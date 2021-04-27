@@ -171,7 +171,7 @@ function Creature:addDamageCondition(target, type, list, damage, period, rounds)
 	return true
 end
 
-function Creature.checkCreatureInsideDoor(player, toPosition)
+function Creature.isInsideDoor(creature, toPosition)
 	local creature = Tile(toPosition):getTopCreature()
 	if creature then
 		toPosition.x = toPosition.x + 1

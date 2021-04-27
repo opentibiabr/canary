@@ -1,15 +1,23 @@
-local toolGear = Action()
+local toolgear = Action()
 
-function toolGear.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return onUseRope(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUseShovel(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUseMachete(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUseScythe(player, item, fromPosition, target, toPosition, isHotkey)
-		or onUseKitchenKnife(player, item, fromPosition, target, toPosition, isHotkey)
+function toolgear.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if math.random(100) > 5 then
+		return ActionsLib.useRope(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useShovel(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.usePick(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useMachete(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useSpoon(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useScythe(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useSickle(player, item, fromPosition, target, toPosition, isHotkey)
+		or ActionsLib.useKitchenKnife(player, item, fromPosition, target, toPosition, isHotkey)
+	else
+		player:say("Oh no! Your tool is jammed and can't be used for a minute.", TALKTYPE_MONSTER_SAY)
+		item:transform(item.itemid + 1)
+		item:decay()
+	end
+	return true
 end
 
-toolGear:id(10511, 10513, 10515)
-toolGear:register()
+toolgear:id(9594, 9596, 9598)
+toolgear:register()

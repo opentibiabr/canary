@@ -38,7 +38,7 @@ local playerFunctions = {
 	["stamina"] = { isActive = true, targetFunction = function (player, target) return player:setStamina(target) end },
 	["town"] = { isActive = true, targetFunction = function (player, target) return player:setTown(Town(target)) end },
 	["balance"] = { isActive = true, targetFunction = function (player, target) return player:setBankBalance(target + player:getBankBalance()) end },
-	["save"] = { isActive = true, targetFunction = function (player, target) return player:save() end },
+	["save"] = { isActive = true, targetFunction = function (player, target) return target:save() end },
 	["type"] = { isActive = true, targetFunction = function (player, target) return player:setAccountType(target) end },
 	["skullTime"] = { isActive = true, targetFunction = function (player, target) return player:setSkullTime(target) end },
 	["maxMana"] = { isActive = true, targetFunction = function (player, target) return player:setMaxMana(target) end },

@@ -38,12 +38,12 @@ local interactions = {
     NpcInteraction:createGreetInteraction("Hi %s! What is it, what d'ye {want}?")
         :addInitValidationProcessor(
             PlayerProcessingConfigs:new()
-               :addStorage(Storage.DarkTrails.Mission01, 1)
+               :addStorage(Storage.Quest.ExampleQuest.Example, 1)
         ),
     NpcInteraction:createGreetInteraction()
         :addInitValidationProcessor(
             PlayerProcessingConfigs:new()
-               :addStorage(Storage.DarkTrails.Mission01, 2)
+               :addStorage(Storage.Quest.ExampleQuest.Example, 2)
         ),
     NpcInteraction:new(
             {"want"},
@@ -65,12 +65,12 @@ local interactions = {
                     {current = 0, previous = 1}
             ):addCompletionUpdateProcessor(
                     PlayerProcessingConfigs:new()
-                        :addStorage(Storage.DarkTrails.Mission01, 2)
-                        :addStorage(Storage.DarkTrails.Mission02, 1)
+                        :addStorage(Storage.Quest.ExampleQuest.Example, 2)
+                        :addStorage(Storage.Quest.ExampleQuest.Example, 1)
             )
     ):addInitValidationProcessor(
         PlayerProcessingConfigs:new()
-           :addStorage(Storage.DarkTrails.Mission01, 1)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 1)
     ),
     NpcInteraction:createFarewellInteraction(),
 }

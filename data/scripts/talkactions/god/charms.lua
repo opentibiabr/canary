@@ -49,7 +49,13 @@ function resetCharm.onSay(player, words, param)
 
 	player:sendCancelMessage("Reseted charm points from character '" .. target:getName() .. "'.")
 	target:sendCancelMessage("Reseted your charm points!")
-	target:resetCharmsBestiary()
+	target:setCharmPoints(0)
+	target:setCharmRuneSlotExpansion(false)
+	local runesUsed = target:getCharmUsedRuneBitAll()
+	for i, charm in pairs(runesUsed) do
+		target:resetCharmRuneCreature(Bestiary.Charms[charm])
+	end
+	target:setCharmUnlockedRuneBit(0)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 
 end
@@ -75,7 +81,7 @@ function charmExpansion.onSay(player, words, param)
 
 	player:sendCancelMessage("Added charm expansion for player '" .. target:getName() .. "'.")
 	target:sendCancelMessage("Received charm expansion!")
-	target:charmExpansion(true)
+	target:setCharmRuneSlotExpansion(true)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 
 end
@@ -101,7 +107,11 @@ function charmRune.onSay(player, words, param)
 
 	player:sendCancelMessage("Added all charm runes to '" .. target:getName() .. "'.")
 	target:sendCancelMessage("Received all charm runes!")
-	target:unlockAllCharmRunes()
+	local playerCurBit = target:getCharmUnlockedRunesBit()
+	for i, charm in pairs(Bestiary.Charms) do
+		playerCurBit = Bestiary.bitToggle(playerCurBit, charm.id, true)
+	end
+	target:setCharmUnlockedRuneBit(playerCurBit)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 
 end
@@ -135,17 +145,16 @@ function setBestiary.onSay(player, words, param)
 	split[2] = split[2]:gsub("^%s*(.-)$", "%1") --Trim left
 	split[3] = split[3]:gsub("^%s*(.-)$", "%1") --Trim left
 
-	local monsterName = split[2]
-	local mType = MonsterType(monsterName)
-	if not(mType) or (mType and mType:raceId() == 0) then
+	local monsterID = Bestiary.MonstersName[split[2]]
+	if not monsterID then
 		player:sendCancelMessage("This monster has no bestiary. Type the name exactly as in game.")
 		return false
 	end
 	local amount = tonumber(split[3])
 
-	player:sendCancelMessage("Set bestiary kill of monster '".. monsterName .. "' from player '" .. target:getName() .. "' to '" .. amount .. "'.")
-	target:sendCancelMessage("Updated kills of monster '".. monsterName .. "'!")
-	target:addBestiaryKill(monsterName, amount)
+	player:sendCancelMessage("Set bestiary kill of monster '".. split[2] .. "' from player '" .. target:getName() .. "' to '" .. amount .. "'.")
+	target:sendCancelMessage("Updated kills of monster '".. split[2] .. "'!")
+	local playerCurBit = target:setBestiaryKillCount(monsterID, amount)
 	target:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 end
 

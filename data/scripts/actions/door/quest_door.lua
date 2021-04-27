@@ -1,4 +1,5 @@
 local doorIds = {}
+
 for index, value in ipairs(QuestDoorTable) do
 	if not table.contains(doorIds, value.openDoor) then
 		table.insert(doorIds, value.openDoor)
@@ -10,6 +11,7 @@ for index, value in ipairs(QuestDoorTable) do
 end
 
 local questDoor = Action()
+
 function questDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	for index, value in ipairs(QuestDoorTable) do
 		if value.closedDoor == item.itemid then
@@ -24,7 +26,7 @@ function questDoor.onUse(player, item, fromPosition, target, toPosition, isHotke
 		end
 	end
 
-	if Creature.checkCreatureInsideDoor(player, toPosition) then
+	if Creature.isInsideDoor(player, toPosition) then
 		return true
 	end
 	return true

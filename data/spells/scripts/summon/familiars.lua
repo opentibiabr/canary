@@ -6,8 +6,8 @@ local familiar = {
 }
 
 local timer = {
-	[1] = {storage=Storage.PetSummonEvent10, countdown=10, message = "10 seconds"},
-	[2] = {storage=Storage.PetSummonEvent60, countdown=60, message = "one minute"}
+	[1] = {storage = Storage.PetSummonEvent10, countdown = 10, message = "10 seconds"},
+	[2] = {storage = Storage.PetSummonEvent60, countdown = 60, message = "one minute"}
 }
 
 local function sendMessageFunction(pid, message)

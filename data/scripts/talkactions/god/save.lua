@@ -1,10 +1,8 @@
 local savingEvent = 0
-function saveLoop(delay)
+function save(delay)
 	saveServer()
-	SaveHirelings()
-	Spdlog.info("Saved Hirelings")
 	if delay > 0 then
-		savingEvent = addEvent(saveLoop, delay, delay)
+		savingEvent = addEvent(save, delay, delay)
 	end
 end
 
@@ -14,12 +12,10 @@ function save.onSay(player, words, param)
 	if player:getGroup():getAccess() then
 		if isNumber(param) then
 			stopEvent(savingEvent)
-			saveLoop(tonumber(param) * 60 * 1000)
+			save(tonumber(param) * 60 * 1000)
 		else
 			saveServer()
-			SaveHirelings()
-			Spdlog.info("Saved Hirelings")
-			player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is saved ...")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Server is saved ...")
 		end
 	end
 end

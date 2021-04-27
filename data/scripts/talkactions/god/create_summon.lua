@@ -14,9 +14,6 @@ function createSummon.onSay(player, words, param)
 	local monster = Game.createMonster(param, position)
 	if monster then
 		player:addSummon(monster)
-		if monster:getOutfit().lookType == 0 then
-			monster:setOutfit({lookType = player:getFamiliarLooktype()})
-		end
 		monster:reload()
 		position:sendMagicEffect(CONST_ME_MAGIC_RED)
 	else

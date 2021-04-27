@@ -33,7 +33,7 @@ function ipBan.onSay(player, words, param)
 
 	resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = " .. targetIp)
 	if resultId ~= false then
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, targetName .. "  is already IP banned.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, targetName .. "  is already IP banned.")
 		result.free(resultId)
 		return false
 	end
@@ -41,7 +41,7 @@ function ipBan.onSay(player, words, param)
 	local timeNow = os.time()
 	db.query("INSERT INTO `ip_bans` (`ip`, `reason`, `banned_at`, `expires_at`, `banned_by`) VALUES (" ..
 			targetIp .. ", '', " .. timeNow .. ", " .. timeNow + (ipBanDays * 86400) .. ", " .. player:getGuid() .. ")")
-	player:sendTextMessage(MESSAGE_ADMINISTRADOR, targetName .. "  has been IP banned.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, targetName .. "  has been IP banned.")
 	return false
 end
 

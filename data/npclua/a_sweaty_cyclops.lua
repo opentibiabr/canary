@@ -37,7 +37,7 @@ local getCraftInteractions = function (craftConfigs)
         craftInteractions[#craftInteractions + 1] = NpcInteraction:createReplyInteraction(
             {index}, craftConfig.message, {current = 1, previous = 0}
         ):addInitValidationProcessor(
-            PlayerProcessingConfigs:new():addStorage(Storage.FriendsandTraders.TheSweatyCyclops, 0, ConfigsTypes.CONFIG_LTE)
+            PlayerProcessingConfigs:new():addStorage(Storage.Quest.ExampleQuest.Example, 0, ConfigsTypes.CONFIG_LTE)
         )
 
         if index ~= "soul orb" then
@@ -50,7 +50,7 @@ local getCraftInteractions = function (craftConfigs)
                 topic
             ):addInitValidationProcessor(
                 PlayerProcessingConfigs:new()
-                   :addStorage(Storage.FriendsandTraders.TheSweatyCyclops, 2)
+                   :addStorage(Storage.Quest.ExampleQuest.Example, 2)
             ):addCompletionValidationProcessor(
                 PlayerProcessingConfigs:new():addItem(craftConfig.item, 1)
             ):addCompletionUpdateProcessor(
@@ -103,8 +103,8 @@ local interactions = {
         {current = 0, previous = 2}
     ):addInitUpdateProcessor(
         PlayerProcessingConfigs:new()
-           :addStorage(Storage.FriendsandTraders.DefaultStart, 1)
-           :addStorage(Storage.FriendsandTraders.TheSweatyCyclops, 1)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 1)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 1)
     ),
     NpcInteraction:createConfirmationInteraction(
         {"bast skirt", "uth'kean", "uth'prta", "uth'lokr", "za'ralator", "soul orb"},
@@ -116,12 +116,12 @@ local interactions = {
         3
     ):addInitValidationProcessor(
         PlayerProcessingConfigs:new()
-           :addStorage(Storage.FriendsandTraders.TheSweatyCyclops, 1)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 1)
     ):addCompletionValidationProcessor(
         PlayerProcessingConfigs:new():addItem(3983, 3)
     ):addCompletionUpdateProcessor(
         PlayerProcessingConfigs:new():addItem(3983, -3)
-           :addStorage(Storage.FriendsandTraders.TheSweatyCyclops, 2)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 2)
     ),
     NpcInteraction:createConfirmationInteraction(
         {"soul orb"},
@@ -133,7 +133,7 @@ local interactions = {
         8
     ):addInitValidationProcessor(
         PlayerProcessingConfigs:new()
-           :addStorage(Storage.FriendsandTraders.TheSweatyCyclops, 2)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 2)
     ):addCompletionValidationProcessor(
         PlayerProcessingConfigs:new():addItem(5944, 1, ConfigsTypes.CONFIG_GTE)
     ):addCompletionUpdateProcessor(
@@ -169,7 +169,7 @@ local interactions = {
         10
     ):addInitValidationProcessor(
         PlayerProcessingConfigs:new()
-            :addStorage(Storage.SweetyCyclops.AmuletStatus, 0, ConfigsTypes.CONFIG_LTE)
+            :addStorage(Storage.Quest.ExampleQuest.Example, 0, ConfigsTypes.CONFIG_LTE)
     ):addCompletionValidationProcessor(
         PlayerProcessingConfigs:new()
             :addItem(8262, 1)
@@ -184,19 +184,19 @@ local interactions = {
             :addItem(8264, -1)
             :addItem(8265, -1)
             :removeAmount(5000)
-            :addStorage(Storage.SweetyCyclops.AmuletStatus, 1)
-            :addStorage(Storage.SweetyCyclops.AmuletTimer, os.time() + 24 * 60 * 60)
+            :addStorage(Storage.Quest.ExampleQuest.Example, 1)
+            :addStorage(Storage.Quest.ExampleQuest.Example, os.time() + 24 * 60 * 60)
     ),
     NpcInteraction:createReplyInteraction(
         {"amulet"},
         "Ahh, lil' one wants amulet. Here! Have it! Mighty, mighty amulet lil' one has. Don't know what but mighty, mighty it is!!!"
     ):addInitValidationProcessor(
         PlayerProcessingConfigs:new()
-            :addStorage(Storage.SweetyCyclops.AmuletStatus, 1)
-            :addStorage(Storage.SweetyCyclops.AmuletTimer, os.time(), ConfigsTypes.CONFIG_LTE)
+            :addStorage(Storage.Quest.ExampleQuest.Example, 1)
+            :addStorage(Storage.Quest.ExampleQuest.Example, os.time(), ConfigsTypes.CONFIG_LTE)
     ):addCompletionUpdateProcessor(
         PlayerProcessingConfigs:new()
-            :addStorage(Storage.SweetyCyclops.AmuletStatus, 2)
+            :addStorage(Storage.Quest.ExampleQuest.Example, 2)
             :addItem(8266, 1)
     ),
     NpcInteraction:createConfirmationInteraction(
@@ -209,14 +209,14 @@ local interactions = {
             11
     ):addInitValidationProcessor(
         PlayerProcessingConfigs:new()
-           :addStorage(Storage.HiddenCityOfBeregar.GoingDown, 1, ConfigsTypes.CONFIG_GTE)
-           :addStorage(Storage.HiddenCityOfBeregar.GearWheel, 2, ConfigsTypes.CONFIG_LTE)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 1, ConfigsTypes.CONFIG_GTE)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 2, ConfigsTypes.CONFIG_LTE)
     ):addCompletionValidationProcessor(
             PlayerProcessingConfigs:new():addItem(5880, 1)
     ):addCompletionUpdateProcessor(
         PlayerProcessingConfigs:new()
             -- Needs to do in way that we can increase storage
-            :addStorage(Storage.HiddenCityOfBeregar.GearWheel, 3)
+            :addStorage(Storage.Quest.ExampleQuest.Example, 3)
             :addItem(5880, -1)
             :addItem(9690, 1)
     ),

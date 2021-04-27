@@ -65,12 +65,12 @@ local destinations = {
                             e.g.
                             completionUpdaters = {
                                 PlayerProcessingConfigs:new():addValidation(
-                                    PlayerProcessingConfigs:new():addStorage(Storage.Postman.Mission01, 1)
-                                ):addStorage(Storage.Postman.Mission01, 2)
+                                    PlayerProcessingConfigs:new():addStorage(Storage.Quest.ExampleQuest.Example, 1)
+                                ):addStorage(Storage.Quest.ExampleQuest.Example, 2)
                             }
                       ]]--
-                      if player:getStorageValue(Storage.Postman.Mission01) == 1 then
-                          player:setStorageValue(Storage.Postman.Mission01, 2)
+                      if player:getStorageValue(Storage.Quest.ExampleQuest.Example) == 1 then
+                          player:setStorageValue(Storage.Quest.ExampleQuest.Example, 2)
                       end
                 end
                 )
@@ -87,8 +87,8 @@ local destinations = {
     { town = "yalahar", baseCost = 200, position = Position(32816, 31272, 6), discounts = 'postman',
         completionValidations = {
             PlayerProcessingConfigs:new()
-                :addStorage(Storage.SearoutesAroundYalahar.Thais, 1, ConfigsTypes.CONFIG_NEQ)
-                :addStorage(Storage.SearoutesAroundYalahar.TownsCounter, 4, ConfigsTypes.CONFIG_LTE)
+                :addStorage(Storage.Quest.ExampleQuest.Example, 1, ConfigsTypes.CONFIG_NEQ)
+                :addStorage(Storage.Quest.ExampleQuest.Example, 4, ConfigsTypes.CONFIG_LTE)
         }
     },
 }

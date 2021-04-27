@@ -63,9 +63,9 @@ function NpcInteraction:createTravelInteraction(player, travelConfigs, baseMessa
     travelUpdaters[#travelUpdaters + 1] = PlayerProcessingConfigs:new()
                                              :addCallback(
                                             function(player)
-                                                    if travelConfigs.town == "kazordoon" and player:getStorageValue(Storage.WhatAFoolish.PieBoxTimer) > os.time() then
+                                                    --[[if travelConfigs.town == "kazordoon" and player:getStorageValue(Storage.WhatAFoolish.PieBoxTimer) > os.time() then
                                                         player:setStorageValue(Storage.WhatAFoolish.PieBoxTimer, 1)
-                                                    end
+                                                    end]]
                                                 end
                                             )
 

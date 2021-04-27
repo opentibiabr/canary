@@ -1560,7 +1560,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 	}
 
 	if (toCylinder->getContainer() != NULL &&
-		toCylinder->getItem()->getID() == ITEM_LOCKER1 &&
+		toCylinder->getItem()->getID() == ITEM_LOCKER &&
 		toPos.getZ() == ITEM_SUPPLY_STASH_INDEX) {
 		player->stowItem(item, count, false);
 			return;

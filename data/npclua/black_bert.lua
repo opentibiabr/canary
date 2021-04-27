@@ -133,7 +133,7 @@ local interactions = {
             }
     ):addCompletionValidationProcessor(
         PlayerProcessingConfigs:new()
-           :addStorage(Storage.ThievesGuild.Mission08, 3)
+           :addStorage(Storage.Quest.ExampleQuest.Example, 3)
         )
     :addCompletionUpdateProcessor(
     PlayerProcessingConfigs:new()

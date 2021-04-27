@@ -1,61 +1,71 @@
-local MusicEffect = {
-	[2070] = CONST_ME_SOUND_GREEN, 	--Wooden Flute
-	[2071] = CONST_ME_SOUND_GREEN, 	--Lyre
-	[2072] = CONST_ME_SOUND_GREEN, 	--Lute
-	[2073] = CONST_ME_SOUND_GREEN, 	--Drum
-	[2074] = CONST_ME_SOUND_BLUE, 	--Panpipes
-	[2075] = CONST_ME_SOUND_GREEN, 	--Simple Fanfare
-	[2076] = CONST_ME_SOUND_GREEN, 	--Fanfare
-	[2077] = CONST_ME_SOUND_GREEN, 	--Royal Fanfare
-	[2078] = CONST_ME_SOUND_GREEN, 	--Post Horn
-	[2079] = CONST_ME_SOUND_RED, 	--War Horn
-	[2080] = CONST_ME_SOUND_BLUE, 	--Piano
-	[2081] = CONST_ME_SOUND_BLUE, 	--Piano
-	[2082] = CONST_ME_SOUND_BLUE, 	--Piano
-	[2083] = CONST_ME_SOUND_BLUE, 	--Piano
-	[2084] = CONST_ME_SOUND_BLUE, 	--Harp
-	[2085] = CONST_ME_SOUND_BLUE, 	--Harp
-	[2332] = CONST_ME_SOUND_GREEN, 	--Waldo's Post Horn
-	[2364] = CONST_ME_SOUND_GREEN, 	--Post Horn
-	-- non movable instruments
-	[2367] = CONST_ME_SOUND_GREEN, 	--Drum
-	[2368] = CONST_ME_SOUND_GREEN, 	--Simple Fanfare
-	[3957] = CONST_ME_SOUND_YELLOW, --Cornucopia
-	[2370] = CONST_ME_SOUND_GREEN, 	--Lute
-	[2371] = CONST_ME_SOUND_BLUE, 	--Horn of Sundering
-	[2372] = CONST_ME_SOUND_GREEN, 	--Lyre
-	[2373] = CONST_ME_SOUND_BLUE, 	--Panpipes
-	[2070] = CONST_ME_SOUND_GREEN, 	--Wooden Flute
-	--
-	[3951] = CONST_ME_SOUND_BLUE, 	--Bongo Drum
-	[3952] = CONST_ME_SOUND_GREEN, 	--Didgeridoo
-	[3953] = CONST_ME_SOUND_RED, 	--War Drum
-	[5786] = CONST_ME_SOUND_GREEN, 	--Wooden Whistle
-	[13759] = CONST_ME_SOUND_BLUE, 	--Small Whistle
+local setting = {
+	[2948] = {effect = CONST_ME_SOUND_GREEN}, -- wooden flute
+	[2949] = {effect = CONST_ME_SOUND_GREEN}, -- lyre
+	[2950] = {effect = CONST_ME_SOUND_GREEN}, -- lute
+	[2951] = {effect = CONST_ME_SOUND_GREEN}, -- drum
+	[2952] = {effect = CONST_ME_SOUND_GREEN}, -- panpipes
+	[2953] = {effect = CONST_ME_SOUND_GREEN}, -- simple fanfare
+	[2954] = {effect = CONST_ME_SOUND_GREEN}, -- fanfare
+	[2955] = {effect = CONST_ME_SOUND_GREEN}, -- royal fanfare
+	[2956] = {effect = CONST_ME_SOUND_GREEN}, -- post horn
+	[2957] = {effect = CONST_ME_SOUND_GREEN}, -- war horn
+	[2958] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2959] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2961] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2962] = {effects = {failure = CONST_ME_SOUND_PURPLE, success = CONST_ME_SOUND_GREEN}, chance = 50}, -- piano
+	[2963] = {effect = CONST_ME_SOUND_GREEN}, -- harp
+	[2964] = {effect = CONST_ME_SOUND_GREEN}, -- harp
+	[3219] = {effect = CONST_ME_SOUND_GREEN}, -- Waldo's post horn
+	[3255] = {effect = CONST_ME_SOUND_GREEN}, -- drum (immovable)
+	[3256] = {effect = CONST_ME_SOUND_GREEN}, -- simple fanfare (immovable)
+	[3257] = {effect = CONST_ME_SOUND_YELLOW, itemId = 3592, itemCount = 10, chance = 80, remove = true}, -- cornucopia (immovable)
+	[3258] = {effect = CONST_ME_SOUND_GREEN}, -- lute (immovable)
+	[3259] = {effect = CONST_ME_SOUND_BLUE}, -- the horn of sundering (actual effect is unknown; immovable)
+	[3260] = {effect = CONST_ME_SOUND_GREEN}, -- lyre (immovable)
+	[3261] = {effect = CONST_ME_SOUND_GREEN}, -- panpipes (immovable)
+	[2951] = {effect = CONST_ME_SOUND_BLUE}, -- bongo drum (actual effect is unknown)
+	[2965] = {effects = {failure = CONST_ME_POFF, success = CONST_ME_SOUND_GREEN}, chance = 20}, -- didgeridoo
+	[2966] = {effect = CONST_ME_SOUND_RED}, -- war drum
+	[3103] = {effect = CONST_ME_SOUND_YELLOW, itemId = 3592, itemCount = 10, chance = 80, remove = true}, -- cornucopia
+	[5786] = {effects = {failure = CONST_ME_SOUND_RED, success = CONST_ME_SOUND_YELLOW}, monster = "war wolf", chance = 60, remove = true}, -- wooden whistle
+	[6572] = {effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 6573, decayId = 6572}, -- party trumpet
+	[6573] = {effect = CONST_ME_SOUND_GREEN, text = "TOOOOOOT", transformId = 6572, decayId = 6573}, -- party trumpet
+	[12602] = {effect = CONST_ME_SOUND_BLUE}, -- small whistle (actual effect is unknown)
+	[23725] = {effect = CONST_ME_SOUND_WHITE} -- small crystal bell
 }
 
 local music = Action()
 
 function music.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if item.itemid == 2071 then
-		if isInRange(player:getPosition(), Position(32695, 31717, 2), Position(32699, 31719, 2)) then
-			local lyreProgress = player:getStorageValue(Storage.Diapason.Lyre)
-			if lyreProgress < 7
-					and player:getStorageValue(Storage.Diapason.Edala) ~= 1
-					and player:getStorageValue(Storage.Diapason.LyreTimer) < os.time() then
-				player:setStorageValue(Storage.Diapason.Lyre, math.max(0, lyreProgress) + 1)
-				player:setStorageValue(Storage.Diapason.Edala, 1)
-				player:setStorageValue(Storage.Diapason.LyreTimer, os.time() + 86400)
+	local instrument, chance = setting[item:getId()]
+	if instrument.chance then
+		chance = instrument.chance >= math.random(1, 100)
+
+		if instrument.monster and chance then
+			local monster = Game.createMonster(instrument.monster, player:getPosition(), true)
+			if monster then
+				player:addSummon(monster)
 			end
+		elseif instrument.itemId and chance then
+			player:addItem(instrument.itemId, instrument.itemCount)
 		end
 	end
 
-	player:addAchievementProgress('Rockstar', 10000)
-	item:getPosition():sendMagicEffect(MusicEffect[item.itemid])
+	item:getPosition():sendMagicEffect(instrument.effect or instrument.effects and chance and instrument.effects.success or instrument.effects.failure)
+
+	if instrument.transformId then
+		player:say(instrument.text, TALKTYPE_MONSTER_SAY, false, nil, item:getPosition())
+		item:transform(instrument.transformId)
+		item:decay(instrument.decayId)
+	end
+
+	if not chance and instrument.remove then
+		item:remove()
+	end
 	return true
 end
 
-for index, value in pairs(MusicEffect) do
+for index, value in pairs(setting) do
 	music:id(index)
 end
 

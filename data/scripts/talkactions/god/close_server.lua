@@ -9,7 +9,7 @@ function closeServer.onSay(player, words, param)
 		Game.setGameState(GAME_STATE_SHUTDOWN)
 	else
 		Game.setGameState(GAME_STATE_CLOSED)
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, "Server is now closed.")
+		player:sendTextMessage(MESSAGE_INFO_DESCR, "Server is now closed.")
 	end
 	return false
 end

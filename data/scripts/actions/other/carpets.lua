@@ -1,87 +1,56 @@
 local carpetItems = {
-	[25393] = 25392, --rift carpet
-	[25392] = 25393, --rift carpet
-	[26193] = 26192, --void carpet
-	[26192] = 26193, --void carpet
-	[26087] = 26109, --yalahahari carpet
-	[26109] = 26087, --yalahahari carpet
-	[26088] = 26110, --white fur carpet
-	[26110] = 26088, --white fur carpet
-	[26089] = 26111, --bamboo mat carpet
-	[26111] = 26089, --bamboo matr carpet
-	[26371] = 26363, --crimson carpet
-	[26363] = 26371, --crimson carpet
-	[26366] = 26372, --azure carpet
-	[26372] = 26366, --azure carpet
-	[26367] = 26373, --emerald carpet
-	[26373] = 26367, --emerald carpet
-	[26368] = 26374, --light parquet carpet
-	[26374] = 26368, --light parquet carpet
-	[26369] = 26375, --dark parquet carpet
-	[26375] = 26369, --dark parquet carpet
-	[26370] = 26376, --mable floor
-	[26376] = 26370, --marble floor
-	[27084] = 27092, --flowery carpet
-	[27092] = 27084, --flowery carpet
-	[27085] = 27093, --Colourful Carpet
-	[27093] = 27085, --Colourful Carpet
-	[27086] = 27094, --striped carpet
-	[27094] = 27086, --striped carpet
-	[27087] = 27095, --fur carpet
-	[27095] = 27087, --fur carpet
-	[27088] = 27096, --diamond carpet
-	[27096] = 27088, --diamond carpet
-	[27089] = 27097, --patterned carpet
-	[27097] = 27089, --patterned carpet
-	[27090] = 27098, --night sky carpet
-	[27098] = 27090, --night sky carpet
-	[27091] = 27099, --star carpet
-	[27099] = 27091, --star carpet
-	[29350] = 29351, --verdant carpet
-	[29351] = 29350, --verdant carpet
-	[29352] = 29353, --shaggy carpet
-	[29353] = 29352, --shaggy carpet
-	[29355] = 29354, --mystic carpet
-	[29354] = 29355, --mystic carpet
-	[29356] = 29357, --stone tile
-	[29357] = 29356, --stone tile
-	[29359] = 29358, --wooden plank
-	[29358] = 29359, --wooden plank
-	[29386] = 29387, --wheat carpet
-	[29387] = 29386, --wheat carpet
-	[29388] = 29389, --crested carpet
-	[29389] = 29388, --crested carpet
-	[29390] = 29391, --decorated carpet
-	[29391] = 29390, --decorated carpet
-	[36301] = 36303, --tournament carpet
-	[36303] = 36301, --tournament carpet
-	[36302] = 36304, --sublime tournament carpet
-	[36304] = 36302, --sublime tournament carpet
-	[40776] = 40777, --grandiose carpet
-	[40777] = 40776, --grandiose carpet
+	[22737] = 22736, [22736] = 22737,-- Rift carpet
+	[23537] = 23536, [23536] = 23537,-- Void carpet
+	[23431] = 23453, [23453] = 23431,-- Yalaharian carpet
+	[23432] = 23454, [23454] = 23432,-- White fur carpet
+	[23433] = 23455, [23455] = 23433,-- Bamboo mat carpet
+	[23715] = 23707, [23707] = 23715,-- Crimson carpet
+	[23710] = 23716, [23716] = 23710,-- Azure carpet
+	[23711] = 23717, [23717] = 23711,-- Emerald carpet
+	[23712] = 23718, [23718] = 23712,-- Light parquet carpet
+	[23713] = 23719, [23719] = 23713,-- Dark parquet carpet
+	[23714] = 23720, [23720] = 23714,-- Marble floor
+	[24416] = 24424, [24424] = 24416,-- Flowery carpet
+	[24417] = 24425, [24425] = 24417,-- Colourful Carpet
+	[24418] = 24426, [24426] = 24418,-- Striped carpet
+	[24419] = 24427, [24427] = 24419,-- Fur carpet
+	[24420] = 24428, [24428] = 24420,-- Diamond carpet
+	[24421] = 24429, [24429] = 24421,-- Patterned carpet
+	[24422] = 24430, [24430] = 24422,-- Night sky carpet
+	[24423] = 24431, [24431] = 24423,-- Star carpet
+	[26114] = 26115, [26115] = 26114,-- Verdant carpet
+	[26116] = 26117, [26117] = 26116,-- Shaggy carpet
+	[26118] = 26119, [26119] = 26118,-- Mystic carpet
+	[26120] = 26121, [26121] = 26120,-- Stone tile
+	[26123] = 26122, [26122] = 26123,-- Wooden plank
+	[26151] = 26150, [26150] = 26151,-- Wheat carpet
+	[26152] = 26153, [26153] = 26152,-- Crested carpet
+	[26154] = 26155, [26155] = 26154 -- Decorated carpet
 }
 
 local carpets = Action()
 
-function carpets.onUse(player, item, fp, target, toPosition, isHotkey)
+function carpets.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local carpet = carpetItems[item.itemid]
 	if not carpet then
 		return false
 	end
-
-	local fromPosition = item:getPosition()
-	local tile = Tile(fromPosition)
-	if not fromPosition:getTile():getHouse() then
-		player:sendTextMessage(MESSAGE_FAILURE, "You may use this only inside a house.")
-	elseif tile:getItemCountById(item.itemid) == 1 then
-		for k,v in pairs(carpetItems) do
-			if tile:getItemCountById(k) > 0 and k ~= item.itemid then
-				player:sendCancelMessage(Game.getReturnMessage(RETURNVALUE_NOTPOSSIBLE))
-				return true
-			end
-		end
-		item:transform(carpet)
+	local tile = Tile(item:getPosition())
+	local carpetStack = 0
+	for _, carpetId in pairs(carpetItems) do
+		carpetStack = carpetStack + tile:getItemCountById(carpetId)
 	end
+	if fromPosition.x == CONTAINER_POSITION then
+		player:sendTextMessage(MESSAGE_STATUS_SMALL, "Put the item on the floor first.")
+		return true
+	elseif not tile or not tile:getHouse() then
+		player:sendTextMessage(MESSAGE_STATUS_SMALL, "You may use this only inside a house.")
+		return true
+	elseif carpetStack > 1 then
+		player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return true
+	end
+	item:transform(carpet)
 	return true
 end
 

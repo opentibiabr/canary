@@ -1,2 +1,2 @@
-dofile('data/startup/tables/tables.lua')
+dofile('data/startup/tables/load.lua')
 dofile('data/startup/others/others.lua')

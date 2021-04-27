@@ -8,13 +8,7 @@ dofile('data/lib/compat/compat.lua')
 dofile('data/lib/debugging/dump.lua')
 
 -- Tables library
-dofile('data/lib/tables/table.lua')
-
--- Others library
-dofile('data/lib/others/others.lua')
-
--- Quests library
-dofile('data/lib/quests/quest.lua')
+dofile('data/lib/tables/load.lua')
 
 -- Player Processor Library
 dofile('data/lib/player_processor/load.lua')

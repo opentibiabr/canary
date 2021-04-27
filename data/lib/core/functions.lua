@@ -38,17 +38,6 @@ debug.sethook(function(event, line)
 	end
 end, "l")
 
--- OTServBr-Global functions
-function getJackLastMissionState(player)
-	if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.LastMissionState) == 1 then
-		return "You told Jack the truth about his personality. You also explained that you and Spectulus \z
-		made a mistake by assuming him as the real Jack."
-	else
-		return "You lied to the confused Jack about his true personality. You and Spectulus made him \z
-		believe that he is in fact a completely different person. Now he will never be able to find out the truth."
-	end
-end
-
 function getRateFromTable(t, level, default)
 	for _, rate in ipairs(t) do
 		if level >= rate.minlevel and (not rate.maxlevel or level <= rate.maxlevel) then
@@ -261,117 +250,6 @@ function playerExists(name)
 		return true
 	end
 	return false
-end
-
-function functionRevert()
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Corrupted, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Desert, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Dimension, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Grass, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Ice, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Mushroom, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Roshamuul, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.Venom, 0)
-	Game.setStorageValue(GlobalStorage.FerumbrasAscendant.Habitats.AllHabitats, 0)
-	for a = 1, #basins do
-		local item = Tile(basins[a].pos):getItemById(24852)
-		item:transform(12070)
-	end
-	local specs, spec = Game.getSpectators(Position(33629, 32693, 12), false, false, 25, 25, 85, 85)
-	for i = 1, #specs do
-		spec = specs[i]
-		if spec:isPlayer() then
-			spec:teleportTo(Position(33630, 32648, 12))
-			spec:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			spec:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'You were teleported because the habitats are returning to their original form.')
-		elseif spec:isMonster() then
-			spec:remove()
-		end
-	end
-	for x = 33611, 33625 do
-		for y = 32658, 32727 do
-			local position = Position(x, y, 12)
-			local tile = Tile(position)
-			if not tile then
-				return
-			end
-			local ground = tile:getGround()
-			if not ground then
-				return
-			end
-			ground:remove()
-			local items = tile:getItems()
-			if items then
-				for i = 1, #items do
-					local item = items[i]
-					item:remove()
-				end
-			end
-		end
-	end
-
-	for x = 33634, 33648 do
-		for y = 32658, 32727 do
-			local position = Position(x, y, 12)
-			local tile = Tile(position)
-			if not tile then
-				return
-			end
-			local ground = tile:getGround()
-			if not ground then
-				return
-			end
-			ground:remove()
-			local items = tile:getItems()
-			if items then
-				for i = 1, #items do
-					local item = items[i]
-					item:remove()
-				end
-			end
-		end
-	end
-
-	Game.loadMap('data/world/worldchanges/habitats.otbm')
-	return true
-end
-
-function checkWallArito(item, toPosition)
-	if (not item:isItem()) then
-		return false
-	end
-	local wallTile = Tile(Position(33206, 32536, 6))
-	if not wallTile or wallTile:getItemCountById(8202) > 0 then
-		return false
-	end
-	local checkEqual = {
-		[2016] = {Position(33207, 32537, 6), {5858, -1}, Position(33205, 32537, 6)},
-		[2419] = {Position(33205, 32537, 6), {2016, 1}, Position(33207, 32537, 6), 5858}
-	}
-	local it = checkEqual[item:getId()]
-	if (it and it[1] == toPosition and Tile(it[3]):getItemCountById(it[2][1], it[2][2]) > 0) then
-		wallTile:getItemById(877):transform(8202)
-
-		if (it[4]) then
-			item:transform(it[4])
-		end
-
-		addEvent(
-		function()
-			if (Tile(Position(33206, 32536, 6)):getItemCountById(8210) > 0) then
-				Tile(Position(33206, 32536, 6)):getItemById(8210):transform(877)
-			end
-			if (Tile(Position(33205, 32537, 6)):getItemCountById(5858) > 0) then
-				Tile(Position(33205, 32537, 6)):getItemById(5858):remove()
-			end
-		end,
-		5 * 60 * 1000
-		)
-	else
-		if (it and it[4] and it[1] == toPosition) then
-			item:transform(it[4])
-		end
-	end
 end
 
 function placeSpawnRandom(fromPositon, toPosition, monsterName, ammount, hasCall, storage, value, removestorage,

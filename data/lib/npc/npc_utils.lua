@@ -1,7 +1,7 @@
 -- Utils functions for NPC System
 local travelDiscounts = {
-	['postman'] = {price = 10, storage = Storage.Postman.Rank, value = 3},
-	['new frontier'] = {price = 50, storage = Storage.TheNewFrontier.Mission03, value = 1}
+	--['postman'] = {price = 10, storage = Storage.Postman.Rank, value = 3},
+	--['new frontier'] = {price = 50, storage = Storage.TheNewFrontier.Mission03, value = 1}
 }
 
 function buildTravelMessage(baseMessage, place, cost)

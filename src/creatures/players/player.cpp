@@ -989,7 +989,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 		return it->second;
 	}
 
-	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER1);
+	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER);
 	depotLocker->setDepotId(depotId);
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);

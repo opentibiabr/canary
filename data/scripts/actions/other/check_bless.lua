@@ -6,5 +6,5 @@ function checkBless.onUse(player, item, fromPosition, target, toPosition, isHotk
 	return Blessings.checkBless(player)
 end
 
-checkBless:id(6561, 12424)
+checkBless:id(6561, 11468)
 checkBless:register()

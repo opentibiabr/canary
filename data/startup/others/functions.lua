@@ -152,23 +152,6 @@ function loadLuaNpcs(tablename)
 	Spdlog.info("Loaded ".. #Game.getTowns() .. " towns with ".. #Game.getHouses() .." houses in total")
 end
 ]]
--- Function for load the map and spawm custom (config.lua line 92)
--- Set mapCustomEnabled to false for disable the custom map
-function loadCustomMap()
-	local mapName = configManager.getString(configKeys.MAP_CUSTOM_NAME)
-	if configManager.getBoolean(configKeys.MAP_CUSTOM_ENABLED) then
-		Spdlog.info("Loading custom map")
-		Game.loadMap(configManager.getString(configKeys.MAP_CUSTOM_FILE))
-		Spdlog.info("Loaded " .. mapName .. " map")
-		-- It's load the spawn
-		-- 10 * 1000 = 10 seconds delay for load the spawn after loading the map
-		addEvent(
-		function()
-			--Game.loadSpawnFile(configManager.getString(configKeys.MAP_CUSTOM_SPAWN))
-			--Spdlog.info("Loaded " .. mapName .. " spawn")
-		end, 10 * 1000)
-	end
-end
 
 -- Functions that cannot be used in reload command, so they have been moved here
 -- Prey slots consumption

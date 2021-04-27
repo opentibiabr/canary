@@ -58,7 +58,7 @@ local equipitems = {
 	["epiphany"] = {"wand", "rod", "helmetmage", "special_strike", "special_wand", "special_rod", "crit_wandrod", "life_wandrod"},
 	["featherweight"] = {"backpack"},
 }
-
+--[[
 local enablingStorages = {
 	["lich shroud"] = Storage.ForgottenKnowledge.LadyTenebrisKilled,
 	["reap"] = Storage.ForgottenKnowledge.LadyTenebrisKilled,
@@ -82,7 +82,7 @@ local enablingStorages = {
 	["strike"] = Storage.ForgottenKnowledge.LastLoreKilled,
 	["epiphany"] = Storage.ForgottenKnowledge.LastLoreKilled,
 	["featherweight"] = -1,
-}
+}]]
 
 function Player.canImbueItem(self, imbuement, item)
 	local item_type = ""
@@ -93,7 +93,7 @@ function Player.canImbueItem(self, imbuement, item)
 		end
 	end
 	local imb_type = ""
-	for ibt, imb_n in pairs(enablingStorages) do
+	--[[for ibt, imb_n in pairs(enablingStorages) do
 		if string.find(ibt, imbuement:getName():lower()) then
 			imb_type = ibt
 			break
@@ -130,7 +130,7 @@ function Player.canImbueItem(self, imbuement, item)
 
 	if imbuement:getBase().id == 3 and not self:getGroup():getAccess() and stg > -1 and self:getStorageValue(stg) < 1 then
 		return false
-	end
+	end]]
 
 	return true
 end

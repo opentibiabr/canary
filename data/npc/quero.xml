@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Quero" walkinterval="2000" floorchange="0" script="quero.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="55" body="30" legs="24" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			drum, 2073, 140;
+			lute, 2072, 195;
+			lyre, 2071, 120;
+			simple fanfare, 2075, 150;"/>
+	</parameters>
+</npc>

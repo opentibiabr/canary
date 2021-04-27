@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Zurak" walkinterval="0" floorchange="0" script="zurakarena.lua">
+	<health now="100" max="100"/>
+	<look type="114"/>
+	<parameters>
+		<parameter key="message_greet" value="{Hurry} before zzomeone will zee uzz."/>
+	</parameters>
+</npc>

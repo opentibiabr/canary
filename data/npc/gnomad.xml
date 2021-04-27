@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomad" walkinterval="0" floorchange="0" script="gnomad.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="78" body="94" legs="94" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|, welcome to War Zone I!"/>
+		<parameter key="message_farewell" value="Good bye."/>
+	</parameters>
+</npc>

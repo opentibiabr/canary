@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Talesia" walkinterval="2000" floorchange="0" script="talesia.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="114" body="97" legs="58" feet="116" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Salutation, |PLAYERNAME|! "/>
+		<parameter key="message_farewell" value="Fare thee well, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Fare thee well"/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="name;warehouse;thais;king tibianus;king;"/>
+		<parameter key="keyword_reply1" value="I am Talesia De'Mir, owner of Crunor's Finest Warehouse."/>
+		<parameter key="keyword_reply2" value="My warehouse is only one of many. We merchants hold this city together and lead it to prosperity."/>
+		<parameter key="keyword_reply3" value="I hope they live well from our taxes..."/>
+		<parameter key="keyword_reply4" value="We pay this man enough to live here undisturbed of major interventions."/>
+		<parameter key="keyword_reply5" value="We pay this man enough to live here undisturbed of major interventions."/>
+	</parameters>
+</npc>

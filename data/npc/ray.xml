@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ray" walkinterval="2000" floorchange="0" script="ray.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="19" body="115" legs="126" feet="58" addons="0"/>
+	<voices>
+		<voice text="If you need help with letters or parcels, just ask me. I can explain everything." interval2="100" margin="1" yell="no"/>
+		<voice text="Stay in touch with your friends. Send a letter, let them know you care and such!" interval2="120" margin="1" yell="no"/>
+		<voice text="Welcome to the post office!" interval2="90" margin="1" yell="no"/>
+		<voice text="No, no, no, there IS no parcel bug, I'm telling you!" interval2="120" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="How may I help you |PLAYERNAME|? Ask me for a {trade} if you want to buy something. I can also explain the mail system."/>
+		<parameter key="message_farewell" value="I hope to see you back soon, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="I hope to see you back soon."/>
+		<parameter key="message_sendtrade" value="Here. Don't forget that you need to buy a label too if you want to send a parcel. Always write the name of the {receiver} in the first line and the name of the {city} in the second line."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			label, 2599, 1;
+			letter, 2597, 8;
+			parcel, 2595, 15;"/>
+	</parameters>
+</npc>

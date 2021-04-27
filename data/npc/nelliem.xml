@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Nelliem" walkinterval="2000" floorchange="0" script="nelliem.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="115" body="100" legs="105" feet="76" addons="0"/>
+	<voices>
+		<voice text="The right tools are the secret of a green thumb." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, |PLAYERNAME|, traveller from afar... if you need gardening tools, just ask me for a {trade}."/>
+		<parameter key="message_farewell" value="Go...! Learn the secret of green thumbs and may Crunor bless you..."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I'm keeping my thumbs green and selling gardening tools as you can see on the shelves behind me."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			broom, 2551, 12;
+			crowbar, 2416, 260;
+			empty flower pot, 7655, 250;
+			fishing rod, 2580, 150;
+			hammer, 2557, 80;
+			hoe, 2552, 15;
+			machete, 2420, 35;
+			pick, 2553, 50;
+			pitchfork, 2548, 25;
+			rake, 2549, 20;
+			rope, 2120, 50;
+			saw, 2558, 95;
+			scythe, 2550, 25;
+			shovel, 2554, 20;
+			watering can, 7734, 50;
+			worm, 3976, 1;"/>
+	</parameters>
+</npc>

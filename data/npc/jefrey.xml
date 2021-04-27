@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Jefrey" walkinterval="2000" floorchange="0" script="bank.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="95" body="63" legs="38" feet="82" addons="2"/>
+</npc>

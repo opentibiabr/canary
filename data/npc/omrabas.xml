@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Omrabas" walkinterval="2000" floorchange="0" script="omrabas.lua">
+	<health now="100" max="100"/>
+	<look typeex="2229"/>
+</npc>

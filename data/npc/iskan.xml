@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Iskan" walkinterval="2000" floorchange="0" script="iskan.lua">
+	<health now="100" max="100"/>
+	<look type="143" head="38" body="116" legs="38" feet="19" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Greetings. What can I {do for you}?"/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="message_walkaway" value="Good bye."/>
+	</parameters>
+</npc>

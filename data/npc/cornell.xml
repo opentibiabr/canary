@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Cornell" walkinterval="2000" floorchange="0" script="cornell.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="114" body="99" legs="40" feet="115" addons="2"/>
+	<voices>
+		<voice text="Passage to Grimvale available here!" interval2="0" margin="1" yell="no"/>
+	</voices>
+</npc>

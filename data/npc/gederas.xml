@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Gederas" walkinterval="2000" floorchange="0" script="gederas.lua">
+	<health now="100" max="100"/>
+	<look type="289" head="40" body="57" legs="21" feet="20" addons="3"/>
+</npc>

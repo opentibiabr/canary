@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Eranth" walkinterval="2000" script="eranth.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="97" body="98" legs="97" feet="75" addons="0"/>
+</npc>

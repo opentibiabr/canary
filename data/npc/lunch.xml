@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lunch" walkinterval="2000" floorchange="0" script="lunch.lua">
+	<health now="100" max="100"/>
+	<look type="297"/>
+	<voices>
+		<voice text="La La Laaa Laaahh!." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Uhh! Visitoooors!"/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="message_walkaway" value="bye."/>
+	</parameters>
+</npc>

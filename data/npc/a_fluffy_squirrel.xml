@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Fluffy Squirrel" walkinterval="0" script="a_fluffy_squirrel.lua">
+	<health now="100" max="100"/>
+	<look type="274"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			acorn, 11213, 10;
+			walnut, 7909, 80;"/>
+	</parameters>
+</npc>

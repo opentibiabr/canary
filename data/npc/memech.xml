@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Memech" walkinterval="2000" floorchange="0" script="memech.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="21" body="21" legs="21" feet="116" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			axe, 2386, 20;
+			battle axe, 2378, 235;
+			battle hammer, 2417, 350;
+			bone sword, 2450, 75;
+			brass armor, 2465, 450;
+			brass helmet,2460, 120;
+			brass legs, 2478, 195;
+			brass shield, 2511, 65;
+			carlin sword, 2395, 473;
+			chain armor, 2464, 200;
+			chain helmet, 2458, 52;
+			chain legs, 2648, 80;
+			club, 2382, 5;
+			coat, 2651, 8;
+			crowbar, 2416, 260;
+			dagger, 2379, 5;
+			doublet, 2485, 16;
+			durable exercise axe, 40115, 945000, 1800;
+			durable exercise bow, 40117, 945000, 1800;
+			durable exercise club, 40116, 945000, 1800;
+			durable exercise sword, 40114, 945000, 1800;
+			dwarven shield, 2525, 500;
+			exercise axe, 32385, 262500, 500;
+			exercise bow, 32387, 262500, 500;
+			exercise club, 32386, 262500, 500;
+			exercise sword, 32384, 262500, 500;
+			hand axe, 2380, 8;
+			iron helmet, 2459, 390;
+			jacket, 2650, 12;
+			lasting exercise axe, 40121, 7560000, 14400;
+			lasting exercise bow, 40123, 7560000, 14400;
+			lasting exercise club, 40122, 7560000, 14400;
+			lasting exercise sword, 40120, 7560000, 14400;
+			leather armor, 2467, 35;
+			leather boots, 2643, 10;
+			leather helmet, 2461, 12;
+			leather legs, 2649, 10;
+			longsword, 2397, 160;
+			mace, 2398, 90;
+			morning star, 2394, 430;
+			plate armor, 2463, 1200;
+			plate shield, 2510, 125;
+			rapier, 2384, 15;
+			sabre, 2385, 35;
+			scale armor, 2483, 260;
+			short sword, 2406, 26;
+			sickle, 2405, 7;
+			soldier helmet, 2481, 110;
+			spike sword, 2383, 8000;
+			steel helmet, 2457, 580;
+			steel shield, 2509, 240;
+			studded armor, 2484, 90;
+			studded helmet, 2482, 63;
+			studded legs, 2468, 50;
+			studded shield, 2526, 50;
+			sword, 2376, 85;
+			throwing knife, 2410, 25;
+			throwing star, 2399, 42;
+			two handed sword, 2377, 950;
+			viking helmet, 2473, 265;
+			viking shield, 2531, 260;
+			war hammer, 2391, 10000;
+			wooden shield, 2512, 15;"/>
+		<parameter key="shop_sellable" value="
+			axe, 2386, 7;
+			battle axe, 2378, 80;
+			battle hammer, 2417, 120;
+			battle shield, 2513, 95;
+			bone club, 2449, 5;
+			bone sword, 2450, 20;
+			brass armor, 2465, 150;
+			brass helmet, 2460, 30;
+			brass legs, 2478, 49;
+			brass shield, 2511, 25;
+			carlin sword, 2395, 118;
+			chain armor, 2464, 70;
+			chain helmet, 2458, 17;
+			chain legs, 2648, 25;
+			club, 2382, 1;
+			coat, 2651, 1;
+			copper shield, 2530, 50;
+			crowbar, 2416, 50;
+			dagger, 2379, 2;
+			double axe, 2387, 260;
+			doublet, 2485, 3;
+			dwarven shield, 2525, 100;
+			fire sword, 2392, 1000;
+			halberd, 2381, 400;
+			hand axe, 2380, 4;
+			hatchet, 2388, 25;
+			iron helmet, 2459, 150;
+			jacket, 2650, 1;
+			katana, 2412, 35;
+			leather armor, 2467, 12;
+			leather boots, 2643, 2;
+			leather helmet, 2461, 4;
+			leather legs, 2649, 9;
+			legion helmet, 2480, 22;
+			longsword, 2397, 51;
+			mace, 2398, 30;
+			morning star, 2394, 100;
+			orcish axe, 2428, 350;
+			plate armor, 2463, 400;
+			plate legs, 2647, 115;
+			plate shield, 2510, 45;
+			rapier, 2384, 5;
+			sabre, 2385, 12;
+			scale armor, 2483, 75;
+			short sword, 2406, 10;
+			sickle, 2405, 3;
+			small axe, 2559, 5;
+			soldier helmet, 2481, 16;
+			spike sword, 2383, 240;
+			steel helmet, 2457, 293;
+			steel shield, 2509, 80;
+			studded armor, 2484, 25;
+			studded club, 2448, 10;
+			studded helmet, 2482, 20;
+			studded legs, 2468, 15;
+			studded shield, 2526, 16;
+			swampling club, 20104, 40;
+			sword, 2376, 25;
+			throwing knife, 2410, 2;
+			two handed sword, 2377, 450;
+			viking helmet, 2473, 66;
+			viking shield, 2531, 85;
+			war hammer, 2391, 470;
+			wooden shield, 2512, 5;"/>
+	</parameters>
+</npc>

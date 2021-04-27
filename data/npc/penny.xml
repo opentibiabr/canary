@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Penny" walkinterval="2000" floorchange="0" script="penny.lua">
+	<health now="100" max="100"/>
+	<look type="137" head="58" body="116" legs="117" feet="59" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			letter, 2597, 1;
+			cake, 6278, 1;"/>
+	</parameters>
+</npc>

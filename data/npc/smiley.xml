@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Smiley" walkinterval="2000" floorchange="0" script="smiley.lua">
+	<health now="100" max="100"/>
+	<look type="37" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<voices>
+		<voice text="Spellssssssssss... druidssssssss...." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="... Greeeeeetiiiingssss..."/>
+		<parameter key="message_farewell" value="... Good... Bye"/>
+		<parameter key="message_walkaway" value="... Good... Bye"/>
+	</parameters>
+</npc>

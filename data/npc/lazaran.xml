@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lazaran" walkinterval="2000" floorchange="0" script="lazaran.lua">
+	<health now="100" max="100"/>
+	<look type="143" head="57" body="57" legs="57" feet="57"/>
+	<parameters>
+		<parameter key="message_greet" value="Me greet."/>
+	</parameters>
+</npc>

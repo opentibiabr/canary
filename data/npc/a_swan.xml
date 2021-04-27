@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="A Swan" walkinterval="0" floorchange="0" script="a_swan.lua">
+	<health now="100" max="100"/>
+	<look typeex="28804"/>
+	<voices>
+		<voice text="Goodbye." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

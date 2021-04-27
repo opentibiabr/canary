@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Xed" walkinterval="2000" floorchange="0" script="xed.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="78" body="36" legs="57" feet="97" addons="0"/>
+	<voices>
+		<voice text="Selling bows, crossbows and ammunition!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, |PLAYERNAME|. Welcome to the distance fighting booth of the Ironhouse where you can buy bows, crossbows and ammunition."/>
+		<parameter key="message_farewell" value="Goodbye |PLAYERNAME|, and may the gods be with you."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I am the humble supplier for distance fighting weapons of the Ironhouse, owned by Abran Ironeye."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bow, 2456, 400;
+			crossbow, 2455, 500;
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			spear, 2389, 10;"/>
+		<parameter key="shop_sellable" value="spear, 2389, 3;"/>
+	</parameters>
+</npc>

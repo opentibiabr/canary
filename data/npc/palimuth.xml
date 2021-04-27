@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Palimuth" walkinterval="2000" script="palimuth.lua">
+	<health now="100" max="100"/>
+	<look type="325" head="97" body="0" legs="79" feet="98" addons="0"/>
+</npc>

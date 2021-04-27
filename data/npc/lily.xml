@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lily" walkinterval="2000" floorchange="0" script="lily.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="78" body="101" legs="86" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			antidote potion, 8474, 50;
+			small health potion, 8704, 20;"/>
+		<parameter key="shop_sellable" value="
+			blueberry, 2677, 1;
+			cookie, 8111, 1;
+			empty potion flask, 7636, 5;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomelvis" walkinterval="2000" floorchange="0" script="gnomelvis.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="67" body="76" legs="105" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello. Is it me you're {looking} for??"/>
+	</parameters>
+</npc>

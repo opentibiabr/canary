@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Imalas" walkinterval="2000" floorchange="0" script="imalas.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="115" body="9" legs="39" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 2;
+			brown bread, 2691, 3;
+			carrot, 2684, 2;
+			cheese, 2696, 5;
+			cherry, 2679, 1;
+			cookie, 2687, 2;
+			egg, 2695, 2;
+			grapes, 2681, 3;
+			melon, 2682, 8;
+			peas, 12639, 2;
+			pumpkin, 2683, 10;
+			roll, 2690, 2;"/>
+	</parameters>
+</npc>

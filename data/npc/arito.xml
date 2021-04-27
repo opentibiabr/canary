@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Arito" walkinterval="2000" floorchange="0" script="arito.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="59" body="111" legs="99" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bread, 2689, 8;
+			cheese, 2696, 12;
+			fish, 2667, 6;
+			ham, 2671, 16;
+			meat, 2666, 10;
+			mug of water, 2012, 1, 1;
+			mug of beer, 2012, 2, 3;
+			mug of lemonade, 2012, 2, 5;
+			mug of wine, 2012, 3, 15;"/>
+		<parameter key="shop_sellable" value="ice cube, 7441, 250;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Anerui" walkinterval="2000" floorchange="0" script="anerui.lua">
+	<health now="100" max="100"/>
+	<look type="63"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			meat, 2666, 4;
+			ham, 2671, 6;"/>
+	</parameters>
+</npc>

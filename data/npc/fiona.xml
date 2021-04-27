@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Fiona" walkinterval="2000" floorchange="0" script="fiona.lua">
+	<health now="100" max="100"/>
+	<look type="137" head="115" body="100" legs="95" feet="38" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			basalt fetish, 20136, 210;
+			basalt figurine, 20137, 160;
+			bat wing, 5894, 50;
+			behemoth claw, 5930, 2000;
+			berserk potion, 7439, 500;
+			blazing bone, 18425, 610;
+			blood tincture in a vial, 21245, 360;
+			bloody dwarven beard, 20107, 110;
+			bola, 20089, 35;
+			bone fetish, 20111, 150;
+			bonelord eye, 5898, 80;
+			bony tail, 11194, 210;
+			brimstone fangs, 12658, 380;
+			brimstone shell, 12659, 210;
+			broken throwing axe, 20131, 230;
+			bullseye potion, 7443, 500;
+			carrion worm fang, 11192, 35;
+			cheese cutter, 20097, 50;
+			chicken feather, 5890, 30;
+			deeptags, 15426, 290;
+			demon dust, 5906, 300;
+			demon horn, 5954, 1000;
+			demonic skeletal hand, 10564, 80;
+			dragon priests wandtip, 11361, 175;
+			dragons tail, 12413, 100;
+			draken sulphur, 12614, 550;
+			elder bonelord tentacle, 11193, 150;
+			elven astral observer, 12421, 90;
+			elven scouting glass, 12420, 50;
+			enchanted chicken wing, 5891, 20000;
+			fiery heart, 10553, 375;
+			fish fin, 5895, 150;
+			flask of warriors sweat, 5885, 10000;
+			frosty heart, 10578, 280;
+			gauze bandage, 10566, 90;
+			geomancers staff, 12419, 120;
+			giant eye, 11197, 380;
+			glob of acid slime, 9967, 25;
+			glob of mercury, 9966, 20;
+			glob of tar, 9968, 30;
+			green dragon scale, 5920, 100;
+			hardened bone, 5925, 70;
+			heaven blossom, 5921, 50;
+			hellspawn tail, 11221, 475;
+			hideous chunk, 18434, 510;
+			holy ash, 20130, 160;
+			holy orchid, 5922, 90;
+			honeycomb, 5902, 40;
+			humongous chunk, 18433, 540;
+			key to the drowned library, 15422, 330;
+			lizard scale, 5881, 120;
+			lost basher's spike, 20106, 280;
+			lost bracers, 20133, 140;
+			lost husher's staff, 20128, 250;
+			luminous orb, 12410, 1000;
+			mad froth, 20134, 80;
+			magic sulphur, 5904, 8000;
+			mastermind potion, 7440, 500;
+			miraculum, 12430, 60;
+			mystical hourglass, 10577, 700;
+			pair of hellflayer horns, 25385, 1300;
+			perfect behemoth fang, 5893, 250;
+			red dragon scale, 5882, 200;
+			red hair dye, 20135, 40;
+			scythe leg, 11229, 450;
+			sea serpent scale, 10583, 520;
+			skull shatterer, 20129, 170;
+			small flask of eyedrops, 12468, 95;
+			some grimeleech wings, 25386, 1200;
+			spellsinger's seal, 15421, 280;
+			spider silk, 5879, 100;
+			spirit container, 5884, 40000;
+			spooky blue eye, 10559, 95;
+			stone wing, 11195, 120;
+			turtle shell, 5899, 90;
+			vampire dust, 5905, 100;
+			vexclaw talon, 25384, 1100;
+			weaver's wandtip, 11314, 250;
+			wimp tooth chain, 20127, 120;
+			wyrm scale, 10582, 400;
+			wyvern talisman, 10561, 265;"/>
+	</parameters>
+</npc>

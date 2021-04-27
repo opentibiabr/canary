@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Carina" walkinterval="2000" floorchange="0" script="carina.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="97" body="70" legs="94" feet="76" addons="0"/>
+	<voices>
+		<voice text="Fine jewels, rings and amulets!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Welcome, |PLAYERNAME|. I'm looking forward to {trade} with you."/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I sell some of the most beautiful jewels in Tibia."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			golden amulet, 2130, 6600;
+			precious necklace, 8767, 5000;
+			ruby necklace, 2133, 3560;
+			wedding ring, 2121, 990;"/>
+		<parameter key="shop_sellable" value="wedding ring, 2121, 100;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Angus" walkinterval="2000" floorchange="0" script="angus.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="57" body="132" legs="114" feet="113" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Be greeted, noble |PLAYERNAME| and welcome to the Explorer Society."/>
+		<parameter key="message_farewell" value="Come back soon, noble |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Come back soon, noble."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			atlas, 6108, 150;
+			butterfly conservation kit, 4865, 250;
+			ectoplasm container, 4863, 750;
+			botanist s container, 4869, 500;
+			orichalcum pearl, 5022, 80;
+			crown backpack, 10522, 800;"/>
+		<parameter key="shop_sellable" value="
+			explorer brooch, 4873, 50;
+			giant smithhammer, 2321, 250;
+			hydra egg, 4850, 500;
+			old parchment, 4842, 500;
+			skull of ratha, 2320, 250;"/>
+	</parameters>
+</npc>

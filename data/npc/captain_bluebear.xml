@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Captain Bluebear" walkinterval="2000" floorchange="0" script="captain_bluebear.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="19" body="69" legs="125" feet="50" addons="0"/>
+</npc>

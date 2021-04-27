@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gree Dee" walkinterval="2000" floorchange="0" script="gree_dee.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="97" body="77" legs="87" feet="115" addons="0"/>
+	<voices>
+		<voice text="Come and buy at a cheap rate!" interval2="100" margin="1" yell="no"/>
+		<voice text="Feel FREE to buy my ITEMS!" interval2="120" margin="1" yell="yes"/>
+	</voices>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="message_farewell" value="You really should have bought some extra stuff, just in case."/>
+		<parameter key="message_walkaway" value="You really should have bought some extra stuff, just in case."/>
+		<parameter key="message_sendtrade" value="You will not believe how cheap my items are."/>
+		<parameter key="message_greet" value="Be greeted esteemed customer with a full purse!"/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			basket, 1989, 6;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2042, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			cup, 2013, 2, 0;
+			deed of ownership, 8694, 1000;
+			document, 1952, 12;
+			fishing rod, 2580, 40;
+			brocade backpack, 9774, 20;
+			brocade bag, 9775, 5;
+			hand auger, 36169, 25;
+			machete, 2420, 6;
+			net, 36324, 50;
+			parchment, 1951, 8;
+			pick, 2553, 50;
+			plate, 2035, 6;
+			present, 1990, 10;
+			rope, 2120, 50;
+			scroll, 1949, 5;
+			scythe, 2550, 50;
+			shovel, 2554, 10;
+			torch, 2050, 2;
+			vial of oil, 2006, 20, 11;
+			waterskin of water, 2031, 40, 1;
+			watch, 2036, 20;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			machete, 2420, 6;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

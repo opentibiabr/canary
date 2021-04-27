@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Maritima" walkinterval="0" script="maritima.lua">
+	<health now="100" max="100"/>
+	<look typeex="5811"/>
+	<parameters>
+		<parameter key="message_greet" value="Oh, hello |PLAYERNAME|. A visitor, how nice!"/>
+	</parameters>
+</npc>

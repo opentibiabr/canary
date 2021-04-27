@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Julian" walkinterval="2000" floorchange="0" script="julian.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="55" body="30" legs="23" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Ah, looking for some cooking utensils today, |PLAYERNAME|? Welcome!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="HI;instruments;job;"/>
+		<parameter key="keyword_reply1" value="Be greeted, |PLAYERNAME|! May I help you? With some {instruments}, perhaps?"/>
+		<parameter key="keyword_reply2" value="You can buy a lyre, lute, drum, and simple fanfare. I also sell pianos and harps. If you'd like to see my offers, ask me for a {trade}."/>
+		<parameter key="keyword_reply3" value="I make instruments and sometimes I'm wandering through the lands of Tibia as a bard."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			drum, 2073, 140;
+			harp kit , 3934, 50;
+			lute, 2072, 195;
+			lyre, 2071, 120;
+			piano kit, 3933, 200;
+			simple fanfare, 2075, 150;"/>
+	</parameters>
+</npc>

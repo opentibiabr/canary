@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Admiral Wyrmslicer" walkinterval="2000" floorchange="0" script="admiral_wyrmslicer.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="19" body="113" legs="112" feet="114" addons="0"/>
+</npc>

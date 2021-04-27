@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Pompan" walkinterval="2000" floorchange="0" script="pompan.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="78" body="13" legs="32" feet="108" addons="0"/>
+</npc>

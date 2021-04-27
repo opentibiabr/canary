@@ -1,0 +1,95 @@
+---
+
+name: Build on Ubuntu
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - v*
+
+    tags:
+      - v*
+
+  pull_request:
+    paths:
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - .github/**
+
+jobs:
+  job:
+    name: ${{ matrix.os }}-${{ matrix.buildtype }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+        buildtype: [Debug, Release]
+        include:
+          - os: ubuntu-18.04
+            triplet: x64-linux
+          - os: ubuntu-20.04
+            triplet: x64-linux
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: lukka/get-cmake@latest
+
+      - name: Install Dependencies
+        run: >
+          sudo apt-get update && sudo apt-get install ccache build-essential
+          libluajit-5.1-dev zip
+
+      - name: CCache
+        id: ccache
+        uses: actions/cache@v2
+        with:
+          path: ~/.ccache
+          key: ${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          restore-keys: |
+            ${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+            ${{ matrix.os }}-${{ matrix.buildtype }}-
+
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v7
+        with:
+          setupOnly: true
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+          vcpkgTriplet: ${{ matrix.triplet }}
+          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
+          vcpkgGitCommitId: ${{ secrets.VCPKG_ID }}
+
+      - name: 'Run CMake with Ninja, install dependencies with vcpkg, build with CMake'
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildDirectory: ${{ github.workspace }}/build/
+          cmakeBuildType: ${{ matrix.buildtype }}
+
+      - name: Clean workspace
+        if: ${{ matrix.buildtype == 'Release' }}
+        shell: bash
+        run: |
+          mv ${{ github.workspace }}/build/bin/otbr ${{ github.workspace }}/otbr
+          find . -maxdepth 1 ! -name otbr ! -name data ! -name config.lua.dist ! -name key.pem ! -name LICENSE ! -name README.md ! -name schema.sql -exec rm -r {} \;
+
+      - name: Prepare datapack contents
+        if: ${{ matrix.buildtype == 'Release' }}
+        shell: bash
+        run: |
+          mv config.lua.dist config.lua
+          unzip -o data/world/world.zip -d data/world/
+          rm data/world/world.zip
+          cd ..
+          zip -r otservbr.zip otservbr-global
+
+      - name: Upload binary
+        if: ${{ matrix.buildtype == 'Release' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-otbr-amd64-${{ matrix.buildtype }}-${{ github.sha }}
+          path: ${{ runner.workspace }}/otservbr.zip

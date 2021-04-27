@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Brasith" walkinterval="2000" floorchange="0" script="brasith.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="41" body="94" legs="97" feet="76"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 2;
+			bottle of bug milk, 9674, 200;
+			bottle of milk, 2007, 15, 6;
+			broccoli, 12417, 3;
+			bulb of garlic, 9114, 4;
+			carrot, 2684, 3;
+			cauliflower, 12418, 4;
+			cherry, 2679, 1;
+			corncob, 2686, 3;
+			grapes, 2681, 3;
+			juice squeezer, 5865, 100;
+			melon, 2682, 8;
+			potato, 8838, 4;
+			pumpkin, 2683, 10;
+			strawberry, 2680, 1;"/>
+	</parameters>
+</npc>

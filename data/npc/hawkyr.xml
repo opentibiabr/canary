@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Hawkyr" walkinterval="2000" floorchange="0" script="hawkyr.lua">
+	<health now="100" max="100"/>
+	<look type="143" head="97" body="116" legs="82" feet="121" addons="2"/>
+</npc>

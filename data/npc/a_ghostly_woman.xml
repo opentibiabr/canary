@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Ghostly Woman" walkinterval="2000" floorchange="0" script="a_ghostly_woman.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="9" body="85" legs="10" feet="85" addons="1"/>
+</npc>

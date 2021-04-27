@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Marvin" walkinterval="0" floorchange="0" script="marvin.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="38" body="109" legs="14" feet="57" addons="2"/>
+	<parameters>
+		<parameter key="message_greet" value="Ah, you come just in time for the special voting about the most recent {funding} project. I guess you want to participate in it."/>
+	</parameters>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Amber" walkinterval="2000" floorchange="0" script="amber.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="59" body="113" legs="132" feet="76" addons="1"/>
+</npc>

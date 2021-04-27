@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gorn" walkinterval="2000" floorchange="0" script="gorn.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="58" body="68" legs="101" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			basket, 1989, 6;
+			brown book, 1971, 15;
+			black book, 1972, 15;
+			grey small book, 1973, 15;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2057, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			cup, 3942, 2, 0;
+			document, 1952, 12;
+			fishing rod, 2580, 150;
+			greeting card, 6387, 30;
+			hand auger, 36169, 25;
+			inkwell, 2600, 10;
+			jug, 7244, 10;
+			machete, 2420, 35;
+			mug, 2012, 4, 0;
+			net, 36324, 50;
+			orange backpack, 10519, 20;
+			orange bag, 10520, 5;
+			parchment, 1948, 8;
+			parchment, 1951, 8;
+			pick, 2553, 50;
+			plate, 2035, 6;
+			present, 1990, 10;
+			rope, 2120, 50;
+			scroll, 1949, 5;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			torch, 2050, 2;
+			valentine's card, 6538, 30;
+			watch, 2036, 20;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			green book, 1980, 15;
+			orange book, 1977, 30;
+			blue book, 1978, 20;
+			gemmed book, 1976, 100;
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			inkwell, 2600, 8;
+			machete, 2420, 6;
+			parchment, 1948, 5;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554,8;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

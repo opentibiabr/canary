@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Archery" walkinterval="2000" floorchange="0" script="archery.lua">
+	<health now="100" max="100"/>
+	<look type="683" head="97" body="0" legs="96" feet="114" addons="3" mount="1101"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			assassin star, 7368, 100;
+			infernal bolt, 6529, 300000;
+			burst arrow, 2546, 300000;
+			arrow, 2544, 3;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bow, 2456, 400;
+			crossbow, 2455, 500;
+			crystalline arrow, 18304, 20;
+			diamond arrow, 40736, 100;
+			drill bolt, 18436, 12;
+			earth arrow, 7850, 5;
+			envenomed arrow, 18437, 12;
+			flaming arrow, 7840, 5;
+			flash arrow, 7838, 5;
+			onyx arrow, 7365, 7;
+			piercing bolt, 7363, 5;
+			power bolt, 2547, 7;
+			prismatic bolt, 18435, 20;
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			royal spear, 7378, 15;
+			shiver arrow, 7839, 5;
+			sniper arrow, 7364, 5;
+			small stone, 1294, 100;
+			spear, 2389, 9;
+			spectral bolt, 40737, 70;
+			tarsal arrow, 15648, 6;
+			throwing star, 2399, 42;
+			vortex bolt, 15649, 6;"/>
+	</parameters>
+</npc>

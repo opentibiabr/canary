@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Nor" walkinterval="2000" floorchange="0" script="nor.lua">
+	<health now="100" max="100"/>
+	<look type="143" head="77" body="113" legs="19" feet="116" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Psst, not that loud."/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="message_walkaway" value="Bye."/>
+	</parameters>
+</npc>

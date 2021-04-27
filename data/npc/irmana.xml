@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Irmana" walkinterval="2000" script="irmana.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="78" body="90" legs="13" feet="14" addons="3"/>
+	<voices>
+		<voice text="Welcome to the house of fashion, Iron Sparrow!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Welcome to the house of fashion, |PLAYERNAME|,also {recycle} Red Robe, Mystic Turban or Green Tunics or buy few things ask me for a {trade}!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_onsendtrade" value="I'm currently interested in these materials."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			ape fur, 5883, 120;
+			badger fur, 11216, 15;
+			black wool, 12404, 300;
+			blue piece of cloth, 5912, 200;
+			brown piece of cloth, 5913, 100;
+			bunch of troll hair, 10606, 30;
+			dirty turban, 12412, 120;
+			downy feather, 12640, 20;
+			earflap, 20099, 40;
+			frost giant pelt, 10575, 160;
+			geomancer's robe, 12414, 80;
+			ghostly tissue, 10607, 90;
+			gloom wolf fur, 24663, 70;			
+			green dragon leather, 5877, 100;
+			green piece of cloth, 5910, 200;
+			jewelled belt, 12426, 180;
+			lion's mane, 10608, 60;
+			lizard leather, 5876, 150;
+			minotaur leather, 5878, 80;
+			necromantic robe, 12431, 250;
+			noble turban, 12442, 430;
+			piece of crocodile leather, 11196, 15;
+			purple robe, 12429, 110;
+			red dragon leather, 5948, 200;
+			red piece of cloth, 5911, 300;
+			rope belt, 12448, 66;
+			royal tapestry, 9958, 1000;
+			safety pin, 12449, 120;
+			shaggy tail, 11324, 25;
+			silky fur, 11209, 35;
+			simple dress, 2657, 50;
+			skunk tail, 11191, 50;
+			snake skin, 10611, 400;
+			spool of yarn, 5886, 1000;
+			striped fur, 11210, 50;
+			tattered piece of robe, 10601, 120;
+			thick fur, 11224, 150;
+			velvet tapestry, 9837, 800;
+			warwolf fur, 11235, 30;
+			werewolf fur, 11234, 380;
+			white piece of cloth, 5909, 100;
+			winter wolf fur, 11212, 20;
+			wool, 11236, 15;
+			yellow piece of cloth, 5914, 150;"/>
+	</parameters>
+</npc>

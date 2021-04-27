@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Mugluf" walkinterval="0" floorchange="0" script="mugluf.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="95" body="0" legs="0" feet="113" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			salt, 38765, 5;
+			meat, 2666, 5;
+			salmon, 2668, 6;
+			ham, 2671, 8;"/>
+	</parameters>
+</npc>

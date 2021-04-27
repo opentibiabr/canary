@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Emma" walkinterval="2000" floorchange="0" script="emma.lua">
+	<health now="100" max="100"/>
+	<look type="139" head="79" body="90" legs="52" feet="15" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="HAIL TO THE QUEEN!"/>
+		<parameter key="message_farewell" value="LONG LIVE THE QUEEN! You may leave now!"/>
+		<parameter key="message_walkaway" value="LONG LIVE THE QUEEN!"/>
+	</parameters>
+</npc>

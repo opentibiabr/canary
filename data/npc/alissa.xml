@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Alissa" walkinterval="2000" floorchange="0" script="alissa.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="114" body="3" legs="72" feet="16" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 3;
+			blueberry, 2677, 1;
+			carrot, 2684, 3;
+			cherry, 2679, 1;
+			cucumber, 8842, 5;
+			grapes, 2681, 3;
+			mango, 5097, 8;
+			melon, 2682, 8;
+			orange, 2675, 6;
+			pear, 2673, 5;
+			plum, 8839, 3;
+			potato, 8838, 5;
+			pumpkin, 2683, 10;
+			raspberry, 8840, 1;
+			red apple, 2674, 3;
+			strawberry, 2680, 1;
+			tomato, 2685, 4;"/>
+	</parameters>
+</npc>

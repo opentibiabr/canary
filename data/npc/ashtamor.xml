@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ashtamor" walkinterval="2000" floorchange="0" script="ashtamor.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="19" body="114" legs="76" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Welcome, |PLAYERNAME|, wanderer between the worlds."/>
+		<parameter key="message_farewell" value="See you again, |PLAYERNAME| ... sooner or later, more or less alive."/>
+		<parameter key="message_walkaway" value="See you again ... sooner or later, more or less alive."/>
+		<parameter key="message_onsendtrade" value="Yes, it's a wise idea not to leave the choice of your future vessel to chance. Have a look."/>
+	</parameters>
+</npc>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Buddel" walkinterval="2000" floorchange="0" script="buddel_raider_camp.lua">
+	<health now="100" max="100"/>
+	<look type="143" head="19" body="57" legs="22" feet="20" addons="0"/>
+	<voices>
+		<voice text="Oh geeze, where are we again? *HICKS*" interval2="120" margin="1" yell="no"/>
+		<voice text="*HICKS*" interval2="100" margin="1" yell="no"/>
+		<voice text=" LALALALA ... an' a bottle of RUM !!!" interval2="90" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="compass, 11219, 45;"/>
+		<parameter key="message_sendtrade" value="Got any compasses for me?"/>
+		<parameter key="message_greet" value="Ho ho, *HICKS*. Captain Buddel is always at your service!"/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="message_walkaway" value="Bye."/>
+	</parameters>
+</npc>

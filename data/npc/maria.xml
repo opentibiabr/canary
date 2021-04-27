@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Maria" walkinterval="2000" floorchange="0" script="maria.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="77" body="41" legs="62" feet="116" addons="0"/>
+	<voices>
+		<voice text="Hello, hello! Put your feet up and relax in the Hard Rock Tavern." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="The Hard Rock Tavern greets you, |PLAYERNAME|. Sit down, have some {food} and a {drink}!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|. Tell your friends about us and visit us again."/>
+		<parameter key="message_walkaway" value="Good bye, |PLAYERNAME|. Tell your friends about us and visit us again."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bread, 2689, 4;
+			cheese, 2696, 6;
+			cookie, 2687, 5;
+			egg, 2695, 2;
+			ham, 2671, 8;
+			meat, 2666, 5;
+			mug of beer, 2012, 2, 3;
+			mug of lemonade, 2012, 2, 5;
+			mug of water, 2012, 1, 1;
+			mug of wine, 2012, 3, 15;
+			tomato, 2685, 5;
+			valentine's cake, 6393, 100;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Kratos" walkinterval="2000" floorchange="0" script="kratos.lua">
+	<health now="100" max="100"/>
+	<look type="471" head="77" body="101" legs="97" feet="115" mount="902" addons="3"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+	</parameters>
+</npc>

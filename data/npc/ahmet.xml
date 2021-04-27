@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ahmet" walkinterval="2000" floorchange="0" script="ahmet.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="57" body="116" legs="97" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="message_farewell" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my offers."/>
+		<parameter key="message_greet" value="Be mourned pilgrim in flesh. I'm selling general goods."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			basket, 1989, 6;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2042, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			cup, 2013, 2, 0;
+			deed of ownership, 8694, 1000;
+			document, 1952, 12;
+			fishing rod, 2580, 40;
+			golden backpack, 2004, 10;
+			golden bag, 1997, 4;
+			hand auger, 36169, 25;
+			machete, 2420, 6;
+			net, 36324, 50;
+			parchment, 1951, 8;
+			pick, 2553, 50;
+			plate, 2035, 6;
+			present, 1990, 10;
+			rope, 2120, 50;
+			scroll, 1949, 5;
+			scythe, 2550, 50;
+			shovel, 2554, 10;
+			torch, 2050, 2;
+			vial of oil, 2006, 20, 11;
+			waterskin of water, 2031, 40, 1;
+			watch, 2036, 20;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			machete, 2420, 6;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

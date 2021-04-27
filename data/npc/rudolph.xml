@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Rudolph" walkinterval="2000" floorchange="0" script="rudolph.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="41" body="29" legs="78" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			belted cape, 8872, 1300;
+			cape, 2654, 9;
+			green tunic, 2652, 25;
+			jacket, 2650, 12;
+			rangers cloak, 2660, 550;
+			leather legs, 2649, 10;
+			leather boots, 2643, 2;
+			sandals, 2642, 2;
+			scarf, 2661, 15;"/>
+		<parameter key="shop_sellable" value="belted cape, 8872, 500;"/>
+	</parameters>
+</npc>

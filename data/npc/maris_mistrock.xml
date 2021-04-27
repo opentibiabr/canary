@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Maris" walkinterval="2000" script="maris_mistrock.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="78" body="51" legs="85" feet="126" addons="0"/>
+</npc>

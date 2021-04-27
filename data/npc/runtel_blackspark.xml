@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Runtel Blackspark" walkinterval="2000" floorchange="0" script="runtel_blackspark.lua">
+	<health now="100" max="100"/>
+	<look type="472" head="59" body="114" legs="0" feet="94" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			animate dead rune, 2316, 375;
+			avalanche rune, 2274, 57;
+			blank rune, 2260, 10;
+			chameleon rune, 2291, 210;
+			convince creature rune, 2290, 80;
+			cure poison rune, 2266, 65;
+			destroy field rune, 2261, 15;
+			disintegrate rune, 2310, 26;
+			energy bomb rune, 2262, 203;
+			energy field rune, 2277, 38;
+			energy wall rune, 2279, 85;
+			explosion rune, 2313, 31;
+			fire bomb rune, 2305, 147;
+			fire field rune, 2301, 28;
+			fire wall rune, 2303, 61;
+			fireball rune, 2302, 30;
+			great fireball rune, 2304, 57;
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			health potion, 7618, 50;
+			heavy magic missile rune, 2311, 12;
+			holy missile rune, 2295, 16;
+			icicle rune, 2271, 30;
+			intense healing rune, 2265, 95;
+			light magic missile rune, 2287, 4;
+			magic wall rune, 2293, 116;
+			mana potion, 7620, 56;
+			paralyze rune, 2278, 700;
+			poison bomb rune, 2286, 85;
+			poison field rune, 2285, 21;          
+			poison wall rune, 2289, 52;           
+			soulfire rune, 2308, 46;			
+			stalagmite rune, 2292, 12;
+			stone shower rune, 2288, 37;			
+			strong health potion, 7588, 115;		
+			strong mana potion, 7589, 93;			
+			sudden death rune, 2268, 135;			
+			supreme health potion, 26031, 625;
+			thunderstorm rune, 2315, 47;			
+			ultimate healing rune, 2273, 175;			
+			ultimate health potion, 8473, 379;			
+			ultimate mana potion, 26029, 438;
+			ultimate spirit potion, 26030, 438;
+			wild growth rune, 2269, 160;"/>
+	</parameters>
+</npc>

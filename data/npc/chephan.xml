@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Chephan" walkinterval="2000" floorchange="0" script="chephan.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="2" body="26" legs="115" feet="76" addons="0"/>
+	<voices>
+		<voice text="Cooking utensils and kitchen equipment! For pros and starters!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Ah, looking for some cooking utensils today, |PLAYERNAME|? Welcome!"/>
+		<parameter key="message_farewell" value="So long, |PLAYERNAME|."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I sell all the cooking utensils you can dream of."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			baking tray, 14345, 20;
+			bottle, 2007, 3, 0;
+			bucket, 7142, 4;
+			cleaver, 2568, 15;
+			cup, 2013, 2, 0;
+			fork, 2564, 10;
+			jug, 7243, 10;
+			kitchen knife, 2566, 10;
+			mug, 2012, 4, 0;
+			oven spatula, 2569, 12;
+			pan, 2563, 20;
+			plate, 2035, 6;
+			pot, 2562, 30, 0;
+			rolling pin, 2570, 12;
+			spoon, 2565, 10;
+			wooden spoon, 2567, 5;"/>
+	</parameters>
+</npc>

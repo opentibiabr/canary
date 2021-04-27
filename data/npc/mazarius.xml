@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Mazarius" walkinterval="1500" speed="100" walkradius="2" floorchange="0" script="mazarius.lua">
+	<health max="100" now="100"/>
+	<look type="130" head="78" body="76" legs="19" feet="38" addons="1" mount="0"/>
+</npc>

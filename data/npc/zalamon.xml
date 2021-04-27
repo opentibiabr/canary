@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Zalamon" walkinterval="2000" floorchange="0" script="zalamon.lua">
+	<health now="100" max="100"/>
+	<look type="115"/>
+	<parameters>
+		<parameter key="message_greet" value="Not many travellerzz zzezze dayzz. I hope you bring good newzz."/>
+	</parameters>
+</npc>

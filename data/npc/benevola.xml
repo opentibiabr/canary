@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Benevola" walkinterval="2000" floorchange="0" script="benevola.lua">
+	<health now="100" max="100"/>
+	<look type="158" head="81" body="120" legs="15" feet="94" addons="0"/>
+</npc>

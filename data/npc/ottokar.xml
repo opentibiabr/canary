@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ottokar" walkinterval="2000" floorchange="0" script="ottokar.lua">
+	<health now="100" max="100"/>
+	<look type="153" head="132" body="121" legs="120" feet="114" addons="3"/>
+	<voices>
+		<voice text="Where to get enough food for all?" interval2="100" margin="1" yell="no"/>
+		<voice text="Oh my! Oh my!!" interval2="100" margin="1" yell="no"/>
+		<voice text="This time things are getting troublesome." interval2="100" margin="1" yell="no"/>
+		<voice text="All these troubles." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Oh, an adventurer! Do you have {medicine}?."/>
+	</parameters>
+</npc>

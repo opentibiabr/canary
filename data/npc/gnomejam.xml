@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomejam" walkinterval="2000" floorchange="0" script="gnomejam.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="3" body="58" legs="58" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. I sell all kind of food, say {trade} to see what I got to offer!"/>
+		<parameter key="shop_buyable" value="
+			bread, 2689, 4;
+			cheese, 2696, 6;
+			ham, 2671, 8;
+			meat, 2666, 5;"/>
+	</parameters>
+</npc>

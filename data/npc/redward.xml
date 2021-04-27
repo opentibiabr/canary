@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Redward" walkinterval="2000" floorchange="0" script="redward.lua">
+	<health now="100" max="100"/>
+	<look type="237" head="20" body="39" legs="45" feet="7" addons="0"/>
+	<voices>
+		<voice text="Are you looking at me!?" interval2="120" margin="1" yell="no"/>
+		<voice text="Welcome to the post office!" interval2="90" margin="1" yell="no"/>
+		</voices>
+	<parameters>
+		<parameter key="message_greet" value="Hi there. Welcome to my humble post office."/>
+		<parameter key="message_farewell" value="Bye for now, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye."/>
+		<parameter key="message_sendtrade" value="Here. Don't forget that you need to buy a label too if you want to send a parcel. Always write the name of the {receiver} in the first line and the name of the {city} in the second line."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			label, 2599, 1;
+			letter, 2597, 8;
+			parcel, 2595, 15;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Messenger of Santa" walkinterval="2000" floorchange="0" script="messenger_of_santa.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="39" body="99" legs="60" feet="117" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			blue christmas bundle, 6508, 60;
+			blue christmas garland, 6505, 25;
+			christmas branch, 6489, 40;
+			christmas card, 6388, 10;
+			christmas garland, 6503, 25;
+			christmas present green, 6510, 20;
+			christmas present red, 6506, 20;
+			christmas tree package, 3910, 50;
+			christmas wreath, 6502, 45;
+			green christmas bundle, 6509, 80;
+			red christmas bundle, 6507, 70;
+			red christmas garland, 6504, 25;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Sandomo" walkinterval="2000" floorchange="0" script="sandomo.lua">
+	<health now="100" max="100"/>
+	<look type="289" head="38" body="113" legs="2" feet="20" addons="1"/>
+</npc>

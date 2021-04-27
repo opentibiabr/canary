@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Baxter" walkinterval="2000" floorchange="0" script="baxter.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="77" body="29" legs="29" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="bricklayers kit, 8613, 100;"/>
+		<parameter key="shop_sellable" value="
+			broken helmet, 12409, 20;
+			broken shamanic staff, 12408, 35;
+			dead rat, 3813, 1;
+			orc leather, 12435, 30;
+			orc tooth, 11113, 150;
+			orcish gear, 12433, 85;
+			shamanic hood, 12434, 45;
+			skull belt, 12436, 80;"/>
+	</parameters>
+</npc>

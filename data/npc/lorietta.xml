@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lorietta" walkinterval="0" script="lorietta.lua">
+	<health now="100" max="100"/>
+	<look type="270" head="78" body="79" legs="80" feet="77" addons="1"/>
+</npc>

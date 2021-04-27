@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Rose" walkinterval="2000" floorchange="0" script="rose.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="79" body="77" legs="112" feet="116" addons="0"/>
+	<voices>
+		<voice text="Have a look at my beautiful flowers!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Welcome to Crunor's finest warehouse, |PLAYERNAME|."/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="Here you may buy some of the most beautiful flowers."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			exotic flowers, 2107, 300;
+			flower bowl, 2102, 6;
+			god flowers, 2100, 5;
+			honey flower, 2103, 5;
+			indoor plant kit, 3937, 8;
+			potted flower, 2104, 5;"/>
+	</parameters>
+</npc>

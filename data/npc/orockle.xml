@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Orockle" walkinterval="0" floorchange="0" script="orockle.lua">
+	<health now="100" max="100"/>
+	<look typeex="14892"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			blob bomb, 15390, 150;
+			flask of chitin dissolver, 15463, 150;
+			gooey substance, 15462, 150;
+			reagent flask, 15465, 200;
+			strange powder, 15389, 150;
+			swarmer drum, 15650, 200;"/>
+	</parameters>
+</npc>

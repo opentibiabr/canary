@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Inkaef" walkinterval="0" floorchange="0" script="inkaef.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="114" body="86" legs="0" feet="86" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			armor rack, 6114, 90;
+			barrel, 3919, 12;
+			big table, 3911, 30;
+			birdcage, 3922, 50;
+			bookcase, 6373, 70;
+			box, 1738, 10;
+			chest of drawers, 3915, 18;
+			chest, 1740, 10;
+			chimney, 8692, 200;
+			crate, 1739, 10;
+			cuckoo clock, 1877, 40;
+			dresser, 3916, 25;
+			empty goldfish bowl, 5928, 50;
+			flower bowl, 2102, 6;
+			globe, 3923, 50;
+			goblin statue, 3930, 50;
+			god flowers, 2100, 5;
+			green cushioned chair, 3901, 40;
+			green pillow, 1688, 25;
+			green tapestry, 1860, 25;
+			harp, 3934, 50;
+			heart pillow, 1685, 30;
+			honey flower, 2103, 5;
+			indoor plant, 3937, 8;
+			knight statue, 3928, 50;
+			large amphora, 3931, 50;
+			large trunk, 3920, 10;
+			locker, 3917, 30;
+			minotaur statue, 3929, 50;
+			orange tapestry, 1866, 25;
+			oven, 6372, 80;
+			pendulum clock, 3927, 75;
+			piano, 3933, 200;
+			picture, 1852, 50;
+			picture, 1853, 50;
+			picture, 1854, 50;
+			potted flower, 2104, 5;
+			purple tapestry, 1857, 25;
+			red cushioned chair, 3901, 40;
+			red pillow, 1687, 25;
+			red tapestry, 1869, 25;
+			rocking chair, 3904, 25;
+			rocking horse, 3926, 30;
+			round blue pillow, 1690, 25;
+			round purple pillow, 1692, 25;
+			round red pillow, 1691, 25;
+			round turquoise pillow, 1693, 25;
+			small blue pillow, 1681, 20;
+			small green pillow, 1679, 20;
+			small orange pillow, 1682, 20;
+			small purple pillow, 1678, 20;
+			small red pillow, 1680, 20;
+			small round table, 14328, 25;
+			small table, 3908, 20;
+			small turquoise pillow, 1683, 20;
+			small white pillow, 1684, 20;
+			sofa chair, 3905, 55;
+			square table, 14329, 25;
+			table lamp, 3924, 35;
+			telescope, 3925, 70;
+			treasure quest, 1746, 1000;
+			trophy stand, 7936, 50;
+			trough, 3918, 7;
+			venorean cabinet, 20254, 90;
+			venorean drawer, 20257, 40;
+			venorean wardrobe, 20255, 50;
+			wall mirror, 1845, 40;
+			wall mirror, 1848, 40;
+			wall mirror, 1851, 40;
+			water pipe, 2093, 40;
+			weapon rack, 6115, 90;
+			white tapestry, 1880, 25;
+			wooden chair, 3903, 15;
+			yellow pillow, 1689, 25;
+			yellow tapestry, 1863, 25;"/>
+	</parameters>
+</npc>

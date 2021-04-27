@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Shadowpunch" walkinterval="2000" floorchange="0" script="shadowpunch.lua">
+	<health now="100" max="100"/>
+	<look type="152" head="91" body="91" legs="93" feet="91" addons="1"/>
+</npc>

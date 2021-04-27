@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnombold" walkinterval="2000" floorchange="0" speechbubble="1" script="gnombold.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="40" body="81" legs="101" feet="57" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hi!"/>
+	</parameters>
+</npc>

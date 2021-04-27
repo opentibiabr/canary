@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Duncan" walkinterval="2000" floorchange="0" script="duncan.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="38" body="23" legs="0" feet="116" addons="1"/>
+	<parameters>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="wares;"/>
+		<parameter key="keyword_reply1" value="Well erm, currently we are a little short on weapons and the like, but I still have pirate tapestries for sale.cough, Ask me for a {trade} if you're interested."/>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|, come closer. Have a look at my {wares} and such."/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="message_walkaway" value="Bye!"/>
+		<parameter key="message_sendtrade" value="Here you go. Those would fit nicely into your house, showing that you're a fan and supporter and all that."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="pirate tapestry, 5616, 40;"/>
+	</parameters>
+</npc>

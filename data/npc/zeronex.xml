@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Zeronex" walkinterval="2000" floorchange="0" script="zeronex.lua">
+	<health now="100" max="100"/>
+	<look type="133" head="95" body="116" legs="3" feet="38" addons="1"/>
+</npc>

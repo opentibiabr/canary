@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Dankwart" walkinterval="2000" floorchange="0" script="dankwart.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="39" body="58" legs="58" feet="115" addons="0"/>
+	<voices>
+		<voice text="Come to my tavern if you're hungry or thirsty, traveller." interval2="120" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Hi there and welcome to my tavern. Have a drink."/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="message_walkaway" value="Good bye."/>
+		<parameter key="message_sendtrade" value="Take a good look, but not too deep into the glasses."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bread, 2689, 4;
+			cheese, 2696, 6;
+			ham, 2671, 8;
+			meat, 2666, 5;
+			mug of tea, 2012, 3, 35;
+			mug of mead, 2012, 5, 43;"/>
+	</parameters>
+</npc>

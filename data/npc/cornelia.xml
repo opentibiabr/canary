@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Cornelia" walkinterval="2000" floorchange="0" script="cornelia.lua">
+	<health now="100" max="100"/>
+	<look type="139" head="95" body="76" legs="100" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			brass armor, 2465, 450;
+			brass helmet, 2460, 120;
+			brass legs, 2478, 195;
+			brass shield, 2511, 65;
+			chain armor, 2464, 200;
+			chain helmet, 2458, 52;
+			chain legs, 2648, 80;
+			coat, 2651, 8;
+			doublet, 2485, 16;
+			dwarven shield, 2525, 500;
+			iron helmet, 2459, 390;
+			jacket, 2650, 12;
+			leather armor, 2467, 35;
+			leather boots, 2643, 10;
+			leather helmet, 2461, 12;
+			leather legs, 2649, 10;
+			plate armor, 2463, 1200;
+			plate shield, 2510, 125;
+			scale armor, 2483, 260;
+			soldier helmet, 2481, 110;
+			steel helmet, 2457, 580;
+			steel shield, 2509, 240;
+			studded armor, 2484, 90;
+			studded helmet, 2482, 63;
+			studded legs, 2468, 50;
+			studded shield, 2526, 50;
+			viking helmet, 2473, 265;
+			viking shield, 2531, 260;
+			wooden shield, 2512, 15;"/>
+		<parameter key="shop_sellable" value="
+			battle shield, 2513, 95;
+			brass armor, 2465, 150;
+			brass helmet, 2460, 30;
+			brass legs, 2478, 49;
+			brass shield, 2511, 25;
+			chain armor, 2464, 70;
+			chain helmet, 2458, 17;
+			chain legs, 2648, 25;
+			coat, 2651, 1;
+			copper shield, 2530, 50;
+			doublet, 2485, 3;
+			dwarven shield, 2525, 100;
+			iron helmet, 2459, 150;
+			jacket, 2650, 1;
+			leather armor, 2467, 12;
+			leather boots, 2643, 2;
+			leather helmet, 2461, 4;
+			leather legs, 2649, 9;
+			legion helmet, 2480, 22;
+			plate armor, 2463, 400;
+			plate legs, 2647, 115;
+			plate shield, 2510, 45;
+			scale armor, 2483, 75;
+			small axe, 2559, 5;
+			soldier helmet, 2481, 16;
+			steel helmet, 2457, 293;
+			steel shield, 2509, 80;
+			studded armor, 2484, 25;
+			studded helmet, 2482, 20;
+			studded legs, 2468, 15;
+			studded shield, 2526, 16;
+			viking helmet, 2473, 66;
+			viking shield, 2531, 85;
+			wooden shield, 2512, 5;"/>
+	</parameters>
+</npc>

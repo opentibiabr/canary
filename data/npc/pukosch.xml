@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Pukosch" walkinterval="2000" floorchange="0" script="pukosch.lua">
+	<health now="100" max="100"/>
+	<look type="70"/>
+</npc>

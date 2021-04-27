@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Nymph Challenging" walkinterval="2000" floorchange="0" script="nymph_challenging.lua">
+	<health now="100" max="100"/>
+	<look type="989" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<voices>
+		<voice text="Stand in the ashes of a trillion dead souls and ask the ghosts if honor matters." interval2="120" margin="1" yell="no"/>
+		<voice text="Hope is what makes us strong. It is why we are here. It is what we fight with when all else is lost." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

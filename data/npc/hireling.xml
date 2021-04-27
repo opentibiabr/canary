@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<npc name="Hireling" script="hireling.lua" walkinterval="0" floorchange="0">
+	<health now="100" max="100" />
+	<look type="136" head="97" body="34" legs="3" feet="116" addons="0" />
+</npc>

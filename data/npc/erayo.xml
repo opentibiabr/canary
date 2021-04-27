@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Erayo" walkinterval="2000" floorchange="0" script="erayo.lua">
+	<health now="100" max="100"/>
+	<look type="152" head="86" body="125" legs="86" feet="87" addons="3"/>
+</npc>

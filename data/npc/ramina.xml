@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ramina" walkinterval="2000" floorchange="0" script="ramina.lua">
+	<health now="100" max="100"/>
+	<look type="1199" head="114" body="0" legs="15" feet="79" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 7;
+			peas, 12639, 5;
+			brown bread, 2691, 6;
+			fish, 2667, 10;
+			lemon, 8841, 5;
+			mango, 5097, 12;
+			melon, 2682, 14;
+			orange, 2675, 12;
+			vial of fruit juice, 2006, 10, 21;
+			vial of water, 2006, 2, 1;
+			mug of wine, 2012, 15, 15;"/>
+		<parameter key="shop_sellable" value="
+			empty honey glass, 36166, 270;
+			jar of honey, 36167, 300;"/>
+	</parameters>
+</npc>

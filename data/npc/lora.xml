@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Lora" walkinterval="2000" floorchange="0" script="lora.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="114" body="70" legs="0" feet="19" addons="1"/>
+	<voices>
+		<voice text="Farewell and enjoy the festivities." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

@@ -1,0 +1,40 @@
+root = true
+
+# General configuration
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = tab
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Lua, XML
+[*.{lua,xml}]
+indent_style = tab
+indent_size = 2
+
+# SQL
+[**.{sql}]
+indent_style = space
+indent_size = 2
+
+#cmake
+[CMakeLists.txt]
+indent_style = tab
+indent_size = 2
+
+# Google Style
+[*.{cpp,hpp,h}]
+indent_style = tab
+indent_size = 2
+indent_brace_style = K&R
+spaces_around_brackets = none
+
+[*.{yml,yaml,json}]
+indent_style = space
+indent_size = 2
+
+# CMake
+[CMakeLists.txt]
+indent_style = space
+indent_size = 2

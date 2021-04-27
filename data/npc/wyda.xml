@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Wyda" walkinterval="2000" floorchange="0" script="wyda.lua">
+	<health now="100" max="100"/>
+	<look type="54" head="0" body="119" legs="119" feet="126"/>
+	<parameters>
+		<parameter key="message_greet" value="In the end, I will only be nice to they who know my name."/>
+		<parameter key="module_keywords" value="1"/>
+	</parameters>
+</npc>

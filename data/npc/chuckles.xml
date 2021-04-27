@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Chuckles" walkinterval="2000" floorchange="0" script="chuckles.lua">
+	<health now="100" max="100"/>
+	<look type="99"/>
+	<voices>
+		<voice text="My old bones feel a storm approaching. chuckles" interval2="90" margin="1" yell="no"/>
+		<voice text="chuckles!" interval2="90" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="magic;"/>
+		<parameter key="keyword_reply1" value="Magic is nothing but a tool that comes in different shapes. chuckles"/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. I trade with runes, potions, wands and rods. If you need something, feel free to ask me for a trade."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			avalanche rune, 2274, 57;
+			blank rune, 2260, 10;
+			chameleon rune, 2291, 210;
+			convince creature rune, 2290, 80;
+			cure poison rune, 2266, 65;
+			destroy field rune, 2261, 15;
+			energy field rune, 2277, 38;
+			energy wall rune, 2279, 85;
+			explosion rune, 2313, 31;
+			fire bomb rune, 2305, 147;
+			fire field rune, 2301, 28;
+			fire wall rune, 2303, 61;
+			great fireball rune, 2304, 57;
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			hailstorm rod, 2183, 15000;
+			health potion, 7618, 50;
+			heavy magic missile rune, 2311, 12;
+			intense healing rune, 2265, 95;
+			light magic missile rune, 2287, 4;
+			mana potion, 7620, 56;
+			moonlight rod, 2186, 1000;
+			necrotic rod, 2185, 5000;
+			northwind rod, 8911, 7500;
+			poison field rune, 2285, 21;
+			poison wall rune, 2289, 52;
+			snakebite rod, 2182, 500;
+			spellbook, 2175, 150;
+			springsprout rod, 8912, 18000;
+			stalagmite rune, 2292, 12;
+			strong health potion, 7588, 115;
+			strong mana potion, 7589, 93;
+			sudden death rune, 2268, 135;
+			supreme health potion, 26031, 625;
+			terra rod, 2181, 10000;
+			ultimate healing rune, 2273, 175;
+			ultimate health potion, 8473, 379;
+			ultimate mana potion, 26029, 438;
+			ultimate spirit potion, 26030, 438;
+			underworld rod, 8910, 22000;
+			wand of cosmic energy, 2189, 10000;
+			wand of decay, 2188, 5000;
+			wand of draconia, 8921, 5000;
+			wand of dragonbreath, 2191, 1000;
+			wand of inferno, 2187, 15000;
+			wand of starstorm, 8920, 18000;
+			wand of voodoo, 8922, 22000;
+			wand of vortex, 2190, 500;
+			exercise rod, 32388, 262500, 500;
+			exercise wand, 32389, 262500, 500;
+			durable exercise rod, 40118, 945000, 1800;
+			durable exercise wand, 40119, 945000, 1800;
+			lasting exercise rod, 40124, 7560000, 14400;
+			lasting exercise wand, 40125, 7560000, 14400;"/>
+		<parameter key="shop_sellable" value="
+			empty potion flask, 7634, 5;
+			empty potion flask, 7635, 5;
+			empty potion flask, 7636, 5;
+			spellwand, 7735, 299;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

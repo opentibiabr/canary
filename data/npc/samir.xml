@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Samir" walkinterval="2000" floorchange="0" script="samir.lua">
+	<health now="100" max="100"/>
+	<look type="153" head="57" body="59" legs="114" feet="114" addons="3"/>
+</npc>

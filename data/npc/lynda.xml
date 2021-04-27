@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lynda" walkinterval="2000" floorchange="0" script="lynda.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="79" body="81" legs="67" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;pilgrim;priest;blessings;anything;king;life;mission;name;"/>
+		<parameter key="keyword_reply1" value="I am a priest of the great pantheon."/>
+		<parameter key="keyword_reply2" value="I am a priest of the great pantheon."/>
+		<parameter key="keyword_reply3" value="Well, as a priest I can tell you everything about {blessings}. I can also carry out a {marriage ceremony} to bind your and your beloved's soul together."/>
+		<parameter key="keyword_reply4" value="There are five blessings available in five sacred places: the spiritual shielding, the spark of the phoenix, the embrace of Tibia, the fire of the suns and the wisdom of solitude. Additionally, you can receive the twist of fate here."/>
+		<parameter key="keyword_reply5" value="Meditate on that and pray for your soul."/>
+		<parameter key="keyword_reply6" value="King Tibianus is our benevolent sovereign."/>
+		<parameter key="keyword_reply7" value="Life is a gift of the gods, honor life and don't destroy it."/>
+		<parameter key="keyword_reply8" value="It is my mission to spread knowledge about the gods."/>
+		<parameter key="keyword_reply9" value="My name is Lynda. And the spirits tell me that you are |PLAYERNAME|."/>
+	</parameters>
+</npc>

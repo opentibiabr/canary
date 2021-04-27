@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomission" walkinterval="2000" floorchange="0" script="gnomission.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="41" body="115" legs="100" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. You are probably eager to enter the {warzones}. But perhaps you are also interested in other aspects of my {job}."/>
+		<parameter key="message_farewell" value="Good bye!"/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			arbalest, 5803, 42000;
+			arcane staff, 2453, 42000;
+			baby seal doll, 7183, 20000;
+			bejeweled ship's telescope, 10532, 20000;
+			blade of corruption, 12649, 60000;
+			bloody edge, 7416, 30000;
+			blue legs, 7730, 15000;
+			blue rose, 2745, 250;
+			bright sword, 2407, 6000;
+			ceremonial ankh, 6561, 20000;
+			claw of 'the noxious spawn', 10309, 15000;
+			crystal wand, 2184, 10000;
+			demon helmet, 2493, 40000;
+			dragon robe, 8867, 50000;
+			dwarven axe, 2435, 1500;
+			dwarven legs, 2504, 40000;
+			egg of the many, 10523, 15000;
+			executioner, 7453, 55000;
+			frozen starlight, 2361, 20000;
+			golden amulet, 2130, 2000;
+			golden fafnar trophy, 10542, 10000;
+			golden sickle, 2418, 1000;
+			greenwood coat, 8869, 50000;
+			marlin trophy, 7964, 5000;
+			modified crossbow, 8849, 10000;
+			mucus plug, 18396, 500;
+			orichalcum pearl, 5022, 40; 
+			ornamented shield, 2524, 1500;
+			panda teddy, 5080, 30000;
+			pet pig, 18455, 1500;
+			purple tome, 1982, 2000;
+			red tome, 1986, 2000;
+			runed sword, 7417, 45000;
+			sea serpent trophy, 10529, 10000;
+			silkweaver bow, 8857, 12000;
+			silver fafnar trophy, 10543, 1000;
+			silver rune emblem explosion, 12563, 5000;
+			silver rune emblem heavy magic missile, 12561, 5000;
+			silver rune emblem sudden death, 12565, 5000;
+			silver rune emblem ultimate healing, 12559, 5000;
+			souleater trophy, 12635, 7500;
+			star amulet, 2131, 500;
+			statue of abyssador, 18500, 4000;
+			statue of deathstrike, 18504, 3000;
+			statue of devovorga, 12663, 1500;
+			statue of gnomevil, 18508, 2000;
+			stuffed dragon, 5791, 6000;
+			the avenger, 6528, 42000;
+			the ironworker, 8853, 50000;
+			trophy of jaul, 15419, 4000;
+			trophy of obujos, 15415, 3000;
+			trophy of tanjis, 15417, 2000;
+			unholy book, 6103, 30000;
+			windborn colossus armor, 8883, 50000;"/>
+		<parameter key="shop_buyable" value="mushroom pie, 18397, 150;"/>
+	</parameters>
+</npc>

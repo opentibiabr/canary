@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ivalisse" walkinterval="2000" floorchange="0" script="ivalisse.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="2" body="19" legs="28" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="So you have come, |PLAYERNAME|. I hoped you would not..."/>
+		<parameter key="message_farewell" value="Bye."/>
+	</parameters>
+</npc>

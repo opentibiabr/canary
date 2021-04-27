@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Pat The Worker" walkinterval="2000" floorchange="0" script="pat_the_worker.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="57" body="40" legs="78" feet="96"/>
+</npc>

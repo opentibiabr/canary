@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ezean" walkinterval="0" floorchange="0" script="ezean.lua">
+	<health now="100" max="100"/>
+	<look type="339" head="0" body="0" legs="0" feet="0"/>
+	<parameters>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="mail;letters;explain;depot;parcel;explain;"/>
+		<parameter key="keyword_reply1" value="With our mail system you can send {letters} and {parcels} to other Tibians. I can either explain how {letters} and {parcels} work or sell them to you if you ask me for a {trade}."/>
+		<parameter key="keyword_reply2" value="If you want to buy a letter, ask me for a {trade}. Or do you want me to {explain} how letters work?"/>
+		<parameter key="keyword_reply3" value="With a letter you can send a message to another Tibian's {depot}. If you want to send it to 'Ben' in 'Thais', use the letter - so that a form opens - and write 'Ben' in the first line and 'Thais' in the second line. Write your message below that. ..."/>
+		<parameter key="keyword_reply4" value="Each major city has at least one depot. Just step in front of one of the lockers and you can store items inside. Your mail will also arrive there. Each city has its own storage, don't forget where you store items!"/>
+		<parameter key="keyword_reply5" value="If you want to buy a parcel, ask me for a {trade}. Or do you want me to {explain} how parcels work?"/>
+		<parameter key="keyword_reply6" value="In a parcel you can send items to another Tibian's {depot}. Put your items into the parcel and also place a completed {label} with the name and the {city} of the {receiver} inside. Then drag your parcel on one of the blue {mailboxes} here to send it."/>
+		<parameter key="message_greet" value="Hello. How may I help you |PLAYERNAME|? Ask me for a {trade} if you want to buy something. I can also explain the {mail} system."/>
+		<parameter key="message_farewell" value="It was a pleasure to help you, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye."/>
+		<parameter key="message_sendtrade" value="Here. Don't forget that you need to buy a label too if you want to send a parcel. Always write the name of the {receiver} in the first line and the name of the {city} in the second line."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			label, 2599, 1;
+			letter, 2597, 8;
+			parcel, 2595, 15;"/>
+	</parameters>
+</npc>

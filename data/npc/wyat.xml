@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Wyat" walkinterval="2000" floorchange="0" script="wyat.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="98" body="96" legs="95" feet="116" addons="0"/>
+	<parameters>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;quest;king;god;"/>
+		<parameter key="keyword_reply1" value="I am the sheriff of the Thaian territory."/>
+		<parameter key="keyword_reply2" value="Look up our 'Tibia's most wanted' lists."/>
+		<parameter key="keyword_reply3" value="HAIL TO KING TIBIANUS!"/>
+		<parameter key="keyword_reply4" value="I am follower of Banor."/>
+		<parameter key="message_greet" value="Salutations, |PLAYERNAME|!"/>
+		<parameter key="message_farewell" value="LONG LIVE THE KING!"/>
+		<parameter key="message_walkaway" value="LONG LIVE THE KING!"/>
+	</parameters>
+</npc>

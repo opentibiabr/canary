@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tanaro" walkinterval="2000" floorchange="0" script="tanaro.lua">
+	<health now="100" max="100"/>
+	<look type="144" head="113" body="0" legs="97" feet="115" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bottle of water, 2007, 2, 1;
+			bread, 2689, 2;
+			cake, 6278, 50;
+			cheese, 2696, 4;
+			cookie, 2687, 2;
+			egg, 2695, 2;
+			fish, 2667, 5;
+			green flask of wine, 2009, 3, 15;
+			ham, 2671, 6;
+			meat, 2666, 3;
+			roll, 2690, 2;
+			salmon, 2668, 6;
+			valentine's cake, 6393, 100;
+			white mushroom, 2787, 6;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Pydar" walkinterval="2000" floorchange="0" script="pydar.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="95" body="94" legs="132" feet="118" addons="0"/>
+</npc>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Donald McRonald" walkinterval="2000" floorchange="0" script="donald_mcronald.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="22" body="94" legs="79" feet="117" addons="0"/>
+	<parameters>
+		<parameter key="message_farewell" value="Yes, bye!."/>
+		<parameter key="message_walkaway" value="?"/>
+		<parameter key="message_greet" value="Hmmm, well, hello |PLAYERNAME|."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			beetroot, 8845, 2;
+			bunch of wheat, 2694, 1;
+			carrot, 2684, 3;
+			cheese, 2696, 5;
+			corncob, 2686, 3;
+			cucumber, 8842, 3;"/>
+		<parameter key="shop_sellable" value="dead spider, 2807, 2;"/>
+	</parameters>
+</npc>

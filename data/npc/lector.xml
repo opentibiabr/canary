@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lector" walkinterval="2000" floorchange="0" script="lector.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="79" body="38" legs="0" feet="68" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			ham, 2671, 6;
+			meat, 2666, 3;"/>
+	</parameters>
+</npc>

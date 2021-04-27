@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Jeronimo" walkinterval="2000" floorchange="0" script="jeronimo.lua">
+	<health now="150" max="150"/>
+	<look type="132" head="57" body="59" legs="3" feet="1" addons="3"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Do not want to make an exchange? I have {Small Stamina Refil}, {Zaoan Chess Box}, {Pannier Backpack}, {Green Light}, {3x Blood Herb}, {Draken Doll}, {Bear Doll}."/>
+		<parameter key="message_farewell" value="Bye bye!"/>
+	</parameters>
+</npc>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Obi" walkinterval="2000" floorchange="0" script="obi.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="19" body="63" legs="96" feet="38" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			axe, 2386, 20;
+			dagger, 2379, 5;
+			hand axe, 2380, 8;
+			rapier, 2384, 15;
+			sabre, 2385, 25;
+			scythe, 2550, 12;
+			short sword, 2406, 30;
+			sickle, 2405, 8;
+			spear, 2389, 10;"/>
+		<parameter key="shop_sellable" value="
+			axe, 2386, 7;
+			bone club, 2449, 5;
+			dagger, 2379, 2;
+			hand axe, 2380, 4;
+			hatchet, 2388, 25;
+			katana, 2412, 35;
+			mace, 2398, 30;
+			machete, 2420, 30;
+			machete, 2420, 6;
+			rapier, 2384, 5;
+			sabre, 2385, 12;
+			scythe, 2550, 3;
+			short sword, 2406, 10;
+			sickle, 2405, 2;
+			spear, 2389, 3;
+			sword, 2376, 25;"/>
+	</parameters>
+</npc>

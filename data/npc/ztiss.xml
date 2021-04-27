@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ztiss" walkinterval="2000" floorchange="0" script="ztiss.lua">
+	<health now="100" max="100"/>
+	<look type="340"/>
+	<parameters>
+		<parameter key="message_greet" value="Be greeted my .. guezt"/>
+	</parameters>
+</npc>

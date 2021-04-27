@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Maro" walkinterval="2000" floorchange="0" script="maro.lua">
+	<health now="100" max="100"/>
+	<look type="25"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			backpack, 1988, 20;
+			baking tray, 2561, 20;
+			basket, 1989, 6;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2041, 8;
+			candlestick, 2047, 2;
+			cleaver, 2568, 15;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			cup, 2013, 2, 0;
+			fishing rod, 2580, 150;
+			fork, 2564, 10;         
+			hand auger, 36169, 25;
+			hoe, 2552, 15;
+			jug, 7244, 10;
+			kitchen knife, 2566, 10;
+			machete, 2420, 35;
+			mug, 2012, 4, 0;
+			net, 36324, 50;
+			pan, 2563, 20;          
+			pick, 2553, 50;
+			plate, 2035, 6;
+			present, 1990, 10;          
+			rake, 2549, 20;
+			rope, 2120, 50;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			spoon, 2565, 10;
+			torch, 2050, 2;
+			watch, 2036, 20;
+			watering can, 7734, 50;
+			wooden spoon, 2567, 5;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			machete, 2420, 6;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

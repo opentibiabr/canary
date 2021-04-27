@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Norma" walkinterval="2000" floorchange="0" script="norma.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="78" body="76" legs="72" feet="96" addons="2"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bread, 2689, 3;
+			cheese, 2696, 5;
+			egg, 2695, 2;
+			mug of beer, 2012, 3, 3;
+			mug of lemonade, 2012, 2, 5;
+			mug of milk, 2012, 2, 6;
+			mug of wine, 2012, 3, 15;
+			party cake, 6280, 50;"/>
+	</parameters>
+</npc>

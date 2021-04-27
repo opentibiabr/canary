@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Dedoras" walkinterval="2000" floorchange="0" script="dedoras.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="76" body="57" legs="78" feet="77" addons="2"/>
+</npc>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lokur" walkinterval="2000" floorchange="0" script="lokur.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="57" body="79" legs="79" feet="95"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			label, 2599, 1;
+			letter, 2597, 8;
+			parcel, 2595, 15;"/>
+	</parameters>
+</npc>

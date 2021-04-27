@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Flora" walkinterval="2000" floorchange="0" script="flora.lua">
+	<health now="100" max="100"/>
+	<look type="148" head="114" body="81" legs="20" feet="3" addons="0"/>
+</npc>

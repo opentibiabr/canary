@@ -1,0 +1,4 @@
+FROM mariadb:10
+
+WORKDIR /docker-entrypoint-initdb.d
+COPY schema.sql ./

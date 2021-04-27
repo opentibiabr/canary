@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Dove" walkinterval="2000" floorchange="0" script="dove.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="59" body="86" legs="106" feet="115" addons="0"/>
+	<voices>
+		<voice text="If you need help with letters or parcels, just ask me. I can explain everything." interval2="100" margin="1" yell="no"/>
+		<voice text="Hey, send a letter to your friend now and then. Keep in touch, you know." interval2="120" margin="1" yell="no"/>
+		<voice text="Welcome to the post office!" interval2="90" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Be greeted, noble |PLAYERNAME| and welcome to the post office."/>
+		<parameter key="message_farewell" value="Come back soon, noble |PLAYERNAME|."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;mail;letters;explain;depot;parcels;explain;city;mailboxes;"/>
+		<parameter key="keyword_reply1" value="I am responsible for this post office. If you have questions about the {mail} system or the depots, just ask me."/>
+		<parameter key="keyword_reply2" value="With our mail system you can send {letters} and {parcels} to other Tibians. I can either explain how {letters} and {parcels} work or sell them to you if you ask me for a {trade}."/>
+		<parameter key="keyword_reply3" value="If you want to buy a letter, ask me for a {trade}. Or do you want me to {explain} how letters work?"/>
+		<parameter key="keyword_reply4" value="With a letter you can send a message to another Tibian's {depot}. If you want to send it to 'Ben' in 'Thais', use the letter - so that a form opens - and write 'Ben' in the first line and 'Thais' in the second line. Write your message below that. ..."/>
+		<parameter key="keyword_reply5" value="Each major city has at least one depot. Just step in front of one of the lockers and you can store items inside. Your mail will also arrive there. Each city has its own storage, don't forget where you store items!"/>
+		<parameter key="keyword_reply6" value="If you want to buy a parcel, ask me for a {trade}. Or do you want me to {explain} how parcels work?"/>
+		<parameter key="keyword_reply7" value="In a parcel you can send items to another Tibian's {depot}. Put your items into the parcel and also place a completed {label} with the name and the {city} of the {receiver} inside. Then drag your parcel on one of the blue {mailboxes} here to send it."/>
+		<parameter key="keyword_reply8" value="The depots you can send parcels or letters to are in the following cities"/>
+		<parameter key="keyword_reply9" value="With our mail system you can send {letters} and {parcels} to other Tibians. I can either explain how {letters} and {parcels} work or sell them to you if you ask me for a {trade}."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+            label, 2599, 1;
+            letter, 2597, 8;
+            parcel, 2595, 15;"/>
+	</parameters>
+</npc>

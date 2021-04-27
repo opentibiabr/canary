@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Ghostly Guardian" walkinterval="2000" floorchange="0" script="a_ghostly_guardian.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="38" body="85" legs="9" feet="85" addons="3"/>
+</npc>

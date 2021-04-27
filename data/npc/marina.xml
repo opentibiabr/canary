@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Marina" walkinterval="0" floorchange="0" script="marina.lua">
+	<health now="100" max="100"/>
+	<look typeex="5811"/>
+	<parameters>
+		<parameter key="message_greet" value="You wouldn't keep a pretty lady like me waiting, would you?"/>
+	</parameters>
+</npc>

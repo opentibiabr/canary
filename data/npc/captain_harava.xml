@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Captain Harava" walkinterval="2000" floorchange="0" script="captain_harava.lua">
+	<health now="100" max="100"/>
+	<look type="1200" head="77" body="101" legs="3" feet="0" addons="0"/>
+</npc>

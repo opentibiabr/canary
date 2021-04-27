@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Alexander" walkinterval="2000" floorchange="0" script="alexander.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="96" body="71" legs="63" feet="97" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			animate dead rune, 2316, 375;
+			blank rune, 2260, 10;
+			crystal ball, 2192, 530;
+			desintegrate rune, 2310, 26;
+			durable exercise rod, 40118, 945000, 1800;
+			durable exercise wand, 40119, 945000, 1800;
+			energy bomb rune, 2262, 203;
+			exercise rod, 32388, 262500, 500;
+			exercise wand, 32389, 262500, 500;
+			fireball rune, 2302, 30;
+			hailstorm rod, 2183, 15000;
+			holy missile rune, 2295, 16;
+			icicle rune, 2271, 30;
+			lasting exercise rod, 40124, 7560000, 14400;
+			lasting exercise wand, 40125, 7560000, 14400;
+			life ring, 2168, 900;
+			magic wall rune, 2293, 116;
+			moonlight rod, 2186, 1000;
+			necrotic rod, 2185, 5000;
+			northwind rod, 8911, 7500;
+			paralyze rune, 2278, 700;
+			poison bomb rune, 2286, 85;
+			snakebite rod, 2182, 500;
+			soulfire rune, 2308, 46;
+			springsprout rod, 8912, 18000;
+			stone shower rune, 2288, 37;
+			terra rod, 2181, 10000;
+			thunderstorm rune, 2315, 47;
+			underworld rod, 8910, 22000;
+			wand of cosmic energy, 2189, 10000;
+			wand of decay, 2188, 5000;
+			wand of draconia, 8921, 7500;
+			wand of dragonbreath, 2191, 1000;
+			wand of inferno, 2187, 15000;
+			wand of starstorm, 8920, 18000;
+			wand of voodoo, 8922, 22000;
+			wand of vortex, 2190, 500;
+			wild growth rune, 2269, 160;"/>
+		<parameter key="shop_sellable" value="
+			crystal ball, 2192, 190;
+			life crystal, 2177, 85;
+			mind stone, 2178, 170;
+			spellbook of enlightenment, 8900, 4000;
+			spellbook of lost souls, 8903, 19000;
+			spellbook of mind control, 8902, 13000;
+			spellbook of warding, 8901, 8000;
+			spellwand, 7735, 299;"/>
+	</parameters>
+</npc>

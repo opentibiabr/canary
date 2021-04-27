@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Asrak" walkinterval="2000" floorchange="0" script="asrak.lua">
+	<health now="100" max="100"/>
+	<look type="29" head="10" body="20" legs="30" feet="40" addons="0"/>
+</npc>

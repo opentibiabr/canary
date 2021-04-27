@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ferryman Kamil" walkinterval="2000" floorchange="0" script="ferryman_kamil.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="0" body="71" legs="76" feet="115" addons="3"/>
+	<voices>
+		<voice text="Leaving for Meluna Island soon!" interval2="100" margin="1" yell="no"/>
+		<voice text="Passage for newly weds only." interval2="120" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_farewell" value="May the Goddess of Love watch over you."/>
+		<parameter key="message_walkaway" value="May the Goddess of Love watch over you."/>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. If you're a newly wed I'll transport you and your spouse to Honeymoon Island {Meluna} free of charge."/>
+	</parameters>
+</npc>

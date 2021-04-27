@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Captain Haba" walkinterval="2000" floorchange="0" script="captain_haba_open_sea.lua">
+	<health now="100" max="100"/>
+	<look type="98" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Wha'd'ya want? Ask me 'bout the instructions if you don't know what to do! If you wanna head back to {Svargrond}, let me know."/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="bait, 8297, 50;"/>
+	</parameters>
+</npc>

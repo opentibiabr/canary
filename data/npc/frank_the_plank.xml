@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Frank The Plank" walkinterval="2000" floorchange="0" script="frank_the_plank.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="0" body="87" legs="108" feet="0" addons="1"/>
+</npc>

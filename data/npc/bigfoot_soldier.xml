@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Bigfoot Soldier" walkinterval="2000" floorchange="2" script="bigfoot_soldier.lua">
+	<health now="100" max="100"/>
+	<look type="514" head="78" body="120" legs="58" feet="15" addons="3"/>
+</npc>

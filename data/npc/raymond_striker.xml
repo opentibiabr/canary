@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Raymond Striker" walkinterval="2000" floorchange="0" script="raymond_striker.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="39" body="77" legs="98" feet="95" addons="1"/>
+	<parameters>
+		<parameter key="message_greet" value="Be greeted."/>
+		<parameter key="message_farewell" value="Bye."/>
+	</parameters>
+</npc>

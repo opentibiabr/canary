@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Roswitha" walkinterval="2000" floorchange="0" script="roswitha.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="114" body="118" legs="113" feet="3" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello, my lad. Sit down, have a drink, why don't you?"/>
+	</parameters>
+</npc>

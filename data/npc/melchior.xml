@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Melchior" walkinterval="2000" floorchange="0" script="melchior.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="0" body="25" legs="59" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, |PLAYERNAME|. I do not see your face, but I can read a thousand things in your voice!"/>
+	</parameters>
+</npc>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Perac" walkinterval="2000" floorchange="0" script="perac.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="78" body="90" legs="68" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="message_greet" value="Oh, please come in, |PLAYERNAME|. What do you need? Distance weapons? I sell lots of them."/>
+		<parameter key="message_sendtrade" value="Here you go."/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bow, 2456, 400;
+			crossbow, 2455, 500;
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			spear, 2389, 10;"/>
+		<parameter key="shop_sellable" value="spear, 2389, 3;"/>
+	</parameters>
+</npc>

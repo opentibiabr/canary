@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tarun" walkinterval="2000" floorchange="0" script="tarun.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="0" body="67" legs="0" feet="67" addons="2" mount="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			health potion, 7618, 50;
+			mana potion, 7620, 56;
+			strong health potion, 7588, 115;
+			strong mana potion, 7589, 93;
+			supreme health potion, 26031, 625;
+			ultimate health potion, 8473, 379;
+			ultimate mana potion, 26029, 438;
+			ultimate spirit potion, 26030, 438;"/>
+		<parameter key="shop_sellable" value="
+			colourful feather, 12470, 110;
+			empty potion flask, 7634, 5;
+			empty potion flask, 7635, 5;
+			empty potion flask, 7636, 5;
+			golden lotus brooch, 24630, 270;
+			hellspawn tail, 11221, 475;
+			mammoth tusk, 11238, 100;
+			orc tusk, 8614, 700;
+			peacock feather fan, 24631, 350;
+			sabretooth, 11228, 400;
+			spider silk, 5879, 100;
+			tusk, 3956, 100;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

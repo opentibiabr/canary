@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Sister Of Jack" walkinterval="2000" floorchange="0" script="sister_of_jack.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="77" body="128" legs="110" feet="115" addons="0"/>
+</npc>

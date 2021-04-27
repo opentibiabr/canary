@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Hairycles" walkinterval="2000" floorchange="0" script="hairycles.lua">
+	<health now="100" max="100"/>
+	<look type="117" head="10" body="20" legs="30" feet="40" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Oh! Hello! Hello! Did not notice!"/>
+		<parameter key="message_walkaway" value="Bye, bye!"/>
+		<parameter key="message_farewell" value="Bye, bye!"/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 2;
+			monkey statue 'hear' kit, 5087, 65;
+			monkey statue 'see' kit, 5086, 65;
+			monkey statue 'speak' kit, 5088, 65;"/>
+	</parameters>
+</npc>

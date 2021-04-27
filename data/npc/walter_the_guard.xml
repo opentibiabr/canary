@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Walter, The Guard" walkinterval="2000" floorchange="0" script="walter_the_guard.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="19" body="19" legs="38" feet="38" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="LONG LIVE THE KING!"/>
+		<parameter key="message_farewell" value="LONG LIVE THE KING!"/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="It's my duty to protect the city."/>
+	</parameters>
+</npc>

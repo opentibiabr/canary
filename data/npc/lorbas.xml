@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lorbas" walkinterval="1000" floorchange="0" script="lorbas.lua">
+	<health now="100" max="100"/>
+	<look type="57" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<parameters>
+		<parameter key="message_farewell" value="Farewell, |PLAYERNAME|!"/>
+		<parameter key="message_sendtrade" value="I don't have any goods for trade, but if you ask one of the {merchants}, he or she will gladly show you what you can buy or sell."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="hi;job;grand order;day of doom;cathedral;ferumbras;monk;dark monk;gods;name;"/>
+		<parameter key="keyword_reply1" value="Be greeted, dear traveller."/>
+		<parameter key="keyword_reply2" value="I am just a humble monk and responsible to maintain this little outpost that is leftover from our grand order."/>
+		<parameter key="keyword_reply3" value="Our order was once the greatest and richest in the whole known world. Kings, traders and knights of various orders were our supporters and the gods smiled upon us ... or at least that's what we thought until the day of doom."/>
+		<parameter key="keyword_reply4" value="On the day of doom, our dream of building the greatest and most opulent cathedral was shattered. "/>
+		<parameter key="keyword_reply5" value="What was once planned as the most impressive cathedral of all times, lies now in ruins. All what the earthquake has left over is a heap of rubble. The ruins are cursed and everybody who dares to go there will draw the ire of heaven on himself. All those that travel there are infested with bad luck. But only few have returned from this treacherous ground. Noxious fumes are killing intruders almost unnoticed. Crumbling structures might kill you instantly. Those who survive the dangers of nature will face the soul-eating ghosts of those who have died in the catastrophe. It's not worth to go there, there are no richnesses or treasures left in the ruins, the gold of our order melted away in funding the cathedral's construction. I urge you to stay away from the cursed ground and the ruins. For the safety of your body and your soul keep away from there. "/>
+		<parameter key="keyword_reply6" value="He will discover where his path will lead him to. But no matter how ruthless he is, even he stays away from the ruins of the cathedral."/>
+		<parameter key="keyword_reply7" value="We monks of the humble path feel that we are not worthy to spread the word of the gods. We live in humility and poverty to serve the gods. Most of us have vowed an oath of silence and I humbly took the burden to become the spokesperson."/>
+		<parameter key="keyword_reply8" value="I know nothing about that topic. If you would excuse me, I have things to attend."/>
+		<parameter key="keyword_reply9" value="I am not worthy to speak about the gods."/>
+		<parameter key="keyword_reply10" value="My name is Lorbas."/>
+	</parameters>
+</npc>

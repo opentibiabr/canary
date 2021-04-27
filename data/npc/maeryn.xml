@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Maeryn" walkinterval="2000" floorchange="0" script="maeryn.lua">
+	<health now="100" max="100"/>
+	<look type="683" head="94" body="101" legs="97" feet="116" addons="0"/>
+</npc>

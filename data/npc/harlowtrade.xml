@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Harlow" walkinterval="0" script="harlow_trade.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="116" body="77" legs="94" feet="97" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="What do you want, |PLAYERNAME|? I'm a busy man."/>
+		<parameter key="message_farewell" value="Yeah, bye."/>
+		<parameter key="message_walkaway" value="Yeah, bye."/>
+		<parameter key="message_needmoremoney" value="You don't have enough money!"/>
+		<parameter key="message_decline" value="Alright then!"/>
+	</parameters>
+</npc>

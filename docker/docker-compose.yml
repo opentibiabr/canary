@@ -1,0 +1,60 @@
+version: "3.3"
+
+services:
+  server:
+    build:
+      context: ../
+      dockerfile: docker/server/Dockerfile
+    ports:
+      - 7171:7171
+      - 7172:7172
+    depends_on:
+      - mysql
+      - website
+      - login
+    links:
+      - mysql
+
+  mysql:
+    build:
+      context: ../
+      dockerfile: docker/mysql/Dockerfile
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=otserver
+      - MYSQL_USER=otserver
+      - MYSQL_PASSWORD=otserver
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    ports:
+      - 3306:3306
+    volumes:
+      - db-volume:/var/lib/mysql
+
+  website:
+    image: webdevops/php-nginx:alpine-php7
+    restart: unless-stopped
+    environment:
+      - WEB_DOCUMENT_ROOT=/tmp/web/
+      - WEB_DOCUMENT_INDEX=index.php
+    ports:
+      - 8080:80
+    volumes:
+      - ./docker/data/web:/tmp/web
+      - ./:/tmp/otserver/
+    depends_on:
+      - mysql
+
+  login:
+    build:
+      context: ../
+      dockerfile: docker/login/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./docker/data/:/tmp/
+    ports:
+      - 80:8080
+    depends_on:
+      - mysql
+
+volumes:
+  db-volume:

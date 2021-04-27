@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Rottin Wood" walkinterval="2000" speechbubble="1" floorchange="0" script="rottin_wood.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="114" body="118" legs="116" feet="97" addons="3"/>
+	<parameters>
+		<parameter key="message_greet" value="Hunter's greeting! I assume you want something from me since you came all the way out here on your own. This is as dangerous place to be, I doubt that all my men will accept strangers like I do. You don't seem to have any problems with that, though."/>
+		<parameter key="message_farewell" value="Farewell."/>
+		<parameter key="message_walkaway" value="Good bye."/>
+	</parameters>
+</npc>

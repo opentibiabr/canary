@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tom" walkinterval="2000" floorchange="0" script="tom.lua">
+	<health now="100" max="100"/>
+	<look type="144" head="113" body="115" legs="58" feet="115" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			antlers, 11214, 5;
+			bear paw, 5896, 10;
+			bunch of troll hair, 10606, 5;
+			dead rabbit, 2992, 2;
+			dead rat, 2813, 2;
+			dead wolf, 2826, 5;
+			lump of dirt, 10609, 2;
+			minotaur horn, 12428, 15;
+			minotaur leather, 5878, 12;
+			orc leather, 12435, 8;
+			orc tooth, 11113, 40;
+			pelvis bone, 12437, 5;
+			pig foot, 10610, 2;
+			poison spider shell, 12441, 3;
+			spider fangs, 8859, 4;
+			wolf paw, 5897, 7;
+			wool, 11236, 10;"/>
+	</parameters>
+</npc>

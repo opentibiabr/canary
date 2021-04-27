@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Soilance" walkinterval="2000" script="soilance.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="79" body="48" legs="57" feet="76" addons="0"/>
+	<voices>
+		<voice text="Come have a drink in the Hard Rock Racing Track." interval2="120" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, |PLAYERNAME|. Perhaps you are interested in buying some food?"/>
+		<parameter key="message_farewell" value="Well, bye.."/>
+		<parameter key="message_walkaway" value="Goodbye?"/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			meat, 2666, 3;
+			ham, 2671, 5;"/>
+	</parameters>
+</npc>

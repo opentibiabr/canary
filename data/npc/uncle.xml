@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Uncle" walkinterval="2000" script="uncle.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="38" body="19" legs="20" feet="95" addons="1"/>
+</npc>

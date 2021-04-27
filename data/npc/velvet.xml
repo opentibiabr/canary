@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Velvet" walkinterval="2000" floorchange="0" script="velvet.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="59" body="96" legs="115" feet="95" addons="0"/>
+	<voices>
+		<voice text="Silky smooth pillows and tapestries! No home is perfect without them!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Welcome to our pillow and tapestry shop, |PLAYERNAME|!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			blue pillow, 1686, 25;
+			blue tapestry, 1872, 25;
+			green pillow, 1688, 25;
+			green tapestry, 1860, 25;
+			heart pillow, 1685, 30;
+			orange tapestry, 1866, 25;
+			purple tapestry, 1857, 25;
+			red pillow, 1687, 25;
+			red tapestry, 1869, 25;
+			round blue pillow, 1690, 25;
+			round purple pillow, 1692, 25;
+			round red pillow, 1691, 25;
+			round turquoise pillow, 1693, 25;
+			small blue pillow, 1681, 20;
+			small green pillow, 1679, 20;
+			small orange pillow, 1682, 20;
+			small purple pillow, 1678, 20;
+			small red pillow, 1680, 20;
+			small turquoise pillow, 1683, 20;
+			small white pillow, 1684, 20;
+			white tapestry, 1880, 25;
+			yellow pillow, 1689, 25;
+			yellow tapestry, 1863, 25;"/>
+	</parameters>
+</npc>

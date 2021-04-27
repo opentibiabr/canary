@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ceiron" walkinterval="2000" script="ceiron.lua">
+	<health now="100" max="100"/>
+	<look type="144" head="78" body="100" legs="119" feet="116" addons="3"/>
+</npc>

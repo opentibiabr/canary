@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Garamond" walkinterval="2000" floorchange="0" script="garamond.lua">
+	<health now="100" max="100"/>
+	<look type="432" head="0" body="113" legs="109" feet="107" addons="2"/>
+</npc>

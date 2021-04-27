@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ninev" walkinterval="2000" floorchange="0" script="ninev.lua">
+	<health now="100" max="100"/>
+	<look type="1199" head="114" body="86" legs="68" feet="9" addons="0"/>
+</npc>

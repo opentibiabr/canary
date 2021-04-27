@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Ghostly Sage" walkinterval="0" floorchange="0" script="a_ghostly_sage.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="9" body="85" legs="9" feet="85" addons="1"/>
+</npc>

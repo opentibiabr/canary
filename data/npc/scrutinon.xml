@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Scrutinon" walkinterval="0" floorchange="0" script="scrutinon.lua">
+	<health now="100" max="100"/>
+	<look typeex="7825" head="7825" body="0" legs="0" feet="0" addons="0"/>
+	<parameters>
+	<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="travel;visitor;job"/>
+		<parameter key="keyword_reply1" value="So you want to leave this place? As you may have noticed, most seafarers won't stay here... for long. So, do you want me to send you back to {Ab'Dendriel}, {Darashia}, {Edron} or {Venore}?"/>
+		<parameter key="keyword_reply2" value="Then stay. I certainly don't mind."/>
+		<parameter key="keyword_reply3" value="I am waiting. Beyond time and ever watchful. And I expected you, traveller."/>
+		<parameter key="message_greet" value="|PLAYERNAME|. I have been watching your fate for quite some time. It's about time you came here. Do you seek to enter the riven island of {Quirefang} or {travel} back from where you came?"/>
+		<parameter key="message_farewell" value="I will see you again."/>
+		<parameter key="message_walkaway" value="Some things are not meant to be told, then."/>
+	</parameters>
+</npc>

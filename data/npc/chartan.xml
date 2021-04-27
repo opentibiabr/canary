@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Chartan" walkinterval="2000" floorchange="0" script="chartan.lua">
+	<health now="100" max="100"/>
+	<look type="338"/>
+	<parameters>
+		<parameter key="message_greet" value="Great Znake forgive me to converze wiz ziz unworzy blankzkin."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			avalanche rune, 2274, 57;
+			blank rune, 2260, 10;
+			chameleon rune, 2291, 210;
+			convince creature rune, 2290, 80;
+			cure poison rune, 2266, 65;
+			destroy field rune, 2261, 15;
+			dragonfruit, 12638, 5;
+			egg, 2695, 3;
+			energy field rune, 2277, 38;
+			energy wall rune, 2279, 85;
+			explosion rune, 2313, 31;
+			fire bomb rune, 2305, 147;
+			fire field rune, 2301, 28;
+			fire wall rune, 2303, 61;
+			great fireball rune, 2304, 57;
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			ham, 2671, 10;
+			health potion, 7618, 50;
+			heavy magic missile rune, 2311, 12;
+			intense healing rune, 2265, 95;
+			light magic missile rune, 2287, 4;
+			mana potion, 7620, 56;
+			poison field rune, 2285, 21;
+			poison wall rune, 2289, 52;
+			stalagmite rune, 2292, 12;
+			strong health potion, 7588, 115;
+			strong mana potion, 7589, 93;
+			sudden death rune, 2268, 135;
+			supreme health potion, 26031, 625;
+			ultimate healing rune, 2273, 175;
+			ultimate health potion, 8473, 379;
+			ultimate mana potion, 26029, 438;
+			ultimate spirit potion, 26030, 438;"/>
+		<parameter key="shop_sellable" value="
+			empty potion flask, 7634, 5;
+			empty potion flask, 7635, 5;
+			empty potion flask, 7636, 5;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

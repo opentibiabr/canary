@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="One-Eyed Joe" walkinterval="2000" floorchange="0" script="one_eyed_joe.lua">
+	<health now="100" max="100"/>
+	<look type="155" head="94" body="114" legs="105" feet="97" addons="1"/>
+</npc>

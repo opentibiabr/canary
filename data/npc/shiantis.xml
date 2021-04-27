@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Shiantis" walkinterval="2000" floorchange="0" script="shiantis.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="0" body="36" legs="13" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Welcome |PLAYERNAME|. What is your need today? Ask me for a {trade} to check out my offers."/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I am selling several kinds of equipment and decoration. What is your need?"/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			basket, 1989, 6;
+			birdcage kit, 3922, 50;
+			black book, 1972, 15;
+			bottle, 2007, 3, 0;
+			brown book, 1971, 15;
+			bucket, 2005, 4, 0;
+			candelabrum, 2041, 8;
+			candlestick, 2047, 2;
+			chimney kit, 8692, 200;
+			closed trap, 2578, 280;
+			coal basin kit, 3932, 25;
+			crowbar, 2416, 260;
+			cuckoo clock, 1877, 40;
+			document, 1968, 12;
+			empty goldfish bowl, 5928, 50;
+			fishing rod, 2580, 150;
+			globe kit, 3923, 50;
+			greeting card, 6387, 30;
+			grey small book, 1973, 15;
+			hand auger, 36169, 25;
+			inkwell, 2600, 10;
+			machete, 2420, 35;
+			net, 36324, 50;
+			oven kit, 6372, 80;
+			parchment, 1951, 8;
+			pendulum clock kit, 3927, 75;
+			picture, 1852, 50;
+			picture, 1853, 50;
+			picture, 1854, 50;
+			present, 1990, 10;
+			red backpack, 2000, 20;
+			red bag, 1993, 5;
+			rocking horse kit, 3926, 30;
+			rope, 2120, 50;
+			scroll, 1949, 5;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			table lamp kit, 3924, 35;
+			telescope kit, 3925, 70;
+			torch, 2050, 2;
+			valentine's card, 6538, 30;
+			vial of oil, 2006, 20, 11;
+			wall mirror, 1845, 40;
+			wall mirror, 1848, 40;
+			wall mirror, 1851, 40;
+			watch, 6091, 20;
+			water pipe, 2093, 40;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			green book, 1980, 15;
+			orange book, 1977, 30;
+			blue book, 1978, 20;
+			gemmed book, 1976, 100;
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			inkwell, 2600, 8;
+			machete, 2420, 6;
+			parchment, 7696, 5;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554,8;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

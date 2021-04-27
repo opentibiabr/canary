@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Shanar" walkinterval="2000" floorchange="0" script="shanar.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="0" body="94" legs="105" feet="76"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			axe, 2386, 20;
+			battle axe, 2378, 235;
+			battle hammer, 2417, 350;
+			bone sword, 2450, 75;
+			brass armor, 2465, 450;
+			brass helmet, 2460, 120;
+			brass legs, 2478, 195;
+			brass shield, 2511, 65;
+			carlin sword, 2395, 473;
+			chain armor, 2464, 200;
+			chain helmet, 2458, 52;
+			chain legs, 2648, 80;
+			club, 2382, 5;
+			dagger, 2379, 5;
+			durable exercise axe, 40115, 945000, 1800;
+			durable exercise bow, 40117, 945000, 1800;
+			durable exercise club, 40116, 945000, 1800;
+			durable exercise sword, 40114, 945000, 1800;
+			exercise axe, 32385, 262500, 500;
+			exercise bow, 32387, 262500, 500;
+			exercise club, 32386, 262500, 500;
+			exercise sword, 32384, 262500, 500;
+			lasting exercise axe, 40121, 7560000, 14400;
+			lasting exercise bow, 40123, 7560000, 14400;
+			lasting exercise club, 40122, 7560000, 14400;
+			lasting exercise sword, 40120, 7560000, 14400;
+			leather armor, 2467, 35;
+			leather helmet, 2461, 12;
+			longsword, 2397, 160;
+			machete, 2420, 35;
+			rapier, 2384, 15;
+			sabre, 2385, 35;
+			spear, 2389, 10;
+			staff, 2401, 40;
+			steel shield, 2509, 240;
+			throwing knife, 2410, 25;
+			wooden shield, 2512, 15;"/>
+		<parameter key="shop_sellable" value="
+			axe, 2386, 7;
+			battle axe, 2378, 80;
+			battle hammer, 2417, 120;
+			battle shield, 2513, 95;
+			brass armor, 2465, 150;
+			brass helmet, 2460, 30;
+			brass legs, 2478, 49;
+			brass shield, 2511, 16;
+			chain armor, 2464, 70;
+			chain helmet, 2458, 17;
+			chain legs, 2648, 20;
+			dagger, 2379, 2;
+			devil helmet, 2462, 450;
+			dragon shield, 2516, 360;
+			fire sword, 2392, 1000;
+			guardian shield, 2515, 180;
+			iron helmet, 2459, 145;
+			knight armor, 2476, 875;
+			knight legs, 2477, 375;
+			leather armor, 2467, 12;
+			leather helmet, 2461, 4;
+			leather legs, 2649, 1;
+			longsword, 2397, 51;
+			mace, 2398, 23;
+			orcish axe, 2428, 350;
+			plate armor, 2463, 400;
+			plate legs, 2647, 115;
+			plate shield, 2510, 31;
+			rapier, 2384, 5;
+			sabre, 2385, 12;
+			short sword, 2406, 10;
+			spear, 2389, 3;
+			spike sword, 2383, 225;
+			steel helmet, 2457, 190;
+			steel shield, 2509, 80;
+			two handed sword, 2377, 450;
+			viking helmet, 2473, 66;
+			warrior helmet, 2475, 696;
+			wooden shield, 2512, 5;"/>
+	</parameters>
+</npc>

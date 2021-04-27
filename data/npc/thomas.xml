@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Thomas" walkinterval="2000" floorchange="0" script="thomas.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="116" body="11" legs="100" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Feel welcome, |PLAYERNAME|. If you are interested in paperware such as books or scrolls, ask me for a {trade}."/>
+		<parameter key="message_farewell" value="Bye, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Bye, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my wares."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			black book, 1972, 15;
+			brown book, 1971, 15;
+			document, 1952, 12;
+			greeting card, 6387, 30;
+			grey small book, 1973, 15;
+			inkwell, 2600, 10;
+			parchment, 1948, 8;
+			parchment, 1951, 8;
+			scroll, 1949, 5;
+			spellbook, 2175, 150;
+			valentines card, 6538, 30;"/>
+		<parameter key="shop_sellable" value="
+			blue book, 1978, 20;
+			gemmed book, 1976, 100;
+			green book, 1980, 15;
+			inkwell, 2600, 8;
+			orange book, 1977, 30;
+			parchment, 1948, 5;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Yulas" walkinterval="2000" floorchange="0" script="yulas.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="58" body="43" legs="38" feet="76" addons="0"/>
+	<voices>
+		<voice text="Every home needs at least one table. Come get yours here." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Welcome to the Plank and Treasurechest Market, |PLAYERNAME|! Looking for {furniture}, I hope."/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			big table kit, 3911, 30;
+			round table kit, 14328, 25;
+			small table kit, 3908, 20;
+			square table kit, 14329, 25;
+			trophy stand, 7936, 50;"/>
+	</parameters>
+</npc>

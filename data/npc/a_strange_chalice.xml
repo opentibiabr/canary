@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="A Strange Chalice" walkinterval="0" floorchange="0" script="a_strange_chalice.lua">
+	<health now="100" max="100"/>
+	<look typeex="26405"/>
+	<voices>
+		<voice text="Good bye." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

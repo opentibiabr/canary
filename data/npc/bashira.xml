@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Bashira" walkinterval="0" floorchange="0" script="bashira.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="78" body="63" legs="97" feet="76"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			basket, 1989, 6;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2041, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			cup, 2013, 2, 0;
+			document, 1952, 12;
+			fishing rod, 2580, 150;
+			green backpack, 1998, 20;
+			green bag, 1991, 4;
+			hand auger, 36169, 25;
+			machete, 2420, 35;
+			net, 36324, 50;
+			parchment, 1951, 8;
+			pick, 2553, 50;
+			plate, 2035, 6;
+			present, 1990, 10;
+			rope, 2120, 50;
+			scroll, 1949, 5;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			torch, 2050, 2;
+			vial of oil, 2006, 20, 11;
+			watch, 2036, 20;
+			waterskin of water, 2031, 10, 1;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			machete, 2420, 6;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			vial, 2006, 5;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

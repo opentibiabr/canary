@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Ghostly Knight" walkinterval="2000" floorchange="0" script="a_ghostly_knight.lua">
+	<health now="100" max="100"/>
+	<look type="134" head="0" body="66" legs="0" feet="66" addons="0"/>
+</npc>

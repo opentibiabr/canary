@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Guide Kunibert" walkinterval="2000" floorchange="0" script="guide_kunibert.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="38" body="46" legs="68" feet="29" addons="3"/>
+</npc>

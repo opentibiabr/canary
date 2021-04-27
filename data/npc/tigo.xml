@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tigo" walkinterval="2000" floorchange="0" script="tigo.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="78" body="6" legs="121" feet="120" addons="0"/>
+	<parameters>
+	<!-- <parameter key="message_greet" value="Hiho |PLAYERNAME|! Welcome to Kazordoon {furniture} store."/> -->
+	</parameters>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Simon The Beggar" walkinterval="2000" script="simon_the_beggar.lua">
+	<health now="100" max="100"/>
+	<look type="153" head="116" body="123" legs="123" feet="40" addons="3"/>
+</npc>

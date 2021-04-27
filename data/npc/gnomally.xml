@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomally" walkinterval="2000" floorchange="0" script="gnomally.lua">
+	<health now="100" max="100"/>
+	<look type="507" head="52" body="90" legs="90" feet="90" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Oh, hello! I'm the gnome-human relations assistant. I am here for you to trade your tokens for equipment, resupply you with mission items and talk to you about your relations to us gnomes! ..."/>
+	</parameters>
+</npc>

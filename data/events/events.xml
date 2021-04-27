@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<events>
+	<!-- Creature Methods -->
+	<event class="Creature" method="onChangeOutfit" enabled="1" />
+	<event class="Creature" method="onAreaCombat" enabled="0" />
+	<event class="Creature" method="onTargetCombat" enabled="1" /><!-- removeCombatProtection on secure modes protection -->
+	<event class="Creature" method="onHear" enabled="0" />
+
+	<!-- Party Methods -->
+	<event class="Party" method="onJoin" enabled="0" />
+	<event class="Party" method="onLeave" enabled="0" />
+	<event class="Party" method="onDisband" enabled="0" />
+	<event class="Party" method="onShareExperience" enabled="1" />
+
+	<!-- Player Methods -->
+	<event class="Player" method="onBrowseField" enabled="0" />
+	<event class="Player" method="onLook" enabled="1" />
+	<event class="Player" method="onLookInBattleList" enabled="1" />
+	<event class="Player" method="onLookInTrade" enabled="1" />
+	<event class="Player" method="onLookInShop" enabled="0" />
+	<event class="Player" method="onMoveItem" enabled="1" /><!-- Protections on rewardsystem and global depots -->
+	<event class="Player" method="onItemMoved" enabled="0" />
+	<event class="Player" method="onMoveCreature" enabled="1" />
+	<event class="Player" method="onReportBug" enabled="1" />
+	<event class="Player" method="onReportRuleViolation" enabled="1" />
+	<event class="Player" method="onTurn" enabled="1" /><!-- Move with ( ctrl + arrows ) like to TFS 0.3.x : 0.4 -->
+	<event class="Player" method="onTradeRequest" enabled="1" /><!-- Move with ( ctrl + arrows ) like to TFS 0.3.x : 0.4 -->
+	<event class="Player" method="onTradeAccept" enabled="1" />
+	<event class="Player" method="onGainExperience" enabled="1" />
+	<event class="Player" method="onLoseExperience" enabled="0" />
+	<event class="Player" method="onGainSkillTries" enabled="1" />
+	<event class="Player" method="onRequestQuestLog" enabled="1" />
+	<event class="Player" method="onRequestQuestLine" enabled="1" />
+	<event class="Player" method="onStorageUpdate" enabled="1" />
+	<!-- Imbuement System -->
+	<event class="Player" method="canBeAppliedImbuement" enabled="1" />
+	<event class="Player" method="onApplyImbuement" enabled="1" />
+	<event class="Player" method="clearImbuement" enabled="1" />
+	<event class="Player" method="onCombat" enabled="1" />
+
+	<event class="Creature" method="onDrainHealth" enabled="1" />
+	<event class="Player" method="onRemoveCount" enabled="1" /><!-- Tibia 11 function -->
+
+	<!-- Monster Methods -->
+	<event class="Monster" method="onDropLoot" enabled="1" />
+	<event class="Monster" method="onSpawn" enabled="1" />
+</events>

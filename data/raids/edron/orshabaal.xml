@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="Event" message="Orshabaal's minions are working on his return to the World.
+		LEAVE Edron at once, mortals." />
+	<announce delay="20000" type="Event" message="Orshabaal is about to make his way into the mortal realm.
+		Run for your lives!" />
+	<announce delay="60000" type="Event" message="Orshabaal has been summoned from hell to plague the
+		lands of mortals once again." />
+	<!--Single Spawns-->
+	<singlespawn delay="60000" name="Orshabaal" x="33118" y="31699" z="7" />
+</raid>

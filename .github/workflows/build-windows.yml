@@ -1,0 +1,97 @@
+---
+
+name: Build on Windows
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - v*
+
+    tags:
+      - v*
+
+  pull_request:
+    paths:
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - .github/**
+
+jobs:
+  job:
+    name: ${{ matrix.os }}-${{ matrix.buildtype }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+        buildtype: [Debug, Release]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+            packages: >
+              boost-asio boost-iostreams boost-system boost-filesystem
+              boost-variant boost-lockfree cryptopp curl jsoncpp
+              luajit libmariadb pugixml spdlog
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: lukka/get-cmake@latest
+
+      - name: Windows - remove C:/mysql*
+        run: rm -r -fo C:/mysql-5.7.21-winx64
+        if: contains( matrix.os, 'windows')
+
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v7
+        with:
+          setupOnly: true
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+          vcpkgTriplet: ${{ matrix.triplet }}
+          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
+          vcpkgGitCommitId: ${{ secrets.VCPKG_ID }}
+
+      - name: Run CMake to install the dependencies specified in the vcpkg.json manifest, generate project file and build the project
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          buildDirectory: ${{ github.workspace }}/build
+          useVcpkgToolchainFile: true
+          buildWithCMake: true
+
+      - name: Copy artifacts
+        if: ${{ matrix.buildtype == 'Release' }}
+        shell: pwsh
+        run: |
+          Copy-Item -Path ${{ github.workspace }}\build\bin\* -Destination ${{ github.workspace }} -Recurse
+
+      - name: Create and Upload Full Datapack
+        if: ${{ matrix.buildtype == 'Release' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: otbr-full-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}
+          path: |
+            ${{ github.workspace }}
+            !${{ github.workspace }}/build/
+            !${{ github.workspace }}/vcpkg/
+            !${{ github.workspace }}/.git/
+            !${{ github.workspace }}/.github/
+            !${{ github.workspace }}/.appveyor.yml
+            !${{ github.workspace }}/.editorconfig
+            !${{ github.workspace }}/.gitignore
+            !${{ github.workspace }}/.reviewdog.yml
+            !${{ github.workspace }}/.travis.yml
+            !${{ github.workspace }}/tests/
+            !${{ github.workspace }}/cmake/
+            !${{ github.workspace }}/sonar-project.properties
+            !${{ github.workspace }}/Jenkinsfile
+
+      - name: Create and Upload Server Only
+        if: ${{ matrix.buildtype == 'Release' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: otbr-server-only-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}
+          path: |
+            ${{ github.workspace }}/build/bin/

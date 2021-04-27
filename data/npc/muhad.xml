@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Muhad" walkinterval="0" floorchange="0" script="muhad.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="116" body="116" legs="78" feet="114" addons="2"/>
+</npc>

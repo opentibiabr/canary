@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Todd" walkinterval="2000" floorchange="0" script="todd.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="115" body="0" legs="67" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			scroll of heroic deeds, 12466, 230;
+			small notebook, 12406, 480;"/>
+	</parameters>
+</npc>

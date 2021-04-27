@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Hanna" walkinterval="2000" floorchange="0" script="hanna.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="96" body="65" legs="0" feet="96" addons="2"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			amber with a bug, 37459, 41000;
+			amber with a dragonfly, 37460, 56000;
+			amber, 37461, 20000;
+			ancient coin, 27058, 350;
+			black pearl, 2144, 280;
+			blue crystal shard, 18413, 1500;
+			blue crystal splinter, 18418, 400;
+			brown crystal splinter, 18417, 400;
+			brown shimmering pearl, 7633, 3000;
+			coral brooch, 27059, 750;
+			crunor idol, 34693, 30000;
+			cyan crystal fragment, 18419, 800;
+			dragon figurine, 34691, 45000;
+			gemmed figurine, 27060, 3500;
+			giant amethyst, 34699, 60000;
+			giant emerald, 34698, 90000;
+			giant ruby, 34697, 70000;
+			giant sapphire, 34699, 50000;
+			green giant shimmering pearl, 7632, 3000;
+			giant topaz, 37458, 80000;
+			gold ingot, 9971, 5000;
+			gold nugget, 2157, 850;
+			green crystal fragment, 18421, 800;
+			green crystal shard, 18415, 1500;
+			green crystal splinter, 18416, 400;
+			lion figurine, 38616, 10000;
+			onyx chip, 24849, 400;
+			opal, 24850, 500;
+			ornate locket, 34694, 18000;
+			prismatic quartz, 27630, 450;
+			red crystal fragment, 18420, 800;
+			skull coin, 37418, 12000;
+			small amethyst, 2150, 200;
+			small diamond, 2145, 300;
+			small emerald, 2149, 250;
+			small enchanted amethyst, 7762, 200;
+			small enchanted emerald, 7761, 250;
+			small enchanted ruby, 7760, 250;
+			small enchanted sapphire, 7759, 250;
+			small ruby, 2147, 250;
+			small sapphire, 2146, 250;
+			small topaz, 9970, 200;
+			tiger eye, 27629, 350;
+			unicorn figurine, 34692, 50000;
+			violet crystal shard, 18414, 1500;
+			watermelon tourmaline, 38614, 30000;
+			watermelon tourmaline, 38615, 230000;
+			wedding ring, 2121, 100;
+			white pearl, 2143, 320;
+			white silk flower, 38843, 9000;"/>
+		<parameter key="shop_buyable" value="
+			black pearl, 2144, 560;
+			bronze goblet, 5807, 2000;
+			golden amulet, 2130, 6600;
+			golden goblet, 5805, 5000;
+			ruby necklace, 2133, 3560;
+			silver goblet, 5806, 3000;
+			small amethyst, 2150, 400;
+			small diamond, 2145, 600;
+			small emerald, 2149, 500;
+			small ruby, 2147, 500;
+			small sapphire, 2146, 500;
+			wedding ring, 2121, 990;
+			white pearl, 2143, 320;"/>
+	</parameters>
+</npc>

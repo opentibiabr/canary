@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lailene" walkinterval="2000" floorchange="0" script="lailene.lua">
+	<health now="100" max="100"/>
+	<look type="279" head="114" body="94" legs="113" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			ethno coat, 8892, 750;
+			magicians robe, 8819, 450;
+			spirit cloak, 8870, 1000;"/>
+		<parameter key="shop_sellable" value="
+			batwing hat, 10016, 8000;
+			ethno coat, 8892, 200;
+			focus cape, 8871, 6000;
+			jade hat, 11368, 9000;
+			spellweavers rob, 11355, 12000;
+			spirit cloak, 8870, 350;
+			zaoan robe, 11356, 12000;"/>
+	</parameters>
+</npc>

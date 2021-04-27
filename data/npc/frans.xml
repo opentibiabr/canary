@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Frans" walkinterval="2000" floorchange="0" script="frans.lua">
+	<health now="100" max="100"/>
+	<look typeex="2229" head="113" body="113" legs="113" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Beeee Greeeeted |PLAYERNAME|. What is your neeeed?"/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I am selliiiing ruuuunes, wands, roooods and spellbooooooks."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="          
+			avalanche rune, 2274, 57;
+			blank rune, 2260, 10;
+			chameleon rune, 2291, 210;
+			convince creature rune, 2290, 80;
+			cure poison rune, 2266, 65;
+			destroy field rune, 2261, 15;
+			durable exercise rod, 40118, 945000, 1800;
+			durable exercise wand, 40119, 945000, 1800;
+			energy field rune, 2277, 38;
+			energy wall rune, 2279, 85;
+			exercise rod, 32388, 262500, 500;
+			exercise wand, 32389, 262500, 500;
+			explosion rune, 2313, 31;
+			fire bomb rune, 2305, 147;
+			fire field rune, 2301, 28;
+			fire wall rune, 2303, 61;
+			great fireball rune, 2304, 57;
+			heavy magic missile rune, 2311, 12;
+			intense healing rune, 2265, 95;
+			lasting exercise rod, 40124, 7560000, 14400;
+			lasting exercise wand, 40125, 7560000, 14400;
+			light magic missile rune, 2287, 4;
+			moonlight rod, 2186, 1000;
+			necrotic rod, 2185, 5000;
+			poison field rune, 2285, 21;
+			poison wall rune, 2289, 52;
+			snakebite rod, 2182, 500;
+			spellbook, 2175, 150;
+			stalagmite rune, 2292, 12;
+			sudden death rune, 2268, 135;
+			terra rod, 2181, 10000;
+			ultimate healing rune, 2273, 175;
+			wand of cosmic energy, 2189, 10000;
+			wand of decay, 2188, 5000;
+			wand of dragonbreath, 2191, 1000;
+			wand of vortex, 2190, 500;"/>
+		<parameter key="shop_sellable" value="spellwand, 7735, 299;"/>
+	</parameters>
+</npc>

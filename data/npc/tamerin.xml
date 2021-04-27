@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tamerin" walkinterval="2000" script="tamerin.lua">
+	<health now="100" max="100"/>
+	<look type="153" head="58" body="119" legs="120" feet="121" addons="3"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello, what brings you here?"/>
+	</parameters>
+</npc>

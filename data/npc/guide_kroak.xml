@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Guide Kroak" walkinterval="2000" floorchange="0" script="guide_kroak.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="38" body="46" legs="68" feet="29" addons="3"/>
+	<voices>
+		<voice text="Do not waste your time, let me help you find the way." interval2="11" margin="1" yell="no"/>
+		<voice text="Those sellers were seen there." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

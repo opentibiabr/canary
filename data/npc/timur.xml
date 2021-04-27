@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Timur" walkinterval="2000" floorchange="0" script="timur.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="0" body="116" legs="63" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			basket, 1989, 6;
+			bolt, 2543, 4;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelaburm, 2041, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			document, 1952, 12;
+			fishing rod, 2580, 150;
+			hand auger, 36169, 25;
+			machete, 2420, 35;
+			net, 36324, 50;
+			parchment, 1951, 8;
+			pick, 2553, 50;
+			present, 2331, 10;
+			rope, 2120, 50;
+			scroll, 1949, 10;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			torch, 2050, 2;
+			viking helmet, 2473, 265;
+			watch, 2036, 20;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			bow, 2456, 130;
+			closed trap, 2578, 75;
+			crossbow, 2455, 160;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			hatchet, 2388, 25;
+			mace, 2398, 30;
+			machete, 2420, 6;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			viking helmet, 2473, 66;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

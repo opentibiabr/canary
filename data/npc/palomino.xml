@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Palomino" walkinterval="2000" floorchange="0" script="palomino.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="116" body="39" legs="12" feet="97" addons="2"/>
+</npc>

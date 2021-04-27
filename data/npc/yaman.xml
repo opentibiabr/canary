@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Yaman" walkinterval="2000" floorchange="0" script="yaman.lua">
+	<health now="100" max="100"/>
+	<look type="103"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			dragon necklace, 2201, 1000, 200;
+			dwarven ring, 2213, 2000;
+			energy ring, 2167, 2000;
+			life ring, 2168, 900;
+			might ring, 2164, 5000, 20;
+			protection amulet, 2200, 700, 250;
+			ring of healing, 2214, 2000;
+			silver amulet, 2170, 100, 200;
+			strange talisman, 2161, 100, 200;
+			time ring, 2169, 2000;"/>
+		<parameter key="shop_sellable" value="
+			ankh, 2327, 100;
+			dragon necklace, 2201, 100;
+			dwarven ring, 2213, 100;
+			energy ring, 2167, 100;
+			glacial rod, 18412, 6500;
+			hailstorm rod, 2183, 3000;
+			life ring, 2168, 50;
+			might ring, 2164, 250;
+			moonlight rod, 2186, 200;
+			muck rod, 18411, 6000;
+			mysterious fetish, 2194, 50;
+			necrotic rod, 2185, 1000;
+			northwind rod, 8911, 1500;
+			protection amulet, 2200, 100;
+			ring of healing, 2214, 100;
+			silver amulet, 2170, 50;
+			snakebite rod, 2182, 100;
+			springsprout rod, 8912, 3600;
+			strange talisman, 2161, 30;
+			terra rod, 2181, 2000;
+			time ring, 2169, 100;
+			underworld rod, 8910, 4400;"/>
+	</parameters>
+</npc>

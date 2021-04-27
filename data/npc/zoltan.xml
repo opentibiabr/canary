@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Zoltan" walkinterval="2000" floorchange="0" script="zoltan.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="95" body="94" legs="95" feet="76" addons="0"/>
+</npc>

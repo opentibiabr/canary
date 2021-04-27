@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Elane" walkinterval="2000" floorchange="0" script="elane.lua">
+	<health now="100" max="100"/>
+	<look type="137" head="96" body="101" legs="120" feet="120" addons="3"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="sniper gloves, 5875, 2000;"/>
+	</parameters>
+</npc>

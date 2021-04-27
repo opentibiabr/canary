@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Borkas" walkinterval="2000" floorchange="0" script="borkas.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="77" body="43" legs="38" feet="76" addons="0"/>
+	<voices>
+		<voice text="Welcome to the house of fashion, Iron Sparrow!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Hey |PLAYERNAME|, what'cha want?"/>
+		<parameter key="message_farewell" value="Thanks and see ya."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I'm into sellin' furniture. My grandfather was in that business, then my father, and so am I."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			armor rack kit, 6114, 90;
+			barrel kit, 3919, 12;
+			bookcase kit, 6373, 70;
+			box, 1738, 10;
+			chest, 1740, 10;
+			crate, 1739, 10;
+			drawer kit, 3915, 18;
+			dresser kit, 3916, 25;
+			locker kit, 3917, 30;
+			treasure chest, 1746, 1000;
+			trough kit, 3918, 7;
+			trunk kit, 3920, 10;
+			venorean cabinet kit, 20254, 90;
+			venorean wardrobe kit, 20255, 50;
+			venorean drawer kit, 20257, 40;
+			weapon rack kit, 6115, 90;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Angelina" walkinterval="2000" floorchange="0" script="angelina.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="57" body="117" legs="118" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="message_farewell" value="May the gods bless you."/>
+		<parameter key="message_walkaway" value="May the gods bless you."/>
+	</parameters>
+</npc>

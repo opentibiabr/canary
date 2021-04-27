@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Habdel" walkinterval="0" floorchange="0" script="habdel.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="95" body="1" legs="0" feet="58" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			axe, 2386, 20;
+			battle axe, 2378, 235;
+			battle hammer, 2417, 350;
+			bone sword, 2450, 75;
+			carlin sword, 2395, 473;
+			club, 2382, 5;
+			crowbar, 2416, 260;
+			dagger, 2379, 5;
+			durable exercise axe, 40115, 945000, 1800;
+			durable exercise bow, 40117, 945000, 1800;
+			durable exercise club, 40116, 945000, 1800;
+			durable exercise sword, 40114, 945000, 1800;
+			exercise axe, 32385, 262500, 500;
+			exercise bow, 32387, 262500, 500;
+			exercise club, 32386, 262500, 500;
+			exercise sword, 32384, 262500, 500;
+			hand axe, 2380, 8;
+			lasting exercise axe, 40121, 7560000, 14400;
+			lasting exercise bow, 40123, 7560000, 14400;
+			lasting exercise club, 40122, 7560000, 14400;
+			lasting exercise sword, 40120, 7560000, 14400;
+			longsword, 2397, 160;
+			mace, 2398, 90;
+			morning star, 2394, 430;
+			rapier, 2384, 15;
+			sabre, 2385, 35;
+			short sword, 2406, 26;
+			sickle, 2405, 7;
+			spike sword, 2383, 8000;
+			sword, 2376, 25;
+			throwing knife, 2410, 25;
+			throwing star, 2399, 42;
+			two handed sword, 2377, 950;
+			war hammer, 2391, 10000;"/>
+		<parameter key="shop_sellable" value="
+			axe, 2386, 7;
+			battle axe, 2378, 80;
+			battle hammer, 2417, 120;
+			bone club, 2449, 5;
+			bone sword, 2450, 20;
+			carlin sword, 2395, 118;
+			club, 2382, 1;
+			crowbar, 2416, 50;
+			dagger, 2379, 2;
+			double axe, 2387, 260;
+			fire sword, 2392, 1000;
+			halberd, 2381, 400;
+			hand axe, 2380, 4;
+			hatchet, 2388, 25;
+			katana, 2412, 35;
+			longsword, 2397, 51;
+			mace, 2398, 30;
+			morning star, 2394, 100;
+			orcish axe, 2428, 350;
+			rapier, 2384, 5;
+			sabre, 2385, 12;
+			short sword, 2406, 10;
+			sickle, 2405, 3;
+			small axe, 2559, 5;
+			spike sword, 2383, 240;
+			studded club, 2448, 10;
+			swampling club, 20104, 40;
+			sword, 2376, 25;
+			throwing knife, 2410, 2;
+			two handed sword, 2377, 450;
+			war hammer, 2391, 470;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnome Trooper" walkinterval="2000" floorchange="0" script="gnome_trooper.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="59" body="20" legs="39" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Do you have {something} to deliver?"/>
+	</parameters>
+</npc>

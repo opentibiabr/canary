@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Bonifacius" walkinterval="2000" floorchange="0" script="bonifacius.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="59" body="82" legs="97" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Thousand greetings, |PLAYERNAME|. How may I help you? I have delicious {food} to offer."/>
+		<parameter key="message_farewell" value="May the gods bless your travels, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="May the gods bless your travels, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my wares."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 2;
+			cheese, 2696, 5;
+			cookie, 2687, 2;
+			egg, 2695, 2;
+			grapes, 2681, 3;
+			meat, 2666, 5;
+			melon, 2682, 8;
+			orange, 2675, 5;
+			pumpkin, 2683, 10;
+			roll, 2690, 2;
+			salmon, 2668, 4;"/>
+	</parameters>
+</npc>

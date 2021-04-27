@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tereban" walkinterval="2000" floorchange="0" script="tereban.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="38" body="48" legs="20" feet="76" addons="0"/>
+</npc>

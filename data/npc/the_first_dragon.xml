@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="The First Dragon" walkinterval="2000" script="the_first_dragon.lua">
+	<health now="100" max="100"/>
+	<look type="947" addons="3" head="113" body="117" legs="119" feet="80"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello, my sparring buddy. We should have another {fight} sometimes. I think you may have earned a little {reward}."/>
+		<parameter key="message_farewell" value="Goodbye mortal. It would be nice to see you again."/>
+		<parameter key="message_walkaway" value="Goodbye mortal. It would be nice to see you again."/>
+	</parameters>
+</npc>

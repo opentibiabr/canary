@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lothar" walkinterval="2000" script="lothar.lua">
+	<health now="100" max="100"/>
+	<look type="153" head="114" body="113" legs="132" feet="132" addons="2"/>
+</npc>

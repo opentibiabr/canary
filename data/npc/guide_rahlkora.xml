@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Guide Rahlkora" walkinterval="2000" floorchange="0" script="guide_rahlkora.lua">
+	<health now="100" max="100"/>
+	<look type="150" head="79" body="97" legs="78" feet="96" addons="0"/>
+</npc>

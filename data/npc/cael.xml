@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Cael" walkinterval="2000" floorchange="0" script="cael.lua">
+	<health now="100" max="100"/>
+	<look type="66"/>
+</npc>

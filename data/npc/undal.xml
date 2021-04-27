@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Undal" walkinterval="0" speed="100" walkradius="2" floorchange="0" script="default.lua">
+	<health max="100" now="100"/>
+	<look type="1137" head="0" body="87" legs="49" feet="87" addons="0" mount="0"/>
+</npc>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Talphion" walkinterval="2000" floorchange="0" script="talphion.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="27" body="86" legs="126" feet="127"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			crossbow, 2455, 1150;
+			bolt, 2543, 5;"/>
+	</parameters>
+</npc>

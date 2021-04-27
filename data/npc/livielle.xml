@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Livielle" walkinterval="2000" floorchange="0" script="livielle.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="114" body="94" legs="132" feet="132" addons="0"/>
+	<voices>
+		<voice text="Ah, salut! Come 'ere and 'ave some of my delicious fruits!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Ah, 'ello, |PLAYERNAME|! I can see you're longing for my delicious {fruits}, ch?ri."/>
+		<parameter key="message_farewell" value="Bon app?tit, and come back soon for your daily dose of vitamins!"/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="fruits;job;"/>
+		<parameter key="keyword_reply1" value="What's your favorite flavour today? I offer all sorts of exotic fruits as well as juice squeezers to create tasty fruit juice. Just ask for a {trade}!"/>
+		<parameter key="keyword_reply2" value="Alors, guess what my job might be, standing 'ere in the middle of all these juicy exotic {fruits}?"/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bottle of milk, 2007, 15, 6;
+			banana, 2676, 5;
+			blueberry, 2677, 1;
+			carrot, 2684, 3;
+			cherry, 2679, 1;
+			corncob, 2686, 3;
+			grapes, 2681, 3;
+			juice squeezer, 5865, 100;
+			lemon, 8841, 3;
+			mango, 5097, 10;
+			melon, 2682, 10;
+			orange, 2675, 10;
+			potato, 8838, 4;
+			pumpkin, 2683, 10;
+			sample of venorean spice, 9675, 200;
+			strawberry, 2680, 2;
+			white mushroom, 2787, 10;"/>
+	</parameters>
+</npc>

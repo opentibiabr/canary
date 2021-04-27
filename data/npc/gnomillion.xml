@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomillion" walkinterval="2000" floorchange="0" script="bank.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="78" body="98" legs="98" feet="60" addons="0"/>
+</npc>

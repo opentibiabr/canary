@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="John" walkinterval="2000" floorchange="0" script="john.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="58" body="68" legs="38" feet="114" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			camouflage backpack, 3940, 30;
+			camouflage bag, 3939, 10;
+			fishing rod, 2580, 300;
+			pick, 2553, 100;
+			rope, 2120, 100;
+			shovel, 2554, 100;
+			torch, 2050, 5;
+			treasure map, 5091, 1000;
+			very noble-looking watch, 6091, 500;
+			worm, 3976, 2;"/>
+	</parameters>
+</npc>

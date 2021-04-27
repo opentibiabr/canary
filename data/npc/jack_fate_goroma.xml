@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Jack Fate" walkinterval="2000" floorchange="0" script="jack_fate_goroma.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="19" body="69" legs="88" feet="69" addons="0"/>
+</npc>

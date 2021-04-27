@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Hamish" walkinterval="2000" floorchange="0" script="hamish.lua">
+	<health now="100" max="100"/>
+	<look type="133" head="19" body="95" legs="87" feet="128" addons="1"/>
+	<parameters>
+		<parameter key="message_farewell" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my offers."/>
+		<parameter key="message_greet" value="Be mourned pilgrim in flesh. I'm selling general goods."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			blank rune, 2260, 10;
+			cure poison rune, 2266, 65;
+			destroy field rune, 2261, 15;
+			energy field rune, 2277, 38;
+			fire field rune, 2301, 28;
+			health potion, 7618, 50;
+			intense healing rune, 2265, 95;
+			light stone shower rune, 23722, 25;
+			lightest missile rune, 23723, 20;
+			mana potion, 7620, 56;
+			moonlight rod, 2186, 1000;
+			necrotic rod, 2185, 5000;
+			poison field rune, 2285, 21;
+			small health potion, 8704, 20;
+			snakebite rod, 2182, 500;
+			wand of decay, 2188, 5000;
+			wand of dragonbreath, 2191, 1000;
+			wand of vortex, 2190, 500;"/>
+	</parameters>
+</npc>

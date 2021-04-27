@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tamoril" walkinterval="2000" script="tamoril.lua">
+	<health now="100" max="100"/>
+	<look type="39"/>
+	<voices>
+		<voice text="Grrrrr" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="I welcome thee, |PLAYERNAME|! I suppose you are looking for a trade in fine jewelery!"/>
+		<parameter key="message_farewell" value="Goodbye and please bring more gold next time. I mean, it would be nice to see you again."/>
+		<parameter key="message_walkaway" value="Goodbye and please bring more gold next time. I mean, it would be nice to see you again."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			blue gem, 2158, 5000;
+			golden mug, 2033, 250;
+			green gem, 2155, 5000;
+			red gem, 2156, 1000;
+			violet gem, 2153, 10000;
+			white gem, 37604, 12000;
+			yellow gem, 2154, 1000;"/>
+	</parameters>
+</npc>

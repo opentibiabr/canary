@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Omur" walkinterval="0" floorchange="0" script="omur.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="95" body="0" legs="6" feet="116" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 3;
+			carrot, 2684, 4;
+			grapes, 2681, 5;
+			melon, 2682, 10;
+			orange, 2675, 7;
+			pumpkin, 2683, 10;
+			sample of sand wasp honey, 9676, 200;
+			tomato, 2685, 5;"/>
+	</parameters>
+</npc>

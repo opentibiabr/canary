@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Zizzle" walkinterval="2000" floorchange="0" script="zizzle.lua">
+	<health now="100" max="100"/>
+	<look type="114"/>
+	<parameters>
+		<parameter key="message_greet" value="Ah our human alliez have finally arrived! I've already feared zat ze emperor'z forzez had caught you. Your rezilienze and prowezz are imprezzive."/>
+	</parameters>
+</npc>

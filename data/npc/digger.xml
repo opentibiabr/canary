@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Digger" walkinterval="2000" floorchange="0" script="digger.lua">
+	<health now="100" max="100"/>
+	<look type="9" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<voices>
+		<voice text="Selling potions for humans and poison for undead creatures." interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Oh, |PLAYERNAME| is that you? You look inconveniently healthy."/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I am selling some potions."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			health potion, 7618, 50;
+			mana potion, 7620, 56;
+			strong health potion, 7588, 115;
+			strong mana potion, 7589, 93;
+			ultimate health potion, 8473, 379;"/>
+		<parameter key="shop_sellable" value="
+			empty potion flask, 7634, 5;
+			empty potion flask, 7635, 5;
+			empty potion flask, 7636, 5;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

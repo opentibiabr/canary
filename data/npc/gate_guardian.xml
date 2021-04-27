@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gate Guardian" walkinterval="0" floorchange="0" script="gate_guardian.lua">
+	<health now="100" max="100"/>
+	<look type="334"/>
+	<parameters>
+		<parameter key="message_greet" value="Chhhhzzz. Ugly humanzzz! You better have a good reazzzon to be here!"/>
+	</parameters>
+</npc>

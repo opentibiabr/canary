@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Barnabas Dee" walkinterval="2000" floorchange="0" script="barnabas_dee.lua">
+	<health now="100" max="100"/>
+	<look type="432" head="0" body="95" legs="117" feet="98" addons="1"/>
+</npc>

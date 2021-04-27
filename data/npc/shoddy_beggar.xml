@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Shoddy Beggar" walkinterval="2000" floorchange="0" script="shoddy_beggar.lua">
+	<health now="100" max="100"/>
+	<look type="153" head="20" body="39" legs="39" feet="116" addons="3"/>
+</npc>

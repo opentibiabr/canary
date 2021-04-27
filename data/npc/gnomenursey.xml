@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomenursey" walkinterval="0" floorchange="0" script="gnomenursey.lua">
+	<health now="100" max="100"/>
+	<look type="507" head="66" body="47" legs="66" feet="46" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="A gnomish day to you my friend! What can I do for you?"/>
+		<parameter key="message_farewell" value="Good bye."/>
+	</parameters>
+</npc>

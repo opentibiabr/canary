@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Guard Bazaya" walkinterval="2000" floorchange="0" script="guard_bazaya.lua">
+	<health now="100" max="100"/>
+	<look type="1200" head="76" body="0" legs="3" feet="105" addons="2"/>
+	<voices>
+		<voice text="Good bye." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

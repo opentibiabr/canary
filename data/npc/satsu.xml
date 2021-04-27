@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Satsu" walkinterval="2000" floorchange="0" script="satsu.lua">
+	<health now="100" max="100"/>
+	<look type="158" head="78" body="96" legs="118" feet="96" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			cocktail glass of beer, 10150, 52, 3;
+			cocktail glass of fruit juice, 10150, 52, 21;
+			cocktail glass of lemonade, 10150, 52, 5;
+			cocktail glass of mead, 10150, 52, 43;
+			cocktail glass of milk, 10150, 52, 6;
+			cocktail glass of rum, 10150, 52, 27;
+			cocktail glass of tea, 10150, 52, 35;
+			cocktail glass of water, 10150, 52, 1;
+			cocktail glass of wine, 10150, 52, 15;"/>
+		<parameter key="shop_sellable" value="cocktail glass, 10150, 50;"/>
+	</parameters>
+</npc>

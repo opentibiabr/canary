@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Mortis" walkinterval="2000" floorchange="0" script="mortis.lua">
+	<health now="100" max="100"/>
+	<look type="289" head="38" body="19" legs="21" feet="20" addons="2"/>
+</npc>

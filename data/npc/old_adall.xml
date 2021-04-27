@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Old Adall" walkinterval="2000" floorchange="0" script="old_adall.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="95" body="26" legs="115" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hi, |PLAYERNAME|. Need a passage?"/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="message_walkaway" value="Bye."/>
+	</parameters>
+</npc>

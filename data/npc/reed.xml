@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Reed" walkinterval="2000" script="reed.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="58" body="43" legs="38" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello. Unless you have official business or want to {pass} the gate, please move on."/>
+		<parameter key="message_farewell" value="So I am alone again."/>
+		<parameter key="message_walkaway" value="So I am alone again."/>
+	</parameters>
+</npc>

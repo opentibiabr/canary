@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Rock in a Hard Place" walkinterval="0" floorchange="0" script="rock_with_a_soft_spot.lua">
+	<health now="100" max="100"/>
+	<look typeex="14896"/>
+</npc>

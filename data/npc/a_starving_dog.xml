@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Starving Dog" walkinterval="2000" floorchange="0" script="a_starving_dog.lua">
+	<health now="100" max="100"/>
+	<look type="258"/>
+	<parameters>
+		<parameter key="message_greet" value="Wuff"/>
+		<parameter key="message_farewell" value="Sniff"/>
+		<parameter key="message_walkaway" value="Sniff"/>
+	</parameters>
+</npc>

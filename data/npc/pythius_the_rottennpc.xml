@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Pythius The Rotten" walkinterval="0" script="pythius_the_rotten.lua">
+	<health now="100" max="100"/>
+	<look type="231"/>
+	<parameters>
+		<!--I GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH. YOU'LL FIND SOME OF MY LIVING BROTHERS THERE-->
+		<parameter key="message_greet" value="I AWAITED YOU!"/>
+		<parameter key="message_farewell" value="YOU ARE ALWAYS WELCOME HERE."/>
+		<parameter key="message_walkaway" value="YOU ARE ALWAYS WELCOME HERE."/>
+	</parameters>
+</npc>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Luna" walkinterval="2000" floorchange="0" script="luna.lua">
+	<health now="100" max="100"/>
+	<look type="137" head="0" body="100" legs="100" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			brown mushroom, 2789, 10;
+			fern, 2801, 24;
+			red mushroom, 2788, 12;
+			red rose, 2744, 11;
+			star herb, 2800, 21;
+			stone herb, 2799, 28;
+			tulip, 2754, 9;
+			white mushroom, 2787, 6;"/>
+		<parameter key="shop_sellable" value="
+			bamboo stick, 12401, 30;
+			bundle of cursed straw, 10605, 800;
+			carniphila seeds, 11217, 50;
+			dark mushroom, 2792, 100;
+			dung ball, 15622, 130;
+			fire mushroom, 2795, 200;
+			goat grass, 2760, 50;
+			grave flower, 2747, 25;
+			green mushroom, 2796, 100;
+			lump of dirt, 10609, 10;
+			lump of earth, 11222, 130;
+			nettle blossom, 11231, 75;
+			nettle spit, 12432, 25;
+			orange mushroom, 2790, 150;
+			powder herb, 2803, 10;
+			seeds, 7732, 150;
+			shadow herb, 2804, 20;
+			sling herb, 2802, 10;
+			swamp grass, 10603, 20;
+			troll green, 2805, 25;
+			trollroot, 12471, 50;
+			wood mushroom, 2791, 15;"/>
+	</parameters>
+</npc>

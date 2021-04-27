@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Lavirias" walkinterval="2000" floorchange="0" script="lavirias.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="19" body="41" legs="117" feet="116"/>
+</npc>

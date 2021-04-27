@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Jean Pierre" walkinterval="2000" floorchange="0" script="jean_pierre.lua">
+	<health now="100" max="100"/>
+	<look type="104"/>
+	<parameters>
+		<parameter key="message_farewell" value="May your oven always be warm and your stomach filled, |PLAYERNAME|."/>
+	</parameters>
+</npc>

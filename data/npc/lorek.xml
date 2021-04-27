@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lorek" walkinterval="2000" floorchange="0" script="lorek.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="19" body="10" legs="38" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, |PLAYERNAME|. If you want me to transport you to the other end of the city, feel free to ask me for a passage."/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="message_walkaway" value="Bye."/>
+	</parameters>
+</npc>

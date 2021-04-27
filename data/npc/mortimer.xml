@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Mortimer" walkinterval="2000" floorchange="0" script="mortimer.lua">
+	<health now="100" max="100"/>
+	<look type="133" head="0" body="115" legs="102" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			atlas, 6108, 150;
+			botanist's container, 4869, 500;
+			butterfly conservation kit, 4865, 250;
+			crown backpack, 10522, 800;
+			ectoplasm container, 4863, 750;
+			orichalcum pearl, 5022, 80;"/>
+		<parameter key="shop_sellable" value="
+			explorer brooch, 4873, 50;
+			giant smithhammer, 2321, 250;
+			hydra egg, 4850, 500;
+			old parchment, 5956, 500;
+			skull of Ratha, 2320, 250;"/>
+	</parameters>
+</npc>

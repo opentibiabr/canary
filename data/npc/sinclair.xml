@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Sinclair" walkinterval="2000" floorchange="0" script="sinclair.lua">
+	<health now="100" max="100"/>
+	<look type="133" head="21" body="38" legs="19" feet="95" addons="1"/>
+</npc>

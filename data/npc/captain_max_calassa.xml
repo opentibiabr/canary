@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Captain Max" walkinterval="2000" floorchange="0" script="captain_max_calassa.lua">
+	<health now="100" max="100"/>
+	<look type="134" head="95" body="10" legs="56" feet="77" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="helmet of the deep, 5461, 5000;"/>
+		<parameter key="shop_sellable" value="helmet of the deep, 5461, 5000;"/>
+	</parameters>
+</npc>

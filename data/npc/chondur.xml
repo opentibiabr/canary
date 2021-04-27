@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Chondur" walkinterval="2000" floorchange="0" script="chondur.lua">
+	<health now="100" max="100"/>
+	<look type="154" head="38" body="113" legs="119" feet="116" addons="3"/>
+	<parameters>
+		<parameter key="keywords" value="rituals;"/>
+		<parameter key="keyword_reply1" value="Hm. I don't think you need another one of my counterspells to cross the barrier on Goroma."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="message_greet" value="Be greeted, child. What do you want in an old shaman's hut?"/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="message_walkaway" value="Good bye!"/>
+		<parameter key="message_sendtrade" value="Well, I currently buy mysterious and enigmatic voodoo skulls and a few other things I might need for my rituals."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="shop_sellable" value="
+			black skull, 9969, 4000;
+			blood goblet, 9447, 10000;
+			blood herb, 2798, 500;
+			enigmatic voodoo skull, 5670, 4000;
+			mysterious voodoo skull, 5669, 4000;"/>
+	</parameters>
+</npc>

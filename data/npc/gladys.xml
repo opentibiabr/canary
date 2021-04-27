@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gladys" walkinterval="0" floorchange="0" script="gladys.lua">
+	<health now="100" max="100"/>
+	<look type="148" head="57" body="94" legs="78" feet="114" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			basket, 1989, 6;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2041, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			fishing rod, 2580, 150;
+			hand auger, 36169, 25;
+			machete, 2420, 35;
+			net, 36324, 50;
+			pick, 2553, 50;
+			present, 1990, 10;
+			rope, 2120, 50;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			torch, 2050, 2;
+			watch, 2036, 20;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			badger boots, 24742, 7500;
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			fox paw, 30697, 100;
+			fur armor, 24741, 5000;
+			machete, 2420, 6;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			watch, 2036, 6;
+			werebadger claws, 24707, 160;
+			werebadger skull, 24711, 185;
+			werebear fur, 24713, 185;
+			werebear skull, 24713, 195;
+			wereboar hooves, 24709, 175;
+			wereboar loincloth, 24743, 1500;
+			wereboar tusk, 24710, 165;
+			werefox tail, 30698, 200;
+			werewolf amulet, 24716, 3000;
+			werewolf fang, 24708, 180;
+			werewolf fur, 11234, 380;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

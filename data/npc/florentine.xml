@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Florentine" walkinterval="2000" floorchange="0" script="florentine.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="2" body="91" legs="77" feet="2" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bowl of evergreen flowers, 11428, 150;
+			flower bowl, 2102, 6;
+			god flowers, 2100, 5;
+			honey flower, 2103, 5;
+			indoor plant kit, 3929, 8;
+			potted flower, 2104, 5;"/>
+	</parameters>
+</npc>

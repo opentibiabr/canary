@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Commander Stone" walkinterval="2000" floorchange="0" script="commander_stone.lua">
+	<health now="100" max="100"/>
+	<look type="512" head="85" body="9" legs="9" feet="9" addons="3"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello {recruit}."/>
+	</parameters>
+</npc>

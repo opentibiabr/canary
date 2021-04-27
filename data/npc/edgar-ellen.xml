@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Edgar-Ellen" walkinterval="2000" floorchange="0" script="edgar-ellen.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="0" body="39" legs="99" feet="116" addons="0"/>
+</npc>

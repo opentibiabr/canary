@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Klom Stonecutter" walkinterval="2000" floorchange="0" script="klom_stonecutter.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="3" body="77" legs="68" feet="76" addons="0"/>
+</npc>

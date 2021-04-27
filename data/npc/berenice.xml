@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Berenice" walkinterval="2000" floorchange="0" script="berenice.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="5" body="87" legs="104" feet="106" addons="0"/>
+	<voices>
+		<voice text="Need orichalcum pearls or an atlas? Get those here." interval2="100" margin="1" yell="no"/>
+		<voice text="Hiring courageous explorers for a mission!" interval2="120" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, what can I do for you? If you're interested in the {explorer society}, just ask me."/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="message_walkaway" value="How rude!"/>
+		<parameter key="message_sendtrade" value="Of course."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			atlas, 6108, 150;
+			orichalcum pearl, 5022, 80;"/>
+		<parameter key="shop_sellable" value="
+			first verse of the hymn, 6087, 100;
+			second verse of the hymn, 6088, 250;
+			third verse of the hymn, 6089, 400;
+			fourth verse of the hymn, 6090, 800;"/>
+	</parameters>
+</npc>

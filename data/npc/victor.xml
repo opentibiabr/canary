@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Victor" walkinterval="2000" floorchange="0" script="victor.lua">
+	<health now="100" max="100"/>
+	<look type="134" head="21" body="78" legs="38" feet="95" addons="3"/>
+ 	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			health potion, 7618, 75;
+			strong health potion, 7588, 150;
+			great health potion, 7591, 300;
+			ultimate health potion, 8473, 500;"/>
+	</parameters>
+</npc>

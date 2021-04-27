@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Andrew Lyze" walkinterval="2000" floorchange="0" script="andrew_lyze.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="81" body="21" legs="54" feet="94" addons="0"/>
+</npc>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Beautiful Girl" walkinterval="2000" floorchange="0" script="a_beautiful_girl.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="77" body="81" legs="79" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="So you have come, |PLAYERNAME|. I hoped you would not..."/>
+		<parameter key="message_farewell" value="Bye."/>
+	</parameters>
+</npc>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Tothdral" walkinterval="2000" floorchange="0" script="tothdral.lua">
+	<health now="100" max="100"/>
+	<look type="65"/>
+	<parameters>
+		<parameter key="message_greet" value="Welcome |PLAYERNAME|!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="I'm currently interested in these materials."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			black hood, 10562, 190;
+			book of necromantic rituals, 11237, 180;
+			book of prayers, 10563, 120;
+			broken key ring, 12608, 8000;
+			broken ring of ending, 13877, 4000;
+			cultish mask, 10555, 280;
+			cultish robe, 10556, 150;
+			cultish symbol, 12411, 500;
+			dark rosary, 11220, 48;
+			elvish talisman, 10552, 45;
+			flask of embalming fluid, 12422, 30;
+			strange symbol, 2174, 200;
+			unholy bone, 11233, 480;
+			witch broom, 10569, 60;"/>
+	</parameters>
+</npc>

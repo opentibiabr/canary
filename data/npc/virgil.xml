@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Virgil" walkinterval="0" floorchange="0" script="virgil.lua">
+	<health now="100" max="100"/>
+	<look type="328" head="95" body="114" legs="98" feet="97" addons="0"/>
+</npc>

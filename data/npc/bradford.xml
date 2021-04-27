@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Bradford" walkinterval="2000" floorchange="0" script="bradford.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="38" body="93" legs="82" feet="116" addons="2"/>
+	<voices>
+		<voice text="Ahem. sings. Laaaaand of the twin suns, how beautiful you are..." interval2="100" margin="1" yell="no"/>
+		<voice text="Ahem. sings.Yo ho ho and a bottle of rum!" interval2="120" margin="1" yell="no"/>
+		<voice text="Ahem. sings. Love... and death... and romance... lalala... and so on." interval2="110" margin="1" yell="no"/>
+		<voice text="Ahem. sings. Ohhh Tibia, my one true love..." interval2="110" margin="1" yell="no"/>
+		<voice text="Ahem. sings. A stooory is told, adventures unfold..." interval2="110" margin="1" yell="no"/>
+		<voice text="Ahem. sings. It's brother against brother, steel against steel..." interval2="110" margin="1" yell="no"/>
+		<voice text="Ahem. sings. Demons dance in the hall of bones!" interval2="110" margin="1" yell="no"/>
+		<voice text="Okay, now I need some rum to keep my throat wet." interval2="110" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Greetings, traveller |PLAYERNAME|."/>
+		<parameter key="message_farewell" value="Farewell, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Oh, just when I wanted to tell him about that treasure."/>
+	</parameters>
+</npc>

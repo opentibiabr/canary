@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Legola" walkinterval="2000" floorchange="0" script="legola.lua">
+	<health now="100" max="100"/>
+	<look type="137" head="72" body="68" legs="68" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			girlish hair decoration, 12399, 30;
+			hunters quiver, 12425, 80;
+			protective charm, 12400, 60;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Kazzan" walkinterval="2000" floorchange="0" script="kazzan.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="95" body="13" legs="14" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Feel welcome in the lands of the children of the enlightened Daraman, |PLAYERNAME|."/>
+	</parameters>
+</npc>

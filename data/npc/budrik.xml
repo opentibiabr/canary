@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Budrik" walkinterval="2000" floorchange="0" script="budrik.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="94" body="95" legs="58" feet="114"/>
+	<parameters>
+		<parameter key="message_greet" value="Hiho, hiho |PLAYERNAME|."/>
+		<parameter key="message_farewell" value="Happy hunting, old chap! Come back to me when you are done hunting."/>
+	</parameters>
+</npc>

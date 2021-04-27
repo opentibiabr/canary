@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Yana" walkinterval="2000" floorchange="0" currency="25377" script="yana.lua">
+	<health now="100" max="100"/>
+	<look type="471" head="0" body="57" legs="0" feet="68" addons="2"/>
+	<parameters>
+		<parameter key="message_greet" value="Blessings, |PLAYERNAME|! How may I help you? Do you wish to {trade} some {tokens}, prove your {worth} to receive powerful imbuements, or do you need some {information}?"/>
+	</parameters>
+</npc>

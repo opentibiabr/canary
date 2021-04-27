@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomette" walkinterval="2000" floorchange="0" script="gnomette.lua">
+	<health now="100" max="100"/>
+	<look type="507" head="94" body="72" legs="115" feet="115"/>
+	<parameters>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|!"/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="teleport crystal, 18457, 150;"/>
+	</parameters>
+</npc>

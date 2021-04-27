@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Kalvin" walkinterval="2000" script="kalvin.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="115" body="117" legs="120" feet="126" addons="3"/>
+	<parameters>
+		<parameter key="message_greet" value="Be greeted, |PLAYERNAME|! If you need information about outfits, I'm your man."/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye, |PLAYERNAME|."/>
+	</parameters>
+</npc>

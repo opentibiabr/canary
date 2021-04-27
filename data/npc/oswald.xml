@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Oswald" walkinterval="2000" floorchange="0" script="oswald.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="115" body="0" legs="67" feet="114" addons="0"/>
+</npc>

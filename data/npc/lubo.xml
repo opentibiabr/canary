@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Lubo" walkinterval="2000" floorchange="0" script="lubo.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="115" body="39" legs="96" feet="118" addons="3"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			backpack, 1988, 25;
+			basket, 1989, 6;
+			bottle, 2007, 3, 0;
+			bucket, 2005, 4, 0;
+			candelabrum, 2057, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crowbar, 2416, 260;
+			fishing rod, 2580, 150;
+			hand auger, 36169, 25;
+			machete, 2420, 35;
+			net, 36324, 50;
+			pick, 2553, 50;
+			present, 1990, 10;
+			red apple, 2674, 3;
+			rope, 2120, 50;
+			scythe, 2550, 50;
+			shovel, 2554, 50;
+			watch, 2036, 20;
+			waterskin of water, 2031, 10, 1;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			closed trap, 2578, 75;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			machete, 2420, 6;
+			pick ,2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

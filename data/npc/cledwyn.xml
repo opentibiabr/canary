@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Cledwyn" walkinterval="2000" floorchange="0" currency="25172" script="cledwyn.lua">
+	<health now="150" max="150"/>
+	<look type="128" head="114" body="0" legs="76" feet="94" addons="3"/>
+	<parameters>
+		<parameter key="message_greet" value="Blessings, |PLAYERNAME|! How may I be of service? Do you wish to trade some {token}s, or would you like some {information} or {talk}? Should I {enchant} certain items for you?"/>
+		<parameter key="message_farewell" value="Make your own destiny, |PLAYERNAME|."/>
+	</parameters>
+</npc>

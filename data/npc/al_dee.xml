@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Al Dee" walkinterval="2000" floorchange="0" script="al_dee.lua">
+	<health now="100" max="100"/>
+	<look type="129" head="97" body="77" legs="87" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			backpack, 1988, 10;
+			bag, 1987, 4;
+			fishing rod, 2580, 150;
+			rope, 2120, 50;
+			scroll, 1949, 5;
+			scythe, 2550, 12;
+			shovel, 2554, 10;
+			torch, 2050, 2;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			fishing rod, 2580, 30;
+			rope, 2120, 8;
+			shovel, 2554, 2;"/>
+	</parameters>
+</npc>

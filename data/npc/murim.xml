@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Murim" walkinterval="0" floorchange="0" script="bank.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="116" body="24" legs="21" feet="39"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			label, 2599, 1;
+			letter, 2597, 8;
+			parcel, 2595, 15;"/>
+	</parameters>
+</npc>

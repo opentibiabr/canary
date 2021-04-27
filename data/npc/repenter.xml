@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Repenter" walkinterval="2000" floorchange="0" script="repenter.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="95" body="23" legs="22" feet="20"/>
+</npc>

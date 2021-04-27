@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Pemaret" walkinterval="2000" floorchange="0" script="pemaret.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="79" body="10" legs="126" feet="126" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			green perch, 7159, 100;
+			marlin, 7963, 800;
+			northern pike, 2669, 100;
+			rainbow trout, 7158, 100;
+			shimmer swimmer, 13546, 3000;"/>
+		<parameter key="shop_buyable" value="fish, 2667, 5;"/>
+	</parameters>
+</npc>

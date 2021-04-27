@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gelidrazah'S Thirst" walkinterval="100000" speed="0" walkradius="0" floorchange="0" script="gelidrazahs_thirst.lua">
+	<health max="100" now="100"/>
+	<look typeex="10948" head="0" body="0" legs="0" feet="0" addons="0" mount="0"/>
+</npc>

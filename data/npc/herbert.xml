@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Herbert" walkinterval="2000" floorchange="0" script="herbert.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="97" body="93" legs="36" feet="93" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="At last! The audience arrives!"/>
+		<parameter key="message_farewell" value="Thank you! Thank you! Sorry, no autographs today!"/>
+		<parameter key="message_walkaway" value="Alas! The crowds are gone and curtains fall! Was it but a dream?"/>
+		<parameter key="message_sendtrade" value="Here. Don't forget that you need to buy a label too if you want to send a parcel. Always write the name of the {receiver} in the first line and the name of the {city} in the second line."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			label, 2599, 1;
+			letter, 2597, 8;
+			parcel, 2595, 15;"/>
+	</parameters>
+</npc>

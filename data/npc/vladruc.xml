@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Vladruc" walkinterval="2000" floorchange="0" script="vladruc.lua">
+	<health now="100" max="100"/>
+	<look type="68" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="I am Vladruc Urghain and welcome you, |PLAYERNAME|, to my house."/>
+		<parameter key="message_farewell" value="Go safely |PLAYERNAME|, and leave something of the happiness you bring!"/>
+		<parameter key="message_walkaway" value="Go safely, and leave something of the happiness you bring!"/>
+	</parameters>
+</npc>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Perod" walkinterval="2000" floorchange="0" script="perod.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="39" body="125" legs="29" feet="114" addons="0"/>
+	<parameters>
+	<parameter key="message_greet" value="Greetings, dear |PLAYERNAME|. What do you need? I sell general {equipment} and {distance} weapons."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my wares. If you're only interested in {distance} equipment or a {football}, let me know."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			black book, 1972, 15;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bottle, 2007, 3, 0;
+			bow, 2456, 400;
+			brown book, 1971, 15;
+			bucket, 2005, 4, 0;
+			camouflage backpack, 3940, 20;
+			camouflage bag, 3939, 5;
+			candelabrum, 2042, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crossbow, 2455, 500;
+			crowbar, 2416, 260;
+			crystalline arrow, 18304, 20;
+			cup, 3942, 2, 0;
+			diamond arrow, 40736, 100;
+			document, 1952, 12;
+			drill bolt, 18436, 12;
+			earth arrow, 7850, 5;
+			envenomed arrow, 18437, 12;
+			fishing rod, 2580, 150;
+			flaming arrow, 7840, 5;
+			flash arrow, 7838, 5;
+			greeting card, 6387, 30;
+			grey small book, 1973, 15;
+			hand auger, 36169, 25;
+			inkwell, 2600, 10;
+			jug, 7244, 10;
+			machete, 2420, 40;
+			mug, 2012, 4, 0;
+			net, 36324, 50;
+			onyx arrow, 7365, 7;
+			parchment, 1948, 8;
+			parchment, 1951, 8;         
+			pick, 2553, 50;
+			piercing bolt, 7363, 5;
+			plate, 2035, 6;
+			power bolt, 2547, 7;
+			present, 1990, 10;
+			prismatic bolt, 18435, 20;        
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			rope, 2120, 50;
+			royal spear, 7378, 15;
+			scroll, 1949, 5;
+			scythe, 2550, 50;
+			shiver arrow, 7839, 5;
+			shovel, 2554, 50;
+			sniper arrow, 7364, 5;
+			spear, 2389, 10;
+			spectral bolt, 40737, 70;
+			tarsal arrow, 15648, 6;
+			throwing star, 2399, 42;
+			torch, 2050, 2;
+			vortex bolt, 15649, 6;
+			watch, 6091, 20;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			blue book, 1978, 20;
+			bow, 2456, 400;
+			crossbow, 2455, 500;
+			crowbar, 2416, 50;
+			fishing rod, 2580, 40;
+			gemmed book, 1976, 100;
+			green book, 1980, 15;
+			inkwell, 2600, 8;
+			machete, 2420, 6;
+			orange book, 1977, 30;
+			parchment, 7696, 5;
+			pick, 2553, 15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			spear, 2389, 10;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

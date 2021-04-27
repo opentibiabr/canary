@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="A Bearded Woman" walkinterval="2000" floorchange="0" script="a_bearded_woman.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="60" body="22" legs="24" feet="32" addons="1"/>
+</npc>

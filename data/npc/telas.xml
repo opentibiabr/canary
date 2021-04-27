@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Telas" walkinterval="2000" floorchange="0" script="telas.lua">
+	<health now="100" max="100"/>
+	<look type="133" head="39" body="0" legs="0" feet="76" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			ancient stone, 10549, 200;
+			battle stone, 12403, 290;
+			broken gladiator shield, 10573, 190;
+			coal, 13757, 20;
+			crystal of balance, 9942, 1000;
+			crystal of focus, 9941, 2000;
+			crystal of power, 9980, 3000;
+			crystal pedestal, 9976, 500;
+			crystalline spikes, 18432, 440;
+			flintstone, 13943, 800;
+			gear crystal, 10572, 200;
+			gear wheel, 9690, 500;
+			huge chunk of crude iron, 5892, 15000;
+			magma clump, 18424, 570;
+			metal spike, 11215, 320;
+			piece of draconian steel, 5889, 3000;
+			piece of hell steel, 5888, 500;
+			piece of hellfire armor, 10581, 550;
+			piece of royal steel, 5887, 10000;
+			pulverized ore, 18427, 400;
+			shiny stone, 11227, 500;
+			stone nose, 18431, 590;
+			sulphurous stone, 11232, 100;
+			vein of ore, 18429, 330;
+			war crystal, 10571, 460;"/>
+	</parameters>
+</npc>

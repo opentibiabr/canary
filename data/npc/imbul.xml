@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Imbul" walkinterval="2000" floorchange="0" script="imbul.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="95" body="2" legs="63" feet="115" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hi, |PLAYERNAME|. If you want me to transport you to the other end of the city, feel free to ask me for a passage."/>
+		<parameter key="message_farewell" value="Bye."/>
+		<parameter key="message_walkaway" value="Bye."/>
+	</parameters>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Percy Silverhand" walkinterval="2000" floorchange="0" script="percy_silverhand.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="19" body="131" legs="35" feet="128" addons="1"/>
+</npc>

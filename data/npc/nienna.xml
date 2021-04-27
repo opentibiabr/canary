@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Nienna" walkinterval="2000" floorchange="0" script="nienna.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="78" body="85" legs="58" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			black pearl, 2144, 560;
+			candelabrum, 2041, 8;
+			candlestick, 2047, 2;
+			exotic flowers, 2107, 310;
+			fireworks rocket, 6576, 1000;
+			flower bouquet, 7733, 500;
+			flower bowl, 2102, 6;
+			god flowers, 2100, 5;
+			heart pillow, 1685, 30;
+			honey flower, 2103, 5;
+			lyre, 2071, 120;
+			orange star, 2759, 50;
+			potter flower, 2104, 5;
+			present, 1990, 10;
+			red rose, 2744, 11;
+			ruby necklace, 2133, 3560;
+			small amethyst, 2150, 400;
+			small diamond, 2145, 600;
+			small emerald, 2149, 500;
+			small ruby, 2147, 500;
+			small sapphire, 2146, 500;
+			white pearl, 2143, 320;"/>
+	</parameters>
+</npc>

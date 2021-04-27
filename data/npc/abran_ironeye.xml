@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Abran Ironeye" walkinterval="2000" floorchange="0" script="abran_ironeye.lua">
+	<health now="100" max="100"/>
+	<look type="73" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hail, |PLAYERNAME|! do you wanna buy blessings?"/>
+		<parameter key="message_farewell" value="You are dismissed."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I am a busy man. I run the Ironhouse."/>
+	</parameters>
+</npc>

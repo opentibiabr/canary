@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Zuma Magehide" walkinterval="2000" floorchange="0" script="zuma_magehide.lua">
+	<health now="100" max="100"/>
+	<look type="138" head="58" body="19" legs="0" feet="132" addons="3"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			axe ring, 2208, 500;
+			bronze amulet, 2172, 100, 200;
+			club ring, 2209, 500;
+			dragon necklace, 2201, 1000, 200;
+			dwarven ring, 2213, 3000;
+			elven amulet, 2198, 500, 50;
+			energy ring, 2167, 5000;
+			garlic necklace, 2199, 100, 150;
+			life ring, 2168, 900;
+			might ring, 2164, 5000, 20;
+			power ring, 2166, 100;
+			protection amulet, 2200, 700, 250;
+			ring of healing, 2214, 2000;
+			silver amulet, 2170, 100, 200;
+			stealth ring, 2165, 5000;
+			stone skin amulet, 2197, 5000, 5;
+			strange talisman, 2161, 100, 200;
+			sword ring, 2207, 500;
+			time ring, 2169, 5000;"/>
+	</parameters>
+</npc>

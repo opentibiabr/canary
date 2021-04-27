@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Ikassis" walkinterval="2000" floorchange="0" script="ikassis.lua">
+	<health now="100" max="100"/>
+	<look type="28" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<voices>
+		<voice text="The wildlife is troubled." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

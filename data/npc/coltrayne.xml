@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Coltrayne" walkinterval="2000" floorchange="0" script="coltrayne.lua">
+	<health now="100" max="100"/>
+	<look type="134" head="114" body="38" legs="124" feet="78" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="message_farewell" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my offers."/>
+		<parameter key="message_greet" value="Be mourned pilgrim in flesh. I'm selling general goods."/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			axe, 2386, 20;
+			bolt, 2543, 4;
+			chain helmet, 2458, 52;
+			coat, 2651, 8;
+			crossbow, 2455, 500;
+			dagger, 2379, 5;
+			doublet, 2485, 16;
+			hand axe, 2380, 8;
+			jacket, 2650, 10;
+			leather armor, 2467, 25;
+			leather helmet, 2461, 12;
+			leather legs, 2649, 10;
+			rapier, 2384, 15;
+			sabre, 2385, 25;
+			scythe, 2550, 12;
+			short sword, 2406, 30;
+			sickle, 2405, 8;
+			spear, 2389, 10;
+			studded helmet, 2482, 63;
+			studded shield, 2526, 50;
+			wooden shield, 2512, 15;"/>
+		<parameter key="shop_sellable" value="
+			axe, 2386, 7;
+			bone club, 2449, 5;
+			brass helmet, 2460, 22;
+			brass shield, 2511, 25;
+			chain armor, 2464, 40;
+			chain helmet, 2458, 12;
+			copper shield, 2530, 50;
+			dagger, 2379, 2;
+			doublet, 2485, 3;
+			hand axe, 2380, 4;
+			hatchet, 2388, 25;
+			katana, 2412, 35;
+			leather armor, 2467, 5;
+			leather boots, 2643, 2;  
+			legion helmet, 2480, 22;
+			mace, 2398, 30;
+			machete, 2420, 6;
+			plate shield, 2510, 40;
+			rapier, 2384, 5;
+			sabre, 2385, 12;
+			scythe, 2550, 3;
+			short sword, 2406, 10;
+			sickle, 2405, 2;
+			spear, 2389, 3;
+			studded armor, 2484, 10;
+			studded helmet, 2482, 20;
+			studded legs, 2468, 15;
+			studded shield, 2526, 16;
+			sword, 2376, 25;
+			viking helmet, 2473, 25;"/>
+	</parameters>
+</npc>

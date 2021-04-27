@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Allen" walkinterval="2000" floorchange="0" script="allen.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="76" body="43" legs="38" feet="76" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Welcome to the Plank and Treasurechest Market, |PLAYERNAME|! Best {trades} in town!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="module_keywords" value="1"/>
+		<parameter key="keywords" value="job;"/>
+		<parameter key="keyword_reply1" value="I run this market and sell furniture."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			blue bed kit, 7907, 80;
+			canopy bed kit, 20252, 200;
+			green bed kit, 7904, 80;
+			green cushioned chair kit, 3902, 40;
+			red bed kit, 7906, 80;
+			red cushioned chair kit, 3901, 40;
+			rocking chair kit, 3904, 25;
+			sofa chair kit, 3905, 55;
+			treasure chest, 1746, 1000;
+			venorean cabinet kit, 20254, 90;
+			venorean drawer kit, 20257, 40;
+			venorean wardrobe kit, 20255, 50;
+			wooden chair kit, 3903, 15;
+			yellow bed kit, 7905, 80;"/>
+	</parameters>
+</npc>

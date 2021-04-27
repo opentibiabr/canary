@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Cerdras" walkinterval="2000" floorchange="0" script="cerdras.lua">
+	<health now="100" max="100"/>
+	<look type="144" head="20" body="96" legs="41" feet="22" addons="2"/>
+</npc>

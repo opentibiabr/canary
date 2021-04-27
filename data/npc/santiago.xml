@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Santiago" walkinterval="2000" floorchange="0" script="santiago.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="38" body="115" legs="87" feet="114" addons="0"/>
+</npc>

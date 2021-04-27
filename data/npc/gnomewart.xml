@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomewart" walkinterval="2000" floorchange="0" script="gnomewart.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="41" body="100" legs="100" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Oh! Hi there! I guess you are here for the {endurance} test!"/>
+	</parameters>
+</npc>

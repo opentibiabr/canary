@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Gnomerrow" walkinterval="2000" floorchange="0" script="gnomerrow.lua">
+	<health now="100" max="100"/>
+	<look type="493" head="131" body="131" legs="131" feet="132" addons="0"/>
+	<parameters>
+		<parameter key="message_greet" value="Hi |PLAYERNAME|!"/>
+		<parameter key="message_farewell" value="Good bye."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bow, 2456, 400;
+			crossbow, 2455, 500;
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			spear, 2389, 10;"/>
+		<parameter key="shop_sellable" value="spear, 2389, 3;"/>
+	</parameters>
+</npc>

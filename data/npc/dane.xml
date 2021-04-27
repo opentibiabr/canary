@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Dane" walkinterval="2000" floorchange="0" script="dane.lua">
+	<health now="100" max="100"/>
+	<look type="136" head="79" body="97" legs="86" feet="96" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bottle of lemonade, 2007, 12, 5;
+			bottle of milk,2007, 4, 6;
+			bottle of water, 2007, 2, 1;"/>
+	</parameters>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Graubart" walkinterval="2000" floorchange="0" script="graubart.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="25" body="107" legs="57" feet="114" addons="0"/>
+</npc>

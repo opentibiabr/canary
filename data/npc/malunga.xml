@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Malunga" walkinterval="2000" floorchange="0" script="malunga.lua">
+	<health now="100" max="100"/>
+	<look type="149" head="95" body="78" legs="19" feet="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			boggy dreads, 10584, 200;
+			bonecarving knife, 20110, 140;
+			centipede leg, 11218, 28;
+			cliff strider claw, 18428, 800;
+			cobra tongue, 10551, 15;
+			compound eye, 15486, 150;
+			crawler head plating, 15482, 210;
+			damselfly eye, 19743, 25;
+			damselfly wing, 19738, 20;
+			deepling breaktime snack, 15424, 90;
+			deepling claw, 15455, 430;
+			deepling ridge, 15452, 360;
+			deepling scales, 15430, 80;
+			deepling warts, 15425, 180;
+			demonic finger, 13530, 1000;
+			dowser, 21427, 35;
+			essence of a bad dream, 11223, 360;
+			eye of a deepling, 13870, 150;
+			eye of a weeper, 18426, 650;
+			eye of corruption, 12627, 390;
+			fir cone, 21428, 25;
+			ghastly dragon head, 11366, 700;
+			ghoul snack, 12423, 60;
+			gland, 8971, 500;
+			hair of a banshee, 12402, 350;
+			half-digested piece of meat, 11200, 55;
+			half-eaten brain, 10576, 85;
+			hatched rorc egg, 21314, 30;
+			haunted piece of wood, 10600, 115;
+			hellhound slobber, 10554, 500;
+			horoscope, 21243, 40;
+			incantation notes, 21246, 90;
+			lancet, 21242, 90;
+			lizard essence, 12636, 300;
+			mutated flesh, 11225, 50;
+			mutated rat tail, 10585, 150;
+			necromantic robe, 12431, 250;
+			pelvis bone, 12437, 30;
+			petrified scream, 11337, 250;
+			piece of dead brain, 10580, 420;
+			piece of scarab shell, 10558, 45;
+			piece of swampling wood, 20103, 30;
+			pieces of magic chalk, 21247, 210;
+			pig foot, 10610, 10;
+			pile of grave earth, 12440, 25;
+			poison spider shell, 12441, 10;
+			poisonous slime, 10557, 50;
+			rorc egg, 21313, 120;
+			rotten piece of cloth, 11208, 30;
+			scale of corruption, 12629, 680;
+			scorpion tail, 10568, 25;
+			slime mould, 13758, 175;
+			small pitchfork, 12469, 70;
+			spider fangs, 8859, 10;
+			spidris mandible, 15485, 450;
+			spitter nose, 15481, 340;
+			strand of medusa hair, 11226, 600;
+			swampling moss, 20102, 20;
+			swarmer antenna, 15479, 130;
+			tail of corruption, 12628, 240;
+			tarantula egg, 11198, 80;
+			tentacle piece, 12622, 5000;
+			thorn, 10560, 100;
+			tooth file, 21241, 60;
+			undead heart, 11367, 200;
+			vampire's cape chain, 21244, 150;
+			venison, 21312, 55;
+			waspoid claw, 15483, 320;
+			waspoid wing, 15484, 190;
+			widow's mandibles, 11328, 110;
+			winged tail, 11230, 800;
+			yielocks, 13942, 600;
+			yielowax, 13881, 600;"/>
+	</parameters>
+</npc>

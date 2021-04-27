@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Ambassador Of Rathleton" walkinterval="2000" floorchange="0" script="ambassador_of_rathleton.lua">
+	<health now="100" max="100"/>
+	<look type="472" head="19" body="53" legs="61" feet="3" addons="0"/>
+	<voices>
+		<voice text="Good bye." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

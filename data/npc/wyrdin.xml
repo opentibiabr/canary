@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Wyrdin" walkinterval="2000" floorchange="0" script="wyrdin.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="76" body="77" legs="79" feet="115" addons="0"/>
+</npc>

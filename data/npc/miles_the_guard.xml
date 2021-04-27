@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Miles, The Guard" walkinterval="2000" floorchange="0" script="miles_the_guard.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="0" body="19" legs="19" feet="19" addons="0"/>
+</npc>

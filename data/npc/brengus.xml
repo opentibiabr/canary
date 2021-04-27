@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Brengus" walkinterval="2000" floorchange="0" script="brengus.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="79" body="76" legs="76" feet="114" addons="0"/>
+	<voices>
+		<voice text="Best weapons and armors in town!" interval2="100" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_greet" value="Be greeted, |PLAYERNAME|. If you want to buy or sell weapons and armors, ask me for a {trade}."/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			arrow, 2544, 3;
+			axe, 2386, 20;
+			battle axe, 2378, 235;
+			battle hammer, 2417, 350;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bone sword, 2450, 75;
+			bow, 2456, 400;
+			brass armor, 2465, 450;
+			brass helmet, 2460, 120;
+			brass legs, 2478, 195;
+			brass shield, 2511, 65;
+			carlin sword, 2395, 473;
+			chain armor, 2464, 200;
+			chain helmet, 2458, 52;
+			chain legs, 2648, 80;
+			club, 2382, 5;
+			coat, 2651, 8;
+			crimson sword, 7385, 610;
+			crossbow, 2455, 500;
+			crowbar, 2416, 260;
+			crystalline arrow, 18304, 20;
+			dagger, 2379, 5;
+			diamond arrow, 40736, 100;
+			doublet, 2485, 16;
+			drill bolt, 18436, 12;
+			durable exercise axe, 40115, 945000, 1800;
+			durable exercise bow, 40117, 945000, 1800;
+			durable exercise club, 40116, 945000, 1800;
+			durable exercise sword, 40114, 945000, 1800;
+			dwarven shield, 2525, 500;
+			earth arrow, 7850, 5;
+			envenomed arrow, 18437, 12;
+			exercise axe, 32385, 262500, 500;
+			exercise bow, 32387, 262500, 500;
+			exercise club, 32386, 262500, 500;
+			exercise sword, 32384, 262500, 500;
+			flaming arrow, 7840, 5;
+			flash arrow, 7838, 5;
+			hand axe, 2380, 8;
+			iron helmet, 2459, 390;
+			jacket, 2650, 12;
+			lasting exercise axe, 40121, 7560000, 14400;
+			lasting exercise bow, 40123, 7560000, 14400;
+			lasting exercise club, 40122, 7560000, 14400;
+			lasting exercise sword, 40120, 7560000, 14400;
+			leather armor, 2467, 35;
+			leather boots, 2643, 10;
+			leather helmet, 2461, 12;
+			leather legs, 2649, 10;
+			longsword, 2397, 160;
+			mace, 2398, 90;
+			morning star, 2394, 430;
+			onyx arrow, 7365, 7;
+			piercing bolt, 7363, 5;
+			plate armor, 2463, 1200;
+			plate shield, 2510, 125;
+			power bolt, 2547, 7;
+			prismatic bolt, 18435, 20;
+			quiver, 40397, 400;
+			rapier, 2384, 15;
+			red quiver, 40684, 400;
+			sabre, 2385, 35;
+			scale armor, 2483, 260;
+			shiver arrow, 7839, 5;
+			short sword, 2406, 26;
+			sickle, 2405, 7;
+			sniper arrow, 7364, 5;
+			soldier helmet, 2481, 110;
+			spear, 2389, 9;
+			spectral bolt, 40737, 70;
+			spike sword, 2383, 8000;
+			steel helmet, 2457, 580;
+			steel shield, 2509, 240;
+			studded armor, 2484, 90;
+			studded helmet, 2482, 63;
+			studded legs, 2468, 50;
+			studded shield, 2526, 50;
+			sword, 2376, 85;
+			tarsal arrow, 15648, 6;
+			throwing knife, 2410, 25;
+			throwing star, 2399, 42;
+			two handed sword, 2377, 950;
+			viking helmet, 2473, 265;
+			viking shield, 2531, 260;
+			vortex bolt, 15649, 6;
+			war hammer, 2391, 10000;
+			wooden shield, 2512, 15;"/>
+		<parameter key="shop_sellable" value="
+			axe, 2386, 7;
+			banana sash, 12467, 55;
+			banana staff, 3966, 1000;
+			bast skirt, 3983, 750;
+			battle axe, 2378, 80;
+			battle hammer, 2417, 120;
+			battle shield, 2513, 95;
+			bone club, 2449, 5;
+			bone sword, 2450, 20;
+			bonelord helmet, 3972, 2200;
+			bow, 2456, 100;
+			brass armor, 2465, 150;
+			brass helmet, 2460, 30;
+			brass legs, 2478, 49;
+			brass shield, 2511, 25;
+			carlin sword, 2395, 118;
+			chain armor, 2464, 70;
+			chain helmet, 2458, 17;
+			chain legs, 2648, 25;
+			charmer's tiara, 3971, 900;
+			club, 2382, 1;
+			coat, 2651, 1;
+			copper shield, 2530, 50;
+			crocodile boots, 3982, 1000;
+			crossbow, 2455, 120;
+			crowbar, 2416, 50;
+			dagger, 2379, 2;
+			double axe, 2387, 260;
+			doublet, 2485, 3;
+			dwarven shield, 2525, 100;
+			feather headdress, 3970, 850;
+			fire sword, 2392, 1000;
+			halberd, 2381, 400;
+			hand axe, 2380, 4;
+			hatchet, 2388, 25;
+			horseman helmet, 3969, 280;
+			hunting spear, 3965, 25;
+			iron helmet, 2459, 150;
+			jacket, 2650, 1;
+			katana, 2412, 35;
+			kongra's shoulderpad, 12427, 100;
+			leather armor, 2467, 12;
+			leather boots, 2643, 2;
+			leather helmet, 2461, 4;
+			leather legs, 2649, 9;
+			legion helmet, 2480, 22;
+			leopard armor, 3968, 300;
+			longsword, 2397, 51;
+			mace, 2398, 30;
+			morning star, 2394, 100;
+			orcish axe, 2428, 350;
+			plate armor, 2463, 400;
+			plate legs, 2647, 115;
+			plate shield, 2510, 45;
+			rapier, 2384, 5;
+			ripper lance, 3964, 500;
+			sabre, 2385, 12;
+			salamander shield, 3975, 280;
+			scale armor, 2483, 75;
+			sentinel shield, 3974, 120;
+			short sword, 2406, 10;
+			sickle, 2405, 3;
+			soldier helmet, 2481, 16;
+			spear, 2389, 3;
+			spike sword, 2383, 240;
+			steel helmet, 2457, 293;
+			steel shield, 2509, 80;
+			studded armor, 2484, 25;
+			studded club, 2448, 10;
+			studded helmet, 2482, 20;
+			studded legs, 2468, 15;
+			studded shield, 2526, 16;
+			swampling club, 20104, 40;
+			sword, 2376, 25;
+			templar scytheblade, 3963, 200;
+			throwing knife, 2410, 2;
+			tribal mask, 3967, 250;
+			tusk shield, 3973, 850;
+			two handed sword, 2377, 450;
+			viking helmet, 2473, 66;
+			viking shield, 2531, 85;
+			war hammer, 2391, 470;
+			wooden shield, 2512, 5;"/>
+	</parameters>
+</npc>

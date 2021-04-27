@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Arkulius" walkinterval="2000" floorchange="0" script="arkulius.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="0" body="79" legs="90" feet="117" addons="3"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			energy soil, 8303, 2000;
+			eternal flames, 8304, 5000;
+			flawless ice crystal, 8300, 5000;
+			glimmering soil, 8299, 2000;
+			iced soil, 8302, 2000;
+			mother soil, 8305, 5000;
+			natural soil, 8298, 2000;
+			neutral matter, 8310, 5000;
+			pure energy, 8306, 5000;"/>
+	</parameters>
+</npc>

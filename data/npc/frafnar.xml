@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Frafnar" walkinterval="2000" floorchange="0" script="frafnar.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="58" body="119" legs="81" feet="114"/>
+</npc>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Percybald" walkinterval="2000" floorchange="0" script="percybald.lua">
+	<health now="100" max="100"/>
+	<look type="131" head="3" body="21" legs="21" feet="38" addons="0"/>
+</npc>

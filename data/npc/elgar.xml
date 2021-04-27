@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Elgar" walkinterval="2000" floorchange="0" script="bank.lua">
+	<health now="100" max="100"/>
+	<look type="160" head="77" body="113" legs="116" feet="95" addons="0"/>
+	<parameters>
+		<parameter key="message_sendtrade" value="Here. Don't forget that you need to buy a label too if you want to send a parcel. Always write the name of the {receiver} in the first line."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+            label, 2599, 1;
+            letter, 2597, 8;
+            parcel, 2595, 15;"/>
+	</parameters>
+</npc>

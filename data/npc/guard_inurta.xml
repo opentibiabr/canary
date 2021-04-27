@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Guard Inurta" walkinterval="2000" floorchange="0" script="guard_inurta.lua">
+	<health now="100" max="100"/>
+	<look type="1199" head="114" body="29" legs="68" feet="78" addons="2"/>
+	<voices>
+		<voice text="Good bye." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

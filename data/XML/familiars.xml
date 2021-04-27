@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<familiars>
+	<!-- Familiars sorcerrers -->
+	<familiar vocation="1" lookType="994" name="Thundergiant" premium="yes" unlocked="no" enabled="yes" />
+	<familiar vocation="5" lookType="994" name="Thundergiant" premium="yes" unlocked="no" enabled="yes" />
+	
+	<familiar vocation="1" lookType="1367" name="Bladespark" premium="yes" unlocked="no" enabled="yes" type="quest" />
+	<familiar vocation="5" lookType="1367" name="Bladespark" premium="yes" unlocked="no" enabled="yes" type="quest" />
+	
+	<!-- Familiars druids -->
+	<familiar vocation="2" lookType="993" name="Grovebeast" premium="no" unlocked="no" enabled="yes" />
+	<familiar vocation="6" lookType="993" name="Grovebeast" premium="no" unlocked="no" enabled="yes" />
+	
+	<familiar vocation="2" lookType="1364" name="Mossmasher" premium="no" unlocked="no" enabled="yes" type="quest" />
+	<familiar vocation="6" lookType="1364" name="Mossmasher" premium="no" unlocked="no" enabled="yes" type="quest" />
+	
+	<!-- Familiars paladins -->
+	<familiar vocation="3" lookType="992" name="Emberwing" premium="no" unlocked="no" enabled="yes" />
+	<familiar vocation="7" lookType="992" name="Emberwing" premium="yes" unlocked="no" enabled="yes" />
+
+	<familiar vocation="3" lookType="1366" name="Sandscourge" premium="no" unlocked="no" enabled="yes" type="quest" />
+	<familiar vocation="7" lookType="1366" name="Sandscourge" premium="yes" unlocked="no" enabled="yes" type="quest" />
+	
+	<!-- Familiars knights -->
+	<familiar vocation="4" lookType="991" name="Skullfrost" premium="yes" unlocked="no" enabled="yes" />
+	<familiar vocation="8" lookType="991" name="Skullfrost" premium="yes" unlocked="no" enabled="yes" />
+	
+	<familiar vocation="4" lookType="1365" name="Snowbash" premium="yes" unlocked="no" enabled="yes" type="quest" />
+	<familiar vocation="8" lookType="1365" name="Snowbash" premium="yes" unlocked="no" enabled="yes" type="quest" />
+
+	
+</familiars>

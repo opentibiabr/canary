@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Grumpy Stone" walkinterval="2000" floorchange="0" script="grumpy_stone.lua">
+	<health now="100" max="100"/>
+	<look type="0" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<voices>
+		<voice text="That's annoying!" interval2="33" margin="1" yell="no"/>
+		<voice text="Grrrr ... We would need a pair of hands." interval2="120" margin="1" yell="no"/>
+	</voices>
+</npc>

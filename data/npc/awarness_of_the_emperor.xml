@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Awarness Of The Emperor" walkinterval="2000" floorchange="0" script="awareness_of_the_emperor.lua">
+	<health now="100" max="100"/>
+	<look type="231"/>
+	<parameters>
+		<parameter key="message_greet" value="I am not here to fight you, fool. Like it or not, we will have to work together to stop the {catastrophe} you and that {priest} have initiated."/>
+	</parameters>
+</npc>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Ustan" walkinterval="2000" floorchange="0" script="ustan.lua">
+	<health now="100" max="100"/>
+	<look type="144" head="0" body="38" legs="76" feet="95" addons="1"/>
+	<parameters>
+		<parameter key="message_greet" value="Welcome to my house, |PLAYERNAME|!"/>
+		<parameter key="message_farewell" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="Good bye, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="I'm currently interested in these materials."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			bear paw, 5896, 100;
+			wolf paw, 5897, 70;
+			wolf tooth chain, 2129, 100;"/>
+	</parameters>
+</npc>

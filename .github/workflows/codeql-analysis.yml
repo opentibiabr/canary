@@ -1,0 +1,61 @@
+---
+
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ develop ]
+  schedule:
+    - cron: '17 22 * * 2'
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'cpp', 'python' ]
+
+    steps:
+    - uses: lukka/get-cmake@latest
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Install Dependencies
+      if: ${{ matrix.language == 'cpp' }}
+      run: >
+        sudo apt-get update && sudo apt-get install ccache build-essential
+        libluajit-5.1-dev zip
+
+    - name: Restore artifacts, or setup vcpkg (do not install any package)
+      if: ${{ matrix.language == 'cpp' }}
+      uses: lukka/run-vcpkg@v7
+      with:
+        setupOnly: true
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+        appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+        vcpkgTriplet: ${{ matrix.triplet }}
+        additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
+        vcpkgGitCommitId: ${{ secrets.VCPKG_ID }}
+
+    - name: 'Run CMake with Ninja, install dependencies with vcpkg, build with CMake'
+      if: ${{ matrix.language == 'cpp' }}
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        useVcpkgToolchainFile: true
+        buildDirectory: ${{ github.workspace }}/build/
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1

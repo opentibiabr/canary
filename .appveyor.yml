@@ -1,0 +1,58 @@
+---
+image: Visual Studio 2019
+
+shallow_clone: true
+
+# set clone depth
+clone_depth: 1
+
+# environment:
+#   APPVEYOR_SAVE_CACHE_ON_ERROR: true
+
+platform:
+  - x64
+
+configuration:
+  - Release
+
+matrix:
+  fast_finish: true
+
+only_commits:
+  files:
+    - src/
+    - vc14/
+    - .appveyor.yml
+    - cmake/
+    - CMakeLists.txt
+
+install:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - cd C:\Tools\vcpkg
+  - git pull
+  - .\bootstrap-vcpkg.bat
+  - .\vcpkg integrate install
+  - cd %APPVEYOR_BUILD_FOLDER%
+
+before_build:
+  - cmd: |-
+      if not exist build mkdir build
+      cd build
+      cmake -DCMAKE_TOOLCHAIN_FILE=C:\Tools\vcpkg\scripts\buildsystems\vcpkg.cmake ..
+      cmake --build . --config Release
+
+build:
+  project: C:\projects\otservbr-global\build\otbr.sln
+  verbosity: minimal
+  parallel: true
+
+after_build:
+  - cd %APPVEYOR_BUILD_FOLDER%\build\bin
+  - 7z a -tzip otservbr-global.zip Release\
+
+cache:
+  - C:\projects\otservbr-global\build\vcpkg_installed\
+  - C:\Users\appveyor\AppData\Local\vcpkg\archives
+
+artifacts:
+  - path: \build\bin\otservbr-global.zip

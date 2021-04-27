@@ -1,0 +1,12 @@
+---
+source:
+  - any: ['src/**/*']
+
+data:
+  - any: ['data/**/*', '!data/world/*']
+
+map:
+  - any: ['data/world/*']
+
+docker:
+  - any: ['docker/**/*']

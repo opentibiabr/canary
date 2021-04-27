@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Fadil" walkinterval="2000" floorchange="0" script="fadil.lua">
+	<health now="100" max="100"/>
+	<look type="146" head="114" body="94" legs="0" feet="94" addons="1"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			collar of blue plasma, 26198, 6000;
+			collar of green plasma, 26199, 6000;
+			collar of red plasma, 26200, 6000;
+			condensed energy, 26157, 260;
+			crystal bone, 26177, 250;
+			crystallized anger, 26163, 400;
+			curious matter, 26167, 430;
+			dangerous proto matter, 26171, 300;
+			energy ball, 26179, 300;
+			energy vein, 26164, 270;
+			frozen lightning, 26175, 270;
+			glistening bone, 26178, 250;
+			green bandage, 29002, 180;
+			instable proto matter, 26172, 300;
+			little bowl of myrrh, 29007, 500;
+			odd organ, 26166, 410;
+			plasma pearls, 26162, 250;
+			plasmatic lightning, 26176, 270;
+			ring of blue plasma, 26185, 8000;
+			ring of green plasma, 26187, 8000;
+			ring of red plasma, 26189, 8000;
+			single human eye, 29006, 1000;
+			small energy ball, 26180, 250;
+			solid rage, 26173, 310;
+			spark sphere, 26174, 350;
+			sparkion claw, 26158, 290;
+			sparkion legs, 26160, 310;
+			sparkion stings, 26161, 280;
+			sparkion tail, 26159, 300;
+			strange proto matter, 26169, 300;
+			volatile proto matter, 26170, 300;"/>
+	</parameters>
+</npc>

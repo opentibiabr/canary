@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Asnarus" walkinterval="2000" floorchange="0" script="asnarus.lua">
+	<health now="100" max="100"/>
+	<look type="104" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<parameters>
+		<parameter key="message_farewell" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_walkaway" value="May enlightenment be your path, |PLAYERNAME|."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my offers."/>
+		<parameter key="message_greet" value="Be mourned pilgrim in flesh. I'm selling general goods."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			animate dead rune, 2316, 375;
+			arrow, 2544, 2;
+			blue quiver, 40683, 400;
+			bolt, 2580, 4;
+			bow, 2456, 400;
+			crossbow, 2455, 500;
+			crystalline arrow, 18304, 20;
+			desintegrate rune, 2310, 26;
+			diamond arrow, 40736, 100;
+			drill bolt, 18436, 12;
+			earth arrow, 7850, 5;
+			energy bomb rune, 2262, 203;
+			envenomed arrow, 18437, 12;
+			fireball rune, 2302, 30;
+			flaming arrow, 7840, 5;
+			flash arrow, 7838, 5;
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			health potion, 7618, 50;
+			holy missile rune, 2295, 16;
+			icicle rune, 2271, 30;
+			magic wall rune, 2293, 116;
+			mana potion, 7620, 56;
+			onyx arrow, 7365, 7;
+			paralyze rune, 2278, 700;
+			piercing bolt, 7363, 5;
+			poison bomb rune, 2286, 85;
+			power bolt, 2547, 7;
+			prismatic bolt, 18435, 20;
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			royal spear, 7378, 15;
+			shiver arrow, 7839, 5;
+			sniper arrow, 7364, 5;
+			soulfire rune, 2308, 46;
+			spear, 2389, 9;
+			spectral bolt, 40737, 70;
+			stone shower rune, 2288, 37;
+			strong health potion, 7588, 115;
+			strong mana potion, 7589, 93;
+			supreme health potion, 26031, 625;
+			tarsal arrow, 15648, 6;
+			throwing star, 2399, 42;
+			thunderstorm rune, 2315, 47;
+			ultimate health potion, 8473, 379;
+			ultimate mana potion, 26029, 438;
+			ultimate spirit potion, 26030, 438;
+			vortex bolt, 15649, 6;
+			wild growth rune, 2269, 160;"/>
+		<parameter key="shop_sellable" value="
+			empty potion flask, 7634, 5;
+			empty potion flask, 7635, 5;
+			empty potion flask, 7636, 5;
+			bow, 2456, 100;
+			bowl of terror sweat, 22538, 500;
+			broken visor, 22518, 1900;
+			crossbow, 2455, 120;
+			dead weight, 22536, 450;
+			frazzle skin, 22533, 400;
+			frazzle tongue, 22532, 700;
+			goosebump leather, 22539, 650;
+			hemp rope, 22540, 350;
+			pool of chitinous glue, 22541, 430;
+			sight of surrenders eye, 22517, 3000;
+			silencer claws, 22534, 390;
+			silencer resonating chamber, 22535, 600;
+			spear, 2389, 3;
+			trapped bad dream monster, 22537, 900;
+			vial, 2006, 5;"/>
+	</parameters>
+</npc>

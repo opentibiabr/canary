@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Jerom" walkinterval="2000" floorchange="0" script="jerom.lua">
+	<health now="100" max="100"/>
+	<look type="132" head="76" body="78" legs="78" feet="114" addons="1"/>
+</npc>

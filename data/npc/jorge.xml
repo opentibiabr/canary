@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Jorge" walkinterval="2000" floorchange="0" script="jorge.lua">
+	<health now="100" max="100"/>
+	<look type="159" head="38" body="77" legs="78" feet="94"/>
+	<parameters>
+		<parameter key="message_greet" value="Hello |PLAYERNAME|. Do not want to make an exchange? I have Replicas of {Norseman Doll}, {Abacus}, {Key of Numerous Locks}, {Friendship Amulet}, {The Mexcalibur}, {Orc's Jaw Shredder}, {Frozen Heart}, {Phoenix Statue}, {Dragon Eye} and {Noble Sword}."/>
+		<parameter key="message_farewell" value="Bye bye!"/>
+	</parameters>
+</npc>

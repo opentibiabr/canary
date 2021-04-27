@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Christine" walkinterval="2000" floorchange="0" script="christine.lua">
+	<health now="100" max="100"/>
+	<look type="140" head="2" body="23" legs="2" feet="115" addons="1"/>
+	<voices>
+		<voice text="Selling various types of food." interval2="90" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="keywords" value="food;"/>
+		<parameter key="keyword_reply1" value="If you'd like to see my offers, ask me for a {trade}."/>
+		<parameter key="message_greet" value="Hi there and welcome to my little {food} shop."/>
+		<parameter key="message_farewell" value="Yeah, bye."/>
+		<parameter key="message_walkaway" value="However."/>
+		<parameter key="message_sendtrade" value="Of course, just browse through my wares."/>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			banana, 2676, 5;
+			bottle of glooth wine, 23516, 10;
+			bowl of glooth soup, 23515, 4;
+			bread, 2689, 4;
+			cake, 6278, 50;
+			cheese, 2696, 6;
+			cookie, 2687, 2;
+			cucumber, 8842, 3;
+			egg, 2695, 2;
+			fish, 2667, 5;
+			glooth sandwich, 23514, 7;
+			glooth steak, 23517, 10;
+			ham, 2671, 8;
+			meat, 2666, 5;
+			potato, 8838, 4;
+			red apple, 2674, 3;
+			roll, 2690, 2;
+			salmon, 2668, 10;
+			tomato, 2685, 5;
+			white mushroom, 2787, 10;"/>
+	</parameters>
+</npc>

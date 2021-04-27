@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Rahkem" walkinterval="2000" floorchange="0" script="rahkem.lua">
+	<health now="100" max="100"/>
+	<look type="130" head="0" body="77" legs="87" feet="116" addons="0"/>
+</npc>

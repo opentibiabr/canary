@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="Maun" walkinterval="2000" floorchange="0" script="maun.lua">
+	<health now="100" max="100"/>
+	<look type="289" head="38" body="19" legs="21" feet="20" addons="0"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			animate dead rune, 2316, 375;
+			arrow, 2544, 3;
+			basket, 1989, 6;
+			blue quiver, 40683, 400;
+			bolt, 2543, 4;
+			bottle,2007, 3, 0;
+			bow, 2456, 400;
+			bucket, 2005, 4, 0;
+			candelabrum, 2041, 8;
+			candlestick, 2047, 2;
+			closed trap, 2578, 280;
+			crossbow, 2455, 500;
+			crowbar, 2416, 260;
+			crystalline arrow, 18304, 20;
+			desintegrate rune, 2310, 26;
+			diamond arrow, 40736, 100;
+			drill bolt, 18436, 12;
+			earth arrow, 7850, 5;
+			energy bomb rune, 2262, 203;
+			envenomed arrow, 18437, 12;
+			fireball rune, 2302, 30;
+			fishing rod, 2580, 150;
+			flaming arrow, 7840, 5;
+			flash arrow, 7838, 5;
+			great health potion, 7591, 225;
+			great mana potion, 7590, 144;
+			great spirit potion, 8472, 228;
+			hand auger, 36169, 25;
+			health potion, 7618, 50;
+			holy missile rune, 2295, 16;
+			icicle rune, 2271, 30;
+			machete, 2420, 35;
+			magic wall rune, 2293, 116;
+			mana potion, 7620, 56;
+			net, 36324, 50;
+			onyx arrow, 7365, 7;
+			paralyze rune, 2278, 700;
+			pick, 2553, 50;
+			piercing bolt, 7363, 5;
+			poison bomb rune, 2286, 85;
+			power bolt, 2547, 7;
+			present, 1990, 10;
+			prismatic bolt, 18435, 20;
+			quiver, 40397, 400;
+			red quiver, 40684, 400;
+			rope, 2120, 50;
+			royal spear, 7378, 15;
+			scythe, 2550, 50;
+			shiver arrow, 7839, 5;
+			shovel, 2554, 50;
+			sniper arrow, 7364, 5;
+			soulfire rune, 2308, 46;
+			spear, 2389, 9;
+			spectral bolt, 40737, 70;
+			stone shower rune, 2288, 37;
+			strong health potion, 7588, 115;
+			strong mana potion, 7589, 93;
+			supreme health potion, 26031, 625;
+			tarsal arrow, 15648, 6;
+			throwing star, 2399, 42;
+			thunderstorm rune, 2315, 47;
+			torch, 2050, 2;
+			ultimate health potion, 8473, 379;
+			ultimate mana potion, 26029, 438;
+			ultimate spirit potion, 26030, 438;
+			vortex bolt, 15649, 6;
+			watch, 2036, 20;
+			wild growth rune, 2269, 160;
+			worm, 3976, 1;"/>
+		<parameter key="shop_sellable" value="
+			bow, 2456, 100;
+			closed trap, 2578, 75;
+			crossbow, 2455, 120;
+			crowbar, 2416, 50;
+			empty potion flask, 7634, 5;
+			empty potion flask, 7635, 5;
+			empty potion flask, 7636, 5;
+			fishing rod, 2580, 40;
+			machete, 2420, 6;
+			pick, 2553 ,15;
+			rope, 2120, 15;
+			scythe, 2550, 10;
+			shovel, 2554, 8;
+			spear, 2389, 3;
+			vial, 2006, 5;
+			watch, 2036, 6;
+			wooden hammer, 2556, 15;"/>
+	</parameters>
+</npc>

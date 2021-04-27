@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Nah'Bob" walkinterval="2000" floorchange="0" script="nah_bob.lua">
+	<health now="100" max="100"/>
+	<look type="80"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="
+			bonelord shield, 2518, 7000;
+			noble armor, 2486, 8000;
+			obsidian lance, 2425, 3000;
+			spike sword, 2383, 8000;
+			war hammer, 2391, 10000;"/>
+		<parameter key="shop_sellable" value="
+			angelic axe, 7436, 5000;
+			blue robe, 2656, 10000;
+			bonelord shield, 2518, 1200;
+			boots of haste, 2195, 30000;
+			broadsword, 2413, 500;
+			butcher's axe, 7412, 18000;
+			crown armor, 2487, 12000;
+			crown helmet, 2491, 2500;
+			crown legs, 2488, 12000;
+			crown shield, 2519, 8000;
+			crusader helmet, 2497, 6000;
+			dragon lance, 2414, 9000;
+			dragon shield, 2516, 4000;
+			fire axe, 2432, 8000;
+			fire sword, 2392, 4000;
+			glorious axe, 7454, 3000;
+			guardian shield, 2515, 2000;
+			ice rapier, 2396, 1000;
+			noble armor, 2486, 900;
+			obsidian lance, 2425, 500;
+			phoenix shield, 2539, 16000;
+			queen's sceptre, 7410, 20000;
+			royal helmet, 2498, 30000;
+			shadow sceptre, 7451, 10000;
+			spike sword, 2383, 1000;
+			thaian sword, 7391, 16000;
+			war hammer, 2391, 1200;"/>
+	</parameters>
+</npc>

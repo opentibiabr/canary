@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Dorian" walkinterval="2000" floorchange="0" script="dorian.lua">
+	<health now="100" max="100"/>
+	<look type="151" head="22" body="58" legs="77" feet="21" addons="2"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_buyable" value="lock pick, 8717, 50;"/>
+	</parameters>
+</npc>

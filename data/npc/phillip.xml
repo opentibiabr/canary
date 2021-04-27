@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Phillip" walkinterval="2000" floorchange="0" script="phillip.lua">
+	<health now="100" max="100"/>
+	<look type="128" head="116" body="54" legs="68" feet="76" addons="0"/>
+</npc>

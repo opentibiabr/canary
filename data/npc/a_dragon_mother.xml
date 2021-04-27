@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<npc name="A Dragon Mother" walkinterval="2000" floorchange="0" script="a_dragon_mother.lua">
+	<health now="100" max="100"/>
+	<look type="39" head="0" body="0" legs="0" feet="0" addons="0"/>
+	<voices>
+		<voice text="GRRR" interval2="120" margin="1" yell="no"/>
+		<voice text="My egg is in danger!" interval2="96" margin="1" yell="no"/>
+	</voices>
+	<parameters>
+		<parameter key="message_farewell" value="Grrr."/>
+	</parameters>
+</npc>

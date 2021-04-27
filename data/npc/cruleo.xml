@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Cruleo" walkinterval="2000" floorchange="0" script="cruleo.lua">
+	<health now="100" max="100"/>
+	<look type="254" head="94" body="115" legs="97" feet="97"/>
+	<parameters>
+		<parameter key="module_shop" value="1"/>
+		<parameter key="shop_sellable" value="
+			white deer antlers, 13533, 400;
+			white deer skin, 13534, 245;"/>
+	</parameters>
+</npc>

@@ -371,7 +371,6 @@ config.lua
 *.ini
 *.otb
 *.exe
-*.otbm
 *.rar
 
 # SFTP for Sublime

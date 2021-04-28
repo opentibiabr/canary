@@ -20,9 +20,9 @@ then
 else
 	echo "Compilation successful!"
 	cd ..
-	if [ -f "otbr" ]; then
+	if [ -f "canary" ]; then
 		echo "Saving old build"
-		mv ./otbr ./otbr.old
+		mv ./canary ./canary.old
 	fi
-	cp ./build/otbr ./otbr
+	cp ./build/canary ./canary
 fi

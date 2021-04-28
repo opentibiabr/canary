@@ -1,6 +1,6 @@
 /**
  * @file creaturecallback.h
- * OTBR
+ * OpenTibiaBR
  * Copyright (C) 2021 Lucas Grossi <lucas.ggrossi@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify

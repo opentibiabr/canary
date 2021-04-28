@@ -1,4 +1,4 @@
-project(otbr)
+project(canary)
 
 # *****************************************************************************
 # Cmake Features
@@ -31,7 +31,7 @@ option(DEBUG_LOG "Enable Debug Log" OFF)
 # Client
 # *****************************************************************************
 if (MSVC)
-  add_executable(${PROJECT_NAME} "" ../cmake/otservbr-global.rc)
+  add_executable(${PROJECT_NAME} "" ../cmake/canary.rc)
 else()
   add_executable(${PROJECT_NAME} "")
 endif()

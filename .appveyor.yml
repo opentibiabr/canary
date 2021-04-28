@@ -42,17 +42,17 @@ before_build:
       cmake --build . --config Release
 
 build:
-  project: C:\projects\otservbr-global\build\otbr.sln
+  project: C:\projects\canary\build\canary.sln
   verbosity: minimal
   parallel: true
 
 after_build:
   - cd %APPVEYOR_BUILD_FOLDER%\build\bin
-  - 7z a -tzip otservbr-global.zip Release\
+  - 7z a -tzip canary.zip Release\
 
 cache:
-  - C:\projects\otservbr-global\build\vcpkg_installed\
+  - C:\projects\canary\build\vcpkg_installed\
   - C:\Users\appveyor\AppData\Local\vcpkg\archives
 
 artifacts:
-  - path: \build\bin\otservbr-global.zip
+  - path: \build\bin\canary.zip

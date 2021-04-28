@@ -5068,7 +5068,7 @@ int LuaScriptInterface::luaGameGetBestiaryList(lua_State* L)
 		}
    } else {
 	if (isNumber(L, 2)) {
-	   std::map<uint16_t, std::string> tmplist = g_bestiary.findRaceByName("OTBR", false, getNumber<BestiaryType_t>(L, 2));
+	   std::map<uint16_t, std::string> tmplist = g_bestiary.findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
 		for (auto itb : tmplist) {
 			if (name) {
 				pushString(L, itb.second);

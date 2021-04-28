@@ -86,7 +86,7 @@ def do_login(data):
             'worlds': [
                 {
                     'id': 0,
-                    'name': os.getenv('SERVER_NAME', 'OTServBR-Global'),
+                    'name': os.getenv('SERVER_NAME', 'Canary'),
                     'externaladdressprotected': os.getenv('PROXY_IP', '127.0.0.1'),
                     'externalportprotected': int(os.getenv('SERVER_GAME_PORT', 7172)),
                     'externaladdressunprotected': os.getenv('PROXY_IP', '127.0.0.1'),

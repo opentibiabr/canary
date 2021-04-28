@@ -377,8 +377,8 @@ config.lua
 sftp-config.json
 
 # Binaries
-otbr
-otbr.old
+canary
+canary.old
 
 # VCPKG
 vcpkg_installed

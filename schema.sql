@@ -1,5 +1,5 @@
 --
--- OTServBR - Global - Database schema
+--Canary - Database schema
 --
 
 -- --------------------------------------------------------

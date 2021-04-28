@@ -116,8 +116,8 @@ bool ConfigManager::load()
 		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
 
 		string[IP] = getGlobalString(L, "ip", "127.0.0.1");
-		string[MAP_NAME] = getGlobalString(L, "mapName", "otservbr");
-		string[MAP_AUTHOR] = getGlobalString(L, "mapAuthor", "OTServBR");
+		string[MAP_NAME] = getGlobalString(L, "mapName", "canary");
+		string[MAP_AUTHOR] = getGlobalString(L, "mapAuthor", "Eduardo Dantas");
 
 		string[MAP_CUSTOM_NAME] = getGlobalString(L, "mapCustomName", "");
 		string[MAP_CUSTOM_FILE] = getGlobalString(L, "mapCustomFile", "");
@@ -129,7 +129,7 @@ bool ConfigManager::load()
 		string[MYSQL_HOST] = getGlobalString(L, "mysqlHost", "127.0.0.1");
 		string[MYSQL_USER] = getGlobalString(L, "mysqlUser", "root");
 		string[MYSQL_PASS] = getGlobalString(L, "mysqlPass", "");
-		string[MYSQL_DB] = getGlobalString(L, "mysqlDatabase", "otservbr-global");
+		string[MYSQL_DB] = getGlobalString(L, "mysqlDatabase", "canary");
 		string[MYSQL_SOCK] = getGlobalString(L, "mysqlSock", "");
 		string[CLIENT_VERSION_STR] = getGlobalString(L, "clientVersionStr", "12.64");
 

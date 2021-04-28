@@ -1,4 +1,3 @@
--- Functions from The Forgotten Server
 Position.directionOffset = {
 	[DIRECTION_NORTH] = {x = 0, y = -1},
 	[DIRECTION_EAST] = {x = 1, y = 0},
@@ -48,7 +47,6 @@ function Position:moveUpstairs()
 	return self
 end
 
--- Functions from OTServBR-Global
 function Position:isInRange(from, to)
 	-- No matter what corner from and to is, we want to make
 	-- life easier by calculating north-west and south-east

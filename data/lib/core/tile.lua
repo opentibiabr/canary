@@ -59,7 +59,6 @@ function Tile:isWalkable(pz, creature, floorchange, block, proj)
 	return true
 end
 
--- Functions from OTServbr-Global
 function Tile.isHouse(self)
 	local house = self:getHouse()
 	return not not house

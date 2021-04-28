@@ -1,4 +1,4 @@
-local xml_monster_dir = 'data/world/otservbr-spawn.xml' -- Diretório do arquivo onde contém os monstros.
+local xml_monster_dir = 'data/world/canary-monster.xml'
 local new_file_name = 'monster_count.txt'
 
 local count_monsters = TalkAction("/countmonsters")

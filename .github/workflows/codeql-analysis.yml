@@ -47,7 +47,7 @@ jobs:
         appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
         vcpkgTriplet: ${{ matrix.triplet }}
         additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
-        vcpkgGitCommitId: ${{ secrets.VCPKG_ID }}
+        vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
 
     - name: 'Run CMake with Ninja, install dependencies with vcpkg, build with CMake'
       if: ${{ matrix.language == 'cpp' }}

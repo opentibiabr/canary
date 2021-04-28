@@ -35,7 +35,7 @@ install:
   - ./vcpkg/vcpkg integrate install
 
 script:
-  - cd /home/travis/build/opentibiabr/otservbr-global
+  - cd /home/travis/build/opentibiabr/canary
   - export CXXFLAGS="$CXXFLAGS -DBOOST_ASIO_DISABLE_NOEXCEPT=1 "
   - /home/travis/build/opentibiabr/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
   - mkdir build
@@ -47,7 +47,7 @@ script:
   - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} || true
 
   # - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} || true
-  # - curl --upload-file /home/travis/build/opentibiabr/otservbr-global/sonar-cfamily-reproducer.zip https://transfer.sh/sonar-cfamily-reproducer.zip
+  # - curl --upload-file /home/travis/build/opentibiabr/canary/sonar-cfamily-reproducer.zip https://transfer.sh/sonar-cfamily-reproducer.zip
 
 cache:
   directories:

@@ -181,7 +181,7 @@ void loadModules() {
 #ifndef UNIT_TESTING
 int main(int argc, char* argv[]) {
 #ifdef DEBUG_LOG
-	SPDLOG_DEBUG("[OTBR] SPDLOG LOG DEBUG ENABLED");
+	SPDLOG_DEBUG("[CANARY] SPDLOG LOG DEBUG ENABLED");
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [file %@] [func %!] [thread %t] [%^%l%$] %v ");
 #else
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");

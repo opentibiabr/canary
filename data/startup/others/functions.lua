@@ -136,23 +136,6 @@ function loadLuaMapBookDocument(tablename)
 	end
 end
 
---[[
--- NOTE: THIS FUNCTION IS DESATIVATED, NPCS IS NOW BY XML (world/otservbr-npc.xml)
-function loadLuaNpcs(tablename)
-	for index, value in pairs(tablename) do
-		if value.name and value.position then
-			local spawn = Game.createNpc(value.name, value.position)
-			if spawn then
-				spawn:setMasterPos(value.position)
-				Game.setStorageValue(Storage.NpcSpawn, 1)
-			end
-		end
-	end
-	Spdlog.info("Loaded ".. (#NpcTable) .." npcs and spawned ".. Game.getMonsterCount() .." monsters")
-	Spdlog.info("Loaded ".. #Game.getTowns() .. " towns with ".. #Game.getHouses() .." houses in total")
-end
-]]
-
 -- Functions that cannot be used in reload command, so they have been moved here
 -- Prey slots consumption
 function preyTimeLeft(player, slot)

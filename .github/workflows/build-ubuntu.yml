@@ -2,22 +2,7 @@
 
 name: Build on Ubuntu
 
-on:
-  push:
-    branches:
-      - master
-      - develop
-      - v*
-
-    tags:
-      - v*
-
-  pull_request:
-    paths:
-      - cmake/**
-      - src/**
-      - CMakeLists.txt
-      - .github/**
+on: [push, pull_request]
 
 jobs:
   job:
@@ -60,7 +45,7 @@ jobs:
           appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
           vcpkgTriplet: ${{ matrix.triplet }}
           additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
-          vcpkgGitCommitId: ${{ secrets.VCPKG_ID }}
+          vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
 
       - name: 'Run CMake with Ninja, install dependencies with vcpkg, build with CMake'
         uses: lukka/run-cmake@v3
@@ -71,25 +56,20 @@ jobs:
           cmakeBuildType: ${{ matrix.buildtype }}
 
       - name: Clean workspace
-        if: ${{ matrix.buildtype == 'Release' }}
+        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
         shell: bash
         run: |
-          mv ${{ github.workspace }}/build/bin/otbr ${{ github.workspace }}/otbr
-          find . -maxdepth 1 ! -name otbr ! -name data ! -name config.lua.dist ! -name key.pem ! -name LICENSE ! -name README.md ! -name schema.sql -exec rm -r {} \;
+          mv ${{ github.workspace }}/build/bin/canary ${{ github.workspace }}/canary
+          find . -maxdepth 1 ! -name canary ! -name data ! -name config.lua.dist ! -name key.pem ! -name LICENSE ! -name README.md ! -name schema.sql -exec rm -r {} \;
 
       - name: Prepare datapack contents
-        if: ${{ matrix.buildtype == 'Release' }}
+        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
         shell: bash
         run: |
           mv config.lua.dist config.lua
-          unzip -o data/world/world.zip -d data/world/
-          rm data/world/world.zip
-          cd ..
-          zip -r otservbr.zip otservbr-global
 
       - name: Upload binary
-        if: ${{ matrix.buildtype == 'Release' }}
+        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.os }}-otbr-amd64-${{ matrix.buildtype }}-${{ github.sha }}
-          path: ${{ runner.workspace }}/otservbr.zip
+          name: ${{ matrix.os }}-canary-amd64-${{ matrix.buildtype }}-${{ github.sha }}

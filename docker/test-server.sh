@@ -64,7 +64,7 @@ mkdir -p build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
 make -j`nproc`
-mv bin/otbr ../
+mv bin/canary ../
 cd ..
 
 unzip -o data/world/world.zip -d data/world/

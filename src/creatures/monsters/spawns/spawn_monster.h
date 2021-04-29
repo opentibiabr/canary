@@ -20,8 +20,8 @@
 #ifndef FS_SPAWN_H_1A86089E080846A9AE53ED12E7AE863B
 #define FS_SPAWN_H_1A86089E080846A9AE53ED12E7AE863B
 
-#include "../../../items/tile.h"
-#include "../../../game/movement/position.h"
+#include "items/tile.h"
+#include "game/movement/position.h"
 
 class Monster;
 class MonsterType;

@@ -20,7 +20,7 @@
 #ifndef FS_TELEPORT_H_873B7F7F1DB24101A7ACFB54B25E0ABC
 #define FS_TELEPORT_H_873B7F7F1DB24101A7ACFB54B25E0ABC
 
-#include "../../items/tile.h"
+#include "items/tile.h"
 
 class Teleport final : public Item, public Cylinder
 {

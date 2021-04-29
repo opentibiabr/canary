@@ -20,7 +20,7 @@
 #ifndef FS_HOUSETILE_H_57D59BEC1CE741D9B142BFC54634505B
 #define FS_HOUSETILE_H_57D59BEC1CE741D9B142BFC54634505B
 
-#include "../../items/tile.h"
+#include "items/tile.h"
 
 class House;
 

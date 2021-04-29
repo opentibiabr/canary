@@ -20,9 +20,9 @@
 #ifndef FS_TRASHHOLDER_H_BA162024D67B4D388147F5EE06F33098
 #define FS_TRASHHOLDER_H_BA162024D67B4D388147F5EE06F33098
 
-#include "item.h"
-#include "cylinder.h"
-#include "../utils/const.h"
+#include "items/item.h"
+#include "items/cylinder.h"
+#include "utils/const.h"
 
 class TrashHolder final : public Item, public Cylinder
 {

@@ -22,9 +22,9 @@
 #ifndef OT_SRC_MODULE_H_
 #define OT_SRC_MODULE_H_
 
-#include "../scripts/luascript.h"
-#include "../global/baseevents.h"
-#include "../../server/network/message/networkmessage.h"
+#include "lua/scripts/luascript.h"
+#include "lua/global/baseevents.h"
+#include "server/network/message/networkmessage.h"
 
 enum ModuleType_t {
 	MODULE_TYPE_RECVBYTE,

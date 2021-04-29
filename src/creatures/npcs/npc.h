@@ -21,8 +21,8 @@
 #define FS_NPC_H_9F5EEFE64314418CA7DA41D1B9409DD0
 
 #include "npcs.h"
-#include "../../items/tile.h"
-#include "../../utils/enums.h"
+#include "items/tile.h"
+#include "utils/enums.h"
 
 class Creature;
 class Game;

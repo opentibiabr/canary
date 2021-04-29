@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "chat.h"
-#include "../../game/game.h"
-#include "../../utils/pugicast.h"
-#include "../../game/scheduling/scheduler.h"
+#include "creatures/interactions/chat.h"
+#include "game/game.h"
+#include "utils/pugicast.h"
+#include "game/scheduling/scheduler.h"
 
 extern Chat* g_chat;
 extern Game g_game;

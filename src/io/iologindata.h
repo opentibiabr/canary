@@ -20,9 +20,9 @@
 #ifndef FS_IOLOGINDATA_H_28B0440BEC594654AC0F4E1A5E42B2EF
 #define FS_IOLOGINDATA_H_28B0440BEC594654AC0F4E1A5E42B2EF
 
-#include "../creatures/players/account/account.hpp"
-#include "../creatures/players/player.h"
-#include "../database/database.h"
+#include "creatures/players/account/account.hpp"
+#include "creatures/players/player.h"
+#include "database/database.h"
 
 using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
 

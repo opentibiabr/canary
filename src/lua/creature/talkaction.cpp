@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "../../creatures/players/player.h"
-#include "talkaction.h"
-#include "../../utils/pugicast.h"
+#include "creatures/players/player.h"
+#include "lua/creature/talkaction.h"
+#include "utils/pugicast.h"
 
 TalkActions::TalkActions()
 	: scriptInterface("TalkAction Interface")

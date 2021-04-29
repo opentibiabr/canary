@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "scheduler.h"
+#include "game/scheduling/scheduler.h"
 
 void Scheduler::threadMain()
 {

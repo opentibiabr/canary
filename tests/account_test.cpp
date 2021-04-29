@@ -3,7 +3,7 @@
  * Copyright (C) 2020 Open Tibia Community
  */
 
-#include "../src/creatures/players/account/account.hpp"
+#include "src/creatures/players/account/account.hpp"
 #include <catch2/catch.hpp>
 #include <limits>
 

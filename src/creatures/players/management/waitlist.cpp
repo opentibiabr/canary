@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "../../../config/configmanager.h"
-#include "../../../game/game.h"
-#include "waitlist.h"
+#include "config/configmanager.h"
+#include "game/game.h"
+#include "creatures/players/management/waitlist.h"
 
 extern ConfigManager g_config;
 extern Game g_game;

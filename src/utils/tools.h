@@ -24,9 +24,9 @@
 #include <string>
 #include <regex>
 #include <boost/algorithm/string.hpp>
-#include "../game/movement/position.h"
-#include "const.h"
-#include "enums.h"
+#include "game/movement/position.h"
+#include "utils/const.h"
+#include "utils/enums.h"
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result);
 

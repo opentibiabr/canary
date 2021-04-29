@@ -20,7 +20,7 @@
 #ifndef FS_NETWORKMESSAGE_H_B853CFED58D1413A87ACED07B2926E03
 #define FS_NETWORKMESSAGE_H_B853CFED58D1413A87ACED07B2926E03
 
-#include "../../../utils/const.h"
+#include "utils/const.h"
 
 class Item;
 class Creature;

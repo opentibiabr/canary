@@ -20,7 +20,7 @@
 #ifndef FS_WAITLIST_H_7E4299E552E44F10BC4F4E50BF3D7241
 #define FS_WAITLIST_H_7E4299E552E44F10BC4F4E50BF3D7241
 
-#include "../player.h"
+#include "creatures/players/player.h"
 
 struct WaitListInfo;
 

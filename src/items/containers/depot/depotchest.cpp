@@ -19,10 +19,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "depotchest.h"
-#include "../../../utils/tools.h"
+#include "items/containers/depot/depotchest.h"
+#include "utils/tools.h"
 
 DepotChest::DepotChest(uint16_t type) :
 	Container(type)

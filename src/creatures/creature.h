@@ -20,13 +20,13 @@
 #ifndef FS_CREATURE_H_5363C04015254E298F84E6D59A139508
 #define FS_CREATURE_H_5363C04015254E298F84E6D59A139508
 
-#include "../map/map.h"
-#include "../game/movement/position.h"
-#include "combat/condition.h"
-#include "../utils/const.h"
-#include "../items/tile.h"
-#include "../utils/enums.h"
-#include "../lua/creature/creatureevent.h"
+#include "map/map.h"
+#include "game/movement/position.h"
+#include "creatures/combat/condition.h"
+#include "utils/const.h"
+#include "items/tile.h"
+#include "utils/enums.h"
+#include "lua/creature/creatureevent.h"
 
 using ConditionList = std::list<Condition*>;
 using CreatureEventList = std::list<CreatureEvent*>;

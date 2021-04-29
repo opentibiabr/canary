@@ -20,8 +20,8 @@
 #ifndef FS_CYLINDER_H_54BBCEB2A5B7415DAD837E4D58115150
 #define FS_CYLINDER_H_54BBCEB2A5B7415DAD837E4D58115150
 
-#include "../utils/enums.h"
-#include "thing.h"
+#include "utils/enums.h"
+#include "items/thing.h"
 
 class Item;
 class Creature;

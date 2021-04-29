@@ -23,11 +23,11 @@
 #include <utility>
 #include <vector>
 
-#include "cylinder.h"
-#include "thing.h"
-#include "items.h"
-#include "../lua/scripts/luascript.h"
-#include "../utils/tools.h"
+#include "items/cylinder.h"
+#include "items/thing.h"
+#include "items/items.h"
+#include "lua/scripts/luascript.h"
+#include "utils/tools.h"
 #include <typeinfo>
 
 #include <boost/variant.hpp>

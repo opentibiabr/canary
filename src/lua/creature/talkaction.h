@@ -20,9 +20,9 @@
 #ifndef FS_TALKACTION_H_E6AABAC0F89843469526ADF310F3131C
 #define FS_TALKACTION_H_E6AABAC0F89843469526ADF310F3131C
 
-#include "../scripts/luascript.h"
-#include "../global/baseevents.h"
-#include "../../utils/const.h"
+#include "lua/scripts/luascript.h"
+#include "lua/global/baseevents.h"
+#include "utils/const.h"
 
 class TalkAction;
 using TalkAction_ptr = std::unique_ptr<TalkAction>;

@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "inbox.h"
-#include "../../../utils/tools.h"
+#include "items/containers/inbox/inbox.h"
+#include "utils/tools.h"
 
 Inbox::Inbox(uint16_t type) : Container(type, 30, false, true)
 {

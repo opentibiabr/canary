@@ -20,10 +20,10 @@
 #ifndef FS_COMBAT_H_B02CE79230FC43708699EE91FCC8F7CC
 #define FS_COMBAT_H_B02CE79230FC43708699EE91FCC8F7CC
 
-#include "../../items/thing.h"
-#include "condition.h"
-#include "../../map/map.h"
-#include "../../lua/global/baseevents.h"
+#include "items/thing.h"
+#include "creatures/combat/condition.h"
+#include "map/map.h"
+#include "lua/global/baseevents.h"
 
 class Condition;
 class Creature;

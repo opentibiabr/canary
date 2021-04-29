@@ -20,7 +20,7 @@
 #ifndef FS_ITEMLOADER_H_107F1D3EECC94CD0A0F528843010D5D4
 #define FS_ITEMLOADER_H_107F1D3EECC94CD0A0F528843010D5D4
 
-#include "../io/fileloader.h"
+#include "io/fileloader.h"
 
 enum itemgroup_t {
 	ITEM_GROUP_NONE,

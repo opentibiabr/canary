@@ -20,7 +20,7 @@
 #ifndef FS_NPCS_H_
 #define FS_NPCS_H_
 
-#include "../creature.h"
+#include "creatures/creature.h"
 
 class NpcType
 {

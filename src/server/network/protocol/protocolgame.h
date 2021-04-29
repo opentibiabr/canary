@@ -22,12 +22,12 @@
 
 #include <string>
 
-#include "protocol.h"
-#include "../../../creatures/interactions/chat.h"
-#include "../../../config/configmanager.h"
-#include "../../../creatures/creature.h"
-#include "../../../game/scheduling/tasks.h"
-#include "../../../game/gamestore.h"
+#include "server/network/protocol/protocol.h"
+#include "creatures/interactions/chat.h"
+#include "config/configmanager.h"
+#include "creatures/creature.h"
+#include "game/scheduling/tasks.h"
+#include "game/gamestore.h"
 
 
 

@@ -20,7 +20,7 @@
 #ifndef FS_WILDCARDTREE_H_054C9BA46A1D4EA4B7C77ECE60ED4DEB
 #define FS_WILDCARDTREE_H_054C9BA46A1D4EA4B7C77ECE60ED4DEB
 
-#include "enums.h"
+#include "utils/enums.h"
 
 class WildcardTreeNode
 {

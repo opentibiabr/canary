@@ -36,9 +36,9 @@
 #endif
 #endif
 
-#include "../../database/database.h"
-#include "../../utils/enums.h"
-#include "../../game/movement/position.h"
+#include "database/database.h"
+#include "utils/enums.h"
+#include "game/movement/position.h"
 #include <boost/lexical_cast.hpp>
 
 class Thing;

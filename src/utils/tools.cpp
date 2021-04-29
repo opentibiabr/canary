@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "tools.h"
-#include "../config/configmanager.h"
+#include "utils/tools.h"
+#include "config/configmanager.h"
 
 extern ConfigManager g_config;
 

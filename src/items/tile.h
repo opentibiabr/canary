@@ -22,9 +22,9 @@
 
 #include <unordered_set>
 
-#include "cylinder.h"
-#include "item.h"
-#include "../utils/tools.h"
+#include "items/cylinder.h"
+#include "items/item.h"
+#include "utils/tools.h"
 
 class Creature;
 class Teleport;

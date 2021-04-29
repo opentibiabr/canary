@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 
-#include "../../../utils/enums.h"
+#include "utils/enums.h"
 
 struct Familiar {
 	Familiar(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initType) :

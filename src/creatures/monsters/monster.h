@@ -20,9 +20,9 @@
 #ifndef FS_MONSTER_H_9F5EEFE64314418CA7DA41D1B9409DD0
 #define FS_MONSTER_H_9F5EEFE64314418CA7DA41D1B9409DD0
 
-#include "../../items/tile.h"
-#include "monsters.h"
-#include "../../utils/enums.h"
+#include "items/tile.h"
+#include "creatures/monsters/monsters.h"
+#include "utils/enums.h"
 
 class Creature;
 class Game;

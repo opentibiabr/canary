@@ -40,10 +40,9 @@ COPY config.lua.dist /canary/config.lua
 WORKDIR /canary
 
 RUN sed -i '/mysqlHost = .*$/c\mysqlHost = "mysql"' config.lua \
-  && sed -i '/mysqlUser = .*$/c\mysqlUser = "otserver"' config.lua \
-  && sed -i '/mysqlPass = .*$/c\mysqlPass = "otserver"' config.lua \
-  && sed -i '/mysqlDatabase = .*$/c\mysqlDatabase = "otserver"' config.lua \
-  && unzip -o data/world/world.zip -d data/world/
+  && sed -i '/mysqlUser = .*$/c\mysqlUser = "canary"' config.lua \
+  && sed -i '/mysqlPass = .*$/c\mysqlPass = "canary"' config.lua \
+  && sed -i '/mysqlDatabase = .*$/c\mysqlDatabase = "canary"' config.lua
 
 VOLUME /canary
 

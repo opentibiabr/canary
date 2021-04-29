@@ -20,10 +20,10 @@
 #ifndef FS_ITEMS_H_4E2221634ABA45FE85BA50F710669B3C
 #define FS_ITEMS_H_4E2221634ABA45FE85BA50F710669B3C
 
-#include "../utils/const.h"
-#include "../utils/enums.h"
-#include "itemloader.h"
-#include "../game/movement/position.h"
+#include "utils/const.h"
+#include "utils/enums.h"
+#include "items/itemloader.h"
+#include "game/movement/position.h"
 
 enum SlotPositionBits : uint32_t {
 	SLOTP_WHEREEVER = 0xFFFFFFFF,

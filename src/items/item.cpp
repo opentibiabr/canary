@@ -17,21 +17,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "item.h"
-#include "containers/container.h"
-#include "../game/movement/teleport.h"
-#include "trashholder.h"
-#include "containers/mailbox/mailbox.h"
-#include "../map/house/house.h"
-#include "../game/game.h"
-#include "bed.h"
+#include "items/item.h"
+#include "items/containers/container.h"
+#include "game/movement/teleport.h"
+#include "items/trashholder.h"
+#include "items/containers/mailbox/mailbox.h"
+#include "map/house/house.h"
+#include "game/game.h"
+#include "items/bed.h"
 #include "containers/rewards/rewardchest.h"
-#include "../creatures/players/imbuements/imbuements.h"
+#include "creatures/players/imbuements/imbuements.h"
 
-#include "../lua/creature/actions.h"
-#include "../creatures/combat/spells.h"
+#include "lua/creature/actions.h"
+#include "creatures/combat/spells.h"
 
 extern Game g_game;
 extern Spells* g_spells;

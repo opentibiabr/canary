@@ -23,9 +23,9 @@
 #include <set>
 #include <unordered_set>
 
-#include "../../items/containers/container.h"
-#include "housetile.h"
-#include "../../game/movement/position.h"
+#include "items/containers/container.h"
+#include "map/house/housetile.h"
+#include "game/movement/position.h"
 
 class House;
 class BedItem;

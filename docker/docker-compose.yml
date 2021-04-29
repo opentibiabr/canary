@@ -21,9 +21,9 @@ services:
       dockerfile: docker/mysql/Dockerfile
     restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=otserver
-      - MYSQL_USER=otserver
-      - MYSQL_PASSWORD=otserver
+      - MYSQL_DATABASE=canary
+      - MYSQL_USER=canary
+      - MYSQL_PASSWORD=canary
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     ports:
       - 3306:3306

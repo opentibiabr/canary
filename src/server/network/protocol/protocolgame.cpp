@@ -17,30 +17,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "protocolgame.h"
+#include "server/network/protocol/protocolgame.h"
 
-#include "../message/outputmessage.h"
+#include "server/network/message/outputmessage.h"
 
-#include "../../../creatures/players/player.h"
+#include "creatures/players/player.h"
 
-#include "../../../config/configmanager.h"
-#include "../../../lua/creature/actions.h"
-#include "../../../game/game.h"
-#include "../../../io/iologindata.h"
-#include "../../../io/iomarket.h"
-#include "../../../creatures/players/management/waitlist.h"
-#include "../../../creatures/players/management/ban.h"
-#include "../../../game/scheduling/scheduler.h"
-#include "../../../lua/modules/modules.h"
-#include "../../../creatures/combat/spells.h"
-#include "../../../items/weapons/weapons.h"
-#include "../../../creatures/players/imbuements/imbuements.h"
-#include "../../../io/iobestiary.h"
-#include "../../../creatures/monsters/monsters.h"
+#include "config/configmanager.h"
+#include "lua/creature/actions.h"
+#include "game/game.h"
+#include "io/iologindata.h"
+#include "io/iomarket.h"
+#include "creatures/players/management/waitlist.h"
+#include "creatures/players/management/ban.h"
+#include "game/scheduling/scheduler.h"
+#include "lua/modules/modules.h"
+#include "creatures/combat/spells.h"
+#include "items/weapons/weapons.h"
+#include "creatures/players/imbuements/imbuements.h"
+#include "io/iobestiary.h"
+#include "creatures/monsters/monsters.h"
 
 extern Game g_game;
 extern ConfigManager g_config;

@@ -20,12 +20,12 @@
 #ifndef FS_WEAPONS_H_69D1993478AA42948E24C0B90B8F5BF5
 #define FS_WEAPONS_H_69D1993478AA42948E24C0B90B8F5BF5
 
-#include "../../lua/scripts/luascript.h"
-#include "../../creatures/players/player.h"
-#include "../../lua/global/baseevents.h"
-#include "../../creatures/combat/combat.h"
-#include "../../utils/const.h"
-#include "../../creatures/players/vocations/vocation.h"
+#include "lua/scripts/luascript.h"
+#include "creatures/players/player.h"
+#include "lua/global/baseevents.h"
+#include "creatures/combat/combat.h"
+#include "utils/const.h"
+#include "creatures/players/vocations/vocation.h"
 
 extern Vocations g_vocations;
 

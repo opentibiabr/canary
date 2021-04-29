@@ -195,6 +195,7 @@ if (MSVC)
 
 target_include_directories(${PROJECT_NAME}
 	PRIVATE
+		${CMAKE_SOURCE_DIR}/src
 		${MYSQL_INCLUDE_DIR}
 		${LUA_INCLUDE_DIR}
 		${Boost_INCLUDE_DIRS}
@@ -221,8 +222,7 @@ else()
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-			$<INSTALL_INTERFACE:include>
+			${CMAKE_SOURCE_DIR}/src
 			${LUA_INCLUDE_DIR}
 	)
 

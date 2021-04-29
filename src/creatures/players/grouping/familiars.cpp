@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
-#include "familiars.h"
-#include "../../../utils/pugicast.h"
-#include "../../../utils/tools.h"
+#include "otpch.h"
+#include "creatures/players/grouping/familiars.h"
+#include "utils/pugicast.h"
+#include "utils/tools.h"
 
 bool Familiars::loadFromXml() {
 	pugi::xml_document doc;

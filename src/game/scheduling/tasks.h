@@ -21,8 +21,8 @@
 #define FS_TASKS_H_A66AC384766041E59DCA059DAB6E1976
 
 #include <condition_variable>
-#include "../../utils/thread_holder_base.h"
-#include "../../utils/enums.h"
+#include "utils/thread_holder_base.h"
+#include "utils/enums.h"
 
 const int DISPATCHER_TASK_EXPIRATION = 2000;
 const auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));

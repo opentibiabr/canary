@@ -20,10 +20,10 @@
 #ifndef FS_MOVEMENT_H_5E0D2626D4634ACA83AC6509518E5F49
 #define FS_MOVEMENT_H_5E0D2626D4634ACA83AC6509518E5F49
 
-#include "../global/baseevents.h"
-#include "../../items/item.h"
-#include "../scripts/luascript.h"
-#include "../../creatures/players/vocations/vocation.h"
+#include "lua/global/baseevents.h"
+#include "items/item.h"
+#include "lua/scripts/luascript.h"
+#include "creatures/players/vocations/vocation.h"
 
 extern Vocations g_vocations;
 

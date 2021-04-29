@@ -17,25 +17,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
 #include <bitset>
 
-#include "player.h"
-#include "../../items/bed.h"
-#include "../interactions/chat.h"
-#include "../combat/combat.h"
-#include "../../config/configmanager.h"
-#include "../../lua/creature/creatureevent.h"
-#include "../../lua/creature/events.h"
-#include "../../game/game.h"
-#include "../../io/iologindata.h"
-#include "../monsters/monster.h"
-#include "../monsters/monsters.h"
-#include "../../lua/creature/movement.h"
-#include "../../game/scheduling/scheduler.h"
-#include "../../items/weapons/weapons.h"
-#include "../../io/iobestiary.h"
+#include "creatures/players/player.h"
+#include "items/bed.h"
+#include "creatures/interactions/chat.h"
+#include "creatures/combat/combat.h"
+#include "config/configmanager.h"
+#include "lua/creature/creatureevent.h"
+#include "lua/creature/events.h"
+#include "game/game.h"
+#include "io/iologindata.h"
+#include "creatures/monsters/monster.h"
+#include "creatures/monsters/monsters.h"
+#include "lua/creature/movement.h"
+#include "game/scheduling/scheduler.h"
+#include "items/weapons/weapons.h"
+#include "io/iobestiary.h"
 
 extern ConfigManager g_config;
 extern Game g_game;

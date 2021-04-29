@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "protocol.h"
-#include "../message/outputmessage.h"
-#include "../../../security/rsa.h"
-#include "../../../security/xtea.h"
+#include "server/network/protocol/protocol.h"
+#include "server/network/message/outputmessage.h"
+#include "security/rsa.h"
+#include "security/xtea.h"
 
 extern RSA2 g_RSA;
 

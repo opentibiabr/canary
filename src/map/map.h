@@ -20,16 +20,16 @@
 #ifndef FS_MAP_H_E3953D57C058461F856F5221D359DAFA
 #define FS_MAP_H_E3953D57C058461F856F5221D359DAFA
 
-#include "../game/movement/position.h"
-#include "../items/item.h"
-#include "../io/fileloader.h"
+#include "game/movement/position.h"
+#include "items/item.h"
+#include "io/fileloader.h"
 
-#include "../utils/tools.h"
-#include "../items/tile.h"
-#include "town.h"
-#include "house/house.h"
-#include "../creatures/monsters/spawns/spawn_monster.h"
-#include "../creatures/npcs/spawns/spawn_npc.h"
+#include "utils/tools.h"
+#include "items/tile.h"
+#include "map/town.h"
+#include "map/house/house.h"
+#include "creatures/monsters/spawns/spawn_monster.h"
+#include "creatures/npcs/spawns/spawn_npc.h"
 
 class Creature;
 class Player;

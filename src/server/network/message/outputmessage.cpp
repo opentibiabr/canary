@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
 #include "outputmessage.h"
-#include "../protocol/protocol.h"
-#include "../../../utils/lockfree.h"
-#include "../../../game/scheduling/scheduler.h"
+#include "server/network/protocol/protocol.h"
+#include "utils/lockfree.h"
+#include "game/scheduling/scheduler.h"
 
 extern Scheduler g_scheduler;
 

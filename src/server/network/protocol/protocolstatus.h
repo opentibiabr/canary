@@ -20,8 +20,8 @@
 #ifndef FS_STATUS_H_8B28B354D65B4C0483E37AD1CA316EB4
 #define FS_STATUS_H_8B28B354D65B4C0483E37AD1CA316EB4
 
-#include "../message/networkmessage.h"
-#include "protocol.h"
+#include "server/network/message/networkmessage.h"
+#include "server/network/protocol/protocol.h"
 
 class ProtocolStatus final : public Protocol
 {

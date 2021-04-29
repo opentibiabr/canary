@@ -20,9 +20,9 @@
 #ifndef FS_RAIDS_H_3583C7C054584881856D55765DEDAFA9
 #define FS_RAIDS_H_3583C7C054584881856D55765DEDAFA9
 
-#include "../../utils/const.h"
-#include "../../game/movement/position.h"
-#include "../global/baseevents.h"
+#include "utils/const.h"
+#include "game/movement/position.h"
+#include "lua/global/baseevents.h"
 
 enum RaidState_t {
 	RAIDSTATE_IDLE,

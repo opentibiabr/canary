@@ -20,7 +20,7 @@
 #ifndef FS_BED_H_84DE19758D424C6C9789189231946BFF
 #define FS_BED_H_84DE19758D424C6C9789189231946BFF
 
-#include "item.h"
+#include "items/item.h"
 
 class House;
 class Player;

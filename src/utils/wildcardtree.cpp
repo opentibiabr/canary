@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
 #include <stack>
 
-#include "wildcardtree.h"
+#include "utils/wildcardtree.h"
 
 WildcardTreeNode* WildcardTreeNode::getChild(char ch)
 {

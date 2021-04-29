@@ -20,7 +20,7 @@
 #ifndef FS_THING_H_6F16A8E566AF4ACEAE02CF32A7246144
 #define FS_THING_H_6F16A8E566AF4ACEAE02CF32A7246144
 
-#include "../game/movement/position.h"
+#include "game/movement/position.h"
 
 class Tile;
 class Cylinder;

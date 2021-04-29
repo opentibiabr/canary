@@ -19,9 +19,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "depotlocker.h"
+#include "items/containers/depot/depotlocker.h"
 
 DepotLocker::DepotLocker(uint16_t type) :
 	Container(type, 4), depotId(0) {}

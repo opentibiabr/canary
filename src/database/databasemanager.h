@@ -19,7 +19,7 @@
 
 #ifndef FS_DATABASEMANAGER_H_2B75821C555E4D1D83E32B20D683217C
 #define FS_DATABASEMANAGER_H_2B75821C555E4D1D83E32B20D683217C
-#include "database.h"
+#include "database/database.h"
 
 class DatabaseManager
 {

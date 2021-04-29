@@ -22,8 +22,8 @@
 
 #include <queue>
 
-#include "../cylinder.h"
-#include "../item.h"
+#include "items/cylinder.h"
+#include "items/item.h"
 
 class Container;
 class DepotChest;

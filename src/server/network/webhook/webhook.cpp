@@ -1,6 +1,6 @@
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "webhook.h"
+#include "server/network/webhook/webhook.h"
 
 #include <curl/curl.h>
 #include <json/json.h>
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <memory>
 
-#include "../../../config/configmanager.h"
+#include "config/configmanager.h"
 
 extern ConfigManager g_config;
 

@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "creaturecallback.h"
+#include "lua/callbacks/creaturecallback.h"
 
 bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 	if (scriptId == -1) {

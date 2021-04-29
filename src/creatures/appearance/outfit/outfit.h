@@ -22,7 +22,7 @@
 
 #include <utility>
 
-#include "../../../utils/enums.h"
+#include "utils/enums.h"
 
 struct Outfit {
 	Outfit(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initFrom) :

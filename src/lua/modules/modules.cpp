@@ -19,10 +19,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "modules.h"
-#include "../../creatures/players/player.h"
+#include "lua/modules/modules.h"
+#include "creatures/players/player.h"
 
 Modules::Modules() :
 	scriptInterface("Modules Interface")

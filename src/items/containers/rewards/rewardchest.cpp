@@ -19,9 +19,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "rewardchest.h"
+#include "items/containers/rewards/rewardchest.h"
 
 RewardChest::RewardChest(uint16_t type) :
 	Container(type)

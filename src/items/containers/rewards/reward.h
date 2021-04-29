@@ -22,7 +22,7 @@
 #ifndef OT_SRC_REWARD_H_
 #define OT_SRC_REWARD_H_
 
-#include "../container.h"
+#include "items/containers/container.h"
 
 class Reward : public Container
 {

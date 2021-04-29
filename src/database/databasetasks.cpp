@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "databasetasks.h"
-#include "../game/scheduling/tasks.h"
+#include "database/databasetasks.h"
+#include "game/scheduling/tasks.h"
 
 extern Dispatcher g_dispatcher;
 

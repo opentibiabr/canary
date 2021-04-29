@@ -10,9 +10,9 @@
 #include <vector>
 #include <limits.h>
 
-#include "../../../database/database.h"
-#include "../../../database/databasetasks.h"
-#include "../../../utils/definitions.h"
+#include "database/database.h"
+#include "database/databasetasks.h"
+#include "utils/definitions.h"
 
 namespace account {
 

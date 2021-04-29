@@ -20,7 +20,7 @@
 #ifndef SRC_BASEEVENTS_H_
 #define SRC_BASEEVENTS_H_
 
-#include "../scripts/luascript.h"
+#include "lua/scripts/luascript.h"
 
 class Event;
 using Event_ptr = std::unique_ptr<Event>;

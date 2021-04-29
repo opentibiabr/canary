@@ -20,11 +20,11 @@
 #ifndef FS_SCHEDULER_H_2905B3D5EAB34B4BA8830167262D2DC1
 #define FS_SCHEDULER_H_2905B3D5EAB34B4BA8830167262D2DC1
 
-#include "tasks.h"
+#include "game/scheduling/tasks.h"
 #include <unordered_set>
 #include <queue>
 
-#include "../../utils/thread_holder_base.h"
+#include "utils/thread_holder_base.h"
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;
 

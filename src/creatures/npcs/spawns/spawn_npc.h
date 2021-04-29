@@ -20,8 +20,8 @@
 #ifndef FS_SPAWN_NPC_H_
 #define FS_SPAWN_NPC_H_
 
-#include "../../../items/tile.h"
-#include "../../../game/movement/position.h"
+#include "items/tile.h"
+#include "game/movement/position.h"
 
 class Npc;
 class NpcType;

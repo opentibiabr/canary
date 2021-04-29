@@ -20,11 +20,11 @@
 #ifndef FS_SPELLS_H_D78A7CCB7080406E8CAA6B1D31D3DA71
 #define FS_SPELLS_H_D78A7CCB7080406E8CAA6B1D31D3DA71
 
-#include "../../lua/scripts/luascript.h"
-#include "../players/player.h"
-#include "../../lua/creature/actions.h"
-#include "../../lua/creature/talkaction.h"
-#include "../../lua/global/baseevents.h"
+#include "lua/scripts/luascript.h"
+#include "creatures/players/player.h"
+#include "lua/creature/actions.h"
+#include "lua/creature/talkaction.h"
+#include "lua/global/baseevents.h"
 
 class InstantSpell;
 class RuneSpell;

@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "iomapserialize.h"
-#include "../game/game.h"
-#include "../items/bed.h"
+#include "io/iomapserialize.h"
+#include "game/game.h"
+#include "items/bed.h"
 
 extern Game g_game;
 

@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "rsa.h"
+#include "security/rsa.h"
 
 #include <cryptopp/base64.h>
 #include <cryptopp/osrng.h>

@@ -17,9 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "xtea.h"
+#include "security/xtea.h"
 
 #include <array>
 #include <assert.h>

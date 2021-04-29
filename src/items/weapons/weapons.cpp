@@ -17,14 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "../../creatures/combat/combat.h"
-#include "../../config/configmanager.h"
-#include "../../game/game.h"
-#include "../../utils/pugicast.h"
-#include "../../lua/creature/events.h"
-#include "weapons.h"
+#include "creatures/combat/combat.h"
+#include "config/configmanager.h"
+#include "game/game.h"
+#include "utils/pugicast.h"
+#include "lua/creature/events.h"
+#include "items/weapons/weapons.h"
 
 extern Game g_game;
 extern Vocations g_vocations;

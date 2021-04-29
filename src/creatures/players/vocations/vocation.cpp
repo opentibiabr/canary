@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "vocation.h"
+#include "creatures/players/vocations/vocation.h"
 
-#include "../../../utils/pugicast.h"
-#include "../../../utils/tools.h"
+#include "utils/pugicast.h"
+#include "utils/tools.h"
 
 bool Vocations::loadFromXml()
 {

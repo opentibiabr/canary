@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "groups.h"
+#include "creatures/players/grouping/groups.h"
 
-#include "../../../utils/pugicast.h"
-#include "../../../utils/tools.h"
+#include "utils/pugicast.h"
+#include "utils/tools.h"
 
 const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
 	{"cannotusecombat", PlayerFlag_CannotUseCombat},

@@ -17,17 +17,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "combat.h"
+#include "creatures/combat/combat.h"
 
-#include "../../game/game.h"
-#include "../../items/weapons/weapons.h"
-#include "../../config/configmanager.h"
-#include "../../lua/creature/events.h"
-#include "../monsters/monster.h"
-#include "../../io/iobestiary.h"
-#include "../monsters/monsters.h"
+#include "game/game.h"
+#include "items/weapons/weapons.h"
+#include "config/configmanager.h"
+#include "lua/creature/events.h"
+#include "creatures/monsters/monster.h"
+#include "io/iobestiary.h"
+#include "creatures/monsters/monsters.h"
 
 extern Game g_game;
 extern Weapons* g_weapons;

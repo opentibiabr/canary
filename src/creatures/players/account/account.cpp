@@ -20,10 +20,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "account.hpp"
-#include "../../../database/databasetasks.h"
+#include "creatures/players/account/account.hpp"
+#include "database/databasetasks.h"
 
 #include <algorithm>
 #include <limits>

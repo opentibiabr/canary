@@ -20,8 +20,8 @@
 #ifndef FS_PARTY_H_41D4D7CF417C4CC99FAE94D552255044
 #define FS_PARTY_H_41D4D7CF417C4CC99FAE94D552255044
 
-#include "../player.h"
-#include "../../monsters/monsters.h"
+#include "creatures/players/player.h"
+#include "creatures/monsters/monsters.h"
 
 class Player;
 class Party;

@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
 #if __has_include("luajit/lua.hpp")
   #include <luajit/lua.hpp>
@@ -25,8 +25,8 @@
   #include <lua.hpp>
 #endif
 
-#include "configmanager.h"
-#include "../game/game.h"
+#include "config/configmanager.h"
+#include "game/game.h"
 
 #if LUA_VERSION_NUM >= 502
 #undef lua_strlen

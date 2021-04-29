@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "ban.h"
-#include "../../../database/database.h"
-#include "../../../database/databasetasks.h"
-#include "../../../utils/tools.h"
+#include "creatures/players/management/ban.h"
+#include "database/database.h"
+#include "database/databasetasks.h"
+#include "utils/tools.h"
 
 bool Ban::acceptConnection(uint32_t clientIP)
 {

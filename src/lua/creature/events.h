@@ -20,9 +20,9 @@
 #ifndef FS_EVENTS_H_BD444CC0EE167E5777E4C90C766B36DC
 #define FS_EVENTS_H_BD444CC0EE167E5777E4C90C766B36DC
 
-#include "../../creatures/players/imbuements/imbuements.h"
-#include "../scripts/luascript.h"
-#include "../../creatures/combat/spells.h"
+#include "creatures/players/imbuements/imbuements.h"
+#include "lua/scripts/luascript.h"
+#include "creatures/combat/spells.h"
 
 class Party;
 class ItemType;

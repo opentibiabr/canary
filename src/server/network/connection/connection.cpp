@@ -17,15 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "../../../config/configmanager.h"
-#include "connection.h"
-#include "../message/outputmessage.h"
-#include "../protocol/protocol.h"
-#include "../protocol/protocolgame.h"
-#include "../../../game/scheduling/scheduler.h"
-#include "../../server.h"
+#include "config/configmanager.h"
+#include "server/network/connection/connection.h"
+#include "server/network/message/outputmessage.h"
+#include "server/network/protocol/protocol.h"
+#include "server/network/protocol/protocolgame.h"
+#include "game/scheduling/scheduler.h"
+#include "server/server.h"
 
 extern ConfigManager g_config;
 

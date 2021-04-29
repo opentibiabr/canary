@@ -20,9 +20,9 @@
 #ifndef FS_CREATUREEVENT_H_73FCAF4608CB41399D53C919316646A9
 #define FS_CREATUREEVENT_H_73FCAF4608CB41399D53C919316646A9
 
-#include "../scripts/luascript.h"
-#include "../global/baseevents.h"
-#include "../../utils/enums.h"
+#include "lua/scripts/luascript.h"
+#include "lua/global/baseevents.h"
+#include "utils/enums.h"
 
 class CreatureEvent;
 using CreatureEvent_ptr = std::unique_ptr<CreatureEvent>;

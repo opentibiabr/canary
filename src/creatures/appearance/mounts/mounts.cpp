@@ -18,12 +18,12 @@
  */
 #include <string>
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "mounts.h"
+#include "creatures/appearance/mounts/mounts.h"
 
-#include "../../../utils/pugicast.h"
-#include "../../../utils/tools.h"
+#include "utils/pugicast.h"
+#include "utils/tools.h"
 
 bool Mounts::reload()
 {

@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "items.h"
-#include "../creatures/combat/spells.h"
-#include "weapons/weapons.h"
+#include "items/items.h"
+#include "creatures/combat/spells.h"
+#include "items/weapons/weapons.h"
 
-#include "../utils/pugicast.h"
+#include "utils/pugicast.h"
 
 #ifdef __cpp_lib_filesystem
 #include <filesystem>

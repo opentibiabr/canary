@@ -19,16 +19,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "npc.h"
+#include "creatures/npcs/npc.h"
 #include "npcs.h"
-#include "../../config/configmanager.h"
-#include "../../lua/callbacks/creaturecallback.h"
-#include "../../game/game.h"
-#include "../combat/spells.h"
-#include "../../lua/creature/events.h"
-#include "../../utils/enums.h"
+#include "config/configmanager.h"
+#include "lua/callbacks/creaturecallback.h"
+#include "game/game.h"
+#include "creatures/combat/spells.h"
+#include "lua/creature/events.h"
+#include "utils/enums.h"
 
 extern Game g_game;
 extern Npcs g_npcs;

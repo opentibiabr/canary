@@ -20,8 +20,8 @@
 #ifndef FS_PROTOCOL_H_D71405071ACF4137A4B1203899DE80E1
 #define FS_PROTOCOL_H_D71405071ACF4137A4B1203899DE80E1
 
-#include "../connection/connection.h"
-#include "../../../security/xtea.h"
+#include "server/network/connection/connection.h"
+#include "security/xtea.h"
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {

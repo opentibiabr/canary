@@ -20,8 +20,8 @@
 #ifndef FS_DEPOTLOCKER_H_53AD8E0606A34070B87F792611F4F3F8
 #define FS_DEPOTLOCKER_H_53AD8E0606A34070B87F792611F4F3F8
 
-#include "../container.h"
-#include "../inbox/inbox.h"
+#include "items/containers/container.h"
+#include "items/containers/inbox/inbox.h"
 
 class DepotLocker final : public Container
 {

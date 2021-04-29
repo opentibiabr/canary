@@ -20,9 +20,9 @@
 #ifndef FS_ACTIONS_H_87F60C5F587E4B84948F304A6451E6E6
 #define FS_ACTIONS_H_87F60C5F587E4B84948F304A6451E6E6
 
-#include "../global/baseevents.h"
-#include "../../utils/enums.h"
-#include "../scripts/luascript.h"
+#include "lua/global/baseevents.h"
+#include "utils/enums.h"
+#include "lua/scripts/luascript.h"
 
 class Action;
 using Action_ptr = std::unique_ptr<Action>;

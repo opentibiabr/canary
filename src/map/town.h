@@ -20,7 +20,7 @@
 #ifndef FS_TOWN_H_3BE21D2293B44AA4A3D22D25BE1B9350
 #define FS_TOWN_H_3BE21D2293B44AA4A3D22D25BE1B9350
 
-#include "../game/movement/position.h"
+#include "game/movement/position.h"
 
 class Town
 {

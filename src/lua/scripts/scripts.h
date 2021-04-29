@@ -20,8 +20,8 @@
 #ifndef FS_SCRIPTS_H
 #define FS_SCRIPTS_H
 
-#include "luascript.h"
-#include "../../utils/enums.h"
+#include "lua/scripts/luascript.h"
+#include "utils/enums.h"
 
 class Scripts
 {

@@ -20,8 +20,8 @@
 #ifndef FS_MONSTERS_H_776E8327BCE2450EB7C4A260785E6C0D
 #define FS_MONSTERS_H_776E8327BCE2450EB7C4A260785E6C0D
 
-#include "../creature.h"
-#include "../../utils/enums.h"
+#include "creatures/creature.h"
+#include "utils/enums.h"
 
 class Loot {
 	public:

@@ -17,16 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../../otpch.h"
+#include "otpch.h"
 
-#include "spawn_npc.h"
-#include "../../../game/game.h"
-#include "../npc.h"
-#include "../../../config/configmanager.h"
-#include "../../../game/scheduling/scheduler.h"
+#include "creatures/npcs/spawns/spawn_npc.h"
+#include "game/game.h"
+#include "creatures/npcs/npc.h"
+#include "config/configmanager.h"
+#include "game/scheduling/scheduler.h"
 
-#include "../../../utils/pugicast.h"
-#include "../../../lua/creature/events.h"
+#include "utils/pugicast.h"
+#include "lua/creature/events.h"
 
 extern ConfigManager g_config;
 extern Npcs g_npcs;

@@ -17,11 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "../config/configmanager.h"
-#include "databasemanager.h"
-#include "../lua/scripts/luascript.h"
+#include "config/configmanager.h"
+#include "database/databasemanager.h"
+#include "lua/scripts/luascript.h"
 
 extern ConfigManager g_config;
 

@@ -22,12 +22,12 @@
 
 #include <utility>
 
-#include "../items/item.h"
-#include "../map/map.h"
-#include "../map/house/house.h"
-#include "../creatures/monsters/spawns/spawn_monster.h"
-#include "../creatures/npcs/spawns/spawn_npc.h"
-#include "../config/configmanager.h"
+#include "items/item.h"
+#include "map/map.h"
+#include "map/house/house.h"
+#include "creatures/monsters/spawns/spawn_monster.h"
+#include "creatures/npcs/spawns/spawn_npc.h"
+#include "config/configmanager.h"
 
 extern ConfigManager g_config;
 

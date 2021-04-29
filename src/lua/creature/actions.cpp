@@ -17,16 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "actions.h"
-#include "../../items/bed.h"
-#include "../../config/configmanager.h"
-#include "../../items/containers/container.h"
-#include "../../game/game.h"
-#include "../../utils/pugicast.h"
-#include "../../creatures/combat/spells.h"
-#include "../../items/containers/rewards/rewardchest.h"
+#include "lua/creature/actions.h"
+#include "items/bed.h"
+#include "config/configmanager.h"
+#include "items/containers/container.h"
+#include "game/game.h"
+#include "utils/pugicast.h"
+#include "creatures/combat/spells.h"
+#include "items/containers/rewards/rewardchest.h"
 
 extern Game g_game;
 extern Spells* g_spells;

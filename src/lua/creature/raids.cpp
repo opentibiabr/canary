@@ -17,17 +17,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../../otpch.h"
+#include "otpch.h"
 
-#include "raids.h"
+#include "lua/creature/raids.h"
 
-#include "../../utils/pugicast.h"
+#include "utils/pugicast.h"
 
-#include "../../game/game.h"
-#include "../../config/configmanager.h"
-#include "../../game/scheduling/scheduler.h"
-#include "../../creatures/monsters/monster.h"
-#include "../../server/network/webhook/webhook.h"
+#include "game/game.h"
+#include "config/configmanager.h"
+#include "game/scheduling/scheduler.h"
+#include "creatures/monsters/monster.h"
+#include "server/network/webhook/webhook.h"
 
 extern Game g_game;
 extern ConfigManager g_config;

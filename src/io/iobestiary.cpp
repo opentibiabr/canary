@@ -17,14 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "iobestiary.h"
-#include "../utils/enums.h"
-#include "../creatures/monsters/monster.h"
-#include "../creatures/monsters/monsters.h"
-#include "../game/game.h"
-#include "../creatures/players/player.h"
+#include "io/iobestiary.h"
+#include "utils/enums.h"
+#include "creatures/monsters/monster.h"
+#include "creatures/monsters/monsters.h"
+#include "game/game.h"
+#include "creatures/players/player.h"
 
 extern Game g_game;
 extern Monsters g_monsters;

@@ -20,8 +20,8 @@
 #ifndef FS_IOMAPSERIALIZE_H_7E903658F34E44F9BE03A713B55A3D6D
 #define FS_IOMAPSERIALIZE_H_7E903658F34E44F9BE03A713B55A3D6D
 
-#include "../database/database.h"
-#include "../map/map.h"
+#include "database/database.h"
+#include "map/map.h"
 
 class IOMapSerialize
 {

@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "../otpch.h"
+#include "otpch.h"
 
-#include "thing.h"
-#include "tile.h"
+#include "items/thing.h"
+#include "items/tile.h"
 
 const Position& Thing::getPosition() const
 {

@@ -19,9 +19,9 @@ def do_login(data):
 
     try:
         connection = mariadb.connect(host=os.getenv('DB_IP', 'mysql'),
-                                database=os.getenv('DB_DATABASE', 'otserver'),
-                                user=os.getenv('DB_USER', 'otserver'),
-                                password=os.getenv('DB_PASSWORD', 'otserver'))
+                                database=os.getenv('DB_DATABASE', 'canary'),
+                                user=os.getenv('DB_USER', 'canary'),
+                                password=os.getenv('DB_PASSWORD', 'canary'))
 
         sql_select_Query = "SELECT id, premdays, lastday FROM accounts WHERE name = '" + data['email'].replace('@','') + "'"
 

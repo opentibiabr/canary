@@ -221,9 +221,9 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	if resultId ~= false then
 		repeat
 			local entry = {
-				description = result.getDataString(resultId, "description"),
-				timestamp = result.getDataInt(resultId, "timestamp"),
-				daystreak = result.getDataInt(resultId, "daystreak"),
+				description = result.getString(resultId, "description"),
+				timestamp = result.getNumber(resultId, "timestamp"),
+				daystreak = result.getNumber(resultId, "daystreak"),
 			}
 			table.insert(entries, entry)
 		until not result.next(resultId)

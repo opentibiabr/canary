@@ -87,7 +87,7 @@ local enablingStorages = {
 function Player.canImbueItem(self, imbuement, item)
 	local item_type = ""
 	for tp, items in pairs(Imbuements_Weapons) do
-		if isInArray(items, item:getId()) then
+		if table.contains(items, item:getId()) then
 			item_type = tp
 			break
 		end

@@ -20,7 +20,7 @@ function tile.onStepIn(creature, item, position, fromPosition)
 		if creature:getLevel() < item.actionid - 1000 then
 			creature:teleportTo(fromPosition, false)
 			position:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			creature:sendTextMessage(MESSAGE_INFO_DESCR, "The tile seems to be protected against unwanted intruders.")
+			creature:sendTextMessage(MESSAGE_LOOK, "The tile seems to be protected against unwanted intruders.")
 		end
 		return true
 	end
@@ -32,7 +32,7 @@ function tile.onStepIn(creature, item, position, fromPosition)
 		if depotItem then
 			local depotItems = creature:getDepotLocker(getDepotId(depotItem:getUniqueId()), true):getItemHoldingCount()
 			depotItems = depotItems - 3
-			creature:sendTextMessage(MESSAGE_STATUS_DEFAULT, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or "."))
+			creature:sendTextMessage(MESSAGE_LOGIN, "Your depot contains " .. depotItems .. " item" .. (depotItems > 1 and "s." or "."))
 			return true
 		end
 	end
@@ -40,7 +40,7 @@ function tile.onStepIn(creature, item, position, fromPosition)
 	if item.actionid ~= 0 and creature:getStorageValue(item.actionid) <= 0 then
 		creature:teleportTo(fromPosition, false)
 		position:sendMagicEffect(CONST_ME_MAGIC_BLUE)
-		creature:sendTextMessage(MESSAGE_INFO_DESCR, "The tile seems to be protected against unwanted intruders.")
+		creature:sendTextMessage(MESSAGE_LOOK, "The tile seems to be protected against unwanted intruders.")
 		return true
 	end
 	return true

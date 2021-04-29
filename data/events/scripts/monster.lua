@@ -10,7 +10,7 @@ function Monster:onDropLoot(corpse)
 		for i = 1, #monsterLoot do
 			local item = corpse:createLootItem(monsterLoot[i])
 			if not item then
-				print('[Warning] DropLoot:', 'Could not add loot item to corpse.')
+				Spdlog.info("Could not add loot item to corpse of monster '".. mType:getName() .."'")
 			end
 		end
 

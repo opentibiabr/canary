@@ -83,6 +83,11 @@ bool Scripts::loadScriptSystems()
 
 	g_weapons->loadDefaults();
 
+	g_spells = new Spells();
+	if (!g_spells) {
+		return false;
+	}
+
 	g_actions = new Actions();
 	if (!g_actions) {
 		return false;

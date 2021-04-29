@@ -55,9 +55,7 @@ Monsters g_monsters;
 Npcs g_npcs;
 Vocations g_vocations;
 extern Scripts* g_scripts;
-extern Spells* g_spells;
 RSA2 g_RSA;
-
 
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
@@ -65,9 +63,9 @@ std::unique_lock<std::mutex> g_loaderUniqueLock(g_loaderLock);
 
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-  g_loaderSignal.notify_all();
-  getchar();
-  exit(-1);
+	g_loaderSignal.notify_all();
+	getchar();
+	exit(-1);
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -81,19 +79,18 @@ void badAllocationHandler() {
 }
 
 void initGlobalScopes() {
-  g_scripts = new Scripts();
-  g_modules = new Modules();
-  g_spells = new Spells();
-  g_events = new Events();
-  g_imbuements = new Imbuements();
+	g_scripts = new Scripts();
+	g_modules = new Modules();
+	g_events = new Events();
+	g_imbuements = new Imbuements();
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {
-  SPDLOG_INFO("Loading {}", moduleName);
-  if (!loaded) {
-     SPDLOG_ERROR("Cannot load: {}", moduleName);
-     startupErrorMessage();
-  }
+	SPDLOG_INFO("Loading {}", moduleName);
+	if (!loaded) {
+		SPDLOG_ERROR("Cannot load: {}", moduleName);
+		startupErrorMessage();
+	}
 }
 
 void loadModules() {
@@ -164,8 +161,6 @@ void loadModules() {
 		"data/XML/imbuements.xml");
 	modulesLoadHelper(g_modules->loadFromXml(),
 		"data/modules/modules.xml");
-	modulesLoadHelper(g_spells->loadFromXml(),
-		"data/spells/spells.xml");
 	modulesLoadHelper(g_events->loadFromXml(),
 		"data/events/events.xml");
 	modulesLoadHelper(g_scripts->loadScripts("scripts", false, false),
@@ -256,7 +251,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	SPDLOG_INFO("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
 	SPDLOG_INFO("Visit our forum for updates, support, and resources: "
-		"https://forums.otserv.com.br and https://othispano.com");
+		"https://forums.otserv.com.br");
 
 	// check if config.lua or config.lua.dist exist
 	std::ifstream c_test("./config.lua");

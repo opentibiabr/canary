@@ -40,7 +40,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 
 	if target.itemid == 1 then
 		if item.type == 0 then
-			player:sendTextMessage(MESSAGE_STATUS_SMALL, "It is empty.")
+			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		elseif target.uid == player.uid then
 			if table.contains({3, 15, 43}, item.type) then
 				player:addCondition(drunk)
@@ -64,7 +64,7 @@ function fluid.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if fluidSource ~= 0 then
 			item:transform(item:getId(), fluidSource)
 		elseif item.type == 0 then
-			player:sendTextMessage(MESSAGE_STATUS_SMALL, "It is empty.")
+			player:sendTextMessage(MESSAGE_FAILURE, "It is empty.")
 		else
 			if toPosition.x == CONTAINER_POSITION then
 				toPosition = player:getPosition()

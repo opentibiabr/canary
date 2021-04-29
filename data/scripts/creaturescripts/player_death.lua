@@ -78,7 +78,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then
-					warId = result.getDataInt(resultId, "id")
+					warId = result.getNumber(resultId, "id")
 					result.free(resultId)
 				end
 

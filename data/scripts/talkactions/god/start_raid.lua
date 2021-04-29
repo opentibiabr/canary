@@ -15,7 +15,7 @@ function startRaid.onSay(player, words, param)
 	if returnValue ~= RETURNVALUE_NOERROR then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, Game.getReturnMessage(returnValue))
 	else
-		player:sendTextMessage(MESSAGE_INFO_DESCR, "Raid started.")
+		player:sendTextMessage(MESSAGE_LOOK, "Raid started.")
 	end
 	return false
 end

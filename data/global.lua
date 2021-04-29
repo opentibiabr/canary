@@ -5,6 +5,15 @@ NOT_MOVEABLE_ACTION = 100
 PARTY_PROTECTION = 1 -- Set to 0 to disable.
 ADVANCED_SECURE_MODE = 1 -- Set to 0 to disable.
 
+NORTH = DIRECTION_NORTH
+EAST = DIRECTION_EAST
+SOUTH = DIRECTION_SOUTH
+WEST = DIRECTION_WEST
+SOUTHWEST = DIRECTION_SOUTHWEST
+SOUTHEAST = DIRECTION_SOUTHEAST
+NORTHWEST = DIRECTION_NORTHWEST
+NORTHEAST = DIRECTION_NORTHEAST
+
 STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
@@ -125,4 +134,9 @@ end
 -- Delay potion
 if not playerDelayPotion then
 	playerDelayPotion = {}
+end
+
+-- this is a fix for lua52 or higher which has the function renamed to table.unpack, while luajit still uses unpack
+if unpack == nil then
+	unpack = table.unpack
 end

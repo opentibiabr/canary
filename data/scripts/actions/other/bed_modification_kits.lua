@@ -31,7 +31,7 @@ function bedModificationKits.onUse(player, item, fromPosition, target, toPositio
 
 	local targetItemId = target:getId()
 	if targetItemId == newBed[1][1] or targetItemId == newBed[2][1] then
-		player:sendTextMessage(MESSAGE_STATUS_SMALL, "You already have this value modification.")
+		player:sendTextMessage(MESSAGE_FAILURE, "You already have this value modification.")
 		return true
 	end
 

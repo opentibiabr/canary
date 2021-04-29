@@ -16,7 +16,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if target.itemid == 9582 then
 		local owner = target:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER)
 		if owner ~= 0 and owner ~= player:getId() then
-			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are not the owner.")
+			player:sendTextMessage(MESSAGE_FAILURE, "You are not the owner.")
 			return true
 		end
 

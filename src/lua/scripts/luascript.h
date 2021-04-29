@@ -408,6 +408,7 @@ class LuaScriptInterface
 		static const luaL_Reg luaConfigManagerTable[4];
 		static const luaL_Reg luaDatabaseTable[9];
 		static const luaL_Reg luaResultTable[6];
+		static const luaL_Reg luaSpdlogTable[5];
 
 		static int protectedCall(lua_State* L, int nargs, int nresults);
 

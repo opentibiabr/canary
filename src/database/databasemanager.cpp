@@ -98,16 +98,19 @@ void DatabaseManager::updateDatabase()
 	luaL_openlibs(L);
 
 #ifndef LUAJIT_VERSION
-	//bit operations for Lua, based on bitlib project release 24
-	//bit.bnot, bit.band, bit.bor, bit.bxor, bit.lshift, bit.rshift
+	// Bit operations for Lua, based on bitlib project release 24
+	// Bit.bnot, bit.band, bit.bor, bit.bxor, bit.lshift, bit.rshift
 	luaL_register(L, "bit", LuaScriptInterface::luaBitReg);
 #endif
 
-	//db table
+	// Db table
 	luaL_register(L, "db", LuaScriptInterface::luaDatabaseTable);
 
-	//result table
+	// Result table
 	luaL_register(L, "result", LuaScriptInterface::luaResultTable);
+
+	// Spdlog table
+	luaL_register(L, "Spdlog", LuaScriptInterface::luaSpdlogTable);
 
 	int32_t version = getDatabaseVersion();
 	do {

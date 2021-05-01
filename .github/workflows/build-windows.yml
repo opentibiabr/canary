@@ -47,13 +47,11 @@ jobs:
           buildWithCMake: true
 
       - name: Copy artifacts
-        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
         shell: pwsh
         run: |
           Copy-Item -Path ${{ github.workspace }}\build\bin\* -Destination ${{ github.workspace }} -Recurse
 
       - name: Create and Upload Full Datapack
-        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
         uses: actions/upload-artifact@v2
         with:
           name: canary-full-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}
@@ -74,7 +72,6 @@ jobs:
             !${{ github.workspace }}/Jenkinsfile
 
       - name: Create and Upload Server Only
-        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
         uses: actions/upload-artifact@v2
         with:
           name: canary-server-only-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}

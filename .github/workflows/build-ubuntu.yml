@@ -55,21 +55,28 @@ jobs:
           buildDirectory: ${{ github.workspace }}/build/
           cmakeBuildType: ${{ matrix.buildtype }}
 
-      - name: Clean workspace
-        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
-        shell: bash
-        run: |
-          mv ${{ github.workspace }}/build/bin/canary ${{ github.workspace }}/canary
-          find . -maxdepth 1 ! -name canary ! -name data ! -name config.lua.dist ! -name key.pem ! -name LICENSE ! -name README.md ! -name schema.sql -exec rm -r {} \;
-
-      - name: Prepare datapack contents
-        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
+      - name: Prepare artifact contents
         shell: bash
         run: |
           mv config.lua.dist config.lua
+          mv build/bin/canary .
 
-      - name: Upload binary
-        if: ${{ matrix.buildtype == 'Release' && github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/test' }}
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-canary-amd64-${{ matrix.buildtype }}-${{ github.sha }}
+          path: |
+            ${{ github.workspace }}
+            !${{ github.workspace }}/build/
+            !${{ github.workspace }}/vcpkg/
+            !${{ github.workspace }}/.git/
+            !${{ github.workspace }}/.github/
+            !${{ github.workspace }}/.appveyor.yml
+            !${{ github.workspace }}/.editorconfig
+            !${{ github.workspace }}/.gitignore
+            !${{ github.workspace }}/.reviewdog.yml
+            !${{ github.workspace }}/.travis.yml
+            !${{ github.workspace }}/tests/
+            !${{ github.workspace }}/cmake/
+            !${{ github.workspace }}/sonar-project.properties
+            !${{ github.workspace }}/Jenkinsfile

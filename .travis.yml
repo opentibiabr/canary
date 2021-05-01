@@ -13,9 +13,9 @@ git:
 
 addons:
   sonarcloud:
-    organization: "opentibiabr"
+    organization: opentibiabr
     token:
-      secure: X+7KiitGRaVuYh8wjZQDJ3kmv2B+FNudXaRUbOwjK/a+0YK0z7FkVmXklg05MygF4QtjkTOdUqg/HSgSY492/jMkb2ZxOlI/utR+UUnKf77XiwBFcUG+bmdNAG8+U0MG5I70xKjauXdNrUFZu9Ds5TpD40m4UMmAr0pGtrXyP6T28WG7t/sNxzlmwSx0Z+2+ZKhEFdneAXVXX6zC6TXA5yPFvEdawPm8iqJ7fjq559Yqsn7l38Sd3BVoa9tbcwTMCvQwn6DivxLbkSKYs173y33bbGx48rikf9JHdFaSPVD7rNzpiuz7JCxJu6eBjh+FP9lxs4jJ0Kb8NEzxzotjGNSyxAW7+o0F8F869PL3fpTcWMlWTnrEVAn5pIXGaZ6+0yhoCSCwbHGKX42rUXndlROF1laCnE8ANOBFqxElVQpRNJVI2Xh34q32VdElGX9I73BmaTq8QZN9o4a895g3a2XeP4tCUxNbflh60uMHa6eOS5mOuuOc4l6ehYvwJw3aa3Pcz46RvcAWfp+5aslTDXnCZzDoBlTSx8tKkR7kNe+AnZj2yQi0j/mWOR97S9N2qfKDaEGnMtyq+EUEkOE6KPI8eqzrNYHbNX6SVbyfMer8nAem6b1p8PgaU+vgeixgtWaB+OgZSf592xrtkrKEeuA37dm+hwQJ2IzcZ7+p7RA=
+      secure: XeUyt0Kacat0i/GJHAmyQmQGFBR/3CMYfw06iXMIkjy3fsORb0aF2P711Nh+DnaVsR+aEOBLTm2jKS52g+AQ9OjXGzvv20UYbRBc0yU7PxyXVJwkAbcqtXMddYSyQQA7uAWTpkI72nLK03t8pXZJlwals7HutdyN1bmhkc04ZP9W3QVKTwQAuG246vhiI7/gYTrM5rTsxP/zf9ur2kjx2M3rug41WqM9CdPxbJN6ozr0O0YTOXXBiez3L224BkqKlS6OFcMkDXEnTv5MXK2jQjPya9R06uShK0KC4KsDkfmS64x6wgX8nTGvkOKGH6oMhEB+dHHJ8zD4vsxmCqk1muK7uVrBKqAACIWfkOdAsCBypYZJO4CPlaoSb/gsKGfCGWK59iUfpALSBvMsar8vkYZ15nVuOdQmpv+Feyauh5vVro4SwS17VALLEj52TPdcrE40Gpa5YGkT9iCwAQxvxcEBcrDoB0QUaanC5hsXZVxrKc9QHZZkv+d9ay0FdwwvZZ0oCWA+nb5pLY0dkOq26OgdWo4/fjRB7YGm+vjxnN1rI4bT2wGUmp616iAd11J5DI4dwvy+m9/4xSkapkVXW7lRklg9XmZZAovRSBUeh4eE+zGfB/cc3gzS0x74tR5ubyekGjzhMdupYbj6cAdwlDJRw3cgmJQ9qjmBPBWmfuk=
   apt:
     update: true
     packages:
@@ -44,7 +44,7 @@ script:
   - cd ..
   - NUMBER_OF_PROCESSORS=$(nproc --all)
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
-  - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} || true
+  - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS}
 
   # - sonar-scanner -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=${TRAVIS_HOME}/.cfamily -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} || true
   # - curl --upload-file /home/travis/build/opentibiabr/canary/sonar-cfamily-reproducer.zip https://transfer.sh/sonar-cfamily-reproducer.zip

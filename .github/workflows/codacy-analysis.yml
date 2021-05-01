@@ -2,13 +2,7 @@
 
 name: Codacy Security Scan
 
-on:
-  push:
-    branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
-  schedule:
-    - cron: '44 0 * * 1'
+on: [push, pull_request]
 
 jobs:
   codacy-security-scan:

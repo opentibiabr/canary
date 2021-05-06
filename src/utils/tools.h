@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_TOOLS_H_5F9A9742DA194628830AA1C64909AE43
-#define FS_TOOLS_H_5F9A9742DA194628830AA1C64909AE43
+#ifndef SRC_UTILS_TOOLS_H_
+#define SRC_UTILS_TOOLS_H_
 
 #include <random>
 #include <string>
@@ -129,4 +129,4 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	}
 }
 
-#endif
+#endif  // SRC_UTILS_TOOLS_H_

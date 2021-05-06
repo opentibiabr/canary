@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_IOMAP_H_8085D4B1037A44288494A52FDBB775E4
-#define FS_IOMAP_H_8085D4B1037A44288494A52FDBB775E4
+#ifndef SRC_IO_IOMAP_H_
+#define SRC_IO_IOMAP_H_
 
 #include <utility>
 
@@ -113,14 +113,10 @@ class IOMap
 	public:
 		bool loadMap(Map* map, const std::string& identifier);
 
-		/* Load the spawns
-		 * \param map pointer to the Map class
-		 * \returns Returns true if the spawns were loaded successfully
-		 */
 		static bool loadMonsters(Map* map) {
 			if (map->monsterfile.empty()) {
-				//OTBM file doesn't tell us about the monsterfile,
-				//lets guess it is mapname-monster.xml.
+				// OTBM file doesn't tell us about the monsterfile,
+				// Lets guess it is mapname-monster.xml.
 				map->monsterfile = g_config.getString(ConfigManager::MAP_NAME);
 				map->monsterfile += "-monster.xml";
 			}
@@ -128,14 +124,10 @@ class IOMap
 			return map->spawnsMonster.loadFromXML(map->monsterfile);
 		}
 
-		/* Load the npcs
-		 * \param map pointer to the Map class
-		 * \returns Returns true if the spawn npcs were loaded successfully
-		 */
 		static bool loadNpcs(Map* map) {
 			if (map->npcfile.empty()) {
-				//OTBM file doesn't tell us about the npcfile,
-				//lets guess it is mapname-npc.xml.
+				// OTBM file doesn't tell us about the npcfile,
+				// Lets guess it is mapname-npc.xml.
 				map->npcfile = g_config.getString(ConfigManager::MAP_NAME);
 				map->npcfile += "-npc.xml";
 			}
@@ -143,14 +135,10 @@ class IOMap
 			return map->spawnsNpc.loadFromXml(map->npcfile);
 		}
 
-		/* Load the houses (not house tile-data)
-		 * \param map pointer to the Map class
-		 * \returns Returns true if the houses were loaded successfully
-		 */
 		static bool loadHouses(Map* map) {
 			if (map->housefile.empty()) {
-				//OTBM file doesn't tell us about the housefile,
-				//lets guess it is mapname-house.xml.
+				// OTBM file doesn't tell us about the housefile,
+				// Lets guess it is mapname-house.xml.
 				map->housefile = g_config.getString(ConfigManager::MAP_NAME);
 				map->housefile += "-house.xml";
 			}
@@ -174,4 +162,4 @@ class IOMap
 		std::string errorString;
 };
 
-#endif
+#endif  // SRC_IO_IOMAP_H_

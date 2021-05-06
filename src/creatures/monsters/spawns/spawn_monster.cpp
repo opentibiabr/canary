@@ -156,7 +156,7 @@ bool SpawnsMonster::isInZone(const Position& centerPos, int32_t radius, const Po
 	}
 
 	return ((pos.getX() >= centerPos.getX() - radius) && (pos.getX() <= centerPos.getX() + radius) &&
-	        (pos.getY() >= centerPos.getY() - radius) && (pos.getY() <= centerPos.getY() + radius));
+            (pos.getY() >= centerPos.getY() - radius) && (pos.getY() <= centerPos.getY() + radius));
 }
 
 void SpawnMonster::startSpawnMonsterCheck()
@@ -284,10 +284,10 @@ void SpawnMonster::cleanup()
 {
 	auto it = spawnedMonsterMap.begin();
 	while (it != spawnedMonsterMap.end()) {
-	        uint32_t spawnMonsterId = it->first;
+            uint32_t spawnMonsterId = it->first;
 		Monster* monster = it->second;
-	        if (monster->isRemoved()) {
-		        spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
+            if (monster->isRemoved()) {
+               spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
 			monster->decrementReferenceCounter();
 			it = spawnedMonsterMap.erase(it);
 		} else {

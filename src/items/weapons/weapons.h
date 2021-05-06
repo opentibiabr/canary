@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_WEAPONS_H_69D1993478AA42948E24C0B90B8F5BF5
-#define FS_WEAPONS_H_69D1993478AA42948E24C0B90B8F5BF5
+#ifndef SRC_ITEMS_WEAPONS_WEAPONS_H_
+#define SRC_ITEMS_WEAPONS_WEAPONS_H_
 
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
@@ -51,7 +51,7 @@ class Weapons final : public BaseEvents
 
 		static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 		static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
-		
+
 		bool registerLuaEvent(Weapon* event);
 		void clear(bool fromLua) override final;
 
@@ -250,7 +250,7 @@ class WeaponMelee final : public Weapon
 		int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const override;
 		CombatType_t getElementType() const override { return elementType; }
 		virtual int16_t getElementDamageValue() const override;
-		
+
 
 	private:
 		bool getSkillType(const Player* player, const Item* item, skills_t& skill, uint32_t& skillpoint) const override;
@@ -310,4 +310,4 @@ class WeaponWand final : public Weapon
 		int32_t maxChange = 0;
 };
 
-#endif
+#endif  // SRC_ITEMS_WEAPONS_WEAPONS_H_

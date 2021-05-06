@@ -32,20 +32,17 @@
 extern Game g_game;
 extern ConfigManager g_config;
 
-Raids::Raids()
-{
+Raids::Raids() {
 	scriptInterface.initState();
 }
 
-Raids::~Raids()
-{
+Raids::~Raids() {
 	for (Raid* raid : raidList) {
 		delete raid;
 	}
 }
 
-bool Raids::loadFromXml()
-{
+bool Raids::loadFromXml() {
 	if (isLoaded()) {
 		return true;
 	}
@@ -76,8 +73,8 @@ bool Raids::loadFromXml()
 			ss << "raids/" << name << ".xml";
 			file = ss.str();
 			SPDLOG_WARN("[Raids::loadFromXml] - "
-                        "'file' tag missing for raid: {} using default: {}",
-                        name, file);
+						"'file' tag missing for raid: {} using default: {}",
+						name, file);
 		}
 
 		interval = pugi::cast<uint32_t>(raidNode.attribute("interval2").value()) * 60;
@@ -92,7 +89,7 @@ bool Raids::loadFromXml()
 			margin = pugi::cast<uint32_t>(attr.value()) * 60 * 1000;
 		} else {
 			SPDLOG_WARN("[Raids::loadFromXml] - "
-                        "'margin' tag missing for raid: {}", name);
+						"'margin' tag missing for raid: {}", name);
 			margin = 0;
 		}
 
@@ -118,8 +115,7 @@ bool Raids::loadFromXml()
 
 static constexpr int32_t MAX_RAND_RANGE = 10000000;
 
-bool Raids::startup()
-{
+bool Raids::startup() {
 	if (!isLoaded() || isStarted()) {
 		return false;
 	}
@@ -132,8 +128,7 @@ bool Raids::startup()
 	return started;
 }
 
-void Raids::checkRaids()
-{
+void Raids::checkRaids() {
 	if (!getRunning()) {
 		uint64_t now = OTSYS_TIME();
 
@@ -156,8 +151,7 @@ void Raids::checkRaids()
 	checkRaidsEvent = g_scheduler.addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this)));
 }
 
-void Raids::clear()
-{
+void Raids::clear() {
 	g_scheduler.stopEvent(checkRaidsEvent);
 	checkRaidsEvent = 0;
 
@@ -175,14 +169,12 @@ void Raids::clear()
 	scriptInterface.reInitState();
 }
 
-bool Raids::reload()
-{
+bool Raids::reload() {
 	clear();
 	return loadFromXml();
 }
 
-Raid* Raids::getRaidByName(const std::string& name)
-{
+Raid* Raids::getRaidByName(const std::string& name) {
 	for (Raid* raid : raidList) {
 		if (strcasecmp(raid->getName().c_str(), name.c_str()) == 0) {
 			return raid;
@@ -191,15 +183,13 @@ Raid* Raids::getRaidByName(const std::string& name)
 	return nullptr;
 }
 
-Raid::~Raid()
-{
+Raid::~Raid() {
 	for (RaidEvent* raidEvent : raidEvents) {
 		delete raidEvent;
 	}
 }
 
-bool Raid::loadFromXml(const std::string& filename)
-{
+bool Raid::loadFromXml(const std::string& filename) {
 	if (isLoaded()) {
 		return true;
 	}
@@ -243,8 +233,7 @@ bool Raid::loadFromXml(const std::string& filename)
 	return true;
 }
 
-void Raid::startRaid()
-{
+void Raid::startRaid() {
 	RaidEvent* raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
@@ -252,8 +241,7 @@ void Raid::startRaid()
 	}
 }
 
-void Raid::executeRaidEvent(RaidEvent* raidEvent)
-{
+void Raid::executeRaidEvent(RaidEvent* raidEvent) {
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
 		RaidEvent* newRaidEvent = getNextRaidEvent();
@@ -269,24 +257,21 @@ void Raid::executeRaidEvent(RaidEvent* raidEvent)
 	}
 }
 
-void Raid::resetRaid()
-{
+void Raid::resetRaid() {
 	nextEvent = 0;
 	state = RAIDSTATE_IDLE;
 	g_game.raids.setRunning(nullptr);
 	g_game.raids.setLastRaidEnd(OTSYS_TIME());
 }
 
-void Raid::stopEvents()
-{
+void Raid::stopEvents() {
 	if (nextEventEvent != 0) {
 		g_scheduler.stopEvent(nextEventEvent);
 		nextEventEvent = 0;
 	}
 }
 
-RaidEvent* Raid::getNextRaidEvent()
-{
+RaidEvent* Raid::getNextRaidEvent() {
 	if (nextEvent < raidEvents.size()) {
 		return raidEvents[nextEvent];
 	} else {
@@ -294,8 +279,7 @@ RaidEvent* Raid::getNextRaidEvent()
 	}
 }
 
-bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode)
-{
+bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	pugi::xml_attribute delayAttribute = eventNode.attribute("delay");
 	if (!delayAttribute) {
 		SPDLOG_ERROR("[RaidEvent::configureRaidEvent] - 'delay' tag missing");
@@ -306,8 +290,7 @@ bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 	return true;
 }
 
-bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode)
-{
+bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -315,7 +298,7 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 	pugi::xml_attribute messageAttribute = eventNode.attribute("message");
 	if (!messageAttribute) {
 		SPDLOG_ERROR("[AnnounceEvent::configureRaidEvent] - "
-                     "'message' tag missing for announce event");
+                    "'message' tag missing for announce event");
 		return false;
 	}
 	message = messageAttribute.as_string();
@@ -337,29 +320,27 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 			messageType = MESSAGE_GAMEMASTER_CONSOLE;
 		} else {
 			SPDLOG_WARN("[AnnounceEvent::configureRaidEvent] - "
-                        "Unknown type tag missing for announce event, "
-                        "using default: {}",
-                        static_cast<uint32_t>(messageType));
+						"Unknown type tag missing for announce event, "
+						"using default: {}",
+						static_cast<uint32_t>(messageType));
 		}
 	} else {
 		messageType = MESSAGE_EVENT_ADVANCE;
 		SPDLOG_WARN("[AnnounceEvent::configureRaidEvent] - "
-                    "Type tag missing for announce event, "
-                    "using default: {}",
-                    static_cast<uint32_t>(messageType));
+					"Type tag missing for announce event, "
+					"using default: {}",
+					static_cast<uint32_t>(messageType));
 	}
 	return true;
 }
 
-bool AnnounceEvent::executeEvent()
-{
+bool AnnounceEvent::executeEvent() {
 	g_game.broadcastMessage(message, messageType);
   webhook_send_message("Incoming raid!", message, WEBHOOK_COLOR_RAID);
 	return true;
 }
 
-bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
-{
+bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -369,7 +350,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 		monsterName = attr.as_string();
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
-                     "'Name' tag missing for singlespawn event");
+                    "'Name' tag missing for singlespawn event");
 		return false;
 	}
 
@@ -377,7 +358,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 		position.x = pugi::cast<uint16_t>(attr.value());
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
-                     "'X' tag missing for singlespawn event");
+                    "'X' tag missing for singlespawn event");
 		return false;
 	}
 
@@ -385,7 +366,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 		position.y = pugi::cast<uint16_t>(attr.value());
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
-                     "'Y' tag missing for singlespawn event");
+                    "'Y' tag missing for singlespawn event");
 		return false;
 	}
 
@@ -393,32 +374,30 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 		position.z = pugi::cast<uint16_t>(attr.value());
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
-                     "'Z' tag missing for singlespawn event");
+                    "'Z' tag missing for singlespawn event");
 		return false;
 	}
 	return true;
 }
 
-bool SingleSpawnEvent::executeEvent()
-{
+bool SingleSpawnEvent::executeEvent() {
 	Monster* monster = Monster::createMonster(monsterName);
 	if (!monster) {
 		SPDLOG_ERROR("[SingleSpawnEvent::executeEvent] - Cant create monster {}",
-                     monsterName);
+                    monsterName);
 		return false;
 	}
 
 	if (!g_game.placeCreature(monster, position, false, true)) {
 		delete monster;
 		SPDLOG_ERROR("[SingleSpawnEvent::executeEvent] - Cant create monster {}",
-                     monsterName);
+                    monsterName);
 		return false;
 	}
 	return true;
 }
 
-bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
-{
+bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -551,15 +530,14 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 	return true;
 }
 
-bool AreaSpawnEvent::executeEvent()
-{
+bool AreaSpawnEvent::executeEvent() {
 	for (const MonsterSpawn& spawn : spawnMonsterList) {
 		uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
 		for (uint32_t i = 0; i < amount; ++i) {
 			Monster* monster = Monster::createMonster(spawn.name);
 			if (!monster) {
 				SPDLOG_ERROR("[AreaSpawnEvent::executeEvent] - Can't create monster {}",
-                             spawn.name);
+                              spawn.name);
 				return false;
 			}
 
@@ -580,8 +558,7 @@ bool AreaSpawnEvent::executeEvent()
 	return true;
 }
 
-bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode)
-{
+bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	if (!RaidEvent::configureRaidEvent(eventNode)) {
 		return false;
 	}
@@ -589,7 +566,7 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 	pugi::xml_attribute scriptAttribute = eventNode.attribute("script");
 	if (!scriptAttribute) {
 		SPDLOG_ERROR("[ScriptEvent::configureRaidEvent] - "
-                     "No script file found for raid");
+                    "No script file found for raid");
 		return false;
 	}
 
@@ -597,7 +574,7 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 
 	if (!loadScript("data/raids/scripts/" + scriptName)) {
 		SPDLOG_ERROR("[ScriptEvent::configureRaidEvent] - "
-                     "Can not load raid script: {}", scriptName);
+                    "Can not load raid script: {}", scriptName);
 		return false;
 	}
 
@@ -606,18 +583,16 @@ bool ScriptEvent::configureRaidEvent(const pugi::xml_node& eventNode)
 	return true;
 }
 
-std::string ScriptEvent::getScriptEventName() const
-{
+std::string ScriptEvent::getScriptEventName() const {
 	return "onRaid";
 }
 
-bool ScriptEvent::executeEvent()
-{
+bool ScriptEvent::executeEvent() {
 	//onRaid()
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[ScriptEvent::onRaid - Script {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     getScriptName());
+                    "Call stack overflow. Too many lua script calls being nested.",
+                    getScriptName());
 		return false;
 	}
 

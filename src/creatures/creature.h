@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_CREATURE_H_5363C04015254E298F84E6D59A139508
-#define FS_CREATURE_H_5363C04015254E298F84E6D59A139508
+#ifndef SRC_CREATURES_CREATURE_H_
+#define SRC_CREATURES_CREATURE_H_
 
 #include "map/map.h"
 #include "game/movement/position.h"
@@ -80,10 +80,10 @@ class FrozenPathingConditionCall
 		explicit FrozenPathingConditionCall(Position newTargetPos) : targetPos(std::move(newTargetPos)) {}
 
 		bool operator()(const Position& startPos, const Position& testPos,
-		                const FindPathParams& fpp, int32_t& bestMatchDist) const;
+                       const FindPathParams& fpp, int32_t& bestMatchDist) const;
 
 		bool isInRange(const Position& startPos, const Position& testPos,
-		               const FindPathParams& fpp) const;
+                      const FindPathParams& fpp) const;
 
 	private:
 		Position targetPos;
@@ -312,7 +312,7 @@ class Creature : virtual public Thing
 		}
 		virtual bool setAttackedCreature(Creature* creature);
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
-		                             bool checkDefense = false, bool checkArmor = false, bool field = false);
+                                    bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster);
 
@@ -327,8 +327,8 @@ class Creature : virtual public Thing
 			return master != nullptr;
 		}
 		/**
-		 * hasBeenSummoned doesn't guarantee master still exists
-		 */
+        * hasBeenSummoned doesn't guarantee master still exists
+        */
 		bool hasBeenSummoned() const {
 			return summoned;
 		}
@@ -431,14 +431,14 @@ class Creature : virtual public Thing
 
 		void onAddTileItem(const Tile* tile, const Position& pos);
 		virtual void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem,
-		                              const ItemType& oldType, const Item* newItem, const ItemType& newType);
+                                     const ItemType& oldType, const Item* newItem, const ItemType& newType);
 		virtual void onRemoveTileItem(const Tile* tile, const Position& pos, const ItemType& iType,
-		                              const Item* item);
+                                     const Item* item);
 
 		virtual void onCreatureAppear(Creature* creature, bool isLogin);
 		virtual void onRemoveCreature(Creature* creature, bool isLogout);
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-		                            const Tile* oldTile, const Position& oldPos, bool teleport);
+                                   const Tile* oldTile, const Position& oldPos, bool teleport);
 
 		virtual void onAttackedCreatureDisappear(bool) {}
 		virtual void onFollowCreatureDisappear(bool) {}
@@ -544,13 +544,13 @@ class Creature : virtual public Thing
 		Creature* followCreature = nullptr;
 
 		/**
-		 * We need to persist if this creature is summon or not because when we
-		 * increment the bestiary count, the master might be gone before we can
-		 * check if this summon has a master and mistakenly count it kill.
-		 *
-		 * @see BestiaryOnKill
-		 * @see Monster::death()
-		 */
+        * We need to persist if this creature is summon or not because when we
+        * increment the bestiary count, the master might be gone before we can
+        * check if this summon has a master and mistakenly count it kill.
+        *
+        * @see BestiaryOnKill
+        * @see Monster::death()
+        */
 		bool summoned = false;
 
 		uint64_t lastStep = 0;
@@ -628,7 +628,7 @@ class Creature : virtual public Thing
 
 		friend class Game;
 		friend class Map;
-		friend class LuaScriptInterface;
+		friend class CreatureFunctions;
 };
 
-#endif
+#endif  // SRC_CREATURES_CREATURE_H_

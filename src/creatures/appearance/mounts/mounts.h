@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_MOUNTS_H_73716D11906A4C5C9F4A7B68D34C9BA6
-#define FS_MOUNTS_H_73716D11906A4C5C9F4A7B68D34C9BA6
+#ifndef SRC_CREATURES_APPEARANCE_MOUNTS_MOUNTS_H_
+#define SRC_CREATURES_APPEARANCE_MOUNTS_MOUNTS_H_
 
 #include <utility>
 #include <string>
@@ -55,4 +55,4 @@ class Mounts
 		std::vector<Mount> mounts;
 };
 
-#endif
+#endif  // SRC_CREATURES_APPEARANCE_MOUNTS_MOUNTS_H_

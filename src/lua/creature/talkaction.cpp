@@ -24,18 +24,15 @@
 #include "utils/pugicast.h"
 
 TalkActions::TalkActions()
-	: scriptInterface("TalkAction Interface")
-{
+	: scriptInterface("TalkAction Interface") {
 	scriptInterface.initState();
 }
 
-TalkActions::~TalkActions()
-{
+TalkActions::~TalkActions() {
 	clear(false);
 }
 
-void TalkActions::clear(bool fromLua)
-{
+void TalkActions::clear(bool fromLua) {
 	for (auto it = talkActions.begin(); it != talkActions.end(); ) {
 		if (fromLua == it->second.fromLua) {
 			it = talkActions.erase(it);
@@ -47,26 +44,22 @@ void TalkActions::clear(bool fromLua)
 	reInitState(fromLua);
 }
 
-LuaScriptInterface& TalkActions::getScriptInterface()
-{
+LuaScriptInterface& TalkActions::getScriptInterface() {
 	return scriptInterface;
 }
 
-std::string TalkActions::getScriptBaseName() const
-{
+std::string TalkActions::getScriptBaseName() const {
 	return "talkactions";
 }
 
-Event_ptr TalkActions::getEvent(const std::string& nodeName)
-{
+Event_ptr TalkActions::getEvent(const std::string& nodeName) {
 	if (strcasecmp(nodeName.c_str(), "talkaction") != 0) {
 		return nullptr;
 	}
 	return Event_ptr(new TalkAction(&scriptInterface));
 }
 
-bool TalkActions::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
+bool TalkActions::registerEvent(Event_ptr event, const pugi::xml_node&) {
 	TalkAction_ptr talkAction{static_cast<TalkAction*>(event.release())}; // event is guaranteed to be a TalkAction
 	std::vector<std::string> words = talkAction->getWordsMap();
 
@@ -81,8 +74,7 @@ bool TalkActions::registerEvent(Event_ptr event, const pugi::xml_node&)
 	return true;
 }
 
-bool TalkActions::registerLuaEvent(TalkAction* event)
-{
+bool TalkActions::registerLuaEvent(TalkAction* event) {
 	TalkAction_ptr talkAction{ event };
 	std::vector<std::string> words = talkAction->getWordsMap();
 
@@ -97,8 +89,7 @@ bool TalkActions::registerLuaEvent(TalkAction* event)
 	return true;
 }
 
-TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const
-{
+TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const {
 	size_t wordsLength = words.length();
 	for (auto it = talkActions.begin(); it != talkActions.end(); ) {
 		const std::string& talkactionWords = it->first;
@@ -139,12 +130,11 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 	return TALKACTION_CONTINUE;
 }
 
-bool TalkAction::configureEvent(const pugi::xml_node& node)
-{
+bool TalkAction::configureEvent(const pugi::xml_node& node) {
 	pugi::xml_attribute wordsAttribute = node.attribute("words");
 	if (!wordsAttribute) {
 		SPDLOG_ERROR("[TalkAction::configureEvent] "
-                     "Missing words for talkaction or spell");
+                    "Missing words for talkaction or spell");
 		return false;
 	}
 
@@ -159,18 +149,16 @@ bool TalkAction::configureEvent(const pugi::xml_node& node)
 	return true;
 }
 
-std::string TalkAction::getScriptEventName() const
-{
+std::string TalkAction::getScriptEventName() const {
 	return "onSay";
 }
 
-bool TalkAction::executeSay(Player* player, const std::string& words, const std::string& param, SpeakClasses type) const
-{
+bool TalkAction::executeSay(Player* player, const std::string& words, const std::string& param, SpeakClasses type) const {
 	//onSay(player, words, param, type)
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[TalkAction::executeSay - Player {} words {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     player->getName(), getWords());
+                    "Call stack overflow. Too many lua script calls being nested.",
+                    player->getName(), getWords());
 		return false;
 	}
 

@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_MAP_H_E3953D57C058461F856F5221D359DAFA
-#define FS_MAP_H_E3953D57C058461F856F5221D359DAFA
+#ifndef SRC_MAP_MAP_H_
+#define SRC_MAP_MAP_H_
 
 #include "game/movement/position.h"
 #include "items/item.h"
@@ -182,71 +182,71 @@ class Map
 		uint32_t clean() const;
 
 		/**
-		  * Load a map.
-		  * \returns true if the map was loaded successfully
-		  */
+         * Load a map.
+         * \returns true if the map was loaded successfully
+         */
 		bool loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs);
 
 		/**
-		  * Save a map.
-		  * \returns true if the map was saved successfully
-		  */
+         * Save a map.
+         * \returns true if the map was saved successfully
+         */
 		static bool save();
 
 		/**
-		  * Get a single tile.
-		  * \returns A pointer to that tile.
-		  */
+         * Get a single tile.
+         * \returns A pointer to that tile.
+         */
 		Tile* getTile(uint16_t x, uint16_t y, uint8_t z) const;
 		Tile* getTile(const Position& pos) const {
 			return getTile(pos.x, pos.y, pos.z);
 		}
 
 		/**
-		  * Set a single tile.
-		  */
+         * Set a single tile.
+         */
 		void setTile(uint16_t x, uint16_t y, uint8_t z, Tile* newTile);
 		void setTile(const Position& pos, Tile* newTile) {
 			setTile(pos.x, pos.y, pos.z, newTile);
 		}
 
 		/**
-		  * Place a creature on the map
-		  * \param centerPos The position to place the creature
-		  * \param creature Creature to place on the map
-		  * \param extendedPos If true, the creature will in first-hand be placed 2 tiles away
-		  * \param forceLogin If true, placing the creature will not fail becase of obstacles (creatures/chests)
-		  */
+         * Place a creature on the map
+         * \param centerPos The position to place the creature
+         * \param creature Creature to place on the map
+         * \param extendedPos If true, the creature will in first-hand be placed 2 tiles away
+         * \param forceLogin If true, placing the creature will not fail becase of obstacles (creatures/chests)
+         */
 		bool placeCreature(const Position& centerPos, Creature* creature, bool extendedPos = false, bool forceLogin = false);
 
 		void moveCreature(Creature& creature, Tile& newTile, bool forceTeleport = false);
 
 		void getSpectators(SpectatorHashSet& spectators, const Position& centerPos, bool multifloor = false, bool onlyPlayers = false,
-						   int32_t minRangeX = 0, int32_t maxRangeX = 0,
-						   int32_t minRangeY = 0, int32_t maxRangeY = 0);
+                           int32_t minRangeX = 0, int32_t maxRangeX = 0,
+                           int32_t minRangeY = 0, int32_t maxRangeY = 0);
 
 		void clearSpectatorCache();
 
 		/**
-		  * Checks if you can throw an object to that position
-		  *	\param fromPos from Source point
-		  *	\param toPos Destination point
-		  *	\param rangex maximum allowed range horizontially
-		  *	\param rangey maximum allowed range vertically
-		  *	\param checkLineOfSight checks if there is any blocking objects in the way
-		  *	\returns The result if you can throw there or not
-		  */
+         * Checks if you can throw an object to that position
+         *	\param fromPos from Source point
+         *	\param toPos Destination point
+         *	\param rangex maximum allowed range horizontially
+         *	\param rangey maximum allowed range vertically
+         *	\param checkLineOfSight checks if there is any blocking objects in the way
+         *	\returns The result if you can throw there or not
+         */
 		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
-							  int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
+                              int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
 
 		/**
-		  * Checks if path is clear from fromPos to toPos
-		  * Notice: This only checks a straight line if the path is clear, for path finding use getPathTo.
-		  *	\param fromPos from Source point
-		  *	\param toPos Destination point
-		  *	\param floorCheck if true then view is not clear if fromPos.z is not the same as toPos.z
-		  *	\returns The result if there is no obstacles
-		  */
+         * Checks if path is clear from fromPos to toPos
+         * Notice: This only checks a straight line if the path is clear, for path finding use getPathTo.
+         *	\param fromPos from Source point
+         *	\param toPos Destination point
+         *	\param floorCheck if true then view is not clear if fromPos.z is not the same as toPos.z
+         *	\returns The result if there is no obstacles
+         */
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool floorCheck) const;
 		bool checkSightLine(const Position& fromPos, const Position& toPos) const;
 
@@ -283,12 +283,13 @@ class Map
 
 		// Actually scans the map for spectators
 		void getSpectatorsInternal(SpectatorHashSet& spectators, const Position& centerPos,
-								   int32_t minRangeX, int32_t maxRangeX,
-								   int32_t minRangeY, int32_t maxRangeY,
-								   int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const;
+                                   int32_t minRangeX, int32_t maxRangeX,
+                                   int32_t minRangeY, int32_t maxRangeY,
+                                   int32_t minRangeZ, int32_t maxRangeZ,
+                                   bool onlyPlayers) const;
 
 		friend class Game;
 		friend class IOMap;
 };
 
-#endif
+#endif  // SRC_MAP_MAP_H_

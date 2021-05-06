@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_DATABASETASKS_H_9CBA08E9F5FEBA7275CCEE6560059576
-#define FS_DATABASETASKS_H_9CBA08E9F5FEBA7275CCEE6560059576
+#ifndef SRC_DATABASE_DATABASETASKS_H_
+#define SRC_DATABASE_DATABASETASKS_H_
 
 #include <condition_variable>
 #include "utils/thread_holder_base.h"
@@ -59,4 +59,4 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 
 extern DatabaseTasks g_databaseTasks;
 
-#endif
+#endif  // SRC_DATABASE_DATABASETASKS_H_

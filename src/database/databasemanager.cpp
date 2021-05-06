@@ -21,6 +21,7 @@
 
 #include "config/configmanager.h"
 #include "database/databasemanager.h"
+#include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.h"
 
 extern ConfigManager g_config;
@@ -97,20 +98,7 @@ void DatabaseManager::updateDatabase()
 
 	luaL_openlibs(L);
 
-#ifndef LUAJIT_VERSION
-	// Bit operations for Lua, based on bitlib project release 24
-	// Bit.bnot, bit.band, bit.bor, bit.bxor, bit.lshift, bit.rshift
-	luaL_register(L, "bit", LuaScriptInterface::luaBitReg);
-#endif
-
-	// Db table
-	luaL_register(L, "db", LuaScriptInterface::luaDatabaseTable);
-
-	// Result table
-	luaL_register(L, "result", LuaScriptInterface::luaResultTable);
-
-	// Spdlog table
-	luaL_register(L, "Spdlog", LuaScriptInterface::luaSpdlogTable);
+	CoreLibsFunctions::init(L);
 
 	int32_t version = getDatabaseVersion();
 	do {

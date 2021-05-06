@@ -1,6 +1,6 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_NPC_H_9F5EEFE64314418CA7DA41D1B9409DD0
-#define FS_NPC_H_9F5EEFE64314418CA7DA41D1B9409DD0
+#ifndef SRC_CREATURES_NPCS_NPC_H_
+#define SRC_CREATURES_NPCS_NPC_H_
 
 #include "npcs.h"
 #include "items/tile.h"
@@ -129,9 +129,9 @@ class Npc final : public Creature
 		void resetPlayerInteractions();
 
 		bool isInteractingWithPlayer(uint32_t playerId) {
-		  if (playerInteractions.find(playerId) == playerInteractions.end()) {
-		    return false;
-		  }
+         if (playerInteractions.find(playerId) == playerInteractions.end()) {
+           return false;
+         }
 			return true;
 		}
 
@@ -197,4 +197,4 @@ class Npc final : public Creature
 		friend class Map;
 };
 
-#endif
+#endif  // SRC_CREATURES_NPCS_NPC_H_

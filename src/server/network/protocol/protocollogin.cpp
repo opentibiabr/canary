@@ -138,11 +138,11 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 
 	msg.skipBytes(17);
 	/*
-	 * Skipped bytes:
-	 * 4 bytes: client version
-	 * 12 bytes: dat, spr, pic signatures (4 bytes each)
-	 * 1 byte: 0
-	 */
+     * Skipped bytes:
+     * 4 bytes: client version
+     * 12 bytes: dat, spr, pic signatures (4 bytes each)
+     * 1 byte: 0
+     */
 
 	if (!Protocol::RSA_decrypt(msg)) {
 		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");

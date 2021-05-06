@@ -1,7 +1,6 @@
 /**
- * @file creaturecallback.h
- * OpenTibiaBR
- * Copyright (C) 2021 Lucas Grossi <lucas.ggrossi@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_CREATURE_CALLBACK_H
-#define FS_CREATURE_CALLBACK_H
+#ifndef SRC_LUA_CALLBACKS_CREATURECALLBACK_H_
+#define SRC_LUA_CALLBACKS_CREATURECALLBACK_H_
 
 #include "otpch.h"
 #include "creatures/creature.h"
 class Creature;
 
-class CreatureCallback
-{
+class CreatureCallback {
 	public:
 		CreatureCallback(LuaScriptInterface* scriptInterface, Creature* targetCreature)
 			: scriptInterface(scriptInterface), targetCreature(targetCreature) {};
@@ -76,4 +74,4 @@ class CreatureCallback
 		lua_State* L;
 };
 
-#endif
+#endif  // SRC_LUA_CALLBACKS_CREATURECALLBACK_H_

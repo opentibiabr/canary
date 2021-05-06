@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_HOUSETILE_H_57D59BEC1CE741D9B142BFC54634505B
-#define FS_HOUSETILE_H_57D59BEC1CE741D9B142BFC54634505B
+#ifndef SRC_MAP_HOUSE_HOUSETILE_H_
+#define SRC_MAP_HOUSE_HOUSETILE_H_
 
 #include "items/tile.h"
 
@@ -51,4 +51,4 @@ class HouseTile final : public DynamicTile
 		House* house;
 };
 
-#endif
+#endif  // SRC_MAP_HOUSE_HOUSETILE_H_

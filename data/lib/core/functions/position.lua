@@ -258,8 +258,8 @@ teleportTo: is where you will teleport the player (it is only necessary to put t
 function Position.hasCreatureInArea(fromPosition, toPosition, removeCreatures, removePlayer, teleportTo)
 	for positionX = fromPosition.x, toPosition.x do
 		for positionY = fromPosition.y, toPosition.y do
-        	for positionZ = fromPosition.z, toPosition.z do
-		        local room = {x = positionX, y = positionY, z= positionZ}
+			for positionZ = fromPosition.z, toPosition.z do
+				local room = {x = positionX, y = positionY, z= positionZ}
 				local tile = Tile(room)
 				if tile then
 					local creatures = tile:getCreatures()

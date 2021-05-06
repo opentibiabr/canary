@@ -20,20 +20,21 @@
 #include "otpch.h"
 #include <csignal>
 
-#include "server/signals.h"
-#include "game/scheduling/tasks.h"
-#include "game/game.h"
-#include "lua/creature/actions.h"
 #include "config/configmanager.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/talkaction.h"
-#include "lua/creature/raids.h"
 #include "creatures/appearance/mounts/mounts.h"
-#include "lua/global/globalevent.h"
+#include "creatures/combat/spells.h"
 #include "creatures/monsters/monster.h"
-#include "lua/creature/events.h"
-#include "game/scheduling/scheduler.h"
 #include "database/databasetasks.h"
+#include "game/game.h"
+#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
+#include "lua/creature/actions.h"
+#include "lua/creature/events.h"
+#include "lua/creature/raids.h"
+#include "lua/creature/talkaction.h"
+#include "lua/global/globalevent.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "server/signals.h"
 
 extern Scheduler g_scheduler;
 extern DatabaseTasks g_databaseTasks;

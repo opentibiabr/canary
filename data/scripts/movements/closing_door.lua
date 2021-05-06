@@ -23,7 +23,7 @@ function closingDoor.onStepIn(creature, item, position, fromPosition)
 	end
 
 	for index, value in ipairs(QuestDoorTable) do
-		 if value.openDoor == item.itemid then
+		if value.openDoor == item.itemid then
 			if player:getStorageValue(item.actionid) ~= -1 then
 				return true
 			else
@@ -34,7 +34,7 @@ function closingDoor.onStepIn(creature, item, position, fromPosition)
 		end
 	end
 	for index, value in ipairs(LevelDoorTable) do
-		 if value.openDoor == item.itemid then
+		if value.openDoor == item.itemid then
 			if item.actionid > 0 and player:getLevel() >= item.actionid - 1000 then
 				return true
 			else

@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_ITEMS_H_4E2221634ABA45FE85BA50F710669B3C
-#define FS_ITEMS_H_4E2221634ABA45FE85BA50F710669B3C
+#ifndef SRC_ITEMS_ITEMS_H_
+#define SRC_ITEMS_ITEMS_H_
 
 #include "utils/const.h"
 #include "utils/enums.h"
@@ -362,4 +362,5 @@ class Items
 		std::vector<ItemType> items;
 		InventoryVector inventory;
 };
-#endif
+
+#endif  // SRC_ITEMS_ITEMS_H_

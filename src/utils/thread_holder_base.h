@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_THREAD_HOLDER_H_BEB56FC46748E71D15A5BF0773ED2E67
-#define FS_THREAD_HOLDER_H_BEB56FC46748E71D15A5BF0773ED2E67
+#ifndef SRC_UTILS_THREAD_HOLDER_H_
+#define SRC_UTILS_THREAD_HOLDER_H_
 
 #include <thread>
 #include <atomic>
@@ -56,4 +56,4 @@ class ThreadHolder
 		std::thread thread;
 };
 
-#endif
+#endif  // SRC_UTILS_THREAD_HOLDER_H_

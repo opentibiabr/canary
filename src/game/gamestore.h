@@ -1,8 +1,6 @@
 /**
- * @file gamestore.h
- * 
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef OT_SRC_GAMESTORE_H_
-#define OT_SRC_GAMESTORE_H_
+#ifndef SRC_GAME_GAMESTORE_H_
+#define SRC_GAME_GAMESTORE_H_
 
 #include "movement/position.h"
 
@@ -161,4 +159,4 @@ class IOGameStore {
 		static HistoryStoreOfferList getHistoryEntries(uint32_t account_id, uint32_t page);
 };
 
-#endif //OTX_GAMESTORE_H
+#endif  // SRC_GAME_GAMESTORE_H_

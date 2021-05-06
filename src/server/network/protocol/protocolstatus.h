@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_STATUS_H_8B28B354D65B4C0483E37AD1CA316EB4
-#define FS_STATUS_H_8B28B354D65B4C0483E37AD1CA316EB4
+#ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLSTATUS_H_
+#define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLSTATUS_H_
 
 #include "server/network/message/networkmessage.h"
 #include "server/network/protocol/protocol.h"
@@ -47,4 +47,4 @@ class ProtocolStatus final : public Protocol
 		static std::map<uint32_t, int64_t> ipConnectMap;
 };
 
-#endif
+#endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLSTATUS_H_

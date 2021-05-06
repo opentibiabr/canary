@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_POSITION_H_5B684192F7034FB8857C8280D2CC6C75
-#define FS_POSITION_H_5B684192F7034FB8857C8280D2CC6C75
+#ifndef SRC_GAME_MOVEMENT_POSITION_H_
+#define SRC_GAME_MOVEMENT_POSITION_H_
 
 #include <string>
 
@@ -146,4 +146,4 @@ struct Position
 std::ostream& operator<<(std::ostream&, const Position&);
 std::ostream& operator<<(std::ostream&, const Direction&);
 
-#endif
+#endif  // SRC_GAME_MOVEMENT_POSITION_H_

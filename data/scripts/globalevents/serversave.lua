@@ -16,19 +16,19 @@ local function serverSave()
 end
 
 local function secondServerSaveWarning()
-	broadcastMessage("Server is saving game in one minute. Please logout.", MESSAGE_ADMINISTRADOR)
+	Game.broadcastMessage("Server is saving game in one minute. Please logout.", MESSAGE_ADMINISTRADOR)
 	addEvent(serverSave, 60000)
 end
 
 local function firstServerSaveWarning()
-	broadcastMessage("Server is saving game in 3 minutes. Please logout.", MESSAGE_ADMINISTRADOR)
+	Game.broadcastMessage("Server is saving game in 3 minutes. Please logout.", MESSAGE_ADMINISTRADOR)
 	addEvent(secondServerSaveWarning, 120000)
 end
 
 local serverSave = GlobalEvent("Server Save")
 
 function serverSave.onTime(interval)
-	broadcastMessage("Server is saving game in 5 minutes. Please logout.", MESSAGE_ADMINISTRADOR)
+	Game.broadcastMessage("Server is saving game in 5 minutes. Please logout.", MESSAGE_ADMINISTRADOR)
 	Game.setGameState(GAME_STATE_STARTUP)
 	addEvent(firstServerSaveWarning, 120000)
 	return not shutdownAtServerSave

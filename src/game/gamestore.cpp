@@ -1,8 +1,6 @@
 /**
- * @file gamestore.cpp
- * 
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,13 +19,12 @@
 
 #include "otpch.h"
 
-#include "game/gamestore.h"
+#include <boost/algorithm/string.hpp>
 
+#include "database/database.h"
+#include "game/gamestore.h"
 #include "utils/pugicast.h"
 #include "utils/tools.h"
-#include "database/database.h"
-
-#include <boost/algorithm/string.hpp>
 
 uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;
 
@@ -126,8 +123,8 @@ bool GameStore::loadFromXml()
 					tmp->addonNumber = (uint8_t) offerNode.attribute("addon").as_uint(0);
 					if (!tmp->femaleLookType || !tmp->maleLookType || tmp->addonNumber > 3) {
 						printXMLError("Error parsing XML outfit offer  - GameStore::loadFromXml",
-									  "data/XML/gamestore.xml",
-									  result);
+									"data/XML/gamestore.xml",
+									result);
 						return false;
 					} else {
 						offer = tmp;
@@ -164,7 +161,7 @@ bool GameStore::loadFromXml()
 
 					if (!tmp->productId || !tmp->count) {
 						printXMLError("Error parsing XML Item Offer - GameStore::loadFromXml",
-									  "data/XML/gamestore.xml", result);
+									"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
@@ -177,7 +174,7 @@ bool GameStore::loadFromXml()
 
 					if (!tmp->productId || !tmp->count) {
 						printXMLError("Error parsing XML Stackable Item Offer - GameStore::loadFromXml",
-									  "data/XML/gamestore.xml", result);
+									"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
@@ -189,7 +186,7 @@ bool GameStore::loadFromXml()
 					tmp->count = (uint16_t) offerNode.attribute("count").as_uint();
 					if (!tmp->productId || !tmp->count) {
 						printXMLError("Error parsing XML Wrappable Item Offer - GameStore::loadFromXml",
-									  "data/XML/gamestore.xml", result);
+									"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
@@ -200,8 +197,10 @@ bool GameStore::loadFromXml()
 					tmp->type = BLESSING;
 					if (!tmp->blessings.size()) {
 						//no number was found
-						printXMLError("Error Parsing XML bless offer - no blessnumber specified  - GameStore::loadFromXml",
-										"data/XML/gamestore.xml", result);
+						printXMLError("Error Parsing XML bless offer - "
+									"no blessnumber specified  - "
+									"GameStore::loadFromXml",
+									"data/XML/gamestore.xml", result);
 						return false;
 					}
 
@@ -225,9 +224,11 @@ bool GameStore::loadFromXml()
 
 					tmp->days = (uint16_t)offerNode.attribute("days").as_uint();
 					if (tmp->days == 0) {
-						printXMLError("Error parsing XML premiumtime offer type - required 'days' attribute not found - GameStore::loadFromXml",
-									  "data/XML/gamestore.xml",
-									  result);
+						printXMLError("Error parsing XML premiumtime offer type "
+									"- required 'days' attribute not found - "
+									"GameStore::loadFromXml",
+									"data/XML/gamestore.xml",
+									result);
 						return false;
 					}
 
@@ -251,7 +252,7 @@ bool GameStore::loadFromXml()
 						offer->state = StoreState_t::NEW;
 					} else if (boost::iequals(offerstate, "sale")) {
 						//offer->state = StoreState_t::SALE;
-					 // TODO: Solve the client crash with sale offers. Probably we need to add the previous price to show the strikethrough text indicating a sale.
+						// TODO: Solve the client crash with sale offers. Probably we need to add the previous price to show the strikethrough text indicating a sale.
 						offer->state = StoreState_t::NORMAL;
 					} else if (boost::iequals(offerstate, "limitedtime")) {
 						offer->state = StoreState_t::LIMITED_TIME;
@@ -259,8 +260,10 @@ bool GameStore::loadFromXml()
 
 					if (!offer->name.length() || !offer->price) {
 						printXMLError(
-								"Error parsing XML - One or more required offer params are missing - GameStore::loadFromXml",
-								"data/XML/gamestore.xml", result);
+							"Error parsing XML - "
+							"One or more required offer params are missing - "
+							"GameStore::loadFromXml",
+							"data/XML/gamestore.xml", result);
 						return false;
 					}
 					offerCount++;
@@ -329,8 +332,8 @@ HistoryStoreOfferList IOGameStore::getHistoryEntries(uint32_t account_id, uint32
 	std::ostringstream query;
 
 	query << "SELECT `description`,`mode`,`coin_amount`,`time` FROM `store_history` WHERE `account_id` = " <<account_id << " ORDER BY `time` DESC LIMIT "
-		  << (std::max<int>((page-1),0)*GameStore::HISTORY_ENTRIES_PER_PAGE)
-		  << "," << GameStore::HISTORY_ENTRIES_PER_PAGE <<";";
+			<< (std::max<int>((page-1), 0)*GameStore::HISTORY_ENTRIES_PER_PAGE)
+			<< "," << GameStore::HISTORY_ENTRIES_PER_PAGE <<";";
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 
 	if (result) {

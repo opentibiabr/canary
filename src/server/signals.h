@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_SIGNALHANDLINGTHREAD_H_01C6BF08B0EFE9E200175D108CF0B35F
-#define FS_SIGNALHANDLINGTHREAD_H_01C6BF08B0EFE9E200175D108CF0B35F
+#ifndef SRC_SERVER_SIGNALS_H_
+#define SRC_SERVER_SIGNALS_H_
 
 #include <boost/asio.hpp>
 
@@ -39,4 +39,4 @@ class Signals
 		static void sigusr1Handler();
 };
 
-#endif
+#endif  // SRC_SERVER_SIGNALS_H_

@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_OUTFIT_H_C56E7A707E3F422C8C93D9BE09916AA3
-#define FS_OUTFIT_H_C56E7A707E3F422C8C93D9BE09916AA3
+#ifndef SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
+#define SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
 
 #include <utility>
 
@@ -65,4 +65,4 @@ class Outfits
 		std::vector<Outfit> outfits[PLAYERSEX_LAST + 1];
 };
 
-#endif
+#endif  // SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_

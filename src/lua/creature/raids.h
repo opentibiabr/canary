@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_RAIDS_H_3583C7C054584881856D55765DEDAFA9
-#define FS_RAIDS_H_3583C7C054584881856D55765DEDAFA9
+#ifndef SRC_LUA_CREATURE_RAIDS_H_
+#define SRC_LUA_CREATURE_RAIDS_H_
 
 #include "utils/const.h"
 #include "game/movement/position.h"
@@ -46,8 +46,7 @@ static constexpr int32_t RAID_MINTICKS = 1000;
 class Raid;
 class RaidEvent;
 
-class Raids
-{
+class Raids {
 	public:
 		Raids();
 		~Raids();
@@ -102,8 +101,7 @@ class Raids
 		bool started = false;
 };
 
-class Raid
-{
+class Raid {
 	public:
 		Raid(std::string initName, uint32_t initInterval, uint32_t initMarginTime, bool initRepeat) :
 			name(std::move(initName)), interval(initInterval), margin(initMarginTime), repeat(initRepeat) {}
@@ -155,8 +153,7 @@ class Raid
 		bool repeat;
 };
 
-class RaidEvent
-{
+class RaidEvent {
 	public:
 		virtual ~RaidEvent() = default;
 
@@ -171,8 +168,7 @@ class RaidEvent
 		uint32_t delay;
 };
 
-class AnnounceEvent final : public RaidEvent
-{
+class AnnounceEvent final : public RaidEvent {
 	public:
 		AnnounceEvent() = default;
 
@@ -185,8 +181,7 @@ class AnnounceEvent final : public RaidEvent
 		MessageClasses messageType = MESSAGE_EVENT_ADVANCE;
 };
 
-class SingleSpawnEvent final : public RaidEvent
-{
+class SingleSpawnEvent final : public RaidEvent {
 	public:
 		bool configureRaidEvent(const pugi::xml_node& eventNode) override;
 
@@ -197,8 +192,7 @@ class SingleSpawnEvent final : public RaidEvent
 		Position position;
 };
 
-class AreaSpawnEvent final : public RaidEvent
-{
+class AreaSpawnEvent final : public RaidEvent {
 	public:
 		bool configureRaidEvent(const pugi::xml_node& eventNode) override;
 
@@ -209,8 +203,7 @@ class AreaSpawnEvent final : public RaidEvent
 		Position fromPos, toPos;
 };
 
-class ScriptEvent final : public RaidEvent, public Event
-{
+class ScriptEvent final : public RaidEvent, public Event {
 	public:
 		explicit ScriptEvent(LuaScriptInterface* interface) : Event(interface) {}
 
@@ -233,4 +226,4 @@ class ScriptEvent final : public RaidEvent, public Event
 		std::string scriptName;
 };
 
-#endif
+#endif  // SRC_LUA_CREATURE_RAIDS_H_

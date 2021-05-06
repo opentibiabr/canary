@@ -19,12 +19,13 @@
 
 #include "otpch.h"
 
-#include "creatures/combat/combat.h"
 #include "config/configmanager.h"
-#include "game/game.h"
-#include "creatures/monsters/monster.h"
-#include "utils/pugicast.h"
+#include "creatures/combat/combat.h"
 #include "creatures/combat/spells.h"
+#include "creatures/monsters/monster.h"
+#include "game/game.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "utils/pugicast.h"
 
 extern Game g_game;
 extern Spells* g_spells;
@@ -213,7 +214,8 @@ std::list<uint16_t> Spells::getSpellsByVocation(uint16_t vocationId)
 		vocSpellsIt = vocSpells.find(vocationId);
 
 		if (vocSpellsIt != vocSpells.end()
-				&& vocSpellsIt->second) {
+				&& vocSpellsIt->second)
+		{
 			spellsList.push_back(it.second.getId());
 		}
 	}
@@ -1055,8 +1057,8 @@ bool InstantSpell::canThrowSpell(const Creature* creature, const Creature* targe
 	const Position& fromPos = creature->getPosition();
 	const Position& toPos = target->getPosition();
 	if (fromPos.z != toPos.z ||
-	        (range == -1 && !g_game.canThrowObjectTo(fromPos, toPos, checkLineOfSight)) ||
-	        (range != -1 && !g_game.canThrowObjectTo(fromPos, toPos, checkLineOfSight, range, range))) {
+            (range == -1 && !g_game.canThrowObjectTo(fromPos, toPos, checkLineOfSight)) ||
+            (range != -1 && !g_game.canThrowObjectTo(fromPos, toPos, checkLineOfSight, range, range))) {
 		return false;
 	}
 	return true;

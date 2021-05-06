@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_MOVEMENT_H_5E0D2626D4634ACA83AC6509518E5F49
-#define FS_MOVEMENT_H_5E0D2626D4634ACA83AC6509518E5F49
+#ifndef SRC_LUA_CREATURE_MOVEMENT_H_
+#define SRC_LUA_CREATURE_MOVEMENT_H_
 
 #include "lua/global/baseevents.h"
 #include "items/item.h"
-#include "lua/scripts/luascript.h"
+#include "lua/functions/events/move_event_functions.hpp"
 #include "creatures/players/vocations/vocation.h"
 
 extern Vocations g_vocations;
@@ -50,8 +50,7 @@ struct MoveEventList {
 
 using VocEquipMap = std::map<uint16_t, bool>;
 
-class MoveEvents final : public BaseEvents
-{
+class MoveEvents final : public BaseEvents {
 	public:
 		MoveEvents();
 		~MoveEvents();
@@ -103,8 +102,7 @@ using StepFunction = std::function<uint32_t(Creature* creature, Item* item, cons
 using MoveFunction = std::function<uint32_t(Item* item, Item* tileItem, const Position& pos)>;
 using EquipFunction = std::function<uint32_t(MoveEvent* moveEvent, Player* player, Item* item, slots_t slot, bool boolean)>;
 
-class MoveEvent final : public Event
-{
+class MoveEvent final : public Event {
 	public:
 		explicit MoveEvent(LuaScriptInterface* interface);
 
@@ -248,4 +246,4 @@ class MoveEvent final : public Event
 		std::vector<Position> posList;
 };
 
-#endif
+#endif  // SRC_LUA_CREATURE_MOVEMENT_H_

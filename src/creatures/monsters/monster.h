@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_MONSTER_H_9F5EEFE64314418CA7DA41D1B9409DD0
-#define FS_MONSTER_H_9F5EEFE64314418CA7DA41D1B9409DD0
+#ifndef SRC_CREATURES_MONSTERS_MONSTER_H_
+#define SRC_CREATURES_MONSTERS_MONSTER_H_
 
 #include "items/tile.h"
 #include "creatures/monsters/monsters.h"
@@ -198,7 +198,7 @@ class Monster final : public Creature
 		}
 
 		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
-							 bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+                              bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 		static uint32_t monsterAutoID;
 
@@ -263,10 +263,10 @@ class Monster final : public Creature
 
 		bool canUseAttack(const Position& pos, const Creature* target) const;
 		bool canUseSpell(const Position& pos, const Position& targetPos,
-						 const spellBlock_t& sb, uint32_t interval, bool& inRange, bool& resetTicks);
+                         const spellBlock_t& sb, uint32_t interval, bool& inRange, bool& resetTicks);
 		bool getRandomStep(const Position& creaturePos, Direction& direction) const;
 		bool getDanceStep(const Position& creaturePos, Direction& direction,
-						  bool keepAttack = true, bool keepDistance = true);
+                           bool keepAttack = true, bool keepDistance = true);
 		bool isInSpawnRange(const Position& pos) const;
 		bool canWalkTo(Position pos, Direction direction) const;
 
@@ -300,8 +300,8 @@ class Monster final : public Creature
 			return !randomStepping;
 		}
 
-		friend class LuaScriptInterface;
+		friend class MonsterFunctions;
 		friend class Map;
 };
 
-#endif
+#endif  // SRC_CREATURES_MONSTERS_MONSTER_H_

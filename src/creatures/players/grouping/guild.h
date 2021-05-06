@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_GUILD_H_C00F0A1D732E4BA88FF62ACBE74D76BC
-#define FS_GUILD_H_C00F0A1D732E4BA88FF62ACBE74D76BC
+#ifndef SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
+#define SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_
 
 class Player;
 
@@ -88,4 +88,4 @@ class Guild
 		uint32_t memberCount = 0;
 };
 
-#endif
+#endif  // SRC_CREATURES_PLAYERS_GROUPING_GUILD_H_

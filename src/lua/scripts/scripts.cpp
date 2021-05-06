@@ -19,18 +19,20 @@
 
 #include "otpch.h"
 
-#include "lua/creature/actions.h"
-#include "creatures/interactions/chat.h"
-#include "lua/creature/talkaction.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/movement.h"
-#include "items/weapons/weapons.h"
-#include "lua/global/globalevent.h"
-#include "lua/creature/events.h"
-#include "lua/scripts/scripts.h"
-#include "lua/modules/modules.h"
-#include "creatures/players/imbuements/imbuements.h"
 #include <boost/filesystem.hpp>
+
+#include "creatures/combat/spells.h"
+#include "creatures/interactions/chat.h"
+#include "creatures/players/imbuements/imbuements.h"
+#include "items/weapons/weapons.h"
+#include "lua/creature/actions.h"
+#include "lua/creature/events.h"
+#include "lua/creature/movement.h"
+#include "lua/creature/talkaction.h"
+#include "lua/global/globalevent.h"
+#include "lua/modules/modules.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.h"
 
 Actions* g_actions = nullptr;
 CreatureEvents* g_creatureEvents = nullptr;
@@ -49,13 +51,11 @@ extern LuaEnvironment g_luaEnvironment;
 extern ConfigManager g_config;
 
 Scripts::Scripts() :
-	scriptInterface("Scripts Interface")
-{
+	scriptInterface("Scripts Interface") {
 	scriptInterface.initState();
 }
 
-Scripts::~Scripts()
-{
+Scripts::~Scripts() {
 	scriptInterface.reInitState();
 
 	delete g_events;
@@ -71,8 +71,7 @@ Scripts::~Scripts()
 	delete g_imbuements;
 }
 
-bool Scripts::loadScriptSystems()
-{
+bool Scripts::loadScriptSystems() {
 	g_chat = new Chat();
 
 	// XML loads disabled start
@@ -117,8 +116,7 @@ bool Scripts::loadScriptSystems()
 	return true;
 }
 
-bool Scripts::loadEventSchedulerScripts(const std::string& fileName)
-{
+bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 	namespace fs = boost::filesystem;
 
 	const auto dir = fs::current_path() / "data" / "events" / "scripts" / "scheduler";
@@ -143,8 +141,7 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName)
 	return false;
 }
 
-bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
-{
+bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 	namespace fs = boost::filesystem;
 
 	const auto dir = fs::current_path() / "data" / folderName;

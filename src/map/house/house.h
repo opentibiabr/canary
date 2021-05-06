@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_HOUSE_H_EB9732E7771A438F9CD0EFA8CB4C58C4
-#define FS_HOUSE_H_EB9732E7771A438F9CD0EFA8CB4C58C4
+#ifndef SRC_MAP_HOUSE_HOUSE_H_
+#define SRC_MAP_HOUSE_HOUSE_H_
 
 #include <set>
 #include <unordered_set>
@@ -136,9 +136,9 @@ class House
 		void updateDoorDescription() const;
 
 		bool canEditAccessList(uint32_t listId, const Player* player);
-		// listId special values:
-		// GUEST_LIST	 guest list
-		// SUBOWNER_LIST subowner list
+		// listId special = values:
+		// GUEST_LIST = guest list
+		// SUBOWNER_LIST = subowner list
 		void setAccessList(uint32_t listId, const std::string& textlist);
 		bool getAccessList(uint32_t listId, std::string& list) const;
 
@@ -312,4 +312,4 @@ class Houses
 		HouseMap houseMap;
 };
 
-#endif
+#endif  // SRC_MAP_HOUSE_HOUSE_H_

@@ -17,13 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_COMBAT_H_B02CE79230FC43708699EE91FCC8F7CC
-#define FS_COMBAT_H_B02CE79230FC43708699EE91FCC8F7CC
+#ifndef SRC_CREATURES_COMBAT_COMBAT_H_
+#define SRC_CREATURES_COMBAT_COMBAT_H_
 
-#include "items/thing.h"
 #include "creatures/combat/condition.h"
-#include "map/map.h"
+#include "items/thing.h"
 #include "lua/global/baseevents.h"
+#include "map/map.h"
 
 class Condition;
 class Creature;
@@ -358,4 +358,4 @@ class MagicField final : public Item
 		int64_t createTime;
 };
 
-#endif
+#endif  // SRC_CREATURES_COMBAT_COMBAT_H_

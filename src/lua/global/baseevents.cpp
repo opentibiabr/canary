@@ -20,14 +20,13 @@
 #include "otpch.h"
 
 #include "lua/global/baseevents.h"
-
+#include "lua/scripts/lua_environment.hpp"
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 
 extern LuaEnvironment g_luaEnvironment;
 
-bool BaseEvents::loadFromXml()
-{
+bool BaseEvents::loadFromXml() {
 	if (loaded) {
 		SPDLOG_ERROR("[BaseEvents::loadFromXml] - It's already loaded.");
 		return false;
@@ -36,9 +35,9 @@ bool BaseEvents::loadFromXml()
 	std::string scriptsName = getScriptBaseName();
 	std::string basePath = "data/" + scriptsName + "/";
 	if (getScriptInterface().loadFile(basePath + "lib/" +
-                                     scriptsName + ".lua") == -1) {
+                                      scriptsName + ".lua") == -1) {
 		SPDLOG_WARN("[BaseEvents::loadFromXml] - Can not load {}lib/{}.lua",
-                    scriptsName, scriptsName);
+					scriptsName, scriptsName);
 	}
 
 	std::string filename = basePath + scriptsName + ".xml";
@@ -85,15 +84,13 @@ bool BaseEvents::loadFromXml()
 	return true;
 }
 
-bool BaseEvents::reload()
-{
+bool BaseEvents::reload() {
 	loaded = false;
 	clear(false);
 	return loadFromXml();
 }
 
-void BaseEvents::reInitState(bool fromLua)
-{
+void BaseEvents::reInitState(bool fromLua) {
 	if (!fromLua) {
 		getScriptInterface().reInitState();
 	}
@@ -102,15 +99,14 @@ void BaseEvents::reInitState(bool fromLua)
 Event::Event(LuaScriptInterface* interface) : scriptInterface(interface) {}
 
 bool Event::checkScript(const std::string& basePath, const std::string&
-							scriptsName, const std::string& scriptFile) const
-{
+							scriptsName, const std::string& scriptFile) const {
 	LuaScriptInterface* testInterface = g_luaEnvironment.getTestInterface();
 	testInterface->reInitState();
 
 	if (testInterface->loadFile(std::string(basePath + "lib/" + scriptsName +
 															".lua")) == -1) {
 		SPDLOG_WARN("[Event::checkScript] - Can not load {}lib/{}.lua",
-                    scriptsName, scriptsName);
+					scriptsName, scriptsName);
 	}
 
 	if (scriptId != 0) {
@@ -120,7 +116,7 @@ bool Event::checkScript(const std::string& basePath, const std::string&
 
 	if (testInterface->loadFile(basePath + scriptFile) == -1) {
 		SPDLOG_WARN("[Event::checkScript] - Can not load script: {}",
-                    scriptFile);
+					scriptFile);
 		SPDLOG_ERROR(testInterface->getLastLuaError());
 		return false;
 	}
@@ -128,23 +124,22 @@ bool Event::checkScript(const std::string& basePath, const std::string&
 	int32_t id = testInterface->getEvent(getScriptEventName());
 	if (id == -1) {
 		SPDLOG_WARN("[Event::checkScript] - Event "
-                    "{} not found {}", getScriptEventName(), scriptFile);
+					"{} not found {}", getScriptEventName(), scriptFile);
 		return false;
 	}
 	return true;
 }
 
-bool Event::loadScript(const std::string& scriptFile)
-{
+bool Event::loadScript(const std::string& scriptFile) {
 	if ((scriptInterface == nullptr) || scriptId != 0) {
 		SPDLOG_WARN("[Event::loadScript] - ScriptInterface (nullptr), "
-                    "can not load scriptid: {}", scriptId);
+					"can not load scriptid: {}", scriptId);
 		return false;
 	}
 
 	if (scriptInterface->loadFile(scriptFile) == -1) {
 		SPDLOG_WARN("[Event::loadScript] - Can not load script: {}",
-                    scriptFile);
+					scriptFile);
 		SPDLOG_WARN(scriptInterface->getLastLuaError());
 		return false;
 	}
@@ -152,7 +147,7 @@ bool Event::loadScript(const std::string& scriptFile)
 	int32_t id = scriptInterface->getEvent(getScriptEventName());
 	if (id == -1) {
 		SPDLOG_WARN("[Event::loadScript] - Event {} not found {}",
-                    getScriptEventName(), scriptFile);
+					getScriptEventName(), scriptFile);
 		return false;
 	}
 
@@ -161,18 +156,17 @@ bool Event::loadScript(const std::string& scriptFile)
 	return true;
 }
 
-bool Event::loadCallback()
-{
+bool Event::loadCallback() {
 	if ((scriptInterface == nullptr) || scriptId != 0) {
 		SPDLOG_WARN("[Event::loadScript] - ScriptInterface (nullptr), "
-                    "can not load scriptid: {}", scriptId);
+					"can not load scriptid: {}", scriptId);
 		return false;
 	}
 
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		SPDLOG_WARN("[Event::loadScript] - Event {} not found",
-                    getScriptEventName());
+					getScriptEventName());
 		return false;
 	}
 
@@ -182,8 +176,7 @@ bool Event::loadCallback()
 }
 
 bool CallBack::loadCallBack(LuaScriptInterface* interface, const std::string&
-																		name)
-{
+																		name) {
 	if (interface == nullptr) {
 		SPDLOG_WARN("[Event::loadScript] - ScriptInterface (nullptr)");
 		return false;
@@ -194,7 +187,7 @@ bool CallBack::loadCallBack(LuaScriptInterface* interface, const std::string&
 	int32_t id = scriptInterface->getEvent(name.c_str());
 	if (id == -1) {
 		SPDLOG_WARN("[Event::loadScript] - Event {} not found",
-                    name);
+					name);
 		return false;
 	}
 

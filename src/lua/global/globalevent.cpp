@@ -28,18 +28,15 @@
 extern ConfigManager g_config;
 
 GlobalEvents::GlobalEvents() :
-	scriptInterface("GlobalEvent Interface")
-{
+	scriptInterface("GlobalEvent Interface") {
 	scriptInterface.initState();
 }
 
-GlobalEvents::~GlobalEvents()
-{
+GlobalEvents::~GlobalEvents() {
 	clear(false);
 }
 
-void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua)
-{
+void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ) {
 		if (fromLua == it->second.fromLua) {
 			it = map.erase(it);
@@ -49,8 +46,7 @@ void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua)
 	}
 }
 
-void GlobalEvents::clear(bool fromLua)
-{
+void GlobalEvents::clear(bool fromLua) {
 	g_scheduler.stopEvent(thinkEventId);
 	thinkEventId = 0;
 	g_scheduler.stopEvent(timerEventId);
@@ -63,16 +59,14 @@ void GlobalEvents::clear(bool fromLua)
 	reInitState(fromLua);
 }
 
-Event_ptr GlobalEvents::getEvent(const std::string& nodeName)
-{
+Event_ptr GlobalEvents::getEvent(const std::string& nodeName) {
 	if (strcasecmp(nodeName.c_str(), "globalevent") != 0) {
 		return nullptr;
 	}
 	return Event_ptr(new GlobalEvent(&scriptInterface));
 }
 
-bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
+bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&) {
 	GlobalEvent_ptr globalEvent{static_cast<GlobalEvent*>(event.release())}; //event is guaranteed to be a GlobalEvent
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
@@ -98,12 +92,11 @@ bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&)
 	}
 
 	SPDLOG_WARN("[GlobalEvents::configureEvent] - "
-                "Duplicate registered globalevent with name: {}", globalEvent->getName());
+				"Duplicate registered globalevent with name: {}", globalEvent->getName());
 	return false;
 }
 
-bool GlobalEvents::registerLuaEvent(GlobalEvent* event)
-{
+bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
 	GlobalEvent_ptr globalEvent{ event };
 	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
 		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
@@ -132,13 +125,11 @@ bool GlobalEvents::registerLuaEvent(GlobalEvent* event)
 	return false;
 }
 
-void GlobalEvents::startup() const
-{
+void GlobalEvents::startup() const {
 	execute(GLOBALEVENT_STARTUP);
 }
 
-void GlobalEvents::timer()
-{
+void GlobalEvents::timer() {
 	time_t now = time(nullptr);
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
@@ -174,12 +165,11 @@ void GlobalEvents::timer()
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		timerEventId = g_scheduler.addEvent(createSchedulerTask(std::max<int64_t>(1000, nextScheduledTime * 1000),
-							                std::bind(&GlobalEvents::timer, this)));
+											std::bind(&GlobalEvents::timer, this)));
 	}
 }
 
-void GlobalEvents::think()
-{
+void GlobalEvents::think() {
 	int64_t now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
@@ -212,8 +202,7 @@ void GlobalEvents::think()
 	}
 }
 
-void GlobalEvents::execute(GlobalEvent_t type) const
-{
+void GlobalEvents::execute(GlobalEvent_t type) const {
 	for (const auto& it : serverMap) {
 		const GlobalEvent& globalEvent = it.second;
 		if (globalEvent.getEventType() == type) {
@@ -222,8 +211,7 @@ void GlobalEvents::execute(GlobalEvent_t type) const
 	}
 }
 
-GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type)
-{
+GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	// TODO: This should be better implemented. Maybe have a map for every type.
 	switch (type) {
 		case GLOBALEVENT_NONE: return thinkMap;
@@ -246,8 +234,7 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type)
 
 GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Event(interface) {}
 
-bool GlobalEvent::configureEvent(const pugi::xml_node& node)
-{
+bool GlobalEvent::configureEvent(const pugi::xml_node& node) {
 	pugi::xml_attribute nameAttribute = node.attribute("name");
 	if (!nameAttribute) {
 		SPDLOG_ERROR("[GlobalEvent::configureEvent] - Missing name for a globalevent");
@@ -276,8 +263,8 @@ bool GlobalEvent::configureEvent(const pugi::xml_node& node)
 			min = params[1];
 			if (min < 0 || min > 59) {
 				SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                             "Invalid minute {} for globalevent with name: {}",
-                             attr.as_string(), name);
+                              "Invalid minute {} for globalevent with name: {}",
+                              attr.as_string(), name);
 				return false;
 			}
 
@@ -324,14 +311,13 @@ bool GlobalEvent::configureEvent(const pugi::xml_node& node)
 		nextExecution = OTSYS_TIME() + interval;
 	} else {
 		SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                     "No interval for globalevent with name: {}", name);
+                    "No interval for globalevent with name: {}", name);
 		return false;
 	}
 	return true;
 }
 
-std::string GlobalEvent::getScriptEventName() const
-{
+std::string GlobalEvent::getScriptEventName() const {
 	switch (eventType) {
 		case GLOBALEVENT_STARTUP: return "onStartup";
 		case GLOBALEVENT_SHUTDOWN: return "onShutdown";
@@ -346,8 +332,8 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 	//onPeriodChange(lightState, lightTime)
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executePeriodChange - {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     getName());
+                    "Call stack overflow. Too many lua script calls being nested.",
+                    getName());
 		return false;
 	}
 
@@ -362,13 +348,12 @@ bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightIn
 	return scriptInterface->callFunction(2);
 }
 
-bool GlobalEvent::executeRecord(uint32_t current, uint32_t old)
-{
+bool GlobalEvent::executeRecord(uint32_t current, uint32_t old) {
 	//onRecord(current, old)
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executeRecord - {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     getName());
+                    "Call stack overflow. Too many lua script calls being nested.",
+                    getName());
 		return false;
 	}
 
@@ -383,12 +368,11 @@ bool GlobalEvent::executeRecord(uint32_t current, uint32_t old)
 	return scriptInterface->callFunction(2);
 }
 
-bool GlobalEvent::executeEvent() const
-{
+bool GlobalEvent::executeEvent() const {
 	if (!scriptInterface->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executeEvent - {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     getName());
+                    "Call stack overflow. Too many lua script calls being nested.",
+                    getName());
 		return false;
 	}
 

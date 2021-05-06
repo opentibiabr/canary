@@ -22,20 +22,21 @@
 #include <fstream>
 
 #include "config/configmanager.h"
+#include "creatures/combat/spells.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
-#include "lua/creature/events.h"
 #include "game/game.h"
+#include "game/scheduling/scheduler.h"
 #include "io/iomarket.h"
+#include "lua/creature/events.h"
 #include "lua/modules/modules.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.h"
+#include "security/rsa.h"
 #include "server/network/protocol/protocollogin.h"
 #include "server/network/protocol/protocolstatus.h"
-#include "security/rsa.h"
-#include "game/scheduling/scheduler.h"
-#include "lua/scripts/scripts.h"
-#include "creatures/combat/spells.h"
-#include "server/server.h"
 #include "server/network/webhook/webhook.h"
+#include "server/server.h"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"

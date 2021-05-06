@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_THING_H_6F16A8E566AF4ACEAE02CF32A7246144
-#define FS_THING_H_6F16A8E566AF4ACEAE02CF32A7246144
+#ifndef SRC_ITEMS_THING_H_
+#define SRC_ITEMS_THING_H_
 
 #include "game/movement/position.h"
 
@@ -82,4 +82,4 @@ class Thing
 		}
 };
 
-#endif
+#endif  // SRC_ITEMS_THING_H_

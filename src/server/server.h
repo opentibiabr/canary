@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_SERVER_H_984DA68ABF744127850F90CC710F281B
-#define FS_SERVER_H_984DA68ABF744127850F90CC710F281B
+#ifndef SRC_SERVER_SERVER_H_
+#define SRC_SERVER_SERVER_H_
 
 #include "server/network/connection/connection.h"
 #include "server/signals.h"
@@ -146,10 +146,10 @@ bool ServiceManager::add(uint16_t port)
 
 		if (service_port->is_single_socket() || ProtocolType::server_sends_first) {
 			SPDLOG_ERROR("[ServiceManager::add] - "
-                         "{} and {} cannot use the same port {}",
-                         ProtocolType::protocol_name(),
-                         service_port->get_protocol_names(),
-                         port);
+												"{} and {} cannot use the same port {}",
+												ProtocolType::protocol_name(),
+												service_port->get_protocol_names(),
+												port);
 			return false;
 		}
 	}
@@ -157,4 +157,4 @@ bool ServiceManager::add(uint16_t port)
 	return service_port->add_service(std::make_shared<Service<ProtocolType>>());
 }
 
-#endif
+#endif  // SRC_SERVER_SERVER_H_

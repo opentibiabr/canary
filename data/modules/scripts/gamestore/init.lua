@@ -185,7 +185,7 @@ GameStore.DefaultDescriptions = {
 GameStore.isItsPacket = function(byte)
 	for k, v in pairs(GameStore.RecivedPackets) do
 		if v == byte then
-		  return true
+			return true
 		end
 	end
 	return false

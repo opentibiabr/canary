@@ -215,7 +215,7 @@ void Monster::onRemoveCreature(Creature* creature, bool isLogout)
 }
 
 void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-							 const Tile* oldTile, const Position& oldPos, bool teleport)
+                              const Tile* oldTile, const Position& oldPos, bool teleport)
 {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
@@ -671,7 +671,7 @@ void Monster::onFollowCreatureComplete(const Creature* creature)
 }
 
 BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
-							  bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */)
+                              bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */)
 {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
 
@@ -941,7 +941,7 @@ bool Monster::canUseAttack(const Position& pos, const Creature* target) const
 }
 
 bool Monster::canUseSpell(const Position& pos, const Position& targetPos,
-						  const spellBlock_t& sb, uint32_t interval, bool& inRange, bool& resetTicks)
+                           const spellBlock_t& sb, uint32_t interval, bool& inRange, bool& resetTicks)
 {
 	inRange = true;
 
@@ -1290,7 +1290,7 @@ bool Monster::getRandomStep(const Position& creaturePos, Direction& moveDirectio
 }
 
 bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection,
-						   bool keepAttack /*= true*/, bool keepDistance /*= true*/)
+                           bool keepAttack /*= true*/, bool keepDistance /*= true*/)
 {
 	bool canDoAttackNow = canUseAttack(creaturePos, attackedCreature);
 

@@ -1,6 +1,6 @@
 /**
  * @file connection.h
- * 
+ *
  * The Forgotten Server - a free and open-source MMORPG server emulator
  * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
  *
@@ -19,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef OT_SRC_CONNECTION_H_
-#define OT_SRC_CONNECTION_H_
+#ifndef SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
+#define SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 
 #include <unordered_set>
 
@@ -146,4 +146,4 @@ class Connection : public std::enable_shared_from_this<Connection>
 		bool receivedLastChar;
 };
 
-#endif
+#endif  // SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_

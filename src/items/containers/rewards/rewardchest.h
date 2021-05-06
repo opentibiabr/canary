@@ -1,8 +1,6 @@
 /**
- * @file rewardchest.h
- * 
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef OT_SRC_REWARDCHEST_H_
-#define OT_SRC_REWARDCHEST_H_
+#ifndef SRC_ITEMS_CONTAINERS_REWARDS_REWARDCHEST_H_
+#define SRC_ITEMS_CONTAINERS_REWARDS_REWARDCHEST_H_
 
 #include "items/containers/container.h"
 
@@ -48,4 +46,4 @@ class RewardChest final : public Container
 		}
 };
 
-#endif
+#endif  // SRC_ITEMS_CONTAINERS_REWARDS_REWARDCHEST_H_

@@ -504,7 +504,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   query << "SELECT `item_count`, `item_id`  FROM `player_stash` WHERE `player_id` = " << player->getGUID();
   if ((result = db.storeQuery(query.str()))) {
     do {
-	  player->addItemOnStash(result->getNumber<uint16_t>("item_id"), result->getNumber<uint32_t>("item_count"));
+      player->addItemOnStash(result->getNumber<uint16_t>("item_id"), result->getNumber<uint32_t>("item_count"));
     } while (result->next());
   }
 
@@ -542,13 +542,13 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	propBestStream.init(Bestattr, attrBestSize);
 
 	for (int i = 0; i <= propBestStream.size(); i++) {
-	 uint16_t raceid_t;
-	 if (propBestStream.read<uint16_t>(raceid_t)) {
-	  MonsterType* tmp_tt = g_monsters.getMonsterTypeByRaceId(raceid_t);
-	  if (tmp_tt) {
-	   player->addBestiaryTrackerList(tmp_tt);
-	  }
-	 }
+     uint16_t raceid_t;
+     if (propBestStream.read<uint16_t>(raceid_t)) {
+      MonsterType* tmp_tt = g_monsters.getMonsterTypeByRaceId(raceid_t);
+      if (tmp_tt) {
+       player->addBestiaryTrackerList(tmp_tt);
+      }
+     }
 	}
 
   } else {

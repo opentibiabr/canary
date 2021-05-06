@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_TALKACTION_H_E6AABAC0F89843469526ADF310F3131C
-#define FS_TALKACTION_H_E6AABAC0F89843469526ADF310F3131C
+#ifndef SRC_LUA_CREATURE_TALKACTION_H_
+#define SRC_LUA_CREATURE_TALKACTION_H_
 
 #include "lua/scripts/luascript.h"
 #include "lua/global/baseevents.h"
@@ -33,8 +33,7 @@ enum TalkActionResult_t {
 	TALKACTION_FAILED,
 };
 
-class TalkAction : public Event
-{
+class TalkAction : public Event {
 	public:
 		explicit TalkAction(LuaScriptInterface* interface) : Event(interface) {}
 
@@ -69,8 +68,7 @@ class TalkAction : public Event
 		std::string separator = "\"";
 };
 
-class TalkActions final : public BaseEvents
-{
+class TalkActions final : public BaseEvents {
 	public:
 		TalkActions();
 		~TalkActions();
@@ -95,4 +93,4 @@ class TalkActions final : public BaseEvents
 		LuaScriptInterface scriptInterface;
 };
 
-#endif
+#endif  // SRC_LUA_CREATURE_TALKACTION_H_

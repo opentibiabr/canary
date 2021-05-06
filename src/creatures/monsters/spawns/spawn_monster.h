@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_SPAWN_H_1A86089E080846A9AE53ED12E7AE863B
-#define FS_SPAWN_H_1A86089E080846A9AE53ED12E7AE863B
+#ifndef SRC_CREATURES_MONSTERS_SPAWNS_SPAWN_MONSTER_H_
+#define SRC_CREATURES_MONSTERS_SPAWNS_SPAWN_MONSTER_H_
 
 #include "items/tile.h"
 #include "game/movement/position.h"
@@ -107,4 +107,4 @@ class SpawnsMonster
 
 static constexpr int32_t NONBLOCKABLE_SPAWN_MONSTER_INTERVAL = 1400;
 
-#endif
+#endif  // SRC_CREATURES_MONSTERS_SPAWNS_SPAWN_MONSTER_H_

@@ -434,7 +434,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
     	damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
     }
 
-	  	Combat::doCombatHealth(player, target, damage, params);
+      	Combat::doCombatHealth(player, target, damage, params);
 	}
 
 	onUsedWeapon(player, item, target->getTile());

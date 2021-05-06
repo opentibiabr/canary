@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_DEFINITIONS_H_877452FEC245450C9F96B8FD268D8963
-#define FS_DEFINITIONS_H_877452FEC245450C9F96B8FD268D8963
+#ifndef SRC_UTILS_DEFINITIONS_H_
+#define SRC_UTILS_DEFINITIONS_H_
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
 static constexpr auto STATUS_SERVER_VERSION = "TFS 1.3";
@@ -79,4 +79,4 @@ static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 
 typedef int error_t;
 
-#endif
+#endif  // SRC_UTILS_DEFINITIONS_H_

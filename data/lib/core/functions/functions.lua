@@ -27,7 +27,7 @@ local start = os.time()
 local linecount = 0
 debug.sethook(function(event, line)
 	linecount = linecount + 1
-	if os.mtime() - start >= 1 then
+	if systemTime() - start >= 1 then
 		if linecount >= 30000 then
 			Spdlog.warn(string.format("[debug.sethook] - Possible infinite loop in file [%s] near line [%d]",
 				debug.getinfo(2).source, line))

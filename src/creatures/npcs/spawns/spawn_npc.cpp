@@ -1,6 +1,6 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ bool SpawnsNpc::isInZone(const Position& centerPos, int32_t radius, const Positi
 	}
 
 	return ((pos.getX() >= centerPos.getX() - radius) && (pos.getX() <= centerPos.getX() + radius) &&
-	        (pos.getY() >= centerPos.getY() - radius) && (pos.getY() <= centerPos.getY() + radius));
+            (pos.getY() >= centerPos.getY() - radius) && (pos.getY() <= centerPos.getY() + radius));
 }
 
 void SpawnNpc::startSpawnNpcCheck()
@@ -262,10 +262,10 @@ void SpawnNpc::cleanup()
 {
 	auto it = spawnedNpcMap.begin();
 	while (it != spawnedNpcMap.end()) {
-	        uint32_t spawnId = it->first;
+            uint32_t spawnId = it->first;
 		Npc* npc = it->second;
-	        if (npc->isRemoved()) {
-		        spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
+            if (npc->isRemoved()) {
+               spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
 			npc->decrementReferenceCounter();
 			it = spawnedNpcMap.erase(it);
 		} else {

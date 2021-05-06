@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_TASKS_H_A66AC384766041E59DCA059DAB6E1976
-#define FS_TASKS_H_A66AC384766041E59DCA059DAB6E1976
+#ifndef SRC_GAME_SCHEDULING_TASKS_H_
+#define SRC_GAME_SCHEDULING_TASKS_H_
 
 #include <condition_variable>
 #include "utils/thread_holder_base.h"
@@ -86,4 +86,4 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 
 extern Dispatcher g_dispatcher;
 
-#endif
+#endif  // SRC_GAME_SCHEDULING_TASKS_H_

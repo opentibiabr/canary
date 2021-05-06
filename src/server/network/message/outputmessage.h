@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_OUTPUTMESSAGE_H_C06AAED85C7A43939F22D229297C0CC1
-#define FS_OUTPUTMESSAGE_H_C06AAED85C7A43939F22D229297C0CC1
+#ifndef SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
+#define SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
 
 #include "server/network/message/networkmessage.h"
 #include "server/network/connection/connection.h"
@@ -107,4 +107,4 @@ class OutputMessagePool
 };
 
 
-#endif
+#endif  // SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_

@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_DATABASE_H_A484B0CDFDE542838F506DCE3D40C693
-#define FS_DATABASE_H_A484B0CDFDE542838F506DCE3D40C693
+#ifndef SRC_DATABASE_DATABASE_H_
+#define SRC_DATABASE_DATABASE_H_
 
 #include <boost/lexical_cast.hpp>
 #include <mysql/mysql.h>
@@ -36,97 +36,34 @@ class Database
 		Database() = default;
 		~Database();
 
-		// non-copyable
+		// Singleton - ensures we don't accidentally copy it.
 		Database(const Database&) = delete;
 		Database& operator=(const Database&) = delete;
 
-		/**
-		 * Singleton implementation.
-		 *
-		 * @return database connection handler singleton
-		 */
-		static Database& getInstance()
-		{
+		static Database& getInstance() {
+			// Guaranteed to be destroyed.
 			static Database instance;
+			// Instantiated on first use.
 			return instance;
 		}
 
-		/**
-		 * Connects to the database
-		 *
-		 * @return true on successful connection, false on error
-		 */
 		bool connect();
 
-    /**
-     * @brief Connect to the database using parameters
-     *
-     * @param host
-     * @param user
-     * @param password
-     * @param database
-     * @param port
-     * @param sock
-     * @return true Success
-     * @return false Fail
-     */
-    bool connect(const char *host, const char *user, const char *password,
-                const char *database, uint32_t port, const char *sock);
+		bool connect(const char *host, const char *user, const char *password,
+                     const char *database, uint32_t port, const char *sock);
 
-    /**
-		 * Executes command.
-		 *
-		 * Executes query which doesn't generates results (eg. INSERT, UPDATE, DELETE...).
-		 *
-		 * @param query command
-		 * @return true on success, false on error
-		 */
 		bool executeQuery(const std::string& query);
 
-		/**
-		 * Queries database.
-		 *
-		 * Executes query which generates results (mostly SELECT).
-		 *
-		 * @return results object (nullptr on error)
-		 */
 		DBResult_ptr storeQuery(const std::string& query);
 
-		/**
-		 * Escapes string for query.
-		 *
-		 * Prepares string to fit SQL queries including quoting it.
-		 *
-		 * @param s string to be escaped
-		 * @return quoted string
-		 */
 		std::string escapeString(const std::string& s) const;
 
-		/**
-		 * Escapes binary stream for query.
-		 *
-		 * Prepares binary stream to fit SQL queries.
-		 *
-		 * @param s binary stream
-		 * @param length stream length
-		 * @return quoted string
-		 */
 		std::string escapeBlob(const char* s, uint32_t length) const;
 
-		/**
-		 * Retrieve id of last inserted row
-		 *
-		 * @return id on success, 0 if last query did not result on any rows with auto_increment keys
-		 */
 		uint64_t getLastInsertId() const {
 			return static_cast<uint64_t>(mysql_insert_id(handle));
 		}
 
-		/**
-		 * Get database engine version
-		 *
-		 * @return the database engine version
-		 */
 		static const char* getClientVersion() {
 			return mysql_get_client_info();
 		}
@@ -136,13 +73,6 @@ class Database
 		}
 
 	private:
-		/**
-		 * Transaction related methods.
-		 *
-		 * Methods for starting, commiting and rolling back transaction. Each of the returns boolean value.
-		 *
-		 * @return true on success, false on error
-		 */
 		bool beginTransaction();
 		bool rollback();
 		bool commit();
@@ -166,8 +96,7 @@ class DBResult
 		DBResult& operator=(const DBResult&) = delete;
 
 		template<typename T>
-		T getNumber(const std::string& s) const
-		{
+		T getNumber(const std::string& s) const {
 			auto it = listNames.find(s);
 			if (it == listNames.end()) {
 				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
@@ -273,4 +202,4 @@ class DBTransaction
 		TransactionStates_t state = STATE_NO_START;
 };
 
-#endif
+#endif  // SRC_DATABASE_DATABASE_H_

@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_CONFIGMANAGER_H_6BDD23BD0B8344F4B7C40E8BE6AF6F39
-#define FS_CONFIGMANAGER_H_6BDD23BD0B8344F4B7C40E8BE6AF6F39
+#ifndef SRC_CONFIG_CONFIGMANAGER_H_
+#define SRC_CONFIG_CONFIGMANAGER_H_
 
 class ConfigManager
 {
@@ -185,4 +185,4 @@ class ConfigManager
 		bool loaded = false;
 };
 
-#endif
+#endif  // SRC_CONFIG_CONFIGMANAGER_H_

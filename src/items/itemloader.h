@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_ITEMLOADER_H_107F1D3EECC94CD0A0F528843010D5D4
-#define FS_ITEMLOADER_H_107F1D3EECC94CD0A0F528843010D5D4
+#ifndef SRC_ITEMS_ITEMLOADER_H_
+#define SRC_ITEMS_ITEMLOADER_H_
 
 #include "io/fileloader.h"
 
@@ -201,4 +201,4 @@ struct lightBlock2 {
 
 #pragma pack()
 /////////OTB specific//////////////
-#endif
+#endif  // SRC_ITEMS_ITEMLOADER_H_

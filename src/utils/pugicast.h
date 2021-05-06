@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_PUGICAST_H_07810DF7954D411EB14A16C3ED2A7548
-#define FS_PUGICAST_H_07810DF7954D411EB14A16C3ED2A7548
+#ifndef SRC_UTILS_PUGICAST_H_
+#define SRC_UTILS_PUGICAST_H_
 
 #include <boost/lexical_cast.hpp>
 
@@ -36,4 +36,4 @@ namespace pugi {
 	}
 }
 
-#endif
+#endif  // SRC_UTILS_PUGICAST_H_

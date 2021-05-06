@@ -1,7 +1,6 @@
 /**
- * @file creaturecallback.h
- * OpenTibiaBR
- * Copyright (C) 2021 Lucas Grossi <lucas.ggrossi@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

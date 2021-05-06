@@ -1,6 +1,6 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
 			return false;
-	  }
+      }
 		int32_t maxHealth = target->getMaxHealth();
 		charmDamage.primary.type = charm->dmgtype;
 		charmDamage.primary.value = ((-maxHealth * (charm->percent)) / 100);

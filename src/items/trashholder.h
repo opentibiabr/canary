@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_TRASHHOLDER_H_BA162024D67B4D388147F5EE06F33098
-#define FS_TRASHHOLDER_H_BA162024D67B4D388147F5EE06F33098
+#ifndef SRC_ITEMS_TRASHHOLDER_H_
+#define SRC_ITEMS_TRASHHOLDER_H_
 
 #include "items/item.h"
 #include "items/cylinder.h"
@@ -54,4 +54,4 @@ class TrashHolder final : public Item, public Cylinder
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t link = LINK_OWNER) override;
 };
 
-#endif
+#endif  // SRC_ITEMS_TRASHHOLDER_H_

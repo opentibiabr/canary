@@ -19,8 +19,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef OT_SRC_MODULE_H_
-#define OT_SRC_MODULE_H_
+#ifndef SRC_LUA_MODULES_MODULES_H_
+#define SRC_LUA_MODULES_MODULES_H_
 
 #include "lua/scripts/luascript.h"
 #include "lua/global/baseevents.h"
@@ -36,8 +36,7 @@ using Module_ptr = std::unique_ptr<Module>;
 
 /**/
 
-class Module final : public Event
-{
+class Module final : public Event {
 	public:
 		explicit Module(LuaScriptInterface* interface);
 
@@ -73,8 +72,7 @@ class Module final : public Event
 		bool loaded;
 };
 
-class Modules final : public BaseEvents
-{
+class Modules final : public BaseEvents {
 	public:
 		Modules();
 
@@ -98,4 +96,4 @@ class Modules final : public BaseEvents
 		LuaScriptInterface scriptInterface;
 };
 
-#endif
+#endif  // SRC_LUA_MODULES_MODULES_H_

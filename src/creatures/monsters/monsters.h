@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_MONSTERS_H_776E8327BCE2450EB7C4A260785E6C0D
-#define FS_MONSTERS_H_776E8327BCE2450EB7C4A260785E6C0D
+#ifndef SRC_CREATURES_MONSTERS_MONSTERS_H_
+#define SRC_CREATURES_MONSTERS_MONSTERS_H_
 
 #include "creatures/creature.h"
 #include "utils/enums.h"
@@ -249,4 +249,4 @@ class Monsters
 		bool loaded = false;
 };
 
-#endif
+#endif  // SRC_CREATURES_MONSTERS_MONSTERS_H_

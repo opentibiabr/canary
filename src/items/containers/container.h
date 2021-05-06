@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_CONTAINER_H_5590165FD8A2451B98D71F13CD3ED8DC
-#define FS_CONTAINER_H_5590165FD8A2451B98D71F13CD3ED8DC
+#ifndef SRC_ITEMS_CONTAINERS_CONTAINER_H_
+#define SRC_ITEMS_CONTAINERS_CONTAINER_H_
 
 #include <queue>
 
@@ -192,4 +192,4 @@ class Container : public Item, public Cylinder
 		friend class IOMapSerialize;
 };
 
-#endif
+#endif  // SRC_ITEMS_CONTAINERS_CONTAINER_H_

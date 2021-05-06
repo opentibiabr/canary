@@ -1,8 +1,6 @@
 /**
- * @file npc.cpp
- *
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,7 +134,7 @@ void Npc::onRemoveCreature(Creature* creature, bool isLogout)
 }
 
 void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
-							 const Tile* oldTile, const Position& oldPos, bool teleport)
+                              const Tile* oldTile, const Position& oldPos, bool teleport)
 {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
@@ -400,7 +398,7 @@ bool Npc::isInSpawnRange(const Position& pos) const
 void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	Creature* creature = g_game.getCreatureByID(playerId);
 	if (!creature) {
-	  return;
+      return;
 	}
 
 	turnToCreature(creature);

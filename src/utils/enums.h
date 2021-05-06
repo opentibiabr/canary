@@ -17,10 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_ENUMS_H_003445999FEE4A67BCECBE918B0124CE
-#define FS_ENUMS_H_003445999FEE4A67BCECBE918B0124CE
+#ifndef SRC_UTILS_ENUMS_H_
+#define SRC_UTILS_ENUMS_H_
 
 #include <list>
+#include "game/movement/position.h"
 
 enum RuleViolationType_t : uint8_t {
 	REPORT_TYPE_NAME = 0,
@@ -821,6 +822,69 @@ struct CombatDamage
 	}
 };
 
+// Lua Interface
+enum {
+	EVENT_ID_LOADING = 1,
+	EVENT_ID_USER = 1000,
+};
+
+enum LuaVariantType_t {
+	VARIANT_NONE,
+
+	VARIANT_NUMBER,
+	VARIANT_POSITION,
+	VARIANT_TARGETPOSITION,
+	VARIANT_STRING,
+};
+
+enum LuaDataType {
+	LuaData_Unknown,
+
+	LuaData_Item,
+	LuaData_Container,
+	LuaData_Teleport,
+	LuaData_Player,
+	LuaData_Monster,
+	LuaData_Npc,
+	LuaData_Tile,
+};
+
+enum ErrorCode_t {
+	LUA_ERROR_PLAYER_NOT_FOUND,
+	LUA_ERROR_CREATURE_NOT_FOUND,
+	LUA_ERROR_NPC_NOT_FOUND,
+	LUA_ERROR_ITEM_NOT_FOUND,
+	LUA_ERROR_THING_NOT_FOUND,
+	LUA_ERROR_TILE_NOT_FOUND,
+	LUA_ERROR_HOUSE_NOT_FOUND,
+	LUA_ERROR_COMBAT_NOT_FOUND,
+	LUA_ERROR_CONDITION_NOT_FOUND,
+	LUA_ERROR_AREA_NOT_FOUND,
+	LUA_ERROR_CONTAINER_NOT_FOUND,
+	LUA_ERROR_VARIANT_NOT_FOUND,
+	LUA_ERROR_VARIANT_UNKNOWN,
+	LUA_ERROR_SPELL_NOT_FOUND
+};
+
+struct LootBlock;
+
+struct LuaVariant {
+	LuaVariantType_t type = VARIANT_NONE;
+	std::string text;
+	Position pos;
+	uint32_t number = 0;
+};
+
+struct LuaTimerEventDesc {
+	int32_t scriptId = -1;
+	int32_t function = -1;
+	std::list<int32_t> parameters;
+	uint32_t eventId = 0;
+
+	LuaTimerEventDesc() = default;
+	LuaTimerEventDesc(LuaTimerEventDesc&& other) = default;
+};
+
 using StashItemList = std::map<uint16_t, uint32_t>;
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
@@ -1110,4 +1174,4 @@ class TeamFinder
 	std::map<uint32_t, uint8_t> membersMap = {}; // list: player:getGuid(), player status
 };
 
-#endif
+#endif  // SRC_UTILS_ENUMS_H_

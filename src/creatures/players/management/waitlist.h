@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_WAITLIST_H_7E4299E552E44F10BC4F4E50BF3D7241
-#define FS_WAITLIST_H_7E4299E552E44F10BC4F4E50BF3D7241
+#ifndef SRC_CREATURES_PLAYERS_MANAGEMENT_WAITLIST_H_
+#define SRC_CREATURES_PLAYERS_MANAGEMENT_WAITLIST_H_
 
 #include "creatures/players/player.h"
 
@@ -39,4 +39,4 @@ class WaitingList
 		std::unique_ptr<WaitListInfo> info;
 };
 
-#endif
+#endif  // SRC_CREATURES_PLAYERS_MANAGEMENT_WAITLIST_H_

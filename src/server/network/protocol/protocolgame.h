@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_PROTOCOLGAME_H_FACA2A2D1A9348B78E8FD7E8003EBB87
-#define FS_PROTOCOLGAME_H_FACA2A2D1A9348B78E8FD7E8003EBB87
+#ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
+#define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
 
 #include <string>
 
@@ -379,7 +379,7 @@ private:
 
 	void sendAddCreature(const Creature *creature, const Position &pos, int32_t stackpos, bool isLogin);
 	void sendMoveCreature(const Creature *creature, const Position &newPos, int32_t newStackPos,
-						  const Position &oldPos, int32_t oldStackPos, bool teleport);
+                         const Position &oldPos, int32_t oldStackPos, bool teleport);
 
 	//containers
 	void sendAddContainerItem(uint8_t cid, uint16_t slot, const Item *item);
@@ -417,11 +417,11 @@ private:
 
 	// translate a floor to clientreadable format
 	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z,
-							 int32_t width, int32_t height, int32_t offset, int32_t &skip);
+                              int32_t width, int32_t height, int32_t offset, int32_t &skip);
 
 	// translate a map area to clientreadable format
 	void GetMapDescription(int32_t x, int32_t y, int32_t z,
-						   int32_t width, int32_t height, NetworkMessage &msg);
+                           int32_t width, int32_t height, NetworkMessage &msg);
 
 	void AddCreature(NetworkMessage &msg, const Creature *creature, bool known, uint32_t remove);
 	void AddPlayerStats(NetworkMessage &msg);
@@ -485,4 +485,4 @@ private:
 	void sendSpecialContainersAvailable();
 };
 
-#endif
+#endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

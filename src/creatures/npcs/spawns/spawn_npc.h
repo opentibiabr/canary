@@ -1,6 +1,6 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_SPAWN_NPC_H_
-#define FS_SPAWN_NPC_H_
+#ifndef SRC_CREATURES_NPCS_SPAWNS_SPAWN_NPC_H_
+#define SRC_CREATURES_NPCS_SPAWNS_SPAWN_NPC_H_
 
 #include "items/tile.h"
 #include "game/movement/position.h"
@@ -107,4 +107,4 @@ class SpawnsNpc
 
 static constexpr int32_t NONBLOCKABLE_SPAWN_NPC_INTERVAL = 1400;
 
-#endif
+#endif  // SRC_CREATURES_NPCS_SPAWNS_SPAWN_NPC_H_

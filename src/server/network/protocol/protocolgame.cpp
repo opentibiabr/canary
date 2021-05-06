@@ -269,12 +269,12 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 				if (banInfo.expiresAt > 0)
 				{
 					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-					   << banInfo.reason;
+                      << banInfo.reason;
 				}
 				else
 				{
 					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-					   << banInfo.reason;
+                      << banInfo.reason;
 				}
 				disconnectClient(ss.str());
 				return;
@@ -289,7 +289,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			std::ostringstream ss;
 
 			ss << "Too many players online.\nYou are at place "
-			   << currentSlot << " on the waiting list.";
+               << currentSlot << " on the waiting list.";
 
 			auto output = OutputMessagePool::getOutputMessage();
 			output->addByte(0x16);
@@ -546,7 +546,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 
 		std::ostringstream ss;
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-		   << banInfo.reason;
+          << banInfo.reason;
 		disconnectClient(ss.str());
 		return;
 	}
@@ -1589,7 +1589,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xB1);
 	msg.addByte(0x00); // No data available
 
-	msg.addByte(1);												   // Worlds
+	msg.addByte(1); // Worlds
 	msg.addString(g_config.getString(ConfigManager::SERVER_NAME)); // First World
 	msg.addString(g_config.getString(ConfigManager::SERVER_NAME)); // Selected World
 
@@ -1599,9 +1599,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	auto vocationPosition = msg.getBufferPosition();
 	uint8_t vocations = 1;
 
-	msg.skipBytes(1);			   // Vocation Count
+	msg.skipBytes(1); // Vocation Count
 	msg.add<uint32_t>(0xFFFFFFFF); // All Vocations - hardcoded
-	msg.addString("(all)");		   // All Vocations - hardcoded
+	msg.addString("(all)");          // All Vocations - hardcoded
 
 	uint32_t selectedVocation = 0xFFFFFFFF;
 	const auto &vocationsMap = g_vocations.getVocations();
@@ -1611,7 +1611,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId()))
 		{
 			msg.add<uint32_t>(vocation.getFromVocation()); // Vocation Id
-			msg.addString(vocation.getVocName());		   // Vocation Name
+			msg.addString(vocation.getVocName());          // Vocation Name
 			++vocations;
 			if (vocation.getFromVocation() == vocationId)
 			{
@@ -1637,7 +1637,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(sizeof(highscoreCategories) / sizeof(HighscoreCategory)); // Category Count
 	for (HighscoreCategory &category : highscoreCategories)
 	{
-		msg.addByte(category.id);	  // Category Id
+		msg.addByte(category.id); // Category Id
 		msg.addString(category.name); // Category Name
 		if (category.id == categoryId)
 		{
@@ -1652,19 +1652,19 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(characters.size()); // Character Count
 	for (const HighscoreCharacter &character : characters)
 	{
-		msg.add<uint32_t>(character.rank);							   // Rank
-		msg.addString(character.name);								   // Character Name
-		msg.addString("");											   // Probably Character Title(not visible in window)
-		msg.addByte(character.vocation);							   // Vocation Id
+		msg.add<uint32_t>(character.rank); // Rank
+		msg.addString(character.name); // Character Name
+		msg.addString(""); // Probably Character Title(not visible in window)
+		msg.addByte(character.vocation); // Vocation Id
 		msg.addString(g_config.getString(ConfigManager::SERVER_NAME)); // World
-		msg.add<uint16_t>(character.level);							   // Level
-		msg.addByte((player->getGUID() == character.id));			   // Player Indicator Boolean
-		msg.add<uint64_t>(character.points);						   // Points
+		msg.add<uint16_t>(character.level); // Level
+		msg.addByte((player->getGUID() == character.id)); // Player Indicator Boolean
+		msg.add<uint64_t>(character.points); // Points
 	}
 
-	msg.addByte(0xFF);				  // ??
-	msg.addByte(0);					  // ??
-	msg.addByte(1);					  // ??
+	msg.addByte(0xFF); // ??
+	msg.addByte(0); // ??
+	msg.addByte(1); // ??
 	msg.add<uint32_t>(time(nullptr)); // Last Update
 
 	msg.setBufferPosition(vocationPosition);
@@ -2503,7 +2503,7 @@ void ProtocolGame::parseStoreRequestOffers(NetworkMessage &message)
 	if (index >= 0)
 	{
 		addGameTaskTimed(350, &Game::playerShowStoreCategoryOffers, player->getID(),
-						 g_game.gameStore.getCategoryOffers().at(index));
+                         g_game.gameStore.getCategoryOffers().at(index));
 	}
 	else
 	{
@@ -3289,8 +3289,9 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	msg.addString(player->getVocation()->getVocName());
 	msg.addString("Outfit");
 
-	const Outfit *outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(),
-																	  player->getDefaultOutfit().lookType);
+	const Outfit *outfit = Outfits::getInstance().getOutfitByLookType(
+                           player->getSex(),
+                           player->getDefaultOutfit().lookType);
 	if (outfit)
 	{
 		msg.addString(outfit->name);
@@ -3412,7 +3413,7 @@ void ProtocolGame::sendBlessStatus()
 
 	msg.addByte(0x9C);
 
-	msg.add<uint16_t>((blessCount >= 5) ? (flag | 1) : flag);		  //Show up the glowing effect in items if have all blesses
+	msg.add<uint16_t>((blessCount >= 5) ? (flag | 1) : flag);         //Show up the glowing effect in items if have all blesses
 	msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	// msg.add<uint16_t>(0);
 
@@ -3468,10 +3469,10 @@ void ProtocolGame::initPreyData()
 void ProtocolGame::sendPreyRerollPrice(uint32_t price /*= 0*/, uint8_t wildcard /*= 0*/, uint8_t directly /*= 0*/)
 {
 	NetworkMessage msg;
-	msg.addByte(0xE9);		  // reroll prices
+	msg.addByte(0xE9); // reroll prices
 	msg.add<uint32_t>(price); // price
-	msg.addByte(wildcard);	  // wildcard
-	msg.addByte(directly);	  // selectCreatureDirectly price (5 in tibia)
+	msg.addByte(wildcard); // wildcard
+	msg.addByte(directly); // selectCreatureDirectly price (5 in tibia)
 
 	// Prey Task
 	msg.add<uint32_t>(0);
@@ -3489,9 +3490,9 @@ void ProtocolGame::sendPreyData(PreySlotNum_t slot, PreyState_t slotState)
 	msg.addByte(slot);
 
 	msg.addByte(slotState);
-	msg.addByte(0x00);	  // empty byte
+	msg.addByte(0x00); // empty byte
 	msg.add<uint32_t>(0); // next free roll
-	msg.addByte(0x00);	  // wildCards
+	msg.addByte(0x00); // wildCards
 
 	writeToOutputBuffer(msg);
 }
@@ -3669,7 +3670,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 
 	msg.addByte(0x00); // To-do: Depot Find (boolean)
 
-	msg.addByte(container->isUnlocked() ? 0x01 : 0x00);	   // Drag and drop
+	msg.addByte(container->isUnlocked() ? 0x01 : 0x00); // Drag and drop
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
 
 	uint32_t containerSize = container->size();
@@ -3792,7 +3793,7 @@ void ProtocolGame::sendGameNews()
 	NetworkMessage msg;
 	msg.addByte(0x98);
 	msg.add<uint32_t>(1); // unknown
-	msg.addByte(1);		  //(0 = open | 1 = highlight)
+	msg.addByte(1);         //(0 = open | 1 = highlight)
 	writeToOutputBuffer(msg);
 }
 
@@ -4022,7 +4023,7 @@ void ProtocolGame::updateCoinBalance()
 				client->sendCoinBalance();
 			}
 		},
-							 this)));
+                              this)));
 }
 
 void ProtocolGame::sendMarketLeave()
@@ -5153,7 +5154,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	msg.add<uint16_t>(static_cast<uint16_t>(g_config.getNumber(ConfigManager::STORE_COIN_PACKET)));
 
 	msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
-	msg.addByte(0x00);									   // tournament button
+	msg.addByte(0x00); // Tournament button
 
 	writeToOutputBuffer(msg);
 
@@ -5972,9 +5973,9 @@ void ProtocolGame::sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint3
 	page = 0x00;
 	////////////////////////
 
-	msg.addByte(0xFD);				   //BrowseTransactionHistory
-	msg.add<uint32_t>(page);		   //which page
-	msg.add<uint32_t>(isLastPage);	   //is the last page? /
+	msg.addByte(0xFD); //BrowseTransactionHistory
+	msg.add<uint32_t>(page); //which page
+	msg.add<uint32_t>(isLastPage); //is the last page? /
 	msg.addByte((uint8_t)list.size()); //how many elements follows
 
 	for (HistoryStoreOffer offer : list)
@@ -5982,7 +5983,7 @@ void ProtocolGame::sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint3
 		msg.add<uint32_t>(offer.time);
 		msg.addByte(offer.mode);
 		msg.add<uint32_t>(offer.amount); //FIXME: investigate why it doesn't send the price properly
-		msg.addByte(0x00);				 // 0 = transferable tibia coin, 1 = normal tibia coin
+		msg.addByte(0x00); // 0 = transferable tibia coin, 1 = normal tibia coin
 		msg.addString(offer.description);
 	}
 
@@ -6186,10 +6187,10 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
 
-	msg.add<uint16_t>(player->getBaseXpGain());		 // base xp gain rate
+	msg.add<uint16_t>(player->getBaseXpGain()); // base xp gain rate
 	msg.add<uint16_t>(player->getGrindingXpBoost()); // low level bonus
-	msg.add<uint16_t>(player->getStoreXpBoost());	 // xp boost
-	msg.add<uint16_t>(player->getStaminaXpBoost());	 // stamina multiplier (100 = 1.0x)
+	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
+	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
 	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
@@ -6206,7 +6207,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 
 	msg.add<uint16_t>(player->getExpBoostStamina()); // xp boost time (seconds)
-	msg.addByte(1);									 // enables exp boost in the store
+	msg.addByte(1); // enables exp boost in the store
 
 	msg.add<uint16_t>(player->getManaShield());  // remaining mana shield
 	msg.add<uint16_t>(player->getMaxManaShield());  // total mana shield
@@ -6246,7 +6247,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	}
 
 	// used for imbuement (Feather)
-	msg.add<uint32_t>(player->getCapacity());	  // total capacity
+	msg.add<uint32_t>(player->getCapacity()); // total capacity
 	msg.add<uint32_t>(player->getBaseCapacity()); // base total capacity
 }
 

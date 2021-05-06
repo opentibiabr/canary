@@ -17,204 +17,94 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_ACTIONS_H_87F60C5F587E4B84948F304A6451E6E6
-#define FS_ACTIONS_H_87F60C5F587E4B84948F304A6451E6E6
+#ifndef SRC_LUA_CREATURE_ACTIONS_H_
+#define SRC_LUA_CREATURE_ACTIONS_H_
 
 #include "lua/global/baseevents.h"
-#include "utils/enums.h"
 #include "lua/scripts/luascript.h"
+#include "utils/enums.h"
 
 class Action;
-using Action_ptr = std::unique_ptr<Action>;
-using ActionFunction = std::function<bool(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey)>;
 
-/**
- * @brief Action class to handle the actions.
- *
- */
-class Action : public Event
-{
+using Action_ptr = std::unique_ptr<Action>;
+using ActionFunction =
+                       std::function<bool(Player* player, Item* item,
+                            const Position& fromPosition, Thing* target,
+                            const Position& toPosition, bool isHotkey
+                       )>;
+
+class Action : public Event {
 	public:
-		/**
-		 * @brief Construct a new Action object
-		 *
-		 * @param interface
-		 */
 		explicit Action(LuaScriptInterface* interface);
 
-		/**
-		 * @brief Reads XML and set action attributes
-		 *
-		 * @param node XML node
-		 * @return true
-		 * @return false
-		 */
 		bool configureEvent(const pugi::xml_node& node) override;
 
-		//scripting
-
-		/**
-		 * @brief Call onUse() function from script(Lua script interface)
-		 *
-		 * @param player
-		 * @param item
-		 * @param fromPosition
-		 * @param target
-		 * @param toPosition
-		 * @param isHotkey
-		 * @return true Success
-		 * @return false Fail
-		 */
+		// Scripting
 		virtual bool executeUse(Player* player, Item* item,
-								const Position& fromPosition, Thing* target,
-								const Position& toPosition, bool isHotkey);
+                                const Position& fromPosition, Thing* target,
+                                const Position& toPosition, bool isHotkey);
 
-		/**
-		 * @brief Get the Allow Far Use object
-		 *
-		 * @return true
-		 * @return false
-		 */
 		bool getAllowFarUse() const {
 			return allowFarUse;
 		}
 
-		/**
-		 * @brief Set the Allow Far Use object
-		 *
-		 * @param allow true if allowed otherwise false
-		 */
 		void setAllowFarUse(bool allow) {
 			allowFarUse = allow;
 		}
 
-		/**
-		 * @brief Get the Check Line Of Sight state
-		 *
-		 * @return true
-		 * @return false
-		 */
 		bool getCheckLineOfSight() const {
 			return checkLineOfSight;
 		}
-		/**
-		 * @brief Set the Check Line Of Sight state
-		 *
-		 * @param state true if needs to check line of sight otherwise false
-		 */
+
 		void setCheckLineOfSight(bool state) {
 			checkLineOfSight = state;
 		}
 
-		/**
-		 * @brief Get the Check Floor state
-		 *
-		 * @return true
-		 * @return false
-		 */
 		bool getCheckFloor() const {
 			return checkFloor;
 		}
 
-		/**
-		 * @brief Set the Check Floor state
-		 *
-		 * @param state
-		 */
 		void setCheckFloor(bool state) {
 			checkFloor = state;
 		}
 
-		/**
-		 * @brief Get the Item Id Range vector
-		 *
-		 * @return std::vector<uint16_t> ID's
-		 */
 		std::vector<uint16_t> getItemIdRange() {
 			return ids;
 		}
-		/**
-		 * @brief Add item id to the vector
-		 *
-		 * @param id
-		 */
+
 		void addItemId(uint16_t id) {
 			ids.emplace_back(id);
 		}
 
-		/**
-		 * @brief Get the Unique Id Range vector
-		 *
-		 * @return std::vector<uint16_t> UID's
-		 */
 		std::vector<uint16_t> getUniqueIdRange() {
 			return uids;
 		}
 
-		/**
-		 * @brief Add unique id to the vector
-		 *
-		 * @param id Unique ID
-		 */
 		void addUniqueId(uint16_t id) {
 			uids.emplace_back(id);
 		}
 
-		/**
-		 * @brief Get the Action Id Range vector
-		 *
-		 * @return std::vector<uint16_t>
-		 */
 		std::vector<uint16_t> getActionIdRange() {
 			return aids;
 		}
 
-		/**
-		 * @brief Add AID to the vector
-		 *
-		 * @param id
-		 */
 		void addActionId(uint16_t id) {
 			aids.emplace_back(id);
 		}
 
-		/**
-		 * @brief Check if player can execute the action.
-		 *
-		 * E.g. if it needs to be near or can be far, and if it is far if needs
-		 * 											to be on the line of sight.
-		 *
-		 * @param player
-		 * @param toPos
-		 * @return ReturnValue
-		 */
 		virtual ReturnValue canExecuteAction(const Player* player,
-														const Position& toPos);
-		/**
-		 * @brief If the action has its own error handler to be called.
-		 *
-		 * @return true
-		 * @return false
-		 */
+                                             const Position& toPos);
+
 		virtual bool hasOwnErrorHandler() {
 			return false;
 		}
 
-		/**
-		 * @brief Get the Target object
-		 *
-		 * @param player
-		 * @param targetCreature
-		 * @param toPosition
-		 * @param toStackPos
-		 * @return Thing*
-		 */
 		virtual Thing* getTarget(Player* player, Creature* targetCreature,
 						const Position& toPosition, uint8_t toStackPos) const;
 
 		/**ActionFunction = std::function<bool(Player* player, Item* item,
-		 *							const Position& fromPosition, Thing* target,
-		 *							const Position& toPosition, bool isHotkey)>;
+        * const Position& fromPosition, Thing* target,
+        * const Position& toPosition, bool isHotkey)>;
 		**/
 		ActionFunction function;
 
@@ -232,8 +122,7 @@ class Action : public Event
 		std::vector<uint16_t> aids;
 };
 
-class Actions final : public BaseEvents
-{
+class Actions final : public BaseEvents {
 	public:
 		Actions();
 		~Actions();
@@ -272,4 +161,4 @@ class Actions final : public BaseEvents
 		LuaScriptInterface scriptInterface;
 };
 
-#endif
+#endif  // SRC_LUA_CREATURE_ACTIONS_H_

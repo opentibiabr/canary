@@ -111,7 +111,7 @@ bool Mailbox::sendItem(Item* item) const
 	}
 	if (player && item) {
 		if (g_game.internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER,
-		                            item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+                                   item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			Item* newItem = g_game.transformItem(item, item->getID() + 1);
 			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
 				newItem->setWriter(writer);
@@ -128,7 +128,7 @@ bool Mailbox::sendItem(Item* item) const
 		}
 
 		if (item && g_game.internalMoveItem(item->getParent(), tmpPlayer.getInbox(), INDEX_WHEREEVER,
-		                            item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
+                                   item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			Item* newItem = g_game.transformItem(item, item->getID() + 1);
 			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
 				newItem->setWriter(writer);

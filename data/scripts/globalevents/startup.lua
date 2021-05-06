@@ -1,7 +1,7 @@
 local startup = GlobalEvent("Startup")
 
 function startup.onStartup()
-	math.randomseed(os.mtime())
+	math.randomseed(systemTime())
 
 	db.query("TRUNCATE TABLE `players_online`")
 	db.asyncQuery("DELETE FROM `guild_wars` WHERE `status` = 0")

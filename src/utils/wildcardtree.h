@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_WILDCARDTREE_H_054C9BA46A1D4EA4B7C77ECE60ED4DEB
-#define FS_WILDCARDTREE_H_054C9BA46A1D4EA4B7C77ECE60ED4DEB
+#ifndef SRC_UTILS_WILDCARDTREE_H_
+#define SRC_UTILS_WILDCARDTREE_H_
 
 #include "utils/enums.h"
 
@@ -46,4 +46,4 @@ class WildcardTreeNode
 		bool breakpoint;
 };
 
-#endif
+#endif  // SRC_UTILS_WILDCARDTREE_H_

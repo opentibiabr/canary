@@ -17,14 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_SCRIPTS_H
-#define FS_SCRIPTS_H
+#ifndef SRC_LUA_SCRIPTS_SCRIPTS_H_
+#define SRC_LUA_SCRIPTS_SCRIPTS_H_
 
 #include "lua/scripts/luascript.h"
 #include "utils/enums.h"
 
-class Scripts
-{
+class Scripts {
 	public:
 		Scripts();
 		~Scripts();
@@ -49,4 +48,4 @@ class Scripts
 		LuaScriptInterface scriptInterface;
 };
 
-#endif
+#endif  // SRC_LUA_SCRIPTS_SCRIPTS_H_

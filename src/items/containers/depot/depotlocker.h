@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef FS_DEPOTLOCKER_H_53AD8E0606A34070B87F792611F4F3F8
-#define FS_DEPOTLOCKER_H_53AD8E0606A34070B87F792611F4F3F8
+#ifndef SRC_ITEMS_CONTAINERS_DEPOT_DEPOTLOCKER_H_
+#define SRC_ITEMS_CONTAINERS_DEPOT_DEPOTLOCKER_H_
 
 #include "items/containers/container.h"
 #include "items/containers/inbox/inbox.h"
@@ -62,5 +62,5 @@ class DepotLocker final : public Container
 		uint16_t depotId;
 };
 
-#endif
+#endif  // SRC_ITEMS_CONTAINERS_DEPOT_DEPOTLOCKER_H_
 

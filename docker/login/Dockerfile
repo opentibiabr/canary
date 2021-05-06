@@ -1,9 +1,3 @@
-FROM python:3
+FROM lucasggrossi/otbr_login:go-login1.0
 
-WORKDIR /usr/src/app
-
-RUN pip install --no-cache-dir Flask mysql-connector-python
-
-COPY docker/data/login.py .
-
-CMD [ "python", "./login.py" ]
+ENTRYPOINT ["/login-server/loginserver-linux-x64"]

@@ -1,3 +1,4 @@
+--
 version: "3.3"
 
 services:
@@ -27,8 +28,6 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     ports:
       - 3306:3306
-    volumes:
-      - db-volume:/var/lib/mysql
 
   website:
     image: webdevops/php-nginx:alpine-php7
@@ -50,11 +49,19 @@ services:
       dockerfile: docker/login/Dockerfile
     restart: unless-stopped
     volumes:
-      - ./docker/data/:/tmp/
+      - ./data/:/info/data/
     ports:
       - 80:8080
     depends_on:
       - mysql
-
-volumes:
-  db-volume:
+    environment:
+      - DB_HOSTNAME=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=canary
+      - DB_USERNAME=canary
+      - DB_PASSWORD=canary
+      - APP_PORT=8080
+      - SERVER_PATH=/info/
+      - SERVER_NAME=Canary
+      - SERVER_IP=127.0.0.1
+      - SERVER_PORT=7172

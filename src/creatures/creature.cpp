@@ -1419,27 +1419,15 @@ int64_t Creature::getStepDuration() const
 		return 0;
 	}
 
-	uint32_t calculatedStepSpeed;
-	uint32_t groundSpeed;
-
 	int32_t stepSpeed = getStepSpeed();
-	if (stepSpeed > -Creature::speedB) {
-		calculatedStepSpeed = floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5);
-		if (calculatedStepSpeed == 0) {
-			calculatedStepSpeed = 1;
-		}
-	} else {
-		calculatedStepSpeed = 1;
-	}
+	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5), 1);
+	calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? calculatedStepSpeed : 1;
 
-	if (tile) {
+	uint32_t groundSpeed = 150;
+	if (tile && tile->getGround()) {
 		Item* ground = tile->getGround();
-		groundSpeed = Item::items[ground->getID()].speed;
-		if (groundSpeed == 0) {
-			groundSpeed = 150;
-		}
-	} else {
-		groundSpeed = 150;
+		const ItemType& it = Item::items[ground->getID()];
+		groundSpeed = it.speed > 0 ? it.speed : groundSpeed;
 	}
 
 	double duration = std::floor(1000 * groundSpeed / calculatedStepSpeed);

@@ -33,7 +33,7 @@ namespace account {
 enum Errors : uint8_t {
   ERROR_NO = 0,
   ERROR_DB,
-  ERROR_INVALID_ACC_NAME,
+  ERROR_INVALID_ACCOUNT_EMAIL,
   ERROR_INVALID_ACC_PASSWORD,
   ERROR_INVALID_ACC_TYPE,
   ERROR_INVALID_ID,
@@ -42,7 +42,8 @@ enum Errors : uint8_t {
   ERROR_NOT_INITIALIZED,
   ERROR_NULLPTR,
   ERROR_VALUE_NOT_ENOUGH_COINS,
-  ERROR_VALUE_OVERFLOW
+  ERROR_VALUE_OVERFLOW,
+  ERROR_PLAYER_NOT_FOUND
 };
 
 enum AccountType : uint8_t {
@@ -203,8 +204,8 @@ class Account {
 
   error_t GetID(uint32_t *id);
 
-  error_t SetName(std::string  name);
-  error_t GetName(std::string *name);
+  error_t SetEmail(std::string  name);
+  error_t GetEmail(std::string *name);
 
   error_t SetPassword(std::string  password);
   error_t GetPassword(std::string *password);
@@ -218,18 +219,20 @@ class Account {
   error_t SetAccountType(AccountType  account_type);
   error_t GetAccountType(AccountType *account_type);
 
+  error_t GetAccountPlayer(Player *player, std::string& characterName);
   error_t GetAccountPlayers(std::vector<Player> *players);
 
  private:
   error_t SetID(uint32_t id);
   error_t LoadAccountDB(std::ostringstream &query);
   error_t LoadAccountPlayersDB(std::vector<Player> *players);
+  error_t LoadAccountPlayerDB(Player *player, std::string& characterName);
 
   Database *db_;
   DatabaseTasks *db_tasks_;
 
   uint32_t id_;
-  std::string name_;
+  std::string email_;
   std::string password_;
   uint32_t premium_remaining_days_;
   time_t premium_last_day_;

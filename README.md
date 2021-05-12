@@ -1,4 +1,4 @@
-# OTServ Brasil - Global Server
+# OpenTibiaBR - Canary Project
 
 [![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/3NxYnyV)
 [![GitHub issues](https://img.shields.io/github/issues/opentibiabr/canary)](https://github.com/opentibiabr/canary/issues)
@@ -10,7 +10,7 @@
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/a71728d523ac4b23a9c0b974ae4ec5df)](https://www.codacy.com/gh/opentibiabr/canary/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=opentibiabr/canary&amp;utm_campaign=Badge_Grade)
 [![CodeQL](https://github.com/opentibiabr/canary/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/codeql-analysis.yml)
-[![Codacy Security Scan](https://github.com/opentibiabr/canary/actions/workflows/codacy-analysis.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/codacy-analysis.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opentibiabr_canary&metric=alert_status)](https://sonarcloud.io/dashboard?id=opentibiabr_canary)
 
 ## Builds
 
@@ -21,7 +21,7 @@
 
 ## Project
 
-OTServ Brasil - Global Server is a free and open-source MMORPG server emulator written in C++. It is a fork of the [Forgotten Server](https://github.com/otland/forgottenserver) project. To connect to the server and to take a stable experience, you can use our [own client](https://forums.otserv.com.br/index.php?/forums/topic/167933-canary-cliente-tibia-12/) and if you want to edit something, check our [customized tools](https://github.com/opentibiabr/tools).
+OpenTibiaBR - Canary Project is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. To connect to the server and to take a stable experience, you can use our [own client](https://github.com/opentibiabr/otclient) or [tibia client](https://forums.otserv.com.br/index.php?/forums/topic/167933-otservbr-global-cliente-tibia-12/) and if you want to edit something, check our [customized tools](https://github.com/opentibiabr/tools).
 
 You are subject to our code of conduct, read at [this link](https://github.com/opentibiabr/canary/blob/develop/CODE_OF_CONDUCT.md).
 

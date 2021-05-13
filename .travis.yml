@@ -5,7 +5,8 @@ dist: focal
 language: cpp
 compiler: gcc
 env:
-  - VCPKG_TRIPLET=x64-linux
+  global:
+    - VCPKG_TRIPLET=x64-linux VCPKG_BUILD_TYPE=release CMAKE_BUILD_PARALLEL_LEVEL=2 MAKEFLAGS="-j 2"
 
 git:
   strategy: clone
@@ -29,18 +30,19 @@ addons:
       - unzip
 
 install:
-  - cd /home/travis/build/opentibiabr
-  - git clone https://github.com/microsoft/vcpkg
+  - cd $HOME
+  - git clone https://github.com/microsoft/vcpkg || true
+  - cd vcpkg ; git fetch ; git pull ; cd ..
   - ./vcpkg/bootstrap-vcpkg.sh
   - ./vcpkg/vcpkg integrate install
 
 script:
   - cd /home/travis/build/opentibiabr/canary
   - export CXXFLAGS="$CXXFLAGS -DBOOST_ASIO_DISABLE_NOEXCEPT=1 "
-  - /home/travis/build/opentibiabr/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+  - $HOME/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
   - mkdir build
   - cd build
-  - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/opentibiabr/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  - cmake -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake ..
   - cd ..
   - NUMBER_OF_PROCESSORS=$(nproc --all)
   - build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
@@ -55,3 +57,4 @@ cache:
     - $HOME/.cache
     - $HOME/.ccache
     - $HOME/.cfamily
+    - $HOME/vcpkg

@@ -43,24 +43,23 @@ services:
       - mysql
 
   login:
-    build:
-      context: ../
-      dockerfile: docker/login/Dockerfile
+    image: opentibiabr/login-server:latest
     restart: unless-stopped
-    volumes:
-      - ./data/:/info/data/
     ports:
       - 80:8080
     depends_on:
       - mysql
     environment:
+      - DB_DATABASE=canary
       - DB_HOSTNAME=mysql
       - DB_PORT=3306
-      - DB_DATABASE=canary
-      - DB_USERNAME=canary
       - DB_PASSWORD=canary
-      - APP_PORT=8080
-      - SERVER_PATH=/info/
+      - DB_USERNAME=canary
+      - ENV_LOG_LEVEL=verbose
+      - ENV_TYPE=dev
+      - LOGIN_PORT=8080
       - SERVER_NAME=Canary
+      - SERVER_LOCATION=Bra
       - SERVER_IP=127.0.0.1
       - SERVER_PORT=7172
+#      - VOCATIONS -- map your custom vocations here, if needed, comma separated

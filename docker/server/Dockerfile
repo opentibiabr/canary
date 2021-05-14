@@ -30,7 +30,7 @@ WORKDIR /srv/build
 RUN cmake -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake .. && make -j`nproc`
 
 # Stage 3: load data and execute
-FROM build
+FROM ubuntu:20.04
 
 COPY --from=build /srv/build/bin/canary /bin/canary
 COPY LICENSE *.sql key.pem /canary/
@@ -38,6 +38,8 @@ COPY data /canary/data
 COPY config.lua.dist /canary/config.lua
 
 WORKDIR /canary
+
+RUN apt-get update && apt-get install -y --no-install-recommends libluajit-5.1-dev
 
 RUN sed -i '/mysqlHost = .*$/c\mysqlHost = "mysql"' config.lua \
   && sed -i '/mysqlUser = .*$/c\mysqlUser = "canary"' config.lua \

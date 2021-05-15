@@ -19,6 +19,13 @@
 [![Build on Ubuntu](https://github.com/opentibiabr/canary/workflows/Build%20on%20Ubuntu/badge.svg)](https://github.com/opentibiabr/canary/actions?query=workflow%3A%22Build+on+Ubuntu%22)
 [![Build on Windows](https://github.com/opentibiabr/canary/workflows/Build%20on%20Windows/badge.svg)](https://github.com/opentibiabr/canary/actions?query=workflow%3A%22Build+on+Windows%22)
 
+## Docker
+`docker pull opentibiabr/canary:latest`<br><br>
+[![Automation](https://img.shields.io/docker/cloud/automated/opentibiabr/canary)](https://hub.docker.com/r/opentibiabr/canary)
+[![Image Size](https://img.shields.io/docker/image-size/opentibiabr/canary)](https://hub.docker.com/r/opentibiabr/canary/tags?page=1&ordering=last_updated)
+![Pulls](https://img.shields.io/docker/pulls/opentibiabr/canary)
+[![Build](https://img.shields.io/docker/cloud/build/opentibiabr/canary)](https://hub.docker.com/r/opentibiabr/canary/builds)
+
 ## Project
 
 OpenTibiaBR - Canary Project is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. To connect to the server and to take a stable experience, you can use our [own client](https://github.com/opentibiabr/otclient) or [tibia client](https://forums.otserv.com.br/index.php?/forums/topic/167933-otservbr-global-cliente-tibia-12/) and if you want to edit something, check our [customized tools](https://github.com/opentibiabr/tools).

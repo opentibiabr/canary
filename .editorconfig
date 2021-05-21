@@ -24,6 +24,6 @@ indent_style = tab
 indent_size = 2
 
 # YAML, JSON, SQL
-[*.{yml,yaml,json, sql}]
+[*.{yml,yaml,yamllint,json,sql}]
 indent_style = space
 indent_size = 2

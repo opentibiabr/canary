@@ -1,0 +1,74 @@
+---
+name: Analysis - SonarCloud
+
+on: [push, pull_request]
+
+env:
+  VCPKG_BUILD_TYPE: release
+  CMAKE_BUILD_PARALLEL_LEVEL: 2
+  MAKEFLAGS: '-j 2'
+
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Linux Dependencies
+        run: >
+          sudo apt-get update && sudo apt-get install ccache build-essential
+          libluajit-5.1-dev zip
+
+      - name: CCache
+        id: ccache
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/.ccache
+          key: ccache-${{ runner.os}}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          restore-keys: |
+            ccache-${{ runner.os}}-${{ matrix.buildtype }}-
+            ccache-${{ runner.os}}-
+
+      - name: Sonar cache
+        uses: actions/cache@v2.1.5
+        with:
+          path: /home/runner/.cfamily
+          key: sonar-${{ runner.os}}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          restore-keys: |
+            sonar-${{ runner.os}}-${{ matrix.buildtype }}-
+            sonar-${{ runner.os}}-
+
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@v7
+        with:
+          setupOnly: true
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
+          vcpkgTriplet: ${{ matrix.triplet }}
+          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
+          vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
+
+      - name: Prepare Sonar scanner
+        run: |
+          wget -nv https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.0.2311-linux.zip
+          unzip -q sonar-scanner-cli-4.6.0.2311-linux.zip
+          echo "${PWD}/sonar-scanner-4.6.0.2311-linux/bin/" >> $GITHUB_PATH
+          wget -nv https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip -q build-wrapper-linux-x86.zip
+          echo "${PWD}/build-wrapper-linux-x86" >> $GITHUB_PATH
+
+      - name: SonarCloud Scan
+        run: |
+          NUMBER_OF_PROCESSORS=$(nproc --all)
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake ..
+          cd ..
+          build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
+          sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=opentibiabr -Dsonar.login=$SONAR_TOKEN -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=$HOME/.cfamily
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

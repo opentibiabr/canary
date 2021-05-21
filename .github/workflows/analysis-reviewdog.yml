@@ -1,0 +1,164 @@
+---
+name: Analysis - Review Dog
+on: [pull_request]
+jobs:
+
+  cppcheck:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Setup cppcheck
+        run: sudo apt-get update && sudo apt-get install -y cppcheck
+
+      - name: cppcheck
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ${{ runner.workspace }}/canary
+          cppcheck --version
+          reviewdog -reporter=github-pr-review -runners=cppcheck
+
+  cpplint:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: cpplint
+        uses: reviewdog/action-cpplint@master
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          flags: --linelength=120
+          filter: "-build/c++14\
+            ,-build/include\
+            ,-build/include_subdir\
+            ,-build/include_alpha\
+            ,-build/include_order\
+            ,-build/include_what_you_use\
+            ,-build/namespaces\
+            ,-readability/braces\
+            ,-readability/casting\
+            ,-readability/namespace\
+            ,-readability/todo\
+            ,-runtime/int\
+            ,-runtime/references\
+            ,-whitespace/blank_line\
+            ,-whitespace/braces\
+            ,-whitespace/comments\
+            ,-whitespace/empty_conditional_body\
+            ,-whitespace/empty_if_body\
+            ,-whitespace/empty_loop_body\
+            ,-whitespace/end_of_line\
+            ,-whitespace/ending_newline\
+            ,-whitespace/forcolon\
+            ,-whitespace/indent\
+            ,-whitespace/line_length\
+            ,-whitespace/newline\
+            ,-whitespace/operators\
+            ,-whitespace/parens
+            "
+
+  luac:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Setup Lua/Luacheck
+        run: sudo apt-get update && sudo apt-get install -y lua5.1 liblua5.1-0-dev lua-check
+
+      - name: luac
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ${{ runner.workspace }}/canary
+          luac -v
+          reviewdog -reporter=github-pr-review -runners=luac
+
+  luacheck:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Setup Lua/Luacheck
+        run: sudo apt-get update && sudo apt-get install -y lua5.1 liblua5.1-0-dev lua-check
+
+      - name: luacheck
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          luacheck --version
+          cd ${{ runner.workspace }}/canary
+          reviewdog -reporter=github-pr-review -runners=luacheck
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: shellcheck
+        uses: reviewdog/action-shellcheck@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          pattern: '*.sh'
+          exclude: './.git/*'
+
+  xmllint:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: Setup reviewdog
+        uses: reviewdog/action-setup@v1
+
+      - name: Setup xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+      - name: xmllint
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd ${{ runner.workspace }}/canary
+          xmllint --version
+          reviewdog -reporter=github-pr-review -runners=xmllint
+
+  yamllint:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out code.
+        uses: actions/checkout@master
+
+      - name: Run yamllint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+
+      - name: Run yamllint
+        uses: reviewdog/action-yamllint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review

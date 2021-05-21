@@ -1,8 +1,12 @@
 ---
-
-name: Build on Windows
+name: Build - Windows
 
 on: [push, pull_request]
+
+env:
+  VCPKG_BUILD_TYPE: release
+  CMAKE_BUILD_PARALLEL_LEVEL: 2
+  MAKEFLAGS: '-j 2'
 
 jobs:
   job:
@@ -10,10 +14,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
-        buildtype: [Debug, Release]
+        os: [windows-2019]
+        buildtype: [Debug, RelWithDebInfo]
         include:
-          - os: windows-latest
+          - os: windows-2019
             triplet: x64-windows
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
@@ -21,10 +25,10 @@ jobs:
               luajit libmariadb pugixml spdlog
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: lukka/get-cmake@latest
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Windows - remove C:/mysql*
+      - name: Remove Windows pre-installed MySQL
         run: rm -r -fo C:/mysql-5.7.21-winx64
         if: contains( matrix.os, 'windows')
 
@@ -32,19 +36,22 @@ jobs:
         uses: lukka/run-vcpkg@v7
         with:
           setupOnly: true
-          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgDirectory: ${{ github.workspace }}/vcpkg
           appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
           vcpkgTriplet: ${{ matrix.triplet }}
           additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
           vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
 
-      - name: Run CMake to install the dependencies specified in the vcpkg.json manifest, generate project file and build the project
+      - name: Get latest CMake and ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Run CMake
         uses: lukka/run-cmake@v3
         with:
-          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          buildDirectory: ${{ github.workspace }}/build
+          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
           useVcpkgToolchainFile: true
-          buildWithCMake: true
+          buildDirectory: ${{ github.workspace }}/build
+          cmakeBuildType: ${{ matrix.buildtype }}
 
       - name: Copy artifacts
         shell: pwsh

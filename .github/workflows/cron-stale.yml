@@ -1,5 +1,5 @@
 ---
-name: 'Stale issues and PRs'
+name: 'Cron - Stale issues and PRs'
 on:
   schedule:
     - cron: '30 1 * * *'

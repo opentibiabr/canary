@@ -1,7 +1,14 @@
 ---
 name: Build - Ubuntu
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - dev
+      - devel
+      - develop
 
 env:
   VCPKG_BUILD_TYPE: release

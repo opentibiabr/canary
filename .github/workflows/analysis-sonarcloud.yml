@@ -1,7 +1,14 @@
 ---
 name: Analysis - SonarCloud
 
-on: [push, pull_request]
+on:
+  pull_request_target:
+  push:
+    branches:
+      - master
+      - dev
+      - devel
+      - develop
 
 env:
   VCPKG_BUILD_TYPE: release
@@ -16,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Install Linux Dependencies
         run: >
@@ -33,7 +42,7 @@ jobs:
             ccache-${{ runner.os}}-
 
       - name: Sonar cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2
         with:
           path: /home/runner/.cfamily
           key: sonar-${{ runner.os}}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
@@ -60,7 +69,8 @@ jobs:
           unzip -q build-wrapper-linux-x86.zip
           echo "${PWD}/build-wrapper-linux-x86" >> $GITHUB_PATH
 
-      - name: SonarCloud Scan
+      - name: SonarCloud PR Scan
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         run: |
           NUMBER_OF_PROCESSORS=$(nproc --all)
           mkdir -p build
@@ -68,7 +78,36 @@ jobs:
           cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake ..
           cd ..
           build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
-          sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=opentibiabr -Dsonar.login=$SONAR_TOKEN -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} -Dsonar.cfamily.cache.enabled=true -Dsonar.cfamily.cache.path=$HOME/.cfamily
+          sonar-scanner \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=opentibiabr \
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} \
+            -Dsonar.cfamily.cache.enabled=true \
+            -Dsonar.cfamily.cache.path=$HOME/.cfamily \
+            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}  \
+            -Dsonar.pullrequest.branch=${{ github.head_ref }}  \
+            -Dsonar.pullrequest.base=${{ github.base_ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: SonarCloud Scan
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          NUMBER_OF_PROCESSORS=$(nproc --all)
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake ..
+          cd ..
+          build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
+          sonar-scanner \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.organization=opentibiabr \
+            -Dsonar.login=$SONAR_TOKEN \
+            -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} \
+            -Dsonar.cfamily.cache.enabled=true \
+            -Dsonar.cfamily.cache.path=$HOME/.cfamily \
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

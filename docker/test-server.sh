@@ -67,8 +67,6 @@ make -j`nproc`
 mv bin/canary ../
 cd ..
 
-unzip -o data/world/world.zip -d data/world/
-
 cp config.lua.dist config.lua
 sed -i '/ip = .*$/c\ip = "'"$PROXY_IP"'"' config.lua
 sed -i '/motd = .*$/c\motd = "Test Server"' config.lua

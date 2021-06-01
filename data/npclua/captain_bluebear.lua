@@ -116,7 +116,7 @@ npcType.onMove = function(npc, creature, fromPosition, toPosition)
 end
 
 npcType.onSay = function(npc, creature, type, message)
-    local npcInteractions = table.concat(replyInteractions, getTravelInteractions(creature, destinations, travelMessages))
+    local npcInteractions = table.join(replyInteractions, getTravelInteractions(creature, destinations, travelMessages))
     return npc:processOnSay(message, creature, npcInteractions)
 end
 

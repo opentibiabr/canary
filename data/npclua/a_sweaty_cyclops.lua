@@ -235,7 +235,7 @@ npcType.onMove = function(npc, creature, fromPosition, toPosition)
 end
 
 npcType.onSay = function(npc, creature, type, message)
-    return npc:processOnSay(message, creature, table.concat(interactions, getCraftInteractions(craftConfigs)))
+    return npc:processOnSay(message, creature, table.join(interactions, getCraftInteractions(craftConfigs)))
 end
 
 npcType:register(npcConfig)

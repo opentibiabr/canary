@@ -31,7 +31,9 @@
 LuaEnvironment::LuaEnvironment(): LuaScriptInterface("Main Interface") {}
 
 LuaEnvironment::~LuaEnvironment() {
-	delete testInterface;
+	if (!testInterface) {
+		delete testInterface;
+	}
 	closeState();
 }
 

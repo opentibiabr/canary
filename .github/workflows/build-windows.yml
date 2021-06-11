@@ -68,7 +68,7 @@ jobs:
       - name: Create and Upload Full Datapack
         uses: actions/upload-artifact@v2
         with:
-          name: canary-full-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}
+          name: canary-full-${{ matrix.os }}-${{ matrix.buildtype }}-${{ steps.gitversion.outputs.semVer }}
           path: |
             ${{ github.workspace }}
             !${{ github.workspace }}/build/
@@ -84,10 +84,11 @@ jobs:
             !${{ github.workspace }}/cmake/
             !${{ github.workspace }}/sonar-project.properties
             !${{ github.workspace }}/Jenkinsfile
+            !${{ github.workspace }}/GitVersion.yml
 
       - name: Create and Upload Server Only
         uses: actions/upload-artifact@v2
         with:
-          name: canary-server-only-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}
+          name: canary-server-only-${{ matrix.os }}-${{ matrix.buildtype }}-${{ steps.gitversion.outputs.semVer }}
           path: |
             ${{ github.workspace }}/build/bin/

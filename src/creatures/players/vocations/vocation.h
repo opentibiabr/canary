@@ -20,7 +20,7 @@
 #ifndef SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
 #define SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
 
-#include "utils/enums.h"
+#include "declarations.hpp"
 #include "items/item.h"
 
 class Vocation

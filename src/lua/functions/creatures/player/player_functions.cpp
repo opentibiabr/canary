@@ -1642,7 +1642,7 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	}
 
 	bool canDropOnMap = getBoolean(L, 4, true);
-	slots_t slot = getNumber<slots_t>(L, 6, CONST_SLOT_WHEREEVER);
+	Slots_t slot = getNumber<Slots_t>(L, 6, CONST_SLOT_WHEREEVER);
 	for (int32_t i = 1; i <= itemCount; ++i) {
 		int32_t stackCount = subType;
 		if (it.stackable) {
@@ -1705,7 +1705,7 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	bool canDropOnMap = getBoolean(L, 3, false);
 	ReturnValue returnValue;
 	if (canDropOnMap) {
-		slots_t slot = getNumber<slots_t>(L, 4, CONST_SLOT_WHEREEVER);
+		Slots_t slot = getNumber<Slots_t>(L, 4, CONST_SLOT_WHEREEVER);
 		returnValue = g_game.internalPlayerAddItem(player, item, true, slot);
 	} else {
 		int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);

@@ -20,16 +20,15 @@
 #ifndef SRC_CREATURES_COMBAT_COMBAT_H_
 #define SRC_CREATURES_COMBAT_COMBAT_H_
 
-#include "creatures/combat/condition.h"
-#include "items/thing.h"
 #include "lua/global/baseevents.h"
+#include "creatures/combat/condition.h"
+#include "declarations.hpp"
 #include "map/map.h"
+#include "items/thing.h"
 
 class Condition;
 class Creature;
 class Item;
-
-struct Position;
 
 //for luascript callback
 class ValueCallback final : public CallBack
@@ -189,15 +188,6 @@ class AreaCombat
 		void clear();
 
 	private:
-		enum MatrixOperation_t {
-			MATRIXOPERATION_COPY,
-			MATRIXOPERATION_MIRROR,
-			MATRIXOPERATION_FLIP,
-			MATRIXOPERATION_ROTATE90,
-			MATRIXOPERATION_ROTATE180,
-			MATRIXOPERATION_ROTATE270,
-		};
-
 		MatrixArea* createArea(const std::list<uint32_t>& list, uint32_t rows);
 		void copyArea(const MatrixArea* input, MatrixArea* output, MatrixOperation_t op) const;
 

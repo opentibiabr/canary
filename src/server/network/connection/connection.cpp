@@ -129,7 +129,7 @@ void Connection::accept()
 		} else {
 			// Read size of the first packet
 			boost::asio::async_read(socket,
-				boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH),
+				boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
 				std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
 		}
 	} catch (boost::system::system_error& e) {
@@ -151,7 +151,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 	}
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
-	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_config.getNumber(ConfigManager::MAX_PACKETS_PER_SECOND))) {
+	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_config.getNumber(MAX_PACKETS_PER_SECOND))) {
 			SPDLOG_INFO("{} disconnected for exceeding packet per second limit", convertIPToString(getIP()));
 			close();
 			return;
@@ -163,7 +163,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 		if (!receivedName && msgBuffer[1] == 0x00) {
 			receivedLastChar = true;
 		} else {
-			std::string serverName = g_config.getString(ConfigManager::SERVER_NAME) + "\n";
+			std::string serverName = g_config.getString(SERVER_NAME) + "\n";
 
 			if (!receivedName) {
 				if (static_cast<char>(msgBuffer[0]) == serverName[0]
@@ -219,7 +219,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
                                            std::placeholders::_1));
 
 		// Read packet content
-		msg.setLength(size + NetworkMessage::HEADER_LENGTH);
+		msg.setLength(size + HEADER_LENGTH);
 		boost::asio::async_read(socket, boost::asio::buffer(msg.getBodyBuffer(), size),
                                std::bind(&Connection::parsePacket, shared_from_this(), std::placeholders::_1));
 	} catch (boost::system::system_error& e) {
@@ -253,7 +253,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 		if (!protocol) {
 			// As of 11.11+ update, we need to check if it's a outdated client or a status client server with this ugly check
 			if (msg.getLength() < 280) {
-				msg.skipBytes(-NetworkMessage::CHECKSUM_LENGTH); //those 32bits read up there
+				msg.skipBytes(-CHECKSUM_LENGTH); //those 32bits read up there
 			}
 
 			// Game protocol has already been created at this point
@@ -278,7 +278,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 
 		// Wait to the next packet
 		boost::asio::async_read(socket,
-                               boost::asio::buffer(msg.getBuffer(), NetworkMessage::HEADER_LENGTH),
+                               boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
                                std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
 	} catch (boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::parsePacket] - {}", e.what());

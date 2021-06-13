@@ -87,7 +87,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 			door->setAccessList("");
 		}
 	} else {
-		std::string strRentPeriod = asLowerCaseString(g_config.getString(ConfigManager::HOUSE_RENT_PERIOD));
+		std::string strRentPeriod = asLowerCaseString(g_config.getString(HOUSE_RENT_PERIOD));
 		time_t currentTime = time(nullptr);
 		if (strRentPeriod == "yearly") {
            currentTime += 24 * 60 * 60 * 365;
@@ -135,7 +135,7 @@ void House::updateDoorDescription() const
 	} else {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
 
-		const int32_t housePrice = g_config.getNumber(ConfigManager::HOUSE_PRICE);
+		const int32_t housePrice = g_config.getNumber(HOUSE_PRICE);
 		if (housePrice != -1) {
 			ss << " It costs " << (houseTiles.size() * housePrice) << " gold coins.";
 		}
@@ -152,7 +152,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player)
 		return HOUSE_OWNER;
 	}
 
-	if (g_config.getBoolean(ConfigManager::HOUSE_OWNED_BY_ACCOUNT)) {
+	if (g_config.getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
 		if (ownerAccountId == player->getAccount()) {
 			return HOUSE_OWNER;
 		}

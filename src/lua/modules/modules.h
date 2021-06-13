@@ -22,19 +22,13 @@
 #ifndef SRC_LUA_MODULES_MODULES_H_
 #define SRC_LUA_MODULES_MODULES_H_
 
-#include "lua/scripts/luascript.h"
 #include "lua/global/baseevents.h"
+#include "declarations.hpp"
+#include "lua/scripts/luascript.h"
 #include "server/network/message/networkmessage.h"
-
-enum ModuleType_t {
-	MODULE_TYPE_RECVBYTE,
-	MODULE_TYPE_NONE,
-};
 
 class Module;
 using Module_ptr = std::unique_ptr<Module>;
-
-/**/
 
 class Module final : public Event {
 	public:

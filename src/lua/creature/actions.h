@@ -21,8 +21,8 @@
 #define SRC_LUA_CREATURE_ACTIONS_H_
 
 #include "lua/global/baseevents.h"
+#include "declarations.hpp"
 #include "lua/scripts/luascript.h"
-#include "utils/enums.h"
 
 class Action;
 

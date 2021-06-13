@@ -24,7 +24,7 @@
 #include "creatures/players/player.h"
 #include "lua/global/baseevents.h"
 #include "creatures/combat/combat.h"
-#include "utils/const.h"
+#include "utils/utils_definitions.hpp"
 #include "creatures/players/vocations/vocation.h"
 
 extern Vocations g_vocations;

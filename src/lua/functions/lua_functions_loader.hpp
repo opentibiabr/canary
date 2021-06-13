@@ -20,10 +20,10 @@
 #ifndef SRC_LUA_FUNCTIONS_LUA_FUNCTIONS_LOADER_HPP_
 #define SRC_LUA_FUNCTIONS_LUA_FUNCTIONS_LOADER_HPP_
 
-#include "game/movement/position.h"
+#include "declarations.hpp"
 #include "lua/scripts/luajit_sync.hpp"
+#include "game/movement/position.h"
 #include "lua/scripts/script_environment.hpp"
-#include "utils/enums.h"
 
 class Combat;
 class Creature;

@@ -19,13 +19,10 @@
 
 #include "otpch.h"
 
-#if __has_include("luajit/lua.hpp")
-  #include <luajit/lua.hpp>
-#else
-  #include <lua.hpp>
-#endif
+#include "lua/scripts/luajit_sync.hpp"
 
 #include "config/configmanager.h"
+#include "declarations.hpp"
 #include "game/game.h"
 
 #if LUA_VERSION_NUM >= 502
@@ -253,7 +250,7 @@ bool ConfigManager::load()
 bool ConfigManager::reload()
 {
 	bool result = load();
-	if (transformToSHA1(getString(ConfigManager::MOTD)) != g_game.getMotdHash()) {
+	if (transformToSHA1(getString(MOTD)) != g_game.getMotdHash()) {
 		g_game.incrementMotdNum();
 	}
 	return result;
@@ -261,7 +258,7 @@ bool ConfigManager::reload()
 
 static std::string dummyStr;
 
-const std::string& ConfigManager::getString(string_config_t what) const
+const std::string& ConfigManager::getString(stringConfig_t what) const
 {
 	if (what >= LAST_STRING_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getString] - Accessing invalid index: {}", what);
@@ -270,7 +267,7 @@ const std::string& ConfigManager::getString(string_config_t what) const
 	return string[what];
 }
 
-int32_t ConfigManager::getNumber(integer_config_t what) const
+int32_t ConfigManager::getNumber(integerConfig_t what) const
 {
 	if (what >= LAST_INTEGER_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getNumber] - Accessing invalid index: {}", what);
@@ -279,7 +276,7 @@ int32_t ConfigManager::getNumber(integer_config_t what) const
 	return integer[what];
 }
 
-int16_t ConfigManager::getShortNumber(integer_config_t what) const
+int16_t ConfigManager::getShortNumber(integerConfig_t what) const
 {
 	if (what >= LAST_INTEGER_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getShortNumber] - Accessing invalid index: {}", what);
@@ -288,7 +285,7 @@ int16_t ConfigManager::getShortNumber(integer_config_t what) const
 	return integer[what];
 }
 
-bool ConfigManager::getBoolean(boolean_config_t what) const
+bool ConfigManager::getBoolean(booleanConfig_t what) const
 {
 	if (what >= LAST_BOOLEAN_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getBoolean] - Accessing invalid index: {}", what);
@@ -297,7 +294,7 @@ bool ConfigManager::getBoolean(boolean_config_t what) const
 	return boolean[what];
 }
 
-float ConfigManager::getFloat(floating_config_t what) const
+float ConfigManager::getFloat(floatingConfig_t what) const
 {
 	if (what >= LAST_FLOATING_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getFLoat] - Accessing invalid index: {}", what);

@@ -42,13 +42,13 @@ class Service final : public ServiceBase
 {
 	public:
 		bool is_single_socket() const override {
-			return ProtocolType::server_sends_first;
+			return ProtocolType::SERVER_SENDS_FIRST;
 		}
 		bool is_checksummed() const override {
-			return ProtocolType::use_checksum;
+			return ProtocolType::USE_CHECKSUM;
 		}
 		uint8_t get_protocol_identifier() const override {
-			return ProtocolType::protocol_identifier;
+			return ProtocolType::PROTOCOL_IDENTIFIER;
 		}
 		const char* get_protocol_name() const override {
 			return ProtocolType::protocol_name();
@@ -144,7 +144,7 @@ bool ServiceManager::add(uint16_t port)
 	} else {
 		service_port = foundServicePort->second;
 
-		if (service_port->is_single_socket() || ProtocolType::server_sends_first) {
+		if (service_port->is_single_socket() || ProtocolType::SERVER_SENDS_FIRST) {
 			SPDLOG_ERROR("[ServiceManager::add] - "
 												"{} and {} cannot use the same port {}",
 												ProtocolType::protocol_name(),

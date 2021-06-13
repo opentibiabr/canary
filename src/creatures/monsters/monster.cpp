@@ -54,7 +54,7 @@ Monster::Monster(MonsterType* mType) :
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
 	skull = mType->info.skull;
-	float multiplier = g_config.getFloat(ConfigManager::RATE_MONSTER_HEALTH);
+	float multiplier = g_config.getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health*multiplier;
 	healthMax = mType->info.healthMax*multiplier;
 	baseSpeed = mType->info.baseSpeed;
@@ -895,9 +895,9 @@ void Monster::doAttacking(uint32_t interval)
 
 				float multiplier;
 				if (maxCombatValue > 0) { //defense
-					multiplier = g_config.getFloat(ConfigManager::RATE_MONSTER_DEFENSE);
+					multiplier = g_config.getFloat(RATE_MONSTER_DEFENSE);
 				} else { //attack
-					multiplier = g_config.getFloat(ConfigManager::RATE_MONSTER_ATTACK);
+					multiplier = g_config.getFloat(RATE_MONSTER_ATTACK);
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
@@ -1958,9 +1958,9 @@ bool Monster::getCombatValues(int32_t& min, int32_t& max)
 
 	float multiplier;
 	if (maxCombatValue > 0) { //defense
-		multiplier = g_config.getFloat(ConfigManager::RATE_MONSTER_DEFENSE);
+		multiplier = g_config.getFloat(RATE_MONSTER_DEFENSE);
 	} else { //attack
-		multiplier = g_config.getFloat(ConfigManager::RATE_MONSTER_ATTACK);
+		multiplier = g_config.getFloat(RATE_MONSTER_ATTACK);
 	}
 
 	min = minCombatValue * multiplier;

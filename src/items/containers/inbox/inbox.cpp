@@ -65,7 +65,7 @@ ReturnValue Inbox::queryAdd(int32_t, const Thing& thing, uint32_t,
 	return RETURNVALUE_NOERROR;
 }
 
-void Inbox::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t)
+void Inbox::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
 {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
@@ -73,7 +73,7 @@ void Inbox::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t
 	}
 }
 
-void Inbox::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t)
+void Inbox::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
 {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {

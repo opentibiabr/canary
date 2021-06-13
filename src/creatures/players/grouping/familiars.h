@@ -24,27 +24,7 @@
 #include <vector>
 #include <string>
 
-#include "utils/enums.h"
-
-struct Familiar {
-	Familiar(std::string initName, uint16_t initLookType, bool initPremium, bool initUnlocked, std::string initType) :
-		name(initName), lookType(initLookType), premium(initPremium), unlocked(initUnlocked),
-		type(initType) {}
-
-	std::string name;
-	uint16_t lookType;
-	bool premium;
-	bool unlocked;
-	std::string type;
-};
-
-struct ProtocolFamiliars {
-	ProtocolFamiliars(const std::string& initName, uint16_t initLookType) :
-		name(initName), lookType(initLookType) {}
-
-	const std::string& name;
-	uint16_t lookType;
-};
+#include "declarations.hpp"
 
 class Familiars {
 	public:

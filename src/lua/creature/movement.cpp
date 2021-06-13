@@ -303,7 +303,7 @@ void MoveEvents::addEvent(MoveEvent moveEvent, int32_t id, MoveListMap& map) {
 	}
 }
 
-MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, slots_t slot) {
+MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, Slots_t slot) {
 	uint32_t slotp;
 	switch (slot) {
 		case CONST_SLOT_HEAD: slotp = SLOTP_HEAD; break;
@@ -433,7 +433,7 @@ uint32_t MoveEvents::onCreatureMove(Creature* creature, const Tile* tile, MoveEv
 	return ret;
 }
 
-uint32_t MoveEvents::onPlayerEquip(Player* player, Item* item, slots_t slot, bool isCheck) {
+uint32_t MoveEvents::onPlayerEquip(Player* player, Item* item, Slots_t slot, bool isCheck) {
 	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
@@ -441,7 +441,7 @@ uint32_t MoveEvents::onPlayerEquip(Player* player, Item* item, slots_t slot, boo
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 
-uint32_t MoveEvents::onPlayerDeEquip(Player* player, Item* item, slots_t slot) {
+uint32_t MoveEvents::onPlayerDeEquip(Player* player, Item* item, Slots_t slot) {
 	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
@@ -658,7 +658,7 @@ uint32_t MoveEvent::RemoveItemField(Item*, Item*, const Position&) {
 	return 1;
 }
 
-uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, slots_t slot, bool isCheck) {
+uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool isCheck) {
 	if (player->isItemAbilityEnabled(slot)) {
 		return 1;
 	}
@@ -782,7 +782,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	return 1;
 }
 
-uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, slots_t slot, bool) {
+uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t slot, bool) {
 	if (!player->isItemAbilityEnabled(slot)) {
 		return 1;
 	}
@@ -935,7 +935,7 @@ bool MoveEvent::executeStep(Creature* creature, Item* item, const Position& pos)
 	return scriptInterface->callFunction(4);
 }
 
-uint32_t MoveEvent::fireEquip(Player* player, Item* item, slots_t toSlot, bool isCheck) {
+uint32_t MoveEvent::fireEquip(Player* player, Item* item, Slots_t toSlot, bool isCheck) {
 	if (scripted) {
 		if (!equipFunction || equipFunction(this, player, item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {
@@ -948,7 +948,7 @@ uint32_t MoveEvent::fireEquip(Player* player, Item* item, slots_t toSlot, bool i
 	}
 }
 
-bool MoveEvent::executeEquip(Player* player, Item* item, slots_t onSlot, bool isCheck) {
+bool MoveEvent::executeEquip(Player* player, Item* item, Slots_t onSlot, bool isCheck) {
 	//onEquip(player, item, slot, isCheck)
 	//onDeEquip(player, item, slot, isCheck)
 	if (!scriptInterface->reserveScriptEnv()) {

@@ -24,6 +24,7 @@
 
 #include <unordered_set>
 
+#include "declarations.hpp"
 #include "server/network/message/networkmessage.h"
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
@@ -67,16 +68,6 @@ class Connection : public std::enable_shared_from_this<Connection>
 		// non-copyable
 		Connection(const Connection&) = delete;
 		Connection& operator=(const Connection&) = delete;
-
-		enum ConnectionState_t : int8_t {
-			CONNECTION_STATE_DISCONNECTED,
-			CONNECTION_STATE_CONNECTING_STAGE1,
-			CONNECTION_STATE_CONNECTING_STAGE2,
-			CONNECTION_STATE_GAME,
-			CONNECTION_STATE_PENDING
-		};
-
-		enum { FORCE_CLOSE = true };
 
 		Connection(boost::asio::io_service& init_io_service,
 			ConstServicePort_ptr init_service_port) :

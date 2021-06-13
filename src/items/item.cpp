@@ -887,7 +887,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 }
 
-bool Item::hasProperty(ITEMPROPERTY prop) const
+bool Item::hasProperty(ItemProperty prop) const
 {
 	const ItemType& it = items[id];
 	switch (prop) {
@@ -2315,7 +2315,7 @@ int64_t ItemAttributes::emptyInt;
 double ItemAttributes::emptyDouble;
 bool ItemAttributes::emptyBool;
 
-const std::string& ItemAttributes::getStrAttr(itemAttrTypes type) const
+const std::string& ItemAttributes::getStrAttr(ItemAttrTypes type) const
 {
 	if (!isStrAttrType(type)) {
 		return emptyString;
@@ -2328,7 +2328,7 @@ const std::string& ItemAttributes::getStrAttr(itemAttrTypes type) const
 	return *attr->value.string;
 }
 
-void ItemAttributes::setStrAttr(itemAttrTypes type, const std::string& value)
+void ItemAttributes::setStrAttr(ItemAttrTypes type, const std::string& value)
 {
 	if (!isStrAttrType(type)) {
 		return;
@@ -2343,7 +2343,7 @@ void ItemAttributes::setStrAttr(itemAttrTypes type, const std::string& value)
 	attr.value.string = new std::string(value);
 }
 
-void ItemAttributes::removeAttribute(itemAttrTypes type)
+void ItemAttributes::removeAttribute(ItemAttrTypes type)
 {
 	if (!hasAttribute(type)) {
 		return;
@@ -2365,7 +2365,7 @@ void ItemAttributes::removeAttribute(itemAttrTypes type)
 	attributeBits &= ~type;
 }
 
-int64_t ItemAttributes::getIntAttr(itemAttrTypes type) const
+int64_t ItemAttributes::getIntAttr(ItemAttrTypes type) const
 {
 	if (!isIntAttrType(type)) {
 		return 0;
@@ -2378,7 +2378,7 @@ int64_t ItemAttributes::getIntAttr(itemAttrTypes type) const
 	return attr->value.integer;
 }
 
-void ItemAttributes::setIntAttr(itemAttrTypes type, int64_t value)
+void ItemAttributes::setIntAttr(ItemAttrTypes type, int64_t value)
 {
 	if (!isIntAttrType(type)) {
 		return;
@@ -2387,7 +2387,7 @@ void ItemAttributes::setIntAttr(itemAttrTypes type, int64_t value)
 	getAttr(type).value.integer = value;
 }
 
-void ItemAttributes::increaseIntAttr(itemAttrTypes type, int64_t value)
+void ItemAttributes::increaseIntAttr(ItemAttrTypes type, int64_t value)
 {
 	if (!isIntAttrType(type)) {
 		return;
@@ -2396,7 +2396,7 @@ void ItemAttributes::increaseIntAttr(itemAttrTypes type, int64_t value)
 	getAttr(type).value.integer += value;
 }
 
-const ItemAttributes::Attribute* ItemAttributes::getExistingAttr(itemAttrTypes type) const
+const ItemAttributes::Attribute* ItemAttributes::getExistingAttr(ItemAttrTypes type) const
 {
 	if (hasAttribute(type)) {
 		for (const Attribute& attribute : attributes) {
@@ -2408,7 +2408,7 @@ const ItemAttributes::Attribute* ItemAttributes::getExistingAttr(itemAttrTypes t
 	return nullptr;
 }
 
-ItemAttributes::Attribute& ItemAttributes::getAttr(itemAttrTypes type)
+ItemAttributes::Attribute& ItemAttributes::getAttr(ItemAttrTypes type)
 {
 	if (hasAttribute(type)) {
 		for (Attribute& attribute : attributes) {

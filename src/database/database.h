@@ -27,6 +27,8 @@
 #include <map>
 #include <iostream>
 
+#include "declarations.hpp"
+
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;
 
@@ -193,12 +195,6 @@ class DBTransaction
 		}
 
 	private:
-		enum TransactionStates_t {
-			STATE_NO_START,
-			STATE_START,
-			STATE_COMMIT,
-		};
-
 		TransactionStates_t state = STATE_NO_START;
 };
 

@@ -19,14 +19,14 @@
 
 #include "otpch.h"
 
+#include "declarations.hpp"
 #include "creatures/npcs/npc.h"
-#include "npcs.h"
+#include "creatures/npcs/npcs.h"
 #include "config/configmanager.h"
 #include "lua/callbacks/creaturecallback.h"
 #include "game/game.h"
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
-#include "utils/enums.h"
 
 extern Game g_game;
 extern Npcs g_npcs;
@@ -54,7 +54,7 @@ Npc::Npc(NpcType* npcType) :
 {
 	defaultOutfit = npcType->info.outfit;
 	currentOutfit = npcType->info.outfit;
-	float multiplier = g_config.getFloat(ConfigManager::RATE_NPC_HEALTH);
+	float multiplier = g_config.getFloat(RATE_NPC_HEALTH);
 	health = npcType->info.health*multiplier;
 	healthMax = npcType->info.healthMax*multiplier;
 	baseSpeed = npcType->info.baseSpeed;

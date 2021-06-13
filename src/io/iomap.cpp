@@ -440,7 +440,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 			tile = createTile(ground_item, nullptr, x, y, z);
 		}
 
-		tile->setFlag(static_cast<tileflags_t>(tileflags));
+		tile->setFlag(static_cast<TileFlags_t>(tileflags));
 
 		map.setTile(x, y, z, tile);
 	}

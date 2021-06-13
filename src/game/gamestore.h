@@ -20,96 +20,7 @@
 #ifndef SRC_GAME_GAMESTORE_H_
 #define SRC_GAME_GAMESTORE_H_
 
-#include "movement/position.h"
-
-enum Offer_t {
-	DISABLED=0,
-	ITEM=1,
-	STACKABLE_ITEM=2,
-	OUTFIT=3,
-	OUTFIT_ADDON=4,
-	MOUNT=5,
-	NAMECHANGE=6,
-	SEXCHANGE=7,
-	PROMOTION=8,
-	PREMIUM_TIME,
-	TELEPORT,
-	BLESSING,
-	BOOST_XP, //not using yet
-	BOOST_STAMINA, //not using yet
-	WRAP_ITEM
-};
-
-enum ClientOffer_t{
-	SIMPLE=0,
-	ADDITIONALINFO=1
-};
-
-enum StoreState_t {
-	NORMAL=0,
-	NEW,
-	SALE,
-	LIMITED_TIME
-};
-
-enum GameStoreError_t{
-	STORE_ERROR_PURCHASE=0,
-	STORE_ERROR_NETWORK,
-	STORE_ERROR_HISTORY,
-	STORE_ERROR_TRANSFER,
-	STORE_ERROR_INFORMATION
-};
-
-enum StoreService_t {
-	SERVICE_STANDARD = 0,
-	SERVICE_OUTFIT = 3,
-	SERVICE_MOUNT = 4
-};
-
-struct BaseOffer{
-	uint32_t id;
-	std::string name;
-	std::string description;
-	uint32_t price;
-	Offer_t type;
-	StoreState_t state;
-	std::vector<std::string> icons;
-};
-
-struct ItemOffer : BaseOffer{
-	uint16_t productId;
-	uint16_t count;
-};
-
-struct MountOffer: BaseOffer{
-	uint8_t mountId;
-};
-
-struct OutfitOffer : BaseOffer {
-	uint16_t maleLookType;
-	uint16_t femaleLookType;
-	uint8_t addonNumber;
-};
-
-struct TeleportOffer : BaseOffer{
-	Position position;
-};
-
-struct PremiumTimeOffer : BaseOffer{
-	uint16_t days;
-};
-
-struct BlessingOffer : BaseOffer{
-	std::vector<uint8_t> blessings;
-};
-
-struct StoreCategory{
-	std::string name;
-	std::string description;
-	StoreState_t state;
-	std::vector<std::string> icons;
-	std::vector<BaseOffer*> offers;
-};
+#include "declarations.hpp"
 
 class GameStore {
 	public:
@@ -143,16 +54,6 @@ class GameStore {
 		bool loaded=false;
 		std::vector<StoreCategory*> storeCategoryOffers;
 };
-
-
-struct HistoryStoreOffer {
-	uint32_t time;
-	uint8_t mode;
-	uint32_t amount;
-	std::string description;
-};
-
-using HistoryStoreOfferList = std::vector<HistoryStoreOffer>;
 
 class IOGameStore {
 	public:

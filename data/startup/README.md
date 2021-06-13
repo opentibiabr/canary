@@ -43,7 +43,7 @@ Action IDS
 	The action is also used as storage, "x" storage is added in the player,
 	and the same action number gives access to a door, for example.
 
-	Reserved player action storage key ranges (const.h at the source)
+	Reserved player action storage key ranges (const.hpp at the source)
 	[10000000 - 20000000]
 	[1000 - 1500]
 	[2001 - 2011]

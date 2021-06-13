@@ -526,7 +526,7 @@ int TileFunctions::luaTileHasProperty(lua_State* L) {
 		item = nullptr;
 	}
 
-	ITEMPROPERTY property = getNumber<ITEMPROPERTY>(L, 2);
+	ItemProperty property = getNumber<ItemProperty>(L, 2);
 	if (item) {
 		pushBoolean(L, tile->hasProperty(item, property));
 	} else {
@@ -556,7 +556,7 @@ int TileFunctions::luaTileHasFlag(lua_State* L) {
 	// tile:hasFlag(flag)
 	Tile* tile = getUserdata<Tile>(L, 1);
 	if (tile) {
-		tileflags_t flag = getNumber<tileflags_t>(L, 2);
+		TileFlags_t flag = getNumber<TileFlags_t>(L, 2);
 		pushBoolean(L, tile->hasFlag(flag));
 	} else {
 		lua_pushnil(L);

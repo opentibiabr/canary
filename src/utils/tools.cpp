@@ -1019,7 +1019,7 @@ uint8_t clientFluidToServer(uint8_t clientFluid)
 	return clientToServerFluidMap[clientFluid];
 }
 
-itemAttrTypes stringToItemAttribute(const std::string& str)
+ItemAttrTypes stringToItemAttribute(const std::string& str)
 {
 	if (str == "aid") {
 		return ITEM_ATTRIBUTE_ACTIONID;

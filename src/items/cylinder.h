@@ -20,31 +20,13 @@
 #ifndef SRC_ITEMS_CYLINDER_H_
 #define SRC_ITEMS_CYLINDER_H_
 
-#include "utils/enums.h"
+#include "declarations.hpp"
 #include "items/thing.h"
 
 class Item;
 class Creature;
 
 static constexpr int32_t INDEX_WHEREEVER = -1;
-
-enum cylinderflags_t {
-	FLAG_NOLIMIT = 1 << 0, //Bypass limits like capacity/container limits, blocking items/creatures etc.
-	FLAG_IGNOREBLOCKITEM = 1 << 1, //Bypass movable blocking item checks
-	FLAG_IGNOREBLOCKCREATURE = 1 << 2, //Bypass creature checks
-	FLAG_CHILDISOWNER = 1 << 3, //Used by containers to query capacity of the carrier (player)
-	FLAG_PATHFINDING = 1 << 4, //An additional check is done for floor changing/teleport items
-	FLAG_IGNOREFIELDDAMAGE = 1 << 5, //Bypass field damage checks
-	FLAG_IGNORENOTMOVEABLE = 1 << 6, //Bypass check for mobility
-	FLAG_IGNOREAUTOSTACK = 1 << 7, //queryDestination will not try to stack items together
-};
-
-enum cylinderlink_t {
-	LINK_OWNER,
-	LINK_PARENT,
-	LINK_TOPPARENT,
-	LINK_NEAR,
-};
 
 class Cylinder : virtual public Thing
 {
@@ -139,7 +121,7 @@ class Cylinder : virtual public Thing
 		 * \param index is the objects new index value
 		 * \param link holds the relation the object has to the cylinder
 		 */
-		virtual void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t link = LINK_OWNER) = 0;
+		virtual void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) = 0;
 
 		/**
 		 * Is sent after an operation (move/remove) to update internal values
@@ -147,7 +129,7 @@ class Cylinder : virtual public Thing
 		 * \param index is the previous index of the removed object
 		 * \param link holds the relation the object has to the cylinder
 		 */
-		virtual void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t link = LINK_OWNER) = 0;
+		virtual void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) = 0;
 
 		/**
 		 * Gets the index of an object
@@ -229,8 +211,8 @@ class VirtualCylinder final : public Cylinder
 		virtual void replaceThing(uint32_t, Thing*) override {}
 		virtual void removeThing(Thing*, uint32_t) override {}
 
-		virtual void postAddNotification(Thing*, const Cylinder*, int32_t, cylinderlink_t = LINK_OWNER) override {}
-		virtual void postRemoveNotification(Thing*, const Cylinder*, int32_t, cylinderlink_t = LINK_OWNER) override {}
+		virtual void postAddNotification(Thing*, const Cylinder*, int32_t, CylinderLink_t = LINK_OWNER) override {}
+		virtual void postRemoveNotification(Thing*, const Cylinder*, int32_t, CylinderLink_t = LINK_OWNER) override {}
 
 		bool isPushable() const override {
 			return false;

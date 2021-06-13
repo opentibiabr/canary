@@ -20,14 +20,10 @@
 #ifndef SRC_LUA_CREATURE_RAIDS_H_
 #define SRC_LUA_CREATURE_RAIDS_H_
 
-#include "utils/const.h"
+#include "utils/utils_definitions.hpp"
+#include "declarations.hpp"
 #include "game/movement/position.h"
 #include "lua/global/baseevents.h"
-
-enum RaidState_t {
-	RAIDSTATE_IDLE,
-	RAIDSTATE_EXECUTING,
-};
 
 struct MonsterSpawn {
 	MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :

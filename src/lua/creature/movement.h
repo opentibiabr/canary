@@ -21,25 +21,12 @@
 #define SRC_LUA_CREATURE_MOVEMENT_H_
 
 #include "lua/global/baseevents.h"
+#include "declarations.hpp"
 #include "items/item.h"
 #include "lua/functions/events/move_event_functions.hpp"
 #include "creatures/players/vocations/vocation.h"
 
 extern Vocations g_vocations;
-
-enum MoveEvent_t {
-	MOVE_EVENT_STEP_IN,
-	MOVE_EVENT_STEP_OUT,
-	MOVE_EVENT_EQUIP,
-	MOVE_EVENT_DEEQUIP,
-	MOVE_EVENT_ADD_ITEM,
-	MOVE_EVENT_REMOVE_ITEM,
-	MOVE_EVENT_ADD_ITEM_ITEMTILE,
-	MOVE_EVENT_REMOVE_ITEM_ITEMTILE,
-
-	MOVE_EVENT_LAST,
-	MOVE_EVENT_NONE
-};
 
 class MoveEvent;
 using MoveEvent_ptr = std::unique_ptr<MoveEvent>;
@@ -60,8 +47,8 @@ class MoveEvents final : public BaseEvents {
 		MoveEvents& operator=(const MoveEvents&) = delete;
 
 		uint32_t onCreatureMove(Creature* creature, const Tile* tile, MoveEvent_t eventType);
-		uint32_t onPlayerEquip(Player* player, Item* item, slots_t slot, bool isCheck);
-		uint32_t onPlayerDeEquip(Player* player, Item* item, slots_t slot);
+		uint32_t onPlayerEquip(Player* player, Item* item, Slots_t slot, bool isCheck);
+		uint32_t onPlayerDeEquip(Player* player, Item* item, Slots_t slot);
 		uint32_t onItemMove(Item* item, Tile* tile, bool isAdd);
 
 		MoveEvent* getEvent(Item* item, MoveEvent_t eventType);
@@ -88,7 +75,7 @@ class MoveEvents final : public BaseEvents {
 		void addEvent(MoveEvent moveEvent, const Position& pos, MovePosListMap& map);
 		MoveEvent* getEvent(const Tile* tile, MoveEvent_t eventType);
 
-		MoveEvent* getEvent(Item* item, MoveEvent_t eventType, slots_t slot);
+		MoveEvent* getEvent(Item* item, MoveEvent_t eventType, Slots_t slot);
 
 		MoveListMap uniqueIdMap;
 		MoveListMap actionIdMap;
@@ -100,7 +87,7 @@ class MoveEvents final : public BaseEvents {
 
 using StepFunction = std::function<uint32_t(Creature* creature, Item* item, const Position& pos)>;
 using MoveFunction = std::function<uint32_t(Item* item, Item* tileItem, const Position& pos)>;
-using EquipFunction = std::function<uint32_t(MoveEvent* moveEvent, Player* player, Item* item, slots_t slot, bool boolean)>;
+using EquipFunction = std::function<uint32_t(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean)>;
 
 class MoveEvent final : public Event {
 	public:
@@ -114,7 +101,7 @@ class MoveEvent final : public Event {
 
 		uint32_t fireStepEvent(Creature* creature, Item* item, const Position& pos);
 		uint32_t fireAddRemItem(Item* item, Item* tileItem, const Position& pos);
-		uint32_t fireEquip(Player* player, Item* item, slots_t slot, bool isCheck);
+		uint32_t fireEquip(Player* player, Item* item, Slots_t slot, bool isCheck);
 
 		uint32_t getSlot() const {
 			return slot;
@@ -122,7 +109,7 @@ class MoveEvent final : public Event {
 
 		//scripting
 		bool executeStep(Creature* creature, Item* item, const Position& pos);
-		bool executeEquip(Player* player, Item* item, slots_t slot, bool isCheck);
+		bool executeEquip(Player* player, Item* item, Slots_t slot, bool isCheck);
 		bool executeAddRemItem(Item* item, Item* tileItem, const Position& pos);
 		//
 
@@ -218,8 +205,8 @@ class MoveEvent final : public Event {
 		static uint32_t AddItemField(Item* item, Item* tileItem, const Position& pos);
 		static uint32_t RemoveItemField(Item* item, Item* tileItem, const Position& pos);
 
-		static uint32_t EquipItem(MoveEvent* moveEvent, Player* player, Item* item, slots_t slot, bool boolean);
-		static uint32_t DeEquipItem(MoveEvent* moveEvent, Player* player, Item* item, slots_t slot, bool boolean);
+		static uint32_t EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
+		static uint32_t DeEquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
 		MoveEvent_t eventType = MOVE_EVENT_NONE;
 		StepFunction stepFunction;

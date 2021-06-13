@@ -24,9 +24,9 @@
 #include "items/containers/container.h"
 #include "creatures/creature.h"
 #include "items/cylinder.h"
+#include "declarations.hpp"
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
-#include "utils/enums.h"
 #include "grouping/familiars.h"
 #include "game/gamestore.h"
 #include "grouping/groups.h"
@@ -54,79 +54,9 @@ class Bed;
 class Guild;
 class Imbuement;
 
-enum skillsid_t {
-	SKILLVALUE_LEVEL = 0,
-	SKILLVALUE_TRIES = 1,
-	SKILLVALUE_PERCENT = 2,
-};
-
-enum fightMode_t : uint8_t {
-	FIGHTMODE_ATTACK = 1,
-	FIGHTMODE_BALANCED = 2,
-	FIGHTMODE_DEFENSE = 3,
-};
-
-enum pvpMode_t : uint8_t {
-	PVP_MODE_DOVE = 0,
-	PVP_MODE_WHITE_HAND = 1,
-	PVP_MODE_YELLOW_HAND = 2,
-	PVP_MODE_RED_FIST = 3,
-};
-
-enum tradestate_t : uint8_t {
-	TRADE_NONE,
-	TRADE_INITIATED,
-	TRADE_ACCEPT,
-	TRADE_ACKNOWLEDGE,
-	TRADE_TRANSFER,
-};
-
-enum PlayerAsyncOngoingTaskFlags : uint64_t {
-	PlayerAsyncTask_Highscore = 1 << 0,
-	PlayerAsyncTask_RecentDeaths = 1 << 1,
-	PlayerAsyncTask_RecentPvPKills = 1 << 2
-};
-
-struct VIPEntry {
-	VIPEntry(uint32_t initGuid, std::string initName, std::string initDescription, uint32_t initIcon, bool initNotify) :
-		guid(initGuid), name(std::move(initName)), description(std::move(initDescription)), icon(initIcon), notify(initNotify) {}
-
-	uint32_t guid;
-	std::string name;
-	std::string description;
-	uint32_t icon;
-	bool notify;
-};
-
 struct OpenContainer {
 	Container* container;
 	uint16_t index;
-};
-
-struct OutfitEntry {
-	constexpr OutfitEntry(uint16_t initLookType, uint8_t initAddons) : lookType(initLookType), addons(initAddons) {}
-
-	uint16_t lookType;
-	uint8_t addons;
-};
-
-struct FamiliarEntry {
-	constexpr explicit FamiliarEntry(uint16_t initLookType) : lookType(initLookType) {}
-	uint16_t lookType;
-};
-
-struct Skill {
-	uint64_t tries = 0;
-	uint16_t level = 10;
-	double_t percent = 0;
-};
-
-struct Kill {
-	uint32_t target;
-	time_t time;
-	bool unavenged;
-
-	Kill(uint32_t _target, time_t _time, bool _unavenged) : target(_target), time(_time), unavenged(_unavenged) {}
 };
 
 using MuteCountMap = std::map<uint32_t, uint32_t>;
@@ -713,12 +643,12 @@ class Player final : public Creature, public Cylinder
 			return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
 		}
 
-		Item* getInventoryItem(slots_t slot) const;
+		Item* getInventoryItem(Slots_t slot) const;
 
-		bool isItemAbilityEnabled(slots_t slot) const {
+		bool isItemAbilityEnabled(Slots_t slot) const {
 			return inventoryAbilities[slot];
 		}
-		void setItemAbility(slots_t slot, bool enabled) {
+		void setItemAbility(Slots_t slot, bool enabled) {
 			inventoryAbilities[slot] = enabled;
 		}
 
@@ -759,10 +689,10 @@ class Player final : public Creature, public Cylinder
 		uint64_t getMoney() const;
 
 		//safe-trade functions
-		void setTradeState(tradestate_t state) {
+		void setTradeState(TradeState_t state) {
 			tradeState = state;
 		}
-		tradestate_t getTradeState() const {
+		TradeState_t getTradeState() const {
 			return tradeState;
 		}
 		Item* getTradeItem() {
@@ -804,7 +734,7 @@ class Player final : public Creature, public Cylinder
 		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
 
 		void setChaseMode(bool mode);
-		void setFightMode(fightMode_t mode) {
+		void setFightMode(FightMode_t mode) {
 			fightMode = mode;
 		}
 		void setSecureMode(bool mode) {
@@ -858,7 +788,7 @@ class Player final : public Creature, public Cylinder
 			return lastAttackBlockType;
 		}
 
-		Item* getWeapon(slots_t slot, bool ignoreAmmo) const;
+		Item* getWeapon(Slots_t slot, bool ignoreAmmo) const;
 		Item* getWeapon(bool ignoreAmmo = false) const;
 		WeaponType_t getWeaponType() const;
 		int32_t getWeaponSkill(const Item* item) const;
@@ -1110,7 +1040,7 @@ class Player final : public Creature, public Cylinder
 				client->sendCoinBalance();
 			}
 		}
-		void sendInventoryItem(slots_t slot, const Item* item) {
+		void sendInventoryItem(Slots_t slot, const Item* item) {
 			if (client) {
 				client->sendInventoryItem(slot, item);
 			}
@@ -1613,10 +1543,10 @@ class Player final : public Creature, public Cylinder
 
 		void postAddNotification(Thing* thing, const Cylinder* oldParent,
                                  int32_t index,
-                                 cylinderlink_t link = LINK_OWNER) override;
+                                 CylinderLink_t link = LINK_OWNER) override;
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent,
                                     int32_t index,
-                                    cylinderlink_t link = LINK_OWNER) override;
+                                    CylinderLink_t link = LINK_OWNER) override;
 
 		void setNextAction(int64_t time) {
 			if (time > nextAction) {
@@ -2156,10 +2086,9 @@ class Player final : public Creature, public Cylinder
 		PlayerSex_t sex = PLAYERSEX_FEMALE;
 		OperatingSystem_t operatingSystem = CLIENTOS_NONE;
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
-		tradestate_t tradeState = TRADE_NONE;
-		fightMode_t fightMode = FIGHTMODE_ATTACK;
-		account::AccountType accountType =
-		account::AccountType::ACCOUNT_TYPE_NORMAL;
+		TradeState_t tradeState = TRADE_NONE;
+		FightMode_t fightMode = FIGHTMODE_ATTACK;
+		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
 
 		bool chaseMode = false;

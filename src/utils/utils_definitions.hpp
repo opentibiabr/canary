@@ -1,6 +1,6 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,83 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_UTILS_CONST_H_
-#define SRC_UTILS_CONST_H_
+#ifndef SRC_UTILS_UTILS_DEFINITIONS_HPP_
+#define SRC_UTILS_UTILS_DEFINITIONS_HPP_
 
-static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
-static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 24590;
+// Enums
+enum Icons_t {
+	ICON_POISON = 1 << 0,
+	ICON_BURN = 1 << 1,
+	ICON_ENERGY =  1 << 2,
+	ICON_DRUNK = 1 << 3,
+	ICON_MANASHIELD = 1 << 4,
+	ICON_PARALYZE = 1 << 5,
+	ICON_HASTE = 1 << 6,
+	ICON_SWORDS = 1 << 7,
+	ICON_DROWNING = 1 << 8,
+	ICON_FREEZING = 1 << 9,
+	ICON_DAZZLED = 1 << 10,
+	ICON_CURSED = 1 << 11,
+	ICON_PARTY_BUFF = 1 << 12,
+	ICON_REDSWORDS = 1 << 13,
+	ICON_PIGEON = 1 << 14,
+	ICON_BLEEDING = 1 << 15,
+	ICON_LESSERHEX = 1 << 16,
+	ICON_INTENSEHEX = 1 << 17,
+	ICON_GREATERHEX = 1 << 18,
+	ICON_ROOTED = 1 << 19,
+	ICON_FEARED = 1 << 20,
+	ICON_GOSHNAR1 = 1 << 21,
+	ICON_GOSHNAR2 = 1 << 22,
+	ICON_GOSHNAR3 = 1 << 23,
+	ICON_GOSHNAR4 = 1 << 24,
+	ICON_GOSHNAR5 = 1 << 25,
+	ICON_NEWMANASHIELD = 1 << 26,
+};
 
-const uint32_t MAX_LOOTCHANCE = 100000;
-const uint32_t MAX_STATICWALK = 100;
+enum WieldInfo_t {
+	WIELDINFO_NONE = 0,
+	WIELDINFO_LEVEL = 1 << 0,
+	WIELDINFO_MAGLV = 1 << 1,
+	WIELDINFO_VOCREQ = 1 << 2,
+	WIELDINFO_PREMIUM = 1 << 3,
+};
+
+enum CreatureIcon_t {
+	CREATUREICON_NONE = 0,
+	CREATUREICON_HIGHERRECEIVEDDAMAGE = 1,
+	CREATUREICON_LOWERDEALTDAMAGE = 2,
+	CREATUREICON_TURNEDMELEE = 3,
+};
+
+enum ThreadState {
+	THREAD_STATE_RUNNING,
+	THREAD_STATE_CLOSING,
+	THREAD_STATE_TERMINATED,
+};
+
+enum SpawnType_t
+{
+	RESPAWN_IN_ALL = 0,
+	RESPAWN_IN_DAY = 1,
+	RESPAWN_IN_NIGHT = 2,
+	RESPAWN_IN_DAY_CAVE = 3,
+	RESPAWN_IN_NIGHT_CAVE = 4,
+};
+
+enum Cipbia_Elementals_t : uint8_t {
+	CIPBIA_ELEMENTAL_PHYSICAL = 0,
+	CIPBIA_ELEMENTAL_FIRE = 1,
+	CIPBIA_ELEMENTAL_EARTH = 2,
+	CIPBIA_ELEMENTAL_ENERGY = 3,
+	CIPBIA_ELEMENTAL_ICE = 4,
+	CIPBIA_ELEMENTAL_HOLY = 5,
+	CIPBIA_ELEMENTAL_DEATH = 6,
+	CIPBIA_ELEMENTAL_HEALING = 7,
+	CIPBIA_ELEMENTAL_DROWN = 8,
+	CIPBIA_ELEMENTAL_LIFEDRAIN = 9,
+	CIPBIA_ELEMENTAL_UNDEFINED = 10
+};
 
 enum MagicEffectClasses : uint8_t {
 	CONST_ME_NONE,
@@ -398,43 +467,6 @@ enum TextColor_t : uint8_t {
 	TEXTCOLOR_NONE = 255,
 };
 
-enum Icons_t {
-	ICON_POISON = 1 << 0,
-	ICON_BURN = 1 << 1,
-	ICON_ENERGY =  1 << 2,
-	ICON_DRUNK = 1 << 3,
-	ICON_MANASHIELD = 1 << 4,
-	ICON_PARALYZE = 1 << 5,
-	ICON_HASTE = 1 << 6,
-	ICON_SWORDS = 1 << 7,
-	ICON_DROWNING = 1 << 8,
-	ICON_FREEZING = 1 << 9,
-	ICON_DAZZLED = 1 << 10,
-	ICON_CURSED = 1 << 11,
-	ICON_PARTY_BUFF = 1 << 12,
-	ICON_REDSWORDS = 1 << 13,
-	ICON_PIGEON = 1 << 14,
-	ICON_BLEEDING = 1 << 15,
-	ICON_LESSERHEX = 1 << 16,
-	ICON_INTENSEHEX = 1 << 17,
-	ICON_GREATERHEX = 1 << 18,
-	ICON_ROOTED = 1 << 19,
-	ICON_FEARED = 1 << 20,
-	ICON_GOSHNAR1 = 1 << 21,
-	ICON_GOSHNAR2 = 1 << 22,
-	ICON_GOSHNAR3 = 1 << 23,
-	ICON_GOSHNAR4 = 1 << 24,
-	ICON_GOSHNAR5 = 1 << 25,
-	ICON_NEWMANASHIELD = 1 << 26,
-};
-
-enum CreatureIcon_t {
-  CREATUREICON_NONE = 0,
-  CREATUREICON_HIGHERRECEIVEDDAMAGE = 1,
-  CREATUREICON_LOWERDEALTDAMAGE = 2,
-  CREATUREICON_TURNEDMELEE = 3,
-};
-
 enum WeaponType_t : uint8_t {
 	WEAPON_NONE,
 	WEAPON_SWORD,
@@ -444,7 +476,7 @@ enum WeaponType_t : uint8_t {
 	WEAPON_DISTANCE,
 	WEAPON_WAND,
 	WEAPON_AMMO,
-  WEAPON_QUIVER,
+	WEAPON_QUIVER,
 };
 
 enum Ammo_t : uint8_t {
@@ -463,14 +495,6 @@ enum WeaponAction_t : uint8_t {
 	WEAPONACTION_REMOVECOUNT,
 	WEAPONACTION_REMOVECHARGE,
 	WEAPONACTION_MOVE,
-};
-
-enum WieldInfo_t {
-	WIELDINFO_NONE = 0,
-	WIELDINFO_LEVEL = 1 << 0,
-	WIELDINFO_MAGLV = 1 << 1,
-	WIELDINFO_VOCREQ = 1 << 2,
-	WIELDINFO_PREMIUM = 1 << 3,
 };
 
 enum Skulls_t : uint8_t {
@@ -505,6 +529,34 @@ enum GuildEmblems_t : uint8_t {
 	GUILDEMBLEM_NEUTRAL = 3,
 	GUILDEMBLEM_MEMBER = 4,
 	GUILDEMBLEM_OTHER = 5,
+};
+
+enum ReloadTypes_t : uint8_t  {
+	RELOAD_TYPE_ALL,
+	RELOAD_TYPE_CHAT,
+	RELOAD_TYPE_COMMANDS,
+	RELOAD_TYPE_CONFIG,
+	RELOAD_TYPE_EVENTS,
+	RELOAD_TYPE_GLOBAL,
+	RELOAD_TYPE_IMBUEMENTS,
+	RELOAD_TYPE_ITEMS,
+	RELOAD_TYPE_MODULES,
+	RELOAD_TYPE_MONSTERS,
+	RELOAD_TYPE_MOUNTS,
+	RELOAD_TYPE_NPCS,
+	RELOAD_TYPE_RAIDS,
+	RELOAD_TYPE_SCRIPTS,
+	RELOAD_TYPE_SPELLS,
+	RELOAD_TYPE_STAGES,
+};
+
+enum NameEval_t : uint8_t {
+	VALID,
+	INVALID,
+	INVALID_LENGTH,
+	INVALID_TOKEN_LENGTH,
+	INVALID_FORBIDDEN,
+	INVALID_CHARACTER
 };
 
 enum item_t : uint16_t {
@@ -662,57 +714,4 @@ enum PlayerCustomFlags : uint64_t {
   PlayerCustomFlag_IgnoredByNpcs = 1 << 1
 };
 
-enum ReloadTypes_t : uint8_t  {
-	RELOAD_TYPE_ALL,
-	RELOAD_TYPE_CHAT,
-	RELOAD_TYPE_COMMANDS,
-	RELOAD_TYPE_CONFIG,
-	RELOAD_TYPE_EVENTS,
-	RELOAD_TYPE_GLOBAL,
-	RELOAD_TYPE_IMBUEMENTS,
-	RELOAD_TYPE_ITEMS,
-	RELOAD_TYPE_MODULES,
-	RELOAD_TYPE_MONSTERS,
-	RELOAD_TYPE_MOUNTS,
-	RELOAD_TYPE_NPCS,
-	RELOAD_TYPE_RAIDS,
-	RELOAD_TYPE_SCRIPTS,
-	RELOAD_TYPE_SPELLS,
-	RELOAD_TYPE_STAGES,
-};
-
-enum NameEval_t : uint8_t {
-	VALID,
-	INVALID,
-	INVALID_LENGTH,
-	INVALID_TOKEN_LENGTH,
-	INVALID_FORBIDDEN,
-	INVALID_CHARACTER
-};
-
-static constexpr int32_t CHANNEL_GUILD = 0x00;
-static constexpr int32_t CHANNEL_PARTY = 0x01;
-static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
-
-static constexpr int32_t STORAGEVALUE_PROMOTION = 30018;
-static constexpr int32_t STORAGEVALUE_EMOTE = 30019;
-static constexpr int32_t STORAGEVALUE_DAILYREWARD = 14898;
-static constexpr int32_t STORAGEVALUE_BESTIARYKILLCOUNT = 61305000; // Can get up to 2000 storages!
-// Reserved player storage key ranges;
-// [10000000 - 20000000];
-static constexpr int32_t PSTRG_RESERVED_RANGE_START = 10000000;
-static constexpr int32_t PSTRG_RESERVED_RANGE_SIZE = 10000000;
-// [1000 - 1500];
-static constexpr int32_t PSTRG_OUTFITS_RANGE_START = (PSTRG_RESERVED_RANGE_START + 1000);
-static constexpr int32_t PSTRG_OUTFITS_RANGE_SIZE = 500;
-// [2001 - 2011];
-static constexpr int32_t PSTRG_MOUNTS_RANGE_START = (PSTRG_RESERVED_RANGE_START + 2001);
-static constexpr int32_t PSTRG_MOUNTS_RANGE_SIZE = 10;
-static constexpr int32_t PSTRG_MOUNTS_CURRENTMOUNT = (PSTRG_MOUNTS_RANGE_START + 10);
-// [3000 - 3500];
-static constexpr int32_t PSTRG_FAMILIARS_RANGE_START = (PSTRG_RESERVED_RANGE_START + 3000);
-static constexpr int32_t PSTRG_FAMILIARS_RANGE_SIZE = 500;
-
-#define IS_IN_KEYRANGE(key, range) (key >= PSTRG_##range##_START && ((key - PSTRG_##range##_START) <= PSTRG_##range##_SIZE))
-
-#endif  // SRC_UTILS_CONST_H_
+#endif  // SRC_UTILS_UTILS_DEFINITIONS_HPP_

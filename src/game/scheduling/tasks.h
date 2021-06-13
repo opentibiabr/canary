@@ -21,8 +21,9 @@
 #define SRC_GAME_SCHEDULING_TASKS_H_
 
 #include <condition_variable>
+
+#include "declarations.hpp"
 #include "utils/thread_holder_base.h"
-#include "utils/enums.h"
 
 const int DISPATCHER_TASK_EXPIRATION = 2000;
 const auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));

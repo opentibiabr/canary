@@ -22,12 +22,12 @@
 
 #include "otpch.h"
 
-#include "creatures/creature.h"
 #include "creatures/players/account/account.hpp"
-#include "game/game.h"
+#include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
+#include "declarations.hpp"
+#include "game/game.h"
 #include "lua/scripts/luascript.h"
-#include "utils/enums.h"
 
 class LuaEnums final : LuaScriptInterface {
 	public:

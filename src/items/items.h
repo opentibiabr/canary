@@ -20,71 +20,10 @@
 #ifndef SRC_ITEMS_ITEMS_H_
 #define SRC_ITEMS_ITEMS_H_
 
-#include "utils/const.h"
-#include "utils/enums.h"
+#include "utils/utils_definitions.hpp"
+#include "declarations.hpp"
 #include "items/itemloader.h"
 #include "game/movement/position.h"
-
-enum SlotPositionBits : uint32_t {
-	SLOTP_WHEREEVER = 0xFFFFFFFF,
-	SLOTP_HEAD = 1 << 0,
-	SLOTP_NECKLACE = 1 << 1,
-	SLOTP_BACKPACK = 1 << 2,
-	SLOTP_ARMOR = 1 << 3,
-	SLOTP_RIGHT = 1 << 4,
-	SLOTP_LEFT = 1 << 5,
-	SLOTP_LEGS = 1 << 6,
-	SLOTP_FEET = 1 << 7,
-	SLOTP_RING = 1 << 8,
-	SLOTP_AMMO = 1 << 9,
-	SLOTP_DEPOT = 1 << 10,
-	SLOTP_TWO_HAND = 1 << 11,
-	SLOTP_HAND = (SLOTP_LEFT | SLOTP_RIGHT)
-};
-
-enum ItemTypes_t {
-	ITEM_TYPE_NONE,
-	ITEM_TYPE_DEPOT,
-	ITEM_TYPE_MAILBOX,
-	ITEM_TYPE_TRASHHOLDER,
-	ITEM_TYPE_CONTAINER,
-	ITEM_TYPE_DOOR,
-	ITEM_TYPE_MAGICFIELD,
-	ITEM_TYPE_TELEPORT,
-	ITEM_TYPE_BED,
-	ITEM_TYPE_KEY,
-	ITEM_TYPE_RUNE,
-	ITEM_TYPE_SUPPLY,
-	ITEM_TYPE_REWARDCHEST,
-	ITEM_TYPE_CARPET,
-	ITEM_TYPE_CREATUREPRODUCT,
-	ITEM_TYPE_FOOD,
-	ITEM_TYPE_VALUABLE,
-	ITEM_TYPE_POTION,
-
-	ITEM_TYPE_ARMOR,
-	ITEM_TYPE_AMULET,
-	ITEM_TYPE_BOOTS,
-	ITEM_TYPE_DECORATION,
-	ITEM_TYPE_HELMET,
-	ITEM_TYPE_LEGS,
-	ITEM_TYPE_OTHER,
-	ITEM_TYPE_RING,
-	ITEM_TYPE_SHIELD,
-	ITEM_TYPE_TOOLS,
-	ITEM_TYPE_AMMO,
-	ITEM_TYPE_AXE,
-	ITEM_TYPE_CLUB,
-	ITEM_TYPE_DISTANCE,
-	ITEM_TYPE_SWORD,
-	ITEM_TYPE_WAND,
-
-	ITEM_TYPE_RETRIEVE,
-	ITEM_TYPE_GOLD,
-	ITEM_TYPE_UNASSIGNED,
-
-	ITEM_TYPE_LAST,
-};
 
 struct Abilities {
 	uint32_t healthGain = 0;
@@ -215,7 +154,7 @@ class ItemType
 			return str;
 		}
 
-		itemgroup_t group = ITEM_GROUP_NONE;
+		ItemGroup_t group = ITEM_GROUP_NONE;
 		ItemTypes_t type = ITEM_TYPE_NONE;
 		uint16_t id = 0;
 		uint16_t clientId = 0;

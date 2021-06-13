@@ -24,6 +24,7 @@
 #include <unordered_set>
 
 #include "items/containers/container.h"
+#include "declarations.hpp"
 #include "map/house/housetile.h"
 #include "game/movement/position.h"
 
@@ -94,18 +95,6 @@ class Door final : public Item
 		House* house = nullptr;
 		std::unique_ptr<AccessList> accessList;
 		friend class House;
-};
-
-enum AccessList_t {
-	GUEST_LIST = 0x100,
-	SUBOWNER_LIST = 0x101,
-};
-
-enum AccessHouseLevel_t {
-	HOUSE_NOT_INVITED = 0,
-	HOUSE_GUEST = 1,
-	HOUSE_SUBOWNER = 2,
-	HOUSE_OWNER = 3,
 };
 
 using HouseTileList = std::list<HouseTile*>;
@@ -256,14 +245,6 @@ class House
 };
 
 using HouseMap = std::map<uint32_t, House*>;
-
-enum RentPeriod_t {
-	RENTPERIOD_DAILY,
-	RENTPERIOD_WEEKLY,
-	RENTPERIOD_MONTHLY,
-	RENTPERIOD_YEARLY,
-	RENTPERIOD_NEVER,
-};
 
 class Houses
 {

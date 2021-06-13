@@ -24,8 +24,8 @@
 #include <vector>
 
 #include "creatures/combat/combat.h"
+#include "declarations.hpp"
 #include "lua/scripts/luascript.h"
-#include "utils/enums.h"
 
 class AreaCombat;
 class Combat;

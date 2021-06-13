@@ -338,9 +338,9 @@ int ItemFunctions::luaItemHasAttribute(lua_State* L) {
 		return 1;
 	}
 
-	itemAttrTypes attribute;
+	ItemAttrTypes attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<itemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
@@ -359,9 +359,9 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 		return 1;
 	}
 
-	itemAttrTypes attribute;
+	ItemAttrTypes attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<itemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
@@ -386,9 +386,9 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		return 1;
 	}
 
-	itemAttrTypes attribute;
+	ItemAttrTypes attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<itemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
@@ -415,9 +415,9 @@ int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {
 		return 1;
 	}
 
-	itemAttrTypes attribute;
+	ItemAttrTypes attribute;
 	if (isNumber(L, 2)) {
-		attribute = getNumber<itemAttrTypes>(L, 2);
+		attribute = getNumber<ItemAttrTypes>(L, 2);
 	} else if (isString(L, 2)) {
 		attribute = stringToItemAttribute(getString(L, 2));
 	} else {
@@ -674,7 +674,7 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 		return 1;
 	}
 
-	slots_t slot = getNumber<slots_t>(L, 3, CONST_SLOT_WHEREEVER);
+	Slots_t slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
 
 	Item* moveItem = nullptr;
 	ReturnValue ret = g_game.internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
@@ -702,7 +702,7 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	// item:hasProperty(property)
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		ITEMPROPERTY property = getNumber<ITEMPROPERTY>(L, 2);
+		ItemProperty property = getNumber<ItemProperty>(L, 2);
 		pushBoolean(L, item->hasProperty(property));
 	} else {
 		lua_pushnil(L);

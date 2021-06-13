@@ -54,7 +54,7 @@ ReturnValue Reward::queryAdd(int32_t, const Thing& thing, uint32_t,
 	return RETURNVALUE_NOERROR;
 }
 
-void Reward::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, cylinderlink_t)
+void Reward::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
 {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {
@@ -62,7 +62,7 @@ void Reward::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 	}
 }
 
-void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, cylinderlink_t)
+void Reward::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
 {
 	Cylinder* localParent = getParent();
 	if (localParent != nullptr) {

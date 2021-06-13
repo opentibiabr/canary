@@ -20,8 +20,8 @@
 #ifndef SRC_IO_IOMARKET_H_
 #define SRC_IO_IOMARKET_H_
 
-#include "utils/enums.h"
 #include "database/database.h"
+#include "declarations.hpp"
 
 class IOMarket
 {

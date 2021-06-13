@@ -29,9 +29,9 @@ class ProtocolLogin : public Protocol
 {
 	public:
 		// static protocol information
-		enum {server_sends_first = false};
-		enum {protocol_identifier = 0x01};
-		enum {use_checksum = true};
+		enum {SERVER_SENDS_FIRST = false};
+		enum {PROTOCOL_IDENTIFIER = 0x01};
+		enum {USE_CHECKSUM = true};
 		static const char* protocol_name() {
 			return "login protocol";
 		}

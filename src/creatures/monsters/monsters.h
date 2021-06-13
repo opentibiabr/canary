@@ -21,7 +21,7 @@
 #define SRC_CREATURES_MONSTERS_MONSTERS_H_
 
 #include "creatures/creature.h"
-#include "utils/enums.h"
+#include "declarations.hpp"
 
 class Loot {
 	public:

@@ -45,82 +45,6 @@ class Door;
 class MagicField;
 class BedItem;
 
-enum ITEMPROPERTY {
-	CONST_PROP_BLOCKSOLID = 0,
-	CONST_PROP_HASHEIGHT,
-	CONST_PROP_BLOCKPROJECTILE,
-	CONST_PROP_BLOCKPATH,
-	CONST_PROP_ISVERTICAL,
-	CONST_PROP_ISHORIZONTAL,
-	CONST_PROP_MOVEABLE,
-	CONST_PROP_IMMOVABLEBLOCKSOLID,
-	CONST_PROP_IMMOVABLEBLOCKPATH,
-	CONST_PROP_IMMOVABLENOFIELDBLOCKPATH,
-	CONST_PROP_NOFIELDBLOCKPATH,
-	CONST_PROP_SUPPORTHANGABLE,
-};
-
-enum TradeEvents_t {
-	ON_TRADE_TRANSFER,
-	ON_TRADE_CANCEL,
-};
-
-enum ItemDecayState_t : uint8_t {
-	DECAYING_FALSE = 0,
-	DECAYING_TRUE,
-	DECAYING_PENDING,
-};
-
-enum AttrTypes_t {
-	//ATTR_DESCRIPTION = 1,
-	//ATTR_EXT_FILE = 2,
-	ATTR_TILE_FLAGS = 3,
-	ATTR_ACTION_ID = 4,
-	ATTR_UNIQUE_ID = 5,
-	ATTR_TEXT = 6,
-	ATTR_DESC = 7,
-	ATTR_TELE_DEST = 8,
-	ATTR_ITEM = 9,
-	ATTR_DEPOT_ID = 10,
-	//ATTR_EXT_SPAWN_FILE = 11,
-	ATTR_RUNE_CHARGES = 12,
-	//ATTR_EXT_HOUSE_FILE = 13,
-	ATTR_HOUSEDOORID = 14,
-	ATTR_COUNT = 15,
-	ATTR_DURATION = 16,
-	ATTR_DECAYING_STATE = 17,
-	ATTR_WRITTENDATE = 18,
-	ATTR_WRITTENBY = 19,
-	ATTR_SLEEPERGUID = 20,
-	ATTR_SLEEPSTART = 21,
-	ATTR_CHARGES = 22,
-	ATTR_CONTAINER_ITEMS = 23,
-	ATTR_NAME = 24,
-	ATTR_ARTICLE = 25,
-	ATTR_PLURALNAME = 26,
-	ATTR_WEIGHT = 27,
-	ATTR_ATTACK = 28,
-	ATTR_DEFENSE = 29,
-	ATTR_EXTRADEFENSE = 30,
-	ATTR_ARMOR = 31,
-	ATTR_HITCHANCE = 32,
-	ATTR_SHOOTRANGE = 33,
-	ATTR_SPECIAL = 34,
-	ATTR_IMBUINGSLOTS = 35,
-	ATTR_OPENCONTAINER = 36,
-	ATTR_CUSTOM_ATTRIBUTES = 37,
-
-	ATTR_QUICKLOOTCONTAINER = 38
-};
-
-enum Attr_ReadValue {
-	ATTR_READ_CONTINUE,
-	ATTR_READ_ERROR,
-	ATTR_READ_END,
-};
-
-#define IMBUEMENT_SLOT 500
-
 class ItemAttributes
 {
 	public:
@@ -347,10 +271,10 @@ class ItemAttributes
 		};
 
 	private:
-		bool hasAttribute(itemAttrTypes type) const {
+		bool hasAttribute(ItemAttrTypes type) const {
 			return (type & attributeBits) != 0;
 		}
-		void removeAttribute(itemAttrTypes type);
+		void removeAttribute(ItemAttrTypes type);
 
 		static std::string emptyString;
 		static int64_t emptyInt;
@@ -359,16 +283,15 @@ class ItemAttributes
 
 		typedef std::unordered_map<std::string, CustomAttribute> CustomAttributeMap;
 
-		struct Attribute
-		{
+		struct Attribute {
 			union {
 				int64_t integer;
 				std::string* string;
 				CustomAttributeMap* custom;
 			} value;
-			itemAttrTypes type;
+			ItemAttrTypes type;
 
-			explicit Attribute(itemAttrTypes initType) : type(initType) {
+			explicit Attribute(ItemAttrTypes initType) : type(initType) {
 				memset(&value, 0, sizeof(value));
 			}
 			Attribute(const Attribute& i) {
@@ -424,15 +347,15 @@ class ItemAttributes
 		std::forward_list<Attribute> attributes;
 		uint32_t attributeBits = 0;
 
-		const std::string& getStrAttr(itemAttrTypes type) const;
-		void setStrAttr(itemAttrTypes type, const std::string& value);
+		const std::string& getStrAttr(ItemAttrTypes type) const;
+		void setStrAttr(ItemAttrTypes type, const std::string& value);
 
-		int64_t getIntAttr(itemAttrTypes type) const;
-		void setIntAttr(itemAttrTypes type, int64_t value);
-		void increaseIntAttr(itemAttrTypes type, int64_t value);
+		int64_t getIntAttr(ItemAttrTypes type) const;
+		void setIntAttr(ItemAttrTypes type, int64_t value);
+		void increaseIntAttr(ItemAttrTypes type, int64_t value);
 
-		const Attribute* getExistingAttr(itemAttrTypes type) const;
-		Attribute& getAttr(itemAttrTypes type);
+		const Attribute* getExistingAttr(ItemAttrTypes type) const;
+		Attribute& getAttr(ItemAttrTypes type);
 
 		CustomAttributeMap* getCustomAttributeMap() {
 			if (!hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
@@ -516,13 +439,13 @@ class ItemAttributes
 			| ITEM_ATTRIBUTE_NAME | ITEM_ATTRIBUTE_ARTICLE | ITEM_ATTRIBUTE_PLURALNAME | ITEM_ATTRIBUTE_SPECIAL;
 
 	public:
-		static bool isIntAttrType(itemAttrTypes type) {
+		static bool isIntAttrType(ItemAttrTypes type) {
 			return (type & intAttributeTypes) == type;
 		}
-		static bool isStrAttrType(itemAttrTypes type) {
+		static bool isStrAttrType(ItemAttrTypes type) {
 			return (type & stringAttributeTypes) == type;
 		}
-		inline static bool isCustomAttrType(itemAttrTypes type) {
+		inline static bool isCustomAttrType(ItemAttrTypes type) {
 			return (type & 0x80000000) != 0;
 		}
 
@@ -597,26 +520,26 @@ class Item : virtual public Thing
 			return nullptr;
 		}
 
-		const std::string& getStrAttr(itemAttrTypes type) const {
+		const std::string& getStrAttr(ItemAttrTypes type) const {
 			if (!attributes) {
 				return ItemAttributes::emptyString;
 			}
 			return attributes->getStrAttr(type);
 		}
-		void setStrAttr(itemAttrTypes type, const std::string& value) {
+		void setStrAttr(ItemAttrTypes type, const std::string& value) {
 			getAttributes()->setStrAttr(type, value);
 		}
 
-		int32_t getIntAttr(itemAttrTypes type) const {
+		int32_t getIntAttr(ItemAttrTypes type) const {
 			if (!attributes) {
 				return 0;
 			}
 			return attributes->getIntAttr(type);
 		}
-		void setIntAttr(itemAttrTypes type, int32_t value) {
+		void setIntAttr(ItemAttrTypes type, int32_t value) {
 			getAttributes()->setIntAttr(type, value);
 		}
-		void increaseIntAttr(itemAttrTypes type, int32_t value) {
+		void increaseIntAttr(ItemAttrTypes type, int32_t value) {
 			getAttributes()->increaseIntAttr(type, value);
 		}
 
@@ -628,12 +551,12 @@ class Item : virtual public Thing
 			return isLootTrackeable;
 		}
 
-		void removeAttribute(itemAttrTypes type) {
+		void removeAttribute(ItemAttrTypes type) {
 			if (attributes) {
 				attributes->removeAttribute(type);
 			}
 		}
-		bool hasAttribute(itemAttrTypes type) const {
+		bool hasAttribute(ItemAttrTypes type) const {
 			if (!attributes) {
 				return false;
 			}
@@ -814,8 +737,8 @@ class Item : virtual public Thing
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
 		}
 
-    static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
-																						const Item* item = nullptr);
+		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
+                                    const Item* item = nullptr);
 		static std::string getDescription(const ItemType& it, int32_t lookDistance, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getNameDescription(const ItemType& it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count = 1);
@@ -918,7 +841,7 @@ class Item : virtual public Thing
 		uint32_t getWorth() const;
 		LightInfo getLightInfo() const;
 
-		bool hasProperty(ITEMPROPERTY prop) const;
+		bool hasProperty(ItemProperty prop) const;
 		bool isBlocking() const {
 			return items[id].blockSolid;
 		}

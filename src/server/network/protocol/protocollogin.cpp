@@ -60,7 +60,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 	Game::updatePremium(account);
 
 	auto output = OutputMessagePool::getOutputMessage();
-	const std::string& motd = g_config.getString(ConfigManager::MOTD);
+	const std::string& motd = g_config.getString(MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
 		output->addByte(0x14);
@@ -82,10 +82,10 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 	output->addByte(1);  // number of worlds
 
 	output->addByte(0);  // world id
-	output->addString(g_config.getString(ConfigManager::SERVER_NAME));
-	output->addString(g_config.getString(ConfigManager::IP));
+	output->addString(g_config.getString(SERVER_NAME));
+	output->addString(g_config.getString(IP));
 
-	output->add<uint16_t>(g_config.getShortNumber(ConfigManager::GAME_PORT));
+	output->add<uint16_t>(g_config.getShortNumber(GAME_PORT));
 
 	output->addByte(0);
 
@@ -99,7 +99,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 
 	// Add premium days
 	output->addByte(0);
-	if (g_config.getBoolean(ConfigManager::FREE_PREMIUM)) {
+	if (g_config.getBoolean(FREE_PREMIUM)) {
 		output->addByte(1);
 		output->add<uint32_t>(0);
 	} else {

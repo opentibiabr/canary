@@ -1,8 +1,8 @@
 --[[
-Reserved player action storage key ranges (const.h)
+Reserved player action storage key ranges (const.hpp)
 	It is possible to place the storage in a quest door, so the player who has that storage will go through the door
 
-	Reserved player action storage key ranges (const.h at the source)
+	Reserved player action storage key ranges (const.hpp at the source)
 	[10000000 - 20000000]
 	[1000 - 1500]
 	[2001 - 2011]

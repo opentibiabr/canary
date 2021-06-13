@@ -20,7 +20,7 @@
 #ifndef SRC_CREATURES_INTERACTIONS_CHAT_H_
 #define SRC_CREATURES_INTERACTIONS_CHAT_H_
 
-#include "utils/const.h"
+#include "utils/utils_definitions.hpp"
 #include "lua/scripts/luascript.h"
 
 class Party;

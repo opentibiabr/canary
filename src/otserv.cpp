@@ -22,6 +22,7 @@
 #include <fstream>
 
 #include "config/configmanager.h"
+#include "declarations.hpp"
 #include "creatures/combat/spells.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
@@ -99,7 +100,7 @@ void loadModules() {
 		"config.lua");
 
 	SPDLOG_INFO("Server protocol: {}",
-		g_config.getString(ConfigManager::CLIENT_VERSION_STR));
+		g_config.getString(CLIENT_VERSION_STR));
 
 	// set RSA key
 	try {
@@ -128,7 +129,7 @@ void loadModules() {
 	g_databaseTasks.start();
 	DatabaseManager::updateDatabase();
 
-	if (g_config.getBoolean(ConfigManager::OPTIMIZE_DATABASE)
+	if (g_config.getBoolean(OPTIMIZE_DATABASE)
 			&& !DatabaseManager::optimizeTables()) {
 		SPDLOG_INFO("No tables were optimized");
 	}
@@ -197,7 +198,7 @@ int main(int argc, char* argv[]) {
 	g_loaderSignal.wait(g_loaderUniqueLock);
 
 	if (serviceManager.is_running()) {
-		SPDLOG_INFO("{} {}", g_config.getString(ConfigManager::SERVER_NAME),
+		SPDLOG_INFO("{} {}", g_config.getString(SERVER_NAME),
                     "server online!");
 		serviceManager.run();
 	} else {
@@ -274,8 +275,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	loadModules();
 
 #ifdef _WIN32
-	const std::string& defaultPriority = g_config.getString(
-											ConfigManager::DEFAULT_PRIORITY);
+	const std::string& defaultPriority = g_config.getString(DEFAULT_PRIORITY);
 	if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	} else if (strcasecmp(defaultPriority.c_str(), "above-normal") == 0) {
@@ -283,8 +283,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	}
 #endif
 
-	std::string worldType = asLowerCaseString(g_config.getString(
-                            ConfigManager::WORLD_TYPE));
+	std::string worldType = asLowerCaseString(g_config.getString(WORLD_TYPE));
 	if (worldType == "pvp") {
 		g_game.setWorldType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
@@ -293,14 +292,14 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		g_game.setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		SPDLOG_ERROR("Unknown world type: {}, valid world types are: pvp, no-pvp "
-			"and pvp-enforced", g_config.getString(ConfigManager::WORLD_TYPE));
+			"and pvp-enforced", g_config.getString(WORLD_TYPE));
 		startupErrorMessage();
 	}
 
 	SPDLOG_INFO("World type set as {}", asUpperCaseString(worldType));
 
 	SPDLOG_INFO("Loading map...");
-	if (!g_game.loadMainMap(g_config.getString(ConfigManager::MAP_NAME))) {
+	if (!g_game.loadMainMap(g_config.getString(MAP_NAME))) {
 		SPDLOG_ERROR("Failed to load map");
 		startupErrorMessage();
 	}
@@ -309,17 +308,13 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	g_game.setGameState(GAME_STATE_INIT);
 
 	// Game client protocols
-	services->add<ProtocolGame>(static_cast<uint16_t>(g_config.getNumber(
-												ConfigManager::GAME_PORT)));
-	services->add<ProtocolLogin>(static_cast<uint16_t>(g_config.getNumber(
-												ConfigManager::LOGIN_PORT)));
+	services->add<ProtocolGame>(static_cast<uint16_t>(g_config.getNumber(GAME_PORT)));
+	services->add<ProtocolLogin>(static_cast<uint16_t>(g_config.getNumber(LOGIN_PORT)));
 	// OT protocols
-	services->add<ProtocolStatus>(static_cast<uint16_t>(g_config.getNumber(
-												ConfigManager::STATUS_PORT)));
+	services->add<ProtocolStatus>(static_cast<uint16_t>(g_config.getNumber(STATUS_PORT)));
 
 	RentPeriod_t rentPeriod;
-	std::string strRentPeriod = asLowerCaseString(g_config.getString(
-											ConfigManager::HOUSE_RENT_PERIOD));
+	std::string strRentPeriod = asLowerCaseString(g_config.getString(HOUSE_RENT_PERIOD));
 
 	if (strRentPeriod == "yearly") {
 		rentPeriod = RENTPERIOD_YEARLY;

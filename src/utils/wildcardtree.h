@@ -20,7 +20,7 @@
 #ifndef SRC_UTILS_WILDCARDTREE_H_
 #define SRC_UTILS_WILDCARDTREE_H_
 
-#include "utils/enums.h"
+#include "declarations.hpp"
 
 class WildcardTreeNode
 {

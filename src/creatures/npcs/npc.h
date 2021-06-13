@@ -20,9 +20,9 @@
 #ifndef SRC_CREATURES_NPCS_NPC_H_
 #define SRC_CREATURES_NPCS_NPC_H_
 
-#include "npcs.h"
+#include "declarations.hpp"
+#include "creatures/npcs/npcs.h"
 #include "items/tile.h"
-#include "utils/enums.h"
 
 class Creature;
 class Game;

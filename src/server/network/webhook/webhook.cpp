@@ -39,7 +39,7 @@ static int webhook_send_message_(const char *url, const char *payload, std::stri
 static std::string get_payload(std::string title, std::string message, int color);
 
 void webhook_send_message(std::string title, std::string message, int color) {
-	std::string url = g_config.getString(ConfigManager::DISCORD_WEBHOOK_URL);
+	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
 	if (url.empty()) {
 		return;
 	}
@@ -83,8 +83,8 @@ static std::string get_payload(std::string title, std::string message, int color
 
 	std::stringstream footer_text;
 	footer_text
-			<< g_config.getString(ConfigManager::IP) << ":"
-			<< g_config.getNumber(ConfigManager::GAME_PORT) << " | "
+			<< g_config.getString(IP) << ":"
+			<< g_config.getNumber(GAME_PORT) << " | "
 			<< time_buf << " UTC";
 
 	Json::Value footer(Json::objectValue);

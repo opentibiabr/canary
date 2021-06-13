@@ -19,15 +19,15 @@
 
 #include "otpch.h"
 
+#include "declarations.hpp"
 #include "creatures/combat/combat.h"
-
-#include "game/game.h"
-#include "items/weapons/weapons.h"
 #include "config/configmanager.h"
 #include "lua/creature/events.h"
-#include "creatures/monsters/monster.h"
+#include "game/game.h"
 #include "io/iobestiary.h"
+#include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
+#include "items/weapons/weapons.h"
 
 extern Game g_game;
 extern Weapons* g_weapons;
@@ -278,7 +278,7 @@ bool Combat::isInPvpZone(const Creature* attacker, const Creature* target)
 
 bool Combat::isProtected(const Player* attacker, const Player* target)
 {
-	uint32_t protectionLevel = g_config.getNumber(ConfigManager::PROTECTION_LEVEL);
+	uint32_t protectionLevel = g_config.getNumber(PROTECTION_LEVEL);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
 	}

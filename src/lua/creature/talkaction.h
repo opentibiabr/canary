@@ -20,18 +20,13 @@
 #ifndef SRC_LUA_CREATURE_TALKACTION_H_
 #define SRC_LUA_CREATURE_TALKACTION_H_
 
-#include "lua/scripts/luascript.h"
 #include "lua/global/baseevents.h"
-#include "utils/const.h"
+#include "utils/utils_definitions.hpp"
+#include "declarations.hpp"
+#include "lua/scripts/luascript.h"
 
 class TalkAction;
 using TalkAction_ptr = std::unique_ptr<TalkAction>;
-
-enum TalkActionResult_t {
-	TALKACTION_CONTINUE,
-	TALKACTION_BREAK,
-	TALKACTION_FAILED,
-};
 
 class TalkAction : public Event {
 	public:

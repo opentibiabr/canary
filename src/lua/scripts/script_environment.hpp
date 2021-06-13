@@ -21,7 +21,7 @@
 #define SRC_LUA_SCRIPTS_SCRIPT_ENVIRONMENT_HPP_
 
 #include "database/database.h"
-#include "utils/enums.h"
+#include "declarations.hpp"
 
 class Thing;
 class Creature;

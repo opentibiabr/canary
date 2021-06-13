@@ -108,11 +108,11 @@ std::size_t WaitingList::getTime(std::size_t slot)
 bool WaitingList::clientLogin(const Player* player)
 {
 	if (player->hasFlag(PlayerFlag_CanAlwaysLogin) ||
-      player->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER) {
+		player->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER) {
 		return true;
 	}
 
-	uint32_t maxPlayers = static_cast<uint32_t>(g_config.getNumber(ConfigManager::MAX_PLAYERS));
+	uint32_t maxPlayers = static_cast<uint32_t>(g_config.getNumber(MAX_PLAYERS));
 	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game.getPlayersOnline() < maxPlayers)) {
 		return true;
 	}

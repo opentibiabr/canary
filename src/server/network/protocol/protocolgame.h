@@ -64,21 +64,13 @@ struct TextMessage
 class ProtocolGame final : public Protocol
 {
 public:
-	// static protocol information
-	enum
-	{
-		server_sends_first = true
-	};
-	enum
-	{
-		protocol_identifier = 0
-	}; // Not required as we send first
-	enum
-	{
-		use_checksum = true
-	};
-	static const char *protocol_name()
-	{
+	// Static protocol information.
+	enum {SERVER_SENDS_FIRST = true};
+	// Not required as we send first.
+	enum {PROTOCOL_IDENTIFIER = 0};
+	enum {USE_CHECKSUM = true};
+
+	static const char *protocol_name() {
 		return "gameworld protocol";
 	}
 
@@ -394,7 +386,7 @@ private:
 	void sendLootStats(Item *item, uint8_t count);
 
 	//inventory
-	void sendInventoryItem(slots_t slot, const Item *item);
+	void sendInventoryItem(Slots_t slot, const Item *item);
 	void sendInventoryClientIds();
 
 	//messages
@@ -467,7 +459,7 @@ private:
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint32_t version = g_config.getNumber(ConfigManager::CLIENT_VERSION);
+	uint32_t version = g_config.getNumber(CLIENT_VERSION);
 	int32_t clientVersion = 0;
 
 	uint8_t challengeRandom = 0;

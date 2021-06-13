@@ -278,7 +278,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 		}
 		ItemType& iType = items[serverId];
 
-		iType.group = static_cast<itemgroup_t>(itemNode.type);
+		iType.group = static_cast<ItemGroup_t>(itemNode.type);
 		switch (itemNode.type) {
 			case ITEM_GROUP_CONTAINER:
 				iType.type = ITEM_TYPE_CONTAINER;

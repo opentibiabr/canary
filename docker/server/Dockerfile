@@ -41,12 +41,6 @@ WORKDIR /canary
 
 RUN apt-get update && apt-get install -y --no-install-recommends libluajit-5.1-dev
 
-RUN sed -i '/mysqlHost = .*$/c\mysqlHost = "mysql"' config.lua \
-  && sed -i '/mysqlUser = .*$/c\mysqlUser = "canary"' config.lua \
-  && sed -i '/mysqlPass = .*$/c\mysqlPass = "canary"' config.lua \
-  && sed -i '/mysqlDatabase = .*$/c\mysqlDatabase = "canary"' config.lua
+COPY docker/server/start.sh start.sh
 
-VOLUME /canary
-
-ENTRYPOINT ["/bin/canary"]
-
+ENTRYPOINT ["/canary/start.sh"]

@@ -205,6 +205,7 @@ int main(int argc, char* argv[]) {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
 		g_databaseTasks.shutdown();
 		g_dispatcher.shutdown();
+		exit(-1);
 	}
 
 	g_scheduler.join();

@@ -11,8 +11,10 @@ on:
       - develop
 
 jobs:
-  tests-lua:
+  job:
+    name: Run Lua Tests
     runs-on: ubuntu-latest
+
     steps:
       - name: Update
         run: sudo apt-get update

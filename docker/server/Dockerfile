@@ -39,7 +39,7 @@ COPY config.lua.dist /canary/config.lua
 
 WORKDIR /canary
 
-RUN apt-get update && apt-get install -y --no-install-recommends libluajit-5.1-dev
+RUN apt-get update && apt-get install -y --no-install-recommends libluajit-5.1-dev mariadb-client
 
 COPY docker/server/start.sh start.sh
 

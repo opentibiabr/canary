@@ -2296,9 +2296,9 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 	account::Account account(player->getAccount());
 	account.LoadAccountDB();
 	uint32_t coins;
-	account.GetCoins(&coins);
+	account.GetCoins(COIN_TYPE_DEFAULT);
 	lua_pushnumber(L, coins);
-  } else {
+	} else {
 		lua_pushnil(L);
 	}
 	return 1;
@@ -2312,16 +2312,16 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-  uint32_t coins = getNumber<uint32_t>(L, 2);
+	uint32_t coins = getNumber<uint32_t>(L, 2);
 
-  account::Account account(player->getAccount());
-  account.LoadAccountDB();
-  if(account.AddCoins(coins)) {
-	account.GetCoins(&(player->coinBalance));
-	pushBoolean(L, true);
-  } else {
-	lua_pushnil(L);
-  }
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if(account.AddCoins(coins)) {
+		account.GetCoins(COIN_TYPE_DEFAULT);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
 
 	return 1;
 }
@@ -2334,16 +2334,16 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-  uint32_t coins = getNumber<uint32_t>(L, 2);
+	uint32_t coins = getNumber<uint32_t>(L, 2);
 
-  account::Account account(player->getAccount());
-  account.LoadAccountDB();
-  if (account.RemoveCoins(coins)) {
-	account.GetCoins(&(player->coinBalance));
-	pushBoolean(L, true);
-  } else {
-	lua_pushnil(L);
-  }
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.RemoveCoins(coins)) {
+		account.GetCoins(COIN_TYPE_DEFAULT);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
 
 	return 1;
 }

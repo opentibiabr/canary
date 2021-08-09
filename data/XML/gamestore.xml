@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<store>
+	<category name="Consumables" icon="Category_Consumables.png" rookgaard="yes" >
+		<subcategory name="Blessings" />
+		<subcategory name="Runes" />
+		<subcategory name="Special Foods" />
+	</category>
+	<category name="General Items" icon="Category_GeneralItems.png" rookgaard="yes" >
+		<subcategory name="Equipments" />
+		<subcategory name="Weapons" />
+		<subcategory name="Containers" />
+		<subcategory name="Exercise Weapons" />
+		<subcategory name="Useful Items" />
+	</category>
+	<category name="Cosmetics" icon="Category_Cosmetics.png" rookgaard="yes" >
+		<subcategory name="Mounts" />
+		<subcategory name="Outfits" />
+	</category>
+	<category name="House" icon="Category_HouseTools.png" rookgaard="yes" >
+		<subcategory name="Decorations" />
+		<subcategory name="Furniture" />
+		<subcategory name="Upgrades" />
+		<subcategory name="Hirelings" />
+		<subcategory name="Hirelings Dresses" />
+	</category>
+	<category name="Tournament" icon="Category_Tournament.png" rookgaard="yes" >
+		<subcategory name="Tickets" />
+		<subcategory name="Exclusive Offers" />
+	</category>
+	<category name="Extras" icon="Category_Extras.png" rookgaard="yes" >
+		<subcategory name="Extra Services" />
+		<subcategory name="Useful Things" />
+	</category>
+
+	<!-- home -->
+	<home>
+		<offer name="Pair of Skelot Boots" />
+		<offer name="360 Days of Premium" />
+		<offer name="XP Boost +50%" />	
+		<offer name="Full Golden Outfit" />
+		<offer name="New Recovery Key" />
+		<offer name="Permanent Teleport Scroll [VIP]"/>
+		<offer name="Bosses Eye"/> 	
+		<banner image="store_home_banner.png" />
+	</home>
+
+	<!-- Offers -->
+ 	<offers name="Premium Time" icon="Category_PremiumTime.png" rookgaard="yes" state="sale" >
+		<offer name="30 Days of Premium" count="1" price="250" itemtype="16101" icon="Product_PremiumTime30.png" description="VIP Account for 30 days." description12="VIP benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" type="item"  actionid="7127" state="sale" validUntil="30" />  <!-- 7097 + vipdays -->
+		<offer name="90 Days of Premium" count="1" itemtype="16101" price="400" icon="Product_PremiumTime90.png" description="VIP Account for 90 days." description12="VIP benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" type="item"  actionid="7187" state="sale" validUntil="30" />
+		<offer name="180 Days of Premium" count="1" itemtype="16101" price="700" icon="Product_PremiumTime180.png" description="VIP Account for 180 days." description12="VIP benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" type="item"  actionid="7277" state="sale" validUntil="30" />
+		<offer name="360 Days of Premium" count="1" itemtype="16101" price="1000" icon="Product_PremiumTime360.png" description="VIP Account for 360 days." description12="VIP benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" type="item"  actionid="7457" state="sale" validUntil="30" />
+	</offers> 
+	<offers name="Imbuements" description="Imbuement Itens" icon="Category_PremiumTime.png" rookgaard="yes" state="none" >
+		<offer name="Strike" items="12400,20;11228,25;25384,5" price="50" icon="Imbuement_Critical-Strike3.png" description="20 Protective Charms + 25 Sabretooth + 5 Vexclaw Talons" type="multiitems" />
+		<offer name="Vampirism" items="10602,25;10550,15;10580,5" price="50" icon="Imbuement_Life_Leech3.png" description="25 Vampire Teeth + 15  Bloody Pincerss + 5 Piece of Dead Brain" type="multiitems" />
+		<offer name="Void" items="12448,25;22534,25;25386,5" price="50" icon="Imbuement_Mana_Leech3.png" description="25 Rope Belts + 25 Silencer Claws + 5 Some Grimeleech Wings" type="multiitems" />
+		<offer name="Bash" items="10574,20;10574,15;11322,10" price="50" icon="Imbuement_Skillboost_Club3.png" description="20 Cyclops Toe + 15 Ogre Nose Rings + 10  Warmaster's Wristguards" type="multiitems" />
+		<offer name="Blockade" items="10558,20;12659,25;22533,25" price="50" icon="Imbuement_Skillboost_Shielding3.png" description="20 Piece of Scarab Shell + 25 Brimstone Shells + 25 Frazzle Skins" type="multiitems" />
+		<offer name="Chop" items="11113,20;12403,25;23571,20" price="50" icon="Imbuement_Skillboost_Axe3.png" description="20 Orc Tooth + 25 Battle Stones + 20 Moohtant Horns" type="multiitems" />
+		<offer name="Epiphany" items="10552,25;12408,15;11226,15" price="50" icon="Imbuement_Skillboost_Magic3.png" description="25 Elvish Talismans + 15 Broken Shamanic Staffs + 15 Strand of Medusa Hair" type="multiitems" />		
+		<offer name="Precision" items="12420,25;21311,20;11215,10" price="50" icon="Imbuement_Skillboost_Distance3.png" description="	25 Elven Scouting Glasses + 20 Elven Hoofs + 10 Metal Spikes" type="multiitems" />		
+		<offer name="Slash" items="10608,25;23573,25;10571,5" price="50" icon="Imbuement_Skillboost_Sword3.png" description="25 Lion's Mane + 25 Mooh'tah Shells + 5 War Crystals" type="multiitems" />	
+		<offer name="Swiftness" items="19738,15;11219,25;15484,20" price="50" icon="Imbuement_Skillboost_Speed3.png" description="15 Damselfly Wings + 25 Compasses + 20 Waspoid Wings" type="multiitems" />		
+		<offer name="Vibrancy" items="24709,20;26163,15;33089,5" price="50" icon="Imbuement_Vibrancy3.png" description="20 Wereboar Hooves + 15 Crystallized Angers + 5 Quills" type="multiitems" />		
+		<offer name="Electrify" items="21310,25;24631,5;26164,1" price="50" icon="Imbuement_Damage_Energy3.png" description="25 Rorc Feathers + 5 Peacock Feather Fans + 1 Energy Vein" type="multiitems" />
+		<offer name="Frost" items="10578,25;24170,10;10567,5" price="50" icon="Imbuement_Damage_Ice3.png" description="25 Frosty Hearts + 10 Seacrest Hairs + 5 Polar Bear Paws" type="multiitems" />		
+		<offer name="Reap" items="12440,25;10564,20;11337,5" price="50" icon="Imbuement_Damage_Death3.png" description="25 Pile of Grave Earth + 20 Demonic Skeletal Hands + 5 Petrified Screams" type="multiitems" />		
+		<offer name="Scorch" items="10553,25;5920,5;5954,5" price="50" icon="Imbuement_Damage_Fire3.png" description="25 Fiery Hearts + 5 Green Dragon Scales + 5 Demon Horns" type="multiitems" />		
+		<offer name="Venom" items="10603,25;10557,20;23565,2" price="50" icon="Imbuement_Damage_Earth3.png" description="25 Swamp Grasses + 20 Poisonous Slimes + 2 Slime Hearts" type="multiitems" />		
+		<offer name="Cloud Fabric" items="10561,20;15482,15;10582,10" price="50" icon="Imbuement_Protection_Energy3.png" description="20 Wyvern Talismans + 15 Crawler Head Platings + 10 Wyrm Scales" type="multiitems" />
+		<offer name="Demon Presence" items="10556,25;10555,25;11221,20" price="50" icon="Imbuement_Protection_Holy3.png" description="25 Cultish Robes + 25 Cultish Masks + 20 Hellspawn Tails" type="multiitems" />
+		<offer name="Dragon Hide" items="5877,20;18425,10;12614,5" price="50" icon="Imbuement_Protection_Fire3.png" description="20 Green Dragon Leathers + 10 Blazing Bones + 5 Draken Sulphurs" type="multiitems" />
+		<offer name="Lich Shroud" items="12422,25;24663,20;10577,5" price="50" icon="Imbuement_Protection_Death3.png" description="25 Flask of Embalming Fluid + 20 Gloom Wolf Furs + 5 Mystical Hourglasses" type="multiitems" />		
+		<offer name="Quara Scale" items="11212,25;11224,15;15425,5" price="50" icon="Imbuement_Protection_Ice3.png" description="25 Winter Wolf Furs + 15 Thick Furs + 5 Deepling Warts" type="multiitems" />
+		<offer name="Snake Skin" items="20103,25;10611,20;12658,10" price="50" icon="Imbuement_Protection_Earth3.png" description="25 Piece of Swampling Wood + 20 Snake Skins + 10 Brimstone Fangss" type="multiitems" />
+	</offers>
+	<offers name="Equipments" icon="Category_Equipments.png" rookgaard="yes" state="none" parent="General Items" >
+		<offer name="Gill Gugel" itemtype="18398" count="1" price="100" icon="" description="" type="item"/>
+		<offer name="Gill Coat" itemtype="18399" count="1" price="100" icon="" description="" type="item"/>
+		<offer name="Gill Legs" itemtype="18400" count="1" price="100" icon="" description="" type="item"/>
+		<offer name="Prismatic Armor" itemtype="18404" count="1" price="100" icon="" description="" type="item"/>
+		<offer name="Prismatic Legs" itemtype="18405" count="1" price="100" icon="" description="" type="item"/>
+		<offer name="Prismatic Helmet" itemtype="18403" count="1" price="100" icon="" description="" type="item"/>
+		<offer name="Spellbook of Vigilance" itemtype="18401" count="1" price="100" icon="" description="" type="item"/>
+	</offers>		
+	<offers name="Weapons" icon="Category_Weapons.png" rookgaard="no" state="none" parent="General Items" >
+		<offer name="Mycological Bow" itemtype="18454" count="1" price="150" icon="" description=""  description12="" type="item"/>
+		<offer name="Obsidian Truncheon" itemtype="8928" count="1" price="150" icon="" type="item"/>
+		<offer name="Emerald Sword" itemtype="8930" count="1" price="150" icon="" type="item"/>
+		<offer name="Glacial Rod" itemtype="18412" count="1" price="150" icon="" type="item"/>
+		<offer name="Hellforged Axe" itemtype="8924" count="1" price="150" icon="" type="item"/>
+		<offer name="Muck Rod" itemtype="18411" count="1" price="150" icon="" type="item"/>
+		<offer name="Crystal Crossbow" itemtype="18453" count="1" price="150" icon="" type="item"/>
+		<offer name="Shiny Blade" itemtype="18465" count="1" price="150" icon="" type="item"/>
+		<offer name="Wand of Defiance" itemtype="18390" count="1" price="150" icon="" type="item"/>
+		<offer name="Wand of Everblazing" itemtype="18409" count="1" price="150" icon="" type="item"/>
+		<offer name="Crystalline Axe" itemtype="18451" count="1" price="150" icon="" type="item"/>
+		<offer name="Mycological Mace" itemtype="18452" count="1" price="150" icon="" description="" type="item"/>
+		<offer name="Blade of Destruction" itemtype="30684" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Slayer of Destruction" itemtype="30685" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Axe of Destruction" itemtype="30686" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Chopper of Destruction" itemtype="30687" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Mace of Destruction" itemtype="30688" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Hammer of Destruction" itemtype="30689" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Bow of Destruction" itemtype="30690" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Crossbow of Destruction" itemtype="30691" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Wand of Destruction" itemtype="30692" count="1" price="200" icon="" description="" type="item"/>
+		<offer name="Rod of Destruction" itemtype="30693" count="1" price="200" icon="" description="" type="item"/>
+	</offers>
+	<offers name="Exercise Weapons" icon="Category_ExerciseWeapons.png" rookgaard="no" state="none" parent="General Items" >
+		<offer name="Exercise Axe 1000x" itemtype="33083" charges="1000" price="25" icon="Training_Axe.png" type="training" />
+		<offer name="Exercise Axe 5000x" itemtype="33083" charges="5000" price="75" icon="Training_Axe.png" type="training" />
+		<offer name="Exercise Axe 10000x" itemtype="33083" charges="10000" price="150" icon="Training_Axe.png" type="training" />		
+		<offer name="Exercise Bow 1000x" itemtype="33085" charges="1000" price="25" icon="Training_Bow.png" type="training" />
+		<offer name="Exercise Bow 5000x" itemtype="33085" charges="5000" price="75" icon="Training_Bow.png" type="training" />
+		<offer name="Exercise Bow 10000x" itemtype="33085" charges="10000" price="150" icon="Training_Bow.png" type="training" />
+		<offer name="Exercise Club 1000x" itemtype="33084" charges="1000" price="25" icon="Training_Club.png" type="training" />
+		<offer name="Exercise Club 5000x" itemtype="33084" charges="5000" price="75" icon="Training_Club.png" type="training" />
+		<offer name="Exercise Club 10000x" itemtype="33084" charges="10000" price="150" icon="Training_Club.png" type="training" />		
+		<offer name="Exercise Rod 1000x" itemtype="33086" charges="1000" price="25" icon="Training_Rod.png" type="training" />
+		<offer name="Exercise Rod 5000x" itemtype="33086" charges="5000" price="75" icon="Training_Rod.png" type="training" />
+		<offer name="Exercise Rod 10000x" itemtype="33086" charges="10000" price="150" icon="Training_Rod.png" type="training" />		
+		<offer name="Exercise Sword 1000x" itemtype="33082" charges="1000" price="25" icon="Training_Sword.png" type="training" />
+		<offer name="Exercise Sword 5000x" itemtype="33082" charges="5000" price="75" icon="Training_Sword.png" type="training" />
+		<offer name="Exercise Sword 10000x" itemtype="33082" charges="10000" price="150" icon="Training_Sword.png" type="training" />
+		<offer name="Exercise Wand 1000x" itemtype="33087" charges="1000" price="25" icon="Training_Wand.png" type="training" />
+		<offer name="Exercise Wand 5000x" itemtype="33087" charges="5000" price="75" icon="Training_Wand.png" type="training" />
+		<offer name="Exercise Wand 10000x" itemtype="33087" charges="10000" price="150" icon="Training_Wand.png" type="training" />
+	</offers>
+	<offers name="Useful Items" icon="Category_UsefulItems.png" rookgaard="no" state="none" parent="General Items" >
+		<offer name="Whacking Driller of Fate" itemtype="10516" count="1" price="50" icon="" type="item"/>
+		<offer name="Sneaky Stabber of Eliteness" itemtype="10512" count="1" price="50" icon="" type="item"/>
+		<offer name="Squeezing Gear of Girlpower" itemtype="10513" count="1" price="50" icon="" type="item"/>
+		<offer name="Obsidian Knife" itemtype="5908" count="1" price="50" icon="" type="item"/>
+		<offer name="Blessed Wooden Stake" itemtype="5942" count="1" price="50" icon="" type="item"/>
+	</offers>
+	<offers name="Containers" icon="Category_Containers.png" rookgaard="yes" state="none" parent="General Items" >
+		<offer name="Zaoan Chess Box" itemtype="20620" count="1" price="100" icon="" type="item"/>
+		<offer name="Loot Pounch" itemtype="26377" count="1" price="225" icon="Product_MagicCoinPurse.png" description="With Loot Pouch, you can carry your loot amount without having to keep many backpacks in your backpack. This product allows you to carry as much gold as your capacity allows." type="pouch" state="new" />
+	</offers>
+	<offers name="Special Foods" icon="Category_SpecialFoods.png" rookgaard="yes" state="none" parent="Consumables" >
+		<offer name="Blueberry Cupcake" itemtype="31719" description="Fill up all your mana. (Stackeable)" count="1" price="50" icon="Product_BlueberryCupcake.png" type="item" />
+		<offer name="Strawberry Cupcake" itemtype="31720" description="Fill up all your life. (Stackeable)" count="1" price="50" icon="Product_StrawberryCupcake.png" type="item" />
+	</offers>
+	<offers name="Blessings" icon="Category_Blessings.png" rookgaard="yes" state="none" parent="Consumables" >
+		<offer name="All Regular Blessings" blessid="9" price="100" icon="Product_Blessing_AllPvE.png" description12="Buy all blessings for your character (Mountain blessings included). Characters that own all Blessings will not lose any container or items they are wearing. Further, their experience loss is reduced as well as their skill loss. Note, however, that characters with a red or black skull will lose all equipment upon death even if they wear all blessings." type="allblessing" />
+		<!-- <offer name="Runes blessing" blessid="9" price="30" icon="Product_Blessing_AllPvE.png" description12="With this bless, your runes are endless for 1 day." type="blessrune" /> -->
+	</offers>
+	<offers name="Runes and Potions" description="Buy magically filled runes to unleash their energy when in need of it." icon="Category_Runes.png" rookgaard="no" state="none" parent="Consumables" >
+		<offer name="Health Keg" itemtype="28579" count="500" price="30" icon="Health_Keg.png" type="item" />
+		<offer name="Strong Health Keg" itemtype="28580" count="500" price="40" icon="Strong_Health_Keg.png" type="stackeable" />
+		<offer name="Great Health Keg" itemtype="28581" count="500" price="50" icon="Great_Health_Keg.png" type="stackeable" />
+		<offer name="Ultimate Health Keg" itemtype="28582" count="500" price="60" icon="Ultimate_Health_Keg.png" type="stackeable" />
+		<offer name="Supreme Health Keg" itemtype="28583" count="500" price="70" icon="Supreme_Health_Keg.png" type="stackeable" />
+		<offer name="Mana Keg" itemtype="28584" count="500" price="30" icon="Mana_Keg.png" type="stackeable" />
+		<offer name="Strong Mana Keg" itemtype="28585" count="500" price="50" icon="Strong_Mana_Keg.png" type="stackeable" />
+		<offer name="Great Mana Keg" itemtype="28586" count="500" price="50" icon="Great_Mana_Keg.png" type="stackeable" />
+		<offer name="Ultimate Mana Keg" itemtype="28587" count="500" price="70" icon="Ultimate_Mana_Keg.png" type="stackeable" />
+		<offer name="Great Spirit Keg" itemtype="28589" count="500" price="50" icon="Great_spirit_Keg.png" type="stackeable" />
+		<offer name="Ultimate Spirit Keg" itemtype="28590" count="500" price="70" icon="Ultimate_Spirit_Keg.png" type="stackeable" />
+		<offer name="Avalanche Rune" itemtype="2274" count="300" price="20" icon="Product_Rune_AvalancheRune.png" description="Here you can purchase a stack of '300 Avalanche Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone blockor a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." type="stackeable" />		
+		<offer name="Magic Wall Rune" itemtype="2293" count="300" price="20" icon="Product_Rune_MagicWallRune.png" description="Here you can purchase a stack of '300 Magic Wall Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." type="stackeable" />
+		<offer name="Paralyze Rune" itemtype="2278" count="300" price="20" icon="Product_Rune_ParalyzeRune.png" description="Here you can purchase a stack of '300 Paralyze Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." type="stackeable" />
+		<offer name="Sudden Death Rune" itemtype="2268" count="300" price="20" icon="Product_Rune_SuddenDeathRune.png" description="Here you can purchase a stack of '250 Sudden Death Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." description12="{character}<br/>{storeinbox}<br/>{vocationlevelcheck}<br/>{battlesign}<br/>{capacity}<br/><br/><br/><i>Nearly no other spell can compare to Sudden Death when it comes to sheer damage. For this reason it is immensely popular despite the fact that only a single target is affected. However, since the damage caused by the rune is of deadly nature, it is less useful against most undead creatures.</i>" type="stackeable" />
+		<offer name="Wild Growth Rune" itemtype="2269" count="300" price="20" icon="Product_Rune_WildGrowthRune.png" description="Here you can purchase a stack of '250 Wild Growth Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchaserunes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." type="stackeable" />
+		<offer name="Ultimate Spirit Potion" itemtype="26030" count="100" price="20" icon="Product_Potion_ultimate_health_potion.png" type="stackeable" />
+		<offer name="Ultimate Mana Potion" itemtype="26029" count="100" price="20" icon="Product_Potion_ultimate_health_potion.png" type="stackeable" />
+		<offer name="Supreme Health Potion" itemtype="26031" count="100" price="20" icon="Product_Potion_Supreme_health_potion.png" type="stackeable" />
+	</offers>
+	<offers name="Mounts" description="Buy your character one or more of the fabolous Mountsoffered here." icon="Category_Mounts.png" rookgaard="yes" state="none" parent="Cosmetics" >
+		<offer name="Cranium Spider" id="116" price="200" icon="Product_Mount_SkullSpider_v1.png" description="Here you can purchase the Mount 'Cranium Spider' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Cave Tarantula" id="117" price="200" icon="Product_Mount_SkullSpider_v2.png" description="Here you can purchase the Mount 'Cave Tarantula' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Gloom Widow" id="118" price="200" icon="Product_Mount_SkullSpider_v3.png" description="Here you can purchase the Mount 'Snow Pelt' for your character. Riding on a mount isnot only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<!--offer name="Blazing Unicorn" id="113" price="350" icon="Product_Mount_UnicornFire.png" description="Here you can purchase the Mount 'Gloom Widow' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Artic Unicorn" id="114" price="350" icon="Product_Mount_UnicornRainbow.png" description="Here you can purchase the Mount 'Artic Unicorn' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Prismatic Unicorn" id="115" price="350" icon="Product_Mount_UnicornIce.png" description="Here you can purchase the Mount 'Prismatic Unicorn' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" /-->
+		<offer name="Armoured War Horse" id="23" price="200" icon="Product_Mount_ArmouredWarHorse.png" description="Here you can purchase the Mount 'Armoured War Horse' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Shadow Draptor" id="24" price="200" icon="Product_Mount_shadowdraptor.png" description="Here you can purchase the Mount 'Shadow Draptor' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Steelbeak" id="34" price="200" icon="Product_Mount_steelbeak.png" description="Here you can purchase the Mount 'Steelbeak' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="CrimsonRay" id="33" price="200" icon="Product_Mount_crimsonray.png" description="Here you canpurchase the Mount 'Crimson Ray' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Jungle Saurian" id="110" price="200" icon="Product_Mount_Saurian_v1.png" description="Here you can purchase the Mount 'Jungle Saurian' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Ember Saurian" id="111" price="200" icon="Product_Mount_Saurian_v2.png" description="Here you can purchase the Mount 'Ember Saurian' for your character. Riding on a mount is not only cool, but also gives yourcharacter a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Lagoon Saurian" id="112" price="200" icon="Product_Mount_Saurian_v3.png" description="Here you can purchase the Mount 'Lagoon Saurian' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Gold Sphinx" id="107" price="200" icon="Product_Mount_Sphinx_v1.png" description="Here you can purchase the Mount 'GoldSphinx' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Emerald Sphinx" id="108" price="200" icon="Product_Mount_Sphinx_v2.png" description="Here you can purchase the Mount 'Emerald Sphinx' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Shadow Sphinx" id="109" price="200" icon="Product_Mount_Sphinx_v3.png" description="Here you can purchase the Mount 'Shadow Sphinx' foryour character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Jackalope" id="103" price="200" icon="Product_Mount_AntleredRabbit_v1.png" description="Here you can purchase the Mount 'Jackalope' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Dreadhare" id="104" price="200" icon="Product_Mount_AntleredRabbit_v2.png" description="Here you can purchase the Mount 'Dreadhare' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mountwill only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Wolpertinger" id="105" price="200" icon="Product_Mount_AntleredRabbit_v3.png" description="Here you can purchase the Mount 'Wolpertinger' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Ivory Fang" id="100" price="200" icon="Product_Mount_ivoryfang.png" description="Here you can purchase the Mount 'Ivory Fang' for your character. Riding on amount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Shadow Claw" id="101" price="200" icon="Product_Mount_ShadowClaw.png" description="Here you can purchase the Mount 'Shadow Claw' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Snow Pelt" id="102" price="200" icon="Product_Mount_SnowPelt.png" description="Here you can purchase the Mount 'Snow Pelt' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Swamp Snapper" id="95" price="200" icon="Product_Mount_SwampSnapper.png" description="Here you can purchase the Mount 'Swamp Snapper' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Mould Shell" id="96" price="200" icon="Product_Mount_MouldShell.png" description="Here you can purchase the Mount 'Mould Shell' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased itin the Store." type="mount" />
+		<offer name="Reed Lurker" id="97" price="200" icon="Product_Mount_ReedLurker.png" description="Here you can purchase the Mount'Reed Lurker' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Bloodcurl" id="92" price="200" icon="Product_Mount_Bloodcurl.png" description="Here you can purchase the Mount 'Bloodcurl' for your character. Riding on a mount is not only cool, but also gives your character a speed boost.Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Leafscuttler" id="93" price="200" icon="Product_Mount_Leafscuttler.png" description="Here you can purchase the Mount 'Leafscuttler' for yourcharacter. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Mouldpincer" id="91" price="200" icon="Product_Mount_Mouldpincer.png" description="Here you can purchase the Mount 'Mouldpincer' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Nightdweller" id="88" price="200" icon="Product_Mount_Nightdweller.png" description="Here you can purchase the Mount 'Nightdweller' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Frostflare" id="89" price="200" icon="Product_Mount_Frostflare.png" description="Here you can purchase the Mount 'Frostflare' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Cinderhoof" id="90" price="200" icon="Product_Mount_Cinderhoof.png" description="Here you can purchase the Mount 'Cinderhoof' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Slagsnare" id="84" price="200" icon="Product_Mount_Slagsnare.png" description="Here you canpurchase the Mount 'Slagsnare' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Nightstinger" id="85" price="200" icon="Product_Mount_Nightstinger.png" description="Here you can purchase the Mount 'Nightstinger' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Razorcreep" id="86" price="200" icon="Product_Mount_Razorcreep.png" description="Here you can purchase the Mount 'Razorcreep' for your character. Riding on a mount is not only cool, but also gives your character aspeed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Gorongra" id="81" price="200" icon="Product_Mount_Gorongra.png" description="Here you can purchase the Mount 'Gorongra' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note:The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Noctungra" id="82" price="200" icon="Product_Mount_Noctungra.png" description="Here you can purchase the Mount 'Noctungra' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Silverneck" id="83" price="200" icon="Product_Mount_Silverneck.png" description="Here you can purchase the Mount 'Silverneck' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Sea Devil" id="78" price="200" icon="Product_Mount_SeaDevil.png" description="Here you can purchase the Mount 'Sea Devil' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Coralripper" id="79" price="200" icon="Product_Mount_Coralripper.png" description="Here you can purchase the Mount 'Coralripper' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Plumfish" id="80" price="200" icon="Product_Mount_Plumfish.png" description="Here you can purchase the Mount 'Plumfish' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Flitterkatzen" id="75" price="200" icon="Product_Mount_Flitterkatzen.png" description="Here you can purchase the Mount 'Flitterkatzen' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Venompaw" id="76" price="200" icon="Product_Mount_Venompaw.png" description="Here you can purchase the Mount 'Venompaw' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Batcat" id="77" price="200" icon="Product_Mount_BatCat.png" description="Here you can purchase the Mount 'Batcat' for your character. Riding on amount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Ringtail Waccoon" id="68" price="200" icon="Product_Mount_RingtailWaccoon.png" description="Here you can purchase the Mount 'Ringtail Waccoon' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will onlybe received by the character who purchased it in the Store." type="mount" />
+		<offer name="Night Waccoon" id="69" price="200" icon="Product_Mount_NightWaccoon.png" description="Here you can purchase the Mount 'Night Waccoon' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Emerald Waccoon" id="70" price="200" icon="Product_Mount_EmeraldWaccoon.png" description="Here you can purchase the Mount 'Emerald Waccoon' for your character. Riding on amount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Flying Divan" id="65" price="200" icon="Product_Mount_FlyingDivan.png" description="Here you can purchase the Mount 'Flying Divan' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be receivedby the character who purchased it in the Store." type="mount" />
+		<offer name="Magic Carpet" id="66" price="200" icon="Product_Mount_MagicCarpet.png" description="Here you can purchase the Mount 'Magic Carpet' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Floating Kashmir" id="67" price="200" icon="Product_Mount_FloatingKashmir.png" description="Here you can purchase the Mount 'Floating Kashmir' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Shadow Hart" id="72" price="200" icon="Product_Mount_ShadowHart.png" description="Here you can purchase the Mount 'Shadow Hart' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Black Stag" id="73" price="200" icon="Product_Mount_BlackStag.png" description="Here you can purchase the Mount 'Black Stag' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Emperor Deer" id="74" price="200" icon="Product_Mount_EmperorDeer.png" description="Here you can purchase the Mount 'Emperor Deer' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it inthe Store." type="mount" />
+		<offer name="Tundra Rambler" id="62" price="200" icon="Product_Mount_TundraRambler.png" description="Here you can purchase the Mount 'Tundra Rambler' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Highland Yak" id="63" price="200" icon="Product_Mount_HighlandYak.png" description="Here you can purchase the Mount 'Highland Yak' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Glacier Vagabond" id="64" price="200" icon="Product_Mount_GlacierVagabond.png" description="Here you can purchase the Mount 'Glacier Vagabond' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Golden Dragonfly" id="59" price="200" icon="Product_Mount_GoldenDragonfly.png" description="Here you can purchase the Mount 'Golden Dragonfly' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Steel Bee" id="60" price="200" icon="Product_Mount_SteelBee.png" description="Here you can purchase the Mount 'Steel Bee' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Copper Fly" id="61" price="200" icon="Product_Mount_CopperFly.png" description="Here you can purchase the Mount 'Copper Fly' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Doombringer" id="53" price="200" icon="Product_Mount_Doombringer.png" description="Here you can purchase the Mount 'Doombringer' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Woodland Prince" id="54" price="200" icon="Product_Mount_WoodlandPrince.png" description="Here you can purchase the Mount 'Woodland Prince' for your character.Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Hailtorm Fury" id="55" price="200" icon="Product_Mount_HailstormFury.png" description="Here you can purchase the Mount 'Hailtorm Fury' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Siegebreaker" id="56" price="200" icon="Product_Mount_Siegebreaker.png" description="Here you can purchase the Mount 'Siegebreaker' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only bereceived by the character who purchased it in the Store." type="mount" />
+		<offer name="Poisonbane" id="57" price="200" icon="Product_Mount_Poisonbane.png" description="Here you can purchase the Mount 'Poisonbane' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Blackpelt" id="58" price="200" icon="Product_Mount_Blackpelt.png" description="Hereyou can purchase the Mount 'Blackpelt' for your character. Riding on a mount is not only cool, butalso gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Nethersteed" id="50" price="200" icon="Product_Mount_Nethersteed.png" description="Here you can purchase the Mount 'Nethersteed' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Tempest" id="51" price="200" icon="Product_Mount_Tempest.png" description="Here you can purchase the Mount 'Tempest' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Flamesteed" id="47" price="200" icon="Product_Mount_Flamesteed.png" description="Here you can purchase the Mount 'Flamesteed' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Tombstinger" id="36" price="200" icon="Product_Mount_Tombstinger.png" description="Here you can purchase the Mount 'Tombstinger' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Death Crawler" id="46" price="200" icon="Product_Mount_DeathCrawler.png" description="Here you can purchase the Mount 'Death Crawler' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Jade Pincer" id="49" price="200" icon="Product_Mount_JadePincer.png" description="Here you can purchase the Mount 'Jade Pincer' for your character. Riding on amount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Desert King" id="41" price="200" icon="Product_Mount_DesertKing.png" description="Here you can purchase the Mount 'Desert King' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received bythe character who purchased it in the Store." type="mount" />
+		<offer name="Jade Lion" id="48" price="200" icon="Product_Mount_JadeLion.png" description="Hereyou can purchase the Mount 'Jade Lion' for your character. Riding on a mount is not only cool, butalso gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" />
+		<offer name="Winter King" id="52" price="200" icon="Product_Mount_WinterKing.png" description="Here you can purchase the Mount 'Winter king' for your character. Riding on a mount is not only cool, but also givesyour character a speed boost. Note: The Mount will only be received by the character who purchasedit in the Store." type="mount" />
+	</offers>
+	<offers name="Outfits" description="Buy your character one more of the classy outfits offered here." icon="Category_Outfits.png" rookgaard="yes" state="none" parent="Cosmetics" >
+		<offer name="Full Sun Priest Outfit" addon="3" male="1023" female="1024" price="220" icon="Product_Mount_SunPriest_Male_Full.png" type="outfit addon" />
+		<offer name="Full Herbalist Outfit" addon="3" male="1021" female="1020" price="220" icon="Product_Mount_Herbalist_Male_Full.png" type="outfit addon" />
+		<offer name="Full Entrepreneur Outfit" addon="3" male="472" female="471" price="220" icon="Product_Mount_Entrepreneur_Male_Full.png" type="outfit addon" />
+		<offer name="Full Trophy Hunter Outfit" addon="3" male="957" female="958" price="220" icon="Product_Mount_TrophyHunter_Male_Full.png" type="outfit addon" />
+
+		<!-- retro outfit -->
+		<offer name="Retro Citizen" male="974" female="975" price="330" icon="Product_Mount_RetroCitizen_Male_Base.png" type="outfit addon" />
+		<offer name="Retro Hunter" male="972" female="973" price="330" icon="Product_Mount_RetroHunter_Male_Base.png" type="outfit addon" />
+		<offer name="Retro Knight" male="970" female="971" price="330" icon="Product_Mount_RetroKnight_Male_Base.png" type="outfit addon" />
+		<offer name="Retro Wizzard" male="968" female="969" price="330" icon="Product_Mount_RetroMage_Male_Base.png" type="outfit addon" />
+		<offer name="Retro Noblewoman" male="966" female="967" price="330" icon="Product_Mount_RetroNobleman_Male_Base.png" type="outfit addon" />
+		<offer name="Retro Summoner" male="964" female="965" price="330" icon="Product_Mount_RetroSummoner_Male_Base.png" type="outfit addon" />
+		<offer name="Retro Warrior" male="962" female="963" price="330" icon="Product_Mount_RetroWarrior_Male_Base.png" type="outfit addon" />
+
+		<offer name="Full Pharaoh Outfit" addon="3" male="955" female="956" price="220" icon="Product_Mount_Pharaoh_male_Full.png" type="outfit addon" />
+		<offer name="Full Groove Keeper Outfit" addon="3" male="908" female="909" price="220" icon="Product_Mount_AntlerDruid_male_Full.png" type="outfit addon" />
+		<offer name="Full Lupine Wardem Outfit" addon="3" male="899" female="900" price="220" icon="Product_Mount_LupinWarden_male_Full.png" type="outfit addon" />
+		<offer name="Full Arena Champion Outfit" addon="3" male="884" female="885" price="220" icon="Product_Mount_ArenaChampion_Male_Full.png" type="outfit addon" />
+		<offer name="Full Philosopher Outfit" addon="3" male="873" female="874" price="220" icon="Product_Mount_Professor_Male_Full.png" type="outfit addon" />
+		<offer name="Full Winter Warden Outfit" addon="3" male="853" female="852" price="220" icon="Product_Mount_WinterWarden_Male_Full.png" type="outfit addon" />
+		<offer name="Full Royal Pumpkin Outfit" addon="3" male="760" female="759" price="220" icon="Product_Outfit_RoyalPumpkin_Male_Full.png" type="outfit addon" />
+		<offer name="Full Sea Dog Outfit" addon="3" male="750" female="749" price="220" icon="Product_Mount_SeaDog_Male_Full.png" type="outfit addon" />
+		<offer name="Full Champion Outfit" addon="3" male="633" female="632" price="220" icon="Product_Mount_Champion_Male_Full.png" type="outfit addon" />
+		<offer name="Full Conjurer Outfit" addon="3" male="634" female="635" price="220" icon="Product_Mount_Conjurer_Male_Full.png" type="outfit addon" />
+		<offer name="Full Beastmaster Outfit" addon="3" male="637" female="636" price="220" icon="Product_Mount_Beastmaster_Male_Full.png" type="outfit addon" />
+		<offer name="Full Chaos Acolyte Outfit" addon="3" male="665" female="664" price="220" icon="Product_Mount_ChaosAcolyte_Male_Full.png" type="outfit addon" />
+		<offer name="Full Death Herald Outfit" addon="3" male="667" female="666" price="220" icon="Product_Mount_DeathHerald_Male_Full.png" type="outfit addon" />
+		<offer name="Full Ranger Outfit" addon="3" male="684" female="683" price="220" icon="Product_Mount_Ranger_Male_Full.png" type="outfit addon" />
+		<offer name="Full Ceremonial Garb Outfit" addon="3" male="695" female="694" price="220" icon="Product_Mount_CeremonialGarb_Male_Full.png" type="outfit addon" />
+		<offer name="Full Puppeteer Outfit" addon="3" male="697" female="696" price="220" icon="Product_Mount_Puppeteer_Male_Full.png" type="outfit addon" />
+		<offer name="Full Spirit Caller Outfit" addon="3" male="699" female="698" price="220" icon="Product_Mount_SpiritCaller_Male_Full.png" type="outfit addon" />
+		<offer name="Full Evoker Outfit" addon="3" male="725" female="724" price="220" icon="Product_Mount_Evoker_Male_Full.png" type="outfit addon" />
+		<offer name="Full Seaweaver Outfit" addon="3" male="733" female="732" price="220" icon="Product_Mount_SeaWeaver_Male_Full.png" type="outfit addon" />
+		<offer name="Full Golden Outfit" addon="3" male="1210" female="1211" price="3000" icon="Product_Mount_Golden_Male_Full.png" type="outfit addon" />
+	</offers>
+	<offers name="Decorations" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseEquipment.png" rookgaard="yes" state="none" parent="House" >
+		<offer name="Festive Filled Shoes" itemtype="34941" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Fireplace" itemtype="34948" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Pile of Presents" itemtype="34959" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Pyramitemtype" itemtype="34963" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Rocking Chair" itemtype="34955" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Sack of Presents" itemtype="34961" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Sleigh" itemtype="34957" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Table" itemtype="34943" count="1" price="50" icon="" type="house" />
+		<offer name="Festive Tree" itemtype="34952" count="1" price="50" icon="" type="house" />
+		<offer name="Chest of Abundance" itemtype="33426" count="1" price="50" icon="" type="house" />
+		<offer name="Fluorescent Fungi" itemtype="33401" count="1" price="50" icon="" type="house" />
+		<offer name="Gloomy Poisonous Fungi" itemtype="33407" count="1" price="50" icon="" type="house" />
+		<offer name="Glowing Sulphur Fungi" itemtype="33405" count="1" price="50" icon="" type="house" />
+		<offer name="Incomprehensible Riches" itemtype="33425" count="1" price="50" icon="" type="house" />
+		<offer name="Luminescent Fungi" itemtype="33403" count="1" price="50" icon="" type="house" />
+		<offer name="Painting of Tibiasula" itemtype="33428" count="1" price="50" icon="" type="house" />
+		<offer name="Stuffed Bear Display" itemtype="33409" count="1" price="50" icon="" type="house" />
+		<offer name="Stuffed Teddy Display" itemtype="33411" count="1" price="50" icon="" type="house" />
+		<offer name="Anglerfish Lamp" itemtype="32258" count="1" price="50" icon="" type="house" />
+		<offer name="Baby Rotworm" itemtype="33193" count="1" price="50" icon="" type="house" />
+		<offer name="Bellflower" itemtype="33200" count="1" price="50" icon="" type="house" />
+		<offer name="Carnivorous Plant" itemtype="33191" count="1" price="50" icon="" type="house" />
+		<offer name="Fennec" itemtype="33198" count="1" price="50" icon="" type="house" />
+		<offer name="Forget-Me-Not" itemtype="33201" count="1" price="50" icon="" type="house" />
+		<offer name="Red Geranium" itemtype="33202" count="1" price="50" icon="" type="house" />
+		<offer name="Alchemistic Cupboard" itemtype="32038" count="1" price="50" icon="" description="Buy an incredible Alchemistic Cupboard to decorate your home." type="house" />
+		<offer name="Alchemistic Scales" itemtype="32032" count="1" price="50" icon="" description="Buy an incredible Alchemistic Scales to decorate your home." type="house" />
+		<offer name="Arrival at Thais Painting" itemtype="32046" count="1" price="50" icon="" description="Buy an incredible Arrival at Thais Painting to decorate your home." type="house" />
+		<offer name="Dungeon Scene Painting" itemtype="32045" count="1" price="50" icon="" description="Buy an incredible Dungeon Scene Painting to decorate your home." type="house" />
+		<offer name="Ferumbras Bust" itemtype="32040" count="1" price="50" icon="" description="Buy an incredible Ferumbras Bust to decorate your home." type="house" />
+		<offer name="Ferumbras Portrait" itemtype="32048" count="1" price="50" icon="" description="Buy an incredible Ferumbras Portrait to decorate your home." type="house" />
+		<offer name="King Tibianus Bust" itemtype="32050" count="1" price="50" icon="" description="Buy an incredible King Tibianus Bust to decorate your home." type="house" />
+		<offer name="Light of Change" itemtype="32023" count="1" price="120" icon="" description="Buy an incredible Light of Change to decorate your home." type="house" />
+		<offer name="Pile of Alchemistic Books" itemtype="32037" count="1" price="25" icon="" description="Buy an incredible Pile of Alchemistic Books to decorate your home." type="house" />
+		<offer name="Queen Eloise bust" itemtype="32043" count="1" price="25" icon="" description="Buy an incredible Queen Eloise bust to decorate your home." type="house" />
+		<offer name="Tibia streets painting" itemtype="32047" count="1" price="25" icon="" description="Buy an incredible Tibia Streets Painting to decorate your home." type="house" />
+		<offer name="Torch of Change" itemtype="32027" count="1" price="60" icon="" description="Buy an incredible Torch of Change to decorate your home." type="house" />
+		<offer name="Crested Carpet" itemtype="29388" count="1" price="25" icon="" description="Buy an incredible Crested Carpet to decorate your home." type="house" />
+		<offer name="Decorated Carpet" itemtype="29390" count="1" price="35" icon="" description="Buy an incredible Decorated Carpet to decorate your home." type="house" />
+		<offer name="Demon Pet" itemtype="29411" count="1" price="180" icon="" description="Buy an incredible Demon Pet to decorate your home." type="house" />
+		<offer name="Terrarium Snake" itemtype="29408" count="1" price="180" icon="" description="Buy an incredible Terrarium Snake to decorate your home." type="house" />
+		<offer name="Wheat Carpet" itemtype="29387" count="1" price="30" icon="" description="Buy an incredible Wheat Carpet to decorate your home." type="house" />
+		<offer name="Bath Tube" itemtype="29336" count="1" price="90" icon="" description="Buy an incredible Bath Tube to decorate your home." type="house" />
+		<offer name="Hrodmiran Weapons Rack" itemtype="29317" count="1" price="90" icon="" description="Buy an incredible Hrodmiran Weapons Rack to decorate your home." type="house" />
+		<offer name="Mystic Carpet" itemtype="29354" count="1" price="35" icon="" description="Buy an incredible Mystic Carpet to decorate your home." type="house" />
+		<offer name="Shaggy Carpet" itemtype="29352" count="1" price="30" icon="" description="Buy an incredible Shaggy Carpet to decorate your home." type="house" />
+		<offer name="Stone Tiles" itemtype="29357" count="1" price="180" icon="" description="Buy an incredible Stone Tiles to decorate your home." type="house" />
+		<offer name="Terrarium Spider" itemtype="29314" count="1" price="180" icon="" description="Buy an incredible Terrarium Spider to decorate your home." type="house" />
+		<offer name="Venorean Table Clock" itemtype="29348" count="1" price="30" icon="" description="Buy an incredible Venorean Table Clock to decorate your home." type="house" />
+		<offer name="Verdant Carpet" itemtype="29350" count="1" price="30" icon="" description="Buy an incredible Verdant Carpet to decorate your home." type="house" />
+		<offer name="Wooden Planks" itemtype="29359" count="1" price="25" icon="" description="Buy an incredible Bitter-Smack Leaf to decorate your home." type="house" />
+		<offer name="Bitter-Smack Leaf" itemtype="27893" count="1" price="50" icon="" description="Buy an incredible Bitter-Smack Leaf to decorate your home." type="house" />
+		<offer name="Blooming Cactus" itemtype="27892" count="1" price="50" icon="" description="Buy an incredible Blooming Cactus to decorate your home." type="house" />
+		<offer name="Chamaleon" itemtype="27889" count="1" price="50" icon="" description="Buy an incredible Chamaleon to decorate your home." type="house" />
+		<offer name="Pink Roses" itemtype="27894" count="1" price="50" icon="" description="Buy an incredible Pink Roses to decorate your home." type="house" />
+		<offer name="Red Roses" itemtype="27895" count="1" price="50" icon="" description="Buy an incredible Red Roses to decorate your home." type="house" />
+		<offer name="Vengothic Lamp" itemtype="27909" count="1" price="180" icon="" description="Buy an incredible Vengothic Lamp to decorate your home." type="house" />
+		<offer name="Yellow Roses" itemtype="27896" count="1" price="50" icon="" description="Buy an incredible Yellow Roses to decorate your home." type="house" />
+		<offer name="Colourful Carpet" itemtype="27085" count="1" price="35" icon="" description="Buy an incredible Colourful Carpet to decorate your home." type="house" />
+		<offer name="Diamond Carpet" itemtype="27088" count="1" price="30" icon="" description="Buy an incredible Diamond Carpet to decorate your home." type="house" />
+		<offer name="Flowery Carpet" itemtype="27084" count="1" price="35" icon="" description="Buy an incredible Flowery Carpet to decorate your home." type="house" />
+		<offer name="Fur Carpet" itemtype="27087" count="1" price="30" description="Buy an incredible Fur Carpet to decorate your home." type="house" />
+		<offer name="Lit Skull Lamp" itemtype="27103" count="1" price="30" icon="" description="Buy an Lit Skull Lamp to decorate your home." type="house" />
+		<offer name="Night Sky Carpet" itemtype="27090" count="1" price="30" icon="" description="Buy an Night Sky Carpet to decorate your home." type="house" />
+		<offer name="Parrot" itemtype="27101" count="1" price="180" icon="" description="Buy an incredible Parrot to decorate your home." type="house" />
+		<offer name="Patterned Carpet" itemtype="27089" count="1" price="30" icon="" description="Buy an incredible Patterned Carpet to decorate your home." type="house" />
+		<offer name="Star Carpet" itemtype="27091" count="1" price="30" icon="" description="Buy an incredible Star Carpet to decorate your home." type="house" />
+		<offer name="Striped Carpet" itemtype="27086" count="1" price="35" icon="" description="Buy an incredible Striped Carpet to decorate your home." type="house" />
+		<offer name="Azure Carpet" itemtype="26366" count="1" price="35" icon="" description="Buy an incredible Azure Carpet to decorate your home." type="house" />
+		<offer name="Brocade Tapestry" itemtype="26381" count="1" price="50" icon="" description="Buy an incredible Brocade Tapestry to decorate your home." type="house" />
+		<offer name="Crimson Carpet" itemtype="26363" count="1" price="35" icon="" description="Buy an incredible Crimson Carpet to decorate your home." type="house" />
+		<offer name="Dark Parquet" itemtype="26375" count="1" price="30" icon="" description="Buy an incredible Dark Parquet to decorate your home." type="house" />
+		<offer name="Dog House" itemtype="26365" count="1" price="150" icon="" description="Buy an incredible Dog House to decorate your home." type="house" />
+		<offer name="Emerald Carpet" itemtype="26367" count="1" price="30" icon="" description="Buy an incredible Emerald Carpet to decorate your home." type="house" />
+		<offer name="Fish Tank" itemtype="26347" count="1" price="70" icon="" description="Buy an incredible Fish Tank to decorate your home." type="house" />
+		<offer name="Golden Dragon Tapestry" itemtype="26379" count="1" price="70" icon="" description="Buy an incredible Golden Dragon Tapestry to decorate your home." type="house" />
+		<offer name="Light Parquet" itemtype="26370" count="1" price="30" icon="" description="Buy an incredible Light Parquet to decorate your home." type="house" />
+		<offer name="Marble Floor" itemtype="26370" count="1" price="30" icon="" description="Buy an incredible Marble Floor to decorate your home." type="house" />
+		<offer name="Sword Tapestry" itemtype="26380" count="1" price="60" icon="" description="Buy an incredible Sword Tapestry to decorate your home." type="house" />
+		<offer name="All-Seeing Tapestry" itemtype="26106" count="1" price="70" icon="" description="Buy an incredible All-Seeing Tapestry to decorate your home." type="house" />
+		<offer name="Menacing Tapestry" itemtype="26105" count="1" price="70" icon="" description="Buy an incredible Menacing Tapestry to decorate your home." type="house" />
+		<offer name="Lordly Tapestry" itemtype="26104" count="1" price="25" icon="" description="Buy an incredible Lordly Tapestry to decorate your home." type="house" />
+		<offer name="Bamboo Mat" itemtype="26089" count="1" price="25" icon="" description="Buy an incredible Bamboo Mat to decorate your home." type="house" />
+		<offer name="White Fur Carpet" itemtype="26088" count="1" price="30" icon="" description="Buy an incredible White Fur Carpet to decorate your home." type="house" />
+		<offer name="Yalaharian Carpet" itemtype="26087" count="1" price="35" icon="" description="Buy an incredible Yalaharian Carpet to decorateyour home." type="house" />
+		<offer name="Lit Predator Lamp" itemtype="26092" count="1" price="180" icon="" description="Buy an incredible Predator Lamp to decorate your home." type="house" />
+		<offer name="Lit Protectress Lamp" itemtype="26096" count="1" price="180" icon="" description="Buy an incredible Lit Protectress Lamp to decorate your home." type="house" />
+		<offer name="Hamster in a Wheel" itemtype="26101" count="1" price="180" icon="" description="Buy an incredible Hamster in a Wheel to decorate your home." type="house" />
+		<offer name="Cat in a Basket" itemtype="26108" count="1" price="150" icon="" description="Buy an incredible Cat in a Basket to decorate your home." type="house" />
+		<offer name="Baby Dragon" itemtype="26099" count="1" price="250" icon="" description="Buy an incredible Baby Dragon to decorate your home." type="house" />
+	</offers>
+	<offers name="Casks" icon="Category_Casks.png" rookgaard="yes" state="none" parent="House" >
+		<offer name="Health Cask" itemtype="28555" count="1000" price="10" icon="Health_Cask.png" type="house" />
+		<offer name="Strong Health Cask" itemtype="28556" count="1000" price="20" icon="Strong_Health_Cask.png" type="house" />
+		<offer name="Great Health Cask" itemtype="28557" count="1000" price="30" icon="Great_Health_Cask.png" type="house" />
+		<offer name="Ultimate Health Cask" itemtype="28558" count="1000" price="40" icon="Ultimate_Health_Cask.png" type="house" />
+		<offer name="Supreme Health Cask" itemtype="28559" count="1000" price="40" icon="Supreme_Health_Cask.png" type="house" />
+		<offer name="Mana Cask" itemtype="28565" count="1000" price="10" icon="Mana_Cask.png" type="house" />
+		<offer name="Strong Mana Cask" itemtype="28566" count="1000" price="20" icon="Strong_Mana_Cask.png" type="house" />
+		<offer name="Great Mana Cask" itemtype="28567" count="1000" price="30" icon="Great_Mana_Cask.png" type="house" />
+		<offer name="Ultimate Mana Cask" itemtype="28568" count="1000" price="40" icon="Ultimate_Mana_Cask.png" type="house" />
+		<offer name="Great Spirit Cask" itemtype="28575" count="1000" price="20" icon="Great_Spirit_Cask.png" type="house" />
+		<offer name="Ultimate Spirit Cask" itemtype="28576" count="1000" price="40" icon="Ultimate_Spirit_Cask.png" type="house" />
+	</offers>
+	<offers name="Furniture" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_Furniture.png" rookgaard="yes" state="none" parent="House" >
+		<offer name="Hrodmir Chair" itemtype="36407" count="1" price="50" icon="" description="Buy an incredible Hrodmir Chair to decorate your home." type="house" />
+		<offer name="Hrodmir Chest" itemtype="36401" count="1" price="50" icon="" description="Buy an incredible Hrodmir Chest to decorate your home." type="house" />
+		<offer name="Hrodmir Cupboard" itemtype="36419" count="1" price="50" icon="" description="Buy an incredible Hrodmir Cupboard to decorate your home." type="house" />
+		<offer name="Hrodmir Table" itemtype="36393" count="1" price="50" icon="" description="Buy an incredible Hrodmir Table to decorate your home." type="house" />
+		<offer name="Dwarven Stone Cabinet" itemtype="35906" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Cabinet to decorate your home." type="house" />
+		<offer name="Dwarven Stone Chair" itemtype="35899" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Chair to decorate your home." type="house" />
+		<offer name="Dwarven Stone Chest" itemtype="35904" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Chest to decorate your home." type="house" />
+		<offer name="Dwarven Stone Table" itemtype="35905" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Table to decorate your home." type="house" />
+		<offer name="Round Side Table" itemtype="35922" count="1" price="50" icon="" description="Buy an incredible Round Side Table to decorate your home." type="house" />
+		<offer name="Square Side Table" itemtype="35921" count="1" price="50" icon="" description="Buy an incredible Square Side Table to decorate your home." type="house" />
+		<offer name="Wooden Bookcase" itemtype="35908" count="1" price="50" icon="" description="Buy an incredible Wooden Bookcase to decorate your home." type="house" />
+		<offer name="Comfy Cabinet" itemtype="33423" count="1" price="50" icon="" type="house" />
+		<offer name="Comfy Chair" itemtype="33415" count="1" price="50" icon="" type="house" />
+		<offer name="Comfy Chest" itemtype="33422" count="1" price="50" icon="" type="house" />
+		<offer name="Comfy Table" itemtype="33417" count="1" price="50" icon="" type="house" />
+		<offer name="Skeletal Cabinet" itemtype="33189" count="1" price="50" icon="" type="house" />
+		<offer name="Skeletal Chair" itemtype="32260" count="1" price="50" icon="" type="house" />
+		<offer name="Skeletal Chest" itemtype="32266" count="1" price="50" icon="" type="house" />
+		<offer name="Skeletal Table" itemtype="32264" count="1" price="50" icon="" type="house" />
+		<offer name="Alchemistic Cabinet" itemtype="32020" count="1" price="100" icon="" description="Buy an incredible Alchemistic Cabinet to decorate your home." type="house" />
+		<offer name="Alchemistic Bookstand" itemtype="32031" count="1" price="100" icon="" description="Buy an incredible Alchemistic Bookstand to decorate your home." type="house" />
+		<offer name="Alchemistic Chair" itemtype="32018" count="1" price="50" icon="" description="Buy an incredible Alchemistic Chair to decorate your home." type="house" />
+		<offer name="Ornate Table" itemtype="29397" count="1" price="50" icon="" description="Buy an incredible Ornate Table to decorate your home." type="house" />
+		<offer name="Ornate Chair" itemtype="29395" count="1" price="50" icon="" description="Buy an incredible Ornate Chair to decorate your home." type="house" />
+		<offer name="Ornate Chest" itemtype="29403" count="1" price="80" icon="" description="Buy an incredible Ornate Chest to decorate your home." type="house" />
+		<offer name="Ornate Cabinet" itemtype="29399" count="1" price="100" icon="" description="Buy an incredible Ornate Cabinet to decorate your home." type="house" />
+		<offer name="Verdant Chair" itemtype="29340" count="1" price="50" icon="" description="Buy an incredible Verdant Chair to decorate your home." type="house" />
+		<offer name="Verdant Cabinet" itemtype="29342" count="1" price="100" icon="" description="Buy an incredible Verdant Cabinet to decorate your home." type="house" />
+		<offer name="Verdant Trunk" itemtype="29346" count="1" price="50" icon="" description="Buy an incredible Verdant Trunk to decorate your home." type="house" />
+		<offer name="Verdant Table" itemtype="29347" count="1" price="80" icon="" description="Buy an incredible Verdant Table to decorate your home." type="house" />
+		<offer name="Vengothic Chair" itemtype="27900" count="1" price="50" icon="" description="Buy an incredible Vengothic Chair to decorate your home." type="house" />
+		<offer name="Vengothic Chest" itemtype="27908" count="1" price="80" icon="" description="Buy an incredible Vengothic Chest to decorate your home." type="house" />
+		<offer name="Vengothic Cabinet" itemtype="27904" count="1" price="100" icon="" description="Buy an incredible Vengothic Cabinet to decorate your home." type="house" />
+		<offer name="Vengothic Table" itemtype="27902" count="1" price="50" icon="" description="Buy an incredible Vengothic Table to decorate your home." type="house" />
+		<offer name="Rustic Cabinet" itemtype="26357" count="1" price="100" icon="" description="Buy an incredible Rustic Cabinet to decorate your home." type="house" />
+		<offer name="Rustic Chair" itemtype="26352" count="1" price="50" icon="" description="Buy an incredible Rustic Chair to decorate your home." type="house" />
+		<offer name="Rustic Trunk" itemtype="26362" count="1" price="80" icon="" description="Buy an incredible Rustic Trunk to decorate your home." type="house" />
+		<offer name="Rustic Table" itemtype="26355" count="1" price="50" icon="" description="Buy an incredible Rustic Table to decorate your home." type="house" />
+		<offer name="Ferocious Table" itemtype="26070" count="1" price="50" icon="" description="Buy an incredible Ferocious Table to decorate your home." type="house" />
+		<offer name="Ferocious Trunk" itemtype="26082" count="1" price="80" icon="" description="Buy an incredible Ferocious Trunk to decorate your home." type="house" />
+		<offer name="Ferocious Chair" itemtype="26066" count="1" price="50" icon="" description="Buy an incredible Ferocious Chair to decorate your home." type="house" />
+		<offer name="Ferocious Cabinet" itemtype="26078" count="1" price="110" icon="" description="Buy an incredible Ferocious Cabinet to decorate your home." type="house" />
+		<offer name="Magnificent Table" itemtype="26074" count="1" price="60" icon="" description="Buy an incredible Magnificent Table to decorate your home." type="house" />
+		<offer name="Magnificent Trunk" itemtype="26086" count="1" price="70" icon="" description="Buy an incredible Magnificent Trunk to decorate your home." type="house" />
+		<offer name="Magnificent Chair" itemtype="26062" count="1" price="60" icon="" description="Buy an incredible Magnificent chair to decorate your home." type="house" />
+		<offer name="Magnificent Cabinet" itemtype="26075" count="1" price="100" icon="" description="Buy an incredible Magnificent Cabinet to decorate your home." type="house" />
+	</offers>
+	<offers name="Upgrades" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_Houseupgrades.png" rookgaard="yes" state="none" parent="House" >
+		<offer name="Demon Exercise Dummy" itemtype="32145" count="1" price="150" icon="" description="Buy an incredible Demon Exercise Dummye to decorate your home." type="house" />
+		<offer name="Ferumbras Exercise Dummy" itemtype="32143" count="1" price="150" icon="" description="Buy an incredible Ferumbras Exercise Dummye to decorate your home." type="house" />
+		<offer name="Monk Exercise Dummy" itemtype="32147" count="1" price="150" icon="" description="Buy an incredible Monk Exercise Dummye to decorate your home." type="house" />
+		<offer name="Daily Reward Shrine" itemtype="29022" count="1" price="150" icon="" description="Buy an incredible Daily Reward Shrine to decorate your home." type="house" />
+		<offer name="Shiny Daily Reward Shrine" itemtype="29024" count="1" price="150" icon="" description="Buy an incredible Shiny Daily Reward Shrine to decorate your home." type="house" />
+		<offer name="Gilded Imbuing Shrine" itemtype="27851" count="1" price="200" icon="" description="Buy an incredible Gilded Imbuing Shrine to decorate your home." type="house" />
+		<offer name="Imbuing Shrine" itemtype="27842" count="1" price="150" icon="" description="Buy an incredible Imbuing Shrine to decorate your home." type="house" />
+		<offer name="Royal Mailbox" itemtype="26056" count="1" price="150" icon="" description="Buy an incredible Royal Mailbox to decorate your home." type="house" />
+		<offer name="Ornate Mailbox" itemtype="26058" count="1" price="200" icon="" description="Buy an incredible Ornate Mailbox to decorate your home." type="house" />
+	</offers>
+	<offers name="Hirelings" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseTools_NPCApprenticeships.png" rookgaard="yes" state="none" parent="House" >
+		<offer name="Hireling Apprentice" addon="3" male="1108" female="1107" price="750" description="." type="outfit addon" disabled="yes" />
+	</offers>
+	<offers name="Hireling Dresses" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseTools_NPCDresses.png" rookgaard="yes" state="none" parent="House" >
+		<offer name="Banker Dress" price="200" addon="3" male="1110" female="1109" description="." type="outfit addon" disabled="yes" />
+		<offer name="Bonelord Dress" price="200" addon="3" male="1124" female="1123" description="." type="outfit addon" disabled="yes" />
+		<offer name="Cook Dress" price="200" addon="3" male="1114" female="1113" description="." type="outfit addon" disabled="yes" />
+		<offer name="Dragon Dress" addon="3" male="1126" female="1125" price="750" description="." type="outfit addon" disabled="yes" />
+		<offer name="Ferumbras Dress" addon="3" male="1132" female="1131" price="750" description="." type="outfit addon" disabled="yes" />
+		<offer name="Hydra Dress" addon="3" male="1130" female="1129" price="750" description="." type="outfit addon" disabled="yes" />
+		<offer name="Servant Dress" addon="3" male="1118" female="1117" price="750" description="." type="outfit addon" disabled="yes" />
+		<offer name="Stewart Dress" addon="3" male="1116" female="1115" price="750" description="." type="outfit addon" disabled="yes" />
+		<offer name="Trader Dress" addon="3" male="1112" female="1111" price="750" description="." type="outfit addon" disabled="yes" />
+	</offers>
+	<offers name="Boost" description="Buy your character a boost to speed up your character development." icon="Category_Boosts.png" rookgaard="yes" state="none" >
+		<offer name="XP Boost +50%" price="150" icon="xpboosticon.png" description12="<i>Purchase a boost that increases the experience points your character gains from hunting by 50%!</i><br/><br/>{character}<br/>{info} lasts for 1 hour hunting time<br/>{info} paused if stamina falls under 14 hours<br/>{info} can be purchased up to 5 times between 2 server saves<br/>{info} price increases with every purchase<br/>{info} cannot be purchased if an XP boost is already active" type="expboost" />
+	</offers>
+	<offers name="Tickets" icon="Category_Ticket.png" rookgaard="yes" parent="Tournament" >
+		<offer name="Restricted Tournament Ticket" price="500" icon="Product_RestrictedTournamentTicket.png" disabled="yes" />
+	</offers>
+	<offers name="Exclusive Offers" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_ExclusiveOffers.png" rookgaard="yes" state="none" parent="Tournament" >
+		<offer name="Cerberus Champion" id="145" price="1250" icon="" description="Here you can purchase the Mount 'Cerberus Champion' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" coinType="tournament" />
+		<offer name="Cerberus Champion Puppy" itemtype="36178" count="1" price="800" icon="" description="Buy an incredible Cerberus Champion Puppy to decorate your home." type="house" coinType="tournament" />
+		<!--offer name="Full Lion of War" addon="3" male="1206" female="1207" price="1750" description="." type="outfit addon" coinType="tournament" />
+		<offer name="Full Veteran Paladin" addon="3" male="1204" female="1205" price="1750" description="." type="outfit addon" coinType="tournament" />
+		<offer name="Full Void Master" addon="3" male="1202" female="1203" price="1750" description="." type="outfit addon" coinType="tournament" /-->
+		<offer name="Jousting Eagle" id="144" price="1250" icon="" description="Here you can purchase the Mount 'Jousting Eagle' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." type="mount" coinType="tournament" />
+		<offer name="Jousting Eagle Baby" itemtype="36177" count="1" price="800" icon="" description="Buy an incredible Jousting Eagle Baby to decorate your home." type="house" coinType="tournament" />
+		<offer name="Sublime Tournament Accolade" itemtype="36187" count="1" price="500" icon="" description="Buy an incredible Sublime Tournament Accolade to decorate your home." type="house" coinType="tournament" />
+		<offer name="Sublime Tournament Carpet" itemtype="36183" count="1" price="70" icon="" description="Buy an incredible Tournament Accolade to decorate your home." type="house" coinType="tournament" />
+		<offer name="Tournament Accolade" itemtype="36185" count="1" price="500" icon="" description="Buy an incredible Sublime Tournament Carpet to decorate your home." type="house" coinType="tournament" />
+		<offer name="Tournament Carpet" itemtype="36182" count="1" price="70" icon="" description="Buy an incredible Tournament Carpet to decorate your home." type="house" coinType="tournament" />
+	</offers>
+	<offers name="Extra Services" description="Buy yourcharacter one or more of the helpful items offered here." icon="Category_ExtraServices.png" rookgaard="yes" state="none" parent="Extras" >
+		<offer name="Main Character Change" price="750" icon="Product_MainCharacterChange.png" description="." type="namechange" buyType="offername" disabled="yes" />
+		<offer name="Express World Transfer" price="750" icon="Product_ExpressCharacterWorldTransfer.png" description="." buyType="teste" type="namechange" disabled="yes" />
+		<offer name="World Transfer" id="100000" price="750" icon="Product_CharacterWorldTransfer.png" description="." type="namechange" disabled="yes" />
+		<offer name="Character Name Change" price="250" icon="namechanger.png" description="You must be in a protection zone to change your name. After entering your new name, you will be disconnected from the server. You must logout completely and login again using your account details in order to refresh your character list." type="namechange" />
+		<offer name="Character Sex Change" price="100" icon="sexchanger.png" description="Use this to change the sex of your character. Changes apply immediately. You don't need to logout for changes to apply." type="sexchange" disabled="yes"/>
+	</offers>
+	<offers name="Useful Things" description="Buy yourcharacter one or more of the helpful items offered here." icon="Category_Convenience.png" rookgaard="yes" state="none" parent="Extras" >
+		<offer name="Pair of Skelot Boots" itemtype="2358" count="1" price="200" icon="" type="item" state="new" />
+		<offer name="Charm Expansion" count="1" price="300" icon="Product_UsefulThings_UnlimitedBonusUsage.png" description="If you have purchased the Charm Expansion Offer for your character, you also get a 25% discount whenever you are removing a Charm from a creature. As a creature can only have one Charm assigned at once and a specific Charm cannot be assigned to more than one creature at a time, this purchase will save you quite some gold pieces in the long run." description12="<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i><br/><br/>{character}<br/>{once}" type="charmexpansion" />
+		<offer name="Charm points (30x)" count="30" price="200" icon="Product_UsefulThings_UnlimitedBonusUsage.png" description12="This offer provides 30 charm points.<br /> <br />NOTE: THIS OFFER IS NOT CHARM EXPANSION" type="charmpoints" disabled="no"/>
+		<offer name="30x Instant Reward Access" count="50" price="100" icon="Product_UsefulThings_CollectionTokens.png" description="It has 30 charges and allows access to the Daily Rewards system wherever the character is." type="reward" />
+		<offer name="Permanent Prey Slot" price="500" icon="Product_UsefulThings_PermanentPreySlot.png" description="." type="preyslot" />
+		<offer name="Prey Wildcard (15x)" count="15" price="100" icon="Product_UsefulThings_PreyBonusReroll.png" description="." description12="<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i><br/><br/>{character}<br/>{info} added directly to Prey dialog<br/>{limit|50}" type="preybonus" />
+		<offer name="Prey Wildcard (90x)" count="90" price="300" icon="Product_UsefulThings_PreyBonusReroll.png" description="." description12="<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i><br/><br/>{character}<br/>{info} added directly to Prey dialog<br/>{limit|50}" type="preybonus" />
+		<offer name="Temple Teleport" price="10" icon="Product_Transportation_TempleTeleport.png" description="Teleports you to your temple." type="temple" />
+		<offer name="Permanent Teleport Scroll [VIP]" itemtype="29019" price="200" icon="Product_UsefulThings_Temple_Teleport_Scroll.png" description="With this tool, you can choose between teleport to your own house or to any city that you want to!" type="item" actionid="101"/>
+		<offer name="Remove Frag" price="100" icon="removefrag.png" description="Removes a frag from your history" type="fragremove" />
+		<offer name="Remove Red Skull" skull="red" price="400" icon="removeskull.png" description="Removes a frag from your history" type="skullremove" />
+		<offer name="Remove Black Skull" skull="black" price="650" icon="removeskull.png" description="Removes a frag from your history" type="skullremove" />
+		<offer name="Stamina Refill" itemtype="36799" price="200" icon="Product_UsefulThings_Temple_Teleport_Scroll.png" description="With this tool, you can fully refill your stamina! Remember that you can use this item again only after 20 hours of using the last." type="item" actionid="101" disabled="yes"/>
+		<offer name="New Recovery Key" count="1" price="150" icon="Product_UsefulThings_RK.png" description="" type="recoverykey" disabled="no"/>
+		<offer name="Bosses Eye" itemtype="24683" count="1" price="50" icon="" type="item" state="new" disabled="no"/>
+	</offers>
+</store>

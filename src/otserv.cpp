@@ -31,6 +31,7 @@
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
+#include "game/gamestore.hpp"
 #include "game/scheduling/scheduler.h"
 #include "io/iomarket.h"
 #include "lua/creature/events.h"
@@ -54,6 +55,7 @@ Scheduler g_scheduler;
 Game g_game;
 ConfigManager g_config;
 extern Events* g_events;
+GameStore g_gameStore;
 extern Imbuements* g_imbuements;
 extern LuaEnvironment g_luaEnvironment;
 extern Modules* g_modules;
@@ -178,6 +180,8 @@ void loadModules() {
 		"data/XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
 		"data/XML/familiars.xml");
+	modulesLoadHelper(g_gameStore.loadFromXml(),
+		"data/XML/gamestore.xml");
 	modulesLoadHelper(g_imbuements->loadFromXml(),
 		"data/XML/imbuements.xml");
 	modulesLoadHelper(g_modules->loadFromXml(),

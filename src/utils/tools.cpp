@@ -1324,9 +1324,18 @@ const char* getReturnMessage(ReturnValue value)
 	}
 }
 
-int64_t OTSYS_TIME()
+int64_t OTSYS_TIME(bool useTime)
 {
-	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	if (useTime) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	}
+	int64_t time = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + (g_config.getNumber(TIME_GMT) * 1000);
+	return time;
+}
+
+int32_t OS_TIME(time_t* timer)
+{
+	return (time(timer) + g_config.getNumber(TIME_GMT));
 }
 
 SpellGroup_t stringToSpellGroup(const std::string &value)

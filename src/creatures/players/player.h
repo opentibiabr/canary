@@ -28,7 +28,6 @@
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
 #include "grouping/familiars.h"
-#include "game/gamestore.h"
 #include "grouping/groups.h"
 #include "grouping/guild.h"
 #include "imbuements/imbuements.h"
@@ -525,7 +524,17 @@ class Player final : public Creature, public Cylinder
 		bool isPremium() const;
 		void setPremiumDays(int32_t v);
 
-		void setTibiaCoins(int32_t v);
+		void setTibiaCoins(int32_t v, CoinType_t coinType = COIN_TYPE_DEFAULT);
+		bool canRemoveCoins(int32_t v, CoinType_t coinType = COIN_TYPE_DEFAULT);
+		int32_t getCoinBalance(CoinType_t coinType = COIN_TYPE_DEFAULT) {
+			if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
+				return coinBalance;
+			} else if (coinType == COIN_TYPE_TOURNAMENT) {
+				return tournamentCoinBalance;
+			} else {
+				return 0;
+			}
+		}
 
 		uint16_t getHelpers() const;
 
@@ -1055,44 +1064,6 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		//store
-		void sendOpenStore(uint8_t serviceType) {
-			if(client) {
-				client->sendOpenStore(serviceType);
-			}
-		}
-
-		void sendShowStoreCategoryOffers(StoreCategory* category) {
-			if(client) {
-				client->sendStoreCategoryOffers(category);
-			}
-		}
-
-		void sendStoreError(GameStoreError_t error, const std::string& errorMessage) {
-			if(client) {
-				client->sendStoreError(error, errorMessage);
-			}
-		}
-
-		void sendStorePurchaseSuccessful(const std::string& message, const uint32_t newCoinBalance) {
-			if(client)
-			{
-				client->sendStorePurchaseSuccessful(message, newCoinBalance);
-			}
-		}
-
-		void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType) {
-			if(client) {
-				client->sendStoreRequestAdditionalInfo(offerId, clientOfferType);
-			}
-		}
-
-		void sendStoreTrasactionHistory(HistoryStoreOfferList& list, uint32_t page, uint8_t entriesPerPage) {
-			if(client) {
-				client->sendStoreTrasactionHistory(list, page, entriesPerPage);
-			}
-		}
-
 		// Quickloot
 		void sendLootContainers() {
 			if (client) {
@@ -1523,12 +1494,6 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void sendStoreOpen(uint8_t serviceType) {
-			if (client) {
-				client->sendOpenStore(serviceType);
-			}
-		}
-
 		void receivePing() {
 			lastPong = OTSYS_TIME();
 		}
@@ -1850,9 +1815,14 @@ class Player final : public Creature, public Cylinder
 
 		uint16_t getFreeBackpackSlots() const;
 
+		void addAccountStorageValue(const uint32_t key, const int32_t value);
+		bool getAccountStorageValue(const uint32_t key, int32_t& value) const;
+
 		// Interfaces
 		error_t SetAccountInterface(account::Account *account);
 		error_t GetAccountInterface(account::Account *account);
+
+		std::vector<Kill> unjustifiedKills;
 
 
 	private:
@@ -1923,6 +1893,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, DepotChest*> depotChests;
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
+		std::map<uint32_t, int32_t> accountStorageMap;
 
 		std::map<uint32_t, Reward*> rewardMap;
 
@@ -1970,9 +1941,10 @@ class Player final : public Creature, public Cylinder
 		int64_t nextPotionAction = 0;
 		int64_t lastQuickLootNotification = 0;
 		int64_t lastWalking = 0;
-		uint64_t asyncOngoingTasks = 0;
 
-		std::vector<Kill> unjustifiedKills;
+		uint32_t lastUpdateCoin = OTSYS_TIME();
+
+		uint64_t asyncOngoingTasks = 0;
 
 		BedItem* bedItem = nullptr;
 		Guild* guild = nullptr;
@@ -2018,14 +1990,17 @@ class Player final : public Creature, public Cylinder
 		int32_t varStats[STAT_LAST + 1] = {};
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
-		uint32_t premiumDays = 0;
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
 		int32_t offlineTrainingSkill = -1;
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
-		uint32_t coinBalance = 0;
+		int32_t tournamentCoinBalance = 0;
+
 		uint16_t expBoostStamina = 0;
+
+		uint32_t coinBalance = 0;
+		uint32_t premiumDays = 0;
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;

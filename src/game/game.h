@@ -25,8 +25,9 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
 #include "items/containers/container.h"
-#include "game/gamestore.h"
+#include "game/gamestore.hpp"
 #include "creatures/players/grouping/groups.h"
+#include "game/gamestore.hpp"
 #include "io/iobestiary.h"
 #include "items/item.h"
 #include "map/map.h"
@@ -325,11 +326,6 @@ class Game
 		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
-		void playerStoreOpen(uint32_t playerId, uint8_t serviceType);
-		void playerShowStoreCategoryOffers(uint32_t playerId, StoreCategory* category);
-		void playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t productType, const std::string& additionalInfo="");
-		void playerCoinTransfer(uint32_t playerId, const std::string& receiverName, uint32_t amount);
-		void playerStoreTransactionHistory(uint32_t playerId, uint32_t page);
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
@@ -453,11 +449,14 @@ class Game
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);
 
+		bool addAccountHistory(uint32_t accountId, StoreHistory history);
+		void loadAccountStoreHistory(uint32_t account, std::vector<StoreHistory> history);
+		bool getAccountHistory(const uint32_t accountId, std::vector<StoreHistory>& history) const;
+
 		Groups groups;
 		Map map;
 		Mounts mounts;
 		Raids raids;
-		GameStore gameStore;
 
 		std::forward_list<Item*> toDecayItems;
 
@@ -528,6 +527,9 @@ class Game
 
 		void checkDecay();
 		void internalDecayItem(Item* item);
+
+		// Account id and history
+		std::unordered_map<uint32_t, std::vector<StoreHistory>> storeHistory;
 
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;

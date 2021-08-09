@@ -146,6 +146,7 @@ class ConfigFunctions final : LuaScriptInterface {
 
 			registerEnumIn(L, "configKeys", PUSH_WHEN_ATTACKING)
 
+			registerEnumIn(L, "configKeys", TIME_GMT)
 			#undef registerEnumIn
 		}
 

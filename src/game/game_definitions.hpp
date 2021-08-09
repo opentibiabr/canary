@@ -46,27 +46,6 @@ enum ClientOffer_t{
 	ADDITIONALINFO=1
 };
 
-enum StoreState_t {
-	NORMAL=0,
-	NEW,
-	SALE,
-	LIMITED_TIME
-};
-
-enum GameStoreError_t{
-	STORE_ERROR_PURCHASE=0,
-	STORE_ERROR_NETWORK,
-	STORE_ERROR_HISTORY,
-	STORE_ERROR_TRANSFER,
-	STORE_ERROR_INFORMATION
-};
-
-enum StoreService_t {
-	SERVICE_STANDARD = 0,
-	SERVICE_OUTFIT = 3,
-	SERVICE_MOUNT = 4
-};
-
 enum StackPosType_t {
 	STACKPOS_MOVE,
 	STACKPOS_LOOK,
@@ -110,6 +89,24 @@ enum LightState_t {
 	LIGHT_STATE_NIGHT,
 	LIGHT_STATE_SUNSET,
 	LIGHT_STATE_SUNRISE,
+};
+
+enum BlessType_t : uint8_t
+{
+	ADVENTURE_BLESS = 0,
+	TWIST_OF_FATE = 1, // PVP Bless
+	WISDOM_OF_SOLITUDE = 2,
+	SPARK_OF_THE_PHOENIX = 3,
+	FIRE_OF_THE_SUNS = 4,
+	SPIRITUAL_SHIELDING = 5,
+	EMBRACE_OF_TIBIA = 6,
+	HEART_OF_THE_MOUNTAIN = 7,
+	BLOOD_OF_THE_MOUNTAIN = 8,
+
+	BLESS_ADV_FIRST = ADVENTURE_BLESS,
+	BLESS_FIRST = TWIST_OF_FATE,
+	BLESS_PVE_FIRST = WISDOM_OF_SOLITUDE,
+	BLESS_LAST = BLOOD_OF_THE_MOUNTAIN
 };
 
 enum CyclopediaCharacterInfoType_t : uint8_t {
@@ -159,16 +156,13 @@ enum Webhook_Colors_t : uint32_t {
 	WEBHOOK_COLOR_RAID = 0x0000FF
 };
 
-// Structs
-struct HistoryStoreOffer {
-	uint32_t time;
-	uint8_t mode;
-	uint32_t amount;
-	std::string description;
+enum CoinType_t : uint8_t {
+	COIN_TYPE_DEFAULT = 0,
+	COIN_TYPE_TRANSFERABLE = 1,
+	COIN_TYPE_TOURNAMENT = 2,
 };
 
-using HistoryStoreOfferList = std::vector<HistoryStoreOffer>;
-
+// Structs
 struct ModalWindow {
 	std::list<std::pair<std::string, uint8_t>> buttons, choices;
 	std::string title, message;
@@ -191,7 +185,6 @@ struct BaseOffer{
 	std::string description;
 	uint32_t price;
 	Offer_t type;
-	StoreState_t state;
 	std::vector<std::string> icons;
 };
 
@@ -220,14 +213,6 @@ struct PremiumTimeOffer : BaseOffer{
 
 struct BlessingOffer : BaseOffer{
 	std::vector<uint8_t> blessings;
-};
-
-struct StoreCategory{
-	std::string name;
-	std::string description;
-	StoreState_t state;
-	std::vector<std::string> icons;
-	std::vector<BaseOffer*> offers;
 };
 
 #endif  // SRC_GAME_GAME_DEFINITIONS_HPP_

@@ -21,6 +21,7 @@
 
 #include "creatures/players/account/account.hpp"
 #include "database/databasetasks.h"
+#include "game/game.h"
 
 #include <algorithm>
 #include <limits>
@@ -87,13 +88,19 @@ error_t Account::SetDatabaseTasksInterface(DatabaseTasks *database_tasks) {
  * Coins Methods
  ******************************************************************************/
 
-error_t Account::GetCoins(uint32_t *coins) {
-
-  if (db_ == nullptr || coins == nullptr || id_ == 0) {
+error_t Account::GetCoins(CoinType_t coinType) {
+  if (db_ == nullptr || id_ == 0) {
       return ERROR_NOT_INITIALIZED;
   }
 
   std::ostringstream query;
+  std::string coins = "coins";
+	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
+		coins = "coins";
+	} else if (coinType == COIN_TYPE_TOURNAMENT) {
+		coins = "tournamentBalance";
+	}
+
   query << "SELECT `coins` FROM `accounts` WHERE `id` = " << id_;
 
   DBResult_ptr result = db_->storeQuery(query.str());
@@ -101,34 +108,27 @@ error_t Account::GetCoins(uint32_t *coins) {
       return ERROR_DB;
   }
 
-  *coins = result->getNumber<uint32_t>("coins");
+  result->getNumber<uint32_t>("coins");
   return ERROR_NO;
 }
 
-error_t Account::AddCoins(uint32_t amount) {
+error_t Account::AddCoins(int32_t amount)
+{
+	std::string coins = "`coins`";
+  CoinType_t coinType;
+  if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
+		coins = "`coins`";
+	} else if (coinType == COIN_TYPE_TOURNAMENT) {
+		coins = "`tournamentBalance`";
+	}
+	std::ostringstream query;
+	query << "UPDATE `accounts` SET " << coins << " = " << coins << " + " << amount << " WHERE `id` = " << id_;
 
-  if (db_tasks_ == nullptr) {
-      return ERROR_NULLPTR;
-  }
-  if (amount == 0)  {
-    return ERROR_NO;
-  }
-
-  uint32_t current_coins = 0;
-  this->GetCoins(&current_coins);
-  if ((current_coins + amount) < current_coins) {
-    return ERROR_VALUE_OVERFLOW;
-  }
-
-  std::ostringstream query;
-  query << "UPDATE `accounts` SET `coins` = " << (current_coins + amount)
-        << " WHERE `id` = " << id_;
-
-  db_tasks_->addTask(query.str());
+	g_databaseTasks.addTask(query.str());
   return ERROR_NO;
 }
 
-error_t Account::RemoveCoins(uint32_t amount) {
+error_t Account::RemoveCoins(int32_t amount) {
 
   if (db_tasks_ == nullptr) {
       return ERROR_NULLPTR;
@@ -138,42 +138,34 @@ error_t Account::RemoveCoins(uint32_t amount) {
     return ERROR_NO;
   }
 
-  uint32_t current_coins = 0;
-  this->GetCoins(&current_coins);
+  CoinType_t coinType;
+  std::string coins = "`coins`";
+	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
+		coins = "`coins`";
+	} else if (coinType == COIN_TYPE_TOURNAMENT) {
+		coins = "`tournamentBalance`";
+	}
+	std::ostringstream query;
+	query << "UPDATE `accounts` SET " << coins << " = " << coins << " - " << amount << " WHERE `id` = " << id_;
 
-  if ((current_coins - amount) > current_coins) {
-    return ERROR_VALUE_NOT_ENOUGH_COINS;
-  }
-
-  std::ostringstream query;
-  query << "UPDATE `accounts` SET `coins` = "<< (current_coins - amount)
-        << " WHERE `id` = " << id_;
-
-  db_tasks_->addTask(query.str());
-
-  return ERROR_NO;
-}
-
-error_t Account::RegisterCoinsTransaction(CoinTransactionType type,
-                                          uint32_t coins,
-                                          const std::string& description) {
-
-  if (db_ == nullptr) {
-      return ERROR_NULLPTR;
-  }
-
-  std::ostringstream query;
-  query << "INSERT INTO `coins_transactions` (`account_id`, `type`, `amount`,"
-          " `description`) VALUES (" << id_ << ", " << static_cast<uint16_t>(type) << ", "<< coins
-          << ", " << db_->escapeString(description) << ")";
-
-  if (!db_->executeQuery(query.str())) {
-      return ERROR_DB;
-  }
+	g_databaseTasks.addTask(query.str());
 
   return ERROR_NO;
 }
 
+error_t Account::RegisterCoinsTransaction(uint32_t time, uint8_t mode, uint32_t amount, uint8_t coinMode, std::string description, int32_t cust)
+{
+	Database& db = Database::getInstance();
+	std::ostringstream query;
+	query << "INSERT INTO `store_history` (`accountid`, `time`, `mode`, `amount`, `coinMode`, `description`, `cust`) VALUES (" <<
+		 id_ << "," << time << "," << static_cast<uint16_t>(mode) << "," << amount << "," << static_cast<uint16_t>(coinMode) << "," <<
+		 db.escapeString(description) << "," << cust << ")";
+
+	StoreHistory historyOffer(time, mode, amount, coinMode, description, cust);
+	g_game.addAccountHistory(id_, historyOffer);
+
+	db.executeQuery(query.str());
+}
 
 /*******************************************************************************
  * Database

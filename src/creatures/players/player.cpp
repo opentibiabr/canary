@@ -4619,9 +4619,63 @@ void Player::setPremiumDays(int32_t v)
 	sendBasicData();
 }
 
-void Player::setTibiaCoins(int32_t v)
+void Player::setTibiaCoins(int32_t v, CoinType_t coinType)
 {
-	coinBalance = v;
+	switch (coinType) {
+		case COIN_TYPE_DEFAULT:
+		case COIN_TYPE_TRANSFERABLE: {
+			coinBalance = v;
+			break;
+		}
+
+		case COIN_TYPE_TOURNAMENT: {
+			tournamentCoinBalance = v;
+			break;
+		}
+
+		default: {
+			coinBalance = v;
+			break;
+		}
+	}
+}
+
+bool Player::canRemoveCoins(int32_t v, CoinType_t coinType)
+{
+	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
+		// a cada 2 segundos atualizar, na diferença que for chamada
+		lastUpdateCoin = OTSYS_TIME() + 2000;
+
+		account::Account account(getAccount());
+		account.LoadAccountDB();
+		if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
+			coinBalance = account.GetCoins(coinType);
+		} else if (coinType == COIN_TYPE_TOURNAMENT) {
+			tournamentCoinBalance = account.GetCoins(coinType);
+		}
+	}
+
+
+	int32_t coins; 
+	switch (coinType) {
+		case COIN_TYPE_DEFAULT:
+		case COIN_TYPE_TRANSFERABLE: {
+			coins = coinBalance;
+			break;
+		}
+
+		case COIN_TYPE_TOURNAMENT: {
+			coins = tournamentCoinBalance;
+			break;
+		}
+
+		default: {
+			coins = coinBalance;
+			break;
+		}
+	}
+
+	return (coins - v) >= 0;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const
@@ -5423,6 +5477,29 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	stashContainer(itemDict);
 }
 
+void Player::addAccountStorageValue(const uint32_t key, const int32_t value)
+{
+	if (value != -1) {
+		int32_t oldValue;
+		getAccountStorageValue(key, oldValue);
+		accountStorageMap[key] = value;
+	} else {
+		accountStorageMap.erase(key);
+	}
+}
+
+bool Player::getAccountStorageValue(const uint32_t key, int32_t& value) const
+{
+	auto it = accountStorageMap.find(key);
+	if (it == accountStorageMap.end()) {
+		value = -1;
+		return false;
+	}
+
+	value = it->second;
+	return true;
+}
+
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/
@@ -5440,4 +5517,3 @@ error_t Player::GetAccountInterface(account::Account* account) {
 	account = account_;
 	return account::ERROR_NO;
 }
-

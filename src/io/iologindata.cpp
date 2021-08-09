@@ -281,7 +281,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     acc.GetPremiumRemaningDays(&(player->premiumDays));
   }
 
-  acc.GetCoins(&(player->coinBalance));
+  acc.GetCoins(COIN_TYPE_DEFAULT);
 
   player->preyBonusRerolls = result->getNumber<uint16_t>("bonus_rerolls");
 

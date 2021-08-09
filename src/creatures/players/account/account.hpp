@@ -132,7 +132,7 @@ class Account {
    * @param coins Pointer to return the number of coins
    * @return error_t ERROR_NO(0) Success, otherwise Fail.
    */
-  error_t GetCoins(uint32_t *coins);
+  error_t GetCoins(CoinType_t coinType);
 
   /**
    * @brief Add coins to the account and update database.
@@ -140,7 +140,7 @@ class Account {
    * @param amount Amount of coins to be added
    * @return error_t ERROR_NO(0) Success, otherwise Fail.
    */
-  error_t AddCoins(uint32_t amount);
+  error_t AddCoins(int32_t amount);
 
   /**
    * @brief Removes coins from the account and update database.
@@ -148,7 +148,7 @@ class Account {
    * @param amount Amount of coins to be removed
    * @return error_t ERROR_NO(0) Success, otherwise Fail.
    */
-  error_t RemoveCoins(uint32_t amount);
+  error_t RemoveCoins(int32_t amount);
 
   /**
    * @brief Register account coins transactions in database.
@@ -158,9 +158,7 @@ class Account {
    * @param description Description of the transaction
    * @return error_t ERROR_NO(0) Success, otherwise Fail.
    */
-  error_t RegisterCoinsTransaction(CoinTransactionType type, uint32_t coins,
-                                  const std::string &description);
-
+  error_t RegisterCoinsTransaction(uint32_t time, uint8_t mode, uint32_t amount, uint8_t coinMode, std::string description, int32_t cust);
 
   /***************************************************************************
    * Database

@@ -182,7 +182,7 @@ class GameStore {
 
 };
 
-class StoreOffers  {
+class StoreOffers {
 	public:
 		StoreOffers(std::string name) : 
 				name(std::move(name)) {}
@@ -314,6 +314,8 @@ class StoreOffer {
 		bool haveOfferRookgaard() {
 			return rookgaard;
 		}
+
+		Mount* getMount();
 
 	protected:
 		friend class GameStore;

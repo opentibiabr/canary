@@ -62,7 +62,6 @@ const std::unordered_map<std::string, OfferTypes_t> OfferTypesMap = {
 	{"charmexpansion", OFFER_TYPE_CHARM_EXPANSION},
 	{"charmpoints", OFFER_TYPE_CHARM_POINTS},
 	{"multiitems", OFFER_TYPE_MULTI_ITEMS},
-	{"vip", OFFER_TYPE_VIP},
 	{"fragremove", OFFER_TYPE_FRAG_REMOVE},
 	{"skullremove", OFFER_TYPE_SKULL_REMOVE},
 	{"recoverykey", OFFER_TYPE_RECOVERYKEY},
@@ -608,6 +607,11 @@ std::string StoreOffer::getDisabledReason(Player* player)
 	}
 
 	return disabledReason;
+}
+
+Mount* StoreOffer::getMount()
+{
+	return g_game.mounts.getMountByID(id);
 }
 
 uint8_t GameStore::convertType(OfferTypes_t type)

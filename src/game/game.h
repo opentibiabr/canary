@@ -517,6 +517,12 @@ class Game
 			return CharmList;
 		}
 
+		// Store
+		void playerOpenStore(uint32_t playerId, bool openStore, StoreOffers* offers = nullptr);
+		void playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::string& param);
+		void playerStoreTransactionHistory(uint32_t playerId, uint32_t pages, uint8_t entryPages);
+		void queueSendStoreAlertToUser(uint32_t playerId, std::string message, StoreErrors_t storeErrorCode = STORE_ERROR_NETWORK);
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);

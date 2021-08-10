@@ -37,6 +37,9 @@ class Tile;
 class Connection;
 class Quest;
 class ProtocolGame;
+class StoreOffers;
+class StoreOffer;
+
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 extern ConfigManager g_config;
@@ -223,6 +226,25 @@ private:
 
 	// imbue info
 	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuid);
+
+	// Store
+	void parseOpenStore();
+	void parseRequestStoreOffers(NetworkMessage& msg);
+	void parseBuyStoreOffer(NetworkMessage& msg);
+	void parseSendDescription(NetworkMessage& msg);
+	void parseOpenTransactionHistory(NetworkMessage& msg);
+	void parseRequestTransactionHistory(NetworkMessage& msg);
+
+	void sendStoreHistory(uint32_t totalPages, uint32_t pages, std::vector<StoreHistory> filter);
+	void sendShowStoreOffers(StoreOffers* offers);
+	void sendOfferDescription(uint32_t id, std::string desc);
+	void sendStoreHome();
+	void sendStoreError(uint8_t errorType, std::string message);
+	void sendStorePurchaseSuccessful(const std::string& message);
+
+	void requestPurchaseData(uint32_t offerId, uint8_t offerType);
+	void openStore();
+	void addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> it);
 
 	//Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);

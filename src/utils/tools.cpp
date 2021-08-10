@@ -1067,6 +1067,8 @@ ItemAttrTypes stringToItemAttribute(const std::string& str)
 		return ITEM_ATTRIBUTE_FLUIDTYPE;
 	} else if (str == "doorid") {
 		return ITEM_ATTRIBUTE_DOORID;
+	} else if (str == "wrapid") {
+		return ITEM_ATTRIBUTE_WRAPID;
 	}
 	return ITEM_ATTRIBUTE_NONE;
 }
@@ -1444,4 +1446,16 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+std::string generateRK(size_t length)
+{
+	std::ostringstream newkey;
+	std::string consonants = "ABCDEFGHIJLMNOPQRSTUVWXYZ0123456789";
+	while (newkey.str().length() < length)
+	{
+		uint8_t pos = uniform_random(1, consonants.length());
+		newkey << consonants.substr(pos, 1);
+	}
+	return newkey.str();
 }

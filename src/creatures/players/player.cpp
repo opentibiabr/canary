@@ -5477,6 +5477,30 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	stashContainer(itemDict);
 }
 
+bool Player::removeFrags(uint8_t count)
+{
+	if (unjustifiedKills.empty()) {
+		return false;
+	}
+
+	uint8_t passed = 0;
+	std::vector<Kill> v_unjustifiedKills = unjustifiedKills;
+	for (const auto& kill : v_unjustifiedKills) {
+		if (passed >= count) {
+			break;
+		}
+
+		if (kill.time > 0) {
+			unjustifiedKills.erase(unjustifiedKills.begin() + passed);
+			passed++;
+		}
+
+	}
+
+	sendUnjustifiedPoints();
+	return true;
+}
+
 void Player::addAccountStorageValue(const uint32_t key, const int32_t value)
 {
 	if (value != -1) {

@@ -25,9 +25,7 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
 #include "items/containers/container.h"
-#include "game/gamestore.hpp"
 #include "creatures/players/grouping/groups.h"
-#include "game/gamestore.hpp"
 #include "io/iobestiary.h"
 #include "items/item.h"
 #include "map/map.h"
@@ -35,6 +33,7 @@
 #include "movement/position.h"
 #include "creatures/players/player.h"
 #include "lua/creature/raids.h"
+#include "creatures/players/store/store.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
 

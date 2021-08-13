@@ -124,6 +124,7 @@ target_sources(${PROJECT_NAME}
     creatures/players/grouping/party.cpp
     creatures/players/imbuements/imbuements.cpp
     creatures/players/management/ban.cpp
+    creatures/players/store/store.cpp
     creatures/players/management/waitlist.cpp
     creatures/players/player.cpp
     creatures/players/vocations/vocation.cpp
@@ -131,7 +132,6 @@ target_sources(${PROJECT_NAME}
     database/databasemanager.cpp
     database/databasetasks.cpp
     game/game.cpp
-    game/gamestore.cpp
     game/movement/position.cpp
     game/movement/teleport.cpp
     game/scheduling/scheduler.cpp

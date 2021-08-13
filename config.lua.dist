@@ -51,9 +51,6 @@ freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 18
 
--- GameStore
-gamestoreByModules = true
-
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
 

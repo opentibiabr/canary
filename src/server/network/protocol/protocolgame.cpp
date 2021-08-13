@@ -26,7 +26,6 @@
 #include "config/configmanager.h"
 #include "declarations.hpp"
 #include "game/game.h"
-#include "game/gamestore.hpp"
 #include "creatures/players/imbuements/imbuements.h"
 #include "io/iobestiary.h"
 #include "io/iologindata.h"
@@ -38,6 +37,7 @@
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/combat/spells.h"
+#include "creatures/players/store/store.hpp"
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
 
@@ -51,7 +51,7 @@ extern Modules *g_modules;
 extern Spells *g_spells;
 extern Imbuements *g_imbuements;
 extern Monsters g_monsters;
-extern GameStore g_gameStore;
+extern Store g_store;
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 {
@@ -751,7 +751,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xF7: parseMarketCancelOffer(msg); break;
 		case 0xF8: parseMarketAcceptOffer(msg); break;
 		case 0xF9: parseModalWindowAnswer(msg); break;
-		// Gamestore
+		// Store
 		case 0xFA: parseOpenStore(); break;
 		case 0xFB: parseRequestStoreOffers(msg); break;
 		case 0xFC: parseBuyStoreOffer(msg); break;
@@ -2581,17 +2581,17 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage& msg)
 
 	StoreOffers* offers = nullptr;
 	if (actionType == 0) {
-		offers = g_gameStore.getOfferByName(g_config.getString(DEFAULT_OFFER));
+		offers = g_store.getOfferByName(g_config.getString(DEFAULT_OFFER));
 	} else if (actionType == 2) {
 		std::string categoryName = msg.getString();
-		offers = g_gameStore.getOfferByName(categoryName);
+		offers = g_store.getOfferByName(categoryName);
 	} else if (actionType == 4) {
 		uint32_t id = msg.get<uint32_t>();
-		offers = g_gameStore.getOffersByOfferId(id);
+		offers = g_store.getOffersByOfferId(id);
 	} else {
 		// SPDLOG_INFO("Test");
 		// std::string categoryName = msg.getString();
-		// offers = g_gameStore.getOfferByName(categoryName);
+		// offers = g_store.getOfferByName(categoryName);
 	}
 
 	if (offers != nullptr) {
@@ -2607,17 +2607,17 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage& msg)
 	OfferBuyTypes_t productType = static_cast<OfferBuyTypes_t>(msg.getByte());
 	std::string param;
 
-	StoreOffer* offer = g_gameStore.getOfferById(id);
+	StoreOffer* offer = g_store.getOfferById(id);
 	if (offer == nullptr) {
 		return;
 	}
 
-	if (offer->getOfferType() == OFFER_TYPE_NAMECHANGE && productType != OFFER_BUY_TYPE_NAMECHANGE) {
+	if (offer->getOfferType() == OFFER_TYPE_NAME_CHANGE && productType != OFFER_BUY_TYPE_NAMECHANGE) {
 		requestPurchaseData(id, OFFER_BUY_TYPE_NAMECHANGE);
 		return;
 	}
 
-	if (offer->getOfferType() == OFFER_TYPE_NAMECHANGE) {
+	if (offer->getOfferType() == OFFER_TYPE_NAME_CHANGE) {
 		param = msg.getString();
 	}
 
@@ -2627,7 +2627,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage& msg)
 void ProtocolGame::parseSendDescription(NetworkMessage& msg)
 {
 	uint32_t offerId = msg.get<uint32_t>();
-	StoreOffer* storeOffer = g_gameStore.getOfferById(offerId);
+	StoreOffer* storeOffer = g_store.getOfferById(offerId);
 	if (storeOffer == nullptr) {
 		return;
 	}
@@ -6615,7 +6615,7 @@ void ProtocolGame::sendShowStoreOffers(StoreOffers* offers)
 	msg.add<uint32_t>(0);
 
 	uint16_t count = 0;
-	std::map<std::string, std::vector<StoreOffer*>> organized = g_gameStore.getStoreOrganizedByName(offers);
+	std::map<std::string, std::vector<StoreOffer*>> organized = g_store.getStoreOrganizedByName(offers);
 	for (const auto& it : organized) {
 		if (!it.first.empty())
 			count++;
@@ -6655,7 +6655,7 @@ void ProtocolGame::sendStoreHome()
 	msg.add<uint16_t>(0x00);
 
 	uint16_t count = 0;
-	std::map<std::string, std::vector<StoreOffer*>> organized = g_gameStore.getHomeOffersOrganized();
+	std::map<std::string, std::vector<StoreOffer*>> organized = g_store.getHomeOffersOrganized();
 	for (const auto& it : organized) {
 		if (!it.first.empty())
 			count++;
@@ -6671,7 +6671,7 @@ void ProtocolGame::sendStoreHome()
 
 	}
 
-	std::vector<std::string> banners =  g_gameStore.getHomeBanners();
+	std::vector<std::string> banners =  g_store.getHomeBanners();
 	for (auto banner = banners.begin(), end = banners.end(); banner != end; ++banner) {
 		msg.addByte(banners.size());
 		msg.addString((*banner));
@@ -6721,9 +6721,9 @@ void ProtocolGame::openStore()
 	NetworkMessage msg;
 	msg.addByte(0xFB);
 
-	msg.add<uint16_t>(g_gameStore.getOfferCount());
+	msg.add<uint16_t>(g_store.getOfferCount());
 	// enviando primeiro as categorias sem subcategorias
-	std::vector<StoreCategory> categories = g_gameStore.getStoreCategories();
+	std::vector<StoreCategory> categories = g_store.getStoreCategories();
 	for (auto it = categories.begin(), end = categories.end(); it != end; ++it) {
 		msg.addString((*it).name);
 
@@ -6735,7 +6735,7 @@ void ProtocolGame::openStore()
 		msg.add<uint16_t>(0x00);
 	}
 
-	std::vector<StoreOffers*> offers = g_gameStore.getStoreOffers();
+	std::vector<StoreOffers*> offers = g_store.getStoreOffers();
 	for (auto it = offers.begin(), end = offers.end(); it != end; ++it) {
 		msg.addString((*it)->getName());
 
@@ -6799,7 +6799,7 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 
 	}
 
-	uint8_t oftp = g_gameStore.convertType(lasttype);
+	uint8_t oftp = g_store.convertType(lasttype);
 	msg.addByte(oftp);
 	if (oftp == 0) {
 		msg.addString(lasticon);
@@ -6821,8 +6821,8 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 	msg.add<uint16_t>(0x00); // category
 
 	msg.add<uint16_t>(298);
-	msg.add<uint32_t>(lasttype == OFFER_TYPE_NAMECHANGE ? lastid : 0x00);
-	msg.addByte(lasttype == OFFER_TYPE_NAMECHANGE);
+	msg.add<uint32_t>(lasttype == OFFER_TYPE_NAME_CHANGE ? lastid : 0x00);
+	msg.addByte(lasttype == OFFER_TYPE_NAME_CHANGE);
 	msg.add<uint16_t>(0x00);
 
 }

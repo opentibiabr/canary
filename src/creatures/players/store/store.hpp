@@ -15,13 +15,10 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
-#ifndef C40D8054_B234_4A7F_9ACA_13C27DBFBB09
-#define C40D8054_B234_4A7F_9ACA_13C27DBFBB09
-
-#ifndef SRC_GAME_GAMESTORE_H_
-#define SRC_GAME_GAMESTORE_H_
+#ifndef SRC_CREATURES_PLAYERS_STORE_STORE_HPP_
+#define SRC_CREATURES_PLAYERS_STORE_STORE_HPP_
 
 #include <boost/lexical_cast.hpp>
 
@@ -38,24 +35,24 @@ class StoreOffers;
 class StoreOffer;
 
 enum OfferTypes_t : uint8_t {
-	OFFER_TYPE_NONE = 0, // (this will disable offer)
+	OFFER_TYPE_NONE = 0, // This will disable offer
 	OFFER_TYPE_ITEM = 1,
 	OFFER_TYPE_STACKABLE = 2,
 	OFFER_TYPE_OUTFIT = 3,
 	OFFER_TYPE_OUTFIT_ADDON = 4,
 	OFFER_TYPE_MOUNT = 5,
-	OFFER_TYPE_NAMECHANGE = 6,
-	OFFER_TYPE_SEXCHANGE = 7,
+	OFFER_TYPE_NAME_CHANGE = 6,
+	OFFER_TYPE_SEX_CHANGE = 7,
 	OFFER_TYPE_PROMOTION = 8,
 	OFFER_TYPE_HOUSE = 9,
-	OFFER_TYPE_EXPBOOST = 10,
-	OFFER_TYPE_PREYSLOT = 11,
-	OFFER_TYPE_PREYBONUS = 12,
+	OFFER_TYPE_EXP_BOOST = 10,
+	OFFER_TYPE_PREY_SLOT = 11,
+	OFFER_TYPE_PREY_BONUS = 12,
 	OFFER_TYPE_TEMPLE = 13,
 	OFFER_TYPE_BLESSINGS = 14,
 	OFFER_TYPE_PREMIUM = 15,
 	OFFER_TYPE_POUCH = 16,
-	OFFER_TYPE_ALLBLESSINGS = 17,
+	OFFER_TYPE_ALL_BLESSINGS = 17,
 	OFFER_TYPE_INSTANT_REWARD_ACCESS = 18,
 	OFFER_TYPE_TRAINING = 19,
 	OFFER_TYPE_CHARM_EXPANSION = 20,
@@ -64,7 +61,7 @@ enum OfferTypes_t : uint8_t {
 	OFFER_TYPE_VIP = 24,
 	OFFER_TYPE_FRAG_REMOVE = 25,
 	OFFER_TYPE_SKULL_REMOVE = 26,
-	OFFER_TYPE_RECOVERYKEY = 27,
+	OFFER_TYPE_RECOVERY_KEY = 27,
 };
 
 enum OfferBuyTypes_t : uint8_t {
@@ -121,9 +118,13 @@ struct StoreHome {
 	std::vector<std::string> banners;
 };
 
-class GameStore {
+class Store {
 	public:
-		bool loadFromXml(bool reloading = false);
+		//bool loadStore(const FileName& identifier);
+		bool loadFromXML(bool reloading = false);
+		bool loadCategory(pugi::xml_node node, pugi::xml_attribute name);
+		bool loadHome(pugi::xml_node node);
+		bool loadOffer(pugi::xml_node node, pugi::xml_attribute storeAttribute, pugi::xml_attribute attributeName);
 		bool reload();
 
 		bool hasNewOffer() {
@@ -172,7 +173,8 @@ class GameStore {
 
 		bool loaded = false;
 	private:
-		// Como mount usa como base uint16, podemos setar os ids das ofertas (que nao foram identificada) como o valor maximo do uint16 + 1
+		// As mount uses uint16 as base, we can set the ids of the offers (which were not identified)
+		// As the maximum value of uint16 + 1
 		uint16_t beginid = std::numeric_limits<uint16_t>::max();
 		uint32_t runningid = beginid;
 		uint16_t offercount = 0;
@@ -210,7 +212,7 @@ class StoreOffers {
 
 		StoreOffer* getOfferByID(uint32_t id);
 	protected:
-		friend class GameStore;
+		friend class Store;
 		friend class StoreOffer;
 
 		std::map<uint32_t, StoreOffer> offers;
@@ -256,7 +258,7 @@ class StoreOffer {
 			return blessid;
 		}
 		uint16_t getItemType() {
-			return itemtype;
+			return itemId;
 		}
 		uint16_t getCharges() {
 			return charges;
@@ -318,7 +320,7 @@ class StoreOffer {
 		Mount* getMount();
 
 	protected:
-		friend class GameStore;
+		friend class Store;
 		friend class StoreOffers;
 
 	private:
@@ -327,17 +329,16 @@ class StoreOffer {
 
 		std::map<uint16_t, uint16_t> itemList;
 		std::string description = "";
-		std::string description12;
 		std::string icon = "";
 		OfferStates_t state = OFFER_STATE_NONE;
 		CoinType_t coinType = COIN_TYPE_DEFAULT;
 		OfferBuyTypes_t buyType = OFFER_BUY_TYPE_OTHERS;
 		uint16_t count = 1;
-		uint32_t price = 150; // default price -- evitando que entre oferta sem valor
-		uint32_t basePrice = 0; // default price -- evitando que entre oferta sem valor
+		uint32_t price = 0; // Default price (This preventing valueless offers from entering)
+		uint32_t basePrice = 0; // Default price (This preventing valueless offers from entering)
 		uint32_t validUntil = 0;
 		uint16_t blessid = 0;
-		uint16_t itemtype = 0;
+		uint16_t itemId = 0;
 		uint16_t charges = 1;
 		uint8_t addon = 0;
 		uint16_t male;
@@ -349,7 +350,5 @@ class StoreOffer {
 		bool rookgaard = true;
 		OfferTypes_t type = OFFER_TYPE_NONE;
 };
-
-#endif
 
 #endif

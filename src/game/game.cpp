@@ -29,7 +29,6 @@
 #include "database/databasetasks.h"
 #include "lua/creature/events.h"
 #include "game/game.h"
-#include "game/gamestore.hpp"
 #include "lua/global/globalevent.h"
 #include "io/iologindata.h"
 #include "io/iomarket.h"
@@ -42,6 +41,7 @@
 #include "lua/creature/talkaction.h"
 #include "items/weapons/weapons.h"
 #include "lua/scripts/scripts.h"
+#include "creatures/players/store/store.hpp"
 #include "lua/modules/modules.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/account/account.hpp"
@@ -65,7 +65,7 @@ extern Weapons* g_weapons;
 extern Scripts* g_scripts;
 extern Modules* g_modules;
 extern Imbuements* g_imbuements;
-extern GameStore g_gameStore;
+extern Store g_store;
 
 Game::Game()
 {
@@ -8368,7 +8368,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 
 
 	OfferTypes_t offerType = thisOffer->getOfferType();
-	if (!g_gameStore.isValidType(offerType)) {
+	if (!g_store.isValidType(offerType)) {
 		player->sendStoreError(STORE_ERROR_INFORMATION, "This offer is unavailable.");
 		return;
 	}
@@ -8396,7 +8396,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 
 	int32_t offerPrice = thisOffer->getPrice(player) * -1;
 	std::stringstream returnmessage;
-	if (offerType == OFFER_TYPE_NAMECHANGE) {
+	if (offerType == OFFER_TYPE_NAME_CHANGE) {
 		std::ostringstream query;
 		std::string newName = param;
 		trimString(newName);
@@ -8694,7 +8694,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 
 		successfully = true;
 		returnmessage << "You have purchased " << thisOffer->getName() << " for " << thisOffer->getPrice(player) <<" coins";
-	} else if (offerType == OFFER_TYPE_ALLBLESSINGS) {
+	} else if (offerType == OFFER_TYPE_ALL_BLESSINGS) {
 
 		uint8_t count = 0;
 		uint8_t limitBless = 0;
@@ -8766,7 +8766,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 
 		returnmessage << "You've successfully bought the " << mount->name <<" Mount.";
 		successfully = true;
-	} else if (offerType == OFFER_TYPE_SEXCHANGE) {
+	} else if (offerType == OFFER_TYPE_SEX_CHANGE) {
 		Outfit_t outfit = player->getCurrentOutfit();
 		if (player->getSex() == PLAYERSEX_FEMALE) {
 			player->setSex(PLAYERSEX_MALE);
@@ -8783,7 +8783,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 		returnmessage << "You have purchased " << thisOffer->getName() << " for " << thisOffer->getPrice(player) <<" coins";
 		successfully = true;
 
-	} else if (offerType == OFFER_TYPE_EXPBOOST) {
+	} else if (offerType == OFFER_TYPE_EXP_BOOST) {
 		uint16_t currentExpBoostTime = player->getExpBoostStamina();
 
 		player->setStoreXpBoost(50);
@@ -8885,7 +8885,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 		player->setSkull(SKULL_NONE);
 
 		successfully = true;
-	} else if (offerType == OFFER_TYPE_RECOVERYKEY) {
+	} else if (offerType == OFFER_TYPE_RECOVERY_KEY) {
 		std::ostringstream newkey;
 		newkey << generateRK(4) << "-" << generateRK(4) << "-" << generateRK(4) << "-" << generateRK(4);
 

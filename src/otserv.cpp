@@ -31,7 +31,6 @@
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
-#include "game/gamestore.hpp"
 #include "game/scheduling/scheduler.h"
 #include "io/iomarket.h"
 #include "lua/creature/events.h"
@@ -41,6 +40,7 @@
 #include "security/rsa.h"
 #include "server/network/protocol/protocollogin.h"
 #include "server/network/protocol/protocolstatus.h"
+#include "creatures/players/store/store.hpp"
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
 
@@ -55,7 +55,7 @@ Scheduler g_scheduler;
 Game g_game;
 ConfigManager g_config;
 extern Events* g_events;
-GameStore g_gameStore;
+Store g_store;
 extern Imbuements* g_imbuements;
 extern LuaEnvironment g_luaEnvironment;
 extern Modules* g_modules;
@@ -180,8 +180,9 @@ void loadModules() {
 		"data/XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
 		"data/XML/familiars.xml");
-	modulesLoadHelper(g_gameStore.loadFromXml(),
-		"data/XML/gamestore.xml");
+
+	modulesLoadHelper(g_store.loadFromXML(),
+		"data/store/store.xml");
 	modulesLoadHelper(g_imbuements->loadFromXml(),
 		"data/XML/imbuements.xml");
 	modulesLoadHelper(g_modules->loadFromXml(),
@@ -245,9 +246,6 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	g_game.setGameState(GAME_STATE_STARTUP);
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
-#ifdef _WIN32
-	SetConsoleTitle(STATUS_SERVER_NAME);
-#endif
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	SPDLOG_INFO("{} - Based on [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);

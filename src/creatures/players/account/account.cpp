@@ -164,7 +164,7 @@ error_t Account::RegisterCoinsTransaction(uint32_t time, uint8_t mode, uint32_t 
 	StoreHistory historyOffer(time, mode, amount, coinMode, description, cust);
 	g_game.addAccountHistory(id_, historyOffer);
 
-	db.executeQuery(query.str());
+	return db.executeQuery(query.str());
 }
 
 /*******************************************************************************

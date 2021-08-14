@@ -2290,26 +2290,31 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerGetStoreCoins(lua_State* L) {
-	// player:getStoreCoins([coinType = COIN_TYPE_DEFAULT])
+	// player:getStoreCoins(coinType)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	lua_pushnumber(L, player->getStoreCoinBalance(getNumber<CoinType_t>(L, 2, COIN_TYPE_DEFAULT)));
+	CoinType_t coinType = getNumber<CoinType_t>(L, 2);
+	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
+		lua_pushnumber(L, player->getStoreCoinBalance(coinType));
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerAddStoreCoins(lua_State* L) {
-	// player:addStoreCoins(coins, [coinType = COIN_TYPE_DEFAULT])
+	// player:addStoreCoins(coins, coinType)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	CoinType_t coinType = getNumber<CoinType_t>(L, 3, COIN_TYPE_DEFAULT);
+	CoinType_t coinType = getNumber<CoinType_t>(L, 3);
 	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
 		int32_t coins = getNumber<int32_t>(L, 2);
 		int32_t addCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getStoreCoinBalance(coinType), coins);
@@ -2317,7 +2322,7 @@ int PlayerFunctions::luaPlayerAddStoreCoins(lua_State* L) {
 			account::Account account(player->getAccount());
 			account.LoadAccountDB();
 			player->setStoreCoins(player->getStoreCoinBalance(coinType) + addCoins, coinType);
-			account.AddCoins(addCoins);
+			account.AddCoins(addCoins, coinType);
 			lua_pushnumber(L, addCoins);
 		}
 	}
@@ -2325,23 +2330,29 @@ int PlayerFunctions::luaPlayerAddStoreCoins(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerRemoveStoreCoins(lua_State* L) {
-	// player:removeStoreCoins(coins)
+	// player:removeStoreCoins(coins, coinType)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint32_t coins = getNumber<uint32_t>(L, 2);
-
-	account::Account account(player->getAccount());
-	account.LoadAccountDB();
-	if (account.RemoveCoins(coins)) {
-		lua_pushnumber(L, account.GetCoins());
-	} else {
-		lua_pushnil(L);
+	int32_t coins = getNumber<int32_t>(L, 2);
+	CoinType_t coinType = getNumber<CoinType_t>(L, 3);
+	if (!player->canRemoveStoreCoins(coins, coinType)) {
+		pushBoolean(L, false);
+		return 1;
 	}
 
+	int32_t removeCoins = std::min<int32_t>(player->getStoreCoinBalance(coinType), coins);
+	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
+		if (removeCoins > 0) {
+			account::Account account(player->getAccount());
+			account.LoadAccountDB();
+			player->setStoreCoins(player->getStoreCoinBalance(coinType) - removeCoins, coinType);
+			account.RemoveCoins(removeCoins, coinType);
+		}
+	}
 	return 1;
 }
 

@@ -4649,10 +4649,9 @@ bool Player::canRemoveStoreCoins(int32_t coins, CoinType_t coinType)
 		account::Account account(this->getAccount());
 		account.LoadAccountDB();
 		if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
-			account.GetStoreCoinBalance(&(coinBalance));
-			this->coinBalance = account.GetCoins();
+			this->coinBalance = account.GetCoins(coinType);
 		} else if (coinType == COIN_TYPE_TOURNAMENT) {
-			tournamentCoinBalance = account.GetCoins(coinType);
+			this->tournamentCoinBalance = account.GetCoins(coinType);
 		}
 	}
 

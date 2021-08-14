@@ -142,6 +142,7 @@ private:
 	void parseTournamentLeaderboard(NetworkMessage &msg);
 
 	void parseGreet(NetworkMessage &msg);
+	void parseStoreCoinTransfer(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
@@ -221,8 +222,6 @@ private:
 	void parseOpenChannel(NetworkMessage &msg);
 	void parseOpenPrivateChannel(NetworkMessage &msg);
 	void parseCloseChannel(NetworkMessage &msg);
-
-	void parseCoinTransfer(NetworkMessage &msg);
 
 	// imbue info
 	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuid);

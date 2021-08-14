@@ -1018,6 +1018,10 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, WEBHOOK_COLOR_OFFLINE);
 			registerEnum(L, WEBHOOK_COLOR_WARNING);
 			registerEnum(L, WEBHOOK_COLOR_RAID);
+
+			registerEnum(L, COIN_TYPE_DEFAULT);
+			registerEnum(L, COIN_TYPE_TRANSFERABLE);
+			registerEnum(L, COIN_TYPE_TOURNAMENT);
 			#undef registerEnum
 		}
 

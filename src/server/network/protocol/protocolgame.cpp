@@ -740,7 +740,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE7: /* thank you */ break;
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEE: parseGreet(msg); break;
-		case 0xEF: parseCoinTransfer(msg); break;
+		case 0xEF: parseStoreCoinTransfer(msg); break;
 		case 0xF0: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerShowQuestLog, player->getID()); break;
 		case 0xF1: parseQuestLine(msg); break;
 		// case 0xF2: parseRuleViolationReport(msg); break;
@@ -2426,6 +2426,13 @@ void ProtocolGame::parseGreet(NetworkMessage &msg)
 	addGameTask(&Game::playerNpcGreet, player->getID(), npcId);
 }
 
+void ProtocolGame::parseStoreCoinTransfer(NetworkMessage &msg) {
+	std::string recipient = msg.getString();
+	uint16_t amount = msg.get<uint16_t>();
+
+	addGameTask(&Game::playerStoreCoinTransfer, player->getID(), recipient, amount);
+}
+
 void ProtocolGame::parseDebugAssert(NetworkMessage &msg)
 {
 	if (debugAssertSent)
@@ -2500,11 +2507,6 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg)
 		player->sendMarketEnter(player->getLastDepotId());
 		addGameTask(&Game::playerBrowseMarket, player->getID(), browseId);
 	}
-}
-
-void ProtocolGame::parseCoinTransfer(NetworkMessage& msg) {
-	std::string recipient = msg.getString();
-	uint16_t amount = msg.get<uint16_t>();
 }
 
 void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg)

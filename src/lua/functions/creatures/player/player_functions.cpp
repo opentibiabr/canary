@@ -2289,45 +2289,43 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
-	// player:getTibiaCoins()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-	account::Account account(player->getAccount());
-	account.LoadAccountDB();
-	uint32_t coins;
-	account.GetCoins(COIN_TYPE_DEFAULT);
-	lua_pushnumber(L, coins);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
-	// player:addTibiaCoins(coins)
+int PlayerFunctions::luaPlayerGetStoreCoins(lua_State* L) {
+	// player:getStoreCoins([coinType = COIN_TYPE_DEFAULT])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	uint32_t coins = getNumber<uint32_t>(L, 2);
-
-	account::Account account(player->getAccount());
-	account.LoadAccountDB();
-	if(account.AddCoins(coins)) {
-		account.GetCoins(COIN_TYPE_DEFAULT);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-
+	lua_pushnumber(L, player->getStoreCoinBalance(getNumber<CoinType_t>(L, 2, COIN_TYPE_DEFAULT)));
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
-	// player:removeTibiaCoins(coins)
+int PlayerFunctions::luaPlayerAddStoreCoins(lua_State* L) {
+	// player:addStoreCoins(coins, [coinType = COIN_TYPE_DEFAULT])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	CoinType_t coinType = getNumber<CoinType_t>(L, 3, COIN_TYPE_DEFAULT);
+	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
+		int32_t coins = getNumber<int32_t>(L, 2);
+		int32_t addCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getStoreCoinBalance(coinType), coins);
+		if (addCoins > 0) {
+			account::Account account(player->getAccount());
+			account.LoadAccountDB();
+			player->setStoreCoins(player->getStoreCoinBalance(coinType) + addCoins, coinType);
+			account.AddCoins(addCoins);
+			lua_pushnumber(L, addCoins);
+		}
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveStoreCoins(lua_State* L) {
+	// player:removeStoreCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -2339,8 +2337,7 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 	account::Account account(player->getAccount());
 	account.LoadAccountDB();
 	if (account.RemoveCoins(coins)) {
-		account.GetCoins(COIN_TYPE_DEFAULT);
-		pushBoolean(L, true);
+		lua_pushnumber(L, account.GetCoins());
 	} else {
 		lua_pushnil(L);
 	}

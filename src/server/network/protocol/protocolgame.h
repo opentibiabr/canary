@@ -330,7 +330,7 @@ private:
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
-	void updateCoinBalance();
+	void updateStoreCoinBalance();
 	void sendMarketLeave();
 	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
 	void sendMarketAcceptOffer(const MarketOfferEx &offer);
@@ -365,7 +365,7 @@ private:
 	void sendSpellCooldown(uint8_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 
-	void sendCoinBalance();
+	void sendStoreCoinBalance();
 
 	//tiles
 	void sendMapDescription(const Position &pos);

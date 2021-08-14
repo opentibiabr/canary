@@ -34,6 +34,8 @@ Account::Account() {
   password_.clear();
   premium_remaining_days_ = 0;
   premium_last_day_ = 0;
+  coin_balance = 0;
+  tournament_coin_balance = 0;
   account_type_ = ACCOUNT_TYPE_NORMAL;
   db_ = &Database::getInstance();
   db_tasks_ = &g_databaseTasks;
@@ -45,6 +47,8 @@ Account::Account(uint32_t id) {
   password_.clear();
   premium_remaining_days_ = 0;
   premium_last_day_ = 0;
+  coin_balance = 0;
+  tournament_coin_balance = 0;
   account_type_ = ACCOUNT_TYPE_NORMAL;
   db_ = &Database::getInstance();
   db_tasks_ = &g_databaseTasks;
@@ -55,6 +59,8 @@ Account::Account(const std::string &email) : email_(email) {
   password_.clear();
   premium_remaining_days_ = 0;
   premium_last_day_ = 0;
+  coin_balance = 0;
+  tournament_coin_balance = 0;
   account_type_ = ACCOUNT_TYPE_NORMAL;
   db_ = &Database::getInstance();
   db_tasks_ = &g_databaseTasks;
@@ -90,26 +96,25 @@ error_t Account::SetDatabaseTasksInterface(DatabaseTasks *database_tasks) {
 
 error_t Account::GetCoins(CoinType_t coinType) {
   if (db_ == nullptr || id_ == 0) {
-      return ERROR_NOT_INITIALIZED;
+    return ERROR_NOT_INITIALIZED;
   }
 
   std::ostringstream query;
   std::string coins = "coins";
-	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
-		coins = "coins";
-	} else if (coinType == COIN_TYPE_TOURNAMENT) {
-		coins = "tournamentBalance";
-	}
+  if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
+    coins = "coins";
+  } else if (coinType == COIN_TYPE_TOURNAMENT) {
+    coins = "tournamentBalance";
+  }
 
-  query << "SELECT `coins` FROM `accounts` WHERE `id` = " << id_;
+  query << "SELECT `" << coins << "` FROM `accounts` WHERE `id` = " << id_;
 
   DBResult_ptr result = db_->storeQuery(query.str());
   if (!result) {
-      return ERROR_DB;
+    return ERROR_DB;
   }
 
-  result->getNumber<uint32_t>("coins");
-  return ERROR_NO;
+  return result->getNumber<uint32_t>(coins);
 }
 
 error_t Account::AddCoins(int32_t amount)
@@ -158,8 +163,8 @@ error_t Account::RegisterCoinsTransaction(uint32_t time, uint8_t mode, uint32_t 
 	Database& db = Database::getInstance();
 	std::ostringstream query;
 	query << "INSERT INTO `store_history` (`accountid`, `time`, `mode`, `amount`, `coinMode`, `description`, `cust`) VALUES (" <<
-		 id_ << "," << time << "," << static_cast<uint16_t>(mode) << "," << amount << "," << static_cast<uint16_t>(coinMode) << "," <<
-		 db.escapeString(description) << "," << cust << ")";
+		id_ << "," << time << "," << static_cast<uint16_t>(mode) << "," << amount << "," << static_cast<uint16_t>(coinMode) << "," <<
+		db.escapeString(description) << "," << cust << ")";
 
 	StoreHistory historyOffer(time, mode, amount, coinMode, description, cust);
 	g_game.addAccountHistory(id_, historyOffer);
@@ -210,6 +215,8 @@ error_t Account::LoadAccountDB(std::ostringstream &query) {
   this->SetPassword(result->getString("password"));
   this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
   this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
+  this->SetStoreCoinBalance(result->getNumber<uint32_t>("coins"));
+  this->SetTournamentCoinBalance(result->getNumber<uint32_t>("tournamentBalance"));
 
   return ERROR_NO;
 }
@@ -265,6 +272,8 @@ error_t Account::SaveAccountDB() {
         << "`email` = " << db_->escapeString(email_) << " , "
         << "`type` = " << account_type_ << " , "
         << "`password` = " << db_->escapeString(password_) << " , "
+        << "`coins` = " << coin_balance << " , "
+        << "`tournamentBalance` = " << tournament_coin_balance << " , "
         << "`premdays` = " << premium_remaining_days_ << " , "
         << "`lastday` = " << premium_last_day_;
 
@@ -364,6 +373,42 @@ error_t Account::GetPremiumLastDay(time_t *last_day) {
   }
 
   *last_day = premium_last_day_;
+  return ERROR_NO;
+}
+
+error_t Account::SetStoreCoinBalance(uint32_t coins) {
+  if (coins == 0) {
+    return ERROR_INVALID_ID;
+  }
+
+  coin_balance = coins;
+  return ERROR_NO;
+}
+
+error_t Account::GetStoreCoinBalance(uint32_t *coins) {
+  if (coins == nullptr) {
+    return ERROR_NULLPTR;
+  }
+
+  *coins = coin_balance;
+  return ERROR_NO;
+}
+
+error_t Account::SetTournamentCoinBalance(uint32_t tournamentCoins) {
+  if (tournamentCoins == 0) {
+    return ERROR_INVALID_ID;
+  }
+
+  tournament_coin_balance = tournamentCoins;
+  return ERROR_NO;
+}
+
+error_t Account::GetTournamentCoinBalance(uint32_t *tournamentCoins) {
+  if (tournamentCoins == nullptr) {
+    return ERROR_NULLPTR;
+  }
+
+  *tournamentCoins = tournament_coin_balance;
   return ERROR_NO;
 }
 

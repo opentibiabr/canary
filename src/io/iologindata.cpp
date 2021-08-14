@@ -104,7 +104,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   Database& db = Database::getInstance();
 
   std::ostringstream query;
-  query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
+  query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`, (SELECT `coins` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `coinbalance`, (SELECT `tournamentBalance` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `tournamentBalance`";
   if (!g_config.getBoolean(FREE_PREMIUM)) {
     query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
   }
@@ -128,6 +128,8 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   player->setGroup(group);
   player->accountNumber = result->getNumber<uint32_t>("account_id");
   player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
+  player->coinBalance = result->getNumber<uint32_t>("coinbalance");
+  player->tournamentCoinBalance = result->getNumber<uint32_t>("tournamentBalance");
   if (!g_config.getBoolean(FREE_PREMIUM)) {
     player->premiumDays = result->getNumber<uint16_t>("premium_days");
   } else {
@@ -266,22 +268,25 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   Database& db = Database::getInstance();
 
   uint32_t accountId = result->getNumber<uint32_t>("account_id");
-  account::Account acc;
-  acc.SetDatabaseInterface(&db);
-  acc.LoadAccountDB(accountId);
+  account::Account account;
+  account.SetDatabaseInterface(&db);
+  account.LoadAccountDB(accountId);
 
   player->setGUID(result->getNumber<uint32_t>("id"));
   player->name = result->getString("name");
-  acc.GetID(&(player->accountNumber));
-  acc.GetAccountType(&(player->accountType));
+  account.GetID(&(player->accountNumber));
+  account.GetAccountType(&(player->accountType));
+  account.GetStoreCoinBalance(&(player->coinBalance));
+  account.GetTournamentCoinBalance(&(player->coinBalance));
 
   if (g_config.getBoolean(FREE_PREMIUM)) {
     player->premiumDays = std::numeric_limits<uint16_t>::max();
   } else {
-    acc.GetPremiumRemaningDays(&(player->premiumDays));
+    account.GetPremiumRemaningDays(&(player->premiumDays));
   }
 
-  acc.GetCoins(COIN_TYPE_DEFAULT);
+  player->coinBalance = account.GetCoins();
+  player->tournamentCoinBalance = account.GetCoins(COIN_TYPE_TOURNAMENT);
 
   player->preyBonusRerolls = result->getNumber<uint16_t>("bonus_rerolls");
 

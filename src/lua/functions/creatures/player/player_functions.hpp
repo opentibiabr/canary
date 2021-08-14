@@ -213,9 +213,9 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addPremiumDays", PlayerFunctions::luaPlayerAddPremiumDays);
 			registerMethod(L, "Player", "removePremiumDays", PlayerFunctions::luaPlayerRemovePremiumDays);
 
-			registerMethod(L, "Player", "getTibiaCoins", PlayerFunctions::luaPlayerGetTibiaCoins);
-			registerMethod(L, "Player", "addTibiaCoins", PlayerFunctions::luaPlayerAddTibiaCoins);
-			registerMethod(L, "Player", "removeTibiaCoins", PlayerFunctions::luaPlayerRemoveTibiaCoins);
+			registerMethod(L, "Player", "getStoreCoins", PlayerFunctions::luaPlayerGetStoreCoins);
+			registerMethod(L, "Player", "addStoreCoins", PlayerFunctions::luaPlayerAddStoreCoins);
+			registerMethod(L, "Player", "removeStoreCoins", PlayerFunctions::luaPlayerRemoveStoreCoins);
 
 			registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 			registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
@@ -492,9 +492,9 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddPremiumDays(lua_State* L);
 		static int luaPlayerRemovePremiumDays(lua_State* L);
 
-		static int luaPlayerGetTibiaCoins(lua_State* L);
-		static int luaPlayerAddTibiaCoins(lua_State* L);
-		static int luaPlayerRemoveTibiaCoins(lua_State* L);
+		static int luaPlayerGetStoreCoins(lua_State* L);
+		static int luaPlayerAddStoreCoins(lua_State* L);
+		static int luaPlayerRemoveStoreCoins(lua_State* L);
 
 		static int luaPlayerHasBlessing(lua_State* L);
 		static int luaPlayerAddBlessing(lua_State* L);

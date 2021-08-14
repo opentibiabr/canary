@@ -132,7 +132,7 @@ class Account {
    * @param coins Pointer to return the number of coins
    * @return error_t ERROR_NO(0) Success, otherwise Fail.
    */
-  error_t GetCoins(CoinType_t coinType);
+  error_t GetCoins(CoinType_t coinType = COIN_TYPE_DEFAULT);
 
   /**
    * @brief Add coins to the account and update database.
@@ -211,6 +211,12 @@ class Account {
   error_t SetPremiumRemaningDays(uint32_t  days);
   error_t GetPremiumRemaningDays(uint32_t *days);
 
+  error_t SetStoreCoinBalance(uint32_t coins);
+  error_t GetStoreCoinBalance(uint32_t *coins);
+
+  error_t SetTournamentCoinBalance(uint32_t tournamentCoins);
+  error_t GetTournamentCoinBalance(uint32_t *tournamentCoins);
+
   error_t SetPremiumLastDay(time_t  last_day);
   error_t GetPremiumLastDay(time_t *last_day);
 
@@ -234,6 +240,8 @@ class Account {
   std::string password_;
   uint32_t premium_remaining_days_;
   time_t premium_last_day_;
+  uint32_t coin_balance;
+  uint32_t tournament_coin_balance;
   AccountType account_type_;
 };
 

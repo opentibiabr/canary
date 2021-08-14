@@ -525,9 +525,9 @@ class Player final : public Creature, public Cylinder
 		bool isPremium() const;
 		void setPremiumDays(int32_t v);
 
-		void setTibiaCoins(int32_t v, CoinType_t coinType = COIN_TYPE_DEFAULT);
-		bool canRemoveCoins(int32_t v, CoinType_t coinType = COIN_TYPE_DEFAULT);
-		int32_t getCoinBalance(CoinType_t coinType = COIN_TYPE_DEFAULT) {
+		void setStoreCoins(int32_t coins, CoinType_t coinType = COIN_TYPE_DEFAULT);
+		bool canRemoveStoreCoins(int32_t coins, CoinType_t coinType = COIN_TYPE_DEFAULT);
+		int32_t getStoreCoinBalance(CoinType_t coinType = COIN_TYPE_DEFAULT) {
 			if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
 				return coinBalance;
 			} else if (coinType == COIN_TYPE_TOURNAMENT) {
@@ -1049,9 +1049,9 @@ class Player final : public Creature, public Cylinder
 				client->sendLockerItems(itemMap, count);
 			}
 		}
-		void sendCoinBalance() {
+		void sendStoreCoinBalance() {
 			if (client) {
-				client->sendCoinBalance();
+				client->sendStoreCoinBalance();
 			}
 		}
 		void sendInventoryItem(Slots_t slot, const Item* item) {
@@ -1077,15 +1077,15 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		// GameStore
+		// Store
 		void openStore() {
 			if (client) {
 				client->openStore();
 			}
 		}
-		void updateCoinBalance() {
+		void updateStoreCoinBalance() {
 			if (client) {
-				client->updateCoinBalance();
+				client->updateStoreCoinBalance();
 			}
 		}
 

@@ -4619,63 +4619,63 @@ void Player::setPremiumDays(int32_t v)
 	sendBasicData();
 }
 
-void Player::setTibiaCoins(int32_t v, CoinType_t coinType)
+void Player::setStoreCoins(int32_t coins, CoinType_t coinType)
 {
 	switch (coinType) {
 		case COIN_TYPE_DEFAULT:
 		case COIN_TYPE_TRANSFERABLE: {
-			coinBalance = v;
+			coinBalance = coins;
 			break;
 		}
 
 		case COIN_TYPE_TOURNAMENT: {
-			tournamentCoinBalance = v;
+			tournamentCoinBalance = coins;
 			break;
 		}
 
 		default: {
-			coinBalance = v;
+			coinBalance = coins;
 			break;
 		}
 	}
 }
 
-bool Player::canRemoveCoins(int32_t v, CoinType_t coinType)
+bool Player::canRemoveStoreCoins(int32_t coins, CoinType_t coinType)
 {
 	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
-		// a cada 2 segundos atualizar, na diferença que for chamada
+		// Update every 2 seconds
 		lastUpdateCoin = OTSYS_TIME() + 2000;
 
-		account::Account account(getAccount());
+		account::Account account(this->getAccount());
 		account.LoadAccountDB();
 		if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
-			coinBalance = account.GetCoins(coinType);
+			account.GetStoreCoinBalance(&(coinBalance));
+			this->coinBalance = account.GetCoins();
 		} else if (coinType == COIN_TYPE_TOURNAMENT) {
 			tournamentCoinBalance = account.GetCoins(coinType);
 		}
 	}
 
-
-	int32_t coins; 
+	int32_t removeCoins;
 	switch (coinType) {
 		case COIN_TYPE_DEFAULT:
 		case COIN_TYPE_TRANSFERABLE: {
-			coins = coinBalance;
+			removeCoins = coinBalance;
 			break;
 		}
 
 		case COIN_TYPE_TOURNAMENT: {
-			coins = tournamentCoinBalance;
+			removeCoins = tournamentCoinBalance;
 			break;
 		}
 
 		default: {
-			coins = coinBalance;
+			removeCoins = coinBalance;
 			break;
 		}
 	}
 
-	return (coins - v) >= 0;
+	return (removeCoins - coins) >= 0;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const

@@ -38,6 +38,9 @@ class IOLoginData
                                             uint32_t *accountId);
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);
+		
+		static bool loadAccountStoreHistory(uint32_t accountId);
+
 		static void updateOnlineStatus(uint32_t guid, bool login);
 		static bool preloadPlayer(Player* player, const std::string& name);
 

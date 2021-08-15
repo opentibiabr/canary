@@ -162,7 +162,7 @@ error_t Account::RegisterCoinsTransaction(uint32_t time, uint8_t mode, uint32_t 
 	}
 
 	std::ostringstream query;
-	query << "INSERT INTO `coins_transactions` (`account_id`,`time`, `mode`, `amount`, `coinMode`, `description`, `cust`) VALUES ("
+	query << "INSERT INTO `store_history` (`account_id`, `time`, `mode`, `amount`, `coinMode`, `description`, `cust`) VALUES ("
 		<< id_ << ","
 		<< time << ","
 		<< static_cast<uint16_t>(mode) << ","
@@ -177,7 +177,8 @@ error_t Account::RegisterCoinsTransaction(uint32_t time, uint8_t mode, uint32_t 
 	StoreHistory historyOffer(time, mode, amount, coinMode, description, cust);
 	g_game.addAccountHistory(id_, historyOffer);
 
-	return db_->executeQuery(query.str());
+	db_->executeQuery(query.str());
+	return ERROR_NO;
 }
 
 /*******************************************************************************

@@ -8992,10 +8992,12 @@ void Game::queueSendStoreAlertToUser(uint32_t playerId, std::string message, Sto
 void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipient, uint16_t amount) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
+		SPDLOG_INFO("[Game::playerStoreCoinTransfer] - Player with id '{}' not exist", player->getName());
 		return;
 	}
 
 	if (player->getStoreCoinBalance() < amount) {
+		SPDLOG_INFO("[Game::playerStoreCoinTransfer] - Player {} not have coins for transfer", player->getName());
 		return;
 	}
 
@@ -9007,6 +9009,7 @@ void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipie
 	if (!recipientPlayer) {
 		recipientPlayer = new Player(nullptr);
 		if (!IOLoginData::loadPlayerByName(recipientPlayer, recipient)) {
+			SPDLOG_INFO("[Game::playerStoreCoinTransfer] - Player with name '{}' not exist", player->getName());
 			delete recipientPlayer;
 			return;
 		}
@@ -9018,13 +9021,14 @@ void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipie
 
 	std::string description(player->getName() + " transferred to " + recipient);
 
-	account::Account account(player->getAccount());
-	account.LoadAccountDB();
+	account::Account account;
+	account.LoadAccountDB(player->getAccount());
 	account.AddCoins(-static_cast<int32_t>(amount));
 	player->coinBalance -= amount;
 	account.RegisterCoinsTransaction(OS_TIME(nullptr), static_cast<uint8_t>(HISTORY_TYPE_NONE), amount, 0, description, -static_cast<int32_t>(amount));
 
-	account.AddCoins(-static_cast<int32_t>(amount));
+	account.LoadAccountDB(recipientPlayer->getAccount());
+	account.AddCoins(amount);
 	account.RegisterCoinsTransaction(OS_TIME(nullptr), static_cast<uint8_t>(HISTORY_TYPE_NONE), amount, 0, description, amount);
 	recipientPlayer->coinBalance += amount;
 

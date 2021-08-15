@@ -25,7 +25,7 @@ function getTournamentCoins.onSay(player, words, param)
 		return false
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have ".. player:getStoreCoins(COIN_TYPE_TOURNAMENT) .." store tournament coins.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have ".. targetPlayer:getStoreCoins(COIN_TYPE_TOURNAMENT) .." store tournament coins.")
 	return true
 end
 
@@ -78,7 +78,7 @@ function addTournamentCoins.onSay(player, words, param)
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	player:addStoreCoins(coins, COIN_TYPE_TOURNAMENT)
+	targetPlayer:addStoreCoins(coins, COIN_TYPE_TOURNAMENT)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." store tournament coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. coins .." store tournament coins to your account.")
 	-- Distro log
@@ -135,7 +135,7 @@ function removeTournamentCoins.onSay(player, words, param)
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	player:removeStoreCoins(coins, COIN_TYPE_TOURNAMENT)
+	targetPlayer:removeStoreCoins(coins, COIN_TYPE_TOURNAMENT)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." store tournament coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." removed ".. coins .." store tournament coins to your account.")
 	-- Distro log

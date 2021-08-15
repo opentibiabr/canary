@@ -25,7 +25,7 @@ function getCoins.onSay(player, words, param)
 		return false
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have ".. player:getStoreCoins(COIN_TYPE_DEFAULT) .." store coins.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have ".. targetPlayer:getStoreCoins(COIN_TYPE_DEFAULT) .." store coins.")
 	return true
 end
 
@@ -78,7 +78,7 @@ function addCoins.onSay(player, words, param)
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	player:addStoreCoins(coins, COIN_TYPE_DEFAULT)
+	targetPlayer:addStoreCoins(coins, COIN_TYPE_DEFAULT)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." store coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. coins .." store coins to your account.")
 	-- Distro log
@@ -135,7 +135,7 @@ function removeCoins.onSay(player, words, param)
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	player:removeStoreCoins(coins, COIN_TYPE_DEFAULT)
+	targetPlayer:removeStoreCoins(coins, COIN_TYPE_DEFAULT)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." store coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." removed ".. coins .." store coins to your account.")
 	-- Distro log

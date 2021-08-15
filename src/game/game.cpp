@@ -8746,6 +8746,8 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 
 		successfully = true;
 		returnmessage << "You've successfully bought the "<< thisOffer->getName() << ".";
+		player->addOutfit(thisOffer->getOutfitMale(), addons);
+		player->addOutfit(thisOffer->getOutfitFemale(), addons);
 	} else if (offerType == OFFER_TYPE_MOUNT) {
 		Mount* mount = thisOffer->getMount();
 		if (!mount || mount == nullptr) {

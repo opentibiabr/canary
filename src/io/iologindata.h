@@ -39,6 +39,7 @@ class IOLoginData
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);
 		
+		// This function load the "store_history" database table
 		static bool loadAccountStoreHistory(uint32_t accountId);
 
 		static void updateOnlineStatus(uint32_t guid, bool login);

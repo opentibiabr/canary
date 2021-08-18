@@ -4,6 +4,8 @@ DB_HOST="${SERVER_DB_HOST:-127.0.0.1}"
 DB_USER="${SERVER_DB_USER:-canary}"
 DB_PASSWORD="${SERVER_DB_PASSWORD:-canary}"
 DB_DATABASE="${SERVER_DB_DATABASE:-canary}"
+OT_SERVER_LOGIN_PORT="${SERVER_LOGIN_PORT:-7171}"
+OT_SERVER_GAME_PORT="${SERVER_GAME_PORT:-7172}"
 
 echo ""
 echo "===== Print Variables ====="
@@ -34,6 +36,8 @@ sed -i '/mysqlHost = .*$/c\mysqlHost = "'$DB_HOST'"' config.lua
 sed -i '/mysqlUser = .*$/c\mysqlUser = "'$DB_USER'"' config.lua
 sed -i '/mysqlPass = .*$/c\mysqlPass = "'$DB_PASSWORD'"' config.lua
 sed -i '/mysqlDatabase = .*$/c\mysqlDatabase = "'$DB_DATABASE'"' config.lua
+sed -i '/loginProtocolPort = .*$/c\loginProtocolPort = '$OT_SERVER_LOGIN_PORT'' config.lua
+sed -i '/gameProtocolPort = .*$/c\gameProtocolPort = '$OT_SERVER_GAME_PORT'' config.lua
 
 echo ""
 echo "===== Server Configuration ====="

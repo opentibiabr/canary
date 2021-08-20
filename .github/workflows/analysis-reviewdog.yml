@@ -51,6 +51,7 @@ jobs:
             ,-runtime/int\
             ,-runtime/references\
             ,-whitespace/blank_line\
+            ,-whitespace/tab\
             ,-whitespace/braces\
             ,-whitespace/comments\
             ,-whitespace/empty_conditional_body\

@@ -351,4 +351,4 @@ class StoreOffer {
 		OfferTypes_t type = OFFER_TYPE_NONE;
 };
 
-##endif // SRC_CREATURES_PLAYERS_STORE_STORE_HPP_
+#endif // SRC_CREATURES_PLAYERS_STORE_STORE_HPP_

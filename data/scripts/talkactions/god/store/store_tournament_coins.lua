@@ -91,7 +91,7 @@ function addTournamentCoins.onSay(player, words, param)
                                  added ".. coins .." store tournament coins to your account.")
 	-- Distro log
 	Spdlog.info("".. player:getName() .." added ".. coins .." \z
-                store tournament coins to ".. targetPlayer:getName() .." account.")
+                store tournament coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 
@@ -154,7 +154,7 @@ function removeTournamentCoins.onSay(player, words, param)
                                  removed ".. coins .." store tournament coins to your account.")
 	-- Distro log
 	Spdlog.info("".. player:getName() .." removed ".. coins .." store tournament \z
-                coins to ".. targetPlayer:getName() .." account.")
+                coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 

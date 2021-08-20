@@ -90,7 +90,7 @@ function addCoins.onSay(player, words, param)
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added \z
 	                             ".. coins .." store coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. coins .." store coins to ".. targetPlayer:getName() .." account.")
+	Spdlog.info("".. player:getName() .." added ".. coins .." store coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 
@@ -149,9 +149,10 @@ function removeCoins.onSay(player, words, param)
 	targetPlayer:removeStoreCoins(coins, COIN_TYPE_DEFAULT)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." \z
                            store coins for the ".. targetPlayer:getName() .." account.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." removed ".. coins .." store coins to your account.")
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." \z
+                                 removed ".. coins .." store coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." removed ".. coins .." store coins to ".. targetPlayer:getName() .." account.")
+	Spdlog.info("".. player:getName() .." removed ".. coins .." store coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 

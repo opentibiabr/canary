@@ -474,18 +474,18 @@ std::vector<StoreOffer*> Store::getHomeOffers() {
 	std::vector<StoreOffer*> filter;
 
 	for (auto off = home.offers.begin(), end = home.offers.end(); off != end; ++off) {
-		StoreOffer* oferta = getStoreOfferByName((*off));
-		if (oferta) {
+		StoreOffer* storeOffer = getStoreOfferByName((*off));
+		if (storeOffer) {
 			bool hasDec = false;
 			for (auto off2 = filter.begin(), end2 = filter.end(); off2 != end2; ++off2) {
-				if ((*off2)->getName() == oferta->getName()){
+				if ((*off2)->getName() == storeOffer->getName()){
 					hasDec = true;
 					break;
 				}
 			}
 
 			if (!hasDec) {
-				filter.emplace_back(oferta);
+				filter.emplace_back(storeOffer);
 			}
 		}
 	}
@@ -497,10 +497,10 @@ std::vector<StoreOffer*> Store::getHomeOffers() {
 std::map<std::string, std::vector<StoreOffer*>> Store::getHomeOffersOrganized() {
 	std::map<std::string, std::vector<StoreOffer*>> filter;
 	for (auto off = home.offers.begin(), end = home.offers.end(); off != end; ++off) {
-		StoreOffer* oferta = getStoreOfferByName((*off));
-		if (oferta) {
-			std::string name = oferta->getName();
-			filter[name].emplace_back(oferta);
+		StoreOffer* storeOffer = getStoreOfferByName((*off));
+		if (storeOffer) {
+			std::string name = storeOffer->getName();
+			filter[name].emplace_back(storeOffer);
 		}
 	}
 

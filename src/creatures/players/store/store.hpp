@@ -333,7 +333,7 @@ class StoreOffer {
 		OfferStates_t state = OFFER_STATE_NONE;
 		CoinType_t coinType = COIN_TYPE_DEFAULT;
 		OfferBuyTypes_t buyType = OFFER_BUY_TYPE_OTHERS;
-		uint16_t count = 1;
+		uint16_t count = 150;
 		uint32_t price = 0; // Default price (This preventing valueless offers from entering)
 		uint32_t basePrice = 0; // Default price (This preventing valueless offers from entering)
 		uint32_t validUntil = 0;
@@ -351,4 +351,4 @@ class StoreOffer {
 		OfferTypes_t type = OFFER_TYPE_NONE;
 };
 
-#endif
+##endif // SRC_CREATURES_PLAYERS_STORE_STORE_HPP_

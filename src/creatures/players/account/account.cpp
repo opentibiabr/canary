@@ -99,7 +99,6 @@ error_t Account::GetCoins(CoinType_t coinType) {
 		return ERROR_NOT_INITIALIZED;
 	}
 
-	std::ostringstream query;
 	std::string coins = "coins";
 	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
 		coins = "coins";
@@ -107,6 +106,7 @@ error_t Account::GetCoins(CoinType_t coinType) {
 		coins = "tournamentBalance";
 	}
 
+	std::ostringstream query;
 	query << "SELECT `" << coins << "` FROM `accounts` WHERE `id` = " << id_;
 
 	DBResult_ptr result = db_->storeQuery(query.str());

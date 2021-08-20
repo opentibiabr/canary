@@ -12,6 +12,7 @@ function getCoins.onSay(player, words, param)
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
+		-- Distro log
 		Spdlog.error("[getCoins.onSay] - Player name param not found")
 		return false
 	end
@@ -21,11 +22,13 @@ function getCoins.onSay(player, words, param)
 	local targetPlayer = Player(split[1])
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(split[1]) .." is not online")
+		-- Distro log
 		Spdlog.error("[getCoins.onSay] - Player ".. string.titleCase(split[1]) .." is not online")
 		return false
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have ".. targetPlayer:getStoreCoins(COIN_TYPE_DEFAULT) .." store coins.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have \z
+                           ".. targetPlayer:getStoreCoins(COIN_TYPE_DEFAULT) .." store coins.")
 	return true
 end
 
@@ -42,6 +45,7 @@ function addCoins.onSay(player, words, param)
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
+		-- Distro log
 		Spdlog.error("[addCoins.onSay] - Player name param not found")
 		return false
 	end
@@ -50,6 +54,7 @@ function addCoins.onSay(player, words, param)
 	-- Check if have all parameters (god and coinscount)
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters")
+		-- Distro log
 		Spdlog.error("[addCoins.onSay] - Insufficient parameters")
 		return false
 	end
@@ -58,6 +63,7 @@ function addCoins.onSay(player, words, param)
 	local targetPlayer = Player(split[1])
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(split[1]) .." is not online")
+		-- Distro log
 		Spdlog.error("[addCoins.onSay] - Player ".. string.titleCase(split[1]) .." is not online")
 		return false
 	end
@@ -79,8 +85,10 @@ function addCoins.onSay(player, words, param)
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	targetPlayer:addStoreCoins(coins, COIN_TYPE_DEFAULT)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." store coins for the ".. targetPlayer:getName() .." account.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. coins .." store coins to your account.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." \z
+                           store coins for the ".. targetPlayer:getName() .." account.")
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added \z
+	                             ".. coins .." store coins to your account.")
 	-- Distro log
 	Spdlog.info("".. player:getName() .." added ".. coins .." store coins to ".. targetPlayer:getName() .." account.")
 	return true
@@ -99,6 +107,7 @@ function removeCoins.onSay(player, words, param)
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
+		-- Distro log
 		Spdlog.error("[removeCoins.onSay] - Player name param not found")
 		return false
 	end
@@ -107,6 +116,7 @@ function removeCoins.onSay(player, words, param)
 	-- Check if have all parameters (god and coinscount)
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters")
+		-- Distro log
 		Spdlog.error("[removeCoins.onSay] - Insufficient parameters")
 		return false
 	end
@@ -115,6 +125,7 @@ function removeCoins.onSay(player, words, param)
 	local targetPlayer = Player(split[1])
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(split[1]) .." is not online")
+		-- Distro log
 		Spdlog.error("[removeCoins.onSay] - Player ".. string.titleCase(split[1]) .." is not online")
 		return false
 	end
@@ -136,7 +147,8 @@ function removeCoins.onSay(player, words, param)
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	targetPlayer:removeStoreCoins(coins, COIN_TYPE_DEFAULT)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." store coins for the ".. targetPlayer:getName() .." account.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." \z
+                           store coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." removed ".. coins .." store coins to your account.")
 	-- Distro log
 	Spdlog.info("".. player:getName() .." removed ".. coins .." store coins to ".. targetPlayer:getName() .." account.")

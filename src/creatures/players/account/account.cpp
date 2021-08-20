@@ -119,14 +119,14 @@ error_t Account::GetCoins(CoinType_t coinType) {
 
 error_t Account::AddCoins(int32_t amount, CoinType_t coinType)
 {
-	std::string coins = "`coins`";
+	std::string coins = "coins";
 	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
-		coins = "`coins`";
+		coins = "coins";
 	} else if (coinType == COIN_TYPE_TOURNAMENT) {
-		coins = "`tournamentBalance`";
+		coins = "tournamentBalance";
 	}
 	std::ostringstream query;
-	query << "UPDATE `accounts` SET " << coins << " = " << coins << " + " << amount << " WHERE `id` = " << id_;
+	query << "UPDATE `accounts` SET `" << coins << "` = `" << coins << "` + " << amount << " WHERE `id` = " << id_;
 
 	db_tasks_->addTask(query.str());
 	return ERROR_NO;

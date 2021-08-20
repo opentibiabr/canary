@@ -12,6 +12,7 @@ function getTournamentCoins.onSay(player, words, param)
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
+		-- Distro log
 		Spdlog.error("[getTournamentCoins.onSay] - Player name param not found")
 		return false
 	end
@@ -21,11 +22,13 @@ function getTournamentCoins.onSay(player, words, param)
 	local targetPlayer = Player(split[1])
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(split[1]) .." is not online")
+		-- Distro log
 		Spdlog.error("[getTournamentCoins.onSay] - Player ".. string.titleCase(split[1]) .." is not online")
 		return false
 	end
 
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have ".. targetPlayer:getStoreCoins(COIN_TYPE_TOURNAMENT) .." store tournament coins.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." \z
+                           have ".. targetPlayer:getStoreCoins(COIN_TYPE_TOURNAMENT) .." store tournament coins.")
 	return true
 end
 
@@ -42,6 +45,7 @@ function addTournamentCoins.onSay(player, words, param)
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
+		-- Distro log
 		Spdlog.error("[addTournamentCoins.onSay] - Player name param not found")
 		return false
 	end
@@ -50,6 +54,7 @@ function addTournamentCoins.onSay(player, words, param)
 	-- Check if have all parameters (god and coinscount)
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters")
+		-- Distro log
 		Spdlog.error("[addTournamentCoins.onSay] - Insufficient parameters")
 		return false
 	end
@@ -58,6 +63,7 @@ function addTournamentCoins.onSay(player, words, param)
 	local targetPlayer = Player(split[1])
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(split[1]) .." is not online")
+		-- Distro log
 		Spdlog.error("[addTournamentCoins.onSay] - Player ".. string.titleCase(split[1]) .." is not online")
 		return false
 	end
@@ -79,10 +85,13 @@ function addTournamentCoins.onSay(player, words, param)
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	targetPlayer:addStoreCoins(coins, COIN_TYPE_TOURNAMENT)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." store tournament coins for the ".. targetPlayer:getName() .." account.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added ".. coins .." store tournament coins to your account.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." \z
+                           store tournament coins for the ".. targetPlayer:getName() .." account.")
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." \z
+                                 added ".. coins .." store tournament coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. coins .." store tournament coins to ".. targetPlayer:getName() .." account.")
+	Spdlog.info("".. player:getName() .." added ".. coins .." \z
+                store tournament coins to ".. targetPlayer:getName() .." account.")
 	return true
 end
 
@@ -99,6 +108,7 @@ function removeTournamentCoins.onSay(player, words, param)
 	-- Check the first param (player name) exists
 	if param == "" then
 		player:sendCancelMessage("Player name param required")
+		-- Distro log
 		Spdlog.error("[removeTournamentCoins.onSay] - Player name param not found")
 		return false
 	end
@@ -107,6 +117,7 @@ function removeTournamentCoins.onSay(player, words, param)
 	-- Check if have all parameters (god and coinscount)
 	if not split[2] then
 		player:sendCancelMessage("Insufficient parameters")
+		-- Distro log
 		Spdlog.error("[removeTournamentCoins.onSay] - Insufficient parameters")
 		return false
 	end
@@ -115,6 +126,7 @@ function removeTournamentCoins.onSay(player, words, param)
 	local targetPlayer = Player(split[1])
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(split[1]) .." is not online")
+		-- Distro log
 		Spdlog.error("[removeTournamentCoins.onSay] - Player ".. string.titleCase(split[1]) .." is not online")
 		return false
 	end
@@ -136,10 +148,13 @@ function removeTournamentCoins.onSay(player, words, param)
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	targetPlayer:removeStoreCoins(coins, COIN_TYPE_TOURNAMENT)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." store tournament coins for the ".. targetPlayer:getName() .." account.")
-	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." removed ".. coins .." store tournament coins to your account.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." \z
+                           store tournament coins for the ".. targetPlayer:getName() .." account.")
+	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." \z
+                                 removed ".. coins .." store tournament coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." removed ".. coins .." store tournament coins to ".. targetPlayer:getName() .." account.")
+	Spdlog.info("".. player:getName() .." removed ".. coins .." store tournament \z
+                coins to ".. targetPlayer:getName() .." account.")
 	return true
 end
 

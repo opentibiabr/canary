@@ -20,7 +20,6 @@
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 
-// Enum
 struct StoreHistory {
 	StoreHistory(uint32_t time, uint8_t mode, uint32_t amount, uint8_t coinMode, std::string description, int32_t cust) : 
 		time(time), mode(mode), amount(amount), coinMode(coinMode), description(std::move(description)), cust(cust) {}
@@ -34,6 +33,7 @@ struct StoreHistory {
 
 };
 
+// Enum
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,

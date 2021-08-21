@@ -186,7 +186,7 @@ class Store {
 
 class StoreOffers {
 	public:
-		StoreOffers(std::string name) : 
+		explicit StoreOffers(std::string name) : 
 				name(std::move(name)) {}
 
 		std::string getName() {

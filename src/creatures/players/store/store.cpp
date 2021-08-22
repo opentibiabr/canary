@@ -19,10 +19,12 @@
 
 #include "otpch.h"
 
+#include "config/configmanager.h"
 #include "game/game.h"
 #include "utils/pugicast.h"
 #include "creatures/players/store/store.hpp"
 
+extern ConfigManager g_config;
 extern Game g_game;
 
 const std::unordered_map<std::string, CoinType_t> CoinTypeMap = {
@@ -278,7 +280,6 @@ bool Store::loadOffer(pugi::xml_node node, pugi::xml_attribute storeAttribute, p
 			childNodeName = childNode.attribute("description");
 			if (childNodeName) {
 				offer.description =  childNodeName.value();
-				replaceString(offer.description, "<li>", "&#8226;");
 			}
 
 			childNodeName = childNode.attribute("type");
@@ -504,7 +505,6 @@ std::map<std::string, std::vector<StoreOffer*>> Store::getHomeOffersOrganized() 
 		}
 	}
 
-
 	return filter;
 }
 
@@ -514,7 +514,7 @@ std::map<std::string, std::vector<StoreOffer*>> Store::getStoreOrganizedByName(S
 		StoreOffer* offer = offers->getOfferByID(info.first);
 		if (offer) {
 			std::string name = offer->getName();
-			filter[name].emplace_back(offer);				
+			filter[name].emplace_back(offer);
 		}
 	}
 
@@ -696,38 +696,28 @@ StoreOffer* Store::getOfferById(uint32_t id) {
 }
 
 uint32_t StoreOffer::getPrice(Player* player) {
-	uint32_t newPrice = 0;
-	if (player && type == OFFER_TYPE_EXP_BOOST) {
-		int32_t value1;
-		player->getStorageValue(51052, value1);
-		uint32_t xpBoostPrice = getExpBoostPrice(value1);
-		if (xpBoostPrice > 0) {
-			if (player->isPremium()) {
-				xpBoostPrice *= 0.90;
-			}
-
-		}
-		
-		return xpBoostPrice;
-	}
-
+	uint32_t offerBasePrice = 0;
 	if (state == OFFER_STATE_SALE) {
 		time_t mytime;
 		mytime = time(NULL);
 		struct tm tm = *localtime(&mytime);
 		int32_t daySub = validUntil - tm.tm_mday;
 		if (daySub < 0) {
-			newPrice = basePrice;
+			offerBasePrice = basePrice;
 		}
 	}
 
-	uint32_t p_prince = price;
-	if (player && player->isPremium()) {
-		newPrice *= 0.90;
-		p_prince *= 0.90;
+	uint32_t discountPrice = price;
+	// Check if discount for premium is activated
+	if (g_config.getBoolean(STORE_PREMIUM_DISCOUNT)) {
+		if (player && player->isPremium()) {
+			offerBasePrice *= 1.0;
+			// Default premium discount rate (0.90 = 10% of discount)
+			discountPrice *= g_config.getFloat(RATE_STORE_PREMIUM_DISCOUNT);
+		}
 	}
 
-	return newPrice > 0 ? newPrice : p_prince;
+	return offerBasePrice > 0 ? offerBasePrice : discountPrice;
 }
 
 uint16_t StoreOffer::getCount(bool inBuy) {

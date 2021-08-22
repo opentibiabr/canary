@@ -297,22 +297,6 @@ class StoreOffer {
 			return skull;
 		}
 
-		uint32_t getExpBoostPrice(int32_t value) {
-			if(value == 1)
-				return 30;
-			else if (value == 2)
-				return 45;
-			else if (value == 3)
-				return 90;
-			else if (value == 4)
-				return 180;
-			else if (value == 5)
-				return 360;
-			else
-				return 30;
-
-		}
-
 		bool haveOfferRookgaard() {
 			return rookgaard;
 		}
@@ -333,8 +317,8 @@ class StoreOffer {
 		OfferStates_t state = OFFER_STATE_NONE;
 		CoinType_t coinType = COIN_TYPE_DEFAULT;
 		OfferBuyTypes_t buyType = OFFER_BUY_TYPE_OTHERS;
-		uint16_t count = 150;
-		uint32_t price = 0; // Default price (This preventing valueless offers from entering)
+		uint16_t count = 1;
+		uint32_t price = 150; // Default price (This preventing valueless offers from entering)
 		uint32_t basePrice = 0; // Default price (This preventing valueless offers from entering)
 		uint32_t validUntil = 0;
 		uint16_t blessid = 0;

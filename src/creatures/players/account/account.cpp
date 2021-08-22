@@ -103,7 +103,7 @@ error_t Account::GetCoins(CoinType_t coinType) {
 	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
 		coins = "coins";
 	} else if (coinType == COIN_TYPE_TOURNAMENT) {
-		coins = "tournamentBalance";
+		coins = "tournament_coins";
 	}
 
 	std::ostringstream query;
@@ -123,7 +123,7 @@ error_t Account::AddCoins(int32_t amount, CoinType_t coinType)
 	if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
 		coins = "coins";
 	} else if (coinType == COIN_TYPE_TOURNAMENT) {
-		coins = "tournamentBalance";
+		coins = "tournament_coins";
 	}
 	std::ostringstream query;
 	query << "UPDATE `accounts` SET `" << coins << "` = `" << coins << "` + " << amount << " WHERE `id` = " << id_;
@@ -225,7 +225,7 @@ error_t Account::LoadAccountDB(std::ostringstream &query) {
 	this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
 	this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
 	this->SetStoreCoinBalance(result->getNumber<uint32_t>("coins"));
-	this->SetTournamentCoinBalance(result->getNumber<uint32_t>("tournamentBalance"));
+	this->SetTournamentCoinBalance(result->getNumber<uint32_t>("tournament_coins"));
 
 	return ERROR_NO;
 }

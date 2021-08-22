@@ -183,6 +183,8 @@ bool ConfigManager::load()
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 
+	boolean[STORE_PREMIUM_DISCOUNT] = getGlobalBoolean(L, "storePremiumDiscount", false);
+
 	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
 	string[SERVER_NAME] = getGlobalString(L, "serverName", "");
 	string[OWNER_NAME] = getGlobalString(L, "ownerName", "");
@@ -249,6 +251,8 @@ bool ConfigManager::load()
 	floating[RATE_NPC_HEALTH] = getGlobalFloat(L, "rateNpcHealth", 1.0);
 	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);
 	floating[RATE_NPC_DEFENSE] = getGlobalFloat(L, "rateNpcDefense", 1.0);
+
+	floating[RATE_STORE_PREMIUM_DISCOUNT] = getGlobalFloat(L, "rateStorePremiumDiscount", 0.90);
 
 	loaded = true;
 	lua_close(L);

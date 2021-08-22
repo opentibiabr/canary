@@ -160,7 +160,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   player->accountNumber = result->getNumber<uint32_t>("account_id");
   player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
   player->coinBalance = result->getNumber<uint32_t>("coinbalance");
-  player->tournamentCoinBalance = result->getNumber<uint32_t>("tournamentBalance");
+  player->tournamentCoinBalance = result->getNumber<uint32_t>("tournament_coins");
   if (!g_config.getBoolean(FREE_PREMIUM)) {
     player->premiumDays = result->getNumber<uint16_t>("premium_days");
   } else {

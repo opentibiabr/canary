@@ -312,7 +312,7 @@ class StoreOffer {
 		std::string name = "";
 
 		std::map<uint16_t, uint16_t> itemList;
-		std::string description = "";
+		std::string description;
 		std::string icon = "";
 		OfferStates_t state = OFFER_STATE_NONE;
 		CoinType_t coinType = COIN_TYPE_DEFAULT;

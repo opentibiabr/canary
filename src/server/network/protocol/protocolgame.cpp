@@ -738,7 +738,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
 		case 0xE6: parseBugReport(msg); break;
 		case 0xE7: /* thank you */ break;
-		case 0xE8: parseDebugAssert(msg); break;
+		case 0xE8: parseSendDescription(msg); break;
 		case 0xEE: parseGreet(msg); break;
 		case 0xEF: parseStoreCoinTransfer(msg); break;
 		case 0xF0: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerShowQuestLog, player->getID()); break;
@@ -2633,6 +2633,7 @@ void ProtocolGame::parseSendDescription(NetworkMessage& msg)
 	if (storeOffer == nullptr) {
 		return;
 	}
+
 	player->sendOfferDescription(offerId, storeOffer->getDescription(player));
 }
 
@@ -6728,7 +6729,7 @@ void ProtocolGame::openStore()
 	msg.addByte(0xFB);
 
 	msg.add<uint16_t>(g_store.getOfferCount());
-	// enviando primeiro as categorias sem subcategorias
+	// First sending categories without subcategories
 	std::vector<StoreCategory> categories = g_store.getStoreCategories();
 	for (auto it = categories.begin(), end = categories.end(); it != end; ++it) {
 		msg.addString((*it).name);

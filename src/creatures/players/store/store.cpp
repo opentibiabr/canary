@@ -452,7 +452,7 @@ std::vector<StoreOffer*> Store::getStoreOffer(StoreOffers* offers) {
 	for (auto& info : offers->offers) {
 		StoreOffer* offer = offers->getOfferByID(info.first);
 		if (offer) {
-			filter.push_back(offer);				
+			filter.push_back(offer);
 		}
 	}
 	return filter;

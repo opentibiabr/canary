@@ -116,7 +116,6 @@ mysqlPass = ""
 mysqlDatabase = "canary"
 mysqlPort = 3306
 mysqlSock = ""
-passwordType = "aha1" -- For MyAAC
 
 -- Misc.
 allowChangeOutfit = true

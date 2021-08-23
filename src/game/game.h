@@ -521,7 +521,7 @@ class Game
 		void playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::string& param);
 		void playerStoreTransactionHistory(uint32_t playerId, uint32_t pages, uint8_t entryPages);
 		void queueSendStoreAlertToUser(uint32_t playerId, std::string message, StoreErrors_t storeErrorCode = STORE_ERROR_NETWORK);
-		void playerStoreCoinTransfer(uint32_t playerId, const std::string &recipient, uint16_t amount);
+		void playerCoinTransfer(uint32_t playerId, const std::string &recipient, uint16_t amount);
 
 	private:
 		void checkImbuements();

@@ -617,12 +617,10 @@ std::string StoreOffer::getDisabledReason(Player* player) {
 		disabledReason = "This offer is deactivated."; 
 	}
 
-	if (player->getStoreCoinBalance(coinType) - getPrice(player) < 0) {
-		if (coinType == COIN_TYPE_TOURNAMENT) {
-			disabledReason = "You don't have tournament coins.";
-		} else {
-			disabledReason = "You don't have coins.";
-		}
+	if (player->getCoinBalance() - getPrice(player) < 0) {
+		disabledReason = "You don't have coins.";
+	} else if (player->getTournamentCoinBalance() - getPrice(player) < 0) {
+		disabledReason = "You don't have tournament coins.";
 	}
 
 	return disabledReason;

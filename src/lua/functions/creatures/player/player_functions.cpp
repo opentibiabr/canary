@@ -2289,48 +2289,46 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetStoreCoins(lua_State* L) {
-	// player:getStoreCoins(coinType)
+int PlayerFunctions::luaPlayerGetCoins(lua_State* L) {
+	// player:getCoins()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	CoinType_t coinType = getNumber<CoinType_t>(L, 2);
-	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
-		lua_pushnumber(L, player->getStoreCoinBalance(coinType));
+	if (player->getCoinBalance() != std::numeric_limits<int32_t>::max()) {
+		lua_pushnumber(L, player->getCoinBalance());
 	} else {
 		lua_pushnil(L);
 	}
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerAddStoreCoins(lua_State* L) {
-	// player:addStoreCoins(coins, coinType)
+int PlayerFunctions::luaPlayerAddCoins(lua_State* L) {
+	// player:addCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	CoinType_t coinType = getNumber<CoinType_t>(L, 3);
-	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
+	if (player->getCoinBalance() != std::numeric_limits<int32_t>::max()) {
 		int32_t coins = getNumber<int32_t>(L, 2);
-		int32_t addCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getStoreCoinBalance(coinType), coins);
+		int32_t addCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getCoinBalance(), coins);
 		if (addCoins > 0) {
 			account::Account account(player->getAccount());
-			account.LoadAccountDB();
-			player->setStoreCoins(player->getStoreCoinBalance(coinType) + addCoins, coinType);
-			account.AddCoins(addCoins, coinType);
+			account.loadAccountDB();
+			player->setCoins(player->getCoinBalance() + addCoins);
+			account.addCoins(addCoins);
 			lua_pushnumber(L, addCoins);
 		}
 	}
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerRemoveStoreCoins(lua_State* L) {
-	// player:removeStoreCoins(coins, coinType)
+int PlayerFunctions::luaPlayerRemoveCoins(lua_State* L) {
+	// player:removeCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
@@ -2338,19 +2336,82 @@ int PlayerFunctions::luaPlayerRemoveStoreCoins(lua_State* L) {
 	}
 
 	int32_t coins = getNumber<int32_t>(L, 2);
-	CoinType_t coinType = getNumber<CoinType_t>(L, 3);
-	if (!player->canRemoveStoreCoins(coins, coinType)) {
+	if (!player->canRemoveCoins(coins)) {
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	int32_t removeCoins = std::min<int32_t>(player->getStoreCoinBalance(coinType), coins);
-	if (player->getStoreCoinBalance(coinType) != std::numeric_limits<int32_t>::max()) {
+	int32_t removeCoins = std::min<int32_t>(player->getCoinBalance(), coins);
+	if (player->getCoinBalance() != std::numeric_limits<int32_t>::max()) {
 		if (removeCoins > 0) {
 			account::Account account(player->getAccount());
-			account.LoadAccountDB();
-			player->setStoreCoins(player->getStoreCoinBalance(coinType) - removeCoins, coinType);
-			account.RemoveCoins(removeCoins, coinType);
+			account.loadAccountDB();
+			player->setCoins(player->getCoinBalance() - removeCoins);
+			account.removeCoins(removeCoins);
+		}
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTournamentCoins(lua_State* L) {
+	// player:getTournamentCoins()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (player->getTournamentCoinBalance() != std::numeric_limits<int32_t>::max()) {
+		lua_pushnumber(L, player->getTournamentCoinBalance());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddTournamentCoins(lua_State* L) {
+	// player:addTournamentCoins(tournamentCoins)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (player->getTournamentCoinBalance() != std::numeric_limits<int32_t>::max()) {
+		int32_t tournamentCoins = getNumber<int32_t>(L, 2);
+		int32_t addTournamentCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getTournamentCoinBalance(), tournamentCoins);
+		if (addTournamentCoins > 0) {
+			account::Account account(player->getAccount());
+			account.loadAccountDB();
+			player->setTournamentCoins(player->getTournamentCoinBalance() + addTournamentCoins);
+			account.addTournamentCoins(addTournamentCoins);
+			lua_pushnumber(L, addTournamentCoins);
+		}
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveTournamentCoins(lua_State* L) {
+	// player:removeTournamentCoins(tournamentCoins)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int32_t tournamentCoins = getNumber<int32_t>(L, 2);
+	if (!player->canRemoveTournamentCoins(tournamentCoins)) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	int32_t removeTournamentCoins = std::min<int32_t>(player->getTournamentCoinBalance(), tournamentCoins);
+	if (player->getTournamentCoinBalance() != std::numeric_limits<int32_t>::max()) {
+		if (removeTournamentCoins > 0) {
+			account::Account account(player->getAccount());
+			account.loadAccountDB();
+			player->setTournamentCoins(player->getTournamentCoinBalance() - removeTournamentCoins);
+			account.removeTournamentCoins(removeTournamentCoins);
 		}
 	}
 	return 1;

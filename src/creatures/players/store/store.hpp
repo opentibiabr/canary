@@ -211,6 +211,7 @@ class StoreOffers {
 		}
 
 		StoreOffer* getOfferByID(uint32_t id);
+
 	protected:
 		friend class Store;
 		friend class StoreOffer;
@@ -224,7 +225,6 @@ class StoreOffers {
 		std::string parent;
 		bool rookgaard = false;
 		OfferStates_t state = OFFER_STATE_NONE;
-
 };
 
 class StoreOffer {

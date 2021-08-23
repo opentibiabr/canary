@@ -28,14 +28,14 @@ function getTournamentCoins.onSay(player, words, param)
 	end
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." \z
-                           have ".. targetPlayer:getStoreCoins(COIN_TYPE_TOURNAMENT) .." store tournament coins.")
+                           have ".. targetPlayer:getTournamentCoins() .." tournament coins.")
 	return true
 end
 
 getTournamentCoins:separator(" ")
 getTournamentCoins:register()
 
-local addTournamentCoins = TalkAction("/addTournamentCoins")
+local addTournamentCoins = TalkAction("/addtournamentcoins")
 
 function addTournamentCoins.onSay(player, words, param)
 	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
@@ -84,21 +84,21 @@ function addTournamentCoins.onSay(player, words, param)
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	targetPlayer:addStoreCoins(coins, COIN_TYPE_TOURNAMENT)
+	targetPlayer:addTournamentCoins(coins)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." \z
-                           store tournament coins for the ".. targetPlayer:getName() .." account.")
+                           tournament coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." \z
-                                 added ".. coins .." store tournament coins to your account.")
+                                 added ".. coins .." tournament coins to your account.")
 	-- Distro log
 	Spdlog.info("".. player:getName() .." added ".. coins .." \z
-                store tournament coins to ".. targetPlayer:getName() .." account")
+                tournament coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 
 addTournamentCoins:separator(" ")
 addTournamentCoins:register()
 
-local removeTournamentCoins = TalkAction("/removeTournamentCoins")
+local removeTournamentCoins = TalkAction("/removetournamentcoins")
 
 function removeTournamentCoins.onSay(player, words, param)
 	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
@@ -134,26 +134,35 @@ function removeTournamentCoins.onSay(player, words, param)
 	-- Trim left
 	split[2] = split[2]:gsub("^%s*(.-)$", "%1")
 
-	-- Keep the coinscount in variable "coins"
-	local coins = 0
+	-- Keep the tournament coins count in variable "tournamentCoins"
+	local tournamentCoins = 0
 	if split[2] then
-		coins = tonumber(split[2])
+		tournamentCoins = tonumber(split[2])
 	end
 
-	-- Check if the coins is valid
-	if coins <= 0 or coins == nil then
-		player:sendCancelMessage("Invalid coins count.")
-		return false
+	-- Check if the tournament coins to remove is valid
+	if tournamentCoins <= 0 or tournamentCoins == nil then
+		return player:sendCancelMessage("Invalid tournament coins count.")
+	end
+
+	-- Check if target player have tournament coins
+	if targetPlayer:getTournamentCoins() <= 0 then
+		return player:sendCancelMessage("The player ".. targetPlayer:getName() .." has no tournament coins to remove.")
+	end
+
+	-- Check target player have the count of tournament coins to remove
+	if targetPlayer:getTournamentCoins() < tournamentCoins then
+		return player:sendCancelMessage("The player does not have this amount of tournament coins to remove, the player balance is ".. targetPlayer:getTournamentCoins() .." tournament coins.")
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	targetPlayer:removeStoreCoins(coins, COIN_TYPE_TOURNAMENT)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." \z
-                           store tournament coins for the ".. targetPlayer:getName() .." account.")
+	targetPlayer:removeTournamentCoins(tournamentCoins)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. tournamentCoins .." \z
+                           tournament coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." \z
-                                 removed ".. coins .." store tournament coins to your account.")
+                                 removed ".. tournamentCoins .." tournament coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." removed ".. coins .." store tournament \z
+	Spdlog.info("".. player:getName() .." removed ".. tournamentCoins .." tournament \z
                 coins to ".. targetPlayer:getName() .." account")
 	return true
 end

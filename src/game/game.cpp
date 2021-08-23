@@ -7573,13 +7573,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-			if (amount > player->getStoreCoinBalance()) {
+			if (amount > player->getCoinBalance()) {
 				return;
 			}
 
 			account::Account account(player->getAccount());
-			account.LoadAccountDB();
-			account.AddCoins(amount);
+			account.loadAccountDB();
+			account.addCoins(amount);
 		} else {
 			uint16_t stashmath = amount;
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
@@ -7670,8 +7670,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			account.AddCoins(offer.amount);
+			account.loadAccountDB(player->getAccount());
+			account.addCoins(offer.amount);
     }
 		else if (it.stackable) {
 			uint16_t tmpAmount = offer.amount;
@@ -7773,12 +7773,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			if (amount > account.GetCoins()) {
+			account.loadAccountDB(player->getAccount());
+			if (amount > account.getCoins()) {
 				return;
 			}
 
-			account.AddCoins(amount);
+			account.addCoins(amount);
 			account.RegisterCoinsTransaction(OS_TIME(nullptr), 0, amount, 0, "Sold on Market", -static_cast<int32_t>(amount));
 		} else {
 			std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotLocker);
@@ -7807,8 +7807,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
-			account.LoadAccountDB(buyerPlayer->getAccount());
-			account.AddCoins(amount);
+			account.loadAccountDB(buyerPlayer->getAccount());
+			account.addCoins(amount);
 			account.RegisterCoinsTransaction(OS_TIME(nullptr), 0, amount, 0, "Purchased on Market", -static_cast<int32_t>(amount));
 		}
 		else if (it.stackable) {
@@ -7870,8 +7870,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
-			account.LoadAccountDB(player->getAccount());
-			account.AddCoins(amount);
+			account.loadAccountDB(player->getAccount());
+			account.addCoins(amount);
 			account.RegisterCoinsTransaction(OS_TIME(nullptr), 0, amount, 0, "Purchased on Market", -static_cast<int32_t>(amount));
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
@@ -7906,7 +7906,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 			if (it.id == ITEM_STORE_COIN) {
 				account::Account account;
-				account.LoadAccountDB(sellerPlayer->getAccount());
+				account.loadAccountDB(sellerPlayer->getAccount());
 				account.RegisterCoinsTransaction(OS_TIME(nullptr), 0, amount, 0, "Sold on Market", -static_cast<int32_t>(amount));
 			}
 		} else {
@@ -7916,7 +7916,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 				if (IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
 					account::Account account;
-					account.LoadAccountDB(sellerPlayer->getAccount());
+					account.loadAccountDB(sellerPlayer->getAccount());
 					account.RegisterCoinsTransaction(OS_TIME(nullptr), 0, amount, 0, "Sold on Market", -static_cast<int32_t>(amount));
 				}
 
@@ -8339,7 +8339,7 @@ void Game::playerOpenStore(uint32_t playerId, bool openStore, StoreOffers* offer
 	}
 
 	// Update coins
-	player->updateStoreCoinBalance();
+	player->updateCoinBalance();
 
 	if (openStore) {
 		player->openStore();
@@ -8365,19 +8365,27 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 		return;
 	}
 
-
+	player->updateCoinBalance();
 	OfferTypes_t offerType = thisOffer->getOfferType();
 	if (!g_store.isValidType(offerType)) {
 		player->sendStoreError(STORE_ERROR_INFORMATION, "This offer is unavailable.");
 		return;
 	}
 
-	if (!player->canRemoveStoreCoins(thisOffer->getPrice(player)) ) {
-		player->sendStoreError(STORE_ERROR_PURCHASE, "You don't have coins.");
-		return;
+	if (thisOffer->getCoinType() == COIN_TYPE_DEFAULT) {
+		if (!player->canRemoveCoins(thisOffer->getPrice(player))) {
+			player->sendStoreError(STORE_ERROR_PURCHASE, "You don't have coins.");
+			return;
+		}	
+	}
+	if (thisOffer->getCoinType() == COIN_TYPE_TOURNAMENT) {
+		if (!player->canRemoveTournamentCoins(thisOffer->getPrice(player))) {
+			player->sendStoreError(STORE_ERROR_PURCHASE, "You don't have tournament coins.");
+			return;
+		}
 	}
 
-	player->updateStoreCoinBalance();
+	player->updateCoinBalance();
 	std::string message = thisOffer->getDisabledReason(player);
 	if (!message.empty()) {
 		player->sendStoreError(STORE_ERROR_PURCHASE, message);
@@ -8930,16 +8938,24 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 		successfully = true;
 	}
 
+	account::Account account(player->getAccount());
+	account.loadAccountDB();
 	if (successfully) {
-		account::Account account(player->getAccount());
-		account.LoadAccountDB();
-		account.RemoveCoins(offerPrice*-1);
-		player->setStoreCoins(account.GetCoins(thisOffer->getCoinType()), thisOffer->getCoinType());
-		if (returnmessage.str().empty()) {
-			returnmessage << "You have purchased " << thisOffer->getName() << " for " << offerPrice*-1 <<" coins";
+		if (thisOffer->getCoinType() == COIN_TYPE_DEFAULT) {
+			account.removeCoins(offerPrice*-1);
+			player->setCoins(account.getCoins());
+			if (returnmessage.str().empty()) {
+				returnmessage << "You have purchased " << thisOffer->getName() << " for " << offerPrice*-1 <<" coins";
+			}
+		} else if (thisOffer->getCoinType() == COIN_TYPE_TOURNAMENT) {
+			account.removeTournamentCoins(offerPrice*-1);
+			player->setTournamentCoins(account.getTournamentCoins());
+			if (returnmessage.str().empty()) {
+				returnmessage << "You have purchased " << thisOffer->getName() << " for " << offerPrice*-1 <<" tournament coins";
+			}
 		}
 
-		player->updateStoreCoinBalance();
+		player->updateCoinBalance();
 
 		player->sendStorePurchaseSuccessful(returnmessage.str());
 		account.RegisterCoinsTransaction(OS_TIME(nullptr), static_cast<uint8_t>(HISTORY_TYPE_NONE), thisOffer->getCount(true), static_cast<uint8_t>(thisOffer->getCoinType()), std::move(thisOffer->getName()), offerPrice);
@@ -8991,15 +9007,15 @@ void Game::queueSendStoreAlertToUser(uint32_t playerId, std::string message, Sto
 	player->sendStoreError(storeErrorCode, message);
 }
 
-void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipient, uint16_t amount) {
+void Game::playerCoinTransfer(uint32_t playerId, const std::string& recipient, uint16_t amount) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
-		SPDLOG_INFO("[Game::playerStoreCoinTransfer] - Player with id '{}' not exist", player->getName());
+		SPDLOG_INFO("[Game::playerCoinTransfer] - Player with id '{}' not exist", player->getName());
 		return;
 	}
 
-	if (player->getStoreCoinBalance() < amount) {
-		SPDLOG_INFO("[Game::playerStoreCoinTransfer] - Player {} not have coins for transfer", player->getName());
+	if (player->getCoinBalance() < amount) {
+		SPDLOG_INFO("[Game::playerCoinTransfer] - Player {} not have coins for transfer", player->getName());
 		return;
 	}
 
@@ -9011,7 +9027,7 @@ void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipie
 	if (!recipientPlayer) {
 		recipientPlayer = new Player(nullptr);
 		if (!IOLoginData::loadPlayerByName(recipientPlayer, recipient)) {
-			SPDLOG_INFO("[Game::playerStoreCoinTransfer] - Player with name '{}' not exist", player->getName());
+			SPDLOG_INFO("[Game::playerCoinTransfer] - Player with name '{}' not exist", player->getName());
 			delete recipientPlayer;
 			return;
 		}
@@ -9024,13 +9040,13 @@ void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipie
 	std::string description(player->getName() + " transferred to " + recipient);
 
 	account::Account account;
-	account.LoadAccountDB(player->getAccount());
-	account.AddCoins(-static_cast<int32_t>(amount));
+	account.loadAccountDB(player->getAccount());
+	account.addCoins(-static_cast<int32_t>(amount));
 	player->coinBalance -= amount;
 	account.RegisterCoinsTransaction(OS_TIME(nullptr), static_cast<uint8_t>(HISTORY_TYPE_NONE), amount, 0, description, -static_cast<int32_t>(amount));
 
-	account.LoadAccountDB(recipientPlayer->getAccount());
-	account.AddCoins(amount);
+	account.loadAccountDB(recipientPlayer->getAccount());
+	account.addCoins(amount);
 	account.RegisterCoinsTransaction(OS_TIME(nullptr), static_cast<uint8_t>(HISTORY_TYPE_NONE), amount, 0, description, amount);
 	recipientPlayer->coinBalance += amount;
 
@@ -9038,8 +9054,8 @@ void Game::playerStoreCoinTransfer(uint32_t playerId, const std::string& recipie
 		IOLoginData::savePlayer(recipientPlayer);
 		delete recipientPlayer;
 	} else {
-		recipientPlayer->sendStoreCoinBalance();
+		recipientPlayer->sendCoinBalance();
 	}
 
-	player->sendStoreCoinBalance();
+	player->sendCoinBalance();
 }

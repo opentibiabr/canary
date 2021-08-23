@@ -89,7 +89,7 @@ TEST_CASE("Get Coins Account Not Initialized", "[UnitTest]") {
 	account::Account account;
   error_t result;
   uint32_t coins;
-  result = account.GetCoins(&coins);
+  result = account.getCoins(&coins);
   CHECK(result == account::ERROR_NOT_INITIALIZED);
 }
 
@@ -250,21 +250,21 @@ TEST_CASE("Get Coins", "[UnitTest]") {
 	account::Account account(1);
   error_t result;
   uint32_t coins;
-  result = account.GetCoins(&coins);
+  result = account.getCoins(&coins);
   CHECK(result == account::ERROR_DB);
 }
 
 TEST_CASE("Add Zero Coins", "[UnitTest]") {
 	account::Account account(1);
   error_t result;
-  result = account.AddCoins(0);
+  result = account.addCoins(0);
   REQUIRE(result == account::ERROR_NO);
 }
 
 TEST_CASE("Remove Zero Coins", "[UnitTest]") {
 	account::Account account(1);
   error_t result;
-  result = account.RemoveCoins(0);
+  result = account.removeCoins(0);
   REQUIRE(result == account::ERROR_NO);
 }
 /*******************************************************************************
@@ -324,16 +324,16 @@ TEST_CASE("Remove Coins From Account With Zero Coins", "[IntegrationTest]") {
 
   // Clean account coins
   uint32_t get_coins;
-  result = account.GetCoins(&get_coins);
+  result = account.getCoins(&get_coins);
   CHECK(result == account::ERROR_NO);
-  result = account.RemoveCoins(get_coins);
+  result = account.removeCoins(get_coins);
   CHECK(result == account::ERROR_NO);
   db_tasks.flush();
   db_tasks.stop();
   db_tasks.shutdown();
   db_tasks.join();
 
-  result = account.RemoveCoins(1);
+  result = account.removeCoins(1);
   REQUIRE(result == account::ERROR_VALUE_NOT_ENOUGH_COINS);
 }
 
@@ -366,17 +366,17 @@ TEST_CASE("Add Maximum Number Of Coins", "[IntegrationTest]") {
 
   // Clean account coins
   uint32_t get_coins;
-  result = account.GetCoins(&get_coins);
+  result = account.getCoins(&get_coins);
   CHECK(result == account::ERROR_NO);
-  result = account.RemoveCoins(get_coins);
+  result = account.removeCoins(get_coins);
   CHECK(result == account::ERROR_NO);
   db_tasks.flush();
 
-  result = account.AddCoins(std::numeric_limits<uint32_t>::max());
+  result = account.addCoins(std::numeric_limits<uint32_t>::max());
   REQUIRE(result == account::ERROR_NO);
   db_tasks.flush();
 
-  result = account.GetCoins(&get_coins);
+  result = account.getCoins(&get_coins);
   CHECK(result == account::ERROR_NO);
 
   db_tasks.stop();
@@ -414,20 +414,20 @@ TEST_CASE("Add Maximum Number Of Coins Plus One", "[IntegrationTest]") {
 
   // Clean account coins
   uint32_t get_coins;
-  result = account.GetCoins(&get_coins);
+  result = account.getCoins(&get_coins);
   CHECK(result == account::ERROR_NO);
-  result = account.RemoveCoins(get_coins);
+  result = account.removeCoins(get_coins);
   CHECK(result == account::ERROR_NO);
   db_tasks.flush();
 
-  result = account.AddCoins(std::numeric_limits<uint32_t>::max());
+  result = account.addCoins(std::numeric_limits<uint32_t>::max());
   REQUIRE(result == account::ERROR_NO);
   db_tasks.flush();
   db_tasks.stop();
   db_tasks.shutdown();
   db_tasks.join();
 
-  result = account.AddCoins(1);
+  result = account.addCoins(1);
   REQUIRE(result == account::ERROR_VALUE_OVERFLOW);
 }
 
@@ -460,18 +460,18 @@ TEST_CASE("Add/Remove Coins Operation", "[IntegrationTest]") {
 
   // Clean account coins
   uint32_t get_coins;
-  result = account.GetCoins(&get_coins);
+  result = account.getCoins(&get_coins);
   CHECK(result == account::ERROR_NO);
-  result = account.RemoveCoins(get_coins);
+  result = account.removeCoins(get_coins);
   CHECK(result == account::ERROR_NO);
   db_tasks.flush();
 
   uint32_t add_coins = 15;
-  result = account.AddCoins(add_coins);
+  result = account.addCoins(add_coins);
   REQUIRE(result == account::ERROR_NO);
   db_tasks.flush();
 
-  result = account.GetCoins(&get_coins);
+  result = account.getCoins(&get_coins);
   CHECK(result == account::ERROR_NO);
 
   db_tasks.stop();
@@ -498,7 +498,7 @@ TEST_CASE("Load Account Using ID From Constructor", "[IntegrationTest]") {
   }
 
   error_t result;
-  result = account.LoadAccountDB();
+  result = account.loadAccountDB();
   REQUIRE(result == account::ERROR_NO);
 
   uint32_t id;
@@ -550,7 +550,7 @@ TEST_CASE("Load Account Using Email From Constructor", "[IntegrationTest]") {
   }
 
   error_t result;
-  result = account.LoadAccountDB();
+  result = account.loadAccountDB();
   REQUIRE(result == account::ERROR_NO);
 
   uint32_t id;
@@ -602,7 +602,7 @@ TEST_CASE("Load Account Using ID", "[IntegrationTest]") {
   }
 
   error_t result;
-  result = account.LoadAccountDB(1);
+  result = account.loadAccountDB(1);
   REQUIRE(result == account::ERROR_NO);
 
   uint32_t id;
@@ -654,7 +654,7 @@ TEST_CASE("Load Account Using Email", "[IntegrationTest]") {
   }
 
   error_t result;
-  result = account.LoadAccountDB("@GOD");
+  result = account.loadAccountDB("@GOD");
   REQUIRE(result == account::ERROR_NO);
 
   uint32_t id;
@@ -707,9 +707,9 @@ TEST_CASE("Save Account", "[IntegrationTest]") {
   }
 
   error_t result;
-  result = account_orig.LoadAccountDB();
+  result = account_orig.loadAccountDB();
   REQUIRE(result == account::ERROR_NO);
-  result = account.LoadAccountDB();
+  result = account.loadAccountDB();
   REQUIRE(result == account::ERROR_NO);
 
   // Check account
@@ -772,7 +772,7 @@ TEST_CASE("Save Account", "[IntegrationTest]") {
 
   //Load Changed Account
   account::Account changed_account;
-  result = changed_account.LoadAccountDB(1);
+  result = changed_account.loadAccountDB(1);
 
   //Check Changed Account
   result = changed_account.GetID(&id);

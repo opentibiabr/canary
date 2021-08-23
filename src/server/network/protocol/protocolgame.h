@@ -142,7 +142,7 @@ private:
 	void parseTournamentLeaderboard(NetworkMessage &msg);
 
 	void parseGreet(NetworkMessage &msg);
-	void parseStoreCoinTransfer(NetworkMessage &msg);
+	void parseCoinTransfer(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
@@ -329,7 +329,7 @@ private:
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
-	void updateStoreCoinBalance();
+	void updateCoinBalance();
 	void sendMarketLeave();
 	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
 	void sendMarketAcceptOffer(const MarketOfferEx &offer);
@@ -364,7 +364,7 @@ private:
 	void sendSpellCooldown(uint8_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 
-	void sendStoreCoinBalance();
+	void sendCoinBalance();
 
 	//tiles
 	void sendMapDescription(const Position &pos);

@@ -88,14 +88,14 @@ class Account {
 	/**
 		* @brief Construct a new Account object
 		*
-		* @param id Set Account ID to be used by LoadAccountDB
+		* @param id Set Account ID to be used by loadAccountDB
 		*/
 	explicit Account(uint32_t id);
 
 	/**
 		* @brief Construct a new Account object
 		*
-		* @param name Set Account Name to be used by LoadAccountDB
+		* @param name Set Account Name to be used by loadAccountDB
 		*/
 	explicit Account(const std::string &name);
 
@@ -125,14 +125,13 @@ class Account {
 		* Coins Methods
 		**************************************************************************/
 
-	/**
+	/** Normal coins
 		* @brief Get the amount of coins that the account has from database.
 		*
-		* @param accountId Account ID to get the coins.
 		* @param coins Pointer to return the number of coins
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
-	error_t GetCoins(CoinType_t coinType = COIN_TYPE_DEFAULT);
+	error_t getCoins();
 
 	/**
 		* @brief Add coins to the account and update database.
@@ -140,7 +139,7 @@ class Account {
 		* @param amount Amount of coins to be added
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
-	error_t AddCoins(int32_t amount, CoinType_t coinType = COIN_TYPE_DEFAULT);
+	error_t addCoins(int32_t amount);
 
 	/**
 		* @brief Removes coins from the account and update database.
@@ -148,10 +147,43 @@ class Account {
 		* @param amount Amount of coins to be removed
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
-	error_t RemoveCoins(int32_t amount, CoinType_t coinType = COIN_TYPE_DEFAULT);
+	error_t removeCoins(int32_t amount);
 
 	/**
 		* @brief Register account coins transactions in database.
+		*
+		* @param type Type of the transaction(Add/Remove).
+		* @param coins Amount of coins
+		* @param description Description of the transaction
+		* @return error_t ERROR_NO(0) Success, otherwise Fail.
+		*/
+	
+	
+	/** Tournament Coins
+		* @brief Get the amount of tournament coins that the account has from database.
+		*
+		* @return error_t ERROR_NO(0) Success, otherwise Fail.
+		*/
+	error_t getTournamentCoins();
+
+	/**
+		* @brief Add coins to the account and update database.
+		*
+		* @param amount Amount of coins to be added
+		* @return error_t ERROR_NO(0) Success, otherwise Fail.
+		*/
+	error_t addTournamentCoins(int32_t amount);
+
+	/**
+		* @brief Removes tournament coins from the account and update database.
+		*
+		* @param amount Amount of coins to be removed
+		* @return error_t ERROR_NO(0) Success, otherwise Fail.
+		*/
+	error_t removeTournamentCoins(int32_t amount);
+
+	/**
+		* @brief Register account tournament coins transactions in database.
 		*
 		* @param type Type of the transaction(Add/Remove).
 		* @param coins Amount of coins
@@ -170,7 +202,7 @@ class Account {
 		*
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
-	error_t LoadAccountDB();
+	error_t loadAccountDB();
 
 	/**
 		* @brief Try to
@@ -178,7 +210,7 @@ class Account {
 		* @param name
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
-	error_t LoadAccountDB(std::string name);
+	error_t loadAccountDB(std::string name);
 
 	/**
 		* @brief
@@ -186,7 +218,7 @@ class Account {
 		* @param id
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
-	error_t LoadAccountDB(uint32_t id);
+	error_t loadAccountDB(uint32_t id);
 
 	/**
 		* @brief
@@ -211,11 +243,11 @@ class Account {
 	error_t SetPremiumRemaningDays(uint32_t	days);
 	error_t GetPremiumRemaningDays(uint32_t *days);
 
-	error_t SetStoreCoinBalance(uint32_t coins);
-	error_t GetStoreCoinBalance(uint32_t *coins);
+	error_t setCoinBalance(uint32_t coins);
+	error_t getCoinBalance(uint32_t *coins);
 
-	error_t SetTournamentCoinBalance(uint32_t tournamentCoins);
-	error_t GetTournamentCoinBalance(uint32_t *tournamentCoins);
+	error_t setTournamentCoinBalance(uint32_t tournamentCoins);
+	error_t getTournamentCoinBalance(uint32_t *tournamentCoins);
 
 	error_t SetPremiumLastDay(time_t	last_day);
 	error_t GetPremiumLastDay(time_t *last_day);
@@ -228,7 +260,7 @@ class Account {
 
  private:
 	error_t SetID(uint32_t id);
-	error_t LoadAccountDB(std::ostringstream &query);
+	error_t loadAccountDB(std::ostringstream &query);
 	error_t LoadAccountPlayersDB(std::vector<Player> *players);
 	error_t LoadAccountPlayerDB(Player *player, std::string& characterName);
 
@@ -240,8 +272,8 @@ class Account {
 	std::string password_;
 	uint32_t premium_remaining_days_;
 	time_t premium_last_day_;
-	uint32_t coin_balance;
-	uint32_t tournament_coin_balance;
+	uint32_t coinBalance;
+	uint32_t tournamentCoinBalance;
 	AccountType account_type_;
 };
 

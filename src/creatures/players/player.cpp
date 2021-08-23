@@ -4619,62 +4619,46 @@ void Player::setPremiumDays(int32_t v)
 	sendBasicData();
 }
 
-void Player::setStoreCoins(int32_t coins, CoinType_t coinType)
+void Player::setCoins(int32_t coins)
 {
-	switch (coinType) {
-		case COIN_TYPE_DEFAULT:
-		case COIN_TYPE_TRANSFERABLE: {
-			coinBalance = coins;
-			break;
-		}
-
-		case COIN_TYPE_TOURNAMENT: {
-			tournamentCoinBalance = coins;
-			break;
-		}
-
-		default: {
-			coinBalance = coins;
-			break;
-		}
-	}
+	coinBalance = coins;
 }
 
-bool Player::canRemoveStoreCoins(int32_t coins, CoinType_t coinType)
+void Player::setTournamentCoins(int32_t tournamentCoins)
+{
+	tournamentCoinBalance = tournamentCoins;
+}
+
+bool Player::canRemoveCoins(int32_t coins)
 {
 	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
 		// Update every 2 seconds
 		lastUpdateCoin = OTSYS_TIME() + 2000;
 
 		account::Account account(this->getAccount());
-		account.LoadAccountDB();
-		if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
-			this->coinBalance = account.GetCoins(coinType);
-		} else if (coinType == COIN_TYPE_TOURNAMENT) {
-			this->tournamentCoinBalance = account.GetCoins(coinType);
-		}
+		account.loadAccountDB();
+		this->coinBalance = account.getCoins();
 	}
 
-	int32_t removeCoins;
-	switch (coinType) {
-		case COIN_TYPE_DEFAULT:
-		case COIN_TYPE_TRANSFERABLE: {
-			removeCoins = coinBalance;
-			break;
-		}
-
-		case COIN_TYPE_TOURNAMENT: {
-			removeCoins = tournamentCoinBalance;
-			break;
-		}
-
-		default: {
-			removeCoins = coinBalance;
-			break;
-		}
-	}
+	int32_t removeCoins = coinBalance;
 
 	return (removeCoins - coins) >= 0;
+}
+
+bool Player::canRemoveTournamentCoins(int32_t tournamentCoins)
+{
+	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
+		// Update every 2 seconds
+		lastUpdateCoin = OTSYS_TIME() + 2000;
+
+		account::Account account(this->getAccount());
+		account.loadAccountDB();
+		this->tournamentCoinBalance = account.getTournamentCoins();
+	}
+
+	int32_t removeTournamentCoins = tournamentCoinBalance;
+
+	return (removeTournamentCoins - tournamentCoins) >= 0;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const
@@ -5165,36 +5149,6 @@ void Player::sendModalWindow(const ModalWindow& modalWindow)
 void Player::clearModalWindows()
 {
 	modalWindows.clear();
-}
-
-uint16_t Player::getHelpers() const
-{
-	uint16_t helpers;
-
-	if (guild && party) {
-		std::unordered_set<Player*> helperSet;
-
-		const auto& guildMembers = guild->getMembersOnline();
-		helperSet.insert(guildMembers.begin(), guildMembers.end());
-
-		const auto& partyMembers = party->getMembers();
-		helperSet.insert(partyMembers.begin(), partyMembers.end());
-
-		const auto& partyInvitees = party->getInvitees();
-		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
-
-		helperSet.insert(party->getLeader());
-
-		helpers = helperSet.size();
-	} else if (guild) {
-		helpers = guild->getMembersOnline().size();
-	} else if (party) {
-		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
-	} else {
-		helpers = 0;
-	}
-
-	return helpers;
 }
 
 void Player::sendClosePrivate(uint16_t channelId)

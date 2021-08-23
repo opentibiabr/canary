@@ -28,7 +28,7 @@ function getCoins.onSay(player, words, param)
 	end
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player ".. targetPlayer:getName() .." have \z
-                           ".. targetPlayer:getStoreCoins(COIN_TYPE_DEFAULT) .." store coins.")
+                           ".. targetPlayer:getCoins() .." coins.")
 	return true
 end
 
@@ -84,13 +84,13 @@ function addCoins.onSay(player, words, param)
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	targetPlayer:addStoreCoins(coins, COIN_TYPE_DEFAULT)
+	targetPlayer:addCoins(coins)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull added ".. coins .." \z
-                           store coins for the ".. targetPlayer:getName() .." account.")
+                           coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added \z
-	                             ".. coins .." store coins to your account.")
+	                             ".. coins .." coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." added ".. coins .." store coins to ".. targetPlayer:getName() .." account")
+	Spdlog.info("".. player:getName() .." added ".. coins .." coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 
@@ -139,20 +139,29 @@ function removeCoins.onSay(player, words, param)
 		coins = tonumber(split[2])
 	end
 
-	-- Check if the coins is valid
+	-- Check if the coins to remove is valid
 	if coins <= 0 or coins == nil then
-		player:sendCancelMessage("Invalid coins count.")
-		return false
+		return player:sendCancelMessage("Invalid coins count.")
+	end
+
+	-- Check if target player have coins
+	if targetPlayer:getCoins() <= 0 then
+		return player:sendCancelMessage("The player ".. targetPlayer:getName() .." has no coins to remove.")
+	end
+
+	-- Check target player have the count of coins to remove
+	if targetPlayer:getCoins() < coins then
+		return player:sendCancelMessage("The player does not have this amount of coins to remove, the player balance is ".. targetPlayer:getCoins() .." coins.")
 	end
 
 	targetPlayer:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-	targetPlayer:removeStoreCoins(coins, COIN_TYPE_DEFAULT)
+	targetPlayer:removeCoins(coins)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successfull removed ".. coins .." \z
-                           store coins for the ".. targetPlayer:getName() .." account.")
+                           coins for the ".. targetPlayer:getName() .." account.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." \z
-                                 removed ".. coins .." store coins to your account.")
+                                 removed ".. coins .." coins to your account.")
 	-- Distro log
-	Spdlog.info("".. player:getName() .." removed ".. coins .." store coins to ".. targetPlayer:getName() .." account")
+	Spdlog.info("".. player:getName() .." removed ".. coins .." coins to ".. targetPlayer:getName() .." account")
 	return true
 end
 

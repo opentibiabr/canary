@@ -525,19 +525,17 @@ class Player final : public Creature, public Cylinder
 		bool isPremium() const;
 		void setPremiumDays(int32_t v);
 
-		void setStoreCoins(int32_t coins, CoinType_t coinType = COIN_TYPE_DEFAULT);
-		bool canRemoveStoreCoins(int32_t coins, CoinType_t coinType = COIN_TYPE_DEFAULT);
-		int32_t getStoreCoinBalance(CoinType_t coinType = COIN_TYPE_DEFAULT) {
-			if (coinType == COIN_TYPE_DEFAULT || coinType == COIN_TYPE_TRANSFERABLE) {
-				return coinBalance;
-			} else if (coinType == COIN_TYPE_TOURNAMENT) {
-				return tournamentCoinBalance;
-			} else {
-				return 0;
-			}
+		void setCoins(int32_t coins);
+		bool canRemoveCoins(int32_t coins);
+		int32_t getCoinBalance() {
+			return coinBalance;
 		}
 
-		uint16_t getHelpers() const;
+		void setTournamentCoins(int32_t coins);
+		bool canRemoveTournamentCoins(int32_t coins);
+		int32_t getTournamentCoinBalance() {
+			return tournamentCoinBalance;
+		}
 
 		bool setVocation(uint16_t vocId);
 		uint16_t getVocationId() const {
@@ -1049,9 +1047,9 @@ class Player final : public Creature, public Cylinder
 				client->sendLockerItems(itemMap, count);
 			}
 		}
-		void sendStoreCoinBalance() {
+		void sendCoinBalance() {
 			if (client) {
-				client->sendStoreCoinBalance();
+				client->sendCoinBalance();
 			}
 		}
 		void sendInventoryItem(Slots_t slot, const Item* item) {
@@ -1083,9 +1081,9 @@ class Player final : public Creature, public Cylinder
 				client->openStore();
 			}
 		}
-		void updateStoreCoinBalance() {
+		void updateCoinBalance() {
 			if (client) {
-				client->updateStoreCoinBalance();
+				client->updateCoinBalance();
 			}
 		}
 
@@ -2049,12 +2047,12 @@ class Player final : public Creature, public Cylinder
 		int32_t offlineTrainingSkill = -1;
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
-		int32_t tournamentCoinBalance = 0;
 
 		uint16_t expBoostStamina = 0;
 		uint16_t entriesPerPage = 26;
 
 		uint32_t coinBalance = 0;
+		uint32_t tournamentCoinBalance = 0;
 		uint32_t premiumDays = 0;
 
 		uint16_t lastStatsTrainingTime = 0;

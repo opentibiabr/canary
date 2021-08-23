@@ -44,7 +44,7 @@
 		<banner image="store_home_banner.png" />
 	</home>
 
-	<!-- Offers -->
+	<!-- Store offer -->
 	<!-- Premium time -->
 	<offer name="Premium Time" icon="Category_PremiumTime.png" rookgaard="yes" state="sale" >
 		<offers name="30 Days of Premium" count="1" price="250" itemid="14758" icon="Product_PremiumTime30.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7127" state="sale" validUntil="30" />

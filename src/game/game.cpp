@@ -8345,7 +8345,7 @@ void Game::playerOpenStore(uint32_t playerId, bool openStore, StoreOffers* offer
 		player->openStore();
 	} else if (offers == nullptr) {
 		player->sendStoreHome();
-	} else if (offers != nullptr) {
+	} else {
 		player->sendShowStoreOffers(offers);
 	}
 

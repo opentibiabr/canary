@@ -2582,9 +2582,7 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage& msg)
 	}
 
 	StoreOffers* offers = nullptr;
-	if (actionType == 0) {
-		offers = g_store.getOfferByName(g_config.getString(DEFAULT_OFFER));
-	} else if (actionType == 2) {
+	if (actionType == 2) {
 		std::string categoryName = msg.getString();
 		offers = g_store.getOfferByName(categoryName);
 	} else if (actionType == 4) {
@@ -6627,8 +6625,9 @@ void ProtocolGame::sendShowStoreOffers(StoreOffers* offers)
 	uint16_t count = 0;
 	std::map<std::string, std::vector<StoreOffer*>> organized = g_store.getStoreOrganizedByName(offers);
 	for (const auto& it : organized) {
-		if (!it.first.empty())
+		if (!it.first.empty()) {
 			count++;
+		}
 	}
 
 	msg.add<uint16_t>(count);
@@ -6776,8 +6775,9 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 		lastitemid = (*offer)->getItemType();
 		lastoutfit = (player->getSex() == PLAYERSEX_FEMALE ? (*offer)->getOutfitFemale() : (*offer)->getOutfitMale());
 		lastmount = (*offer)->getMount();
-		if (lastid == 0)
+		if (lastid == 0) {
 			lastid = (*offer)->getId();
+		}
 
 		msg.add<uint32_t>((*offer)->getId());
 		msg.add<uint16_t>((*offer)->getCount());
@@ -6788,7 +6788,7 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 		msg.addByte(!disabled.empty());
 		if (!disabled.empty()) {
 			msg.addByte(0x01);
-				msg.addString(disabled);
+			msg.addString(disabled);
 		}
 
 		if ((*offer)->getOfferState() == OFFER_STATE_SALE) {
@@ -6828,7 +6828,7 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 	// Version 1220+
 	msg.addByte(0x00);
 
-	msg.add<uint16_t>(0x00); // category
+	msg.add<uint16_t>(0x00); // Category
 
 	msg.add<uint16_t>(298);
 	msg.add<uint32_t>(lasttype == OFFER_TYPE_NAME_CHANGE ? lastid : 0x00);

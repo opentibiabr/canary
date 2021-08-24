@@ -106,7 +106,7 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const
 	}
 }
 
-uint32_t Monster::getReflectValue(CombatType_t reflectType) const {
+uint32_t Monster::getReflectPercent(CombatType_t reflectType) const {
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
 		return it->second;

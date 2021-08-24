@@ -362,6 +362,42 @@ class Player final : public Creature, public Cylinder
 		Party* getParty() const {
 			return party;
 		}
+
+		uint32_t getReflectPercent(CombatType_t combatType) const override;
+		uint32_t getReflectFlat(CombatType_t combatType) const override;
+
+		void setReflectPercent(CombatType_t combatType, int32_t value) {
+			this->reflectMapPercent[combatType] += value;
+		}
+		void setReflectFlat(CombatType_t combatType, int32_t value) {
+			this->reflectMapFlat[combatType] += value;
+		}
+
+		uint16_t getCleavePercent() const {
+			return cleavePercent;
+		}
+
+		void setCleavePercent(uint16_t value) {
+			cleavePercent += value;
+		}
+
+		int32_t getPerfectShotDamage(uint8_t range) const {
+			auto it = perfectShot.find(range);
+			if (it != perfectShot.end())
+				return it->second;
+			return 0;
+		}
+
+		void setPerfectShotDamage(uint8_t range, int32_t damage) {
+			int32_t actualDamage = getPerfectShotDamage(range);
+			bool aboveZero = (actualDamage != 0);
+			actualDamage += damage;
+			if (actualDamage == 0 && aboveZero)
+				perfectShot.erase(range);
+			else
+				perfectShot[range] = actualDamage;
+		}
+
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
 		bool isPartner(const Player* player) const;
@@ -2107,6 +2143,11 @@ class Player final : public Creature, public Cylinder
 		bool supplyStash = false; // Menu option 'stow, stow container ...'
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
+
+		std::map<CombatType_t, int32_t> reflectMapPercent;
+		std::map<CombatType_t, int32_t> reflectMapFlat;
+		uint16_t cleavePercent = 0;
+		std::map<uint8_t, int32_t> perfectShot;
 
 		static uint32_t playerAutoID;
 

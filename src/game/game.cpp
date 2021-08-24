@@ -5447,13 +5447,14 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		CombatDamage damageReflected;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	if (damage.primary.type != COMBAT_NONE) {
+	if (!damage.extension && damage.primary.type != COMBAT_NONE) {
 		// Damage reflection primary
-		if (attacker && target->getMonster()) {
-			uint32_t primaryReflect = target->getMonster()->getReflectValue(damage.primary.type);
-			if (primaryReflect > 0) {
+		if (attacker) {
+			uint32_t primaryReflectPercent = target->getReflectPercent(damage.primary.type);
+			uint32_t primaryReflectFlat = target->getReflectFlat(damage.primary.type);
+			if (primaryReflectPercent > 0 || primaryReflectFlat > 0) {
+				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflectPercent / 100.)) + std::min(damage.primary.value, static_cast<int32_t>(primaryReflectFlat));
 				damageReflected.primary.type = damage.primary.type;
-				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflect / 100.));
 				damageReflected.extension = true;
 				damageReflected.exString = "(damage reflection)";
 				canReflect = true;
@@ -5476,20 +5477,21 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		primaryBlockType = BLOCK_NONE;
 	}
 
-	if (damage.secondary.type != COMBAT_NONE) {
+	if (!damage.extension && damage.secondary.type != COMBAT_NONE) {
 		// Damage reflection secondary
-		if (attacker && target->getMonster()) {
-			uint32_t secondaryReflect = target->getMonster()->getReflectValue(damage.secondary.type);
-			if (secondaryReflect > 0) {
+		if (attacker) {
+			uint32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type);
+			uint32_t secondaryReflectFlat = target->getReflectFlat(damage.secondary.type);
+			if (secondaryReflectPercent > 0 || secondaryReflectFlat > 0) {
 				if (!canReflect) {
 					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectFlat));
 					damageReflected.extension = true;
 					damageReflected.exString = "(damage reflection)";
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectFlat));
 				}
 			}
 		}
@@ -5737,6 +5739,27 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
+
+		bool perfectShot = false;
+		if (attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
+			const Position& targetPos = target->getPosition();
+			const Position& attackerPos = attacker->getPosition();
+			if (targetPos.z == attackerPos.z) {
+				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);
+				int32_t distanceY = Position::getDistanceY(targetPos, attackerPos);
+				int32_t damageX = attackerPlayer->getPerfectShotDamage(distanceX);
+				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY);
+				if (damageX != 0 || damageY != 0) {
+					int32_t totalDamage = damageX;
+					if (distanceX != distanceY)
+						totalDamage += damageY;
+					if (damage.critical)
+						totalDamage += (totalDamage * attackerPlayer->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE));
+					damage.primary.value += totalDamage;
+					perfectShot = true;
+				}
+			}
+		}
 
 		TextMessage message;
 		message.position = targetPos;

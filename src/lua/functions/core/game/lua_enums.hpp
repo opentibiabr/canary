@@ -313,6 +313,12 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, CONST_ME_ROOTS)
 			registerEnum(L, CONST_ME_CHIVALRIOUS_CHALLENGE)
 			registerEnum(L, CONST_ME_DIVINE_DAZZLE)
+			registerEnum(L, CONST_ME_PINK_SPARKS)
+			registerEnum(L, CONST_ME_TELEPORT_PURPLE)
+			registerEnum(L, CONST_ME_TELEPORT_RED)
+			registerEnum(L, CONST_ME_TELEPORT_ORANGE)
+			registerEnum(L, CONST_ME_TELEPORT_WHITE)
+			registerEnum(L, CONST_ME_TELEPORT_LIGHTBLUE)
 
 			registerEnum(L, CONST_ANI_NONE)
 			registerEnum(L, CONST_ANI_SPEAR)

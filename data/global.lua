@@ -144,28 +144,29 @@ end
 -- Increase Stamina when Attacking Trainer
 staminaBonus = {
 	target = 'Training Machine',
-	period = configManager.getNumber(configKeys.STAMINA_TRAINER_DELAY) * 60 * 1000, -- time on miliseconds
-	bonus = configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN), -- gain stamina
-	events = {}
+	period = configManager.getNumber(configKeys.STAMINA_TRAINER_DELAY) * 60 * 1000, -- time on miliseconds trainers
+	bonus = configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN), -- gain stamina trainers
+	eventsTrainer = {}, -- stamina in trainers
+	eventsPz = {} -- stamina in Pz
 }
 
-function addStamina(name, ...)
+function addStamina(id, ...)
 	-- Creature:onTargetCombat
-	if name then
-		local player = Player(name)
+	if id then
+		local player = Player(id)
 		if configManager.getBoolean(configKeys.STAMINA_TRAINER) then
 			if not player then
-				staminaBonus.events[name] = nil
+				staminaBonus.eventsTrainer[id] = nil
 			else
 				local target = player:getTarget()
 				if not target or target:getName() ~= staminaBonus.target then
-					staminaBonus.events[name] = nil
+					staminaBonus.eventsTrainer[id] = nil
 				else
 					player:setStamina(player:getStamina() + staminaBonus.bonus)
 					player:sendTextMessage(MESSAGE_STATUS_SMALL,
 																string.format("%i of stamina has been refilled.",
 																configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
-					staminaBonus.events[name] = addEvent(addStamina, staminaBonus.period, name)
+					staminaBonus.eventsTrainer[id] = addEvent(addStamina, staminaBonus.period, id)
 				end
 			end
 		end
@@ -176,12 +177,12 @@ function addStamina(name, ...)
 	local id, delay = ...
 
 	if id and delay then
-		if not staminaBonus.events[id] then return false end
-		stopEvent(staminaBonus.events[id])
+		if not staminaBonus.eventsPz[id] then return false end
+		stopEvent(staminaBonus.eventsPz[id])
 
 		local player = Player(id)
 		if not player then
-			staminaBonus.events[id] = nil
+			staminaBonus.eventsPz[id] = nil
 			return false
 		end
 
@@ -191,7 +192,7 @@ function addStamina(name, ...)
 			delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY) * 60 * 1000 -- Stamina Green 12 min.
 		elseif actualStamina == 2520 then
 			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are no longer refilling stamina, because your stamina is already full.")
-			staminaBonus.events[id] = nil
+			staminaBonus.eventsPz[id] = nil
 			return false
 		end
 
@@ -199,7 +200,7 @@ function addStamina(name, ...)
 		player:sendTextMessage(MESSAGE_STATUS_SMALL,
 																string.format("%i of stamina has been refilled.",
 																configManager.getNumber(configKeys.STAMINA_PZ_GAIN)))
-		staminaBonus.events[id] = addEvent(addStamina, delay, nil, id, delay)
+																staminaBonus.eventsPz[id] = addEvent(addStamina, delay, nil, id, delay)
 		return true
 	end
 	return false

@@ -135,6 +135,15 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 			registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 			registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
+
+			registerEnumIn(L, "configKeys", STAMINA_TRAINER)
+			registerEnumIn(L, "configKeys", STAMINA_PZ)
+			registerEnumIn(L, "configKeys", STAMINA_ORANGE_DELAY)
+			registerEnumIn(L, "configKeys", STAMINA_GREEN_DELAY)
+			registerEnumIn(L, "configKeys", STAMINA_TRAINER_DELAY)
+			registerEnumIn(L, "configKeys", STAMINA_PZ_GAIN)
+			registerEnumIn(L, "configKeys", STAMINA_TRAINER_GAIN)
+
 			#undef registerEnumIn
 		}
 

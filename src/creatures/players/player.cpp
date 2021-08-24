@@ -1396,6 +1396,7 @@ void Player::onChangeZone(ZoneType_t zone)
 
 	g_game.updateCreatureWalkthrough(this);
 	sendIcons();
+	g_events->eventPlayerOnChangeZone(this, zone);
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone)

@@ -176,10 +176,10 @@ bool ConfigManager::load()
 
 	boolean[WEATHER_RAIN] = getGlobalBoolean(L, "weatherRain", false);
 	boolean[WEATHER_THUNDER] = getGlobalBoolean(L, "thunderEffect", false);
-
 	boolean[ALL_CONSOLE_LOG] = getGlobalBoolean(L, "allConsoleLog", false);
-
 	boolean[FREE_QUESTS] = getGlobalBoolean(L, "freeQuests", false);
+	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
+	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 
@@ -233,6 +233,12 @@ bool ConfigManager::load()
 
 	integer[PUSH_DELAY] = getGlobalNumber(L, "pushDelay", 1000);
 	integer[PUSH_DISTANCE_DELAY] = getGlobalNumber(L, "pushDistanceDelay", 1500);
+
+	integer[STAMINA_ORANGE_DELAY] = getGlobalNumber(L, "staminaOrangeDelay", 1);
+	integer[STAMINA_GREEN_DELAY] = getGlobalNumber(L, "staminaGreenDelay", 5);
+	integer[STAMINA_PZ_GAIN] = getGlobalNumber(L, "staminaPzGain", 1);
+	integer[STAMINA_TRAINER_DELAY] = getGlobalNumber(L, "staminaTrainerDelay", 5);
+	integer[STAMINA_TRAINER_GAIN] = getGlobalNumber(L, "staminaTrainerGain", 1);
 
 	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
 	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);

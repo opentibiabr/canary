@@ -19,9 +19,27 @@ CREATE TABLE IF NOT EXISTS `accounts` (
     `lastday` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
     `coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
-    `tournament_coins` INT(11) NOT NULL DEFAULT '0',
+    `tournament_coins` int(11) NOT NULL DEFAULT '0',
     `creation` int(11) UNSIGNED NOT NULL DEFAULT '0',
-    `recruiter` INT(6) DEFAULT 0,
+    `recruiter` int(6) DEFAULT 0,
+    CONSTRAINT `accounts_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `accounts_unique` UNIQUE (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `coins_transactions`
+CREATE TABLE IF NOT EXISTS `coins_transactions` (
+    `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `account_id` int(11) UNSIGNED NOT NULL,
+    `type` tinyint(1) UNSIGNED NOT NULL,
+    `coin_type` tinyint(1) UNSIGNED NOT NULL,
+    `amount` int(12) UNSIGNED NOT NULL,
+    `description` varchar(3500),
+    `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+    INDEX `account_id` (`account_id`),
+    CONSTRAINT `coins_transactions_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `coins_transactions_account_fk`
+    FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+    ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `players`
@@ -654,17 +672,6 @@ CREATE TABLE IF NOT EXISTS `player_storage` (
 
 -- --------------------------------------------------------
 
--- Table structure `store_history`
-CREATE TABLE IF NOT EXISTS `store_history` (
-    `account_id` int(11) NOT NULL,
-    `mode` tinyint(1) NOT NULL DEFAULT 0,
-    `amount` int(11) NOT NULL,
-    `coinMode` tinyint(2) NOT NULL DEFAULT 0,
-    `description` varchar(255) DEFAULT NULL,
-    `cust` int(11) NOT NULL,
-    `time` bigint(20) DEFAULT NULL,
-    INDEX `account_id` (`account_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `tile_store`
 CREATE TABLE IF NOT EXISTS `tile_store` (

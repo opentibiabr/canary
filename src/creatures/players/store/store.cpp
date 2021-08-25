@@ -32,12 +32,14 @@ const std::unordered_map<std::string, CoinType_t> CoinTypeMap = {
 	{"transferable", COIN_TYPE_TRANSFERABLE},
 	{"tournament", COIN_TYPE_TOURNAMENT}
 };
+
 const std::unordered_map<std::string, OfferStates_t> OfferStatesMap = {
 	{"none", OFFER_STATE_NONE},
 	{"new", OFFER_STATE_NEW},
 	{"sale", OFFER_STATE_SALE},
 	{"timed", OFFER_STATE_TIMED}
 };
+
 const std::unordered_map<std::string, OfferTypes_t> OfferTypesMap = {
 	{"none", OFFER_TYPE_NONE},
 	{"item", OFFER_TYPE_ITEM},
@@ -518,7 +520,6 @@ std::map<std::string, std::vector<StoreOffer*>> Store::getStoreOrganizedByName(S
 		}
 	}
 
-
 	return filter;
 }
 
@@ -599,22 +600,22 @@ std::string StoreOffer::getDisabledReason(Player* player) {
 		}
 	} else if (type == OFFER_TYPE_SKULL_REMOVE) {
 		if (player->getSkull() != skull) {
-			disabledReason = "This offer is disabled for you"; 
+			disabledReason = "This offer is disabled for you";
 		}
 	} else if (type == OFFER_TYPE_FRAG_REMOVE) {
 		if (player->unjustifiedKills.empty()) {
-			disabledReason = "You have no frag to remove."; 
+			disabledReason = "You have no frag to remove.";
 		}
 	} else if (type == OFFER_TYPE_RECOVERY_KEY) {
 		int32_t value;
 		player->getAccountStorageValue(1, value);
 		if (value > OS_TIME(nullptr)) {
-			disabledReason = "You recently generated an RK."; 
+			disabledReason = "You recently generated an RK.";
 		}
 	}
 
 	if (player->getVocation()->getId() == 0 && !rookgaard) {
-		disabledReason = "This offer is deactivated."; 
+		disabledReason = "This offer is deactivated.";
 	}
 
 	if (player->getCoinBalance() - getPrice(player) < 0) {
@@ -696,9 +697,12 @@ StoreOffer* Store::getOfferById(uint32_t id) {
 uint32_t StoreOffer::getPrice(Player* player) {
 	uint32_t offerBasePrice = 0;
 	if (state == OFFER_STATE_SALE) {
-		time_t mytime;
-		mytime = time(NULL);
-		struct tm tm = *localtime(&mytime);
+		time_t my_time;
+		struct tm tm;
+
+		my_time = time(NULL);
+		localtime_r(&my_time, &tm);
+
 		int32_t daySub = validUntil - tm.tm_mday;
 		if (daySub < 0) {
 			offerBasePrice = basePrice;

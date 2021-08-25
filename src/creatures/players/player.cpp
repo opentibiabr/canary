@@ -4631,15 +4631,27 @@ void Player::setTournamentCoins(int32_t tournamentCoins)
 
 bool Player::canRemoveCoins(int32_t coins)
 {
+	int result;
+
 	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
 		// Update every 2 seconds
 		lastUpdateCoin = OTSYS_TIME() + 2000;
 
 		account::Account account(this->getAccount());
-		account.loadAccountDB();
-		this->coinBalance = account.getCoins();
-	}
+		if(account::ERROR_NO != account.LoadAccountDB())
+		{
+			SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+			return false;
+		};
 
+		if(auto [ coinBalance, result ] = account.GetCoins() ;
+			account::ERROR_NO != result)
+		{
+			SPDLOG_ERROR("Failed to get Coins for account: [{}]",
+				this->getAccount());
+			return false;
+		};
+	}
 	int32_t removeCoins = coinBalance;
 
 	return (removeCoins - coins) >= 0;
@@ -4652,8 +4664,20 @@ bool Player::canRemoveTournamentCoins(int32_t tournamentCoins)
 		lastUpdateCoin = OTSYS_TIME() + 2000;
 
 		account::Account account(this->getAccount());
-		account.loadAccountDB();
-		this->tournamentCoinBalance = account.getTournamentCoins();
+		if(account::ERROR_NO != account.LoadAccountDB())
+		{
+			SPDLOG_ERROR("Failed to load Account: [{}]",
+				account.GetID());
+			return false;
+		};
+
+		if(auto [ tournamentCoinBalance, result ] = account.GetTournamentCoins() ;
+			account::ERROR_NO != result)
+		{
+			SPDLOG_ERROR("Failed to get Tournament Coins for account: [{}]",
+				this->getAccount());
+			return false;
+		};
 	}
 
 	int32_t removeTournamentCoins = tournamentCoinBalance;

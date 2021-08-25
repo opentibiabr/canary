@@ -2318,10 +2318,21 @@ int PlayerFunctions::luaPlayerAddCoins(lua_State* L) {
 		int32_t addCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getCoinBalance(), coins);
 		if (addCoins > 0) {
 			account::Account account(player->getAccount());
-			account.loadAccountDB();
+			if(account::ERROR_NO != account.LoadAccountDB()) {
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
+			if(account::ERROR_NO != account.AddCoins(addCoins)) {
+				SPDLOG_ERROR("Failed to add coins to Account: [{}]", account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
 			player->setCoins(player->getCoinBalance() + addCoins);
-			account.addCoins(addCoins);
 			lua_pushnumber(L, addCoins);
+
 		}
 	}
 	return 1;
@@ -2345,9 +2356,21 @@ int PlayerFunctions::luaPlayerRemoveCoins(lua_State* L) {
 	if (player->getCoinBalance() != std::numeric_limits<int32_t>::max()) {
 		if (removeCoins > 0) {
 			account::Account account(player->getAccount());
-			account.loadAccountDB();
+			if(account::ERROR_NO != account.LoadAccountDB()) {
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
+			if(account::ERROR_NO != account.RemoveCoins(removeCoins)) {
+				SPDLOG_ERROR("Failed to remove coins from Account: [{}]", account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
 			player->setCoins(player->getCoinBalance() - removeCoins);
-			account.removeCoins(removeCoins);
+			lua_pushnumber(L, removeCoins);
+
 		}
 	}
 	return 1;
@@ -2382,9 +2405,20 @@ int PlayerFunctions::luaPlayerAddTournamentCoins(lua_State* L) {
 		int32_t addTournamentCoins = std::min<int32_t>(std::numeric_limits<int32_t>::max() - player->getTournamentCoinBalance(), tournamentCoins);
 		if (addTournamentCoins > 0) {
 			account::Account account(player->getAccount());
-			account.loadAccountDB();
+			if(account::ERROR_NO != account.LoadAccountDB()) {
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
+			if(account::ERROR_NO != account.AddTournamentCoins(addTournamentCoins)) {
+				SPDLOG_ERROR("Failed to add tournament coins to Account: [{}]",
+					account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
 			player->setTournamentCoins(player->getTournamentCoinBalance() + addTournamentCoins);
-			account.addTournamentCoins(addTournamentCoins);
 			lua_pushnumber(L, addTournamentCoins);
 		}
 	}
@@ -2409,9 +2443,22 @@ int PlayerFunctions::luaPlayerRemoveTournamentCoins(lua_State* L) {
 	if (player->getTournamentCoinBalance() != std::numeric_limits<int32_t>::max()) {
 		if (removeTournamentCoins > 0) {
 			account::Account account(player->getAccount());
-			account.loadAccountDB();
+			if(account::ERROR_NO != account.LoadAccountDB()) {
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
+			account.RemoveTournamentCoins(removeTournamentCoins);
+			if(account::ERROR_NO != account.RemoveTournamentCoins(removeTournamentCoins)) {
+				SPDLOG_ERROR("Failed to add tournament coins to Account: [{}]",
+					account.GetID());
+				pushBoolean(L, false);
+				return 1;
+			}
+
 			player->setTournamentCoins(player->getTournamentCoinBalance() - removeTournamentCoins);
-			account.removeTournamentCoins(removeTournamentCoins);
+			lua_pushnumber(L, removeTournamentCoins);
 		}
 	}
 	return 1;

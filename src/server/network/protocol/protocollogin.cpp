@@ -50,10 +50,11 @@ void ProtocolLogin::disconnectClient(const std::string& message, uint16_t versio
 
 void ProtocolLogin::getCharacterList(const std::string& email, const std::string& password, uint16_t version)
 {
-	account::Account account;
-	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
-		disconnectClient("Email or password is not correct", version);
-		return;
+  int result = 0;
+  account::Account account;
+  if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
+    disconnectClient("Email or password is not correct", version);
+    return;
 	}
 
 	// Update premium days
@@ -76,7 +77,11 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 
 	// Add char list
 	std::vector<account::Player> players;
-	account.GetAccountPlayers(&players);
+	if (auto [ players, result ] = account.GetAccountPlayers();
+		account::ERROR_NO != result) {
+		SPDLOG_ERROR("Failed to load Account [{}] players. (Error: [{}])",
+			account.GetID(), result);
+	}
 	output->addByte(0x64);
 
 	output->addByte(1);  // number of worlds
@@ -104,7 +109,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 		output->add<uint32_t>(0);
 	} else {
 	uint32_t days;
-	account.GetPremiumRemaningDays(&days);
+	days = account.GetPremiumRemaningDays();
 	output->addByte(0);
 	output->add<uint32_t>(time(nullptr) + (days * 86400));
   }

@@ -398,6 +398,30 @@ class Player final : public Creature, public Cylinder
 				perfectShot[range] = actualDamage;
 		}
 
+		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
+			return specializedMagicLevel[combatTypeToIndex(combat)];
+		}
+
+		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
+			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
+		}
+
+		int32_t getMagicShieldCapacityFlat() const {
+			return magicShieldCapacityFlat;
+		}
+
+		int16_t getMagicShieldCapacityPercent() const {
+			return magicShieldCapacityPercent;
+		}
+
+		void setMagicShieldCapacityFlat(int32_t value) {
+			magicShieldCapacityFlat += value;
+		}
+
+		void setMagicShieldCapacityPercent(int16_t value) {
+			magicShieldCapacityPercent += value;
+		}
+
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
 		bool isPartner(const Player* player) const;
@@ -2148,6 +2172,9 @@ class Player final : public Creature, public Cylinder
 		std::map<CombatType_t, int32_t> reflectMapFlat;
 		uint16_t cleavePercent = 0;
 		std::map<uint8_t, int32_t> perfectShot;
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		int32_t magicShieldCapacityFlat = 0;
+		int16_t magicShieldCapacityPercent = 0;
 
 		static uint32_t playerAutoID;
 

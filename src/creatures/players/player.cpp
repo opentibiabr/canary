@@ -3737,22 +3737,6 @@ void Player::doAttacking(uint32_t)
 	}
 }
 
-uint32_t Player::getReflectFlat(CombatType_t reflectType) const {
-	auto it = reflectMapFlat.find(reflectType);
-	if (it != reflectMapFlat.end()) {
-		return std::min<uint32_t>(std::round(getMaxHealth() * 0.01), it->second);
-	}
-	return 0;
-}
-
-uint32_t Player::getReflectPercent(CombatType_t reflectType) const {
-	auto it = reflectMapPercent.find(reflectType);
-	if (it != reflectMapPercent.end()) {
-		return it->second;
-	}
-	return 0;
-}
-
 uint64_t Player::getGainedExperience(Creature* attacker) const
 {
 	if (g_config.getBoolean(EXPERIENCE_FROM_PLAYERS)) {

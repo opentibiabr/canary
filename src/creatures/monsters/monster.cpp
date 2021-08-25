@@ -1180,7 +1180,7 @@ bool Monster::pushCreature(Creature* creature)
 	for (Direction dir : dirList) {
 		const Position& tryPos = Spells::getCasterPosition(creature, dir);
 		Tile* toTile = g_game.map.getTile(tryPos);
-		if (toTile && !toTile->hasFlag(TILESTATE_BLOCKPATH)) {
+		if (toTile && !toTile->hasFlag(TILESTATE_BLOCKPATH) && !toTile->getCreatures()) {
 			if (g_game.internalMoveCreature(creature, dir) == RETURNVALUE_NOERROR) {
 				return true;
 			}
@@ -1254,8 +1254,8 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 		}
 	}
 
-	if (result && (canPushItems() || canPushCreatures())) {
-		const Position& pos = Spells::getCasterPosition(this, direction);
+	if (result) {
+		const Position& pos = getNextPosition(nextDirection, getPosition());
 		Tile* posTile = g_game.map.getTile(pos);
 		if (posTile) {
 			if (canPushItems()) {

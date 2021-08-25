@@ -135,7 +135,7 @@ class Account {
 	/** Coins
 		* @brief Get the amount of coins that the account has from database.
 		*
-		* @param coins Pointer to return the number of coins
+		* @return uint32_t Number of coins
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
 	std::tuple<uint32_t, error_t> GetCoins();
@@ -159,6 +159,7 @@ class Account {
 	/** Tournament Coins
 		* @brief Get the amount of tournament coins that the account has from database.
 		*
+		* @return uint32_t Number of tournament coins
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
 	std::tuple<uint32_t, error_t> GetTournamentCoins();
@@ -192,7 +193,7 @@ class Account {
 	error_t LoadAccountDB();
 
 	/**
-		* @brief Try to
+		* @brief Try to load account from DB using Account Name
 		*
 		* @param name
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
@@ -200,15 +201,15 @@ class Account {
 	error_t LoadAccountDB(std::string name);
 
 	/**
-		* @brief
+		* @brief Try to load account from DB using Account ID
 		*
-		* @param id
+		* @param id Account ID
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
 	error_t LoadAccountDB(uint32_t id);
 
 	/**
-		* @brief
+		* @brief Save Account to DB
 		*
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
@@ -250,7 +251,9 @@ class Account {
 		*
 		* @param type Type of the transaction(Add/Remove).
 		* @param coins Amount of coins
+		* @param coin_type Type of the coin
 		* @param description Description of the transaction
+		*
 		* @return error_t ERROR_NO(0) Success, otherwise Fail.
 		*/
 	error_t RegisterCoinsTransaction(CoinTransactionType type, uint32_t coins,

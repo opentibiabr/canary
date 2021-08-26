@@ -855,6 +855,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		g_game.addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
+	if (params.combatType == COMBAT_HEALING && target->getMonster()){
+		if (target != caster)		{
+			return;
+		}
+	}
+
 	if(caster && caster->getPlayer()){
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);

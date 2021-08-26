@@ -578,6 +578,10 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 		}
 	}
 
+	if ((attr = node.attribute("allowOnSelf"))) {
+		allowOnSelf = attr.as_bool();
+	}
+
 	if ((attr = node.attribute("aggressive"))) {
 		aggressive = booleanString(attr.as_string());
 	}
@@ -667,7 +671,7 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
-	if (isInstant() && isLearnable()) {
+	if (isInstant() && getNeedLearn()) {
 		if (!player->hasLearnedInstantSpell(getName())) {
 			player->sendCancelMessage(RETURNVALUE_YOUNEEDTOLEARNTHISSPELL);
 			g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
@@ -921,6 +925,7 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 	}
 
 	LuaVariant var;
+	Player* playerTarget = nullptr;
 
 	if (selfTarget) {
 		var.type = VARIANT_NUMBER;
@@ -930,7 +935,6 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 		bool useDirection = false;
 
 		if (hasParam) {
-			Player* playerTarget = nullptr;
 			ReturnValue ret = g_game.getPlayerByNameWildcard(param, playerTarget);
 
 			if (playerTarget && playerTarget->isAccessPlayer() && !player->isAccessPlayer()) {
@@ -1000,7 +1004,6 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 		var.type = VARIANT_STRING;
 
 		if (getHasPlayerNameParam()) {
-			Player* playerTarget = nullptr;
 			ReturnValue ret = g_game.getPlayerByNameWildcard(param, playerTarget);
 
 			if (ret != RETURNVALUE_NOERROR) {
@@ -1044,7 +1047,17 @@ bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 		}
 	}
 
-	bool result = internalCastSpell(player, var);
+	if (!allowOnSelf && playerTarget && playerTarget->getName() == player->getName()) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return false;
+	}
+
+	auto worldType = g_game.getWorldType();
+	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
+		player->addInFightTicks(true);
+	}
+
+	bool result = executeCastSpell(player, var);
 	if (result) {
 		postCastSpell(player);
 	}
@@ -1077,7 +1090,7 @@ bool InstantSpell::castSpell(Creature* creature)
 
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
-			return internalCastSpell(creature, var);
+			return executeCastSpell(creature, var);
 		}
 
 		return false;
@@ -1089,7 +1102,7 @@ bool InstantSpell::castSpell(Creature* creature)
 		var.pos = creature->getPosition();
 	}
 
-	return internalCastSpell(creature, var);
+	return executeCastSpell(creature, var);
 }
 
 bool InstantSpell::castSpell(Creature* creature, Creature* target)
@@ -1098,15 +1111,10 @@ bool InstantSpell::castSpell(Creature* creature, Creature* target)
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
-		return internalCastSpell(creature, var);
+		return executeCastSpell(creature, var);
 	} else {
 		return castSpell(creature);
 	}
-}
-
-bool InstantSpell::internalCastSpell(Creature* creature, const LuaVariant& var)
-{
-	return executeCastSpell(creature, var);
 }
 
 bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
@@ -1144,7 +1152,7 @@ bool InstantSpell::canCast(const Player* player) const
 		return true;
 	}
 
-	if (isLearnable()) {
+	if (getNeedLearn()) {
 		if (player->hasLearnedInstantSpell(getName())) {
 			return true;
 		}
@@ -1263,7 +1271,8 @@ bool RuneSpell::executeUse(Player* player, Item* item, const Position&, Thing* t
 		player->updateSupplyTracker(item);
 	}
 
-	if (getPzOnUse() && g_game.getWorldType() == WORLD_TYPE_PVP) {
+	auto worldType = g_game.getWorldType();
+	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
 		player->addInFightTicks(true);
 	}
 

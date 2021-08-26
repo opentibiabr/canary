@@ -46,6 +46,8 @@ class SpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "Spell", "needTarget", SpellFunctions::luaSpellNeedTarget);
 			registerMethod(L, "Spell", "needWeapon", SpellFunctions::luaSpellNeedWeapon);
 			registerMethod(L, "Spell", "needLearn", SpellFunctions::luaSpellNeedLearn);
+			registerMethod(L, "Spell", "allowOnSelf", SpellFunctions::luaSpellAllowOnSelf);
+			registerMethod(L, "Spell", "setPzLocked", SpellFunctions::luaSpellPzLocked);
 			registerMethod(L, "Spell", "isSelfTarget", SpellFunctions::luaSpellSelfTarget);
 			registerMethod(L, "Spell", "isBlocking", SpellFunctions::luaSpellBlocking);
 			registerMethod(L, "Spell", "isAggressive", SpellFunctions::luaSpellAggressive);
@@ -86,6 +88,8 @@ class SpellFunctions final : LuaScriptInterface {
 		static int luaSpellPremium(lua_State* L);
 		static int luaSpellEnabled(lua_State* L);
 		static int luaSpellNeedTarget(lua_State* L);
+		static int luaSpellAllowOnSelf(lua_State* L);
+		static int luaSpellPzLocked(lua_State* L);
 		static int luaSpellNeedWeapon(lua_State* L);
 		static int luaSpellNeedLearn(lua_State* L);
 		static int luaSpellSelfTarget(lua_State* L);

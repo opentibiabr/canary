@@ -410,14 +410,11 @@ int8_t IOBestiary::calculateDifficult(uint32_t chance) const
 
 	if (chanceInPercent < 0.2) {
 		return 4;
-	}
-	else if (chanceInPercent < 1) {
+	} else if (chanceInPercent < 1) {
 		return 3;
-	}
-	else if (chanceInPercent < 5) {
+	} else if (chanceInPercent < 5) {
 		return 2;
-	}
-	else if (chanceInPercent < 25) {
+	} else if (chanceInPercent < 25) {
 		return 1;
 	}
 	return 0;

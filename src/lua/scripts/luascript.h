@@ -35,7 +35,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		virtual bool initState();
 		bool reInitState();
 
-		int32_t loadFile(const std::string& file);
+		int32_t loadFile(const std::string& file, NpcOld* npcOld = nullptr);
 
 		const std::string& getFileById(int32_t scriptId);
 		int32_t getEvent(const std::string& eventName);

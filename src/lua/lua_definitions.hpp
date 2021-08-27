@@ -36,7 +36,10 @@ enum LuaDataType {
 	LuaData_Teleport,
 	LuaData_Player,
 	LuaData_Monster,
+	// Lua npcs
 	LuaData_Npc,
+	// XML npcs
+	LuaData_NpcOld,
 	LuaData_Tile,
 };
 

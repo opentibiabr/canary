@@ -1,2 +1,15 @@
+<!--
+	NOTE: 
+    The npc type="xml" is the name of file (data/npcxml/filename)
+    The npc type="lua" is the name inside of lua file, in the Game.createNpcType("name") folder (data/npclua/)
+    
+-->
 <?xml version="1.0"?>
-<npcs/>
+<npcs>
+	<npc centerx="5010" centery="4998" centerz="7" radius="3">
+		<npc name="NPC Canary (Lua)" type="lua" x="0" y="0" z="0" spawntime="60" />
+	</npc>
+	<npc centerx="5001" centery="5019" centerz="7" radius="3">
+		<npc name="Canary" type="xml" x="0" y="0" z="0" spawntime="60" />
+	</npc>
+</npcs>

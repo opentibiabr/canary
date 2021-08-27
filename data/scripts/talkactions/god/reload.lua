@@ -26,6 +26,9 @@ local reloadTypes = {
 	["npc"] = RELOAD_TYPE_NPCS,
 	["npcs"] = RELOAD_TYPE_NPCS,
 
+	["npcxml"] = RELOAD_TYPE_NPCS_OLD,
+	["npcsxml"] = RELOAD_TYPE_NPCS_OLD,
+
 	["raid"] = RELOAD_TYPE_RAIDS,
 	["raids"] = RELOAD_TYPE_RAIDS,
 

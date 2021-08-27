@@ -3745,6 +3745,7 @@ void ProtocolGame::sendLootStats(Item *item, uint8_t count)
 	writeToOutputBuffer(msg);
 }
 
+// Lua npcs
 void ProtocolGame::sendShop(Npc *npc)
 {
 	NetworkMessage msg;
@@ -3764,6 +3765,27 @@ void ProtocolGame::sendShop(Npc *npc)
 		if (++i > itemsToSend) break;
 
 		AddShopItem(msg, it.second, it.first);
+	}
+
+	writeToOutputBuffer(msg);
+}
+
+// XML npcs
+void ProtocolGame::sendOldShop(NpcOld *npc, const ShopInfoList &itemList)
+{
+	NetworkMessage msg;
+	msg.addByte(0x7A);
+	msg.addString(npc->getName());
+	msg.add<uint16_t>(npc->getCurrencyTrading());
+
+	msg.addString(std::string()); // ??
+
+	uint16_t itemsToSend = std::min<size_t>(itemList.size(), std::numeric_limits<uint16_t>::max());
+	msg.add<uint16_t>(itemsToSend);
+
+	uint16_t i = 0;
+	for (auto it = itemList.begin(); i < itemsToSend; ++it, ++i) {
+		AddOldShopItem(msg, *it);
 	}
 
 	writeToOutputBuffer(msg);
@@ -3810,6 +3832,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
 	writeToOutputBuffer(msg);
 }
 
+// Lua npcs
 void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap)
 {
 	//Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
@@ -3878,6 +3901,78 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint
 			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
+				break;
+			}
+		}
+	}
+
+	msg.setBufferPosition(msgPosition);
+	msg.addByte(itemsToSend);
+	writeToOutputBuffer(msg);
+}
+
+// XML npcs
+void ProtocolGame::sendOldShopSaleItemList(const std::vector<OldShopInfo> &shop, const std::map<uint32_t, uint32_t> &inventoryMap)
+{
+	//Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
+	uint64_t playerMoney = 0;
+	auto it = inventoryMap.find(ITEM_CRYSTAL_COIN);
+	if (it != inventoryMap.end())
+	{
+		playerMoney += static_cast<uint64_t>(it->second) * 10000;
+	}
+	it = inventoryMap.find(ITEM_PLATINUM_COIN);
+	if (it != inventoryMap.end())
+	{
+		playerMoney += static_cast<uint64_t>(it->second) * 100;
+	}
+	it = inventoryMap.find(ITEM_GOLD_COIN);
+	if (it != inventoryMap.end())
+	{
+		playerMoney += static_cast<uint64_t>(it->second);
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xEE);
+	msg.addByte(0x00);
+	msg.add<uint64_t>(player->getBankBalance());
+	uint16_t currency = player->getOnlyOldShopOwner() ? player->getOnlyOldShopOwner()->getCurrency() : ITEM_GOLD_COIN;
+	msg.addByte(0xEE);
+	if (currency == ITEM_GOLD_COIN) {
+		msg.addByte(0x01);
+		msg.add<uint64_t>(playerMoney);
+	} else {
+		msg.addByte(0x02);
+		uint64_t newCurrency = 0;
+		auto search = inventoryMap.find(currency);
+		if (search != inventoryMap.end()) {
+			newCurrency += static_cast<uint64_t>(search->second);
+		}
+		msg.add<uint64_t>(newCurrency);
+	}
+
+	msg.addByte(0x7B);
+	msg.add<uint64_t>(playerMoney);
+
+	uint8_t itemsToSend = 0;
+	auto msgPosition = msg.getBufferPosition();
+	msg.skipBytes(1);
+
+	for (const OldShopInfo &oldShopInfo : shop) {
+		if (oldShopInfo.sellPrice == 0) {
+			continue;
+		}
+
+		uint32_t index = static_cast<uint32_t>(oldShopInfo.itemId);
+		if (Item::items[oldShopInfo.itemId].isFluidContainer()) {
+			index |= (static_cast<uint32_t>(oldShopInfo.subType) << 16);
+		}
+
+		it = inventoryMap.find(index);
+		if (it != inventoryMap.end()) {
+			msg.addItemId(oldShopInfo.itemId);
+			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
+			if (++itemsToSend >= 0xFF) {
 				break;
 			}
 		}
@@ -6605,6 +6700,7 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 	GetMapDescription(oldPos.x - 8, oldPos.y + 7, newPos.z, 18, 1, msg);
 }
 
+// Lua npcs
 void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId)
 {
 	const ItemType &it = Item::items[itemId];
@@ -6619,6 +6715,24 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16
 
 	msg.addByte(count);
 	msg.addString(item.name);
+	msg.add<uint32_t>(it.weight);
+	msg.add<uint32_t>(item.buyPrice == 4294967295 ? 0 : item.buyPrice);
+	msg.add<uint32_t>(item.sellPrice == 4294967295 ? 0 : item.sellPrice);
+}
+
+// XML npcs
+void ProtocolGame::AddOldShopItem(NetworkMessage &msg, const OldShopInfo &item)
+{
+	const ItemType &it = Item::items[item.itemId];
+	msg.add<uint16_t>(it.clientId);
+
+	if (it.isSplash() || it.isFluidContainer()) {
+		msg.addByte(serverFluidToClient(item.subType));
+	} else {
+		msg.addByte(0x00);
+	}
+
+	msg.addString(item.realName);
 	msg.add<uint32_t>(it.weight);
 	msg.add<uint32_t>(item.buyPrice == 4294967295 ? 0 : item.buyPrice);
 	msg.add<uint32_t>(item.sellPrice == 4294967295 ? 0 : item.sellPrice);

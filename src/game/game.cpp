@@ -44,8 +44,8 @@
 #include "lua/modules/modules.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/account/account.hpp"
-#include "creatures/npcs/npc.h"
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/lua_npc.hpp"
+#include "creatures/npcs/lua_npcs.hpp"
 #include "server/network/webhook/webhook.h"
 
 extern ConfigManager g_config;
@@ -282,8 +282,12 @@ void Game::setGameState(GameState_t newState)
 			groups.load();
 			g_chat->load();
 
+			// Load monsters spawns
 			map.spawnsMonster.startup();
+			// Load Lua npcs spawns
 			map.spawnsNpc.startup();
+			// Load XML npcs spawns
+			map.spawnsNpcOld.startup();
 
 			raids.loadFromXml();
 			raids.startup();
@@ -839,8 +843,12 @@ Creature* Game::getCreatureByID(uint32_t id)
 		return getPlayerByID(id);
 	} else if (id <= Monster::monsterAutoID) {
 		return getMonsterByID(id);
+	// Lua npcs
 	} else if (id <= Npc::npcAutoID) {
-		return getNpcByID(id);
+		return (getNpcByID(id));
+	// XML npcs
+	} else if (id <= NpcOld::npcOldAutoID) {
+		return (getNpcOldByID(id));
 	}
 	return nullptr;
 }
@@ -858,6 +866,7 @@ Monster* Game::getMonsterByID(uint32_t id)
 	return it->second;
 }
 
+// Lua npcs
 Npc* Game::getNpcByID(uint32_t id)
 {
 	if (id == 0) {
@@ -866,6 +875,20 @@ Npc* Game::getNpcByID(uint32_t id)
 
 	auto it = npcs.find(id);
 	if (it == npcs.end()) {
+		return nullptr;
+	}
+	return it->second;
+}
+
+// XML npcs
+NpcOld* Game::getNpcOldByID(uint32_t id)
+{
+	if (id == 0) {
+		return nullptr;
+	}
+
+	auto it = npcsOld.find(id);
+	if (it == npcsOld.end()) {
 		return nullptr;
 	}
 	return it->second;
@@ -897,7 +920,14 @@ Creature* Game::getCreatureByName(const std::string& s)
 		return m_it->second;
 	}
 
+	// Lua npcs
 	for (const auto& it : npcs) {
+		if (lowerCaseName == asLowerCaseString(it.second->getName())) {
+			return it.second;
+		}
+	}
+	// XML npcs
+	for (const auto& it : npcsOld) {
 		if (lowerCaseName == asLowerCaseString(it.second->getName())) {
 			return it.second;
 		}
@@ -911,6 +941,7 @@ Creature* Game::getCreatureByName(const std::string& s)
 	return nullptr;
 }
 
+// Lua npcs
 Npc* Game::getNpcByName(const std::string& s)
 {
 	if (s.empty()) {
@@ -919,6 +950,22 @@ Npc* Game::getNpcByName(const std::string& s)
 
 	const char* npcName = s.c_str();
 	for (const auto& it : npcs) {
+		if (strcasecmp(npcName, it.second->getName().c_str()) == 0) {
+			return it.second;
+		}
+	}
+	return nullptr;
+}
+
+// XML npcs
+NpcOld* Game::getNpcOldByName(const std::string& s)
+{
+	if (s.empty()) {
+		return nullptr;
+	}
+
+	const char* npcName = s.c_str();
+	for (const auto& it : npcsOld) {
 		if (strcasecmp(npcName, it.second->getName().c_str()) == 0) {
 			return it.second;
 		}
@@ -1281,8 +1328,15 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 				}
 			}
 
+			// Lua npcs
 			Npc* movingNpc = movingCreature->getNpc();
 			if (movingNpc && movingNpc->canSee(toPos)) {
+				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+				return;
+			}
+			// XML npcs
+			NpcOld* movingNpcOld = movingCreature->getNpcOld();
+			if (movingNpcOld && movingNpcOld->canSee(toPos)) {
 				player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 				return;
 			}
@@ -2902,8 +2956,13 @@ void Game::playerCloseNpcChannel(uint32_t playerId)
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
+		// Lua npcs
 		if (Npc* npc = spectator->getNpc()) {
 			npc->onPlayerCloseChannel(player);
+		}
+		// XML npcs
+		if (NpcOld* npcOld = spectator->getNpcOld()) {
+			npcOld->onPlayerCloseChannel(player);
 		}
 	}
 }
@@ -4264,8 +4323,15 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t spriteId, uint8_t count, ui
 		return;
 	}
 
-	Npc* merchant = player->getShopOwner();
-	if (!merchant) {
+	// Lua npcs
+	Npc* npc = player->getShopOwner();
+	if (!npc) {
+		return;
+	}
+	// XML npcs
+	int32_t onBuy, onSell;
+	NpcOld* npcOld = player->getOldShopOwner(onBuy, onSell);
+	if (!npcOld) {
 		return;
 	}
 
@@ -4285,7 +4351,13 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t spriteId, uint8_t count, ui
 		return;
 	}
 
-	merchant->onPlayerBuyItem(player, it.id, subType, amount, ignoreCap, inBackpacks);
+	// Lua npcs
+	if (npc) {
+		npc->onPlayerBuyItem(player, it.id, subType, amount, ignoreCap, inBackpacks);
+	// XML npcs
+	} else if (npcOld) {
+		npcOld->onPlayerTrade(player, onBuy, it.id, subType, amount, ignoreCap, inBackpacks);
+	}
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount, bool ignoreEquipped)
@@ -4299,8 +4371,15 @@ void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, u
 		return;
 	}
 
-	Npc* merchant = player->getShopOwner();
-	if (!merchant) {
+	// Lua npcs
+	Npc* npc = player->getShopOwner();
+	if (!npc) {
+		return;
+	}
+	// XML npcs
+	int32_t onBuy, onSell;
+	NpcOld* npcOld = player->getOldShopOwner(onBuy, onSell);
+	if (!npcOld) {
 		return;
 	}
 
@@ -4316,7 +4395,13 @@ void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, u
 		subType = count;
 	}
 
-	merchant->onPlayerSellItem(player, it.id, subType, amount, ignoreEquipped);
+	// Lua npcs
+	if (npc) {
+		npc->onPlayerSellItem(player, it.id, subType, amount, ignoreEquipped);
+	// XML npcs
+	} else if (npcOld) {
+		npcOld->onPlayerTrade(player, onSell, it.id, subType, amount, ignoreEquipped);
+	}
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -4336,8 +4421,15 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		return;
 	}
 
+	// Lua npcs
 	Npc* merchant = player->getShopOwner();
 	if (!merchant) {
+		return;
+	}
+	// XML npcs
+	int32_t onBuy, onSell;
+	NpcOld* merchantOld = player->getOldShopOwner(onBuy, onSell);
+	if (!merchantOld) {
 		return;
 	}
 
@@ -5167,7 +5259,12 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
+		// Lua npcs
 		if (spectator->getNpc()) {
+			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
+		}
+		// XML npcs
+		if (spectator->getNpcOld()) {
 			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 		}
 	}
@@ -6690,7 +6787,10 @@ void Game::shutdown()
 	g_databaseTasks.shutdown();
 	g_dispatcher.shutdown();
 	map.spawnsMonster.clear();
+	// Lua npcs
 	map.spawnsNpc.clear();
+	// XML npcs
+	map.spawnsNpcOld.clear();
 	raids.clear();
 
 	cleanup();
@@ -7382,8 +7482,9 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId)
 		return;
 	}
 
+	// Lua npcs
 	Npc* npc = creature->getNpc();
-	if(npc) {
+	if (npc) {
 		SpectatorHashSet spectators;
 		spectators.insert(npc);
 		map.getSpectators(spectators, player->getPosition(), true, true);
@@ -7394,7 +7495,24 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId)
 			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Trade", false, &spectators);
 		} else {
 			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Sail", false, &spectators);
-        }
+		}
+
+		return;
+	}
+	// XML npcs
+	NpcOld* npcOld = creature->getNpcOld();
+	if (npcOld) {
+		SpectatorHashSet spectators;
+		spectators.insert(npcOld);
+		map.getSpectators(spectators, player->getPosition(), true, true);
+		internalCreatureSay(player, TALKTYPE_SAY, "Hi", false, &spectators);
+		spectators.clear();
+		spectators.insert(npcOld);
+		if (npcOld->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
+			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Trade", false, &spectators);
+		} else {
+			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Sail", false, &spectators);
+		}
 
 		return;
 	}
@@ -8477,7 +8595,13 @@ void Game::updatePlayerSaleItems(uint32_t playerId)
 	std::map<uint32_t, uint32_t> tempInventoryMap;
 	player->getAllItemTypeCountAndSubtype(tempInventoryMap);
 
-	player->sendSaleItemList(tempInventoryMap);
+	// Lua npcs
+	if (player->shopOwner) {
+		player->sendSaleItemList(tempInventoryMap);
+	// XML npcs
+	} else if (player->oldShopOwner) {
+		player->sendOldShopSaleItemList(tempInventoryMap);
+	}
 	player->setScheduledSaleUpdate(false);
 }
 
@@ -8497,6 +8621,7 @@ void Game::removePlayer(Player* player)
 	players.erase(player->getID());
 }
 
+// Lua npcs
 void Game::addNpc(Npc* npc)
 {
 	npcs[npc->getID()] = npc;
@@ -8505,6 +8630,17 @@ void Game::addNpc(Npc* npc)
 void Game::removeNpc(Npc* npc)
 {
 	npcs.erase(npc->getID());
+}
+
+// XML npcs
+void Game::addNpcOld(NpcOld* npcOld)
+{
+	npcsOld[npcOld->getID()] = npcOld;
+}
+
+void Game::removeNpcOld(NpcOld* npcOld)
+{
+	npcsOld.erase(npcOld->getID());
 }
 
 void Game::addMonster(Monster* monster)
@@ -8630,9 +8766,15 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_scripts->loadScripts("monster", false, true);
 			return true;
 		}
+		// Lua npcs
 		case RELOAD_TYPE_NPCS: {
 			g_npcs.reset();
 			g_scripts->loadScripts("npclua", false, true);
+			return true;
+		}
+		// XML npcs
+		case RELOAD_TYPE_NPCS_OLD: {
+			NpcsOld::reload();
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();

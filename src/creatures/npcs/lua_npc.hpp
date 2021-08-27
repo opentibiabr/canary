@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
-#ifndef SRC_CREATURES_NPCS_NPC_H_
-#define SRC_CREATURES_NPCS_NPC_H_
+#ifndef SRC_CREATURES_NPCS_LUA_NPC_HPP_
+#define SRC_CREATURES_NPCS_LUA_NPC_HPP_
 
 #include "declarations.hpp"
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/lua_npcs.hpp"
 #include "items/tile.h"
 
 class Creature;
@@ -197,4 +197,4 @@ class Npc final : public Creature
 		friend class Map;
 };
 
-#endif  // SRC_CREATURES_NPCS_NPC_H_
+#endif // SRC_CREATURES_NPCS_LUA_NPC_HPP_

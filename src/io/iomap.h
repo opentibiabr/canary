@@ -73,6 +73,8 @@ class IOMap
 			return map->spawnsMonster.loadFromXML(map->monsterfile);
 		}
 
+		// Lua npcs load
+		// XML npcs load
 		static bool loadNpcs(Map* map) {
 			if (map->npcfile.empty()) {
 				// OTBM file doesn't tell us about the npcfile,
@@ -80,8 +82,8 @@ class IOMap
 				map->npcfile = g_config.getString(MAP_NAME);
 				map->npcfile += "-npc.xml";
 			}
-
-			return map->spawnsNpc.loadFromXml(map->npcfile);
+			// Load npcs
+			return (map->spawnsNpc.loadFromXml(map->npcfile)) && (map->spawnsNpcOld.loadFromXml(map->npcfile));
 		}
 
 		static bool loadHouses(Map* map) {

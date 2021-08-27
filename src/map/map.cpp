@@ -25,7 +25,8 @@
 #include "creatures/creature.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
+#include "creatures/npcs/lua_npc.hpp"
+#include "creatures/npcs/xml_npc.hpp"
 
 extern Game g_game;
 

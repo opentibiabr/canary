@@ -30,7 +30,7 @@
 #include "io/iobestiary.h"
 #include "items/item.h"
 #include "map/map.h"
-#include "creatures/npcs/npc.h"
+#include "creatures/npcs/lua_npc.hpp"
 #include "movement/position.h"
 #include "creatures/players/player.h"
 #include "lua/creature/raids.h"
@@ -41,6 +41,7 @@ class ServiceManager;
 class Creature;
 class Monster;
 class Npc;
+class NpcOld;
 class CombatInfo;
 class Charm;
 
@@ -102,13 +103,18 @@ class Game
 
 		Monster* getMonsterByID(uint32_t id);
 
+		// Lua npcs
 		Npc* getNpcByID(uint32_t id);
+		// XML npcs
+		NpcOld* getNpcOldByID(uint32_t id);
 
 		Player* getPlayerByID(uint32_t id);
 
 		Creature* getCreatureByName(const std::string& s);
-
+		// Lua npcs
 		Npc* getNpcByName(const std::string& s);
+		// XML npcs
+		NpcOld* getNpcOldByName(const std::string& s);
 
 		Player* getPlayerByName(const std::string& s);
 
@@ -419,13 +425,20 @@ class Game
 
 		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
 		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
+		// Lua npcs
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
+		// XML npcs
+		const std::map<uint32_t, NpcOld*>& getNpcsOld() const { return npcsOld; }
 
 		void addPlayer(Player* player);
 		void removePlayer(Player* player);
 
+		// Lua npcs
 		void addNpc(Npc* npc);
 		void removeNpc(Npc* npc);
+		// XML npcs
+		void addNpcOld(NpcOld* npcOld);
+		void removeNpcOld(NpcOld* npcOld);
 
 		void addMonster(Monster* npc);
 		void removeMonster(Monster* npc);
@@ -552,7 +565,10 @@ class Game
 
 		WildcardTreeNode wildcardTree { false };
 
+		// Lua npcs
 		std::map<uint32_t, Npc*> npcs;
+		// XML npcs
+		std::map<uint32_t, NpcOld*> npcsOld;
 		std::map<uint32_t, Monster*> monsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*

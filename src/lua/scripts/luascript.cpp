@@ -21,7 +21,6 @@
 
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/luascript.h"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
@@ -51,7 +50,7 @@ bool LuaScriptInterface::reInitState() {
 
 /// Same as lua_pcall, but adds stack trace to error strings in called function.
 
-int32_t LuaScriptInterface::loadFile(const std::string& file) {
+int32_t LuaScriptInterface::loadFile(const std::string& file, NpcOld* npcOld /* = nullptr*/) {
 	//loads file as a chunk at stack top
 	int ret = luaL_loadfile(luaState, file.c_str());
 	if (ret != 0) {
@@ -72,7 +71,8 @@ int32_t LuaScriptInterface::loadFile(const std::string& file) {
 
 	ScriptEnvironment* env = getScriptEnv();
 	env->setScriptId(EVENT_ID_LOADING, this);
-	//env->setNpc(npc);
+	// XML npcs
+	env->setNpcOld(npcOld);
 
 	//execute it
 	ret = protectedCall(luaState, 0, 0);

@@ -23,7 +23,7 @@
 
 #include "game/game.h"
 #include "creatures/creature.h"
-#include "creatures/npcs/npc.h"
+#include "creatures/npcs/lua_npc.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {

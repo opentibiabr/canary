@@ -625,7 +625,14 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 						}
 						case LuaData_Player:
 						case LuaData_Monster:
+						// Lua npcs
 						case LuaData_Npc: {
+							lua_getglobal(globalState, "Creature");
+							lua_getfield(globalState, -1, "getId");
+							break;
+						}
+						// XML npcs
+						case LuaData_NpcOld: {
 							lua_getglobal(globalState, "Creature");
 							lua_getfield(globalState, -1, "getId");
 							break;

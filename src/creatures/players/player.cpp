@@ -758,7 +758,10 @@ bool Player::canWalkthrough(const Creature* creature) const
 
 	const Player* player = creature->getPlayer();
 	const Monster* monster = creature->getMonster();
+	// Lua npcs
 	const Npc* npc = creature->getNpc();
+	// XML npcs
+	const NpcOld* npcOld = creature->getNpcOld();
 	if (monster) {
 		if (!monster->isPet()) {
 			return false;
@@ -790,10 +793,16 @@ bool Player::canWalkthrough(const Creature* creature) const
 
 		thisPlayer->setLastWalkthroughPosition(creature->getPosition());
 		return true;
+	// Lua npcs
 	} else if (npc) {
-		const Tile* tile = npc->getTile();
-		const HouseTile* houseTile = dynamic_cast<const HouseTile*>(tile);
-		return (houseTile != nullptr);
+		const Tile* npcTile = npc->getTile();
+		const HouseTile* npcHouseTile = dynamic_cast<const HouseTile*>(npcTile);
+		return (npcHouseTile != nullptr);
+	// XML npcs
+	} else if (npcOld) {
+		const Tile* npcOldtile = npcOld->getTile();
+		const HouseTile* npcOldHouseTile = dynamic_cast<const HouseTile*>(npcOldtile);
+		return (npcOldHouseTile != nullptr);
 	}
 
 	return false;
@@ -814,14 +823,23 @@ bool Player::canWalkthroughEx(const Creature* creature) const
 	}
 
 	const Player* player = creature->getPlayer();
+	// Lua npcs
 	const Npc* npc = creature->getNpc();
+	// XML npcs
+	const NpcOld* npcOld = creature->getNpcOld();
 	if (player) {
 		const Tile* playerTile = player->getTile();
 		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_config.getNumber(PROTECTION_LEVEL)) || g_game.getWorldType() == WORLD_TYPE_NO_PVP);
+	// Lua npcs
 	} else if (npc) {
-		const Tile* tile = npc->getTile();
-		const HouseTile* houseTile = dynamic_cast<const HouseTile*>(tile);
-		return (houseTile != nullptr);
+		const Tile* npcTile = npc->getTile();
+		const HouseTile* npcHouseTile = dynamic_cast<const HouseTile*>(npcTile);
+		return (npcHouseTile != nullptr);
+	// XML npcs
+	} else if (npcOld) {
+		const Tile* npcOldTile = npcOld->getTile();
+		const HouseTile* npcOldHouseTile = dynamic_cast<const HouseTile*>(npcOldTile);
+		return (npcOldHouseTile != nullptr);
 	} else {
 		return false;
 	}
@@ -1442,7 +1460,13 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 			g_game.internalCloseTrade(this);
 		}
 
-		closeShopWindow();
+		// Lua npcs
+		if (creature == shopOwner) {
+			closeShopWindow();
+		// XML npcs
+		} else if (creature == oldShopOwner) {
+			closeOldShopWindow();
+		}
 
 		clearPartyInvitations();
 
@@ -1473,12 +1497,19 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 		}
 	}
 
+	// Lua npcs
 	if (creature == shopOwner) {
 		setShopOwner(nullptr);
 		sendCloseShop();
 	}
+	// XML npcs
+	if (creature == oldShopOwner) {
+		setOldShopOwner(nullptr, -1, -1);
+		sendCloseShop();
+	}
 }
 
+// Lua npc functions
 void Player::openShopWindow(Npc* npc)
 {
 	closeShopWindow(true);
@@ -1507,7 +1538,74 @@ bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/)
 	}
 
 	return true;
+} // Lua npcs functions end
+
+// XML npcs functions
+void Player::openOldShopWindow(NpcOld* npc, const std::vector<OldShopInfo>& shop)
+{
+	oldShopItemList = std::move(shop);
+	std::map<uint32_t, uint32_t> tempInventoryMap;
+	getAllItemTypeCountAndSubtype(tempInventoryMap);
+
+	sendOldShop(npc);
+	sendOldShopSaleItemList(tempInventoryMap);
 }
+
+bool Player::closeOldShopWindow(bool sendCloseShopWindow /*= true*/)
+{
+	//unreference callbacks
+	int32_t onBuy;
+	int32_t onSell;
+
+	NpcOld* npcOld = getOldShopOwner(onBuy, onSell);
+	if (!npcOld) {
+		oldShopItemList.clear();
+		return false;
+	}
+
+	setOldShopOwner(nullptr, -1, -1);
+	npcOld->onPlayerEndTrade(this, onBuy, onSell);
+
+	if (sendCloseShopWindow) {
+		sendCloseShop();
+	}
+
+	oldShopItemList.clear();
+	return true;
+}
+
+// TODO (Eduardo): this function need review
+bool Player::updateSaleOldShopList(const Item* item)
+{
+	uint16_t currency = shopOwner ? shopOwner->getCurrency() : ITEM_GOLD_COIN;
+	uint16_t itemId = item->getID();
+	if ((currency == ITEM_GOLD_COIN && itemId != ITEM_GOLD_COIN && itemId != ITEM_PLATINUM_COIN && itemId != ITEM_CRYSTAL_COIN) || (currency != ITEM_GOLD_COIN && itemId != currency)) {
+		auto it = std::find_if(oldShopItemList.begin(), oldShopItemList.end(), [itemId](const OldShopInfo& shopInfo) { return shopInfo.itemId == itemId && shopInfo.sellPrice != 0; });
+		if (it == oldShopItemList.end()) {
+			const Container* container = item->getContainer();
+			if (!container) {
+				return false;
+			}
+
+			const auto& items = container->getItemList();
+			return std::any_of(items.begin(), items.end(), [this](const Item* containerItem) {
+				return updateSaleOldShopList(containerItem);
+			});
+		}
+	}
+
+	g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game, getID())));
+	scheduledSaleUpdate = true;
+	return true;
+}
+
+bool Player::hasOldShopItemForSale(uint32_t itemId, uint8_t subType) const
+{
+	const ItemType& itemType = Item::items[itemId];
+	return std::any_of(oldShopItemList.begin(), oldShopItemList.end(), [&](const OldShopInfo& oldShopInfo) {
+		return oldShopInfo.itemId == itemId && oldShopInfo.buyPrice != 0 && (!itemType.isFluidContainer() || oldShopInfo.subType == subType);
+	});
+} // XML npcs functions end
 
 void Player::onWalk(Direction& dir)
 {

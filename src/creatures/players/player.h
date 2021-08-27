@@ -42,11 +42,13 @@
 #include "items/containers/rewards/rewardchest.h"
 #include "map/town.h"
 #include "vocations/vocation.h"
-#include "creatures/npcs/npc.h"
+#include "creatures/npcs/lua_npc.hpp"
+#include "creatures/npcs/xml_npc.hpp"
 
 class House;
 class NetworkMessage;
 class Weapon;
+class NpcOld;
 class ProtocolGame;
 class Party;
 class SchedulerTask;
@@ -699,13 +701,36 @@ class Player final : public Creature, public Cylinder
 			return tradeItem;
 		}
 
-		//shop functions
+		// Lua npcs shop functions
 		void setShopOwner(Npc* owner) {
 			shopOwner = owner;
 		}
 
 		Npc* getShopOwner() const {
 			return shopOwner;
+		}
+
+		// XML npcs shop functions
+		void setOldShopOwner(NpcOld* owner, int32_t onBuy, int32_t onSell) {
+			oldShopOwner = owner;
+			purchaseCallback = onBuy;
+			saleCallback = onSell;
+		}
+
+		NpcOld* getOldShopOwner(int32_t& onBuy, int32_t& onSell) {
+			onBuy = purchaseCallback;
+			onSell = saleCallback;
+			return oldShopOwner;
+		}
+
+		const NpcOld* getOldShopOwner(int32_t& onBuy, int32_t& onSell) const {
+			onBuy = purchaseCallback;
+			onSell = saleCallback;
+			return oldShopOwner;
+		}
+
+		NpcOld* getOnlyOldShopOwner() {
+			return oldShopOwner;
 		}
 
 		//V.I.P. functions
@@ -726,12 +751,19 @@ class Player final : public Creature, public Cylinder
 		void onWalk(Direction& dir) override;
 		void onWalkAborted() override;
 		void onWalkComplete() override;
-
 		void stopWalk();
+
+		// Lua npcs
 		void openShopWindow(Npc* npc);
 		bool closeShopWindow(bool sendCloseShopWindow = true);
 		bool updateSaleShopList(const Item* item);
 		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
+
+		// XML npcs
+		void openOldShopWindow(NpcOld* npc, const std::vector<OldShopInfo>& shop);
+		bool closeOldShopWindow(bool sendCloseShopWindow = true);
+		bool updateSaleOldShopList(const Item* item);
+		bool hasOldShopItemForSale(uint32_t itemId, uint8_t subType) const;
 
 		void setChaseMode(bool mode);
 		void setFightMode(FightMode_t mode) {
@@ -1283,21 +1315,35 @@ class Player final : public Creature, public Cylinder
 				client->sendToChannel(creature, type, text, channelId);
 			}
 		}
+		// Lua npcs
+		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
+			if (client && shopOwner) {
+				client->sendSaleItemList(shopOwner->getShopItems(), inventoryMap);
+			}
+		}
 		void sendShop(Npc* npc) const {
 			if (client) {
 				client->sendShop(npc);
 			}
 		}
-		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
-      if (client && shopOwner) {
-        client->sendSaleItemList(shopOwner->getShopItems(), inventoryMap);
-      }
-    }
 		void sendCloseShop() const {
 			if (client) {
 				client->sendCloseShop();
 			}
 		}
+		// Lua npcs end
+		// XML npcs
+		void sendOldShop(NpcOld* npcOld) const {
+			if (client) {
+				client->sendOldShop(npcOld, oldShopItemList);
+			}
+		}
+		void sendOldShopSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
+			if (client && oldShopOwner) {
+				client->sendOldShopSaleItemList(oldShopItemList, inventoryMap);
+			}
+		}
+		// XML npcs end
 		void sendMarketEnter(uint32_t depotId);
 		void sendMarketLeave() {
 			inMarket = false;
@@ -1928,6 +1974,9 @@ class Player final : public Creature, public Cylinder
 		std::vector<OutfitEntry> outfits;
 		std::vector<FamiliarEntry> familiars;
 
+		// XML npcs
+		std::vector<OldShopInfo> oldShopItemList;
+
 		GuildWarVector guildWarVector;
 
 		std::forward_list<Party*> invitePartyList;
@@ -1980,7 +2029,10 @@ class Player final : public Creature, public Cylinder
  		Item* inventory[CONST_SLOT_LAST + 1] = {};
 		Item* writeItem = nullptr;
 		House* editHouse = nullptr;
+		// Lua npcs
 		Npc* shopOwner = nullptr;
+		// XML npcs
+		NpcOld* oldShopOwner = nullptr;
 		Party* party = nullptr;
 		Player* tradePartner = nullptr;
 		ProtocolGame_ptr client;
@@ -1988,6 +2040,16 @@ class Player final : public Creature, public Cylinder
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 		RewardChest* rewardChest = nullptr;
+
+		uint16_t staminaMinutes = 2520;
+		uint16_t lastStatsTrainingTime = 0;
+		uint16_t expBoostStamina = 0;
+		uint16_t maxWriteLen = 0;
+		uint16_t baseXpGain = 100;
+		uint16_t voucherXpBoost = 0;
+		uint16_t grindingXpBoost = 0;
+		uint16_t storeXpBoost = 0;
+		uint16_t staminaXpBoost = 100;
 
 		uint32_t inventoryWeight = 0;
 		uint32_t capacity = 40000;
@@ -2010,33 +2072,31 @@ class Player final : public Creature, public Cylinder
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
 		uint32_t manaMax = 0;
-		int32_t varSkills[SKILL_LAST + 1] = {};
-		int32_t varStats[STAT_LAST + 1] = {};
-		int32_t shopCallback = -1;
-		int32_t MessageBufferCount = 0;
+		uint32_t coinBalance = 0;
 		uint32_t premiumDays = 0;
+
+		int16_t lastDepotId = -1;
+
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
 		int32_t offlineTrainingSkill = -1;
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
-		uint32_t coinBalance = 0;
-		uint16_t expBoostStamina = 0;
+		int32_t varSkills[SKILL_LAST + 1] = {};
+		int32_t varStats[STAT_LAST + 1] = {};
+		int32_t MessageBufferCount = 0;
+		// XML npcs
+		int32_t shopCallback = -1;
+		int32_t purchaseCallback = -1;
+		int32_t saleCallback = -1;
+		// XML npcs end
 
-		uint16_t lastStatsTrainingTime = 0;
-		uint16_t staminaMinutes = 2520;
 		std::vector<uint16_t> preyStaminaMinutes = {7200, 7200, 7200};
 		std::vector<uint16_t> preyBonusType = {0, 0, 0};
 		std::vector<uint16_t> preyBonusValue = {0, 0, 0};
 		std::vector<std::string> preyBonusName = {"", "", ""};
 		std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0 };
-		uint16_t maxWriteLen = 0;
-		uint16_t baseXpGain = 100;
-		uint16_t voucherXpBoost = 0;
-		uint16_t grindingXpBoost = 0;
-		uint16_t storeXpBoost = 0;
-		uint16_t staminaXpBoost = 100;
-		int16_t lastDepotId = -1;
+
 		StashItemList stashItems; // [ClientID] = amount
 
 		// Bestiary
@@ -2147,6 +2207,7 @@ class Player final : public Creature, public Cylinder
 
 		friend class Game;
 		friend class Npc;
+		friend class NpcOld;
 		friend class PlayerFunctions;
 		friend class NetworkMessageFunctions;
 		friend class Map;

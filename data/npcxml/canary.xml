@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="NPC Canary (XML)" walkinterval="2000" floorchange="0" script="canary.lua">
+	<health now="100" max="100"/>
+	<!-- looktype number-->
+	<look type="136"/>
+</npc>

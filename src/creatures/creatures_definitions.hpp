@@ -21,7 +21,6 @@
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 
 // Enum
-
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,
@@ -707,12 +706,13 @@ struct HistoryMarketOffer {
 	MarketOfferState_t state;
 };
 
+// Lua npcs
 struct ShopInfo {
 	uint16_t itemClientId;
-	std::string name;
 	int32_t subType;
 	uint32_t buyPrice;
 	uint32_t sellPrice;
+	std::string name;
 
 	ShopInfo() {
 		itemClientId = 0;
@@ -721,13 +721,35 @@ struct ShopInfo {
 		sellPrice = 0;
 	}
 
-	ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, std::string newName = "")
-		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), name(std::move(newName)) {}
+	ShopInfo(uint16_t newItemClientId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, std::string newName = "")
+		: itemClientId(newItemClientId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), name(std::move(newName)) {}
+};
+
+// XML npcs
+struct OldShopInfo {
+	uint16_t itemId;
+	int32_t subType;
+	uint32_t buyPrice;
+	uint32_t sellPrice;
+	std::string realName;
+
+	OldShopInfo() {
+		itemId = 0;
+		subType = 1;
+		buyPrice = 0;
+		sellPrice = 0;
+	}
+
+	OldShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, std::string newRealName = "")
+		: itemId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), realName(std::move(newRealName)) {}
 };
 
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
+// Lua npcs
 using ShopInfoMap = std::unordered_map<uint16_t, ShopInfo>;
+// XML npcs
+using ShopInfoList = std::vector<OldShopInfo>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 
 struct Familiar {

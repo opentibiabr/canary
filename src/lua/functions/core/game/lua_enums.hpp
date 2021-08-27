@@ -971,7 +971,10 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, RELOAD_TYPE_MODULES)
 			registerEnum(L, RELOAD_TYPE_MONSTERS)
 			registerEnum(L, RELOAD_TYPE_MOUNTS)
+			// Lua npcs
 			registerEnum(L, RELOAD_TYPE_NPCS)
+			// XML npcs
+			registerEnum(L, RELOAD_TYPE_NPCS_OLD)
 			registerEnum(L, RELOAD_TYPE_RAIDS)
 			registerEnum(L, RELOAD_TYPE_SCRIPTS)
 			registerEnum(L, RELOAD_TYPE_SPELLS)

@@ -21,7 +21,7 @@
 
 #include "creatures/npcs/spawns/spawn_npc.h"
 #include "game/game.h"
-#include "creatures/npcs/npc.h"
+#include "creatures/npcs/lua_npc.hpp"
 #include "config/configmanager.h"
 #include "game/scheduling/scheduler.h"
 
@@ -45,7 +45,7 @@ bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filenpcname.c_str());
 	if (!result) {
-		printXMLError("Error - SpawnsNpc::loadFromXml", filenpcname, result);
+		printXMLError("SpawnsNpc::loadFromXml", filenpcname, result);
 		return false;
 	}
 
@@ -68,7 +68,7 @@ bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
 		}
 
 		if (!spawnNode.first_child()) {
-			SPDLOG_WARN("Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
+			SPDLOG_WARN("[SpawnsNpcOld::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
 			continue;
 		}
 
@@ -77,8 +77,22 @@ bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
 
 		for (auto childNode : spawnNode.children()) {
 			if (strcasecmp(childNode.name(), "npc") == 0) {
+				// If tag npc not have tag: name, then not load npc
 				pugi::xml_attribute nameAttribute = childNode.attribute("name");
 				if (!nameAttribute) {
+					SPDLOG_WARN("[SpawnsNpc::loadFromXml] - the npc tag is missing tag 'name' or is wrong");
+					continue;
+				}
+
+				// If tag npc not have tag: type, then not load npc
+				pugi::xml_attribute typeAttribute = childNode.attribute("type");
+				if (!typeAttribute) {
+					SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Npc with name {} is missing tag 'type', is necessary to add a type (xml or lua)", nameAttribute.as_string());
+					continue;
+				}
+				// Not load npc if have the "xml" tag
+				std::string xmlType = childNode.attribute("type").as_string("xml");
+				if (boost::iequals(xmlType, "xml")) {
 					continue;
 				}
 
@@ -90,7 +104,6 @@ bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
 				} else {
 					dir = DIRECTION_NORTH;
 				}
-
 				Position pos(
 					centerPos.x + pugi::cast<uint16_t>(childNode.attribute("x").value()),
 					centerPos.y + pugi::cast<uint16_t>(childNode.attribute("y").value()),

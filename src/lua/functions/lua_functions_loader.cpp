@@ -23,7 +23,7 @@
 #include "creatures/combat/spells.h"
 #include "creatures/interactions/chat.h"
 #include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
+#include "creatures/npcs/lua_npc.hpp"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/player.h"
 #include "database/databasemanager.h"
@@ -260,8 +260,14 @@ void LuaFunctionsLoader::setCreatureMetatable(lua_State* L, int32_t index, const
 		luaL_getmetatable(L, "Player");
 	} else if (creature->getMonster()) {
 		luaL_getmetatable(L, "Monster");
-	} else {
+	// Lua npcs
+	} else if (creature->getNpc()) {
 		luaL_getmetatable(L, "Npc");
+	// XML npcs
+	} else if (creature->getNpcOld()) {
+		luaL_getmetatable(L, "NpcOld");
+	} else {
+		SPDLOG_ERROR("[LuaFunctionsLoader::setCreatureMetatable] - Metatable {} is missing or not exist.", index);
 	}
 	lua_setmetatable(L, index - 1);
 }
@@ -388,8 +394,13 @@ Thing* LuaFunctionsLoader::getThing(lua_State* L, int32_t arg) {
 			case LuaData_Monster:
 				thing = getUserdata<Monster>(L, arg);
 				break;
+			// Lua npcs
 			case LuaData_Npc:
 				thing = getUserdata<Npc>(L, arg);
+				break;
+			// XML npcs
+			case LuaData_NpcOld:
+				thing = getUserdata<NpcOld>(L, arg);
 				break;
 			default:
 				thing = nullptr;
@@ -547,8 +558,12 @@ void LuaFunctionsLoader::registerClass(lua_State* L, const std::string& classNam
 		lua_pushnumber(L, LuaData_Player);
 	} else if (className == "Monster") {
 		lua_pushnumber(L, LuaData_Monster);
+	// Lua npcs
 	} else if (className == "Npc") {
 		lua_pushnumber(L, LuaData_Npc);
+	// XML npcs
+	} else if (className == "NpcOld") {
+		lua_pushnumber(L, LuaData_NpcOld);
 	} else if (className == "Tile") {
 		lua_pushnumber(L, LuaData_Tile);
 	} else {

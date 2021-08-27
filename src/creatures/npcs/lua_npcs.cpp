@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
 #include "otpch.h"
 
@@ -24,8 +24,8 @@
 #include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/npcs/npc.h"
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/lua_npc.hpp"
+#include "creatures/npcs/lua_npcs.hpp"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 

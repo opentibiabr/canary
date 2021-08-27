@@ -30,6 +30,7 @@
 #include "map/house/house.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
+#include "creatures/npcs/spawns/spawn_npc_xml.hpp"
 
 class Creature;
 class Player;
@@ -265,7 +266,10 @@ class Map
 		}
 
 		SpawnsMonster spawnsMonster;
+		// Lua npcs
 		SpawnsNpc spawnsNpc;
+		// XML npcs
+		SpawnsNpcOld spawnsNpcOld;
 		Towns towns;
 		Houses houses;
 	private:

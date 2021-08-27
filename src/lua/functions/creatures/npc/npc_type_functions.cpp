@@ -19,7 +19,7 @@
 
 #include "otpch.h"
 
-#include "creatures/npcs/npcs.h"
+#include "creatures/npcs/lua_npcs.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 

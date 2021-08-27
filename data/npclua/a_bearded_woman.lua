@@ -46,6 +46,7 @@ end
 npcType.onMove = function(npc, creature, fromPosition, toPosition)
 end
 
+-- This is the npc interactions (called on npc:processOnSay)
 local interactions = {
     NpcInteraction:createGreetInteraction("GET ME OUT OF HERE! NOW!"),
     NpcInteraction:createReplyInteraction({"job"}, "I am a great and famous actor! Not a princess, at all. I was only PRETENDING to be a princess. But try explaining that to those stupid pirates."),

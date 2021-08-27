@@ -114,9 +114,11 @@ target_sources(${PROJECT_NAME}
     creatures/monsters/monster.cpp
     creatures/monsters/monsters.cpp
     creatures/monsters/spawns/spawn_monster.cpp
-    creatures/npcs/npc.cpp
-    creatures/npcs/npcs.cpp
+    creatures/npcs/lua_npc.cpp
+    creatures/npcs/lua_npcs.cpp
+    creatures/npcs/xml_npc.cpp
     creatures/npcs/spawns/spawn_npc.cpp
+    creatures/npcs/spawns/spawn_npc_xml.cpp
     creatures/players/account/account.cpp
     creatures/players/grouping/familiars.cpp
     creatures/players/grouping/groups.cpp
@@ -188,6 +190,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/creatures/monster/monster_type_functions.cpp
     lua/functions/creatures/npc/npc_functions.cpp
     lua/functions/creatures/npc/npc_type_functions.cpp
+    lua/functions/creatures/npc/xml_npc_functions.cpp
     lua/functions/creatures/player/group_functions.cpp
     lua/functions/creatures/player/guild_functions.cpp
     lua/functions/creatures/player/mount_functions.cpp

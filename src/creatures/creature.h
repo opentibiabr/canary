@@ -36,7 +36,10 @@ class Thing;
 class Container;
 class Player;
 class Monster;
+// Lua npcs
 class Npc;
+// XML npcs
+class NpcOld;
 class Item;
 class Tile;
 
@@ -89,10 +92,18 @@ class Creature : virtual public Thing
 		virtual const Player* getPlayer() const {
 			return nullptr;
 		}
+		// Lua npcs
 		virtual Npc* getNpc() {
 			return nullptr;
 		}
 		virtual const Npc* getNpc() const {
+			return nullptr;
+		}
+		// XML npcs
+		virtual NpcOld* getNpcOld() {
+			return nullptr;
+		}
+		virtual const NpcOld* getNpcOld() const {
 			return nullptr;
 		}
 		virtual Monster* getMonster() {

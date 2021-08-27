@@ -29,8 +29,6 @@
 #include "game/scheduling/tasks.h"
 #include "game/gamestore.h"
 
-
-
 class NetworkMessage;
 class Player;
 class Game;
@@ -307,14 +305,24 @@ private:
 	void sendCreatureSkull(const Creature *creature);
 	void sendCreatureType(const Creature *creature, uint8_t creatureType);
 
+	// Lua npcs
 	void sendShop(Npc *npc);
+	// XML npcs
+	void sendOldShop(NpcOld *npc, const ShopInfoList &itemList);
+
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
 	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t prey = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
+
+	// Lua npcs
 	void sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap);
+	// XML npcs
+	void sendOldShopSaleItemList(const std::vector<OldShopInfo> &shop, const std::map<uint32_t, uint32_t> &inventoryMap);
+
 	void sendMarketEnter(uint32_t depotId);
+
 	void updateCoinBalance();
 	void sendMarketLeave();
 	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
@@ -430,8 +438,11 @@ private:
 	void MoveUpCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
 	void MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
 
-	//shop
+	// Shop
+	// Lua npcs
 	void AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId);
+	// XML npcs
+	void AddOldShopItem(NetworkMessage &msg, const OldShopInfo &item);
 
 	//otclient
 	void parseExtendedOpcode(NetworkMessage &msg);

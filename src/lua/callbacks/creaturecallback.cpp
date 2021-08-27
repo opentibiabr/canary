@@ -33,9 +33,7 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 		return false;
 	}
 
-	scriptInterface
-					->getScriptEnv()
-					->setScriptId(scriptId, scriptInterface);
+	scriptInterface->getScriptEnv()->setScriptId(scriptId, scriptInterface);
 
 	L = scriptInterface->getLuaState();
 
@@ -45,11 +43,15 @@ bool CreatureCallback::startScriptInterface(int32_t scriptId) {
 }
 
 void CreatureCallback::pushSpecificCreature(Creature *creature) {
+	// Lua npcs
 	if (Npc* npc = creature->getNpc()) {
 		LuaScriptInterface::pushUserdata<Npc>(L, npc);
-	}else if (Monster* monster = creature->getMonster()) {
+	// XML npcs
+	} else if (NpcOld* npcOld = creature->getNpcOld()) {
+		LuaScriptInterface::pushUserdata<NpcOld>(L, npcOld);
+	} else if (Monster* monster = creature->getMonster()) {
 		LuaScriptInterface::pushUserdata<Monster>(L, monster);
-	}else if (Player* player = creature->getPlayer()) {
+	} else if (Player* player = creature->getPlayer()) {
 		LuaScriptInterface::pushUserdata<Player>(L, player);
 	} else {
 		return;
@@ -60,8 +62,13 @@ void CreatureCallback::pushSpecificCreature(Creature *creature) {
 }
 
 std::string CreatureCallback::getCreatureClass(Creature *creature) {
+	// Lua npcs
 	if (creature->getNpc()) {
 		return "Npc";
+	}
+	// XML npcs
+	if (creature->getNpcOld()) {
+		return "NpcOld";
 	}
 	if (creature->getMonster()) {
 		return "Monster";

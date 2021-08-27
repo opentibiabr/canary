@@ -28,6 +28,7 @@ class Creature;
 class Item;
 class Container;
 class Npc;
+class NpcOld;
 
 class LuaScriptInterface;
 class Cylinder;
@@ -72,11 +73,19 @@ class ScriptEnvironment {
 		static uint32_t addResult(DBResult_ptr res);
 		static bool removeResult(uint32_t id);
 
+		// Lua npcs
 		void setNpc(Npc * npc) {
-				curNpc = npc;
+			curNpc = npc;
 		}
 		Npc * getNpc() const {
-				return curNpc;
+			return curNpc;
+		}
+		// XML npcs
+		void setNpcOld(NpcOld * npcOld) {
+			curNpcOld = npcOld;
+		}
+		NpcOld * getNpcOld() const {
+			return curNpcOld;
 		}
 
 		Thing * getThingByUID(uint32_t uid);
@@ -91,8 +100,10 @@ class ScriptEnvironment {
 
 		LuaScriptInterface * interface;
 
-		// for npc scripts
+		// Lua npcs
 		Npc * curNpc = nullptr;
+		// XML npcs
+		NpcOld * curNpcOld = nullptr;
 
 		// temporary item list
 		static std::multimap < ScriptEnvironment * , Item * > tempItems;

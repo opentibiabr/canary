@@ -84,8 +84,8 @@ class Weapon : public Event
 		static bool useFist(Player* player, Creature* target);
 		virtual bool useWeapon(Player* player, Item* item, Creature* target) const;
 
-		virtual int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const = 0;
-		virtual int32_t getElementDamage(const Player* player, const Creature* target, const Item* item) const = 0;
+		virtual int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false, uint16_t cleaveDamage = 0) const = 0;
+		virtual int32_t getElementDamage(const Player* player, const Creature* target, const Item* item, uint16_t cleavePercent = 0) const = 0;
 		virtual CombatType_t getElementType() const = 0;
 		virtual int16_t getElementDamageValue() const = 0;
 		virtual CombatDamage getCombatDamage(CombatDamage combat, Player* player, Item* item, int32_t damageModifier) const;

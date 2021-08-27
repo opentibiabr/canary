@@ -27,6 +27,10 @@
 extern ConfigManager g_config;
 extern Game g_game;
 
+#if defined(_MSC_VER)
+#   define localtime_r(T,Tm) (localtime_s(Tm,T) ? NULL : Tm)
+#endif
+
 const std::unordered_map<std::string, CoinType_t> CoinTypeMap = {
 	{"coin", COIN_TYPE_DEFAULT},
 	{"transferable", COIN_TYPE_TRANSFERABLE},

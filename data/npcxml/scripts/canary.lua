@@ -15,10 +15,12 @@ function onThink()
 	npcHandler:onThink()
 end
 
+-- Module shop
 local shopModule = ShopModule:new()
 npcHandler:addModule(shopModule)
-
+-- Buyable item
 shopModule:addBuyableItem({"almanac of magic"}, 10025, 600, 1)
+-- Sellable item
 shopModule:addSellableItem({"almanac of magic"}, 10025, 300, 1)
 
 -- Function called by the callback "npcHandler:setCallback(CALLBACK_GREET, greetCallback)" in end of file
@@ -27,6 +29,7 @@ local function greetCallback(cid)
 	return true
 end
 
+-- On creature say callback
 local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
@@ -45,8 +48,14 @@ local function creatureSayCallback(cid, type, msg)
 	return true
 end
 
+-- Set to local function "greetCallback"
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+-- Set to local function "creatureSayCallback"
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+
+-- Bye message
 npcHandler:setMessage(MESSAGE_FAREWELL, "Yeah, good bye and don't come again!")
+-- Walkaway message
 npcHandler:setMessage(MESSAGE_WALKAWAY, "You not have education?")
+
 npcHandler:addModule(FocusModule:new())

@@ -21,10 +21,32 @@ npcHandler:addModule(shopModule)
 shopModule:addBuyableItem({"almanac of magic"}, 10025, 600, 1)
 shopModule:addSellableItem({"almanac of magic"}, 10025, 300, 1)
 
-keywordHandler:addKeyword({'canary'}, StdModule.say, {npcHandler = npcHandler, text = "The goal is for Canary to be an 'engine', that is, it will be a server with a 'clean' datapack, with as few things as possible, thus facilitating development and testing. See more on our {discord group}"})
-keywordHandler:addKeyword({'discord group'}, StdModule.say, {npcHandler = npcHandler, text = "This the our discord group link: https://discordapp.com/invite/3NxYnyV"})
+-- Function called by the callback "npcHandler:setCallback(CALLBACK_GREET, greetCallback)" in end of file
+local function greetCallback(cid)
+	npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, you need more info about {canary}?")
+	return true
+end
 
-npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|, you need more info about {canary}?")
+local function creatureSayCallback(cid, type, msg)
+	if not npcHandler:isFocused(cid) then
+		return false
+	end
+
+	if msgcontains(msg, "canary") then
+		npcHandler:say({
+			"The goal is for Canary to be an 'engine', that is, it will be \z
+				a server with a 'clean' datapack, with as few things as possible, \z
+				thus facilitating development and testing.",
+			"See more on our {discord group}."
+		}, cid, false, false, 3000)
+	elseif msgcontains(msg, "discord group") then
+		npcHandler:say("This the our discord group link: {https://discordapp.com/invite/3NxYnyV}", cid)
+	end
+	return true
+end
+
+npcHandler:setCallback(CALLBACK_GREET, greetCallback)
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_FAREWELL, "Yeah, good bye and don't come again!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "You not have education?")
 npcHandler:addModule(FocusModule:new())

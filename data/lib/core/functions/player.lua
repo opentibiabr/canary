@@ -314,3 +314,32 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
         end
     end
 end
+
+function Player.sellItem(self, itemid, count, cost)
+	if self:removeItem(itemid, count) then
+		if not self:addMoney(cost) then
+			return error('Could not add money to ' .. self:getName() .. '(' .. cost .. 'gp)')
+		end
+		return true
+	end
+	return false
+end
+
+function Player.buyItemContainer(self, containerid, itemid, count, cost, charges)
+	if not self:removeMoney(cost) then
+		Spdlog.error("[doPlayerBuyItemContainer] - Player ".. self:getName() .." do not have money or money is invalid")
+		return false
+	end
+
+	for i = 1, count do
+		local container = Game.createItem(containerid, 1)
+		for x = 1, ItemType(containerid):getCapacity() do
+			container:addItem(itemid, charges)
+		end
+
+		if self:addItemEx(container, true) ~= RETURNVALUE_NOERROR then
+			return false
+		end
+	end
+	return true
+end

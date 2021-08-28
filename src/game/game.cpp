@@ -4323,18 +4323,6 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t spriteId, uint8_t count, ui
 		return;
 	}
 
-	// Lua npcs
-	Npc* npc = player->getShopOwner();
-	if (!npc) {
-		return;
-	}
-	// XML npcs
-	int32_t onBuy, onSell;
-	NpcOld* npcOld = player->getOldShopOwner(onBuy, onSell);
-	if (!npcOld) {
-		return;
-	}
-
 	const ItemType& it = Item::items.getItemIdByClientId(spriteId);
 	if (it.id == 0) {
 		return;
@@ -4347,15 +4335,23 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t spriteId, uint8_t count, ui
 		subType = count;
 	}
 
-	if (!player->hasShopItemForSale(it.id, subType)) {
-		return;
-	}
-
 	// Lua npcs
+	Npc* npc = player->getShopOwner();
 	if (npc) {
+		if (!player->hasShopItemForSale(it.id, subType)) {
+			return;
+		}
+
 		npc->onPlayerBuyItem(player, it.id, subType, amount, ignoreCap, inBackpacks);
+	}
 	// XML npcs
-	} else if (npcOld) {
+	int32_t onBuy, onSell;
+	NpcOld* npcOld = player->getOldShopOwner(onBuy, onSell);
+	if (npcOld) {
+		if (!player->hasOldShopItemForSale(it.id, subType)) {
+			return;
+		}
+
 		npcOld->onPlayerTrade(player, onBuy, it.id, subType, amount, ignoreCap, inBackpacks);
 	}
 }
@@ -4371,18 +4367,6 @@ void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, u
 		return;
 	}
 
-	// Lua npcs
-	Npc* npc = player->getShopOwner();
-	if (!npc) {
-		return;
-	}
-	// XML npcs
-	int32_t onBuy, onSell;
-	NpcOld* npcOld = player->getOldShopOwner(onBuy, onSell);
-	if (!npcOld) {
-		return;
-	}
-
 	const ItemType& it = Item::items.getItemIdByClientId(spriteId);
 	if (it.id == 0) {
 		return;
@@ -4396,10 +4380,15 @@ void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, u
 	}
 
 	// Lua npcs
+	Npc* npc = player->getShopOwner();
 	if (npc) {
 		npc->onPlayerSellItem(player, it.id, subType, amount, ignoreEquipped);
+	}
+
 	// XML npcs
-	} else if (npcOld) {
+	int32_t onBuy, onSell;
+	NpcOld* npcOld = player->getOldShopOwner(onBuy, onSell);
+	if (npcOld) {
 		npcOld->onPlayerTrade(player, onSell, it.id, subType, amount, ignoreEquipped);
 	}
 }
@@ -4421,18 +4410,6 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		return;
 	}
 
-	// Lua npcs
-	Npc* merchant = player->getShopOwner();
-	if (!merchant) {
-		return;
-	}
-	// XML npcs
-	int32_t onBuy, onSell;
-	NpcOld* merchantOld = player->getOldShopOwner(onBuy, onSell);
-	if (!merchantOld) {
-		return;
-	}
-
 	const ItemType& it = Item::items.getItemIdByClientId(spriteId);
 	if (it.id == 0) {
 		return;
@@ -4445,18 +4422,37 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		subType = count;
 	}
 
-	if (!player->hasShopItemForSale(it.id, subType)) {
-		return;
-	}
-
 	if (!g_events->eventPlayerOnLookInShop(player, &it, subType)) {
 		return;
 	}
 
-	std::ostringstream ss;
-	ss << "You see " << Item::getDescription(it, 1, nullptr, subType);
-	player->sendTextMessage(MESSAGE_LOOK, ss.str());
-	merchant->onPlayerCheckItem(player, it.id, subType);
+	// Lua npcs
+	Npc* merchant = player->getShopOwner();
+	if (merchant) {
+		if (!player->hasShopItemForSale(it.id, subType)) {
+			return;
+		}
+
+		std::ostringstream ss;
+		ss << "You see " << Item::getDescription(it, 1, nullptr, subType);
+		player->sendTextMessage(MESSAGE_LOOK, ss.str());
+		merchant->onPlayerCheckItem(player, it.id, subType);
+		return;
+	}
+
+	// XML npcs
+	int32_t onBuy, onSell;
+	NpcOld* merchantOld = player->getOldShopOwner(onBuy, onSell);
+	if (merchantOld) {
+		if (!player->hasOldShopItemForSale(it.id, subType)) {
+			return;
+		}
+
+		std::ostringstream ss;
+		ss << "You see " << Item::getDescription(it, 1, nullptr, subType);
+		player->sendTextMessage(MESSAGE_LOOK, ss.str());
+		return;
+	}
 }
 
 void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos)

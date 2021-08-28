@@ -474,12 +474,12 @@ if NpcHandler == nil then
 
 	-- Handles onBuy events. If you wish to handle this yourself, use the CALLBACK_ONBUY callback.
 	function NpcHandler:onBuy(creature, itemid, subType, amount, ignoreCap, inBackpacks)
-		local cid = creature.uid
-		if (os.time() - getPlayerStorageValue(cid, storage)) >= duration then
-		setPlayerStorageValue(cid, storage, os.time()) -- Delay for buy
+		local player = Player(creature.uid)
+		if (os.time() - player:getStorageValue(storage)) >= duration then
+			player:setStorageValue(storage, os.time()) -- Delay for buy
 		local callback = self:getCallback(CALLBACK_ONBUY)
-		if callback == nil or callback(cid, itemid, subType, amount, ignoreCap, inBackpacks) then
-			if self:processModuleCallback(CALLBACK_ONBUY, cid, itemid, subType, amount, ignoreCap, inBackpacks) then
+		if callback == nil or callback(player, itemid, subType, amount, ignoreCap, inBackpacks) then
+			if self:processModuleCallback(CALLBACK_ONBUY, player, itemid, subType, amount, ignoreCap, inBackpacks) then
 				--
 			end
 		end
@@ -490,10 +490,10 @@ if NpcHandler == nil then
 
 	-- Handles onSell events. If you wish to handle this yourself, use the CALLBACK_ONSELL callback.
 	function NpcHandler:onSell(creature, itemid, subType, amount, ignoreCap, inBackpacks)
-		local cid = creature.uid
+		local player = Player(creature.uid)
 		local callback = self:getCallback(CALLBACK_ONSELL)
-		if callback == nil or callback(cid, itemid, subType, amount, ignoreCap, inBackpacks) then
-			if self:processModuleCallback(CALLBACK_ONSELL, cid, itemid, subType, amount, ignoreCap, inBackpacks) then
+		if callback == nil or callback(player, itemid, subType, amount, ignoreCap, inBackpacks) then
+			if self:processModuleCallback(CALLBACK_ONSELL, player, itemid, subType, amount, ignoreCap, inBackpacks) then
 				--
 			end
 		end
@@ -614,6 +614,7 @@ if NpcHandler == nil then
 	end
 
 	function NpcHandler:doNPCTalkALot(msgs, interval, pcid)
+		local npc = NpcOld()
 		if self.eventDelayedSay[pcid] then
 			self:cancelNPCTalk(self.eventDelayedSay[pcid])
 		end
@@ -622,7 +623,7 @@ if NpcHandler == nil then
 		local ret = {}
 		for aux = 1, #msgs do
 			self.eventDelayedSay[pcid][aux] = {}
-			doCreatureSayWithDelay(getNpcCid(), msgs[aux], TALKTYPE_PRIVATE_NP, ((aux-1) * (interval or 4000)) + 700, self.eventDelayedSay[pcid][aux], pcid)
+			NpcOld():sayWithDelay(getNpcCid(), msgs[aux], TALKTYPE_PRIVATE_NP, ((aux-1) * (interval or 4000)) + 700, self.eventDelayedSay[pcid][aux], pcid)
 			ret[#ret + 1] = self.eventDelayedSay[pcid][aux]
 		end
 		return(ret)

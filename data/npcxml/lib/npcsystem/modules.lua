@@ -220,7 +220,7 @@ if Modules == nil then
 			npcHandler:say("First get rid of those blood stains! You are not going to ruin my vehicle!", cid)
 		elseif not player:removeMoneyBank(cost) then
 			npcHandler:say("You don't have enough money.", cid)
-		elseif os.time() < getPlayerStorageValue(cid, Storage.NpcExhaust) then
+		elseif os.time() < player:getStorageValue(Storage.NpcExhaust) then
 			npcHandler:say('Sorry, but you need to wait three seconds before travel again.', cid)
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		else
@@ -1047,6 +1047,7 @@ if Modules == nil then
 		end
 
 		local player = Player(cid)
+		local npc = NpcOld()
 		local parseInfo = {
 			[TAG_PLAYERNAME] = player:getName(),
 			[TAG_ITEMCOUNT] = amount,
@@ -1062,7 +1063,7 @@ if Modules == nil then
 		end
 
 		local subType = shopItem.subType or 1
-		local a, b = doNpcSellItem(cid, itemid, amount, subType, ignoreCap, inBackpacks, ITEM_SHOPPING_BAG)
+		local a, b = npc:sellItem(cid, itemid, amount, subType, ignoreCap, inBackpacks, ITEM_SHOPPING_BAG)
 		if a < amount then
 			local msgId = MESSAGE_NEEDMORESPACE
 			if a == 0 then
@@ -1116,7 +1117,7 @@ if Modules == nil then
 			[TAG_ITEMNAME] = shopItem.name
 		}
 
-		if not isItemFluidContainer(itemid) then
+		if not ItemType(itemid):isFluidContainer() then
 			subType = -1
 		elseif subType == 0 then
 			subType = -1
@@ -1180,6 +1181,7 @@ if Modules == nil then
 
 		local parentParameters = node:getParent():getParameters()
 		local player = Player(cid)
+		local npc = NpcOld()
 		local parseInfo = {
 			[TAG_PLAYERNAME] = player:getName(),
 			[TAG_ITEMCOUNT] = shop_amount[cid],
@@ -1188,7 +1190,7 @@ if Modules == nil then
 		}
 
 		if shop_eventtype[cid] == SHOPMODULE_SELL_ITEM then
-			local ret = doPlayerSellItem(cid, shop_itemid[cid], shop_amount[cid], shop_cost[cid] * shop_amount[cid])
+			local ret = player:sellItem(cid, shop_itemid[cid], shop_amount[cid], shop_cost[cid] * shop_amount[cid])
 			if ret == true then
 				local msg = module.npcHandler:getMessage(MESSAGE_ONSELL)
 				msg = module.npcHandler:parseMessage(msg, parseInfo)
@@ -1207,7 +1209,7 @@ if Modules == nil then
 				return false
 			end
 
-			local a, b = doNpcSellItem(cid, shop_itemid[cid], shop_amount[cid], shop_subtype[cid], false, false, ITEM_SHOPPING_BAG)
+			local a, b = npc:sellItem(cid, shop_itemid[cid], shop_amount[cid], shop_subtype[cid], false, false, ITEM_SHOPPING_BAG)
 			if a < shop_amount[cid] then
 				local msgId = MESSAGE_NEEDMORESPACE
 				if a == 0 then
@@ -1222,7 +1224,7 @@ if Modules == nil then
 						return false
 					end
 					if shop_itemid[cid] == ITEM_PARCEL then
-						doNpcSellItem(cid, ITEM_LABEL, shop_amount[cid], shop_subtype[cid], true, false, ITEM_SHOPPING_BAG)
+						npc:sellItem(cid, ITEM_LABEL, shop_amount[cid], shop_subtype[cid], true, false, ITEM_SHOPPING_BAG)
 					end
 					return true
 				end
@@ -1235,12 +1237,12 @@ if Modules == nil then
 					return false
 				end
 				if shop_itemid[cid] == ITEM_PARCEL then
-					doNpcSellItem(cid, ITEM_LABEL, shop_amount[cid], shop_subtype[cid], true, false, ITEM_SHOPPING_BAG)
+					npc:sellItem(cid, ITEM_LABEL, shop_amount[cid], shop_subtype[cid], true, false, ITEM_SHOPPING_BAG)
 				end
 				return true
 			end
 		elseif shop_eventtype[cid] == SHOPMODULE_BUY_ITEM_CONTAINER then
-			local ret = doPlayerBuyItemContainer(cid, shop_container[cid], shop_itemid[cid], shop_amount[cid], shop_cost[cid] * shop_amount[cid], shop_subtype[cid])
+			local ret = player:buyItemContainer(cid, shop_container[cid], shop_itemid[cid], shop_amount[cid], shop_cost[cid] * shop_amount[cid], shop_subtype[cid])
 			if ret == true then
 				local msg = module.npcHandler:getMessage(MESSAGE_ONBUY)
 				msg = module.npcHandler:parseMessage(msg, parseInfo)

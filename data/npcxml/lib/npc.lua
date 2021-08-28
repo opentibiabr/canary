@@ -4,6 +4,21 @@ dofile('data/npcxml/lib/npcsystem/customModules.lua')
 
 isPlayerPremiumCallback = Player.isPremium
 
+-- Function called with by the function "NpcOld:sayWithDelay"
+local sayFunction = function(cid, text, type, e, pcid)
+	local npc = NpcOld(cid)
+	if not npc then
+		Spdlog.error("[local func = function(cid, text, type, e, pcid)] - Creature not is valid")
+		return
+	end
+
+	local player = Player(pcid)
+	if player:isPlayer() then
+		npc:say(text, type, false, pcid, npc:getPosition())
+		e.done = true
+	end
+end
+
 function msgcontains(message, keyword)
 	local message, keyword = message:lower(), keyword:lower()
 	if message == keyword then
@@ -13,7 +28,7 @@ function msgcontains(message, keyword)
 	return message:find(keyword) and not message:find('(%w+)' .. keyword)
 end
 
-function doNpcSellItem(cid, itemId, amount, subType, ignoreCap, inBackpacks, backpack)
+function NpcOld:sellItem(cid, itemId, amount, subType, ignoreCap, inBackpacks, backpack)
 	local amount = amount or 1
 	local subType = subType or 0
 	local item = 0
@@ -49,11 +64,11 @@ function doNpcSellItem(cid, itemId, amount, subType, ignoreCap, inBackpacks, bac
 				end
 			end
 		end
-
 		return a, b
 	end
 
-	for i = 1, amount do -- normal method for non-stackable items
+	-- Normal method for non-stackable items
+	for i = 1, amount do
 		local item = Game.createItem(itemId, subType)
 		if player:addItemEx(item, ignoreCap) ~= RETURNVALUE_NOERROR then
 			break
@@ -63,57 +78,11 @@ function doNpcSellItem(cid, itemId, amount, subType, ignoreCap, inBackpacks, bac
 	return a, 0
 end
 
-local func = function(cid, text, type, e, pcid)
-	local npc = NpcOld(cid)
-	if not npc then
-		Spdlog.error("[local func = function(cid, text, type, e, pcid)] - Npc not exist")
-		return
-	end
-
-	local player = Player(pcid)
-	if player:isPlayer() then
-		local creature = Creature(cid)
-		creature:say(text, type, false, pcid, creature:getPosition())
-		e.done = true
-	end
-end
-
-function doCreatureSayWithDelay(cid, text, type, delay, e, pcid)
+function NpcOld:sayWithDelay(cid, text, messageType, delay, e, pcid)
 	if Player(pcid):isPlayer() then
 		e.done = false
-		e.event = addEvent(func, delay < 1 and 1000 or delay, cid, text, type, e, pcid)
+		e.event = addEvent(sayFunction, delay < 1 and 1000 or delay, cid, text, messageType, e, pcid)
 	end
-end
-
-function doPlayerSellItem(cid, itemid, count, cost)
-	local player = Player(cid)
-	if player:removeItem(itemid, count) then
-		if not player:addMoney(cost) then
-			error('Could not add money to ' .. player:getName() .. '(' .. cost .. 'gp)')
-		end
-		return true
-	end
-	return false
-end
-
-function doPlayerBuyItemContainer(cid, containerid, itemid, count, cost, charges)
-	local player = Player(cid)
-	if not player:removeMoney(cost) then
-		Spdlog.error("[doPlayerBuyItemContainer] - Player ".. player:getName() .." do not have money or money is invalid")
-		return false
-	end
-
-	for i = 1, count do
-		local container = Game.createItem(containerid, 1)
-		for x = 1, ItemType(containerid):getCapacity() do
-			container:addItem(itemid, charges)
-		end
-
-		if player:addItemEx(container, true) ~= RETURNVALUE_NOERROR then
-			return false
-		end
-	end
-	return true
 end
 
 function getCount(string)

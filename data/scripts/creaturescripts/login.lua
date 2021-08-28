@@ -35,5 +35,27 @@ function login.onLogin(player)
 	player:registerEvent("DropLoot")
 	return true
 end
+	
+	if SCHEDULE_SPAWN_RATE ~= 100 then
+		if SCHEDULE_SPAWN_RATE > 100 then
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Event! Monsters respawn at a faster rate \
+			Happy Hunting!")
+		else
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Decreased! Monsters respawn at a slower rate.")
+		end
+	end
+
+	-- Set Client XP Gain Rate --
+	local rateExp = 1
+	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
+		rateExp = getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXP))
+
+		if SCHEDULE_EXP_RATE ~= 100 then
+			rateExp = math.max(0, (rateExp * SCHEDULE_EXP_RATE)/100)
+		end
+	end
+
+	local staminaMinutes = player:getStamina()
+	player:setBaseXpGain(rateExp * 100)
 
 login:register()

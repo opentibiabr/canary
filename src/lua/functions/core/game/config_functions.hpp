@@ -97,7 +97,7 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", PZ_LOCKED)
 			registerEnumIn(L, "configKeys", DEFAULT_DESPAWNRANGE)
 			registerEnumIn(L, "configKeys", DEFAULT_DESPAWNRADIUS)
-			registerEnumIn(L, "configKeys", RATE_EXPERIENCE)
+			registerEnumIn(L, "configKeys", RATE_EXP)
 			registerEnumIn(L, "configKeys", RATE_SKILL)
 			registerEnumIn(L, "configKeys", RATE_LOOT)
 			registerEnumIn(L, "configKeys", RATE_MAGIC)

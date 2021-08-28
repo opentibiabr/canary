@@ -95,6 +95,13 @@ int GameFunctions::luaGamegetEventSExp(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGamegetEventSSpawnRate(lua_State* L)
+{
+	// Game.getEventSSpawnRate()
+	lua_pushnumber(L, g_game.getSpawnSchedule());
+	return 1;
+}
+
 int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	// Game.getSpectators(position[, multifloor = false[, onlyPlayer = false[, minRangeX = 0[, maxRangeX = 0[, minRangeY = 0[, maxRangeY = 0]]]]]])
 	const Position& position = getPosition(L, 1);

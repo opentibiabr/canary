@@ -238,25 +238,24 @@ bool Game::loadScheduleEventFromXml()
 			if ((schedENode.attribute("exprate"))) {
 				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
 				g_game.setExpSchedule(exprate);
-				ss << " exp: " << (exprate - 100) << "%";
-			}
+ss << " exp: " << (exprate) << "%";			}
 
 			if ((schedENode.attribute("lootrate"))) {
 				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
 				g_game.setLootSchedule(lootrate);
-				ss << ", loot: " << (lootrate - 100) << "%";
+				ss << ", loot: " << (lootrate) << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
 				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
 				g_game.setSpawnMonsterSchedule(spawnrate);
-				ss << ", spawn: "  << (spawnrate - 100) << "%";
+				ss << ", spawn: "  << (spawnrate) << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
 				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
 				g_game.setSkillSchedule(skillrate);
-				ss << ", skill: " << (skillrate - 100) << "%";
+				ss << ", skill: " << (skillrate) << "%";
 			}
 		}
 		SPDLOG_INFO(ss.str());

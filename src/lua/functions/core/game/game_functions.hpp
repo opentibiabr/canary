@@ -38,6 +38,7 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "getEventSLoot", GameFunctions::luaGamegetEventSLoot);
 				registerMethod(L, "Game", "getEventSSkill", GameFunctions::luaGamegetEventSSkill);
 				registerMethod(L, "Game", "getEventSExp", GameFunctions::luaGamegetEventSExp);
+				registerMethod(L, "Game", "getEventSSpawnRate", GameFunctions::luaGamegetEventSSpawnRate);
 
 				registerMethod(L, "Game", "getSpectators", GameFunctions::luaGameGetSpectators);
 
@@ -94,6 +95,7 @@ class GameFunctions final : LuaScriptInterface {
 			static int luaGamegetEventSLoot(lua_State* L);
 			static int luaGamegetEventSSkill(lua_State* L);
 			static int luaGamegetEventSExp(lua_State* L);
+			static int luaGamegetEventSSpawnRate(lua_State* L);
 
 			static int luaGameGetSpectators(lua_State* L);
 

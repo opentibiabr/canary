@@ -974,7 +974,6 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, RELOAD_TYPE_NPCS)
 			registerEnum(L, RELOAD_TYPE_RAIDS)
 			registerEnum(L, RELOAD_TYPE_SCRIPTS)
-			registerEnum(L, RELOAD_TYPE_SPELLS)
 			registerEnum(L, RELOAD_TYPE_STAGES)
 
 			registerEnum(L, ZONE_PROTECTION)

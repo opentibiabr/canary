@@ -77,10 +77,10 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 
 	// Add char list
 	std::vector<account::Player> players;
-	if (auto [ players, result ] = account.GetAccountPlayers();
+	if (auto [ players, result ] = account.getAccountPlayers();
 		account::ERROR_NO != result) {
 		SPDLOG_ERROR("Failed to load Account [{}] players. (Error: [{}])",
-			account.GetID(), result);
+			account.getID(), result);
 	}
 	output->addByte(0x64);
 
@@ -109,7 +109,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 		output->add<uint32_t>(0);
 	} else {
 	uint32_t days;
-	days = account.GetPremiumRemaningDays();
+	days = account.getPremiumRemaningDays();
 	output->addByte(0);
 	output->add<uint32_t>(time(nullptr) + (days * 86400));
   }

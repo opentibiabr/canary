@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <store>
 	<!-- Categorys -->
-	<category name="Consumables" icon="Category_Consumables.png" rookgaard="yes" >
+	<category name="Consumables" icon="Category_Consumables.png" rookgaard="yes">
 		<subcategory name="Blessings" />
 		<subcategory name="Runes" />
 		<subcategory name="Special Foods" />
 	</category>
-	<category name="General Items" icon="Category_GeneralItems.png" rookgaard="yes" >
+	<category name="General Items" icon="Category_GeneralItems.png" rookgaard="yes">
 		<subcategory name="Equipments" />
 		<subcategory name="Weapons" />
 		<subcategory name="Containers" />
 		<subcategory name="Exercise Weapons" />
 		<subcategory name="Useful Items" />
 	</category>
-	<category name="Cosmetics" icon="Category_Cosmetics.png" rookgaard="yes" >
+	<category name="Cosmetics" icon="Category_Cosmetics.png" rookgaard="yes">
 		<subcategory name="Mounts" />
 		<subcategory name="Outfits" />
 	</category>
-	<category name="House" icon="Category_HouseTools.png" rookgaard="yes" >
+	<category name="House" icon="Category_HouseTools.png" rookgaard="yes">
 		<subcategory name="Decorations" />
 		<subcategory name="Furniture" />
 		<subcategory name="Upgrades" />
 		<subcategory name="Hirelings" />
 		<subcategory name="Hirelings Dresses" />
 	</category>
-	<category name="Tournament" icon="Category_Tournament.png" rookgaard="yes" >
+	<category name="Tournament" icon="Category_Tournament.png" rookgaard="yes">
 		<subcategory name="Tickets" />
 		<subcategory name="Exclusive Offers" />
 	</category>
-	<category name="Extras" icon="Category_Extras.png" rookgaard="yes" >
+	<category name="Extras" icon="Category_Extras.png" rookgaard="yes">
 		<subcategory name="Extra Services" />
 		<subcategory name="Useful Things" />
 	</category>
@@ -46,13 +46,13 @@
 
 	<!-- Store offer -->
 	<!-- Premium time -->
-	<offer name="Premium Time" icon="Category_PremiumTime.png" rookgaard="yes" state="sale" >
-		<offers name="30 Days of Premium" count="1" price="250" itemid="14758" icon="Product_PremiumTime30.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7127" state="sale" validUntil="30" />
-		<offers name="90 Days of Premium" count="1" itemid="14758" price="400" icon="Product_PremiumTime90.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7187" state="sale" validUntil="30" />
-		<offers name="180 Days of Premium" count="1" itemid="14758" price="700" icon="Product_PremiumTime180.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7277" state="sale" validUntil="30" />
-		<offers name="360 Days of Premium" count="1" itemid="14758" price="1000" icon="Product_PremiumTime360.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7457" state="sale" validUntil="30" />
+	<offer name="Premium Time" icon="Category_PremiumTime.png" rookgaard="yes" state="sale">
+		<offers name="30 Days of Premium" count="1" price="250" itemId="14758" icon="Product_PremiumTime30.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7127" state="sale" validUntil="30" />
+		<offers name="90 Days of Premium" count="1" itemId="14758" price="400" icon="Product_PremiumTime90.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7187" state="sale" validUntil="30" />
+		<offers name="180 Days of Premium" count="1" itemId="14758" price="700" icon="Product_PremiumTime180.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7277" state="sale" validUntil="30" />
+		<offers name="360 Days of Premium" count="1" itemId="14758" price="1000" icon="Product_PremiumTime360.png" description="Premium benefits: <br /> {info} XP bonus <br /> {info} Loot bonus <br /> {info} Exclusive Mounts <br /> {info} Exclusive outfits <br /> {info} Access to Premium Plaza" coinType="coin" type="item" actionid="7457" state="sale" validUntil="30" />
 	</offer>
-	<offer name="Imbuements" description="Imbuement Itens" icon="Category_Imbuements.png" rookgaard="yes" state="none" >
+	<offer name="Imbuements" description="Imbuement Itens" icon="Category_Imbuements.png" rookgaard="yes" state="none">
 		<offers name="Strike" items="11444,20;10311,25;22728,5" price="50" icon="Imbuement_Critical-Strike3.png" description="20 Protective Charms + 25 Sabretooth + 5 Vexclaw Talons" coinType="coin" type="multiitems" />
 		<offers name="Vampirism" items="9685,25;9633,15;9663,5" price="50" icon="Imbuement_Life_Leech3.png" description="25 Vampire Teeth + 15  Bloody Pincerss + 5 Piece of Dead Brain" coinType="coin" type="multiitems" />
 		<offers name="Void" items="11492,25;20200,25;22730,5" price="50" icon="Imbuement_Mana_Leech3.png" description="25 Rope Belts + 25 Silencer Claws + 5 Some Grimeleech Wings" coinType="coin" type="multiitems" />
@@ -76,99 +76,99 @@
 		<offers name="Quara Scale" items="10295,25;10307,15;14012,5" price="50" icon="Imbuement_Protection_Ice3.png" description="25 Winter Wolf Furs + 15 Thick Furs + 5 Deepling Warts" coinType="coin" type="multiitems" />
 		<offers name="Snake Skin" items="17823,25;9694,20;11702,10" price="50" icon="Imbuement_Protection_Earth3.png" description="25 Piece of Swampling Wood + 20 Snake Skins + 10 Brimstone Fangss" coinType="coin" type="multiitems" />
 	</offer>
-	<offer name="Equipments" icon="Category_Equipments.png" rookgaard="yes" state="none" parent="General Items" >
-		<offers name="Gill Gugel" itemid="16104" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Gill Coat" itemid="16105" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Gill Legs" itemid="16106" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Prismatic Armor" itemid="16110" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Prismatic Legs" itemid="16111" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Prismatic Helmet" itemid="16109" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Spellbook of Vigilance" itemid="16107" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+	<offer name="Equipments" icon="Category_Equipments.png" rookgaard="yes" state="none" parent="General Items">
+		<offers name="Gill Gugel" itemId="16104" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Gill Coat" itemId="16105" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Gill Legs" itemId="16106" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Prismatic Armor" itemId="16110" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Prismatic Legs" itemId="16111" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Prismatic Helmet" itemId="16109" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Spellbook of Vigilance" itemId="16107" count="1" price="100" icon="" description="" coinType="coin" type="item"/>
 	</offer>
-	<offer name="Weapons" icon="Category_Weapons.png" rookgaard="no" state="none" parent="General Items" >
-		<offers name="Mycological Bow" itemid="16164" count="1" price="150" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Obsidian Truncheon" itemid="8100" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Emerald Sword" itemid="8102" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Glacial Rod" itemid="16118" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Hellforged Axe" itemid="8096" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Muck Rod" itemid="16117" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Crystal Crossbow" itemid="16163" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Shiny Blade" itemid="16175" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Wand of Defiance" itemid="16096" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Wand of Everblazing" itemid="16115" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Crystalline Axe" itemid="16161" count="1" price="150" icon="" coinType="coin" type="item"/>
-		<offers name="Mycological Mace" itemid="16162" count="1" price="150" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Blade of Destruction" itemid="27449" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Slayer of Destruction" itemid="27450" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Axe of Destruction" itemid="27451" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Chopper of Destruction" itemid="27452" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Mace of Destruction" itemid="27453" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Hammer of Destruction" itemid="27454" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Bow of Destruction" itemid="27455" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Crossbow of Destruction" itemid="27456" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Wand of Destruction" itemid="27457" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
-		<offers name="Rod of Destruction" itemid="27458" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+	<offer name="Weapons" icon="Category_Weapons.png" rookgaard="no" state="none" parent="General Items">
+		<offers name="Mycological Bow" itemId="16164" count="1" price="150" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Obsidian Truncheon" itemId="8100" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Emerald Sword" itemId="8102" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Glacial Rod" itemId="16118" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Hellforged Axe" itemId="8096" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Muck Rod" itemId="16117" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Crystal Crossbow" itemId="16163" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Shiny Blade" itemId="16175" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Wand of Defiance" itemId="16096" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Wand of Everblazing" itemId="16115" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Crystalline Axe" itemId="16161" count="1" price="150" icon="" coinType="coin" type="item"/>
+		<offers name="Mycological Mace" itemId="16162" count="1" price="150" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Blade of Destruction" itemId="27449" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Slayer of Destruction" itemId="27450" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Axe of Destruction" itemId="27451" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Chopper of Destruction" itemId="27452" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Mace of Destruction" itemId="27453" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Hammer of Destruction" itemId="27454" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Bow of Destruction" itemId="27455" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Crossbow of Destruction" itemId="27456" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Wand of Destruction" itemId="27457" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
+		<offers name="Rod of Destruction" itemId="27458" count="1" price="200" icon="" description="" coinType="coin" type="item"/>
 	</offer>
-	<offer name="Exercise Weapons" icon="Category_ExerciseWeapons.png" rookgaard="no" state="none" parent="General Items" >
-		<offers name="Exercise Axe 1000x" itemid="28553" charges="1000" price="25" icon="Training_Axe.png" coinType="coin" type="training" />
-		<offers name="Exercise Axe 5000x" itemid="28553" charges="5000" price="75" icon="Training_Axe.png" coinType="coin" type="training" />
-		<offers name="Exercise Axe 10000x" itemid="28553" charges="10000" price="150" icon="Training_Axe.png" coinType="coin" type="training" />
-		<offers name="Exercise Bow 1000x" itemid="28555" charges="1000" price="25" icon="Training_Bow.png" coinType="coin" type="training" />
-		<offers name="Exercise Bow 5000x" itemid="28555" charges="5000" price="75" icon="Training_Bow.png" coinType="coin" type="training" />
-		<offers name="Exercise Bow 10000x" itemid="28555" charges="10000" price="150" icon="Training_Bow.png" coinType="coin" type="training" />
-		<offers name="Exercise Club 1000x" itemid="28554" charges="1000" price="25" icon="Training_Club.png" coinType="coin" type="training" />
-		<offers name="Exercise Club 5000x" itemid="28554" charges="5000" price="75" icon="Training_Club.png" coinType="coin" type="training" />
-		<offers name="Exercise Club 10000x" itemid="28554" charges="10000" price="150" icon="Training_Club.png" coinType="coin" type="training" />
-		<offers name="Exercise Rod 1000x" itemid="28556" charges="1000" price="25" icon="Training_Rod.png" coinType="coin" type="training" />
-		<offers name="Exercise Rod 5000x" itemid="28556" charges="5000" price="75" icon="Training_Rod.png" coinType="coin" type="training" />
-		<offers name="Exercise Rod 10000x" itemid="28556" charges="10000" price="150" icon="Training_Rod.png" coinType="coin" type="training" />
-		<offers name="Exercise Sword 1000x" itemid="28552" charges="1000" price="25" icon="Training_Sword.png" coinType="coin" type="training" />
-		<offers name="Exercise Sword 5000x" itemid="28552" charges="5000" price="75" icon="Training_Sword.png" coinType="coin" type="training" />
-		<offers name="Exercise Sword 10000x" itemid="28552" charges="10000" price="150" icon="Training_Sword.png" coinType="coin" type="training" />
-		<offers name="Exercise Wand 1000x" itemid="28557" charges="1000" price="25" icon="Training_Wand.png" coinType="coin" type="training" />
-		<offers name="Exercise Wand 5000x" itemid="28557" charges="5000" price="75" icon="Training_Wand.png" coinType="coin" type="training" />
-		<offers name="Exercise Wand 10000x" itemid="28557" charges="10000" price="150" icon="Training_Wand.png" coinType="coin" type="training" />
+	<offer name="Exercise Weapons" icon="Category_ExerciseWeapons.png" rookgaard="no" state="none" parent="General Items">
+		<offers name="Exercise Axe 1000x" itemId="28553" charges="1000" price="25" icon="Training_Axe.png" coinType="coin" type="training" />
+		<offers name="Exercise Axe 5000x" itemId="28553" charges="5000" price="75" icon="Training_Axe.png" coinType="coin" type="training" />
+		<offers name="Exercise Axe 10000x" itemId="28553" charges="10000" price="150" icon="Training_Axe.png" coinType="coin" type="training" />
+		<offers name="Exercise Bow 1000x" itemId="28555" charges="1000" price="25" icon="Training_Bow.png" coinType="coin" type="training" />
+		<offers name="Exercise Bow 5000x" itemId="28555" charges="5000" price="75" icon="Training_Bow.png" coinType="coin" type="training" />
+		<offers name="Exercise Bow 10000x" itemId="28555" charges="10000" price="150" icon="Training_Bow.png" coinType="coin" type="training" />
+		<offers name="Exercise Club 1000x" itemId="28554" charges="1000" price="25" icon="Training_Club.png" coinType="coin" type="training" />
+		<offers name="Exercise Club 5000x" itemId="28554" charges="5000" price="75" icon="Training_Club.png" coinType="coin" type="training" />
+		<offers name="Exercise Club 10000x" itemId="28554" charges="10000" price="150" icon="Training_Club.png" coinType="coin" type="training" />
+		<offers name="Exercise Rod 1000x" itemId="28556" charges="1000" price="25" icon="Training_Rod.png" coinType="coin" type="training" />
+		<offers name="Exercise Rod 5000x" itemId="28556" charges="5000" price="75" icon="Training_Rod.png" coinType="coin" type="training" />
+		<offers name="Exercise Rod 10000x" itemId="28556" charges="10000" price="150" icon="Training_Rod.png" coinType="coin" type="training" />
+		<offers name="Exercise Sword 1000x" itemId="28552" charges="1000" price="25" icon="Training_Sword.png" coinType="coin" type="training" />
+		<offers name="Exercise Sword 5000x" itemId="28552" charges="5000" price="75" icon="Training_Sword.png" coinType="coin" type="training" />
+		<offers name="Exercise Sword 10000x" itemId="28552" charges="10000" price="150" icon="Training_Sword.png" coinType="coin" type="training" />
+		<offers name="Exercise Wand 1000x" itemId="28557" charges="1000" price="25" icon="Training_Wand.png" coinType="coin" type="training" />
+		<offers name="Exercise Wand 5000x" itemId="28557" charges="5000" price="75" icon="Training_Wand.png" coinType="coin" type="training" />
+		<offers name="Exercise Wand 10000x" itemId="28557" charges="10000" price="150" icon="Training_Wand.png" coinType="coin" type="training" />
 	</offer>
-	<offer name="Useful Items" icon="Category_UsefulItems.png" rookgaard="no" state="none" parent="General Items" >
-		<offers name="Whacking Driller of Fate" itemid="9599" count="1" price="50" icon="" coinType="coin" type="item"/>
-		<offers name="Sneaky Stabber of Eliteness" itemid="9595" count="1" price="50" icon="" coinType="coin" type="item"/>
-		<offers name="Squeezing Gear of Girlpower" itemid="9596" count="1" price="50" icon="" coinType="coin" type="item"/>
-		<offers name="Obsidian Knife" itemid="5908" count="1" price="50" icon="" coinType="coin" type="item"/>
-		<offers name="Blessed Wooden Stake" itemid="5942" count="1" price="50" icon="" coinType="coin" type="item"/>
+	<offer name="Useful Items" icon="Category_UsefulItems.png" rookgaard="no" state="none" parent="General Items">
+		<offers name="Whacking Driller of Fate" itemId="9599" count="1" price="50" icon="" coinType="coin" type="item"/>
+		<offers name="Sneaky Stabber of Eliteness" itemId="9595" count="1" price="50" icon="" coinType="coin" type="item"/>
+		<offers name="Squeezing Gear of Girlpower" itemId="9596" count="1" price="50" icon="" coinType="coin" type="item"/>
+		<offers name="Obsidian Knife" itemId="5908" count="1" price="50" icon="" coinType="coin" type="item"/>
+		<offers name="Blessed Wooden Stake" itemId="5942" count="1" price="50" icon="" coinType="coin" type="item"/>
 	</offer>
-	<offer name="Containers" icon="Category_Containers.png" rookgaard="yes" state="none" parent="General Items" >
-		<offers name="Zaoan Chess Box" itemid="18339" count="1" price="100" icon="" coinType="coin" type="item"/>
-		<offers name="Loot Pounch" itemid="23721" count="1" price="225" icon="Product_MagicCoinPurse.png" description="With Loot Pouch, you can carry your loot amount without having to keep many backpacks in your backpack. This product allows you to carry as much gold as your capacity allows." coinType="coin" type="pouch" state="new" />
+	<offer name="Containers" icon="Category_Containers.png" rookgaard="yes" state="none" parent="General Items">
+		<offers name="Zaoan Chess Box" itemId="18339" count="1" price="100" icon="" coinType="coin" type="item"/>
+		<offers name="Loot Pounch" itemId="23721" count="1" price="225" icon="Product_MagicCoinPurse.png" description="With Loot Pouch, you can carry your loot amount without having to keep many backpacks in your backpack. This product allows you to carry as much gold as your capacity allows." coinType="coin" type="pouch" state="new" />
 	</offer>
-	<offer name="Special Foods" icon="Category_SpecialFoods.png" rookgaard="yes" state="none" parent="Consumables" >
-		<offers name="Blueberry Cupcake" itemid="28484" description="Fill up all your mana. (Stackeable)" count="1" price="50" icon="Product_BlueberryCupcake.png" coinType="coin" type="item" />
-		<offers name="Strawberry Cupcake" itemid="28485" description="Fill up all your life. (Stackeable)" count="1" price="50" icon="Product_StrawberryCupcake.png" coinType="coin" type="item" />
+	<offer name="Special Foods" icon="Category_SpecialFoods.png" rookgaard="yes" state="none" parent="Consumables">
+		<offers name="Blueberry Cupcake" itemId="28484" description="Fill up all your mana. (Stackeable)" count="1" price="50" icon="Product_BlueberryCupcake.png" coinType="coin" type="item" />
+		<offers name="Strawberry Cupcake" itemId="28485" description="Fill up all your life. (Stackeable)" count="1" price="50" icon="Product_StrawberryCupcake.png" coinType="coin" type="item" />
 	</offer>
-	<offer name="Blessings" icon="Category_Blessings.png" rookgaard="yes" state="none" parent="Consumables" >
+	<offer name="Blessings" icon="Category_Blessings.png" rookgaard="yes" state="none" parent="Consumables">
 		<offers name="All Regular Blessings" blessid="9" price="100" icon="Product_Blessing_AllPvE.png" description="Buy all blessings for your character (Mountain blessings included). Characters that own all Blessings will not lose any container or items they are wearing. Further, their experience loss is reduced as well as their skill loss. Note, however, that characters with a red or black skull will lose all equipment upon death even if they wear all blessings." coinType="coin" type="allblessing" />
 	</offer>
-	<offer name="Runes and Potions" description="Buy magically filled runes to unleash their energy when in need of it." icon="Category_Runes.png" rookgaard="no" state="none" parent="Consumables" >
-		<offers name="Health Keg" itemid="25903" count="500" price="30" icon="Health_Keg.png" coinType="coin" type="item" />
-		<offers name="Strong Health Keg" itemid="25904" count="500" price="40" icon="Strong_Health_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Great Health Keg" itemid="25905" count="500" price="50" icon="Great_Health_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Ultimate Health Keg" itemid="25906" count="500" price="60" icon="Ultimate_Health_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Supreme Health Keg" itemid="25907" count="500" price="70" icon="Supreme_Health_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Mana Keg" itemid="25908" count="500" price="30" icon="Mana_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Strong Mana Keg" itemid="25909" count="500" price="50" icon="Strong_Mana_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Great Mana Keg" itemid="25910" count="500" price="50" icon="Great_Mana_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Ultimate Mana Keg" itemid="25911" count="500" price="70" icon="Ultimate_Mana_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Great Spirit Keg" itemid="25913" count="500" price="50" icon="Great_spirit_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Ultimate Spirit Keg" itemid="25914" count="500" price="70" icon="Ultimate_Spirit_Keg.png" coinType="coin" type="stackeable" />
-		<offers name="Avalanche Rune" itemid="3161" count="300" price="20" icon="Product_Rune_AvalancheRune.png" description="Here you can purchase a stack of '300 Avalanche Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone blockor a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
-		<offers name="Magic Wall Rune" itemid="3180" count="300" price="20" icon="Product_Rune_MagicWallRune.png" description="Here you can purchase a stack of '300 Magic Wall Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
-		<offers name="Paralyze Rune" itemid="3165" count="300" price="20" icon="Product_Rune_ParalyzeRune.png" description="Here you can purchase a stack of '300 Paralyze Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
-		<offers name="Sudden Death Rune" itemid="3155" count="300" price="20" icon="Product_Rune_SuddenDeathRune.png" description="{character}<br/>{storeinbox}<br/>{vocationlevelcheck}<br/>{battlesign}<br/>{capacity}<br/><br/><br/><i>Nearly no other spell can compare to Sudden Death when it comes to sheer damage. For this reason it is immensely popular despite the fact that only a single target is affected. However, since the damage caused by the rune is of deadly nature, it is less useful against most undead creatures.</i>" coinType="coin" type="stackeable" />
-		<offers name="Wild Growth Rune" itemid="3156" count="300" price="20" icon="Product_Rune_WildGrowthRune.png" description="Here you can purchase a stack of '250 Wild Growth Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchaserunes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
-		<offers name="Ultimate Spirit Potion" itemid="23374" count="100" price="20" icon="Product_Potion_ultimate_health_potion.png" coinType="coin" type="stackeable" />
-		<offers name="Ultimate Mana Potion" itemid="23373" count="100" price="20" icon="Product_Potion_ultimate_health_potion.png" coinType="coin" type="stackeable" />
-		<offers name="Supreme Health Potion" itemid="23375" count="100" price="20" icon="Product_Potion_Supreme_health_potion.png" coinType="coin" type="stackeable" />
+	<offer name="Runes and Potions" description="Buy magically filled runes to unleash their energy when in need of it." icon="Category_Runes.png" rookgaard="no" state="none" parent="Consumables">
+		<offers name="Health Keg" itemId="25903" count="500" price="30" icon="Health_Keg.png" coinType="coin" type="item" />
+		<offers name="Strong Health Keg" itemId="25904" count="500" price="40" icon="Strong_Health_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Great Health Keg" itemId="25905" count="500" price="50" icon="Great_Health_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Ultimate Health Keg" itemId="25906" count="500" price="60" icon="Ultimate_Health_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Supreme Health Keg" itemId="25907" count="500" price="70" icon="Supreme_Health_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Mana Keg" itemId="25908" count="500" price="30" icon="Mana_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Strong Mana Keg" itemId="25909" count="500" price="50" icon="Strong_Mana_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Great Mana Keg" itemId="25910" count="500" price="50" icon="Great_Mana_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Ultimate Mana Keg" itemId="25911" count="500" price="70" icon="Ultimate_Mana_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Great Spirit Keg" itemId="25913" count="500" price="50" icon="Great_spirit_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Ultimate Spirit Keg" itemId="25914" count="500" price="70" icon="Ultimate_Spirit_Keg.png" coinType="coin" type="stackeable" />
+		<offers name="Avalanche Rune" itemId="3161" count="300" price="20" icon="Product_Rune_AvalancheRune.png" description="Here you can purchase a stack of '300 Avalanche Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone blockor a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
+		<offers name="Magic Wall Rune" itemId="3180" count="300" price="20" icon="Product_Rune_MagicWallRune.png" description="Here you can purchase a stack of '300 Magic Wall Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
+		<offers name="Paralyze Rune" itemId="3165" count="300" price="20" icon="Product_Rune_ParalyzeRune.png" description="Here you can purchase a stack of '300 Paralyze Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchase runes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
+		<offers name="Sudden Death Rune" itemId="3155" count="300" price="20" icon="Product_Rune_SuddenDeathRune.png" description="{character}<br/>{storeinbox}<br/>{vocationlevelcheck}<br/>{battlesign}<br/>{capacity}<br/><br/><br/><i>Nearly no other spell can compare to Sudden Death when it comes to sheer damage. For this reason it is immensely popular despite the fact that only a single target is affected. However, since the damage caused by the rune is of deadly nature, it is less useful against most undead creatures.</i>" coinType="coin" type="stackeable" />
+		<offers name="Wild Growth Rune" itemId="3156" count="300" price="20" icon="Product_Rune_WildGrowthRune.png" description="Here you can purchase a stack of '250 Wild Growth Runes'. Use them to unleash their magical energy when in need of it. Note, characters with a protection zone block or a battle sign cannot purchaserunes. Also, characters cannot buy runes that exceed their capacity. Finally, runes bought in the Store can only be used by the character that makes the purchase. For this reason, the purchased runes need to fit the character's level and magic level." coinType="coin" type="stackeable" />
+		<offers name="Ultimate Spirit Potion" itemId="23374" count="100" price="20" icon="Product_Potion_ultimate_health_potion.png" coinType="coin" type="stackeable" />
+		<offers name="Ultimate Mana Potion" itemId="23373" count="100" price="20" icon="Product_Potion_ultimate_health_potion.png" coinType="coin" type="stackeable" />
+		<offers name="Supreme Health Potion" itemId="23375" count="100" price="20" icon="Product_Potion_Supreme_health_potion.png" coinType="coin" type="stackeable" />
 	</offer>
-	<offer name="Mounts" description="Buy your character one or more of the fabolous Mountsoffered here." icon="Category_Mounts.png" rookgaard="yes" state="none" parent="Cosmetics" >
+	<offer name="Mounts" description="Buy your character one or more of the fabolous Mountsoffered here." icon="Category_Mounts.png" rookgaard="yes" state="none" parent="Cosmetics">
 		<offers name="Cranium Spider" id="116" price="200" icon="Product_Mount_SkullSpider_v1.png" description="Here you can purchase the Mount 'Cranium Spider' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." coinType="coin" type="mount" />
 		<offers name="Cave Tarantula" id="117" price="200" icon="Product_Mount_SkullSpider_v2.png" description="Here you can purchase the Mount 'Cave Tarantula' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." coinType="coin" type="mount" />
 		<offers name="Gloom Widow" id="118" price="200" icon="Product_Mount_SkullSpider_v3.png" description="Here you can purchase the Mount 'Snow Pelt' for your character. Riding on a mount isnot only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." coinType="coin" type="mount" />
@@ -243,7 +243,7 @@
 		<offers name="Jade Lion" id="48" price="200" icon="Product_Mount_JadeLion.png" description="Hereyou can purchase the Mount 'Jade Lion' for your character. Riding on a mount is not only cool, butalso gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." coinType="coin" type="mount" />
 		<offers name="Winter King" id="52" price="200" icon="Product_Mount_WinterKing.png" description="Here you can purchase the Mount 'Winter king' for your character. Riding on a mount is not only cool, but also givesyour character a speed boost. Note: The Mount will only be received by the character who purchasedit in the Store." coinType="coin" type="mount" />
 	</offer>
-	<offer name="Outfits" description="Buy your character one more of the classy outfits offered here." icon="Category_Outfits.png" rookgaard="yes" state="none" parent="Cosmetics" >
+	<offer name="Outfits" description="Buy your character one more of the classy outfits offered here." icon="Category_Outfits.png" rookgaard="yes" state="none" parent="Cosmetics">
 		<offers name="Full Sun Priest Outfit" addon="3" male="1023" female="1024" price="220" icon="Product_Mount_SunPriest_Male_Full.png" coinType="coin" type="outfitaddon" />
 		<offers name="Full Herbalist Outfit" addon="3" male="1021" female="1020" price="220" icon="Product_Mount_Herbalist_Male_Full.png" coinType="coin" type="outfitaddon" />
 		<offers name="Full Entrepreneur Outfit" addon="3" male="472" female="471" price="220" icon="Product_Mount_Entrepreneur_Male_Full.png" coinType="coin" type="outfitaddon" />
@@ -279,174 +279,174 @@
 		<offers name="Full Seaweaver Outfit" addon="3" male="733" female="732" price="220" icon="Product_Mount_SeaWeaver_Male_Full.png" coinType="coin" type="outfitaddon" />
 		<offers name="Full Golden Outfit" addon="3" male="1210" female="1211" price="3000" icon="Product_Mount_Golden_Male_Full.png" coinType="coin" type="outfitaddon" />
 	</offer>
-	<offer name="Decorations" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseEquipment.png" rookgaard="yes" state="none" parent="House" >
-		<offers name="Festive Filled Shoes" itemid="30227" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Fireplace" itemid="30234" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Pile of Presents" itemid="30245" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Pyramitemid" itemid="30249" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Rocking Chair" itemid="30241" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Sack of Presents" itemid="30247" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Sleigh" itemid="30243" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Table" itemid="30229" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Festive Tree" itemid="30229" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Chest of Abundance" itemid="28945" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Fluorescent Fungi" itemid="28922" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Gloomy Poisonous Fungi" itemid="28926" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Glowing Sulphur Fungi" itemid="28924" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Incomprehensible Riches" itemid="28944" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Luminescent Fungi" itemid="28922" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Painting of Tibiasula" itemid="28947" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Stuffed Bear Display" itemid="28928" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Stuffed Teddy Display" itemid="28930" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Anglerfish Lamp" itemid="28674" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Baby Rotworm" itemid="28690" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Bellflower" itemid="28697" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Carnivorous Plant" itemid="28688" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Fennec" itemid="28695" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Forget-Me-Not" itemid="28698" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Red Geranium" itemid="28699" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Alchemistic Cupboard" itemid="27689" count="1" price="50" icon="" description="Buy an incredible Alchemistic Cupboard to decorate your home." coinType="coin" type="house" />
-		<offers name="Alchemistic Scales" itemid="27683" count="1" price="50" icon="" description="Buy an incredible Alchemistic Scales to decorate your home." coinType="coin" type="house" />
-		<offers name="Arrival at Thais Painting" itemid="27698" count="1" price="50" icon="" description="Buy an incredible Arrival at Thais Painting to decorate your home." coinType="coin" type="house" />
-		<offers name="Dungeon Scene Painting" itemid="27697" count="1" price="50" icon="" description="Buy an incredible Dungeon Scene Painting to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferumbras Bust" itemid="27692" count="1" price="50" icon="" description="Buy an incredible Ferumbras Bust to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferumbras Portrait" itemid="27700" count="1" price="50" icon="" description="Buy an incredible Ferumbras Portrait to decorate your home." coinType="coin" type="house" />
-		<offers name="King Tibianus Bust" itemid="27703" count="1" price="50" icon="" description="Buy an incredible King Tibianus Bust to decorate your home." coinType="coin" type="house" />
-		<offers name="Light of Change" itemid="27667" count="1" price="120" icon="" description="Buy an incredible Light of Change to decorate your home." coinType="coin" type="house" />
-		<offers name="Pile of Alchemistic Books" itemid="27688" count="1" price="25" icon="" description="Buy an incredible Pile of Alchemistic Books to decorate your home." coinType="coin" type="house" />
-		<offers name="Queen Eloise bust" itemid="27695" count="1" price="25" icon="" description="Buy an incredible Queen Eloise bust to decorate your home." coinType="coin" type="house" />
-		<offers name="Tibia streets painting" itemid="27699" count="1" price="25" icon="" description="Buy an incredible Tibia Streets Painting to decorate your home." coinType="coin" type="house" />
-		<offers name="Torch of Change" itemid="27671" count="1" price="60" icon="" description="Buy an incredible Torch of Change to decorate your home." coinType="coin" type="house" />
-		<offers name="Crested Carpet" itemid="26152" count="1" price="25" icon="" description="Buy an incredible Crested Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Decorated Carpet" itemid="26154" count="1" price="35" icon="" description="Buy an incredible Decorated Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Demon Pet" itemid="26175" count="1" price="180" icon="" description="Buy an incredible Demon Pet to decorate your home." coinType="coin" type="house" />
-		<offers name="Terrarium Snake" itemid="26172" count="1" price="180" icon="" description="Buy an incredible Terrarium Snake to decorate your home." coinType="coin" type="house" />
-		<offers name="Wheat Carpet" itemid="26151" count="1" price="30" icon="" description="Buy an incredible Wheat Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Bath Tube" itemid="26100" count="1" price="90" icon="" description="Buy an incredible Bath Tube to decorate your home." coinType="coin" type="house" />
-		<offers name="Hrodmiran Weapons Rack" itemid="26081" count="1" price="90" icon="" description="Buy an incredible Hrodmiran Weapons Rack to decorate your home." coinType="coin" type="house" />
-		<offers name="Mystic Carpet" itemid="26118" count="1" price="35" icon="" description="Buy an incredible Mystic Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Shaggy Carpet" itemid="26116" count="1" price="30" icon="" description="Buy an incredible Shaggy Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Stone Tiles" itemid="26121" count="1" price="180" icon="" description="Buy an incredible Stone Tiles to decorate your home." coinType="coin" type="house" />
-		<offers name="Terrarium Spider" itemid="26078" count="1" price="180" icon="" description="Buy an incredible Terrarium Spider to decorate your home." coinType="coin" type="house" />
-		<offers name="Venorean Table Clock" itemid="26112" count="1" price="30" icon="" description="Buy an incredible Venorean Table Clock to decorate your home." coinType="coin" type="house" />
-		<offers name="Verdant Carpet" itemid="26114" count="1" price="30" icon="" description="Buy an incredible Verdant Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Wooden Planks" itemid="26123" count="1" price="25" icon="" description="Buy an incredible Bitter-Smack Leaf to decorate your home." coinType="coin" type="house" />
-		<offers name="Bitter-Smack Leaf" itemid="25217" count="1" price="50" icon="" description="Buy an incredible Bitter-Smack Leaf to decorate your home." coinType="coin" type="house" />
-		<offers name="Blooming Cactus" itemid="25216" count="1" price="50" icon="" description="Buy an incredible Blooming Cactus to decorate your home." coinType="coin" type="house" />
-		<offers name="Chamaleon" itemid="25213" count="1" price="50" icon="" description="Buy an incredible Chamaleon to decorate your home." coinType="coin" type="house" />
-		<offers name="Pink Roses" itemid="25218" count="1" price="50" icon="" description="Buy an incredible Pink Roses to decorate your home." coinType="coin" type="house" />
-		<offers name="Red Roses" itemid="25219" count="1" price="50" icon="" description="Buy an incredible Red Roses to decorate your home." coinType="coin" type="house" />
-		<offers name="Vengothic Lamp" itemid="25233" count="1" price="180" icon="" description="Buy an incredible Vengothic Lamp to decorate your home." coinType="coin" type="house" />
-		<offers name="Yellow Roses" itemid="25220" count="1" price="50" icon="" description="Buy an incredible Yellow Roses to decorate your home." coinType="coin" type="house" />
-		<offers name="Colourful Carpet" itemid="24417" count="1" price="35" icon="" description="Buy an incredible Colourful Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Diamond Carpet" itemid="24420" count="1" price="30" icon="" description="Buy an incredible Diamond Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Flowery Carpet" itemid="24416" count="1" price="35" icon="" description="Buy an incredible Flowery Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Fur Carpet" itemid="24419" count="1" price="30" description="Buy an incredible Fur Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Lit Skull Lamp" itemid="24435" count="1" price="30" icon="" description="Buy an Lit Skull Lamp to decorate your home." coinType="coin" type="house" />
-		<offers name="Night Sky Carpet" itemid="24422" count="1" price="30" icon="" description="Buy an Night Sky Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Parrot" itemid="24433" count="1" price="180" icon="" description="Buy an incredible Parrot to decorate your home." coinType="coin" type="house" />
-		<offers name="Patterned Carpet" itemid="24421" count="1" price="30" icon="" description="Buy an incredible Patterned Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Star Carpet" itemid="24423" count="1" price="30" icon="" description="Buy an incredible Star Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Striped Carpet" itemid="24418" count="1" price="35" icon="" description="Buy an incredible Striped Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Azure Carpet" itemid="23710" count="1" price="35" icon="" description="Buy an incredible Azure Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Brocade Tapestry" itemid="23725" count="1" price="50" icon="" description="Buy an incredible Brocade Tapestry to decorate your home." coinType="coin" type="house" />
-		<offers name="Crimson Carpet" itemid="23707" count="1" price="35" icon="" description="Buy an incredible Crimson Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Dark Parquet" itemid="23719" count="1" price="30" icon="" description="Buy an incredible Dark Parquet to decorate your home." coinType="coin" type="house" />
-		<offers name="Dog House" itemid="23709" count="1" price="150" icon="" description="Buy an incredible Dog House to decorate your home." coinType="coin" type="house" />
-		<offers name="Emerald Carpet" itemid="23711" count="1" price="30" icon="" description="Buy an incredible Emerald Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Fish Tank" itemid="23691" count="1" price="70" icon="" description="Buy an incredible Fish Tank to decorate your home." coinType="coin" type="house" />
-		<offers name="Golden Dragon Tapestry" itemid="23723" count="1" price="70" icon="" description="Buy an incredible Golden Dragon Tapestry to decorate your home." coinType="coin" type="house" />
-		<offers name="Light Parquet" itemid="23718" count="1" price="30" icon="" description="Buy an incredible Light Parquet to decorate your home." coinType="coin" type="house" />
-		<offers name="Marble Floor" itemid="23714" count="1" price="30" icon="" description="Buy an incredible Marble Floor to decorate your home." coinType="coin" type="house" />
-		<offers name="Sword Tapestry" itemid="23724" count="1" price="60" icon="" description="Buy an incredible Sword Tapestry to decorate your home." coinType="coin" type="house" />
-		<offers name="All-Seeing Tapestry" itemid="23450" count="1" price="70" icon="" description="Buy an incredible All-Seeing Tapestry to decorate your home." coinType="coin" type="house" />
-		<offers name="Menacing Tapestry" itemid="23449" count="1" price="70" icon="" description="Buy an incredible Menacing Tapestry to decorate your home." coinType="coin" type="house" />
-		<offers name="Lordly Tapestry" itemid="23448" count="1" price="25" icon="" description="Buy an incredible Lordly Tapestry to decorate your home." coinType="coin" type="house" />
-		<offers name="Bamboo Mat" itemid="23433" count="1" price="25" icon="" description="Buy an incredible Bamboo Mat to decorate your home." coinType="coin" type="house" />
-		<offers name="White Fur Carpet" itemid="23432" count="1" price="30" icon="" description="Buy an incredible White Fur Carpet to decorate your home." coinType="coin" type="house" />
-		<offers name="Yalaharian Carpet" itemid="23431" count="1" price="35" icon="" description="Buy an incredible Yalaharian Carpet to decorateyour home." coinType="coin" type="house" />
-		<offers name="Lit Predator Lamp" itemid="23436" count="1" price="180" icon="" description="Buy an incredible Predator Lamp to decorate your home." coinType="coin" type="house" />
-		<offers name="Lit Protectress Lamp" itemid="23440" count="1" price="180" icon="" description="Buy an incredible Lit Protectress Lamp to decorate your home." coinType="coin" type="house" />
-		<offers name="Hamster in a Wheel" itemid="23445" count="1" price="180" icon="" description="Buy an incredible Hamster in a Wheel to decorate your home." coinType="coin" type="house" />
-		<offers name="Cat in a Basket" itemid="23452" count="1" price="150" icon="" description="Buy an incredible Cat in a Basket to decorate your home." coinType="coin" type="house" />
-		<offers name="Baby Dragon" itemid="23443" count="1" price="250" icon="" description="Buy an incredible Baby Dragon to decorate your home." coinType="coin" type="house" />
+	<offer name="Decorations" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseEquipment.png" rookgaard="yes" state="none" parent="House">
+		<offers name="Festive Filled Shoes" itemId="30227" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Fireplace" itemId="30234" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Pile of Presents" itemId="30245" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Pyramitemid" itemId="30249" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Rocking Chair" itemId="30241" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Sack of Presents" itemId="30247" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Sleigh" itemId="30243" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Table" itemId="30229" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Festive Tree" itemId="30229" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Chest of Abundance" itemId="28945" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Fluorescent Fungi" itemId="28922" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Gloomy Poisonous Fungi" itemId="28926" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Glowing Sulphur Fungi" itemId="28924" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Incomprehensible Riches" itemId="28944" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Luminescent Fungi" itemId="28922" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Painting of Tibiasula" itemId="28947" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Stuffed Bear Display" itemId="28928" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Stuffed Teddy Display" itemId="28930" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Anglerfish Lamp" itemId="28674" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Baby Rotworm" itemId="28690" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Bellflower" itemId="28697" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Carnivorous Plant" itemId="28688" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Fennec" itemId="28695" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Forget-Me-Not" itemId="28698" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Red Geranium" itemId="28699" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Alchemistic Cupboard" itemId="27689" count="1" price="50" icon="" description="Buy an incredible Alchemistic Cupboard to decorate your home." coinType="coin" type="house" />
+		<offers name="Alchemistic Scales" itemId="27683" count="1" price="50" icon="" description="Buy an incredible Alchemistic Scales to decorate your home." coinType="coin" type="house" />
+		<offers name="Arrival at Thais Painting" itemId="27698" count="1" price="50" icon="" description="Buy an incredible Arrival at Thais Painting to decorate your home." coinType="coin" type="house" />
+		<offers name="Dungeon Scene Painting" itemId="27697" count="1" price="50" icon="" description="Buy an incredible Dungeon Scene Painting to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferumbras Bust" itemId="27692" count="1" price="50" icon="" description="Buy an incredible Ferumbras Bust to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferumbras Portrait" itemId="27700" count="1" price="50" icon="" description="Buy an incredible Ferumbras Portrait to decorate your home." coinType="coin" type="house" />
+		<offers name="King Tibianus Bust" itemId="27703" count="1" price="50" icon="" description="Buy an incredible King Tibianus Bust to decorate your home." coinType="coin" type="house" />
+		<offers name="Light of Change" itemId="27667" count="1" price="120" icon="" description="Buy an incredible Light of Change to decorate your home." coinType="coin" type="house" />
+		<offers name="Pile of Alchemistic Books" itemId="27688" count="1" price="25" icon="" description="Buy an incredible Pile of Alchemistic Books to decorate your home." coinType="coin" type="house" />
+		<offers name="Queen Eloise bust" itemId="27695" count="1" price="25" icon="" description="Buy an incredible Queen Eloise bust to decorate your home." coinType="coin" type="house" />
+		<offers name="Tibia streets painting" itemId="27699" count="1" price="25" icon="" description="Buy an incredible Tibia Streets Painting to decorate your home." coinType="coin" type="house" />
+		<offers name="Torch of Change" itemId="27671" count="1" price="60" icon="" description="Buy an incredible Torch of Change to decorate your home." coinType="coin" type="house" />
+		<offers name="Crested Carpet" itemId="26152" count="1" price="25" icon="" description="Buy an incredible Crested Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Decorated Carpet" itemId="26154" count="1" price="35" icon="" description="Buy an incredible Decorated Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Demon Pet" itemId="26175" count="1" price="180" icon="" description="Buy an incredible Demon Pet to decorate your home." coinType="coin" type="house" />
+		<offers name="Terrarium Snake" itemId="26172" count="1" price="180" icon="" description="Buy an incredible Terrarium Snake to decorate your home." coinType="coin" type="house" />
+		<offers name="Wheat Carpet" itemId="26151" count="1" price="30" icon="" description="Buy an incredible Wheat Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Bath Tube" itemId="26100" count="1" price="90" icon="" description="Buy an incredible Bath Tube to decorate your home." coinType="coin" type="house" />
+		<offers name="Hrodmiran Weapons Rack" itemId="26081" count="1" price="90" icon="" description="Buy an incredible Hrodmiran Weapons Rack to decorate your home." coinType="coin" type="house" />
+		<offers name="Mystic Carpet" itemId="26118" count="1" price="35" icon="" description="Buy an incredible Mystic Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Shaggy Carpet" itemId="26116" count="1" price="30" icon="" description="Buy an incredible Shaggy Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Stone Tiles" itemId="26121" count="1" price="180" icon="" description="Buy an incredible Stone Tiles to decorate your home." coinType="coin" type="house" />
+		<offers name="Terrarium Spider" itemId="26078" count="1" price="180" icon="" description="Buy an incredible Terrarium Spider to decorate your home." coinType="coin" type="house" />
+		<offers name="Venorean Table Clock" itemId="26112" count="1" price="30" icon="" description="Buy an incredible Venorean Table Clock to decorate your home." coinType="coin" type="house" />
+		<offers name="Verdant Carpet" itemId="26114" count="1" price="30" icon="" description="Buy an incredible Verdant Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Wooden Planks" itemId="26123" count="1" price="25" icon="" description="Buy an incredible Bitter-Smack Leaf to decorate your home." coinType="coin" type="house" />
+		<offers name="Bitter-Smack Leaf" itemId="25217" count="1" price="50" icon="" description="Buy an incredible Bitter-Smack Leaf to decorate your home." coinType="coin" type="house" />
+		<offers name="Blooming Cactus" itemId="25216" count="1" price="50" icon="" description="Buy an incredible Blooming Cactus to decorate your home." coinType="coin" type="house" />
+		<offers name="Chamaleon" itemId="25213" count="1" price="50" icon="" description="Buy an incredible Chamaleon to decorate your home." coinType="coin" type="house" />
+		<offers name="Pink Roses" itemId="25218" count="1" price="50" icon="" description="Buy an incredible Pink Roses to decorate your home." coinType="coin" type="house" />
+		<offers name="Red Roses" itemId="25219" count="1" price="50" icon="" description="Buy an incredible Red Roses to decorate your home." coinType="coin" type="house" />
+		<offers name="Vengothic Lamp" itemId="25233" count="1" price="180" icon="" description="Buy an incredible Vengothic Lamp to decorate your home." coinType="coin" type="house" />
+		<offers name="Yellow Roses" itemId="25220" count="1" price="50" icon="" description="Buy an incredible Yellow Roses to decorate your home." coinType="coin" type="house" />
+		<offers name="Colourful Carpet" itemId="24417" count="1" price="35" icon="" description="Buy an incredible Colourful Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Diamond Carpet" itemId="24420" count="1" price="30" icon="" description="Buy an incredible Diamond Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Flowery Carpet" itemId="24416" count="1" price="35" icon="" description="Buy an incredible Flowery Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Fur Carpet" itemId="24419" count="1" price="30" description="Buy an incredible Fur Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Lit Skull Lamp" itemId="24435" count="1" price="30" icon="" description="Buy an Lit Skull Lamp to decorate your home." coinType="coin" type="house" />
+		<offers name="Night Sky Carpet" itemId="24422" count="1" price="30" icon="" description="Buy an Night Sky Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Parrot" itemId="24433" count="1" price="180" icon="" description="Buy an incredible Parrot to decorate your home." coinType="coin" type="house" />
+		<offers name="Patterned Carpet" itemId="24421" count="1" price="30" icon="" description="Buy an incredible Patterned Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Star Carpet" itemId="24423" count="1" price="30" icon="" description="Buy an incredible Star Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Striped Carpet" itemId="24418" count="1" price="35" icon="" description="Buy an incredible Striped Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Azure Carpet" itemId="23710" count="1" price="35" icon="" description="Buy an incredible Azure Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Brocade Tapestry" itemId="23725" count="1" price="50" icon="" description="Buy an incredible Brocade Tapestry to decorate your home." coinType="coin" type="house" />
+		<offers name="Crimson Carpet" itemId="23707" count="1" price="35" icon="" description="Buy an incredible Crimson Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Dark Parquet" itemId="23719" count="1" price="30" icon="" description="Buy an incredible Dark Parquet to decorate your home." coinType="coin" type="house" />
+		<offers name="Dog House" itemId="23709" count="1" price="150" icon="" description="Buy an incredible Dog House to decorate your home." coinType="coin" type="house" />
+		<offers name="Emerald Carpet" itemId="23711" count="1" price="30" icon="" description="Buy an incredible Emerald Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Fish Tank" itemId="23691" count="1" price="70" icon="" description="Buy an incredible Fish Tank to decorate your home." coinType="coin" type="house" />
+		<offers name="Golden Dragon Tapestry" itemId="23723" count="1" price="70" icon="" description="Buy an incredible Golden Dragon Tapestry to decorate your home." coinType="coin" type="house" />
+		<offers name="Light Parquet" itemId="23718" count="1" price="30" icon="" description="Buy an incredible Light Parquet to decorate your home." coinType="coin" type="house" />
+		<offers name="Marble Floor" itemId="23714" count="1" price="30" icon="" description="Buy an incredible Marble Floor to decorate your home." coinType="coin" type="house" />
+		<offers name="Sword Tapestry" itemId="23724" count="1" price="60" icon="" description="Buy an incredible Sword Tapestry to decorate your home." coinType="coin" type="house" />
+		<offers name="All-Seeing Tapestry" itemId="23450" count="1" price="70" icon="" description="Buy an incredible All-Seeing Tapestry to decorate your home." coinType="coin" type="house" />
+		<offers name="Menacing Tapestry" itemId="23449" count="1" price="70" icon="" description="Buy an incredible Menacing Tapestry to decorate your home." coinType="coin" type="house" />
+		<offers name="Lordly Tapestry" itemId="23448" count="1" price="25" icon="" description="Buy an incredible Lordly Tapestry to decorate your home." coinType="coin" type="house" />
+		<offers name="Bamboo Mat" itemId="23433" count="1" price="25" icon="" description="Buy an incredible Bamboo Mat to decorate your home." coinType="coin" type="house" />
+		<offers name="White Fur Carpet" itemId="23432" count="1" price="30" icon="" description="Buy an incredible White Fur Carpet to decorate your home." coinType="coin" type="house" />
+		<offers name="Yalaharian Carpet" itemId="23431" count="1" price="35" icon="" description="Buy an incredible Yalaharian Carpet to decorateyour home." coinType="coin" type="house" />
+		<offers name="Lit Predator Lamp" itemId="23436" count="1" price="180" icon="" description="Buy an incredible Predator Lamp to decorate your home." coinType="coin" type="house" />
+		<offers name="Lit Protectress Lamp" itemId="23440" count="1" price="180" icon="" description="Buy an incredible Lit Protectress Lamp to decorate your home." coinType="coin" type="house" />
+		<offers name="Hamster in a Wheel" itemId="23445" count="1" price="180" icon="" description="Buy an incredible Hamster in a Wheel to decorate your home." coinType="coin" type="house" />
+		<offers name="Cat in a Basket" itemId="23452" count="1" price="150" icon="" description="Buy an incredible Cat in a Basket to decorate your home." coinType="coin" type="house" />
+		<offers name="Baby Dragon" itemId="23443" count="1" price="250" icon="" description="Buy an incredible Baby Dragon to decorate your home." coinType="coin" type="house" />
 	</offer>
-	<offer name="Casks" icon="Category_Casks.png" rookgaard="yes" state="none" parent="House" >
-		<offers name="Health Cask" itemid="25879" count="1000" price="10" icon="Health_Cask.png" coinType="coin" type="house" />
-		<offers name="Strong Health Cask" itemid="25880" count="1000" price="20" icon="Strong_Health_Cask.png" coinType="coin" type="house" />
-		<offers name="Great Health Cask" itemid="25881" count="1000" price="30" icon="Great_Health_Cask.png" coinType="coin" type="house" />
-		<offers name="Ultimate Health Cask" itemid="25882" count="1000" price="40" icon="Ultimate_Health_Cask.png" coinType="coin" type="house" />
-		<offers name="Supreme Health Cask" itemid="25883" count="1000" price="40" icon="Supreme_Health_Cask.png" coinType="coin" type="house" />
-		<offers name="Mana Cask" itemid="25889" count="1000" price="10" icon="Mana_Cask.png" coinType="coin" type="house" />
-		<offers name="Strong Mana Cask" itemid="25890" count="1000" price="20" icon="Strong_Mana_Cask.png" coinType="coin" type="house" />
-		<offers name="Great Mana Cask" itemid="25891" count="1000" price="30" icon="Great_Mana_Cask.png" coinType="coin" type="house" />
-		<offers name="Ultimate Mana Cask" itemid="25892" count="1000" price="40" icon="Ultimate_Mana_Cask.png" coinType="coin" type="house" />
-		<offers name="Great Spirit Cask" itemid="25899" count="1000" price="20" icon="Great_Spirit_Cask.png" coinType="coin" type="house" />
-		<offers name="Ultimate Spirit Cask" itemid="25900" count="1000" price="40" icon="Ultimate_Spirit_Cask.png" coinType="coin" type="house" />
+	<offer name="Casks" icon="Category_Casks.png" rookgaard="yes" state="none" parent="House">
+		<offers name="Health Cask" itemId="25879" count="1000" price="10" icon="Health_Cask.png" coinType="coin" type="house" />
+		<offers name="Strong Health Cask" itemId="25880" count="1000" price="20" icon="Strong_Health_Cask.png" coinType="coin" type="house" />
+		<offers name="Great Health Cask" itemId="25881" count="1000" price="30" icon="Great_Health_Cask.png" coinType="coin" type="house" />
+		<offers name="Ultimate Health Cask" itemId="25882" count="1000" price="40" icon="Ultimate_Health_Cask.png" coinType="coin" type="house" />
+		<offers name="Supreme Health Cask" itemId="25883" count="1000" price="40" icon="Supreme_Health_Cask.png" coinType="coin" type="house" />
+		<offers name="Mana Cask" itemId="25889" count="1000" price="10" icon="Mana_Cask.png" coinType="coin" type="house" />
+		<offers name="Strong Mana Cask" itemId="25890" count="1000" price="20" icon="Strong_Mana_Cask.png" coinType="coin" type="house" />
+		<offers name="Great Mana Cask" itemId="25891" count="1000" price="30" icon="Great_Mana_Cask.png" coinType="coin" type="house" />
+		<offers name="Ultimate Mana Cask" itemId="25892" count="1000" price="40" icon="Ultimate_Mana_Cask.png" coinType="coin" type="house" />
+		<offers name="Great Spirit Cask" itemId="25899" count="1000" price="20" icon="Great_Spirit_Cask.png" coinType="coin" type="house" />
+		<offers name="Ultimate Spirit Cask" itemId="25900" count="1000" price="40" icon="Ultimate_Spirit_Cask.png" coinType="coin" type="house" />
 	</offer>
-	<offer name="Furniture" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_Furniture.png" rookgaard="yes" state="none" parent="House" >
-		<offers name="Hrodmir Chair" itemid="31693" count="1" price="50" icon="" description="Buy an incredible Hrodmir Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Hrodmir Chest" itemid="31687" count="1" price="50" icon="" description="Buy an incredible Hrodmir Chest to decorate your home." coinType="coin" type="house" />
-		<offers name="Hrodmir Cupboard" itemid="31705" count="1" price="50" icon="" description="Buy an incredible Hrodmir Cupboard to decorate your home." coinType="coin" type="house" />
-		<offers name="Hrodmir Table" itemid="31679" count="1" price="50" icon="" description="Buy an incredible Hrodmir Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Dwarven Stone Cabinet" itemid="31192" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Dwarven Stone Chair" itemid="31185" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Dwarven Stone Chest" itemid="31190" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Chest to decorate your home." coinType="coin" type="house" />
-		<offers name="Dwarven Stone Table" itemid="31191" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Round Side Table" itemid="31087" count="1" price="50" icon="" description="Buy an incredible Round Side Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Square Side Table" itemid="31207" count="1" price="50" icon="" description="Buy an incredible Square Side Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Wooden Bookcase" itemid="31194" count="1" price="50" icon="" description="Buy an incredible Wooden Bookcase to decorate your home." coinType="coin" type="house" />
-		<offers name="Comfy Cabinet" itemid="28942" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Comfy Chair" itemid="28934" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Comfy Chest" itemid="28941" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Comfy Table" itemid="28936" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Skeletal Cabinet" itemid="28686" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Skeletal Chair" itemid="28676" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Skeletal Chest" itemid="28682" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Skeletal Table" itemid="28680" count="1" price="50" icon="" coinType="coin" type="house" />
-		<offers name="Alchemistic Cabinet" itemid="27664" count="1" price="100" icon="" description="Buy an incredible Alchemistic Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Alchemistic Bookstand" itemid="27682" count="1" price="100" icon="" description="Buy an incredible Alchemistic Bookstand to decorate your home." coinType="coin" type="house" />
-		<offers name="Alchemistic Chair" itemid="27662" count="1" price="50" icon="" description="Buy an incredible Alchemistic Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Ornate Table" itemid="26161" count="1" price="50" icon="" description="Buy an incredible Ornate Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Ornate Chair" itemid="26159" count="1" price="50" icon="" description="Buy an incredible Ornate Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Ornate Chest" itemid="26167" count="1" price="80" icon="" description="Buy an incredible Ornate Chest to decorate your home." coinType="coin" type="house" />
-		<offers name="Ornate Cabinet" itemid="26163" count="1" price="100" icon="" description="Buy an incredible Ornate Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Verdant Chair" itemid="26104" count="1" price="50" icon="" description="Buy an incredible Verdant Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Verdant Cabinet" itemid="26106" count="1" price="100" icon="" description="Buy an incredible Verdant Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Verdant Trunk" itemid="26110" count="1" price="50" icon="" description="Buy an incredible Verdant Trunk to decorate your home." coinType="coin" type="house" />
-		<offers name="Verdant Table" itemid="26111" count="1" price="80" icon="" description="Buy an incredible Verdant Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Vengothic Chair" itemid="25224" count="1" price="50" icon="" description="Buy an incredible Vengothic Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Vengothic Chest" itemid="25232" count="1" price="80" icon="" description="Buy an incredible Vengothic Chest to decorate your home." coinType="coin" type="house" />
-		<offers name="Vengothic Cabinet" itemid="25228" count="1" price="100" icon="" description="Buy an incredible Vengothic Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Vengothic Table" itemid="25226" count="1" price="50" icon="" description="Buy an incredible Vengothic Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Rustic Cabinet" itemid="23701" count="1" price="100" icon="" description="Buy an incredible Rustic Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Rustic Chair" itemid="23696" count="1" price="50" icon="" description="Buy an incredible Rustic Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Rustic Trunk" itemid="23706" count="1" price="80" icon="" description="Buy an incredible Rustic Trunk to decorate your home." coinType="coin" type="house" />
-		<offers name="Rustic Table" itemid="23699" count="1" price="50" icon="" description="Buy an incredible Rustic Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferocious Table" itemid="23414" count="1" price="50" icon="" description="Buy an incredible Ferocious Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferocious Trunk" itemid="23426" count="1" price="80" icon="" description="Buy an incredible Ferocious Trunk to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferocious Chair" itemid="23410" count="1" price="50" icon="" description="Buy an incredible Ferocious Chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferocious Cabinet" itemid="23422" count="1" price="110" icon="" description="Buy an incredible Ferocious Cabinet to decorate your home." coinType="coin" type="house" />
-		<offers name="Magnificent Table" itemid="23418" count="1" price="60" icon="" description="Buy an incredible Magnificent Table to decorate your home." coinType="coin" type="house" />
-		<offers name="Magnificent Trunk" itemid="23430" count="1" price="70" icon="" description="Buy an incredible Magnificent Trunk to decorate your home." coinType="coin" type="house" />
-		<offers name="Magnificent Chair" itemid="23406" count="1" price="60" icon="" description="Buy an incredible Magnificent chair to decorate your home." coinType="coin" type="house" />
-		<offers name="Magnificent Cabinet" itemid="23419" count="1" price="100" icon="" description="Buy an incredible Magnificent Cabinet to decorate your home." coinType="coin" type="house" />
+	<offer name="Furniture" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_Furniture.png" rookgaard="yes" state="none" parent="House">
+		<offers name="Hrodmir Chair" itemId="31693" count="1" price="50" icon="" description="Buy an incredible Hrodmir Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Hrodmir Chest" itemId="31687" count="1" price="50" icon="" description="Buy an incredible Hrodmir Chest to decorate your home." coinType="coin" type="house" />
+		<offers name="Hrodmir Cupboard" itemId="31705" count="1" price="50" icon="" description="Buy an incredible Hrodmir Cupboard to decorate your home." coinType="coin" type="house" />
+		<offers name="Hrodmir Table" itemId="31679" count="1" price="50" icon="" description="Buy an incredible Hrodmir Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Dwarven Stone Cabinet" itemId="31192" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Dwarven Stone Chair" itemId="31185" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Dwarven Stone Chest" itemId="31190" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Chest to decorate your home." coinType="coin" type="house" />
+		<offers name="Dwarven Stone Table" itemId="31191" count="1" price="50" icon="" description="Buy an incredible Dwarven Stone Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Round Side Table" itemId="31087" count="1" price="50" icon="" description="Buy an incredible Round Side Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Square Side Table" itemId="31207" count="1" price="50" icon="" description="Buy an incredible Square Side Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Wooden Bookcase" itemId="31194" count="1" price="50" icon="" description="Buy an incredible Wooden Bookcase to decorate your home." coinType="coin" type="house" />
+		<offers name="Comfy Cabinet" itemId="28942" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Comfy Chair" itemId="28934" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Comfy Chest" itemId="28941" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Comfy Table" itemId="28936" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Skeletal Cabinet" itemId="28686" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Skeletal Chair" itemId="28676" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Skeletal Chest" itemId="28682" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Skeletal Table" itemId="28680" count="1" price="50" icon="" coinType="coin" type="house" />
+		<offers name="Alchemistic Cabinet" itemId="27664" count="1" price="100" icon="" description="Buy an incredible Alchemistic Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Alchemistic Bookstand" itemId="27682" count="1" price="100" icon="" description="Buy an incredible Alchemistic Bookstand to decorate your home." coinType="coin" type="house" />
+		<offers name="Alchemistic Chair" itemId="27662" count="1" price="50" icon="" description="Buy an incredible Alchemistic Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Ornate Table" itemId="26161" count="1" price="50" icon="" description="Buy an incredible Ornate Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Ornate Chair" itemId="26159" count="1" price="50" icon="" description="Buy an incredible Ornate Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Ornate Chest" itemId="26167" count="1" price="80" icon="" description="Buy an incredible Ornate Chest to decorate your home." coinType="coin" type="house" />
+		<offers name="Ornate Cabinet" itemId="26163" count="1" price="100" icon="" description="Buy an incredible Ornate Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Verdant Chair" itemId="26104" count="1" price="50" icon="" description="Buy an incredible Verdant Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Verdant Cabinet" itemId="26106" count="1" price="100" icon="" description="Buy an incredible Verdant Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Verdant Trunk" itemId="26110" count="1" price="50" icon="" description="Buy an incredible Verdant Trunk to decorate your home." coinType="coin" type="house" />
+		<offers name="Verdant Table" itemId="26111" count="1" price="80" icon="" description="Buy an incredible Verdant Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Vengothic Chair" itemId="25224" count="1" price="50" icon="" description="Buy an incredible Vengothic Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Vengothic Chest" itemId="25232" count="1" price="80" icon="" description="Buy an incredible Vengothic Chest to decorate your home." coinType="coin" type="house" />
+		<offers name="Vengothic Cabinet" itemId="25228" count="1" price="100" icon="" description="Buy an incredible Vengothic Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Vengothic Table" itemId="25226" count="1" price="50" icon="" description="Buy an incredible Vengothic Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Rustic Cabinet" itemId="23701" count="1" price="100" icon="" description="Buy an incredible Rustic Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Rustic Chair" itemId="23696" count="1" price="50" icon="" description="Buy an incredible Rustic Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Rustic Trunk" itemId="23706" count="1" price="80" icon="" description="Buy an incredible Rustic Trunk to decorate your home." coinType="coin" type="house" />
+		<offers name="Rustic Table" itemId="23699" count="1" price="50" icon="" description="Buy an incredible Rustic Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferocious Table" itemId="23414" count="1" price="50" icon="" description="Buy an incredible Ferocious Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferocious Trunk" itemId="23426" count="1" price="80" icon="" description="Buy an incredible Ferocious Trunk to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferocious Chair" itemId="23410" count="1" price="50" icon="" description="Buy an incredible Ferocious Chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferocious Cabinet" itemId="23422" count="1" price="110" icon="" description="Buy an incredible Ferocious Cabinet to decorate your home." coinType="coin" type="house" />
+		<offers name="Magnificent Table" itemId="23418" count="1" price="60" icon="" description="Buy an incredible Magnificent Table to decorate your home." coinType="coin" type="house" />
+		<offers name="Magnificent Trunk" itemId="23430" count="1" price="70" icon="" description="Buy an incredible Magnificent Trunk to decorate your home." coinType="coin" type="house" />
+		<offers name="Magnificent Chair" itemId="23406" count="1" price="60" icon="" description="Buy an incredible Magnificent chair to decorate your home." coinType="coin" type="house" />
+		<offers name="Magnificent Cabinet" itemId="23419" count="1" price="100" icon="" description="Buy an incredible Magnificent Cabinet to decorate your home." coinType="coin" type="house" />
 	</offer>
-	<offer name="Upgrades" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_Houseupgrades.png" rookgaard="yes" state="none" parent="House" >
-		<offers name="Demon Exercise Dummy" itemid="28561" count="1" price="150" icon="" description="Buy an incredible Demon Exercise Dummye to decorate your home." coinType="coin" type="house" />
-		<offers name="Ferumbras Exercise Dummy" itemid="28559" count="1" price="150" icon="" description="Buy an incredible Ferumbras Exercise Dummye to decorate your home." coinType="coin" type="house" />
-		<offers name="Monk Exercise Dummy" itemid="28563" count="1" price="150" icon="" description="Buy an incredible Monk Exercise Dummye to decorate your home." coinType="coin" type="house" />
-		<offers name="Daily Reward Shrine" itemid="25721" count="1" price="150" icon="" description="Buy an incredible Daily Reward Shrine to decorate your home." coinType="coin" type="house" />
-		<offers name="Shiny Daily Reward Shrine" itemid="25723" count="1" price="150" icon="" description="Buy an incredible Shiny Daily Reward Shrine to decorate your home." coinType="coin" type="house" />
-		<offers name="Gilded Imbuing Shrine" itemid="25183" count="1" price="200" icon="" description="Buy an incredible Gilded Imbuing Shrine to decorate your home." coinType="coin" type="house" />
-		<offers name="Imbuing Shrine" itemid="25174" count="1" price="150" icon="" description="Buy an incredible Imbuing Shrine to decorate your home." coinType="coin" type="house" />
-		<offers name="Royal Mailbox" itemid="23400" count="1" price="150" icon="" description="Buy an incredible Royal Mailbox to decorate your home." coinType="coin" type="house" />
-		<offers name="Ornate Mailbox" itemid="23402" count="1" price="200" icon="" description="Buy an incredible Ornate Mailbox to decorate your home." coinType="coin" type="house" />
+	<offer name="Upgrades" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_Houseupgrades.png" rookgaard="yes" state="none" parent="House">
+		<offers name="Demon Exercise Dummy" itemId="28561" count="1" price="150" icon="" description="Buy an incredible Demon Exercise Dummye to decorate your home." coinType="coin" type="house" />
+		<offers name="Ferumbras Exercise Dummy" itemId="28559" count="1" price="150" icon="" description="Buy an incredible Ferumbras Exercise Dummye to decorate your home." coinType="coin" type="house" />
+		<offers name="Monk Exercise Dummy" itemId="28563" count="1" price="150" icon="" description="Buy an incredible Monk Exercise Dummye to decorate your home." coinType="coin" type="house" />
+		<offers name="Daily Reward Shrine" itemId="25721" count="1" price="150" icon="" description="Buy an incredible Daily Reward Shrine to decorate your home." coinType="coin" type="house" />
+		<offers name="Shiny Daily Reward Shrine" itemId="25723" count="1" price="150" icon="" description="Buy an incredible Shiny Daily Reward Shrine to decorate your home." coinType="coin" type="house" />
+		<offers name="Gilded Imbuing Shrine" itemId="25183" count="1" price="200" icon="" description="Buy an incredible Gilded Imbuing Shrine to decorate your home." coinType="coin" type="house" />
+		<offers name="Imbuing Shrine" itemId="25174" count="1" price="150" icon="" description="Buy an incredible Imbuing Shrine to decorate your home." coinType="coin" type="house" />
+		<offers name="Royal Mailbox" itemId="23400" count="1" price="150" icon="" description="Buy an incredible Royal Mailbox to decorate your home." coinType="coin" type="house" />
+		<offers name="Ornate Mailbox" itemId="23402" count="1" price="200" icon="" description="Buy an incredible Ornate Mailbox to decorate your home." coinType="coin" type="house" />
 	</offer>
-	<offer name="Hirelings" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseTools_NPCApprenticeships.png" rookgaard="yes" state="none" parent="House" >
+	<offer name="Hirelings" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseTools_NPCApprenticeships.png" rookgaard="yes" state="none" parent="House">
 		<offers name="Hireling Apprentice" addon="3" male="1108" female="1107" price="750" description="." coinType="coin" type="outfitaddon" disabled="yes" />
 	</offer>
-	<offer name="Hireling Dresses" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseTools_NPCDresses.png" rookgaard="yes" state="none" parent="House" >
+	<offer name="Hireling Dresses" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_HouseTools_NPCDresses.png" rookgaard="yes" state="none" parent="House">
 		<offers name="Banker Dress" price="200" addon="3" male="1110" female="1109" description="." coinType="coin" type="outfitaddon" disabled="yes" />
 		<offers name="Bonelord Dress" price="200" addon="3" male="1124" female="1123" description="." coinType="coin" type="outfitaddon" disabled="yes" />
 		<offers name="Cook Dress" price="200" addon="3" male="1114" female="1113" description="." coinType="coin" type="outfitaddon" disabled="yes" />
@@ -457,47 +457,47 @@
 		<offers name="Stewart Dress" addon="3" male="1116" female="1115" price="750" description="." coinType="coin" type="outfitaddon" disabled="yes" />
 		<offers name="Trader Dress" addon="3" male="1112" female="1111" price="750" description="." coinType="coin" type="outfitaddon" disabled="yes" />
 	</offer>
-	<offer name="Boost" description="Buy your character a boost to speed up your character development." icon="Category_Boosts.png" rookgaard="yes" state="none" >
+	<offer name="Boost" description="Buy your character a boost to speed up your character development." icon="Category_Boosts.png" rookgaard="yes" state="none">
 		<offers name="XP Boost +50%" price="150" icon="xpboosticon.png" description="<i>Purchase a boost that increases the experience points your character gains from hunting by 50%!</i><br/><br/>{character}<br/>{info} lasts for 1 hour hunting time<br/>{info} paused if stamina falls under 14 hours<br/>{info} can be purchased up to 5 times between 2 server saves<br/>{info} price increases with every purchase<br/>{info} cannot be purchased if an XP boost is already active" coinType="coin" type="expboost" />
 	</offer>
-	<offer name="Tickets" icon="Category_Ticket.png" rookgaard="yes" parent="Tournament" >
+	<offer name="Tickets" icon="Category_Ticket.png" rookgaard="yes" parent="Tournament">
 		<offers name="Restricted Tournament Ticket" price="500" icon="Product_RestrictedTournamentTicket.png" disabled="yes" />
 	</offer>
-	<offer name="Exclusive Offers" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_ExclusiveOffers.png" rookgaard="yes" state="none" parent="Tournament" >
+	<offer name="Exclusive Offers" description="Buy exceptional equipment to upgrade your Tibia House" icon="Category_ExclusiveOffers.png" rookgaard="yes" state="none" parent="Tournament">
 		<offers name="Cerberus Champion" id="145" price="1250" icon="" description="Here you can purchase the Mount 'Cerberus Champion' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." coinType="tournament" type="mount" />
-		<offers name="Cerberus Champion Puppy" itemid="31464" count="1" price="800" icon="" description="Buy an incredible Cerberus Champion Puppy to decorate your home." coinType="tournament" type="house" />
+		<offers name="Cerberus Champion Puppy" itemId="31464" count="1" price="800" icon="" description="Buy an incredible Cerberus Champion Puppy to decorate your home." coinType="tournament" type="house" />
 		<offers name="Full Lion of War" addon="3" male="1206" female="1207" price="1750" description="" coinType="tournament" type="outfitaddon" type="house" />
 		<offers name="Full Veteran Paladin" addon="3" male="1204" female="1205" price="1750" description="" coinType="tournament" type="outfitaddon" type="house" />
 		<offers name="Full Void Master" addon="3" male="1202" female="1203" price="1750" description="" coinType="tournament" type="outfitaddon" type="house" />
 		<offers name="Jousting Eagle" id="144" price="1250" icon="" description="Here you can purchase the Mount 'Jousting Eagle' for your character. Riding on a mount is not only cool, but also gives your character a speed boost. Note: The Mount will only be received by the character who purchased it in the Store." coinType="tournament" type="mount" type="house" />
-		<offers name="Jousting Eagle Baby" itemid="31463" count="1" price="800" icon="" description="Buy an incredible Jousting Eagle Baby to decorate your home." coinType="tournament" type="house" />
-		<offers name="Sublime Tournament Accolade" itemid="31473" count="1" price="500" icon="" description="Buy an incredible Sublime Tournament Accolade to decorate your home." coinType="tournament" type="house" />
-		<offers name="Sublime Tournament Carpet" itemid="31469" count="1" price="70" icon="" description="Buy an incredible Tournament Accolade to decorate your home." coinType="tournament" type="house" />
-		<offers name="Tournament Accolade" itemid="31471" count="1" price="500" icon="" description="Buy an incredible Sublime Tournament Carpet to decorate your home." coinType="tournament" type="house" />
-		<offers name="Tournament Carpet" itemid="31468" count="1" price="70" icon="" description="Buy an incredible Tournament Carpet to decorate your home." coinType="tournament" type="house" />
+		<offers name="Jousting Eagle Baby" itemId="31463" count="1" price="800" icon="" description="Buy an incredible Jousting Eagle Baby to decorate your home." coinType="tournament" type="house" />
+		<offers name="Sublime Tournament Accolade" itemId="31473" count="1" price="500" icon="" description="Buy an incredible Sublime Tournament Accolade to decorate your home." coinType="tournament" type="house" />
+		<offers name="Sublime Tournament Carpet" itemId="31469" count="1" price="70" icon="" description="Buy an incredible Tournament Accolade to decorate your home." coinType="tournament" type="house" />
+		<offers name="Tournament Accolade" itemId="31471" count="1" price="500" icon="" description="Buy an incredible Sublime Tournament Carpet to decorate your home." coinType="tournament" type="house" />
+		<offers name="Tournament Carpet" itemId="31468" count="1" price="70" icon="" description="Buy an incredible Tournament Carpet to decorate your home." coinType="tournament" type="house" />
 	</offer>
-	<offer name="Extra Services" description="Buy yourcharacter one or more of the helpful items offered here." icon="Category_ExtraServices.png" rookgaard="yes" state="none" parent="Extras" >
+	<offer name="Extra Services" description="Buy yourcharacter one or more of the helpful items offered here." icon="Category_ExtraServices.png" rookgaard="yes" state="none" parent="Extras">
 		<offers name="Main Character Change" price="750" icon="Product_MainCharacterChange.png" description="." coinType="coin" type="namechange" buycoinType="coin" type="offername" disabled="yes" />
 		<offers name="Express World Transfer" price="750" icon="Product_ExpressCharacterWorldTransfer.png" description="." buycoinType="coin" type="teste" coinType="coin" type="namechange" disabled="yes" />
 		<offers name="World Transfer" id="100000" price="750" icon="Product_CharacterWorldTransfer.png" description="." coinType="coin" type="namechange" disabled="yes" />
 		<offers name="Character Name Change" price="250" icon="namechanger.png" description="You must be in a protection zone to change your name. After entering your new name, you will be disconnected from the server. You must logout completely and login again using your account details in order to refresh your character list." coinType="coin" type="namechange" />
 		<offers name="Character Sex Change" price="100" icon="sexchanger.png" description="Use this to change the sex of your character. Changes apply immediately. You don't need to logout for changes to apply." coinType="coin" type="sexchange" disabled="yes"/>
 	</offer>
-	<offer name="Useful Things" description="Buy yourcharacter one or more of the helpful items offered here." icon="Category_Convenience.png" rookgaard="yes" state="none" parent="Extras" >
-		<offers name="Pair of Soft Boots" itemid="3246" count="1" price="200" icon="" coinType="coin" type="item" state="new" />
-		<offers name="Charm Expansion" count="1" price="300" icon="Product_UsefulThings_UnlimitedBonusUsage.png"  description="<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i><br/><br/>{character}<br/>{once}" coinType="coin" type="charmexpansion" />
-		<offers name="Charm points (30x)" count="30" price="200" icon="Product_UsefulThings_UnlimitedBonusUsage.png" description="This offers provides 30 charm points.<br /> <br />NOTE: THIS OFFER IS NOT CHARM EXPANSION" coinType="coin" type="charmpoints" disabled="no"/>
+	<offer name="Useful Things" description="Buy yourcharacter one or more of the helpful items offered here." icon="Category_Convenience.png" rookgaard="yes" state="none" parent="Extras">
+		<offers name="Pair of Soft Boots" itemId="3246" count="1" price="200" icon="" coinType="coin" type="item" state="new" />
+		<offers name="Charm Expansion" count="1" price="300" icon="Product_UsefulThings_UnlimitedBonusUsage.png" description="<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i><br/><br/>{character}<br/>{once}" coinType="coin" type="charmexpansion" />
+		<offers name="Charm points (30x)" count="30" price="200" icon="Product_UsefulThings_UnlimitedBonusUsage.png" description="This offers provides 30 charm points.<br /><br />NOTE: THIS OFFER IS NOT CHARM EXPANSION" coinType="coin" type="charmpoints" disabled="no"/>
 		<offers name="30x Instant Reward Access" count="50" price="100" icon="Product_UsefulThings_CollectionTokens.png" description="It has 30 charges and allows access to the Daily Rewards system wherever the character is." coinType="coin" type="reward" />
 		<offers name="Permanent Prey Slot" price="500" icon="Product_UsefulThings_PermanentPreySlot.png" coinType="coin" type="preyslot" />
 		<offers name="Prey Wildcard (15x)" count="15" price="100" icon="Product_UsefulThings_PreyBonusReroll.png" description="<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i><br/><br/>{character}<br/>{info} added directly to Prey dialog<br/>{limit|50}" coinType="coin" type="preybonus" />
 		<offers name="Prey Wildcard (90x)" count="90" price="300" icon="Product_UsefulThings_PreyBonusReroll.png" description="<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i><br/><br/>{character}<br/>{info} added directly to Prey dialog<br/>{limit|50}" coinType="coin" type="preybonus" />
 		<offers name="Temple Teleport" price="10" icon="Product_Transportation_TempleTeleport.png" description="Teleports you to your temple." coinType="coin" type="temple" />
-		<offers name="Permanent Teleport Scroll [Premium]" itemid="25718" price="200" icon="Product_UsefulThings_Temple_Teleport_Scroll.png" description="With this tool, you can choose between teleport to your own house or to any city that you want to!" coinType="coin" type="item" actionid="101"/>
+		<offers name="Permanent Teleport Scroll [Premium]" itemId="25718" price="200" icon="Product_UsefulThings_Temple_Teleport_Scroll.png" description="With this tool, you can choose between teleport to your own house or to any city that you want to!" coinType="coin" type="item" actionid="101"/>
 		<offers name="Remove Frag" price="100" icon="removefrag.png" description="Removes a frag from your history" coinType="coin" type="fragremove" />
 		<offers name="Remove Red Skull" skull="red" price="400" icon="removeskull.png" description="Removes a frag from your history" coinType="coin" type="skullremove" />
 		<offers name="Remove Black Skull" skull="black" price="650" icon="removeskull.png" description="Removes a frag from your history" coinType="coin" type="skullremove" />
-		<offers name="Stamina Refill" itemid="31964" price="200" icon="Product_UsefulThings_Temple_Teleport_Scroll.png" description="With this tool, you can fully refill your stamina! Remember that you can use this item again only after 20 hours of using the last." coinType="coin" type="item" actionid="101" disabled="yes"/>
+		<offers name="Stamina Refill" itemId="31964" price="200" icon="Product_UsefulThings_Temple_Teleport_Scroll.png" description="With this tool, you can fully refill your stamina! Remember that you can use this item again only after 20 hours of using the last." coinType="coin" type="item" actionid="101" disabled="yes"/>
 		<offers name="New Recovery Key" count="1" price="150" icon="Product_UsefulThings_RK.png" description="" coinType="coin" type="recoverykey" disabled="no"/>
-		<offers name="Bosses Eye" itemid="22027" count="1" price="50" icon="" coinType="coin" type="item" state="new" disabled="no"/>
+		<offers name="Bosses Eye" itemId="22027" count="1" price="50" icon="" coinType="coin" type="item" state="new" disabled="no"/>
 	</offer>
 </store>

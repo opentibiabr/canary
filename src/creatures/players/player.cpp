@@ -4638,13 +4638,13 @@ bool Player::canRemoveCoins(int32_t coins)
 		lastUpdateCoin = OTSYS_TIME() + 2000;
 
 		account::Account account(this->getAccount());
-		if(account::ERROR_NO != account.LoadAccountDB())
+		if(account::ERROR_NO != account.loadAccountDB())
 		{
-			SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+			SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 			return false;
 		};
 
-		if(auto [ coinBalance, result ] = account.GetCoins() ;
+		if(auto [ coinBalance, result ] = account.getCoins() ;
 			account::ERROR_NO != result)
 		{
 			SPDLOG_ERROR("Failed to get Coins for account: [{}]",
@@ -4664,14 +4664,14 @@ bool Player::canRemoveTournamentCoins(int32_t tournamentCoins)
 		lastUpdateCoin = OTSYS_TIME() + 2000;
 
 		account::Account account(this->getAccount());
-		if(account::ERROR_NO != account.LoadAccountDB())
+		if(account::ERROR_NO != account.loadAccountDB())
 		{
 			SPDLOG_ERROR("Failed to load Account: [{}]",
-				account.GetID());
+				account.getID());
 			return false;
 		};
 
-		if(auto [ tournamentCoinBalance, result ] = account.GetTournamentCoins() ;
+		if(auto [ tournamentCoinBalance, result ] = account.getTournamentCoins() ;
 			account::ERROR_NO != result)
 		{
 			SPDLOG_ERROR("Failed to get Tournament Coins for account: [{}]",

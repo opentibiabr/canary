@@ -33,12 +33,12 @@ extern Game g_game;
 extern Monsters g_monsters;
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
-	if (account && account::ERROR_NO != account->LoadAccountDB(email)) {
+	if (account && account::ERROR_NO != account->loadAccountDB(email)) {
 		SPDLOG_ERROR("Email [{}] doesn't match any account.", email);
 		return false;
 	}
 
-	std::string accountPassword = account->GetPassword();
+	std::string accountPassword = account->getPassword();
 	if (transformToSHA1(password) != accountPassword) {
 		SPDLOG_ERROR("Password [{}] doesn't match any account",
 									transformToSHA1(password));
@@ -59,13 +59,13 @@ bool IOLoginData::gameWorldAuthentication(const std::string& email,
 	account::Player player;
 	int result;
 
-	if (auto [player, result] = account.GetAccountPlayer(characterName);
+	if (auto [player, result] = account.getAccountPlayer(characterName);
 				account::ERROR_NO != result) {
 		SPDLOG_ERROR("Player [{}] not found or deleted for account.", characterName);
 		return false;
 	}
 
-	*accountId = account.GetID();
+	*accountId = account.getID();
 
 	return true;
 }
@@ -304,29 +304,29 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   uint32_t accountId = result->getNumber<uint32_t>("account_id");
   account::Account account(accountId);
-  account.SetDatabaseInterface(&db);
-	if(account::ERROR_NO != account.LoadAccountDB())
+  account.setDatabaseInterface(&db);
+	if(account::ERROR_NO != account.loadAccountDB())
 	{
-		SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+		SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 		return false;
 	}
 
   player->setGUID(result->getNumber<uint32_t>("id"));
   player->name = result->getString("name");
-  player->accountNumber = account.GetID();
-  player->accountType = account.GetAccountType();
+  player->accountNumber = account.getID();
+  player->accountType = account.getAccountType();
 
 	int res = 0;
 	uint32_t coins, tournament_coins;
 
-	if (auto [ coins, res ] = account.GetCoins(); account::ERROR_NO != res) {
+	if (auto [ coins, res ] = account.getCoins(); account::ERROR_NO != res) {
 		SPDLOG_ERROR("Failed to load Player [{}] coins. (Error: [{}])",
 			player->name, res);
 		return false;
 	}
 	player->coinBalance = coins;
 
-	if (auto [ tournament_coins, res ] = account.GetTournamentCoins();
+	if (auto [ tournament_coins, res ] = account.getTournamentCoins();
 			account::ERROR_NO != res) {
 		SPDLOG_ERROR("Failed to load Player [{}] tournament coins. (Error: [{}])",
 			player->name, res);
@@ -337,7 +337,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   if (g_config.getBoolean(FREE_PREMIUM)) {
     player->premiumDays = std::numeric_limits<uint16_t>::max();
   } else {
-    player->premiumDays = account.GetPremiumRemaningDays();
+    player->premiumDays = account.getPremiumRemaningDays();
   }
 
   player->preyBonusRerolls = result->getNumber<uint16_t>("bonus_rerolls");

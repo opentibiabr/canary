@@ -6864,27 +6864,27 @@ bool save = false;
 	uint32_t rem_days = 0;
 	time_t last_day;
 
-	rem_days = account.GetPremiumRemaningDays();
-	last_day = account.GetPremiumLastDay() ;
+	rem_days = account.getPremiumRemaningDays();
+	last_day = account.getPremiumLastDay() ;
 
 	std::string email;
 	if (rem_days != 0) {
 		if (last_day == 0) {
-			account.SetPremiumLastDay(timeNow);
+			account.setPremiumLastDay(timeNow);
 			save = true;
 		} else {
 			uint32_t days = (timeNow - last_day) / 86400;
 			if (days > 0) {
 				if (days >= rem_days) {
-					if(!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
-						email = account.GetEmail();
+					if(!account.setPremiumRemaningDays(0) || !account.setPremiumLastDay(0)) {
+						email = account.getEmail();
 						SPDLOG_ERROR("Failed to set account premium days, account email: {}",
 							email);
 					}
 				} else {
-					account.SetPremiumRemaningDays((rem_days - days));
+					account.setPremiumRemaningDays((rem_days - days));
 					time_t remainder = (timeNow - last_day) % 86400;
-					account.SetPremiumLastDay(timeNow - remainder);
+					account.setPremiumLastDay(timeNow - remainder);
 				}
 
 				save = true;
@@ -6892,12 +6892,12 @@ bool save = false;
 		}
 	}
 	else if (last_day != 0) {
-		account.SetPremiumLastDay(0);
+		account.setPremiumLastDay(0);
 		save = true;
 	}
 
-	if (save && !account.SaveAccountDB()) {
-		SPDLOG_ERROR("Failed to save account: {}", account.GetEmail());
+	if (save && !account.saveAccountDB()) {
+		SPDLOG_ERROR("Failed to save account: {}", account.getEmail());
 	}
 }
 
@@ -7579,13 +7579,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			}
 
 			account::Account account(player->getAccount());
-			if(account::ERROR_NO != account.LoadAccountDB()) {
-				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+			if(account::ERROR_NO != account.loadAccountDB()) {
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 				return;
 			}
 
-			if(account::ERROR_NO != account.AddCoins(amount)) {
-				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.GetID());
+			if(account::ERROR_NO != account.addCoins(amount)) {
+				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.getID());
 					return;
 			}
 		} else {
@@ -7678,13 +7678,13 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(player->getAccount());
-			if(account::ERROR_NO != account.LoadAccountDB()) {
-				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+			if(account::ERROR_NO != account.loadAccountDB()) {
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 				return;
 			}
 
-			if(account::ERROR_NO != account.AddCoins(offer.amount)) {
-				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.GetID());
+			if(account::ERROR_NO != account.addCoins(offer.amount)) {
+				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.getID());
 					return;
 			}
 		}
@@ -7788,26 +7788,26 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(player->getAccount());
-			if(account::ERROR_NO != account.LoadAccountDB())
+			if(account::ERROR_NO != account.loadAccountDB())
 			{
-				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 				return;
 			};
 
 			uint32_t player_coins = 0;
-			if (auto [ player_coins, result ] = account.GetCoins();
+			if (auto [ player_coins, result ] = account.getCoins();
 					account::ERROR_NO == result) {
 				if (amount > player_coins) {
 					return;
 				}
 			} else {
 				SPDLOG_ERROR("Failed to add Account [{}] coins. (Error: [{}])",
-					account.GetID(), result);
+					account.getID(), result);
 				return;
 			}
 
-			if (account::ERROR_NO != account.AddCoins(amount)) {
-				SPDLOG_ERROR("Failed to add Account [{}] coins.",	account.GetID());
+			if (account::ERROR_NO != account.addCoins(amount)) {
+				SPDLOG_ERROR("Failed to add Account [{}] coins.",	account.getID());
 				return;
 			}
 		} else {
@@ -7837,14 +7837,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(buyerPlayer->getAccount());
-			if(account::ERROR_NO != account.LoadAccountDB())
+			if(account::ERROR_NO != account.loadAccountDB())
 			{
-				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 				return;
 			}
 
-			if(account::ERROR_NO != account.AddCoins(amount)) {
-				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.GetID());
+			if(account::ERROR_NO != account.addCoins(amount)) {
+				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.getID());
 				return;
 			}
 		}
@@ -7907,14 +7907,14 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(player->getAccount());
-			if(account::ERROR_NO != account.LoadAccountDB())
+			if(account::ERROR_NO != account.loadAccountDB())
 			{
-				SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+				SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 				return;
 			}
 
-			if(account::ERROR_NO != account.AddCoins(amount)) {
-				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.GetID());
+			if(account::ERROR_NO != account.addCoins(amount)) {
+				SPDLOG_ERROR("Failed to add coins to account: [{}]", account.getID());
 					return;
 			}
 		} else if (it.stackable) {
@@ -7950,9 +7950,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 			if (it.id == ITEM_STORE_COIN) {
 				account::Account account(sellerPlayer->getAccount());
-				if(account::ERROR_NO != account.LoadAccountDB())
+				if(account::ERROR_NO != account.loadAccountDB())
 				{
-					SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+					SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 					return;
 				}
 			}
@@ -7963,9 +7963,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 				if (IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
 					account::Account account(sellerPlayer->getAccount());
-					if(account::ERROR_NO != account.LoadAccountDB())
+					if(account::ERROR_NO != account.loadAccountDB())
 					{
-						SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+						SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 						return;
 					}
 				}
@@ -8989,21 +8989,21 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 	}
 
 	account::Account account(player->getAccount());
-	if(account::ERROR_NO != account.LoadAccountDB())
+	if(account::ERROR_NO != account.loadAccountDB())
 	{
-		SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+		SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 		return;
 	}
 
 	if (successfully) {
 		if (thisOffer->getCoinType() == COIN_TYPE_DEFAULT) {
-			if(account::ERROR_NO == account.RemoveCoins(offerPrice*-1)) {
+			if(account::ERROR_NO == account.removeCoins(offerPrice*-1)) {
 				int coins = 0;
-				if(auto [ coins, result ] = account.GetCoins() ;
+				if(auto [ coins, result ] = account.getCoins() ;
 					account::ERROR_NO == result) {
 					player->setCoins(coins);
 				} else {
-					SPDLOG_ERROR("Failed to get Coins for account: [{}]", account.GetID());
+					SPDLOG_ERROR("Failed to get Coins for account: [{}]", account.getID());
 					return;
 				}
 
@@ -9012,22 +9012,22 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 						<< " for " << offerPrice*-1 <<" coins";
 				}
 			} else {
-				SPDLOG_ERROR("Failed to remove Coins from account: [{}]", account.GetID());
+				SPDLOG_ERROR("Failed to remove Coins from account: [{}]", account.getID());
 			}
 		} else if (thisOffer->getCoinType() == COIN_TYPE_TOURNAMENT) {
 
-			if(account::ERROR_NO != account.RemoveTournamentCoins(offerPrice*-1))	{
+			if(account::ERROR_NO != account.removeTournamentCoins(offerPrice*-1))	{
 				SPDLOG_ERROR("Failed to remove Tournament Coins from account: [{}]",
-					account.GetID());
+					account.getID());
 					return;
 			}
 
 			int tournament_coins = 0;
-			if(auto [ tournament_coins, result ] = account.GetTournamentCoins() ;
+			if(auto [ tournament_coins, result ] = account.getTournamentCoins() ;
 				account::ERROR_NO != result)
 			{
 				SPDLOG_ERROR("Failed to get Tournament Coins for account: [{}]",
-					account.GetID());
+					account.getID());
 					return;
 			};
 
@@ -9123,27 +9123,27 @@ void Game::playerCoinTransfer(uint32_t playerId, const std::string& recipient, u
 	std::string description(player->getName() + " transferred to " + recipient);
 
 	account::Account account(player->getAccount());
-	if(account::ERROR_NO != account.LoadAccountDB())
+	if(account::ERROR_NO != account.loadAccountDB())
 	{
-		SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+		SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 		return;
 	}
 
-	if(account::ERROR_NO != account.RemoveCoins(static_cast<int32_t>(amount))) {
-		SPDLOG_ERROR("Failed to remove coins to account: [{}]", account.GetID());
+	if(account::ERROR_NO != account.removeCoins(static_cast<int32_t>(amount))) {
+		SPDLOG_ERROR("Failed to remove coins to account: [{}]", account.getID());
 		return;
 	}
 
 	player->coinBalance -= amount;
 
-	if(account::ERROR_NO != account.LoadAccountDB(recipientPlayer->getAccount()))
+	if(account::ERROR_NO != account.loadAccountDB(recipientPlayer->getAccount()))
 	{
-		SPDLOG_ERROR("Failed to load Account: [{}]", account.GetID());
+		SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
 		return;
 	}
 
-	if(account::ERROR_NO != account.AddCoins(amount)) {
-		SPDLOG_ERROR("Failed to add coins to account: [{}]", account.GetID());
+	if(account::ERROR_NO != account.addCoins(amount)) {
+		SPDLOG_ERROR("Failed to add coins to account: [{}]", account.getID());
 		return;
 	}
 	

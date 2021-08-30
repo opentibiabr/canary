@@ -352,6 +352,9 @@ class Creature : virtual public Thing
 		virtual bool isAttackable() const {
 			return true;
 		}
+		virtual Faction_t getFaction() const {
+			return FACTION_DEFAULT;
+		}
 
 		virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
 		virtual void changeMana(int32_t manaChange);

@@ -89,8 +89,8 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "removeExperience", PlayerFunctions::luaPlayerRemoveExperience);
 			registerMethod(L, "Player", "getLevel", PlayerFunctions::luaPlayerGetLevel);
 
-			registerMethod("Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
-			registerMethod("Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
+			registerMethod(L, "Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
+			registerMethod(L, "Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
 
 			registerMethod(L, "Player", "getMagicLevel", PlayerFunctions::luaPlayerGetMagicLevel);
 			registerMethod(L, "Player", "getBaseMagicLevel", PlayerFunctions::luaPlayerGetBaseMagicLevel);

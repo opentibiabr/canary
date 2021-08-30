@@ -1,7 +1,6 @@
 -- Advanced NPC System by Jiddo
 
 if NpcHandler == nil then
-	local exhaustStorage = Storage.NpcExhaustOnBuy
 	local duration = 1
 	-- Constant talkdelay behaviors.
 	TALKDELAY_NONE = 0 -- No talkdelay. Npc will reply immedeatly.
@@ -15,11 +14,11 @@ if NpcHandler == nil then
 	MESSAGE_GREET = 1 -- When the player greets the npc.
 	MESSAGE_FAREWELL = 2 -- When the player unGreets the npc.
 	MESSAGE_BUY = 3 -- When the npc asks the player if he wants to buy something.
-	MESSAGE_ONBUY = 4 -- When the player successfully buys something via talk.
-	MESSAGE_BOUGHT = 5 -- When the player bought something through the shop window.
-	MESSAGE_SELL = 6 -- When the npc asks the player if he wants to sell something.
-	MESSAGE_ONSELL = 7 -- When the player successfully sells something via talk.
-	MESSAGE_SOLD = 8 -- When the player sold something through the shop window.
+	-- EMPTY = 4
+	-- EMPTY = 5
+	-- EMPTY = 6
+	-- EMPTY = 7
+	-- EMPTY = 8
 	MESSAGE_MISSINGMONEY = 9 -- When the player does not have enough money.
 	MESSAGE_NEEDMONEY = 10 -- Same as above, used for shop window.
 	MESSAGE_MISSINGITEM = 11 -- When the player is trying to sell an item he does not have.
@@ -46,8 +45,6 @@ if NpcHandler == nil then
 	CALLBACK_MESSAGE_DEFAULT = 7
 	CALLBACK_PLAYER_ENDTRADE = 8
 	CALLBACK_PLAYER_CLOSECHANNEL = 9
-	CALLBACK_ONBUY = 10
-	CALLBACK_ONSELL = 11
 	CALLBACK_ONADDFOCUS = 18
 	CALLBACK_ONRELEASEFOCUS = 19
 	CALLBACK_ONTRADEREQUEST = 20
@@ -85,11 +82,10 @@ if NpcHandler == nil then
 			[MESSAGE_GREET] = "Greetings, |PLAYERNAME|.",
 			[MESSAGE_FAREWELL] = "Good bye, |PLAYERNAME|.",
 			[MESSAGE_BUY] = "Do you want to buy |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| gold coins?",
-			[MESSAGE_ONBUY] = "Here you are.",
-			[MESSAGE_BOUGHT] = "Bought |ITEMCOUNT|x |ITEMNAME| for |TOTALCOST| gold.",
-			[MESSAGE_SELL] = "Do you want to sell |ITEMCOUNT| |ITEMNAME| for |TOTALCOST| gold coins?",
-			[MESSAGE_ONSELL] = "Here you are, |TOTALCOST| gold.",
-			[MESSAGE_SOLD] = "Sold |ITEMCOUNT|x |ITEMNAME| for |TOTALCOST| gold.",
+			--[EMPTY] = "EMPTY",
+			--[EMPTY] = "EMPTY",
+			--[EMPTY] = "EMPTY",
+			--[EMPTY] = "EMPTY",
 			[MESSAGE_MISSINGMONEY] = "You don't have enough money.",
 			[MESSAGE_NEEDMONEY] = "You don't have enough money.",
 			[MESSAGE_MISSINGITEM] = "You don't have so many.",
@@ -253,10 +249,6 @@ if NpcHandler == nil then
 				tmpRet = module:callbackOnPlayerEndTrade(...)
 			elseif id == CALLBACK_PLAYER_CLOSECHANNEL and module.callbackOnPlayerCloseChannel ~= nil then
 				tmpRet = module:callbackOnPlayerCloseChannel(...)
-			elseif id == CALLBACK_ONBUY and module.callbackOnBuy ~= nil then
-				tmpRet = module:callbackOnBuy(...)
-			elseif id == CALLBACK_ONSELL and module.callbackOnSell ~= nil then
-				tmpRet = module:callbackOnSell(...)
 			elseif id == CALLBACK_ONTRADEREQUEST and module.callbackOnTradeRequest ~= nil then
 				tmpRet = module:callbackOnTradeRequest(...)
 			elseif id == CALLBACK_ONADDFOCUS and module.callbackOnAddFocus ~= nil then
@@ -349,10 +341,10 @@ if NpcHandler == nil then
 					msg = self:parseMessage(msg, parseInfo)
 					self:say(msg, npc, cid, true)
 				else
-					return
+					return false
 				end
 			else
-				return
+				return false
 			end
 		end
 		self:addFocus(npc, cid)
@@ -388,7 +380,6 @@ if NpcHandler == nil then
 		if npc:getId() == cid then
 			return
 		end
-		print(npc:getId())
 
 		local callback = self:getCallback(CALLBACK_CREATURE_DISAPPEAR)
 		if callback == nil or callback(cid) then
@@ -437,33 +428,6 @@ if NpcHandler == nil then
 				if self:isFocused(cid) then
 					self:unGreet(cid)
 				end
-			end
-		end
-	end
-
-	-- Handles onBuy events. If you wish to handle this yourself, use the CALLBACK_ONBUY callback.
-	function NpcHandler:onBuy(creature, itemid, subType, amount, ignoreCap, inBackpacks)
-		local player = Player(creature.uid)
-		if (os.time() - player:getStorageValue(exhaustStorage)) >= duration then
-			player:setStorageValue(exhaustStorage, os.time()) -- Delay for buy
-		local callback = self:getCallback(CALLBACK_ONBUY)
-		if callback == nil or callback(player, itemid, subType, amount, ignoreCap, inBackpacks) then
-			if self:processModuleCallback(CALLBACK_ONBUY, player, itemid, subType, amount, ignoreCap, inBackpacks) then
-				--
-			end
-		end
-		else
-			return false
-		end
-	end
-
-	-- Handles onSell events. If you wish to handle this yourself, use the CALLBACK_ONSELL callback.
-	function NpcHandler:onSell(creature, itemid, subType, amount, ignoreCap, inBackpacks)
-		local player = Player(creature.uid)
-		local callback = self:getCallback(CALLBACK_ONSELL)
-		if callback == nil or callback(player, itemid, subType, amount, ignoreCap, inBackpacks) then
-			if self:processModuleCallback(CALLBACK_ONSELL, player, itemid, subType, amount, ignoreCap, inBackpacks) then
-				--
 			end
 		end
 	end
@@ -532,12 +496,12 @@ if NpcHandler == nil then
 					local message_female = self:parseMessage(msg_female, parseInfo)
 					if message_female ~= message_male then
 						if playerSex == PLAYERSEX_FEMALE then
-							selfSay(message_female)
+							self:say(message_female, npc, cid)
 						else
-							selfSay(message_male)
+							self:say(message_male, npc, cid)
 						end
 					elseif message ~= "" then
-						selfSay(message)
+						self:say(message, npc, cid)
 					end
 					self:resetNpc(cid)
 					self:releaseFocus(npc, cid)
@@ -561,7 +525,7 @@ if NpcHandler == nil then
 		events = nil
 	end
 
-	function NpcHandler:doNPCTalkALot(msgs, interval, npc, pcid)
+	function NpcHandler:doNPCTalkALot(msgs, delay, npc, pcid)
 		if self.eventDelayedSay[pcid] then
 			self:cancelNPCTalk(self.eventDelayedSay[pcid])
 		end
@@ -570,7 +534,7 @@ if NpcHandler == nil then
 		local ret = {}
 		for aux = 1, #msgs do
 			self.eventDelayedSay[pcid][aux] = {}
-			npc:sayWithDelay(npc:getId(), msgs[aux], TALKTYPE_PRIVATE_NP, ((aux-1) * (interval or 4000)) + 700, self.eventDelayedSay[pcid][aux], pcid)
+			npc:sayWithDelay(npc:getId(), msgs[aux], TALKTYPE_PRIVATE_NP, ((aux-1) * (delay or 4000)), self.eventDelayedSay[pcid][aux], pcid)
 			ret[#ret + 1] = self.eventDelayedSay[pcid][aux]
 		end
 		return(ret)
@@ -578,9 +542,9 @@ if NpcHandler == nil then
 
 	-- Makes the npc represented by this instance of NpcHandler say something.
 	--	This implements the currently set type of talkdelay.
-	function NpcHandler:say(message, npc, focus, publicize, shallDelay, delay)
+	function NpcHandler:say(message, npc, focus, useDelay, delay)
 		if type(message) == "table" then
-			return self:doNPCTalkALot(message, delay or 6000, npc, focus)
+			return self:doNPCTalkALot(message, delay, npc, focus)
 		end
 
 		if self.eventDelayedSay[focus] then
@@ -589,9 +553,23 @@ if NpcHandler == nil then
 
 		stopEvent(self.eventSay[focus])
 		self.eventSay[focus] = addEvent(function(npcId, message, focusId)
+			if not Npc(npc) then
+				return Spdlog.error("[NpcHandler:say] - Npc parameter is missing or wrong")
+			end
+
+			if not Player(focus) then
+				return Spdlog.error("[NpcHandler:say] - Player parameter is missing or wrong")
+			end
+			
 			npcId = npc:getId()
 			if npcId == nil then
 				Spdlog.error("[NpcHandler:say] - Npc not found or is nil")
+				return
+			end
+	
+			focusId = Player(focus):getId()
+			if npcId == nil then
+				Spdlog.error("[NpcHandler:say] - Player id not found or is nil")
 				return
 			end
 
@@ -600,6 +578,21 @@ if NpcHandler == nil then
 				local parseInfo = {[TAG_PLAYERNAME] = player:getName(), [TAG_TIME] = getFormattedWorldTime(), [TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel()), [TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel())}
 				npc:say(self:parseMessage(message, parseInfo), TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
 			end
-		end, self.talkDelayTime * 1000, npcId, message, focus)
+		end, self.talkDelayTime * 1000, npc:getId(), message, focusId)
+	end
+
+	-- sendMessages(msg, messagesTable, npc, creature, useDelay(true or false), delay)
+	-- If not have useDelay = true and delay, then send npc:talk(), this function not have delay of one message to other
+	function NpcHandler:sendMessages(message, messageTable, npc, player, useDelay, delay)
+		for index, value in pairs(messageTable) do
+			if msgcontains(message, index) then
+				if useDelay and useDelay == true then
+					self:say(value, npc, player, delay or 1000)
+				else
+					npc:talk(Player(player), value)
+				end
+				return true
+			end
+		end
 	end
 end

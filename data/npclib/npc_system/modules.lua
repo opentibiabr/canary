@@ -12,9 +12,6 @@ if Modules == nil then
 	SHOP_YESWORD = {"yes"}
 	SHOP_NOWORD = {"no"}
 
-	-- Pattern used to get the amount of an item a player wants to buy/sell.
-	PATTERN_COUNT = "%d+"
-
 	Modules = {
 		parseableModules = {}
 	}

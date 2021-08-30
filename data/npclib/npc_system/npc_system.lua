@@ -20,9 +20,6 @@ if NpcSystem == nil then
 	SHOP_YESWORD = {'yes'}
 	SHOP_NOWORD = {'no'}
 
-	-- Pattern used to get the amount of an item a player wants to buy/sell.
-	PATTERN_COUNT = '%d+'
-
 	-- Talkdelay behavior. For more information, look at the top of npchandler.lua.
 	NPCHANDLER_TALKDELAY = TALKDELAY_ONTHINK
 

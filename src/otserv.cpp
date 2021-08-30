@@ -170,6 +170,8 @@ void loadModules() {
 
 	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
+	modulesLoadHelper(g_scripts->loadScripts("npclib", true, false),
+		"data/npclib");
 	modulesLoadHelper(g_vocations.loadFromXml(),
 		"data/XML/vocations.xml");
 	modulesLoadHelper(g_game.loadScheduleEventFromXml(),

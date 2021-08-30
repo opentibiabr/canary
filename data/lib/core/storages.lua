@@ -32,7 +32,7 @@ Storage = {
 		}
 	},
 
-	NpcExhaust = 30000,
+	NpcExhaustOnBuy = 30000,
 	StoreExaust = 30001,
 	DelayLargeSeaShell = 30002,
 	Promotion = 30003,

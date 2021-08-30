@@ -8670,6 +8670,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_NPCS: {
 			g_npcs.reset();
 			g_scripts->loadScripts("npclua", false, true);
+			g_scripts->loadScripts("npclib", true, false);
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();

@@ -193,6 +193,7 @@ void Npc::onThink(uint32_t interval)
 	// onThink(self, interval)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.thinkEvent)) {
+		callback.pushSpecificCreature(this);
 		callback.pushNumber(interval);
 	}
 
@@ -398,7 +399,7 @@ bool Npc::isInSpawnRange(const Position& pos) const
 void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	Creature* creature = g_game.getCreatureByID(playerId);
 	if (!creature) {
-      return;
+		return;
 	}
 
 	turnToCreature(creature);

@@ -44,7 +44,7 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 			npc = nullptr;
 		}
 	} else {
-		npc = getScriptEnv()->getNpc();
+		npc = getUserdata<Npc>(L, 1);
 	}
 
 	if (npc) {
@@ -344,7 +344,6 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 	}
 
 	player->openShopWindow(npc);
-
 	pushBoolean(L, true);
 	return 1;
 }
@@ -403,5 +402,124 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	setField(L, "sellPrice", shopInfo.sellPrice);
 
 	pushBoolean(L, true);
+	return 1;
+}
+
+int NpcFunctions::luaNpcMove(lua_State* L)
+{
+	// npc:move(direction)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (npc) {
+		g_game.internalMoveCreature(npc, getNumber<Direction>(L, 2));
+	}
+	return 0;
+}
+
+int NpcFunctions::luaNpcTurn(lua_State* L)
+{
+	// npc:turn(direction)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (npc) {
+		g_game.internalCreatureTurn(npc, getNumber<Direction>(L, 2));
+	}
+	return 0;
+}
+
+int NpcFunctions::luaNpcFollow(lua_State* L)
+{
+	// npc:follow(player)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, npc->setFollowCreature(getPlayer(L, 2)));
+	return 1;
+}
+
+int NpcFunctions::luaNpcGetId(lua_State* L)
+{
+	// npc:getId()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+	
+	lua_pushnumber(L, npc->getID());
+	return 1;
+}
+
+int NpcFunctions::luaNpcSellItem(lua_State* L)
+{
+	// npc:sellItem(player, itemid, amount, <optional> subtype, <optional> actionid, <optional: default: 1> canDropOnMap)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	Player* player = getPlayer(L, 2);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	uint32_t sellCount = 0;
+
+	uint32_t itemId = getNumber<uint32_t>(L, 3);
+	uint32_t amount = getNumber<uint32_t>(L, 4);
+	uint32_t subType;
+
+	int32_t n = getNumber<int32_t>(L, 5, -1);
+	if (n != -1) {
+		subType = n;
+	} else {
+		subType = 1;
+	}
+
+	uint32_t actionId = getNumber<uint32_t>(L, 6, 0);
+	bool canDropOnMap = getBoolean(L, 7, true);
+
+	const ItemType& it = Item::items[itemId];
+	if (it.stackable) {
+		while (amount > 0) {
+			int32_t stackCount = std::min<int32_t>(100, amount);
+			Item* item = Item::CreateItem(it.id, stackCount);
+			if (item && actionId != 0) {
+				item->setActionId(actionId);
+			}
+
+			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+				delete item;
+				lua_pushnumber(L, sellCount);
+				return 1;
+			}
+
+			amount -= stackCount;
+			sellCount += stackCount;
+		}
+	} else {
+		for (uint32_t i = 0; i < amount; ++i) {
+			Item* item = Item::CreateItem(it.id, subType);
+			if (item && actionId != 0) {
+				item->setActionId(actionId);
+			}
+
+			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+				delete item;
+				lua_pushnumber(L, sellCount);
+				return 1;
+			}
+
+			++sellCount;
+		}
+	}
+
+	lua_pushnumber(L, sellCount);
 	return 1;
 }

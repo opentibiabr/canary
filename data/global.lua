@@ -150,23 +150,23 @@ staminaBonus = {
 	eventsPz = {} -- stamina in Pz
 }
 
-function addStamina(id, ...)
+function addStamina(playerId, ...)
 	-- Creature:onTargetCombat
-	if id then
-		local player = Player(id)
+	if playerId then
+		local player = Player(playerId)
 		if configManager.getBoolean(configKeys.STAMINA_TRAINER) then
 			if not player then
-				staminaBonus.eventsTrainer[id] = nil
+				staminaBonus.eventsTrainer[playerId] = nil
 			else
 				local target = player:getTarget()
 				if not target or target:getName() ~= staminaBonus.target then
-					staminaBonus.eventsTrainer[id] = nil
+					staminaBonus.eventsTrainer[playerId] = nil
 				else
 					player:setStamina(player:getStamina() + staminaBonus.bonus)
 					player:sendTextMessage(MESSAGE_STATUS_SMALL,
 																string.format("%i of stamina has been refilled.",
 																configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
-					staminaBonus.eventsTrainer[id] = addEvent(addStamina, staminaBonus.period, id)
+					staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 				end
 			end
 		end
@@ -174,15 +174,15 @@ function addStamina(id, ...)
 	end
 
 	-- Player:onChangeZone
-	local id, delay = ...
+	local localPlayerId, delay = ...
 
-	if id and delay then
-		if not staminaBonus.eventsPz[id] then return false end
-		stopEvent(staminaBonus.eventsPz[id])
+	if localPlayerId and delay then
+		if not staminaBonus.eventsPz[localPlayerId] then return false end
+		stopEvent(staminaBonus.eventsPz[localPlayerId])
 
-		local player = Player(id)
+		local player = Player(localPlayerId)
 		if not player then
-			staminaBonus.eventsPz[id] = nil
+			staminaBonus.eventsPz[localPlayerId] = nil
 			return false
 		end
 
@@ -191,16 +191,19 @@ function addStamina(id, ...)
 		if actualStamina > 2400 and actualStamina < 2520 then
 			delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY) * 60 * 1000 -- Stamina Green 12 min.
 		elseif actualStamina == 2520 then
-			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are no longer refilling stamina, because your stamina is already full.")
-			staminaBonus.eventsPz[id] = nil
+			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are no longer refilling stamina, \z
+                                                         because your stamina is already full.")
+			staminaBonus.eventsPz[localPlayerId] = nil
 			return false
 		end
 
 		player:setStamina(player:getStamina() + configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
 		player:sendTextMessage(MESSAGE_STATUS_SMALL,
-																string.format("%i of stamina has been refilled.",
-																configManager.getNumber(configKeys.STAMINA_PZ_GAIN)))
-																staminaBonus.eventsPz[id] = addEvent(addStamina, delay, nil, id, delay)
+                               string.format("%i of stamina has been refilled.",
+                                             configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
+                               )
+        )
+		staminaBonus.eventsPz[localPlayerId] = addEvent(addStamina, delay, nil, localPlayerId, delay)
 		return true
 	end
 	return false

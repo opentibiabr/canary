@@ -359,6 +359,8 @@ void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 		} else {
 			targetList.push_back(creature);
 		}
+		if(!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+			totalPlayersOnScreen++;
 	}
 }
 
@@ -368,6 +370,8 @@ void Monster::removeTarget(Creature* creature)
 	if (it != targetList.end()) {
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
+		if(!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+			totalPlayersOnScreen--;
 	}
 }
 
@@ -476,9 +480,13 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
+	} else if (creature->getPlayer() &&  creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+		return false;
 	} else {
-		if ((creature->getPlayer() && !creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) ||
-				(creature->getMaster() && creature->getMaster()->getPlayer())) {
+		if (getFaction() != FACTION_DEFAULT) {
+			return isEnemyFaction(creature->getFaction()) || creature->getFaction() == FACTION_PLAYER;
+		}
+		if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
 			return true;
 		}
 	}
@@ -705,6 +713,10 @@ bool Monster::isTarget(const Creature* creature) const
 	if (creature->getPosition().z != getPosition().z) {
 		return false;
 	}
+	Faction_t targetFaction = creature->getFaction();
+	if (getFaction() != FACTION_DEFAULT) {
+		return isEnemyFaction(targetFaction);
+	}
 	return true;
 }
 
@@ -752,6 +764,9 @@ void Monster::updateIdleStatus()
 
 	if (conditions.empty()) {
 		if (!isSummon() && targetList.empty()) {
+			idle = true;
+		}
+		else if ((!master || master->getMonster()) && getFaction() != FACTION_DEFAULT && (totalPlayersOnScreen == 0 && (!master || master->getMonster()->totalPlayersOnScreen == 0))) {
 			idle = true;
 		}
 	}

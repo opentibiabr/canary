@@ -5676,6 +5676,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					continue;
 				}
 
+				if (damage.primary.type == COMBAT_HEALING && target && target->getMonster()) {
+					if (target != attacker) {
+						return false;
+					}
+				}
+
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 					ss.str({});
 					ss << "You heal " << target->getNameDescription() << " for " << damageString;
@@ -8644,14 +8650,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_IMBUEMENTS: return g_imbuements->reload();
 		case RELOAD_TYPE_RAIDS: return raids.reload() && raids.startup();
 
-		case RELOAD_TYPE_SPELLS: {
-			if (!g_spells->reload()) {
-				SPDLOG_WARN("[Game::reload] - Failed to reload spells.");
-				std::terminate();
-			}
-			return true;
-		}
-
 		case RELOAD_TYPE_SCRIPTS: {
 			// commented out stuff is TODO, once we approach further in revscriptsys
 			g_actions->clear(true);
@@ -8667,10 +8665,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 		}
 
 		default: {
-			if (!g_spells->reload()) {
-				SPDLOG_WARN("[Game::reload] - Failed to reload spells.");
-				std::terminate();
-			}
 
 			g_config.reload();
 			raids.reload() && raids.startup();

@@ -151,9 +151,6 @@ void Signals::sighupHandler()
 	g_game.raids.startup();
 	SPDLOG_INFO("Reloaded raids");
 
-	g_spells->reload();;
-	SPDLOG_INFO("Reloaded spells");
-
 	Item::items.reload();
 	SPDLOG_INFO("Reloaded items");
 

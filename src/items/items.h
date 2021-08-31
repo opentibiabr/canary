@@ -24,41 +24,78 @@
 #include "declarations.hpp"
 #include "items/itemloader.h"
 #include "game/movement/position.h"
+#include "config/configmanager.h"
+
+extern ConfigManager g_config;
 
 struct Abilities {
-	uint32_t healthGain = 0;
-	uint32_t healthTicks = 0;
-	uint32_t manaGain = 0;
-	uint32_t manaTicks = 0;
+	public:
+		uint32_t conditionImmunities = 0;
+		uint32_t conditionSuppressions = 0;
 
-	uint32_t conditionImmunities = 0;
-	uint32_t conditionSuppressions = 0;
+		//stats modifiers
+		int32_t stats[STAT_LAST + 1] = { 0 };
+		int32_t statsPercent[STAT_LAST + 1] = { 0 };
 
-	//stats modifiers
-	int32_t stats[STAT_LAST + 1] = { 0 };
-	int32_t statsPercent[STAT_LAST + 1] = { 0 };
+		//extra skill modifiers
+		int32_t skills[SKILL_LAST + 1] = { 0 };
 
-	//extra skill modifiers
-	int32_t skills[SKILL_LAST + 1] = { 0 };
+		int32_t speed = 0;
 
-	int32_t speed = 0;
+		// field damage abilities modifiers
+		int16_t fieldAbsorbPercent[COMBAT_COUNT] = { 0 };
 
-	// field damage abilities modifiers
-	int16_t fieldAbsorbPercent[COMBAT_COUNT] = { 0 };
+		//damage abilities modifiers
+		int16_t absorbPercent[COMBAT_COUNT] = { 0 };
 
-	//damage abilities modifiers
-	int16_t absorbPercent[COMBAT_COUNT] = { 0 };
+		//relfect abilities modifires
+		int16_t reflectPercent[COMBAT_COUNT] = { 0 };
 
-	//relfect abilities modifires
-	int16_t reflectPercent[COMBAT_COUNT] = { 0 };
+		//elemental damage
+		uint16_t elementDamage = 0;
+		CombatType_t elementType = COMBAT_NONE;
 
-	//elemental damage
-	uint16_t elementDamage = 0;
-	CombatType_t elementType = COMBAT_NONE;
+		bool manaShield = false;
+		bool invisible = false;
+		bool regeneration = false;
 
-	bool manaShield = false;
-	bool invisible = false;
-	bool regeneration = false;
+		void setHealthGain(uint32_t value) {
+			healthGain = value;
+		}
+
+		uint32_t getHealthGain() const {
+			return healthGain * g_config.getFloat(ConfigManager::RATE_HEALTH_REGEN);
+		}
+
+		void setHealthTicks(uint32_t value) {
+			healthTicks = value;
+		}
+
+		uint32_t getHealthTicks() const {
+			return healthTicks / g_config.getFloat(ConfigManager::RATE_HEALTH_REGEN_SPEED);
+		}
+
+		void setManaGain(uint32_t value) {
+			manaGain = value;
+		}
+
+		uint32_t getManaGain() const {
+			return manaGain * g_config.getFloat(ConfigManager::RATE_MANA_REGEN);
+		}
+
+		void setManaTicks(uint32_t value) {
+			manaTicks = value;
+		}
+
+		uint32_t getManaTicks() const {
+			return manaTicks / g_config.getFloat(ConfigManager::RATE_MANA_REGEN_SPEED);
+		}
+
+	private:
+		uint32_t healthGain = 0;
+		uint32_t healthTicks = 0;
+		uint32_t manaGain = 0;
+		uint32_t manaTicks = 0;
 };
 
 class ConditionDamage;

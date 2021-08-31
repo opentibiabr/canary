@@ -20,8 +20,11 @@
 #ifndef SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
 #define SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_
 
+#include "config/configmanager.h"
 #include "declarations.hpp"
 #include "items/item.h"
+
+extern ConfigManager g_config;
 
 class Vocation
 {
@@ -60,28 +63,37 @@ class Vocation
 		}
 
 		uint32_t getManaGainTicks() const {
-			return gainManaTicks;
+			return gainManaTicks / g_config.getFloat(ConfigManager::RATE_MANA_REGEN_SPEED);
 		}
+
 		uint32_t getManaGainAmount() const {
-			return gainManaAmount;
+			return gainManaAmount * g_config.getFloat(ConfigManager::RATE_MANA_REGEN);
 		}
+
 		uint32_t getHealthGainTicks() const {
-			return gainHealthTicks;
+			return gainHealthTicks / g_config.getFloat(ConfigManager::RATE_HEALTH_REGEN_SPEED);
 		}
+
 		uint32_t getHealthGainAmount() const {
-			return gainHealthAmount;
+			return gainHealthAmount * g_config.getFloat(ConfigManager::RATE_HEALTH_REGEN);
 		}
 
 		uint8_t getSoulMax() const {
 			return soulMax;
 		}
-		uint16_t getSoulGainTicks() const {
-			return gainSoulTicks;
+
+		uint32_t getSoulGainTicks() const {
+			return gainSoulTicks / g_config.getFloat(ConfigManager::RATE_SOUL_REGEN_SPEED);
+		}
+
+		uint32_t getBaseAttackSpeed() const {
+			return attackSpeed;
 		}
 
 		uint32_t getAttackSpeed() const {
-			return attackSpeed;
+			return attackSpeed / g_config.getFloat(ConfigManager::RATE_ATTACK_SPEED);
 		}
+
 		uint32_t getBaseSpeed() const {
 			return baseSpeed;
 		}
@@ -125,7 +137,7 @@ class Vocation
 
     bool magicShield = false;
 
-		uint16_t gainSoulTicks = 120;
+		uint32_t gainSoulTicks = 120000;
 
 		uint8_t soulMax = 100;
 		uint8_t clientId = 0;

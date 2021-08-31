@@ -101,9 +101,9 @@ bool Player::setVocation(uint16_t vocId)
 	Condition* condition = getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	if (condition) {
 		condition->setParam(CONDITION_PARAM_HEALTHGAIN, vocation->getHealthGainAmount());
-		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks() * 1000);
+		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks());
 		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
-		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
+		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks());
 	}
 	g_game.addPlayerVocation(this);
 	return true;
@@ -4160,7 +4160,7 @@ void Player::changeMana(int32_t manaChange)
 void Player::changeSoul(int32_t soulChange)
 {
 	if (soulChange > 0) {
-		soul += std::min<int32_t>(soulChange, vocation->getSoulMax() - soul);
+		soul += std::min<int32_t>(soulChange * g_config.getFloat(ConfigManager::RATE_SOUL_REGEN), vocation->getSoulMax() - soul);
 	} else {
 		soul = std::max<int32_t>(0, soul + soulChange);
 	}

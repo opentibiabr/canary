@@ -290,7 +290,7 @@ function Player:onChangeZone(zone)
 							delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY)
 						end
 
-						self:sendTextMessage(MESSAGE_STATUS_SMALL,
+						self:sendTextMessage(MESSAGE_STATUS,
                                              string.format("In protection zone. \
                                                            Every %i minutes, gain %i stamina.",
                                                            delay, configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
@@ -301,7 +301,7 @@ function Player:onChangeZone(zone)
 				end
 			else
 				if event then
-					self:sendTextMessage(MESSAGE_STATUS_SMALL, "You are no longer refilling stamina, \z
+					self:sendTextMessage(MESSAGE_STATUS, "You are no longer refilling stamina, \z
                                          since you left a regeneration zone.")
 					stopEvent(event)
 					staminaBonus.eventsPz[self:getId()] = nil

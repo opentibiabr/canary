@@ -143,7 +143,7 @@ end
 
 -- Increase Stamina when Attacking Trainer
 staminaBonus = {
-	target = 'Training Machine',
+	target = 'Azure Frog',
 	period = configManager.getNumber(configKeys.STAMINA_TRAINER_DELAY) * 60 * 1000, -- time on miliseconds trainers
 	bonus = configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN), -- gain stamina trainers
 	eventsTrainer = {}, -- stamina in trainers
@@ -163,7 +163,7 @@ function addStamina(playerId, ...)
 					staminaBonus.eventsTrainer[playerId] = nil
 				else
 					player:setStamina(player:getStamina() + staminaBonus.bonus)
-					player:sendTextMessage(MESSAGE_STATUS_SMALL,
+					player:sendTextMessage(MESSAGE_STATUS,
 																string.format("%i of stamina has been refilled.",
 																configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN)))
 					staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
@@ -191,14 +191,14 @@ function addStamina(playerId, ...)
 		if actualStamina > 2400 and actualStamina < 2520 then
 			delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY) * 60 * 1000 -- Stamina Green 12 min.
 		elseif actualStamina == 2520 then
-			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are no longer refilling stamina, \z
+			player:sendTextMessage(MESSAGE_STATUS, "You are no longer refilling stamina, \z
                                                          because your stamina is already full.")
 			staminaBonus.eventsPz[localPlayerId] = nil
 			return false
 		end
 
 		player:setStamina(player:getStamina() + configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
-		player:sendTextMessage(MESSAGE_STATUS_SMALL,
+		player:sendTextMessage(MESSAGE_STATUS,
                                string.format("%i of stamina has been refilled.",
                                              configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
                                )

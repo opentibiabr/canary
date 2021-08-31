@@ -9,9 +9,9 @@ end
 function Creature:onTargetCombat(target)
 	if self:isPlayer() then
 		if target and target:getName() == staminaBonus.target then
-			local id = self:getId()
-			if not staminaBonus.eventsTrainer[id] then
-				staminaBonus.eventsTrainer[id] = addEvent(addStamina, staminaBonus.period, id)
+			local playerId = self:getId()
+			if not staminaBonus.eventsTrainer[playerId] then
+				staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 			end
 		end
 	end

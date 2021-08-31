@@ -236,8 +236,8 @@ void BedItem::regeneratePlayer(Player* player) const
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen * g_config.getFloat(ConfigManager::RATE_HEALTH_REGEN), false);
-		player->changeMana(regen * g_config.getFloat(ConfigManager::RATE_MANA_REGEN));
+		player->changeHealth(regen * g_config.getFloat(RATE_HEALTH_REGEN), false);
+		player->changeMana(regen * g_config.getFloat(RATE_MANA_REGEN));
 	}
 
 	const int32_t soulRegen = sleptTime / (60 * 15); // RATE_SOUL_REGEN_SPEED?

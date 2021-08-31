@@ -824,17 +824,17 @@ bool Spell::playerRuneSpellCheck(Player* player, const Position& toPos)
 void Spell::applyCooldownConditions(Player* player) const
 {
 	if (cooldown > 0) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, cooldown / g_config.getFloat(ConfigManager::RATE_SPELL_COOLDOWN), 0, false, spellId);
+		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLCOOLDOWN, cooldown / g_config.getFloat(RATE_SPELL_COOLDOWN), 0, false, spellId);
 		player->addCondition(condition);
 	}
 
 	if (groupCooldown > 0) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, groupCooldown / g_config.getFloat(ConfigManager::RATE_SPELL_COOLDOWN), 0, false, group);
+		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, groupCooldown / g_config.getFloat(RATE_SPELL_COOLDOWN), 0, false, group);
 		player->addCondition(condition);
 	}
 
 	if (secondaryGroupCooldown > 0) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, secondaryGroupCooldown / g_config.getFloat(ConfigManager::RATE_SPELL_COOLDOWN), 0, false, secondaryGroup);
+		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, secondaryGroupCooldown / g_config.getFloat(RATE_SPELL_COOLDOWN), 0, false, secondaryGroup);
 		player->addCondition(condition);
 	}
 }

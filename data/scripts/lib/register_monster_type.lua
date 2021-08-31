@@ -109,6 +109,32 @@ registerMonsterType.corpse = function(mtype, mask)
 		mtype:corpseId(mask.corpse)
 	end
 end
+registerMonsterType.faction = function(mtype, mask)
+	if mask.faction then
+		mtype:faction(mask.faction)
+	end
+end
+registerMonsterType.targetPreferPlayer = function(mtype, mask)
+	if mask.targetPreferPlayer then
+		mtype:targetPreferPlayer(mask.targetPreferPlayer)
+	end
+end
+registerMonsterType.targetPreferMaster = function(mtype, mask)
+	if mask.targetPreferMaster then
+		mtype:targetPreferMaster(mask.targetPreferMaster)
+	end
+end
+registerMonsterType.enemyFactions = function(mtype, mask)
+	if mask.enemyFactions then
+		for _, enemyFaction in pairs(mask.enemyFactions) do
+			if not enemyFaction then
+				print("[Error - Loading monsters] Monster: \"" .. mtype:name() .. "\". Unknown enemy faction.")
+			else
+				mtype:enemyFactions(enemyFaction)
+			end
+		end
+	end
+end
 registerMonsterType.flags = function(mtype, mask)
 	if mask.flags then
 		if mask.flags.attackable ~= nil then

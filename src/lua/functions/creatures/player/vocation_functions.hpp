@@ -30,6 +30,7 @@ class VocationFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Vocation", "getId", VocationFunctions::luaVocationGetId);
 			registerMethod(L, "Vocation", "getClientId", VocationFunctions::luaVocationGetClientId);
+			registerMethod(L, "Vocation", "getBaseId", VocationFunctions::luaVocationGetBaseId);
 			registerMethod(L, "Vocation", "getName", VocationFunctions::luaVocationGetName);
 			registerMethod(L, "Vocation", "getDescription", VocationFunctions::luaVocationGetDescription);
 
@@ -61,6 +62,7 @@ class VocationFunctions final : LuaScriptInterface {
 
 		static int luaVocationGetId(lua_State* L);
 		static int luaVocationGetClientId(lua_State* L);
+		static int luaVocationGetBaseId(lua_State* L);
 		static int luaVocationGetName(lua_State* L);
 		static int luaVocationGetDescription(lua_State* L);
 

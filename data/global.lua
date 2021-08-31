@@ -143,7 +143,7 @@ end
 
 -- Increase Stamina when Attacking Trainer
 staminaBonus = {
-	target = 'Azure Frog',
+	target = 'Training Machine',
 	period = configManager.getNumber(configKeys.STAMINA_TRAINER_DELAY) * 60 * 1000, -- time on miliseconds trainers
 	bonus = configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN), -- gain stamina trainers
 	eventsTrainer = {}, -- stamina in trainers

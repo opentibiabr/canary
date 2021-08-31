@@ -45,6 +45,10 @@ class Vocation
 			return clientId;
 		}
 
+		uint8_t getBaseId() const {
+			return baseId;
+		}
+
 		uint32_t getHPGain() const {
 			return gainHP;
 		}
@@ -125,6 +129,7 @@ class Vocation
 
 		uint8_t soulMax = 100;
 		uint8_t clientId = 0;
+		uint8_t baseId = 0;
 
 		static uint32_t skillBase[SKILL_LAST + 1];
 };

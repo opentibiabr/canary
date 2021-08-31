@@ -63,10 +63,10 @@ local DAILY_REWARD_STATUS_PREMIUM = 1
 
 local DailyRewardItems = {
 	[0] = {7618, 7620}, -- God/no vocation character
-	[VOCATION.CLIENT_ID.PALADIN] = {7618, 7588, 7620, 7589, 8472, 26030, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
-	[VOCATION.CLIENT_ID.DRUID] = {7618, 7620, 7589, 7590, 26029, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2269, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
-	[VOCATION.CLIENT_ID.SORCERER] = {7618, 7620, 7589, 7590, 26029, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
-	[VOCATION.CLIENT_ID.KNIGHT] = {7618, 7588, 7591, 8473, 26031, 7620, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
+	[VOCATION.BASE_ID.PALADIN] = {7618, 7588, 7620, 7589, 8472, 26030, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
+	[VOCATION.BASE_ID.DRUID] = {7618, 7620, 7589, 7590, 26029, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2269, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
+	[VOCATION.BASE_ID.SORCERER] = {7618, 7620, 7589, 7590, 26029, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
+	[VOCATION.BASE_ID.KNIGHT] = {7618, 7588, 7591, 8473, 26031, 7620, 2316, 2274, 2291, 2266, 2310, 2262, 2277, 2313, 2305, 2301, 2303, 2302, 2304, 2271, 2265, 2293, 2286, 2289, 2308, 2288, 2268, 2315},
 }
 
 DailyReward = {
@@ -283,7 +283,7 @@ end
 
 function Player.iterateTest(self)
 	local dailyTable = DailyReward.rewards[5]
-	local reward = DailyRewardItems[self:getVocation():getClientId()]
+	local reward = DailyRewardItems[self:getVocation():getBaseId()]
 
 	if not(reward) then
 		reward = {}
@@ -572,10 +572,10 @@ function Player.readDailyReward(self, msg, currentDay, state)
 	else
 		if systemType == 1 then
 			if (state == DAILY_REWARD_STATUS_FREE) then
-				rewards = DailyRewardItems[self:getVocation():getClientId()]
+				rewards = DailyRewardItems[self:getVocation():getBaseId()]
 				itemsToPick = dailyTable.freeAccount
 			else
-				rewards = DailyRewardItems[self:getVocation():getClientId()]
+				rewards = DailyRewardItems[self:getVocation():getBaseId()]
 				itemsToPick = dailyTable.premiumAccount
 			end
 

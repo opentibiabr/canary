@@ -80,6 +80,12 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, DIRECTION_SOUTHEAST)
 			registerEnum(L, DIRECTION_NORTHWEST)
 			registerEnum(L, DIRECTION_NORTHEAST)
+			
+			registerEnum(L, FACTION_DEFAULT)
+			registerEnum(L, FACTION_PLAYER)
+			registerEnum(L, FACTION_LION)
+			registerEnum(L, FACTION_LIONUSURPERS)
+			registerEnum(L, FACTION_LAST)
 
 			registerEnum(L, COMBAT_NONE)
 			registerEnum(L, COMBAT_PHYSICALDAMAGE)
@@ -974,7 +980,6 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, RELOAD_TYPE_NPCS)
 			registerEnum(L, RELOAD_TYPE_RAIDS)
 			registerEnum(L, RELOAD_TYPE_SCRIPTS)
-			registerEnum(L, RELOAD_TYPE_SPELLS)
 			registerEnum(L, RELOAD_TYPE_STAGES)
 
 			registerEnum(L, ZONE_PROTECTION)

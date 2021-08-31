@@ -382,6 +382,89 @@ int MonsterTypeFunctions::luaMonsterTypeExperience(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeFaction(lua_State* L)
+{
+	// get: monsterType:faction() set: monsterType:faction(faction)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.faction);
+		}
+		else {
+			monsterType->info.faction = getNumber<Faction_t>(L, 2);
+			pushBoolean(L, true);
+		}
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeEnemyFactions(lua_State* L)
+{
+	// get: monsterType:enemyFactions() set: monsterType:enemyFactions(enemyFaction)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_createtable(L, monsterType->info.enemyFactions.size(), 0);
+			int index = 0;
+
+			for (auto faction : monsterType->info.enemyFactions) {
+				lua_pushnumber(L, faction);
+				lua_rawseti(L, -2, ++index);
+			}
+		}
+		else {
+			Faction_t faction = getNumber<Faction_t>(L, 2);
+			monsterType->info.enemyFactions.emplace(faction);
+			pushBoolean(L, true);
+		}
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeTargetPreferPlayer(lua_State* L)
+{
+	// get: monsterType:targetPreferPlayer() set: monsterType:targetPreferPlayer(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushboolean(L, monsterType->info.targetPreferPlayer);
+		}
+		else {
+			monsterType->info.targetPreferPlayer = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeTargetPreferMaster(lua_State* L)
+{
+	// get: monsterType:targetPreferMaster() set: monsterType:targetPreferMaster(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monsterType->info.faction);
+		}
+		else {
+			monsterType->info.targetPreferMaster = getBoolean(L, 2);
+			pushBoolean(L, true);
+		}
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeRaceid(lua_State* L) {
 	// get: monsterType:raceId() set: monsterType:raceId(id)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);

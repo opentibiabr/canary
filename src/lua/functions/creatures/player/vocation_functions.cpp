@@ -65,6 +65,17 @@ int VocationFunctions::luaVocationGetClientId(lua_State* L) {
 	return 1;
 }
 
+int VocationFunctions::luaVocationGetBaseId(lua_State* L) {
+	// vocation:getBaseId()
+	Vocation* vocation = getUserdata<Vocation>(L, 1);
+	if (vocation) {
+		lua_pushnumber(L, vocation->getBaseId());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int VocationFunctions::luaVocationGetName(lua_State* L) {
 	// vocation:getName()
 	Vocation* vocation = getUserdata<Vocation>(L, 1);

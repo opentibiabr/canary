@@ -18,28 +18,40 @@ bullseye:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 local setting = {
 	[236] = {
 		health = {250, 350},
-		vocations = {3, 4, 7, 8},
+		vocations = {
+			VOCATION.BASE_ID.KNIGHT,
+			VOCATION.BASE_ID.PALADIN
+		},
 		level = 50,
 		flask = 283,
 		description = "Only knights and paladins of level 50 or above may drink this fluid."
 	},
 	[237] = {
 		mana = {115, 185},
-		vocations = {1, 2, 3, 5, 6, 7},
+		vocations = {
+			VOCATION.BASE_ID.SORCERER,
+			VOCATION.BASE_ID.DRUID,
+			VOCATION.BASE_ID.PALADIN
+		},
 		level = 50,
 		flask = 283,
 		description = "Only sorcerers, druids and paladins of level 50 or above may drink this fluid."
 	},
 	[238] = {
 		mana = {150, 250},
-		vocations = {1, 2, 5, 6},
+		vocations = {
+			VOCATION.BASE_ID.SORCERER,
+			VOCATION.BASE_ID.DRUID
+		},
 		level = 80,
 		flask = 284,
 		description = "Only druids and sorcerers of level 80 or above may drink this fluid."
 	},
 	[239] = {
 		health = {425, 575},
-		vocations = {4, 8},
+		vocations = {
+			VOCATION.BASE_ID.KNIGHT
+		},
 		level = 80,
 		flask = 284,
 		description = "Only knights of level 80 or above may drink this fluid."
@@ -60,32 +72,43 @@ local setting = {
 	},
 	[7439] = {
 		condition = berserk,
-		vocations = {4, 8},
+		vocations = {
+			VOCATION.BASE_ID.KNIGHT
+		},
 		effect = CONST_ME_MAGIC_RED,
 		description = "Only knights may drink this potion.", text = "You feel stronger."
 	},
 	[7440] = {
 		condition = mastermind,
-		vocations = {1, 2, 5, 6},
+		vocations = {
+			VOCATION.BASE_ID.SORCERER,
+			VOCATION.BASE_ID.DRUID
+		},
 		effect = CONST_ME_MAGIC_BLUE,
 		description = "Only sorcerers and druids may drink this potion.", text = "You feel smarter."
 	},
 	[7443] = {
 		condition = bullseye,
-		vocations = {3, 7},
+		vocations = {
+			VOCATION.BASE_ID.PALADIN
+		},
 		effect = CONST_ME_MAGIC_GREEN,
 		description = "Only paladins may drink this potion.", text = "You feel more accurate."
 	},
 	[7642] = {
 		health = {250, 350}, mana = {100, 200},
-		vocations = {3, 7},
+		vocations = {
+			VOCATION.BASE_ID.PALADIN
+		},
 		level = 80,
 		flask = 284,
 		description = "Only paladins of level 80 or above may drink this fluid."
 	},
 	[7643] = {
 		health = {650, 850},
-		vocations = {4, 8},
+		vocations = {
+			VOCATION.BASE_ID.KNIGHT
+		},
 		level = 130,
 		flask = 284,
 		description = "Only knights of level 130 or above may drink this fluid."
@@ -100,21 +123,28 @@ local setting = {
 	},
 	[23373] = {
 		mana = {425, 575},
-		vocations = {1, 2, 5, 6},
+		vocations = {
+			VOCATION.BASE_ID.SORCERER,
+			VOCATION.BASE_ID.DRUID
+		},
 		level = 130,
 		flask = 284,
 		description = "Only druids and sorcerers of level 130 or above may drink this fluid."
 	},
 	[23374] = {
 		health = {420, 580}, mana = {250, 350},
-		vocations = {3, 7},
+		vocations = {
+			VOCATION.BASE_ID.PALADIN
+		},
 		level = 130,
 		flask = 284,
 		description = "Only paladins of level 130 or above may drink this fluid."
 	},
 	[23375] = {
 		health = {875, 1125},
-		vocations = {4, 8},
+		vocations = {
+			VOCATION.BASE_ID.KNIGHT
+		},
 		level = 200,
 		flask = 284,
 		description = "Only knights of level 200 or above may drink this fluid."
@@ -129,7 +159,7 @@ function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	local potion = setting[item:getId()]
-	if potion.level and player:getLevel() < potion.level or potion.vocations and not table.contains(potion.vocations, player:getVocation():getId()) then
+	if potion.level and player:getLevel() < potion.level or potion.vocations and not table.contains(potion.vocations, player:getVocation():getBaseId()) then
 		player:say(potion.description, TALKTYPE_MONSTER_SAY)
 		return true
 	end
@@ -144,11 +174,11 @@ function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	else
 		if potion.health then
-			doTargetCombat(0, target, COMBAT_HEALING, potion.health[1], potion.health[2])
+			doTargetCombatHealth(0, target, COMBAT_HEALING, potion.health[1], potion.health[2])
 		end
 
 		if potion.mana then
-			doTargetCombat(0, target, COMBAT_MANADRAIN, potion.mana[1], potion.mana[2])
+			doTargetCombatMana(0, target, COMBAT_MANADRAIN, potion.mana[1], potion.mana[2])
 		end
 
 		if potion.antidote then

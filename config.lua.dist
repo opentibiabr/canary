@@ -62,6 +62,15 @@ weatherRain = false
 thunderEffect = false
 freeQuests = false
 allConsoleLog = false
+-- Stamina in Trainers
+staminaTrainer = false
+staminaTrainerDelay = 5
+staminaTrainerGain = 1
+-- Stamina in PZ
+staminaPz = false
+staminaOrangeDelay = 1
+staminaGreenDelay = 5
+staminaPzGain = 1
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default

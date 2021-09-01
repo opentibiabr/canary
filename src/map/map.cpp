@@ -29,13 +29,19 @@
 
 extern Game g_game;
 
-bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
-{
+bool Map::load(const std::string& identifier) {
 	IOMap loader;
 	if (!loader.loadMap(this, identifier)) {
-		SPDLOG_ERROR("[Map::loadMap] - {}", loader.getLastErrorString());
+		SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
 		return false;
 	}
+	return true;
+}
+
+bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+{
+	// Load the map
+	this->load(identifier);
 
 	if (loadMonsters) {
 		if (!IOMap::loadMonsters(this)) {
@@ -55,6 +61,41 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 	if (loadNpcs) {
 		if (!IOMap::loadNpcs(this)) {
 			SPDLOG_WARN("Failed to load npc spawn data");
+		}
+	}
+
+	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
+	if (g_config.getBoolean(MAP_CUSTOM_ENABLED)) {
+		this->monsterfile.clear();
+		this->housefile.clear();
+		this->npcfile.clear();
+	}
+	return true;
+}
+
+bool Map::loadMapCustom(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+{
+	// Load the map
+	this->load(identifier);
+
+	if (loadMonsters) {
+		if (!IOMap::loadMonstersCustom(this)) {
+			SPDLOG_WARN("Failed to load monster custom data");
+		}
+	}
+
+	if (loadHouses) {
+		if (!IOMap::loadHousesCustom(this)) {
+			SPDLOG_WARN("Failed to load house custom data");
+		}
+
+		IOMapSerialize::loadHouseInfo();
+		IOMapSerialize::loadHouseItems(this);
+	}
+
+	if (loadNpcs) {
+		if (!IOMap::loadNpcsCustom(this)) {
+			SPDLOG_WARN("Failed to load npc custom spawn data");
 		}
 	}
 	return true;

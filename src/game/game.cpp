@@ -282,8 +282,13 @@ void Game::setGameState(GameState_t newState)
 			groups.load();
 			g_chat->load();
 
+			// Load monsters and npcs stored by the "loadFromXML" function
 			map.spawnsMonster.startup();
 			map.spawnsNpc.startup();
+
+			// Load monsters and npcs custom stored by the "loadFromXML" function
+			map.spawnsMonsterCustom.startup();
+			map.spawnsNpcCustom.startup();
 
 			raids.loadFromXml();
 			raids.startup();
@@ -662,6 +667,13 @@ bool Game::loadMainMap(const std::string& filename)
 	Monster::despawnRange = g_config.getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_config.getNumber(DEFAULT_DESPAWNRADIUS);
 	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+}
+
+bool Game::loadCustomMap(const std::string& filename)
+{
+	Monster::despawnRange = g_config.getNumber(DEFAULT_DESPAWNRANGE);
+	Monster::despawnRadius = g_config.getNumber(DEFAULT_DESPAWNRADIUS);
+	return map.loadMapCustom("data/world/custom/" + filename + ".otbm", true, true, true);
 }
 
 void Game::loadMap(const std::string& path)

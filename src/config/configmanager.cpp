@@ -111,7 +111,7 @@ bool ConfigManager::load()
 	if (!loaded) { //info that must be loaded one time (unless we reset the modules involved)
 		boolean[BIND_ONLY_GLOBAL_ADDRESS] = getGlobalBoolean(L, "bindOnlyGlobalAddress", false);
 		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
-		boolean[USE_MAP_CUSTOM] = getGlobalBoolean(L, "useMapCustom", false);
+		boolean[USE_MAP_CUSTOM] = getGlobalBoolean(L, "useMapCustom", true);
 
 		string[IP] = getGlobalString(L, "ip", "127.0.0.1");
 		string[MAP_NAME] = getGlobalString(L, "mapName", "canary");

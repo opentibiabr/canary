@@ -65,7 +65,7 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 	}
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
-	if (g_config.getBoolean(MAP_CUSTOM_ENABLED)) {
+	if (g_config.getBoolean(USE_MAP_CUSTOM)) {
 		this->monsterfile.clear();
 		this->housefile.clear();
 		this->npcfile.clear();

@@ -2747,6 +2747,7 @@ void Game::playerMove(uint32_t playerId, Direction direction)
 
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
+	player->pushEvent(false);
 
 	player->startAutoWalk(std::forward_list<Direction> { direction });
 }

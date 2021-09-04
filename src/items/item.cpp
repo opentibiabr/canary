@@ -2293,7 +2293,7 @@ bool Item::canDecay() const
 
 uint32_t Item::getWorth() const
 {
-	switch (id) {
+	switch (items[id].clientId) {
 		case ITEM_GOLD_COIN:
 			return count;
 

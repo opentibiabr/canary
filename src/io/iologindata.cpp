@@ -617,8 +617,9 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   // Store Inbox
+  const ItemType& itemTypeStoreInbox = Item::items.getItemIdByClientId(ITEM_STORE_INBOX);
   if (!player->inventory[CONST_SLOT_STORE_INBOX]) {
-    player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(ITEM_STORE_INBOX));
+    player->internalAddThing(CONST_SLOT_STORE_INBOX, Item::CreateItem(itemTypeStoreInbox.id));
   }
 
   //load depot items

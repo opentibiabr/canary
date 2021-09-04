@@ -34,7 +34,7 @@ class NpcType
 
 		uint8_t speechBubble;
 
-		uint16_t currencyServerId = ITEM_GOLD_COIN;
+		uint16_t currencyId = ITEM_GOLD_COIN;
 
 		uint32_t yellChance = 0;
 		uint32_t yellSpeedTicks = 0;

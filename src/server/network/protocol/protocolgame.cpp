@@ -3663,9 +3663,10 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 
 	msg.addByte(cid);
 
-	if (container->getID() == ITEM_BROWSEFIELD)
+	const ItemType& itemTypeBag = Item::items.getItemIdByClientId(ITEM_BAG);
+	if (container->getClientID() == ITEM_BROWSEFIELD)
 	{
-		AddItem(msg, ITEM_BAG, 1);
+		AddItem(msg, itemTypeBag.id, 1);
 		msg.addString("Browse Field");
 	}
 	else
@@ -3763,7 +3764,7 @@ void ProtocolGame::sendShop(Npc *npc)
 	NetworkMessage msg;
 	msg.addByte(0x7A);
 	msg.addString(npc->getName());
-	msg.add<uint16_t>(npc->getCurrencyTrading());
+	msg.add<uint16_t>(npc->getCurrency());
 
 	msg.addString(std::string()); // ??
 

@@ -529,7 +529,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 			}
 
 			if (monster->isSummon()) {
-				if (ground->getID() >= ITEM_WALKABLE_SEA_START && ground->getID() <= ITEM_WALKABLE_SEA_END) { 
+				if (ground->getClientID() >= ITEM_WALKABLE_SEA_START && ground->getClientID() <= ITEM_WALKABLE_SEA_END) { 
 					return RETURNVALUE_NOTPOSSIBLE;
 				}
 			}
@@ -641,7 +641,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 				if (creature && creature->getPlayer()) {
 					if (const auto fieldList = getItemList()) {
 						for (Item* findfield : *fieldList) {
-							if (findfield && (findfield->getID() == ITEM_WILDGROWTH_SAFE || findfield->getID() == ITEM_MAGICWALL_SAFE)) {
+							if (findfield && (findfield->getClientID() == ITEM_WILDGROWTH_SAFE || findfield->getClientID() == ITEM_MAGICWALL_SAFE)) {
 								if (!creature->isInGhostMode()) {
 									g_game.internalRemoveItem(findfield, 1);
 								}

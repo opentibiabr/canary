@@ -24,7 +24,7 @@
 
 
 Reward::Reward() :
-	Container(ITEM_REWARD_CONTAINER)
+	Container(Item::items.getItemIdByClientId(ITEM_REWARD_CONTAINER).id)
 {
 	maxSize = 32;
 	unlocked = false;

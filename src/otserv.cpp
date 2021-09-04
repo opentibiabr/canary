@@ -329,7 +329,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	}
 
 	// If "mapCustoEnabled" is true on config.lua, then load the custom map
-	if (g_config.getBoolean(USE_MAP_CUSTOM)) {
+	if (g_config.getBoolean(TOGGLE_MAP_CUSTOM)) {
 		SPDLOG_INFO("Loading custom map...");
 		if (!g_game.loadCustomMap(g_config.getString(MAP_CUSTOM_NAME))) {
 			SPDLOG_ERROR("Failed to load custom map");

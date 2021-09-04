@@ -697,13 +697,14 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 		g_game.addMagicEffect(getPosition(), CONST_ME_POFF);
 	} else {
 		Item* splash;
+		const ItemType& itemTypeFullSplash = Item::items.getItemIdByClientId(ITEM_FULLSPLASH);
 		switch (getRace()) {
 			case RACE_VENOM:
-				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_GREEN);
+				splash = Item::CreateItem(itemTypeFullSplash.id, FLUID_GREEN);
 				break;
 
 			case RACE_BLOOD:
-				splash = Item::CreateItem(ITEM_FULLSPLASH, FLUID_BLOOD);
+				splash = Item::CreateItem(itemTypeFullSplash.id, FLUID_BLOOD);
 				break;
 
 			default:

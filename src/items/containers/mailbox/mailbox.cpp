@@ -104,7 +104,7 @@ bool Mailbox::sendItem(Item* item) const
 	std::string writer;
 	time_t date = time(0);
 	std::string text;
-	if (item && item->getID() == ITEM_LETTER && item->getWriter() != "") {
+	if (item && item->getClientID() == ITEM_LETTER && item->getWriter() != "") {
 		writer = item->getWriter();
 		date = item->getDate();
 		text = item->getText();
@@ -113,7 +113,7 @@ bool Mailbox::sendItem(Item* item) const
 		if (g_game.internalMoveItem(item->getParent(), player->getInbox(), INDEX_WHEREEVER,
                                    item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			Item* newItem = g_game.transformItem(item, item->getID() + 1);
-			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
+			if (newItem && newItem->getClientID() == ITEM_LETTER_STAMPED && writer != "") {
 				newItem->setWriter(writer);
 				newItem->setDate(date);
 				newItem->setText(text);
@@ -130,7 +130,7 @@ bool Mailbox::sendItem(Item* item) const
 		if (item && g_game.internalMoveItem(item->getParent(), tmpPlayer.getInbox(), INDEX_WHEREEVER,
                                    item, item->getItemCount(), nullptr, FLAG_NOLIMIT) == RETURNVALUE_NOERROR) {
 			Item* newItem = g_game.transformItem(item, item->getID() + 1);
-			if (newItem && newItem->getID() == ITEM_LETTER_STAMPED && writer != "") {
+			if (newItem && newItem->getClientID() == ITEM_LETTER_STAMPED && writer != "") {
 				newItem->setWriter(writer);
 				newItem->setDate(date);
 				newItem->setText(text);
@@ -147,7 +147,7 @@ bool Mailbox::getReceiver(Item* item, std::string& name) const
 	const Container* container = item->getContainer();
 	if (container) {
 		for (Item* containerItem : container->getItemList()) {
-			if (containerItem->getID() == ITEM_LABEL && getReceiver(containerItem, name)) {
+			if (containerItem->getClientID() == ITEM_LABEL && getReceiver(containerItem, name)) {
 				return true;
 			}
 		}
@@ -166,5 +166,5 @@ bool Mailbox::getReceiver(Item* item, std::string& name) const
 
 bool Mailbox::canSend(const Item* item)
 {
-	return item->getID() == ITEM_PARCEL || item->getID() == ITEM_LETTER;
+	return item->getClientID() == ITEM_PARCEL || item->getClientID() == ITEM_LETTER;
 }

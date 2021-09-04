@@ -92,12 +92,8 @@ class Npc final : public Creature
 			npcType->info.speechBubble = bubble;
 		}
 
-		uint16_t getCurrencyTrading() const {
-			return Item::items[npcType->info.currencyServerId].clientId;
-		}
-
 		uint16_t getCurrency() const {
-			return npcType->info.currencyServerId;
+			return npcType->info.currencyId;
 		}
 
 		ShopInfoMap getShopItems() {

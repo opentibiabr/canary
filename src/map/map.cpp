@@ -54,8 +54,15 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 			SPDLOG_WARN("Failed to load house data");
 		}
 
-		IOMapSerialize::loadHouseInfo();
-		IOMapSerialize::loadHouseItems(this);
+		/**
+		 * Only load houses items if map custom load is disabled
+		 * If map custom is enabled, then it is load in loadMapCustom function
+		 * NOTE: This will ensure that the information is not duplicated
+		*/
+		if (!g_config.getBoolean(TOGGLE_MAP_CUSTOM)) {
+			IOMapSerialize::loadHouseInfo();
+			IOMapSerialize::loadHouseItems(this);
+		}
 	}
 
 	if (loadNpcs) {
@@ -65,7 +72,7 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 	}
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
-	if (g_config.getBoolean(USE_MAP_CUSTOM)) {
+	if (g_config.getBoolean(TOGGLE_MAP_CUSTOM)) {
 		this->monsterfile.clear();
 		this->housefile.clear();
 		this->npcfile.clear();
@@ -104,25 +111,15 @@ bool Map::loadMapCustom(const std::string& identifier, bool loadHouses, bool loa
 bool Map::save()
 {
 	bool saved = false;
-	for (uint32_t tries = 0; tries < 3; tries++) {
+	for (uint32_t tries = 0; tries < 6; tries++) {
 		if (IOMapSerialize::saveHouseInfo()) {
 			saved = true;
-			break;
+		}
+		if (saved && IOMapSerialize::saveHouseItems()) {
+			return true;
 		}
 	}
-
-	if (!saved) {
-		return false;
-	}
-
-	saved = false;
-	for (uint32_t tries = 0; tries < 3; tries++) {
-		if (IOMapSerialize::saveHouseItems()) {
-			saved = true;
-			break;
-		}
-	}
-	return saved;
+	return false;
 }
 
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const

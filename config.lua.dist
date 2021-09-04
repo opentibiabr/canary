@@ -110,7 +110,7 @@ partyListMaxDistance = 30
 
 -- Custom Map
 -- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
-useMapCustom = false
+toggleMapCustom = false
 mapCustomName = "canary-custom"
 mapCustomAuthor = "OpenTibiaBR"
 

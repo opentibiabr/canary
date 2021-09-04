@@ -27,7 +27,7 @@ extern Game g_game;
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
-	if (getID() == ITEM_GOLD_POUCH) {
+	if (getClientID() == ITEM_GOLD_POUCH) {
 		pagination = true;
 	}
 }
@@ -39,7 +39,7 @@ Container::Container(uint16_t initType, uint16_t initSize, bool initUnlocked /*=
 	pagination(initPagination)
 {}
 
-Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
+Container::Container(Tile* tile) : Container(Item::items.getItemIdByClientId(ITEM_BROWSEFIELD).id, 30, false, true)
 {
 	TileItemVector* itemVector = tile->getItemList();
 	if (itemVector) {
@@ -56,7 +56,7 @@ Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
 
 Container::~Container()
 {
-	if (getID() == ITEM_BROWSEFIELD) {
+	if (getClientID() == ITEM_BROWSEFIELD) {
 		g_game.browseFields.erase(getTile());
 
 		for (Item* item : itemlist) {
@@ -111,7 +111,7 @@ Container* Container::getTopParentContainer() const
 
 bool Container::hasParent() const
 {
-	return getID() != ITEM_BROWSEFIELD && dynamic_cast<const Player*>(getParent()) == nullptr;
+	return getClientID() != ITEM_BROWSEFIELD && dynamic_cast<const Player*>(getParent()) == nullptr;
 }
 
 void Container::addItem(Item* item)
@@ -189,7 +189,7 @@ bool Container::countsToLootAnalyzerBalance()
 		return true;
 	}
 
-	if (getID() == ITEM_REWARD_CONTAINER) {
+	if (getClientID() == ITEM_REWARD_CONTAINER) {
 		return true;
 	}
 

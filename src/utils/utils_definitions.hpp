@@ -559,11 +559,11 @@ enum NameEval_t : uint8_t {
 };
 
 enum item_t : uint16_t {
-	ITEM_BROWSEFIELD = 371, // for internal use
+	ITEM_BROWSEFIELD = 470, // for internal use
 	ITEM_SUPPLY_STASH_INDEX = 1, //for internal use
 	ITEM_DEPOT_NULL = 22796, // for internal use - Actual Item ID: 168
-	TRANSFORM_BOX_ID = 23398, // for internal use
-	ITEM_DOCUMENT_RO = 2834, //read-only
+	ITEM_DECORATION_KIT = 23398, // For internal use (wrap item)
+	ITEM_DOCUMENT_RO = 2834, // Read-only
 
 	ITEM_GOLD_POUCH = 23721,
 
@@ -635,6 +635,7 @@ enum item_t : uint16_t {
 	ITEM_SMALLSPLASH = 2889,
 
 	ITEM_PARCEL = 3503,
+	ITEM_PARCEL_STAMPED = 3504,
 	ITEM_LETTER = 3505,
 	ITEM_LETTER_STAMPED = 3506,
 	ITEM_LABEL = 3507,
@@ -657,6 +658,7 @@ enum item_t : uint16_t {
 	ITEM_KEG_START = 25903, //kegs ids are contiguous in item.otb
 	ITEM_KEG_END = 25914,
 
+	// Walkable sea
 	ITEM_WALKABLE_SEA_START = 629,
 	ITEM_WALKABLE_SEA_END = 634,
 
@@ -664,6 +666,23 @@ enum item_t : uint16_t {
 
 	ITEM_OLD_DIAMOND_ARROW = 25757,
 	ITEM_DIAMOND_ARROW = 35901,
+	ITEM_FILLED_BATH_TUBE = 26077,
+
+	ITEM_SWORD_RING = 2210,
+	ITEM_CLUB_RING = 2212,
+	ITEM_DWARVEN_RING = 2215,
+	ITEM_RING_HEALING = 2216,
+	ITEM_STEALTH_RING = 2202,
+	ITEM_TIME_RING = 2206,
+
+	ITEM_PAIR_SOFT_BOOTS = 6132,
+	ITEM_PAIR_SOFT_BOOTS_ACTIVATED = 2640,
+
+	ITEM_DEATH_RING = 6300,
+	ITEM_DEATH_RING_ACTIVATED = 6301,
+	
+	ITEM_PRISMATIC_RING = 18528,
+	ITEM_PRISMATIC_RING_ACTIVATED = 18408
 };
 
 enum PlayerFlags : uint64_t {

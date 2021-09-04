@@ -283,10 +283,10 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 	if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
 		callback.pushSpecificCreature(this);
 		callback.pushCreature(player);
+		callback.pushNumber(itemType.clientId);
 		callback.pushNumber(amount);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
-		callback.pushNumber(itemType.clientId);
 	}
 
 	if (callback.persistLuaState()) {

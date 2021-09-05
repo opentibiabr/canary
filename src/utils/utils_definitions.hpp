@@ -561,7 +561,7 @@ enum NameEval_t : uint8_t {
 enum item_t : uint16_t {
 	ITEM_BROWSEFIELD = 371, // for internal use
 	ITEM_SUPPLY_STASH_INDEX = 1, //for internal use
-	ITEM_DEPOT_NULL = 168, // for internal use
+	ITEM_DEPOT_NULL = 22796, // for internal use - Actual Item ID: 168
 	TRANSFORM_BOX_ID = 23398, // for internal use
 	ITEM_DOCUMENT_RO = 2834, //read-only
 
@@ -627,7 +627,6 @@ enum item_t : uint16_t {
 	ITEM_MARKET = 12903,
 	ITEM_STORE_INBOX = 23396,
 	ITEM_SUPPLY_STASH = 28750,
-
 
 	ITEM_MALE_CORPSE = 4240,
 	ITEM_FEMALE_CORPSE = 4247,

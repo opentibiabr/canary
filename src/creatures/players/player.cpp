@@ -1179,7 +1179,11 @@ void Player::sendImbuementWindow(Item* item)
 
 void Player::sendMarketEnter(uint32_t depotId)
 {
-	if (client && depotId && this->getLastDepotId() != -1) {
+	if (this->isInMarket() || this->getLastDepotId() == -1 || !depotId) {
+		return;
+	}
+
+	if (client) {
 		client->sendMarketEnter(depotId);
 	}
 }
@@ -1396,6 +1400,7 @@ void Player::onChangeZone(ZoneType_t zone)
 
 	g_game.updateCreatureWalkthrough(this);
 	sendIcons();
+	g_events->eventPlayerOnChangeZone(this, zone);
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone)

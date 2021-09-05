@@ -144,7 +144,7 @@ void loadModules() {
 	// Lua Env
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/global.lua") == 0),
 		"data/global.lua");
-	if (g_config.getBoolean(ConfigManager::RATE_USE_STAGES)) {
+	if (g_config.getBoolean(RATE_USE_STAGES)) {
 		modulesLoadHelper((g_luaEnvironment.loadFile("data/stages.lua") == 0),
 			"data/stages.lua");
 	}

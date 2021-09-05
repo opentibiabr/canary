@@ -244,17 +244,17 @@ void BedItem::regeneratePlayer(Player* player) const
 
 void BedItem::updateAppearance(const Player* player)
 {
-	const ItemType& itemType = Item::items.getItemIdByClientId(id);
-	if (itemType.type == ITEM_TYPE_BED) {
-		if ((player != nullptr) && itemType.transformToOnUse[player->getSex()] != 0) {
-			const ItemType& newType = Item::items.getItemIdByClientId(itemType.transformToOnUse[player->getSex()]);
+	const ItemType& it = Item::items[id];
+	if (it.type == ITEM_TYPE_BED) {
+		if ((player != nullptr) && it.transformToOnUse[player->getSex()] != 0) {
+			const ItemType& newType = Item::items[it.transformToOnUse[player->getSex()]];
 			if (newType.type == ITEM_TYPE_BED) {
-				g_game.transformItem(this, itemType.transformToOnUse[player->getSex()]);
+				g_game.transformItem(this, it.transformToOnUse[player->getSex()]);
 			}
-		} else if (itemType.transformToFree != 0) {
-			const ItemType& newType = Item::items.getItemIdByClientId(itemType.transformToFree);
+		} else if (it.transformToFree != 0) {
+			const ItemType& newType = Item::items[it.transformToFree];
 			if (newType.type == ITEM_TYPE_BED) {
-				g_game.transformItem(this, itemType.transformToFree);
+				g_game.transformItem(this, it.transformToFree);
 			}
 		}
 	}

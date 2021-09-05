@@ -129,7 +129,7 @@ class Game
 
 		Player* getPlayerByAccount(uint32_t acc);
 
-		bool internalPlaceCreature(Creature* creature, const Position& pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
+		bool internalPlaceCreature(Creature* creature, const Position& pos, bool extendedPos = false, bool forced = false);
 
 		bool placeCreature(Creature* creature, const Position& pos, bool extendedPos = false, bool force = false);
 

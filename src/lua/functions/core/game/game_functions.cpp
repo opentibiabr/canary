@@ -430,11 +430,22 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 }
 
 int GameFunctions::luaGameCreateMonster(lua_State* L) {
-	// Game.createMonster(monsterName, position[, extended = false[, force = false]])
+	// Game.createMonster(monsterName, position[, extended = false[, force = false[, master = nil]]])
 	Monster* monster = Monster::createMonster(getString(L, 1));
 	if (!monster) {
 		lua_pushnil(L);
 		return 1;
+	}
+
+	bool isSummon = false;
+	if (lua_gettop(L) >= 5) {
+		Creature* master = getCreature(L, 5);
+		if (master) {
+			monster->setMaster(master);
+			monster->setDropLoot(false);
+			monster->setSkillLoss(false);
+			isSummon = true;
+		}
 	}
 
 	const Position& position = getPosition(L, 2);
@@ -444,7 +455,11 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		pushUserdata<Monster>(L, monster);
 		setMetatable(L, -1, "Monster");
 	} else {
-		delete monster;
+		if (isSummon) {
+			monster->setMaster(nullptr);
+		} else {
+			delete monster;
+		}
 		lua_pushnil(L);
 	}
 	return 1;

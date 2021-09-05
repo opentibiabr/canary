@@ -722,7 +722,7 @@ bool Monster::isTarget(const Creature* creature) const
 
 bool Monster::selectTarget(Creature* creature)
 {
-	if (!isTarget(creature) || returnToMasterInterval > 0) {
+	if (!isTarget(creature)) {
 		return false;
 	}
 
@@ -2119,10 +2119,6 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 
 	if (isSummon()) {
 		if (getMaster() == creature) {
-			int32_t distX = Position::getDistanceX(getPosition(), creature->getPosition());
-			int32_t distY = Position::getDistanceY(getPosition(), creature->getPosition());
-			fpp.absoluteDist = true;
-			fpp.preferDiagonal = !(distX >= 2 && distY == 0 || distY >= 2 && distX == 0);
 			fpp.maxTargetDist = 2;
 			fpp.fullPathSearch = true;
 		} else if (targetDistance <= 1) {

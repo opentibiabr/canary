@@ -97,8 +97,8 @@ int GameFunctions::luaGamegetEventSExp(lua_State* L) {
 
 int GameFunctions::luaGamegetEventSSpawnRate(lua_State* L)
 {
-	// Game.getEventSSpawnRate()
-	lua_pushnumber(L, g_game.getSpawnSchedule());
+	// Game.getEventMonsterSpawnRate()
+	lua_pushnumber(L, g_game.getSpawnMonsterSchedule());
 	return 1;
 }
 

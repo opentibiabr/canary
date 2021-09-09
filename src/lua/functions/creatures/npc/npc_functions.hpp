@@ -55,6 +55,8 @@ class NpcFunctions final : LuaScriptInterface {
 				registerMethod(L, "Npc", "follow", NpcFunctions::luaNpcFollow);
 				registerMethod(L, "Npc", "sellItem", NpcFunctions::luaNpcSellItem);
 
+				registerMethod(L, "Npc", "getDistanceTo", NpcFunctions::luaNpcGetDistanceTo);
+
 				NpcTypeFunctions::init(L);
 			}
 
@@ -86,6 +88,8 @@ class NpcFunctions final : LuaScriptInterface {
 			static int luaNpcTurn(lua_State* L);
 			static int luaNpcFollow(lua_State* L);
 			static int luaNpcSellItem(lua_State* L);
+
+			static int luaNpcGetDistanceTo(lua_State* L);
 
 			friend class CreatureFunctions;
 };

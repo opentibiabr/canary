@@ -523,3 +523,32 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 	lua_pushnumber(L, sellCount);
 	return 1;
 }
+
+int NpcFunctions::luaNpcGetDistanceTo(lua_State* L)
+{
+	//npc:getDistanceTo(uid)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	Thing* thing = getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1));
+	pushBoolean(L, thing && thing->isPushable());
+	if (!thing) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_THING_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const Position& thingPos = thing->getPosition();
+	const Position& npcPos = npc->getPosition();
+	if (npcPos.z != thingPos.z) {
+		lua_pushnumber(L, -1);
+	} else {
+		int32_t dist = std::max<int32_t>(Position::getDistanceX(npcPos, thingPos), Position::getDistanceY(npcPos, thingPos));
+		lua_pushnumber(L, dist);
+	}
+	return 1;
+}

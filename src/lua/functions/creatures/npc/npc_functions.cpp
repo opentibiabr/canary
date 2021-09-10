@@ -376,6 +376,26 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	return 1;
 }
 
+int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
+	//npc:isMerchant()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	ShopInfoMap shopItems = npc->getShopItems();
+
+	if (shopItems.empty()) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
 int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	//npc:getShopItem(clientId)
 	Npc* npc = getUserdata<Npc>(L, 1);

@@ -363,14 +363,18 @@ class Player final : public Creature, public Cylinder
 			return party;
 		}
 
-		uint32_t getReflectPercent(CombatType_t combatType) const override;
-		uint32_t getReflectFlat(CombatType_t combatType) const override;
+		uint32_t getReflectPercent(CombatType_t combatType) const override {
+			return reflectPercent[combatTypeToIndex(combatType)];
+		}
+		uint32_t getReflectFlat(CombatType_t combatType) const override {
+			return reflectFlat[combatTypeToIndex(combatType)];
+		}
 
 		void setReflectPercent(CombatType_t combatType, int32_t value) {
-			this->reflectMapPercent[combatType] += value;
+			this->reflectPercent[combatTypeToIndex(combatType)] = std::max(0, this->reflectPercent[combatTypeToIndex(combatType)] + value);
 		}
 		void setReflectFlat(CombatType_t combatType, int32_t value) {
-			this->reflectMapFlat[combatType] += value;
+			this->reflectFlat[combatTypeToIndex(combatType)] = std::max(0, this->reflectFlat[combatTypeToIndex(combatType)] + value);
 		}
 
 		uint16_t getCleavePercent() const {

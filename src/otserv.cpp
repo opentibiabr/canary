@@ -167,11 +167,11 @@ void loadModules() {
 		"data/stages.lua");
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/startup/startup.lua") == 0),
 		"data/startup/startup.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile("data/npclib/load.lua") == 0),
+		"data/npclib/load.lua");
 
 	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
-	modulesLoadHelper(g_scripts->loadScripts("npclib", true, false),
-		"data/npclib");
 	modulesLoadHelper(g_vocations.loadFromXml(),
 		"data/XML/vocations.xml");
 	modulesLoadHelper(g_game.loadScheduleEventFromXml(),

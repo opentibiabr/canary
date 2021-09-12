@@ -33,6 +33,7 @@
 #include "io/iologindata.h"
 #include "io/iomarket.h"
 #include "items/items.h"
+#include "lua/scripts/lua_environment.hpp"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
 #include "game/scheduling/scheduler.h"
@@ -64,6 +65,7 @@ extern Weapons* g_weapons;
 extern Scripts* g_scripts;
 extern Modules* g_modules;
 extern Imbuements* g_imbuements;
+extern LuaEnvironment g_luaEnvironment;
 
 Game::Game()
 {
@@ -8693,7 +8695,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_NPCS: {
 			g_npcs.reset();
 			g_scripts->loadScripts("npclua", false, true);
-			g_scripts->loadScripts("npclib", true, false);
+			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();

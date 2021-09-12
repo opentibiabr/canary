@@ -3,7 +3,7 @@ local travelDiscounts = {
 	['postman'] = {price = 10, storage = Storage.Quest.ExampleQuest, value = 1}
 }
 
-function StdModule.travelDiscount(player, discounts)
+function StdModule.travelDiscount(npc, player, discounts)
 	local discountPrice, discount = 0
 	if type(discounts) == 'string' then
 		discount = travelDiscounts[discounts]
@@ -22,55 +22,55 @@ function StdModule.travelDiscount(player, discounts)
 	return discountPrice
 end
 
-function StdModule.kick(cid, message, keywords, parameters, node)
+function StdModule.kick(npc, player, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 	if npcHandler == nil then
 		Spdlog.error("StdModule.travel called without any npcHandler instance.")
 	end
 
-	if not npcHandler:isFocused(cid) then
+	if not npcHandler:checkInteraction(npc, player) then
 		return false
 	end
 
-	npcHandler:releaseFocus(cid)
-	npcHandler:say(parameters.text or "Off with you!", cid)
+	npcHandler:removeInteraction(npc, creature)
+	npcHandler:say(parameters.text or "Off with you!", npc, player)
 
 	local destination = parameters.destination
 	if type(destination) == 'table' then
 		destination = destination[math.random(#destination)]
 	end
 
-	Player(cid):teleportTo(destination, true)
+	Player(player):teleportTo(destination, true)
 
-	npcHandler:resetNpc(cid)
+	npcHandler:resetNpc(player)
 	return true
 end
 
 local GreetModule = {}
-function GreetModule.greet(npc, cid, message, keywords, parameters)
-	if not parameters.npcHandler:isInRange(cid) then
+function GreetModule.greet(npc, player, message, keywords, parameters)
+	if not parameters.npcHandler:isInRange(player) then
 		return true
 	end
 
-	if parameters.npcHandler:isFocused(cid) then
+	if parameters.npcHandler:checkInteraction(player) then
 		return true
 	end
 
-	local parseInfo = { [TAG_PLAYERNAME] = Player(cid):getName() }
-	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), cid, true)
-	parameters.npcHandler:addFocus(npc, cid)
+	local parseInfo = { [TAG_PLAYERNAME] = Player(player):getName() }
+	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), npc, player)
+	parameters.npcHandler:setInteraction(npc, player)
 	return true
 end
 
-function GreetModule.farewell(cid, message, keywords, parameters)
-	if not parameters.npcHandler:isFocused(cid) then
+function GreetModule.farewell(npc, player, message, keywords, parameters)
+	if not parameters.npcHandler:checkInteraction(npc, player) then
 		return false
 	end
 
-	local parseInfo = { [TAG_PLAYERNAME] = Player(cid):getName() }
-	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), cid, true)
-	parameters.npcHandler:resetNpc(cid)
-	parameters.npcHandler:releaseFocus(cid)
+	local parseInfo = { [TAG_PLAYERNAME] = Player(player):getName() }
+	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), npc, player)
+	parameters.npcHandler:resetNpc(player)
+	parameters.npcHandler:removeInteraction(npc, player)
 	return true
 end
 
@@ -154,19 +154,19 @@ local hints = {
 	[28] = 'There is nothing more I can tell you. If you are still in need of some {hints}, I can repeat them for you.'
 }
 
-function StdModule.rookgaardHints(cid, message, keywords, parameters, node)
+function StdModule.rookgaardHints(npc, player, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 	if npcHandler == nil then
 		error("StdModule.say called without any npcHandler instance.")
 	end
 
-	if not npcHandler:isFocused(cid) then
+	if not npcHandler:checkInteraction(npc, player) then
 		return false
 	end
 
-	local player = Player(cid)
+	local player = Player(player)
 	local hintId = player:getStorageValue(Storage.RookgaardHints)
-	npcHandler:say(hints[hintId], cid)
+	npcHandler:say(hints[hintId], player)
 	if hintId >= #hints then
 		player:setStorageValue(Storage.RookgaardHints, -1)
 	else

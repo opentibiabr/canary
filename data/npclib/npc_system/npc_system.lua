@@ -2,11 +2,6 @@
 npcs_loaded_travel = {}
 
 if NpcSystem == nil then
-	-- Loads the underlying classes of the npcsystem.
-	dofile('data/npclib/npc_system/keyword_handler.lua')
-	dofile('data/npclib/npc_system/npc_handler.lua')
-	dofile('data/npclib/npc_system/modules.lua')
-
 	-- Global npc constants:
 
 	-- Greeting and unGreeting keywords. For more information look at the top of modules.lua

@@ -1,22 +1,15 @@
--- Including the Advanced NPC System
-dofile('data/npclib/npc_system/npc_system.lua')
-dofile('data/npclib/npc_system/custom_modules.lua')
-
 isPlayerPremiumCallback = Player.isPremium
 
 -- Function called with by the function "Npc:sayWithDelay"
-local sayFunction = function(npc, text, type, e, pcid)
+local sayFunction = function(npc, text, type, e, player)
 	local npc = Npc(npc)
 	if not npc then
-		Spdlog.error("[local func = function(cid, text, type, e, pcid)] - Creature not is valid")
+		Spdlog.error("[local func = function(npc, text, type, e, player)] - Npc not is valid")
 		return
 	end
 
-	local player = Player(pcid)
-	if player:isPlayer() then
-		npc:say(text, type, false, pcid, npc:getPosition())
-		e.done = true
-	end
+	npc:say(text, type, false, player, npc:getPosition())
+	e.done = true
 end
 
 function msgcontains(message, keyword)
@@ -25,14 +18,13 @@ function msgcontains(message, keyword)
 		return true
 	end
 
-	return lowerMessage:find(lowerKeyword) and not lowerMessage:find('(%w+)' .. lowerKeyword)
+	return string.find(lowerMessage, lowerKeyword) and string.find(lowerMessage, lowerKeyword.. '(%w+)')
 end
 
-function Npc:sellItem(cid, itemId, amount, subType, ignoreCap, inBackpacks, backpack)
+function Npc:sellItem(player, itemId, amount, subType, ignoreCap, inBackpacks, backpack)
 	local localAmount = amount or 1
 	local localSubType = subType or 0
 	local item = 0
-	local player = Player(cid)
 
 	if ItemType(itemId):isStackable() then
 		local stuff
@@ -79,27 +71,25 @@ end
 
 -- Npc talk
 -- npc:talk({text, text2}) or npc:talk(text)
-function Npc:talk(creature, text)
+function Npc:talk(player, text)
 	if type(text) == "table" then
 		for i = 0, #text do
-			self:sendMessage(creature, text[i])
+			self:sendMessage(player, text[i])
 		end
 	else
-		self:sendMessage(creature, text)
+		self:sendMessage(player, text)
 	end
 end
 
 -- Npc send message to player
 -- npc:sendMessage(text)
-function Npc:sendMessage(creature, text)
-	return self:say(string.format(text or "", creature:getName()), TALKTYPE_PRIVATE_NP, true, creature)
+function Npc:sendMessage(player, text)
+	return self:say(string.format(text or "", player:getName()), TALKTYPE_PRIVATE_NP, true, player)
 end
 
-function Npc:sayWithDelay(npc, text, messageType, delay, e, pcid)
-	if Player(pcid):isPlayer() then
-		e.done = false
-		e.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npc, text, messageType, e, pcid)
-	end
+function Npc:sayWithDelay(npc, text, messageType, delay, e, player)
+	e.done = false
+	e.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npc, text, messageType, e, player)
 end
 
 function getCount(string)

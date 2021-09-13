@@ -66,12 +66,14 @@ Player::~Player()
 	for (Item* item : inventory) {
 		if (item) {
 			item->setParent(nullptr);
+			item->stopDecaying();
 			item->decrementReferenceCounter();
 		}
 	}
 
 	for (const auto& it : depotLockerMap) {
 		it.second->removeInbox(inbox);
+		it.second->stopDecaying();
 		it.second->decrementReferenceCounter();
 	}
 
@@ -83,6 +85,7 @@ Player::~Player()
 		it.second->decrementReferenceCounter();
 	}
 
+	inbox->stopDecaying();
 	inbox->decrementReferenceCounter();
 
 	setWriteItem(nullptr);
@@ -3563,6 +3566,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 					for (const auto& it : depotChests) {
 						if (it.second == depotChest) {
 							isOwner = true;
+							it.second->stopDecaying();
 							onSendContainer(container);
 						}
 					}

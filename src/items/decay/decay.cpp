@@ -55,6 +55,19 @@ void Decay::stopDecay(Item* item, int64_t timestamp)
 		std::vector<Item*>& decayItems = it->second;
 
 		size_t i = 0, end = decayItems.size();
+		if (end == 1) {
+			if (item == decayItems[i]) {
+				if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+					//Incase we removed duration attribute don't assign new duration
+					item->setDuration(item->getDuration());
+				}
+				item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
+				g_game.ReleaseItem(item);
+
+				decayMap.erase(it);
+			}
+			return;
+		}
 		while (i < end) {
 			if (item == decayItems[i]) {
 				if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {

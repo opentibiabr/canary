@@ -777,8 +777,17 @@ void Container::internalAddThing(uint32_t, Thing* thing)
 
 void Container::startDecaying()
 {
+	g_game.startDecay(this);
 	for (Item* item : itemlist) {
 		item->startDecaying();
+	}
+}
+
+void Container::stopDecaying()
+{
+	g_game.startDecay(this);
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		g_game.stopDecay(*it);
 	}
 }
 
@@ -793,13 +802,6 @@ uint16_t Container::getFreeSlots() const
 	}
 
 	return counter;
-}
-
-void Container::stopDecaying()
-{
-	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_game.stopDecay(*it);
-	}
 }
 
 ContainerIterator Container::iterator() const

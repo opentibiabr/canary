@@ -284,7 +284,8 @@ void Item::setID(uint16_t newid)
 	uint32_t newDuration = it.decayTime * 1000;
 
 	if (newDuration == 0 && !it.stopTime && it.decayTo < 0) {
-		removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
+		//We'll get called startDecay anyway so let's schedule it
+		setDecaying(DECAYING_STOPPING);
 		removeAttribute(ITEM_ATTRIBUTE_DURATION);
 	}
 
@@ -293,8 +294,16 @@ void Item::setID(uint16_t newid)
 	}
 
 	if (newDuration > 0 && (!prevIt.stopTime || !hasAttribute(ITEM_ATTRIBUTE_DURATION))) {
-		setDecaying(DECAYING_FALSE);
+		setDecaying(DECAYING_PENDING);
 		setDuration(newDuration);
+	}
+}
+
+void Item::setParent(Cylinder* cylinder)
+{
+	parent = cylinder;
+	if (!parent) {
+		g_game.stopDecay(this);
 	}
 }
 
@@ -492,7 +501,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setDuration(std::max<int32_t>(0, duration));
+			setDuration(duration);
 			break;
 		}
 
@@ -794,7 +803,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 
 	if (hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 		propWriteStream.write<uint8_t>(ATTR_DURATION);
-		propWriteStream.write<uint32_t>(getIntAttr(ITEM_ATTRIBUTE_DURATION));
+		propWriteStream.write<int32_t>(getDuration());
 	}
 
 	ItemDecayState_t decayState = getDecaying();

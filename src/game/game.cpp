@@ -47,6 +47,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
+#include "decay/decay.h"
 
 extern ConfigManager g_config;
 extern Actions* g_actions;
@@ -162,7 +163,6 @@ void Game::start(ServiceManager* manager)
 
 	g_scheduler.addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
-	g_scheduler.addEvent(createSchedulerTask(EVENT_DECAYINTERVAL, std::bind(&Game::checkDecay, this)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
 }
 
@@ -1965,9 +1965,6 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 
 		if (item->isRemoved()) {
 			item->onRemoved();
-			if (item->canDecay()) {
-				decayItems->remove(item);
-			}
 			ReleaseItem(item);
 		}
 
@@ -6419,21 +6416,37 @@ void Game::addDistanceEffect(const SpectatorHashSet& spectators, const Position&
 
 void Game::startDecay(Item* item)
 {
-	if (!item || !item->canDecay()) {
+	if (!item) {
 		return;
 	}
 
 	ItemDecayState_t decayState = item->getDecaying();
-	if (decayState == DECAYING_TRUE) {
+	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
+		stopDecay(item);
 		return;
 	}
 
-	if (item->getDuration() > 0) {
-		item->incrementReferenceCounter();
-		item->setDecaying(DECAYING_TRUE);
-		toDecayItems.push_front(item);
+	if (!item->canDecay() || decayState == DECAYING_TRUE) {
+		return;
+	}
+
+	int32_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
+	if (duration > 0) {
+		g_decay.startDecay(item, duration);
 	} else {
 		internalDecayItem(item);
+	}
+}
+
+void Game::stopDecay(Item* item)
+{
+	if (item->hasAttribute(ITEM_ATTRIBUTE_DECAYSTATE)) {
+		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
+			g_decay.stopDecay(item, item->getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP));
+			item->removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+		} else {
+			item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
+		}
 	}
 }
 
@@ -6486,50 +6499,6 @@ void Game::internalDecayItem(Item* item)
                          static_cast<uint32_t>(ret), item->getID());
 		}
 	}
-}
-
-void Game::checkDecay()
-{
-	g_scheduler.addEvent(createSchedulerTask(EVENT_DECAYINTERVAL, std::bind(&Game::checkDecay, this)));
-
-	size_t bucket = (lastBucket + 1) % EVENT_DECAY_BUCKETS;
-
-	auto it = decayItems[bucket].begin(), end = decayItems[bucket].end();
-	while (it != end) {
-		Item* item = *it;
-		if (!item->canDecay()) {
-			item->setDecaying(DECAYING_FALSE);
-			ReleaseItem(item);
-			it = decayItems[bucket].erase(it);
-			continue;
-		}
-
-		int32_t duration = item->getDuration();
-		int32_t decreaseTime = std::min<int32_t>(EVENT_DECAYINTERVAL * EVENT_DECAY_BUCKETS, duration);
-
-		duration -= decreaseTime;
-		item->decreaseDuration(decreaseTime);
-
-		if (duration <= 0) {
-			it = decayItems[bucket].erase(it);
-			internalDecayItem(item);
-			ReleaseItem(item);
-		} else if (duration < EVENT_DECAYINTERVAL * EVENT_DECAY_BUCKETS) {
-			it = decayItems[bucket].erase(it);
-			size_t newBucket = (bucket + ((duration + EVENT_DECAYINTERVAL / 2) / 1000)) % EVENT_DECAY_BUCKETS;
-			if (newBucket == bucket) {
-				internalDecayItem(item);
-				ReleaseItem(item);
-			} else {
-				decayItems[newBucket].push_back(item);
-			}
-		} else {
-			++it;
-		}
-	}
-
-	lastBucket = bucket;
-	cleanup();
 }
 
 void Game::checkImbuements()
@@ -6722,16 +6691,6 @@ void Game::cleanup()
 		item->decrementReferenceCounter();
 	}
 	ToReleaseItems.clear();
-
-	for (Item* item : toDecayItems) {
-		const uint32_t dur = item->getDuration();
-		if (dur >= EVENT_DECAYINTERVAL * EVENT_DECAY_BUCKETS) {
-			decayItems[lastBucket].push_back(item);
-		} else {
-			decayItems[(lastBucket + 1 + dur / 1000) % EVENT_DECAY_BUCKETS].push_back(item);
-		}
-	}
-	toDecayItems.clear();
 
 	for (Item* item : toImbuedItems) {
 		imbuedItems[lastImbuedBucket].push_back(item);

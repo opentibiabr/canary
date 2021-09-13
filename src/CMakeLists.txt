@@ -130,6 +130,7 @@ target_sources(${PROJECT_NAME}
     database/database.cpp
     database/databasemanager.cpp
     database/databasetasks.cpp
+    decay/decay.cpp
     game/game.cpp
     game/gamestore.cpp
     game/movement/position.cpp

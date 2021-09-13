@@ -507,6 +507,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, ITEM_ATTRIBUTE_SPECIAL)
 			registerEnum(L, ITEM_ATTRIBUTE_OPENCONTAINER)
 			registerEnum(L, ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)
+			registerEnum(L, ITEM_ATTRIBUTE_DURATION_TIMESTAMP)
 
 			registerEnum(L, ITEM_TYPE_DEPOT)
 			registerEnum(L, ITEM_TYPE_REWARDCHEST)

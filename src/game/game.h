@@ -45,8 +45,6 @@ class CombatInfo;
 class Charm;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
-static constexpr int32_t EVENT_DECAYINTERVAL = 250;
-static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 static constexpr int32_t EVENT_IMBUEMENTINTERVAL = 250;
 static constexpr int32_t EVENT_IMBUEMENT_BUCKETS = 4;
 
@@ -403,6 +401,9 @@ class Game
 		}
 
 		void startDecay(Item* item);
+		void stopDecay(Item* item);
+		void internalDecayItem(Item* item);
+
 		int32_t getLightHour() const {
 			return lightHour;
 		}
@@ -526,16 +527,12 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
-		void checkDecay();
-		void internalDecayItem(Item* item);
-
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
 
-		std::list<Item*> decayItems[EVENT_DECAY_BUCKETS];
 		std::list<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 
 		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];

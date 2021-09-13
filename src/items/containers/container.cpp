@@ -795,6 +795,13 @@ uint16_t Container::getFreeSlots() const
 	return counter;
 }
 
+void Container::stopDecaying()
+{
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		g_game.stopDecay(*it);
+	}
+}
+
 ContainerIterator Container::iterator() const
 {
 	ContainerIterator cit;

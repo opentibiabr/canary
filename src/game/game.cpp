@@ -47,7 +47,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
-#include "decay/decay.h"
+#include "items/decay/decay.h"
 
 extern ConfigManager g_config;
 extern Actions* g_actions;
@@ -1767,6 +1767,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		}
 
 		if (item->isRemoved()) {
+			item->stopDecaying();
 			ReleaseItem(item);
 		}
 	}
@@ -1972,6 +1973,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 
 		if (item->isRemoved()) {
 			item->onRemoved();
+			item->stopDecaying();
 			ReleaseItem(item);
 		}
 
@@ -2225,6 +2227,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 		Cylinder* newParent = item->getParent();
 		if (newParent == nullptr) {
+			item->stopDecaying();
 			ReleaseItem(item);
 			return nullptr;
 		}
@@ -2260,6 +2263,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 					item->setParent(nullptr);
 					cylinder->postRemoveNotification(item, cylinder, itemIndex);
+					item->stopDecaying();
 					ReleaseItem(item);
 					return newItem;
 				} else {
@@ -2315,6 +2319,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 	item->setParent(nullptr);
 	cylinder->postRemoveNotification(item, cylinder, itemIndex);
+	item->stopDecaying();
 	ReleaseItem(item);
 
 	if (newItem->getDuration() > 0) {

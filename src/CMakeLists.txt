@@ -130,7 +130,6 @@ target_sources(${PROJECT_NAME}
     database/database.cpp
     database/databasemanager.cpp
     database/databasetasks.cpp
-    decay/decay.cpp
     game/game.cpp
     game/gamestore.cpp
     game/movement/position.cpp
@@ -153,6 +152,7 @@ target_sources(${PROJECT_NAME}
     items/containers/rewards/reward.cpp
     items/containers/rewards/rewardchest.cpp
     items/cylinder.cpp
+    items/decay/decay.cpp
     items/item.cpp
     items/items.cpp
     items/thing.cpp

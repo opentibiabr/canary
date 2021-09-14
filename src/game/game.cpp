@@ -5199,11 +5199,15 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir)
 	}
 	creature->setDirection(dir);
 
-	//send to client
+	// Send to client
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendCreatureTurn(creature);
+		Player* tmpPlayer = spectator->getPlayer();
+		if(!tmpPlayer) {
+			continue;
+		}
+		tmpPlayer->sendCreatureTurn(creature);
 	}
 	return true;
 }
@@ -7386,27 +7390,24 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId)
 		return;
 	}
 
-	Creature* creature = getCreatureByID(npcId);
-	if (!creature) {
+	Npc* npc = getNpcByID(npcId);
+	if (!npc) {
 		return;
 	}
 
-	Npc* npc = creature->getNpc();
-	if(npc) {
-		SpectatorHashSet spectators;
-		spectators.insert(npc);
-		map.getSpectators(spectators, player->getPosition(), true, true);
-		internalCreatureSay(player, TALKTYPE_SAY, "Hi", false, &spectators);
-		spectators.clear();
-		spectators.insert(npc);
-		if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
-			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Trade", false, &spectators);
-		} else {
-			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Sail", false, &spectators);
-        }
-
-		return;
+	SpectatorHashSet spectators;
+	spectators.insert(npc);
+	map.getSpectators(spectators, player->getPosition(), true, true);
+	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
+	spectators.clear();
+	spectators.insert(npc);
+	if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &spectators);
+	} else {
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &spectators);
 	}
+
+	return;
 }
 
 void Game::playerLeaveMarket(uint32_t playerId)

@@ -202,8 +202,12 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 	return 1;
 }
 
+/**
+ * @param creature, Is the creature that the npc will focus on
+ * @param true, If true, force stop walk, if @param false, do not force stop walk
+ */
 int NpcFunctions::luaNpcTurnToCreature(lua_State* L) {
-	// npc:turnToCreature(creature)
+	// npc:turnToCreature(creature, true)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	Creature* creature = getCreature(L, 2);
 
@@ -219,6 +223,10 @@ int NpcFunctions::luaNpcTurnToCreature(lua_State* L) {
 		return 1;
 	}
 
+	bool stopEventWalk = getBoolean(L, 3, true);
+	if (stopEventWalk) {
+		npc->stopEventWalk();
+	}
 	npc->turnToCreature(creature);
 	pushBoolean(L, true);
 	return 1;

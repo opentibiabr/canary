@@ -295,6 +295,10 @@ do
 			self:eventType(NPCS_EVENT_PLAYER_CHECK_ITEM)
 			self:onPlayerCheckItem(value)
 			return
+		elseif key == "onPlayerCloseChannel" then
+			self:eventType(NPCS_EVENT_PLAYER_CLOSE_CHANNEL)
+			self:onPlayerBuyItem(value)
+			return
 		end
 		rawset(self, key, value)
 	end

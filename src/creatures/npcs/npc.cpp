@@ -316,6 +316,28 @@ void Npc::onPlayerCheckItem(Player* player, uint16_t serverId,
 	}
 }
 
+void Npc::onPlayerCloseChannel(Creature* creature)
+{
+	Player* player = creature->getPlayer();
+	if (!player) {
+		return;
+	}
+
+	// onPlayerCloseChannel(npc, player)
+	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
+	if (callback.startScriptInterface(npcType->info.playerCloseChannel)) {
+		callback.pushSpecificCreature(this);
+		callback.pushCreature(player);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+
+	player->closeShopWindow(true);
+	this->removePlayerInteraction(player->getID());
+}
+
 void Npc::onThinkYell(uint32_t interval)
 {
 	if (npcType->info.yellSpeedTicks == 0) {
@@ -474,9 +496,4 @@ void Npc::closeAllShopWindows()
 		}
 	}
 	shopPlayerSet.clear();
-}
-
-void Npc::onPlayerCloseChannel(Player* player)
-{
-	player->closeShopWindow(true);
 }

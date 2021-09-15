@@ -46,6 +46,7 @@ class NpcType
 		int32_t creatureMoveEvent = -1;
 		int32_t creatureSayEvent = -1;
 		int32_t thinkEvent = -1;
+		int32_t playerCloseChannel = -1;
 		int32_t playerBuyEvent = -1;
 		int32_t playerSellEvent = -1;
 		int32_t playerLookEvent = -1;

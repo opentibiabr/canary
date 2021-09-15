@@ -404,7 +404,7 @@ if NpcHandler == nil then
 		local callback = self:getCallback(CALLBACK_PLAYER_CLOSECHANNEL)
 		if callback == nil or callback(npc, player) then
 			if self:processModuleCallback(CALLBACK_PLAYER_CLOSECHANNEL, player, msgtype, msg) then
-				self:unGreet(npc, player)
+				self:onWalkAway(npc, player)
 			end
 		end
 	end
@@ -465,7 +465,7 @@ if NpcHandler == nil then
 					if not self:isInRange(npc, player) then
 						self:onWalkAway(npc, player)
 					else
-						npc:turnToCreature(player)
+						self:updateInteraction(player)
 					end
 				end
 			end

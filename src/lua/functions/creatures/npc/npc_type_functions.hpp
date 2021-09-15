@@ -55,6 +55,7 @@ class NpcTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "NpcType", "onDisappear", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onMove", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onSay", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+			registerMethod(L, "NpcType", "onPlayerCloseChannel", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onPlayerBuyItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onPlayerSellItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onPlayerCheckItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);

@@ -119,5 +119,10 @@ npcType.onSay = function(npc, creature, type, message)
 	npcHandler:onCreatureSay(npc, creature, type, message)
 end
 
+-- onPlayerCloseChannel
+npcType.onPlayerCloseChannel = function(npc, player)
+	npcHandler:onPlayerCloseChannel(npc, player)
+end
+
 -- Register npc
 npcType:register(npcConfig)

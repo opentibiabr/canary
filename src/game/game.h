@@ -460,8 +460,6 @@ class Game
 		Raids raids;
 		GameStore gameStore;
 
-		std::forward_list<Item*> toDecayItems;
-
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
 		}

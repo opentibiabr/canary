@@ -1842,7 +1842,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		if (moveItem->getDecaying() != DECAYING_TRUE) {
 			moveItem->incrementReferenceCounter();
 			moveItem->setDecaying(DECAYING_TRUE);
-			g_game.toDecayItems.push_front(moveItem);
+			toDecayItems.push_back(moveItem);
 		}
 	}
 
@@ -1934,7 +1934,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 	if (item->getDuration() > 0) {
 		item->incrementReferenceCounter();
 		item->setDecaying(DECAYING_TRUE);
-		g_game.toDecayItems.push_front(item);
+		toDecayItems.push_back(item);
 	}
 
   Item* quiver = toCylinder->getItem();
@@ -2328,7 +2328,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 		if (newItem->getDecaying() != DECAYING_TRUE) {
 			newItem->incrementReferenceCounter();
 			newItem->setDecaying(DECAYING_TRUE);
-			g_game.toDecayItems.push_front(newItem);
+			toDecayItems.push_back(newItem);
 		}
 	}
 

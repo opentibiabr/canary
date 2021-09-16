@@ -1835,7 +1835,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		if (moveItem->getDecaying() != DECAYING_TRUE) {
 			moveItem->incrementReferenceCounter();
 			moveItem->setDecaying(DECAYING_TRUE);
-			g_game.toDecayItems.push_front(moveItem);
+			toDecayItems.push_back(moveItem);
 		}
 	}
 
@@ -1927,7 +1927,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 	if (item->getDuration() > 0) {
 		item->incrementReferenceCounter();
 		item->setDecaying(DECAYING_TRUE);
-		g_game.toDecayItems.push_front(item);
+		toDecayItems.push_back(item);
 	}
 
   Item* quiver = toCylinder->getItem();
@@ -2321,7 +2321,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 		if (newItem->getDecaying() != DECAYING_TRUE) {
 			newItem->incrementReferenceCounter();
 			newItem->setDecaying(DECAYING_TRUE);
-			g_game.toDecayItems.push_front(newItem);
+			toDecayItems.push_back(newItem);
 		}
 	}
 
@@ -5308,9 +5308,9 @@ void Game::checkCreatures(size_t index)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this, (index + 1) % EVENT_CREATURECOUNT)));
 
 	auto& checkCreatureList = checkCreatureLists[index];
-	auto it = checkCreatureList.begin(), end = checkCreatureList.end();
-	while (it != end) {
-		Creature* creature = *it;
+	size_t it = 0, end = checkCreatureList.size();
+	while (it < end) {
+		Creature* creature = checkCreatureList[it];
 		if (creature->creatureCheck) {
 			if (creature->getHealth() > 0) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
@@ -5320,8 +5320,11 @@ void Game::checkCreatures(size_t index)
 			++it;
 		} else {
 			creature->inCheckCreaturesVector = false;
-			it = checkCreatureList.erase(it);
 			ReleaseCreature(creature);
+
+			std::swap(checkCreatureList[it], checkCreatureList.back());
+			checkCreatureList.pop_back();
+			--end;
 		}
 	}
 

@@ -460,8 +460,6 @@ class Game
 		Raids raids;
 		GameStore gameStore;
 
-		std::forward_list<Item*> toDecayItems;
-
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
 		}
@@ -533,7 +531,9 @@ class Game
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
 
-		std::list<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
+		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
+
+		std::vector<Item*> toDecayItems;
 
 		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];
 

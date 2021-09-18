@@ -7406,8 +7406,6 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId)
 	} else {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &spectators);
 	}
-
-	return;
 }
 
 void Game::playerLeaveMarket(uint32_t playerId)

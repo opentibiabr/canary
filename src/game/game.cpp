@@ -2747,6 +2747,7 @@ void Game::playerMove(uint32_t playerId, Direction direction)
 
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
+	player->cancelPush();
 
 	player->startAutoWalk(std::forward_list<Direction> { direction });
 }
@@ -5074,7 +5075,9 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& 
 
 	result = g_spells->playerSaySpell(player, words);
 	if (result == TALKACTION_BREAK) {
-		player->cancelPush();
+		if (!g_config.getBoolean(PUSH_WHEN_ATTACKING)) {
+			player->cancelPush();
+		}
 
 		if (!g_config.getBoolean(EMOTE_SPELLS)) {
 			return internalCreatureSay(player, TALKTYPE_SPELL_USE, words, false);

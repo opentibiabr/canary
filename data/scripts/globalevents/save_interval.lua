@@ -16,7 +16,8 @@ local save = GlobalEvent("save")
 function save.onTime(interval)
         local remaningTime = 60 * 1000
         if configManager.getBoolean(configKeys.SAVE_INTERVAL) then
-        local message = "The server will save all accounts within " .. (remaningTime/1000) .." seconds. You might lag or freeze for 5 seconds, please find a safe place.", MESSAGE_STATUS_WARNING
+        local message = "The server will save all accounts within " .. (remaningTime/1000) .." seconds. \z
+                         You might lag or freeze for 5 seconds, please find a safe place.", MESSAGE_STATUS_WARNING
         Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
         addEvent(serverSave, remaningTime, interval)
         return true

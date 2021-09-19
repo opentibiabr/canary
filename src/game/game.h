@@ -249,8 +249,8 @@ class Game
 		void playerOpenChannel(uint32_t playerId, uint16_t channelId);
 		void playerCloseChannel(uint32_t playerId, uint16_t channelId);
 		void playerOpenPrivateChannel(uint32_t playerId, std::string& receiver);
-		void playerStowItem(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems);
-		void playerStashWithdraw(Player* player, uint16_t spriteId, uint32_t count, uint8_t stackpos);
+		void playerStowItem(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems);
+		void playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t count, uint8_t stackpos);
 		void playerCloseNpcChannel(uint32_t playerId);
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
@@ -353,7 +353,7 @@ class Game
 			return boostedCreature;
 		}
 
-		void onPressHotkeyEquip(Player* player, uint16_t spriteid);
+		void onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid);
 
 		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
                               int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;

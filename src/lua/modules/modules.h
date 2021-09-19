@@ -74,7 +74,7 @@ class Modules final : public BaseEvents {
 		Modules(const Modules&) = delete;
 		Modules& operator=(const Modules&) = delete;
 
-		void executeOnRecvbyte(Player* player, NetworkMessage& msg, uint8_t byte) const;
+		void executeOnRecvbyte(uint32_t playerId, NetworkMessage& msg, uint8_t byte) const;
 		Module* getEventByRecvbyte(uint8_t recvbyte, bool force);
 
 	protected:

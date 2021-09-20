@@ -17,6 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <boost/filesystem.hpp>
 #include "otpch.h"
 
 #include "io/iomap.h"
@@ -40,6 +41,11 @@ bool Map::load(const std::string& identifier) {
 
 bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
 {
+	if (!boost::filesystem::exists(identifier)) {
+		SPDLOG_WARN("File '{}' not exist. Unzip map.", identifier);
+		return false;
+	}
+
 	// Load the map
 	this->load(identifier);
 

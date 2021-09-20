@@ -5328,23 +5328,27 @@ void Game::checkCreatures(size_t index)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this, (index + 1) % EVENT_CREATURECOUNT)));
 
 	auto& checkCreatureList = checkCreatureLists[index];
-	auto it = checkCreatureList.begin(), end = checkCreatureList.end();
-	while (it != end) {
-		Creature* creature = *it;
-		if (creature->creatureCheck) {
+	size_t it = 0, end = checkCreatureList.size();
+	while (it < end) {
+		Creature* creature = checkCreatureList[it];
+		if (creature && creature->creatureCheck) {
 			if (creature->getHealth() > 0) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+			} else {
+				creature->onDeath();
 			}
 			++it;
 		} else {
 			creature->inCheckCreaturesVector = false;
-			it = checkCreatureList.erase(it);
 			ReleaseCreature(creature);
+
+			checkCreatureList[it] = checkCreatureList.back();
+			checkCreatureList.pop_back();
+			--end;
 		}
 	}
-
 	cleanup();
 }
 

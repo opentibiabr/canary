@@ -1019,7 +1019,7 @@ bool Game::internalPlaceCreature(Creature* creature, const Position& pos, bool e
 
 bool Game::placeCreature(Creature* creature, const Position& pos, bool extendedPos /*=false*/, bool forced /*= false*/)
 {
-	if (!internalPlaceCreature(creature, pos, extendedPos, forced, true)) {
+	if (!internalPlaceCreature(creature, pos, extendedPos, forced)) {
 		return false;
 	}
 
@@ -1037,6 +1037,8 @@ bool Game::placeCreature(Creature* creature, const Position& pos, bool extendedP
 
 	creature->getParent()->postAddNotification(creature, nullptr, 0);
 
+	addCreatureCheck(creature);
+	creature->onPlacedCreature();
 	return true;
 }
 
@@ -6825,24 +6827,36 @@ void Game::updatePlayerShield(Player* player)
 void Game::updateCreatureType(Creature* creature)
 {
 	const Player* masterPlayer = nullptr;
-
 	CreatureType_t creatureType = creature->getType();
 	if (creatureType == CREATURETYPE_MONSTER) {
 		const Creature* master = creature->getMaster();
 		if (master) {
 			masterPlayer = master->getPlayer();
 			if (masterPlayer) {
-				creatureType = CREATURETYPE_SUMMONPLAYER;
+				creatureType = CREATURETYPE_SUMMON_OTHERS;
 			}
 		}
+	}
+	if (creature->isHealthHidden()) {
+		creatureType = CREATURETYPE_HIDDEN;
 	}
 
 	//send to clients
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
-
-	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendCreatureType(creature, creatureType);
+	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
+		for (Creature* spectator : spectators) {
+			Player* player = spectator->getPlayer();
+			if (masterPlayer == player) {
+				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
+			} else {
+				player->sendCreatureType(creature, creatureType);
+			}
+		}
+	} else {
+		for (Creature* spectator : spectators) {
+			spectator->getPlayer()->sendCreatureType(creature, creatureType);
+		}
 	}
 }
 

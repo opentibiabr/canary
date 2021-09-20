@@ -2764,19 +2764,16 @@ void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureTy
 	NetworkMessage msg;
 	msg.addByte(0x95);
 	msg.add<uint32_t>(creature->getID());
-	msg.addByte(creatureType);
-
-	if (player->getOperatingSystem() == CLIENTOS_WINDOWS)
-	{
-		msg.addByte(creatureType); // type or any byte idk
+	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
+		creatureType = CREATURETYPE_SUMMON_PLAYER;
 	}
-
-	if (creatureType == CREATURETYPE_SUMMONPLAYER)
-	{
-		const Creature *master = creature->getMaster();
-		if (master)
-		{
+	msg.addByte(creatureType); // type or any byte idk
+	if (creatureType == CREATURETYPE_SUMMON_PLAYER) {
+		const Creature* master = creature->getMaster();
+		if (master) {
 			msg.add<uint32_t>(master->getID());
+		} else {
+			msg.add<uint32_t>(0);
 		}
 	}
 
@@ -6062,7 +6059,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			msg.addByte(creatureType);
 		}
 
-		if (creatureType == CREATURETYPE_SUMMONPLAYER)
+		if (creatureType == CREATURETYPE_SUMMON_PLAYER)
 		{
 			const Creature *master = creature->getMaster();
 			if (master)
@@ -6144,7 +6141,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			const Player *masterPlayer = master->getPlayer();
 			if (masterPlayer)
 			{
-				creatureType = CREATURETYPE_SUMMONPLAYER;
+				creatureType = CREATURETYPE_SUMMON_PLAYER;
 			}
 		}
 	}
@@ -6158,7 +6155,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		msg.addByte(creatureType); // Type (for summons)
 	}
 
-	if (creatureType == CREATURETYPE_SUMMONPLAYER)
+	if (creatureType == CREATURETYPE_SUMMON_PLAYER)
 	{
 		const Creature *master = creature->getMaster();
 		if (master)

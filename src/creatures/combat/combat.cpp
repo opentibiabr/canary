@@ -660,7 +660,7 @@ void Combat::combatTileEffects(const SpectatorHashSet& spectators, Creature* cas
 			}
 		}
 
-		Item* item = Item::CreateItem(Item::items.getItemIdByClientId(itemId).id);
+		Item* item = Item::CreateItem(itemId);
 		if (caster) {
 			item->setOwner(caster->getID());
 		}
@@ -1542,7 +1542,7 @@ void AreaCombat::setupExtArea(const std::list<uint32_t>& list, uint32_t rows)
 void MagicField::onStepInField(Creature* creature)
 {
 	//remove magic walls/wild growth
-	if (getClientID() == ITEM_MAGICWALL || getClientID() == ITEM_WILDGROWTH || getClientID() == ITEM_MAGICWALL_SAFE || getClientID() == ITEM_WILDGROWTH_SAFE || isBlocking()) {
+	if (id == ITEM_MAGICWALL || id == ITEM_WILDGROWTH || id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE || isBlocking()) {
 		if (!creature->isInGhostMode()) {
 			g_game.internalRemoveItem(this, 1);
 		}

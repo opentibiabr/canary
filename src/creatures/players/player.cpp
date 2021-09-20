@@ -56,7 +56,7 @@ Player::Player(ProtocolGame_ptr p) :
                                     Creature(),
                                     lastPing(OTSYS_TIME()),
                                     lastPong(lastPing),
-                                    inbox(new Inbox(Item::items.getItemIdByClientId(ITEM_INBOX).id)),
+                                    inbox(new Inbox(ITEM_INBOX)),
                                     client(std::move(p)) {
   inbox->incrementReferenceCounter();
 }
@@ -589,7 +589,7 @@ void Player::addContainer(uint8_t cid, Container* container)
 		return;
 	}
 
-	if (container->getClientID() == ITEM_BROWSEFIELD) {
+	if (container->getID() == ITEM_BROWSEFIELD) {
 		container->incrementReferenceCounter();
 	}
 
@@ -597,7 +597,7 @@ void Player::addContainer(uint8_t cid, Container* container)
 	if (it != openContainers.end()) {
 		OpenContainer& openContainer = it->second;
 		Container* oldContainer = openContainer.container;
-		if (oldContainer->getClientID() == ITEM_BROWSEFIELD) {
+		if (oldContainer->getID() == ITEM_BROWSEFIELD) {
 			oldContainer->decrementReferenceCounter();
 		}
 
@@ -622,7 +622,7 @@ void Player::closeContainer(uint8_t cid)
 	Container* container = openContainer.container;
 	openContainers.erase(it);
 
-	if (container && container->getClientID() == ITEM_BROWSEFIELD) {
+	if (container && container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
 }
@@ -943,8 +943,7 @@ bool Player::isNearDepotBox() const
 
 DepotChest* Player::getDepotBox()
 {
-	const ItemType& itemTypeDepot = Item::items.getItemIdByClientId(ITEM_DEPOT);
-	DepotChest* depotBoxs = new DepotChest(itemTypeDepot.id);
+	DepotChest* depotBoxs = new DepotChest(ITEM_DEPOT);
 	depotBoxs->incrementReferenceCounter();
 	depotBoxs->setMaxDepotItems(getMaxDepotItems());
 	for (uint32_t index = 1; index <= 18; ++index) {
@@ -966,10 +965,10 @@ DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 
 	DepotChest* depotChest;
 	if (depotId > 0 && depotId < 18) {
-		depotChest = new DepotChest(Item::items.getItemIdByClientId(ITEM_DEPOT_NULL).id + depotId);
+		depotChest = new DepotChest(ITEM_DEPOT_NULL + depotId);
 	}
 	else {
-		depotChest = new DepotChest(Item::items.getItemIdByClientId(ITEM_DEPOT_XVIII).id);
+		depotChest = new DepotChest(ITEM_DEPOT_XVIII);
 	}
 
 	depotChest->incrementReferenceCounter();
@@ -990,17 +989,12 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 		return it->second;
 	}
 
-	const ItemType& itemTypeLocker = Item::items.getItemIdByClientId(ITEM_LOCKER);
-	const ItemType& itemTypeMarket = Item::items.getItemIdByClientId(ITEM_MARKET);
-	const ItemType& itemTypeStash = Item::items.getItemIdByClientId(ITEM_SUPPLY_STASH);
-	const ItemType& itemTypeDepot = Item::items.getItemIdByClientId(ITEM_DEPOT);
-
-	DepotLocker* depotLocker = new DepotLocker(itemTypeLocker.id);
+	DepotLocker* depotLocker = new DepotLocker(ITEM_LOCKER);
 	depotLocker->setDepotId(depotId);
-	depotLocker->internalAddThing(Item::CreateItem(itemTypeMarket.id));
+	depotLocker->internalAddThing(Item::CreateItem(ITEM_MARKET));
 	depotLocker->internalAddThing(inbox);
-	depotLocker->internalAddThing(Item::CreateItem(itemTypeStash.id));
-	Container* depotChest = Item::CreateItemAsContainer(itemTypeDepot.id, g_config.getNumber(DEPOT_BOXES));
+	depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
+	Container* depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, g_config.getNumber(DEPOT_BOXES));
 	for (uint8_t i = g_config.getNumber(DEPOT_BOXES); i > 0; i--) {
 		DepotChest* depotBox = getDepotChest(i, true);
 		depotChest->internalAddThing(depotBox);
@@ -1017,7 +1011,7 @@ RewardChest* Player::getRewardChest()
 		return rewardChest;
 	}
 
-	rewardChest = new RewardChest(Item::items.getItemIdByClientId(ITEM_REWARD_CHEST).id);
+	rewardChest = new RewardChest(ITEM_REWARD_CHEST);
 	return rewardChest;
 }
 
@@ -1212,7 +1206,7 @@ void Player::sendAddContainerItem(const Container* container, const Item* item)
 		}
 
 		uint16_t slot = openContainer.index;
-		if (container->getClientID() == ITEM_BROWSEFIELD) {
+		if (container->getID() == ITEM_BROWSEFIELD) {
 			uint16_t containerSize = container->size() - 1;
 			uint16_t pageEnd = openContainer.index + container->capacity() - 1;
 			if (containerSize > pageEnd) {

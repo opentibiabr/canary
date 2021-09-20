@@ -254,8 +254,7 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	}
 
 	auto timestamp = time(nullptr);
-	const ItemType& itemType = Item::items.getItemIdByClientId(ITEM_REWARD_CONTAINER);
-	Item * rewardContainer = Item::CreateItem(itemType.id);
+	Item * rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
 	rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
 	container->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
 	container->internalAddThing(rewardContainer);

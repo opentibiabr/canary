@@ -3663,10 +3663,9 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 
 	msg.addByte(cid);
 
-	const ItemType& itemTypeBag = Item::items.getItemIdByClientId(ITEM_BAG);
-	if (container->getClientID() == ITEM_BROWSEFIELD)
+	if (container->getID() == ITEM_BROWSEFIELD)
 	{
-		AddItem(msg, itemTypeBag.id, 1);
+		AddItem(msg, ITEM_BAG, 1);
 		msg.addString("Browse Field");
 	}
 	else

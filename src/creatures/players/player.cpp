@@ -1179,7 +1179,7 @@ void Player::sendImbuementWindow(Item* item)
 
 void Player::sendMarketEnter(uint32_t depotId)
 {
-	if (this->isInMarket() || this->getLastDepotId() == -1 || !depotId) {
+	if (this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
 

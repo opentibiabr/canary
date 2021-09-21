@@ -277,9 +277,9 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 	// npcType:onDisappear(callback)
 	// npcType:onMove(callback)
 	// npcType:onSay(callback)
-	// npcType:onPlayerBuyItem(callback)
-	// npcType:onPlayerSellItem(callback)
-	// npcType:onPlayerCheckItem(callback)
+	// npcType:onBuyItem(callback)
+	// npcType:onSellItem(callback)
+	// npcType:onCheckItem(callback)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
 		if (npcType->loadCallback(&g_scripts->getScriptInterface())) {
@@ -459,5 +459,35 @@ int NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeGetSpeechBubble(lua_State* L) {
+	// npcType:getSpeechBubble()
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+	}
+
+	lua_pushnumber(L, npcType->info.speechBubble);
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeSetSpeechBubble(lua_State* L) {
+	// npcType:setSpeechBubble(speechBubble)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+	}
+
+	if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, npcType->info.speechBubble);
+	} else {
+		npcType->info.speechBubble = getNumber<uint8_t>(L, 2);
+		pushBoolean(L, true);
+	}
+
 	return 1;
 }

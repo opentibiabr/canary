@@ -1,10 +1,9 @@
 -- Custom Modules, created to help us in this datapack
 local travelDiscounts = {
-	['postman'] = {price = 10, storage = Storage.Postman.Rank, value = 3},
-	['new frontier'] = {price = 50, storage = Storage.TheNewFrontier.Mission03, value = 1}
+	['postman'] = {price = 10, storage = Storage.Quest.ExampleQuest, value = 1}
 }
 
-function StdModule.travelDiscount(player, discounts)
+function StdModule.travelDiscount(npc, player, discounts)
 	local discountPrice, discount = 0
 	if type(discounts) == 'string' then
 		discount = travelDiscounts[discounts]
@@ -23,79 +22,83 @@ function StdModule.travelDiscount(player, discounts)
 	return discountPrice
 end
 
-function StdModule.kick(cid, message, keywords, parameters, node)
+function StdModule.kick(npc, player, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 	if npcHandler == nil then
-		error("StdModule.travel called without any npcHandler instance.")
+		Spdlog.error("StdModule.travel called without any npcHandler instance.")
 	end
 
-	if not npcHandler:isFocused(cid) then
+	if not npcHandler:checkInteraction(npc, player) then
 		return false
 	end
 
-	npcHandler:releaseFocus(cid)
-	npcHandler:say(parameters.text or "Off with you!", cid)
+	npcHandler:removeInteraction(npc, player)
+	npcHandler:say(parameters.text or "Off with you!", npc, player)
 
 	local destination = parameters.destination
 	if type(destination) == 'table' then
 		destination = destination[math.random(#destination)]
 	end
 
-	Player(cid):teleportTo(destination, true)
+	Player(player):teleportTo(destination, true)
 
-	npcHandler:resetNpc(cid)
+	npcHandler:resetNpc(player)
 	return true
 end
 
 local GreetModule = {}
-function GreetModule.greet(cid, message, keywords, parameters)
-	if not parameters.npcHandler:isInRange(cid) then
+function GreetModule.greet(npc, player, message, keywords, parameters)
+	if not parameters.npcHandler:isInRange(npc, player) then
 		return true
 	end
 
-	if parameters.npcHandler:isFocused(cid) then
+	if parameters.npcHandler:checkInteraction(npc, player) then
 		return true
 	end
 
-	local parseInfo = { [TAG_PLAYERNAME] = Player(cid):getName() }
-	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), cid, true)
-	parameters.npcHandler:addFocus(cid)
+	local parseInfo = { [TAG_PLAYERNAME] = Player(player):getName() }
+	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), npc, player)
+	parameters.npcHandler:setInteraction(npc, player)
 	return true
 end
 
-function GreetModule.farewell(cid, message, keywords, parameters)
-	if not parameters.npcHandler:isFocused(cid) then
+function GreetModule.farewell(npc, player, message, keywords, parameters)
+	if not parameters.npcHandler:checkInteraction(npc, player) then
 		return false
 	end
 
-	local parseInfo = { [TAG_PLAYERNAME] = Player(cid):getName() }
-	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), cid, true)
-	parameters.npcHandler:resetNpc(cid)
-	parameters.npcHandler:releaseFocus(cid)
+	local parseInfo = { [TAG_PLAYERNAME] = Player(player):getName() }
+	parameters.npcHandler:say(parameters.npcHandler:parseMessage(parameters.text, parseInfo), npc, player)
+	parameters.npcHandler:resetNpc(player)
+	parameters.npcHandler:removeInteraction(npc, player)
 	return true
 end
 
 -- Adds a keyword which acts as a greeting word
 function KeywordHandler:addGreetKeyword(keys, parameters, condition, action)
-	local keys = keys
-	keys.callback = FocusModule.messageMatcherDefault
-	return self:addKeyword(keys, GreetModule.greet, parameters, condition, action)
+	local localKeys = keys
+	localKeys.callback = FocusModule.messageMatcherDefault
+	return self:addKeyword(localKeys, GreetModule.greet, parameters, condition, action)
 end
 
 -- Adds a keyword which acts as a farewell word
 function KeywordHandler:addFarewellKeyword(keys, parameters, condition, action)
-	local keys = keys
-	keys.callback = FocusModule.messageMatcherDefault
-	return self:addKeyword(keys, GreetModule.farewell, parameters, condition, action)
+	local localKeys = keys
+	localKeys.callback = FocusModule.messageMatcherDefault
+	return self:addKeyword(localKeys, GreetModule.farewell, parameters, condition, action)
 end
 
 -- Adds a keyword which acts as a spell word
 function KeywordHandler:addSpellKeyword(keys, parameters)
-	local keys = keys
-	keys.callback = FocusModule.messageMatcherDefault
+	local localKeys = keys
+	localKeys.callback = FocusModule.messageMatcherDefault
 
-	local npcHandler, spellName, price, vocationId = parameters.npcHandler, parameters.spellName, parameters.price, parameters.vocation
-	local spellKeyword = self:addKeyword(keys, StdModule.say, {npcHandler = npcHandler, text = string.format("Do you want to learn the spell '%s' for %s?", spellName, price > 0 and price .. ' gold' or 'free')},
+	local npcHandler, spellName, price, vocationId = parameters.npcHandler,
+          parameters.spellName, parameters.price, parameters.vocation
+	local spellKeyword = self:addKeyword(localKeys, StdModule.say, {
+		npcHandler = npcHandler, text = string.format("Do you want to learn the spell '%s' for %s?\z
+                                                      ", spellName, price > 0 and price .. ' gold' or 'free')
+	},
 		function(player)
 			-- This will register for all client id vocations
 			local vocationClientId = player:getVocation():getBaseId()
@@ -108,17 +111,24 @@ function KeywordHandler:addSpellKeyword(keys, parameters)
 	)
 
 	spellKeyword:addChildKeyword({'yes'}, StdModule.learnSpell, {npcHandler = npcHandler, spellName = spellName, level = parameters.level, price = price})
-	spellKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'Maybe next time.', reset = true})
+	spellKeyword:addChildKeyword({'no'}, StdModule.say, {
+		npcHandler = npcHandler, text = 'Maybe next time.', reset = true
+	})
 end
 
 local hints = {
 	[-1] = 'If you don\'t know the meaning of an icon on the right side, move the mouse cursor on it and wait a moment.',
-	[0] = 'Send private messages to other players by right-clicking on the player or the player\'s name and select \'Message to ....\'. You can also open a \'private message channel\' and type in the name of the player.',
-	[1] = 'Use the shortcuts \'SHIFT\' to look, \'CTRL\' for use and \'ALT\' for attack when clicking on an object or player.',
-	[2] = 'If you already know where you want to go, click on the automap and your character will walk there automatically if the location is reachable and not too far away.',
+	[0] = 'Send private messages to other players by right-clicking on the player or the player\'s name and \z
+               select \'Message to ....\'. You can also open a \'private message channel\' \z
+               and type in the name of the player.',
+	[1] = 'Use the shortcuts \'SHIFT\' to look, \'CTRL\' for use and \'ALT\' \z
+               for attack when clicking on an object or player.',
+	[2] = 'If you already know where you want to go, click on the automap and your character will walk there \z
+               automatically if the location is reachable and not too far away.',
 	[3] = 'To open or close skills, battle or VIP list, click on the corresponding button to the right.',
 	[4] = '\'Capacity\' restricts the amount of things you can carry with you. It raises with each level.',
-	[5] = 'Always have a look on your health bar. If you see that you do not regenerate health points anymore, eat something.',
+	[5] = 'Always have a look on your health bar. If you see that you do not regenerate \z
+               health points anymore, eat something.',
 	[6] = 'Always eat as much food as possible. This way, you\'ll regenerate health points for a longer period of time.',
 	[7] = 'After you have killed a monster, you have 10 seconds in which the corpse is not moveable and no one else but you can loot it.',
 	[8] = 'Be careful when you approach three or more monsters because you only can block the attacks of two. In such a situation even a few rats can do severe damage or even kill you.',
@@ -144,129 +154,23 @@ local hints = {
 	[28] = 'There is nothing more I can tell you. If you are still in need of some {hints}, I can repeat them for you.'
 }
 
-function StdModule.rookgaardHints(cid, message, keywords, parameters, node)
+function StdModule.rookgaardHints(npc, player, message, keywords, parameters, node)
 	local npcHandler = parameters.npcHandler
 	if npcHandler == nil then
 		error("StdModule.say called without any npcHandler instance.")
 	end
 
-	if not npcHandler:isFocused(cid) then
+	if not npcHandler:checkInteraction(npc, player) then
 		return false
 	end
 
-	local player = Player(cid)
+	local player = Player(player)
 	local hintId = player:getStorageValue(Storage.RookgaardHints)
-	npcHandler:say(hints[hintId], cid)
+	npcHandler:say(hints[hintId], npc, player)
 	if hintId >= #hints then
 		player:setStorageValue(Storage.RookgaardHints, -1)
 	else
 		player:setStorageValue(Storage.RookgaardHints, hintId + 1)
 	end
 	return true
-end
-
--- VoiceModule
-VoiceModule = {
-	voices = nil,
-	voiceCount = 0,
-	lastVoice = 0,
-	timeout = nil,
-	chance = nil,
-	npcHandler = nil
-}
-
--- Creates a new instance of VoiceModule
-function VoiceModule:new(voices, timeout, chance)
-	local obj = {}
-	setmetatable(obj, self)
-	self.__index = self
-
-	obj.voices = voices
-	for i = 1, #obj.voices do
-		local voice = obj.voices[i]
-		if voice.yell then
-			voice.yell = nil
-			voice.talktype = TALKTYPE_YELL
-		else
-			voice.talktype = TALKTYPE_SAY
-		end
-	end
-
-	obj.voiceCount = #voices
-	obj.timeout = timeout or 10
-	obj.chance = chance or 25
-	return obj
-end
-
-function VoiceModule:init(handler)
-	return true
-end
-
-function VoiceModule:callbackOnThink()
-	if self.lastVoice < os.time() then
-		self.lastVoice = os.time() + self.timeout
-		if math.random(100) < self.chance  then
-			local voice = self.voices[math.random(self.voiceCount)]
-			Npc():say(voice.text, voice.talktype)
-		end
-	end
-	return true
-end
-
-function Player.removeMoneyNpc(self, amount)
-
-	if type(amount) == 'string' then
-		amount = tonumber(amount)
-	end
-
-	local moneyCount = self:getMoney()
-	local bankCount = self:getBankBalance()
-
-	-- The player have all the money with him
-	if amount <= moneyCount then
-		-- Removes player inventory money
-		self:removeMoney(amount)
-
-		self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
-		return true
-
-	-- The player doens't have all the money with him
-	elseif amount <= (moneyCount + bankCount) then
-
-		-- Check if the player has some money
-		if moneyCount ~= 0 then
-			-- Removes player inventory money
-			self:removeMoney(moneyCount)
-			local remains = amount - moneyCount
-
-			-- Removes player bank money
-			self:setBankBalance(bankCount - remains)
-
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
-			return true
-
-		else
-			self:setBankBalance(bankCount - amount)
-			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
-			return true
-		end
-	end
-
-	return false
-end
-
-local function getPlayerMoney(cid)
-	local player = Player(cid)
-	if player then
-		return player:getMoney() + player:getBankBalance()
-	end
-	return 0
-end
-
-local function doPlayerRemoveMoney(cid, amount)
-	local player = Player(cid)
-	if player then
-		return player:removeMoneyNpc(amount)
-	end
-	return false
 end

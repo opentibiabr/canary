@@ -3763,7 +3763,7 @@ void ProtocolGame::sendShop(Npc *npc)
 	NetworkMessage msg;
 	msg.addByte(0x7A);
 	msg.addString(npc->getName());
-	msg.add<uint16_t>(npc->getCurrencyTrading());
+	msg.add<uint16_t>(npc->getCurrency());
 
 	msg.addString(std::string()); // ??
 

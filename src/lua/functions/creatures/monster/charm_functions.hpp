@@ -35,8 +35,8 @@ class CharmFunctions final : LuaScriptInterface {
 				registerMethod(L, "Charm", "damageType", CharmFunctions::luaCharmDamageType);
 				registerMethod(L, "Charm", "percentage", CharmFunctions::luaCharmPercentage);
 				registerMethod(L, "Charm", "chance", CharmFunctions::luaCharmChance);
-				registerMethod(L, "Charm", "cancelMessage", CharmFunctions::luaCharmCancelMessage);
-				registerMethod(L, "Charm", "logMsg", CharmFunctions::luaCharmLogMsg);
+				registerMethod(L, "Charm", "messageCancel", CharmFunctions::luaCharmMessageCancel);
+				registerMethod(L, "Charm", "messageServerLog", CharmFunctions::luaCharmMessageServerLog);
 				registerMethod(L, "Charm", "effect", CharmFunctions::luaCharmEffect);
 		}
 
@@ -49,8 +49,8 @@ class CharmFunctions final : LuaScriptInterface {
 		static int luaCharmDamageType(lua_State* L);
 		static int luaCharmPercentage(lua_State* L);
 		static int luaCharmChance(lua_State* L);
-		static int luaCharmCancelMessage(lua_State* L);
-		static int luaCharmLogMsg(lua_State* L);
+		static int luaCharmMessageCancel(lua_State* L);
+		static int luaCharmMessageServerLog(lua_State* L);
 		static int luaCharmEffect(lua_State* L);
 };
 

@@ -167,6 +167,8 @@ void loadModules() {
 		"data/stages.lua");
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/startup/startup.lua") == 0),
 		"data/startup/startup.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile("data/npclib/load.lua") == 0),
+		"data/npclib/load.lua");
 
 	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
@@ -320,10 +322,19 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	SPDLOG_INFO("World type set as {}", asUpperCaseString(worldType));
 
-	SPDLOG_INFO("Loading map...");
+	SPDLOG_INFO("Loading main map...");
 	if (!g_game.loadMainMap(g_config.getString(MAP_NAME))) {
-		SPDLOG_ERROR("Failed to load map");
+		SPDLOG_ERROR("Failed to load main map");
 		startupErrorMessage();
+	}
+
+	// If "mapCustomEnabled" is true on config.lua, then load the custom map
+	if (g_config.getBoolean(TOGGLE_MAP_CUSTOM)) {
+		SPDLOG_INFO("Loading custom map...");
+		if (!g_game.loadCustomMap(g_config.getString(MAP_CUSTOM_NAME))) {
+			SPDLOG_ERROR("Failed to load custom map");
+			startupErrorMessage();
+		}
 	}
 
 	SPDLOG_INFO("Initializing gamestate...");

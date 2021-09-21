@@ -35,6 +35,7 @@ class NpcFunctions final : LuaScriptInterface {
 				registerMethod(L, "Npc", "getCurrency", NpcFunctions::luaNpcGetCurrency);
 				registerMethod(L, "Npc", "getSpeechBubble", NpcFunctions::luaNpcGetSpeechBubble);
 				registerMethod(L, "Npc", "setSpeechBubble", NpcFunctions::luaNpcSetSpeechBubble);
+				registerMethod(L, "Npc", "getId", NpcFunctions::luaNpcGetId);
 				registerMethod(L, "Npc", "getName", NpcFunctions::luaNpcGetName);
 				registerMethod(L, "Npc", "setName", NpcFunctions::luaNpcSetName);
 				registerMethod(L, "Npc", "place", NpcFunctions::luaNpcPlace);
@@ -48,6 +49,14 @@ class NpcFunctions final : LuaScriptInterface {
 				registerMethod(L, "Npc", "openShopWindow", NpcFunctions::luaNpcOpenShopWindow);
 				registerMethod(L, "Npc", "closeShopWindow", NpcFunctions::luaNpcCloseShopWindow);
 				registerMethod(L, "Npc", "getShopItem", NpcFunctions::luaNpcGetShopItem);
+				registerMethod(L, "Npc", "isMerchant", NpcFunctions::luaNpcIsMerchant);
+
+				registerMethod(L, "Npc", "move", NpcFunctions::luaNpcMove);
+				registerMethod(L, "Npc", "turn", NpcFunctions::luaNpcTurn);
+				registerMethod(L, "Npc", "follow", NpcFunctions::luaNpcFollow);
+				registerMethod(L, "Npc", "sellItem", NpcFunctions::luaNpcSellItem);
+
+				registerMethod(L, "Npc", "getDistanceTo", NpcFunctions::luaNpcGetDistanceTo);
 
 				NpcTypeFunctions::init(L);
 			}
@@ -61,6 +70,7 @@ class NpcFunctions final : LuaScriptInterface {
 			static int luaNpcGetCurrency(lua_State* L);
 			static int luaNpcGetSpeechBubble(lua_State* L);
 			static int luaNpcSetSpeechBubble(lua_State* L);
+			static int luaNpcGetId(lua_State* L);
 			static int luaNpcGetName(lua_State* L);
 			static int luaNpcSetName(lua_State* L);
 			static int luaNpcPlace(lua_State* L);
@@ -74,6 +84,14 @@ class NpcFunctions final : LuaScriptInterface {
 			static int luaNpcOpenShopWindow(lua_State* L);
 			static int luaNpcCloseShopWindow(lua_State* L);
 			static int luaNpcGetShopItem(lua_State* L);
+			static int luaNpcIsMerchant(lua_State* L);
+
+			static int luaNpcMove(lua_State* L);
+			static int luaNpcTurn(lua_State* L);
+			static int luaNpcFollow(lua_State* L);
+			static int luaNpcSellItem(lua_State* L);
+
+			static int luaNpcGetDistanceTo(lua_State* L);
 
 			friend class CreatureFunctions;
 };

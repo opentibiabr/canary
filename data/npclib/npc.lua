@@ -1,15 +1,9 @@
 isPlayerPremiumCallback = Player.isPremium
 
 -- Function called with by the function "Npc:sayWithDelay"
-local sayFunction = function(npc, text, type, e, player)
-	local npc = Npc(npc)
-	if not npc then
-		Spdlog.error("[local func = function(npc, text, type, e, player)] - Npc not is valid")
-		return
-	end
-
-	npc:say(text, type, false, player, npc:getPosition())
-	e.done = true
+local sayFunction = function(npc, text, type, eventDelay, playerId)
+	npc:say(text, type, false, playerId, npc:getPosition())
+	eventDelay.done = true
 end
 
 function msgcontains(message, keyword)
@@ -18,7 +12,9 @@ function msgcontains(message, keyword)
 		return true
 	end
 
-	return string.find(lowerMessage, lowerKeyword) and string.find(lowerMessage, lowerKeyword.. '(%w+)') and string.find(lowerMessage, '(%w+)' .. lowerKeyword)
+	return string.find(lowerMessage, lowerKeyword)
+		and string.find(lowerMessage, lowerKeyword.. '(%w+)')
+		and string.find(lowerMessage, '(%w+)' .. lowerKeyword)
 end
 
 -- Npc talk
@@ -39,9 +35,9 @@ function Npc:sendMessage(player, text)
 	return self:say(string.format(text or "", player:getName()), TALKTYPE_PRIVATE_NP, true, player)
 end
 
-function Npc:sayWithDelay(npc, text, messageType, delay, e, player)
-	e.done = false
-	e.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npc, text, messageType, e, player)
+function Npc:sayWithDelay(npc, text, messageType, delay, eventDelay, player)
+	eventDelay.done = false
+	eventDelay.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npc, text, messageType, eventDelay, player)
 end
 
 function getCount(string)

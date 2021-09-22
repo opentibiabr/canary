@@ -36,11 +36,6 @@ if KeywordHandler == nil then
 			return
 		end
 
-		local player = Player(player)
-		if not player then
-			return
-		end
-
 		self.action(player, self.parameters.npcHandler, message)
 	end
 
@@ -94,7 +89,10 @@ if KeywordHandler == nil then
 		return self.keywords
 	end
 
-	-- Adds a childNode to this node. Creates the childNode based on the parameters (k = keywords, c = callback, p = parameters)
+	--[[
+		Adds a childNode to this node. Creates the childNode based on the parameters:
+		(k = keywords, c = callback, p = parameters)
+	]]
 	function KeywordNode:addChildKeyword(keywords, callback, parameters, condition, action)
 		local new = KeywordNode:new(keywords, callback, parameters, condition, action)
 		return self:addChildKeywordNode(new)
@@ -159,7 +157,7 @@ if KeywordHandler == nil then
 
 		if node:getParent() then
 			node = node:getParent() -- Search through the parent.
-			local ret = self:processNodeMessage(node, npc, player, message)
+			ret = self:processNodeMessage(node, npc, player, message)
 			if ret then
 				return true
 			end
@@ -167,7 +165,7 @@ if KeywordHandler == nil then
 
 		if node ~= self:getRoot() then
 			node = self:getRoot() -- Search through the root.
-			local ret = self:processNodeMessage(node, npc, player, message)
+			ret = self:processNodeMessage(node, npc, player, message)
 			if ret then
 				return true
 			end
@@ -175,8 +173,9 @@ if KeywordHandler == nil then
 		return false
 	end
 
-	-- Tries to process the given message using the node parameter's children and calls the node's callback function if found.
-	--	Returns the childNode which processed the message or nil if no such node was found.
+	-- Tries to process the given message using the node parameter's children
+	-- Calls the node's callback function if found
+	-- Returns the childNode which processed the message or nil if no such node was found
 	function KeywordHandler:processNodeMessage(node, npc, player, message)
 		local playerId = player:getId()
 		local messageLower = message:lower()
@@ -184,7 +183,8 @@ if KeywordHandler == nil then
 			if childNode:checkMessage(player, messageLower) then
 				local oldLast = self.lastNode[playerId]
 				self.lastNode[playerId] = childNode
-				childNode.parent = node -- Make sure node is the parent of childNode (as one node can be parent to several nodes).
+				-- Make sure node is the parent of childNode (as one node can be parent to several nodes).
+				childNode.parent = node
 				if childNode:processMessage(npc, player, messageLower) then
 					childNode:processAction(player, messageLower)
 					return true

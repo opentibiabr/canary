@@ -1,7 +1,6 @@
 -- Advanced NPC System by Jiddo
 
 if NpcHandler == nil then
-	local duration = 1
 	-- Constant talkdelay behaviors.
 	TALKDELAY_NONE = 0 -- No talkdelay. Npc will reply immedeatly.
 	TALKDELAY_ONTHINK = 1 -- Talkdelay handled through the onThink callback function. (Default)
@@ -408,10 +407,12 @@ if NpcHandler == nil then
 				end
 
 				if self.keywordHandler ~= nil then
-					if self:checkInteraction(npc, player) and msgtype == TALKTYPE_PRIVATE_PN or not self:checkInteraction(npc, player) then
+					if self:checkInteraction(npc, player)
+					and msgtype == TALKTYPE_PRIVATE_PN
+					or not self:checkInteraction(npc, player) then
 						local ret = self.keywordHandler:processMessage(npc, player, msg)
 						if not ret then
-							local callback = self:getCallback(CALLBACK_MESSAGE_DEFAULT)
+							callback = self:getCallback(CALLBACK_MESSAGE_DEFAULT)
 							if callback ~= nil and callback(npc, player, msgtype, msg) then
 								self:setTalkStart(playerId, os.time())
 							end
@@ -579,7 +580,8 @@ if NpcHandler == nil then
 		local ret = {}
 		for aux = 1, #msgs do
 			self.eventDelayedSay[playerId][aux] = {}
-			npc:sayWithDelay(npcUniqueId, msgs[aux], TALKTYPE_PRIVATE_NP, ((aux-1) * (delay or 4000)), self.eventDelayedSay[playerId][aux], playerUniqueId)
+			npc:sayWithDelay(npcUniqueId, msgs[aux], TALKTYPE_PRIVATE_NP, ((aux-1) * (delay or 4000)),
+                             self.eventDelayedSay[playerId][aux], playerUniqueId)
 			ret[#ret + 1] = self.eventDelayedSay[playerId][aux]
 		end
 		return(ret)
@@ -598,27 +600,34 @@ if NpcHandler == nil then
 		end
 
 		stopEvent(self.eventSay[playerId])
-		self.eventSay[playerId] = addEvent(function(npcId, message, focusId)
+		self.eventSay[playerId] = addEvent(
+		function(npcId, messageDelayed, focusId)
 			if not Npc(npc) then
 				return Spdlog.error("[NpcHandler:say] - Npc parameter is missing or wrong")
 			end
-			
+
 			npcId = npc:getId()
 			if npcId == nil then
 				Spdlog.error("[NpcHandler:say] - Npc not found or is nil")
 				return
 			end
-	
+
 			focusId = player:getId()
-			if npcId == nil then
+			if focusId == nil then
 				Spdlog.error("[NpcHandler:say] - Player id not found or is nil")
 				return
 			end
 
-			local player = Player(focusId)
-			if player then
-				local parseInfo = {[TAG_PLAYERNAME] = player:getName(), [TAG_TIME] = getFormattedWorldTime(), [TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel()), [TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel())}
-				npc:say(self:parseMessage(message, parseInfo), textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
+			local focusPlayer = Player(focusId)
+			if focusPlayer then
+				local parseInfo = {
+					[TAG_PLAYERNAME] = focusPlayer:getName(),
+					[TAG_TIME] = getFormattedWorldTime(),
+					[TAG_BLESSCOST] = Blessings.getBlessingsCost(focusPlayer:getLevel()),
+					[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(focusPlayer:getLevel())
+				}
+				npc:say(self:parseMessage(messageDelayed, parseInfo),
+                        textType or TALKTYPE_PRIVATE_NP, false, focusPlayer, npc:getPosition())
 			end
 		end, self.talkDelayTime * 1000, npcId, message, focusId)
 	end

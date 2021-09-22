@@ -2,6 +2,12 @@ isPlayerPremiumCallback = Player.isPremium
 
 -- Function called with by the function "Npc:sayWithDelay"
 local sayFunction = function(npc, text, type, eventDelay, playerId)
+	local npc = Npc(npc)
+	if not npc then
+		Spdlog.error("[local func = function(npc, text, type, e, player)] - Npc not is valid")
+		return
+	end
+
 	npc:say(text, type, false, playerId, npc:getPosition())
 	eventDelay.done = true
 end

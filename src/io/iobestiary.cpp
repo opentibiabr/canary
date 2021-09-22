@@ -157,6 +157,10 @@ void IOBestiary::resetCharmRuneCreature(Player* player, Charm* charm)
 
 void IOBestiary::setCharmRuneCreature(Player* player, Charm* charm, uint16_t raceid)
 {
+	if (!player || !charm) {
+		return;
+	}
+
 	player->parseRacebyCharm(charm->id, true, raceid);
 	int32_t Toggle = bitToggle(player->getUsedRunesBit(), charm, true);
 	player->setUsedRunesBit(Toggle);
@@ -278,6 +282,9 @@ int32_t IOBestiary::bitToggle(int32_t input, Charm* charm, bool on) const
 void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid)
 {
 	Charm* charm = getBestiaryCharm(runeID);
+	if (!player || !charm) {
+		return;
+	}
 
 	if (action == 0) {
 		std::ostringstream ss;

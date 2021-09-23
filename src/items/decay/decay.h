@@ -37,4 +37,4 @@ class Decay
 
 extern Decay g_decay;
 
-#endif
+#endif // SRC_ITEMS_DECAY_DECAY_H_

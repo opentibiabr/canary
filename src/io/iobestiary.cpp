@@ -230,7 +230,7 @@ void IOBestiary::addCharmPoints(Player* player, uint16_t amount, bool negative /
 void IOBestiary::addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount /*= 1*/)
 {
 	uint16_t raceid = mtype->info.raceid;
-	if (raceid == 0 || player || mtype) {
+	if (raceid == 0 || !player || !mtype) {
 		return;
 	}
 	uint32_t curCount = player->getBestiaryKillCount(raceid);

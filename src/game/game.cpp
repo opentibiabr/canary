@@ -1735,18 +1735,11 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 	//update item(s)
 	if (item->isStackable()) {
 		uint32_t n;
+
 		if (toItem && item->equals(toItem)) {
 			n = std::min<uint32_t>(100 - toItem->getItemCount(), m);
-			// Update same decay item count
-			if (item->getDuration() > 0) {
-				updateItem = toItem->clone();
-				updateItem->setItemCount(toItem->getItemCount() + n);
-				toCylinder->removeThing(toItem, toItem->getItemCount());
-				toCylinder->addThing(index, updateItem);
-			} else {
-				toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
-				updateItem = toItem;
-			}
+			toCylinder->updateThing(toItem, toItem->getID(), toItem->getItemCount() + n);
+			updateItem = toItem;
 		} else {
 			n = 0;
 		}
@@ -1798,16 +1791,20 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		}
 	}
 
-  Item* quiver = toCylinder->getItem();
-  if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && quiver->getHoldingPlayer() && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-    quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
-  }
-  else {
-    quiver = fromCylinder->getItem();
-    if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && quiver->getHoldingPlayer() && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-      quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
-    }
-  }
+	Item* quiver = toCylinder->getItem();
+	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER 
+               && quiver->getHoldingPlayer()
+               && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+	} else {
+		quiver = fromCylinder->getItem();
+		if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+                   && quiver->getHoldingPlayer()
+                   && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+			quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+		}
+	}
+
 	//we could not move all, inform the player
 	if (item->isStackable() && maxQueryCount < count) {
 		return retMaxCount;
@@ -1819,7 +1816,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			return ret;
 		}
 
-     	if (Player* player = actor->getPlayer()) {
+		if (Player* player = actor->getPlayer()) {
 			const ItemType& it = Item::items[fromCylinder->getItem()->getID()];
 			if (it.id <= 0) {
 				return ret;
@@ -1828,14 +1825,6 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			if (it.corpseType != RACE_NONE && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
 				player->updateLootTracker(item);
 			}
-		}
-	}
-
-	if (moveItem && moveItem->getDuration() > 0) {
-		if (moveItem->getDecaying() != DECAYING_TRUE) {
-			moveItem->incrementReferenceCounter();
-			moveItem->setDecaying(DECAYING_TRUE);
-			toDecayItems.push_back(moveItem);
 		}
 	}
 
@@ -1924,16 +1913,13 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 		}
 	}
 
-	if (item->getDuration() > 0) {
-		item->incrementReferenceCounter();
-		item->setDecaying(DECAYING_TRUE);
-		toDecayItems.push_back(item);
+	Item* quiver = toCylinder->getItem();
+	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+               && quiver->getHoldingPlayer()
+               && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 	}
 
-  Item* quiver = toCylinder->getItem();
-  if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && quiver->getHoldingPlayer() && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-    quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
-  }
 	return RETURNVALUE_NOERROR;
 }
 
@@ -1974,10 +1960,14 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 
 		cylinder->postRemoveNotification(item, nullptr, index);
 	}
-  Item* quiver = cylinder->getItem();
-  if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && quiver->getHoldingPlayer() && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-    quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
-  }
+
+	Item* quiver = cylinder->getItem();
+	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+               && quiver->getHoldingPlayer()
+               && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+	}
+
 	return RETURNVALUE_NOERROR;
 }
 
@@ -2228,6 +2218,8 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 		}
 
 		newParent->postAddNotification(item, cylinder, newParent->getThingIndex(item));
+		item->startDecaying();
+
 		return item;
 	}
 
@@ -2243,7 +2235,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					newItemId = curType.decayTo;
 				}
 
-				if (newItemId <= 0) {
+				if (newItemId < 0) {
 					internalRemoveItem(item);
 					return nullptr;
 				} else if (newItemId != newId) {
@@ -2260,14 +2252,14 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					cylinder->postRemoveNotification(item, cylinder, itemIndex);
 					item->stopDecaying();
 					ReleaseItem(item);
+					newItem->startDecaying();
+
 					return newItem;
 				} else {
 					return transformItem(item, newItemId);
 				}
 			}
 		} else {
-			uint32_t currentDuration = item->getDuration();
-
 			cylinder->postRemoveNotification(item, cylinder, itemIndex);
 			uint16_t itemId = item->getID();
 			int32_t count = item->getSubType();
@@ -2285,16 +2277,25 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 			}
 
 			cylinder->updateThing(item, itemId, count);
-			if (currentDuration) {
-				item->setDuration(currentDuration);
-			}
 			cylinder->postAddNotification(item, cylinder, itemIndex);
-      Item* quiver = cylinder->getItem();
-      if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && quiver->getHoldingPlayer() && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-        quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
-      }
+
+			Item* quiver = cylinder->getItem();
+			if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+                       && quiver->getHoldingPlayer()
+                       && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+				quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
+			}
+			item->startDecaying();
+
 			return item;
 		}
+	}
+
+	Item* quiver = cylinder->getItem();
+	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+               && quiver->getHoldingPlayer()
+               && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
+		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 	}
 
 	//Replacing the the old item with the new while maintaining the old position
@@ -2316,19 +2317,8 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	cylinder->postRemoveNotification(item, cylinder, itemIndex);
 	item->stopDecaying();
 	ReleaseItem(item);
+	newItem->startDecaying();
 
-	if (newItem->getDuration() > 0) {
-		if (newItem->getDecaying() != DECAYING_TRUE) {
-			newItem->incrementReferenceCounter();
-			newItem->setDecaying(DECAYING_TRUE);
-			toDecayItems.push_back(newItem);
-		}
-	}
-
-  Item* quiver = cylinder->getItem();
-  if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && quiver->getHoldingPlayer() && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
-    quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
-  }
 	return newItem;
 }
 
@@ -3600,18 +3590,20 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		if (hiddenCharges > 0) {
 			item->setDate(hiddenCharges);
 		}
-		startDecay(item);
+		newItem->startDecaying();
 	}
 	else if (item->getID() == TRANSFORM_BOX_ID && unWrapId != 0) {
 		uint16_t hiddenCharges = item->getDate();
-		item->removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION);
-		addMagicEffect(item->getPosition(), CONST_ME_POFF);
-		transformItem(item, unWrapId);
-		if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
-			item->setSubType(hiddenCharges);
+		Item* newItem = transformItem(item, unWrapId);
+		if (newItem) {
+			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
+				newItem->setSubType(hiddenCharges);
+			}
+			addMagicEffect(pos, CONST_ME_POFF);
+			newItem->removeCustomAttribute("unWrapId");
+			newItem->removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION);
+			newItem->startDecaying();
 		}
-		item->removeCustomAttribute("unWrapId");
-		startDecay(item);
 	}
 }
 
@@ -5565,7 +5557,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 
 			if (splash) {
 				internalAddItem(target->getTile(), splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
-				startDecay(splash);
+				splash->startDecaying();
 			}
 
 			break;
@@ -6500,11 +6492,11 @@ void Game::internalDecayItem(Item* item)
 			}
 		}
 		Item* newItem = transformItem(item, it.decayTo);
-		startDecay(newItem);
+		transformItem(item, it.decayTo);
 	} else {
 		ReturnValue ret = internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
-			SPDLOG_DEBUG("Game::internalDecayItem] internalDecayItem failed, "
+			SPDLOG_ERROR("[Game::internalDecayItem] - internalDecayItem failed, "
                          "error code: {}, item id: {}",
                          static_cast<uint32_t>(ret), item->getID());
 		}

@@ -533,8 +533,6 @@ class Game
 
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 
-		std::vector<Item*> toDecayItems;
-
 		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];
 
 		std::map<uint16_t, std::string> BestiaryList;

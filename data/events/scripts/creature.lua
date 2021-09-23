@@ -8,11 +8,6 @@ end
 
 function Creature:onTargetCombat(target)
 	local player = target:getPlayer()
-	if player and player:getName() == staminaBonus.player then
-		local playerId = player:getId()
-		if not staminaBonus.eventsTrainer[playerId] then
-			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
-		end
-	end
+	self:addEventStamina(player)
 	return true
 end

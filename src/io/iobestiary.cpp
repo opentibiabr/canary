@@ -31,7 +31,7 @@ extern Monsters g_monsters;
 
 bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage)
 {
-	if (!charm || !player || target) {
+	if (!charm || !player || !target) {
 		return false;
 	}
 

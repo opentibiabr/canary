@@ -7,12 +7,11 @@ function Creature:onAreaCombat(tile, isAggressive)
 end
 
 function Creature:onTargetCombat(target)
-	if self:isPlayer() then
-		if target and target:getName() == staminaBonus.target then
-			local playerId = self:getId()
-			if not staminaBonus.eventsTrainer[playerId] then
-				staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
-			end
+	local player = target:getPlayer()
+	if player and player:getName() == staminaBonus.player then
+		local playerId = player:getId()
+		if not staminaBonus.eventsTrainer[playerId] then
+			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)
 		end
 	end
 	return true

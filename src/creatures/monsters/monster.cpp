@@ -366,12 +366,16 @@ void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 
 void Monster::removeTarget(Creature* creature)
 {
+	if (!creature) {
+		return;
+	}
+
 	auto it = std::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
 
-		if(creature && !master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
 	}

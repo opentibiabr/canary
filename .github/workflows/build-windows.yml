@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Remove Windows pre-installed MySQL
-        run: rm -r -fo C:/mysql-5.7.21-winx64
+        run: rm -r -fo C:/mysql*
         if: contains( matrix.os, 'windows')
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)

@@ -62,6 +62,11 @@ jobs:
           additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
           vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
 
+      - name: install
+        run: |
+          cd ${{ github.workspace }}
+          vcpkg install
+
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@latest
 

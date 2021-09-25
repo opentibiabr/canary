@@ -610,7 +610,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 	uint8_t recvbyte = msg.getByte();
 
-	//a dead player can not perform actions
+	// A dead player can not perform actions
 	if (!player || player->isRemoved() || player->getHealth() <= 0) {
 		if (recvbyte == 0x0F) {
 			// we need to make the player pointer != null in this part, game.cpp release is the first step
@@ -625,7 +625,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	}
 
 	// Modules system
-	if(recvbyte != 0xD3){
+	if(player && recvbyte != 0xD3){
 		g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player->getID(), msg, recvbyte)));
 	}
 
@@ -3045,7 +3045,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 		else
 		{
-			for (uint16_t i = 0; i < COMBAT_COUNT; ++i)
+			for (size_t i = 0; i < COMBAT_COUNT; ++i)
 			{
 				absorbs[i] += it.abilities->absorbPercent[i];
 			}

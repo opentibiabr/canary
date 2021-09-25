@@ -67,7 +67,6 @@ Scripts::~Scripts() {
 	delete g_chat;
 	delete g_creatureEvents;
 	delete g_globalEvents;
-	delete g_scripts;
 	delete g_imbuements;
 }
 

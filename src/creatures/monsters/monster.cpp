@@ -366,12 +366,18 @@ void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 
 void Monster::removeTarget(Creature* creature)
 {
+	if (!creature) {
+		return;
+	}
+
 	auto it = std::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
-		if(!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
+		}
 	}
 }
 
@@ -480,7 +486,7 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
-	} else if (creature->getPlayer() &&  creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
 		return false;
 	} else {
 		if (getFaction() != FACTION_DEFAULT) {

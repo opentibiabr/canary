@@ -2,13 +2,10 @@
 name: Analysis - CodeQL
 
 on:
-  pull_request:
   push:
-    branches:
-      - master
-      - dev
-      - devel
-      - develop
+    paths:
+      - 'src/**'
+      - '**.py'
 
 env:
   VCPKG_BUILD_TYPE: release

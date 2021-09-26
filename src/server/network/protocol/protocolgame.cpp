@@ -3123,11 +3123,28 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
 	msg.addByte(0x00);
+
+	uint16_t inventoryItems = 0;
+	auto startInventory = msg.getBufferPosition();
+	msg.skipBytes(2);
+	for (std::underlying_type<Slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; slot++)
+	{
+		Item *inventoryItem = player->getInventoryItem(static_cast<Slots_t>(slot));
+		if (inventoryItem)
+		{
+			++inventoryItems;
+			msg.add<uint16_t>(inventoryItem->getClientID());
+			msg.add<uint32_t>(inventoryItem->getItemCount());
+		}
+		// TODO show / count items in backpack
+	}
+
 	msg.add<uint16_t>(0);
 	msg.add<uint16_t>(0);
 	msg.add<uint16_t>(0);
 	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+	msg.setBufferPosition(startInventory);
+	msg.add<uint16_t>(inventoryItems);
 	writeToOutputBuffer(msg);
 }
 

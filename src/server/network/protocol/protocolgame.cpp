@@ -3124,9 +3124,11 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
 	msg.addByte(0x00);
 
+	// Inventory
+	auto startInventoryItems = msg.getBufferPosition();
 	uint16_t inventoryItems = 0;
-	auto startInventory = msg.getBufferPosition();
 	msg.skipBytes(2);
+
 	for (std::underlying_type<Slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; slot++)
 	{
 		Item *inventoryItem = player->getInventoryItem(static_cast<Slots_t>(slot));
@@ -3139,12 +3141,48 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 		// TODO show / count items in backpack
 	}
 
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.setBufferPosition(startInventory);
+	// Stash
+	// TODO Why does it display items in the store inbox?
+	auto startStashItems = msg.getBufferPosition();
+	StashItemList stashItems = player->getStashItems();
+	msg.skipBytes(2);
+
+	for (auto item : stashItems) {
+		msg.add<uint16_t>(item.first);
+		msg.add<uint32_t>(item.second);
+	}
+
+	// DepotItems
+	auto startDepotItems = msg.getBufferPosition();
+	uint16_t depotItems = 0;
+	msg.skipBytes(2);
+
+	// StoreInboxItems
+	auto startStoreInboxItems = msg.getBufferPosition();
+	uint16_t storeInboxItems = 0;
+	msg.skipBytes(2);
+
+	// InboxItems
+	auto startInboxItems = msg.getBufferPosition();
+	uint16_t inboxItems = 0;
+	msg.skipBytes(2);
+
+	// execute
+	msg.setBufferPosition(startInventoryItems);
 	msg.add<uint16_t>(inventoryItems);
+
+	msg.setBufferPosition(startDepotItems);
+	msg.add<uint16_t>(depotItems);
+
+	msg.setBufferPosition(startStashItems);
+	msg.add<uint16_t>(stashItems.size());
+
+	msg.setBufferPosition(startInboxItems);
+	msg.add<uint16_t>(inboxItems);
+
+	msg.setBufferPosition(startStoreInboxItems);
+	msg.add<uint16_t>(storeInboxItems);
+
 	writeToOutputBuffer(msg);
 }
 

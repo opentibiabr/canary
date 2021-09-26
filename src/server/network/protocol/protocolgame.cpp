@@ -2836,7 +2836,7 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
 	msg.addByte(0x00); // hide stamina
-	msg.addByte(0x00); // enable store summary & character titles
+	msg.addByte(0x01); // enable store summary & character titles
 	msg.addString(""); // character title
 	writeToOutputBuffer(msg);
 }
@@ -3245,7 +3245,9 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
 	msg.addByte(0x00);
-	msg.add<uint32_t>(0);
+	// Remaining Store Xp Boost Time
+	msg.add<uint32_t>(player->getExpBoostStamina());
+	// RemainingDailyRewardXpBoostTime
 	msg.add<uint32_t>(0);
 	msg.addByte(0x00);
 	msg.addByte(0x00);
@@ -3321,8 +3323,18 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
 	msg.addByte(0x00);
-	// enable badges
+	// ShowAccountInformation
+	msg.addByte(0x01);
+	// if ShowAccountInformation show IsOnline, IsPremium, character title, badges
+	// IsOnline
+	msg.addByte(0x01);
+	// IsPremium (GOD has always 'Premium')
+	msg.addByte(player->isPremium() ? 0x01 : 0x00);
+	// character title
+	msg.addString("");
+	// badges
 	msg.addByte(0x00);
+	// Todo badges loop
 	writeToOutputBuffer(msg);
 }
 

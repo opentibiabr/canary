@@ -462,8 +462,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, CREATURETYPE_PLAYER)
 			registerEnum(L, CREATURETYPE_MONSTER)
 			registerEnum(L, CREATURETYPE_NPC)
-			registerEnum(L, CREATURETYPE_SUMMONPLAYER)
-			registerEnum(L, CREATURETYPE_SUMMON_OWN)
+			registerEnum(L, CREATURETYPE_SUMMON_PLAYER)
 			registerEnum(L, CREATURETYPE_SUMMON_OTHERS)
 			registerEnum(L, CREATURETYPE_HIDDEN)
 

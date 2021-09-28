@@ -57,6 +57,9 @@ void DatabaseTasks::threadMain()
 	while (getState() != THREAD_STATE_TERMINATED) {
 		taskLockUnique.lock();
 		if (tasks.empty()) {
+			if (flushTasks) {
+				flushSignal.notify_one();
+			}
 			taskSignal.wait(taskLockUnique);
 		}
 
@@ -109,12 +112,10 @@ void DatabaseTasks::runTask(const DatabaseTask& task)
 void DatabaseTasks::flush()
 {
 	std::unique_lock<std::mutex> guard{ taskLock };
-	while (!tasks.empty()) {
-		auto task = std::move(tasks.front());
-		tasks.pop_front();
-		guard.unlock();
-		runTask(task);
-		guard.lock();
+	if (!tasks.empty()) {
+		flushTasks = true;
+		flushSignal.wait(guard);
+		flushTasks = false;
 	}
 }
 

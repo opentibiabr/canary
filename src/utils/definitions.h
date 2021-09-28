@@ -46,6 +46,10 @@ static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 #define NOMINMAX
 #endif
 
+#if defined(_WIN32) || defined(WIN32) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__BORLANDC__)
+#define OS_WINDOWS
+#endif
+
 #define WIN32_LEAN_AND_MEAN
 
 #ifdef _MSC_VER

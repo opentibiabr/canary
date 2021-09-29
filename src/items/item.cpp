@@ -2058,11 +2058,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	}
 
 	if (it.showCharges) {
-		if (subType == 0){
-			s << " that has " << it.charges << " charge" << (subType != 1 ? "s" : "") << " left";
-		} else{
-			s << " that has " << subType << " charge" << (subType != 1 ? "s" : "") << " left";
-		}
+		s << " that has " << subType << " charge" << (subType != 1 ? "s" : "") << " left";
 	}
 
 	if (it.showDuration) {

@@ -1722,15 +1722,13 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 	}
 
 	if (!inEventMovePush)
-		if (!g_config.getBoolean(PUSH_WHEN_ATTACKING)) {
-			cancelPush();
-		}
+		cancelPush();
 
-		if (task) {
-			actionTaskEvent = g_scheduler.addEvent(task);
-			if (resetIdleTime) {
-				this->resetIdleTime();
-			}
+	if (task) {
+		actionTaskEvent = g_scheduler.addEvent(task);
+		if (resetIdleTime) {
+			this->resetIdleTime();
+		}
 	}
 }
 

@@ -385,7 +385,8 @@ enum CreatureType_t : uint8_t {
 	CREATURETYPE_PLAYER = 0,
 	CREATURETYPE_MONSTER = 1,
 	CREATURETYPE_NPC = 2,
-	CREATURETYPE_SUMMON_PLAYER = 3,
+	CREATURETYPE_SUMMONPLAYER = 3,
+	CREATURETYPE_SUMMON_OWN = 3,
 	CREATURETYPE_SUMMON_OTHERS = 4,
 	CREATURETYPE_HIDDEN = 5,
 };
@@ -638,6 +639,8 @@ struct FindPathParams {
 	bool clearSight = true;
 	bool allowDiagonal = true;
 	bool keepDistance = false;
+	bool absoluteDist = false;
+	bool preferDiagonal = false;
 	int32_t maxSearchDist = 0;
 	int32_t minTargetDist = -1;
 	int32_t maxTargetDist = -1;

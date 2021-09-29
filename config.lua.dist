@@ -89,13 +89,9 @@ houseOwnedByAccount = false
 timeBetweenActions = 200
 timeBetweenExActions = 1000
 
--- Push
--- NOTE: pushDelay: interval for every push
--- NOTE: pushDistanceDelay: delay for every distance push
--- NOTE: pushWhenAttacking: true = enable the push during attack, false = disable the push during attack
+-- Push Delay
 pushDelay = 1000
 pushDistanceDelay = 1500
-pushWhenAttacking = false
 
 -- Map
 -- NOTE: set mapName WITHOUT .otbm at the end

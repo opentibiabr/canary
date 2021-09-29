@@ -610,7 +610,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 	uint8_t recvbyte = msg.getByte();
 
-	// A dead player can not perform actions
+	//a dead player can not perform actions
 	if (!player || player->isRemoved() || player->getHealth() <= 0) {
 		if (recvbyte == 0x0F) {
 			// we need to make the player pointer != null in this part, game.cpp release is the first step
@@ -625,22 +625,9 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	}
 
 	// Modules system
-	if(player && recvbyte != 0xD3){
-		g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player->getID(), msg, recvbyte)));
+	if(recvbyte != 0xD3){
+		g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
 	}
-
-		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
-}
-
-void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
-{
-	if (!acceptPackets || g_game.getGameState() == GAME_STATE_SHUTDOWN) {
-		return;
-	}
-
-	if (!player || player->isRemoved() || player->getHealth() <= 0) {
-		return;	
-}
 
 	switch (recvbyte) {
 		case 0x14: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
@@ -721,7 +708,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xCD: parseInspectionObject(msg); break;
 		case 0xD2: addGameTask(&Game::playerRequestOutfit, player->getID()); break;
 		//g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
-		case 0xD3: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
+		case 0xD3: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, this, msg))); break;
 		case 0xD4: parseToggleMount(msg); break;
 		case 0xD5: parseApplyImbuement(msg); break;
 		case 0xD6: parseClearingImbuement(msg); break;
@@ -777,7 +764,8 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg)
 		return;
 	}
 	uint16_t spriteid = msg.get<uint16_t>();
-	addGameTask(&Game::onPressHotkeyEquip, player->getID(), spriteid);
+	addGameTask(&Game::onPressHotkeyEquip, player, spriteid);
+	return;
 }
 
 void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
@@ -1112,10 +1100,6 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg)
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 {
-	if (!player || player->isRemoved()) {
-		return;
-	}
-
 	uint16_t startBufferPosition = msg.getBufferPosition();
 	Module *outfitModule = g_modules->getEventByRecvbyte(0xD3, false);
 	if (outfitModule)
@@ -2764,16 +2748,19 @@ void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureTy
 	NetworkMessage msg;
 	msg.addByte(0x95);
 	msg.add<uint32_t>(creature->getID());
-	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		creatureType = CREATURETYPE_SUMMON_PLAYER;
+	msg.addByte(creatureType);
+
+	if (player->getOperatingSystem() == CLIENTOS_WINDOWS)
+	{
+		msg.addByte(creatureType); // type or any byte idk
 	}
-	msg.addByte(creatureType); // type or any byte idk
-	if (creatureType == CREATURETYPE_SUMMON_PLAYER) {
-		const Creature* master = creature->getMaster();
-		if (master) {
+
+	if (creatureType == CREATURETYPE_SUMMONPLAYER)
+	{
+		const Creature *master = creature->getMaster();
+		if (master)
+		{
 			msg.add<uint32_t>(master->getID());
-		} else {
-			msg.add<uint32_t>(0);
 		}
 	}
 
@@ -2871,7 +2858,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
-	Condition *condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
+	Condition *condition = player->getCondition(CONDITION_REGENERATION);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 	msg.add<uint16_t>(player->getSpeed() / 2);
@@ -3045,7 +3032,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 		else
 		{
-			for (size_t i = 0; i < COMBAT_COUNT; ++i)
+			for (uint16_t i = 0; i < COMBAT_COUNT; ++i)
 			{
 				absorbs[i] += it.abilities->absorbPercent[i];
 			}
@@ -4021,23 +4008,19 @@ void ProtocolGame::sendCoinBalance()
 
 void ProtocolGame::updateCoinBalance()
 {
-	if (!player) {
-		return;
-	}
-	
 	g_dispatcher.addTask(
-		createTask(std::bind([](uint32_t playerId) {
-			Player* threadPlayer = g_game.getPlayerByID(playerId);
-			if (threadPlayer) {
+		createTask(std::bind([](ProtocolGame *client) {
+			if (client && client->player)
+			{
 				account::Account account;
-				account.LoadAccountDB(threadPlayer->getAccount());
+				account.LoadAccountDB(client->player->getAccount());
 				uint32_t coins;
 				account.GetCoins(&coins);
-				threadPlayer->coinBalance = coins;
-				threadPlayer->sendCoinBalance();
+				client->player->coinBalance = coins;
+				client->sendCoinBalance();
 			}
 		},
-                              player->getID())));
+                              this)));
 }
 
 void ProtocolGame::sendMarketLeave()
@@ -6059,7 +6042,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			msg.addByte(creatureType);
 		}
 
-		if (creatureType == CREATURETYPE_SUMMON_PLAYER)
+		if (creatureType == CREATURETYPE_SUMMONPLAYER)
 		{
 			const Creature *master = creature->getMaster();
 			if (master)
@@ -6141,7 +6124,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			const Player *masterPlayer = master->getPlayer();
 			if (masterPlayer)
 			{
-				creatureType = CREATURETYPE_SUMMON_PLAYER;
+				creatureType = CREATURETYPE_SUMMONPLAYER;
 			}
 		}
 	}
@@ -6155,7 +6138,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		msg.addByte(creatureType); // Type (for summons)
 	}
 
-	if (creatureType == CREATURETYPE_SUMMON_PLAYER)
+	if (creatureType == CREATURETYPE_SUMMONPLAYER)
 	{
 		const Creature *master = creature->getMaster();
 		if (master)
@@ -6215,7 +6198,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 
 	msg.add<uint16_t>(player->getBaseSpeed() / 2);
 
-	Condition *condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
+	Condition *condition = player->getCondition(CONDITION_REGENERATION);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
 
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
@@ -6713,11 +6696,6 @@ void ProtocolGame::sendOpenStash()
 
 void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 {
-	if (!player->isSupplyStashMenuAvailable()) {
-		player->sendCancelMessage("You can't use supply stash right now.");
-		return;
-	}
-
 	if (player->isStashExhausted()) {
 		player->sendCancelMessage("You need to wait to do this again.");
 		return;
@@ -6730,28 +6708,28 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 			uint16_t spriteId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
 			uint32_t count = msg.getByte();
-			addGameTask(&Game::playerStowItem, player->getID(), pos, spriteId, stackpos, count, false);
+			addGameTask(&Game::playerStowItem, player, pos, spriteId, stackpos, count, false);
 			break;
 		}
 		case SUPPLY_STASH_ACTION_STOW_CONTAINER: {
 			Position pos = msg.getPosition();
 			uint16_t spriteId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
-			addGameTask(&Game::playerStowItem, player->getID(), pos, spriteId, stackpos, 0, false);
+			addGameTask(&Game::playerStowItem, player, pos, spriteId, stackpos, 0, false);
 			break;
 		}
 		case SUPPLY_STASH_ACTION_STOW_STACK: {
 			Position pos = msg.getPosition();
 			uint16_t spriteId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
-			addGameTask(&Game::playerStowItem, player->getID(), pos, spriteId, stackpos, 0, true);
+			addGameTask(&Game::playerStowItem, player, pos, spriteId, stackpos, 0, true);
 			break;
 		}
 		case SUPPLY_STASH_ACTION_WITHDRAW: {
 			uint16_t spriteId = msg.get<uint16_t>();
 			uint32_t count = msg.get<uint32_t>();
 			uint8_t stackpos = msg.getByte();
-			addGameTask(&Game::playerStashWithdraw, player->getID(), spriteId, count, stackpos);
+			addGameTask(&Game::playerStashWithdraw, player, spriteId, count, stackpos);
 			break;
 		}
 		default:

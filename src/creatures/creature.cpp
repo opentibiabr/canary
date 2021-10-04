@@ -203,11 +203,11 @@ void Creature::onCreatureWalk()
 				forceUpdateFollowPath = true;
 			}
 		} else {
+			stopEventWalk();
+
 			if (listWalkDir.empty()) {
 				onWalkComplete();
-			}
-
-			stopEventWalk();
+			}	
 		}
 	}
 

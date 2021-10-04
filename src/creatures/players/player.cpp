@@ -284,6 +284,51 @@ WeaponType_t Player::getWeaponType() const
 	return item->getWeaponType();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int32_t Player::getWeaponSkill(const Item* item) const
 {
 	if (!item) {

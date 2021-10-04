@@ -63,6 +63,8 @@ enum booleanConfig_t {
 	STAMINA_PZ,
 	PUSH_WHEN_ATTACKING,
 
+	SORT_LOOT_BY_CHANCE,
+
 	LAST_BOOLEAN_CONFIG
 	};
 

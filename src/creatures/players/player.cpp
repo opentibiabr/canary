@@ -3316,44 +3316,7 @@ bool Player::isStashExhausted() const {
 	return (OTSYS_TIME() - lastStashInteraction < exhaust_time);
 }
 
-void Player::stashContainer(StashContainerList itemDict)
-{
-	StashItemList stashItemDict; // ClientID - Count
-	for (auto it_dict : itemDict) {
-		stashItemDict[(it_dict.first)->getClientID()] = it_dict.second;
-	}
-
-	for (auto it : stashItems) {
-		if(!stashItemDict[it.first]) {
-			stashItemDict[it.first] = it.second;
-		} else {
-			stashItemDict[it.first] += it.second;
-		}
-	}
-
-	if (getStashSize(stashItemDict) > g_config.getNumber(STASH_ITEMS)) {
-		sendCancelMessage("You don't have capacity in the Supply Stash to stow all this item.");
-		return;
-	}
-
-	uint32_t totalStowed = 0;
-	std::ostringstream retString;
-	for (auto stashIterator : itemDict) {
-		uint16_t iteratorCID = (stashIterator.first)->getClientID();
-		if (g_game.internalRemoveItem(stashIterator.first, stashIterator.second) == RETURNVALUE_NOERROR) {
-			addItemOnStash(iteratorCID, stashIterator.second);
-			totalStowed += stashIterator.second;
-		}
-	}
-
-	if (totalStowed == 0) {
-		sendCancelMessage("Sorry, not possible.");
-		return;
-	}
-
-	retString << "Stowed " << totalStowed << " object" << (totalStowed > 1 ? "s." : ".");
-	sendTextMessage(MESSAGE_STATUS, retString.str());
-}
+void Player::stashContainer(StashContainerList itemDict) { return; }
 
 bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/) const
 {

@@ -167,8 +167,10 @@ rateMonsterAttack = 1.0
 rateMonsterDefense = 1.0
 
 -- Monsters
+-- walkToSpawnRadius is the allowed distance that the monster will stay away from spawn position when left with no targets, 0 to disable
 deSpawnRange = 2
 deSpawnRadius = 50
+walkToSpawnRadius = 15
 
 -- Stamina
 staminaSystem = true

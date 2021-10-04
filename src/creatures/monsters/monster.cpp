@@ -516,6 +516,14 @@ void Monster::onCreatureLeave(Creature* creature)
 	if (isOpponent(creature)) {
 		removeTarget(creature);
 		if (targetList.empty()) {
+			int32_t walkToSpawnRadius = g_config.getNumber(ConfigManager::DEFAULT_WALKTOSPAWNRADIUS);
+			if (walkToSpawnRadius > 0 && !Position::areInRange(position, masterPos, walkToSpawnRadius, walkToSpawnRadius)) {
+				std::vector<Direction> dirList;
+				if (getPathTo(masterPos, dirList, 0, 0, true, true)) {
+					startAutoWalk(dirList);
+					return;
+				}
+			}
 			updateIdleStatus();
 		}
 	}
@@ -777,6 +785,10 @@ void Monster::updateIdleStatus()
 		}
 	}
 
+	if (idle) {
+		idle = listWalkDir.empty();
+	}
+
 	setIdle(idle);
 }
 
@@ -843,6 +855,7 @@ void Monster::onThink(uint32_t interval)
 	}
 
 	if (!isInSpawnRange(position)) {
+		g_game.addMagicEffect(this->getPosition(), CONST_ME_POFF);
 		g_game.internalTeleport(this, masterPos);
 		setIdle(true);
 	} else {
@@ -1242,20 +1255,20 @@ void Monster::pushCreatures(Tile* tile)
 
 bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 {
-	if (isIdle || getHealth() <= 0) {
+	if (listWalkDir.empty() && (isIdle || getHealth() <= 0)) {
 		//we dont have anyone watching might aswell stop walking
 		eventWalk = 0;
 		return false;
 	}
 
 	bool result = false;
-	if ((!followCreature || !hasFollowPath) && (!isSummon() || !isMasterInRange)) {
+	if (listWalkDir.empty() && (!followCreature || !hasFollowPath) && (!isSummon() || !isMasterInRange)) {
 		if (getTimeSinceLastMove() >= 1000) {
 			randomStepping = true;
 			//choose a random direction
 			result = getRandomStep(getPosition(), nextDirection);
 		}
-	} else if ((isSummon() && isMasterInRange) || followCreature) {
+	} else if ((isSummon() && isMasterInRange) || followCreature || !listWalkDir.empty()) {
 		randomStepping = false;
 		result = Creature::getNextStep(nextDirection, flags);
 		if (result) {

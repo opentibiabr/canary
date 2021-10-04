@@ -659,8 +659,6 @@ bool Game::loadItemsPrice()
 
 bool Game::loadMainMap(const std::string& filename)
 {
-	Monster::despawnRange = g_config.getNumber(DEFAULT_DESPAWNRANGE);
-	Monster::despawnRadius = g_config.getNumber(DEFAULT_DESPAWNRADIUS);
 	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
 }
 

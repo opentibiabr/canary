@@ -24,6 +24,7 @@
 #include "config/configmanager.h"
 #include "declarations.hpp"
 #include "game/game.h"
+#include "creatures/monsters/monsters.h"
 
 #if LUA_VERSION_NUM >= 502
 #undef lua_strlen
@@ -197,8 +198,9 @@ bool ConfigManager::load()
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
-	integer[DEFAULT_DESPAWNRANGE] = getGlobalNumber(L, "deSpawnRange", 2);
-	integer[DEFAULT_DESPAWNRADIUS] = getGlobalNumber(L, "deSpawnRadius", 50);
+	integer[DEFAULT_DESPAWNRANGE] = Monster::despawnRange = getGlobalNumber(L, "deSpawnRange", 2);
+	integer[DEFAULT_DESPAWNRADIUS] = Monster::despawnRadius = getGlobalNumber(L, "deSpawnRadius", 50);
+	integer[DEFAULT_WALKTOSPAWNRADIUS] = getGlobalNumber(L, "walkToSpawnRadius", 15);
 	integer[RATE_EXPERIENCE] = getGlobalNumber(L, "rateExp", 5);
 	integer[RATE_SKILL] = getGlobalNumber(L, "rateSkill", 3);
 	integer[RATE_LOOT] = getGlobalNumber(L, "rateLoot", 2);

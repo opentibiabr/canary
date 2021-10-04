@@ -3296,6 +3296,9 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 		Item* item2;
 		item2->getID();
 
+		Item* item3 = new Item(100);
+		delete item3;
+		item3->getID();
 
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {

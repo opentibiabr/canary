@@ -53,6 +53,10 @@ MuteCountMap Player::muteCountMap;
 
 uint32_t Player::playerAutoID = 0x10010000;
 
+
+
+
+
 Player::Player(ProtocolGame_ptr p) :
                                     Creature(),
                                     lastPing(OTSYS_TIME()),

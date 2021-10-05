@@ -69,6 +69,13 @@ Player::Player(ProtocolGame_ptr p) :
   inbox->incrementReferenceCounter();
 }
 
+
+
+
+
+
+
+
 Player::~Player()
 {
 

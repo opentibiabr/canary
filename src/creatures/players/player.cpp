@@ -71,31 +71,7 @@ Player::Player(ProtocolGame_ptr p) :
 
 Player::~Player()
 {
-	for (Item* item : inventory) {
-		if (item) {
-			item->setParent(nullptr);
-			item->decrementReferenceCounter();
-		}
-	}
 
-	for (const auto& it : depotLockerMap) {
-		it.second->removeInbox(inbox);
-		it.second->decrementReferenceCounter();
-	}
-
-	for (const auto& it : rewardMap) {
-		it.second->decrementReferenceCounter();
-	}
-
-	for (const auto& it : quickLootContainers) {
-		it.second->decrementReferenceCounter();
-	}
-
-	inbox->decrementReferenceCounter();
-
-	setWriteItem(nullptr);
-	setEditHouse(nullptr);
-	logged = false;
 }
 
 

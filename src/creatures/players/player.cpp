@@ -135,6 +135,19 @@ Player::~Player()
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 bool Player::setVocation(uint16_t vocId)
 {
 	Vocation* voc = g_vocations.getVocation(vocId);

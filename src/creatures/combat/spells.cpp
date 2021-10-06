@@ -1304,7 +1304,7 @@ bool RuneSpell::castSpell(Creature* creature, Creature* target)
 bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
 {
 	if (!creature) {
-		return false
+		return false;
 	}
 
 	bool result;

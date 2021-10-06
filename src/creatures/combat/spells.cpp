@@ -46,10 +46,6 @@ Spells::~Spells()
 
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 {
-	if (!player) {
-		return TALKACTION_FAILED;
-	}
-
 	std::string str_words = words;
 
 	//strip trailing spaces

@@ -273,8 +273,24 @@ registerMonsterType.events = function(mtype, mask)
 		end
 	end
 end
+
+function sortLootByChance(loot)
+	if not configManager.getBoolean(configKeys.SORT_LOOT_BY_CHANCE) then
+		return
+	end
+
+	table.sort(loot, function(loot1, loot2)
+		if not loot1.chance or not loot2.chance then
+			return 0
+		end
+
+		return loot1.chance < loot2.chance
+	end)
+end
+
 registerMonsterType.loot = function(mtype, mask)
 	if type(mask.loot) == "table" then
+		sortLootByChance(mask.loot)
 		local lootError = false
 		for _, loot in pairs(mask.loot) do
 			local parent = Loot()
@@ -336,6 +352,7 @@ registerMonsterType.loot = function(mtype, mask)
 				parent:setUnique(loot.unique)
 			end
 			if loot.child then
+				sortLootByChance(loot.child)
 				for _, children in pairs(loot.child) do
 					local child = Loot()
 					if children.name then

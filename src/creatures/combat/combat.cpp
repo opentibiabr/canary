@@ -499,10 +499,6 @@ CallBack* Combat::getCallback(CallBackParam_t key)
 
 void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data)
 {
-	if (!caster || !target) {
-		return;
-	}
-
 	assert(data);
 	CombatDamage damage = *data;
 	if (caster && caster->getPlayer()) {

@@ -745,10 +745,6 @@ void Combat::doCombat(Creature* caster, Creature* target) const
 
 void Combat::doCombat(Creature* caster, const Position& position) const
 {
-	if (!caster) {
-		return;
-	}
-
 	//area combat callback function
 	if (params.combatType != COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, nullptr);

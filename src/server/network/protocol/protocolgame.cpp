@@ -3923,10 +3923,19 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	do
 	{
 		Container *container = containerList.front();
+		if (!container)
+		{
+			continue;
+		}
 		containerList.pop_front();
 
 		for (Item *item : container->getItemList())
 		{
+			if (!item)
+			{
+				continue;
+			}
+
 			Container *c = item->getContainer();
 			if (c && !c->empty())
 			{

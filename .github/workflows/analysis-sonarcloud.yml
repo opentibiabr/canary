@@ -2,7 +2,7 @@
 name: Analysis - SonarCloud
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize, reopened]
   push:
     branches:
@@ -27,6 +27,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - uses: actions/checkout@v2
+        if: ${{ github.event_name == 'push' }}
 
       - name: Install Linux Dependencies
         run: >

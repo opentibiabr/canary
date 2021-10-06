@@ -920,7 +920,7 @@ bool InstantSpell::configureEvent(const pugi::xml_node& node)
 
 bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 {
-	if (!player || !playerSpellCheck(player)) {
+	if (!playerSpellCheck(player)) {
 		return false;
 	}
 

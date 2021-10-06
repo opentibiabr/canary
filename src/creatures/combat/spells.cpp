@@ -1134,10 +1134,8 @@ bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 
 	scriptInterface->pushFunction(scriptId);
 
-	if (creature) {
-		LuaScriptInterface::pushUserdata<Creature>(L, creature);
-		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	}
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	LuaScriptInterface::pushVariant(L, var);
 

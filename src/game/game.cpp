@@ -5080,6 +5080,10 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type,
 
 bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& text)
 {
+	if (!player) {
+		return false;
+	}
+
 	if (player->walkExhausted()) {
 		return true;
 	}

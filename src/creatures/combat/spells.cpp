@@ -46,6 +46,10 @@ Spells::~Spells()
 
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 {
+	if (!player) {
+		return TALKACTION_FAILED;
+	}
+
 	std::string str_words = words;
 
 	//strip trailing spaces
@@ -920,7 +924,7 @@ bool InstantSpell::configureEvent(const pugi::xml_node& node)
 
 bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 {
-	if (!playerSpellCheck(player)) {
+	if (!player || !playerSpellCheck(player)) {
 		return false;
 	}
 
@@ -1134,8 +1138,10 @@ bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 
 	scriptInterface->pushFunction(scriptId);
 
-	LuaScriptInterface::pushUserdata<Creature>(L, creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	if (creature) {
+		LuaScriptInterface::pushUserdata<Creature>(L, creature);
+		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	}
 
 	LuaScriptInterface::pushVariant(L, var);
 
@@ -1297,6 +1303,10 @@ bool RuneSpell::castSpell(Creature* creature, Creature* target)
 
 bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
 {
+	if (!creature) {
+		return false
+	}
+
 	bool result;
 	if (scripted) {
 		result = executeCastSpell(creature, var, isHotkey);

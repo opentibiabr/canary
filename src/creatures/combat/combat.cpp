@@ -499,6 +499,10 @@ CallBack* Combat::getCallback(CallBackParam_t key)
 
 void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data)
 {
+	if (!caster || !target) {
+		return;
+	}
+
 	assert(data);
 	CombatDamage damage = *data;
 	if (caster && caster->getPlayer()) {
@@ -730,6 +734,10 @@ void Combat::addDistanceEffect(Creature* caster, const Position& fromPos, const 
 
 void Combat::doCombat(Creature* caster, Creature* target) const
 {
+	if (!caster || !target) {
+		return;
+	}
+
 	//target combat callback function
 	if (params.combatType != COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, target);
@@ -745,6 +753,10 @@ void Combat::doCombat(Creature* caster, Creature* target) const
 
 void Combat::doCombat(Creature* caster, const Position& position) const
 {
+	if (!caster) {
+		return;
+	}
+
 	//area combat callback function
 	if (params.combatType != COMBAT_NONE) {
 		CombatDamage damage = getCombatDamage(caster, nullptr);

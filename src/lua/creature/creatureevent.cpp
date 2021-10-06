@@ -516,7 +516,11 @@ void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, 
 	if (creature) {
 		LuaScriptInterface::pushUserdata(L, creature);
 		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else if (attacker) {
+	} else {
+	  lua_pushnil(L);
+	}
+	
+	if (attacker) {
 		LuaScriptInterface::pushUserdata(L, attacker);
 		LuaScriptInterface::setCreatureMetatable(L, -1, attacker);
 	} else {

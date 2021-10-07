@@ -435,7 +435,7 @@ uint32_t Player::getClientIcons() const
 		icons |= ICON_REDSWORDS;
 	}
 
-	if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		icons |= ICON_PIGEON;
 		client->sendRestingStatus(1);
 

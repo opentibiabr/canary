@@ -1327,8 +1327,12 @@ bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool
 
 	scriptInterface->pushFunction(scriptId);
 
-	LuaScriptInterface::pushUserdata<Creature>(L, creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	if (creature) {
+		LuaScriptInterface::pushUserdata(L, creature);
+		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	} else {
+		LuaScriptInterface::reportErrorFunc(LuaScriptInterface::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+	}
 
 	LuaScriptInterface::pushVariant(L, var);
 

@@ -640,7 +640,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 	}
 
 	Item*& item = *itemPtr;
-	if (!item || item->isRemoved()) {
+	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
@@ -688,7 +688,12 @@ int ItemFunctions::luaItemDecay(lua_State* L) {
 	// item:decay(decayId)
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		g_game.startDecay(item);
+		if (isNumber(L, 2)) {
+			ItemType& it = Item::items.getItemType(item->getID());
+			it.decayTo = getNumber<int32_t>(L, 2);
+		}
+
+		item->startDecaying();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

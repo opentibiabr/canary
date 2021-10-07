@@ -31,6 +31,9 @@ weatherConfig = {
     maxDMG = 5
 }
 
+-- Exercise Training
+onExerciseTraining = {}
+
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100

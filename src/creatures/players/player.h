@@ -2172,8 +2172,8 @@ class Player final : public Creature, public Cylinder
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
 
-		int16_t reflectPercent[COMBAT_COUNT] = { 0 };
-		int32_t reflectFlat[COMBAT_COUNT] = { 0 };
+		int16_t reflectMapPercent[COMBAT_COUNT] = { 0 };
+		int32_t reflectMapFlat[COMBAT_COUNT] = { 0 };
 		uint16_t cleavePercent = 0;
 		std::map<uint8_t, int32_t> perfectShot;
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };

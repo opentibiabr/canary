@@ -6569,6 +6569,9 @@ void Game::checkImbuements()
 	auto it = imbuedItems[bucket].begin(), end = imbuedItems[bucket].end();
 	while (it != end) {
 		Item* item = *it;
+		if (!item) {
+			continue;
+		}
 
 		if (item->isRemoved() || !item->getParent()->getCreature()) {
 			ReleaseItem(item);
@@ -6578,7 +6581,7 @@ void Game::checkImbuements()
 
 		Player* player = item->getParent()->getCreature()->getPlayer();
 		const ItemType& itemType = Item::items[item->getID()];
-		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
+		if (!player|| !player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
 			it++;
 			continue;
 		}

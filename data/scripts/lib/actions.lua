@@ -126,7 +126,6 @@ ActionsLib.useRope = function(player, item, fromPosition, target, toPosition, is
 		return false
 	end
 
-	local RopeSpots = {386, 421, 12935, 12936, 14238, 17238, 21501, 21965, 21966, 21967, 21968, 23363}
 	if table.contains(ropeSpots, tile:getGround():getId()) or tile:getItemById(14435) then
 		if Tile(toPosition:moveUpstairs()):hasFlag(TILESTATE_PROTECTIONZONE) and player:isPzLocked() then
 			player:sendCancelMessage(RETURNVALUE_PLAYERISPZLOCKED)

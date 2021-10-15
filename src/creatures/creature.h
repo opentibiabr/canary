@@ -352,6 +352,9 @@ class Creature : virtual public Thing
 		virtual bool isAttackable() const {
 			return true;
 		}
+		virtual Faction_t getFaction() const {
+			return FACTION_DEFAULT;
+		}
 
 		virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
 		virtual void changeMana(int32_t manaChange);
@@ -532,7 +535,6 @@ class Creature : virtual public Thing
 		uint32_t scriptEventsBitField = 0;
 		uint32_t eventWalk = 0;
 		uint32_t walkUpdateTicks = 0;
-		int32_t returnToMasterInterval = 0;
 		uint32_t lastHitCreatureId = 0;
 		uint32_t blockCount = 0;
 		uint32_t blockTicks = 0;

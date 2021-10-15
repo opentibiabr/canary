@@ -345,8 +345,13 @@ void Game::setGameState(GameState_t newState)
 	}
 }
 
-void Game::onPressHotkeyEquip(Player* player, uint16_t spriteid)
+void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid)
 {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+	
 	Item* item;
 	const ItemType& itemType = Item::items.getItemIdByClientId(spriteid);
 
@@ -1014,7 +1019,7 @@ bool Game::internalPlaceCreature(Creature* creature, const Position& pos, bool e
 
 bool Game::placeCreature(Creature* creature, const Position& pos, bool extendedPos /*=false*/, bool forced /*= false*/)
 {
-	if (!internalPlaceCreature(creature, pos, extendedPos, forced, true)) {
+	if (!internalPlaceCreature(creature, pos, extendedPos, forced)) {
 		return false;
 	}
 
@@ -1032,6 +1037,8 @@ bool Game::placeCreature(Creature* creature, const Position& pos, bool extendedP
 
 	creature->getParent()->postAddNotification(creature, nullptr, 0);
 
+	addCreatureCheck(creature);
+	creature->onPlacedCreature();
 	return true;
 }
 
@@ -2747,6 +2754,7 @@ void Game::playerMove(uint32_t playerId, Direction direction)
 
 	player->resetIdleTime();
 	player->setNextWalkActionTask(nullptr);
+	player->cancelPush();
 
 	player->startAutoWalk(std::forward_list<Direction> { direction });
 }
@@ -3731,8 +3739,13 @@ void Game::playerBrowseField(uint32_t playerId, const Position& pos)
 	}
 }
 
-void Game::playerStowItem(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems)
+void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems)
 {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
 	if (!player->isPremium()) {
 		player->sendCancelMessage(RETURNVALUE_YOUNEEDPREMIUMACCOUNT);
 		return;
@@ -3755,8 +3768,13 @@ void Game::playerStowItem(Player* player, const Position& pos, uint16_t spriteId
 	player->stowItem(item, count, allItems);
 }
 
-void Game::playerStashWithdraw(Player* player, uint16_t spriteId, uint32_t count, uint8_t)
+void Game::playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t count, uint8_t)
 {
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+	
 	if (player->hasFlag(PlayerFlag_CannotPickupItem)) {
 		return;
 	}
@@ -5074,7 +5092,9 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& 
 
 	result = g_spells->playerSaySpell(player, words);
 	if (result == TALKACTION_BREAK) {
-		player->cancelPush();
+		if (!g_config.getBoolean(PUSH_WHEN_ATTACKING)) {
+			player->cancelPush();
+		}
 
 		if (!g_config.getBoolean(EMOTE_SPELLS)) {
 			return internalCreatureSay(player, TALKTYPE_SPELL_USE, words, false);
@@ -5196,11 +5216,15 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir)
 	}
 	creature->setDirection(dir);
 
-	//send to client
+	// Send to client
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendCreatureTurn(creature);
+		Player* tmpPlayer = spectator->getPlayer();
+		if(!tmpPlayer) {
+			continue;
+		}
+		tmpPlayer->sendCreatureTurn(creature);
 	}
 	return true;
 }
@@ -5304,23 +5328,27 @@ void Game::checkCreatures(size_t index)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CHECK_CREATURE_INTERVAL, std::bind(&Game::checkCreatures, this, (index + 1) % EVENT_CREATURECOUNT)));
 
 	auto& checkCreatureList = checkCreatureLists[index];
-	auto it = checkCreatureList.begin(), end = checkCreatureList.end();
-	while (it != end) {
-		Creature* creature = *it;
-		if (creature->creatureCheck) {
+	size_t it = 0, end = checkCreatureList.size();
+	while (it < end) {
+		Creature* creature = checkCreatureList[it];
+		if (creature && creature->creatureCheck) {
 			if (creature->getHealth() > 0) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 				creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 				creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+			} else {
+				creature->onDeath();
 			}
 			++it;
 		} else {
 			creature->inCheckCreaturesVector = false;
-			it = checkCreatureList.erase(it);
 			ReleaseCreature(creature);
+
+			checkCreatureList[it] = checkCreatureList.back();
+			checkCreatureList.pop_back();
+			--end;
 		}
 	}
-
 	cleanup();
 }
 
@@ -5676,6 +5704,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				if(!tmpPlayer)
 				{
 					continue;
+				}
+
+				if (damage.primary.type == COMBAT_HEALING && target && target->getMonster()) {
+					if (target != attacker) {
+						return false;
+					}
 				}
 
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
@@ -6819,25 +6853,41 @@ void Game::updatePlayerShield(Player* player)
 
 void Game::updateCreatureType(Creature* creature)
 {
-	const Player* masterPlayer = nullptr;
+	if (!creature) {
+		return;
+	}
 
+	const Player* masterPlayer = nullptr;
 	CreatureType_t creatureType = creature->getType();
 	if (creatureType == CREATURETYPE_MONSTER) {
 		const Creature* master = creature->getMaster();
 		if (master) {
 			masterPlayer = master->getPlayer();
 			if (masterPlayer) {
-				creatureType = CREATURETYPE_SUMMONPLAYER;
+				creatureType = CREATURETYPE_SUMMON_OTHERS;
 			}
 		}
+	}
+	if (creature->isHealthHidden()) {
+		creatureType = CREATURETYPE_HIDDEN;
 	}
 
 	//send to clients
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
-
-	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendCreatureType(creature, creatureType);
+	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
+		for (Creature* spectator : spectators) {
+			Player* player = spectator->getPlayer();
+			if (masterPlayer == player) {
+				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
+			} else {
+				player->sendCreatureType(creature, creatureType);
+			}
+		}
+	} else {
+		for (Creature* spectator : spectators) {
+			spectator->getPlayer()->sendCreatureType(creature, creatureType);
+		}
 	}
 }
 
@@ -7400,26 +7450,21 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId)
 		return;
 	}
 
-	Creature* creature = getCreatureByID(npcId);
-	if (!creature) {
+	Npc* npc = getNpcByID(npcId);
+	if (!npc) {
 		return;
 	}
 
-	Npc* npc = creature->getNpc();
-	if(npc) {
-		SpectatorHashSet spectators;
-		spectators.insert(npc);
-		map.getSpectators(spectators, player->getPosition(), true, true);
-		internalCreatureSay(player, TALKTYPE_SAY, "Hi", false, &spectators);
-		spectators.clear();
-		spectators.insert(npc);
-		if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
-			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Trade", false, &spectators);
-		} else {
-			internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "Sail", false, &spectators);
-        }
-
-		return;
+	SpectatorHashSet spectators;
+	spectators.insert(npc);
+	map.getSpectators(spectators, player->getPosition(), true, true);
+	internalCreatureSay(player, TALKTYPE_SAY, "hi", false, &spectators);
+	spectators.clear();
+	spectators.insert(npc);
+	if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &spectators);
+	} else {
+		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &spectators);
 	}
 }
 
@@ -7756,9 +7801,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (!buyerPlayer) {
-			buyerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
-				delete buyerPlayer;
 				return;
 			}
 		}
@@ -8667,14 +8710,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_IMBUEMENTS: return g_imbuements->reload();
 		case RELOAD_TYPE_RAIDS: return raids.reload() && raids.startup();
 
-		case RELOAD_TYPE_SPELLS: {
-			if (!g_spells->reload()) {
-				SPDLOG_WARN("[Game::reload] - Failed to reload spells.");
-				std::terminate();
-			}
-			return true;
-		}
-
 		case RELOAD_TYPE_SCRIPTS: {
 			// commented out stuff is TODO, once we approach further in revscriptsys
 			g_actions->clear(true);
@@ -8690,10 +8725,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 		}
 
 		default: {
-			if (!g_spells->reload()) {
-				SPDLOG_WARN("[Game::reload] - Failed to reload spells.");
-				std::terminate();
-			}
 
 			g_config.reload();
 			raids.reload() && raids.startup();

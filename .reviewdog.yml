@@ -9,7 +9,9 @@ runner:
 
   luacheck:
     cmd: luacheck --formatter=plain --no-color --no-config --no-global \
-      --no-unused --no-unused-args --no-cache -d ./data/
+      --no-unused --no-unused-args --no-cache --no-max-line-length \
+      --no-max-code-line-length --no-max-string-line-length \
+      --no-max-comment-line-length -d ./data/
     errorformat:
       - "%f:%l:%c: %m"
     level: warning

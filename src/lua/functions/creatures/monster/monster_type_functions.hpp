@@ -56,6 +56,11 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 				registerMethod(L, "MonsterType", "runHealth", MonsterTypeFunctions::luaMonsterTypeRunHealth);
 				registerMethod(L, "MonsterType", "experience", MonsterTypeFunctions::luaMonsterTypeExperience);
 
+				registerMethod(L, "MonsterType", "faction", MonsterTypeFunctions::luaMonsterTypeFaction);
+				registerMethod(L, "MonsterType", "enemyFactions", MonsterTypeFunctions::luaMonsterTypeEnemyFactions);
+				registerMethod(L, "MonsterType", "targetPreferPlayer", MonsterTypeFunctions::luaMonsterTypeTargetPreferPlayer);
+				registerMethod(L, "MonsterType", "targetPreferMaster", MonsterTypeFunctions::luaMonsterTypeTargetPreferMaster);
+
 				registerMethod(L, "MonsterType", "raceId", MonsterTypeFunctions::luaMonsterTypeRaceid);
 				registerMethod(L, "MonsterType", "Bestiaryclass", MonsterTypeFunctions::luaMonsterTypeBestiaryclass);
 				registerMethod(L, "MonsterType", "BestiaryOccurrence", MonsterTypeFunctions::luaMonsterTypeBestiaryOccurrence);
@@ -170,6 +175,11 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 		static int luaMonsterTypeMaxHealth(lua_State* L);
 		static int luaMonsterTypeRunHealth(lua_State* L);
 		static int luaMonsterTypeExperience(lua_State* L);
+
+		static int luaMonsterTypeFaction(lua_State* L);
+		static int luaMonsterTypeEnemyFactions(lua_State* L);
+		static int luaMonsterTypeTargetPreferPlayer(lua_State* L);
+		static int luaMonsterTypeTargetPreferMaster(lua_State* L);
 
 		static int luaMonsterTypeRaceid(lua_State* L);
 		static int luaMonsterTypeBestiaryclass(lua_State* L);

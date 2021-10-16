@@ -6594,6 +6594,7 @@ void Game::checkImbuements()
 			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
 			if (duration > 0 && newDuration == 0) {
 				needUpdate = true;
+				item->setImbuement(slot, 0);
 			}
 		}
 
@@ -6604,9 +6605,6 @@ void Game::checkImbuements()
 			player->postRemoveNotification(item, player, index);
 			ReleaseItem(item);
 			it = imbuedItems[bucket].erase(it);
-			for (uint8_t slot = 0; slot < slots; slot++) {
-				item->setImbuement(slot, 0);
-			}
 		}
 
 		for (uint8_t slot = 0; slot < slots; slot++) {

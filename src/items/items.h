@@ -54,6 +54,9 @@ struct Abilities {
 
 	//elemental damage
 	uint16_t elementDamage = 0;
+	uint16_t cleaveDamage = 0;
+	uint16_t reflectDamage = 0;
+	uint16_t perfectBonus = 0;
 	CombatType_t elementType = COMBAT_NONE;
 
 	bool manaShield = false;

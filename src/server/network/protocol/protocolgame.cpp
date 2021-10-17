@@ -2887,7 +2887,6 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
-	// Check if all clients have the same hardcoded skill ids
 	static const uint8_t HardcodedSkillIds[] = { 11, 9, 8, 10, 7, 6, 13 };
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i)
 	{
@@ -2899,28 +2898,9 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 
-	// Version 12.70 start
+	// Version 12.70
 	msg.addByte(0x00); // bool ?
-	msg.addByte(0xA1); // Unknown
 
-	msg.add<uint16_t>(player->getMagicLevel());
-	msg.add<uint16_t>(player->getBaseMagicLevel());
-	// Loyalty bonus
-	msg.add<uint16_t>(player->getBaseMagicLevel());
-	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
-
-	static const skills_t SkillsIterator[] = {SKILL_FIST, SKILL_CLUB, SKILL_SWORD, SKILL_AXE, SKILL_DISTANCE, SKILL_SHIELD, SKILL_FISHING, SKILL_CRITICAL_HIT_CHANCE, SKILL_LIFE_LEECH_CHANCE, SKILL_MANA_LEECH_CHANCE};
-	for (skills_t skill : SkillsIterator) {
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(static_cast<uint8_t>(skill)), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(static_cast<uint8_t>(skill)));
-		// Loyalty bonus
-		msg.add<uint16_t>(player->getBaseSkill(static_cast<uint8_t>(skill)));
-		msg.add<uint16_t>(player->getSkillPercent(static_cast<uint8_t>(skill)) * 100);
-	}
-
-	msg.add<uint32_t>(player->getCapacity());
-	msg.add<uint32_t>(player->getCapacity());
-	// Version 12.70 end
 	writeToOutputBuffer(msg);
 }
 
@@ -2943,11 +2923,10 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	msg.add<uint16_t>(0); // Direct bonus
 	msg.add<uint16_t>(0); // Percentage bonus
 
-	msg.add<uint16_t>(0); // Perfect shot range 1
-	msg.add<uint16_t>(0); // Perfect shot range 2
-	msg.add<uint16_t>(0); // Perfect shot range 3
-	msg.add<uint16_t>(0); // Perfect shot range 4
-	msg.add<uint16_t>(0); // Perfect shot range 5
+	for (uint16_t i = 1; i <= 5; i++)
+	{
+		msg.add<uint16_t>(0x00); // Perfect shot range
+	}
 
 	msg.add<uint16_t>(0); // Reflection
 	// Version 12.70 end

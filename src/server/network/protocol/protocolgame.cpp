@@ -3087,12 +3087,6 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 	}
 
-	// Version 12.70
-	// This next byte is not realy before the 'msg.addByte(combats)'
-	// in fact this is the last one byte before sending!!
-	// PS: This byte represents a header for an array, that means with value '0' we dont need to continue sending bytes.
-	msg.addByte(0); // Unknown size
-
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
 
@@ -4504,7 +4498,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	// Version 12.70
+	// Version 12.70 new items
 	// Magic
 	std::ostringstream string;
 	msg.add<uint16_t>(0x00);

@@ -2759,7 +2759,7 @@ void ProtocolGame::sendCreatureSkull(const Creature *creature)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureType)
+void ProtocolGame::sendCreatureUpdate(const Creature *creature)
 {
 	if (creature && !creature->isRemoved())
 	{

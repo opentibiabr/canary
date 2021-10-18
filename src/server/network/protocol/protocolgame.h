@@ -306,7 +306,7 @@ private:
 	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
 	void sendCreatureShield(const Creature *creature);
 	void sendCreatureSkull(const Creature *creature);
-	void sendCreatureType(const Creature *creature, uint8_t creatureType);
+	void sendCreatureUpdate(const Creature *creature);
 
 	void sendShop(Npc *npc);
 	void sendCloseShop();

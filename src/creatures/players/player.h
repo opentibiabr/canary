@@ -1000,9 +1000,9 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureShield(creature);
 			}
 		}
-		void sendCreatureType(const Creature* creature, uint8_t creatureType) {
+		void sendCreatureUpdate(const Creature* creature) {
 			if (client) {
-				client->sendCreatureType(creature, creatureType);
+				client->sendCreatureUpdate(creature);
 			}
 		}
 		void sendSpellCooldown(uint8_t spellId, uint32_t time) {

@@ -6830,40 +6830,22 @@ void Game::updatePlayerShield(Player* player)
 
 void Game::updateCreatureType(Creature* creature)
 {
-	if (!creature) {
+	if (!creature || creature->isHealthHidden()) {
 		return;
 	}
 
-	const Player* masterPlayer = nullptr;
-	CreatureType_t creatureType = creature->getType();
-	if (creatureType == CREATURETYPE_MONSTER) {
-		const Creature* master = creature->getMaster();
-		if (master) {
-			masterPlayer = master->getPlayer();
-			if (masterPlayer) {
-				creatureType = CREATURETYPE_SUMMON_OTHERS;
-			}
-		}
-	}
-	if (creature->isHealthHidden()) {
-		creatureType = CREATURETYPE_HIDDEN;
-	}
-
-	//send to clients
+	// Send to clients
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
-	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		for (Creature* spectator : spectators) {
-			Player* player = spectator->getPlayer();
-			if (masterPlayer == player) {
-				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
-			} else {
-				player->sendCreatureType(creature, creatureType);
-			}
+
+	for (Creature* spectator : spectators) {
+		if (!spectator) {
+			continue;
 		}
-	} else {
-		for (Creature* spectator : spectators) {
-			spectator->getPlayer()->sendCreatureType(creature, creatureType);
+
+		Player* player = spectator->getPlayer();
+		if (player) {
+			player->sendCreatureUpdate(creature);
 		}
 	}
 }

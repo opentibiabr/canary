@@ -7,7 +7,6 @@ function Creature:onAreaCombat(tile, isAggressive)
 end
 
 function Creature:onTargetCombat(target)
-	local player = target:getPlayer()
-	self:addEventStamina(player)
+	self:addEventStamina(target)
 	return true
 end

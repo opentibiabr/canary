@@ -383,8 +383,8 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 				}
 			}
 		}
+		return g_events->eventCreatureOnTargetCombat(attacker, target);
 	}
-	return g_events->eventCreatureOnTargetCombat(attacker, target);
 }
 
 void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina, double newMinb, double newMaxa, double newMaxb)

@@ -4498,45 +4498,50 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	// Version 12.70 new items
+	// Version 12.70
+	// New items modifiers
+
 	// Magic
 	std::ostringstream string;
 	msg.add<uint16_t>(0x00);
 
 	// Cleave
-	if (it.abilities && it.abilities->cleaveDamage)
+	if (it.modifiers)
 	{
-		string.clear();
-		string << it.abilities->cleaveDamage << "%";
-		msg.addString(string.str());
-	}
-	else
-	{
-		msg.add<uint16_t>(0x00);
-	}
+		if (it.modifiers->cleaveDamage)
+		{
+			string.clear();
+			string << it.modifiers->cleaveDamage << "%";
+			msg.addString(string.str());
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
 
-	// Reflection
-	if (it.abilities && it.abilities->reflectDamage)
-	{
-		string.clear();
-		string << it.abilities->reflectDamage;
-		msg.addString(string.str());
-	}
-	else
-	{
-		msg.add<uint16_t>(0x00);
-	}
+		// Reflection
+		if (it.modifiers->reflectDamage)
+		{
+			string.clear();
+			string << it.modifiers->reflectDamage;
+			msg.addString(string.str());
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
 
-	// Perf shot
-	if (it.abilities && it.abilities->perfectBonus)
-	{
-		string.clear();
-		string << "+" << it.abilities->perfectBonus << " at range";
-		msg.addString(string.str());
-	}
-	else
-	{
-		msg.add<uint16_t>(0x00);
+		// Perf shot
+		if (it.modifiers->perfectBonus)
+		{
+			string.clear();
+			string << "+" << it.modifiers->perfectBonus << " at range";
+			msg.addString(string.str());
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
 	}
 
 	uint8_t slot = Item::items[itemId].imbuingSlots;

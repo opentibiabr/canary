@@ -6828,7 +6828,7 @@ void Game::updatePlayerShield(Player* player)
 	}
 }
 
-void Game::updateCreatureType(Creature* creature)
+void Game::updateCreature(Creature* creature)
 {
 	if (!creature || creature->isHealthHidden()) {
 		return;

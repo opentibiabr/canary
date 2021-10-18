@@ -366,7 +366,7 @@ class Game
 		void updateCreatureIcon(const Creature* creature);
 		void updateCreatureSkull(const Creature* player);
 		void updatePlayerShield(Player* player);
-		void updateCreatureType(Creature* creature);
+		void updateCreature(Creature* creature);
 		void updateCreatureWalkthrough(const Creature* creature);
 
 		GameState_t getGameState() const;

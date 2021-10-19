@@ -79,6 +79,9 @@ public:
 	void login(const std::string &name, uint32_t accnumber, OperatingSystem_t operatingSystem);
 	void logout(bool displayEffect, bool forced);
 
+	void spawn();
+	void despawn();
+	
 	void AddItem(NetworkMessage &msg, const Item *item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count);
 

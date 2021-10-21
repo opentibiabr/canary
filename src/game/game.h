@@ -544,7 +544,6 @@ class Game
 		std::map<uint32_t, uint32_t> stages;
 
 		std::list<Item*> decayItems[EVENT_DECAY_BUCKETS];
-		std::list<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 
 		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];
 
@@ -553,6 +552,7 @@ class Game
 
 		std::vector<Charm*> CharmList;
 		std::vector<Creature*> ToReleaseCreatures;
+		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
 
 		size_t lastBucket = 0;

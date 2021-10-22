@@ -33,7 +33,7 @@ function Player:onLook(thing, position, distance)
 				description = string.format("%s\nDecays to: %d", description, decayId)
 			end
 
-		player:showImbuemetSlotOnLook(itemType, description, thing)
+			player:showImbuemetSlotOnLook(itemType, description, thing)
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"
 			if thing:isPlayer() and thing:getMaxMana() > 0 then

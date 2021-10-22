@@ -150,11 +150,11 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 		SPDLOG_WARN("[Items::loadFromOtb] - items.otb using generic client version");
 	} else if (majorVersion != 3) {
 		SPDLOG_ERROR("[Items::loadFromOtb] - "
-					 "Old version detected, a newer version of items.otb is required");
+                     "Old version detected, a newer version of items.otb is required");
 		return ERROR_INVALID_FORMAT;
 	} else if (minorVersion < CLIENT_VERSION_1140) {
 		SPDLOG_ERROR("[Items::loadFromOtb] - "
-					 "A newer version of items.otb is required");
+                     "A newer version of items.otb is required");
 		return ERROR_INVALID_FORMAT;
 	}
 
@@ -190,7 +190,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 			}
 
 			switch (attrib) {
-			case ITEM_ATTR_SERVERID: {
+				case ITEM_ATTR_SERVERID: {
 					if (datalen != sizeof(uint16_t)) {
 						return ERROR_INVALID_FORMAT;
 					}
@@ -199,10 +199,10 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 						return ERROR_INVALID_FORMAT;
 					}
 
-				break;
+					break;
 				}
 
-			case ITEM_ATTR_CLIENTID: {
+				case ITEM_ATTR_CLIENTID: {
 					if (datalen != sizeof(uint16_t)) {
 						return ERROR_INVALID_FORMAT;
 					}
@@ -210,10 +210,10 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 					if (!stream.read<uint16_t>(clientId)) {
 						return ERROR_INVALID_FORMAT;
 					}
-				break;
+					break;
 				}
 
-			case ITEM_ATTR_SPEED: {
+				case ITEM_ATTR_SPEED: {
 					if (datalen != sizeof(uint16_t)) {
 						return ERROR_INVALID_FORMAT;
 					}
@@ -221,10 +221,10 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 					if (!stream.read<uint16_t>(speed)) {
 						return ERROR_INVALID_FORMAT;
 					}
-				break;
+					break;
 				}
 
-			case ITEM_ATTR_LIGHT2: {
+				case ITEM_ATTR_LIGHT2: {
 					if (datalen != sizeof(lightBlock2)) {
 						return ERROR_INVALID_FORMAT;
 					}
@@ -236,10 +236,10 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 
 					lightLevel = static_cast<uint8_t>(lb2.lightLevel);
 					lightColor = static_cast<uint8_t>(lb2.lightColor);
-				break;
+					break;
 				}
 
-			case ITEM_ATTR_TOPORDER: {
+				case ITEM_ATTR_TOPORDER: {
 					if (datalen != sizeof(uint8_t)) {
 						return ERROR_INVALID_FORMAT;
 					}
@@ -247,10 +247,10 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 					if (!stream.read<uint8_t>(alwaysOnTopOrder)) {
 						return ERROR_INVALID_FORMAT;
 					}
-				break;
+					break;
 				}
 
-			case ITEM_ATTR_WAREID: {
+				case ITEM_ATTR_WAREID: {
 					if (datalen != sizeof(uint16_t)) {
 						return ERROR_INVALID_FORMAT;
 					}
@@ -258,7 +258,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 					if (!stream.read<uint16_t>(wareId)) {
 						return ERROR_INVALID_FORMAT;
 					}
-				break;
+					break;
 				}
 
 				default: {
@@ -266,7 +266,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 					if (!stream.skip(datalen)) {
 						return ERROR_INVALID_FORMAT;
 					}
-				break;
+					break;
 				}
 			}
 		}
@@ -281,28 +281,28 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 
 		iType.group = static_cast<ItemGroup_t>(itemNode.type);
 		switch (itemNode.type) {
-		case ITEM_GROUP_CONTAINER:
+			case ITEM_GROUP_CONTAINER:
 				iType.type = ITEM_TYPE_CONTAINER;
-			break;
-		case ITEM_GROUP_DOOR:
+				break;
+			case ITEM_GROUP_DOOR:
 				//not used
 				iType.type = ITEM_TYPE_DOOR;
-			break;
-		case ITEM_GROUP_MAGICFIELD:
+				break;
+			case ITEM_GROUP_MAGICFIELD:
 				//not used
 				iType.type = ITEM_TYPE_MAGICFIELD;
-			break;
-		case ITEM_GROUP_TELEPORT:
+				break;
+			case ITEM_GROUP_TELEPORT:
 				//not used
 				iType.type = ITEM_TYPE_TELEPORT;
-			break;
-		case ITEM_GROUP_NONE:
-		case ITEM_GROUP_GROUND:
-		case ITEM_GROUP_SPLASH:
-		case ITEM_GROUP_FLUID:
-		case ITEM_GROUP_CHARGES:
-		case ITEM_GROUP_DEPRECATED:
-			break;
+				break;
+			case ITEM_GROUP_NONE:
+			case ITEM_GROUP_GROUND:
+			case ITEM_GROUP_SPLASH:
+			case ITEM_GROUP_FLUID:
+			case ITEM_GROUP_CHARGES:
+			case ITEM_GROUP_DEPRECATED:
+				break;
 			default:
 				return ERROR_INVALID_FORMAT;
 		}
@@ -362,8 +362,8 @@ bool Items::loadFromXml()
 		if (!fromIdAttribute) {
 			if (idAttribute) {
 				SPDLOG_WARN("[Items::loadFromXml] - "
-							"No item id: {} found",
-							idAttribute.value());
+                            "No item id: {} found",
+                            idAttribute.value());
 			} else {
 				SPDLOG_WARN("[Items::loadFromXml] - No item id found");
 			}
@@ -373,8 +373,8 @@ bool Items::loadFromXml()
 		pugi::xml_attribute toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			SPDLOG_WARN("[Items::loadFromXml] - "
-						"tag fromid: {} without toid",
-						fromIdAttribute.value());
+                        "tag fromid: {} without toid",
+                        fromIdAttribute.value());
 			continue;
 		}
 
@@ -455,59 +455,65 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		}
 
 		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
-		// New parses
-		ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseShowCount(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseArmor(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseDefense(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseExtraDefense(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseWeaponType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseSlotType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseAmmoType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseShootType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseMagicEffect(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseLootType(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseRange(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseDuration(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseTransform(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseCharges(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseShowAttributes(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseHitChance(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseInvisible(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseSpeed(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseHealthAndMana(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseSkills(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseCriticalHit(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseLifeAndManaLeech(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseMaxHitAndManaPoints(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
-		ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseLevelDoor(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseBeds(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
-		ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
+		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
+		if (parseAttribute != ItemParseAttributesMap.end()) {
+			// New parses
+			ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseShowCount(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseArmor(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseDefense(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseExtraDefense(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWeaponType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSlotType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAmmoType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseShootType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMagicEffect(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseLootType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseRange(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseDuration(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseTransform(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCharges(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseShowAttributes(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseHitChance(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseInvisible(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSpeed(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseHealthAndMana(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSkills(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCriticalHit(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseLifeAndManaLeech(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMaxHitAndManaPoints(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
+			ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseLevelDoor(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseBeds(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
+		} else {
+			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value {}",
+                        keyAttribute.as_string());
+		}
 	}
 
 	//check bed items

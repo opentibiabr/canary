@@ -272,3 +272,24 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
         end
     end
 end
+
+function Player:showImbuemetSlotOnLook(itemType, description, thing)
+	if (itemType and itemType:getImbuingSlots() > 0) then
+		local imbuingSlots = "Imbuements: ("
+		for slot = 0, itemType:getImbuingSlots() - 1 do
+			if slot > 0 then
+				imbuingSlots = string.format("%s, ", imbuingSlots)
+			end
+			local duration = thing:getImbuementDuration(slot)
+			if duration > 0 then
+				local imbue = thing:getImbuement(slot)
+				imbuingSlots = string.format("%s%s %s %s",
+					imbuingSlots, imbue:getBase().name, imbue:getName(), getTime(duration))
+			else
+				imbuingSlots = string.format("%sEmpty Slot", imbuingSlots)
+			end
+		end
+		imbuingSlots = string.format("%s).", imbuingSlots)
+		description = string.gsub(description, "It weighs", imbuingSlots.. "\nIt weighs")
+	end
+end

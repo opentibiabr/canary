@@ -31,6 +31,10 @@ extern Monsters g_monsters;
 
 bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage)
 {
+	if (!charm || !player || !target) {
+		return false;
+	}
+
 	CombatParams charmParams;
 	CombatDamage charmDamage;
 	if (charm->type == CHARM_OFFENSIVE) {
@@ -99,6 +103,10 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 
 Charm* IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= false*/)
 {
+	if (!activeCharm) {
+		return nullptr;
+	}
+
 	std::vector<Charm*> charmInternal = g_game.getCharmList();
 	for (Charm* tmpCharm : charmInternal) {
 		if (tmpCharm->id == activeCharm) {
@@ -150,6 +158,10 @@ uint8_t IOBestiary::getKillStatus(MonsterType* mtype, uint32_t killAmount) const
 
 void IOBestiary::resetCharmRuneCreature(Player* player, Charm* charm)
 {
+	if (!player || !charm) {
+		return;
+	}
+
 	int32_t value = bitToggle(player->getUsedRunesBit(), charm, false);
 	player->setUsedRunesBit(value);
 	player->parseRacebyCharm(charm->id, true, 0);
@@ -157,6 +169,10 @@ void IOBestiary::resetCharmRuneCreature(Player* player, Charm* charm)
 
 void IOBestiary::setCharmRuneCreature(Player* player, Charm* charm, uint16_t raceid)
 {
+	if (!player || !charm) {
+		return;
+	}
+
 	player->parseRacebyCharm(charm->id, true, raceid);
 	int32_t Toggle = bitToggle(player->getUsedRunesBit(), charm, true);
 	player->setUsedRunesBit(Toggle);
@@ -180,6 +196,10 @@ std::list<charmRune_t> IOBestiary::getCharmUsedRuneBitAll(Player* player)
 
 uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race) const
 {
+	if (!player) {
+		return 0;
+	}
+
 	uint16_t count = 0;
 	std::map<uint16_t, std::string> besty_l = g_game.getBestiaryList();
 
@@ -194,6 +214,10 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race
 
 void IOBestiary::addCharmPoints(Player* player, uint16_t amount, bool negative /*= false*/)
 {
+	if (!player) {
+		return;
+	}
+
 	uint32_t myCharms = player->getCharmPoints();
 	if (negative) {
 		myCharms -= amount;
@@ -206,7 +230,7 @@ void IOBestiary::addCharmPoints(Player* player, uint16_t amount, bool negative /
 void IOBestiary::addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount /*= 1*/)
 {
 	uint16_t raceid = mtype->info.raceid;
-	if (raceid == 0) {
+	if (raceid == 0 || !player || !mtype) {
 		return;
 	}
 	uint32_t curCount = player->getBestiaryKillCount(raceid);
@@ -244,6 +268,10 @@ void IOBestiary::addBestiaryKill(Player* player, MonsterType* mtype, uint32_t am
 
 charmRune_t IOBestiary::getCharmFromTarget(Player* player, MonsterType* mtype)
 {
+	if (!player || !mtype) {
+		return CHARM_NONE;
+	}
+
 	uint16_t bestiaryEntry = mtype->info.raceid;
 	std::list<charmRune_t> usedRunes = getCharmUsedRuneBitAll(player);
 
@@ -258,11 +286,19 @@ charmRune_t IOBestiary::getCharmFromTarget(Player* player, MonsterType* mtype)
 
 bool IOBestiary::hasCharmUnlockedRuneBit(Charm* charm, int32_t input) const
 {
+	if (!charm) {
+		return false;
+	}
+
 	return ((input & charm->binary) != 0);
 }
 
 int32_t IOBestiary::bitToggle(int32_t input, Charm* charm, bool on) const
 {
+	if (!charm) {
+		return CHARM_NONE;
+	}
+
 	int32_t returnToggle = 0;
 	int32_t binary = charm->binary;
 	if (on) {
@@ -278,6 +314,9 @@ int32_t IOBestiary::bitToggle(int32_t input, Charm* charm, bool on) const
 void IOBestiary::sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid)
 {
 	Charm* charm = getBestiaryCharm(runeID);
+	if (!player || !charm) {
+		return;
+	}
 
 	if (action == 0) {
 		std::ostringstream ss;

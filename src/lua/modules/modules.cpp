@@ -23,6 +23,7 @@
 
 #include "lua/modules/modules.h"
 #include "creatures/players/player.h"
+#include "game/game.h"
 
 Modules::Modules() :
 	scriptInterface("Modules Interface") {
@@ -88,7 +89,12 @@ Module* Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 	return nullptr;
 }
 
-void Modules::executeOnRecvbyte(Player* player, NetworkMessage& msg, uint8_t byte) const {
+void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage& msg, uint8_t byte) const {
+	Player* player = g_game.getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
 	for (auto& it : recvbyteList) {
 		Module module = it.second;
 		if (module.getEventType() == MODULE_TYPE_RECVBYTE && module.getRecvbyte() == byte && player->canRunModule(module.getRecvbyte())) {

@@ -62,6 +62,15 @@ weatherRain = false
 thunderEffect = false
 freeQuests = false
 allConsoleLog = false
+-- Stamina in Trainers
+staminaTrainer = false
+staminaTrainerDelay = 5
+staminaTrainerGain = 1
+-- Stamina in PZ
+staminaPz = false
+staminaOrangeDelay = 1
+staminaGreenDelay = 5
+staminaPzGain = 1
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default
@@ -80,9 +89,13 @@ houseOwnedByAccount = false
 timeBetweenActions = 200
 timeBetweenExActions = 1000
 
--- Push Delay
+-- Push
+-- NOTE: pushDelay: interval for every push
+-- NOTE: pushDistanceDelay: delay for every distance push
+-- NOTE: pushWhenAttacking: true = enable the push during attack, false = disable the push during attack
 pushDelay = 1000
 pushDistanceDelay = 1500
+pushWhenAttacking = false
 
 -- Map
 -- NOTE: set mapName WITHOUT .otbm at the end
@@ -116,6 +129,7 @@ mysqlPass = ""
 mysqlDatabase = "canary"
 mysqlPort = 3306
 mysqlSock = ""
+passwordType = "sha1"
 
 -- Misc.
 allowChangeOutfit = true
@@ -137,6 +151,13 @@ serverSaveNotifyDuration = 5
 serverSaveCleanMap = false
 serverSaveClose = false
 serverSaveShutdown = true
+
+-- Sort loot by chance, most rare items drop first
+-- it is good to be setted when you have a higher
+-- rateLoot to avoid losing all rare items when
+-- the corpse size is less than the total of loots
+-- the monster can drop
+sortLootByChance = false
 
 -- Rates
 -- NOTE: rateExp, rateSkill and rateMagic is used as a fallback only

@@ -21,6 +21,10 @@
 
 #include <fstream>
 
+#ifdef OS_WINDOWS
+	#include "conio.h"
+#endif
+
 #include "config/configmanager.h"
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
@@ -62,6 +66,21 @@ RSA2 g_RSA;
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
 std::unique_lock<std::mutex> g_loaderUniqueLock(g_loaderLock);
+
+/**
+ *It is preferable to keep the close button off as it closes the server without saving (this can cause the player to lose items from houses and others informations, since windows automatically closes the process in five seconds, when forcing the close)
+ * Choose to use "CTROL + C" or "CTROL + BREAK" for security close
+ * To activate/desactivate window;
+ * \param MF_GRAYED Disable the "x" (force close) button
+ * \param MF_ENABLED Enable the "x" (force close) button
+*/
+void toggleForceCloseButton() {
+	#ifdef OS_WINDOWS
+	HWND hwnd = GetConsoleWindow();
+	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
+	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
+	#endif
+}
 
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
@@ -183,6 +202,8 @@ int main(int argc, char* argv[]) {
 #else
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
 #endif
+	// Toggle force close button enabled/disabled
+	toggleForceCloseButton();
 
 	// Setup bad allocation handler
 	std::set_new_handler(badAllocationHandler);

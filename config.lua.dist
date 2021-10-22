@@ -152,6 +152,13 @@ serverSaveCleanMap = false
 serverSaveClose = false
 serverSaveShutdown = true
 
+-- Sort loot by chance, most rare items drop first
+-- it is good to be setted when you have a higher
+-- rateLoot to avoid losing all rare items when
+-- the corpse size is less than the total of loots
+-- the monster can drop
+sortLootByChance = false
+
 -- Rates
 -- NOTE: rateExp, rateSkill and rateMagic is used as a fallback only
 -- To configure rates see file data/stages.lua

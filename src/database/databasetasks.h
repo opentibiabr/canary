@@ -38,11 +38,11 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 {
 	public:
 		DatabaseTasks();
-    bool SetDatabaseInterface(Database *database);
-    void start();
-    void startThread();
-    void flush();
-    void shutdown();
+		bool SetDatabaseInterface(Database *database);
+		void start();
+		void startThread();
+		void flush();
+		void shutdown();
 
 		void addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback = nullptr, bool store = false);
 
@@ -55,6 +55,8 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		std::list<DatabaseTask> tasks;
 		std::mutex taskLock;
 		std::condition_variable taskSignal;
+		std::condition_variable flushSignal;
+		bool flushTasks = false;
 };
 
 extern DatabaseTasks g_databaseTasks;

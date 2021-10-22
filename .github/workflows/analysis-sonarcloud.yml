@@ -60,7 +60,7 @@ jobs:
             sonar-${{ runner.os}}-
 
       - name: Cache SonarCloud packages
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         with:
           path: ~/.sonar/cache
           key: sonar-${{ runner.os}}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}

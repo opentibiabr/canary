@@ -1179,7 +1179,11 @@ void Player::sendImbuementWindow(Item* item)
 
 void Player::sendMarketEnter(uint32_t depotId)
 {
-	if (client && depotId && this->getLastDepotId() != -1) {
+	if (this->isInMarket() || this->getLastDepotId() == -1 || !depotId) {
+		return;
+	}
+
+	if (client) {
 		client->sendMarketEnter(depotId);
 	}
 }
@@ -1396,6 +1400,7 @@ void Player::onChangeZone(ZoneType_t zone)
 
 	g_game.updateCreatureWalkthrough(this);
 	sendIcons();
+	g_events->eventPlayerOnChangeZone(this, zone);
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone)
@@ -1714,13 +1719,15 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 	}
 
 	if (!inEventMovePush)
-		cancelPush();
-
-	if (task) {
-		actionTaskEvent = g_scheduler.addEvent(task);
-		if (resetIdleTime) {
-			this->resetIdleTime();
+		if (!g_config.getBoolean(PUSH_WHEN_ATTACKING)) {
+			cancelPush();
 		}
+
+		if (task) {
+			actionTaskEvent = g_scheduler.addEvent(task);
+			if (resetIdleTime) {
+				this->resetIdleTime();
+			}
 	}
 }
 

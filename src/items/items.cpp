@@ -511,7 +511,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 			ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value {}",
+			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}",
                         keyAttribute.as_string());
 		}
 	}

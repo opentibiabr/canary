@@ -296,8 +296,9 @@ bool Combat::isProtected(const Player* attacker, const Player* target)
 
 ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 {
+	// If attacker ou target not exist, set the return value so you can call this function as a combat checker
 	if (!attacker || !target) {
-		return RETURNVALUE_CREATUREDOESNOTEXIST;
+		return RETURNVALUE_NOERROR;
 	}
 
 	const Creature *attackerMaster = attacker->getMaster();

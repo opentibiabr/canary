@@ -198,8 +198,10 @@ function Creature.isInsideDoor(creature, toPosition)
 	end
 end
 
-function Creature:addEventStamina(player)
-	if player:getName() == staminaBonus.player then
+function Creature:addEventStamina(target)
+	local player = self:getPlayer()
+	local monster = target:getMonster()
+	if player and monster and monster:getName() == staminaBonus.target then
 		local playerId = player:getId()
 		if not staminaBonus.eventsTrainer[playerId] then
 			staminaBonus.eventsTrainer[playerId] = addEvent(addStamina, staminaBonus.period, playerId)

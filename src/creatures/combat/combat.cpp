@@ -392,6 +392,21 @@ ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attack
 	}
 }
 
+ReturnValue Combat::canDoCombatNoPVP(Creature *attacker, Creature *target)
+{
+	if (target->getPlayer()) {
+		if (!isInPvpZone(attacker, target)) {
+			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+		}
+	}
+
+	if (target->isSummon() && target->getMaster()->getPlayer()) {
+		if (!isInPvpZone(attacker, target)) {
+			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+		}
+	}
+}
+
 ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 {
 	// If attacker ou target not exist, set the return value so you can call this function as a combat checker
@@ -430,19 +445,10 @@ ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 		canDoCombatSummon(attacker, attackerMaster, targetPlayer, target);
 	}
 
+	// Block attack players in world is no pvp mode
 	if (g_game.getWorldType() == WORLD_TYPE_NO_PVP) {
 		if (attacker->getPlayer() || (attackerMaster && attackerMaster->getPlayer())) {
-			if (target->getPlayer()) {
-				if (!isInPvpZone(attacker, target)) {
-					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-				}
-			}
-
-			if (target->isSummon() && target->getMaster()->getPlayer()) {
-				if (!isInPvpZone(attacker, target)) {
-					return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-				}
-			}
+			canDoCombatNoPVP(attacker, target);
 		}
 	}
 

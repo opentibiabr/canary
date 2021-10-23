@@ -2,13 +2,10 @@
 name: Analysis - CodeQL
 
 on:
-  pull_request:
   push:
-    branches:
-      - master
-      - dev
-      - devel
-      - develop
+    paths:
+      - 'src/**'
+      - '**.py'
 
 env:
   VCPKG_BUILD_TYPE: release
@@ -29,11 +26,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: ${{ matrix.language }}
 
       - name: Install Linux Dependencies
         if: ${{ matrix.language == 'cpp' }}
@@ -59,8 +51,13 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
           appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
           vcpkgTriplet: x64-linux
-          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
+          additionalCachedPaths: ${{ github.workspace }}/vcpkg_installed
           vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
+
+      - name: install
+        run: |
+          cd ${{ github.workspace }}
+          vcpkg install
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@latest

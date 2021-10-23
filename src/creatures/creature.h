@@ -532,7 +532,6 @@ class Creature : virtual public Thing
 		uint32_t scriptEventsBitField = 0;
 		uint32_t eventWalk = 0;
 		uint32_t walkUpdateTicks = 0;
-		int32_t returnToMasterInterval = 0;
 		uint32_t lastHitCreatureId = 0;
 		uint32_t blockCount = 0;
 		uint32_t blockTicks = 0;

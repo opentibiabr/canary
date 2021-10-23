@@ -21,6 +21,7 @@
 	<event class="Player" method="onMoveItem" enabled="1" /><!-- Protections on rewardsystem and global depots -->
 	<event class="Player" method="onItemMoved" enabled="0" />
 	<event class="Player" method="onMoveCreature" enabled="1" />
+	<event class="Player" method="onChangeZone" enabled="1" />
 	<event class="Player" method="onReportBug" enabled="1" />
 	<event class="Player" method="onReportRuleViolation" enabled="1" />
 	<event class="Player" method="onTurn" enabled="1" /><!-- Move with ( ctrl + arrows ) like to TFS 0.3.x : 0.4 -->

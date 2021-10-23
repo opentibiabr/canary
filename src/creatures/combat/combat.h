@@ -264,7 +264,7 @@ class Combat
 		static ReturnValue canDoCombatTarget(Creature *creature, const Player *targetPlayer);
 		static ReturnValue canDoCombatMaster(const Creature *attackerMaster, const Player *targetPlayer);
 		static ReturnValue canDoCombatMonster(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer);
-		static ReturnValue canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer, Creature *target);
+		static ReturnValue canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, Creature *target);
 		static ReturnValue canDoCombatNoPVP(Creature *attacker, Creature *target);
 		static ReturnValue canDoCombat(Creature* attacker, Creature* target);
 		static void postCombatEffects(Creature* caster, const Position& pos, const CombatParams& params);

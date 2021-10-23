@@ -325,6 +325,7 @@ ReturnValue Combat::canDoCombatTarget(Creature *attacker, const Player *targetPl
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 		}
 	}
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Player *targetPlayer)
@@ -353,18 +354,17 @@ ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Play
 
 ReturnValue Combat::canDoCombatMonster(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer)
 {
-	if (attacker->getMonster() && (!attackerMaster || attackerMaster->getMonster()))
+	if (attacker->getMonster()
+	&& (!attackerMaster || attackerMaster->getMonster()
+	&& attacker->getFaction() != FACTION_DEFAULT
+	&& !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())))
 	{
-		if (attacker->getFaction() != FACTION_DEFAULT
-		&& !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction()))
-		{
-			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-		}
+		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer, Creature *target)
+ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, Creature *target)
 {
 	const Player *attackerPlayer = attacker->getPlayer();
 	const Monster *attackerMonster = attacker->getMonster();
@@ -441,7 +441,7 @@ ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
 
-		canDoCombatSummon(attacker, attackerMaster, targetPlayer, target);
+		canDoCombatSummon(attacker, attackerMaster, target);
 	}
 
 	// Block attack players in world is no pvp mode

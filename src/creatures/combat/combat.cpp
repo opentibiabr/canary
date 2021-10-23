@@ -330,7 +330,7 @@ ReturnValue Combat::canDoCombatTarget(Creature *attacker, const Player *targetPl
 ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Player *targetPlayer)
 {
 	const Player *masterAttackerPlayer = attackerMaster->getPlayer();
-	if (masterAttackerPlayer) {
+	if (!masterAttackerPlayer) {
 		return RETURNVALUE_NOERROR;
 	}
 

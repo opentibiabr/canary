@@ -639,7 +639,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 	uint8_t recvbyte = msg.getByte();
 
-if (!player || player->isRemoved()) {
+	if (!player || player->isRemoved()) {
 		if (recvbyte == 0x0F) {
 			disconnect();
 		}

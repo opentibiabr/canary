@@ -2522,6 +2522,9 @@ void Player::despawn()
 
 	// remove from map
 	Tile* tile = getTile();
+	if (!tile) {
+	    return;
+	}
 
 	std::vector<int32_t> oldStackPosVector;
 

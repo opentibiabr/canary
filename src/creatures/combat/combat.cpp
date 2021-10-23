@@ -302,43 +302,47 @@ ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 	}
 
 	const Creature *attackerMaster = attacker->getMaster();
+	if (!attackerMaster) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	const Player *attackerPlayer = attacker->getPlayer();
+	if (!attackerPlayer) {
+		return RETURNVALUE_NOERROR;
+	}
+
 	if (const Player *targetPlayer = target->getPlayer()) {
 		if (targetPlayer->hasFlag(PlayerFlag_CannotBeAttacked)) {
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		if (const Player *attackerPlayer = attacker->getPlayer()) {
-			if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)) {
-				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-			}
-
-			if (isProtected(attackerPlayer, targetPlayer)) {
-				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-			}
-
-			//nopvp-zone
-			const Tile *targetPlayerTile = targetPlayer->getTile();
-			if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
-				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-			}
-			else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
-				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-			}
+		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)) {
+			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		if (attackerMaster) {
-			if (const Player *masterAttackerPlayer = attackerMaster->getPlayer()) {
-				if (masterAttackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)) {
-					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-				}
+		if (isProtected(attackerPlayer, targetPlayer)) {
+			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+		}
 
-				if (targetPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
-					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-				}
+		// nopvp-zone
+		const Tile *targetPlayerTile = targetPlayer->getTile();
+		if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)) {
+			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
+		} else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
+			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
+		}
 
-				if (isProtected(masterAttackerPlayer, targetPlayer)) {
-					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-				}
+		if (const Player *masterAttackerPlayer = attackerMaster->getPlayer()) {
+			if (masterAttackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)) {
+				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+			}
+
+			if (targetPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
+			}
+
+			if (isProtected(masterAttackerPlayer, targetPlayer)) {
+				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 		}
 
@@ -347,22 +351,18 @@ ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 				return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 			}
 		}
-	}
-	else if (target && target->getMonster()) {
+	} else if (target && target->getMonster()) {
 		if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attacker->getMonster() && !attacker->getMonster()->isEnemyFaction(target->getFaction())) {
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
 
-		if (const Player *attackerPlayer = attacker->getPlayer()) {
-			if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackMonster)) {
-				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
-			}
-
-			if (target->isSummon() && target->getMaster()->getPlayer() && target->getZone() == ZONE_NOPVP) {
-				return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-			}
+		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackMonster)) {
+			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
-		else if (attacker->getMonster()) {
+
+		if (target->isSummon() && target->getMaster()->getPlayer() && target->getZone() == ZONE_NOPVP) {
+			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
+		} else if (attacker->getMonster()) {
 			const Creature *targetMaster = target->getMaster();
 
 			if ((!targetMaster || !targetMaster->getPlayer()) && attacker->getFaction() == FACTION_DEFAULT) {

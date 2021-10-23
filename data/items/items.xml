@@ -34296,12 +34296,12 @@
 	</item>
 	<item id="22736" article="a" name="rift carpet">
 		<attribute key="description" value="This carpet is extremely soft to the touch - and forever will be."/>
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="22737" article="a" name="folded rift carpet">
 		<attribute key="description" value="This carpet is extremely soft to the touch - and forever will be."/>
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 		<attribute key="weight" value="1000"/>
 	</item>
@@ -34979,15 +34979,15 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23431" article="a" name="Yalaharian carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23432" article="a" name="white fur carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23433" article="a" name="bamboo Mat">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23434" article="a" name="predator lamp">
@@ -35052,15 +35052,15 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23453" article="a" name="Yalaharian carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23454" article="a" name="white fur carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23455" article="a" name="bamboo mat">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23456" article="a" name="used red chair kit">
@@ -35389,12 +35389,12 @@
 		<attribute key="weight" value="750"/>
 	</item>
 	<item id="23536" article="a" name="folded void carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="description" value="This carpet is extremely soft to the touch - and forever will be."/>
 		<attribute key="weight" value="1000"/>
 	</item>
 	<item id="23537" article="a" name="void carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="description" value="This carpet is extremely soft to the touch - and forever will be."/>
 		<attribute key="weight" value="1000"/>
 	</item>
@@ -35640,7 +35640,7 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23707" article="a" name="crimson carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23708" article="a" name="dog house">
@@ -35654,47 +35654,47 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23710" article="an" name="azure carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23711" article="an" name="emerald carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23712" article="a" name="light parquet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23713" article="a" name="dark parquet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23714" article="a" name="marble parquet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23715" article="a" name="crimson carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23716" article="an" name="azure carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23717" article="an" name="emerald carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23718" article="a" name="light parquet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23719" article="a" name="dark parquet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23720" article="a" name="marble parquet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="23721" article="a" name="gold pouch">
@@ -36056,67 +36056,67 @@
 		<attribute key="weight" value="300"/>
 	</item>
 	<item id="24416" article="a" name="flowery carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24417" article="a" name="colourful carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24418" article="a" name="striped carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24419" article="a" name="fur carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24420" article="a" name="diamond carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24421" article="a" name="patterned carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24422" article="a" name="night sky carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24423" article="a" name="star carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24424" article="a" name="flowery carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24425" article="a" name="colourful carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24426" article="a" name="striped carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24427" article="a" name="fur carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24428" article="a" name="diamond carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24429" article="a" name="patterned carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24430" article="a" name="night sky carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="24431" article="a" name="star carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item fromid="24432" toid="24433" article="a" name="parrot">
@@ -38626,43 +38626,43 @@
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26114" article="a" name="verdant carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26115" article="a" name="verdant carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26116" article="a" name="shaggy carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26117" article="a" name="shaggy carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26118" article="a" name="mystic carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26119" article="a" name="mystic carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26120" article="a" name="stone tiles">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26121" article="a" name="stone tiles">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26122" article="a" name="wooden planks">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26123" article="a" name="wooden planks">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26124" name="unknown corpse (skeleton)"/>
@@ -38692,15 +38692,15 @@
 	<item id="26143" article="a" name="small stones"/>
 	<item fromid="26144" toid="26149" name="RESERVED SPRITE"/>
 	<item fromid="26150" toid="26150" article="a" name="wheat carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item fromid="26152" toid="26153" article="a" name="crested carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item fromid="26154" toid="26155" article="a" name="decorated carpet">
-		<!-- <attribute key="type" value="carpet"/> -->
+		<attribute key="type" value="carpet"/>
 		<attribute key="wrapableTo" value="23398"/>
 	</item>
 	<item id="26156" article="an" name="ornate chair">

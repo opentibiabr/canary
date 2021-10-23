@@ -259,6 +259,12 @@ class Combat
 		static ConditionType_t DamageToConditionType(CombatType_t type);
 		static ReturnValue canTargetCreature(Player* attacker, Creature* target);
 		static ReturnValue canDoCombat(Creature* caster, Tile* tile, bool aggressive);
+
+		// canDoCombat functions
+		static ReturnValue canDoCombatTarget(Creature *creature, const Player *targetPlayer);
+		static ReturnValue canDoCombatMaster(const Creature *attackerMaster, const Player *targetPlayer);
+		static ReturnValue canDoCombatMonster(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer);
+		static ReturnValue canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer, Creature *target);
 		static ReturnValue canDoCombat(Creature* attacker, Creature* target);
 		static void postCombatEffects(Creature* caster, const Position& pos, const CombatParams& params);
 

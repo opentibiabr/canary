@@ -3,6 +3,7 @@ name: Analysis - SonarCloud
 
 on:
   pull_request_target:
+    types: [opened, synchronize, reopened]
   push:
     branches:
       - master
@@ -14,6 +15,10 @@ env:
   VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
+  NUMBER_OF_PROCESSORS: 2
+  SONAR_SCANNER_VERSION: 4.6.1.2450
+  SONAR_SERVER_URL: "https://sonarcloud.io"
+  BUILD_WRAPPER_OUT_DIR: bw-output
 
 jobs:
   sonarcloud:
@@ -21,10 +26,14 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         with:
-          fetch-depth: 0
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+
+      - uses: actions/checkout@v2
+        if: ${{ github.event_name == 'push' }}
 
       - name: Install Linux Dependencies
         run: >
@@ -50,6 +59,15 @@ jobs:
             sonar-${{ runner.os}}-${{ matrix.buildtype }}-
             sonar-${{ runner.os}}-
 
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.sonar/cache
+          key: sonar-${{ runner.os}}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          restore-keys: |
+            sonar-${{ runner.os}}-${{ matrix.buildtype }}-
+            sonar-${{ runner.os}}-
+
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v7
         with:
@@ -60,54 +78,65 @@ jobs:
           additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
           vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
 
-      - name: Prepare Sonar scanner
-        run: |
-          wget -nv https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.0.2311-linux.zip
-          unzip -q sonar-scanner-cli-4.6.0.2311-linux.zip
-          echo "${PWD}/sonar-scanner-4.6.0.2311-linux/bin/" >> $GITHUB_PATH
-          wget -nv https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-          unzip -q build-wrapper-linux-x86.zip
-          echo "${PWD}/build-wrapper-linux-x86" >> $GITHUB_PATH
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
 
-      - name: SonarCloud PR Scan
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
+      - name: Download and set up sonar-scanner
+        env:
+          SONAR_SCANNER_DOWNLOAD_URL: https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux.zip
         run: |
-          NUMBER_OF_PROCESSORS=$(nproc --all)
+          mkdir -p $HOME/.sonar
+          curl -sSLo $HOME/.sonar/sonar-scanner.zip ${{ env.SONAR_SCANNER_DOWNLOAD_URL }}
+          unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+          echo "$HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/bin" >> $GITHUB_PATH
+
+      - name: Download and set up build-wrapper
+        env:
+          BUILD_WRAPPER_DOWNLOAD_URL: ${{ env.SONAR_SERVER_URL }}/static/cpp/build-wrapper-linux-x86.zip
+        run: |
+          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip ${{ env.BUILD_WRAPPER_DOWNLOAD_URL }}
+          unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
+          echo "$HOME/.sonar/build-wrapper-linux-x86" >> $GITHUB_PATH
+
+      - name: Run build-wrapper
+        run: |
           mkdir -p build
-          cd build
-          cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake ..
-          cd ..
-          build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
-          sonar-scanner \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.organization=opentibiabr \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} \
-            -Dsonar.cfamily.cache.enabled=true \
-            -Dsonar.cfamily.cache.path=$HOME/.cfamily \
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}  \
-            -Dsonar.pullrequest.branch=${{ github.head_ref }}  \
-            -Dsonar.pullrequest.base=${{ github.base_ref }}
+          cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake -S . -B build
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build
+
+      - name: Run PR sonar-scanner
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      - name: SonarCloud Scan
-        if: ${{ github.event_name == 'push' }}
         run: |
-          NUMBER_OF_PROCESSORS=$(nproc --all)
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake ..
-          cd ..
-          build-wrapper-linux-x86-64 --out-dir bw-output cmake --build build/
           sonar-scanner \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.organization=opentibiabr \
-            -Dsonar.login=$SONAR_TOKEN \
-            -Dsonar.cfamily.threads=${NUMBER_OF_PROCESSORS} \
-            -Dsonar.cfamily.cache.enabled=true \
-            -Dsonar.cfamily.cache.path=$HOME/.cfamily \
+            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" \
+            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
+            --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
+            --define sonar.cfamily.cache.enabled=true \
+            --define sonar.cfamily.cache.path=$HOME/.cfamily \
+            --define sonar.pullrequest.key=${{ github.event.pull_request.number }} \
+            --define sonar.pullrequest.branch=${{ github.head_ref }} \
+            --define sonar.pullrequest.base=${{ github.base_ref }}
+
+      - name: Run sonar-scanner
+        if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" \
+            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
+            --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
+            --define sonar.cfamily.cache.enabled=true \
+            --define sonar.cfamily.cache.path=$HOME/.cfamily
+
+      - name: SonarQube Quality Gate check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 5
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

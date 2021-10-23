@@ -2553,6 +2553,9 @@ void Player::despawn()
 
 	//event method
 	for (Creature* spectator : spectators) {
+	    if (!spectator) {
+	        continue;
+	    }
 		spectator->onRemoveCreature(this, false);
 	}
 

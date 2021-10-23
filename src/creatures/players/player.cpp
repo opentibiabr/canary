@@ -2494,6 +2494,9 @@ bool Player::spawn()
 	}
 
 	for (Creature* spectator : spectators) {
+	    if (!spectator) {
+	        continue;
+	    }
 	spectator->onCreatureAppear(this, true);
 	}
 

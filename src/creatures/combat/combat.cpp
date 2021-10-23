@@ -418,8 +418,13 @@ ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 		return RETURNVALUE_NOERROR;
 	}
 
-	const Player *targetPlayer = target->getPlayer();
 	const Creature *attackerMaster = attacker->getMaster();
+	if (!attackerMaster)
+	{
+		return RETURNVALUE_NOERROR;
+	}
+
+	const Player *targetPlayer = target->getPlayer();
 	if (targetPlayer)
 	{
 		if (targetPlayer->hasFlag(PlayerFlag_CannotBeAttacked))

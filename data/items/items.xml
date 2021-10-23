@@ -46,7 +46,7 @@
 	</item>
 	<item id="111" article="a" name="dead human">
 		<attribute key="containerSize" value="10"/>
-		<attribute key="decayTo" value="3058"/>
+		<attribute key="decayTo" value="4240"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="corpseType" value="blood"/>
 		<attribute key="fluidsource" value="blood"/>

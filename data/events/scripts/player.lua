@@ -122,7 +122,7 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 	local player = creature:getPlayer()
 	if player and onExerciseTraining[player:getId()] and self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) == false then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-	return false
+		return false
 	end
 	return true
 end

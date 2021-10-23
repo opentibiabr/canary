@@ -348,6 +348,7 @@ ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Play
 	{
 		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Combat::canDoCombatMonster(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer)
@@ -360,6 +361,7 @@ ReturnValue Combat::canDoCombatMonster(Creature *attacker, const Creature *attac
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 	}
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer, Creature *target)
@@ -390,6 +392,7 @@ ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attack
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
 	}
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Combat::canDoCombatNoPVP(Creature *attacker, Creature *target)
@@ -405,6 +408,7 @@ ReturnValue Combat::canDoCombatNoPVP(Creature *attacker, Creature *target)
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
 	}
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)

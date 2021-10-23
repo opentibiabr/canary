@@ -2531,6 +2531,9 @@ void Player::despawn()
 	SpectatorHashSet spectators;
 	g_game.map.getSpectators(spectators, tile->getPosition(), true);
 	for (Creature* spectator : spectators) {
+	    if (!spectator) {
+	        continue;
+	    }
 		if (Player* player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getStackposOfCreature(player, this) : -1);
 		}

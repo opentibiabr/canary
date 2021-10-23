@@ -296,7 +296,7 @@ bool Combat::isProtected(const Player* attacker, const Player* target)
 
 ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
 {
-	if (!attacker) {
+	if (!attacker || !target) {
 		return RETURNVALUE_CREATUREDOESNOTEXIST;
 	}
 

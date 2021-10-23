@@ -2485,6 +2485,9 @@ bool Player::spawn()
 	SpectatorHashSet spectators;
 	g_game.map.getSpectators(spectators, position, false, true);
 	for (Creature* spectator : spectators) {
+	    if (!spectator) {
+	        continue;
+	    }
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(this, pos, true);
 		}

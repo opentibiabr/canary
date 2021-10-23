@@ -2546,6 +2546,9 @@ void Player::despawn()
 	//send to client
 	size_t i = 0;
 	for (Creature* spectator : spectators) {
+	    if (!spectator) {
+	        continue;
+	    }
 		if (Player* player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 		}

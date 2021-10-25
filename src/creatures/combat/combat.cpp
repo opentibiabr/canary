@@ -278,6 +278,11 @@ bool Combat::isInPvpZone(const Creature* attacker, const Creature* target)
 
 bool Combat::isProtected(const Player* attacker, const Player* target)
 {
+	// If it is have flag that it can attack, then it will ignore this function
+	if (!attacker->hasFlag(PlayerFlag_CannotAttackPlayer)) {
+		return false;
+	}
+
 	uint32_t protectionLevel = g_config.getNumber(PROTECTION_LEVEL);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
@@ -301,6 +306,7 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 	{
 		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer))
 		{
+			SPDLOG_INFO(RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER);
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
@@ -309,7 +315,7 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		//nopvp-zone
+		// No pvp-zone
 		const Tile *targetPlayerTile = targetPlayer->getTile();
 		if (!targetPlayerTile)
 		{
@@ -331,7 +337,8 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Player *targetPlayer)
 {
 	const Player *masterAttackerPlayer = attackerMaster->getPlayer();
-	if (!masterAttackerPlayer) {
+	if (!masterAttackerPlayer)
+	{
 		return RETURNVALUE_NOERROR;
 	}
 

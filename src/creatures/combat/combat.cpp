@@ -306,7 +306,6 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 	{
 		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer))
 		{
-			SPDLOG_INFO(RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER);
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 

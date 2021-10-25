@@ -294,7 +294,7 @@ bool Combat::isProtected(const Player* attacker, const Player* target)
 	return false;
 }
 
-ReturnValue Combat::canDoCombatTarget(Creature *attacker, const Player *targetPlayer)
+ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *targetPlayer)
 {
 	const Player *attackerPlayer = attacker->getPlayer();
 	if (attackerPlayer)
@@ -352,7 +352,7 @@ ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Play
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Combat::canDoCombatMonster(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer)
+ReturnValue Combat::canDoCombatMonster(const Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer)
 {
 	if (attacker->getMonster()
 	&& (!attackerMaster || attackerMaster->getMonster()
@@ -364,7 +364,7 @@ ReturnValue Combat::canDoCombatMonster(Creature *attacker, const Creature *attac
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, Creature *target)
+ReturnValue Combat::canDoCombatSummon(const Creature *attacker, const Creature *attackerMaster, const Creature *target)
 {
 	const Player *attackerPlayer = attacker->getPlayer();
 	const Monster *attackerMonster = attacker->getMonster();
@@ -395,7 +395,7 @@ ReturnValue Combat::canDoCombatSummon(Creature *attacker, const Creature *attack
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Combat::canDoCombatNoPVP(Creature *attacker, Creature *target)
+ReturnValue Combat::canDoCombatNoPVP(const Creature *attacker, const Creature *target)
 {
 	if (target->getPlayer()) {
 		if (!isInPvpZone(attacker, target)) {
@@ -411,7 +411,7 @@ ReturnValue Combat::canDoCombatNoPVP(Creature *attacker, Creature *target)
 	return RETURNVALUE_NOERROR;
 }
 
-ReturnValue Combat::canDoCombat(Creature *attacker, Creature *target)
+ReturnValue Combat::canDoCombat(const Creature *attacker, const Creature *target)
 {
 	// If attacker ou target not exist, set the return value so you can call this function as a combat checker
 	if (!attacker || !target) {

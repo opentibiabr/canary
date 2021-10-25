@@ -261,12 +261,12 @@ class Combat
 		static ReturnValue canDoCombat(Creature* caster, Tile* tile, bool aggressive);
 
 		// canDoCombat functions
-		static ReturnValue canDoCombatTarget(Creature *creature, const Player *targetPlayer);
+		static ReturnValue canDoCombatTarget(const Creature *creature, const Player *targetPlayer);
 		static ReturnValue canDoCombatMaster(const Creature *attackerMaster, const Player *targetPlayer);
-		static ReturnValue canDoCombatMonster(Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer);
-		static ReturnValue canDoCombatSummon(Creature *attacker, const Creature *attackerMaster, Creature *target);
-		static ReturnValue canDoCombatNoPVP(Creature *attacker, Creature *target);
-		static ReturnValue canDoCombat(Creature* attacker, Creature* target);
+		static ReturnValue canDoCombatMonster(const Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer);
+		static ReturnValue canDoCombatSummon(const Creature *attacker, const Creature *attackerMaster, const Creature *target);
+		static ReturnValue canDoCombatNoPVP(const Creature *attacker, const Creature *target);
+		static ReturnValue canDoCombat(const Creature* attacker, const Creature* target);
 		static void postCombatEffects(Creature* caster, const Position& pos, const CombatParams& params);
 
 		static void addDistanceEffect(Creature* caster, const Position& fromPos, const Position& toPos, uint8_t effect);

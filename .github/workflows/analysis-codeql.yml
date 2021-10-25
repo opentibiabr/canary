@@ -27,6 +27,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+
       - name: Install Linux Dependencies
         if: ${{ matrix.language == 'cpp' }}
         run: >
@@ -34,6 +39,7 @@ jobs:
           libluajit-5.1-dev zip
 
       - name: CCache
+        if: ${{ matrix.language == 'cpp' }}
         id: ccache
         uses: actions/cache@v2
         with:
@@ -51,15 +57,11 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
           appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
           vcpkgTriplet: x64-linux
-          additionalCachedPaths: ${{ github.workspace }}/vcpkg_installed
+          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
           vcpkgGitCommitId: b9cd2a7958dec657fb869ec487d2a98cf39a8d48
 
-      - name: install
-        run: |
-          cd ${{ github.workspace }}
-          vcpkg install
-
       - name: Get latest CMake and ninja
+        if: ${{ matrix.language == 'cpp' }}
         uses: lukka/get-cmake@latest
 
       - name: Run CMake

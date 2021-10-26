@@ -321,8 +321,8 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 			return RETURNVALUE_NOERROR;
 		}
 
-		if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE
-		|| attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)
+		if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)
+		|| (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)
 		&& !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)))
 		{
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;

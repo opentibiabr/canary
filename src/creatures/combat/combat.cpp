@@ -278,8 +278,12 @@ bool Combat::isInPvpZone(const Creature* attacker, const Creature* target)
 
 bool Combat::isProtected(const Player* attacker, const Player* target)
 {
+	if (!attacker || !target) {
+		return false;
+	}
+
 	// If it is have flag that it can attack, then it will ignore this function
-	if (attacker && !attacker->hasFlag(PlayerFlag_CannotAttackPlayer)) {
+	if (!attacker->hasFlag(PlayerFlag_CannotAttackPlayer)) {
 		return false;
 	}
 

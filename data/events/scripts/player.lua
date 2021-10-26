@@ -3,7 +3,38 @@ function Player:onBrowseField(position)
 end
 
 function Player:onLook(thing, position, distance)
-	local description = "You see " .. thing:getDescription(distance)
+	local description = "You see "
+	if thing:isItem() then
+		description = description .. thing:getDescription(distance)
+
+		local itemType = thing:getType()
+		if (itemType and itemType:getImbuingSlots() > 0) then
+			local imbuingSlots = "Imbuements: ("
+			for slot = 0, itemType:getImbuingSlots() - 1 do
+				if slot > 0 then
+					imbuingSlots = string.format("%s, ", imbuingSlots)
+				end
+				local duration = thing:getImbuementDuration(slot)
+				if duration > 0 then
+					local imbue = thing:getImbuement(slot)
+					imbuingSlots = string.format("%s%s %s %s",
+						imbuingSlots, imbue:getBase().name, imbue:getName(), getTime(duration))
+				else
+					imbuingSlots = string.format("%sEmpty Slot", imbuingSlots)
+				end
+			end
+			imbuingSlots = string.format("%s).", imbuingSlots)
+			description = string.gsub(description, "It weighs", imbuingSlots.. "\nIt weighs")
+		end
+	elseif thing:isMonster() then
+		description = description .. thing:getDescription(distance)
+		local master = thing:getMaster()
+		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
+			description = description..' (Master: ' .. master:getName() .. '). \z
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.PetSummon) - os.time())
+		end
+	end
+
 	if self:getGroup():getAccess() then
 		if thing:isItem() then
 			description = string.format("%s\nItem ID: %d", description, thing:getId())
@@ -32,8 +63,6 @@ function Player:onLook(thing, position, distance)
 			if decayId ~= -1 then
 				description = string.format("%s\nDecays to: %d", description, decayId)
 			end
-
-			self:showImbuemetSlotOnLook(itemType, description, thing)
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"
 			if thing:isPlayer() and thing:getMaxMana() > 0 then

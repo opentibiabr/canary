@@ -308,12 +308,8 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 	const Player *attackerPlayer = attacker->getPlayer();
 	if (attackerPlayer)
 	{
-		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer))
-		{
-			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-		}
-
-		if (isProtected(attackerPlayer, targetPlayer))
+		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)
+		|| isProtected(attackerPlayer, targetPlayer))
 		{
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
@@ -325,11 +321,9 @@ ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *ta
 			return RETURNVALUE_NOERROR;
 		}
 
-		if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE))
-		{
-			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-		}
-		else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE))
+		if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE
+		|| attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)
+		&& !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)))
 		{
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 		}
@@ -345,7 +339,7 @@ ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Play
 		return RETURNVALUE_NOERROR;
 	}
 
-	if (masterAttackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer))
+	if (masterAttackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer) || isProtected(masterAttackerPlayer, targetPlayer))
 	{
 		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
@@ -355,10 +349,6 @@ ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Play
 		return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 	}
 
-	if (isProtected(masterAttackerPlayer, targetPlayer))
-	{
-		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-	}
 	return RETURNVALUE_NOERROR;
 }
 
@@ -376,9 +366,7 @@ ReturnValue Combat::canDoCombatMonster(const Creature *attacker, const Creature 
 
 ReturnValue Combat::canDoCombatSummon(const Creature *attacker, const Creature *attackerMaster, const Creature *target)
 {
-	const Player *attackerPlayer = attacker->getPlayer();
-	const Monster *attackerMonster = attacker->getMonster();
-	if (attackerPlayer)
+	if (const Player *attackerPlayer = attacker->getPlayer())
 	{
 		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackMonster))
 		{
@@ -392,7 +380,7 @@ ReturnValue Combat::canDoCombatSummon(const Creature *attacker, const Creature *
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 		}
 	}
-	else if (attackerMonster)
+	else if (const Monster *attackerMonster = attacker->getMonster())
 	{
 		const Creature *targetMaster = target->getMaster();
 		if ((!targetMaster || !targetMaster->getPlayer())

@@ -631,7 +631,6 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 			if (conditionDamage->getTotalDamage() > 0) {
 				conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
 			}
-			delete conditionDamage;
 		}
 	}
 }

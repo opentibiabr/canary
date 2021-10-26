@@ -22,10 +22,10 @@
 #include "items/functions/item_parse.hpp"
 
 void ItemParse::parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string type = tmpStrValue;
-	if (type == "type") {
-		type = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = ItemTypesMap.find(type);
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "type") {
+		stringValue = asLowerCaseString(valueAttribute.as_string());
+		auto itemMap = ItemTypesMap.find(stringValue);
 		if (itemMap != ItemTypesMap.end()) {
 			itemType.type = itemMap->second;
 			if (itemType.type == ITEM_TYPE_CONTAINER) {
@@ -39,159 +39,158 @@ void ItemParse::parseType(const std::string& tmpStrValue, pugi::xml_attribute va
 }
 
 void ItemParse::parseDescription(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string description = tmpStrValue;
-	if (description == "description") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "description") {
 		itemType.description = valueAttribute.as_string();
 	}
 }
 
 void ItemParse::parseRuneSpellName(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string runespellname = tmpStrValue;
-	std::string string = tmpStrValue;
-	if (string == "runespellname") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "runespellname") {
 		itemType.runeSpellName = valueAttribute.as_string();
 	}
 }
 
 void ItemParse::parseWeight(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string weight = tmpStrValue;
-	if (weight == "weight") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "weight") {
 		itemType.weight = pugi::cast<uint32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseShowCount(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string showCount = tmpStrValue;
-	if (showCount == "showcount") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "showcount") {
 		itemType.showCount = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseArmor(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string armor = tmpStrValue;
-	if (armor == "armor") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "armor") {
 		itemType.armor = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string defense = tmpStrValue;
-	if (defense == "defense") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "defense") {
 		itemType.defense = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseExtraDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string extraDefense = tmpStrValue;
-	if (extraDefense == "extradef") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "extradef") {
 		itemType.extraDefense = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string attack = tmpStrValue;
-	if (attack == "attack") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "attack") {
 		itemType.attack = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string rotateTo = tmpStrValue;
-	if (rotateTo == "rotateto") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "rotateto") {
 		itemType.rotateTo = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string wrapContainer = tmpStrValue;
-	if (wrapContainer == "wrapcontainer") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "wrapcontainer") {
 		itemType.wrapContainer = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseImbuingSlot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string imbuingSlots = tmpStrValue;
-	if (imbuingSlots == "imbuingslot") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "imbuingslot") {
 		itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string wrapable = tmpStrValue;
-	if (wrapable == "wrapableto") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "wrapableto") {
 		itemType.wrapableTo = pugi::cast<int32_t>(valueAttribute.value());
 		itemType.wrapable = true;
 	}
 }
 
 void ItemParse::parseMoveable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string moveable = tmpStrValue;
-	if (moveable == "moveable") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "moveable") {
 		itemType.moveable = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string isPodium = tmpStrValue;
-	if (isPodium == "podium") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "podium") {
 		itemType.isPodium = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string blockProjectile = tmpStrValue;
-	if (blockProjectile == "blockprojectile") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "blockprojectile") {
 		itemType.blockProjectile = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parsePickupable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string allowPickupable = tmpStrValue;
-	if (allowPickupable == "pickupable") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "pickupable") {
 		itemType.allowPickupable = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseFloorChange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string floorChange = tmpStrValue;
-	if (floorChange == "floorchange") {
-		floorChange = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = TileStatesMap.find(floorChange);
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "floorchange") {
+		stringValue = asLowerCaseString(valueAttribute.as_string());
+		auto itemMap = TileStatesMap.find(stringValue);
 		if (itemMap != TileStatesMap.end()) {
 			itemType.floorChange = itemMap->second;
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown floorChange {}",
+			SPDLOG_WARN("[ItemParse::parseFloorChange] - Unknown floorChange {}",
                         valueAttribute.as_string());
 		}
 	}
 }
 
 void ItemParse::parseCorpseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string corpseType = tmpStrValue;
-	if (corpseType == "corpsetype") {
-		corpseType = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = RaceTypesMap.find(corpseType);
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "corpsetype") {
+		stringValue = asLowerCaseString(valueAttribute.as_string());
+		auto itemMap = RaceTypesMap.find(stringValue);
 		if (itemMap != RaceTypesMap.end()) {
 			itemType.corpseType = itemMap->second;
 		} else {
-			SPDLOG_WARN("[Items::parseItemNode] - Unknown corpseType {}",
+			SPDLOG_WARN("[ItemParse::parseCorpseType] - Unknown corpseType {}",
                         valueAttribute.as_string());
 		}
 	}
 }
 
 void ItemParse::parseContainerSize(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "containersize") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "containersize") {
 		itemType.maxItems = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseFluidSource(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "fluidsource") {
-		string = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = FluidTypesMap.find(string);
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "fluidsource") {
+		stringValue = asLowerCaseString(valueAttribute.as_string());
+		auto itemMap = FluidTypesMap.find(stringValue);
 		if (itemMap != FluidTypesMap.end()) {
 			itemType.fluidSource = itemMap->second;
 		} else {
@@ -202,24 +201,24 @@ void ItemParse::parseFluidSource(const std::string& tmpStrValue, pugi::xml_attri
 }
 
 void ItemParse::parseWriteables(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "readable") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "readable") {
 		itemType.canReadText = valueAttribute.as_bool();
-	} else if (string == "writeable") {
+	} else if (stringValue == "writeable") {
 		itemType.canWriteText = valueAttribute.as_bool();
 		itemType.canReadText = itemType.canWriteText;
-	} else if (string == "maxtextlen") {
+	} else if (stringValue == "maxtextlen") {
 		itemType.maxTextLen = pugi::cast<uint16_t>(valueAttribute.value());
-	} else if (string == "writeonceitemid") {
+	} else if (stringValue == "writeonceitemid") {
 		itemType.writeOnceItemId = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseWeaponType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "weapontype") {
-		string = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = WeaponTypesMap.find(string);
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "weapontype") {
+		stringValue = asLowerCaseString(valueAttribute.as_string());
+		auto itemMap = WeaponTypesMap.find(stringValue);
 		if (itemMap != WeaponTypesMap.end()) {
 			itemType.weaponType = itemMap->second;
 		} else {
@@ -230,32 +229,32 @@ void ItemParse::parseWeaponType(const std::string& tmpStrValue, pugi::xml_attrib
 }
 
 void ItemParse::parseSlotType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "slottype") {
-		string = asLowerCaseString(valueAttribute.as_string());
-	if (string == "head") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "slottype") {
+		stringValue = asLowerCaseString(valueAttribute.as_string());
+	if (stringValue == "head") {
 			itemType.slotPosition |= SLOTP_HEAD;
-		} else if (string == "body") {
+		} else if (stringValue == "body") {
 			itemType.slotPosition |= SLOTP_ARMOR;
-		} else if (string == "legs") {
+		} else if (stringValue == "legs") {
 			itemType.slotPosition |= SLOTP_LEGS;
-		} else if (string == "feet") {
+		} else if (stringValue == "feet") {
 			itemType.slotPosition |= SLOTP_FEET;
-		} else if (string == "backpack") {
+		} else if (stringValue == "backpack") {
 			itemType.slotPosition |= SLOTP_BACKPACK;
-		} else if (string == "two-handed") {
+		} else if (stringValue == "two-handed") {
 			itemType.slotPosition |= SLOTP_TWO_HAND;
-		} else if (string == "right-hand") {
+		} else if (stringValue == "right-hand") {
 			itemType.slotPosition &= ~SLOTP_LEFT;
-		} else if (string == "left-hand") {
+		} else if (stringValue == "left-hand") {
 			itemType.slotPosition &= ~SLOTP_RIGHT;
-		} else if (string == "necklace") {
+		} else if (stringValue == "necklace") {
 			itemType.slotPosition |= SLOTP_NECKLACE;
-		} else if (string == "ring") {
+		} else if (stringValue == "ring") {
 			itemType.slotPosition |= SLOTP_RING;
-		} else if (string == "ammo") {
+		} else if (stringValue == "ammo") {
 			itemType.slotPosition |= SLOTP_AMMO;
-		} else if (string == "hand") {
+		} else if (stringValue == "hand") {
 			itemType.slotPosition |= SLOTP_HAND;
 		} else {
 			SPDLOG_WARN("[itemParseSlotType - Items::parseItemNode] - Unknown slotType {}",
@@ -265,8 +264,8 @@ void ItemParse::parseSlotType(const std::string& tmpStrValue, pugi::xml_attribut
 }
 
 void ItemParse::parseAmmoType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "ammotype") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "ammotype") {
 		itemType.ammoType = getAmmoType(asLowerCaseString(valueAttribute.as_string()));
 		if (itemType.ammoType == AMMO_NONE) {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown ammoType {}",
@@ -276,8 +275,8 @@ void ItemParse::parseAmmoType(const std::string& tmpStrValue, pugi::xml_attribut
 }
 
 void ItemParse::parseShootType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "shoottype") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "shoottype") {
 		ShootType_t shoot = getShootType(asLowerCaseString(valueAttribute.as_string()));
 		if (shoot != CONST_ANI_NONE) {
 			itemType.shootType = shoot;
@@ -289,8 +288,8 @@ void ItemParse::parseShootType(const std::string& tmpStrValue, pugi::xml_attribu
 }
 
 void ItemParse::parseMagicEffect(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "effect") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "effect") {
 		MagicEffectClasses effect = getMagicEffect(asLowerCaseString(valueAttribute.as_string()));
 		if (effect != CONST_ME_NONE) {
 			itemType.magicEffect = effect;
@@ -302,195 +301,195 @@ void ItemParse::parseMagicEffect(const std::string& tmpStrValue, pugi::xml_attri
 }
 
 void ItemParse::parseLootType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "loottype") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "loottype") {
 		itemType.type = Item::items.getLootType(valueAttribute.as_string());
 	}
 }
 
 void ItemParse::parseRange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "range") {
-		itemType.shootRange = pugi::cast<uint16_t>(valueAttribute.value());
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "range") {
+		itemType.shootRange = pugi::cast<uint8_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseDuration(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "duration") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "duration") {
 		itemType.decayTime = pugi::cast<uint32_t>(valueAttribute.value());
-	} else if (string == "stopduration") {
+	} else if (stringValue == "stopduration") {
 		itemType.stopTime = valueAttribute.as_bool();
-	} else if (string == "showduration") {
+	} else if (stringValue == "showduration") {
 		itemType.showDuration = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseTransform(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "transformequipto") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
-	} else if (string == "transformdeequipto") {
+	} else if (stringValue == "transformdeequipto") {
 		itemType.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
-	} else if (string == "transformto") {
+	} else if (stringValue == "transformto") {
 		itemType.transformToFree = pugi::cast<uint16_t>(valueAttribute.value());
-	} else if (string == "destroyto") {
+	} else if (stringValue == "destroyto") {
 		itemType.destroyTo = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseCharges(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "charges") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "charges") {
 		itemType.charges = pugi::cast<uint32_t>(valueAttribute.value());
-	} else if (string == "showcharges") {
+	} else if (stringValue == "showcharges") {
 		itemType.showCharges = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseShowAttributes(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "showattributes") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "showattributes") {
 		itemType.showAttributes = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseHitChance(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "hitchance") {
-		itemType.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int16_t>(valueAttribute.value())));
-	} else if (string == "maxhitchance") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "hitchance") {
+		itemType.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int8_t>(valueAttribute.value())));
+	} else if (stringValue == "maxhitchance") {
 		itemType.maxHitChance = std::min<uint32_t>(100, pugi::cast<uint32_t>(valueAttribute.value()));
 	}
 }
 
 void ItemParse::parseInvisible(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "invisible") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "invisible") {
 		itemType.getAbilities().invisible = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseSpeed(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "speed") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "speed") {
 		itemType.getAbilities().speed = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseHealthAndMana(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "healthgain") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "healthgain") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
 		abilities.healthGain = pugi::cast<uint32_t>(valueAttribute.value());
-	} else if (string == "healthticks") {
+	} else if (stringValue == "healthticks") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
 		abilities.healthTicks = pugi::cast<uint32_t>(valueAttribute.value());
-	} else if (string == "managain") {
+	} else if (stringValue == "managain") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
 		abilities.manaGain = pugi::cast<uint32_t>(valueAttribute.value());
-	} else if (string == "manaticks") {
+	} else if (stringValue == "manaticks") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
 		abilities.manaTicks = pugi::cast<uint32_t>(valueAttribute.value());
-	} else if (string == "manashield") {
+	} else if (stringValue == "manashield") {
 		itemType.getAbilities().manaShield = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseSkills(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "skillsword") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "skillsword") {
 		itemType.getAbilities().skills[SKILL_SWORD] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "skillaxe") {
+	} else if (stringValue == "skillaxe") {
 		itemType.getAbilities().skills[SKILL_AXE] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "skillclub") {
+	} else if (stringValue == "skillclub") {
 		itemType.getAbilities().skills[SKILL_CLUB] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "skilldist") {
+	} else if (stringValue == "skilldist") {
 		itemType.getAbilities().skills[SKILL_DISTANCE] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "skillfish") {
+	} else if (stringValue == "skillfish") {
 		itemType.getAbilities().skills[SKILL_FISHING] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "skillshield") {
+	} else if (stringValue == "skillshield") {
 		itemType.getAbilities().skills[SKILL_SHIELD] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "skillfist") {
+	} else if (stringValue == "skillfist") {
 		itemType.getAbilities().skills[SKILL_FIST] = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseCriticalHit(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "criticalhitchance") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "criticalhitchance") {
 		itemType.getAbilities().skills[SKILL_CRITICAL_HIT_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "criticalhitdamage") {
+	} else if (stringValue == "criticalhitdamage") {
 		itemType.getAbilities().skills[SKILL_CRITICAL_HIT_DAMAGE] = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseLifeAndManaLeech(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "lifeleechchance") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "lifeleechchance") {
 		itemType.getAbilities().skills[SKILL_LIFE_LEECH_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "lifeleechamount") {
+	} else if (stringValue == "lifeleechamount") {
 		itemType.getAbilities().skills[SKILL_LIFE_LEECH_AMOUNT] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "manaleechchance") {
+	} else if (stringValue == "manaleechchance") {
 		itemType.getAbilities().skills[SKILL_MANA_LEECH_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "manaleechamount") {
+	} else if (stringValue == "manaleechamount") {
 		itemType.getAbilities().skills[SKILL_MANA_LEECH_AMOUNT] = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseMaxHitAndManaPoints(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "maxhitpoints") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "maxhitpoints") {
 		itemType.getAbilities().stats[STAT_MAXHITPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "maxhitpointspercent") {
+	} else if (stringValue == "maxhitpointspercent") {
 		itemType.getAbilities().statsPercent[STAT_MAXHITPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "maxmanapoints") {
+	} else if (stringValue == "maxmanapoints") {
 		itemType.getAbilities().stats[STAT_MAXMANAPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "maxmanapointspercent") {
+	} else if (stringValue == "maxmanapointspercent") {
 		itemType.getAbilities().statsPercent[STAT_MAXMANAPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseMagicPoints(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "magicpoints") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "magicpoints") {
 		itemType.getAbilities().stats[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-	} else if (string == "magicpointspercent") {
+	} else if (stringValue == "magicpointspercent") {
 		itemType.getAbilities().statsPercent[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseFieldAbsorbPercent(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "fieldabsorbpercentenergy") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "fieldabsorbpercentenergy") {
 		itemType.getAbilities().fieldAbsorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "fieldabsorbpercentfire") {
+	} else if (stringValue == "fieldabsorbpercentfire") {
 		itemType.getAbilities().fieldAbsorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "fieldabsorbpercentpoison") {
+	} else if (stringValue == "fieldabsorbpercentpoison") {
 		itemType.getAbilities().fieldAbsorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseAbsorbPercent(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "absorbpercentall") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "absorbpercentall") {
 		int16_t value = pugi::cast<int16_t>(valueAttribute.value());
 		Abilities & abilities = itemType.getAbilities();
 		for (auto & i: abilities.absorbPercent) {
 			i += value;
 		}
-	} else if (string == "absorbpercentelements") {
+	} else if (stringValue == "absorbpercentelements") {
 		int16_t value = pugi::cast<int16_t>(valueAttribute.value());
 		Abilities & abilities = itemType.getAbilities();
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
-	} else if (string == "absorbpercentmagic") {
+	} else if (stringValue == "absorbpercentmagic") {
 		int16_t value = pugi::cast<int16_t>(valueAttribute.value());
 		Abilities & abilities = itemType.getAbilities();
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
@@ -499,175 +498,168 @@ void ItemParse::parseAbsorbPercent(const std::string& tmpStrValue, pugi::xml_att
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] += value;
-	} else if (string == "absorbpercentenergy") {
+	} else if (stringValue == "absorbpercentenergy") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentfire") {
+	} else if (stringValue == "absorbpercentfire") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentpoison") {
+	} else if (stringValue == "absorbpercentpoison") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentice") {
+	} else if (stringValue == "absorbpercentice") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentholy") {
+	} else if (stringValue == "absorbpercentholy") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentdeath") {
+	} else if (stringValue == "absorbpercentdeath") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentlifedrain") {
+	} else if (stringValue == "absorbpercentlifedrain") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_LIFEDRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentmanadrain") {
+	} else if (stringValue == "absorbpercentmanadrain") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_MANADRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentdrown") {
+	} else if (stringValue == "absorbpercentdrown") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_DROWNDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercentphysical") {
+	} else if (stringValue == "absorbpercentphysical") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-	} else if (string == "absorbpercenthealing") {
+	} else if (stringValue == "absorbpercenthealing") {
 		itemType.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_HEALING)] += pugi::cast<int16_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseSupressDrunk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "suppressdrunk") {
-		if (valueAttribute.as_bool()) {
+	std::string stringValue = tmpStrValue;
+	if (valueAttribute.as_bool()) {
+		if (stringValue == "suppressdrunk") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_DRUNK;
-		}
-	} else if (string == "suppressenergy") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppressenergy") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_ENERGY;
-		}
-	} else if (string == "suppressfire") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppressfire") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_FIRE;
-		}
-	} else if (string == "suppresspoison") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppresspoison") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_POISON;
-		}
-	} else if (string == "suppressdrown") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppressdrown") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_DROWN;
-		}
-	} else if (string == "suppressphysical") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppressphysical") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_BLEEDING;
-		}
-	} else if (string == "suppressfreeze") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppressfreeze") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_FREEZING;
-		}
-	} else if (string == "suppressdazzle") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppressdazzle") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_DAZZLED;
-		}
-	} else if (string == "suppresscurse") {
-		if (valueAttribute.as_bool()) {
+		} else if (stringValue == "suppresscurse") {
 			itemType.getAbilities().conditionSuppressions |= CONDITION_CURSED;
 		}
 	}
 }
 
+void ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
+	if (lowerStringValue == "fire") {
+		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
+		combatType = COMBAT_FIREDAMAGE;
+	} else if (lowerStringValue == "energy") {
+		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
+		combatType = COMBAT_ENERGYDAMAGE;
+	} else if (lowerStringValue == "poison") {
+		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
+		combatType = COMBAT_EARTHDAMAGE;
+	} else if (lowerStringValue == "drown") {
+		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
+		combatType = COMBAT_DROWNDAMAGE;
+	} else if (lowerStringValue == "physical") {
+		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
+		combatType = COMBAT_PHYSICALDAMAGE;
+	} else {
+		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
+                    valueAttribute.as_string());
+	}
+}
+
+void ItemParse::parseFieldCombat(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute) {
+	uint32_t combatTicks = 0;
+	int32_t combatDamage = 0;
+	int32_t combatStart = 0;
+	int32_t combatCount = 1;
+
+	for (auto subAttributeNode: attributeNode.children()) {
+		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+		if (!subKeyAttribute) {
+			continue;
+		}
+
+		pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+		if (!subValueAttribute) {
+			continue;
+		}
+
+		stringValue = asLowerCaseString(subKeyAttribute.as_string());
+		if (stringValue == "ticks") {
+			combatTicks = pugi::cast<uint32_t>(subValueAttribute.value());
+		} else if (stringValue == "count") {
+			combatCount = std::max<int32_t>(1, pugi::cast<int32_t>(subValueAttribute.value()));
+		} else if (stringValue == "start") {
+			combatStart = std::max<int32_t>(0, pugi::cast<int32_t>(subValueAttribute.value()));
+		} else if (stringValue == "damage") {
+			combatDamage = -pugi::cast<int32_t>(subValueAttribute.value());
+			if (combatStart > 0) {
+				std::list<int32_t>damageList;
+				ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
+				for (int32_t damageValue: damageList) {
+					conditionDamage->addDamage(1, combatTicks, -damageValue);
+				}
+
+				combatStart = 0;
+			} else {
+				conditionDamage->addDamage(combatCount, combatTicks, combatDamage);
+			}
+		}
+	}
+}
+
 void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "field") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "field") {
 		CombatType_t combatType = COMBAT_NONE;
 		ConditionDamage *conditionDamage = nullptr;
 
-		string = asLowerCaseString(valueAttribute.as_string());
-		if (string == "fire") {
-			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
-			combatType = COMBAT_FIREDAMAGE;
-		} else if (string == "energy") {
-			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
-			combatType = COMBAT_ENERGYDAMAGE;
-		} else if (string == "poison") {
-			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
-			combatType = COMBAT_EARTHDAMAGE;
-		} else if (string == "drown") {
-			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
-			combatType = COMBAT_DROWNDAMAGE;
-		} else if (string == "physical") {
-			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
-			combatType = COMBAT_PHYSICALDAMAGE;
-		} else {
-			SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
-                        valueAttribute.as_string());
-		}
-
+		// Parse fields conditions (fire/energy/poison/drown/physical)
+		parseFieldConditions(conditionDamage, combatType, stringValue, valueAttribute);
 		if (combatType != COMBAT_NONE) {
 			itemType.combatType = combatType;
 			itemType.conditionDamage.reset(conditionDamage);
-			uint32_t ticks = 0;
-			int32_t damage = 0;
-			int32_t start = 0;
-			int32_t count = 1;
-
-			for (auto subAttributeNode: attributeNode.children()) {
-
-				pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
-				if (!subKeyAttribute) {
-					continue;
-				}
-
-				pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
-				if (!subValueAttribute) {
-					continue;
-				}
-
-				string = asLowerCaseString(subKeyAttribute.as_string());
-				if (string == "ticks") {
-					ticks = pugi::cast<uint32_t>(subValueAttribute.value());
-				} else if (string == "count") {
-					count = std::max<int32_t>(1, pugi::cast<int32_t>(subValueAttribute.value()));
-				} else if (string == "start") {
-					start = std::max<int32_t>(0, pugi::cast<int32_t>(subValueAttribute.value()));
-				} else if (string == "damage") {
-					damage = -pugi::cast<int32_t>(subValueAttribute.value());
-					if (start > 0) {
-						std::list<int32_t>damageList;
-						ConditionDamage::generateDamageList(damage, start, damageList);
-						for (int32_t damageValue: damageList) {
-							conditionDamage->addDamage(1, ticks, -damageValue);
-						}
-
-						start = 0;
-					} else {
-						conditionDamage->addDamage(count, ticks, damage);
-					}
-				}
-			}
+			
+			parseFieldCombat(conditionDamage, stringValue, attributeNode, valueAttribute);
 
 			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 
 			if (conditionDamage->getTotalDamage() > 0) {
 				conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
 			}
+			delete conditionDamage;
 		}
 	}
 }
 
 void ItemParse::parseReplaceable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "replaceable") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "replaceable") {
 		itemType.replaceable = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseLevelDoor(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "leveldoor") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "leveldoor") {
 		itemType.levelDoor = pugi::cast<uint32_t>(valueAttribute.value());
 	}
 }
 
 void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "partnerdirection") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "partnerdirection") {
 		itemType.bedPartnerDir = getDirection(valueAttribute.as_string());
 	}
 		
-	if (string == "maletransformto") {
-		uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
+	uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
+	ItemType & other = Item::items.getItemType(value);
+	if (stringValue == "maletransformto") {
 		itemType.transformToOnUse[PLAYERSEX_MALE] = value;
-		ItemType & other = Item::items.getItemType(value);
 		if (other.transformToFree == 0) {
 			other.transformToFree = itemType.id;
 		}
@@ -675,11 +667,9 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 		if (itemType.transformToOnUse[PLAYERSEX_FEMALE] == 0) {
 			itemType.transformToOnUse[PLAYERSEX_FEMALE] = value;
 		}
-	} else if (string == "femaletransformto") {
-		uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
+	} else if (stringValue == "femaletransformto") {
 		itemType.transformToOnUse[PLAYERSEX_FEMALE] = value;
 
-		ItemType & other = Item::items.getItemType(value);
 		if (other.transformToFree == 0) {
 			other.transformToFree = itemType.id;
 		}
@@ -691,28 +681,28 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 }
 
 void ItemParse::parseElement(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "elementice") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "elementice") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 		abilities.elementType = COMBAT_ICEDAMAGE;
-	} else if (string == "elementearth") {
+	} else if (stringValue == "elementearth") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 		abilities.elementType = COMBAT_EARTHDAMAGE;
-	} else if (string == "elementfire") {
+	} else if (stringValue == "elementfire") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 		abilities.elementType = COMBAT_FIREDAMAGE;
-	} else if (string == "elementenergy") {
+	} else if (stringValue == "elementenergy") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 		abilities.elementType = COMBAT_ENERGYDAMAGE;
-	} else if (string == "elementdeath") {
+	} else if (stringValue == "elementdeath") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 		abilities.elementType = COMBAT_DEATHDAMAGE;
-	} else if (string == "elementholy") {
+	} else if (stringValue == "elementholy") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
 		abilities.elementType = COMBAT_HOLYDAMAGE;
@@ -720,17 +710,17 @@ void ItemParse::parseElement(const std::string& tmpStrValue, pugi::xml_attribute
 }
 
 void ItemParse::parseWalk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "walkstack") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "walkstack") {
 		itemType.walkStack = valueAttribute.as_bool();
-	} else if (string == "block_solid") {
+	} else if (stringValue == "block_solid") {
 		itemType.blockSolid = valueAttribute.as_bool();
 	}
 }
 
 void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string string = tmpStrValue;
-	if (string == "allowdistread") {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "allowdistread") {
 		itemType.allowDistRead = booleanString(valueAttribute.as_string());
 	}
 }

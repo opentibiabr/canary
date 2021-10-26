@@ -457,7 +457,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
 		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
 		if (parseAttribute != ItemParseAttributesMap.end()) {
-			// New parses
+			// Parse item attributes
 			ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
@@ -516,7 +516,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		}
 	}
 
-	//check bed items
+	// Check bed items
 	if ((itemType.transformToFree != 0 || itemType.transformToOnUse[PLAYERSEX_FEMALE] != 0 || itemType.transformToOnUse[PLAYERSEX_MALE] != 0) && itemType.type != ITEM_TYPE_BED) {
 		SPDLOG_WARN("[Items::parseItemNode] - Item {} is not set as a bed-type", itemType.id);
 	}

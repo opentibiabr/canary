@@ -212,8 +212,8 @@ class ItemType
 		ShootType_t shootType = CONST_ANI_NONE;
 		RaceType_t corpseType = RACE_NONE;
 		FluidTypes_t fluidSource = FLUID_NONE;
+		TileFlags_t floorChange = TILESTATE_NONE;
 
-		uint8_t floorChange = 0;
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;
 		uint8_t lightColor = 0;

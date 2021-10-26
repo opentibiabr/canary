@@ -224,17 +224,9 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"quiver", WEAPON_QUIVER},
 };
 
-class ItemParse
+class ItemParse final : Items
 {
 	public:
-	ItemParse() = default;
-
-	//non-copyable
-	ItemParse(const ItemParse& other) = delete;
-		ItemParse& operator=(const ItemParse& other) = delete;
-
-	ItemParse(ItemParse&& other) = default;
-	ItemParse& operator=(ItemParse&& other) = default;
 
 	static void parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseDescription(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -288,6 +280,11 @@ class ItemParse
 	static void parseElement(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWalk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+
+	private:
+	// Parent of the function: static void parseField
+	static void parseFieldConditions(ConditionDamage *conditionDamage, CombatType_t combatType, std::string lowerString, pugi::xml_attribute valueAttribute);
+	static void parseFieldCombat(ConditionDamage *conditionDamage, std::string string, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute);
 };
 
 #endif // SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_

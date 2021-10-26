@@ -568,6 +568,7 @@ void ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, CombatTyp
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
+		delete conditionDamage;
 	}
 }
 

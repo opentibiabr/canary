@@ -90,8 +90,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"skillshield", ITEM_PARSE_SKILLSHIELD},
 	{"skillfist", ITEM_PARSE_SKILLFIST},
 	{"criticalhitchance", ITEM_PARSE_CRITICALHITCHANCE},
-	{"criticalhitamount", ITEM_PARSE_CRITICALHITAMOUNT},
-	{"skillcriticaldamage", ITEM_PARSE_CRITICALHITDAMAGE},
+	{"criticalhitdamage", ITEM_PARSE_CRITICALHITDAMAGE},
 	{"skilllifechance", ITEM_PARSE_LIFELEECHCHANCE},
 	{"skilllifeamount", ITEM_PARSE_LIFELEECHAMOUNT},
 	{"skillmanachance", ITEM_PARSE_MANALEECHCHANCE},
@@ -101,7 +100,6 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"maxmanapoints", ITEM_PARSE_MAXMANAPOINTS},
 	{"maxmanapointspercent", ITEM_PARSE_MAXMANAPOINTSPERCENT},
 	{"magicpoints", ITEM_PARSE_MAGICPOINTS},
-	{"magiclevelpoints", ITEM_PARSE_MAGICPOINTS},
 	{"magicpointspercent", ITEM_PARSE_MAGICPOINTSPERCENT},
 	{"fieldabsorbpercentenergy", ITEM_PARSE_FIELDABSORBPERCENTENERGY},
 	{"fieldabsorbpercentfire", ITEM_PARSE_FIELDABSORBPERCENTFIRE},
@@ -284,7 +282,7 @@ class ItemParse final : Items
 	private:
 	// Parent of the function: static void parseField
 	static void parseFieldConditions(ConditionDamage *conditionDamage, CombatType_t combatType, std::string lowerString, pugi::xml_attribute valueAttribute);
-	static void parseFieldCombat(ConditionDamage *conditionDamage, std::string string, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute);
+	static void parseFieldCombat(ConditionDamage *conditionDamage, std::string string, pugi::xml_node attributeNode);
 };
 
 #endif // SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_

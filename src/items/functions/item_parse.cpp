@@ -571,7 +571,7 @@ void ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, CombatTyp
 	}
 }
 
-void ItemParse::parseFieldCombat(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute) {
+void ItemParse::parseFieldCombat(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
 	uint32_t combatTicks = 0;
 	int32_t combatDamage = 0;
 	int32_t combatStart = 0;
@@ -624,7 +624,7 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 			itemType.combatType = combatType;
 			itemType.conditionDamage.reset(conditionDamage);
 			
-			parseFieldCombat(conditionDamage, stringValue, attributeNode, valueAttribute);
+			parseFieldCombat(conditionDamage, stringValue, attributeNode);
 
 			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 

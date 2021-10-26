@@ -5026,7 +5026,7 @@
 		<attribute key="description" value="You have a vague feeling that it looks somewhat silly."/>
 		<attribute key="weight" value="700"/>
 		<attribute key="armor" value="3"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuingslot" value="1"/>
 	</item>
@@ -15396,13 +15396,13 @@
 		<attribute key="armor" value="8"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="2650"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="8043" article="a" name="focus cape">
 		<attribute key="weight" value="2100"/>
 		<attribute key="armor" value="9"/>
 		<attribute key="slotType" value="body"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="8044" article="a" name="belted cape">
 		<attribute key="weight" value="3500"/>
@@ -15543,14 +15543,14 @@
 		<attribute key="armor" value="7"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="2550"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item fromid="8066" toid="8069" article="a" name="mysterious machine"/>
 	<item fromid="8070" toid="8071" article="a" name="chalk board"/>
 	<item id="8072" article="a" name="spellbook of enlightenment">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="1950"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="defense" value="18"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuingslot" value="1"/>
@@ -15558,7 +15558,7 @@
 	<item id="8073" article="a" name="spellbook of warding">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2100"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="defense" value="22"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuingslot" value="1"/>
@@ -15566,21 +15566,21 @@
 	<item id="8074" article="a" name="spellbook of mind control">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2450"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="weaponType" value="shield"/>
 	</item>
 	<item id="8075" article="a" name="spellbook of lost souls">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2560"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="defense" value="20"/>
 		<attribute key="weaponType" value="shield"/>
 	</item>
 	<item id="8076" article="a" name="spellscroll of prophecies">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2650"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="12"/>
 		<attribute key="weaponType" value="shield"/>
 	</item>
@@ -15655,7 +15655,7 @@
 	<item id="8090" article="a" name="spellbook of dark mysteries">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2850"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="weaponType" value="shield"/>
 	</item>
@@ -16620,7 +16620,7 @@
 		<attribute key="weight" value="3500"/>
 		<attribute key="armor" value="5"/>
 		<attribute key="slotType" value="head"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="imbuingslot" value="1"/>
 	</item>
 	<item id="8865" article="a" name="crystal column"/>
@@ -17377,7 +17377,7 @@
 		<attribute key="weight" value="600"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="slotType" value="head"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="imbuingslot" value="1"/>
 	</item>
 	<item id="9104" article="a" name="football"/>
@@ -19802,7 +19802,7 @@
 	<item id="10451" article="a" name="jade hat">
 		<attribute key="weight" value="900"/>
 		<attribute key="armor" value="4"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuingslot" value="1"/>
 	</item>
@@ -20871,7 +20871,7 @@
 	<item id="11674" article="a" name="cobra crown">
 		<attribute key="weight" value="850"/>
 		<attribute key="armor" value="3"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="absorbPercentFire" value="-5"/>
 		<attribute key="absorbPercentEarth" value="5"/>
 		<attribute key="slotType" value="head"/>
@@ -20933,7 +20933,7 @@
 		<attribute key="weight" value="4500"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="slotType" value="body"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="absorbPercentFire" value="5"/>
 	</item>
 	<item id="11688" article="a" name="shield of corruption">
@@ -20960,7 +20960,7 @@
 	<item id="11691" article="a" name="snake god's wristguard">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2800"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="14"/>
 		<attribute key="weaponType" value="shield"/>
 	</item>
@@ -23427,7 +23427,7 @@
 		<attribute key="weight" value="3000"/>
 		<attribute key="defense" value="25"/>
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuingslot" value="1"/>
 	</item>
@@ -23677,7 +23677,7 @@
 		<attribute key="weight" value="2000"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="slotType" value="body"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="absorbPercentIce" value="5"/>
 	</item>
 	<item id="14087" article="a" name="grasshopper legs">
@@ -24080,7 +24080,7 @@
 		<attribute key="defense" value="19"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentdeath" value="5"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="showAttributes" value="1"/>
 	</item>
 	<item fromid="14770" toid="14801" name="crystal floor"/>
@@ -24919,7 +24919,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="range" value="4"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="16097" article="a" name="glowing mushroom">
 		<attribute key="weight" value="1000"/>
@@ -24958,7 +24958,7 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="absorbpercentearth" value="6"/>
 		<attribute key="absorbpercentfire" value="-6"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 	</item>
 	<item id="16105" article="a" name="gill coat">
 		<attribute key="weight" value="1900"/>
@@ -24966,7 +24966,7 @@
 		<attribute key="slotType" value="body"/>
 		<attribute key="absorbpercentearth" value="10"/>
 		<attribute key="absorbpercentfire" value="-10"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="16106" article="a" name="gill legs">
 		<attribute key="weight" value="2800"/>
@@ -24974,12 +24974,12 @@
 		<attribute key="slotType" value="legs"/>
 		<attribute key="absorbpercentearth" value="8"/>
 		<attribute key="absorbpercentfire" value="-8"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="16107" article="a" name="spellbook of vigilance">
 		<attribute key="description" value="It shows your spells and can also shield against attacks when worn."/>
 		<attribute key="weight" value="2700"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="defense" value="20"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="absorbpercentearth" value="3"/>
@@ -25051,7 +25051,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="fire"/>
 		<attribute key="range" value="4"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="16116" article="a" name="prismatic shield">
 		<attribute key="weight" value="7200"/>
@@ -25067,7 +25067,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallearth"/>
 		<attribute key="range" value="4"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="16118" article="a" name="glacial rod">
 		<attribute key="description" value="Hurls the icy essence of the Svargrond glaciers."/>
@@ -25075,7 +25075,7 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="range" value="4"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 	</item>
 	<item id="16119" article="a" name="blue crystal shard" plural="blue crystal shards">
 		<attribute key="weight" value="20"/>
@@ -29900,7 +29900,7 @@
 		<attribute key="armor" value="12"/>
 		<attribute key="absorbpercentfire" value="5"/>
 		<attribute key="slotType" value="body"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="weight" value="3400"/>
 	</item>
@@ -30317,7 +30317,7 @@
 		<attribute key="absorbPercentIce" value="2"/>
 		<attribute key="absorbpercentenergy" value="2"/>
 		<attribute key="defense" value="14"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="4000"/>
 	</item>
@@ -30328,7 +30328,7 @@
 		<attribute key="absorbpercentenergy" value="3"/>
 		<attribute key="defense" value="16"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="3500"/>
 	</item>
@@ -30339,7 +30339,7 @@
 		<attribute key="absorbpercentenergy" value="5"/>
 		<attribute key="defense" value="20"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="3000"/>
 	</item>
@@ -31601,7 +31601,7 @@
 		<attribute key="armor" value="5"/>
 		<attribute key="absorbpercentearth" value="3"/>
 		<attribute key="absorbpercentfire" value="-3"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="slotType" value="head"/>
 		<attribute key="weight" value="800"/>
 	</item>
@@ -33559,7 +33559,7 @@
 	<item id="22130" article="an" name="enchanted werewolf amulet">
 		<attribute key="armor" value="9"/>
 		<attribute key="absorbPercentPhysical" value="4"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="decayTo" value="22060"/>
 		<attribute key="slotType" value="necklace"/>
@@ -34010,7 +34010,7 @@
 		<attribute key="armor" value="15"/>
 		<attribute key="absorbpercentfire" value="8"/>
 		<attribute key="absorbPercentIce" value="-8"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="14500"/>
 	</item>
@@ -34018,7 +34018,7 @@
 		<attribute key="armor" value="15"/>
 		<attribute key="absorbpercentearth" value="8"/>
 		<attribute key="absorbpercentfire" value="-8"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="14500"/>
 	</item>
@@ -34026,7 +34026,7 @@
 		<attribute key="armor" value="15"/>
 		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="absorbpercentearth" value="-8"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="14500"/>
 	</item>
@@ -34034,7 +34034,7 @@
 		<attribute key="armor" value="15"/>
 		<attribute key="absorbPercentIce" value="8"/>
 		<attribute key="absorbpercentenergy" value="-8"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="14500"/>
 	</item>
@@ -34358,7 +34358,7 @@
 	<item id="22755" article="a" name="book of lies">
 		<attribute key="defense" value="18"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="2400"/>
 	</item>
@@ -34432,7 +34432,7 @@
 		<attribute key="description" value="It is made of platinum and emeralds and topped by a large F made of gold."/>
 		<attribute key="decayTo" value="22764"/>
 		<attribute key="duration" value="86400"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="range" value="4"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="weaponType" value="wand"/>
@@ -35291,7 +35291,7 @@
 	<item id="23526" article="a" name="collar of blue plasma">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="1800"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="skilldist" value="4"/>
@@ -35306,7 +35306,7 @@
 		<attribute key="healthticks" value="6000"/>
 		<attribute key="managain" value="8"/>
 		<attribute key="manaticks" value="6000"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="slotType" value="necklace"/>
@@ -35336,7 +35336,7 @@
 	<item id="23530" article="a" name="ring of blue plasma">
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="1800"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="skilldist" value="3"/>
@@ -35358,7 +35358,7 @@
 		<attribute key="healthticks" value="6000"/>
 		<attribute key="managain" value="4"/>
 		<attribute key="manaticks" value="6000"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="slotType" value="ring"/>
@@ -37054,7 +37054,7 @@
 	<item id="25699" article="a" name="wooden spellbook">
 		<attribute key="absorbpercentearth" value="5"/>
 		<attribute key="defense" value="16"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="imbuingslot" value="1"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="1200"/>
@@ -37062,7 +37062,7 @@
 	<item id="25700" article="a" name="dream blossom staff">
 		<attribute key="description" value="It's a gnarly branch with a gleaming blue blossom."/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="shootType" value="death"/>
 		<attribute key="weaponType" value="wand"/>
@@ -37228,7 +37228,7 @@
 		<attribute key="description" value="Temporary magic powers enchant this staff."/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="900"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="stopduration" value="0"/>
 		<attribute key="showduration" value="1"/>
@@ -39035,14 +39035,14 @@
 	<item id="27457" article="a" name="wand of destruction">
 		<attribute key="shootType" value="energy"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="weight" value="3500"/>
 	</item>
 	<item id="27458" article="a" name="rod of destruction">
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="shootType" value="ice"/>
 		<attribute key="weight" value="3500"/>
@@ -39611,7 +39611,7 @@
 		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="absorbPercentIce" value="-2"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="head"/>
 		<attribute key="weight" value="2400"/>
 	</item>
@@ -39629,7 +39629,7 @@
 		<attribute key="armor" value="9"/>
 		<attribute key="absorbpercentenergy" value="7"/>
 		<attribute key="absorbPercentIce" value="-2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="legs"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -41015,7 +41015,7 @@
 		<attribute key="absorbpercentfire" value="9"/>
 		<attribute key="armor" value="8"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="head"/>
 		<attribute key="weight" value="1300"/>
 	</item>
@@ -41032,7 +41032,7 @@
 	<item id="28716" article="a" name="falcon rod">
 		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="range" value="5"/>
 		<attribute key="shootType" value="smallearth"/>
 		<attribute key="weaponType" value="wand"/>
@@ -41041,7 +41041,7 @@
 	<item id="28717" article="a" name="falcon wand">
 		<attribute key="absorbpercentfire" value="8"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="range" value="5"/>
 		<attribute key="shootType" value="energy"/>
 		<attribute key="weaponType" value="wand"/>
@@ -41555,7 +41555,7 @@
 	<item id="28825" article="a" name="deepling ceremonial dagger">
 		<attribute key="absorbpercentearth" value="5"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="6"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="weaponType" value="wand"/>
@@ -41564,7 +41564,7 @@
 	<item id="28826" article="a" name="deepling fork">
 		<attribute key="absorbpercentholy" value="8"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="range" value="5"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="weight" value="3300"/>
@@ -42121,7 +42121,7 @@
 		<attribute key="absorbpercentearth" value="12"/>
 		<attribute key="absorbpercentfire" value="-5"/>
 		<attribute key="armor" value="13"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="imbuingslot" value="1"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="4800"/>
@@ -42140,7 +42140,7 @@
 		<attribute key="absorbPercentPhysical" value="4"/>
 		<attribute key="defense" value="26"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="3500"/>
 	</item>
@@ -42168,7 +42168,7 @@
 		<attribute key="absorbpercentenergy" value="10"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -42176,14 +42176,14 @@
 		<attribute key="armor" value="2"/>
 		<attribute key="absorbpercentearth" value="8"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="1"/>
+		<attribute key="magicpoints" value="1"/>
 		<attribute key="slotType" value="feet"/>
 		<attribute key="weight" value="800"/>
 	</item>
 	<item id="29425" article="an" name="energized limb">
 		<attribute key="absorbpercentenergy" value="10"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="range" value="4"/>
 		<attribute key="shootType" value="fire"/>
 		<attribute key="weight" value="2700"/>
@@ -42193,7 +42193,7 @@
 		<attribute key="absorbpercentearth" value="7"/>
 		<attribute key="defense" value="19"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="2700"/>
 	</item>
@@ -42227,7 +42227,7 @@
 		<attribute key="absorbpercentenergy" value="6"/>
 		<attribute key="defense" value="17"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="weight" value="1800"/>
 	</item>
@@ -43693,13 +43693,13 @@
 	</item>
 	<item id="30399" name="cobra wand">
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="weight" value="4000"/>
 	</item>
 	<item id="30400" name="cobra rod">
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -43713,7 +43713,7 @@
 		<attribute key="armor" value="2"/>
 		<attribute key="decayTo" value="30403"/>
 		<attribute key="duration" value="7200"/>
-		<attribute key="magicLevelPoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="slotType" value="necklace"/>
 		<attribute key="weight" value="500"/>
 	</item>
@@ -45086,7 +45086,7 @@
 		<attribute key="absorbpercentearth" value="11"/>
 		<attribute key="absorbpercentfire" value="-2"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="4400"/>
 	</item>
@@ -45126,7 +45126,7 @@
 		<attribute key="absorbpercentholy" value="-3"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="imbuingslot" value="2"/>
-		<attribute key="magicLevelPoints" value="2"/>
+		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="head"/>
 		<attribute key="weight" value="2300"/>
 	</item>
@@ -45134,7 +45134,7 @@
 		<attribute key="absorbpercentdeath" value="6"/>
 		<attribute key="armor" value="16"/>
 		<attribute key="imbuingslot" value="1"/>
-		<attribute key="magicLevelPoints" value="4"/>
+		<attribute key="magicpoints" value="4"/>
 		<attribute key="slotType" value="body"/>
 		<attribute key="weight" value="5200"/>
 	</item>
@@ -46490,7 +46490,7 @@
 		<attribute key="loottype" value="axe" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="skillAxe" value="2" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="32617" article="a" name="fabulous legs">
 		<attribute key="weight" value="5500" />
@@ -46510,7 +46510,7 @@
 		<attribute key="slotType" value="legs" />
 		<attribute key="loottype" value="legs" />
 		<attribute key="absorbPercentHoly" value="8" />
-		<attribute key="magiclevelpoints" value="1" />
+		<attribute key="magicpoints" value="1" />
 	</item>
 	<item id="32619" name="pair of nightmare boots">
 		<attribute key="armor" value="2" />
@@ -46518,15 +46518,15 @@
 		<attribute key="slotType" value="feet" />
 		<attribute key="loottype" value="boots" />
 		<attribute key="absorbPercentEnergy" value="6" />
-		<attribute key="magiclevelpoints" value="1" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="magicpoints" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="32620" article="a" name="ghost backpack">
 		<attribute key="weight" value="500" />
 		<attribute key="containerSize" value="26" />
 		<attribute key="loottype" value="container" />
 		<attribute key="slotType" value="backpack" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="32621" article="a" name="ring of souls">
 		<attribute key="description" value="This ring is out of magic energy." />
@@ -46564,7 +46564,7 @@
 		<attribute key="armor" value="17" />
 		<attribute key="skillDist" value="2" />
 		<attribute key="absorbPercentPhysical" value="3" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="32629" name="the spectral scrap of cloth">
 		<attribute key="loottype" value="other" />
@@ -46575,7 +46575,7 @@
 		<attribute key="armor" value="1" />
 		<attribute key="slotType" value="head" />
 		<attribute key="loottype" value="helmet" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="32631" article="a" name="ghost claw">
 		<attribute key="loottype" value="other" />
@@ -48181,20 +48181,20 @@
 		<attribute key="weaponType" value="sword" />
 		<attribute key="loottype" value="sword" />
 		<attribute key="skillSword" value="5" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34083" article="a" name="soulshredder">
 		<attribute key="weight" value="8100" />
 		<attribute key="defense" value="35" />
 		<attribute key="attack" value="10" />
 		<attribute key="elementIce" value="47" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="loottype" value="sword" />
 		<attribute key="skillSword" value="5" />
-		<attribute key="imbuingSlots" value="3" />
+		<attribute key="imbuingslot" value="3" />
 	</item>
 	<item id="34084" article="a" name="soulbiter">
 		<attribute key="weight" value="4000" />
@@ -48209,20 +48209,20 @@
 		<attribute key="weaponType" value="axe" />
 		<attribute key="loottype" value="axe" />
 		<attribute key="skillAxe" value="5" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34085" article="a" name="souleater">
 		<attribute key="weight" value="7200" />
 		<attribute key="defense" value="35" />
 		<attribute key="attack" value="10" />
 		<attribute key="elementIce" value="47" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="axe" />
 		<attribute key="loottype" value="axe" />
 		<attribute key="skillAxe" value="5" />
-		<attribute key="imbuingSlots" value="3" />
+		<attribute key="imbuingslot" value="3" />
 	</item>
 	<item id="34086" article="a" name="soulcrusher">
 		<attribute key="weight" value="4100" />
@@ -48237,20 +48237,20 @@
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
 		<attribute key="skillClub" value="5" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34087" article="a" name="soulmaimer">
 		<attribute key="weight" value="8900" />
 		<attribute key="defense" value="35" />
 		<attribute key="attack" value="10" />
 		<attribute key="elementEnergy" value="47" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
 		<attribute key="skillClub" value="5" />
-		<attribute key="imbuingSlots" value="3" />
+		<attribute key="imbuingslot" value="3" />
 	</item>
 	<item id="34088" article="a" name="soulbleeder">
 		<attribute key="weight" value="4700" />
@@ -48261,11 +48261,11 @@
 		<attribute key="attack" value="8" />
 		<attribute key="HitChance" value="5" />
 		<attribute key="skillDist" value="4" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="absorbPercentHoly" value="7" />
 		<attribute key="ammoType" value="arrow" />
-		<attribute key="imbuingSlots" value="3" />
+		<attribute key="imbuingslot" value="3" />
 	</item>
 	<item id="34089" article="a" name="soulpiercer">
 		<attribute key="weight" value="4000" />
@@ -48278,45 +48278,45 @@
 		<attribute key="absorbPercentDeath" value="7" />
 		<attribute key="weaponType" value="distance"/>
 		<attribute key="ammoType" value="bolt"/>
-		<attribute key="imbuingSlots" value="3"/>
+		<attribute key="imbuingslot" value="3"/>
 	</item>
 	<item id="34090" article="a" name="soultainter">
 		<attribute key="weaponType" value="wand" />
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="6" />
 		<attribute key="shootType" value="death" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="absorbPercentDeath" value="12" />
-		<attribute key="magiclevelpoints" value="5" />
+		<attribute key="magicpoints" value="5" />
 		<attribute key="weight" value="1900" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34091" article="a" name="soulhexer">
 		<attribute key="weaponType" value="wand" />
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="6" />
 		<attribute key="shootType" value="smallice" />
-		<attribute key="magiclevelpoints" value="5" />
+		<attribute key="magicpoints" value="5" />
 		<attribute key="skilllifechance" value="100" />
 		<attribute key="skilllifeamount" value="5" />
 		<attribute key="skillmanachance" value="100" />
 		<attribute key="skillmanaamount" value="3" />
 		<attribute key="absorbPercentIce" value="12" />
 		<attribute key="weight" value="2500" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34092" article="a" name="soulshanks">
 		<attribute key="weight" value="3800" />
 		<attribute key="armor" value="10"/>
-		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="absorbPercentDeath" value="10" />
 		<attribute key="slotType" value="legs"/>
 	</item>
 	<item id="34093" article="a" name="soulstrider">
 		<attribute key="weight" value="3800" />
 		<attribute key="armor" value="10"/>
-		<attribute key="magiclevelpoints" value="3"/>
+		<attribute key="magicpoints" value="3"/>
 		<attribute key="absorbPercentFire" value="10" />
 		<attribute key="slotType" value="legs"/>
 	</item>
@@ -48328,25 +48328,25 @@
 		<attribute key="absorbPercentPhysical" value="3" />
 		<attribute key="absorbPercentFire" value="15" />
 		<attribute key="weight" value="12300" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34095" article="a" name="soulmantle">
 		<attribute key="slotType" value="body" />
 		<attribute key="loottype" value="armor" />
 		<attribute key="armor" value="17" />
-		<attribute key="magiclevelpoints" value="4" />
+		<attribute key="magicpoints" value="4" />
 		<attribute key="absorbPercentPhysical" value="4" />
 		<attribute key="weight" value="2400" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34096" article="a" name="soulshroud">
 		<attribute key="slotType" value="body" />
 		<attribute key="loottype" value="armor" />
 		<attribute key="armor" value="17" />
-		<attribute key="magiclevelpoints" value="4" />
+		<attribute key="magicpoints" value="4" />
 		<attribute key="absorbPercentDeath" value="10" />
 		<attribute key="weight" value="2400" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34097" name="pair of soulwalkers">
 		<attribute key="weight" value="1300"/>
@@ -48359,7 +48359,7 @@
 		<attribute key="absorbPercentFire" value="5" />
 		<attribute key="speed" value="30"/>
 		<attribute key="loottype" value="boots" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="34098" name="pair of soulstalkers">
 		<attribute key="weight" value="1300"/>
@@ -48369,7 +48369,7 @@
 		<attribute key="absorbPercentPhysical" value="5" />
 		<attribute key="speed" value="40"/>
 		<attribute key="loottype" value="boots" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="34099" article="a" name="soulbastion">
 		<attribute key="weight" value="5800" />
@@ -48378,7 +48378,7 @@
 		<attribute key="absorbPercentPhysical" value="10" />
 		<attribute key="absorbPercentDeath" value="10" />
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="34100" name="Katex' blood">
 		<attribute key="loottype" value="creatureproduct" />
@@ -48608,39 +48608,39 @@
 		<attribute key="skillDist" value="2" />
 		<attribute key="absorbPercentIce" value="5" />
 		<attribute key="ammoType" value="arrow" />
-		<attribute key="imbuingSlots" value="3" />
+		<attribute key="imbuingslot" value="3" />
 	</item>
 	<item id="34151" article="a" name="lion rod">
 		<attribute key="weaponType" value="wand" />
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="5" />
 		<attribute key="shootType" value="smallice" />
-		<attribute key="magiclevelpoints" value="2" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="35" />
+		<attribute key="magicpoints" value="2" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="35" />
 		<attribute key="weight" value="3700" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34152" article="a" name="lion wand">
 		<attribute key="weaponType" value="wand" />
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="4" />
 		<attribute key="shootType" value="smallice" />
-		<attribute key="magiclevelpoints" value="2" />
+		<attribute key="magicpoints" value="2" />
 		<attribute key="skilllifechance" value="100" />
 		<attribute key="skilllifeamount" value="18" />
 		<attribute key="weight" value="3300" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34153" article="a" name="lion spellbook">
 		<attribute key="weight" value="2500" />
-		<attribute key="magiclevelpoints" value="4" />
+		<attribute key="magicpoints" value="4" />
 		<attribute key="absorbPercentPhysical" value="3" />
 		<attribute key="absorbPercentIce" value="7" />
 		<attribute key="defense" value="20" />
 		<attribute key="weaponType" value="shield" />
 		<attribute key="loottype" value="shield" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="34154" article="a" name="lion shield">
 		<attribute key="weight" value="6500" />
@@ -48659,7 +48659,7 @@
 		<attribute key="weaponType" value="sword" />
 		<attribute key="loottype" value="sword" />
 		<attribute key="skillSword" value="3" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34156" article="a" name="lion spangenhelm">
 		<attribute key="weight" value="3000" />
@@ -48669,7 +48669,7 @@
 		<attribute key="absorbPercentEarth" value="5" />
 		<attribute key="slotType" value="head" />
 		<attribute key="loottype" value="helmet" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34157" article="a" name="lion plate">
 		<attribute key="slotType" value="body" />
@@ -48680,7 +48680,7 @@
 		<attribute key="skillClub" value="3" />
 		<attribute key="absorbPercentPhysical" value="6" />
 		<attribute key="weight" value="15000" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34158" article="a" name="lion amulet">
 		<attribute key="weight" value="520" />
@@ -49008,7 +49008,7 @@
 		<attribute key="weaponType" value="axe" />
 		<attribute key="loottype" value="axe" />
 		<attribute key="skillAxe" value="3" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34254" article="a" name="lion hammer">
 		<attribute key="weight" value="6500" />
@@ -49019,7 +49019,7 @@
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
 		<attribute key="skillClub" value="3" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="34255" article="a" name="trapdoor">
 		<attribute key="floorchange" value="down" />
@@ -49218,7 +49218,7 @@
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="35515" article="a" name="throwing axe">
 		<attribute key="weight" value="4700" />
@@ -49228,7 +49228,7 @@
 		<attribute key="loottype" value="axe" />
 		<attribute key="extradef" value="2" />
 		<attribute key="skillAxe" value="2" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="35516" name="exotic legs">
 		<attribute key="weight" value="7200" />
@@ -49256,45 +49256,45 @@
 		<attribute key="skillDist" value="1" />
 		<attribute key="absorbPercentPhysical" value="3" />
 		<attribute key="weight" value="4700" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="35519" name="makeshift boots">
 		<attribute key="weight" value="1450" />
 		<attribute key="armor" value="2" />
-		<attribute key="magiclevelpoints" value="1" />
+		<attribute key="magicpoints" value="1" />
 		<attribute key="absorbPercentFire" value="6" />
 		<attribute key="slotType" value="feet" />
 		<attribute key="loottype" value="boots" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="35520" name="make-do boots">
 		<attribute key="weight" value="1200" />
 		<attribute key="armor" value="2" />
-		<attribute key="magiclevelpoints" value="1" />
+		<attribute key="magicpoints" value="1" />
 		<attribute key="absorbPercentIce" value="6" />
 		<attribute key="slotType" value="feet" />
 		<attribute key="loottype" value="boots" />
-		<attribute key="imbuingSlots" value="1" />
+		<attribute key="imbuingslot" value="1" />
 	</item>
 	<item id="35521" article="a" name="jungle rod">
 		<attribute key="weaponType" value="wand" />
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="4" />
 		<attribute key="shootType" value="smallice" />
-		<attribute key="magiclevelpoints" value="1" />
+		<attribute key="magicpoints" value="1" />
 		<attribute key="absorbPercentEarth" value="3" />
 		<attribute key="weight" value="3700" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="35522" article="a" name="jungle wand">
 		<attribute key="weaponType" value="wand" />
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="4" />
 		<attribute key="shootType" value="smallearth" />
-		<attribute key="magiclevelpoints" value="1" />
+		<attribute key="magicpoints" value="1" />
 		<attribute key="absorbPercentIce" value="3" />
 		<attribute key="weight" value="3200" />
-		<attribute key="imbuingSlots" value="2" />
+		<attribute key="imbuingslot" value="2" />
 	</item>
 	<item id="35523" article="an" name="exotic amulet">
 		<attribute key="slotType" value="necklace" />

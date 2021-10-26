@@ -380,7 +380,7 @@ ReturnValue Combat::canDoCombatSummon(const Creature *attacker, const Creature *
 			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 		}
 	}
-	else if (const Monster *attackerMonster = attacker->getMonster())
+	else if (attacker->getMonster())
 	{
 		const Creature *targetMaster = target->getMaster();
 		if ((!targetMaster || !targetMaster->getPlayer())

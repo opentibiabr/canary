@@ -6590,7 +6590,7 @@ void Game::checkImbuements()
 		uint8_t slots = Item::items[item->getID()].imbuingSlots;
 		for (uint8_t slot = 0; slot < slots; slot++) {
 			uint32_t info = item->getImbuement(slot);
-			int32_t id = info & 0xFF;
+			uint16_t id = info & 0xFF;
 			if (id == 0) {
 				continue;
 			}

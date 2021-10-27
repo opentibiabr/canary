@@ -548,33 +548,28 @@ void ItemParse::parseSupressDrunk(const std::string& tmpStrValue, pugi::xml_attr
 	}
 }
 
-ConditionDamage* ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> ItemParse::parseFieldConditions(ConditionId_t conditionId, ConditionType_t conditionType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
+	conditionId = CONDITIONID_COMBAT;
 	if (lowerStringValue == "fire") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
-		}
+		conditionType = CONDITION_FIRE;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "energy") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
-		}
+		conditionType = CONDITION_ENERGY;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "poison") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
-		}
+		conditionType = CONDITION_POISON;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "drown") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
-		}
+		conditionType = CONDITION_DROWN;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "physical") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
-		}
+		conditionType = CONDITION_BLEEDING;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else {
-		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
-                    valueAttribute.as_string());
+	SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
+                valueAttribute.as_string());
 	}
-	delete conditionDamage;
 }
 
 CombatType_t ItemParse::parseFieldCombatType(CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
@@ -641,24 +636,36 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "field") {
 		CombatType_t combatType = COMBAT_NONE;
-		ConditionDamage *conditionDamage = nullptr;
+		ConditionDamage* conditionDamage = nullptr;
 
-		// Parse fields conditions and combat type (fire/energy/poison/drown/physical)
-		conditionDamage = parseFieldConditions(conditionDamage, stringValue, valueAttribute);
+		// Parse fields conditions (fire/energy/poison/drown/physical)
 		combatType = parseFieldCombatType(combatType, stringValue, valueAttribute);
+		ConditionId_t condID;
+		ConditionType_t condType;
+		auto result = parseFieldConditions(condID, condType, stringValue, valueAttribute);
+		condID = std::get<0>(result);
+		condType = std::get<1>(result);
+		stringValue = std::get<2>(result);
+		valueAttribute = std::get<3>(result);
+
 		if (combatType != COMBAT_NONE) {
-			itemType.combatType = combatType;
-			itemType.conditionDamage.reset(conditionDamage);
+			if (!conditionDamage) {
+				conditionDamage = new ConditionDamage(condID, condType);
+
+				itemType.combatType = combatType;
+				itemType.conditionDamage.reset(conditionDamage);
+
+				parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
 			
-			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
+				conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 
-			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
-
-			if (conditionDamage->getTotalDamage() > 0) {
-				conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
+				if (conditionDamage->getTotalDamage() > 0) {
+					conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
+				}
+				return;
 			}
+			delete conditionDamage;
 		}
-		delete conditionDamage;
 	}
 }
 

@@ -155,7 +155,7 @@ FAMILIARSNAME = {
 	"knight familiar",
 	"druid familiar",
 	"paladin familiar"
-},
+}
 
 function addStamina(playerId, ...)
 	-- Creature:onTargetCombat

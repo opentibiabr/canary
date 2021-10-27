@@ -49,23 +49,32 @@ struct Abilities {
 	//damage abilities modifiers
 	int16_t absorbPercent[COMBAT_COUNT] = { 0 };
 
-	//relfect abilities modifires
+	// Reflect abilities modifires
 	int16_t reflectPercent[COMBAT_COUNT] = { 0 };
 
 	//elemental damage
 	uint16_t elementDamage = 0;
 	CombatType_t elementType = COMBAT_NONE;
 
+	// New 12.7 modifiers
+	// Specialized magic level modifiers
+	int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+
+	// Magic shield capacity modifiers
+	int16_t magicShieldCapacityPercent = 0;
+	int32_t magicShieldCapacityFlat = 0;
+	
+	// Cleave modifiers
+	int16_t cleavePercent = 0;
+	
+	// Perfect shot modifiers
+	int32_t perfectShotDamage = 0;
+	int16_t perfectShotRange = 0;
+	int16_t reflectMelee = 0;
+
 	bool manaShield = false;
 	bool invisible = false;
 	bool regeneration = false;
-};
-
-struct Modifiers {
-	public:
-		uint16_t cleaveDamage = 0;
-		uint16_t reflectDamage = 0;
-		uint16_t perfectBonus = 0;
 };
 
 class ConditionDamage;
@@ -145,13 +154,6 @@ class ItemType
 			return *abilities;
 		}
 
-		Modifiers& getModifiers() {
-			if (!modifiers) {
-				modifiers.reset(new Modifiers());
-			}
-			return *modifiers;
-		}
-
 		std::string getPluralName() const {
 			if (!pluralName.empty()) {
 				return pluralName;
@@ -183,7 +185,6 @@ class ItemType
 		std::string runeSpellName;
 		std::string vocationString;
 
-		std::unique_ptr<Modifiers> modifiers;
 		std::unique_ptr<Abilities> abilities;
 		std::unique_ptr<ConditionDamage> conditionDamage;
 
@@ -227,8 +228,8 @@ class ItemType
 		ShootType_t shootType = CONST_ANI_NONE;
 		RaceType_t corpseType = RACE_NONE;
 		FluidTypes_t fluidSource = FLUID_NONE;
+		TileFlags_t floorChange = TILESTATE_NONE;
 
-		uint8_t floorChange = 0;
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;
 		uint8_t lightColor = 0;
@@ -291,6 +292,8 @@ class Items
 
 		uint16_t getItemIdByName(const std::string& name);
 
+		ItemTypes_t getLootType(const std::string& strValue);
+
 		uint32_t majorVersion = 0;
 		uint32_t minorVersion = 0;
 		uint32_t buildNumber = 0;
@@ -310,7 +313,6 @@ class Items
 		NameMap nameToItems;
 
 	private:
-		ItemTypes_t getLootType(const std::string& strValue);
 
 		std::map<uint16_t, uint16_t> reverseItemMap;
 		std::vector<ItemType> items;

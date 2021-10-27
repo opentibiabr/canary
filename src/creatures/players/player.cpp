@@ -236,27 +236,38 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
-    const ItemType& it = Item::items[item->getID()];
-    if (it.ammoType != AMMO_NONE) {
-      Item* quiver = inventory[CONST_SLOT_RIGHT];
-      if (!quiver || quiver->getWeaponType() != WEAPON_QUIVER)
-        return nullptr;
-      Container* container = quiver->getContainer();
-      if (!container)
-        return nullptr;
-      bool found = false;
-      for (Item* ammoItem : container->getItemList()) {
-        if (ammoItem->getAmmoType() == it.ammoType) {
-          item = ammoItem;
-          found = true;
-          break;
-        }
-      }
-      if (!found)
-        return nullptr;
-    }
-  }
+	if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
+		const ItemType& it = Item::items[item->getID()];
+		if (it.ammoType != AMMO_NONE) {
+			Item* quiver = inventory[CONST_SLOT_RIGHT];
+			if (!quiver || quiver->getWeaponType() != WEAPON_QUIVER) {
+				return nullptr;
+			}
+
+			Container* container = quiver->getContainer();
+			if (!container) {
+				return nullptr;
+			}
+
+			bool found = false;
+			for (Item* ammoItem : container->getItemList()) {
+				if (ammoItem->getAmmoType() == it.ammoType) {
+					const Weapon* weapon = g_weapons->getWeapon(item);
+					if (weapon && weapon->getReqLevel() <= this->getLevel()) {
+						return nullptr;
+					}
+
+					item = ammoItem;
+					found = true;
+					break;
+				}
+			}
+
+			if (!found) {
+				return nullptr;
+			}
+		}
+	}
 	return item;
 }
 
@@ -435,7 +446,7 @@ uint32_t Player::getClientIcons() const
 		icons |= ICON_REDSWORDS;
 	}
 
-	if (tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+	if (tile && tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 		icons |= ICON_PIGEON;
 		client->sendRestingStatus(1);
 
@@ -2227,21 +2238,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 						}
 					}
 				}
-				if (attacker) {
-					const int16_t& reflectPercent = it.abilities->reflectPercent[combatTypeToIndex(combatType)];
-					if (reflectPercent != 0) {
-						CombatParams params;
-						params.combatType = combatType;
-						params.impactEffect = CONST_ME_MAGIC_BLUE;
-
-						CombatDamage reflectDamage;
-						reflectDamage.origin = ORIGIN_SPELL;
-						reflectDamage.primary.type = combatType;
-						reflectDamage.primary.value = std::round(-damage * (reflectPercent / 100.));
-
-						Combat::doCombatHealth(this, attacker, reflectDamage, params);
-					}
-				}
 			}
 
 			uint8_t slots = Item::items[item->getID()].imbuingSlots;
@@ -3040,7 +3036,7 @@ Cylinder* Player::queryDestination(int32_t& index, const Thing& thing, Item** de
 						return tmpContainer;
 					}
 
-					n--;
+					--n;
 				}
 
 				for (Item* tmpContainerItem : tmpContainer->getItemList()) {
@@ -3248,7 +3244,7 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if ((*it)->getID() == itemId) {
+				if ((*it) && (*it)->getID() == itemId) {
 					count += Item::countByType(*it, subType);
 				}
 			}
@@ -3861,8 +3857,16 @@ void Player::onAddCombatCondition(ConditionType_t type)
 			sendTextMessage(MESSAGE_FAILURE, "You are drunk.");
 			break;
 
+		case CONDITION_LESSERHEX:
+		case CONDITION_INTENSEHEX:
+		case CONDITION_GREATERHEX:
+			sendTextMessage(MESSAGE_FAILURE, "You are hexed.");
+			break;
 		case CONDITION_ROOTED:
 			sendTextMessage(MESSAGE_FAILURE, "You are rooted.");
+			break;
+		case CONDITION_FEARED:
+			sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 			break;
 
 		case CONDITION_CURSED:

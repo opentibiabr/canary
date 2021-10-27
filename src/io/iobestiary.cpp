@@ -47,7 +47,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
       }
 		int32_t maxHealth = target->getMaxHealth();
 		charmDamage.primary.type = charm->dmgtype;
-		charmDamage.primary.value = ((-maxHealth * (charm->percent)) / 100);
+		charmDamage.primary.value = ((-maxHealth * (charm->percent)) / 200);
 		charmDamage.extension = true;
 		charmDamage.exString = charm->logMsg;
 
@@ -60,7 +60,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 		switch (charm->id) {
 			case CHARM_PARRY: {
 				charmDamage.primary.type = charm->dmgtype;
-				charmDamage.primary.value = -realDamage;
+				charmDamage.primary.value = -realDamage * 1.8;
 				charmDamage.extension = true;
 				charmDamage.exString = charm->logMsg;
 
@@ -445,15 +445,15 @@ std::list<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const
 
 int8_t IOBestiary::calculateDifficult(uint32_t chance) const
 {
-	chance = chance / 1000;
+	float chanceInPercent = chance / 1000;
 
-	if (chance < 0.2) {
+	if (chanceInPercent < 0.2) {
 		return 4;
-	} else if (chance < 1) {
+	} else if (chanceInPercent < 1) {
 		return 3;
-	} else if (chance < 5) {
+	} else if (chanceInPercent < 5) {
 		return 2;
-	} else if (chance < 25) {
+	} else if (chanceInPercent < 25) {
 		return 1;
 	}
 	return 0;

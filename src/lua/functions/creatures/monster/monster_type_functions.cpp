@@ -1139,6 +1139,8 @@ int MonsterTypeFunctions::luaMonsterTypeRace(lua_State* L) {
 				monsterType->info.race = RACE_FIRE;
 			} else if (race == "energy") {
 				monsterType->info.race = RACE_ENERGY;
+			} else if (race == "ink") {
+				monsterType->info.race = RACE_INK;
 			} else {
 				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeRace] - "
 							"Unknown race type {}", race);

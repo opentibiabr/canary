@@ -72,7 +72,7 @@ enum ConditionAttr_t {
 	CONDITIONATTR_END = 254,
 };
 
-enum ConditionType_t {
+enum ConditionType_t : uint64_t {
 	CONDITION_NONE,
 
 	CONDITION_POISON = 1 << 0,
@@ -103,7 +103,16 @@ enum ConditionType_t {
 	CONDITION_PACIFIED = 1 << 25,
 	CONDITION_SPELLCOOLDOWN = 1 << 26,
 	CONDITION_SPELLGROUPCOOLDOWN = 1 << 27,
-	CONDITION_ROOTED = 1 << 28,
+	CONDITION_LESSERHEX = 1 << 28,
+	CONDITION_INTENSEHEX = 1 << 29,
+	CONDITION_GREATERHEX = 1 << 30,
+	CONDITION_ROOTED = static_cast<uint64_t>(1) << 31,
+	CONDITION_FEARED = static_cast<uint64_t>(1) << 32,
+	CONDITION_GOSHNAR1 = static_cast<uint64_t>(1) << 33,
+	CONDITION_GOSHNAR2 = static_cast<uint64_t>(1) << 34,
+	CONDITION_GOSHNAR3 = static_cast<uint64_t>(1) << 35,
+	CONDITION_GOSHNAR4 = static_cast<uint64_t>(1) << 36,
+	CONDITION_GOSHNAR5 = static_cast<uint64_t>(1) << 37
 };
 
 enum ConditionParam_t {
@@ -403,6 +412,7 @@ enum RaceType_t : uint8_t {
 	RACE_UNDEAD,
 	RACE_FIRE,
 	RACE_ENERGY,
+	RACE_INK,
 };
 
 enum BlockType_t : uint8_t {
@@ -766,6 +776,7 @@ struct CombatDamage {
 	bool critical;
 	int affected;
 	bool extension;
+	bool cleave;
 	std::string exString;
 
 	CombatDamage() {
@@ -775,6 +786,7 @@ struct CombatDamage {
 		critical = false;
 		affected = 1;
 		extension = false;
+		cleave = false;
 		exString = "";
 	}
 };

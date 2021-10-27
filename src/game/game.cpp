@@ -4454,7 +4454,55 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId)
 	g_events->eventPlayerOnLookInBattleList(player, creature, lookDistance);
 }
 
-void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos, Item* defaultItem)
+void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses) {
+	if (lootAllCorpses) {
+		Tile *tile = g_game.map.getTile(pos.x, pos.y, pos.z);
+		if (!tile) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
+		TileItemVector *itemVector = tile->getItemList();
+		uint16_t corpses = 0;
+		for (Item *tileItem: *itemVector) {
+			if (!tileItem) {
+				continue;
+			}
+
+			Container *tileCorpse = tileItem->getContainer();
+			if (!tileCorpse || !tileCorpse->isCorpse() || tileCorpse->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || tileCorpse->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+				continue;
+			}
+
+			if (!tileCorpse->isRewardCorpse()) {
+				uint32_t corpseOwner = tileCorpse->getCorpseOwner();
+				if (corpseOwner != 0 && !player->canOpenCorpse(corpseOwner)) {
+					continue;
+				}
+			}
+
+			corpses++;
+			internalQuickLootCorpse(player, tileCorpse);
+			if (corpses >= 10) {
+				break;
+			}
+		}
+
+		if (corpses > 0) {
+			if (corpses > 1) {
+				std::stringstream string;
+				string << "You looted " << corpses << " corpses.";
+				player->sendTextMessage(MESSAGE_LOOT, string.str());
+			}
+
+			return;
+		}
+	}
+
+	browseField = false;
+}
+
+void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos, Item* defaultItem, bool lootAllCorpses)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -4466,7 +4514,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		SchedulerTask* task = createSchedulerTask(delay, std::bind(
                               &Game::playerQuickLoot,
                               this, player->getID(), pos,
-                              spriteId, stackPos, defaultItem));
+                              spriteId, stackPos, defaultItem, lootAllCorpses));
 		player->setNextActionTask(task);
 		return;
 	}
@@ -4480,7 +4528,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 				SchedulerTask* task = createSchedulerTask(0, std::bind(
                                       &Game::playerQuickLoot,
                                       this, player->getID(), pos,
-                                      spriteId, stackPos, defaultItem));
+                                      spriteId, stackPos, defaultItem, lootAllCorpses));
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4513,9 +4561,15 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		return;
 	}
 
+	playerLootAllCorpses(player, pos, lootAllCorpses);
+
 	Container* corpse = nullptr;
 	if (pos.x == 0xffff) {
 		corpse = item->getParent()->getContainer();
+		if (corpse && corpse->getID() == ITEM_BROWSEFIELD) {
+		 	corpse = item->getContainer();
+			browseField = true;
+		}
 	} else {
 		corpse = item->getContainer();
 	}
@@ -4533,7 +4587,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		}
 	}
 
-	if (pos.x == 0xffff) {
+	if (pos.x == 0xffff && !browseField) {
 		uint32_t worth = item->getWorth();
 		ObjectCategory_t category = getObjectCategory(item);
 		ReturnValue ret = internalQuickLootItem(player, item, category);
@@ -5475,13 +5529,14 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		CombatDamage damageReflected;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	if (damage.primary.type != COMBAT_NONE) {
+	if (!damage.extension && damage.primary.type != COMBAT_NONE) {
 		// Damage reflection primary
-		if (attacker && target->getMonster()) {
-			uint32_t primaryReflect = target->getMonster()->getReflectValue(damage.primary.type);
-			if (primaryReflect > 0) {
+		if (attacker) {
+			uint32_t primaryReflectPercent = target->getReflectPercent(damage.primary.type);
+			uint32_t primaryReflectMelee = target->getReflectMelee();
+			if (primaryReflectPercent > 0 || primaryReflectMelee > 0) {
+				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflectPercent / 100.)) + std::min(damage.primary.value, static_cast<int32_t>(primaryReflectMelee));
 				damageReflected.primary.type = damage.primary.type;
-				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflect / 100.));
 				damageReflected.extension = true;
 				damageReflected.exString = "(damage reflection)";
 				canReflect = true;
@@ -5504,20 +5559,21 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		primaryBlockType = BLOCK_NONE;
 	}
 
-	if (damage.secondary.type != COMBAT_NONE) {
+	if (!damage.extension && damage.secondary.type != COMBAT_NONE) {
 		// Damage reflection secondary
-		if (attacker && target->getMonster()) {
-			uint32_t secondaryReflect = target->getMonster()->getReflectValue(damage.secondary.type);
-			if (secondaryReflect > 0) {
+		if (attacker) {
+			uint32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type);
+			uint32_t secondaryReflectMelee = target->getReflectMelee();
+			if (secondaryReflectPercent > 0 || secondaryReflectMelee > 0) {
 				if (!canReflect) {
 					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectMelee));
 					damageReflected.extension = true;
 					damageReflected.exString = "(damage reflection)";
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectMelee));
 				}
 			}
 		}
@@ -5577,6 +5633,10 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 				case RACE_ENERGY:
 					color = TEXTCOLOR_PURPLE;
 					effect = CONST_ME_ENERGYHIT;
+					break;
+				case RACE_INK:
+					color = TEXTCOLOR_DARKGREY;
+					effect = CONST_ME_BLACKHIT;
 					break;
 				default:
 					color = TEXTCOLOR_NONE;
@@ -5704,12 +5764,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					continue;
 				}
 
-				if (damage.primary.type == COMBAT_HEALING && target && target->getMonster()) {
-					if (target != attacker) {
-						return false;
-					}
-				}
-
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 					ss.str({});
 					ss << "You heal " << target->getNameDescription() << " for " << damageString;
@@ -5771,6 +5825,27 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		damage.primary.value = std::abs(damage.primary.value);
 		damage.secondary.value = std::abs(damage.secondary.value);
+
+		bool perfectShot = false;
+		if (attackerPlayer && damage.extension == false && damage.origin == ORIGIN_RANGED && target == attackerPlayer->getAttackedCreature()) {
+			const Position& targetPos = target->getPosition();
+			const Position& attackerPos = attacker->getPosition();
+			if (targetPos.z == attackerPos.z) {
+				int32_t distanceX = Position::getDistanceX(targetPos, attackerPos);
+				int32_t distanceY = Position::getDistanceY(targetPos, attackerPos);
+				int32_t damageX = attackerPlayer->getPerfectShotDamage(distanceX);
+				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY);
+				if (damageX != 0 || damageY != 0) {
+					int32_t totalDamage = damageX;
+					if (distanceX != distanceY)
+						totalDamage += damageY;
+					if (damage.critical)
+						totalDamage += (totalDamage * attackerPlayer->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE));
+					damage.primary.value += totalDamage;
+					perfectShot = true;
+				}
+			}
+		}
 
 		TextMessage message;
 		message.position = targetPos;
@@ -5871,6 +5946,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your attack.";
 						message.type = MESSAGE_DAMAGE_DEALT;
 						message.text = ss.str();
+						
+						if (perfectShot) {
+							ss << " (perfect shot)";
+						}
 					} else if (tmpPlayer == targetPlayer) {
 						ss.str({});
 						ss << "You lose " << damageString << " mana";
@@ -5962,10 +6041,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		}
 
 		// Using real damage
-		if (attackerPlayer) {
+		if (attackerPlayer && !damage.cleave && !damage.extension) {
 			//life leech
 			uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);
-      		uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
+			uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
 			if (normal_random(0, 100) < lifeChance) {
 				// Vampiric charm rune
 				if (target && target->getMonster()) {
@@ -5987,14 +6066,14 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				int affected = damage.affected;
 				tmpDamage.origin = ORIGIN_SPELL;
 				tmpDamage.primary.type = COMBAT_HEALING;
-				tmpDamage.primary.value = std::round(realDamage * (lifeSkill / 100.) * (0.2 * affected + 0.9)) / affected;
+				tmpDamage.primary.value = std::round((realDamage * (0.9 + (damage.affected / 10.)) * (attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) /100.)) / damage.affected);
 
 				Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 			}
 
 			//mana leech
 			uint16_t manaChance = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_CHANCE);
-      		uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT);
+			uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT);
 			if (normal_random(0, 100) < manaChance) {
 				// Void charm rune
 				if (target && target->getMonster()) {
@@ -6016,13 +6095,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				int affected = damage.affected;
 				tmpDamage.origin = ORIGIN_SPELL;
 				tmpDamage.primary.type = COMBAT_MANADRAIN;
-				tmpDamage.primary.value = std::round(realDamage * (manaSkill / 100.) * (0.1 * affected + 0.9)) / affected;
+				tmpDamage.primary.value = std::round((realDamage * (0.9 + (damage.affected / 10.)) * (attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) /100.)) / damage.affected);
 
 				Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 			}
 
 			//Charm rune (attacker as player)
-			if (!damage.extension && target && target->getMonster()) {
+			if (target && target->getMonster()) {
 				MonsterType* mType = g_monsters.getMonsterType(target->getName());
 				if (mType) {
 					IOBestiary g_bestiary;
@@ -6100,6 +6179,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					if (damage.extension) {
 						ss << " " << damage.exString;
 					}
+					if (perfectShot) {
+						ss << " (perfect shot)";
+					}
 					message.type = MESSAGE_DAMAGE_DEALT;
 					message.text = ss.str();
 				} else if (tmpPlayer == targetPlayer) {
@@ -6114,6 +6196,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					}
 					if (damage.extension) {
 						ss << " " << damage.exString;
+					}
+					if (perfectShot) {
+						ss << " (perfect shot)";
 					}
 					message.type = MESSAGE_DAMAGE_RECEIVED;
 					message.text = ss.str();
@@ -6138,6 +6223,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 						ss << '.';
 						if (damage.extension) {
 							ss << " " << damage.exString;
+						}
+						if (perfectShot) {
+							ss << " (perfect shot)";
 						}
 						spectatorMessage = ss.str();
 					}
@@ -6569,6 +6657,9 @@ void Game::checkImbuements()
 	auto it = imbuedItems[bucket].begin(), end = imbuedItems[bucket].end();
 	while (it != end) {
 		Item* item = *it;
+		if (!item) {
+			continue;
+		}
 
 		if (item->isRemoved() || !item->getParent()->getCreature()) {
 			ReleaseItem(item);
@@ -6578,31 +6669,28 @@ void Game::checkImbuements()
 
 		Player* player = item->getParent()->getCreature()->getPlayer();
 		const ItemType& itemType = Item::items[item->getID()];
-		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
+		if (!player || !player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
 			it++;
 			continue;
 		}
 
 		bool needUpdate = false;
 		uint8_t slots = Item::items[item->getID()].imbuingSlots;
+		int32_t index = player ? player->getThingIndex(item) : -1;
 		for (uint8_t slot = 0; slot < slots; slot++) {
 			uint32_t info = item->getImbuement(slot);
 			int32_t duration = info >> 8;
 			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
 			if (duration > 0 && newDuration == 0) {
 				needUpdate = true;
-			}
-		}
-
-		int32_t index = player ? player->getThingIndex(item) : -1;
-		needUpdate = needUpdate && index != -1;
-
-		if (needUpdate) {
-			player->postRemoveNotification(item, player, index);
-			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
-			for (uint8_t slot = 0; slot < slots; slot++) {
-				item->setImbuement(slot, 0);
+			if (index != -1)
+				{
+					needUpdate = true;
+					player->postRemoveNotification(item, player, index);
+					ReleaseItem(item);
+					it = imbuedItems[bucket].erase(it);
+					item->setImbuement(slot, 0);
+				}
 			}
 		}
 
@@ -6830,40 +6918,22 @@ void Game::updatePlayerShield(Player* player)
 
 void Game::updateCreatureType(Creature* creature)
 {
-	if (!creature) {
+	if (!creature || creature->isHealthHidden()) {
 		return;
 	}
 
-	const Player* masterPlayer = nullptr;
-	CreatureType_t creatureType = creature->getType();
-	if (creatureType == CREATURETYPE_MONSTER) {
-		const Creature* master = creature->getMaster();
-		if (master) {
-			masterPlayer = master->getPlayer();
-			if (masterPlayer) {
-				creatureType = CREATURETYPE_SUMMON_OTHERS;
-			}
-		}
-	}
-	if (creature->isHealthHidden()) {
-		creatureType = CREATURETYPE_HIDDEN;
-	}
-
-	//send to clients
+	// Send to clients
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true, true);
-	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		for (Creature* spectator : spectators) {
-			Player* player = spectator->getPlayer();
-			if (masterPlayer == player) {
-				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
-			} else {
-				player->sendCreatureType(creature, creatureType);
-			}
+
+	for (Creature* spectator : spectators) {
+		if (!spectator) {
+			continue;
 		}
-	} else {
-		for (Creature* spectator : spectators) {
-			spectator->getPlayer()->sendCreatureType(creature, creatureType);
+
+		Player* player = spectator->getPlayer();
+		if (player) {
+			player->sendCreatureUpdate(creature);
 		}
 	}
 }

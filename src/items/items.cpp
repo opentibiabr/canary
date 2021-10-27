@@ -19,6 +19,7 @@
 
 #include "otpch.h"
 
+#include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
@@ -408,36 +409,38 @@ void Items::buildInventoryList()
 	std::sort(inventory.begin(), inventory.end());
 }
 
-void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
-{
+void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 	if (id >= items.size()) {
 		items.resize(id + 1);
 	}
-	ItemType& iType = items[id];
+	ItemType & iType = items[id];
 	iType.id = id;
 
-	ItemType& it = getItemType(id);
-	if (it.id == 0) {
+	ItemType & itemType = getItemType(id);
+	if (itemType.id == 0) {
 		return;
 	}
 
-	if (!it.name.empty()) {
+	if (!itemType.name.empty()) {
 		SPDLOG_WARN("[Items::parseItemNode] - Duplicate item with id: {}", id);
 		return;
 	}
 
-	it.name = itemNode.attribute("name").as_string();
+	itemType.name = itemNode.attribute("name").as_string();
 
-	nameToItems.insert({ asLowerCaseString(it.name), id });
+	nameToItems.insert({
+		asLowerCaseString(itemType.name),
+		id
+	});
 
 	pugi::xml_attribute articleAttribute = itemNode.attribute("article");
 	if (articleAttribute) {
-		it.article = articleAttribute.as_string();
+		itemType.article = articleAttribute.as_string();
 	}
 
 	pugi::xml_attribute pluralAttribute = itemNode.attribute("plural");
 	if (pluralAttribute) {
-		it.pluralName = pluralAttribute.as_string();
+		itemType.pluralName = pluralAttribute.as_string();
 	}
 
 	for (auto attributeNode : itemNode.children()) {
@@ -452,568 +455,74 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 		}
 
 		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
-
-		// Put here because have many conditions (C1601 - compiler limit: blocks nested too deeply)
-		if (tmpStrValue == "type") {
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "key") {
-				it.type = ITEM_TYPE_KEY;
-			} else if (tmpStrValue == "magicfield") {
-				it.type = ITEM_TYPE_MAGICFIELD;
-			} else if (tmpStrValue == "container") {
-				it.group = ITEM_GROUP_CONTAINER;
-				it.type = ITEM_TYPE_CONTAINER;
-			} else if (tmpStrValue == "depot") {
-				it.type = ITEM_TYPE_DEPOT;
-			} else if (tmpStrValue == "rewardchest") {
-				it.type = ITEM_TYPE_REWARDCHEST;
-			} else if (tmpStrValue == "carpet") {
-				it.type = ITEM_TYPE_CARPET;
-			} else if (tmpStrValue == "mailbox") {
-				it.type = ITEM_TYPE_MAILBOX;
-			} else if (tmpStrValue == "trashholder") {
-				it.type = ITEM_TYPE_TRASHHOLDER;
-			} else if (tmpStrValue == "teleport") {
-				it.type = ITEM_TYPE_TELEPORT;
-			} else if (tmpStrValue == "door") {
-				it.type = ITEM_TYPE_DOOR;
-			} else if (tmpStrValue == "bed") {
-				it.type = ITEM_TYPE_BED;
-			} else if (tmpStrValue == "rune") {
-				it.type = ITEM_TYPE_RUNE;
-			} else if (tmpStrValue == "supply") {
-				it.type = ITEM_TYPE_SUPPLY;
-			} else if (tmpStrValue == "creatureproduct") {
-				it.type = ITEM_TYPE_CREATUREPRODUCT;
-			} else if (tmpStrValue == "food") {
-				it.type = ITEM_TYPE_FOOD;
-			} else if (tmpStrValue == "valuable") {
-				it.type = ITEM_TYPE_VALUABLE;
-			} else if (tmpStrValue == "potion") {
-				it.type = ITEM_TYPE_POTION;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown type: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "description") {
-			it.description = valueAttribute.as_string();
-		} else if (tmpStrValue == "runespellname") {
-			it.runeSpellName = valueAttribute.as_string();
-		} else if (tmpStrValue == "weight") {
-			it.weight = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "showcount") {
-			it.showCount = valueAttribute.as_bool();
-		} else if (tmpStrValue == "armor") {
-			it.armor = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "defense") {
-			it.defense = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "extradef") {
-			it.extraDefense = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "attack") {
-			it.attack = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "rotateto") {
-			it.rotateTo = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "wrapcontainer") {
-			it.wrapContainer = valueAttribute.as_bool();
-		} else if (tmpStrValue == "imbuingslots") {
-			it.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "wrapableto" || tmpStrValue == "unwrapableto") {
-			it.wrapableTo = pugi::cast<int32_t>(valueAttribute.value());
-			it.wrapable = true;
-		} else if (tmpStrValue == "moveable" || tmpStrValue == "movable") {
-			it.moveable = valueAttribute.as_bool();
-		} else if (tmpStrValue == "ispodium") {
-			it.isPodium = valueAttribute.as_bool();
-		} else if (tmpStrValue == "blockprojectile") {
-			it.blockProjectile = valueAttribute.as_bool();
-		} else if (tmpStrValue == "allowpickupable" || tmpStrValue == "pickupable") {
-			it.allowPickupable = valueAttribute.as_bool();
-		} else if (tmpStrValue == "floorchange") {
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "down") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_DOWN;
-			} else if (tmpStrValue == "north") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_NORTH;
-			} else if (tmpStrValue == "south") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_SOUTH;
-			} else if (tmpStrValue == "southalt") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_SOUTH_ALT;
-			} else if (tmpStrValue == "west") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_WEST;
-			} else if (tmpStrValue == "east") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_EAST;
-			} else if (tmpStrValue == "eastalt") {
-				it.floorChange |= TILESTATE_FLOORCHANGE_EAST_ALT;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown floorChange: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "corpsetype") {
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "venom") {
-				it.corpseType = RACE_VENOM;
-			} else if (tmpStrValue == "blood") {
-				it.corpseType = RACE_BLOOD;
-			} else if (tmpStrValue == "undead") {
-				it.corpseType = RACE_UNDEAD;
-			} else if (tmpStrValue == "fire") {
-				it.corpseType = RACE_FIRE;
-			} else if (tmpStrValue == "energy") {
-				it.corpseType = RACE_ENERGY;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown corpseType: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "containersize") {
-			it.maxItems = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "fluidsource") {
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "water") {
-				it.fluidSource = FLUID_WATER;
-			} else if (tmpStrValue == "blood") {
-				it.fluidSource = FLUID_BLOOD;
-			} else if (tmpStrValue == "beer") {
-				it.fluidSource = FLUID_BEER;
-			} else if (tmpStrValue == "slime") {
-				it.fluidSource = FLUID_SLIME;
-			} else if (tmpStrValue == "lemonade") {
-				it.fluidSource = FLUID_LEMONADE;
-			} else if (tmpStrValue == "milk") {
-				it.fluidSource = FLUID_MILK;
-			} else if (tmpStrValue == "mana") {
-				it.fluidSource = FLUID_MANA;
-			} else if (tmpStrValue == "life") {
-				it.fluidSource = FLUID_LIFE;
-			} else if (tmpStrValue == "oil") {
-				it.fluidSource = FLUID_OIL;
-			} else if (tmpStrValue == "urine") {
-				it.fluidSource = FLUID_URINE;
-			} else if (tmpStrValue == "coconut") {
-				it.fluidSource = FLUID_COCONUTMILK;
-			} else if (tmpStrValue == "wine") {
-				it.fluidSource = FLUID_WINE;
-			} else if (tmpStrValue == "mud") {
-				it.fluidSource = FLUID_MUD;
-			} else if (tmpStrValue == "fruitjuice") {
-				it.fluidSource = FLUID_FRUITJUICE;
-			} else if (tmpStrValue == "lava") {
-				it.fluidSource = FLUID_LAVA;
-			} else if (tmpStrValue == "rum") {
-				it.fluidSource = FLUID_RUM;
-			} else if (tmpStrValue == "swamp") {
-				it.fluidSource = FLUID_SWAMP;
-			} else if (tmpStrValue == "tea") {
-				it.fluidSource = FLUID_TEA;
-			} else if (tmpStrValue == "mead") {
-				it.fluidSource = FLUID_MEAD;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown fluidSource: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "readable") {
-			it.canReadText = valueAttribute.as_bool();
-		} else if (tmpStrValue == "writeable") {
-			it.canWriteText = valueAttribute.as_bool();
-			it.canReadText = it.canWriteText;
-		} else if (tmpStrValue == "maxtextlen") {
-			it.maxTextLen = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "writeonceitemid") {
-			it.writeOnceItemId = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "weapontype") {
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "sword") {
-				it.weaponType = WEAPON_SWORD;
-			} else if (tmpStrValue == "club") {
-				it.weaponType = WEAPON_CLUB;
-			} else if (tmpStrValue == "axe") {
-				it.weaponType = WEAPON_AXE;
-			} else if (tmpStrValue == "shield") {
-				it.weaponType = WEAPON_SHIELD;
-			} else if (tmpStrValue == "distance") {
-				it.weaponType = WEAPON_DISTANCE;
-			} else if (tmpStrValue == "wand") {
-				it.weaponType = WEAPON_WAND;
-			} else if (tmpStrValue == "ammunition") {
-				it.weaponType = WEAPON_AMMO;
-      } else if (tmpStrValue == "quiver") {
-				it.weaponType = WEAPON_QUIVER;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown weaponType: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "slottype") {
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "head") {
-				it.slotPosition |= SLOTP_HEAD;
-			} else if (tmpStrValue == "body") {
-				it.slotPosition |= SLOTP_ARMOR;
-			} else if (tmpStrValue == "legs") {
-				it.slotPosition |= SLOTP_LEGS;
-			} else if (tmpStrValue == "feet") {
-				it.slotPosition |= SLOTP_FEET;
-			} else if (tmpStrValue == "backpack") {
-				it.slotPosition |= SLOTP_BACKPACK;
-			} else if (tmpStrValue == "two-handed") {
-				it.slotPosition |= SLOTP_TWO_HAND;
-			} else if (tmpStrValue == "right-hand") {
-				it.slotPosition &= ~SLOTP_LEFT;
-			} else if (tmpStrValue == "left-hand") {
-				it.slotPosition &= ~SLOTP_RIGHT;
-			} else if (tmpStrValue == "necklace") {
-				it.slotPosition |= SLOTP_NECKLACE;
-			} else if (tmpStrValue == "ring") {
-				it.slotPosition |= SLOTP_RING;
-			} else if (tmpStrValue == "ammo") {
-				it.slotPosition |= SLOTP_AMMO;
-			} else if (tmpStrValue == "hand") {
-				it.slotPosition |= SLOTP_HAND;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown slotType: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "ammotype") {
-			it.ammoType = getAmmoType(asLowerCaseString(valueAttribute.as_string()));
-			if (it.ammoType == AMMO_NONE) {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown ammoType: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "shoottype") {
-			ShootType_t shoot = getShootType(asLowerCaseString(valueAttribute.as_string()));
-			if (shoot != CONST_ANI_NONE) {
-				it.shootType = shoot;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown shootType: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "effect") {
-			MagicEffectClasses effect = getMagicEffect(asLowerCaseString(valueAttribute.as_string()));
-			if (effect != CONST_ME_NONE) {
-				it.magicEffect = effect;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] - Unknown effect: {}",
-                            valueAttribute.as_string());
-			}
-		} else if (tmpStrValue == "loottype") {
-			it.type = getLootType(valueAttribute.as_string());
-		} else if (tmpStrValue == "range") {
-			it.shootRange = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "stopduration") {
-			it.stopTime = valueAttribute.as_bool();
-		} else if (tmpStrValue == "decayto") {
-			it.decayTo = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "transformequipto") {
-			it.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "transformdeequipto") {
-			it.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "duration") {
-			it.decayTime = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "showduration") {
-			it.showDuration = valueAttribute.as_bool();
-		} else if (tmpStrValue == "charges") {
-			it.charges = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "showcharges") {
-			it.showCharges = valueAttribute.as_bool();
-		} else if (tmpStrValue == "showattributes") {
-			it.showAttributes = valueAttribute.as_bool();
-		} else if (tmpStrValue == "hitchance") {
-			it.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int16_t>(valueAttribute.value())));
-		} else if (tmpStrValue == "maxhitchance") {
-			it.maxHitChance = std::min<uint32_t>(100, pugi::cast<uint32_t>(valueAttribute.value()));
-		} else if (tmpStrValue == "invisible") {
-			it.getAbilities().invisible = valueAttribute.as_bool();
-		} else if (tmpStrValue == "speed") {
-			it.getAbilities().speed = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "healthgain") {
-			Abilities& abilities = it.getAbilities();
-			abilities.regeneration = true;
-			abilities.healthGain = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "healthticks") {
-			Abilities& abilities = it.getAbilities();
-			abilities.regeneration = true;
-			abilities.healthTicks = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "managain") {
-			Abilities& abilities = it.getAbilities();
-			abilities.regeneration = true;
-			abilities.manaGain = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "manaticks") {
-			Abilities& abilities = it.getAbilities();
-			abilities.regeneration = true;
-			abilities.manaTicks = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "manashield") {
-			it.getAbilities().manaShield = valueAttribute.as_bool();
-		} else if (tmpStrValue == "skillsword") {
-			it.getAbilities().skills[SKILL_SWORD] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillaxe") {
-			it.getAbilities().skills[SKILL_AXE] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillclub") {
-			it.getAbilities().skills[SKILL_CLUB] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skilldist") {
-			it.getAbilities().skills[SKILL_DISTANCE] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillfish") {
-			it.getAbilities().skills[SKILL_FISHING] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillshield") {
-			it.getAbilities().skills[SKILL_SHIELD] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillfist") {
-			it.getAbilities().skills[SKILL_FIST] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillcriticalchance") {
-			it.getAbilities().skills[SKILL_CRITICAL_HIT_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillcriticaldamage") {
-			it.getAbilities().skills[SKILL_CRITICAL_HIT_DAMAGE] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skilllifechance") {
-			it.getAbilities().skills[SKILL_LIFE_LEECH_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skilllifeamount") {
-			it.getAbilities().skills[SKILL_LIFE_LEECH_AMOUNT] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillmanachance") {
-			it.getAbilities().skills[SKILL_MANA_LEECH_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "skillmanaamount") {
-			it.getAbilities().skills[SKILL_MANA_LEECH_AMOUNT] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "maxhitpoints") {
-			it.getAbilities().stats[STAT_MAXHITPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "maxhitpointspercent") {
-			it.getAbilities().statsPercent[STAT_MAXHITPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "maxmanapoints") {
-			it.getAbilities().stats[STAT_MAXMANAPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "maxmanapointspercent") {
-			it.getAbilities().statsPercent[STAT_MAXMANAPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "magicpoints" || tmpStrValue == "magiclevelpoints") {
-			it.getAbilities().stats[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "magicpointspercent") {
-			it.getAbilities().statsPercent[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "fieldabsorbpercentenergy") {
-			it.getAbilities().fieldAbsorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "fieldabsorbpercentfire") {
-			it.getAbilities().fieldAbsorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "fieldabsorbpercentpoison" || tmpStrValue == "fieldabsorpercentearth") {
-			it.getAbilities().fieldAbsorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentall" || tmpStrValue == "absorbpercentallelements") {
-			int16_t value = pugi::cast<int16_t>(valueAttribute.value());
-			Abilities& abilities = it.getAbilities();
-			for (auto& i : abilities.absorbPercent) {
-				i += value;
-			}
-		} else if (tmpStrValue == "absorbpercentelements") {
-			int16_t value = pugi::cast<int16_t>(valueAttribute.value());
-			Abilities& abilities = it.getAbilities();
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
-		} else if (tmpStrValue == "absorbpercentmagic") {
-			int16_t value = pugi::cast<int16_t>(valueAttribute.value());
-			Abilities& abilities = it.getAbilities();
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] += value;
-			abilities.absorbPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] += value;
-		} else if (tmpStrValue == "absorbpercentenergy") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentfire") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentpoison" ||	tmpStrValue == "absorbpercentearth") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentice") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentholy") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentdeath") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentlifedrain") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_LIFEDRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentmanadrain") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_MANADRAIN)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentdrown") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_DROWNDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercentphysical") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "absorbpercenthealing") {
-			it.getAbilities().absorbPercent[combatTypeToIndex(COMBAT_HEALING)] += pugi::cast<int16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "suppressdrunk") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_DRUNK;
-			}
-		} else if (tmpStrValue == "suppressenergy") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_ENERGY;
-			}
-		} else if (tmpStrValue == "suppressfire") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_FIRE;
-			}
-		} else if (tmpStrValue == "suppresspoison") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_POISON;
-			}
-		} else if (tmpStrValue == "suppressdrown") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_DROWN;
-			}
-		} else if (tmpStrValue == "suppressphysical") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_BLEEDING;
-			}
-		} else if (tmpStrValue == "suppressfreeze") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_FREEZING;
-			}
-		} else if (tmpStrValue == "suppressdazzle") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_DAZZLED;
-			}
-		} else if (tmpStrValue == "suppresscurse") {
-			if (valueAttribute.as_bool()) {
-				it.getAbilities().conditionSuppressions |= CONDITION_CURSED;
-			}
-		} else if (tmpStrValue == "field") {
-			it.group = ITEM_GROUP_MAGICFIELD;
-			it.type = ITEM_TYPE_MAGICFIELD;
-
-			CombatType_t combatType = COMBAT_NONE;
-			ConditionDamage* conditionDamage = nullptr;
-
-			tmpStrValue = asLowerCaseString(valueAttribute.as_string());
-			if (tmpStrValue == "fire") {
-				conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
-				combatType = COMBAT_FIREDAMAGE;
-			} else if (tmpStrValue == "energy") {
-				conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
-				combatType = COMBAT_ENERGYDAMAGE;
-			} else if (tmpStrValue == "poison") {
-				conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
-				combatType = COMBAT_EARTHDAMAGE;
-			} else if (tmpStrValue == "drown") {
-				conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
-				combatType = COMBAT_DROWNDAMAGE;
-			} else if (tmpStrValue == "physical") {
-				conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
-				combatType = COMBAT_PHYSICALDAMAGE;
-			} else {
-				SPDLOG_WARN("[Items::parseItemNode] Unknown field value: {}",
-                            valueAttribute.as_string());
-			}
-
-			if (combatType != COMBAT_NONE) {
-				it.combatType = combatType;
-				it.conditionDamage.reset(conditionDamage);
-				uint32_t ticks = 0;
-				int32_t damage = 0;
-				int32_t start = 0;
-				int32_t count = 1;
-
-				for (auto subAttributeNode : attributeNode.children()) {
-					pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
-					if (!subKeyAttribute) {
-						continue;
-					}
-
-					pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
-					if (!subValueAttribute) {
-						continue;
-					}
-
-					tmpStrValue = asLowerCaseString(subKeyAttribute.as_string());
-					if (tmpStrValue == "ticks") {
-						ticks = pugi::cast<uint32_t>(subValueAttribute.value());
-					} else if (tmpStrValue == "count") {
-						count = std::max<int32_t>(1, pugi::cast<int32_t>(subValueAttribute.value()));
-					} else if (tmpStrValue == "start") {
-						start = std::max<int32_t>(0, pugi::cast<int32_t>(subValueAttribute.value()));
-					} else if (tmpStrValue == "damage") {
-						damage = -pugi::cast<int32_t>(subValueAttribute.value());
-
-						if (start > 0) {
-							std::list<int32_t> damageList;
-							ConditionDamage::generateDamageList(damage, start, damageList);
-							for (int32_t damageValue : damageList) {
-								conditionDamage->addDamage(1, ticks, -damageValue);
-							}
-
-							start = 0;
-						} else {
-							conditionDamage->addDamage(count, ticks, damage);
-						}
-					}
-				}
-
-				conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
-
-				if (conditionDamage->getTotalDamage() > 0) {
-					conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
-				}
-			}
-		} else if (tmpStrValue == "replaceable") {
-			it.replaceable = valueAttribute.as_bool();
-		} else if (tmpStrValue == "partnerdirection") {
-			it.bedPartnerDir = getDirection(valueAttribute.as_string());
-		} else if (tmpStrValue == "leveldoor") {
-			it.levelDoor = pugi::cast<uint32_t>(valueAttribute.value());
-		} else if (tmpStrValue == "maletransformto" || tmpStrValue == "malesleeper") {
-			uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
-			it.transformToOnUse[PLAYERSEX_MALE] = value;
-			ItemType& other = getItemType(value);
-			if (other.transformToFree == 0) {
-				other.transformToFree = it.id;
-			}
-
-			if (it.transformToOnUse[PLAYERSEX_FEMALE] == 0) {
-				it.transformToOnUse[PLAYERSEX_FEMALE] = value;
-			}
-		} else if (tmpStrValue == "femaletransformto" || tmpStrValue == "femalesleeper") {
-			uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
-			it.transformToOnUse[PLAYERSEX_FEMALE] = value;
-
-			ItemType& other = getItemType(value);
-			if (other.transformToFree == 0) {
-				other.transformToFree = it.id;
-			}
-
-			if (it.transformToOnUse[PLAYERSEX_MALE] == 0) {
-				it.transformToOnUse[PLAYERSEX_MALE] = value;
-			}
-		} else if (tmpStrValue == "transformto") {
-			it.transformToFree = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "destroyto") {
-			it.destroyTo = pugi::cast<uint16_t>(valueAttribute.value());
-		} else if (tmpStrValue == "elementice") {
-			Abilities& abilities = it.getAbilities();
-			abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-			abilities.elementType = COMBAT_ICEDAMAGE;
-		} else if (tmpStrValue == "elementearth") {
-			Abilities& abilities = it.getAbilities();
-			abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-			abilities.elementType = COMBAT_EARTHDAMAGE;
-		} else if (tmpStrValue == "elementfire") {
-			Abilities& abilities = it.getAbilities();
-			abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-			abilities.elementType = COMBAT_FIREDAMAGE;
-		} else if (tmpStrValue == "elementenergy") {
-			Abilities& abilities = it.getAbilities();
-			abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-			abilities.elementType = COMBAT_ENERGYDAMAGE;
-		} else if (tmpStrValue == "elementdeath") {
-			Abilities& abilities = it.getAbilities();
-			abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-			abilities.elementType = COMBAT_DEATHDAMAGE;
-		} else if (tmpStrValue == "elementholy") {
-			Abilities& abilities = it.getAbilities();
-			abilities.elementDamage = pugi::cast<uint16_t>(valueAttribute.value());
-			abilities.elementType = COMBAT_HOLYDAMAGE;
-		} else if (tmpStrValue == "walkstack") {
-			it.walkStack = valueAttribute.as_bool();
-		} else if (tmpStrValue == "blocking") {
-			it.blockSolid = valueAttribute.as_bool();
-		} else if (tmpStrValue == "allowdistread") {
-			it.allowDistRead = booleanString(valueAttribute.as_string());
+		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
+		if (parseAttribute != ItemParseAttributesMap.end()) {
+			// Parse item attributes
+			ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseShowCount(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseArmor(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseDefense(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseExtraDefense(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWeaponType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSlotType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAmmoType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseShootType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMagicEffect(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseLootType(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseRange(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseDuration(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseTransform(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCharges(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseShowAttributes(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseHitChance(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseInvisible(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSpeed(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseHealthAndMana(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSkills(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCriticalHit(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseLifeAndManaLeech(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMaxHitAndManaPoints(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
+			ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseLevelDoor(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseBeds(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}",
                         keyAttribute.as_string());
 		}
 	}
 
-	//check bed items
-	if ((it.transformToFree != 0 || it.transformToOnUse[PLAYERSEX_FEMALE] != 0 || it.transformToOnUse[PLAYERSEX_MALE] != 0) && it.type != ITEM_TYPE_BED) {
-		SPDLOG_WARN("[Items::parseItemNode] - Item {} is not set as a bed-type", it.id);
+	// Check bed items
+	if ((itemType.transformToFree != 0 || itemType.transformToOnUse[PLAYERSEX_FEMALE] != 0 || itemType.transformToOnUse[PLAYERSEX_MALE] != 0) && itemType.type != ITEM_TYPE_BED) {
+		SPDLOG_WARN("[Items::parseItemNode] - Item {} is not set as a bed-type", itemType.id);
 	}
 }
 

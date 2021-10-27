@@ -306,7 +306,7 @@ private:
 	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
 	void sendCreatureShield(const Creature *creature);
 	void sendCreatureSkull(const Creature *creature);
-	void sendCreatureType(const Creature *creature, uint8_t creatureType);
+	void sendCreatureUpdate(const Creature *creature);
 
 	void sendShop(Npc *npc);
 	void sendCloseShop();
@@ -368,6 +368,7 @@ private:
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, const Item *item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, const Item *item);
 	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
+	void sendUpdateTileCreature(const Position& pos, uint32_t stackpos, const Creature* creature);
 	void sendUpdateTile(const Tile *tile, const Position &pos);
 
 	void sendAddCreature(const Creature *creature, const Position &pos, int32_t stackpos, bool isLogin);

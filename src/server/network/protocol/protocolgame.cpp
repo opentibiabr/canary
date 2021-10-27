@@ -1277,7 +1277,8 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg)
 	Position pos = msg.getPosition();
 	uint16_t spriteId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr);
+	bool lootAllCorpses = msg.getByte();
+	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr, lootAllCorpses);
 }
 
 void ProtocolGame::parseLootContainer(NetworkMessage &msg)
@@ -1826,11 +1827,35 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 	newmsg.addByte(lootList.size());
 	for (LootBlock loot : lootList)
 	{
-		newmsg.addItemId(currentLevel > 1 ? loot.id : 0);
 		int8_t difficult = g_bestiary.calculateDifficult(loot.chance);
+		bool shouldAddItem = false;
+
+		switch (currentLevel)
+		{
+			case 1:
+				shouldAddItem = false;
+			break;
+			case 2:
+				if (difficult < 2)
+				{
+					shouldAddItem = true;
+				}
+				break;
+			case 3:
+				if (difficult < 3)
+				{
+					shouldAddItem = true;
+				}
+				break;
+			case 4:
+				shouldAddItem = true;
+				break;
+		}
+		newmsg.addItemId(shouldAddItem == true ? loot.id : 0);
+
 		newmsg.addByte(difficult);
 		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
-		if (currentLevel > 1)
+		if (shouldAddItem == true)
 		{
 			newmsg.addString(loot.name);
 			newmsg.addByte(loot.countmax > 0 ? 0x1 : 0x0);
@@ -2681,18 +2706,21 @@ void ProtocolGame::sendCreatureLight(const Creature *creature)
 void ProtocolGame::sendCreatureIcon(const Creature* creature)
 {
 	if (!creature)
-    	return;
-  	CreatureIcon_t icon = creature->getIcon();
-  	NetworkMessage msg;
- 	msg.addByte(0x8B);
-  	msg.add<uint32_t>(creature->getID());
-  	msg.addByte(14); // type 14 for this
-  	msg.addByte(icon != CREATUREICON_NONE); // 0 = no icon, 1 = we'll send an icon
-  	if (icon != CREATUREICON_NONE) {
-    	msg.addByte(icon);
-    	msg.addByte(1); // ???
-    	msg.add<uint16_t>(0); // used for the life in the new quest
-  	}
+  	{
+		return;
+	}
+
+	CreatureIcon_t icon = creature->getIcon();
+	NetworkMessage msg;
+	msg.addByte(0x8B);
+	msg.add<uint32_t>(creature->getID());
+	msg.addByte(14); // type 14 for this
+	msg.addByte(icon != CREATUREICON_NONE); // 0 = no icon, 1 = we'll send an icon
+	if (icon != CREATUREICON_NONE) {
+		msg.addByte(icon);
+		msg.addByte(0); // Creature update
+		msg.add<uint16_t>(0); // Used for the life in the new quest
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -2759,25 +2787,21 @@ void ProtocolGame::sendCreatureSkull(const Creature *creature)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureType)
+
+void ProtocolGame::sendCreatureUpdate(const Creature *creature)
 {
-	NetworkMessage msg;
-	msg.addByte(0x95);
-	msg.add<uint32_t>(creature->getID());
-	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		creatureType = CREATURETYPE_SUMMON_PLAYER;
-	}
-	msg.addByte(creatureType); // type or any byte idk
-	if (creatureType == CREATURETYPE_SUMMON_PLAYER) {
-		const Creature* master = creature->getMaster();
-		if (master) {
-			msg.add<uint32_t>(master->getID());
-		} else {
-			msg.add<uint32_t>(0);
+	if (creature && !creature->isRemoved())
+	{
+		const Tile* tile = creature->getTile();
+		const Player* player = creature->getPlayer();
+		if (tile)
+		{
+			const Position& position = creature->getPosition();
+			int32_t stackpos = tile->getClientIndexOfCreature(player, creature);
+
+			sendUpdateTileCreature(position, stackpos, creature);
 		}
 	}
-
-	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendCreatureSquare(const Creature *creature, SquareColor_t color)
@@ -2835,9 +2859,9 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 	msg.add<uint16_t>(player->getLevel());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(0x00); // hide stamina
-	msg.addByte(0x00); // enable store summary & character titles
-	msg.addString(""); // character title
+	msg.addByte(0x01); // hide stamina
+	msg.addByte(0x01); // enable store summary & character titles
+	msg.addString("Loyal"); // character title
 	writeToOutputBuffer(msg);
 }
 
@@ -2898,8 +2922,28 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 
-	// Version 12.70
-	msg.addByte(0x00); // bool ?
+	// Version 12.70 start (new items magic level modifiers)
+	const Item *weapon = player->getWeapon();
+	if (weapon)
+	{
+		const ItemType &it = Item::items[weapon->getID()];
+		if (it.abilities && it.abilities->elementType != COMBAT_NONE && weapon->getSpecializedMagicLevel(it.abilities->elementType))
+		{
+			msg.addByte(0x01);
+			msg.addByte(getCipbiaElement(it.abilities->elementType));
+			msg.add<uint16_t>(weapon->getSpecializedMagicLevel(it.abilities->elementType)); // Magic boost value
+		}
+		else
+		{
+			msg.addByte(0x00);
+		}
+	}
+	else
+	{
+		msg.addByte(0x00);
+	}
+	// Version 12.70 end
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendCyclopediaCharacterCombatStats()
@@ -2914,20 +2958,68 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		msg.add<uint16_t>(0);
 	}
 
-	// Version 12.70 start
-	msg.add<uint16_t>(0); // Cleave
+	// Version 12.72 start (item modifiers)
+	int16_t cleave = 0;
+	int32_t magicShieldFlat = 0;
+	int16_t magicShieldPercent = 0;
+	int8_t perfectShotRange = 0;
+	int16_t perfectShotDamage = 0;
+	int16_t reflectMelee = 0;
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot)))
+		{
+			continue;
+		}
 
-	// Magic shield capacity
-	msg.add<uint16_t>(0); // Direct bonus
-	msg.add<uint16_t>(0); // Percentage bonus
+		Item *item = player->getInventoryItem(static_cast<Slots_t>(slot));
+		if (!item)
+		{
+			continue;
+		}
 
-	for (uint16_t i = 1; i <= 5; i++)
-	{
-		msg.add<uint16_t>(0x00); // Perfect shot range
+		// cleave check
+		if (item->getCleavePercent() >= 1) {
+			cleave = cleave += item->getCleavePercent();
+		}
+		// magic shield
+		if (item->getMagicShieldCapacityFlat() >= 1) {
+			magicShieldFlat = magicShieldFlat += item->getMagicShieldCapacityFlat();
+		}
+		if (item->getMagicShieldCapacityPercent() >= 1) {
+			magicShieldPercent = magicShieldPercent += item->getMagicShieldCapacityPercent();
+		}
+		// perfect Shoot
+		if (item->getPerfectShotRange() >= 1)
+		{
+			perfectShotDamage = perfectShotDamage += item->getPerfectShotDamage();
+			perfectShotRange = perfectShotRange += item->getPerfectShotRange();
+		}
+		// reflection
+		if (item->getReflectMelee() >= 1) {
+			reflectMelee = reflectMelee += item->getReflectMelee();
+		}
 	}
 
-	msg.add<uint16_t>(0); // Reflection
-	// Version 12.70 end
+	// cleave
+	msg.add<uint16_t>(cleave);
+	// Magic shield capacity
+	msg.add<uint16_t>(magicShieldFlat); // Direct bonus
+	msg.add<uint16_t>(magicShieldPercent); // Percentage bonus
+	// Perfect shoot range
+	for (uint16_t i = 1; i <= 5; i++)
+	{
+		if (perfectShotRange == i)
+		{
+			msg.add<uint16_t>(perfectShotDamage);
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
+	}
+	// Reflection
+	msg.add<uint16_t>(reflectMelee);
+	// Version 12.72 end
 
 	uint8_t haveBlesses = 0;
 	uint8_t blessings = 8;
@@ -3066,15 +3158,27 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 		else
 		{
-			for (size_t i = 0; i < COMBAT_COUNT; ++i)
+			for (uint16_t i = 0; i < COMBAT_COUNT; ++i)
 			{
 				absorbs[i] += it.abilities->absorbPercent[i];
 			}
 		}
 	}
 
-	static const Cipbia_Elementals_t cipbiaCombats[] = {CIPBIA_ELEMENTAL_PHYSICAL, CIPBIA_ELEMENTAL_ENERGY, CIPBIA_ELEMENTAL_EARTH, CIPBIA_ELEMENTAL_FIRE, CIPBIA_ELEMENTAL_UNDEFINED,
-														CIPBIA_ELEMENTAL_LIFEDRAIN, CIPBIA_ELEMENTAL_UNDEFINED, CIPBIA_ELEMENTAL_HEALING, CIPBIA_ELEMENTAL_DROWN, CIPBIA_ELEMENTAL_ICE, CIPBIA_ELEMENTAL_HOLY, CIPBIA_ELEMENTAL_DEATH};
+	static const Cipbia_Elementals_t cipbiaCombats[] = {
+		CIPBIA_ELEMENTAL_PHYSICAL,
+		CIPBIA_ELEMENTAL_ENERGY,
+		CIPBIA_ELEMENTAL_EARTH,
+		CIPBIA_ELEMENTAL_FIRE,
+		CIPBIA_ELEMENTAL_LIFEDRAIN,
+		CIPBIA_ELEMENTAL_UNDEFINED,
+		CIPBIA_ELEMENTAL_HEALING,
+		CIPBIA_ELEMENTAL_DROWN,
+		CIPBIA_ELEMENTAL_ICE,
+		CIPBIA_ELEMENTAL_HOLY,
+		CIPBIA_ELEMENTAL_DEATH
+	};
+
 	for (size_t i = 0; i < COMBAT_COUNT; ++i)
 	{
 		if (absorbs[i] != 0)
@@ -3085,8 +3189,16 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 	}
 
+	// Concoctions potions (missing code for parse functions)
+	msg.addByte(0x01);
+	msg.addItemId(36723); //itemid
+
+	msg.add<uint16_t>(1800); //time
+
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries)
@@ -3142,11 +3254,66 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
 	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+
+	// Inventory
+	auto startInventoryItems = msg.getBufferPosition();
+	uint16_t inventoryItems = 0;
+	msg.skipBytes(2);
+
+	for (std::underlying_type<Slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; slot++)
+	{
+		Item *inventoryItem = player->getInventoryItem(static_cast<Slots_t>(slot));
+		if (inventoryItem)
+		{
+			++inventoryItems;
+			msg.add<uint16_t>(inventoryItem->getClientID());
+			msg.add<uint32_t>(inventoryItem->getItemCount());
+		}
+		// TODO show / count items in backpack
+	}
+
+	// Stash
+	// TODO Why does it display items in the store inbox?
+	auto startStashItems = msg.getBufferPosition();
+	StashItemList stashItems = player->getStashItems();
+	msg.skipBytes(2);
+
+	for (auto item : stashItems) {
+		msg.add<uint16_t>(item.first);
+		msg.add<uint32_t>(item.second);
+	}
+
+	// DepotItems
+	auto startDepotItems = msg.getBufferPosition();
+	uint16_t depotItems = 0;
+	msg.skipBytes(2);
+
+	// StoreInboxItems
+	auto startStoreInboxItems = msg.getBufferPosition();
+	uint16_t storeInboxItems = 0;
+	msg.skipBytes(2);
+
+	// InboxItems
+	auto startInboxItems = msg.getBufferPosition();
+	uint16_t inboxItems = 0;
+	msg.skipBytes(2);
+
+	// execute
+	msg.setBufferPosition(startInventoryItems);
+	msg.add<uint16_t>(inventoryItems);
+
+	msg.setBufferPosition(startDepotItems);
+	msg.add<uint16_t>(depotItems);
+
+	msg.setBufferPosition(startStashItems);
+	msg.add<uint16_t>(stashItems.size());
+
+	msg.setBufferPosition(startInboxItems);
+	msg.add<uint16_t>(inboxItems);
+
+	msg.setBufferPosition(startStoreInboxItems);
+	msg.add<uint16_t>(storeInboxItems);
+
 	writeToOutputBuffer(msg);
 }
 
@@ -3264,7 +3431,9 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
 	msg.addByte(0x00);
-	msg.add<uint32_t>(0);
+	// Remaining Store Xp Boost Time
+	msg.add<uint32_t>(player->getExpBoostStamina());
+	// RemainingDailyRewardXpBoostTime
 	msg.add<uint32_t>(0);
 	msg.addByte(0x00);
 	msg.addByte(0x00);
@@ -3340,8 +3509,18 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
 	msg.addByte(0x00);
-	// enable badges
+	// ShowAccountInformation
+	msg.addByte(0x01);
+	// if ShowAccountInformation show IsOnline, IsPremium, character title, badges
+	// IsOnline
+	msg.addByte(0x01);
+	// IsPremium (GOD has always 'Premium')
+	msg.addByte(player->isPremium() ? 0x01 : 0x00);
+	// character title
+	msg.addString("");
+	// badges
 	msg.addByte(0x00);
+	// Todo badges loop
 	writeToOutputBuffer(msg);
 }
 
@@ -3942,10 +4121,18 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	do
 	{
 		Container *container = containerList.front();
+		if (!container)
+		{
+			continue;
+		}
 		containerList.pop_front();
 
 		for (Item *item : container->getItemList())
 		{
+			if (!item)
+			{
+				continue;
+			}
 			Container *c = item->getContainer();
 			if (c && !c->empty())
 			{
@@ -4231,6 +4418,12 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	msg.addByte(0xF8);
 	msg.addItemId(itemId);
 
+	Item *item = g_game.findItemOfType(player, itemId);
+	if (!item)
+	{
+		return;
+	}
+
 	const ItemType &it = Item::items[itemId];
 	if (it.armor != 0)
 	{
@@ -4424,7 +4617,25 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				separator = true;
 			}
 
-			ss << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			ss << " magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+		}
+
+		// Version 12.72 (Specialized magic level modifier)
+		for (uint8_t i = 1; i <= 11; i++)
+		{
+			if (it.abilities->specializedMagicLevel[i])
+			{
+				if (separator)
+				{
+					ss << ", ";
+				}
+				else
+				{
+					separator = true;
+				}
+				std::string combatName = getCombatName(indexToCombatType(i));
+				ss << std::showpos << combatName << std::noshowpos << " magic level +" << it.abilities->specializedMagicLevel[i];
+			}
 		}
 
 		if (it.abilities->speed != 0)
@@ -4494,52 +4705,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	// Version 12.70
-	// New items modifiers
-
-	// Magic
-	std::ostringstream string;
-	msg.add<uint16_t>(0x00);
-
-	// Cleave
-	if (it.modifiers)
-	{
-		if (it.modifiers->cleaveDamage)
-		{
-			string.clear();
-			string << it.modifiers->cleaveDamage << "%";
-			msg.addString(string.str());
-		}
-		else
-		{
-			msg.add<uint16_t>(0x00);
-		}
-
-		// Reflection
-		if (it.modifiers->reflectDamage)
-		{
-			string.clear();
-			string << it.modifiers->reflectDamage;
-			msg.addString(string.str());
-		}
-		else
-		{
-			msg.add<uint16_t>(0x00);
-		}
-
-		// Perf shot
-		if (it.modifiers->perfectBonus)
-		{
-			string.clear();
-			string << "+" << it.modifiers->perfectBonus << " at range";
-			msg.addString(string.str());
-		}
-		else
-		{
-			msg.add<uint16_t>(0x00);
-		}
-	}
-
 	uint8_t slot = Item::items[itemId].imbuingSlots;
 	if (slot > 0)
 	{
@@ -4549,6 +4714,62 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	{
 		msg.add<uint16_t>(0x00);
 	}
+
+	// Version 12.70
+
+	int32_t magicShieldFlat = item->getMagicShieldCapacityFlat();
+	int16_t magicShieldPercent = item->getMagicShieldCapacityPercent();
+	int16_t cleave = item->getCleavePercent();
+	int16_t reflectMelee = item->getReflectMelee();
+	int16_t perfectShotRange = item->getPerfectShotRange();
+	int16_t perfectShotDamage = item->getPerfectShotDamage();
+	
+	// Magic shield capacity modifier
+	if (magicShieldFlat >= 1)
+	{
+		std::ostringstream string;
+		string << "+" << magicShieldFlat << " and " << magicShieldPercent << "%";
+		msg.addString(string.str());
+	}
+	else
+	{
+		msg.add<uint16_t>(0x00);
+	}
+
+	// Start 12.70 (new items modifiers)
+	// Cleave modifier
+	if (cleave >= 1) {
+		std::ostringstream string;
+		string << cleave << "%";
+		msg.addString(string.str());
+	}
+	else
+	{
+		msg.add<uint16_t>(0x00);
+	}
+	
+	// Damage reflection modifier
+	if (reflectMelee >= 1)
+	{
+		std::ostringstream string;
+		string << reflectMelee;
+		msg.addString(string.str());
+	}
+	else
+	{
+		msg.add<uint16_t>(0x00);
+	}
+
+	// Perfect shot modifier
+	if (perfectShotRange >= 1)
+	{
+		std::ostringstream string;
+		string << "+" << perfectShotDamage << " at range " << perfectShotRange;
+		msg.addString(string.str());
+	} else {
+		msg.add<uint16_t>(0x00);
+	}
+	// Final 12.70
 
 	MarketStatistics *statistics = IOMarket::getInstance().getPurchaseStatistics(itemId);
 	if (statistics)
@@ -4577,6 +4798,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	{
 		msg.addByte(0x00);
 	}
+
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendTradeItemRequest(const std::string &traderName, const Item *item, bool ack)
@@ -5108,6 +5331,25 @@ void ProtocolGame::sendRemoveTileThing(const Position &pos, uint32_t stackpos)
 
 	NetworkMessage msg;
 	RemoveTileThing(msg, pos, stackpos);
+	writeToOutputBuffer(msg);
+}
+void ProtocolGame::sendUpdateTileCreature(const Position& pos, uint32_t stackpos, const Creature* creature)
+{
+	if (!canSee(pos))
+	{
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x6B);
+	msg.addPosition(pos);
+	msg.addByte(stackpos);
+
+	bool known;
+	uint32_t removedKnown;
+	checkCreatureAsKnown(creature->getID(), known, removedKnown);
+	AddCreature(msg, creature, false, removedKnown);
+
 	writeToOutputBuffer(msg);
 }
 

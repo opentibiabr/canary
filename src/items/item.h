@@ -792,6 +792,34 @@ class Item : virtual public Thing
 			}
 			return items[id].weight;
 		}
+
+		int16_t getCleavePercent() const {
+			return items[id].abilities->cleavePercent;
+		}
+
+		int16_t getPerfectShotDamage() const {
+			return items[id].abilities->perfectShotDamage;
+		}
+		int16_t getPerfectShotRange() const {
+			return items[id].abilities->perfectShotRange;
+		}
+
+		int16_t getReflectMelee() const {
+			return items[id].abilities->reflectMelee;
+		}
+
+		int16_t getMagicShieldCapacityPercent() const {
+			return items[id].abilities->magicShieldCapacityPercent;
+		}
+
+		int32_t getMagicShieldCapacityFlat() const {
+			return items[id].abilities->magicShieldCapacityFlat;
+		}
+
+		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
+			return items[id].abilities->specializedMagicLevel[combatTypeToIndex(combat)];
+		}
+		
 		int32_t getAttack() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {
 				return getIntAttr(ITEM_ATTRIBUTE_ATTACK);

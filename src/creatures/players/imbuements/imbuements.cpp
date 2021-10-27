@@ -72,7 +72,8 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 			categories.emplace_back(
 				pugi::cast<uint16_t>(id.value()),
-				baseNode.attribute("name").as_string()
+				baseNode.attribute("name").as_string(),
+				baseNode.attribute("agressive").as_bool(true)
 			);
 
 		// Imbuements

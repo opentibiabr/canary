@@ -553,6 +553,9 @@ void ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, CombatTyp
 	if (lowerStringValue == "fire") {
 		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
 		combatType = COMBAT_FIREDAMAGE;
+		if (!conditionManage) {
+			delete conditionDamage;
+		}
 	} else if (lowerStringValue == "energy") {
 		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
 		combatType = COMBAT_ENERGYDAMAGE;

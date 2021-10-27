@@ -18908,6 +18908,7 @@
 		<attribute key="type" value="magicfield"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="duration" value="20"/>
+		<attribute key="blocking" value="1"/>
 	</item>
 	<item id="10182" article="a" name="rush wood">
 		<attribute key="type" value="magicfield"/>

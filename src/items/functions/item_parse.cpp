@@ -579,6 +579,7 @@ ConditionDamage* ItemParse::parseFieldConditions(ConditionDamage *conditionDamag
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
 	}
+	return conditionDamage;
 }
 
 CombatType_t ItemParse::parseFieldCombatType(CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
@@ -597,6 +598,7 @@ CombatType_t ItemParse::parseFieldCombatType(CombatType_t combatType, std::strin
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
 	}
+	return combatType;
 }
 
 void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
@@ -661,6 +663,7 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 				conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
 			}
 		}
+		delete conditionDamage;
 	}
 }
 

@@ -618,17 +618,17 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::st
 			combatStart = std::max<int32_t>(0, pugi::cast<int32_t>(subValueAttribute.value()));
 		} else if (stringValue == "damage") {
 			combatDamage = -pugi::cast<int32_t>(subValueAttribute.value());
-			if (combatStart > 0) {
-				std::list<int32_t>damageList;
-				ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
-				for (int32_t damageValue: damageList) {
-					conditionDamage->addDamage(1, combatTicks, -damageValue);
-				}
-
-				combatStart = 0;
-			} else {
+			if (combatStart == 0) {
 				conditionDamage->addDamage(combatCount, combatTicks, combatDamage);
 			}
+
+			std::list<int32_t>damageList;
+			ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
+			for (int32_t damageValue: damageList) {
+				conditionDamage->addDamage(1, combatTicks, -damageValue);
+			}
+
+			combatStart = 0;
 		}
 	}
 }

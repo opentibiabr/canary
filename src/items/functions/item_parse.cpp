@@ -567,28 +567,29 @@ std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> Ite
 		conditionType = CONDITION_BLEEDING;
 		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else {
-	SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
+		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                 valueAttribute.as_string());
 	}
+	return std::make_tuple(CONDITIONID_DEFAULT, CONDITION_NONE, lowerStringValue, valueAttribute);
 }
 
-CombatType_t ItemParse::parseFieldCombatType(CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
 	if (lowerStringValue == "fire") {
-		return combatType = COMBAT_FIREDAMAGE;
+		return COMBAT_FIREDAMAGE;
 	} else if (lowerStringValue == "energy") {
-		return combatType = COMBAT_ENERGYDAMAGE;
+		return COMBAT_ENERGYDAMAGE;
 	} else if (lowerStringValue == "poison") {
-		return combatType = COMBAT_EARTHDAMAGE;
+		return COMBAT_EARTHDAMAGE;
 	} else if (lowerStringValue == "drown") {
-		return combatType = COMBAT_DROWNDAMAGE;
+		return COMBAT_DROWNDAMAGE;
 	} else if (lowerStringValue == "physical") {
-		return combatType = COMBAT_PHYSICALDAMAGE;
+		return COMBAT_PHYSICALDAMAGE;
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
 	}
-	return combatType;
+	return COMBAT_NONE;
 }
 
 void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
@@ -639,9 +640,9 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 		ConditionDamage* conditionDamage = nullptr;
 
 		// Parse fields conditions (fire/energy/poison/drown/physical)
-		combatType = parseFieldCombatType(combatType, stringValue, valueAttribute);
-		ConditionId_t condID;
-		ConditionType_t condType;
+		combatType = parseFieldCombatType(stringValue, valueAttribute);
+		ConditionId_t condID = CONDITIONID_DEFAULT;
+		ConditionType_t condType = CONDITION_NONE;
 		auto result = parseFieldConditions(condID, condType, stringValue, valueAttribute);
 		condID = std::get<0>(result);
 		condType = std::get<1>(result);
@@ -649,22 +650,22 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 		valueAttribute = std::get<3>(result);
 
 		if (combatType != COMBAT_NONE) {
-			if (!conditionDamage) {
-				conditionDamage = new ConditionDamage(condID, condType);
-
-				itemType.combatType = combatType;
-				itemType.conditionDamage.reset(conditionDamage);
-
-				parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
-			
-				conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
-
-				if (conditionDamage->getTotalDamage() > 0) {
-					conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
-				}
-				return;
+			if (conditionDamage) {
+				delete conditionDamage;
 			}
-			delete conditionDamage;
+
+			conditionDamage = new ConditionDamage(condID, condType);
+
+			itemType.combatType = combatType;
+			itemType.conditionDamage.reset(conditionDamage);
+
+			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
+			
+			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
+
+			if (conditionDamage->getTotalDamage() > 0) {
+				conditionDamage->setParam(CONDITION_PARAM_FORCEUPDATE, 1);
+			}
 		}
 	}
 }

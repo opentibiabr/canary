@@ -222,7 +222,7 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"quiver", WEAPON_QUIVER},
 };
 
-class ItemParse final : Items
+class ItemParse final : public Items
 {
 	public:
 
@@ -282,7 +282,7 @@ class ItemParse final : Items
 	private:
 	// Parent of the function: static void parseField
 	static std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> parseFieldConditions(ConditionId_t conditionId, ConditionType_t conditionType, std::string lowerStringValue, pugi::xml_attribute valueAttribute);
-	static CombatType_t parseFieldCombatType(CombatType_t combatType, std::string string, pugi::xml_attribute valueAttribute);
+	static CombatType_t parseFieldCombatType(std::string string, pugi::xml_attribute valueAttribute);
 	static void parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode);
 };
 

@@ -554,32 +554,27 @@ ConditionDamage* ItemParse::parseFieldConditions(ConditionDamage *conditionDamag
 		if (!conditionDamage) {
 			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
 		}
-		delete conditionDamage;
 	} else if (lowerStringValue == "energy") {
 		if (!conditionDamage) {
 			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
 		}
-		delete conditionDamage;
 	} else if (lowerStringValue == "poison") {
 		if (!conditionDamage) {
 			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
 		}
-		delete conditionDamage;
 	} else if (lowerStringValue == "drown") {
 		if (!conditionDamage) {
 			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
 		}
-		delete conditionDamage;
 	} else if (lowerStringValue == "physical") {
 		if (!conditionDamage) {
 			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
 		}
-		delete conditionDamage;
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
 	}
-	return conditionDamage;
+	delete conditionDamage;
 }
 
 CombatType_t ItemParse::parseFieldCombatType(CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {

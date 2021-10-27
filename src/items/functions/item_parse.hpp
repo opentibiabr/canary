@@ -281,8 +281,9 @@ class ItemParse final : Items
 
 	private:
 	// Parent of the function: static void parseField
-	static void parseFieldConditions(ConditionDamage *conditionDamage, CombatType_t combatType, std::string lowerString, pugi::xml_attribute valueAttribute);
-	static void parseFieldCombat(ConditionDamage *conditionDamage, std::string string, pugi::xml_node attributeNode);
+	static ConditionDamage* parseFieldConditions(ConditionDamage *conditionDamage, std::string lowerString, pugi::xml_attribute valueAttribute);
+	static CombatType_t parseFieldCombatType(CombatType_t combatType, std::string string, pugi::xml_attribute valueAttribute);
+	static void parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode);
 };
 
 #endif // SRC_ITEMS_FUNCTIONS_ITEM_PARSE_HPP_

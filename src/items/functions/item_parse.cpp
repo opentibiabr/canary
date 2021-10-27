@@ -551,28 +551,38 @@ void ItemParse::parseSupressDrunk(const std::string& tmpStrValue, pugi::xml_attr
 void ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
 	if (lowerStringValue == "fire") {
-		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
-		combatType = COMBAT_FIREDAMAGE;
 		if (!conditionDamage) {
-			delete conditionDamage;
+			combatType = COMBAT_FIREDAMAGE;
+			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
 		}
+		delete conditionDamage;
 	} else if (lowerStringValue == "energy") {
-		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
-		combatType = COMBAT_ENERGYDAMAGE;
-		free(conditionDamage);
+		if (!conditionDamage) {
+			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
+			combatType = COMBAT_ENERGYDAMAGE;
+		}
+		delete conditionDamage;
 	} else if (lowerStringValue == "poison") {
-		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
-		combatType = COMBAT_EARTHDAMAGE;
+		if (!conditionDamage) {
+			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
+			combatType = COMBAT_EARTHDAMAGE;
+		}
+		delete conditionDamage;
 	} else if (lowerStringValue == "drown") {
-		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
-		combatType = COMBAT_DROWNDAMAGE;
+		if (!conditionDamage) {
+			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
+			combatType = COMBAT_DROWNDAMAGE;
+		}
+		delete conditionDamage;
 	} else if (lowerStringValue == "physical") {
-		conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
-		combatType = COMBAT_PHYSICALDAMAGE;
+		if (!conditionDamage) {
+			conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
+			combatType = COMBAT_PHYSICALDAMAGE;
+		}
+		delete conditionDamage;
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
-		delete conditionDamage;
 	}
 }
 

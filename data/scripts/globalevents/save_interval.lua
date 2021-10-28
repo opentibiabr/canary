@@ -25,7 +25,7 @@ end
 local save = GlobalEvent("save")
 function save.onTime(interval)
 	if time == 0 then
-		return Spdlog.error("Check that the save interval type is valid")
+		return Spdlog.error(string.format("Save interval type '%s' is not valid, use 'second', 'minute' or 'hour'", saveIntervalType))
 	end
 
 	local remaningTime = 60 * 1000

@@ -7,5 +7,10 @@ function Creature:onAreaCombat(tile, isAggressive)
 end
 
 function Creature:onTargetCombat(target)
-	return RETURNVALUE_NOERROR
+	if not self then
+		return true
+	end
+
+	self:addEventStamina(target)
+	return true
 end

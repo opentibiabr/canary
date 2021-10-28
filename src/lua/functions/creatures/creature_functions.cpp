@@ -291,27 +291,6 @@ int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 	return 1;
 }
 
-int CreatureFunctions::luaCreatureReload(lua_State* L) {
-	// creature:reload()
-	Creature* creature = getUserdata<Creature>(L, 1);
-	if (!creature) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	const Position& position = creature->getPosition();
-	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, position, false, true); // 3 parâmetro é multifloor, ver se há necessidade de usar.
-	for (Creature* spectator : spectators) {
-		Player* tmpPlayer = spectator->getPlayer();
-		if (tmpPlayer) {
-			tmpPlayer->reloadCreature(creature);
-		}
-	}
-
-	return 1;
-}
-
 int CreatureFunctions::luaCreatureGetLight(lua_State* L) {
 	// creature:getLight()
 	const Creature* creature = getUserdata<const Creature>(L, 1);

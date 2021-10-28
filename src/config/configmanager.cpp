@@ -173,13 +173,15 @@ bool ConfigManager::load()
 	boolean[SERVER_SAVE_SHUTDOWN] = getGlobalBoolean(L, "serverSaveShutdown", true);
 	boolean[STOREMODULES] = getGlobalBoolean(L, "gamestoreByModules", true);
 	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
+	boolean[PUSH_WHEN_ATTACKING] = getGlobalBoolean(L, "pushWhenAttacking", false);
 
 	boolean[WEATHER_RAIN] = getGlobalBoolean(L, "weatherRain", false);
 	boolean[WEATHER_THUNDER] = getGlobalBoolean(L, "thunderEffect", false);
-
 	boolean[ALL_CONSOLE_LOG] = getGlobalBoolean(L, "allConsoleLog", false);
-
 	boolean[FREE_QUESTS] = getGlobalBoolean(L, "freeQuests", false);
+	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
+	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
+	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 
@@ -192,7 +194,7 @@ bool ConfigManager::load()
 	string[MOTD] = getGlobalString(L, "motd", "");
 	string[WORLD_TYPE] = getGlobalString(L, "worldType", "pvp");
 	string[STORE_IMAGES_URL] = getGlobalString(L, "coinImagesURL", "");
-  string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
+	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
@@ -234,18 +236,23 @@ bool ConfigManager::load()
 	integer[PUSH_DELAY] = getGlobalNumber(L, "pushDelay", 1000);
 	integer[PUSH_DISTANCE_DELAY] = getGlobalNumber(L, "pushDistanceDelay", 1500);
 
+	integer[STAMINA_ORANGE_DELAY] = getGlobalNumber(L, "staminaOrangeDelay", 1);
+	integer[STAMINA_GREEN_DELAY] = getGlobalNumber(L, "staminaGreenDelay", 5);
+	integer[STAMINA_PZ_GAIN] = getGlobalNumber(L, "staminaPzGain", 1);
+	integer[STAMINA_TRAINER_DELAY] = getGlobalNumber(L, "staminaTrainerDelay", 5);
+	integer[STAMINA_TRAINER_GAIN] = getGlobalNumber(L, "staminaTrainerGain", 1);
+
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
 	floating[RATE_MANA_REGEN] = getGlobalFloat(L, "rateManaRegen", 1.0);
 	floating[RATE_MANA_REGEN_SPEED] = getGlobalFloat(L, "rateManaRegenSpeed", 1.0);
 	floating[RATE_SOUL_REGEN] = getGlobalFloat(L, "rateSoulRegen", 1.0);
 	floating[RATE_SOUL_REGEN_SPEED] = getGlobalFloat(L, "rateSoulRegenSpeed", 1.0);
-
 	floating[RATE_SPELL_COOLDOWN] = getGlobalFloat(L, "rateSpellCooldown", 1.0);
 	floating[RATE_ATTACK_SPEED] = getGlobalFloat(L, "rateAttackSpeed", 1.0);
 	floating[RATE_OFFLINE_TRAINING_SPEED] = getGlobalFloat(L, "rateOfflineTrainingSpeed", 1.0);
 	floating[RATE_EXERCISE_TRAINING_SPEED] = getGlobalFloat(L, "rateExerciseTrainingSpeed", 1.0);
-
+	
 	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
 	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);
 	floating[RATE_MONSTER_DEFENSE] = getGlobalFloat(L, "rateMonsterDefense", 1.0);

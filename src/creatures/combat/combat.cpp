@@ -867,7 +867,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 	}
 
 	if (params.combatType == COMBAT_HEALING && target->getMonster()){
-		if (target != caster)		{
+		if (target != caster)	{
 			return;
 		}
 	}

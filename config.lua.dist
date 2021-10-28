@@ -62,10 +62,7 @@ weatherRain = false
 thunderEffect = false
 freeQuests = false
 allConsoleLog = false
--- NOTE: saveIntervalTime in hours
-saveInterval = false
-saveIntervalCleanMap = false
-saveIntervalTime = 1
+
 -- Stamina in Trainers
 staminaTrainer = false
 staminaTrainerDelay = 5
@@ -75,10 +72,16 @@ staminaPz = false
 staminaOrangeDelay = 1
 staminaGreenDelay = 5
 staminaPzGain = 1
--- NOTE: saveIntervalTime in hours
-saveInterval = false
-saveIntervalCleanMap = false
-saveIntervalTime = 1
+
+-- Save interval per time
+-- NOTE: togleSaveInterval: true = enable the save interval, false = disable the save interval
+-- NOTE: saveIntervalType: "minute", "second" or "hour"
+-- NOTE: togleSaveIntervalCleanMap: true = enable the clean map, false = disable the clean map
+-- NOTE: saveIntervalTime: time based on what was set in "saveIntervalType"
+togleSaveInterval = true
+saveIntervalType = "hour"
+togleSaveIntervalCleanMap = true
+saveIntervalTime = 2
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default

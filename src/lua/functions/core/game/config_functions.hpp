@@ -135,9 +135,6 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 			registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 			registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
-			registerEnumIn(L, "configKeys", SAVE_INTERVAL)
-			registerEnumIn(L, "configKeys", SAVE_INTERVAL_CLEAN_MAP)
-			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME)
 
 			registerEnumIn(L, "configKeys", STAMINA_TRAINER)
 			registerEnumIn(L, "configKeys", STAMINA_PZ)
@@ -148,8 +145,9 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", STAMINA_TRAINER_GAIN)
 			registerEnumIn(L, "configKeys", SORT_LOOT_BY_CHANCE)
 			registerEnumIn(L, "configKeys", PUSH_WHEN_ATTACKING)
-			registerEnumIn(L, "configKeys", SAVE_INTERVAL)
-			registerEnumIn(L, "configKeys", SAVE_INTERVAL_CLEAN_MAP)
+			registerEnumIn(L, "configKeys", TOGLE_SAVE_INTERVAL)
+			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TYPE)
+			registerEnumIn(L, "configKeys", TOGLE_SAVE_INTERVAL_CLEAN_MAP)
 			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME)
 
 			#undef registerEnumIn

@@ -24,6 +24,10 @@ end
 
 local save = GlobalEvent("save")
 function save.onTime(interval)
+	if time == 0 then
+		return false
+	end
+
 	local remaningTime = 60 * 1000
 	if configManager.getBoolean(configKeys.TOGLE_SAVE_INTERVAL) then
 		local message = "The server will save all accounts within " .. (remaningTime/1000) .." seconds. \z
@@ -35,5 +39,8 @@ function save.onTime(interval)
 	return not configManager.getBoolean(configKeys.TOGLE_SAVE_INTERVAL)
 end
 
-save:interval(configTime * time)
+if time ~= 0 then
+	save:interval(configTime * time)
+end
+
 save:register()

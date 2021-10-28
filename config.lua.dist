@@ -75,6 +75,10 @@ staminaPz = false
 staminaOrangeDelay = 1
 staminaGreenDelay = 5
 staminaPzGain = 1
+-- NOTE: saveIntervalTime in hours
+saveInterval = false
+saveIntervalCleanMap = false
+saveIntervalTime = 1
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default

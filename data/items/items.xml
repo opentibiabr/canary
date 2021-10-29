@@ -48200,8 +48200,8 @@
 		<attribute key="defense" value="35" />
 		<attribute key="attack" value="10" />
 		<attribute key="elementIce" value="47" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="sword" />
 		<attribute key="loottype" value="sword" />
@@ -48228,8 +48228,8 @@
 		<attribute key="defense" value="35" />
 		<attribute key="attack" value="10" />
 		<attribute key="elementIce" value="47" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="axe" />
 		<attribute key="loottype" value="axe" />
@@ -48256,8 +48256,8 @@
 		<attribute key="defense" value="35" />
 		<attribute key="attack" value="10" />
 		<attribute key="elementEnergy" value="47" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="slotType" value="two-handed" />
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
@@ -48273,8 +48273,8 @@
 		<attribute key="attack" value="8" />
 		<attribute key="HitChance" value="5" />
 		<attribute key="skillDist" value="4" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="absorbPercentHoly" value="7" />
 		<attribute key="ammoType" value="arrow" />
 		<attribute key="imbuingSlot" value="3" />
@@ -48297,8 +48297,8 @@
 		<attribute key="loottype" value="wand" />
 		<attribute key="range" value="6" />
 		<attribute key="shootType" value="death" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="10" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="10" />
 		<attribute key="absorbPercentDeath" value="12" />
 		<attribute key="magiclevelpoints" value="5" />
 		<attribute key="weight" value="1900" />
@@ -48628,8 +48628,8 @@
 		<attribute key="range" value="5" />
 		<attribute key="shootType" value="smallice" />
 		<attribute key="magiclevelpoints" value="2" />
-		<attribute key="skillcriticalchance" value="10" />
-		<attribute key="skillcriticaldamage" value="35" />
+		<attribute key="criticalhitchance" value="10" />
+		<attribute key="criticalhitdamage" value="35" />
 		<attribute key="weight" value="3700" />
 		<attribute key="imbuingSlot" value="2" />
 	</item>

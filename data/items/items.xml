@@ -50312,7 +50312,7 @@
 		<attribute key="description" value="Drinking this potion temporarily increases critical hit chance." />
 		<attribute key="weight" value="210" />
 	</item>
-	<item id="41560" article="a" name="stamina extension">
+	<item id="36725" article="a" name="stamina extension">
 		<attribute key="loottype" value="creatureproduct" />
 		<attribute key="description" value="Drinking this potion fills up stamina by one hour." />
 		<attribute key="weight" value="210" />
@@ -50406,7 +50406,7 @@
 		<attribute key="loottype" value="decoration" />
 		<attribute key="weight" value="110" />
 	</item>
-	<item fromid="36750" toid="36754" name="falcon pet">
+	<item fromid="36750" toid="36754" name="falcon pet"/>
 	<item id="36761" article="a" name="dead lavafungus">
 		<attribute key="containerSize" value="30" />
 		<attribute key="decayTo" value="0" />
@@ -50900,7 +50900,7 @@
 	<item id="36943" article="a" name="cloth fragment">
 		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
 	</item>
-	<item id="36944" article="a" name="the book of death carpet" />
+	<item id="36944" article="a" name="the book of death carpet">
 		<attribute key="description" value="This carpet resembles the book of death prime artefact. It feels soft to the touch and seems to have almost no weight." />
 	</item>
 	<item id="36945" article="a" name="cloth fragment">

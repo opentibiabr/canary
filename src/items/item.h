@@ -804,8 +804,8 @@ class Item : virtual public Thing
 			return items[id].abilities->perfectShotRange;
 		}
 
-		int16_t getReflectMelee() const {
-			return items[id].abilities->reflectMelee;
+		int16_t getReflectDamage() const {
+			return items[id].abilities->reflectDamage;
 		}
 
 		int16_t getMagicShieldCapacityPercent() const {

@@ -372,12 +372,12 @@ class Player final : public Creature, public Cylinder
 			this->reflectMapPercent[combatTypeToIndex(combatType)] = std::max(0, this->reflectMapPercent[combatTypeToIndex(combatType)] + value);
 		}
 
-		uint32_t getReflectMelee() const {
-			return reflectMelee;
+		uint32_t getReflectDamage() const {
+			return reflectDamage;
 		}
 
-		void setReflectMelee(int32_t value) {
-			reflectMelee += value;
+		void setReflectDamage(int32_t value) {
+			reflectDamage += value;
 		}
 
 		uint16_t getCleavePercent() const {
@@ -2180,7 +2180,7 @@ class Player final : public Creature, public Cylinder
 		bool exerciseTraining = false;
 
 		int16_t reflectMapPercent[COMBAT_COUNT] = { 0 };
-		int32_t reflectMelee = 0;
+		int32_t reflectDamage = 0;
 		uint16_t cleavePercent = 0;
 		std::map<uint8_t, int32_t> perfectShot;
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };

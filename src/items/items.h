@@ -70,7 +70,7 @@ struct Abilities {
 	// Perfect shot modifiers
 	int32_t perfectShotDamage = 0;
 	int16_t perfectShotRange = 0;
-	int16_t reflectMelee = 0;
+	int16_t reflectDamage = 0;
 
 	bool manaShield = false;
 	bool invisible = false;

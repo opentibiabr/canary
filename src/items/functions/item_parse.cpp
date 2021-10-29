@@ -814,8 +814,8 @@ void ItemParse::parseCleavePercent(const std::string& tmpStrValue, pugi::xml_att
 void ItemParse::parseReflectDamage(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	Abilities & abilities = itemType.getAbilities();
-	if (stringValue == "reflectmelee") {
-		abilities.reflectMelee += pugi::cast<int16_t>(valueAttribute.value());
+	if (stringValue == "reflectdamage") {
+		abilities.reflectDamage += pugi::cast<int16_t>(valueAttribute.value());
 	} else if (stringValue == "reflectpercentall") {
 		int16_t value = pugi::cast<int16_t>(valueAttribute.value());
 		for (auto& i : abilities.reflectPercent) {

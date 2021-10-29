@@ -761,8 +761,8 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 			player->setSpecializedMagicLevel(indexToCombatType(combat), it.abilities->specializedMagicLevel[combat]);
 	}
 
-	if (it.abilities->reflectMelee != 0) {
-		player->setReflectMelee(it.abilities->reflectMelee);
+	if (it.abilities->reflectDamage != 0) {
+		player->setReflectDamage(it.abilities->reflectDamage);
 	}
 
 	if (it.abilities->perfectShotRange != 0) {
@@ -873,8 +873,8 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 			player->setSpecializedMagicLevel(indexToCombatType(combat), -it.abilities->specializedMagicLevel[combat]);
 	}
 
-	if (it.abilities->reflectMelee != 0) {
-		player->setReflectMelee(-it.abilities->reflectMelee);
+	if (it.abilities->reflectDamage != 0) {
+		player->setReflectDamage(-it.abilities->reflectDamage);
 	}
 
 	if (it.abilities->perfectShotRange != 0) {

@@ -513,6 +513,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 			ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
+			ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}",

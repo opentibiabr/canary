@@ -2964,7 +2964,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	int16_t magicShieldPercent = 0;
 	int8_t perfectShotRange = 0;
 	int16_t perfectShotDamage = 0;
-	int16_t reflectMelee = 0;
+	int16_t reflectDamage = 0;
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 		if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot)))
 		{
@@ -2995,8 +2995,8 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 			perfectShotRange = perfectShotRange += item->getPerfectShotRange();
 		}
 		// reflection
-		if (item->getReflectMelee() >= 1) {
-			reflectMelee = reflectMelee += item->getReflectMelee();
+		if (item->getReflectDamage() >= 1) {
+			reflectDamage = reflectDamage += item->getReflectDamage();
 		}
 	}
 
@@ -3018,7 +3018,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 	}
 	// Reflection
-	msg.add<uint16_t>(reflectMelee);
+	msg.add<uint16_t>(reflectDamage);
 	// Version 12.72 end
 
 	uint8_t haveBlesses = 0;
@@ -4720,7 +4720,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	int32_t magicShieldFlat = item->getMagicShieldCapacityFlat();
 	int16_t magicShieldPercent = item->getMagicShieldCapacityPercent();
 	int16_t cleave = item->getCleavePercent();
-	int16_t reflectMelee = item->getReflectMelee();
+	int16_t reflectDamage = item->getReflectDamage();
 	int16_t perfectShotRange = item->getPerfectShotRange();
 	int16_t perfectShotDamage = item->getPerfectShotDamage();
 	
@@ -4749,10 +4749,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	}
 	
 	// Damage reflection modifier
-	if (reflectMelee >= 1)
+	if (reflectDamage >= 1)
 	{
 		std::ostringstream string;
-		string << reflectMelee;
+		string << reflectDamage;
 		msg.addString(string.str());
 	}
 	else

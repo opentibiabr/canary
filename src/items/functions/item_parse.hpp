@@ -163,7 +163,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"perfectshotdamage", ITEM_PARSE_PERFECTSHOTDAMAGE},
 	{"perfectshotrange", ITEM_PARSE_PERFECTSHOTRANGE},
 	{"cleavepercent", ITEM_PARSE_CLEAVEPERCENT},
-	{"reflectmelee", ITEM_PARSE_REFLECTFLATALL},
+	{"reflectdamage", ITEM_PARSE_REFLECTDAMAGE},
 	{"reflectpercentall", ITEM_PARSE_REFLECTPERCENTALL},
 };
 

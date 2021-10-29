@@ -5533,9 +5533,9 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		// Damage reflection primary
 		if (attacker) {
 			uint32_t primaryReflectPercent = target->getReflectPercent(damage.primary.type);
-			uint32_t primaryReflectMelee = target->getReflectMelee();
-			if (primaryReflectPercent > 0 || primaryReflectMelee > 0) {
-				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflectPercent / 100.)) + std::min(damage.primary.value, static_cast<int32_t>(primaryReflectMelee));
+			uint32_t primaryReflectDamage = target->getReflectDamage();
+			if (primaryReflectPercent > 0 || primaryReflectDamage > 0) {
+				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflectPercent / 100.)) + std::min(damage.primary.value, static_cast<int32_t>(primaryReflectDamage));
 				damageReflected.primary.type = damage.primary.type;
 				damageReflected.extension = true;
 				damageReflected.exString = "(damage reflection)";
@@ -5563,17 +5563,17 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		// Damage reflection secondary
 		if (attacker) {
 			uint32_t secondaryReflectPercent = target->getReflectPercent(damage.secondary.type);
-			uint32_t secondaryReflectMelee = target->getReflectMelee();
-			if (secondaryReflectPercent > 0 || secondaryReflectMelee > 0) {
+			uint32_t secondaryReflectDamage = target->getReflectDamage();
+			if (secondaryReflectPercent > 0 || secondaryReflectDamage > 0) {
 				if (!canReflect) {
 					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectMelee));
+					damageReflected.primary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectDamage));
 					damageReflected.extension = true;
 					damageReflected.exString = "(damage reflection)";
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectMelee));
+					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflectPercent / 100.)) + std::min(damage.secondary.value,  static_cast<int32_t>(secondaryReflectDamage));
 				}
 			}
 		}

@@ -4418,12 +4418,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	msg.addByte(0xF8);
 	msg.addItemId(itemId);
 
-	Item *item = g_game.findItemOfType(player, itemId);
-	if (!item)
-	{
-		return;
-	}
-
 	const ItemType &it = Item::items[itemId];
 	if (it.armor != 0)
 	{
@@ -4717,59 +4711,59 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 
 	// Version 12.70
 
-	int32_t magicShieldFlat = item->getMagicShieldCapacityFlat();
-	int16_t magicShieldPercent = item->getMagicShieldCapacityPercent();
-	int16_t cleave = item->getCleavePercent();
-	int16_t reflectDamage = item->getReflectDamage();
-	int16_t perfectShotRange = item->getPerfectShotRange();
-	int16_t perfectShotDamage = item->getPerfectShotDamage();
-	
-	// Magic shield capacity modifier
-	if (magicShieldFlat >= 1)
-	{
-		std::ostringstream string;
-		string << "+" << magicShieldFlat << " and " << magicShieldPercent << "%";
-		msg.addString(string.str());
-	}
-	else
-	{
-		msg.add<uint16_t>(0x00);
-	}
+	if (it.abilities) {
+		int32_t magicShieldFlat = it.abilities->magicShieldCapacityFlat;
+		int16_t magicShieldPercent = it.abilities->magicShieldCapacityPercent;
+		int16_t cleave = it.abilities->cleavePercent;
+		int16_t reflectDamage = it.abilities->reflectDamage;
+		int16_t perfectShotRange = it.abilities->perfectShotRange;
+		int16_t perfectShotDamage = it.abilities->perfectShotDamage;
+		// Magic shield capacity modifier
+		if (magicShieldFlat != 0)
+		{
+			std::ostringstream string;
+			string << "+" << magicShieldFlat << " and " << magicShieldPercent << "%";
+			msg.addString(string.str());
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
 
-	// Start 12.70 (new items modifiers)
-	// Cleave modifier
-	if (cleave >= 1) {
-		std::ostringstream string;
-		string << cleave << "%";
-		msg.addString(string.str());
-	}
-	else
-	{
-		msg.add<uint16_t>(0x00);
-	}
-	
-	// Damage reflection modifier
-	if (reflectDamage >= 1)
-	{
-		std::ostringstream string;
-		string << reflectDamage;
-		msg.addString(string.str());
-	}
-	else
-	{
-		msg.add<uint16_t>(0x00);
-	}
+		// Start 12.70 (new items modifiers)
+		// Cleave modifier
+		if (cleave != 0) {
+			std::ostringstream string;
+			string << cleave << "%";
+			msg.addString(string.str());
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
+		
+		// Damage reflection modifier
+		if (reflectDamage != 0)
+		{
+			std::ostringstream string;
+			string << reflectDamage;
+			msg.addString(string.str());
+		}
+		else
+		{
+			msg.add<uint16_t>(0x00);
+		}
 
-	// Perfect shot modifier
-	if (perfectShotRange >= 1)
-	{
-		std::ostringstream string;
-		string << "+" << perfectShotDamage << " at range " << perfectShotRange;
-		msg.addString(string.str());
-	} else {
-		msg.add<uint16_t>(0x00);
-	}
-	// Final 12.70
+		// Perfect shot modifier
+		if (perfectShotRange != 0)
+		{
+			std::ostringstream string;
+			string << "+" << perfectShotDamage << " at range " << perfectShotRange;
+			msg.addString(string.str());
+		} else {
+			msg.add<uint16_t>(0x00);
+		}
+	} // Final 12.70
 
 	MarketStatistics *statistics = IOMarket::getInstance().getPurchaseStatistics(itemId);
 	if (statistics)

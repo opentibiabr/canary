@@ -5861,7 +5861,15 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				message.primary.color = TEXTCOLOR_BLUE;
 
 				for (Creature* spectator : spectators) {
+					if (!spectator) {
+						continue;
+					}
+
 					Player* tmpPlayer = spectator->getPlayer();
+					if (!tmpPlayer) {
+						continue;
+					}
+
 					if (tmpPlayer->getPosition().z != targetPos.z) {
 						continue;
 					}

@@ -1,5 +1,1232 @@
 local items = {
 	{
+		-- gilded eldritch rod
+		itemid = 36675,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- gilded eldritch rod
+		itemid = 36675,
+		type = "deequip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch rod
+		itemid = 36674,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch rod
+		itemid = 36674,
+		type = "deequip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch tome
+		itemid = 36673,
+		type = "equip",
+		slot = "shield",
+		level = 300,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch tome
+		itemid = 36673,
+		type = "deequip",
+		slot = "shield",
+		level = 300,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch folio
+		itemid = 36672,
+		type = "equip",
+		slot = "shield",
+		level = 300,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch folio
+		itemid = 36672,
+		type = "deequip",
+		slot = "shield",
+		level = 300,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch hood
+		itemid = 36671,
+		type = "equip",
+		slot = "head",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch hood
+		itemid = 36671,
+		type = "deequip",
+		slot = "head",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch cowl
+		itemid = 36670,
+		type = "equip",
+		slot = "head",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch cowl
+		itemid = 36670,
+		type = "deequip",
+		slot = "head",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- gilded eldritch wand
+		itemid = 36669,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- gilded eldritch wand
+		itemid = 36669,
+		type = "deequip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch wand
+		itemid = 36668,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch wand
+		itemid = 36668,
+		type = "deequip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch breeches
+		itemid = 36667,
+		type = "equip",
+		slot = "legs",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch breeches
+		itemid = 36667,
+		type = "deequip",
+		slot = "legs",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch quiver
+		itemid = 36666,
+		type = "equip",
+		slot = "right-hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch quiver
+		itemid = 36666,
+		type = "deequip",
+		slot = "right-hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- gilded eldritch bow
+		itemid = 36665,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- gilded eldritch bow
+		itemid = 36665,
+		type = "deequip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch bow
+		itemid = 36664,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch bow
+		itemid = 36664,
+		type = "deequip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch cuirass
+		itemid = 36663,
+		type = "equip",
+		slot = "armor",
+		level = 250,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch cuirass
+		itemid = 36663,
+		type = "deequip",
+		slot = "armor",
+		level = 250,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch greataxe
+		itemid = 36662,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch greataxe
+		itemid = 36662,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch greataxe
+		itemid = 36661,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch greataxe
+		itemid = 36661,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch warmace
+		itemid = 36660,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch warmace
+		itemid = 36660,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch warmace
+		itemid = 36659,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch warmace
+		itemid = 36659,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch claymore
+		itemid = 36658,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch claymore
+		itemid = 36658,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch claymore
+		itemid = 36657,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch claymore
+		itemid = 36657,
+		type = "deequip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch shield
+		itemid = 36656,
+		type = "equip",
+		slot = "shield",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		--  eldritch shield
+		itemid = 36656,
+		type = "deequip",
+		slot = "shield",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- spectral bolt (no decay)
+		itemid = 35902,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- spectral bolt (no decay)
+		itemid = 35902,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- red quiver
+		itemid = 35849,
+		type = "equip",
+		slot = "right-hand",
+		vocation = {
+			{"None", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- red quiver
+		itemid = 35849,
+		type = "deequip",
+		slot = "right-hand",
+		vocation = {
+			{"None", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- blue quiver
+		itemid = 35848,
+		type = "equip",
+		slot = "right-hand",
+		vocation = {
+			{"None", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- blue quiver
+		itemid = 35848,
+		type = "deequip",
+		slot = "right-hand",
+		vocation = {
+			{"None", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- quiver
+		itemid = 35562,
+		type = "equip",
+		slot = "right-hand",
+		vocation = {
+			{"None", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- quiver
+		itemid = 35562,
+		type = "deequip",
+		slot = "right-hand",
+		vocation = {
+			{"None", true},
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- jungle quiver
+		itemid = 35524,
+		type = "equip",
+		slot = "right-hand",
+		level = 150,		
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- jungle quiver
+		itemid = 35524,
+		type = "deequip",
+		slot = "right-hand",
+		level = 150,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- exotic amulet
+		itemid = 35523,
+		type = "equip",
+		slot = "necklace",
+		level = 180
+	},
+	{
+		-- exotic amulet
+		itemid = 35523,
+		type = "deequip",
+		slot = "necklace"
+	},
+	{
+		-- jungle wand
+		itemid = 35522,
+		type = "equip",
+		slot = "hand",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- jungle wand
+		itemid = 35522,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- jungle rod
+		itemid = 35521,
+		type = "equip",
+		slot = "hand",
+		level = 150,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- jungle rod
+		itemid = 35521,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- make-do boots
+		itemid = 35520,
+		type = "equip",
+		slot = "feet",
+		level = 150,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- make-do boots
+		itemid = 35520,
+		type = "deequip",
+		slot = "feet",
+	},
+	{
+		-- makeshift boots
+		itemid = 35519,
+		type = "equip",
+		slot = "feet",
+		level = 150,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- makeshift boots
+		itemid = 35519,
+		type = "deequip",
+		slot = "feet",
+	},
+	{
+		-- jungle bow
+		itemid = 35518,
+		type = "equip",
+		slot = "hand",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- jungle bow
+		itemid = 35518,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- bast legs
+		itemid = 35517,
+		type = "equip",
+		slot = "legs",
+		level = 150,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- bast legs
+		itemid = 35517,
+		type = "deequip",
+		slot = "legs",
+	},
+	{
+		-- exotic legs
+		itemid = 35516,
+		type = "equip",
+		slot = "legs",
+		level = 130,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- exotic legs
+		itemid = 35516,
+		type = "deequip",
+		slot = "legs",
+	},
+	{
+		-- throwing axe
+		itemid = 35515,
+		type = "equip",
+		slot = "hand",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- throwing axe
+		itemid = 35515,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- jungle flail
+		itemid = 35514,
+		type = "equip",
+		slot = "hand",
+		level = 150,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- jungle flail
+		itemid = 35514,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- lion hammer
+		itemid = 34254,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion hammer
+		itemid = 34254,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- lion axe
+		itemid = 34253,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion axe
+		itemid = 34253,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- lion amulet
+		itemid = 34158,
+		type = "equip",
+		slot = "necklace",
+		level = 150
+	},
+	{
+		-- lion amulet
+		itemid = 34158,
+		type = "deequip",
+		slot = "necklace",
+		level = 150
+	},
+	{
+		-- lion plate
+		itemid = 34157,
+		type = "deequip",
+		slot = "armor",
+		level = 270
+	},
+	{
+		-- lion plate
+		itemid = 34157,
+		type = "equip",
+		slot = "armor",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion spangenhelm
+		itemid = 34156,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- lion spangenhelm
+		itemid = 34156,
+		type = "equip",
+		slot = "head",
+		level = 230,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- lion longsword
+		itemid = 34155,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion longsword
+		itemid = 34155,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- lion spellbook
+		itemid = 34153,
+		type = "deequip",
+		slot = "shield"
+	},
+	{
+		-- lion spellbook
+		itemid = 34153,
+		type = "equip",
+		slot = "shield",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Druid", true, true},
+			{"Master Sorcerer"},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- lion wand
+		itemid = 34152,
+		type = "equip",
+		slot = "hand",
+		level = 220,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- lion wand
+		itemid = 34152,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- lion rod
+		itemid = 34151,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- lion rod
+		itemid = 34151,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- lion longbow
+		itemid = 34150,
+		type = "equip",
+		slot = "hand",
+		level = 270,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- lion longbow
+		itemid = 34150,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- soulbastion shield
+		itemid = 34099,
+		type = "deequip",
+		slot = "shield"
+	},
+	{
+		-- soulbastion shield
+		itemid = 34099,
+		type = "equip",
+		slot = "shield",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- pair of soulstalkers
+		itemid = 34098,
+		type = "deequip",
+		slot = "feet"
+	},
+	{
+		-- pair of soulstalkers
+		itemid = 34098,
+		type = "equip",
+		slot = "feet",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- pair of soulwalkers
+		itemid = 34097,
+		type = "deequip",
+		slot = "feet"
+	},
+	{
+		-- pair of soulwalkers
+		itemid = 34097,
+		type = "equip",
+		slot = "feet",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulshroud armor
+		itemid = 34096,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- soulshroud armor
+		itemid = 34096,
+		type = "equip",
+		slot = "armor",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- soulmantel armor
+		itemid = 34095,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- soulmantel armor
+		itemid = 34095,
+		type = "equip",
+		slot = "armor",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- soulshell armor
+		itemid = 34094,
+		type = "deequip",
+		slot = "armor",
+		level = 400
+	},
+	{
+		-- soulshell armor
+		itemid = 34094,
+		type = "equip",
+		slot = "armor",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- soulstrider legs
+		itemid = 34093,
+		type = "deequip",
+		slot = "legs",
+		level = 400
+	},
+	{
+		-- soulstrider legs
+		itemid = 34093,
+		type = "equip",
+		slot = "legs",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- soulshanks legs
+		itemid = 34092,
+		type = "deequip",
+		slot = "legs",
+		level = 400
+	},
+	{
+		-- soulshanks legs
+		itemid = 34092,
+		type = "equip",
+		slot = "legs",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- soulhexer
+		itemid = 34091,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulhexer
+		itemid = 34091,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- soultainter
+		itemid = 34090,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soultainter
+		itemid = 34090,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- soulpiercer
+		itemid = 34089,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulpiercer
+		itemid = 34089,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- soulbleeder
+		itemid = 34088,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulbleeder
+		itemid = 34088,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- soulmaimer
+		itemid = 34087,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulmaimer
+		itemid = 34087,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulcrusher
+		itemid = 34086,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulcrusher
+		itemid = 34086,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- souleater
+		itemid = 34085,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- souleater
+		itemid = 34085,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulbiter
+		itemid = 34084,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulbiter
+		itemid = 34084,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulshredder
+		itemid = 34083,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulshredder
+		itemid = 34083,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulcutter
+		itemid = 34082,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
+		-- soulcutter
+		itemid = 34082,
+		type = "equip",
+		slot = "hand",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion ring
+		itemid = 34080,
+		type = "deequip",
+		slot = "ring",
+		level = 270
+	},
+	{
+		-- lion ring
+		itemid = 34080,
+		type = "equip",
+		slot = "ring",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- Lit Torch (Sparkling)
+		itemid = 34016,
+		type = "equip",
+		slot = "ammo"
+	},
+	{
+		-- Lit Torch (Sparkling)
+		itemid = 34016,
+		type = "deequip",
+		slot = "ammo"
+	},
+	{
+		-- pair of old bracers
+		itemid = 32705,
+		type = "equip",
+		slot = "armor"
+	},
+	{
+		-- pair of old bracers
+		itemid = 32705,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
 		-- ring of souls
 		itemid = 32636,
 		type = "equip",

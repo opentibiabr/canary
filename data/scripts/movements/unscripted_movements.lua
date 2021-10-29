@@ -522,7 +522,7 @@ local items = {
 		itemid = 35524,
 		type = "equip",
 		slot = "right-hand",
-		level = 150,		
+		level = 150,
 		vocation = {
 			{"Paladin", true, true},
 			{"Royal Paladin"}

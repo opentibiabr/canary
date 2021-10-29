@@ -1,5 +1,388 @@
 local weapons = {
 	{
+		-- gilded eldritch rod
+		itemId = 36675,
+		type = WEAPON_WAND,
+		level = 250,
+		unproperly = true,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- eldritch rod
+		itemId = 36674,
+		type = WEAPON_WAND,
+		level = 250,
+		unproperly = true,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- gilded eldritch wand
+		itemId = 36669,
+		type = WEAPON_WAND,
+		level = 250,
+		unproperly = true,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- eldritch wand
+		itemId = 36668,
+		type = WEAPON_WAND,
+		level = 250,
+		unproperly = true,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- gilded eldritch bow
+		itemId = 36665,
+		type = WEAPON_DISTANCE,
+		level = 250,
+		unproperly = true,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- eldritch bow
+		itemId = 36664,
+		type = WEAPON_DISTANCE,
+		level = 250,
+		unproperly = true,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- gilded eldritch greataxe
+		itemId = 36662,
+		type = WEAPON_AXE,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch greataxe
+		itemId = 36661,
+		type = WEAPON_AXE,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch warmace
+		itemId = 36660,
+		type = WEAPON_CLUB,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch warmace
+		itemId = 36659,
+		type = WEAPON_CLUB,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- gilded eldritch claymore
+		itemId = 36658,
+		type = WEAPON_SWORD,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- eldritch claymore
+		itemId = 36657,
+		type = WEAPON_SWORD,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- spectral bolt (no decay)
+		itemId = 35902,
+		type = WEAPON_AMMO,
+		level = 150,
+		unproperly = true,
+		action = "removecount"
+	},
+	{
+		-- jungle wand
+		itemId = 35522,
+		type = WEAPON_WAND,
+		wandType = "earth",
+		level = 150,
+		mana = 19,
+		damage = {80, 100},
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- jungle rod
+		itemId = 35521,
+		type = WEAPON_WAND,
+		wandType = "ice",
+		level = 150,
+		mana = 19,
+		damage = {80, 100},
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- jungle bow
+		itemId = 35518,
+		type = WEAPON_DISTANCE,
+		level = 150,
+		unproperly = true,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- throwing axe
+		itemId = 35515,
+		type = WEAPON_AXE,
+		level = 150,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- jungle flail
+		itemId = 35514,
+		type = WEAPON_CLUB,
+		level = 150,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion longsword
+		itemId = 34155,
+		type = WEAPON_SWORD,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion hammer
+		itemId = 34254,
+		type = WEAPON_CLUB,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion axe
+		itemId = 34253,
+		type = WEAPON_AXE,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- lion wand
+		itemId = 34152,
+		type = WEAPON_WAND,
+		wandType = "ice",
+		level = 220,
+		mana = 21,
+		damage = {89, 109},
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- lion rod
+		itemId = 34151,
+		type = WEAPON_WAND,
+		wandType = "ice",
+		level = 270,
+		mana = 20,
+		damage = {85, 105},
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- lion longbow
+		itemId = 34150,
+		type = WEAPON_DISTANCE,
+		level = 270,
+		unproperly = true,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- soulhexer rod
+		itemId = 34091,
+		type = WEAPON_WAND,
+		wandType = "ice",
+		level = 400,
+		mana = 21,
+		damage = {98, 118},
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- soultainter wand
+		itemId = 34090,
+		type = WEAPON_WAND,
+		wandType = "death",
+		level = 400,
+		mana = 21,
+		damage = {100, 120},
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- soulpiercer crossbow
+		itemId = 34089,
+		type = WEAPON_DISTANCE,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- soulbleeder bow
+		itemId = 34088,
+		type = WEAPON_DISTANCE,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- soulmaimer club
+		itemId = 34087,
+		type = WEAPON_CLUB,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulcrusher club
+		itemId = 34086,
+		type = WEAPON_CLUB,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- souleater axe
+		itemId = 34085,
+		type = WEAPON_AXE,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulbiter axe
+		itemId = 34084,
+		type = WEAPON_AXE,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulshredder sword
+		itemId = 34083,
+		type = WEAPON_SWORD,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- soulcutter sword
+		itemId = 34082,
+		type = WEAPON_SWORD,
+		level = 400,
+		unproperly = true,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
 		-- phantasmal axe
 		itemid = 32616,
 		type = WEAPON_AXE,

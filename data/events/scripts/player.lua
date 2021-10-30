@@ -4,13 +4,12 @@ end
 
 function Player:onLook(thing, position, distance)
 	local description = "You see "
+	description = description .. thing:getDescription(distance)
 	if thing:isItem() then
-		description = description .. thing:getDescription(distance)
-
-		local itemType = thing:getType()
-		if (itemType and itemType:getImbuingSlots() > 0) then
+		local item = thing:getType()
+		if (item and item:getImbuingSlots() > 0) then
 			local imbuingSlots = "Imbuements: ("
-			for slot = 0, itemType:getImbuingSlots() - 1 do
+			for slot = 0, item:getImbuingSlots() - 1 do
 				if slot > 0 then
 					imbuingSlots = string.format("%s, ", imbuingSlots)
 				end
@@ -42,19 +41,21 @@ function Player:onLook(thing, position, distance)
 				description = string.format("%s, Unique ID: %d", description, uniqueId)
 			end
 
-			local itemType = thing:getType()
+			local item = thing:getType()
 
-			local transformEquipId = itemType:getTransformEquipId()
-			local transformDeEquipId = itemType:getTransformDeEquipId()
-			if transformEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
-			elseif transformDeEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onDeEquip)", description, transformDeEquipId)
-			end
+			if item then
+				local transformEquipId = item:getTransformEquipId()
+				local transformDeEquipId = item:getTransformDeEquipId()
+				if transformEquipId ~= 0 then
+					description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
+				elseif transformDeEquipId ~= 0 then
+					description = string.format("%s\nTransforms to: %d (onDeEquip)", 	description, transformDeEquipId)
+				end
 
-			local decayId = itemType:getDecayId()
-			if decayId ~= -1 then
-				description = string.format("%s\nDecays to: %d", description, decayId)
+				local decayId = item:getDecayId()
+				if decayId ~= -1 then
+					description = string.format("%s\nDecays to: %d", description, decayId)
+				end
 			end
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"

@@ -18904,6 +18904,18 @@
 	<item fromid="10160" toid="10171" article="a" name="sand"/>
 	<item fromid="10172" toid="10179" article="a" name="dragon statue"/>
 	<item id="10180" article="a" name="groud"/>
+	<item id="10181" article="a" name="magic wall">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="20"/>
+		<attribute key="blocking" value="1"/>
+	</item>
+	<item id="10182" article="a" name="rush wood">
+		<attribute key="type" value="magicfield"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="45"/>
+		<attribute key="blocking" value="1"/>
+	</item>
 	<item id="10183" article="a" name="flask of poison">
 		<attribute key="description" value="This poison is meant to weaken the enemy and should be used on the rice fields near Chaochai."/>
 		<attribute key="weight" value="180"/>

@@ -287,6 +287,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 				//not used
 				iType.type = ITEM_TYPE_DOOR;
 				break;
+			// ITEM_GROUP_MAGICFIELD is Deprecated
 			case ITEM_GROUP_MAGICFIELD:
 				//not used
 				iType.type = ITEM_TYPE_MAGICFIELD;
@@ -866,9 +867,6 @@ void Items::parseItemNode(const pugi::xml_node& itemNode, uint16_t id)
 				it.getAbilities().conditionSuppressions |= CONDITION_CURSED;
 			}
 		} else if (tmpStrValue == "field") {
-			it.group = ITEM_GROUP_MAGICFIELD;
-			it.type = ITEM_TYPE_MAGICFIELD;
-
 			CombatType_t combatType = COMBAT_NONE;
 			ConditionDamage* conditionDamage = nullptr;
 

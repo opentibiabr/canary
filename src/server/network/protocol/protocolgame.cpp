@@ -2518,7 +2518,7 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg)
 	}
 	else
 	{
-    player->sendMarketEnter(player->getLastDepotId());
+		player->sendMarketEnter(player->getLastDepotId());
 		addGameTask(&Game::playerBrowseMarket, player->getID(), browseId);
 	}
 }
@@ -3947,10 +3947,19 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	do
 	{
 		Container *container = containerList.front();
+		if (!container)
+		{
+			continue;
+		}
 		containerList.pop_front();
 
 		for (Item *item : container->getItemList())
 		{
+			if (!item)
+			{
+				continue;
+			}
+
 			Container *c = item->getContainer();
 			if (c && !c->empty())
 			{

@@ -182,6 +182,8 @@ bool ConfigManager::load()
 	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
 	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
 	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);
+	boolean[TOGLE_SAVE_INTERVAL] = getGlobalBoolean(L, "togleSaveInterval", false);
+	boolean[TOGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "togleSaveIntervalCleanMap", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 
@@ -194,7 +196,8 @@ bool ConfigManager::load()
 	string[MOTD] = getGlobalString(L, "motd", "");
 	string[WORLD_TYPE] = getGlobalString(L, "worldType", "pvp");
 	string[STORE_IMAGES_URL] = getGlobalString(L, "coinImagesURL", "");
-  string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
+	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
+	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
@@ -241,7 +244,8 @@ bool ConfigManager::load()
 	integer[STAMINA_PZ_GAIN] = getGlobalNumber(L, "staminaPzGain", 1);
 	integer[STAMINA_TRAINER_DELAY] = getGlobalNumber(L, "staminaTrainerDelay", 5);
 	integer[STAMINA_TRAINER_GAIN] = getGlobalNumber(L, "staminaTrainerGain", 1);
-
+	integer[SAVE_INTERVAL_TIME] = getGlobalNumber(L, "saveIntervalTime", 1);
+	
 	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
 	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);
 	floating[RATE_MONSTER_DEFENSE] = getGlobalFloat(L, "rateMonsterDefense", 1.0);

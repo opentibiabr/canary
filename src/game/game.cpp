@@ -6573,16 +6573,16 @@ void Game::checkImbuements()
 			continue;
 		}
 
-		if (item->isRemoved() || !item->getParent()->getCreature()) {
-			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
-			continue;
-		}
-
 		Player* player = item->getHoldingPlayer();
 		if (!player) {
 			ReleaseItem(item);
 			it = imbuedItems[bucket].erase(it);
+			continue;
+		}
+		
+		const ItemType& itemType = Item::items[item->getID()];
+		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
+			it++;
 			continue;
 		}
 

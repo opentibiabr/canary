@@ -1599,6 +1599,7 @@ class Player final : public Creature, public Cylinder
 		int64_t getLastPong() const {
 			return lastPong;
 		}
+		void updateRegeneration();
 
 		void setScheduledSaleUpdate(bool scheduled) {
 			scheduledSaleUpdate = scheduled;

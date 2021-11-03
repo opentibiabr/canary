@@ -528,14 +528,14 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 
 		searchType = TARGETSEARCH_NEAREST;
 
-		int32_t sum = this->mType->info.targetStrategiesNearestPercent;
+		int32_t sum = this->mType->info.strategiesTargetNearest;
 		if (rnd > sum) {
 			searchType = TARGETSEARCH_HP;
-			sum += this->mType->info.targetStrategiesLowerHPPercent;
+			sum += this->mType->info.strategiesTargetHealth;
 
 			if (rnd > sum) {
 				searchType = TARGETSEARCH_DAMAGE;
-				sum += this->mType->info.targetStrategiesMostDamagePercent;
+				sum += this->mType->info.strategiesTargetDamage;
 				if (rnd > sum) {
 					searchType = TARGETSEARCH_RANDOM;
 				}

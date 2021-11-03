@@ -11,12 +11,15 @@ function createSummon.onSay(player, words, param)
 	end
 
 	local position = player:getPosition()
-	local monster = Game.createMonster(param, position, true, false, player)
-	if monster then
-		position:sendMagicEffect(CONST_ME_MAGIC_RED)
-	else
-		player:sendCancelMessage("There is not enough room.")
+	local summon = Game.createMonster(param, position, true, false, player)
+	if not summon then
+		player:sendCancelMessage(RETURNVALUE_NOTENOUGHROOM)
 		position:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	if summon:getOutfit().lookType == 0 then
+		summon:setOutfit({lookType = player:getFamiliarLooktype()})
 	end
 	return false
 end

@@ -33,10 +33,6 @@
 	<event class="Player" method="onRequestQuestLog" enabled="1" />
 	<event class="Player" method="onRequestQuestLine" enabled="1" />
 	<event class="Player" method="onStorageUpdate" enabled="1" />
-	<!-- Imbuement System -->
-	<event class="Player" method="canBeAppliedImbuement" enabled="1" />
-	<event class="Player" method="onApplyImbuement" enabled="1" />
-	<event class="Player" method="clearImbuement" enabled="1" />
 	<event class="Player" method="onCombat" enabled="1" />
 
 	<event class="Creature" method="onDrainHealth" enabled="1" />

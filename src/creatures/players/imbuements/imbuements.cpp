@@ -40,7 +40,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	if (!result) {
 		printXMLError("Error - Imbuements::loadFromXml", "data/XML/imbuements.xml", result);
 		return  false;
-     }
+	}
 
 	loaded = true;
 	for (auto baseNode : doc.child("imbuements").children()) {
@@ -113,6 +113,11 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			pugi::xml_attribute premiumBase = baseNode.attribute("premium");
 			if (premiumBase) {
 				imb.premium = premiumBase.as_bool();
+			}
+
+			pugi::xml_attribute storageBase = baseNode.attribute("storage");
+			if (storageBase) {
+				imb.storage = pugi::cast<uint32_t>(storageBase.value());
 			}
 
 			pugi::xml_attribute subgroupBase = baseNode.attribute("subgroup");
@@ -344,17 +349,50 @@ Category* Imbuements::getCategoryByID(uint16_t id)
 	return it != categories.end() ? &*it : nullptr;
 }
 
-std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
+bool Imbuements::parseImbuements(Player* player, Item* item)
 {
-	std::vector<Imbuement*> filtered;
-	for (auto& info : imbues) {
-		Imbuement* imbuement = &info.second;
-		if (!g_events->eventPlayerCanBeAppliedImbuement(player, imbuement, item)) {
-			continue;
-		}
-
-		filtered.push_back(imbuement);
+	if (!player || !item) {
+		return false;
 	}
 
-	return filtered;
+	for (auto& info : imbues)
+	{
+		Imbuement* imbuement = &info.second;
+
+		const ItemType& it = Item::items[item->getID()];
+		uint8_t slot = it.imbuingSlots;
+		if (slot <= 0)
+		{
+			return false;
+		}
+
+		for(uint8_t slotid = 0; slotid < slot; slotid++)
+		{
+			if (item->getImbuement(slotid))
+			{
+				continue;
+			}
+		}
+
+		std::vector<ImbuementTypes_t> imbueType = it.imbuementType;
+
+		uint16_t baseImbuementId = imbuement->getBaseID();
+		Category* category = getCategoryByID(imbuement->getCategory());
+		int32_t value = 1;
+		for (auto imbuementTypes : imbueType)
+		{
+			if (category->id != imbuementTypes
+			|| g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)
+			&& imbuement->getImbuementStorage() != 0
+			&& !player->getStorageValue(imbuement->getImbuementStorage(), value)
+			&& baseImbuementId >= 1 && baseImbuementId <= 3)
+			{
+				continue;
+			}
+
+			imbuementsTypes.push_back(imbuement);
+		}
+
+	}
+	return true;
 }

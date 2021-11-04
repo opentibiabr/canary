@@ -6365,8 +6365,12 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		}
 	}
 
-	std::vector<Imbuement *> imbuements = g_imbuements->getImbuements(player, item);
+	// Clear imbuementsTypes for send again (ensures there are no duplications)
+	g_imbuements->imbuementsTypes.clear();
+
+	std::vector<Imbuement *> imbuements = g_imbuements->getImbuementType(player, item);
 	std::unordered_map<uint16_t, uint16_t> needItems;
+
 	msg.add<uint16_t>(imbuements.size());
 	for (Imbuement *ib : imbuements)
 	{
@@ -6395,6 +6399,22 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 
 	sendResourcesBalance(player->getMoney(), player->getBankBalance());
 
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendImbuementResult(std::string message)
+{
+	NetworkMessage msg;
+	msg.addByte(0xED);
+	msg.addByte(0x01);
+	msg.addString(message);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::closeImbuementWindow()
+{
+	NetworkMessage msg;
+	msg.addByte(0xEC);
 	writeToOutputBuffer(msg);
 }
 

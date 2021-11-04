@@ -60,8 +60,16 @@ class Imbuements {
 
 		BaseImbue* getBaseByID(uint16_t id);
 		Category* getCategoryByID(uint16_t id);
-		std::vector<Imbuement*> getImbuements(Player* player, Item* item);
+		bool parseImbuements(Player* player, Item* item);
+		std::vector<Imbuement*> getImbuementType(Player* player, Item* item)
+		{
+			if (parseImbuements(player, item))
+			{
+				return imbuementsTypes;
+			}
+		}
 
+		std::vector<Imbuement*> imbuementsTypes;
 	protected:
 		friend class Imbuement;
 
@@ -73,7 +81,6 @@ class Imbuements {
 
 	private:
 		uint32_t runningid = 0;
-
 };
 
 class Imbuement
@@ -88,6 +95,11 @@ class Imbuement
 
 		uint16_t getBaseID() const {
 			return baseid;
+		}
+
+		uint32_t getImbuementStorage()
+		{
+			return storage;
 		}
 
 		bool isPremium() {
@@ -132,6 +144,7 @@ class Imbuement
 
 	private:
 		bool premium = false;
+		uint32_t storage = 0;
 		uint16_t id, baseid, category = 0;
 		std::string name, description, subgroup = "";
 

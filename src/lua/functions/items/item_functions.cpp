@@ -709,3 +709,18 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	}
 	return 1;
 }
+
+int ItemFunctions::luaItemGetImbuementDuration(lua_State* L) {
+	// item:getImbuementDuration()
+	Item* item = getUserdata<Item>(L, 1);
+	if (item) {
+		const ItemType& it = Item::items[item->getID()];
+		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
+			uint32_t info = item->getImbuement(slotid);
+			lua_pushnumber(L, info);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

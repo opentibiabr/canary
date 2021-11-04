@@ -245,6 +245,9 @@ private:
 	void sendFYIBox(const std::string &message);
 
 	void sendImbuementWindow(Item *item);
+	void sendImbuementResult(std::string message);
+	void closeImbuementWindow();
+
 	void sendItemsPrice();
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);

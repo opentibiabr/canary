@@ -721,6 +721,16 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
+		case ATTR_IMBUEMENT_TYPE: {
+			std::string imbuementType;
+			if (!propStream.readString(imbuementType)) {
+				return ATTR_READ_ERROR;
+			}
+
+			setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
+			break;
+		}
+
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -885,6 +895,11 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	if (hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_QUICKLOOTCONTAINER);
 		propWriteStream.write<uint32_t>(getQuicklootAttr());
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_TYPE)) {
+		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
+		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE));
 	}
 }
 

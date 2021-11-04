@@ -4861,11 +4861,10 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-  if (item->getTopParent() != player || item->getParent() == player) {
-    return;
-  }
-
-	g_events->eventPlayerOnApplyImbuement(player, imbuement, item, slot, protectionCharm);
+	if (item->getTopParent() != player || item->getParent() == player) {
+		return;
+	}
+	// Apply imbuement here
 }
 
 void Game::playerClearingImbuement(uint32_t playerid, uint8_t slot)
@@ -4884,7 +4883,7 @@ void Game::playerClearingImbuement(uint32_t playerid, uint8_t slot)
 		return;
 	}
 
-	g_events->eventPlayerClearImbuement(player, item, slot);
+	// Clear imbuement here
 	return;
 }
 

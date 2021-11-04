@@ -232,7 +232,7 @@ void ItemParse::parseSlotType(const std::string& tmpStrValue, pugi::xml_attribut
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "slottype") {
 		stringValue = asLowerCaseString(valueAttribute.as_string());
-	if (stringValue == "head") {
+		if (stringValue == "head") {
 			itemType.slotPosition |= SLOTP_HEAD;
 		} else if (stringValue == "body") {
 			itemType.slotPosition |= SLOTP_ARMOR;

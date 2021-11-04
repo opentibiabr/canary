@@ -20,6 +20,7 @@
 #include "otpch.h"
 
 #include "items/functions/item_parse.hpp"
+#include "items/functions/item_parse/imbuement_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
@@ -459,6 +460,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		if (parseAttribute != ItemParseAttributesMap.end()) {
 			// Parse item attributes
 			ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
+			ParseImbuement::initParseImbuement(tmpStrValue, attributeNode, keyAttribute, valueAttribute, itemType);
 			ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
 			ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);

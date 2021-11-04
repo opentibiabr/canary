@@ -436,7 +436,7 @@ class ItemAttributes
 			| ITEM_ATTRIBUTE_OPENCONTAINER | ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
 
 		const static uint32_t stringAttributeTypes = ITEM_ATTRIBUTE_DESCRIPTION | ITEM_ATTRIBUTE_TEXT | ITEM_ATTRIBUTE_WRITER
-			| ITEM_ATTRIBUTE_NAME | ITEM_ATTRIBUTE_ARTICLE | ITEM_ATTRIBUTE_PLURALNAME | ITEM_ATTRIBUTE_SPECIAL;
+			| ITEM_ATTRIBUTE_NAME | ITEM_ATTRIBUTE_ARTICLE | ITEM_ATTRIBUTE_PLURALNAME | ITEM_ATTRIBUTE_SPECIAL | ATTR_IMBUEMENT_TYPE;
 
 	public:
 		static bool isIntAttrType(ItemAttrTypes type) {
@@ -996,6 +996,10 @@ class Item : virtual public Thing
 
 		uint32_t getImbuement(uint8_t slot);
 		void setImbuement(uint8_t slot, int64_t info);
+
+		const std::vector<ImbuementTypes_t>& getImbuementType() const {
+			return items[id].imbuementType;
+		};
 
 	protected:
 		std::string getWeightDescription(uint32_t weight) const;

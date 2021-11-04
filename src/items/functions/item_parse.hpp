@@ -149,6 +149,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"walkstack", ITEM_PARSE_WALKSTACK},
 	{"blocking", ITEM_PARSE_BLOCK_SOLID},
 	{"allowdistread", ITEM_PARSE_ALLOWDISTREAD},
+	{"imbuementslot", ITEM_PARSE_IMBUEMENT},
 };
 
 const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -222,7 +223,28 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"quiver", WEAPON_QUIVER},
 };
 
-class ItemParse final : public Items
+const std::unordered_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
+	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
+	{"life leech", IMBUEMENT_LIFE_LEECH},
+	{"mana leech", IMBUEMENT_MANA_LEECH},
+	{"critical hit", IMBUEMENT_CRITICAL_HIT},
+	{"elemental protection death", IMBUEMENT_ELEMENTAL_PROTECTION_DEATH},
+	{"elemental protection earth", IMBUEMENT_ELEMENTAL_PROTECTION_EARTH},
+	{"elemental protection fire", IMBUEMENT_ELEMENTAL_PROTECTION_FIRE},
+	{"elemental protection ice", IMBUEMENT_ELEMENTAL_PROTECTION_ICE},
+	{"elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY},
+	{"elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY},
+	{"increase speed", IMBUEMENT_INCREASE_SPEED},
+	{"skillbost axe", IMBUEMENT_SKILLBOST_AXE},
+	{"skillbost sword", IMBUEMENT_SKILLBOST_SWORD},
+	{"skillbost club", IMBUEMENT_SKILLBOST_CLUB},
+	{"skillbost shielding", IMBUEMENT_SKILLBOST_SHIELDING},
+	{"skillbost distance", IMBUEMENT_SKILLBOST_DISTANCE},
+	{"skillbost magic level", IMBUEMENT_SKILLBOST_MAGIC_LEVEL},
+	{"increase capacity", IMBUEMENT_INCREASE_CAPACITY}
+};
+
+class ItemParse : public Items
 {
 	public:
 

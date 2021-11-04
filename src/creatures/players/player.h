@@ -1378,7 +1378,22 @@ class Player final : public Creature, public Cylinder
 				client->sendOutfitWindow();
 			}
 		}
+		// Imbuements
 		void sendImbuementWindow(Item* item);
+		void sendImbuementResult(std::string message)
+		{
+			if (client)
+			{
+				client->sendImbuementResult(message);
+			}
+		}
+		void closeImbuementWindow()
+		{
+			if(client)
+			{
+				client->closeImbuementWindow();
+			}
+		}
 		void sendPodiumWindow(const Item* podium, const Position& position,
                               uint16_t spriteId, uint8_t stackpos) {
 			if (client) {

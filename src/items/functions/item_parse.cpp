@@ -310,7 +310,7 @@ void ItemParse::parseLootType(const std::string& tmpStrValue, pugi::xml_attribut
 void ItemParse::parseRange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "range") {
-		itemType.shootRange = pugi::cast<uint8_t>(valueAttribute.value());
+		itemType.shootRange = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }
 
@@ -357,7 +357,7 @@ void ItemParse::parseShowAttributes(const std::string& tmpStrValue, pugi::xml_at
 void ItemParse::parseHitChance(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "hitchance") {
-		itemType.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int8_t>(valueAttribute.value())));
+		itemType.hitChance = std::min<int8_t>(100, std::max<int8_t>(-100, pugi::cast<int16_t>(valueAttribute.value())));
 	} else if (stringValue == "maxhitchance") {
 		itemType.maxHitChance = std::min<uint32_t>(100, pugi::cast<uint32_t>(valueAttribute.value()));
 	}

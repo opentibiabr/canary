@@ -693,36 +693,38 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 
 		//Podium (no dedicated class)
 		case ATTR_PODIUMOUTFIT: {
-			uint8_t byteValue;
-			uint16_t lookTypeValue;
+			uint8_t podiumFlags;
 
 			// flags
-			if (!propStream.read<uint8_t>(byteValue)) {
+			if (!propStream.read<uint8_t>(podiumFlags)) {
 				return ATTR_READ_ERROR;
 			}
-			bool showPlatform = (byteValue & 1) != 0;
-			bool showOutfit = (byteValue & 2) != 0;
-			bool showMount = (byteValue & 4) != 0;
+			bool showPlatform = (podiumFlags & 1) != 0;
+			bool showOutfit = (podiumFlags & 2) != 0;
+			bool showMount = (podiumFlags & 4) != 0;
 
 			// direction
-			if (!propStream.read<uint8_t>(byteValue)) {
+			uint8_t dir;
+			if (!propStream.read<uint8_t>(dir)) {
 				return ATTR_READ_ERROR;
 			}
-			uint8_t dir = byteValue;
 
 			// outfit
 			Outfit_t outfit;
-			if (!propStream.read<uint16_t>(outfit.lookType)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookHead)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookBody)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookLegs)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookFeet)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookAddons)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint16_t>(outfit.lookMount)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookMountHead)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookMountBody)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookMountLegs)) { return ATTR_READ_ERROR; }
-			if (!propStream.read<uint8_t>(outfit.lookMountFeet)) { return ATTR_READ_ERROR; }
+			if (!(propStream.read<uint16_t>(outfit.lookType) &&
+						propStream.read<uint8_t>(outfit.lookHead) &&
+						propStream.read<uint8_t>(outfit.lookBody) &&
+						propStream.read<uint8_t>(outfit.lookLegs) &&
+						propStream.read<uint8_t>(outfit.lookFeet) &&
+						propStream.read<uint8_t>(outfit.lookAddons) &&
+						propStream.read<uint16_t>(outfit.lookMount) &&
+						propStream.read<uint8_t>(outfit.lookMountHead) &&
+						propStream.read<uint8_t>(outfit.lookMountBody) &&
+						propStream.read<uint8_t>(outfit.lookMountLegs) &&
+						propStream.read<uint8_t>(outfit.lookMountFeet))
+				) {
+				return ATTR_READ_ERROR;
+			}
 
 			if (isPodium()) {
 				// set flags to podium

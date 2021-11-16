@@ -146,6 +146,7 @@ enum ItemGroup_t {
 	ITEM_GROUP_FLUID,
 	ITEM_GROUP_DOOR, //deprecated
 	ITEM_GROUP_DEPRECATED,
+	ITEM_GROUP_PODIUM, //compatibility
 
 	ITEM_GROUP_LAST
 };
@@ -383,8 +384,9 @@ enum AttrTypes_t {
 	ATTR_IMBUINGSLOTS = 35,
 	ATTR_OPENCONTAINER = 36,
 	ATTR_CUSTOM_ATTRIBUTES = 37,
-
-	ATTR_QUICKLOOTCONTAINER = 38
+	ATTR_QUICKLOOTCONTAINER = 38,
+	
+	ATTR_PODIUMOUTFIT = 40, // read only, for OTBM
 };
 
 enum SlotPositionBits : uint32_t {

@@ -691,6 +691,70 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
+		//Podium (no dedicated class)
+		case ATTR_PODIUMOUTFIT: {
+			uint8_t byteValue;
+			uint16_t lookTypeValue;
+
+			// flags
+			if (!propStream.read<uint8_t>(byteValue)) {
+				return ATTR_READ_ERROR;
+			}
+			bool showPlatform = (byteValue & 1) != 0;
+			bool showOutfit = (byteValue & 2) != 0;
+			bool showMount = (byteValue & 4) != 0;
+
+			// direction
+			if (!propStream.read<uint8_t>(byteValue)) {
+				return ATTR_READ_ERROR;
+			}
+			uint8_t dir = byteValue;
+
+			// outfit
+			Outfit_t outfit;
+			if (!propStream.read<uint16_t>(outfit.lookType)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookHead)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookBody)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookLegs)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookFeet)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookAddons)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint16_t>(outfit.lookMount)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookMountHead)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookMountBody)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookMountLegs)) { return ATTR_READ_ERROR; }
+			if (!propStream.read<uint8_t>(outfit.lookMountFeet)) { return ATTR_READ_ERROR; }
+
+			if (isPodium()) {
+				// set flags to podium
+				std::string key;
+				key = "PodiumVisible"; setCustomAttribute(key, static_cast<int64_t>(showPlatform));
+				key = "LookDirection"; setCustomAttribute(key, static_cast<int64_t>(dir));
+
+				if (showOutfit && outfit.lookType != 0) {
+					key = "LookType"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookType));
+					key = "LookHead"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookHead));
+					key = "LookBody"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookBody));
+					key = "LookLegs"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookLegs));
+					key = "LookFeet"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookFeet));
+					key = "LookAddons"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookAddons));
+				} else {
+					removeCustomAttribute("LookType");
+				}
+
+				if (showMount && outfit.lookMount != 0) {
+					key = "LookMount"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookMount));
+					key = "LookMountHead"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountHead));
+					key = "LookMountBody"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountBody));
+					key = "LookMountLegs"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountLegs));
+					key = "LookMountFeet"; setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountFeet));
+				} else {
+					removeCustomAttribute("LookMount");
+				}
+			}
+
+			break;
+		}
+
 		//Container class
 		case ATTR_CONTAINER_ITEMS: {
 			return ATTR_READ_ERROR;

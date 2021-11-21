@@ -321,10 +321,17 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	return true;
 }
 
+void Imbuements::reset() {
+	imbuementsTypes.clear();
+}
+
 bool Imbuements::reload() {
+	reset();
+
 	imbues.clear();
 	bases.clear();
 	categories.clear();
+
 	runningid = 0;
 	loaded = false;
 
@@ -368,7 +375,7 @@ bool Imbuements::parseImbuements(Player* player, Item* item)
 
 		for(uint8_t slotid = 0; slotid < slot; slotid++)
 		{
-			if (item->getImbuement(slotid))
+			if (item->getImbuementDuration(slotid))
 			{
 				continue;
 			}

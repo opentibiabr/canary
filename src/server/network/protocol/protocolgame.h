@@ -29,8 +29,6 @@
 #include "game/scheduling/tasks.h"
 #include "game/gamestore.h"
 
-
-
 class NetworkMessage;
 class Player;
 class Game;

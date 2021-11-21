@@ -1379,6 +1379,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		// Imbuements
+		bool onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm);
 		void sendImbuementWindow(Item* item);
 		void sendImbuementResult(std::string message)
 		{

@@ -44,6 +44,7 @@ class Mailbox;
 class Door;
 class MagicField;
 class BedItem;
+class Imbuement;
 
 class ItemAttributes
 {
@@ -743,6 +744,7 @@ class Item : virtual public Thing
 		static std::string getNameDescription(const ItemType& it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count = 1);
 
+		//std::string parseImbuementDescription(const Item* item);
 		std::string getDescription(int32_t lookDistance) const override final;
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
@@ -994,10 +996,13 @@ class Item : virtual public Thing
 			return !parent || parent->isRemoved();
 		}
 
-		uint32_t getImbuement(uint8_t slot);
-		void setImbuement(uint8_t slot, int64_t info);
+		uint32_t getImbuementDuration(uint8_t slot);
+		Imbuement* getImbuement(uint8_t slot);
 
-		const std::vector<ImbuementTypes_t>& getImbuementType() const {
+		bool setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
+
+		const std::vector<ImbuementTypes_t>& getImbuementType() const
+		{
 			return items[id].imbuementType;
 		};
 

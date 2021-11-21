@@ -5,27 +5,7 @@ end
 function Player:onLook(thing, position, distance)
 	local description = "You see "
 	description = description .. thing:getDescription(distance)
-	if thing:isItem() then
-		local item = thing:getType()
-		if (item and item:getImbuingSlots() > 0) then
-			local imbuingSlots = "Imbuements: ("
-			for slot = 0, item:getImbuingSlots() - 1 do
-				if slot > 0 then
-					imbuingSlots = string.format("%s, ", imbuingSlots)
-				end
-				local duration = thing:getImbuementDuration(slot)
-				if duration > 0 then
-					local imbue = thing:getImbuement(slot)
-					imbuingSlots = string.format("%s%s %s %s",
-						imbuingSlots, imbue:getBase().name, imbue:getName(), getTime(duration))
-				else
-					imbuingSlots = string.format("%sEmpty Slot", imbuingSlots)
-				end
-			end
-			imbuingSlots = string.format("%s).", imbuingSlots)
-			description = string.gsub(description, "It weighs", imbuingSlots.. "\nIt weighs")
-		end
-	elseif thing:isMonster() then
+	if thing:isMonster() then
 		description = description .. thing:getDescription(distance)
 		local master = thing:getMaster()
 		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then

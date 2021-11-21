@@ -25,6 +25,8 @@
 #include "items/item.h"
 #include "lua/functions/items/item_functions.hpp"
 
+class Imbuement;
+
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {
 	// Item(uid)
@@ -710,17 +712,60 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	return 1;
 }
 
+int ItemFunctions::luaItemGetImbuingSlots(lua_State* L) {
+	// item:getImbuingSlots()
+	Item* item = getUserdata<Item>(L, 1);
+	if (item) {
+		lua_pushnumber(L, item->getImbuingSlots());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int ItemFunctions::luaItemGetImbuementDuration(lua_State* L) {
 	// item:getImbuementDuration()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
 		const ItemType& it = Item::items[item->getID()];
-		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			uint32_t info = item->getImbuement(slotid);
+		uint8_t slot = it.imbuingSlots;
+		if (slot <= 0)
+		{
+			return false;
+		}
+
+		for(uint8_t slotid = 0; slotid < slot; slotid++) {
+			uint32_t info = item->getImbuementDuration(slotid);
 			lua_pushnumber(L, info);
 		}
 	} else {
 		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemFunctions::luaItemGetImbuement(lua_State* L)
+{
+	// item:getImbuement()
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		lua_pushnil(L);
+		return 0;
+	}
+
+	const ItemType& it = Item::items[item->getID()];
+	for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++)
+	{
+		Imbuement* imbuement = item->getImbuement(slotid);
+		if (!imbuement)
+		{
+			reportErrorFunc("Imbuement not found");
+			lua_pushnil(L);
+			return 0;
+		}
+		pushUserdata<Imbuement>(L, imbuement);
+		setMetatable(L, -1, "Imbuement");
 	}
 	return 1;
 }

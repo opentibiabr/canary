@@ -6332,8 +6332,8 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	uint8_t slot = it.imbuingSlots;
 	for (uint8_t i = 0; i < slot; i++)
 	{
-		uint32_t info = item->getImbuement(i);
-		if (info >> 8)
+		uint32_t info = item->getImbuementDuration(i);
+		if (info)
 		{
 			itemHasImbue = true;
 			break;
@@ -6348,35 +6348,35 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	msg.addItemId(item->getID());
 	msg.addByte(slot);
 
+	// Send imbuement time
 	for (uint8_t i = 0; i < slot; i++)
 	{
-		uint32_t info = item->getImbuement(i);
-		if (info >> 8)
-		{
-			msg.addByte(0x01);
-
-			addImbuementInfo(msg, (info & 0xFF));
-			msg.add<uint32_t>(info >> 8);
-			msg.add<uint32_t>(g_imbuements->getBaseByID(g_imbuements->getImbuement((info & 0xFF))->getBaseID())->removecust);
-		}
-		else
+		Imbuement *imbuement = item->getImbuement(i);
+		uint32_t duration = item->getImbuementDuration(i);
+		if (!duration)
 		{
 			msg.addByte(0x00);
+			continue;
 		}
+
+		msg.addByte(0x01);
+		addImbuementInfo(msg, imbuement->getId());
+		msg.add<uint32_t>(duration);
+		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuement->getBaseID())->removecust);
 	}
 
 	// Clear imbuementsTypes for send again (ensures there are no duplications)
-	g_imbuements->imbuementsTypes.clear();
+	g_imbuements->reset();
 
 	std::vector<Imbuement *> imbuements = g_imbuements->getImbuementType(player, item);
 	std::unordered_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());
-	for (Imbuement *ib : imbuements)
+	for (Imbuement *imbuement : imbuements)
 	{
-		addImbuementInfo(msg, ib->getId());
+		addImbuementInfo(msg, imbuement->getId());
 
-		const auto &items = ib->getItems();
+		const auto &items = imbuement->getItems();
 		for (const auto &itm : items)
 		{
 			if (!needItems.count(itm.first))

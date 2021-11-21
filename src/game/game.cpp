@@ -4416,6 +4416,7 @@ void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos
 		lookDistance = -1;
 	}
 
+	// Parse onLook from event player
 	g_events->eventPlayerOnLook(player, pos, thing, stackPos, lookDistance);
 }
 
@@ -4852,19 +4853,20 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 	}
 
 	Imbuement* imbuement = g_imbuements->getImbuement(imbuementid);
-	if(!imbuement) {
+	if (!imbuement) {
 		return;
 	}
 
 	Item* item = player->imbuing;
-	if(item == nullptr) {
+	if (!item) {
 		return;
 	}
 
 	if (item->getTopParent() != player || item->getParent() == player) {
 		return;
 	}
-	// Apply imbuement here
+
+	player->onApplyImbuement(imbuement, item, slot, protectionCharm);
 }
 
 void Game::playerClearingImbuement(uint32_t playerid, uint8_t slot)
@@ -6561,70 +6563,55 @@ void Game::checkDecay()
 
 void Game::checkImbuements()
 {
-	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
-
 	size_t bucket = (lastImbuedBucket + 1) % EVENT_IMBUEMENT_BUCKETS;
+	std::list<Item*> items = imbuedItems[bucket];
 
-	auto it = imbuedItems[bucket].begin(), end = imbuedItems[bucket].end();
-	while (it != end) {
+	for (auto it = items.begin(); it != items.end(); ++it){
 		Item* item = *it;
 		if (!item) {
 			continue;
 		}
 
-		if (item->isRemoved() || !item->getParent()->getCreature()) {
+		Player* player = item->getHoldingPlayer();
+		if (item->isRemoved() || !player) {
 			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
+			it = --imbuedItems[bucket].erase(it);
 			continue;
 		}
-
-		Player* player = item->getHoldingPlayer();
-		if (!player) {
-			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
+		
+		const ItemType& itemType = Item::items[item->getID()];
+		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
 			continue;
 		}
 
 		bool hasImbue = false;
 		uint8_t slots = Item::items[item->getID()].imbuingSlots;
-		for (uint8_t slot = 0; slot < slots; slot++) {
-			uint32_t info = item->getImbuement(slot);
-			uint16_t id = info & 0xFF;
-			if (id == 0) {
-				continue;
-			}
-
-			int32_t duration = info >> 8;
-			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
-			if (newDuration > 0) {
-				hasImbue = true;
-			}
-
-			Imbuement* imbuement = g_imbuements->getImbuement(id);
+		for (uint8_t slotid = 0; slotid < slots; slotid++) {
+			Imbuement* imbuement = item->getImbuement(slotid);
 			if(!imbuement) {
 				continue;
 			}
 
-			Category* category = g_imbuements->getCategoryByID(imbuement->getCategory());
-			if (category->agressive && !player->hasCondition(CONDITION_INFIGHT)) {
-				continue;
-			}
+			uint16_t id = imbuement->getId();
+			int32_t duration = item->getImbuementDuration(slotid);
+
+			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
 
 			if (duration > 0 && newDuration == 0) {
-				item->setImbuement(slot, 0);
+				item->setImbuement(slotid, id, duration, 0);
 				player->onDeEquipImbueItem(imbuement);
-			} else {
-				item->setImbuement(slot, ((newDuration << 8) | id));
+								continue;
 			}
+
+			hasImbue = true;
+			item->setImbuement(slotid, id, duration, newDuration);
 		}
 
-		if (hasImbue) {
-			it++;
-		} else {
+		if (!hasImbue) {
 			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
+			it = --imbuedItems[bucket].erase(it);
+			continue;
 		}
-
 	}
 
 	lastImbuedBucket = bucket;

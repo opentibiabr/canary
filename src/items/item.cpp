@@ -37,7 +37,7 @@
 extern Game g_game;
 extern Spells* g_spells;
 extern Vocations g_vocations;
-extern Imbuements g_imbuements;
+extern Imbuements* g_imbuements;
 
 Items Item::items;
 
@@ -95,25 +95,41 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 	return newItem;
 }
 
-uint32_t Item::getImbuement(uint8_t slot) {
+Imbuement* Item::getImbuement(uint8_t slot) {
+	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
+
+	if (!attr) {
+		return nullptr;
+	}
+
+	uint32_t info = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
+	Imbuement* imbuement = g_imbuements->getImbuement(info & 0xFF);
+
+	return imbuement ? imbuement : nullptr;
+}
+
+uint32_t Item::getImbuementDuration(uint8_t slot) {
 	int64_t slotid = IMBUEMENT_SLOT + slot;
 	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(slotid);
-	if (attr) {
+	if (attr)
+	{
 		uint32_t info = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
-		if(info << 8)
-			return info;
+		if (info)
+		{
+			return info >> 8;
+		}
 	}
 
 	return 0;
 }
 
-void Item::setImbuement(uint8_t slot, int64_t info) {
-	int64_t slotid = IMBUEMENT_SLOT + slot;
-	std::string key = boost::lexical_cast<std::string>(slotid);
-	ItemAttributes::CustomAttribute val;
-	val.set<int64_t>(info);
-	setCustomAttribute(key, val);
-	return;
+bool Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration) {
+	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
+	ItemAttributes::CustomAttribute value;
+	value.set<int64_t>(duration > 0 ? (newDuration << 8) | id : 0);
+
+	setCustomAttribute(key, value);
+	return true;
 }
 
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
@@ -2162,6 +2178,46 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		s << '.';
 	}
 
+	uint8_t slot = item->getImbuingSlots();
+	if (item && slot >= 1)
+	{
+		s << std::endl << "Imbuements: (";
+
+		for (uint8_t slotid = 0; slotid < slot; slotid++)
+		{
+			if (slotid >= 1)
+			{
+				s << ", ";
+			}
+			Item* castItem = const_cast<Item*>(item);
+			uint32_t duration = castItem->getImbuementDuration(slotid);
+			if (duration)
+			{
+				Imbuement *imbuement = castItem->getImbuement(slotid);
+				if (!imbuement) {
+					return nullptr;
+				}
+
+				BaseImbue *base = g_imbuements->getBaseByID(imbuement->getBaseID());
+				if (!base) {
+					return nullptr;
+				}
+
+				int minutes = duration / 60;
+				int hours = minutes / 60;
+				s << base->name << " "
+				  << imbuement->getName() << " "
+				  << std::setw(2) << std::setfill('0') << (hours) << ":"
+				  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h"; 
+			}
+			else
+			{
+				s << "Empty Slot";
+			}
+		}
+		s << ").";
+	}
+
 	if (lookDistance <= 1) {
 		if (item) {
 			const uint32_t weight = item->getWeight();
@@ -2471,7 +2527,7 @@ bool Item::hasMarketAttributes() const
 	if (items[id].imbuingSlots > 0) {
 		for (uint8_t slot = 0; slot < items[id].imbuingSlots; slot++) {
 			Item* item = const_cast<Item*>(this);
-			uint32_t info = item->getImbuement(slot);
+			uint32_t info = item->getImbuementDuration(slot);
 			if (info) {
 				return false;
 			}

@@ -53,6 +53,7 @@ struct Category {
 
 class Imbuements {
 	public:
+		void reset();
 		bool loadFromXml(bool reloading = false);
 		bool reload();
 
@@ -74,6 +75,7 @@ class Imbuements {
 		friend class Imbuement;
 
 		std::map<uint32_t, Imbuement> imbues;
+
 		std::vector<BaseImbue> bases;
 		std::vector<Category> categories;
 

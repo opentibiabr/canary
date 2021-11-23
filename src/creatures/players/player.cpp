@@ -1278,7 +1278,7 @@ void Player::sendImbuementWindow(Item* item)
 		return;
 	}
 
-	if (g_imbuements->getImbuements(this, item).size == 0)
+	if (g_imbuements->getImbuements(this, item).size() == 0)
 	{
 		this->sendImbuementResult("There was a problem processing your request, please contact the administrator.");
 		return;

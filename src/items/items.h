@@ -158,7 +158,7 @@ class ItemType
 			imbuementTypes[imbuementType] = true;
 		}
 
-		const std::vector<ImbuementTypes_t>& getImbuementTypes() const {
+		const std::map<ImbuementTypes_t, bool>& getImbuementTypes() const {
 			return imbuementTypes;
 		};
 

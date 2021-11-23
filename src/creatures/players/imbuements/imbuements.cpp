@@ -364,36 +364,32 @@ std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 {
 	std::vector<Imbuement*> imbuements;
 
-	if (!player || !item) {
-		return false;
-	}
-
 	const ItemType& it = Item::items[item->getID()];
 
 	for (auto& info : imbues)
 	{
-		if(!g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)) {
+		if (!g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)) {
 			continue;
 		}
 
 		Imbuement* imbuement = &info.second;
-		if(!imbuement || imbuement->getImbuementStorage() == 0) {
+		if (!imbuement || imbuement->getImbuementStorage() == 0) {
 			continue;
 		}
 
 		int32_t value;
-		if(player->getStorageValue(imbuement->getImbuementStorage(), value)) {
+		if (player->getStorageValue(imbuement->getImbuementStorage(), value)) {
 			continue;
 		}
 
 		uint16_t baseImbuementId = imbuement->getBaseID();
-		if(baseImbuementId < 1 || baseImbuementId > 3) {
+		if (baseImbuementId < 1 || baseImbuementId > 3) {
 			continue;
 		}
 
 		Category* category = getCategoryByID(imbuement->getCategory());
 		if (!it.imbuementTypes[category->id]) {
-			continue
+			continue;
 		}
 
 		imbuements.push_back(imbuement);

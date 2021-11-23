@@ -1155,10 +1155,10 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	const auto & items = imbuement->getItems();
-	for (auto & imbuementItems : items)
+	const auto& items = imbuement->getItems();
+	for (auto& imbuementItem : items)
 	{
-		if (this->getItemTypeCount(imbuementItems.first) + this->getStashItemCount(imbuementItems.first) < imbuementItems.second)
+		if (this->getItemTypeCount(imbuementItem.first) + this->getStashItemCount(imbuementItem.first) < imbuementItem.second)
 		{
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
@@ -1179,11 +1179,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	}
 
 	uint32_t price = baseImbuement->price;
-	if (protectionCharm)
-	{
-		price += baseImbuement->protectionPrice;
-	}
-
+	price += protectionCharm ? baseImbuement->protectionPrice : 0;
 
 	if (!g_game.removeMoney(this, price, 0, false))
 	{
@@ -1194,33 +1190,22 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	// Remove items
-	for (auto & imbuementItems : items)
+	for (auto & imbuementItem : items)
 	{
-		uint32_t invertoryItemCount = this->getItemTypeCount(imbuementItems.first);
-		if (invertoryItemCount >= imbuementItems.second)
+		uint32_t invertoryItemCount = this->getItemTypeCount(imbuementItem.first);
+		if (invertoryItemCount >= imbuementItem.second)
 		{
-			if (!this->removeItemOfType(imbuementItems.first, imbuementItems.second, -1, true))
-			{
-				SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, the player doesn't have the items");
-				this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-				return;
-			}
+			this->removeItemOfType(imbuementItem.first, imbuementItem.second, -1, true);
+			continue;
 		}
-		else
-		{
-			uint16_t mathItemCount = imbuementItems.second;
-			if (invertoryItemCount > 0 && this->removeItemOfType(imbuementItems.first, invertoryItemCount, -1, false))
-			{
-				mathItemCount = mathItemCount - invertoryItemCount;
-			}
 
-			if (!this->withdrawItem(imbuementItems.first, mathItemCount))
-			{
-				this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-				return;
-			}
+		uint16_t mathItemCount = imbuementItem.second;
+		if (invertoryItemCount > 0 && this->removeItemOfType(imbuementItem.first, invertoryItemCount, -1, false))
+		{
+			mathItemCount = mathItemCount - invertoryItemCount;
 		}
+
+		this->withdrawItem(imbuementItem.first, mathItemCount);
 	}
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
@@ -1231,31 +1216,24 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	if (!item->setImbuement(slot, imbuement->getId(), baseImbuement->duration, baseImbuement->duration))
-	{
-		this->sendImbuementResult("The item failed to apply the imbuement, close the window and try again, if it persists contact an administrator.");
-		return;
-	}
+	item->setImbuement(slot, imbuement->getId(), baseImbuement->duration, baseImbuement->duration);
 
 	this->sendImbuementWindow(item);
 }
 
 void Player::onClearImbuement(Item* item, uint8_t slot)
 {
-	if (!item)
-	{
+	if (!item) {
 		return;
 	}
 
 	Imbuement *imbuement = item->getImbuement(slot);
-	if (!imbuement)
-	{
+	if (!imbuement) {
 		return;
 	}
 
 	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
-	if (!baseImbuement)
-	{
+	if (!baseImbuement) {
 		return;
 	}
 

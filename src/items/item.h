@@ -1000,7 +1000,7 @@ class Item : virtual public Thing
 		uint32_t getImbuementDuration(uint8_t slot);
 		Imbuement* getImbuement(uint8_t slot);
 
-		bool setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
+		void setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
 
 		bool getImbuementType(uint16_t imbuementType) {
 			if (items[id].imbuementTypes.find(imbuementType) == items[id].imbuementTypes.end()) {

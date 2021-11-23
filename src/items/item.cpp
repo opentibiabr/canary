@@ -137,7 +137,7 @@ uint32_t Item::getImbuementDuration(uint8_t slot)
 	return 0;
 }
 
-bool Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration)
+void Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration)
 {
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
@@ -146,7 +146,6 @@ bool Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t ne
 	value.set<int64_t>(newDuration);
 
 	setCustomAttribute(key, value);
-	return true;
 }
 
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
@@ -2225,7 +2224,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				s << base->name << " "
 				  << imbuement->getName() << " "
 				  << std::setw(2) << std::setfill('0') << (hours) << ":"
-				  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h"; 
+				  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h";
 			}
 			else
 			{

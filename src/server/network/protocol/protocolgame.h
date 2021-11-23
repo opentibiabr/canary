@@ -185,8 +185,8 @@ private:
 
 	// Imbuements
 	void parseApplyImbuement(NetworkMessage &msg);
-	void parseClearingImbuement(NetworkMessage &msg);
-	void parseCloseImbuingWindow(NetworkMessage &msg);
+	void parseClearImbuement(NetworkMessage &msg);
+	void parseCloseImbuementWindow(NetworkMessage &msg);
 
 	void parseModalWindowAnswer(NetworkMessage &msg);
 

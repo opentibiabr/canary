@@ -4848,7 +4848,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-	if (!player->inImbuing()) {
+	if (!player->getImbuingItem()) {
 		return;
 	}
 
@@ -4857,7 +4857,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-	Item* item = player->imbuing;
+	Item* item = player->imbuingItem;
 	if (!item) {
 		return;
 	}
@@ -4869,34 +4869,37 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 	player->onApplyImbuement(imbuement, item, slot, protectionCharm);
 }
 
-void Game::playerClearingImbuement(uint32_t playerid, uint8_t slot)
+void Game::playerClearImbuement(uint32_t playerid, uint8_t slot)
 {
 	Player* player = getPlayerByID(playerid);
-	if (!player) {
+	if (!player)
+	{
 		return;
 	}
 
-	if (!player->inImbuing()) {
+	if (!player->getImbuingItem())
+	{
 		return;
 	}
 
-	Item* item = player->imbuing;
-	if(item == nullptr) {
+	Item* item = player->imbuingItem;
+	if (!item)
+	{
 		return;
 	}
 
-	// Clear imbuement here
-	return;
+	player->onClearImbuement(item, slot);
 }
 
-void Game::playerCloseImbuingWindow(uint32_t playerid)
+void Game::playerCloseImbuementWindow(uint32_t playerid)
 {
 	Player* player = getPlayerByID(playerid);
-	if (!player) {
+	if (!player)
+	{
 		return;
 	}
 
-	player->inImbuing(nullptr);
+	player->setImbuingItem(nullptr);
 	return;
 }
 

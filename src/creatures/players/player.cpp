@@ -1097,17 +1097,17 @@ Item* Player::getWriteItem(uint32_t& retWindowTextId, uint16_t& retMaxWriteLen)
 	return writeItem;
 }
 
-void Player::inImbuing(Item* item)
+void Player::setImbuingItem(Item* item)
 {
-	if (imbuing) {
-		imbuing->decrementReferenceCounter();
+	if (imbuingItem) {
+		imbuingItem->decrementReferenceCounter();
 	}
 
 	if (item) {
-		imbuing = item;
-		imbuing->incrementReferenceCounter();
+		imbuingItem = item;
+		imbuingItem->incrementReferenceCounter();
 	} else {
-		imbuing = nullptr;
+		imbuingItem = nullptr;
 	}
 }
 
@@ -1155,28 +1155,33 @@ void Player::sendHouseWindow(House* house, uint32_t listId) const
 	}
 }
 
-bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm)
+void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm)
 {
+	if (!imbuement || !item) {
+		return;
+	}
+
 	const auto & items = imbuement->getItems();
 	for (auto & imbuementItems : items)
 	{
 		if (this->getItemTypeCount(imbuementItems.first) + this->getStashItemCount(imbuementItems.first) < imbuementItems.second)
 		{
 			this->sendImbuementResult("You don't have all necessary items.");
-			return false;
+			return;
 		}
 	}
 
 	if (item->getImbuementDuration(slot) > 0)
 	{
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement");
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-		return false;
+		return;
 	}
 
 	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
 	if (!baseImbuement)
 	{
-		return false;
+		return;
 	}
 
 	uint32_t price = baseImbuement->price;
@@ -1185,18 +1190,14 @@ bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		price += baseImbuement->protectionPrice;
 	}
 
-	if (!protectionCharm && uniform_random(1, 20) > baseImbuement->percent)
+	
+	if (!g_game.removeMoney(this, price, 0, false))
 	{
-		for (const auto imbuementItems : items)
-		{
-			this->removeItemOfType(imbuementItems.first, imbuementItems.second, -1, true);
-		}
+		std::string message = "You don't have " + std::to_string(price) + " gold coins."; 
 
-		g_game.removeMoney(this, price, 0, true);
-
-		this->sendImbuementWindow(item);
-		this->sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
-		return false;
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money");
+		this->sendImbuementResult(message);
+		return;
 	}
 
 	// Remove items
@@ -1207,8 +1208,9 @@ bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		{
 			if (!this->removeItemOfType(imbuementItems.first, imbuementItems.second, -1, true))
 			{
+				SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, the player doesn't have the items");
 				this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-				return false;
+				return;
 			}
 		}
 		else
@@ -1222,27 +1224,67 @@ bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 			if (!this->withdrawItem(imbuementItems.first, mathItemCount))
 			{
 				this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-				return false;
+				return;
 			}
 		}
 	}
 
-	if (!g_game.removeMoney(this, price, 0, false))
+	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
 	{
-		std::string message = "You don't have " + std::to_string(price) + " gold coins."; 
-
-		this->sendImbuementResult(message);
-		return false;
+		this->sendImbuementWindow(item);
+		this->sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
+		this->sendImbuementWindow(item);
+		return;
 	}
 
 	if (!item->setImbuement(slot, imbuement->getId(), baseImbuement->duration, baseImbuement->duration))
 	{
 		this->sendImbuementResult("The item failed to apply the imbuement, close the window and try again, if it persists contact an administrator.");
-		return false;
+		return;
 	}
 
 	this->sendImbuementWindow(item);
-	return true;
+}
+
+void Player::onClearImbuement(Item* item, uint8_t slot)
+{
+	if (!item)
+	{
+		return;
+	}
+
+	Imbuement *imbuement = item->getImbuement(slot);
+	if (!imbuement)
+	{
+		return;
+	}
+
+	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement)
+	{
+		return;
+	}
+
+	if (!item->getImbuementDuration(slot))
+	{
+		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement");
+		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
+	uint32_t price = baseImbuement->removeCost;
+	if (!g_game.removeMoney(this, price, 0, false))
+	{
+		std::string message = "You don't have " + std::to_string(price) + " gold coins."; 
+
+		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money");
+		this->sendImbuementResult(message);
+		this->sendImbuementWindow(item);
+		return;
+	}
+
+	item->setImbuement(slot, imbuement->getId(), 0, 0);
+	this->sendImbuementWindow(item);
 }
 
 void Player::sendImbuementWindow(Item* item)

@@ -724,8 +724,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xD3: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
 		case 0xD4: parseToggleMount(msg); break;
 		case 0xD5: parseApplyImbuement(msg); break;
-		case 0xD6: parseClearingImbuement(msg); break;
-		case 0xD7: parseCloseImbuingWindow(msg); break;
+		case 0xD6: parseClearImbuement(msg); break;
+		case 0xD7: parseCloseImbuementWindow(msg); break;
 		case 0xDC: parseAddVip(msg); break;
 		case 0xDD: parseRemoveVip(msg); break;
 		case 0xDE: parseEditVip(msg); break;
@@ -1180,15 +1180,15 @@ void ProtocolGame::parseApplyImbuement(NetworkMessage &msg)
 	addGameTask(&Game::playerApplyImbuement, player->getID(), imbuementId, slot, protectionCharm);
 }
 
-void ProtocolGame::parseClearingImbuement(NetworkMessage &msg)
+void ProtocolGame::parseClearImbuement(NetworkMessage &msg)
 {
 	uint8_t slot = msg.getByte();
-	addGameTask(&Game::playerClearingImbuement, player->getID(), slot);
+	addGameTask(&Game::playerClearImbuement, player->getID(), slot);
 }
 
-void ProtocolGame::parseCloseImbuingWindow(NetworkMessage &)
+void ProtocolGame::parseCloseImbuementWindow(NetworkMessage &)
 {
-	addGameTask(&Game::playerCloseImbuingWindow, player->getID());
+	addGameTask(&Game::playerCloseImbuementWindow, player->getID());
 }
 
 void ProtocolGame::parseUseItem(NetworkMessage &msg)
@@ -6340,8 +6340,8 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		}
 	}
 
-	// Seting imbuing item
-	player->inImbuing(item);
+	// Set imbuing item
+	player->setImbuingItem(item);
 
 	NetworkMessage msg;
 	msg.addByte(0xEB);

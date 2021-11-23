@@ -393,10 +393,10 @@ class Player final : public Creature, public Cylinder
 			bedItem = b;
 		}
 
-		bool inImbuing() {
-			return imbuing != nullptr;
+		bool getImbuingItem() {
+			return imbuingItem != nullptr;
 		}
-		void inImbuing(Item* item);
+		void setImbuingItem(Item* item);
 
 		void addBlessing(uint8_t index, uint8_t count) {
 			if (blessings[index - 1] == 255) {
@@ -1379,7 +1379,8 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		// Imbuements
-		bool onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm);
+		void onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm);
+		void onClearImbuement(Item* item, uint8_t slot);
 		void sendImbuementWindow(Item* item);
 		void sendImbuementResult(std::string message)
 		{
@@ -1995,7 +1996,7 @@ class Player final : public Creature, public Cylinder
 		GuildRank_ptr guildRank;
 		Group* group = nullptr;
 		Inbox* inbox;
-		Item* imbuing = nullptr; // for intarnal use
+		Item* imbuingItem = nullptr; // for internal use
 		Item* tradeItem = nullptr;
  		Item* inventory[CONST_SLOT_LAST + 1] = {};
 		Item* writeItem = nullptr;

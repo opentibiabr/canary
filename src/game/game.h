@@ -302,8 +302,8 @@ class Game
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
 		void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
 		void playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t slot, bool protectionCharm);
-		void playerClearingImbuement(uint32_t playerid, uint8_t slot);
-		void playerCloseImbuingWindow(uint32_t playerid);
+		void playerClearImbuement(uint32_t playerid, uint8_t slot);
+		void playerCloseImbuementWindow(uint32_t playerid);
 		void playerTurn(uint32_t playerId, Direction dir);
 		void playerRequestOutfit(uint32_t playerId);
 		void playerShowQuestLog(uint32_t playerId);

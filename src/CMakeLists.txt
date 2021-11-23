@@ -155,7 +155,6 @@ target_sources(${PROJECT_NAME}
     items/item.cpp
     items/items.cpp
     items/functions/item_parse.cpp
-    items/functions/item_parse/imbuement_parse.cpp
     items/thing.cpp
     items/tile.cpp
     items/trashholder.cpp

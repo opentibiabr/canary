@@ -26,6 +26,10 @@ extern Events* g_events;
 
 Imbuement* Imbuements::getImbuement(uint16_t id)
 {
+	if (id == 0) {
+		return nullptr;
+	}
+
 	auto it = imbues.find(id);
 	if (it == imbues.end()) {
 		SPDLOG_WARN("Imbuement {} not found", id);
@@ -371,14 +375,6 @@ bool Imbuements::parseImbuements(Player* player, Item* item)
 		if (slot <= 0)
 		{
 			return false;
-		}
-
-		for(uint8_t slotid = 0; slotid < slot; slotid++)
-		{
-			if (item->getImbuementDuration(slotid))
-			{
-				continue;
-			}
 		}
 
 		std::vector<ImbuementTypes_t> imbueType = it.imbuementType;

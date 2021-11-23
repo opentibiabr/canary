@@ -95,7 +95,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 	return newItem;
 }
 
-std::pair<Imbuement*, uint32_t> Item::getImbuementAndDurationPair(uint8_t slot
+std::pair<Imbuement*, uint32_t> Item::getImbuementAndDurationPair(uint8_t slot)
 {
 	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
 	if (attr)

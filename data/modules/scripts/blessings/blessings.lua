@@ -321,7 +321,7 @@ Blessings.BuyAllBlesses = function(player)
 		totalCost = totalCost + PvPBlessCost
 	end
 
-	if player:removeMoneyNpc(totalCost) then
+	if player:removeMoneyBank(totalCost) then
 		for i, v in ipairs(missingBless) do
 			player:addBlessing(v.id, 1)
 		end

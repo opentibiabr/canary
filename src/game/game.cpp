@@ -6577,59 +6577,63 @@ void Game::checkImbuements()
 	auto it = imbuedItems[bucket].begin(), end = imbuedItems[bucket].end();
 	while (it != end) {
 		Item* item = *it;
+		if (!item) {
+			continue;
+		}
 
-		if (item->isRemoved() || !item->getParent()->getCreature()) {
+		Player* player = item->getHoldingPlayer();
+		if (!player) {
 			ReleaseItem(item);
 			it = imbuedItems[bucket].erase(it);
 			continue;
 		}
-
-		Player* player = item->getParent()->getCreature()->getPlayer();
+		
 		const ItemType& itemType = Item::items[item->getID()];
 		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
 			it++;
 			continue;
 		}
 
-		bool needUpdate = false;
+		bool hasImbue = false;
 		uint8_t slots = Item::items[item->getID()].imbuingSlots;
 		for (uint8_t slot = 0; slot < slots; slot++) {
 			uint32_t info = item->getImbuement(slot);
+			uint16_t id = info & 0xFF;
+			if (id == 0) {
+				continue;
+			}
+
 			int32_t duration = info >> 8;
 			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
+			if (newDuration > 0) {
+				hasImbue = true;
+			}
+
+			Imbuement* imbuement = g_imbuements->getImbuement(id);
+			if(!imbuement) {
+				continue;
+			}
+
+			Category* category = g_imbuements->getCategoryByID(imbuement->getCategory());
+			if (category->agressive && !player->hasCondition(CONDITION_INFIGHT)) {
+				continue;
+			}
+
 			if (duration > 0 && newDuration == 0) {
-				needUpdate = true;
+				item->setImbuement(slot, 0);
+				player->onDeEquipImbueItem(imbuement);
+			} else {
+				item->setImbuement(slot, ((newDuration << 8) | id));
 			}
 		}
 
-		int32_t index = player ? player->getThingIndex(item) : -1;
-		needUpdate = needUpdate && index != -1;
-
-		if (needUpdate) {
-			player->postRemoveNotification(item, player, index);
+		if (hasImbue) {
+			it++;
+		} else {
 			ReleaseItem(item);
 			it = imbuedItems[bucket].erase(it);
-			for (uint8_t slot = 0; slot < slots; slot++) {
-				item->setImbuement(slot, 0);
-			}
 		}
 
-		for (uint8_t slot = 0; slot < slots; slot++) {
-			uint32_t info = item->getImbuement(slot);
-			int32_t duration = info >> 8;
-			int32_t decreaseTime = std::min<int32_t>((EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690, duration);
-			duration -= decreaseTime;
-
-			int32_t id = info & 0xFF;
-			int64_t newinfo = (duration << 8) | id;
-			item->setImbuement(slot, newinfo);
-		}
-
-		if (needUpdate) {
-			player->postAddNotification(item, player, index);
-		} else {
-			it++;
-		}
 	}
 
 	lastImbuedBucket = bucket;

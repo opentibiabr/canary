@@ -213,7 +213,7 @@ function VoiceModule:callbackOnThink()
 	return true
 end
 
-function Player.removeMoneyNpc(self, amount)
+function Player.removeMoneyBank(self, amount)
 
 	if type(amount) == 'string' then
 		amount = tonumber(amount)
@@ -266,7 +266,7 @@ end
 local function doPlayerRemoveMoney(cid, amount)
 	local player = Player(cid)
 	if player then
-		return player:removeMoneyNpc(amount)
+		return player:removeMoneyBank(amount)
 	end
 	return false
 end

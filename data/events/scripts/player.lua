@@ -6,10 +6,10 @@ function Player:onLook(thing, position, distance)
 	local description = "You see "
 	description = description .. thing:getDescription(distance)
 	if thing:isItem() then
-		local item = thing:getType()
-		if (item and item:getImbuingSlots() > 0) then
+		local itemType = thing:getType()
+		if (itemType and itemType:getImbuingSlots() > 0) then
 			local imbuingSlots = "Imbuements: ("
-			for slot = 0, item:getImbuingSlots() - 1 do
+			for slot = 0, itemType:getImbuingSlots() - 1 do
 				if slot > 0 then
 					imbuingSlots = string.format("%s, ", imbuingSlots)
 				end
@@ -24,6 +24,13 @@ function Player:onLook(thing, position, distance)
 			end
 			imbuingSlots = string.format("%s).", imbuingSlots)
 			description = string.gsub(description, "It weighs", imbuingSlots.. "\nIt weighs")
+		end
+	elseif thing:isMonster() then
+		description = description .. thing:getDescription(distance)
+		local master = thing:getMaster()
+		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
+			description = description..' (Master: ' .. master:getName() .. '). \z
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.PetSummon) - os.time())
 		end
 	end
 
@@ -41,18 +48,18 @@ function Player:onLook(thing, position, distance)
 				description = string.format("%s, Unique ID: %d", description, uniqueId)
 			end
 
-			local item = thing:getType()
+			local itemType = thing:getType()
 
-			if item then
-				local transformEquipId = item:getTransformEquipId()
-				local transformDeEquipId = item:getTransformDeEquipId()
+			if itemType then
+				local transformEquipId = itemType:getTransformEquipId()
+				local transformDeEquipId = itemType:getTransformDeEquipId()
 				if transformEquipId ~= 0 then
 					description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
 				elseif transformDeEquipId ~= 0 then
 					description = string.format("%s\nTransforms to: %d (onDeEquip)", 	description, transformDeEquipId)
 				end
 
-				local decayId = item:getDecayId()
+				local decayId = itemType:getDecayId()
 				if decayId ~= -1 then
 					description = string.format("%s\nDecays to: %d", description, decayId)
 				end

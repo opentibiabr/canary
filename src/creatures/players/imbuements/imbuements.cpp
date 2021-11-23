@@ -360,42 +360,44 @@ Category* Imbuements::getCategoryByID(uint16_t id)
 	return it != categories.end() ? &*it : nullptr;
 }
 
-bool Imbuements::parseImbuements(Player* player, Item* item)
+std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 {
+	std::vector<Imbuement*> imbuements;
+
 	if (!player || !item) {
 		return false;
 	}
 
+	const ItemType& it = Item::items[item->getID()];
+
 	for (auto& info : imbues)
 	{
-		Imbuement* imbuement = &info.second;
-
-		const ItemType& it = Item::items[item->getID()];
-		uint8_t slot = it.imbuingSlots;
-		if (slot <= 0)
-		{
-			return false;
+		if(!g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)) {
+			continue;
 		}
 
-		std::vector<ImbuementTypes_t> imbueType = it.imbuementType;
+		Imbuement* imbuement = &info.second;
+		if(!imbuement || imbuement->getImbuementStorage() == 0) {
+			continue;
+		}
+
+		int32_t value;
+		if(player->getStorageValue(imbuement->getImbuementStorage(), value)) {
+			continue;
+		}
 
 		uint16_t baseImbuementId = imbuement->getBaseID();
-		Category* category = getCategoryByID(imbuement->getCategory());
-		int32_t value = 1;
-		for (auto imbuementTypes : imbueType)
-		{
-			if (category->id != imbuementTypes
-			|| g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)
-			&& imbuement->getImbuementStorage() != 0
-			&& !player->getStorageValue(imbuement->getImbuementStorage(), value)
-			&& baseImbuementId >= 1 && baseImbuementId <= 3)
-			{
-				continue;
-			}
-
-			imbuementsTypes.push_back(imbuement);
+		if(baseImbuementId < 1 || baseImbuementId > 3) {
+			continue;
 		}
 
+		Category* category = getCategoryByID(imbuement->getCategory());
+		if (!it.imbuementTypes[category->id]) {
+			continue
+		}
+
+		imbuements.push_back(imbuement);
 	}
-	return true;
+
+	return imbuements;
 }

@@ -1184,10 +1184,10 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		price += baseImbuement->protectionPrice;
 	}
 
-	
+
 	if (!g_game.removeMoney(this, price, 0, false))
 	{
-		std::string message = "You don't have " + std::to_string(price) + " gold coins."; 
+		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
 
 		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money");
 		this->sendImbuementResult(message);
@@ -1269,7 +1269,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 	uint32_t price = baseImbuement->removeCost;
 	if (!g_game.removeMoney(this, price, 0, false))
 	{
-		std::string message = "You don't have " + std::to_string(price) + " gold coins."; 
+		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
 
 		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money");
 		this->sendImbuementResult(message);
@@ -1300,7 +1300,7 @@ void Player::sendImbuementWindow(Item* item)
 		return;
 	}
 
-	if (!g_imbuements->parseImbuements(this, item))
+	if (g_imbuements->getImbuements(this, item).size == 0)
 	{
 		this->sendImbuementResult("There was a problem processing your request, please contact the administrator.");
 		return;

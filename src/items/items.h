@@ -154,12 +154,12 @@ class ItemType
 			return str;
 		}
 
-		void setImbuementType(ImbuementTypes_t imbueType) {
-			imbuementType.insert(imbuementType.begin(), imbueType);
+		void setImbuementType(ImbuementTypes_t imbuementType) {
+			imbuementTypes[imbuementType] = true;
 		}
 
-		const std::vector<ImbuementTypes_t>& getImbuementType() const {
-			return imbuementType;
+		const std::vector<ImbuementTypes_t>& getImbuementTypes() const {
+			return imbuementTypes;
 		};
 
 		ItemGroup_t group = ITEM_GROUP_NONE;
@@ -221,7 +221,7 @@ class ItemType
 		RaceType_t corpseType = RACE_NONE;
 		FluidTypes_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
-		std::vector<ImbuementTypes_t> imbuementType;
+		std::map<ImbuementTypes_t, bool> imbuementTypes;
 
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;

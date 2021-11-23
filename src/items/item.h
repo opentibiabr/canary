@@ -1002,9 +1002,9 @@ class Item : virtual public Thing
 
 		bool setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
 
-		const std::vector<ImbuementTypes_t>& getImbuementType() const
+		const std::vector<ImbuementTypes_t>& getImbuementTypes() const
 		{
-			return items[id].imbuementType;
+			return items[id].imbuementTypes;
 		};
 
 	protected:

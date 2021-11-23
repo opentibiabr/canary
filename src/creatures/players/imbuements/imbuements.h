@@ -61,14 +61,7 @@ class Imbuements {
 
 		BaseImbue* getBaseByID(uint16_t id);
 		Category* getCategoryByID(uint16_t id);
-		bool parseImbuements(Player* player, Item* item);
-		std::vector<Imbuement*> getImbuementType(Player* player, Item* item)
-		{
-			if (parseImbuements(player, item))
-			{
-				return imbuementsTypes;
-			}
-		}
+		std::vector<Imbuement*> getImbuements(Player* player, Item* item);
 
 		std::vector<Imbuement*> imbuementsTypes;
 	protected:

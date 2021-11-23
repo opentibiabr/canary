@@ -6597,14 +6597,13 @@ void Game::checkImbuements()
 
 			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
 
-			if (duration > 0 && newDuration == 0) {
-				item->setImbuement(slotid, id, duration, 0);
-				player->onDeEquipImbueItem(imbuement);
-								continue;
-			}
-
-			hasImbue = true;
 			item->setImbuement(slotid, id, duration, newDuration);
+			hasImbue = true;
+
+			if (duration > 0 && newDuration == 0) {
+				player->onDeEquipImbueItem(imbuement);
+				continue;
+			}
 		}
 
 		if (!hasImbue) {
@@ -7592,6 +7591,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		}
 
 		std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
+		if (itemList.empty()) {
+			return;
+		}
 
 		if (!itemList.empty()) {
 			if (it.stackable) {

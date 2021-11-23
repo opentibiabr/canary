@@ -96,22 +96,21 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t basid = imbuement->getBaseID();
-	BaseImbue* base = g_imbuements->getBaseByID(basid);
-
-	if (base) {
-		lua_createtable(L, 0, 7);
-		setField(L, "id", base->id);
-		setField(L, "name", base->name);
-		setField(L, "price", base->price);
-		setField(L, "protection", base->protection);
-		setField(L, "percent", base->percent);
-		setField(L, "removecust", base->removecust);
-		setField(L, "duration", base->duration);
-	} else {
+	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	if (baseImbuement)
+	{
 		lua_pushnil(L);
+		return 1;
 	}
 
+	lua_createtable(L, 0, 7);
+	setField(L, "id", baseImbuement->id);
+	setField(L, "name", baseImbuement->name);
+	setField(L, "price", baseImbuement->price);
+	setField(L, "protection", baseImbuement->protectionPrice);
+	setField(L, "percent", baseImbuement->percent);
+	setField(L, "removeCost", baseImbuement->removeCost);
+	setField(L, "duration", baseImbuement->duration);
 	return 1;
 }
 

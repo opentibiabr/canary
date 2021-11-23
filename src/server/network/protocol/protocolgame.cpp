@@ -6316,7 +6316,7 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuid)
 
 	msg.add<uint32_t>(base->price);
 	msg.addByte(base->percent);
-	msg.add<uint32_t>(base->protection);
+	msg.add<uint32_t>(base->protectionPrice);
 }
 
 void ProtocolGame::sendImbuementWindow(Item *item)
@@ -6362,7 +6362,7 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		msg.addByte(0x01);
 		addImbuementInfo(msg, imbuement->getId());
 		msg.add<uint32_t>(duration);
-		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuement->getBaseID())->removecust);
+		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuement->getBaseID())->removeCost);
 	}
 
 	// Clear imbuementsTypes for send again (ensures there are no duplications)

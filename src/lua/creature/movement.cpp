@@ -796,17 +796,23 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	}
 
 	if (it.imbuingSlots > 0) {
-		std::vector<Imbuement*> imbuement;
+		std::vector<Imbuement*> imbuementList;
 		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			uint32_t info = item->getImbuementDuration(slotid);
-			if (info == 0) {
+			Imbuement *imbuement = item->getImbuement(slotid);
+			if (!imbuement) {
 				continue;
 			}
-			imbuement.push_back(g_imbuements->getImbuement(info & 0xFF));
+
+			if (item->getImbuementDuration(slotid) == 0) {
+				continue;
+			}
+
+			imbuementList.push_back(imbuement);
 		}
-		if(!imbuement.empty()) {
-			for (Imbuement* ib : imbuement) {
-				player->onDeEquipImbueItem(ib);
+	
+		if(!imbuementList.empty()) {
+			for (Imbuement *imbuement : imbuementList) {
+				player->onDeEquipImbueItem(imbuement);
 			}
 		}
 	}

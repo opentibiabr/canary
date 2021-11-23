@@ -30,14 +30,14 @@ class Item;
 class Imbuement;
 
 struct BaseImbue {
-	BaseImbue(uint16_t initId, std::string initName, uint32_t initProtection, uint32_t initPrice, uint32_t initRemovecust, int32_t initDuration, uint16_t initPercent) :
-		id(initId), name(std::move(initName)), protection(initProtection), price(initPrice), removecust(initRemovecust), duration(initDuration), percent(initPercent) {}
+	BaseImbue(uint16_t initId, std::string initName, uint32_t initProtectionPrice, uint32_t initPrice, uint32_t initRemoveCost, int32_t initDuration, uint16_t initPercent) :
+		id(initId), name(std::move(initName)), protectionPrice(initProtectionPrice), price(initPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) {}
 
 	uint16_t id;
 	std::string name;
-	uint32_t protection;
+	uint32_t protectionPrice;
 	uint32_t price;
-	uint32_t removecust;
+	uint32_t removeCost;
 	int32_t duration;
 	uint16_t percent;
 };

@@ -95,6 +95,15 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 	return newItem;
 }
 
+std::pair<Imbuement*, uint32_t> Item::getImbuementAndDurationPair(uint8_t slot) {
+	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
+	if (attr) {
+		uint32_t info = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
+		std::pair<Imbuement*, uint32_t> imbuementDurationPair(g_imbuements->getImbuement(info & 0xFF), info >> 8);
+		return imbuementDurationPair;
+	}
+}
+
 Imbuement* Item::getImbuement(uint8_t slot) {
 	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
 
@@ -126,7 +135,9 @@ uint32_t Item::getImbuementDuration(uint8_t slot) {
 bool Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration) {
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
-	value.set<int64_t>(duration > 0 ? (newDuration << 8) | id : 0);
+
+	newDuration = duration > 0 ? (newDuration << 8) | id : 0;
+	value.set<int64_t>(newDuration);
 
 	setCustomAttribute(key, value);
 	return true;

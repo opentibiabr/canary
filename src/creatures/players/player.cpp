@@ -1157,7 +1157,8 @@ void Player::sendHouseWindow(House* house, uint32_t listId) const
 
 bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm)
 {
-	for (auto & imbuementItems : imbuement->getItems())
+	const auto & items = imbuement->getItems();
+	for (auto & imbuementItems : items)
 	{
 		if (this->getItemTypeCount(imbuementItems.first) + this->getStashItemCount(imbuementItems.first) < imbuementItems.second)
 		{
@@ -1172,25 +1173,34 @@ bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return false;
 	}
 
-	uint32_t baseId = imbuement->getBaseID();
-	BaseImbue* baseImbuement = g_imbuements->getBaseByID(baseId);
-	const auto & items = imbuement->getItems();
-	uint32_t basePrice = baseImbuement->price; //+ (protectionCharm && baseImbuement->protection || 0);
-	uint32_t protectionPrice = baseImbuement->protection;
-	if (!protectionCharm || uniform_random(1, 100) > baseImbuement->percent)
+	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement)
+	{
+		return false;
+	}
+
+	uint32_t price = baseImbuement->price;
+	if (protectionCharm)
+	{
+		price += baseImbuement->protectionPrice;
+	}
+
+	if (!protectionCharm && uniform_random(1, 20) > baseImbuement->percent)
 	{
 		for (const auto imbuementItems : items)
 		{
 			this->removeItemOfType(imbuementItems.first, imbuementItems.second, -1, true);
 		}
-		g_game.removeMoney(this, basePrice + protectionCharm && protectionPrice, 0, true);
+
+		g_game.removeMoney(this, price, 0, true);
+
 		this->sendImbuementWindow(item);
 		this->sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
 		return false;
 	}
 
 	// Remove items
-	for (auto & imbuementItems : imbuement->getItems())
+	for (auto & imbuementItems : items)
 	{
 		uint32_t invertoryItemCount = this->getItemTypeCount(imbuementItems.first);
 		if (invertoryItemCount >= imbuementItems.second)
@@ -1217,17 +1227,15 @@ bool Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		}
 	}
 
-	if (!g_game.removeMoney(this, basePrice + protectionCharm && protectionPrice, 0, false))
+	if (!g_game.removeMoney(this, price, 0, false))
 	{
-		std::string message = "You don't have " + std::to_string(basePrice) + " gold coins."; 
+		std::string message = "You don't have " + std::to_string(price) + " gold coins."; 
 
 		this->sendImbuementResult(message);
 		return false;
 	}
 
-	uint32_t duration = baseImbuement->duration;
-
-	if (!item->setImbuement(slot, imbuement->getId(), duration, 0))
+	if (!item->setImbuement(slot, imbuement->getId(), baseImbuement->duration, baseImbuement->duration))
 	{
 		this->sendImbuementResult("The item failed to apply the imbuement, close the window and try again, if it persists contact an administrator.");
 		return false;
@@ -2333,11 +2341,14 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			}
 
 			uint8_t slots = Item::items[item->getID()].imbuingSlots;
-			for (uint8_t i = 0; i < slots; i++) {
-				uint32_t info = item->getImbuementDuration(i);
-				if (info) {
-					Imbuement* ib = g_imbuements->getImbuement(info & 0xFF);
-					const int16_t& absorbPercent2 = ib->absorbPercent[combatTypeToIndex(combatType)];
+			for (uint8_t slotid = 0; slotid < slots; slotid++) {
+				Imbuement *imbuement = item->getImbuement(slotid);
+				if (!imbuement) {
+					continue;
+				}
+
+				if (item->getImbuementDuration(slotid)) {
+					const int16_t& absorbPercent2 = imbuement->absorbPercent[combatTypeToIndex(combatType)];
 
 					if (absorbPercent2 != 0) {
 						damage -= std::ceil(damage * (absorbPercent2 / 100.));

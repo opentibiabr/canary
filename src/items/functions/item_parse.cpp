@@ -21,6 +21,62 @@
 
 #include "items/functions/item_parse.hpp"
 
+void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+	// Parse all item attributes
+	ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseShowCount(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseArmor(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDefense(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseExtraDefense(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWeaponType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSlotType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAmmoType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseShootType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicEffect(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseLootType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseRange(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDuration(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseTransform(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCharges(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseShowAttributes(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseHitChance(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseInvisible(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSpeed(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseHealthAndMana(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSkills(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCriticalHit(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseLifeAndManaLeech(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMaxHitAndManaPoints(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseLevelDoor(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseBeds(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
+}
+
 void ItemParse::parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "type") {
@@ -756,5 +812,39 @@ void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "allowdistread") {
 		itemType.allowDistRead = booleanString(valueAttribute.as_string());
+	}
+}
+
+void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "imbuementslot") {
+		if (valueAttribute.value() == "0") {
+			SPDLOG_INFO("DESACTIVATED ITEM IMBUEMENT {}", itemType.id);
+			return;
+		}
+
+		itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
+
+		for (auto subAttributeNode: attributeNode.children()) {
+			pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+			if (!subKeyAttribute) {
+				continue;
+			}
+
+			pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+			if (!subValueAttribute) {
+				continue;
+			}
+
+			stringValue = asLowerCaseString(subKeyAttribute.as_string());
+
+			auto itemMap = ImbuementsTypeMap.find(stringValue);
+			if (itemMap != ImbuementsTypeMap.end()) {
+				itemType.setImbuementType(itemMap->second);
+			} else {
+				SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
+          	              valueAttribute.as_string());
+			}
+		}
 	}
 }

@@ -388,7 +388,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 		}
 
 		Category* category = getCategoryByID(imbuement->getCategory());
-		if (!it.imbuementTypes[category->id]) {
+		if (!item->getImbuementType(category->id)) {
 			continue;
 		}
 

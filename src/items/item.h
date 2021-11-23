@@ -1002,10 +1002,13 @@ class Item : virtual public Thing
 
 		bool setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
 
-		const std::map<ImbuementTypes_t, bool>& getImbuementTypes() const
-		{
-			return items[id].imbuementTypes;
-		};
+		bool getImbuementType(uint16_t imbuementType) {
+			if (items[id].imbuementTypes.find(imbuementType) == items[id].imbuementTypes.end()) {
+				return false;
+			}
+
+			return true;
+		}
 
 	protected:
 		std::string getWeightDescription(uint32_t weight) const;

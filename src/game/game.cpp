@@ -6591,7 +6591,7 @@ void Game::checkImbuements()
 		}
 		
 		const ItemType& itemType = Item::items[item->getID()];
-		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
+		if (!player->hasCondition(CONDITION_INFIGHT)) {
 			continue;
 		}
 

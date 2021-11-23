@@ -289,6 +289,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 				//not used
 				iType.type = ITEM_TYPE_DOOR;
 				break;
+			// ITEM_GROUP_MAGICFIELD is Deprecated
 			case ITEM_GROUP_MAGICFIELD:
 				//not used
 				iType.type = ITEM_TYPE_MAGICFIELD;

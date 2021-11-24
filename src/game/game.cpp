@@ -6583,7 +6583,7 @@ void Game::checkImbuements()
 
 	for (auto it = items.begin(); it != items.end(); ++it) {
 		Item* item = *it;
-		if (!item) {
+		if (!item || item->isRemoved()) {
 			continue;
 		}
 

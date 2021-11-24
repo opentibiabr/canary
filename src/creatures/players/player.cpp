@@ -1167,7 +1167,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 
 	if (item->getImbuementDuration(slot) > 0)
 	{
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement");
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
@@ -1185,7 +1185,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	{
 		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
 
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money");
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		this->sendImbuementResult(message);
 		return;
 	}
@@ -1239,7 +1239,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 
 	if (!item->getImbuementDuration(slot))
 	{
-		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement");
+		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
@@ -1249,7 +1249,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 	{
 		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
 
-		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money");
+		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		this->sendImbuementResult(message);
 		this->sendImbuementWindow(item);
 		return;
@@ -1275,6 +1275,11 @@ void Player::sendImbuementWindow(Item* item)
 	uint8_t slot = it.imbuingSlots;
 	if (slot <= 0 ) {
 		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
+		return;
+	}
+
+	if (item->getParent() == this) {
+		this->sendTextMessage(MESSAGE_FAILURE, "You cannot imbue an equipped item.");
 		return;
 	}
 

@@ -691,25 +691,19 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	}
 
 	if (it.imbuingSlots > 0) {
-		std::vector<Imbuement*> imbuementList;
+		bool hasImbuement = false;
 		for (uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
 			Imbuement *imbuement = item->getImbuement(slotid);
-			if (!imbuement) {
+			if (!imbuement || item->getImbuementDuration(slotid) == 0) {
 				continue;
 			}
 
-			if (item->getImbuementDuration(slotid) == 0) {
-				continue;
-			}
-
-			imbuementList.push_back(imbuement);
+			hasImbuement = true;
+			player->onEquipImbueItem(imbuement);
 		}
-	
-		if (!imbuementList.empty()) {
+
+		if (hasImbuement) {
 			g_game.startImbuementCountdown(item);
-			for (Imbuement *imbuement : imbuementList) {
-				player->onEquipImbueItem(imbuement);
-			}
 		}
 	}
 
@@ -805,21 +799,11 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 		std::vector<Imbuement*> imbuementList;
 		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
 			Imbuement *imbuement = item->getImbuement(slotid);
-			if (!imbuement) {
+			if (!imbuement || item->getImbuementDuration(slotid) == 0) {
 				continue;
 			}
 
-			if (item->getImbuementDuration(slotid) == 0) {
-				continue;
-			}
-
-			imbuementList.push_back(imbuement);
-		}
-	
-		if(!imbuementList.empty()) {
-			for (Imbuement *imbuement : imbuementList) {
-				player->onDeEquipImbueItem(imbuement);
-			}
+			player->onDeEquipImbueItem(imbuement);
 		}
 	}
 

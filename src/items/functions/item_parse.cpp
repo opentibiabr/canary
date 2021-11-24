@@ -717,7 +717,7 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 			itemType.conditionDamage.reset(conditionDamage);
 
 			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
-			
+
 			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 
 			if (conditionDamage->getTotalDamage() > 0) {
@@ -746,7 +746,7 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 	if (stringValue == "partnerdirection") {
 		itemType.bedPartnerDir = getDirection(valueAttribute.as_string());
 	}
-		
+
 	uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
 	ItemType & other = Item::items.getItemType(value);
 	if (stringValue == "maletransformto") {
@@ -818,34 +818,31 @@ void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml
 
 void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
-	if (stringValue == "imbuementslot") {
-		if (valueAttribute.value() == "0") {
-			SPDLOG_INFO("DESACTIVATED ITEM IMBUEMENT {}", itemType.id);
-			return;
+	if (stringValue != "imbuementslot") {
+		return;
+	}
+
+	if (valueAttribute.value() == "0") {
+		SPDLOG_INFO("DESACTIVATED ITEM IMBUEMENT {}", itemType.id);
+		return;
+	}
+
+	itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
+
+	for (auto subAttributeNode: attributeNode.children()) {
+		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+
+		if (!subKeyAttribute || !subAttributeNode.attribute("value")) {
+			continue;
 		}
 
-		itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
-
-		for (auto subAttributeNode: attributeNode.children()) {
-			pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
-			if (!subKeyAttribute) {
-				continue;
-			}
-
-			pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
-			if (!subValueAttribute) {
-				continue;
-			}
-
-			stringValue = asLowerCaseString(subKeyAttribute.as_string());
-
-			auto itemMap = ImbuementsTypeMap.find(stringValue);
-			if (itemMap != ImbuementsTypeMap.end()) {
-				itemType.setImbuementType(itemMap->second);
-			} else {
-				SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
-          	              valueAttribute.as_string());
-			}
+		auto itemMap = ImbuementsTypeMap.find(asLowerCaseString(subKeyAttribute.as_string()));
+		if (itemMap != ImbuementsTypeMap.end()) {
+			itemType.setImbuementType(itemMap->second);
+			continue;
 		}
+
+		SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
+											valueAttribute.as_string());
 	}
 }

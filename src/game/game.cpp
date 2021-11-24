@@ -351,7 +351,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid)
 	if (!player) {
 		return;
 	}
-	
+
 	Item* item;
 	const ItemType& itemType = Item::items.getItemIdByClientId(spriteid);
 
@@ -3774,7 +3774,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t co
 	if (!player) {
 		return;
 	}
-	
+
 	if (player->hasFlag(PlayerFlag_CannotPickupItem)) {
 		return;
 	}
@@ -6604,12 +6604,11 @@ void Game::checkImbuements()
 				continue;
 			}
 
-			uint16_t id = imbuement->getId();
 			int32_t duration = item->getImbuementDuration(slotid);
 
 			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
 
-			item->setImbuement(slotid, id, duration, newDuration);
+			item->setImbuement(slotid, imbuement->getId(), duration, newDuration);
 			hasImbue = true;
 
 			if (duration > 0 && newDuration == 0) {
@@ -7607,20 +7606,16 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			return;
 		}
 
-		if (!itemList.empty()) {
-			if (it.stackable) {
-				uint16_t tmpAmount = stashmath;
-				for (Item *item : itemList) {
-					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
-					tmpAmount -= removeCount;
-					internalRemoveItem(item, removeCount);
-
-				}
-			} else {
-				for (Item *item : itemList) {
-					internalRemoveItem(item);
-				}
+		uint16_t tmpAmount = stashmath;
+		for (Item *item : itemList) {
+			if (!it.stackable) {
+				internalRemoveItem(item);
+				continue;
 			}
+
+			uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
+			tmpAmount -= removeCount;
+			internalRemoveItem(item, removeCount);
 		}
    }
     g_game.removeMoney(player, fee, 0, true);

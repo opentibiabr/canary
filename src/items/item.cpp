@@ -98,32 +98,15 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 Imbuement* Item::getImbuement(uint8_t slot)
 {
 	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
-
-	if (!attr)
-	{
-		return nullptr;
-	}
-
-	uint32_t info = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
-	Imbuement* imbuement = g_imbuements->getImbuement(info & 0xFF);
-
-	return imbuement ? imbuement : nullptr;
+	uint32_t info = attr ? static_cast<uint32_t>(boost::get<int64_t>(attr->value)) : 0;
+	return g_imbuements->getImbuement(info & 0xFF);
 }
 
 uint32_t Item::getImbuementDuration(uint8_t slot)
 {
-	int64_t slotid = IMBUEMENT_SLOT + slot;
-	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(slotid);
-	if (attr)
-	{
-		uint32_t info = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
-		if (info)
-		{
-			return info >> 8;
-		}
-	}
-
-	return 0;
+	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
+	uint32_t info = attr ? static_cast<uint32_t>(boost::get<int64_t>(attr->value)) : 0;
+	return info >> 8;
 }
 
 void Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration)

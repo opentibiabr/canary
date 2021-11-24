@@ -53,7 +53,6 @@ struct Category {
 
 class Imbuements {
 	public:
-		void reset();
 		bool loadFromXml(bool reloading = false);
 		bool reload();
 

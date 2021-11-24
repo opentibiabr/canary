@@ -96,8 +96,9 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
+
 	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
-	if (baseImbuement)
+	if (!baseImbuement)
 	{
 		lua_pushnil(L);
 		return 1;

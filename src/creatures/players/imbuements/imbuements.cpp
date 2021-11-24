@@ -358,8 +358,6 @@ std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 {
 	std::vector<Imbuement*> imbuements;
 
-	const ItemType& it = Item::items[item->getID()];
-
 	for (auto& info : imbues)
 	{
 		Imbuement* imbuement = &info.second;

@@ -796,7 +796,6 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	}
 
 	if (it.imbuingSlots > 0) {
-		std::vector<Imbuement*> imbuementList;
 		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
 			Imbuement *imbuement = item->getImbuement(slotid);
 			if (!imbuement || item->getImbuementDuration(slotid) == 0) {

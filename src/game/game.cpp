@@ -6588,7 +6588,7 @@ void Game::checkImbuements()
 		}
 
 		Player* player = item->getHoldingPlayer();
-		if (item->isRemoved() || !player) {
+		if (!player) {
 			continue;
 		}
 

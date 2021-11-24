@@ -996,7 +996,6 @@ class Item : virtual public Thing
 			return !parent || parent->isRemoved();
 		}
 
-		std::pair<Imbuement*, uint32_t> getImbuementAndDurationPair(uint8_t slot);
 		uint32_t getImbuementDuration(uint8_t slot);
 		Imbuement* getImbuement(uint8_t slot);
 

@@ -6587,13 +6587,10 @@ void Game::checkImbuements()
 
 		Player* player = item->getHoldingPlayer();
 		if (item->isRemoved() || !player) {
-			ReleaseItem(item);
-			it = --imbuedItems[bucket].erase(it);
 			continue;
 		}
 
-		const ItemType& itemType = Item::items[item->getID()];
-		if (!player->hasCondition(CONDITION_INFIGHT)) {
+		if (!player->hasCondition(CONDITION_INFIGHT) || item->getContainer()) {
 			continue;
 		}
 

@@ -822,11 +822,6 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 		return;
 	}
 
-	if (valueAttribute.value() == "0") {
-		SPDLOG_INFO("DESACTIVATED ITEM IMBUEMENT {}", itemType.id);
-		return;
-	}
-
 	itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
 
 	for (auto subAttributeNode: attributeNode.children()) {
@@ -838,11 +833,15 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 
 		auto itemMap = ImbuementsTypeMap.find(asLowerCaseString(subKeyAttribute.as_string()));
 		if (itemMap != ImbuementsTypeMap.end()) {
-			itemType.setImbuementType(itemMap->second);
-			continue;
+			ImbuementTypes_t imbuementType = getImbuementType(asLowerCaseString(subKeyAttribute.as_string()));
+			if (imbuementType != IMBUEMENT_NONE) {
+				itemType.setImbuementType(imbuementType);
+				continue;
+			}
+		else
+			SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
+						valueAttribute.as_string());
 		}
 
-		SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
-											valueAttribute.as_string());
 	}
 }

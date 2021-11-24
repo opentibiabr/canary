@@ -2177,31 +2177,33 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 			{
 				s << ", ";
 			}
+
 			Item* castItem = const_cast<Item*>(item);
-			uint32_t duration = castItem->getImbuementDuration(slotid);
-			if (duration)
-			{
-				Imbuement *imbuement = castItem->getImbuement(slotid);
-				if (!imbuement) {
-					return nullptr;
-				}
-
-				BaseImbue *base = g_imbuements->getBaseByID(imbuement->getBaseID());
-				if (!base) {
-					return nullptr;
-				}
-
-				int minutes = duration / 60;
-				int hours = minutes / 60;
-				s << base->name << " "
-				  << imbuement->getName() << " "
-				  << std::setw(2) << std::setfill('0') << (hours) << ":"
-				  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h";
+			if (!castItem) {
+				continue;
 			}
-			else
-			{
+
+			uint32_t duration = castItem->getImbuementDuration(slotid);
+			if (!duration) {
 				s << "Empty Slot";
 			}
+
+			Imbuement *imbuement = castItem->getImbuement(slotid);
+			if (!imbuement) {
+				continue;
+			}
+
+			const BaseImbue *base = g_imbuements->getBaseByID(imbuement->getBaseID());
+			if (!base) {
+				continue;
+			}
+
+			int minutes = duration / 60;
+			int hours = minutes / 60;
+			s << base->name << " "
+			  << imbuement->getName() << " "
+			  << std::setw(2) << std::setfill('0') << (hours) << ":"
+			  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h";
 		}
 		s << ").";
 	}

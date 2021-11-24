@@ -4848,7 +4848,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-	if (!player->getImbuingItem()) {
+	if (!player->hasImbuingItem ()) {
 		return;
 	}
 
@@ -4879,7 +4879,7 @@ void Game::playerClearImbuement(uint32_t playerid, uint8_t slot)
 		return;
 	}
 
-	if (!player->getImbuingItem())
+	if (!player->hasImbuingItem ())
 	{
 		return;
 	}
@@ -7584,41 +7584,43 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-      account::Account account(player->getAccount());
-      account.LoadAccountDB();
-      uint32_t coins;
-      account.GetCoins(&coins);
+			account::Account account(player->getAccount());
+			account.LoadAccountDB();
+			uint32_t coins;
+			account.GetCoins(&coins);
 
-      if (amount > coins) {
-        return;
-      }
-      account.RemoveCoins(static_cast<uint32_t>(amount));
-    } else {
-		uint16_t stashmath = amount;
-		uint16_t stashminus = player->getStashItemCount(it.wareId);
-		if (stashminus > 0) {
-			stashmath = (amount - (amount > stashminus ? stashminus : amount));
-			player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
-		}
-
-		std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
-		if (itemList.empty()) {
-			return;
-		}
-
-		uint16_t tmpAmount = stashmath;
-		for (Item *item : itemList) {
-			if (!it.stackable) {
-				internalRemoveItem(item);
-				continue;
+			if (amount > coins) {
+				return;
 			}
 
-			uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
-			tmpAmount -= removeCount;
-			internalRemoveItem(item, removeCount);
+			account.RemoveCoins(static_cast<uint32_t>(amount));
+		} else {
+			uint16_t stashmath = amount;
+			uint16_t stashminus = player->getStashItemCount(it.wareId);
+			if (stashminus > 0) {
+				stashmath = (amount - (amount > stashminus ? stashminus : amount));
+				player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
+			}
+
+			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
+			if (itemList.empty()) {
+				return;
+			}
+
+			uint16_t tmpAmount = stashmath;
+			for (Item *item : itemList) {
+				if (!it.stackable) {
+					internalRemoveItem(item);
+					continue;
+				}
+
+				uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
+				tmpAmount -= removeCount;
+				internalRemoveItem(item, removeCount);
+			}
 		}
-   }
-    g_game.removeMoney(player, fee, 0, true);
+
+		g_game.removeMoney(player, fee, 0, true);
 	} else {
 
 		uint64_t totalPrice = price * amount;
@@ -7777,7 +7779,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (!buyerPlayer) {
+			buyerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
+				delete buyerPlayer;
 				return;
 			}
 		}

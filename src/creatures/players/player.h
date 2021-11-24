@@ -393,7 +393,7 @@ class Player final : public Creature, public Cylinder
 			bedItem = b;
 		}
 
-		bool getImbuingItem() {
+		bool hasImbuingItem () {
 			return imbuingItem != nullptr;
 		}
 		void setImbuingItem(Item* item);

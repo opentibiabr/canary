@@ -2362,12 +2362,14 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 					continue;
 				}
 
-				if (item->getImbuementDuration(slotid)) {
-					const int16_t& absorbPercent2 = imbuement->absorbPercent[combatTypeToIndex(combatType)];
+				if (!item->getImbuementDuration(slotid)) {
+					continue;
+				}
 
-					if (absorbPercent2 != 0) {
-						damage -= std::ceil(damage * (absorbPercent2 / 100.));
-					}
+				const int16_t& imbuementAbsorbPercent = imbuement->absorbPercent[combatTypeToIndex(combatType)];
+
+				if (imbuementAbsorbPercent != 0) {
+					damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));
 				}
 			}
 

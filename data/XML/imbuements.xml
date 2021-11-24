@@ -15,11 +15,11 @@
 	<category id="8" name="Elemental Protection (Energy)" agressive="1" />
 	<category id="9" name="Elemental Protection (Holy)" agressive="1" />
 	<category id="10" name="Increase Speed" agressive="0" />
-	<category id="11" name="Skillboost (Axe)" agressive="1" />
-	<category id="12" name="Skillboost (Sword)" agressive="1" />
-	<category id="13" name="Skillboost (Club)" agressive="1" />
+	<category id="11" name="Skillboost (Axe Fighting)" agressive="1" />
+	<category id="12" name="Skillboost (Sword Fighting)" agressive="1" />
+	<category id="13" name="Skillboost (Club Fighting)" agressive="1" />
 	<category id="14" name="Skillboost (Shielding)" agressive="1" />
-	<category id="15" name="Skillboost (Distance)" agressive="1" />
+	<category id="15" name="Skillboost (Distance Fighting)" agressive="1" />
 	<category id="16" name="Skillboost (Magic Level)" agressive="1" />
 	<category id="17" name="Increase Capacity" agressive="0" />
 

@@ -6574,10 +6574,12 @@ void Game::checkDecay()
 
 void Game::checkImbuements()
 {
+	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
+
 	size_t bucket = (lastImbuedBucket + 1) % EVENT_IMBUEMENT_BUCKETS;
 	std::list<Item*> items = imbuedItems[bucket];
 
-	for (auto it = items.begin(); it != items.end(); ++it){
+	for (auto it = items.begin(); it != items.end(); ++it) {
 		Item* item = *it;
 		if (!item) {
 			continue;
@@ -6589,7 +6591,7 @@ void Game::checkImbuements()
 			it = --imbuedItems[bucket].erase(it);
 			continue;
 		}
-		
+
 		const ItemType& itemType = Item::items[item->getID()];
 		if (!player->hasCondition(CONDITION_INFIGHT)) {
 			continue;
@@ -6622,7 +6624,6 @@ void Game::checkImbuements()
 			it = --imbuedItems[bucket].erase(it);
 			continue;
 		}
-
 	}
 
 	lastImbuedBucket = bucket;

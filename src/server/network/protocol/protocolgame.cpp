@@ -6366,8 +6366,8 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	uint8_t slot = it.imbuingSlots;
 	for (uint8_t i = 0; i < slot; i++)
 	{
-		uint32_t info = item->getImbuementDuration(i);
-		if (info)
+		uint32_t duration = item->getImbuementDuration(i);
+		if (duration)
 		{
 			itemHasImbue = true;
 			break;

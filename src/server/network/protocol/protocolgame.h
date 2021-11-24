@@ -226,7 +226,7 @@ private:
 	void parseStoreBuyOffer(NetworkMessage &message);
 	void parseCoinTransfer(NetworkMessage &msg);
 
-	// imbue info
+	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuid);
 
 	//Send functions

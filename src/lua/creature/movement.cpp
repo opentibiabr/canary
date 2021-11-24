@@ -691,18 +691,24 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	}
 
 	if (it.imbuingSlots > 0) {
-		std::vector<Imbuement*> imbuement;
-		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			uint32_t info = item->getImbuementDuration(slotid);
-			if (info == 0) {
+		std::vector<Imbuement*> imbuementList;
+		for (uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
+			Imbuement *imbuement = item->getImbuement(slotid);
+			if (!imbuement) {
 				continue;
 			}
-			imbuement.push_back(g_imbuements->getImbuement(info & 0xFF));
+
+			if (item->getImbuementDuration(slotid) == 0) {
+				continue;
+			}
+
+			imbuementList.push_back(imbuement);
 		}
-		if(!imbuement.empty()) {
+	
+		if (!imbuementList.empty()) {
 			g_game.startImbuementCountdown(item);
-			for (Imbuement* ib : imbuement) {
-				player->onEquipImbueItem(ib);
+			for (Imbuement *imbuement : imbuementList) {
+				player->onEquipImbueItem(imbuement);
 			}
 		}
 	}

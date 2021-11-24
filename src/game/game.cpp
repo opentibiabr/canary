@@ -4863,6 +4863,8 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 	}
 
 	if (item->getTopParent() != player || item->getParent() == player) {
+		SPDLOG_ERROR("[Game::playerApplyImbuement] - An error occurred while player with name {} try to apply imbuement", player->getName());
+		player->sendImbuementResult("An error has occurred, reopen the imbuement window. If the problem persists, contact your administrator.");
 		return;
 	}
 
@@ -6590,7 +6592,7 @@ void Game::checkImbuements()
 			continue;
 		}
 
-		if (!player->hasCondition(CONDITION_INFIGHT) || item->getContainer()) {
+		if (!player->hasCondition(CONDITION_INFIGHT) || item->getParent() != player) {
 			continue;
 		}
 

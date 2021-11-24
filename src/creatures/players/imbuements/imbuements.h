@@ -62,8 +62,6 @@ class Imbuements {
 		BaseImbue* getBaseByID(uint16_t id);
 		Category* getCategoryByID(uint16_t id);
 		std::vector<Imbuement*> getImbuements(Player* player, Item* item);
-
-		std::vector<Imbuement*> imbuementsTypes;
 	protected:
 		friend class Imbuement;
 

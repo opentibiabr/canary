@@ -6399,10 +6399,7 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuement->getBaseID())->removeCost);
 	}
 
-	// Clear imbuementsTypes for send again (ensures there are no duplications)
-	g_imbuements->reset();
-
-	std::vector<Imbuement *> imbuements = g_imbuements->getImbuementType(player, item);
+	std::vector<Imbuement *> imbuements = g_imbuements->getImbuements(player, item);
 	std::unordered_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());

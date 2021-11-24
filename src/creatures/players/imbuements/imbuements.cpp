@@ -325,13 +325,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 	return true;
 }
 
-void Imbuements::reset() {
-	imbuementsTypes.clear();
-}
-
 bool Imbuements::reload() {
-	reset();
-
 	imbues.clear();
 	bases.clear();
 	categories.clear();
@@ -368,27 +362,22 @@ std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 
 	for (auto& info : imbues)
 	{
-		if (!g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)) {
-			continue;
-		}
-
 		Imbuement* imbuement = &info.second;
-		if (!imbuement || imbuement->getImbuementStorage() == 0) {
+		if (!imbuement) {
 			continue;
 		}
 
 		int32_t value;
-		if (player->getStorageValue(imbuement->getImbuementStorage(), value)) {
-			continue;
-		}
-
 		uint16_t baseImbuementId = imbuement->getBaseID();
-		if (baseImbuementId < 1 || baseImbuementId > 3) {
+		if (g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)
+		&& imbuement->getImbuementStorage() != 0
+		&& player->getStorageValue(imbuement->getImbuementStorage(), value)
+		&& baseImbuementId >= 1 && baseImbuementId <= 3) {
 			continue;
 		}
 
 		Category* category = getCategoryByID(imbuement->getCategory());
-		if (!item->getImbuementType(category->id)) {
+		if (!item->hasImbuement(category->id)) {
 			continue;
 		}
 

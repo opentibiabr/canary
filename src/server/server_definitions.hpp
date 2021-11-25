@@ -83,7 +83,7 @@ enum Resource_t : uint8_t{
 enum InspectObjectTypes : uint8_t {
 	INSPECT_NORMALOBJECT = 0,
 	INSPECT_NPCTRADE = 1,
-	INSPECT_UNKNOWN = 2,
+	INSPECT_PLAYERTRADE = 2,
 	INSPECT_CYCLOPEDIA = 3
 };
 

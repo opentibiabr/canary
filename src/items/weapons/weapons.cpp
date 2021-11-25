@@ -410,7 +410,7 @@ bool Weapon::useFist(Player* player, Creature* target)
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier, int32_t cleavePercent) const
 {
 	if (scripted) {
-		if (cleave) {
+		if (cleavePercent != 0) {
 			return;
 		}
 

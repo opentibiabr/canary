@@ -29,12 +29,11 @@
 extern Game g_game;
 extern Monsters g_monsters;
 
-bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage)
+bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion)
 {
 	if (!charm || !player || !target) {
 		return false;
 	}
-
 	CombatParams charmParams;
 	CombatDamage charmDamage;
 	if (charm->type == CHARM_OFFENSIVE) {
@@ -44,12 +43,15 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
 			return false;
-      }
+	  	}
 		int32_t maxHealth = target->getMaxHealth();
 		charmDamage.primary.type = charm->dmgtype;
-		charmDamage.primary.value = ((-maxHealth * (charm->percent)) / 200);
+		charmDamage.primary.value = ((-maxHealth * (charm->percent)) / 100);
 		charmDamage.extension = true;
-		charmDamage.exString = charm->logMsg;
+		if (!charmDamage.exString.empty()) {
+			charmDamage.exString += ", ";
+		}
+		charmDamage.exString += charm->logMsg + (dueToPotion ? " due to active charm upgrade" : "");
 
 		charmParams.impactEffect = charm->effect;
 		charmParams.combatType = charmDamage.primary.type;
@@ -59,13 +61,13 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 	} else if (charm->type == CHARM_DEFENSIVE) {
 		switch (charm->id) {
 			case CHARM_PARRY: {
-				charmDamage.primary.type = charm->dmgtype;
-				charmDamage.primary.value = -realDamage * 1.8;
+				charmDamage.primary.type = COMBAT_NEUTRALDAMAGE;
+				charmDamage.primary.value = -realDamage;
 				charmDamage.extension = true;
-				charmDamage.exString = charm->logMsg;
-
-				charmParams.impactEffect = charm->effect;
-				charmParams.combatType = charmDamage.primary.type;
+				if (!charmDamage.exString.empty()) {
+					charmDamage.exString += ", ";
+				}
+				charmDamage.exString += charm->logMsg + (dueToPotion ? " due to active charm upgrade" : "");	
 				charmParams.aggressive = true;
 				break;
 			}

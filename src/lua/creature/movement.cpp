@@ -752,35 +752,6 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		player->addCondition(condition);
 	}
 
-	for (uint16_t combat = 0; combat <= 11; combat++) {
-		if (it.abilities->reflectPercent[combat] != 0) {
-			player->setReflectPercent(indexToCombatType(combat), it.abilities->reflectPercent[combat]);
-		}
-
-		if (it.abilities->specializedMagicLevel[combat] != 0)
-			player->setSpecializedMagicLevel(indexToCombatType(combat), it.abilities->specializedMagicLevel[combat]);
-	}
-
-	if (it.abilities->reflectDamage != 0) {
-		player->setReflectDamage(it.abilities->reflectDamage);
-	}
-
-	if (it.abilities->perfectShotRange != 0) {
-		player->setPerfectShotDamage(it.abilities->perfectShotRange, it.abilities->perfectShotDamage);
-	}
-
-	if (it.abilities->cleavePercent != 0) {
-		player->setCleavePercent(it.abilities->cleavePercent);
-	}
-
-	if (it.abilities->magicShieldCapacityFlat != 0) {
-		player->setMagicShieldCapacityFlat(it.abilities->magicShieldCapacityFlat);
-	}
-
-	if (it.abilities->magicShieldCapacityPercent != 0) {
-		player->setMagicShieldCapacityPercent(it.abilities->magicShieldCapacityPercent);
-	}
-
 	//skill/stats modifiers
 	bool needUpdate = false;
 
@@ -863,34 +834,6 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 
 	if (it.abilities->regeneration) {
 		player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
-	}
-
-	for (uint16_t combat = 0; combat <= 11; combat++) {
-		if (it.abilities->reflectPercent[combat] != 0)
-			player->setReflectPercent(indexToCombatType(combat), -it.abilities->reflectPercent[combat]);
-
-		if (it.abilities->specializedMagicLevel[combat] != 0)
-			player->setSpecializedMagicLevel(indexToCombatType(combat), -it.abilities->specializedMagicLevel[combat]);
-	}
-
-	if (it.abilities->reflectDamage != 0) {
-		player->setReflectDamage(-it.abilities->reflectDamage);
-	}
-
-	if (it.abilities->perfectShotRange != 0) {
-		player->setPerfectShotDamage(it.abilities->perfectShotRange, -it.abilities->perfectShotDamage);
-	}
-
-	if (it.abilities->cleavePercent != 0) {
-		player->setCleavePercent(-it.abilities->cleavePercent);
-	}
-
-	if (it.abilities->magicShieldCapacityFlat != 0) {
-		player->setMagicShieldCapacityFlat(-it.abilities->magicShieldCapacityFlat);
-	}
-
-	if (it.abilities->magicShieldCapacityPercent != 0) {
-		player->setMagicShieldCapacityPercent(-it.abilities->magicShieldCapacityPercent);
 	}
 	
 	//skill/stats modifiers

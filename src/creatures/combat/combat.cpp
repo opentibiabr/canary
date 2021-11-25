@@ -872,11 +872,11 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		}
 	}
 
-	if(caster && caster->getPlayer()){
+	if (!damage.extension && caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		// Charm low blow rune)
-		if (target && target->getMonster() && !damage.cleave) {
+		if (target && target->getMonster()) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
 				MonsterType* mType = g_monsters.getMonsterType(target->getName());
@@ -891,8 +891,8 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		}
 		if (damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance) {
 			damage.critical = true;
-			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE)) / 100;
+			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE)) / 100;
 		}
 	}
 	if (canCombat) {

@@ -363,37 +363,13 @@ class Player final : public Creature, public Cylinder
 			return party;
 		}
 
-		// 12.7
-		uint32_t getReflectPercent(CombatType_t combatType) const override {
-			return reflectMapPercent[combatTypeToIndex(combatType)];
+		int32_t getCleavePercent(bool inventoryCheck = true) const;
+
+		void setCleavePercent(int32_t value) {
+			cleavePercent = std::max(0, cleavePercent + value);
 		}
 
-		void setReflectPercent(CombatType_t combatType, int32_t value) {
-			this->reflectMapPercent[combatTypeToIndex(combatType)] = std::max(0, this->reflectMapPercent[combatTypeToIndex(combatType)] + value);
-		}
-
-		uint32_t getReflectDamage() const {
-			return reflectDamage;
-		}
-
-		void setReflectDamage(int32_t value) {
-			reflectDamage += value;
-		}
-
-		uint16_t getCleavePercent() const {
-			return cleavePercent;
-		}
-
-		void setCleavePercent(uint16_t value) {
-			cleavePercent += value;
-		}
-
-		int32_t getPerfectShotDamage(uint8_t range) const {
-			auto it = perfectShot.find(range);
-			if (it != perfectShot.end())
-				return it->second;
-			return 0;
-		}
+		int32_t getPerfectShotDamage(uint8_t range, bool inventoryCheck = true) const;
 
 		void setPerfectShotDamage(uint8_t range, int32_t damage) {
 			int32_t actualDamage = getPerfectShotDamage(range);
@@ -405,29 +381,27 @@ class Player final : public Creature, public Cylinder
 				perfectShot[range] = actualDamage;
 		}
 
-		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-			return specializedMagicLevel[combatTypeToIndex(combat)];
-		}
+		int32_t getSpecializedMagicLevel(CombatType_t combat, bool inventoryCheck = true) const;
 
 		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
 			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
 		}
 
-		int32_t getMagicShieldCapacityFlat() const {
-			return magicShieldCapacityFlat;
-		}
-
-		int16_t getMagicShieldCapacityPercent() const {
-			return magicShieldCapacityPercent;
-		}
+		int32_t getMagicShieldCapacityFlat(bool inventoryCheck = true) const;
 
 		void setMagicShieldCapacityFlat(int32_t value) {
 			magicShieldCapacityFlat += value;
 		}
 
-		void setMagicShieldCapacityPercent(int16_t value) {
+		int32_t getMagicShieldCapacityPercent(bool inventoryCheck = true) const;
+
+		void setMagicShieldCapacityPercent(int32_t value) {
 			magicShieldCapacityPercent += value;
 		}
+
+		int32_t getReflectPercent(CombatType_t combat, bool inventoryCheck = true) const override;
+
+		int32_t getReflectFlat(CombatType_t combat, bool inventoryCheck = true) const override;
 
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
@@ -2179,13 +2153,11 @@ class Player final : public Creature, public Cylinder
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
 
-		int16_t reflectMapPercent[COMBAT_COUNT] = { 0 };
-		int32_t reflectDamage = 0;
-		uint16_t cleavePercent = 0;
-		std::map<uint8_t, int32_t> perfectShot;
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		int32_t cleavePercent = 0;
+		std::map<uint8_t, int32_t> perfectShot;
 		int32_t magicShieldCapacityFlat = 0;
-		int16_t magicShieldCapacityPercent = 0;
+		int32_t magicShieldCapacityPercent = 0;
 
 		static uint32_t playerAutoID;
 

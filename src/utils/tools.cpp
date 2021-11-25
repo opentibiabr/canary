@@ -1004,6 +1004,8 @@ size_t combatTypeToIndex(CombatType_t combatType)
 			return 10;
 		case COMBAT_DEATHDAMAGE:
 			return 11;
+		case COMBAT_NEUTRALDAMAGE:
+			return 12;
 		default:
 			return 0;
 	}

@@ -106,12 +106,13 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const
 	}
 }
 
-uint32_t Monster::getReflectPercent(CombatType_t reflectType) const {
+int32_t Monster::getReflectPercent(CombatType_t reflectType, bool inventoryCheck) const {
+	int32_t result = Creature::getReflectPercent(reflectType, inventoryCheck);
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
-		return it->second;
+		result += it->second;
 	}
-	return 0;
+	return result;
 }
 
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {

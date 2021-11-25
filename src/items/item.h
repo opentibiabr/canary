@@ -793,19 +793,23 @@ class Item : virtual public Thing
 			return items[id].weight;
 		}
 
-		int16_t getCleavePercent() const {
+		int32_t getCleavePercent() const {
 			return items[id].abilities->cleavePercent;
 		}
 
-		int16_t getPerfectShotDamage() const {
+		int32_t getPerfectShotDamage() const {
 			return items[id].abilities->perfectShotDamage;
 		}
-		int16_t getPerfectShotRange() const {
+		uint8_t getPerfectShotRange() const {
 			return items[id].abilities->perfectShotRange;
 		}
 
-		int16_t getReflectDamage() const {
-			return items[id].abilities->reflectDamage;
+		int32_t getReflectionFlat(CombatType_t combatType) const {
+			return items[id].abilities->reflectFlat[combatTypeToIndex(combatType)];
+		}
+
+		int32_t getReflectionPercent(CombatType_t combatType) const {
+			return items[id].abilities->reflectPercent[combatTypeToIndex(combatType)];
 		}
 
 		int16_t getMagicShieldCapacityPercent() const {

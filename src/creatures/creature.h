@@ -412,8 +412,20 @@ class Creature : virtual public Thing
 		virtual void onRemoveCreature(Creature* creature, bool isLogout);
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
                                    const Tile* oldTile, const Position& oldPos, bool teleport);
-		virtual uint32_t getReflectPercent(CombatType_t combatType) const { return 0; }
-		virtual uint32_t getReflectDamage() const { return 0; }
+								   
+		virtual int32_t getReflectPercent(CombatType_t combatType, bool inventoryCheck = true) const {
+			return reflectPercent[combatTypeToIndex(combatType)];
+		}
+		virtual int32_t getReflectFlat(CombatType_t combatType, bool inventoryCheck = true) const {
+			return reflectFlat[combatTypeToIndex(combatType)];
+		}
+
+		virtual void setReflectPercent(CombatType_t combatType, int32_t value) {
+			this->reflectPercent[combatTypeToIndex(combatType)] = std::max(0, this->reflectPercent[combatTypeToIndex(combatType)] + value);
+		}
+		virtual void setReflectFlat(CombatType_t combatType, int32_t value) {
+			this->reflectFlat[combatTypeToIndex(combatType)] = std::max(0, this->reflectFlat[combatTypeToIndex(combatType)] + value);
+		}
 		
 		virtual void onAttackedCreatureDisappear(bool) {}
 		virtual void onFollowCreatureDisappear(bool) {}
@@ -547,6 +559,9 @@ class Creature : virtual public Thing
 		uint16_t manaShield = 0;
 		uint16_t maxManaShield = 0;
 		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
+
+		int32_t reflectPercent[COMBAT_COUNT] = { 0 };
+		int32_t reflectFlat[COMBAT_COUNT] = { 0 };
 
 		Outfit_t currentOutfit;
 		Outfit_t defaultOutfit;

@@ -126,6 +126,7 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 		case COMBAT_ICEDAMAGE: return CIPBIA_ELEMENTAL_ICE;
 		case COMBAT_HOLYDAMAGE: return CIPBIA_ELEMENTAL_HOLY;
 		case COMBAT_DEATHDAMAGE: return CIPBIA_ELEMENTAL_DEATH;
+		case COMBAT_MANADRAIN: return CIPBIA_ELEMENTAL_MANADRAIN;
 		default: return CIPBIA_ELEMENTAL_UNDEFINED;
 	}
 }

@@ -1018,9 +1018,9 @@ std::vector<std::pair<std::string, std::string>>
 				descriptions.emplace_back("Perfect Shot", ss.str());
 			}
 
-			if (it.abilities->reflectDamage) {
+			if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
 				ss.str("");
-				ss << it.abilities->reflectDamage;
+				ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
@@ -1301,9 +1301,9 @@ std::vector<std::pair<std::string, std::string>>
 				descriptions.emplace_back("Perfect Shot", ss.str());
 			}
 
-			if (it.abilities->reflectDamage) {
+			if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
 				ss.str("");
-				ss << it.abilities->reflectDamage;
+				ss << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)];
 				descriptions.emplace_back("Damage Reflection", ss.str());
 			}
 
@@ -1622,7 +1622,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 					s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
 				}
 
-				if (it.abilities->reflectDamage) {
+				if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
 					if (begin) {
 						begin = false;
 						s << " (";
@@ -1630,7 +1630,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 						s << ", ";
 					}
 
-					s << "damage reflection " << std::showpos << it.abilities->reflectDamage << std::noshowpos;
+					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];
@@ -1865,7 +1865,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 					s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
 				}
 
-				if (it.abilities->reflectDamage) {
+				if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
 					if (begin) {
 						begin = false;
 						s << " (";
@@ -1873,7 +1873,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 						s << ", ";
 					}
 
-					s << "damage reflection " << std::showpos << it.abilities->reflectDamage << std::noshowpos;
+					s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
 				}
 
 				int16_t show = it.abilities->absorbPercent[0];
@@ -2081,7 +2081,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
 			}
 
-			if (it.abilities->reflectDamage) {
+			if (it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)]) {
 				if (begin) {
 					begin = false;
 					s << " (";
@@ -2089,7 +2089,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 					s << ", ";
 				}
 
-				s << "damage reflection " << std::showpos << it.abilities->reflectDamage << std::noshowpos;
+				s << "damage reflection " << std::showpos << it.abilities->reflectFlat[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] << std::noshowpos;
 			}
 
 			int16_t show = it.abilities->absorbPercent[0];

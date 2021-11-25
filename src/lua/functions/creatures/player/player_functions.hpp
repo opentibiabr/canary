@@ -92,6 +92,9 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getMagicShieldCapacityFlat", PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat);
 			registerMethod(L, "Player", "getMagicShieldCapacityPercent", PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent);
 
+			registerMethod(L, "Player", "sendSpellCooldown", PlayerFunctions::luaPlayerSendSpellCooldown);
+			registerMethod(L, "Player", "sendSpellGroupCooldown", PlayerFunctions::luaPlayerSendSpellGroupCooldown);
+
 			registerMethod(L, "Player", "getMagicLevel", PlayerFunctions::luaPlayerGetMagicLevel);
 			registerMethod(L, "Player", "getBaseMagicLevel", PlayerFunctions::luaPlayerGetBaseMagicLevel);
 			registerMethod(L, "Player", "getMana", PlayerFunctions::luaPlayerGetMana);
@@ -371,6 +374,9 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerGetMagicShieldCapacityFlat(lua_State* L);
 		static int luaPlayerGetMagicShieldCapacityPercent(lua_State* L);
+
+		static int luaPlayerSendSpellCooldown(lua_State* L);
+		static int luaPlayerSendSpellGroupCooldown(lua_State* L);
 
 		static int luaPlayerGetMagicLevel(lua_State* L);
 		static int luaPlayerGetBaseMagicLevel(lua_State* L);

@@ -198,6 +198,7 @@ Condition* Condition::createCondition(ConditionId_t id, ConditionType_t type, in
 		case CONDITION_CHANNELMUTEDTICKS:
 		case CONDITION_YELLTICKS:
 		case CONDITION_PACIFIED:
+		case CONDITION_TIBIADROMEPOTIONS:
 			return new ConditionGeneric(id, type, ticks, buff, subId);
 
 		default:
@@ -361,8 +362,16 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
     memcpy(statsPercent, conditionAttrs.statsPercent, sizeof(statsPercent));
     memcpy(buffs, conditionAttrs.buffs, sizeof(buffs));
     memcpy(buffsPercent, conditionAttrs.buffsPercent, sizeof(buffsPercent));
+    memcpy(absorbs, conditionAttrs.absorbs, sizeof(absorbs));
+    memcpy(absorbsPercent, conditionAttrs.absorbsPercent, sizeof(absorbsPercent));
+    memcpy(increases, conditionAttrs.increases, sizeof(increases));
+    memcpy(increasesPercent, conditionAttrs.increasesPercent, sizeof(increasesPercent));
     updatePercentBuffs(creature);
     updateBuffs(creature);
+    updatePercentAbsorbs(creature);
+    updateAbsorbs(creature);
+    updatePercentIncreases(creature);
+    updateIncreases(creature);
     disableDefense = conditionAttrs.disableDefense;
 
     if (Player* player = creature->getPlayer()) {
@@ -385,6 +394,12 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream& prop
   else if (attr == CONDITIONATTR_BUFFS) {
     return propStream.read<int32_t>(buffs[currentBuff++]);
   }
+  else if (attr == CONDITIONATTR_ABSORBS) {
+    return propStream.read<int32_t>(absorbs[currentAbsorb++]);
+  }
+  else if (attr == CONDITIONATTR_INCREASES) {
+    return propStream.read<int32_t>(increases[currentIncrease++]);
+  }
   return Condition::unserializeProp(attr, propStream);
 }
 
@@ -406,6 +421,16 @@ void ConditionAttributes::serialize(PropWriteStream& propWriteStream)
     propWriteStream.write<uint8_t>(CONDITIONATTR_BUFFS);
     propWriteStream.write<int32_t>(buffs[i]);
   }
+
+  for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+    propWriteStream.write<uint8_t>(CONDITIONATTR_ABSORBS);
+    propWriteStream.write<int32_t>(absorbs[i]);
+  }
+
+  for (size_t i = 0; i < COMBAT_COUNT; ++i) {
+    propWriteStream.write<uint8_t>(CONDITIONATTR_INCREASES);
+    propWriteStream.write<int32_t>(increases[i]);
+  }
 }
 
 bool ConditionAttributes::startCondition(Creature* creature)
@@ -417,6 +442,10 @@ bool ConditionAttributes::startCondition(Creature* creature)
   creature->setUseDefense(!disableDefense);
   updatePercentBuffs(creature);
   updateBuffs(creature);
+  updatePercentAbsorbs(creature);
+  updateAbsorbs(creature);
+  updatePercentIncreases(creature);
+  updateIncreases(creature);
   if (Player* player = creature->getPlayer()) {
     updatePercentSkills(player);
     updateSkills(player);
@@ -499,6 +528,46 @@ void ConditionAttributes::updateSkills(Player* player)
   }
 }
 
+void ConditionAttributes::updatePercentAbsorbs(Creature* creature)
+{
+  for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
+    if (absorbsPercent[i] == 0) {
+      continue;
+    }
+	absorbs[i] = std::round((100 - creature->getAbsorbPercent(indexToCombatType(i))) * absorbsPercent[i] / 100.);
+  }
+}
+
+void ConditionAttributes::updateAbsorbs(Creature* creature)
+{
+  for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
+    if (absorbs[i] == 0) {
+      continue;
+    }
+    creature->setAbsorbPercent(indexToCombatType(i), absorbs[i]);
+  }
+}
+
+void ConditionAttributes::updatePercentIncreases(Creature* creature)
+{
+  for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
+    if (increasesPercent[i] == 0) {
+      continue;
+    }
+	increases[i] = std::round((100 - creature->getIncreasePercent(indexToCombatType(i))) * increasesPercent[i] / 100.);
+  }
+}
+
+void ConditionAttributes::updateIncreases(Creature* creature)
+{
+  for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
+    if (increases[i] == 0) {
+      continue;
+    }
+    creature->setIncreasePercent(indexToCombatType(i), increases[i]);
+  }
+}
+
 void ConditionAttributes::updatePercentBuffs(Creature* creature)
 {
   for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
@@ -561,6 +630,14 @@ void ConditionAttributes::endCondition(Creature* creature)
       needUpdateIcons = true;
       creature->setBuff(static_cast<buffs_t>(i), -buffs[i]);
     }
+  }
+  for (uint8_t i = 0; i < COMBAT_COUNT; i++) {
+	  if (absorbs[i]) {
+		  creature->setAbsorbPercent(indexToCombatType(i), -absorbs[i]);
+	  }
+	  if (increases[i]) {
+		  creature->setIncreasePercent(indexToCombatType(i), -increases[i]);
+	  }
   }
   if (creature->getMonster() && needUpdateIcons) {
     g_game.updateCreatureIcon(creature);
@@ -737,6 +814,106 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value)
 
   case CONDITION_PARAM_BUFF_DAMAGERECEIVED: {
     buffsPercent[BUFF_DAMAGERECEIVED] = std::max<int32_t>(0, value);
+    return true;
+  }
+
+  case CONDITION_PARAM_ABSORB_PHYSICALPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] = value;
+    return true; 
+  }
+
+  case CONDITION_PARAM_ABSORB_FIREPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] = value;
+    return true;
+  }
+    
+  case CONDITION_PARAM_ABSORB_ENERGYPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] = value;
+    return true;
+  }
+    
+  case CONDITION_PARAM_ABSORB_ICEPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_ABSORB_EARTHPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_ABSORB_DEATHPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] = value;
+    return true; 
+  }
+
+  case CONDITION_PARAM_ABSORB_HOLYPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_ABSORB_LIFEDRAINPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_LIFEDRAIN)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_ABSORB_MANADRAINPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_MANADRAIN)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_ABSORB_DROWNPERCENT: {
+    absorbsPercent[combatTypeToIndex(COMBAT_DROWNDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_INCREASE_PHYSICALPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_PHYSICALDAMAGE)] = value;
+    return true; 
+  }
+
+  case CONDITION_PARAM_INCREASE_FIREPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] = value;
+    return true;
+  }
+    
+  case CONDITION_PARAM_INCREASE_ENERGYPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] = value;
+    return true;
+  }
+    
+  case CONDITION_PARAM_INCREASE_ICEPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_INCREASE_EARTHPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_INCREASE_DEATHPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_DEATHDAMAGE)] = value;
+    return true; 
+  }
+
+  case CONDITION_PARAM_INCREASE_HOLYPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_HOLYDAMAGE)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_INCREASE_LIFEDRAINPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_LIFEDRAIN)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_INCREASE_MANADRAINPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_MANADRAIN)] = value;
+    return true;
+  }
+
+  case CONDITION_PARAM_INCREASE_DROWNPERCENT: {
+    increasesPercent[combatTypeToIndex(COMBAT_DROWNDAMAGE)] = value;
     return true;
   }
 

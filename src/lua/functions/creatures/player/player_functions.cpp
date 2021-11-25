@@ -720,6 +720,40 @@ int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L)
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSendSpellCooldown(lua_State* L)
+{
+	// player:sendSpellCooldown(spellId, time)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	uint8_t spellId = getNumber<uint32_t>(L, 2, 1);
+	uint32_t time = getNumber<uint32_t>(L, 3, 0);
+
+ 	player->sendSpellCooldown(spellId, time);
+	pushBoolean(L, true);
+
+ 	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSpellCooldown(lua_State* L)
+{
+	// player:sendSpellCooldown(spellId, time)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	uint8_t spellId = getNumber<uint32_t>(L, 2, 1);
+	uint32_t time = getNumber<uint32_t>(L, 3, 0);
+
+ 	player->sendSpellCooldown(spellId, time);
+	pushBoolean(L, true);
+
+ 	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetMagicLevel(lua_State* L) {
 	// player:getMagicLevel()
 	Player* player = getUserdata<Player>(L, 1);

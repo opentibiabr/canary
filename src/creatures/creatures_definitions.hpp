@@ -67,6 +67,8 @@ enum ConditionAttr_t {
 	CONDITIONATTR_ISBUFF,
 	CONDITIONATTR_SUBID,
 	CONDITIONATTR_MANASHIELD,
+	CONDITIONATTR_ABSORBS,
+	CONDITIONATTR_INCREASES,
 
 	//reserved for serialization
 	CONDITIONATTR_END = 254,
@@ -112,7 +114,8 @@ enum ConditionType_t : uint64_t {
 	CONDITION_GOSHNAR2 = static_cast<uint64_t>(1) << 34,
 	CONDITION_GOSHNAR3 = static_cast<uint64_t>(1) << 35,
 	CONDITION_GOSHNAR4 = static_cast<uint64_t>(1) << 36,
-	CONDITION_GOSHNAR5 = static_cast<uint64_t>(1) << 37
+	CONDITION_GOSHNAR5 = static_cast<uint64_t>(1) << 37,
+	CONDITION_TIBIADROMEPOTIONS = static_cast<uint64_t>(1) << 38,
 };
 
 enum ConditionParam_t {
@@ -173,6 +176,26 @@ enum ConditionParam_t {
 	CONDITION_PARAM_MANASHIELD = 55,
 	CONDITION_PARAM_BUFF_DAMAGEDEALT = 56,
 	CONDITION_PARAM_BUFF_DAMAGERECEIVED = 57,
+	CONDITION_PARAM_ABSORB_PHYSICALPERCENT = 58,
+	CONDITION_PARAM_ABSORB_FIREPERCENT = 59,
+	CONDITION_PARAM_ABSORB_ENERGYPERCENT = 60,
+	CONDITION_PARAM_ABSORB_ICEPERCENT = 61,
+	CONDITION_PARAM_ABSORB_EARTHPERCENT = 62,
+	CONDITION_PARAM_ABSORB_DEATHPERCENT = 63,
+	CONDITION_PARAM_ABSORB_HOLYPERCENT = 64,
+	CONDITION_PARAM_ABSORB_LIFEDRAINPERCENT = 65,
+	CONDITION_PARAM_ABSORB_MANADRAINPERCENT = 66,
+	CONDITION_PARAM_ABSORB_DROWNPERCENT = 67,
+	CONDITION_PARAM_INCREASE_PHYSICALPERCENT = 68,
+	CONDITION_PARAM_INCREASE_FIREPERCENT = 69,
+	CONDITION_PARAM_INCREASE_ENERGYPERCENT = 70,
+	CONDITION_PARAM_INCREASE_ICEPERCENT = 71,
+	CONDITION_PARAM_INCREASE_EARTHPERCENT = 72,
+	CONDITION_PARAM_INCREASE_DEATHPERCENT = 73,
+	CONDITION_PARAM_INCREASE_HOLYPERCENT = 74,
+	CONDITION_PARAM_INCREASE_LIFEDRAINPERCENT = 75,
+	CONDITION_PARAM_INCREASE_MANADRAINPERCENT = 76,
+	CONDITION_PARAM_INCREASE_DROWNPERCENT = 77,
 };
 
 enum stats_t {
@@ -580,8 +603,9 @@ enum CombatType_t : uint16_t {
 	COMBAT_ICEDAMAGE = 1 << 9,
 	COMBAT_HOLYDAMAGE = 1 << 10,
 	COMBAT_DEATHDAMAGE = 1 << 11,
+	COMBAT_NEUTRALDAMAGE = 1 << 12,
 
-	COMBAT_COUNT = 12
+	COMBAT_COUNT = 13
 };
 
 enum PlayerAsyncOngoingTaskFlags : uint64_t {
@@ -766,7 +790,8 @@ struct LightInfo {
 	constexpr LightInfo(uint8_t newLevel, uint8_t newColor) : level(newLevel), color(newColor) {}
 };
 
-struct CombatDamage {
+struct CombatDamage
+{
 	struct {
 		CombatType_t type;
 		int32_t value;
@@ -776,17 +801,17 @@ struct CombatDamage {
 	bool critical;
 	int affected;
 	bool extension;
-	bool cleave;
+
 	std::string exString;
 
-	CombatDamage() {
+	CombatDamage()
+	{
 		origin = ORIGIN_NONE;
 		primary.type = secondary.type = COMBAT_NONE;
 		primary.value = secondary.value = 0;
 		critical = false;
 		affected = 1;
 		extension = false;
-		cleave = false;
 		exString = "";
 	}
 };

@@ -58,19 +58,19 @@ struct Abilities {
 
 	// New 12.7 modifiers
 	// Specialized magic level modifiers
+	int32_t reflectFlat[COMBAT_COUNT] = { 0 };
 	int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 
-	// Magic shield capacity modifiers
-	int16_t magicShieldCapacityPercent = 0;
+	//magic shield capacity
+	int32_t magicShieldCapacityPercent = 0;
 	int32_t magicShieldCapacityFlat = 0;
 	
-	// Cleave modifiers
-	int16_t cleavePercent = 0;
+	//cleave
+	int32_t cleavePercent = 0;
 	
-	// Perfect shot modifiers
+	// perfect shot
 	int32_t perfectShotDamage = 0;
-	int16_t perfectShotRange = 0;
-	int16_t reflectDamage = 0;
+	uint8_t perfectShotRange = 0;
 
 	bool manaShield = false;
 	bool invisible = false;

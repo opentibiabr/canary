@@ -131,9 +131,17 @@ class ConditionAttributes final : public ConditionGeneric
 		int32_t statsPercent[STAT_LAST + 1] = {};
     	int32_t buffsPercent[BUFF_LAST + 1] = {};
     	int32_t buffs[BUFF_LAST + 1] = {};
+
+		int32_t absorbs[COMBAT_COUNT] = {};
+		int32_t absorbsPercent[COMBAT_COUNT] = {};
+		int32_t increases[COMBAT_COUNT] = {};
+		int32_t increasesPercent[COMBAT_COUNT] = {};
+
 		int32_t currentSkill = 0;
 		int32_t currentStat = 0;
     	int32_t currentBuff = 0;
+		int32_t currentAbsorb = 0;
+		int32_t currentIncrease = 0;
 
 		bool disableDefense = false;
 
@@ -141,7 +149,11 @@ class ConditionAttributes final : public ConditionGeneric
 		void updateStats(Player* player);
 		void updatePercentSkills(Player* player);
 		void updateSkills(Player* player);
-    	void updatePercentBuffs(Creature* creature);
+		void updatePercentAbsorbs(Creature* creature);
+    	void updateAbsorbs(Creature* creature);
+		void updatePercentIncreases(Creature* creature);
+    	void updateIncreases(Creature* creature);
+		void updatePercentBuffs(Creature* creature);
     	void updateBuffs(Creature* creature);
 };
 

@@ -807,7 +807,7 @@ void ItemParse::parseCleavePercent(const std::string& tmpStrValue, pugi::xml_att
 	std::string stringValue = tmpStrValue;
 	Abilities & abilities = itemType.getAbilities();
 	if (stringValue == "cleavepercent") {
-		abilities.cleavePercent += pugi::cast<inint32_tt16_t>(valueAttribute.value());
+		abilities.cleavePercent += pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 

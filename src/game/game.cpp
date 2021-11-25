@@ -6036,7 +6036,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 							if (attacker) {
 								ss << " due to ";
 								if (attacker == target) {
-									ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own " << attackMsg << "" : "his own " << attackMsg << "") : "its own " << attackMsg << "");
+									ss << (targetPlayer ? (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own " : "his own ") : "its own ");
+									ss << attackMsg;
 								} else {
 									ss << "an " << attackMsg << " by " << attacker->getNameDescription();
 								}
@@ -6272,10 +6273,11 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 							ss << " due to ";
 							if (attacker == target) {
 								if (targetPlayer) {
-									ss << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own " << attackMsg << "" : "his own " << attackMsg << "");
+									ss << (targetPlayer->getSex() == PLAYERSEX_FEMALE ? "her own " : "his own ");
 								} else {
-									ss << "its own " << attackMsg << "";
+									ss << "its own ";
 								}
+								ss << attackMsg;
 							} else {
 								ss << "an " << attackMsg << " by " << attacker->getNameDescription();
 							}

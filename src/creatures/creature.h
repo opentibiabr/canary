@@ -582,7 +582,7 @@ class Creature : virtual public Thing
 
 		uint16_t manaShield = 0;
 		uint16_t maxManaShield = 0;
-		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
+		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
 
 		int32_t reflectPercent[COMBAT_COUNT] = { 0 };
 		int32_t reflectFlat[COMBAT_COUNT] = { 0 };

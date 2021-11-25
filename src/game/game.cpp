@@ -5569,7 +5569,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 				}
 			}
 			if (target->getPlayer() && attacker->getAbsorbPercent(damage.primary.type) != 0)
-			damageAbsorbMessage = true;
+				damageAbsorbMessage = true;
 			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0)
 				damageIncreaseMessage = true;
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
@@ -5618,7 +5618,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 				}
 			}
 			if (target->getPlayer() && attacker->getAbsorbPercent(damage.secondary.type) != 0)
-			damageAbsorbMessage = true;
+				damageAbsorbMessage = true;
 			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0)
 				damageIncreaseMessage = true;
 			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
@@ -5897,7 +5897,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				int32_t damageY = attackerPlayer->getPerfectShotDamage(distanceY);
 				Item* item = attackerPlayer->getWeapon();
 				if (item && item->getWeaponType() == WEAPON_DISTANCE) {
-					Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
+					Item* quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
 					if (quiver->getWeaponType() == WEAPON_QUIVER) {
 						if (quiver->getPerfectShotRange() == distanceX)
 							damageX -= quiver->getPerfectShotDamage();

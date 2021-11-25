@@ -810,11 +810,8 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 {
 	BlockType_t blockType = BLOCK_NONE;
 
-	if (combatType != COMBAT_HEALING && damage > 0) {
+	if (combatType != COMBAT_HEALING && damage != 0) {
 		int32_t value = absorbPercent[combatTypeToIndex(combatType)];
-		if (value != 0)
-			damage -= damage * (value / 100);
-		value = fieldAbsorbPercent[combatTypeToIndex(combatType)];
 		if (value != 0)
 			damage -= damage * (value / 100);
 		value = absorbFlat[combatTypeToIndex(combatType)];

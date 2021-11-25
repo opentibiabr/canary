@@ -7792,7 +7792,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (!buyerPlayer) {
+			buyerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
+				delete buyerPlayer;
 				return;
 			}
 		}
@@ -7809,7 +7811,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 			account.RemoveCoins(amount);
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-                                             "Sold on Market");
+											 "Sold on Market");
 		} else {
 			uint16_t stashmath = amount;
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
@@ -7843,15 +7845,15 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 
 		if (it.id == ITEM_STORE_COIN) {
-      account::Account account;
-      account.LoadAccountDB(buyerPlayer->getAccount());
-      account.AddCoins(amount);
-      account.RegisterCoinsTransaction(account::COIN_ADD, amount,
-                                      "Purchased on Market");
-    }
-    else if (it.stackable)
-    {
-      uint16_t tmpAmount = amount;
+			account::Account account;
+			account.LoadAccountDB(buyerPlayer->getAccount());
+			account.AddCoins(amount);
+			account.RegisterCoinsTransaction(account::COIN_ADD, amount,
+											 "Purchased on Market");
+		}
+		else if (it.stackable)
+		{
+			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
 				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
@@ -7862,10 +7864,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 				tmpAmount -= stackCount;
 			}
-    }
-    else
-    {
-      int32_t subType;
+		}
+		else
+		{
+			int32_t subType;
 			if (it.charges != 0) {
 				subType = it.charges;
 			} else {
@@ -7879,9 +7881,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 					break;
 				}
 			}
-    }
+		}
 
-    if (buyerPlayer->isOffline()) {
+		if (buyerPlayer->isOffline()) {
 			IOLoginData::savePlayer(buyerPlayer);
 			delete buyerPlayer;
 		}
@@ -7910,11 +7912,11 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-      account::Account account;
-      account.LoadAccountDB(player->getAccount());
-      account.AddCoins(amount);
-      account.RegisterCoinsTransaction(account::COIN_ADD, amount,
-                                      "Purchased on Market");
+			account::Account account;
+			account.LoadAccountDB(player->getAccount());
+			account.AddCoins(amount);
+			account.RegisterCoinsTransaction(account::COIN_ADD, amount,
+											 "Purchased on Market");
 		} else if (it.stackable) {
 			uint16_t tmpAmount = amount;
 			while (tmpAmount > 0) {
@@ -7947,28 +7949,29 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (sellerPlayer) {
 			sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
 			if (it.id == ITEM_STORE_COIN) {
-        account::Account account;
-        account.LoadAccountDB(sellerPlayer->getAccount());
-        account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-                                        "Sold on Market");
-      }
+				account::Account account;
+				account.LoadAccountDB(sellerPlayer->getAccount());
+				account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
+												 "Sold on Market");
+			}
 		} else {
 			IOLoginData::increaseBankBalance(offer.playerId, totalPrice);
 			if (it.id == ITEM_STORE_COIN) {
 				sellerPlayer = new Player(nullptr);
 
 				if (IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
-          account::Account account;
-          account.LoadAccountDB(sellerPlayer->getAccount());
-          account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-                                          "Sold on Market");
-		}
+					account::Account account;
+					account.LoadAccountDB(sellerPlayer->getAccount());
+					account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
+													 "Sold on Market");
+				}
 
 				delete sellerPlayer;
 			}
 		}
+
 		if (it.id != ITEM_STORE_COIN) {
-		player->onReceiveMail();
+			player->onReceiveMail();
 		}
 	}
 

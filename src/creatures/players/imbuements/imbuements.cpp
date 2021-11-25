@@ -336,9 +336,9 @@ bool Imbuements::reload() {
 	return loadFromXml(true);
 }
 
-BaseImbue* Imbuements::getBaseByID(uint16_t id)
+BaseImbuement* Imbuements::getBaseByID(uint16_t id)
 {
-	auto it = std::find_if(bases.begin(), bases.end(), [id](const BaseImbue& group_imb) {
+	auto it = std::find_if(bases.begin(), bases.end(), [id](const BaseImbuement& group_imb) {
 				return group_imb.id == id;
 			});
 

@@ -4509,7 +4509,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	uint8_t slot = Item::items[itemId].imbuingSlots;
+	uint8_t slot = it.imbuementSlot;
 	if (slot > 0)
 	{
 		msg.addString(std::to_string(slot));
@@ -6324,16 +6324,16 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuid)
 {
 	Imbuement *imbuement = g_imbuements->getImbuement(imbuid);
-	BaseImbue *base = g_imbuements->getBaseByID(imbuement->getBaseID());
+	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
 	Category *category = g_imbuements->getCategoryByID(imbuement->getCategory());
 
 	msg.add<uint32_t>(imbuid);
-	msg.addString(base->name + " " + imbuement->getName());
+	msg.addString(baseImbuement->name + " " + imbuement->getName());
 	msg.addString(imbuement->getDescription());
 	msg.addString(category->name + imbuement->getSubGroup());
 
 	msg.add<uint16_t>(imbuement->getIconID());
-	msg.add<uint32_t>(base->duration);
+	msg.add<uint32_t>(baseImbuement->duration);
 
 	msg.addByte(imbuement->isPremium() ? 0x01 : 0x00);
 
@@ -6348,9 +6348,9 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuid)
 		msg.add<uint16_t>(itm.second);
 	}
 
-	msg.add<uint32_t>(base->price);
-	msg.addByte(base->percent);
-	msg.add<uint32_t>(base->protectionPrice);
+	msg.add<uint32_t>(baseImbuement->price);
+	msg.addByte(baseImbuement->percent);
+	msg.add<uint32_t>(baseImbuement->protectionPrice);
 }
 
 void ProtocolGame::sendImbuementWindow(Item *item)
@@ -6360,20 +6360,18 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		return;
 	}
 
-	const ItemType &it = Item::items[item->getID()];
-
 	bool itemHasImbue = false;
-	uint8_t slot = it.imbuingSlots;
-	for (uint8_t i = 0; i < slot; i++)
+	uint8_t slot = item->getImbuementSlot();
+	ImbuementInfo imbuementInfo;
+	for (uint8_t slotid = 0; slotid < slot; slotid++)
 	{
-		if (item->getImbuementDuration(i))
+		if (item->getImbuementInfo(slotid, &imbuementInfo))
 		{
 			itemHasImbue = true;
 			break;
 		}
 	}
 
-	// Set imbuing item
 	player->setImbuingItem(item);
 
 	NetworkMessage msg;
@@ -6382,20 +6380,18 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	msg.addByte(slot);
 
 	// Send imbuement time
-	for (uint8_t i = 0; i < slot; i++)
+	for (uint8_t slotid = 0; slotid < slot; slotid++)
 	{
-		Imbuement *imbuement = item->getImbuement(i);
-		uint32_t duration = item->getImbuementDuration(i);
-		if (!duration)
+		if (!item->getImbuementInfo(slotid, &imbuementInfo))
 		{
 			msg.addByte(0x00);
 			continue;
 		}
 
 		msg.addByte(0x01);
-		addImbuementInfo(msg, imbuement->getId());
-		msg.add<uint32_t>(duration);
-		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuement->getBaseID())->removeCost);
+		addImbuementInfo(msg, imbuementInfo.imbuement->getId());
+		msg.add<uint32_t>(imbuementInfo.duration);
+		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
 	}
 
 	std::vector<Imbuement *> imbuements = g_imbuements->getImbuements(player, item);

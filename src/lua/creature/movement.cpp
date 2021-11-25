@@ -690,16 +690,17 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		player->setItemAbility(slot, true);
 	}
 
-	if (it.imbuingSlots > 0) {
+	uint8_t imbuementSlot = item->getImbuementSlot();
+	ImbuementInfo imbuementInfo;
+	if (item && imbuementSlot > 0) {
 		bool hasImbuement = false;
-		for (uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			Imbuement *imbuement = item->getImbuement(slotid);
-			if (!imbuement || item->getImbuementDuration(slotid) == 0) {
+		for (uint8_t slotid = 0; slotid < imbuementSlot; slotid++) {
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				continue;
 			}
 
 			hasImbuement = true;
-			player->onEquipImbueItem(imbuement);
+			player->onEquipImbueItem(imbuementInfo.imbuement);
 		}
 
 		if (hasImbuement) {
@@ -795,14 +796,16 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 		g_game.startDecay(item);
 	}
 
-	if (it.imbuingSlots > 0) {
-		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			Imbuement *imbuement = item->getImbuement(slotid);
-			if (!imbuement || item->getImbuementDuration(slotid) == 0) {
+	uint8_t imbuementSlot = item->getImbuementSlot();
+	ImbuementInfo imbuementInfo;
+	if (item && imbuementSlot > 0) {
+		bool hasImbuement = false;
+		for (uint8_t slotid = 0; slotid < imbuementSlot; slotid++) {
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				continue;
 			}
 
-			player->onDeEquipImbueItem(imbuement);
+			player->onDeEquipImbueItem(imbuementInfo.imbuement);
 		}
 	}
 

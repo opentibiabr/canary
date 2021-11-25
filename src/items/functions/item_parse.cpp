@@ -34,7 +34,6 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
@@ -162,13 +161,6 @@ void ItemParse::parseWrapContainer(const std::string& tmpStrValue, pugi::xml_att
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "wrapcontainer") {
 		itemType.wrapContainer = valueAttribute.as_bool();
-	}
-}
-
-void ItemParse::parseImbuingSlot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "imbuingslot") {
-		itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
@@ -822,7 +814,7 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 		return;
 	}
 
-	itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
+	itemType.imbuementSlot = pugi::cast<int32_t>(valueAttribute.value());
 
 	for (auto subAttributeNode: attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");

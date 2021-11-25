@@ -29,8 +29,8 @@ class Item;
 
 class Imbuement;
 
-struct BaseImbue {
-	BaseImbue(uint16_t initId, std::string initName, uint32_t initProtectionPrice, uint32_t initPrice, uint32_t initRemoveCost, int32_t initDuration, uint16_t initPercent) :
+struct BaseImbuement {
+	BaseImbuement(uint16_t initId, std::string initName, uint32_t initProtectionPrice, uint32_t initPrice, uint32_t initRemoveCost, int32_t initDuration, uint16_t initPercent) :
 		id(initId), name(std::move(initName)), protectionPrice(initProtectionPrice), price(initPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) {}
 
 	uint16_t id;
@@ -58,7 +58,7 @@ class Imbuements {
 
 		Imbuement* getImbuement(uint16_t id);
 
-		BaseImbue* getBaseByID(uint16_t id);
+		BaseImbuement* getBaseByID(uint16_t id);
 		Category* getCategoryByID(uint16_t id);
 		std::vector<Imbuement*> getImbuements(Player* player, Item* item);
 	protected:
@@ -66,7 +66,7 @@ class Imbuements {
 
 		std::map<uint32_t, Imbuement> imbues;
 
-		std::vector<BaseImbue> bases;
+		std::vector<BaseImbuement> bases;
 		std::vector<Category> categories;
 
 		bool loaded = false;

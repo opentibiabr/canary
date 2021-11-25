@@ -6596,31 +6596,26 @@ void Game::checkImbuements()
 			continue;
 		}
 
-		bool hasImbue = false;
-		uint8_t slots = Item::items[item->getID()].imbuingSlots;
-		for (uint8_t slotid = 0; slotid < slots; slotid++) {
-			Imbuement* imbuement = item->getImbuement(slotid);
-			if(!imbuement) {
+		uint8_t slot = item->getImbuementSlot();
+		ImbuementInfo imbuementInfo;
+		for (uint8_t slotid = 0; slotid < slot; slotid++)
+		{
+			if (!item->getImbuementInfo(slotid, &imbuementInfo))
+			{
 				continue;
 			}
 
-			int32_t duration = item->getImbuementDuration(slotid);
-
+			int32_t duration = imbuementInfo.duration;
 			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
 
-			item->setImbuement(slotid, imbuement->getId(), duration, newDuration);
-			hasImbue = true;
+			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
 
 			if (duration > 0 && newDuration == 0) {
-				player->onDeEquipImbueItem(imbuement);
+				ReleaseItem(item);
+				it = --imbuedItems[bucket].erase(it);
+				player->onDeEquipImbueItem(imbuementInfo.imbuement);
 				continue;
 			}
-		}
-
-		if (!hasImbue) {
-			ReleaseItem(item);
-			it = --imbuedItems[bucket].erase(it);
-			continue;
 		}
 	}
 

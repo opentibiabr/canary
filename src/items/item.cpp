@@ -95,18 +95,13 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 	return newItem;
 }
 
-Imbuement* Item::getImbuement(uint8_t slot)
+bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
-	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	uint32_t info = attr ? static_cast<uint32_t>(boost::get<int64_t>(attr->value)) : 0;
-	return g_imbuements->getImbuement(info & 0xFF);
-}
-
-uint32_t Item::getImbuementDuration(uint8_t slot)
-{
-	const ItemAttributes::CustomAttribute* attr = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	uint32_t info = attr ? static_cast<uint32_t>(boost::get<int64_t>(attr->value)) : 0;
-	return info >> 8;
+	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
+	uint32_t info = attribute ? static_cast<uint32_t>(boost::get<int64_t>(attribute->value)) : 0;
+	imbuementInfo->imbuement = g_imbuements->getImbuement(info & 0xFF);
+	imbuementInfo->duration = info >> 8;
+	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
 void Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration)
@@ -583,13 +578,13 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
-		case ATTR_IMBUINGSLOTS: {
-			int32_t imbuingSlots;
-			if (!propStream.read<int32_t>(imbuingSlots)) {
+		case ATTR_IMBUEMENTSLOT: {
+			int32_t imbuementSlot;
+			if (!propStream.read<int32_t>(imbuementSlot)) {
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_IMBUINGSLOTS, imbuingSlots);
+			setIntAttr(ITEM_ATTRIBUTE_IMBUEMENTSLOT, imbuementSlot);
 			break;
 		}
 
@@ -853,9 +848,9 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_IMBUINGSLOTS)) {
-		propWriteStream.write<uint8_t>(ATTR_IMBUINGSLOTS);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_IMBUINGSLOTS));
+	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENTSLOT)) {
+		propWriteStream.write<uint8_t>(ATTR_IMBUEMENTSLOT);
+		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_IMBUEMENTSLOT));
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_OPENCONTAINER)) {
@@ -2166,7 +2161,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		s << '.';
 	}
 
-	uint8_t slot = item->getImbuingSlots();
+	uint8_t slot = item->getImbuementSlot();
 	if (item && slot >= 1)
 	{
 		s << std::endl << "Imbuements: (";
@@ -2179,29 +2174,28 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 			}
 
 			Item* castItem = const_cast<Item*>(item);
-			if (!castItem) {
+			if (!castItem)
+			{
 				continue;
 			}
 
-			uint32_t duration = castItem->getImbuementDuration(slotid);
-			if (!duration) {
+			ImbuementInfo imbuementInfo;
+			if (!castItem->getImbuementInfo(slotid, &imbuementInfo))
+			{
 				s << "Empty Slot";
-			}
-
-			Imbuement *imbuement = castItem->getImbuement(slotid);
-			if (!imbuement) {
 				continue;
 			}
 
-			const BaseImbue *base = g_imbuements->getBaseByID(imbuement->getBaseID());
-			if (!base) {
+			const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+			if (!baseImbuement)
+			{
 				continue;
 			}
 
-			int minutes = duration / 60;
+			int minutes = imbuementInfo.duration / 60;
 			int hours = minutes / 60;
-			s << base->name << " "
-			  << imbuement->getName() << " "
+			s << baseImbuement->name << " "
+			  << imbuementInfo.imbuement->getName() << " "
 			  << std::setw(2) << std::setfill('0') << (hours) << ":"
 			  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h";
 		}
@@ -2514,11 +2508,12 @@ bool Item::hasMarketAttributes() const
 		}
 	}
 
-	if (items[id].imbuingSlots > 0) {
-		for (uint8_t slot = 0; slot < items[id].imbuingSlots; slot++) {
-			Item* item = const_cast<Item*>(this);
-			uint32_t info = item->getImbuementDuration(slot);
-			if (info) {
+	Item* item = const_cast<Item*>(this);
+	uint8_t slot = item->getImbuementSlot();
+	if (item && slot > 0) {
+		for (uint8_t slotid = 0; slotid < slot; slotid++) {
+			ImbuementInfo imbuementInfo;
+			if (item->getImbuementInfo(slotid, &imbuementInfo)) {
 				return false;
 			}
 		}

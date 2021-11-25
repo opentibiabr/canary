@@ -712,11 +712,11 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemGetImbuingSlots(lua_State* L) {
-	// item:getImbuingSlots()
+int ItemFunctions::luaItemGetImbuementSlot(lua_State* L) {
+	// item:getImbuementSlot()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getImbuingSlots());
+		lua_pushnumber(L, item->getImbuementSlot());
 	} else {
 		lua_pushnil(L);
 	}

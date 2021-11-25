@@ -1165,14 +1165,15 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		}
 	}
 
-	if (item->getImbuementDuration(slot) > 0)
+	ImbuementInfo imbuementInfo;
+	if (item->getImbuementInfo(slot, &imbuementInfo))
 	{
 		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
 		return;
 	}
 
-	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
 	if (!baseImbuement)
 	{
 		return;
@@ -1227,20 +1228,16 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		return;
 	}
 
-	Imbuement *imbuement = item->getImbuement(slot);
-	if (!imbuement) {
-		return;
-	}
-
-	BaseImbue* baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
-	if (!baseImbuement) {
-		return;
-	}
-
-	if (!item->getImbuementDuration(slot))
+	ImbuementInfo imbuementInfo;
+	if (!item->getImbuementInfo(slot, &imbuementInfo))
 	{
 		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
 		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
+	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+	if (!baseImbuement) {
 		return;
 	}
 
@@ -1255,7 +1252,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		return;
 	}
 
-	item->setImbuement(slot, imbuement->getId(), 0, 0);
+	item->setImbuement(slot, imbuementInfo.imbuement->getId(), 0, 0);
 	this->sendImbuementWindow(item);
 }
 
@@ -1272,7 +1269,7 @@ void Player::sendImbuementWindow(Item* item)
 	}
 
 	const ItemType& it = Item::items[item->getID()];
-	uint8_t slot = it.imbuingSlots;
+	uint8_t slot = it.imbuementSlot;
 	if (slot <= 0 ) {
 		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
 		return;
@@ -2355,18 +2352,16 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 				}
 			}
 
-			uint8_t slots = Item::items[item->getID()].imbuingSlots;
-			for (uint8_t slotid = 0; slotid < slots; slotid++) {
-				Imbuement *imbuement = item->getImbuement(slotid);
-				if (!imbuement) {
+			uint8_t slots = item->getImbuementSlot();
+			ImbuementInfo imbuementInfo;
+			for (uint8_t slotid = 0; slotid < slot; slotid++)
+			{
+				if (!item->getImbuementInfo(slotid, &imbuementInfo))
+				{
 					continue;
 				}
 
-				if (!item->getImbuementDuration(slotid)) {
-					continue;
-				}
-
-				const int16_t& imbuementAbsorbPercent = imbuement->absorbPercent[combatTypeToIndex(combatType)];
+				const int16_t& imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
 
 				if (imbuementAbsorbPercent != 0) {
 					damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));

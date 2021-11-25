@@ -40,7 +40,6 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"attack", ITEM_PARSE_ATTACK},
 	{"rotateto", ITEM_PARSE_ROTATETO},
 	{"wrapcontainer", ITEM_PARSE_WRAPCONTAINER},
-	{"imbuingslot", ITEM_PARSE_IMBUINGSLOT},
 	{"wrapableto", ITEM_PARSE_WRAPABLETO},
 	{"unwrapableto", ITEM_PARSE_WRAPABLETO},
 	{"moveable", ITEM_PARSE_MOVEABLE},
@@ -261,7 +260,6 @@ class ItemParse : public Items
 	static void parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseImbuingSlot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseMoveable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

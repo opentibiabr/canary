@@ -435,9 +435,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		if (cleave) {
 			damage.extension = true;
 			damagePercent = player->getCleavePercent();
-			if (damage.exString.empty()) {
-				damage.exString += "(";
-			} else {
+			if (!damage.exString.empty()) {
 				damage.exString += ", ";
 			}
 			damage.exString += "cleave damage";

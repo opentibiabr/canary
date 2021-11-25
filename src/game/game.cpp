@@ -7888,8 +7888,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			IOLoginData::savePlayer(buyerPlayer);
 			delete buyerPlayer;
 		}
-	// MARKETACTION_SELL
-	} else {
+	} else if (offer.type == MARKETACTION_SELL) {
 		Player* sellerPlayer = getPlayerByGUID(offer.playerId);
 		if (player == sellerPlayer) {
 			player->sendFYIBox("You cannot accept your own offer.");

@@ -7735,11 +7735,13 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.timestamp += g_config.getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
 	player->sendMarketEnter(player->getLastDepotId());
-	player->updateMarketExhausted(); // Exhausted for cancel offer in the market
+	// Exhausted for cancel offer in the market
+	player->updateMarketExhausted();
 }
 
-void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount) // Limit of 64k of items to create offer
+void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount)
 {
+	// Limit of 64k of items to create offer
 	if (amount == 0 || amount > 64000) {
 		return;
 	}
@@ -7886,7 +7888,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			IOLoginData::savePlayer(buyerPlayer);
 			delete buyerPlayer;
 		}
-	} else {//MARKETACTION_SELL
+	// MARKETACTION_SELL
+	} else {
 		Player* sellerPlayer = getPlayerByGUID(offer.playerId);
 		if (player == sellerPlayer) {
 			player->sendFYIBox("You cannot accept your own offer.");

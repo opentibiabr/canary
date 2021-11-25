@@ -7596,42 +7596,44 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-      account::Account account(player->getAccount());
-      account.LoadAccountDB();
-      uint32_t coins;
-      account.GetCoins(&coins);
+			account::Account account(player->getAccount());
+			account.LoadAccountDB();
+			uint32_t coins;
+			account.GetCoins(&coins);
 
-      if (amount > coins) {
-        return;
-      }
-      account.RemoveCoins(static_cast<uint32_t>(amount));
-    } else {
-		uint16_t stashmath = amount;
-		uint16_t stashminus = player->getStashItemCount(it.wareId);
-		if (stashminus > 0) {
+			if (amount > coins) {
+				return;
+			}
+
+			account.RemoveCoins(static_cast<uint32_t>(amount));
+		} else {
+			uint16_t stashmath = amount;
+			uint16_t stashminus = player->getStashItemCount(it.wareId);
 			stashmath = (amount - (amount > stashminus ? stashminus : amount));
-			player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
-		}
 
-		std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
+			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
+			if (itemList.empty() && stashmath > 0) {
+				return;
+			}
 
-		if (!itemList.empty()) {
-			if (it.stackable) {
-				uint16_t tmpAmount = stashmath;
-				for (Item *item : itemList) {
-					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
-					tmpAmount -= removeCount;
-					internalRemoveItem(item, removeCount);
+			if (stashminus > 0) {
+				player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
+			}
 
-				}
-			} else {
-				for (Item *item : itemList) {
+			uint16_t tmpAmount = stashmath;
+			for (Item *item : itemList) {
+				if (!it.stackable) {
 					internalRemoveItem(item);
+					continue;
 				}
+
+				uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
+				tmpAmount -= removeCount;
+				internalRemoveItem(item, removeCount);
 			}
 		}
-   }
-    g_game.removeMoney(player, fee, 0, true);
+
+		g_game.removeMoney(player, fee, 0, true);
 	} else {
 
 		uint64_t totalPrice = price * amount;
@@ -7796,26 +7798,33 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
-      account::Account account;
-      account.LoadAccountDB(player->getAccount());
-      uint32_t coins;
-      account.GetCoins(&coins);
-      if (amount > coins)
-      {
-        return;
-      }
-
-      account.RemoveCoins(amount);
-      account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-                                      "Sold on Market");
-    } else {
-			std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotLocker);
-			if (itemList.empty()) {
+			account::Account account;
+			account.LoadAccountDB(player->getAccount());
+			uint32_t coins;
+			account.GetCoins(&coins);
+			if (amount > coins)
+			{
 				return;
 			}
 
+			account.RemoveCoins(amount);
+			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
+                                             "Sold on Market");
+		} else {
+			uint16_t stashmath = amount;
+			uint16_t stashminus = player->getStashItemCount(it.wareId);
+			stashmath = (amount - (amount > stashminus ? stashminus : amount));
+			std::forward_list<Item*> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
+			if (itemList.empty() && stashmath > 0) {
+				return;
+			}
+
+			if (stashminus > 0) {
+				player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
+			}
+
 			if (it.stackable) {
-				uint16_t tmpAmount = amount;
+				uint16_t tmpAmount = stashmath;
 				for (Item* item : itemList) {
 					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;
@@ -7965,9 +7974,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	const int32_t marketOfferDuration = g_config.getNumber(MARKET_OFFER_DURATION);
 
-	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, offer.timestamp + marketOfferDuration, OFFERSTATE_ACCEPTEDEX);
+	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, time(nullptr), OFFERSTATE_ACCEPTEDEX);
 
-	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, offer.timestamp + marketOfferDuration, OFFERSTATE_ACCEPTED);
+	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, time(nullptr), OFFERSTATE_ACCEPTED);
 
 	offer.amount -= amount;
 

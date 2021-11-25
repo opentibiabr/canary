@@ -363,13 +363,13 @@ class Player final : public Creature, public Cylinder
 			return party;
 		}
 
-		int32_t getCleavePercent(bool inventoryCheck = true) const;
+		int32_t getCleavePercent(bool useCharges = false) const;
 
 		void setCleavePercent(int32_t value) {
 			cleavePercent = std::max(0, cleavePercent + value);
 		}
 
-		int32_t getPerfectShotDamage(uint8_t range, bool inventoryCheck = true) const;
+		int32_t getPerfectShotDamage(uint8_t range, bool useCharges = false) const;
 
 		void setPerfectShotDamage(uint8_t range, int32_t damage) {
 			int32_t actualDamage = getPerfectShotDamage(range);
@@ -381,27 +381,27 @@ class Player final : public Creature, public Cylinder
 				perfectShot[range] = actualDamage;
 		}
 
-		int32_t getSpecializedMagicLevel(CombatType_t combat, bool inventoryCheck = true) const;
+		int32_t getSpecializedMagicLevel(CombatType_t combat, bool useCharges = false) const;
 
 		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
 			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
 		}
 
-		int32_t getMagicShieldCapacityFlat(bool inventoryCheck = true) const;
+		int32_t getMagicShieldCapacityFlat(bool useCharges = false) const;
 
 		void setMagicShieldCapacityFlat(int32_t value) {
 			magicShieldCapacityFlat += value;
 		}
 
-		int32_t getMagicShieldCapacityPercent(bool inventoryCheck = true) const;
+		int32_t getMagicShieldCapacityPercent(bool useCharges = false) const;
 
 		void setMagicShieldCapacityPercent(int32_t value) {
 			magicShieldCapacityPercent += value;
 		}
 
-		int32_t getReflectPercent(CombatType_t combat, bool inventoryCheck = true) const override;
+		int32_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
 
-		int32_t getReflectFlat(CombatType_t combat, bool inventoryCheck = true) const override;
+		int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
 
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;

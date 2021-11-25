@@ -136,7 +136,7 @@ class Monster final : public Creature
 			this->spawnMonster = newSpawnMonster;
 		}
 
-		int32_t getReflectPercent(CombatType_t combatType, bool inventoryCheck = false) const override;
+		int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const override;
 		uint32_t getHealingCombatValue(CombatType_t healingType) const;
 
 		bool canWalkOnFieldType(CombatType_t combatType) const;

@@ -698,10 +698,10 @@ int PlayerFunctions::luaPlayerGetLevel(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L)
 {
-	// player:getMagicShieldCapacityFlat()
+	// player:getMagicShieldCapacityFlat(useCharges)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->getMagicShieldCapacityFlat());
+		lua_pushnumber(L, player->getMagicShieldCapacityFlat(getBoolean(L, 2, false)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -710,10 +710,10 @@ int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L)
 
 int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L)
 {
-	// player:getMagicShieldCapacityPercent()
+	// player:getMagicShieldCapacityPercent(useCharges)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->getMagicShieldCapacityPercent());
+		lua_pushnumber(L, player->getMagicShieldCapacityPercent(getBoolean(L, 2, false)));
 	} else {
 		lua_pushnil(L);
 	}

@@ -413,10 +413,10 @@ class Creature : virtual public Thing
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
                                    const Tile* oldTile, const Position& oldPos, bool teleport);
 								   
-		virtual int32_t getReflectPercent(CombatType_t combatType, bool inventoryCheck = true) const {
+		virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const {
 			return reflectPercent[combatTypeToIndex(combatType)];
 		}
-		virtual int32_t getReflectFlat(CombatType_t combatType, bool inventoryCheck = true) const {
+		virtual int32_t getReflectFlat(CombatType_t combatType, bool useCharges = false) const {
 			return reflectFlat[combatTypeToIndex(combatType)];
 		}
 

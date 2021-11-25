@@ -106,8 +106,8 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const
 	}
 }
 
-int32_t Monster::getReflectPercent(CombatType_t reflectType, bool inventoryCheck) const {
-	int32_t result = Creature::getReflectPercent(reflectType, inventoryCheck);
+int32_t Monster::getReflectPercent(CombatType_t reflectType, bool useCharges) const {
+	int32_t result = Creature::getReflectPercent(reflectType, useCharges);
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
 		result += it->second;

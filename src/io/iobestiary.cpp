@@ -29,7 +29,7 @@
 extern Game g_game;
 extern Monsters g_monsters;
 
-bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion)
+bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage, bool dueToPotion, bool checkArmor)
 {
 	if (!charm || !player || !target) {
 		return false;
@@ -69,6 +69,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 				}
 				charmDamage.exString += charm->logMsg + (dueToPotion ? " due to active charm upgrade" : "");	
 				charmParams.aggressive = true;
+				charmParams.blockedByArmor = checkArmor;
 				break;
 			}
 			case CHARM_DODGE: {

@@ -6598,10 +6598,8 @@ void Game::checkImbuements()
 
 		uint8_t slot = item->getImbuementSlot();
 		ImbuementInfo imbuementInfo;
-		for (uint8_t slotid = 0; slotid < slot; slotid++)
-		{
-			if (!item->getImbuementInfo(slotid, &imbuementInfo))
-			{
+		for (uint8_t slotid = 0; slotid < slot; slotid++) {
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				continue;
 			}
 

@@ -5560,21 +5560,20 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			}
 		}
 		damage.primary.value = -damage.primary.value;
-		// Damage healing primary
-		if (attacker && target->getMonster()) {
-			uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
-			if (primaryHealing > 0) {
-				damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
-				canHeal = true;
+		if (attacker) {
+			if (target->getMonster()) {
+				uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
+				if (primaryHealing > 0) {
+					damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
+					canHeal = true;
+				}
 			}
-		}
-		if (target->getPlayer() && attacker->getAbsorbPercent(damage.primary.type) != 0)
+			if (target->getPlayer() && attacker->getAbsorbPercent(damage.primary.type) != 0)
 			damageAbsorbMessage = true;
-		if (attacker && attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0)
-			damageIncreaseMessage = true;
-			
-		if (attacker)
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.primary.type) != 0)
+				damageIncreaseMessage = true;
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+		}
 		damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
@@ -5610,22 +5609,20 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		}
 		damage.secondary.value = -damage.secondary.value;
 		// Damage healing secondary
-		if (attacker && target->getMonster()) {
-			uint32_t secondaryHealing = target->getMonster()->getHealingCombatValue(damage.secondary.type);
-			if (secondaryHealing > 0) {
-				;
-				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
-				canHeal = true;
+		if (attacker) {
+			if (target->getMonster()) {
+				uint32_t secondaryHealing = target->getMonster()->getHealingCombatValue(damage.secondary.type);
+				if (secondaryHealing > 0) {
+					damageHeal.primary.value = std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
+					canHeal = true;
+				}
 			}
-		}
-
-		if (target->getPlayer() && attacker->getAbsorbPercent(damage.secondary.type) != 0)
+			if (target->getPlayer() && attacker->getAbsorbPercent(damage.secondary.type) != 0)
 			damageAbsorbMessage = true;
-		if (attacker && attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0)
-			damageIncreaseMessage = true;
-
-		if (attacker)
+			if (attacker->getPlayer() && attacker->getIncreasePercent(damage.secondary.type) != 0)
+				damageIncreaseMessage = true;
 			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+		}
 		damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
 
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
@@ -6224,10 +6221,8 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				}
 
 				targetPlayer->updateInputAnalyzer(damage.primary.type, damage.primary.value, cause);
-				if (attackerPlayer) {
-					if (damage.secondary.type != COMBAT_NONE) {
-						attackerPlayer->updateInputAnalyzer(damage.secondary.type, damage.secondary.value, cause);
-					}
+				if (damage.secondary.type != COMBAT_NONE) {
+					targetPlayer->updateInputAnalyzer(damage.secondary.type, damage.secondary.value, cause);
 				}
 			}
 

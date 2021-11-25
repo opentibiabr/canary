@@ -6611,11 +6611,14 @@ void Game::checkImbuements()
 			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
 
 			if (duration > 0 && newDuration == 0) {
-				ReleaseItem(item);
-				it = --imbuedItems[bucket].erase(it);
 				player->onDeEquipImbueItem(imbuementInfo.imbuement);
 				continue;
 			}
+		}
+
+		if (imbuementInfo.duration == 1) {
+			ReleaseItem(item);
+			it = --imbuedItems[bucket].erase(it);
 		}
 	}
 

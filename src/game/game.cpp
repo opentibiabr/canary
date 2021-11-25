@@ -7525,9 +7525,9 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 	player->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 }
 
-void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous) // Limit of 64k of items to create offer
+void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous)
 {
-	// 64000 is size of the client limitation
+	// 64000 is size of the client limitation (uint16_t)
 	if (amount == 0 || amount > 64000) {
 		return;
 	}
@@ -7660,11 +7660,11 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
 	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers);
 
-	//
-	player->updateMarketExhausted(); // Exhausted for create offert in the market
+	// Exhausted for create offert in the market
+	player->updateMarketExhausted();
 }
 
-void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter) // Market cancel offer
+void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {

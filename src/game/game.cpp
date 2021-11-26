@@ -7607,9 +7607,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 
 			account.RemoveCoins(static_cast<uint32_t>(amount));
 		} else {
-			uint16_t stashmath = amount;
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
-			stashmath = (amount - (amount > stashminus ? stashminus : amount));
+			amount = (amount - (amount > stashminus ? stashminus : amount));
 
 			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
 			if (itemList.empty() && stashmath > 0) {

@@ -6596,9 +6596,8 @@ void Game::checkImbuements()
 			continue;
 		}
 
-		uint8_t slot = item->getImbuementSlot();
-		ImbuementInfo imbuementInfo;
-		for (uint8_t slotid = 0; slotid < slot; slotid++) {
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			ImbuementInfo imbuementInfo;
 			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
 				continue;
 			}
@@ -6609,13 +6608,13 @@ void Game::checkImbuements()
 			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
 
 			if (duration > 0 && newDuration == 0) {
+				ReleaseItem(item);
 				player->onDeEquipImbueItem(imbuementInfo.imbuement);
 				continue;
 			}
 		}
 
-		if (imbuementInfo.duration == 1) {
-			ReleaseItem(item);
+		if (!item->hasImbuiments()) {
 			it = --imbuedItems[bucket].erase(it);
 		}
 	}

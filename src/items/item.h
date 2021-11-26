@@ -998,8 +998,8 @@ class Item : virtual public Thing
 
 		/**
 		 * @brief Get the Imbuement Info object
-		 * 
-		 * @param slot 
+		 *
+		 * @param slot
 		 * @param imbuementInfo (Imbuement *imbuement, uint32_t duration = 0)
 		 * @return true = duration is > 0 (info >> 8)
 		 * @return false
@@ -1008,6 +1008,16 @@ class Item : virtual public Thing
 		void setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
 		bool hasImbuement(uint16_t imbuementType) {
 			return items[id].imbuementTypes.find(imbuementType) != items[id].imbuementTypes.end();
+		}
+		bool hasImbuements() {
+			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+				ImbuementInfo imbuementInfo;
+				if (item->getImbuementInfo(slotid, &imbuementInfo) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 	protected:

@@ -820,7 +820,8 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 
 		if (attacker) {
 			value = attacker->getIncreasePercent(combatType);
-			damage += damage * (value / 100);
+			if (value != 0)
+				damage += damage * (value / 100);
 		}
 	}
 

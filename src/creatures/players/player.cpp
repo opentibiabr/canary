@@ -4631,7 +4631,7 @@ void Player::setTibiaCoins(int32_t v)
 int32_t Player::getCleavePercent(bool useCharges) const {
 	int32_t result = cleavePercent;
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 
@@ -4663,7 +4663,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 	if (it != perfectShot.end())
 		result = it->second;
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 
@@ -4691,7 +4691,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
 	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 
@@ -4720,7 +4720,7 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 	int32_t result = magicShieldCapacityFlat;
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 
@@ -4749,7 +4749,7 @@ int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 	int32_t result = magicShieldCapacityPercent;
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 
@@ -4778,7 +4778,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectPercent[combatTypeToIndex(combat)];
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 
@@ -4807,7 +4807,7 @@ int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
 	int32_t result = reflectFlat[combatTypeToIndex(combat)];
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
-		if (!isItemAbilityEnabled(static_cast<slots_t>(slot))) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
 			continue;
 		}
 

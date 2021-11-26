@@ -7610,8 +7610,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
 			amount = (amount - (amount > stashminus ? stashminus : amount));
 
-			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
-			if (itemList.empty() && stashmath > 0) {
+			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, amount, depotLocker);
+			if (itemList.empty() && amount > 0) {
 				return;
 			}
 
@@ -7619,7 +7619,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 				player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
 			}
 
-			uint16_t tmpAmount = stashmath;
+			uint16_t tmpAmount = amount;
 			for (Item *item : itemList) {
 				if (!it.stackable) {
 					internalRemoveItem(item);

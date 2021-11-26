@@ -1010,9 +1010,9 @@ class Item : virtual public Thing
 			return items[id].imbuementTypes.find(imbuementType) != items[id].imbuementTypes.end();
 		}
 		bool hasImbuements() {
-			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			for (uint8_t slotid = 0; slotid < this->getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;
-				if (item->getImbuementInfo(slotid, &imbuementInfo) {
+				if (this->getImbuementInfo(slotid, &imbuementInfo)) {
 					return true;
 				}
 			}

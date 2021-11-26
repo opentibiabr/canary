@@ -6614,7 +6614,7 @@ void Game::checkImbuements()
 			}
 		}
 
-		if (!item->hasImbuiments()) {
+		if (!item->hasImbuements()) {
 			it = --imbuedItems[bucket].erase(it);
 		}
 	}

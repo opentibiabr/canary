@@ -468,6 +468,41 @@ void Player::updateInventoryWeight()
 	}
 }
 
+void Player::updateInventoryImbuement()
+{
+	for (int items = CONST_SLOT_FIRST; items <= CONST_SLOT_LAST; ++items) {
+		Item* item = inventory[items];
+		if (!item) {
+			continue;
+		}
+
+		if (!this->hasCondition(CONDITION_INFIGHT) || item->getParent() != this) {
+			continue;
+		}
+
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+				continue;
+			}
+
+			Player* player = item->getHoldingPlayer();
+			if (player) {
+				g_game.playersWithImbuements[player->getID()] = player;
+			}
+
+			int32_t duration = imbuementInfo.duration;
+			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENT_INTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
+
+			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
+
+			if (duration > 0 && newDuration == 0) {
+				this->removeItemImbuementStats(imbuementInfo.imbuement);
+			}
+		}
+	}
+}
+
 void Player::setTraining(bool value) {
 	for (const auto& it : g_game.getPlayers()) {
 		if (!this->isInGhostMode() || it.second->isAccessPlayer()) {
@@ -1219,6 +1254,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 
 	item->setImbuement(slot, imbuement->getId(), baseImbuement->duration, baseImbuement->duration);
 
+	this->addItemImbuementStats(imbuement);
 	this->sendImbuementWindow(item);
 }
 
@@ -1268,15 +1304,8 @@ void Player::sendImbuementWindow(Item* item)
 		return;
 	}
 
-	const ItemType& it = Item::items[item->getID()];
-	uint8_t slot = it.imbuementSlot;
-	if (slot <= 0 ) {
+	if (item->getImbuementSlot() <= 0 ) {
 		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
-		return;
-	}
-
-	if (item->getParent() == this) {
-		this->sendTextMessage(MESSAGE_FAILURE, "You cannot imbue an equipped item.");
 		return;
 	}
 
@@ -3663,7 +3692,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 
 	if (const Item* item = thing->getItem()) {
 		if (const Container* container = item->getContainer()) {
-      checkLootContainers(container);
+			checkLootContainers(container);
 
 			if (container->isRemoved() || !Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
 				autoCloseContainers(container);
@@ -5404,11 +5433,10 @@ uint16_t Player::getFreeBackpackSlots() const
 	return counter;
 }
 
-void Player::onEquipImbueItem(Imbuement* imbuement)
+void Player::addItemImbuementStats(Imbuement* imbuement)
 {
-	// check skills
 	bool requestUpdate = false;
-
+	// Check imbuement skills
 	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 		if (imbuement->skills[i]) {
 			requestUpdate = true;
@@ -5421,7 +5449,7 @@ void Player::onEquipImbueItem(Imbuement* imbuement)
 		requestUpdate = false;
 	}
 
-	// check magpoint
+	// Check imbuement magic level
 	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
 		if (imbuement->stats[s]) {
 			requestUpdate = true;
@@ -5429,12 +5457,12 @@ void Player::onEquipImbueItem(Imbuement* imbuement)
 		}
 	}
 
-	// speed
+	// Add imbuement speed
 	if (imbuement->speed != 0) {
 		g_game.changeSpeed(this, imbuement->speed);
 	}
 
-	// capacity
+	// Add imbuement capacity
 	if (imbuement->capacity != 0) {
 		requestUpdate = true;
 		bonusCapacity = (capacity * imbuement->capacity)/100;
@@ -5448,11 +5476,11 @@ void Player::onEquipImbueItem(Imbuement* imbuement)
 	return;
 }
 
-void Player::onDeEquipImbueItem(Imbuement* imbuement)
+void Player::removeItemImbuementStats(Imbuement* imbuement)
 {
-	// check skills
 	bool requestUpdate = false;
 
+	// Check imbuement skills
 	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
 		if (imbuement->skills[i]) {
 			requestUpdate = true;
@@ -5465,7 +5493,7 @@ void Player::onDeEquipImbueItem(Imbuement* imbuement)
 		requestUpdate = false;
 	}
 
-	// check magpoint
+	// Check imbuement magic level
 	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
 		if (imbuement->stats[s]) {
 			requestUpdate = true;
@@ -5473,12 +5501,12 @@ void Player::onDeEquipImbueItem(Imbuement* imbuement)
 		}
 	}
 
-	// speed
+	// Remove imbuement speed
 	if (imbuement->speed != 0) {
 		g_game.changeSpeed(this, -imbuement->speed);
 	}
 
-	// capacity
+	// Remove imbuement capacity
 	if (imbuement->capacity != 0) {
 		requestUpdate = true;
 		bonusCapacity = 0;

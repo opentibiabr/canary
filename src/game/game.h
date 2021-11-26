@@ -47,8 +47,6 @@ class Charm;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
-static constexpr int32_t EVENT_IMBUEMENTINTERVAL = 250;
-static constexpr int32_t EVENT_IMBUEMENT_BUCKETS = 4;
 
 class Game
 {
@@ -397,11 +395,6 @@ class Game
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
-		void startImbuementCountdown(Item* item) {
-			item->incrementReferenceCounter();
-			toImbuedItems.push_front(item);
-		}
-
 		void startDecay(Item* item);
 		int32_t getLightHour() const {
 			return lightHour;
@@ -474,8 +467,6 @@ class Game
 			tilesToClean.clear();
 		}
 
-		std::forward_list<Item*> toImbuedItems;
-
 		// Event schedule
 		uint16_t getExpSchedule() const {
 			return expSchedule;
@@ -530,14 +521,13 @@ class Game
 		void internalDecayItem(Item* item);
 
 		std::unordered_map<uint32_t, Player*> players;
+		std::unordered_map<uint32_t, Player*> playersWithImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
 
 		std::list<Item*> decayItems[EVENT_DECAY_BUCKETS];
-
-		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];
 
 		std::map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
@@ -601,6 +591,8 @@ class Game
 
 		std::map<uint16_t, uint32_t> itemsPriceMap;
 		uint16_t itemsSaleCount;
+
+		friend class Player;
 };
 
 #endif  // SRC_GAME_GAME_H_

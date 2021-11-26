@@ -1694,8 +1694,8 @@ class Player final : public Creature, public Cylinder
 
 		void setTraining(bool value);
 
-		void onEquipImbueItem(Imbuement* imbuement);
-		void onDeEquipImbueItem(Imbuement* imbuement);
+		void addItemImbuementStats(Imbuement* imbuement);
+		void removeItemImbuementStats(Imbuement* imbuement);
 
 		bool isMarketExhausted() const;
 		void updateMarketExhausted() {
@@ -1889,6 +1889,11 @@ class Player final : public Creature, public Cylinder
 		void removeExperience(uint64_t exp, bool sendText = false);
 
 		void updateInventoryWeight();
+		/**
+		 * @brief Starts checking the imbuements in the item so that the time decay is performed
+		 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
+		 */
+		void updateInventoryImbuement();
 
 		void setNextWalkActionTask(SchedulerTask* task);
 		void setNextWalkTask(SchedulerTask* task);
@@ -2178,6 +2183,7 @@ class Player final : public Creature, public Cylinder
 		friend class Actions;
 		friend class IOLoginData;
 		friend class ProtocolGame;
+		friend class MoveEvent;
 
   account::Account *account_;
 };

@@ -752,6 +752,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   loadPlayerPreyData(player);
   player->updateBaseSpeed();
   player->updateInventoryWeight();
+  player->updateInventoryImbuement();
   player->updateItemsLight(true);
   return true;
 }

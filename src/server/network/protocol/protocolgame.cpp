@@ -6360,14 +6360,11 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		return;
 	}
 
-	bool itemHasImbue = false;
 	uint8_t slot = item->getImbuementSlot();
-	ImbuementInfo imbuementInfo;
 	for (uint8_t slotid = 0; slotid < slot; slotid++)
 	{
-		if (item->getImbuementInfo(slotid, &imbuementInfo))
+		if (item->hasImbuements())
 		{
-			itemHasImbue = true;
 			break;
 		}
 	}
@@ -6382,6 +6379,7 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	// Send imbuement time
 	for (uint8_t slotid = 0; slotid < slot; slotid++)
 	{
+		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo))
 		{
 			msg.addByte(0x00);

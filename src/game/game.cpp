@@ -163,7 +163,7 @@ void Game::start(ServiceManager* manager)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_DECAYINTERVAL, std::bind(&Game::checkDecay, this)));
-	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
+	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 }
 
 GameState_t Game::getGameState() const
@@ -4862,7 +4862,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-	if (item->getTopParent() != player || item->getParent() == player) {
+	if (item->getTopParent() != player) {
 		SPDLOG_ERROR("[Game::playerApplyImbuement] - An error occurred while player with name {} try to apply imbuement", player->getName());
 		player->sendImbuementResult("An error has occurred, reopen the imbuement window. If the problem persists, contact your administrator.");
 		return;
@@ -6576,49 +6576,16 @@ void Game::checkDecay()
 
 void Game::checkImbuements()
 {
-	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
+	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	size_t bucket = (lastImbuedBucket + 1) % EVENT_IMBUEMENT_BUCKETS;
-	std::list<Item*> items = imbuedItems[bucket];
-
-	for (auto it = items.begin(); it != items.end(); ++it) {
-		Item* item = *it;
-		if (!item || item->isRemoved()) {
-			continue;
-		}
-
-		Player* player = item->getHoldingPlayer();
+	for (const auto& players : playersWithImbuements) {
+		Player *player = players.second;
 		if (!player) {
-			continue;
+			return;
 		}
 
-		if (player->getZone() == ZONE_PROTECTION || !player->hasCondition(CONDITION_INFIGHT) || item->getParent() != player) {
-			continue;
-		}
-
-		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-			ImbuementInfo imbuementInfo;
-			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-				continue;
-			}
-
-			int32_t duration = imbuementInfo.duration;
-			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
-
-			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
-
-			if (duration > 0 && newDuration == 0) {
-				player->onDeEquipImbueItem(imbuementInfo.imbuement);
-			}
-		}
-
-		if (!item->hasImbuements()) {
-			it = --imbuedItems[bucket].erase(it);
-		}
+		player->updateInventoryImbuement();
 	}
-
-	lastImbuedBucket = bucket;
-	cleanup();
 }
 
 void Game::checkLight()
@@ -6753,12 +6720,6 @@ void Game::cleanup()
 		}
 	}
 	toDecayItems.clear();
-
-	for (Item* item : toImbuedItems) {
-		imbuedItems[lastImbuedBucket].push_back(item);
-	}
-	toImbuedItems.clear();
-
 }
 
 void Game::ReleaseCreature(Creature* creature)

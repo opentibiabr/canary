@@ -2512,8 +2512,7 @@ bool Item::hasMarketAttributes() const
 	uint8_t slot = item->getImbuementSlot();
 	if (item && slot > 0) {
 		for (uint8_t slotid = 0; slotid < slot; slotid++) {
-			ImbuementInfo imbuementInfo;
-			if (item->getImbuementInfo(slotid, &imbuementInfo)) {
+			if (item->hasImbuements()) {
 				return false;
 			}
 		}

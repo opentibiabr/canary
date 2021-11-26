@@ -161,6 +161,13 @@ staminaBonus = {
 	eventsPz = {} -- stamina in Pz
 }
 
+FAMILIARSNAME = {
+	"sorcerer familiar",
+	"knight familiar",
+	"druid familiar",
+	"paladin familiar"
+}
+
 function addStamina(playerId, ...)
 	-- Creature:onTargetCombat
 	if playerId then

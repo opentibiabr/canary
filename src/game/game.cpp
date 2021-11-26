@@ -7813,11 +7813,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
 											 "Sold on Market");
 		} else {
-			uint16_t stashmath = amount;
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
-			stashmath = (amount - (amount > stashminus ? stashminus : amount));
-			std::forward_list<Item*> itemList = getMarketItemList(it.wareId, stashmath, depotLocker);
-			if (itemList.empty() && stashmath > 0) {
+			amount = (amount - (amount > stashminus ? stashminus : amount));
+			std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotLocker);
+			if (itemList.empty() && amount > 0) {
 				return;
 			}
 
@@ -7826,7 +7825,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			if (it.stackable) {
-				uint16_t tmpAmount = stashmath;
+				uint16_t tmpAmount = amount;
 				for (Item* item : itemList) {
 					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;

@@ -6592,7 +6592,7 @@ void Game::checkImbuements()
 			continue;
 		}
 
-		if (!player->hasCondition(CONDITION_INFIGHT) || item->getParent() != player) {
+		if (player->getZone() == ZONE_PROTECTION || !player->hasCondition(CONDITION_INFIGHT) || item->getParent() != player) {
 			continue;
 		}
 
@@ -6608,9 +6608,7 @@ void Game::checkImbuements()
 			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
 
 			if (duration > 0 && newDuration == 0) {
-				ReleaseItem(item);
 				player->onDeEquipImbueItem(imbuementInfo.imbuement);
-				continue;
 			}
 		}
 

@@ -140,7 +140,11 @@ int CreatureFunctions::luaCreatureCanSeeCreature(lua_State* L) {
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
 		const Creature* otherCreature = getCreature(L, 2);
-		pushBoolean(L, creature->canSeeCreature(otherCreature));
+		if (otherCreature) {
+			pushBoolean(L, creature->canSeeCreature(otherCreature));
+		} else {
+			pushBoolean(L, false);
+		}
 	} else {
 		lua_pushnil(L);
 	}

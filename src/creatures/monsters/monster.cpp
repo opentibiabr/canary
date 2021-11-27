@@ -765,7 +765,6 @@ void Monster::onThink(uint32_t interval) {
 
 	if (!isInSpawnRange(position)) {
 		g_game().internalTeleport(this, masterPos);
-		setIdle(true);
 	} else {
 		updateIdleStatus();
 

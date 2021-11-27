@@ -692,6 +692,6 @@ class Game {
 		) const;
 };
 
-constexpr auto g_game = &Game::getInstance;
+constexpr auto ()g_game = &Game::getInstance;
 
 #endif // SRC_GAME_GAME_H_

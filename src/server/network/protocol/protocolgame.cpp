@@ -3480,6 +3480,7 @@ void ProtocolGame::sendCyclopediaCharacterTitles()
 void ProtocolGame::sendTournamentLeaderboard()
 {
 	NetworkMessage msg;
+	//playermsg.reset();
 	msg.addByte(0xC5);
 	msg.addByte(0);
 	msg.addByte(0x01);
@@ -5365,6 +5366,8 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 	msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
 	msg.addByte(0x00); // Tournament button
+	msg.addByte(0x0A); // sendPendingStateEntered
+	msg.addByte(0x0F); // sendEnterWorld
 
 	writeToOutputBuffer(msg);
 

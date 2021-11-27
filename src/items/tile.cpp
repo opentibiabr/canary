@@ -1529,6 +1529,10 @@ void Tile::setTileFlags(const Item* item) {
 		setFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH);
 	}
 
+	if (item->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+		setFlag(TILESTATE_BLOCKPROJECTILE);
+	}
+
 	if (item->getTeleport()) {
 		setFlag(TILESTATE_TELEPORT);
 	}
@@ -1569,28 +1573,115 @@ void Tile::resetTileFlags(const Item* item) {
 		resetFlag(TILESTATE_FLOORCHANGE);
 	}
 
-	if (item->hasProperty(CONST_PROP_BLOCKSOLID) && !hasProperty(item, CONST_PROP_BLOCKSOLID)) {
+	bool blockSolid = item->hasProperty(CONST_PROP_BLOCKSOLID);
+	bool immovableBlockSolid = item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID);
+	bool blockPath = item->hasProperty(CONST_PROP_BLOCKPATH);
+	bool noFieldBlockPath = item->hasProperty(CONST_PROP_NOFIELDBLOCKPATH);
+	bool immovableBlockPath = item->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH);
+	bool immovableNoFieldBlockPath = item->hasProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH);
+	bool blockProjectile = item->hasProperty(CONST_PROP_BLOCKPROJECTILE);
+
+	do {
+		if ((blockSolid | immovableBlockSolid | blockPath | noFieldBlockPath | immovableBlockPath | immovableNoFieldBlockPath | blockProjectile) == false) {
+			break;
+		}
+	} while (0);
+
+
+	if ((blockSolid | immovableBlockSolid | blockPath | noFieldBlockPath | immovableBlockPath | immovableNoFieldBlockPath | blockProjectile) != false) {
+		if (ground && item != ground) {
+			if (blockSolid && ground->hasProperty(CONST_PROP_BLOCKSOLID)) {
+				blockSolid = false;
+
+			}
+			if (immovableBlockSolid && ground->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID)) {
+				immovableBlockSolid = false;
+
+			}
+			if (blockPath && ground->hasProperty(CONST_PROP_BLOCKPATH)) {
+				blockPath = false;
+
+			}
+			if (noFieldBlockPath && ground->hasProperty(CONST_PROP_NOFIELDBLOCKPATH)) {
+				noFieldBlockPath = false;
+
+			}
+			if (immovableBlockPath && ground->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH)) {
+				immovableBlockPath = false;
+
+			}
+			if (immovableNoFieldBlockPath && ground->hasProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH)) {
+				immovableNoFieldBlockPath = false;
+
+			}
+			if (blockProjectile && ground->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+				blockProjectile = false;
+
+			}
+		}
+
+		if (const TileItemVector* items = getItemList()) {
+			for (const Item* checkItem : *items) {
+				if (item != checkItem) {
+					if (blockSolid && checkItem->hasProperty(CONST_PROP_BLOCKSOLID)) {
+						blockSolid = false;
+		
+					}
+					if (immovableBlockSolid && checkItem->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID)) {
+						immovableBlockSolid = false;
+		
+					}
+					if (blockPath && checkItem->hasProperty(CONST_PROP_BLOCKPATH)) {
+						blockPath = false;
+		
+					}
+					if (noFieldBlockPath && checkItem->hasProperty(CONST_PROP_NOFIELDBLOCKPATH)) {
+						noFieldBlockPath = false;
+		
+					}
+					if (immovableBlockPath && checkItem->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH)) {
+						immovableBlockPath = false;
+		
+					}
+					if (immovableNoFieldBlockPath && checkItem->hasProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH)) {
+						immovableNoFieldBlockPath = false;
+		
+					}
+					if (blockProjectile && checkItem->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+						blockProjectile = false;
+		
+					}
+				}
+			}
+		}
+	}
+
+	if (blockSolid) {
 		resetFlag(TILESTATE_BLOCKSOLID);
 	}
 
-	if (item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) && !hasProperty(item, CONST_PROP_IMMOVABLEBLOCKSOLID)) {
+	if (immovableBlockSolid) {
 		resetFlag(TILESTATE_IMMOVABLEBLOCKSOLID);
 	}
 
-	if (item->hasProperty(CONST_PROP_BLOCKPATH) && !hasProperty(item, CONST_PROP_BLOCKPATH)) {
+	if (noFieldBlockPath) {
 		resetFlag(TILESTATE_BLOCKPATH);
 	}
 
-	if (item->hasProperty(CONST_PROP_NOFIELDBLOCKPATH) && !hasProperty(item, CONST_PROP_NOFIELDBLOCKPATH)) {
+	if (noFieldBlockPath) {
 		resetFlag(TILESTATE_NOFIELDBLOCKPATH);
 	}
 
-	if (item->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH) && !hasProperty(item, CONST_PROP_IMMOVABLEBLOCKPATH)) {
+	if (immovableBlockPath) {
 		resetFlag(TILESTATE_IMMOVABLEBLOCKPATH);
 	}
 
-	if (item->hasProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH) && !hasProperty(item, CONST_PROP_IMMOVABLENOFIELDBLOCKPATH)) {
+	if (immovableNoFieldBlockPath) {
 		resetFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH);
+	}
+
+	if (blockProjectile) {
+		resetFlag(TILESTATE_BLOCKPROJECTILE);
 	}
 
 	if (item->getTeleport()) {

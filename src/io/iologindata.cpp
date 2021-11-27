@@ -199,7 +199,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	Condition* condition = Condition::createCondition(propStream);
 	while (condition) {
 		if (condition->unserialize(propStream)) {
-			player->storedConditionList.push_front(condition);
+			player->storedConditionList.push_back(condition);
 		} else {
 			delete condition;
 		}

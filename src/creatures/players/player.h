@@ -2369,7 +2369,7 @@ class Player final : public Creature, public Cylinder {
 		std::forward_list<uint32_t> modalWindows;
 		std::forward_list<std::string> learnedInstantSpellList;
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
-		std::forward_list<Condition*> storedConditionList;
+		std::vector<Condition*> storedConditionList;
 
 		std::list<MonsterType*> BestiaryTracker;
 

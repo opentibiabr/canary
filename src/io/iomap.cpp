@@ -56,6 +56,11 @@ Tile* IOMap::createTile(Item*&ground, Item* item, uint16_t x, uint16_t y, uint8_
 }
 
 bool IOMap::loadMap(Map* map, const std::string &fileName, const Position &pos, bool unload) {
+	if (!std::filesystem::exists(fileName)) {
+		setLastErrorString("Failed to load " + fileName + ": File doesn't exist.");
+		return false;
+	}
+
 	int64_t start = OTSYS_TIME();
 	OTB::Loader loader { fileName, OTB::Identifier { { 'O', 'T', 'B', 'M' } } };
 	auto &root = loader.parseTree();

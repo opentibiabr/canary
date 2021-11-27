@@ -395,44 +395,29 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 
 void ProtocolGame::logout(bool displayEffect, bool forced)
 {
-	//dispatcher thread
-	if (!player)
-	{
+	if (!player) {
 		return;
 	}
 
-	if (!player->isRemoved())
-	{
-		if (!forced)
-		{
-			if (!player->isAccessPlayer())
-			{
-				if (player->getTile()->hasFlag(TILESTATE_NOLOGOUT))
-				{
-					player->sendCancelMessage(RETURNVALUE_YOUCANNOTLOGOUTHERE);
-					return;
-				}
-
-				if (!player->getTile()->hasFlag(TILESTATE_PROTECTIONZONE) && player->hasCondition(CONDITION_INFIGHT))
-				{
-					player->sendCancelMessage(RETURNVALUE_YOUMAYNOTLOGOUTDURINGAFIGHT);
-					return;
-				}
-			}
-
-			//scripting event - onLogout
-			if (!g_creatureEvents->playerLogout(player))
-			{
-				//Let the script handle the error message
-				return;
-			}
+	bool removePlayer = !player->isRemoved() && !forced;
+	if (removePlayer && !player->isAccessPlayer()) {
+		if (player->getTile()->hasFlag(TILESTATE_NOLOGOUT)) {
+			player->sendCancelMessage(RETURNVALUE_YOUCANNOTLOGOUTHERE);
+			return;
 		}
 
-		if (displayEffect && player->getHealth() > 0 && !player->isInGhostMode())
-		{
-			g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		if (!player->getTile()->hasFlag(TILESTATE_PROTECTIONZONE) && player->hasCondition(CONDITION_INFIGHT)) {
+			player->sendCancelMessage(RETURNVALUE_YOUMAYNOTLOGOUTDURINGAFIGHT);
+			return;
 		}
 	}
+
+	if (removePlayer && !g_creatureEvents->playerLogout(player)) {
+		return;
+	}
+
+	displayEffect = displayEffect && !player->isRemoved() && player->getHealth() > 0 && !player->isInGhostMode();
+	displayEffect && g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
 
 	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);
 

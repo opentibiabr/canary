@@ -459,7 +459,7 @@ class Game
 
 		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
 		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
-		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
+		const std::unordered_map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
 		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
 
@@ -576,6 +576,8 @@ class Game
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
+		std::unordered_map<uint32_t, Npc*> npcs;
+		std::unordered_map<uint32_t, Monster*> monsters;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
@@ -602,9 +604,6 @@ class Game
 		size_t lastImbuedBucket = 0;
 
 		WildcardTreeNode wildcardTree { false };
-
-		std::map<uint32_t, Npc*> npcs;
-		std::map<uint32_t, Monster*> monsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 

@@ -4948,12 +4948,15 @@ bool Player::addPartyInvitation(Party* newParty) {
 		return false;
 	}
 
-	invitePartyList.push_front(newParty);
+	invitePartyList.push_back(newParty);
 	return true;
 }
 
 void Player::removePartyInvitation(Party* remParty) {
-	invitePartyList.remove(remParty);
+	auto it = std::find(invitePartyList.begin(), invitePartyList.end(), remParty);
+	if (it != invitePartyList.end()) {
+		invitePartyList.erase(it);
+	}
 }
 
 void Player::clearPartyInvitations() {

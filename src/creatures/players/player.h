@@ -2365,7 +2365,7 @@ class Player final : public Creature, public Cylinder {
 
 		GuildWarVector guildWarVector;
 
-		std::forward_list<Party*> invitePartyList;
+		std::vector<Party*> invitePartyList;
 		std::forward_list<uint32_t> modalWindows;
 		std::forward_list<std::string> learnedInstantSpellList;
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.

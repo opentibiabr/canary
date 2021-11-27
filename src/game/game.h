@@ -446,18 +446,10 @@ class Game {
 
 		void sendOfflineTrainingDialog(Player* player);
 
-		const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
-			return itemsPriceMap;
-		}
-		const phmap::flat_hash_map<uint32_t, Player*> &getPlayers() const {
-			return players;
-		}
-		const std::map<uint32_t, Monster*> &getMonsters() const {
-			return monsters;
-		}
-		const std::map<uint32_t, Npc*> &getNpcs() const {
-			return npcs;
-		}
+		const std::map<uint16_t, std::map<uint8_t, uint64_t>>& getItemsPrice() const { return itemsPriceMap; }
+		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
+		const phmap::flat_hash_map<uint32_t, Monster*>& getMonsters() const { return monsters; }
+		const phmap::flat_hash_map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
 		const std::vector<ItemClassification*> &getItemsClassifications() const {
 			return itemsClassifications;
@@ -576,6 +568,8 @@ class Game {
 
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
+		phmap::flat_hash_map<uint32_t, Npc*> npcs;
+		phmap::flat_hash_map<uint32_t, Monster*> monsters;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
@@ -603,8 +597,6 @@ class Game {
 
 		WildcardTreeNode wildcardTree { false };
 
-		std::map<uint32_t, Npc*> npcs;
-		std::map<uint32_t, Monster*> monsters;
 		std::vector<uint32_t> forgeableMonsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*

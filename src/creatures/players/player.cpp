@@ -470,7 +470,7 @@ void Player::updateInventoryWeight()
 
 void Player::updateInventoryImbuement(bool init /* = false */)
 {
-	uint8_t imbuementsToCheck = getPlayerActiveImbuements(getID());
+	uint8_t imbuementsToCheck = g_game.getPlayerActiveImbuements(getID());
 	for (int items = CONST_SLOT_FIRST; items <= CONST_SLOT_LAST; ++items) {
 		/*
 		 * Small optimization to avoid unneeded iteration.
@@ -494,9 +494,11 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 				continue;
 			}
 
-			init && g_game.increasePlayerActiveImbuements(getID());
+			if (init) {
+				g_game.increasePlayerActiveImbuements(getID());
+			}
 
-			int32_t duration = std::max(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL);
+			int32_t duration = std::max<uint8_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL);
 			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration);
 
 			if (duration == 0) {
@@ -1134,8 +1136,14 @@ Item* Player::getWriteItem(uint32_t& retWindowTextId, uint16_t& retMaxWriteLen)
 
 void Player::setImbuingItem(Item* item)
 {
-	imbuingItem && imbuingItem->decrementReferenceCounter();
-	item && item->incrementReferenceCounter();
+	if (imbuingItem) {
+		imbuingItem->decrementReferenceCounter();
+	}
+
+	if (item) {
+		item->incrementReferenceCounter();
+	}
+
 	imbuingItem = item;
 }
 

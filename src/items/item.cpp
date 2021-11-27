@@ -104,7 +104,7 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
-void Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration)
+void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
 {
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
@@ -2485,7 +2485,7 @@ void Item::startDecaying()
 	g_game.startDecay(this);
 }
 
-bool Item::hasMarketAttributes() const
+bool Item::hasMarketAttributes()
 {
 	if (!attributes) {
 		return true;

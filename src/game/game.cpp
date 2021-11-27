@@ -878,15 +878,12 @@ Npc* Game::getNpcByID(uint32_t id)
 
 Player* Game::getPlayerByID(uint32_t id)
 {
-	if (id == 0) {
-		return nullptr;
+	auto it = players.find(id);
+	if (it != players.end()) {
+		return it->second;
 	}
 
-	auto it = players.find(id);
-	if (it == players.end()) {
-		return nullptr;
-	}
-	return it->second;
+	return nullptr;
 }
 
 Creature* Game::getCreatureByName(const std::string& s)
@@ -6579,9 +6576,9 @@ void Game::checkImbuements()
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
 	std::list<uint32_t> toBeDeleted;
-	for (auto& it : playersWithImbuements) {
-		Player* player = players.find(it.first);
-		if (!player || it.second == 0) {
+	for (auto& it : playersActiveImbuements) {
+		Player* player = getPlayerByID(it.first);
+		if (!player) {
 			toBeDeleted.emplace_back(it.first);
 			continue;
 		}

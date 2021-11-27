@@ -510,15 +510,20 @@ class Game
 		}
 
 		void increasePlayerActiveImbuements(uint32_t playerId) {
-			setPlayerActiveImbuements(playersActiveImbuements[playerId] + 1);
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
 		}
 
 		void decreasePlayerActiveImbuements(uint32_t playerId) {
-			setPlayerActiveImbuements(playersActiveImbuements[playerId] - 1);
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] - 1);
 		}
 
 		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
-			playersActiveImbuements[playerId] = std::max(0, std::min(255, value));
+			if (value <= 0) {
+				playersActiveImbuements.erase(playerId);
+				return;
+			}
+			
+			playersActiveImbuements[playerId] = std::min<uint8_t>(255, value);
 		}
 
 		uint8_t getPlayerActiveImbuements(uint32_t playerId) {

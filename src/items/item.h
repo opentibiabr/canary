@@ -964,7 +964,7 @@ class Item : virtual public Thing
 			return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) && !hasAttribute(ITEM_ATTRIBUTE_ACTIONID);
 		}
 
-		bool hasMarketAttributes() const;
+		bool hasMarketAttributes();
 
 		std::unique_ptr<ItemAttributes>& getAttributes() {
 			if (!attributes) {

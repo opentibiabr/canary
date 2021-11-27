@@ -173,7 +173,7 @@ class Container : public Item, public Cylinder
 		void stopDecaying() override;
 
 	protected:
-		std::ostringstream& getContentDescription(std::ostringstream& os) const;
+		std::string& getContentDescription(std::string& sink) const;
 
 		uint32_t maxSize;
 		uint32_t totalWeight = 0;

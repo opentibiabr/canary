@@ -690,21 +690,14 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		player->setItemAbility(slot, true);
 	}
 
-	uint8_t imbuementSlot = item->getImbuementSlot();
-	if (item && imbuementSlot > 0) {
-		for (uint8_t slotid = 0; slotid < imbuementSlot; slotid++) {
-			ImbuementInfo imbuementInfo;
-			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-				continue;
-			}
-
-			player->addItemImbuementStats(imbuementInfo.imbuement);
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
 		}
 
-		// Send players map to game.cpp
-		if (item->hasImbuements()) {
-			player->updateInventoryImbuement();
-		}
+		player->addItemImbuementStats(imbuementInfo.imbuement);
+		g_game.increasePlayerActiveImbuements(player->getID());
 	}
 
 	if (!it.abilities) {
@@ -795,16 +788,14 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 		g_game.startDecay(item);
 	}
 
-	uint8_t imbuementSlot = item->getImbuementSlot();
-	if (item && imbuementSlot > 0) {
-		for (uint8_t slotid = 0; slotid < imbuementSlot; slotid++) {
-			ImbuementInfo imbuementInfo;
-			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-				continue;
-			}
-
-			player->removeItemImbuementStats(imbuementInfo.imbuement);
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
 		}
+
+		player->removeItemImbuementStats(imbuementInfo.imbuement);
+		g_game.decreasePlayerActiveImbuements(player->getID());
 	}
 
 	if (!it.abilities) {

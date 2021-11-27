@@ -640,7 +640,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 	}
 
 	if (!player || player->isRemoved() || player->getHealth() <= 0) {
-		return;	
+		return;
 }
 
 	switch (recvbyte) {
@@ -4058,7 +4058,7 @@ void ProtocolGame::updateCoinBalance()
 	if (!player) {
 		return;
 	}
-	
+
 	g_dispatcher.addTask(
 		createTask(std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game.getPlayerByID(playerId);
@@ -6361,13 +6361,6 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	}
 
 	uint8_t slot = item->getImbuementSlot();
-	for (uint8_t slotid = 0; slotid < slot; slotid++)
-	{
-		if (item->hasImbuements())
-		{
-			break;
-		}
-	}
 
 	player->setImbuingItem(item);
 

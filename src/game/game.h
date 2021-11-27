@@ -509,6 +509,22 @@ class Game
 			return CharmList;
 		}
 
+		void increasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playersActiveImbuements[playerId] + 1);
+		}
+
+		void decreasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playersActiveImbuements[playerId] - 1);
+		}
+
+		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
+			playersActiveImbuements[playerId] = std::max(0, std::min(255, value));
+		}
+
+		uint8_t getPlayerActiveImbuements(uint32_t playerId) {
+			return playersActiveImbuements[playerId];
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -521,7 +537,7 @@ class Game
 		void internalDecayItem(Item* item);
 
 		std::unordered_map<uint32_t, Player*> players;
-		std::unordered_map<uint32_t, Player*> playersWithImbuements;
+		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
@@ -591,8 +607,6 @@ class Game
 
 		std::map<uint16_t, uint32_t> itemsPriceMap;
 		uint16_t itemsSaleCount;
-
-		friend class Player;
 };
 
 #endif  // SRC_GAME_GAME_H_

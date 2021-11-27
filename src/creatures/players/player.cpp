@@ -468,15 +468,23 @@ void Player::updateInventoryWeight()
 	}
 }
 
-void Player::updateInventoryImbuement()
+void Player::updateInventoryImbuement(bool init /* = false */)
 {
+	uint8_t imbuementsToCheck = getPlayerActiveImbuements(getID());
 	for (int items = CONST_SLOT_FIRST; items <= CONST_SLOT_LAST; ++items) {
+		/*
+		 * Small optimization to avoid unneeded iteration.
+		 */
+		if (!init && imbuementsToCheck == 0) {
+			break;
+		}
+
 		Item* item = inventory[items];
 		if (!item) {
 			continue;
 		}
 
-		if (!this->hasCondition(CONDITION_INFIGHT) || item->getParent() != this) {
+		if (!hasCondition(CONDITION_INFIGHT)) {
 			continue;
 		}
 
@@ -486,19 +494,17 @@ void Player::updateInventoryImbuement()
 				continue;
 			}
 
-			Player* player = item->getHoldingPlayer();
-			if (player) {
-				g_game.playersWithImbuements[player->getID()] = player;
+			init && g_game.increasePlayerActiveImbuements(getID());
+
+			int32_t duration = std::max(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL);
+			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration);
+
+			if (duration == 0) {
+				removeItemImbuementStats(imbuementInfo.imbuement);
+				g_game.decreasePlayerActiveImbuements(getID());
 			}
 
-			int32_t duration = imbuementInfo.duration;
-			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENT_INTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
-
-			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration, newDuration);
-
-			if (duration > 0 && newDuration == 0) {
-				this->removeItemImbuementStats(imbuementInfo.imbuement);
-			}
+			imbuementsToCheck--;
 		}
 	}
 }
@@ -1128,16 +1134,9 @@ Item* Player::getWriteItem(uint32_t& retWindowTextId, uint16_t& retMaxWriteLen)
 
 void Player::setImbuingItem(Item* item)
 {
-	if (imbuingItem) {
-		imbuingItem->decrementReferenceCounter();
-	}
-
-	if (item) {
-		imbuingItem = item;
-		imbuingItem->incrementReferenceCounter();
-	} else {
-		imbuingItem = nullptr;
-	}
+	imbuingItem && imbuingItem->decrementReferenceCounter();
+	item && item->incrementReferenceCounter();
+	imbuingItem = item;
 }
 
 void Player::setWriteItem(Item* item, uint16_t maxWriteLength /*= 0*/)
@@ -1222,40 +1221,40 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
 
 		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
-		this->sendImbuementResult(message);
+		sendImbuementResult(message);
 		return;
 	}
 
 	for (auto & imbuementItem : items)
 	{
-		uint32_t invertoryItemCount = this->getItemTypeCount(imbuementItem.first);
+		uint32_t invertoryItemCount = getItemTypeCount(imbuementItem.first);
 		if (invertoryItemCount >= imbuementItem.second)
 		{
-			this->removeItemOfType(imbuementItem.first, imbuementItem.second, -1, true);
+			removeItemOfType(imbuementItem.first, imbuementItem.second, -1, true);
 			continue;
 		}
 
 		uint16_t mathItemCount = imbuementItem.second;
-		if (invertoryItemCount > 0 && this->removeItemOfType(imbuementItem.first, invertoryItemCount, -1, false))
+		if (invertoryItemCount > 0 && removeItemOfType(imbuementItem.first, invertoryItemCount, -1, false))
 		{
 			mathItemCount = mathItemCount - invertoryItemCount;
 		}
 
-		this->withdrawItem(imbuementItem.first, mathItemCount);
+		withdrawItem(imbuementItem.first, mathItemCount);
 	}
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
 	{
-		this->sendImbuementWindow(item);
-		this->sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
-		this->sendImbuementWindow(item);
+		sendImbuementWindow(item);
+		sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
+		sendImbuementWindow(item);
 		return;
 	}
 
-	item->setImbuement(slot, imbuement->getId(), baseImbuement->duration, baseImbuement->duration);
+	item->setImbuement(slot, imbuement->getId(), baseImbuement->duration);
 
-	this->addItemImbuementStats(imbuement);
-	this->sendImbuementWindow(item);
+	addItemImbuementStats(imbuement);
+	sendImbuementWindow(item);
 }
 
 void Player::onClearImbuement(Item* item, uint8_t slot)
@@ -1288,7 +1287,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		return;
 	}
 
-	item->setImbuement(slot, imbuementInfo.imbuement->getId(), 0, 0);
+	item->setImbuement(slot, imbuementInfo.imbuement->getId(), 0);
 	this->sendImbuementWindow(item);
 }
 

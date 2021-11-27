@@ -1005,14 +1005,14 @@ class Item : virtual public Thing
 		 * @return false
 		 */
 		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
-		void setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration);
+		void setImbuement(uint8_t slot, uint16_t id, int32_t duration);
 		bool hasImbuement(uint16_t imbuementType) {
 			return items[id].imbuementTypes.find(imbuementType) != items[id].imbuementTypes.end();
 		}
 		bool hasImbuements() {
-			for (uint8_t slotid = 0; slotid < this->getImbuementSlot(); slotid++) {
+			for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;
-				if (this->getImbuementInfo(slotid, &imbuementInfo)) {
+				if (getImbuementInfo(slotid, &imbuementInfo)) {
 					return true;
 				}
 			}

@@ -6578,13 +6578,19 @@ void Game::checkImbuements()
 {
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	for (const auto& players : playersWithImbuements) {
-		Player *player = players.second;
-		if (!player) {
-			return;
+	std::list<uint32_t> toBeDeleted;
+	for (auto& it : playersWithImbuements) {
+		Player* player = players.find(it.first);
+		if (!player || it.second == 0) {
+			toBeDeleted.emplace_back(it.first);
+			continue;
 		}
 
 		player->updateInventoryImbuement();
+	}
+
+	for (auto& it : toBeDeleted) {
+		playersActiveImbuements.erase(it);
 	}
 }
 

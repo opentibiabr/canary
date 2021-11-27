@@ -104,14 +104,11 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
-void Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration, int32_t newDuration)
+void Item::setImbuement(uint8_t slot, uint16_t id, uint32_t duration)
 {
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
-
-	newDuration = duration > 0 ? (newDuration << 8) | id : 0;
-	value.set<int64_t>(newDuration);
-
+	value.set<int64_t>(duration > 0 ? (duration << 8) | id : 0);
 	setCustomAttribute(key, value);
 }
 
@@ -2490,31 +2487,21 @@ void Item::startDecaying()
 
 bool Item::hasMarketAttributes() const
 {
-	if (attributes == nullptr) {
+	if (!attributes) {
 		return true;
 	}
 
 	for (const auto& attr : attributes->getList()) {
-		if (attr.type == ITEM_ATTRIBUTE_CHARGES) {
-			uint16_t charges = static_cast<uint16_t>(attr.value.integer);
-			if (charges != items[id].charges) {
-				return false;
-			}
-		} else if (attr.type == ITEM_ATTRIBUTE_DURATION) {
-			uint32_t duration = static_cast<uint32_t>(attr.value.integer);
-			if (duration != getDefaultDuration()) {
-				return false;
-			}
+		if (attr.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attr.value.integer) != items[id].charges) {
+			return false;
 		}
-	}
 
-	Item* item = const_cast<Item*>(this);
-	uint8_t slot = item->getImbuementSlot();
-	if (item && slot > 0) {
-		for (uint8_t slotid = 0; slotid < slot; slotid++) {
-			if (item->hasImbuements()) {
-				return false;
-			}
+		if (attr.type == ITEM_ATTRIBUTE_DURATION && static_cast<uint32_t>(attr.value.integer) != getDefaultDuration()) {
+			return false;
+		}
+
+		if (attr.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
+			return false;
 		}
 	}
 

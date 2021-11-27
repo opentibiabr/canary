@@ -1705,6 +1705,10 @@ bool ConditionLight::unserializeProp(ConditionAttr_t attr, PropStream &propStrea
 
 		lightInfo.level = value;
 		return true;
+	} else if (attr == CONDITIONATTR_LIGHTCOLOR_8B) {
+		return propStream.read<uint8_t>(lightInfo.color);
+	} else if (attr == CONDITIONATTR_LIGHTLEVEL_8B) {
+		return propStream.read<uint8_t>(lightInfo.level);
 	} else if (attr == CONDITIONATTR_LIGHTTICKS) {
 		return propStream.read<uint32_t>(internalLightTicks);
 	} else if (attr == CONDITIONATTR_LIGHTINTERVAL) {
@@ -1716,14 +1720,11 @@ bool ConditionLight::unserializeProp(ConditionAttr_t attr, PropStream &propStrea
 void ConditionLight::serialize(PropWriteStream &propWriteStream) {
 	Condition::serialize(propWriteStream);
 
-	// TODO: color and level could be serialized as 8-bit if we can retain backwards
-	// compatibility, but perhaps we should keep it like this in case they increase
-	// in the future...
-	propWriteStream.write<uint8_t>(CONDITIONATTR_LIGHTCOLOR);
-	propWriteStream.write<uint32_t>(lightInfo.color);
+	propWriteStream.write<uint8_t>(CONDITIONATTR_LIGHTCOLOR_8B);
+	propWriteStream.write<uint8_t>(lightInfo.color);
 
-	propWriteStream.write<uint8_t>(CONDITIONATTR_LIGHTLEVEL);
-	propWriteStream.write<uint32_t>(lightInfo.level);
+	propWriteStream.write<uint8_t>(CONDITIONATTR_LIGHTLEVEL_8B);
+	propWriteStream.write<uint8_t>(lightInfo.level);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_LIGHTTICKS);
 	propWriteStream.write<uint32_t>(internalLightTicks);

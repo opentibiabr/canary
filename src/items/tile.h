@@ -288,8 +288,8 @@ class Tile : public Cylinder {
 
 	protected:
 		Item* ground = nullptr;
-		Position tilePos;
 		uint32_t flags = 0;
+		Position tilePos;
 };
 
 // Used for walkable tiles, where there is high likeliness of

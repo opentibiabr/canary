@@ -421,16 +421,12 @@ void Tile::onRemoveTileItem(const SpectatorVector &spectators, const std::vector
 	const Position &cylinderMapPos = getPosition();
 	const ItemType &iType = Item::items[item->getID()];
 
-	// send to client
-	size_t i = 0;
+	// send to client + event method
+	size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[i++]);
+			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[++i]);
 		}
-	}
-
-	// event methods
-	for (Creature* spectator : spectators) {
 		spectator->onRemoveTileItem(this, cylinderMapPos, iType, item);
 	}
 
@@ -1085,13 +1081,15 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 			return;
 		}
 
-		std::vector<int32_t> oldStackPosVector;
-
 		SpectatorVector spectators;
 		g_game().map.getSpectators(spectators, getPosition(), true);
+
+		std::vector<int32_t> oldStackPosVector(spectators.size());
+		size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
+
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {
-				oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
+				oldStackPosVector[++i] = getStackposOfItem(tmpPlayer, item);
 			}
 		}
 
@@ -1110,13 +1108,15 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 			item->setItemCount(newCount);
 			onUpdateTileItem(item, itemType, item, itemType);
 		} else {
-			std::vector<int32_t> oldStackPosVector;
-
 			SpectatorVector spectators;
 			g_game().map.getSpectators(spectators, getPosition(), true);
+
+			std::vector<int32_t> oldStackPosVector(spectators.size());
+			size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
+
 			for (Creature* spectator : spectators) {
 				if (Player* tmpPlayer = spectator->getPlayer()) {
-					oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
+					oldStackPosVector[++i] = getStackposOfItem(tmpPlayer, item);
 				}
 			}
 

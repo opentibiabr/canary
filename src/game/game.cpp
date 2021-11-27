@@ -6579,15 +6579,11 @@ void Game::checkImbuements()
 	for (auto& it : playersActiveImbuements) {
 		Player* player = getPlayerByID(it.first);
 		if (!player) {
-			toBeDeleted.emplace_back(it.first);
+			setPlayerActiveImbuements(it.first, 0);
 			continue;
 		}
 
 		player->updateInventoryImbuement();
-	}
-
-	for (auto& it : toBeDeleted) {
-		playersActiveImbuements.erase(it);
 	}
 }
 

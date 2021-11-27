@@ -498,7 +498,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 				g_game.increasePlayerActiveImbuements(getID());
 			}
 
-			int32_t duration = std::max<uint8_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL);
+			int32_t duration = std::max(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL);
 			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration);
 
 			if (duration == 0) {

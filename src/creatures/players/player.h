@@ -2266,7 +2266,7 @@ class Player final : public Creature, public Cylinder {
 		static uint32_t playerFirstID;
 		static uint32_t playerLastID;
 
-		std::forward_list<Condition*> getMuteConditions() const;
+		std::vector<Condition*> getMuteConditions() const;
 
 		void checkTradeState(const Item* item);
 		bool hasCapacity(const Item* item, uint32_t count) const;

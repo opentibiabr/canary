@@ -5541,9 +5541,9 @@ size_t Player::getMaxDepotItems() const
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
-std::forward_list<Condition*> Player::getMuteConditions() const
+std::vector<Condition*> Player::getMuteConditions() const
 {
-	std::forward_list<Condition*> muteConditions;
+	std::vector<Condition*> muteConditions;
 	for (Condition* condition : conditions) {
 		if (condition->getTicks() <= 0) {
 			continue;
@@ -5554,7 +5554,7 @@ std::forward_list<Condition*> Player::getMuteConditions() const
 			continue;
 		}
 
-		muteConditions.push_front(condition);
+		muteConditions.push_back(condition);
 	}
 	return muteConditions;
 }

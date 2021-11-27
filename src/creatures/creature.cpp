@@ -813,7 +813,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 	if (combatType != COMBAT_HEALING && damage != 0) {
 		int32_t value = absorbPercent[combatTypeToIndex(combatType)];
 		if (value != 0)
-			damage -= damage * (value / 100);
+			damage -= damage * (value / 100.);
 		value = absorbFlat[combatTypeToIndex(combatType)];
 		if (value != 0)
 			damage = std::max(0, damage + value);
@@ -821,7 +821,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		if (attacker) {
 			value = attacker->getIncreasePercent(combatType);
 			if (value != 0)
-				damage += damage * (value / 100);
+				damage += damage * (value / 100.);
 		}
 	}
 

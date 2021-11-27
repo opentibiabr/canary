@@ -6575,7 +6575,6 @@ void Game::checkImbuements()
 {
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	std::list<uint32_t> toBeDeleted;
 	for (auto& it : playersActiveImbuements) {
 		Player* player = getPlayerByID(it.first);
 		if (!player) {

@@ -422,10 +422,10 @@ void Map::getSpectatorsInternal(SpectatorVector &spectators, const Position &cen
 	int32_t x2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (max_x + maxoffset)));
 	int32_t y2 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (max_y + maxoffset)));
 
-	int32_t startx1 = x1 - (x1 % FLOOR_SIZE);
-	int32_t starty1 = y1 - (y1 % FLOOR_SIZE);
-	int32_t endx2 = x2 - (x2 % FLOOR_SIZE);
-	int32_t endy2 = y2 - (y2 % FLOOR_SIZE);
+	int32_t startx1 = x1 - (x1 & FLOOR_MASK);
+	int32_t starty1 = y1 - (y1 & FLOOR_MASK);
+	int32_t endx2 = x2 - (x2 & FLOOR_MASK);
+	int32_t endy2 = y2 - (y2 & FLOOR_MASK);
 
 	const QTreeLeafNode* startLeaf = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, starty1);
 	const QTreeLeafNode* leafS = startLeaf;
@@ -1076,10 +1076,11 @@ void AStarNodes::closeNode(AStarNode* node) {
 void AStarNodes::openNode(AStarNode* node) {
 	size_t index = node - nodes;
 	assert(index < MAX_NODES);
-	if (!openNodes[index]) {
-		openNodes[index] = true;
-		--closedNodes;
-	}
+#if defined(__SSE2__)
+	calculatedNodes[index] = nodes[index].f + nodes[index].g;
+#endif
+	closedNodes -= (openNodes[index] ? 0 : 1);
+	openNodes[index] = true;
 }
 
 int_fast32_t AStarNodes::getClosedNodes() const {

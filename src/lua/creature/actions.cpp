@@ -445,17 +445,18 @@ bool Actions::useItemEx(Player* player, const Position &fromPos, const Position 
 }
 
 void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t count) {
-	std::ostringstream ss;
+	std::string str;
+	str.reserve(128);
 
 	const ItemType &it = Item::items[item->getID()];
 	if (!it.showCount) {
-		ss << "Using one of " << item->getName() << "...";
+		str.append("Using one of ").append(item->getName()).append(3, '.');
 	} else if (count == 1) {
-		ss << "Using the last " << item->getName() << "...";
+		str.append("Using the last ").append(item->getName()).append(3, '.');
 	} else {
-		ss << "Using one of " << count << ' ' << item->getPluralName() << "...";
+		str.append("Using one of ").append(std::to_string(count)).append(1, ' ').append(item->getPluralName()).append(3, '.');
 	}
-	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
+	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, str);
 }
 
 /*

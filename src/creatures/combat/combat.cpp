@@ -211,15 +211,19 @@ ReturnValue Combat::canTargetCreature(Player* player, Creature* target) {
 }
 
 ReturnValue Combat::canDoCombat(Creature* caster, Tile* tile, bool aggressive) {
-	if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
+	// if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
+	// 	return RETURNVALUE_NOTENOUGHROOM;
+	// }
 
-	if (tile->hasFlag(TILESTATE_FLOORCHANGE)) {
-		return RETURNVALUE_NOTENOUGHROOM;
-	}
+	// if (tile->hasFlag(TILESTATE_FLOORCHANGE)) {
+	// 	return RETURNVALUE_NOTENOUGHROOM;
+	// }
 
-	if (tile->getTeleportItem()) {
+	// if (tile->getTeleportItem()) {
+	// 	return RETURNVALUE_NOTENOUGHROOM;
+	// }
+
+	if (tile->hasFlag(TILESTATE_BLOCKPROJECTILE | TILESTATE_FLOORCHANGE | TILESTATE_TELEPORT)) {
 		return RETURNVALUE_NOTENOUGHROOM;
 	}
 
@@ -1300,17 +1304,15 @@ void TargetCallback::onTargetCombat(Creature* creature, Creature* target) const 
 
 //**********************************************************//
 
-void AreaCombat::clear() {
-	for (const auto &it : areas) {
-		delete it.second;
-	}
-	areas.clear();
-}
-
 AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	hasExtArea = rhs.hasExtArea;
-	for (const auto &it : rhs.areas) {
-		areas[it.first] = new MatrixArea(*it.second);
+	for (int32_t i = DIRECTION_NORTH; i <= DIRECTION_LAST; ++i) {
+		if (rhs.areas[i].isInitialized()) {
+			areas[i].setupArea(rhs.areas[i].getRows(), rhs.areas[i].getCols());
+			copyArea(&rhs.areas[i], &areas[i], MATRIXOPERATION_COPY);
+		} else {
+			areas[i].clear();
+		}
 	}
 }
 
@@ -1323,9 +1325,12 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 	uint32_t centerY, centerX;
 	area->getCenter(centerY, centerX);
 
-	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
+	uint32_t rows = area->getRows();
 	uint32_t cols = area->getCols();
-	for (uint32_t y = 0, rows = area->getRows(); y < rows; ++y) {
+	list.reserve(static_cast<size_t>(rows * cols));
+
+	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
+	for (uint32_t y = 0; y < rows; ++y) {
 		for (uint32_t x = 0; x < cols; ++x) {
 			if (area->getValue(y, x) != 0 && g_game().isSightClear(targetPos, tmpPos, true)) {
 				Tile* tile = g_game().map.getTile(tmpPos);
@@ -1346,84 +1351,146 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 	uint32_t centerY, centerX;
 	input->getCenter(centerY, centerX);
 
-	if (op == MATRIXOPERATION_COPY) {
-		for (uint32_t y = 0; y < input->getRows(); ++y) {
+	switch (op) {
+		case MATRIXOPERATION_MIRROR: {
+			for (uint32_t y = 0; y < input->getRows(); ++y) {
+				uint32_t rx = 0;
+				for (int32_t x = input->getCols(); --x >= 0;) {
+					output->setValue(y, rx++, input->getValue(y, x));
+				}
+			}
+
+			output->setCenter(centerY, (input->getRows() - 1) - centerX);
+			break;
+		}
+
+		case MATRIXOPERATION_FLIP: {
 			for (uint32_t x = 0; x < input->getCols(); ++x) {
-				(*output)[y][x] = (*input)[y][x];
+				uint32_t ry = 0;
+				for (int32_t y = input->getRows(); --y >= 0;) {
+					output->setValue(ry++, x, input->getValue(y, x));
+				}
 			}
+			output->setCenter((input->getCols() - 1) - centerY, centerX);
+			break;
 		}
-
-		output->setCenter(centerY, centerX);
-	} else if (op == MATRIXOPERATION_MIRROR) {
-		for (uint32_t y = 0; y < input->getRows(); ++y) {
-			uint32_t rx = 0;
-			for (int32_t x = input->getCols(); --x >= 0;) {
-				(*output)[y][rx++] = (*input)[y][x];
-			}
-		}
-
-		output->setCenter(centerY, (input->getRows() - 1) - centerX);
-	} else if (op == MATRIXOPERATION_FLIP) {
-		for (uint32_t x = 0; x < input->getCols(); ++x) {
+		case MATRIXOPERATION_ROTATE90: {
 			uint32_t ry = 0;
-			for (int32_t y = input->getRows(); --y >= 0;) {
-				(*output)[ry++][x] = (*input)[y][x];
+			for (uint32_t x = 0; x < input->getCols(); ++x) {
+				uint32_t rx = 0;
+				for (int32_t y = input->getRows(); --y >= 0;) {
+					output->setValue(ry, rx++, input->getValue(y, x));
+				}
+
+				++ry;
 			}
+
+			// we need position correction
+			output->setCenter((input->getCols() - 1) - centerX, (input->getRows() - 1) - centerY);
+			break;
 		}
+		case MATRIXOPERATION_ROTATE180: {
+			uint32_t rx = input->getCols();
+			for (uint32_t x = 0; x < input->getCols(); ++x) {
+				--rx;
 
-		output->setCenter((input->getCols() - 1) - centerY, centerX);
-	} else {
-		// rotation
-		int32_t rotateCenterX = (output->getCols() / 2) - 1;
-		int32_t rotateCenterY = (output->getRows() / 2) - 1;
-		int32_t angle;
-
-		switch (op) {
-			case MATRIXOPERATION_ROTATE90:
-				angle = 90;
-				break;
-
-			case MATRIXOPERATION_ROTATE180:
-				angle = 180;
-				break;
-
-			case MATRIXOPERATION_ROTATE270:
-				angle = 270;
-				break;
-
-			default:
-				angle = 0;
-				break;
-		}
-
-		double angleRad = M_PI * angle / 180.0;
-
-		double a = std::cos(angleRad);
-		double b = -std::sin(angleRad);
-		double c = std::sin(angleRad);
-		double d = std::cos(angleRad);
-
-		const uint32_t rows = input->getRows();
-		for (uint32_t x = 0, cols = input->getCols(); x < cols; ++x) {
-			for (uint32_t y = 0; y < rows; ++y) {
-				// calculate new coordinates using rotation center
-				int32_t newX = x - centerX;
-				int32_t newY = y - centerY;
-
-				// perform rotation
-				int32_t rotatedX = static_cast<int32_t>(round(newX * a + newY * b));
-				int32_t rotatedY = static_cast<int32_t>(round(newX * c + newY * d));
-
-				// write in the output matrix using rotated coordinates
-				(*output)[rotatedY + rotateCenterY][rotatedX + rotateCenterX] = (*input)[y][x];
+				uint32_t ry = 0;
+				for (int32_t y = input->getRows(); --y >= 0;) {
+					output->setValue(ry++, rx, input->getValue(y, x));
+				}
 			}
+
+			// we need position correction
+			output->setCenter((input->getRows() - 1) - centerY, centerX);
+			break;
+		}
+		case MATRIXOPERATION_ROTATE270: {
+			uint32_t ry = input->getCols();
+			for (uint32_t x = 0; x < input->getCols(); ++x) {
+				--ry;
+
+				uint32_t rx = input->getRows();
+				for (int32_t y = input->getRows(); --y >= 0;) {
+					output->setValue(ry, --rx, input->getValue(y, x));
+				}
+			}
+			// we need position correction
+			output->setCenter((input->getCols() - 1) - centerX, centerY);
+			break;
+		}
+		default: {
+			for (uint32_t y = 0; y < input->getRows(); ++y) {
+				for (uint32_t x = 0; x < input->getCols(); ++x) {
+					output->setValue(y, x, input->getValue(y, x));
+				}
+			}
+
+			output->setCenter(centerY, centerX);
+			break;
 		}
 
-		output->setCenter(rotateCenterY, rotateCenterX);
+			// 	output->setCenter(centerY, (input->getRows() - 1) - centerX);
+			// } else if (op == MATRIXOPERATION_FLIP) {
+			// 	for (uint32_t x = 0; x < input->getCols(); ++x) {
+			// 		uint32_t ry = 0;
+			// 		for (int32_t y = input->getRows(); --y >= 0;) {
+			// 			(*output)[ry++][x] = (*input)[y][x];
+			// 		}
+			// 	}
+
+			// 	output->setCenter((input->getCols() - 1) - centerY, centerX);
+			// } else {
+			// 	// rotation
+			// 	int32_t rotateCenterX = (output->getCols() / 2) - 1;
+			// 	int32_t rotateCenterY = (output->getRows() / 2) - 1;
+			// 	int32_t angle;
+
+			// 	switch (op) {
+			// 		case MATRIXOPERATION_ROTATE90:
+			// 			angle = 90;
+			// 			break;
+
+			// 		case MATRIXOPERATION_ROTATE180:
+			// 			angle = 180;
+			// 			break;
+
+			// 		case MATRIXOPERATION_ROTATE270:
+			// 			angle = 270;
+			// 			break;
+
+			// 		default:
+			// 			angle = 0;
+			// 			break;
+			// 	}
+
+			// 	double angleRad = M_PI * angle / 180.0;
+
+			// 	double a = std::cos(angleRad);
+			// 	double b = -std::sin(angleRad);
+			// 	double c = std::sin(angleRad);
+			// 	double d = std::cos(angleRad);
+
+			// 	const uint32_t rows = input->getRows();
+			// 	for (uint32_t x = 0, cols = input->getCols(); x < cols; ++x) {
+			// 		for (uint32_t y = 0; y < rows; ++y) {
+			// 			// calculate new coordinates using rotation center
+			// 			int32_t newX = x - centerX;
+			// 			int32_t newY = y - centerY;
+
+			// 			// perform rotation
+			// 			int32_t rotatedX = static_cast<int32_t>(round(newX * a + newY * b));
+			// 			int32_t rotatedY = static_cast<int32_t>(round(newX * c + newY * d));
+
+			// 			// write in the output matrix using rotated coordinates
+			// 			(*output)[rotatedY + rotateCenterY][rotatedX + rotateCenterX] = (*input)[y][x];
+			// 		}
+			// 	}
+
+			// 	output->setCenter(rotateCenterY, rotateCenterX);
 	}
 }
 
-MatrixArea* AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t rows) {
+MatrixArea* AreaCombat::createArea(Direction dir, const std::list<uint32_t> &list, uint32_t rows) {
 	uint32_t cols;
 	if (rows == 0) {
 		cols = 0;
@@ -1431,7 +1498,8 @@ MatrixArea* AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t row
 		cols = list.size() / rows;
 	}
 
-	MatrixArea* area = new MatrixArea(rows, cols);
+	MatrixArea* area = &areas[dir];
+	area->setupArea(rows, cols);
 
 	uint32_t x = 0;
 	uint32_t y = 0;
@@ -1456,27 +1524,23 @@ MatrixArea* AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t row
 }
 
 void AreaCombat::setupArea(const std::list<uint32_t> &list, uint32_t rows) {
-	MatrixArea* area = createArea(list, rows);
-
 	// NORTH
-	areas[DIRECTION_NORTH] = area;
-
-	uint32_t maxOutput = std::max<uint32_t>(area->getCols(), area->getRows()) * 2;
+	MatrixArea* area = createArea(DIRECTION_NORTH, list, rows);
 
 	// SOUTH
-	MatrixArea* southArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, southArea, MATRIXOPERATION_ROTATE180);
-	areas[DIRECTION_SOUTH] = southArea;
+	MatrixArea* southArea = &areas[DIRECTION_SOUTH];
+	southArea->setupArea(area->getRows(), area->getCols());
+	AreaCombat::copyArea(area, southArea, MATRIXOPERATION_ROTATE180);
 
 	// EAST
-	MatrixArea* eastArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, eastArea, MATRIXOPERATION_ROTATE90);
-	areas[DIRECTION_EAST] = eastArea;
+	MatrixArea* eastArea = &areas[DIRECTION_EAST];
+	eastArea->setupArea(area->getCols(), area->getRows());
+	AreaCombat::copyArea(area, eastArea, MATRIXOPERATION_ROTATE90);
 
 	// WEST
-	MatrixArea* westArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, westArea, MATRIXOPERATION_ROTATE270);
-	areas[DIRECTION_WEST] = westArea;
+	MatrixArea* westArea = &areas[DIRECTION_WEST];
+	westArea->setupArea(area->getCols(), area->getRows());
+	AreaCombat::copyArea(area, westArea, MATRIXOPERATION_ROTATE270);
 }
 
 void AreaCombat::setupArea(int32_t length, int32_t spread) {
@@ -1553,27 +1617,24 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 	}
 
 	hasExtArea = true;
-	MatrixArea* area = createArea(list, rows);
 
 	// NORTH-WEST
-	areas[DIRECTION_NORTHWEST] = area;
-
-	uint32_t maxOutput = std::max<uint32_t>(area->getCols(), area->getRows()) * 2;
+	MatrixArea* area = createArea(DIRECTION_NORTHWEST, list, rows);
 
 	// NORTH-EAST
-	MatrixArea* neArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, neArea, MATRIXOPERATION_MIRROR);
-	areas[DIRECTION_NORTHEAST] = neArea;
+	MatrixArea* neArea = &areas[DIRECTION_NORTHEAST];
+	neArea->setupArea(area->getRows(), area->getCols());
+	AreaCombat::copyArea(area, neArea, MATRIXOPERATION_MIRROR);
 
 	// SOUTH-WEST
-	MatrixArea* swArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(area, swArea, MATRIXOPERATION_FLIP);
-	areas[DIRECTION_SOUTHWEST] = swArea;
+	MatrixArea* swArea = &areas[DIRECTION_SOUTHWEST];
+	swArea->setupArea(area->getRows(), area->getCols());
+	AreaCombat::copyArea(area, swArea, MATRIXOPERATION_FLIP);
 
 	// SOUTH-EAST
-	MatrixArea* seArea = new MatrixArea(maxOutput, maxOutput);
-	copyArea(swArea, seArea, MATRIXOPERATION_MIRROR);
-	areas[DIRECTION_SOUTHEAST] = seArea;
+	MatrixArea* seArea = &areas[DIRECTION_SOUTHEAST];
+	seArea->setupArea(area->getRows(), area->getCols());
+	AreaCombat::copyArea(swArea, seArea, MATRIXOPERATION_MIRROR);
 }
 
 //**********************************************************//

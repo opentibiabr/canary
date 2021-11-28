@@ -132,7 +132,7 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	}
 }
 
-constexpr double fast_pow(double base, uint32_t exp) {
+static inline double fast_pow(double base, uint32_t exp) {
 	double result = 1.0;
 	while (exp) {
 		if (exp & 1) {

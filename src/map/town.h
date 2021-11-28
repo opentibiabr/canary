@@ -40,43 +40,38 @@ class Town {
 		Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, Town*>;
+using TownMap = std::map<uint32_t, Town>;
 
 class Towns {
 	public:
 		Towns() = default;
-		~Towns() {
-			for (const auto &it : townMap) {
-				delete it.second;
-			}
-		}
 
 		// non-copyable
 		Towns(const Towns &) = delete;
 		Towns &operator=(const Towns &) = delete;
 
-		bool addTown(uint32_t townId, Town* town) {
-			return townMap.emplace(townId, town).second;
+		Town* addTown(uint32_t townId) {
+			return &townMap.emplace(townId, townId).first->second;
 		}
 
-		Town* getTown(const std::string &townName) const {
-			for (const auto &it : townMap) {
-				if (strcasecmp(townName.c_str(), it.second->getName().c_str()) == 0) {
-					return it.second;
+		Town* getTown(const std::string &townName) {
+			for (auto &it : townMap) {
+				if (strcasecmp(townName.c_str(), it.second.getName().c_str()) == 0) {
+					return &it.second;
 				}
 			}
 			return nullptr;
 		}
 
-		Town* getTown(uint32_t townId) const {
+		Town* getTown(uint32_t townId) {
 			auto it = townMap.find(townId);
 			if (it == townMap.end()) {
 				return nullptr;
 			}
-			return it->second;
+			return &it->second;
 		}
 
-		const TownMap &getTowns() const {
+		TownMap &getTowns() {
 			return townMap;
 		}
 

@@ -475,8 +475,7 @@ bool IOMap::parseTowns(OTB::Loader &loader, const OTB::Node &townsNode, Map &map
 
 		Town* town = map.towns.getTown(townId);
 		if (!town) {
-			town = new Town(townId);
-			map.towns.addTown(townId, town);
+			town = map.towns.addTown(townId);
 		}
 
 		std::string townName;

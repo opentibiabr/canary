@@ -184,12 +184,12 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 
 int GameFunctions::luaGameGetTowns(lua_State* L) {
 	// Game.getTowns()
-	const auto &towns = g_game().map.towns.getTowns();
+	auto &towns = g_game().map.towns.getTowns();
 	lua_createtable(L, towns.size(), 0);
 
 	int index = 0;
-	for (auto townEntry : towns) {
-		pushUserdata<Town>(L, townEntry.second);
+	for (auto &townEntry : towns) {
+		pushUserdata<Town>(L, &townEntry.second);
 		setMetatable(L, -1, "Town");
 		lua_rawseti(L, -2, ++index);
 	}

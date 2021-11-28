@@ -317,7 +317,7 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 	bool teleport = forceTeleport || !newTile.getGround() || !Position::areInRange<1, 1, 1>(oldPos, newPos);
 
 	SpectatorVector spectators;
-	if (!teleport) {
+	if (!teleport && oldPos.z == newPos.z) {
 		int32_t minRangeX = maxViewportX;
 		int32_t maxRangeX = maxViewportX;
 		int32_t minRangeY = maxViewportY;

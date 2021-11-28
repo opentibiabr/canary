@@ -185,18 +185,22 @@ uint16_t Vocations::getPromotedVocation(uint16_t vocationId) const {
 
 uint32_t Vocation::skillBase[SKILL_LAST + 1] = { 50, 50, 50, 50, 30, 100, 20 };
 
-uint64_t Vocation::getReqSkillTries(uint8_t skill, uint16_t level) {
+uint64_t Vocation::getReqSkillTries(uint8_t skill, uint32_t level) {
 	if (skill > SKILL_LAST || level <= 10) {
 		return 0;
 	}
+	level -= 10;
 
-	auto it = cacheSkill[skill].find(level);
-	if (it != cacheSkill[skill].end()) {
-		return it->second;
+	std::vector<uint64_t>& skillCache = cacheSkill[skill];
+	if (level >= skillCache.size()) {
+		skillCache.resize(static_cast<size_t>(level) + 1, 0);
 	}
 
-	uint64_t tries = static_cast<uint64_t>(skillBase[skill] * std::pow(static_cast<double>(skillMultipliers[skill]), level - 11));
-	cacheSkill[skill][level] = tries;
+	uint64_t& tries = skillCache[level];
+
+	if (tries == 0) {
+		tries = std::max<uint64_t>(1, static_cast<uint64_t>(skillBase[skill] * fast_pow(static_cast<double>(skillMultipliers[skill]), level - 1)));
+	}
 	return tries;
 }
 
@@ -204,12 +208,14 @@ uint64_t Vocation::getReqMana(uint32_t magLevel) {
 	if (magLevel == 0) {
 		return 0;
 	}
-	auto it = cacheMana.find(magLevel);
-	if (it != cacheMana.end()) {
-		return it->second;
+	std::vector<uint64_t>& manaCache = cacheMana;
+	if (magLevel >= manaCache.size()) {
+		manaCache.resize(static_cast<size_t>(magLevel) + 1, 0);
 	}
 
-	uint64_t reqMana = std::floor<uint64_t>(1600 * std::pow<double>(manaMultiplier, static_cast<int32_t>(magLevel) - 1));
-	cacheMana[magLevel] = reqMana;
-	return reqMana;
+	uint64_t& tries = manaCache[magLevel];
+	if (tries == 0) {
+		tries = std::max<uint64_t>(1, static_cast<uint64_t>(1600 * fast_pow(static_cast<double>(manaMultiplier), magLevel - 1)));
+	}
+	return tries;
 }

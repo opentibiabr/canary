@@ -31,8 +31,9 @@ House::House(uint32_t houseId) : id(houseId) {}
 
 void House::addTile(HouseTile* tile)
 {
-	tile->setFlag(TILESTATE_PROTECTIONZONE);
 	houseTiles.push_back(tile);
+	houseTiles.shrink_to_fit();
+	tile->setFlag(TILESTATE_PROTECTIONZONE);
 }
 
 void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* player/* = nullptr*/)
@@ -323,6 +324,7 @@ void House::addDoor(Door* door)
 {
 	door->incrementReferenceCounter();
 	doorList.push_back(door);
+	doorList.shrink_to_fit();
 	door->setHouse(this);
 	updateDoorDescription();
 }
@@ -332,13 +334,15 @@ void House::removeDoor(Door* door)
 	auto it = std::find(doorList.begin(), doorList.end(), door);
 	if (it != doorList.end()) {
 		door->decrementReferenceCounter();
-		doorList.erase(it);
+		(*it) = doorList.back();
+		doorList.pop_back();
 	}
 }
 
 void House::addBed(BedItem* bed)
 {
 	bedsList.push_back(bed);
+	bedsList.shrink_to_fit();
 	bed->setHouse(this);
 }
 
@@ -624,9 +628,9 @@ void Door::onRemoved()
 
 House* Houses::getHouseByPlayerId(uint32_t playerId)
 {
-	for (const auto& it : houseMap) {
-		if (it.second->getOwner() == playerId) {
-			return it.second;
+	for (auto& it : houseMap) {
+		if (it.second.getOwner() == playerId) {
+			return &it.second;
 		}
 	}
 	return nullptr;
@@ -684,8 +688,8 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 	}
 
 	time_t currentTime = time(nullptr);
-	for (const auto& it : houseMap) {
-		House* house = it.second;
+	for (auto& it : houseMap) {
+		House* house = const_cast<House*>(&it.second);
 		if (house->getOwner() == 0) {
 			continue;
 		}

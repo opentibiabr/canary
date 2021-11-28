@@ -277,11 +277,11 @@ StringVector explodeString(const std::string &inString, const std::string &separ
 	std::string::size_type start = 0, end = 0;
 
 	while (--limit != -1 && (end = inString.find(separator, start)) != std::string::npos) {
-		returnVector.push_back(inString.substr(start, end - start));
+		returnVector.emplace_back(std::move(inString.substr(start, end - start)));
 		start = end + separator.size();
 	}
 
-	returnVector.push_back(inString.substr(start));
+	returnVector.emplace_back(std::move(inString.substr(start)));
 	return returnVector;
 }
 

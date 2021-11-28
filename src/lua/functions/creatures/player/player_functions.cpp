@@ -1388,10 +1388,10 @@ int PlayerFunctions::luaPlayerGetGuildNick(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetGuildNick(lua_State* L) {
 	// player:setGuildNick(nick)
-	const std::string& nick = getString(L, 2);
+	std::string nick = getString(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setGuildNick(nick);
+		player->setGuildNick(std::move(nick));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

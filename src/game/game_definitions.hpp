@@ -170,7 +170,7 @@ struct HistoryStoreOffer {
 using HistoryStoreOfferList = std::vector<HistoryStoreOffer>;
 
 struct ModalWindow {
-	std::list<std::pair<std::string, uint8_t>> buttons, choices;
+	std::vector<std::pair<std::string, uint8_t>> buttons, choices;
 	std::string title, message;
 	uint32_t id;
 	uint8_t defaultEnterButton, defaultEscapeButton;

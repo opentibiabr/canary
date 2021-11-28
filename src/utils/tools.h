@@ -129,4 +129,16 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	}
 }
 
+constexpr double fast_pow(double base, uint32_t exp) {
+	double result = 1.0;
+	while (exp) {
+		if (exp & 1) {
+			result *= base;
+		}
+		exp >>= 1;
+		base *= base;
+	}
+	return result;
+}
+
 #endif  // SRC_UTILS_TOOLS_H_

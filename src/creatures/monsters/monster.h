@@ -377,7 +377,7 @@ class Monster final : public Creature {
 		bool isInSpawnRange(const Position &pos) const;
 		bool canWalkTo(Position pos, Direction direction) const;
 
-		static bool pushItem(Item* item, const Direction &nextDirection);
+		static bool pushItem(Item* item);
 		static void pushItems(Tile* tile, const Direction &nextDirection);
 		static bool pushCreature(Creature* creature);
 		static void pushCreatures(Tile* tile);

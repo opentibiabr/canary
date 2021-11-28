@@ -14,6 +14,7 @@
 #include "utils/definitions.h"
 #include "utils/simd.hpp"
 
+#include <array>
 #include <bitset>
 #include <charconv>
 #include <filesystem>
@@ -28,7 +29,6 @@
 #include <queue>
 #include <variant>
 #include <vector>
-#include <variant>
 
 #include <asio.hpp>
 #include <curl/curl.h>

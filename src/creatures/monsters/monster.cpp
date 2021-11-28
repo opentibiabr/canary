@@ -1065,10 +1065,15 @@ void Monster::onThinkYell(uint32_t interval) {
 	}
 }
 
-bool Monster::pushItem(Item* item, const Direction &nextDirection) {
+bool Monster::pushItem(Item* item) {
 	const Position &centerPos = item->getPosition();
-	for (const auto &[x, y] : getPushItemLocationOptions(nextDirection)) {
-		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
+
+	static std::array<std::pair<int32_t, int32_t>, 8> relList { { { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 0 }, { 1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 } } };
+
+	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+
+	for (const auto &it : relList) {
+		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
 		Tile* tile = g_game().map.getTile(tryPos);
 		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
 			return true;
@@ -1091,7 +1096,7 @@ void Monster::pushItems(Tile* tile, const Direction &nextDirection) {
 	while (it != items->end()) {
 		Item* item = *it;
 		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH) || item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID) {
-			if (moveCount < 20 && pushItem(item, nextDirection)) {
+			if (moveCount < 20 && pushItem(item)) {
 				++moveCount;
 			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
 				++removeCount;
@@ -1106,7 +1111,7 @@ void Monster::pushItems(Tile* tile, const Direction &nextDirection) {
 }
 
 bool Monster::pushCreature(Creature* creature) {
-	static std::vector<Direction> dirList {
+	static std::array<Direction, 4> dirList {
 		DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
 		DIRECTION_SOUTH
@@ -1213,7 +1218,7 @@ void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &
 }
 
 bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirection) const {
-	static std::vector<Direction> dirList {
+	static std::array<Direction, 4> dirList {
 		DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
 		DIRECTION_SOUTH

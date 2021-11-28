@@ -198,12 +198,12 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 
 int GameFunctions::luaGameGetHouses(lua_State* L) {
 	// Game.getHouses()
-	const auto &houses = g_game().map.houses.getHouses();
+	auto& houses = g_game().map.houses.getHouses();
 	lua_createtable(L, houses.size(), 0);
 
 	int index = 0;
-	for (auto houseEntry : houses) {
-		pushUserdata<House>(L, houseEntry.second);
+	for (auto& houseEntry : houses) {
+		pushUserdata<House>(L, &houseEntry.second);
 		setMetatable(L, -1, "House");
 		lua_rawseti(L, -2, ++index);
 	}

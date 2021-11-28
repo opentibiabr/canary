@@ -124,7 +124,7 @@ enum Webhook_Colors_t : uint32_t {
 };
 
 struct ModalWindow {
-		std::list<std::pair<std::string, uint8_t>> buttons, choices;
+		std::vector<std::pair<std::string, uint8_t>> buttons, choices;
 		std::string title, message;
 		uint32_t id;
 		uint8_t defaultEnterButton, defaultEscapeButton;

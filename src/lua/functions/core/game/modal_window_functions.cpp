@@ -14,14 +14,14 @@
 
 // ModalWindow
 int ModalWindowFunctions::luaModalWindowCreate(lua_State* L) {
-	// ModalWindow(id, title, message)
-	const std::string &message = getString(L, 4);
-	const std::string &title = getString(L, 3);
-	uint32_t id = getNumber<uint32_t>(L, 2);
+    // ModalWindow(id, title, message)
+    std::string message = getString(L, 4);
+	std::string title = getString(L, 3);
+    uint32_t id = getNumber<uint32_t>(L, 2);
 
-	pushUserdata<ModalWindow>(L, new ModalWindow(id, title, message));
-	setMetatable(L, -1, "ModalWindow");
-	return 1;
+    pushUserdata<ModalWindow>(L, new ModalWindow(id, std::move(title), std::move(message)));
+    setMetatable(L, -1, "ModalWindow");
+    return 1;
 }
 
 int ModalWindowFunctions::luaModalWindowDelete(lua_State* L) {
@@ -67,29 +67,29 @@ int ModalWindowFunctions::luaModalWindowGetMessage(lua_State* L) {
 }
 
 int ModalWindowFunctions::luaModalWindowSetTitle(lua_State* L) {
-	// modalWindow:setTitle(text)
-	const std::string &text = getString(L, 2);
-	ModalWindow* window = getUserdata<ModalWindow>(L, 1);
-	if (window) {
-		window->title = text;
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // modalWindow:setTitle(text)
+    std::string text = getString(L, 2);
+    ModalWindow* window = getUserdata<ModalWindow>(L, 1);
+    if (window) {
+        window->title = std::move(text);
+        pushBoolean(L, true);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int ModalWindowFunctions::luaModalWindowSetMessage(lua_State* L) {
-	// modalWindow:setMessage(text)
-	const std::string &text = getString(L, 2);
-	ModalWindow* window = getUserdata<ModalWindow>(L, 1);
-	if (window) {
-		window->message = text;
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // modalWindow:setMessage(text)
+    std::string text = getString(L, 2);
+    ModalWindow* window = getUserdata<ModalWindow>(L, 1);
+    if (window) {
+        window->message = std::move(text);
+        pushBoolean(L, true);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int ModalWindowFunctions::luaModalWindowGetButtonCount(lua_State* L) {
@@ -115,31 +115,33 @@ int ModalWindowFunctions::luaModalWindowGetChoiceCount(lua_State* L) {
 }
 
 int ModalWindowFunctions::luaModalWindowAddButton(lua_State* L) {
-	// modalWindow:addButton(id, text)
-	const std::string &text = getString(L, 3);
-	uint8_t id = getNumber<uint8_t>(L, 2);
-	ModalWindow* window = getUserdata<ModalWindow>(L, 1);
-	if (window) {
-		window->buttons.emplace_back(text, id);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // modalWindow:addButton(id, text)
+    std::string text = getString(L, 3);
+    uint8_t id = getNumber<uint8_t>(L, 2);
+    ModalWindow* window = getUserdata<ModalWindow>(L, 1);
+    if (window) {
+        window->buttons.emplace_back(std::move(text), id);
+		window->buttons.shrink_to_fit();
+        pushBoolean(L, true);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int ModalWindowFunctions::luaModalWindowAddChoice(lua_State* L) {
-	// modalWindow:addChoice(id, text)
-	const std::string &text = getString(L, 3);
-	uint8_t id = getNumber<uint8_t>(L, 2);
-	ModalWindow* window = getUserdata<ModalWindow>(L, 1);
-	if (window) {
-		window->choices.emplace_back(text, id);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // modalWindow:addChoice(id, text)
+    std::string text = getString(L, 3);
+    uint8_t id = getNumber<uint8_t>(L, 2);
+    ModalWindow* window = getUserdata<ModalWindow>(L, 1);
+    if (window) {
+        window->choices.emplace_back(std::move(text), id);
+		window->buttons.shrink_to_fit();
+        pushBoolean(L, true);
+    } else {
+        lua_pushnil(L);
+    }
+    return 1;
 }
 
 int ModalWindowFunctions::luaModalWindowGetDefaultEnterButton(lua_State* L) {

@@ -1427,10 +1427,10 @@ int PlayerFunctions::luaPlayerGetGuildNick(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSetGuildNick(lua_State* L) {
 	// player:setGuildNick(nick)
-	const std::string &nick = getString(L, 2);
+	std::string nick = getString(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setGuildNick(nick);
+		player->setGuildNick(std::move(nick));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1866,12 +1866,10 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	if (isNumber(L, 2)) {
 		item = Item::CreateItem(getNumber<uint16_t>(L, 2));
 		fixMemoryLeak = true;
-	}
-	else if (isString(L, 2)) {
+	} else if (isString(L, 2)) {
 		item = Item::CreateItem(Item::items.getItemIdByName(getString(L, 2)));
 		fixMemoryLeak = true;
-	}
-	else if (isUserdata(L, 2)) {
+	} else if (isUserdata(L, 2)) {
 		if (getUserdataType(L, 2) != LuaData_Item) {
 			pushBoolean(L, false);
 			return 1;

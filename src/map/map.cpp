@@ -273,30 +273,28 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 	}
 
 	if (!foundTile) {
-		static std::vector<std::pair<int32_t, int32_t>> extendedRelList {
-                              {0, -2},
-                    {-1, -1}, {0, -1}, {1, -1},
-           {-2, 0}, {-1,  0},          {1,  0}, {2, 0},
-                    {-1,  1}, {0,  1}, {1,  1},
-                              {0,  2}
-		};
-
-		static std::vector<std::pair<int32_t, int32_t>> normalRelList {
+		static std::array<std::pair<int32_t, int32_t>, 12> relList { {
             {-1, -1}, {0, -1}, {1, -1},
             {-1,  0},          {1,  0},
-            {-1,  1}, {0,  1}, {1,  1}
-		};
+           	{-1,  1}, {0,  1}, {1,  1},
 
-		std::vector<std::pair<int32_t, int32_t>>& relList = (extendedPos ? extendedRelList : normalRelList);
+					  {0, -2},
+			{-2, 0},           {2, 0},
+					  {0,  2}
+		} };
 
+		size_t relListCount;
 		if (extendedPos) {
-			std::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
-			std::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
+			relListCount = 12;
+			std::shuffle(relList.begin(), relList.begin() + 8, getRandomGenerator());
+			std::shuffle(relList.begin() + 8, relList.end(), getRandomGenerator());
 		} else {
-			std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+			relListCount = 8;
+			std::shuffle(relList.begin(), relList.begin() + 8, getRandomGenerator());
 		}
 
-		for (const auto& it : relList) {
+		for (size_t i = 0; i < relListCount; ++i) {
+			const auto& it = relList[i];
 			Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
 
 			tile = getTile(tryPos.x, tryPos.y, tryPos.z);

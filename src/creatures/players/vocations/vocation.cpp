@@ -207,7 +207,7 @@ uint64_t Vocation::getReqSkillTries(uint8_t skill, uint32_t level)
 
 	uint64_t& tries = skillCache[level];
 
-	if (tries == 0) {
+	if (level != 0 && tries == 0) {
 		tries = std::max<uint64_t>(1, static_cast<uint64_t>(skillBase[skill] * fast_pow(static_cast<double>(skillMultipliers[skill]), level - 1)));
 	}
 	return tries;
@@ -224,7 +224,7 @@ uint64_t Vocation::getReqMana(uint32_t magLevel)
 	}
 
 	uint64_t& tries = manaCache[magLevel];
-	if (tries == 0) {
+	if (magLevel != 0 && tries == 0) {
 		tries = std::max<uint64_t>(1, static_cast<uint64_t>(1600 * fast_pow(static_cast<double>(manaMultiplier), magLevel - 1)));
 	}
 	return tries;

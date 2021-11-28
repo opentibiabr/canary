@@ -629,8 +629,11 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	}
 
 	LuaTimerEventDesc eventDesc;
-	for (int i = 0; i < parameters - 2; ++i) { // -2 because addEvent needs at least two parameters
-		eventDesc.parameters.push_back(luaL_ref(globalState, LUA_REGISTRYINDEX));
+	if (parameters > 2) {
+		eventDesc.parameters.resize(static_cast<size_t>(parameters - 2));
+		for (int i = 0; i < parameters - 2; ++i) { //-2 because addEvent needs at least two parameters
+			eventDesc.parameters[i] = luaL_ref(globalState, LUA_REGISTRYINDEX);
+		}
 	}
 
 	uint32_t delay = std::max<uint32_t>(100, getNumber<uint32_t>(globalState, 2));

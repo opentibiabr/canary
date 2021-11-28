@@ -24,6 +24,8 @@
 #include "game/game.h"
 #include "items/item.h"
 #include "lua/functions/items/item_functions.hpp"
+#include "items/decay/decay.h"
+
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {
@@ -405,9 +407,9 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 			case ITEM_ATTRIBUTE_DECAYSTATE: {
 				ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
 				if (decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
-					g_game.stopDecay(item);
+					g_decay.stopDecay(item);
 				} else {
-					g_game.startDecay(item);
+					g_decay.startDecay(item);
 				}
 				pushBoolean(L, true);
 				return 1;
@@ -415,7 +417,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 			case ITEM_ATTRIBUTE_DURATION: {
 				item->setDecaying(DECAYING_PENDING);
 				item->setDuration(getNumber<int32_t>(L, 3));
-				g_game.startDecay(item);
+				g_decay.startDecay(item);
 				pushBoolean(L, true);
 				return 1;
 			}

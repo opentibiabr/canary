@@ -47,7 +47,6 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
-#include "items/decay/decay.h"
 
 extern ConfigManager g_config;
 extern Actions* g_actions;
@@ -6445,92 +6444,6 @@ void Game::addDistanceEffect(const SpectatorHashSet& spectators, const Position&
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
-		}
-	}
-}
-
-void Game::startDecay(Item* item)
-{
-	if (!item) {
-		return;
-	}
-
-	ItemDecayState_t decayState = item->getDecaying();
-	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
-		stopDecay(item);
-		return;
-	}
-
-	if (!item->canDecay() || decayState == DECAYING_TRUE) {
-		return;
-	}
-
-	int32_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
-	if (duration > 0) {
-		g_decay.startDecay(item, duration);
-	} else {
-		internalDecayItem(item);
-	}
-}
-
-void Game::stopDecay(Item* item)
-{
-	if (item->hasAttribute(ITEM_ATTRIBUTE_DECAYSTATE)) {
-		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
-			g_decay.stopDecay(item, item->getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP));
-			item->removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
-		} else {
-			item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
-		}
-	}
-}
-
-void Game::internalDecayItem(Item* item)
-{
-	const ItemType& it = Item::items[item->getID()];
-	if (it.decayTo != 0) {
-		Player* player = item->getHoldingPlayer();
-		if (player) {
-			bool needUpdateSkills = false;
-			for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-				if (it.abilities && it.abilities->skills[i] != 0) {
-					needUpdateSkills = true;
-					player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
-				}
-			}
-
-			if (needUpdateSkills) {
-				player->sendSkills();
-			}
-
-			bool needUpdateStats = false;
-			for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-				if (it.abilities && it.abilities->stats[s] != 0) {
-					needUpdateStats = true;
-					needUpdateSkills = true;
-					player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
-				}
-				if (it.abilities && it.abilities->statsPercent[s] != 0) {
-					needUpdateStats = true;
-					player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
-				}
-			}
-
-			if (needUpdateStats) {
-				player->sendStats();
-			}
-
-			if (needUpdateSkills) {
-				player->sendSkills();
-			}
-		}
-		transformItem(item, it.decayTo);
-	} else {
-		ReturnValue ret = internalRemoveItem(item);
-		if (ret != RETURNVALUE_NOERROR) {
-			SPDLOG_ERROR("[Game::internalDecayItem] - internalDecayItem failed, "
-                         "error code: {}, item id: {}",
-                         static_cast<uint32_t>(ret), item->getID());
 		}
 	}
 }

@@ -20,6 +20,7 @@
 #include "otpch.h"
 
 #include "items/containers/container.h"
+#include "items/decay/decay.h"
 #include "io/iomap.h"
 #include "game/game.h"
 
@@ -777,17 +778,17 @@ void Container::internalAddThing(uint32_t, Thing* thing)
 
 void Container::startDecaying()
 {
-	g_game.startDecay(this);
+	g_decay.startDecay(this);
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_game.startDecay(*it);
+		g_decay.startDecay(*it);
 	}
 }
 
 void Container::stopDecaying()
 {
-	g_game.stopDecay(this);
+	g_decay.stopDecay(this);
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_game.stopDecay(*it);
+		g_decay.stopDecay(*it);
 	}
 }
 

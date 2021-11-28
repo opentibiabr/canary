@@ -22,6 +22,7 @@
 #include "items/item.h"
 #include "items/functions/item_parse.hpp"
 #include "items/containers/container.h"
+#include "items/decay/decay.h"
 #include "game/movement/teleport.h"
 #include "items/trashholder.h"
 #include "items/containers/mailbox/mailbox.h"
@@ -2428,12 +2429,12 @@ ItemAttributes::Attribute& ItemAttributes::getAttr(ItemAttrTypes type)
 
 void Item::startDecaying()
 {
-	g_game.startDecay(this);
+	g_decay.startDecay(this);
 }
 
 void Item::stopDecaying()
 {
-	g_game.stopDecay(this);
+	g_decay.stopDecay(this);
 }
 
 bool Item::hasMarketAttributes() const

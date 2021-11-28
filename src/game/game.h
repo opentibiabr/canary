@@ -400,10 +400,6 @@ class Game
 			toImbuedItems.push_front(item);
 		}
 
-		void startDecay(Item* item);
-		void stopDecay(Item* item);
-		void internalDecayItem(Item* item);
-
 		int32_t getLightHour() const {
 			return lightHour;
 		}

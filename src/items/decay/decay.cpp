@@ -99,7 +99,7 @@ void Decay::stopDecay(Item* item)
 						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
 						g_game.ReleaseItem(item);
 
-						std::swap(decayItems[i], decayItems.back());
+						decayItems[i] = decayItems.back();
 						decayItems.pop_back();
 						return;
 					}

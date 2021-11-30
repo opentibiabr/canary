@@ -1,4 +1,4 @@
-﻿/**
+/**
  * The Forgotten Server - a free and open-source MMORPG server emulator
  * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
  *
@@ -182,6 +182,7 @@ class ItemType
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;
+		int32_t upgradeClassification = 0;
 		int32_t defense = 0;
 		int32_t extraDefense = 0;
 		int32_t armor = 0;

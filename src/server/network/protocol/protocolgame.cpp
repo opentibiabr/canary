@@ -77,6 +77,9 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 		msg.addByte(2);
 		msg.addByte(0x01);
 	}
+	if (it.upgradeClassification > 0) {
+		msg.addByte(0);
+	}
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
@@ -188,6 +191,9 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 
 		msg.addByte(lookDirection ? static_cast<uint8_t>(boost::get<int64_t>(lookDirection->value)) : 2);
 		msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
+	}
+	if (it.upgradeClassification > 0) {
+		msg.addByte(0);
 	}
 }
 
@@ -6297,6 +6303,16 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	// used for imbuement (Feather)
 	msg.add<uint32_t>(player->getCapacity()); // total capacity
 	msg.add<uint32_t>(player->getBaseCapacity()); // base total capacity
+
+	// 12.81 Protocol
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
 }
 
 void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount /* = true*/)

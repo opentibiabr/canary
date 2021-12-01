@@ -4558,10 +4558,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	uint8_t slot = Item::items[itemId].imbuingSlots;
-	if (slot > 0)
+	if (it.imbuingSlots > 0)
 	{
-		msg.addString(std::to_string(slot));
+		msg.addString(std::to_string(it.imbuingSlots));
 	}
 	else
 	{
@@ -4575,10 +4574,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	msg.add<uint16_t>(0x00);
 	// 12.72 protocol END
 
-	uint8_t upgradeClassification = Item::items[itemId].upgradeClassification;
-	if (upgradeClassification > 0)
+	if (it.upgradeClassification > 0)
 	{
-		msg.addString(std::to_string(upgradeClassification));
+		msg.addString(std::to_string(it.upgradeClassification));
 	}
 	else
 	{
@@ -5731,7 +5729,7 @@ void ProtocolGame::sendOutfitWindow()
 
 	msg.addByte(0x00); //Try outfit
 	msg.addByte(mounted ? 0x01 : 0x00);
-	msg.add<uint16_t>(0);
+	msg.addByte(0);
 
 	writeToOutputBuffer(msg);
 }
@@ -6787,7 +6785,7 @@ void ProtocolGame::sendItemsPrice()
 			msg.addItemId(it.first);
 			if (Item::items[it.first].upgradeClassification > 0)
 			{
-				msg.addByte(0); // Tier
+				msg.addByte(0);
 			}
 			msg.add<uint32_t>(it.second);
 			msg.add<uint32_t>(0);

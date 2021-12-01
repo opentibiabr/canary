@@ -182,7 +182,6 @@ class ItemType
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;
-		int32_t upgradeClassification = 0;
 		int32_t defense = 0;
 		int32_t extraDefense = 0;
 		int32_t armor = 0;
@@ -215,6 +214,7 @@ class ItemType
 		FluidTypes_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
 
+		uint8_t upgradeClassification = 0;
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;
 		uint8_t lightColor = 0;

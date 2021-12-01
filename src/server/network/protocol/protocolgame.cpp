@@ -4123,7 +4123,12 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 	NetworkMessage msg;
 
 	msg.addByte(0xF9);
+	msg.addByte(0);
 	msg.addItemId(itemId);
+
+	if (Item::items[itemId].upgradeClassification > 0) {
+		msg.addByte(0);
+	}
 
 	msg.add<uint32_t>(buyOffers.size());
 	for (const MarketOffer &offer : buyOffers)
@@ -4132,6 +4137,7 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 		msg.add<uint16_t>(offer.counter);
 		msg.add<uint16_t>(offer.amount);
 		msg.add<uint32_t>(offer.price);
+		msg.add<uint32_t>(0);
 		msg.addString(offer.playerName);
 	}
 
@@ -4142,6 +4148,7 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 		msg.add<uint16_t>(offer.counter);
 		msg.add<uint16_t>(offer.amount);
 		msg.add<uint32_t>(offer.price);
+		msg.add<uint32_t>(0);
 		msg.addString(offer.playerName);
 	}
 
@@ -4284,6 +4291,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	msg.addItemId(itemId);
 
 	const ItemType &it = Item::items[itemId];
+
+	if (it.upgradeClassification > 0) {
+		msg.addByte(0);
+	}
+
 	if (it.armor != 0)
 	{
 		msg.addString(std::to_string(it.armor));
@@ -4556,14 +4568,38 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
+	// 12.72 protocol START
+	msg.add<uint16_t>(0x00);
+	msg.add<uint16_t>(0x00);
+	msg.add<uint16_t>(0x00);
+	msg.add<uint16_t>(0x00);
+	// 12.72 protocol END
+
+	uint8_t upgradeClassification = Item::items[itemId].upgradeClassification;
+	if (upgradeClassification > 0)
+	{
+		msg.addString(std::to_string(upgradeClassification));
+	}
+	else
+	{
+		msg.add<uint16_t>(0x00);
+	}
+
+	msg.add<uint16_t>(0x00);
+
 	MarketStatistics *statistics = IOMarket::getInstance().getPurchaseStatistics(itemId);
 	if (statistics)
 	{
 		msg.addByte(0x01);
 		msg.add<uint32_t>(statistics->numTransactions);
 		msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
+		// 12.72 protocol START
+		msg.add<uint32_t>(0);
+		// 12.72 protocol END
+		msg.add<uint32_t>(0);
 		msg.add<uint32_t>(statistics->highestPrice);
 		msg.add<uint32_t>(statistics->lowestPrice);
+		msg.add<uint32_t>(0);
 	}
 	else
 	{
@@ -4576,8 +4612,13 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.addByte(0x01);
 		msg.add<uint32_t>(statistics->numTransactions);
 		msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
+		// 12.72 protocol START
+		msg.add<uint32_t>(0);
+		// 12.72 protocol END
+		msg.add<uint32_t>(0);
 		msg.add<uint32_t>(statistics->highestPrice);
 		msg.add<uint32_t>(statistics->lowestPrice);
+		msg.add<uint32_t>(0);
 	}
 	else
 	{
@@ -5690,6 +5731,7 @@ void ProtocolGame::sendOutfitWindow()
 
 	msg.addByte(0x00); //Try outfit
 	msg.addByte(mounted ? 0x01 : 0x00);
+	msg.add<uint16_t>(0);
 
 	writeToOutputBuffer(msg);
 }
@@ -6743,7 +6785,12 @@ void ProtocolGame::sendItemsPrice()
 		for (const auto &it : items)
 		{
 			msg.addItemId(it.first);
+			if (Item::items[it.first].upgradeClassification > 0)
+			{
+				msg.addByte(0); // Tier
+			}
 			msg.add<uint32_t>(it.second);
+			msg.add<uint32_t>(0);
 		}
 	}
 

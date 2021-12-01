@@ -2928,6 +2928,11 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
+
+	// 12.72 protocol START
+	msg.addByte(0);
+	// 12.72 protocol END
+
 	writeToOutputBuffer(msg);
 }
 
@@ -2951,6 +2956,21 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 			++haveBlesses;
 		}
 	}
+
+	// 12.72 protocol START
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
+	msg.add<uint16_t>(0);
+	// 12.72 protocol END
+
 	msg.addByte(haveBlesses);
 	msg.addByte(blessings);
 	const Item *weapon = player->getWeapon();
@@ -3094,6 +3114,17 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 			++combats;
 		}
 	}
+
+	// 12.72 protocol START
+	msg.addByte(0);
+	// 12.72 protocol END
+
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
 
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);

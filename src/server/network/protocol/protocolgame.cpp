@@ -4053,6 +4053,10 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	for (std::map<uint16_t, uint32_t>::const_iterator it = depotItems.begin(); i < itemsToSend; ++it, ++i)
 	{
 		msg.add<uint16_t>(it->first);
+		if (Item::items[it.first].upgradeClassification > 0)
+		{
+			msg.addByte(0);
+		}
 		msg.add<uint16_t>(std::min<uint32_t>(0xFFFF, it->second));
 	}
 

@@ -6507,6 +6507,9 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	NetworkMessage msg;
 	msg.addByte(0xEB);
 	msg.addItemId(item->getID());
+	if (it.upgradeClassification > 0) {
+		msg.addByte(0);
+	}
 	msg.addByte(slot);
 
 	for (uint8_t i = 0; i < slot; i++)

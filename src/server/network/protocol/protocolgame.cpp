@@ -4288,6 +4288,40 @@ void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyO
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendForgingData()
+{
+	NetworkMessage msg;
+	msg.addByte(0x86);
+
+	std::vector<ItemClassification*> classifications = g_game.getItemsClassifications();
+	msg.addByte(classifications.size());	
+	for (ItemClassification* classification : classifications)
+	{
+		msg.addByte(classification->id);
+		msg.addByte(classification->tiers.size());
+		for (std::pair<uint8_t, uint64_t> tier : classification->tiers)
+		{
+			msg.addByte(tier.first);
+			msg.add<uint64_t>(tier.second);
+		}
+	}
+
+	// Forging values
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+	msg.addByte(0);
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendMarketDetail(uint16_t itemId)
 {
 	NetworkMessage msg;
@@ -5310,6 +5344,8 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	sendStoreHighlight();
 
 	sendItemsPrice();
+
+	sendForgingData();
 
 	//gameworld light-settings
 	sendWorldLight(g_game.getWorldLightInfo());

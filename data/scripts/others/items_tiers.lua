@@ -48,7 +48,6 @@ classification.Upgrades = {
 		TierId = 2,
 		Price = 20000000
 	}
-	
 }
 
 ItemClass:register(classification)
@@ -99,7 +98,6 @@ classification.Upgrades = {
 		TierId = 9,
 		Price = 15000000000
 	}
-	
 }
 
 ItemClass:register(classification)

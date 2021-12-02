@@ -56,13 +56,19 @@ specialRopeSpots = {12935}
 updateInterval = 2
 -- Healing
 -- Global table to insert data
-healingImpact = {}
+if healingImpact == nil then
+	healingImpact = {}
+end
 -- Damage
 -- Global table to insert data
-damageImpact = {}
+if damageImpact == nil then
+	damageImpact = {}
+end
 
 -- New prey => preyTimeLeft
-nextPreyTime = {}
+if nextPreyTime == nil then
+	nextPreyTime = {}
+end
 
 do -- Event Schedule rates
 	local lootRate = Game.getEventSLoot()

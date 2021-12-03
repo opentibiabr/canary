@@ -4140,8 +4140,7 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 		msg.add<uint32_t>(offer.timestamp);
 		msg.add<uint16_t>(offer.counter);
 		msg.add<uint16_t>(offer.amount);
-		msg.add<uint32_t>(offer.price);
-		msg.add<uint32_t>(0);
+		msg.add<uint64_t>(offer.price);
 		msg.addString(offer.playerName);
 	}
 
@@ -4151,8 +4150,7 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 		msg.add<uint32_t>(offer.timestamp);
 		msg.add<uint16_t>(offer.counter);
 		msg.add<uint16_t>(offer.amount);
-		msg.add<uint32_t>(offer.price);
-		msg.add<uint32_t>(0);
+		msg.add<uint64_t>(offer.price);
 		msg.addString(offer.playerName);
 	}
 
@@ -4628,14 +4626,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	{
 		msg.addByte(0x01);
 		msg.add<uint32_t>(statistics->numTransactions);
-		msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
-		// 12.72 protocol START
-		msg.add<uint32_t>(0);
-		// 12.72 protocol END
-		msg.add<uint32_t>(0);
-		msg.add<uint32_t>(statistics->highestPrice);
-		msg.add<uint32_t>(statistics->lowestPrice);
-		msg.add<uint32_t>(0);
+		msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
+		msg.add<uint64_t>(statistics->highestPrice);
+		msg.add<uint64_t>(statistics->lowestPrice);
 	}
 	else
 	{
@@ -4647,14 +4640,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	{
 		msg.addByte(0x01);
 		msg.add<uint32_t>(statistics->numTransactions);
-		msg.add<uint32_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
-		// 12.72 protocol START
-		msg.add<uint32_t>(0);
-		// 12.72 protocol END
-		msg.add<uint32_t>(0);
-		msg.add<uint32_t>(statistics->highestPrice);
-		msg.add<uint32_t>(statistics->lowestPrice);
-		msg.add<uint32_t>(0);
+		msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
+		msg.add<uint64_t>(statistics->highestPrice);
+		msg.add<uint64_t>(statistics->lowestPrice);
 	}
 	else
 	{

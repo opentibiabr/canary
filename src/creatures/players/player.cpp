@@ -499,7 +499,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			}
 
 			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
-			item->setImbuement(slotid, imbuementInfo.imbuement->getId(), duration);
+			item->setImbuement(slotid, imbuementInfo.imbuement->getID(), duration);
 			if (duration == 0) {
 				removeItemImbuementStats(imbuementInfo.imbuement);
 				g_game.decreasePlayerActiveImbuements(getID());
@@ -1252,16 +1252,16 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
 	{
-		sendImbuementWindow(item);
+		openImbuementWindow(item);
 		sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
-		sendImbuementWindow(item);
+		openImbuementWindow(item);
 		return;
 	}
 
-	item->setImbuement(slot, imbuement->getId(), baseImbuement->duration);
+	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 
 	addItemImbuementStats(imbuement);
-	sendImbuementWindow(item);
+	openImbuementWindow(item);
 }
 
 void Player::onClearImbuement(Item* item, uint8_t slot)
@@ -1290,15 +1290,15 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 
 		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		this->sendImbuementResult(message);
-		this->sendImbuementWindow(item);
+		this->openImbuementWindow(item);
 		return;
 	}
 
-	item->setImbuement(slot, imbuementInfo.imbuement->getId(), 0);
-	this->sendImbuementWindow(item);
+	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
+	this->openImbuementWindow(item);
 }
 
-void Player::sendImbuementWindow(Item* item)
+void Player::openImbuementWindow(Item* item)
 {
 	if (!client || !item) {
 		return;
@@ -1315,7 +1315,7 @@ void Player::sendImbuementWindow(Item* item)
 		return;
 	}
 
-	client->sendImbuementWindow(item);
+	client->openImbuementWindow(item);
 }
 
 void Player::sendMarketEnter(uint32_t depotId)

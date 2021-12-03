@@ -6340,7 +6340,7 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuid)
 	msg.add<uint32_t>(baseImbuement->protectionPrice);
 }
 
-void ProtocolGame::sendImbuementWindow(Item *item)
+void ProtocolGame::openImbuementWindow(Item *item)
 {
 	if (!item || item->isRemoved())
 	{
@@ -6367,7 +6367,7 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 		}
 
 		msg.addByte(0x01);
-		addImbuementInfo(msg, imbuementInfo.imbuement->getId());
+		addImbuementInfo(msg, imbuementInfo.imbuement->getID());
 		msg.add<uint32_t>(imbuementInfo.duration);
 		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
 	}
@@ -6378,7 +6378,7 @@ void ProtocolGame::sendImbuementWindow(Item *item)
 	msg.add<uint16_t>(imbuements.size());
 	for (Imbuement *imbuement : imbuements)
 	{
-		addImbuementInfo(msg, imbuement->getId());
+		addImbuementInfo(msg, imbuement->getID());
 
 		const auto &items = imbuement->getItems();
 		for (const auto &itm : items)

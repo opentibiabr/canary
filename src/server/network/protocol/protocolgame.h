@@ -242,7 +242,7 @@ private:
 	void sendIcons(uint32_t icons);
 	void sendFYIBox(const std::string &message);
 
-	void sendImbuementWindow(Item *item);
+	void openImbuementWindow(Item *item);
 	void sendImbuementResult(std::string message);
 	void closeImbuementWindow();
 

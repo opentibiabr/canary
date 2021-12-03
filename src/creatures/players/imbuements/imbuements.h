@@ -81,7 +81,7 @@ class Imbuement
 		Imbuement(uint16_t initId, uint16_t initBaseId) :
 				id(initId), baseid(initBaseId) {}
 
-		uint16_t getId() const {
+		uint16_t getID() const {
 			return id;
 		}
 

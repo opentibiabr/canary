@@ -1383,7 +1383,7 @@ class Player final : public Creature, public Cylinder
 		// Imbuements
 		void onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm);
 		void onClearImbuement(Item* item, uint8_t slot);
-		void sendImbuementWindow(Item* item);
+		void openImbuementWindow(Item* item);
 		void sendImbuementResult(std::string message)
 		{
 			if (client)

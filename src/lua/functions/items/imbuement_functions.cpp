@@ -61,7 +61,7 @@ int ImbuementFunctions::luaImbuementGetId(lua_State* L) {
 	// imbuement:getId()
 	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
-		lua_pushnumber(L, imbuement->getId());
+		lua_pushnumber(L, imbuement->getID());
 	} else {
 		lua_pushnil(L);
 	}

@@ -17,15 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_ITEMS_ITEM_CLASSIFICATION_HPP_
-#define SRC_ITEMS_ITEM_CLASSIFICATION_HPP_
+#ifndef SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
+#define SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
 
 // Classification class for forging system and market.
 class ItemClassification
 {
  public:
 	ItemClassification() = default;
-	ItemClassification(uint8_t id) :
+	explicit ItemClassification(uint8_t id) :
 		id(id) {}
 	virtual ~ItemClassification() = default;
 
@@ -45,4 +45,4 @@ class ItemClassification
 	std::vector<std::pair<uint8_t, uint64_t>> tiers;
 };
 
-#endif  // SRC_ITEMS_ITEM_CLASSIFICATION_HPP_
+#endif  // SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_

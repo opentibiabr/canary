@@ -150,13 +150,13 @@ class Game
 			itemsClassifications.push_back(itemsClassification);
 		}
 		ItemClassification* getItemsClassification(uint8_t id, bool create) {
-			for (ItemClassification* itemClassification : itemsClassifications) {
-				if (itemClassification->id == id) {
-					return itemClassification;
-				}
-			}
+			auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
+				return it->id == id;
+				});
 
-			if (create) {
+			if (it != itemsClassifications.end()) {
+				return *it;
+			} else if (create) {
 				ItemClassification* itemClassification = new ItemClassification(id);
 				addItemsClassification(itemClassification);
 				return itemClassification;

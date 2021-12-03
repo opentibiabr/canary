@@ -2947,6 +2947,15 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(0);
 	}
+
+	// To-Do: Insert on skill enum
+	msg.add<uint16_t>(0); // 1
+	msg.add<uint16_t>(0); // 1
+	msg.add<uint16_t>(0); // 2
+	msg.add<uint16_t>(0); // 2
+	msg.add<uint16_t>(0); // 3
+	msg.add<uint16_t>(0); // 3
+
 	uint8_t haveBlesses = 0;
 	uint8_t blessings = 8;
 	for (uint8_t i = 1; i < blessings; ++i)
@@ -3118,13 +3127,6 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	// 12.72 protocol START
 	msg.addByte(0);
 	// 12.72 protocol END
-
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
 
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
@@ -6399,19 +6401,20 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
 
+	// 12.81 Protocol - To-Do: insert on SKILL_ enum
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
+	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(0);
+
 	// used for imbuement (Feather)
 	msg.add<uint32_t>(player->getCapacity()); // total capacity
 	msg.add<uint32_t>(player->getBaseCapacity()); // base total capacity
 
-	// 12.81 Protocol
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
 }
 
 void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount /* = true*/)

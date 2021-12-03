@@ -2520,22 +2520,15 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerCloseImbuementWindow(lua_State* L) {
-	// player:closeImbuementWindow(item)
+	// player:closeImbuementWindow()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
 		return 1;
 	}
-	
-	Item* item = getUserdata<Item>(L, 2);
-	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
 
-	player->closeImbuementWindow(item);
+	player->closeImbuementWindow();
 	return 1;
 }
 

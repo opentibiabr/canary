@@ -1009,19 +1009,7 @@ class Item : virtual public Thing
 		bool hasImbuementType(uint16_t imbuementType) {
 			return items[id].imbuementTypes.find(imbuementType) != items[id].imbuementTypes.end();
 		}
-
-		bool hasImbuementID(uint16_t imbuementId) {
-			for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
-				ImbuementInfo imbuementInfo;
-				getImbuementInfo(slotid, &imbuementInfo);
-				
-				if (imbuementInfo.imbuement->getID() == imbuementId) {
-					return true;
-				}
-			}
-
-			return false;
-		}
+		bool hasImbuementCategoryId(uint16_t categoryId);
 		bool hasImbuements() {
 			for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;

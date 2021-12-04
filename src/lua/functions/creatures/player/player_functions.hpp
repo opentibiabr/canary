@@ -509,6 +509,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerHasLearnedSpell(lua_State* L);
 
 		static int luaPlayerOpenImbuementWindow(lua_State* L);
+		static int luaPlayerCloseImbuementWindow(lua_State* L);
 
 		static int luaPlayerSendTutorial(lua_State* L);
 		static int luaPlayerAddMapMark(lua_State* L);

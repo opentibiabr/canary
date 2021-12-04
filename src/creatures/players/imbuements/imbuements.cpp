@@ -365,6 +365,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 			continue;
 		}
 
+		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
 		int32_t value;
 		uint16_t baseImbuementId = imbuement->getBaseID();
 		if (g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)
@@ -374,8 +375,14 @@ std::vector<Imbuement*> Imbuements::getImbuements(Player* player, Item* item)
 			continue;
 		}
 
+		// Send only the imbuements registered on item (in items.xml) to the imbuement window
 		Category* category = getCategoryByID(imbuement->getCategory());
-		if (!item->hasImbuementType(category->id) || item->hasImbuementID(category->id)) {
+		if (!item->hasImbuementType(category->id)) {
+			continue;
+		}
+
+		// If the item is already imbued with an imbuement, remove the imbuement from the next free slot
+		if (item->hasImbuementCategoryId(category->id)) {
 			continue;
 		}
 

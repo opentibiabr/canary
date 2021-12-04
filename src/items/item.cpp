@@ -112,6 +112,19 @@ void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
 	setCustomAttribute(key, value);
 }
 
+bool Item::hasImbuementCategoryId(uint16_t categoryId) {
+	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (getImbuementInfo(slotid, &imbuementInfo)) {
+			Category* category = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			if (category->id == categoryId) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 {
 	const ItemType& it = Item::items[type];

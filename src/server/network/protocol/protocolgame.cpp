@@ -305,15 +305,6 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		// New Prey
-		if (!IOLoginData::loadPlayerPreyData(player))
-		{
-			SPDLOG_WARN("[ProtocolGame::login] - "
-                        "Prey data could not be loaded from player: {}",
-                        player->getName());
-			return;
-		};
-
 		player->setOperatingSystem(operatingSystem);
 
 		if (!g_game.placeCreature(player, player->getLoginPosition()))
@@ -3482,53 +3473,10 @@ void ProtocolGame::sendPremiumTrigger()
 	}
 }
 
-// Send preyInfo
 void ProtocolGame::closeImbuingWindow()
 {
 	NetworkMessage msg;
 	msg.addByte(0xEC);
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::initPreyData()
-{
-	for (uint8_t i = 0; i <= PREY_SLOTNUM_THIRD; i++)
-	{
-		sendPreyData(static_cast<PreySlotNum_t>(i), PREY_STATE_LOCKED);
-	}
-
-	sendResourcesBalance();
-	sendPreyRerollPrice();
-}
-
-void ProtocolGame::sendPreyRerollPrice(uint32_t price /*= 0*/, uint8_t wildcard /*= 0*/, uint8_t directly /*= 0*/)
-{
-	NetworkMessage msg;
-	msg.addByte(0xE9); // reroll prices
-	msg.add<uint32_t>(price); // price
-	msg.addByte(wildcard); // wildcard
-	msg.addByte(directly); // selectCreatureDirectly price (5 in tibia)
-
-	// Prey Task
-	msg.add<uint32_t>(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0);
-	msg.addByte(0);
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendPreyData(PreySlotNum_t slot, PreyState_t slotState)
-{
-	NetworkMessage msg;
-	msg.addByte(0xE8);
-	msg.addByte(slot);
-
-	msg.addByte(slotState);
-	msg.addByte(0x00); // empty byte
-	msg.add<uint32_t>(0); // next free roll
-	msg.addByte(0x00); // wildCards
-
 	writeToOutputBuffer(msg);
 }
 
@@ -3832,11 +3780,10 @@ void ProtocolGame::sendGameNews()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t prey /*= 0*/)
+void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/)
 {
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY, money);
-	sendResourceBalance(RESOURCE_PREY, prey);
 }
 
 void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
@@ -5293,7 +5240,6 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 	sendLootContainers();
 	sendBasicData();
-	initPreyData();
 
 	player->sendClientCheck();
 	player->sendGameNews();

@@ -61,9 +61,6 @@ healingImpact = {}
 -- Global table to insert data
 damageImpact = {}
 
--- New prey => preyTimeLeft
-nextPreyTime = {}
-
 do -- Event Schedule rates
 	local lootRate = Game.getEventSLoot()
 	if lootRate ~= 100 then
@@ -115,20 +112,12 @@ if nextUseStaminaTime == nil then
 	nextUseStaminaTime = {}
 end
 
-if nextUseStaminaPrey == nil then
-	nextUseStaminaPrey = {}
-end
-
 if nextUseXpStamina == nil then
 	nextUseXpStamina = {}
 end
 
 if lastItemImbuing == nil then
 	lastItemImbuing = {}
-end
-
-if nextDelayPreyReroll == nil then
-	nextDelayPreyReroll = {}
 end
 
 -- Delay potion

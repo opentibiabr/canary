@@ -587,20 +587,14 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have maximum of reward tokens."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
-			if self:getPreyBonusRerolls() >= 50 then
-				disabled = 1
-				disabledReason = "You already have maximum of prey wildcards."
-			end
+			-- To-Do
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
 			if self:charmExpansion() then
 				disabled = 1
 				disabledReason = "You already have charm expansion."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
-			if self:getStorageValue(Prey.Config.StoreSlotStorage) == 1 then
-				disabled = 1
-				disabledReason = "You already have 3 slots released."
-			end
+			-- To-Do
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
 			local remainingBoost = self:getExpBoostStamina()
 			if self:getStorageValue(GameStore.Storages.expBoostCount) == 6 then
@@ -1483,32 +1477,15 @@ function GameStore.processExpBoostPuchase(player)
 end
 
 function GameStore.processPreySlotPurchase(player)
-	if player:getStorageValue(Prey.Config.StoreSlotStorage) < 1 then
-		player:setStorageValue(Prey.Config.StoreSlotStorage, 1)
-		player:setPreyUnlocked(CONST_PREY_SLOT_THIRD, 2)
-		player:setPreyState(CONST_PREY_SLOT_THIRD, 1)
-
-		-- Update Prey Data
-		for slot = CONST_PREY_SLOT_FIRST, CONST_PREY_SLOT_THIRD do
-			player:sendPreyData(slot)
-		end
-	end
+	-- To-Do
 end
 
 function GameStore.processPreyHuntingSlotPurchase(player)
-	if player:getStorageValue(CONST_HUNTING_STORAGE) < 1 then
-		player:setStorageValue(CONST_HUNTING_STORAGE, 1)
-
-		-- Update Prey Data
-		player:sendPreyHuntingData(CONST_PREY_SLOT_THIRD)
-	end
+	-- To-Do
 end
 
 function GameStore.processPreyBonusReroll(player, offerCount)
-	if player:getPreyBonusRerolls() + offerCount >= 51 then
-		return error({code = 1, message = "You cannot own more than 50 prey wildcards."})
-	end
-	player:setPreyBonusRerolls(player:getPreyBonusRerolls() + offerCount)
+	-- To-Do
 end
 
 function GameStore.processTempleTeleportPurchase(player)

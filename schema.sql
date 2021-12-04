@@ -124,10 +124,6 @@ CREATE TABLE IF NOT EXISTS `players` (
     `skill_manaleech_amount` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
     `max_manashield` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
-    `prey_stamina_1` int(11) DEFAULT NULL,
-    `prey_stamina_2` int(11) DEFAULT NULL,
-    `prey_stamina_3` int(11) DEFAULT NULL,
-    `prey_column` smallint(6) NOT NULL DEFAULT '1',
     `xpboost_stamina` smallint(5) DEFAULT NULL,
     `xpboost_value` tinyint(4) DEFAULT NULL,
     `marriage_status` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
@@ -707,27 +703,6 @@ CREATE TABLE IF NOT EXISTS `towns` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8;
-
--- Table structure `prey_slots`
-CREATE TABLE IF NOT EXISTS `prey_slots` (
-    `player_id` int(11) NOT NULL,
-    `num` smallint(2) NOT NULL,
-    `state` smallint(2) NOT NULL DEFAULT '1',
-    `unlocked` smallint(2) NOT NULL DEFAULT '0',
-    `current` varchar(40) NOT NULL DEFAULT '',
-    `monster_list` varchar(360) NOT NULL,
-    `free_reroll_in` int(11) NOT NULL DEFAULT '0',
-    `time_left` smallint(5) NOT NULL DEFAULT '0',
-    `next_use` int(11) NOT NULL DEFAULT '0',
-    `bonus_type` smallint(3) NOT NULL,
-    `bonus_value` smallint(3) NOT NULL DEFAULT '0',
-    `bonus_grade` smallint(3) NOT NULL DEFAULT '0',
-    `tick` smallint(3) NOT NULL DEFAULT '0',
-    INDEX `player_id` (`player_id`),
-    CONSTRAINT `prey_slots_players_fk`
-        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create Account god/god
 INSERT INTO `accounts`

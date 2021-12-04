@@ -151,15 +151,6 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getStamina", PlayerFunctions::luaPlayerGetStamina);
 			registerMethod(L, "Player", "setStamina", PlayerFunctions::luaPlayerSetStamina);
 
-			registerMethod(L, "Player", "getPreyStamina", PlayerFunctions::luaPlayerGetPreyStamina);
-			registerMethod(L, "Player", "getPreyType", PlayerFunctions::luaPlayerGetPreyType);
-			registerMethod(L, "Player", "getPreyValue", PlayerFunctions::luaPlayerGetPreyValue);
-			registerMethod(L, "Player", "getPreyName", PlayerFunctions::luaPlayerGetPreyName);
-			registerMethod(L, "Player", "setPreyStamina", PlayerFunctions::luaPlayerSetPreyStamina);
-			registerMethod(L, "Player", "setPreyType", PlayerFunctions::luaPlayerSetPreyType);
-			registerMethod(L, "Player", "setPreyValue", PlayerFunctions::luaPlayerSetPreyValue);
-			registerMethod(L, "Player", "setPreyName", PlayerFunctions::luaPlayerSetPreyName);
-
 			registerMethod(L, "Player", "getSoul", PlayerFunctions::luaPlayerGetSoul);
 			registerMethod(L, "Player", "addSoul", PlayerFunctions::luaPlayerAddSoul);
 			registerMethod(L, "Player", "getMaxSoul", PlayerFunctions::luaPlayerGetMaxSoul);
@@ -238,34 +229,6 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "isPzLocked", PlayerFunctions::luaPlayerIsPzLocked);
 
 			registerMethod(L, "Player", "getClient", PlayerFunctions::luaPlayerGetClient);
-
-			// New prey
-			// GET
-			registerMethod(L, "Player", "getPreyState", PlayerFunctions::luaPlayerGetPreyState);
-			registerMethod(L, "Player", "getPreyUnlocked", PlayerFunctions::luaPlayerGetPreyUnlocked);
-			registerMethod(L, "Player", "getPreyCurrentMonster", PlayerFunctions::luaPlayerGetPreyCurrentMonster);
-			registerMethod(L, "Player", "getPreyMonsterList", PlayerFunctions::luaPlayerGetPreyMonsterList);
-			registerMethod(L, "Player", "getPreyFreeRerollIn", PlayerFunctions::luaPlayerGetPreyFreeRerollIn);
-			registerMethod(L, "Player", "getPreyTimeLeft", PlayerFunctions::luaPlayerGetPreyTimeLeft);
-			registerMethod(L, "Player", "getPreyNextUse", PlayerFunctions::luaPlayerGetPreyNextUse);
-			registerMethod(L, "Player", "getPreyBonusType", PlayerFunctions::luaPlayerGetPreyBonusType);
-			registerMethod(L, "Player", "getPreyBonusValue", PlayerFunctions::luaPlayerGetPreyBonusValue);
-			registerMethod(L, "Player", "getPreyBonusGrade", PlayerFunctions::luaPlayerGetPreyBonusGrade);
-			registerMethod(L, "Player", "getPreyBonusRerolls", PlayerFunctions::luaPlayerGetPreyBonusRerolls);
-			registerMethod(L, "Player", "getPreyTick", PlayerFunctions::luaPlayerGetPreyTick);
-			// SET
-			registerMethod(L, "Player", "setPreyState", PlayerFunctions::luaPlayerSetPreyState);
-			registerMethod(L, "Player", "setPreyUnlocked", PlayerFunctions::luaPlayerSetPreyUnlocked);
-			registerMethod(L, "Player", "setPreyCurrentMonster", PlayerFunctions::luaPlayerSetPreyCurrentMonster);
-			registerMethod(L, "Player", "setPreyMonsterList", PlayerFunctions::luaPlayerSetPreyMonsterList);
-			registerMethod(L, "Player", "setPreyFreeRerollIn", PlayerFunctions::luaPlayerSetPreyFreeRerollIn);
-			registerMethod(L, "Player", "setPreyTimeLeft", PlayerFunctions::luaPlayerSetPreyTimeLeft);
-			registerMethod(L, "Player", "setPreyNextUse", PlayerFunctions::luaPlayerSetPreyNextUse);
-			registerMethod(L, "Player", "setPreyBonusType", PlayerFunctions::luaPlayerSetPreyBonusType);
-			registerMethod(L, "Player", "setPreyBonusValue", PlayerFunctions::luaPlayerSetPreyBonusValue);
-			registerMethod(L, "Player", "setPreyBonusGrade", PlayerFunctions::luaPlayerSetPreyBonusGrade);
-			registerMethod(L, "Player", "setPreyBonusRerolls", PlayerFunctions::luaPlayerSetPreyBonusRerolls);
-			registerMethod(L, "Player", "setPreyTick", PlayerFunctions::luaPlayerSetPreyTick);
 
 			registerMethod(L, "Player", "getHouse", PlayerFunctions::luaPlayerGetHouse);
 			registerMethod(L, "Player", "sendHouseWindow", PlayerFunctions::luaPlayerSendHouseWindow);
@@ -429,15 +392,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetStamina(lua_State* L);
 		static int luaPlayerSetStamina(lua_State* L);
 
-		static int luaPlayerGetPreyStamina(lua_State* L);
-		static int luaPlayerGetPreyType(lua_State* L);
-		static int luaPlayerGetPreyValue(lua_State* L);
-		static int luaPlayerGetPreyName(lua_State* L);
-		static int luaPlayerSetPreyStamina(lua_State* L);
-		static int luaPlayerSetPreyType(lua_State* L);
-		static int luaPlayerSetPreyValue(lua_State* L);
-		static int luaPlayerSetPreyName(lua_State* L);
-
 		static int luaPlayerGetSoul(lua_State* L);
 		static int luaPlayerAddSoul(lua_State* L);
 		static int luaPlayerGetMaxSoul(lua_State* L);
@@ -521,32 +475,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetContainers(lua_State* L);
 		static int luaPlayerSetLootContainer(lua_State* L);
 		static int luaPlayerGetLootContainer(lua_State* L);
-
-		static int luaPlayerGetPreyState(lua_State * L);
-		static int luaPlayerGetPreyUnlocked(lua_State * L);
-		static int luaPlayerGetPreyCurrentMonster(lua_State * L);
-		static int luaPlayerGetPreyMonsterList(lua_State * L);
-		static int luaPlayerGetPreyFreeRerollIn(lua_State * L);
-		static int luaPlayerGetPreyTimeLeft(lua_State * L);
-		static int luaPlayerGetPreyNextUse(lua_State * L);
-		static int luaPlayerGetPreyBonusType(lua_State * L);
-		static int luaPlayerGetPreyBonusValue(lua_State * L);
-		static int luaPlayerGetPreyBonusGrade(lua_State * L);
-		static int luaPlayerGetPreyBonusRerolls(lua_State * L);
-		static int luaPlayerGetPreyTick(lua_State * L);
-
-		static int luaPlayerSetPreyState(lua_State * L);
-		static int luaPlayerSetPreyUnlocked(lua_State * L);
-		static int luaPlayerSetPreyCurrentMonster(lua_State * L);
-		static int luaPlayerSetPreyMonsterList(lua_State * L);
-		static int luaPlayerSetPreyFreeRerollIn(lua_State * L);
-		static int luaPlayerSetPreyTimeLeft(lua_State * L);
-		static int luaPlayerSetPreyNextUse(lua_State * L);
-		static int luaPlayerSetPreyBonusType(lua_State * L);
-		static int luaPlayerSetPreyBonusValue(lua_State * L);
-		static int luaPlayerSetPreyBonusGrade(lua_State * L);
-		static int luaPlayerSetPreyBonusRerolls(lua_State * L);
-		static int luaPlayerSetPreyTick(lua_State * L);
 
 		static int luaPlayerGetClient(lua_State* L);
 

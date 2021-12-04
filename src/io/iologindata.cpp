@@ -144,111 +144,6 @@ bool IOLoginData::loadPlayerById(Player* player, uint32_t id)
   return loadPlayer(player, db.storeQuery(query.str()));
 }
 
-// New Prey
-bool IOLoginData::loadPlayerPreyData(Player* player)
-{
-  Database& db = Database::getInstance();
-  DBResult_ptr result;
-  std::ostringstream query;
-  query << "SELECT `num`, `state`, `unlocked`, `current`, `monster_list`, `free_reroll_in`, `time_left`, `next_use`, `bonus_type`, `bonus_value`, `bonus_grade`, `tick` FROM `prey_slots` WHERE `player_id` = " << player->getGUID();
-  if ((result = db.storeQuery(query.str()))) {
-    do {
-      uint16_t slotNum = result->getNumber<uint16_t>("num");
-      player->preySlotState[slotNum] = result->getNumber<uint16_t>("state");
-      player->preySlotUnlocked[slotNum] = result->getNumber<uint16_t>("unlocked");
-      player->preySlotCurrentMonster[slotNum] = result->getString("current");
-      player->preySlotMonsterList[slotNum] = result->getString("monster_list");
-      player->preySlotFreeRerollIn[slotNum] = result->getNumber<uint16_t>("free_reroll_in");
-      player->preySlotTimeLeft[slotNum] = result->getNumber<uint16_t>("time_left");
-      player->preySlotNextUse[slotNum] = result->getNumber<uint32_t>("next_use");
-      player->preySlotBonusType[slotNum] = result->getNumber<uint16_t>("bonus_type");
-      player->preySlotBonusValue[slotNum] = result->getNumber<uint16_t>("bonus_value");
-      player->preySlotBonusGrade[slotNum] = result->getNumber<uint16_t>("bonus_grade");
-      player->preySlotTick[slotNum] = result->getNumber<uint16_t>("tick");
-    } while (result->next());
-  }
-  else {
-    query.str(std::string());
-    DBInsert preyDataQuery("INSERT INTO `prey_slots` (`player_id`, `num`, `state`, `unlocked`, `current`, `monster_list`, `free_reroll_in`, `time_left`, `next_use`, `bonus_type`, `bonus_value`, `bonus_grade`, `tick`) VALUES ");
-    for (size_t num = 0; num < PREY_SLOTNUM_THIRD + 1; num++) {
-      query << player->getGUID() << ',' << num << ',' << 0 << ',' << 0 << ',' << db.escapeString("") << ',' << db.escapeString("") << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0;
-      if (!preyDataQuery.addRow(query)) {
-        return false;
-      }
-    }
-    if (!preyDataQuery.execute()) {
-      return false;
-    }
-    // Reload player data
-    return loadPlayerPreyData(player);
-  }
-
-  return true;
-}
-
-bool IOLoginData::loadPlayerPreyById(Player* player, uint32_t id)
-{
-  Database& db = Database::getInstance();
-  std::ostringstream query;
-  query << "SELECT `player_id`, `bonus_type1`, `bonus_value1`, `bonus_name1`, `bonus_type2`, `bonus_value2`, `bonus_name2`, `bonus_type3`, `bonus_value3`, `bonus_name3` FROM `player_preytimes` WHERE `player_id` = " << id;
-  DBResult_ptr result = db.storeQuery(query.str());
-
-  if (!result) {
-    return false;
-  }
-
-  player->preyBonusType[0] = result->getNumber<uint16_t>("bonus_type1");
-  player->preyBonusType[1] = result->getNumber<uint16_t>("bonus_type2");
-  player->preyBonusType[2] = result->getNumber<uint16_t>("bonus_type3");
-
-  player->preyBonusValue[0] = result->getNumber<uint16_t>("bonus_value1");
-  player->preyBonusValue[1] = result->getNumber<uint16_t>("bonus_value2");
-  player->preyBonusValue[2] = result->getNumber<uint16_t>("bonus_value3");
-
-  player->preyBonusName[0] = result->getString("bonus_name1");
-  player->preyBonusName[1] = result->getString("bonus_name2");
-  player->preyBonusName[2] = result->getString("bonus_name3");
-
-  return true;
-}
-
-bool IOLoginData::savePlayerPreyById(Player* player, uint32_t id)
-{
-  Database& db = Database::getInstance();
-  std::ostringstream querycheck;
-  std::ostringstream query;
-  querycheck << "SELECT `bonus_type1` FROM `player_preytimes` WHERE `player_id` = " << id;
-  DBResult_ptr returnQuery = db.storeQuery(querycheck.str());
-
-  if (!returnQuery) {
-    query << "INSERT INTO `player_preytimes` (`player_id`, `bonus_type1`, `bonus_value1`, `bonus_name1`, `bonus_type2`, `bonus_value2`, `bonus_name2`, `bonus_type3`, `bonus_value3`, `bonus_name3`) VALUES (";
-    query << id << ", ";
-    query << player->getPreyType(0) << ", ";
-    query << player->getPreyValue(0) << ", ";
-    query << db.escapeString(player->getPreyName(0)) << ", ";
-    query << player->getPreyType(1) << ", ";
-    query << player->getPreyValue(1) << ", ";
-    query << db.escapeString(player->getPreyName(1)) << ", ";
-    query << player->getPreyType(2) << ", ";
-    query << player->getPreyValue(2) << ", ";
-    query << db.escapeString(player->getPreyName(2)) << ")";
-  } else {
-    query << "UPDATE `player_preytimes` SET ";
-    query << "`bonus_type1` = " << player->getPreyType(0) << ',';
-    query << "`bonus_value1` = " << player->getPreyValue(0) << ',';
-    query << "`bonus_name1` = " << db.escapeString(player->getPreyName(0)) << ',';
-    query << "`bonus_type2` = " << player->getPreyType(1) << ',';
-    query << "`bonus_value2` = " << player->getPreyValue(1) << ',';
-    query << "`bonus_name2` = " << db.escapeString(player->getPreyName(1)) << ',';
-    query << "`bonus_type3` = " << player->getPreyType(2) << ',';
-    query << "`bonus_value3` = " << player->getPreyValue(2) << ',';
-    query << "`bonus_name3` = " << db.escapeString(player->getPreyName(2));
-    query << " WHERE `player_id` = " << id;
-  }
-
-  return db.executeQuery(query.str());
-}
-
 bool IOLoginData::loadPlayerByName(Player* player, const std::string& name)
 {
   Database& db = Database::getInstance();
@@ -282,8 +177,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   acc.GetCoins(&(player->coinBalance));
-
-  player->preyBonusRerolls = result->getNumber<uint16_t>("bonus_rerolls");
 
   Group* group = g_game.groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
@@ -414,10 +307,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   player->staminaMinutes = result->getNumber<uint16_t>("stamina");
-  player->preyStaminaMinutes[0] = result->getNumber<uint16_t>("prey_stamina_1");
-  player->preyStaminaMinutes[1] = result->getNumber<uint16_t>("prey_stamina_2");
-  player->preyStaminaMinutes[2] = result->getNumber<uint16_t>("prey_stamina_3");
-
   player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
   player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
 
@@ -749,7 +638,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     } while (result->next());
   }
 
-  loadPlayerPreyData(player);
   player->updateBaseSpeed();
   player->updateInventoryWeight();
   player->updateItemsLight(true);
@@ -852,7 +740,6 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 
 bool IOLoginData::savePlayer(Player* player)
 {
-  savePlayerPreyById(player, player->getGUID());
   if (player->getHealth() <= 0) {
     player->changeHealth(1);
   }
@@ -953,10 +840,6 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`offlinetraining_time` = " << player->getOfflineTrainingTime() / 1000 << ',';
   query << "`offlinetraining_skill` = " << player->getOfflineTrainingSkill() << ',';
   query << "`stamina` = " << player->getStaminaMinutes() << ',';
-  query << "`prey_stamina_1` = " << player->getPreyStamina(0) << ",";
-  query << "`prey_stamina_2` = " << player->getPreyStamina(1) << ",";
-  query << "`prey_stamina_3` = " << player->getPreyStamina(2) << ",";
-
   query << "`skill_fist` = " << player->skills[SKILL_FIST].level << ',';
   query << "`skill_fist_tries` = " << player->skills[SKILL_FIST].tries << ',';
   query << "`skill_club` = " << player->skills[SKILL_CLUB].level << ',';
@@ -987,7 +870,6 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`max_manashield` = " << player->getMaxManaShield() << ',';
   query << "`xpboost_value` = " << player->getStoreXpBoost() << ',';
   query << "`xpboost_stamina` = " << player->getExpBoostStamina() << ',';
-  query << "`bonus_rerolls` = " << player->getPreyBonusRerolls() << ',';
   query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ',';
 
   if (!player->isOffline()) {
@@ -1194,28 +1076,6 @@ bool IOLoginData::savePlayer(Player* player)
   }
 
   if (!saveItems(player, itemList, inboxQuery, propWriteStream)) {
-    return false;
-  }
-
-  // New Prey
-  query.str(std::string());
-  query << "DELETE FROM `prey_slots` WHERE `player_id` = " << player->getGUID();
-  if (!db.executeQuery(query.str())) {
-    SPDLOG_WARN("[IOLoginData::savePlayer] - Failed to delete table 'prey_slosts' from player: {}", player->getName());
-    return false;
-  }
-
-  query.str(std::string());
-  DBInsert preyDataQuery("INSERT INTO `prey_slots` (`player_id`, `num`, `state`, `unlocked`, `current`, `monster_list`, `free_reroll_in`, `time_left`, `next_use`, `bonus_type`, `bonus_value`, `bonus_grade`, `tick`) VALUES ");
-  for (size_t num = 0; num < PREY_SLOTNUM_THIRD + 1; num++) {
-    query << player->getGUID() << ',' << num << ',' << player->preySlotState[num] << ',' << player->preySlotUnlocked[num] << ',' << db.escapeString(player->preySlotCurrentMonster[num]) << ',' << db.escapeString(player->preySlotMonsterList[num]) << ',' << player->preySlotFreeRerollIn[num] << ',' << player->preySlotTimeLeft[num] << ',' << player->preySlotNextUse[num] << ',' << player->preySlotBonusType[num] << ',' << player->preySlotBonusValue[num] << ',' << player->preySlotBonusGrade[num] << ',' << player->preySlotTick[num];
-    if (!preyDataQuery.addRow(query)) {
-      return false;
-    }
-  }
-
-  if (!preyDataQuery.execute()) {
-    SPDLOG_WARN("[IOLoginData::savePlayer] - Failed for save prey from playerr: {}", player->getName());
     return false;
   }
 

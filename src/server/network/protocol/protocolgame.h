@@ -268,12 +268,7 @@ private:
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
 
-	// Send preyInfo
 	void closeImbuingWindow();
-	void initPreyData();
-	void sendPreyRerollPrice(uint32_t price = 0, uint8_t wildcard = 0, uint8_t directly = 0);
-	void sendPreyData(PreySlotNum_t slot, PreyState_t slotState);
-
 	void sendCancelWalk();
 	void sendChangeSpeed(const Creature *creature, uint32_t speed);
 	void sendCancelTarget();
@@ -312,7 +307,7 @@ private:
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
-	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t prey = 0);
+	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);

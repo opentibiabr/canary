@@ -486,12 +486,12 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 
 		// Time not decay on protection zone
 		const Tile* playerTile = getTile();
-		if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (category->agressive && playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			continue;
 		}
 
 		// Time not decay if not is infight mode
-		if (!hasCondition(CONDITION_INFIGHT)) {
+		if (category->agressive && !hasCondition(CONDITION_INFIGHT)) {
 			continue;
 		}
 
@@ -1316,7 +1316,7 @@ void Player::openImbuementWindow(Item* item)
 		return;
 	}
 
-	if (item->getImbuementSlot() <= 0 ) {
+	if (item->getImbuementSlot() <= 0) {
 		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
 		return;
 	}

@@ -4845,7 +4845,7 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-	if (!player->hasImbuingItem ()) {
+	if (!player->hasImbuingItem()) {
 		return;
 	}
 

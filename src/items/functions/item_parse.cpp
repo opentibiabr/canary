@@ -647,7 +647,7 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::st
 	int32_t combatStart = 0;
 	int32_t combatCount = 1;
 
-	for (auto subAttributeNode: attributeNode.children()) {
+	for (auto subAttributeNode : attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 		if (!subKeyAttribute) {
 			continue;
@@ -829,7 +829,9 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 				itemType.setImbuementType(imbuementType);
 				continue;
 			}
+		}
 		else
+		{
 			SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
 						valueAttribute.as_string());
 		}

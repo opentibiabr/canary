@@ -501,9 +501,34 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 {
 	assert(data);
 	CombatDamage damage = *data;
-	if (caster && caster->getPlayer()) {
-		Item* tool = caster->getPlayer()->getWeapon();
-		g_events->eventPlayerOnCombat(caster->getPlayer(), target, tool, damage);
+	if (caster) {
+		Player *player = caster->getPlayer();
+		if (!player) {
+			return;
+		}
+
+		Item* item = player->getWeapon();
+		if (!item) {
+			return;
+		}
+
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+				continue;
+			}
+
+			int16_t imbuementElementPercentDamage = imbuementInfo.imbuement->elementDamage;
+			int32_t totalDamage = damage.primary.value;
+			if (imbuementElementPercentDamage > 0) {
+				float factorPercent = imbuementElementPercentDamage / 100;
+				damage.secondary.type = imbuementInfo.imbuement->combatType;
+				damage.primary.value = totalDamage * (1 - factorPercent);
+				damage.secondary.value = totalDamage * (factorPercent);
+			}
+		}
+
+		g_events->eventPlayerOnCombat(player, target, item, damage);
 	}
 
 	if (g_game.combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {

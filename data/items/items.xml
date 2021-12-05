@@ -50845,6 +50845,15 @@
 		<attribute key="absorbPercentPhysical" value="7" />
 		<attribute key="absorbPercentEarth" value="10" />
 		<attribute key="weaponType" value="shield"/>
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection holy" value="1"/>
+			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="elemental protection fire" value="1"/>
+			<attribute key="elemental protection death" value="1"/>
+			<attribute key="elemental protection earth" value="1"/>
+			<attribute key="elemental protection energy" value="1"/>
+			<attribute key="elemental protection ice" value="1"/>
+		</attribute>
 	</item>
 	<item id="34155" article="a" name="lion longsword">
 		<attribute key="weight" value="7500" />

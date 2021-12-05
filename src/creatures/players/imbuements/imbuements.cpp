@@ -30,8 +30,8 @@ Imbuement* Imbuements::getImbuement(uint16_t id)
 		return nullptr;
 	}
 
-	auto it = imbuementList.find(id);
-	if (it == imbuementList.end()) {
+	auto it = imbuementMap.find(id);
+	if (it == imbuementMap.end()) {
 		SPDLOG_WARN("Imbuement {} not found", id);
 		return nullptr;
 	}
@@ -96,7 +96,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			auto imbuements = imbuementList.emplace(std::piecewise_construct,
+			auto imbuements = imbuementMap.emplace(std::piecewise_construct,
 				std::forward_as_tuple(runningid),
 				std::forward_as_tuple(runningid, baseid));
 
@@ -325,7 +325,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 }
 
 bool Imbuements::reload() {
-	imbuementList.clear();
+	imbuementMap.clear();
 	basesImbuement.clear();
 	categoriesImbuement.clear();
 
@@ -357,7 +357,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* it
 {
 	std::vector<Imbuement*> imbuements;
 
-	for (auto& [key, value] : imbuementList)
+	for (auto& [key, value] : imbuementMap)
 	{
 		Imbuement* imbuement = &value;
 		if (!imbuement) {

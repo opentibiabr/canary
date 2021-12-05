@@ -712,6 +712,38 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	return 1;
 }
 
+int ItemFunctions::luaItemGetImbuement(lua_State* L)
+{
+	// item:getImbuement()
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
+		}
+
+		Imbuement *imbuement = imbuementInfo.imbuement;
+		if (!imbuement) {
+			continue;
+		}
+
+		pushUserdata<Imbuement>(L, imbuement);
+		setMetatable(L, -1, "Imbuement");
+
+		lua_createtable(L, 0, 3);
+		setField(L, "id", imbuement->getID());
+		setField(L, "name", imbuement->getName());
+		setField(L, "duration", imbuementInfo.duration);
+	}
+	return 1;
+}
+
 int ItemFunctions::luaItemGetImbuementSlot(lua_State* L) {
 	// item:getImbuementSlot()
 	const Item* item = getUserdata<Item>(L, 1);

@@ -11,7 +11,7 @@ RUN apt-get install -y --no-install-recommends \
 RUN apt-get install -y --no-install-recommends libluajit-5.1-dev unzip
 
 WORKDIR /opt
-RUN git clone https://github.com/microsoft/vcpkg
+RUN git clone https://github.com/microsoft/vcpkg --depth=1
 RUN ./vcpkg/bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg

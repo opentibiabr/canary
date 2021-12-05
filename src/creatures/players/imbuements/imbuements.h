@@ -64,16 +64,14 @@ class Imbuements {
 
 	protected:
 		friend class Imbuement;
+		bool loaded = false;
 
-
+	private:
 		std::map<uint32_t, Imbuement> imbuementList;
 
 		std::vector<BaseImbuement> basesImbuement;
 		std::vector<CategoryImbuement> categoriesImbuement;
 
-		bool loaded = false;
-
-	private:
 		uint32_t runningid = 0;
 };
 

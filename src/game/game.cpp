@@ -8460,25 +8460,14 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 	return std::forward_list<Item*>();
 }
 
-void Game::forceAddCondition(uint32_t creatureId, Condition* condition)
-{
-	Creature* creature = getCreatureByID(creatureId);
-	if (!creature) {
-		delete condition;
-		return;
-	}
-
-	creature->addCondition(condition, true);
-}
-
-void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t type)
+void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionType, ConditionId_t conditionId)
 {
 	Creature* creature = getCreatureByID(creatureId);
 	if (!creature) {
 		return;
 	}
 
-	creature->removeCondition(type, true);
+	creature->removeCondition(conditionType, conditionId, true);
 }
 
 void Game::sendOfflineTrainingDialog(Player* player)

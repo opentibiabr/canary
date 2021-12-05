@@ -154,7 +154,7 @@ class ItemType
 			return str;
 		}
 
-		void setImbuementType(uint16_t imbuementType) {
+		void setImbuementType(ImbuementTypes_t imbuementType) {
 			imbuementTypes[imbuementType] = true;
 		}
 
@@ -217,7 +217,7 @@ class ItemType
 		RaceType_t corpseType = RACE_NONE;
 		FluidTypes_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
-		std::map<uint16_t, bool> imbuementTypes;
+		std::map<ImbuementTypes_t, bool> imbuementTypes;
 
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;

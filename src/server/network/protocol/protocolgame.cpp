@@ -3470,13 +3470,6 @@ void ProtocolGame::sendPremiumTrigger()
 }
 
 // Send preyInfo
-void ProtocolGame::closeImbuingWindow()
-{
-	NetworkMessage msg;
-	msg.addByte(0xEC);
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::initPreyData()
 {
 	for (uint8_t i = 0; i <= PREY_SLOTNUM_THIRD; i++)
@@ -4496,10 +4489,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	uint8_t slot = it.imbuementSlot;
-	if (slot > 0)
+	if (it.imbuementSlot > 0)
 	{
-		msg.addString(std::to_string(slot));
+		msg.addString(std::to_string(it.imbuementSlot));
 	}
 	else
 	{
@@ -6308,16 +6300,16 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 	}
 }
 
-void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuid)
+void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId)
 {
-	Imbuement *imbuement = g_imbuements->getImbuement(imbuid);
-	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
-	Category *category = g_imbuements->getCategoryByID(imbuement->getCategory());
+	Imbuement *imbuement = g_imbuements->getImbuement(imbuementId);
+	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	CategoryImbuement *categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
 
-	msg.add<uint32_t>(imbuid);
+	msg.add<uint32_t>(imbuementId);
 	msg.addString(baseImbuement->name + " " + imbuement->getName());
 	msg.addString(imbuement->getDescription());
-	msg.addString(category->name + imbuement->getSubGroup());
+	msg.addString(categoryImbuement->name + imbuement->getSubGroup());
 
 	msg.add<uint16_t>(imbuement->getIconID());
 	msg.add<uint32_t>(baseImbuement->duration);
@@ -6347,17 +6339,15 @@ void ProtocolGame::openImbuementWindow(Item *item)
 		return;
 	}
 
-	uint8_t slot = item->getImbuementSlot();
-
 	player->setImbuingItem(item);
 
 	NetworkMessage msg;
 	msg.addByte(0xEB);
 	msg.addItemId(item->getID());
-	msg.addByte(slot);
+	msg.addByte(item->getImbuementSlot());
 
 	// Send imbuement time
-	for (uint8_t slotid = 0; slotid < slot; slotid++)
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 	{
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo))
@@ -6376,7 +6366,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	std::unordered_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());
-	for (Imbuement *imbuement : imbuements)
+	for (const Imbuement *imbuement : imbuements)
 	{
 		addImbuementInfo(msg, imbuement->getID());
 
@@ -6406,7 +6396,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendImbuementResult(std::string message)
+void ProtocolGame::sendImbuementResult(const std::string message)
 {
 	NetworkMessage msg;
 	msg.addByte(0xED);

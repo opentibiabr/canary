@@ -433,7 +433,7 @@ class ItemAttributes
 			| ITEM_ATTRIBUTE_WEIGHT | ITEM_ATTRIBUTE_ATTACK | ITEM_ATTRIBUTE_DEFENSE | ITEM_ATTRIBUTE_EXTRADEFENSE
 			| ITEM_ATTRIBUTE_ARMOR | ITEM_ATTRIBUTE_HITCHANCE | ITEM_ATTRIBUTE_SHOOTRANGE | ITEM_ATTRIBUTE_OWNER
 			| ITEM_ATTRIBUTE_DURATION | ITEM_ATTRIBUTE_DECAYSTATE | ITEM_ATTRIBUTE_CORPSEOWNER | ITEM_ATTRIBUTE_CHARGES
-			| ITEM_ATTRIBUTE_FLUIDTYPE | ITEM_ATTRIBUTE_DOORID | ITEM_ATTRIBUTE_IMBUEMENTSLOT
+			| ITEM_ATTRIBUTE_FLUIDTYPE | ITEM_ATTRIBUTE_DOORID | ITEM_ATTRIBUTE_IMBUEMENT_SLOT
 			| ITEM_ATTRIBUTE_OPENCONTAINER | ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
 
 		const static uint32_t stringAttributeTypes = ITEM_ATTRIBUTE_DESCRIPTION | ITEM_ATTRIBUTE_TEXT | ITEM_ATTRIBUTE_WRITER
@@ -738,13 +738,14 @@ class Item : virtual public Thing
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
 		}
 
+		static std::string parseImbuementDescription(const Item* item);
+
 		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
                                     const Item* item = nullptr);
 		static std::string getDescription(const ItemType& it, int32_t lookDistance, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getNameDescription(const ItemType& it, const Item* item = nullptr, int32_t subType = -1, bool addArticle = true);
 		static std::string getWeightDescription(const ItemType& it, uint32_t weight, uint32_t count = 1);
 
-		//std::string parseImbuementDescription(const Item* item);
 		std::string getDescription(int32_t lookDistance) const override final;
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
@@ -819,8 +820,8 @@ class Item : virtual public Thing
 			return items[id].extraDefense;
 		}
 		int32_t getImbuementSlot() const {
-			if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENTSLOT)) {
-				return getIntAttr(ITEM_ATTRIBUTE_IMBUEMENTSLOT);
+			if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)) {
+				return getIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT);
 			}
 			return items[id].imbuementSlot;
 		}
@@ -1006,7 +1007,7 @@ class Item : virtual public Thing
 		 */
 		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
 		void setImbuement(uint8_t slot, uint16_t id, int32_t duration);
-		bool hasImbuementType(uint16_t imbuementType) {
+		bool hasImbuementType(ImbuementTypes_t imbuementType) {
 			return items[id].imbuementTypes.find(imbuementType) != items[id].imbuementTypes.end();
 		}
 		bool hasImbuementCategoryId(uint16_t categoryId);

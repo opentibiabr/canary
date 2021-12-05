@@ -745,7 +745,7 @@ SkullNames skullNames = {
 	{"white",				SKULL_WHITE},
 };
 
-ImbuementTypeNames imbuementTypeNames = {
+const ImbuementTypeNames imbuementTypeNames = {
 	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
 	{"life leech", IMBUEMENT_LIFE_LEECH},
 	{"mana leech", IMBUEMENT_MANA_LEECH},

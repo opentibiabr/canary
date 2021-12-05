@@ -227,7 +227,7 @@ private:
 	void parseCoinTransfer(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuid);
+	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId);
 
 	//Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -243,7 +243,7 @@ private:
 	void sendFYIBox(const std::string &message);
 
 	void openImbuementWindow(Item *item);
-	void sendImbuementResult(std::string message);
+	void sendImbuementResult(const std::string message);
 	void closeImbuementWindow();
 
 	void sendItemsPrice();
@@ -270,7 +270,6 @@ private:
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
 
 	// Send preyInfo
-	void closeImbuingWindow();
 	void initPreyData();
 	void sendPreyRerollPrice(uint32_t price = 0, uint8_t wildcard = 0, uint8_t directly = 0);
 	void sendPreyData(PreySlotNum_t slot, PreyState_t slotState);

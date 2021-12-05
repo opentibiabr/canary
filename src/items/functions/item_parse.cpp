@@ -74,7 +74,7 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseImbuement(tmpStrValue, attributeNode, keyAttribute, valueAttribute, itemType);
+	ItemParse::parseImbuement(tmpStrValue, attributeNode, valueAttribute, itemType);
 }
 
 void ItemParse::parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
@@ -808,12 +808,11 @@ void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml
 	}
 }
 
-void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue != "imbuementslot") {
 		return;
 	}
-
 	itemType.imbuementSlot = pugi::cast<int32_t>(valueAttribute.value());
 
 	for (auto subAttributeNode: attributeNode.children()) {

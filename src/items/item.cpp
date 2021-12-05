@@ -116,8 +116,8 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-			Category* category = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
-			if (category->id == categoryId) {
+			const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			if (categoryImbuement->id == categoryId) {
 				return true;
 			}
 		}
@@ -588,13 +588,13 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
-		case ATTR_IMBUEMENTSLOT: {
+		case ATTR_IMBUEMENT_SLOT: {
 			int32_t imbuementSlot;
 			if (!propStream.read<int32_t>(imbuementSlot)) {
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_IMBUEMENTSLOT, imbuementSlot);
+			setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, imbuementSlot);
 			break;
 		}
 
@@ -858,9 +858,9 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENTSLOT)) {
-		propWriteStream.write<uint8_t>(ATTR_IMBUEMENTSLOT);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_IMBUEMENTSLOT));
+	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)) {
+		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
+		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT));
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_OPENCONTAINER)) {
@@ -1409,6 +1409,52 @@ std::vector<std::pair<std::string, std::string>>
 	}
 	descriptions.shrink_to_fit();
 	return descriptions;
+}
+
+std::string Item::parseImbuementDescription(const Item* item)
+{
+	std::ostringstream s;
+	if (item && item->getImbuementSlot() >= 1)
+	{
+		s << std::endl << "Imbuements: (";
+
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
+		{
+			if (slotid >= 1)
+			{
+				s << ", ";
+			}
+
+			Item* castItem = const_cast<Item*>(item);
+			if (!castItem)
+			{
+				continue;
+			}
+
+			ImbuementInfo imbuementInfo;
+			if (!castItem->getImbuementInfo(slotid, &imbuementInfo))
+			{
+				s << "Empty Slot";
+				continue;
+			}
+
+			const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+			if (!baseImbuement)
+			{
+				continue;
+			}
+
+			int minutes = imbuementInfo.duration / 60;
+			int hours = minutes / 60;
+			s << baseImbuement->name << " "
+			  << imbuementInfo.imbuement->getName() << " "
+			  << std::setw(2) << std::setfill('0') << hours << ":"
+			  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h";
+		}
+		s << ").";
+	}
+
+	return s.str();
 }
 
 std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
@@ -2171,46 +2217,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		s << '.';
 	}
 
-	uint8_t slot = item->getImbuementSlot();
-	if (item && slot >= 1)
-	{
-		s << std::endl << "Imbuements: (";
-
-		for (uint8_t slotid = 0; slotid < slot; slotid++)
-		{
-			if (slotid >= 1)
-			{
-				s << ", ";
-			}
-
-			Item* castItem = const_cast<Item*>(item);
-			if (!castItem)
-			{
-				continue;
-			}
-
-			ImbuementInfo imbuementInfo;
-			if (!castItem->getImbuementInfo(slotid, &imbuementInfo))
-			{
-				s << "Empty Slot";
-				continue;
-			}
-
-			const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
-			if (!baseImbuement)
-			{
-				continue;
-			}
-
-			int minutes = imbuementInfo.duration / 60;
-			int hours = minutes / 60;
-			s << baseImbuement->name << " "
-			  << imbuementInfo.imbuement->getName() << " "
-			  << std::setw(2) << std::setfill('0') << (hours) << ":"
-			  << std::setw(2) << std::setfill('0') << (minutes % 60) << "h";
-		}
-		s << ").";
-	}
+	s << parseImbuementDescription(item);
 
 	if (lookDistance <= 1) {
 		if (item) {
@@ -2504,16 +2511,16 @@ bool Item::hasMarketAttributes()
 		return true;
 	}
 
-	for (const auto& attr : attributes->getList()) {
-		if (attr.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attr.value.integer) != items[id].charges) {
+	for (const auto& attribute : attributes->getList()) {
+		if (attribute.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
 			return false;
 		}
 
-		if (attr.type == ITEM_ATTRIBUTE_DURATION && static_cast<uint32_t>(attr.value.integer) != getDefaultDuration()) {
+		if (attribute.type == ITEM_ATTRIBUTE_DURATION && static_cast<uint32_t>(attribute.value.integer) != getDefaultDuration()) {
 			return false;
 		}
 
-		if (attr.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
+		if (attribute.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
 			return false;
 		}
 	}

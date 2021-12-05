@@ -878,9 +878,9 @@ Npc* Game::getNpcByID(uint32_t id)
 
 Player* Game::getPlayerByID(uint32_t id)
 {
-	auto it = players.find(id);
-	if (it != players.end()) {
-		return it->second;
+	auto playerMap = players.find(id);
+	if (playerMap != players.end()) {
+		return playerMap->second;
 	}
 
 	return nullptr;
@@ -6575,10 +6575,10 @@ void Game::checkImbuements()
 {
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	for (auto& it : playersActiveImbuements) {
-		Player* player = getPlayerByID(it.first);
+	for (const auto& [key, value] : playersActiveImbuements) {
+		Player* player = getPlayerByID(key);
 		if (!player) {
-			setPlayerActiveImbuements(it.first, 0);
+			setPlayerActiveImbuements(key, 0);
 			continue;
 		}
 

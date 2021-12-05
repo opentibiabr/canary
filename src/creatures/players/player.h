@@ -1384,14 +1384,14 @@ class Player final : public Creature, public Cylinder
 		void onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm);
 		void onClearImbuement(Item* item, uint8_t slot);
 		void openImbuementWindow(Item* item);
-		void sendImbuementResult(std::string message)
+		void sendImbuementResult(const std::string message)
 		{
 			if (client)
 			{
 				client->sendImbuementResult(message);
 			}
 		}
-		void closeImbuementWindow()
+		void closeImbuementWindow() const
 		{
 			if(client)
 			{
@@ -1694,8 +1694,8 @@ class Player final : public Creature, public Cylinder
 
 		void setTraining(bool value);
 
-		void addItemImbuementStats(Imbuement* imbuement);
-		void removeItemImbuementStats(Imbuement* imbuement);
+		void addItemImbuementStats(const Imbuement* imbuement);
+		void removeItemImbuementStats(const Imbuement* imbuement);
 
 		bool isMarketExhausted() const;
 		void updateMarketExhausted() {

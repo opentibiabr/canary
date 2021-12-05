@@ -97,7 +97,7 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 		return 1;
 	}
 
-	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
 	if (!baseImbuement)
 	{
 		lua_pushnil(L);
@@ -122,13 +122,13 @@ int ImbuementFunctions::luaImbuementGetCategory(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t catid = imbuement->getCategory();
-	Category* category = g_imbuements->getCategoryByID(catid);
+	uint32_t categoryId = imbuement->getCategory();
+	const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(categoryId);
 
-	if (category) {
+	if (categoryImbuement) {
 		lua_createtable(L, 0, 2);
-		setField(L, "id", category->id);
-		setField(L, "name", category->name);
+		setField(L, "id", categoryImbuement->id);
+		setField(L, "name", categoryImbuement->name);
 	} else {
 		lua_pushnil(L);
 	}

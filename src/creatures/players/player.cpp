@@ -1197,9 +1197,9 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	}
 
 	const auto& items = imbuement->getItems();
-	for (auto& imbuementItem : items)
+	for (auto& [key, value] : items)
 	{
-		if (this->getItemTypeCount(imbuementItem.first) + this->getStashItemCount(imbuementItem.first) < imbuementItem.second)
+		if (this->getItemTypeCount(key) + this->getStashItemCount(key) < value)
 		{
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
@@ -1214,7 +1214,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
 	if (!baseImbuement)
 	{
 		return;
@@ -1232,22 +1232,22 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	for (auto & imbuementItem : items)
+	for (auto& [key, value] : items)
 	{
-		uint32_t invertoryItemCount = getItemTypeCount(imbuementItem.first);
-		if (invertoryItemCount >= imbuementItem.second)
+		uint32_t invertoryItemCount = getItemTypeCount(key);
+		if (invertoryItemCount >= value)
 		{
-			removeItemOfType(imbuementItem.first, imbuementItem.second, -1, true);
+			removeItemOfType(key, value, -1, true);
 			continue;
 		}
 
-		uint16_t mathItemCount = imbuementItem.second;
-		if (invertoryItemCount > 0 && removeItemOfType(imbuementItem.first, invertoryItemCount, -1, false))
+		uint32_t mathItemCount = value;
+		if (invertoryItemCount > 0 && removeItemOfType(key, invertoryItemCount, -1, false))
 		{
 			mathItemCount = mathItemCount - invertoryItemCount;
 		}
 
-		withdrawItem(imbuementItem.first, mathItemCount);
+		withdrawItem(key, mathItemCount);
 	}
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
@@ -1278,15 +1278,14 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		return;
 	}
 
-	BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
 	if (!baseImbuement) {
 		return;
 	}
 
-	uint32_t price = baseImbuement->removeCost;
-	if (!g_game.removeMoney(this, price, 0, false))
+	if (!g_game.removeMoney(this, baseImbuement->removeCost, 0, false))
 	{
-		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
+		std::string message = "You don't have " + std::to_string(baseImbuement->removeCost) + " gold coins.";
 
 		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		this->sendImbuementResult(message);
@@ -2387,10 +2386,9 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 				}
 			}
 
-			uint8_t slots = item->getImbuementSlot();
-			ImbuementInfo imbuementInfo;
-			for (uint8_t slotid = 0; slotid < slot; slotid++)
+			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 			{
+				ImbuementInfo imbuementInfo;
 				if (!item->getImbuementInfo(slotid, &imbuementInfo))
 				{
 					continue;
@@ -5439,7 +5437,7 @@ uint16_t Player::getFreeBackpackSlots() const
 	return counter;
 }
 
-void Player::addItemImbuementStats(Imbuement* imbuement)
+void Player::addItemImbuementStats(const Imbuement* imbuement)
 {
 	bool requestUpdate = false;
 	// Check imbuement skills
@@ -5482,7 +5480,7 @@ void Player::addItemImbuementStats(Imbuement* imbuement)
 	return;
 }
 
-void Player::removeItemImbuementStats(Imbuement* imbuement)
+void Player::removeItemImbuementStats(const Imbuement* imbuement)
 {
 	bool requestUpdate = false;
 

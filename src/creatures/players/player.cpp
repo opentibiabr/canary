@@ -484,6 +484,13 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			continue;
 		}
 
+		// Time not decay on protection zone
+		const Tile* playerTile = getTile();
+		if (playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			continue;
+		}
+
+		// Time not decay if not is infight mode
 		if (!hasCondition(CONDITION_INFIGHT)) {
 			continue;
 		}

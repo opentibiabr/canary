@@ -283,7 +283,7 @@ else()
       cryptopp-static
       CURL::libcurl
       jsoncpp_static
-      libmariadb mariadbclient
+      unofficial::libmariadb unofficial::mariadbclient
       pugixml::pugixml
       spdlog::spdlog
       Threads::Threads

@@ -238,10 +238,12 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"quiver", WEAPON_QUIVER},
 };
 
-class ItemParse final : Items
+class ItemParse final : public Items
 {
 	public:
+	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
+	private:
 	static void parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseDescription(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRuneSpellName(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

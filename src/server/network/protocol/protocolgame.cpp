@@ -386,6 +386,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	player->isConnecting = false;
 
 	player->client = getThis();
+	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, false);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
@@ -1832,27 +1833,27 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 
 		switch (currentLevel)
 		{
-			case 1:
-				shouldAddItem = false;
+		case 1:
+			shouldAddItem = false;
 			break;
-			case 2:
-				if (difficult < 2)
-				{
-					shouldAddItem = true;
-				}
-				break;
-			case 3:
-				if (difficult < 3)
-				{
-					shouldAddItem = true;
-				}
-				break;
-			case 4:
+		case 2:
+			if (difficult < 2)
+			{
 				shouldAddItem = true;
-				break;
+			}
+			break;
+		case 3:
+			if (difficult < 3)
+			{
+				shouldAddItem = true;
+			}
+			break;
+		case 4:
+			shouldAddItem = true;
+			break;
 		}
-		newmsg.addItemId(shouldAddItem == true ? loot.id : 0);
 
+		newmsg.addItemId(shouldAddItem == true ? loot.id : 0);
 		newmsg.addByte(difficult);
 		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
 		if (shouldAddItem == true)
@@ -2519,7 +2520,7 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg)
 	}
 	else
 	{
-    player->sendMarketEnter(player->getLastDepotId());
+		player->sendMarketEnter(player->getLastDepotId());
 		addGameTask(&Game::playerBrowseMarket, player->getID(), browseId);
 	}
 }

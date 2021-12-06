@@ -98,13 +98,7 @@ bool Player::setVocation(uint16_t vocId)
 	}
 	vocation = voc;
 
-	Condition* condition = getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
-	if (condition) {
-		condition->setParam(CONDITION_PARAM_HEALTHGAIN, vocation->getHealthGainAmount());
-		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks() * 1000);
-		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
-		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
-	}
+	updateRegeneration();
 	g_game.addPlayerVocation(this);
 	return true;
 }
@@ -1336,6 +1330,8 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 			addCondition(condition);
 		}
 		storedConditionList.clear();
+
+		updateRegeneration();
 
 		BedItem* bed = g_game.getBedBySleeper(guid);
 		if (bed) {
@@ -5464,6 +5460,21 @@ void Player::setGuild(Guild* newGuild)
 	}
 }
 
+void Player::updateRegeneration()
+{
+	if (!vocation) {
+		return;
+	}
+
+	Condition* condition = getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
+	if (condition) {
+		condition->setParam(CONDITION_PARAM_HEALTHGAIN, vocation->getHealthGainAmount());
+		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks() * 1000);
+		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
+		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
+	}
+}
+
 //Custom: Anti bug of market
 bool Player::isMarketExhausted() const {
 	uint32_t exhaust_time = 3000; // half second 500
@@ -5630,6 +5641,44 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	}
 
 	stashContainer(itemDict);
+}
+
+void Player::openPlayerContainers()
+{
+	std::vector<std::pair<uint8_t, Container*>> openContainersList;
+
+	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		Container* itemContainer = item->getContainer();
+		if (itemContainer) {
+			uint8_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+			if (cid > 0) {
+				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+			}
+			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
+				Container* subContainer = (*it)->getContainer();
+				if (subContainer) {
+					uint8_t subcid = (*it)->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+					if (subcid > 0) {
+						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
+					}
+				}
+			}
+		}
+	}
+
+	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
+		return left.first < right.first;
+	});
+
+	for (auto& it : openContainersList) {
+		addContainer(it.first - 1, it.second);
+		onSendContainer(it.second);
+	}
 }
 
 /*******************************************************************************

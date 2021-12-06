@@ -3,7 +3,37 @@ function Player:onBrowseField(position)
 end
 
 function Player:onLook(thing, position, distance)
-	local description = "You see " .. thing:getDescription(distance)
+	local description = "You see "
+	description = description .. thing:getDescription(distance)
+	if thing:isItem() then
+		local itemType = thing:getType()
+		if (itemType and itemType:getImbuingSlots() > 0) then
+			local imbuingSlots = "Imbuements: ("
+			for slot = 0, itemType:getImbuingSlots() - 1 do
+				if slot > 0 then
+					imbuingSlots = string.format("%s, ", imbuingSlots)
+				end
+				local duration = thing:getImbuementDuration(slot)
+				if duration > 0 then
+					local imbue = thing:getImbuement(slot)
+					imbuingSlots = string.format("%s%s %s %s",
+						imbuingSlots, imbue:getBase().name, imbue:getName(), getTime(duration))
+				else
+					imbuingSlots = string.format("%sEmpty Slot", imbuingSlots)
+				end
+			end
+			imbuingSlots = string.format("%s).", imbuingSlots)
+			description = string.gsub(description, "It weighs", imbuingSlots.. "\nIt weighs")
+		end
+	elseif thing:isMonster() then
+		description = description .. thing:getDescription(distance)
+		local master = thing:getMaster()
+		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
+			description = description..' (Master: ' .. master:getName() .. '). \z
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.PetSummon) - os.time())
+		end
+	end
+
 	if self:getGroup():getAccess() then
 		if thing:isItem() then
 			description = string.format("%s\nItem ID: %d", description, thing:getId())
@@ -20,17 +50,19 @@ function Player:onLook(thing, position, distance)
 
 			local itemType = thing:getType()
 
-			local transformEquipId = itemType:getTransformEquipId()
-			local transformDeEquipId = itemType:getTransformDeEquipId()
-			if transformEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
-			elseif transformDeEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onDeEquip)", description, transformDeEquipId)
-			end
+			if itemType then
+				local transformEquipId = itemType:getTransformEquipId()
+				local transformDeEquipId = itemType:getTransformDeEquipId()
+				if transformEquipId ~= 0 then
+					description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
+				elseif transformDeEquipId ~= 0 then
+					description = string.format("%s\nTransforms to: %d (onDeEquip)", 	description, transformDeEquipId)
+				end
 
-			local decayId = itemType:getDecayId()
-			if decayId ~= -1 then
-				description = string.format("%s\nDecays to: %d", description, decayId)
+				local decayId = itemType:getDecayId()
+				if decayId ~= -1 then
+					description = string.format("%s\nDecays to: %d", description, decayId)
+				end
 			end
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"
@@ -313,4 +345,159 @@ function Player:onChangeZone(zone)
 		end
 	end
 	return false
+end
+
+function Player:canBeAppliedImbuement(imbuement, item)
+	local categories = {}
+	local slots = ItemType(item:getId()):getImbuingSlots()
+	if slots > 0 then
+		for slot = 0, slots - 1 do
+			local duration = item:getImbuementDuration(slot)
+			if duration > 0 then
+				local imbuementlot = item:getImbuement(slot)
+				local categoryId = imbuementlot:getCategory().id
+				table.insert(categories, categoryId)
+			end
+		end
+	end
+
+	if table.contains(categories, imbuement:getCategory().id) then
+		return false
+	end
+
+	if imbuement:isPremium() and self:getPremiumDays() < 1 then
+		return false
+	end
+
+	if self:getStorageValue(Storage.Imbuement) > 0 then
+		imbuable = true
+	else
+		imbuable = false
+	end
+
+	if not self:canImbueItem(imbuement, item) then
+		return false
+	end
+
+	return true
+end
+
+function Player:onApplyImbuement(imbuement, item, slot, protectionCharm)
+	for slot = CONST_SLOT_HEAD, CONST_SLOT_AMMO do
+		local slotItem = self:getSlotItem(slot)
+		if slotItem and slotItem == item then
+			self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "You can't imbue a equipped item.")
+			self:closeImbuementWindow()
+			return true
+		end
+	end
+
+	for _, pid in pairs(imbuement:getItems()) do
+		if (self:getItemCount(pid.itemid) + self:getStashItemCount(pid.itemid)) < pid.count then
+			self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "You don't have all necessary items.")
+			return false
+		end
+	end
+
+	if item:getImbuementDuration(slot) > 0 then
+		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ERROR, "An error ocurred, please reopen imbuement window.")
+		return false
+	end
+
+	local base = imbuement:getBase()
+	local price = base.price + (protectionCharm and base.protection or 0)
+
+	local chance = protectionCharm and 100 or base.percent
+	if math.random(100) > chance then -- failed attempt
+		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.")
+		-- Removing items
+		for _, pid in pairs(imbuement:getItems()) do
+			self:removeItem(pid.itemid, pid.count)
+		end
+		-- Removing money
+		self:removeMoneyBank(price)
+		-- Refreshing shrine window
+		local nitem = Item(item.uid)
+		self:sendImbuementPanel(nitem)
+		return false
+	end
+
+	-- Removing items
+	for _, pid in pairs(imbuement:getItems()) do
+		local invertoryItemCount = self:getItemCount(pid.itemid)
+		if invertoryItemCount >= pid.count then
+			if not(self:removeItem(pid.itemid, pid.count)) then
+				self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ERROR, "An error ocurred, please reopen imbuement window.")
+				return false
+			end
+		else
+			local mathItemCount = pid.count
+			if invertoryItemCount > 0 and self:removeItem(pid.itemid, invertoryItemCount) then
+				mathItemCount = mathItemCount - invertoryItemCount
+			end
+
+			if not(self:removeStashItem(pid.itemid, mathItemCount)) then
+				self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ERROR, "An error ocurred, please reopen imbuement window.")
+				return false
+			end
+		end
+	end
+
+	if not self:removeMoneyBank(price) then
+		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "You don't have enough money " ..price.. " gps.")
+		return false
+	end
+
+	if not item:addImbuement(slot, imbuement:getId()) then
+		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "Item failed to apply imbuement.")
+		return false
+	end
+
+	-- Update item
+	local imbueItem = Item(item.uid)
+	self:sendImbuementPanel(imbueItem)
+	return true
+end
+
+function Player:clearImbuement(item, slot)
+	local slots = ItemType(item:getId()):getImbuingSlots()
+	if slots < slot then
+		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR, "Sorry, not possible.")
+		return false
+	end
+
+	if item:getTopParent() ~= self or item:getParent() == self then
+		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
+			"An error occurred while applying the clearing charm to the item.")
+		return false
+	end
+
+	-- slot is not used
+	local info = item:getImbuementDuration(slot)
+	if info == 0 then
+		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
+			"An error occurred while applying the clearing charm to the item.")
+		return false
+	end
+
+	local imbuement = item:getImbuement(slot)
+	if not self:removeMoneyBank(imbuement:getBase().removecust) then
+		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
+			"You don't have enough money " ..imbuement:getBase().removecust.. " gps.")
+		return false
+	end
+
+	if not item:cleanImbuement(slot) then
+		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
+			"An error occurred while applying the clearing charm to the item.")
+		return false
+	end
+
+	-- Update item
+	local nitem = Item(item.uid)
+	self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_SUCCESS,
+		"Congratulations! You have successfully applied the clearing charm to your item.");
+	self:sendImbuementPanel(nitem)
+
+	return true
 end

@@ -1096,6 +1096,8 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
+		void openPlayerContainers();
+
 		//store
 		void sendOpenStore(uint8_t serviceType) {
 			if(client) {
@@ -1636,6 +1638,8 @@ class Player final : public Creature, public Cylinder
 		void learnInstantSpell(const std::string& spellName);
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
+
+		void updateRegeneration();
 
 		void setScheduledSaleUpdate(bool scheduled) {
 			scheduledSaleUpdate = scheduled;

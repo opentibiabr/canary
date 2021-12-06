@@ -43,11 +43,12 @@ struct BaseImbue {
 };
 
 struct Category {
-	Category(uint16_t initId, std::string initName) :
-		id(initId), name(std::move(initName)) {}
+	Category(uint16_t initId, std::string initName, bool initAgressive) :
+		id(initId), name(std::move(initName)), agressive(initAgressive) {}
 
 	uint16_t id;
 	std::string name;
+	bool agressive;
 };
 
 class Imbuements {

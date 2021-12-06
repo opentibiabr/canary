@@ -21,6 +21,67 @@
 
 #include "items/functions/item_parse.hpp"
 
+void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+	// Parse all item attributes
+	ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseRuneSpellName(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWeight(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseShowCount(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseArmor(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDefense(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseExtraDefense(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWeaponType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSlotType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAmmoType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseShootType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicEffect(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseLootType(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseRange(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDuration(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseTransform(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCharges(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseShowAttributes(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseHitChance(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseInvisible(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSpeed(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseHealthAndMana(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSkills(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCriticalHit(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseLifeAndManaLeech(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMaxHitAndManaPoints(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseField(tmpStrValue, attributeNode, valueAttribute, itemType);
+	ItemParse::parseReplaceable(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseLevelDoor(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseBeds(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseReflectDamage(tmpStrValue, valueAttribute, itemType);
+}
+
 void ItemParse::parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "type") {
@@ -548,55 +609,48 @@ void ItemParse::parseSupressDrunk(const std::string& tmpStrValue, pugi::xml_attr
 	}
 }
 
-ConditionDamage* ItemParse::parseFieldConditions(ConditionDamage *conditionDamage, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+std::tuple<ConditionId_t, ConditionType_t, std::string, pugi::xml_attribute> ItemParse::parseFieldConditions(ConditionId_t conditionId, ConditionType_t conditionType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
+	conditionId = CONDITIONID_COMBAT;
 	if (lowerStringValue == "fire") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_FIRE);
-		}
-		delete conditionDamage;
+		conditionType = CONDITION_FIRE;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "energy") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_ENERGY);
-		}
-		delete conditionDamage;
+		conditionType = CONDITION_ENERGY;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "poison") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_POISON);
-		}
-		delete conditionDamage;
+		conditionType = CONDITION_POISON;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "drown") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_DROWN);
-		}
-		delete conditionDamage;
+		conditionType = CONDITION_DROWN;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else if (lowerStringValue == "physical") {
-		if (!conditionDamage) {
-			return conditionDamage = new ConditionDamage(CONDITIONID_COMBAT, CONDITION_BLEEDING);
-		}
-		delete conditionDamage;
+		conditionType = CONDITION_BLEEDING;
+		return std::make_tuple(conditionId, conditionType, lowerStringValue, valueAttribute);
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
-                    valueAttribute.as_string());
+                valueAttribute.as_string());
 	}
+	return std::make_tuple(CONDITIONID_DEFAULT, CONDITION_NONE, lowerStringValue, valueAttribute);
 }
 
-CombatType_t ItemParse::parseFieldCombatType(CombatType_t combatType, std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
+CombatType_t ItemParse::parseFieldCombatType(std::string lowerStringValue, pugi::xml_attribute valueAttribute) {
 	lowerStringValue = asLowerCaseString(valueAttribute.as_string());
 	if (lowerStringValue == "fire") {
-		return combatType = COMBAT_FIREDAMAGE;
+		return COMBAT_FIREDAMAGE;
 	} else if (lowerStringValue == "energy") {
-		return combatType = COMBAT_ENERGYDAMAGE;
+		return COMBAT_ENERGYDAMAGE;
 	} else if (lowerStringValue == "poison") {
-		return combatType = COMBAT_EARTHDAMAGE;
+		return COMBAT_EARTHDAMAGE;
 	} else if (lowerStringValue == "drown") {
-		return combatType = COMBAT_DROWNDAMAGE;
+		return COMBAT_DROWNDAMAGE;
 	} else if (lowerStringValue == "physical") {
-		return combatType = COMBAT_PHYSICALDAMAGE;
+		return COMBAT_PHYSICALDAMAGE;
 	} else {
 		SPDLOG_WARN("[Items::parseItemNode] Unknown field value {}",
                     valueAttribute.as_string());
 	}
+	return COMBAT_NONE;
 }
 
 void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::string stringValue, pugi::xml_node attributeNode) {
@@ -625,17 +679,17 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::st
 			combatStart = std::max<int32_t>(0, pugi::cast<int32_t>(subValueAttribute.value()));
 		} else if (stringValue == "damage") {
 			combatDamage = -pugi::cast<int32_t>(subValueAttribute.value());
-			if (combatStart > 0) {
-				std::list<int32_t>damageList;
-				ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
-				for (int32_t damageValue: damageList) {
-					conditionDamage->addDamage(1, combatTicks, -damageValue);
-				}
-
-				combatStart = 0;
-			} else {
+			if (combatStart == 0) {
 				conditionDamage->addDamage(combatCount, combatTicks, combatDamage);
 			}
+
+			std::list<int32_t>damageList;
+			ConditionDamage::generateDamageList(combatDamage, combatStart, damageList);
+			for (int32_t damageValue: damageList) {
+				conditionDamage->addDamage(1, combatTicks, -damageValue);
+			}
+
+			combatStart = 0;
 		}
 	}
 }
@@ -644,17 +698,30 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "field") {
 		CombatType_t combatType = COMBAT_NONE;
-		ConditionDamage *conditionDamage = nullptr;
+		ConditionDamage* conditionDamage = nullptr;
 
-		// Parse fields conditions and combat type (fire/energy/poison/drown/physical)
-		conditionDamage = parseFieldConditions(conditionDamage, stringValue, valueAttribute);
-		combatType = parseFieldCombatType(combatType, stringValue, valueAttribute);
+		// Parse fields conditions (fire/energy/poison/drown/physical)
+		combatType = parseFieldCombatType(stringValue, valueAttribute);
+		ConditionId_t condID = CONDITIONID_DEFAULT;
+		ConditionType_t condType = CONDITION_NONE;
+		auto result = parseFieldConditions(condID, condType, stringValue, valueAttribute);
+		condID = std::get<0>(result);
+		condType = std::get<1>(result);
+		stringValue = std::get<2>(result);
+		valueAttribute = std::get<3>(result);
+
 		if (combatType != COMBAT_NONE) {
+			if (conditionDamage) {
+				delete conditionDamage;
+			}
+
+			conditionDamage = new ConditionDamage(condID, condType);
+
 			itemType.combatType = combatType;
 			itemType.conditionDamage.reset(conditionDamage);
-			
-			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
 
+			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
+			
 			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 
 			if (conditionDamage->getTotalDamage() > 0) {

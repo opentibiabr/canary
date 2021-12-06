@@ -950,9 +950,9 @@ class Item : virtual public Thing
 			count = n;
 		}
 
-		static uint32_t countByType(const Item* i, int32_t subType) {
-			if (subType == -1 || subType == i->getSubType()) {
-				return i->getItemCount();
+		static uint32_t countByType(const Item* item, int32_t subType) {
+			if (subType == -1 || subType == item->getSubType()) {
+				return item->getItemCount();
 			}
 
 			return 0;

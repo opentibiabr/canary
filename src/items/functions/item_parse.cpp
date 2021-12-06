@@ -64,7 +64,7 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseCriticalHit(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseLifeAndManaLeech(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMaxHitAndManaPoints(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseMagicPoints(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFieldAbsorbPercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAbsorbPercent(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseSupressDrunk(tmpStrValue, valueAttribute, itemType);
@@ -75,7 +75,7 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseSpecializedMagicLevelPoint(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMagicShieldCapacity(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePerfecShot(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseCleavePercent(tmpStrValue, valueAttribute, itemType);
@@ -515,7 +515,7 @@ void ItemParse::parseMaxHitAndManaPoints(const std::string& tmpStrValue, pugi::x
 	}
 }
 
-void ItemParse::parseMagicPoints(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+void ItemParse::parseMagicLevelPoint(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "magiclevelpoints") {
 		itemType.getAbilities().stats[STAT_MAGICPOINTS] = pugi::cast<int32_t>(valueAttribute.value());
@@ -820,7 +820,7 @@ void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml
 	}
 }
 
-void ItemParse::parseMagicLevelPoint(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+void ItemParse::parseSpecializedMagicLevelPoint(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	Abilities & abilities = itemType.getAbilities();
 	if (stringValue == "deathmagiclevelpoints") {

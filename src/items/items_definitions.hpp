@@ -20,8 +20,6 @@
 #ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
 #define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
 
-#define IMBUEMENT_SLOT 500
-
 class Imbuement;
 
 // Enums

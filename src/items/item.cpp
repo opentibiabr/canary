@@ -34,6 +34,8 @@
 #include "lua/creature/actions.h"
 #include "creatures/combat/spells.h"
 
+#define IMBUEMENT_SLOT 500
+
 extern Game g_game;
 extern Spells* g_spells;
 extern Vocations g_vocations;

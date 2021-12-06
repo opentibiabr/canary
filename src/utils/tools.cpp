@@ -757,12 +757,12 @@ const ImbuementTypeNames imbuementTypeNames = {
 	{"elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY},
 	{"elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY},
 	{"increase speed", IMBUEMENT_INCREASE_SPEED},
-	{"skillbost axe", IMBUEMENT_SKILLBOST_AXE},
-	{"skillbost sword", IMBUEMENT_SKILLBOST_SWORD},
-	{"skillbost club", IMBUEMENT_SKILLBOST_CLUB},
-	{"skillbost shielding", IMBUEMENT_SKILLBOST_SHIELDING},
-	{"skillbost distance", IMBUEMENT_SKILLBOST_DISTANCE},
-	{"skillbost magic level", IMBUEMENT_SKILLBOST_MAGIC_LEVEL},
+	{"skillboost axe", IMBUEMENT_SKILLBOOST_AXE},
+	{"skillboost sword", IMBUEMENT_SKILLBOOST_SWORD},
+	{"skillboost club", IMBUEMENT_SKILLBOOST_CLUB},
+	{"skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING},
+	{"skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE},
+	{"skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL},
 	{"increase capacity", IMBUEMENT_INCREASE_CAPACITY}
 };
 

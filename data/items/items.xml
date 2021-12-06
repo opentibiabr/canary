@@ -4262,11 +4262,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3023" article="a" name="holy scarab">
@@ -4443,7 +4443,7 @@
 			<attribute key="elemental protection ice" value="1"/>
 			<attribute key="elemental protection energy" value="1"/>
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 		</attribute>
 	</item>
 	<item id="3060" article="an" name="orb">
@@ -4534,7 +4534,7 @@
 		<attribute key="range" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 	</item>
@@ -5130,7 +5130,7 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 	</item>
 	<item id="3211" article="a" name="broom">
@@ -5363,7 +5363,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5417,7 +5417,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5482,7 +5482,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -5505,7 +5505,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5563,7 +5563,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5615,7 +5615,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5668,7 +5668,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5683,7 +5683,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5698,7 +5698,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5746,7 +5746,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -5766,7 +5766,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -5781,7 +5781,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -5808,7 +5808,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5828,7 +5828,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5842,7 +5842,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5857,7 +5857,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5896,7 +5896,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5912,7 +5912,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -5930,7 +5930,7 @@
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5969,7 +5969,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -5985,7 +5985,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -5999,7 +5999,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -6019,7 +6019,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -6053,7 +6053,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -6069,7 +6069,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -6084,7 +6084,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -6097,7 +6097,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -6119,7 +6119,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -6163,7 +6163,7 @@
 		<attribute key="range" value="5"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -6187,11 +6187,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3353" article="an" name="iron helmet">
@@ -6279,11 +6279,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3366" article="a" name="magic plate armor">
@@ -6317,11 +6317,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3370" article="a" name="knight armor">
@@ -6432,11 +6432,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3386" article="a" name="dragon scale mail">
@@ -6460,11 +6460,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3388" article="a" name="demon armor">
@@ -6497,11 +6497,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3392" article="a" name="royal helmet">
@@ -6511,11 +6511,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3393" article="an" name="amazon helmet">
@@ -6524,11 +6524,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3394" article="an" name="amazon armor">
@@ -6558,11 +6558,11 @@
 		<attribute key="absorbPercentPhysical" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3397" article="a" name="dwarven armor">
@@ -6656,11 +6656,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3409" article="a" name="steel shield">
@@ -6669,7 +6669,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6704,7 +6704,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6723,7 +6723,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6743,7 +6743,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6757,7 +6757,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6772,7 +6772,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6792,7 +6792,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6813,7 +6813,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6842,7 +6842,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6867,7 +6867,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6886,7 +6886,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6901,7 +6901,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6915,7 +6915,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6929,7 +6929,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6943,7 +6943,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6963,7 +6963,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -6987,7 +6987,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -7006,7 +7006,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -7438,11 +7438,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="3574" article="a" name="mystic turban">
@@ -11337,11 +11337,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item fromid="5743" toid="5744" name="wooden floor"/>
@@ -13465,7 +13465,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -13492,7 +13492,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -13663,7 +13663,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -13769,7 +13769,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14790,7 +14790,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14811,7 +14811,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14825,7 +14825,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14840,7 +14840,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14854,7 +14854,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14891,7 +14891,7 @@
 		<attribute key="description" value="This axe is only granted to a scrapper of the Svargrond Arena."/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14913,7 +14913,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14929,7 +14929,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -14969,7 +14969,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14983,7 +14983,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -14997,7 +14997,7 @@
 		<attribute key="extradef" value="-2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15011,7 +15011,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15026,7 +15026,7 @@
 		<attribute key="description" value="This sword is only granted to a greenhorn of the Svargrond arena."/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15040,7 +15040,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15054,7 +15054,7 @@
 		<attribute key="extradef" value="1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15075,7 +15075,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15094,7 +15094,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15118,7 +15118,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15133,7 +15133,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15146,7 +15146,7 @@
 		<attribute key="extradef" value="-3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15160,7 +15160,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15174,7 +15174,7 @@
 		<attribute key="extradef" value="-3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15188,7 +15188,7 @@
 		<attribute key="extradef" value="-3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15209,7 +15209,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15230,7 +15230,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15244,7 +15244,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15265,7 +15265,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15296,7 +15296,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15310,7 +15310,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15324,7 +15324,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15352,7 +15352,7 @@
 		<attribute key="description" value="This axe is only granted to a warlord of the Svargrond arena."/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15366,7 +15366,7 @@
 		<attribute key="extradef" value="-2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15388,7 +15388,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15403,7 +15403,7 @@
 		<attribute key="hitchance" value="5"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15465,7 +15465,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15479,7 +15479,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -15492,7 +15492,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15513,7 +15513,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15526,7 +15526,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -15549,11 +15549,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="7459" article="a" name="pair of earmuffs">
@@ -15568,7 +15568,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -16134,7 +16134,7 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 	</item>
 	<item id="7993" article="a" name="witchhunter's coat">
@@ -16190,7 +16190,7 @@
 		<attribute key="hitchance" value="1"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16205,7 +16205,7 @@
 		<attribute key="attack" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16221,7 +16221,7 @@
 		<attribute key="attack" value="5"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16237,7 +16237,7 @@
 		<attribute key="attack" value="20"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16252,7 +16252,7 @@
 		<attribute key="attack" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16268,7 +16268,7 @@
 		<attribute key="attack" value="3"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16284,7 +16284,7 @@
 		<attribute key="attack" value="3"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16307,7 +16307,7 @@
 		<attribute key="hitchance" value="3"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16550,7 +16550,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -16566,7 +16566,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -16647,7 +16647,7 @@
 		<attribute key="range" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 	</item>
@@ -16659,7 +16659,7 @@
 		<attribute key="range" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 	</item>
@@ -16689,7 +16689,7 @@
 		<attribute key="range" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 	</item>
@@ -16701,7 +16701,7 @@
 		<attribute key="range" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 	</item>
@@ -16713,7 +16713,7 @@
 		<attribute key="range" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 	</item>
@@ -16730,7 +16730,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16744,7 +16744,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16758,7 +16758,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16780,7 +16780,7 @@
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -16794,7 +16794,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -16807,7 +16807,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -16821,7 +16821,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -17698,7 +17698,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 	</item>
 	<item id="8865" article="a" name="crystal column"/>
@@ -18460,7 +18460,7 @@
 		<attribute key="magicpoints" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 	</item>
 	<item id="9104" article="a" name="football"/>
@@ -19095,7 +19095,7 @@
 		<attribute key="description" value="A sturdy shield made of old meat."/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -19117,11 +19117,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="9375" article="a" name="pointed rabbitslayer">
@@ -19144,7 +19144,7 @@
 		<attribute key="defense" value="8"/>
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection holy" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
@@ -19162,7 +19162,7 @@
 		<attribute key="range" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -19190,7 +19190,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -19205,11 +19205,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="9382" article="a" name="helmet of nature">
@@ -19219,11 +19219,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="9383" name="trousers of the ancients">
@@ -19738,7 +19738,7 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 	</item>
 	<item id="9654" article="a" name="war crystal" plural="war crystals">
@@ -20697,11 +20697,11 @@
 		<attribute key="absorbPercentPhysical" value="5"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="10386" article="a" name="Zaoan shoes">
@@ -20727,7 +20727,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -20748,7 +20748,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -20769,7 +20769,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -20848,7 +20848,7 @@
 		<attribute key="weight" value="8700"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -21035,7 +21035,7 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 	</item>
 	<item id="10452" article="a" name="terramite shell" plural="terramite shells">
@@ -22034,7 +22034,7 @@
 		<attribute key="slotType" value="two-handed"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -22190,7 +22190,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -22206,11 +22206,11 @@
 		<attribute key="skillDist" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="11690" name="trashed draken boots">
@@ -22234,7 +22234,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -22247,7 +22247,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -24721,7 +24721,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -24744,7 +24744,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -24760,7 +24760,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -24908,7 +24908,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -24923,7 +24923,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -25019,7 +25019,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -25034,7 +25034,7 @@
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -25215,7 +25215,7 @@
 		<attribute key="attack" value="2"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -25254,7 +25254,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -25432,7 +25432,7 @@
 		<attribute key="hitchance" value="1"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -26626,7 +26626,7 @@
 		<attribute key="skillaxe" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -26642,7 +26642,7 @@
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -26666,7 +26666,7 @@
 		<attribute key="hitchance" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -26705,7 +26705,7 @@
 		<attribute key="skillsword" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -27821,7 +27821,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -27916,11 +27916,11 @@
 		<attribute key="slotType" value="head"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="weight" value="3500"/>
 	</item>
@@ -31217,7 +31217,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31267,7 +31267,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31280,7 +31280,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -31324,7 +31324,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -31575,7 +31575,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31589,7 +31589,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31610,7 +31610,7 @@
 		<attribute key="defense" value="31"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31624,7 +31624,7 @@
 		<attribute key="defense" value="35"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31647,7 +31647,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31661,7 +31661,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31682,7 +31682,7 @@
 		<attribute key="defense" value="30"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31696,7 +31696,7 @@
 		<attribute key="defense" value="34"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31720,7 +31720,7 @@
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -31734,7 +31734,7 @@
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -31755,7 +31755,7 @@
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -31769,7 +31769,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -31793,7 +31793,7 @@
 		<attribute key="hitchance" value="5"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31809,7 +31809,7 @@
 		<attribute key="hitchance" value="5"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31835,7 +31835,7 @@
 		<attribute key="hitchance" value="2"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31851,7 +31851,7 @@
 		<attribute key="hitchance" value="4"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -31880,7 +31880,7 @@
 		<attribute key="defense" value="16"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -31899,7 +31899,7 @@
 		<attribute key="defense" value="20"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -33234,7 +33234,7 @@
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -35355,7 +35355,7 @@
 	<item id="22183" article="an" name="ogre scepta">
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 		<attribute key="range" value="3"/>
@@ -35395,11 +35395,11 @@
 		<attribute key="armor" value="4"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="slotType" value="head"/>
 		<attribute key="weight" value="3100"/>
@@ -35883,7 +35883,7 @@
 		<attribute key="defense" value="37"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -35898,7 +35898,7 @@
 		<attribute key="defense" value="28"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -35986,11 +35986,11 @@
 		<attribute key="armor" value="10"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="slotType" value="head"/>
 		<attribute key="weight" value="3800"/>
@@ -35999,7 +35999,7 @@
 		<attribute key="defense" value="18"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -36027,7 +36027,7 @@
 		<attribute key="defense" value="38"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -36063,7 +36063,7 @@
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -36283,7 +36283,7 @@
 		<attribute key="hitchance" value="3"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -36299,7 +36299,7 @@
 		<attribute key="hitchance" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -38755,7 +38755,7 @@
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -38769,7 +38769,7 @@
 		<attribute key="description" value="It's a gnarly branch with a gleaming blue blossom."/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 		<attribute key="magicpoints" value="2"/>
@@ -40682,7 +40682,7 @@
 		<attribute key="defense" value="33"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -40695,7 +40695,7 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -40709,7 +40709,7 @@
 		<attribute key="defense" value="31"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -40722,7 +40722,7 @@
 		<attribute key="defense" value="32"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -40737,7 +40737,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -40750,7 +40750,7 @@
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -40764,7 +40764,7 @@
 		<attribute key="hitchance" value="6"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -40780,7 +40780,7 @@
 		<attribute key="hitchance" value="6"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -40794,7 +40794,7 @@
 		<attribute key="shootType" value="energy"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -40806,7 +40806,7 @@
 	<item id="27458" article="a" name="rod of destruction">
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -41380,7 +41380,7 @@
 		<attribute key="absorbPercentIce" value="-2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="head"/>
@@ -41417,7 +41417,7 @@
 		<attribute key="defense" value="38"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -41436,7 +41436,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -42808,7 +42808,7 @@
 		<attribute key="armor" value="8"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="head"/>
@@ -42820,11 +42820,11 @@
 		<attribute key="armor" value="10"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="slotType" value="head"/>
 		<attribute key="skilldist" value="2"/>
@@ -42835,7 +42835,7 @@
 		<attribute key="absorbpercentenergy" value="8"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -42849,7 +42849,7 @@
 		<attribute key="absorbpercentfire" value="8"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -42866,7 +42866,7 @@
 		<attribute key="hitchance" value="5"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -42910,7 +42910,7 @@
 		<attribute key="defense" value="39"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -42926,7 +42926,7 @@
 		<attribute key="defense" value="40"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -42942,7 +42942,7 @@
 		<attribute key="defense" value="34"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -42959,7 +42959,7 @@
 		<attribute key="elementenergy" value="45"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -42976,7 +42976,7 @@
 		<attribute key="extradef" value="3"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43414,7 +43414,7 @@
 		<attribute key="absorbpercentearth" value="5"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43428,7 +43428,7 @@
 		<attribute key="absorbpercentholy" value="8"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43446,7 +43446,7 @@
 		<attribute key="extradef" value="-1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43461,7 +43461,7 @@
 		<attribute key="extradef" value="-1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43475,7 +43475,7 @@
 		<attribute key="extradef" value="-1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43489,7 +43489,7 @@
 		<attribute key="extradef" value="-1"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -43997,7 +43997,7 @@
 		<attribute key="hitchance" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -44029,7 +44029,7 @@
 		<attribute key="elementice" value="39"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -44043,7 +44043,7 @@
 		<attribute key="defense" value="26"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -44061,7 +44061,7 @@
 		<attribute key="extradef" value="4"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -44076,7 +44076,7 @@
 		<attribute key="extradef" value="4"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -44113,7 +44113,7 @@
 		<attribute key="absorbpercentenergy" value="10"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -44128,7 +44128,7 @@
 		<attribute key="defense" value="19"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -44144,11 +44144,11 @@
 		<attribute key="armor" value="7"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="skilldist" value="2"/>
 		<attribute key="slotType" value="head"/>
@@ -44168,7 +44168,7 @@
 		<attribute key="defense" value="37"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -44185,7 +44185,7 @@
 		<attribute key="defense" value="17"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -45617,7 +45617,7 @@
 	<item id="30393" article="a" name="cobra crossbow">
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -45641,7 +45641,7 @@
 		<attribute key="defense" value="29"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -45652,7 +45652,7 @@
 		<attribute key="defense" value="29"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -45664,11 +45664,11 @@
 		<attribute key="armor" value="9"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="skillsword" value="1"/>
 		<attribute key="skillclub" value="1"/>
@@ -45681,7 +45681,7 @@
 		<attribute key="defense" value="31"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -45692,7 +45692,7 @@
 	<item id="30399" name="cobra wand">
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
 		<attribute key="magicpoints" value="2"/>
@@ -45702,7 +45702,7 @@
 	<item id="30400" name="cobra rod">
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 		<attribute key="magicpoints" value="2"/>
@@ -47086,11 +47086,11 @@
 		<attribute key="armor" value="9"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 		<attribute key="skillsword" value="2"/>
 		<attribute key="skillclub" value="2"/>
@@ -47135,7 +47135,7 @@
 		<attribute key="extradef" value="2"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -47150,7 +47150,7 @@
 		<attribute key="hitchance" value="4"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -47167,7 +47167,7 @@
 		<attribute key="armor" value="7"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 		</attribute>
 		<attribute key="magicpoints" value="2"/>
 		<attribute key="slotType" value="head"/>
@@ -47276,7 +47276,7 @@
 		<attribute key="elementearth" value="46"/>
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -48551,7 +48551,7 @@
 		<attribute key="skillAxe" value="2" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -48654,11 +48654,11 @@
 		<attribute key="loottype" value="helmet" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="32631" article="a" name="ghost claw">
@@ -50267,7 +50267,7 @@
 		<attribute key="skillSword" value="5" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50286,7 +50286,7 @@
 		<attribute key="skillSword" value="5" />
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50307,7 +50307,7 @@
 		<attribute key="skillAxe" value="5" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50326,7 +50326,7 @@
 		<attribute key="skillAxe" value="5" />
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50347,7 +50347,7 @@
 		<attribute key="skillClub" value="5" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -50365,7 +50365,7 @@
 		<attribute key="skillClub" value="5" />
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -50385,7 +50385,7 @@
 		<attribute key="ammoType" value="arrow" />
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50404,7 +50404,7 @@
 		<attribute key="ammoType" value="bolt"/>
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50422,7 +50422,7 @@
 		<attribute key="weight" value="1900" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 	</item>
@@ -50440,7 +50440,7 @@
 		<attribute key="weight" value="2500" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 	</item>
@@ -50546,7 +50546,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -50784,7 +50784,7 @@
 		<attribute key="ammoType" value="arrow" />
 		<attribute key="imbuementslot" value="3">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50801,7 +50801,7 @@
 		<attribute key="weight" value="3700" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 	</item>
@@ -50816,7 +50816,7 @@
 		<attribute key="weight" value="3300" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 	</item>
@@ -50830,7 +50830,7 @@
 		<attribute key="loottype" value="shield" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -50847,7 +50847,7 @@
 		<attribute key="weaponType" value="shield"/>
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection holy" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
 			<attribute key="elemental protection fire" value="1"/>
 			<attribute key="elemental protection death" value="1"/>
 			<attribute key="elemental protection earth" value="1"/>
@@ -50866,7 +50866,7 @@
 		<attribute key="skillSword" value="3" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -50882,11 +50882,11 @@
 		<attribute key="loottype" value="helmet" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost shielding" value="1"/>
-			<attribute key="skillbost sword" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost shielding" value="1"/>
+			<attribute key="skillboost sword" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 		</attribute>
 	</item>
 	<item id="34157" article="a" name="lion plate">
@@ -51236,7 +51236,7 @@
 		<attribute key="skillAxe" value="3" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -51253,7 +51253,7 @@
 		<attribute key="skillClub" value="3" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -51457,7 +51457,7 @@
 		<attribute key="loottype" value="club" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost club" value="1"/>
+			<attribute key="skillboost club" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
 		</attribute>
@@ -51472,7 +51472,7 @@
 		<attribute key="skillAxe" value="2" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost axe" value="1"/>
+			<attribute key="skillboost axe" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -51506,7 +51506,7 @@
 		<attribute key="weight" value="4700" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost distance" value="1"/>
+			<attribute key="skillboost distance" value="1"/>
 			<attribute key="elemental damage" value ="1"/>
 			<attribute key="critical hit" value ="1"/>
 			<attribute key="life leech" value="1"/>
@@ -51544,7 +51544,7 @@
 		<attribute key="weight" value="3700" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 	</item>
@@ -51558,7 +51558,7 @@
 		<attribute key="weight" value="3200" />
 		<attribute key="imbuementslot" value="2">
 			<attribute key="mana leech" value="1"/>
-			<attribute key="skillbost magic level" value="1"/>
+			<attribute key="skillboost magic level" value="1"/>
 			<attribute key="critical hit" value ="1"/>
 		</attribute>
 	</item>

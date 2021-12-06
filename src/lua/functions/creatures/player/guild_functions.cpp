@@ -163,10 +163,10 @@ int GuildFunctions::luaGuildGetMotd(lua_State* L) {
 
 int GuildFunctions::luaGuildSetMotd(lua_State* L) {
 	// guild:setMotd(motd)
-	const std::string &motd = getString(L, 2);
+	std::string motd = getString(L, 2);
 	Guild* guild = getUserdata<Guild>(L, 1);
 	if (guild) {
-		guild->setMotd(motd);
+		guild->setMotd(std::move(motd));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

@@ -105,7 +105,7 @@ int MoveEventFunctions::luaMoveEventSlot(lua_State* L) {
 	}
 
 	if (moveevent->getEventType() == MOVE_EVENT_EQUIP || moveevent->getEventType() == MOVE_EVENT_DEEQUIP) {
-		std::string slotName = asLowerCaseString(getString(L, 2));
+		std::string slotName = asLowerCaseString(std::move(getString(L, 2)));
 		if (slotName == "head") {
 			moveevent->setSlot(SLOTP_HEAD);
 		} else if (slotName == "necklace") {
@@ -197,9 +197,9 @@ int MoveEventFunctions::luaMoveEventVocation(lua_State* L) {
 		}
 		if (showInDescription) {
 			if (moveevent->getVocationString().empty()) {
-				tmp = asLowerCaseString(getString(L, 2));
+				tmp = std::move(asLowerCaseString(std::move(getString(L, 2))));
 				tmp += "s";
-				moveevent->setVocationString(tmp);
+				moveevent->setVocationString(std::move(tmp));
 			} else {
 				tmp = moveevent->getVocationString();
 				if (lastVoc) {
@@ -207,9 +207,9 @@ int MoveEventFunctions::luaMoveEventVocation(lua_State* L) {
 				} else {
 					tmp += ", ";
 				}
-				tmp += asLowerCaseString(getString(L, 2));
+				tmp += asLowerCaseString(std::move(getString(L, 2)));
 				tmp += "s";
-				moveevent->setVocationString(tmp);
+				moveevent->setVocationString(std::move(tmp));
 			}
 		}
 		pushBoolean(L, true);

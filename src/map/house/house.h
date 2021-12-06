@@ -129,7 +129,7 @@ class House {
 		}
 
 		void setName(std::string newHouseName) {
-			this->houseName = newHouseName;
+			this->houseName = std::move(newHouseName);
 		}
 		const std::string &getName() const {
 			return houseName;

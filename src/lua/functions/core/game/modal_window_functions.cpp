@@ -121,7 +121,7 @@ int ModalWindowFunctions::luaModalWindowAddButton(lua_State* L) {
     ModalWindow* window = getUserdata<ModalWindow>(L, 1);
     if (window) {
         window->buttons.emplace_back(std::move(text), id);
-		window->buttons.shrink_to_fit();
+		window->choices.shrink_to_fit();
         pushBoolean(L, true);
     } else {
         lua_pushnil(L);
@@ -136,7 +136,7 @@ int ModalWindowFunctions::luaModalWindowAddChoice(lua_State* L) {
     ModalWindow* window = getUserdata<ModalWindow>(L, 1);
     if (window) {
         window->choices.emplace_back(std::move(text), id);
-		window->buttons.shrink_to_fit();
+		window->choices.shrink_to_fit();
         pushBoolean(L, true);
     } else {
         lua_pushnil(L);

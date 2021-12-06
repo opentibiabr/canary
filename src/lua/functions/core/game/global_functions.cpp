@@ -77,8 +77,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 
 		if (--itemCount == 0) {
 			if (newItem->getParent()) {
-				uint32_t uid = getScriptEnv()->addThing(newItem);
-				lua_pushnumber(L, uid);
+				lua_pushnumber(L, getScriptEnv()->addThing(newItem));
 				return 1;
 			} else {
 				// stackable item stacked with existing object, newItem will be released

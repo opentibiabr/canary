@@ -578,12 +578,12 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 	if (spell) {
 		if (lua_gettop(L) == 1) {
 			lua_createtable(L, 0, 0);
-			auto it = 0;
-			for (auto voc : spell->getVocMap()) {
+			size_t it = 0;
+			for (const auto& voc : spell->getVocMap()) {
 				++it;
 				std::string s = std::to_string(it);
 				const char* pchar = s.c_str();
-				std::string name = g_vocations().getVocation(voc.first)->getVocName();
+				const std::string& name = g_vocations().getVocation(voc.first)->getVocName();
 				setField(L, pchar, name);
 			}
 			setMetatable(L, -1, "Spell");
@@ -633,8 +633,8 @@ int SpellFunctions::luaSpellWords(lua_State* L) {
 			if (lua_gettop(L) == 3) {
 				sep = getString(L, 3);
 			}
-			spell->setWords(getString(L, 2));
-			spell->setSeparator(sep);
+			spell->setWords(std::move(getString(L, 2)));
+			spell->setSeparator((sep.empty() ? '"' : sep[0]));
 			pushBoolean(L, true);
 		}
 	} else {

@@ -42,8 +42,8 @@ class CreatureEvent final : public Event {
 		const std::string& getName() const {
 			return eventName;
 		}
-		void setName(const std::string& name) {
-			eventName = name;
+		void setName(std::string name) {
+			eventName = std::move(name);
 		}
 		bool isLoaded() const {
 			return loaded;

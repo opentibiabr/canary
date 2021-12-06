@@ -117,7 +117,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		std::string name = result->getString("name");
 		if (!name.empty()) {
 			owner = guid;
-			ownerName = name;
+			ownerName = std::move(name);
 			ownerAccountId =  result->getNumber<uint32_t>("account_id");
 		}
 	}

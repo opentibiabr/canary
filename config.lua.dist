@@ -154,6 +154,7 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
+stashMoving = false
 
 -- Server Save
 -- NOTE: serverSaveNotifyDuration in minutes

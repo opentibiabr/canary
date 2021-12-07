@@ -62,6 +62,7 @@ weatherRain = false
 thunderEffect = false
 freeQuests = false
 allConsoleLog = false
+stashMoving = false
 
 -- Stamina in Trainers
 staminaTrainer = false
@@ -154,7 +155,6 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
-stashMoving = false
 
 -- Server Save
 -- NOTE: serverSaveNotifyDuration in minutes

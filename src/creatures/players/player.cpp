@@ -5422,7 +5422,7 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 		}
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
-    	Container* container = item->getContainer();
+		Container* container = item->getContainer();
 		DepotChest* depotChest = getDepotChest(4, true);
 		ItemVector items = container->getItems();
 

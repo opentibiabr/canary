@@ -43,8 +43,8 @@ maxItem = 2000
 maxContainer = 100
 
 -- Version
-clientVersion = 1264
-clientVersionStr = "12.64"
+clientVersion = 1272
+clientVersionStr = "12.72"
 
 -- Depot Limit
 freeDepotLimit = 2000

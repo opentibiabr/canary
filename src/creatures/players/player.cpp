@@ -484,20 +484,21 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			continue;
 		}
 
-		// Time not decay on protection zone
-		const Tile* playerTile = getTile();
-		if (category->agressive && playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-			continue;
-		}
-
-		// Time not decay if not is infight mode
-		if (category->agressive && !hasCondition(CONDITION_INFIGHT)) {
-			continue;
-		}
-
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 			ImbuementInfo imbuementInfo;
 			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+				continue;
+			}
+
+			// Time not decay on protection zone
+			const Tile* playerTile = getTile();
+			const CategoryImbuement *categoryImbuement = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			if (categoryImbuement->agressive && playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				continue;
+			}
+
+			// Time not decay if not is infight mode
+			if (categoryImbuement->agressive && !hasCondition(CONDITION_INFIGHT)) {
 				continue;
 			}
 

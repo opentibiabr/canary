@@ -817,8 +817,12 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 
 	for (auto subAttributeNode: attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+		if (!subKeyAttribute) {
+			continue;
+		}
 
-		if (!subKeyAttribute || !subAttributeNode.attribute("value")) {
+		pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+		if (!subValueAttribute) {
 			continue;
 		}
 
@@ -826,7 +830,7 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 		if (itemMap != ImbuementsTypeMap.end()) {
 			ImbuementTypes_t imbuementType = getImbuementType(asLowerCaseString(subKeyAttribute.as_string()));
 			if (imbuementType != IMBUEMENT_NONE) {
-				itemType.setImbuementType(imbuementType);
+				itemType.setImbuementType(imbuementType, pugi::cast<uint16_t>(subValueAttribute.value()));
 				continue;
 			}
 		}

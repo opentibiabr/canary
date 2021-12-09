@@ -509,7 +509,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			item->setImbuement(slotid, imbuementInfo.imbuement->getID(), duration);
 			if (duration == 0) {
-				removeItemImbuementStats(imbuementInfo.imbuement);
+				removeItemImbuementStats(imbuementInfo.imbuement, item);
 				g_game.decreasePlayerActiveImbuements(getID());
 			}
 
@@ -1266,9 +1266,12 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	if (item->getParent() == this) {
+		addItemImbuementStats(imbuement, item);
+	}
+	
 	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 
-	addItemImbuementStats(imbuement);
 	openImbuementWindow(item);
 }
 
@@ -1299,6 +1302,10 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		this->sendImbuementResult(message);
 		this->openImbuementWindow(item);
 		return;
+	}
+
+	if (item->getParent() == this) {
+		removeItemImbuementStats(imbuementInfo.imbuement, item);
 	}
 
 	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
@@ -5445,14 +5452,14 @@ uint16_t Player::getFreeBackpackSlots() const
 	return counter;
 }
 
-void Player::addItemImbuementStats(const Imbuement* imbuement)
+void Player::addItemImbuementStats(const Imbuement* imbuement, Item *item)
 {
 	bool requestUpdate = false;
 	// Check imbuement skills
-	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (imbuement->skills[i]) {
+	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
+		if (imbuement->skills[skill] && !item->hasCriticalChanceSkill(skill)) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(i), imbuement->skills[i]);
+			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill]);
 		}
 	}
 
@@ -5462,10 +5469,10 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 	}
 
 	// Check imbuement magic level
-	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-		if (imbuement->stats[s]) {
+	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
+		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(s), imbuement->stats[s]);
+			setVarStats(static_cast<stats_t>(stat), imbuement->stats[stat]);
 		}
 	}
 
@@ -5488,15 +5495,15 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 	return;
 }
 
-void Player::removeItemImbuementStats(const Imbuement* imbuement)
+void Player::removeItemImbuementStats(const Imbuement* imbuement, Item *item)
 {
 	bool requestUpdate = false;
 
 	// Check imbuement skills
-	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (imbuement->skills[i]) {
+	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
+		if (imbuement->skills[skill] && !item->hasCriticalChanceSkill(skill)) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(i), -imbuement->skills[i]);
+			setVarSkill(static_cast<skills_t>(skill), -imbuement->skills[skill]);
 		}
 	}
 
@@ -5506,10 +5513,10 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement)
 	}
 
 	// Check imbuement magic level
-	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-		if (imbuement->stats[s]) {
+	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
+		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(s), -imbuement->stats[s]);
+			setVarStats(static_cast<stats_t>(stat), -imbuement->stats[stat]);
 		}
 	}
 

@@ -4438,7 +4438,15 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				separator = true;
 			}
 
-			ss << getSkillName(i) << ' ' << std::showpos << it.abilities->skills[i] << std::noshowpos << '%';
+			ss << getSkillName(i) << ' ';
+			if (i != SKILL_CRITICAL_HIT_CHANCE) {
+				ss << std::showpos;
+			}
+			ss << it.abilities->skills[i] << '%';
+
+			if (i != SKILL_CRITICAL_HIT_CHANCE) {
+				ss << std::noshowpos;
+			}
 		}
 
 		if (it.abilities->stats[STAT_MAGICPOINTS] != 0)

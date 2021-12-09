@@ -1694,8 +1694,8 @@ class Player final : public Creature, public Cylinder
 
 		void setTraining(bool value);
 
-		void addItemImbuementStats(const Imbuement* imbuement);
-		void removeItemImbuementStats(const Imbuement* imbuement);
+		void addItemImbuementStats(const Imbuement* imbuement, Item *item);
+		void removeItemImbuementStats(const Imbuement* imbuement, Item *item);
 
 		bool isMarketExhausted() const;
 		void updateMarketExhausted() {

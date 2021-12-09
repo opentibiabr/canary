@@ -891,7 +891,7 @@ std::string getSkillName(uint8_t skillid)
 			return "critical hit chance";
 
 		case SKILL_CRITICAL_HIT_DAMAGE:
-			return "critical hit damage";
+			return "critical extra damage";
 
 		case SKILL_LIFE_LEECH_CHANCE:
 			return "life leech chance";

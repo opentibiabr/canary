@@ -375,7 +375,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* it
 
 		// Send only the imbuements registered on item (in items.xml) to the imbuement window
 		const CategoryImbuement* categoryImbuement = getCategoryByID(imbuement->getCategory());
-		if (!item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id))) {
+		if (!item->hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 			continue;
 		}
 

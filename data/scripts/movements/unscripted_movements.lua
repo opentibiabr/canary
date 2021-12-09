@@ -1,5 +1,17 @@
 local items = {
 	{
+		-- cobra sword
+		itemid = 34083,
+		type = "equip",
+		slot = "hand",
+	},
+	{
+		-- cobra sword
+		itemid = 34083,
+		type = "deequip",
+		slot = "hand",
+	},
+	{
 		-- ring of souls
 		itemid = 32636,
 		type = "equip",

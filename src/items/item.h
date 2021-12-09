@@ -1049,8 +1049,12 @@ class Item : virtual public Thing
 		 */
 		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
 		void setImbuement(uint8_t slot, uint16_t id, int32_t duration);
-		bool hasImbuementType(ImbuementTypes_t imbuementType) {
-			return items[id].imbuementTypes.find(imbuementType) != items[id].imbuementTypes.end();
+		bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t maxTier) {
+			auto it = items[id].imbuementTypes.find(imbuementType);
+			if (it != items[id].imbuementTypes.end()) {
+				return (it->second >= maxTier);
+			}
+			return false;
 		}
 		bool hasImbuementCategoryId(uint16_t categoryId);
 		bool hasImbuements() {
@@ -1059,6 +1063,15 @@ class Item : virtual public Thing
 				if (getImbuementInfo(slotid, &imbuementInfo)) {
 					return true;
 				}
+			}
+
+			return false;
+		}
+
+		// Check if item have critical chance skill
+		bool hasCriticalChanceSkill(int32_t skill) {
+			if (skill == SKILL_CRITICAL_HIT_CHANCE) {
+				return true;
 			}
 
 			return false;

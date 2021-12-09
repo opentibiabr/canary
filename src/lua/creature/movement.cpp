@@ -696,7 +696,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 			continue;
 		}
 
-		player->addItemImbuementStats(imbuementInfo.imbuement);
+		player->addItemImbuementStats(imbuementInfo.imbuement, item);
 		g_game.increasePlayerActiveImbuements(player->getID());
 	}
 
@@ -794,7 +794,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 			continue;
 		}
 
-		player->removeItemImbuementStats(imbuementInfo.imbuement);
+		player->removeItemImbuementStats(imbuementInfo.imbuement, item);
 		g_game.decreasePlayerActiveImbuements(player->getID());
 	}
 

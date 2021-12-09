@@ -533,6 +533,10 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 			continue;
 		}
 
+		if (imbuementInfo.imbuement->combatType == COMBAT_NONE) {
+			continue;
+		}
+
 		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;
 
 		damage.secondary.type = imbuementInfo.imbuement->combatType;

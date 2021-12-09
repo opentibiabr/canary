@@ -49,18 +49,8 @@ jobs:
       - name: Fix Repository Name
         run: echo IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
 
-      - name: Build
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: docker/server/Dockerfile
-          tags: ghcr.io/${{ env.IMAGE_REPOSITORY }}:${{ steps.gitversion.outputs.semVer }}
-          cache-from: type=gha, scope=${{ github.workflow }}
-          cache-to: type=gha, scope=${{ github.workflow }}
-
       - name: Build and push
         id: docker_build
-        if: ${{ github.event_name == 'push' }}
         uses: docker/build-push-action@v2
         with:
           file: docker/server/Dockerfile
@@ -70,7 +60,6 @@ jobs:
           cache-to: type=gha, scope=${{ github.workflow }}
 
       - name: Image digest
-        if: ${{ github.event_name == 'push' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       # # Temp fix

@@ -6735,53 +6735,6 @@ void ProtocolGame::sendUpdateLootTracker(Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendTaskHuntingBaseData()
-{
-	if (!player || !g_config.getBoolean(TASK_HUNTING_ENABLED)) {
-		return;
-	}
-
-	NetworkMessage msg;
-	
-	msg.addByte(0xBA);
-
-	std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
-	msg.add<uint16_t>(bestiaryList.size());
-	for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
-		MonsterType* mtype = g_monsters.getMonsterType((*it).second);
-		if (!mtype) {
-			return;
-		}
-
-		msg.add<uint16_t>(mtype->info.raceid);
-		if (mtype->info.bestiaryStars <= 1) {
-			msg.addByte(0x01);
-		} else if (mtype->info.bestiaryStars <= 3) {
-			msg.addByte(0x02);
-		} else {
-			msg.addByte(0x03);
-		}
-	}
-
-	std::vector<TaskHuntingOption*> options = g_prey.GetTaskOptions();
-	msg.addByte(options.size());
-	for (auto it = options.begin(); it != options.end(); ++it) {
-		TaskHuntingOption* option = *it;
-		if (!option) {
-			return;
-		}
-
-		msg.addByte(static_cast<uint8_t>(option->difficult));
-		msg.addByte(option->rarity);
-		msg.add<uint16_t>(option->firstKills);
-		msg.add<uint16_t>(option->firstReward);
-		msg.add<uint16_t>(option->secondKills);
-		msg.add<uint16_t>(option->secondReward);
-	}
-
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::sendTaskHuntingData(TaskHuntingSlot* slot)
 {
 	if (!player || !slot) {

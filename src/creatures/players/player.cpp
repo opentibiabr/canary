@@ -5559,7 +5559,7 @@ void Player::initializeTaskHunting()
 	}
 
 	if (client && g_config.getBoolean(TASK_HUNTING_ENABLED)) {
-		client->sendTaskHuntingBaseData();
+		client->writeToOutputBuffer(g_prey.GetTaskHuntingBaseDate());
 	}
 }
 

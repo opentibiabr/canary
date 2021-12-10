@@ -24,6 +24,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "server/network/protocol/protocolgame.h"
 
 enum PreySlot_t : uint8_t {
 	PreySlot_One = 0,
@@ -97,6 +98,8 @@ enum PreyTaskDifficult_t : uint8_t {
 	PreyTaskDifficult_First = PreyTaskDifficult_Easy,
 	PreyTaskDifficult_Last = PreyTaskDifficult_Hard
 };
+
+class NetworkMessage;
 
 class PreySlot
 {
@@ -233,6 +236,11 @@ class IOPrey
 		return taskOption;
 	}
 
+	NetworkMessage GetTaskHuntingBaseDate() const {
+		return baseDataMessage;
+	}
+
+	NetworkMessage baseDataMessage;
 	std::vector<TaskHuntingOption*> taskOption;
 };
 

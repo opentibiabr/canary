@@ -560,8 +560,6 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 
 void IOPrey::InitializeTaskHuntOptions()
 {
-	taskOption.clear();
-
 	if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
@@ -590,6 +588,40 @@ void IOPrey::InitializeTaskHuntOptions()
 		}
 
 		kills *= 4;
+	}
+
+	baseDataMessage.addByte(0xBA);
+	std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
+	baseDataMessage.add<uint16_t>(bestiaryList.size());
+	for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
+		MonsterType* mtype = g_monsters.getMonsterType((*it).second);
+		if (!mtype) {
+			return;
+		}
+
+		baseDataMessage.add<uint16_t>(mtype->info.raceid);
+		if (mtype->info.bestiaryStars <= 1) {
+			baseDataMessage.addByte(0x01);
+		} else if (mtype->info.bestiaryStars <= 3) {
+			baseDataMessage.addByte(0x02);
+		} else {
+			baseDataMessage.addByte(0x03);
+		}
+	}
+
+	baseDataMessage.addByte(taskOption.size());
+	for (auto it = taskOption.begin(); it != taskOption.end(); ++it) {
+		TaskHuntingOption* option = *it;
+		if (!option) {
+			return;
+		}
+
+		baseDataMessage.addByte(static_cast<uint8_t>(option->difficult));
+		baseDataMessage.addByte(option->rarity);
+		baseDataMessage.add<uint16_t>(option->firstKills);
+		baseDataMessage.add<uint16_t>(option->firstReward);
+		baseDataMessage.add<uint16_t>(option->secondKills);
+		baseDataMessage.add<uint16_t>(option->secondReward);
 	}
 }
 

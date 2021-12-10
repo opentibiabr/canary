@@ -31,6 +31,14 @@ extern Monsters g_monsters;
 extern ConfigManager g_config;
 extern IOPrey g_prey;
 
+// Prey class
+PreySlot::PreySlot(PreySlot_t id) :
+									id(id) {
+		eraseBonus();
+		reloadBonusValue();
+		reloadBonusType();
+}
+
 void PreySlot::reloadBonusType()
 {
 	if (bonusRarity == 10) {
@@ -103,11 +111,10 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 		stageFour = 4;
 	}
 
-	uint16_t raceId;
 	uint8_t tries = 0;
 	size_t maxIndex = bestiary.size() - 1;
 	while (raceIdList.size() < 9) {
-		raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
+		uint16_t raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
 		tries++;
 
 		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {
@@ -135,6 +142,16 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 			tries = 0;
 		}
 	}
+}
+
+// Task hunting class
+TaskHuntingSlot::TaskHuntingSlot(PreySlot_t id) :
+												id(id) {
+	upgrade = false;
+	state = PreyTaskDataState_Selection;
+	selectedRaceId = 0;
+	currentKills = 0;
+	rarity = 1;
 }
 
 void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level)
@@ -231,6 +248,8 @@ void TaskHuntingSlot::reloadReward()
 		chance = normal_random(0, 45);
 	} else if (rarity == 3) {
 		chance = normal_random(0, 20);
+	} else {
+		return;
 	}
 
 	if (chance <= 5) {
@@ -246,6 +265,7 @@ void TaskHuntingSlot::reloadReward()
 	}
 }
 
+// Prey/Task hunting global class
 bool IOPrey::CheckPlayerPreys(Player* player)
 {
 	if (!player) {

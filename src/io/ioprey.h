@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_IO_PREY_H_
-#define SRC_IO_PREY_H_
+#ifndef SRC_IO_IOPREY_H_
+#define SRC_IO_IOPREY_H_
 
 #include <string>
 #include <iostream>
@@ -102,12 +102,7 @@ class PreySlot
 {
  public:
 	PreySlot() = default;
-	PreySlot(PreySlot_t id) :
-		id(id) {
-			eraseBonus();
-			reloadBonusValue();
-			reloadBonusType();
-		}
+	explicit PreySlot(PreySlot_t id);
 	virtual ~PreySlot() = default;
 
 	bool isOccupied() const {
@@ -156,8 +151,7 @@ class TaskHuntingSlot
 {
  public:
 	TaskHuntingSlot() = default;
-	TaskHuntingSlot(PreySlot_t id) :
-		id(id) {}
+	explicit TaskHuntingSlot(PreySlot_t id);
 	virtual ~TaskHuntingSlot() = default;
 
 	bool isOccupied() const {
@@ -242,4 +236,4 @@ class IOPrey
 	std::vector<TaskHuntingOption*> taskOption;
 };
 
-#endif  // SRC_IO_PREY_H_
+#endif  // SRC_IO_IOPREY_H_

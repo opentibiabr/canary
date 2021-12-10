@@ -5781,11 +5781,15 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		Monster* targetMonster;
 		if (target && target->getMonster()) {
 			targetMonster = target->getMonster();
+		} else {
+			targetMonster = nullptr;
 		}
 
 		Monster* attackerMonster;
 		if (attacker && attacker->getMonster()) {
 			attackerMonster = attacker->getMonster();
+		} else {
+			attackerMonster = nullptr;
 		}
 
 		if (attackerPlayer && targetMonster) {

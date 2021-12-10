@@ -90,6 +90,12 @@ Player::~Player()
 		}
 	}
 
+	for (TaskHuntingSlot* slot : taskHunting) {
+		if (slot) {
+			delete slot;
+		}
+	}
+
 	inbox->decrementReferenceCounter();
 
 	setWriteItem(nullptr);

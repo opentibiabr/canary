@@ -5533,7 +5533,9 @@ void Player::initializePrey()
 				slot->reloadMonsterGrid(getPreyBlackList(), getLevel());
 			}
 
-			setPreySlotClass(slot);
+			if (!setPreySlotClass(slot)) {
+				delete slot;
+			}
 		}
 	} else {
 		g_game.initializePreyCounter(getGUID());
@@ -5554,22 +5556,15 @@ void Player::initializeTaskHunting()
 				slot->reloadMonsterGrid(getTaskHuntingBlackList(), getLevel());
 			}
 
-			setTaskHuntingSlotClass(slot);
+			if (!setTaskHuntingSlotClass(slot)) {
+				delete slot;
+			}
 		}
 	}
 
 	if (client && g_config.getBoolean(TASK_HUNTING_ENABLED)) {
 		client->sendTaskHuntingBaseData();
 	}
-}
-
-bool Player::isCreatureUnlockedOnTaskHunting(MonsterType* mtype)
-{
-	if (!mtype) {
-		return false;
-	}
-
-	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
 /*******************************************************************************

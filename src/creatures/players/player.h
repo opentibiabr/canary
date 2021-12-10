@@ -1843,12 +1843,13 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
-		void setPreySlotClass(PreySlot* slot) {
+		bool setPreySlotClass(PreySlot* slot) {
 			if (getPreySlotById(slot->id)) {
-				return;
+				return false;
 			}
 
 			preys.push_back(slot);
+			return true;
 		}
 
 		bool usePreyCards(uint16_t amount) {
@@ -1905,15 +1906,23 @@ class Player final : public Creature, public Cylinder
 		}
 
 		// Task hunting system
-		void initializeTaskHunting();		
-		bool isCreatureUnlockedOnTaskHunting(MonsterType* mtype);
+		void initializeTaskHunting();
 
-		void setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
+		bool isCreatureUnlockedOnTaskHunting(MonsterType* mtype) {
+			if (!mtype) {
+				return false;
+			}
+
+			return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+		}
+
+		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
 			if (getTaskHuntingSlotById(slot->id)) {
-				return;
+				return false;
 			}
 
 			taskHunting.push_back(slot);
+			return true;
 		}
 
 		void reloadTaskSlot(PreySlot_t slotid) {

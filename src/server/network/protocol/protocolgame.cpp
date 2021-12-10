@@ -6147,15 +6147,6 @@ void ProtocolGame::sendPreyData(PreySlot* slot)
 		for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
 			msg.add<uint16_t>((*it).first);
 		}
-	//} else if (slot->state == PreyDataState_WildcardSelection) {
-	//	msg.addByte(static_cast<uint8_t>(slot->bonus));
-	//	msg.add<uint16_t>(slot->bonusPercentage);
-	//	msg.addByte(slot->bonusRarity);
-	//	std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
-	//	msg.add<uint16_t>(bestiaryList.size());
-	//	for (auto it : bestiaryList) {
-	//		msg.add<uint16_t>(it.first);
-	//	}
 	} else {
 		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", slot->state);
 		return;

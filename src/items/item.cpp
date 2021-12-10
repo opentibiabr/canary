@@ -219,7 +219,11 @@ Item* Item::clone() const
 
 bool Item::equals(const Item* otherItem) const
 {
-	if (!otherItem || id != otherItem->id) {
+	if (!otherItem) {
+		return false;
+	}
+
+	if (id != otherItem->id) {
 		return false;
 	}
 
@@ -228,27 +232,30 @@ bool Item::equals(const Item* otherItem) const
 	}
 
 	const auto& otherAttributes = otherItem->attributes;
-	if (!otherAttributes || attributes->attributeBits != otherAttributes->attributeBits) {
+	if (!otherAttributes) {
 		return false;
 	}
 
-	const auto& attributeList = attributes->attributes;
-	const auto& otherAttributeList = otherAttributes->attributes;
-	for (const auto& attribute : attributeList) {
-		if (ItemAttributes::isStrAttrType(attribute.type)) {
-			for (const auto& otherAttribute : otherAttributeList) {
-				if (attribute.type == otherAttribute.type && *attribute.value.string != *otherAttribute.value.string) {
-					return false;
-				}
+	if (attributes->attributeBits != otherAttributes->attributeBits) {
+		return false;
+	}
+
+	for (const auto& attribute : attributes->attributes) {
+		for (const auto& otherAttribute : otherAttributes->attributes) {
+			if (attribute.type != otherAttribute.type) {
+				continue;
 			}
-		} else {
-			for (const auto& otherAttribute : otherAttributeList) {
-				if (attribute.type == otherAttribute.type && attribute.value.integer != otherAttribute.value.integer) {
-					return false;
-				}
+
+			if (ItemAttributes::isStrAttrType(attribute.type) && *attribute.value.string != *otherAttribute.value.string) {
+				return false;
+			}
+
+			if (ItemAttributes::isIntAttrType(attribute.type) && attribute.value.integer != otherAttribute.value.integer) {
+				return false;
 			}
 		}
 	}
+
 	return true;
 }
 
@@ -2354,17 +2361,11 @@ void ItemAttributes::removeAttribute(ItemAttrTypes type)
 		return;
 	}
 
-	auto prev_it = attributes.cbegin();
-	if ((*prev_it).type == type) {
-		attributes.pop_front();
-	} else {
-		auto it = prev_it, end = attributes.cend();
-		while (++it != end) {
-			if ((*it).type == type) {
-				attributes.erase_after(prev_it);
-				break;
-			}
-			prev_it = it;
+	for (auto it = attributes.begin(), end = attributes.end(); it != end; ++it) {
+		if ((*it).type == type) {
+			(*it) = std::move(attributes.back());
+			attributes.pop_back();
+			break;
 		}
 	}
 	attributeBits &= ~type;
@@ -2424,8 +2425,8 @@ ItemAttributes::Attribute& ItemAttributes::getAttr(ItemAttrTypes type)
 	}
 
 	attributeBits |= type;
-	attributes.emplace_front(type);
-	return attributes.front();
+	attributes.emplace_back(type);
+	return attributes.back();
 }
 
 void Item::startDecaying()
@@ -2464,40 +2465,4 @@ bool Item::hasMarketAttributes() const
 	}
 
 	return true;
-}
-
-template<>
-const std::string& ItemAttributes::CustomAttribute::get<std::string>() {
-	if (value.type() == typeid(std::string)) {
-		return boost::get<std::string>(value);
-	}
-
-	return emptyString;
-}
-
-template<>
-const int64_t& ItemAttributes::CustomAttribute::get<int64_t>() {
-	if (value.type() == typeid(int64_t)) {
-		return boost::get<int64_t>(value);
-	}
-
-	return emptyInt;
-}
-
-template<>
-const double& ItemAttributes::CustomAttribute::get<double>() {
-	if (value.type() == typeid(double)) {
-		return boost::get<double>(value);
-	}
-
-	return emptyDouble;
-}
-
-template<>
-const bool& ItemAttributes::CustomAttribute::get<bool>() {
-	if (value.type() == typeid(bool)) {
-		return boost::get<bool>(value);
-	}
-
-	return emptyBool;
 }

@@ -181,4 +181,13 @@
 	<mount id="179" clientid="1389" name="Void Watcher" speed="20" premium="no" type="store" />
 	<mount id="180" clientid="1390" name="Rune Watcher" speed="20" premium="no" type="store" />
 	<mount id="181" clientid="1391" name="Rift Watcher" speed="20" premium="no" type="store" />
+	<mount id="182" clientid="1417" name="Phant" speed="20" premium="yes" type="arena" />
+	<mount id="183" clientid="1430" name="Shellodon" speed="20" premium="yes" type="quest" />
+	<mount id="184" clientid="1431" name="Singeing Steed" speed="20" premium="yes" type="quest" />
+	<mount id="185" clientid="1439" name="Hyacinth" speed="20" premium="no" type="store" />
+	<mount id="186" clientid="1440" name="Peony" speed="20" premium="no" type="store" />
+	<mount id="187" clientid="1441" name="Dandelion" speed="20" premium="no" type="store" />
+	<mount id="188" clientid="1446" name="Rustwurm" speed="20" premium="no" type="store" />
+	<mount id="189" clientid="1447" name="Bogwurm" speed="20" premium="no" type="store" />
+	<mount id="190" clientid="1448" name="Gloomwurm" speed="20" premium="no" type="store" />
 </mounts>

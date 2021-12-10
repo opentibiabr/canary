@@ -4111,12 +4111,8 @@ void Player::gainExperience(uint64_t gainExp, Creature* source)
 			}
 
 			if (g_config.getBoolean(TASK_HUNTING_ENABLED)) {
-				auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](TaskHuntingSlot* itTask) {
-					return itTask->selectedRaceId == raceId;
-					});
-
-				if (it != taskHunting.end()) {
-					TaskHuntingSlot* taskSlot = *it;
+				TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(raceId);
+				if (taskSlot) {
 					TaskHuntingOption* option = g_prey.GetTaskRewardOption(taskSlot);
 					if (option) {
 						taskSlot->currentKills += 1;

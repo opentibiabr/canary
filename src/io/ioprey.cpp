@@ -478,6 +478,9 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		} else if (slot->state == PreyTaskDataState_Selection && !slot->isCreatureOnList(raceId)) {
 			player->sendMessageDialog("There was an error while processing your action. Please try reopening the task window.");
 			return;
+		} else if (player->getTaskHuntingWithCreature(raceId)) {
+			player->sendMessageDialog("This creature is already selected on another slot.");
+			return;
 		}
 
 		MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId);
@@ -534,11 +537,11 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		reward = std::ceil((reward * boostChange) / 10);
 		ss << "You succesfully claimed your hunting task and received " << reward;
 		if (boostChange == 20) {
-			ss << " including a 100% bonus!!";
+			ss << " hunting task points including a 100% bonus!!";
 		} else if (boostChange == 15) {
-			ss << " including a 50% bonus!";
+			ss << " hunting task points including a 50% bonus!";
 		} else {
-			ss << " with no bonus.";
+			ss << " hunting task points with no bonus.";
 		}
 
 		slot->eraseTask();

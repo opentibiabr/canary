@@ -1987,6 +1987,22 @@ class Player final : public Creature, public Cylinder
 			return getLevel() * g_config.getNumber(TASK_HUNTING_CANCEL_PRICE);
 		}
 
+		TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const {
+			if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+				return nullptr;
+			}
+
+			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](TaskHuntingSlot* itTask) {
+				return itTask->selectedRaceId == raceId;
+			});
+
+			if (it != taskHunting.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;

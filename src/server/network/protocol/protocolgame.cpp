@@ -6830,7 +6830,7 @@ void ProtocolGame::sendTaskHuntingData(TaskHuntingSlot* slot)
 		msg.add<uint16_t>(slot->selectedRaceId);
 		msg.addByte(slot->upgrade ? 0x01 : 0x00);
 		msg.add<uint16_t>(slot->upgrade ? option->secondKills : option->firstKills);
-		msg.add<uint16_t>(slot->currentKills);
+		msg.add<uint16_t>(std::min<uint16_t>(slot->currentKills, slot->upgrade ? option->secondKills : option->firstKills));
 		msg.addByte(slot->rarity);
 	} else {
 		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", slot->state);

@@ -25,8 +25,11 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
+#include "io/ioprey.h"
 
 #include <limits>
+
+class PreySlot;
 
 extern ConfigManager g_config;
 extern Game g_game;
@@ -285,6 +288,9 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->loginPosition.x = result->getNumber<uint16_t>("posx");
   player->loginPosition.y = result->getNumber<uint16_t>("posy");
   player->loginPosition.z = result->getNumber<uint16_t>("posz");
+
+  player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
+  player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -638,6 +644,69 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     } while (result->next());
   }
 
+  // Load prey class
+  if (g_config.getBoolean(PREY_ENABLED)) {
+    query.str(std::string());
+    query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
+    if (result = db.storeQuery(query.str())) {
+      do {
+        PreySlot* slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+        slot->state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+        slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
+        slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
+        slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
+        slot->bonusRarity = result->getNumber<uint16_t>("bonus_rarity");
+        slot->bonusPercentage = result->getNumber<uint16_t>("bonus_percentage");
+        slot->bonusTimeLeft = result->getNumber<uint16_t>("bonus_time");
+        slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
+
+        unsigned long preySize;
+        const char* preyStream = result->getStream("monster_list", preySize);
+        PropStream propPreyStream;
+        propPreyStream.init(preyStream, preySize);
+
+        uint16_t raceId;
+        while (propPreyStream.read<uint16_t>(raceId)) {
+          slot->raceIdList.push_back(raceId);
+        }
+
+        player->setPreySlotClass(slot);
+      } while (result->next());
+    }
+  }
+
+  // Load task hunting class
+  if (g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+    query.str(std::string());
+    query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
+    if (result = db.storeQuery(query.str())) {
+      do {
+        TaskHuntingSlot* slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+        slot->state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+        slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
+        slot->upgrade = result->getNumber<bool>("upgrade");
+        slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));
+        slot->currentKills = result->getNumber<uint16_t>("kills");
+        slot->disabledUntilTimeStamp = result->getNumber<int64_t>("disabled_time");
+        slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
+
+        unsigned long taskHuntSize;
+        const char* taskHuntStream = result->getStream("monster_list", taskHuntSize);
+        PropStream propTaskHuntStream;
+        propTaskHuntStream.init(taskHuntStream, taskHuntSize);
+
+        uint16_t raceId;
+        while (propTaskHuntStream.read<uint16_t>(raceId)) {
+          slot->raceIdList.push_back(raceId);
+        }
+
+        player->setTaskHuntingSlotClass(slot);
+      } while (result->next());
+    }
+  }
+
+  player->initializePrey();
+	player->initializeTaskHunting();
   player->updateBaseSpeed();
   player->updateInventoryWeight();
   player->updateItemsLight(true);
@@ -791,6 +860,9 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`posx` = " << loginPosition.getX() << ',';
   query << "`posy` = " << loginPosition.getY() << ',';
   query << "`posz` = " << loginPosition.getZ() << ',';
+
+  query << "`prey_wildcard` = " << player->getPreyCards() << ',';
+  query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
 
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';
@@ -1077,6 +1149,87 @@ bool IOLoginData::savePlayer(Player* player)
 
   if (!saveItems(player, itemList, inboxQuery, propWriteStream)) {
     return false;
+  }
+
+  // Save prey class
+  if (g_config.getBoolean(PREY_ENABLED)) {
+    query.str(std::string());
+    query << "DELETE FROM `player_prey` WHERE `player_id` = " << player->getGUID();
+    if (!db.executeQuery(query.str())) {
+      return false;
+    }
+
+    for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+      PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
+      if (slot) {
+        query.str(std::string());
+        query << "INSERT INTO `player_prey` (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES (";
+          query << player->getGUID() << ", ";
+          query << static_cast<uint16_t>(slot->id) << ", ";
+          query << static_cast<uint16_t>(slot->state) << ", ";
+          query << slot->selectedRaceId << ", ";
+          query << static_cast<uint16_t>(slot->option) << ", ";
+          query << static_cast<uint16_t>(slot->bonus) << ", ";
+          query << static_cast<uint16_t>(slot->bonusRarity) << ", ";
+          query << slot->bonusPercentage << ", ";
+          query << slot->bonusTimeLeft << ", ";
+          query << slot->freeRerollTimeStamp << ", ";
+
+        PropWriteStream propPreyStream;
+        for (auto it = slot->raceIdList.begin(); it != slot->raceIdList.end(); ++it) {
+          propPreyStream.write<uint16_t>(*it);
+        }
+
+        size_t preySize;
+        const char* preyList = propPreyStream.getStream(preySize);
+        query << db.escapeBlob(preyList, preySize) << ")";
+
+        if (!db.executeQuery(query.str())) {
+          SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
+          return false;
+        }
+      }
+    }
+  }
+
+  // Save task hunting class
+  if (g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+    query.str(std::string());
+    query << "DELETE FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
+    if (!db.executeQuery(query.str())) {
+      return false;
+    }
+
+    for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+      TaskHuntingSlot* slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId));
+      if (slot) {
+        query.str(std::string());
+        query << "INSERT INTO `player_taskhunt` (`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, `kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES (";
+          query << player->getGUID() << ", ";
+          query << static_cast<uint16_t>(slot->id) << ", ";
+          query << static_cast<uint16_t>(slot->state) << ", ";
+          query << slot->selectedRaceId << ", ";
+          query << (slot->upgrade ? 1 : 0) << ", ";
+          query << static_cast<uint16_t>(slot->rarity) << ", ";
+          query << slot->currentKills << ", ";
+          query << slot->disabledUntilTimeStamp << ", ";
+          query << slot->freeRerollTimeStamp << ", ";
+
+        PropWriteStream propTaskHuntingStream;
+        for (auto it = slot->raceIdList.begin(); it != slot->raceIdList.end(); ++it) {
+          propTaskHuntingStream.write<uint16_t>(*it);
+        }
+
+        size_t taskHuntingSize;
+        const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
+        query << db.escapeBlob(taskHuntingList, taskHuntingSize) << ")";
+
+        if (!db.executeQuery(query.str())) {
+          SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
+          return false;
+        }
+      }
+    }
   }
 
   query.str(std::string());

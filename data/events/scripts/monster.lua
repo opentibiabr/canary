@@ -8,7 +8,7 @@ function Monster:onDropLoot(corpse)
 	if not player or player:getStamina() > 840 then
 		local monsterLoot = mType:getLoot()
 		for i = 1, #monsterLoot do
-			local item = corpse:createLootItem(monsterLoot[i])
+			local item = corpse:createLootItem(monsterLoot[i], player, self)
 			if not item then
 				Spdlog.info("Could not add loot item to corpse of monster '".. mType:getName() .."'")
 			end

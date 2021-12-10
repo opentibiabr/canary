@@ -208,6 +208,9 @@ class Monster final : public Creature
 		bool getIgnoreFieldDamage() const {
 			return ignoreFieldDamage;
 		}
+		uint16_t getRaceId() const {
+			return mType->info.raceid;
+		}
 
 		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
                               bool checkDefense = false, bool checkArmor = false, bool field = false) override;

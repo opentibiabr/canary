@@ -32,6 +32,7 @@
 
 extern Monsters g_monsters;
 extern Scripts* g_scripts;
+extern IOBestiary g_bestiary;
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
@@ -127,7 +128,6 @@ int GameFunctions::luaGameGetBoostedCreature(lua_State* L) {
 
 int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	// Game.getBestiaryList([bool[string or BestiaryType_t]])
-	IOBestiary g_bestiary;
 	lua_newtable(L);
 	int index = 0;
 	bool name = getBoolean(L, 2, false);
@@ -551,7 +551,6 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	IOBestiary g_bestiary;
 
 	charmRune_t ID = getNumber<charmRune_t>(L, 1);
 	Charm* charm = g_bestiary.getBestiaryCharm(ID, true);

@@ -34,6 +34,7 @@
 #include "imbuements/imbuements.h"
 #include "items/containers/inbox/inbox.h"
 #include "io/ioguild.h"
+#include "io/ioprey.h"
 #include "creatures/appearance/mounts/mounts.h"
 #include "creatures/appearance/outfit/outfit.h"
 #include "grouping/party.h"
@@ -53,6 +54,8 @@ class SchedulerTask;
 class Bed;
 class Guild;
 class Imbuement;
+class PreySlot;
+class TaskHuntingSlot;
 
 struct OpenContainer {
 	Container* container;
@@ -1795,6 +1798,193 @@ class Player final : public Creature, public Cylinder
 		error_t SetAccountInterface(account::Account *account);
 		error_t GetAccountInterface(account::Account *account);
 
+		void sendMessageDialog(std::string message)
+		{
+			if (client) {
+				client->sendMessageDialog(message);
+			}
+		}
+
+		// Prey system
+		void initializePrey();
+
+		void sendPreyData() const {
+			if (client) {
+				for (PreySlot* slot : preys) {
+					client->sendPreyData(slot);
+				}
+
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards());
+			}
+		}
+
+		void sendPreyTimeLeft(PreySlot* slot) const {
+			if (g_config.getBoolean(PREY_ENABLED) && client) {
+				client->sendPreyTimeLeft(slot);
+			}
+		}
+
+		void reloadPreySlot(PreySlot_t slotid) {
+			if (g_config.getBoolean(PREY_ENABLED) && client) {
+				client->sendPreyData(getPreySlotById(slotid));
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+		}
+
+		PreySlot* getPreySlotById(PreySlot_t slotid) {
+			auto it = std::find_if(preys.begin(), preys.end(), [slotid](PreySlot* it) {
+				return it->id == slotid;
+				});
+
+			if (it != preys.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		void setPreySlotClass(PreySlot* slot) {
+			if (getPreySlotById(slot->id)) {
+				return;
+			}
+
+			preys.push_back(slot);
+		}
+
+		bool usePreyCards(uint16_t amount) {
+			if (preyCards < amount) {
+				return false;
+			}
+
+			preyCards -= amount;
+			return true;
+		}
+
+		void addPreyCards(uint64_t amount) {
+			preyCards += amount;
+		}
+
+		uint64_t getPreyCards() const {
+			return preyCards;
+		}
+
+		uint32_t getPreyRerollPrice() const {
+			return getLevel() * g_config.getNumber(PREY_REROLL_PRICE_LEVEL);
+		}
+
+		std::vector<uint16_t> getPreyBlackList() {
+			std::vector<uint16_t> rt;
+			for (PreySlot* slot : preys) {
+				if (slot) {
+					if (slot->isOccupied()) {
+						rt.push_back(slot->selectedRaceId);
+					}
+					for (uint16_t raceId : slot->raceIdList) {
+						rt.push_back(raceId);
+					}
+				}
+			}
+
+			return rt;
+		}
+
+		PreySlot* getPreyWithMonster(uint16_t raceId) const {
+			if (!g_config.getBoolean(PREY_ENABLED)) {
+				return nullptr;
+			}
+
+			auto it = std::find_if(preys.begin(), preys.end(), [raceId](PreySlot* it) {
+				return it->selectedRaceId == raceId;
+				});
+
+			if (it != preys.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		// Task hunting system
+		void initializeTaskHunting();		
+		bool isCreatureUnlockedOnTaskHunting(MonsterType* mtype);
+
+		void setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
+			if (getTaskHuntingSlotById(slot->id)) {
+				return;
+			}
+
+			taskHunting.push_back(slot);
+		}
+
+		void reloadTaskSlot(PreySlot_t slotid) {
+			if (g_config.getBoolean(TASK_HUNTING_ENABLED) && client) {
+				client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+		}
+
+		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) {
+			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](TaskHuntingSlot* it) {
+				return it->id == slotid;
+				});
+
+			if (it != taskHunting.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		std::vector<uint16_t> getTaskHuntingBlackList() {
+			std::vector<uint16_t> rt;
+			for (TaskHuntingSlot* slot : taskHunting) {
+				if (slot) {
+					if (slot->isOccupied()) {
+						rt.push_back(slot->selectedRaceId);
+					} else {
+						for (uint16_t raceId : slot->raceIdList) {
+							rt.push_back(raceId);
+						}
+					}
+				}
+			}
+
+			return rt;
+		}
+
+		void sendTaskHuntingData() {
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+				for (TaskHuntingSlot* slot : taskHunting) {
+					if (slot) {
+						client->sendTaskHuntingData(slot);
+					}
+				}
+			}
+		}
+
+		void addTaskHuntingPoints(uint16_t amount) {
+			taskHuntingPoints += amount;
+		}
+
+		void useTaskHuntingPoints(uint64_t amount) {
+			if (taskHuntingPoints > amount) {
+				taskHuntingPoints -= amount;
+			}
+		}
+
+		uint64_t getTaskHuntingPoints() {
+			return taskHuntingPoints;
+		}
+
+		uint32_t getTaskHuntingRerollPrice() const {
+			return getLevel() * g_config.getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
+		}
+
+		uint32_t getTaskHuntingCancelPrice() const {
+			return getLevel() * g_config.getNumber(TASK_HUNTING_CANCEL_PRICE);
+		}
+
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -1873,6 +2063,9 @@ class Player final : public Creature, public Cylinder
 		std::vector<OutfitEntry> outfits;
 		std::vector<FamiliarEntry> familiars;
 
+		std::vector<PreySlot*> preys;
+		std::vector<TaskHuntingSlot*> taskHunting;
+
 		GuildWarVector guildWarVector;
 
 		std::forward_list<Party*> invitePartyList;
@@ -1899,6 +2092,8 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastAttack = 0;
 		uint64_t bankBalance = 0;
 		uint64_t lastQuestlogUpdate = 0;
+		uint64_t preyCards = 0;
+		uint64_t taskHuntingPoints = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;

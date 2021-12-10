@@ -34,6 +34,7 @@ extern Chat* g_chat;
 extern Monsters g_monsters;
 extern Spells* g_spells;
 extern Vocations g_vocations;
+extern IOBestiary g_bestiary;
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -200,7 +201,6 @@ int PlayerFunctions::luaPlayerUnlockAllCharmRunes(lua_State* L) {
 	// player:unlockAllCharmRunes()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		IOBestiary g_bestiary;
 		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
 			Charm* charm = g_bestiary.getBestiaryCharm(static_cast<charmRune_t>(i));
 			if (charm) {
@@ -219,7 +219,6 @@ int PlayerFunctions::luaPlayeraddCharmPoints(lua_State* L) {
 	// player:addCharmPoints()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		IOBestiary g_bestiary;
 		int16_t charms = getNumber<int16_t>(L, 2);
 		if (charms >= 0) {
 			g_bestiary.addCharmPoints(player, static_cast<uint16_t>(charms));
@@ -325,7 +324,6 @@ int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
 	if (player) {
 			MonsterType* mtype = g_monsters.getMonsterType(getString(L, 2));
 			if (mtype) {
-				IOBestiary g_bestiary;
 				g_bestiary.addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
 				pushBoolean(L, true);
 			} else {
@@ -350,6 +348,117 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 				setMetatable(L, -1, "MonsterType");
 			} else {
 				lua_pushnil(L);
+			}
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddPreyCards(lua_State* L) {
+	// player:addPreyCards(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->addPreyCards(getNumber<uint64_t>(L, 2, 0));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
+	// player:getPreyCards()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getPreyCards());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
+	// player:removeTaskHuntingPoints(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		player->useTaskHuntingPoints(getNumber<uint64_t>(L, 2, 0));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
+	// player:getPreyLootPercentage(raceid)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
+			lua_pushnumber(L, 100 + slot->bonusPercentage);
+		} else {
+			lua_pushnumber(L, 100);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
+	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		PreySlot* slot = player->getPreySlotById(PreySlot_Three);
+		if (slot && slot->state == PreyDataState_Locked) {
+
+			if (lua_gettop(L) == 1) {
+				pushBoolean(L, slot->state != PreyDataState_Locked);
+			} else {
+				if (getBoolean(L, 2, false)) {
+					slot->eraseBonus();
+					slot->state = PreyDataState_Selection;
+					slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
+					player->reloadPreySlot(PreySlot_Three);
+				} else {
+					slot->state = PreyDataState_Locked;
+				}
+
+				pushBoolean(L, true);
+			}
+		} else {
+			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerTaskThirdSlot(lua_State* L) {
+	// get: player:taskHuntingThirdSlot() set: player:taskHuntingThirdSlot(bool)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		TaskHuntingSlot* slot = player->getTaskHuntingSlotById(PreySlot_Three);
+		if (slot) {
+			if (lua_gettop(L) == 1) {
+				pushBoolean(L, slot->state != PreyTaskDataState_Locked);
+			} else {
+				if (getBoolean(L, 2, false)) {
+					slot->eraseTask();
+					slot->reloadReward();
+					slot->state = PreyTaskDataState_Selection;
+					slot->reloadMonsterGrid(player->getTaskHuntingBlackList(), player->getLevel());
+					player->reloadTaskSlot(PreySlot_Three);
+				} else {
+					slot->state = PreyTaskDataState_Locked;
+				}
+
+				pushBoolean(L, true);
 			}
 		} else {
 			lua_pushnil(L);

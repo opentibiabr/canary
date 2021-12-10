@@ -42,6 +42,8 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
+#include "io/ioprey.h"
+#include "io/iobestiary.h"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
@@ -58,7 +60,9 @@ extern Imbuements* g_imbuements;
 extern LuaEnvironment g_luaEnvironment;
 extern Modules* g_modules;
 Monsters g_monsters;
+IOBestiary g_bestiary;
 Npcs g_npcs;
+IOPrey g_prey;
 Vocations g_vocations;
 extern Scripts* g_scripts;
 RSA2 g_RSA;
@@ -192,6 +196,7 @@ void loadModules() {
 		"data/npclua");
 
 	g_game.loadBoostedCreature();
+	g_prey.InitializeTaskHuntOptions();
 }
 
 #ifndef UNIT_TESTING

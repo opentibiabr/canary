@@ -129,6 +129,8 @@ CREATE TABLE IF NOT EXISTS `players` (
     `marriage_status` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `marriage_spouse` int(11) NOT NULL DEFAULT '-1',
     `bonus_rerolls` bigint(21) NOT NULL DEFAULT '0',
+    `prey_wildcard` bigint(21) NOT NULL DEFAULT '0',
+    `task_points` bigint(21) NOT NULL DEFAULT '0',
     `quickloot_fallback` tinyint(1) DEFAULT '0',
     `lookmountbody` tinyint(3) unsigned NOT NULL DEFAULT '0',
     `lookmountfeet` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -603,23 +605,30 @@ CREATE TABLE IF NOT EXISTS `player_namelocks` (
 -- Table structure `player_prey`
 CREATE TABLE IF NOT EXISTS `player_prey` (
     `player_id` int(11) NOT NULL,
-    `name` varchar(50) NOT NULL,
-    `mindex` smallint(6) NOT NULL,
-    `mcolumn` int(11) NOT NULL
+    `slot` tinyint(1) NOT NULL,
+    `state` tinyint(1) NOT NULL,
+    `raceid` varchar(250) NOT NULL,
+    `option` tinyint(1) NOT NULL,
+    `bonus_type` tinyint(1) NOT NULL,
+    `bonus_rarity` tinyint(1) NOT NULL,
+    `bonus_percentage` varchar(250) NOT NULL,
+    `bonus_time` varchar(250) NOT NULL,
+    `free_reroll` bigint(20) NOT NULL,
+    `monster_list` BLOB NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Table structure `player_preytimes`
-CREATE TABLE IF NOT EXISTS `player_preytimes` (
+-- Table structure `player_taskhunt`
+CREATE TABLE IF NOT EXISTS `player_taskhunt` (
     `player_id` int(11) NOT NULL,
-    `bonus_type1` int(11) NOT NULL,
-    `bonus_value1` int(11) NOT NULL,
-    `bonus_name1` varchar(50) NOT NULL,
-    `bonus_type2` int(11) NOT NULL,
-    `bonus_value2` int(11) NOT NULL,
-    `bonus_name2` varchar(50) NOT NULL,
-    `bonus_type3` int(11) NOT NULL,
-    `bonus_value3` int(11) NOT NULL,
-    `bonus_name3` varchar(50) NOT NULL
+    `slot` tinyint(1) NOT NULL,
+    `state` tinyint(1) NOT NULL,
+    `raceid` varchar(250) NOT NULL,
+    `upgrade` tinyint(1) NOT NULL,
+    `rarity` tinyint(1) NOT NULL,
+    `kills` varchar(250) NOT NULL,
+    `disabled_time` bigint(20) NOT NULL,
+    `free_reroll` bigint(20) NOT NULL,
+    `monster_list` BLOB NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `player_rewards`

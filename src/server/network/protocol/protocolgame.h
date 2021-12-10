@@ -28,7 +28,7 @@
 #include "creatures/creature.h"
 #include "game/scheduling/tasks.h"
 #include "game/gamestore.h"
-
+#include "io/ioprey.h"
 
 
 class NetworkMessage;
@@ -40,6 +40,9 @@ class Tile;
 class Connection;
 class Quest;
 class ProtocolGame;
+class PreySlot;
+class TaskHuntingSlot;
+class TaskHuntingOption;
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 extern ConfigManager g_config;
@@ -136,6 +139,7 @@ private:
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
 
 	void parseHighscores(NetworkMessage &msg);
+	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
 
@@ -144,6 +148,7 @@ private:
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
+	void parsePreyAction(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarysendRaces();
@@ -307,7 +312,7 @@ private:
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
-	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0);
+	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
@@ -353,6 +358,11 @@ private:
 	void sendStoreError(GameStoreError_t error, const std::string &message);
 	void sendStorePurchaseSuccessful(const std::string &message, const uint32_t coinBalance);
 	void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType);
+
+	void sendPreyTimeLeft(PreySlot* slot);
+	void sendPreyData(PreySlot* slot);
+	void sendPreyPrices();
+
 	void sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint32_t page, uint8_t entriesPerPage);
 	void parseStoreOpenTransactionHistory(NetworkMessage &msg);
 	void parseStoreRequestTransactionHistory(NetworkMessage &msg);
@@ -417,11 +427,15 @@ private:
 	void AddPlayerSkills(NetworkMessage &msg);
 	void sendBlessStatus();
 	void sendPremiumTrigger();
+	void sendMessageDialog(std::string message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);
 	void AddCreatureLight(NetworkMessage &msg, const Creature *creature);
 
 	//tiles
 	static void RemoveTileThing(NetworkMessage &msg, const Position &pos, uint32_t stackpos);
+
+	void sendTaskHuntingData(TaskHuntingSlot* slot);
+	void sendTaskHuntingBaseData();
 
 	void MoveUpCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
 	void MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);

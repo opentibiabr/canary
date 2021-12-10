@@ -54,6 +54,35 @@ depotBoxes = 18
 -- GameStore
 gamestoreByModules = true
 
+-- Prey system
+-- NOTE: preyRerollPricePerLevel: Price multiplier in gold coin for rerolling prey list.
+-- NOTE: preySelectListPrice: Price to manually select creature on list and to lock prey slot.
+-- NOTE: preyBonusRerollPrice: Price to manually reroll bonus type and to enable automatic reroll.
+-- NOTE: preyBonusTime: Time in seconds that players will have of prey bonus.
+-- NOTE: preyFreeRerollTime: Time in seconds that players will have to wait to get a new free prey list.
+preySystemEnabled = true
+preyFreeThirdSlot = false
+preyRerollPricePerLevel = 200
+preySelectListPrice = 1
+preyBonusRerollPrice = 2
+preyBonusPercentMin = 5
+preyBonusPercentMax = 40
+preyBonusTime = 2 * 60 * 60
+preyFreeRerollTime = 20 * 60 * 60
+
+-- Task hunting system
+-- NOTE: taskHuntingLimitedTasksExhaust: Time to wait to select a new creature on the task hunting slot after claiming the reward.
+-- NOTE: taskHuntingRerollPricePerLevel: Price multiplier in gold coin for rerolling task hunting list.
+-- NOTE: taskHuntingFreeRerollTime: Time in seconds that players will have to wait to get a new free task hunting list.
+taskHuntingSystemEnabled = true
+taskHuntingFreeThirdSlot = false
+taskHuntingLimitedTasksExhaust = 20 * 60 * 60
+taskHuntingRerollPricePerLevel = 200
+taskHuntingSelectListPrice = 1
+taskHuntingBonusRerollPrice = 2
+taskHuntingCancelPrice = 3
+taskHuntingFreeRerollTime = 20 * 60 * 60
+
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
 

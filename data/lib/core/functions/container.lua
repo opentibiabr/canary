@@ -2,7 +2,7 @@ function Container.isContainer(self)
 	return true
 end
 
-function Container.createLootItem(self, item, boolCharm)
+function Container.createLootItem(self, item, player, source)
 	if self:getEmptySlots() == 0 then
 		return true
 	end
@@ -16,8 +16,15 @@ function Container.createLootItem(self, item, boolCharm)
 		return
 	end
 
-	if boolCharm and lootBlockType:getType() == ITEM_TYPE_CREATUREPRODUCT then
-		chanceTo = (chanceTo * (GLOBAL_CHARM_GUT + 100))/100
+	local monsterType = source:getType()
+	if player and monsterType and monsterType:raceId() > 0 then
+		chanceTo = math.ceil((chanceTo * player:getPreyLootPercentage(monsterType:raceId())) / 100)
+		if lootBlockType:getType() == ITEM_TYPE_CREATUREPRODUCT then
+			local charm = player:getCharmMonsterType(CHARM_GUT)
+			if charm and charm:raceId() == monsterType:raceId() then
+				chanceTo = math.ceil((chanceTo * GLOBAL_CHARM_GUT) / 100)
+			end
+		end
 	end
 
 	if randvalue < chanceTo then
@@ -40,7 +47,7 @@ function Container.createLootItem(self, item, boolCharm)
 
 		if tmpItem:isContainer() then
 			for i = 1, #item.childLoot do
-				if not tmpItem:createLootItem(item.childLoot[i]) then
+				if not tmpItem:createLootItem(item.childLoot[i], player, source) then
 					tmpItem:remove()
 					return false
 				end

@@ -390,8 +390,8 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE     then local newName = msg:getString(); GameStore.processNameChangePurchase(player, offer.id, productType, newName, offer.name, offerPrice)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE      then GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST       then GameStore.processExpBoostPuchase(player)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT       then GameStore.processPreySlotPurchase(player)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT    then GameStore.processPreyHuntingSlotPurchase(player)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT       then player:preyThirdSlot(true)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT    then player:taskHuntingThirdSlot(true)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS      then GameStore.processPreyBonusReroll(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_TEMPLE         then GameStore.processTempleTeleportPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES        then GameStore.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges)
@@ -587,14 +587,25 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have maximum of reward tokens."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
-			-- To-Do
+			if self:getPreyCards()>= 50 then
+				disabled = 1
+				disabledReason = "You already have maximum of prey wildcards."
+			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARMS then
 			if self:charmExpansion() then
 				disabled = 1
 				disabledReason = "You already have charm expansion."
 			end
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
+			if player:taskHuntingThirdSlot() then
+				disabled = 1
+				disabledReason = "You already have 3 slots released."
+			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
-			-- To-Do
+			if player:preyThirdSlot() then
+				disabled = 1
+				disabledReason = "You already have 3 slots released."
+			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
 			local remainingBoost = self:getExpBoostStamina()
 			if self:getStorageValue(GameStore.Storages.expBoostCount) == 6 then
@@ -1476,16 +1487,11 @@ function GameStore.processExpBoostPuchase(player)
 	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
 end
 
-function GameStore.processPreySlotPurchase(player)
-	-- To-Do
-end
-
-function GameStore.processPreyHuntingSlotPurchase(player)
-	-- To-Do
-end
-
 function GameStore.processPreyBonusReroll(player, offerCount)
-	-- To-Do
+	if player:getPreyCards() + offerCount >= 51 then
+		return error({code = 1, message = "You cannot own more than 50 prey wildcards."})
+	end
+	player:addPreyCards(offerCount)
 end
 
 function GameStore.processTempleTeleportPurchase(player)

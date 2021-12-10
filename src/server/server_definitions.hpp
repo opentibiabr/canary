@@ -61,7 +61,9 @@ enum SessionEndInformations : uint8_t {
 
 enum Resource_t : uint8_t{
 	RESOURCE_BANK = 0x00,
-	RESOURCE_INVENTORY = 0x01
+	RESOURCE_INVENTORY = 0x01,
+	RESOURCE_PREY_CARDS = 0x0A,
+	RESOURCE_TASK_HUNTING = 0x32
 };
 
 enum InspectObjectTypes : uint8_t {

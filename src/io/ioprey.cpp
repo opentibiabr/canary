@@ -194,11 +194,10 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 		stageFour = 4;
 	}
 
-	uint16_t raceId;
 	uint8_t tries = 0;
 	size_t maxIndex = bestiary.size() - 1;
 	while (raceIdList.size() < 9) {
-		raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
+		uint16_t raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
 		tries++;
 
 		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {

@@ -161,8 +161,37 @@ class ItemAttributes
 				value = v;
 			}
 
-			template<typename T>
-			const T& get();
+			const std::string& getString() const {
+				if (value.type() == typeid(std::string)) {
+					return boost::get<std::string>(value);
+				}
+
+				return emptyString;
+			}
+
+			const int64_t& getInt() const {
+				if (value.type() == typeid(int64_t)) {
+					return boost::get<int64_t>(value);
+				}
+
+				return emptyInt;
+			}
+
+			const double& getDouble() const {
+				if (value.type() == typeid(double)) {
+					return boost::get<double>(value);
+				}
+
+				return emptyDouble;
+			}
+
+			const bool& getBool() const {
+				if (value.type() == typeid(bool)) {
+					return boost::get<bool>(value);
+				}
+
+				return emptyBool;
+			}
 
 			struct PushLuaVisitor : public boost::static_visitor<> {
 				lua_State* L;
@@ -272,7 +301,7 @@ class ItemAttributes
 
 	private:
 		bool hasAttribute(ItemAttrTypes type) const {
-			return (type & attributeBits) != 0;
+			return (type & static_cast<ItemAttrTypes>(attributeBits)) != 0;
 		}
 		void removeAttribute(ItemAttrTypes type);
 
@@ -291,7 +320,10 @@ class ItemAttributes
 			} value;
 			ItemAttrTypes type;
 
-			explicit Attribute(ItemAttrTypes initType) : type(initType) {
+			// Singleton - ensures we don't accidentally copy it
+			Attribute& operator=(const Attribute& other) = delete;
+
+			explicit Attribute(ItemAttrTypes type) : type(type) {
 				memset(&value, 0, sizeof(value));
 			}
 			Attribute(const Attribute& i) {
@@ -306,22 +338,11 @@ class ItemAttributes
 					memset(&value, 0, sizeof(value));
 				}
 			}
-			Attribute(Attribute&& attribute) : value(attribute.value), type(attribute.type) {
+			Attribute(Attribute&& attribute) noexcept : value(attribute.value), type(attribute.type) {
 				memset(&attribute.value, 0, sizeof(value));
 				attribute.type = ITEM_ATTRIBUTE_NONE;
 			}
-			~Attribute() {
-				if (ItemAttributes::isStrAttrType(type)) {
-					delete value.string;
-				} else if (ItemAttributes::isCustomAttrType(type)) {
-					delete value.custom;
-				}
-			}
-			Attribute& operator=(Attribute other) {
-				Attribute::swap(*this, other);
-				return *this;
-			}
-			Attribute& operator=(Attribute&& other) {
+			Attribute& operator=(Attribute&& other) noexcept {
 				if (this != &other) {
 					if (ItemAttributes::isStrAttrType(type)) {
 						delete value.string;
@@ -337,15 +358,17 @@ class ItemAttributes
 				}
 				return *this;
 			}
-
-			static void swap(Attribute& first, Attribute& second) {
-				std::swap(first.value, second.value);
-				std::swap(first.type, second.type);
+			~Attribute() {
+				if (ItemAttributes::isStrAttrType(type)) {
+					delete value.string;
+				} else if (ItemAttributes::isCustomAttrType(type)) {
+					delete value.custom;
+				}
 			}
 		};
 
-		std::forward_list<Attribute> attributes;
-		uint32_t attributeBits = 0;
+		std::vector<Attribute> attributes;
+		std::underlying_type_t<ItemAttrTypes> attributeBits = 0;
 
 		const std::string& getStrAttr(ItemAttrTypes type) const;
 		void setStrAttr(ItemAttrTypes type, const std::string& value);
@@ -367,12 +390,12 @@ class ItemAttributes
 
 		template<typename R>
 		void setCustomAttribute(int64_t key, R value) {
-			std::string tmp = boost::lexical_cast<std::string>(key);
+			std::string tmp = std::to_string(key);
 			setCustomAttribute(tmp, value);
 		}
 
 		void setCustomAttribute(int64_t key, CustomAttribute& value) {
-			std::string tmp = boost::lexical_cast<std::string>(key);
+			std::string tmp = std::to_string(key);
 			setCustomAttribute(tmp, value);
 		}
 
@@ -398,7 +421,7 @@ class ItemAttributes
 		}
 
 		const CustomAttribute* getCustomAttribute(int64_t key) {
-			std::string tmp = boost::lexical_cast<std::string>(key);
+			std::string tmp = std::to_string(key);
 			return getCustomAttribute(tmp);
 		}
 
@@ -413,7 +436,7 @@ class ItemAttributes
 		}
 
 		bool removeCustomAttribute(int64_t key) {
-			std::string tmp = boost::lexical_cast<std::string>(key);
+			std::string tmp = std::to_string(key);
 			return removeCustomAttribute(tmp);
 		}
 
@@ -428,28 +451,47 @@ class ItemAttributes
 			return false;
 		}
 
-		const static uint32_t intAttributeTypes = ITEM_ATTRIBUTE_ACTIONID | ITEM_ATTRIBUTE_UNIQUEID | ITEM_ATTRIBUTE_DATE
-			| ITEM_ATTRIBUTE_WEIGHT | ITEM_ATTRIBUTE_ATTACK | ITEM_ATTRIBUTE_DEFENSE | ITEM_ATTRIBUTE_EXTRADEFENSE
-			| ITEM_ATTRIBUTE_ARMOR | ITEM_ATTRIBUTE_HITCHANCE | ITEM_ATTRIBUTE_SHOOTRANGE | ITEM_ATTRIBUTE_OWNER
-			| ITEM_ATTRIBUTE_DURATION | ITEM_ATTRIBUTE_DECAYSTATE | ITEM_ATTRIBUTE_CORPSEOWNER | ITEM_ATTRIBUTE_CHARGES
-			| ITEM_ATTRIBUTE_FLUIDTYPE | ITEM_ATTRIBUTE_DOORID | ITEM_ATTRIBUTE_IMBUINGSLOTS
-			| ITEM_ATTRIBUTE_OPENCONTAINER | ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
-
-		const static uint32_t stringAttributeTypes = ITEM_ATTRIBUTE_DESCRIPTION | ITEM_ATTRIBUTE_TEXT | ITEM_ATTRIBUTE_WRITER
-			| ITEM_ATTRIBUTE_NAME | ITEM_ATTRIBUTE_ARTICLE | ITEM_ATTRIBUTE_PLURALNAME | ITEM_ATTRIBUTE_SPECIAL;
-
 	public:
 		static bool isIntAttrType(ItemAttrTypes type) {
-			return (type & intAttributeTypes) == type;
+			std::underlying_type_t<ItemAttrTypes> checkTypes = 0;
+			checkTypes |= ITEM_ATTRIBUTE_ACTIONID;
+			checkTypes |= ITEM_ATTRIBUTE_UNIQUEID;
+			checkTypes |= ITEM_ATTRIBUTE_DATE;
+			checkTypes |= ITEM_ATTRIBUTE_WEIGHT;
+			checkTypes |= ITEM_ATTRIBUTE_ATTACK;
+			checkTypes |= ITEM_ATTRIBUTE_DEFENSE;
+			checkTypes |= ITEM_ATTRIBUTE_EXTRADEFENSE;
+			checkTypes |= ITEM_ATTRIBUTE_ARMOR;
+			checkTypes |= ITEM_ATTRIBUTE_HITCHANCE;
+			checkTypes |= ITEM_ATTRIBUTE_SHOOTRANGE;
+			checkTypes |= ITEM_ATTRIBUTE_OWNER;
+			checkTypes |= ITEM_ATTRIBUTE_DURATION;
+			checkTypes |= ITEM_ATTRIBUTE_DECAYSTATE;
+			checkTypes |= ITEM_ATTRIBUTE_CORPSEOWNER;
+			checkTypes |= ITEM_ATTRIBUTE_CHARGES;
+			checkTypes |= ITEM_ATTRIBUTE_FLUIDTYPE;
+			checkTypes |= ITEM_ATTRIBUTE_DOORID;
+			checkTypes |= ITEM_ATTRIBUTE_IMBUINGSLOTS;
+			checkTypes |= ITEM_ATTRIBUTE_OPENCONTAINER;
+			checkTypes |= ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
+			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(ItemAttrTypes type) {
-			return (type & stringAttributeTypes) == type;
+			std::underlying_type_t<ItemAttrTypes> checkTypes = 0;
+			checkTypes |= ITEM_ATTRIBUTE_DESCRIPTION;
+			checkTypes |= ITEM_ATTRIBUTE_TEXT;
+			checkTypes |= ITEM_ATTRIBUTE_WRITER;
+			checkTypes |= ITEM_ATTRIBUTE_NAME;
+			checkTypes |= ITEM_ATTRIBUTE_ARTICLE;
+			checkTypes |= ITEM_ATTRIBUTE_PLURALNAME;
+			checkTypes |= ITEM_ATTRIBUTE_SPECIAL;
+			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		inline static bool isCustomAttrType(ItemAttrTypes type) {
-			return (type & 0x80000000) != 0;
+			return (type & ITEM_ATTRIBUTE_CUSTOM) != 0;
 		}
 
-		const std::forward_list<Attribute>& getList() const {
+		const std::vector<Attribute>& getList() const {
 			return attributes;
 		}
 

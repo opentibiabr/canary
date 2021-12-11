@@ -63,8 +63,7 @@ class Game
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);
 
-		void forceAddCondition(uint32_t creatureId, Condition* condition);
-		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type);
+		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
 		bool loadMainMap(const std::string& filename);
 		void loadMap(const std::string& path);

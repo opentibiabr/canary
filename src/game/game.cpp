@@ -5703,13 +5703,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				{
 					continue;
 				}
-
-				if (damage.primary.type == COMBAT_HEALING && target && target->getMonster()) {
-					if (target != attacker) {
-						return false;
-					}
-				}
-
+				
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 					ss.str({});
 					ss << "You heal " << target->getNameDescription() << " for " << damageString;
@@ -8466,25 +8460,14 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 	return std::forward_list<Item*>();
 }
 
-void Game::forceAddCondition(uint32_t creatureId, Condition* condition)
-{
-	Creature* creature = getCreatureByID(creatureId);
-	if (!creature) {
-		delete condition;
-		return;
-	}
-
-	creature->addCondition(condition, true);
-}
-
-void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t type)
+void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionType, ConditionId_t conditionId)
 {
 	Creature* creature = getCreatureByID(creatureId);
 	if (!creature) {
 		return;
 	}
 
-	creature->removeCondition(type, true);
+	creature->removeCondition(conditionType, conditionId, true);
 }
 
 void Game::sendOfflineTrainingDialog(Player* player)

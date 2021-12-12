@@ -1052,7 +1052,7 @@ class Item : virtual public Thing
 		bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) {
 			auto it = items[id].imbuementTypes.find(imbuementType);
 			if (it != items[id].imbuementTypes.end()) {
-				return (it->second >= imbuementTier));
+				return (it->second >= imbuementTier);
 			}
 			return false;
 		}

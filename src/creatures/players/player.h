@@ -1953,7 +1953,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
 
-		std::map<skills_t, uint16_t> maxValuePerSkill = {
+		std::map<uint8_t, uint16_t> maxValuePerSkill = {
 			{SKILL_LIFE_LEECH_CHANCE, 100},
 			{SKILL_MANA_LEECH_CHANCE, 100},
 			{SKILL_CRITICAL_HIT_CHANCE, 10}

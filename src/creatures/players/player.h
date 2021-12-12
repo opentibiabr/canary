@@ -772,11 +772,14 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const {
-			if (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE) {
-				return std::min<uint16_t>(100, std::max<uint16_t>(0, skills[skill].level + varSkills[skill]));
+			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+
+			auto it = maxValuePerSkill.find(skill);
+			if (it != maxValuePerSkill.end()) {
+				skillLevel = std::min<uint16_t>(it->second, skillLevel);
 			}
 
-			return std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+			return skillLevel;
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
@@ -1694,8 +1697,8 @@ class Player final : public Creature, public Cylinder
 
 		void setTraining(bool value);
 
-		void addItemImbuementStats(const Imbuement* imbuement, Item *item);
-		void removeItemImbuementStats(const Imbuement* imbuement, Item *item);
+		void addItemImbuementStats(const Imbuement* imbuement);
+		void removeItemImbuementStats(const Imbuement* imbuement);
 
 		bool isMarketExhausted() const;
 		void updateMarketExhausted() {
@@ -1949,6 +1952,12 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, DepotChest*> depotChests;
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
+
+		std::map<skills_t, uint16_t> maxValuePerSkill = {
+			{SKILL_LIFE_LEECH_CHANCE, 100},
+			{SKILL_MANA_LEECH_CHANCE, 100},
+			{SKILL_CRITICAL_HIT_CHANCE, 10}
+		};
 
 		std::map<uint32_t, Reward*> rewardMap;
 

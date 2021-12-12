@@ -154,8 +154,8 @@ class ItemType
 			return str;
 		}
 
-		void setImbuementType(ImbuementTypes_t imbuementType, uint16_t maxTier) {
-			imbuementTypes[imbuementType] = maxTier;
+		void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
+			imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
 		}
 
 		ItemGroup_t group = ITEM_GROUP_NONE;

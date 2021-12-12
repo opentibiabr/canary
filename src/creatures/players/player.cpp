@@ -509,7 +509,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			item->setImbuement(slotid, imbuementInfo.imbuement->getID(), duration);
 			if (duration == 0) {
-				removeItemImbuementStats(imbuementInfo.imbuement, item);
+				removeItemImbuementStats(imbuementInfo.imbuement);
 				g_game.decreasePlayerActiveImbuements(getID());
 			}
 
@@ -1267,9 +1267,9 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	}
 
 	if (item->getParent() == this) {
-		addItemImbuementStats(imbuement, item);
+		addItemImbuementStats(imbuement);
 	}
-	
+
 	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 
 	openImbuementWindow(item);
@@ -1305,7 +1305,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 	}
 
 	if (item->getParent() == this) {
-		removeItemImbuementStats(imbuementInfo.imbuement, item);
+		removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 
 	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
@@ -5452,20 +5452,15 @@ uint16_t Player::getFreeBackpackSlots() const
 	return counter;
 }
 
-void Player::addItemImbuementStats(const Imbuement* imbuement, Item *item)
+void Player::addItemImbuementStats(const Imbuement* imbuement)
 {
 	bool requestUpdate = false;
 	// Check imbuement skills
 	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
-		if (imbuement->skills[skill] && !item->hasCriticalChanceSkill(skill)) {
+		if (imbuement->skills[skill]) {
 			requestUpdate = true;
 			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill]);
 		}
-	}
-
-	if (requestUpdate) {
-		sendSkills();
-		requestUpdate = false;
 	}
 
 	// Check imbuement magic level
@@ -5495,21 +5490,15 @@ void Player::addItemImbuementStats(const Imbuement* imbuement, Item *item)
 	return;
 }
 
-void Player::removeItemImbuementStats(const Imbuement* imbuement, Item *item)
+void Player::removeItemImbuementStats(const Imbuement* imbuement)
 {
 	bool requestUpdate = false;
 
-	// Check imbuement skills
 	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
-		if (imbuement->skills[skill] && !item->hasCriticalChanceSkill(skill)) {
+		if (imbuement->skills[skill]) {
 			requestUpdate = true;
 			setVarSkill(static_cast<skills_t>(skill), -imbuement->skills[skill]);
 		}
-	}
-
-	if (requestUpdate) {
-		sendSkills();
-		requestUpdate = false;
 	}
 
 	// Check imbuement magic level

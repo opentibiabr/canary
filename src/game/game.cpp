@@ -3053,6 +3053,13 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 		}
 	}
 
+	int8_t test_cid = player->getContainerID(parentContainer);
+	if (test_cid != -1) {
+		player->closeContainer(test_cid);
+		player->sendCloseContainer(test_cid);
+		return;
+	}
+
 	if (parentContainer->hasPagination() && parentContainer->hasParent()) {
 		uint16_t indexContainer = std::floor(parentContainer->getThingIndex(container) / parentContainer->capacity()) * parentContainer->capacity();
 		player->addContainer(cid, parentContainer);

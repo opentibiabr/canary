@@ -592,7 +592,7 @@ void Map::clearSpectatorCache(bool clearPlayer)
 	}
 }
 
-bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight /*= true*/,
+bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, SightLines_t lineOfSight /*= SightLine_CheckSightLine*/,
                            int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const
 {
 	//z checks
@@ -603,9 +603,6 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 	}
 
 	int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
-	if (deltaz > 2) {
-		return false;
-	}
 
 	if ((Position::getDistanceX(fromPos, toPos) - deltaz) > rangex) {
 		return false;
@@ -616,10 +613,10 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 		return false;
 	}
 
-	if (!checkLineOfSight) {
+	if (!(lineOfSight & SightLine_CheckSightLine)) {
 		return true;
 	}
-	return isSightClear(fromPos, toPos, false);
+	return isSightClear(fromPos, toPos, (lineOfSight & SightLine_FloorCheck));
 }
 
 bool Map::checkSightLine(const Position& fromPos, const Position& toPos) const

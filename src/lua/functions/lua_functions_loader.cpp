@@ -114,7 +114,7 @@ int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
 }
 
 void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
-	lua_createtable(L, 0, 2);
+	lua_createtable(L, 0, 3);
 	setField(L, "type", var.type);
 	switch (var.type) {
 		case VARIANT_NUMBER:
@@ -125,6 +125,7 @@ void LuaFunctionsLoader::pushVariant(lua_State* L, const LuaVariant &var) {
 			break;
 		case VARIANT_TARGETPOSITION:
 		case VARIANT_POSITION: {
+			setField(L, "directionalArea", var.directionalArea ? 1 : 0);
 			pushPosition(L, var.pos);
 			lua_setfield(L, -2, "pos");
 			break;
@@ -344,9 +345,10 @@ LuaVariant LuaFunctionsLoader::getVariant(lua_State* L, int32_t arg) {
 
 		case VARIANT_POSITION:
 		case VARIANT_TARGETPOSITION: {
+			var.directionalArea = (getField<uint32_t>(L, arg, "directionalArea") != 0);
 			lua_getfield(L, arg, "pos");
 			var.pos = getPosition(L, lua_gettop(L));
-			lua_pop(L, 2);
+			lua_pop(L, 3);
 			break;
 		}
 

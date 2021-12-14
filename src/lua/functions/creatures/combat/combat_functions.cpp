@@ -170,7 +170,13 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 		}
 
 		case VARIANT_POSITION: {
-			combat->doCombat(creature, variant.pos);
+			if (variant.directionalArea) {
+				combat->setDirectionArea(true);
+				combat->doCombat(creature, variant.pos);
+				combat->setDirectionArea(false);
+			} else {
+				combat->doCombat(creature, variant.pos);
+			}
 			break;
 		}
 

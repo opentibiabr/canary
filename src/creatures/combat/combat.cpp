@@ -69,13 +69,14 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	return damage;
 }
 
-void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const AreaCombat* area, std::vector<Tile*> &list) {
+void Combat::getCombatArea(const Position& centerPos, const Position& targetPos, const AreaCombat* area, std::vector<Tile*>& list, bool directionalArea)
+{
 	if (targetPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
 
 	if (area) {
-		area->getList(centerPos, targetPos, list);
+		area->getList(centerPos, targetPos, directionalArea ? centerPos : targetPos, list);
 	} else {
 		Tile* tile = g_game().map.getTile(targetPos);
 		if (!tile) {
@@ -801,9 +802,9 @@ void Combat::CombatFunc(Creature* caster, const Position &pos, const AreaCombat*
 	std::vector<Tile*> tileList;
 
 	if (caster) {
-		getCombatArea(caster->getPosition(), pos, area, tileList);
+		getCombatArea(caster->getPosition(), pos, area, tileList, params.directionalArea);
 	} else {
-		getCombatArea(pos, pos, area, tileList);
+		getCombatArea(pos, pos, area, tileList, params.directionalArea);
 	}
 
 	uint32_t maxX = 0;
@@ -1316,7 +1317,8 @@ AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	}
 }
 
-void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<Tile*> &list) const {
+void AreaCombat::getList(const Position& centerPos, const Position& targetPos, const Position& sightLinePos, std::vector<Tile*>& list) const
+{
 	const MatrixArea* area = getArea(centerPos, targetPos);
 	if (!area) {
 		return;
@@ -1330,20 +1332,19 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 	list.reserve(static_cast<size_t>(rows * cols));
 
 	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
-	for (uint32_t y = 0; y < rows; ++y) {
-		for (uint32_t x = 0; x < cols; ++x) {
-			if (area->getValue(y, x) != 0 && g_game().isSightClear(targetPos, tmpPos, true)) {
-				Tile* tile = g_game().map.getTile(tmpPos);
-				if (!tile) {
-					tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
-					g_game().map.setTile(tmpPos, tile);
+	for (uint32_t y = 0; y < rows; ++y, ++tmpPos.y, tmpPos.x -= cols) {
+		for (uint32_t x = 0; x < cols; ++x, ++tmpPos.x) {
+			if (area->getValue(y, x) != 0) {
+				if (g_game().isSightClear(sightLinePos, tmpPos, true)) {
+					Tile* tile = g_game().map.getTile(tmpPos);
+					if (!tile) {
+						tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
+						g_game().map.setTile(tmpPos, tile);
+					}
+					list.push_back(tile);
 				}
-				list.push_back(tile);
 			}
-			tmpPos.x++;
 		}
-		tmpPos.x -= cols;
-		tmpPos.y++;
 	}
 }
 

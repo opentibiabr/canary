@@ -5828,8 +5828,14 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 		msg.addByte(it.second);
 	}
 
-	msg.addByte(modalWindow.defaultEscapeButton);
-	msg.addByte(modalWindow.defaultEnterButton);
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) {
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	} else {
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	}
 	msg.addByte(modalWindow.priority ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);

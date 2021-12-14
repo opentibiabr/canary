@@ -239,7 +239,7 @@ class Map {
 		 *	\param checkLineOfSight checks if there is any blocking objects in the way
 		 *	\returns The result if you can throw there or not
 		 */
-		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight = true, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
 
 		/**
 		 * Checks if path is clear from fromPos to toPos

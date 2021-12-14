@@ -239,15 +239,12 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 	}
 
 	if (!foundTile) {
-		static std::array<std::pair<int32_t, int32_t>, 12> relList { {
-            {-1, -1}, {0, -1}, {1, -1},
-            {-1,  0},          {1,  0},
-           	{-1,  1}, {0,  1}, {1,  1},
+		static std::array<std::pair<int32_t, int32_t>, 12> relList { { { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 0 }, { 1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 },
 
-					  {0, -2},
-			{-2, 0},           {2, 0},
-					  {0,  2}
-		} };
+																	   { 0, -2 },
+																	   { -2, 0 },
+																	   { 2, 0 },
+																	   { 0, 2 } } };
 
 		size_t relListCount;
 		if (extendedPos) {
@@ -260,7 +257,7 @@ bool Map::placeCreature(const Position &centerPos, Creature* creature, bool exte
 		}
 
 		for (size_t i = 0; i < relListCount; ++i) {
-			const auto& it = relList[i];
+			const auto &it = relList[i];
 			Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
 
 			tile = getTile(tryPos.x, tryPos.y, tryPos.z);
@@ -554,7 +551,7 @@ void Map::clearSpectatorCache(bool clearPlayer) {
 	}
 }
 
-bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const {
+bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight /*= SightLine_CheckSightLine*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const {
 	// z checks
 	// underground 8->15
 	// ground level and above 7->0
@@ -576,10 +573,10 @@ bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool 
 		return false;
 	}
 
-	if (!checkLineOfSight) {
+	if (!(lineOfSight & SightLine_CheckSightLine)) {
 		return true;
 	}
-	return isSightClear(fromPos, toPos, false);
+	return isSightClear(fromPos, toPos, (lineOfSight & SightLine_FloorCheck));
 }
 
 bool Map::checkSightLine(const Position &fromPos, const Position &toPos) const {

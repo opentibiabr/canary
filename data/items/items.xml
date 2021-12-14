@@ -5381,6 +5381,7 @@
 	</item>
 	<item id="3086" article="a" name="stealth ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="invisible" value="1" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
@@ -5391,6 +5392,7 @@
 	</item>
 	<item id="3087" article="a" name="power ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="skillfist" value="6" />
 		<attribute key="duration" value="1800" />
@@ -5400,6 +5402,7 @@
 	</item>
 	<item id="3088" article="an" name="energy ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="manashield" value="1" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
@@ -5410,6 +5413,7 @@
 	</item>
 	<item id="3089" article="a" name="life ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="manaticks" value="6000" />
@@ -5423,6 +5427,7 @@
 	</item>
 	<item id="3090" article="a" name="time ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="speed" value="60" />
@@ -5457,6 +5462,7 @@
 	</item>
 	<item id="3094" article="a" name="sword ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="skillsword" value="4" />
 		<attribute key="duration" value="1800" />
@@ -5466,6 +5472,7 @@
 	</item>
 	<item id="3095" article="an" name="axe ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="skillaxe" value="4" />
 		<attribute key="duration" value="1800" />
@@ -5475,6 +5482,7 @@
 	</item>
 	<item id="3096" article="a" name="club ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="skillclub" value="4" />
 		<attribute key="duration" value="1800" />
@@ -5500,6 +5508,7 @@
 	</item>
 	<item id="3099" article="a" name="dwarven ring">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="suppressdrunk" value="1" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
@@ -5510,6 +5519,7 @@
 	</item>
 	<item id="3100" article="a" name="ring of healing">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="manaticks" value="6000" />
@@ -7911,15 +7921,19 @@
 		<attribute key="weight" value="850" />
 	</item>
 	<item id="3484" article="a" name="telescope" plural="telescopes">
+		<attribute key="loottype" value="other" />
 		<attribute key="rotateto" value="3487" />
 	</item>
 	<item id="3485" article="a" name="telescope" plural="telescopes">
+		<attribute key="loottype" value="other" />
 		<attribute key="rotateto" value="3486" />
 	</item>
 	<item id="3486" article="a" name="telescope" plural="telescopes">
+		<attribute key="loottype" value="other" />
 		<attribute key="rotateto" value="3484" />
 	</item>
 	<item id="3487" article="a" name="telescope" plural="telescopes">
+		<attribute key="loottype" value="other" />
 		<attribute key="rotateto" value="3485" />
 	</item>
 	<item id="3488" article="a" name="ship's telescope">
@@ -14089,6 +14103,7 @@
 	<item id="6300" article="a" name="death ring">
 		<attribute key="description" value="Wearing it makes you feel a little weaker than usual." />
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="absorbpercentdeath" value="5" />
 		<attribute key="skillshield" value="-10" />
@@ -18496,7 +18511,9 @@
 		<attribute key="weight" value="890" />
 	</item>
 	<item fromid="8454" toid="8470" article="a" name="stone wall" />
-	<item fromid="8471" toid="8476" article="a" name="stone railing" />
+	<item fromid="8471" toid="8476" article="a" name="stone railing">
+		<attribute key="loottype" value="ring" />
+	</item>
 	<item fromid="8477" toid="8488" article="a" name="small tower" />
 	<item fromid="8489" toid="8498" article="a" name="stone wall" />
 	<item fromid="8499" toid="8500" article="a" name="moss" />
@@ -18973,6 +18990,7 @@
 	<item fromid="8903" toid="8905" article="a" name="rusty boots">
 		<attribute key="description" value="If you can remove the rust layer and dirt from the boots you will be able to see what it is" />
 		<attribute key="slotType" value="feet" />
+		<attribute key="loottype" value="shield" />
 		<attribute key="armor" value="1" />
 		<attribute key="weight" value="2800" />
 	</item>
@@ -20129,7 +20147,7 @@
 	</item>
 	<item id="9234" article="a" name="worm punisher">
 		<attribute key="description" value="The hammer would be more effective when heated." />
-		<attribute key="loottype" value="tools" />
+		<attribute key="loottype" value="other" />
 		<attribute key="weight" value="6450" />
 	</item>
 	<item id="9235" article="a" name="golem disassembler">
@@ -22518,7 +22536,9 @@
 	<item id="10507" article="a" name="lamp">
 		<attribute key="weight" value="3000" />
 	</item>
-	<item fromid="10508" toid="10519" article="a" name="stone floor" />
+	<item fromid="10508" toid="10519" article="a" name="stone floor">
+		<attribute key="loottype" value="tools" />
+	</item>
 	<item fromid="10520" toid="10521" article="a" name="closed door" />
 	<item fromid="10522" toid="10547" name="dirt floor" />
 	<item fromid="10548" toid="10577" name="ground" />
@@ -25200,6 +25220,7 @@
 	<item id="12670" article="a" name="star ring">
 		<attribute key="description" value="If you wear it on your ring slot, it will boost your health regeneration when you're not hungry." />
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="duration" value="600" />
@@ -32120,7 +32141,9 @@
 	</item>
 	<item fromid="18486" toid="18510" article="a" name="tree branch" />
 	<item fromid="18511" toid="18514" article="a" name="twig" />
-	<item fromid="18515" toid="18532" name="leaves" />
+	<item fromid="18515" toid="18532" name="leaves">
+		<attribute key="loottype" value="ring" />
+	</item>
 	<item fromid="18533" toid="18557" article="a" name="root" />
 	<item fromid="18558" toid="18559" name="twisted roots" />
 	<item fromid="18560" toid="18577" name="teal leaves" />
@@ -38601,6 +38624,7 @@
 	<item id="23397" name="RESERVED SPRITE" />
 	<item id="23398" article="a" name="decoration kit">
 		<attribute key="description" value="You bought this item in the Store or gained it as a daily reward. This item cannot be traded." />
+		<attribute key="loottype" value="decoration" />
 	</item>
 	<item id="23399" article="a" name="mailbox">
 		<attribute key="type" value="mailbox" />
@@ -38883,6 +38907,7 @@
 	<item id="23475" article="a" name="tiara of power">
 		<attribute key="description" value="It can only be wielded properly by sorcerers and druids of level 100 or higher." />
 		<attribute key="slotType" value="head" />
+		<attribute key="loottype" value="helmet" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="absorbpercentenergy" value="8" />
@@ -39109,6 +39134,7 @@
 	</item>
 	<item id="23526" article="a" name="collar of blue plasma">
 		<attribute key="slotType" value="necklace" />
+		<attribute key="loottype" value="amulet" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="magicpoints" value="2" />
@@ -39120,6 +39146,7 @@
 	</item>
 	<item id="23527" article="a" name="collar of green plasma">
 		<attribute key="slotType" value="necklace" />
+		<attribute key="loottype" value="amulet" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="magicpoints" value="3" />
@@ -39134,6 +39161,7 @@
 	</item>
 	<item id="23528" article="a" name="collar of red plasma">
 		<attribute key="slotType" value="necklace" />
+		<attribute key="loottype" value="amulet" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="absorbpercentphysical" value="5" />
@@ -39155,6 +39183,7 @@
 	</item>
 	<item id="23530" article="a" name="ring of blue plasma">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="magicpoints" value="1" />
@@ -39174,6 +39203,7 @@
 	</item>
 	<item id="23532" article="a" name="ring of green plasma">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="magicpoints" value="2" />
@@ -39196,6 +39226,7 @@
 	</item>
 	<item id="23534" article="a" name="ring of red plasma">
 		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
 		<attribute key="showduration" value="1" />
 		<attribute key="showAttributes" value="1" />
 		<attribute key="absorbpercentphysical" value="3" />
@@ -43052,7 +43083,9 @@
 	<item id="26124" name="unknown corpse (skeleton)" />
 	<item fromid="26125" toid="26128" name="stone tile" />
 	<!-- unconfirmed name -->
-	<item fromid="26129" toid="26132" name="RESERVED SPRITE" />
+	<item fromid="26129" toid="26132" name="RESERVED SPRITE">
+		<attribute key="loottype" value="boots" />
+	</item>
 	<item id="26133" article="a" name="dead boss">
 		<!-- unknown item -->
 		<attribute key="corpseType" value="blood" />
@@ -48261,6 +48294,7 @@
 	</item>
 	<item id="30343" article="an" name="enchanted sleep shawl" plural="enchanted sleep shawls">
 		<attribute key="slotType" value="necklace" />
+		<attribute key="loottype" value="amulet" />
 		<attribute key="armor" value="3" />
 		<attribute key="weight" value="430" />
 	</item>
@@ -48279,6 +48313,7 @@
 	</item>
 	<item id="30345" article="an" name="enchanted pendulet" plural="enchanted pendulets">
 		<attribute key="slotType" value="necklace" />
+		<attribute key="loottype" value="amulet" />
 		<attribute key="armor" value="2" />
 		<attribute key="weight" value="650" />
 	</item>

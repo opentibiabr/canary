@@ -962,7 +962,8 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 	// check throw distance
 	const Position &movingCreaturePos = movingCreature->getPosition();
 	const Position &toPos = toTile->getPosition();
-	if ((Position::getDistanceX(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceY(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceZ(movingCreaturePos, toPos) * 4 > movingCreature->getThrowRange())) {
+	int32_t throwRange = movingCreature->getThrowRange();
+	if (Position::getDistanceX(movingCreaturePos, toPos) > throwRange || Position::getDistanceY(movingCreaturePos, toPos) > throwRange || Position::getDistanceZ(movingCreaturePos, toPos) > 0) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		return;
 	}
@@ -1273,7 +1274,8 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 		}
 	}
 
-	if ((Position::getDistanceX(playerPos, mapToPos) > item->getThrowRange()) || (Position::getDistanceY(playerPos, mapToPos) > item->getThrowRange()) || (Position::getDistanceZ(mapFromPos, mapToPos) + 4 > item->getThrowRange())) {
+	int32_t throwRange = item->getThrowRange();
+	if (Position::getDistanceX(playerPos, mapToPos) > throwRange || Position::getDistanceY(playerPos, mapToPos) > throwRange || (!item->isPickupable() && Position::getDistanceZ(mapFromPos, mapToPos) > 0)) {
 		player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 		return;
 	}

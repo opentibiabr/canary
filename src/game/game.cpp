@@ -6569,15 +6569,22 @@ void Game::checkImbuements()
 {
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
+	std::vector<uint32_t> toErase;
+
 	for (const auto& [key, value] : playersActiveImbuements) {
 		Player* player = getPlayerByID(key);
 		if (!player) {
-			setPlayerActiveImbuements(key, 0);
+			toErase.push_back(key);
 			continue;
 		}
 
 		player->updateInventoryImbuement();
 	}
+
+	for (uint32_t playerId : toErase) {
+		setPlayerActiveImbuements(playerId, 0);
+	}
+
 }
 
 void Game::checkLight()

@@ -52113,7 +52113,15 @@
 		<attribute key="defense" value="39" />
 		<attribute key="weaponType" value="shield" />
 		<attribute key="loottype" value="shield" />
-		<attribute key="imbuingSlot" value="1" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection holy" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+		</attribute>
 	</item>
 	<item id="36657" article="a" name="eldritch claymore">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52125,7 +52133,13 @@
 		<attribute key="weaponType" value="sword" />
 		<attribute key="loottype" value="sword" />
 		<attribute key="weight" value="8500" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="elemental damage" value ="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36658" article="a" name="gilded eldritch claymore">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52137,7 +52151,13 @@
 		<attribute key="weaponType" value="sword" />
 		<attribute key="loottype" value="sword" />
 		<attribute key="weight" value="8600" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="elemental damage" value ="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36659" article="a" name="eldritch warmace">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52149,7 +52169,12 @@
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
 		<attribute key="weight" value="8200" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36660" article="a" name="gilded eldritch warmace">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52161,7 +52186,12 @@
 		<attribute key="weaponType" value="club" />
 		<attribute key="loottype" value="club" />
 		<attribute key="weight" value="8300" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36661" article="a" name="eldritch greataxe">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52172,7 +52202,13 @@
 		<attribute key="weaponType" value="axe" />
 		<attribute key="loottype" value="axe" />
 		<attribute key="weight" value="6500" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="elemental damage" value ="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36662" article="a" name="gilded eldritch greataxe">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52183,7 +52219,13 @@
 		<attribute key="weaponType" value="axe" />
 		<attribute key="loottype" value="axe" />
 		<attribute key="weight" value="6600" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="elemental damage" value ="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36663" article="a" name="eldritch cuirass">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52192,7 +52234,15 @@
 		<attribute key="absorbPercentPhysical" value="10" />
 		<attribute key="slotType" value="body" />
 		<attribute key="loottype" value="armor" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="elemental protection holy" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 		<attribute key="absorbPercentPhysical" value="10" />
 	</item>
 	<item id="36664" article="a" name="eldritch bow">
@@ -52206,7 +52256,13 @@
 		<attribute key="range" value="6" />
 		<attribute key="hitChance" value="6" />
 		<attribute key="attack" value="6" />
-		<attribute key="imbuingSlot" value="3" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="elemental damage" value ="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36665" article="a" name="gilded eldritch bow">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52219,7 +52275,13 @@
 		<attribute key="range" value="6" />
 		<attribute key="hitChance" value="6" />
 		<attribute key="attack" value="6" />
-		<attribute key="imbuingSlot" value="3" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="elemental damage" value ="3"/>
+			<attribute key="critical hit" value ="3"/>
+			<attribute key="life leech" value="3"/>
+		</attribute>
 	</item>
 	<item id="36666" article="a" name="eldritch quiver">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52247,7 +52309,11 @@
 		<attribute key="range" value="4" />
 		<attribute key="absorbPercentEnergy" value="4" />
 		<attribute key="magicpoints" value="2" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
+			<attribute key="critical hit" value ="3"/>
+		</attribute>
 	</item>
 	<item id="36669" article="a" name="gilded eldritch wand">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52258,7 +52324,11 @@
 		<attribute key="range" value="4" />
 		<attribute key="absorbPercentEnergy" value="4" />
 		<attribute key="magicpoints" value="2" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost magic level" value="3"/>
+			<attribute key="critical hit" value ="3"/>
+		</attribute>
 	</item>
 	<item id="36670" article="a" name="eldritch cowl">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52266,7 +52336,14 @@
 		<attribute key="slotType" value="head" />
 		<attribute key="loottype" value="helmet" />
 		<attribute key="armor" value="7" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+		</attribute>
 		<attribute key="absorbPercentIce" value="7" />
 	</item>
 	<item id="36671" article="a" name="eldritch hood">
@@ -52275,7 +52352,14 @@
 		<attribute key="slotType" value="head" />
 		<attribute key="loottype" value="helmet" />
 		<attribute key="armor" value="7" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+		</attribute>
 		<attribute key="absorbPercentEarth" value="7" />
 	</item>
 	<item id="36672" article="a" name="eldritch folio">
@@ -52286,7 +52370,15 @@
 		<attribute key="defense" value="21" />
 		<attribute key="weaponType" value="shield" />
 		<attribute key="loottype" value="shield" />
-		<attribute key="imbuingSlot" value="1" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection holy" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+		</attribute>
 	</item>
 	<item id="36673" article="a" name="eldritch tome">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52296,7 +52388,15 @@
 		<attribute key="defense" value="21" />
 		<attribute key="weaponType" value="shield" />
 		<attribute key="loottype" value="shield" />
-		<attribute key="imbuingSlot" value="1" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection holy" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="elemental protection fire" value="3"/>
+			<attribute key="elemental protection death" value="3"/>
+			<attribute key="elemental protection earth" value="3"/>
+			<attribute key="elemental protection energy" value="3"/>
+			<attribute key="elemental protection ice" value="3"/>
+		</attribute>
 	</item>
 	<item id="36674" article="a" name="eldritch rod">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52307,7 +52407,14 @@
 		<attribute key="loottype" value="wand" />
 		<attribute key="shootType" value="ice" />
 		<attribute key="range" value="4" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+		</attribute>
 	</item>
 	<item id="36675" article="a" name="gilded eldritch rod">
 		<attribute key="loottype" value="creatureproduct" />
@@ -52318,7 +52425,14 @@
 		<attribute key="loottype" value="wand" />
 		<attribute key="shootType" value="ice" />
 		<attribute key="range" value="4" />
-		<attribute key="imbuingSlot" value="2" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3"/>
+			<attribute key="skillboost shielding" value="3"/>
+			<attribute key="skillboost sword" value="3"/>
+			<attribute key="skillboost distance" value="3"/>
+			<attribute key="skillboost axe" value="3"/>
+			<attribute key="skillboost club" value="3"/>
+		</attribute>
 	</item>
 	<item id="36676" article="a" name="dead lavaworm">
 		<attribute key="containerSize" value="30" />

@@ -49864,4 +49864,1236 @@
 		<attribute key="isPodium" value="true" />
 		<attribute key="wrapableTo" value="23398" />
 	</item>
+	<item fromid="35977" toid="35978" name="sarcophagus" />
+	<item fromid="35980" toid="35995" name="sarcophagus" />
+	<item fromid="35996" toid="35998" article="a" name="white marble floor" />
+	<item fromid="36000" toid="36011" article="a" name="white marble floor" />
+	<item fromid="36012" toid="36018" name="column" />
+	<item fromid="36019" toid="36020" article="a" name="white lion doll">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Its serene presence encourages bravery. Awarded by ElPodcastibiano.com" />
+		<attribute key="weight" value="1700" />
+	</item>
+	<item fromid="36078" toid="36083" article="a" name="mosaic">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item fromid="36478" toid="36481" article="a" name="banor doll">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Imbued with the undying soul of the first human, it bestows the might of the gods to its owner. Awarded by TibiArt.net" />
+		<attribute key="weight" value="3800" />
+	</item>
+	<item id="36532" article="a" name="white marble floor" />
+	<item fromid="36541" toid="36542" article="a" name="column" />
+	<item id="36543" article="a" name="chisel">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="850" />
+	</item>
+	<item id="36544" article="a" name="brush">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="850" />
+	</item>
+	<item id="36545" article="a" name="marble floor">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="850" />
+	</item>
+	<item fromid="36549" toid="36554" name="sun mosaic">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="36586" article="a" name="old parchment">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="This old parchment names the holy seer sphinxes and lamassu of Kilmaresh. Their names are Nasramet, Zabaya, Anunit, Nesertis, Kematef, Yaeta and Rimush." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36599" article="a" name="fiery gnomish stonesmasher">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Use it, while it's still hot." />
+		<attribute key="weight" value="6450" />
+	</item>
+	<item id="36600" article="a" name="gnomish stonesmasher">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="If not heated up regularly, this smasher will crumble." />
+		<attribute key="weight" value="6450" />
+	</item>
+	<item id="36601" article="a" name="sacramental wine">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="180" />
+	</item>
+	<item id="36605" article="a" name="gnomish lava fishing rod">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="850" />
+	</item>
+	<item id="36609" article="a" name="dead the abomination">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36610" article="a" name="dead the abomination">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36609" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36611" article="a" name="dead the abomination">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36610" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36612" article="a" name="dead the abomination">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36611" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36656" article="a" name="eldritch shield">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="6600" />
+		<attribute key="absorbPercentPhysical" value="4" />
+		<attribute key="defense" value="39" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="loottype" value="shield" />
+		<attribute key="imbuingSlot" value="1" />
+	</item>
+	<item id="36657" article="a" name="eldritch claymore">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="attack" value="6" />
+		<attribute key="elementFire" value="50" />
+		<attribute key="defense" value="33" />
+		<attribute key="skillSword" value="3" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="sword" />
+		<attribute key="loottype" value="sword" />
+		<attribute key="weight" value="8500" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36658" article="a" name="gilded eldritch claymore">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="attack" value="6" />
+		<attribute key="elementFire" value="50" />
+		<attribute key="defense" value="33" />
+		<attribute key="skillSword" value="3" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="sword" />
+		<attribute key="loottype" value="sword" />
+		<attribute key="weight" value="8600" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36659" article="a" name="eldritch warmace">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="attack" value="6" />
+		<attribute key="elementFire" value="50" />
+		<attribute key="defense" value="33" />
+		<attribute key="skillClub" value="3" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="club" />
+		<attribute key="loottype" value="club" />
+		<attribute key="weight" value="8200" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36660" article="a" name="gilded eldritch warmace">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="attack" value="6" />
+		<attribute key="elementFire" value="50" />
+		<attribute key="defense" value="33" />
+		<attribute key="skillClub" value="3" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="club" />
+		<attribute key="loottype" value="club" />
+		<attribute key="weight" value="8300" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36661" article="a" name="eldritch greataxe">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="attack" value="56" />
+		<attribute key="defense" value="33" />
+		<attribute key="skillAxe" value="3" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="axe" />
+		<attribute key="loottype" value="axe" />
+		<attribute key="weight" value="6500" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36662" article="a" name="gilded eldritch greataxe">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="attack" value="56" />
+		<attribute key="defense" value="33" />
+		<attribute key="skillAxe" value="3" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="axe" />
+		<attribute key="loottype" value="axe" />
+		<attribute key="weight" value="6600" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36663" article="a" name="eldritch cuirass">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="1100" />
+		<attribute key="armor" value="16" />
+		<attribute key="absorbPercentPhysical" value="10" />
+		<attribute key="slotType" value="body" />
+		<attribute key="loottype" value="armor" />
+		<attribute key="imbuingSlot" value="2" />
+		<attribute key="absorbPercentPhysical" value="10" />
+	</item>
+	<item id="36664" article="a" name="eldritch bow">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="5800" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="distance" />
+		<attribute key="loottype" value="distance" />
+		<attribute key="ammoType" value="arrow" />
+		<attribute key="skillDist" value="2" />
+		<attribute key="range" value="6" />
+		<attribute key="hitChance" value="6" />
+		<attribute key="attack" value="6" />
+		<attribute key="imbuingSlot" value="3" />
+	</item>
+	<item id="36665" article="a" name="gilded eldritch bow">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="5800" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="weaponType" value="distance" />
+		<attribute key="loottype" value="distance" />
+		<attribute key="ammoType" value="arrow" />
+		<attribute key="skillDist" value="2" />
+		<attribute key="range" value="6" />
+		<attribute key="hitChance" value="6" />
+		<attribute key="attack" value="6" />
+		<attribute key="imbuingSlot" value="3" />
+	</item>
+	<item id="36666" article="a" name="eldritch quiver">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="2200" />
+		<attribute key="containerSize" value="8" />
+		<attribute key="weaponType" value="quiver" />
+		<attribute key="slotType" value="right-hand" />
+	</item>
+	<item id="36667" article="a" name="eldritch breeches">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="6900" />
+		<attribute key="skillDist" value="2" />
+		<attribute key="armor" value="9"/>
+		<attribute key="absorbPercentPhysical" value="2" />
+		<attribute key="absorbPercentHoly" value="7" />
+		<attribute key="slotType" value="legs" />
+		<attribute key="loottype" value="legs" />
+	</item>
+	<item id="36668" article="a" name="eldritch wand">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="3600" />
+		<attribute key="weaponType" value="wand" />
+		<attribute key="loottype" value="wand" />
+		<attribute key="shootType" value="fire" />
+		<attribute key="range" value="4" />
+		<attribute key="absorbPercentEnergy" value="4" />
+		<attribute key="magicpoints" value="2" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36669" article="a" name="gilded eldritch wand">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="3700" />
+		<attribute key="weaponType" value="wand" />
+		<attribute key="loottype" value="wand" />
+		<attribute key="shootType" value="fire" />
+		<attribute key="range" value="4" />
+		<attribute key="absorbPercentEnergy" value="4" />
+		<attribute key="magicpoints" value="2" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36670" article="a" name="eldritch cowl">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="2600" />
+		<attribute key="slotType" value="head" />
+		<attribute key="loottype" value="helmet" />
+		<attribute key="armor" value="7" />
+		<attribute key="imbuingSlot" value="2" />
+		<attribute key="absorbPercentIce" value="7" />
+	</item>
+	<item id="36671" article="a" name="eldritch hood">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="2700" />
+		<attribute key="slotType" value="head" />
+		<attribute key="loottype" value="helmet" />
+		<attribute key="armor" value="7" />
+		<attribute key="imbuingSlot" value="2" />
+		<attribute key="absorbPercentEarth" value="7" />
+	</item>
+	<item id="36672" article="a" name="eldritch folio">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="2800" />
+		<attribute key="magicpoints" value="4" />
+		<attribute key="absorbPercentEarth" value="6" />
+		<attribute key="defense" value="21" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="loottype" value="shield" />
+		<attribute key="imbuingSlot" value="1" />
+	</item>
+	<item id="36673" article="a" name="eldritch tome">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="absorbPercentFire" value="6" />
+		<attribute key="weight" value="2600" />
+		<attribute key="magicpoints" value="4" />
+		<attribute key="defense" value="21" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="loottype" value="shield" />
+		<attribute key="imbuingSlot" value="1" />
+	</item>
+	<item id="36674" article="a" name="eldritch rod">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="3500" />
+		<attribute key="magicpoints" value="2" />
+		<attribute key="absorbPercentEarth" value="4" />
+		<attribute key="weaponType" value="wand" />
+		<attribute key="loottype" value="wand" />
+		<attribute key="shootType" value="ice" />
+		<attribute key="range" value="4" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36675" article="a" name="gilded eldritch rod">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="3500" />
+		<attribute key="magicpoints" value="2" />
+		<attribute key="absorbPercentEarth" value="4" />
+		<attribute key="weaponType" value="wand" />
+		<attribute key="loottype" value="wand" />
+		<attribute key="shootType" value="ice" />
+		<attribute key="range" value="4" />
+		<attribute key="imbuingSlot" value="2" />
+	</item>
+	<item id="36676" article="a" name="dead lavaworm">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36677" article="a" name="dead lavaworm">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36676" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36678" article="a" name="dead lavaworm">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36677" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36679" article="a" name="dead lavaworm">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36678" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36681" article="a" name="dead tremendous tyrant">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36682" article="a" name="dead tremendous tyrant">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36681" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36683" article="a" name="dead tremendous tyrant">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36682" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36684" article="a" name="dead tremendous tyrant">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36683" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36686" article="a" name="dead varnished diremaw">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36687" article="a" name="dead varnished diremaw">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36686" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36688" article="a" name="dead varnished diremaw">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36687" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36689" article="a" name="dead streaked devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36688" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36690" article="a" name="dead streaked devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36689" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36691" article="a" name="dead streaked devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36690" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36692" article="a" name="dead streaked devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36691" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36693" article="a" name="dead eyeless devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36694" article="a" name="dead eyeless devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36693" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36695" article="a" name="dead eyeless devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36694" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36696" article="a" name="dead eyeless devourer">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36695" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36698" article="a" name="dead blemished spawn">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36699" article="a" name="dead blemished spawn">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36698" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36700" article="a" name="dead blemished spawn">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36699" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36701" article="a" name="dead blemished spawn">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36700" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36706" article="a" name="red gem">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36707" article="a" name="eye shaped frame">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="500" />
+		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
+	</item>
+	<item id="36708" name="the eye of suon">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="600" />
+		<attribute key="slotType" value="ring" />
+		<attribute key="loottype" value="ring" />
+	</item>
+	<item fromid="36709" toid="36710" article="a" name="lever" />
+	<item id="36713" article="a" name="pieces of eldritch wax">
+		<attribute key="weight" value="150" />
+	</item>
+	<item id="36715" article="a" name="gnome pick">
+		<attribute key="weight" value="4500" />
+	</item>
+	<item id="36716" article="a" name="dead afflicted strider">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36717" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36717" article="a" name="dead afflicted strider">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36718" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36718" article="a" name="dead afflicted strider">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36719" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36719" article="a" name="dead afflicted strider">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36721" article="a" name="firewood">
+		<attribute key="loottype" value="creatureproduct" />
+	</item>
+	<item id="36723" article="a" name="kooldown-aid">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily resets cooldowns for all spells." />
+		<attribute key="weight" value="210" />
+	</item>
+	<item id="36724" article="a" name="strike enhancement">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases critical hit chance." />
+		<attribute key="weight" value="210" />
+	</item>
+	<item id="41560" article="a" name="stamina extension">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion fills up stamina by one hour." />
+		<attribute key="weight" value="210" />
+	</item>
+	<item id="36726" article="a" name="charm upgrade">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases offensive charm trigger chances except Cripple." />
+		<attribute key="weight" value="210" />
+	</item>
+	<item id="36727" article="a" name="wealth duplex">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily doubles the loot from every regular monster you kill." />
+		<attribute key="weight" value="210" />
+	</item>
+	<item id="36728" article="a" name="bestiary betterment">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily makes kills count twice for the Bestiary." />
+		<attribute key="weight" value="210" />
+	</item>
+	<item id="36729" article="a" name="fire resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases fire protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36730" article="a" name="ice resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases ice protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36731" article="a" name="earth resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases earth protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36732" article="a" name="energy resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases energy protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36733" article="a" name="holy resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases holy protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36734" article="a" name="death resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases death protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36735" article="a" name="physical resilience">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily increases physical protection." />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36736" article="a" name="fire amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies fire damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36737" article="a" name="ice amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies ice damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36738" article="a" name="earth amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies earth damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36739" article="a" name="energy amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies energy damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36740" article="a" name="holy amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies holy damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36741" article="a" name="death amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies death damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36742" article="a" name="physical amplification">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="description" value="Drinking this potion temporarily amplifies physical damage against monsters" />
+		<attribute key="weight" value="230" />
+	</item>
+	<item id="36748" article="a" name="many faces trophy">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="weight" value="110" />
+	</item>
+	<item fromid="36750" toid="36754" name="falcon pet">
+	<item id="36761" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36762" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36761" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36763" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36762" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36764" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36763" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36765" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36766" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36765" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36767" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36766" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36768" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36767" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36769" article="a" name="lavaworm spike roots">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36770" article="a" name="lavaworm spikes">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36771" article="a" name="lavaworm jaws">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36772" article="a" name="streaked devourer eyes">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36773" article="a" name="streaked devourer maw">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36774" article="a" name="streaked devourer legs">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36775" article="a" name="eyeless devourer maw">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36776" article="a" name="eyeless devourer legs">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36777" article="a" name="eyeless devourer tongue">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36778" article="a" name="blemished spawn head">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36779" article="a" name="blemished spawn abdomen">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36780" article="a" name="blemished spawn tail">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36781" article="a" name="varnished diremaw brainpan">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36782" article="a" name="varnished diremaw legs">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36783" article="a" name="tremendous tyrant head">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36784" article="a" name="tremendous tyrant shell">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36785" article="a" name="lavafungus head">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36786" article="a" name="lavafungus ring">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36787" article="a" name="cave chimera head">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36788" article="a" name="cave chimera leg">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36789" article="a" name="afflicted strider head">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36790" article="a" name="afflicted strider worms">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36791" article="a" name="abomination's tail">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36792" article="a" name="abomination's eye">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36793" article="a" name="abomination's tongue">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36794" article="a" name="brainstealer's tissue">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36795" article="a" name="brainstealer's brain">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36796" article="a" name="brainstealer's brainwave">
+		<attribute key="loottype" value="valuable" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36805" article="a" name="carnisylvan finger">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36806" article="a" name="carnisylvan bark">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36807" article="a" name="human teeth">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36808" article="a" name="old royal diary">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="130" />
+	</item>
+	<item id="36809" article="a" name="curl of hair">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="130" />
+	</item>
+	<item id="36810" article="a" name="artefact box">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="5000" />
+		<attribute key="containerSize" value="32" />
+		<attribute key="slotType" value="backpack" />
+	</item>
+	<item id="36811" article="a" name="megasylvan sapling">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="36812" article="a" name="violet tulip">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36813" article="a" name="galthen's satchel">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="1000" />
+		<attribute key="containerSize" value="32" />
+		<attribute key="slotType" value="backpack" />
+	</item>
+	<item fromid="36814" toid="36819" article="a" name="glass floor">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="36820" article="a" name="bashmu fang">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36821" article="a" name="bashmu tongue">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36822" article="a" name="scorpion charm">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36823" article="a" name="bashmu feather">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item fromid="36824" toid="36826" article="a" name="glass floor">
+		<attribute key="loottype" value="creatureproduct" />
+	</item>
+	<item id="36827" article="a" name="drome cube">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="36833" article="a" name="arena badge">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="36835" article="a" name="eldritch crystal">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="175" />
+	</item>
+	<item id="36836" article="a" name="eldritch casket">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="containerSize" value="32" />
+		<attribute key="slotType" value="backpack" />
+		<attribute key="weight" value="1300" />
+	</item>
+	<item id="36837" article="a" name="plushie of lavaworm">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="550" />
+	</item>
+	<item id="36838" article="a" name="folded eldritch carpet">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="1100" />
+	</item>
+	<item id="36844" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36845" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36844" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36846" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36845" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36847" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36846" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item fromid="36855" toid="36856" name="pit demon statue" />
+	<item fromid="36857" toid="36858" name="pit demon statue" />
+	<item fromid="36859" toid="36860" name="pit demon statue" />
+	<item fromid="36861" toid="36862" name="pit demon statue" />
+	<item fromid="36870" toid="36873" name="blackboard" />
+	<item id="36875" article="a" name="golden hand mirror">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="650" />
+	</item>
+	<item id="36876" article="a" name="blackened hand mirror">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="660" />
+	</item>
+	<item id="36877" article="a" name="strange idol">
+		<attribute key="loottype" value="creatureproduct" />
+	</item>
+	<item id="36879" article="a" name="dead hulking carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36880" article="a" name="dead hulking carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36879" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36881" article="a" name="dead hulking carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36880" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36882" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36883" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36882" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36884" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36883" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36885" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36884" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36888" article="a" name="dead poisonous carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36889" article="a" name="dead poisonous carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36888" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36890" article="a" name="dead poisonous carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36889" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36892" article="a" name="dead dark carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36893" article="a" name="dead dark carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36892" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36894" article="a" name="dead dark carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36893" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36895" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36896" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36895" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36897" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36896" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36898" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36897" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36903" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36904" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36903" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36905" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36904" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36906" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36905" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36912" article="a" name="dead domestikion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36913" article="a" name="dead domestikion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36912" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36914" article="a" name="dead domestikion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36913" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36918" article="an" name="plushie of a murmillion" />
+	<item id="36919" article="an" name="plushie of a scissorion" />
+	<item id="36920" article="an" name="plushie of a hoodinion" />
+	<item id="36921" article="an" name="plushie of a Mearidion" />
+	<item id="36922" article="an" name="plushie of a domestikion" />
+	<item id="36923" article="a" name="ritual notes">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="36938" article="a" name="fiery horseshoe">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="120" />
+	</item>
+	<item id="36939" article="a" name="cloth fragment">
+		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36940" article="a" name="sylvan sapling carpet">
+		<attribute key="description" value="This carpet resembles the sylvan sapling prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36941" article="a" name="cloth fragment">
+		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36942" article="a" name="the spatial almanach carpet">
+		<attribute key="description" value="This carpet resembles the spatial almanach prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36943" article="a" name="cloth fragment">
+		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36944" article="a" name="the book of death carpet" />
+		<attribute key="description" value="This carpet resembles the book of death prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36945" article="a" name="cloth fragment">
+		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36946" article="a" name="the supreme cube carpet">
+		<attribute key="description" value="This carpet resembles the supreme cube prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36947" article="a" name="cloth fragment">
+		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36948" article="a" name="the ring of ending carpet">
+		<attribute key="description" value="This carpet resembles the ring of ending prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36949" article="a" name="cloth fragment">
+		<attribute key="description" value="This cloth resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36950" article="a" name="the cobra amulet carpet">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles the cobra amulet prime artefact. It feels soft to the touch and seems to have almost no weight." />
+	</item>
+	<item id="36951" article="a" name="folded artefact carpet I">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="36952" article="a" name="folded artefact carpet II">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="36953" article="a" name="folded artefact carpet III">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="36954" article="a" name="folded artefact carpet IV">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="36955" article="a" name="folded artefact carpet V">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="36956" article="a" name="folded artefact carpet VI">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item fromid="36958" toid="36960" article="a" name="megasylvan plant">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="weight" value="170" />
+	</item>
+	<item id="36961" article="a" name="pot with sylvan earth">
+		<attribute key="loottype" value="decoration" />
+		<attribute key="description" value="The pot contains rare sylvan earth from the living forest under Bounac. Nothing is planted in there." />
+		<attribute key="weight" value="20" />
+	</item>
+	<item id="36971" article="a" name="girtablilu warrior carapace">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36972" article="a" name="old girtablilu carapace">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="250" />
+	</item>
+	<item id="36973" article="a" name="magic forcefield">
+		<attribute key="type" value="teleport" />
+		<attribute key="description" value="You can see the other side trough it." />
+		<attribute key="effect" value="teleport" />
+	</item>
+	<item id="36980" article="a" name="chest" />
+	<item id="36981" article="a" name="gnome shovel">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="2800" />
+	</item>
+	<item id="36991" article="a" name="tournament bronze trophy">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="36992" article="a" name="tournament platinum trophy">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="150" />
+	</item>
+	<item id="36993" article="a" name="tournament gold trophy">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="36994" article="a" name="gold blessed shield">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="36995" article="a" name="gold warlord sword">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item fromid="36996" toid="36999" article="a" name="unicorn doll">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="37000" article="a" name="magic forcefield">
+		<attribute key="type" value="teleport" />
+		<attribute key="description" value="You can see the other side trough it." />
+		<attribute key="effect" value="teleport" />
+	</item>
+	<item id="37001" article="a" name="magic forcefield">
+		<attribute key="type" value="teleport" />
+		<attribute key="description" value="You can see the other side trough it." />
+		<attribute key="effect" value="teleport" />
+	</item>
+	<item id="37002" article="a" name="tagralt-inlaid scabbard">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="2500" />
+	</item>
+	<item id="37003" article="a" name="eye-embroidered veil">
+		<attribute key="loottype" value="creatureproduct" />
+		<attribute key="weight" value="100" />
+	</item>
 </items>

@@ -529,9 +529,6 @@ void Map::getSpectators(SpectatorVector &spectators, const Position &centerPos, 
 			minRangeZ = centerPos.z;
 			maxRangeZ = centerPos.z;
 		}
-		if (spectators.capacity() < 32) {
-			spectators.reserve(32);
-		}
 
 		getSpectatorsInternal(spectators, centerPos, minRangeX, maxRangeX, minRangeY, maxRangeY, minRangeZ, maxRangeZ, onlyPlayers);
 		if (cacheResult) {

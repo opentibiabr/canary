@@ -17,8 +17,7 @@ local function getSkillId(skillName)
 end
 
 local function getExpForLevel(level)
-	level = level - 1
-	return ((50 * level * level * level) - (150 * level * level) + (400 * level)) / 3
+	return math.floor((((level - 6) * level + 17) * level - 12) / 6) * 100
 end
 
 

@@ -512,6 +512,7 @@ using CombatTypeNames = std::unordered_map<CombatType_t, std::string, std::hash<
 using AmmoTypeNames = std::unordered_map<std::string, Ammo_t>;
 using WeaponActionNames = std::unordered_map<std::string, WeaponAction_t>;
 using SkullNames = std::unordered_map<std::string, Skulls_t>;
+using ImbuementTypeNames = std::unordered_map<std::string, ImbuementTypes_t>;
 
 /**
  * @Deprecated
@@ -744,6 +745,27 @@ SkullNames skullNames = {
 	{"white",				SKULL_WHITE},
 };
 
+const ImbuementTypeNames imbuementTypeNames = {
+	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
+	{"life leech", IMBUEMENT_LIFE_LEECH},
+	{"mana leech", IMBUEMENT_MANA_LEECH},
+	{"critical hit", IMBUEMENT_CRITICAL_HIT},
+	{"elemental protection death", IMBUEMENT_ELEMENTAL_PROTECTION_DEATH},
+	{"elemental protection earth", IMBUEMENT_ELEMENTAL_PROTECTION_EARTH},
+	{"elemental protection fire", IMBUEMENT_ELEMENTAL_PROTECTION_FIRE},
+	{"elemental protection ice", IMBUEMENT_ELEMENTAL_PROTECTION_ICE},
+	{"elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY},
+	{"elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY},
+	{"increase speed", IMBUEMENT_INCREASE_SPEED},
+	{"skillboost axe", IMBUEMENT_SKILLBOOST_AXE},
+	{"skillboost sword", IMBUEMENT_SKILLBOOST_SWORD},
+	{"skillboost club", IMBUEMENT_SKILLBOOST_CLUB},
+	{"skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING},
+	{"skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE},
+	{"skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL},
+	{"increase capacity", IMBUEMENT_INCREASE_CAPACITY}
+};
+
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
@@ -819,6 +841,15 @@ Skulls_t getSkullType(const std::string& strValue)
 	return SKULL_NONE;
 }
 
+ImbuementTypes_t getImbuementType(const std::string& strValue)
+{
+	auto imbuementType = imbuementTypeNames.find(strValue);
+	if (imbuementType != imbuementTypeNames.end()) {
+		return imbuementType->second;
+	}
+	return IMBUEMENT_NONE;
+}
+
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
@@ -860,7 +891,7 @@ std::string getSkillName(uint8_t skillid)
 			return "critical hit chance";
 
 		case SKILL_CRITICAL_HIT_DAMAGE:
-			return "critical hit damage";
+			return "critical extra damage";
 
 		case SKILL_LIFE_LEECH_CHANCE:
 			return "life leech chance";

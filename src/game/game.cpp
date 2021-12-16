@@ -4944,9 +4944,12 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 
 void Game::playerWhisper(Player* player, const std::string &text) {
 	SpectatorVector spectators;
-	map.getSpectators(spectators, player->getPosition(), false, false, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY);
+	const Position& pos = player->getPosition();
+	map.getSpectatorsInternal(spectators, pos, 
+			Map::maxClientViewportX, Map::maxClientViewportX,
+			Map::maxClientViewportY, Map::maxClientViewportY, pos.z, pos.z, false);
 
-	// send to client
+	// send to client + event method
 	for (Creature* spectator : spectators) {
 		if (Player* spectatorPlayer = spectator->getPlayer()) {
 			if (!Position::areInRange<1, 1>(player->getPosition(), spectatorPlayer->getPosition())) {
@@ -4955,10 +4958,6 @@ void Game::playerWhisper(Player* player, const std::string &text) {
 				spectatorPlayer->sendCreatureSay(player, TALKTYPE_WHISPER, text);
 			}
 		}
-	}
-
-	// event method
-	for (Creature* spectator : spectators) {
 		spectator->onCreatureSay(player, TALKTYPE_WHISPER, text);
 	}
 }
@@ -5080,26 +5079,34 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 		// is used if available and if it can be used, else a local vector is
 		// used (hopefully the compiler will optimize away the construction of
 		// the temporary when it's not used).
+		// Use getSpectatorsInternal here because we won't get any cached spectators anyway
 		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
-			map.getSpectators(spectators, *pos, false, false, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY);
+			map.getSpectatorsInternal(spectators, *pos, 
+					Map::maxClientViewportX, Map::maxClientViewportX,
+					Map::maxClientViewportY, Map::maxClientViewportY, pos->z, pos->z, false);
 		} else {
-			map.getSpectators(spectators, *pos, true, false, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
+			if (pos->z < 8) {
+				map.getSpectatorsInternal(spectators, *pos, 
+						(Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
+						(Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2, 0, 7, false);
+			} else {
+				map.getSpectatorsInternal(spectators, *pos,
+						(Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
+						(Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2, pos->z, pos->z, false);
+			}
 		}
 	} else {
-		spectators = (*spectatorsPtr);
+		spectators = std::move(*spectatorsPtr);
 	}
 
-	// send to client
+	// send to client + event method
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			if (!ghostMode || tmpPlayer->canSeeCreature(creature)) {
 				tmpPlayer->sendCreatureSay(creature, type, text, pos);
 			}
 		}
-	}
 
-	// event method
-	for (Creature* spectator : spectators) {
 		spectator->onCreatureSay(creature, type, text);
 		if (creature != spectator) {
 			g_events().eventCreatureOnHear(spectator, creature, text, type);

@@ -295,6 +295,7 @@ class Combat
 		static void CombatFunc(Creature* caster, const Position& pos, const AreaCombat* area, const CombatParams& params, CombatFunction func, CombatDamage* data);
 
 		static void CombatHealthFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data);
+		static CombatDamage applyImbuementElementalDamage(Item* item, CombatDamage damage);
 		static void CombatManaFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* damage);
 		static void CombatConditionFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data);
 		static void CombatDispelFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data);

@@ -506,6 +506,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, ITEM_ATTRIBUTE_SPECIAL)
 			registerEnum(L, ITEM_ATTRIBUTE_OPENCONTAINER)
 			registerEnum(L, ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)
+			registerEnum(L, ITEM_ATTRIBUTE_IMBUEMENT_TYPE)
 
 			registerEnum(L, ITEM_TYPE_DEPOT)
 			registerEnum(L, ITEM_TYPE_REWARDCHEST)
@@ -597,8 +598,6 @@ class LuaEnums final : LuaScriptInterface {
 
 			registerEnum(L, ITEM_GOLD_POUCH)
 			registerEnum(L, ITEM_STORE_INBOX)
-
-			registerEnum(L, IMBUEMENT_SLOT)
 
 			registerEnum(L, CHARM_GUT)
 			registerEnum(L, CHARM_SCAVENGE)

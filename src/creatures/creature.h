@@ -327,11 +327,11 @@ class Creature : virtual public Thing
 			return SPEECHBUBBLE_NONE;
 		}
 
-		bool addCondition(Condition* condition, bool force = false);
+		bool addCondition(Condition* condition);
 		bool addCombatCondition(Condition* condition);
-		void removeCondition(ConditionType_t type, ConditionId_t conditionId, bool force = false);
-		void removeCondition(ConditionType_t type, bool force = false);
-		void removeCondition(Condition* condition, bool force = false);
+		void removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force = false);
+		void removeCondition(ConditionType_t type);
+		void removeCondition(Condition* condition);
 		void removeCombatCondition(ConditionType_t type);
 		Condition* getCondition(ConditionType_t type) const;
 		Condition* getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId = 0) const;

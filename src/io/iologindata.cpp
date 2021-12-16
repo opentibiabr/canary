@@ -613,7 +613,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   for (auto& it : openContainersList) {
     player->addContainer(it.first - 1, it.second);
-    g_scheduler.addEvent(createSchedulerTask(((it.first) * 50), std::bind(&Game::playerUpdateContainer, &g_game, player->getGUID(), it.first - 1)));
+    player->onSendContainer(it.second);
   }
 
   // Store Inbox
@@ -752,6 +752,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   loadPlayerPreyData(player);
   player->updateBaseSpeed();
   player->updateInventoryWeight();
+  player->updateInventoryImbuement(true);
   player->updateItemsLight(true);
   return true;
 }

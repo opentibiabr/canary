@@ -41,6 +41,10 @@ using ItemVector = std::vector<Item*>;
 class SpectatorVector : public CreatureVector
 {
 	public:
+		SpectatorVector() {
+			specs.reserve(32);
+		}
+
 		void mergeSpectators(const SpectatorVector& spectators) {
 			size_t it = 0, end = spectators.size();
 			while (it < end) {
@@ -73,6 +77,9 @@ class SpectatorVector : public CreatureVector
 				}
 			}
 		}
+
+	private:
+		CreatureVector specs;
 };
 
 class TileItemVector : private ItemVector
@@ -93,7 +100,7 @@ class TileItemVector : private ItemVector
 		using ItemVector::const_iterator;
 		using ItemVector::reverse_iterator;
 		using ItemVector::const_reverse_iterator;
-    using ItemVector::empty;
+    	using ItemVector::empty;
 
 		iterator getBeginDownItem() {
 			return begin();

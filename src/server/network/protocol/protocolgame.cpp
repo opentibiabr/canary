@@ -4109,7 +4109,10 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 	NetworkMessage msg;
 
 	msg.addByte(0xF9);
-	msg.addByte(0);
+
+	// Version 12.81 - Item browsing type
+	msg.addByte(0x03);
+
 	msg.addItemId(itemId);
 
 	if (Item::items[itemId].upgradeClassification > 0) {
@@ -4286,18 +4289,10 @@ void ProtocolGame::sendForgingData()
 		}
 	}
 
-	// Forging values
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
-	msg.addByte(0);
+	// Version 12.81
+	for (uint8_t i = 1; i <= 11; ++i) {
+		msg.addByte(0);
+	}
 
 	writeToOutputBuffer(msg);
 }
@@ -5747,6 +5742,8 @@ void ProtocolGame::sendOutfitWindow()
 
 	msg.addByte(0x00); //Try outfit
 	msg.addByte(mounted ? 0x01 : 0x00);
+
+	// Version 12.81 - Random outfit 'bool'
 	msg.addByte(0);
 
 	writeToOutputBuffer(msg);
@@ -6389,15 +6386,11 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
 
-	// 12.81 Protocol - To-Do: insert on SKILL_ enum
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+	// Version 12..81
+	for (uint8_t i = 1; i <= 3; ++i ) {
+		msg.add<uint16_t>(0);
+		msg.add<uint16_t>(0);
+	}
 
 	// used for imbuement (Feather)
 	msg.add<uint32_t>(player->getCapacity()); // total capacity

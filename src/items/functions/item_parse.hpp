@@ -40,7 +40,6 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"attack", ITEM_PARSE_ATTACK},
 	{"rotateto", ITEM_PARSE_ROTATETO},
 	{"wrapcontainer", ITEM_PARSE_WRAPCONTAINER},
-	{"imbuingslot", ITEM_PARSE_IMBUINGSLOT},
 	{"wrapableto", ITEM_PARSE_WRAPABLETO},
 	{"unwrapableto", ITEM_PARSE_WRAPABLETO},
 	{"moveable", ITEM_PARSE_MOVEABLE},
@@ -149,6 +148,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"walkstack", ITEM_PARSE_WALKSTACK},
 	{"blocking", ITEM_PARSE_BLOCK_SOLID},
 	{"allowdistread", ITEM_PARSE_ALLOWDISTREAD},
+	{"imbuementslot", ITEM_PARSE_IMBUEMENT},
 };
 
 const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -222,12 +222,33 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"quiver", WEAPON_QUIVER},
 };
 
-class ItemParse final : public Items
+const std::unordered_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
+	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
+	{"life leech", IMBUEMENT_LIFE_LEECH},
+	{"mana leech", IMBUEMENT_MANA_LEECH},
+	{"critical hit", IMBUEMENT_CRITICAL_HIT},
+	{"elemental protection death", IMBUEMENT_ELEMENTAL_PROTECTION_DEATH},
+	{"elemental protection earth", IMBUEMENT_ELEMENTAL_PROTECTION_EARTH},
+	{"elemental protection fire", IMBUEMENT_ELEMENTAL_PROTECTION_FIRE},
+	{"elemental protection ice", IMBUEMENT_ELEMENTAL_PROTECTION_ICE},
+	{"elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY},
+	{"elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY},
+	{"increase speed", IMBUEMENT_INCREASE_SPEED},
+	{"skillboost axe", IMBUEMENT_SKILLBOOST_AXE},
+	{"skillboost sword", IMBUEMENT_SKILLBOOST_SWORD},
+	{"skillboost club", IMBUEMENT_SKILLBOOST_CLUB},
+	{"skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING},
+	{"skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE},
+	{"skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL},
+	{"increase capacity", IMBUEMENT_INCREASE_CAPACITY}
+};
+
+class ItemParse : public Items
 {
 	public:
-	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
-	private:
+	protected:
 	static void parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseDescription(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRuneSpellName(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -239,7 +260,6 @@ class ItemParse final : public Items
 	static void parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseImbuingSlot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseMoveable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -280,6 +300,7 @@ class ItemParse final : public Items
 	static void parseElement(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWalk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
 	private:
 	// Parent of the function: static void parseField

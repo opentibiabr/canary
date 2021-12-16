@@ -186,6 +186,7 @@ bool ConfigManager::load()
 	boolean[TOGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "togleSaveIntervalCleanMap", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
+	boolean[TOGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "togleImbuementShrineStorage", true);
 
 	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
 	string[SERVER_NAME] = getGlobalString(L, "serverName", "");
@@ -245,7 +246,7 @@ bool ConfigManager::load()
 	integer[STAMINA_TRAINER_DELAY] = getGlobalNumber(L, "staminaTrainerDelay", 5);
 	integer[STAMINA_TRAINER_GAIN] = getGlobalNumber(L, "staminaTrainerGain", 1);
 	integer[SAVE_INTERVAL_TIME] = getGlobalNumber(L, "saveIntervalTime", 1);
-	
+
 	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
 	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);
 	floating[RATE_MONSTER_DEFENSE] = getGlobalFloat(L, "rateMonsterDefense", 1.0);

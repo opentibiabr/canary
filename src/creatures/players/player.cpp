@@ -468,6 +468,56 @@ void Player::updateInventoryWeight()
 	}
 }
 
+void Player::updateInventoryImbuement(bool init /* = false */)
+{
+	uint8_t imbuementsToCheck = g_game.getPlayerActiveImbuements(getID());
+	for (int items = CONST_SLOT_FIRST; items <= CONST_SLOT_LAST; ++items) {
+		/*
+		 * Small optimization to avoid unneeded iteration.
+		 */
+		if (!init && imbuementsToCheck == 0) {
+			break;
+		}
+
+		Item* item = inventory[items];
+		if (!item) {
+			continue;
+		}
+
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+				continue;
+			}
+
+			// Time not decay on protection zone
+			const Tile* playerTile = getTile();
+			const CategoryImbuement *categoryImbuement = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			if (categoryImbuement->agressive && playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				continue;
+			}
+
+			// Time not decay if not is infight mode
+			if (categoryImbuement->agressive && !hasCondition(CONDITION_INFIGHT)) {
+				continue;
+			}
+
+			if (init) {
+				g_game.increasePlayerActiveImbuements(getID());
+			}
+
+			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
+			item->setImbuement(slotid, imbuementInfo.imbuement->getID(), duration);
+			if (duration == 0) {
+				removeItemImbuementStats(imbuementInfo.imbuement);
+				g_game.decreasePlayerActiveImbuements(getID());
+			}
+
+			imbuementsToCheck--;
+		}
+	}
+}
+
 void Player::setTraining(bool value) {
 	for (const auto& it : g_game.getPlayers()) {
 		if (!this->isInGhostMode() || it.second->isAccessPlayer()) {
@@ -1091,18 +1141,17 @@ Item* Player::getWriteItem(uint32_t& retWindowTextId, uint16_t& retMaxWriteLen)
 	return writeItem;
 }
 
-void Player::inImbuing(Item* item)
+void Player::setImbuingItem(Item* item)
 {
-	if (imbuing) {
-		imbuing->decrementReferenceCounter();
+	if (imbuingItem) {
+		imbuingItem->decrementReferenceCounter();
 	}
 
 	if (item) {
-		imbuing = item;
-		imbuing->incrementReferenceCounter();
-	} else {
-		imbuing = nullptr;
+		item->incrementReferenceCounter();
 	}
+
+	imbuingItem = item;
 }
 
 void Player::setWriteItem(Item* item, uint16_t maxWriteLength /*= 0*/)
@@ -1149,7 +1198,120 @@ void Player::sendHouseWindow(House* house, uint32_t listId) const
 	}
 }
 
-void Player::sendImbuementWindow(Item* item)
+void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm)
+{
+	if (!imbuement || !item) {
+		return;
+	}
+
+	const auto& items = imbuement->getItems();
+	for (auto& [key, value] : items)
+	{
+		if (this->getItemTypeCount(key) + this->getStashItemCount(key) < value)
+		{
+			this->sendImbuementResult("You don't have all necessary items.");
+			return;
+		}
+	}
+
+	ImbuementInfo imbuementInfo;
+	if (item->getImbuementInfo(slot, &imbuementInfo))
+	{
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
+		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
+	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement)
+	{
+		return;
+	}
+
+	uint32_t price = baseImbuement->price;
+	price += protectionCharm ? baseImbuement->protectionPrice : 0;
+
+	if (!g_game.removeMoney(this, price, 0, true))
+	{
+		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
+
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
+		sendImbuementResult(message);
+		return;
+	}
+
+	for (auto& [key, value] : items)
+	{
+		uint32_t invertoryItemCount = getItemTypeCount(key);
+		if (invertoryItemCount >= value)
+		{
+			removeItemOfType(key, value, -1, true);
+			continue;
+		}
+
+		uint32_t mathItemCount = value;
+		if (invertoryItemCount > 0 && removeItemOfType(key, invertoryItemCount, -1, false))
+		{
+			mathItemCount = mathItemCount - invertoryItemCount;
+		}
+
+		withdrawItem(key, mathItemCount);
+	}
+
+	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
+	{
+		openImbuementWindow(item);
+		sendImbuementResult("Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.");
+		openImbuementWindow(item);
+		return;
+	}
+
+	if (item->getParent() == this) {
+		addItemImbuementStats(imbuement);
+	}
+
+	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
+	openImbuementWindow(item);
+}
+
+void Player::onClearImbuement(Item* item, uint8_t slot)
+{
+	if (!item) {
+		return;
+	}
+
+	ImbuementInfo imbuementInfo;
+	if (!item->getImbuementInfo(slot, &imbuementInfo))
+	{
+		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, item not contains imbuement", this->getName());
+		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
+	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+	if (!baseImbuement) {
+		return;
+	}
+
+	if (!g_game.removeMoney(this, baseImbuement->removeCost, 0, true))
+	{
+		std::string message = "You don't have " + std::to_string(baseImbuement->removeCost) + " gold coins.";
+
+		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
+		this->sendImbuementResult(message);
+		this->openImbuementWindow(item);
+		return;
+	}
+
+	if (item->getParent() == this) {
+		removeItemImbuementStats(imbuementInfo.imbuement);
+	}
+
+	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
+	this->openImbuementWindow(item);
+}
+
+void Player::openImbuementWindow(Item* item)
 {
 	if (!client || !item) {
 		return;
@@ -1161,14 +1323,12 @@ void Player::sendImbuementWindow(Item* item)
 		return;
 	}
 
-	const ItemType& it = Item::items[item->getID()];
-	uint8_t slot = it.imbuingSlots;
-	if (slot <= 0 ) {
+	if (item->getImbuementSlot() <= 0) {
 		this->sendTextMessage(MESSAGE_FAILURE, "This item is not imbuable.");
 		return;
 	}
 
-	client->sendImbuementWindow(item);
+	client->openImbuementWindow(item);
 }
 
 void Player::sendMarketEnter(uint32_t depotId)
@@ -2240,16 +2400,18 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 				}
 			}
 
-			uint8_t slots = Item::items[item->getID()].imbuingSlots;
-			for (uint8_t i = 0; i < slots; i++) {
-				uint32_t info = item->getImbuement(i);
-				if (info >> 8) {
-					Imbuement* ib = g_imbuements->getImbuement(info & 0xFF);
-					const int16_t& absorbPercent2 = ib->absorbPercent[combatTypeToIndex(combatType)];
+			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
+			{
+				ImbuementInfo imbuementInfo;
+				if (!item->getImbuementInfo(slotid, &imbuementInfo))
+				{
+					continue;
+				}
 
-					if (absorbPercent2 != 0) {
-						damage -= std::ceil(damage * (absorbPercent2 / 100.));
-					}
+				const int16_t& imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
+
+				if (imbuementAbsorbPercent != 0) {
+					damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));
 				}
 			}
 
@@ -3548,7 +3710,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 
 	if (const Item* item = thing->getItem()) {
 		if (const Container* container = item->getContainer()) {
-      checkLootContainers(container);
+			checkLootContainers(container);
 
 			if (container->isRemoved() || !Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
 				autoCloseContainers(container);
@@ -5289,37 +5451,31 @@ uint16_t Player::getFreeBackpackSlots() const
 	return counter;
 }
 
-void Player::onEquipImbueItem(Imbuement* imbuement)
+void Player::addItemImbuementStats(const Imbuement* imbuement)
 {
-	// check skills
 	bool requestUpdate = false;
-
-	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (imbuement->skills[i]) {
+	// Check imbuement skills
+	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
+		if (imbuement->skills[skill]) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(i), imbuement->skills[i]);
+			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill]);
 		}
 	}
 
-	if (requestUpdate) {
-		sendSkills();
-		requestUpdate = false;
-	}
-
-	// check magpoint
-	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-		if (imbuement->stats[s]) {
+	// Check imbuement magic level
+	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
+		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(s), imbuement->stats[s]);
+			setVarStats(static_cast<stats_t>(stat), imbuement->stats[stat]);
 		}
 	}
 
-	// speed
+	// Add imbuement speed
 	if (imbuement->speed != 0) {
 		g_game.changeSpeed(this, imbuement->speed);
 	}
 
-	// capacity
+	// Add imbuement capacity
 	if (imbuement->capacity != 0) {
 		requestUpdate = true;
 		bonusCapacity = (capacity * imbuement->capacity)/100;
@@ -5333,37 +5489,31 @@ void Player::onEquipImbueItem(Imbuement* imbuement)
 	return;
 }
 
-void Player::onDeEquipImbueItem(Imbuement* imbuement)
+void Player::removeItemImbuementStats(const Imbuement* imbuement)
 {
-	// check skills
 	bool requestUpdate = false;
 
-	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (imbuement->skills[i]) {
+	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
+		if (imbuement->skills[skill]) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(i), -imbuement->skills[i]);
+			setVarSkill(static_cast<skills_t>(skill), -imbuement->skills[skill]);
 		}
 	}
 
-	if (requestUpdate) {
-		sendSkills();
-		requestUpdate = false;
-	}
-
-	// check magpoint
-	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-		if (imbuement->stats[s]) {
+	// Check imbuement magic level
+	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
+		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(s), -imbuement->stats[s]);
+			setVarStats(static_cast<stats_t>(stat), -imbuement->stats[stat]);
 		}
 	}
 
-	// speed
+	// Remove imbuement speed
 	if (imbuement->speed != 0) {
 		g_game.changeSpeed(this, -imbuement->speed);
 	}
 
-	// capacity
+	// Remove imbuement capacity
 	if (imbuement->capacity != 0) {
 		requestUpdate = true;
 		bonusCapacity = 0;

@@ -2499,16 +2499,36 @@ int PlayerFunctions::luaPlayerSendTutorial(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSendImbuementPanel(lua_State* L) {
-	// player:sendImbuementPanel(item, update = false)
+int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
+	// player:openImbuementWindow(item)
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		Item* item = getUserdata<Item>(L, 2);
-		player->sendImbuementWindow(item);
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
 	}
+	
+	Item* item = getUserdata<Item>(L, 2);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	player->openImbuementWindow(item);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerCloseImbuementWindow(lua_State* L) {
+	// player:closeImbuementWindow()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	player->closeImbuementWindow();
 	return 1;
 }
 

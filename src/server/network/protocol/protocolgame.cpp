@@ -4579,9 +4579,9 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (it.imbuingSlots > 0)
+	if (it.imbuementSlot > 0)
 	{
-		msg.addString(std::to_string(it.imbuingSlots));
+		msg.addString(std::to_string(it.imbuementSlot));
 	}
 	else
 	{
@@ -6464,7 +6464,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	NetworkMessage msg;
 	msg.addByte(0xEB);
 	msg.addItemId(item->getID());
-	if (it.upgradeClassification > 0) {
+	if (Item::items[item->getID()].upgradeClassification > 0) {
 		msg.addByte(0);
 	}
 	msg.addByte(item->getImbuementSlot());

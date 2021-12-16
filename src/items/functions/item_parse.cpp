@@ -21,7 +21,7 @@
 
 #include "items/functions/item_parse.hpp"
 
-void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	// Parse all item attributes
 	ItemParse::parseType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseDescription(tmpStrValue, valueAttribute, itemType);
@@ -34,7 +34,6 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseImbuingSlot(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
@@ -75,6 +74,7 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseElement(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWalk(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAllowDistanceRead(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseImbuement(tmpStrValue, attributeNode, valueAttribute, itemType);
 }
 
 void ItemParse::parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
@@ -161,13 +161,6 @@ void ItemParse::parseWrapContainer(const std::string& tmpStrValue, pugi::xml_att
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "wrapcontainer") {
 		itemType.wrapContainer = valueAttribute.as_bool();
-	}
-}
-
-void ItemParse::parseImbuingSlot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "imbuingslot") {
-		itemType.imbuingSlots = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
@@ -288,7 +281,7 @@ void ItemParse::parseSlotType(const std::string& tmpStrValue, pugi::xml_attribut
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "slottype") {
 		stringValue = asLowerCaseString(valueAttribute.as_string());
-	if (stringValue == "head") {
+		if (stringValue == "head") {
 			itemType.slotPosition |= SLOTP_HEAD;
 		} else if (stringValue == "body") {
 			itemType.slotPosition |= SLOTP_ARMOR;
@@ -654,7 +647,7 @@ void ItemParse::parseFieldCombatDamage(ConditionDamage *conditionDamage, std::st
 	int32_t combatStart = 0;
 	int32_t combatCount = 1;
 
-	for (auto subAttributeNode: attributeNode.children()) {
+	for (auto subAttributeNode : attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
 		if (!subKeyAttribute) {
 			continue;
@@ -716,7 +709,7 @@ void ItemParse::parseField(const std::string& tmpStrValue, pugi::xml_node attrib
 			itemType.conditionDamage.reset(conditionDamage);
 
 			parseFieldCombatDamage(conditionDamage, stringValue, attributeNode);
-			
+
 			conditionDamage->setParam(CONDITION_PARAM_FIELD, 1);
 
 			if (conditionDamage->getTotalDamage() > 0) {
@@ -745,7 +738,7 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 	if (stringValue == "partnerdirection") {
 		itemType.bedPartnerDir = getDirection(valueAttribute.as_string());
 	}
-		
+
 	uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
 	ItemType & other = Item::items.getItemType(value);
 	if (stringValue == "maletransformto") {
@@ -812,5 +805,40 @@ void ItemParse::parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "allowdistread") {
 		itemType.allowDistRead = booleanString(valueAttribute.as_string());
+	}
+}
+
+void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+	std::string stringValue = tmpStrValue;
+	if (stringValue != "imbuementslot") {
+		return;
+	}
+	itemType.imbuementSlot = pugi::cast<int32_t>(valueAttribute.value());
+
+	for (auto subAttributeNode: attributeNode.children()) {
+		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");
+		if (!subKeyAttribute) {
+			continue;
+		}
+
+		pugi::xml_attribute subValueAttribute = subAttributeNode.attribute("value");
+		if (!subValueAttribute) {
+			continue;
+		}
+
+		auto itemMap = ImbuementsTypeMap.find(asLowerCaseString(subKeyAttribute.as_string()));
+		if (itemMap != ImbuementsTypeMap.end()) {
+			ImbuementTypes_t imbuementType = getImbuementType(asLowerCaseString(subKeyAttribute.as_string()));
+			if (imbuementType != IMBUEMENT_NONE) {
+				itemType.setImbuementType(imbuementType, pugi::cast<uint16_t>(subValueAttribute.value()));
+				continue;
+			}
+		}
+		else
+		{
+			SPDLOG_WARN("[ParseImbuement::initParseImbuement] - Unknown type: {}",
+						valueAttribute.as_string());
+		}
+
 	}
 }

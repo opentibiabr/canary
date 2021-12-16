@@ -513,6 +513,27 @@ class Game
 			return CharmList;
 		}
 
+		void increasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
+		}
+
+		void decreasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] - 1);
+		}
+
+		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
+			if (value <= 0) {
+				playersActiveImbuements.erase(playerId);
+				return;
+			}
+			
+			playersActiveImbuements[playerId] = std::min<uint8_t>(255, value);
+		}
+
+		uint8_t getPlayerActiveImbuements(uint32_t playerId) {
+			return playersActiveImbuements[playerId];
+		}
+
 		void initializePreyCounter(uint32_t playerguid) {
 			auto it = std::find_if(playersPreys.begin(), playersPreys.end(), [playerguid](uint32_t it){
 				return it == playerguid;

@@ -2946,6 +2946,12 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		msg.add<uint16_t>(0);
 	}
 
+	// Version 12.81 new skill (Fatal, Dodge and Momentum)
+	for (uint8_t i = 1; i <= 3; ++i) {
+		msg.add<uint16_t>(0);
+		msg.add<uint16_t>(0);
+	}
+
 	// Cleave (12.70)
 	msg.add<uint16_t>(0);
 	// Magic shield capacity (12.70)
@@ -6412,7 +6418,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i ) {
+	for (uint8_t i = 1; i <= 3; ++i) {
 		msg.add<uint16_t>(0);
 		msg.add<uint16_t>(0);
 	}

@@ -154,7 +154,7 @@ void ItemParse::parseAttack(const std::string& tmpStrValue, pugi::xml_attribute 
 void ItemParse::parseUpgradeClassification(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "upgradeclassification") {
-		itemType.upgradeClassification = pugi::cast<uint8_t>(valueAttribute.value());
+		itemType.upgradeClassification = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 

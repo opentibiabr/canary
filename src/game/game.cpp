@@ -163,7 +163,7 @@ void Game::start(ServiceManager* manager)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_DECAYINTERVAL, std::bind(&Game::checkDecay, this)));
-	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
+	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 }
 
 GameState_t Game::getGameState() const
@@ -351,7 +351,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid)
 	if (!player) {
 		return;
 	}
-	
+
 	Item* item;
 	const ItemType& itemType = Item::items.getItemIdByClientId(spriteid);
 
@@ -878,15 +878,12 @@ Npc* Game::getNpcByID(uint32_t id)
 
 Player* Game::getPlayerByID(uint32_t id)
 {
-	if (id == 0) {
-		return nullptr;
+	auto playerMap = players.find(id);
+	if (playerMap != players.end()) {
+		return playerMap->second;
 	}
 
-	auto it = players.find(id);
-	if (it == players.end()) {
-		return nullptr;
-	}
-	return it->second;
+	return nullptr;
 }
 
 Creature* Game::getCreatureByName(const std::string& s)
@@ -3774,7 +3771,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t co
 	if (!player) {
 		return;
 	}
-	
+
 	if (player->hasFlag(PlayerFlag_CannotPickupItem)) {
 		return;
 	}
@@ -4416,6 +4413,7 @@ void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos
 		lookDistance = -1;
 	}
 
+	// Parse onLook from event player
 	g_events->eventPlayerOnLook(player, pos, thing, stackPos, lookDistance);
 }
 
@@ -4847,55 +4845,60 @@ void Game::playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t
 		return;
 	}
 
-	if (!player->inImbuing()) {
+	if (!player->hasImbuingItem()) {
 		return;
 	}
 
 	Imbuement* imbuement = g_imbuements->getImbuement(imbuementid);
-	if(!imbuement) {
+	if (!imbuement) {
 		return;
 	}
 
-	Item* item = player->imbuing;
-	if(item == nullptr) {
+	Item* item = player->imbuingItem;
+	if (!item) {
 		return;
 	}
 
-  if (item->getTopParent() != player || item->getParent() == player) {
-    return;
-  }
+	if (item->getTopParent() != player) {
+		SPDLOG_ERROR("[Game::playerApplyImbuement] - An error occurred while player with name {} try to apply imbuement", player->getName());
+		player->sendImbuementResult("An error has occurred, reopen the imbuement window. If the problem persists, contact your administrator.");
+		return;
+	}
 
-	g_events->eventPlayerOnApplyImbuement(player, imbuement, item, slot, protectionCharm);
+	player->onApplyImbuement(imbuement, item, slot, protectionCharm);
 }
 
-void Game::playerClearingImbuement(uint32_t playerid, uint8_t slot)
+void Game::playerClearImbuement(uint32_t playerid, uint8_t slot)
 {
 	Player* player = getPlayerByID(playerid);
-	if (!player) {
+	if (!player)
+	{
 		return;
 	}
 
-	if (!player->inImbuing()) {
+	if (!player->hasImbuingItem ())
+	{
 		return;
 	}
 
-	Item* item = player->imbuing;
-	if(item == nullptr) {
+	Item* item = player->imbuingItem;
+	if (!item)
+	{
 		return;
 	}
 
-	g_events->eventPlayerClearImbuement(player, item, slot);
-	return;
+	player->onClearImbuement(item, slot);
 }
 
-void Game::playerCloseImbuingWindow(uint32_t playerid)
+void Game::playerCloseImbuementWindow(uint32_t playerid)
 {
 	Player* player = getPlayerByID(playerid);
-	if (!player) {
+	if (!player)
+	{
 		return;
 	}
 
-	player->inImbuing(nullptr);
+	player->setImbuingItem(nullptr);
 	return;
 }
 
@@ -6564,74 +6567,24 @@ void Game::checkDecay()
 
 void Game::checkImbuements()
 {
-	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENTINTERVAL, std::bind(&Game::checkImbuements, this)));
+	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	size_t bucket = (lastImbuedBucket + 1) % EVENT_IMBUEMENT_BUCKETS;
+	std::vector<uint32_t> toErase;
 
-	auto it = imbuedItems[bucket].begin(), end = imbuedItems[bucket].end();
-	while (it != end) {
-		Item* item = *it;
-		if (!item) {
-			continue;
-		}
-
-		Player* player = item->getHoldingPlayer();
+	for (const auto& [key, value] : playersActiveImbuements) {
+		Player* player = getPlayerByID(key);
 		if (!player) {
-			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
-			continue;
-		}
-		
-		const ItemType& itemType = Item::items[item->getID()];
-		if (!player->hasCondition(CONDITION_INFIGHT) && !itemType.isContainer()) {
-			it++;
+			toErase.push_back(key);
 			continue;
 		}
 
-		bool hasImbue = false;
-		uint8_t slots = Item::items[item->getID()].imbuingSlots;
-		for (uint8_t slot = 0; slot < slots; slot++) {
-			uint32_t info = item->getImbuement(slot);
-			uint16_t id = info & 0xFF;
-			if (id == 0) {
-				continue;
-			}
-
-			int32_t duration = info >> 8;
-			int32_t newDuration = std::max(0, (duration - (EVENT_IMBUEMENTINTERVAL * EVENT_IMBUEMENT_BUCKETS) / 690));
-			if (newDuration > 0) {
-				hasImbue = true;
-			}
-
-			Imbuement* imbuement = g_imbuements->getImbuement(id);
-			if(!imbuement) {
-				continue;
-			}
-
-			Category* category = g_imbuements->getCategoryByID(imbuement->getCategory());
-			if (category->agressive && !player->hasCondition(CONDITION_INFIGHT)) {
-				continue;
-			}
-
-			if (duration > 0 && newDuration == 0) {
-				item->setImbuement(slot, 0);
-				player->onDeEquipImbueItem(imbuement);
-			} else {
-				item->setImbuement(slot, ((newDuration << 8) | id));
-			}
-		}
-
-		if (hasImbue) {
-			it++;
-		} else {
-			ReleaseItem(item);
-			it = imbuedItems[bucket].erase(it);
-		}
-
+		player->updateInventoryImbuement();
 	}
 
-	lastImbuedBucket = bucket;
-	cleanup();
+	for (uint32_t playerId : toErase) {
+		setPlayerActiveImbuements(playerId, 0);
+	}
+
 }
 
 void Game::checkLight()
@@ -6766,12 +6719,6 @@ void Game::cleanup()
 		}
 	}
 	toDecayItems.clear();
-
-	for (Item* item : toImbuedItems) {
-		imbuedItems[lastImbuedBucket].push_back(item);
-	}
-	toImbuedItems.clear();
-
 }
 
 void Game::ReleaseCreature(Creature* creature)

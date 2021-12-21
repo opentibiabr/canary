@@ -502,25 +502,52 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	assert(data);
 	CombatDamage damage = *data;
 	if (caster && caster->getPlayer()) {
-		Item* tool = caster->getPlayer()->getWeapon();
-		g_events->eventPlayerOnCombat(caster->getPlayer(), target, tool, damage);
+		Item *item = caster->getPlayer()->getWeapon();
+		damage = applyImbuementElementalDamage(item, damage);
+		g_events->eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
+
+		if (target && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
+			damage.primary.value /= 2;
+			damage.secondary.value /= 2;
+		}
 	}
 
 	if (g_game.combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
 	}
 
-	if ((damage.primary.value < 0 || damage.secondary.value < 0)) {
-		if (caster && target && caster->getPlayer() && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
-			damage.primary.value /= 2;
-			damage.secondary.value /= 2;
-		}
-	}
-
 	if (g_game.combatChangeHealth(caster, target, damage)) {
 		CombatConditionFunc(caster, target, params, &damage);
 		CombatDispelFunc(caster, target, params, nullptr);
 	}
+}
+
+CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage damage) {
+	if (!item) {
+		return damage;
+	}
+
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
+		}
+
+		if (imbuementInfo.imbuement->combatType == COMBAT_NONE) {
+			continue;
+		}
+
+		float damagePercent = imbuementInfo.imbuement->elementDamage / 100.0;
+
+		damage.secondary.type = imbuementInfo.imbuement->combatType;
+		damage.primary.value = damage.primary.value * (1 - damagePercent);
+		damage.secondary.value = damage.primary.value * (damagePercent);
+
+		/* If damage imbuement is set, we can return without checking other slots */
+		break;
+	}
+	
+	return damage;
 }
 
 void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data)

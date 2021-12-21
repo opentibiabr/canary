@@ -128,12 +128,6 @@ bool Events::loadFromXml() {
 				info.playerOnStorageUpdate = event;
 			} else if (methodName == "onRemoveCount") {
 				info.playerOnRemoveCount = event;
-			}else if (methodName == "canBeAppliedImbuement") {
-				info.playerCanBeAppliedImbuement = event;
-			}else if (methodName == "onApplyImbuement") {
-				info.playerOnApplyImbuement= event;
-			}else if (methodName == "clearImbuement") {
-				info.playerClearImbuement = event;
 			}else if (methodName == "onCombat") {
 				info.playerOnCombat = event;
 			} else {
@@ -1148,116 +1142,6 @@ void Events::eventPlayerOnGainSkillTries(Player* player, skills_t skill, uint64_
 	}
 
 	scriptInterface.resetScriptEnv();
-}
-
-bool Events::eventPlayerCanBeAppliedImbuement(Player* player, Imbuement* imbuement, Item* item) {
-	// Player:canBeAppliedImbuement(imbuement, item)
-	if (info.playerCanBeAppliedImbuement == -1) {
-		return false;
-	}
-
-	if (!scriptInterface.reserveScriptEnv()) {
-		SPDLOG_ERROR("[Events::eventPlayerCanBeAppliedImbuement - "
-                     "Player {} imbuement {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     player->getName(), imbuement->getName());
-		return false;
-	}
-
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
-	env->setScriptId(info.playerCanBeAppliedImbuement, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.playerCanBeAppliedImbuement);
-
-	if (player) {
-		LuaScriptInterface::pushUserdata<Player>(L, player);
-		LuaScriptInterface::setMetatable(L, -1, "Player");
-	} else {
-		lua_pushnil(L);
-	}
-
-	LuaScriptInterface::pushUserdata<Imbuement>(L, imbuement);
-	LuaScriptInterface::setMetatable(L, -1, "Imbuement");
-
-	LuaScriptInterface::pushUserdata<Item>(L, item);
-	LuaScriptInterface::setItemMetatable(L, -1, item);
-
-	return scriptInterface.callFunction(3);
-}
-
-void Events::eventPlayerOnApplyImbuement(Player* player, Imbuement* imbuement, Item* item, uint8_t slot, bool protectionCharm) {
-	// Player:onApplyImbuement(imbuement, item, slot, protectionCharm)
-	if (info.playerOnApplyImbuement == -1) {
-		return;
-	}
-
-	if (!scriptInterface.reserveScriptEnv()) {
-		SPDLOG_ERROR("[Events::eventPlayerOnApplyImbuement - "
-                     "Player {} imbuement {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     player->getName(), imbuement->getName());
-		return;
-	}
-
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
-	env->setScriptId(info.playerOnApplyImbuement, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.playerOnApplyImbuement);
-
-	if (player) {
-		LuaScriptInterface::pushUserdata<Player>(L, player);
-		LuaScriptInterface::setMetatable(L, -1, "Player");
-	} else {
-		lua_pushnil(L);
-	}
-
-	LuaScriptInterface::pushUserdata<Imbuement>(L, imbuement);
-	LuaScriptInterface::setMetatable(L, -1, "Imbuement");
-
-	LuaScriptInterface::pushUserdata<Item>(L, item);
-	LuaScriptInterface::setItemMetatable(L, -1, item);
-
-	lua_pushnumber(L, slot);
-	LuaScriptInterface::pushBoolean(L, protectionCharm);
-
-	scriptInterface.callVoidFunction(5);
-}
-
-void Events::eventPlayerClearImbuement(Player* player, Item* item, uint8_t slot) {
-	// Player:clearImbuement(item, slot)
-	if (info.playerClearImbuement == -1) {
-		return;
-	}
-
-	if (!scriptInterface.reserveScriptEnv()) {
-		SPDLOG_ERROR("[Events::eventPlayerClearImbuement - "
-                     "Player {} item {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     player->getName(), item->getName());
-		return;
-	}
-
-	ScriptEnvironment* env = scriptInterface.getScriptEnv();
-	env->setScriptId(info.playerClearImbuement, &scriptInterface);
-
-	lua_State* L = scriptInterface.getLuaState();
-	scriptInterface.pushFunction(info.playerClearImbuement);
-
-	if (player) {
-		LuaScriptInterface::pushUserdata<Player>(L, player);
-		LuaScriptInterface::setMetatable(L, -1, "Player");
-	} else {
-		lua_pushnil(L);
-	}
-
-	LuaScriptInterface::pushUserdata<Item>(L, item);
-	LuaScriptInterface::setItemMetatable(L, -1, item);
-
-	lua_pushnumber(L, slot);
-
-	scriptInterface.callVoidFunction(3);
 }
 
 void Events::eventPlayerOnCombat(Player* player, Creature* target, Item* item, CombatDamage& damage) {

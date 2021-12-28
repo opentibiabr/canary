@@ -33,6 +33,7 @@ class NpcFunctions final : LuaScriptInterface {
 				registerMethod(L, "Npc", "isNpc", NpcFunctions::luaNpcIsNpc);
 				registerMethod(L, "Npc", "setMasterPos", NpcFunctions::luaNpcSetMasterPos);
 				registerMethod(L, "Npc", "getCurrency", NpcFunctions::luaNpcGetCurrency);
+				registerMethod(L, "Npc", "setCurrency", NpcFunctions::luaNpcSetCurrency);
 				registerMethod(L, "Npc", "getSpeechBubble", NpcFunctions::luaNpcGetSpeechBubble);
 				registerMethod(L, "Npc", "setSpeechBubble", NpcFunctions::luaNpcSetSpeechBubble);
 				registerMethod(L, "Npc", "getId", NpcFunctions::luaNpcGetId);
@@ -68,6 +69,7 @@ class NpcFunctions final : LuaScriptInterface {
 			static int luaNpcSetMasterPos(lua_State* L);
 
 			static int luaNpcGetCurrency(lua_State* L);
+			static int luaNpcSetCurrency(lua_State* L);
 			static int luaNpcGetSpeechBubble(lua_State* L);
 			static int luaNpcSetSpeechBubble(lua_State* L);
 			static int luaNpcGetId(lua_State* L);

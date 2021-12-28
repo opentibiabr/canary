@@ -89,6 +89,19 @@ int NpcFunctions::luaNpcGetCurrency(lua_State* L) {
 	return 1;
 }
 
+int NpcFunctions::luaNpcSetCurrency(lua_State* L) {
+	// npc:getCurrency()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	npc->setCurrency(getNumber<uint16_t>(L, 2));
+	return 1;
+}
+
 int NpcFunctions::luaNpcGetSpeechBubble(lua_State* L) {
 	// npc:getSpeechBubble()
 	Npc* npc = getUserdata<Npc>(L, 1);

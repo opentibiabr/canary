@@ -93,6 +93,9 @@ class Npc final : public Creature
 		uint16_t getCurrency() const {
 			return npcType->info.currencyId;
 		}
+		void setCurrency(uint16_t currency) {
+			npcType->info.currencyId = currency;
+		}
 
 		ShopInfoMap getShopItems() {
 			return npcType->info.shopItems;

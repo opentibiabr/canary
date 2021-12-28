@@ -480,12 +480,33 @@ int NpcTypeFunctions::luaNpcTypeSetSpeechBubble(lua_State* L) {
 	if (!npcType) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
 		pushBoolean(L, false);
+		return 1;
 	}
 
 	if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, npcType->info.speechBubble);
 	} else {
 		npcType->info.speechBubble = getNumber<uint8_t>(L, 2);
+		pushBoolean(L, true);
+	}
+
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeCurrency(lua_State* L) {
+	// get = npcType:currency()
+	// set = npcType:currency(newCurrency)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, npcType->info.currencyId);
+	} else {
+		npcType->info.currencyId = getNumber<uint16_t>(L, 2);
 		pushBoolean(L, true);
 	}
 

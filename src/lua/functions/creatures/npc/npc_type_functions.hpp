@@ -73,6 +73,7 @@ class NpcTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "NpcType", "respawnTypeIsUnderground", NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground);
 			registerMethod(L, "NpcType", "getSpeechBubble", NpcTypeFunctions::luaNpcTypeGetSpeechBubble);
 			registerMethod(L, "NpcType", "setSpeechBubble", NpcTypeFunctions::luaNpcTypeSetSpeechBubble);
+			registerMethod(L, "NpcType", "currency", NpcTypeFunctions::luaNpcTypeCurrency);
 
 			registerMethod(L, "NpcType", "addShopItem", NpcTypeFunctions::luaNpcTypeAddShopItem);
 		}
@@ -117,6 +118,8 @@ class NpcTypeFunctions final : LuaScriptInterface {
 
 		static int luaNpcTypeGetSpeechBubble(lua_State* L);
 		static int luaNpcTypeSetSpeechBubble(lua_State* L);
+
+		static int luaNpcTypeCurrency(lua_State* L);
 
 		static int luaNpcTypeAddShopItem(lua_State* L);
 

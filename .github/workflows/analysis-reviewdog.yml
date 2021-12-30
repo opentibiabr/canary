@@ -109,7 +109,6 @@ jobs:
           xmllint --version
           reviewdog -reporter=github-pr-check -runners=xmllint
 
-
   yamllint:
     runs-on: ubuntu-latest
     steps:
@@ -134,4 +133,5 @@ jobs:
       - name: hadolint
         uses: reviewdog/action-hadolint@v1
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check

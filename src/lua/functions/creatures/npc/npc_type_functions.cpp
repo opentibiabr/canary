@@ -196,6 +196,8 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 	shopItem.buyPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "buy"));
 	shopItem.sellPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "sell"));
 	shopItem.subType = static_cast<uint16_t>(getField<uint32_t>(L, table, "count"));
+	shopItem.storageKey = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageKey"));
+	shopItem.storageValue = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageValue"));
 
 	const ItemType &it = Item::items.getItemIdByClientId(shopItem.itemClientId);
 

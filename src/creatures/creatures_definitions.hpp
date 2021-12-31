@@ -711,16 +711,18 @@ struct ShopInfo {
 	int32_t subType;
 	uint32_t buyPrice;
 	uint32_t sellPrice;
+	int32_t storageKey, storageValue;
 
 	ShopInfo() {
 		itemClientId = 0;
 		subType = 1;
 		buyPrice = 0;
 		sellPrice = 0;
+		storageKey, storageValue = 0;
 	}
 
-	ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, std::string newName = "")
-		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), name(std::move(newName)) {}
+	ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
+		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), storageKey(newStorageKey), storageValue(newStorageValue), name(std::move(newName)) {}
 };
 
 using MarketOfferList = std::list<MarketOffer>;

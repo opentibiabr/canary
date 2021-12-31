@@ -3803,18 +3803,36 @@ void ProtocolGame::sendShop(Npc *npc)
 	msg.addString(npc->getName());
 	msg.add<uint16_t>(npc->getCurrency());
 
-	msg.addString(std::string()); // ??
+	msg.addString(std::string()); // Currency name
 
 	const ShopInfoMap itemMap = npc->getShopItems();
 	uint16_t itemsToSend = std::min<size_t>(itemMap.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (auto& it : itemMap)
+	for (auto& shopInfoPair : itemMap)
 	{
-		if (++i > itemsToSend) break;
+		const uint16_t itemId = shopInfoPair.first;
+		const ShopInfo &shopInfo = shopInfoPair.second;
+		int32_t storageValue;
+		player->getStorageValue(shopInfo.storageKey, storageValue);
+		if (storageValue < shopInfo.storageValue)
+		{
+			// Empty bytes from AddShopitem
+			msg.add<uint16_t>(0);
+			msg.addByte(0);
+			msg.addString(std::string());
+			msg.add<uint32_t>(0);
+			msg.add<uint32_t>(0);
+			msg.add<uint32_t>(0);
+			continue;
+		}
 
-		AddShopItem(msg, it.second, it.first);
+		if (++i > itemsToSend) {
+			break;
+		}
+
+		AddShopItem(msg, shopInfo, itemId);
 	}
 
 	writeToOutputBuffer(msg);

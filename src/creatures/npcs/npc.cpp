@@ -234,7 +234,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t serverId,
 		if (!g_game.removeMoney(player, totalCost, 0, true)) {
 			return;
 		}
-	} else if(!player->removeItemOfType(getCurrency(), shopInfo.buyPrice, subType, false)) {
+	} else if(!player->removeItemOfType(getCurrency(), shopInfo.buyPrice, -1, false)) {
 		return;
 	}
 
@@ -271,7 +271,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 
 	ShopInfo shopInfo = getShopItems()[serverId];
 
-	if(!player->removeItemOfType(serverId, amount, subType, false)) {
+	if(!player->removeItemOfType(serverId, amount, -1, false)) {
 		return;
 	}
 
@@ -284,6 +284,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 		callback.pushSpecificCreature(this);
 		callback.pushCreature(player);
 		callback.pushNumber(itemType.clientId);
+		callback.pushNumber(subType);
 		callback.pushNumber(amount);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);

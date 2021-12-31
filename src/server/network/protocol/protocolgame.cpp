@@ -657,8 +657,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x77: parseHotkeyEquip(msg); break;
 		case 0x78: parseThrow(msg); break;
 		case 0x79: parseLookInShop(msg); break;
-		case 0x7A: parsePlayerPurchase(msg); break;
-		case 0x7B: parsePlayerSale(msg); break;
+		case 0x7A: parsePlayerBuyOnShop(msg); break;
+		case 0x7B: parsePlayerSellOnShop(msg); break;
 		case 0x7C: addGameTask(&Game::playerCloseShop, player->getID()); break;
 		case 0x7D: parseRequestTrade(msg); break;
 		case 0x7E: parseLookInTrade(msg); break;
@@ -1410,7 +1410,7 @@ void ProtocolGame::parseLookInShop(NetworkMessage &msg)
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerLookInShop, player->getID(), id, count);
 }
 
-void ProtocolGame::parsePlayerPurchase(NetworkMessage &msg)
+void ProtocolGame::parsePlayerBuyOnShop(NetworkMessage &msg)
 {
 	uint16_t id = msg.get<uint16_t>();
 	uint8_t count = msg.getByte();
@@ -1420,7 +1420,7 @@ void ProtocolGame::parsePlayerPurchase(NetworkMessage &msg)
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerBuyItem, player->getID(), id, count, amount, ignoreCap, inBackpacks);
 }
 
-void ProtocolGame::parsePlayerSale(NetworkMessage &msg)
+void ProtocolGame::parsePlayerSellOnShop(NetworkMessage &msg)
 {
 	uint16_t id = msg.get<uint16_t>();
 	uint8_t count = std::max(msg.getByte(), (uint8_t) 1);
@@ -3814,25 +3814,11 @@ void ProtocolGame::sendShop(Npc *npc)
 	{
 		const uint16_t itemId = shopInfoPair.first;
 		const ShopInfo &shopInfo = shopInfoPair.second;
-		int32_t storageValue;
-		player->getStorageValue(shopInfo.storageKey, storageValue);
-		if (storageValue < shopInfo.storageValue)
-		{
-			// Empty bytes from AddShopitem
-			msg.add<uint16_t>(0);
-			msg.addByte(0);
-			msg.addString(std::string());
-			msg.add<uint32_t>(0);
-			msg.add<uint32_t>(0);
-			msg.add<uint32_t>(0);
-			continue;
-		}
+		AddShopItem(msg, shopInfo, itemId);
 
 		if (++i > itemsToSend) {
 			break;
 		}
-
-		AddShopItem(msg, shopInfo, itemId);
 	}
 
 	writeToOutputBuffer(msg);
@@ -6706,8 +6692,27 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 	GetMapDescription(oldPos.x - 8, oldPos.y + 7, newPos.z, 18, 1, msg);
 }
 
+void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
+{
+	// Empty bytes from AddShopItem
+	msg.add<uint16_t>(0);
+	msg.addByte(0);
+	msg.addString(std::string());
+	msg.add<uint32_t>(0);
+	msg.add<uint32_t>(0);
+	msg.add<uint32_t>(0);
+}
+
 void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId)
 {
+	int32_t storageValue;
+	player->getStorageValue(item.storageKey, storageValue);
+	if (storageValue < item.storageValue)
+	{
+		AddHiddenShopItem(msg);
+		return;
+	}
+
 	const ItemType &it = Item::items[itemId];
 	msg.add<uint16_t>(item.itemClientId);
 

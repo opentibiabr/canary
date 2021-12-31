@@ -3814,11 +3814,12 @@ void ProtocolGame::sendShop(Npc *npc)
 	{
 		const uint16_t itemId = shopInfoPair.first;
 		const ShopInfo &shopInfo = shopInfoPair.second;
-		AddShopItem(msg, shopInfo, itemId);
 
 		if (++i > itemsToSend) {
 			break;
 		}
+
+		AddShopItem(msg, shopInfo, itemId);
 	}
 
 	writeToOutputBuffer(msg);

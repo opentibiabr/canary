@@ -4382,10 +4382,6 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		subType = count;
 	}
 
-	if (!player->hasShopItemForSale(it.id, subType)) {
-		return;
-	}
-
 	if (!g_events->eventPlayerOnLookInShop(player, &it, subType)) {
 		return;
 	}

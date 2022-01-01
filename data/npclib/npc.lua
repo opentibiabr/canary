@@ -1,5 +1,3 @@
-isPlayerPremiumCallback = Player.isPremium
-
 -- Function called with by the function "Npc:sayWithDelay"
 local sayFunction = function(npc, text, type, eventDelay, playerId)
 	local npc = Npc(npc)
@@ -12,7 +10,7 @@ local sayFunction = function(npc, text, type, eventDelay, playerId)
 	eventDelay.done = true
 end
 
-function msgcontains(message, keyword)
+function MsgContains(message, keyword)
 	local lowerMessage, lowerKeyword = message:lower(), keyword:lower()
 	if lowerMessage == lowerKeyword then
 		return true
@@ -46,7 +44,7 @@ function Npc:sayWithDelay(npc, text, messageType, delay, eventDelay, player)
 	eventDelay.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npc, text, messageType, eventDelay, player)
 end
 
-function getCount(string)
+function GetCount(string)
 	local b, e = string:find("%d+")
 	return b and e and tonumber(string:sub(b, e)) or -1
 end

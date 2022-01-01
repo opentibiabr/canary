@@ -182,6 +182,7 @@ if NpcHandler == nil then
 	-- If the player is not interacting with the npc, it set the npc's interaction with the player
 	-- It clean the eventDelayedSay and turn npc to the player
 	function NpcHandler:updateInteraction(npc, player)
+		local playerId = player:getId()
 		if not self:checkInteraction(npc, player) then
 			npc:setPlayerInteraction(player, 0)
 			return true
@@ -636,7 +637,7 @@ if NpcHandler == nil then
 	-- If not have useDelay = true and delay, then send npc:talk(), this function not have delay of one message to other
 	function NpcHandler:sendMessages(message, messageTable, npc, player, useDelay, delay)
 		for index, value in pairs(messageTable) do
-			if msgcontains(message, index) then
+			if MsgContains(message, index) then
 				if useDelay and useDelay == true then
 					self:say(value, npc, player, delay or 1000)
 				else

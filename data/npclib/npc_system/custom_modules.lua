@@ -4,7 +4,8 @@ local travelDiscounts = {
 }
 
 function StdModule.travelDiscount(npc, player, discounts)
-	local discountPrice, discount = 0
+	local discountPrice = 0
+	local discount = 0
 	if type(discounts) == "string" then
 		discount = travelDiscounts[discounts]
 		if discount and player:getStorageValue(discount.storage) >= discount.value then

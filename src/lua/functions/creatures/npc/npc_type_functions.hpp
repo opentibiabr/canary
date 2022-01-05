@@ -71,7 +71,7 @@ class NpcTypeFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "NpcType", "respawnTypePeriod", NpcTypeFunctions::luaNpcTypeRespawnTypePeriod);
 			registerMethod(L, "NpcType", "respawnTypeIsUnderground", NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground);
-			registerMethod(L, "NpcType", "peechBubble", NpcTypeFunctions::luaNpcTypeSpeechBubble);
+			registerMethod(L, "NpcType", "speechBubble", NpcTypeFunctions::luaNpcTypeSpeechBubble);
 			registerMethod(L, "NpcType", "currency", NpcTypeFunctions::luaNpcTypeCurrency);
 
 			registerMethod(L, "NpcType", "addShopItem", NpcTypeFunctions::luaNpcTypeAddShopItem);

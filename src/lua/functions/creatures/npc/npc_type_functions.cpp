@@ -464,20 +464,9 @@ int NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground(lua_State* L) {
 	return 1;
 }
 
-int NpcTypeFunctions::luaNpcTypeGetSpeechBubble(lua_State* L) {
-	// npcType:getSpeechBubble()
-	NpcType* npcType = getUserdata<NpcType>(L, 1);
-	if (!npcType) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
-		pushBoolean(L, false);
-	}
-
-	lua_pushnumber(L, npcType->info.speechBubble);
-	return 1;
-}
-
-int NpcTypeFunctions::luaNpcTypeSetSpeechBubble(lua_State* L) {
-	// npcType:setSpeechBubble(speechBubble)
+int NpcTypeFunctions::luaNpcTypeSpeechBubble(lua_State* L) {
+	// get = npcType:speechBubble()
+	// set = npcType:speechBubble(newSpeechBubble)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (!npcType) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
@@ -486,13 +475,11 @@ int NpcTypeFunctions::luaNpcTypeSetSpeechBubble(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.speechBubble);
+		lua_pushnumber(L, npcType->info.speechBubble);
 	} else {
 		npcType->info.speechBubble = getNumber<uint8_t>(L, 2);
 		pushBoolean(L, true);
 	}
-
-	return 1;
 }
 
 int NpcTypeFunctions::luaNpcTypeCurrency(lua_State* L) {

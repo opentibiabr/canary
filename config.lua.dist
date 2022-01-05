@@ -43,8 +43,8 @@ maxItem = 2000
 maxContainer = 100
 
 -- Version
-clientVersion = 1264
-clientVersionStr = "12.64"
+clientVersion = 1272
+clientVersionStr = "12.72"
 
 -- Depot Limit
 freeDepotLimit = 2000
@@ -82,6 +82,9 @@ togleSaveInterval = true
 saveIntervalType = "hour"
 togleSaveIntervalCleanMap = true
 saveIntervalTime = 1
+
+-- Imbuement
+togleImbuementShrineStorage = false
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default

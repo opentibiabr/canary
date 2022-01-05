@@ -42,7 +42,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	int32_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
+	int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
 	if (duration > 0) {
 		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
 			stopDecay(item);

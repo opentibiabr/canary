@@ -131,17 +131,25 @@ class ItemAttributes
 		}
 
 		void setDuration(int32_t time) {
-			setIntAttr(ITEM_ATTRIBUTE_DURATION, time);
+			setIntAttr(ITEM_ATTRIBUTE_DURATION, std::max<int32_t>(0, time));
 		}
-		void decreaseDuration(int32_t time) {
-			increaseIntAttr(ITEM_ATTRIBUTE_DURATION, -time);
+		void setDurationTimestamp(int64_t timestamp) {
+			setIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP, timestamp);
 		}
-		uint32_t getDuration() const {
-			return getIntAttr(ITEM_ATTRIBUTE_DURATION);
+		int32_t getDuration() const {
+			ItemDecayState_t decayState = getDecaying();
+			if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+				return std::max<int32_t>(0, static_cast<int32_t>(getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP) - OTSYS_TIME()));
+			} else {
+				return getIntAttr(ITEM_ATTRIBUTE_DURATION);
+			}
 		}
 
 		void setDecaying(ItemDecayState_t decayState) {
 			setIntAttr(ITEM_ATTRIBUTE_DECAYSTATE, decayState);
+			if (decayState == DECAYING_FALSE) {
+				removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+			}
 		}
 		ItemDecayState_t getDecaying() const {
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
@@ -573,16 +581,16 @@ class Item : virtual public Thing
 			getAttributes()->setStrAttr(type, value);
 		}
 
-		int32_t getIntAttr(ItemAttrTypes type) const {
+		int64_t getIntAttr(ItemAttrTypes type) const {
 			if (!attributes) {
 				return 0;
 			}
 			return attributes->getIntAttr(type);
 		}
-		void setIntAttr(ItemAttrTypes type, int32_t value) {
+		void setIntAttr(ItemAttrTypes type, int64_t value) {
 			getAttributes()->setIntAttr(type, value);
 		}
-		void increaseIntAttr(ItemAttrTypes type, int32_t value) {
+		void increaseIntAttr(ItemAttrTypes type, int64_t value) {
 			getAttributes()->increaseIntAttr(type, value);
 		}
 
@@ -758,20 +766,25 @@ class Item : virtual public Thing
 		}
 
 		void setDuration(int32_t time) {
-			setIntAttr(ITEM_ATTRIBUTE_DURATION, time);
+			setIntAttr(ITEM_ATTRIBUTE_DURATION, std::max<int32_t>(0, time));
 		}
-		void decreaseDuration(int32_t time) {
-			increaseIntAttr(ITEM_ATTRIBUTE_DURATION, -time);
+		void setDurationTimestamp(int64_t timestamp) {
+			setIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP, timestamp);
 		}
-		uint32_t getDuration() const {
-			if (!attributes) {
-				return 0;
+		int32_t getDuration() const {
+			ItemDecayState_t decayState = getDecaying();
+			if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+				return std::max<int32_t>(0, static_cast<int32_t>(getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP) - OTSYS_TIME()));
+			} else {
+				return getIntAttr(ITEM_ATTRIBUTE_DURATION);
 			}
-			return getIntAttr(ITEM_ATTRIBUTE_DURATION);
 		}
 
 		void setDecaying(ItemDecayState_t decayState) {
 			setIntAttr(ITEM_ATTRIBUTE_DECAYSTATE, decayState);
+			if (decayState == DECAYING_FALSE) {
+				removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+			}
 		}
 		ItemDecayState_t getDecaying() const {
 			if (!attributes) {
@@ -999,6 +1012,7 @@ class Item : virtual public Thing
 		virtual void onTradeEvent(TradeEvents_t, Player*) {}
 
 		virtual void startDecaying();
+		virtual void stopDecaying();
 
 		void setLoadedFromMap(bool value) {
 			loadedFromMap = value;
@@ -1083,6 +1097,7 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 
 		//Don't add variables here, use the ItemAttribute class.
+		friend class Decay;
 };
 
 using ItemList = std::list<Item*>;

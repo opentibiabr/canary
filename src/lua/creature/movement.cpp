@@ -684,8 +684,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 
 	const ItemType& it = Item::items[item->getID()];
 	if (it.transformEquipTo != 0) {
-		Item* newItem = g_game.transformItem(item, it.transformEquipTo);
-		g_game.startDecay(newItem);
+		g_game.transformItem(item, it.transformEquipTo);
 	} else {
 		player->setItemAbility(slot, true);
 	}
@@ -785,7 +784,6 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	const ItemType& it = Item::items[item->getID()];
 	if (it.transformDeEquipTo != 0) {
 		g_game.transformItem(item, it.transformDeEquipTo);
-		g_game.startDecay(item);
 	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {

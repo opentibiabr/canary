@@ -271,7 +271,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 
 	ShopInfo shopInfo = getShopItems()[serverId];
 
-	if(!player->removeItemOfType(serverId, amount, -1, false)) {
+	if(!player->removeItemOfType(serverId, amount, -1, false, false)) {
 		return;
 	}
 

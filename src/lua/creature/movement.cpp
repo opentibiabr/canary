@@ -684,27 +684,19 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 
 	const ItemType& it = Item::items[item->getID()];
 	if (it.transformEquipTo != 0) {
-		Item* newItem = g_game.transformItem(item, it.transformEquipTo);
-		g_game.startDecay(newItem);
+		g_game.transformItem(item, it.transformEquipTo);
 	} else {
 		player->setItemAbility(slot, true);
 	}
 
-	if (it.imbuingSlots > 0) {
-		std::vector<Imbuement*> imbuement;
-		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			uint32_t info = item->getImbuement(slotid);
-			if (info >> 8 == 0) {
-				continue;
-			}
-			imbuement.push_back(g_imbuements->getImbuement(info & 0xFF));
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
 		}
-		if(!imbuement.empty()) {
-			g_game.startImbuementCountdown(item);
-			for (Imbuement* ib : imbuement) {
-				player->onEquipImbueItem(ib);
-			}
-		}
+
+		player->addItemImbuementStats(imbuementInfo.imbuement);
+		g_game.increasePlayerActiveImbuements(player->getID());
 	}
 
 	if (!it.abilities) {
@@ -792,23 +784,16 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	const ItemType& it = Item::items[item->getID()];
 	if (it.transformDeEquipTo != 0) {
 		g_game.transformItem(item, it.transformDeEquipTo);
-		g_game.startDecay(item);
 	}
 
-	if (it.imbuingSlots > 0) {
-		std::vector<Imbuement*> imbuement;
-		for(uint8_t slotid = 0; slotid < it.imbuingSlots; slotid++) {
-			uint32_t info = item->getImbuement(slotid);
-			if (info >> 8 == 0) {
-				continue;
-			}
-			imbuement.push_back(g_imbuements->getImbuement(info & 0xFF));
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
 		}
-		if(!imbuement.empty()) {
-			for (Imbuement* ib : imbuement) {
-				player->onDeEquipImbueItem(ib);
-			}
-		}
+
+		player->removeItemImbuementStats(imbuementInfo.imbuement);
+		g_game.decreasePlayerActiveImbuements(player->getID());
 	}
 
 	if (!it.abilities) {

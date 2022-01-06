@@ -171,6 +171,48 @@ function Player.withdrawMoney(self, amount)
 	return true
 end
 
+-- player:removeMoneyBank(money)
+function Player:removeMoneyBank(amount)
+
+	if type(amount) == 'string' then
+		amount = tonumber(amount)
+	end
+
+	local moneyCount = self:getMoney()
+	local bankCount = self:getBankBalance()
+
+	-- The player have all the money with him
+	if amount <= moneyCount then
+		-- Removes player inventory money
+		self:removeMoney(amount)
+
+		self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from inventory."):format(amount))
+		return true
+
+	-- The player doens't have all the money with him
+	elseif amount <= (moneyCount + bankCount) then
+
+		-- Check if the player has some money
+		if moneyCount ~= 0 then
+			-- Removes player inventory money
+			self:removeMoney(moneyCount)
+			local remains = amount - moneyCount
+
+			-- Removes player bank money
+			self:setBankBalance(bankCount - remains)
+
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d from inventory and %d gold from bank account. Your account balance is now %d gold."):format(moneyCount, amount - moneyCount, self:getBankBalance()))
+			return true
+
+		else
+			self:setBankBalance(bankCount - amount)
+			self:sendTextMessage(MESSAGE_TRADE, ("Paid %d gold from bank account. Your account balance is now %d gold."):format(amount, self:getBankBalance()))
+			return true
+		end
+	end
+	return false
+end
+
 function Player.hasAllowMovement(self)
 	return self:getStorageValue(STORAGE.blockMovementStorage) ~= 1
 end

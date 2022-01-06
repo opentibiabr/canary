@@ -7,10 +7,10 @@ then
 	echo "Clean build directory"
 	rm -rf *
 	echo "Configuring"
-	cmake ..
+	cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake ..
 else
 	mkdir "build" && cd build
-	cmake ..
+	cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake ..
 fi
 
 make -j$(nproc) || exit 1
@@ -24,5 +24,5 @@ else
 		echo "Saving old build"
 		mv ./canary ./canary.old
 	fi
-	cp ./build/canary ./canary
+	cp ./build/bin/canary ./canary
 fi

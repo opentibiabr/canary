@@ -3496,7 +3496,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 				continue;
 			}
 
-			if (!player->canSellImbuedItem(item, ignoreImbued)) {
+			if (player && !player->canSellImbuedItem(item, ignoreImbued)) {
 				continue;
 			}
 
@@ -3516,7 +3516,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 						continue;
 					}
 
-					if (!player->canSellImbuedItem(containerItem, ignoreImbued)) {
+					if ((player && !player->canSellImbuedItem(containerItem, ignoreImbued)) {
 						continue;
 					}
 

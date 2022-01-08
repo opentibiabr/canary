@@ -422,6 +422,7 @@ int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L)
 		lua_pushnil(L);
 		return 1;
 	}
+
 	lua_pushnumber(L, player->isExerciseTraining());
 	return 1;
 }

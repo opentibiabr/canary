@@ -4806,7 +4806,7 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string& name)
 		}
 
 		if (!vipPlayer->isInGhostMode() || player->isAccessPlayer()) {
-			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), VIPSTATUS_ONLINE);
+			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), vipPlayer->statusVipList);
 		} else {
 			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), VIPSTATUS_OFFLINE);
 		}

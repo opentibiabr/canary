@@ -5283,7 +5283,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 			}
 			else
 			{
-				vipStatus = VIPSTATUS_ONLINE;
+				vipStatus = vipPlayer->statusVipList;
 			}
 
 			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
@@ -5302,7 +5302,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 			}
 			else
 			{
-				vipStatus = VIPSTATUS_ONLINE;
+				vipStatus = vipPlayer->statusVipList;
 			}
 
 			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);

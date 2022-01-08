@@ -56,6 +56,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getCapacity", PlayerFunctions::luaPlayerGetCapacity);
 			registerMethod(L, "Player", "setCapacity", PlayerFunctions::luaPlayerSetCapacity);
 
+			registerMethod(L, "Player", "isTraining", PlayerFunctions::luaPlayerGetIsTraining);
 			registerMethod(L, "Player", "setTraining", PlayerFunctions::luaPlayerSetTraining);
 
 			registerMethod(L, "Player", "getFreeCapacity", PlayerFunctions::luaPlayerGetFreeCapacity);
@@ -335,6 +336,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetCapacity(lua_State* L);
 		static int luaPlayerSetCapacity(lua_State* L);
 
+		static int luaPlayerGetIsTraining(lua_State* L);
 		static int luaPlayerSetTraining(lua_State* L);
 
 		static int luaPlayerGetKills(lua_State* L);

@@ -45,8 +45,6 @@ class CombatInfo;
 class Charm;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
-static constexpr int32_t EVENT_DECAYINTERVAL = 250;
-static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 
 class Game
 {
@@ -394,7 +392,6 @@ class Game
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
-		void startDecay(Item* item);
 		int32_t getLightHour() const {
 			return lightHour;
 		}
@@ -450,8 +447,6 @@ class Game
 		Mounts mounts;
 		Raids raids;
 		GameStore gameStore;
-
-		std::forward_list<Item*> toDecayItems;
 
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
@@ -537,17 +532,12 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
-		void checkDecay();
-		void internalDecayItem(Item* item);
-
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
-
-		std::list<Item*> decayItems[EVENT_DECAY_BUCKETS];
 
 		std::map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";

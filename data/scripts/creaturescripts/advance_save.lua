@@ -17,7 +17,7 @@ function advanceSave.onAdvance(player, skill, oldLevel, newLevel)
 
 		player:setBaseXpGain(baseRate * 100)
 		end
-			return true
+		return true
 	end
 
 advanceSave:register()

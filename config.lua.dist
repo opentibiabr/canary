@@ -176,7 +176,7 @@ serverSaveShutdown = true
 sortLootByChance = false
 
 -- Rates
---  NOTE: rateExp, rateSkill and rateMagic is used when 'rateUseStages = false' - or a fallback only
+-- NOTE: rateExp, rateSkill and rateMagic is used when 'rateUseStages = false' - or a fallback only
 -- To configure rates see file data/stages.lua
 rateUseStages = false
 rateExp = 1

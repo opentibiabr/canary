@@ -237,7 +237,7 @@ bool Game::loadScheduleEventFromXml()
 			if ((schedENode.attribute("exprate"))) {
 				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
 				g_game.setExpSchedule(exprate);
-ss << " exp: " << (exprate) << "%";			}
+				ss << " exp: " << (exprate) << "%";			}
 
 			if ((schedENode.attribute("lootrate"))) {
 				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());

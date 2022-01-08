@@ -96,7 +96,6 @@ function exerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	local isMagic = false
 	local bonusDummy = isInArray(houseDummies, weaponId) or nil
 	local skillToTraining = skillsStages or nil
-	local skillRateDefault = skillLevelRate
 	local skillLevel = player:getSkillLevel(exerciseWeaponsTable[weaponId].skill)
 
 	if exerciseWeaponsTable[weaponId].skill == SKILL_MAGLEVEL then

@@ -380,7 +380,7 @@ function Player.preyAction(self, msg)
 		-- If free reroll is available
 		if (self:getMinutesUntilFreeReroll(slot) == 0) then
 			self:setPreyNextUse(slot, os.time() + 20 * 60 * 60)
-		elseif (not self:removeMoneyNpc(self:getRerollPrice())) then
+		elseif (not self:removeMoneyBank(self:getRerollPrice())) then
 			return self:sendErrorDialog("You do not have enough money to perform this action.")
 		end
 

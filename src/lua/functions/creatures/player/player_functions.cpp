@@ -417,11 +417,12 @@ int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L)
 {
 	// player:isTraining()
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->isExerciseTraining());
-	} else {
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		lua_pushnil(L);
+		return 1;
 	}
+	lua_pushnumber(L, player->isExerciseTraining());
 	return 1;
 }
 

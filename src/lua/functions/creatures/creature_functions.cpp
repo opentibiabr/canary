@@ -611,9 +611,9 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
 
-	Condition* condition = creature->getCondition(conditionType, conditionId, subId);
+	const Condition* condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
-		pushUserdata<Condition>(L, condition);
+		pushUserdata<const Condition>(L, condition);
 		setWeakMetatable(L, -1, "Condition");
 	} else {
 		lua_pushnil(L);
@@ -622,12 +622,11 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureAddCondition(lua_State* L) {
-	// creature:addCondition(condition[, force = false])
+	// creature:addCondition(condition)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	Condition* condition = getUserdata<Condition>(L, 2);
 	if (creature && condition) {
-		bool force = getBoolean(L, 3, false);
-		pushBoolean(L, creature->addCondition(condition->clone(), force));
+		pushBoolean(L, creature->addCondition(condition->clone()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -645,10 +644,10 @@ int CreatureFunctions::luaCreatureRemoveCondition(lua_State* L) {
 	ConditionType_t conditionType = getNumber<ConditionType_t>(L, 2);
 	ConditionId_t conditionId = getNumber<ConditionId_t>(L, 3, CONDITIONID_COMBAT);
 	uint32_t subId = getNumber<uint32_t>(L, 4, 0);
-	Condition* condition = creature->getCondition(conditionType, conditionId, subId);
+	const Condition* condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
 		bool force = getBoolean(L, 5, false);
-		creature->removeCondition(condition, force);
+		creature->removeCondition(conditionType, conditionId, force);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

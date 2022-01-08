@@ -394,11 +394,11 @@ int ItemTypeFunctions::luaItemTypeGetExtraDefense(lua_State* L) {
 	return 1;
 }
 
-int ItemTypeFunctions::luaItemTypeGetImbuingSlots(lua_State* L) {
-	// itemType:getImbuingSlots()
+int ItemTypeFunctions::luaItemTypeGetImbuementSlot(lua_State* L) {
+	// itemType:getImbuementSlot()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
-		lua_pushnumber(L, itemType->imbuingSlots);
+		lua_pushnumber(L, itemType->imbuementSlot);
 	} else {
 		lua_pushnil(L);
 	}

@@ -123,10 +123,10 @@ class MonsterType
 		int32_t changeTargetChance = 0;
 		int32_t defense = 0;
 		int32_t armor = 0;
-		int32_t targetStrategiesNearestPercent = 0;
-		int32_t targetStrategiesLowerHPPercent = 0;
-		int32_t targetStrategiesMostDamagePercent = 0;
-		int32_t targetStrategiesRandom = 0;
+		int32_t strategiesTargetNearest = 0;
+		int32_t strategiesTargetHealth = 0;
+		int32_t strategiesTargetDamage = 0;
+		int32_t strategiesTargetRandom = 0;
 		bool targetPreferPlayer = false;
 		bool targetPreferMaster = false;
 

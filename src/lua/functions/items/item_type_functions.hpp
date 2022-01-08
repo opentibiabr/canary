@@ -64,7 +64,7 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "getAttack", ItemTypeFunctions::luaItemTypeGetAttack);
 			registerMethod(L, "ItemType", "getDefense", ItemTypeFunctions::luaItemTypeGetDefense);
 			registerMethod(L, "ItemType", "getExtraDefense", ItemTypeFunctions::luaItemTypeGetExtraDefense);
-			registerMethod(L, "ItemType", "getImbuingSlots", ItemTypeFunctions::luaItemTypeGetImbuingSlots);
+			registerMethod(L, "ItemType", "getImbuementSlot", ItemTypeFunctions::luaItemTypeGetImbuementSlot);
 			registerMethod(L, "ItemType", "getArmor", ItemTypeFunctions::luaItemTypeGetArmor);
 			registerMethod(L, "ItemType", "getWeaponType", ItemTypeFunctions::luaItemTypeGetWeaponType);
 
@@ -126,7 +126,7 @@ class ItemTypeFunctions final : LuaScriptInterface {
 		static int luaItemTypeGetAttack(lua_State* L);
 		static int luaItemTypeGetDefense(lua_State* L);
 		static int luaItemTypeGetExtraDefense(lua_State* L);
-		static int luaItemTypeGetImbuingSlots(lua_State* L);
+		static int luaItemTypeGetImbuementSlot(lua_State* L);
 		static int luaItemTypeGetArmor(lua_State* L);
 		static int luaItemTypeGetWeaponType(lua_State* L);
 

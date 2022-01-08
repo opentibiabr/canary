@@ -154,6 +154,10 @@ class ItemType
 			return str;
 		}
 
+		void setImbuementType(ImbuementTypes_t imbuementType, uint16_t slotMaxTier) {
+			imbuementTypes[imbuementType] = std::min<uint16_t>(IMBUEMENT_MAX_TIER, slotMaxTier);
+		}
+
 		ItemGroup_t group = ITEM_GROUP_NONE;
 		ItemTypes_t type = ITEM_TYPE_NONE;
 		uint16_t id = 0;
@@ -185,7 +189,7 @@ class ItemType
 		int32_t defense = 0;
 		int32_t extraDefense = 0;
 		int32_t armor = 0;
-		int32_t imbuingSlots = 0;
+		int32_t imbuementSlot = 0;
 		int32_t rotateTo = 0;
 		int32_t runeMagLevel = 0;
 		int32_t runeLevel = 0;
@@ -212,8 +216,9 @@ class ItemType
 		ShootType_t shootType = CONST_ANI_NONE;
 		RaceType_t corpseType = RACE_NONE;
 		FluidTypes_t fluidSource = FLUID_NONE;
+		TileFlags_t floorChange = TILESTATE_NONE;
+		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
-		uint8_t floorChange = 0;
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;
 		uint8_t lightColor = 0;
@@ -276,6 +281,8 @@ class Items
 
 		uint16_t getItemIdByName(const std::string& name);
 
+		ItemTypes_t getLootType(const std::string& strValue);
+
 		uint32_t majorVersion = 0;
 		uint32_t minorVersion = 0;
 		uint32_t buildNumber = 0;
@@ -295,7 +302,6 @@ class Items
 		NameMap nameToItems;
 
 	private:
-		ItemTypes_t getLootType(const std::string& strValue);
 
 		std::map<uint16_t, uint16_t> reverseItemMap;
 		std::vector<ItemType> items;

@@ -31,9 +31,6 @@ weatherConfig = {
     maxDMG = 5
 }
 
--- Exercise Training
-onExerciseTraining = {}
-
 -- Event Schedule
 SCHEDULE_LOOT_RATE = 100
 SCHEDULE_EXP_RATE = 100
@@ -117,6 +114,11 @@ end
 
 string.trim = function(str)
 	return str:match'^()%s*$' and '' or str:match'^%s*(.*%S)'
+end
+
+-- Exercise Training
+if onExerciseTraining == nil then
+	onExerciseTraining = {}
 end
 
 -- Stamina

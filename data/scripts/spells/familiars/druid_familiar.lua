@@ -6,7 +6,7 @@ local spell = Spell("instant")
 
 function spell.onCastSpell(player, variant)
 	local playerPosition = player:getPosition()
-	if not player or not isPremium(player) then
+	if not player or not player:isPremium() then
 		playerPosition:sendMagicEffect(CONST_ME_POFF)
 		player:sendCancelMessage("You need a premium account.")
 	return false

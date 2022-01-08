@@ -11,9 +11,9 @@ function familiarOnLogin.onLogin(player)
 	local familiarTimeLeft = player:getStorageValue(Storage.FamiliarSummon) - player:getLastLogout()
 
 	if vocation then
-		if (not isPremium(player) and player:hasFamiliar(vocation.id)) or player:getLevel() < 200 then
+		if (not player:isPremium() and player:hasFamiliar(vocation.id)) or player:getLevel() < 200 then
 			player:removeFamiliar(vocation.id)
-		elseif isPremium(player) and player:getLevel() >= 200 then
+		elseif player:isPremium() and player:getLevel() >= 200 then
 			if familiarTimeLeft > 0 then
 				familiarName = vocation.name
 			end

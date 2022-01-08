@@ -37,7 +37,8 @@ Storage = {
 	DelayLargeSeaShell = 30002,
 	Promotion = 30003,
 	PetSummonEvent10 = 30004,
-	PetSummonEvent60 = 30005
+	PetSummonEvent60 = 30005,
+	Imbuement = 30006
 }
 
 GlobalStorage = {

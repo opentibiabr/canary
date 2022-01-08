@@ -82,6 +82,9 @@ class ItemFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Item", "hasProperty", ItemFunctions::luaItemHasProperty);
 
+			registerMethod(L, "Item", "getImbuementSlot", ItemFunctions::luaItemGetImbuementSlot);
+			registerMethod(L, "Item", "getImbuement", ItemFunctions::luaItemGetImbuement);
+
 			ContainerFunctions::init(L);
 			ImbuementFunctions::init(L);
 			ItemTypeFunctions::init(L);
@@ -138,6 +141,9 @@ class ItemFunctions final : LuaScriptInterface {
 		static int luaItemGetDescription(lua_State* L);
 
 		static int luaItemHasProperty(lua_State* L);
+
+		static int luaItemGetImbuementSlot(lua_State* L);
+		static int luaItemGetImbuement(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

@@ -57,6 +57,9 @@ class DepotLocker final : public Container
 		bool canRemove() const override {
 			return false;
 		}
+		bool isRemoved() const override {
+			return false;
+		}
 
 	private:
 		uint16_t depotId;

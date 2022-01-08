@@ -1,31 +1,9 @@
-local spell = Spell("instant")
 
 local familiar = {
 	[VOCATION.BASE_ID.SORCERER] = {name = "Sorcerer familiar"}
 }
 
-local timer = {
-	[1] = {storage=Storage.PetSummonEvent10, countdown=10, message = "10 seconds"},
-	[2] = {storage=Storage.PetSummonEvent60, countdown=60, message = "one minute"}
-}
-
-local function sendMessageFunction(pid, message)
-	if Player(pid) then
-		Player(pid):sendTextMessage(MESSAGE_LOOT, "Your summon will disappear in less than " .. message)
-	end
-end
-
-local function removePet(creatureId, playerId)
-	local creature = Creature(creatureId)
-	local player = Player(playerId)
-	if not creature or not player then
-		return true
-	end
-	creature:remove()
-	for sendMessage = 1, #timer do
-		player:setStorageValue(timer[sendMessage].storage, -1)
-	end
-end
+local spell = Spell("instant")
 
 function spell.onCastSpell(player, variant)
 	local playerPosition = player:getPosition()
@@ -67,10 +45,10 @@ function spell.onCastSpell(player, variant)
 	myFamiliar:changeSpeed(deltaSpeed)
 	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-	player:setStorageValue(Storage.PetSummon, os.time() + 15*60) -- 15 minutes from now
-	addEvent(removePet, 15*60*1000, myFamiliar:getId(), player:getId())
-	for sendMessage = 1, #timer do
-		player:setStorageValue(timer[sendMessage].storage,addEvent(sendMessageFunction, (15*60-timer[sendMessage].countdown)*1000, player:getId(),timer[sendMessage].message))
+	player:setStorageValue(Storage.FamiliarSummon, os.time() + 15*60) -- 15 minutes from now
+	addEvent(removeFamiliar, 15*60*1000, myFamiliar:getId(), player:getId())
+	for sendMessage = 1, #FAMILIAR_TIMER do
+		player:setStorageValue(FAMILIAR_TIMER[sendMessage].storage,addEvent(sendMessageFunction, (15*60-FAMILIAR_TIMER[sendMessage].countdown)*1000, player:getId(),FAMILIAR_TIMER[sendMessage].message))
 	end
 	return true
 end

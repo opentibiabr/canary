@@ -36,8 +36,9 @@ Storage = {
 	StoreExaust = 30001,
 	DelayLargeSeaShell = 30002,
 	Promotion = 30003,
-	PetSummonEvent10 = 30004,
-	PetSummonEvent60 = 30005,
+	FamiliarSummon = 30026,
+	FamiliarSummonEvent10 = 30054,
+	FamiliarSummonEvent60 = 30055,
 	Imbuement = 30006
 }
 

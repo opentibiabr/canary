@@ -1248,12 +1248,12 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 
 	player->pushEvent(false);
 	const Monster* monster = movingCreature->getMonster();
-	bool isPet = false;
+	bool isFamiliar = false;
 	if (monster) {
-		isPet = monster->isPet();
+		isFamiliar = monster->isFamiliar();
 	}
 
-	if (!isPet && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)) ||
+	if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)) ||
 				(movingCreature->isInGhostMode() && !player->isAccessPlayer()))) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
 		return;

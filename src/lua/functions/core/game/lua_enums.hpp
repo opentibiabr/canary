@@ -462,8 +462,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, CREATURETYPE_PLAYER)
 			registerEnum(L, CREATURETYPE_MONSTER)
 			registerEnum(L, CREATURETYPE_NPC)
-			registerEnum(L, CREATURETYPE_SUMMONPLAYER)
-			registerEnum(L, CREATURETYPE_SUMMON_OWN)
+			registerEnum(L, CREATURETYPE_SUMMON_PLAYER)
 			registerEnum(L, CREATURETYPE_SUMMON_OTHERS)
 			registerEnum(L, CREATURETYPE_HIDDEN)
 
@@ -507,6 +506,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, ITEM_ATTRIBUTE_SPECIAL)
 			registerEnum(L, ITEM_ATTRIBUTE_OPENCONTAINER)
 			registerEnum(L, ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)
+			registerEnum(L, ITEM_ATTRIBUTE_DURATION_TIMESTAMP)
 
 			registerEnum(L, ITEM_TYPE_DEPOT)
 			registerEnum(L, ITEM_TYPE_REWARDCHEST)
@@ -598,8 +598,6 @@ class LuaEnums final : LuaScriptInterface {
 
 			registerEnum(L, ITEM_GOLD_POUCH)
 			registerEnum(L, ITEM_STORE_INBOX)
-
-			registerEnum(L, IMBUEMENT_SLOT)
 
 			registerEnum(L, CHARM_GUT)
 			registerEnum(L, CHARM_SCAVENGE)

@@ -45,10 +45,6 @@ class CombatInfo;
 class Charm;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
-static constexpr int32_t EVENT_DECAYINTERVAL = 250;
-static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
-static constexpr int32_t EVENT_IMBUEMENTINTERVAL = 250;
-static constexpr int32_t EVENT_IMBUEMENT_BUCKETS = 4;
 
 class Game
 {
@@ -63,8 +59,7 @@ class Game
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);
 
-		void forceAddCondition(uint32_t creatureId, Condition* condition);
-		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type);
+		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
 		bool loadMainMap(const std::string& filename);
 		void loadMap(const std::string& path);
@@ -249,8 +244,8 @@ class Game
 		void playerOpenChannel(uint32_t playerId, uint16_t channelId);
 		void playerCloseChannel(uint32_t playerId, uint16_t channelId);
 		void playerOpenPrivateChannel(uint32_t playerId, std::string& receiver);
-		void playerStowItem(Player* player, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems);
-		void playerStashWithdraw(Player* player, uint16_t spriteId, uint32_t count, uint8_t stackpos);
+		void playerStowItem(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems);
+		void playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t count, uint8_t stackpos);
 		void playerCloseNpcChannel(uint32_t playerId);
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
@@ -302,8 +297,8 @@ class Game
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
 		void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
 		void playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t slot, bool protectionCharm);
-		void playerClearingImbuement(uint32_t playerid, uint8_t slot);
-		void playerCloseImbuingWindow(uint32_t playerid);
+		void playerClearImbuement(uint32_t playerid, uint8_t slot);
+		void playerCloseImbuementWindow(uint32_t playerid);
 		void playerTurn(uint32_t playerId, Direction dir);
 		void playerRequestOutfit(uint32_t playerId);
 		void playerShowQuestLog(uint32_t playerId);
@@ -353,7 +348,7 @@ class Game
 			return boostedCreature;
 		}
 
-		void onPressHotkeyEquip(Player* player, uint16_t spriteid);
+		void onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid);
 
 		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
                               int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
@@ -397,12 +392,6 @@ class Game
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
-		void startImbuementCountdown(Item* item) {
-			item->incrementReferenceCounter();
-			toImbuedItems.push_front(item);
-		}
-
-		void startDecay(Item* item);
 		int32_t getLightHour() const {
 			return lightHour;
 		}
@@ -459,8 +448,6 @@ class Game
 		Raids raids;
 		GameStore gameStore;
 
-		std::forward_list<Item*> toDecayItems;
-
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
 		}
@@ -473,8 +460,6 @@ class Game
 		void clearTilesToClean() {
 			tilesToClean.clear();
 		}
-
-		std::forward_list<Item*> toImbuedItems;
 
 		// Event schedule
 		uint16_t getExpSchedule() const {
@@ -518,6 +503,27 @@ class Game
 			return CharmList;
 		}
 
+		void increasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
+		}
+
+		void decreasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] - 1);
+		}
+
+		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
+			if (value <= 0) {
+				playersActiveImbuements.erase(playerId);
+				return;
+			}
+			
+			playersActiveImbuements[playerId] = std::min<uint8_t>(255, value);
+		}
+
+		uint8_t getPlayerActiveImbuements(uint32_t playerId) {
+			return playersActiveImbuements[playerId];
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -526,25 +532,19 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
-		void checkDecay();
-		void internalDecayItem(Item* item);
-
 		std::unordered_map<uint32_t, Player*> players;
+		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
-
-		std::list<Item*> decayItems[EVENT_DECAY_BUCKETS];
-		std::list<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
-
-		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];
 
 		std::map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
 
 		std::vector<Charm*> CharmList;
 		std::vector<Creature*> ToReleaseCreatures;
+		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
 
 		size_t lastBucket = 0;

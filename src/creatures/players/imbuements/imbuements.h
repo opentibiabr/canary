@@ -29,25 +29,26 @@ class Item;
 
 class Imbuement;
 
-struct BaseImbue {
-	BaseImbue(uint16_t initId, std::string initName, uint32_t initProtection, uint32_t initPrice, uint32_t initRemovecust, int32_t initDuration, uint16_t initPercent) :
-		id(initId), name(std::move(initName)), protection(initProtection), price(initPrice), removecust(initRemovecust), duration(initDuration), percent(initPercent) {}
+struct BaseImbuement {
+	BaseImbuement(uint16_t initId, std::string initName, uint32_t initProtectionPrice, uint32_t initPrice, uint32_t initRemoveCost, int32_t initDuration, uint8_t initPercent) :
+		id(initId), name(std::move(initName)), protectionPrice(initProtectionPrice), price(initPrice), removeCost(initRemoveCost), duration(initDuration), percent(initPercent) {}
 
 	uint16_t id;
 	std::string name;
-	uint32_t protection;
+	uint32_t protectionPrice;
 	uint32_t price;
-	uint32_t removecust;
+	uint32_t removeCost;
 	int32_t duration;
-	uint16_t percent;
+	uint8_t percent;
 };
 
-struct Category {
-	Category(uint16_t initId, std::string initName) :
-		id(initId), name(std::move(initName)) {}
+struct CategoryImbuement {
+	CategoryImbuement(uint16_t initId, std::string initName, bool initAgressive) :
+		id(initId), name(std::move(initName)), agressive(initAgressive) {}
 
 	uint16_t id;
 	std::string name;
+	bool agressive;
 };
 
 class Imbuements {
@@ -57,22 +58,21 @@ class Imbuements {
 
 		Imbuement* getImbuement(uint16_t id);
 
-		BaseImbue* getBaseByID(uint16_t id);
-		Category* getCategoryByID(uint16_t id);
-		std::vector<Imbuement*> getImbuements(Player* player, Item* item);
+		BaseImbuement* getBaseByID(uint16_t id);
+		CategoryImbuement* getCategoryByID(uint16_t id);
+		std::vector<Imbuement*> getImbuements(const Player* player, Item* item);
 
 	protected:
 		friend class Imbuement;
-
-		std::map<uint32_t, Imbuement> imbues;
-		std::vector<BaseImbue> bases;
-		std::vector<Category> categories;
-
 		bool loaded = false;
 
 	private:
-		uint32_t runningid = 0;
+		std::map<uint32_t, Imbuement> imbuementMap;
 
+		std::vector<BaseImbuement> basesImbuement;
+		std::vector<CategoryImbuement> categoriesImbuement;
+
+		uint32_t runningid = 0;
 };
 
 class Imbuement
@@ -81,12 +81,17 @@ class Imbuement
 		Imbuement(uint16_t initId, uint16_t initBaseId) :
 				id(initId), baseid(initBaseId) {}
 
-		uint16_t getId() const {
+		uint16_t getID() const {
 			return id;
 		}
 
 		uint16_t getBaseID() const {
 			return baseid;
+		}
+
+		uint32_t getStorage() const
+		{
+			return storage;
 		}
 
 		bool isPremium() {
@@ -131,6 +136,7 @@ class Imbuement
 
 	private:
 		bool premium = false;
+		uint32_t storage = 0;
 		uint16_t id, baseid, category = 0;
 		std::string name, description, subgroup = "";
 

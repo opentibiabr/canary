@@ -52,7 +52,6 @@ class CreatureFunctions final : LuaScriptInterface {
 			registerMethod(L, "Creature", "setFollowCreature", CreatureFunctions::luaCreatureSetFollowCreature);
 			registerMethod(L, "Creature", "getMaster", CreatureFunctions::luaCreatureGetMaster);
 			registerMethod(L, "Creature", "setMaster", CreatureFunctions::luaCreatureSetMaster);
-			registerMethod(L, "Creature", "reload", CreatureFunctions::luaCreatureReload);
 			registerMethod(L, "Creature", "getLight", CreatureFunctions::luaCreatureGetLight);
 			registerMethod(L, "Creature", "setLight", CreatureFunctions::luaCreatureSetLight);
 			registerMethod(L, "Creature", "getSpeed", CreatureFunctions::luaCreatureGetSpeed);
@@ -126,8 +125,6 @@ class CreatureFunctions final : LuaScriptInterface {
 
 		static int luaCreatureGetMaster(lua_State* L);
 		static int luaCreatureSetMaster(lua_State* L);
-
-		static int luaCreatureReload(lua_State* L);
 
 		static int luaCreatureGetLight(lua_State* L);
 		static int luaCreatureSetLight(lua_State* L);

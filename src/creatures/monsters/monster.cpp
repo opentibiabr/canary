@@ -366,12 +366,18 @@ void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 
 void Monster::removeTarget(Creature* creature)
 {
+	if (!creature) {
+		return;
+	}
+
 	auto it = std::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
-		if(!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
+		}
 	}
 }
 
@@ -480,7 +486,7 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
-	} else if (creature->getPlayer() &&  creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
 		return false;
 	} else {
 		if (getFaction() != FACTION_DEFAULT) {
@@ -522,14 +528,14 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 
 		searchType = TARGETSEARCH_NEAREST;
 
-		int32_t sum = this->mType->info.targetStrategiesNearestPercent;
+		int32_t sum = this->mType->info.strategiesTargetNearest;
 		if (rnd > sum) {
 			searchType = TARGETSEARCH_HP;
-			sum += this->mType->info.targetStrategiesLowerHPPercent;
+			sum += this->mType->info.strategiesTargetHealth;
 
 			if (rnd > sum) {
 				searchType = TARGETSEARCH_DAMAGE;
-				sum += this->mType->info.targetStrategiesMostDamagePercent;
+				sum += this->mType->info.strategiesTargetDamage;
 				if (rnd > sum) {
 					searchType = TARGETSEARCH_RANDOM;
 				}
@@ -722,7 +728,7 @@ bool Monster::isTarget(const Creature* creature) const
 
 bool Monster::selectTarget(Creature* creature)
 {
-	if (!isTarget(creature) || returnToMasterInterval > 0) {
+	if (!isTarget(creature)) {
 		return false;
 	}
 
@@ -2119,10 +2125,6 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 
 	if (isSummon()) {
 		if (getMaster() == creature) {
-			int32_t distX = Position::getDistanceX(getPosition(), creature->getPosition());
-			int32_t distY = Position::getDistanceY(getPosition(), creature->getPosition());
-			fpp.absoluteDist = true;
-			fpp.preferDiagonal = !(distX >= 2 && distY == 0 || distY >= 2 && distX == 0);
 			fpp.maxTargetDist = 2;
 			fpp.fullPathSearch = true;
 		} else if (targetDistance <= 1) {

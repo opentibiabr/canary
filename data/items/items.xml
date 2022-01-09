@@ -4291,11 +4291,13 @@
 	<item id="2909" article="a" name="wall lamp"/>
 	<item id="2910" article="a" name="lit wall lamp"/>
 	<item id="2911" article="a" name="candelabrum">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="weight" value="5000"/>
 	</item>
 	<item id="2912" article="a" name="lit candelabrum">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="180"/>
 		<attribute key="decayTo" value="2913"/>
@@ -4306,11 +4308,13 @@
 		<attribute key="weight" value="4500"/>
 	</item>
 	<item id="2914" article="a" name="lamp">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="weight" value="3000"/>
 	</item>
 	<item id="2915" article="a" name="lit lamp">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="180"/>
 		<attribute key="decayTo" value="2916"/>
@@ -4322,55 +4326,65 @@
 	</item>
 	<item id="2917" article="a" name="candlestick">
 		<attribute key="slotType" value="ammo"/>
+		<attribute key="loottype" value="ammo" />
 		<attribute key="stopduration" value="1"/>
 		<attribute key="weight" value="300"/>
 	</item>
 	<item id="2918" article="a" name="lit candlestick">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="240"/>
 		<attribute key="decayTo" value="2919"/>
 		<attribute key="weight" value="300"/>
 	</item>
 	<item id="2919" article="a" name="used candlestick">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="weight" value="250"/>
 	</item>
 	<item id="2920" article="a" name="torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="2921" article="a" name="lit torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="600"/>
 		<attribute key="decayTo" value="2923"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="2922" article="a" name="torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="2923" article="a" name="lit torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="2925"/>
 		<attribute key="weight" value="450"/>
 	</item>
 	<item id="2924" article="a" name="torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="weight" value="500"/>
 	</item>
 	<item id="2925" article="a" name="lit torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="2926"/>
 		<attribute key="weight" value="400"/>
 	</item>
 	<item id="2926" article="a" name="burnt down torch">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="0"/>
@@ -4740,6 +4754,7 @@
 		<attribute key="weight" value="290"/>
 	</item>
 	<item id="3046" article="a" name="magic light wand">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
@@ -4748,6 +4763,7 @@
 	<item id="3047" article="a" name="magic light wand">
 		<attribute key="description" value="The wand glows"/>
 		<attribute key="slotType" value="ammo"/>
+		<attribute key="loottype" value="ammo" />
 		<attribute key="showduration" value="1"/>
 		<attribute key="duration" value="3000"/>
 		<attribute key="decayTo" value="0"/>
@@ -12049,6 +12065,7 @@
 	</item>
 	<item id="5811" article="a" name="mermaid"/>
 	<item id="5812" article="a" name="skull candle">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="duration" value="3000"/>
@@ -12056,6 +12073,7 @@
 		<attribute key="weight" value="2200"/>
 	</item>
 	<item id="5813" article="a" name="skull candle">
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
@@ -18948,6 +18966,7 @@
 	<item id="9034" article="a" name="dracoyle statue">
 		<attribute key="description" value="This rare treasure is said to protect its owner from misery and curses"/>
 		<attribute key="slotType" value="ammo"/>
+		<attribute key="loottype" value="ammo" />
 		<attribute key="duration" value="604800"/>
 		<attribute key="decayTo" value="9035"/>
 		<attribute key="rotateto" value="9039"/>
@@ -18978,6 +18997,7 @@
 	<item id="9042" article="a" name="magical torch">
 		<attribute key="description" value="Light all important locations given to you by Lucius before one of the basins stops burning"/>
 		<attribute key="slotType" value="ammo"/>
+		<attribute key="loottype" value="ammo" />
 		<attribute key="showduration" value="1"/>
 		<attribute key="speed" value="50"/>
 		<attribute key="duration" value="86400"/>
@@ -40069,7 +40089,12 @@
 	<item id="25755" name="RESERVED SPRITE"/>
 	<item id="25756" article="an" name="energized tile"/>
 	<item id="25757" article="a" name="diamond arrow">
-		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="attack" value="37"/>
+		<attribute key="decayTo" value="0"/>
+		<attribute key="duration" value="3600"/>
+		<attribute key="maxhitchance" value="100"/>
+		<attribute key="loottype" value="ammo" />
 		<attribute key="slotType" value="ammo"/>
 		<attribute key="ammotype" value="arrow"/>
 		<attribute key="shootType" value="diamondarrow"/>
@@ -40090,12 +40115,9 @@
 		<attribute key="showduration" value="1"/>
 		<attribute key="maxhitchance" value="100"/>
 		<attribute key="duration" value="3600"/>
-		<attribute key="decayTo" value="0"/>
-		<attribute key="attack" value="78"/>
 		<attribute key="weight" value="90"/>
 	</item>
 	<item id="25759" article="a" name="royal star">
-		<attribute key="weaponType" value="distance"/>
 		<attribute key="shootType" value="royalstar"/>
 		<attribute key="elementfire" value="2"/>
 		<attribute key="maxhitchance" value="100"/>

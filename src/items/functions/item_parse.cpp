@@ -51,6 +51,7 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseMagicEffect(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseLootType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseRange(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseDecayTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseDuration(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseTransform(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseCharges(tmpStrValue, valueAttribute, itemType);
@@ -360,6 +361,13 @@ void ItemParse::parseRange(const std::string& tmpStrValue, pugi::xml_attribute v
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "range") {
 		itemType.shootRange = pugi::cast<uint16_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::parseDecayTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "decayto") {
+		itemType.decayTo = pugi::cast<uint16_t>(valueAttribute.value());
 	}
 }
 

@@ -413,6 +413,20 @@ int PlayerFunctions::luaPlayerSetTraining(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L)
+{
+	// player:isTraining()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->isExerciseTraining());
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetFreeCapacity(lua_State* L) {
 	// player:getFreeCapacity()
 	Player* player = getUserdata<Player>(L, 1);
@@ -3028,7 +3042,7 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	} else {
 		for (const auto& it : g_game.getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
-				it.second->notifyStatusChange(player, VIPSTATUS_ONLINE);
+				it.second->notifyStatusChange(player, player->statusVipList);
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), true);

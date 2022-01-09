@@ -62,6 +62,8 @@ weatherRain = false
 thunderEffect = false
 freeQuests = false
 allConsoleLog = false
+-- With that config enabled, when you stow an container inside your stash
+-- the non-stackable items will be moved to your depot chest IV.
 stashMoving = false
 
 -- Stamina in Trainers

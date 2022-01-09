@@ -5577,13 +5577,9 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 		}
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
-		Container* container = item->getContainer();
-		DepotChest* depotChest = getDepotChest(4, true);
-		ItemVector items = container->getItems();
-
-		for (Item* containerItem : items) {
+		for (Item* containerItem : item->getContainer()->getItems()) {
 			if (g_config.getBoolean(STASH_MOVING) && containerItem && !containerItem->isStackable()) {
-				g_game.internalMoveItem(containerItem->getParent(), depotChest, INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
+				g_game.internalMoveItem(containerItem->getParent(), getDepotChest(4, true), INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
 			}
 		}
 	} else {

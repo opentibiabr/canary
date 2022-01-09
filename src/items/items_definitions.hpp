@@ -214,6 +214,7 @@ enum ClientVersion_t {
 	CLIENT_VERSION_1100_V3 = 60, // No relased
 	CLIENT_VERSION_1100_V4 = 61, // No relased
 	CLIENT_VERSION_1140 = 62,
+	CLIENT_VERSION_1285 = 63,
 };
 
 enum RootAttrib_ {

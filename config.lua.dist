@@ -43,8 +43,8 @@ maxItem = 2000
 maxContainer = 100
 
 -- Version
-clientVersion = 1264
-clientVersionStr = "12.64"
+clientVersion = 1272
+clientVersionStr = "12.72"
 
 -- Depot Limit
 freeDepotLimit = 2000
@@ -73,6 +73,8 @@ staminaPz = false
 staminaOrangeDelay = 1
 staminaGreenDelay = 5
 staminaPzGain = 1
+-- Max players allowed on a dummy.
+maxAllowedOnADummy = 1
 
 -- Save interval per time
 -- NOTE: togleSaveInterval: true = enable the save interval, false = disable the save interval
@@ -83,6 +85,9 @@ togleSaveInterval = true
 saveIntervalType = "hour"
 togleSaveIntervalCleanMap = true
 saveIntervalTime = 1
+
+-- Imbuement
+togleImbuementShrineStorage = false
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default

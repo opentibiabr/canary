@@ -458,7 +458,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		std::string tmpStrValue = asLowerCaseString(keyAttribute.as_string());
 		auto parseAttribute = ItemParseAttributesMap.find(tmpStrValue);
 		if (parseAttribute != ItemParseAttributesMap.end()) {
-			ItemParse::initParse(tmpStrValue, attributeNode, valueAttribute, itemType);
+			ItemParse::initParse(tmpStrValue, attributeNode, keyAttribute, valueAttribute, itemType);
 		} else {
 			SPDLOG_WARN("[Items::parseItemNode] - Unknown key value: {}",
                         keyAttribute.as_string());

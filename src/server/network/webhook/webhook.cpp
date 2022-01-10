@@ -38,8 +38,7 @@ void webhook_init() {
 static int webhook_send_message_(const char *url, const char *payload, std::string *response_body);
 static std::string get_payload(std::string title, std::string message, int color);
 
-void webhook_send_message(std::string title, std::string message, int color) {
-	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+void webhook_send_message(std::string title, std::string message, int color, std::string url) {
 	if (url.empty()) {
 		return;
 	}

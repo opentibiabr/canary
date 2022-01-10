@@ -6555,7 +6555,8 @@ void Game::dieSafely(std::string errorMsg /* = "" */)
 
 void Game::shutdown()
 {
-  webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE);
+	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
 
 	SPDLOG_INFO("Shutting down...");
 

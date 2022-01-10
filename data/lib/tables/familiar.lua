@@ -23,7 +23,7 @@ function removeFamiliar(creatureId, playerId)
 		return true
 	end
 	creature:remove()
-	for sendMessage = 1, #timer do
+	for sendMessage = 1, #FAMILIAR_TIMER do
 		player:setStorageValue(timer[sendMessage].storage, -1)
 	end
 end

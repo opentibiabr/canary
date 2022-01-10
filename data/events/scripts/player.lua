@@ -10,7 +10,7 @@ function Player:onLook(thing, position, distance)
 		local master = thing:getMaster()
 		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
 			description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.PetSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
 		end
 	end
 

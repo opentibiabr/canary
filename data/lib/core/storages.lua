@@ -36,9 +36,10 @@ Storage = {
 	StoreExaust = 30001,
 	DelayLargeSeaShell = 30002,
 	Promotion = 30003,
-	PetSummonEvent10 = 30004,
-	PetSummonEvent60 = 30005,
-	Imbuement = 30006
+	Imbuement = 30004,
+	FamiliarSummon = 30005,
+	FamiliarSummonEvent10 = 30006,
+	FamiliarSummonEvent60 = 30007
 }
 
 GlobalStorage = {

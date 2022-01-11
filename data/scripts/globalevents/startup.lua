@@ -9,6 +9,10 @@ function startup.onStartup()
 	db.asyncQuery("DELETE FROM `ip_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. os.time())
 	db.asyncQuery("DELETE FROM `market_history` WHERE `inserted` <= " .. (os.time() - configManager.getNumber(configKeys.MARKET_OFFER_DURATION)))
 
+	-- reset familiars message storage
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent10)
+	db.query('DELETE FROM `player_storage` WHERE `key` = '..Storage.FamiliarSummonEvent60)
+
 	-- Move expired bans to ban history
 	local resultId = db.storeQuery("SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. os.time())
 	if resultId ~= false then

@@ -7680,6 +7680,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
+			delete buyerPlayer;
 			return;
 		}
 
@@ -7785,6 +7786,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount())
 		{
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
+			delete sellerPlayer;
 			return;
 		}
 

@@ -7787,11 +7787,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount())
 		{
-			if (player->isInMarket()) {
-				player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
-			}
+			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			if (sellerPlayer->isOffline()) {
-				delete sellerPlayer;
+				return delete sellerPlayer;
 			}
 			return;
 		}

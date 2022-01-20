@@ -26,7 +26,6 @@
 #include "lua/functions/items/item_functions.hpp"
 #include "items/decay/decay.h"
 
-
 class Imbuement;
 
 // Item

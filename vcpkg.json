@@ -8,7 +8,9 @@
     "boost-filesystem",
     "boost-iostreams",
     "boost-system",
-    "libmariadb",
+    { "name": "libmariadb",
+      "features": [ "mariadbclient" ]
+    },
     "pugixml",
     "spdlog",
     "curl",

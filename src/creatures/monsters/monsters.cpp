@@ -864,8 +864,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.isAttackable = attr.as_bool();
 			} else if (strcasecmp(attrName, "hostile") == 0) {
 				mType->info.isHostile = attr.as_bool();
-			} else if (strcasecmp(attrName, "pet") == 0) {
-				mType->info.isPet = attr.as_bool();
+			} else if (strcasecmp(attrName, "familiar") == 0) {
+				mType->info.isFamiliar = attr.as_bool();
 			} else if (strcasecmp(attrName, "illusionable") == 0) {
 				mType->info.isIllusionable = attr.as_bool();
 			} else if (strcasecmp(attrName, "convinceable") == 0) {
@@ -949,31 +949,31 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 
 	if ((node = monsterNode.child("targetstrategies"))) {
 		if ((attr = node.attribute("nearest"))) {
-			mType->info.targetStrategiesNearestPercent = pugi::cast<int32_t>(attr.value());
+			mType->info.strategiesTargetNearest = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing targetStrategiesNearestPercent. {}", file);
+                        "Missing strategiesTargetNearest. {}", file);
 		}
 
 		if ((attr = node.attribute("health"))) {
-			mType->info.targetStrategiesLowerHPPercent = pugi::cast<int32_t>(attr.value());
+			mType->info.strategiesTargetHealth = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing targetStrategiesLowerHPPercent. {}", file);
+                        "Missing strategiesTargetHealth. {}", file);
 		}
 
 		if ((attr = node.attribute("damage"))) {
-			mType->info.targetStrategiesMostDamagePercent = pugi::cast<int32_t>(attr.value());
+			mType->info.strategiesTargetDamage = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing targetStrategiesMostDamagePercent. {}", file);
+                        "Missing strategiesTargetDamage. {}", file);
 		}
 
 		if ((attr = node.attribute("random"))) {
-			mType->info.targetStrategiesRandom = pugi::cast<int32_t>(attr.value());
+			mType->info.strategiesTargetRandom = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing targetStrategiesRandom. {}", file);
+                        "Missing strategiesTargetRandom. {}", file);
 		}
 	}
 

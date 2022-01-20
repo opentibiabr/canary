@@ -150,14 +150,14 @@ int MonsterTypeFunctions::luaMonsterTypeIsHostile(lua_State* L) {
 	return 1;
 }
 
-int MonsterTypeFunctions::luaMonsterTypeIsPet(lua_State* L) {
-	// get: monsterType:isPet() set: monsterType:isPet(bool)
+int MonsterTypeFunctions::luaMonsterTypeisFamiliar(lua_State* L) {
+	// get: monsterType:isFamiliar() set: monsterType:isFamiliar(bool)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			pushBoolean(L, monsterType->info.isPet);
+			pushBoolean(L, monsterType->info.isFamiliar);
 		} else {
-			monsterType->info.isPet = getBoolean(L, 2);
+			monsterType->info.isFamiliar = getBoolean(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -1374,9 +1374,9 @@ int MonsterTypeFunctions::luaMonsterTypeStrategiesTargetNearest(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.changeTargetChance);
+			lua_pushnumber(L, monsterType->info.strategiesTargetNearest);
 		} else {
-			monsterType->info.changeTargetChance = getNumber<int32_t>(L, 2);
+			monsterType->info.strategiesTargetNearest = getNumber<int32_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -1390,9 +1390,9 @@ int MonsterTypeFunctions::luaMonsterTypeStrategiesTargetHealth(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.changeTargetChance);
+			lua_pushnumber(L, monsterType->info.strategiesTargetHealth);
 		} else {
-			monsterType->info.changeTargetChance = getNumber<int32_t>(L, 2);
+			monsterType->info.strategiesTargetHealth = getNumber<int32_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -1406,9 +1406,9 @@ int MonsterTypeFunctions::luaMonsterTypeStrategiesTargetDamage(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.changeTargetChance);
+			lua_pushnumber(L, monsterType->info.strategiesTargetDamage);
 		} else {
-			monsterType->info.changeTargetChance = getNumber<int32_t>(L, 2);
+			monsterType->info.strategiesTargetDamage = getNumber<int32_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -1422,9 +1422,9 @@ int MonsterTypeFunctions::luaMonsterTypeStrategiesTargetRandom(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.changeTargetChance);
+			lua_pushnumber(L, monsterType->info.strategiesTargetRandom);
 		} else {
-			monsterType->info.changeTargetChance = getNumber<int32_t>(L, 2);
+			monsterType->info.strategiesTargetRandom = getNumber<int32_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {

@@ -3,7 +3,17 @@ function Player:onBrowseField(position)
 end
 
 function Player:onLook(thing, position, distance)
-	local description = "You see " .. thing:getDescription(distance)
+	local description = "You see "
+	description = description .. thing:getDescription(distance)
+	if thing:isMonster() then
+		description = description .. thing:getDescription(distance)
+		local master = thing:getMaster()
+		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
+			description = description..' (Master: ' .. master:getName() .. '). \z
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
+		end
+	end
+
 	if self:getGroup():getAccess() then
 		if thing:isItem() then
 			description = string.format("%s\nItem ID: %d", description, thing:getId())
@@ -20,17 +30,19 @@ function Player:onLook(thing, position, distance)
 
 			local itemType = thing:getType()
 
-			local transformEquipId = itemType:getTransformEquipId()
-			local transformDeEquipId = itemType:getTransformDeEquipId()
-			if transformEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
-			elseif transformDeEquipId ~= 0 then
-				description = string.format("%s\nTransforms to: %d (onDeEquip)", description, transformDeEquipId)
-			end
+			if itemType then
+				local transformEquipId = itemType:getTransformEquipId()
+				local transformDeEquipId = itemType:getTransformDeEquipId()
+				if transformEquipId ~= 0 then
+					description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
+				elseif transformDeEquipId ~= 0 then
+					description = string.format("%s\nTransforms to: %d (onDeEquip)", 	description, transformDeEquipId)
+				end
 
-			local decayId = itemType:getDecayId()
-			if decayId ~= -1 then
-				description = string.format("%s\nDecays to: %d", description, decayId)
+				local decayId = itemType:getDecayId()
+				if decayId ~= -1 then
+					description = string.format("%s\nDecays to: %d", description, decayId)
+				end
 			end
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"
@@ -119,6 +131,11 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
+	local player = creature:getPlayer()
+	if player and onExerciseTraining[player:getId()] and self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) == false then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
 	return true
 end
 
@@ -206,12 +223,20 @@ soulCondition:setTicks(4 * 60 * 1000)
 soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
 
 local function useStamina(player)
+	if not player then
+		return false
+	end
+
 	local staminaMinutes = player:getStamina()
 	if staminaMinutes == 0 then
 		return
 	end
 
 	local playerId = player:getId()
+	if not playerId then
+		return false
+	end
+
 	local currentTime = os.time()
 	local timePassed = currentTime - nextUseStaminaTime[playerId]
 	if timePassed <= 0 then
@@ -244,8 +269,10 @@ function Player:onGainExperience(source, exp, rawExp)
 		self:addCondition(soulCondition)
 	end
 
-	-- Apply experience stage multiplier
-	exp = exp * Game.getExperienceStage(self:getLevel())
+	-- Experience Stage Multiplier
+	local expStage = getRateFromTable(experienceStages, self:getLevel(), configManager.getNumber(configKeys.RATE_EXP))
+	exp = exp * expStage
+	baseExp = rawExp * expStage
 
 	-- Stamina modifier
 	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then

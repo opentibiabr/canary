@@ -188,8 +188,8 @@ private:
 
 	// Imbuements
 	void parseApplyImbuement(NetworkMessage &msg);
-	void parseClearingImbuement(NetworkMessage &msg);
-	void parseCloseImbuingWindow(NetworkMessage &msg);
+	void parseClearImbuement(NetworkMessage &msg);
+	void parseCloseImbuementWindow(NetworkMessage &msg);
 
 	void parseModalWindowAnswer(NetworkMessage &msg);
 
@@ -223,7 +223,7 @@ private:
 	void parseOpenPrivateChannel(NetworkMessage &msg);
 	void parseCloseChannel(NetworkMessage &msg);
 
-	// imbue info
+	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuid);
 
 	// Store
@@ -258,7 +258,10 @@ private:
 	void sendIcons(uint32_t icons);
 	void sendFYIBox(const std::string &message);
 
-	void sendImbuementWindow(Item *item);
+	void openImbuementWindow(Item *item);
+	void sendImbuementResult(const std::string message);
+	void closeImbuementWindow();
+
 	void sendItemsPrice();
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
@@ -283,7 +286,6 @@ private:
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
 
 	// Send preyInfo
-	void closeImbuingWindow();
 	void initPreyData();
 	void sendPreyRerollPrice(uint32_t price = 0, uint8_t wildcard = 0, uint8_t directly = 0);
 	void sendPreyData(PreySlotNum_t slot, PreyState_t slotState);

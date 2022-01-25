@@ -1,23 +1,23 @@
 ItemTierClassifications = {
-	-- Upgade classification 1
+	-- Upgrade classification 1
 	[1] = {
 		-- Update tier 0
 		[0] = {Price = 25000}
 	},
-	-- Upgade classification 2
+	-- Upgrade classification 2
 	[2] = {
 		-- Update tier 0
 		[0] = {Price = 750000},
 		-- Update tier 1
 		[1] = {Price = 5000000}
 	},
-	-- Upgade classification 3
+	-- Upgrade classification 3
 	[3] = {
 		[0] = {Price = 4000000},
 		[1] = {Price = 10000000},
 		[2] = {Price = 20000000}
 	},
-	-- Upgade classification 4
+	-- Upgrade classification 4
 	[4] = {
 		[0] = {Price = 8000000},
 		[1] = {Price = 20000000},

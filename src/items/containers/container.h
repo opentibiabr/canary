@@ -166,7 +166,8 @@ class Container : public Item, public Cylinder
 
 		void internalAddThing(Thing* thing) override final;
 		void internalAddThing(uint32_t index, Thing* thing) override final;
-		void startDecaying() override final;
+		void startDecaying() override;
+		void stopDecaying() override;
 
 	protected:
 		std::ostringstream& getContentDescription(std::ostringstream& os) const;

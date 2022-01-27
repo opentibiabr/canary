@@ -1248,12 +1248,12 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 
 	player->pushEvent(false);
 	const Monster* monster = movingCreature->getMonster();
-	bool isPet = false;
+	bool isFamiliar = false;
 	if (monster) {
-		isPet = monster->isPet();
+		isFamiliar = monster->isFamiliar();
 	}
 
-	if (!isPet && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)) ||
+	if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)) ||
 				(movingCreature->isInGhostMode() && !player->isAccessPlayer()))) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
 		return;
@@ -2110,10 +2110,10 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 			const uint32_t removeCount = std::ceil(money / static_cast<double>(worth));
 			addMoney(cylinder, (worth * removeCount) - money, flags);
 			internalRemoveItem(item, removeCount);
-			break;
+			return true;
 		} else {
 			internalRemoveItem(item);
-			break;
+			return true;
 		}
 	}
 
@@ -4806,7 +4806,7 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string& name)
 		}
 
 		if (!vipPlayer->isInGhostMode() || player->isAccessPlayer()) {
-			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), VIPSTATUS_ONLINE);
+			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), vipPlayer->statusVipList);
 		} else {
 			player->addVIP(vipPlayer->getGUID(), vipPlayer->getName(), VIPSTATUS_OFFLINE);
 		}
@@ -6555,7 +6555,8 @@ void Game::dieSafely(std::string errorMsg /* = "" */)
 
 void Game::shutdown()
 {
-  webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE);
+	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
 
 	SPDLOG_INFO("Shutting down...");
 
@@ -7368,7 +7369,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 	}
 
 	if (g_config.getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
-		player->sendMarketLeave();
+		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
 		return;
 	}
 

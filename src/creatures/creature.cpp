@@ -483,6 +483,12 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			}
 		}
 
+		if (Player* player = creature->getPlayer()) {
+			if (player->isExerciseTraining()){
+				player->setTraining(false);
+			}
+		}
+
 		if (newTile->getZone() != oldTile->getZone()) {
 			onChangeZone(getZone());
 		}
@@ -860,7 +866,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 bool Creature::setAttackedCreature(Creature* creature)
 {
 	if (creature) {
-		if (this->getMonster() && this->getMonster()->isPet() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
 
@@ -1117,13 +1123,13 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	}
 
 	Monster* m = getMonster();
-	if (!m->isPet()) {
+	if (!m->isFamiliar()) {
 		gainExp /= 2;
 	}
 
 	master->onGainExperience(gainExp, target);
 
-	if (!m->isPet()) {
+	if (!m->isFamiliar()) {
 		SpectatorHashSet spectators;
 		g_game.map.getSpectators(spectators, position, false, true);
 		if (spectators.empty()) {

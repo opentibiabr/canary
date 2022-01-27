@@ -527,6 +527,7 @@ void Player::setTraining(bool value) {
 			it.second->notifyStatusChange(this, value ? VIPSTATUS_TRAINING : VIPSTATUS_ONLINE, false);
 		}
 	}
+	this->statusVipList = VIPSTATUS_TRAINING;
 	setExerciseTraining(value);
 }
 
@@ -807,7 +808,7 @@ bool Player::canWalkthrough(const Creature* creature) const
 	const Monster* monster = creature->getMonster();
 	const Npc* npc = creature->getNpc();
 	if (monster) {
-		if (!monster->isPet()) {
+		if (!monster->isFamiliar()) {
 			return false;
 		}
 		return true;
@@ -854,7 +855,7 @@ bool Player::canWalkthroughEx(const Creature* creature) const
 
 	const Monster* monster = creature->getMonster();
 	if (monster) {
-		if (!monster->isPet()) {
+		if (!monster->isFamiliar()) {
 			return false;
 		}
 		return true;
@@ -2685,7 +2686,7 @@ void Player::removeList()
 void Player::addList()
 {
 	for (const auto& it : g_game.getPlayers()) {
-		it.second->notifyStatusChange(this, VIPSTATUS_ONLINE);
+		it.second->notifyStatusChange(this, this->statusVipList);
 	}
 
 	g_game.addPlayer(this);

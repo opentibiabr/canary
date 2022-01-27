@@ -116,6 +116,11 @@ string.trim = function(str)
 	return str:match'^()%s*$' and '' or str:match'^%s*(.*%S)'
 end
 
+-- Exercise Training
+if onExerciseTraining == nil then
+	onExerciseTraining = {}
+end
+
 -- Stamina
 if nextUseStaminaTime == nil then
 	nextUseStaminaTime = {}

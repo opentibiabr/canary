@@ -33,6 +33,13 @@ function login.onLogin(player)
 	-- Events
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
+
+
+	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
+		stopEvent(onExerciseTraining[player:getId()].event)
+		onExerciseTraining[player:getId()] = nil
+		player:setTraining(false)
+	end
 	return true
 end
 

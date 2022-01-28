@@ -7774,30 +7774,43 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			delete buyerPlayer;
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
-		Player* sellerPlayer = getPlayerByGUID(offer.playerId);
-		if (!sellerPlayer)
-		{
+
+		Player *sellerPlayer = getPlayerByGUID(offer.playerId);
+		if (!sellerPlayer) {
 			sellerPlayer = new Player(nullptr);
-			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId))
-			{
-				return delete sellerPlayer;
+
+			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
+				if (sellerPlayer != nullptr) {
+					delete sellerPlayer;
+					return;
+				}
 			}
 		}
 
-		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount())
-		{
+		if (player == sellerPlayer ||
+			player->getAccount() == sellerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
+
 			if (sellerPlayer->isOffline()) {
-				return delete sellerPlayer;
+				if (sellerPlayer != nullptr) {
+					delete sellerPlayer;
+					return;
+				}
 			}
 			return;
 		}
 
 		if (totalPrice > (player->getBankBalance() + player->getMoney())) {
 			if (sellerPlayer->isOffline()) {
-				return delete sellerPlayer;
+				if (sellerPlayer != nullptr) {
+					delete sellerPlayer;
+					return;
+				}
 			}
-			return;
+			if (sellerPlayer != nullptr) {
+				delete sellerPlayer;
+				return;
+			}
 		}
 
 		// Have enough money on the bank

@@ -185,8 +185,7 @@ rateMagic = 25
 rateSpawn = 1
 
 -- Today regeneration condition over an loop every 1 second,
--- so values which should regenerated less then 1 second
--- won't will work
+-- So values which should regenerated less then 1 second or won't will work
 rateHealthRegen = 1.0
 rateHealthRegenSpeed = 1.0
 rateManaRegen = 1.0

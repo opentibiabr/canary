@@ -906,7 +906,7 @@ uint32_t ConditionRegeneration::getHealthTicks(Creature* creature) const
 	const Player* player = creature->getPlayer();
 
 	if (player != nullptr && isBuff) {
-		return healthTicks / static_cast<uint32_t>(g_configManager().getFloat(RATE_SPELL_COOLDOWN));
+		return healthTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN);
 	}
 
 	return healthTicks;
@@ -917,7 +917,7 @@ uint32_t ConditionRegeneration::getManaTicks(Creature* creature) const
 	const Player* player = creature->getPlayer();
 
 	if (player != nullptr && isBuff) {
-		return manaTicks / static_cast<uint32_t>(g_configManager().getFloat(RATE_SPELL_COOLDOWN));
+		return manaTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN);
 	}
 
 	return manaTicks;

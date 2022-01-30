@@ -25,7 +25,6 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
 #include "items/containers/container.h"
-#include "game/gamestore.h"
 #include "creatures/players/grouping/groups.h"
 #include "io/iobestiary.h"
 #include "items/item.h"
@@ -34,6 +33,7 @@
 #include "movement/position.h"
 #include "creatures/players/player.h"
 #include "lua/creature/raids.h"
+#include "creatures/players/store/store.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
 
@@ -320,11 +320,6 @@ class Game
 		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
-		void playerStoreOpen(uint32_t playerId, uint8_t serviceType);
-		void playerShowStoreCategoryOffers(uint32_t playerId, StoreCategory* category);
-		void playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t productType, const std::string& additionalInfo="");
-		void playerCoinTransfer(uint32_t playerId, const std::string& receiverName, uint32_t amount);
-		void playerStoreTransactionHistory(uint32_t playerId, uint32_t page);
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
@@ -442,11 +437,14 @@ class Game
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);
 
+		bool addAccountHistory(uint32_t accountId, StoreHistory history);
+		void loadAccountStoreHistory(uint32_t account, std::vector<StoreHistory> history);
+		bool getAccountHistory(const uint32_t accountId, std::vector<StoreHistory>& history) const;
+
 		Groups groups;
 		Map map;
 		Mounts mounts;
 		Raids raids;
-		GameStore gameStore;
 
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
@@ -503,6 +501,13 @@ class Game
 			return CharmList;
 		}
 
+		// Store
+		void playerOpenStore(uint32_t playerId, bool openStore, StoreOffers* offers = nullptr);
+		void playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::string& param);
+		void playerStoreTransactionHistory(uint32_t playerId, uint32_t pages, uint8_t entryPages);
+		void queueSendStoreAlertToUser(uint32_t playerId, std::string message, StoreErrors_t storeErrorCode = STORE_ERROR_NETWORK);
+		void playerCoinTransfer(uint32_t playerId, const std::string &recipient, uint16_t amount);
+
 		void increasePlayerActiveImbuements(uint32_t playerId) {
 			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
 		}
@@ -532,6 +537,8 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
+		// Account id and history
+		std::unordered_map<uint32_t, std::vector<StoreHistory>> storeHistory;
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;

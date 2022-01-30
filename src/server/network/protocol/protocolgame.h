@@ -27,7 +27,6 @@
 #include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "game/scheduling/tasks.h"
-#include "game/gamestore.h"
 
 class NetworkMessage;
 class Player;
@@ -38,6 +37,9 @@ class Tile;
 class Connection;
 class Quest;
 class ProtocolGame;
+class StoreOffers;
+class StoreOffer;
+
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 extern ConfigManager g_config;
@@ -140,6 +142,7 @@ private:
 	void parseTournamentLeaderboard(NetworkMessage &msg);
 
 	void parseGreet(NetworkMessage &msg);
+	void parseCoinTransfer(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
@@ -220,14 +223,27 @@ private:
 	void parseOpenPrivateChannel(NetworkMessage &msg);
 	void parseCloseChannel(NetworkMessage &msg);
 
-	//Store methods
-	void parseStoreOpen(NetworkMessage &message);
-	void parseStoreRequestOffers(NetworkMessage &message);
-	void parseStoreBuyOffer(NetworkMessage &message);
-	void parseCoinTransfer(NetworkMessage &msg);
-
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId);
+	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuid);
+
+	// Store
+	void parseOpenStore();
+	void parseRequestStoreOffers(NetworkMessage& msg);
+	void parseBuyStoreOffer(NetworkMessage& msg);
+	void parseSendDescription(NetworkMessage& msg);
+	void parseOpenTransactionHistory(NetworkMessage& msg);
+	void parseRequestTransactionHistory(NetworkMessage& msg);
+
+	void sendStoreHistory(uint32_t totalPages, uint32_t pages, std::vector<StoreHistory> filter);
+	void sendShowStoreOffers(StoreOffers* offers);
+	void sendOfferDescription(uint32_t id, std::string desc);
+	void sendStoreHome();
+	void sendStoreError(uint8_t errorType, std::string message);
+	void sendStorePurchaseSuccessful(const std::string& message);
+
+	void requestPurchaseData(uint32_t offerId, uint8_t offerType);
+	void openStore();
+	void addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> it);
 
 	//Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -280,7 +296,6 @@ private:
 	void sendCreatureOutfit(const Creature *creature, const Outfit_t &outfit);
 	void sendStats();
 	void sendBasicData();
-	void sendStoreHighlight();
 	void sendTextMessage(const TextMessage &message);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
 
@@ -352,15 +367,6 @@ private:
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
 
 	void sendCoinBalance();
-
-	void sendOpenStore(uint8_t serviceType);
-	void sendStoreCategoryOffers(StoreCategory *category);
-	void sendStoreError(GameStoreError_t error, const std::string &message);
-	void sendStorePurchaseSuccessful(const std::string &message, const uint32_t coinBalance);
-	void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType);
-	void sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint32_t page, uint8_t entriesPerPage);
-	void parseStoreOpenTransactionHistory(NetworkMessage &msg);
-	void parseStoreRequestTransactionHistory(NetworkMessage &msg);
 
 	//tiles
 	void sendMapDescription(const Position &pos);

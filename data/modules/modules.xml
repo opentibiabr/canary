@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modules>
-	<!-- GameStore -->
-	<module type="recvbyte" byte="232" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="233" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="239" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="250" delay="600" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="251" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="252" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="253" script="gamestore/gamestore.lua"/>
-	<module type="recvbyte" byte="254" script="gamestore/gamestore.lua"/>
-
 	<!-- Prey System -->
 	<module type="recvbyte" byte="235" script="prey_system/prey.lua" />
 	<module type="recvbyte" byte="237" script="prey_system/prey.lua" />

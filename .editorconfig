@@ -10,8 +10,8 @@ trim_trailing_whitespace = true
 
 # C/C++
 [*.{cpp,hpp,h}]
-indent_style = tab
-indent_size = 2
+indent_style = space
+indent_size = 4
 
 # CMake
 [CMakeLists.txt]

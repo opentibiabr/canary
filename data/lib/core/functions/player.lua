@@ -216,7 +216,6 @@ function Player.hasRookgaardShield(self)
 		or self:getItemCount(2530) > 0
 end
 
-
 function Player.isSorcerer(self)
 	return table.contains({VOCATION.ID.SORCERER, VOCATION.ID.MASTER_SORCERER}, self:getVocation():getId())
 end

@@ -1100,6 +1100,8 @@ ItemAttrTypes stringToItemAttribute(const std::string& str)
 		return ITEM_ATTRIBUTE_DOORID;
 	} else if (str == "timestamp") {
 		return ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+	} else if (str == "wrapid") {
+		return ITEM_ATTRIBUTE_WRAPID;
 	}
 	return ITEM_ATTRIBUTE_NONE;
 }
@@ -1357,9 +1359,18 @@ const char* getReturnMessage(ReturnValue value)
 	}
 }
 
-int64_t OTSYS_TIME()
+int64_t OTSYS_TIME(bool useTime)
 {
-	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	if (useTime) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	}
+	int64_t time = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) + (g_config.getNumber(TIME_GMT) * 1000);
+	return time;
+}
+
+int32_t OS_TIME(time_t* timer)
+{
+	return (time(timer) + g_config.getNumber(TIME_GMT));
 }
 
 SpellGroup_t stringToSpellGroup(const std::string &value)
@@ -1468,4 +1479,16 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+std::string generateRK(size_t length)
+{
+	std::ostringstream newkey;
+	std::string consonants = "ABCDEFGHIJLMNOPQRSTUVWXYZ0123456789";
+	while (newkey.str().length() < length)
+	{
+		uint8_t pos = uniform_random(1, consonants.length());
+		newkey << consonants.substr(pos, 1);
+	}
+	return newkey.str();
 }

@@ -23,10 +23,8 @@
 #include "game/game.h"
 #include "io/iologindata.h"
 #include "game/scheduling/scheduler.h"
-#include "config/configmanager.h"
 
 extern Game g_game;
-extern ConfigManager g_config;
 
 BedItem::BedItem(uint16_t id) : Item(id)
 {
@@ -236,8 +234,8 @@ void BedItem::regeneratePlayer(Player* player) const
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen * g_config.getFloat(RATE_HEALTH_REGEN), false);
-		player->changeMana(regen * g_config.getFloat(RATE_MANA_REGEN));
+		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN), false);
+		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN));
 	}
 
 	const int32_t soulRegen = sleptTime / (60 * 15); // RATE_SOUL_REGEN_SPEED?

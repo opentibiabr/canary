@@ -134,10 +134,7 @@ function Player.transferMoneyTo(self, target, amount)
 
 	local targetPlayer = Player(target)
 	if targetPlayer then
-		local town = targetPlayer:getTown()
-		if town and town:getId() ~= TOWNS_LIST.DAWNPORT or town:getId() ~= TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
-			targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
-		end
+		targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
 	else
 		if not playerExists(target) then
 			return false
@@ -145,13 +142,6 @@ function Player.transferMoneyTo(self, target, amount)
 
 		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) ..' LIMIT 1;')
 		if query_town ~= false then
-			local town = result.getNumber(query_town, "town_id")
-			if town then
-				local town_id = Town(town) and Town(town):getId()
-				if town_id and town_id  == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
-					return false
-				end
-			end
 			result.free(consulta)
 			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
 		end

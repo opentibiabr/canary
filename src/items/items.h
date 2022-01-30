@@ -57,6 +57,7 @@ struct Abilities {
 		bool invisible = false;
 		bool regeneration = false;
 
+	private:
 		void setHealthGain(uint32_t value) {
 			healthGain = value;
 		}
@@ -89,7 +90,6 @@ struct Abilities {
 			return manaTicks / g_configManager().getFloat(RATE_MANA_REGEN_SPEED);
 		}
 
-	private:
 		uint32_t healthGain = 0;
 		uint32_t healthTicks = 0;
 		uint32_t manaGain = 0;

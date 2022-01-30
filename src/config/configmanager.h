@@ -30,7 +30,7 @@ class ConfigManager
 		ConfigManager(ConfigManager const&) = delete;
 		void operator=(ConfigManager const&) = delete;
 
-		static ConfigManager& getInstance() {
+		inline static ConfigManager& getInstance() {
 			// Guaranteed to be destroyed
 			static ConfigManager instance;
 			// Instantiated on first use

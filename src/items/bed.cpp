@@ -234,7 +234,7 @@ void BedItem::regeneratePlayer(Player* player) const
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen * static_cast<uint32_t>(g_configManager().getFloat(RATE_HEALTH_REGEN), false));
+		player->changeHealth(regen * static_cast<uint32_t>(g_configManager().getFloat(RATE_HEALTH_REGEN)), false);
 		player->changeMana(regen * static_cast<uint32_t>(g_configManager().getFloat(RATE_MANA_REGEN)));
 	}
 

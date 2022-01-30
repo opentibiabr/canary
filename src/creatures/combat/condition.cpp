@@ -903,7 +903,7 @@ bool ConditionRegeneration::setParam(ConditionParam_t param, int32_t value)
 
 uint32_t ConditionRegeneration::getHealthTicks(Creature* creature) const
 {
-	Player* player = creature->getPlayer();
+	const Player* player = creature->getPlayer();
 
 	if (player != nullptr && isBuff) {
 		return healthTicks / static_cast<uint32_t>(g_configManager().getFloat(RATE_SPELL_COOLDOWN));
@@ -914,7 +914,7 @@ uint32_t ConditionRegeneration::getHealthTicks(Creature* creature) const
 
 uint32_t ConditionRegeneration::getManaTicks(Creature* creature) const
 {
-	Player* player = creature->getPlayer();
+	const Player* player = creature->getPlayer();
 
 	if (player != nullptr && isBuff) {
 		return manaTicks / static_cast<uint32_t>(g_configManager().getFloat(RATE_SPELL_COOLDOWN));

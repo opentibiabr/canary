@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "creatures/combat/combat.h"
 #include "creatures/combat/spells.h"
 #include "creatures/monsters/monster.h"
@@ -31,7 +30,6 @@ extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
 extern Vocations g_vocations;
-extern ConfigManager g_config;
 extern LuaEnvironment g_luaEnvironment;
 
 Spells::Spells()
@@ -1265,7 +1263,7 @@ bool RuneSpell::executeUse(Player* player, Item* item, const Position&, Thing* t
 	}
 
 	postCastSpell(player);
-	if (hasCharges && item && g_config.getBoolean(REMOVE_RUNE_CHARGES)) {
+	if (hasCharges && item && g_configManager().getBoolean(REMOVE_RUNE_CHARGES)) {
 		int32_t newCount = std::max<int32_t>(0, item->getItemCount() - 1);
 		g_game.transformItem(item, item->getID(), newCount);
 		player->updateSupplyTracker(item);

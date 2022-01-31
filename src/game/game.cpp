@@ -23,7 +23,6 @@
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"
-#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
 #include "database/databasetasks.h"
@@ -48,7 +47,6 @@
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
 
-extern ConfigManager g_config;
 extern Actions* g_actions;
 extern Chat* g_chat;
 extern TalkActions* g_talkActions;
@@ -289,7 +287,7 @@ void Game::setGameState(GameState_t newState)
 
 			mounts.loadFromXml();
 
-			if (!g_config.getBoolean(STOREMODULES)) {
+			if (!g_configManager().getBoolean(STOREMODULES)) {
 				gameStore.loadFromXml();
 				gameStore.startup();
 			}
@@ -658,8 +656,8 @@ bool Game::loadItemsPrice()
 
 bool Game::loadMainMap(const std::string& filename)
 {
-	Monster::despawnRange = g_config.getNumber(DEFAULT_DESPAWNRANGE);
-	Monster::despawnRadius = g_config.getNumber(DEFAULT_DESPAWNRADIUS);
+	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
+	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
 }
 
@@ -1175,7 +1173,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 		if (Position::areInRange<1, 1, 0>(movingCreature->getPosition(),
                                           player->getPosition())) {
 			SchedulerTask* task = createSchedulerTask(
-                                  g_config.getNumber(PUSH_DELAY),
+                                  g_configManager().getNumber(PUSH_DELAY),
                                   std::bind(&Game::playerMoveCreatureByID, this,
                                   player->getID(), movingCreature->getID(),
                                   movingCreature->getPosition(), tile->getPosition()));
@@ -2957,7 +2955,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 	}
 
 	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
-	if (isHotkey && !g_config.getBoolean(AIMBOT_HOTKEY_ENABLED)) {
+	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
 	}
 
@@ -3071,7 +3069,7 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 	}
 
 	bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
-	if (isHotkey && !g_config.getBoolean(AIMBOT_HOTKEY_ENABLED)) {
+	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
 	}
 
@@ -3164,7 +3162,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uin
 	}
 
 	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
-	if (!g_config.getBoolean(AIMBOT_HOTKEY_ENABLED)) {
+	if (!g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		if (creature->getPlayer() || isHotkey) {
 			player->sendCancelMessage(RETURNVALUE_DIRECTPLAYERSHOOT);
 			return;
@@ -3905,7 +3903,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-  if (g_config.getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+  if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(tradeItem->getTile())) {
 			House* house = houseTile->getHouse();
 			if (house && !house->isInvited(player)) {
@@ -4914,7 +4912,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir)
 
 void Game::playerRequestOutfit(uint32_t playerId)
 {
-	if (!g_config.getBoolean(ALLOW_CHANGEOUTFIT)) {
+	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
 		return;
 	}
 
@@ -4938,7 +4936,7 @@ void Game::playerToggleMount(uint32_t playerId, bool mount)
 
 void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 {
-	if (!g_config.getBoolean(ALLOW_CHANGEOUTFIT)) {
+	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
 		return;
 	}
 
@@ -5090,11 +5088,11 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& 
 
 	result = g_spells->playerSaySpell(player, words);
 	if (result == TALKACTION_BREAK) {
-		if (!g_config.getBoolean(PUSH_WHEN_ATTACKING)) {
+		if (!g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
 			player->cancelPush();
 		}
 
-		if (!g_config.getBoolean(EMOTE_SPELLS)) {
+		if (!g_configManager().getBoolean(EMOTE_SPELLS)) {
 			return internalCreatureSay(player, TALKTYPE_SPELL_USE, words, false);
 		} else {
 			return internalCreatureSay(player, TALKTYPE_MONSTER_SAY, words, false);
@@ -6555,7 +6553,7 @@ void Game::dieSafely(std::string errorMsg /* = "" */)
 
 void Game::shutdown()
 {
-	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
 
 	SPDLOG_INFO("Shutting down...");
@@ -6749,7 +6747,7 @@ void Game::loadMotdNum()
 	result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
 	if (result) {
 		motdHash = result->getString("value");
-		if (motdHash != transformToSHA1(g_config.getString(MOTD))) {
+		if (motdHash != transformToSHA1(g_configManager().getString(MOTD))) {
 			++motdNum;
 		}
 	} else {
@@ -6766,7 +6764,7 @@ void Game::saveMotdNum() const
 	db.executeQuery(query.str());
 
 	query.str(std::string());
-	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_config.getString(MOTD)) << "' WHERE `config` = 'motd_hash'";
+	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(MOTD)) << "' WHERE `config` = 'motd_hash'";
 	db.executeQuery(query.str());
 }
 
@@ -7368,7 +7366,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		return;
 	}
 
-	if (g_config.getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
+	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
 		return;
 	}
@@ -7387,7 +7385,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		return;
 	}
 
-	const uint32_t maxOfferCount = g_config.getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
+	const uint32_t maxOfferCount = g_configManager().getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
 	if (maxOfferCount != 0 && IOMarket::getPlayerOfferCount(player->getGUID()) >= maxOfferCount) {
 		return;
 	}
@@ -7543,7 +7541,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	IOMarket::moveOfferToHistory(offer.id, OFFERSTATE_CANCELLED);
 	offer.amount = 0;
-	offer.timestamp += g_config.getNumber(MARKET_OFFER_DURATION);
+	offer.timestamp += g_configManager().getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
@@ -7786,7 +7784,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 	}
 
-	const int32_t marketOfferDuration = g_config.getNumber(MARKET_OFFER_DURATION);
+	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, time(nullptr), OFFERSTATE_ACCEPTEDEX);
 
@@ -8503,7 +8501,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();
-		case RELOAD_TYPE_CONFIG: return g_config.reload();
+		case RELOAD_TYPE_CONFIG: return g_configManager().reload();
 		case RELOAD_TYPE_EVENTS: return g_events->loadFromXml();
 		case RELOAD_TYPE_ITEMS: return Item::items.reload();
 		case RELOAD_TYPE_MODULES: return g_modules->reload();
@@ -8527,7 +8525,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 
 		default: {
 
-			g_config.reload();
+			g_configManager().reload();
 			raids.reload() && raids.startup();
 			Item::items.reload();
 			g_weapons->clear(true);

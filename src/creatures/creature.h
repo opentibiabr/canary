@@ -577,7 +577,6 @@ class Creature : virtual public Thing
 		bool floorChange = false;
 		bool canUseDefense = true;
 		bool moveLocked = false;
-		bool dead = false;
 
 		//creature script events
 		bool hasEventRegistered(CreatureEventType_t event) const {
@@ -605,6 +604,9 @@ class Creature : virtual public Thing
 		virtual void death(Creature*) {}
 		virtual bool dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
 		virtual Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature);
+
+	private:
+		bool dead = false;
 
 		friend class Game;
 		friend class Map;

@@ -2711,9 +2711,9 @@ void Player::despawn()
 	    if (!spectator) {
 	        continue;
 	    }
-		Player* player = spectator->getPlayer();
-		if (player) {
-			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
+		if (Player* player = spectator->getPlayer()) {
+			i++;
+			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i]);
 		}
 	}
 
@@ -2730,8 +2730,8 @@ void Player::despawn()
 	g_game.removePlayer(this);
 
 	// show player as pending
-	for (const auto& it : g_game.getPlayers()) {
-		it.second->notifyStatusChange(this, VIPSTATUS_PENDING);
+	for (const auto& [key, player] : g_game.getPlayers()) {
+		player->notifyStatusChange(this, VIPSTATUS_PENDING);
 	}
 
 	setDead(true);

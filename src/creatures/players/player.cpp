@@ -2680,7 +2680,7 @@ void Player::despawn()
 	onWalkAborted();
 
 	// remove check
-	g_game.removeCreatureCheck(this);
+	Game::removeCreatureCheck(this);
 
 	// remove from map
 	Tile* tile = getTile();
@@ -2696,7 +2696,7 @@ void Player::despawn()
 	    if (!spectator) {
 	        continue;
 	    }
-		if (Player* player = spectator->getPlayer()) {
+		if (const Player* player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getStackposOfCreature(player, this) : -1);
 		}
 	}
@@ -2711,7 +2711,8 @@ void Player::despawn()
 	    if (!spectator) {
 	        continue;
 	    }
-		if (Player* player = spectator->getPlayer()) {
+		Player* player = spectator->getPlayer();
+		if (player) {
 			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 		}
 	}

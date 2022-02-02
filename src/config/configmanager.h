@@ -25,6 +25,8 @@
 class ConfigManager
 {
 	public:
+		ConfigManager() = default;
+
 		// Singleton - ensures we don't accidentally copy it
 		ConfigManager(ConfigManager const&) = delete;
 		void operator=(ConfigManager const&) = delete;
@@ -54,8 +56,6 @@ class ConfigManager
 		};
 
 	private:
-		ConfigManager() {}
-
 		std::string configFileLua = { "config.lua" };
 		std::string string[LAST_STRING_CONFIG] = {};
 		int32_t integer[LAST_INTEGER_CONFIG] = {};

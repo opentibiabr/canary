@@ -280,8 +280,6 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 
 bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 {
-	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION);
-
 	Database& db = Database::getInstance();
 
 	std::ostringstream query;

@@ -6771,7 +6771,7 @@ void ProtocolGame::sendOpenStash()
 		msg.add<uint16_t>(item.first);
 		msg.add<uint32_t>(item.second);
 	}
-	msg.add<uint16_t>(g_configManager().getNumber(STASH_ITEMS) - getStashSize(list));
+	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STASH_ITEMS) - getStashSize(list)));
 	writeToOutputBuffer(msg);
 }
 

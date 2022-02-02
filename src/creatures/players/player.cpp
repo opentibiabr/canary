@@ -1027,7 +1027,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	auto it = depotLockerMap.find(depotId);
 	if (it != depotLockerMap.end()) {
 		inbox->setParent(it->second);
-		for (uint8_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
+		for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
 			if (DepotChest* depotBox = getDepotChest(i, false)) {
 				depotBox->setParent(it->second->getItemByIndex(0)->getContainer());
  			}
@@ -1041,7 +1041,7 @@ DepotLocker* Player::getDepotLocker(uint32_t depotId)
 	depotLocker->internalAddThing(inbox);
 	depotLocker->internalAddThing(Item::CreateItem(ITEM_SUPPLY_STASH));
 	Container* depotChest = Item::CreateItemAsContainer(ITEM_DEPOT, g_configManager().getNumber(DEPOT_BOXES));
-	for (uint8_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
+	for (uint32_t i = g_configManager().getNumber(DEPOT_BOXES); i > 0; i--) {
 		DepotChest* depotBox = getDepotChest(i, true);
 		depotChest->internalAddThing(depotBox);
 		depotBox->setParent(depotChest);
@@ -1876,16 +1876,15 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 		actionTaskEvent = 0;
 	}
 
-	if (!inEventMovePush)
-		if (!g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
-			cancelPush();
-		}
+	if (!inEventMovePush && !g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
+		cancelPush();
+	}
 
-		if (task) {
-			actionTaskEvent = g_scheduler.addEvent(task);
-			if (resetIdleTime) {
-				this->resetIdleTime();
-			}
+	if (task) {
+		actionTaskEvent = g_scheduler.addEvent(task);
+		if (resetIdleTime) {
+			this->resetIdleTime();
+		}
 	}
 }
 

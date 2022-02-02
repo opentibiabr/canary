@@ -5458,12 +5458,8 @@ for k, category in ipairs(GameStore.Categories) do
 					runningId = runningId + 1
 				end
 			end
-			if not offer.type then
-				offer.type = GameStore.OfferTypes.OFFER_TYPE_NONE
-			end
-			if not offer.coinType then
-				offer.coinType = GameStore.CointType.Coin
-			end
+			if not offer.type then offer.type = GameStore.OfferTypes.OFFER_TYPE_NONE end
+			if not offer.coinType then offer.coinType = GameStore.CointType.Coin end
 		end
 	end
 end

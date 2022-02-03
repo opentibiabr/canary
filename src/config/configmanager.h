@@ -33,7 +33,7 @@ class ConfigManager
 
 		static ConfigManager& getInstance() {
 			// Guaranteed to be destroyed
-			inline static ConfigManager instance;
+			static ConfigManager instance;
 			// Instantiated on first use
 			return instance;
 		}

@@ -24,7 +24,6 @@
 #include "declarations.hpp"
 #include "items/itemloader.h"
 #include "game/movement/position.h"
-#include "config/configmanager.h"
 
 struct Abilities {
 	public:

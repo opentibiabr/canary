@@ -21,7 +21,6 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/combat.h"
-#include "config/configmanager.h"
 #include "lua/creature/events.h"
 #include "game/game.h"
 #include "io/iobestiary.h"
@@ -31,7 +30,6 @@
 
 extern Game g_game;
 extern Weapons* g_weapons;
-extern ConfigManager g_config;
 extern Events* g_events;
 extern Monsters g_monsters;
 
@@ -278,7 +276,7 @@ bool Combat::isInPvpZone(const Creature* attacker, const Creature* target)
 
 bool Combat::isProtected(const Player* attacker, const Player* target)
 {
-	uint32_t protectionLevel = g_config.getNumber(PROTECTION_LEVEL);
+	uint32_t protectionLevel = g_configManager().getNumber(PROTECTION_LEVEL);
 	if (target->getLevel() < protectionLevel || attacker->getLevel() < protectionLevel) {
 		return true;
 	}

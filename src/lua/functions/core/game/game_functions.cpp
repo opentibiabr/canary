@@ -596,8 +596,8 @@ int GameFunctions::luaGameStartRaid(lua_State* L) {
 int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 	// Game.getClientVersion()
 	lua_createtable(L, 0, 3);
-	setField(L, "version", g_config.getNumber(CLIENT_VERSION));
-	setField(L, "string", g_config.getString(CLIENT_VERSION_STR));
+	setField(L, "version", g_configManager().getNumber(CLIENT_VERSION));
+	setField(L, "string", g_configManager().getString(CLIENT_VERSION_STR));
 	return 1;
 }
 

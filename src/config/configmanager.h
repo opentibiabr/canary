@@ -26,11 +26,12 @@ class ConfigManager
 {
 	public:
 		ConfigManager() = default;
+
 		// Singleton - ensures we don't accidentally copy it
 		ConfigManager(ConfigManager const&) = delete;
 		void operator=(ConfigManager const&) = delete;
 
-		inline static ConfigManager& getInstance() {
+		static ConfigManager& getInstance() {
 			// Guaranteed to be destroyed
 			static ConfigManager instance;
 			// Instantiated on first use

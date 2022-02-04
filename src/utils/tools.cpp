@@ -20,9 +20,7 @@
 #include "otpch.h"
 
 #include "utils/tools.h"
-#include "config/configmanager.h"
 
-extern ConfigManager g_config;
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {

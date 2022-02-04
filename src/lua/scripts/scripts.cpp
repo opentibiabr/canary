@@ -48,7 +48,6 @@ Modules* g_modules = nullptr;
 Imbuements* g_imbuements = nullptr;
 
 extern LuaEnvironment g_luaEnvironment;
-extern ConfigManager g_config;
 
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
@@ -160,7 +159,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 		if(fs::is_regular_file(*it) && it->path().extension() == ".lua") {
 			size_t found = it->path().filename().string().find(disable);
 			if (found != std::string::npos) {
-				if (g_config.getBoolean(SCRIPTS_CONSOLE_LOGS)) {
+				if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 					SPDLOG_INFO("{} [disabled]", it->path().filename().string());
 				}
 				continue;
@@ -175,7 +174,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 		if (!isLib) {
 			if (redir.empty() || redir != it->parent_path().string()) {
 				auto p = it->relative_path();
-				if (g_config.getBoolean(SCRIPTS_CONSOLE_LOGS)) {
+				if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 					SPDLOG_INFO("[{}]", p.parent_path().filename().string());
 				}
 				redir = it->parent_path().string();
@@ -188,7 +187,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 			continue;
 		}
 
-		if (g_config.getBoolean(SCRIPTS_CONSOLE_LOGS)) {
+		if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 			if (!reload) {
 				SPDLOG_INFO("{} [loaded]", it->filename().string());
 			} else {

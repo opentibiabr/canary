@@ -24,13 +24,11 @@
 #include "utils/pugicast.h"
 
 #include "game/game.h"
-#include "config/configmanager.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 #include "server/network/webhook/webhook.h"
 
 extern Game g_game;
-extern ConfigManager g_config;
 
 Raids::Raids() {
 	scriptInterface.initState();
@@ -335,7 +333,7 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 }
 
 bool AnnounceEvent::executeEvent() {
-	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	g_game.broadcastMessage(message, messageType);
 	webhook_send_message("Incoming raid!", message, WEBHOOK_COLOR_RAID, url);
 	return true;

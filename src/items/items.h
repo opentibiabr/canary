@@ -24,7 +24,6 @@
 #include "declarations.hpp"
 #include "items/itemloader.h"
 #include "game/movement/position.h"
-
 struct Abilities {
 	uint32_t healthGain = 0;
 	uint32_t healthTicks = 0;

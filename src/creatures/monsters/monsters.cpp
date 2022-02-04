@@ -24,7 +24,6 @@
 #include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
 #include "items/weapons/weapons.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 
 #include "utils/pugicast.h"
@@ -32,7 +31,6 @@
 extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
-extern ConfigManager g_config;
 
 spellBlock_t::~spellBlock_t()
 {
@@ -66,7 +64,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 	for (auto monsterNode : doc.child("monsters").children()) {
 		std::string name = asLowerCaseString(monsterNode.attribute("name").as_string());
 		std::string file = "data/monster/" + std::string(monsterNode.attribute("file").as_string());
-		auto forceLoad = g_config.getBoolean(FORCE_MONSTERTYPE_LOAD);
+		auto forceLoad = g_configManager().getBoolean(FORCE_MONSTERTYPE_LOAD);
 		if (forceLoad) {
 			loadMonster(file, name, true);
 			continue;

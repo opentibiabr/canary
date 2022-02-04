@@ -22,13 +22,11 @@
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "config/configmanager.h"
 #include "game/scheduling/scheduler.h"
 
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
 
-extern ConfigManager g_config;
 extern Monsters g_monsters;
 extern Game g_game;
 extern Events* g_events;
@@ -108,7 +106,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 					boostedrate = 1;
 				}
 
-				uint32_t interval = pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value()) * 100000 / (g_config.getNumber(RATE_SPAWN) * boostedrate * eventschedule);
+				uint32_t interval = pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value()) * 100000 / (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule);
 				if (interval >= MONSTER_MINSPAWN_INTERVAL && interval <= MONSTER_MAXSPAWN_INTERVAL) {
 					spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
@@ -259,7 +257,7 @@ void SpawnMonster::checkSpawnMonster()
 				scheduleSpawn(spawnMonsterId, sb, 3 * NONBLOCKABLE_SPAWN_MONSTER_INTERVAL);
 			}
 
-			if (++spawnMonsterCount >= static_cast<uint32_t>(g_config.getNumber(RATE_SPAWN))) {
+			if (++spawnMonsterCount >= static_cast<uint32_t>(g_configManager().getNumber(RATE_SPAWN))) {
 				break;
 			}
 		}

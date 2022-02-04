@@ -21,7 +21,6 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "config/configmanager.h"
 #include "creatures/interactions/chat.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
@@ -33,7 +32,6 @@
 class Creature;
 
 extern Chat* g_chat;
-extern ConfigManager g_config;
 extern Game g_game;
 extern LuaEnvironment g_luaEnvironment;
 
@@ -568,7 +566,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		return 1;
 	}
 
-	if (g_config.getBoolean(WARN_UNSAFE_SCRIPTS) || g_config.getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) || g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
 		std::vector<std::pair<int32_t, LuaDataType>> indexes;
 		for (int i = 3; i <= parameters; ++i) {
 			if (lua_getmetatable(globalState, i) == 0) {
@@ -584,7 +582,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		}
 
 		if (!indexes.empty()) {
-			if (g_config.getBoolean(WARN_UNSAFE_SCRIPTS)) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
 				bool plural = indexes.size() > 1;
 
 				std::string warningString = "Argument";
@@ -613,7 +611,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 				reportErrorFunc(warningString);
 			}
 
-			if (g_config.getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
+			if (g_configManager().getBoolean(CONVERT_UNSAFE_SCRIPTS)) {
 				for (const auto& entry : indexes) {
 					switch (entry.second) {
 						case LuaData_Item:

@@ -366,7 +366,7 @@ std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* it
 
 		// Parse the storages for each imbuement in imbuements.xml and config.lua (enable/disable storage)
 		int32_t storageValue;
-		if (g_config.getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)
+		if (g_configManager().getBoolean(TOGLE_IMBUEMENT_SHRINE_STORAGE)
 		&& imbuement->getStorage() != 0
 		&& !player->getStorageValue(imbuement->getStorage(), storageValue)
 		&& imbuement->getBaseID() >= 1 && imbuement->getBaseID() <= 3) {

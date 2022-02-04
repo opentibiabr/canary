@@ -21,8 +21,6 @@
 
 #include "database/database.h"
 
-#include "config/configmanager.h"
-
 #include <mysql/errmsg.h>
 
 

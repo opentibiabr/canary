@@ -20,6 +20,7 @@
 #ifndef SRC_ITEMS_ITEMS_H_
 #define SRC_ITEMS_ITEMS_H_
 
+#include "config/configmanager.h"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "items/itemloader.h"

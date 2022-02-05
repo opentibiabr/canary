@@ -111,7 +111,7 @@ bool Vocations::loadFromXml()
 		}
 
 		if ((attr = vocationNode.attribute("gainsoulticks"))) {
-			voc.gainSoulTicks = pugi::cast<uint16_t>(attr.value());
+			voc.gainSoulTicks = pugi::cast<uint32_t>(attr.value());
 		}
 
 		if ((attr = vocationNode.attribute("fromvoc"))) {

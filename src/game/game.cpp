@@ -670,8 +670,8 @@ bool Game::loadMainMap(const std::string& filename)
 
 bool Game::loadCustomMap(const std::string& filename)
 {
-	Monster::despawnRange = g_config.getNumber(DEFAULT_DESPAWNRANGE);
-	Monster::despawnRadius = g_config.getNumber(DEFAULT_DESPAWNRADIUS);
+	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
+	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 	return map.loadMapCustom("data/world/custom/" + filename + ".otbm", true, true, true);
 }
 

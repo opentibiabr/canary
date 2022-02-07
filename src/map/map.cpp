@@ -59,7 +59,7 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 		 * If map custom is enabled, then it is load in loadMapCustom function
 		 * NOTE: This will ensure that the information is not duplicated
 		*/
-		if (!g_config.getBoolean(TOGGLE_MAP_CUSTOM)) {
+		if (!g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 			IOMapSerialize::loadHouseInfo();
 			IOMapSerialize::loadHouseItems(this);
 		}
@@ -72,7 +72,7 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 	}
 
 	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
-	if (g_config.getBoolean(TOGGLE_MAP_CUSTOM)) {
+	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 		this->monsterfile.clear();
 		this->housefile.clear();
 		this->npcfile.clear();

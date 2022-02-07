@@ -30,17 +30,25 @@ services:
     ports:
       - 3306:3306
 
-  website:
-    image: webdevops/php-nginx:alpine-php7
+  website-nginx:
+    image: nginx:latest
     restart: unless-stopped
-    environment:
-      - WEB_DOCUMENT_ROOT=/tmp/web/
-      - WEB_DOCUMENT_INDEX=index.php
     ports:
       - 8080:80
     volumes:
-      - ./docker/data/web:/tmp/web
+      - ./data/web/:/tmp/web/
       - ./:/tmp/otserver/
+      - ./data/nginx:/etc/nginx/conf.d/
+    depends_on:
+      - mysql
+      - website-php
+    links:
+      - website-php
+
+  website-php:
+    image: php:7-fpm
+    volumes:
+      - ./data/web/:/tmp/web/
     depends_on:
       - mysql
 

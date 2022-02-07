@@ -157,7 +157,7 @@ local charms = {
 		name = "Scavenge",
 		description = "Enhances your chances to successfully skin/dust a skinnable/dustable creature.",
 		type = CHARM_PASSIVE,
-		percent = 5,
+		percent = 25,
 		points = 800
 	},
 	-- Gut charm

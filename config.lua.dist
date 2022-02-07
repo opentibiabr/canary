@@ -61,6 +61,7 @@ onlyPremiumAccount = false
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
+autoLoot = false
 
 -- Stamina in Trainers
 staminaTrainer = false

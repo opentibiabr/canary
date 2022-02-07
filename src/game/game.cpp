@@ -2483,6 +2483,10 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse)
 		ss << "No loot";
 	}
 
+	if (!browseField) {
+		return;
+	}
+
 	ss << ".";
 	player->sendTextMessage(MESSAGE_LOOT, ss.str());
 
@@ -4455,7 +4459,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId)
 	g_events->eventPlayerOnLookInBattleList(player, creature, lookDistance);
 }
 
-void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos, Item* defaultItem, bool lootAllCorpses)
+void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos, Item* defaultItem, bool lootAllCorpses, bool autoLoot)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -4467,12 +4471,12 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		SchedulerTask* task = createSchedulerTask(delay, std::bind(
                               &Game::playerQuickLoot,
                               this, player->getID(), pos,
-                              spriteId, stackPos, defaultItem, lootAllCorpses));
+                              spriteId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 		player->setNextActionTask(task);
 		return;
 	}
 
-	if (pos.x != 0xffff) {
+	if (!autoLoot && pos.x != 0xffff) {
 		if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 			//need to walk to the corpse first before looting it
 			std::forward_list<Direction> listDir;
@@ -4481,7 +4485,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 				SchedulerTask* task = createSchedulerTask(0, std::bind(
                                       &Game::playerQuickLoot,
                                       this, player->getID(), pos,
-                                      spriteId, stackPos, defaultItem, lootAllCorpses));
+                                      spriteId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4594,7 +4598,7 @@ void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAl
 			return;
 		}
 
-		TileItemVector *itemVector = tile->getItemList();
+		const TileItemVector *itemVector = tile->getItemList();
 		uint16_t corpses = 0;
 		for (Item *tileItem: *itemVector) {
 			if (!tileItem) {

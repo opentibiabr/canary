@@ -294,8 +294,8 @@ class Game
 		void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 		void playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos);
 		void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
-		void playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId,
-								uint8_t stackPos, Item* defaultItem = nullptr, bool lootAllCorpses = false);
+		void playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos,
+								Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 		void playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses);
 		void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category,
 								const Position& pos, uint16_t spriteId, uint8_t stackPos);

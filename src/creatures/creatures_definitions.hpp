@@ -829,7 +829,7 @@ struct summonBlock_t {
 	std::string name;
 	uint32_t chance;
 	uint32_t speed;
-	uint32_t max;
+	uint32_t count;
 	bool force = false;
 };
 

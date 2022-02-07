@@ -111,16 +111,14 @@ bool ConfigManager::load()
 	if (!loaded) { //info that must be loaded one time (unless we reset the modules involved)
 		boolean[BIND_ONLY_GLOBAL_ADDRESS] = getGlobalBoolean(L, "bindOnlyGlobalAddress", false);
 		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
+		boolean[TOGGLE_MAP_CUSTOM] = getGlobalBoolean(L, "toggleMapCustom", true);
 
 		string[IP] = getGlobalString(L, "ip", "127.0.0.1");
 		string[MAP_NAME] = getGlobalString(L, "mapName", "canary");
 		string[MAP_AUTHOR] = getGlobalString(L, "mapAuthor", "Eduardo Dantas");
 
 		string[MAP_CUSTOM_NAME] = getGlobalString(L, "mapCustomName", "");
-		string[MAP_CUSTOM_FILE] = getGlobalString(L, "mapCustomFile", "");
-		string[MAP_CUSTOM_SPAWN] = getGlobalString(L, "mapCustomSpawn", "");
 		string[MAP_CUSTOM_AUTHOR] = getGlobalString(L, "mapCustomAuthor", "OTServBR");
-		boolean[MAP_CUSTOM_ENABLED] = getGlobalBoolean(L, "mapCustomEnabled", true);
 
 		string[HOUSE_RENT_PERIOD] = getGlobalString(L, "houseRentPeriod", "never");
 		string[MYSQL_HOST] = getGlobalString(L, "mysqlHost", "127.0.0.1");

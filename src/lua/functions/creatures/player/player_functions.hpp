@@ -175,6 +175,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
 			registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 			registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
+			registerMethod(L, "Player", "getItemIdByCid", PlayerFunctions::luaPlayerGetItemIdByCid);
 			registerMethod(L, "Player", "sendContainer", PlayerFunctions::luaPlayerSendContainer);
 
 			registerMethod(L, "Player", "getMoney", PlayerFunctions::luaPlayerGetMoney);
@@ -455,6 +456,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddItemEx(lua_State* L);
 		static int luaPlayerRemoveStashItem(lua_State* L);
 		static int luaPlayerRemoveItem(lua_State* L);
+		static int luaPlayerGetItemIdByCid(lua_State* L);
 		static int luaPlayerSendContainer(lua_State* L);
 
 		static int luaPlayerGetMoney(lua_State* L);

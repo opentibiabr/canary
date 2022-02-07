@@ -191,6 +191,7 @@ void Npc::onThink(uint32_t interval)
 	// onThink(self, interval)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.thinkEvent)) {
+		callback.pushSpecificCreature(this);
 		callback.pushNumber(interval);
 	}
 
@@ -231,7 +232,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t serverId,
 		if (!g_game.removeMoney(player, totalCost, 0, true)) {
 			return;
 		}
-	} else if(!player->removeItemOfType(getCurrency(), shopInfo.buyPrice, subType, false)) {
+	} else if(!player->removeItemOfType(getCurrency(), shopInfo.buyPrice, -1, false)) {
 		return;
 	}
 
@@ -268,7 +269,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 
 	ShopInfo shopInfo = getShopItems()[serverId];
 
-	if(!player->removeItemOfType(serverId, amount, subType, false)) {
+	if(!player->removeItemOfType(serverId, amount, -1, false, false)) {
 		return;
 	}
 
@@ -280,10 +281,11 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 	if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
 		callback.pushSpecificCreature(this);
 		callback.pushCreature(player);
+		callback.pushNumber(itemType.clientId);
+		callback.pushNumber(subType);
 		callback.pushNumber(amount);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
-		callback.pushNumber(itemType.clientId);
 	}
 
 	if (callback.persistLuaState()) {
@@ -311,6 +313,28 @@ void Npc::onPlayerCheckItem(Player* player, uint16_t serverId,
 	if (callback.persistLuaState()) {
 		return;
 	}
+}
+
+void Npc::onPlayerCloseChannel(Creature* creature)
+{
+	Player* player = creature->getPlayer();
+	if (!player) {
+		return;
+	}
+
+	// onPlayerCloseChannel(npc, player)
+	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
+	if (callback.startScriptInterface(npcType->info.playerCloseChannel)) {
+		callback.pushSpecificCreature(this);
+		callback.pushCreature(player);
+	}
+
+	if (callback.persistLuaState()) {
+		return;
+	}
+
+	player->closeShopWindow(true);
+	this->removePlayerInteraction(player->getID());
 }
 
 void Npc::onThinkYell(uint32_t interval)
@@ -396,7 +420,7 @@ bool Npc::isInSpawnRange(const Position& pos) const
 void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
 	Creature* creature = g_game.getCreatureByID(playerId);
 	if (!creature) {
-      return;
+		return;
 	}
 
 	turnToCreature(creature);
@@ -471,9 +495,4 @@ void Npc::closeAllShopWindows()
 		}
 	}
 	shopPlayerSet.clear();
-}
-
-void Npc::onPlayerCloseChannel(Player* player)
-{
-	player->closeShopWindow(true);
 }

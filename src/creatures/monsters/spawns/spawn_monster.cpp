@@ -43,7 +43,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filemonstername.c_str());
 	if (!result) {
-		printXMLError("Error - SpawnsMonster::loadFromXml", filemonstername, result);
+		printXMLError("SpawnsMonster::loadFromXml", filemonstername, result);
 		return false;
 	}
 
@@ -69,7 +69,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 		}
 
 		if (!spawnMonsterNode.first_child()) {
-			SPDLOG_WARN("Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
+			SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
 			continue;
 		}
 
@@ -111,9 +111,9 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 					spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
 					if (interval <= MONSTER_MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("{} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000);
+						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000);
 					} else {
-						SPDLOG_WARN("{} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
+						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
 					}
 				}
 			}

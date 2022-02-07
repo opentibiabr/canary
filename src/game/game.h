@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
@@ -61,7 +61,18 @@ class Game
 
 		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
+		/**
+		* Load the main map
+		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
+		 * \returns true if the custom map was loaded successfully
+		*/
 		bool loadMainMap(const std::string& filename);
+		/**
+		* Load the custom map
+		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
+		 * \returns true if the custom map was loaded successfully
+		*/
+		bool loadCustomMap(const std::string& filename);
 		void loadMap(const std::string& path);
 
 		void getMapDimensions(uint32_t& width, uint32_t& height) const {

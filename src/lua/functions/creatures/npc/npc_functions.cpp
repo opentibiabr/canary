@@ -44,7 +44,7 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 			npc = nullptr;
 		}
 	} else {
-		npc = getScriptEnv()->getNpc();
+		npc = getUserdata<Npc>(L, 1);
 	}
 
 	if (npc) {
@@ -86,6 +86,19 @@ int NpcFunctions::luaNpcGetCurrency(lua_State* L) {
 	}
 
 	lua_pushnumber(L, npc->getCurrency());
+	return 1;
+}
+
+int NpcFunctions::luaNpcSetCurrency(lua_State* L) {
+	// npc:getCurrency()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	npc->setCurrency(getNumber<uint16_t>(L, 2));
 	return 1;
 }
 
@@ -202,8 +215,12 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 	return 1;
 }
 
+/**
+ * @param creature, Is the creature that the npc will focus on
+ * @param true, If true, force stop walk, if @param false, do not force stop walk
+ */
 int NpcFunctions::luaNpcTurnToCreature(lua_State* L) {
-	// npc:turnToCreature(creature)
+	// npc:turnToCreature(creature, true)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	Creature* creature = getCreature(L, 2);
 
@@ -219,6 +236,10 @@ int NpcFunctions::luaNpcTurnToCreature(lua_State* L) {
 		return 1;
 	}
 
+	bool stopEventWalk = getBoolean(L, 3, true);
+	if (stopEventWalk) {
+		npc->stopEventWalk();
+	}
 	npc->turnToCreature(creature);
 	pushBoolean(L, true);
 	return 1;
@@ -344,7 +365,6 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 	}
 
 	player->openShopWindow(npc);
-
 	pushBoolean(L, true);
 	return 1;
 }
@@ -377,6 +397,26 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 	return 1;
 }
 
+int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
+	//npc:isMerchant()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	ShopInfoMap shopItems = npc->getShopItems();
+
+	if (shopItems.empty()) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
 int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	//npc:getShopItem(clientId)
 	Npc* npc = getUserdata<Npc>(L, 1);
@@ -403,5 +443,153 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	setField(L, "sellPrice", shopInfo.sellPrice);
 
 	pushBoolean(L, true);
+	return 1;
+}
+
+int NpcFunctions::luaNpcMove(lua_State* L)
+{
+	// npc:move(direction)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (npc) {
+		g_game.internalMoveCreature(npc, getNumber<Direction>(L, 2));
+	}
+	return 0;
+}
+
+int NpcFunctions::luaNpcTurn(lua_State* L)
+{
+	// npc:turn(direction)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (npc) {
+		g_game.internalCreatureTurn(npc, getNumber<Direction>(L, 2));
+	}
+	return 0;
+}
+
+int NpcFunctions::luaNpcFollow(lua_State* L)
+{
+	// npc:follow(player)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, npc->setFollowCreature(getPlayer(L, 2)));
+	return 1;
+}
+
+int NpcFunctions::luaNpcGetId(lua_State* L)
+{
+	// npc:getId()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+	
+	lua_pushnumber(L, npc->getID());
+	return 1;
+}
+
+int NpcFunctions::luaNpcSellItem(lua_State* L)
+{
+	// npc:sellItem(player, itemid, amount, <optional> subtype, <optional> actionid, <optional: default: 1> canDropOnMap)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	Player* player = getPlayer(L, 2);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	uint32_t sellCount = 0;
+
+	uint32_t itemId = getNumber<uint32_t>(L, 3);
+	uint32_t amount = getNumber<uint32_t>(L, 4);
+	uint32_t subType;
+
+	int32_t n = getNumber<int32_t>(L, 5, -1);
+	if (n != -1) {
+		subType = n;
+	} else {
+		subType = 1;
+	}
+
+	uint32_t actionId = getNumber<uint32_t>(L, 6, 0);
+	bool canDropOnMap = getBoolean(L, 7, true);
+
+	const ItemType& it = Item::items[itemId];
+	if (it.stackable) {
+		while (amount > 0) {
+			int32_t stackCount = std::min<int32_t>(100, amount);
+			Item* item = Item::CreateItem(it.id, stackCount);
+			if (item && actionId != 0) {
+				item->setActionId(actionId);
+			}
+
+			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+				delete item;
+				lua_pushnumber(L, sellCount);
+				return 1;
+			}
+
+			amount -= stackCount;
+			sellCount += stackCount;
+		}
+	} else {
+		for (uint32_t i = 0; i < amount; ++i) {
+			Item* item = Item::CreateItem(it.id, subType);
+			if (item && actionId != 0) {
+				item->setActionId(actionId);
+			}
+
+			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+				delete item;
+				lua_pushnumber(L, sellCount);
+				return 1;
+			}
+
+			++sellCount;
+		}
+	}
+
+	lua_pushnumber(L, sellCount);
+	return 1;
+}
+
+int NpcFunctions::luaNpcGetDistanceTo(lua_State* L)
+{
+	//npc:getDistanceTo(uid)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	Thing* thing = getScriptEnv()->getThingByUID(getNumber<uint32_t>(L, -1));
+	pushBoolean(L, thing && thing->isPushable());
+	if (!thing) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_THING_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const Position& thingPos = thing->getPosition();
+	const Position& npcPos = npc->getPosition();
+	if (npcPos.z != thingPos.z) {
+		lua_pushnumber(L, -1);
+	} else {
+		int32_t dist = std::max<int32_t>(Position::getDistanceX(npcPos, thingPos), Position::getDistanceY(npcPos, thingPos));
+		lua_pushnumber(L, dist);
+	}
 	return 1;
 }

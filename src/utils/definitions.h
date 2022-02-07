@@ -21,8 +21,8 @@
 #define SRC_UTILS_DEFINITIONS_H_
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
-static constexpr auto STATUS_SERVER_VERSION = "TFS 1.3";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "OTServBR Team, Mark Samman and The Forgotten Server Developers";
+static constexpr auto STATUS_SERVER_VERSION = "1.1.0";
+static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization and Mark Samman";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;

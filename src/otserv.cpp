@@ -165,6 +165,8 @@ void loadModules() {
 		"data/stages.lua");
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/startup/startup.lua") == 0),
 		"data/startup/startup.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile("data/npclib/load.lua") == 0),
+		"data/npclib/load.lua");
 
 	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
@@ -243,13 +245,13 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SetConsoleTitle(STATUS_SERVER_NAME);
 #endif
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	SPDLOG_INFO("{} - Based on [{}] dated [{}]",
+	SPDLOG_INFO("{} - Version [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
 	SPDLOG_WARN("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
 #else
-	SPDLOG_INFO("{} - Based on {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
+	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
 	SPDLOG_INFO("Compiled with {}", BOOST_COMPILER);
@@ -272,8 +274,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 #endif
 
 	SPDLOG_INFO("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
-	SPDLOG_INFO("Visit our forum for updates, support, and resources: "
-		"https://forums.otserv.com.br");
+	SPDLOG_INFO("Visit our website for updates, support, and resources: "
+		"https://docs.opentibiabr.org/");
 
 	// check if config.lua or config.lua.dist exist
 	std::ifstream c_test("./config.lua");
@@ -322,6 +324,15 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	if (!g_game.loadMainMap(g_configManager().getString(MAP_NAME))) {
 		SPDLOG_ERROR("Failed to load map");
 		startupErrorMessage();
+	}
+
+	// If "mapCustomEnabled" is true on config.lua, then load the custom map
+	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+		SPDLOG_INFO("Loading custom map...");
+		if (!g_game.loadCustomMap(g_configManager().getString(MAP_CUSTOM_NAME))) {
+			SPDLOG_ERROR("Failed to load custom map");
+			startupErrorMessage();
+		}
 	}
 
 	SPDLOG_INFO("Initializing gamestate...");

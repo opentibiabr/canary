@@ -69,6 +69,7 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 		case LUA_ERROR_PLAYER_NOT_FOUND: return "Player not found";
 		case LUA_ERROR_CREATURE_NOT_FOUND: return "Creature not found";
 		case LUA_ERROR_NPC_NOT_FOUND: return "Npc not found";
+		case LUA_ERROR_NPC_TYPE_NOT_FOUND: return "Npc type not found";
 		case LUA_ERROR_ITEM_NOT_FOUND: return "Item not found";
 		case LUA_ERROR_THING_NOT_FOUND: return "Thing not found";
 		case LUA_ERROR_TILE_NOT_FOUND: return "Tile not found";

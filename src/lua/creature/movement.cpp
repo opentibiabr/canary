@@ -851,6 +851,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	return 1;
 }
 
+// TODO (EDUARDO): Move this functions for revscriptsys interface
 bool MoveEvent::loadFunction(const pugi::xml_attribute& attr, bool isScripted) {
 	const char* functionName = attr.as_string();
 	if (strcasecmp(functionName, "onstepinfield") == 0) {

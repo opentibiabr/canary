@@ -32,6 +32,7 @@
 #include "io/iologindata.h"
 #include "io/iomarket.h"
 #include "items/items.h"
+#include "lua/scripts/lua_environment.hpp"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
 #include "game/scheduling/scheduler.h"
@@ -62,6 +63,7 @@ extern Weapons* g_weapons;
 extern Scripts* g_scripts;
 extern Modules* g_modules;
 extern Imbuements* g_imbuements;
+extern LuaEnvironment g_luaEnvironment;
 
 Game::Game()
 {
@@ -279,8 +281,13 @@ void Game::setGameState(GameState_t newState)
 			groups.load();
 			g_chat->load();
 
+			// Load monsters and npcs stored by the "loadFromXML" function
 			map.spawnsMonster.startup();
 			map.spawnsNpc.startup();
+
+			// Load monsters and npcs custom stored by the "loadFromXML" function
+			map.spawnsMonsterCustom.startup();
+			map.spawnsNpcCustom.startup();
 
 			raids.loadFromXml();
 			raids.startup();
@@ -613,9 +620,9 @@ void Game::saveGameState()
 		IOLoginData::savePlayer(it.second);
 	}
 
-  for (const auto& it : guilds) {
-    IOGuild::saveGuild(it.second);
-  }
+	for (const auto& it : guilds) {
+		IOGuild::saveGuild(it.second);
+	}
 
 	Map::save();
 
@@ -659,6 +666,13 @@ bool Game::loadMainMap(const std::string& filename)
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+}
+
+bool Game::loadCustomMap(const std::string& filename)
+{
+	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
+	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
+	return map.loadMapCustom("data/world/custom/" + filename + ".otbm", true, true, true);
 }
 
 void Game::loadMap(const std::string& path)
@@ -3531,7 +3545,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			return;
 	}
 
-	if (!item || item->getClientID() != spriteId || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || (!item->isWrapable() && item->getID() != 26054)) {
+	if (!item || item->getClientID() != spriteId || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || (!item->isWrapable() && item->getID() != ITEM_DECORATION_KIT)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3557,7 +3571,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-	if ((item->getHoldingPlayer() && item->getID() == 26054) || (tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID))) {
+	if ((item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT) || (tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID))) {
 		player->sendCancelMessage("You can only wrap/unwrap in the floor.");
 		return;
 	}
@@ -3570,20 +3584,20 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		unWrapId = (uint16_t)tmp;
 	}
 
-  // prevent to wrap a filled bath tube
-  if (item->getID() == 29313) {
-    player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-    return;
-  }
+	// Prevent to wrap a filled bath tube
+	if (item->getClientID() == ITEM_FILLED_BATH_TUBE) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
 
-	if (item->isWrapable() && item->getID() != TRANSFORM_BOX_ID) {
+	if (item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) {
 		uint16_t hiddenCharges = 0;
 		if (isCaskItem(item->getID())) {
 			hiddenCharges = item->getSubType();
 		}
 		uint16_t oldItemID = item->getID();
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
-		Item* newItem = transformItem(item, 26054);
+		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 		ItemAttributes::CustomAttribute val;
 		val.set<int64_t>(oldItemID);
 		std::string key = "unWrapId";
@@ -3594,7 +3608,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		}
 		newItem->startDecaying();
 	}
-	else if (item->getID() == TRANSFORM_BOX_ID && unWrapId != 0) {
+	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
 		uint16_t hiddenCharges = item->getDate();
 		Item* newItem = transformItem(item, unWrapId);
 		if (newItem) {
@@ -4359,10 +4373,6 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		subType = clientFluidToServer(count);
 	} else {
 		subType = count;
-	}
-
-	if (!player->hasShopItemForSale(it.id, subType)) {
-		return;
 	}
 
 	if (!g_events->eventPlayerOnLookInShop(player, &it, subType)) {
@@ -7464,6 +7474,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		itemsPriceMap[it.id] = price;
 	}
 
+	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id);
 	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
@@ -7498,6 +7509,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance( player->getBankBalance() + static_cast<uint64_t>(offer.price) * offer.amount);
+		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {
 		const ItemType& it = Item::items[offer.itemId];
@@ -7543,6 +7555,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.amount = 0;
 	offer.timestamp += g_configManager().getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
+	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
 	player->updateMarketExhausted();
@@ -7587,7 +7600,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	uint64_t totalPrice = offer.price * amount;
 
-	// The player has an offer to by something and someone is going to sell to it
+	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
@@ -7798,11 +7811,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		IOMarket::acceptOffer(offer.id, amount);
 	}
 
+	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	offer.timestamp += marketOfferDuration;
 	player->sendMarketAcceptOffer(offer);
-
-	player->updateMarketExhausted(); // Exhausted for accept offer in the market
+	// Exhausted for accept offer in the market
+	player->updateMarketExhausted();
 }
 
 void Game::playerStoreOpen(uint32_t playerId, uint8_t serviceType)
@@ -7881,9 +7895,9 @@ void Game::playerBuyStoreOffer(uint32_t playerId, uint32_t offerId,
 					Item * item;
 
 					if (offer -> type == WRAP_ITEM) {
-						item = Item::CreateItem(TRANSFORM_BOX_ID, std::min < uint16_t > (packSize, pendingCount));
-						item -> setActionId(tmp -> productId);
-						item -> setSpecialDescription("Unwrap it in your own house to create a <" + Item::items[tmp -> productId].name + ">.");
+						item = Item::CreateItem(ITEM_DECORATION_KIT, std::min < uint16_t > (packSize, pendingCount));
+						item->setActionId(tmp->productId);
+						item->setSpecialDescription("Unwrap it in your own house to create a <" + Item::items[tmp->productId].name + ">.");
 					} else {
 						item = Item::CreateItem(tmp -> productId, std::min < uint16_t > (packSize, pendingCount));
 					}
@@ -8498,6 +8512,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_NPCS: {
 			g_npcs.reset();
 			g_scripts->loadScripts("npclua", false, true);
+			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();

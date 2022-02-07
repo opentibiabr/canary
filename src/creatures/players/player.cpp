@@ -3465,7 +3465,21 @@ void Player::stashContainer(StashContainerList itemDict)
 	sendTextMessage(MESSAGE_STATUS, retString.str());
 }
 
-bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/) const
+bool Player::canSellImbuedItem(Item *item, bool ignoreImbued)
+{
+	if (!ignoreImbued) {
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			ImbuementInfo imbuementInfo;
+			if (item->getImbuementInfo(slotid, &imbuementInfo)) {
+				sendTextMessage(MESSAGE_LOOK, "You cannot sell an imbued item.");
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/, bool ignoreImbued /*false*/) const
 {
 	if (amount == 0) {
 		return true;
@@ -3480,9 +3494,15 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 			continue;
 		}
 
+		Player *player = item->getHoldingPlayer();
+
 		if (!ignoreEquipped && item->getID() == itemId) {
 			uint32_t itemCount = Item::countByType(item, subType);
 			if (itemCount == 0) {
+				continue;
+			}
+
+			if (player && !player->canSellImbuedItem(item, ignoreImbued)) {
 				continue;
 			}
 
@@ -3499,6 +3519,10 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 				if (containerItem->getID() == itemId) {
 					uint32_t itemCount = Item::countByType(containerItem, subType);
 					if (itemCount == 0) {
+						continue;
+					}
+
+					if (player && !player->canSellImbuedItem(containerItem, ignoreImbued)) {
 						continue;
 					}
 

@@ -133,11 +133,9 @@ partyListMaxDistance = 30
 
 -- Custom Map
 -- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
+toggleMapCustom = false
 mapCustomName = "canary-custom"
-mapCustomFile = "data/world/custom/canary-custom.otbm"
-mapCustomSpawn = "data/world/custom/canary-custom-spawn.xml"
 mapCustomAuthor = "OpenTibiaBR"
-mapCustomEnabled = false
 
 -- Market
 marketOfferDuration = 30 * 24 * 60 * 60

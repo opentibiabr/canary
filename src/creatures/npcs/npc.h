@@ -83,8 +83,6 @@ class Npc final : public Creature
 			masterPos = pos;
 		}
 
-		void onPlayerCloseChannel(Player* player);
-
 		uint8_t getSpeechBubble() const override {
 			return npcType->info.speechBubble;
 		}
@@ -92,12 +90,11 @@ class Npc final : public Creature
 			npcType->info.speechBubble = bubble;
 		}
 
-		uint16_t getCurrencyTrading() const {
-			return Item::items[npcType->info.currencyServerId].clientId;
-		}
-
 		uint16_t getCurrency() const {
-			return npcType->info.currencyServerId;
+			return npcType->info.currencyId;
+		}
+		void setCurrency(uint16_t currency) {
+			npcType->info.currencyId = currency;
 		}
 
 		ShopInfoMap getShopItems() {
@@ -154,6 +151,7 @@ class Npc final : public Creature
                             uint8_t amount, bool ignore);
 		void onPlayerCheckItem(Player* player, uint16_t itemid,
                           uint8_t count);
+		void onPlayerCloseChannel(Creature* creature);
 		void onPlacedCreature() override;
 
 		bool canWalkTo(const Position& fromPos, Direction dir) const;

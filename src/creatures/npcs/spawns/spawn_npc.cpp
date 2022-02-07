@@ -34,21 +34,21 @@ extern Events* g_events;
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day
 
-bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
+bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 {
 	if (isLoaded()) {
 		return true;
 	}
 
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file(filenpcname.c_str());
+	pugi::xml_parse_result result = doc.load_file(fileNpcName.c_str());
 	if (!result) {
-		printXMLError("Error - SpawnsNpc::loadFromXml", filenpcname, result);
+		printXMLError("SpawnsNpc::loadFromXml", fileNpcName, result);
 		return false;
 	}
 
-	this->filenpcname = filenpcname;
-	loaded = true;
+	setFileName(fileNpcName);
+	setLoaded(true);
 
 	for (auto spawnNode : doc.child("npcs").children()) {
 		Position centerPos(
@@ -66,7 +66,7 @@ bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
 		}
 
 		if (!spawnNode.first_child()) {
-			SPDLOG_WARN("Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
+			SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Empty spawn at position: {} with radius: {}", centerPos.toString(), radius);
 			continue;
 		}
 
@@ -99,9 +99,9 @@ bool SpawnsNpc::loadFromXml(const std::string& filenpcname)
 					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
 					if (interval <= MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("{} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
+						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
 					} else {
-						SPDLOG_WARN("{} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MAXSPAWN_INTERVAL / 1000);
+						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MAXSPAWN_INTERVAL / 1000);
 					}
 				}
 			}
@@ -120,7 +120,7 @@ void SpawnsNpc::startup()
 		spawnNpc.startup();
 	}
 
-	started = true;
+	setStarted(true);
 }
 
 void SpawnsNpc::clear()
@@ -130,9 +130,9 @@ void SpawnsNpc::clear()
 	}
 	spawnNpcList.clear();
 
-	loaded = false;
-	started = false;
-	filenpcname.clear();
+	setLoaded(false);
+	setStarted(false);
+	fileName.clear();
 }
 
 bool SpawnsNpc::isInZone(const Position& centerPos, int32_t radius, const Position& pos)

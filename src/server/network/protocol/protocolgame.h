@@ -169,8 +169,8 @@ private:
 	void parseHouseWindow(NetworkMessage &msg);
 
 	void parseLookInShop(NetworkMessage &msg);
-	void parsePlayerPurchase(NetworkMessage &msg);
-	void parsePlayerSale(NetworkMessage &msg);
+	void parsePlayerBuyOnShop(NetworkMessage &msg);
+	void parsePlayerSellOnShop(NetworkMessage &msg);
 
 	void parseQuestLine(NetworkMessage &msg);
 
@@ -431,6 +431,7 @@ private:
 	void MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
 
 	//shop
+	void AddHiddenShopItem(NetworkMessage &msg);
 	void AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId);
 
 	//otclient

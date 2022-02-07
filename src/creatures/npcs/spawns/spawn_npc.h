@@ -91,16 +91,28 @@ class SpawnsNpc
 		bool isStarted() const {
 			return started;
 		}
+		bool setStarted(bool setStarted) {
+			return started = setStarted;
+		}
+		
 		bool isLoaded() const {
 			return loaded;
 		}
+		bool setLoaded(bool setLoaded) {
+			return loaded = setLoaded;
+		}
+
+		std::string setFileName(std::string setName) {
+			return fileName = setName;
+		}
+
 		std::forward_list<SpawnNpc>& getSpawnNpcList() {
 			return spawnNpcList;
 		}
 
 	private:
 		std::forward_list<SpawnNpc> spawnNpcList;
-		std::string filenpcname;
+		std::string fileName;
 		bool loaded = false;
 		bool started = false;
 };

@@ -1209,7 +1209,8 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	const auto& items = imbuement->getItems();
 	for (auto& [key, value] : items)
 	{
-		if (this->getItemTypeCount(key) + this->getStashItemCount(key) < value)
+		const ItemType& itemType = Item::items[key];
+		if (this->getItemTypeCount(key) + this->getStashItemCount(itemType.clientId) < value)
 		{
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
@@ -1242,6 +1243,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	std::stringstream withdrawItemMessage;
 	for (auto& [key, value] : items)
 	{
 		uint32_t inventoryItemCount = getItemTypeCount(key);
@@ -1257,8 +1259,13 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 			mathItemCount = mathItemCount - inventoryItemCount;
 		}
 
-		withdrawItem(key, mathItemCount);
+		const ItemType& itemType = Item::items[key];
+
+		withdrawItemMessage << "Using " << mathItemCount << "x "<< itemType.name <<" from your supply stash. ";
+		withdrawItem(itemType.clientId, mathItemCount);
 	}
+
+	sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 
 	if (!protectionCharm && uniform_random(1, 100) > baseImbuement->percent)
 	{

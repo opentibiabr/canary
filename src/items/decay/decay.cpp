@@ -43,6 +43,11 @@ void Decay::startDecay(Item* item)
 	}
 
 	int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
+	if (duration <= 0 && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+		internalDecayItem(item);
+		return;
+	}
+
 	if (duration > 0) {
 		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
 			stopDecay(item);
@@ -62,8 +67,6 @@ void Decay::startDecay(Item* item)
 		item->setDecaying(DECAYING_TRUE);
 		item->setDurationTimestamp(timestamp);
 		decayMap[timestamp].push_back(item);
-	} else {
-		internalDecayItem(item);
 	}
 }
 

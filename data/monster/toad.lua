@@ -33,7 +33,13 @@ monster.race = "blood"
 monster.corpse = 6077
 monster.speed = 210
 monster.manaCost = 400
-monster.maxSummons = 0
+
+monster.summon = {
+	maxSummons = 1,
+	summons = {
+		{name = "Azure Frog", chance = 30, interval = 1000, count = 2}
+	}
+}
 
 monster.changeTarget = {
 	interval = 4000,

@@ -1342,13 +1342,11 @@ void Player::openImbuementWindow(Item* item)
 
 void Player::sendMarketEnter(uint32_t depotId)
 {
-	if (this->isInMarket() || this->getLastDepotId() == -1 || !depotId) {
+	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
-
-	if (client) {
-		client->sendMarketEnter(depotId);
-	}
+	
+	client->sendMarketEnter(depotId);
 }
 
 //container

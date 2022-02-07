@@ -164,8 +164,8 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.rewardBoss then
 			mtype:isRewardBoss(mask.flags.rewardBoss)
 		end
-		if mask.flags.pet then
-			mtype:isPet(mask.flags.pet)
+		if mask.flags.familiar then
+			mtype:familiar(mask.flags.familiar)
 		end
 		if mask.flags.respawntype or mask.flags.respawnType then
 			Spdlog.warn(string.format("[registerMonsterType.flags] - Monster: %s. Deprecated flag 'respawnType', use instead table 'respawnType = { period = RespawnPeriod_t, underground = boolean}'",

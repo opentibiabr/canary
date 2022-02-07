@@ -725,20 +725,20 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	if (it.abilities->regeneration) {
 		Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
 
-		if (it.abilities->healthGain != 0) {
-			condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->healthGain);
+		if (it.abilities->getHealthGain() != 0) {
+			condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
 		}
 
-		if (it.abilities->healthTicks != 0) {
-			condition->setParam(CONDITION_PARAM_HEALTHTICKS, it.abilities->healthTicks);
+		if (it.abilities->getHealthTicks() != 0) {
+			condition->setParam(CONDITION_PARAM_HEALTHTICKS, it.abilities->getHealthTicks());
 		}
 
-		if (it.abilities->manaGain != 0) {
-			condition->setParam(CONDITION_PARAM_MANAGAIN, it.abilities->manaGain);
+		if (it.abilities->getManaGain() != 0) {
+			condition->setParam(CONDITION_PARAM_MANAGAIN, it.abilities->getManaGain());
 		}
 
-		if (it.abilities->manaTicks != 0) {
-			condition->setParam(CONDITION_PARAM_MANATICKS, it.abilities->manaTicks);
+		if (it.abilities->getManaTicks() != 0) {
+			condition->setParam(CONDITION_PARAM_MANATICKS, it.abilities->getManaTicks());
 		}
 
 		player->addCondition(condition);

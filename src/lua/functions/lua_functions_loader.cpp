@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "creatures/combat/spells.h"
 #include "creatures/interactions/chat.h"
 #include "creatures/monsters/monster.h"

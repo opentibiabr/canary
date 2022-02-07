@@ -10,7 +10,7 @@ function Player:onLook(thing, position, distance)
 		local master = thing:getMaster()
 		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
 			description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.PetSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
 		end
 	end
 
@@ -223,12 +223,20 @@ soulCondition:setTicks(4 * 60 * 1000)
 soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
 
 local function useStamina(player)
+	if not player then
+		return false
+	end
+
 	local staminaMinutes = player:getStamina()
 	if staminaMinutes == 0 then
 		return
 	end
 
 	local playerId = player:getId()
+	if not playerId then
+		return false
+	end
+
 	local currentTime = os.time()
 	local timePassed = currentTime - nextUseStaminaTime[playerId]
 	if timePassed <= 0 then
@@ -257,7 +265,7 @@ function Player:onGainExperience(source, exp, rawExp)
 	-- Soul regeneration
 	local vocation = self:getVocation()
 	if self:getSoul() < vocation:getMaxSoul() and exp >= self:getLevel() then
-		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks() * 1000)
+		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks())
 		self:addCondition(soulCondition)
 	end
 

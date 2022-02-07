@@ -23,7 +23,6 @@
 
 #include "lua/creature/actions.h"
 #include "creatures/players/management/ban.h"
-#include "config/configmanager.h"
 #include "declarations.hpp"
 #include "game/game.h"
 #include "creatures/players/imbuements/imbuements.h"
@@ -41,7 +40,6 @@
 #include "items/weapons/weapons.h"
 
 extern Game g_game;
-extern ConfigManager g_config;
 extern Actions actions;
 extern CreatureEvents *g_creatureEvents;
 extern Vocations g_vocations;
@@ -209,7 +207,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 {
 	//dispatcher thread
 	Player *foundPlayer = g_game.getPlayerByName(name);
-	if (!foundPlayer || g_config.getBoolean(ALLOW_CLONES))
+	if (!foundPlayer || g_configManager().getBoolean(ALLOW_CLONES))
 	{
 		player = new Player(getThis());
 		player->setName(name);
@@ -241,13 +239,13 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_config.getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER))
+		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER))
 		{
 			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
 			return;
 		}
 
-		if (g_config.getBoolean(ONE_PLAYER_ON_ACCOUNT) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game.getPlayerByAccount(player->getAccount()))
+		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game.getPlayerByAccount(player->getAccount()))
 		{
 			disconnectClient("You may only login with one character\nof your account at the same time.");
 			return;
@@ -337,7 +335,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	}
 	else
 	{
-		if (eventConnect != 0 || !g_config.getBoolean(REPLACE_KICK_ON_LOGIN))
+		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN))
 		{
 			//Already trying to connect
 			disconnectClient("You are already logged in.");
@@ -502,10 +500,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	if (clientVersion != g_config.getNumber(CLIENT_VERSION))
+	if (clientVersion != g_configManager().getNumber(CLIENT_VERSION))
 	{
 		std::ostringstream ss;
-		ss << "Only clients with protocol " << g_config.getString(CLIENT_VERSION_STR) << " allowed!";
+		ss << "Only clients with protocol " << g_configManager().getString(CLIENT_VERSION_STR) << " allowed!";
 		disconnectClient(ss.str());
 		return;
 	}
@@ -726,7 +724,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE7: /* thank you */ break;
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEE: parseGreet(msg); break;
-		case 0xEF: if (!g_config.getBoolean(STOREMODULES)) { parseCoinTransfer(msg); } break; /* premium coins transfer */
+		case 0xEF: if (!g_configManager().getBoolean(STOREMODULES)) { parseCoinTransfer(msg); } break; /* premium coins transfer */
 		case 0xF0: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerShowQuestLog, player->getID()); break;
 		case 0xF1: parseQuestLine(msg); break;
 		// case 0xF2: parseRuleViolationReport(msg); break;
@@ -737,9 +735,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xF7: parseMarketCancelOffer(msg); break;
 		case 0xF8: parseMarketAcceptOffer(msg); break;
 		case 0xF9: parseModalWindowAnswer(msg); break;
-		case 0xFA: if (!g_config.getBoolean(STOREMODULES)) { parseStoreOpen(msg); } break;
-		case 0xFB: if (!g_config.getBoolean(STOREMODULES)) { parseStoreRequestOffers(msg); } break;
-		case 0xFC: if (!g_config.getBoolean(STOREMODULES)) { parseStoreBuyOffer(msg); } break;
+		case 0xFA: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreOpen(msg); } break;
+		case 0xFB: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreRequestOffers(msg); } break;
+		case 0xFC: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreBuyOffer(msg); } break;
 //		case 0xFD: parseStoreOpenTransactionHistory(msg); break;
 //		case 0xFE: parseStoreRequestTransactionHistory(msg); break;
 
@@ -1591,8 +1589,8 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0x00); // No data available
 
 	msg.addByte(1); // Worlds
-	msg.addString(g_config.getString(SERVER_NAME)); // First World
-	msg.addString(g_config.getString(SERVER_NAME)); // Selected World
+	msg.addString(g_configManager().getString(SERVER_NAME)); // First World
+	msg.addString(g_configManager().getString(SERVER_NAME)); // Selected World
 
 	msg.addByte(0); // Game World Category: 0xFF(-1) - Selected World
 	msg.addByte(0); // BattlEye World Type
@@ -1657,7 +1655,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 		msg.addString(character.name); // Character Name
 		msg.addString(""); // Probably Character Title(not visible in window)
 		msg.addByte(character.vocation); // Vocation Id
-		msg.addString(g_config.getString(SERVER_NAME)); // World
+		msg.addString(g_configManager().getString(SERVER_NAME)); // World
 		msg.add<uint16_t>(character.level); // Level
 		msg.addByte((player->getGUID() == character.id)); // Player Indicator Boolean
 		msg.add<uint64_t>(character.points); // Points
@@ -3488,7 +3486,7 @@ void ProtocolGame::sendStoreHighlight()
 
 void ProtocolGame::sendPremiumTrigger()
 {
-	if (!g_config.getBoolean(FREE_PREMIUM))
+	if (!g_configManager().getBoolean(FREE_PREMIUM))
 	{
 		NetworkMessage msg;
 		msg.addByte(0x9E);
@@ -5229,8 +5227,8 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	msg.addByte(0x00); // can change pvp framing option
 	msg.addByte(0x00); // expert mode button enabled
 
-	msg.addString(g_config.getString(STORE_IMAGES_URL));
-	msg.add<uint16_t>(static_cast<uint16_t>(g_config.getNumber(STORE_COIN_PACKET)));
+	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
+	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
 
 	msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
 	msg.addByte(0x00); // Tournament button
@@ -6773,7 +6771,7 @@ void ProtocolGame::sendOpenStash()
 		msg.add<uint16_t>(item.first);
 		msg.add<uint32_t>(item.second);
 	}
-	msg.add<uint16_t>(g_config.getNumber(STASH_ITEMS) - getStashSize(list));
+	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STASH_ITEMS) - getStashSize(list)));
 	writeToOutputBuffer(msg);
 }
 

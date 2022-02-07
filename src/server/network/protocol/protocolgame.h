@@ -40,7 +40,6 @@ class Quest;
 class ProtocolGame;
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
-extern ConfigManager g_config;
 extern Game g_game;
 
 struct TextMessage
@@ -460,7 +459,7 @@ private:
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint32_t version = g_config.getNumber(CLIENT_VERSION);
+	uint32_t version = g_configManager().getNumber(CLIENT_VERSION);
 	int32_t clientVersion = 0;
 
 	uint8_t challengeRandom = 0;

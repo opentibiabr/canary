@@ -299,6 +299,7 @@ class Spell : public BaseSpell
 		SpellType_t spellType = SPELL_UNDEFINED;
 
 	protected:
+		void applyCooldownConditions(Player* player) const;
 		bool playerSpellCheck(Player* player) const;
 		bool playerInstantSpellCheck(Player* player, const Position& toPos);
 		bool playerRuneSpellCheck(Player* player, const Position& toPos);

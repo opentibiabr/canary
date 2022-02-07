@@ -60,7 +60,6 @@ onlyPremiumAccount = false
 -- Customs
 weatherRain = false
 thunderEffect = false
-freeQuests = false
 allConsoleLog = false
 
 -- Stamina in Trainers
@@ -87,6 +86,14 @@ saveIntervalTime = 1
 
 -- Imbuement
 togleImbuementShrineStorage = false
+
+-- Free quests
+-- Add quest access to player when logging in
+-- NOTE: Only quests that are in the "freequests.lua" script table will work
+-- toggleFreeQuest = enable/disable the system
+-- freeQuestStage = if you add more quests to the table, change this value to run freeQuest again
+toggleFreeQuest = false
+freeQuestStage = 1
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default

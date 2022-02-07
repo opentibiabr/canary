@@ -22,15 +22,15 @@
 
 #include <utility>
 
-#include "config/configmanager.h"
 #include "declarations.hpp"
+
+#include "config/configmanager.h"
 #include "map/house/house.h"
 #include "items/item.h"
 #include "map/map.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
 
-extern ConfigManager g_config;
 
 #pragma pack(1)
 
@@ -71,7 +71,7 @@ class IOMap
 			if (map->monsterfile.empty()) {
 				// OTBM file doesn't tell us about the monsterfile,
 				// Lets guess it is mapname-monster.xml.
-				map->monsterfile = g_config.getString(MAP_NAME);
+				map->monsterfile = g_configManager().getString(MAP_NAME);
 				map->monsterfile += "-monster.xml";
 			}
 
@@ -87,7 +87,7 @@ class IOMap
 			if (map->npcfile.empty()) {
 				// OTBM file doesn't tell us about the npcfile,
 				// Lets guess it is mapname-npc.xml.
-				map->npcfile = g_config.getString(MAP_NAME);
+				map->npcfile = g_configManager().getString(MAP_NAME);
 				map->npcfile += "-npc.xml";
 			}
 
@@ -103,7 +103,7 @@ class IOMap
 			if (map->housefile.empty()) {
 				// OTBM file doesn't tell us about the housefile,
 				// Lets guess it is mapname-house.xml.
-				map->housefile = g_config.getString(MAP_NAME);
+				map->housefile = g_configManager().getString(MAP_NAME);
 				map->housefile += "-house.xml";
 			}
 

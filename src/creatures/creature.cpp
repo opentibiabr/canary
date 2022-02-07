@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
@@ -31,7 +30,6 @@ double Creature::speedB = 261.29;
 double Creature::speedC = -4795.01;
 
 extern Game g_game;
-extern ConfigManager g_config;
 extern CreatureEvents* g_creatureEvents;
 
 Creature::Creature()
@@ -483,6 +481,12 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			}
 		}
 
+		if (Player* player = creature->getPlayer()) {
+			if (player->isExerciseTraining()){
+				player->setTraining(false);
+			}
+		}
+
 		if (newTile->getZone() != oldTile->getZone()) {
 			onChangeZone(getZone());
 		}
@@ -626,7 +630,7 @@ void Creature::onDeath()
 	Creature* mostDamageCreature = nullptr;
 
 	const int64_t timeNow = OTSYS_TIME();
-	const uint32_t inFightTicks = g_config.getNumber(PZ_LOCKED);
+	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED);
 	int32_t mostDamage = 0;
 	std::map<Creature*, uint64_t> experienceMap;
 	for (const auto& it : damageMap) {
@@ -687,7 +691,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 {
 	if (!lootDrop && getMonster()) {
 		if (master) {
-			//scripting event - onDeath
+			// Scripting event onDeath
 			const CreatureEventList& deathEvents = getCreatureEvents(CREATURE_EVENT_DEATH);
 			for (CreatureEvent* deathEvent : deathEvents) {
 				deathEvent->executeOnDeath(this, nullptr, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
@@ -711,26 +715,24 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 				break;
 		}
 
-		Tile* updateTile = getTile();
-
-		if (splash) {
-			g_game.internalAddItem(updateTile, splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
-			g_game.startDecay(splash);
+		Tile* tile = getTile();
+		if (tile && splash) {
+			g_game.internalAddItem(tile, splash, INDEX_WHEREEVER, FLAG_NOLIMIT);
+			splash->startDecaying();
 		}
 
 		Item* corpse = getCorpse(lastHitCreature, mostDamageCreature);
-		if (corpse) {
-			g_game.internalAddItem(updateTile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
-			g_game.startDecay(corpse);
-		}
-
-		//scripting event - onDeath
-		for (CreatureEvent* deathEvent : getCreatureEvents(CREATURE_EVENT_DEATH)) {
-			deathEvent->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
-		}
-
-		if (corpse) {
+		if (tile && corpse) {
+			g_game.internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
+			corpse->startDecaying();
+		}
+
+		// Scripting event onDeath
+		for (CreatureEvent* deathEvent : getCreatureEvents(CREATURE_EVENT_DEATH)) {
+			if (deathEvent && corpse) {
+				deathEvent->executeOnDeath(this, corpse, lastHitCreature, mostDamageCreature, lastHitUnjustified, mostDamageUnjustified);
+			}
 		}
 	}
 
@@ -743,7 +745,7 @@ bool Creature::hasBeenAttacked(uint32_t attackerId)
 	if (it == damageMap.end()) {
 		return false;
 	}
-	return (OTSYS_TIME() - it->second.ticks) <= g_config.getNumber(PZ_LOCKED);
+	return (OTSYS_TIME() - it->second.ticks) <= g_configManager().getNumber(PZ_LOCKED);
 }
 
 Item* Creature::getCorpse(Creature*, Creature*)
@@ -862,7 +864,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 bool Creature::setAttackedCreature(Creature* creature)
 {
 	if (creature) {
-		if (this->getMonster() && this->getMonster()->isPet() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
 
@@ -1119,13 +1121,13 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	}
 
 	Monster* m = getMonster();
-	if (!m->isPet()) {
+	if (!m->isFamiliar()) {
 		gainExp /= 2;
 	}
 
 	master->onGainExperience(gainExp, target);
 
-	if (!m->isPet()) {
+	if (!m->isFamiliar()) {
 		SpectatorHashSet spectators;
 		g_game.map.getSpectators(spectators, position, false, true);
 		if (spectators.empty()) {

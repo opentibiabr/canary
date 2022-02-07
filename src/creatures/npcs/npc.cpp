@@ -22,7 +22,6 @@
 #include "declarations.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
-#include "config/configmanager.h"
 #include "lua/callbacks/creaturecallback.h"
 #include "game/game.h"
 #include "creatures/combat/spells.h"
@@ -31,7 +30,6 @@
 extern Game g_game;
 extern Npcs g_npcs;
 extern Events* g_events;
-extern ConfigManager g_config;
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -54,7 +52,7 @@ Npc::Npc(NpcType* npcType) :
 {
 	defaultOutfit = npcType->info.outfit;
 	currentOutfit = npcType->info.outfit;
-	float multiplier = g_config.getFloat(RATE_NPC_HEALTH);
+	float multiplier = g_configManager().getFloat(RATE_NPC_HEALTH);
 	health = npcType->info.health*multiplier;
 	healthMax = npcType->info.healthMax*multiplier;
 	baseSpeed = npcType->info.baseSpeed;

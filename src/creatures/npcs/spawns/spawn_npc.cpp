@@ -22,13 +22,11 @@
 #include "creatures/npcs/spawns/spawn_npc.h"
 #include "game/game.h"
 #include "creatures/npcs/npc.h"
-#include "config/configmanager.h"
 #include "game/scheduling/scheduler.h"
 
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
 
-extern ConfigManager g_config;
 extern Npcs g_npcs;
 extern Game g_game;
 extern Events* g_events;

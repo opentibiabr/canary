@@ -24,7 +24,6 @@
 #include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
 #include "items/weapons/weapons.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 
 #include "utils/pugicast.h"
@@ -32,7 +31,6 @@
 extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
-extern ConfigManager g_config;
 
 spellBlock_t::~spellBlock_t()
 {
@@ -66,7 +64,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 	for (auto monsterNode : doc.child("monsters").children()) {
 		std::string name = asLowerCaseString(monsterNode.attribute("name").as_string());
 		std::string file = "data/monster/" + std::string(monsterNode.attribute("file").as_string());
-		auto forceLoad = g_config.getBoolean(FORCE_MONSTERTYPE_LOAD);
+		auto forceLoad = g_configManager().getBoolean(FORCE_MONSTERTYPE_LOAD);
 		if (forceLoad) {
 			loadMonster(file, name, true);
 			continue;
@@ -864,8 +862,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.isAttackable = attr.as_bool();
 			} else if (strcasecmp(attrName, "hostile") == 0) {
 				mType->info.isHostile = attr.as_bool();
-			} else if (strcasecmp(attrName, "pet") == 0) {
-				mType->info.isPet = attr.as_bool();
+			} else if (strcasecmp(attrName, "familiar") == 0) {
+				mType->info.isFamiliar = attr.as_bool();
 			} else if (strcasecmp(attrName, "illusionable") == 0) {
 				mType->info.isIllusionable = attr.as_bool();
 			} else if (strcasecmp(attrName, "convinceable") == 0) {

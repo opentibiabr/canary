@@ -20,9 +20,7 @@
 #include "otpch.h"
 
 #include "utils/tools.h"
-#include "config/configmanager.h"
 
-extern ConfigManager g_config;
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -1098,6 +1096,8 @@ ItemAttrTypes stringToItemAttribute(const std::string& str)
 		return ITEM_ATTRIBUTE_FLUIDTYPE;
 	} else if (str == "doorid") {
 		return ITEM_ATTRIBUTE_DOORID;
+	} else if (str == "timestamp") {
+		return ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
 	}
 	return ITEM_ATTRIBUTE_NONE;
 }

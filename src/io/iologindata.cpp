@@ -21,14 +21,12 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 #include "io/iologindata.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 
 #include <limits>
 
-extern ConfigManager g_config;
 extern Game g_game;
 extern Monsters g_monsters;
 
@@ -86,7 +84,7 @@ void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accoun
 
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login)
 {
-  if (g_config.getBoolean(ALLOW_CLONES)) {
+  if (g_configManager().getBoolean(ALLOW_CLONES)) {
     return;
   }
 
@@ -105,7 +103,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 
   std::ostringstream query;
   query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
-  if (!g_config.getBoolean(FREE_PREMIUM)) {
+  if (!g_configManager().getBoolean(FREE_PREMIUM)) {
     query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
   }
   query << " FROM `players` WHERE `name` = " << db.escapeString(name);
@@ -128,7 +126,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   player->setGroup(group);
   player->accountNumber = result->getNumber<uint32_t>("account_id");
   player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
-  if (!g_config.getBoolean(FREE_PREMIUM)) {
+  if (!g_configManager().getBoolean(FREE_PREMIUM)) {
     player->premiumDays = result->getNumber<uint16_t>("premium_days");
   } else {
     player->premiumDays = std::numeric_limits<uint16_t>::max();
@@ -275,7 +273,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   acc.GetID(&(player->accountNumber));
   acc.GetAccountType(&(player->accountType));
 
-  if (g_config.getBoolean(FREE_PREMIUM)) {
+  if (g_configManager().getBoolean(FREE_PREMIUM)) {
     player->premiumDays = std::numeric_limits<uint16_t>::max();
   } else {
     acc.GetPremiumRemaningDays(&(player->premiumDays));
@@ -556,7 +554,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   if ((result = db.storeQuery(query.str()))) {
     do {
       time_t killTime = result->getNumber<time_t>("time");
-      if ((time(nullptr) - killTime) <= g_config.getNumber(FRAG_TIME)) {
+      if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
         player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
       }
     } while (result->next());
@@ -577,6 +575,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
         player->internalAddThing(pid, item);
+        item->startDecaying();
       } else {
         ItemMap::const_iterator it2 = itemMap.find(pid);
         if (it2 == itemMap.end()) {
@@ -586,17 +585,18 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         Container* container = it2->second.first->getContainer();
         if (container) {
           container->internalAddThing(item);
+          item->startDecaying();
         }
       }
 
       Container* itemContainer = item->getContainer();
       if (itemContainer) {
-        uint8_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+        int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
         if (cid > 0) {
           openContainersList.emplace_back(std::make_pair(cid, itemContainer));
         }
         if (item->hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
-          uint32_t flags = item->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+          int64_t flags = item->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
           for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
             if (hasBitSet(1 << category, flags)) {
               player->setLootContainer((ObjectCategory_t)category, itemContainer, true);
@@ -638,6 +638,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         DepotChest* depotChest = player->getDepotChest(pid, true);
         if (depotChest) {
           depotChest->internalAddThing(item);
+          item->startDecaying();
         }
       } else {
         ItemMap::const_iterator it2 = itemMap.find(pid);
@@ -648,6 +649,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         Container* container = it2->second.first->getContainer();
         if (container) {
           container->internalAddThing(item);
+          item->startDecaying();
         }
       }
     }
@@ -716,6 +718,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       if (pid >= 0 && pid < 100) {
         player->getInbox()->internalAddThing(item);
+        item->startDecaying();
       } else {
         ItemMap::const_iterator it2 = itemMap.find(pid);
 
@@ -726,6 +729,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         Container* container = it2->second.first->getContainer();
         if (container) {
           container->internalAddThing(item);
+          item->startDecaying();
         }
       }
     }

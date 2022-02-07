@@ -20,6 +20,7 @@
 #include "otpch.h"
 
 #include "items/containers/container.h"
+#include "items/decay/decay.h"
 #include "io/iomap.h"
 #include "game/game.h"
 
@@ -383,10 +384,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		uint32_t maxItem = static_cast<uint32_t>(g_config.getNumber(MAX_ITEM));
+		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));
 		if (const Container* addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_config.getNumber(MAX_CONTAINER));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
@@ -777,8 +778,17 @@ void Container::internalAddThing(uint32_t, Thing* thing)
 
 void Container::startDecaying()
 {
-	for (Item* item : itemlist) {
-		item->startDecaying();
+	g_decay.startDecay(this);
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		g_decay.startDecay(*it);
+	}
+}
+
+void Container::stopDecaying()
+{
+	g_decay.stopDecay(this);
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		g_decay.stopDecay(*it);
 	}
 }
 

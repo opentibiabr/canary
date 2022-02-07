@@ -133,6 +133,18 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 			registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 			registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
+			
+			registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN)
+			registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN_SPEED)
+			registerEnumIn(L, "configKeys", RATE_MANA_REGEN)
+			registerEnumIn(L, "configKeys", RATE_MANA_REGEN_SPEED)
+			registerEnumIn(L, "configKeys", RATE_SOUL_REGEN)
+			registerEnumIn(L, "configKeys", RATE_SOUL_REGEN_SPEED)
+
+			registerEnumIn(L, "configKeys", RATE_SPELL_COOLDOWN)
+			registerEnumIn(L, "configKeys", RATE_ATTACK_SPEED)
+			registerEnumIn(L, "configKeys", RATE_OFFLINE_TRAINING_SPEED)
+			registerEnumIn(L, "configKeys", RATE_EXERCISE_TRAINING_SPEED)
 
 			registerEnumIn(L, "configKeys", STAMINA_TRAINER)
 			registerEnumIn(L, "configKeys", STAMINA_PZ)
@@ -142,6 +154,8 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", STAMINA_PZ_GAIN)
 			registerEnumIn(L, "configKeys", STAMINA_TRAINER_GAIN)
 			registerEnumIn(L, "configKeys", SORT_LOOT_BY_CHANCE)
+			registerEnumIn(L, "configKeys", MAX_ALLOWED_ON_A_DUMMY)
+
 			registerEnumIn(L, "configKeys", PUSH_WHEN_ATTACKING)
 			registerEnumIn(L, "configKeys", TOGLE_SAVE_INTERVAL)
 			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TYPE)

@@ -1,9 +1,9 @@
 -- Function called with by the function "Npc:sayWithDelay"
-local sayFunction = function(npc, text, type, eventDelay, playerId)
-	local npc = Npc(npc)
+local sayFunction = function(npcId, text, type, eventDelay, playerId)
+	local npc = Npc(npcId)
 	if not npc then
-		Spdlog.error("[local func = function(npc, text, type, e, player)] - Npc not is valid")
-		return
+		Spdlog.error("[local func = function(npcId, text, type, e, player)] - Npc not is valid")
+		return false
 	end
 
 	npc:say(text, type, false, playerId, npc:getPosition())
@@ -39,9 +39,9 @@ function Npc:sendMessage(player, text)
 	return self:say(string.format(text or "", player:getName()), TALKTYPE_PRIVATE_NP, true, player)
 end
 
-function Npc:sayWithDelay(npc, text, messageType, delay, eventDelay, player)
+function Npc:sayWithDelay(npcId, text, messageType, delay, eventDelay, player)
 	eventDelay.done = false
-	eventDelay.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npc, text, messageType, eventDelay, player)
+	eventDelay.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npcId, text, messageType, eventDelay, player)
 end
 
 function GetCount(string)

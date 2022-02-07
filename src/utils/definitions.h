@@ -22,7 +22,7 @@
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
 static constexpr auto STATUS_SERVER_VERSION = "1.1.0";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "OTServBR Team and Mark Samman";
+static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization and Mark Samman";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;

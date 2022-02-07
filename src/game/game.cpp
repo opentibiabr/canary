@@ -7600,7 +7600,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	uint64_t totalPrice = offer.price * amount;
 
-	// The player has an offer to by something and someone is going to sell to ittemType
+	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());

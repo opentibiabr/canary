@@ -458,7 +458,8 @@ enum NpcsEvent_t : uint8_t {
 	NPCS_EVENT_SAY = 5,
 	NPCS_EVENT_PLAYER_BUY = 6,
 	NPCS_EVENT_PLAYER_SELL = 7,
-	NPCS_EVENT_PLAYER_CHECK_ITEM = 8
+	NPCS_EVENT_PLAYER_CHECK_ITEM = 8,
+	NPCS_EVENT_PLAYER_CLOSE_CHANNEL = 9
 };
 
 enum DailyRewardBonus : uint8_t {
@@ -710,16 +711,19 @@ struct ShopInfo {
 	int32_t subType;
 	uint32_t buyPrice;
 	uint32_t sellPrice;
+	int32_t storageKey, storageValue;
 
 	ShopInfo() {
 		itemClientId = 0;
 		subType = 1;
 		buyPrice = 0;
 		sellPrice = 0;
+		storageKey = 0;
+		storageValue = 0;
 	}
 
-	ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, std::string newName = "")
-		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), name(std::move(newName)) {}
+	explicit ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
+		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), storageKey(newStorageKey), storageValue(newStorageValue), name(std::move(newName)) {}
 };
 
 using MarketOfferList = std::list<MarketOffer>;
@@ -829,7 +833,7 @@ struct summonBlock_t {
 	std::string name;
 	uint32_t chance;
 	uint32_t speed;
-	uint32_t max;
+	uint32_t count;
 	bool force = false;
 };
 

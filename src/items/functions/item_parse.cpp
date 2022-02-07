@@ -439,19 +439,19 @@ void ItemParse::parseHealthAndMana(const std::string& tmpStrValue, pugi::xml_att
 	if (stringValue == "healthgain") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.healthGain = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setHealthGain(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "healthticks") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.healthTicks = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setHealthTicks(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "managain") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.manaGain = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setManaGain(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "manaticks") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.manaTicks = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setManaTicks(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "manashield") {
 		itemType.getAbilities().manaShield = valueAttribute.as_bool();
 	}

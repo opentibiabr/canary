@@ -1790,6 +1790,26 @@ int PlayerFunctions::luaPlayerRemoveItem(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetItemIdByCid(lua_State* L) {
+	// player:getItemIdByCid(itemId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint16_t itemId;
+	itemId = Item::items.getItemIdByClientId(getNumber<uint16_t>(L, 2)).id;
+
+	if (itemId == 0) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, itemId);
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerSendContainer(lua_State* L) {
 	// player:sendContainer(container)
 	Player* player = getUserdata<Player>(L, 1);

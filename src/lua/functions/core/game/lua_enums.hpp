@@ -1005,6 +1005,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, NPCS_EVENT_PLAYER_BUY)
 			registerEnum(L, NPCS_EVENT_PLAYER_SELL)
 			registerEnum(L, NPCS_EVENT_PLAYER_CHECK_ITEM)
+			registerEnum(L, NPCS_EVENT_PLAYER_CLOSE_CHANNEL)
 
 			registerEnum(L, LIGHT_STATE_DAY);
 			registerEnum(L, LIGHT_STATE_NIGHT);

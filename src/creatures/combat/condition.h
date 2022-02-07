@@ -158,6 +158,9 @@ class ConditionRegeneration final : public ConditionGeneric
 
 		bool setParam(ConditionParam_t param, int32_t value) override;
 
+		uint32_t getHealthTicks(Creature* creature) const;
+		uint32_t getManaTicks(Creature* creature) const;
+
 		ConditionRegeneration* clone() const override {
 			return new ConditionRegeneration(*this);
 		}

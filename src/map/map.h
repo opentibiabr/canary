@@ -185,7 +185,25 @@ class Map
          * Load a map.
          * \returns true if the map was loaded successfully
          */
+		bool load(const std::string& identifier);
+		/**
+		* Load the main map
+		 * \param identifier Is the main map name (name of file .otbm)
+		 * \param loadHouses if true, the main map houses is loaded
+		 * \param loadMonsters if true, the main map monsters is loaded
+		 * \param loadNpcs if true, the main map npcs is loaded
+		 * \returns true if the main map was loaded successfully
+		*/
 		bool loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs);
+		/**
+		* Load the custom map
+		 * \param identifier Is the map custom folder
+		 * \param loadHouses if true, the map custom houses is loaded
+		 * \param loadMonsters if true, the map custom monsters is loaded
+		 * \param loadNpcs if true, the map custom npcs is loaded
+		 * \returns true if the custom map was loaded successfully
+		*/
+		bool loadMapCustom(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs);
 
 		/**
          * Save a map.
@@ -264,10 +282,16 @@ class Map
 			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
 		}
 
+		// Storage made by "loadFromXML" of houses, monsters and npcs for main map
 		SpawnsMonster spawnsMonster;
 		SpawnsNpc spawnsNpc;
 		Towns towns;
 		Houses houses;
+
+		// Storage made by "loadFromXML" of houses, monsters and npcs for custom map
+		SpawnsMonster spawnsMonsterCustom;
+		SpawnsNpc spawnsNpcCustom;
+		Houses housesCustom;
 	private:
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;

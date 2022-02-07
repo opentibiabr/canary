@@ -23,7 +23,6 @@
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"
-#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
 #include "database/databasetasks.h"
@@ -33,6 +32,7 @@
 #include "io/iologindata.h"
 #include "io/iomarket.h"
 #include "items/items.h"
+#include "lua/scripts/lua_environment.hpp"
 #include "creatures/monsters/monster.h"
 #include "lua/creature/movement.h"
 #include "game/scheduling/scheduler.h"
@@ -48,7 +48,6 @@
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
 
-extern ConfigManager g_config;
 extern Actions* g_actions;
 extern Chat* g_chat;
 extern TalkActions* g_talkActions;
@@ -64,6 +63,7 @@ extern Weapons* g_weapons;
 extern Scripts* g_scripts;
 extern Modules* g_modules;
 extern Imbuements* g_imbuements;
+extern LuaEnvironment g_luaEnvironment;
 
 Game::Game()
 {
@@ -281,15 +281,20 @@ void Game::setGameState(GameState_t newState)
 			groups.load();
 			g_chat->load();
 
+			// Load monsters and npcs stored by the "loadFromXML" function
 			map.spawnsMonster.startup();
 			map.spawnsNpc.startup();
+
+			// Load monsters and npcs custom stored by the "loadFromXML" function
+			map.spawnsMonsterCustom.startup();
+			map.spawnsNpcCustom.startup();
 
 			raids.loadFromXml();
 			raids.startup();
 
 			mounts.loadFromXml();
 
-			if (!g_config.getBoolean(STOREMODULES)) {
+			if (!g_configManager().getBoolean(STOREMODULES)) {
 				gameStore.loadFromXml();
 				gameStore.startup();
 			}
@@ -615,9 +620,9 @@ void Game::saveGameState()
 		IOLoginData::savePlayer(it.second);
 	}
 
-  for (const auto& it : guilds) {
-    IOGuild::saveGuild(it.second);
-  }
+	for (const auto& it : guilds) {
+		IOGuild::saveGuild(it.second);
+	}
 
 	Map::save();
 
@@ -658,9 +663,16 @@ bool Game::loadItemsPrice()
 
 bool Game::loadMainMap(const std::string& filename)
 {
-	Monster::despawnRange = g_config.getNumber(DEFAULT_DESPAWNRANGE);
-	Monster::despawnRadius = g_config.getNumber(DEFAULT_DESPAWNRADIUS);
+	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
+	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
 	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+}
+
+bool Game::loadCustomMap(const std::string& filename)
+{
+	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
+	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
+	return map.loadMapCustom("data/world/custom/" + filename + ".otbm", true, true, true);
 }
 
 void Game::loadMap(const std::string& path)
@@ -1175,7 +1187,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 		if (Position::areInRange<1, 1, 0>(movingCreature->getPosition(),
                                           player->getPosition())) {
 			SchedulerTask* task = createSchedulerTask(
-                                  g_config.getNumber(PUSH_DELAY),
+                                  g_configManager().getNumber(PUSH_DELAY),
                                   std::bind(&Game::playerMoveCreatureByID, this,
                                   player->getID(), movingCreature->getID(),
                                   movingCreature->getPosition(), tile->getPosition()));
@@ -2957,7 +2969,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 	}
 
 	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
-	if (isHotkey && !g_config.getBoolean(AIMBOT_HOTKEY_ENABLED)) {
+	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
 	}
 
@@ -3071,7 +3083,7 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 	}
 
 	bool isHotkey = (pos.x == 0xFFFF && pos.y == 0 && pos.z == 0);
-	if (isHotkey && !g_config.getBoolean(AIMBOT_HOTKEY_ENABLED)) {
+	if (isHotkey && !g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		return;
 	}
 
@@ -3164,7 +3176,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uin
 	}
 
 	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
-	if (!g_config.getBoolean(AIMBOT_HOTKEY_ENABLED)) {
+	if (!g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
 		if (creature->getPlayer() || isHotkey) {
 			player->sendCancelMessage(RETURNVALUE_DIRECTPLAYERSHOOT);
 			return;
@@ -3533,7 +3545,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			return;
 	}
 
-	if (!item || item->getClientID() != spriteId || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || (!item->isWrapable() && item->getID() != 26054)) {
+	if (!item || item->getClientID() != spriteId || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || (!item->isWrapable() && item->getID() != ITEM_DECORATION_KIT)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3559,7 +3571,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-	if ((item->getHoldingPlayer() && item->getID() == 26054) || (tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID))) {
+	if ((item->getHoldingPlayer() && item->getID() == ITEM_DECORATION_KIT) || (tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) && !item->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID))) {
 		player->sendCancelMessage("You can only wrap/unwrap in the floor.");
 		return;
 	}
@@ -3572,20 +3584,20 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		unWrapId = (uint16_t)tmp;
 	}
 
-  // prevent to wrap a filled bath tube
-  if (item->getID() == 29313) {
-    player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-    return;
-  }
+	// Prevent to wrap a filled bath tube
+	if (item->getClientID() == ITEM_FILLED_BATH_TUBE) {
+		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
 
-	if (item->isWrapable() && item->getID() != TRANSFORM_BOX_ID) {
+	if (item->isWrapable() && item->getID() != ITEM_DECORATION_KIT) {
 		uint16_t hiddenCharges = 0;
 		if (isCaskItem(item->getID())) {
 			hiddenCharges = item->getSubType();
 		}
 		uint16_t oldItemID = item->getID();
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
-		Item* newItem = transformItem(item, 26054);
+		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 		ItemAttributes::CustomAttribute val;
 		val.set<int64_t>(oldItemID);
 		std::string key = "unWrapId";
@@ -3596,7 +3608,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		}
 		newItem->startDecaying();
 	}
-	else if (item->getID() == TRANSFORM_BOX_ID && unWrapId != 0) {
+	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
 		uint16_t hiddenCharges = item->getDate();
 		Item* newItem = transformItem(item, unWrapId);
 		if (newItem) {
@@ -3905,7 +3917,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-  if (g_config.getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+  if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(tradeItem->getTile())) {
 			House* house = houseTile->getHouse();
 			if (house && !house->isInvited(player)) {
@@ -4361,10 +4373,6 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		subType = clientFluidToServer(count);
 	} else {
 		subType = count;
-	}
-
-	if (!player->hasShopItemForSale(it.id, subType)) {
-		return;
 	}
 
 	if (!g_events->eventPlayerOnLookInShop(player, &it, subType)) {
@@ -4914,7 +4922,7 @@ void Game::playerTurn(uint32_t playerId, Direction dir)
 
 void Game::playerRequestOutfit(uint32_t playerId)
 {
-	if (!g_config.getBoolean(ALLOW_CHANGEOUTFIT)) {
+	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
 		return;
 	}
 
@@ -4938,7 +4946,7 @@ void Game::playerToggleMount(uint32_t playerId, bool mount)
 
 void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 {
-	if (!g_config.getBoolean(ALLOW_CHANGEOUTFIT)) {
+	if (!g_configManager().getBoolean(ALLOW_CHANGEOUTFIT)) {
 		return;
 	}
 
@@ -5090,11 +5098,11 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& 
 
 	result = g_spells->playerSaySpell(player, words);
 	if (result == TALKACTION_BREAK) {
-		if (!g_config.getBoolean(PUSH_WHEN_ATTACKING)) {
+		if (!g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
 			player->cancelPush();
 		}
 
-		if (!g_config.getBoolean(EMOTE_SPELLS)) {
+		if (!g_configManager().getBoolean(EMOTE_SPELLS)) {
 			return internalCreatureSay(player, TALKTYPE_SPELL_USE, words, false);
 		} else {
 			return internalCreatureSay(player, TALKTYPE_MONSTER_SAY, words, false);
@@ -6555,7 +6563,7 @@ void Game::dieSafely(std::string errorMsg /* = "" */)
 
 void Game::shutdown()
 {
-	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	webhook_send_message("Server is shutting down", "Shutting down...", WEBHOOK_COLOR_OFFLINE, url);
 
 	SPDLOG_INFO("Shutting down...");
@@ -6749,7 +6757,7 @@ void Game::loadMotdNum()
 	result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_hash'");
 	if (result) {
 		motdHash = result->getString("value");
-		if (motdHash != transformToSHA1(g_config.getString(MOTD))) {
+		if (motdHash != transformToSHA1(g_configManager().getString(MOTD))) {
 			++motdNum;
 		}
 	} else {
@@ -6766,7 +6774,7 @@ void Game::saveMotdNum() const
 	db.executeQuery(query.str());
 
 	query.str(std::string());
-	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_config.getString(MOTD)) << "' WHERE `config` = 'motd_hash'";
+	query << "UPDATE `server_config` SET `value` = '" << transformToSHA1(g_configManager().getString(MOTD)) << "' WHERE `config` = 'motd_hash'";
 	db.executeQuery(query.str());
 }
 
@@ -7368,7 +7376,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		return;
 	}
 
-	if (g_config.getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
+	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
 		return;
 	}
@@ -7387,7 +7395,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		return;
 	}
 
-	const uint32_t maxOfferCount = g_config.getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
+	const uint32_t maxOfferCount = g_configManager().getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
 	if (maxOfferCount != 0 && IOMarket::getPlayerOfferCount(player->getGUID()) >= maxOfferCount) {
 		return;
 	}
@@ -7466,6 +7474,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 		itemsPriceMap[it.id] = price;
 	}
 
+	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id);
 	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
@@ -7500,6 +7509,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance( player->getBankBalance() + static_cast<uint64_t>(offer.price) * offer.amount);
+		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {
 		const ItemType& it = Item::items[offer.itemId];
@@ -7543,8 +7553,9 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	IOMarket::moveOfferToHistory(offer.id, OFFERSTATE_CANCELLED);
 	offer.amount = 0;
-	offer.timestamp += g_config.getNumber(MARKET_OFFER_DURATION);
+	offer.timestamp += g_configManager().getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
+	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
 	player->updateMarketExhausted();
@@ -7589,7 +7600,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	uint64_t totalPrice = offer.price * amount;
 
-	// The player has an offer to by something and someone is going to sell to it
+	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
@@ -7786,7 +7797,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 	}
 
-	const int32_t marketOfferDuration = g_config.getNumber(MARKET_OFFER_DURATION);
+	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, time(nullptr), OFFERSTATE_ACCEPTEDEX);
 
@@ -7800,11 +7811,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		IOMarket::acceptOffer(offer.id, amount);
 	}
 
+	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	offer.timestamp += marketOfferDuration;
 	player->sendMarketAcceptOffer(offer);
-
-	player->updateMarketExhausted(); // Exhausted for accept offer in the market
+	// Exhausted for accept offer in the market
+	player->updateMarketExhausted();
 }
 
 void Game::playerStoreOpen(uint32_t playerId, uint8_t serviceType)
@@ -7883,9 +7895,9 @@ void Game::playerBuyStoreOffer(uint32_t playerId, uint32_t offerId,
 					Item * item;
 
 					if (offer -> type == WRAP_ITEM) {
-						item = Item::CreateItem(TRANSFORM_BOX_ID, std::min < uint16_t > (packSize, pendingCount));
-						item -> setActionId(tmp -> productId);
-						item -> setSpecialDescription("Unwrap it in your own house to create a <" + Item::items[tmp -> productId].name + ">.");
+						item = Item::CreateItem(ITEM_DECORATION_KIT, std::min < uint16_t > (packSize, pendingCount));
+						item->setActionId(tmp->productId);
+						item->setSpecialDescription("Unwrap it in your own house to create a <" + Item::items[tmp->productId].name + ">.");
 					} else {
 						item = Item::CreateItem(tmp -> productId, std::min < uint16_t > (packSize, pendingCount));
 					}
@@ -8500,10 +8512,11 @@ bool Game::reload(ReloadTypes_t reloadType)
 		case RELOAD_TYPE_NPCS: {
 			g_npcs.reset();
 			g_scripts->loadScripts("npclua", false, true);
+			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();
-		case RELOAD_TYPE_CONFIG: return g_config.reload();
+		case RELOAD_TYPE_CONFIG: return g_configManager().reload();
 		case RELOAD_TYPE_EVENTS: return g_events->loadFromXml();
 		case RELOAD_TYPE_ITEMS: return Item::items.reload();
 		case RELOAD_TYPE_MODULES: return g_modules->reload();
@@ -8527,7 +8540,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 
 		default: {
 
-			g_config.reload();
+			g_configManager().reload();
 			raids.reload() && raids.startup();
 			Item::items.reload();
 			g_weapons->clear(true);

@@ -40,7 +40,6 @@ class Quest;
 class ProtocolGame;
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
-extern ConfigManager g_config;
 extern Game g_game;
 
 struct TextMessage
@@ -170,8 +169,8 @@ private:
 	void parseHouseWindow(NetworkMessage &msg);
 
 	void parseLookInShop(NetworkMessage &msg);
-	void parsePlayerPurchase(NetworkMessage &msg);
-	void parsePlayerSale(NetworkMessage &msg);
+	void parsePlayerBuyOnShop(NetworkMessage &msg);
+	void parsePlayerSellOnShop(NetworkMessage &msg);
 
 	void parseQuestLine(NetworkMessage &msg);
 
@@ -432,6 +431,7 @@ private:
 	void MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
 
 	//shop
+	void AddHiddenShopItem(NetworkMessage &msg);
 	void AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId);
 
 	//otclient
@@ -460,7 +460,7 @@ private:
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint32_t version = g_config.getNumber(CLIENT_VERSION);
+	uint32_t version = g_configManager().getNumber(CLIENT_VERSION);
 	int32_t clientVersion = 0;
 
 	uint8_t challengeRandom = 0;

@@ -572,6 +572,24 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	return 1;
 }
 
+int GameFunctions::luaGameCreateItemClassification(lua_State* L) {
+	// Game.createItemClassification(id)
+	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+		reportErrorFunc("Item classification can only be registered in the Scripts interface.");
+		lua_pushnil(L);
+		return 1;
+	}
+
+	ItemClassification* itemClassification = g_game.getItemsClassification(getNumber<uint8_t>(L, 1), true);
+	if (itemClassification) {
+		pushUserdata<ItemClassification>(L, itemClassification);
+		setMetatable(L, -1, "ItemClassification");
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int GameFunctions::luaGameStartRaid(lua_State* L) {
 	// Game.startRaid(raidName)
 	const std::string& raidName = getString(L, 1);

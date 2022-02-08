@@ -152,7 +152,7 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 		SPDLOG_ERROR("[Items::loadFromOtb] - "
                      "Old version detected, a newer version of items.otb is required");
 		return ERROR_INVALID_FORMAT;
-	} else if (minorVersion < CLIENT_VERSION_1140) {
+	} else if (minorVersion < CLIENT_VERSION_1285) {
 		SPDLOG_ERROR("[Items::loadFromOtb] - "
                      "A newer version of items.otb is required");
 		return ERROR_INVALID_FORMAT;

@@ -728,7 +728,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
 			bool corpses = corpse->isRewardCorpse() && (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
-			if (g_configManager().getBoolean(AUTOLOOT) && mostDamageCreature->getPlayer() && !corpses) {
+			if (g_configManager().getBoolean(AUTOLOOT) && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				int32_t pos = tile->getStackposOfItem(mostDamageCreature->getPlayer(), corpse);
 				g_dispatcher.addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game, mostDamageCreature->getID(), this->getPosition(), corpse->getClientID(), pos, nullptr, false, true)));
 			}

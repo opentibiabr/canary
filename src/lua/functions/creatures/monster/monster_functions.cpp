@@ -93,7 +93,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		monster->defaultOutfit = monsterType->info.outfit;
 		monster->currentOutfit = monsterType->info.outfit;
 		monster->skull = monsterType->info.skull;
-		float multiplier = g_config.getFloat(RATE_MONSTER_HEALTH);
+		float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 		monster->health = monsterType->info.health * multiplier;
 		monster->healthMax = monsterType->info.healthMax * multiplier;
 		monster->baseSpeed = monsterType->info.baseSpeed;

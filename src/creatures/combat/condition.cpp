@@ -824,7 +824,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 		player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
 	}
 	if (creature->getZone() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
-		if (internalHealthTicks >= healthTicks) {
+		if (internalHealthTicks >= getHealthTicks(creature)) {
 			internalHealthTicks = 0;
 
 			int32_t realHealthGain = creature->getHealth();
@@ -862,7 +862,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 	}
 
 	if (creature->getZone() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_MP_REGENERATION) {
-		if (internalManaTicks >= manaTicks) {
+		if (internalManaTicks >= getManaTicks(creature)) {
 			internalManaTicks = 0;
 			if (creature->getZone() == ZONE_PROTECTION && PlayerdailyStreak >= DAILY_REWARD_DOUBLE_MP_REGENERATION) {
 				creature->changeMana(manaGain * 2); // Double regen from daily reward
@@ -899,6 +899,28 @@ bool ConditionRegeneration::setParam(ConditionParam_t param, int32_t value)
 		default:
 			return ret;
 	}
+}
+
+uint32_t ConditionRegeneration::getHealthTicks(Creature* creature) const
+{
+	const Player* player = creature->getPlayer();
+
+	if (player != nullptr && isBuff) {
+		return healthTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN);
+	}
+
+	return healthTicks;
+}
+
+uint32_t ConditionRegeneration::getManaTicks(Creature* creature) const
+{
+	const Player* player = creature->getPlayer();
+
+	if (player != nullptr && isBuff) {
+		return manaTicks / g_configManager().getFloat(RATE_SPELL_COOLDOWN);
+	}
+
+	return manaTicks;
 }
 
 bool ConditionManaShield::startCondition(Creature* creature)

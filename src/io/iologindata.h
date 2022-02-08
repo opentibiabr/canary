@@ -29,13 +29,20 @@ using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
 class IOLoginData
 {
 	public:
-		static bool authenticateAccountPassword(const std::string& email,
-                                                const std::string& password,
-                                                account::Account *account);
-		static bool gameWorldAuthentication(const std::string& accountName,
-                                            const std::string& password,
-                                            std::string& characterName,
-                                            uint32_t *accountId);
+		#if GAME_FEATURE_LOGIN_EMAIL > 0
+		static bool authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account);
+		#else
+		static bool authenticateAccountPassword(const std::string& accountName, const std::string& password, account::Account *account);
+		#endif
+		#if GAME_FEATURE_SESSIONKEY > 0
+		#if GAME_FEATURE_LOGIN_EMAIL > 0
+		static uint32_t gameWorldAuthentication(const std::string& email, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime);
+		#else
+		static uint32_t gameWorldAuthentication(const std::string& accountName, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime);
+		#endif
+		#else
+		static uint32_t gameWorldAuthentication(const std::string& accountName, const std::string& password, std::string& characterName);
+		#endif
 		static account::AccountType getAccountType(uint32_t accountId);
 		static void setAccountType(uint32_t accountId, account::AccountType accountType);
 		static void updateOnlineStatus(uint32_t guid, bool login);

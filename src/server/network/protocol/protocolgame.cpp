@@ -214,14 +214,60 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 #endif
 {
 	//dispatcher thread
-	Player *foundPlayer = g_game.getPlayerByName(characterName);
+	auto connection = getConnection();
+	if (!connection)
+	{
+		return;
+	}
+
+	BanInfo banInfo;
+	if (IOBan::isIpBanned(connection->getIP(), banInfo))
+	{
+		if (banInfo.reason.empty())
+		{
+			banInfo.reason = "(none)";
+		}
+
+		std::ostringstream ss;
+		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
+		disconnectClient(ss.str());
+		return;
+	}
+
+	#if GAME_FEATURE_SESSIONKEY > 0
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	uint32_t accountId = IOLoginData::gameWorldAuthentication(email, password, characterName, token, tokenTime);
+	if (accountId == 0)
+	{
+		SPDLOG_INFO("EMAIL {}", email);
+		SPDLOG_INFO("PASSWORD {}", password);
+		disconnectClient("Your email or password is not correct.");
+		return;
+	}
+	#else
+	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
+	if (accountId == 0)
+	{
+		disconnectClient("Account name or password is not correct.");
+		return;
+	}
+	#endif
+	#else
+	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName);
+	if (accountId == 0)
+	{
+		disconnectClient("Account name or password is not correct.");
+		return;
+	}
+	#endif
+
+	Player* foundPlayer = g_game.getPlayerByName(characterName);
 	if (!foundPlayer || g_configManager().getBoolean(ALLOW_CLONES))
 	{
 		player = new Player(getThis());
 		player->setName(characterName);
 
 		player->incrementReferenceCounter();
-		player->setID();
 
 		if (!IOLoginData::preloadPlayer(player, characterName))
 		{
@@ -229,6 +275,7 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 			return;
 		}
 
+		player->setID();
 		if (IOBan::isPlayerNamelocked(player->getGUID()))
 		{
 			disconnectClient("Your character has been namelocked.");
@@ -261,8 +308,7 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 
 		if (!player->hasFlag(PlayerFlag_CannotBeBanned))
 		{
-			BanInfo banInfo;
-			if (IOBan::isAccountBanned(player->getAccount(), banInfo))
+			if (IOBan::isAccountBanned(accountId, banInfo))
 			{
 				if (banInfo.reason.empty())
 				{
@@ -272,13 +318,11 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 				std::ostringstream ss;
 				if (banInfo.expiresAt > 0)
 				{
-					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-                      << banInfo.reason;
+					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
 				}
 				else
 				{
-					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-                      << banInfo.reason;
+					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
 				}
 				disconnectClient(ss.str());
 				return;
@@ -293,12 +337,12 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 			std::ostringstream ss;
 
 			ss << "Too many players online.\nYou are at place "
-               << currentSlot << " on the waiting list.";
+			   << currentSlot << " on the waiting list.";
 
 			auto output = OutputMessagePool::getOutputMessage();
 			output->addByte(0x16);
 			output->addString(ss.str());
-			output->addByte(retryTime);
+			output->addByte(static_cast<uint8_t>(retryTime));
 			send(output);
 			disconnect();
 			return;
@@ -334,6 +378,12 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 
 		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX)
 		{
+			NetworkMessage opcodeMessage;
+			opcodeMessage.addByte(0x32);
+			opcodeMessage.addByte(0x00);
+			opcodeMessage.add<uint16_t>(0x00);
+			writeToOutputBuffer(opcodeMessage);
+
 			player->registerCreatureEvent("ExtendedOpcode");
 		}
 
@@ -605,27 +655,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 	if (g_game.getGameState() == GAME_STATE_MAINTAIN)
 	{
 		disconnectClient("Gameworld is under maintenance. Please re-connect in a while.");
-		return;
-	}
-
-	BanInfo banInfo;
-	if (IOBan::isIpBanned(getIP(), banInfo))
-	{
-		if (banInfo.reason.empty())
-		{
-			banInfo.reason = "(none)";
-		}
-
-		std::ostringstream ss;
-		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
-          << banInfo.reason;
-		disconnectClient(ss.str());
-		return;
-	}
-
-	uint32_t accountId;
-	if (!IOLoginData::gameWorldAuthentication(email, password, characterName, &accountId)) {
-		disconnectClient("Email or password is not correct.");
 		return;
 	}
 

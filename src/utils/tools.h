@@ -110,6 +110,7 @@ NameEval_t validateName(const std::string &name);
 bool isCaskItem(uint16_t itemId);
 
 std::string getObjectCategoryName(ObjectCategory_t category);
+std::string decodeSecret(const std::string& secret);
 
 int64_t OTSYS_TIME();
 

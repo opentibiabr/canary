@@ -21,6 +21,7 @@
 
 #include "creatures/players/account/account.hpp"
 #include "database/databasetasks.h"
+#include "utils/tools.h"
 
 #include <algorithm>
 #include <limits>
@@ -31,6 +32,7 @@ Account::Account() {
   id_ = 0;
   email_.clear();
   password_.clear();
+  secret_.clear();
   premium_remaining_days_ = 0;
   premium_last_day_ = 0;
   account_type_ = ACCOUNT_TYPE_NORMAL;
@@ -42,6 +44,7 @@ Account::Account(uint32_t id) {
   id_ = id;
   email_.clear();
   password_.clear();
+  secret_.clear();
   premium_remaining_days_ = 0;
   premium_last_day_ = 0;
   account_type_ = ACCOUNT_TYPE_NORMAL;
@@ -52,6 +55,7 @@ Account::Account(uint32_t id) {
 Account::Account(const std::string &email) : email_(email) {
   id_ = 0;
   password_.clear();
+  secret_.clear();
   premium_remaining_days_ = 0;
   premium_last_day_ = 0;
   account_type_ = ACCOUNT_TYPE_NORMAL;
@@ -216,6 +220,7 @@ error_t Account::LoadAccountDB(std::ostringstream &query) {
   this->SetEmail(result->getString("email"));
   this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
   this->SetPassword(result->getString("password"));
+  this->SetSecret(result->getString("secret"));
   this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
   this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
 
@@ -273,6 +278,7 @@ error_t Account::SaveAccountDB() {
         << "`email` = " << db_->escapeString(email_) << " , "
         << "`type` = " << account_type_ << " , "
         << "`password` = " << db_->escapeString(password_) << " , "
+        << "`secret` = " << db_->escapeString(secret_) << " , "
         << "`premdays` = " << premium_remaining_days_ << " , "
         << "`lastday` = " << premium_last_day_;
 
@@ -341,6 +347,23 @@ error_t Account::GetPassword(std::string *password) {
   }
 
   *password = password_;
+  return ERROR_NO;
+}
+
+error_t Account::SetSecret(std::string secret) {
+  if (secret.empty()) {
+    return ERROR_DB;
+  }
+  secret_ = secret;
+  return ERROR_NO;
+}
+
+error_t Account::GetSecret(std::string *secret) {
+  if (secret == nullptr) {
+    return ERROR_NULLPTR;
+  }
+
+  *secret = secret_;
   return ERROR_NO;
 }
 

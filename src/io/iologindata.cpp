@@ -24,44 +24,115 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
+#include "utils/tools.h"
 
 #include <limits>
 
 extern Game g_game;
 extern Monsters g_monsters;
 
-bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
+#if GAME_FEATURE_LOGIN_EMAIL > 0
+bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account)
+#else
+bool IOLoginData::authenticateAccountPassword(const std::string& accountName, const std::string& password, account::Account *account)
+#endif
+{
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {
 		SPDLOG_ERROR("Email {} doesn't match any account.", email);
 		return false;
 	}
+	#else
+	if (account::ERROR_NO != account->LoadAccountDB(accountName)) {
+		SPDLOG_ERROR("Account name {} doesn't match any account.", accountName);
+		return false;
+	}
+	#endif
 
 	std::string accountPassword;
 	account->GetPassword(&accountPassword);
 	if (transformToSHA1(password) != accountPassword) {
-			SPDLOG_ERROR("Password '{}' doesn't match any account", transformToSHA1(password));
-			return false;
+		SPDLOG_ERROR("Password '{}' doesn't match any account", transformToSHA1(password));
+		return false;
 	}
 
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string& email, const std::string& password, std::string& characterName, uint32_t *accountId)
+#if GAME_FEATURE_SESSIONKEY > 0
+#if GAME_FEATURE_LOGIN_EMAIL > 0
+uint32_t IOLoginData::gameWorldAuthentication(const std::string& email, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime)
+#else
+uint32_t IOLoginData::gameWorldAuthentication(const std::string& accountName, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime)
+#endif
+#else
+uint32_t IOLoginData::gameWorldAuthentication(const std::string& accountName, const std::string& password, std::string& characterName)
+#endif
 {
-	account::Account account;
-	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
-		return false;
+	Database& db = Database::getInstance();
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	const std::string& escapedEmail = db.escapeString(email);
+	const std::string& escapedCharacterName = db.escapeString(characterName);
+	std::ostringstream query;
+	#else
+	const std::string& escapedAccountName = db.escapeString(accountName);
+	const std::string& escapedCharacterName = db.escapeString(characterName);
+	std::ostringstream query;
+	#endif
+
+	#if GAME_FEATURE_SESSIONKEY > 0
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	query << "SELECT `id`, `password`, `secret` FROM `accounts` WHERE `email` = " << escapedEmail << " LIMIT 1";
+	#else
+	query << "SELECT `id`, `password`, `secret` FROM `accounts` WHERE `name` = " << escapedAccountName << " LIMIT 1";
+	#endif
+	#else
+	query << "SELECT `id`, `password` FROM `accounts` WHERE `name` = " << escapedAccountName << " LIMIT 1";
+	#endif
+	DBResult_ptr result = db.storeQuery(query.str());
+	if (!result) {
+		SPDLOG_ERROR("There was a problem for find the account for player {}", characterName);
+		return 0;
 	}
+
+	#if GAME_FEATURE_SESSIONKEY > 0
+	std::string secret = decodeSecret(result->getString("secret"));
+	if (!secret.empty()) {
+		if (token.empty()) {
+			SPDLOG_ERROR("The token for the player {} is empty", characterName);
+			return 0;
+		}
+
+		bool tokenValid = token == generateToken(secret, tokenTime) || token == generateToken(secret, tokenTime - 1) || token == generateToken(secret, tokenTime + 1);
+		if (!tokenValid) {
+			SPDLOG_ERROR("The token for the player {} is invalid", characterName);
+			return 0;
+		}
+	}
+	#endif
+
+	account::Account account;
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
+		SPDLOG_ERROR("There was a problem authenticating account email or password for player {}", characterName);
+		return 0;
+	}
+	#else
+	if (!IOLoginData::authenticateAccountPassword(accountName, password, &account)) {
+		SPDLOG_ERROR("There was a problem authenticating account name or password for player {}", characterName);
+		return 0;
+	}
+	#endif
 
 	account::Player player;
 	if (account::ERROR_NO != account.GetAccountPlayer(&player, characterName)) {
 		SPDLOG_ERROR("Player not found or deleted for account.");
-		return false;
+		return 0;
 	}
 
-	account.GetID(accountId);
-
-	return true;
+	uint32_t accountId;
+	account.GetID(&accountId);
+	return accountId;
 }
 
 account::AccountType IOLoginData::getAccountType(uint32_t accountId)

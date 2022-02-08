@@ -21,7 +21,6 @@
 
 #include "utils/tools.h"
 
-
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -1466,4 +1465,33 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+std::string decodeSecret(const std::string& secret)
+{
+	// simple base32 decoding
+	std::string key;
+	key.reserve(10);
+
+	uint32_t buffer = 0, left = 0;
+	for (const auto& ch : secret) {
+		buffer <<= 5;
+		if (ch >= 'A' && ch <= 'Z') {
+			buffer |= (ch & 0x1F) - 1;
+		} else if (ch >= '2' && ch <= '7') {
+			buffer |= ch - 24;
+		} else {
+			// if a key is broken, return empty and the comparison
+			// will always be false since the token must not be empty
+			return {};
+		}
+
+		left += 5;
+		if (left >= 8) {
+			left -= 8;
+			key.push_back(static_cast<char>(buffer >> left));
+		}
+	}
+
+	return key;
 }

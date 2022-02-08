@@ -210,6 +210,9 @@ class Account {
   error_t SetPassword(std::string  password);
   error_t GetPassword(std::string *password);
 
+  error_t SetSecret(std::string secret);
+  error_t GetSecret(std::string *secret);
+
   error_t SetPremiumRemaningDays(uint32_t  days);
   error_t GetPremiumRemaningDays(uint32_t *days);
 
@@ -234,6 +237,7 @@ class Account {
   uint32_t id_;
   std::string email_;
   std::string password_;
+  std::string secret_;
   uint32_t premium_remaining_days_;
   time_t premium_last_day_;
   AccountType account_type_;

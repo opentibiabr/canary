@@ -22,7 +22,7 @@ npcConfig.outfit = {
 }
 
 npcConfig.voices = {
-	interval = 5000,
+	interval = 15000,
 	chance = 20,
 	{ text = "Welcome to the Canary Server!" }
 }

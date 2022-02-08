@@ -21,6 +21,7 @@
 #define SRC_LUA_FUNCTIONS_ITEMS_ITEM_TYPE_FUNCTIONS_HPP_
 
 #include "lua/scripts/luascript.h"
+#include "lua/functions/items/item_classification_functions.hpp"
 
 class ItemTypeFunctions final : LuaScriptInterface {
 	public:
@@ -86,6 +87,8 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "getBaseSpeed", ItemTypeFunctions::luaItemTypeGetBaseSpeed);
 
 			registerMethod(L, "ItemType", "hasSubType", ItemTypeFunctions::luaItemTypeHasSubType);
+			
+			ItemClassificationFunctions::init(L);
 		}
 
 	private:

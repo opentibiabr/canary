@@ -246,6 +246,7 @@ private:
 	void closeImbuementWindow();
 
 	void sendItemsPrice();
+	void sendForgingData();
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 	void sendMagicEffect(const Position &pos, uint8_t type);

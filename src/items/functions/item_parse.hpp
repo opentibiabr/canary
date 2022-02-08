@@ -38,6 +38,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"defense", ITEM_PARSE_DEFENSE},
 	{"extradef", ITEM_PARSE_EXTRADEF},
 	{"attack", ITEM_PARSE_ATTACK},
+	{"upgradeclassification", ITEM_PARSE_UPGRADE_CLASS},
 	{"rotateto", ITEM_PARSE_ROTATETO},
 	{"wrapcontainer", ITEM_PARSE_WRAPCONTAINER},
 	{"wrapableto", ITEM_PARSE_WRAPABLETO},
@@ -258,6 +259,7 @@ class ItemParse : public Items
 	static void parseDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseExtraDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseUpgradeClassification(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

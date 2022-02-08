@@ -22,6 +22,7 @@
 #ifndef SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 #define SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 
+#include <thread>
 #include <unordered_set>
 
 #include "declarations.hpp"
@@ -55,7 +56,7 @@ class ConnectionManager
 		void releaseConnection(const Connection_ptr& connection);
 		void closeAll();
 
-	protected:
+	private:
 		ConnectionManager() = default;
 
 		std::unordered_set<Connection_ptr> connections;
@@ -69,20 +70,22 @@ class Connection : public std::enable_shared_from_this<Connection>
 		Connection(const Connection&) = delete;
 		Connection& operator=(const Connection&) = delete;
 
-		Connection(boost::asio::io_service& init_io_service,
-			ConstServicePort_ptr init_service_port) :
-			readTimer(init_io_service),
-			writeTimer(init_io_service),
-			service_port(std::move(init_service_port)),
-			socket(init_io_service) {
-			connectionState = CONNECTION_STATE_PENDING;
-			packetsSent = 0;
-			timeConnected = time(nullptr);
-			receivedFirst = false;
-			serverNameTime = 0;
-			receivedName = false;
-			receivedLastChar = false;
-		}
+		enum ConnectionState_t : uint8_t {
+			CONNECTION_STATE_OPEN,
+			CONNECTION_STATE_IDENTIFYING,
+			CONNECTION_STATE_READINGS,
+			CONNECTION_STATE_CLOSED
+		};
+
+		enum { FORCE_CLOSE = true };
+
+		Connection(boost::asio::io_service& io_service,
+		           ConstServicePort_ptr service_port) :
+			readTimer(io_service),
+			writeTimer(io_service),
+			service_port(std::move(service_port)),
+			socket(io_service),
+			timeConnected(time(nullptr)) {}
 		~Connection();
 
 		friend class ConnectionManager;
@@ -92,11 +95,13 @@ class Connection : public std::enable_shared_from_this<Connection>
 		void accept(Protocol_ptr protocol);
 		void accept();
 
+		void resumeWork();
 		void send(const OutputMessage_ptr& msg);
 
 		uint32_t getIP();
 
 	private:
+		void parseProxyIdentification(const boost::system::error_code& error);
 		void parseHeader(const boost::system::error_code& error);
 		void parsePacket(const boost::system::error_code& error);
 
@@ -105,6 +110,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		static void handleTimeout(ConnectionWeak_ptr connectionWeak, const boost::system::error_code& error);
 
 		void closeSocket();
+		void internalWorker();
 		void internalSend(const OutputMessage_ptr& msg);
 
 		boost::asio::ip::tcp::socket& getSocket() {
@@ -127,14 +133,10 @@ class Connection : public std::enable_shared_from_this<Connection>
 		boost::asio::ip::tcp::socket socket;
 
 		time_t timeConnected;
-		uint32_t packetsSent;
+		uint32_t packetsSent = 0;
 
-		int8_t connectionState;
-		bool receivedFirst;
-
-		uint32_t serverNameTime;
-		bool receivedName;
-		bool receivedLastChar;
+		std::underlying_type<ConnectionState_t>::type connectionState = CONNECTION_STATE_OPEN;
+		bool receivedFirst = false;
 };
 
 #endif  // SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_

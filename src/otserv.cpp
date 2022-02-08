@@ -116,8 +116,7 @@ void loadModules() {
 	modulesLoadHelper(g_configManager().load(),
 		"config.lua");
 
-	SPDLOG_INFO("Server protocol: {}",
-		g_configManager().getString(CLIENT_VERSION_STR));
+	SPDLOG_INFO("Server protocol: {}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
 
 	// set RSA key
 	try {

@@ -343,6 +343,12 @@ class Player final : public Creature, public Cylinder
 		void setOperatingSystem(OperatingSystem_t clientos) {
 			operatingSystem = clientos;
 		}
+		OperatingSystem_t getTfcOperatingSystem() const {
+			return tfcOperatingSystem;
+		}
+		void setTfcOperatingSystem(OperatingSystem_t clientos) {
+			tfcOperatingSystem = clientos;
+		}
 
 		uint32_t getProtocolVersion() const {
 			if (!client) {
@@ -2125,6 +2131,7 @@ class Player final : public Creature, public Cylinder
 
 		PlayerSex_t sex = PLAYERSEX_FEMALE;
 		OperatingSystem_t operatingSystem = CLIENTOS_NONE;
+		OperatingSystem_t tfcOperatingSystem = CLIENTOS_NONE;
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		TradeState_t tradeState = TRADE_NONE;
 		FightMode_t fightMode = FIGHTMODE_ATTACK;

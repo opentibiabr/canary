@@ -1340,6 +1340,7 @@ void Player::openImbuementWindow(Item* item)
 	client->openImbuementWindow(item);
 }
 
+#if GAME_FEATURE_MARKET > 0
 void Player::sendMarketEnter(uint32_t depotId)
 {
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
@@ -1348,6 +1349,7 @@ void Player::sendMarketEnter(uint32_t depotId)
 	
 	client->sendMarketEnter(depotId);
 }
+#endif
 
 //container
 void Player::sendAddContainerItem(const Container* container, const Item* item)

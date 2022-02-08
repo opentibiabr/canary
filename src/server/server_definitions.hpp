@@ -50,6 +50,12 @@ enum RequestedInfo_t : uint16_t {
 	REQUEST_SERVER_SOFTWARE_INFO = 1 << 7,
 };
 
+enum ChecksumMethods_t : uint8_t {
+	CHECKSUM_METHOD_NONE,
+	CHECKSUM_METHOD_ADLER32,
+	CHECKSUM_METHOD_SEQUENCE
+};
+
 enum SessionEndInformations : uint8_t {
 	// Guessing unknown types are ban/protocol error or something.
 	// But since there aren't any difference from logout should we care?

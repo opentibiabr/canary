@@ -43,11 +43,9 @@ class OutputMessage : public NetworkMessage
 			add_header(info.length);
 		}
 
-		void addCryptoHeader(uint8_t addChecksum, uint32_t& sequence) {
-			if (addChecksum == 1) {
-				add_header(adlerChecksum(buffer + outputBufferStart, info.length));
-			} else if (addChecksum == 2) {
-				add_header(sequence++);
+		void addCryptoHeader(bool addChecksum, uint32_t checksum) {
+			if (addChecksum) {
+				add_header(checksum);
 			}
 
 			writeMessageLength();
@@ -55,24 +53,24 @@ class OutputMessage : public NetworkMessage
 
 		void append(const NetworkMessage& msg) {
 			auto msgLen = msg.getLength();
-			memcpy(buffer + info.position, msg.getBuffer() + 8, msgLen);
+			memcpy(buffer + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 			info.length += msgLen;
 			info.position += msgLen;
 		}
 
 		void append(const OutputMessage_ptr& msg) {
 			auto msgLen = msg->getLength();
-			memcpy(buffer + info.position, msg->getBuffer() + 8, msgLen);
+			memcpy(buffer + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 			info.length += msgLen;
 			info.position += msgLen;
 		}
 
 	private:
 		template <typename T>
-		void add_header(T addHeader) {
+		void add_header(T add) {
 			assert(outputBufferStart >= sizeof(T));
 			outputBufferStart -= sizeof(T);
-			memcpy(buffer + outputBufferStart, &addHeader, sizeof(T));
+			memcpy(buffer + outputBufferStart, &add, sizeof(T));
 			//added header size to the message size
 			info.length += sizeof(T);
 		}
@@ -105,6 +103,5 @@ class OutputMessagePool
 		//and relatively rarely modified (only when a client connects/disconnects)
 		std::vector<Protocol_ptr> bufferedProtocols;
 };
-
 
 #endif  // SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_

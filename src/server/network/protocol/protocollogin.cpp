@@ -119,42 +119,51 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
+	msg.skipBytes(2); // client OS
 
-	if (operatingSystem <= CLIENTOS_NEW_MAC)
-		enableCompact();
-
-	uint16_t version = msg.get<uint16_t>();
-
-	msg.skipBytes(17);
+	uint32_t clientVersion = static_cast<uint32_t>(msg.get<uint16_t>());
+	if (clientVersion >= 971) {
+		clientVersion = msg.get<uint32_t>();
+		msg.skipBytes(13);
+	} else {
+		msg.skipBytes(12);
+	}
 	/*
-     * Skipped bytes:
-     * 4 bytes: client version
-     * 12 bytes: dat, spr, pic signatures (4 bytes each)
-     * 1 byte: 0
-     */
+	 * Skipped bytes:
+	 * 4 bytes: protocolVersion(971+)
+	 * 12 bytes: dat, spr, pic signatures (4 bytes each)
+	 * 1 byte: preview world(971+)
+	 */
 
-	if (!Protocol::RSA_decrypt(msg)) {
-		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
-		disconnect();
+	if (clientVersion >= 770) {
+		if (!Protocol::RSA_decrypt(msg)) {
+			disconnect();
+			return;
+		}
+
+		uint32_t key[4] = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
+		enableXTEAEncryption();
+		setXTEAKey(key);
+
+		if (clientVersion >= 830) {
+			setChecksumMethod(CHECKSUM_METHOD_ADLER32);
+		}
+	}
+
+	if (clientVersion != CLIENT_VERSION) {
+		std::ostringstream ss;
+		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
+		disconnectClient(ss.str(), clientVersion);
 		return;
 	}
 
-	xtea::key key;
-	key[0] = msg.get<uint32_t>();
-	key[1] = msg.get<uint32_t>();
-	key[2] = msg.get<uint32_t>();
-	key[3] = msg.get<uint32_t>();
-	enableXTEAEncryption();
-	setXTEAKey(std::move(key));
-
 	if (g_game.getGameState() == GAME_STATE_STARTUP) {
-		disconnectClient("Gameworld is starting up. Please wait.", version);
+		disconnectClient("Gameworld is starting up. Please wait.", clientVersion);
 		return;
 	}
 
 	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
-		disconnectClient("Gameworld is under maintenance.\nPlease re-connect in a while.", version);
+		disconnectClient("Gameworld is under maintenance.\nPlease re-connect in a while.", clientVersion);
 		return;
 	}
 
@@ -171,22 +180,22 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 
 		std::ostringstream ss;
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n" << banInfo.reason;
-		disconnectClient(ss.str(), version);
+		disconnectClient(ss.str(), clientVersion);
 		return;
 	}
 
 	std::string email = msg.getString();
 	if (email.empty()) {
-		disconnectClient("Invalid email.", version);
+		disconnectClient("Invalid email.", clientVersion);
 		return;
 	}
 
 	std::string password = msg.getString();
 	if (password.empty()) {
-		disconnectClient("Invalid password.", version);
+		disconnectClient("Invalid password.", clientVersion);
 		return;
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, email, password, version)));
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, email, password, clientVersion)));
 }

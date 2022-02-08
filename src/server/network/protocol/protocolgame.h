@@ -73,7 +73,15 @@ public:
 
 	explicit ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {}
 
-	void login(const std::string &name, uint32_t accnumber, OperatingSystem_t operatingSystem);
+	#if GAME_FEATURE_SESSIONKEY > 0
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	void login(const std::string& email, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
+	#else
+	void login(const std::string& accountName, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
+	#endif
+	#else
+	void login(const std::string& accountName, const std::string& password, std::string& characterName, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
+	#endif
 	void logout(bool displayEffect, bool forced);
 
 	void AddItem(NetworkMessage &msg, const Item *item);
@@ -91,7 +99,7 @@ private:
 	{
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 	}
-	void connect(uint32_t playerId, OperatingSystem_t operatingSystem);
+	void connect(uint32_t playerId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem);
 	void disconnectClient(const std::string &message) const;
 	void writeToOutputBuffer(const NetworkMessage &msg);
 
@@ -460,8 +468,7 @@ private:
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint32_t version = g_configManager().getNumber(CLIENT_VERSION);
-	int32_t clientVersion = 0;
+	uint16_t version = CLIENT_VERSION;
 
 	uint8_t challengeRandom = 0;
 

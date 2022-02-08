@@ -1017,6 +1017,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, WEBHOOK_COLOR_OFFLINE);
 			registerEnum(L, WEBHOOK_COLOR_WARNING);
 			registerEnum(L, WEBHOOK_COLOR_RAID);
+			registerEnum(L, CLIENT_VERSION)
 			#undef registerEnum
 		}
 

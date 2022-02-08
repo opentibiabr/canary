@@ -45,5 +45,6 @@
 #include <pugixml.hpp>
 
 #include "spdlog/spdlog.h"
+#include "features/features.hpp"
 
 #endif  // SRC_OTPCH_H_

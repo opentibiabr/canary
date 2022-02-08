@@ -203,19 +203,27 @@ void ProtocolGame::release()
 	Protocol::release();
 }
 
-void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem)
+#if GAME_FEATURE_SESSIONKEY > 0
+#if GAME_FEATURE_LOGIN_EMAIL > 0
+void ProtocolGame::login(const std::string& email, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+#else
+void ProtocolGame::login(const std::string& accountName, const std::string& password, std::string& characterName, std::string& token, uint32_t tokenTime, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+#endif
+#else
+void ProtocolGame::login(const std::string& accountName, const std::string& password, std::string& characterName, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
+#endif
 {
 	//dispatcher thread
-	Player *foundPlayer = g_game.getPlayerByName(name);
+	Player *foundPlayer = g_game.getPlayerByName(characterName);
 	if (!foundPlayer || g_configManager().getBoolean(ALLOW_CLONES))
 	{
 		player = new Player(getThis());
-		player->setName(name);
+		player->setName(characterName);
 
 		player->incrementReferenceCounter();
 		player->setID();
 
-		if (!IOLoginData::preloadPlayer(player, name))
+		if (!IOLoginData::preloadPlayer(player, characterName))
 		{
 			disconnectClient("Your character could not be loaded.");
 			return;
@@ -254,7 +262,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		if (!player->hasFlag(PlayerFlag_CannotBeBanned))
 		{
 			BanInfo banInfo;
-			if (IOBan::isAccountBanned(accountId, banInfo))
+			if (IOBan::isAccountBanned(player->getAccount(), banInfo))
 			{
 				if (banInfo.reason.empty())
 				{
@@ -313,7 +321,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		};
 
 		player->setOperatingSystem(operatingSystem);
-
+		player->setTfcOperatingSystem(tfcOperatingSystem);
 		if (!g_game.placeCreature(player, player->getLoginPosition()))
 		{
 			if (!g_game.placeCreature(player, player->getTemplePosition(), false, true))
@@ -347,17 +355,17 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+			eventConnect = g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem, tfcOperatingSystem)));
 		}
 		else
 		{
-			connect(foundPlayer->getID(), operatingSystem);
+			connect(foundPlayer->getID(), operatingSystem, tfcOperatingSystem);
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 }
 
-void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
+void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem, OperatingSystem_t tfcOperatingSystem)
 {
 	eventConnect = 0;
 
@@ -381,6 +389,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	g_chat->removeUserFromAllChannels(*player);
 	player->clearModalWindows();
 	player->setOperatingSystem(operatingSystem);
+	player->setTfcOperatingSystem(tfcOperatingSystem);
 	player->isConnecting = false;
 
 	player->client = getThis();
@@ -432,78 +441,157 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		enableCompact();
-	}
-
+	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.getByte());
+	OperatingSystem_t TFCoperatingSystem = static_cast<OperatingSystem_t>(msg.getByte());
 	version = msg.get<uint16_t>();
-
-	clientVersion = static_cast<int32_t>(msg.get<uint32_t>());
-
-	msg.skipBytes(3); // U16 dat revision, game preview state
-
-	// In version 12.40.10030 we have 13 extra bytes
-	if (msg.getLength() - msg.getBufferPosition() == 141)
-	{
-		msg.skipBytes(13);
+	if (version >= 1111) {
+		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+		enableCompression();
+	} else if (version >= 830) {
+		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}
 
-	if (!Protocol::RSA_decrypt(msg))
-	{
-		SPDLOG_WARN("[ProtocolGame::onRecvFirstMessage] - RSA Decrypt Failed");
+	#if GAME_FEATURE_CLIENT_VERSION > 0
+	uint32_t clientVersion = msg.get<uint32_t>();
+	if (clientVersion == 1120 && operatingSystem >= CLIENTOS_NEW_LINUX && operatingSystem < CLIENTOS_OTCLIENT_LINUX) {
+		clientVersion = 1121;
+	}
+	#endif
+
+	if (version >= 1240) {
+		if (msg.getLength() - msg.getBufferPosition() > 132) { // RSA + version string length + content revision + preview state)
+			msg.getString();
+		}
+	}
+
+	#if GAME_FEATURE_CONTENT_REVISION > 0
+	msg.skipBytes(2);
+	#endif
+	#if GAME_FEATURE_PREVIEW_STATE > 0
+	msg.skipBytes(1);
+	#endif
+	#if GAME_FEATURE_CLIENT_VERSION > 0
+	if (clientVersion >= 1149 && clientVersion < 1200) {
+		if (msg.getLength() - msg.getBufferPosition() > 128) {
+			shouldAddExivaRestrictions = true;
+			msg.skipBytes(1);
+		}
+	}
+	#endif
+
+	#if GAME_FEATURE_RSA1024 > 0
+	if (!Protocol::RSA_decrypt(msg)) {
 		disconnect();
 		return;
 	}
+	#endif
 
-	xtea::key key;
-	key[0] = msg.get<uint32_t>();
-	key[1] = msg.get<uint32_t>();
-	key[2] = msg.get<uint32_t>();
-	key[3] = msg.get<uint32_t>();
+	#if GAME_FEATURE_XTEA > 0
+	uint32_t key[4] = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
-	setXTEAKey(std::move(key));
+	setXTEAKey(key);
+	#endif
+
+	if (operatingSystem >= (CLIENTOS_OTCLIENT_LINUX + CLIENTOS_OTCLIENT_LINUX)) {
+		disconnectClient("OTClientV8 extended features are not supported on this server.");
+		return;
+	}
 
 	msg.skipBytes(1); // gamemaster flag
 
+	#if GAME_FEATURE_SESSIONKEY > 0
 	std::string sessionKey = msg.getString();
-	size_t pos = sessionKey.find('\n');
-	if (pos == std::string::npos)
-	{
-		disconnectClient("You must enter your email.");
-		return;
-	}
 
-	if (operatingSystem == CLIENTOS_NEW_LINUX)
-	{
-		// TODO: check what new info for linux is send
-		msg.getString();
-		msg.getString();
-	}
-
-	std::string email = sessionKey.substr(0, pos);
-	if (email.empty())
-	{
-		disconnectClient("You must enter your email.");
-		return;
-	}
-
-	std::string password = sessionKey.substr(pos + 1);
-	std::string characterName = msg.getString();
-
-	uint32_t timeStamp = msg.get<uint32_t>();
-	uint8_t randNumber = msg.getByte();
-	if (challengeTimestamp != timeStamp || challengeRandom != randNumber)
-	{
+	auto sessionArgs = explodeString(sessionKey, "\n", 4);
+	if (sessionArgs.size() != 4) {
 		disconnect();
 		return;
 	}
 
-	if (clientVersion != g_configManager().getNumber(CLIENT_VERSION))
-	{
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	std::string& email = sessionArgs[0];
+	#else
+	std::string& accountName = sessionArgs[0];
+	#endif
+	std::string& password = sessionArgs[1];
+	std::string& token = sessionArgs[2];
+	uint32_t tokenTime = 0;
+	try {
+		tokenTime = std::stoul(sessionArgs[3]);
+	} catch (const std::invalid_argument&) {
+		disconnectClient("Malformed token packet.");
+		return;
+	} catch (const std::out_of_range&) {
+		disconnectClient("Token time is too long.");
+		return;
+	}
+
+	std::string characterName = msg.getString();
+	#if CLIENT_VERSION >= 1252
+	if (operatingSystem == CLIENTOS_NEW_LINUX) {
+		//TODO: check what new info for linux is send
+		msg.getString();
+		msg.getString();
+	}
+	#endif
+
+	#else
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	std::string email = msg.getString();
+	#endif
+	#if GAME_FEATURE_ACCOUNT_NAME > 0
+	std::string accountName = msg.getString();
+	#else
+	std::string accountName = std::to_string(msg.get<uint32_t>());
+	#endif
+
+	std::string characterName = msg.getString();
+	std::string password = msg.getString();
+	#if GAME_FEATURE_AUTHENTICATOR > 0
+	// should we even try implementing pre sessionkey tokens?
+	// it is only for 10.72 and 10.73 and we don't have timestamp
+	msg.getString();
+	#endif
+	#endif
+
+	if (characterName.empty() || characterName.size() > NETWORKMESSAGE_PLAYERNAME_MAXLENGTH) {
+		disconnectClient("Malformed packet.");
+		return;
+	}
+
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	if (email.empty()) {
+		disconnectClient("You must enter your email.");
+		return;
+	}
+	#else
+	if (accountName.empty()) {
+		disconnectClient("You must enter your account name.");
+		return;
+	}
+	#endif
+
+	if (password.empty()) {
+		disconnectClient("Invalid password.");
+		return;
+	}
+
+	#if GAME_FEATURE_SERVER_SENDFIRST > 0
+	uint32_t timeStamp = msg.get<uint32_t>();
+	uint8_t randNumber = msg.getByte();
+	if (challengeTimestamp != timeStamp || challengeRandom != randNumber) {
+		disconnect();
+		return;
+	}
+	#endif
+
+	#if GAME_FEATURE_CLIENT_VERSION > 0
+	if (clientVersion != CLIENT_VERSION) {
+	#else
+	if (version != CLIENT_VERSION) {
+	#endif
 		std::ostringstream ss;
-		ss << "Only clients with protocol " << g_configManager().getString(CLIENT_VERSION_STR) << " allowed!";
+		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
 		disconnectClient(ss.str());
 		return;
 	}
@@ -541,7 +629,15 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	#if GAME_FEATURE_SESSIONKEY > 0
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), std::move(email), std::move(password), std::move(characterName), std::move(token), tokenTime, operatingSystem, TFCoperatingSystem)));
+	#else
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), std::move(accountName), std::move(password), std::move(characterName), std::move(token), tokenTime, operatingSystem, TFCoperatingSystem)));
+	#endif
+	#else
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), std::move(accountName), std::move(password), std::move(characterName), operatingSystem, TFCoperatingSystem)));
+	#endif
 }
 
 void ProtocolGame::onConnect()

@@ -31,8 +31,7 @@ const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY {10};
 
 void OutputMessagePool::scheduleSendAll()
 {
-	auto functor = std::bind(&OutputMessagePool::sendAll, this);
-	g_scheduler.addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), functor));
+	g_scheduler.addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), std::bind(&OutputMessagePool::sendAll, this)));
 }
 
 void OutputMessagePool::sendAll()
@@ -64,7 +63,7 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
 	//dispatcher thread
 	auto it = std::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
 	if (it != bufferedProtocols.end()) {
-		std::swap(*it, bufferedProtocols.back());
+		*it = bufferedProtocols.back();
 		bufferedProtocols.pop_back();
 	}
 }

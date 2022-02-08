@@ -6707,7 +6707,7 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
 	int32_t storageValue;
 	player->getStorageValue(item.storageKey, storageValue);
-	if (storageValue < item.storageValue)
+	if (item.storageKey != 0 && storageValue < item.storageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;

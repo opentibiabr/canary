@@ -45,12 +45,12 @@ class ProtocolLogin : public Protocol
 
 		#if GAME_FEATURE_SESSIONKEY > 0
 		#if GAME_FEATURE_LOGIN_EMAIL > 0
-		void ProtocolLogin::getCharacterList(const std::string& email, const std::string& password, std::string& token, uint32_t version);
+		void getCharacterList(const std::string& email, const std::string& password, std::string& token, uint32_t version);
 		#else
-		void ProtocolLogin::getCharacterList(const std::string& accountName, const std::string& password, const std::string& token, uint32_t version);
+		void getCharacterList(const std::string& accountName, const std::string& password, const std::string& token, uint32_t version);
 		#endif
 		#else
-		void ProtocolLogin::getCharacterList(const std::string& accountName, const std::string& password, uint32_t version);
+		void getCharacterList(const std::string& accountName, const std::string& password, uint32_t version);
 		#endif
 };
 

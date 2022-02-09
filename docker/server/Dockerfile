@@ -1,14 +1,9 @@
 # Stage 1: Download all dependencies
 FROM ubuntu:20.04 AS dependencies
 
-RUN apt-get update && apt-get install -y --no-install-recommends cmake
-
-RUN apt-get update && apt-get install -y --no-install-recommends git
-
-RUN apt-get install -y --no-install-recommends \
-	build-essential ca-certificates curl zip unzip tar pkg-config
-
-RUN apt-get install -y --no-install-recommends libluajit-5.1-dev unzip
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	cmake git build-essential ca-certificates curl zip unzip tar pkg-config \
+	autoconf automake libtool libluajit-5.1-dev unzip
 
 WORKDIR /opt
 RUN git clone https://github.com/microsoft/vcpkg --depth=1

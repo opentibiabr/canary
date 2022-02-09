@@ -934,32 +934,39 @@ void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
 	if (creatures)
 	{
 		bool playerAdded = false;
-		for (const Creature *creature : boost::adaptors::reverse(*creatures))
+		if (count < 10)
 		{
-			if (!player->canSeeCreature(creature))
+			for (auto it = creatures->rbegin(), end = creatures->rend(); it != end; ++it)
 			{
-				continue;
-			}
+				const Creature* creature = (*it);
+				if (!player->canSeeCreature(creature))
+				{
+					continue;
+				}
 
-			if (tile->getPosition() == player->getPosition() && count == 9 && !playerAdded)
-			{
-				creature = player;
-			}
+				if (creature->getID() == player->getID())
+				{
+					playerAdded = true;
+				}
 
-			if (creature->getID() == player->getID())
-			{
-				playerAdded = true;
+				bool known;
+				uint32_t removedKnown;
+				checkCreatureAsKnown(creature->getID(), known, removedKnown);
+				AddCreature(msg, creature, known, removedKnown);
+				if (++count == 10)
+				{
+					break;
+				}
 			}
+		}
+		if (!playerAdded && tile->getPosition() == player->getPosition())
+		{
+			const Creature* creature = player;
 
 			bool known;
 			uint32_t removedKnown;
 			checkCreatureAsKnown(creature->getID(), known, removedKnown);
 			AddCreature(msg, creature, known, removedKnown);
-
-			if (++count == 10)
-			{
-				return;
-			}
 		}
 	}
 
@@ -4034,12 +4041,12 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint
 	msg.addByte(0xEE);
 	if (currency == ITEM_GOLD_COIN) {
 		msg.addByte(0x01);
- 		msg.add<uint64_t>(playerMoney);
+		msg.add<uint64_t>(playerMoney);
 	} else {
 		msg.addByte(0x02);
 		uint64_t newCurrency = 0;
 		auto search = inventoryMap.find(currency);
-  		if (search != inventoryMap.end()) {
+		if (search != inventoryMap.end()) {
 			newCurrency += static_cast<uint64_t>(search->second);
 		}
 		msg.add<uint64_t>(newCurrency);
@@ -5381,6 +5388,8 @@ void ProtocolGame::sendFightModes()
 
 void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos, int32_t stackpos, bool isLogin)
 {
+	NetworkMessage msg;
+
 	if (!canSee(pos))
 	{
 		return;
@@ -5388,40 +5397,28 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 	if (creature != player)
 	{
-		if (stackpos >= 10)
+		if (stackpos != -1)
 		{
-			return;
+			msg.reset();
+			msg.addByte(0x6A);
+			msg.addPosition(pos);
+			msg.addByte(stackpos);
+
+			bool known;
+			uint32_t removedKnown;
+			checkCreatureAsKnown(creature->getID(), known, removedKnown);
+			AddCreature(msg, creature, known, removedKnown);
+			writeToOutputBuffer(msg);
 		}
-
-		NetworkMessage msg;
-		msg.addByte(0x6A);
-		msg.addPosition(pos);
-		msg.addByte(stackpos);
-
-		bool known;
-		uint32_t removedKnown;
-		checkCreatureAsKnown(creature->getID(), known, removedKnown);
-		AddCreature(msg, creature, known, removedKnown);
-		writeToOutputBuffer(msg);
 
 		if (isLogin)
 		{
-			if (const Player *creaturePlayer = creature->getPlayer())
-			{
-				if (!creaturePlayer->isAccessPlayer() ||
-					creaturePlayer->getAccountType() == account::ACCOUNT_TYPE_NORMAL)
-					sendMagicEffect(pos, CONST_ME_TELEPORT);
-			}
-			else
-			{
-				sendMagicEffect(pos, CONST_ME_TELEPORT);
-			}
+			sendMagicEffect(pos, CONST_ME_TELEPORT);
 		}
 
 		return;
 	}
 
-	NetworkMessage msg;
 	msg.addByte(0x17);
 
 	msg.add<uint32_t>(player->getID());
@@ -6323,8 +6320,11 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow)
 void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bool known, uint32_t remove)
 {
 	CreatureType_t creatureType = creature->getType();
-	const Player *otherPlayer = creature->getPlayer();
+	if (creature->isHealthHidden()) {
+		creatureType = CREATURETYPE_HIDDEN;
+	}
 
+	const Player* otherPlayer = creature->getPlayer();
 	if (known)
 	{
 		msg.add<uint16_t>(0x62);
@@ -6335,31 +6335,11 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		msg.add<uint16_t>(0x61);
 		msg.add<uint32_t>(remove);
 		msg.add<uint32_t>(creature->getID());
-		if (creature->isHealthHidden())
-		{
-			msg.addByte(CREATURETYPE_HIDDEN);
-		}
-		else
-		{
-			msg.addByte(creatureType);
-		}
+		msg.addByte(creatureType);
 
-		if (creatureType == CREATURETYPE_SUMMON_PLAYER)
+		if (creatureType == CREATURETYPE_HIDDEN)
 		{
-			const Creature *master = creature->getMaster();
-			if (master)
-			{
-				msg.add<uint32_t>(master->getID());
-			}
-			else
-			{
-				msg.add<uint32_t>(0x00);
-			}
-		}
-
-		if (creature->isHealthHidden())
-		{
-			msg.addString("");
+			msg.addString(std::string());
 		}
 		else
 		{
@@ -6367,7 +6347,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		}
 	}
 
-	if (creature->isHealthHidden())
+	if (creatureType == CREATURETYPE_HIDDEN && creature != player)
 	{
 		msg.addByte(0x00);
 	}
@@ -6380,8 +6360,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 
 	if (!creature->isInGhostMode() && !creature->isInvisible())
 	{
-		const Outfit_t &outfit = creature->getCurrentOutfit();
-		AddOutfit(msg, outfit);
+		const Outfit_t& outfit = creature->getCurrentOutfit();
+		AddOutfit(msg, outfit, true);
 		if (outfit.lookMount != 0)
 		{
 			msg.addByte(outfit.lookMountHead);
@@ -6393,7 +6373,8 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 	else
 	{
 		static Outfit_t outfit;
-		AddOutfit(msg, outfit);
+		AddOutfit(msg, outfit, false);
+		msg.add<uint16_t>(0);
 	}
 
 	LightInfo lightInfo = creature->getCreatureLight();
@@ -6402,13 +6383,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 
 	msg.add<uint16_t>(creature->getStepSpeed() / 2);
 
-	CreatureIcon_t icon = creature->getIcon();
-	msg.addByte(icon != CREATUREICON_NONE); // Icons
-	if (icon != CREATUREICON_NONE) {
-		msg.addByte(icon);
-		msg.addByte(1);
-		msg.add<uint16_t>(0);
-	}
+	msg.addByte(0);
 
 	msg.addByte(player->getSkullClient(creature));
 	msg.addByte(player->getPartyShield(otherPlayer));
@@ -6426,49 +6401,45 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			const Player *masterPlayer = master->getPlayer();
 			if (masterPlayer)
 			{
-				creatureType = CREATURETYPE_SUMMON_PLAYER;
+				if (masterPlayer == player)
+				{
+					creatureType = CREATURETYPE_SUMMON_PLAYER;
+				}
+				else
+				{
+					creatureType = CREATURETYPE_SUMMON_OTHERS;
+				}
 			}
 		}
 	}
 
-	if (creature->isHealthHidden())
+	if (creatureType == CREATURETYPE_SUMMON_OTHERS)
 	{
-		msg.addByte(CREATURETYPE_HIDDEN);
+		creatureType = CREATURETYPE_SUMMON_PLAYER;
 	}
-	else
-	{
-		msg.addByte(creatureType); // Type (for summons)
-	}
-
+	msg.addByte(creatureType);
 	if (creatureType == CREATURETYPE_SUMMON_PLAYER)
 	{
-		const Creature *master = creature->getMaster();
+		const Creature* master = creature->getMaster();
 		if (master)
 		{
 			msg.add<uint32_t>(master->getID());
 		}
 		else
 		{
-			msg.add<uint32_t>(0x00);
+			msg.add<uint32_t>(0);
 		}
 	}
 
 	if (creatureType == CREATURETYPE_PLAYER)
 	{
-		const Player *otherCreature = creature->getPlayer();
-		if (otherCreature)
-		{
-			msg.addByte(otherCreature->getVocation()->getClientId());
-		}
-		else
-		{
-			msg.addByte(0);
-		}
+		msg.addByte(creature->getPlayer()->getVocation()->getClientId());
 	}
 
 	msg.addByte(creature->getSpeechBubble());
 	msg.addByte(0xFF); // MARK_UNMARKED
-	msg.addByte(0x00); // inspection type
+	msg.addByte(0); // inspection type
+
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
 }
 

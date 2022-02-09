@@ -15,7 +15,14 @@
     "spdlog",
     "curl",
     "jsoncpp",
-    "mpir",
+    {
+      "name": "gmp",
+      "platform": "linux"
+    },
+    {
+      "name": "mpir",
+      "platform": "windows"
+    },
     {
       "name": "luajit",
       "platform": "windows"

@@ -15,6 +15,7 @@
     "spdlog",
     "curl",
     "jsoncpp",
+    "zlib",
     {
       "name": "gmp",
       "platform": "linux"

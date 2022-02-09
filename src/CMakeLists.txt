@@ -82,6 +82,7 @@ if (MSVC)
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
   find_package(GMP REQUIRED)
+  find_package(ZLIB REQUIRED)
 else()
   find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(CURL CONFIG REQUIRED)
@@ -91,6 +92,7 @@ else()
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
   find_package(GMP REQUIRED)
+  find_package(ZLIB REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
 endif (MSVC)
 
@@ -249,6 +251,7 @@ target_include_directories(${PROJECT_NAME}
     ${PUGIXML_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
     ${GMP_INCLUDE_DIR}
+    ${ZLIB_INCLUDE_DIR}
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
@@ -261,6 +264,7 @@ target_link_libraries(${PROJECT_NAME}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
     ${GMP_LIBRARIES}
+    ${ZLIB_LIBRARY}
     jsoncpp_lib
     spdlog::spdlog
 )

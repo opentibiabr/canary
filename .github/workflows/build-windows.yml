@@ -29,7 +29,7 @@ jobs:
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
               boost-variant boost-lockfree mpir curl jsoncpp
-              luajit libmariadb pugixml spdlog
+              luajit libmariadb pugixml spdlog zlib
 
     steps:
       - name: Checkout repository

@@ -27,13 +27,7 @@ echo "================================"
 echo ""
 
 echo ""
-echo "===== Create Database and Import schema ====="
-echo ""
-
-mysql -u $DB_USER -p$DB_PASSWORD -h $DB_HOST -e "CREATE DATABASE $DB_DATABASE;"
-mysql -u $DB_USER -p$DB_PASSWORD -h $DB_HOST -e "SHOW DATABASES;"
-mysql -u $DB_USER -p$DB_PASSWORD -h $DB_HOST -D $DB_DATABASE < schema.sql
-
+echo "===== The Database will be created from mysql/Dockerfile using schema.sql ====="
 echo ""
 echo "================================"
 echo ""

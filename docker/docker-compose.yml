@@ -14,8 +14,11 @@ services:
       - mysql
       - website
       - login
+    restart: on-failure
     links:
       - mysql
+    environment:
+      - SERVER_DB_HOST=mysql
 
   mysql:
     build:

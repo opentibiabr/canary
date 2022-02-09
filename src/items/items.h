@@ -1,4 +1,4 @@
-﻿/**
+/**
  * The Forgotten Server - a free and open-source MMORPG server emulator
  * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
  *
@@ -254,6 +254,7 @@ class ItemType
 		TileFlags_t floorChange = TILESTATE_NONE;
 		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
+		uint8_t upgradeClassification = 0;
 		uint8_t alwaysOnTopOrder = 0;
 		uint8_t lightLevel = 0;
 		uint8_t lightColor = 0;

@@ -275,6 +275,7 @@ else()
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUA_INCLUDE_DIR}
+      ${GMP_INCLUDE_DIRS}
   )
 
   target_link_libraries(${PROJECT_NAME}
@@ -291,6 +292,7 @@ else()
       spdlog::spdlog
       Threads::Threads
       ${LUA_LIBRARIES}
+      ${GMP_LIBRARIES}
   )
 
 endif (MSVC)

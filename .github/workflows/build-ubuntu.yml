@@ -38,7 +38,7 @@ jobs:
       - name: Install Linux Dependencies
         run: >
           sudo apt-get update && sudo apt-get install ccache build-essential
-          libluajit-5.1-dev zip
+          libluajit-5.1-dev zip libtool autoconf
 
       - name: CCache
         id: ccache

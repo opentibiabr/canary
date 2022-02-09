@@ -250,8 +250,8 @@ target_include_directories(${PROJECT_NAME}
     ${Boost_INCLUDE_DIRS}
     ${PUGIXML_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
-    ${GMP_INCLUDE_DIR}
-    ${ZLIB_INCLUDE_DIR}
+    ${GMP_INCLUDE_DIRS}
+    ${ZLIB_INCLUDE_DIRS}
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
@@ -264,7 +264,7 @@ target_link_libraries(${PROJECT_NAME}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
     ${GMP_LIBRARIES}
-    ${ZLIB_LIBRARY}
+    ${ZLIB_LIBRARIES}
     jsoncpp_lib
     spdlog::spdlog
 )

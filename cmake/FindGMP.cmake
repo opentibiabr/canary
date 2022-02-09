@@ -8,38 +8,7 @@
 # GMP_LIBRARY_DLL    - library DLL to install. Only available on WIN32.
 # GMP_LIBRARIES_DIR - the directory the library we link with is found in.
 
-
-if (ANDROID)
-
-  set( GMP_ROOT ${CMAKE_SOURCE_DIR}/../gmp/${ANDROID_ABI} )
-  if (EXISTS ${GMP_ROOT} )
-    message("Looking good for ${GMP_ROOT}")
-    set(GMP_INCLUDE_DIRS ${GMP_ROOT} CACHE PATH "include search path")
-    set(GMP_LIBRARIES  ${GMP_ROOT}/libgmp.so CACHE FILEPATH "include search path")
-    set(GMP_LIBRARIES_DIR ${GMP_ROOT} CACHE PATH "include search path")
- else()
-    message("Bad call: ${GMP_ROOT} does not exist")
-    endif()
-set( GMP_ROOT ${CMAKE_SOURCE_DIR}/../../gmp/${ANDROID_ABI} )
-if (EXISTS ${GMP_ROOT} )
-    message("Looking good for ${GMP_ROOT}")
-    set(GMP_INCLUDE_DIRS ${GMP_ROOT} CACHE PATH "include search path")
-    set(GMP_LIBRARIES  ${GMP_ROOT}/libgmp.so CACHE FILEPATH "include search path")
-    set(GMP_LIBRARIES_DIR ${GMP_ROOT} CACHE PATH "include search path")
- else()
-    message("Bad call: ${GMP_ROOT} does not exist")
-    endif()
-find_path(GMP_INCLUDE_DIRS
-        NAMES gmp.h
-        HINTS ${GMP_ROOT}
-    NO_SYSTEM_ENVIRONMENT_PATH)
-  find_library(GMP_LIBRARIES NAMES gmp
-                PATHS
-      ${GMP_ROOT}
-      NO_SYSTEM_ENVIRONMENT_PATH)
-
-
-elseif(MSVC)
+if(MSVC)
    find_library(GMP_LIBRARIES NAMES mpir mpird
                 PATHS
       $ENV{GMP_ROOT}

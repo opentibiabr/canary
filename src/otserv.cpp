@@ -59,7 +59,6 @@ Monsters g_monsters;
 Npcs g_npcs;
 Vocations g_vocations;
 extern Scripts* g_scripts;
-RSA2 g_RSA;
 
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
@@ -118,12 +117,17 @@ void loadModules() {
 
 	SPDLOG_INFO("Server protocol: {}.{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
 
-	// set RSA key
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
 	try {
-		g_RSA.loadPEM("key.pem");
-	} catch(const std::exception& e) {
-		SPDLOG_ERROR(e.what());
-		startupErrorMessage();
+		if (!g_rsa().loadPEM("key.pem")) {
+			// file doesn't exist - switch to base10-hardcoded keys
+			SPDLOG_ERROR("File key.pem doesn't exist - loading standard rsa key\n");
+			g_rsa().setKey(p, q);
+		}
+	} catch (std::exception const& e) {
+		SPDLOG_ERROR("Loading RSA Key from key.pem failed: {}\n", e.what());
+		g_rsa().setKey(p, q);
 	}
 
 	// Database

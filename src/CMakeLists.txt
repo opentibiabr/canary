@@ -74,8 +74,6 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 # *****************************************************************************
 if (MSVC)
   find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
-  find_package(cryptopp CONFIG REQUIRED)
-  set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
   find_package(LuaJIT REQUIRED)
@@ -83,15 +81,16 @@ if (MSVC)
   find_package(PugiXML REQUIRED)
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
+  find_package(GMP REQUIRED)
 else()
   find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
-  find_package(cryptopp CONFIG REQUIRED)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
   find_package(LuaJIT REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
+  find_package(GMP REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
 endif (MSVC)
 
@@ -225,7 +224,6 @@ target_sources(${PROJECT_NAME}
     otpch.cpp
     otserv.cpp
     security/rsa.cpp
-    security/xtea.cpp
     server/network/connection/connection.cpp
     server/network/message/networkmessage.cpp
     server/network/message/outputmessage.cpp
@@ -249,8 +247,8 @@ target_include_directories(${PROJECT_NAME}
     ${LUA_INCLUDE_DIR}
     ${Boost_INCLUDE_DIRS}
     ${PUGIXML_INCLUDE_DIR}
-    ${CRYPTOPP_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    ${GMP_INCLUDE_DIR}
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
@@ -260,9 +258,9 @@ target_link_libraries(${PROJECT_NAME}
     ${Boost_LIBRARY_DIRS}
     ${Boost_LIBRARIES}
     ${PUGIXML_LIBRARIES}
-    ${CRYPTOPP_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
+    ${GMP_LIBRARIES}
     jsoncpp_lib
     spdlog::spdlog
 )
@@ -282,7 +280,6 @@ else()
       Boost::filesystem
       Boost::iostreams
       Boost::system
-      cryptopp-static
       CURL::libcurl
       jsoncpp_static
       unofficial::libmariadb unofficial::mariadbclient

@@ -220,7 +220,7 @@ error_t Account::LoadAccountDB(std::ostringstream &query) {
   this->SetEmail(result->getString("email"));
   this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
   this->SetPassword(result->getString("password"));
-  this->SetSecret(result->getString("secret"));
+  this->SetSecret(std::move(decodeSecret(result->getString("secret"))));
   this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
   this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
 

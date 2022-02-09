@@ -24,8 +24,6 @@
 #include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 
-extern RSA2 g_RSA;
-
 Protocol::~Protocol()
 {
 	if (compreesionEnabled) {
@@ -494,7 +492,7 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 		return false;
 	}
 
-	g_RSA.decrypt(reinterpret_cast<char*>(msg.getBuffer()) + msg.getBufferPosition()); //does not break strict aliasing
+	g_rsa().decrypt(reinterpret_cast<char*>(msg.getBuffer()) + msg.getBufferPosition()); //does not break strict aliasing
 	return (msg.getByte() == 0);
 }
 
@@ -518,7 +516,7 @@ void Protocol::enableCompression()
 			defStream->opaque = Z_NULL;
 			if (deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
 				defStream.reset();
-				std::cout << "Zlib deflateInit2 error: " << (defStream->msg ? defStream->msg : "unknown error") << std::endl;
+				SPDLOG_ERROR("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
 			} else {
 				compreesionEnabled = true;
 			}

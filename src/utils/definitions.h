@@ -28,7 +28,7 @@ static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 
 // 1121 version is actually 1120 QTClient
-#define CLIENT_VERSION 1272
+#define CLIENT_VERSION 1285
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
 

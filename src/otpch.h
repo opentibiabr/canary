@@ -46,5 +46,6 @@
 
 #include "spdlog/spdlog.h"
 #include "features/features.hpp"
+#include "utils/string_extended.hpp"
 
 #endif  // SRC_OTPCH_H_

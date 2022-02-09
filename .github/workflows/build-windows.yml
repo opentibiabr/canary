@@ -28,7 +28,7 @@ jobs:
             triplet: x64-windows
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
-              boost-variant boost-lockfree cryptopp curl jsoncpp
+              boost-variant boost-lockfree mpir curl jsoncpp
               luajit libmariadb pugixml spdlog
 
     steps:

@@ -2483,10 +2483,6 @@ void Game::internalQuickLootCorpse(Player* player, Container* corpse)
 		ss << "No loot";
 	}
 
-	if (!browseField) {
-		return;
-	}
-
 	ss << ".";
 	player->sendTextMessage(MESSAGE_LOOT, ss.str());
 
@@ -4610,11 +4606,9 @@ void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAl
 				continue;
 			}
 
-			if (!tileCorpse->isRewardCorpse()) {
-				uint32_t corpseOwner = tileCorpse->getCorpseOwner();
-				if (corpseOwner != 0 && !player->canOpenCorpse(corpseOwner)) {
-					continue;
-				}
+			uint32_t corpseOwner = tileCorpse->getCorpseOwner();
+			if (!tileCorpse->isRewardCorpse() && !player->canOpenCorpse(corpseOwner)) {
+				continue;
 			}
 
 			corpses++;

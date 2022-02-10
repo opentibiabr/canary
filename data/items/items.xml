@@ -41304,7 +41304,7 @@
 		<attribute key="weight" value="7000"/>
 		<attribute key="upgradeclassification" value="1"/>
 	</item>
-	<item id="26019" article="an" name="ornate remedy slayer ">
+	<item id="26019" article="an" name="ornate remedy slayer">
 		<attribute key="description" value="This replica looks overcharged"/>
 		<attribute key="attack" value="5"/>
 		<attribute key="defense" value="5"/>
@@ -46769,19 +46769,19 @@
 	<item id="30232" article="a" name="festive table">
 		<attribute key="wrapableto" value="23398"/>
 	</item>
-	<item id="30233" article="a" name="festive fireplace ">
+	<item id="30233" article="a" name="festive fireplace">
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30235"/>
 	</item>
-	<item id="30234" article="a" name="festive fireplace ">
+	<item id="30234" article="a" name="festive fireplace">
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30236"/>
 	</item>
-	<item id="30235" article="a" name="festive fireplace ">
+	<item id="30235" article="a" name="festive fireplace">
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30233"/>
 	</item>
-	<item id="30236" article="a" name="festive fireplace ">
+	<item id="30236" article="a" name="festive fireplace">
 		<attribute key="wrapableto" value="23398"/>
 		<attribute key="rotateto" value="30234"/>
 	</item>
@@ -46925,7 +46925,7 @@
 	<item id="30279" article="a" name="frozen claw">
 		<attribute key="weight" value="455"/>
 	</item>
-	<item id="30280" article="a" name="percht queen's frozen heart ">
+	<item id="30280" article="a" name="percht queen's frozen heart">
 		<attribute key="weight" value="1700"/>
 	</item>
 	<item id="30281" article="a" name="frozen chain">
@@ -48675,7 +48675,7 @@
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="570"/>
 	</item>
-	<item id="31557" article="a" name="blister ring ">
+	<item id="31557" article="a" name="blister ring">
 		<attribute key="description" value="This ring is out of magic energy."/>
 		<attribute key="slotType" value="ring"/>
 		<attribute key="weight" value="90"/>
@@ -48945,7 +48945,7 @@
 		<attribute key="description" value="The spell on it has faded"/>
 		<attribute key="weight" value="4500"/>
 	</item>
-	<item id="31616" article="a" name="blister ring ">
+	<item id="31616" article="a" name="blister ring">
 		<attribute key="slotType" value="ring"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
@@ -53192,7 +53192,7 @@
 		<attribute key="weight" value="300"/>
 	</item>
 	<item id="34259" article="a" name="ventilation grille"/>
-	<item id="34264" name="Tibiapedia ">
+	<item id="34264" name="Tibiapedia">
 		<attribute key="description" value="It will guide you through the adventures in Tibia. Awarded by Tibiapedia.com"/>
 		<attribute key="weight" value="250"/>
 	</item>
@@ -53200,7 +53200,7 @@
 		<attribute key="description" value="It will guide you through the adventures in Tibia. Awarded by Tibiapedia.com"/>
 		<attribute key="weight" value="250"/>
 	</item>
-	<item id="34266" name="Tibiapedia ">
+	<item id="34266" name="Tibiapedia">
 		<attribute key="description" value="It will guide you through the adventures in Tibia. Awarded by Tibiapedia.com"/>
 		<attribute key="weight" value="250"/>
 	</item>
@@ -55028,6 +55028,62 @@
 	<item id="36749" name="many faces trophy"/>
 	<item fromid="36750" toid="36754" name="falcon pet"/>
 	<item id="36756" name="falcon pet"/>
+	<item id="36761" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36762" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36761" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36763" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36762" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36764" article="a" name="dead lavafungus">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36763" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36765" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36766" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36765" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36767" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36766" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36768" article="a" name="dead cave chimera">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36767" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
 	<item id="36769" name="lavaworm spike roots">
 		<attribute key="weight" value="70"/>
 	</item>
@@ -55182,6 +55238,30 @@
 	<item id="36838" name="folded eldritch carpet">
 		<attribute key="weight" value="1100"/>
 	</item>
+	<item id="36844" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36845" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36844" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36846" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36845" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
+	<item id="36847" article="a" name="dead the mega magmaoid">
+		<attribute key="containerSize" value="25" />
+		<attribute key="decayTo" value="36846" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+	</item>
 	<item id="36865" name="plushie of a murmillion"/>
 	<item id="36866" name="plushie of a scissorion"/>
 	<item id="36867" name="plushie of a hoodinion"/>
@@ -55194,6 +55274,177 @@
 	<item id="36876" name="blackened hand mirror">
 		<attribute key="description" value="It is blackened with soot"/>
 		<attribute key="weight" value="660"/>
+	</item>
+	<item id="36877" article="a" name="strange idol">
+		<attribute key="loottype" value="creatureproduct" />
+	</item>
+	<item id="36879" article="a" name="dead hulking carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36880" article="a" name="dead hulking carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36879" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36881" article="a" name="dead hulking carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36880" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36882" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36883" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36882" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36884" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36883" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36885" article="a" name="dead carnisylvan sapling">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36884" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36888" article="a" name="dead poisonous carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36889" article="a" name="dead poisonous carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36888" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36890" article="a" name="dead poisonous carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36889" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36892" article="a" name="dead dark carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36893" article="a" name="dead dark carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36892" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36894" article="a" name="dead dark carnisylvan">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36893" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36895" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36896" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36895" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36897" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36896" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36898" article="a" name="dead murmillion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36897" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36903" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="10" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36904" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36903" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36905" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36904" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36906" article="a" name="dead hoodinion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36905" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36912" article="a" name="dead domestikion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36913" article="a" name="dead domestikion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36912" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
+	</item>
+	<item id="36914" article="a" name="dead domestikion">
+		<attribute key="containerSize" value="30" />
+		<attribute key="decayTo" value="36913" />
+		<attribute key="duration" value="300" />
+		<attribute key="corpseType" value="blood" />
+		<attribute key="fluidSource" value="blood" />
 	</item>
 	<item id="36915" name="sun mosaic"/>
 	<item id="36916" name="sun mosaic"/>
@@ -55526,11 +55777,109 @@
 	</item>
 	<item id="37519" name="kraken buoy lamp"/>
 	<item id="37520" name="kraken tentacle lamp"/>
+	<item id="37530" name="bottle of champagne">
+		<attribute key="description" value="It was created by Tibia's finest vintagers for the celebration of 25 years of Tibia" />
+	</item>
+	<item id="37531" name="candy floss" />
+	<item id="37532" name="ice cream cone">
+		<attribute key="description" value="It is covered in colourful sprinkles" />
+	</item>
+	<item id="37533" name="birthday layer cake">
+		<attribute key="description" value="It was created by Tibia's finest bakers for the celebration of 25 years of Tibia" />
+	</item>
+	<item id="37534" name="tapestry of honour">
+		<attribute key="description" value="It was awarded during the festivities of Tibia's anniversary" />
+	</item>
+	<item id="37535" name="tapestry of honour">
+		<attribute key="description" value="It was awarded during the festivities of Tibia's anniversary" />
+	</item>
+	<item id="37536" name="changing backpack">
+		<attribute key="description" value="It changes its appearance in the course of years, just like Tibia" />
+	</item>
+	<item id="37537" name="tapestry of honour">
+		<attribute key="description" value="It was awarded during the festivities of Tibia's anniversary" />
+	</item>
+	<item id="37538" name="tapestry of honour">
+		<attribute key="description" value="It was awarded during the festivities of Tibia's anniversary" />
+	</item>
+	<item id="37539" name="portrait with Ferumbras" />
+	<item id="37540" name="blue wallpaper" />
+	<item id="37541" name="green wallpaper" />
+	<item id="37542" name="golden wallpaper" />
+	<item id="37543" name="string of fairy lights" />
+	<item id="37544" name="string of fairy lights" />
+	<item id="37545" name="string of fairy lights" />
+	<item id="37546" name="tapestry of honour">
+		<attribute key="description" value="It was awarded during the festivities of Tibia's anniversary" />
+	</item>
 	<item id="37561" article="an" name="exaltation chest" plural="exaltation chests">
 		<attribute key="containersize" value="2"/>
 		<attribute key="weight" value="2000"/>
 	</item>
+	<item id="37562" name="pile of presents kit">
+		<attribute key="description" value="Use it in your house to place a pile of presents" />
+	</item>
+	<item id="37563" name="pile of three presents kit">
+		<attribute key="description" value="Use it in your house to place a pile of three presents" />
+	</item>
+	<item id="37564" name="green and blue presents kit">
+		<attribute key="description" value="Use it in your house to place a green and a blue present" />
+	</item>
+	<item id="37565" name="green and red presents kit">
+		<attribute key="description" value="Use it in your house to place a green and a red present" />
+	</item>
+	<item id="37566" name="blue and red presents kit">
+		<attribute key="description" value="Use it in your house to place a blue and a red present" />
+	</item>
+	<item id="37567" name="blue present kit">
+		<attribute key="description" value="Use it in your house to place a blue present" />
+	</item>
+	<item id="37568" name="red present kit">
+		<attribute key="description" value="Use it in your house to place a red present" />
+	</item>
+	<item id="37569" name="small blue present kit">
+		<attribute key="description" value="Use it in your house to place a small blue present" />
+	</item>
+	<item id="37570" name="yellow present kit">
+		<attribute key="description" value="Use it in your house to place a yellow present" />
+	</item>
+	<item id="37571" name="another yellow present kit">
+		<attribute key="description" value="Use it in your house to place another yellow present" />
+	</item>
+	<item id="37572" name="vessel of Gaz'haragoth" />
+	<item id="37573" name="vessel of Ferumbras" />
+	<item id="37574" name="vessel of the Mad Mage" />
+	<item id="37575" name="vessel of Horestis" />
+	<item id="37576" name="vessel of Devovorga" />
+	<item id="37580" name="string of fairy lights" />
+	<item id="37581" name="string of fairy lights" />
+	<item id="37582" name="string of fairy lights" />
+	<item id="37603" name="divining rod" />
+	<item id="37604" name="brass button" />
+	<item id="37605" name="decorative plume" />
+	<item id="37607" name="green demon legs" />
+	<item id="37608" name="green demon armor">
+		<attribute key="upgradeclassification" value="4" />
+	</item>
+	<item id="37609" name="green demon helmet">
+		<attribute key="description" value="You hear an evil whispering from inside" />
+		<attribute key="upgradeclassification" value="4" />
+	</item>
+	<item id="37610" name="green demon slippers" />
+	<item id="37611" name="Morshabaal's mask" />
+	<item id="37613" name="Morshabaal's brain" />
+	<item id="37614" name="box full of decoration" />
 	<item id="37700" name="kraken watcher lamp"/>
+	<item id="37708" name="old health potion">
+		<attribute key="description" value="This health potion could not save the poor woman who fell victim to a giant spider on the island of Calcanea" />
+	</item>
+	<item id="37710" name="50 Theons" />
+	<item id="37711" name="7197 Theons" />
+	<item id="37712" name="200 Theons" />
+	<item id="37717" name="dragon pinata kit">
+		<attribute key="description" value="Use it in your house to place a dragon pinata" />
+	</item>
+	<item id="37810" name="Morshabaal's extract" />
 	<item id="41560" article="a" name="stamina extension">
 		<attribute key="description" value="Drinking this potion fills up stamina by one hour."/>
 		<attribute key="loottype" value="creatureproduct"/>

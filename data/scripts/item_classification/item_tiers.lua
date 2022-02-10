@@ -39,11 +39,8 @@ for classificationId, classificationTable in ipairs(itemTierClassifications) do
 	-- Registers table for register_item_tier.lua interface
 	classification.Upgrades = {}
 	for tierId, tierTable in ipairs(classificationTable) do
-		if tierId then
-			classification.Upgrades.TierId = tierId
-		end
-		if tierTable.price then
-			classification.Upgrades.Price = tierTable.price
+		if tierId and tierTable.price then
+			table.insert(classification.Upgrades, {TierId = tierId, Price = tierTable.price})
 		end
 	end
 	-- Create item classification and register classification table

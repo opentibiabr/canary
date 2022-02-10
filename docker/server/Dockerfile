@@ -1,7 +1,7 @@
 # Stage 1: Download all dependencies
 FROM ubuntu:20.04 AS dependencies
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y --no-install-recommends \
 	cmake git build-essential ca-certificates curl zip unzip tar pkg-config \
 	autoconf automake libtool libluajit-5.1-dev unzip
 

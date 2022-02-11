@@ -4606,8 +4606,7 @@ void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAl
 				continue;
 			}
 
-			uint32_t corpseOwner = tileCorpse->getCorpseOwner();
-			if (!tileCorpse->isRewardCorpse() && !player->canOpenCorpse(corpseOwner)) {
+			if (!tileCorpse->isRewardCorpse() && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
 				continue;
 			}
 

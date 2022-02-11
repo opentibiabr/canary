@@ -731,7 +731,6 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			if (g_configManager().getBoolean(AUTOLOOT) && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				int32_t pos = tile->getStackposOfItem(mostDamageCreature->getPlayer(), corpse);
 				g_dispatcher.addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game, mostDamageCreature->getID(), this->getPosition(), corpse->getClientID(), pos - 1, nullptr, false, true)));
-				//g_scheduler.addEvent(createSchedulerTask(400, std::bind(&Game::playerQuickLoot, &g_game, mostDamageCreature->getID(), this->getPosition(), corpse->getClientID(), pos - 1, nullptr, false, true)));
 			}
 		}
 

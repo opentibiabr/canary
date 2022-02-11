@@ -24,7 +24,6 @@
 #include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
 #include "items/weapons/weapons.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 
 #include "utils/pugicast.h"
@@ -32,7 +31,6 @@
 extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
-extern ConfigManager g_config;
 
 spellBlock_t::~spellBlock_t()
 {
@@ -66,7 +64,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 	for (auto monsterNode : doc.child("monsters").children()) {
 		std::string name = asLowerCaseString(monsterNode.attribute("name").as_string());
 		std::string file = "data/monster/" + std::string(monsterNode.attribute("file").as_string());
-		auto forceLoad = g_config.getBoolean(FORCE_MONSTERTYPE_LOAD);
+		auto forceLoad = g_configManager().getBoolean(FORCE_MONSTERTYPE_LOAD);
 		if (forceLoad) {
 			loadMonster(file, name, true);
 			continue;
@@ -1256,7 +1254,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 		for (auto summonNode : node.children()) {
 			int32_t chance = 100;
 			int32_t speed = 1000;
-			int32_t max = mType->info.maxSummons;
+			int32_t count = mType->info.maxSummons;
 			bool force = false;
 
 			if ((attr = summonNode.attribute("speed")) || (attr = summonNode.attribute("interval"))) {
@@ -1267,8 +1265,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				chance = pugi::cast<int32_t>(attr.value());
 			}
 
-			if ((attr = summonNode.attribute("max"))) {
-				max = pugi::cast<uint32_t>(attr.value());
+			if ((attr = summonNode.attribute("count"))) {
+				count = pugi::cast<uint32_t>(attr.value());
 			}
 
 			if ((attr = summonNode.attribute("force"))) {
@@ -1280,7 +1278,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				sb.name = attr.as_string();
 				sb.speed = speed;
 				sb.chance = chance;
-				sb.max = max;
+				sb.count = count;
 				sb.force = force;
 				mType->info.summons.emplace_back(sb);
 			} else {

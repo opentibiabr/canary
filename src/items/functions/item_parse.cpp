@@ -32,6 +32,7 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseDefense(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseExtraDefense(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseAttack(tmpStrValue, valueAttribute, itemType);
+	ItemParse::parseUpgradeClassification(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseRotateTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
@@ -148,6 +149,13 @@ void ItemParse::parseAttack(const std::string& tmpStrValue, pugi::xml_attribute 
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "attack") {
 		itemType.attack = pugi::cast<int32_t>(valueAttribute.value());
+	}
+}
+
+void ItemParse::parseUpgradeClassification(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
+	std::string stringValue = tmpStrValue;
+	if (stringValue == "upgradeclassification") {
+		itemType.upgradeClassification = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
@@ -439,19 +447,19 @@ void ItemParse::parseHealthAndMana(const std::string& tmpStrValue, pugi::xml_att
 	if (stringValue == "healthgain") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.healthGain = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setHealthGain(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "healthticks") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.healthTicks = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setHealthTicks(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "managain") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.manaGain = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setManaGain(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "manaticks") {
 		Abilities & abilities = itemType.getAbilities();
 		abilities.regeneration = true;
-		abilities.manaTicks = pugi::cast<uint32_t>(valueAttribute.value());
+		abilities.setManaTicks(pugi::cast<uint32_t>(valueAttribute.value()));
 	} else if (stringValue == "manashield") {
 		itemType.getAbilities().manaShield = valueAttribute.as_bool();
 	}

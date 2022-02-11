@@ -20,7 +20,6 @@
 #include "otpch.h"
 
 #include "creatures/combat/combat.h"
-#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
@@ -34,7 +33,6 @@
 extern Game g_game;
 extern Spells* g_spells;
 extern Npcs g_npcs;
-extern ConfigManager g_config;
 
 bool NpcType::canSpawn(const Position& pos)
 {
@@ -83,6 +81,9 @@ bool NpcType::loadCallback(LuaScriptInterface* scriptInterface)
 			break;
 		case NPCS_EVENT_PLAYER_CHECK_ITEM:
 			info.playerLookEvent = id;
+			break;
+		case NPCS_EVENT_PLAYER_CLOSE_CHANNEL:
+			info.playerCloseChannel = id;
 			break;
 		default:
 			break;

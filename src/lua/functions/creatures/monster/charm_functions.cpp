@@ -126,8 +126,8 @@ int CharmFunctions::luaCharmChance(lua_State* L) {
 	return 1;
 }
 
-int CharmFunctions::luaCharmCancelMessage(lua_State* L) {
-	// get: charm:cancelMessage() set: charm:cancelMessage(string)
+int CharmFunctions::luaCharmMessageCancel(lua_State* L) {
+	// get: charm:messageCancel() set: charm:messageCancel(string)
 	Charm* charm = getUserdata<Charm>(L, 1);
 	if (lua_gettop(L) == 1) {
 		pushString(L, charm->cancelMsg);
@@ -138,8 +138,8 @@ int CharmFunctions::luaCharmCancelMessage(lua_State* L) {
 	return 1;
 }
 
-int CharmFunctions::luaCharmLogMsg(lua_State* L) {
-	// get: charm:logMsg() set: charm:logMsg(string)
+int CharmFunctions::luaCharmMessageServerLog(lua_State* L) {
+	// get: charm:messageServerLog() set: charm:messageServerLog(string)
 	Charm* charm = getUserdata<Charm>(L, 1);
 	if (lua_gettop(L) == 1) {
 		pushString(L, charm->logMsg);

@@ -22,10 +22,8 @@
 #include "server/network/message/outputmessage.h"
 #include "server/server.h"
 #include "game/scheduling/scheduler.h"
-#include "config/configmanager.h"
 #include "creatures/players/management/ban.h"
 
-extern ConfigManager g_config;
 Ban g_bans;
 
 ServiceManager::~ServiceManager()
@@ -169,12 +167,12 @@ void ServicePort::open(uint16_t port)
 	pendingStart = false;
 
 	try {
-		if (g_config.getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
+		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
 			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service,
                            boost::asio::ip::tcp::endpoint(
                            boost::asio::ip::address(
                            boost::asio::ip::address_v4::from_string(
-                           g_config.getString(IP))), serverPort)));
+                           g_configManager().getString(IP))), serverPort)));
 		} else {
 			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service,
                            boost::asio::ip::tcp::endpoint(

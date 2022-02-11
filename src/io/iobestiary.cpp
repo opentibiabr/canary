@@ -238,24 +238,17 @@ void IOBestiary::addBestiaryKill(Player* player, MonsterType* mtype, uint32_t am
 
 	player->addBestiaryKillCount(raceid, amount);
 
-	if (curCount == 0) {
-		player->sendBestiaryEntryChanged(raceid);
-		ss << "You unlocked details for the creature '" << mtype->name << "'";
-		player->sendTextMessage(MESSAGE_STATUS, ss.str());
-		return;
-	}
+	if ((curCount == 0) ||  // Initial kill stage
+		(curCount < mtype->info.bestiaryFirstUnlock && (curCount + amount) >= mtype->info.bestiaryFirstUnlock) ||  // First kill stage reached
+		(curCount < mtype->info.bestiarySecondUnlock && (curCount + amount) >= mtype->info.bestiarySecondUnlock) ||  // Second kill stage reached
+		(curCount < mtype->info.bestiaryToUnlock && (curCount + amount) >= mtype->info.bestiaryToUnlock)) {  // Final kill stage reached
 
-	curCount += amount;
+		ss << "You unlocked details for the creature '" << mtype->name << "'";
+		player->sendTextMessage(MESSAGE_STATUS, ss.str());
+		player->sendBestiaryEntryChanged(raceid);
 
-	if ((curCount == mtype->info.bestiaryFirstUnlock) || (curCount == mtype->info.bestiarySecondUnlock)) {
-		ss << "You unlocked details for the creature '" << mtype->name << "'";
-		player->sendTextMessage(MESSAGE_STATUS, ss.str());
-		player->sendBestiaryEntryChanged(raceid);
-	} else if (curCount == mtype->info.bestiaryToUnlock) {
-		ss << "You unlocked details for the creature '" << mtype->name << "'";
-		player->sendTextMessage(MESSAGE_STATUS, ss.str());
-		addCharmPoints(player, mtype->info.bestiaryCharmsPoints);
-		player->sendBestiaryEntryChanged(raceid);
+		if ((curCount + amount) >= mtype->info.bestiaryToUnlock)
+			addCharmPoints(player, mtype->info.bestiaryCharmsPoints);
 	}
 
 	std::list<MonsterType*> trackerList = player->getBestiaryTrackerList();

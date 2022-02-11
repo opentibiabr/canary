@@ -20,9 +20,7 @@
 #include "otpch.h"
 
 #include "utils/tools.h"
-#include "config/configmanager.h"
 
-extern ConfigManager g_config;
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -626,6 +624,15 @@ MagicEffectNames magicEffectNames = {
 	{"watercreature",		CONST_ME_WATERCREATURE},
 	{"watersplash",			CONST_ME_WATERSPLASH},
 	{"whiteenergyspark",	CONST_ME_WHITE_ENERGY_SPARK },
+	{"fatal", 				CONST_ME_FATAL},
+	{"dodge", 				CONST_ME_DODGE},
+	{"hourglass",			CONST_ME_HOURGLASS},
+	{"ferumbras1",			CONST_ME_FERUMBRAS_1},
+	{"gazharagoth",			CONST_ME_GAZHARAGOTH},
+	{"madmage",				CONST_ME_MAD_MAGE},
+	{"horestis",			CONST_ME_HORESTIS},
+	{"devovorga",			CONST_ME_DEVOVORGA},
+	{"ferumbras2",			CONST_ME_FERUMBRAS_2},
 };
 
 ShootTypeNames shootTypeNames = {

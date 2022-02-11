@@ -196,6 +196,8 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 	shopItem.buyPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "buy"));
 	shopItem.sellPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "sell"));
 	shopItem.subType = static_cast<uint16_t>(getField<uint32_t>(L, table, "count"));
+	shopItem.storageKey = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageKey"));
+	shopItem.storageValue = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageValue"));
 
 	const ItemType &it = Item::items.getItemIdByClientId(shopItem.itemClientId);
 
@@ -277,9 +279,9 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 	// npcType:onDisappear(callback)
 	// npcType:onMove(callback)
 	// npcType:onSay(callback)
-	// npcType:onPlayerBuyItem(callback)
-	// npcType:onPlayerSellItem(callback)
-	// npcType:onPlayerCheckItem(callback)
+	// npcType:onBuyItem(callback)
+	// npcType:onSellItem(callback)
+	// npcType:onCheckItem(callback)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
 		if (npcType->loadCallback(&g_scripts->getScriptInterface())) {
@@ -458,6 +460,44 @@ int NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground(lua_State* L) {
 		}
 	} else {
 		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeSpeechBubble(lua_State* L) {
+	// get = npcType:speechBubble()
+	// set = npcType:speechBubble(newSpeechBubble)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, npcType->info.speechBubble);
+	} else {
+		npcType->info.speechBubble = getNumber<uint8_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeCurrency(lua_State* L) {
+	// get = npcType:currency()
+	// set = npcType:currency(newCurrency)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, npcType->info.currencyId);
+	} else {
+		npcType->info.currencyId = getNumber<uint16_t>(L, 2);
+		pushBoolean(L, true);
 	}
 	return 1;
 }

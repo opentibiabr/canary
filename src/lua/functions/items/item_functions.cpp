@@ -97,6 +97,19 @@ int ItemFunctions::luaItemGetId(lua_State* L) {
 	return 1;
 }
 
+int ItemFunctions::luaItemGetClientId(lua_State* L) {
+	// item:getClientId()
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, item->getClientID());
+	return 1;
+}
+
 int ItemFunctions::luaItemClone(lua_State* L) {
 	// item:clone()
 	Item* item = getUserdata<Item>(L, 1);

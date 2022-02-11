@@ -9,10 +9,6 @@
 #include <iostream>
 #include <memory>
 
-#include "config/configmanager.h"
-
-extern ConfigManager g_config;
-
 // Tread no further, adventurer!
 // Go back while you still can.
 
@@ -82,8 +78,8 @@ static std::string get_payload(std::string title, std::string message, int color
 
 	std::stringstream footer_text;
 	footer_text
-			<< g_config.getString(IP) << ":"
-			<< g_config.getNumber(GAME_PORT) << " | "
+			<< g_configManager().getString(IP) << ":"
+			<< g_configManager().getNumber(GAME_PORT) << " | "
 			<< time_buf << " UTC";
 
 	Json::Value footer(Json::objectValue);

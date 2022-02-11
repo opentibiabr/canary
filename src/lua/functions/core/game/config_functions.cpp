@@ -21,19 +21,18 @@
 
 #include "lua/functions/core/game/config_functions.hpp"
 
-extern ConfigManager g_config;
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {
-	pushString(L, g_config.getString(getNumber<stringConfig_t>(L, -1)));
+	pushString(L, g_configManager().getString(getNumber<stringConfig_t>(L, -1)));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetNumber(lua_State* L) {
-	lua_pushnumber(L, g_config.getNumber(getNumber<integerConfig_t>(L, -1)));
+	lua_pushnumber(L, g_configManager().getNumber(getNumber<integerConfig_t>(L, -1)));
 	return 1;
 }
 
 int ConfigFunctions::luaConfigManagerGetBoolean(lua_State* L) {
-	pushBoolean(L, g_config.getBoolean(getNumber<booleanConfig_t>(L, -1)));
+	pushBoolean(L, g_configManager().getBoolean(getNumber<booleanConfig_t>(L, -1)));
 	return 1;
 }

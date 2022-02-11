@@ -151,8 +151,8 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((Item::items.loadFromOtb("data/items/items.otb") == ERROR_NONE),
-		"items.otb");
+	modulesLoadHelper((Item::items.loadFromProtobuf("data/items/items.dat") == ERROR_NONE),
+		"items.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
 	modulesLoadHelper(Scripts::getInstance().loadScriptSystems(),

@@ -83,6 +83,7 @@ if (MSVC)
   find_package(PugiXML REQUIRED)
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
+  find_package(Protobuf REQUIRED)
 else()
   find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(cryptopp CONFIG REQUIRED)
@@ -93,6 +94,7 @@ else()
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
+  find_package(Protobuf REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -143,6 +145,7 @@ target_sources(${PROJECT_NAME}
     io/iomap.cpp
     io/iomapserialize.cpp
     io/iomarket.cpp
+    io/protobuf/appearances.pb.cc
     items/bed.cpp
     items/containers/container.cpp
     items/containers/depot/depotchest.cpp
@@ -251,6 +254,7 @@ target_include_directories(${PROJECT_NAME}
     ${PUGIXML_INCLUDE_DIR}
     ${CRYPTOPP_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    ${Protobuf_INCLUDE_DIRS}
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
@@ -263,6 +267,7 @@ target_link_libraries(${PROJECT_NAME}
     ${CRYPTOPP_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
+    ${Protobuf_LIBRARIES}
     jsoncpp_lib
     spdlog::spdlog
 )
@@ -273,6 +278,7 @@ else()
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUA_INCLUDE_DIR}
+      ${Protobuf_INCLUDE_DIRS}
   )
 
   target_link_libraries(${PROJECT_NAME}
@@ -290,6 +296,7 @@ else()
       spdlog::spdlog
       Threads::Threads
       ${LUA_LIBRARIES}
+      ${Protobuf_LIBRARIES}
   )
 
 endif (MSVC)

@@ -707,7 +707,7 @@ struct HistoryMarketOffer {
 };
 
 struct ShopInfo {
-	uint16_t itemClientId;
+	uint16_t itemId;
 	std::string name;
 	int32_t subType;
 	uint32_t buyPrice;
@@ -715,7 +715,7 @@ struct ShopInfo {
 	int32_t storageKey, storageValue;
 
 	ShopInfo() {
-		itemClientId = 0;
+		itemId = 0;
 		subType = 1;
 		buyPrice = 0;
 		sellPrice = 0;
@@ -724,7 +724,7 @@ struct ShopInfo {
 	}
 
 	explicit ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
-		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), storageKey(newStorageKey), storageValue(newStorageValue), name(std::move(newName)) {}
+		: itemId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), storageKey(newStorageKey), storageValue(newStorageValue), name(std::move(newName)) {}
 };
 
 using MarketOfferList = std::list<MarketOffer>;

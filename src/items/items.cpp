@@ -18,7 +18,8 @@
  */
 
 #include "otpch.h"
-
+#include <fstream>
+#include "io/protobuf/appearances.pb.h"
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
@@ -41,7 +42,6 @@ Items::Items(){}
 void Items::clear()
 {
 	items.clear();
-	reverseItemMap.clear();
 	nameToItems.clear();
 }
 
@@ -87,7 +87,7 @@ ItemTypes_t Items::getLootType(const std::string& strValue)
 bool Items::reload()
 {
 	clear();
-	loadFromOtb("data/items/items.otb");
+	loadFromProtobuf("data/items/items.dat");
 
 	if (!loadFromXml()) {
 		return false;
@@ -97,249 +97,245 @@ bool Items::reload()
 	return true;
 }
 
-constexpr auto OTBI = OTB::Identifier{{'O','T', 'B', 'I'}};
-
-FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
+FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 {
 	if (!fs::exists(file)) {
-		SPDLOG_ERROR("[Items::loadFromOtb] - Failed to load {}, file doesn't exist", file);
+		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to load {}, file doesn't exist", file);
 		return ERROR_NOT_OPEN;
 	}
 
-	OTB::Loader loader{file, OTBI};
-
-	auto& root = loader.parseTree();
-
-	PropStream props;
-	if (loader.getProps(root, props)) {
-		//4 byte flags
-		//attributes
-		//0x01 = version data
-		uint32_t flags;
-		if (!props.read<uint32_t>(flags)) {
-			return ERROR_INVALID_FORMAT;
-		}
-
-		uint8_t attr;
-		if (!props.read<uint8_t>(attr)) {
-			return ERROR_INVALID_FORMAT;
-		}
-
-		if (attr == ROOT_ATTR_VERSION) {
-			uint16_t datalen;
-			if (!props.read<uint16_t>(datalen)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			if (datalen != sizeof(VERSIONINFO)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			VERSIONINFO vi;
-			if (!props.read(vi)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			majorVersion = vi.dwMajorVersion; //items otb format file version
-			minorVersion = vi.dwMinorVersion; //client version
-			buildNumber = vi.dwBuildNumber; //revision
-		}
+	std::fstream c_items(file, std::ios::in | std::ios::binary);
+	if (!c_items || !c_items.is_open()) {
+		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to load {}, file cannot be oppened", file);
+		c_items.close();
+		return ERROR_NOT_OPEN;
 	}
 
-	if (majorVersion == 0xFFFFFFFF) {
-		SPDLOG_WARN("[Items::loadFromOtb] - items.otb using generic client version");
-	} else if (majorVersion != 3) {
-		SPDLOG_ERROR("[Items::loadFromOtb] - "
-                     "Old version detected, a newer version of items.otb is required");
-		return ERROR_INVALID_FORMAT;
-	} else if (minorVersion < CLIENT_VERSION_1285) {
-		SPDLOG_ERROR("[Items::loadFromOtb] - "
-                     "A newer version of items.otb is required");
-		return ERROR_INVALID_FORMAT;
+	// Verify that the version of the library that we linked against is
+	// compatible with the version of the headers we compiled against.
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	Canary::protobuf::appearances::Appearances p_appearance = Canary::protobuf::appearances::Appearances();
+	if (!p_appearance.ParseFromIstream(&c_items)) {
+		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to parse binary file {}, file is invalid", file);
+		c_items.close();
+		return ERROR_NOT_OPEN;
 	}
 
-	for (auto & itemNode : root.children) {
-		PropStream stream;
-		if (!loader.getProps(itemNode, stream)) {
-			return ERROR_INVALID_FORMAT;
+	for (uint32_t it = 0; it < p_appearance.object_size(); ++it) {
+		Canary::protobuf::appearances::Appearance object = p_appearance.object(it);
+
+		// This scenario should never happen but on custom assets this can break the loader.
+		if (!object.has_flags()) {
+			SPDLOG_WARN("[Items::loadFromProtobuf] - Item with id '{}' is invalid and was ignored.", object.id());
+			continue;
 		}
 
-		uint32_t flags;
-		if (!stream.read<uint32_t>(flags)) {
-			return ERROR_INVALID_FORMAT;
+		if (object.id() >= items.size()) {
+			items.resize(object.id() + 1);
 		}
 
-		uint16_t serverId = 0;
-		uint16_t clientId = 0;
-		uint16_t speed = 0;
-		uint16_t wareId = 0;
-		uint8_t lightLevel = 0;
-		uint8_t lightColor = 0;
-		uint8_t alwaysOnTopOrder = 0;
-		bool isPodium = false;
-
-		if (clientId == 35973 || clientId == 35974) {
-			isPodium = true;
+		ItemType& iType = items[object.id()];
+		if (object.flags().container()) {
+			iType.type = ITEM_TYPE_CONTAINER;
+			iType.group = ITEM_GROUP_CONTAINER;
+		} else if (object.flags().has_bank()) {
+			iType.group = ITEM_GROUP_GROUND;
+		} else if (object.flags().liquidcontainer()) {
+			iType.group = ITEM_GROUP_FLUID;
+		} else if (object.flags().liquidpool()) {
+			iType.group = ITEM_GROUP_SPLASH;
 		}
 
-		uint8_t attrib;
-		while (stream.read<uint8_t>(attrib)) {
-			uint16_t datalen;
-			if (!stream.read<uint16_t>(datalen)) {
-				return ERROR_INVALID_FORMAT;
-			}
+		if (object.flags().clip()) {
+			iType.alwaysOnTopOrder = 1;
+		} else if (object.flags().top()) {
+			iType.alwaysOnTopOrder = 3;
+		} else if (object.flags().bottom()) {
+			iType.alwaysOnTopOrder = 2;
+		}
 
-			switch (attrib) {
-				case ITEM_ATTR_SERVERID: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(serverId)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
+		if (object.flags().has_clothes()) {
+			switch (object.flags().clothes().slot()) {
+				case 0: { // Double hand equip ID
+					iType.slotPosition |= SLOTP_TWO_HAND;
 					break;
 				}
-
-				case ITEM_ATTR_CLIENTID: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(clientId)) {
-						return ERROR_INVALID_FORMAT;
-					}
+				case 1: { // Head equip ID
+					iType.slotPosition |= SLOTP_HEAD;
 					break;
 				}
-
-				case ITEM_ATTR_SPEED: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(speed)) {
-						return ERROR_INVALID_FORMAT;
-					}
+				case 2: { // Amulet equip ID
+					iType.slotPosition |= SLOTP_NECKLACE;
 					break;
 				}
-
-				case ITEM_ATTR_LIGHT2: {
-					if (datalen != sizeof(lightBlock2)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					lightBlock2 lb2;
-					if (!stream.read(lb2)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					lightLevel = static_cast<uint8_t>(lb2.lightLevel);
-					lightColor = static_cast<uint8_t>(lb2.lightColor);
+				case 3: { // Backpack equip ID
+					iType.slotPosition |= SLOTP_BACKPACK;
 					break;
 				}
-
-				case ITEM_ATTR_TOPORDER: {
-					if (datalen != sizeof(uint8_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint8_t>(alwaysOnTopOrder)) {
-						return ERROR_INVALID_FORMAT;
-					}
+				case 4: { // Armor equip ID
+					iType.slotPosition |= SLOTP_ARMOR;
 					break;
 				}
-
-				case ITEM_ATTR_WAREID: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(wareId)) {
-						return ERROR_INVALID_FORMAT;
-					}
+				case 5: { // Right hand equip ID
+					iType.slotPosition &= ~SLOTP_LEFT;
 					break;
 				}
-
-				default: {
-					//skip unknown attributes
-					if (!stream.skip(datalen)) {
-						return ERROR_INVALID_FORMAT;
-					}
+				case 6: { // Left hand equip ID
+					iType.slotPosition &= ~SLOTP_RIGHT;
 					break;
 				}
+				case 7: { // Leg equip ID
+					iType.slotPosition |= SLOTP_LEGS;
+					break;
+				}
+				case 8: { // Boots equip ID
+					iType.slotPosition |= SLOTP_FEET;
+					break;
+				}
+				case 9: { // Ring equip ID
+					iType.slotPosition |= SLOTP_RING;
+					break;
+				}
+				case 10: { // Tools equip ID (Old ammo slot)
+					iType.slotPosition |= SLOTP_AMMO;
+					break;
+				}
+				default:
+					break;
 			}
 		}
 
-		reverseItemMap.emplace(clientId, serverId);
+		if (object.flags().has_market()) {
+			switch (object.flags().market().category()) {
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_ARMORS: {
+					iType.type = ITEM_TYPE_ARMOR;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_AMULETS: {
+					iType.type = ITEM_TYPE_AMULET;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_BOOTS: {
+					iType.type = ITEM_TYPE_BOOTS;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_CONTAINERS: {
+					iType.type = ITEM_TYPE_CONTAINER;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_DECORATION: {
+					iType.type = ITEM_TYPE_DECORATION;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_FOOD: {
+					iType.type = ITEM_TYPE_FOOD;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_HELMETS_HATS: {
+					iType.type = ITEM_TYPE_HELMET;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_LEGS: {
+					iType.type = ITEM_TYPE_LEGS;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_OTHERS: {
+					iType.type = ITEM_TYPE_OTHER;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_POTIONS: {
+					iType.type = ITEM_TYPE_POTION;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_RINGS: {
+					iType.type = ITEM_TYPE_RING;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_RUNES: {
+					iType.type = ITEM_TYPE_RUNE;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_SHIELDS: {
+					iType.type = ITEM_TYPE_SHIELD;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_TOOLS: {
+					iType.type = ITEM_TYPE_TOOLS;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_VALUABLES: {
+					iType.type = ITEM_TYPE_VALUABLE;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_AMMUNITION: {
+					iType.type = ITEM_TYPE_AMMO;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_AXES: {
+					iType.type = ITEM_TYPE_AXE;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_CLUBS: {
+					iType.type = ITEM_TYPE_CLUB;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_DISTANCE_WEAPONS: {
+					iType.type = ITEM_TYPE_DISTANCE;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_SWORDS: {
+					iType.type = ITEM_TYPE_SWORD;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_WANDS_RODS: {
+					iType.type = ITEM_TYPE_WAND;
+					break;
+				}
+				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_CREATURE_PRODUCTS: {
+					iType.type = ITEM_TYPE_CREATUREPRODUCT;
+					break;
+				}
+				default:
+					break;
+			}
 
-		// store the found item
-		if (serverId >= items.size()) {
-			items.resize(serverId + 1);
 		}
-		ItemType& iType = items[serverId];
 
-		iType.group = static_cast<ItemGroup_t>(itemNode.type);
-		switch (itemNode.type) {
-			case ITEM_GROUP_CONTAINER:
-				iType.type = ITEM_TYPE_CONTAINER;
-				break;
-			case ITEM_GROUP_DOOR:
-				//not used
-				iType.type = ITEM_TYPE_DOOR;
-				break;
-			// ITEM_GROUP_MAGICFIELD is Deprecated
-			case ITEM_GROUP_MAGICFIELD:
-				//not used
-				iType.type = ITEM_TYPE_MAGICFIELD;
-				break;
-			case ITEM_GROUP_TELEPORT:
-				//not used
-				iType.type = ITEM_TYPE_TELEPORT;
-				break;
-			case ITEM_GROUP_NONE:
-			case ITEM_GROUP_GROUND:
-			case ITEM_GROUP_SPLASH:
-			case ITEM_GROUP_FLUID:
-			case ITEM_GROUP_CHARGES:
-			case ITEM_GROUP_DEPRECATED:
-				break;
-			default:
-				return ERROR_INVALID_FORMAT;
-		}
+		iType.name = object.name();
+		iType.description = object.description();
 
-		iType.blockSolid = hasBitSet(FLAG_BLOCK_SOLID, flags);
-		iType.blockProjectile = hasBitSet(FLAG_BLOCK_PROJECTILE, flags);
-		iType.blockPathFind = hasBitSet(FLAG_BLOCK_PATHFIND, flags);
-		iType.hasHeight = hasBitSet(FLAG_HAS_HEIGHT, flags);
-		iType.useable = hasBitSet(FLAG_USEABLE, flags);
-		iType.pickupable = hasBitSet(FLAG_PICKUPABLE, flags);
-		iType.moveable = hasBitSet(FLAG_MOVEABLE, flags);
-		iType.wrapContainer = hasBitSet(FLAG_WRAPCONTAINER, flags);
-		iType.stackable = hasBitSet(FLAG_STACKABLE, flags);
+		iType.upgradeClassification = object.flags().has_upgradeclassification() ? static_cast<uint8_t>(object.flags().upgradeclassification().upgrade_classification()) : 0;
+		iType.lightLevel = (object.flags().has_light() && object.flags().light().brightness() != 0) ? static_cast<uint8_t>(object.flags().light().brightness()) : 0;
+		iType.lightColor = (object.flags().has_light() && object.flags().light().color() != 0) ? static_cast<uint8_t>(object.flags().light().color()) : 0;
 
-		iType.alwaysOnTop = hasBitSet(FLAG_ALWAYSONTOP, flags);
-		iType.isVertical = hasBitSet(FLAG_VERTICAL, flags);
-		iType.isHorizontal = hasBitSet(FLAG_HORIZONTAL, flags);
-		iType.isHangable = hasBitSet(FLAG_HANGABLE, flags);
-		iType.allowDistRead = hasBitSet(FLAG_ALLOWDISTREAD, flags);
-		iType.rotatable = hasBitSet(FLAG_ROTATABLE, flags);
-		iType.canReadText = hasBitSet(FLAG_READABLE, flags);
-		iType.lookThrough = hasBitSet(FLAG_LOOKTHROUGH, flags);
-		iType.isAnimation = hasBitSet(FLAG_ANIMATION, flags);
-		// iType.walkStack = !hasBitSet(FLAG_FULLTILE, flags);
-		iType.forceUse = hasBitSet(FLAG_FORCEUSE, flags);
+		iType.id = static_cast<uint16_t>(object.id());
+		iType.speed = (object.flags().has_bank() && object.flags().bank().waypoints() != 0) ? static_cast<uint16_t>(object.flags().bank().waypoints()) : 0;
+		iType.wareId = (object.flags().has_market() && object.flags().market().trade_as_object_id() != 0) ? static_cast<uint16_t>(object.flags().market().trade_as_object_id()) : 0;
 
-		iType.id = serverId;
-		iType.clientId = clientId;
-		iType.speed = speed;
-		iType.lightLevel = lightLevel;
-		iType.lightColor = lightColor;
-		iType.wareId = wareId;
-		iType.alwaysOnTopOrder = alwaysOnTopOrder;
+		iType.forceUse = object.flags().forceuse();
+		iType.hasHeight = object.flags().has_height();
+		iType.blockSolid = object.flags().unpass();
+		iType.blockProjectile = object.flags().unsight();
+		iType.blockPathFind = object.flags().avoid();
+		iType.pickupable = object.flags().take();
+		iType.rotatable = object.flags().rotate();
+		iType.wrapContainer = object.flags().wrap() || object.flags().unwrap();
+		iType.multiUse = object.flags().multiuse();
+		iType.moveable = object.flags().unmove() == false;
+		iType.canReadText = (object.flags().has_lenshelp() && object.flags().lenshelp().id() == 1112) || (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
+		iType.canReadText = (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
+		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == Canary::protobuf::appearances::HOOK_TYPE_SOUTH;
+		iType.isHorizontal = object.flags().has_hook() && object.flags().hook().direction() == Canary::protobuf::appearances::HOOK_TYPE_EAST;
+		iType.isHangable = object.flags().hang();
+		//iType.allowDistRead = false;
+		iType.lookThrough = object.flags().ignore_look();
+		iType.stackable = object.flags().cumulative();
+		iType.isPodium = object.flags().show_off_socket();
 	}
 
 	items.shrink_to_fit();
+	c_items.close();
+
 	return ERROR_NONE;
 }
 
@@ -403,7 +399,7 @@ void Items::buildInventoryList()
 			type.slotPosition & SLOTP_ARMOR ||
 			type.slotPosition & SLOTP_LEGS)
 		{
-			inventory.push_back(type.clientId);
+			inventory.push_back(type.id);
 		}
 	}
 	inventory.shrink_to_fit();
@@ -422,11 +418,12 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		return;
 	}
 
-	if (!itemType.name.empty()) {
+	if (itemType.loaded) {
 		SPDLOG_WARN("[Items::parseItemNode] - Duplicate item with id: {}", id);
 		return;
 	}
 
+	itemType.loaded = true;
 	itemType.name = itemNode.attribute("name").as_string();
 
 	nameToItems.insert({
@@ -483,15 +480,6 @@ const ItemType& Items::getItemType(size_t id) const
 {
 	if (id < items.size()) {
 		return items[id];
-	}
-	return items.front();
-}
-
-const ItemType& Items::getItemIdByClientId(uint16_t spriteId) const
-{
-	auto it = reverseItemMap.find(spriteId);
-	if (it != reverseItemMap.end()) {
-		return getItemType(it->second);
 	}
 	return items.front();
 }

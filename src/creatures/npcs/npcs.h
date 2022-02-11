@@ -80,8 +80,8 @@ class NpcType
 		std::string nameDescription;
 		NpcInfo info;
 
-		void addShopItem(uint16_t serverId, ShopInfo &item) {
-			info.shopItems[serverId] = item;
+		void addShopItem(uint16_t itemId, ShopInfo &item) {
+			info.shopItems[itemId] = item;
 		}
 
 		bool loadCallback(LuaScriptInterface* scriptInterface);

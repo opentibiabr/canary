@@ -418,7 +418,7 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 }
 
 int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
-	//npc:getShopItem(clientId)
+	//npc:getShopItem(itemId)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
@@ -427,16 +427,16 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	}
 
 	ShopInfoMap shopItems = npc->getShopItems();
-	const ItemType &itemType = Item::items.getItemIdByClientId(getNumber<uint16_t>(L, 2));
+	const ItemType &itemType = Item::items[getNumber<uint16_t>(L, 2)];
 
 	if (shopItems.find(itemType.id) == shopItems.end()) {
-		reportErrorFunc("No shop item found for clientId");
+		reportErrorFunc("No shop item found for itemId");
 		pushBoolean(L, false);
 		return 1;
 	}
 
 	ShopInfo shopInfo = shopItems[itemType.id];
-	setField(L, "clientId", shopInfo.itemClientId);
+	setField(L, "itemId", shopInfo.itemId);
 	setField(L, "name", shopInfo.name);
 	setField(L, "subType", shopInfo.subType);
 	setField(L, "buyPrice", shopInfo.buyPrice);

@@ -428,9 +428,9 @@ function Player.selectDailyReward(self, msg)
 		-- Creating items table
 		local columnsPicked = msg:getByte() -- Columns picked
 		for i = 1, columnsPicked do
-			local spriteId = msg:getU16()
+			local itemId = msg:getU16()
 			local count = msg:getByte()
-			items[i] = {spriteId = spriteId, count = count}
+			items[i] = {ItemId = itemId, count = count}
 		end
 
 		-- Verifying if items if player is picking the correct amount
@@ -459,18 +459,17 @@ function Player.selectDailyReward(self, msg)
 
 		local description = ""
 		for k, v in ipairs(items) do
-			local item = Game.getItemIdByClientId(v.spriteId)
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(item:getId(), dailyTable.itemCharges) -- adding charges for each item
+					inbox:addItem(v.ItemId, dailyTable.itemCharges) -- adding charges for each item
 				end
 			else
-				inbox:addItem(item:getId(), v.count) -- adding single item w/o charges
+				inbox:addItem(v.ItemId, v.count) -- adding single item w/o charges
 			end
 			if k ~= columnsPicked then
-				description = description .. "" .. v.count .. "x " .. getItemName(item:getId()) .. ", "
+				description = description .. "" .. v.count .. "x " .. getItemName(v.ItemId) .. ", "
 			else
-				description = description .. "" .. v.count .. "x " .. getItemName(item:getId()) .. "."
+				description = description .. "" .. v.count .. "x " .. getItemName(v.ItemId) .. "."
 			end
 		end
 
@@ -600,7 +599,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 				local itemType = ItemType(itemId)
 				local itemName = itemType:getArticle() .. " " .. getItemName(itemId)
 				local itemWeight = itemType:getWeight()
-				msg:addItemId(itemId)
+				msg:addU16(itemId)
 				msg:addString(itemName)
 				msg:addU32(itemWeight)
 			end

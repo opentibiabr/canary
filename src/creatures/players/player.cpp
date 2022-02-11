@@ -1210,7 +1210,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	for (auto& [key, value] : items)
 	{
 		const ItemType& itemType = Item::items[key];
-		if (this->getItemTypeCount(key) + this->getStashItemCount(itemType.clientId) < value)
+		if (this->getItemTypeCount(key) + this->getStashItemCount(itemType.id) < value)
 		{
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
@@ -1262,7 +1262,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		const ItemType& itemType = Item::items[key];
 
 		withdrawItemMessage << "Using " << mathItemCount << "x "<< itemType.name <<" from your supply stash. ";
-		withdrawItem(itemType.clientId, mathItemCount);
+		withdrawItem(itemType.id, mathItemCount);
 	}
 
 	sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
@@ -3428,9 +3428,9 @@ bool Player::isStashExhausted() const {
 
 void Player::stashContainer(StashContainerList itemDict)
 {
-	StashItemList stashItemDict; // ClientID - Count
+	StashItemList stashItemDict; // ItemID - Count
 	for (auto it_dict : itemDict) {
-		stashItemDict[(it_dict.first)->getClientID()] = it_dict.second;
+		stashItemDict[(it_dict.first)->getID()] = it_dict.second;
 	}
 
 	for (auto it : stashItems) {
@@ -3449,7 +3449,7 @@ void Player::stashContainer(StashContainerList itemDict)
 	uint32_t totalStowed = 0;
 	std::ostringstream retString;
 	for (auto stashIterator : itemDict) {
-		uint16_t iteratorCID = (stashIterator.first)->getClientID();
+		uint16_t iteratorCID = (stashIterator.first)->getID();
 		if (g_game.internalRemoveItem(stashIterator.first, stashIterator.second) == RETURNVALUE_NOERROR) {
 			addItemOnStash(iteratorCID, stashIterator.second);
 			totalStowed += stashIterator.second;
@@ -3559,30 +3559,7 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 	return countMap;
 }
 
-Item* Player::getItemByClientId(uint16_t clientId) const
-{
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-		Item* item = inventory[i];
-		if (!item) {
-			continue;
-		}
-
-		if (item->getClientID() == clientId) {
-			return item;
-		}
-
-		if (Container* container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if ((*it)->getClientID() == clientId) {
-					return (*it);
-				}
-			}
-		}
-	}
-	return nullptr;
-}
-
-std::map<uint16_t, uint16_t> Player::getInventoryClientIds() const
+std::map<uint16_t, uint16_t> Player::getInventoryItemsId() const
 {
 	std::map<uint16_t, uint16_t> itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
@@ -3591,26 +3568,26 @@ std::map<uint16_t, uint16_t> Player::getInventoryClientIds() const
 			continue;
 		}
 
-		auto rootSearch = itemMap.find(item->getClientID());
+		auto rootSearch = itemMap.find(item->getID());
 		if (rootSearch != itemMap.end()) {
-			itemMap[item->getClientID()] = itemMap[item->getClientID()] + Item::countByType(item, -1);
+			itemMap[item->getID()] = itemMap[item->getID()] + Item::countByType(item, -1);
 		}
 		else
 		{
-			itemMap.emplace(item->getClientID(), Item::countByType(item, -1));
+			itemMap.emplace(item->getID(), Item::countByType(item, -1));
 		}
 
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto containerSearch = itemMap.find((*it)->getClientID());
+				auto containerSearch = itemMap.find((*it)->getID());
 				if (containerSearch != itemMap.end()) {
-					itemMap[(*it)->getClientID()] = itemMap[(*it)->getClientID()] + Item::countByType(*it, -1);
+					itemMap[(*it)->getID()] = itemMap[(*it)->getID()] + Item::countByType(*it, -1);
 				}
 				else
 				{
-					itemMap.emplace((*it)->getClientID(), Item::countByType(*it, -1));
+					itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
 				}
-				itemMap.emplace((*it)->getClientID(), Item::countByType(*it, -1));
+				itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
 			}
 		}
 	}
@@ -3679,7 +3656,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 
 		updateInventoryWeight();
 		updateItemsLight();
-		sendInventoryClientIds();
+		sendInventoryIds();
 		sendStats();
 	}
 
@@ -3734,7 +3711,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 
 		updateInventoryWeight();
 		updateItemsLight();
-		sendInventoryClientIds();
+		sendInventoryIds();
 		sendStats();
 	}
 
@@ -5589,13 +5566,13 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 				continue;
 			}
 
-			if (inventoryItem->getClientID() == item->getClientID()) {
+			if (inventoryItem->getID() == item->getID()) {
 				itemDict.push_back(std::pair<Item*, uint32_t>(inventoryItem, inventoryItem->getItemCount()));
 			}
 
 			if (Container* container = inventoryItem->getContainer()) {
 				for (auto stowable_it : container->getStowableItems()) {
-					if ((stowable_it.first)->getClientID() == item->getClientID()) {
+					if ((stowable_it.first)->getID() == item->getID()) {
 						itemDict.push_back(stowable_it);
 					}
 				}

@@ -170,11 +170,11 @@ int ItemTypeFunctions::luaItemTypeIsMagicField(lua_State* L) {
 	return 1;
 }
 
-int ItemTypeFunctions::luaItemTypeIsUseable(lua_State* L) {
-	// itemType:isUseable()
+int ItemTypeFunctions::luaItemTypeIsMultiUse(lua_State* L) {
+	// itemType:isMultiUse()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
-		pushBoolean(L, itemType->isUseable());
+		pushBoolean(L, itemType->isMultiUse());
 	} else {
 		lua_pushnil(L);
 	}
@@ -219,17 +219,6 @@ int ItemTypeFunctions::luaItemTypeGetId(lua_State* L) {
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->id);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int ItemTypeFunctions::luaItemTypeGetClientId(lua_State* L) {
-	// itemType:getClientId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
-	if (itemType) {
-		lua_pushnumber(L, itemType->clientId);
 	} else {
 		lua_pushnil(L);
 	}

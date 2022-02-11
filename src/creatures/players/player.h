@@ -575,29 +575,29 @@ class Player final : public Creature, public Cylinder
 		bool canSellImbuedItem(Item *item, bool ignoreImbued);
 		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool ignoreImbued = true) const;
 
-		void addItemOnStash(uint16_t clientId, uint32_t amount) {
-			auto it = stashItems.find(clientId);
+		void addItemOnStash(uint16_t itemId, uint32_t amount) {
+			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
-				stashItems[clientId] += amount;
+				stashItems[itemId] += amount;
 				return;
 			}
 
-			stashItems[clientId] = amount;
+			stashItems[itemId] = amount;
 		}
-		uint16_t getStashItemCount(uint16_t clientId) const {
-			auto it = stashItems.find(clientId);
+		uint16_t getStashItemCount(uint16_t itemId) const {
+			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
 				return static_cast<uint16_t>(it->second);
 			}
 			return 0;
 		}
-		bool withdrawItem(uint16_t clientId, uint32_t amount) {
-			auto it = stashItems.find(clientId);
+		bool withdrawItem(uint16_t itemId, uint32_t amount) {
+			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
 				if (it->second > amount) {
-					stashItems[clientId] -= amount;
+					stashItems[itemId] -= amount;
 				} else if (it->second == amount) {
-					stashItems.erase(clientId);
+					stashItems.erase(itemId);
 				} else {
 					return false;
 				}
@@ -1053,9 +1053,9 @@ class Player final : public Creature, public Cylinder
 				client->sendInventoryItem(slot, item);
 			}
 		}
-		void sendInventoryClientIds() {
+		void sendInventoryIds() {
 			if (client) {
-				client->sendInventoryClientIds();
+				client->sendInventoryIds();
 			}
 		}
 
@@ -1403,9 +1403,9 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendPodiumWindow(const Item* podium, const Position& position,
-                              uint16_t spriteId, uint8_t stackpos) {
+                              uint16_t itemId, uint8_t stackpos) {
 			if (client) {
-				client->sendPodiumWindow(podium, position, spriteId, stackpos);
+				client->sendPodiumWindow(podium, position, itemId, stackpos);
 			}
 		}
 		void sendCloseContainer(uint8_t cid) {
@@ -1711,9 +1711,9 @@ class Player final : public Creature, public Cylinder
 				return false;
 			}
 
-			auto it = std::find(quickLootListClientIds.begin(),
-                                quickLootListClientIds.end(), item->getClientID());
-			return it != quickLootListClientIds.end();
+			auto it = std::find(quickLootListItemIds.begin(),
+                                quickLootListItemIds.end(), item->getID());
+			return it != quickLootListItemIds.end();
 		}
 
 		bool updateKillTracker(Container* corpse,
@@ -1936,8 +1936,7 @@ class Player final : public Creature, public Cylinder
 		void stashContainer(StashContainerList itemDict);
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		Item* getItemByClientId(uint16_t clientId) const;
-		std::map<uint16_t, uint16_t> getInventoryClientIds() const;
+		std::map<uint16_t, uint16_t> getInventoryItemsId() const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 
@@ -1963,7 +1962,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, Reward*> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
-		std::vector<uint16_t> quickLootListClientIds;
+		std::vector<uint16_t> quickLootListItemIds;
 
 		std::vector<OutfitEntry> outfits;
 		std::vector<FamiliarEntry> familiars;
@@ -2077,7 +2076,7 @@ class Player final : public Creature, public Cylinder
 		uint16_t storeXpBoost = 0;
 		uint16_t staminaXpBoost = 100;
 		int16_t lastDepotId = -1;
-		StashItemList stashItems; // [ClientID] = amount
+		StashItemList stashItems; // [ItemID] = amount
 
 		// Bestiary
 		bool charmExpansion = false;

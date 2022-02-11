@@ -224,30 +224,6 @@ int NetworkMessageFunctions::luaNetworkMessageAddItem(lua_State* L) {
 	return 1;
 }
 
-int NetworkMessageFunctions::luaNetworkMessageAddItemId(lua_State* L) {
-	// networkMessage:addItemId(itemId)
-	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
-	if (!message) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	uint16_t itemId;
-	if (isNumber(L, 2)) {
-		itemId = getNumber<uint16_t>(L, 2);
-	} else {
-		itemId = Item::items.getItemIdByName(getString(L, 2));
-		if (itemId == 0) {
-			lua_pushnil(L);
-			return 1;
-		}
-	}
-
-	message->addItemId(itemId);
-	pushBoolean(L, true);
-	return 1;
-}
-
 int NetworkMessageFunctions::luaNetworkMessageReset(lua_State* L) {
 	// networkMessage:reset()
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);

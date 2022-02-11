@@ -50,6 +50,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 
 	const ItemType& it = Item::items[type];
 	if (it.group == ITEM_GROUP_DEPRECATED) {
+		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is deprecated and should not be used.", type);
 		return nullptr;
 	}
 
@@ -93,6 +94,8 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 		}
 
 		newItem->incrementReferenceCounter();
+	} else {
+		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
 	return newItem;
@@ -131,7 +134,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 {
 	const ItemType& it = Item::items[type];
-	if (it.id == 0 || it.group == ITEM_GROUP_DEPRECATED || it.stackable || it.useable || it.moveable || it.pickupable || it.isDepot() || it.isSplash() || it.isDoor()) {
+	if (it.id == 0 || it.group == ITEM_GROUP_DEPRECATED || it.stackable || it.multiUse || it.moveable || it.pickupable || it.isDepot() || it.isSplash() || it.isDoor()) {
 		return nullptr;
 	}
 

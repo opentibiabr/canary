@@ -38,14 +38,12 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"defense", ITEM_PARSE_DEFENSE},
 	{"extradef", ITEM_PARSE_EXTRADEF},
 	{"attack", ITEM_PARSE_ATTACK},
-	{"upgradeclassification", ITEM_PARSE_UPGRADE_CLASS},
 	{"rotateto", ITEM_PARSE_ROTATETO},
 	{"wrapcontainer", ITEM_PARSE_WRAPCONTAINER},
 	{"wrapableto", ITEM_PARSE_WRAPABLETO},
 	{"unwrapableto", ITEM_PARSE_WRAPABLETO},
 	{"moveable", ITEM_PARSE_MOVEABLE},
 	{"movable", ITEM_PARSE_MOVEABLE},
-	{"ispodium", ITEM_PARSE_PODIUM},
 	{"blockprojectile", ITEM_PARSE_BLOCKPROJECTILE},
 	{"allowpickupable", ITEM_PARSE_PICKUPABLE},
 	{"pickupable", ITEM_PARSE_PICKUPABLE},
@@ -259,12 +257,10 @@ class ItemParse : public Items
 	static void parseDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseExtraDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseUpgradeClassification(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseMoveable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePickupable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFloorChange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

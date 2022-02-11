@@ -234,7 +234,7 @@ std::ostringstream& Container::getContentDescription(std::ostringstream& os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getClientID() << "|" << item->getNameDescription() << "}";
+		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
 	}
 
 	if (firstitem) {

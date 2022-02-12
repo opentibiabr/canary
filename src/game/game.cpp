@@ -8399,18 +8399,40 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 	}
 }
 
-void Game::updatePlayerSaleItems(uint32_t playerId)
+void Game::updatePlayerEvent(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	std::map<uint32_t, uint32_t> tempInventoryMap;
-	player->getAllItemTypeCountAndSubtype(tempInventoryMap);
-
-	player->sendSaleItemList(tempInventoryMap);
-	player->setScheduledSaleUpdate(false);
+	if (player->hasScheduledUpdates(PlayerUpdate_Weight)) {
+		player->updateInventoryWeight();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Light)) {
+		player->updateItemsLight();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Stats)) {
+		player->sendStats();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Skills)) {
+		player->sendSkills();
+	}
+	#if GAME_FEATURE_NPC_INTERFACE > 0 || GAME_FEATURE_INVENTORY_LIST > 0
+	if (player->hasScheduledUpdates((PlayerUpdate_Inventory | PlayerUpdate_Sale))) {
+		std::map<uint32_t, uint32_t> tempInventoryMap;
+		player->getAllItemTypeCountAndSubtype(tempInventoryMap);
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		if (player->hasScheduledUpdates(PlayerUpdate_Inventory)) {
+			player->sendItems(tempInventoryMap);
+		}
+		#endif
+		if (player->hasScheduledUpdates(PlayerUpdate_Sale)) {
+			player->sendSaleItemList(tempInventoryMap);
+		}
+	}
+	#endif
+	player->resetScheduledUpdates();
 }
 
 void Game::addPlayer(Player* player)

@@ -3679,10 +3679,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 			requireListUpdate = oldParent != this;
 		}
 
-		updateInventoryWeight();
-		updateItemsLight();
-		sendInventoryClientIds();
-		sendStats();
+		addScheduledUpdates((PlayerUpdate_Weight | PlayerUpdate_Light | PlayerUpdate_Stats));
 	}
 
 	if (const Item* item = thing->getItem()) {
@@ -3734,10 +3731,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			requireListUpdate = newParent != this;
 		}
 
-		updateInventoryWeight();
-		updateItemsLight();
-		sendInventoryClientIds();
-		sendStats();
+		addScheduledUpdates((PlayerUpdate_Weight | PlayerUpdate_Light | PlayerUpdate_Stats));
 	}
 
 	if (const Item* item = thing->getItem()) {
@@ -3781,11 +3775,11 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 bool Player::updateSaleShopList(const Item* item)
 {
 	uint16_t itemId = item->getID();
-	if (!itemId || !item)
+	if (!itemId || !item) {
 		return true;
-
-	g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game, getID())));
-	scheduledSaleUpdate = true;
+	}
+	
+	addScheduledUpdates(PlayerUpdate_Sale);
 	return true;
 }
 
@@ -4774,6 +4768,15 @@ bool Player::hasLearnedInstantSpell(const std::string& spellName) const
 		}
 	}
 	return false;
+}
+
+void Player::addScheduledUpdates(uint32_t flags)
+{
+	scheduledUpdates |= flags;
+	if (!scheduledUpdate) {
+		g_dispatcher.addTask(createTask(SERVER_BEAT_MILISECONDS, std::bind(&Game::updatePlayerEvent, &g_game, getID())));
+		scheduledUpdate = true;
+	}
 }
 
 bool Player::isInWar(const Player* player) const

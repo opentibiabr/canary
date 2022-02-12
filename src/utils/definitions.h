@@ -37,6 +37,8 @@ static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 #define CLIENT_MAP_WIDTH_OFFSET (CLIENT_MAP_WIDTH / 2)
 #define CLIENT_MAP_HEIGHT_OFFFSET (CLIENT_MAP_HEIGHT / 2)
 
+#define SERVER_BEAT_MILISECONDS 50
+
 #ifndef __FUNCTION__
 #define __FUNCTION__ __func__
 #endif

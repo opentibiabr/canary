@@ -396,7 +396,7 @@ private:
 
 	//inventory
 	void sendInventoryItem(Slots_t slot, const Item *item);
-	void sendInventoryClientIds();
+	void sendItems(const std::map<uint32_t, uint32_t>& inventoryMap);
 
 	//messages
 	void sendModalWindow(const ModalWindow &modalWindow);

@@ -456,18 +456,22 @@ void ConditionAttributes::updatePercentStats(Player* player)
 
 void ConditionAttributes::updateStats(Player* player)
 {
-  bool needUpdate = false;
+  bool needUpdateStats = false;
 
   for (int32_t i = STAT_FIRST; i <= STAT_LAST; ++i) {
     if (stats[i]) {
-      needUpdate = true;
+      needUpdateStats = true;
       player->setVarStats(static_cast<stats_t>(i), stats[i]);
     }
   }
 
-  if (needUpdate) {
-    player->sendStats();
-    player->sendSkills();
+  if (needUpdateStats) {
+    #if CLIENT_VERSION >= 1200
+      //We have magic level in skills now so we need to send skills update too here
+      player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+      #else
+      player->addScheduledUpdates(PlayerUpdate_Stats);
+      #endif
   }
 }
 

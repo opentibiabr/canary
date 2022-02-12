@@ -588,6 +588,15 @@ enum CombatType_t : uint16_t {
 	COMBAT_COUNT = 12
 };
 
+enum PlayerUpdateFlags : uint32_t {
+	PlayerUpdate_Weight = 1 << 0,
+	PlayerUpdate_Light = 1 << 1,
+	PlayerUpdate_Stats = 1 << 2,
+	PlayerUpdate_Skills = 1 << 3,
+	PlayerUpdate_Inventory = 1 << 4,
+	PlayerUpdate_Sale = 1 << 5
+};
+
 enum PlayerAsyncOngoingTaskFlags : uint64_t {
 	PlayerAsyncTask_Highscore = 1 << 0,
 	PlayerAsyncTask_RecentDeaths = 1 << 1,

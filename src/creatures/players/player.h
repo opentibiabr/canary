@@ -1068,11 +1068,13 @@ class Player final : public Creature, public Cylinder
 				client->sendInventoryItem(slot, item);
 			}
 		}
-		void sendInventoryClientIds() {
+		#if GAME_FEATURE_INVENTORY_LIST > 0
+		void sendItems(const std::map<uint32_t, uint32_t>& inventoryMap) {
 			if (client) {
-				client->sendInventoryClientIds();
+				client->sendItems(inventoryMap);
 			}
 		}
+		#endif
 
 		void openPlayerContainers();
 
@@ -1634,6 +1636,15 @@ class Player final : public Creature, public Cylinder
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
 
+		void addScheduledUpdates(uint32_t flags);
+		bool hasScheduledUpdates(uint32_t flags) const {
+			return (scheduledUpdates & flags);
+		}
+		void resetScheduledUpdates() {
+			scheduledUpdates = 0;
+			scheduledUpdate = false;
+		}
+
 		void updateRegeneration();
 
 		void setScheduledSaleUpdate(bool scheduled) {
@@ -2065,6 +2076,8 @@ class Player final : public Creature, public Cylinder
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
 		uint32_t manaMax = 0;
+		uint32_t scheduledUpdates = 0;
+
 		int32_t varSpecialSkills[SPECIALSKILL_LAST + 1] = {};
 		int32_t varSkills[SKILL_LAST + 1] = {};
 		int32_t varStats[STAT_LAST + 1] = {};
@@ -2165,6 +2178,7 @@ class Player final : public Creature, public Cylinder
 		bool supplyStash = false; // Menu option 'stow, stow container ...'
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
+		bool scheduledUpdate = false;
 
 		static uint32_t playerAutoID;
 

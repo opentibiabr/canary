@@ -5497,7 +5497,6 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 		}
 	}
 
-	sendInventoryClientIds();
 	Item *slotItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	if (slotItem)
 	{
@@ -5626,29 +5625,51 @@ void ProtocolGame::sendInventoryItem(Slots_t slot, const Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendInventoryClientIds()
+#if GAME_FEATURE_INVENTORY_LIST > 0
+void ProtocolGame::sendItems(const std::map<uint32_t, uint32_t>& inventoryMap)
 {
-	std::map<uint16_t, uint16_t> items = player->getInventoryClientIds();
-
 	NetworkMessage msg;
 	msg.addByte(0xF5);
-	msg.add<uint16_t>(items.size() + 11);
 
-	for (uint16_t i = 1; i <= 11; i++)
-	{
+	uint16_t itemsToSend = 11;
+	auto msgPosition = msg.getBufferPosition();
+	msg.skipBytes(2);
+
+	for (uint16_t i = 1; i <= 11; i++) {
 		msg.add<uint16_t>(i);
-		msg.addByte(0x00);
-		msg.add<uint16_t>(0x01);
+		msg.addByte(0);
+		msg.add<uint16_t>(1);
 	}
 
-	for (const auto &it : items)
-	{
-		msg.add<uint16_t>(it.first);
-		msg.addByte(0x00);
-		msg.add<uint16_t>(it.second);
+	for (const auto& inventoryInfo : inventoryMap) {
+		uint32_t index = inventoryInfo.first;
+		uint8_t fluidType = static_cast<uint8_t>(index >> 16);
+
+		msg.addItemId(static_cast<uint16_t>(index));
+		msg.addByte((fluidType ? serverFluidToClient(fluidType) : 0));
+		msg.add<uint16_t>(std::min<uint32_t>(inventoryInfo.second, std::numeric_limits<uint16_t>::max()));
+
+		// Limit it to upper networkmessage buffer size incase player have very large inventory
+		#if CLIENT_VERSION >= 1057
+		if (++itemsToSend >= 0x32F0) {
+			break;
+		}
+		#elif CLIENT_VERSION >= 940
+		if (++itemsToSend >= 0x12F0) {
+			break;
+		}
+		#else
+		if (++itemsToSend >= 0xC80) {
+			break;
+		}
+		#endif
 	}
+
+	msg.setBufferPosition(msgPosition);
+	msg.add<uint16_t>(itemsToSend);
 	writeToOutputBuffer(msg);
 }
+#endif
 
 void ProtocolGame::sendAddContainerItem(uint8_t cid, uint16_t slot, const Item *item)
 {

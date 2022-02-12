@@ -43,10 +43,11 @@ int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 		return 1;
 	}
 
-	 player->sendInventoryClientIds();
+	std::map<uint32_t, uint32_t> tempInventoryMap;
+	player->getAllItemTypeCountAndSubtype(tempInventoryMap);
+	player->sendItems(tempInventoryMap);
 	pushBoolean(L, true);
-
-	 return 1;
+	return 1;
 }
 
 int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {

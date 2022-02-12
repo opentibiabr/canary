@@ -173,8 +173,6 @@ void Items::loadFromProtobuf(Appearances appearances)
 	}
 
 	items.shrink_to_fit();
-
-	return ERROR_NONE;
 }
 
 bool Items::loadFromXml()

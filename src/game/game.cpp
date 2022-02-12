@@ -19,6 +19,7 @@
 
 #include "otpch.h"
 
+#include <fstream>
 #include "utils/pugicast.h"
 
 #include "lua/creature/actions.h"
@@ -47,6 +48,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
+#include "io/protobuf/appearances.pb.h"
 
 extern Actions* g_actions;
 extern Chat* g_chat;
@@ -1149,6 +1151,54 @@ void Game::playerInspectItem(Player* player, const Position& pos) {
 
 void Game::playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
 	player->sendItemInspection(itemId, itemCount, nullptr, cyclopedia);
+}
+
+FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string& file)
+{
+	std::fstream fileStream(file, std::ios::in | std::ios::binary);
+	if (!fileStream.is_open()) {
+		SPDLOG_ERROR("[Game::loadAppearanceProtobuf] - Failed to load {}, file cannot be oppened", file);
+		fileStream.close();
+		return ERROR_NOT_OPEN;
+	}
+
+	// Verify that the version of the library that we linked against is
+	// compatible with the version of the headers we compiled against.
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+	appearances = Appearances();
+	if (!appearances.ParseFromIstream(&fileStream)) {
+		SPDLOG_ERROR("[Game::loadAppearanceProtobuf] - Failed to parse binary file {}, file is invalid", file);
+		fileStream.close();
+		return ERROR_NOT_OPEN;
+	}
+
+	// Parsing all items into ItemType
+	Item::items.loadFromProtobuf(appearances);
+
+	// Only iterate other objects if necessary
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
+		// Registering distance effects
+		for (uint32_t it = 0; it < appearances.effect_size(); it++) {
+			registeredDistanceEffects.push_back(static_cast<uint8_t>(appearances.effect(it).id()));
+		}
+
+		// Registering missile effects
+		for (uint32_t it = 0; it < appearances.missile_size(); it++) {
+			registeredMagicEffects.push_back(static_cast<uint8_t>(appearances.missile(it).id()));
+		}
+
+		// Registering outfits
+		for (uint32_t it = 0; it < appearances.outfit_size(); it++) {
+			registeredLookTypes.push_back(static_cast<uint16_t>(appearances.outfit(it).id()));
+		}
+	}
+
+	fileStream.close();
+
+	// Disposing allocated objects.
+	google::protobuf::ShutdownProtobufLibrary();
+
+	return ERROR_NONE;
 }
 
 void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
@@ -6421,6 +6471,11 @@ void Game::addPlayerVocation(const Player* target)
 
 void Game::addMagicEffect(const Position& pos, uint8_t effect)
 {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !isMagicEffectRegistered(effect)) {
+		SPDLOG_WARN("[Game::addMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", effect);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, true, true);
 	addMagicEffect(spectators, pos, effect);
@@ -6428,6 +6483,11 @@ void Game::addMagicEffect(const Position& pos, uint8_t effect)
 
 void Game::addMagicEffect(const SpectatorHashSet& spectators, const Position& pos, uint8_t effect)
 {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game.isMagicEffectRegistered(effect)) {
+		SPDLOG_WARN("[Game::addMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", effect);
+		return;
+	}
+
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
@@ -6437,6 +6497,11 @@ void Game::addMagicEffect(const SpectatorHashSet& spectators, const Position& po
 
 void Game::addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect)
 {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !isDistanceEffectRegistered(effect)) {
+		SPDLOG_WARN("[Game::addDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", effect);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, fromPos, false, true);
 	map.getSpectators(spectators, toPos, false, true);
@@ -6445,6 +6510,11 @@ void Game::addDistanceEffect(const Position& fromPos, const Position& toPos, uin
 
 void Game::addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect)
 {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game.isDistanceEffectRegistered(effect)) {
+		SPDLOG_WARN("[Game::addDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", effect);
+		return;
+	}
+
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);

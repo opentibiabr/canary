@@ -18,12 +18,11 @@
  */
 
 #include "otpch.h"
-#include <fstream>
-#include "io/protobuf/appearances.pb.h"
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
+#include "game/game.h"
 
 #include "utils/pugicast.h"
 
@@ -35,9 +34,8 @@ namespace fs = std::filesystem;
 namespace fs = boost::filesystem;
 #endif
 
-using namespace Canary::protobuf::appearances;
-
 extern Weapons* g_weapons;
+extern Game g_game;
 
 Items::Items(){}
 
@@ -89,7 +87,7 @@ ItemTypes_t Items::getLootType(const std::string& strValue)
 bool Items::reload()
 {
 	clear();
-	loadFromProtobuf("data/items/items.dat");
+	loadFromProtobuf(g_game.appearances);
 
 	if (!loadFromXml()) {
 		return false;
@@ -99,27 +97,10 @@ bool Items::reload()
 	return true;
 }
 
-FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
+void Items::loadFromProtobuf(Appearances appearances)
 {
-	std::fstream c_items(file, std::ios::in | std::ios::binary);
-	if (!c_items.is_open()) {
-		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to load {}, file cannot be oppened", file);
-		c_items.close();
-		return ERROR_NOT_OPEN;
-	}
-
-	// Verify that the version of the library that we linked against is
-	// compatible with the version of the headers we compiled against.
-	GOOGLE_PROTOBUF_VERIFY_VERSION;
-	Appearances p_appearance = Appearances();
-	if (!p_appearance.ParseFromIstream(&c_items)) {
-		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to parse binary file {}, file is invalid", file);
-		c_items.close();
-		return ERROR_NOT_OPEN;
-	}
-
-	for (uint32_t it = 0; it < p_appearance.object_size(); ++it) {
-		Appearance object = p_appearance.object(it);
+	for (uint32_t it = 0; it < appearances.object_size(); ++it) {
+		Appearance object = appearances.object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
@@ -192,10 +173,6 @@ FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 	}
 
 	items.shrink_to_fit();
-	c_items.close();
-
-	// Disposing allocated objects.
-	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }

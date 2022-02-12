@@ -151,8 +151,8 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((Item::items.loadFromProtobuf("data/items/items.dat") == ERROR_NONE),
-		"items.dat");
+	modulesLoadHelper((g_game.loadAppearanceProtobuf("data/protobuf/appearances.dat") == ERROR_NONE),
+		"appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
 	modulesLoadHelper(Scripts::getInstance().loadScriptSystems(),

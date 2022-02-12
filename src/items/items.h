@@ -25,6 +25,9 @@
 #include "declarations.hpp"
 #include "io/fileloader.h"
 #include "game/movement/position.h"
+#include "io/protobuf/appearances.pb.h"
+
+using namespace Canary::protobuf::appearances;
 
 struct Abilities {
 	public:
@@ -304,7 +307,7 @@ class Items
 		bool reload();
 		void clear();
 
-		FILELOADER_ERRORS loadFromProtobuf(const std::string& file);
+		void loadFromProtobuf(Appearances protoBin);
 
 		const ItemType& operator[](size_t id) const {
 			return getItemType(id);

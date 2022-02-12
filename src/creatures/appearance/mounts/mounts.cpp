@@ -21,9 +21,12 @@
 #include "otpch.h"
 
 #include "creatures/appearance/mounts/mounts.h"
+#include "game/game.h"
 
 #include "utils/pugicast.h"
 #include "utils/tools.h"
+
+extern Game g_game;
 
 bool Mounts::reload()
 {
@@ -41,9 +44,15 @@ bool Mounts::loadFromXml()
 	}
 
 	for (auto mountNode : doc.child("mounts").children()) {
+		uint16_t lookType = pugi::cast<uint16_t>(mountNode.attribute("clientid").value());
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game.isLookTypeRegistered(lookType)) {
+			SPDLOG_WARN("[Mounts::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+			continue;
+		}
+
 		mounts.emplace_back(
 			static_cast<uint8_t>(pugi::cast<uint16_t>(mountNode.attribute("id").value())),
-			pugi::cast<uint16_t>(mountNode.attribute("clientid").value()),
+			lookType,
 			mountNode.attribute("name").as_string(),
 			pugi::cast<int32_t>(mountNode.attribute("speed").value()),
 			mountNode.attribute("premium").as_bool(),

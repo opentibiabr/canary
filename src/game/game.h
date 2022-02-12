@@ -46,6 +46,7 @@ class CombatInfo;
 class Charm;
 class ItemClassification;
 
+using namespace Canary::protobuf::appearances;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 
 class Game
@@ -481,6 +482,7 @@ class Game
 		Mounts mounts;
 		Raids raids;
 		GameStore gameStore;
+		Appearances appearances;
 
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
@@ -558,6 +560,19 @@ class Game
 			return playersActiveImbuements[playerId];
 		}
 
+		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
+		bool isMagicEffectRegistered(uint8_t type) const {
+			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) == registeredMagicEffects.end();
+		}
+
+		bool isDistanceEffectRegistered(uint8_t type) const {
+			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) == registeredDistanceEffects.end();
+		}
+
+		bool isLookTypeRegistered(uint16_t type) const {
+			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) == registeredLookTypes.end();
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -580,6 +595,10 @@ class Game
 		std::vector<Creature*> ToReleaseCreatures;
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
+
+		std::vector<uint8_t> registeredMagicEffects;
+		std::vector<uint8_t> registeredDistanceEffects;
+		std::vector<uint16_t> registeredLookTypes;
 
 		size_t lastBucket = 0;
 		size_t lastImbuedBucket = 0;

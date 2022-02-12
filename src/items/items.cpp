@@ -35,6 +35,8 @@ namespace fs = std::filesystem;
 namespace fs = boost::filesystem;
 #endif
 
+using namespace Canary::protobuf::appearances;
+
 extern Weapons* g_weapons;
 
 Items::Items(){}
@@ -99,13 +101,8 @@ bool Items::reload()
 
 FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 {
-	if (!fs::exists(file)) {
-		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to load {}, file doesn't exist", file);
-		return ERROR_NOT_OPEN;
-	}
-
 	std::fstream c_items(file, std::ios::in | std::ios::binary);
-	if (!c_items || !c_items.is_open()) {
+	if (!c_items.is_open()) {
 		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to load {}, file cannot be oppened", file);
 		c_items.close();
 		return ERROR_NOT_OPEN;
@@ -114,7 +111,7 @@ FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
-	Canary::protobuf::appearances::Appearances p_appearance = Canary::protobuf::appearances::Appearances();
+	Appearances p_appearance = Appearances();
 	if (!p_appearance.ParseFromIstream(&c_items)) {
 		SPDLOG_ERROR("[Items::loadFromProtobuf] - Failed to parse binary file {}, file is invalid", file);
 		c_items.close();
@@ -122,7 +119,7 @@ FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 	}
 
 	for (uint32_t it = 0; it < p_appearance.object_size(); ++it) {
-		Canary::protobuf::appearances::Appearance object = p_appearance.object(it);
+		Appearance object = p_appearance.object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
@@ -155,162 +152,23 @@ FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 		}
 
 		if (object.flags().has_clothes()) {
-			switch (object.flags().clothes().slot()) {
-				case 0: { // Double hand equip ID
-					iType.slotPosition |= SLOTP_TWO_HAND;
-					break;
-				}
-				case 1: { // Head equip ID
-					iType.slotPosition |= SLOTP_HEAD;
-					break;
-				}
-				case 2: { // Amulet equip ID
-					iType.slotPosition |= SLOTP_NECKLACE;
-					break;
-				}
-				case 3: { // Backpack equip ID
-					iType.slotPosition |= SLOTP_BACKPACK;
-					break;
-				}
-				case 4: { // Armor equip ID
-					iType.slotPosition |= SLOTP_ARMOR;
-					break;
-				}
-				case 5: { // Right hand equip ID
-					iType.slotPosition &= ~SLOTP_LEFT;
-					break;
-				}
-				case 6: { // Left hand equip ID
-					iType.slotPosition &= ~SLOTP_RIGHT;
-					break;
-				}
-				case 7: { // Leg equip ID
-					iType.slotPosition |= SLOTP_LEGS;
-					break;
-				}
-				case 8: { // Boots equip ID
-					iType.slotPosition |= SLOTP_FEET;
-					break;
-				}
-				case 9: { // Ring equip ID
-					iType.slotPosition |= SLOTP_RING;
-					break;
-				}
-				case 10: { // Tools equip ID (Old ammo slot)
-					iType.slotPosition |= SLOTP_AMMO;
-					break;
-				}
-				default:
-					break;
-			}
+			iType.slotPosition |= static_cast<SlotPositionBits>(1 << (object.flags().clothes().slot() - 1));
 		}
 
 		if (object.flags().has_market()) {
-			switch (object.flags().market().category()) {
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_ARMORS: {
-					iType.type = ITEM_TYPE_ARMOR;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_AMULETS: {
-					iType.type = ITEM_TYPE_AMULET;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_BOOTS: {
-					iType.type = ITEM_TYPE_BOOTS;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_CONTAINERS: {
-					iType.type = ITEM_TYPE_CONTAINER;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_DECORATION: {
-					iType.type = ITEM_TYPE_DECORATION;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_FOOD: {
-					iType.type = ITEM_TYPE_FOOD;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_HELMETS_HATS: {
-					iType.type = ITEM_TYPE_HELMET;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_LEGS: {
-					iType.type = ITEM_TYPE_LEGS;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_OTHERS: {
-					iType.type = ITEM_TYPE_OTHER;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_POTIONS: {
-					iType.type = ITEM_TYPE_POTION;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_RINGS: {
-					iType.type = ITEM_TYPE_RING;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_RUNES: {
-					iType.type = ITEM_TYPE_RUNE;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_SHIELDS: {
-					iType.type = ITEM_TYPE_SHIELD;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_TOOLS: {
-					iType.type = ITEM_TYPE_TOOLS;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_VALUABLES: {
-					iType.type = ITEM_TYPE_VALUABLE;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_AMMUNITION: {
-					iType.type = ITEM_TYPE_AMMO;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_AXES: {
-					iType.type = ITEM_TYPE_AXE;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_CLUBS: {
-					iType.type = ITEM_TYPE_CLUB;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_DISTANCE_WEAPONS: {
-					iType.type = ITEM_TYPE_DISTANCE;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_SWORDS: {
-					iType.type = ITEM_TYPE_SWORD;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_WANDS_RODS: {
-					iType.type = ITEM_TYPE_WAND;
-					break;
-				}
-				case Canary::protobuf::appearances::ITEM_CATEGORY::ITEM_CATEGORY_CREATURE_PRODUCTS: {
-					iType.type = ITEM_TYPE_CREATUREPRODUCT;
-					break;
-				}
-				default:
-					break;
-			}
-
+			iType.type = static_cast<ItemTypes_t>(object.flags().market().category());
 		}
 
 		iType.name = object.name();
 		iType.description = object.description();
 
 		iType.upgradeClassification = object.flags().has_upgradeclassification() ? static_cast<uint8_t>(object.flags().upgradeclassification().upgrade_classification()) : 0;
-		iType.lightLevel = (object.flags().has_light() && object.flags().light().brightness() != 0) ? static_cast<uint8_t>(object.flags().light().brightness()) : 0;
-		iType.lightColor = (object.flags().has_light() && object.flags().light().color() != 0) ? static_cast<uint8_t>(object.flags().light().color()) : 0;
+		iType.lightLevel = object.flags().has_light() ? static_cast<uint8_t>(object.flags().light().brightness()) : 0;
+		iType.lightColor = object.flags().has_light() ? static_cast<uint8_t>(object.flags().light().color()) : 0;
 
 		iType.id = static_cast<uint16_t>(object.id());
-		iType.speed = (object.flags().has_bank() && object.flags().bank().waypoints() != 0) ? static_cast<uint16_t>(object.flags().bank().waypoints()) : 0;
-		iType.wareId = (object.flags().has_market() && object.flags().market().trade_as_object_id() != 0) ? static_cast<uint16_t>(object.flags().market().trade_as_object_id()) : 0;
+		iType.speed = object.flags().has_bank() ? static_cast<uint16_t>(object.flags().bank().waypoints()) : 0;
+		iType.wareId = object.flags().has_market() ? static_cast<uint16_t>(object.flags().market().trade_as_object_id()) : 0;
 
 		iType.forceUse = object.flags().forceuse();
 		iType.hasHeight = object.flags().has_height();
@@ -323,9 +181,9 @@ FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 		iType.multiUse = object.flags().multiuse();
 		iType.moveable = object.flags().unmove() == false;
 		iType.canReadText = (object.flags().has_lenshelp() && object.flags().lenshelp().id() == 1112) || (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
-		iType.canReadText = (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
-		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == Canary::protobuf::appearances::HOOK_TYPE_SOUTH;
-		iType.isHorizontal = object.flags().has_hook() && object.flags().hook().direction() == Canary::protobuf::appearances::HOOK_TYPE_EAST;
+		iType.canReadText = object.flags().has_write() || object.flags().has_write_once();
+		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_SOUTH;
+		iType.isHorizontal = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_EAST;
 		iType.isHangable = object.flags().hang();
 		//iType.allowDistRead = false;
 		iType.lookThrough = object.flags().ignore_look();
@@ -335,6 +193,9 @@ FILELOADER_ERRORS Items::loadFromProtobuf(const std::string& file)
 
 	items.shrink_to_fit();
 	c_items.close();
+
+	// Disposing allocated objects.
+	google::protobuf::ShutdownProtobufLibrary();
 
 	return ERROR_NONE;
 }

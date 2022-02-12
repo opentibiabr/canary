@@ -550,14 +550,13 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				if (item->getItemCount() < 100 &&
 					item->getItemCount() < player->getItemTypeCount(item->getID(), -1) &&
 					item->getDuration() <= 0) {
-					uint16_t itemId = item->getID();
 					uint16_t count = 0;
 					while (player->getItemTypeCount(item->getID())) {
 						if (count == 100) {
 							break;
 						}
 						Container* mainBP = player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer();
-						Item* _item = findItemOfType(mainBP, itemId);
+						Item* _item = findItemOfType(mainBP, item->getID());
 
 						if (!_item) {
 							break;
@@ -572,7 +571,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 							internalRemoveItem(_item, _item->getItemCount());
 						}
 					}
-					Item* newSlotitem = Item::CreateItem(itemId, count);
+					Item* newSlotitem = Item::CreateItem(item->getID(), count);
 					internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
 					return;
 				}

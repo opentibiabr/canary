@@ -194,6 +194,10 @@ class Game
 		ReturnValue internalRemoveItem(Item* item, int32_t count = -1,
                                        bool test = false, uint32_t flags = 0);
 
+		#if GAME_FEATURE_FASTER_CLEAN > 0
+		ReturnValue internalCleanItem(Item* item, int32_t count = -1);
+		#endif
+
 		ReturnValue internalPlayerAddItem(Player* player, Item* item,
                                           bool dropOnMap = true,
                                           Slots_t slot = CONST_SLOT_WHEREEVER);
@@ -216,7 +220,7 @@ class Game
 		bool internalCreatureSay(Creature* creature, SpeakClasses type,
                                  const std::string& text,
                                  bool ghostMode,
-                                 SpectatorHashSet* spectatorsPtr = nullptr,
+                                 SpectatorVector* spectatorsPtr = nullptr,
                                  const Position* pos = nullptr);
 
 		void internalQuickLootCorpse(Player* player, Container* corpse);
@@ -281,7 +285,7 @@ class Game
 		void playerCloseNpcChannel(uint32_t playerId);
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
-		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir);
+		void playerAutoWalk(uint32_t playerId, const std::vector<Direction>& vectorDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos,
                               uint16_t fromSpriteId, const Position& toPos, uint8_t toStackPos, uint16_t toSpriteId);
@@ -382,8 +386,8 @@ class Game
 
 		void onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid);
 
-		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
-                              int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
+		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, SightLines_t lineOfSight = SightLine_CheckSightLine,
+		                      int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor) const;
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
@@ -416,13 +420,13 @@ class Game
 
 		// Animation help functions
 		void addCreatureHealth(const Creature* target);
-		static void addCreatureHealth(const SpectatorHashSet& spectators, const Creature* target);
+		static void addCreatureHealth(const SpectatorVector& spectators, const Creature* target);
 		void addPlayerMana(const Player* target);
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position& pos, uint8_t effect);
-		static void addMagicEffect(const SpectatorHashSet& spectators, const Position& pos, uint8_t effect);
+		static void addMagicEffect(const SpectatorVector& spectators, const Position& pos, uint8_t effect);
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
-		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
+		static void addDistanceEffect(const SpectatorVector& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
 		int32_t getLightHour() const {
 			return lightHour;

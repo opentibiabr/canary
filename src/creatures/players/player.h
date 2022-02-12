@@ -778,6 +778,10 @@ class Player final : public Creature, public Cylinder
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
+		uint16_t getSpecialSkill(uint8_t skill) const {
+			return std::max<int32_t>(0, varSpecialSkills[skill]);
+		}
+
 		uint16_t getSkillLevel(uint8_t skill) const {
 			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
 
@@ -907,6 +911,11 @@ class Player final : public Creature, public Cylinder
 		void sendUpdateTile(const Tile* updateTile, const Position& pos) {
 			if (client) {
 				client->sendUpdateTile(updateTile, pos);
+			}
+		}
+		void sendMapDescription() {
+			if (client) {
+				client->sendMapDescription(getPosition());
 			}
 		}
 
@@ -2056,6 +2065,7 @@ class Player final : public Creature, public Cylinder
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
 		uint32_t manaMax = 0;
+		int32_t varSpecialSkills[SPECIALSKILL_LAST + 1] = {};
 		int32_t varSkills[SKILL_LAST + 1] = {};
 		int32_t varStats[STAT_LAST + 1] = {};
 		int32_t shopCallback = -1;

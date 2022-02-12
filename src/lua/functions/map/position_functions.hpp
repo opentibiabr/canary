@@ -36,7 +36,6 @@ class PositionFunctions final : LuaScriptInterface {
 			registerMetaMethod(L, "Position", "__eq", PositionFunctions::luaPositionCompare);
 
 			registerMethod(L, "Position", "getDistance", PositionFunctions::luaPositionGetDistance);
-			registerMethod(L, "Position", "getPathTo", PositionFunctions::luaPositionGetPathTo);
 			registerMethod(L, "Position", "isSightClear", PositionFunctions::luaPositionIsSightClear);
 
 			registerMethod(L, "Position", "sendMagicEffect", PositionFunctions::luaPositionSendMagicEffect);
@@ -50,7 +49,6 @@ class PositionFunctions final : LuaScriptInterface {
 		static int luaPositionCompare(lua_State* L);
 
 		static int luaPositionGetDistance(lua_State* L);
-		static int luaPositionGetPathTo(lua_State* L);
 		static int luaPositionIsSightClear(lua_State* L);
 
 		static int luaPositionSendMagicEffect(lua_State* L);

@@ -22,6 +22,18 @@
 
 // Enum
 
+enum SpecialSkills_t {
+	SPECIALSKILL_CRITICALHITCHANCE,
+	SPECIALSKILL_CRITICALHITAMOUNT,
+	SPECIALSKILL_LIFELEECHCHANCE,
+	SPECIALSKILL_LIFELEECHAMOUNT,
+	SPECIALSKILL_MANALEECHCHANCE,
+	SPECIALSKILL_MANALEECHAMOUNT,
+
+	SPECIALSKILL_FIRST = SPECIALSKILL_CRITICALHITCHANCE,
+	SPECIALSKILL_LAST = SPECIALSKILL_MANALEECHAMOUNT
+};
+
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,
@@ -768,6 +780,7 @@ struct CombatDamage {
 	} primary, secondary;
 
 	CombatOrigin origin;
+	BlockType_t blockType;
 	bool critical;
 	int affected;
 	bool extension;
@@ -775,6 +788,7 @@ struct CombatDamage {
 
 	CombatDamage() {
 		origin = ORIGIN_NONE;
+		blockType = BLOCK_NONE;
 		primary.type = secondary.type = COMBAT_NONE;
 		primary.value = secondary.value = 0;
 		critical = false;

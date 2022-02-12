@@ -386,7 +386,7 @@ void Tile::onAddTileItem(Item* item)
 
 	const Position& cylinderMapPos = getPosition();
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, cylinderMapPos, true);
 
 	//send to client
@@ -431,7 +431,7 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 
 	const Position& cylinderMapPos = getPosition();
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, cylinderMapPos, true);
 
 	//send to client
@@ -447,55 +447,34 @@ void Tile::onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newIte
 	}
 }
 
-void Tile::onRemoveTileItem(const SpectatorHashSet& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item)
+void Tile::onRemoveTileItem(const SpectatorVector& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item)
 {
-	if ((item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVEABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
+	#if GAME_FEATURE_BROWSEFIELD > 0
+	if (item->hasProperty(CONST_PROP_MOVEABLE) || item->getContainer()) {
 		auto it = g_game.browseFields.find(this);
 		if (it != g_game.browseFields.end()) {
 			it->second->removeThing(item, item->getItemCount());
 		}
 	}
+	#endif
 
 	resetTileFlags(item);
 
 	const Position& cylinderMapPos = getPosition();
 	const ItemType& iType = Item::items[item->getID()];
 
-	//send to client
-	size_t i = 0;
+	//send to client + event method
+	size_t i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[i++]);
+			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[++i]);
 		}
-	}
 
-	//event methods
-	for (Creature* spectator : spectators) {
 		spectator->onRemoveTileItem(this, cylinderMapPos, iType, item);
-	}
-
-  if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES)) {
-		auto items = getItemList();
-		if (!items || items->empty()) {
-			g_game.removeTileToClean(this);
-			return;
-		}
-
-		bool ret = false;
-		for (auto toCheck : *items) {
-			if (toCheck->isCleanable()) {
-				ret = true;
-				break;
-			}
-		}
-
-		if (!ret) {
-			g_game.removeTileToClean(this);
-		}
 	}
 }
 
-void Tile::onUpdateTile(const SpectatorHashSet& spectators)
+void Tile::onUpdateTile(const SpectatorVector& spectators)
 {
 	const Position& cylinderMapPos = getPosition();
 
@@ -876,10 +855,14 @@ void Tile::addThing(int32_t, Thing* thing)
 {
 	Creature* creature = thing->getCreature();
 	if (creature) {
-		g_game.map.clearSpectatorCache();
+		g_game.map.clearSpectatorCache(creature->getPlayer());
 		creature->setParent(this);
 		CreatureVector* creatures = makeCreatures();
+		#if CLIENT_VERSION >= 853
 		creatures->insert(creatures->begin(), creature);
+		#else
+		creatures->push_back(creature);
+		#endif
 	} else {
 		Item* item = thing->getItem();
 		if (item == nullptr) {
@@ -928,7 +911,6 @@ void Tile::addThing(int32_t, Thing* thing)
 			}
 
 			bool isInserted = false;
-
 			if (items) {
 				for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
 					//Note: this is different from internalAddThing
@@ -943,9 +925,10 @@ void Tile::addThing(int32_t, Thing* thing)
 			}
 
 			if (!isInserted) {
-				items->push_back(item);
+				items->insert(items->getEndTopItem(), item);
 			}
 
+			items->addTopItemCount(1);
 			onAddTileItem(item);
 		} else {
 			if (itemType.isMagicField()) {
@@ -973,8 +956,7 @@ void Tile::addThing(int32_t, Thing* thing)
 			}
 
 			items = makeItemList();
-			items->insert(items->getBeginDownItem(), item);
-			items->increaseDownItemCount();
+			items->push_back(item);
 			onAddTileItem(item);
 		}
 	}
@@ -1081,7 +1063,7 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 		if (creatures) {
 			auto it = std::find(creatures->begin(), creatures->end(), thing);
 			if (it != creatures->end()) {
-				g_game.map.clearSpectatorCache();
+				g_game.map.clearSpectatorCache(creature->getPlayer());
 				creatures->erase(it);
 			}
 		}
@@ -1102,7 +1084,7 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 		ground->setParent(nullptr);
 		ground = nullptr;
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game.map.getSpectators(spectators, getPosition(), true);
 		onRemoveTileItem(spectators, std::vector<int32_t>(spectators.size(), 0), item);
 		return;
@@ -1120,22 +1102,25 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 			return;
 		}
 
-		std::vector<int32_t> oldStackPosVector;
-
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game.map.getSpectators(spectators, getPosition(), true);
+
+		std::vector<int32_t> oldStackPosVector(spectators.size());
+		size_t i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {
-				oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
+				oldStackPosVector[++i] = getStackposOfItem(tmpPlayer, item);
 			}
 		}
 
 		item->setParent(nullptr);
 		items->erase(it);
+		items->addTopItemCount(-1);
 		onRemoveTileItem(spectators, oldStackPosVector, item);
 	} else {
-		auto it = std::find(items->getBeginDownItem(), items->getEndDownItem(), item);
-		if (it == items->getEndDownItem()) {
+		auto end = ItemVector::reverse_iterator(items->getBeginDownItem());
+		auto it = std::find(ItemVector::reverse_iterator(items->getEndDownItem()), end, item);
+		if (it == end) {
 			return;
 		}
 
@@ -1144,27 +1129,76 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 			item->setItemCount(newCount);
 			onUpdateTileItem(item, itemType, item, itemType);
 		} else {
-			std::vector<int32_t> oldStackPosVector;
-
-			SpectatorHashSet spectators;
+			SpectatorVector spectators;
 			g_game.map.getSpectators(spectators, getPosition(), true);
+
+			std::vector<int32_t> oldStackPosVector(spectators.size());
+			size_t i = static_cast<size_t>(-1); //Start index at -1 to avoid copying it
 			for (Creature* spectator : spectators) {
 				if (Player* tmpPlayer = spectator->getPlayer()) {
-					oldStackPosVector.push_back(getStackposOfItem(tmpPlayer, item));
+					oldStackPosVector[++i] = getStackposOfItem(tmpPlayer, item);
 				}
 			}
 
 			item->setParent(nullptr);
-			items->erase(it);
-			items->decreaseDownItemCount();
+			items->erase(std::next(it).base());
 			onRemoveTileItem(spectators, oldStackPosVector, item);
 		}
 	}
 }
 
+#if GAME_FEATURE_FASTER_CLEAN > 0
+void Tile::cleanItem(Item* item, int32_t index, uint32_t count)
+{
+	if (index == -1) {
+		return;
+	}
+
+	if (item == ground) {
+		ground->setParent(nullptr);
+		ground = nullptr;
+		return;
+	}
+
+	TileItemVector* items = getItemList();
+	if (!items) {
+		return;
+	}
+
+	const ItemType& itemType = Item::items[item->getID()];
+	if (itemType.alwaysOnTop) {
+		auto it = std::find(items->getBeginTopItem(), items->getEndTopItem(), item);
+		if (it == items->getEndTopItem()) {
+			return;
+		}
+
+		item->setParent(nullptr);
+		items->erase(it);
+		items->addTopItemCount(-1);
+	} else {
+		auto end = ItemVector::reverse_iterator(items->getBeginDownItem());
+		auto it = std::find(ItemVector::reverse_iterator(items->getEndDownItem()), end, item);
+		if (it == end) {
+			return;
+		}
+
+		if (itemType.stackable && count != item->getItemCount()) {
+			uint8_t newCount = static_cast<uint8_t>(std::max<int32_t>(0, static_cast<int32_t>(item->getItemCount() - count)));
+			item->setItemCount(newCount);
+			return;
+		} else {
+			item->setParent(nullptr);
+			items->erase(std::next(it).base());
+		}
+	}
+
+	resetTileFlags(item);
+}
+#endif
+
 void Tile::removeCreature(Creature* creature)
 {
-	g_game.map.getQTNode(tilePos.x, tilePos.y)->removeCreature(creature);
+	g_game.map.getMapSector(tilePos.x, tilePos.y)->removeCreature(creature);
 	removeThing(creature, 0);
 }
 
@@ -1369,7 +1403,7 @@ Thing* Tile::getThing(size_t index) const
 	if (items) {
 		uint32_t topItemSize = items->getTopItemCount();
 		if (index < topItemSize) {
-			return items->at(items->getDownItemCount() + index);
+			return (*items)[index];
 		}
 		index -= topItemSize;
 	}
@@ -1382,14 +1416,14 @@ Thing* Tile::getThing(size_t index) const
 	}
 
 	if (items && index < items->getDownItemCount()) {
-		return items->at(index);
+		return (*items)[items->size() - (index + 1)];
 	}
 	return nullptr;
 }
 
 void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link /*= LINK_OWNER*/)
 {
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, getPosition(), true, true);
 	for (Creature* spectator : spectators) {
 		spectator->getPlayer()->postAddNotification(thing, oldParent, index, LINK_NEAR);
@@ -1444,7 +1478,7 @@ void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t 
 
 void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t)
 {
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, getPosition(), true, true);
 
 	if (getThingCount() > 8) {
@@ -1503,9 +1537,13 @@ void Tile::internalAddThing(uint32_t, Thing* thing)
 
 	Creature* creature = thing->getCreature();
 	if (creature) {
-		g_game.map.clearSpectatorCache();
+		g_game.map.clearSpectatorCache(creature->getPlayer());
 		CreatureVector* creatures = makeCreatures();
+		#if CLIENT_VERSION >= 853
 		creatures->insert(creatures->begin(), creature);
+		#else
+		creatures->push_back(creature);
+		#endif
 	} else {
 		Item* item = thing->getItem();
 		if (item == nullptr) {
@@ -1537,11 +1575,11 @@ void Tile::internalAddThing(uint32_t, Thing* thing)
 			}
 
 			if (!isInserted) {
-				items->push_back(item);
+				items->insert(items->getEndTopItem(), item);
 			}
+			items->addTopItemCount(1);
 		} else {
-			items->insert(items->getBeginDownItem(), item);
-			items->increaseDownItemCount();
+			items->push_back(item);
 		}
 
 		setTileFlags(item);

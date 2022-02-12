@@ -380,7 +380,7 @@ void Npc::onThinkWalk(uint32_t interval)
 
 	Direction dir = Position::getRandomDirection();
 	if (canWalkTo(getPosition(), dir)) {
-		listWalkDir.push_front(dir);
+		vectorWalkDir.emplace_back(dir);
 		addEventWalk();
 	}
 

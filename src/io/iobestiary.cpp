@@ -97,7 +97,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 	} else {
 		return false;
 	}
-	Combat::doCombatHealth(player, target, charmDamage, charmParams);
+	Combat::doTargetCombat(player, target, charmDamage, charmParams);
 	return false;
 }
 

@@ -2122,7 +2122,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game.map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2215,7 +2215,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		message.primary.color = TEXTCOLOR_RED;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game.map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2403,7 +2403,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 						reflectDamage.primary.type = combatType;
 						reflectDamage.primary.value = std::round(-damage * (reflectPercent / 100.));
 
-						Combat::doCombatHealth(this, attacker, reflectDamage, params);
+						Combat::doTargetCombat(this, attacker, reflectDamage, params);
 					}
 				}
 			}

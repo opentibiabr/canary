@@ -138,6 +138,8 @@ class Chat
 
 		bool talkToChannel(const Player& player, SpeakClasses type, const std::string& text, uint16_t channelId);
 
+		void openChannelsByServer(Player* player);
+
 		ChannelList getChannelList(const Player& player);
 
 		ChatChannel* getChannel(const Player& player, uint16_t channelId);

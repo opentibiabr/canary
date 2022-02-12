@@ -451,6 +451,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem,
 	player->client = getThis();
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, false);
+	g_chat->openChannelsByServer(player);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	acceptPackets = true;
@@ -1183,55 +1184,28 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg)
 
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg)
 {
-	uint8_t numdirs = msg.getByte();
-	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 8))
-	{
+	size_t numdirs = static_cast<size_t>(msg.getByte());
+	if (numdirs == 0) {
 		return;
 	}
 
-	msg.skipBytes(numdirs);
-
-	std::forward_list<Direction> path;
-	for (uint8_t i = 0; i < numdirs; ++i)
-	{
-		uint8_t rawdir = msg.getPreviousByte();
-		switch (rawdir)
-		{
-		case 1:
-			path.push_front(DIRECTION_EAST);
-			break;
-		case 2:
-			path.push_front(DIRECTION_NORTHEAST);
-			break;
-		case 3:
-			path.push_front(DIRECTION_NORTH);
-			break;
-		case 4:
-			path.push_front(DIRECTION_NORTHWEST);
-			break;
-		case 5:
-			path.push_front(DIRECTION_WEST);
-			break;
-		case 6:
-			path.push_front(DIRECTION_SOUTHWEST);
-			break;
-		case 7:
-			path.push_front(DIRECTION_SOUTH);
-			break;
-		case 8:
-			path.push_front(DIRECTION_SOUTHEAST);
-			break;
-		default:
-			break;
+	std::vector<Direction> vectorDirection;
+	vectorDirection.resize(numdirs, DIRECTION_NORTH);
+	for (size_t i = numdirs; --i < numdirs;) {
+		uint8_t rawdir = msg.getByte();
+		switch (rawdir) {
+			case 1: vectorDirection[i] = DIRECTION_EAST; break;
+			case 2: vectorDirection[i] = DIRECTION_NORTHEAST; break;
+			case 3: vectorDirection[i] = DIRECTION_NORTH; break;
+			case 4: vectorDirection[i] = DIRECTION_NORTHWEST; break;
+			case 5: vectorDirection[i] = DIRECTION_WEST; break;
+			case 6: vectorDirection[i] = DIRECTION_SOUTHWEST; break;
+			case 7: vectorDirection[i] = DIRECTION_SOUTH; break;
+			case 8: vectorDirection[i] = DIRECTION_SOUTHEAST; break;
+			default: break;
 		}
 	}
-
-	if (path.empty())
-	{
-		return;
-	}
-
-	addGameTask(&Game::playerAutoWalk, player->getID(), path);
+	addGameTask(&Game::playerAutoWalk, player->getID(), vectorDirection);
 }
 
 void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
@@ -5289,7 +5263,7 @@ void ProtocolGame::sendMapDescription(const Position &pos)
 	NetworkMessage msg;
 	msg.addByte(0x64);
 	msg.addPosition(player->getPosition());
-	GetMapDescription(pos.x - 8, pos.y - 6, pos.z, 18, 14, msg);
+	GetMapDescription(pos.x - (CLIENT_MAP_WIDTH_OFFSET - 1), pos.y - (CLIENT_MAP_HEIGHT_OFFFSET - 1), pos.z, CLIENT_MAP_WIDTH, CLIENT_MAP_HEIGHT, msg);
 	writeToOutputBuffer(msg);
 }
 

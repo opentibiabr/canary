@@ -107,7 +107,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 			}
 		}
 		// Reload creature on spectators
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game.map.getSpectators(spectators, monster->getPosition(), true);
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {

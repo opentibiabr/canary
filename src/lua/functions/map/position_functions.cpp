@@ -102,34 +102,6 @@ int PositionFunctions::luaPositionGetDistance(lua_State* L) {
 	return 1;
 }
 
-int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
-	// position:getPathTo(pos[, minTargetDist = 0[, maxTargetDist = 1[, fullPathSearch = true[, clearSight = true[, maxSearchDist = 0]]]]])
-	const Position& pos = getPosition(L, 1);
-	const Position& position = getPosition(L, 2);
-
-	FindPathParams fpp;
-	fpp.minTargetDist = getNumber<int32_t>(L, 3, 0);
-	fpp.maxTargetDist = getNumber<int32_t>(L, 4, 1);
-	fpp.fullPathSearch = getBoolean(L, 5, fpp.fullPathSearch);
-	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
-	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
-
-	std::forward_list<Direction> dirList;
-	if (g_game.map.getPathMatching(pos, dirList, FrozenPathingConditionCall(position), fpp)) {
-		lua_newtable(L);
-
-		int index = 0;
-		for (Direction dir : dirList) {
-			lua_pushnumber(L, dir);
-			lua_rawseti(L, -2, ++index);
-		}
-	}
-	else {
-		pushBoolean(L, false);
-	}
-	return 1;
-}
-
 int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 	// position:isSightClear(positionEx[, sameFloor = true])
 	bool sameFloor = getBoolean(L, 3, true);
@@ -141,11 +113,11 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (lua_gettop(L) >= 3) {
 		Player* player = getPlayer(L, 3);
 		if (player) {
-			spectators.insert(player);
+			spectators.emplace_back(player);
 		}
 	}
 
@@ -163,11 +135,11 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (lua_gettop(L) >= 4) {
 		Player* player = getPlayer(L, 4);
 		if (player) {
-			spectators.insert(player);
+			spectators.emplace_back(player);
 		}
 	}
 

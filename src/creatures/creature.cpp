@@ -201,7 +201,7 @@ void Creature::onCreatureWalk()
 				forceUpdateFollowPath = true;
 			}
 		} else {
-			if (listWalkDir.empty()) {
+			if (vectorWalkDir.empty()) {
 				onWalkComplete();
 			}
 
@@ -210,7 +210,7 @@ void Creature::onCreatureWalk()
 	}
 
 	if (cancelNextWalk) {
-		listWalkDir.clear();
+		vectorWalkDir.clear();
 		onWalkAborted();
 		cancelNextWalk = false;
 	}
@@ -236,26 +236,26 @@ void Creature::onWalk(Direction& dir)
 
 bool Creature::getNextStep(Direction& dir, uint32_t&)
 {
-	if (listWalkDir.empty()) {
+	if (vectorWalkDir.empty()) {
 		return false;
 	}
 
-	dir = listWalkDir.front();
-	listWalkDir.pop_front();
+	dir = vectorWalkDir.back();
+	vectorWalkDir.pop_back();
 	onWalk(dir);
 	return true;
 }
 
-void Creature::startAutoWalk(const std::forward_list<Direction>& listDir)
+void Creature::startAutoWalk(const std::vector<Direction> vectorDirection)
 {
 	if (hasCondition(CONDITION_ROOTED)) {
 		return;
 	}
 
-	listWalkDir = listDir;
+	vectorWalkDir = std::move(vectorDirection);
 
 	size_t size = 0;
-	for (auto it = listDir.begin(); it != listDir.end() && size <= 1; ++it) {
+	for (auto it = vectorDirection.begin(); it != vectorDirection.end() && size <= 1; ++it) {
 		size++;
 	}
 	addEventWalk(size == 1);
@@ -911,10 +911,10 @@ void Creature::goToFollowCreature()
 			} else { //maxTargetDist > 1
 				if (!monster->getDistanceStep(followCreature->getPosition(), dir)) {
 					// if we can't get anything then let the A* calculate
-					listWalkDir.clear();
-					if (getPathTo(followCreature->getPosition(), listWalkDir, fpp)) {
+					vectorWalkDir.clear();
+					if (getPathTo(followCreature->getPosition(), vectorWalkDir, fpp)) {
 						hasFollowPath = true;
-						startAutoWalk(listWalkDir);
+						startAutoWalk(vectorWalkDir);
 					} else {
 						hasFollowPath = false;
 					}
@@ -923,17 +923,17 @@ void Creature::goToFollowCreature()
 			}
 
 			if (dir != DIRECTION_NONE) {
-				listWalkDir.clear();
-				listWalkDir.push_front(dir);
+				vectorWalkDir.clear();
+				vectorWalkDir.emplace_back(dir);
 
 				hasFollowPath = true;
-				startAutoWalk(listWalkDir);
+				startAutoWalk(vectorWalkDir);
 			}
 		} else {
-			listWalkDir.clear();
-			if (getPathTo(followCreature->getPosition(), listWalkDir, fpp)) {
+			vectorWalkDir.clear();
+			if (getPathTo(followCreature->getPosition(), vectorWalkDir, fpp)) {
 				hasFollowPath = true;
-				startAutoWalk(listWalkDir);
+				startAutoWalk(vectorWalkDir);
 			} else {
 				hasFollowPath = false;
 			}
@@ -956,8 +956,8 @@ bool Creature::setFollowCreature(Creature* creature)
 			return false;
 		}
 
-		if (!listWalkDir.empty()) {
-			listWalkDir.clear();
+		if (!vectorWalkDir.empty()) {
+			vectorWalkDir.clear();
 			onWalkAborted();
 		}
 
@@ -1128,7 +1128,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	master->onGainExperience(gainExp, target);
 
 	if (!m->isFamiliar()) {
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game.map.getSpectators(spectators, position, false, true);
 		if (spectators.empty()) {
 			return;
@@ -1579,12 +1579,15 @@ bool Creature::isInvisible() const
 	}) != conditions.end();
 }
 
-bool Creature::getPathTo(const Position& targetPos, std::forward_list<Direction>& dirList, const FindPathParams& fpp) const
+bool Creature::getPathTo(const Position& targetPos, std::vector<Direction>& dirList, const FindPathParams& fpp) const
 {
-	return g_game.map.getPathMatching(*this, dirList, FrozenPathingConditionCall(targetPos), fpp);
+	if (fpp.maxSearchDist != 0 || fpp.keepDistance) {
+		return g_game.map.getPathMatchingCond(*this, targetPos, dirList, FrozenPathingConditionCall(targetPos), fpp);
+	}
+	return g_game.map.getPathMatching(*this, targetPos, dirList, FrozenPathingConditionCall(targetPos), fpp);
 }
 
-bool Creature::getPathTo(const Position& targetPos, std::forward_list<Direction>& dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 0*/) const
+bool Creature::getPathTo(const Position& targetPos, std::vector<Direction>& dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 0*/) const
 {
 	FindPathParams fpp;
 	fpp.fullPathSearch = fullPathSearch;

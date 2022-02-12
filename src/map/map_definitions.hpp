@@ -41,4 +41,11 @@ enum RentPeriod_t {
 	RENTPERIOD_NEVER,
 };
 
+enum SightLines_t : uint8_t {
+	SightLine_NoCheck = 0,
+	SightLine_CheckSightLine = 1 << 0,
+	SightLine_FloorCheck = 1 << 1,
+	SightLine_CheckSightLineAndFloor = SightLine_CheckSightLine | SightLine_FloorCheck,
+};
+
 #endif  // SRC_MAP_MAP_DEFINITIONS_HPP_

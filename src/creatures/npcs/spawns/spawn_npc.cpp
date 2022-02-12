@@ -163,7 +163,7 @@ SpawnNpc::~SpawnNpc()
 
 bool SpawnNpc::findPlayer(const Position& pos)
 {
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator->getPlayer()->hasCustomFlag(PlayerCustomFlag_IgnoredByNpcs)) {

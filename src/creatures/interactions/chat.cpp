@@ -303,7 +303,43 @@ bool Chat::load()
 	}
 
 	for (auto channelNode : doc.child("channels").children()) {
-		uint16_t channelId = pugi::cast<uint16_t>(channelNode.attribute("id").value());
+		uint16_t channelId = 0;
+		if (pugi::xml_attribute attr = channelNode.attribute("hid")) {
+			std::string tmpStrValue = asLowerCaseString(attr.as_string());
+			if (!tfs_strcmp(tmpStrValue.c_str(), "help")) {
+				#if CLIENT_VERSION >= 871
+				channelId = 7;
+				#elif CLIENT_VERSION == 870
+				channelId = 6;
+				#elif CLIENT_VERSION >= 840
+				channelId = 9;
+				#elif CLIENT_VERSION >= 790
+				channelId = 8;
+				#else
+				channelId = 7;
+				#endif
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "advertising")) {
+				#if CLIENT_VERSION >= 871
+				channelId = 5;
+				#else
+				channelId = 4;
+				#endif
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "advertising-rookgaard")) {
+				#if CLIENT_VERSION >= 871
+				channelId = 6;
+				#else
+				channelId = 5;
+				#endif
+			} else if (!tfs_strcmp(tmpStrValue.c_str(), "rvr")) {
+				#if GAME_FEATURE_RULEVIOLATION > 0
+				channelId = 3;
+				#else
+				continue;
+				#endif
+			}
+		} else {
+			channelId = pugi::cast<uint16_t>(channelNode.attribute("id").value());
+		}
 		std::string channelName = channelNode.attribute("name").as_string();
 		bool isPublic = channelNode.attribute("public").as_bool();
 		pugi::xml_attribute scriptAttribute = channelNode.attribute("script");
@@ -523,6 +559,35 @@ bool Chat::talkToChannel(const Player& player, SpeakClasses type, const std::str
 	}
 
 	return channel->talk(player, type, text);
+}
+
+void Chat::openChannelsByServer(Player* player)
+{
+	const ChannelList& list = getChannelList(*player);
+	for (ChatChannel* channel : list) {
+		if (channel->hasUser(*player)) {
+			PrivateChatChannel* privateChannel = dynamic_cast<PrivateChatChannel*>(channel);
+			if (privateChannel && privateChannel->getOwner() == player->getGUID()) {
+				player->sendCreatePrivateChannel(channel->getId(), channel->getName());
+			} else {
+				const InvitedMap* invitedUsers = channel->getInvitedUsers();
+				const UsersMap* users;
+				if (!channel->isPublicChannel()) {
+					users = &channel->getUsers();
+				} else {
+					users = nullptr;
+				}
+
+				#if GAME_FEATURE_RULEVIOLATION > 0
+				if (channel->getId() == 3) {
+					player->sendRuleViolationChannel(channel->getId());
+					continue;
+				}
+				#endif
+				player->sendChannel(channel->getId(), channel->getName(), users, invitedUsers);
+			}
+		}
+	}
 }
 
 ChannelList Chat::getChannelList(const Player& player)

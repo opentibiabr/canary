@@ -748,7 +748,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureSay(lua_State* L) {
-	// creature:say(text[, type = TALKTYPE_MONSTER_SAY[, ghost = false[, target = nullptr[, position]]]])
+	// creature:say(text, type[, ghost = false[, target = nullptr[, position]]])
 	int parameters = lua_gettop(L);
 
 	Position position;
@@ -768,7 +768,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 
 	bool ghost = getBoolean(L, 4, false);
 
-	SpeakClasses type = getNumber<SpeakClasses>(L, 3, TALKTYPE_MONSTER_SAY);
+	SpeakClasses type = getNumber<SpeakClasses>(L, 3);
 	const std::string& text = getString(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
@@ -776,9 +776,9 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 		return 1;
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (target) {
-		spectators.insert(target);
+		spectators.emplace_back(target);
 	}
 
 	if (position.x != 0) {
@@ -851,7 +851,7 @@ int CreatureFunctions::luaCreatureGetDescription(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
-	// creature:getPathTo(pos[, minTargetDist = 0[, maxTargetDist = 1[, fullPathSearch = true[, clearSight = true[, maxSearchDist = 0]]]]])
+	// creature:getPathTo(pos[, minTargetDist = 0[, maxTargetDist = 1[, fullPathSearch = true[, clearSight = false[, maxSearchDist = 0]]]]])
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
 		lua_pushnil(L);
@@ -867,14 +867,13 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	std::forward_list<Direction> dirList;
+	std::vector<Direction> dirList;
 	if (creature->getPathTo(position, dirList, fpp)) {
-		lua_newtable(L);
-
-		int index = 0;
+		size_t pathSize = dirList.size();
+		lua_createtable(L, pathSize, 0);
 		for (Direction dir : dirList) {
 			lua_pushnumber(L, dir);
-			lua_rawseti(L, -2, ++index);
+			lua_rawseti(L, -2, pathSize--);
 		}
 	} else {
 		pushBoolean(L, false);

@@ -3037,7 +3037,7 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	Tile* tile = player->getTile();
 	const Position& position = player->getPosition();
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game.map.getSpectators(spectators, position, true, true);
 	for (Creature* spectator : spectators) {
 		Player* tmpPlayer = spectator->getPlayer();

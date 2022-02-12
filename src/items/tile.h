@@ -37,80 +37,128 @@ class BedItem;
 
 using CreatureVector = std::vector<Creature*>;
 using ItemVector = std::vector<Item*>;
-using SpectatorHashSet = std::unordered_set<Creature*>;
 
-class TileItemVector : private ItemVector
+class TileItemVector
 {
 	public:
-		using ItemVector::begin;
-		using ItemVector::end;
-		using ItemVector::rbegin;
-		using ItemVector::rend;
-		using ItemVector::size;
-		using ItemVector::clear;
-		using ItemVector::at;
-		using ItemVector::insert;
-		using ItemVector::erase;
-		using ItemVector::push_back;
-		using ItemVector::value_type;
-		using ItemVector::iterator;
-		using ItemVector::const_iterator;
-		using ItemVector::reverse_iterator;
-		using ItemVector::const_reverse_iterator;
-    using ItemVector::empty;
+		TileItemVector() = default;
 
-		iterator getBeginDownItem() {
-			return begin();
-		}
-		const_iterator getBeginDownItem() const {
-			return begin();
-		}
-		iterator getEndDownItem() {
-			return begin() + downItemCount;
-		}
-		const_iterator getEndDownItem() const {
-			return begin() + downItemCount;
-		}
-		iterator getBeginTopItem() {
-			return getEndDownItem();
-		}
-		const_iterator getBeginTopItem() const {
-			return getEndDownItem();
-		}
-		iterator getEndTopItem() {
-			return end();
-		}
-		const_iterator getEndTopItem() const {
-			return end();
-		}
+		inline ItemVector::iterator begin() noexcept { return vec.begin(); }
+		inline ItemVector::iterator end() noexcept { return vec.end(); }
+		inline ItemVector::const_iterator begin() const noexcept { return vec.begin(); }
+		inline ItemVector::const_iterator end() const noexcept { return vec.end(); }
+		inline ItemVector::reverse_iterator rbegin() noexcept { return vec.rbegin(); }
+		inline ItemVector::reverse_iterator rend() noexcept { return vec.rend(); }
+		inline ItemVector::const_reverse_iterator rbegin() const noexcept { return vec.rbegin(); }
+		inline ItemVector::const_reverse_iterator rend() const noexcept { return vec.rend(); }
+		inline size_t size() const noexcept { return vec.size(); }
+		inline void clear() noexcept { vec.clear(); }
+		inline void push_back(ItemVector::value_type element) { return vec.push_back(element); }
+		inline void emplace_back(ItemVector::value_type element) { vec.emplace_back(element); }
+		inline ItemVector::iterator erase(ItemVector::const_iterator it) { return vec.erase(it); }
+		inline ItemVector::iterator erase(ItemVector::const_iterator first, ItemVector::const_iterator last) { return vec.erase(first, last); }
+		inline ItemVector::reference operator[](size_t index) { return vec.operator[](index); }
+		inline ItemVector::const_reference operator[](size_t index) const { return vec.operator[](index); }
 
-		uint32_t getTopItemCount() const {
-			return size() - downItemCount;
-		}
-		uint32_t getDownItemCount() const {
-			return downItemCount;
-		}
-		inline Item* getTopTopItem() const {
-			if (getTopItemCount() == 0) {
+		template<class inputIterator>
+		inline void insert(ItemVector::const_iterator it, inputIterator first, inputIterator last) { vec.insert(it, first, last); }
+		inline void insert(ItemVector::const_iterator it, ItemVector::value_type element) { vec.insert(it, element); }
+
+		inline ItemVector::iterator getBeginDownItem() { return begin() + topItemCount; }
+		inline ItemVector::const_iterator getBeginDownItem() const { return begin() + topItemCount; }
+		inline ItemVector::iterator getEndDownItem() noexcept { return end(); }
+		inline ItemVector::const_iterator getEndDownItem() const noexcept { return end(); }
+		inline ItemVector::iterator getBeginTopItem() noexcept { return begin(); }
+		inline ItemVector::const_iterator getBeginTopItem() const noexcept { return begin(); }
+		inline ItemVector::iterator getEndTopItem() { return getBeginDownItem(); }
+		inline ItemVector::const_iterator getEndTopItem() const { return getBeginDownItem(); }
+
+		inline uint32_t getTopItemCount() const noexcept { return topItemCount; }
+		inline uint32_t getDownItemCount() const noexcept { return size() - topItemCount; }
+		inline void addTopItemCount(int32_t increment) noexcept { topItemCount += increment; }
+		inline Item* getTopTopItem() const noexcept {
+			if (topItemCount == 0) {
 				return nullptr;
 			}
 			return *(getEndTopItem() - 1);
 		}
-		inline Item* getTopDownItem() const {
-			if (downItemCount == 0) {
+		inline Item* getTopDownItem() const noexcept {
+			if (getDownItemCount() == 0) {
 				return nullptr;
 			}
-			return *getBeginDownItem();
-		}
-		void increaseDownItemCount() {
-			downItemCount += 1;
-		}
-		void decreaseDownItemCount() {
-			downItemCount -= 1;
+			return *(getEndDownItem() - 1);
 		}
 
+		//Allow implicit conversion to ItemVector&
+		operator ItemVector&() { return vec; }
+
 	private:
-		uint32_t downItemCount = 0;
+		ItemVector vec;
+		uint16_t topItemCount = 0;
+};
+
+class SpectatorVector
+{
+	public:
+		SpectatorVector() {
+			creatureVector.reserve(32);
+		}
+
+		inline CreatureVector::iterator begin() noexcept { return creatureVector.begin(); }
+		inline CreatureVector::iterator end() noexcept { return creatureVector.end(); }
+		inline CreatureVector::const_iterator begin() const noexcept { return creatureVector.begin(); }
+		inline CreatureVector::const_iterator end() const noexcept { return creatureVector.end(); }
+		inline bool empty() const noexcept { return creatureVector.empty(); }
+		inline size_t size() const noexcept { return creatureVector.size(); }
+		inline size_t capacity() const noexcept { return creatureVector.capacity(); }
+		inline void clear() noexcept { creatureVector.clear(); }
+		inline void reserve(size_t count) { creatureVector.reserve(count); }
+		inline void push_back(CreatureVector::value_type element) { return creatureVector.push_back(element); }
+		inline void emplace_back(CreatureVector::value_type element) { creatureVector.emplace_back(element); }
+		inline CreatureVector::reference operator[](size_t index) { return creatureVector.operator[](index); }
+		inline CreatureVector::const_reference operator[](size_t index) const { return creatureVector.operator[](index); }
+
+		template<class inputIterator>
+		inline void insert(CreatureVector::const_iterator it, inputIterator first, inputIterator last) { creatureVector.insert(it, first, last); }
+
+		void mergeSpectators(const SpectatorVector& spectators) {
+			size_t it = 0, end = spectators.size();
+			while (it < end) {
+				Creature* spectator = spectators[it];
+
+				size_t cit = 0, cend = size();
+				while (cit < cend) {
+					if (creatureVector[cit] == spectator) {
+						goto Skip_Duplicate;
+					} else {
+						++cit;
+					}
+				}
+
+				creatureVector.emplace_back(spectator);
+				Skip_Duplicate:
+				++it;
+			}
+		}
+
+		void erase(Creature* spectator) {
+			size_t it = 0, end = size();
+			while (it < end) {
+				if (creatureVector[it] == spectator) {
+					creatureVector[it] = creatureVector.back();
+					creatureVector.pop_back();
+					return;
+				} else {
+					++it;
+				}
+			}
+		}
+
+		//Allow implicit conversion to CreatureVector&
+		operator CreatureVector&() { return creatureVector; }
+
+	private:
+		CreatureVector creatureVector;
 };
 
 class Tile : public Cylinder
@@ -219,6 +267,8 @@ class Tile : public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override final;
 
+		void cleanItem(Item* item, int32_t index, uint32_t count);
+
 		void removeCreature(Creature* creature);
 
 		int32_t getThingIndex(const Thing* thing) const override final;
@@ -254,8 +304,8 @@ class Tile : public Cylinder
 	private:
 		void onAddTileItem(Item* item);
 		void onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType);
-		void onRemoveTileItem(const SpectatorHashSet& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
-		void onUpdateTile(const SpectatorHashSet& spectators);
+		void onRemoveTileItem(const SpectatorVector& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
+		void onUpdateTile(const SpectatorVector& spectators);
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);
@@ -355,4 +405,4 @@ class StaticTile final : public Tile
 		}
 };
 
-#endif  // SRC_ITEMS_TILE_H_
+#endif

@@ -562,15 +562,15 @@ class Game
 
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
 		bool isMagicEffectRegistered(uint8_t type) const {
-			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) == registeredMagicEffects.end();
+			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
 		}
 
 		bool isDistanceEffectRegistered(uint8_t type) const {
-			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) == registeredDistanceEffects.end();
+			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
 		}
 
 		bool isLookTypeRegistered(uint16_t type) const {
-			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) == registeredLookTypes.end();
+			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
 		}
 
 	private:

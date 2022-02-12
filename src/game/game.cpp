@@ -1179,12 +1179,12 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string& file)
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
 		// Registering distance effects
 		for (uint32_t it = 0; it < appearances.effect_size(); it++) {
-			registeredDistanceEffects.push_back(static_cast<uint8_t>(appearances.effect(it).id()));
+			registeredMagicEffects.push_back(static_cast<uint8_t>(appearances.effect(it).id()));
 		}
 
 		// Registering missile effects
 		for (uint32_t it = 0; it < appearances.missile_size(); it++) {
-			registeredMagicEffects.push_back(static_cast<uint8_t>(appearances.missile(it).id()));
+			registeredDistanceEffects.push_back(static_cast<uint8_t>(appearances.missile(it).id()));
 		}
 
 		// Registering outfits

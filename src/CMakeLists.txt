@@ -203,6 +203,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/events/talk_action_functions.cpp
     lua/functions/items/container_functions.cpp
     lua/functions/items/imbuement_functions.cpp
+    lua/functions/items/item_classification_functions.cpp
     lua/functions/items/item_functions.cpp
     lua/functions/items/item_type_functions.cpp
     lua/functions/items/weapon_functions.cpp

@@ -20,7 +20,6 @@
 #include "otpch.h"
 
 #include "creatures/combat/combat.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
@@ -28,7 +27,6 @@
 
 extern Game g_game;
 extern Vocations g_vocations;
-extern ConfigManager g_config;
 extern Weapons* g_weapons;
 extern Events* g_events;
 
@@ -194,7 +192,7 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 		premium = attr.as_bool();
 	}
 
-	if ((attr = node.attribute("breakchance")) && g_config.getBoolean(REMOVE_WEAPON_CHARGES)) {
+	if ((attr = node.attribute("breakchance")) && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
 		breakChance = std::min<uint8_t>(100, pugi::cast<uint16_t>(attr.value()));
 	}
 
@@ -489,15 +487,14 @@ void Weapon::onUsedWeapon(Player* player, Item* item, Tile* destTile) const
 
 	switch (action) {
 		case WEAPONACTION_REMOVECOUNT:
-			if(g_config.getBoolean(REMOVE_WEAPON_AMMO)) {
+			if(g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {
 				Weapon::decrementItemCount(item);
 				player->updateSupplyTracker(item);
 			}
 			break;
 
 		case WEAPONACTION_REMOVECHARGE: {
-			uint16_t charges = item->getCharges();
-			if (charges != 0 && g_config.getBoolean(REMOVE_WEAPON_CHARGES)) {
+			if (uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
 				g_game.transformItem(item, item->getID(), charges - 1);
 			}
 			break;

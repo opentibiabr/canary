@@ -19,13 +19,11 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
 #include "game/scheduling/scheduler.h"
 #include "utils/pugicast.h"
 
-extern ConfigManager g_config;
 
 GlobalEvents::GlobalEvents() :
 	scriptInterface("GlobalEvent Interface") {

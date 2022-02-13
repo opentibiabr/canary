@@ -43,8 +43,8 @@ maxItem = 2000
 maxContainer = 100
 
 -- Version
-clientVersion = 1272
-clientVersionStr = "12.72"
+clientVersion = 1285
+clientVersionStr = "12.85"
 
 -- Depot Limit
 freeDepotLimit = 2000
@@ -60,7 +60,6 @@ onlyPremiumAccount = false
 -- Customs
 weatherRain = false
 thunderEffect = false
-freeQuests = false
 allConsoleLog = false
 
 -- Stamina in Trainers
@@ -87,6 +86,14 @@ saveIntervalTime = 1
 
 -- Imbuement
 togleImbuementShrineStorage = false
+
+-- Free quests
+-- Add quest access to player when logging in
+-- NOTE: Only quests that are in the "freequests.lua" script table will work
+-- toggleFreeQuest = enable/disable the system
+-- freeQuestStage = if you add more quests to the table, change this value to run freeQuest again
+toggleFreeQuest = false
+freeQuestStage = 1
 
 -- Deaths
 -- NOTE: Leave deathLosePercent as -1 if you want to use the default
@@ -126,11 +133,9 @@ partyListMaxDistance = 30
 
 -- Custom Map
 -- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
+toggleMapCustom = false
 mapCustomName = "canary-custom"
-mapCustomFile = "data/world/custom/canary-custom.otbm"
-mapCustomSpawn = "data/world/custom/canary-custom-spawn.xml"
 mapCustomAuthor = "OpenTibiaBR"
-mapCustomEnabled = false
 
 -- Market
 marketOfferDuration = 30 * 24 * 60 * 60
@@ -183,6 +188,20 @@ rateSkill = 50
 rateLoot = 3
 rateMagic = 25
 rateSpawn = 1
+
+-- Today regeneration condition over an loop every 1 second,
+-- So values which should regenerated less then 1 second or won't will work
+rateHealthRegen = 1.0
+rateHealthRegenSpeed = 1.0
+rateManaRegen = 1.0
+rateManaRegenSpeed = 1.0
+rateSoulRegen = 1.0
+rateSoulRegenSpeed = 1.0
+
+rateSpellCooldown = 1.0
+rateAttackSpeed = 1.0
+rateOfflineTrainingSpeed = rateAttackSpeed
+rateExerciseTrainingSpeed = rateAttackSpeed
 
 -- Monster rates
 rateMonsterHealth = 1.0

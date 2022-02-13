@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
@@ -31,7 +30,6 @@ double Creature::speedB = 261.29;
 double Creature::speedC = -4795.01;
 
 extern Game g_game;
-extern ConfigManager g_config;
 extern CreatureEvents* g_creatureEvents;
 
 Creature::Creature()
@@ -632,7 +630,7 @@ void Creature::onDeath()
 	Creature* mostDamageCreature = nullptr;
 
 	const int64_t timeNow = OTSYS_TIME();
-	const uint32_t inFightTicks = g_config.getNumber(PZ_LOCKED);
+	const uint32_t inFightTicks = g_configManager().getNumber(PZ_LOCKED);
 	int32_t mostDamage = 0;
 	std::map<Creature*, uint64_t> experienceMap;
 	for (const auto& it : damageMap) {
@@ -747,7 +745,7 @@ bool Creature::hasBeenAttacked(uint32_t attackerId)
 	if (it == damageMap.end()) {
 		return false;
 	}
-	return (OTSYS_TIME() - it->second.ticks) <= g_config.getNumber(PZ_LOCKED);
+	return (OTSYS_TIME() - it->second.ticks) <= g_configManager().getNumber(PZ_LOCKED);
 }
 
 Item* Creature::getCorpse(Creature*, Creature*)

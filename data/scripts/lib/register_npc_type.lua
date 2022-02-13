@@ -26,8 +26,15 @@ registerNpcType.description = function(npcType, mask)
 end
 
 registerNpcType.speechBubble = function(npcType, mask)
+	local speechBubble = npcType:speechBubble()
 	if mask.speechBubble then
-		npcType:setSpeechBubble(mask.speechBubble)
+		npcType:speechBubble(mask.speechBubble)
+	elseif speechBubble == 3 then
+		npcType:speechBubble(4)
+	elseif speechBubble < 1 then
+		npcType:speechBubble(1)
+	else
+		npcType:speechBubble(2)
 	end
 end
 

@@ -1,4 +1,4 @@
-# OpenTibiaBR - Canary Project
+# OpenTibiaBR - Canary
 
 [![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/3NxYnyV)
 [![GitHub issues](https://img.shields.io/github/issues/opentibiabr/canary)](https://github.com/opentibiabr/canary/issues)
@@ -27,8 +27,13 @@
 [![Build](https://img.shields.io/docker/cloud/build/opentibiabr/canary)](https://hub.docker.com/r/opentibiabr/canary/builds)
 
 ## Project
+OpenTibiaBR - Canary is a free and open-source MMORPG server emulator written in C++.
 
-OpenTibiaBR - Canary Project is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. To connect to the server and to take a stable experience, you can use our [own client](https://github.com/opentibiabr/otclient) or [tibia client](https://forums.otserv.com.br/index.php?/forums/topic/167933-otservbr-global-cliente-tibia-12/) and if you want to edit something, check our [customized tools](https://github.com/opentibiabr/tools).
+It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. You can see the repository history in the [releases](https://github.com/opentibiabr/otservbr-global/releases/).
+
+This project was created with the intention of being a base as clean as possible, to work as an MMORPG engine and not necessarily linked to Tibia Global, although it will also work. The OpenTibiaBR - Global was adapted to work with the source of the Canary, so that it will be the first repository to use this engine.
+
+To connect to the server and to take a stable experience, you can use our [own client](https://github.com/opentibiabr/otclient) or [tibia client](https://forums.otserv.com.br/index.php?/forums/topic/167933-otservbr-global-cliente-tibia-12/) and if you want to edit something, check our [customized tools](https://github.com/opentibiabr/tools).
 
 If you want edit the map, use the [own remere's map editor](https://github.com/opentibiabr/remeres-map-editor/tree/canary).
 

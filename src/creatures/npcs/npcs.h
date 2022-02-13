@@ -80,7 +80,7 @@ class NpcType
 		std::string nameDescription;
 		NpcInfo info;
 
-		void addShopItem(const std::string itemName, ShopInfo &shopInfo) {
+		void addShopItem(const std::string &itemName, const ShopInfo &shopInfo) {
 			info.shopItems[itemName] = shopInfo;
 		}
 

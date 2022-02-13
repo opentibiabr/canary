@@ -3878,7 +3878,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap)
+void ProtocolGame::sendSaleItemList(const ShopInfoMap &shopInfoMap, const std::map<uint32_t, uint32_t> &inventoryMap)
 {
 	//Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
@@ -3924,16 +3924,14 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	for (auto& shopInfoPair : shop)
+	for (auto& [itemName, shopInfo] : shopInfoMap)
 	{
-		const std::string name = shopInfoPair.first;
-		const ShopInfo &shopInfo = shopInfoPair.second;
 		if (shopInfo.sellPrice == 0)
 		{
 			continue;
 		}
 
-		uint32_t index = static_cast<uint32_t>(shopInfo.itemClientId);
+		auto index = static_cast<uint32_t>(shopInfo.itemClientId);
 		if (Item::items[shopInfo.itemClientId].isFluidContainer())
 		{
 			index |= (static_cast<uint32_t>(shopInfo.subType) << 16);
@@ -6801,7 +6799,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 	msg.add<uint32_t>(0);
 }
 
-void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &shopInfo, const std::string itemName)
+void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &shopInfo, const std::string &itemName)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
 	int32_t storageValue;
@@ -6815,14 +6813,12 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &shopInfo, co
 	const ItemType &it = Item::items[shopInfo.itemClientId];
 	msg.add<uint16_t>(shopInfo.itemClientId);
 
-	uint8_t count = std::min(shopInfo.subType, 100);
-
-	if (it.isSplash() || it.isFluidContainer())
-	{
-		count = serverFluidToClient(count);
+	if (it.isSplash() || it.isFluidContainer()) {
+		msg.addByte(serverFluidToClient(shopInfo.subType));
+	} else {
+		msg.addByte(0x00);
 	}
 
-	msg.addByte(count);
 	// If not send "itemName" variable from the npc shop, will registered the name that is in items.xml
 	if (itemName.empty()) {
 		msg.addString(it.name);

@@ -3827,14 +3827,14 @@ void ProtocolGame::sendShop(Npc *npc)
 	uint16_t i = 0;
 	for (auto& shopInfoPair : itemMap)
 	{
-		const uint16_t itemId = shopInfoPair.first;
+		const std::string name = shopInfoPair.first;
 		const ShopInfo &shopInfo = shopInfoPair.second;
 
 		if (++i > itemsToSend) {
 			break;
 		}
 
-		AddShopItem(msg, shopInfo, itemId);
+		AddShopItem(msg, shopInfo, name);
 	}
 
 	writeToOutputBuffer(msg);
@@ -3929,15 +3929,15 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint
 
 	for (auto& shopInfoPair : shop)
 	{
-		const uint16_t itemId = shopInfoPair.first;
+		const std::string name = shopInfoPair.first;
 		const ShopInfo &shopInfo = shopInfoPair.second;
 		if (shopInfo.sellPrice == 0)
 		{
 			continue;
 		}
 
-		uint32_t index = static_cast<uint32_t>(itemId);
-		if (Item::items[itemId].isFluidContainer())
+		uint32_t index = static_cast<uint32_t>(shopInfo.itemClientId);
+		if (Item::items[shopInfo.itemClientId].isFluidContainer())
 		{
 			index |= (static_cast<uint32_t>(shopInfo.subType) << 16);
 		}
@@ -3945,7 +3945,7 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint
 		it = inventoryMap.find(index);
 		if (it != inventoryMap.end())
 		{
-			msg.addItemId(itemId);
+			msg.addItemId(shopInfo.itemClientId);
 			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
@@ -6804,7 +6804,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 	msg.add<uint32_t>(0);
 }
 
-void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId)
+void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, std::string name)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
 	int32_t storageValue;
@@ -6815,7 +6815,7 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16
 		return;
 	}
 
-	const ItemType &it = Item::items[itemId];
+	const ItemType &it = Item::items[item.itemClientId];
 	msg.add<uint16_t>(item.itemClientId);
 
 	uint8_t count = std::min(item.subType, 100);

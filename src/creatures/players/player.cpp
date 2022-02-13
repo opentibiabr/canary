@@ -3793,17 +3793,18 @@ bool Player::hasShopItemForSale(uint32_t itemId, uint8_t subType) const
 		return false;
 	}
 
+	const ItemType& it = Item::items.getItemIdByClientId(itemId);
 	ShopInfoMap shopItemMap = shopOwner->getShopItems();
-	if (shopItemMap.find(itemId) == shopItemMap.end()) {
+	if (shopItemMap.find(it.name) == shopItemMap.end()) {
 		return false;
 	}
 
-	const ShopInfo& shopInfo = shopItemMap[itemId];
+	const ShopInfo& shopInfo = shopItemMap[it.name];
 	if (shopInfo.buyPrice == 0) {
 		return false;
 	}
 
-	if (!Item::items[itemId].isFluidContainer()) {
+	if (!it.isFluidContainer()) {
 		return true;
 	}
 

@@ -26,19 +26,19 @@
     },
     {
       "name": "libzip-dev",
-      "platform": "ubuntu"
+      "platform": "linux"
     },
     {
       "name": "zlib1g-dev",
-      "platform": "ubuntu"
+      "platform": "linux"
     },
     {
       "name": "liblzma-dev",
-      "platform": "ubuntu"
+      "platform": "linux"
     },
     {
       "name": "libbz2-dev",
-      "platform": "ubuntu"
+      "platform": "linux"
     }
   ]
 }

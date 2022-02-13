@@ -20,6 +20,25 @@
       "name": "luajit",
       "platform": "windows"
     },
-    "libzippp"
+    {
+      "name": "libzippp",
+      "platform": "windows"
+    },
+    {
+      "name": "libzip-dev",
+      "platform": "ubuntu"
+    },
+    {
+      "name": "zlib1g-dev",
+      "platform": "ubuntu"
+    },
+    {
+      "name": "liblzma-dev",
+      "platform": "ubuntu"
+    },
+    {
+      "name": "libbz2-dev",
+      "platform": "ubuntu"
+    }
   ]
 }

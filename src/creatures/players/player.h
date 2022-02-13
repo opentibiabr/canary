@@ -732,7 +732,7 @@ class Player final : public Creature, public Cylinder
 		void openShopWindow(Npc* npc);
 		bool closeShopWindow(bool sendCloseShopWindow = true);
 		bool updateSaleShopList(const Item* item);
-		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
+		bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
 		void setChaseMode(bool mode);
 		void setFightMode(FightMode_t mode) {

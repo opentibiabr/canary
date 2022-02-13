@@ -198,14 +198,7 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 	shopItem.subType = static_cast<uint16_t>(getField<uint32_t>(L, table, "count"));
 	shopItem.storageKey = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageKey"));
 	shopItem.storageValue = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageValue"));
-
-	std::string shopTableName = getFieldString(L, table, "itemName");
-	if (boost::iequals(shopTableName, "itemName")) {
-		shopItem.name = shopTableName;
-	} else {
-		const ItemType &it = Item::items.getItemIdByClientId(shopItem.itemClientId);
-		shopItem.name = it.name;
-	}
+	shopItem.name = getFieldString(L, table, "itemName");
 
 	npcType->addShopItem(shopItem.name, shopItem);
 	return 1;

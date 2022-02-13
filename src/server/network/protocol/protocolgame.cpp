@@ -6804,21 +6804,21 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 	msg.add<uint32_t>(0);
 }
 
-void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, std::string name)
+void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &shopInfo, const std::string itemName)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
 	int32_t storageValue;
-	player->getStorageValue(item.storageKey, storageValue);
-	if (item.storageKey != 0 && storageValue < item.storageValue)
+	player->getStorageValue(shopInfo.storageKey, storageValue);
+	if (shopInfo.storageKey != 0 && storageValue < shopInfo.storageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;
 	}
 
-	const ItemType &it = Item::items[item.itemClientId];
-	msg.add<uint16_t>(item.itemClientId);
+	const ItemType &it = Item::items[shopInfo.itemClientId];
+	msg.add<uint16_t>(shopInfo.itemClientId);
 
-	uint8_t count = std::min(item.subType, 100);
+	uint8_t count = std::min(shopInfo.subType, 100);
 
 	if (it.isSplash() || it.isFluidContainer())
 	{
@@ -6826,10 +6826,14 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, std::s
 	}
 
 	msg.addByte(count);
-	msg.addString(item.name);
+	if (itemName.empty()) {
+		msg.addString(it.name);
+	} else {
+		msg.addString(itemName);
+	}
 	msg.add<uint32_t>(it.weight);
-	msg.add<uint32_t>(item.buyPrice == 4294967295 ? 0 : item.buyPrice);
-	msg.add<uint32_t>(item.sellPrice == 4294967295 ? 0 : item.sellPrice);
+	msg.add<uint32_t>(shopInfo.buyPrice == 4294967295 ? 0 : shopInfo.buyPrice);
+	msg.add<uint32_t>(shopInfo.sellPrice == 4294967295 ? 0 : shopInfo.sellPrice);
 }
 
 void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg)

@@ -3787,7 +3787,7 @@ bool Player::updateSaleShopList(const Item* item)
 	return true;
 }
 
-bool Player::hasShopItemForSale(uint32_t itemId, uint8_t subType) const
+bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const
 {
 	if (!shopOwner) {
 		return false;

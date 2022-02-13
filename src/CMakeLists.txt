@@ -267,7 +267,6 @@ target_link_libraries(${PROJECT_NAME}
     ${CURL_LIBRARIES}
     jsoncpp_lib
     spdlog::spdlog
-    libzippp::libzippp
 )
 
 else()

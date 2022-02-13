@@ -23,22 +23,6 @@
     {
       "name": "libzippp",
       "platform": "windows"
-    },
-    {
-      "name": "libzip-dev",
-      "platform": "linux"
-    },
-    {
-      "name": "zlib1g-dev",
-      "platform": "linux"
-    },
-    {
-      "name": "liblzma-dev",
-      "platform": "linux"
-    },
-    {
-      "name": "libbz2-dev",
-      "platform": "linux"
     }
   ]
 }

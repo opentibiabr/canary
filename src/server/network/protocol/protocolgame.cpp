@@ -3825,16 +3825,13 @@ void ProtocolGame::sendShop(Npc *npc)
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (auto& shopInfoPair : itemMap)
+	for (auto& [itemName, shopInfo] : itemMap)
 	{
-		const std::string name = shopInfoPair.first;
-		const ShopInfo &shopInfo = shopInfoPair.second;
-
 		if (++i > itemsToSend) {
 			break;
 		}
 
-		AddShopItem(msg, shopInfo, name);
+		AddShopItem(msg, shopInfo, itemName);
 	}
 
 	writeToOutputBuffer(msg);
@@ -6826,6 +6823,7 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &shopInfo, co
 	}
 
 	msg.addByte(count);
+	// If not send "itemName" variable from the npc shop, will registered the name that is in items.xml
 	if (itemName.empty()) {
 		msg.addString(it.name);
 	} else {

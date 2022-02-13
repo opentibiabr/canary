@@ -222,11 +222,11 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t serverId,
 
 	const ItemType& itemType = Item::items[serverId];
 
-	if (getShopItems().find(serverId) == getShopItems().end()) {
+	if (getShopItems().find(itemType.name) == getShopItems().end()) {
 		return;
 	}
 
-	ShopInfo shopInfo = getShopItems()[serverId];
+	ShopInfo shopInfo = getShopItems()[itemType.name];
 	int64_t totalCost = shopInfo.buyPrice * amount;
 	if (getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game.removeMoney(player, totalCost, 0, true)) {
@@ -263,11 +263,11 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 
 	const ItemType& itemType = Item::items[serverId];
 
-	if (getShopItems().find(serverId) == getShopItems().end()) {
+	if (getShopItems().find(itemType.name) == getShopItems().end()) {
 		return;
 	}
 
-	ShopInfo shopInfo = getShopItems()[serverId];
+	ShopInfo shopInfo = getShopItems()[itemType.name];
 
 	if(!player->removeItemOfType(serverId, amount, -1, false, false)) {
 		return;

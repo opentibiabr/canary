@@ -41,8 +41,7 @@ bool Map::load(const std::string& identifier) {
 	return true;
 }
 
-bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
-{
+bool Map::extractMap(const std::string& identifier) {
 	if (!boost::filesystem::exists(identifier)) {
 		using namespace libzippp;
 		SPDLOG_INFO("Unzipping world.zip to world folder");
@@ -50,21 +49,23 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 		zf.open(ZipArchive::ReadOnly);
 
 		ZipEntry entry = zf.getEntry("otservbr.otbm");
-		size_t writtenBytes = 0;
-		int count = 0;
-
 		std::ofstream unzippedFile("data/world/" + entry.getName(), std::ofstream::binary);
 		if (unzippedFile) {
-			if (entry.readContent(unzippedFile, ZipArchive::Current) == 0) {
-				writtenBytes += entry.getSize();
-				++count;
-			}
+			entry.readContent(unzippedFile, ZipArchive::Current);
 		} else {
 			SPDLOG_ERROR("[Map::unzip] - Failed to unzip world.zip, file doesn't exist");
+			return false;
 		}
 		unzippedFile.close();
 		zf.close();
 	}
+	return true;
+}
+
+bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+{
+	// Extract the map
+	this->extractMap(identifier);
 
 	// Load the map
 	this->load(identifier);

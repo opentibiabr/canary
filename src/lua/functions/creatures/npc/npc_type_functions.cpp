@@ -193,18 +193,14 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 	ShopInfo shopItem;
 
 	shopItem.itemClientId = static_cast<uint16_t>(getField<uint32_t>(L, table, "clientId"));
-	shopItem.buyPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "buy"));
-	shopItem.sellPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "sell"));
-	shopItem.subType = static_cast<uint16_t>(getField<uint32_t>(L, table, "count"));
-	shopItem.storageKey = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageKey"));
-	shopItem.storageValue = static_cast<uint16_t>(getField<uint32_t>(L, table, "storageValue"));
+	shopItem.buyPrice = getField<uint32_t>(L, table, "buy");
+	shopItem.sellPrice = getField<uint32_t>(L, table, "sell");
+	shopItem.subType = static_cast<int32_t>(getField<uint32_t>(L, table, "count"));
+	shopItem.storageKey = static_cast<int32_t>(getField<uint32_t>(L, table, "storageKey"));
+	shopItem.storageValue = static_cast<int32_t>(getField<uint32_t>(L, table, "storageValue"));
+	shopItem.name = getFieldString(L, table, "itemName");
 
-	const ItemType &it = Item::items.getItemIdByClientId(shopItem.itemClientId);
-
-	shopItem.name = it.name;
-
-	npcType->addShopItem(it.id, shopItem);
-
+	npcType->addShopItem(shopItem.name, shopItem);
 	return 1;
 }
 

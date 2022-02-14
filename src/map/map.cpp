@@ -41,7 +41,7 @@ bool Map::load(const std::string& identifier) {
 	return true;
 }
 
-bool Map::extractMap(const std::string& identifier) {
+bool Map::extractMap(const std::string& identifier) const {
 	if (!boost::filesystem::exists(identifier)) {
 		using namespace libzippp;
 		SPDLOG_INFO("Unzipping world.zip to world folder");

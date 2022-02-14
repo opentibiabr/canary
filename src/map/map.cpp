@@ -29,6 +29,7 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
+#include "utils/tools.h"
 
 extern Game g_game;
 
@@ -54,6 +55,7 @@ bool Map::extractMap(const std::string& identifier) const {
 			entry.readContent(unzippedFile, ZipArchive::Current);
 		} else {
 			SPDLOG_ERROR("[Map::unzip] - Failed to unzip world.zip, file doesn't exist");
+			consoleHandlerExit();
 			return false;
 		}
 		unzippedFile.close();

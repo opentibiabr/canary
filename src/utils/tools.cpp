@@ -19,8 +19,11 @@
 
 #include "otpch.h"
 
-#include "utils/tools.h"
+#ifdef OS_WINDOWS
+	#include "conio.h"
+#endif
 
+#include "utils/tools.h"
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -1408,6 +1411,17 @@ void capitalizeWords(std::string& source)
 			source[i] = (char)toupper(source[i]);
 		}
 	}
+}
+
+/**
+ * @details
+ * Prevents the console from closing so there is time to read the error information
+ * Then can press any key to close
+*/
+void consoleHandlerExit()
+{
+	SPDLOG_ERROR("The program will close after pressing any key...");
+	getch();
 }
 
 NameEval_t validateName(const std::string &name)

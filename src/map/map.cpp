@@ -45,20 +45,19 @@ bool Map::load(const std::string& identifier) {
 bool Map::extractMap(const std::string& identifier) const {
 	if (!boost::filesystem::exists(identifier)) {
 		using namespace libzippp;
-		SPDLOG_INFO("Unzipping world.zip to world folder");
+		std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
+		SPDLOG_INFO("Unzipping " + mapName + " to world folder");
 		ZipArchive zf("data/world/world.zip");
-		zf.open(ZipArchive::ReadOnly);
 
-		ZipEntry entry = zf.getEntry(g_configManager().getString(MAP_NAME) + ".otbm");
-		std::ofstream unzippedFile("data/world/" + entry.getName(), std::ofstream::binary);
-		if (unzippedFile) {
-			entry.readContent(unzippedFile, ZipArchive::Current);
+		if (zf.open(ZipArchive::ReadOnly)) {
+			std::ofstream unzippedFile("data/world/" + mapName, std::ofstream::binary);
+			zf.getEntry(mapName).readContent(unzippedFile, ZipArchive::Current);
 		} else {
-			SPDLOG_ERROR("[Map::unzip] - Failed to unzip world.zip, file doesn't exist");
+			SPDLOG_ERROR("[Map::extractMap] - Failed to unzip world.zip, file doesn't exist");
 			consoleHandlerExit();
 			return false;
 		}
-		unzippedFile.close();
+
 		zf.close();
 	}
 	return true;

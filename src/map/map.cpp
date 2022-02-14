@@ -48,7 +48,7 @@ bool Map::extractMap(const std::string& identifier) const {
 		ZipArchive zf("data/world/world.zip");
 		zf.open(ZipArchive::ReadOnly);
 
-		ZipEntry entry = zf.getEntry("otservbr.otbm");
+		ZipEntry entry = zf.getEntry(g_configManager().getString(MAP_NAME));
 		std::ofstream unzippedFile("data/world/" + entry.getName(), std::ofstream::binary);
 		if (unzippedFile) {
 			entry.readContent(unzippedFile, ZipArchive::Current);

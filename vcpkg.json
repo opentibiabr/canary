@@ -16,12 +16,9 @@
     "curl",
     "jsoncpp",
     "cryptopp",
+    "libzippp",
     {
       "name": "luajit",
-      "platform": "windows"
-    },
-    {
-      "name": "libzippp",
       "platform": "windows"
     }
   ]

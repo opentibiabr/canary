@@ -176,7 +176,7 @@ bool ConfigManager::load()
 	boolean[WEATHER_RAIN] = getGlobalBoolean(L, "weatherRain", false);
 	boolean[WEATHER_THUNDER] = getGlobalBoolean(L, "thunderEffect", false);
 	boolean[ALL_CONSOLE_LOG] = getGlobalBoolean(L, "allConsoleLog", false);
-	boolean[TOGGLE_FREE_QUEST] = getGlobalBoolean(L, "freeQuests", false);
+	boolean[TOGGLE_FREE_QUEST] = getGlobalBoolean(L, "toggleFreeQuest", true);
 	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
 	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
 	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);

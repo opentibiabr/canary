@@ -750,7 +750,7 @@ struct ShopInfo {
 
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ShopInfoMap = std::unordered_map<uint16_t, ShopInfo>;
+using ShopInfoMap = std::unordered_map<std::string, ShopInfo>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 
 struct Familiar {

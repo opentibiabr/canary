@@ -24,10 +24,8 @@
 #include "map/house/house.h"
 #include "io/iologindata.h"
 #include "game/game.h"
-#include "config/configmanager.h"
 #include "items/bed.h"
 
-extern ConfigManager g_config;
 extern Game g_game;
 
 House::House(uint32_t houseId) : id(houseId) {}
@@ -55,7 +53,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 	isLoaded = true;
 
 	if (owner != 0) {
-		//send items to depot
+		// Send items to depot
 		if (player) {
 			transferToDepot(player);
 		} else {
@@ -87,7 +85,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 			door->setAccessList("");
 		}
 	} else {
-		std::string strRentPeriod = asLowerCaseString(g_config.getString(HOUSE_RENT_PERIOD));
+		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 		time_t currentTime = time(nullptr);
 		if (strRentPeriod == "yearly") {
            currentTime += 24 * 60 * 60 * 365;
@@ -135,7 +133,7 @@ void House::updateDoorDescription() const
 	} else {
 		ss << "It belongs to house '" << houseName << "'. Nobody owns this house.";
 
-		const int32_t housePrice = g_config.getNumber(HOUSE_PRICE);
+		const int32_t housePrice = g_configManager().getNumber(HOUSE_PRICE);
 		if (housePrice != -1) {
 			ss << " It costs " << (houseTiles.size() * housePrice) << " gold coins.";
 		}
@@ -152,7 +150,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player)
 		return HOUSE_OWNER;
 	}
 
-	if (g_config.getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
+	if (g_configManager().getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
 		if (ownerAccountId == player->getAccount()) {
 			return HOUSE_OWNER;
 		}
@@ -255,22 +253,12 @@ bool House::transferToDepot(Player* player) const
 	if (townId == 0 || owner == 0) {
 		return false;
 	}
-int constructionKits[58][2] = {
-{3901, 1666}, {3902, 1670}, {3903, 1652}, {3904, 1674},
-{3905, 1658}, {3906, 3813}, {3907, 3817}, {3908, 1619}, {3909, 12799}, {3910, 2105},
-{3911, 1614}, {3912, 3806}, {3913, 3807}, {3914, 3809}, {3915, 1716}, {3916, 1724},
-{3917, 1732}, {3918, 1775}, {3919, 1774}, {3920, 1750}, {3921, 3832}, {3922, 2095},
-{3923, 2098}, {3924, 2064}, {3925, 2582}, {3926, 2117}, {3927, 1728}, {3928, 1442},
-{3929, 1446}, {3930, 1447}, {3931, 2034}, {3932, 2604}, {3933, 2080}, {3934, 2084},
-{3935, 3821}, {3936, 3811}, {3937, 2101}, {3938, 3812}, {5086, 5046}, {5087, 5055},
-{5088, 5056}, {6114, 6111}, {6115, 6109}, {6372, 6356}, {6373, 6371}, {8692, 8688},
-{9974, 9975}, {11124, 11125}, {11126, 11127}, {11133, 11129}, {11205, 11203}, {14328, 1616},
-{14329, 1615}, {16075, 16020}, {16099, 16098}, {20254, 20295}, {20255, 20297}, {20257, 20299},
-	};
+
 	ItemList moveItemList;
 	for (HouseTile* tile : houseTiles) {
 		if (const TileItemVector* items = tile->getItemList()) {
-			for (Item* item : *items) {
+			for (auto it = items->rbegin(), end = items->rend(); it != end; ++it) {
+				Item* item = (*it);
 				if (item->isWrapable()) {
 					Container* container = item->getContainer();
 					if (container) {
@@ -280,7 +268,7 @@ int constructionKits[58][2] = {
 					}
 					std::string itemName = item->getName();
 					uint16_t itemID = item->getID();
-					Item* newItem = g_game.transformItem(item, 26054);
+					Item* newItem = g_game.transformItem(item, ITEM_DECORATION_KIT);
 					ItemAttributes::CustomAttribute val;
 					val.set<int64_t>(itemID);
 					std::string key = "unWrapId";
@@ -289,35 +277,13 @@ int constructionKits[58][2] = {
 					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
 					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
 					moveItemList.push_back(newItem);
-				}
-				else if (item->isPickupable()) {
+				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
-				}
-				else {
+				} else {
 					Container* container = item->getContainer();
 					if (container) {
 						for (Item* containerItem : container->getItemList()) {
 							moveItemList.push_back(containerItem);
-						}
-					}
-					for (int i = 0; i < 58; i++) {
-						if (constructionKits[i][1] == item->getID()) {
-							Item* newItem = g_game.transformItem(item, constructionKits[i][0]);
-							moveItemList.push_back(newItem);
-							break;
-						}
-						if (item->isRotatable()) {
-							uint16_t newRotation = item->getID();
-							for (int x = 0; x < 5; x++) {
-								if (!Item::items[newRotation].rotatable) break;
-								newRotation = Item::items[newRotation].rotateTo;
-								if (newRotation == item->getID()) break;
-								if (newRotation == constructionKits[i][1]) {
-									Item* newItem = g_game.transformItem(item, constructionKits[i][0]);
-									moveItemList.push_back(newItem);
-									break;
-								}
-							}
 						}
 					}
 				}

@@ -31,6 +31,7 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerMethod(L, "configManager", "getString", ConfigFunctions::luaConfigManagerGetString);
 			registerMethod(L, "configManager", "getNumber", ConfigFunctions::luaConfigManagerGetNumber);
 			registerMethod(L, "configManager", "getBoolean", ConfigFunctions::luaConfigManagerGetBoolean);
+			registerMethod(L, "configManager", "getFloat", ConfigFunctions::luaConfigManagerGetFloat);
 
 			#define registerEnumIn(L, tableName, value) { \
 				std::string enumName = #value; \
@@ -61,7 +62,8 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", STOREMODULES)
 			registerEnumIn(L, "configKeys", WEATHER_RAIN)
 			registerEnumIn(L, "configKeys", WEATHER_THUNDER)
-			registerEnumIn(L, "configKeys", FREE_QUESTS)
+			registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST)
+			registerEnumIn(L, "configKeys", FREE_QUEST_STAGE)
 			registerEnumIn(L, "configKeys", ALL_CONSOLE_LOG)
 			registerEnumIn(L, "configKeys", SERVER_SAVE_NOTIFY_MESSAGE)
 			registerEnumIn(L, "configKeys", SERVER_SAVE_NOTIFY_DURATION)
@@ -69,10 +71,8 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", SERVER_SAVE_CLOSE)
 			registerEnumIn(L, "configKeys", SERVER_SAVE_SHUTDOWN)
 			registerEnumIn(L, "configKeys", MAP_NAME)
+			registerEnumIn(L, "configKeys", TOGGLE_MAP_CUSTOM)
 			registerEnumIn(L, "configKeys", MAP_CUSTOM_NAME)
-			registerEnumIn(L, "configKeys", MAP_CUSTOM_FILE)
-			registerEnumIn(L, "configKeys", MAP_CUSTOM_SPAWN)
-			registerEnumIn(L, "configKeys", MAP_CUSTOM_ENABLED)
 			registerEnumIn(L, "configKeys", HOUSE_RENT_PERIOD)
 			registerEnumIn(L, "configKeys", SERVER_NAME)
 			registerEnumIn(L, "configKeys", OWNER_NAME)
@@ -135,6 +135,18 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 			registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 			registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
+			
+			registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN)
+			registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN_SPEED)
+			registerEnumIn(L, "configKeys", RATE_MANA_REGEN)
+			registerEnumIn(L, "configKeys", RATE_MANA_REGEN_SPEED)
+			registerEnumIn(L, "configKeys", RATE_SOUL_REGEN)
+			registerEnumIn(L, "configKeys", RATE_SOUL_REGEN_SPEED)
+
+			registerEnumIn(L, "configKeys", RATE_SPELL_COOLDOWN)
+			registerEnumIn(L, "configKeys", RATE_ATTACK_SPEED)
+			registerEnumIn(L, "configKeys", RATE_OFFLINE_TRAINING_SPEED)
+			registerEnumIn(L, "configKeys", RATE_EXERCISE_TRAINING_SPEED)
 
 			registerEnumIn(L, "configKeys", STAMINA_TRAINER)
 			registerEnumIn(L, "configKeys", STAMINA_PZ)
@@ -157,6 +169,7 @@ class ConfigFunctions final : LuaScriptInterface {
 		}
 
 	private:
+		static int luaConfigManagerGetFloat(lua_State* L);
 		static int luaConfigManagerGetBoolean(lua_State* L);
 		static int luaConfigManagerGetNumber(lua_State* L);
 		static int luaConfigManagerGetString(lua_State* L);

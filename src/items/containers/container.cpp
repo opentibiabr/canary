@@ -384,10 +384,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		uint32_t maxItem = static_cast<uint32_t>(g_config.getNumber(MAX_ITEM));
+		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));
 		if (const Container* addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_config.getNumber(MAX_CONTAINER));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}

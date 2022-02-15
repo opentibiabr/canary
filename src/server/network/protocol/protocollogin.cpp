@@ -25,7 +25,6 @@
 #include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 #include "creatures/players/account/account.hpp"
-#include "config/configmanager.h"
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
 #include "game/game.h"
@@ -34,7 +33,6 @@
 #include <limits>
 #include <vector>
 
-extern ConfigManager g_config;
 extern Game g_game;
 
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
@@ -60,7 +58,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 	Game::updatePremium(account);
 
 	auto output = OutputMessagePool::getOutputMessage();
-	const std::string& motd = g_config.getString(MOTD);
+	const std::string& motd = g_configManager().getString(MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
 		output->addByte(0x14);
@@ -82,10 +80,10 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 	output->addByte(1);  // number of worlds
 
 	output->addByte(0);  // world id
-	output->addString(g_config.getString(SERVER_NAME));
-	output->addString(g_config.getString(IP));
+	output->addString(g_configManager().getString(SERVER_NAME));
+	output->addString(g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_config.getShortNumber(GAME_PORT));
+	output->add<uint16_t>(g_configManager().getShortNumber(GAME_PORT));
 
 	output->addByte(0);
 
@@ -99,7 +97,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 
 	// Add premium days
 	output->addByte(0);
-	if (g_config.getBoolean(FREE_PREMIUM)) {
+	if (g_configManager().getBoolean(FREE_PREMIUM)) {
 		output->addByte(1);
 		output->add<uint32_t>(0);
 	} else {

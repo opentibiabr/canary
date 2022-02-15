@@ -55,9 +55,10 @@ class NpcTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "NpcType", "onDisappear", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onMove", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 			registerMethod(L, "NpcType", "onSay", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-			registerMethod(L, "NpcType", "onPlayerBuyItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-			registerMethod(L, "NpcType", "onPlayerSellItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
-			registerMethod(L, "NpcType", "onPlayerCheckItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+			registerMethod(L, "NpcType", "onCloseChannel", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+			registerMethod(L, "NpcType", "onBuyItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+			registerMethod(L, "NpcType", "onSellItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+			registerMethod(L, "NpcType", "onCheckItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 
 			registerMethod(L, "NpcType", "outfit", NpcTypeFunctions::luaNpcTypeOutfit);
 			registerMethod(L, "NpcType", "baseSpeed", NpcTypeFunctions::luaNpcTypeBaseSpeed);
@@ -70,6 +71,8 @@ class NpcTypeFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "NpcType", "respawnTypePeriod", NpcTypeFunctions::luaNpcTypeRespawnTypePeriod);
 			registerMethod(L, "NpcType", "respawnTypeIsUnderground", NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground);
+			registerMethod(L, "NpcType", "speechBubble", NpcTypeFunctions::luaNpcTypeSpeechBubble);
+			registerMethod(L, "NpcType", "currency", NpcTypeFunctions::luaNpcTypeCurrency);
 
 			registerMethod(L, "NpcType", "addShopItem", NpcTypeFunctions::luaNpcTypeAddShopItem);
 		}
@@ -111,6 +114,10 @@ class NpcTypeFunctions final : LuaScriptInterface {
 
 		static int luaNpcTypeRespawnTypePeriod(lua_State* L);
 		static int luaNpcTypeRespawnTypeIsUnderground(lua_State* L);
+
+		static int luaNpcTypeSpeechBubble(lua_State* L);
+
+		static int luaNpcTypeCurrency(lua_State* L);
 
 		static int luaNpcTypeAddShopItem(lua_State* L);
 

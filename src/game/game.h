@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
@@ -36,6 +36,7 @@
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
+#include "items/items_classification.hpp"
 
 class ServiceManager;
 class Creature;
@@ -43,6 +44,7 @@ class Monster;
 class Npc;
 class CombatInfo;
 class Charm;
+class ItemClassification;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 
@@ -61,7 +63,18 @@ class Game
 
 		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
+		/**
+		* Load the main map
+		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
+		 * \returns true if the custom map was loaded successfully
+		*/
 		bool loadMainMap(const std::string& filename);
+		/**
+		* Load the custom map
+		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
+		 * \returns true if the custom map was loaded successfully
+		*/
+		bool loadCustomMap(const std::string& filename);
 		void loadMap(const std::string& path);
 
 		void getMapDimensions(uint32_t& width, uint32_t& height) const {
@@ -137,6 +150,25 @@ class Game
 		}
 		uint16_t getItemsPriceCount() const {
 			return itemsSaleCount;
+		}
+
+		void addItemsClassification(ItemClassification* itemsClassification) {
+			itemsClassifications.push_back(itemsClassification);
+		}
+		ItemClassification* getItemsClassification(uint8_t id, bool create) {
+			auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
+				return it->id == id;
+				});
+
+			if (it != itemsClassifications.end()) {
+				return *it;
+			} else if (create) {
+				ItemClassification* itemClassification = new ItemClassification(id);
+				addItemsClassification(itemClassification);
+				return itemClassification;
+			}
+
+			return nullptr;
 		}
 
 		LightInfo getWorldLightInfo() const;
@@ -410,6 +442,8 @@ class Game
 		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
+		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
+
 		void addPlayer(Player* player);
 		void removePlayer(Player* player);
 
@@ -601,6 +635,8 @@ class Game
 
 		std::map<uint16_t, uint32_t> itemsPriceMap;
 		uint16_t itemsSaleCount;
+
+		std::vector<ItemClassification*> itemsClassifications;
 };
 
 #endif  // SRC_GAME_GAME_H_

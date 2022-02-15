@@ -25,6 +25,19 @@
 class ConfigManager
 {
 	public:
+		ConfigManager() = default;
+
+		// Singleton - ensures we don't accidentally copy it
+		ConfigManager(ConfigManager const&) = delete;
+		void operator=(ConfigManager const&) = delete;
+
+		static ConfigManager& getInstance() {
+			// Guaranteed to be destroyed
+			static ConfigManager instance;
+			// Instantiated on first use
+			return instance;
+		}
+	
 		bool load();
 		bool reload();
 
@@ -51,5 +64,7 @@ class ConfigManager
 
 		bool loaded = false;
 };
+
+constexpr auto g_configManager = &ConfigManager::getInstance;
 
 #endif  // SRC_CONFIG_CONFIGMANAGER_H_

@@ -283,17 +283,21 @@ do
 			self:eventType(NPCS_EVENT_SAY)
 			self:onSay(value)
 			return
-		elseif key == "onPlayerBuyItem" then
+		elseif key == "onBuyItem" then
 			self:eventType(NPCS_EVENT_PLAYER_BUY)
-			self:onPlayerBuyItem(value)
+			self:onBuyItem(value)
 			return
-		elseif key == "onPlayerSellItem" then
+		elseif key == "onSellItem" then
 			self:eventType(NPCS_EVENT_PLAYER_SELL)
-			self:onPlayerSellItem(value)
+			self:onSellItem(value)
 			return
-		elseif key == "onPlayerCheckItem" then
+		elseif key == "onCheckItem" then
 			self:eventType(NPCS_EVENT_PLAYER_CHECK_ITEM)
-			self:onPlayerCheckItem(value)
+			self:onCheckItem(value)
+			return
+		elseif key == "onCloseChannel" then
+			self:eventType(NPCS_EVENT_PLAYER_CLOSE_CHANNEL)
+			self:onBuyItem(value)
 			return
 		end
 		rawset(self, key, value)

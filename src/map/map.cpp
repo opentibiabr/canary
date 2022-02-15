@@ -19,6 +19,9 @@
 
 #include "otpch.h"
 
+#include <boost/filesystem.hpp>
+#include "libzippp.h"
+
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
 #include "creatures/combat/combat.h"
@@ -26,16 +29,48 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
+#include "utils/tools.h"
 
 extern Game g_game;
 
-bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
-{
+bool Map::load(const std::string& identifier) {
 	IOMap loader;
 	if (!loader.loadMap(this, identifier)) {
-		SPDLOG_ERROR("[Map::loadMap] - {}", loader.getLastErrorString());
+		SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
 		return false;
 	}
+	return true;
+}
+
+bool Map::extractMap(const std::string& identifier) const {
+	if (boost::filesystem::exists(identifier)) {
+		return true;
+	}
+	
+	using namespace libzippp;
+	std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
+	SPDLOG_INFO("Unzipping " + mapName + " to world folder");
+	ZipArchive zf("data/world/world.zip");
+
+	if (!zf.open(ZipArchive::ReadOnly)) {
+		SPDLOG_ERROR("[Map::extractMap] - Failed to unzip world.zip, file doesn't exist");
+		consoleHandlerExit();
+		return false;
+	}
+
+	std::ofstream unzippedFile("data/world/" + mapName, std::ofstream::binary);
+	zf.getEntry(mapName).readContent(unzippedFile, ZipArchive::Current);
+	zf.close();
+	return true;
+}
+
+bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+{
+	// Extract the map
+	this->extractMap(identifier);
+
+	// Load the map
+	this->load(identifier);
 
 	if (loadMonsters) {
 		if (!IOMap::loadMonsters(this)) {
@@ -48,13 +83,55 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 			SPDLOG_WARN("Failed to load house data");
 		}
 
-		IOMapSerialize::loadHouseInfo();
-		IOMapSerialize::loadHouseItems(this);
+		/**
+		 * Only load houses items if map custom load is disabled
+		 * If map custom is enabled, then it is load in loadMapCustom function
+		 * NOTE: This will ensure that the information is not duplicated
+		*/
+		if (!g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+			IOMapSerialize::loadHouseInfo();
+			IOMapSerialize::loadHouseItems(this);
+		}
 	}
 
 	if (loadNpcs) {
 		if (!IOMap::loadNpcs(this)) {
 			SPDLOG_WARN("Failed to load npc spawn data");
+		}
+	}
+
+	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
+	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+		this->monsterfile.clear();
+		this->housefile.clear();
+		this->npcfile.clear();
+	}
+	return true;
+}
+
+bool Map::loadMapCustom(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+{
+	// Load the map
+	this->load(identifier);
+
+	if (loadMonsters) {
+		if (!IOMap::loadMonstersCustom(this)) {
+			SPDLOG_WARN("Failed to load monster custom data");
+		}
+	}
+
+	if (loadHouses) {
+		if (!IOMap::loadHousesCustom(this)) {
+			SPDLOG_WARN("Failed to load house custom data");
+		}
+
+		IOMapSerialize::loadHouseInfo();
+		IOMapSerialize::loadHouseItems(this);
+	}
+
+	if (loadNpcs) {
+		if (!IOMap::loadNpcsCustom(this)) {
+			SPDLOG_WARN("Failed to load npc custom spawn data");
 		}
 	}
 	return true;
@@ -63,25 +140,15 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 bool Map::save()
 {
 	bool saved = false;
-	for (uint32_t tries = 0; tries < 3; tries++) {
+	for (uint32_t tries = 0; tries < 6; tries++) {
 		if (IOMapSerialize::saveHouseInfo()) {
 			saved = true;
-			break;
+		}
+		if (saved && IOMapSerialize::saveHouseItems()) {
+			return true;
 		}
 	}
-
-	if (!saved) {
-		return false;
-	}
-
-	saved = false;
-	for (uint32_t tries = 0; tries < 3; tries++) {
-		if (IOMapSerialize::saveHouseItems()) {
-			saved = true;
-			break;
-		}
-	}
-	return saved;
+	return false;
 }
 
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const

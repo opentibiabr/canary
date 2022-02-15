@@ -76,18 +76,18 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 			newItem = new Mailbox(type);
 		} else if (it.isBed()) {
 			newItem = new BedItem(type);
-		} else if (it.id >= 2210 && it.id <= 2212) {
+		} else if (it.id >= ITEM_SWORD_RING && it.id <= ITEM_CLUB_RING) {
 			newItem = new Item(type - 3, count);
-		} else if (it.id == 2215 || it.id == 2216) {
+		} else if (it.id == ITEM_DWARVEN_RING || it.id == ITEM_RING_HEALING) {
 			newItem = new Item(type - 2, count);
-		} else if (it.id >= 2202 && it.id <= 2206) {
+		} else if (it.id >= ITEM_STEALTH_RING && it.id <= ITEM_TIME_RING) {
 			newItem = new Item(type - 37, count);
-		} else if (it.id == 2640) {
-			newItem = new Item(6132, count);
-		} else if (it.id == 6301) {
-			newItem = new Item(6300, count);
-		} else if (it.id == 18528) {
-			newItem = new Item(18408, count);
+		} else if (it.id == ITEM_PAIR_SOFT_BOOTS_ACTIVATED) {
+			newItem = new Item(ITEM_PAIR_SOFT_BOOTS, count);
+		} else if (it.id == ITEM_DEATH_RING_ACTIVATED) {
+			newItem = new Item(ITEM_DEATH_RING, count);
+		} else if (it.id == ITEM_PRISMATIC_RING_ACTIVATED) {
+			newItem = new Item(ITEM_PRISMATIC_RING, count);
 		} else {
 			newItem = new Item(type, count);
 		}

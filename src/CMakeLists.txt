@@ -83,6 +83,7 @@ if (MSVC)
   find_package(PugiXML REQUIRED)
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
+  find_package(libzippp CONFIG REQUIRED)
 else()
   find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(cryptopp CONFIG REQUIRED)
@@ -93,6 +94,7 @@ else()
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
+  find_package(libzippp CONFIG REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -203,6 +205,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/events/talk_action_functions.cpp
     lua/functions/items/container_functions.cpp
     lua/functions/items/imbuement_functions.cpp
+    lua/functions/items/item_classification_functions.cpp
     lua/functions/items/item_functions.cpp
     lua/functions/items/item_type_functions.cpp
     lua/functions/items/weapon_functions.cpp
@@ -264,6 +267,7 @@ target_link_libraries(${PROJECT_NAME}
     ${CURL_LIBRARIES}
     jsoncpp_lib
     spdlog::spdlog
+    libzippp::libzippp
 )
 
 else()
@@ -289,6 +293,7 @@ else()
       spdlog::spdlog
       Threads::Threads
       ${LUA_LIBRARIES}
+      libzippp::libzippp
   )
 
 endif (MSVC)

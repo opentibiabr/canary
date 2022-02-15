@@ -6499,7 +6499,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	msg.addByte(item->getImbuementSlot());
 
 	// Send imbuement time
-	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
+	for (uint8_t slotid = 0; slotid < static_cast<uint8_t>(item->getImbuementSlot()); slotid++)
 	{
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo))

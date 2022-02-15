@@ -1416,8 +1416,9 @@ void capitalizeWords(std::string& source)
 */
 void consoleHandlerExit()
 {
-	SPDLOG_ERROR("The program will close after pressing any key...");
+	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
+	exit(-1);
 }
 
 NameEval_t validateName(const std::string &name)

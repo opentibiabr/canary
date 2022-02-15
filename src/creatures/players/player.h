@@ -2195,6 +2195,7 @@ class Player final : public Creature, public Cylinder
 		friend class IOLoginData;
 		friend class ProtocolGame;
 		friend class MoveEvent;
+		friend class BedItem;
 
   account::Account *account_;
 };

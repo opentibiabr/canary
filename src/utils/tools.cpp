@@ -19,10 +19,6 @@
 
 #include "otpch.h"
 
-#ifdef OS_WINDOWS
-	#include "conio.h"
-#endif
-
 #include "utils/tools.h"
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
@@ -1421,7 +1417,7 @@ void capitalizeWords(std::string& source)
 void consoleHandlerExit()
 {
 	SPDLOG_ERROR("The program will close after pressing any key...");
-	getch();
+	getchar();
 }
 
 NameEval_t validateName(const std::string &name)

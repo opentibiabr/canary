@@ -1414,10 +1414,11 @@ void capitalizeWords(std::string& source)
  * Prevents the console from closing so there is time to read the error information
  * Then can press any key to close
 */
-[[noreturn]] void consoleHandlerExit()
+void consoleHandlerExit()
 {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
+	return;
 }
 
 NameEval_t validateName(const std::string &name)

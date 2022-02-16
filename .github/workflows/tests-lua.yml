@@ -24,6 +24,3 @@ jobs:
 
       - name: Check out code.
         uses: actions/checkout@v1
-
-      - name: Lua Tests
-        run: lua ${{ github.workspace }}/tests/lua/runtests.lua -v

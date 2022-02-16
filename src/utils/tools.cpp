@@ -21,7 +21,6 @@
 
 #include "utils/tools.h"
 
-
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -1408,6 +1407,18 @@ void capitalizeWords(std::string& source)
 			source[i] = (char)toupper(source[i]);
 		}
 	}
+}
+
+/**
+ * @details
+ * Prevents the console from closing so there is time to read the error information
+ * Then can press any key to close
+*/
+void consoleHandlerExit()
+{
+	SPDLOG_ERROR("The program will close after pressing the enter key...");
+	getchar();
+	return;
 }
 
 NameEval_t validateName(const std::string &name)

@@ -19,6 +19,9 @@
 
 #include "otpch.h"
 
+#include <boost/filesystem.hpp>
+#include "libzippp.h"
+
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
 #include "creatures/combat/combat.h"
@@ -26,6 +29,7 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
+#include "utils/tools.h"
 
 extern Game g_game;
 
@@ -38,8 +42,33 @@ bool Map::load(const std::string& identifier) {
 	return true;
 }
 
+bool Map::extractMap(const std::string& identifier) const {
+	if (boost::filesystem::exists(identifier)) {
+		return true;
+	}
+	
+	using namespace libzippp;
+	std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
+	SPDLOG_INFO("Unzipping " + mapName + " to world folder");
+	ZipArchive zf("data/world/world.zip");
+
+	if (!zf.open(ZipArchive::ReadOnly)) {
+		SPDLOG_ERROR("[Map::extractMap] - Failed to unzip world.zip, file doesn't exist");
+		consoleHandlerExit();
+		return false;
+	}
+
+	std::ofstream unzippedFile("data/world/" + mapName, std::ofstream::binary);
+	zf.getEntry(mapName).readContent(unzippedFile, ZipArchive::Current);
+	zf.close();
+	return true;
+}
+
 bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
 {
+	// Extract the map
+	this->extractMap(identifier);
+
 	// Load the map
 	this->load(identifier);
 

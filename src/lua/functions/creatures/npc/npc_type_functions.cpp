@@ -203,7 +203,7 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 
 	shopItem.name = it.name;
 
-	npcType->addShopItem(it.id, shopItem);
+	npcType->addShopItem(shopItem.name, shopItem);
 
 	return 1;
 }

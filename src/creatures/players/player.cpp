@@ -3462,6 +3462,10 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 
 	retString << "Stowed " << totalStowed << " object" << (totalStowed > 1 ? "s." : ".");
+	if (moved) {
+		retString << " Moved " << movedItems << " object" << (movedItems > 1 ? "s." : ".");
+		movedItems = 0;
+	}
 	sendTextMessage(MESSAGE_STATUS, retString.str());
 }
 
@@ -5605,8 +5609,12 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
 		for (Item* containerItem : item->getContainer()->getItems()) {
-			if (g_config.getBoolean(STASH_MOVING) && containerItem && !containerItem->isStackable()) {
-				g_game.internalMoveItem(containerItem->getParent(), getDepotChest(4, true), INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
+			uint32_t depotChest = g_configManager().getNumber(DEPOTCHEST);
+			bool validDepot = depotChest > 0 && depotChest < 19;
+			if (g_configManager().getBoolean(STASH_MOVING) && containerItem && !containerItem->isStackable() && validDepot) {
+				g_game.internalMoveItem(containerItem->getParent(), getDepotChest(depotChest, true), INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
+				movedItems++;
+				moved = true;
 			}
 		}
 	} else {

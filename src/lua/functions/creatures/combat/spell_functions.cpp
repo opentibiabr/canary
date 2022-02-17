@@ -165,9 +165,9 @@ int SpellFunctions::luaSpellName(lua_State* L) {
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
 		if (lua_gettop(L) == 1) {
-			pushString(L, spell->getName());
+			pushString(L, asLowerCaseString(spell->getName()));
 		} else {
-			spell->setName(getString(L, 2));
+			spell->setName(asLowerCaseString(getString(L, 2)));
 			pushBoolean(L, true);
 		}
 	} else {

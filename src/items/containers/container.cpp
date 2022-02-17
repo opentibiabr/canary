@@ -729,7 +729,7 @@ Thing* Container::getThing(size_t index) const
 	return getItemByIndex(index);
 }
 
-ItemVector Container::getItems(bool recursive /*= false*/)
+ItemVector Container::getItems(bool recursive /*= false*/) const
 {
 	ItemVector containerItems;
 	if (recursive) {

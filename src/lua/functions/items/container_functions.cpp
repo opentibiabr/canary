@@ -256,13 +256,14 @@ int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 	bool recursive = getBoolean(L, 2, false);
 	std::vector<Item*> items = container->getItems(recursive);
 
-	lua_createtable(L, items.size(), 0);
+	lua_createtable(L, static_cast<int>(items.size()), 0);
 
 	int index = 0;
 	for (Item* item : items) {
+		index++;
 		pushUserdata(L, item);
 		setItemMetatable(L, -1, item);
-		lua_rawseti(L, -2, ++index);
+		lua_rawseti(L, -2, index);
 	}
 	return 1;
 }

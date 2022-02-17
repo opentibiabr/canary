@@ -485,13 +485,6 @@ class Creature : virtual public Thing
 			}
 		}
 
-		void setDead(bool isDead) {
-			dead = isDead;
-		}
-		bool isDead() const {
-			return dead;
-		}
-
 	protected:
 		virtual bool useCacheMap() const {
 			return false;
@@ -604,9 +597,6 @@ class Creature : virtual public Thing
 		virtual void death(Creature*) {}
 		virtual bool dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified);
 		virtual Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature);
-
-	private:
-		bool dead = false;
 
 		friend class Game;
 		friend class Map;

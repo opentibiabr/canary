@@ -2153,6 +2153,7 @@ class Player final : public Creature, public Cylinder
 		bool supplyStash = false; // Menu option 'stow, stow container ...'
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
+		bool dead = false;
 
 		static uint32_t playerAutoID;
 
@@ -2190,6 +2191,13 @@ class Player final : public Creature, public Cylinder
 		}
 		uint16_t getLookCorpse() const override;
 		void getPathSearchParams(const Creature* creature, FindPathParams& fpp) const override;
+
+		void setDead(bool isDead) {
+			dead = isDead;
+		}
+		bool isDead() const {
+			return dead;
+		}
 
 		friend class Game;
 		friend class Npc;

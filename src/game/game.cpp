@@ -1056,14 +1056,6 @@ bool Game::removeCreature(Creature* creature, bool isLogout/* = true*/)
 		return false;
 	}
 
-	if (creature->isDead()) {
-		creature->removeList();
-		creature->setRemoved();
-		ReleaseCreature(creature);
-		removeCreatureCheck(creature);
-		return true;
-	}
-
 	Tile* tile = creature->getTile();
 
 	std::vector<int32_t> oldStackPosVector;

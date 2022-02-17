@@ -1494,7 +1494,9 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 			bed->wakeUp(this);
 		}
 
-		SPDLOG_INFO("{} has logged in", name);
+		if (isLogin) {
+			SPDLOG_INFO("{} has logged in", name);
+		}
 
 		if (guild) {
 			guild->addMember(this);
@@ -1614,13 +1616,15 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 
 		clearPartyInvitations();
 
-		if (party) {
+		if (party && isLogout) {
 			party->leaveParty(this);
 		}
 
 		g_chat->removeUserFromAllChannels(*this);
 
-		SPDLOG_INFO("{} has logged out", getName());
+		if (isLogout) {
+			SPDLOG_INFO("{} has logged out", getName());
+		}
 
 		if (guild) {
 			guild->removeMember(this);
@@ -2733,7 +2737,7 @@ void Player::despawn()
 
 	// show player as pending
 	for (const auto& [key, player] : g_game.getPlayers()) {
-		player->notifyStatusChange(this, VIPSTATUS_PENDING);
+		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
 	}
 
 	setDead(true);

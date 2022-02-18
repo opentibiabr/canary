@@ -247,7 +247,7 @@ int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 
 int ContainerFunctions::luaContainerGetItems(lua_State* L) {
 	// container:getItems([recursive = false])
-	Container* container = getUserdata<Container>(L, 1);
+	const Container* container = getUserdata<Container>(L, 1);
 	if (!container) {
 		lua_pushnil(L);
 		return 1;

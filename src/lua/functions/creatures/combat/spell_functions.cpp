@@ -142,7 +142,6 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
 				//Change information in the ItemType to get accurate description
 				ItemType& iType = Item::items.getItemType(rune->getRuneItemId());
-				iType.name = rune->getName();
 				iType.runeMagLevel = rune->getMagicLevel();
 				iType.runeLevel = rune->getLevel();
 				iType.charges = rune->getCharges();
@@ -165,9 +164,9 @@ int SpellFunctions::luaSpellName(lua_State* L) {
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
 		if (lua_gettop(L) == 1) {
-			pushString(L, asLowerCaseString(spell->getName()));
+			pushString(L, spell->getName());
 		} else {
-			spell->setName(asLowerCaseString(getString(L, 2)));
+			spell->setName(getString(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

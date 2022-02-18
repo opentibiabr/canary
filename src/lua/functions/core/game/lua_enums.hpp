@@ -323,7 +323,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, CONST_ME_THAIAN_GHOST)
 			registerEnum(L, CONST_ME_GHOST_SMOKE)
 			registerEnum(L, CONST_ME_WATER_BLOCK_FLOATING)
-			registerEnum(L, CONST_ME_CONST_ME_WATER_BLOCK)
+			registerEnum(L, CONST_ME_WATER_BLOCK)
 			registerEnum(L, CONST_ME_ROOTS)
 			registerEnum(L, CONST_ME_GHOSTLY_SCRATCH)
 			registerEnum(L, CONST_ME_GHOSTLY_BITE)

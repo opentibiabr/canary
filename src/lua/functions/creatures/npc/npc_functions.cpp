@@ -429,13 +429,13 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	ShopInfoMap shopItems = npc->getShopItems();
 	const ItemType &itemType = Item::items.getItemIdByClientId(getNumber<uint16_t>(L, 2));
 
-	if (shopItems.find(itemType.id) == shopItems.end()) {
+	if (shopItems.find(itemType.name) == shopItems.end()) {
 		reportErrorFunc("No shop item found for clientId");
 		pushBoolean(L, false);
 		return 1;
 	}
 
-	ShopInfo shopInfo = shopItems[itemType.id];
+	ShopInfo shopInfo = shopItems[itemType.name];
 	setField(L, "clientId", shopInfo.itemClientId);
 	setField(L, "name", shopInfo.name);
 	setField(L, "subType", shopInfo.subType);

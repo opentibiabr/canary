@@ -187,6 +187,11 @@ class Map
          */
 		bool load(const std::string& identifier);
 		/**
+         * Extract the map.
+         * \returns true if the map was extracted successfully
+         */
+		bool extractMap(const std::string& identifier) const;
+		/**
 		* Load the main map
 		 * \param identifier Is the main map name (name of file .otbm)
 		 * \param loadHouses if true, the main map houses is loaded

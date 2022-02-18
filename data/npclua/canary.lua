@@ -33,10 +33,36 @@ npcConfig.flags = {
 
 -- Npc shop
 npcConfig.shop = {
-	{clientId = 123, buy = 16000, sell = 16000, count = 1},
-	{clientId = 130, buy = 100, count = 1},
-	{clientId = 135, buy = 5000, count = 1},
-	{clientId = 138, buy = 600, count = 1}
+	{ itemName = "basket", clientId = 2855, buy = 6 },
+	{ itemName = "bottle", clientId = 2875, buy = 3 },
+	{ itemName = "bucket", clientId = 2873, buy = 4 },
+	{ itemName = "candelabrum", clientId = 2911, buy = 8 },
+	{ itemName = "candlestick", clientId = 2917, buy = 2 },
+	{ itemName = "closed trap", clientId = 3481, buy = 280, sell = 75 },
+	{ itemName = "crowbar", clientId = 3304, buy = 260, sell = 50 },
+	{ itemName = "cup", clientId = 2881, buy = 2 },
+	{ itemName = "document", clientId = 2818, buy = 12 },
+	{ itemName = "fishing rod", clientId = 3483, buy = 150, sell = 40 },
+	{ itemName = "green backpack", clientId = 2865, buy = 20 },
+	{ itemName = "green bag", clientId = 2857, buy = 4 },
+	{ itemName = "hand auger", clientId = 31334, buy = 25 },
+	{ itemName = "machete", clientId = 3308, buy = 35, sell = 6 },
+	{ itemName = "net", clientId = 31489, buy = 50 },
+	{ itemName = "parchment", clientId = 2817, buy = 8 },
+	{ itemName = "pick", clientId = 3456, buy = 50, sell = 15 },
+	{ itemName = "plate", clientId = 2905, buy = 6 },
+	{ itemName = "present", clientId = 2856, buy = 10 },
+	{ itemName = "rope", clientId = 3003, buy = 50, sell = 15 },
+	{ itemName = "scroll", clientId = 2815, buy = 5 },
+	{ itemName = "scythe", clientId = 3453, buy = 50, sell = 10 },
+	{ itemName = "shovel", clientId = 3457, buy = 50, sell = 8 },
+	{ itemName = "torch", clientId = 2920, buy = 2 },
+	{ itemName = "vial", clientId = 2874, sell = 5 },
+	{ itemName = "vial of oil", clientId = 2874, buy = 20, count = 11 },
+	{ itemName = "watch", clientId = 2906, buy = 20, sell = 6 },
+	{ itemName = "waterskin of water", clientId = 2901, buy = 10, count = 1 },
+	{ itemName = "wooden hammer", clientId = 3459, sell = 15 },
+	{ itemName = "worm", clientId = 3492, buy = 1 }
 }
 
 -- Create keywordHandler and npcHandler

@@ -433,7 +433,7 @@ private:
 
 	//shop
 	void AddHiddenShopItem(NetworkMessage &msg);
-	void AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId);
+	void AddShopItem(NetworkMessage &msg, const ShopInfo &item, const std::string &itemName);
 
 	//otclient
 	void parseExtendedOpcode(NetworkMessage &msg);

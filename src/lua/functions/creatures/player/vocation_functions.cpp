@@ -222,6 +222,17 @@ int VocationFunctions::luaVocationGetSoulGainTicks(lua_State* L) {
 	return 1;
 }
 
+int VocationFunctions::luaVocationGetBaseAttackSpeed(lua_State* L) {
+	// vocation:getBaseAttackSpeed()
+	Vocation* vocation = getUserdata<Vocation>(L, 1);
+	if (vocation) {
+		lua_pushnumber(L, vocation->getBaseAttackSpeed());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int VocationFunctions::luaVocationGetAttackSpeed(lua_State* L) {
 	// vocation:getAttackSpeed()
 	Vocation* vocation = getUserdata<Vocation>(L, 1);

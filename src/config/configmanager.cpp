@@ -36,6 +36,7 @@ namespace {
 
 std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue)
 {
+	// lua_getglobal(L, identifier);
 	lua_getglobal(L, identifier);
 	if (!lua_isstring(L, -1)) {
 		return defaultValue;

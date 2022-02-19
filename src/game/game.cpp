@@ -4514,8 +4514,6 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		return;
 	}
 
-	playerLootAllCorpses(player, pos, lootAllCorpses);
-
 	Container* corpse = nullptr;
 	if (pos.x == 0xffff) {
 		corpse = item->getParent()->getContainer();
@@ -4579,7 +4577,11 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		if (corpse->isRewardCorpse()) {
 			g_actions->useItem(player, pos, 0, corpse, false);
 		} else {
-			internalQuickLootCorpse(player, corpse);
+			if (!lootAllCorpses) {
+				internalQuickLootCorpse(player, corpse);
+			} else {
+				playerLootAllCorpses(player, pos, lootAllCorpses);
+			}
 		}
 	}
 

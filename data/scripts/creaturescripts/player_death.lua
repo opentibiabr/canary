@@ -9,6 +9,8 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		nextUseStaminaTime[playerId] = nil
 	end
 
+	nextUseStaminaTime[playerId] = 1
+
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.")
 	if not deathListEnabled then
 		return

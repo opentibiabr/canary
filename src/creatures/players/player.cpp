@@ -2653,19 +2653,15 @@ bool Player::spawn()
 	SpectatorHashSet spectators;
 	g_game.map.getSpectators(spectators, position, false, true);
 	for (Creature* spectator : spectators) {
-	    if (!spectator) {
-	        continue;
-	    }
+		if (!spectator) {
+			continue;
+		}
+
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendCreatureAppear(this, pos, true);
 		}
-	}
 
-	for (Creature* spectator : spectators) {
-	    if (!spectator) {
-	        continue;
-	    }
-	spectator->onCreatureAppear(this, true);
+		spectator->onCreatureAppear(this, false);
 	}
 
 	getParent()->postAddNotification(this, nullptr, 0);
@@ -2691,45 +2687,30 @@ void Player::despawn()
 	// remove from map
 	Tile* tile = getTile();
 	if (!tile) {
-	    return;
+		return;
 	}
 
 	std::vector<int32_t> oldStackPosVector;
 
 	SpectatorHashSet spectators;
 	g_game.map.getSpectators(spectators, tile->getPosition(), true);
+	size_t i = 0;
 	for (Creature* spectator : spectators) {
-	    if (!spectator) {
-	        continue;
-	    }
+		if (!spectator) {
+			continue;
+		}
+
 		if (const Player* player = spectator->getPlayer()) {
 			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getStackposOfCreature(player, this) : -1);
 		}
+		if (Player* player = spectator->getPlayer()) {
+			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
+		}
+
+		spectator->onRemoveCreature(this, false);
 	}
 
 	tile->removeCreature(this);
-
-	const Position& tilePosition = tile->getPosition();
-
-	//send to client
-	size_t i = 0;
-	for (Creature* spectator : spectators) {
-	    if (!spectator) {
-	        continue;
-	    }
-		if (Player* player = spectator->getPlayer()) {
-			i++;
-			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i]);
-		}
-	}
-
-	//event method
-	for (Creature* spectator : spectators) {
-	    if (!spectator) {
-	        continue;
-	    }
-		spectator->onRemoveCreature(this, false);
-	}
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 

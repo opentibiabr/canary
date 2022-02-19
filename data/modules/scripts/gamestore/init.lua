@@ -1455,7 +1455,7 @@ function GameStore.processNameChangePurchase(player, offerId, productType, newNa
 				return false
 			end
 
-			player:remove()
+			player:remove(true)
 		end, 1000)
 	-- If not, we ask him to do!
 	else

@@ -21,7 +21,7 @@ function removeThing.onSay(player, words, param)
 	end
 
 	if thing:isCreature() then
-		thing:remove()
+		thing:remove(true)
 	elseif thing:isItem() then
 		if thing == tile:getGround() then
 			player:sendCancelMessage("You may not remove a ground tile.")

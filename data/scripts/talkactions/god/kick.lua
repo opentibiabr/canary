@@ -16,7 +16,7 @@ function kick.onSay(player, words, param)
 		return false
 	end
 
-	target:remove()
+	target:remove(true)
 	return false
 end
 

@@ -3,6 +3,11 @@ name: Analysis - SonarCloud
 
 on:
   pull_request_target:
+    paths:
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - vcpkg.json
     types: [opened, synchronize, reopened]
   push:
     branches:
@@ -10,6 +15,11 @@ on:
       - dev
       - devel
       - develop
+    paths:
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - vcpkg.json
 
 env:
   VCPKG_BUILD_TYPE: release

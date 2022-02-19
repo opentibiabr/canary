@@ -3,12 +3,22 @@ name: Build - Windows
 
 on:
   pull_request:
+    paths:
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - vcpkg.json
   push:
     branches:
       - master
       - dev
       - devel
       - develop
+    paths:
+      - cmake/**
+      - src/**
+      - CMakeLists.txt
+      - vcpkg.json
 
 env:
   VCPKG_BUILD_TYPE: release
@@ -71,20 +81,29 @@ jobs:
           name: canary-full-${{ matrix.os }}-${{ matrix.buildtype }}-${{ steps.gitversion.outputs.semVer }}
           path: |
             ${{ github.workspace }}
-            !${{ github.workspace }}/build/
-            !${{ github.workspace }}/vcpkg/
             !${{ github.workspace }}/.git/
             !${{ github.workspace }}/.github/
+            !${{ github.workspace }}/build/
+            !${{ github.workspace }}/cmake/
+            !${{ github.workspace }}/docker/
+            !${{ github.workspace }}/docs/
+            !${{ github.workspace }}/src/
+            !${{ github.workspace }}/tests/
             !${{ github.workspace }}/.appveyor.yml
             !${{ github.workspace }}/.editorconfig
             !${{ github.workspace }}/.gitignore
             !${{ github.workspace }}/.reviewdog.yml
-            !${{ github.workspace }}/.travis.yml
-            !${{ github.workspace }}/tests/
-            !${{ github.workspace }}/cmake/
-            !${{ github.workspace }}/sonar-project.properties
-            !${{ github.workspace }}/Jenkinsfile
+            !${{ github.workspace }}/.yamllint.yaml
+            !${{ github.workspace }}/canary.rc
+            !${{ github.workspace }}/CMakeLists.txt
+            !${{ github.workspace }}/CMakeSettings.json
             !${{ github.workspace }}/GitVersion.yml
+            !${{ github.workspace }}/Jenkinsfile
+            !${{ github.workspace }}/README.md
+            !${{ github.workspace }}/recompile.sh
+            !${{ github.workspace }}/sonar-project.properties
+            !${{ github.workspace }}/vcpkg.json
+            !${{ github.workspace }}/vcpkg/
 
       - name: Create and Upload Server Only
         uses: actions/upload-artifact@v2

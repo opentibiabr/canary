@@ -6963,7 +6963,7 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect)
 		return;
 	}
 
-	player->removePlayer(displayEffect, true);
+	player->removePlayer(displayEffect);
 }
 
 void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page) {

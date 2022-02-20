@@ -4192,7 +4192,7 @@ void Player::onPlacedCreature()
 {
 	//scripting event - onLogin
 	if (!g_creatureEvents->playerLogin(this)) {
-		removePlayer(true, true);
+		removePlayer(true);
 	}
 
 	sendUnjustifiedPoints();

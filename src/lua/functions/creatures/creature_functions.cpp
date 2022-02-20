@@ -702,10 +702,10 @@ int CreatureFunctions::luaCreatureRemove(lua_State* L) {
 	}
 
 	Player* player = creature->getPlayer();
-	bool forced = getBoolean(L, 2, false);
+	bool forced = getBoolean(L, 2, true);
 	if (player) {
 		if (forced) {
-			player->removePlayer(true, true);
+			player->removePlayer(true);
 		} else {
 			player->removePlayer(true, false);
 		}

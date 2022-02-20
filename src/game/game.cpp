@@ -312,7 +312,7 @@ void Game::setGameState(GameState_t newState)
 			//kick all players that are still online
 			auto it = players.begin();
 			while (it != players.end()) {
-				it->second->removePlayer(true, true);
+				it->second->removePlayer(true);
 				it = players.begin();
 			}
 
@@ -333,7 +333,7 @@ void Game::setGameState(GameState_t newState)
 			auto it = players.begin();
 			while (it != players.end()) {
 				if (!it->second->hasFlag(PlayerFlag_CanAlwaysLogin)) {
-					it->second->removePlayer(true, true);
+					it->second->removePlayer(true);
 					it = players.begin();
 				} else {
 					++it;

@@ -158,7 +158,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeList() override;
 		void addList() override;
-		void removePlayer(bool displayEffect, bool forced);
+		void removePlayer(bool displayEffect, bool forced = true);
 
 		static uint64_t getExpForLevel(int32_t lv) {
 			lv--;

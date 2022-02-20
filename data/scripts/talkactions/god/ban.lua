@@ -40,7 +40,7 @@ function ban.onSay(player, words, param)
 	local target = Player(name)
 	if target then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, target:getName() .. " has been banned.")
-		target:remove(true)
+		target:remove()
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, name .. " has been banned.")
 	end

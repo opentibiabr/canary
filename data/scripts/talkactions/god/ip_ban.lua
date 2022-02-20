@@ -24,7 +24,7 @@ function ipBan.onSay(player, words, param)
 	local targetPlayer = Player(param)
 	if targetPlayer then
 		targetIp = targetPlayer:getIp()
-		targetPlayer:remove(true)
+		targetPlayer:remove()
 	end
 
 	if targetIp == 0 then

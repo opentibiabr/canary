@@ -783,7 +783,9 @@ int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	if (player) {
 		player->manaMax = getNumber<int32_t>(L, 2);
 		player->mana = std::min<int32_t>(player->mana, player->manaMax);
+		#if GAME_FEATURE_PARTY_LIST > 0
 		g_game.addPlayerMana(player);
+		#endif
 		player->sendStats();
 		pushBoolean(L, true);
 	} else {

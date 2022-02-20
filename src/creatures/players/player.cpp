@@ -99,13 +99,7 @@ bool Player::setVocation(uint16_t vocId, bool internal /*=false*/)
 	}
 	vocation = voc;
 
-	Condition* condition = getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
-	if (condition) {
-		condition->setParam(CONDITION_PARAM_HEALTHGAIN, vocation->getHealthGainAmount());
-		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks() * 1000);
-		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
-		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
-	}
+	updateRegeneration();
 	if (!internal) {
 		#if CLIENT_VERSION >= 950
 		sendBasicData();
@@ -616,9 +610,11 @@ void Player::setVarStats(stats_t stat, int32_t modifier)
 			if (getMana() > getMaxMana()) {
 				Creature::changeMana(getMaxMana() - getMana());
 			}
+			#if GAME_FEATURE_PARTY_LIST > 0
 			else {
 				g_game.addPlayerMana(this);
 			}
+			#endif
 			break;
 		}
 
@@ -1733,7 +1729,9 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (party) {
 		party->updateSharedExperience();
+		#if GAME_FEATURE_PARTY_LIST > 0
 		party->updatePlayerStatus(this, oldPos, newPos);
+		#endif
 	}
 
 	if (teleport || oldPos.z != newPos.z) {
@@ -2671,7 +2669,9 @@ void Player::death(Creature* lastHitCreature)
 		health = healthMax;
 		g_game.internalTeleport(this, getTemplePosition(), true);
 		g_game.addCreatureHealth(this);
+		#if GAME_FEATURE_PARTY_LIST > 0
 		g_game.addPlayerMana(this);
+		#endif
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
 		onIdleStatus();
 		sendStats();
@@ -4387,7 +4387,9 @@ void Player::changeMana(int32_t manaChange)
 	if (!hasFlag(PlayerFlag_HasInfiniteMana)) {
 		Creature::changeMana(manaChange);
 	}
+	#if GAME_FEATURE_PARTY_LIST > 0
 	g_game.addPlayerMana(this);
+	#endif
 	sendStats();
 }
 

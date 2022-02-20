@@ -138,9 +138,13 @@ private:
 	void sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item *item, bool cyclopedia);
 	void parseInspectionObject(NetworkMessage &msg);
 
+	#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
+	#endif
 
+	#if GAME_FEATURE_HIGHSCORES > 0
 	void parseHighscores(NetworkMessage &msg);
+	#endif
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
 

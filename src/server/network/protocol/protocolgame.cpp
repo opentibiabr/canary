@@ -251,7 +251,7 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 		return;
 	}
 	#else
-	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName, token, tokenTime);
+	uint32_t accountId = IOLoginData::gameWorldAuthentication(accountName, password, characterName, token, tokenTime);
 	if (accountId == 0)
 	{
 		disconnectClient("Account name or password is not correct.");
@@ -259,7 +259,7 @@ void ProtocolGame::login(const std::string& accountName, const std::string& pass
 	}
 	#endif
 	#else
-	uint32_t accountId = IOLoginData::gameworldAuthentication(accountName, password, characterName);
+	uint32_t accountId = IOLoginData::gameWorldAuthentication(accountName, password, characterName);
 	if (accountId == 0)
 	{
 		disconnectClient("Account name or password is not correct.");
@@ -834,7 +834,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xAA: addGameTask(&Game::playerCreatePrivateChannel, player->getID()); break;
 		case 0xAB: parseChannelInvite(msg); break;
 		case 0xAC: parseChannelExclude(msg); break;
+		#if GAME_FEATURE_HIGHSCORES > 0
 		case 0xB1: parseHighscores(msg); break;
+		#endif
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
@@ -856,7 +858,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE2: parseBestiarysendCreatures(msg); break;
 		case 0xE3: parseBestiarysendMonsterData(msg); break;
 		case 0xE4: parseSendBuyCharmRune(msg); break;
+		#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
+		#endif
 		case 0xE6: parseBugReport(msg); break;
 		#if GAME_FEATURE_RULEVIOLATION > 0
 		case 0xE7: parseRuleViolation(msg); break;
@@ -1719,6 +1723,7 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	writeToOutputBuffer(msg);
 }
 
+#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage &msg)
 {
 	uint32_t characterID;
@@ -1742,6 +1747,7 @@ void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage &msg)
 	}
 	g_game.playerCyclopediaCharacterInfo(player, characterID, characterInfoType, entriesPerPage, page);
 }
+#endif
 
 #if GAME_FEATURE_HIGHSCORES > 0
 void ProtocolGame::parseHighscores(NetworkMessage &msg)
@@ -6373,20 +6379,30 @@ void ProtocolGame::sendOutfitWindow()
 		msg.add<uint16_t>(75);
 		msg.addString("Gamemaster");
 		msg.addByte(0);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
 		msg.addByte(0x00);
+		#endif
 		++outfitSize;
 
+		#if CLIENT_VERSION >= 800
 		msg.add<uint16_t>(266);
 		msg.addString("Customer Support");
 		msg.addByte(0);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
 		msg.addByte(0x00);
+		#endif
 		++outfitSize;
+		#endif
 
+		#if CLIENT_VERSION >= 830
 		msg.add<uint16_t>(302);
 		msg.addString("Community Manager");
 		msg.addByte(0);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
 		msg.addByte(0x00);
+		#endif
 		++outfitSize;
+		#endif
 	}
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
@@ -6400,7 +6416,9 @@ void ProtocolGame::sendOutfitWindow()
 		msg.add<uint16_t>(outfit.lookType);
 		msg.addString(outfit.name);
 		msg.addByte(addons);
+		#if GAME_FEATURE_OUTFITS_TYPE > 0
 		msg.addByte(0x00);
+		#endif
 		if (++outfitSize == limitOutfits) {
 			break;
 		}
@@ -6408,8 +6426,12 @@ void ProtocolGame::sendOutfitWindow()
 
 	auto endOutfits = msg.getBufferPosition();
 	msg.setBufferPosition(startOutfits);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
 	msg.add<uint16_t>(outfitSize);
-	#endif
+	#else
+	msg.addByte(outfitSize);
+	#endif // GAME_FEATURE_MOUNTS_U16
+	#endif // GAME_FEATURE_OUTFITS
 	msg.setBufferPosition(endOutfits);
 
 	auto startMounts = msg.getBufferPosition();

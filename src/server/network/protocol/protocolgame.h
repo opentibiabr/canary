@@ -148,6 +148,9 @@ private:
 
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
+	#if GAME_FEATURE_RULEVIOLATION > 0
+	void parseRuleViolation(NetworkMessage& msg);
+	#endif
 	void parseDebugAssert(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
 
@@ -237,6 +240,13 @@ private:
 	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId);
 
 	//Send functions
+	#if GAME_FEATURE_RULEVIOLATION > 0
+	void sendRuleViolationChannel(uint16_t channelId);
+	void sendRuleViolationRemove(const std::string& target);
+	void sendRuleViolationCancel(const std::string& target);
+	void sendRuleViolationLock();
+	void sendChannelMessage(const Player* target, const std::string& text, SpeakClasses type, uint32_t time);
+	#endif
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
 	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent);
 	void sendClosePrivate(uint16_t channelId);
@@ -311,10 +321,19 @@ private:
 	void sendCyclopediaCharacterBadges();
 	void sendCyclopediaCharacterTitles();
 
-	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
+	void updateCreatureData(const Creature* creature);
+
+	#if CLIENT_VERSION >= 854
+	void sendCreatureWalkthrough(const Creature* creature, bool walkthrough);
+	#endif
 	void sendCreatureShield(const Creature *creature);
 	void sendCreatureSkull(const Creature *creature);
-	void sendCreatureType(const Creature *creature, uint8_t creatureType);
+	#if CLIENT_VERSION >= 910
+	void sendCreatureType(const Creature* creature, uint8_t creatureType);
+	#endif
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
+	#endif
 
 	void sendShop(Npc *npc);
 	void sendCloseShop();
@@ -383,11 +402,17 @@ private:
                          const Position &oldPos, int32_t oldStackPos, bool teleport);
 
 	//containers
-	void sendAddContainerItem(uint8_t cid, uint16_t slot, const Item *item);
-	void sendUpdateContainerItem(uint8_t cid, uint16_t slot, const Item *item);
-	void sendRemoveContainerItem(uint8_t cid, uint16_t slot, const Item *lastItem);
-
-	void sendContainer(uint8_t cid, const Container *container, bool hasParent, uint16_t firstIndex);
+	#if GAME_FEATURE_CONTAINER_PAGINATION > 0
+	void sendAddContainerItem(uint8_t cid, uint16_t slot, const Item* item);
+	void sendUpdateContainerItem(uint8_t cid, uint16_t slot, const Item* item);
+	void sendRemoveContainerItem(uint8_t cid, uint16_t slot, const Item* lastItem);
+	void sendContainer(uint8_t cid, const Container* container, bool hasParent, uint16_t firstIndex);
+	#else
+	void sendAddContainerItem(uint8_t cid, const Item* item);
+	void sendUpdateContainerItem(uint8_t cid, uint8_t slot, const Item* item);
+	void sendRemoveContainerItem(uint8_t cid, uint8_t slot);
+	void sendContainer(uint8_t cid, const Container* container, bool hasParent);
+	#endif
 	void sendCloseContainer(uint8_t cid);
 
 	//quickloot
@@ -445,6 +470,11 @@ private:
 
 	//otclient
 	void parseExtendedOpcode(NetworkMessage &msg);
+
+	// Translations
+	SpeakClasses translateSpeakClassFromClient(uint8_t talkType);
+	uint8_t translateSpeakClassToClient(SpeakClasses talkType);
+	uint8_t translateMessageClassToClient(MessageClasses messageType);
 
 	//reloadCreature
 	void reloadCreature(const Creature *creature);

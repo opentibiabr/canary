@@ -28,11 +28,23 @@ extern Game g_game;
 void Guild::addMember(Player* player)
 {
 	membersOnline.push_back(player);
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	for (Player* member : membersOnline) {
+		g_game.updatePlayerHelpers(*member);
+	}
+	#endif
 }
 
 void Guild::removeMember(Player* player)
 {
 	membersOnline.remove(player);
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	for (Player* member : membersOnline) {
+		g_game.updatePlayerHelpers(*member);
+	}
+	g_game.updatePlayerHelpers(*player);
+	#endif
+
 	if (membersOnline.empty()) {
 		g_game.removeGuild(id);
 		delete this;

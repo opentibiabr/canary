@@ -154,7 +154,7 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((Item::items.loadFromOtb("data/items/items.otb") == ERROR_NONE),
+	modulesLoadHelper((Item::items.loadFromOtb("data/items/" + std::to_string(CLIENT_VERSION) + "/items.otb") == ERROR_NONE),
 		"items.otb");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");

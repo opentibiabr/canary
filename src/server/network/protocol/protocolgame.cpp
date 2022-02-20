@@ -459,7 +459,8 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem,
 
 void ProtocolGame::logout(bool displayEffect, bool forced)
 {
-	if (!player) {
+	if (!player)
+	{
 		return;
 	}
 
@@ -783,7 +784,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x70: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_EAST); break;
 		case 0x71: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_SOUTH); break;
 		case 0x72: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerTurn, player->getID(), DIRECTION_WEST); break;
+		#if CLIENT_VERSION >= 1150
 		case 0x73: parseTeleport(msg); break;
+		#endif
 		case 0x77: parseHotkeyEquip(msg); break;
 		case 0x78: parseThrow(msg); break;
 		case 0x79: parseLookInShop(msg); break;
@@ -803,7 +806,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x88: parseUpArrowContainer(msg); break;
 		case 0x89: parseTextWindow(msg); break;
 		case 0x8A: parseHouseWindow(msg); break;
+		#if CLIENT_VERSION >= 1092
 		case 0x8B: parseWrapableItem(msg); break;
+		#endif
 		case 0x8C: parseLookAt(msg); break;
 		case 0x8D: parseLookInBattleList(msg); break;
 		case 0x8E: /* join aggression */ break;
@@ -853,20 +858,26 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE4: parseSendBuyCharmRune(msg); break;
 		case 0xE5: parseCyclopediaCharacterInfo(msg); break;
 		case 0xE6: parseBugReport(msg); break;
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		case 0xE7: parseRuleViolation(msg); break;
+		#else
 		case 0xE7: /* thank you */ break;
+		#endif
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEE: parseGreet(msg); break;
 		case 0xEF: if (!g_configManager().getBoolean(STOREMODULES)) { parseCoinTransfer(msg); } break; /* premium coins transfer */
 		case 0xF0: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerShowQuestLog, player->getID()); break;
 		case 0xF1: parseQuestLine(msg); break;
-		// case 0xF2: parseRuleViolationReport(msg); break;
+		case 0xF2: parseRuleViolationReport(msg); break;
 		case 0xF3: /* get object info */ break;
 		case 0xF4: parseMarketLeave(); break;
 		case 0xF5: parseMarketBrowse(msg); break;
 		case 0xF6: parseMarketCreateOffer(msg); break;
 		case 0xF7: parseMarketCancelOffer(msg); break;
 		case 0xF8: parseMarketAcceptOffer(msg); break;
+		#if CLIENT_VERSION >= 960
 		case 0xF9: parseModalWindowAnswer(msg); break;
+		#endif
 		case 0xFA: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreOpen(msg); } break;
 		case 0xFB: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreRequestOffers(msg); } break;
 		case 0xFC: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreBuyOffer(msg); } break;
@@ -1055,28 +1066,55 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 		known = true;
 		return;
 	}
-
 	known = false;
-
+	#if CLIENT_VERSION >= 870
 	if (knownCreatureSet.size() > 1300)
 	{
+	#elif CLIENT_VERSION >= 840
+	if (knownCreatureSet.size() > 250)
+	{
+	#elif CLIENT_VERSION >= 713
+	if (knownCreatureSet.size() > 150)
+	{
+	#else
+	if (knownCreatureSet.size() > 100)
+	{
+	#endif
 		// Look for a creature to remove
-		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
+		#if GAME_FEATURE_PARTY_LIST > 0
+		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it)
+		{
 			// We need to protect party players from removing
 			Creature* creature = g_game.getCreatureByID(*it);
 			Player* checkPlayer;
-			if (creature && (checkPlayer = creature->getPlayer()) != nullptr) {
-				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
+			if (creature && (checkPlayer = creature->getPlayer()) != nullptr)
+			{
+				if (player->getParty() != checkPlayer->getParty() && !canSee(creature))
+				{
 					removedKnown = *it;
 					knownCreatureSet.erase(it);
 					return;
 				}
-			} else if (!canSee(creature)) {
+			}
+			else if (!canSee(creature))
+			{
 				removedKnown = *it;
 				knownCreatureSet.erase(it);
 				return;
 			}
 		}
+		#else
+		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it)
+		{
+			Creature* creature = g_game.getCreatureByID(*it);
+			if (!canSee(creature))
+			{
+				removedKnown = *it;
+				knownCreatureSet.erase(it);
+				return;
+			}
+		}
+		#endif
 
 		// Bad situation. Let's just remove anyone.
 		auto it = knownCreatureSet.begin();
@@ -1224,43 +1262,66 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 	if (msg.getBufferPosition() == startBufferPosition)
 	{
 		uint8_t outfitType = 0;
+		#if CLIENT_VERSION >= 1220
 		outfitType = msg.getByte();
+		#endif
+
 		Outfit_t newOutfit;
+		#if GAME_FEATURE_LOOKTYPE_U16 > 0
 		newOutfit.lookType = msg.get<uint16_t>();
+		#else
+		newOutfit.lookType = msg.getByte();
+		#endif
 		newOutfit.lookHead = std::min<uint8_t>(132, msg.getByte());
 		newOutfit.lookBody = std::min<uint8_t>(132, msg.getByte());
 		newOutfit.lookLegs = std::min<uint8_t>(132, msg.getByte());
 		newOutfit.lookFeet = std::min<uint8_t>(132, msg.getByte());
+		#if GAME_FEATURE_ADDONS > 0
 		newOutfit.lookAddons = msg.getByte();
+		#endif
 		if (outfitType == 0)
 		{
+			#if GAME_FEATURE_MOUNTS > 0
 			newOutfit.lookMount = msg.get<uint16_t>();
+			#endif
+			#if GAME_FEATURE_MOUNT_COLORS > 0
 			newOutfit.lookMountHead = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
+			#endif
+			#if GAME_FEATURE_FAMILIARS > 0
+			//Familiar looktype
 			newOutfit.lookFamiliarsType = msg.get<uint16_t>();
+			#endif
 			g_game.playerChangeOutfit(player->getID(), newOutfit);
 		}
 		else if (outfitType == 1)
 		{
 			//This value probably has something to do with try outfit variable inside outfit window dialog
 			//if try outfit is set to 2 it expects uint32_t value after mounted and disable mounts from outfit window dialog
-			newOutfit.lookMount = 0;
 			msg.get<uint32_t>();
-		} else if (outfitType == 2) {
+		}
+		#if GAME_FEATURE_PODIUM > 0
+		else if (outfitType == 2)
+		{
 			Position pos = msg.getPosition();
 			uint16_t spriteId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
+			#if GAME_FEATURE_MOUNTS > 0
 			newOutfit.lookMount = msg.get<uint16_t>();
+			#endif
+			#if GAME_FEATURE_MOUNT_COLORS > 0
 			newOutfit.lookMountHead = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountBody = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
+			#endif
 			uint8_t direction = std::max<uint8_t>(DIRECTION_NORTH, std::min<uint8_t>(DIRECTION_WEST, msg.getByte()));
 			uint8_t podiumVisible = msg.getByte();
 			g_game.playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, spriteId, podiumVisible, direction);
 		}
+		#endif
 	}
 }
 
@@ -1336,11 +1397,13 @@ void ProtocolGame::parseUpdateContainer(NetworkMessage &msg)
 	addGameTask(&Game::playerUpdateContainer, player->getID(), cid);
 }
 
+#if CLIENT_VERSION >= 1150
 void ProtocolGame::parseTeleport(NetworkMessage &msg)
 {
 	Position newPosition = msg.getPosition();
 	addGameTask(&Game::playerTeleport, player->getID(), newPosition);
 }
+#endif
 
 void ProtocolGame::parseThrow(NetworkMessage &msg)
 {
@@ -1585,6 +1648,7 @@ void ProtocolGame::parseRotateItem(NetworkMessage &msg)
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, spriteId);
 }
 
+#if CLIENT_VERSION >= 1092
 void ProtocolGame::parseWrapableItem(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
@@ -1592,6 +1656,7 @@ void ProtocolGame::parseWrapableItem(NetworkMessage &msg)
 	uint8_t stackpos = msg.getByte();
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerWrapableItem, player->getID(), pos, stackpos, spriteId);
 }
+#endif
 
 void ProtocolGame::parseInspectionObject(NetworkMessage &msg)
 {
@@ -1623,7 +1688,11 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	NetworkMessage msg;
 	msg.addByte(0x76);
 	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1220
 	msg.addByte(cyclopedia ? 0x01 : 0x00);
+	#else
+	(void)cyclopedia;
+	#endif
 	msg.addByte(0x01);
 
 	const ItemType &it = Item::items.getItemIdByClientId(itemId);
@@ -1654,8 +1723,13 @@ void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage &msg)
 {
 	uint32_t characterID;
 	CyclopediaCharacterInfoType_t characterInfoType;
+	#if CLIENT_VERSION >= 1215
 	characterID = msg.get<uint32_t>();
 	characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
+	#else
+	characterID = 0;
+	characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
+	#endif
 	uint16_t entriesPerPage = 0, page = 0;
 	if (characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS || characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS)
 	{
@@ -1669,6 +1743,7 @@ void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage &msg)
 	g_game.playerCyclopediaCharacterInfo(player, characterID, characterInfoType, entriesPerPage, page);
 }
 
+#if GAME_FEATURE_HIGHSCORES > 0
 void ProtocolGame::parseHighscores(NetworkMessage &msg)
 {
 	HighscoreType_t type = static_cast<HighscoreType_t>(msg.getByte());
@@ -1676,8 +1751,10 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg)
 	uint32_t vocation = msg.get<uint32_t>();
 	uint16_t page = 1;
 	const std::string worldName = msg.getString();
-	msg.getByte(); // Game World Category
-	msg.getByte(); // BattlEye World Type
+	#if CLIENT_VERSION >= 1260
+	msg.getByte(); //Game World Category
+	msg.getByte(); //BattlEye World Type
+	#endif
 	if (type == HIGHSCORE_GETENTRIES)
 	{
 		page = std::max<uint16_t>(1, msg.get<uint16_t>());
@@ -1685,6 +1762,7 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg)
 	uint8_t entriesPerPage = std::min<uint8_t>(30, std::max<uint8_t>(5, msg.getByte()));
 	g_game.playerHighscores(player, type, category, vocation, worldName, page, entriesPerPage);
 }
+#endif
 
 void ProtocolGame::sendHighscoresNoData()
 {
@@ -1704,8 +1782,10 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addString(g_configManager().getString(SERVER_NAME)); // First World
 	msg.addString(g_configManager().getString(SERVER_NAME)); // Selected World
 
+	#if CLIENT_VERSION >= 1260
 	msg.addByte(0); // Game World Category: 0xFF(-1) - Selected World
 	msg.addByte(0); // BattlEye World Type
+	#endif
 
 	auto vocationPosition = msg.getBufferPosition();
 	uint8_t vocations = 1;
@@ -1818,8 +1898,8 @@ void ProtocolGame::parseRuleViolationReport(NetworkMessage &msg)
 {
 	uint8_t reportType = msg.getByte();
 	uint8_t reportReason = msg.getByte();
-	const std::string &targetName = msg.getString();
-	const std::string &comment = msg.getString();
+	const std::string targetName = msg.getString();
+	const std::string comment = msg.getString();
 	std::string translation;
 	if (reportType == REPORT_TYPE_NAME)
 	{
@@ -2527,6 +2607,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg)
 
 void ProtocolGame::parseBugReport(NetworkMessage &msg)
 {
+	#if CLIENT_VERSION >= 1071
 	uint8_t category = msg.getByte();
 	std::string message = msg.getString();
 
@@ -2535,6 +2616,11 @@ void ProtocolGame::parseBugReport(NetworkMessage &msg)
 	{
 		position = msg.getPosition();
 	}
+	#else
+	uint8_t category = BUG_CATEGORY_MAP;
+	std::string message = msg.getString();
+	Position position = player->getPosition();
+	#endif
 
 	addGameTask(&Game::playerReportBug, player->getID(), message, position, category);
 }
@@ -2544,6 +2630,29 @@ void ProtocolGame::parseGreet(NetworkMessage &msg)
 	uint32_t npcId = msg.get<uint32_t>();
 	addGameTask(&Game::playerNpcGreet, player->getID(), npcId);
 }
+
+#if GAME_FEATURE_RULEVIOLATION > 0
+void ProtocolGame::parseRuleViolation(NetworkMessage& msg)
+{
+	#if CLIENT_VERSION >= 772
+	std::string target = msg.getString();
+	uint8_t reason = msg.getByte();
+	uint8_t action = msg.getByte();
+	std::string comment = msg.getString();
+	uint32_t statementId = msg.get<uint32_t>();
+	bool ipBanishment = msg.getByte();
+	#else
+	std::string target = msg.getString();
+	uint8_t reason = msg.getByte();
+	std::string comment = msg.getString();
+	uint8_t action = msg.getByte();
+	uint32_t statementId = 0;
+	bool ipBanishment = msg.getByte();
+	#endif
+
+	g_game.playerRuleViolation(player, target, comment, reason, action, statementId, ipBanishment);
+}
+#endif
 
 void ProtocolGame::parseDebugAssert(NetworkMessage &msg)
 {
@@ -2732,13 +2841,15 @@ void ProtocolGame::parseMarketAcceptOffer(NetworkMessage &msg)
 	updateCoinBalance();
 }
 
-void ProtocolGame::parseModalWindowAnswer(NetworkMessage &msg)
+#if CLIENT_VERSION >= 960
+void ProtocolGame::parseModalWindowAnswer(NetworkMessage& msg)
 {
 	uint32_t id = msg.get<uint32_t>();
 	uint8_t button = msg.getByte();
 	uint8_t choice = msg.getByte();
 	addGameTask(&Game::playerAnswerModalWindow, player->getID(), id, button, choice);
 }
+#endif
 
 void ProtocolGame::parseBrowseField(NetworkMessage &msg)
 {
@@ -2837,6 +2948,7 @@ void ProtocolGame::sendWorldLight(const LightInfo &lightInfo)
 	writeToOutputBuffer(msg);
 }
 
+#if CLIENT_VERSION >= 1121
 void ProtocolGame::sendTibiaTime(int32_t time)
 {
 	NetworkMessage msg;
@@ -2845,7 +2957,64 @@ void ProtocolGame::sendTibiaTime(int32_t time)
 	msg.addByte(time % 60);
 	writeToOutputBuffer(msg);
 }
+#endif
 
+void ProtocolGame::updateCreatureData(const Creature* creature)
+{
+	uint32_t cid = creature->getID();
+	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+		return;
+	}
+
+	NetworkMessage msg;
+
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	OperatingSystem_t tfcOS = player->getTfcOperatingSystem();
+	if ((regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) || tfcOS >= CLIENTOS_TFC_ANDROID) {
+		//Using some hack so that I'm don't need to modify AddCreature function
+		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION - 1);
+		AddCreature(msg, creature, false, cid);
+		msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+		msg.addByte(0x03);
+		msg.setLength(msg.getLength() - 2);
+		writeToOutputBuffer(msg);
+	} else {
+		if (canSee(creature)) {
+			int32_t stackpos = creature->getTile()->getStackposOfCreature(player, creature);
+			if (stackpos != -1) {
+				msg.addByte(0x6B);
+				msg.addPosition(creature->getPosition());
+				msg.addByte(stackpos);
+				AddCreature(msg, creature, false, cid);
+				writeToOutputBuffer(msg);
+				return;
+			}
+		}
+
+		//Not the best choice we have here but let's update our creature
+		const Position& pos = player->getPosition();
+		msg.addByte(0x6A);
+		msg.addPosition(pos);
+		#if GAME_FEATURE_TILE_ADDTHING_STACKPOS > 0
+		msg.addByte(0xFF);
+		#endif
+		AddCreature(msg, creature, false, cid);
+		msg.addByte(0x69);
+		msg.addPosition(pos);
+		Tile* tile = player->getTile();
+		if (tile) {
+			GetTileDescription(tile, msg);
+			msg.addByte(0x00);
+			msg.addByte(0xFF);
+		} else {
+			msg.addByte(0x01);
+			msg.addByte(0xFF);
+		}
+		writeToOutputBuffer(msg);
+	}
+}
+
+#if CLIENT_VERSION >= 854
 void ProtocolGame::sendCreatureWalkthrough(const Creature *creature, bool walkthrough)
 {
 	if (!canSee(creature))
@@ -2859,6 +3028,7 @@ void ProtocolGame::sendCreatureWalkthrough(const Creature *creature, bool walkth
 	msg.addByte(walkthrough ? 0x00 : 0x01);
 	writeToOutputBuffer(msg);
 }
+#endif
 
 void ProtocolGame::sendCreatureShield(const Creature *creature)
 {
@@ -2893,11 +3063,13 @@ void ProtocolGame::sendCreatureSkull(const Creature *creature)
 	writeToOutputBuffer(msg);
 }
 
+#if CLIENT_VERSION >= 910
 void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureType)
 {
 	NetworkMessage msg;
 	msg.addByte(0x95);
 	msg.add<uint32_t>(creature->getID());
+	#if CLIENT_VERSION >= 1121
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
 		creatureType = CREATURETYPE_SUMMON_PLAYER;
 	}
@@ -2910,9 +3082,24 @@ void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureTy
 			msg.add<uint32_t>(0);
 		}
 	}
+	#else
+	msg.addByte(creatureType);
+	#endif
 
 	writeToOutputBuffer(msg);
 }
+#endif
+
+#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+void ProtocolGame::sendCreatureHelpers(uint32_t creatureId, uint16_t helpers)
+{
+	NetworkMessage msg;
+	msg.addByte(0x94);
+	msg.add<uint32_t>(creatureId);
+	msg.add<uint16_t>(helpers);
+	writeToOutputBuffer(msg);
+}
+#endif
 
 void ProtocolGame::sendCreatureSquare(const Creature *creature, SquareColor_t color)
 {
@@ -2923,6 +3110,9 @@ void ProtocolGame::sendCreatureSquare(const Creature *creature, SquareColor_t co
 
 	NetworkMessage msg;
 	msg.addByte(0x93);
+	#if CLIENT_VERSION < 1035
+	msg.addByte(0x01);
+	#endif
 	msg.add<uint32_t>(creature->getID());
 	msg.addByte(0x01);
 	msg.addByte(color);
@@ -2941,7 +3131,9 @@ void ProtocolGame::sendAddMarker(const Position &pos, uint8_t markType, const st
 {
 	NetworkMessage msg;
 	msg.addByte(0xDD);
-	msg.addByte(0x00); // unknow
+	#if CLIENT_VERSION >= 1200
+	msg.addByte(0x00); // No data available
+	#endif
 
 	msg.addPosition(pos);
 	msg.addByte(markType);
@@ -2963,7 +3155,9 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.addString(player->getName());
 	msg.addString(player->getVocation()->getVocName());
 	msg.add<uint16_t>(player->getLevel());
@@ -2980,14 +3174,18 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_GENERALSTATS);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
 	// BaseXPGainRate
 	msg.add<uint16_t>(100);
-	// TournamentXPFactor
+	#if CLIENT_VERSION >= 1215
+	// Tournament xp factor
 	msg.add<int32_t>(0);
+	#endif
 	// LowLevelBonus
 	msg.add<uint16_t>(0);
 	// XPBoost
@@ -3043,7 +3241,9 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
@@ -3072,7 +3272,11 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	msg.add<uint16_t>(0);
 
 	uint8_t haveBlesses = 0;
+	#if CLIENT_VERSION >= 1130
 	uint8_t blessings = 8;
+	#else
+	uint8_t blessings = 6;
+	#endif
 	for (uint8_t i = 1; i < blessings; ++i)
 	{
 		if (player->hasBlessing(i))
@@ -3241,7 +3445,9 @@ void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t p
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.add<uint16_t>(page);
 	msg.add<uint16_t>(pages);
 	msg.add<uint16_t>(entries.size());
@@ -3258,7 +3464,9 @@ void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.add<uint16_t>(page);
 	msg.add<uint16_t>(pages);
 	msg.add<uint16_t>(entries.size());
@@ -3276,10 +3484,12 @@ void ProtocolGame::sendCyclopediaCharacterAchievements()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
+	msg.add<uint16_t>(0); // total points
+	msg.add<uint16_t>(0); // total secret achievements
+	msg.add<uint16_t>(0); // achievements
 	writeToOutputBuffer(msg);
 }
 
@@ -3288,7 +3498,9 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.add<uint16_t>(0);
 	msg.add<uint16_t>(0);
 	msg.add<uint16_t>(0);
@@ -3302,7 +3514,9 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	Outfit_t currentOutfit = player->getDefaultOutfit();
 
 	uint16_t outfitSize = 0;
@@ -3410,7 +3624,9 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.add<uint32_t>(0);
 	msg.add<uint32_t>(0);
 	msg.addByte(0x00);
@@ -3430,7 +3646,9 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_INSPECTION);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	uint8_t inventoryItems = 0;
 	auto startInventory = msg.getBufferPosition();
 	msg.skipBytes(1);
@@ -3486,8 +3704,10 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
-	msg.addByte(0x00);
-	// enable badges
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
+	// Enable badges
 	msg.addByte(0x00);
 	writeToOutputBuffer(msg);
 }
@@ -3497,7 +3717,9 @@ void ProtocolGame::sendCyclopediaCharacterTitles()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
-	msg.addByte(0x00);
+	#if CLIENT_VERSION >= 1215
+	msg.addByte(0x00); // No data available
+	#endif
 	msg.addByte(0x00);
 	msg.addByte(0x00);
 	writeToOutputBuffer(msg);
@@ -3518,7 +3740,10 @@ void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction)
 	msg.addByte(0x28);
 	msg.addByte(0x00);
 	msg.addByte(unfairFightReduction);
-	msg.addByte(0x00); // use death redemption (boolean)
+	#if CLIENT_VERSION >= 1121
+	// Use death redemption (boolean)
+	msg.addByte(0x01);
+	#endif
 	writeToOutputBuffer(msg);
 }
 
@@ -3529,6 +3754,7 @@ void ProtocolGame::sendStats()
 	writeToOutputBuffer(msg);
 }
 
+#if CLIENT_VERSION >= 950
 void ProtocolGame::sendBasicData()
 {
 	NetworkMessage msg;
@@ -3543,7 +3769,9 @@ void ProtocolGame::sendBasicData()
 		msg.addByte(0);
 		msg.add<uint32_t>(0);
 	}
-	msg.addByte(player->getVocation()->getClientId());
+	#if CLIENT_VERSION >= 1100
+	msg.addByte(((player->getVocation()->getClientId() != 0) ? 0x01 : 0x00));
+	#endif
 
 	// Prey window
 	if (player->getVocation()->getId() == 0)
@@ -3564,6 +3792,7 @@ void ProtocolGame::sendBasicData()
 	msg.addByte(player->getVocation()->getMagicShield()); // bool - determine whether magic shield is active or not
 	writeToOutputBuffer(msg);
 }
+#endif
 
 void ProtocolGame::sendBlessStatus()
 {
@@ -3669,40 +3898,106 @@ void ProtocolGame::sendPreyData(PreySlotNum_t slot, PreyState_t slotState)
 void ProtocolGame::sendTextMessage(const TextMessage &message)
 {
 	NetworkMessage msg;
+	uint8_t messageType = translateMessageClassToClient(message.type);
+	if (messageType == MESSAGE_NONE)
+	{
+		//Backward compatibility
+		switch (message.type)
+		{
+			#if CLIENT_VERSION < 900
+			case MESSAGE_DAMAGE_DEALT:
+			case MESSAGE_DAMAGE_RECEIVED:
+			case MESSAGE_DAMAGE_OTHERS:
+			{
+				msg.reset();
+				if (message.primary.value != 0)
+				{
+					msg.addByte(0x84);
+					msg.addPosition(message.position);
+					msg.addByte(message.primary.color);
+					msg.addString(std::to_string(message.primary.value));
+				}
+				if (message.secondary.value != 0)
+				{
+					msg.addByte(0x84);
+					msg.addPosition(message.position);
+					msg.addByte(message.secondary.color);
+					msg.addString(std::to_string(message.secondary.value));
+				}
+				if (!message.text.empty())
+				{
+					msg.addByte(0xB4);
+					msg.addByte(translateMessageClassToClient(MESSAGE_EVENT_DEFAULT));
+					msg.addString(message.text);
+				}
+				writeToOutputBuffer(msg);
+				break;
+			}
+			case MESSAGE_MANA:
+			case MESSAGE_HEALED:
+			case MESSAGE_HEALED_OTHERS:
+			case MESSAGE_EXPERIENCE:
+			case MESSAGE_EXPERIENCE_OTHERS:
+			{
+				msg.reset();
+				msg.addByte(0x84);
+				msg.addPosition(message.position);
+				msg.addByte(message.primary.color);
+				msg.addString(std::to_string(message.primary.value));
+				if (!message.text.empty())
+				{
+					msg.addByte(0xB4);
+					msg.addByte(translateMessageClassToClient(MESSAGE_EVENT_DEFAULT));
+					msg.addString(message.text);
+				}
+				writeToOutputBuffer(msg);
+				break;
+			}
+			#endif
+			default:
+			{
+				break;
+			}
+		}
+		return;
+	}
+
+	msg.reset();
 	msg.addByte(0xB4);
-	msg.addByte(message.type);
+	msg.addByte(messageType);
 	switch (message.type)
 	{
-	case MESSAGE_DAMAGE_DEALT:
-	case MESSAGE_DAMAGE_RECEIVED:
-	case MESSAGE_DAMAGE_OTHERS:
-	{
-		msg.addPosition(message.position);
-		msg.add<uint32_t>(message.primary.value);
-		msg.addByte(message.primary.color);
-		msg.add<uint32_t>(message.secondary.value);
-		msg.addByte(message.secondary.color);
-		break;
-	}
-	case MESSAGE_HEALED:
-	case MESSAGE_HEALED_OTHERS:
-	case MESSAGE_EXPERIENCE:
-	case MESSAGE_EXPERIENCE_OTHERS:
-	{
-		msg.addPosition(message.position);
-		msg.add<uint32_t>(message.primary.value);
-		msg.addByte(message.primary.color);
-		break;
-	}
-	case MESSAGE_GUILD:
-	case MESSAGE_PARTY_MANAGEMENT:
-	case MESSAGE_PARTY:
-		msg.add<uint16_t>(message.channelId);
-		break;
-	default:
-	{
-		break;
-	}
+		case MESSAGE_DAMAGE_DEALT:
+		case MESSAGE_DAMAGE_RECEIVED:
+		case MESSAGE_DAMAGE_OTHERS:
+		{
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(message.primary.value);
+			msg.addByte(message.primary.color);
+			msg.add<uint32_t>(message.secondary.value);
+			msg.addByte(message.secondary.color);
+			break;
+		}
+		case MESSAGE_MANA:
+		case MESSAGE_HEALED:
+		case MESSAGE_HEALED_OTHERS:
+		case MESSAGE_EXPERIENCE:
+		case MESSAGE_EXPERIENCE_OTHERS:
+		{
+			msg.addPosition(message.position);
+			msg.add<uint32_t>(message.primary.value);
+			msg.addByte(message.primary.color);
+			break;
+		}
+		case MESSAGE_GUILD:
+		case MESSAGE_PARTY_MANAGEMENT:
+		case MESSAGE_PARTY:
+			msg.add<uint16_t>(message.channelId);
+			break;
+		default:
+		{
+			break;
+		}
 	}
 	msg.addString(message.text);
 	writeToOutputBuffer(msg);
@@ -3780,6 +4075,84 @@ void ProtocolGame::sendChannel(uint16_t channelId, const std::string &channelNam
 	writeToOutputBuffer(msg);
 }
 
+#if GAME_FEATURE_RULEVIOLATION > 0
+void ProtocolGame::sendRuleViolationChannel(uint16_t channelId)
+{
+	NetworkMessage msg;
+	msg.addByte(0xAE);
+	msg.add<uint16_t>(channelId);
+	writeToOutputBuffer(msg);
+
+	auto& ruleViolations = g_game.getRuleViolations();
+	for (auto it = ruleViolations.begin(); it != ruleViolations.end();)
+	{
+		RuleViolation& rvr = it->second;
+		if (Player* owner = g_game.getPlayerByID(rvr.owner))
+		{
+			if (rvr.gamemaster == 0) {
+				sendChannelMessage(owner, rvr.message, TALKTYPE_RVR_CHANNEL, ((OTSYS_TIME() - rvr.time) / 1000) & 0xFFFFFFFF);
+			}
+
+			++it;
+		}
+		else
+		{
+			it = ruleViolations.erase(it);
+		}
+	}
+}
+
+void ProtocolGame::sendRuleViolationRemove(const std::string& target)
+{
+	NetworkMessage msg;
+	msg.addByte(0xAF);
+	msg.addString(target);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendRuleViolationCancel(const std::string& target)
+{
+	NetworkMessage msg;
+	msg.addByte(0xB0);
+	msg.addString(target);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendRuleViolationLock()
+{
+	NetworkMessage msg;
+	msg.addByte(0xB1);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendChannelMessage(const Player* target, const std::string& text, SpeakClasses type, uint32_t time)
+{
+	uint8_t talkType = translateSpeakClassToClient(type);
+	if (talkType == TALKTYPE_NONE)
+	{
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xAA);
+	#if GAME_FEATURE_MESSAGE_STATEMENT > 0
+	msg.add<uint32_t>(0x00);
+	#endif
+	msg.addString(target->getName());
+	#if GAME_FEATURE_MESSAGE_LEVEL > 0
+	msg.add<uint16_t>(0x00);
+	#endif
+	msg.addByte(talkType);
+	#if CLIENT_VERSION >= 713
+	msg.add<uint32_t>(time);
+	#else
+	(void)time;
+	#endif
+	msg.addString(text);
+	writeToOutputBuffer(msg);
+}
+#endif
+
 void ProtocolGame::sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel)
 {
 	NetworkMessage msg;
@@ -3815,7 +4188,11 @@ void ProtocolGame::sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool hasParent, uint16_t firstIndex)
+#if GAME_FEATURE_CONTAINER_PAGINATION > 0
+void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool hasParent, uint16_t firstIndex)
+#else
+void ProtocolGame::sendContainer(uint8_t cid, const Container* container, bool hasParent)
+#endif
 {
 	NetworkMessage msg;
 	msg.addByte(0x6E);
@@ -3837,7 +4214,10 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 
 	msg.addByte(hasParent ? 0x01 : 0x00);
 
-	msg.addByte(0x00); // To-do: Depot Find (boolean)
+	#if CLIENT_VERSION >= 1220
+	// To-do: Depot search (boolean)
+	msg.addByte(0x00);
+	#endif
 
 	msg.addByte(container->isUnlocked() ? 0x01 : 0x00); // Drag and drop
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
@@ -3922,13 +4302,22 @@ void ProtocolGame::sendShop(Npc *npc)
 	NetworkMessage msg;
 	msg.addByte(0x7A);
 	msg.addString(npc->getName());
-	msg.add<uint16_t>(npc->getCurrency());
+	#if CLIENT_VERSION >= 1203
+	msg.addItemId(npc->getCurrency());
+	#endif
 
+	#if CLIENT_VERSION >= 1240
 	msg.addString(std::string()); // Currency name
+	#endif
 
 	const ShopInfoMap itemMap = npc->getShopItems();
+	#if CLIENT_VERSION >= 980
 	uint16_t itemsToSend = std::min<size_t>(itemMap.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
+	#else
+	uint16_t itemsToSend = std::min<size_t>(itemMap.size(), std::numeric_limits<uint8_t>::max());
+	msg.addByte(itemsToSend);
+	#endif
 
 	uint16_t i = 0;
 	for (auto& [itemName, shopInfo] : itemMap)
@@ -4005,6 +4394,7 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shopInfoMap, const std::m
 	}
 
 	NetworkMessage msg;
+	#if CLIENT_VERSION >= 1100
 	msg.addByte(0xEE);
 	msg.addByte(0x00);
 	msg.add<uint64_t>(player->getBankBalance());
@@ -4025,6 +4415,13 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shopInfoMap, const std::m
 
 	msg.addByte(0x7B);
 	msg.add<uint64_t>(playerMoney);
+	#elif CLIENT_VERSION >= 973
+	msg.addByte(0x7B);
+	msg.add<uint64_t>(playerMoney);
+	#else
+	msg.addByte(0x7B);
+	msg.add<uint32_t>(std::min<uint64_t>(playerMoney, std::numeric_limits<uint32_t>::max()));
+	#endif
 
 	uint8_t itemsToSend = 0;
 	auto msgPosition = msg.getBufferPosition();
@@ -4063,7 +4460,19 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shopInfoMap, const std::m
 void ProtocolGame::sendMarketEnter(uint32_t depotId)
 {
 	NetworkMessage msg;
+	#if CLIENT_VERSION >= 1250
+	msg.addByte(0xEE);
+	msg.addByte(0x00);
+	msg.add<uint64_t>(player->getBankBalance());
+	msg.addByte(0xEE);
+	msg.addByte(0x01);
+	msg.add<uint64_t>(0);//player->getMoney() - TODO
+	#endif
 	msg.addByte(0xF6);
+
+	#if CLIENT_VERSION < 1250
+	msg.add<uint64_t>(player->getBankBalance());
+	#endif
 	msg.addByte(std::min<uint32_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max()));
 
 	DepotLocker *depotLocker = player->getDepotLocker(depotId);
@@ -4186,14 +4595,15 @@ void ProtocolGame::sendCoinBalance()
 	msg.add<uint32_t>(player->coinBalance); // Normal Coins
 	msg.add<uint32_t>(player->coinBalance); // Transferable Coins
 	msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
-	msg.add<uint32_t>(0);					// Tournament Coins
+	msg.add<uint32_t>(0); // Tournament Coins
 
 	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::updateCoinBalance()
 {
-	if (!player) {
+	if (!player)
+	{
 		return;
 	}
 
@@ -4850,7 +5260,9 @@ void ProtocolGame::sendCreatureTurn(const Creature *creature, uint32_t stackPos)
 	msg.add<uint16_t>(0x63);
 	msg.add<uint32_t>(creature->getID());
 	msg.addByte(creature->getDirection());
+	#if CLIENT_VERSION >= 953
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
+	#endif
 	writeToOutputBuffer(msg);
 }
 
@@ -4863,7 +5275,13 @@ void ProtocolGame::sendCreatureSay(const Creature *creature, SpeakClasses type, 
 	msg.add<uint32_t>(++statementId);
 
 	msg.addString(creature->getName());
-	msg.addByte(0x00); // Show (Traded)
+	#if CLIENT_VERSION >= 1250
+	if (statementId != 0)
+	{
+		// Show (Traded)
+		msg.addByte(0x00);
+	}
+	#endif
 
 	//Add level only for players
 	if (const Player *speaker = creature->getPlayer())
@@ -4891,6 +5309,12 @@ void ProtocolGame::sendCreatureSay(const Creature *creature, SpeakClasses type, 
 
 void ProtocolGame::sendToChannel(const Creature *creature, SpeakClasses type, const std::string &text, uint16_t channelId)
 {
+	uint8_t talkType = translateSpeakClassToClient(type);
+	if (talkType == TALKTYPE_NONE)
+	{
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 
@@ -4901,7 +5325,10 @@ void ProtocolGame::sendToChannel(const Creature *creature, SpeakClasses type, co
 		msg.add<uint32_t>(0x00);
 		if (statementId != 0)
 		{
-			msg.addByte(0x00); // Show (Traded)
+			#if CLIENT_VERSION >= 1250
+			// Show (Traded)
+			msg.addByte(0x00);
+			#endif
 		}
 	}
 	else if (type == TALKTYPE_CHANNEL_R2)
@@ -4909,7 +5336,10 @@ void ProtocolGame::sendToChannel(const Creature *creature, SpeakClasses type, co
 		msg.add<uint32_t>(0x00);
 		if (statementId != 0)
 		{
-			msg.addByte(0x00); // Show (Traded)
+			#if CLIENT_VERSION >= 1250
+			// Show (Traded)
+			msg.addByte(0x00);
+			#endif
 		}
 		type = TALKTYPE_CHANNEL_R1;
 	}
@@ -4918,7 +5348,10 @@ void ProtocolGame::sendToChannel(const Creature *creature, SpeakClasses type, co
 		msg.addString(creature->getName());
 		if (statementId != 0)
 		{
-			msg.addByte(0x00); // Show (Traded)
+			#if CLIENT_VERSION >= 1250
+			// Show (Traded)
+			msg.addByte(0x00);
+			#endif
 		}
 
 		//Add level only for players
@@ -4940,26 +5373,72 @@ void ProtocolGame::sendToChannel(const Creature *creature, SpeakClasses type, co
 
 void ProtocolGame::sendPrivateMessage(const Player *speaker, SpeakClasses type, const std::string &text)
 {
+	uint8_t talkType = translateSpeakClassToClient(type);
+	if (talkType == TALKTYPE_NONE)
+	{
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 	static uint32_t statementId = 0;
 	msg.add<uint32_t>(++statementId);
 	if (speaker)
 	{
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		if (type == TALKTYPE_RVR_ANSWER)
+		{
+			msg.addString("Gamemaster");
+			#if CLIENT_VERSION >= 1250
+			if (statementId != 0) {
+				msg.addByte(0x00);//(Traded)
+			}
+			#endif
+			#if GAME_FEATURE_MESSAGE_LEVEL > 0
+			msg.add<uint16_t>(0);
+			#endif
+		}
+		else
+		{
+			msg.addString(speaker->getName());
+			#if CLIENT_VERSION >= 1250
+			if (statementId != 0)
+			{
+				// Show (Traded)
+				msg.addByte(0x00);
+			}
+			#endif
+			#if GAME_FEATURE_MESSAGE_LEVEL > 0
+			msg.add<uint16_t>(speaker->getLevel());
+			#endif
+		}
+		#else
 		msg.addString(speaker->getName());
+		#if CLIENT_VERSION >= 1250
 		if (statementId != 0)
 		{
-			msg.addByte(0x00); // Show (Traded)
+			// Show (Traded)
+			msg.addByte(0x00);
 		}
+		#endif
+		#if GAME_FEATURE_MESSAGE_LEVEL > 0
 		msg.add<uint16_t>(speaker->getLevel());
+		#endif
+		#endif
 	}
 	else
 	{
-		msg.add<uint32_t>(0x00);
+		msg.add<uint16_t>(0x00);
+		#if CLIENT_VERSION >= 1250
 		if (statementId != 0)
 		{
-			msg.addByte(0x00); // Show (Traded)
+			// Show (Traded)
+			msg.addByte(0x00);
 		}
+		#endif
+		#if GAME_FEATURE_MESSAGE_LEVEL > 0
+		msg.add<uint16_t>(0x00);
+		#endif
 	}
 	msg.addByte(type);
 	msg.addString(text);
@@ -4979,8 +5458,18 @@ void ProtocolGame::sendChangeSpeed(const Creature *creature, uint32_t speed)
 	NetworkMessage msg;
 	msg.addByte(0x8F);
 	msg.add<uint32_t>(creature->getID());
+	#if CLIENT_VERSION >= 1059
+	#if GAME_FEATURE_NEWSPEED_LAW > 0
 	msg.add<uint16_t>(creature->getBaseSpeed() / 2);
+	#else
+	msg.add<uint16_t>(creature->getBaseSpeed());
+	#endif
+	#endif
+	#if GAME_FEATURE_NEWSPEED_LAW > 0
 	msg.add<uint16_t>(speed / 2);
+	#else
+	msg.add<uint16_t>(speed);
+	#endif
 	writeToOutputBuffer(msg);
 }
 
@@ -5022,14 +5511,22 @@ void ProtocolGame::sendPingBack()
 void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint8_t type)
 {
 	NetworkMessage msg;
+	#if CLIENT_VERSION >= 1203
 	msg.addByte(0x83);
 	msg.addPosition(from);
 	msg.addByte(MAGIC_EFFECTS_CREATE_DISTANCEEFFECT);
 	msg.addByte(type);
-	msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.x) - static_cast<int32_t>(from.x))));
-	msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.y) - static_cast<int32_t>(from.y))));
+	msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int16_t>(to.x - from.x))));
+	msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int16_t>(to.y - from.y))));
 	msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	writeToOutputBuffer(msg);
+	#else
+	msg.addByte(0x85);
+	msg.addPosition(from);
+	msg.addPosition(to);
+	msg.addByte(type);
+	writeToOutputBuffer(msg);
+	#endif
 }
 
 void ProtocolGame::sendRestingStatus(uint8_t protection)
@@ -5094,12 +5591,19 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint8_t type)
 	}
 
 	NetworkMessage msg;
+	#if CLIENT_VERSION >= 1203
 	msg.addByte(0x83);
 	msg.addPosition(pos);
 	msg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
 	msg.addByte(type);
 	msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	writeToOutputBuffer(msg);
+	#else
+	msg.addByte(0x83);
+	msg.addPosition(pos);
+	msg.addByte(type);
+	writeToOutputBuffer(msg);
+	#endif
 }
 
 void ProtocolGame::sendCreatureHealth(const Creature *creature)
@@ -5113,6 +5617,16 @@ void ProtocolGame::sendCreatureHealth(const Creature *creature)
 	msg.addByte(0x8C);
 	msg.add<uint32_t>(creature->getID());
 
+	#if CLIENT_VERSION >= 1121
+	if (creature->isHealthHidden() && creature != player)
+	{
+		msg.addByte(0x00);
+	}
+	else
+	{
+		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+	}
+	#else
 	if (creature->isHealthHidden())
 	{
 		msg.addByte(0x00);
@@ -5121,6 +5635,7 @@ void ProtocolGame::sendCreatureHealth(const Creature *creature)
 	{
 		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
 	}
+	#endif
 	writeToOutputBuffer(msg);
 }
 
@@ -5344,6 +5859,7 @@ void ProtocolGame::sendEnterWorld()
 	writeToOutputBuffer(msg);
 }
 
+#if CLIENT_VERSION >= 1000
 void ProtocolGame::sendFightModes()
 {
 	NetworkMessage msg;
@@ -5354,6 +5870,7 @@ void ProtocolGame::sendFightModes()
 	msg.addByte(PVP_MODE_DOVE);
 	writeToOutputBuffer(msg);
 }
+#endif
 
 void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos, int32_t stackpos, bool isLogin)
 {
@@ -5368,7 +5885,6 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	{
 		if (stackpos != -1)
 		{
-			msg.reset();
 			msg.addByte(0x6A);
 			msg.addPosition(pos);
 			msg.addByte(stackpos);
@@ -5387,6 +5903,8 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 		return;
 	}
+
+	msg.reset();
 
 	msg.addByte(0x17);
 
@@ -5407,8 +5925,12 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 		msg.addByte(0x00);
 	}
 
+	#if CLIENT_VERSION >= 1054
 	msg.addByte(0x00); // can change pvp framing option
+	#endif
+	#if CLIENT_VERSION >= 1058
 	msg.addByte(0x00); // expert mode button enabled
+	#endif
 
 	msg.addString(g_configManager().getString(STORE_IMAGES_URL));
 	msg.add<uint16_t>(static_cast<uint16_t>(g_configManager().getNumber(STORE_COIN_PACKET)));
@@ -5416,11 +5938,40 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
 	msg.addByte(0x00); // Tournament button
 
-	writeToOutputBuffer(msg);
-
-	sendTibiaTime(g_game.getLightHour());
 	sendPendingStateEntered();
 	sendEnterWorld();
+
+	#if GAME_FEATURE_RULEVIOLATION > 0
+	if (player->isAccessPlayer())
+	{
+		msg.addByte(0x0B);
+		#if CLIENT_VERSION >= 726 && CLIENT_VERSION <= 730
+		for (int32_t i = 0; i < 30; ++i)
+		{
+		#elif CLIENT_VERSION >= 850
+		for (int32_t i = 0; i < 20; ++i)
+		{
+		#elif CLIENT_VERSION >= 820
+		for (int32_t i = 0; i < 23; ++i)
+		{
+		#else
+		for (int32_t i = 0; i < 32; ++i)
+		{
+		#endif
+			#if CLIENT_VERSION >= 772
+			msg.addByte(0x84);
+			#else
+			msg.addByte(0x44);
+			#endif
+		}
+	}
+	#endif
+
+	writeToOutputBuffer(msg);
+
+	#if CLIENT_VERSION >= 1121
+	sendTibiaTime(g_game.getLightHour());
+	#endif
 	sendMapDescription(pos);
 	loggedIn = true;
 
@@ -5505,7 +6056,9 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	}
 
 	sendLootContainers();
+	#if CLIENT_VERSION >= 950
 	sendBasicData();
+	#endif
 	initPreyData();
 
 	player->sendClientCheck();
@@ -5732,7 +6285,9 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item *item, uint16_t ma
 		msg.add<uint16_t>(0x00);
 	}
 
+	#if CLIENT_VERSION >= 1250
 	msg.addByte(0x00); // Show (Traded)
+	#endif
 
 	time_t writtenDate = item->getDate();
 	if (writtenDate != 0)
@@ -5756,7 +6311,9 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, uint32_t itemId, const 
 	msg.add<uint16_t>(text.size());
 	msg.addString(text);
 	msg.add<uint16_t>(0x00);
+	#if CLIENT_VERSION >= 1250
 	msg.addByte(0x00); // Show (Traded)
+	#endif
 	msg.add<uint16_t>(0x00);
 	writeToOutputBuffer(msg);
 }
@@ -5792,10 +6349,25 @@ void ProtocolGame::sendOutfitWindow()
 	msg.addByte(currentOutfit.lookMountFeet);
 	msg.add<uint16_t>(currentOutfit.lookFamiliarsType);
 
+	#if GAME_FEATURE_OUTFITS > 0
 	auto startOutfits = msg.getBufferPosition();
+	#if GAME_FEATURE_OUTFITS_U16 > 0
 	uint16_t limitOutfits = std::numeric_limits<uint16_t>::max();
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 800
+	uint8_t limitOutfits = 15;
+	#elif CLIENT_VERSION < 870
+	uint8_t limitOutfits = 25;
+	#elif CLIENT_VERSION < 1062
+	uint8_t limitOutfits = 50;
+	#else
+	uint8_t limitOutfits = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t outfitSize = 0;
+	msg.skipBytes(1);
+	#endif
 
 	if (player->isAccessPlayer()) {
 		msg.add<uint16_t>(75);
@@ -5837,6 +6409,7 @@ void ProtocolGame::sendOutfitWindow()
 	auto endOutfits = msg.getBufferPosition();
 	msg.setBufferPosition(startOutfits);
 	msg.add<uint16_t>(outfitSize);
+	#endif
 	msg.setBufferPosition(endOutfits);
 
 	auto startMounts = msg.getBufferPosition();
@@ -6665,12 +7238,19 @@ void ProtocolGame::AddWorldLight(NetworkMessage &msg, LightInfo lightInfo)
 void ProtocolGame::sendSpecialContainersAvailable()
 {
 	if (!player)
+	{
 		return;
+	}
 
 	NetworkMessage msg;
 	msg.addByte(0x2A);
+	#if CLIENT_VERSION >= 1220
 	msg.addByte(player->isSupplyStashMenuAvailable() ? 0x01 : 0x00);
 	msg.addByte(player->isMarketMenuAvailable() ? 0x01 : 0x00);
+	#else
+	// In older versions they are merged in one bool so let's checker if we have stash or market available
+	msg.addByte((player->isSupplyStashMenuAvailable() || player->isMarketMenuAvailable()) ? 0x01 : 0x00);
+	#endif
 	writeToOutputBuffer(msg);
 }
 
@@ -7060,4 +7640,645 @@ void ProtocolGame::sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_
 	}
 
 	writeToOutputBuffer(msg);
+}
+
+SpeakClasses ProtocolGame::translateSpeakClassFromClient(uint8_t talkType)
+{
+	#if CLIENT_VERSION >= 1055
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x04: return TALKTYPE_PRIVATE_FROM;
+		case 0x05: return TALKTYPE_PRIVATE_TO;
+		case 0x06: return TALKTYPE_CHANNEL_M;
+		case 0x07: return TALKTYPE_CHANNEL_Y;
+		case 0x08: return TALKTYPE_CHANNEL_O;
+		case 0x09: return TALKTYPE_SPELL;
+		case 0x0A: return TALKTYPE_PRIVATE_NP;
+		case 0x0C: return TALKTYPE_PRIVATE_PN;
+		case 0x0D: return TALKTYPE_BROADCAST;
+		case 0x0E: return TALKTYPE_CHANNEL_R1;
+		case 0x0F: return TALKTYPE_PRIVATE_RED_FROM;
+		case 0x10: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x24: return TALKTYPE_MONSTER_SAY;
+		case 0x25: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 1036
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x04: return TALKTYPE_PRIVATE_FROM;
+		case 0x05: return TALKTYPE_PRIVATE_TO;
+		case 0x06: return TALKTYPE_CHANNEL_M;
+		case 0x07: return TALKTYPE_CHANNEL_Y;
+		case 0x08: return TALKTYPE_CHANNEL_O;
+		case 0x09: return TALKTYPE_SPELL;
+		case 0x0A: return TALKTYPE_PRIVATE_NP;
+		case 0x0C: return TALKTYPE_PRIVATE_PN;
+		case 0x0D: return TALKTYPE_BROADCAST;
+		case 0x0E: return TALKTYPE_CHANNEL_R1;
+		case 0x0F: return TALKTYPE_PRIVATE_RED_FROM;
+		case 0x10: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x23: return TALKTYPE_MONSTER_SAY;
+		case 0x24: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 900
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x04: return TALKTYPE_PRIVATE_FROM;
+		case 0x05: return TALKTYPE_PRIVATE_TO;
+		case 0x06: return TALKTYPE_CHANNEL_M;
+		case 0x07: return TALKTYPE_CHANNEL_Y;
+		case 0x08: return TALKTYPE_CHANNEL_O;
+		case 0x09: return TALKTYPE_SPELL;
+		case 0x0A: return TALKTYPE_PRIVATE_NP;
+		case 0x0B: return TALKTYPE_PRIVATE_PN;
+		case 0x0C: return TALKTYPE_BROADCAST;
+		case 0x0D: return TALKTYPE_CHANNEL_R1;
+		case 0x0E: return TALKTYPE_PRIVATE_RED_FROM;
+		case 0x0F: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x22: return TALKTYPE_MONSTER_SAY;
+		case 0x23: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 861
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x06: return TALKTYPE_PRIVATE_TO;
+		case 0x08: return TALKTYPE_CHANNEL_M;
+		case 0x07: return TALKTYPE_CHANNEL_Y;
+		case 0x0C: return TALKTYPE_CHANNEL_O;
+		case 0x05: return TALKTYPE_PRIVATE_NP;
+		case 0x04: return TALKTYPE_PRIVATE_PN;
+		case 0x09: return TALKTYPE_BROADCAST;
+		case 0x0A: return TALKTYPE_CHANNEL_R1;
+		case 0x0B: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x0D: return TALKTYPE_MONSTER_SAY;
+		case 0x0E: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 840
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x06: return TALKTYPE_PRIVATE_TO;
+		case 0x08: return TALKTYPE_CHANNEL_M;
+		case 0x07: return TALKTYPE_CHANNEL_Y;
+		case 0x0F: return TALKTYPE_CHANNEL_O;
+		case 0x09: return TALKTYPE_RVR_CHANNEL;
+		case 0x0A: return TALKTYPE_RVR_ANSWER;
+		case 0x0B: return TALKTYPE_RVR_CONTINUE;
+		case 0x05: return TALKTYPE_PRIVATE_NP;
+		case 0x04: return TALKTYPE_PRIVATE_PN;
+		case 0x0C: return TALKTYPE_BROADCAST;
+		case 0x0D: return TALKTYPE_CHANNEL_R1;
+		case 0x0E: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x13: return TALKTYPE_MONSTER_SAY;
+		case 0x14: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 820
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x06: return TALKTYPE_PRIVATE_TO;
+		case 0x07: return TALKTYPE_CHANNEL_Y;
+		case 0x0E: return TALKTYPE_CHANNEL_O;
+		case 0x08: return TALKTYPE_RVR_CHANNEL;
+		case 0x09: return TALKTYPE_RVR_ANSWER;
+		case 0x0A: return TALKTYPE_RVR_CONTINUE;
+		case 0x05: return TALKTYPE_PRIVATE_NP;
+		case 0x04: return TALKTYPE_PRIVATE_PN;
+		case 0x0B: return TALKTYPE_BROADCAST;
+		case 0x0C: return TALKTYPE_CHANNEL_R1;
+		case 0x0D: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x12: return TALKTYPE_MONSTER_SAY;
+		case 0x13: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 723
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x04: return TALKTYPE_PRIVATE_TO;
+		case 0x05: return TALKTYPE_CHANNEL_Y;
+		case 0x0C: return TALKTYPE_CHANNEL_O;
+		case 0x06: return TALKTYPE_RVR_CHANNEL;
+		case 0x07: return TALKTYPE_RVR_ANSWER;
+		case 0x08: return TALKTYPE_RVR_CONTINUE;
+		case 0x09: return TALKTYPE_BROADCAST;
+		case 0x0A: return TALKTYPE_CHANNEL_R1;
+		case 0x0B: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x10: return TALKTYPE_MONSTER_SAY;
+		case 0x11: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 710
+	switch (talkType)
+	{
+		case 0x01: return TALKTYPE_SAY;
+		case 0x02: return TALKTYPE_WHISPER;
+		case 0x03: return TALKTYPE_YELL;
+		case 0x04: return TALKTYPE_PRIVATE_TO;
+		case 0x05: return TALKTYPE_CHANNEL_Y;
+		case 0x06: return TALKTYPE_RVR_CHANNEL;
+		case 0x07: return TALKTYPE_RVR_ANSWER;
+		case 0x08: return TALKTYPE_RVR_CONTINUE;
+		case 0x09: return TALKTYPE_BROADCAST;
+		case 0x0A: return TALKTYPE_PRIVATE_RED_TO;
+		case 0x0D: return TALKTYPE_MONSTER_SAY;
+		case 0x0E: return TALKTYPE_MONSTER_YELL;
+		default: return TALKTYPE_NONE;
+	}
+	#endif
+}
+
+uint8_t ProtocolGame::translateSpeakClassToClient(SpeakClasses talkType)
+{
+	#if CLIENT_VERSION >= 1055
+	#if CLIENT_VERSION >= 1200
+	if (talkType == TALKTYPE_BOOSTED_CREATURE)
+	{
+		return 0x31;
+	}
+	#endif
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x04;
+		case TALKTYPE_PRIVATE_TO: return 0x05;
+		case TALKTYPE_CHANNEL_M: return 0x06;
+		case TALKTYPE_CHANNEL_Y: return 0x07;
+		case TALKTYPE_CHANNEL_O: return 0x08;
+		case TALKTYPE_SPELL: return 0x09;
+		case TALKTYPE_PRIVATE_NP: return 0x0A;
+		case TALKTYPE_PRIVATE_PN: return 0x0C;
+		case TALKTYPE_BROADCAST: return 0x0D;
+		case TALKTYPE_CHANNEL_R1: return 0x0E;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0F;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x10;
+		case TALKTYPE_MONSTER_SAY: return 0x24;
+		case TALKTYPE_MONSTER_YELL: return 0x25;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 1036
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x04;
+		case TALKTYPE_PRIVATE_TO: return 0x05;
+		case TALKTYPE_CHANNEL_M: return 0x06;
+		case TALKTYPE_CHANNEL_Y: return 0x07;
+		case TALKTYPE_CHANNEL_O: return 0x08;
+		case TALKTYPE_SPELL: return 0x09;
+		case TALKTYPE_PRIVATE_NP: return 0x0A;
+		case TALKTYPE_PRIVATE_PN: return 0x0C;
+		case TALKTYPE_BROADCAST: return 0x0D;
+		case TALKTYPE_CHANNEL_R1: return 0x0E;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0F;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x10;
+		case TALKTYPE_MONSTER_SAY: return 0x23;
+		case TALKTYPE_MONSTER_YELL: return 0x24;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 900
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x04;
+		case TALKTYPE_PRIVATE_TO: return 0x05;
+		case TALKTYPE_CHANNEL_M: return 0x06;
+		case TALKTYPE_CHANNEL_Y: return 0x07;
+		case TALKTYPE_CHANNEL_O: return 0x08;
+		case TALKTYPE_SPELL: return 0x09;
+		case TALKTYPE_PRIVATE_NP: return 0x0A;
+		case TALKTYPE_PRIVATE_PN: return 0x0B;
+		case TALKTYPE_BROADCAST: return 0x0C;
+		case TALKTYPE_CHANNEL_R1: return 0x0D;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0E;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x0F;
+		case TALKTYPE_MONSTER_SAY: return 0x22;
+		case TALKTYPE_MONSTER_YELL: return 0x23;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 861
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x06;
+		case TALKTYPE_PRIVATE_TO: return 0x06;
+		case TALKTYPE_CHANNEL_M: return 0x08;
+		case TALKTYPE_CHANNEL_Y: return 0x07;
+		case TALKTYPE_CHANNEL_O: return 0x0C;
+		case TALKTYPE_SPELL: return 0x01;
+		case TALKTYPE_PRIVATE_NP: return 0x05;
+		case TALKTYPE_PRIVATE_PN: return 0x04;
+		case TALKTYPE_BROADCAST: return 0x09;
+		case TALKTYPE_CHANNEL_R1: return 0x0A;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0B;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x0B;
+		case TALKTYPE_MONSTER_SAY: return 0x0D;
+		case TALKTYPE_MONSTER_YELL: return 0x0E;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 840
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x06;
+		case TALKTYPE_PRIVATE_TO: return 0x06;
+		case TALKTYPE_CHANNEL_M: return 0x08;
+		case TALKTYPE_CHANNEL_Y: return 0x07;
+		case TALKTYPE_CHANNEL_O: return 0x0F;
+		case TALKTYPE_RVR_CHANNEL: return 0x09;
+		case TALKTYPE_RVR_ANSWER: return 0x0A;
+		case TALKTYPE_RVR_CONTINUE: return 0x0B;
+		case TALKTYPE_SPELL: return 0x01;
+		case TALKTYPE_PRIVATE_NP: return 0x05;
+		case TALKTYPE_PRIVATE_PN: return 0x04;
+		case TALKTYPE_BROADCAST: return 0x0C;
+		case TALKTYPE_CHANNEL_R1: return 0x0D;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0E;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x0E;
+		case TALKTYPE_MONSTER_SAY: return 0x13;
+		case TALKTYPE_MONSTER_YELL: return 0x14;
+		case TALKTYPE_CHANNEL_R2: return TALKTYPE_NONE;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 820
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x06;
+		case TALKTYPE_PRIVATE_TO: return 0x06;
+		case TALKTYPE_CHANNEL_M: return 0x07;
+		case TALKTYPE_CHANNEL_Y: return 0x07;
+		case TALKTYPE_CHANNEL_O: return 0x0E;
+		case TALKTYPE_RVR_CHANNEL: return 0x08;
+		case TALKTYPE_RVR_ANSWER: return 0x09;
+		case TALKTYPE_RVR_CONTINUE: return 0x0A;
+		case TALKTYPE_SPELL: return 0x01;
+		case TALKTYPE_PRIVATE_NP: return 0x05;
+		case TALKTYPE_PRIVATE_PN: return 0x04;
+		case TALKTYPE_BROADCAST: return 0x0B;
+		case TALKTYPE_CHANNEL_R1: return 0x0C;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0D;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x0D;
+		case TALKTYPE_MONSTER_SAY: return 0x12;
+		case TALKTYPE_MONSTER_YELL: return 0x13;
+		case TALKTYPE_CHANNEL_R2: return TALKTYPE_NONE;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 723
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x04;
+		case TALKTYPE_PRIVATE_TO: return 0x04;
+		case TALKTYPE_CHANNEL_M: return 0x05;
+		case TALKTYPE_CHANNEL_Y: return 0x05;
+		case TALKTYPE_CHANNEL_O: return 0x0C;
+		case TALKTYPE_RVR_CHANNEL: return 0x06;
+		case TALKTYPE_RVR_ANSWER: return 0x07;
+		case TALKTYPE_RVR_CONTINUE: return 0x08;
+		case TALKTYPE_SPELL: return 0x01;
+		case TALKTYPE_PRIVATE_NP: return 0x01;
+		case TALKTYPE_PRIVATE_PN: return 0x01;
+		case TALKTYPE_BROADCAST: return 0x09;
+		case TALKTYPE_CHANNEL_R1: return 0x0A;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0B;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x0B;
+		case TALKTYPE_MONSTER_SAY: return 0x10;
+		case TALKTYPE_MONSTER_YELL: return 0x11;
+		case TALKTYPE_CHANNEL_R2: return TALKTYPE_NONE;
+		default: return TALKTYPE_NONE;
+	}
+	#elif CLIENT_VERSION >= 710
+	switch (talkType)
+	{
+		case TALKTYPE_SAY: return 0x01;
+		case TALKTYPE_WHISPER: return 0x02;
+		case TALKTYPE_YELL: return 0x03;
+		case TALKTYPE_PRIVATE_FROM: return 0x04;
+		case TALKTYPE_PRIVATE_TO: return 0x04;
+		case TALKTYPE_CHANNEL_M: return 0x05;
+		case TALKTYPE_CHANNEL_Y: return 0x05;
+		case TALKTYPE_CHANNEL_O: return 0x05;
+		case TALKTYPE_RVR_CHANNEL: return 0x06;
+		case TALKTYPE_RVR_ANSWER: return 0x07;
+		case TALKTYPE_RVR_CONTINUE: return 0x08;
+		case TALKTYPE_SPELL: return 0x01;
+		case TALKTYPE_PRIVATE_NP: return 0x01;
+		case TALKTYPE_PRIVATE_PN: return 0x01;
+		case TALKTYPE_BROADCAST: return 0x09;
+		case TALKTYPE_CHANNEL_R1: return 0x05;
+		case TALKTYPE_PRIVATE_RED_FROM: return 0x0A;
+		case TALKTYPE_PRIVATE_RED_TO: return 0x0A;
+		case TALKTYPE_MONSTER_SAY: return 0x0D;
+		case TALKTYPE_MONSTER_YELL: return 0x0E;
+		case TALKTYPE_CHANNEL_R2: return TALKTYPE_NONE;
+		default: return TALKTYPE_NONE;
+	}
+	#endif
+}
+
+uint8_t ProtocolGame::translateMessageClassToClient(MessageClasses messageType)
+{
+	#if CLIENT_VERSION >= 1055
+	#if CLIENT_VERSION >= 1094
+	if (messageType == MESSAGE_MANA)
+	{
+		return 0x2B;
+	}
+	#endif
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x04;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x0D;
+		case MESSAGE_STATUS_DEFAULT: return 0x11;
+		case MESSAGE_STATUS_WARNING: return 0x12;
+		case MESSAGE_EVENT_ADVANCE: return 0x13;
+		case MESSAGE_STATUS_SMALL: return 0x15;
+		case MESSAGE_INFO_DESCR: return 0x16;
+		case MESSAGE_EVENT_DEFAULT: return 0x1E;
+		case MESSAGE_GUILD: return 0x21;
+		case MESSAGE_PARTY_MANAGEMENT: return 0x22;
+		case MESSAGE_PARTY: return 0x23;
+		case MESSAGE_EVENT_ORANGE: return 0x24;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x25;
+		case MESSAGE_DAMAGE_DEALT: return 0x17;
+		case MESSAGE_DAMAGE_RECEIVED: return 0x18;
+		case MESSAGE_MANA: return 0x19;
+		case MESSAGE_HEALED: return 0x19;
+		case MESSAGE_EXPERIENCE: return 0x1A;
+		case MESSAGE_DAMAGE_OTHERS: return 0x1B;
+		case MESSAGE_HEALED_OTHERS: return 0x1C;
+		case MESSAGE_EXPERIENCE_OTHERS: return 0x1D;
+		case MESSAGE_LOOT: return 0x1F;
+		case MESSAGE_LOGIN: return 0x11;
+		case MESSAGE_WARNING: return 0x12;
+		case MESSAGE_GAME: return 0x13;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x14;
+		case MESSAGE_FAILURE: return 0x15;
+		case MESSAGE_LOOK: return 0x16;
+		case MESSAGE_STATUS: return 0x1E;
+		case MESSAGE_TRADENPC: return 0x20;
+		case MESSAGE_REPORT: return 0x26;
+		case MESSAGE_HOTKEY: return 0x27;
+		case MESSAGE_TUTORIAL: return 0x28;
+		case MESSAGE_THANKYOU: return 0x29;
+		case MESSAGE_MARKET: return 0x2A;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 1036
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x04;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x0D;
+		case MESSAGE_STATUS_DEFAULT: return 0x11;
+		case MESSAGE_STATUS_WARNING: return 0x12;
+		case MESSAGE_EVENT_ADVANCE: return 0x13;
+		case MESSAGE_STATUS_SMALL: return 0x14;
+		case MESSAGE_INFO_DESCR: return 0x15;
+		case MESSAGE_EVENT_DEFAULT: return 0x1D;
+		case MESSAGE_GUILD: return 0x20;
+		case MESSAGE_PARTY_MANAGEMENT: return 0x21;
+		case MESSAGE_PARTY: return 0x22;
+		case MESSAGE_EVENT_ORANGE: return 0x23;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x24;
+		case MESSAGE_DAMAGE_DEALT: return 0x16;
+		case MESSAGE_DAMAGE_RECEIVED: return 0x17;
+		case MESSAGE_MANA: return 0x18;
+		case MESSAGE_HEALED: return 0x18;
+		case MESSAGE_EXPERIENCE: return 0x19;
+		case MESSAGE_DAMAGE_OTHERS: return 0x1A;
+		case MESSAGE_HEALED_OTHERS: return 0x1B;
+		case MESSAGE_EXPERIENCE_OTHERS: return 0x1C;
+		case MESSAGE_LOOT: return 0x1E;
+		case MESSAGE_LOGIN: return 0x11;
+		case MESSAGE_WARNING: return 0x12;
+		case MESSAGE_GAME: return 0x13;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x12;
+		case MESSAGE_FAILURE: return 0x14;
+		case MESSAGE_LOOK: return 0x15;
+		case MESSAGE_STATUS: return 0x1D;
+		case MESSAGE_TRADENPC: return 0x1F;
+		case MESSAGE_REPORT: return 0x25;
+		case MESSAGE_HOTKEY: return 0x26;
+		case MESSAGE_TUTORIAL: return 0x27;
+		case MESSAGE_THANKYOU: return 0x28;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 900
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x04;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x0C;
+		case MESSAGE_STATUS_DEFAULT: return 0x10;
+		case MESSAGE_STATUS_WARNING: return 0x11;
+		case MESSAGE_EVENT_ADVANCE: return 0x12;
+		case MESSAGE_STATUS_SMALL: return 0x13;
+		case MESSAGE_INFO_DESCR: return 0x14;
+		case MESSAGE_EVENT_DEFAULT: return 0x1C;
+		case MESSAGE_GUILD: return 0x1F;
+		case MESSAGE_PARTY_MANAGEMENT: return 0x20;
+		case MESSAGE_PARTY: return 0x21;
+		case MESSAGE_EVENT_ORANGE: return 0x22;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x23;
+		case MESSAGE_DAMAGE_DEALT: return 0x15;
+		case MESSAGE_DAMAGE_RECEIVED: return 0x16;
+		case MESSAGE_MANA: return 0x17;
+		case MESSAGE_HEALED: return 0x17;
+		case MESSAGE_EXPERIENCE: return 0x18;
+		case MESSAGE_DAMAGE_OTHERS: return 0x19;
+		case MESSAGE_HEALED_OTHERS: return 0x1A;
+		case MESSAGE_EXPERIENCE_OTHERS: return 0x1B;
+		case MESSAGE_LOOT: return 0x1D;
+		case MESSAGE_LOGIN: return 0x10;
+		case MESSAGE_WARNING: return 0x11;
+		case MESSAGE_GAME: return 0x12;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x11;
+		case MESSAGE_FAILURE: return 0x13;
+		case MESSAGE_LOOK: return 0x14;
+		case MESSAGE_STATUS: return 0x1C;
+		case MESSAGE_TRADENPC: return 0x1E;
+		case MESSAGE_REPORT: return 0x24;
+		case MESSAGE_HOTKEY: return 0x25;
+		case MESSAGE_TUTORIAL: return 0x26;
+		case MESSAGE_THANKYOU: return 0x27;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 861
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x15;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x16;
+		case MESSAGE_STATUS_DEFAULT: return 0x11;
+		case MESSAGE_STATUS_WARNING: return 0x0F;
+		case MESSAGE_EVENT_ADVANCE: return 0x10;
+		case MESSAGE_STATUS_SMALL: return 0x14;
+		case MESSAGE_INFO_DESCR: return 0x13;
+		case MESSAGE_EVENT_DEFAULT: return 0x12;
+		case MESSAGE_EVENT_ORANGE: return 0x0D;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x0E;
+		case MESSAGE_LOOT: return 0x13;
+		case MESSAGE_LOGIN: return 0x11;
+		case MESSAGE_WARNING: return 0x0F;
+		case MESSAGE_GAME: return 0x10;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x0F;
+		case MESSAGE_FAILURE: return 0x14;
+		case MESSAGE_LOOK: return 0x13;
+		case MESSAGE_STATUS: return 0x12;
+		case MESSAGE_TRADENPC: return 0x13;
+		case MESSAGE_REPORT: return 0x13;
+		case MESSAGE_HOTKEY: return 0x13;
+		case MESSAGE_TUTORIAL: return 0x13;
+		case MESSAGE_THANKYOU: return 0x13;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 840
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x1B;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x12;
+		case MESSAGE_STATUS_DEFAULT: return 0x17;
+		case MESSAGE_STATUS_WARNING: return 0x15;
+		case MESSAGE_EVENT_ADVANCE: return 0x16;
+		case MESSAGE_STATUS_SMALL: return 0x1A;
+		case MESSAGE_INFO_DESCR: return 0x19;
+		case MESSAGE_EVENT_DEFAULT: return 0x18;
+		case MESSAGE_EVENT_ORANGE: return 0x13;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x14;
+		case MESSAGE_LOOT: return 0x19;
+		case MESSAGE_LOGIN: return 0x17;
+		case MESSAGE_WARNING: return 0x15;
+		case MESSAGE_GAME: return 0x16;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x15;
+		case MESSAGE_FAILURE: return 0x1A;
+		case MESSAGE_LOOK: return 0x19;
+		case MESSAGE_STATUS: return 0x18;
+		case MESSAGE_TRADENPC: return 0x19;
+		case MESSAGE_REPORT: return 0x19;
+		case MESSAGE_HOTKEY: return 0x19;
+		case MESSAGE_TUTORIAL: return 0x19;
+		case MESSAGE_THANKYOU: return 0x19;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 820
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x1A;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x11;
+		case MESSAGE_STATUS_DEFAULT: return 0x16;
+		case MESSAGE_STATUS_WARNING: return 0x14;
+		case MESSAGE_EVENT_ADVANCE: return 0x15;
+		case MESSAGE_STATUS_SMALL: return 0x19;
+		case MESSAGE_INFO_DESCR: return 0x18;
+		case MESSAGE_EVENT_DEFAULT: return 0x17;
+		case MESSAGE_EVENT_ORANGE: return 0x12;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x13;
+		case MESSAGE_LOOT: return 0x18;
+		case MESSAGE_LOGIN: return 0x16;
+		case MESSAGE_WARNING: return 0x14;
+		case MESSAGE_GAME: return 0x15;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x14;
+		case MESSAGE_FAILURE: return 0x19;
+		case MESSAGE_LOOK: return 0x18;
+		case MESSAGE_STATUS: return 0x17;
+		case MESSAGE_TRADENPC: return 0x18;
+		case MESSAGE_REPORT: return 0x18;
+		case MESSAGE_HOTKEY: return 0x18;
+		case MESSAGE_TUTORIAL: return 0x18;
+		case MESSAGE_THANKYOU: return 0x18;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 723
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x18;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x19;
+		case MESSAGE_STATUS_DEFAULT: return 0x14;
+		case MESSAGE_STATUS_WARNING: return 0x12;
+		case MESSAGE_EVENT_ADVANCE: return 0x13;
+		case MESSAGE_STATUS_SMALL: return 0x17;
+		case MESSAGE_INFO_DESCR: return 0x16;
+		case MESSAGE_EVENT_DEFAULT: return 0x15;
+		case MESSAGE_EVENT_ORANGE: return 0x10;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x11;
+		case MESSAGE_LOOT: return 0x16;
+		case MESSAGE_LOGIN: return 0x14;
+		case MESSAGE_WARNING: return 0x12;
+		case MESSAGE_GAME: return 0x13;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x12;
+		case MESSAGE_FAILURE: return 0x17;
+		case MESSAGE_LOOK: return 0x16;
+		case MESSAGE_STATUS: return 0x15;
+		case MESSAGE_TRADENPC: return 0x16;
+		case MESSAGE_REPORT: return 0x16;
+		case MESSAGE_HOTKEY: return 0x16;
+		case MESSAGE_TUTORIAL: return 0x16;
+		case MESSAGE_THANKYOU: return 0x16;
+		default: return MESSAGE_NONE;
+	}
+	#elif CLIENT_VERSION >= 710
+	switch (messageType)
+	{
+		case MESSAGE_STATUS_CONSOLE_BLUE: return 0x04;
+		case MESSAGE_STATUS_CONSOLE_RED: return 0x09;
+		case MESSAGE_STATUS_DEFAULT: return 0x11;
+		case MESSAGE_STATUS_WARNING: return 0x0F;
+		case MESSAGE_EVENT_ADVANCE: return 0x10;
+		case MESSAGE_STATUS_SMALL: return 0x14;
+		case MESSAGE_INFO_DESCR: return 0x13;
+		case MESSAGE_EVENT_DEFAULT: return 0x12;
+		case MESSAGE_EVENT_ORANGE: return 0x0D;
+		case MESSAGE_STATUS_CONSOLE_ORANGE: return 0x0E;
+		case MESSAGE_LOOT: return 0x13;
+		case MESSAGE_LOGIN: return 0x11;
+		case MESSAGE_WARNING: return 0x0F;
+		case MESSAGE_GAME: return 0x10;
+		case MESSAGE_GAME_HIGHLIGHT: return 0x0F;
+		case MESSAGE_FAILURE: return 0x14;
+		case MESSAGE_LOOK: return 0x13;
+		case MESSAGE_STATUS: return 0x12;
+		case MESSAGE_TRADENPC: return 0x13;
+		case MESSAGE_REPORT: return 0x13;
+		case MESSAGE_HOTKEY: return 0x13;
+		case MESSAGE_TUTORIAL: return 0x13;
+		case MESSAGE_THANKYOU: return 0x13;
+		default: return MESSAGE_NONE;
+	}
+	#endif
 }

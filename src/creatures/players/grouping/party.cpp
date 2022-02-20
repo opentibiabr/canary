@@ -42,8 +42,10 @@ void Party::disband()
 
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
-	g_game.updatePlayerShield(currentLeader);
-	currentLeader->sendCreatureSkull(currentLeader);
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	g_game.updatePlayerHelpers(*currentLeader);
+	#endif
+	currentLeader->sendPlayerPartyIcons(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
 
 	for (Player* invitee : inviteList) {
@@ -59,14 +61,15 @@ void Party::disband()
 	}
 
 	for (Player* member : memberList) {
-		g_game.updatePlayerShield(member);
-
 		for (Player* otherMember : memberList) {
-			otherMember->sendCreatureSkull(member);
+			otherMember->sendPlayerPartyIcons(member);
 		}
 
-		member->sendCreatureSkull(currentLeader);
-		currentLeader->sendCreatureSkull(member);
+		member->sendPlayerPartyIcons(currentLeader);
+		currentLeader->sendPlayerPartyIcons(member);
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+		g_game.updatePlayerHelpers(*member);
+		#endif
 	}
 	memberList.clear();
 	delete this;
@@ -107,18 +110,21 @@ bool Party::leaveParty(Player* player)
 
 	player->setParty(nullptr);
 	player->sendClosePrivate(CHANNEL_PARTY);
-	g_game.updatePlayerShield(player);
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	g_game.updatePlayerHelpers(*player);
+	#endif
 
 	for (Player* member : memberList) {
-		member->sendCreatureSkull(player);
+		member->sendPlayerPartyIcons(player);
 		player->sendPlayerPartyIcons(member);
-		member->sendPartyCreatureUpdate(player);
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+		g_game.updatePlayerHelpers(*member);
+		#endif
 	}
 
-	leader->sendCreatureSkull(player);
-	player->sendCreatureSkull(player);
+	leader->sendPlayerPartyIcons(player);
+	player->sendPlayerPartyIcons(player);
 	player->sendPlayerPartyIcons(leader);
-	leader->sendPartyCreatureUpdate(player);
 
 	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "You have left the party.");
 
@@ -161,8 +167,13 @@ bool Party::passPartyLeadership(Player* player)
 	updateSharedExperience();
 
 	for (Player* member : memberList) {
+		#if GAME_FEATURE_PARTY_LIST > 0
 		member->sendPartyCreatureShield(oldLeader);
 		member->sendPartyCreatureShield(leader);
+		#else
+		member->sendCreatureShield(oldLeader);
+		member->sendCreatureShield(leader);
+		#endif
 	}
 
 	for (Player* invitee : inviteList) {
@@ -170,8 +181,13 @@ bool Party::passPartyLeadership(Player* player)
 		invitee->sendCreatureShield(leader);
 	}
 
+	#if GAME_FEATURE_PARTY_LIST > 0
 	leader->sendPartyCreatureShield(oldLeader);
 	leader->sendPartyCreatureShield(leader);
+	#else
+	leader->sendCreatureShield(oldLeader);
+	leader->sendCreatureShield(leader);
+	#endif
 
 	player->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "You are now the leader of the party.");
 	return true;
@@ -196,20 +212,24 @@ bool Party::joinParty(Player& player)
 
 	player.setParty(this);
 
-	g_game.updatePlayerShield(&player);
-
 	for (Player* member : memberList) {
-		member->sendCreatureSkull(&player);
+		member->sendPlayerPartyIcons(&player);
 		player.sendPlayerPartyIcons(member);
 	}
 
-	player.sendCreatureSkull(&player);
-	leader->sendCreatureSkull(&player);
+	player.sendPlayerPartyIcons(&player);
+	leader->sendPlayerPartyIcons(&player);
 	player.sendPlayerPartyIcons(leader);
 
 	memberList.push_back(&player);
 
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	g_game.updatePlayerHelpers(player);
+	#endif
+
+	#if GAME_FEATURE_PARTY_LIST > 0
 	updatePlayerStatus(&player);
+	#endif
 
 	player.removePartyInvitation(this);
 	updateSharedExperience();
@@ -217,7 +237,7 @@ bool Party::joinParty(Player& player)
 	const std::string& leaderName = leader->getName();
 	ss.str(std::string());
 	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") <<
-       " party. Open the party channel to communicate with your companions.";
+		" party. Open the party channel to communicate with your companions.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 	return true;
 }
@@ -241,6 +261,15 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 	if (empty()) {
 		disband();
 	}
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	else {
+		for (Player* member : memberList) {
+			g_game.updatePlayerHelpers(*member);
+		}
+
+		g_game.updatePlayerHelpers(*leader);
+	}
+	#endif
 
 	return true;
 }
@@ -269,13 +298,19 @@ bool Party::invitePlayer(Player& player)
 
 	if (empty()) {
 		ss << " Open the party channel to communicate with your members.";
-		g_game.updatePlayerShield(leader);
-		leader->sendCreatureSkull(leader);
+		leader->sendPlayerPartyIcons(leader);
 	}
 
 	leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 
 	inviteList.push_back(&player);
+
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	for (Player* member : memberList) {
+		g_game.updatePlayerHelpers(*member);
+	}
+	g_game.updatePlayerHelpers(*leader);
+	#endif
 
 	leader->sendCreatureShield(&player);
 	player.sendCreatureShield(leader);
@@ -295,6 +330,7 @@ bool Party::isPlayerInvited(const Player* player) const
 
 void Party::updateAllPartyIcons()
 {
+	#if GAME_FEATURE_PARTY_LIST > 0
 	for (Player* member : memberList) {
 		for (Player* otherMember : memberList) {
 			member->sendPartyCreatureShield(otherMember);
@@ -304,6 +340,17 @@ void Party::updateAllPartyIcons()
 		leader->sendPartyCreatureShield(member);
 	}
 	leader->sendPartyCreatureShield(leader);
+	#else
+	for (Player* member : memberList) {
+		for (Player* otherMember : memberList) {
+			member->sendCreatureShield(otherMember);
+		}
+
+		member->sendCreatureShield(leader);
+		leader->sendCreatureShield(member);
+	}
+	leader->sendCreatureShield(leader);
+	#endif
 }
 
 void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/)
@@ -364,6 +411,7 @@ void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/)
 {
 	uint64_t shareExperience = experience;
 	g_events->eventPartyOnShareExperience(this, shareExperience);
+
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, source);
 	}
@@ -446,6 +494,7 @@ bool Party::canOpenCorpse(uint32_t ownerId) const
 	return false;
 }
 
+#if GAME_FEATURE_PARTY_LIST > 0
 void Party::showPlayerStatus(Player* player, Player* member, bool showStatus)
 {
 	player->sendPartyCreatureShowStatus(member, showStatus);
@@ -546,6 +595,7 @@ void Party::updatePlayerMana(const Player* player, uint8_t manaPercent)
 	}
 }
 
+#if GAME_FEATURE_PLAYER_VOCATIONS > 0
 void Party::updatePlayerVocation(const Player* player)
 {
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
@@ -560,3 +610,5 @@ void Party::updatePlayerVocation(const Player* player)
 		leader->sendPartyPlayerVocation(player);
 	}
 }
+#endif
+#endif

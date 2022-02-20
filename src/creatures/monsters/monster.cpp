@@ -357,8 +357,10 @@ void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 		} else {
 			targetList.push_back(creature);
 		}
-		if(!master && getFaction() != FACTION_DEFAULT && creature->getPlayer())
+
+		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen++;
+		}
 	}
 }
 
@@ -444,6 +446,7 @@ void Monster::onCreatureFound(Creature* creature, bool pushFront/* = false*/)
 
 void Monster::onCreatureEnter(Creature* creature)
 {
+	// SPDLOG_INFO("onCreatureEnter - {}", creature->getName());
 	if (getMaster() == creature) {
 		//Follow master again
 		isMasterInRange = true;
@@ -484,13 +487,15 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
-	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
-		return false;
 	} else {
 		if (getFaction() != FACTION_DEFAULT) {
 			return isEnemyFaction(creature->getFaction()) || creature->getFaction() == FACTION_PLAYER;
 		}
-		if ((creature->getPlayer()) || (creature->getMaster() && creature->getMaster()->getPlayer())) {
+	
+		if ((creature->getPlayer()
+		&& !creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters))
+		|| (creature->getMaster() && creature->getMaster()->getPlayer()))
+		{
 			return true;
 		}
 	}
@@ -500,6 +505,8 @@ bool Monster::isOpponent(const Creature* creature) const
 
 void Monster::onCreatureLeave(Creature* creature)
 {
+	// SPDLOG_INFO("onCreatureLeave - {}", creature->getName());
+
 	if (getMaster() == creature) {
 		//Take random steps and only use defense abilities (e.g. heal) until its master comes back
 		isMasterInRange = false;
@@ -521,59 +528,35 @@ void Monster::onCreatureLeave(Creature* creature)
 
 bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAULT*/)
 {
-	if (searchType == TARGETSEARCH_DEFAULT) {
-		int32_t rnd = uniform_random(1, 100);
+	std::vector<Creature*> resultList;
+	resultList.reserve(targetList.size());
 
-		searchType = TARGETSEARCH_NEAREST;
-
-		int32_t sum = this->mType->info.strategiesTargetNearest;
-		if (rnd > sum) {
-			searchType = TARGETSEARCH_HP;
-			sum += this->mType->info.strategiesTargetHealth;
-
-			if (rnd > sum) {
-				searchType = TARGETSEARCH_DAMAGE;
-				sum += this->mType->info.strategiesTargetDamage;
-				if (rnd > sum) {
-					searchType = TARGETSEARCH_RANDOM;
-				}
-			}
-		}
-	}
-
-	std::list<Creature*> resultList;
 	const Position& myPos = getPosition();
 
 	for (Creature* creature : targetList) {
-		if (isTarget(creature)) {
-			if ((this->targetDistance == 1) || canUseAttack(myPos, creature)) {
+		if (followCreature != creature && isTarget(creature)) {
+			if (searchType == TARGETSEARCH_RANDOM || canUseAttack(myPos, creature)) {
 				resultList.push_back(creature);
 			}
 		}
 	}
 
-	if (resultList.empty()) {
-		return false;
-	}
-
-	Creature* getTarget = nullptr;
-
 	switch (searchType) {
 		case TARGETSEARCH_NEAREST: {
-			getTarget = nullptr;
+			Creature* target = nullptr;
 			if (!resultList.empty()) {
 				auto it = resultList.begin();
-				getTarget = *it;
+				target = *it;
 
 				if (++it != resultList.end()) {
-					const Position& targetPosition = getTarget->getPosition();
-					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition));
+					const Position& targetPosition = target->getPosition();
+					int32_t minRange = Position::getDistanceX(myPos, targetPosition) + Position::getDistanceY(myPos, targetPosition);
 					do {
 						const Position& pos = (*it)->getPosition();
 
-						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos));
+						int32_t distance = Position::getDistanceX(myPos, pos) + Position::getDistanceY(myPos, pos);
 						if (distance < minRange) {
-							getTarget = *it;
+							target = *it;
 							minRange = distance;
 						}
 					} while (++it != resultList.end());
@@ -586,63 +569,22 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					}
 
 					const Position& pos = creature->getPosition();
-					int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos));
+					int32_t distance = Position::getDistanceX(myPos, pos) + Position::getDistanceY(myPos, pos);
 					if (distance < minRange) {
-						getTarget = creature;
+						target = creature;
 						minRange = distance;
 					}
 				}
 			}
 
-			if (getTarget && selectTarget(getTarget)) {
+			if (target && selectTarget(target)) {
 				return true;
 			}
 			break;
 		}
-		case TARGETSEARCH_HP: {
-			getTarget = nullptr;
-			if (!resultList.empty()) {
-				auto it = resultList.begin();
-				getTarget = *it;
-				if (++it != resultList.end()) {
-					int32_t minHp = getTarget->getHealth();
-					do {
-						if ((*it)->getHealth() < minHp) {
-							getTarget = *it;
 
-							minHp = getTarget->getHealth();
-						}
-					} while (++it != resultList.end());
-				}
-			}
-			if (getTarget && selectTarget(getTarget)) {
-				return true;
-			}
-			break;
-		}
-		case TARGETSEARCH_DAMAGE: {
-			getTarget = nullptr;
-			if (!resultList.empty()) {
-				auto it = resultList.begin();
-				getTarget = *it;
-				if (++it != resultList.end()) {
-					int32_t mostDamage = 0;
-					do {
-						const auto& dmg = damageMap.find((*it)->getID());
-						if (dmg != damageMap.end()) {
-							if (dmg->second.total > mostDamage) {
-								mostDamage = dmg->second.total;
-								getTarget = *it;
-							}
-						}
-					} while (++it != resultList.end());
-				}
-			}
-			if (getTarget && selectTarget(getTarget)) {
-				return true;
-			}
-			break;
-		}
+		case TARGETSEARCH_DEFAULT:
+		case TARGETSEARCH_ATTACKRANGE:
 		case TARGETSEARCH_RANDOM:
 		default: {
 			if (!resultList.empty()) {
@@ -650,13 +592,18 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				std::advance(it, uniform_random(0, resultList.size() - 1));
 				return selectTarget(*it);
 			}
+
+			if (searchType == TARGETSEARCH_ATTACKRANGE) {
+				return false;
+			}
+
 			break;
 		}
 	}
 
 	//lets just pick the first target in the list
 	for (Creature* target : targetList) {
-		if (selectTarget(target)) {
+		if (followCreature != target && selectTarget(target)) {
 			return true;
 		}
 	}

@@ -138,6 +138,21 @@ bool Module::configureEvent(const pugi::xml_node& node) {
 		delay = static_cast<uint16_t>(delayAttribute.as_uint());
 	}
 
+	// Need test and review this
+	pugi::xml_attribute versionAttribute = node.attribute("versionmin");
+	if (versionAttribute) {
+		uint32_t versionMin = pugi::cast<uint32_t>(versionAttribute.value());
+		uint32_t versionMax = pugi::cast<uint32_t>(node.attribute("versionmax").value());
+		if (CLIENT_VERSION < versionMin || CLIENT_VERSION > versionMax) {
+			return false;
+		}
+	} else if ((versionAttribute = node.attribute("version"))) {
+		uint32_t version = pugi::cast<uint32_t>(versionAttribute.value());
+		if (CLIENT_VERSION < version) {
+			return false;
+		}
+	}
+
 	loaded = true;
 	return true;
 }

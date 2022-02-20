@@ -314,6 +314,7 @@ class Monster final : public Creature
 		}
 
 		friend class MonsterFunctions;
+		friend class CreatureFunctions;
 		friend class Map;
 };
 

@@ -322,65 +322,68 @@ enum ShootType_t : uint8_t {
 };
 
 enum SpeakClasses : uint8_t {
-	TALKTYPE_SAY = 1,
-	TALKTYPE_WHISPER = 2,
-	TALKTYPE_YELL = 3,
-	TALKTYPE_PRIVATE_FROM = 4,
-	TALKTYPE_PRIVATE_TO = 5,
-	TALKTYPE_CHANNEL_MANAGER = 6,
-	TALKTYPE_CHANNEL_Y = 7,
-	TALKTYPE_CHANNEL_O = 8,
-	TALKTYPE_SPELL_USE = 9,
-	TALKTYPE_PRIVATE_NP = 10,
-	TALKTYPE_NPC_UNKOWN = 11, /* no effect (?)*/
-	TALKTYPE_PRIVATE_PN = 12,
-	TALKTYPE_BROADCAST = 13,
-	TALKTYPE_CHANNEL_R1 = 14, //red - #c text
-	TALKTYPE_PRIVATE_RED_FROM = 15, //@name@text
-	TALKTYPE_PRIVATE_RED_TO = 16, //@name@text
-	TALKTYPE_MONSTER_SAY = 36,
-	TALKTYPE_MONSTER_YELL = 37,
-
-	TALKTYPE_CHANNEL_R2 = 0xFF, //#d
+	TALKTYPE_NONE = 0x00,
+	TALKTYPE_SAY,
+	TALKTYPE_WHISPER,
+	TALKTYPE_YELL,
+	TALKTYPE_PRIVATE_FROM,
+	TALKTYPE_PRIVATE_TO,
+	TALKTYPE_CHANNEL_M,
+	TALKTYPE_CHANNEL_Y,
+	TALKTYPE_CHANNEL_O,
+	TALKTYPE_RVR_CHANNEL,
+	TALKTYPE_RVR_ANSWER,
+	TALKTYPE_RVR_CONTINUE,
+	TALKTYPE_SPELL,
+	TALKTYPE_PRIVATE_NP,
+	TALKTYPE_PRIVATE_PN,
+	TALKTYPE_BROADCAST,
+	TALKTYPE_CHANNEL_R1, //red - #c text
+	TALKTYPE_PRIVATE_RED_FROM, //@name@text
+	TALKTYPE_PRIVATE_RED_TO, //@name@text
+	TALKTYPE_MONSTER_SAY,
+	TALKTYPE_MONSTER_YELL,
+	TALKTYPE_CHANNEL_R2, //#d
+	TALKTYPE_BOOSTED_CREATURE,
 };
 
 enum MessageClasses : uint8_t {
-	MESSAGE_NONE = 0, /* None */
-
-	MESSAGE_GAMEMASTER_CONSOLE = 13, /* Red message in the console*/ /* TALKTYPE_BROADCAST */
-
-	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
-	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/
-	MESSAGE_EVENT_ADVANCE = 19, /* White message in game window and in the console*/
-	MESSAGE_GAME_HIGHLIGHT = 20, /* Red message in game window and in the console*/
-	MESSAGE_FAILURE = 21, /* White message at the bottom of the game window"*/
-	MESSAGE_LOOK = 22, /* Green message in game window and in the console*/
-	MESSAGE_DAMAGE_DEALT = 23, /* White message on the console*/
-	MESSAGE_DAMAGE_RECEIVED = 24, /* White message on the console*/
-	MESSAGE_HEALED = 25, /* White message on the console*/
-	MESSAGE_EXPERIENCE = 26, /* White message on the console*/
-	MESSAGE_DAMAGE_OTHERS = 27, /* White message on the console*/
-	MESSAGE_HEALED_OTHERS = 28, /* White message on the console*/
-	MESSAGE_EXPERIENCE_OTHERS = 29, /* White message on the console*/
-	MESSAGE_STATUS = 30, /* White message at the bottom of the game window and in the console*/
-	MESSAGE_LOOT = 31, /* White message on the game window and in the console*/
-	MESSAGE_TRADE = 32, /* Green message in game window and in the console*/
-	MESSAGE_GUILD = 33, /* White message in channel (+ channelId)*/
-	MESSAGE_PARTY_MANAGEMENT = 34, /* Green message in game window and in the console*/
-	MESSAGE_PARTY = 35, /* White message on the console*/
-
-	MESSAGE_REPORT = 38, /* White message on the game window and in the console*/
-	MESSAGE_HOTKEY_PRESSED = 39, /* Green message in game window and in the console*/
-	MESSAGE_TUTORIAL_HINT = 40, /* no effect (?)*/
-	MESSAGE_THANK_YOU = 41, /* no effect (?)*/
-	MESSAGE_MARKET = 42, /* Popout a modal window with the message and a 'ok' button*/
-	MESSAGE_MANA = 43, /* no effect (?)*/
-	MESSAGE_BEYOND_LAST = 44, /* White message on the game window and in the console*/
-	MESSAGE_ATTENTION = 48, /* White message on the console*/
-	MESSAGE_BOOSTED_CREATURE = 49, /* White message on the game window and in the console*/
-	MESSAGE_OFFLINE_TRAINING = 50, /* White message on the game window and in the console*/
-	MESSAGE_TRANSACTION = 51, /* White message on the game window and in the console*/
-	MESSAGE_POTION = 52, /* Orange creature say*/
+	MESSAGE_NONE = 0,
+	MESSAGE_STATUS_CONSOLE_BLUE, //Blue message in the console
+	MESSAGE_STATUS_CONSOLE_RED, //Red message in the console
+	MESSAGE_STATUS_DEFAULT, //White message at the bottom of the game window and in the console
+	MESSAGE_STATUS_WARNING, //Red message in game window and in the console
+	MESSAGE_EVENT_ADVANCE, //White message in game window and in the console
+	MESSAGE_STATUS_SMALL, //White message at the bottom of the game window
+	MESSAGE_INFO_DESCR, //Green message in game window and in the console
+	MESSAGE_EVENT_DEFAULT, //White message at the bottom of the game window and in the console
+	MESSAGE_GUILD, //White message in channel (+ channelId)
+	MESSAGE_PARTY_MANAGEMENT, //White message in channel (+ channelId)
+	MESSAGE_PARTY, //White message in channel (+ channelId)
+	MESSAGE_EVENT_ORANGE, //Orange message in the console
+	MESSAGE_STATUS_CONSOLE_ORANGE, //Orange message in the console
+	MESSAGE_DAMAGE_DEALT,
+	MESSAGE_DAMAGE_RECEIVED,
+	MESSAGE_MANA,
+	MESSAGE_HEALED,
+	MESSAGE_EXPERIENCE,
+	MESSAGE_DAMAGE_OTHERS,
+	MESSAGE_HEALED_OTHERS,
+	MESSAGE_EXPERIENCE_OTHERS,
+	MESSAGE_LOOT,
+	MESSAGE_LOGIN,
+	MESSAGE_WARNING,
+	MESSAGE_GAME,
+	MESSAGE_GAME_HIGHLIGHT,
+	MESSAGE_FAILURE,
+	MESSAGE_LOOK,
+	MESSAGE_STATUS,
+	MESSAGE_TRADENPC,
+	MESSAGE_REPORT,
+	MESSAGE_HOTKEY,
+	MESSAGE_TUTORIAL,
+	MESSAGE_THANKYOU,
+	MESSAGE_MARKET,
 };
 
 enum FluidColors_t : uint8_t {

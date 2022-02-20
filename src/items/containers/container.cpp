@@ -234,7 +234,11 @@ std::ostringstream& Container::getContentDescription(std::ostringstream& os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getClientID() << "|" << item->getNameDescription() << "}";
+		#if CLIENT_VERSION >= 1200
+		os << '{' << item->getClientID() << '|' << item->getNameDescription() << '}';
+		#else
+		os << item->getNameDescription();
+		#endif
 	}
 
 	if (firstitem) {

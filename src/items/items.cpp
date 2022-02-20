@@ -36,15 +36,6 @@ namespace fs = boost::filesystem;
 
 extern Weapons* g_weapons;
 
-Items::Items(){}
-
-void Items::clear()
-{
-	items.clear();
-	reverseItemMap.clear();
-	nameToItems.clear();
-}
-
 using LootTypeNames = std::unordered_map<std::string, ItemTypes_t>;
 
 LootTypeNames lootTypeNames = {
@@ -84,11 +75,24 @@ ItemTypes_t Items::getLootType(const std::string& strValue)
 	return ITEM_TYPE_NONE;
 }
 
+Items::Items()
+{
+	items.reserve(65000);
+	reverseItemMap.reserve(65000);
+}
+
+void Items::clear()
+{
+	items.clear();
+	reverseItemMap.clear();
+}
+
 bool Items::reload()
 {
 	clear();
-	loadFromOtb("data/items/items.otb");
-
+	items.reserve(65000);
+	reverseItemMap.reserve(65000);
+	loadFromOtb("data/items/" + std::to_string(CLIENT_VERSION) + "/items.otb");
 	if (!loadFromXml()) {
 		return false;
 	}
@@ -271,9 +275,13 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 			}
 		}
 
-		reverseItemMap.emplace(clientId, serverId);
+		if (clientId >= reverseItemMap.size()) {
+			reverseItemMap.resize(clientId + 1, 0);
+		}
 
-		// store the found item
+		reverseItemMap[clientId] = serverId;
+
+		// Store the found item
 		if (serverId >= items.size()) {
 			items.resize(serverId + 1);
 		}
@@ -340,15 +348,16 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 	}
 
 	items.shrink_to_fit();
+	reverseItemMap.shrink_to_fit();
 	return ERROR_NONE;
 }
 
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
+	pugi::xml_parse_result result = doc.load_file(("data/items/" + std::to_string(CLIENT_VERSION) + "/items.xml").c_str());
 	if (!result) {
-		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
+		printXMLError("Error - Items::loadFromXml", "data/items/" + std::to_string(CLIENT_VERSION) + "/items.xml", result);
 		return false;
 	}
 
@@ -489,9 +498,8 @@ const ItemType& Items::getItemType(size_t id) const
 
 const ItemType& Items::getItemIdByClientId(uint16_t spriteId) const
 {
-	auto it = reverseItemMap.find(spriteId);
-	if (it != reverseItemMap.end()) {
-		return getItemType(it->second);
+	if (spriteId < reverseItemMap.size()) {
+		return getItemType(reverseItemMap[spriteId]);
 	}
 	return items.front();
 }

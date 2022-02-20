@@ -22,10 +22,12 @@
 #ifndef SRC_LUA_MODULES_MODULES_H_
 #define SRC_LUA_MODULES_MODULES_H_
 
+
 #include "lua/global/baseevents.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 #include "server/network/message/networkmessage.h"
+#include "utils/pugicast.h"
 
 class Module;
 using Module_ptr = std::unique_ptr<Module>;

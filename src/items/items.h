@@ -339,7 +339,7 @@ class Items
 
 	private:
 
-		std::map<uint16_t, uint16_t> reverseItemMap;
+		std::vector<uint16_t> reverseItemMap;
 		std::vector<ItemType> items;
 		InventoryVector inventory;
 };

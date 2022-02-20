@@ -282,12 +282,41 @@ int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 	// creature:setMaster(master)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (!creature) {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
 		return 1;
 	}
 
 	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
+	if (Monster* monster = creature->getMonster()) {
+		// Update targets/friends list cache when monster became summon/non-summon
+		monster->clearTargetList();
+		monster->clearFriendList();
+		monster->updateTargetList();
+		monster->updateIdleStatus();
+
+		//Update spectators target/friends list cache when monster became summon/non-summon
+		SpectatorVector spectators;
+		g_game.map.getSpectators(spectators, monster->getPosition(), true);
+		for (Creature* spectator : spectators) {
+			if (Monster* specMonster = spectator->getMonster()) {
+				if (monster != specMonster) {
+					specMonster->onCreatureLeave(monster);
+					specMonster->onCreatureEnter(monster);
+				}
+			}
+		}
+	}
+
+	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
+	#if CLIENT_VERSION >= 1100
+	//Due to cache issues on qt clients we need to recreature creature struct
+	//updateCreatureType doesn't work anymore because it doesn't refresh client cache
+	//I don't know why cipsoft even keep this packet when it don't work anymore
+	g_game.updateCreatureData(creature);
+	#elif CLIENT_VERSION >= 910
 	g_game.updateCreatureType(creature);
+	#endif
 	return 1;
 }
 
@@ -520,8 +549,11 @@ int CreatureFunctions::luaCreatureSetHiddenHealth(lua_State* L) {
 	// creature:setHiddenHealth(hide)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
+		bool oldHiddenHealth = creature->isHealthHidden();
 		creature->setHiddenHealth(getBoolean(L, 2));
-		g_game.addCreatureHealth(creature);
+		if (oldHiddenHealth != creature->isHealthHidden()) {
+			g_game.updateCreatureData(creature);
+		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

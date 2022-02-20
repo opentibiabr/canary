@@ -237,12 +237,14 @@ class Game
 		void kickPlayer(uint32_t playerId, bool displayEffect);
 		void playerReportBug(uint32_t playerId, const std::string& message,
                              const Position& position, uint8_t category);
+
 		void playerDebugAssert(uint32_t playerId, const std::string& assertLine,
                                const std::string& date, const std::string& description,
                                const std::string& comment);
 		void playerNpcGreet(uint32_t playerId, uint32_t npcId);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId,
                                      uint8_t button, uint8_t choice);
+
 		void playerReportRuleViolationReport(uint32_t playerId,
                                              const std::string& targetName,
                                              uint8_t reportType, uint8_t reportReason,
@@ -263,7 +265,9 @@ class Game
 		void broadcastMessage(const std::string& text, MessageClasses type) const;
 
 		//Implementation of player invoked events
-		void playerTeleport(uint32_t playerId, const Position& pos);
+		#if CLIENT_VERSION >= 1150
+		void playerTeleport(uint32_t playerId, const Position& position);
+		#endif
 		void playerMoveThing(uint32_t playerId, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos,
                               const Position& toPos, uint8_t count);
 		void playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position& movingCreatureOrigPos, const Position& toPos);
@@ -280,6 +284,18 @@ class Game
 		void playerOpenChannel(uint32_t playerId, uint16_t channelId);
 		void playerCloseChannel(uint32_t playerId, uint16_t channelId);
 		void playerOpenPrivateChannel(uint32_t playerId, std::string& receiver);
+
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		void playerRuleViolation(Player* player, const std::string& target, const std::string& comment, uint8_t reason, uint8_t action, uint32_t statementId, bool ipBanishment);
+		void playerProcessRuleViolation(Player* player, const std::string& target);
+		void playerCloseRuleViolation(Player* player, const std::string& target);
+		void playerCancelRuleViolation(Player* player);
+		void playerReportRuleViolation(Player* player, const std::string& text);
+		void playerContinueReport(Player* player, const std::string& text);
+		void playerCheckRuleViolation(Player* player);
+		std::unordered_map<std::string, RuleViolation>& getRuleViolations() {return ruleViolations;}
+		#endif
+
 		void playerStowItem(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems);
 		void playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t count, uint8_t stackpos);
 		void playerCloseNpcChannel(uint32_t playerId);
@@ -297,7 +313,9 @@ class Game
 		void playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
 		void playerConfigureShowOffSocket(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
 		void playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Position& pos, uint8_t stackPos, const uint16_t spriteId, uint8_t podiumVisible, uint8_t direction);
+		#if CLIENT_VERSION >= 1092
 		void playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
+		#endif
 		void playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string& text);
 		void playerBrowseField(uint32_t playerId, const Position& pos);
 		void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index);
@@ -397,8 +415,15 @@ class Game
 		void updateCreatureIcon(const Creature* creature);
 		void updateCreatureSkull(const Creature* player);
 		void updatePlayerShield(Player* player);
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+		void updatePlayerHelpers(const Player& player);
+		#endif
+		#if CLIENT_VERSION >= 910
 		void updateCreatureType(Creature* creature);
+		#endif
+		#if CLIENT_VERSION >= 854
 		void updateCreatureWalkthrough(const Creature* creature);
+		#endif
 
 		GameState_t getGameState() const;
 		void setGameState(GameState_t newState);
@@ -427,6 +452,8 @@ class Game
 		static void addMagicEffect(const SpectatorVector& spectators, const Position& pos, uint8_t effect);
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorVector& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
+
+		void updateCreatureData(const Creature* creature);
 
 		int32_t getLightHour() const {
 			return lightHour;
@@ -575,9 +602,13 @@ class Game
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
-		std::map<uint32_t, uint32_t> stages;
+		#if GAME_FEATURE_RULEVIOLATION > 0
+		std::unordered_map<std::string, RuleViolation> ruleViolations;
+		#endif
 
+		std::map<uint32_t, uint32_t> stages;
 		std::map<uint16_t, std::string> BestiaryList;
+
 		std::string boostedCreature = "";
 
 		std::vector<Charm*> CharmList;

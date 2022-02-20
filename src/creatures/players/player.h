@@ -535,7 +535,7 @@ class Player final : public Creature, public Cylinder
 
 		uint16_t getHelpers() const;
 
-		bool setVocation(uint16_t vocId);
+		bool setVocation(uint16_t vocId, bool internal = false);
 		uint16_t getVocationId() const {
 			return vocation->getId();
 		}
@@ -661,6 +661,10 @@ class Player final : public Creature, public Cylinder
 
 		void setVarSkill(skills_t skill, int32_t modifier) {
 			varSkills[skill] += modifier;
+		}
+
+		void setVarSpecialSkill(SpecialSkills_t skill, int32_t modifier) {
+			varSpecialSkills[skill] += modifier;
 		}
 
 		void setVarStats(stats_t stat, int32_t modifier);
@@ -1019,11 +1023,21 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureShield(creature);
 			}
 		}
+		#if CLIENT_VERSION >= 910
 		void sendCreatureType(const Creature* creature, uint8_t creatureType) {
 			if (client) {
 				client->sendCreatureType(creature, creatureType);
 			}
 		}
+		#endif
+		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
+			if (client) {
+				client->sendCreatureHelpers(creatureId, helpers);
+			}
+		}
+		#endif
+		#if CLIENT_VERSION >= 870
 		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
 			if (client) {
 				client->sendSpellCooldown(spellId, time);
@@ -1034,6 +1048,7 @@ class Player final : public Creature, public Cylinder
 				client->sendSpellGroupCooldown(groupId, time);
 			}
 		}
+		#endif
 
 		void reloadCreature(const Creature* creature) {
 			if (client) {
@@ -1264,11 +1279,13 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendStats();
+		#if CLIENT_VERSION >= 950
 		void sendBasicData() const {
 			if (client) {
 				client->sendBasicData();
 			}
 		}
+		#endif
 		void sendBlessStatus() const {
 			if (client) {
 				client->sendBlessStatus();
@@ -1381,11 +1398,13 @@ class Player final : public Creature, public Cylinder
 				client->sendWorldLight(lightInfo);
 			}
 		}
+		#if CLIENT_VERSION >= 1121
 		void sendTibiaTime(int32_t time) {
 			if (client) {
 				client->sendTibiaTime(time);
 			}
 		}
+		#endif
 		void sendChannelsDialog() {
 			if (client) {
 				client->sendChannelsDialog();
@@ -1552,11 +1571,13 @@ class Player final : public Creature, public Cylinder
 				client->sendEnterWorld();
 			}
 		}
+		#if CLIENT_VERSION >= 1000
 		void sendFightModes() {
 			if (client) {
 				client->sendFightModes();
 			}
 		}
+		#endif
 		void sendNetworkMessage(const NetworkMessage& message) {
 			if (client) {
 				client->writeToOutputBuffer(message);
@@ -1993,11 +2014,11 @@ class Player final : public Creature, public Cylinder
 
 		std::vector<OutfitEntry> outfits;
 		std::vector<FamiliarEntry> familiars;
+		std::vector<uint32_t> modalWindows;
 
 		GuildWarVector guildWarVector;
 
 		std::forward_list<Party*> invitePartyList;
-		std::forward_list<uint32_t> modalWindows;
 		std::forward_list<std::string> learnedInstantSpellList;
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 		std::forward_list<Condition*> storedConditionList;
@@ -2193,6 +2214,12 @@ class Player final : public Creature, public Cylinder
 				baseSpeed = PLAYER_MAX_SPEED;
 			}
 		}
+		
+		void updateCreatureData(const Creature* creature) const {
+			if (client) {
+				client->updateCreatureData(creature);
+			}
+		}
 
 		bool isPromoted() const;
 
@@ -2200,6 +2227,11 @@ class Player final : public Creature, public Cylinder
 			return vocation->getAttackSpeed();
 		}
 
+		#if GAME_FEATURE_DOUBLE_PERCENT_SKILLS > 0
+		static uint16_t getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount);
+		#else
+		static uint8_t getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount);
+		#endif
 		static double_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);
 		double getLostPercent() const;
 		uint64_t getLostExperience() const override {

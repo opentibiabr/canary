@@ -538,36 +538,43 @@ void ConditionAttributes::endCondition(Creature* creature)
 {
   Player* player = creature->getPlayer();
   if (player) {
-    bool needUpdate = false;
+    bool needUpdateSkills = false;
 
     for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
       if (skills[i] || skillsPercent[i]) {
-        needUpdate = true;
+        needUpdateSkills = true;
         player->setVarSkill(static_cast<skills_t>(i), -skills[i]);
       }
     }
 
+    for (int32_t i = SPECIALSKILL_FIRST; i <= SPECIALSKILL_LAST; ++i) {
+      if (specialSkills[i]) {
+        needUpdateSkills = true;
+        player->setVarSpecialSkill(static_cast<SpecialSkills_t>(i), -specialSkills[i]);
+      }
+    }
+
+    if (needUpdateSkills) {
+      player->addScheduledUpdates(PlayerUpdate_Skills);
+    }
+
+    bool needUpdateStats = false;
+
     for (int32_t i = STAT_FIRST; i <= STAT_LAST; ++i) {
       if (stats[i]) {
-        needUpdate = true;
+        needUpdateStats = true;
         player->setVarStats(static_cast<stats_t>(i), -stats[i]);
       }
     }
 
-    if (needUpdate) {
-      player->sendStats();
-      player->sendSkills();
+    if (needUpdateStats) {
+      #if CLIENT_VERSION >= 1200
+      //We have magic level in skills now so we need to send skills update too here
+      player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+      #else
+      player->addScheduledUpdates(PlayerUpdate_Stats);
+      #endif
     }
-  }
-  bool needUpdateIcons = false;
-  for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
-    if (buffs[i]) {
-      needUpdateIcons = true;
-      creature->setBuff(static_cast<buffs_t>(i), -buffs[i]);
-    }
-  }
-  if (creature->getMonster() && needUpdateIcons) {
-    g_game.updateCreatureIcon(creature);
   }
 
   if (disableDefense) {
@@ -1838,12 +1845,16 @@ void ConditionSpellCooldown::addCondition(Creature* creature, const Condition* a
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
+		#if CLIENT_VERSION >= 870
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
 				player->sendSpellCooldown(subId, ticks);
 			}
 		}
+		#else
+		(void)creature;
+		#endif
 	}
 }
 
@@ -1853,12 +1864,16 @@ bool ConditionSpellCooldown::startCondition(Creature* creature)
 		return false;
 	}
 
+	#if CLIENT_VERSION >= 870
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
 			player->sendSpellCooldown(subId, ticks);
 		}
 	}
+	#else
+	(void)creature;
+	#endif
 	return true;
 }
 
@@ -1867,12 +1882,16 @@ void ConditionSpellGroupCooldown::addCondition(Creature* creature, const Conditi
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
+		#if CLIENT_VERSION >= 870
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
 				player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
 			}
 		}
+		#else
+		(void)creature;
+		#endif
 	}
 }
 
@@ -1882,11 +1901,15 @@ bool ConditionSpellGroupCooldown::startCondition(Creature* creature)
 		return false;
 	}
 
+	#if CLIENT_VERSION >= 870
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
 			player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
 		}
 	}
+	#else
+	(void)creature;
+	#endif
 	return true;
 }

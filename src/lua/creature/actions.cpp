@@ -544,7 +544,7 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 	} else {
 		ss << "Using one of " << count << ' ' << item->getPluralName() << "...";
 	}
-	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
+	player->sendTextMessage(MESSAGE_INFO_DESCR, ss.str());
 }
 
 Action::Action(LuaScriptInterface* interface) :

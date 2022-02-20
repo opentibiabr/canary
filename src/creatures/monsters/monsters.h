@@ -142,7 +142,11 @@ class MonsterType
 		bool isAttackable = true;
 		bool isHostile = true;
 		bool hiddenHealth = false;
+		#if CLIENT_VERSION >= 1070
 		bool isBlockable = false;
+		#else
+		bool isBlockable = true;
+		#endif
 		bool isFamiliar = false;
 		bool isRewardBoss = false;
 		bool canWalkOnEnergy = true;

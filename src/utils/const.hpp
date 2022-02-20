@@ -24,7 +24,17 @@ const uint32_t MAX_LOOTCHANCE = 100000;
 const uint32_t MAX_STATICWALK = 100;
 
 static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
+#if CLIENT_VERSION >= 1057
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 65500;
+#elif CLIENT_VERSION >= 940
 static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 24590;
+#elif CLIENT_VERSION >= 870
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 16398;
+#elif CLIENT_VERSION >= 780
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 16390;
+#else
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 16382;
+#endif
 
 //QT clients probably have bigger input buffer because of exiva options
 //but for now we don't support exiva options

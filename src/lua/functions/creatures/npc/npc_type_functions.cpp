@@ -200,7 +200,13 @@ int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
 	shopItem.storageValue = static_cast<int32_t>(getField<uint32_t>(L, table, "storageValue"));
 	shopItem.name = getFieldString(L, table, "itemName");
 
-	npcType->addShopItem(shopItem.name, shopItem);
+	const ItemType& itemType = Item::items[shopItem.itemClientId];
+	if (itemType.name == shopItem.name) {
+		npcType->addShopItem(shopItem.name, shopItem);
+	} else {
+		npcType->addShopItem(itemType.name, shopItem);
+	}
+
 	return 1;
 }
 

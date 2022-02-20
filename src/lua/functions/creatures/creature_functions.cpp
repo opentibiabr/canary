@@ -688,7 +688,7 @@ int CreatureFunctions::luaCreatureIsImmune(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureRemove(lua_State* L) {
-	// creature:remove(forced = false)
+	// creature:remove([forced = true])
 	Creature** creaturePtr = getRawUserdata<Creature>(L, 1);
 	if (!creaturePtr) {
 		lua_pushnil(L);

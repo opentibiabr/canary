@@ -814,7 +814,8 @@ struct ShopBlock {
 	int32_t itemSubType;
 	uint32_t itemBuyPrice;
 	uint32_t itemSellPrice;
-	int32_t itemStorageKey, itemStorageValue;
+	int32_t itemStorageKey;
+	int32_t itemStorageValue;
 
 	std::vector<ShopBlock> childShop;
 	ShopBlock() {
@@ -826,6 +827,9 @@ struct ShopBlock {
 		itemStorageKey = 0;
 		itemStorageValue = 0;
 	}
+
+	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
+		: itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) {}
 };
 
 struct summonBlock_t {

@@ -76,7 +76,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 		msg.addByte(0x01);
 	}
 	if (it.upgradeClassification > 0) {
-		msg.addByte(0);
+		msg.addByte(1);
 	}
 }
 
@@ -191,7 +191,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
 	}
 	if (it.upgradeClassification > 0) {
-		msg.addByte(0);
+		msg.addByte(1);
 	}
 }
 
@@ -4567,7 +4567,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 		msg.add<uint16_t>(it->first);
 		if (Item::items[it->first].upgradeClassification > 0)
 		{
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(std::min<uint32_t>(0xFFFF, it->second));
 	}
@@ -4643,7 +4643,7 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 	msg.addByte(MARKETREQUEST_ITEM_BROWSE);
 	msg.addItemId(itemId);
 	if (Item::items[itemId].upgradeClassification > 0) {
-		msg.addByte(0);
+		msg.addByte(1);
 	}
 
 	msg.add<uint32_t>(buyOffers.size());
@@ -4677,7 +4677,7 @@ void ProtocolGame::sendMarketAcceptOffer(const MarketOfferEx &offer)
 	msg.addByte(MARKETREQUEST_ITEM_BROWSE);
 	msg.addItemId(offer.itemId);
 	if (Item::items[offer.itemId].upgradeClassification > 0) {
-		msg.addByte(0);
+		msg.addByte(1);
 	}
 
 	if (offer.type == MARKETACTION_BUY)
@@ -4717,7 +4717,7 @@ void ProtocolGame::sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, c
 		msg.add<uint16_t>(offer.counter);
 		msg.addItemId(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(offer.amount);
 		msg.add<uint64_t>(offer.price);
@@ -4730,7 +4730,7 @@ void ProtocolGame::sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, c
 		msg.add<uint16_t>(offer.counter);
 		msg.addItemId(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(offer.amount);
 		msg.add<uint64_t>(offer.price);
@@ -4752,7 +4752,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer)
 		msg.add<uint16_t>(offer.counter);
 		msg.addItemId(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(offer.amount);
 		msg.add<uint64_t>(offer.price);
@@ -4766,7 +4766,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer)
 		msg.add<uint16_t>(offer.counter);
 		msg.addItemId(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(offer.amount);
 		msg.add<uint64_t>(offer.price);
@@ -4793,7 +4793,7 @@ void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyO
 		msg.add<uint16_t>(counterMap[it->timestamp]++);
 		msg.addItemId(it->itemId);
 		if (Item::items[it->itemId].upgradeClassification > 0) {
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(it->amount);
 		msg.add<uint64_t>(it->price);
@@ -4810,7 +4810,7 @@ void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyO
 		msg.add<uint16_t>(counterMap[it->timestamp]++);
 		msg.addItemId(it->itemId);
 		if (Item::items[it->itemId].upgradeClassification > 0) {
-			msg.addByte(0);
+			msg.addByte(1);
 		}
 		msg.add<uint16_t>(it->amount);
 		msg.add<uint64_t>(it->price);
@@ -4854,7 +4854,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 	const ItemType &it = Item::items[itemId];
 
 	if (it.upgradeClassification > 0) {
-		msg.addByte(0);
+		msg.addByte(1);
 	}
 
 	if (it.armor != 0)
@@ -7383,12 +7383,12 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	msg.addByte(0xEB);
 	msg.addItemId(item->getID());
 	if (Item::items[item->getID()].upgradeClassification > 0) {
-		msg.addByte(0);
+		msg.addByte(1);
 	}
 	msg.addByte(item->getImbuementSlot());
 
 	// Send imbuement time
-	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
+	for (uint8_t slotid = 0; slotid < static_cast<uint8_t>(item->getImbuementSlot()); slotid++)
 	{
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo))
@@ -7749,7 +7749,7 @@ void ProtocolGame::sendItemsPrice()
 			msg.addItemId(it.first);
 			if (Item::items[it.first].upgradeClassification > 0)
 			{
-				msg.addByte(0);
+				msg.addByte(1);
 			}
 			msg.add<uint32_t>(it.second);
 			msg.add<uint32_t>(0);

@@ -821,7 +821,7 @@ struct ShopBlock {
 	ShopBlock() {
 		itemId = 0;
 		itemName = "";
-		itemSubType = -1;
+		itemSubType = 0;
 		itemBuyPrice = 0;
 		itemSellPrice = 0;
 		itemStorageKey = 0;

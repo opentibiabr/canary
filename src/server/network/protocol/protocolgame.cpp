@@ -3820,18 +3820,18 @@ void ProtocolGame::sendShop(Npc *npc)
 
 	msg.addString(std::string()); // Currency name
 
-	const ShopInfoMap itemMap = npc->getShopItems();
-	uint16_t itemsToSend = std::min<size_t>(itemMap.size(), std::numeric_limits<uint16_t>::max());
+	std::vector<ShopBlock> shoplist = npc->getShopItemVector();
+	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (auto& [itemName, shopInfo] : itemMap)
+	for (ShopBlock shopBlock : shoplist)
 	{
 		if (++i > itemsToSend) {
 			break;
 		}
 
-		AddShopItem(msg, shopInfo, itemName);
+		AddShopItem(msg, shopBlock);
 	}
 
 	writeToOutputBuffer(msg);
@@ -3878,7 +3878,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const ShopInfoMap &shopInfoMap, const std::map<uint32_t, uint32_t> &inventoryMap)
+void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint32_t, uint32_t> &inventoryMap)
 {
 	//Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
@@ -3924,23 +3924,24 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shopInfoMap, const std::m
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	for (auto& [itemName, shopInfo] : shopInfoMap)
+
+	for (ShopBlock shopBlock : shopVector)
 	{
-		if (shopInfo.sellPrice == 0)
+		if (shopBlock.itemSellPrice == 0)
 		{
 			continue;
 		}
 
-		auto index = static_cast<uint32_t>(shopInfo.itemClientId);
-		if (Item::items[shopInfo.itemClientId].isFluidContainer())
+		auto index = static_cast<uint32_t>(shopBlock.itemId);
+		if (Item::items[shopBlock.itemId].isFluidContainer())
 		{
-			index |= (static_cast<uint32_t>(shopInfo.subType) << 16);
+			index |= (static_cast<uint32_t>(shopBlock.itemSubType) << 16);
 		}
 
 		it = inventoryMap.find(index);
 		if (it != inventoryMap.end())
 		{
-			msg.addItemId(shopInfo.itemClientId);
+			msg.addItemId(shopBlock.itemId);
 			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
@@ -6799,35 +6800,35 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 	msg.add<uint32_t>(0);
 }
 
-void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &shopInfo, const std::string &itemName)
+void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
 	int32_t storageValue;
-	player->getStorageValue(shopInfo.storageKey, storageValue);
-	if (shopInfo.storageKey != 0 && storageValue < shopInfo.storageValue)
+	player->getStorageValue(shopBlock.itemStorageKey, storageValue);
+	if (shopBlock.itemStorageKey != 0 && storageValue < shopBlock.itemStorageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;
 	}
 
-	const ItemType &it = Item::items[shopInfo.itemClientId];
-	msg.add<uint16_t>(shopInfo.itemClientId);
+	const ItemType &it = Item::items[shopBlock.itemId];
+	msg.add<uint16_t>(shopBlock.itemId);
 
 	if (it.isSplash() || it.isFluidContainer()) {
-		msg.addByte(static_cast<int32_t>(serverFluidToClient(shopInfo.subType)));
+		msg.addByte(static_cast<int32_t>(serverFluidToClient(shopBlock.itemSubType)));
 	} else {
 		msg.addByte(0x00);
 	}
 
 	// If not send "itemName" variable from the npc shop, will registered the name that is in items.xml
-	if (itemName.empty()) {
+	if (shopBlock.itemName.empty()) {
 		msg.addString(it.name);
 	} else {
-		msg.addString(itemName);
+		msg.addString(shopBlock.itemName);
 	}
 	msg.add<uint32_t>(it.weight);
-	msg.add<uint32_t>(shopInfo.buyPrice == 4294967295 ? 0 : shopInfo.buyPrice);
-	msg.add<uint32_t>(shopInfo.sellPrice == 4294967295 ? 0 : shopInfo.sellPrice);
+	msg.add<uint32_t>(shopBlock.itemBuyPrice == 4294967295 ? 0 : shopBlock.itemBuyPrice);
+	msg.add<uint32_t>(shopBlock.itemSellPrice == 4294967295 ? 0 : shopBlock.itemSellPrice);
 }
 
 void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg)

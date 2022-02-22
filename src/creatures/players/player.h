@@ -1299,10 +1299,10 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
-      if (client && shopOwner) {
-        client->sendSaleItemList(shopOwner->getShopItems(), inventoryMap);
-      }
-    }
+			if (client && shopOwner) {
+				client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
+			}
+		}
 		void sendCloseShop() const {
 			if (client) {
 				client->sendCloseShop();

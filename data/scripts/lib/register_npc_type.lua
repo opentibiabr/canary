@@ -146,8 +146,57 @@ end
 
 registerNpcType.shop = function(npcType, mask)
 	if type(mask.shop) == "table" then
-		for _, shopItem in pairs(mask.shop) do
-			npcType:addShopItem(shopItem)
+		for _, shopItems in pairs(mask.shop) do
+			local parent = Shop()
+			if shopItems.name then
+				parent:setNameItem(shopItems.itemName)
+			end
+			if shopItems.clientId then
+				parent:setId(shopItems.clientId)
+			end
+			if shopItems.subType or shopItems.count then
+				parent:setCount(shopItems.subType or shopItems.count)
+			end
+			if shopItems.buy or shopItems.buyPrice then
+				parent:setBuyPrice(shopItems.buy or shopItems.buyPrice)
+			end
+			if shopItems.sell or shopItems.sellPrice then
+				parent:setSellPrice(shopItems.sell or shopItems.sellPrice)
+			end
+			if shopItems.storageKey then
+				parent:setStorageKey(shopItems.storageKey)
+			end
+			if shopItems.storageValue then
+				parent:setStorageValue(shopItems.storageValue)
+			end
+			if shopItems.child then
+				for _, children in pairs(shopItems.child) do
+					local child = Shop()
+					if shopItems.name then
+						child:setNameItem(shopItems.itemName)
+					end
+					if shopItems.clientId then
+						child:setId(shopItems.clientId)
+					end
+					if shopItems.subType or shopItems.count then
+						child:setCount(shopItems.subType or shopItems.count)
+					end
+					if shopItems.buy or shopItems.buyPrice then
+						child:setBuyPrice(shopItems.buy or shopItems.buyPrice)
+					end
+					if shopItems.sell or shopItems.sellPrice then
+						child:setSellPrice(shopItems.sell or shopItems.sellPrice)
+					end
+					if shopItems.storageKey then
+						child:setStorageKey(shopItems.storageKey)
+					end
+					if shopItems.storageValue then
+						child:setStorageValue(shopItems.storageValue)
+					end
+					parent:addChildShop(child)
+				end
+			end
+			npcType:addShopItem(parent)
 		end
 	end
 end

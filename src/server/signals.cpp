@@ -20,7 +20,6 @@
 #include "otpch.h"
 #include <csignal>
 
-#include "config/configmanager.h"
 #include "creatures/appearance/mounts/mounts.h"
 #include "creatures/combat/spells.h"
 #include "creatures/monsters/monster.h"
@@ -40,7 +39,6 @@ extern Scheduler g_scheduler;
 extern DatabaseTasks g_databaseTasks;
 extern Dispatcher g_dispatcher;
 
-extern ConfigManager g_config;
 extern Actions* g_actions;
 extern Monsters g_monsters;
 extern TalkActions* g_talkActions;
@@ -144,7 +142,7 @@ void Signals::sighupHandler()
 	//Dispatcher thread
 	SPDLOG_INFO("SIGHUP received, reloading config files...");
 
-	g_config.reload();
+	g_configManager().reload();
 	SPDLOG_INFO("Reloaded config");
 
 	g_game.raids.reload();

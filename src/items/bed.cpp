@@ -223,7 +223,7 @@ void BedItem::regeneratePlayer(Player* player) const
 	if (condition != nullptr) {
 		uint32_t regen;
 		if (condition->getTicks() != -1) {
-			regen = std::min<int32_t>((condition->getTicks() / 1000), sleptTime) / 30;
+			regen = std::min<int32_t>((condition->getTicks() / 1000), sleptTime) / 30; // RATE_HEALTH_REGEN_SPEED and RATE_MANA_REGEN_SPEED?
 			const int32_t newRegenTicks = condition->getTicks() - (regen * 30000);
 			if (newRegenTicks <= 0) {
 				player->removeCondition(condition);
@@ -234,11 +234,11 @@ void BedItem::regeneratePlayer(Player* player) const
 			regen = sleptTime / 30;
 		}
 
-		player->changeHealth(regen, false);
-		player->changeMana(regen);
+		player->changeHealth(regen * g_configManager().getFloat(RATE_HEALTH_REGEN), false);
+		player->changeMana(regen * g_configManager().getFloat(RATE_MANA_REGEN));
 	}
 
-	const int32_t soulRegen = sleptTime / (60 * 15);
+	const int32_t soulRegen = sleptTime / (60 * 15); // RATE_SOUL_REGEN_SPEED?
 	player->changeSoul(soulRegen);
 }
 

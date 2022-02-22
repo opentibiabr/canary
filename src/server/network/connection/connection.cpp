@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "server/network/connection/connection.h"
 #include "server/network/message/outputmessage.h"
 #include "server/network/protocol/protocol.h"
@@ -27,7 +26,6 @@
 #include "game/scheduling/scheduler.h"
 #include "server/server.h"
 
-extern ConfigManager g_config;
 
 Connection_ptr ConnectionManager::createConnection(boost::asio::io_service& io_service, ConstServicePort_ptr servicePort)
 {
@@ -151,7 +149,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 	}
 
 	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
-	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_config.getNumber(MAX_PACKETS_PER_SECOND))) {
+	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
 			SPDLOG_INFO("{} disconnected for exceeding packet per second limit", convertIPToString(getIP()));
 			close();
 			return;
@@ -163,7 +161,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 		if (!receivedName && msgBuffer[1] == 0x00) {
 			receivedLastChar = true;
 		} else {
-			std::string serverName = g_config.getString(SERVER_NAME) + "\n";
+			std::string serverName = g_configManager().getString(SERVER_NAME) + "\n";
 
 			if (!receivedName) {
 				if (static_cast<char>(msgBuffer[0]) == serverName[0]

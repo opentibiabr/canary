@@ -34,18 +34,19 @@ class NpcType
 
 		uint8_t speechBubble;
 
-		uint16_t currencyServerId = ITEM_GOLD_COIN;
+		uint16_t currencyId = ITEM_GOLD_COIN;
 
 		uint32_t yellChance = 0;
 		uint32_t yellSpeedTicks = 0;
-		uint32_t baseSpeed = 200;
-		uint32_t walkInterval = 1500;
+		uint32_t baseSpeed = 100;
+		uint32_t walkInterval = 2000;
 
 		int32_t creatureAppearEvent = -1;
 		int32_t creatureDisappearEvent = -1;
 		int32_t creatureMoveEvent = -1;
 		int32_t creatureSayEvent = -1;
 		int32_t thinkEvent = -1;
+		int32_t playerCloseChannel = -1;
 		int32_t playerBuyEvent = -1;
 		int32_t playerSellEvent = -1;
 		int32_t playerLookEvent = -1;
@@ -79,8 +80,8 @@ class NpcType
 		std::string nameDescription;
 		NpcInfo info;
 
-		void addShopItem(uint16_t serverId, ShopInfo &item) {
-			info.shopItems[serverId] = item;
+		void addShopItem(const std::string &itemName, const ShopInfo &shopInfo) {
+			info.shopItems[itemName] = shopInfo;
 		}
 
 		bool loadCallback(LuaScriptInterface* scriptInterface);

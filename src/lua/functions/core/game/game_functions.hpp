@@ -71,6 +71,8 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "createTile", GameFunctions::luaGameCreateTile);
 				registerMethod(L, "Game", "createBestiaryCharm", GameFunctions::luaGameCreateBestiaryCharm);
 
+				registerMethod(L, "Game", "createItemClassification", GameFunctions::luaGameCreateItemClassification);
+
 				registerMethod(L, "Game", "getBestiaryCharm", GameFunctions::luaGameGetBestiaryCharm);
 
 				registerMethod(L, "Game", "startRaid", GameFunctions::luaGameStartRaid);
@@ -128,6 +130,8 @@ class GameFunctions final : LuaScriptInterface {
 
 			static int luaGameGetBestiaryCharm(lua_State* L);
 			static int luaGameCreateBestiaryCharm(lua_State* L);
+
+			static int luaGameCreateItemClassification(lua_State* L);
 
 			static int luaGameStartRaid(lua_State* L);
 

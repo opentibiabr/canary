@@ -512,7 +512,8 @@ class Player final : public Creature, public Cylinder
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false) const;
+		bool canSellImbuedItem(Item *item, bool ignoreImbued);
+		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool ignoreImbued = true) const;
 
 		void addItemOnStash(uint16_t clientId, uint32_t amount) {
 			auto it = stashItems.find(clientId);
@@ -671,7 +672,7 @@ class Player final : public Creature, public Cylinder
 		void openShopWindow(Npc* npc);
 		bool closeShopWindow(bool sendCloseShopWindow = true);
 		bool updateSaleShopList(const Item* item);
-		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
+		bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
 		void setChaseMode(bool mode);
 		void setFightMode(FightMode_t mode) {

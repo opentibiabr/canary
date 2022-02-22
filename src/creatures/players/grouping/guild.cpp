@@ -32,7 +32,7 @@ void Guild::addMember(Player* player)
 	for (Player* member : membersOnline) {
 		g_game.updatePlayerHelpers(*member);
 	}
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 }
 
 void Guild::removeMember(Player* player)
@@ -43,7 +43,7 @@ void Guild::removeMember(Player* player)
 		g_game.updatePlayerHelpers(*member);
 	}
 	g_game.updatePlayerHelpers(*player);
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 
 	if (membersOnline.empty()) {
 		g_game.removeGuild(id);

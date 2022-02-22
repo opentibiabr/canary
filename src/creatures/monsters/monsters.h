@@ -146,7 +146,7 @@ class MonsterType
 		bool isBlockable = false;
 		#else
 		bool isBlockable = true;
-		#endif
+		#endif // CLIENT_VERSION >= 1070
 		bool isFamiliar = false;
 		bool isRewardBoss = false;
 		bool canWalkOnEnergy = true;

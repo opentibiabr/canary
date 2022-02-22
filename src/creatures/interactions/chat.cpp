@@ -317,19 +317,19 @@ bool Chat::load()
 				channelId = 8;
 				#else
 				channelId = 7;
-				#endif
+				#endif // CLIENT_VERSION >= 871
 			} else if (!tfs_strcmp(tmpStrValue.c_str(), "advertising")) {
 				#if CLIENT_VERSION >= 871
 				channelId = 5;
 				#else
 				channelId = 4;
-				#endif
+				#endif // CLIENT_VERSION >= 871
 			} else if (!tfs_strcmp(tmpStrValue.c_str(), "advertising-rookgaard")) {
 				#if CLIENT_VERSION >= 871
 				channelId = 6;
 				#else
 				channelId = 5;
-				#endif
+				#endif // CLIENT_VERSION >= 871
 			} else if (!tfs_strcmp(tmpStrValue.c_str(), "rvr")) {
 				#if GAME_FEATURE_RULEVIOLATION > 0
 				channelId = 3;

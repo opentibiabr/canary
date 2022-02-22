@@ -44,7 +44,7 @@ void Party::disband()
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(*currentLeader);
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	currentLeader->sendPlayerPartyIcons(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
 
@@ -69,7 +69,7 @@ void Party::disband()
 		currentLeader->sendPlayerPartyIcons(member);
 		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		g_game.updatePlayerHelpers(*member);
-		#endif
+		#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	}
 	memberList.clear();
 	delete this;
@@ -112,14 +112,14 @@ bool Party::leaveParty(Player* player)
 	player->sendClosePrivate(CHANNEL_PARTY);
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(*player);
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 
 	for (Player* member : memberList) {
 		member->sendPlayerPartyIcons(player);
 		player->sendPlayerPartyIcons(member);
 		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		g_game.updatePlayerHelpers(*member);
-		#endif
+		#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	}
 
 	leader->sendPlayerPartyIcons(player);
@@ -225,11 +225,11 @@ bool Party::joinParty(Player& player)
 
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	g_game.updatePlayerHelpers(player);
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 
 	#if GAME_FEATURE_PARTY_LIST > 0
 	updatePlayerStatus(&player);
-	#endif
+	#endif // GAME_FEATURE_PARTY_LIST
 
 	player.removePartyInvitation(this);
 	updateSharedExperience();
@@ -237,7 +237,7 @@ bool Party::joinParty(Player& player)
 	const std::string& leaderName = leader->getName();
 	ss.str(std::string());
 	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") <<
-		" party. Open the party channel to communicate with your companions.";
+       " party. Open the party channel to communicate with your companions.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 	return true;
 }
@@ -269,7 +269,7 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 
 		g_game.updatePlayerHelpers(*leader);
 	}
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 
 	return true;
 }
@@ -310,7 +310,7 @@ bool Party::invitePlayer(Player& player)
 		g_game.updatePlayerHelpers(*member);
 	}
 	g_game.updatePlayerHelpers(*leader);
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 
 	leader->sendCreatureShield(&player);
 	player.sendCreatureShield(leader);
@@ -610,5 +610,5 @@ void Party::updatePlayerVocation(const Player* player)
 		leader->sendPartyPlayerVocation(player);
 	}
 }
-#endif
-#endif
+#endif // GAME_FEATURE_PLAYER_VOCATIONS
+#endif // GAME_FEATURE_PARTY_LIST

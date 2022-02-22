@@ -1029,14 +1029,14 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureType(creature, creatureType);
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 910
 		#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers) {
 			if (client) {
 				client->sendCreatureHelpers(creatureId, helpers);
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 		#if CLIENT_VERSION >= 870
 		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
 			if (client) {
@@ -1048,7 +1048,7 @@ class Player final : public Creature, public Cylinder
 				client->sendSpellGroupCooldown(groupId, time);
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 870
 
 		void reloadCreature(const Creature* creature) {
 			if (client) {
@@ -1285,7 +1285,7 @@ class Player final : public Creature, public Cylinder
 				client->sendBasicData();
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 950
 		void sendBlessStatus() const {
 			if (client) {
 				client->sendBlessStatus();
@@ -1404,7 +1404,7 @@ class Player final : public Creature, public Cylinder
 				client->sendTibiaTime(time);
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 1121
 		void sendChannelsDialog() {
 			if (client) {
 				client->sendChannelsDialog();
@@ -1577,7 +1577,7 @@ class Player final : public Creature, public Cylinder
 				client->sendFightModes();
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 1000
 		void sendNetworkMessage(const NetworkMessage& message) {
 			if (client) {
 				client->writeToOutputBuffer(message);

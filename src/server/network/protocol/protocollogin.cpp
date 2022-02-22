@@ -287,6 +287,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	}
 
 	#if GAME_FEATURE_SESSIONKEY > 0
+	std::string authToken = msg.getString();
+	#if GAME_FEATURE_LOGIN_EMAIL > 0
 	// read authenticator token and stay logged in flag from last 128 bytes
 	msg.skipBytes((msg.getLength() - 128) - msg.getBufferPosition());
 	if (!Protocol::RSA_decrypt(msg)) {
@@ -294,10 +296,12 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	std::string authToken = msg.getString();
-
+	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, std::move(email), std::move(password), std::move(authToken), clientVersion)));
+	#else
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
 	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, std::move(accountName), std::move(password), std::move(authToken), clientVersion)));
+	#endif
 	#else
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
 	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, std::move(accountName), std::move(password), clientVersion)));

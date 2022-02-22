@@ -598,7 +598,7 @@ void Combat::combatTileEffects(const SpectatorVector& spectators, NetworkMessage
 		effectMsg.addByte(params.impactEffect);
 	}
 }
-#endif
+#endif // CLIENT_VERSION >= 1203
 
 void Combat::combatTileEffects(const SpectatorVector& spectators, Creature* caster, Tile* tile, const CombatParams& params)
 {
@@ -842,7 +842,7 @@ void Combat::doCombat(Creature* caster, const Position& position) const
 		effectMsg.add<uint16_t>(effectParams.startPosX);
 		effectMsg.add<uint16_t>(effectParams.startPosY);
 		effectMsg.addByte(position.z);
-		#endif
+		#endif // CLIENT_VERSION >= 1203
 
 		for (Tile* tile : tileList) {
 			if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
@@ -853,7 +853,7 @@ void Combat::doCombat(Creature* caster, const Position& position) const
 			combatTileEffects(spectators, effectMsg, effectParams, caster, tile, params);
 			#else
 			combatTileEffects(spectators, caster, tile, params);
-			#endif
+			#endif // CLIENT_VERSION >= 1203
 			if (CreatureVector* creatures = tile->getCreatures()) {
 				const Creature* topCreature = tile->getTopCreature();
 				for (Creature* creature : *creatures) {
@@ -905,7 +905,7 @@ void Combat::doCombat(Creature* caster, const Position& position) const
 				tmpPlayer->sendNetworkMessage(effectMsg);
 			}
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 1203
 	}
 }
 
@@ -953,7 +953,7 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 				damage.secondary.value += std::round(damage.secondary.value * (skill * 0.01));
 				#if CLIENT_VERSION >= 1094
 				g_game.addMagicEffect(target->getPosition(), CONST_ME_CRITICAL_DAMAGE);
-				#endif
+				#endif // CLIENT_VERSION >= 1094
 			}
 		}
 
@@ -1079,7 +1079,7 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 	effectMsg.add<uint16_t>(effectParams.startPosX);
 	effectMsg.add<uint16_t>(effectParams.startPosY);
 	effectMsg.addByte(position.z);
-	#endif
+	#endif // CLIENT_VERSION >= 1203
 
 	std::vector<Creature*> toDamageCreatures;
 	toDamageCreatures.reserve(100);
@@ -1093,7 +1093,7 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 		combatTileEffects(spectators, effectMsg, effectParams, caster, tile, params);
 		#else
 		combatTileEffects(spectators, caster, tile, params);
-		#endif
+		#endif // CLIENT_VERSION >= 1203
 		if (CreatureVector* creatures = tile->getCreatures()) {
 			const Creature* topCreature = tile->getTopCreature();
 			for (Creature* creature : *creatures) {
@@ -1122,9 +1122,9 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 						}
 						#else
 						g_game.addMagicEffect(creature->getPosition(), CONST_ME_CRITICAL_DAMAGE);
-						#endif
+						#endif // CLIENT_VERSION >= 1203
 					}
-					#endif
+					#endif // CLIENT_VERSION >= 1094
 
 					if (params.targetCasterOrTopMost) {
 						break;
@@ -1141,7 +1141,7 @@ void Combat::doAreaCombat(Creature* caster, const Position& position, const Area
 			tmpPlayer->sendNetworkMessage(effectMsg);
 		}
 	}
-	#endif
+	#endif // CLIENT_VERSION >= 1203
 
 	CombatDamage leechCombat;
 	for (Creature* creature : toDamageCreatures) {

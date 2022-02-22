@@ -6341,19 +6341,24 @@ void ProtocolGame::sendOutfitWindow()
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
+	#if GAME_FEATURE_MOUNTS > 0
 	Mount* currentMount = g_game.mounts.getMountByID(player->getCurrentMount());
 	if (currentMount) {
 		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;
 	}
+	#endif
 
 	AddOutfit(msg, currentOutfit);
-
+	#if GAME_FEATURE_MOUNT_COLORS > 0
 	msg.addByte(currentOutfit.lookMountHead);
 	msg.addByte(currentOutfit.lookMountBody);
 	msg.addByte(currentOutfit.lookMountLegs);
 	msg.addByte(currentOutfit.lookMountFeet);
+	#endif
+	#if GAME_FEATURE_FAMILIARS > 0
 	msg.add<uint16_t>(currentOutfit.lookFamiliarsType);
+	#endif
 
 	#if GAME_FEATURE_OUTFITS > 0
 	auto startOutfits = msg.getBufferPosition();
@@ -6406,7 +6411,6 @@ void ProtocolGame::sendOutfitWindow()
 	}
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
-
 	for (const Outfit& outfit : outfits) {
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
@@ -6423,28 +6427,40 @@ void ProtocolGame::sendOutfitWindow()
 			break;
 		}
 	}
-
+	
 	auto endOutfits = msg.getBufferPosition();
 	msg.setBufferPosition(startOutfits);
 	#if GAME_FEATURE_MOUNTS_U16 > 0
 	msg.add<uint16_t>(outfitSize);
 	#else
 	msg.addByte(outfitSize);
-	#endif // GAME_FEATURE_MOUNTS_U16
-	#endif // GAME_FEATURE_OUTFITS
+	#endif
 	msg.setBufferPosition(endOutfits);
 
+	#if GAME_FEATURE_MOUNTS > 0
 	auto startMounts = msg.getBufferPosition();
+	#if GAME_FEATURE_MOUNTS_U16 > 0
 	uint16_t limitMounts = std::numeric_limits<uint16_t>::max();
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 1062
+	uint8_t limitMounts = 50;
+	#else
+	uint8_t limitMounts = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t mountSize = 0;
+	msg.skipBytes(1);
+	#endif
 
 	const auto& mounts = g_game.mounts.getMounts();
 	for (const Mount& mount : mounts) {
 		if (player->hasMount(&mount)) {
 			msg.add<uint16_t>(mount.clientId);
 			msg.addString(mount.name);
+			#if GAME_FEATURE_OUTFITS_TYPE > 0
 			msg.addByte(0x00);
+			#endif
 			if (++mountSize == limitMounts) {
 				break;
 			}
@@ -6453,9 +6469,16 @@ void ProtocolGame::sendOutfitWindow()
 
 	auto endMounts = msg.getBufferPosition();
 	msg.setBufferPosition(startMounts);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
 	msg.add<uint16_t>(mountSize);
+	#else
+	msg.addByte(mountSize);
+	#endif
 	msg.setBufferPosition(endMounts);
+	#endif
 
+	// TODO (Eduardo Dantas): Need review
+	#if GAME_FEATURE_FAMILIARS > 0
 	auto startFamiliars = msg.getBufferPosition();
 	uint16_t limitFamiliars = std::numeric_limits<uint16_t>::max();
 	uint16_t familiarSize = 0;
@@ -6472,7 +6495,7 @@ void ProtocolGame::sendOutfitWindow()
 		msg.addString(familiar.name);
 		msg.addByte(0x00);
 		if (++familiarSize == limitFamiliars) {
-				break;
+			break;
 		}
 	}
 
@@ -6480,9 +6503,21 @@ void ProtocolGame::sendOutfitWindow()
 	msg.setBufferPosition(startFamiliars);
 	msg.add<uint16_t>(familiarSize);
 	msg.setBufferPosition(endFamiliars);
-
-	msg.addByte(0x00); //Try outfit
+	#endif // GAME_FEATURE_FAMILIARS
+	
+	#if GAME_FEATURE_OUTFITS_TYPE > 0
+	msg.addByte(0x00);//Try outfit
 	msg.addByte(mounted ? 0x01 : 0x00);
+	#endif
+	#else
+	#if GAME_FEATURE_LOOKTYPE_U16 > 0
+	msg.add<uint16_t>(player->sex % 2 ? 128 : 136);
+	msg.add<uint16_t>(player->isPremium() ? (player->sex % 2 ? 134 : 142) : (player->sex % 2 ? 131 : 139));
+	#else
+	msg.addByte(player->sex % 2 ? 128 : 136);
+	msg.addByte(player->isPremium() ? (player->sex % 2 ? 134 : 142) : (player->sex % 2 ? 131 : 139));
+	#endif
+	#endif
 
 	// Version 12.81 - Random outfit 'bool'
 	msg.addByte(0);
@@ -6526,35 +6561,58 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 		msg.add<uint16_t>(0);
 	}
 
+	#if GAME_FEATURE_MOUNTS > 0
 	if (lookMount) {
 		uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookMount->value));
 		mounted = (look != 0);
 		msg.add<uint16_t>(look);
 
+		#if GAME_FEATURE_MOUNT_COLORS > 0
 		if (mounted) {
 			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookMountHead");
 			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookMountBody");
 			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookMountLegs");
 			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookMountFeet");
 
-			msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
+			msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+			msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+			msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+			msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
 		}
+		#endif
 	} else {
 		msg.add<uint16_t>(0);
+		#if GAME_FEATURE_MOUNT_COLORS > 0
 		msg.addByte(0);
 		msg.addByte(0);
 		msg.addByte(0);
 		msg.addByte(0);
+		#endif
 	}
+	#endif // GAME_FEATURE_MOUNTS
+
+	#if GAME_FEATURE_FAMILIARS > 0
 	msg.add<uint16_t>(0);
+	#endif
 
 	auto startOutfits = msg.getBufferPosition();
+	#if GAME_FEATURE_OUTFITS_U16 > 0
 	uint16_t limitOutfits = std::numeric_limits<uint16_t>::max();
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 800
+	uint8_t limitOutfits = 15;
+	#elif CLIENT_VERSION < 870
+	uint8_t limitOutfits = 25;
+	#elif CLIENT_VERSION < 1062
+	uint8_t limitOutfits = 50;
+	#else
+	uint8_t limitOutfits = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t outfitSize = 0;
+	msg.skipBytes(1);
+	#endif
 
 	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const Outfit& outfit : outfits) {
@@ -6577,17 +6635,30 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(outfitSize);
 	msg.setBufferPosition(endOutfits);
 
+	#if GAME_FEATURE_MOUNTS > 0
 	auto startMounts = msg.getBufferPosition();
+	#if GAME_FEATURE_MOUNTS_U16 > 0
 	uint16_t limitMounts = std::numeric_limits<uint16_t>::max();
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
+	#else
+	#if CLIENT_VERSION < 1062
+	uint8_t limitMounts = 50;
+	#else
+	uint8_t limitMounts = std::numeric_limits<uint8_t>::max();
+	#endif
+	uint8_t mountSize = 0;
+	msg.skipBytes(1);
+	#endif
 
 	const auto& mounts = g_game.mounts.getMounts();
 	for (const Mount& mount : mounts) {
 		if (player->hasMount(&mount)) {
 			msg.add<uint16_t>(mount.clientId);
 			msg.addString(mount.name);
+			#if GAME_FEATURE_OUTFITS_TYPE > 0
 			msg.addByte(0x00);
+			#endif
 			if (++mountSize == limitMounts) {
 				break;
 			}
@@ -6596,8 +6667,13 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 
 	auto endMounts = msg.getBufferPosition();
 	msg.setBufferPosition(startMounts);
+	#if GAME_FEATURE_MOUNTS_U16 > 0
 	msg.add<uint16_t>(mountSize);
+	#else
+	msg.addByte(mountSize);
+	#endif
 	msg.setBufferPosition(endMounts);
+	#endif
 
 	msg.add<uint16_t>(0);
 
@@ -6639,11 +6715,17 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	writeToOutputBuffer(msg);
 }
 
+#if CLIENT_VERSION >= 870
 void ProtocolGame::sendSpellCooldown(uint8_t spellId, uint32_t time)
 {
 	NetworkMessage msg;
 	msg.addByte(0xA4);
 
+	#if CLIENT_VERSION >= 1121
+	if (spellId >= 170) {
+		spellId = 150;
+	}
+	#endif
 	msg.addByte(spellId);
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
@@ -6657,6 +6739,7 @@ void ProtocolGame::sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time)
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
 }
+#endif // CLIENT_VERSION >= 870
 
 void ProtocolGame::sendOpenStore(uint8_t)
 {
@@ -6871,6 +6954,7 @@ void ProtocolGame::sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint3
 	writeToOutputBuffer(msg);
 }
 
+#if CLIENT_VERSION >= 960
 void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow)
 {
 	NetworkMessage msg;
@@ -6887,19 +6971,33 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow)
 		msg.addByte(it.second);
 	}
 
+	#if CLIENT_VERSION >= 970
 	msg.addByte(modalWindow.choices.size());
 	for (const auto &it : modalWindow.choices)
 	{
 		msg.addString(it.first);
 		msg.addByte(it.second);
 	}
+	#endif
 
-	msg.addByte(modalWindow.defaultEscapeButton);
-	msg.addByte(modalWindow.defaultEnterButton);
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX)
+	{
+		msg.addByte(modalWindow.defaultEnterButton);
+		msg.addByte(modalWindow.defaultEscapeButton);
+	}
+	else
+	{
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	}
+	#if CLIENT_VERSION >= 970
 	msg.addByte(modalWindow.priority ? 0x01 : 0x00);
+	#endif
 
 	writeToOutputBuffer(msg);
 }
+#endif
 
 ////////////// Add common messages
 void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bool known, uint32_t remove)
@@ -6920,8 +7018,9 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		msg.add<uint16_t>(0x61);
 		msg.add<uint32_t>(remove);
 		msg.add<uint32_t>(creature->getID());
+		#if CLIENT_VERSION >= 910
 		msg.addByte(creatureType);
-
+		#endif
 		if (creatureType == CREATURETYPE_HIDDEN)
 		{
 			msg.addString(std::string());
@@ -6932,6 +7031,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		}
 	}
 
+	#if CLIENT_VERSION >= 1121
 	if (creatureType == CREATURETYPE_HIDDEN && creature != player)
 	{
 		msg.addByte(0x00);
@@ -6940,13 +7040,23 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 	{
 		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
 	}
+	#else
+	if (creatureType == CREATURETYPE_HIDDEN)
+	{
+		msg.addByte(0x00);
+	}
+	else
+	{
+		msg.addByte(std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100));
+	}
+	#endif
 
 	msg.addByte(creature->getDirection());
-
 	if (!creature->isInGhostMode() && !creature->isInvisible())
 	{
 		const Outfit_t& outfit = creature->getCurrentOutfit();
 		AddOutfit(msg, outfit, true);
+		#if GAME_FEATURE_MOUNT_COLORS > 0
 		if (outfit.lookMount != 0)
 		{
 			msg.addByte(outfit.lookMountHead);
@@ -6954,30 +7064,41 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			msg.addByte(outfit.lookMountLegs);
 			msg.addByte(outfit.lookMountFeet);
 		}
+		#endif
 	}
 	else
 	{
 		static Outfit_t outfit;
 		AddOutfit(msg, outfit, false);
+		#if GAME_FEATURE_MOUNTS > 0
 		msg.add<uint16_t>(0);
+		#endif
 	}
 
 	LightInfo lightInfo = creature->getCreatureLight();
 	msg.addByte(player->isAccessPlayer() ? 0xFF : lightInfo.level);
 	msg.addByte(lightInfo.color);
 
+	#if GAME_FEATURE_NEWSPEED_LAW > 0
 	msg.add<uint16_t>(creature->getStepSpeed() / 2);
+	#else
+	msg.add<uint16_t>(creature->getStepSpeed());
+	#endif
 
+	#if GAME_FEATURE_STATE_ICONS > 0
 	msg.addByte(0);
+	#endif
 
 	msg.addByte(player->getSkullClient(creature));
 	msg.addByte(player->getPartyShield(otherPlayer));
-
+	#if GAME_FEATURE_GUILD_EMBLEM > 0
 	if (!known)
 	{
 		msg.addByte(player->getGuildEmblem(otherPlayer));
 	}
+	#endif
 
+	#if GAME_FEATURE_CREATURE_TYPE > 0
 	if (creatureType == CREATURETYPE_MONSTER)
 	{
 		const Creature *master = creature->getMaster();
@@ -6998,6 +7119,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		}
 	}
 
+	#if CLIENT_VERSION >= 1121
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS)
 	{
 		creatureType = CREATURETYPE_SUMMON_PLAYER;
@@ -7005,7 +7127,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 	msg.addByte(creatureType);
 	if (creatureType == CREATURETYPE_SUMMON_PLAYER)
 	{
-		const Creature* master = creature->getMaster();
+		const Creature *master = creature->getMaster();
 		if (master)
 		{
 			msg.add<uint32_t>(master->getID());
@@ -7015,57 +7137,130 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			msg.add<uint32_t>(0);
 		}
 	}
-
+	#else
+	msg.addByte(creatureType); // Type (for summons)
+	#endif // CLIENT_VERSION >= 1121
+	#if GAME_FEATURE_PLAYER_VOCATIONS > 0
 	if (creatureType == CREATURETYPE_PLAYER)
 	{
 		msg.addByte(creature->getPlayer()->getVocation()->getClientId());
 	}
+	#endif
+	#endif
 
+	#if GAME_FEATURE_CREATURE_ICONS > 0
 	msg.addByte(creature->getSpeechBubble());
+	#endif
+	#if GAME_FEATURE_CREATURE_MARK > 0
 	msg.addByte(0xFF); // MARK_UNMARKED
+	#endif
+	#if GAME_FEATURE_INSPECTION > 0
 	msg.addByte(0); // inspection type
+	#endif
 
+	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
+	if (otherPlayer)
+	{
+		msg.add<uint16_t>(otherPlayer->getHelpers());
+	} else {
+		msg.add<uint16_t>(0x00);
+	}
+	#endif
+
+	#if CLIENT_VERSION >= 854
 	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
+	#endif
 }
 
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 {
 	msg.addByte(0xA0);
 
+	#if GAME_FEATURE_DOUBLE_HEALTH > 0
+	msg.add<uint32_t>(player->getHealth());
+	msg.add<uint32_t>(player->getMaxHealth());
+	#else
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
+	#endif
 
+	#if GAME_FEATURE_DOUBLE_CAPACITY > 0
 	msg.add<uint32_t>(player->getFreeCapacity());
+	#else
+	msg.add<uint16_t>(player->getFreeCapacity());
+	#endif
 
+	#if GAME_FEATURE_TOTAL_CAPACITY > 0 && CLIENT_VERSION < 1150
+	msg.add<uint32_t>(player->getCapacity());
+	#endif
+
+	#if GAME_FEATURE_DOUBLE_EXPERIENCE > 0
 	msg.add<uint64_t>(player->getExperience());
+	#else
+	msg.add<uint32_t>(std::min<uint64_t>(player->getExperience(), std::numeric_limits<uint32_t>::max()));
+	#endif
 
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
 
+	#if GAME_FEATURE_EXPERIENCE_BONUS > 0
+	#if GAME_FEATURE_DETAILED_EXPERIENCE_BONUS > 0
 	msg.add<uint16_t>(player->getBaseXpGain()); // base xp gain rate
+	#if CLIENT_VERSION < 1150
+	msg.add<uint16_t>(0); // Experience voucher
+	#endif // CLIENT_VERSION < 1150
 	msg.add<uint16_t>(player->getGrindingXpBoost()); // low level bonus
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
+	#else
+	msg.addDouble<2>(0.0);
+	#endif // GAME_FEATURE_DETAILED_EXPERIENCE_BONUS
+	#endif // GAME_FEATURE_EXPERIENCE_BONUS
 
+	#if GAME_FEATURE_DOUBLE_HEALTH > 0
+	msg.add<uint32_t>(player->getMana());
+	msg.add<uint32_t>(player->getMaxMana());
+	#else
 	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	#endif
+
+	#if CLIENT_VERSION < 1200
+	msg.addByte(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint8_t>::max()));
+	#if GAME_FEATURE_BASE_SKILLS > 0
+	msg.addByte(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint8_t>::max()));
+	#endif // GAME_FEATURE_BASE_SKILLS
+	msg.addByte(player->getMagicLevelPercent());
+	#endif // CLIENT_VERSION < 1200
 
 	msg.addByte(player->getSoul());
 
+	#if GAME_FEATURE_STAMINA > 0
 	msg.add<uint16_t>(player->getStaminaMinutes());
+	#endif // GAME_FEATURE_STAMINA
 
+	#if GAME_FEATURE_BASE_SKILLS > 0
 	msg.add<uint16_t>(player->getBaseSpeed() / 2);
+	#endif // GAME_FEATURE_BASE_SKILLS
 
+	#if GAME_FEATURE_REGENERATION_TIME > 0
 	Condition *condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
+	#endif // GAME_FEATURE_REGENERATION_TIME
 
+	#if GAME_FEATURE_OFFLINE_TRAINING > 0
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
+	#endif // GAME_FEATURE_OFFLINE_TRAINING
 
-	msg.add<uint16_t>(player->getExpBoostStamina()); // xp boost time (seconds)
-	msg.addByte(1); // enables exp boost in the store
+	#if GAME_FEATURE_DETAILED_EXPERIENCE_BONUS > 0
+	msg.add<uint16_t>(player->getExpBoostStamina()); // Experience boost time (in seconds)
+	msg.addByte(1); // Enables exp boost in the store
+	#endif
 
-	msg.add<uint16_t>(player->getManaShield());  // remaining mana shield
-	msg.add<uint16_t>(player->getMaxManaShield());  // total mana shield
+	#if GAME_FEATURE_NEW_MAGIC_SHIELD > 0
+	msg.add<uint16_t>(player->getManaShield()); // Remaining mana shield
+	msg.add<uint16_t>(player->getMaxManaShield()); // Total mana shield
+	#endif // GAME_FEATURE_NEW_MAGIC_SHIELD
 }
 
 void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
@@ -7115,24 +7310,32 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 
 void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount /* = true*/)
 {
+	#if GAME_FEATURE_LOOKTYPE_U16 > 0
 	msg.add<uint16_t>(outfit.lookType);
+	#else
+	playermsg.addByte(outfit.lookType);
+	#endif // GAME_FEATURE_LOOKTYPE_U16
 	if (outfit.lookType != 0)
 	{
 		msg.addByte(outfit.lookHead);
 		msg.addByte(outfit.lookBody);
 		msg.addByte(outfit.lookLegs);
 		msg.addByte(outfit.lookFeet);
+		#if GAME_FEATURE_ADDONS > 0
 		msg.addByte(outfit.lookAddons);
+		#endif //GAME_FEATURE_ADDONS
 	}
 	else
 	{
 		msg.addItemId(outfit.lookTypeEx);
 	}
 
+	#if GAME_FEATURE_MOUNTS > 0
 	if (addMount)
 	{
 		msg.add<uint16_t>(outfit.lookMount);
 	}
+	#endif
 }
 
 void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId)

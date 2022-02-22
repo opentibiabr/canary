@@ -103,10 +103,10 @@ bool Player::setVocation(uint16_t vocId, bool internal /*=false*/)
 	if (!internal) {
 		#if CLIENT_VERSION >= 950
 		sendBasicData();
-		#endif
+		#endif // CLIENT_VERSION >= 950
 		#if GAME_FEATURE_PLAYER_VOCATIONS > 0
 		g_game.addPlayerVocation(this);
-		#endif
+		#endif // GAME_FEATURE_PLAYER_VOCATIONS
 	}
 	return true;
 }
@@ -614,7 +614,7 @@ void Player::setVarStats(stats_t stat, int32_t modifier)
 			else {
 				g_game.addPlayerMana(this);
 			}
-			#endif
+			#endif // GAME_FEATURE_PARTY_LIST
 			break;
 		}
 
@@ -843,7 +843,7 @@ bool Player::canWalkthrough(const Creature* creature) const
 	#else
 	(void)creature;
 	return false;
-	#endif
+	#endif // CLIENT_VERSION >= 854
 }
 
 bool Player::canWalkthroughEx(const Creature* creature) const
@@ -863,7 +863,7 @@ bool Player::canWalkthroughEx(const Creature* creature) const
 	#else
 	(void)creature;
 	return false;
-	#endif
+	#endif // CLIENT_VERSION >= 854
 }
 
 void Player::onReceiveMail() const
@@ -1562,7 +1562,7 @@ void Player::onChangeZone(ZoneType_t zone)
 
 	#if CLIENT_VERSION >= 854
 	g_game.updateCreatureWalkthrough(this);
-	#endif
+	#endif // CLIENT_VERSION >= 854
 	sendIcons();
 	g_events->eventPlayerOnChangeZone(this, zone);
 }
@@ -1731,7 +1731,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 		party->updateSharedExperience();
 		#if GAME_FEATURE_PARTY_LIST > 0
 		party->updatePlayerStatus(this, oldPos, newPos);
-		#endif
+		#endif // GAME_FEATURE_PARTY_LIST
 	}
 
 	if (teleport || oldPos.z != newPos.z) {
@@ -2098,7 +2098,7 @@ void Player::addManaSpent(uint64_t amount)
 		addScheduledUpdates(PlayerUpdate_Skills);
 		#else
 		addScheduledUpdates(PlayerUpdate_Stats);
-		#endif
+		#endif // CLIENT_VERSION >= 1200
 	}
 }
 
@@ -2145,11 +2145,21 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 	uint32_t prevLevel = level;
 	while (experience >= nextLevelExp) {
 		++level;
-		healthMax += vocation->getHPGain();
-		health += vocation->getHPGain();
-		manaMax += vocation->getManaGain();
-		mana += vocation->getManaGain();
-		capacity += vocation->getCapGain();
+		// Player stats gain for vocations level <= 8
+		if (vocation->getId() != VOCATION_NONE && level <= 8) {
+			Vocation* noneVocation = g_vocations.getVocation(VOCATION_NONE);
+			healthMax += noneVocation->getHPGain();
+			health += noneVocation->getHPGain();
+			manaMax += noneVocation->getManaGain();
+			mana += noneVocation->getManaGain();
+			capacity += noneVocation->getCapGain();
+		} else {
+			healthMax += vocation->getHPGain();
+			health += vocation->getHPGain();
+			manaMax += vocation->getManaGain();
+			mana += vocation->getManaGain();
+			capacity += vocation->getCapGain();
+		}
 
 		currLevelExp = nextLevelExp;
 		nextLevelExp = Player::getExpForLevel(level + 1);
@@ -2168,14 +2178,14 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		g_game.addCreatureHealth(this);
 		#if GAME_FEATURE_PARTY_LIST > 0
 		g_game.addPlayerMana(this);
-		#endif
+		#endif // GAME_FEATURE_PARTY_LIST
 
 		#if CLIENT_VERSION >= 854
 		const uint32_t protectionLevel = static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL));
 		if (prevLevel < protectionLevel && level >= protectionLevel) {
 			g_game.updateCreatureWalkthrough(this);
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 854
 
 		if (party) {
 			party->updateSharedExperience();
@@ -2238,9 +2248,17 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 
 	while (level > 1 && experience < currLevelExp) {
 		--level;
-		healthMax = std::max<int32_t>(0, healthMax - vocation->getHPGain());
-		manaMax = std::max<int32_t>(0, manaMax - vocation->getManaGain());
-		capacity = std::max<int32_t>(0, capacity - vocation->getCapGain());
+		// Player stats loss for vocations level <= 8
+		if (vocation->getId() != VOCATION_NONE && level <= 8) {
+			Vocation* noneVocation = g_vocations.getVocation(VOCATION_NONE);
+			healthMax = std::max<int32_t>(0, healthMax - noneVocation->getHPGain());
+			manaMax = std::max<int32_t>(0, manaMax - noneVocation->getManaGain());
+			capacity = std::max<int32_t>(0, capacity - noneVocation->getCapGain());
+		} else {
+			healthMax = std::max<int32_t>(0, healthMax - vocation->getHPGain());
+			manaMax = std::max<int32_t>(0, manaMax - vocation->getManaGain());
+			capacity = std::max<int32_t>(0, capacity - vocation->getCapGain());
+		}
 		currLevelExp = Player::getExpForLevel(level);
 	}
 
@@ -2253,14 +2271,14 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		g_game.addCreatureHealth(this);
 		#if GAME_FEATURE_PARTY_LIST > 0
 		g_game.addPlayerMana(this);
-		#endif
+		#endif // GAME_FEATURE_PARTY_LIST
 
 		#if CLIENT_VERSION >= 854
 		const uint32_t protectionLevel = static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL));
 		if (oldLevel >= protectionLevel && level < protectionLevel) {
 			g_game.updateCreatureWalkthrough(this);
 		}
-		#endif
+		#endif // CLIENT_VERSION >= 854
 
 		if (party) {
 			party->updateSharedExperience();
@@ -2284,7 +2302,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 uint16_t Player::getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount)
 #else
 uint8_t Player::getPercentSkillLevel(uint64_t count, uint64_t nextLevelCount)
-#endif
+#endif // GAME_FEATURE_DOUBLE_PERCENT_SKILLS
 {
 	if (nextLevelCount == 0) {
 		return 0;
@@ -2671,7 +2689,7 @@ void Player::death(Creature* lastHitCreature)
 		g_game.addCreatureHealth(this);
 		#if GAME_FEATURE_PARTY_LIST > 0
 		g_game.addPlayerMana(this);
-		#endif
+		#endif // GAME_FEATURE_PARTY_LIST
 		onThink(EVENT_CREATURE_THINK_INTERVAL);
 		onIdleStatus();
 		sendStats();
@@ -4389,7 +4407,7 @@ void Player::changeMana(int32_t manaChange)
 	}
 	#if GAME_FEATURE_PARTY_LIST > 0
 	g_game.addPlayerMana(this);
-	#endif
+	#endif // GAME_FEATURE_PARTY_LIST
 	sendStats();
 }
 
@@ -4856,7 +4874,7 @@ void Player::setPremiumDays(int32_t v)
 	premiumDays = v;
 	#if CLIENT_VERSION >= 950
 	sendBasicData();
-	#endif
+	#endif // CLIENT_VERSION >= 950
 }
 
 void Player::setTibiaCoins(int32_t v)
@@ -4916,7 +4934,7 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 	if (player->party) {
 		return SHIELD_GRAY;
 	}
-	#endif
+	#endif //  CLIENT_VERSION >= 1000
 
 	return SHIELD_NONE;
 }
@@ -4995,7 +5013,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const
 		}
 		#else
 		return GUILDEMBLEM_NONE;
-		#endif
+		#endif // CLIENT_VERSION >= 1000
 	} else if (guild == playerGuild) {
 		return GUILDEMBLEM_ALLY;
 	} else if (isInWar(player)) {
@@ -5364,7 +5382,7 @@ void Player::sendModalWindow(const ModalWindow& modalWindow)
 	client->sendModalWindow(modalWindow);
 	#else
 	(void)modalWindow;
-	#endif
+	#endif // CLIENT_VERSION >= 960
 }
 
 void Player::clearModalWindows()

@@ -1718,9 +1718,30 @@ Item* Tile::getUseItem(int32_t index) const
 		return ground;
 	}
 
+	#if CLIENT_VERSION >= 1230
+	// Might be some versions before but I don't have access to them
+	// Cipsoft probably omits creatures in stackpos for some micro-optimizations to avoid unnecessary cache-misses
+	if (ground) {
+		if (index == 0) {
+			return ground;
+		}
+
+		--index;
+	}
+
+	int32_t topItemSize = items->getTopItemCount();
+	if (index < topItemSize) {
+		return (*items)[index];
+	}
+	index -= topItemSize;
+	if (index < static_cast<int32_t>(items->getDownItemCount())) {
+		return (*items)[items->size() - (index + 1)];
+	}
+	#else
 	if (Thing* thing = getThing(index)) {
 		return thing->getItem();
 	}
+	#endif
 
 	return nullptr;
 }

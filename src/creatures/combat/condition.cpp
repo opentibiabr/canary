@@ -467,11 +467,11 @@ void ConditionAttributes::updateStats(Player* player)
 
   if (needUpdateStats) {
     #if CLIENT_VERSION >= 1200
-      //We have magic level in skills now so we need to send skills update too here
-      player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
-      #else
-      player->addScheduledUpdates(PlayerUpdate_Stats);
-      #endif
+    //We have magic level in skills now so we need to send skills update too here
+    player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+    #else
+    player->addScheduledUpdates(PlayerUpdate_Stats);
+    #endif // CLIENT_VERSION >= 1200
   }
 }
 
@@ -573,7 +573,7 @@ void ConditionAttributes::endCondition(Creature* creature)
       player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
       #else
       player->addScheduledUpdates(PlayerUpdate_Stats);
-      #endif
+      #endif // CLIENT_VERSION >= 1200
     }
   }
 
@@ -1854,7 +1854,7 @@ void ConditionSpellCooldown::addCondition(Creature* creature, const Condition* a
 		}
 		#else
 		(void)creature;
-		#endif
+		#endif // CLIENT_VERSION >= 870
 	}
 }
 
@@ -1873,7 +1873,7 @@ bool ConditionSpellCooldown::startCondition(Creature* creature)
 	}
 	#else
 	(void)creature;
-	#endif
+	#endif // CLIENT_VERSION >= 870
 	return true;
 }
 
@@ -1891,7 +1891,7 @@ void ConditionSpellGroupCooldown::addCondition(Creature* creature, const Conditi
 		}
 		#else
 		(void)creature;
-		#endif
+		#endif // CLIENT_VERSION >= 870
 	}
 }
 
@@ -1910,6 +1910,6 @@ bool ConditionSpellGroupCooldown::startCondition(Creature* creature)
 	}
 	#else
 	(void)creature;
-	#endif
+	#endif // CLIENT_VERSION >= 870
 	return true;
 }

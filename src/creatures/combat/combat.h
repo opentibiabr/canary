@@ -29,7 +29,7 @@
 #include "items/thing.h"
 #if CLIENT_VERSION >= 1203
 #include "server/network/message/networkmessage.h"
-#endif
+#endif // CLIENT_VERSION >= 1203
 
 class Condition;
 class Creature;
@@ -94,7 +94,7 @@ struct EffectParams {
 	uint16_t currentPosX;
 	uint16_t currentPosY;
 };
-#endif
+#endif // CLIENT_VERSION >= 1203
 
 enum EffectStatus_t : uint16_t {
 	EFFECT_STATUS_CRITICAL = 1 << 0,
@@ -321,7 +321,7 @@ class Combat
 	private:
 		#if CLIENT_VERSION >= 1203
 		static void combatTileEffects(const SpectatorVector& spectators, NetworkMessage& effectMsg, EffectParams& effectParams, Creature* caster, Tile* tile, const CombatParams& params);
-		#endif
+		#endif // CLIENT_VERSION >= 1203
 		static void combatTileEffects(const SpectatorVector& spectators, Creature* caster, Tile* tile, const CombatParams& params);
 		CombatDamage getCombatDamage(Creature* creature, Creature* target) const;
 

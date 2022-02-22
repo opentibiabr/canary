@@ -136,7 +136,9 @@ private:
 	void sendSessionEndInformation(SessionEndInformations information);
 
 	void sendItemInspection(uint16_t itemId, uint8_t itemCount, const Item *item, bool cyclopedia);
+	#if GAME_FEATURE_INSPECTION > 0
 	void parseInspectionObject(NetworkMessage &msg);
+	#endif
 
 	#if GAME_FEATURE_CYCLOPEDIA_CHARACTERINFO > 0
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
@@ -172,7 +174,9 @@ private:
 	void parseBestiarysendMonsterData(NetworkMessage &msg);
 	void addBestiaryTrackerList(NetworkMessage &msg);
 
+	#if CLIENT_VERSION >= 1150
 	void parseTeleport(NetworkMessage &msg);
+	#endif // CLIENT_VERSION >= 1150
 	void parseThrow(NetworkMessage &msg);
 	void parseUseItemEx(NetworkMessage &msg);
 	void parseUseWithCreature(NetworkMessage &msg);
@@ -202,10 +206,16 @@ private:
 	void parseClearImbuement(NetworkMessage &msg);
 	void parseCloseImbuementWindow(NetworkMessage &msg);
 
+	#if CLIENT_VERSION >= 960
 	void parseModalWindowAnswer(NetworkMessage &msg);
+	#endif // CLIENT_VERSION >= 960
 
+	#if GAME_FEATURE_BROWSEFIELD > 0
 	void parseBrowseField(NetworkMessage &msg);
+	#endif
+	#if GAME_FEATURE_CONTAINER_PAGINATION > 0
 	void parseSeekInContainer(NetworkMessage &msg);
+	#endif
 
 	//trade methods
 	void parseRequestTrade(NetworkMessage &msg);
@@ -225,7 +235,9 @@ private:
 
 	void parseRotateItem(NetworkMessage &msg);
 	void parseConfigureShowOffSocket(NetworkMessage& msg);
+	#if CLIENT_VERSION >= 1092
 	void parseWrapableItem(NetworkMessage &msg);
+	#endif // CLIENT_VERSION >= 1092
 
 	//Channel tabs
 	void parseChannelInvite(NetworkMessage &msg);
@@ -301,7 +313,9 @@ private:
 	void sendCancelTarget();
 	void sendCreatureOutfit(const Creature *creature, const Outfit_t &outfit);
 	void sendStats();
+	#if CLIENT_VERSION >= 950
 	void sendBasicData();
+	#endif // CLIENT_VERSION >= 950
 	void sendStoreHighlight();
 	void sendTextMessage(const TextMessage &message);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
@@ -329,15 +343,15 @@ private:
 
 	#if CLIENT_VERSION >= 854
 	void sendCreatureWalkthrough(const Creature* creature, bool walkthrough);
-	#endif
+	#endif // CLIENT_VERSION >= 854
 	void sendCreatureShield(const Creature *creature);
 	void sendCreatureSkull(const Creature *creature);
 	#if CLIENT_VERSION >= 910
 	void sendCreatureType(const Creature* creature, uint8_t creatureType);
-	#endif
+	#endif // CLIENT_VERSION >= 910
 	#if CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 	void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
-	#endif
+	#endif // CLIENT_VERSION >= 1000 && CLIENT_VERSION < 1185
 
 	void sendShop(Npc *npc);
 	void sendCloseShop();
@@ -370,17 +384,23 @@ private:
 	void sendPendingStateEntered();
 	void sendEnterWorld();
 
+	#if CLIENT_VERSION >= 1000
 	void sendFightModes();
+	#endif // CLIENT_VERSION >= 1000
 
 	void sendCreatureLight(const Creature *creature);
 	void sendCreatureIcon(const Creature* creature);
 	void sendWorldLight(const LightInfo &lightInfo);
+	#if CLIENT_VERSION >= 1121
 	void sendTibiaTime(int32_t time);
+	#endif // CLIENT_VERSION >= 1121
 
 	void sendCreatureSquare(const Creature *creature, SquareColor_t color);
 
+	#if CLIENT_VERSION >= 870
 	void sendSpellCooldown(uint8_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
+	#endif // CLIENT_VERSION >= 870
 
 	void sendCoinBalance();
 
@@ -428,7 +448,9 @@ private:
 	void sendItems(const std::map<uint32_t, uint32_t>& inventoryMap);
 
 	//messages
+	#if CLIENT_VERSION >= 960
 	void sendModalWindow(const ModalWindow &modalWindow);
+	#endif // CLIENT_VERSION >= 960
 
 	//analyzers
 	void sendKillTrackerUpdate(Container *corpse, const std::string &name, const Outfit_t creatureOutfit);
@@ -517,7 +539,9 @@ private:
 
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
+	#if GAME_FEATURE_STASH > 0
 	void sendSpecialContainersAvailable();
+	#endif
 };
 
 #endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

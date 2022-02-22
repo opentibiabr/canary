@@ -118,7 +118,7 @@ int ShopFunctions::luaShopSetCount(lua_State* L) {
 }
 
 int ShopFunctions::luaShopSetBuyPrice(lua_State* L) {
-	// shop:setBuyPrice(chance)
+	// shop:setBuyPrice(price)
 	Shop* shop = getUserdata<Shop>(L, 1);
 	if (shop) {
 		shop->shopBlock.itemBuyPrice = getNumber<uint32_t>(L, 2);

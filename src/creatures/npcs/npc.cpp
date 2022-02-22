@@ -220,7 +220,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t serverId,
 		return;
 	}
 
-	uint32_t buyPrice;
+	uint32_t buyPrice = 0;
 	const ItemType& itemType = Item::items[serverId];
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
 	for (ShopBlock shopBlock : shopVector)
@@ -267,7 +267,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 		return;
 	}
 
-	uint32_t sellPrice;
+	uint32_t sellPrice = 0;
 	const ItemType& itemType = Item::items[serverId];
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
 	for (ShopBlock shopBlock : shopVector)

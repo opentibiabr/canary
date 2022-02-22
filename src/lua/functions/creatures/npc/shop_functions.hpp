@@ -33,7 +33,7 @@ class ShopFunctions final : LuaScriptInterface {
 				registerMethod(L, "Shop", "setIdFromName", ShopFunctions::luaShopSetIdFromName);
 				registerMethod(L, "Shop", "setNameItem", ShopFunctions::luaShopSetNameItem);
 				registerMethod(L, "Shop", "setCount", ShopFunctions::luaShopSetCount);
-				registerMethod(L, "Shop", "set", ShopFunctions::luaShopSetBuyPrice);
+				registerMethod(L, "Shop", "setBuyPrice", ShopFunctions::luaShopSetBuyPrice);
 				registerMethod(L, "Shop", "setSellPrice", ShopFunctions::luaShopSetSellPrice);
 				registerMethod(L, "Shop", "setStorageKey", ShopFunctions::luaShopSetStorageKey);
 				registerMethod(L, "Shop", "setStorageValue", ShopFunctions::luaShopSetStorageValue);

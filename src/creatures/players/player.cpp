@@ -3793,22 +3793,11 @@ bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const
 		return false;
 	}
 
-	const ItemType& it = Item::items.getItemIdByClientId(itemId);
-	ShopInfoMap shopItemMap = shopOwner->getShopItems();
-	if (shopItemMap.find(it.name) == shopItemMap.end()) {
-		return false;
-	}
-
-	const ShopInfo& shopInfo = shopItemMap[it.name];
-	if (shopInfo.buyPrice == 0) {
-		return false;
-	}
-
-	if (!it.isFluidContainer()) {
-		return true;
-	}
-
-	return shopInfo.subType == subType;
+	const ItemType& itemType = Item::items[itemId];
+	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector();
+	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
+		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
+	});
 }
 
 void Player::internalAddThing(Thing* thing)

@@ -8,18 +8,18 @@
 	<item id="5" name="lemonade" />
 	<item id="6" name="milk" />
 	<item id="7" name="manafluid" />
-	<item id="8" name="lifefluid" />
-	<item id="9" name="oil" />
-	<item id="10" name="urine" />
-	<item id="11" name="coconut milk" />
-	<item id="12" name="wine" />
-	<item id="13" name="mud" />
-	<item id="14" name="fruit juice" />
-	<item id="15" name="lava" />
-	<item id="16" name="rum" />
-	<item id="17" name="swamp" />
-	<item id="18" name="tea" />
-	<item id="19" name="mead" />
+	<item id="10" name="lifefluid" />
+	<item id="11" name="oil" />
+	<item id="13" name="urine" />
+	<item id="14" name="coconut milk" />
+	<item id="15" name="wine" />
+	<item id="19" name="mud" />
+	<item id="21" name="fruit juice" />
+	<item id="26" name="lava" />
+	<item id="27" name="rum" />
+	<item id="28" name="swamp" />
+	<item id="35" name="tea" />
+	<item id="43" name="mead" />
 
 	<item id="100" name="void"/>
 	<item id="101" name="earth"/>
@@ -32171,6 +32171,7 @@
 		<attribute key="weight" value="6200"/>
 	</item>
 	<item id="19250" article="a" name="reward chest">
+		<attribute key="type" value="rewardchest" />
 		<attribute key="description" value="This chest contains your rewards earned in battles."/>
 		<attribute key="moveable" value="0"/>
 		<attribute key="allowpickUpAble" value="0"/>

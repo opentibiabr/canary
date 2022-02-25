@@ -42,5 +42,6 @@ function serversave.onTime(interval)
 	addEvent(ServerSaveWarning, 60000, remaningTime)	-- Schedule next event in 1 minute(60000)
 	return not configManager.getBoolean(configKeys.SERVER_SAVE_SHUTDOWN)
 end
-serversave:time("21:50:00")
+
+serversave:time(configManager.getString(configKeys.SERVER_SAVE_TIMER))
 serversave:register()

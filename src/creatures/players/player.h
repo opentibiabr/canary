@@ -1928,13 +1928,7 @@ class Player final : public Creature, public Cylinder
 
 		// Task hunting system
 		void initializeTaskHunting();
-		bool isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
-			if (!mtype) {
-				return false;
-			}
-
-			return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
-		}
+		bool isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const;
 
 		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
 			if (getTaskHuntingSlotById(slot->id)) {

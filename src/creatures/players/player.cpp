@@ -5745,6 +5745,14 @@ void Player::initializeTaskHunting()
 	}
 }
 
+bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
+	if (!mtype) {
+		return false;
+	}
+
+	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+}
+
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/

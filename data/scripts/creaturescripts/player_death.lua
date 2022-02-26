@@ -1,4 +1,4 @@
-local playerDeath = CreatureEvent("Player Death")
+local playerDeath = CreatureEvent("PlayerDeath")
 
 local deathListEnabled = true
 local maxDeathRecords = 5

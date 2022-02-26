@@ -658,6 +658,8 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 		if (recvbyte != 0x1D && recvbyte != 0x1E) {
 			// keep the connection alive
+			g_scheduler.addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
+			g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
 			return;
 		}
 	}

@@ -566,8 +566,8 @@ class Game
 		}
 
 		void initializePreyCounter(uint32_t playerguid) {
-			auto it = std::find_if(playersPreys.begin(), playersPreys.end(), [playerguid](uint32_t it){
-				return it == playerguid;
+			auto it = std::find_if(playersPreys.begin(), playersPreys.end(), [playerguid](uint32_t playerId){
+				return playerId == playerguid;
 			});
 
 			if (it != playersPreys.end()) {

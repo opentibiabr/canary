@@ -397,7 +397,7 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+		const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
 			lua_pushnumber(L, 100 + slot->bonusPercentage);
 		} else {

@@ -30,7 +30,6 @@
 
 class PreySlot;
 
-extern ConfigManager g_config;
 extern Game g_game;
 extern Monsters g_monsters;
 
@@ -659,7 +658,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
     if (result = db.storeQuery(query.str())) {
       do {
-        PreySlot* slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+        auto slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
         slot->state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
@@ -690,7 +689,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
     if (result = db.storeQuery(query.str())) {
       do {
-        TaskHuntingSlot* slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+        auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
         slot->state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->upgrade = result->getNumber<bool>("upgrade");

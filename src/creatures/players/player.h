@@ -1831,7 +1831,7 @@ class Player final : public Creature, public Cylinder
 
 		void sendPreyData() const {
 			if (client) {
-				for (PreySlot* slot : preys) {
+				for (const PreySlot* slot : preys) {
 					client->sendPreyData(slot);
 				}
 
@@ -1839,7 +1839,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void sendPreyTimeLeft(PreySlot* slot) const {
+		void sendPreyTimeLeft(const PreySlot* slot) const {
 			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 				client->sendPreyTimeLeft(slot);
 			}
@@ -1853,8 +1853,8 @@ class Player final : public Creature, public Cylinder
 		}
 
 		PreySlot* getPreySlotById(PreySlot_t slotid) {
-			auto it = std::find_if(preys.begin(), preys.end(), [slotid](PreySlot* it) {
-				return it->id == slotid;
+			auto it = std::find_if(preys.begin(), preys.end(), [slotid](PreySlot* preyIt) {
+				return preyIt->id == slotid;
 				});
 
 			if (it != preys.end()) {
@@ -1894,9 +1894,9 @@ class Player final : public Creature, public Cylinder
 			return getLevel() * g_configManager().getNumber(PREY_REROLL_PRICE_LEVEL);
 		}
 
-		std::vector<uint16_t> getPreyBlackList() {
+		std::vector<uint16_t> getPreyBlackList() const {
 			std::vector<uint16_t> rt;
-			for (PreySlot* slot : preys) {
+			for (const PreySlot* slot : preys) {
 				if (slot) {
 					if (slot->isOccupied()) {
 						rt.push_back(slot->selectedRaceId);
@@ -1928,7 +1928,13 @@ class Player final : public Creature, public Cylinder
 
 		// Task hunting system
 		void initializeTaskHunting();
-		bool isCreatureUnlockedOnTaskHunting(MonsterType* mtype);
+		bool isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
+			if (!mtype) {
+				return false;
+			}
+
+			return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+		}
 
 		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
 			if (getTaskHuntingSlotById(slot->id)) {
@@ -1958,9 +1964,9 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
-		std::vector<uint16_t> getTaskHuntingBlackList() {
+		std::vector<uint16_t> getTaskHuntingBlackList() const {
 			std::vector<uint16_t> rt;
-			for (TaskHuntingSlot* slot : taskHunting) {
+			for (const TaskHuntingSlot* slot : taskHunting) {
 				if (slot) {
 					if (slot->isOccupied()) {
 						rt.push_back(slot->selectedRaceId);
@@ -1996,7 +2002,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		uint64_t getTaskHuntingPoints() {
+		uint64_t getTaskHuntingPoints() const {
 			return taskHuntingPoints;
 		}
 

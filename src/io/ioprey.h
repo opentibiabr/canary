@@ -154,7 +154,7 @@ class TaskHuntingSlot
 {
  public:
 	TaskHuntingSlot() = default;
-	explicit TaskHuntingSlot(PreySlot_t id);
+	explicit TaskHuntingSlot(PreySlot_t id) : id(id) { }
 	virtual ~TaskHuntingSlot() = default;
 
 	bool isOccupied() const {
@@ -224,13 +224,13 @@ class IOPrey
 {
 	public:
 
-	bool CheckPlayerPreys(Player* player);
-	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId);
+	bool CheckPlayerPreys(Player* player) const;
+	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
 
-	void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId);
+	void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;
 
 	void InitializeTaskHuntOptions();
-	TaskHuntingOption* GetTaskRewardOption(TaskHuntingSlot* slot);
+	TaskHuntingOption* GetTaskRewardOption(const TaskHuntingSlot* slot) const;
 
 	std::vector<TaskHuntingOption*> GetTaskOptions() const {
 		return taskOption;

@@ -3542,13 +3542,6 @@ void ProtocolGame::sendPremiumTrigger()
 	}
 }
 
-void ProtocolGame::closeImbuingWindow()
-{
-	NetworkMessage msg;
-	msg.addByte(0xEC);
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::sendTextMessage(const TextMessage &message)
 {
 	NetworkMessage msg;
@@ -6124,7 +6117,7 @@ void ProtocolGame::sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPreyTimeLeft(PreySlot* slot)
+void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot)
 {
 	if (!player || !slot) {
 		return;
@@ -6139,7 +6132,7 @@ void ProtocolGame::sendPreyTimeLeft(PreySlot* slot)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPreyData(PreySlot* slot)
+void ProtocolGame::sendPreyData(const PreySlot* slot)
 {
 	if (!player || !slot) {
 		return;
@@ -6162,7 +6155,7 @@ void ProtocolGame::sendPreyData(PreySlot* slot)
 		}
 
 		msg.addString(mtype->name);
-		Outfit_t outfit = mtype->info.outfit;
+		const Outfit_t outfit = mtype->info.outfit;
 		msg.add<uint16_t>(outfit.lookType);
 		if (outfit.lookType == 0) {
 			msg.add<uint16_t>(outfit.lookTypeEx);
@@ -6187,7 +6180,7 @@ void ProtocolGame::sendPreyData(PreySlot* slot)
 			}
 
 			msg.addString(mtype->name);
-			Outfit_t outfit = mtype->info.outfit;
+			const Outfit_t outfit = mtype->info.outfit;
 			msg.add<uint16_t>(outfit.lookType);
 			if (outfit.lookType == 0) {
 				msg.add<uint16_t>(outfit.lookTypeEx);
@@ -6206,13 +6199,13 @@ void ProtocolGame::sendPreyData(PreySlot* slot)
 		msg.addByte(slot->bonusRarity);
 		msg.addByte(slot->raceIdList.size());
 		for (auto it = slot->raceIdList.begin(); it != slot->raceIdList.end(); ++it) {
-			MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(*it);
+			const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(*it);
 			if (!mtype) {
 				return;
 			}
 
 			msg.addString(mtype->name);
-			Outfit_t outfit = mtype->info.outfit;
+			const Outfit_t outfit = mtype->info.outfit;
 			msg.add<uint16_t>(outfit.lookType);
 			if (outfit.lookType == 0) {
 				msg.add<uint16_t>(outfit.lookTypeEx);
@@ -6225,7 +6218,7 @@ void ProtocolGame::sendPreyData(PreySlot* slot)
 			}
 		}
 	} else if (slot->state == PreyDataState_ListSelection) {
-		std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
+		const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
 		msg.add<uint16_t>(bestiaryList.size());
 		for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
 			msg.add<uint16_t>((*it).first);
@@ -6829,7 +6822,7 @@ void ProtocolGame::sendUpdateLootTracker(Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendTaskHuntingData(TaskHuntingSlot* slot)
+void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 {
 	if (!player || !slot) {
 		return;
@@ -6851,14 +6844,14 @@ void ProtocolGame::sendTaskHuntingData(TaskHuntingSlot* slot)
 			msg.addByte(player->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterTypeByRaceId(*it)) ? 0x01 : 0x00);
 		}
 	} else if (slot->state == PreyTaskDataState_ListSelection) {
-		std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
+		const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
 		msg.add<uint16_t>(bestiaryList.size());
 		for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
 			msg.add<uint16_t>((*it).first);
 			msg.addByte(player->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterType((*it).second)) ? 0x01 : 0x00);
 		}
 	} else if (slot->state == PreyTaskDataState_Active) {
-		TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot);
+		const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot);
 		if (!option) {
 			return;
 		}
@@ -6869,7 +6862,7 @@ void ProtocolGame::sendTaskHuntingData(TaskHuntingSlot* slot)
 		msg.add<uint16_t>(slot->currentKills);
 		msg.addByte(slot->rarity);
 	} else if (slot->state == PreyTaskDataState_Completed) {
-		TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot);
+		const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot);
 		if (!option) {
 			return;
 		}

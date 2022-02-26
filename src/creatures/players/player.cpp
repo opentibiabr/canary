@@ -4294,11 +4294,11 @@ void Player::gainExperience(uint64_t gainExp, Creature* source)
 	}
 
 	if (source) {
-		Monster* monster = source->getMonster();
+		const Monster* monster = source->getMonster();
 		if (monster) {
 			uint16_t raceId = monster->getRaceId();
 			if (g_configManager().getBoolean(PREY_ENABLED)) {
-				PreySlot* slot = getPreyWithMonster(raceId);
+				const PreySlot* slot = getPreyWithMonster(raceId);
 				if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
 					gainExp += std::floor((gainExp * slot->bonusPercentage) / 100);
 				}
@@ -5699,9 +5699,9 @@ void Player::openPlayerContainers()
 
 void Player::initializePrey()
 {
-	if (preys.size() == 0) {
+	if (preys.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			PreySlot* slot = new PreySlot(static_cast<PreySlot_t>(slotId));
+			auto slot = new PreySlot(static_cast<PreySlot_t>(slotId));
 			if (!g_configManager().getBoolean(PREY_ENABLED)) {
 				slot->state = PreyDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT)) {
@@ -5722,9 +5722,9 @@ void Player::initializePrey()
 
 void Player::initializeTaskHunting()
 {
-	if (taskHunting.size() == 0) {
+	if (taskHunting.empty()) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			TaskHuntingSlot* slot = new TaskHuntingSlot(static_cast<PreySlot_t>(slotId));
+			auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(slotId));
 			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				slot->state = PreyTaskDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
@@ -5743,14 +5743,6 @@ void Player::initializeTaskHunting()
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		client->writeToOutputBuffer(g_prey.GetTaskHuntingBaseDate());
 	}
-}
-
-bool Player::isCreatureUnlockedOnTaskHunting(MonsterType* mtype) {
-	if (!mtype) {
-		return false;
-	}
-
-	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
 /*******************************************************************************

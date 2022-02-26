@@ -5785,7 +5785,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			targetMonster = nullptr;
 		}
 
-		Monster* attackerMonster;
+		const Monster* attackerMonster;
 		if (attacker && attacker->getMonster()) {
 			attackerMonster = attacker->getMonster();
 		} else {
@@ -5793,13 +5793,13 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		}
 
 		if (attackerPlayer && targetMonster) {
-			PreySlot* slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
+			const PreySlot* slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
 			if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
 				damage.primary.value += std::ceil((damage.primary.value * slot->bonusPercentage) / 100);
 				damage.secondary.value += std::ceil((damage.secondary.value * slot->bonusPercentage) / 100);
 			}
 		} else if (attackerMonster && targetPlayer) {
-			PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
+			const PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
 			if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
 				damage.primary.value -= std::ceil((damage.primary.value * slot->bonusPercentage) / 100);
 				damage.secondary.value -= std::ceil((damage.secondary.value * slot->bonusPercentage) / 100);
@@ -6001,18 +6001,15 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		if (attackerPlayer) {
 			//life leech
 			uint16_t lifeChance = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_CHANCE);
-      uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
+			uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT);
 			if (normal_random(0, 100) < lifeChance) {
 				// Vampiric charm rune
 				if (targetMonster) {
 					uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
-					if (playerCharmRaceidVamp != 0) {
-						if (playerCharmRaceidVamp == targetMonster->getRaceId()) {
-							IOBestiary g_bestiary;
-							Charm* lifec = g_bestiary.getBestiaryCharm(CHARM_VAMP);
-							if (lifec) {
-								lifeSkill += lifec->percent;
-							}
+					if (playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
+						Charm* lifec = g_bestiary.getBestiaryCharm(CHARM_VAMP);
+						if (lifec) {
+							lifeSkill += lifec->percent;
 						}
 					}
 				}
@@ -6034,13 +6031,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				// Void charm rune
 				if (targetMonster) {
 					uint16_t playerCharmRaceidVoid = attackerPlayer->parseRacebyCharm(CHARM_VOID, false, 0);
-					if (playerCharmRaceidVoid != 0) {
-						if (playerCharmRaceidVoid == targetMonster->getRace()) {
-							IOBestiary g_bestiary;
-							Charm* voidc = g_bestiary.getBestiaryCharm(CHARM_VOID);
-							if (voidc) {
-								manaSkill += voidc->percent;
-							}
+					if (playerCharmRaceidVoid != 0 && playerCharmRaceidVoid == targetMonster->getRace()) {
+						Charm* voidc = g_bestiary.getBestiaryCharm(CHARM_VOID);
+						if (voidc) {
+							manaSkill += voidc->percent;
 						}
 					}
 				}
@@ -6499,7 +6493,7 @@ void Game::checkImbuements()
 void Game::checkPreys()
 {
 	g_scheduler.addEvent(createSchedulerTask(EVENT_PREYINTERVAL, std::bind(&Game::checkPreys, this)));
-	if (playersPreys.size() == 0) {
+	if (playersPreys.empty()) {
 		return;
 	}
 

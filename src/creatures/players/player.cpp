@@ -2186,6 +2186,8 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		levelPercent = 0;
 	}
 	sendStats();
+
+	sendExperienceTracker(rawExp, exp);
 }
 
 void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)

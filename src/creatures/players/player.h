@@ -1379,6 +1379,11 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenPrivateChannel(receiver);
 			}
 		}
+		void sendExperienceTracker(uint64_t rawExp, uint64_t finalExp) {
+			if (client) {
+				client->sendExperienceTracker(rawExp, finalExp);
+			}
+		}
 		void sendOutfitWindow() {
 			if (client) {
 				client->sendOutfitWindow();

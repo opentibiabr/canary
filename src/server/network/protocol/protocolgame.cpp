@@ -651,11 +651,6 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			return;
 		}
 
-		if (OTSYS_TIME() - player->getLastPong() >= 60000) {
-			g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::despawn, getThis())));
-			return;
-		}
-
 		if (recvbyte != 0x1D && recvbyte != 0x1E) {
 			// keep the connection alive
 			g_scheduler.addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));

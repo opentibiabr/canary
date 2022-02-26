@@ -59,7 +59,6 @@ local function extractValues(tab, ret)
 	end
 end
 
-local benchmark = os.clock()
 local extraction = {}
 extractValues(Storage, extraction) -- Call function
 table.sort(extraction) -- Sort the table
@@ -72,7 +71,6 @@ if #extraction > 1 then
 		if extraction[i] == extraction[i+1] then
 			Spdlog.warn(string.format("Duplicate storage value found: %d",
 				extraction[i]))
-			Spdlog.warn(string.format("Processed in %.4f(s)", os.clock() - benchmark))
 		end
 	end
 end

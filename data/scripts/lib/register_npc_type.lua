@@ -146,8 +146,57 @@ end
 
 registerNpcType.shop = function(npcType, mask)
 	if type(mask.shop) == "table" then
-		for _, shopItem in pairs(mask.shop) do
-			npcType:addShopItem(shopItem)
+		for _, shopItems in pairs(mask.shop) do
+			local parent = Shop()
+			if shopItems.itemName or shopItems.itemname then
+				parent:setNameItem(shopItems.itemName or shopItems.itemname)
+			end
+			if shopItems.clientId or shopItems.clientid then
+				parent:setId(shopItems.clientId or shopItems.clientid)
+			end
+			if shopItems.subType or shopItems.subtype or shopItems.count then
+				parent:setCount(shopItems.subType or shopItems.subtype or shopItems.count)
+			end
+			if shopItems.buy then
+				parent:setBuyPrice(shopItems.buy)
+			end
+			if shopItems.sell then
+				parent:setSellPrice(shopItems.sell)
+			end
+			if shopItems.storageKey or shopItems.storagekey then
+				parent:setStorageKey(shopItems.storageKey or shopItems.storagekey)
+			end
+			if shopItems.storageValue or shopItems.storagevalue then
+				parent:setStorageValue(shopItems.storageValue or shopItems.storagevalue)
+			end
+			if shopItems.child then
+				for _, children in pairs(shopItems.child) do
+					local child = Shop()
+					if shopItems.itemName or shopItems.itemname then
+						child:setNameItem(shopItems.itemName or shopItems.itemname)
+					end
+					if shopItems.clientId or shopItems.clientid then
+						child:setId(shopItems.clientId or shopItems.clientid)
+					end
+					if shopItems.subType or shopItems.subtype or shopItems.count then
+						child:setCount(shopItems.subType or shopItems.subtype or shopItems.count)
+					end
+					if shopItems.buy then
+						child:setBuyPrice(shopItems.buy)
+					end
+					if shopItems.sell then
+						child:setSellPrice(shopItems.sell)
+					end
+					if shopItems.storageKey or shopItems.storagekey then
+						child:setStorageKey(shopItems.storageKey or shopItems.storagekey)
+					end
+					if shopItems.storageValue or shopItems.storagevalue then
+						child:setStorageValue(shopItems.storageValue or shopItems.storagevalue)
+					end
+					parent:addChildShop(child)
+				end
+			end
+			npcType:addShopItem(parent)
 		end
 	end
 end

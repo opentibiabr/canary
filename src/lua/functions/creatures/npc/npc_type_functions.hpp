@@ -78,6 +78,7 @@ class NpcTypeFunctions final : LuaScriptInterface {
 		}
 
 	private:
+		static void createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector);
 		static int luaNpcTypeCreate(lua_State* L);
 		static int luaNpcTypeIsPushable(lua_State* L);
 		static int luaNpcTypeFloorChange(lua_State* L);

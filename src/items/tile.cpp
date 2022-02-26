@@ -1482,10 +1482,8 @@ void Tile::internalAddThing(Thing* thing)
 
 			Door* door = item->getDoor();
 			House* house = houseTile->getHouse();
-			if (door) {
-				if (door->getDoorId() != 0) {
-					house->addDoor(door);
-				}
+			if (door && door->getDoorId() != 0) {
+				house->addDoor(door);
 			}
 		}
 	}

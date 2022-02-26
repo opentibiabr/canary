@@ -3597,8 +3597,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			hiddenCharges = item->getSubType();
 		}
 		uint16_t oldItemID = item->getID();
-		ItemType& iType = Item::items.getItemType(item->getID());
-		if (iType.isBed()) {
+		if (Item::items.getItemType(item->getID()).isBed()) {
 			getHouse->removeBed(item->getBed());
 		}
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
@@ -3615,12 +3614,10 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	}
 	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
 		uint16_t hiddenCharges = item->getDate();
-		ItemType& newiType = Item::items.getItemType(unWrapId);
-		if (newiType.isBed()) {
-			if (getHouse->getBedCount() + 1 > getHouse->getMaxBeds()) {
-				player->sendCancelMessage("You reached the maximum beds in this house");
-				return;
-			}
+		const ItemType& newiType = Item::items.getItemType(unWrapId);
+		if (newiType.isBed() && getHouse->getBedCount() + 1 > getHouse->getMaxBeds()) {
+			player->sendCancelMessage("You reached the maximum beds in this house");
+			return;
 		}
 		Item* newItem = transformItem(item, unWrapId);
 		if (newiType.isBed()) {

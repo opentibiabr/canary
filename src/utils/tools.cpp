@@ -394,7 +394,7 @@ std::string formatDateShort(time_t time)
 	return {buffer, 11};
 }
 
-BedItemPart_t getBedPart(const std::string& string)
+BedItemPart_t getBedPart(std::string_view string)
 {
 	if (string == "pillow" || string == "1") {
 		return BED_PILLOW_PART;

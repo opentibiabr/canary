@@ -99,8 +99,7 @@ bool BedItem::canUse(Player* player)
 		return false;
 	}
 
-	BedItem* nextBedItem = getNextBedItem();
-	if (nextBedItem == nullptr) {
+	if (getNextBedItem() == nullptr) {
 		return false;
 	}
 

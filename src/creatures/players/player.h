@@ -1379,7 +1379,7 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenPrivateChannel(receiver);
 			}
 		}
-		void sendExperienceTracker(uint64_t rawExp, uint64_t finalExp) {
+		void sendExperienceTracker(uint64_t rawExp, uint64_t finalExp) const {
 			if (client) {
 				client->sendExperienceTracker(rawExp, finalExp);
 			}

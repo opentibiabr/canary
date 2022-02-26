@@ -143,7 +143,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 	}
 
 	const ItemType& iType = Item::items[id];
-	if (iType.moveable || !tile || iType.isCarpet()) {
+	if (iType.moveable || !tile || iType.isCarpet() || iType.isBed()) {
 		//create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {

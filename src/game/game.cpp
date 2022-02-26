@@ -166,7 +166,7 @@ void Game::start(ServiceManager* manager)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
 
-	if (g_config.getBoolean(PREY_ENABLED)) {
+	if (g_configManager().getBoolean(PREY_ENABLED)) {
 		g_scheduler.addEvent(createSchedulerTask(EVENT_PREYINTERVAL, std::bind(&Game::checkPreys, this)));
 	}
 }

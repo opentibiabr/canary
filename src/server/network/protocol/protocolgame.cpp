@@ -1582,7 +1582,7 @@ void ProtocolGame::parseTaskHuntingAction(NetworkMessage &msg)
 	bool upgrade = msg.getByte() != 0;
 	uint16_t raceId = msg.get<uint16_t>();
 
-	if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
 
@@ -2473,7 +2473,7 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 		raceId = msg.get<uint16_t>();
 	}
 
-	if (!g_config.getBoolean(PREY_ENABLED)) {
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
 		return;
 	}
 
@@ -6252,12 +6252,12 @@ void ProtocolGame::sendPreyPrices()
 	msg.addByte(0xE9);
 
 	msg.add<uint32_t>(player->getPreyRerollPrice());
-	msg.addByte(static_cast<uint8_t>(g_config.getNumber(PREY_BONUS_REROLL_PRICE)));
-	msg.addByte(static_cast<uint8_t>(g_config.getNumber(PREY_SELECTION_LIST_PRICE)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)));
 	msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
-	msg.add<uint32_t>(static_cast<uint32_t>(g_config.getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
-	msg.addByte(static_cast<uint8_t>(g_config.getNumber(TASK_HUNTING_CANCEL_PRICE)));
-	msg.addByte(static_cast<uint8_t>(g_config.getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
+	msg.add<uint32_t>(static_cast<uint32_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_CANCEL_PRICE)));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
 
 	writeToOutputBuffer(msg);
 }

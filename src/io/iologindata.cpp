@@ -654,7 +654,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   // Load prey class
-  if (g_config.getBoolean(PREY_ENABLED)) {
+  if (g_configManager().getBoolean(PREY_ENABLED)) {
     query.str(std::string());
     query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
     if (result = db.storeQuery(query.str())) {
@@ -685,7 +685,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   // Load task hunting class
-  if (g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+  if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
     query.str(std::string());
     query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
     if (result = db.storeQuery(query.str())) {
@@ -1162,7 +1162,7 @@ bool IOLoginData::savePlayer(Player* player)
   }
 
   // Save prey class
-  if (g_config.getBoolean(PREY_ENABLED)) {
+  if (g_configManager().getBoolean(PREY_ENABLED)) {
     query.str(std::string());
     query << "DELETE FROM `player_prey` WHERE `player_id` = " << player->getGUID();
     if (!db.executeQuery(query.str())) {
@@ -1203,7 +1203,7 @@ bool IOLoginData::savePlayer(Player* player)
   }
 
   // Save task hunting class
-  if (g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+  if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
     query.str(std::string());
     query << "DELETE FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
     if (!db.executeQuery(query.str())) {

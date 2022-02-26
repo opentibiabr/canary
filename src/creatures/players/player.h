@@ -1840,13 +1840,13 @@ class Player final : public Creature, public Cylinder
 		}
 
 		void sendPreyTimeLeft(PreySlot* slot) const {
-			if (g_config.getBoolean(PREY_ENABLED) && client) {
+			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 				client->sendPreyTimeLeft(slot);
 			}
 		}
 
 		void reloadPreySlot(PreySlot_t slotid) {
-			if (g_config.getBoolean(PREY_ENABLED) && client) {
+			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 				client->sendPreyData(getPreySlotById(slotid));
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 			}
@@ -1891,7 +1891,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint32_t getPreyRerollPrice() const {
-			return getLevel() * g_config.getNumber(PREY_REROLL_PRICE_LEVEL);
+			return getLevel() * g_configManager().getNumber(PREY_REROLL_PRICE_LEVEL);
 		}
 
 		std::vector<uint16_t> getPreyBlackList() {
@@ -1911,7 +1911,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		PreySlot* getPreyWithMonster(uint16_t raceId) const {
-			if (!g_config.getBoolean(PREY_ENABLED)) {
+			if (!g_configManager().getBoolean(PREY_ENABLED)) {
 				return nullptr;
 			}
 
@@ -1940,7 +1940,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		void reloadTaskSlot(PreySlot_t slotid) {
-			if (g_config.getBoolean(TASK_HUNTING_ENABLED) && client) {
+			if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
 				client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 			}
@@ -2001,15 +2001,15 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint32_t getTaskHuntingRerollPrice() const {
-			return getLevel() * g_config.getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
+			return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
 		}
 
 		uint32_t getTaskHuntingCancelPrice() const {
-			return getLevel() * g_config.getNumber(TASK_HUNTING_CANCEL_PRICE);
+			return getLevel() * g_configManager().getNumber(TASK_HUNTING_CANCEL_PRICE);
 		}
 
 		TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const {
-			if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				return nullptr;
 			}
 

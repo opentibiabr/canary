@@ -4297,14 +4297,14 @@ void Player::gainExperience(uint64_t gainExp, Creature* source)
 		Monster* monster = source->getMonster();
 		if (monster) {
 			uint16_t raceId = monster->getRaceId();
-			if (g_config.getBoolean(PREY_ENABLED)) {
+			if (g_configManager().getBoolean(PREY_ENABLED)) {
 				PreySlot* slot = getPreyWithMonster(raceId);
 				if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
 					gainExp += std::floor((gainExp * slot->bonusPercentage) / 100);
 				}
 			}
 
-			if (g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+			if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(raceId);
 				if (taskSlot) {
 					TaskHuntingOption* option = g_prey.GetTaskRewardOption(taskSlot);
@@ -5702,9 +5702,9 @@ void Player::initializePrey()
 	if (preys.size() == 0) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			PreySlot* slot = new PreySlot(static_cast<PreySlot_t>(slotId));
-			if (!g_config.getBoolean(PREY_ENABLED)) {
+			if (!g_configManager().getBoolean(PREY_ENABLED)) {
 				slot->state = PreyDataState_Inactive;
-			} else if (slot->id == PreySlot_Three && !g_config.getBoolean(PREY_FREE_THIRD_SLOT)) {
+			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT)) {
 				slot->state = PreyDataState_Locked;
 			} else {
 				slot->state = PreyDataState_Selection;
@@ -5725,9 +5725,9 @@ void Player::initializeTaskHunting()
 	if (taskHunting.size() == 0) {
 		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
 			TaskHuntingSlot* slot = new TaskHuntingSlot(static_cast<PreySlot_t>(slotId));
-			if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				slot->state = PreyTaskDataState_Inactive;
-			} else if (slot->id == PreySlot_Three && !g_config.getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
+			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
 				slot->state = PreyTaskDataState_Locked;
 			} else {
 				slot->state = PreyTaskDataState_Selection;
@@ -5740,7 +5740,7 @@ void Player::initializeTaskHunting()
 		}
 	}
 
-	if (client && g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		client->writeToOutputBuffer(g_prey.GetTaskHuntingBaseDate());
 	}
 }

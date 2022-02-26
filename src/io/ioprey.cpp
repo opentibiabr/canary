@@ -54,8 +54,8 @@ void PreySlot::reloadBonusType()
 
 void PreySlot::reloadBonusValue()
 {
-	uint16_t minBonusPercent = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_PERCENT_MIN));
-	uint16_t maxBonusPercent = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_PERCENT_MAX));
+	uint16_t minBonusPercent = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_PERCENT_MIN));
+	uint16_t maxBonusPercent = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_PERCENT_MAX));
 	uint16_t stagePercent = std::floor((maxBonusPercent - minBonusPercent) / 8);
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
@@ -75,7 +75,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 {
 	raceIdList.clear();
 
-	if (!g_config.getBoolean(PREY_ENABLED)) {
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
 		return;
 	}
 
@@ -158,7 +158,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 {
 	raceIdList.clear();
 
-	if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
 
@@ -229,7 +229,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 
 void TaskHuntingSlot::reloadReward()
 {
-	if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
 
@@ -278,10 +278,10 @@ bool IOPrey::CheckPlayerPreys(Player* player)
 			activeSlots++;
 			if ((EVENT_PREYINTERVAL / 1000) >= slot->bonusTimeLeft) {
 				if (slot->option == PreyOption_AutomaticReroll) {
-					if (player->usePreyCards(static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_REROLL_PRICE)))) {
+					if (player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)))) {
 						slot->reloadBonusValue();
 						slot->reloadBonusType();
-						slot->bonusTimeLeft = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_TIME));
+						slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 						player->sendTextMessage(MESSAGE_STATUS, "Your prey bonus type and time has been succesfully reseted.");
 						player->reloadPreySlot(static_cast<PreySlot_t>(slotId));
 						continue;
@@ -289,8 +289,8 @@ bool IOPrey::CheckPlayerPreys(Player* player)
 
 					player->sendTextMessage(MESSAGE_STATUS, "You don't have enought prey cards to enable automatic reroll when your slot expire.");
 				} else if (slot->option == PreyOption_Locked) {
-					if (player->usePreyCards(static_cast<uint16_t>(g_config.getNumber(PREY_SELECTION_LIST_PRICE)))) {
-						slot->bonusTimeLeft = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_TIME));
+					if (player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)))) {
+						slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 						player->sendTextMessage(MESSAGE_STATUS, "Your prey bonus time has been succesfully reseted.");
 						player->reloadPreySlot(static_cast<PreySlot_t>(slotId));
 						continue;
@@ -335,14 +335,14 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 			player->sendMessageDialog("You don't have enought money to reroll the prey slot.");
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
-			slot->freeRerollTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_config.getNumber(PREY_FREE_REROLL_TIME) * 1000);
+			slot->freeRerollTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000);
 		}
 
 		slot->eraseBonus();
 		slot->state = PreyDataState_Selection;
 		slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
 	} else if (action == PreyAction_ListAll_Cards) {
-		if (!player->usePreyCards(static_cast<uint16_t>(g_config.getNumber(PREY_SELECTION_LIST_PRICE)))) {
+		if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)))) {
 			player->sendMessageDialog("You don't have enought prey cards to choose a monsters on the list.");
 			return;
 		}
@@ -365,20 +365,20 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 		slot->state = PreyDataState_Active;
 		slot->selectedRaceId = raceId;
 		slot->removeMonsterType(raceId);
-		slot->bonusTimeLeft = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_TIME));
+		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 		g_game.initializePreyCounter(player->getGUID());
 	} else if (action == PreyAction_BonusReroll) {
 		if (!slot->isOccupied()) {
 			player->sendMessageDialog("You don't have any active monster on this prey slot.");
 			return;
-		} else if (!player->usePreyCards(static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_REROLL_PRICE)))) {
+		} else if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)))) {
 			player->sendMessageDialog("You don't have enought prey cards to reroll this prey slot bonus type.");
 			return;
 		}
 
 		slot->reloadBonusValue();
 		slot->reloadBonusType();
-		slot->bonusTimeLeft = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_TIME));
+		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 	} else if (action == PreyAction_MonsterSelection) {
 		if (slot->isOccupied()) {
 			player->sendMessageDialog("You already have an active monster on this prey slot.");
@@ -396,13 +396,13 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 		slot->state = PreyDataState_Active;
 		slot->selectedRaceId = slot->raceIdList[index];
 		slot->removeMonsterType(slot->selectedRaceId);
-		slot->bonusTimeLeft = static_cast<uint16_t>(g_config.getNumber(PREY_BONUS_TIME));
+		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 		g_game.initializePreyCounter(player->getGUID());
 	} else if (action == PreyAction_Option) {
-		if (option == PreyOption_AutomaticReroll && player->getPreyCards() < static_cast<uint64_t>(g_config.getNumber(PREY_BONUS_REROLL_PRICE))) {
+		if (option == PreyOption_AutomaticReroll && player->getPreyCards() < static_cast<uint64_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE))) {
 			player->sendMessageDialog("You don't have enought prey cards to enable automatic reroll when your slot expire.");
 			return;
-		} else if (option == PreyOption_Locked && player->getPreyCards() < static_cast<uint64_t>(g_config.getNumber(PREY_SELECTION_LIST_PRICE))) {
+		} else if (option == PreyOption_Locked && player->getPreyCards() < static_cast<uint64_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE))) {
 				player->sendMessageDialog("You don't have enought prey cards to lock monster and bonus when the slot expire.");
 				return;
 		}
@@ -440,7 +440,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 			player->sendMessageDialog("You don't have enought money to reroll the task hunting slot.");
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
-			slot->freeRerollTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_config.getNumber(TASK_HUNTING_FREE_REROLL_TIME) * 1000);
+			slot->freeRerollTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_FREE_REROLL_TIME) * 1000);
 		}
 
 		slot->eraseTask();
@@ -448,7 +448,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		slot->state = PreyTaskDataState_Selection;
 		slot->reloadMonsterGrid(player->getTaskHuntingBlackList(), player->getLevel());
 	} else if (action == PreyTaskAction_RewardsReroll) {
-		if (!player->usePreyCards(static_cast<uint16_t>(g_config.getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)))) {
+		if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)))) {
 			player->sendMessageDialog("You don't have enought prey cards to reroll you task reward rarity.");
 			return;
 		}
@@ -458,7 +458,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		if (slot->disabledUntilTimeStamp >= OTSYS_TIME()) {
 			player->sendMessageDialog("You need to wait to select a new creature on task.");
 			return;
-		} else if (!player->usePreyCards(static_cast<uint16_t>(g_config.getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)))) {
+		} else if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)))) {
 			player->sendMessageDialog("You don't have enought prey cards to choose a creature on list for you task hunting slot.");
 			return;
 		}
@@ -549,7 +549,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		slot->state = PreyTaskDataState_Selection;
 		player->addTaskHuntingPoints(reward);
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
-		slot->disabledUntilTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_config.getNumber(TASK_HUNTING_LIMIT_EXHAUST) * 1000);
+		slot->disabledUntilTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_LIMIT_EXHAUST) * 1000);
 	} else {
 		SPDLOG_WARN("[IOPrey::ParseTaskHuntingAction] - Unknown task action: {}", action);
 		return;
@@ -560,7 +560,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 
 void IOPrey::InitializeTaskHuntOptions()
 {
-	if (!g_config.getBoolean(TASK_HUNTING_ENABLED)) {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		return;
 	}
 

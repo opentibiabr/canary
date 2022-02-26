@@ -192,6 +192,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/creatures/monster/monster_type_functions.cpp
     lua/functions/creatures/npc/npc_functions.cpp
     lua/functions/creatures/npc/npc_type_functions.cpp
+    lua/functions/creatures/npc/shop_functions.cpp
     lua/functions/creatures/player/group_functions.cpp
     lua/functions/creatures/player/guild_functions.cpp
     lua/functions/creatures/player/mount_functions.cpp

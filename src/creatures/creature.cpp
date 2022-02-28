@@ -727,10 +727,10 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			g_game.internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
-			Player* player = mostDamageCreature->getPlayer();
 			bool corpses = corpse->isRewardCorpse() && (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
-			if (g_configManager().getBoolean(AUTOBANK) && mostDamageCreature && player && !corpses) {
-				uint64_t money = 0;
+			if (g_configManager().getBoolean(AUTOBANK) && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
+				Player* player = mostDamageCreature->getPlayer();
+				int32_t money = 0;
 				for (Item* item : corpse->getContainer()->getItems()) {
 					money += item->getWorth();
 					g_game.internalRemoveItem(item, money);
@@ -744,8 +744,8 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 				}
 			}
 
-			if (g_configManager().getBoolean(AUTOLOOT) && mostDamageCreature && player && !corpses) {
-				int32_t pos = tile->getStackposOfItem(player, corpse);
+			if (g_configManager().getBoolean(AUTOLOOT) && mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
+				int32_t pos = tile->getStackposOfItem(mostDamageCreature->getPlayer(), corpse);
 				g_dispatcher.addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game, mostDamageCreature->getID(), this->getPosition(), corpse->getClientID(), pos - 1, nullptr, false, true)));
 			}
 		}

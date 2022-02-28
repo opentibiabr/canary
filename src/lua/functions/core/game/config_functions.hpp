@@ -180,6 +180,7 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME)
 			registerEnumIn(L, "configKeys", TOGLE_IMBUEMENT_SHRINE_STORAGE)
 			registerEnumIn(L, "configKeys", SERVER_SAVE_TIME)
+			registerEnumIn(L, "configKeys", RATE_USE_STAGES)
 
 			#undef registerEnumIn
 		}

@@ -232,21 +232,21 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	return entries
 end
 
-DailyReward.loadDailyReward = function(playerId, source)
+DailyReward.loadDailyReward = function(playerId, target)
 	local player = Player(playerId)
 	if not player then
 		return false
 	end
-	if source ~= 0 then
-		source = REWARD_FROM_SHRINE
+	if target ~= 0 then
+		target = REWARD_FROM_SHRINE
 	else
-		source = REWARD_FROM_PANEL
+		target = REWARD_FROM_PANEL
 	end
 
 	player:sendCollectionResource(ClientPackets.JokerResource, player:getJokerTokens())
 	player:sendCollectionResource(ClientPackets.CollectionResource, player:getCollectionTokens())
 	player:sendDailyReward()
-	player:sendOpenRewardWall(source)
+	player:sendOpenRewardWall(target)
 	player:sendDailyRewardCollectionState(DailyReward.isRewardTaken(player:getId()) and DAILY_REWARD_COLLECTED or DAILY_REWARD_NOTCOLLECTED)
 	return true
 end
@@ -273,8 +273,8 @@ DailyReward.pickedReward = function(playerId)
 	return true
 end
 
-DailyReward.isShrine = function(source)
-	if source ~= 0 then
+DailyReward.isShrine = function(target)
+	if target ~= 0 then
 		return false
 	else
 		return true
@@ -349,9 +349,9 @@ DailyReward.init = function(playerId)
 	player:loadDailyRewardBonuses()
 end
 
-DailyReward.processReward = function(playerId, source)
+DailyReward.processReward = function(playerId, target)
 	DailyReward.pickedReward(playerId)
-	DailyReward.loadDailyReward(playerId, source)
+	DailyReward.loadDailyReward(playerId, target)
 	local player = Player(playerId)
 	if player then
 		player:loadDailyRewardBonuses()
@@ -405,8 +405,8 @@ function Player.selectDailyReward(self, msg)
 		return false
 	end
 
-	local source = msg:getByte() -- 0 -> shrine / 1 -> tibia panel
-	if not DailyReward.isShrine(source) then
+	local target = msg:getByte() -- 0 -> shrine / 1 -> tibia panel
+	if not DailyReward.isShrine(target) then
 		if self:getCollectionTokens() < 1 then
 			self:sendError("You do not have enough collection tokens to proceed.")
 			return false
@@ -477,7 +477,7 @@ function Player.selectDailyReward(self, msg)
 		-- Registering history
 		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
 			" .. self:getDayStreak() + 1 .. ". Picked items: " .. description)
-		DailyReward.processReward(playerId, source)
+		DailyReward.processReward(playerId, target)
 	end
 
 	local reward = nil
@@ -501,7 +501,7 @@ function Player.selectDailyReward(self, msg)
 		-- end
 		-- DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
 			-- " .. self:getDayStreak() + 1 .. ". Picked reward: " .. description)
-		-- DailyReward.processReward(playerId, source)
+		-- DailyReward.processReward(playerId, target)
 	-- end
 
 	if (dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST) then
@@ -509,14 +509,14 @@ function Player.selectDailyReward(self, msg)
 		self:setStoreXpBoost(50)
 		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
 			" .. self:getDayStreak() + 1 .. ". Picked reward: XP Bonus for " .. reward .. " minutes.")
-		DailyReward.processReward(playerId, source)
+		DailyReward.processReward(playerId, target)
 	end
 
 	if (dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL) then
 		self:addPreyCards(reward)
 		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
 			" .. self:getDayStreak() + 1 .. ". Picked reward: " .. reward .. "x Prey bonus reroll(s)")
-		DailyReward.processReward(playerId, source)
+		DailyReward.processReward(playerId, target)
 	end
 
 	return true

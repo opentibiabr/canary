@@ -40,6 +40,49 @@ function login.onLogin(player)
 		onExerciseTraining[player:getId()] = nil
 		player:setTraining(false)
 	end
+
+	-- Boosted creature
+	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
+	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
+	
+	if SCHEDULE_SPAWN_RATE ~= 100 then
+		if SCHEDULE_SPAWN_RATE > 100 then
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Event! Monsters respawn at a faster rate \
+			Happy Hunting!")
+		else
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Decreased! Monsters respawn at a slower rate.")
+		end
+	end
+
+	if SCHEDULE_LOOT_RATE ~= 100 then
+		if SCHEDULE_LOOT_RATE > 100 then
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Event! Monsters looted at a faster rate \
+			Happy Hunting!")
+		else
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Loot Rate Decreased! looted looted at a slower rate.")
+		end
+	end
+
+	local playerId = player:getId()
+
+	-- Stamina
+	nextUseStaminaTime[playerId] = 1
+
+	-- EXP Stamina
+	nextUseXpStamina[playerId] = 1
+
+	-- Set Client XP Gain Rate --
+	local rateExp = 1
+	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
+		rateExp = getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
+
+		if SCHEDULE_EXP_RATE ~= 100 then
+			rateExp = math.max(0, (rateExp * SCHEDULE_EXP_RATE)/100)
+		end
+	end
+
+	player:setBaseXpGain(rateExp * 100)
+	
 	return true
 end
 

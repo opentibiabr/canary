@@ -74,24 +74,6 @@ int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGamegetEventSLoot(lua_State* L) {
-	// Game.getEventSLoot()
-	lua_pushnumber(L, g_game().getLootSchedule());
-	return 1;
-}
-
-int GameFunctions::luaGamegetEventSSkill(lua_State* L) {
-	// Game.getEventSSkill()
-	lua_pushnumber(L, g_game().getSkillSchedule());
-	return 1;
-}
-
-int GameFunctions::luaGamegetEventSExp(lua_State* L) {
-	// Game.getEventSExp()
-	lua_pushnumber(L, g_game().getExpSchedule());
-	return 1;
-}
-
 int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	// Game.getSpectators(position[, multifloor = false[, onlyPlayer = false[, minRangeX = 0[, maxRangeX = 0[, minRangeY = 0[, maxRangeY = 0]]]]]])
 	const Position& position = getPosition(L, 1);

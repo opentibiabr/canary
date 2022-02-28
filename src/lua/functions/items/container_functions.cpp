@@ -245,6 +245,29 @@ int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 	return 1;
 }
 
+int ContainerFunctions::luaContainerGetItems(lua_State* L) {
+	// container:getItems([recursive = false])
+	const Container* container = getUserdata<Container>(L, 1);
+	if (!container) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	bool recursive = getBoolean(L, 2, false);
+	std::vector<Item*> items = container->getItems(recursive);
+
+	lua_createtable(L, static_cast<int>(items.size()), 0);
+
+	int index = 0;
+	for (Item* item : items) {
+		index++;
+		pushUserdata(L, item);
+		setItemMetatable(L, -1, item);
+		lua_rawseti(L, -2, index);
+	}
+	return 1;
+}
+
 int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	// container:registerReward()
 	Container* container = getUserdata<Container>(L, 1);

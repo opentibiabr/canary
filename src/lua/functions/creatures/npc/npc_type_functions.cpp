@@ -26,6 +26,27 @@
 extern Npcs g_npcs;
 extern Scripts* g_scripts;
 
+void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector) {
+	lua_createtable(L, shopVector.size(), 0);
+
+	int index = 0;
+	for (const auto& shopBlock : shopVector) {
+		lua_createtable(L, 0, 5);
+
+		setField(L, "itemId", shopBlock.itemId);
+		setField(L, "itemName", shopBlock.itemName);
+		setField(L, "itemBuyPrice", shopBlock.itemBuyPrice);
+		setField(L, "itemSellPrice", shopBlock.itemSellPrice);
+		setField(L, "itemStorageKey", shopBlock.itemStorageKey);
+		setField(L, "itemStorageValue", shopBlock.itemStorageValue);
+
+		createNpcTypeShopLuaTable(L, shopBlock.childShop);
+		lua_setfield(L, -2, "childShop");
+
+		lua_rawseti(L, -2, ++index);
+	}
+}
+
 int NpcTypeFunctions::luaNpcTypeCreate(lua_State* L) {
 	// NpcType(name)
 	NpcType* npcType = g_npcs.getNpcType(getString(L, 1), true);
@@ -176,31 +197,20 @@ int NpcTypeFunctions::luaNpcTypeMaxHealth(lua_State* L) {
 }
 
 int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
-	// npcType:addShopItem(shopItem)
+	// npcType:addShopItem(shop)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (!npcType) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (!isTable(L, 2)) {
-		reportErrorFunc("Shop Item is not a table");
-		pushBoolean(L, false);
-		return 1;
+	Shop* shop = getUserdata<Shop>(L, 2);
+	if (shop) {
+		npcType->loadShop(npcType, shop->shopBlock);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
 	}
-
-	const auto table = lua_gettop(L);
-	ShopInfo shopItem;
-
-	shopItem.itemClientId = static_cast<uint16_t>(getField<uint32_t>(L, table, "clientId"));
-	shopItem.buyPrice = getField<uint32_t>(L, table, "buy");
-	shopItem.sellPrice = getField<uint32_t>(L, table, "sell");
-	shopItem.subType = static_cast<int32_t>(getField<uint32_t>(L, table, "count"));
-	shopItem.storageKey = static_cast<int32_t>(getField<uint32_t>(L, table, "storageKey"));
-	shopItem.storageValue = static_cast<int32_t>(getField<uint32_t>(L, table, "storageValue"));
-	shopItem.name = getFieldString(L, table, "itemName");
-
-	npcType->addShopItem(shopItem.name, shopItem);
 	return 1;
 }
 

@@ -5252,14 +5252,9 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 	if (creature != player)
 	{
-		// stack pos is always real index now, so it can exceed the limit
-		// if stack pos exceeds the limit, we need to refresh the tile instead
-		// 1. this is a rare case, and is only triggered by forcing summon in a position
-		// 2. since no stackpos will be send to the client about that creature, removing
-		//    it must be done with its id if its stackpos remains >= 10. this is done to
-		//    add creatures to battle list instead of rendering on screen
+		// stackpos is always real index now, so it can exceed the limit.
+		// if stackpos exceeds the limit, we need to refresh the tile instead.
 		if (stackpos >= 10) {
-			// @todo: should we avoid this check?
 			if (const Tile* tile = creature->getTile()) {
 				sendUpdateTile(tile, pos);
 			}

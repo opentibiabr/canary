@@ -898,7 +898,7 @@ class Player final : public Creature, public Cylinder
 				client->sendRemoveTileThing(pos, stackpos);
 			}
 		}
-		void sendRemoveTileCreature(const Creature* creature, const Position& pos, int32_t stackpos) {
+		void sendRemoveTileCreature(const Creature* creature, const Position& pos, int32_t stackpos) const {
 			if (client) {
 				client->sendRemoveTileCreature(creature, pos, stackpos);
 			}

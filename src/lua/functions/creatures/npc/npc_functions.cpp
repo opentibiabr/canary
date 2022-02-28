@@ -406,7 +406,7 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 		return 1;
 	}
 
-	ShopInfoMap shopItems = npc->getShopItems();
+	const std::vector<ShopBlock> shopItems = npc->getShopItemVector();
 
 	if (shopItems.empty()) {
 		pushBoolean(L, false);
@@ -426,21 +426,17 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 		return 1;
 	}
 
-	ShopInfoMap shopItems = npc->getShopItems();
-	const ItemType &itemType = Item::items.getItemIdByClientId(getNumber<uint16_t>(L, 2));
-
-	if (shopItems.find(itemType.name) == shopItems.end()) {
-		reportErrorFunc("No shop item found for clientId");
-		pushBoolean(L, false);
-		return 1;
+	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
+	for (ShopBlock shopBlock : shopVector)
+	{
+		setField(L, "id", shopBlock.itemId);
+		setField(L, "name", shopBlock.itemName);
+		setField(L, "subType", shopBlock.itemSubType);
+		setField(L, "buyPrice", shopBlock.itemBuyPrice);
+		setField(L, "sellPrice", shopBlock.itemSellPrice);
+		setField(L, "storageKey", shopBlock.itemStorageKey);
+		setField(L, "storageValue", shopBlock.itemStorageValue);
 	}
-
-	ShopInfo shopInfo = shopItems[itemType.name];
-	setField(L, "clientId", shopInfo.itemClientId);
-	setField(L, "name", shopInfo.name);
-	setField(L, "subType", shopInfo.subType);
-	setField(L, "buyPrice", shopInfo.buyPrice);
-	setField(L, "sellPrice", shopInfo.sellPrice);
 
 	pushBoolean(L, true);
 	return 1;

@@ -23,6 +23,7 @@
 #include <set>
 
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
+#include "lua/functions/creatures/npc/shop_functions.hpp"
 #include "lua/scripts/luascript.h"
 
 class NpcFunctions final : LuaScriptInterface {
@@ -58,7 +59,8 @@ class NpcFunctions final : LuaScriptInterface {
 				registerMethod(L, "Npc", "sellItem", NpcFunctions::luaNpcSellItem);
 
 				registerMethod(L, "Npc", "getDistanceTo", NpcFunctions::luaNpcGetDistanceTo);
-
+				
+				ShopFunctions::init(L);
 				NpcTypeFunctions::init(L);
 			}
 

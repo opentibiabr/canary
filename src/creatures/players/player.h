@@ -2083,6 +2083,7 @@ class Player final : public Creature, public Cylinder
 		uint16_t staminaXpBoost = 100;
 		int16_t lastDepotId = -1;
 		StashItemList stashItems; // [ClientID] = amount
+		uint32_t movedItems = 0;
 
 		// Bestiary
 		bool charmExpansion = false;
@@ -2153,6 +2154,7 @@ class Player final : public Creature, public Cylinder
 		bool supplyStash = false; // Menu option 'stow, stow container ...'
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
+		bool moved = false;
 		bool dead = false;
 
 		static uint32_t playerAutoID;

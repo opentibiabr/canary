@@ -428,7 +428,7 @@ private:
 	void AddPlayerSkills(NetworkMessage &msg);
 	void sendBlessStatus();
 	void sendPremiumTrigger();
-	void sendMessageDialog(std::string message);
+	void sendMessageDialog(const std::string &message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);
 	void AddCreatureLight(NetworkMessage &msg, const Creature *creature);
 

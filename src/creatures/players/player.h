@@ -1819,7 +1819,7 @@ class Player final : public Creature, public Cylinder
 		error_t SetAccountInterface(account::Account *account);
 		error_t GetAccountInterface(account::Account *account);
 
-		void sendMessageDialog(std::string message)
+		void sendMessageDialog(const std::string& message)
 		{
 			if (client) {
 				client->sendMessageDialog(message);
@@ -1853,7 +1853,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		PreySlot* getPreySlotById(PreySlot_t slotid) {
-			auto it = std::find_if(preys.begin(), preys.end(), [slotid](PreySlot* preyIt) {
+			auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
 				return preyIt->id == slotid;
 				});
 
@@ -1915,7 +1915,7 @@ class Player final : public Creature, public Cylinder
 				return nullptr;
 			}
 
-			auto it = std::find_if(preys.begin(), preys.end(), [raceId](PreySlot* it) {
+			auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
 				return it->selectedRaceId == raceId;
 				});
 
@@ -1947,8 +1947,8 @@ class Player final : public Creature, public Cylinder
 		}
 
 		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) {
-			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](TaskHuntingSlot* it) {
-				return it->id == slotid;
+			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
+				return itTask->id == slotid;
 				});
 
 			if (it != taskHunting.end()) {
@@ -2013,7 +2013,7 @@ class Player final : public Creature, public Cylinder
 				return nullptr;
 			}
 
-			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](TaskHuntingSlot* itTask) {
+			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
 				return itTask->selectedRaceId == raceId;
 			});
 

@@ -6672,7 +6672,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMessageDialog(std::string message)
+void ProtocolGame::sendMessageDialog(const std::string &message)
 {
 	NetworkMessage msg;
 	msg.addByte(0xED);

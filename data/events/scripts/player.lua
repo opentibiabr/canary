@@ -286,6 +286,15 @@ function Player:onGainExperience(source, exp, rawExp)
 		end
 	end
 
+	-- Prey system
+	if configManager.getBoolean(configKeys.PREY_ENABLED) then
+		local monsterType = source:getType()
+		if monsterType and monsterType:raceId() > 0 then
+			local preyBonus = player:getPreyExperiencePercentage(monsterType:raceId())
+			exp = math.ceil((exp * preyBonus) / 100)
+		end
+	end
+
 	return exp
 end
 

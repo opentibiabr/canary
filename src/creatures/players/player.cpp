@@ -4275,6 +4275,21 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 				}
 			}
 		}
+	} else if (const Monster* monster = target->getMonster()) {
+		if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+			if (TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(monster->getRaceId())) {
+				if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(taskSlot)) {
+					taskSlot->currentKills += 1;
+					if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
+						(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+						taskSlot->state = PreyTaskDataState_Completed;
+						sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
+					}
+
+					reloadTaskSlot(taskSlot->id);
+				}
+			}
+		}
 	}
 
 	return unjustified;
@@ -4284,36 +4299,6 @@ void Player::gainExperience(uint64_t gainExp, Creature* source)
 {
 	if (hasFlag(PlayerFlag_NotGainExperience) || gainExp == 0 || staminaMinutes == 0) {
 		return;
-	}
-
-	if (source) {
-		const Monster* monster = source->getMonster();
-		if (monster) {
-			uint16_t raceId = monster->getRaceId();
-			if (g_configManager().getBoolean(PREY_ENABLED)) {
-				const PreySlot* slot = getPreyWithMonster(raceId);
-				if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
-					gainExp += std::floor((gainExp * slot->bonusPercentage) / 100);
-				}
-			}
-
-			if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-				TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(raceId);
-				if (taskSlot) {
-					TaskHuntingOption* option = g_prey.GetTaskRewardOption(taskSlot);
-					if (option) {
-						taskSlot->currentKills += 1;
-						if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
-							(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
-							taskSlot->state = PreyTaskDataState_Completed;
-							sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
-						}
-
-						reloadTaskSlot(taskSlot->id);
-					}
-				}
-			}
-		}
 	}
 
 	addExperience(source, gainExp, true);

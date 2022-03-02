@@ -381,6 +381,20 @@ int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
+	// player:getPreyExperiencePercentage(raceId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
+			lua_pushnumber(L, slot->bonusPercentage);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 	// player:removeTaskHuntingPoints(amount)
 	Player* player = getUserdata<Player>(L, 1);

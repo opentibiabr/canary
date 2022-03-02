@@ -55,6 +55,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "getPreyCards", PlayerFunctions::luaPlayerGetPreyCards);
 			registerMethod(L, "Player", "getPreyLootPercentage", PlayerFunctions::luaPlayerGetPreyLootPercentage);
+			registerMethod(L, "Player", "getPreyExperiencePercentage", PlayerFunctions::luaPlayerGetPreyExperiencePercentage);
 			registerMethod(L, "Player", "preyThirdSlot", PlayerFunctions::luaPlayerPreyThirdSlot);
 			registerMethod(L, "Player", "taskHuntingThirdSlot", PlayerFunctions::luaPlayerTaskThirdSlot);
 			registerMethod(L, "Player", "addPreyCards", PlayerFunctions::luaPlayerAddPreyCards);
@@ -309,6 +310,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerPreyThirdSlot(lua_State* L);
 		static int luaPlayerTaskThirdSlot(lua_State* L);
 		static int luaPlayerAddPreyCards(lua_State* L);
+		static int luaPlayerGetPreyExperiencePercentage(lua_State* L);
 		static int luaPlayerRemoveTaskHuntingPoints(lua_State* L);
 
 		static int luaPlayerGetCapacity(lua_State* L);

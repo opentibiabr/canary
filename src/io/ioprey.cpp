@@ -56,7 +56,7 @@ void PreySlot::reloadBonusValue()
 {
 	auto minBonusPercent = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_PERCENT_MIN));
 	auto maxBonusPercent = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_PERCENT_MAX));
-	uint16_t stagePercent = std::floor((maxBonusPercent - minBonusPercent) / 8);
+	auto stagePercent = static_cast<uint16_t>(std::floor((maxBonusPercent - minBonusPercent) / 8));
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
 	} else {
@@ -91,7 +91,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	uint8_t stageTwo;
 	uint8_t stageThree;
 	uint8_t stageFour;
-	uint32_t levelStage = std::floor(level / 100);
+	auto levelStage = static_cast<uint32_t>(std::floor(level / 100));
 	if (levelStage == 0) { // From level 0 to 99
 		stageOne = 3;
 		stageTwo = 3;
@@ -168,7 +168,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	uint8_t stageTwo;
 	uint8_t stageThree;
 	uint8_t stageFour;
-	uint32_t levelStage = std::floor(level / 100);
+	uint32_t levelStage = static_cast<uint32_t>(std::floor(level / 100));
 	if (levelStage == 0) { // From level 0 to 99
 		stageOne = 3;
 		stageTwo = 3;
@@ -332,7 +332,7 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 			player->sendMessageDialog("You don't have enought money to reroll the prey slot.");
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
-			slot->freeRerollTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000);
+			slot->freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000;
 		}
 
 		slot->eraseBonus();
@@ -531,7 +531,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		}
 
 		std::ostringstream ss;
-		reward = std::ceil((reward * boostChange) / 10);
+		reward = static_cast<uint16_t>(std::ceil((reward * boostChange) / 10));
 		ss << "You succesfully claimed your hunting task and received " << reward;
 		if (boostChange == 20) {
 			ss << " hunting task points including a 100% bonus!!";
@@ -546,7 +546,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskA
 		slot->state = PreyTaskDataState_Selection;
 		player->addTaskHuntingPoints(reward);
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
-		slot->disabledUntilTimeStamp = static_cast<int64_t>(OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_LIMIT_EXHAUST) * 1000);
+		slot->disabledUntilTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_LIMIT_EXHAUST) * 1000;
 	} else {
 		SPDLOG_WARN("[IOPrey::ParseTaskHuntingAction] - Unknown task action: {}", action);
 		return;
@@ -567,7 +567,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	uint8_t limitOfStars = 5;										// This is hardcoded on client but i'm saving it in case that they change it in the future.
 	uint16_t kills = killStage;
 	for (uint8_t difficulty = PreyTaskDifficult_First; difficulty <= PreyTaskDifficult_Last; ++difficulty) {	// Difficulties of creatures on bestiary.
-		uint16_t reward = std::round((10 * kills) / killStage);
+		uint16_t reward = static_cast<uint16_t>(std::round((10 * kills) / killStage));
 		for (uint8_t star = 1; star <= limitOfStars; ++star) { 		// Amount of task stars on task hunting.
 			auto option = new TaskHuntingOption();
 			option->difficult = static_cast<PreyTaskDifficult_t>(difficulty);
@@ -581,7 +581,7 @@ void IOPrey::InitializeTaskHuntOptions()
 
 			taskOption.push_back(option);
 
-			reward = std::round((reward * (115 + (difficulty * limitOfStars))) / 100);
+			reward = static_cast<uint16_t>(std::round((reward * (115 + (difficulty * limitOfStars))) / 100));
 		}
 
 		kills *= 4;
@@ -589,7 +589,7 @@ void IOPrey::InitializeTaskHuntOptions()
 
 	baseDataMessage.addByte(0xBA);
 	std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
-	baseDataMessage.add<uint16_t>(bestiaryList.size());
+	baseDataMessage.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
 		MonsterType* mtype = g_monsters.getMonsterType((*it).second);
 		if (!mtype) {
@@ -606,7 +606,7 @@ void IOPrey::InitializeTaskHuntOptions()
 		}
 	}
 
-	baseDataMessage.addByte(taskOption.size());
+	baseDataMessage.addByte(static_cast<uint8_t>(taskOption.size()));
 	for (auto it = taskOption.begin(); it != taskOption.end(); ++it) {
 		TaskHuntingOption* option = *it;
 		if (!option) {

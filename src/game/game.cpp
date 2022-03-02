@@ -6471,11 +6471,6 @@ void Game::addPlayerVocation(const Player* target)
 
 void Game::addMagicEffect(const Position& pos, uint8_t effect)
 {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !isMagicEffectRegistered(effect)) {
-		SPDLOG_WARN("[Game::addMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", effect);
-		return;
-	}
-
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, pos, true, true);
 	addMagicEffect(spectators, pos, effect);
@@ -6483,11 +6478,6 @@ void Game::addMagicEffect(const Position& pos, uint8_t effect)
 
 void Game::addMagicEffect(const SpectatorHashSet& spectators, const Position& pos, uint8_t effect)
 {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game.isMagicEffectRegistered(effect)) {
-		SPDLOG_WARN("[Game::addMagicEffect] An unregistered magic effect type with id '{}' was blocked to prevent client crash.", effect);
-		return;
-	}
-
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendMagicEffect(pos, effect);
@@ -6497,11 +6487,6 @@ void Game::addMagicEffect(const SpectatorHashSet& spectators, const Position& po
 
 void Game::addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect)
 {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !isDistanceEffectRegistered(effect)) {
-		SPDLOG_WARN("[Game::addDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", effect);
-		return;
-	}
-
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, fromPos, false, true);
 	map.getSpectators(spectators, toPos, false, true);
@@ -6510,11 +6495,6 @@ void Game::addDistanceEffect(const Position& fromPos, const Position& toPos, uin
 
 void Game::addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect)
 {
-	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && !g_game.isDistanceEffectRegistered(effect)) {
-		SPDLOG_WARN("[Game::addDistanceEffect] An unregistered distance effect type with id '{}' was blocked to prevent client crash.", effect);
-		return;
-	}
-
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);

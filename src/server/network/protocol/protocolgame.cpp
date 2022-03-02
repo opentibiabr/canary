@@ -6150,7 +6150,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 	} else if (slot->state == PreyDataState_Inactive) {
 		// Empty
 	} else if (slot->state == PreyDataState_Active) {	
-		MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(slot->selectedRaceId);
+		const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(slot->selectedRaceId);
 		if (!mtype) {
 			return;
 		}
@@ -6173,9 +6173,9 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(slot->bonusRarity);
 		msg.add<uint16_t>(slot->bonusTimeLeft);
 	} else if (slot->state == PreyDataState_Selection) {
-		msg.addByte(slot->raceIdList.size());
+		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
 		for (auto it = slot->raceIdList.begin(); it != slot->raceIdList.end(); ++it) {
-			MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(*it);
+			const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(*it);
 			if (!mtype) {
 				return;
 			}
@@ -6220,7 +6220,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		}
 	} else if (slot->state == PreyDataState_ListSelection) {
 		const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
-		msg.add<uint16_t>(bestiaryList.size());
+		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 		for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
 			msg.add<uint16_t>((*it).first);
 		}
@@ -6229,7 +6229,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		return;
 	}
 
-	msg.add<uint32_t>(std::max<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000), 0));
+	msg.add<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0));
 	msg.addByte(static_cast<uint8_t>(slot->option));
 
 	writeToOutputBuffer(msg);

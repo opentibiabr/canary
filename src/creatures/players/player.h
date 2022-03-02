@@ -1819,7 +1819,7 @@ class Player final : public Creature, public Cylinder
 		error_t SetAccountInterface(account::Account *account);
 		error_t GetAccountInterface(account::Account *account);
 
-		void sendMessageDialog(const std::string& message)
+		void sendMessageDialog(const std::string& message) const
 		{
 			if (client) {
 				client->sendMessageDialog(message);
@@ -1975,10 +1975,10 @@ class Player final : public Creature, public Cylinder
 			return rt;
 		}
 
-		void sendTaskHuntingData() {
+		void sendTaskHuntingData() const {
 			if (client) {
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
-				for (TaskHuntingSlot* slot : taskHunting) {
+				for (const TaskHuntingSlot* slot : taskHunting) {
 					if (slot) {
 						client->sendTaskHuntingData(slot);
 					}

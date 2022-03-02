@@ -60,7 +60,7 @@ void PreySlot::reloadBonusValue()
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
 	} else {
-		bonusRarity = normal_random(bonusRarity + 1, 10);
+		bonusRarity = static_cast<uint8_t>(normal_random(bonusRarity + 1, 10));
 	}
 
 	bonusPercentage = stagePercent * bonusRarity;
@@ -115,7 +115,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	}
 
 	uint8_t tries = 0;
-	size_t maxIndex = bestiary.size() - 1;
+	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
 		uint16_t raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
 		tries++;
@@ -168,7 +168,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	uint8_t stageTwo;
 	uint8_t stageThree;
 	uint8_t stageFour;
-	uint32_t levelStage = static_cast<uint32_t>(std::floor(level / 100));
+	auto levelStage = static_cast<uint32_t>(std::floor(level / 100));
 	if (levelStage == 0) { // From level 0 to 99
 		stageOne = 3;
 		stageTwo = 3;
@@ -192,7 +192,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	}
 
 	uint8_t tries = 0;
-	size_t maxIndex = bestiary.size() - 1;
+	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
 		uint16_t raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
 		tries++;
@@ -311,7 +311,12 @@ bool IOPrey::CheckPlayerPreys(Player* player) const
 	return activeSlots != 0;
 }
 
-void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const
+void IOPrey::ParsePreyAction(Player* player, 
+							PreySlot_t slotId, 
+							PreyAction_t action, 
+							PreyOption_t option, 
+							int8_t index, 
+							uint16_t raceId) const
 {
 	if (!player) {
 		return;
@@ -413,7 +418,11 @@ void IOPrey::ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t act
 	player->reloadPreySlot(slotId);
 }
 
-void IOPrey::ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const
+void IOPrey::ParseTaskHuntingAction(Player* player, 
+									PreySlot_t slotId, 
+									PreyTaskAction_t action, 
+									bool upgrade, 
+									uint16_t raceId) const
 {
 	if (!player) {
 		return;
@@ -567,7 +576,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	uint8_t limitOfStars = 5;										// This is hardcoded on client but i'm saving it in case that they change it in the future.
 	uint16_t kills = killStage;
 	for (uint8_t difficulty = PreyTaskDifficult_First; difficulty <= PreyTaskDifficult_Last; ++difficulty) {	// Difficulties of creatures on bestiary.
-		uint16_t reward = static_cast<uint16_t>(std::round((10 * kills) / killStage));
+		auto reward = static_cast<uint16_t>(std::round((10 * kills) / killStage));
 		for (uint8_t star = 1; star <= limitOfStars; ++star) { 		// Amount of task stars on task hunting.
 			auto option = new TaskHuntingOption();
 			option->difficult = static_cast<PreyTaskDifficult_t>(difficulty);
@@ -591,7 +600,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
 	baseDataMessage.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	for (auto it = bestiaryList.begin(); it != bestiaryList.end(); ++it) {
-		MonsterType* mtype = g_monsters.getMonsterType((*it).second);
+		const MonsterType* mtype = g_monsters.getMonsterType((*it).second);
 		if (!mtype) {
 			return;
 		}
@@ -608,7 +617,7 @@ void IOPrey::InitializeTaskHuntOptions()
 
 	baseDataMessage.addByte(static_cast<uint8_t>(taskOption.size()));
 	for (auto it = taskOption.begin(); it != taskOption.end(); ++it) {
-		TaskHuntingOption* option = *it;
+		const TaskHuntingOption* option = *it;
 		if (!option) {
 			return;
 		}
@@ -642,7 +651,7 @@ TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) cons
 		difficult = PreyTaskDifficult_Hard;
 	}
 
-	auto it = std::find_if(taskOption.begin(), taskOption.end(), [difficult, slot](TaskHuntingOption* optionIt) {
+	auto it = std::find_if(taskOption.begin(), taskOption.end(), [difficult, slot](const TaskHuntingOption* optionIt) {
 		return optionIt->difficult == difficult && optionIt->rarity == slot->rarity;
 	});
 

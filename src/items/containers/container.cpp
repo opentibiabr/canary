@@ -729,6 +729,21 @@ Thing* Container::getThing(size_t index) const
 	return getItemByIndex(index);
 }
 
+ItemVector Container::getItems(bool recursive /*= false*/) const
+{
+	ItemVector containerItems;
+	if (recursive) {
+		for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+			containerItems.push_back(*it);
+		}
+	} else {
+		for (Item* item : itemlist) {
+			containerItems.push_back(item);
+		}
+	}
+	return containerItems;
+}
+
 void Container::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
 {
 	Cylinder* topParent = getTopParent();

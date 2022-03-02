@@ -61,6 +61,10 @@ onlyPremiumAccount = false
 weatherRain = false
 thunderEffect = false
 allConsoleLog = false
+-- stashMoving = true, stow an container inside your stash
+-- the non-stackable items will be moved to the selected depot chest(I - XVIII).
+stashMoving = false
+depotChest = 4
 
 -- Stamina in Trainers
 staminaTrainer = false

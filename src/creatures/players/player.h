@@ -732,7 +732,7 @@ class Player final : public Creature, public Cylinder
 		void openShopWindow(Npc* npc);
 		bool closeShopWindow(bool sendCloseShopWindow = true);
 		bool updateSaleShopList(const Item* item);
-		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
+		bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
 		void setChaseMode(bool mode);
 		void setFightMode(FightMode_t mode) {
@@ -1299,10 +1299,10 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
-      if (client && shopOwner) {
-        client->sendSaleItemList(shopOwner->getShopItems(), inventoryMap);
-      }
-    }
+			if (client && shopOwner) {
+				client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
+			}
+		}
 		void sendCloseShop() const {
 			if (client) {
 				client->sendCloseShop();
@@ -2077,6 +2077,7 @@ class Player final : public Creature, public Cylinder
 		uint16_t staminaXpBoost = 100;
 		int16_t lastDepotId = -1;
 		StashItemList stashItems; // [ItemID] = amount
+		uint32_t movedItems = 0;
 
 		// Bestiary
 		bool charmExpansion = false;
@@ -2147,6 +2148,7 @@ class Player final : public Creature, public Cylinder
 		bool supplyStash = false; // Menu option 'stow, stow container ...'
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
+		bool moved = false;
 
 		static uint32_t playerAutoID;
 

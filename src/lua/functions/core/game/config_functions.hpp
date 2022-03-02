@@ -31,6 +31,7 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerMethod(L, "configManager", "getString", ConfigFunctions::luaConfigManagerGetString);
 			registerMethod(L, "configManager", "getNumber", ConfigFunctions::luaConfigManagerGetNumber);
 			registerMethod(L, "configManager", "getBoolean", ConfigFunctions::luaConfigManagerGetBoolean);
+			registerMethod(L, "configManager", "getFloat", ConfigFunctions::luaConfigManagerGetFloat);
 
 			#define registerEnumIn(L, tableName, value) { \
 				std::string enumName = #value; \
@@ -168,6 +169,7 @@ class ConfigFunctions final : LuaScriptInterface {
 		}
 
 	private:
+		static int luaConfigManagerGetFloat(lua_State* L);
 		static int luaConfigManagerGetBoolean(lua_State* L);
 		static int luaConfigManagerGetNumber(lua_State* L);
 		static int luaConfigManagerGetString(lua_State* L);

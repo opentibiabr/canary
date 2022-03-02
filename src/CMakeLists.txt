@@ -84,6 +84,7 @@ if (MSVC)
   find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
   find_package(Protobuf REQUIRED)
+  find_package(libzippp CONFIG REQUIRED)
 else()
   find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(cryptopp CONFIG REQUIRED)
@@ -95,6 +96,7 @@ else()
   find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
   find_package(Protobuf REQUIRED)
+  find_package(libzippp CONFIG REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -193,6 +195,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/creatures/monster/monster_type_functions.cpp
     lua/functions/creatures/npc/npc_functions.cpp
     lua/functions/creatures/npc/npc_type_functions.cpp
+    lua/functions/creatures/npc/shop_functions.cpp
     lua/functions/creatures/player/group_functions.cpp
     lua/functions/creatures/player/guild_functions.cpp
     lua/functions/creatures/player/mount_functions.cpp
@@ -270,6 +273,7 @@ target_link_libraries(${PROJECT_NAME}
     ${Protobuf_LIBRARIES}
     jsoncpp_lib
     spdlog::spdlog
+    libzippp::libzippp
 )
 
 else()
@@ -297,6 +301,7 @@ else()
       Threads::Threads
       ${LUA_LIBRARIES}
       ${Protobuf_LIBRARIES}
+      libzippp::libzippp
   )
 
 endif (MSVC)

@@ -304,3 +304,22 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
         end
     end
 end
+
+function Player.getBlessMessage(self)
+	local currentBlesses = {}
+	for k, v in ipairs(Blessings.All) do
+		if self:hasBlessing(k) then
+			table.insert(currentBlesses, v.name)
+		end
+	end
+
+	local msg = currentBlesses[1]
+	if #currentBlesses > 0 then
+			for i = 2, #currentBlesses do
+				if #currentBlesses > 1 then
+					msg = msg.. (i == #currentBlesses and " and " or ", ") .. currentBlesses[i]
+				end
+			end
+		end
+	return msg
+end

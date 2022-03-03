@@ -1,17 +1,33 @@
+local login = CreatureEvent("login")
+function login.onLogin(player)
+	player:registerEvent("prepareDeath")
+	return true
+end
+
+login:register()
+
+local blesses = CreatureEvent("prepareDeath")
+function blesses.onPrepareDeath(player)
+	local function blessMessage()
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You were blessed with ".. player:getBlessMessage() ..".")
+	end
+	addEvent(blessMessage, 10)
+	return true
+end
+
 local playerDeath = CreatureEvent("Player Death")
 
 local deathListEnabled = true
 local maxDeathRecords = 5
 
 function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	local playerId = player:getId()
-	if nextUseStaminaTime[playerId] then
-		nextUseStaminaTime[playerId] = nil
+	nextUseStaminaTime[player:getId()] = 1
+
+	local function blessMessageOnDeath()
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are still blessed with ".. player:getBlessMessage() ..".")
 	end
 
-	nextUseStaminaTime[playerId] = 1
-
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.")
+	addEvent(blessMessageOnDeath, 150)
 	if not deathListEnabled then
 		return
 	end
@@ -76,7 +92,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		if targetGuild ~= 0 then
 			local killerGuild = killer:getGuild()
 			killerGuild = killerGuild and killerGuild:getId() or 0
-			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(playerId, killer:getId()) then
+			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer:getId()) then
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then

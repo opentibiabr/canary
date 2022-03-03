@@ -2494,7 +2494,7 @@ void Player::death(Creature* lastHitCreature)
 			if (charmRuneBless != 0) {
 				MonsterType* mType = g_monsters.getMonsterType(lastHitCreature->getName());
 				if (mType && mType->info.raceid == charmRuneBless) {
-                 deathLossPercent = (deathLossPercent * 90) / 100;
+					deathLossPercent = (deathLossPercent * 90) / 100;
 				}
 			}
 		}
@@ -2515,6 +2515,14 @@ void Player::death(Creature* lastHitCreature)
 		} else {
 			magLevelPercent = 0;
 		}
+
+		//Level loss
+		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
+		g_events->eventPlayerOnLoseExperience(this, expLoss);
+
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
+		std::ostringstream lostExp;
+		lostExp << "You lost " << expLoss << " experience.";
 
 		//Skill loss
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) { //for each skill
@@ -2544,9 +2552,7 @@ void Player::death(Creature* lastHitCreature)
 			skills[i].percent = Player::getPercentLevel(skills[i].tries, vocation->getReqSkillTries(i, skills[i].level));
 		}
 
-		//Level loss
-		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
-		g_events->eventPlayerOnLoseExperience(this, expLoss);
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostExp.str());
 
 		if (expLoss != 0) {
 			uint32_t oldLevel = level;
@@ -2576,6 +2582,15 @@ void Player::death(Creature* lastHitCreature)
 				levelPercent = 0;
 			}
 		}
+
+		std::ostringstream deathType;
+		deathType << "You died during ";
+		if (pvpDeath) {
+			deathType << "PvP.";
+		} else {
+			deathType << "PvE.";
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
 
 		//Make player lose bless
 		uint8_t maxBlessing = 8;

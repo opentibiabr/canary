@@ -288,7 +288,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->loginPosition.z = result->getNumber<uint16_t>("posz");
 
   player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
-  player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
+  player->addTaskHuntingPoints(result->getNumber<uint16_t>("task_points"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -662,7 +662,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
         slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
-        slot->bonusRarity = result->getNumber<uint16_t>("bonus_rarity");
+        slot->bonusRarity = static_cast<uint8_t>(result->getNumber<uint16_t>("bonus_rarity"));
         slot->bonusPercentage = result->getNumber<uint16_t>("bonus_percentage");
         slot->bonusTimeLeft = result->getNumber<uint16_t>("bonus_time");
         slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");

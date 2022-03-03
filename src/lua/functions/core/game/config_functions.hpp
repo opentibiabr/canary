@@ -164,7 +164,7 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", TOGLE_SAVE_INTERVAL_CLEAN_MAP)
 			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME)
 			registerEnumIn(L, "configKeys", TOGLE_IMBUEMENT_SHRINE_STORAGE)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_TIMER)
+			registerEnumIn(L, "configKeys", SERVER_SAVE_TIME)
 
 			#undef registerEnumIn
 		}

@@ -43,5 +43,5 @@ function serversave.onTime(interval)
 	return not configManager.getBoolean(configKeys.SERVER_SAVE_SHUTDOWN)
 end
 
-serversave:time(configManager.getString(configKeys.SERVER_SAVE_TIMER))
+serversave:time(configManager.getString(configKeys.SERVER_SAVE_TIME))
 serversave:register()

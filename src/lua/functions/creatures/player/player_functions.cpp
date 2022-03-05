@@ -399,8 +399,7 @@ int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 	// player:removeTaskHuntingPoints(amount)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->useTaskHuntingPoints(getNumber<uint64_t>(L, 2, 0));
-		pushBoolean(L, true);
+		pushBoolean(L, player->useTaskHuntingPoints(getNumber<uint64_t>(L, 2, 0)));
 	} else {
 		lua_pushnil(L);
 	}

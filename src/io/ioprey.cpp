@@ -440,7 +440,9 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 
 	if (action == PreyTaskAction_ListReroll) {
 		if (slot->disabledUntilTimeStamp >= OTSYS_TIME()) {
-			player->sendMessageDialog("You need to wait to select a new creature on task.");
+			std::ostringstream ss;
+			ss << "You need to wait " << ((slot->disabledUntilTimeStamp - OTSYS_TIME()) / 60000) << " minutes to select a new creature on task.";
+			player->sendMessageDialog(ss.str());
 			return;
 		} else if (slot->freeRerollTimeStamp > OTSYS_TIME() && !g_game.removeMoney(player, player->getTaskHuntingRerollPrice(), 0, true)) {
 			player->sendMessageDialog("You don't have enought money to reroll the task hunting slot.");
@@ -462,7 +464,9 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 		slot->reloadReward();
 	} else if (action == PreyTaskAction_ListAll_Cards) {
 		if (slot->disabledUntilTimeStamp >= OTSYS_TIME()) {
-			player->sendMessageDialog("You need to wait to select a new creature on task.");
+			std::ostringstream ss;
+			ss << "You need to wait " << ((slot->disabledUntilTimeStamp - OTSYS_TIME()) / 60000) << " minutes to select a new creature on task.";
+			player->sendMessageDialog(ss.str());
 			return;
 		} else if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)))) {
 			player->sendMessageDialog("You don't have enought prey cards to choose a creature on list for you task hunting slot.");
@@ -473,7 +477,9 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 		slot->state = PreyTaskDataState_ListSelection;
 	} else if (action == PreyTaskAction_MonsterSelection) {
 		if (slot->disabledUntilTimeStamp >= OTSYS_TIME()) {
-			player->sendMessageDialog("You need to wait to select a new creature on task.");
+			std::ostringstream ss;
+			ss << "You need to wait " << ((slot->disabledUntilTimeStamp - OTSYS_TIME()) / 60000) << " minutes to select a new creature on task.";
+			player->sendMessageDialog(ss.str());
 			return;
 		} else if (!slot->canSelect()) {
 			player->sendMessageDialog("There was an error while processing your action. Please try reopening the task window.");
@@ -500,7 +506,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 		slot->state = PreyTaskDataState_Active;
 		slot->upgrade = upgrade && player->isCreatureUnlockedOnTaskHunting(mtype);
 	} else if (action == PreyTaskAction_Cancel) {
-		if (!g_game.removeMoney(player, player->getTaskHuntingCancelPrice(), 0, true)) {
+		if (!g_game.removeMoney(player, player->getTaskHuntingRerollPrice(), 0, true)) {
 			player->sendMessageDialog("You don't have enought money to cancel your current task hunting.");
 			return;
 		}
@@ -508,6 +514,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 		slot->eraseTask();
 		slot->reloadReward();
 		slot->state = PreyTaskDataState_Selection;
+		slot->reloadMonsterGrid(player->getTaskHuntingBlackList(), player->getLevel());
 	} else if (action == PreyTaskAction_Claim) {
 		if (!slot->isOccupied()) {
 			player->sendMessageDialog("You cannot claim your task reward with an empty task hunting slot.");

@@ -1879,11 +1879,17 @@ class Player final : public Creature, public Cylinder
 			}
 
 			preyCards -= amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
 			return true;
 		}
 
 		void addPreyCards(uint64_t amount) {
 			preyCards += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
 		}
 
 		uint64_t getPreyCards() const {
@@ -1988,12 +1994,21 @@ class Player final : public Creature, public Cylinder
 
 		void addTaskHuntingPoints(uint16_t amount) {
 			taskHuntingPoints += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
 		}
 
-		void useTaskHuntingPoints(uint64_t amount) {
-			if (taskHuntingPoints > amount) {
-				taskHuntingPoints -= amount;
+		bool useTaskHuntingPoints(uint64_t amount) {
+			if (taskHuntingPoints < amount) {
+				return false;
 			}
+
+			taskHuntingPoints -= amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+			return true;
 		}
 
 		uint64_t getTaskHuntingPoints() const {
@@ -2002,10 +2017,6 @@ class Player final : public Creature, public Cylinder
 
 		uint32_t getTaskHuntingRerollPrice() const {
 			return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
-		}
-
-		uint32_t getTaskHuntingCancelPrice() const {
-			return getLevel() * g_configManager().getNumber(TASK_HUNTING_CANCEL_PRICE);
 		}
 
 		TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const {

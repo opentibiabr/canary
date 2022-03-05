@@ -80,7 +80,6 @@ taskHuntingLimitedTasksExhaust = 20 * 60 * 60
 taskHuntingRerollPricePerLevel = 200
 taskHuntingSelectListPrice = 1
 taskHuntingBonusRerollPrice = 2
-taskHuntingCancelPrice = 3
 taskHuntingFreeRerollTime = 20 * 60 * 60
 
 -- NOTE: Access only for Premium Account

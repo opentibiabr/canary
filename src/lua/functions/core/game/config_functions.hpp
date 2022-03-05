@@ -110,7 +110,6 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", TASK_HUNTING_REROLL_PRICE_LEVEL)
 			registerEnumIn(L, "configKeys", TASK_HUNTING_SELECTION_LIST_PRICE)
 			registerEnumIn(L, "configKeys", TASK_HUNTING_BONUS_REROLL_PRICE)
-			registerEnumIn(L, "configKeys", TASK_HUNTING_CANCEL_PRICE)
 			registerEnumIn(L, "configKeys", TASK_HUNTING_FREE_REROLL_TIME)
 			registerEnumIn(L, "configKeys", DEFAULT_DESPAWNRADIUS)
 			registerEnumIn(L, "configKeys", RATE_EXPERIENCE)

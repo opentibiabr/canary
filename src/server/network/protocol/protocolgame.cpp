@@ -6249,8 +6249,8 @@ void ProtocolGame::sendPreyPrices()
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)));
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)));
 	msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
-	msg.add<uint32_t>(static_cast<uint32_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_CANCEL_PRICE)));
+	msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)));
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
 
 	writeToOutputBuffer(msg);

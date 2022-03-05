@@ -390,8 +390,8 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE     then local newName = msg:getString(); GameStore.processNameChangePurchase(player, offer.id, productType, newName, offer.name, offerPrice)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE      then GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST       then GameStore.processExpBoostPuchase(player)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT       then player:preyThirdSlot(true)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT    then player:taskHuntingThirdSlot(true)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT       then GameStore.processPreyThirdSlot(player)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT    then GameStore.processTaskHuntingThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS      then GameStore.processPreyBonusReroll(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_TEMPLE         then GameStore.processTempleTeleportPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES        then GameStore.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges)
@@ -1485,6 +1485,20 @@ function GameStore.processExpBoostPuchase(player)
 	end
 
 	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
+end
+
+function GameStore.processPreyThirdSlot(player)
+	if player:preyThirdSlot() then
+		return error({code = 1, message = "You already have unlocked all prey slots."})
+	end
+	player:preyThirdSlot(true)
+end
+
+function GameStore.processTaskHuntingThirdSlot(player)
+	if player:taskHuntingThirdSlot() then
+		return error({code = 1, message = "You already have unlocked all task hunting slots."})
+	end
+	player:taskHuntingThirdSlot(true)
 end
 
 function GameStore.processPreyBonusReroll(player, offerCount)

@@ -46,7 +46,7 @@ function Container.createLootItem(self, item, charm, prey)
 
 		if tmpItem:isContainer() then
 			for i = 1, #item.childLoot do
-				if not tmpItem:createLootItem(item.childLoot[i], player, source) then
+				if not tmpItem:createLootItem(item.childLoot[i], charm, prey) then
 					tmpItem:remove()
 					return false
 				end

@@ -27,6 +27,7 @@
 #include "creatures/players/player.h"
 #include "game/game.h"
 #include "io/iologindata.h"
+#include "io/ioprey.h"
 #include "items/item.h"
 #include "lua/functions/creatures/player/player_functions.hpp"
 
@@ -35,6 +36,7 @@ extern Monsters g_monsters;
 extern Spells* g_spells;
 extern Vocations g_vocations;
 extern IOBestiary g_bestiary;
+extern IOPrey g_prey;
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -358,6 +360,18 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerRemovePreyStamina(lua_State* L) {
+	// player:removePreyStamina(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		g_prey.CheckPlayerPreys(player, getNumber<uint8_t>(L, 2, 1));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddPreyCards(lua_State* L) {
 	// player:addPreyCards(amount)
 	Player* player = getUserdata<Player>(L, 1);
@@ -387,7 +401,9 @@ int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 	if (player) {
 		const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
-			lua_pushnumber(L, slot->bonusPercentage);
+			lua_pushnumber(L, 100 + slot->bonusPercentage);
+		} else {
+			lua_pushnumber(L, 100);
 		}
 	} else {
 		lua_pushnil(L);
@@ -427,8 +443,7 @@ int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		PreySlot* slot = player->getPreySlotById(PreySlot_Three);
-		if (slot && slot->state == PreyDataState_Locked) {
-
+		if (slot) {
 			if (lua_gettop(L) == 1) {
 				pushBoolean(L, slot->state != PreyDataState_Locked);
 			} else {

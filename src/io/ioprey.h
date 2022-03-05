@@ -113,7 +113,7 @@ class PreySlot
 	}
 
 	bool canSelect() const {
-		return (state == PreyDataState_Selection || state == PreyDataState_ListSelection);
+		return (state == PreyDataState_Selection || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
 	}
 
 	void eraseBonus() {
@@ -224,7 +224,7 @@ class IOPrey
 {
 	public:
 
-	bool CheckPlayerPreys(Player* player) const;
+	void CheckPlayerPreys(Player* player, uint8_t amount) const;
 	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
 
 	void ParseTaskHuntingAction(Player* player, PreySlot_t slotId, PreyTaskAction_t action, bool upgrade, uint16_t raceId) const;

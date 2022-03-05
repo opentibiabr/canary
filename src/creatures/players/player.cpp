@@ -5702,8 +5702,6 @@ void Player::initializePrey()
 				delete slot;
 			}
 		}
-	} else {
-		g_game.initializePreyCounter(getGUID());
 	}
 }
 

@@ -707,6 +707,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
           slot->raceIdList.push_back(raceId);
         }
 
+        if (slot->state == PreyTaskDataState_Inactive && slot->disabledUntilTimeStamp < OTSYS_TIME()) {
+          slot->state = PreyTaskDataState_Selection;
+        }
+
         player->setTaskHuntingSlotClass(slot);
       } while (result->next());
     }

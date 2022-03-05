@@ -165,10 +165,6 @@ void Game::start(ServiceManager* manager)
 	g_scheduler.addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler.addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
-
-	if (g_configManager().getBoolean(PREY_ENABLED)) {
-		g_scheduler.addEvent(createSchedulerTask(EVENT_PREYINTERVAL, std::bind(&Game::checkPreys, this)));
-	}
 }
 
 GameState_t Game::getGameState() const
@@ -6488,26 +6484,6 @@ void Game::checkImbuements()
 		setPlayerActiveImbuements(playerId, 0);
 	}
 
-}
-
-void Game::checkPreys()
-{
-	g_scheduler.addEvent(createSchedulerTask(EVENT_PREYINTERVAL, std::bind(&Game::checkPreys, this)));
-	if (playersPreys.empty()) {
-		return;
-	}
-
-	auto it = playersPreys.begin();
-	while (it != playersPreys.end()) {
-		Player* player = getPlayerByGUID(*it);
-		if (!player || player->isRemoved() || (player->hasCondition(CONDITION_INFIGHT) && player->getZone() != ZONE_PROTECTION && !g_prey.CheckPlayerPreys(player))) {
-			it = playersPreys.erase(it);
-		} else {
-			++it;
-		}
-	}
-	
-	playersPreys.shrink_to_fit();
 }
 
 void Game::checkLight()

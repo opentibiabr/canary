@@ -51,7 +51,6 @@ class ItemClassification;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
-static constexpr int32_t EVENT_PREYINTERVAL = 5000;
 
 class Game
 {
@@ -565,21 +564,8 @@ class Game
 			return playersActiveImbuements[playerId];
 		}
 
-		void initializePreyCounter(uint32_t playerguid) {
-			auto it = std::find_if(playersPreys.begin(), playersPreys.end(), [playerguid](uint32_t playerId){
-				return playerId == playerguid;
-			});
-
-			if (it != playersPreys.end()) {
-				return;
-			} else {
-				playersPreys.push_back(playerguid);
-			}
-		}
-
 	private:
 		void checkImbuements();
-		void checkPreys();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
 		void playerWhisper(Player* player, const std::string& text);
 		bool playerYell(Player* player, const std::string& text);
@@ -600,8 +586,6 @@ class Game
 		std::vector<Creature*> ToReleaseCreatures;
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
-
-		std::vector<uint32_t> playersPreys;
 
 		size_t lastBucket = 0;
 		size_t lastImbuedBucket = 0;

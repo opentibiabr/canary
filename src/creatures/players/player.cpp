@@ -3462,6 +3462,10 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 
 	retString << "Stowed " << totalStowed << " object" << (totalStowed > 1 ? "s." : ".");
+	if (moved) {
+		retString << " Moved " << movedItems << " object" << (movedItems > 1 ? "s." : ".");
+		movedItems = 0;
+	}
 	sendTextMessage(MESSAGE_STATUS, retString.str());
 }
 
@@ -3764,27 +3768,17 @@ bool Player::updateSaleShopList(const Item* item)
 	return true;
 }
 
-bool Player::hasShopItemForSale(uint32_t itemId, uint8_t subType) const
+bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const
 {
 	if (!shopOwner) {
 		return false;
 	}
 
-	ShopInfoMap shopItemMap = shopOwner->getShopItems();
-	if (shopItemMap.find(itemId) == shopItemMap.end()) {
-		return false;
-	}
-
-	const ShopInfo& shopInfo = shopItemMap[itemId];
-	if (shopInfo.buyPrice == 0) {
-		return false;
-	}
-
-	if (!Item::items[itemId].isFluidContainer()) {
-		return true;
-	}
-
-	return shopInfo.subType == subType;
+	const ItemType& itemType = Item::items[itemId];
+	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector();
+	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
+		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
+	});
 }
 
 void Player::internalAddThing(Thing* thing)
@@ -5435,9 +5429,9 @@ void Player::updateRegeneration()
 	Condition* condition = getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	if (condition) {
 		condition->setParam(CONDITION_PARAM_HEALTHGAIN, vocation->getHealthGainAmount());
-		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks() * 1000);
+		condition->setParam(CONDITION_PARAM_HEALTHTICKS, vocation->getHealthGainTicks());
 		condition->setParam(CONDITION_PARAM_MANAGAIN, vocation->getManaGainAmount());
-		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks() * 1000);
+		condition->setParam(CONDITION_PARAM_MANATICKS, vocation->getManaGainTicks());
 	}
 }
 
@@ -5585,6 +5579,15 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 		}
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
+		for (Item* containerItem : item->getContainer()->getItems()) {
+			uint32_t depotChest = g_configManager().getNumber(DEPOTCHEST);
+			bool validDepot = depotChest > 0 && depotChest < 19;
+			if (g_configManager().getBoolean(STASH_MOVING) && containerItem && !containerItem->isStackable() && validDepot) {
+				g_game.internalMoveItem(containerItem->getParent(), getDepotChest(depotChest, true), INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
+				movedItems++;
+				moved = true;
+			}
+		}
 	} else {
 		itemDict.push_back(std::pair<Item*, uint32_t>(item, count));
 	}

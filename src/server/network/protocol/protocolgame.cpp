@@ -3820,21 +3820,18 @@ void ProtocolGame::sendShop(Npc *npc)
 
 	msg.addString(std::string()); // Currency name
 
-	const ShopInfoMap itemMap = npc->getShopItems();
-	uint16_t itemsToSend = std::min<size_t>(itemMap.size(), std::numeric_limits<uint16_t>::max());
+	std::vector<ShopBlock> shoplist = npc->getShopItemVector();
+	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (auto& shopInfoPair : itemMap)
+	for (ShopBlock shopBlock : shoplist)
 	{
-		const uint16_t itemId = shopInfoPair.first;
-		const ShopInfo &shopInfo = shopInfoPair.second;
-
 		if (++i > itemsToSend) {
 			break;
 		}
 
-		AddShopItem(msg, shopInfo, itemId);
+		AddShopItem(msg, shopBlock);
 	}
 
 	writeToOutputBuffer(msg);
@@ -3881,7 +3878,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint32_t, uint32_t> &inventoryMap)
+void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint32_t, uint32_t> &inventoryMap)
 {
 	//Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
@@ -3927,25 +3924,24 @@ void ProtocolGame::sendSaleItemList(const ShopInfoMap &shop, const std::map<uint
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	for (auto& shopInfoPair : shop)
+
+	for (ShopBlock shopBlock : shopVector)
 	{
-		const uint16_t itemId = shopInfoPair.first;
-		const ShopInfo &shopInfo = shopInfoPair.second;
-		if (shopInfo.sellPrice == 0)
+		if (shopBlock.itemSellPrice == 0)
 		{
 			continue;
 		}
 
-		uint32_t index = static_cast<uint32_t>(itemId);
-		if (Item::items[itemId].isFluidContainer())
+		auto index = static_cast<uint32_t>(shopBlock.itemId);
+		if (Item::items[shopBlock.itemId].isFluidContainer())
 		{
-			index |= (static_cast<uint32_t>(shopInfo.subType) << 16);
+			index |= (static_cast<uint32_t>(shopBlock.itemSubType) << 16);
 		}
 
 		it = inventoryMap.find(index);
 		if (it != inventoryMap.end())
 		{
-			msg.add<uint16_t>(itemId);
+			msg.addItemId(shopBlock.itemId);
 			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
@@ -6504,7 +6500,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	msg.addByte(item->getImbuementSlot());
 
 	// Send imbuement time
-	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
+	for (uint8_t slotid = 0; slotid < static_cast<uint8_t>(item->getImbuementSlot()); slotid++)
 	{
 		ImbuementInfo imbuementInfo;
 		if (!item->getImbuementInfo(slotid, &imbuementInfo))
@@ -6804,32 +6800,34 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 	msg.add<uint32_t>(0);
 }
 
-void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopInfo &item, uint16_t itemId)
+void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
 	int32_t storageValue;
-	player->getStorageValue(item.storageKey, storageValue);
-	if (item.storageKey != 0 && storageValue < item.storageValue)
+	player->getStorageValue(shopBlock.itemStorageKey, storageValue);
+	if (shopBlock.itemStorageKey != 0 && storageValue < shopBlock.itemStorageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;
 	}
 
-	const ItemType &it = Item::items[itemId];
-	msg.add<uint16_t>(item.itemId);
-
-	uint8_t count = std::min(item.subType, 100);
-
-	if (it.isSplash() || it.isFluidContainer())
-	{
-		count = serverFluidToClient(count);
+	const ItemType &it = Item::items[shopBlock.itemId];
+	msg.add<uint16_t>(shopBlock.itemId);
+	if (it.isSplash() || it.isFluidContainer()) {
+		msg.addByte(static_cast<int32_t>(serverFluidToClient(shopBlock.itemSubType)));
+	} else {
+		msg.addByte(0x00);
 	}
 
-	msg.addByte(count);
-	msg.addString(item.name);
+	// If not send "itemName" variable from the npc shop, will registered the name that is in items.xml
+	if (shopBlock.itemName.empty()) {
+		msg.addString(it.name);
+	} else {
+		msg.addString(shopBlock.itemName);
+	}
 	msg.add<uint32_t>(it.weight);
-	msg.add<uint32_t>(item.buyPrice == 4294967295 ? 0 : item.buyPrice);
-	msg.add<uint32_t>(item.sellPrice == 4294967295 ? 0 : item.sellPrice);
+	msg.add<uint32_t>(shopBlock.itemBuyPrice == 4294967295 ? 0 : shopBlock.itemBuyPrice);
+	msg.add<uint32_t>(shopBlock.itemSellPrice == 4294967295 ? 0 : shopBlock.itemSellPrice);
 }
 
 void ProtocolGame::parseExtendedOpcode(NetworkMessage &msg)

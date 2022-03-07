@@ -36,3 +36,8 @@ int ConfigFunctions::luaConfigManagerGetBoolean(lua_State* L) {
 	pushBoolean(L, g_configManager().getBoolean(getNumber<booleanConfig_t>(L, -1)));
 	return 1;
 }
+
+int ConfigFunctions::luaConfigManagerGetFloat(lua_State* L) {
+	lua_pushnumber(L, g_configManager().getFloat(getNumber<floatingConfig_t>(L, -1)));
+	return 1;
+}

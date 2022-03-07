@@ -1416,7 +1416,11 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 end
 
 function GameStore.processMountPurchase(player, offerId)
-	player:addMount(offerId)
+if player:hasMount(offerId) then
+		return error({code = 0, message = "You already own this mount."})
+	else
+		player:addMount(offerId)
+	end
 end
 
 function GameStore.processNameChangePurchase(player, offerId, productType, newName, offerName, offerPrice)

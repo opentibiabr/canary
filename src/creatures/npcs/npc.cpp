@@ -234,11 +234,11 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 	int64_t totalCost = buyPrice * amount;
 	if (getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game.removeMoney(player, totalCost, 0, true)) {
-			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), serverId, getName());
+			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
 			return;
 		}
 	} else if(!player->removeItemOfType(getCurrency(), buyPrice, -1, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), serverId, getName());
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
 
@@ -278,8 +278,8 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	if(!player->removeItemOfType(serverId, amount, -1, false, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), serverId, getName());
+	if(!player->removeItemOfType(itemId, amount, -1, false, false)) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
 

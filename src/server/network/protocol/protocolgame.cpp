@@ -2656,6 +2656,15 @@ void ProtocolGame::sendOpenPrivateChannel(const std::string &receiver)
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendExperienceTracker(int64_t rawExp, int64_t finalExp)
+{
+	NetworkMessage msg;
+	msg.addByte(0xAF);
+	msg.add<int64_t>(rawExp);
+	msg.add<int64_t>(finalExp);
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent)
 {
 	NetworkMessage msg;

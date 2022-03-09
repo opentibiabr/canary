@@ -732,6 +732,10 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 				Player* player = mostDamageCreature->getPlayer();
 				if (g_configManager().getBoolean(AUTOBANK)) {
 					int32_t money = 0;
+					if (!corpse->getContainer()) {
+						return false;
+					}
+
 					for (Item* item : corpse->getContainer()->getItems()) {
 						money += item->getWorth();
 						g_game.internalRemoveItem(item, money);

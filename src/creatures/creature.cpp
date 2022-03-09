@@ -733,7 +733,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 				if (g_configManager().getBoolean(AUTOBANK)) {
 					int32_t money = 0;
 					if (!corpse->getContainer()) {
-						return false;
+						return true;
 					}
 
 					for (Item* item : corpse->getContainer()->getItems()) {

@@ -92,6 +92,21 @@ bool NpcType::loadCallback(LuaScriptInterface* scriptInterface)
 	return true;
 }
 
+void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
+{
+	if (shopBlock.childShop.empty()) {
+		bool isContainer = Item::items[shopBlock.itemId].isContainer();
+		if (isContainer) {
+			for (ShopBlock child : shopBlock.childShop) {
+				shopBlock.childShop.push_back(child);
+			}
+		}
+		npcType->info.shopItemVector.push_back(shopBlock);
+	} else {
+		npcType->info.shopItemVector.push_back(shopBlock);
+	}
+}
+
 NpcType* Npcs::getNpcType(const std::string& name, bool create /* = false*/)
 {
 	std::string key = asLowerCaseString(name);

@@ -2186,6 +2186,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		levelPercent = 0;
 	}
 	sendStats();
+	sendExperienceTracker(rawExp, exp);
 }
 
 void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
@@ -2271,6 +2272,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		levelPercent = 0;
 	}
 	sendStats();
+	sendExperienceTracker(0, -static_cast<int64_t>(exp));
 }
 
 double_t Player::getPercentLevel(uint64_t count, uint64_t nextLevelCount)
@@ -3462,6 +3464,10 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 
 	retString << "Stowed " << totalStowed << " object" << (totalStowed > 1 ? "s." : ".");
+	if (moved) {
+		retString << " Moved " << movedItems << " object" << (movedItems > 1 ? "s." : ".");
+		movedItems = 0;
+	}
 	sendTextMessage(MESSAGE_STATUS, retString.str());
 }
 
@@ -3793,22 +3799,11 @@ bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const
 		return false;
 	}
 
-	const ItemType& it = Item::items.getItemIdByClientId(itemId);
-	ShopInfoMap shopItemMap = shopOwner->getShopItems();
-	if (shopItemMap.find(it.name) == shopItemMap.end()) {
-		return false;
-	}
-
-	const ShopInfo& shopInfo = shopItemMap[it.name];
-	if (shopInfo.buyPrice == 0) {
-		return false;
-	}
-
-	if (!it.isFluidContainer()) {
-		return true;
-	}
-
-	return shopInfo.subType == subType;
+	const ItemType& itemType = Item::items[itemId];
+	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector();
+	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
+		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
+	});
 }
 
 void Player::internalAddThing(Thing* thing)
@@ -5604,6 +5599,15 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 		}
 	} else if (item->getContainer()) {
 		itemDict = item->getContainer()->getStowableItems();
+		for (Item* containerItem : item->getContainer()->getItems(true)) {
+			uint32_t depotChest = g_configManager().getNumber(DEPOTCHEST);
+			bool validDepot = depotChest > 0 && depotChest < 19;
+			if (g_configManager().getBoolean(STASH_MOVING) && containerItem && !containerItem->isStackable() && validDepot) {
+				g_game.internalMoveItem(containerItem->getParent(), getDepotChest(depotChest, true), INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
+				movedItems++;
+				moved = true;
+			}
+		}
 	} else {
 		itemDict.push_back(std::pair<Item*, uint32_t>(item, count));
 	}

@@ -97,8 +97,8 @@ class Npc final : public Creature
 			npcType->info.currencyId = currency;
 		}
 
-		ShopInfoMap getShopItems() {
-			return npcType->info.shopItems;
+		std::vector<ShopBlock> getShopItemVector() {
+			return npcType->info.shopItemVector;
 		}
 
 		bool isPushable() const override {

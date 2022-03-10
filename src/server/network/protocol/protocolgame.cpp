@@ -1269,7 +1269,9 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg)
 	Position pos = msg.getPosition();
 	uint16_t spriteId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr);
+	bool lootAllCorpses = msg.getByte();
+	bool autoLoot = msg.getByte();
+	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr, lootAllCorpses, autoLoot);
 }
 
 void ProtocolGame::parseLootContainer(NetworkMessage &msg)
@@ -2653,6 +2655,15 @@ void ProtocolGame::sendOpenPrivateChannel(const std::string &receiver)
 	NetworkMessage msg;
 	msg.addByte(0xAD);
 	msg.addString(receiver);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendExperienceTracker(int64_t rawExp, int64_t finalExp)
+{
+	NetworkMessage msg;
+	msg.addByte(0xAF);
+	msg.add<int64_t>(rawExp);
+	msg.add<int64_t>(finalExp);
 	writeToOutputBuffer(msg);
 }
 

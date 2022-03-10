@@ -4467,7 +4467,7 @@ void Game::playerLookInBattleList(uint32_t playerId, uint32_t creatureId)
 	g_events->eventPlayerOnLookInBattleList(player, creature, lookDistance);
 }
 
-void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos, Item* defaultItem)
+void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos, Item* defaultItem, bool lootAllCorpses, bool autoLoot)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -4479,12 +4479,12 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		SchedulerTask* task = createSchedulerTask(delay, std::bind(
                               &Game::playerQuickLoot,
                               this, player->getID(), pos,
-                              spriteId, stackPos, defaultItem));
+                              spriteId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 		player->setNextActionTask(task);
 		return;
 	}
 
-	if (pos.x != 0xffff) {
+	if (!autoLoot && pos.x != 0xffff) {
 		if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 			//need to walk to the corpse first before looting it
 			std::forward_list<Direction> listDir;
@@ -4493,7 +4493,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 				SchedulerTask* task = createSchedulerTask(0, std::bind(
                                       &Game::playerQuickLoot,
                                       this, player->getID(), pos,
-                                      spriteId, stackPos, defaultItem));
+                                      spriteId, stackPos, defaultItem, lootAllCorpses, autoLoot));
 				player->setNextWalkActionTask(task);
 			} else {
 				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
@@ -4529,6 +4529,10 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 	Container* corpse = nullptr;
 	if (pos.x == 0xffff) {
 		corpse = item->getParent()->getContainer();
+		if (corpse && corpse->getID() == ITEM_BROWSEFIELD) {
+			corpse = item->getContainer();
+			browseField = true;
+		}
 	} else {
 		corpse = item->getContainer();
 	}
@@ -4546,7 +4550,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		}
 	}
 
-	if (pos.x == 0xffff) {
+	if (pos.x == 0xffff && !browseField) {
 		uint32_t worth = item->getWorth();
 		ObjectCategory_t category = getObjectCategory(item);
 		ReturnValue ret = internalQuickLootItem(player, item, category);
@@ -4585,11 +4589,60 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 		if (corpse->isRewardCorpse()) {
 			g_actions->useItem(player, pos, 0, corpse, false);
 		} else {
-			internalQuickLootCorpse(player, corpse);
+			if (!lootAllCorpses) {
+				internalQuickLootCorpse(player, corpse);
+			} else {
+				playerLootAllCorpses(player, pos, lootAllCorpses);
+			}
 		}
 	}
 
 	return;
+}
+
+void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses) {
+	if (lootAllCorpses) {
+		Tile *tile = g_game.map.getTile(pos.x, pos.y, pos.z);
+		if (!tile) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
+		const TileItemVector *itemVector = tile->getItemList();
+		uint16_t corpses = 0;
+		for (Item *tileItem: *itemVector) {
+			if (!tileItem) {
+				continue;
+			}
+
+			Container *tileCorpse = tileItem->getContainer();
+			if (!tileCorpse || !tileCorpse->isCorpse() || tileCorpse->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || tileCorpse->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+				continue;
+			}
+
+			if (!tileCorpse->isRewardCorpse() && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
+				continue;
+			}
+
+			corpses++;
+			internalQuickLootCorpse(player, tileCorpse);
+			if (corpses >= 30) {
+				break;
+			}
+		}
+
+		if (corpses > 0) {
+			if (corpses > 1) {
+				std::stringstream string;
+				string << "You looted " << corpses << " corpses.";
+				player->sendTextMessage(MESSAGE_LOOT, string.str());
+			}
+
+			return;
+		}
+	}
+
+	browseField = false;
 }
 
 void Game::playerSetLootContainer(uint32_t playerId, ObjectCategory_t category, const Position& pos, uint16_t spriteId, uint8_t stackPos)

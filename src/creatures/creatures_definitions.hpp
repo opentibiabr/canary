@@ -869,11 +869,11 @@ struct voiceBlock_t {
 struct PartyAnalyzer {
 	PartyAnalyzer(uint32_t playerId, std::string playerName) :
                 id(playerId),
-                name(playerName) {}
-
-	std::string name;
+                name(std::move(playerName)) {}
 
 	uint32_t id;
+
+	std::string name;
 
 	uint64_t damage = 0;
 	uint64_t healing = 0;

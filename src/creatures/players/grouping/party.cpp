@@ -575,11 +575,11 @@ void Party::updatePlayerVocation(const Player* player)
 
 void Party::updateTrackerAnalyzer() const
 {
-	if (membersData.size() == 0) {
+	if (membersData.empty()) {
 		return;
 	}
 	
-	for (Player* member : memberList) {
+	for (const Player* member : memberList) {
 		member->updateTrackerAnalyzer();
 	}
 
@@ -588,7 +588,7 @@ void Party::updateTrackerAnalyzer() const
 	}
 }
 
-void Party::addPlayerLoot(uint32_t playerId, const Item* item)
+void Party::addPlayerLoot(uint32_t playerId, const Item* item) const
 {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
 	if (!playerAnalyzer) {
@@ -599,7 +599,7 @@ void Party::addPlayerLoot(uint32_t playerId, const Item* item)
 	std::map<uint16_t, uint32_t> itemMap;
 	itemMap.insert({item->getID(), count});
 	std::map<uint16_t, uint32_t>::iterator it = playerAnalyzer->lootMap.find(item->getID());
-	if(it != playerAnalyzer->lootMap.end()) {
+	if (it != playerAnalyzer->lootMap.end()) {
 		(*it).second += count;
 	} else {
 		playerAnalyzer->lootMap.insert({item->getID(), count});
@@ -609,7 +609,7 @@ void Party::addPlayerLoot(uint32_t playerId, const Item* item)
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerSupply(uint32_t playerId, const Item* item)
+void Party::addPlayerSupply(uint32_t playerId, const Item* item) const
 {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
 	if (!playerAnalyzer) {
@@ -640,11 +640,12 @@ void Party::changeAnalyzerPriceType(PartyAnalyzer_t type)
 		analyzer->lootPrice = priceType == NPC_PRICE ? g_game.getItemNpcPrice(analyzer->lootMap, false) : g_game.getItemMarketPrice(analyzer->lootMap, false);
 		analyzer->supplyPrice = priceType == NPC_PRICE ? g_game.getItemNpcPrice(analyzer->supplyMap, true) : g_game.getItemMarketPrice(analyzer->supplyMap, true);
 	}
+	updateTrackerAnalyzer();
 }
 
 void Party::resetAnalyzer()
 {
-	trackerTime = time(0);
+	trackerTime = time(nullptr);
 	for (PartyAnalyzer* analyzer : membersData) {
 		analyzer->damage = 0;
 		analyzer->healing = 0;

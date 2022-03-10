@@ -151,7 +151,7 @@ private:
 	void sendTeamFinderList();
 	void sendLeaderTeamFinder(bool reset);
 	void createLeaderTeamFinder(NetworkMessage &msg);
-	void parsePartyAnalyzerAction(NetworkMessage &msg);
+	void parsePartyAnalyzerAction() const;
 	void parseLeaderFinderWindow(NetworkMessage &msg);
 	void parseMemberFinderWindow(NetworkMessage &msg);
 	void parseSendBuyCharmRune(NetworkMessage &msg);

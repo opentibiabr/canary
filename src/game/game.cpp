@@ -1831,14 +1831,14 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			return ret;
 		}
 
-		if (Player* player = actor->getPlayer()) {
+		if (const Player* player = actor->getPlayer()) {
 			const ItemType& it = Item::items[fromCylinder->getItem()->getID()];
 			if (it.id <= 0) {
 				return ret;
 			}
 
 			if (it.corpseType != RACE_NONE && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
-				player->sendLootStats(item, item->getItemCount());
+				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 			}
 		}
 	}
@@ -1995,7 +1995,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		if (remaindRet != RETURNVALUE_NOERROR) {
 			ReleaseItem(remainderItem);
-			player->sendLootStats(item, item->getItemCount());
+			player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 		}
 	}
 
@@ -2678,10 +2678,10 @@ ObjectCategory_t Game::getObjectCategory(const Item* item)
 	return category;
 }
 
-uint64_t Game::getItemNpcPrice(std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
+uint64_t Game::getItemNpcPrice(const std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
 {
 	uint64_t total = 0;
-	for (auto& it : itemMap) {
+	for (const std::pair<uint16_t, uint32_t> it : itemMap) {
 		if (it.first == ITEM_GOLD_COIN) {
 			total += it.second;
 		} else if (it.first == ITEM_PLATINUM_COIN) {
@@ -2697,22 +2697,24 @@ uint64_t Game::getItemNpcPrice(std::map<uint16_t, uint32_t> itemMap, bool buyPri
 	return total;
 }
 
-uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
+uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
 {
 	uint64_t total = 0;
-	for (auto& it : itemMap) {
-		auto marketIt = itemsPriceMap.find(it.first);
+	for (const std::pair<uint16_t, uint32_t> it : itemMap) {
 		if (it.first == ITEM_GOLD_COIN) {
 			total += it.second;
 		} else if (it.first == ITEM_PLATINUM_COIN) {
 			total += 100 * it.second;
 		} else if (it.first == ITEM_CRYSTAL_COIN) {
 			total += 10000 * it.second;
-		} else if (marketIt != itemsPriceMap.end()) {
-			total += (*marketIt).second * it.second;
 		} else {
-			const ItemType& iType = Item::items[it.first];
-			total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+			auto marketIt = itemsPriceMap.find(it.first);
+			if (marketIt != itemsPriceMap.end()) {
+				total += (*marketIt).second * it.second;
+			} else {
+				const ItemType& iType = Item::items[it.first];
+				total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+			}
 		}
 	}
 

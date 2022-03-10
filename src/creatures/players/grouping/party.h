@@ -88,8 +88,8 @@ class Party
 		void updatePlayerVocation(const Player* player);
 
 		void updateTrackerAnalyzer() const;
-		void addPlayerLoot(uint32_t playerId, const Item* item);
-		void addPlayerSupply(uint32_t playerId, const Item* item);
+		void addPlayerLoot(uint32_t playerId, const Item* item) const;
+		void addPlayerSupply(uint32_t playerId, const Item* item) const;
 		void changeAnalyzerPriceType(PartyAnalyzer_t type);
 		void resetAnalyzer();
 
@@ -130,7 +130,7 @@ class Party
 
 		uint32_t getAnalyzerTimeNow() const
 		{
-			return static_cast<uint32_t>(time(0) - trackerTime);
+			return static_cast<uint32_t>(time(nullptr) - trackerTime);
 		}
 
 		PlayerVector getMembers() const
@@ -139,7 +139,7 @@ class Party
 		}
 
 		// Party analyzer
-		time_t trackerTime = time(0);
+		time_t trackerTime = time(nullptr);
 		PartyAnalyzer_t priceType = NPC_PRICE;
 		std::vector<PartyAnalyzer*> membersData;
 

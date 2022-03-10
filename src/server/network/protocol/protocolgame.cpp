@@ -639,7 +639,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
 		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
 		case 0x2a: addBestiaryTrackerList(msg); break;
-		case 0x2B: parsePartyAnalyzerAction(msg); break;
+		case 0x2B: parsePartyAnalyzerAction(); break;
 		case 0x2c: parseLeaderFinderWindow(msg); break;
 		case 0x2d: parseMemberFinderWindow(msg); break;
 		case 0x28: parseStashWithdraw(msg); break;
@@ -2144,7 +2144,7 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg)
 	g_game.registerTeamFinderAssemble(player->getGUID(), teamAssemble);
 }
 
-void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg)
+void ProtocolGame::parsePartyAnalyzerAction() const
 {
 	if (!player) {
 		return;
@@ -3822,12 +3822,18 @@ void ProtocolGame::sendLootStats(Item *item, uint8_t count)
 		return;
 	}
 
+	Item* lootedItem = nullptr;
+	lootedItem = item->clone();
+	lootedItem->setItemCount(count);
+
 	NetworkMessage msg;
 	msg.addByte(0xCF);
-	AddItem(msg, item);
-	msg.addString(item->getName());
+	AddItem(msg, lootedItem);
+	msg.addString(lootedItem->getName());
 	item->setIsLootTrackeable(false);
 	writeToOutputBuffer(msg);
+
+	lootedItem = nullptr;
 }
 
 void ProtocolGame::sendShop(Npc *npc)
@@ -6617,8 +6623,8 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party)
 	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
 	for (const PartyAnalyzer* analyzer : party->membersData) {
 		msg.add<uint32_t>(analyzer->id);
-		Player* tmpPlayer = g_game.getPlayerByID(analyzer->id);
-		if (!tmpPlayer || !tmpPlayer->getParty() || tmpPlayer->getParty() != party || !party->isSharedExperienceEnabled()) {
+		const Player* member = g_game.getPlayerByID(analyzer->id);
+		if (!member || !member->getParty() || member->getParty() != party || !party->isSharedExperienceEnabled()) {
 			msg.addByte(0);
 		} else {
 			msg.addByte(1);

@@ -1838,7 +1838,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			}
 
 			if (it.corpseType != RACE_NONE && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
-				player->updateLootTracker(item);
+				player->sendLootStats(item, item->getItemCount());
 			}
 		}
 	}
@@ -1995,7 +1995,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		if (remaindRet != RETURNVALUE_NOERROR) {
 			ReleaseItem(remainderItem);
-			player->updateLootTracker(item);
+			player->sendLootStats(item, item->getItemCount());
 		}
 	}
 
@@ -2676,6 +2676,47 @@ ObjectCategory_t Game::getObjectCategory(const Item* item)
 	}
 
 	return category;
+}
+
+uint64_t Game::getItemNpcPrice(std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
+{
+	uint64_t total = 0;
+	for (auto& it : itemMap) {
+		if (it.first == ITEM_GOLD_COIN) {
+			total += it.second;
+		} else if (it.first == ITEM_PLATINUM_COIN) {
+			total += 100 * it.second;
+		} else if (it.first == ITEM_CRYSTAL_COIN) {
+			total += 10000 * it.second;
+		} else {
+			const ItemType& iType = Item::items[it.first];
+			total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+		}
+	}
+
+	return total;
+}
+
+uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
+{
+	uint64_t total = 0;
+	for (auto& it : itemMap) {
+		auto marketIt = itemsPriceMap.find(it.first);
+		if (it.first == ITEM_GOLD_COIN) {
+			total += it.second;
+		} else if (it.first == ITEM_PLATINUM_COIN) {
+			total += 100 * it.second;
+		} else if (it.first == ITEM_CRYSTAL_COIN) {
+			total += 10000 * it.second;
+		} else if (marketIt != itemsPriceMap.end()) {
+			total += (*marketIt).second * it.second;
+		} else {
+			const ItemType& iType = Item::items[it.first];
+			total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+		}
+	}
+
+	return total;
 }
 
 Item* searchForItem(Container* container, uint16_t itemId)

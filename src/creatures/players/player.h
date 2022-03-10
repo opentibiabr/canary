@@ -1107,9 +1107,6 @@ class Player final : public Creature, public Cylinder
 		}
 		void sendLootStats(Item* item, uint8_t count) {
 			if (client) {
-				client->sendLootStats(item, count);
-			}
-		}
 
 		//event methods
 		void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem,
@@ -1733,29 +1730,23 @@ class Player final : public Creature, public Cylinder
 			return false;
  		}
 
-		void updateSupplyTracker(const Item* item) {
-			if (client) {
-				client->sendUpdateSupplyTracker(item);
+		void updateTrackerAnalyzer() const
+		{
+			if (client && party) {
+				client->updatePartyTrackerAnalyzer(party);
 			}
 		}
 
-		void updateImpactTracker(CombatType_t type, int32_t amount) {
-			if (client) {
-				client->sendUpdateImpactTracker(type, amount);
-			}
-		}
+		void sendLootStats(Item* item, uint8_t count) const;
+		void updateSupplyTracker(const Item* item) const;
+		void updateImpactTracker(CombatType_t type, int32_t amount)const;
+
 		void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
 			if (client) {
 				client->sendUpdateInputAnalyzer(type, amount, target);
 			}
 		}
 
-   		void updateLootTracker(Item* item)
- 		{
-  			if (client) {
- 				client->sendUpdateLootTracker(item);
- 			}
- 		}
 
    		void createLeaderTeamFinder(NetworkMessage &msg)
  		{

@@ -969,6 +969,17 @@ void Player::checkLootContainers(const Item* item)
 	}
 }
 
+void Player::sendLootStats(Item* item, uint8_t count) const
+{
+	if (client) {
+		client->sendLootStats(item, count);
+	}
+
+	if (party) {
+		party->addPlayerLoot(getID(), item);
+	}
+}
+
 bool Player::isNearDepotBox() const
 {
 	const Position& pos = getPosition();
@@ -1103,6 +1114,32 @@ void Player::sendStats()
 	if (client) {
 		client->sendStats();
 		lastStatsTrainingTime = getOfflineTrainingTime() / 60 / 1000;
+	}
+}
+
+void Player::updateSupplyTracker(const Item* item) const
+{
+	if (client) {
+		client->sendUpdateSupplyTracker(item);
+	}
+
+	if (party) {
+		party->addPlayerSupply(getID(), item);
+	}
+}
+
+void Player::updateImpactTracker(CombatType_t type, int32_t amount) const
+{
+	if (client) {
+		client->sendUpdateImpactTracker(type, amount);
+	}
+
+	if (party) {
+		if (type == COMBAT_HEALING) {
+			party->addPlayerHealing(getID(), amount);
+		} else {
+			party->addPlayerDamage(getID(), amount);
+		}
 	}
 }
 

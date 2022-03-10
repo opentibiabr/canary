@@ -29,6 +29,8 @@ extern Events* g_events;
 Party::Party(Player* initLeader) : leader(initLeader)
 {
 	leader->setParty(this);
+	membersData.push_back(new PartyAnalyzer(leader->getID(), leader->getName()));
+	updateTrackerAnalyzer();
 }
 
 void Party::disband()
@@ -69,6 +71,11 @@ void Party::disband()
 		currentLeader->sendCreatureSkull(member);
 	}
 	memberList.clear();
+
+	for (PartyAnalyzer* analyzer : membersData) {
+		delete analyzer;
+	}
+	membersData.clear();
 	delete this;
 }
 
@@ -208,6 +215,9 @@ bool Party::joinParty(Player& player)
 	player.sendPlayerPartyIcons(leader);
 
 	memberList.push_back(&player);
+	if (!getPlayerPartyAnalyzerStruct(player.getID())) {
+		membersData.push_back(new PartyAnalyzer(player.getID(), player.getName()));
+	}
 
 	updatePlayerStatus(&player);
 
@@ -219,6 +229,7 @@ bool Party::joinParty(Player& player)
 	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") <<
        " party. Open the party channel to communicate with your companions.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
+	updateTrackerAnalyzer();
 	return true;
 }
 
@@ -304,6 +315,7 @@ void Party::updateAllPartyIcons()
 		leader->sendPartyCreatureShield(member);
 	}
 	leader->sendPartyCreatureShield(leader);
+	updateTrackerAnalyzer();
 }
 
 void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/)
@@ -559,4 +571,87 @@ void Party::updatePlayerVocation(const Player* player)
 	if (condition) {
 		leader->sendPartyPlayerVocation(player);
 	}
+}
+
+void Party::updateTrackerAnalyzer() const
+{
+	if (membersData.size() == 0) {
+		return;
+	}
+	
+	for (Player* member : memberList) {
+		member->updateTrackerAnalyzer();
+	}
+
+	if (leader) {
+		leader->updateTrackerAnalyzer();
+	}
+}
+
+void Party::addPlayerLoot(uint32_t playerId, const Item* item)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
+	if (!playerAnalyzer) {
+		return;
+	}
+
+	uint32_t count = std::max<uint32_t>(1, item->getItemCount());
+	std::map<uint16_t, uint32_t> itemMap;
+	itemMap.insert({item->getID(), count});
+	std::map<uint16_t, uint32_t>::iterator it = playerAnalyzer->lootMap.find(item->getID());
+	if(it != playerAnalyzer->lootMap.end()) {
+		(*it).second += count;
+	} else {
+		playerAnalyzer->lootMap.insert({item->getID(), count});
+	}
+
+	playerAnalyzer->lootPrice += priceType == NPC_PRICE ? g_game.getItemNpcPrice(itemMap, false) : g_game.getItemMarketPrice(itemMap, false);
+	updateTrackerAnalyzer();
+}
+
+void Party::addPlayerSupply(uint32_t playerId, const Item* item)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
+	if (!playerAnalyzer) {
+		return;
+	}
+
+	std::map<uint16_t, uint32_t> itemMap;
+	itemMap.insert({item->getID(), 1});
+	std::map<uint16_t, uint32_t>::iterator it = playerAnalyzer->supplyMap.find(item->getID());
+	if(it != playerAnalyzer->supplyMap.end()) {
+		(*it).second += 1;
+	} else {
+		playerAnalyzer->supplyMap.insert({item->getID(), 1});
+	}
+
+	playerAnalyzer->supplyPrice += priceType == NPC_PRICE ? g_game.getItemNpcPrice(itemMap, true) : g_game.getItemMarketPrice(itemMap, true);
+	updateTrackerAnalyzer();
+}
+
+void Party::changeAnalyzerPriceType(PartyAnalyzer_t type)
+{
+	if (priceType == type) {
+		return;
+	}
+
+	priceType = type;
+	for (PartyAnalyzer* analyzer : membersData) {
+		analyzer->lootPrice = priceType == NPC_PRICE ? g_game.getItemNpcPrice(analyzer->lootMap, false) : g_game.getItemMarketPrice(analyzer->lootMap, false);
+		analyzer->supplyPrice = priceType == NPC_PRICE ? g_game.getItemNpcPrice(analyzer->supplyMap, true) : g_game.getItemMarketPrice(analyzer->supplyMap, true);
+	}
+}
+
+void Party::resetAnalyzer()
+{
+	trackerTime = time(0);
+	for (PartyAnalyzer* analyzer : membersData) {
+		analyzer->damage = 0;
+		analyzer->healing = 0;
+		analyzer->lootPrice = 0;
+		analyzer->supplyPrice = 0;
+		analyzer->lootMap.clear();
+		analyzer->supplyMap.clear();
+	}
+	updateTrackerAnalyzer();
 }

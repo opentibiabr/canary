@@ -121,26 +121,6 @@ int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerUpdateLootTracker(lua_State* L) {
-	// player:updateLootTracker(item)
-	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	Item* item = getUserdata<Item>(L, 2);
-	if (!item) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	player->updateLootTracker(item);
-	pushBoolean(L, true);
-
-	return 1;
-}
-
 // Player
 int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 	// Player(id or guid or name or userdata)

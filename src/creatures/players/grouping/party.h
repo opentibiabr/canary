@@ -87,6 +87,62 @@ class Party
 		void updatePlayerMana(const Player* player, uint8_t manaPercent);
 		void updatePlayerVocation(const Player* player);
 
+		void updateTrackerAnalyzer() const;
+		void addPlayerLoot(uint32_t playerId, const Item* item);
+		void addPlayerSupply(uint32_t playerId, const Item* item);
+		void changeAnalyzerPriceType(PartyAnalyzer_t type);
+		void resetAnalyzer();
+
+		void addPlayerDamage(uint32_t playerId, uint64_t amount)
+		{
+			PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
+			if (!playerAnalyzer) {
+				return;
+			}
+
+			playerAnalyzer->damage += amount;
+			updateTrackerAnalyzer();
+		}
+
+		void addPlayerHealing(uint32_t playerId, uint64_t amount)
+		{
+			PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
+			if (!playerAnalyzer) {
+				return;
+			}
+
+			playerAnalyzer->healing += amount;
+			updateTrackerAnalyzer();
+		}
+
+		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const
+		{
+			auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
+					return preyIt->id == playerId;
+				});
+
+			if (it != membersData.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		uint32_t getAnalyzerTimeNow() const
+		{
+			return static_cast<uint32_t>(time(0) - trackerTime);
+		}
+
+		PlayerVector getMembers() const
+		{
+			return memberList;
+		}
+
+		// Party analyzer
+		time_t trackerTime = time(0);
+		PartyAnalyzer_t priceType = NPC_PRICE;
+		std::vector<PartyAnalyzer*> membersData;
+
 	private:
 		bool canEnableSharedExperience();
 

@@ -1105,8 +1105,6 @@ class Player final : public Creature, public Cylinder
 				client->sendLootContainers();
 			}
 		}
-		void sendLootStats(Item* item, uint8_t count) {
-			if (client) {
 
 		//event methods
 		void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem,

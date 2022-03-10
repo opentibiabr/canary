@@ -1269,7 +1269,9 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg)
 	Position pos = msg.getPosition();
 	uint16_t spriteId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr);
+	bool lootAllCorpses = msg.getByte();
+	bool autoLoot = msg.getByte();
+	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr, lootAllCorpses, autoLoot);
 }
 
 void ProtocolGame::parseLootContainer(NetworkMessage &msg)

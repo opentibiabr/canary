@@ -99,6 +99,8 @@ bool Items::reload()
 
 void Items::loadFromProtobuf()
 {
+	using namespace Canary::protobuf::appearances;
+
 	for (uint32_t it = 0; it < g_game.appearances.object_size(); ++it) {
 		Appearance object = g_game.appearances.object(it);
 

@@ -47,7 +47,6 @@ class CombatInfo;
 class Charm;
 class ItemClassification;
 
-using namespace Canary::protobuf::appearances;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 
 class Game
@@ -484,7 +483,7 @@ class Game
 		Mounts mounts;
 		Raids raids;
 		GameStore gameStore;
-		Appearances appearances;
+		Canary::protobuf::appearances::Appearances appearances;
 
 		std::unordered_set<Tile*> getTilesToClean() const {
 			return tilesToClean;

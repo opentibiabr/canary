@@ -1146,7 +1146,7 @@ void Game::playerInspectItem(Player* player, const Position& pos) {
 		return;
 	}
 
-	player->sendItemInspection(item->getID(), item->getItemCount(), item, false);
+	player->sendItemInspection(item->getID(), static_cast<uint8_t>(item->getItemCount()), item, false);
 }
 
 void Game::playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
@@ -1155,6 +1155,8 @@ void Game::playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount,
 
 FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string& file)
 {
+	using namespace Canary::protobuf::appearances;
+
 	std::fstream fileStream(file, std::ios::in | std::ios::binary);
 	if (!fileStream.is_open()) {
 		SPDLOG_ERROR("[Game::loadAppearanceProtobuf] - Failed to load {}, file cannot be oppened", file);
@@ -1173,7 +1175,7 @@ FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string& file)
 	}
 
 	// Parsing all items into ItemType
-	Item::items.loadFromProtobuf(appearances);
+	Item::items.loadFromProtobuf();
 
 	// Only iterate other objects if necessary
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS)) {
@@ -4752,7 +4754,7 @@ void Game::playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category)
     return;
   }
 
-  player->sendContainer(container->getID(), container, container->hasParent(), 0);
+  player->sendContainer(static_cast<uint8_t>(container->getID()), container, container->hasParent(), 0);
 }
 
 
@@ -4766,7 +4768,7 @@ void Game::playerSetQuickLootFallback(uint32_t playerId, bool fallback)
 	player->quickLootFallbackToMainContainer = fallback;
 }
 
-void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, std::vector<uint16_t> itemIds)
+void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t filter, const std::vector<uint16_t> itemIds)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {

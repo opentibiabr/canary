@@ -87,7 +87,7 @@ ItemTypes_t Items::getLootType(const std::string& strValue)
 bool Items::reload()
 {
 	clear();
-	loadFromProtobuf(g_game.appearances);
+	loadFromProtobuf();
 
 	if (!loadFromXml()) {
 		return false;
@@ -97,10 +97,10 @@ bool Items::reload()
 	return true;
 }
 
-void Items::loadFromProtobuf(Appearances appearances)
+void Items::loadFromProtobuf()
 {
-	for (uint32_t it = 0; it < appearances.object_size(); ++it) {
-		Appearance object = appearances.object(it);
+	for (uint32_t it = 0; it < g_game.appearances.object_size(); ++it) {
+		Appearance object = g_game.appearances.object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.
 		if (!object.has_flags()) {
@@ -166,7 +166,6 @@ void Items::loadFromProtobuf(Appearances appearances)
 		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_SOUTH;
 		iType.isHorizontal = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_EAST;
 		iType.isHangable = object.flags().hang();
-		//iType.allowDistRead = false;
 		iType.lookThrough = object.flags().ignore_look();
 		iType.stackable = object.flags().cumulative();
 		iType.isPodium = object.flags().show_off_socket();

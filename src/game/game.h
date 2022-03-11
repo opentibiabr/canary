@@ -37,6 +37,7 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
 #include "items/items_classification.hpp"
+#include "io/protobuf/appearances.pb.h"
 
 class ServiceManager;
 class Creature;
@@ -325,7 +326,7 @@ class Game
 		void playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category);
 		void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 		void playerQuickLootBlackWhitelist(uint32_t playerId,
-								QuickLootFilter_t filter, std::vector<uint16_t> itemIds);
+								QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
 		void playerRequestLockFind(uint32_t playerId);
 		void playerRequestAddVip(uint32_t playerId, const std::string& name);
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);

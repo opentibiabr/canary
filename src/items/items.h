@@ -25,9 +25,6 @@
 #include "declarations.hpp"
 #include "io/fileloader.h"
 #include "game/movement/position.h"
-#include "io/protobuf/appearances.pb.h"
-
-using namespace Canary::protobuf::appearances;
 
 struct Abilities {
 	public:
@@ -163,7 +160,7 @@ class ItemType
 			return (allowPickupable || pickupable);
 		}
 		bool isMultiUse() const {
-			return (multiUse);
+			return multiUse;
 		}
 		bool hasSubType() const {
 			return (isFluidContainer() || isSplash() || stackable || charges != 0);
@@ -307,7 +304,7 @@ class Items
 		bool reload();
 		void clear();
 
-		void loadFromProtobuf(Appearances protoBin);
+		void loadFromProtobuf();
 
 		const ItemType& operator[](size_t id) const {
 			return getItemType(id);

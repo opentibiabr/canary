@@ -3576,7 +3576,7 @@ std::map<uint16_t, uint16_t> Player::getInventoryItemsId() const
 
 		auto rootSearch = itemMap.find(item->getID());
 		if (rootSearch != itemMap.end()) {
-			itemMap[item->getID()] = itemMap[item->getID()] + Item::countByType(item, -1);
+			itemMap[item->getID()] = itemMap[item->getID()] + static_cast<uint16_t>(Item::countByType(item, -1));
 		}
 		else
 		{

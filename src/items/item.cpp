@@ -128,8 +128,17 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 {
-	const ItemType& it = Item::items[type];
-	if (it.id == 0 || it.stackable || it.multiUse || it.moveable || it.pickupable || it.isDepot() || it.isSplash() || it.isDoor()) {
+	if (const ItemType& it = Item::items[type];
+			it.id == 0
+			|| it.stackable
+			|| it.multiUse
+			|| it.moveable
+			|| it.pickupable
+			|| it.isDepot()
+			|| it.isSplash()
+			|| it.isDoor()
+		)
+	{
 		return nullptr;
 	}
 

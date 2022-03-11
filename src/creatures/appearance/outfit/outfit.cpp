@@ -59,8 +59,11 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game.isLookTypeRegistered(lookType)) {
+		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
+				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+				&& !g_game.isLookTypeRegistered(lookType)
+			)
+		{
 			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
 			return false;
 		}

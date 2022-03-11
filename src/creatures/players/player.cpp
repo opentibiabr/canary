@@ -3576,18 +3576,18 @@ std::map<uint16_t, uint16_t> Player::getInventoryItemsId() const
 
 		auto rootSearch = itemMap.find(item->getID());
 		if (rootSearch != itemMap.end()) {
-			itemMap[item->getID()] = itemMap[item->getID()] + Item::countByType(item, -1);
+			itemMap[item->getID()] = itemMap[item->getID()] + static_cast<uint16_t>(Item::countByType(item, -1));
 		}
 		else
 		{
-			itemMap.emplace(item->getID(), Item::countByType(item, -1));
+			itemMap.emplace(item->getID(), static_cast<uint16_t>(Item::countByType(item, -1)));
 		}
 
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 				auto containerSearch = itemMap.find((*it)->getID());
 				if (containerSearch != itemMap.end()) {
-					itemMap[(*it)->getID()] = itemMap[(*it)->getID()] + Item::countByType(*it, -1);
+					itemMap[(*it)->getID()] = itemMap[(*it)->getID()] + static_cast<uint16_t>(Item::countByType(*it, -1));
 				}
 				else
 				{
@@ -4337,7 +4337,7 @@ void Player::changeSoul(int32_t soulChange)
 	sendStats();
 }
 
-bool Player::canWear(uint32_t lookType, uint8_t addons) const
+bool Player::canWear(uint16_t lookType, uint8_t addons) const
 {
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game.isLookTypeRegistered(lookType)) {
 		SPDLOG_WARN("[Player::canWear] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
@@ -4463,7 +4463,7 @@ bool Player::getOutfitAddons(const Outfit& outfit, uint8_t& addons) const
 	return true;
 }
 
-bool Player::canFamiliar(uint32_t lookType) const {
+bool Player::canFamiliar(uint16_t lookType) const {
 	if (group->access) {
 		return true;
 	}

@@ -1804,7 +1804,7 @@ int PlayerFunctions::luaPlayerSendContainer(lua_State* L) {
 		return 1;
 	}
 
-	player->sendContainer(container->getID(), container, container->hasParent(), container->getFirstIndex());
+	player->sendContainer(static_cast<uint8_t>(container->getID()), container, container->hasParent(), static_cast<uint8_t>(container->getFirstIndex()));
 	pushBoolean(L, true);
 	return 1;
 }

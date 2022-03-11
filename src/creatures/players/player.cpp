@@ -1955,7 +1955,7 @@ void Player::onThink(uint32_t interval)
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
-			kickPlayer(true);
+			removePlayer(true);
 		} else if (client && idleTime == 60000 * kickAfterMinutes) {
 			std::ostringstream ss;
 			ss << "There was no variation in your behaviour for " << kickAfterMinutes << " minutes. You will be disconnected in one minute if there is no change in your actions until then.";
@@ -2696,11 +2696,11 @@ void Player::addList()
 	g_game.addPlayer(this);
 }
 
-void Player::kickPlayer(bool displayEffect)
+void Player::removePlayer(bool displayEffect, bool forced /*= true*/)
 {
 	g_creatureEvents->playerLogout(this);
 	if (client) {
-		client->logout(displayEffect, true);
+		client->logout(displayEffect, forced);
 	} else {
 		g_game.removeCreature(this);
 	}
@@ -4187,7 +4187,7 @@ void Player::onPlacedCreature()
 {
 	//scripting event - onLogin
 	if (!g_creatureEvents->playerLogin(this)) {
-		kickPlayer(true);
+		removePlayer(true);
 	}
 
 	sendUnjustifiedPoints();

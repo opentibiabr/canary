@@ -854,13 +854,13 @@ class Player final : public Creature, public Cylinder
 		}
 		void checkSkullTicks(int64_t ticks);
 
-		bool canWear(uint32_t lookType, uint8_t addons) const;
+		bool canWear(uint16_t lookType, uint8_t addons) const;
 		void addOutfit(uint16_t lookType, uint8_t addons);
 		bool removeOutfit(uint16_t lookType);
 		bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
 		bool getOutfitAddons(const Outfit& outfit, uint8_t& addons) const;
 
-		bool canFamiliar(uint32_t lookType) const;
+		bool canFamiliar(uint16_t lookType) const;
 		void addFamiliar(uint16_t lookType);
 		bool removeFamiliar(uint16_t lookType);
 		bool getFamiliar(const Familiar& familiar) const;

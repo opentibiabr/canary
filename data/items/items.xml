@@ -45971,6 +45971,8 @@
 	<item id="30399" name="cobra wand">
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="magicpoints" value="2"/>
+		<attribute key="criticalhitdamage" value="35"/>
+		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="1900"/>
 		<attribute key="imbuementslot" value="2">
@@ -45982,6 +45984,8 @@
 	<item id="30400" name="cobra rod">
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="magicpoints" value="2"/>
+		<attribute key="lifeleechamount" value="18"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="5"/>
 		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="2">
@@ -50683,10 +50687,10 @@
 	<item id="34082" article="a" name="soulcutter">
 		<attribute key="weaponType" value="sword"/>
 		<attribute key="elementdeath" value="45"/>
-		<attribute key="skillmanaamount" value="3"/>
-		<attribute key="skillmanachance" value="100"/>
-		<attribute key="skilllifeamount" value="5"/>
-		<attribute key="skilllifechance" value="100"/>
+		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="skillsword" value="5"/>
 		<attribute key="attack" value="7"/>
 		<attribute key="extradef" value="3"/>
@@ -50720,10 +50724,10 @@
 	<item id="34084" article="a" name="soulbiter">
 		<attribute key="weaponType" value="axe"/>
 		<attribute key="elementdeath" value="45"/>
-		<attribute key="skillmanaamount" value="3"/>
-		<attribute key="skillmanachance" value="100"/>
-		<attribute key="skilllifeamount" value="5"/>
-		<attribute key="skilllifechance" value="100"/>
+		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="skillaxe" value="5"/>
 		<attribute key="attack" value="7"/>
 		<attribute key="extradef" value="3"/>
@@ -50757,10 +50761,10 @@
 	<item id="34086" article="a" name="soulcrusher">
 		<attribute key="weaponType" value="club"/>
 		<attribute key="elementice" value="46"/>
-		<attribute key="skillmanaamount" value="3"/>
-		<attribute key="skillmanachance" value="100"/>
-		<attribute key="skilllifeamount" value="5"/>
-		<attribute key="skilllifechance" value="100"/>
+		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="skillclub" value="5"/>
 		<attribute key="attack" value="6"/>
 		<attribute key="extradef" value="3"/>
@@ -50813,6 +50817,8 @@
 		<attribute key="ammotype" value="bolt"/>
 		<attribute key="absorbpercentdeath" value="7"/>
 		<attribute key="skilldist" value="4"/>
+		<attribute key="criticalhitdamage" value="10"/>
+		<attribute key="criticalhitchance" value="10"/>
 		<attribute key="hitchance" value="6"/>
 		<attribute key="range" value="6"/>
 		<attribute key="attack" value="9"/>
@@ -50845,10 +50851,10 @@
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="absorbpercentice" value="12"/>
 		<attribute key="magicpoints" value="5"/>
-		<attribute key="skillmanaamount" value="3"/>
-		<attribute key="skillmanachance" value="100"/>
-		<attribute key="skilllifeamount" value="5"/>
-		<attribute key="skilllifechance" value="100"/>
+		<attribute key="manaleechamount" value="3"/>
+		<attribute key="manaleechchance" value="100"/>
+		<attribute key="lifeleechamount" value="5"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="6"/>
 		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="2">
@@ -51186,8 +51192,8 @@
 		<attribute key="weaponType" value="wand"/>
 		<attribute key="shootType" value="smallice"/>
 		<attribute key="magicpoints" value="2"/>
-		<attribute key="skilllifeamount" value="18"/>
-		<attribute key="skilllifechance" value="100"/>
+		<attribute key="lifeleechamount" value="18"/>
+		<attribute key="lifeleechchance" value="100"/>
 		<attribute key="range" value="4"/>
 		<attribute key="weight" value="2100"/>
 		<attribute key="imbuementslot" value="2">

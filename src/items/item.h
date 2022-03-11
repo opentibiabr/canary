@@ -483,6 +483,7 @@ class ItemAttributes
 			checkTypes |= ITEM_ATTRIBUTE_IMBUEMENT_SLOT;
 			checkTypes |= ITEM_ATTRIBUTE_OPENCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
+			checkTypes |= ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
 			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(ItemAttrTypes type) {

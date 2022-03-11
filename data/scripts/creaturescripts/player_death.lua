@@ -21,7 +21,12 @@ local deathListEnabled = true
 local maxDeathRecords = 5
 
 function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustified, mostDamageUnjustified)
-	nextUseStaminaTime[player:getId()] = 1
+	local playerId = player:getId()
+	if nextUseStaminaTime[playerId] then
+		nextUseStaminaTime[playerId] = nil
+	end
+
+	nextUseStaminaTime[playerId] = 1
 
 	local function blessMessageOnDeath()
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are still blessed with ".. player:getBlessMessage() ..".")
@@ -92,7 +97,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 		if targetGuild ~= 0 then
 			local killerGuild = killer:getGuild()
 			killerGuild = killerGuild and killerGuild:getId() or 0
-			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(player:getId(), killer:getId()) then
+			if killerGuild ~= 0 and targetGuild ~= killerGuild and isInWar(playerId, killer:getId()) then
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then

@@ -116,14 +116,16 @@ class PreySlot
 		return (state == PreyDataState_Selection || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
 	}
 
-	void eraseBonus() {
-		bonus = PreyBonus_None;
+	void eraseBonus(bool maintainBonus = false) {
+		if (!maintainBonus) {
+			bonus = PreyBonus_None;
+			bonusPercentage = 5;
+			bonusRarity = 1;
+		}
 		state = PreyDataState_Selection;
 		option = PreyOption_None;
 		selectedRaceId = 0;
 		bonusTimeLeft = 0;
-		bonusPercentage = 5;
-		bonusRarity = 1;
 	}
 
 	void removeMonsterType(uint16_t raceId) {

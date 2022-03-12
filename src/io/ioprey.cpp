@@ -329,7 +329,7 @@ void IOPrey::ParsePreyAction(Player* player,
 			slot->freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000;
 		}
 
-		slot->eraseBonus();
+		slot->eraseBonus(true);
 		slot->state = PreyDataState_Selection;
 		slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
 	} else if (action == PreyAction_ListAll_Cards) {
@@ -386,8 +386,10 @@ void IOPrey::ParsePreyAction(Player* player,
 			return;
 		}
 
-		slot->reloadBonusValue();
-		slot->reloadBonusType();
+		if (slot->bonus == PreyBonus_None) {
+			slot->reloadBonusValue();
+			slot->reloadBonusType();
+		}
 		slot->state = PreyDataState_Active;
 		slot->selectedRaceId = slot->raceIdList[index];
 		slot->removeMonsterType(slot->selectedRaceId);

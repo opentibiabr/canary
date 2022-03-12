@@ -77,7 +77,6 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "getDecayId", ItemTypeFunctions::luaItemTypeGetDecayId);
 			registerMethod(L, "ItemType", "getRequiredLevel", ItemTypeFunctions::luaItemTypeGetRequiredLevel);
 			registerMethod(L, "ItemType", "getAmmoType", ItemTypeFunctions::luaItemTypeGetAmmoType);
-			registerMethod(L, "ItemType", "getCorpseType", ItemTypeFunctions::luaItemTypeGetCorpseType);
 
 			registerMethod(L, "ItemType", "getDecayTime", ItemTypeFunctions::luaItemTypeGetDecayTime);
 			registerMethod(L, "ItemType", "getShowDuration", ItemTypeFunctions::luaItemTypeGetShowDuration);
@@ -140,7 +139,6 @@ class ItemTypeFunctions final : LuaScriptInterface {
 		static int luaItemTypeGetDecayId(lua_State* L);
 		static int luaItemTypeGetRequiredLevel(lua_State* L);
 		static int luaItemTypeGetAmmoType(lua_State* L);
-		static int luaItemTypeGetCorpseType(lua_State* L);
 
 		static int luaItemTypeGetSpeed(lua_State* L);
 		static int luaItemTypeGetBaseSpeed(lua_State* L);

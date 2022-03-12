@@ -1888,7 +1888,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 				return ret;
 			}
 
-			if (it.corpseType != RACE_NONE && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
+			if (it.isCorpse && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
 				player->updateLootTracker(item);
 			}
 		}

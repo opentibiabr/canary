@@ -153,6 +153,7 @@ void Items::loadFromProtobuf()
 		iType.speed = object.flags().has_bank() ? static_cast<uint16_t>(object.flags().bank().waypoints()) : 0;
 		iType.wareId = object.flags().has_market() ? static_cast<uint16_t>(object.flags().market().trade_as_object_id()) : 0;
 
+		iType.isCorpse = object.flags().corpse() || object.flags().player_corpse();
 		iType.forceUse = object.flags().forceuse();
 		iType.hasHeight = object.flags().has_height();
 		iType.blockSolid = object.flags().unpass();

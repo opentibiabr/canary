@@ -48,7 +48,6 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"allowpickupable", ITEM_PARSE_PICKUPABLE},
 	{"pickupable", ITEM_PARSE_PICKUPABLE},
 	{"floorchange", ITEM_PARSE_FLOORCHANGE},
-	{"corpsetype", ITEM_PARSE_CORPSETYPE},
 	{"containersize", ITEM_PARSE_CONTAINERSIZE},
 	{"fluidsource", ITEM_PARSE_FLUIDSOURCE},
 	{"readable", ITEM_PARSE_READABLE},
@@ -180,14 +179,6 @@ const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
 	{"eastalt", TILESTATE_FLOORCHANGE_EAST_ALT},
 };
 
-const std::unordered_map<std::string, RaceType_t> RaceTypesMap = {
-	{"venom", RACE_VENOM},
-	{"blood", RACE_BLOOD},
-	{"undead", RACE_UNDEAD},
-	{"fire", RACE_FIRE},
-	{"energy", RACE_ENERGY},
-};
-
 const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
 	{"water", FLUID_WATER },
 	{"blood", FLUID_BLOOD},
@@ -264,7 +255,6 @@ class ItemParse : public Items
 	static void parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePickupable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFloorChange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseCorpseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseContainerSize(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFluidSource(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWriteables(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

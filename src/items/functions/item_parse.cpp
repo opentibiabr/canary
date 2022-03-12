@@ -39,7 +39,6 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
@@ -207,20 +206,6 @@ void ItemParse::parseFloorChange(const std::string& tmpStrValue, pugi::xml_attri
 	}
 }
 
-void ItemParse::parseCorpseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "corpsetype") {
-		stringValue = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = RaceTypesMap.find(stringValue);
-		if (itemMap != RaceTypesMap.end()) {
-			itemType.corpseType = itemMap->second;
-		} else {
-			SPDLOG_WARN("[ItemParse::parseCorpseType] - Unknown corpseType {}",
-                        valueAttribute.as_string());
-		}
-	}
-}
-
 void ItemParse::parseContainerSize(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "containersize") {
@@ -379,7 +364,10 @@ void ItemParse::parseTransform(const std::string& tmpStrValue, pugi::xml_attribu
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
-		Item::items.getItemType(itemType.transformEquipTo).type = itemType.type;
+		if (ItemType& transform = Item::items.getItemType(itemType.transformEquipTo);
+			transform.type == ITEM_TYPE_NONE) {
+			transform.type = itemType.type;
+		}
 	} else if (stringValue == "transformdeequipto") {
 		itemType.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
 	} else if (stringValue == "transformto") {

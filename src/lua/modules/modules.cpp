@@ -90,7 +90,7 @@ Module* Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 }
 
 void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage& msg, uint8_t byte) const {
-	Player* player = g_game.getPlayerByID(playerId);
+	Player* player = g_game().getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}

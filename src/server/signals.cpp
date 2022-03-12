@@ -43,7 +43,6 @@ extern Actions* g_actions;
 extern Monsters g_monsters;
 extern TalkActions* g_talkActions;
 extern Spells* g_spells;
-extern Game g_game;
 extern CreatureEvents* g_creatureEvents;
 extern GlobalEvents* g_globalEvents;
 extern Events* g_events;
@@ -120,21 +119,21 @@ void Signals::sigbreakHandler()
 {
 	//Dispatcher thread
 	SPDLOG_INFO("SIGBREAK received, shutting game server down...");
-	g_game.setGameState(GAME_STATE_SHUTDOWN);
+	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }
 
 void Signals::sigtermHandler()
 {
 	//Dispatcher thread
 	SPDLOG_INFO("SIGTERM received, shutting game server down...");
-	g_game.setGameState(GAME_STATE_SHUTDOWN);
+	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }
 
 void Signals::sigusr1Handler()
 {
 	//Dispatcher thread
 	SPDLOG_INFO("SIGUSR1 received, saving the game state...");
-	g_game.saveGameState();
+	g_game().saveGameState();
 }
 
 void Signals::sighupHandler()
@@ -145,14 +144,14 @@ void Signals::sighupHandler()
 	g_configManager().reload();
 	SPDLOG_INFO("Reloaded config");
 
-	g_game.raids.reload();
-	g_game.raids.startup();
+	g_game().raids.reload();
+	g_game().raids.startup();
 	SPDLOG_INFO("Reloaded raids");
 
 	Item::items.reload();
 	SPDLOG_INFO("Reloaded items");
 
-	g_game.mounts.reload();
+	g_game().mounts.reload();
 	SPDLOG_INFO("Reloaded mounts");
 
 	g_events->loadFromXml();
@@ -174,5 +173,5 @@ void Signals::sigintHandler()
 {
 	//Dispatcher thread
 	SPDLOG_INFO("SIGINT received, shutting game server down...");
-	g_game.setGameState(GAME_STATE_SHUTDOWN);
+	g_game().setGameState(GAME_STATE_SHUTDOWN);
 }

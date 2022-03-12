@@ -26,7 +26,6 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
-extern Game g_game;
 
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId)
 {
@@ -134,7 +133,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				continue;
 			}
 
-			Player* player = g_game.getPlayerByGUID(playerId);
+			Player* player = g_game().getPlayerByGUID(playerId);
 			if (!player) {
 				player = new Player(nullptr);
 				if (!IOLoginData::loadPlayerById(player, playerId)) {
@@ -148,7 +147,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				while (tmpAmount > 0) {
 					uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
 					Item* item = Item::CreateItem(itemType.id, stackCount);
-					if (g_game.internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						delete item;
 						break;
 					}
@@ -165,7 +164,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 				for (uint16_t i = 0; i < amount; ++i) {
 					Item* item = Item::CreateItem(itemType.id, subType);
-					if (g_game.internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						delete item;
 						break;
 					}
@@ -179,7 +178,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 		} else {
 			uint64_t totalPrice = result->getNumber<uint64_t>("price") * amount;
 
-			Player* player = g_game.getPlayerByGUID(playerId);
+			Player* player = g_game().getPlayerByGUID(playerId);
 			if (player) {
 				player->setBankBalance(player->getBankBalance() + totalPrice);
 			} else {

@@ -40,7 +40,6 @@ class Quest;
 class ProtocolGame;
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
-extern Game g_game;
 
 struct TextMessage
 {
@@ -448,13 +447,13 @@ private:
 	template <typename Callable, typename... Args>
 	void addGameTask(Callable function, Args &&... args)
 	{
-		g_dispatcher.addTask(createTask(std::bind(function, &g_game, std::forward<Args>(args)...)));
+		g_dispatcher.addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
 	}
 
 	template <typename Callable, typename... Args>
 	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args)
 	{
-		g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game, std::forward<Args>(args)...)));
+		g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
 	}
 
 	std::unordered_set<uint32_t> knownCreatureSet;

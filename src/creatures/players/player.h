@@ -161,7 +161,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeList() override;
 		void addList() override;
-		void kickPlayer(bool displayEffect);
+		void removePlayer(bool displayEffect, bool forced = true);
 
 		static uint64_t getExpForLevel(int32_t lv) {
 			lv--;
@@ -1319,6 +1319,11 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenPrivateChannel(receiver);
 			}
 		}
+		void sendExperienceTracker(int64_t rawExp, int64_t finalExp) const {
+			if (client) {
+				client->sendExperienceTracker(rawExp, finalExp);
+			}
+		}
 		void sendOutfitWindow() {
 			if (client) {
 				client->sendOutfitWindow();
@@ -2333,6 +2338,7 @@ class Player final : public Creature, public Cylinder
 		friend class IOLoginData;
 		friend class ProtocolGame;
 		friend class MoveEvent;
+		friend class BedItem;
 
   account::Account *account_;
 };

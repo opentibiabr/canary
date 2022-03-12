@@ -76,20 +76,13 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 			newItem = new Mailbox(type);
 		} else if (it.isBed()) {
 			newItem = new BedItem(type);
-		} else if (it.id >= ITEM_SWORD_RING && it.id <= ITEM_CLUB_RING) {
-			newItem = new Item(type - 3, count);
-		} else if (it.id == ITEM_DWARVEN_RING || it.id == ITEM_RING_HEALING) {
-			newItem = new Item(type - 2, count);
-		} else if (it.id >= ITEM_STEALTH_RING && it.id <= ITEM_TIME_RING) {
-			newItem = new Item(type - 37, count);
-		} else if (it.id == ITEM_PAIR_SOFT_BOOTS_ACTIVATED) {
-			newItem = new Item(ITEM_PAIR_SOFT_BOOTS, count);
-		} else if (it.id == ITEM_DEATH_RING_ACTIVATED) {
-			newItem = new Item(ITEM_DEATH_RING, count);
-		} else if (it.id == ITEM_PRISMATIC_RING_ACTIVATED) {
-			newItem = new Item(ITEM_PRISMATIC_RING, count);
 		} else {
-			newItem = new Item(type, count);
+			auto itemMap = ItemTransformationMap.find(static_cast<item_t>(it.id));
+			if (itemMap != ItemTransformationMap.end()) {
+				newItem = new Item(itemMap->second, count);
+			} else {
+				newItem = new Item(type, count);
+			}
 		}
 
 		newItem->incrementReferenceCounter();

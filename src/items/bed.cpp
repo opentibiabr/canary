@@ -162,9 +162,8 @@ bool BedItem::sleep(Player* player)
 	// display 'Zzzz'/sleep effect
 	g_game.addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
-	// kick player after he sees himself walk onto the bed and it change id
-	uint32_t playerId = player->getID();
-	g_scheduler.addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&Game::kickPlayer, &g_game, playerId, false)));
+	// logout player after he sees himself walk onto the bed and it change id
+	g_scheduler.addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false)));
 
 	// change self and partner's appearance
 	updateAppearance(player);

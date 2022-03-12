@@ -5830,13 +5830,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 		if (!damage.extension && attackerMonster && targetPlayer) {
 			// Charm rune (target as player)
-			charmRune_t activeCharm = g_bestiary.getCharmFromTarget(targetPlayer, g_monsters.getMonsterTypeByRaceId(attackerMonster->getRaceId()));
-			if (activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
-				Charm* charm = g_bestiary.getBestiaryCharm(activeCharm);
-				if (charm && charm->type == CHARM_DEFENSIVE &&(charm->chance > normal_random(0, 100))) {
-					if (g_bestiary.parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
-						return false; // Dodge charm
-					}
+			if (charmRune_t activeCharm = g_bestiary.getCharmFromTarget(targetPlayer, g_monsters.getMonsterTypeByRaceId(attackerMonster->getRaceId()));
+				activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
+				if (Charm* charm = g_bestiary.getBestiaryCharm(activeCharm);
+					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) && 
+					g_bestiary.parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
+					return false; // Dodge charm
 				}
 			}
 		}
@@ -6001,10 +6000,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (normal_random(0, 100) < lifeChance) {
 				// Vampiric charm rune
 				if (targetMonster) {
-					uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
-					if (playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
-						Charm* lifec = g_bestiary.getBestiaryCharm(CHARM_VAMP);
-						if (lifec) {
+					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0); 
+						playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
+						if (const Charm* lifec = g_bestiary.getBestiaryCharm(CHARM_VAMP)) {
 							lifeSkill += lifec->percent;
 						}
 					}
@@ -6026,10 +6024,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (normal_random(0, 100) < manaChance) {
 				// Void charm rune
 				if (targetMonster) {
-					uint16_t playerCharmRaceidVoid = attackerPlayer->parseRacebyCharm(CHARM_VOID, false, 0);
-					if (playerCharmRaceidVoid != 0 && playerCharmRaceidVoid == targetMonster->getRace()) {
-						Charm* voidc = g_bestiary.getBestiaryCharm(CHARM_VOID);
-						if (voidc) {
+					if (uint16_t playerCharmRaceidVoid = attackerPlayer->parseRacebyCharm(CHARM_VOID, false, 0);
+						playerCharmRaceidVoid != 0 && playerCharmRaceidVoid == targetMonster->getRace()) {
+						if (const Charm* voidc = g_bestiary.getBestiaryCharm(CHARM_VOID)) {
 							manaSkill += voidc->percent;
 						}
 					}
@@ -6047,10 +6044,10 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 
 			//Charm rune (attacker as player)
 			if (!damage.extension && targetMonster) {
-				charmRune_t activeCharm = g_bestiary.getCharmFromTarget(attackerPlayer, g_monsters.getMonsterTypeByRaceId(targetMonster->getRaceId()));
-				if (activeCharm != CHARM_NONE) {
-					Charm* charm = g_bestiary.getBestiaryCharm(activeCharm);
-					if (charm && charm->type == CHARM_OFFENSIVE && (charm->chance >= normal_random(0, 100))) {
+				if (charmRune_t activeCharm = g_bestiary.getCharmFromTarget(attackerPlayer, g_monsters.getMonsterTypeByRaceId(targetMonster->getRaceId()));
+					activeCharm != CHARM_NONE) {
+					if (Charm* charm = g_bestiary.getBestiaryCharm(activeCharm);
+						charm->type == CHARM_OFFENSIVE && (charm->chance >= normal_random(0, 100))) {
 						g_bestiary.parseCharmCombat(charm, attackerPlayer, target, realDamage);
 					}
 				}

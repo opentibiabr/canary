@@ -1188,13 +1188,14 @@ bool IOLoginData::savePlayer(Player* player)
           query << slot->freeRerollTimeStamp << ", ";
 
         PropWriteStream propPreyStream;
-        for (auto it = slot->raceIdList.begin(); it != slot->raceIdList.end(); ++it) {
-          propPreyStream.write<uint16_t>(*it);
-        }
+        std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId)
+        {
+            propPreyStream.write<uint16_t>(raceId);
+        });
 
         size_t preySize;
         const char* preyList = propPreyStream.getStream(preySize);
-        query << db.escapeBlob(preyList, preySize) << ")";
+        query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
 
         if (!db.executeQuery(query.str())) {
           SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
@@ -1228,13 +1229,14 @@ bool IOLoginData::savePlayer(Player* player)
           query << slot->freeRerollTimeStamp << ", ";
 
         PropWriteStream propTaskHuntingStream;
-        for (auto it = slot->raceIdList.begin(); it != slot->raceIdList.end(); ++it) {
-          propTaskHuntingStream.write<uint16_t>(*it);
-        }
+        std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propTaskHuntingStream](uint16_t raceId)
+        {
+            propTaskHuntingStream.write<uint16_t>(raceId);
+        });
 
         size_t taskHuntingSize;
         const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
-        query << db.escapeBlob(taskHuntingList, taskHuntingSize) << ")";
+        query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
 
         if (!db.executeQuery(query.str())) {
           SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());

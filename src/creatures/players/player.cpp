@@ -4275,20 +4275,16 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 				}
 			}
 		}
-	} else if (const Monster* monster = target->getMonster()) {
-		if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-			if (TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(monster->getRaceId())) {
-				if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(taskSlot)) {
-					taskSlot->currentKills += 1;
-					if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
-						(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
-						taskSlot->state = PreyTaskDataState_Completed;
-						sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
-					}
-
-					reloadTaskSlot(taskSlot->id);
-				}
+	} else if (const Monster* monster = target->getMonster();
+		TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(monster->getRaceId())) {
+		if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(taskSlot)) {
+			taskSlot->currentKills += 1;
+			if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
+				(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+				taskSlot->state = PreyTaskDataState_Completed;
+				sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
 			}
+			reloadTaskSlot(taskSlot->id);
 		}
 	}
 

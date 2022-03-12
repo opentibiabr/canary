@@ -1853,11 +1853,9 @@ class Player final : public Creature, public Cylinder
 		}
 
 		PreySlot* getPreySlotById(PreySlot_t slotid) {
-			auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
-				return preyIt->id == slotid;
-				});
-
-			if (it != preys.end()) {
+			if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+					return preyIt->id == slotid;
+				}); it != preys.end()) {
 				return *it;
 			}
 
@@ -1921,11 +1919,9 @@ class Player final : public Creature, public Cylinder
 				return nullptr;
 			}
 
-			auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
-				return it->selectedRaceId == raceId;
-				});
-
-			if (it != preys.end()) {
+			if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
+					return it->selectedRaceId == raceId;
+				}); it != preys.end()) {
 				return *it;
 			}
 
@@ -1953,11 +1949,9 @@ class Player final : public Creature, public Cylinder
 		}
 
 		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) {
-			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
-				return itTask->id == slotid;
-				});
-
-			if (it != taskHunting.end()) {
+			if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
+					return itTask->id == slotid;
+				}); it != taskHunting.end()) {
 				return *it;
 			}
 
@@ -1966,17 +1960,18 @@ class Player final : public Creature, public Cylinder
 
 		std::vector<uint16_t> getTaskHuntingBlackList() const {
 			std::vector<uint16_t> rt;
-			for (const TaskHuntingSlot* slot : taskHunting) {
-				if (slot) {
-					if (slot->isOccupied()) {
-						rt.push_back(slot->selectedRaceId);
-					} else {
-						for (uint16_t raceId : slot->raceIdList) {
-							rt.push_back(raceId);
-						}
-					}
+
+			std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot)
+			{
+				if (slot->isOccupied()) {
+					rt.push_back(slot->selectedRaceId);
+				} else {
+					std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId)
+					{
+						rt.push_back(raceId);
+					});
 				}
-			}
+			});
 
 			return rt;
 		}
@@ -2024,11 +2019,9 @@ class Player final : public Creature, public Cylinder
 				return nullptr;
 			}
 
-			auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
-				return itTask->selectedRaceId == raceId;
-			});
-
-			if (it != taskHunting.end()) {
+			if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
+					return itTask->selectedRaceId == raceId;
+				}); it != taskHunting.end()) {
 				return *it;
 			}
 

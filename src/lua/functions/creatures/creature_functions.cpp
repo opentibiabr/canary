@@ -701,8 +701,7 @@ int CreatureFunctions::luaCreatureRemove(lua_State* L) {
 		return 1;
 	}
 
-	Player* player = creature->getPlayer();
-	if (player) {
+	if (Player* player = creature->getPlayer()) {
 		player->kickPlayer(true);
 	} else {
 		g_game.removeCreature(creature);

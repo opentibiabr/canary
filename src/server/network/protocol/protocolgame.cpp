@@ -6135,83 +6135,40 @@ void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot)
 
 void ProtocolGame::sendPreyData(const PreySlot* slot)
 {
-	if (!player || !slot) {
-		return;
-	}
-
 	NetworkMessage msg;
-
 	msg.addByte(0xE8);
 	msg.addByte(static_cast<uint8_t>(slot->id));
 	msg.addByte(static_cast<uint8_t>(slot->state));
 
-	switch (slot->state) {
-		case PreyDataState_Locked: {
-			msg.addByte(player->isPremium() ? 0x01 : 0x00);
-			break;
-		}
-		case PreyDataState_Inactive: {
+	if (slot->state == PreyDataState_Locked) {
+		msg.addByte(player->isPremium() ? 0x01 : 0x00);
+	} else if (slot->state == PreyDataState_Inactive) {
 			// Empty
-			break;
-		}
-		case PreyDataState_Active: {	
-			if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(slot->selectedRaceId)) {
-				msg.addString(mtype->name);
-				const Outfit_t outfit = mtype->info.outfit;
-				msg.add<uint16_t>(outfit.lookType);
-				if (outfit.lookType == 0) {
-					msg.add<uint16_t>(outfit.lookTypeEx);
-				} else {
-					msg.addByte(outfit.lookHead);
-					msg.addByte(outfit.lookBody);
-					msg.addByte(outfit.lookLegs);
-					msg.addByte(outfit.lookFeet);
-					msg.addByte(outfit.lookAddons);
-				}
-
-				msg.addByte(static_cast<uint8_t>(slot->bonus));
-				msg.add<uint16_t>(slot->bonusPercentage);
-				msg.addByte(slot->bonusRarity);
-				msg.add<uint16_t>(slot->bonusTimeLeft);
+	} else if (slot->state == PreyDataState_Active) {	
+		if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(slot->selectedRaceId)) {
+			msg.addString(mtype->name);
+			const Outfit_t outfit = mtype->info.outfit;
+			msg.add<uint16_t>(outfit.lookType);
+			if (outfit.lookType == 0) {
+				msg.add<uint16_t>(outfit.lookTypeEx);
+			} else {
+				msg.addByte(outfit.lookHead);
+				msg.addByte(outfit.lookBody);
+				msg.addByte(outfit.lookLegs);
+				msg.addByte(outfit.lookFeet);
+				msg.addByte(outfit.lookAddons);
 			}
-			break;
-		}
-		case PreyDataState_Selection: {
-			msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
-			{
-				if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId)) {
-					msg.addString(mtype->name);
-					const Outfit_t outfit = mtype->info.outfit;
-					msg.add<uint16_t>(outfit.lookType);
-					if (outfit.lookType == 0) {
-						msg.add<uint16_t>(outfit.lookTypeEx);
-					} else {
-						msg.addByte(outfit.lookHead);
-						msg.addByte(outfit.lookBody);
-						msg.addByte(outfit.lookLegs);
-						msg.addByte(outfit.lookFeet);
-						msg.addByte(outfit.lookAddons);
-					}
-				} else {
-					SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}", raceId);
-					return;
-				}
-			});
-			break;
-		}
-		case PreyDataState_SelectionChangeMonster: {
+
 			msg.addByte(static_cast<uint8_t>(slot->bonus));
 			msg.add<uint16_t>(slot->bonusPercentage);
 			msg.addByte(slot->bonusRarity);
-			msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
-			{
-				const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId);
-				if (!mtype) {
-					return;
-				}
-
+			msg.add<uint16_t>(slot->bonusTimeLeft);
+		}
+	} else if (slot->state == PreyDataState_Selection) {
+		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
+		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
+		{
+			if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId)) {
 				msg.addString(mtype->name);
 				const Outfit_t outfit = mtype->info.outfit;
 				msg.add<uint16_t>(outfit.lookType);
@@ -6224,22 +6181,46 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 					msg.addByte(outfit.lookFeet);
 					msg.addByte(outfit.lookAddons);
 				}
-			});
-			break;
-		}
-		case PreyDataState_ListSelection: {
-			const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
-			msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-			std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
-			{
-				msg.add<uint16_t>(mType.first);
-			});
-			break;
-		}
-		default: {
-			SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", slot->state);
-			return;
-		}
+			} else {
+				SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}", raceId);
+				return;
+			}
+		});
+	} else if (slot->state == PreyDataState_SelectionChangeMonster) {
+		msg.addByte(static_cast<uint8_t>(slot->bonus));
+		msg.add<uint16_t>(slot->bonusPercentage);
+		msg.addByte(slot->bonusRarity);
+		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
+		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
+		{
+			if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId)) {
+				msg.addString(mtype->name);
+				const Outfit_t outfit = mtype->info.outfit;
+				msg.add<uint16_t>(outfit.lookType);
+				if (outfit.lookType == 0) {
+					msg.add<uint16_t>(outfit.lookTypeEx);
+				} else {
+					msg.addByte(outfit.lookHead);
+					msg.addByte(outfit.lookBody);
+					msg.addByte(outfit.lookLegs);
+					msg.addByte(outfit.lookFeet);
+					msg.addByte(outfit.lookAddons);
+				}
+			} else {
+				SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown monster type raceid: {}", raceId);
+				return;
+			}
+		});
+	} else if (slot->state == PreyDataState_ListSelection) {
+		const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
+		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
+		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
+		{
+			msg.add<uint16_t>(mType.first);
+		});
+	} else {
+		SPDLOG_WARN("[ProtocolGame::sendPreyData] - Unknown prey state: {}", slot->state);
+		return;
 	}
 
 	msg.add<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0));

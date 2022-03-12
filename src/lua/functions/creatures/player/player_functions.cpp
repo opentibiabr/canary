@@ -385,7 +385,7 @@ int PlayerFunctions::luaPlayerAddPreyCards(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
 	// player:getPreyCards()
-	if (Player* player = getUserdata<Player>(L, 1)) {
+	if (const Player* player = getUserdata<Player>(L, 1)) {
 		lua_pushnumber(L, static_cast<lua_Number>(player->getPreyCards()));
 	} else {
 		lua_pushnil(L);
@@ -395,10 +395,9 @@ int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 	// player:getPreyExperiencePercentage(raceId)
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
+	if (const Player* player = getUserdata<Player>(L, 1)) {
+		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+			slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
 			lua_pushnumber(L, static_cast<lua_Number>(100 + slot->bonusPercentage));
 		} else {
 			lua_pushnumber(L, 100);
@@ -411,8 +410,7 @@ int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 
 int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 	// player:removeTaskHuntingPoints(amount)
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
+	if (Player* player = getUserdata<Player>(L, 1)) {
 		pushBoolean(L, player->useTaskHuntingPoints(getNumber<uint64_t>(L, 2, 0)));
 	} else {
 		lua_pushnil(L);
@@ -422,10 +420,9 @@ int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
+	if (const Player* player = getUserdata<Player>(L, 1)) {
+		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+			slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
 			lua_pushnumber(L, 100 + slot->bonusPercentage);
 		} else {
 			lua_pushnumber(L, 100);

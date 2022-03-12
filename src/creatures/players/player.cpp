@@ -1626,7 +1626,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 			SPDLOG_INFO("{} has logged out", getName());
 		}
 
-		if (guild) {
+		if (guild && isLogout) {
 			guild->removeMember(this);
 		}
 

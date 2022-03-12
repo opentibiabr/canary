@@ -731,14 +731,16 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			if (mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				Player* player = mostDamageCreature->getPlayer();
 				if (g_configManager().getBoolean(AUTOBANK)) {
-					int32_t money = 0;
 					if (!corpse->getContainer()) {
 						return true;
 					}
 
+					int32_t money = 0;
 					for (Item* item : corpse->getContainer()->getItems()) {
-						money += item->getWorth();
-						g_game.internalRemoveItem(item, money);
+						if (uint32_t worth = item->getWorth(); worth > 0) {
+							money += worth; 
+							g_game.internalRemoveItem(item);
+						}
 					}
 
 					if (money > 0) {

@@ -379,6 +379,7 @@ void ItemParse::parseTransform(const std::string& tmpStrValue, pugi::xml_attribu
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
+		Item::items.getItemType(itemType.transformEquipTo).type = itemType.type;
 	} else if (stringValue == "transformdeequipto") {
 		itemType.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
 	} else if (stringValue == "transformto") {

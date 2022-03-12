@@ -2264,7 +2264,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	}
 
 	const ItemType& curType = Item::items[item->getID()];
-	if (item->isAlwaysOnTop() != (newType.alwaysOnTopOrder == 0)) {
+	if (item->isAlwaysOnTop() != (newType.alwaysOnTopOrder != 0)) {
 		//This only occurs when you transform items on tiles from a downItem to a topItem (or vice versa)
 		//Remove the old, and add the new
 		cylinder->removeThing(item, item->getItemCount());

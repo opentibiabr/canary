@@ -642,7 +642,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	//a dead player can not performs actions
 	if (player->isDead() || player->getHealth() <= 0) {
 		if (recvbyte == 0x14) {
-			g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::despawn, getThis())));
+			disconnect();
 			return;
 		}
 

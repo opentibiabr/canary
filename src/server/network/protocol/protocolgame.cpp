@@ -6819,86 +6819,67 @@ void ProtocolGame::sendUpdateLootTracker(Item *item)
 
 void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 {
-	if (!player || !slot) {
-		return;
-	}
-	
 	NetworkMessage msg;
-	
 	msg.addByte(0xBB);
 	msg.addByte(static_cast<uint8_t>(slot->id));
 	msg.addByte(static_cast<uint8_t>(slot->state));
-	switch (slot->state) {
-		case PreyTaskDataState_Locked: {
-			msg.addByte(player->isPremium() ? 0x01 : 0x00);
-			break;
-		}
-		case PreyTaskDataState_Inactive: {
-			// Empty
-			break;
-		}
-		case PreyTaskDataState_Selection: {
-			const Player* user = player;
-			msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg, user](uint16_t raceid)
-			{
-				msg.add<uint16_t>(raceid);
-				msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterTypeByRaceId(raceid)) ? 0x01 : 0x00);
-			});
-			break;
-		}
-		case PreyTaskDataState_ListSelection: {
-			const Player* user = player;
-			const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
-			msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-			std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto& mType)
-			{
-				msg.add<uint16_t>(mType.first);
-				msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterType(mType.second)) ? 0x01 : 0x00);
-			});
-			break;
-		}
-		case PreyTaskDataState_Active: {
-			if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot)) {
-				msg.add<uint16_t>(slot->selectedRaceId);
-				if (slot->upgrade) {
-					msg.addByte(0x01);
-					msg.add<uint16_t>(option->secondKills);
-				} else {
-					msg.addByte(0x00);
-					msg.add<uint16_t>(option->firstKills);
-				}
-				msg.add<uint16_t>(slot->currentKills);
-				msg.addByte(slot->rarity);
+	if (slot->state == PreyTaskDataState_Locked) {
+		msg.addByte(player->isPremium() ? 0x01 : 0x00);
+	} else if (slot->state == PreyTaskDataState_Inactive) {
+		// Empty
+	} else if (slot->state == PreyTaskDataState_Selection) {
+		const Player* user = player;
+		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
+		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg, user](uint16_t raceid)
+		{
+			msg.add<uint16_t>(raceid);
+			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterTypeByRaceId(raceid)) ? 0x01 : 0x00);
+		});
+	} else if (slot->state == PreyTaskDataState_ListSelection) {
+		const Player* user = player;
+		const std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
+		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
+		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto& mType)
+		{
+			msg.add<uint16_t>(mType.first);
+			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterType(mType.second)) ? 0x01 : 0x00);
+		});
+	} else if (slot->state == PreyTaskDataState_Active) {
+		if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot)) {
+			msg.add<uint16_t>(slot->selectedRaceId);
+			if (slot->upgrade) {
+				msg.addByte(0x01);
+				msg.add<uint16_t>(option->secondKills);
 			} else {
-				SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
-				return;
+				msg.addByte(0x00);
+				msg.add<uint16_t>(option->firstKills);
 			}
-			break;
-		}
-		case PreyTaskDataState_Completed: {
-			if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot)) {
-				msg.add<uint16_t>(slot->selectedRaceId);
-				if (slot->upgrade) {
-					msg.addByte(0x01);
-					msg.add<uint16_t>(option->secondKills);
-					msg.add<uint16_t>(std::min<uint16_t>(slot->currentKills, option->secondKills));
-				} else {
-					msg.addByte(0x00);
-					msg.add<uint16_t>(option->firstKills);
-					msg.add<uint16_t>(std::min<uint16_t>(slot->currentKills, option->firstKills));
-				}
-				msg.addByte(slot->rarity);
-			} else {
-				SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
-				return;
-			}
-			break;
-		}
-		default: {
-			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", slot->state);
+			msg.add<uint16_t>(slot->currentKills);
+			msg.addByte(slot->rarity);
+		} else {
+			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
 			return;
 		}
+	} else if (slot->state == PreyTaskDataState_Completed) {
+		if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot)) {
+			msg.add<uint16_t>(slot->selectedRaceId);
+			if (slot->upgrade) {
+				msg.addByte(0x01);
+				msg.add<uint16_t>(option->secondKills);
+				msg.add<uint16_t>(std::min<uint16_t>(slot->currentKills, option->secondKills));
+			} else {
+				msg.addByte(0x00);
+				msg.add<uint16_t>(option->firstKills);
+				msg.add<uint16_t>(std::min<uint16_t>(slot->currentKills, option->firstKills));
+			}
+			msg.addByte(slot->rarity);
+		} else {
+			SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown slot option {} on player {}", slot->id, player->getName());
+			return;
+		}
+	} else {
+		SPDLOG_WARN("[ProtocolGame::sendTaskHuntingData] - Unknown task hunting state: {}", slot->state);
+		return;
 	}
 
 	msg.add<uint32_t>(std::max<uint32_t>((static_cast<uint32_t>((slot->freeRerollTimeStamp - OTSYS_TIME())) / 1000), 0));

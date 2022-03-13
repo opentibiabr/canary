@@ -397,7 +397,7 @@ int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
 	// player:getPreyExperiencePercentage(raceId)
 	if (const Player* player = getUserdata<Player>(L, 1)) {
 		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-			slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
+			slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
 			lua_pushnumber(L, static_cast<lua_Number>(100 + slot->bonusPercentage));
 		} else {
 			lua_pushnumber(L, 100);
@@ -422,7 +422,7 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (const Player* player = getUserdata<Player>(L, 1)) {
 		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
-			slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
+			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
 			lua_pushnumber(L, 100 + slot->bonusPercentage);
 		} else {
 			lua_pushnumber(L, 100);

@@ -269,9 +269,8 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
 	}
 
 	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-		
 		if (PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
-			slot->isOccupied()) {
+			slot && slot->isOccupied()) {
 			if (slot->bonusTimeLeft <= amount) {
 				if (slot->option == PreyOption_AutomaticReroll) {
 					if (player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)))) {

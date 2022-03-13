@@ -2594,12 +2594,12 @@ void Player::death(Creature* lastHitCreature)
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
 
-		std::string blessings = getBlessingsName();
+		std::string bless = getBlessingsName();
 		std::ostringstream blesses;
-		if (blessings.length() == 0) {
+		if (bless.length() == 0) {
 			blesses << "You weren't protected with any blessings.";
 		} else {
-			blesses << "You were blessed with " << blessings;
+			blesses << "You were blessed with " << bless;
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, blesses.str());
 
@@ -2614,10 +2614,10 @@ void Player::death(Creature* lastHitCreature)
 		}
 
 		std::ostringstream lostBlesses;
-		if (blessings.length() == 0) {
+		if (bless.length() == 0) {
 			lostBlesses << "You lost all your blesses.";
 		} else {
-			lostBlesses << "You are still blessed with " << blessings;
+			lostBlesses << "You are still blessed with " << bless;
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 
@@ -5791,9 +5791,9 @@ std::string Player::getBlessingsName() const
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto name = BlessingNames.find(static_cast<Blessings_t>(i)); 
-			name != BlessingNames.end()) {
-				os << (*name).second;
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			blessName != BlessingNames.end()) {
+				os << (*blessName).second;
 			} else {
 				continue;
 			}

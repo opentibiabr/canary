@@ -1625,9 +1625,6 @@ class Player final : public Creature, public Cylinder
 		void forgetInstantSpell(const std::string& spellName);
 		bool hasLearnedInstantSpell(const std::string& spellName) const;
 
-		int64_t getLastPong() const {
-			return lastPong;
-		}
 		void updateRegeneration();
 
 		void setScheduledSaleUpdate(bool scheduled) {

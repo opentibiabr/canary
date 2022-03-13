@@ -418,6 +418,7 @@ class Player final : public Creature, public Cylinder
 		uint8_t getBlessingCount(uint8_t index) const {
 			return blessings[index - 1];
 		}
+		std::string getBlessingsName() const; 
 
 		bool isOffline() const {
 			return (getID() == 0);

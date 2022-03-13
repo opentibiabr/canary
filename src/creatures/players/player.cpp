@@ -2594,6 +2594,15 @@ void Player::death(Creature* lastHitCreature)
 		}
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
 
+		std::string blessings = getBlessingsName();
+		std::ostringstream blesses;
+		if (blessings.length() == 0) {
+			blesses << "You weren't protected with any blessings.";
+		} else {
+			blesses << "You were blessed with " << blessings;
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, blesses.str());
+
 		//Make player lose bless
 		uint8_t maxBlessing = 8;
 		if (pvpDeath && hasBlessing(1)) {
@@ -2603,6 +2612,14 @@ void Player::death(Creature* lastHitCreature)
 				removeBlessing(i, 1);
 			}
 		}
+
+		std::ostringstream lostBlesses;
+		if (blessings.length() == 0) {
+			lostBlesses << "You lost all your blesses.";
+		} else {
+			lostBlesses << "You are still blessed with " << blessings;
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 
 		sendStats();
 		sendSkills();
@@ -5760,6 +5777,39 @@ void Player::openPlayerContainers()
 		addContainer(it.first - 1, it.second);
 		onSendContainer(it.second);
 	}
+}
+
+std::string Player::getBlessingsName() const
+{
+	uint8_t count = 0;
+	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
+		if (amount != 0) {
+			count++;
+		}
+	});
+
+	std::ostringstream os;
+	for (uint8_t i = 1; i <= 8; i++) {
+		if (hasBlessing(i)) {
+			if (auto name = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			name != BlessingNames.end()) {
+				os << (*name).second;
+			} else {
+				continue;
+			}
+
+			--count;
+			if (count > 1) {
+				os << ", ";
+			} else if (count == 1) {
+				os << " and ";
+			} else {
+				os << ".";
+			}
+		}
+	}
+
+	return os.str();
 }
 
 /*******************************************************************************

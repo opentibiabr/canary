@@ -48,7 +48,7 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
-#include "io/protobuf/appearances.pb.h"
+#include "protobuf/appearances.pb.h"
 
 extern Actions* g_actions;
 extern Chat* g_chat;

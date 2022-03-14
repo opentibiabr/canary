@@ -147,7 +147,7 @@ target_sources(${PROJECT_NAME}
     io/iomap.cpp
     io/iomapserialize.cpp
     io/iomarket.cpp
-    io/protobuf/appearances.pb.cc
+    protobuf/appearances.pb.cc
     items/bed.cpp
     items/containers/container.cpp
     items/containers/depot/depotchest.cpp

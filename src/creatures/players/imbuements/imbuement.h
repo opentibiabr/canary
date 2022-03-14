@@ -1,0 +1,98 @@
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+#ifndef SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENT_H_
+#define SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENT_H_
+
+#include "declarations.hpp"
+#include "creatures/players/player.h"
+#include "utils/tools.h"
+
+class Player;
+class Item;
+
+class Imbuement
+{
+	public:
+		Imbuement(uint16_t initId, uint16_t initBaseId) :
+				id(initId), baseid(initBaseId) {}
+
+		uint16_t getID() const {
+			return id;
+		}
+
+		uint16_t getBaseID() const {
+			return baseid;
+		}
+
+		uint32_t getStorage() const
+		{
+			return storage;
+		}
+
+		bool isPremium() {
+			return premium;
+		}
+		std::string getName() const {
+			return name;
+		}
+		std::string getDescription() const {
+			return description;
+		}
+
+		std::string getSubGroup() const {
+			return subgroup;
+		}
+
+		uint16_t getCategory() const {
+			return category;
+		}
+
+		const std::vector<std::pair<uint16_t, uint16_t>>& getItems() const {
+			return items;
+		}
+
+		uint16_t getIconID() {
+			return icon + (baseid - 1);
+		}
+
+		uint16_t icon = 1;
+		int32_t stats[STAT_LAST + 1] = {};
+		int32_t skills[SKILL_LAST + 1] = {};
+		int32_t speed = 0;
+		uint32_t capacity = 0;
+		int16_t absorbPercent[COMBAT_COUNT] = {};
+		int16_t elementDamage = 0;
+
+		CombatType_t combatType = COMBAT_NONE;
+
+	protected:
+		friend class Imbuements;
+		friend class Item;
+
+	private:
+		bool premium = false;
+		uint32_t storage = 0;
+		uint16_t id, baseid, category = 0;
+		std::string name, description, subgroup = "";
+
+		std::vector<std::pair<uint16_t, uint16_t>> items;
+};
+
+#endif  // SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENT_H_

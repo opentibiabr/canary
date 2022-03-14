@@ -1600,6 +1600,9 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 	if (creature == this) {
 		if (isLogout) {
 			loginPosition = getPosition();
+			SPDLOG_INFO("{} has logged out", getName());
+			g_chat->removeUserFromAllChannels(*this);
+			clearPartyInvitations();
 		}
 
 		lastLogout = time(nullptr);
@@ -1614,16 +1617,8 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 
 		closeShopWindow();
 
-		clearPartyInvitations();
-
 		if (party && isLogout) {
 			party->leaveParty(this);
-		}
-
-		g_chat->removeUserFromAllChannels(*this);
-
-		if (isLogout) {
-			SPDLOG_INFO("{} has logged out", getName());
 		}
 
 		if (guild && isLogout) {

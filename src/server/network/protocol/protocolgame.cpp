@@ -397,35 +397,6 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	acceptPackets = true;
 }
 
-void ProtocolGame::spawn()
-{
-	//dispatcher thread
-	if (!player) {
-		return;
-	}
-
-	if (!player->spawn()) {
-		disconnect();
-		g_game.removeCreature(player);
-		return;
-	}
-
-	sendAddCreature(player, player->getPosition(), 0, false);
-}
-
-void ProtocolGame::despawn()
-{
-	//dispatcher thread
-	if (!player) {
-		return;
-	}
-	//fire onLogout
-	g_creatureEvents->playerLogout(player);
-
-	disconnect();
-	g_game.removeCreature(player);
-}
-
 void ProtocolGame::logout(bool displayEffect, bool forced)
 {
 	if (!player) {
@@ -647,7 +618,17 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		}
 
 		if (recvbyte == 0x0F) {
-			g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::spawn, getThis())));
+			if (!player) {
+				return;
+			}
+			
+			if (!player->spawn()) {
+				disconnect();
+				g_game.removeCreature(player);
+				return;
+			}
+
+			sendAddCreature(player, player->getPosition(), 0, false);
 			return;
 		}
 

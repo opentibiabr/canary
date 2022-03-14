@@ -63,7 +63,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 	{
 		msg.addByte(fluidMap[count & 7]);
 	}
-	else if (it.isContainer() && player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
+	else if (it.isContainer())
 	{
 		msg.addByte(0x00);
 		msg.addByte(0x00);
@@ -99,7 +99,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	{
 		msg.addByte(fluidMap[item->getFluidType() & 7]);
 	}
-	else if (it.isContainer() && player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
+	else if (it.isContainer())
 	{
 		const Container *container = item->getContainer();
 		if (container && container->getHoldingPlayer() == player)
@@ -444,17 +444,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		enableCompact();
 	}
 
-	version = msg.get<uint16_t>();
+	version = msg.get<uint16_t>(); // Protocol version
 
 	clientVersion = static_cast<int32_t>(msg.get<uint32_t>());
 
-	msg.skipBytes(3); // U16 dat revision, game preview state
+	msg.getString(); // Client version (String)
 
-	// In version 12.40.10030 we have 13 extra bytes
-	if (msg.getLength() - msg.getBufferPosition() == 141)
-	{
-		msg.skipBytes(13);
-	}
+	msg.skipBytes(3); // U16 dat revision, U8 game preview state
 
 	if (!Protocol::RSA_decrypt(msg))
 	{
@@ -6399,12 +6395,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	msg.addByte(0xA1);
 
 	msg.add<uint16_t>(player->getMagicLevel());
-
-	if (player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
-	{
-		msg.add<uint16_t>(player->getBaseMagicLevel());
-	}
-
+	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
@@ -6412,12 +6403,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
-
-		if (player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
-		{
-			msg.add<uint16_t>(player->getBaseSkill(i));
-		}
-
+		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 

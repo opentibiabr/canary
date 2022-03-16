@@ -365,7 +365,13 @@ function Hireling:returnToLamp(player_id)
 		return player:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 	end
 
+	local npc = Npc(self.cid)
+	if npc == nil then
+		Spdlog.error("[Hireling:returnToLamp] - Npc id not found or is nil")
+		return
+	end
 
+	npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
 	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
 	creature:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
 	creature:remove() --remove hireling

@@ -619,6 +619,11 @@ if NpcHandler == nil then
 				return
 			end
 
+			if Creature(npcId) == nil then
+				-- We are silently return it because this can happen when the NPC is removed before the chat msg is triggered.
+				return
+			end
+
 			local focusPlayer = Player(focusId)
 			if focusPlayer then
 				local parseInfo = {

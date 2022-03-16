@@ -111,7 +111,7 @@ Charm* IOBestiary::getBestiaryCharm(charmRune_t activeCharm, bool force /*= fals
 	}
 
 	if (force) {
-		Charm* charm = new Charm();
+		auto charm = new Charm();
 		charm->id = activeCharm;
 		charm->binary = 1 << activeCharm;
 		g_game.addCharmRune(charm);

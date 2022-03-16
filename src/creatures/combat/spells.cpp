@@ -26,9 +26,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "utils/pugicast.h"
 
-extern Spells* g_spells;
-extern Monsters g_monsters;
-extern Vocations g_vocations;
 extern LuaEnvironment g_luaEnvironment;
 
 Spells::Spells()
@@ -314,7 +311,7 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 }
 
 CombatSpell::CombatSpell(Combat* initCombat, bool initNeedTarget, bool initNeedDirection) :
-	Event(&g_spells->getScriptInterface()),
+	Event(&g_spells().getScriptInterface()),
 	combat(initCombat),
 	needDirection(initNeedDirection),
 	needTarget(initNeedTarget)
@@ -592,7 +589,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 			continue;
 		}
 
-		int32_t vocationId = g_vocations.getVocationId(attr.as_string());
+		int32_t vocationId = g_vocations().getVocationId(attr.as_string());
 		if (vocationId != -1) {
 			attr = vocationNode.attribute("showInDescription");
 			vocSpellMap[vocationId] = !attr || attr.as_bool();

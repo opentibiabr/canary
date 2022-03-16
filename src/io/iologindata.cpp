@@ -523,7 +523,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   uint16_t raceid_t;
   while (propBestStream.read<uint16_t>(raceid_t)) {
-    MonsterType* tmp_tt = g_monsters.getMonsterTypeByRaceId(raceid_t);
+    MonsterType* tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
     if (tmp_tt) {
       player->addBestiaryTrackerList(tmp_tt);
     }

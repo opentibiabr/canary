@@ -31,7 +31,6 @@
 
 class Creature;
 
-extern Chat* g_chat;
 extern LuaEnvironment g_luaEnvironment;
 
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
@@ -654,7 +653,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	eventDesc.scriptId = getScriptEnv()->getScriptId();
 
 	auto& lastTimerEventId = g_luaEnvironment.lastEventTimerId;
-	eventDesc.eventId = g_scheduler.addEvent(createSchedulerTask(
+	eventDesc.eventId = g_scheduler().addEvent(createSchedulerTask(
 					delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment, lastTimerEventId)
 	));
 
@@ -684,7 +683,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 	LuaTimerEventDesc timerEventDesc = std::move(it->second);
 	timerEvents.erase(it);
 
-	g_scheduler.stopEvent(timerEventDesc.eventId);
+	g_scheduler().stopEvent(timerEventDesc.eventId);
 	luaL_unref(globalState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	for (auto parameter : timerEventDesc.parameters) {
@@ -748,7 +747,7 @@ int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 	// sendChannelMessage(channelId, type, message)
 	uint32_t channelId = getNumber<uint32_t>(L, 1);
-	ChatChannel* channel = g_chat->getChannelById(channelId);
+	ChatChannel* channel = g_chat().getChannelById(channelId);
 	if (!channel) {
 		pushBoolean(L, false);
 		return 1;
@@ -764,7 +763,7 @@ int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 int GlobalFunctions::luaSendGuildChannelMessage(lua_State* L) {
 	// sendGuildChannelMessage(guildId, type, message)
 	uint32_t guildId = getNumber<uint32_t>(L, 1);
-	ChatChannel* channel = g_chat->getGuildChannelById(guildId);
+	ChatChannel* channel = g_chat().getGuildChannelById(guildId);
 	if (!channel) {
 		pushBoolean(L, false);
 		return 1;

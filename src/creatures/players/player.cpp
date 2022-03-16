@@ -36,14 +36,6 @@
 #include "items/weapons/weapons.h"
 #include "io/iobestiary.h"
 
-extern Chat* g_chat;
-extern Vocations g_vocations;
-extern MoveEvents* g_moveEvents;
-extern Weapons* g_weapons;
-extern CreatureEvents* g_creatureEvents;
-extern Events* g_events;
-extern Imbuements* g_imbuements;
-extern Monsters g_monsters;
 
 MuteCountMap Player::muteCountMap;
 
@@ -92,7 +84,7 @@ Player::~Player()
 
 bool Player::setVocation(uint16_t vocId)
 {
-	Vocation* voc = g_vocations.getVocation(vocId);
+	Vocation* voc = g_vocations().getVocation(vocId);
 	if (!voc) {
 		return false;
 	}
@@ -494,7 +486,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 
 			// Time not decay on protection zone
 			const Tile* playerTile = getTile();
-			const CategoryImbuement *categoryImbuement = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			const CategoryImbuement *categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
 			if (categoryImbuement->agressive && playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 				continue;
 			}
@@ -539,7 +531,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count)
 		return;
 	}
 
-	g_events->eventPlayerOnGainSkillTries(this, skill, count);
+	g_events().eventPlayerOnGainSkillTries(this, skill, count);
 	if (count == 0) {
 		return;
 	}
@@ -555,7 +547,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count)
 		ss << "You advanced to " << getSkillName(skill) << " level " << skills[skill].level << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
 
-		g_creatureEvents->playerAdvance(this, skill, (skills[skill].level - 1), skills[skill].level);
+		g_creatureEvents().playerAdvance(this, skill, (skills[skill].level - 1), skills[skill].level);
 
 		sendUpdateSkills = true;
 		currReqTries = nextReqTries;
@@ -753,8 +745,8 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 		storageMap[key] = value;
 
 		if (!isLogin) {
-			auto currentFrameTime = g_dispatcher.getDispatcherCycle();
-			g_events->eventOnStorageUpdate(this, key, value, oldValue, currentFrameTime);
+			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
+			g_events().eventOnStorageUpdate(this, key, value, oldValue, currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);
@@ -1156,7 +1148,7 @@ void Player::sendPing()
 	}
 
 	if (noPongTime >= 60000 && canLogout()) {
-		if (g_creatureEvents->playerLogout(this)) {
+		if (g_creatureEvents().playerLogout(this)) {
 			if (client) {
 				client->logout(true, true);
 			} else {
@@ -1328,7 +1320,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		return;
 	}
 
-	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
 	if (!baseImbuement) {
 		return;
 	}
@@ -1509,7 +1501,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 			Item* item = inventory[slot];
 			if (item) {
 				item->startDecaying();
-				g_moveEvents->onPlayerEquip(this, item, static_cast<Slots_t>(slot), false);
+				g_moveEvents().onPlayerEquip(this, item, static_cast<Slots_t>(slot), false);
 			}
 		}
 
@@ -1596,7 +1588,7 @@ void Player::onChangeZone(ZoneType_t zone)
 
 	g_game().updateCreatureWalkthrough(this);
 	sendIcons();
-	g_events->eventPlayerOnChangeZone(this, zone);
+	g_events().eventPlayerOnChangeZone(this, zone);
 }
 
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone)
@@ -1630,7 +1622,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 		if (isLogout) {
 			loginPosition = getPosition();
 			SPDLOG_INFO("{} has logged out", getName());
-			g_chat->removeUserFromAllChannels(*this);
+			g_chat().removeUserFromAllChannels(*this);
 			clearPartyInvitations();
 		}
 
@@ -1719,7 +1711,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (hasFollowPath && (creature == followCreature || (creature == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher.addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
 	}
 
 	if (creature != this) {
@@ -1881,7 +1873,7 @@ void Player::checkTradeState(const Item* item)
 void Player::setNextWalkActionTask(SchedulerTask* task)
 {
 	if (walkTaskEvent != 0) {
-		g_scheduler.stopEvent(walkTaskEvent);
+		g_scheduler().stopEvent(walkTaskEvent);
 		walkTaskEvent = 0;
 	}
 
@@ -1892,12 +1884,12 @@ void Player::setNextWalkActionTask(SchedulerTask* task)
 void Player::setNextWalkTask(SchedulerTask* task)
 {
 	if (nextStepEvent != 0) {
-		g_scheduler.stopEvent(nextStepEvent);
+		g_scheduler().stopEvent(nextStepEvent);
 		nextStepEvent = 0;
 	}
 
 	if (task) {
-		nextStepEvent = g_scheduler.addEvent(task);
+		nextStepEvent = g_scheduler().addEvent(task);
 		resetIdleTime();
 	}
 }
@@ -1905,7 +1897,7 @@ void Player::setNextWalkTask(SchedulerTask* task)
 void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true */)
 {
 	if (actionTaskEvent != 0) {
-		g_scheduler.stopEvent(actionTaskEvent);
+		g_scheduler().stopEvent(actionTaskEvent);
 		actionTaskEvent = 0;
 	}
 
@@ -1914,7 +1906,7 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 	}
 
 	if (task) {
-		actionTaskEvent = g_scheduler.addEvent(task);
+		actionTaskEvent = g_scheduler().addEvent(task);
 		if (resetIdleTime) {
 			this->resetIdleTime();
 		}
@@ -1924,26 +1916,26 @@ void Player::setNextActionTask(SchedulerTask* task, bool resetIdleTime /*= true 
 void Player::setNextActionPushTask(SchedulerTask* task)
 {
 	if (actionTaskEventPush != 0) {
-		g_scheduler.stopEvent(actionTaskEventPush);
+		g_scheduler().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
 	}
 
 	if (task) {
-		actionTaskEventPush = g_scheduler.addEvent(task);
+		actionTaskEventPush = g_scheduler().addEvent(task);
 	}
 }
 
 void Player::setNextPotionActionTask(SchedulerTask* task)
 {
 	if (actionPotionTaskEvent != 0) {
-		g_scheduler.stopEvent(actionPotionTaskEvent);
+		g_scheduler().stopEvent(actionPotionTaskEvent);
 		actionPotionTaskEvent = 0;
 	}
 
 	cancelPush();
 
 	if (task) {
-		actionPotionTaskEvent = g_scheduler.addEvent(task);
+		actionPotionTaskEvent = g_scheduler().addEvent(task);
 		//resetIdleTime();
 	}
 }
@@ -1961,7 +1953,7 @@ uint32_t Player::getNextPotionActionTime() const
 void Player::cancelPush()
 {
 	if (actionTaskEventPush !=  0) {
-		g_scheduler.stopEvent(actionTaskEventPush);
+		g_scheduler().stopEvent(actionTaskEventPush);
 		actionTaskEventPush = 0;
 		inEventMovePush = false;
 	}
@@ -2075,7 +2067,7 @@ void Player::addManaSpent(uint64_t amount)
 		return;
 	}
 
-	g_events->eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
+	g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, amount);
 	if (amount == 0) {
 		return;
 	}
@@ -2091,7 +2083,7 @@ void Player::addManaSpent(uint64_t amount)
 		ss << "You advanced to magic level " << magLevel << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
 
-		g_creatureEvents->playerAdvance(this, SKILL_MAGLEVEL, magLevel - 1, magLevel);
+		g_creatureEvents().playerAdvance(this, SKILL_MAGLEVEL, magLevel - 1, magLevel);
 
 		sendUpdateStats = true;
 		currReqMana = nextReqMana;
@@ -2132,7 +2124,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		return;
 	}
 
-	g_events->eventPlayerOnGainExperience(this, source, exp, rawExp);
+	g_events().eventPlayerOnGainExperience(this, source, exp, rawExp);
 	if (exp == 0) {
 		return;
 	}
@@ -2165,7 +2157,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		++level;
 		// Player stats gain for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
-			Vocation* noneVocation = g_vocations.getVocation(VOCATION_NONE);
+			Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
 			healthMax += noneVocation->getHPGain();
 			health += noneVocation->getHPGain();
 			manaMax += noneVocation->getManaGain();
@@ -2201,7 +2193,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 			party->updateSharedExperience();
 		}
 
-		g_creatureEvents->playerAdvance(this, SKILL_LEVEL, prevLevel, level);
+		g_creatureEvents().playerAdvance(this, SKILL_LEVEL, prevLevel, level);
 
 		std::ostringstream ss;
 		ss << "You advanced from Level " << prevLevel << " to Level " << level << '.';
@@ -2223,7 +2215,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		return;
 	}
 
-	g_events->eventPlayerOnLoseExperience(this, exp);
+	g_events().eventPlayerOnLoseExperience(this, exp);
 	if (exp == 0) {
 		return;
 	}
@@ -2261,7 +2253,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		--level;
 		// Player stats loss for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
-			Vocation* noneVocation = g_vocations.getVocation(VOCATION_NONE);
+			Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
 			healthMax = std::max<int32_t>(0, healthMax - noneVocation->getHPGain());
 			manaMax = std::max<int32_t>(0, manaMax - noneVocation->getManaGain());
 			capacity = std::max<int32_t>(0, capacity - noneVocation->getCapGain());
@@ -2518,7 +2510,7 @@ void Player::death(Creature* lastHitCreature)
 		// Charm bless bestiary
 		if (lastHitCreature && lastHitCreature->getMonster()) {
 			if (charmRuneBless != 0) {
-				MonsterType* mType = g_monsters.getMonsterType(lastHitCreature->getName());
+				MonsterType* mType = g_monsters().getMonsterType(lastHitCreature->getName());
 				if (mType && mType->info.raceid == charmRuneBless) {
 					deathLossPercent = (deathLossPercent * 90) / 100;
 				}
@@ -2544,7 +2536,7 @@ void Player::death(Creature* lastHitCreature)
 
 		//Level loss
 		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
-		g_events->eventPlayerOnLoseExperience(this, expLoss);
+		g_events().eventPlayerOnLoseExperience(this, expLoss);
 
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
 		std::ostringstream lostExp;
@@ -2843,7 +2835,7 @@ void Player::addList()
 
 void Player::removePlayer(bool displayEffect, bool forced /*= true*/)
 {
-	g_creatureEvents->playerLogout(this);
+	g_creatureEvents().playerLogout(this);
 	if (client) {
 		client->logout(displayEffect, forced);
 	} else {
@@ -3181,7 +3173,7 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 			return RETURNVALUE_NOTENOUGHCAPACITY;
 		}
 
-		if (!g_moveEvents->onPlayerEquip(const_cast<Player*>(this), const_cast<Item*>(item), static_cast<Slots_t>(index), true)) {
+		if (!g_moveEvents().onPlayerEquip(const_cast<Player*>(this), const_cast<Item*>(item), static_cast<Slots_t>(index), true)) {
 			return RETURNVALUE_CANNOTBEDRESSED;
 		}
 	}
@@ -3810,7 +3802,7 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 {
 	if (link == LINK_OWNER) {
 		//calling movement scripts
-		g_moveEvents->onPlayerEquip(this, thing->getItem(), static_cast<Slots_t>(index), false);
+		g_moveEvents().onPlayerEquip(this, thing->getItem(), static_cast<Slots_t>(index), false);
 	}
 
 	bool requireListUpdate = true;
@@ -3865,7 +3857,7 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 {
 	if (link == LINK_OWNER) {
 		//calling movement scripts
-		g_moveEvents->onPlayerDeEquip(this, thing->getItem(), static_cast<Slots_t>(index));
+		g_moveEvents().onPlayerDeEquip(this, thing->getItem(), static_cast<Slots_t>(index));
 	}
 
 	bool requireListUpdate = true;
@@ -3933,7 +3925,7 @@ bool Player::updateSaleShopList(const Item* item)
 	if (!itemId || !item)
 		return true;
 
-	g_dispatcher.addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID())));
+	g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID())));
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -4005,7 +3997,7 @@ bool Player::setAttackedCreature(Creature* creature)
 	}
 
 	if (creature) {
-		g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
 	}
 	return true;
 }
@@ -4045,7 +4037,7 @@ void Player::doAttacking(uint32_t)
 		bool result = false;
 
 		Item* tool = getWeapon();
-		const Weapon* weapon = g_weapons->getWeapon(tool);
+		const Weapon* weapon = g_weapons().getWeapon(tool);
 		uint32_t delay = getAttackSpeed();
 		bool classicSpeed = g_configManager().getBoolean(CLASSIC_ATTACK_SPEED);
 
@@ -4065,7 +4057,7 @@ void Player::doAttacking(uint32_t)
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
-			g_scheduler.addEvent(task);
+			g_scheduler().addEvent(task);
 		}
 
 		if (result) {
@@ -4119,7 +4111,7 @@ void Player::onWalkAborted()
 void Player::onWalkComplete()
 {
 	if (walkTask) {
-		walkTaskEvent = g_scheduler.addEvent(walkTask);
+		walkTaskEvent = g_scheduler().addEvent(walkTask);
 		walkTask = nullptr;
 	}
 }
@@ -4331,7 +4323,7 @@ void Player::onIdleStatus()
 void Player::onPlacedCreature()
 {
 	//scripting event - onLogin
-	if (!g_creatureEvents->playerLogin(this)) {
+	if (!g_creatureEvents().playerLogin(this)) {
 		removePlayer(true);
 	}
 
@@ -4844,7 +4836,7 @@ void Player::checkSkullTicks(int64_t ticks)
 
 bool Player::isPromoted() const
 {
-	uint16_t promotedVocation = g_vocations.getPromotedVocation(vocation->getId());
+	uint16_t promotedVocation = g_vocations().getPromotedVocation(vocation->getId());
 	return promotedVocation == VOCATION_NONE && vocation->getId() != promotedVocation;
 }
 
@@ -5307,7 +5299,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 		oldSkillValue = magLevel;
 		oldPercentToNextLevel = static_cast<long double>(manaSpent * 100) / nextReqMana;
 
-		g_events->eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
+		g_events().eventPlayerOnGainSkillTries(this, SKILL_MAGLEVEL, tries);
 		uint32_t currMagLevel = magLevel;
 
 		while ((manaSpent + tries) >= nextReqMana) {
@@ -5316,7 +5308,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 			magLevel++;
 			manaSpent = 0;
 
-			g_creatureEvents->playerAdvance(this, SKILL_MAGLEVEL, magLevel - 1, magLevel);
+			g_creatureEvents().playerAdvance(this, SKILL_MAGLEVEL, magLevel - 1, magLevel);
 
 			sendUpdate = true;
 			currReqMana = nextReqMana;
@@ -5361,7 +5353,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 		oldSkillValue = skills[skill].level;
 		oldPercentToNextLevel = static_cast<long double>(skills[skill].tries * 100) / nextReqTries;
 
-		g_events->eventPlayerOnGainSkillTries(this, skill, tries);
+		g_events().eventPlayerOnGainSkillTries(this, skill, tries);
 		uint32_t currSkillLevel = skills[skill].level;
 
 		while ((skills[skill].tries + tries) >= nextReqTries) {
@@ -5371,7 +5363,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 			skills[skill].tries = 0;
 			skills[skill].percent = 0;
 
-			g_creatureEvents->playerAdvance(this, skill, (skills[skill].level - 1), skills[skill].level);
+			g_creatureEvents().playerAdvance(this, skill, (skills[skill].level - 1), skills[skill].level);
 
 			sendUpdate = true;
 			currReqTries = nextReqTries;
@@ -5477,7 +5469,7 @@ uint16_t Player::getHelpers() const
 void Player::sendClosePrivate(uint16_t channelId)
 {
 	if (channelId == CHANNEL_GUILD || channelId == CHANNEL_PARTY) {
-		g_chat->removeUserFromChannel(*this, channelId);
+		g_chat().removeUserFromChannel(*this, channelId);
 	}
 
 	if (client) {

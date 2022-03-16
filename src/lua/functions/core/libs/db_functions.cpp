@@ -56,7 +56,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
-	g_databaseTasks.addTask(getString(L, -1), callback);
+	g_databaseTasks().addTask(getString(L, -1), callback);
 	return 0;
 }
 
@@ -98,7 +98,7 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
-	g_databaseTasks.addTask(getString(L, -1), callback, true);
+	g_databaseTasks().addTask(getString(L, -1), callback, true);
 	return 0;
 }
 

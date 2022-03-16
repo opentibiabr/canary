@@ -22,7 +22,6 @@
 #include "lua/creature/actions.h"
 #include "lua/functions/events/action_functions.hpp"
 
-extern Actions* g_actions;
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
@@ -61,7 +60,7 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_actions->registerLuaEvent(action));
+		pushBoolean(L, g_actions().registerLuaEvent(action));
 		action->getActionIdRange().clear();
 		action->getItemIdRange().clear();
 		action->getUniqueIdRange().clear();

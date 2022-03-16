@@ -33,7 +33,9 @@ class Scripts {
 		Scripts& operator=(const Scripts&) = delete;
 
 		static Scripts& getInstance() {
+			// Guaranteed to be destroyed
 			static Scripts instance;
+			// Instantiated on first use
 			return instance;
 		}
 
@@ -47,5 +49,7 @@ class Scripts {
 	private:
 		LuaScriptInterface scriptInterface;
 };
+
+constexpr auto g_scripts = &Scripts::getInstance;
 
 #endif  // SRC_LUA_SCRIPTS_SCRIPTS_H_

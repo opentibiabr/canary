@@ -23,7 +23,6 @@
 #include "game/game.h"
 #include "lua/creature/events.h"
 
-extern Events* g_events;
 
 Party::Party(Player* initLeader) : leader(initLeader)
 {
@@ -32,7 +31,7 @@ Party::Party(Player* initLeader) : leader(initLeader)
 
 void Party::disband()
 {
-	if (!g_events->eventPartyOnDisband(this)) {
+	if (!g_events().eventPartyOnDisband(this)) {
 		return;
 	}
 
@@ -86,7 +85,7 @@ bool Party::leaveParty(Player* player)
 		return false;
 	}
 
-	if (!g_events->eventPartyOnLeave(this, player)) {
+	if (!g_events().eventPartyOnLeave(this, player)) {
 		return false;
 	}
 
@@ -183,7 +182,7 @@ bool Party::passPartyLeadership(Player* player)
 
 bool Party::joinParty(Player& player)
 {
-	if (!g_events->eventPartyOnJoin(this, &player)) {
+	if (!g_events().eventPartyOnJoin(this, &player)) {
 		return false;
 	}
 
@@ -369,7 +368,7 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive)
 void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/)
 {
 	uint64_t shareExperience = experience;
-	g_events->eventPartyOnShareExperience(this, shareExperience);
+	g_events().eventPartyOnShareExperience(this, shareExperience);
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, source);
 	}

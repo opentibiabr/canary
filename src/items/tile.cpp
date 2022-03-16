@@ -34,7 +34,6 @@
 #include "map/house/housetile.h"
 #include "io/iomap.h"
 
-extern MoveEvents* g_moveEvents;
 
 StaticTile real_nullptr_tile(0xFFFF, 0xFFFF, 0xFF);
 Tile& Tile::nullptr_tile = real_nullptr_tile;
@@ -1427,9 +1426,9 @@ void Tile::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t 
 
 		//calling movement scripts
 		if (creature) {
-			g_moveEvents->onCreatureMove(creature, this, MOVE_EVENT_STEP_IN);
+			g_moveEvents().onCreatureMove(creature, this, MOVE_EVENT_STEP_IN);
 		} else if (item) {
-			g_moveEvents->onItemMove(item, this, true);
+			g_moveEvents().onItemMove(item, this, true);
 		}
 	}
 
@@ -1457,11 +1456,11 @@ void Tile::postRemoveNotification(Thing* thing, const Cylinder* newParent, int32
 	//calling movement scripts
 	Creature* creature = thing->getCreature();
 	if (creature) {
-		g_moveEvents->onCreatureMove(creature, this, MOVE_EVENT_STEP_OUT);
+		g_moveEvents().onCreatureMove(creature, this, MOVE_EVENT_STEP_OUT);
 	} else {
 		Item* item = thing->getItem();
 		if (item) {
-			g_moveEvents->onItemMove(item, this, false);
+			g_moveEvents().onItemMove(item, this, false);
 		}
 	}
 }

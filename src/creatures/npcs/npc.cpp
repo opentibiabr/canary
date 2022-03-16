@@ -27,8 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-extern Npcs g_npcs;
-extern Events* g_events;
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -37,7 +35,7 @@ uint32_t Npc::npcAutoID = 0x80000000;
 
 Npc* Npc::createNpc(const std::string& name)
 {
-	NpcType* npcType = g_npcs.getNpcType(name);
+	NpcType* npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
 		return nullptr;
 	}

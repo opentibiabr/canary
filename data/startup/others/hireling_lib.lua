@@ -342,44 +342,57 @@ function Hireling:spawn()
 
 	npc:place(self:getPosition())
 	creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	self:setCreature(npc:getId())
 end
 
 function Hireling:returnToLamp(player_id)
-	local creature = Creature(self.cid)
-	local player = Player(player_id)
-	local lampType = ItemType(HIRELING_LAMP_ID)
+	if self.active ~= 1 then
+		return
+	end
 
+	local player = Player(player_id)
 	if self:getOwnerId() ~= player_id then
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return player:sendTextMessage(MESSAGE_FAILURE, "You are not the master of this hireling.")
 	end
 
-	if player:getFreeCapacity() < lampType:getWeight(1) then
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return player:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
-	end
-
-	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if not inbox or inbox:getEmptySlots() == 0 then
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return player:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
-	end
-
-	local npc = Npc(self.cid)
-	if npc == nil then
-		Spdlog.error("[Hireling:returnToLamp] - Npc id not found or is nil")
-		return
-	end
-
-	npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
-	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
-	creature:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
-	creature:remove() --remove hireling
-	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
-	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, self:getId()) --save hirelingId on item
 	self.active = 0
-	self.cid = -1
-	self:setPosition({x=0,y=0,z=0})
+	addEvent(function(npcId, ownerGuid, hirelingId)
+		local npc = Npc(npcId)
+		if not npc then
+			return Spdlog.error("[Hireling:returnToLamp] - Npc not found or is nil.")
+		end
+
+		local owner = Player(ownerGuid)
+		if not owner then
+			return
+		end
+
+		local lampType = ItemType(HIRELING_LAMP_ID)
+		if owner:getFreeCapacity() < lampType:getWeight(1) then
+			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
+		end
+
+		local inbox = owner:getSlotItem(CONST_SLOT_STORE_INBOX)
+		if not inbox or inbox:getEmptySlots() == 0 then
+			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
+		end
+
+		local hireling = getHirelingById(hirelingId)
+		if not hireling then
+			return Spdlog.error("[Hireling:returnToLamp] - Hireling not found or is nil.")
+		end
+
+		npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
+		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
+		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
+		npc:remove() --remove hireling
+		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
+		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hirelingId) --save hirelingId on item
+		hireling:setPosition({x=0,y=0,z=0})
+	end, 1000, self.cid, player:getGuid(), self.id)
 end
 -- [[ END CLASS DEFINITION ]]
 

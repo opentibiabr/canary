@@ -7,7 +7,9 @@ find_package(Protobuf REQUIRED)
 
 include_directories(${PROTOBUF_INCLUDE_DIRS})
 
-file(GLOB ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/*.proto")
+file(GLOB ProtoFiles
+	"${CMAKE_CURRENT_SOURCE_DIR}/appearances.proto"
+)
 PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders ${ProtoFiles})
 add_library(${PROJECT_NAME} ${ProtoSources} ${ProtoHeaders})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARY})

@@ -484,6 +484,11 @@ bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* 
 		player->sendCancelMessage(ret);
 		return false;
 	}
+
+	// "using" containers does not send cooldown icon
+	if (!item->getContainer()) {
+		player->sendUseItemCooldown(g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
+	}
 	return true;
 }
 
@@ -529,6 +534,10 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 			player->sendCancelMessage(RETURNVALUE_CANNOTUSETHISOBJECT);
 		}
 		return false;
+	}
+
+	if (!item->getContainer()) {
+		player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	}
 	return true;
 }

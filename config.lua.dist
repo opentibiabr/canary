@@ -65,6 +65,10 @@ allConsoleLog = false
 -- the non-stackable items will be moved to the selected depot chest(I - XVIII).
 stashMoving = false
 depotChest = 4
+autoLoot = false
+-- autoBank = true, the dropped coins from monsters will be automatically 
+-- deposited to your bank account.
+autoBank = false
 
 -- Stamina in Trainers
 staminaTrainer = false

@@ -84,6 +84,10 @@ Game::~Game()
 	for (const auto& it : guilds) {
 		delete it.second;
 	}
+
+	for (const auto& it : CharmList) {
+		delete it;
+	}
 }
 
 void Game::loadBoostedCreature()

@@ -46,43 +46,6 @@ Scripts::~Scripts() {
 	scriptInterface.reInitState();
 }
 
-bool Scripts::loadScriptSystems() {
-
-	// XML loads disabled start
-	if (!g_weapons) {
-		return false;
-	}
-
-	g_weapons().loadDefaults();
-
-	if (!g_spells) {
-		return false;
-	}
-
-	if (!g_actions) {
-		return false;
-	}
-
-	if (!g_talkActions) {
-		return false;
-	}
-
-	if (!g_moveEvents) {
-		return false;
-	}
-
-	if (!g_creatureEvents) {
-		return false;
-	}
-
-	if (!g_globalEvents) {
-		return false;
-	}
-	// XML loads disabled end
-
-	return true;
-}
-
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 	namespace fs = boost::filesystem;
 

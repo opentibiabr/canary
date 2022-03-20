@@ -137,8 +137,6 @@ void loadModules() {
 		"items.otb");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
-	modulesLoadHelper(Scripts::getInstance().loadScriptSystems(),
-		"script systems");
 
 	// Lua Env
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/global.lua") == 0),

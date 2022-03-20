@@ -42,7 +42,6 @@ class Scripts {
 
 		bool loadEventSchedulerScripts(const std::string& fileName);
 		bool loadScripts(std::string folderName, bool isLib, bool reload);
-		bool loadScriptSystems();
 		LuaScriptInterface& getScriptInterface() {
 			return scriptInterface;
 		}

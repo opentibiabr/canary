@@ -391,7 +391,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 
 	player->client = getThis();
 	player->openPlayerContainers();
-	sendAddCreature(player, player->getPosition(), 0, false);
+	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	acceptPackets = true;
@@ -427,7 +427,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced)
 
 	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);
 
-	g_game.removeCreature(player);
+	g_game.removeCreature(player, true);
 }
 
 void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
@@ -602,16 +602,40 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 	uint8_t recvbyte = msg.getByte();
 
-	// A dead player can not perform actions
-	if (!player || player->isRemoved() || player->getHealth() <= 0) {
+	if (!player || player->isRemoved()) {
 		if (recvbyte == 0x0F) {
-			// we need to make the player pointer != null in this part, game.cpp release is the first step
-			// login(player->getName(), player->getAccount(), player->operatingSystem);
+			disconnect();
+		}
+
+		return;
+	}
+
+	//a dead player can not performs actions
+	if (player->isDead() || player->getHealth() <= 0) {
+		if (recvbyte == 0x14) {
 			disconnect();
 			return;
 		}
 
-		if (recvbyte != 0x14) {
+		if (recvbyte == 0x0F) {
+			if (!player) {
+				return;
+			}
+			
+			if (!player->spawn()) {
+				disconnect();
+				g_game.removeCreature(player);
+				return;
+			}
+
+			sendAddCreature(player, player->getPosition(), 0, false);
+			return;
+		}
+
+		if (recvbyte != 0x1D && recvbyte != 0x1E) {
+			// keep the connection alive
+			g_scheduler.addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
+			g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
 			return;
 		}
 	}
@@ -621,7 +645,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player->getID(), msg, recvbyte)));
 	}
 
-		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)

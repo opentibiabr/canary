@@ -44,6 +44,27 @@ function Npc:sayWithDelay(npcId, text, messageType, delay, eventDelay, player)
 	eventDelay.event = addEvent(sayFunction, delay < 1 and 1000 or delay, npcId, text, messageType, eventDelay, player)
 end
 
+function SayEvent(npcId, playerId, messageDelayed, npcHandler)
+	local player = Player(playerId)
+	local npc = Npc(npcId)
+	if not npc then
+		return Spdlog.error("[NpcHandler:say] - Npc parameter is missing, nil or not found")
+	end
+
+	if not player then
+		return Spdlog.error("[NpcHandler:say] - Player parameter is missing, nil or not found")
+	end
+
+	local parseInfo = {
+		[TAG_PLAYERNAME] = player:getName(),
+		[TAG_TIME] = getFormattedWorldTime(),
+		[TAG_BLESSCOST] = Blessings.getBlessingsCost(player:getLevel()),
+		[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(player:getLevel())
+	}
+	npc:say(npcHandler:parseMessage(messageDelayed, parseInfo),
+			textType or TALKTYPE_PRIVATE_NP, false, player, npc:getPosition())
+end
+
 function GetCount(string)
 	local b, e = string:find("%d+")
 	return b and e and tonumber(string:sub(b, e)) or -1

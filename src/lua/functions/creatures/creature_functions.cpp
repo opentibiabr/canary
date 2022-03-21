@@ -688,7 +688,7 @@ int CreatureFunctions::luaCreatureIsImmune(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureRemove(lua_State* L) {
-	// creature:remove()
+	// creature:remove([forced = true])
 	Creature** creaturePtr = getRawUserdata<Creature>(L, 1);
 	if (!creaturePtr) {
 		lua_pushnil(L);
@@ -702,8 +702,13 @@ int CreatureFunctions::luaCreatureRemove(lua_State* L) {
 	}
 
 	Player* player = creature->getPlayer();
+	bool forced = getBoolean(L, 2, true);
 	if (player) {
-		player->kickPlayer(true);
+		if (forced) {
+			player->removePlayer(true);
+		} else {
+			player->removePlayer(true, false);
+		}
 	} else {
 		g_game.removeCreature(creature);
 	}

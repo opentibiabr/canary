@@ -513,13 +513,18 @@ void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, 
 	lua_State* L = scriptInterface->getLuaState();
 	scriptInterface->pushFunction(scriptId);
 
-	LuaScriptInterface::pushUserdata(L, creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	if (creature) {
+		LuaScriptInterface::pushUserdata(L, creature);
+		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
+	} else {
+		LuaScriptInterface::reportErrorFunc(LuaScriptInterface::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+	}
+	
 	if (attacker) {
 		LuaScriptInterface::pushUserdata(L, attacker);
 		LuaScriptInterface::setCreatureMetatable(L, -1, attacker);
 	} else {
-		lua_pushnil(L);
+		LuaScriptInterface::reportErrorFunc(LuaScriptInterface::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
 	}
 
 	LuaScriptInterface::pushCombatDamage(L, damage);

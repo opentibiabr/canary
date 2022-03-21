@@ -601,36 +601,7 @@ if NpcHandler == nil then
 		end
 
 		stopEvent(self.eventSay[playerId])
-		self.eventSay[playerId] = addEvent(
-		function(npcId, messageDelayed, focusId)
-			if not Npc(npc) then
-				return Spdlog.error("[NpcHandler:say] - Npc parameter is missing or wrong")
-			end
-
-			npcId = npc:getId()
-			if npcId == nil then
-				Spdlog.error("[NpcHandler:say] - Npc not found or is nil")
-				return
-			end
-
-			focusId = player:getId()
-			if focusId == nil then
-				Spdlog.error("[NpcHandler:say] - Player id not found or is nil")
-				return
-			end
-
-			local focusPlayer = Player(focusId)
-			if focusPlayer then
-				local parseInfo = {
-					[TAG_PLAYERNAME] = focusPlayer:getName(),
-					[TAG_TIME] = getFormattedWorldTime(),
-					[TAG_BLESSCOST] = Blessings.getBlessingsCost(focusPlayer:getLevel()),
-					[TAG_PVPBLESSCOST] = Blessings.getPvpBlessingCost(focusPlayer:getLevel())
-				}
-				npc:say(self:parseMessage(messageDelayed, parseInfo),
-                        textType or TALKTYPE_PRIVATE_NP, false, focusPlayer, npc:getPosition())
-			end
-		end, self.talkDelayTime * 1000, npcId, message, focusId)
+		self.eventSay[playerId] = addEvent(SayEvent, self.talkDelayTime * 1000, npc:getId(), player:getId(), message, self)
 	end
 
 	-- sendMessages(msg, messagesTable, npc, player, useDelay(true or false), delay)

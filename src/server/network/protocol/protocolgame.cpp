@@ -639,7 +639,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
 		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
 		case 0x2a: addBestiaryTrackerList(msg); break;
-		case 0x2B: parsePartyAnalyzerAction(); break;
+		case 0x2B: parsePartyAnalyzerAction(msg); break;
 		case 0x2c: parseLeaderFinderWindow(msg); break;
 		case 0x2d: parseMemberFinderWindow(msg); break;
 		case 0x28: parseStashWithdraw(msg); break;
@@ -2146,7 +2146,7 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg)
 	g_game.registerTeamFinderAssemble(player->getGUID(), teamAssemble);
 }
 
-void ProtocolGame::parsePartyAnalyzerAction() const
+void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg) const
 {
 	if (!player) {
 		return;
@@ -2157,7 +2157,21 @@ void ProtocolGame::parsePartyAnalyzerAction() const
 		return;
 	}
 
-	party->resetAnalyzer();
+	PartyAnalyzerAction_t action = static_cast<PartyAnalyzerAction_t>(msg.getByte());
+	if (action == PARTYANALYZERACTION_RESET) {
+		party->resetAnalyzer();
+	} else if (action == PARTYANALYZERACTION_PRICETYPE) {
+		party->switchAnalyzerPriceType();
+	} else if (action == PARTYANALYZERACTION_PRICEVALUE) {
+		uint16_t size = msg.get<uint16_t>();
+		for (uint16_t i = 1; i <= size; i++) {
+			uint16_t itemId = msg.get<uint16_t>();
+			uint64_t price = msg.get<uint64_t>();
+			player->setItemCustomPrice(itemId, price);
+		}
+		party->reloadPrices();
+		party->updateTrackerAnalyzer();
+	}
 }
 
 void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg)
@@ -6625,8 +6639,8 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party)
 	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
 	for (const PartyAnalyzer* analyzer : party->membersData) {
 		msg.add<uint32_t>(analyzer->id);
-		const Player* member = g_game.getPlayerByID(analyzer->id);
-		if (!member || !member->getParty() || member->getParty() != party || !party->isSharedExperienceEnabled()) {
+		if (const Player* member = g_game.getPlayerByID(analyzer->id);
+			!member || !member->getParty() || member->getParty() != party) {
 			msg.addByte(0);
 		} else {
 			msg.addByte(1);
@@ -6638,9 +6652,8 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party)
 		msg.add<uint64_t>(analyzer->healing);
 	}
 
-	bool showNames = true; // This bool is to hide the name on the list. (Why this should be optional? To-Do)
+	bool showNames = !party->membersData.empty();
 	msg.addByte(showNames ? 0x01 : 0x00);
-
 	if (showNames) {
 		msg.addByte(static_cast<uint8_t>(party->membersData.size()));
 		for (const PartyAnalyzer* analyzer : party->membersData) {

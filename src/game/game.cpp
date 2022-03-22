@@ -2682,29 +2682,10 @@ ObjectCategory_t Game::getObjectCategory(const Item* item)
 	return category;
 }
 
-uint64_t Game::getItemNpcPrice(const std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
+uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, bool buyPrice) const
 {
 	uint64_t total = 0;
-	for (const std::pair<uint16_t, uint32_t> it : itemMap) {
-		if (it.first == ITEM_GOLD_COIN) {
-			total += it.second;
-		} else if (it.first == ITEM_PLATINUM_COIN) {
-			total += 100 * it.second;
-		} else if (it.first == ITEM_CRYSTAL_COIN) {
-			total += 10000 * it.second;
-		} else {
-			const ItemType& iType = Item::items[it.first];
-			total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
-		}
-	}
-
-	return total;
-}
-
-uint64_t Game::getItemMarketPrice(const std::map<uint16_t, uint32_t> itemMap, bool buyPrice) const
-{
-	uint64_t total = 0;
-	for (const std::pair<uint16_t, uint32_t> it : itemMap) {
+	for (const auto& it : itemMap) {
 		if (it.first == ITEM_GOLD_COIN) {
 			total += it.second;
 		} else if (it.first == ITEM_PLATINUM_COIN) {

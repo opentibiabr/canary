@@ -1728,7 +1728,7 @@ class Player final : public Creature, public Cylinder
 			return false;
  		}
 
-		void updateTrackerAnalyzer() const
+		void updatePartyTrackerAnalyzer() const
 		{
 			if (client && party) {
 				client->updatePartyTrackerAnalyzer(party);
@@ -1764,6 +1764,18 @@ class Player final : public Creature, public Cylinder
  				client->sendTeamFinderList();
  			}
  		}
+		void setItemCustomPrice(uint16_t itemId, uint64_t price)
+		{
+			itemPriceMap[itemId] = price;
+		}
+		uint64_t getItemCustomPrice(uint16_t itemId) const
+		{
+			auto it = itemPriceMap.find(itemId);
+			if (it != itemPriceMap.end()) {
+				return static_cast<uint64_t>(it->second);
+			}
+			return 0;
+		}
 		uint32_t getCharmPoints() {
 			return charmPoints;
 		}
@@ -1947,6 +1959,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, DepotChest*> depotChests;
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
+		std::map<uint16_t, uint64_t> itemPriceMap;
 
 		std::map<uint8_t, uint16_t> maxValuePerSkill = {
 			{SKILL_LIFE_LEECH_CHANCE, 100},

@@ -88,40 +88,19 @@ class Party
 		void updatePlayerVocation(const Player* player);
 
 		void updateTrackerAnalyzer() const;
-		void addPlayerLoot(uint32_t playerId, const Item* item) const;
-		void addPlayerSupply(uint32_t playerId, const Item* item) const;
-		void changeAnalyzerPriceType(PartyAnalyzer_t type);
+		void addPlayerLoot(const Player* player, const Item* item);
+		void addPlayerSupply(const Player* player, const Item* item);
+		void addPlayerDamage(const Player* player, uint64_t amount);
+		void addPlayerHealing(const Player* player, uint64_t amount);
+		void switchAnalyzerPriceType();
 		void resetAnalyzer();
-
-		void addPlayerDamage(uint32_t playerId, uint64_t amount)
-		{
-			PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
-			if (!playerAnalyzer) {
-				return;
-			}
-
-			playerAnalyzer->damage += amount;
-			updateTrackerAnalyzer();
-		}
-
-		void addPlayerHealing(uint32_t playerId, uint64_t amount)
-		{
-			PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
-			if (!playerAnalyzer) {
-				return;
-			}
-
-			playerAnalyzer->healing += amount;
-			updateTrackerAnalyzer();
-		}
+		void reloadPrices();
 
 		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const
 		{
-			auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
+			if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
 					return preyIt->id == playerId;
-				});
-
-			if (it != membersData.end()) {
+				}); it != membersData.end()) {
 				return *it;
 			}
 
@@ -133,14 +112,10 @@ class Party
 			return static_cast<uint32_t>(time(nullptr) - trackerTime);
 		}
 
-		PlayerVector getMembers() const
-		{
-			return memberList;
-		}
-
+	public:
 		// Party analyzer
 		time_t trackerTime = time(nullptr);
-		PartyAnalyzer_t priceType = NPC_PRICE;
+		PartyAnalyzer_t priceType = MARKET_PRICE;
 		std::vector<PartyAnalyzer*> membersData;
 
 	private:

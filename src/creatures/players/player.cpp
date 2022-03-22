@@ -976,7 +976,7 @@ void Player::sendLootStats(Item* item, uint8_t count) const
 	}
 
 	if (party) {
-		party->addPlayerLoot(getID(), item);
+		party->addPlayerLoot(this, item);
 	}
 }
 
@@ -1124,7 +1124,7 @@ void Player::updateSupplyTracker(const Item* item) const
 	}
 
 	if (party) {
-		party->addPlayerSupply(getID(), item);
+		party->addPlayerSupply(this, item);
 	}
 }
 
@@ -1136,9 +1136,9 @@ void Player::updateImpactTracker(CombatType_t type, int32_t amount) const
 
 	if (party) {
 		if (type == COMBAT_HEALING) {
-			party->addPlayerHealing(getID(), amount);
+			party->addPlayerHealing(this, amount);
 		} else {
-			party->addPlayerDamage(getID(), amount);
+			party->addPlayerDamage(this, amount);
 		}
 	}
 }

@@ -51,7 +51,7 @@ int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
 	// player:sendLootStats(item, count)
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -77,7 +77,7 @@ int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
 
 int PlayerFunctions::luaPlayerUpdateSupplyTracker(lua_State* L) {
 	// player:updateSupplyTracker(item)
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;

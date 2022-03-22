@@ -30,7 +30,6 @@ Party::Party(Player* initLeader) : leader(initLeader)
 {
 	leader->setParty(this);
 	membersData.push_back(new PartyAnalyzer(leader->getID(), leader->getName()));
-	updateTrackerAnalyzer();
 }
 
 void Party::disband()
@@ -215,9 +214,6 @@ bool Party::joinParty(Player& player)
 	player.sendPlayerPartyIcons(leader);
 
 	memberList.push_back(&player);
-	if (!getPlayerPartyAnalyzerStruct(player.getID())) {
-		membersData.push_back(new PartyAnalyzer(player.getID(), player.getName()));
-	}
 
 	updatePlayerStatus(&player);
 
@@ -575,71 +571,96 @@ void Party::updatePlayerVocation(const Player* player)
 
 void Party::updateTrackerAnalyzer() const
 {
-	if (membersData.empty()) {
-		return;
-	}
-	
 	for (const Player* member : memberList) {
-		member->updateTrackerAnalyzer();
+		member->updatePartyTrackerAnalyzer();
 	}
 
 	if (leader) {
-		leader->updateTrackerAnalyzer();
+		leader->updatePartyTrackerAnalyzer();
 	}
 }
 
-void Party::addPlayerLoot(uint32_t playerId, const Item* item) const
+void Party::addPlayerLoot(const Player* player, const Item* item)
 {
-	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
-		return;
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
 	}
 
 	uint32_t count = std::max<uint32_t>(1, item->getItemCount());
-	std::map<uint16_t, uint32_t> itemMap;
-	itemMap.insert({item->getID(), count});
-	std::map<uint16_t, uint32_t>::iterator it = playerAnalyzer->lootMap.find(item->getID());
-	if (it != playerAnalyzer->lootMap.end()) {
+	if (auto it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
 		(*it).second += count;
 	} else {
 		playerAnalyzer->lootMap.insert({item->getID(), count});
 	}
 
-	playerAnalyzer->lootPrice += priceType == NPC_PRICE ? g_game.getItemNpcPrice(itemMap, false) : g_game.getItemMarketPrice(itemMap, false);
+	if (priceType == LEADER_PRICE) {
+		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID());
+	} else {
+		std::map<uint16_t, uint32_t> itemMap;
+		itemMap.insert({item->getID(), 1});
+		playerAnalyzer->lootPrice += g_game.getItemMarketPrice(itemMap, true);
+	}
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerSupply(uint32_t playerId, const Item* item) const
+void Party::addPlayerSupply(const Player* player, const Item* item)
 {
-	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(playerId);
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
-		return;
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
 	}
 
-	std::map<uint16_t, uint32_t> itemMap;
-	itemMap.insert({item->getID(), 1});
-	std::map<uint16_t, uint32_t>::iterator it = playerAnalyzer->supplyMap.find(item->getID());
-	if(it != playerAnalyzer->supplyMap.end()) {
+	if(auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
 		(*it).second += 1;
 	} else {
 		playerAnalyzer->supplyMap.insert({item->getID(), 1});
 	}
 
-	playerAnalyzer->supplyPrice += priceType == NPC_PRICE ? g_game.getItemNpcPrice(itemMap, true) : g_game.getItemMarketPrice(itemMap, true);
+	if (priceType == LEADER_PRICE) {
+		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID());
+	} else {
+		std::map<uint16_t, uint32_t> itemMap;
+		itemMap.insert({item->getID(), 1});
+		playerAnalyzer->supplyPrice += g_game.getItemMarketPrice(itemMap, true);
+	}
 	updateTrackerAnalyzer();
 }
 
-void Party::changeAnalyzerPriceType(PartyAnalyzer_t type)
+void Party::addPlayerDamage(const Player* player, uint64_t amount)
 {
-	if (priceType == type) {
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	if (!playerAnalyzer) {
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
+	}
+
+	playerAnalyzer->damage += amount;
+	updateTrackerAnalyzer();
+}
+
+void Party::addPlayerHealing(const Player* player, uint64_t amount)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	if (!playerAnalyzer) {
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
+	}
+
+	playerAnalyzer->healing += amount;
+	updateTrackerAnalyzer();
+}
+
+void Party::switchAnalyzerPriceType()
+{
+	if (leader == nullptr) {
 		return;
 	}
 
-	priceType = type;
-	for (PartyAnalyzer* analyzer : membersData) {
-		analyzer->lootPrice = priceType == NPC_PRICE ? g_game.getItemNpcPrice(analyzer->lootMap, false) : g_game.getItemMarketPrice(analyzer->lootMap, false);
-		analyzer->supplyPrice = priceType == NPC_PRICE ? g_game.getItemNpcPrice(analyzer->supplyMap, true) : g_game.getItemMarketPrice(analyzer->supplyMap, true);
-	}
+	priceType = priceType == LEADER_PRICE ? MARKET_PRICE : LEADER_PRICE;
+	reloadPrices();
 	updateTrackerAnalyzer();
 }
 
@@ -647,12 +668,30 @@ void Party::resetAnalyzer()
 {
 	trackerTime = time(nullptr);
 	for (PartyAnalyzer* analyzer : membersData) {
-		analyzer->damage = 0;
-		analyzer->healing = 0;
-		analyzer->lootPrice = 0;
-		analyzer->supplyPrice = 0;
-		analyzer->lootMap.clear();
-		analyzer->supplyMap.clear();
+		delete analyzer;
 	}
+
+	membersData.clear();
 	updateTrackerAnalyzer();
+}
+
+void Party::reloadPrices()
+{
+	for (PartyAnalyzer* analyzer : membersData) {
+		if (priceType == MARKET_PRICE) {
+			analyzer->lootPrice = g_game.getItemMarketPrice(analyzer->lootMap, false);
+			analyzer->supplyPrice = g_game.getItemMarketPrice(analyzer->supplyMap, true);
+			continue;
+		}
+
+		analyzer->lootPrice = 0;
+		for (const auto it : analyzer->lootMap) {
+			analyzer->lootPrice += leader->getItemCustomPrice(it.first) * it.second;
+		}
+
+		analyzer->supplyPrice = 0;
+		for (const auto it : analyzer->supplyMap) {
+			analyzer->supplyPrice += leader->getItemCustomPrice(it.first) * it.second;
+		}
+	}
 }

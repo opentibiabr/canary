@@ -584,7 +584,7 @@ enum PlayerAsyncOngoingTaskFlags : uint64_t {
 
 enum PartyAnalyzer_t : uint8_t {
 	MARKET_PRICE = 0,
-	NPC_PRICE = 1
+	LEADER_PRICE = 1
 };
 
 // Structs

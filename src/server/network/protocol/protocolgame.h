@@ -151,12 +151,13 @@ private:
 	void sendTeamFinderList();
 	void sendLeaderTeamFinder(bool reset);
 	void createLeaderTeamFinder(NetworkMessage &msg);
-	void parsePartyAnalyzerAction() const;
+	void parsePartyAnalyzerAction(NetworkMessage &msg) const;
 	void parseLeaderFinderWindow(NetworkMessage &msg);
 	void parseMemberFinderWindow(NetworkMessage &msg);
 	void parseSendBuyCharmRune(NetworkMessage &msg);
 	void parseBestiarysendMonsterData(NetworkMessage &msg);
 	void addBestiaryTrackerList(NetworkMessage &msg);
+	void parseObjectInfo(NetworkMessage &msg);
 
 	void parseTeleport(NetworkMessage &msg);
 	void parseThrow(NetworkMessage &msg);

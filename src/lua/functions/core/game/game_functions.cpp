@@ -552,17 +552,7 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 		return 1;
 	}
 
-	charmRune_t ID = getNumber<charmRune_t>(L, 1);
-	Charm* charm = g_bestiary.getBestiaryCharm(ID, true);
-	if (charm && charm->id == ID) {
-		pushUserdata<Charm>(L, charm);
-		setMetatable(L, -1, "Charm");
-	} else if (charm && isNumber(L, 1)) {
-		charm->id = ID;
-		g_game.addCharmRune(charm);
-		charm = g_bestiary.getBestiaryCharm(getNumber<charmRune_t>(L, 1));
-		charm->id = ID;
-		charm->binary = 1 << ID;
+	if (Charm* charm = g_bestiary.getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
 	} else {

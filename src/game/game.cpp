@@ -86,6 +86,10 @@ Game::~Game()
 	for (const auto& it : guilds) {
 		delete it.second;
 	}
+
+	for (const auto& it : CharmList) {
+		delete it;
+	}
 }
 
 void Game::loadBoostedCreature()
@@ -5705,6 +5709,10 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage, bool isEvent /*= false*/)
 {
+	if (!target) {
+		return false;
+	}
+
 	using namespace std;
 	const Position& targetPos = target->getPosition();
 	if (damage.primary.value > 0) {

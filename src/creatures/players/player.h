@@ -1768,14 +1768,6 @@ class Player final : public Creature, public Cylinder
 		{
 			itemPriceMap[itemId] = price;
 		}
-		uint64_t getItemCustomPrice(uint16_t itemId) const
-		{
-			auto it = itemPriceMap.find(itemId);
-			if (it != itemPriceMap.end()) {
-				return static_cast<uint64_t>(it->second);
-			}
-			return 0;
-		}
 		uint32_t getCharmPoints() {
 			return charmPoints;
 		}
@@ -1879,6 +1871,7 @@ class Player final : public Creature, public Cylinder
 			return raceid;
 		}
 
+		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
 
 		// Interfaces

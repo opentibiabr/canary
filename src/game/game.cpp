@@ -86,6 +86,10 @@ Game::~Game()
 	for (const auto& it : guilds) {
 		delete it.second;
 	}
+
+	for (const auto& it : CharmList) {
+		delete it;
+	}
 }
 
 void Game::loadBoostedCreature()
@@ -314,7 +318,7 @@ void Game::setGameState(GameState_t newState)
 			//kick all players that are still online
 			auto it = players.begin();
 			while (it != players.end()) {
-				it->second->kickPlayer(true);
+				it->second->removePlayer(true);
 				it = players.begin();
 			}
 
@@ -335,7 +339,7 @@ void Game::setGameState(GameState_t newState)
 			auto it = players.begin();
 			while (it != players.end()) {
 				if (!it->second->hasFlag(PlayerFlag_CanAlwaysLogin)) {
-					it->second->kickPlayer(true);
+					it->second->removePlayer(true);
 					it = players.begin();
 				} else {
 					++it;
@@ -5754,6 +5758,10 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 
 bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage, bool isEvent /*= false*/)
 {
+	if (!target) {
+		return false;
+	}
+
 	using namespace std;
 	const Position& targetPos = target->getPosition();
 	if (damage.primary.value > 0) {
@@ -7067,7 +7075,7 @@ void Game::kickPlayer(uint32_t playerId, bool displayEffect)
 		return;
 	}
 
-	player->kickPlayer(displayEffect);
+	player->removePlayer(displayEffect);
 }
 
 void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page) {

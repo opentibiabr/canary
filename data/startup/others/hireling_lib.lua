@@ -72,18 +72,18 @@ HIRELING_STORAGE = {
 	OUTFIT = 28900
 }
 
-HIRELING_LAMP_ID = 34070
+HIRELING_LAMP_ID = 29432
 HIRELING_ATTRIBUTE = "HIRELING_ID"
 
 HIRELING_FOODS_BOOST = {
-	MAGIC = 35174,
-	MELEE = 35175,
-	SHIELDING = 35172,
+	MAGIC = 29410,
+	MELEE = 29411,
+	SHIELDING = 29408,
 	DISTANCE = 35173,
 }
 
 HIRELING_FOODS = { -- only the non-skill ones
-	35176, 35177, 35178, 35179, 35180
+	29412, 29413, 29414, 29415, 29416
 }
 
 -- [[ LOCAL FUNCTIONS AND UTILS ]]
@@ -342,38 +342,57 @@ function Hireling:spawn()
 
 	npc:place(self:getPosition())
 	creature:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	self:setCreature(npc:getId())
 end
 
 function Hireling:returnToLamp(player_id)
-	local creature = Creature(self.cid)
-	local player = Player(player_id)
-	local lampType = ItemType(HIRELING_LAMP_ID)
+	if self.active ~= 1 then
+		return
+	end
 
+	local player = Player(player_id)
 	if self:getOwnerId() ~= player_id then
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return player:sendTextMessage(MESSAGE_FAILURE, "You are not the master of this hireling.")
 	end
 
-	if player:getFreeCapacity() < lampType:getWeight(1) then
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return player:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
-	end
-
-	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if not inbox or inbox:getEmptySlots() == 0 then
-		player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return player:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
-	end
-
-
-	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
-	creature:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
-	creature:remove() --remove hireling
-	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
-	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, self:getId()) --save hirelingId on item
 	self.active = 0
-	self.cid = -1
-	self:setPosition({x=0,y=0,z=0})
+	addEvent(function(npcId, ownerGuid, hirelingId)
+		local npc = Npc(npcId)
+		if not npc then
+			return Spdlog.error("[Hireling:returnToLamp] - Npc not found or is nil.")
+		end
+
+		local owner = Player(ownerGuid)
+		if not owner then
+			return
+		end
+
+		local lampType = ItemType(HIRELING_LAMP_ID)
+		if owner:getFreeCapacity() < lampType:getWeight(1) then
+			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return owner:sendTextMessage(MESSAGE_FAILURE, "You do not have enough capacity.")
+		end
+
+		local inbox = owner:getSlotItem(CONST_SLOT_STORE_INBOX)
+		if not inbox or inbox:getEmptySlots() == 0 then
+			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
+			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
+		end
+
+		local hireling = getHirelingById(hirelingId)
+		if not hireling then
+			return Spdlog.error("[Hireling:returnToLamp] - Hireling not found or is nil.")
+		end
+
+		npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
+		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
+		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
+		npc:remove() --remove hireling
+		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
+		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hirelingId) --save hirelingId on item
+		hireling:setPosition({x=0,y=0,z=0})
+	end, 1000, self.cid, player:getGuid(), self.id)
 end
 -- [[ END CLASS DEFINITION ]]
 
@@ -540,56 +559,43 @@ function Player:getHirelingChangingOutfit()
 	return getHirelingById(id)
 end
 
-local function addOutfit(msg, outfit)
+function Player:sendHirelingOutfitWindow(hireling)
+	local outfit = hireling:getOutfit()
+	local msg = NetworkMessage()
+	msg:addByte(0xC8) -- 'ProtocolGame::sendOutfitWindow()'' header
 	msg:addU16(outfit.lookType)
 
-	msg:addByte(outfit.lookHead)
-	msg:addByte(outfit.lookBody)
-	msg:addByte(outfit.lookLegs)
-	msg:addByte(outfit.lookFeet)
-	msg:addByte(outfit.lookAddons)
+	if outfit.lookType == 0 then
+		msg:addU16(outfit.lookTypeEx)
+	else
+		msg:addByte(outfit.lookHead)
+		msg:addByte(outfit.lookBody)
+		msg:addByte(outfit.lookLegs)
+		msg:addByte(outfit.lookFeet)
+		msg:addByte(outfit.lookAddons)
+	end
 	msg:addU16(outfit.lookMount)
-	msg:addByte(0)
-	msg:addByte(0)
-	msg:addByte(0)
-	msg:addByte(0)
-	msg:addU16(0)
-end
 
-function Player:sendHirelingOutfitWindow(hireling)
-	local msg = NetworkMessage()
-	local client = self:getClient()
-	msg:addByte(200) -- header
-	addOutfit(msg, hireling:getOutfit()) -- current outfit
+	msg:addByte(0x00) -- Mount head
+	msg:addByte(0x00) -- Mount body
+	msg:addByte(0x00) -- Mount legs
+	msg:addByte(0x00) -- Mount feet
+	msg:addU16(0x00) -- Familiar
 
 	local availableOutfits = hireling:getAvailableOutfits()
-
-	if client.version >= 1185 then
-		msg:addU16(#availableOutfits)
-	else
-		msg:addByte(#availableOutfits)
-	end
-
+	msg:addU16(#availableOutfits)
 	for _,outfit in ipairs(availableOutfits) do
 		msg:addU16(outfit.lookType)
 		msg:addString(outfit.name)
 		msg:addByte(0x00) -- addons
-
-		if client.version >= 1185 then
-			-- something related to the store button (offer_id maybe) not using now
-			msg:addByte(0x00)
-		end
+		msg:addByte(0x00) -- Store bool
 	end
 
-	-- mounts disabled for hirelings
-	if client.version >= 1185 then
-		msg:addU16(0x00) --mounts count
-		msg:addU16(0x00) --familiar count
-		msg:addByte(0x00) -- dunno
-		msg:addByte(0x00) -- dunno2
-	else
-		msg:addByte(0x00)
-	end
+	msg:addU16(0x00) -- Mounts count
+	msg:addU16(0x00) -- Familiar count
+	msg:addByte(0x00) -- Try outfit bool
+	msg:addByte(0x00) -- Is mounted bool
+	msg:addByte(0x00) -- Random outfit bool
 
 	msg:sendToPlayer(self)
 end

@@ -158,7 +158,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeList() override;
 		void addList() override;
-		void kickPlayer(bool displayEffect);
+		void removePlayer(bool displayEffect, bool forced = true);
 
 		static uint64_t getExpForLevel(int32_t lv) {
 			lv--;
@@ -418,6 +418,7 @@ class Player final : public Creature, public Cylinder
 		uint8_t getBlessingCount(uint8_t index) const {
 			return blessings[index - 1];
 		}
+		std::string getBlessingsName() const; 
 
 		bool isOffline() const {
 			return (getID() == 0);
@@ -1379,6 +1380,11 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenPrivateChannel(receiver);
 			}
 		}
+		void sendExperienceTracker(int64_t rawExp, int64_t finalExp) const {
+			if (client) {
+				client->sendExperienceTracker(rawExp, finalExp);
+			}
+		}
 		void sendOutfitWindow() {
 			if (client) {
 				client->sendOutfitWindow();
@@ -1906,6 +1912,8 @@ class Player final : public Creature, public Cylinder
 		void setNextPotionActionTask(SchedulerTask* task);
 
 		void death(Creature* lastHitCreature) override;
+		bool spawn();
+		void despawn();
 		bool dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature,
                         bool lastHitUnjustified, bool mostDamageUnjustified) override;
 		Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) override;
@@ -2150,6 +2158,7 @@ class Player final : public Creature, public Cylinder
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
 		bool moved = false;
+		bool dead = false;
 
 		static uint32_t playerAutoID;
 
@@ -2188,6 +2197,13 @@ class Player final : public Creature, public Cylinder
 		uint16_t getLookCorpse() const override;
 		void getPathSearchParams(const Creature* creature, FindPathParams& fpp) const override;
 
+		void setDead(bool isDead) {
+			dead = isDead;
+		}
+		bool isDead() const {
+			return dead;
+		}
+
 		friend class Game;
 		friend class Npc;
 		friend class PlayerFunctions;
@@ -2197,6 +2213,7 @@ class Player final : public Creature, public Cylinder
 		friend class IOLoginData;
 		friend class ProtocolGame;
 		friend class MoveEvent;
+		friend class BedItem;
 
   account::Account *account_;
 };

@@ -63,7 +63,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 	{
 		msg.addByte(fluidMap[count & 7]);
 	}
-	else if (it.isContainer() && player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
+	else if (it.isContainer())
 	{
 		msg.addByte(0x00);
 		msg.addByte(0x00);
@@ -99,7 +99,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	{
 		msg.addByte(fluidMap[item->getFluidType() & 7]);
 	}
-	else if (it.isContainer() && player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
+	else if (it.isContainer())
 	{
 		const Container *container = item->getContainer();
 		if (container && container->getHoldingPlayer() == player)
@@ -391,7 +391,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 
 	player->client = getThis();
 	player->openPlayerContainers();
-	sendAddCreature(player, player->getPosition(), 0, false);
+	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
 	acceptPackets = true;
@@ -427,7 +427,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced)
 
 	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);
 
-	g_game.removeCreature(player);
+	g_game.removeCreature(player, true);
 }
 
 void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
@@ -444,17 +444,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		enableCompact();
 	}
 
-	version = msg.get<uint16_t>();
+	version = msg.get<uint16_t>(); // Protocol version
 
 	clientVersion = static_cast<int32_t>(msg.get<uint32_t>());
 
-	msg.skipBytes(3); // U16 dat revision, game preview state
+	msg.getString(); // Client version (String)
 
-	// In version 12.40.10030 we have 13 extra bytes
-	if (msg.getLength() - msg.getBufferPosition() == 141)
-	{
-		msg.skipBytes(13);
-	}
+	msg.skipBytes(3); // U16 dat revision, U8 game preview state
 
 	if (!Protocol::RSA_decrypt(msg))
 	{
@@ -602,16 +598,40 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 	uint8_t recvbyte = msg.getByte();
 
-	// A dead player can not perform actions
-	if (!player || player->isRemoved() || player->getHealth() <= 0) {
+	if (!player || player->isRemoved()) {
 		if (recvbyte == 0x0F) {
-			// we need to make the player pointer != null in this part, game.cpp release is the first step
-			// login(player->getName(), player->getAccount(), player->operatingSystem);
+			disconnect();
+		}
+
+		return;
+	}
+
+	//a dead player can not performs actions
+	if (player->isDead() || player->getHealth() <= 0) {
+		if (recvbyte == 0x14) {
 			disconnect();
 			return;
 		}
 
-		if (recvbyte != 0x14) {
+		if (recvbyte == 0x0F) {
+			if (!player) {
+				return;
+			}
+			
+			if (!player->spawn()) {
+				disconnect();
+				g_game.removeCreature(player);
+				return;
+			}
+
+			sendAddCreature(player, player->getPosition(), 0, false);
+			return;
+		}
+
+		if (recvbyte != 0x1D && recvbyte != 0x1E) {
+			// keep the connection alive
+			g_scheduler.addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
+			g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
 			return;
 		}
 	}
@@ -621,7 +641,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player->getID(), msg, recvbyte)));
 	}
 
-		g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
@@ -1269,7 +1289,9 @@ void ProtocolGame::parseQuickLoot(NetworkMessage &msg)
 	Position pos = msg.getPosition();
 	uint16_t spriteId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr);
+	bool lootAllCorpses = msg.getByte();
+	bool autoLoot = msg.getByte();
+	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr, lootAllCorpses, autoLoot);
 }
 
 void ProtocolGame::parseLootContainer(NetworkMessage &msg)
@@ -2653,6 +2675,15 @@ void ProtocolGame::sendOpenPrivateChannel(const std::string &receiver)
 	NetworkMessage msg;
 	msg.addByte(0xAD);
 	msg.addString(receiver);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendExperienceTracker(int64_t rawExp, int64_t finalExp)
+{
+	NetworkMessage msg;
+	msg.addByte(0xAF);
+	msg.add<int64_t>(rawExp);
+	msg.add<int64_t>(finalExp);
 	writeToOutputBuffer(msg);
 }
 
@@ -6388,12 +6419,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	msg.addByte(0xA1);
 
 	msg.add<uint16_t>(player->getMagicLevel());
-
-	if (player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
-	{
-		msg.add<uint16_t>(player->getBaseMagicLevel());
-	}
-
+	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
@@ -6401,12 +6427,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
-
-		if (player->getOperatingSystem() <= CLIENTOS_NEW_MAC)
-		{
-			msg.add<uint16_t>(player->getBaseSkill(i));
-		}
-
+		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 

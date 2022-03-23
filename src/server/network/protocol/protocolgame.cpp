@@ -936,7 +936,7 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 
 void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &removedKnown)
 {
-	known = !knownCreatureSet.insert(id).second;
+    known = !knownCreatureSet.insert(id).second;
     if (known) {
         return;
     }

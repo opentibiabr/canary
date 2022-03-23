@@ -6917,7 +6917,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 		return;
 	}
 
-	msg.add<uint32_t>(std::max<uint32_t>((static_cast<uint32_t>((slot->freeRerollTimeStamp - OTSYS_TIME())) / 1000), 0));
+	msg.add<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0));
 	writeToOutputBuffer(msg);
 }
 

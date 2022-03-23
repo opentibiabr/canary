@@ -952,7 +952,9 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
         }
 
         Creature* creature = g_game.getCreatureByID(*it);
-        if (!creature || canSee(creature)) continue;
+        if (!creature || canSee(creature)) {
+            continue;
+        }
 
         Player* checkPlayer = creature->getPlayer();
 

@@ -505,8 +505,12 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 		g_events->eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
 
 		if (target && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
-			damage.primary.value /= 2;
-			damage.secondary.value /= 2;
+			if (damage.primary.type != COMBAT_HEALING) {
+				damage.primary.value /= 2;
+			}
+			if (damage.secondary.type != COMBAT_HEALING) {
+				damage.secondary.value /= 2;
+			}
 		}
 	}
 

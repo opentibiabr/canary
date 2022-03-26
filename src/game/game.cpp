@@ -5773,6 +5773,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (targetPlayer) {
 				targetPlayer->updateImpactTracker(COMBAT_HEALING, realHealthChange);
 			}
+
+			// Party hunt analyzer
+			if (Party* party = attackerPlayer ? attackerPlayer->getParty() : nullptr) {
+				party->addPlayerHealing(attackerPlayer, realHealthChange);
+			}
+
 			std::stringstream ss;
 
 			ss << realHealthChange << (realHealthChange != 1 ? " hitpoints." : " hitpoint.");
@@ -6126,6 +6132,18 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 							g_bestiary.parseCharmCombat(charm, attackerPlayer, target, realDamage);
 						}
 					}
+				}
+			}
+
+			// Party hunt analyzer
+			if (Party* party = attackerPlayer->getParty()) {
+				/* Damage on primary type */
+				if (damage.primary.value != 0) {
+					party->addPlayerDamage(attackerPlayer, damage.primary.value);
+				}
+				/* Damage on secondary type */
+				if (damage.secondary.value != 0) {
+					party->addPlayerDamage(attackerPlayer, damage.secondary.value);
 				}
 			}
 		}

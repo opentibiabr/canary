@@ -29,7 +29,6 @@ extern Events* g_events;
 Party::Party(Player* initLeader) : leader(initLeader)
 {
 	leader->setParty(this);
-	membersData.push_back(new PartyAnalyzer(leader->getID(), leader->getName()));
 }
 
 void Party::disband()

@@ -1133,14 +1133,6 @@ void Player::updateImpactTracker(CombatType_t type, int32_t amount) const
 	if (client) {
 		client->sendUpdateImpactTracker(type, amount);
 	}
-
-	if (party) {
-		if (type == COMBAT_HEALING) {
-			party->addPlayerHealing(this, amount);
-		} else {
-			party->addPlayerDamage(this, amount);
-		}
-	}
 }
 
 void Player::sendPing()

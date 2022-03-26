@@ -294,7 +294,7 @@ CORPSES = {
 7742,7743,7848,7849,7908,7927,7928,7929,7931,7970,7971,8272}
 
 -- This array contains all destroyable field items
-FIELDS = {2118,2119,2120,105,2121,2122,2123,2124,2125,2126,21465,2132,2133,2134,2135}
+FIELDS = {105,2118,2119,2120,2121,2122,2123,2124,2125,2126,2132,2133,2134,2135,21465}
 
 function Player:addPartyCondition(combat, variant, condition, baseMana)
 	local party = self:getParty()

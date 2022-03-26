@@ -485,8 +485,8 @@ bool Actions::useItem(Player* player, const Position& pos, uint8_t index, Item* 
 		return false;
 	}
 
-	// don't send cooldown icons if used item is an container or food
-	if (!item->getContainer() || !it.type == ITEM_TYPE_FOOD) {
+	// only send cooldown icon if it's an multi use item
+	if (it.isMultiUse()) {
 		player->sendUseItemCooldown(g_configManager().getNumber(ACTIONS_DELAY_INTERVAL));
 	}
 	return true;
@@ -536,7 +536,7 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 		return false;
 	}
 
-	if (!item->getContainer() || it.type == ITEM_TYPE_FOOD) {
+	if (it.isMultiUse()) {
 		player->sendUseItemCooldown(g_configManager().getNumber(EX_ACTIONS_DELAY_INTERVAL));
 	}
 	return true;

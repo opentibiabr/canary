@@ -4586,7 +4586,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 			return SKULL_YELLOW;
 		}
 
-		if (party && party == player->party) {
+		if (isPartner(player)) {
 			return SKULL_GREEN;
 		}
 	}
@@ -4846,8 +4846,7 @@ PartyShields_t Player::getPartyShield(const Player* player) const
 			return SHIELD_BLUE;
 		}
 
-		// isInviting(player) if members aren't supposed to see the invited player emblem
-		if (party->isPlayerInvited(player)) {
+		if (isInviting(player)) {
 			return SHIELD_WHITEBLUE;
 		}
 	}

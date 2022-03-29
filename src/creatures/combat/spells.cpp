@@ -1274,10 +1274,6 @@ bool RuneSpell::castSpell(Creature* creature, Creature* target)
 
 bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
 {
-	if (!creature) {
-		return false;
-	}
-
 	bool result;
 	if (scripted) {
 		result = executeCastSpell(creature, var, isHotkey);
@@ -1304,12 +1300,8 @@ bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool
 
 	scriptInterface->pushFunction(scriptId);
 
-	if (creature) {
-		LuaScriptInterface::pushUserdata(L, creature);
-		LuaScriptInterface::setCreatureMetatable(L, -1, creature);
-	} else {
-		LuaScriptInterface::reportErrorFunc(LuaScriptInterface::getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
-	}
+	LuaScriptInterface::pushUserdata<Creature>(L, creature);
+	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	LuaScriptInterface::pushVariant(L, var);
 

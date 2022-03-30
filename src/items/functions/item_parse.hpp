@@ -208,8 +208,7 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"shield", WEAPON_SHIELD},
 	{"distance", WEAPON_DISTANCE},
 	{"wand", WEAPON_WAND},
-	{"ammunition", WEAPON_AMMO},
-	{"quiver", WEAPON_QUIVER},
+	{"ammunition", WEAPON_AMMO}
 };
 
 const std::unordered_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {

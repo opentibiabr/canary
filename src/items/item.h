@@ -946,6 +946,9 @@ class Item : virtual public Thing
 		bool hasWalkStack() const {
 			return items[id].walkStack;
 		}
+		bool isQuiver() const {
+			return items[id].isQuiver();
+		}
 
 		const std::string& getName() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_NAME)) {

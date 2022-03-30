@@ -162,6 +162,9 @@ class ItemType
 		bool isMultiUse() const {
 			return multiUse;
 		}
+		bool isQuiver() const {
+			return (type == ITEM_TYPE_QUIVER);
+		}
 		bool hasSubType() const {
 			return (isFluidContainer() || isSplash() || stackable || charges != 0);
 		}

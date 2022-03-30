@@ -235,7 +235,7 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
     const ItemType& it = Item::items[item->getID()];
     if (it.ammoType != AMMO_NONE) {
       Item* quiver = inventory[CONST_SLOT_RIGHT];
-      if (!quiver || quiver->getWeaponType() != WEAPON_QUIVER)
+      if (!quiver || !quiver->isQuiver())
         return nullptr;
       Container* container = quiver->getContainer();
       if (!container)
@@ -3006,14 +3006,14 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 		case CONST_SLOT_RIGHT: {
 			if (slotPosition & SLOTP_RIGHT) {
 				if (!g_configManager().getBoolean(CLASSIC_EQUIPMENT_SLOTS)) {
-          if (item->getWeaponType() != WEAPON_SHIELD && item->getWeaponType() != WEAPON_QUIVER) {
+          if (item->getWeaponType() != WEAPON_SHIELD && !item->isQuiver()) {
             ret = RETURNVALUE_CANNOTBEDRESSED;
           }
           else {
             const Item* leftItem = inventory[CONST_SLOT_LEFT];
             if (leftItem) {
               if ((leftItem->getSlotPosition() | slotPosition) & SLOTP_TWO_HAND) {
-                if (item->getWeaponType() == WEAPON_QUIVER && leftItem->getWeaponType() == WEAPON_DISTANCE)
+                if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE)
                   ret = RETURNVALUE_NOERROR;
                 else
                   ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
@@ -3063,7 +3063,7 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 					if (type == WEAPON_NONE || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
 						ret = RETURNVALUE_CANNOTBEDRESSED;
 					} else if (inventory[CONST_SLOT_RIGHT] && (slotPosition & SLOTP_TWO_HAND)) {
-						if (type == WEAPON_DISTANCE && inventory[CONST_SLOT_RIGHT]->getWeaponType() == WEAPON_QUIVER) {
+						if (type == WEAPON_DISTANCE && inventory[CONST_SLOT_RIGHT]->isQuiver()) {
 							ret = RETURNVALUE_NOERROR;
 						}
 						else {

@@ -378,7 +378,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 		if (quiverThing && backpackThing) {
 			Item* quiver = quiverThing->getItem();
 			Item* backpack = backpackThing->getItem();
-			if (quiver && quiver->getWeaponType() == WEAPON_QUIVER && backpack) {
+			if (quiver && quiver->isQuiver() && backpack) {
 				item = findItemOfType(backpack->getContainer(), itemType.id);
 				if (item) {
 					ret = internalMoveItem(item->getParent(), quiver->getContainer(), 0, item, item->getItemCount(), nullptr);
@@ -412,7 +412,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 		}
 
 		int32_t slotP = newitemType.slotPosition;
-		if (itemType.weaponType == WEAPON_SHIELD || itemType.weaponType == WEAPON_QUIVER) {
+		if (itemType.weaponType == WEAPON_SHIELD || itemType.type == ITEM_TYPE_QUIVER) {
 			slotP = CONST_SLOT_RIGHT;
 		}
 		else if (hasBitSet(SLOTP_HEAD, slotP)) {
@@ -455,7 +455,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 			if (rightthing) {
 				Item* slotRight_Item = rightthing->getItem();
 				if (slotRight_Item) {
-					if (newitemType.weaponType != WEAPON_DISTANCE || slotRight_Item->getWeaponType() != WEAPON_QUIVER)
+					if (newitemType.weaponType != WEAPON_DISTANCE || !slotRight_Item->isQuiver())
 						ret = internalMoveItem(slotRight_Item->getParent(), player, 0, slotRight_Item, slotRight_Item->getItemCount(), nullptr);
 				}
 				else {
@@ -504,7 +504,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				if (slotLeft_item) {
 					ItemType& it = Item::items.getItemType(slotLeft_item->getID());
 					if (hasBitSet(SLOTP_TWO_HAND, it.slotPosition)) {
-						if (newitemType.weaponType != WEAPON_QUIVER || slotLeft_item->getWeaponType() != WEAPON_DISTANCE)
+						if (newitemType.type != ITEM_TYPE_QUIVER || slotLeft_item->getWeaponType() != WEAPON_DISTANCE)
 							ret = internalMoveItem(slotLeft_item->getParent(), player, 0, slotLeft_item, slotLeft_item->getItemCount(), nullptr);
 					}
 				}
@@ -1862,13 +1862,13 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 	}
 
 	Item* quiver = toCylinder->getItem();
-	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER 
+	if (quiver && quiver->isQuiver() 
                && quiver->getHoldingPlayer()
                && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
 	} else {
 		quiver = fromCylinder->getItem();
-		if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+		if (quiver && quiver->isQuiver()
                    && quiver->getHoldingPlayer()
                    && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 			quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
@@ -1984,7 +1984,7 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 	}
 
 	Item* quiver = toCylinder->getItem();
-	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+	if (quiver && quiver->isQuiver()
                && quiver->getHoldingPlayer()
                && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
@@ -2032,7 +2032,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	}
 
 	Item* quiver = cylinder->getItem();
-	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+	if (quiver && quiver->isQuiver()
                && quiver->getHoldingPlayer()
                && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
@@ -2350,7 +2350,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 			cylinder->postAddNotification(item, cylinder, itemIndex);
 
 			Item* quiver = cylinder->getItem();
-			if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+			if (quiver && quiver->isQuiver()
                        && quiver->getHoldingPlayer()
                        && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 				quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
@@ -2362,7 +2362,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 	}
 
 	Item* quiver = cylinder->getItem();
-	if (quiver && quiver->getWeaponType() == WEAPON_QUIVER
+	if (quiver && quiver->isQuiver()
                && quiver->getHoldingPlayer()
                && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);

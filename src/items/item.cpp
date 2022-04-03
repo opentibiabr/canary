@@ -107,18 +107,19 @@ void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
 		return;
 	}
 
+	// Get imbuement by the id
 	Imbuement *imbuement = g_imbuements->getImbuement(id);
 	if (!imbuement) {
 		return;
 	}
 
-	// Send only the imbuements registered on item (in items.xml) to the imbuement window
+	// Get category imbuement for acess category id
 	const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
 	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 		return;
 	}
 
-	// Checks if the item already has the imbuement
+	// Checks if the item already has the imbuement category id
 	if (hasImbuementCategoryId(categoryImbuement->id)) {
 		SPDLOG_ERROR("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
 		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");

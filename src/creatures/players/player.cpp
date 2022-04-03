@@ -1206,6 +1206,14 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	ImbuementInfo imbuementInfo;
+	if (item->getImbuementInfo(slot, &imbuementInfo))
+	{
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
+		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
 	const auto& items = imbuement->getItems();
 	for (auto& [key, value] : items)
 	{
@@ -1215,14 +1223,6 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
 		}
-	}
-
-	ImbuementInfo imbuementInfo;
-	if (item->getImbuementInfo(slot, &imbuementInfo))
-	{
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
-		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-		return;
 	}
 
 	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
@@ -1317,7 +1317,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 
-	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
+	item->clearImbuement(slot, imbuementInfo.imbuement->getID());
 	this->openImbuementWindow(item);
 }
 

@@ -131,6 +131,13 @@ void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
 	value.set<int64_t>(duration > 0 ? (duration << 8) | id : 0);
 	setCustomAttribute(key, value);
 }
+void Item::clearImbuement(uint8_t slot, uint16_t id)
+{
+	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
+	ItemAttributes::CustomAttribute value;
+	value.set<int64_t>(0);
+	setCustomAttribute(key, value);
+}
 
 bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {

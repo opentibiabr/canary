@@ -1275,7 +1275,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
+	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 
 	// Update imbuement stats item if the item is equipped
 	if (item->getParent() == this) {
@@ -1317,7 +1317,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 
-	item->clearImbuement(slot, imbuementInfo.imbuement->getID());
+	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
 	this->openImbuementWindow(item);
 }
 

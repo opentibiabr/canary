@@ -1063,9 +1063,9 @@ class Item : virtual public Thing
 		 * @return false
 		 */
 		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
-		void addImbuement(uint8_t slot, uint16_t id, int32_t duration);
-		void clearImbuement(uint8_t slot, uint16_t id) {
-			return setImbuement(slot, id, 0);
+		void addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
+		void clearImbuement(uint8_t slot, uint16_t imbuementId) {
+			return setImbuement(slot, imbuementId, 0);
 		}
 		bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) {
 			auto it = items[id].imbuementTypes.find(imbuementType);
@@ -1101,7 +1101,7 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 	
 	private:
-		void setImbuement(uint8_t slot, uint16_t id, int32_t duration);
+		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
 };

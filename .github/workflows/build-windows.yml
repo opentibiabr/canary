@@ -47,7 +47,7 @@ jobs:
           appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
           vcpkgTriplet: ${{ matrix.triplet }}
           additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
-          vcpkgGitCommitId: 653912591af709c162fba2d4000a6b3362c8d3c9
+          vcpkgGitCommitId: 773516ecf6014d89cc69b11bb54605ad4be56694
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@latest

@@ -102,6 +102,18 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 
 void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
 {
+	Player* player = getHoldingPlayer();
+	if (!player) {
+		return;
+	}
+
+	// Checks if the item already has the imbuement
+	if (hasImbuementCategoryId(id)) {
+		SPDLOG_ERROR("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", player->getName());
+		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
 	value.set<int64_t>(duration > 0 ? (duration << 8) | id : 0);

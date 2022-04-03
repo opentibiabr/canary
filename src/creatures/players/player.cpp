@@ -1275,11 +1275,12 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
+
+	// Update imbuement stats item if the item is equipped
 	if (item->getParent() == this) {
 		addItemImbuementStats(imbuement);
 	}
-
-	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
 

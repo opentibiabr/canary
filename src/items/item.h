@@ -1063,7 +1063,10 @@ class Item : virtual public Thing
 		 * @return false
 		 */
 		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
-		void setImbuement(uint8_t slot, uint16_t id, int32_t duration);
+		void addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
+		void clearImbuement(uint8_t slot, uint16_t imbuementId) {
+			return setImbuement(slot, imbuementId, 0);
+		}
 		bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) {
 			auto it = items[id].imbuementTypes.find(imbuementType);
 			if (it != items[id].imbuementTypes.end()) {
@@ -1096,7 +1099,9 @@ class Item : virtual public Thing
 
 		bool loadedFromMap = false;
 		bool isLootTrackeable = false;
-
+	
+	private:
+		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
 };

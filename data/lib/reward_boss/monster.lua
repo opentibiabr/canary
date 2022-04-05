@@ -1,7 +1,3 @@
-if not GlobalBosses then
-	GlobalBosses = {}
-end
-
 function Monster.setReward(self, enable)
 	if enable then
 		if not self:getType():isRewardBoss() then
@@ -17,17 +13,6 @@ function Monster.setReward(self, enable)
 		self:unregisterEvent("BossThink")
 	end
 	return true
-end
-
-local function pushValues(buffer, sep, ...)
-	local argv = {...}
-	local argc = #argv
-	for k, v in ipairs(argv) do
-		table.insert(buffer, v)
-		if k < argc and sep then
-			table.insert(buffer, sep)
-		end
-	end
 end
 
 function MonsterType.createLootItem(self, lootBlock, chance, lootTable)

@@ -7,3 +7,6 @@ dofile('data/lib/debugging/dump.lua')
 
 -- Tables library
 dofile('data/lib/tables/load.lua')
+
+-- Others library
+dofile('data/lib/others/load.lua')

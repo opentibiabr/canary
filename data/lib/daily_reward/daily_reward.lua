@@ -7,7 +7,7 @@ DAILY_REWARD_SOUL_REGENERATION = 7
 DAILY_REWARD_FIRST = 2
 DAILY_REWARD_LAST = 7
 
-function regenStamina(id, delay)
+function RegenStamina(id, delay)
 	local staminaEvent = Daily_Bonus.stamina[id]
 	local player = Player(id)
 	if not player then
@@ -26,11 +26,11 @@ function regenStamina(id, delay)
 		end
 	end
 	stopEvent(staminaEvent)
-	Daily_Bonus.stamina[id] = addEvent(regenStamina, delay, id, delay)
+	Daily_Bonus.stamina[id] = addEvent(RegenStamina, delay, id, delay)
 	return true
 end
 
-function regenSoul(id, delay)
+function RegenSoul(id, delay)
 	local soulEvent = Daily_Bonus.soul[id]
 	local maxsoul = 0
 	local player = Player(id)
@@ -51,6 +51,6 @@ function regenSoul(id, delay)
 		end
 	end
 	stopEvent(soulEvent)
-	Daily_Bonus.soul[id] = addEvent(regenSoul, delay, id, delay)
+	Daily_Bonus.soul[id] = addEvent(RegenSoul, delay, id, delay)
 	return true
 end

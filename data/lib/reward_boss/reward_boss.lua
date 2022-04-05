@@ -3,7 +3,7 @@ if not GlobalBosses then
 end
 
 -- Unused function
-function pushValues(buffer, sep, ...)
+function PushValues(buffer, sep, ...)
 	local argv = {...}
 	local argc = #argv
 	for k, v in ipairs(argv) do

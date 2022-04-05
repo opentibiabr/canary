@@ -1,4 +1,3 @@
-
 function Player.getRewardChest(self, autocreate)
 	return self:getDepotChest(99, autocreate)
 end

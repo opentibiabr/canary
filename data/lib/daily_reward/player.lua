@@ -1,4 +1,3 @@
-
 function Player.getCollectionTokens(self)
 	return math.max(self:getStorageValue(DailyReward.storages.collectionTokens), 0)
 end
@@ -106,7 +105,7 @@ function Player.loadDailyRewardBonuses(self)
 			if self:getStamina() > 2340 and self:getStamina() <= 2520 then
 				delay = 6
 			end
-			Daily_Bonus.stamina[self:getId()] = addEvent(regenStamina, delay * 60 * 1000, self:getId(), delay * 60 * 1000)
+			Daily_Bonus.stamina[self:getId()] = addEvent(RegenStamina, delay * 60 * 1000, self:getId(), delay * 60 * 1000)
 		end
 	end
 	-- Soul regeneration
@@ -114,7 +113,7 @@ function Player.loadDailyRewardBonuses(self)
 		local soulEvent = Daily_Bonus.soul[self:getId()]
 		if not soulEvent then
 			local delay = self:getVocation():getSoulGainTicks()
-			Daily_Bonus.soul[self:getId()] = addEvent(regenSoul, delay, self:getId(), delay)
+			Daily_Bonus.soul[self:getId()] = addEvent(RegenSoul, delay, self:getId(), delay)
 		end
 	end
 	Spdlog.debug(string.format("Player: %s, streak level: %d, active bonuses: %s",

@@ -8,8 +8,8 @@ function Player.feed(self, food)
 		if not vocation then
 			return nil
 		end
-		local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
+		local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 		foodCondition:setTicks(food * 1000)
 		foodCondition:setParameter(CONDITION_PARAM_HEALTHGAIN, vocation:getHealthGainAmount())
 		foodCondition:setParameter(CONDITION_PARAM_HEALTHTICKS, vocation:getHealthGainTicks())

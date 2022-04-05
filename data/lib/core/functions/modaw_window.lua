@@ -1,9 +1,9 @@
-if not modalWindows then
-	modalWindows = {
-		modalWindowConstructor = ModalWindow,
-		nextFreeId = 500,
+if not ModalWindows then
+	ModalWindows = {
+		ModalWindowConstructor = ModalWindow,
+		NextFreeId = 500,
 
-		windows = {}
+		Windows = {}
 	}
 end
 
@@ -14,19 +14,19 @@ function ModalWindow(...)
 	local args = {...}
 	if type(args[1]) == 'table' then
 		local self = setmetatable(args[1], MT)
-		local id = modalWindows.nextFreeId
+		local id = ModalWindows.NextFreeId
 		self.id = id
 		self.buttons = {}
 		self.choices = {}
 		self.players = {}
 		self.created = false
 
-		modalWindows.nextFreeId = id + 1
-		table.insert(modalWindows.windows, self)
+		ModalWindows.NextFreeId = id + 1
+		table.insert(ModalWindows.Windows, self)
 		return self
 	end
 
-	return modalWindows.modalWindowConstructor(...)
+	return ModalWindows.ModalWindowConstructor(...)
 end
 
 function MT:setDefaultCallback(callback)
@@ -80,7 +80,7 @@ local buttonOrder = {
 	[1] = {1}
 }
 function MT:create()
-	local modalWindow = modalWindows.modalWindowConstructor(self.id, self.title, self.message)
+	local modalWindow = ModalWindows.ModalWindowConstructor(self.id, self.title, self.message)
 	local order = buttonOrder[math.min(#self.buttons, 4)]
 
 	if order then

@@ -447,6 +447,36 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone)
 	}
 }
 
+bool Creature::checkSummonMove(const Position& newPos, bool teleportSummon)
+{
+	if (hasSummons()) {
+		// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
+		std::forward_list<Creature*> despawnMonsterList;
+		for (Creature* creature : getSummons()) {
+			if (!creature) {
+				continue;
+			}
+
+			Monster* monster = creature->getMonster();
+			// Check is is familiar for teleport to the master, if "teleportSummon" is true, this is not executed
+			const Position& pos = creature->getPosition();
+			if (!teleportSummon && !monster->isFamiliar()) {
+				SPDLOG_DEBUG("[Creature::onCreatureMove] - Creature name {}", creature->getName());
+				continue;
+			}
+
+			if (Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15))
+			{
+				g_game.internalTeleport(creature, creature->getMaster()->getPosition(), true);
+			}
+		}
+
+		for (Creature* despawnCreature : despawnMonsterList) {
+			g_game.removeCreature(despawnCreature, true);
+		}
+	}
+}
+
 void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
                               const Tile* oldTile, const Position& oldPos, bool teleport)
 {
@@ -466,20 +496,8 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			stopEventWalk();
 		}
 
-		if (!summons.empty()) {
-			//check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
-			std::forward_list<Creature*> despawnMonsterList;
-			for (Creature* summon : summons) {
-				const Position& pos = summon->getPosition();
-        if (Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15)) {
-          g_game.internalTeleport(summon, summon->getMaster()->getPosition(), true);
-        }
-			}
-
-			for (Creature* despawnCreature : despawnMonsterList) {
-				g_game.removeCreature(despawnCreature, true);
-			}
-		}
+		// Check if the summon/familiar can move/spawn, set true for the normal summon teleport to pz
+		checkSummonMove(newPos, false);
 
 		if (Player* player = creature->getPlayer()) {
 			if (player->isExerciseTraining()){

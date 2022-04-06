@@ -447,7 +447,7 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone)
 	}
 }
 
-bool Creature::checkSummonMove(const Position& newPos, bool teleportSummon)
+void Creature::checkSummonMove(const Position& newPos, bool teleportSummon)
 {
 	if (hasSummons()) {
 		// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)

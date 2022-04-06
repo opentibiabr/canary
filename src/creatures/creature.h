@@ -420,7 +420,7 @@ class Creature : virtual public Thing
 		 * @return true 
 		 * @return false 
 		 */
-		bool checkSummonMove(const Position& newPos, bool teleportSummon = false);
+		void checkSummonMove(const Position& newPos, bool teleportSummon = false);
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
                                    const Tile* oldTile, const Position& oldPos, bool teleport);
 

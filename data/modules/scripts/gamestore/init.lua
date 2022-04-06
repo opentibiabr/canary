@@ -1365,9 +1365,12 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
-		local decoKit = inbox:addItem(26054, 1)
-		local function changeKit(kit)
+		
+		-- central changeKit logic
+		local function changeKit(decoKit)
 			local decoItemName = ItemType(offerId):getName()
+			local kit = Item(decoKit)
+			
 			if kit then
 				kit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. decoItemName .. ">.")
 				kit:setCustomAttribute("unWrapId", offerId)
@@ -1377,7 +1380,11 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 				end
 			end
 		end
-		addEvent(function() changeKit(decoKit) end, 250)
+	
+		local decoKit = inbox:addItem(23398, 1)
+		if decoKit then
+			addEvent(changeKit, 250, decoKit:getUniqueId())
+		end
 	else
 		return error({code = 0, message = "Please make sure you have free slots in your store inbox."})
 	end

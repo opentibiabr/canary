@@ -132,8 +132,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
     	if (container && item->getWeaponType() == WEAPON_QUIVER && player->getThing(CONST_SLOT_RIGHT) == item) {
       		uint16_t ammoTotal = 0;
       		for (Item* listItem : container->getItemList()) {
-				const ItemType &listType = Item::items[listItem->getID()];
-				if (listType && player->getLevel() >= listType.minReqLevel) {
+				if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
 					ammoTotal += listItem->getItemCount();
 				}
       		}

@@ -16,7 +16,10 @@ function Monster.setReward(self, enable)
 end
 
 function MonsterType.createLootItem(self, lootBlock, chance, lootTable)
-	local lootTable, itemCount = lootTable or {}, 0
+	if lootTable == nil then
+		lootTable = {}
+	end
+	local itemCount = 0
 	local randvalue = math.random(0, 100000) / (getConfigInfo("rateLoot") * chance)
 	if randvalue < lootBlock.chance then
 		if (ItemType(lootBlock.itemId):isStackable()) then

@@ -457,7 +457,7 @@ void Creature::checkSummonMove(const Position& newPos, bool teleportSummon)
 				continue;
 			}
 
-			Monster* monster = creature->getMonster();
+			const Monster* monster = creature->getMonster();
 			// Check is is familiar for teleport to the master, if "teleportSummon" is true, this is not executed
 			const Position& pos = creature->getPosition();
 			if (!teleportSummon && !monster->isFamiliar()) {

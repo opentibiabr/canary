@@ -445,7 +445,7 @@ class Creature : virtual public Thing
 		 * @return true = not empty
 		 * @return false = empty
 		 */
-		bool hasSummons() {
+		bool hasSummons() const {
 			if (!summons.empty()) {
 				return true;
 			}

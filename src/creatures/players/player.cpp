@@ -244,7 +244,7 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
       for (Item* ammoItem : container->getItemList()) {
         if (ammoItem->getAmmoType() == it.ammoType) {
 			const ItemType &ammoItemType = Item::items[ammoItem->getID()];
-			if (ammoItemType.minReqLevel == 0 || level >= ammoItemType.minReqLevel) {
+			if (ammoItemType && level >= ammoItemType.minReqLevel) {
 				item = ammoItem;
 				found = true;
 				break;

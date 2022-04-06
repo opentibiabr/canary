@@ -461,7 +461,7 @@ void Creature::checkSummonMove(const Position& newPos, bool teleportSummon) cons
 			// Check is is familiar for teleport to the master, if "teleportSummon" is true, this is not executed
 			const Position& pos = creature->getPosition();
 			if (!teleportSummon && !monster->isFamiliar()) {
-				SPDLOG_DEBUG("[Creature::onCreatureMove] - Creature name {}", creature->getName());
+				SPDLOG_DEBUG("[Creature::checkSummonMove] - Creature name {}", creature->getName());
 				continue;
 			}
 

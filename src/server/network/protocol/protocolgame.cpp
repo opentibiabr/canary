@@ -133,7 +133,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
       		uint16_t ammoTotal = 0;
       		for (Item* listItem : container->getItemList()) {
 				const ItemType &listType = Item::items[listItem->getID()];
-				if (listType.minReqLevel != 0 && player->getLevel() >= listType.minReqLevel) {
+				if (listType.minReqLevel == 0 || player->getLevel() >= listType.minReqLevel) {
 					ammoTotal += listItem->getItemCount();
 				}
       		}

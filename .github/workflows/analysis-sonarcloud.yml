@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, reopened]
   push:
     branches:
-      - master
+      - main
       - dev
       - devel
       - develop

@@ -1294,63 +1294,60 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	local function isKegItem(itemId)
 		return itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END
 	end
+	
+	local PARCEL_ID = 3504
 
     if isKegItem(offerId) then
-    if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(2596):getWeight() then
-        return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
-    end
-    elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(2596):getWeight() then
+        if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(PARCEL_ID):getWeight() then
+            return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
+        end
+    elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(PARCEL_ID):getWeight() then
         return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
     end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
-		if (isKegItem(offerId)) then
-			if (offerCount >= 500) then
-				local parcel = Item(inbox:addItem(2596, 1):getUniqueId())
-				local function changeParcel(parcel)
-					local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
-					if parcel then
-						parcel:setAttribute(ITEM_ATTRIBUTE_NAME, packagename)
-						local pendingCount = offerCount
-						while (pendingCount > 0) do
-							local pack
-							if (pendingCount > 500) then
-								pack = 500
-							else
-								pack = pendingCount
-							end
-							local kegItem = parcel:addItem(offerId, 1)
-							kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
-							pendingCount = pendingCount - pack
-						end
+	
+		-- central changeParcel Logic
+		local function changeParcel(parcelID, isKeg)
+			local parcel = Item(parcelID)
+			local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
+			local limit = isKeg and 500 or 100
+			
+			if parcel then
+				parcel:setAttribute(ITEM_ATTRIBUTE_NAME, packagename)
+				local pendingCount = offerCount
+				while (pendingCount > 0) do
+					local pack
+					if (pendingCount > limit) then
+						pack = limit
+					else
+						pack = pendingCount
 					end
+					if isKeg then
+						local kegItem = parcel:addItem(offerId, 1)
+						kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
+					else
+						parcel:addItem(offerId, pack)
+					end
+					pendingCount = pendingCount - pack
 				end
-				addEvent(function() changeParcel(parcel) end, 250)
+			end
+		end
+		
+		if isKegItem(offerId) then
+			if (offerCount >= 500) then
+				local parcel = inbox:addItem(PARCEL_ID, 1)
+				if parcel then 
+					addEvent(changeParcel, 250, parcel:getUniqueId(), true)
+				end
 			else
 				local kegItem = inbox:addItem(offerId, 1)
 				kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
 			end
-		elseif (offerCount > 100) then
-			local parcel = Item(inbox:addItem(2596, 1):getUniqueId())
-			local function changeParcel(parcel)
-				local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
-				if parcel then
-					parcel:setAttribute(ITEM_ATTRIBUTE_NAME, packagename)
-					local pendingCount = offerCount
-					while (pendingCount > 0) do
-						local pack
-						if (pendingCount > 100) then
-							pack = 100
-						else
-							pack = pendingCount
-						end
-						parcel:addItem(offerId, pack)
-						pendingCount = pendingCount - pack
-					end
-				end
-			end
-			addEvent(function() changeParcel(parcel) end, 250)
+		elseif offerCount > 100 then
+			local parcel = inbox:addItem(PARCEL_ID, 1)
+			addEvent(changeParcel, 250, parcel:getUniqueId())
 		else
 			inbox:addItem(offerId, offerCount)
 		end

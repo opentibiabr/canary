@@ -7727,9 +7727,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
-			if (buyerPlayer->isOffline()) {
-				delete buyerPlayer;
-			}
 			return;
 		}
 
@@ -7738,8 +7735,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			account.LoadAccountDB(player->getAccount());
 			uint32_t coins;
 			account.GetCoins(&coins);
-			if (amount > coins)
-			{
+			if (amount > coins) {
 				return;
 			}
 
@@ -7761,6 +7757,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			if (it.stackable) {
 				uint16_t tmpAmount = amount;
 				for (Item* item : itemList) {
+					if (!item) {
+						continue;
+					}
 					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;
 					internalRemoveItem(item, removeCount);
@@ -7771,6 +7770,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 			} else {
 				for (Item* item : itemList) {
+					if (!item) {
+						continue;
+					}
 					internalRemoveItem(item);
 				}
 			}
@@ -7825,42 +7827,19 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		Player *sellerPlayer = getPlayerByGUID(offer.playerId);
 		if (!sellerPlayer) {
 			sellerPlayer = new Player(nullptr);
-
 			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
-				if (sellerPlayer != nullptr) {
-					delete sellerPlayer;
-					return;
-				}
-			}
-		}
-
-		if (player == sellerPlayer ||
-			player->getAccount() == sellerPlayer->getAccount()) {
-			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
-
-			if (sellerPlayer->isOffline()) {
-				if (sellerPlayer != nullptr) {
-					delete sellerPlayer;
-					return;
-				}
-			}
-			if (sellerPlayer != nullptr) {
 				delete sellerPlayer;
 				return;
 			}
+		}
+
+		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
+			return;
 		}
 
 		if (totalPrice > (player->getBankBalance() + player->getMoney())) {
-			if (sellerPlayer->isOffline()) {
-				if (sellerPlayer != nullptr) {
-					delete sellerPlayer;
-					return;
-				}
-			}
-			if (sellerPlayer != nullptr) {
-				delete sellerPlayer;
-				return;
-			}
+			return;
 		}
 
 		// Have enough money on the bank

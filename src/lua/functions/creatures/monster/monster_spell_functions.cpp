@@ -177,6 +177,29 @@ int MonsterSpellFunctions::luaMonsterSpellSetCombatSpread(lua_State* L) {
 	return 1;
 }
 
+int MonsterSpellFunctions::luaMonsterSpellSetCombatArea(lua_State* L) {
+	// monsterSpell:setCombatArea(spellArea)
+	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);
+	if (spell) {
+
+		AreaCombat* spellArea = g_luaEnvironment.getAreaObject(getNumber<uint32_t>(L, 2));
+		spell->area = spellArea;
+
+		if (!spellArea) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
+			lua_pushnil(L);
+
+		}
+		else {
+			pushBoolean(L, true);
+		};
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+
 int MonsterSpellFunctions::luaMonsterSpellSetCombatRadius(lua_State* L) {
 	// monsterSpell:setCombatRadius(radius)
 	MonsterSpell* spell = getUserdata<MonsterSpell>(L, 1);

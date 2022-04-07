@@ -39,6 +39,7 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "MonsterSpell", "setAttackValue", MonsterSpellFunctions::luaMonsterSpellSetAttackValue);
 			registerMethod(L, "MonsterSpell", "setNeedTarget", MonsterSpellFunctions::luaMonsterSpellSetNeedTarget);
 			registerMethod(L, "MonsterSpell", "setCombatLength", MonsterSpellFunctions::luaMonsterSpellSetCombatLength);
+			registerMethod(L, "MonsterSpell", "setCombatArea", MonsterSpellFunctions::luaMonsterSpellSetCombatArea);
 			registerMethod(L, "MonsterSpell", "setCombatSpread", MonsterSpellFunctions::luaMonsterSpellSetCombatSpread);
 			registerMethod(L, "MonsterSpell", "setCombatRadius", MonsterSpellFunctions::luaMonsterSpellSetCombatRadius);
 			registerMethod(L, "MonsterSpell", "setConditionType", MonsterSpellFunctions::luaMonsterSpellSetConditionType);
@@ -65,6 +66,7 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 		static int luaMonsterSpellSetAttackValue(lua_State* L);
 		static int luaMonsterSpellSetNeedTarget(lua_State* L);
 		static int luaMonsterSpellSetCombatLength(lua_State* L);
+		static int luaMonsterSpellSetCombatArea(lua_State* L);
 		static int luaMonsterSpellSetCombatSpread(lua_State* L);
 		static int luaMonsterSpellSetCombatRadius(lua_State* L);
 		static int luaMonsterSpellSetConditionType(lua_State* L);

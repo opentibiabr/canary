@@ -179,6 +179,8 @@ class MonsterSpell
 		MonsterSpell(const MonsterSpell&) = delete;
 		MonsterSpell& operator=(const MonsterSpell&) = delete;
 
+		AreaCombat* area;
+
 		std::string name = "";
 		std::string scriptName = "";
 

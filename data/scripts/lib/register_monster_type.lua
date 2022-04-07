@@ -563,6 +563,9 @@ function readSpell(incomingLua)
 			if incomingLua.shootEffect then
 				spell:setCombatShootEffect(incomingLua.shootEffect)
 			end
+			if incomingLua.area then
+      	 spell:setCombatArea(createCombatArea(incomingLua.area))
+      end
 		end
 
 		-- This is for a complex spell, that has combat damage AND some condition

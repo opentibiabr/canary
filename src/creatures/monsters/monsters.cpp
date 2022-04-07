@@ -563,6 +563,10 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		std::unique_ptr<Combat> combat{ new Combat };
 		sb.combatSpell = true;
 
+		if (spell->area) {
+    	 combat->setArea(spell->area);
+    }
+
 		if (spell->length > 0) {
 			spell->spread = std::max<int32_t>(0, spell->spread);
 

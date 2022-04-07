@@ -521,7 +521,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			}
 
 			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
-			item->setImbuement(slotid, imbuementInfo.imbuement->getID(), duration);
+			item->decayImbuementTime(slotid, imbuementInfo.imbuement->getID(), duration);
 			if (duration == 0) {
 				removeItemImbuementStats(imbuementInfo.imbuement);
 				g_game.decreasePlayerActiveImbuements(getID());
@@ -1219,6 +1219,14 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	ImbuementInfo imbuementInfo;
+	if (item->getImbuementInfo(slot, &imbuementInfo))
+	{
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
+		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
 	const auto& items = imbuement->getItems();
 	for (auto& [key, value] : items)
 	{
@@ -1228,14 +1236,6 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
 		}
-	}
-
-	ImbuementInfo imbuementInfo;
-	if (item->getImbuementInfo(slot, &imbuementInfo))
-	{
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
-		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-		return;
 	}
 
 	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
@@ -1288,11 +1288,12 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
+
+	// Update imbuement stats item if the item is equipped
 	if (item->getParent() == this) {
 		addItemImbuementStats(imbuement);
 	}
-
-	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
 
@@ -1329,7 +1330,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 
-	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
+	item->clearImbuement(slot, imbuementInfo.imbuement->getID());
 	this->openImbuementWindow(item);
 }
 

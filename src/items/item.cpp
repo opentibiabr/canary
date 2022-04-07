@@ -100,12 +100,41 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
-void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
+void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
-	value.set<int64_t>(duration > 0 ? (duration << 8) | id : 0);
+	value.set<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0);
 	setCustomAttribute(key, value);
+}
+
+void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
+{
+	Player* player = getHoldingPlayer();
+	if (!player) {
+		return;
+	}
+
+	// Get imbuement by the id
+	const Imbuement *imbuement = g_imbuements->getImbuement(imbuementId);
+	if (!imbuement) {
+		return;
+	}
+
+	// Get category imbuement for acess category id
+	const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
+	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+		return;
+	}
+
+	// Checks if the item already has the imbuement category id
+	if (hasImbuementCategoryId(categoryImbuement->id)) {
+		SPDLOG_ERROR("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
+		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
+	setImbuement(slot, imbuementId, duration);
 }
 
 bool Item::hasImbuementCategoryId(uint16_t categoryId) {

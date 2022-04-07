@@ -508,7 +508,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			}
 
 			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
-			item->setImbuement(slotid, imbuementInfo.imbuement->getID(), duration);
+			item->decayImbuementTime(slotid, imbuementInfo.imbuement->getID(), duration);
 			if (duration == 0) {
 				removeItemImbuementStats(imbuementInfo.imbuement);
 				g_game.decreasePlayerActiveImbuements(getID());
@@ -1235,6 +1235,14 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	ImbuementInfo imbuementInfo;
+	if (item->getImbuementInfo(slot, &imbuementInfo))
+	{
+		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
+		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
 	const auto& items = imbuement->getItems();
 	for (auto& [key, value] : items)
 	{
@@ -1244,14 +1252,6 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 			this->sendImbuementResult("You don't have all necessary items.");
 			return;
 		}
-	}
-
-	ImbuementInfo imbuementInfo;
-	if (item->getImbuementInfo(slot, &imbuementInfo))
-	{
-		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement", this->getName());
-		this->sendImbuementResult("An error ocurred, please reopen imbuement window.");
-		return;
 	}
 
 	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
@@ -1304,11 +1304,12 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
+	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
+
+	// Update imbuement stats item if the item is equipped
 	if (item->getParent() == this) {
 		addItemImbuementStats(imbuement);
 	}
-
-	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
 
@@ -1345,7 +1346,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 		removeItemImbuementStats(imbuementInfo.imbuement);
 	}
 
-	item->setImbuement(slot, imbuementInfo.imbuement->getID(), 0);
+	item->clearImbuement(slot, imbuementInfo.imbuement->getID());
 	this->openImbuementWindow(item);
 }
 
@@ -1523,7 +1524,9 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 			bed->wakeUp(this);
 		}
 
-		SPDLOG_INFO("{} has logged in", name);
+		if (isLogin) {
+			SPDLOG_INFO("{} has logged in", name);
+		}
 
 		if (guild) {
 			guild->addMember(this);
@@ -1627,6 +1630,9 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 	if (creature == this) {
 		if (isLogout) {
 			loginPosition = getPosition();
+			SPDLOG_INFO("{} has logged out", getName());
+			g_chat->removeUserFromAllChannels(*this);
+			clearPartyInvitations();
 		}
 
 		lastLogout = time(nullptr);
@@ -1641,17 +1647,11 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 
 		closeShopWindow();
 
-		clearPartyInvitations();
-
-		if (party) {
+		if (party && isLogout) {
 			party->leaveParty(this);
 		}
 
-		g_chat->removeUserFromAllChannels(*this);
-
-		SPDLOG_INFO("{} has logged out", getName());
-
-		if (guild) {
+		if (guild && isLogout) {
 			guild->removeMember(this);
 		}
 
@@ -2521,7 +2521,7 @@ void Player::death(Creature* lastHitCreature)
 			if (charmRuneBless != 0) {
 				MonsterType* mType = g_monsters.getMonsterType(lastHitCreature->getName());
 				if (mType && mType->info.raceid == charmRuneBless) {
-                 deathLossPercent = (deathLossPercent * 90) / 100;
+					deathLossPercent = (deathLossPercent * 90) / 100;
 				}
 			}
 		}
@@ -2542,6 +2542,14 @@ void Player::death(Creature* lastHitCreature)
 		} else {
 			magLevelPercent = 0;
 		}
+
+		//Level loss
+		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
+		g_events->eventPlayerOnLoseExperience(this, expLoss);
+
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, "You are dead.");
+		std::ostringstream lostExp;
+		lostExp << "You lost " << expLoss << " experience.";
 
 		//Skill loss
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) { //for each skill
@@ -2571,9 +2579,7 @@ void Player::death(Creature* lastHitCreature)
 			skills[i].percent = Player::getPercentLevel(skills[i].tries, vocation->getReqSkillTries(i, skills[i].level));
 		}
 
-		//Level loss
-		uint64_t expLoss = static_cast<uint64_t>(experience * deathLossPercent);
-		g_events->eventPlayerOnLoseExperience(this, expLoss);
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostExp.str());
 
 		if (expLoss != 0) {
 			uint32_t oldLevel = level;
@@ -2604,6 +2610,24 @@ void Player::death(Creature* lastHitCreature)
 			}
 		}
 
+		std::ostringstream deathType;
+		deathType << "You died during ";
+		if (pvpDeath) {
+			deathType << "PvP.";
+		} else {
+			deathType << "PvE.";
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
+
+		std::string bless = getBlessingsName();
+		std::ostringstream blesses;
+		if (bless.length() == 0) {
+			blesses << "You weren't protected with any blessings.";
+		} else {
+			blesses << "You were blessed with " << bless;
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, blesses.str());
+
 		//Make player lose bless
 		uint8_t maxBlessing = 8;
 		if (pvpDeath && hasBlessing(1)) {
@@ -2613,6 +2637,14 @@ void Player::death(Creature* lastHitCreature)
 				removeBlessing(i, 1);
 			}
 		}
+
+		std::ostringstream lostBlesses;
+		if (bless.length() == 0) {
+			lostBlesses << "You lost all your blesses.";
+		} else {
+			lostBlesses << "You are still blessed with " << bless;
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 
 		sendStats();
 		sendSkills();
@@ -2664,6 +2696,91 @@ void Player::death(Creature* lastHitCreature)
 		onIdleStatus();
 		sendStats();
 	}
+	despawn();
+}
+
+bool Player::spawn()
+{
+	setDead(false);
+
+	const Position& pos = getLoginPosition();
+
+	if (!g_game.map.placeCreature(pos, this, false, true)) {
+		return false;
+	}
+
+	SpectatorHashSet spectators;
+	g_game.map.getSpectators(spectators, position, false, true);
+	for (Creature* spectator : spectators) {
+		if (!spectator) {
+			continue;
+		}
+
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendCreatureAppear(this, pos, true);
+		}
+
+		spectator->onCreatureAppear(this, false);
+	}
+
+	getParent()->postAddNotification(this, nullptr, 0);
+	g_game.addCreatureCheck(this);
+
+	addList();
+	return true;
+}
+
+void Player::despawn()
+{
+	if (isDead()) {
+		return;
+	}
+
+	listWalkDir.clear();
+	stopEventWalk();
+	onWalkAborted();
+
+	// remove check
+	Game::removeCreatureCheck(this);
+
+	// remove from map
+	Tile* tile = getTile();
+	if (!tile) {
+		return;
+	}
+
+	std::vector<int32_t> oldStackPosVector;
+
+	SpectatorHashSet spectators;
+	g_game.map.getSpectators(spectators, tile->getPosition(), true);
+	size_t i = 0;
+	for (Creature* spectator : spectators) {
+		if (!spectator) {
+			continue;
+		}
+
+		if (const Player* player = spectator->getPlayer()) {
+			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getStackposOfCreature(player, this) : -1);
+		}
+		if (Player* player = spectator->getPlayer()) {
+			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
+		}
+
+		spectator->onRemoveCreature(this, false);
+	}
+
+	tile->removeCreature(this);
+
+	getParent()->postRemoveNotification(this, nullptr, 0);
+
+	g_game.removePlayer(this);
+
+	// show player as pending
+	for (const auto& [key, player] : g_game.getPlayers()) {
+		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
+	}
+
+	setDead(true);
 }
 
 bool Player::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature, bool lastHitUnjustified, bool mostDamageUnjustified)
@@ -5696,6 +5813,39 @@ void Player::openPlayerContainers()
 		addContainer(it.first - 1, it.second);
 		onSendContainer(it.second);
 	}
+}
+
+std::string Player::getBlessingsName() const
+{
+	uint8_t count = 0;
+	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
+		if (amount != 0) {
+			count++;
+		}
+	});
+
+	std::ostringstream os;
+	for (uint8_t i = 1; i <= 8; i++) {
+		if (hasBlessing(i)) {
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			blessName != BlessingNames.end()) {
+				os << (*blessName).second;
+			} else {
+				continue;
+			}
+
+			--count;
+			if (count > 1) {
+				os << ", ";
+			} else if (count == 1) {
+				os << " and ";
+			} else {
+				os << ".";
+			}
+		}
+	}
+
+	return os.str();
 }
 
 /*******************************************************************************

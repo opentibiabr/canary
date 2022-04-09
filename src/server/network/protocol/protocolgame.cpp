@@ -49,13 +49,13 @@ extern Imbuements *g_imbuements;
 extern Monsters g_monsters;
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTask(Callable function, Args &&... args) const
+void ProtocolGame::addGameTask(Callable function, Args &&... args)
 {
 	g_dispatcher.addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args) const
+void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args)
 {
 	g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
 }

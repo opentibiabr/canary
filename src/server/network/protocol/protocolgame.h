@@ -88,9 +88,9 @@ public:
 private:
 	// Helpers so we don't need to bind every time
 	template <typename Callable, typename... Args>
-	void addGameTask(Callable function, Args &&... args) const;
+	void addGameTask(Callable function, Args &&... args);
 	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args) const;
+	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args);
 
 	ProtocolGame_ptr getThis()
 	{

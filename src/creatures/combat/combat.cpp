@@ -1304,15 +1304,13 @@ void AreaCombat::getList(const Position& centerPos, const Position& targetPos, s
 	uint32_t cols = area->getCols();
 	for (uint32_t y = 0, rows = area->getRows(); y < rows; ++y) {
 		for (uint32_t x = 0; x < cols; ++x) {
-			if (area->getValue(y, x) != 0) {
-				if (g_game().isSightClear(targetPos, tmpPos, true)) {
-					Tile* tile = g_game().map.getTile(tmpPos);
-					if (!tile) {
-						tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
-						g_game().map.setTile(tmpPos, tile);
-					}
-					list.push_front(tile);
+			if (area->getValue(y, x) != 0 && g_game().isSightClear(targetPos, tmpPos, true)) {
+				Tile* tile = g_game().map.getTile(tmpPos);
+				if (!tile) {
+					tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
+					g_game().map.setTile(tmpPos, tile);
 				}
+				list.push_front(tile);
 			}
 			tmpPos.x++;
 		}
@@ -1592,7 +1590,7 @@ void MagicField::onStepInField(Creature* creature)
 
 			Player* targetPlayer = creature->getPlayer();
 			if (targetPlayer) {
-				Player* attackerPlayer = g_game().getPlayerByID(ownerId);
+				const Player* attackerPlayer = g_game().getPlayerByID(ownerId);
 				if (attackerPlayer) {
 					if (Combat::isProtected(attackerPlayer, targetPlayer)) {
 						harmfulField = false;

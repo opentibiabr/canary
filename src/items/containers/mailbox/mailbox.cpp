@@ -99,7 +99,7 @@ bool Mailbox::sendItem(Item* item) const
 		return false;
 	}
 
-	Player* player = g_game().getPlayerByName(receiver);
+	const Player* player = g_game().getPlayerByName(receiver);
 	std::string writer;
 	time_t date = time(0);
 	std::string text;

@@ -146,8 +146,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				uint16_t tmpAmount = amount;
 				while (tmpAmount > 0) {
 					uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
-					Item* item = Item::CreateItem(itemType.id, stackCount);
-					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
+					if (Item* item = Item::CreateItem(itemType.id, stackCount); g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						delete item;
 						break;
 					}

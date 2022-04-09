@@ -280,7 +280,7 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 					Direction dir = getDirectionTo(pos, followPosition);
 					const Position& checkPosition = getNextPosition(dir, pos);
 
-					Tile* nextTile = g_game().map.getTile(checkPosition);
+					const Tile* nextTile = g_game().map.getTile(checkPosition);
 					if (nextTile) {
 						Creature* topCreature = nextTile->getTopCreature();
 						if (topCreature && followCreature != topCreature && isOpponent(topCreature)) {
@@ -1149,10 +1149,8 @@ bool Monster::pushItem(Item* item)
 	for (const auto& it : relList) {
 		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
 		Tile* tile = g_game().map.getTile(tryPos);
-		if (tile && g_game().canThrowObjectTo(centerPos, tryPos)) {
-			if (g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
-				return true;
-			}
+		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
+			return true;
 		}
 	}
 	return false;
@@ -1197,11 +1195,9 @@ bool Monster::pushCreature(Creature* creature)
 
 	for (Direction dir : dirList) {
 		const Position& tryPos = Spells::getCasterPosition(creature, dir);
-		Tile* toTile = g_game().map.getTile(tryPos);
-		if (toTile && !toTile->hasFlag(TILESTATE_BLOCKPATH)) {
-			if (g_game().internalMoveCreature(creature, dir) == RETURNVALUE_NOERROR) {
-				return true;
-			}
+		const Tile* toTile = g_game().map.getTile(tryPos);
+		if (toTile && !toTile->hasFlag(TILESTATE_BLOCKPATH) && g_game().internalMoveCreature(creature, dir) == RETURNVALUE_NOERROR) {
+			return true;
 		}
 	}
 	return false;
@@ -1405,9 +1401,7 @@ bool Monster::getDistanceStep(const Position& targetPos, Direction& moveDirectio
 	int_fast32_t dx = Position::getDistanceX(creaturePos, targetPos);
 	int_fast32_t dy = Position::getDistanceY(creaturePos, targetPos);
 
-	int32_t distance = std::max<int32_t>(dx, dy);
-
-	if (!flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
+	if (int32_t distance = std::max<int32_t>(dx, dy); !flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
 		return false; // let the A* calculate it
 	} else if (!flee && distance == targetDistance) {
 		return true; // we don't really care here, since it's what we wanted to reach (a dancestep will take of dancing in that position)
@@ -1901,7 +1895,7 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) const
 			return false;
 		}
 
-		Tile* tile = g_game().map.getTile(pos);
+		const Tile* tile = g_game().map.getTile(pos);
 		if (tile && tile->getTopVisibleCreature(this) == nullptr &&
 					tile->queryAdd(0, *this, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 			return true;

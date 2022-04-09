@@ -49,13 +49,13 @@ extern Imbuements *g_imbuements;
 extern Monsters g_monsters;
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTask(Callable function, Args &&... args)
+void ProtocolGame::addGameTask(Callable function, Args &&... args) const
 {
 	g_dispatcher.addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
 }
 
 template <typename Callable, typename... Args>
-void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args)
+void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args) const
 {
 	g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
 }
@@ -331,14 +331,11 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 		player->setOperatingSystem(operatingSystem);
 
-		if (!g_game().placeCreature(player, player->getLoginPosition()))
+		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true))
 		{
-			if (!g_game().placeCreature(player, player->getTemplePosition(), false, true))
-			{
-				disconnectClient("Temple position is wrong. Please, contact the administrator.");
-				SPDLOG_WARN("Player {} temple position is wrong", player->getName());
-				return;
-			}
+			disconnectClient("Temple position is wrong. Please, contact the administrator.");
+			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
+			return;
 		}
 
 		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX)
@@ -899,7 +896,7 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 	{
 		for (int32_t ny = 0; ny < height; ny++)
 		{
-			Tile *tile = g_game().map.getTile(x + nx + offset, y + ny + offset, z);
+			const Tile *tile = g_game().map.getTile(static_cast<int32_t>(x + nx + offset), static_cast<int32_t>(y + ny + offset), static_cast<int32_t>(z));
 			if (tile)
 			{
 				if (skip >= 0)
@@ -1512,7 +1509,7 @@ void ProtocolGame::parseInspectionObject(NetworkMessage &msg)
 	{
 		uint16_t itemId = msg.get<uint16_t>();
 		uint16_t itemCount = msg.getByte();
-		g_game().playerInspectItem(player, itemId, itemCount, (inspectionType == INSPECT_CYCLOPEDIA));
+		g_game().playerInspectItem(player, itemId, static_cast<int16_t>(itemCount), (inspectionType == INSPECT_CYCLOPEDIA));
 	}
 }
 
@@ -1947,7 +1944,7 @@ void ProtocolGame::sendTeamFinderList()
 	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
 	msg.add<uint16_t>(teamFinder.size());
 	for (auto it : teamFinder) {
-		Player* leader = g_game().getPlayerByGUID(it.first);
+		const Player* leader = g_game().getPlayerByGUID(it.first);
 		if (!leader)
 			return;
 
@@ -1964,7 +1961,7 @@ void ProtocolGame::sendTeamFinderList()
 		msg.addByte(teamAssemble->vocationIDs);
 		msg.add<uint16_t>(teamAssemble->teamSlots);
 		for (auto itt : teamAssemble->membersMap) {
-			Player* member = g_game().getPlayerByGUID(it.first);
+			const Player* member = g_game().getPlayerByGUID(it.first);
 			if (member) {
 				if (itt.first == player->getGUID())
 					status = itt.second;
@@ -2053,14 +2050,14 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset)
 
 	uint16_t membersSize = 1;
 	for (auto memberPair : teamAssemble->membersMap) {
-		Player* member = g_game().getPlayerByGUID(memberPair.first);
+		const Player* member = g_game().getPlayerByGUID(memberPair.first);
 		if (member) {
 			membersSize += 1;
 		}
 	}
 
 	msg.add<uint16_t>(membersSize);
-	Player* leader = g_game().getPlayerByGUID(teamAssemble->leaderGuid);
+	const Player* leader = g_game().getPlayerByGUID(teamAssemble->leaderGuid);
 	if (!leader)
 		return;
 
@@ -2071,7 +2068,7 @@ void ProtocolGame::sendLeaderTeamFinder(bool reset)
 	msg.addByte(3);
 
 	for (auto memberPair : teamAssemble->membersMap) {
-		Player* member = g_game().getPlayerByGUID(memberPair.first);
+		const Player* member = g_game().getPlayerByGUID(memberPair.first);
 		if (!member) {
 			continue;
 		}
@@ -2173,7 +2170,7 @@ void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg)
 		}
 		case 2: {
 			uint32_t memberID = msg.get<uint32_t>();
-			Player* member = g_game().getPlayerByGUID(memberID);
+			const Player* member = g_game().getPlayerByGUID(memberID);
 			if (!member)
 				return;
 
@@ -2235,7 +2232,7 @@ void ProtocolGame::parseMemberFinderWindow(NetworkMessage &msg)
 			player->sendTeamFinderList();
 	} else {
 		uint32_t leaderID = msg.get<uint32_t>();
-		Player* leader = g_game().getPlayerByGUID(leaderID);
+		const Player* leader = g_game().getPlayerByGUID(leaderID);
 		if (!leader)
 			return;
 
@@ -5386,7 +5383,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 		{
 			VipStatus_t vipStatus;
 
-			Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
+			const Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
 			if (!vipPlayer)
 			{
 				vipStatus = VIPSTATUS_OFFLINE;
@@ -5405,7 +5402,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 		{
 			VipStatus_t vipStatus;
 
-			Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
+			const Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
 			if (!vipPlayer || vipPlayer->isInGhostMode())
 			{
 				vipStatus = VIPSTATUS_OFFLINE;
@@ -5684,7 +5681,7 @@ void ProtocolGame::sendOutfitWindow()
 
 	bool mounted = false;
 	Outfit_t currentOutfit = player->getDefaultOutfit();
-	Mount* currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
+	const Mount* currentMount = g_game().mounts.getMountByID(player->getCurrentMount());
 	if (currentMount) {
 		mounted = (currentOutfit.lookMount == currentMount->clientId);
 		currentOutfit.lookMount = currentMount->clientId;
@@ -5977,11 +5974,11 @@ void ProtocolGame::sendOpenStore(uint8_t)
 	msg.addByte(0x00);
 
 	//add categories
-	uint16_t categoriesCount = g_game().gameStore.getCategoryOffers().size();
+	uint16_t categoriesCount = static_cast<uint16_t>(g_game().gameStore.getCategoryOffers().size());
 
 	msg.add<uint16_t>(categoriesCount);
 
-	for (StoreCategory *category : g_game().gameStore.getCategoryOffers())
+	for (const StoreCategory *category : g_game().gameStore.getCategoryOffers())
 	{
 		msg.addString(category->name);
 		msg.addString(category->description);
@@ -6081,7 +6078,7 @@ void ProtocolGame::sendStoreCategoryOffers(StoreCategory *category)
 		else if (offer->type == MOUNT)
 		{
 			MountOffer *mountOffer = (MountOffer *)offer;
-			Mount *m = g_game().mounts.getMountByID(mountOffer->mountId);
+			const Mount *m = g_game().mounts.getMountByID(mountOffer->mountId);
 			if (player->hasMount(m))
 			{
 				disabled = 1;

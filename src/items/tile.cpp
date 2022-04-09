@@ -779,17 +779,17 @@ Tile* Tile::queryDestination(int32_t&, const Thing&, Item** destItem, uint32_t& 
 		uint16_t dy = tilePos.y;
 		uint8_t dz = tilePos.z + 1;
 
-		Tile* southDownTile = g_game().map.getTile(dx, dy - 1, dz);
+		const Tile* southDownTile = g_game().map.getTile(dx, dy - 1, dz);
 		if (southDownTile && southDownTile->hasFlag(TILESTATE_FLOORCHANGE_SOUTH_ALT)) {
 			dy -= 2;
 			destTile = g_game().map.getTile(dx, dy, dz);
 		} else {
-			Tile* eastDownTile = g_game().map.getTile(dx - 1, dy, dz);
+			const Tile* eastDownTile = g_game().map.getTile(dx - 1, dy, dz);
 			if (eastDownTile && eastDownTile->hasFlag(TILESTATE_FLOORCHANGE_EAST_ALT)) {
 				dx -= 2;
 				destTile = g_game().map.getTile(dx, dy, dz);
 			} else {
-				Tile* downTile = g_game().map.getTile(dx, dy, dz);
+				const Tile* downTile = g_game().map.getTile(dx, dy, dz);
 				if (downTile) {
 					if (downTile->hasFlag(TILESTATE_FLOORCHANGE_NORTH)) {
 						++dy;

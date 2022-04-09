@@ -109,16 +109,16 @@ void ProtocolStatus::sendStatusString()
 	pugi::xml_node players = tsqp.append_child("players");
 	uint32_t real = 0;
 	std::map<uint32_t, uint32_t> listIP;
-	for (const auto& it : g_game().getPlayers()) {
-		if (it.second->getIP() != 0) {
-			auto ip = listIP.find(it.second->getIP());
+	for (const auto& [key, player] : g_game().getPlayers()) {
+		if (player->getIP() != 0) {
+			auto ip = listIP.find(player->getIP());
 			if (ip != listIP.end()) {
-				listIP[it.second->getIP()]++;
-				if (listIP[it.second->getIP()] < 5) {
+				listIP[player->getIP()]++;
+				if (listIP[player->getIP()] < 5) {
 					real++;
 				}
 			} else {
-				listIP[it.second->getIP()] = 1;
+				listIP[player->getIP()] = 1;
 				real++;
 			}
 		}
@@ -188,7 +188,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
 		output->addByte(0x20);
-		output->add<uint32_t>(g_game().getPlayersOnline());
+		output->add<uint32_t>(static_cast<size_t>(g_game().getPlayersOnline()));
 		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
 		output->add<uint32_t>(g_game().getPlayersRecord());
 	}

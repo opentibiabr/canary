@@ -439,7 +439,7 @@ void Party::clearPlayerPoints(Player* player)
 
 bool Party::canOpenCorpse(uint32_t ownerId) const
 {
-	if (Player* player = g_game().getPlayerByID(ownerId)) {
+	if (const Player* player = g_game().getPlayerByID(ownerId)) {
 		return leader->getID() == ownerId || player->getParty() == this;
 	}
 	return false;

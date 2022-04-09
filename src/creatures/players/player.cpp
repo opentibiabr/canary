@@ -519,9 +519,9 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 }
 
 void Player::setTraining(bool value) {
-	for (const auto& it : g_game().getPlayers()) {
-		if (!this->isInGhostMode() || it.second->isAccessPlayer()) {
-			it.second->notifyStatusChange(this, value ? VIPSTATUS_TRAINING : VIPSTATUS_ONLINE, false);
+	for (const auto& [key, player] : g_game().getPlayers()) {
+		if (!this->isInGhostMode() || player->isAccessPlayer()) {
+			player->notifyStatusChange(this, value ? VIPSTATUS_TRAINING : VIPSTATUS_ONLINE, false);
 		}
 	}
 	this->statusVipList = VIPSTATUS_TRAINING;
@@ -973,7 +973,7 @@ bool Player::isNearDepotBox() const
 	const Position& pos = getPosition();
 	for (int32_t cx = -1; cx <= 1; ++cx) {
 		for (int32_t cy = -1; cy <= 1; ++cy) {
-			Tile* posTile = g_game().map.getTile(pos.x + cx, pos.y + cy, pos.z);
+			const Tile* posTile = g_game().map.getTile(static_cast<int32_t>(pos.x + cx), static_cast<int32_t>(pos.y + cy), static_cast<int32_t>(pos.z));
 			if (!posTile) {
 				continue;
 			}
@@ -1579,13 +1579,11 @@ void Player::onAttackedCreatureChangeZone(ZoneType_t zone)
 				onAttackedCreatureDisappear(false);
 			}
 		}
-	} else if (zone == ZONE_NORMAL) {
+	} else if (zone == ZONE_NORMAL && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 		//attackedCreature can leave a pvp zone if not pzlocked
-		if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
-			if (attackedCreature->getPlayer()) {
-				setAttackedCreature(nullptr);
-				onAttackedCreatureDisappear(false);
-			}
+		if (attackedCreature->getPlayer()) {
+			setAttackedCreature(nullptr);
+			onAttackedCreatureDisappear(false);
 		}
 	}
 }
@@ -2454,7 +2452,7 @@ void Player::death(Creature* lastHitCreature)
 		for (const auto& it : damageMap) {
 			CountBlock_t cb = it.second;
 			if ((OTSYS_TIME() - cb.ticks) <= inFightTicks) {
-				Player* damageDealer = g_game().getPlayerByID(it.first);
+				const Player* damageDealer = g_game().getPlayerByID(it.first);
 				if (damageDealer) {
 					playerDmg += cb.total;
 					sumLevels += damageDealer->getLevel();
@@ -2681,15 +2679,15 @@ void Player::removeList()
 {
 	g_game().removePlayer(this);
 
-	for (const auto& it : g_game().getPlayers()) {
-		it.second->notifyStatusChange(this, VIPSTATUS_OFFLINE);
+	for (const auto& [key, player] : g_game().getPlayers()) {
+		player->notifyStatusChange(this, VIPSTATUS_OFFLINE);
 	}
 }
 
 void Player::addList()
 {
-	for (const auto& it : g_game().getPlayers()) {
-		it.second->notifyStatusChange(this, this->statusVipList);
+	for (const auto& [key, player] : g_game().getPlayers()) {
+		player->notifyStatusChange(this, this->statusVipList);
 	}
 
 	g_game().addPlayer(this);
@@ -5022,7 +5020,7 @@ bool Player::toggleMount(bool mount)
 			return false;
 		}
 
-		Mount* currentMount = g_game().mounts.getMountByID(currentMountId);
+		const Mount* currentMount = g_game().mounts.getMountByID(currentMountId);
 		if (!currentMount) {
 			return false;
 		}
@@ -5132,7 +5130,7 @@ bool Player::hasMount(const Mount* mount) const
 
 void Player::dismount()
 {
-	Mount* mount = g_game().mounts.getMountByID(getCurrentMount());
+	const Mount* mount = g_game().mounts.getMountByID(getCurrentMount());
 	if (mount && mount->speed > 0) {
 		g_game().changeSpeed(this, -mount->speed);
 	}

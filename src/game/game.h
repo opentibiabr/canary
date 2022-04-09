@@ -589,9 +589,6 @@ class Game
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
 
-		size_t lastBucket = 0;
-		size_t lastImbuedBucket = 0;
-
 		WildcardTreeNode wildcardTree { false };
 
 		std::map<uint32_t, Npc*> npcs;

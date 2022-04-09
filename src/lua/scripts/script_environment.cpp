@@ -115,7 +115,7 @@ Thing * ScriptEnvironment::getThingByUID(uint32_t uid) {
 	}
 
 	if (uid <= std::numeric_limits < uint16_t > ::max()) {
-		Item * item = g_game().getUniqueItem(uid);
+		Item * item = g_game().getUniqueItem(static_cast<uint32_t>(uid));
 		if (item && !item -> isRemoved()) {
 			return item;
 		}
@@ -150,7 +150,7 @@ Container * ScriptEnvironment::getContainerByUID(uint32_t uid) {
 
 void ScriptEnvironment::removeItemByUID(uint32_t uid) {
 	if (uid <= std::numeric_limits < uint16_t > ::max()) {
-		g_game().removeUniqueItem(uid);
+		g_game().removeUniqueItem(static_cast<uint32_t>(uid));
 		return;
 	}
 

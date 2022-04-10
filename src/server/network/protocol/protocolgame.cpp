@@ -896,7 +896,7 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 	{
 		for (int32_t ny = 0; ny < height; ny++)
 		{
-			const Tile *tile = g_game().map.getTile(static_cast<int32_t>(x + nx + offset), static_cast<int32_t>(y + ny + offset), static_cast<int32_t>(z));
+			const Tile *tile = g_game().map.getTile(static_cast<uint16_t>(x + nx + offset), static_cast<uint16_t>(y + ny + offset), static_cast<uint8_t>(z));
 			if (tile)
 			{
 				if (skip >= 0)
@@ -924,8 +924,7 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 
 void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &removedKnown)
 {
-	auto result = knownCreatureSet.insert(id);
-	if (!result.second)
+	if (auto result = knownCreatureSet.insert(id); !result.second)
 	{
 		known = true;
 		return;
@@ -939,7 +938,7 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
 			// We need to protect party players from removing
 			Creature* creature = g_game().getCreatureByID(*it);
-			Player* checkPlayer;
+			const Player* checkPlayer;
 			if (creature && (checkPlayer = creature->getPlayer()) != nullptr) {
 				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
 					removedKnown = *it;
@@ -1509,7 +1508,7 @@ void ProtocolGame::parseInspectionObject(NetworkMessage &msg)
 	{
 		uint16_t itemId = msg.get<uint16_t>();
 		uint16_t itemCount = msg.getByte();
-		g_game().playerInspectItem(player, itemId, static_cast<int16_t>(itemCount), (inspectionType == INSPECT_CYCLOPEDIA));
+		g_game().playerInspectItem(player, itemId, static_cast<int8_t>(itemCount), (inspectionType == INSPECT_CYCLOPEDIA));
 	}
 }
 

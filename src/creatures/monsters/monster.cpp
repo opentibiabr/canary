@@ -1401,7 +1401,7 @@ bool Monster::getDistanceStep(const Position& targetPos, Direction& moveDirectio
 	int_fast32_t dx = Position::getDistanceX(creaturePos, targetPos);
 	int_fast32_t dy = Position::getDistanceY(creaturePos, targetPos);
 
-	if (int32_t distance = std::max<int32_t>(dx, dy); !flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
+	if (int32_t distance = std::max<int32_t>(static_cast<int32_t>(dx), static_cast<int32_t>(dy)); !flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
 		return false; // let the A* calculate it
 	} else if (!flee && distance == targetDistance) {
 		return true; // we don't really care here, since it's what we wanted to reach (a dancestep will take of dancing in that position)

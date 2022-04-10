@@ -505,7 +505,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 
 					//update 0
 					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						Tile* cacheTile = g_game().map.getTile(myPos.getX() + x, myPos.getY() - maxWalkCacheHeight, myPos.z);
+						const Tile* cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() - maxWalkCacheHeight), myPos.z);
 						updateTileCache(cacheTile, x, -maxWalkCacheHeight);
 					}
 				} else if (oldPos.y < newPos.y) { // south
@@ -516,7 +516,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 
 					//update mapWalkHeight - 1
 					for (int32_t x = -maxWalkCacheWidth; x <= maxWalkCacheWidth; ++x) {
-						Tile* cacheTile = g_game().map.getTile(myPos.getX() + x, myPos.getY() + maxWalkCacheHeight, myPos.z);
+						const Tile* cacheTile = g_game().map.getTile(static_cast<uint16_t>(myPos.getX() + x), static_cast<uint16_t>(myPos.getY() + maxWalkCacheHeight), myPos.z);
 						updateTileCache(cacheTile, x, maxWalkCacheHeight);
 					}
 				}
@@ -541,7 +541,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 
 					//update mapWalkWidth - 1
 					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						Tile* cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, myPos.y + y, myPos.z);
+						const Tile* cacheTile = g_game().map.getTile(myPos.x + maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
 						updateTileCache(cacheTile, maxWalkCacheWidth, y);
 					}
 				} else if (oldPos.x > newPos.x) { // west
@@ -564,7 +564,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 
 					//update 0
 					for (int32_t y = -maxWalkCacheHeight; y <= maxWalkCacheHeight; ++y) {
-						Tile* cacheTile = g_game().map.getTile(myPos.x - maxWalkCacheWidth, myPos.y + y, myPos.z);
+						const Tile* cacheTile = g_game().map.getTile(myPos.x - maxWalkCacheWidth, static_cast<uint16_t>(myPos.y + y), myPos.z);
 						updateTileCache(cacheTile, -maxWalkCacheWidth, y);
 					}
 				}

@@ -85,7 +85,7 @@ BedItem* BedItem::getNextBedItem() const
 	Direction dir = Item::items[id].bedPartnerDir;
 	Position targetPos = getNextPosition(dir, getPosition());
 
-	Tile* tile = g_game().map.getTile(targetPos);
+	const Tile* tile = g_game().map.getTile(targetPos);
 	if (tile == nullptr) {
 		return nullptr;
 	}

@@ -973,7 +973,7 @@ bool Player::isNearDepotBox() const
 	const Position& pos = getPosition();
 	for (int32_t cx = -1; cx <= 1; ++cx) {
 		for (int32_t cy = -1; cy <= 1; ++cy) {
-			const Tile* posTile = g_game().map.getTile(static_cast<int32_t>(pos.x + cx), static_cast<int32_t>(pos.y + cy), static_cast<int32_t>(pos.z));
+			const Tile* posTile = g_game().map.getTile(static_cast<uint16_t>(pos.x + cx), static_cast<uint16_t>(pos.y + cy), static_cast<uint8_t>(pos.z));
 			if (!posTile) {
 				continue;
 			}

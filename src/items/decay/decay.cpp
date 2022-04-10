@@ -190,7 +190,7 @@ void Decay::internalDecayItem(Item* item)
 				player->sendSkills();
 			}
 		}
-		g_game().transformItem(item, it.decayTo);
+		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {

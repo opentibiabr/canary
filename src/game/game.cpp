@@ -84,6 +84,10 @@ Game::~Game()
 	for (const auto& it : guilds) {
 		delete it.second;
 	}
+
+	for (const auto& it : CharmList) {
+		delete it;
+	}
 }
 
 void Game::loadBoostedCreature()
@@ -7662,11 +7666,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		Player* buyerPlayer = getPlayerByGUID(offer.playerId);
-		if (player == buyerPlayer) {
-			player->sendFYIBox("You cannot accept your own offer.");
-			return;
-		}
-
 		if (!buyerPlayer) {
 			buyerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
@@ -7675,13 +7674,17 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 		}
 
+		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
+			return;
+		}
+
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
 			uint32_t coins;
 			account.GetCoins(&coins);
-			if (amount > coins)
-			{
+			if (amount > coins) {
 				return;
 			}
 
@@ -7703,6 +7706,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			if (it.stackable) {
 				uint16_t tmpAmount = amount;
 				for (Item* item : itemList) {
+					if (!item) {
+						continue;
+					}
 					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;
 					internalRemoveItem(item, removeCount);
@@ -7713,6 +7719,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 			} else {
 				for (Item* item : itemList) {
+					if (!item) {
+						continue;
+					}
 					internalRemoveItem(item);
 				}
 			}
@@ -7763,9 +7772,18 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			delete buyerPlayer;
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
-		Player* sellerPlayer = getPlayerByGUID(offer.playerId);
-		if (player == sellerPlayer) {
-			player->sendFYIBox("You cannot accept your own offer.");
+
+		Player *sellerPlayer = getPlayerByGUID(offer.playerId);
+		if (!sellerPlayer) {
+			sellerPlayer = new Player(nullptr);
+			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
+				delete sellerPlayer;
+				return;
+			}
+		}
+
+		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
 
@@ -7821,32 +7839,21 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 		}
 
-		if (sellerPlayer) {
-			sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
-			if (it.id == ITEM_STORE_COIN) {
-				account::Account account;
-				account.LoadAccountDB(sellerPlayer->getAccount());
-				account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-												 "Sold on Market");
-			}
-		} else {
-			IOLoginData::increaseBankBalance(offer.playerId, totalPrice);
-			if (it.id == ITEM_STORE_COIN) {
-				sellerPlayer = new Player(nullptr);
-
-				if (IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
-					account::Account account;
-					account.LoadAccountDB(sellerPlayer->getAccount());
-					account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-													 "Sold on Market");
-				}
-
-				delete sellerPlayer;
-			}
+		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
+		if (it.id == ITEM_STORE_COIN) {
+			account::Account account;
+			account.LoadAccountDB(sellerPlayer->getAccount());
+			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
+											"Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
 			player->onReceiveMail();
+		}
+
+		if (sellerPlayer->isOffline()) {
+			IOLoginData::savePlayer(sellerPlayer);
+			delete sellerPlayer;
 		}
 	}
 

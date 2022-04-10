@@ -282,7 +282,7 @@ void Creature::addEventWalk(bool firstStep)
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler.addEvent(createSchedulerTask(ticks, std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
+	eventWalk = g_scheduler.addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
 }
 
 void Creature::stopEventWalk()

@@ -973,7 +973,7 @@ bool Player::isNearDepotBox() const
 	const Position& pos = getPosition();
 	for (int32_t cx = -1; cx <= 1; ++cx) {
 		for (int32_t cy = -1; cy <= 1; ++cy) {
-			const Tile* posTile = g_game().map.getTile(static_cast<uint16_t>(pos.x + cx), static_cast<uint16_t>(pos.y + cy), static_cast<uint8_t>(pos.z));
+			const Tile* posTile = g_game().map.getTile(static_cast<uint16_t>(pos.x + cx), static_cast<uint16_t>(pos.y + cy), pos.z);
 			if (!posTile) {
 				continue;
 			}
@@ -2673,12 +2673,12 @@ bool Player::spawn()
 
 	const Position& pos = getLoginPosition();
 
-	if (!g_game.map.placeCreature(pos, this, false, true)) {
+	if (!g_game().map.placeCreature(pos, this, false, true)) {
 		return false;
 	}
 
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, position, false, true);
+	g_game().map.getSpectators(spectators, position, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
 			continue;
@@ -2692,7 +2692,7 @@ bool Player::spawn()
 	}
 
 	getParent()->postAddNotification(this, nullptr, 0);
-	g_game.addCreatureCheck(this);
+	g_game().addCreatureCheck(this);
 
 	addList();
 	return true;
@@ -2720,7 +2720,7 @@ void Player::despawn()
 	std::vector<int32_t> oldStackPosVector;
 
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, tile->getPosition(), true);
+	g_game().map.getSpectators(spectators, tile->getPosition(), true);
 	size_t i = 0;
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
@@ -2741,10 +2741,10 @@ void Player::despawn()
 
 	getParent()->postRemoveNotification(this, nullptr, 0);
 
-	g_game.removePlayer(this);
+	g_game().removePlayer(this);
 
 	// show player as pending
-	for (const auto& [key, player] : g_game.getPlayers()) {
+	for (const auto& [key, player] : g_game().getPlayers()) {
 		player->notifyStatusChange(this, VIPSTATUS_PENDING, false);
 	}
 

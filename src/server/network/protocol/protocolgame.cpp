@@ -628,7 +628,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			
 			if (!player->spawn()) {
 				disconnect();
-				g_game.removeCreature(player);
+				g_game().removeCreature(player);
 				return;
 			}
 
@@ -944,47 +944,45 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 
 void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &removedKnown)
 {
-    known = !knownCreatureSet.insert(id).second;
-    if (known) {
-        return;
-    }
+	if (auto [creatureId, isKnown] = knownCreatureSet.insert(id); !isKnown) {
+		return;
+	}
 
-    if (knownCreatureSet.size() < 1300) {
-        removedKnown = 0;
-        return;
-    }
+	if (knownCreatureSet.size() < 1300) {
+		removedKnown = 0;
+		return;
+	}
 
-    // Look for a creature to remove
-    for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
-        if (*it == id) {
-            continue;
-        }
+	// Look for a creature to remove
+	for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
+		if (*it == id) {
+			continue;
+		}
 
-        Creature* creature = g_game.getCreatureByID(*it);
-        if (!creature || canSee(creature)) {
-            continue;
-        }
+		Creature* creature = g_game().getCreatureByID(*it);
+		if (!creature || canSee(creature)) {
+			continue;
+		}
 
-        const Player* checkPlayer = creature->getPlayer();
+		const Player* checkPlayer = creature->getPlayer();
+		if (!checkPlayer) {
+			removedKnown = *it;
+			knownCreatureSet.erase(it);
+			return;
+		}
 
-        if (!checkPlayer) {
-            removedKnown = *it;
-            knownCreatureSet.erase(it);
-            return;
-        }
+		// We need to protect party players from removing
+		if (checkPlayer && player->getParty() != checkPlayer->getParty()) {
+			removedKnown = *it;
+			knownCreatureSet.erase(it);
+			return;
+		}
 
-        // We need to protect party players from removing
-        if (checkPlayer && player->getParty() != checkPlayer->getParty()) {
-            removedKnown = *it;
-            knownCreatureSet.erase(it);
-            return;
-        }
+		removedKnown = *it;
+	}
 
-        removedKnown = *it;
-    }
-
-    /* Bad situation. Let's just remove the last valid one. */
-    knownCreatureSet.erase(removedKnown);
+	/* Bad situation. Let's just remove the last valid one. */
+	knownCreatureSet.erase(removedKnown);
 }
 
 bool ProtocolGame::canSee(const Creature *c) const
@@ -5992,7 +5990,7 @@ void ProtocolGame::sendOpenStore(uint8_t)
 	msg.addByte(0x00);
 
 	//add categories
-	uint16_t categoriesCount = static_cast<uint16_t>(g_game().gameStore.getCategoryOffers().size());
+	auto categoriesCount = static_cast<uint16_t>(g_game().gameStore.getCategoryOffers().size());
 
 	msg.add<uint16_t>(categoriesCount);
 

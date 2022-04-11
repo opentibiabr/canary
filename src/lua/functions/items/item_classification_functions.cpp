@@ -25,7 +25,7 @@
 int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 	// ItemClassification(id)
 	if (isNumber(L, 2)) {
-		ItemClassification* itemClassification = g_game.getItemsClassification(getNumber<uint8_t>(L, 2), false);
+		ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 2), false);
 		if (itemClassification)
 		{
 			pushUserdata<ItemClassification>(L, itemClassification);

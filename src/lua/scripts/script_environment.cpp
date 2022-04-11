@@ -28,7 +28,6 @@
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/script_environment.hpp"
 
-extern Game g_game;
 
 ScriptEnvironment::ScriptEnvironment() {
 	resetEnv();
@@ -51,7 +50,7 @@ void ScriptEnvironment::resetEnv() {
 	while (it != pair.second) {
 		Item * item = it -> second;
 		if (item -> getParent() == VirtualCylinder::virtualCylinder) {
-			g_game.ReleaseItem(item);
+			g_game().ReleaseItem(item);
 		}
 		it = tempItems.erase(it);
 	}
@@ -112,11 +111,11 @@ void ScriptEnvironment::insertItem(uint32_t uid, Item * item) {
 
 Thing * ScriptEnvironment::getThingByUID(uint32_t uid) {
 	if (uid >= 0x10000000) {
-		return g_game.getCreatureByID(uid);
+		return g_game().getCreatureByID(uid);
 	}
 
 	if (uid <= std::numeric_limits < uint16_t > ::max()) {
-		Item * item = g_game.getUniqueItem(uid);
+		Item * item = g_game().getUniqueItem(static_cast<uint16_t>(uid));
 		if (item && !item -> isRemoved()) {
 			return item;
 		}
@@ -151,7 +150,7 @@ Container * ScriptEnvironment::getContainerByUID(uint32_t uid) {
 
 void ScriptEnvironment::removeItemByUID(uint32_t uid) {
 	if (uid <= std::numeric_limits < uint16_t > ::max()) {
-		g_game.removeUniqueItem(uid);
+		g_game().removeUniqueItem(static_cast<uint16_t>(uid));
 		return;
 	}
 

@@ -23,7 +23,6 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
-extern Game g_game;
 Decay g_decay;
 
 void Decay::startDecay(Item* item)
@@ -87,7 +86,7 @@ void Decay::stopDecay(Item* item)
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
-						g_game.ReleaseItem(item);
+						g_game().ReleaseItem(item);
 
 						decayMap.erase(it);
 					}
@@ -100,7 +99,7 @@ void Decay::stopDecay(Item* item)
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
-						g_game.ReleaseItem(item);
+						g_game().ReleaseItem(item);
 
 						decayItems[i] = decayItems.back();
 						decayItems.pop_back();
@@ -144,7 +143,7 @@ void Decay::checkDecay()
 			internalDecayItem(item);
 		}
 
-		g_game.ReleaseItem(item);
+		g_game().ReleaseItem(item);
 	}
 
 	if (it != end) {
@@ -191,9 +190,9 @@ void Decay::internalDecayItem(Item* item)
 				player->sendSkills();
 			}
 		}
-		g_game.transformItem(item, it.decayTo);
+		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
-		ReturnValue ret = g_game.internalRemoveItem(item);
+		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			SPDLOG_ERROR("[Decay::internalDecayItem] - internalDecayItem failed, "
                          "error code: {}, item id: {}",

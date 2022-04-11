@@ -22,7 +22,6 @@
 #include "game/game.h"
 #include "creatures/players/management/waitlist.h"
 
-extern Game g_game;
 
 
 namespace {
@@ -111,7 +110,7 @@ bool WaitingList::clientLogin(const Player* player)
 	}
 
 	auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
-	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game.getPlayersOnline() < maxPlayers)) {
+	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game().getPlayersOnline() < maxPlayers)) {
 		return true;
 	}
 
@@ -122,7 +121,7 @@ bool WaitingList::clientLogin(const Player* player)
 	WaitList::size_type slot;
 	std::tie(it, slot) = info->findClient(player);
 	if (it != info->waitList.end()) {
-		if ((g_game.getPlayersOnline() + slot) <= maxPlayers) {
+		if ((g_game().getPlayersOnline() + slot) <= maxPlayers) {
 			//should be able to login now
 			info->waitList.erase(it);
 			return true;

@@ -3,7 +3,7 @@ project(canary)
 # *****************************************************************************
 # Cmake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -68,12 +68,11 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
-
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
 if (MSVC)
-  find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
+  find_package(Asio REQUIRED)
   find_package(cryptopp CONFIG REQUIRED)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
@@ -81,17 +80,17 @@ if (MSVC)
   find_package(LuaJIT REQUIRED)
   find_package(MySQL REQUIRED)
   find_package(PugiXML REQUIRED)
-  find_package(spdlog CONFIG REQUIRED)
+  find_package(spdlog REQUIRED)
   find_package(Threads REQUIRED)
   find_package(libzippp CONFIG REQUIRED)
 else()
-  find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
+  find_package(Asio REQUIRED)
   find_package(cryptopp CONFIG REQUIRED)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
   find_package(LuaJIT REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
-  find_package(spdlog CONFIG REQUIRED)
+  find_package(spdlog REQUIRED)
   find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
   find_package(libzippp CONFIG REQUIRED)
@@ -250,25 +249,26 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/src
     ${MYSQL_INCLUDE_DIR}
     ${LUA_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
     ${PUGIXML_INCLUDE_DIR}
     ${CRYPTOPP_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    ${spdlog_INCLUDE_DIR}
+    asio::asio
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     ${MYSQL_CLIENT_LIBS}
     ${LUA_LIBRARIES}
-    ${Boost_LIBRARY_DIRS}
-    ${Boost_LIBRARIES}
     ${PUGIXML_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
+    ${spdlog_LIBRARY}
+    fmt::fmt
     jsoncpp_lib
-    spdlog::spdlog
     libzippp::libzippp
+    asio::asio
 )
 
 else()
@@ -281,11 +281,6 @@ else()
 
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
-      Boost::boost
-      Boost::date_time
-      Boost::filesystem
-      Boost::iostreams
-      Boost::system
       cryptopp-static
       CURL::libcurl
       jsoncpp_static

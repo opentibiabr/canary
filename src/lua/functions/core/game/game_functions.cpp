@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "items/item.h"

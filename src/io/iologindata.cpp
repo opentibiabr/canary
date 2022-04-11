@@ -19,13 +19,14 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include "io/iologindata.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 
 #include <limits>
+#include <iostream>
+#include <iterator>
 
 extern Game g_game;
 extern Monsters g_monsters;
@@ -685,8 +686,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
     //second loop (this time a reverse one) to insert the items in the correct order
     //for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-    for (const auto& it : boost::adaptors::reverse(itemMap)) {
-      const std::pair<Item*, int32_t>& pair = it.second;
+    for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+      const std::pair<Item*, int32_t>& pair = it->second;
       Item* item = pair.first;
 
       int32_t pid = pair.second;

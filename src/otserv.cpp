@@ -26,6 +26,7 @@
 #endif
 
 #include "declarations.hpp"
+#include "utils/definitions.h"
 #include "creatures/combat/spells.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
@@ -242,8 +243,12 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 #ifdef _WIN32
-	SetConsoleTitle(STATUS_SERVER_NAME);
-#endif
+#ifdef UNICODE
+SetConsoleTitle(reinterpret_cast<LPCWSTR>(STATUS_SERVER_NAME));
+#else
+SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
+#endif  // !UNICODE
+#endif  // _WIN32
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	SPDLOG_INFO("{} - Version [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
@@ -254,7 +259,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
-	SPDLOG_INFO("Compiled with {}", BOOST_COMPILER);
+	SPDLOG_INFO("Compiled with {}", COMPILER);
 
 	std::string platform;
 	#if defined(__amd64__) || defined(_M_X64)

@@ -24,7 +24,6 @@
 #include "game/scheduling/scheduler.h"
 #include "utils/pugicast.h"
 
-
 GlobalEvents::GlobalEvents() :
 	scriptInterface("GlobalEvent Interface") {
 	scriptInterface.initState();

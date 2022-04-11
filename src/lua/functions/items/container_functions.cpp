@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "game/game.h"
 #include "items/item.h"
 #include "lua/functions/items/container_functions.hpp"

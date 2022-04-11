@@ -20,8 +20,9 @@
 #ifndef SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
 #define SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
 
-#include "server/network/message/networkmessage.h"
 #include "server/network/connection/connection.h"
+#include "lockfree.h"
+#include "server/network/message/networkmessage.h"
 #include "utils/tools.h"
 
 class Protocol;
@@ -106,5 +107,12 @@ class OutputMessagePool
 		std::vector<Protocol_ptr> bufferedProtocols;
 };
 
+class OutputMessageAllocator
+{
+	public:
+		typedef OutputMessage value_type;
+		template<typename U>
+		struct rebind {typedef LockfreePoolingAllocator<U> other;};
+};
 
 #endif  // SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_

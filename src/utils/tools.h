@@ -23,7 +23,6 @@
 #include <random>
 #include <string>
 #include <regex>
-#include <boost/algorithm/string.hpp>
 
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
@@ -67,6 +66,10 @@ std::string getFirstLine(const std::string& str);
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
 std::string convertIPToString(uint32_t ip);
+
+// Split strings
+template<class Iter>
+Iter splitStrings(const std::string &s, const std::string &delim, Iter out);
 
 void trimString(std::string& str);
 

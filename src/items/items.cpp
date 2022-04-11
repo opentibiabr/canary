@@ -26,13 +26,7 @@
 
 #include "utils/pugicast.h"
 
-#ifdef __cpp_lib_filesystem
 #include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
 
 extern Weapons* g_weapons;
 
@@ -97,21 +91,23 @@ bool Items::reload()
 	return true;
 }
 
-constexpr auto OTBI = OTB::Identifier{{'O','T', 'B', 'I'}};
-
 FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 {
-	if (!fs::exists(file)) {
+	if (!std::filesystem::exists(file)) {
 		SPDLOG_ERROR("[Items::loadFromOtb] - Failed to load {}, file doesn't exist", file);
 		return ERROR_NOT_OPEN;
 	}
 
-	OTB::Loader loader{file, OTBI};
+	FileLoader loader;
+	if (!loader.openFile(file.c_str(), "OTBI")) {
+		return ERROR_CAN_NOT_OPEN;
+	}
 
-	auto& root = loader.parseTree();
+	uint32_t type;
+	NODE node = loader.getChildNode(NO_NODE, type);
 
 	PropStream props;
-	if (loader.getProps(root, props)) {
+	if (loader.getProps(node, props)) {
 		//4 byte flags
 		//attributes
 		//0x01 = version data
@@ -158,9 +154,10 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 		return ERROR_INVALID_FORMAT;
 	}
 
-	for (auto & itemNode : root.children) {
+	node = loader.getChildNode(node, type);
+	while (node != NO_NODE) {
 		PropStream stream;
-		if (!loader.getProps(itemNode, stream)) {
+		if (!loader.getProps(node, stream)) {
 			return ERROR_INVALID_FORMAT;
 		}
 
@@ -279,8 +276,8 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 		}
 		ItemType& iType = items[serverId];
 
-		iType.group = static_cast<ItemGroup_t>(itemNode.type);
-		switch (itemNode.type) {
+		iType.group = static_cast<ItemGroup_t>(type);
+		switch (type) {
 			case ITEM_GROUP_CONTAINER:
 				iType.type = ITEM_TYPE_CONTAINER;
 				break;
@@ -337,6 +334,8 @@ FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
 		iType.lightColor = lightColor;
 		iType.wareId = wareId;
 		iType.alwaysOnTopOrder = alwaysOnTopOrder;
+
+		node = loader.getNextNode(node, type);
 	}
 
 	items.shrink_to_fit();

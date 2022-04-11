@@ -20,7 +20,7 @@
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
-#include <boost/lexical_cast.hpp>
+#include "utils/lexical_cast.hpp"
 #include <mysql/mysql.h>
 #include <memory>
 #include <mutex>
@@ -112,21 +112,21 @@ class DBResult
 
 			T data = { 0 };
 			try {
-				data = boost::lexical_cast<T>(row[it->second]);
+				data = Cast::lexicalCast<T>(row[it->second]);
 			}
-			catch (boost::bad_lexical_cast&) {
+			catch (std::exception&) {
 				// overflow; tries to get it as uint64 (as big as possible);
 				uint64_t u64data;
 				try {
-					u64data = boost::lexical_cast<uint64_t>(row[it->second]);
+					u64data = Cast::lexicalCast<uint64_t>(row[it->second]);
 					if (u64data > 0) {
 						// is a valid! thus truncate into int max for data type;
 						data = std::numeric_limits<T>::max();
 					}
 				}
-				catch (boost::bad_lexical_cast &e) {
+				catch (std::exception &exception) {
 					// invalid! discard value.
-					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, e.what());
+					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, exception.what());
 					data = 0;
 				}
 			}

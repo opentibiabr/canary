@@ -28,11 +28,13 @@
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
 #include "utils/tools.h"
-#include <typeinfo>
 
-#include <boost/variant.hpp>
-#include <boost/lexical_cast.hpp>
+#include <typeinfo>
 #include <deque>
+#include <iostream>
+#include <string>
+#include <variant>
+#include <limits>
 
 class Creature;
 class Player;
@@ -157,10 +159,10 @@ class ItemAttributes
 
 		struct CustomAttribute
 		{
-			typedef boost::variant<boost::blank, std::string, int64_t, double, bool> VariantAttribute;
+			typedef std::variant<std::monostate, std::string, int64_t, double, bool> VariantAttribute;
 			VariantAttribute value;
 
-			CustomAttribute() : value(boost::blank()) {}
+			CustomAttribute() : value(std::monostate()) {}
 
 			template<typename T>
 			explicit CustomAttribute(const T& v) : value(v) {}
@@ -171,43 +173,51 @@ class ItemAttributes
 			}
 
 			const std::string& getString() const {
-				if (value.type() == typeid(std::string)) {
-					return boost::get<std::string>(value);
+				try {
+					return std::get<std::string>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is string: {}]", ex.what());
+				}
 				return emptyString;
 			}
 
 			const int64_t& getInt() const {
-				if (value.type() == typeid(int64_t)) {
-					return boost::get<int64_t>(value);
+				try {
+					return std::get<int64_t>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is int64_t: {}", ex.what());
+				}
 				return emptyInt;
 			}
 
 			const double& getDouble() const {
-				if (value.type() == typeid(double)) {
-					return boost::get<double>(value);
+				try {
+					return std::get<double>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is double {}", ex.what());
+				}
 				return emptyDouble;
 			}
 
 			const bool& getBool() const {
-				if (value.type() == typeid(bool)) {
-					return boost::get<bool>(value);
+				try {
+					return std::get<bool>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString() - Object not is bool: {}", ex.what());
+				}
 				return emptyBool;
 			}
 
-			struct PushLuaVisitor : public boost::static_visitor<> {
+			struct PushLuaVisitor {
 				lua_State* L;
 
-				explicit PushLuaVisitor(lua_State* L) : boost::static_visitor<>(), L(L) {}
+				explicit PushLuaVisitor(lua_State* L) : L(L) {}
 
-				void operator()(const boost::blank&) const {
+				void operator()(const std::monostate&) const {
 					lua_pushnil(L);
 				}
 
@@ -229,15 +239,15 @@ class ItemAttributes
 			};
 
 			void pushToLua(lua_State* L) const {
-				boost::apply_visitor(PushLuaVisitor(L), value);
+				std::visit(PushLuaVisitor(L), value);
 			}
 
-			struct SerializeVisitor : public boost::static_visitor<> {
+			struct SerializeVisitor {
 				PropWriteStream& propWriteStream;
 
-				explicit SerializeVisitor(PropWriteStream& propWriteStream) : boost::static_visitor<>(), propWriteStream(propWriteStream) {}
+				explicit SerializeVisitor(PropWriteStream& propWriteStream) : propWriteStream(propWriteStream) {}
 
-				void operator()(const boost::blank&) const {
+				void operator()(const std::monostate&) const {
 				}
 
 				void operator()(const std::string& v) const {
@@ -251,8 +261,8 @@ class ItemAttributes
 			};
 
 			void serialize(PropWriteStream& propWriteStream) const {
-				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.which()));
-				boost::apply_visitor(SerializeVisitor(propWriteStream), value);
+				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.index()));
+				std::visit(SerializeVisitor(propWriteStream), value);
 			}
 
 			bool unserialize(PropStream& propStream) {
@@ -300,7 +310,7 @@ class ItemAttributes
 					}
 
 					default: {
-						value = boost::blank();
+						value = std::monostate();
 						return false;
 					}
 				}
@@ -809,7 +819,7 @@ class Item : virtual public Thing
 		//serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 		bool unserializeAttr(PropStream& propStream);
-		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream);
+		virtual bool unserializeItemNode(FileLoader& fileLoader, NODE node, PropStream& propStream);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 

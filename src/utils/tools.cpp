@@ -21,6 +21,9 @@
 
 #include "utils/tools.h"
 
+#include <string>
+#include <algorithm>
+
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -344,6 +347,23 @@ bool boolean_random(double probability/* = 0.5*/)
 {
 	static std::bernoulli_distribution booleanRand;
 	return booleanRand(getRandomGenerator(), std::bernoulli_distribution::param_type(probability));
+}
+
+template<class Iter>
+Iter splitStrings(const std::string &s, const std::string &delim, Iter out)
+{
+	if (delim.empty()) {
+		*out++ = s;
+		return out;
+	}
+	size_t a = 0, b = s.find(delim);
+	for ( ; b != std::string::npos;
+		a = b + delim.length(), b = s.find(delim, a))
+	{
+		*out++ = std::move(s.substr(a, b - a));
+	}
+	*out++ = std::move(s.substr(a, s.length() - a));
+	return out;
 }
 
 void trimString(std::string& str)
@@ -1428,7 +1448,7 @@ NameEval_t validateName(const std::string &name)
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
-	boost::split(toks, name, boost::is_any_of(" '"));
+	splitStrings(" '", name, std::back_inserter(toks));
 	if(name.length()<3 || name.length()>14) {
 		return INVALID_LENGTH;
 	}

@@ -20,7 +20,7 @@
 #ifndef SRC_UTILS_PUGICAST_H_
 #define SRC_UTILS_PUGICAST_H_
 
-#include <boost/lexical_cast.hpp>
+#include "utils/lexical_cast.hpp"
 
 namespace pugi {
 	template<typename T>
@@ -28,8 +28,8 @@ namespace pugi {
 	{
 		T value;
 		try {
-			value = boost::lexical_cast<T>(str);
-		} catch (boost::bad_lexical_cast&) {
+			value = Cast::lexicalCast<T>(str);
+		} catch (std::exception&) {
 			value = T();
 		}
 		return value;

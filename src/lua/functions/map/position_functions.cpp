@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "game/game.h"
 #include "game/movement/position.h"
 #include "lua/functions/map/position_functions.hpp"

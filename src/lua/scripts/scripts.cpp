@@ -19,7 +19,7 @@
 
 #include "otpch.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "creatures/combat/spells.h"
 #include "creatures/interactions/chat.h"
@@ -115,17 +115,15 @@ bool Scripts::loadScriptSystems() {
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
-	namespace fs = boost::filesystem;
-
-	const auto dir = fs::current_path() / "data" / "events" / "scripts" / "scheduler";
-	if(!fs::exists(dir) || !fs::is_directory(dir)) {
+	const auto dir = std::filesystem::current_path() / "data" / "events" / "scripts" / "scheduler";
+	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
 		SPDLOG_WARN("Can not load folder 'scheduler' on '/data/events/scripts'");
 		return false;
 	}
 
-	fs::recursive_directory_iterator endit;
-	for(fs::recursive_directory_iterator it(dir); it != endit; ++it) {
-		if(fs::is_regular_file(*it) && it->path().extension() == ".lua") {
+	std::filesystem::recursive_directory_iterator endit;
+	for(std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
+		if(std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			if (it->path().filename().string() == fileName) {
 				if(scriptInterface.loadFile(it->path().string()) == -1) {
 					SPDLOG_ERROR(it->path().string());
@@ -140,23 +138,21 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 }
 
 bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
-	namespace fs = boost::filesystem;
-
-	const auto dir = fs::current_path() / "data" / folderName;
-	if(!fs::exists(dir) || !fs::is_directory(dir)) {
+	const auto dir = std::filesystem::current_path() / "data" / folderName;
+	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
 		SPDLOG_ERROR("Can not load folder {}", folderName);
 		return false;
 	}
 
-	fs::recursive_directory_iterator endit;
-	std::vector<fs::path> v;
+	std::filesystem::recursive_directory_iterator endit;
+	std::vector<std::filesystem::path> v;
 	std::string disable = ("#");
-	for(fs::recursive_directory_iterator it(dir); it != endit; ++it) {
+	for(std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
 		auto fn = it->path().parent_path().filename();
 		if ((fn == "lib" && !isLib) || fn == "events") {
 			continue;
 		}
-		if(fs::is_regular_file(*it) && it->path().extension() == ".lua") {
+		if(std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			size_t found = it->path().filename().string().find(disable);
 			if (found != std::string::npos) {
 				if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {

@@ -1,6 +1,6 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,26 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_SERVER_SIGNALS_H_
-#define SRC_SERVER_SIGNALS_H_
+#ifndef SRC_UTILS_RANGE_HPP_
+#define SRC_UTILS_RANGE_HPP_
 
-#include <asio.hpp>
-
-class Signals
+template<typename It>
+class Range
 {
-	asio::signal_set set;
-	public:
-		explicit Signals(asio::io_service& service);
-
-	private:
-		void asyncWait();
-		static void dispatchSignalHandler(int signal);
-
-		static void sigbreakHandler();
-		static void sigintHandler();
-		static void sighupHandler();
-		static void sigtermHandler();
-		static void sigusr1Handler();
+	It b, e;
+public:
+	Range(It b, It e) : b(b), e(e) {}
+	It begin() const { return b; }
+	It end() const { return e; }
 };
 
-#endif  // SRC_SERVER_SIGNALS_H_
+template<typename ORange, typename OIt = decltype(std::rbegin(std::declval<ORange>())), typename It = std::reverse_iterator<OIt>>
+Range<It> reverse(ORange && originalRange) {
+	return Range<It>(It(std::rend(originalRange)), It(std::rbegin(originalRange)));
+}
+
+#endif // SRC_UTILS_RANGE_HPP_

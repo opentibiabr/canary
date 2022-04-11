@@ -24,7 +24,6 @@
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/pugicast.h"
 
 extern Game g_game;
 extern Spells* g_spells;
@@ -599,7 +598,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 			vocSpellMap[vocationId] = !attr || attr.as_bool();
 		} else {
 			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Wrong vocation name: {]", attr.as_string());
+                        "Wrong vocation name: {}", attr.as_string());
 		}
 	}
 	return true;

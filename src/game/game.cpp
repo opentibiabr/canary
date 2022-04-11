@@ -3584,7 +3584,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	const ItemAttributes::CustomAttribute* attr = item->getCustomAttribute("unWrapId");
 	uint16_t unWrapId = 0;
 	if (attr != nullptr) {
-		uint32_t tmp = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
+		uint32_t tmp = static_cast<uint32_t>(std::get<int64_t>(attr->value));
 		unWrapId = (uint16_t)tmp;
 	}
 

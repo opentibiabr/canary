@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "creatures/combat/spells.h"
 #include "creatures/creature.h"
 #include "creatures/interactions/chat.h"

@@ -70,10 +70,18 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 bool IOMap::loadMap(Map* map, const std::string& fileName)
 {
 	int64_t start = OTSYS_TIME();
-	OTB::Loader loader{fileName, OTB::Identifier{{'O', 'T', 'B', 'M'}}};
-	auto& root = loader.parseTree();
+	FileLoader loader;
+	if (!loader.openFile(fileName.c_str(), "OTBM")) {
+		std::ostringstream ostringStream;
+		ostringStream << "Could not open the file " << fileName << '.';
+		setLastErrorString(ostringStream.str());
+		return false;
+	}
+
+	uint32_t type;
 
 	PropStream propStream;
+	NODE root = loader.getChildNode(nullptr, type);
 	if (!loader.getProps(root, propStream)) {
 		setLastErrorString("Could not read root property.");
 		return false;
@@ -122,40 +130,47 @@ bool IOMap::loadMap(Map* map, const std::string& fileName)
 	map->width = root_header.width;
 	map->height = root_header.height;
 
-	if (root.children.size() != 1 || root.children[0].type != OTBM_MAP_DATA) {
+	NODE mapNode = loader.getChildNode(root, type);
+	if (type != OTBM_MAP_DATA) {
 		setLastErrorString("Could not read data node.");
 		return false;
 	}
-
-	auto& mapNode = root.children[0];
 	if (!parseMapDataAttributes(loader, mapNode, *map, fileName)) {
 		return false;
 	}
 
-	for (auto& mapDataNode : mapNode.children) {
-		if (mapDataNode.type == OTBM_TILE_AREA) {
-			if (!parseTileArea(loader, mapDataNode, *map)) {
+	NODE mapDataNode = loader.getChildNode(mapNode, type);
+	while (mapDataNode != NO_NODE) {
+		if (loader.getError() != ERROR_NONE) {
+			setLastErrorString("Invalid map node.");
+			return false;
+		}
+
+		if (type == OTBM_TILE_AREA) {
+			if (!parseTileArea(loader, mapDataNode, *map, type)) {
 				return false;
 			}
-		} else if (mapDataNode.type == OTBM_TOWNS) {
-			if (!parseTowns(loader, mapDataNode, *map)) {
+		} else if (type == OTBM_TOWNS) {
+			if (!parseTowns(loader, mapDataNode, *map, type)) {
 				return false;
 			}
-		} else if (mapDataNode.type == OTBM_WAYPOINTS && headerVersion > 1) {
-			if (!parseWaypoints(loader, mapDataNode, *map)) {
+		} else if (type == OTBM_WAYPOINTS && headerVersion > 1) {
+			if (!parseWaypoints(loader, mapDataNode, *map, type)) {
 				return false;
 			}
 		} else {
 			setLastErrorString("Unknown map node.");
 			return false;
 		}
+
+		mapDataNode = loader.getNextNode(mapDataNode, type);
 	}
 
 	SPDLOG_INFO("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
 	return true;
 }
 
-bool IOMap::parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::string& fileName)
+bool IOMap::parseMapDataAttributes(FileLoader& loader, NODE mapNode, Map& map, const std::string& fileName)
 {
 	PropStream propStream;
 	if (!loader.getProps(mapNode, propStream)) {
@@ -214,10 +229,10 @@ bool IOMap::parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode
 	return true;
 }
 
-bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map)
+bool IOMap::parseTileArea(FileLoader& loader, NODE mapDataNode, Map& map, uint32_t type)
 {
 	PropStream propStream;
-	if (!loader.getProps(tileAreaNode, propStream)) {
+	if (!loader.getProps(mapDataNode, propStream)) {
 		setLastErrorString("Invalid map node.");
 		return false;
 	}
@@ -233,9 +248,14 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 	uint16_t z = area_coord.z;
 
 	static std::map<uint64_t, uint64_t> teleportMap;
+	NODE tileNode = loader.getChildNode(mapDataNode, type);
+	while (tileNode != NO_NODE) {
+		if (loader.getError() != ERROR_NONE) {
+			setLastErrorString("Could not read node data.");
+			return false;
+		}
 
-	for (auto& tileNode : tileAreaNode.children) {
-		if (tileNode.type != OTBM_TILE && tileNode.type != OTBM_HOUSETILE) {
+		if (type != OTBM_TILE && type != OTBM_HOUSETILE) {
 			setLastErrorString("Unknown tile node.");
 			return false;
 		}
@@ -260,7 +280,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		Item* ground_item = nullptr;
 		uint32_t tileflags = TILESTATE_NONE;
 
-		if (tileNode.type == OTBM_HOUSETILE) {
+		if (type == OTBM_HOUSETILE) {
 			uint32_t houseId;
 			if (!propStream.read<uint32_t>(houseId)) {
 				std::ostringstream ss;
@@ -318,36 +338,36 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 						return false;
 					}
 
-			if (Teleport* teleport = item->getTeleport()) {
-				const Position& destPos = teleport->getDestPos();
-				uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
-				uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
-				teleportMap.emplace(teleportPosition, destinationPosition);
-				auto it = teleportMap.find(destinationPosition);
-				if (it != teleportMap.end()) {
-					SPDLOG_WARN("[IOMap::loadMap] - "
-                                "Teleport in position: x {}, y {}, z {} "
-                                "is leading to another teleport", x, y, z);
-				}
-				for (auto const& it2 : teleportMap) {
-					if (it2.second == teleportPosition) {
-						uint16_t fx = (it2.first >> 24) & 0xFFFF;
-						uint16_t fy = (it2.first >> 8) & 0xFFFF;
-						uint8_t fz = (it2.first) & 0xFF;
-						SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Teleport in position: x {}, y {}, z {} "
-                                    "is leading to another teleport",
-                                    fx, fy, static_cast<uint16_t>(fz));
-					}
-				}
+					if (Teleport* teleport = item->getTeleport()) {
+						const Position& destPos = teleport->getDestPos();
+						uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
+						uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
+						teleportMap.emplace(teleportPosition, destinationPosition);
+						auto it = teleportMap.find(destinationPosition);
+						if (it != teleportMap.end()) {
+							SPDLOG_WARN("[IOMap::loadMap] - "
+										"Teleport in position: x {}, y {}, z {} "
+										"is leading to another teleport", x, y, z);
+						}
+						for (auto const& it2 : teleportMap) {
+							if (it2.second == teleportPosition) {
+								uint16_t fx = (it2.first >> 24) & 0xFFFF;
+								uint16_t fy = (it2.first >> 8) & 0xFFFF;
+								uint8_t fz = (it2.first) & 0xFF;
+								SPDLOG_WARN("[IOMap::loadMap] - "
+											"Teleport in position: x {}, y {}, z {} "
+											"is leading to another teleport",
+											fx, fy, static_cast<uint16_t>(fz));
+							}
+						}
 
-			}
+					}
 
 					if (isHouseTile && item->isMoveable()) {
 						SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Moveable item with ID: {}, in house: {}, "
-                                    "at position: x {}, y {}, z {}",
-                                    item->getID(), house->getId(), x, y, z);
+									"Moveable item with ID: {}, in house: {}, "
+									"at position: x {}, y {}, z {}",
+									item->getID(), house->getId(), x, y, z);
 						delete item;
 					} else {
 						if (item->getItemCount() <= 0) {
@@ -369,18 +389,18 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 						}
 					}
 					break;
-				}
-
-				default:
+				} default: {
 					std::ostringstream ss;
 					ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown tile attribute.";
 					setLastErrorString(ss.str());
 					return false;
+				}
 			}
 		}
 
-		for (auto& itemNode : tileNode.children) {
-			if (itemNode.type != OTBM_ITEM) {
+		NODE itemNode = loader.getChildNode(tileNode, type);
+		while (itemNode) {
+			if (type != OTBM_ITEM) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown node type.";
 				setLastErrorString(ss.str());
@@ -411,9 +431,9 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 			if (isHouseTile && item->isMoveable()) {
 				SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Moveable item with ID: {}, in house: {}, "
-                                    "at position: x {}, y {}, z {}",
-                                    item->getID(), house->getId(), x, y, z);
+							"Moveable item with ID: {}, in house: {}, "
+							"at position: x {}, y {}, z {}",
+							item->getID(), house->getId(), x, y, z);
 				delete item;
 			} else {
 				if (item->getItemCount() <= 0) {
@@ -434,6 +454,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 					item->setLoadedFromMap(true);
 				}
 			}
+
+			itemNode = loader.getNextNode(itemNode, type);
 		}
 
 		if (!tile) {
@@ -443,15 +465,18 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		tile->setFlag(static_cast<TileFlags_t>(tileflags));
 
 		map.setTile(x, y, z, tile);
+
+		tileNode = loader.getNextNode(tileNode, type);
 	}
 	return true;
 }
 
-bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map)
+bool IOMap::parseTowns(FileLoader& loader, NODE mapDataNode, Map& map, uint32_t type)
 {
-	for (auto& townNode : townsNode.children) {
+	NODE townNode = loader.getChildNode(mapDataNode, type);
+	while (townNode != NO_NODE) {
 		PropStream propStream;
-		if (townNode.type != OTBM_TOWN) {
+		if (type != OTBM_TOWN) {
 			setLastErrorString("Unknown town node.");
 			return false;
 		}
@@ -488,21 +513,23 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 		}
 
 		town->setTemplePos(Position(town_coords.x, town_coords.y, town_coords.z));
+
+		townNode = loader.getNextNode(townNode, type);
 	}
 	return true;
 }
 
-
-bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map)
+bool IOMap::parseWaypoints(FileLoader& loader, NODE mapDataNode, Map& map, uint32_t type)
 {
 	PropStream propStream;
-	for (auto& node : waypointsNode.children) {
-		if (node.type != OTBM_WAYPOINT) {
+	NODE waypointsNode = loader.getChildNode(mapDataNode, type);
+	while (waypointsNode != NO_NODE) {
+		if (type != OTBM_WAYPOINT) {
 			setLastErrorString("Unknown waypoint node.");
 			return false;
 		}
 
-		if (!loader.getProps(node, propStream)) {
+		if (!loader.getProps(waypointsNode, propStream)) {
 			setLastErrorString("Could not read waypoint data.");
 			return false;
 		}
@@ -520,6 +547,8 @@ bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, 
 		}
 
 		map.waypoints[name] = Position(waypoint_coords.x, waypoint_coords.y, waypoint_coords.z);
+
+		waypointsNode = loader.getNextNode(waypointsNode, type);
 	}
 	return true;
 }

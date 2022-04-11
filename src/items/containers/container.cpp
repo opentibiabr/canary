@@ -150,22 +150,24 @@ Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return Item::readAttr(attr, propStream);
 }
 
-bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream)
+bool Container::unserializeItemNode(FileLoader& fileLoader, NODE node, PropStream& propStream)
 {
-	bool ret = Item::unserializeItemNode(loader, node, propStream);
+	bool ret = Item::unserializeItemNode(fileLoader, node, propStream);
 	if (!ret) {
 		return false;
 	}
 
-	for (auto& itemNode : node.children) {
+	uint32_t type;
+	NODE itemNode = fileLoader.getChildNode(node, type);
+	while (itemNode) {
 		//load container items
-		if (itemNode.type != OTBM_ITEM) {
+		if (type != OTBM_ITEM) {
 			// unknown type
 			return false;
 		}
 
 		PropStream itemPropStream;
-		if (!loader.getProps(itemNode, itemPropStream)) {
+		if (!fileLoader.getProps(itemNode, itemPropStream)) {
 			return false;
 		}
 
@@ -174,12 +176,14 @@ bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, 
 			return false;
 		}
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
+		if (!item->unserializeItemNode(fileLoader, itemNode, itemPropStream)) {
 			return false;
 		}
 
 		addItem(item);
 		updateItemWeight(item->getWeight());
+
+		itemNode = fileLoader.getNextNode(itemNode, type);
 	}
 	return true;
 }

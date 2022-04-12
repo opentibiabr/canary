@@ -22,7 +22,6 @@
 #include "game/movement/teleport.h"
 #include "game/game.h"
 
-extern Game g_game;
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
 {
@@ -75,7 +74,7 @@ bool Teleport::checkInfinityLoop(Tile* destTile) {
 		if (getPosition() == nextDestPos) {
 			return true;
 		}
-		return checkInfinityLoop(g_game.map.getTile(nextDestPos));
+		return checkInfinityLoop(g_game().map.getTile(nextDestPos));
 	}
 	return false;
 }
@@ -87,7 +86,7 @@ void Teleport::addThing(Thing* thing)
 
 void Teleport::addThing(int32_t, Thing* thing)
 {
-	Tile* destTile = g_game.map.getTile(destPos);
+	Tile* destTile = g_game().map.getTile(destPos);
 	if (!destTile) {
 		return;
 	}
@@ -104,18 +103,18 @@ void Teleport::addThing(int32_t, Thing* thing)
 
 	if (Creature* creature = thing->getCreature()) {
 		Position origPos = creature->getPosition();
-		g_game.internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
-		g_game.map.moveCreature(*creature, *destTile);
+		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
+		g_game().map.moveCreature(*creature, *destTile);
 		if (effect != CONST_ME_NONE) {
-			g_game.addMagicEffect(origPos, effect);
-			g_game.addMagicEffect(destTile->getPosition(), effect);
+			g_game().addMagicEffect(origPos, effect);
+			g_game().addMagicEffect(destTile->getPosition(), effect);
 		}
 	} else if (Item* item = thing->getItem()) {
 		if (effect != CONST_ME_NONE) {
-			g_game.addMagicEffect(destTile->getPosition(), effect);
-			g_game.addMagicEffect(item->getPosition(), effect);
+			g_game().addMagicEffect(destTile->getPosition(), effect);
+			g_game().addMagicEffect(item->getPosition(), effect);
 		}
-		g_game.internalMoveItem(getTile(), destTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+		g_game().internalMoveItem(getTile(), destTile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
 	}
 }
 

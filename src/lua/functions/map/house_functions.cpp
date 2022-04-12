@@ -28,7 +28,7 @@
 
 int HouseFunctions::luaHouseCreate(lua_State* L) {
 	// House(id)
-	House* house = g_game.map.houses.getHouse(getNumber<uint32_t>(L, 2));
+	House* house = g_game().map.houses.getHouse(getNumber<uint32_t>(L, 2));
 	if (house) {
 		pushUserdata<House>(L, house);
 		setMetatable(L, -1, "House");
@@ -68,7 +68,7 @@ int HouseFunctions::luaHouseGetTown(lua_State* L) {
 		return 1;
 	}
 
-	Town* town = g_game.map.towns.getTown(house->getTownId());
+	Town* town = g_game().map.towns.getTown(house->getTownId());
 	if (town) {
 		pushUserdata<Town>(L, town);
 		setMetatable(L, -1, "Town");
@@ -146,7 +146,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 		return 1;
 	}
 
-	if (g_game.map.houses.getHouseByPlayerId(tradePartner->getGUID())) {
+	if (g_game().map.houses.getHouseByPlayerId(tradePartner->getGUID())) {
 		lua_pushnumber(L, RETURNVALUE_TRADEPLAYERALREADYOWNSAHOUSE);
 		return 1;
 	}
@@ -163,7 +163,7 @@ int HouseFunctions::luaHouseStartTrade(lua_State* L) {
 	}
 
 	transferItem->getParent()->setParent(player);
-	if (!g_game.internalStartTrade(player, tradePartner, transferItem)) {
+	if (!g_game().internalStartTrade(player, tradePartner, transferItem)) {
 		house->resetTransferItem();
 	}
 

@@ -28,7 +28,6 @@
 
 #include "utils/pugicast.h"
 
-extern Game g_game;
 extern Spells* g_spells;
 extern Monsters g_monsters;
 
@@ -82,7 +81,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 bool MonsterType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;
-	bool isDay = g_game.gameIsDay();
+	bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
@@ -1468,7 +1467,7 @@ MonsterType* Monsters::getMonsterType(const std::string& name)
 }
 
 MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
-	std::map<uint16_t, std::string> raceid_list = g_game.getBestiaryList();
+	std::map<uint16_t, std::string> raceid_list = g_game().getBestiaryList();
 	auto it = raceid_list.find(thisrace);
 	if (it == raceid_list.end()) {
 		return nullptr;

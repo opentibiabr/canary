@@ -1,0 +1,58 @@
+name: Report a enhancement
+description: Any thing that is missing
+title: "[Enhancement]: "
+labels: ["Status: Pending Test", "Type: Enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this issue!
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How critical is this?
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: area
+    attributes:
+      label: Area
+      description: Where is the problem?
+      options:
+        - label: Datapack
+        - label: Docker
+        - label: Map
+        - label: Source
+    validations:
+      required: true
+
+  - type: textarea
+    id: enhancement
+    attributes:
+      label: Describe the enhancement
+      description: What should be improved
+    validations:
+      required: true
+
+  - type: textarea
+    id: attach
+    attributes:
+      label: Attach any relevant file
+      description: Attach screenshots, logs, etc, anything that can helps us
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

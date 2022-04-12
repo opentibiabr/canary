@@ -30,14 +30,13 @@
 
 #include "utils/pugicast.h"
 
-extern Game g_game;
 extern Spells* g_spells;
 extern Npcs g_npcs;
 
 bool NpcType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;
-	bool isDay = g_game.gameIsDay();
+	bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {

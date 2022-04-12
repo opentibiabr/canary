@@ -51,7 +51,6 @@ DatabaseTasks g_databaseTasks;
 Dispatcher g_dispatcher;
 Scheduler g_scheduler;
 
-Game g_game;
 extern Events* g_events;
 extern Imbuements* g_imbuements;
 extern LuaEnvironment g_luaEnvironment;
@@ -222,7 +221,7 @@ void loadModules() {
 		"data/scripts/libs");
 	modulesLoadHelper(g_vocations.loadFromXml(),
 		"data/XML/vocations.xml");
-	modulesLoadHelper(g_game.loadScheduleEventFromXml(),
+	modulesLoadHelper(g_game().loadScheduleEventFromXml(),
 		"data/XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
 		"data/XML/outfits.xml");
@@ -241,7 +240,7 @@ void loadModules() {
 	modulesLoadHelper(g_scripts->loadScripts("npclua", false, false),
 		"data/npclua");
 
-	g_game.loadBoostedCreature();
+	g_game().loadBoostedCreature();
 }
 
 #ifndef UNIT_TESTING
@@ -288,7 +287,7 @@ int main(int argc, char* argv[]) {
 
 void mainLoader(int, char*[], ServiceManager* services) {
 	// dispatcher thread
-	g_game.setGameState(GAME_STATE_STARTUP);
+	g_game().setGameState(GAME_STATE_STARTUP);
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 #ifdef _WIN32
@@ -351,11 +350,11 @@ SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
 
 	std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE));
 	if (worldType == "pvp") {
-		g_game.setWorldType(WORLD_TYPE_PVP);
+		g_game().setWorldType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
-		g_game.setWorldType(WORLD_TYPE_NO_PVP);
+		g_game().setWorldType(WORLD_TYPE_NO_PVP);
 	} else if (worldType == "pvp-enforced") {
-		g_game.setWorldType(WORLD_TYPE_PVP_ENFORCED);
+		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		SPDLOG_ERROR("Unknown world type: {}, valid world types are: pvp, no-pvp "
 			"and pvp-enforced", g_configManager().getString(WORLD_TYPE));
@@ -365,7 +364,7 @@ SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
 	SPDLOG_INFO("World type set as {}", asUpperCaseString(worldType));
 
 	SPDLOG_INFO("Loading map...");
-	if (!g_game.loadMainMap(g_configManager().getString(MAP_NAME))) {
+	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
 		SPDLOG_ERROR("Failed to load map");
 		startupErrorMessage();
 	}
@@ -373,14 +372,14 @@ SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
 	// If "mapCustomEnabled" is true on config.lua, then load the custom map
 	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
 		SPDLOG_INFO("Loading custom map...");
-		if (!g_game.loadCustomMap(g_configManager().getString(MAP_CUSTOM_NAME))) {
+		if (!g_game().loadCustomMap(g_configManager().getString(MAP_CUSTOM_NAME))) {
 			SPDLOG_ERROR("Failed to load custom map");
 			startupErrorMessage();
 		}
 	}
 
 	SPDLOG_INFO("Initializing gamestate...");
-	g_game.setGameState(GAME_STATE_INIT);
+	g_game().setGameState(GAME_STATE_INIT);
 
 	// Game client protocols
 	services->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT)));
@@ -403,7 +402,7 @@ SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
 		rentPeriod = RENTPERIOD_NEVER;
 	}
 
-	g_game.map.houses.payHouses(rentPeriod);
+	g_game().map.houses.payHouses(rentPeriod);
 
 	IOMarket::checkExpiredOffers();
 	IOMarket::getInstance().updateStatistics();
@@ -418,8 +417,8 @@ SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
 	}
 #endif
 
-	g_game.start(services);
-	g_game.setGameState(GAME_STATE_NORMAL);
+	g_game().start(services);
+	g_game().setGameState(GAME_STATE_NORMAL);
 
 	webhook_init();
 

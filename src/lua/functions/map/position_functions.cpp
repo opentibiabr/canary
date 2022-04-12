@@ -113,7 +113,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
 	std::forward_list<Direction> dirList;
-	if (g_game.map.getPathMatching(pos, dirList, FrozenPathingConditionCall(position), fpp)) {
+	if (g_game().map.getPathMatching(pos, dirList, FrozenPathingConditionCall(position), fpp)) {
 		lua_newtable(L);
 
 		int index = 0;
@@ -133,7 +133,7 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 	bool sameFloor = getBoolean(L, 3, true);
 	const Position& positionEx = getPosition(L, 2);
 	const Position& position = getPosition(L, 1);
-	pushBoolean(L, g_game.isSightClear(position, positionEx, sameFloor));
+	pushBoolean(L, g_game().isSightClear(position, positionEx, sameFloor));
 	return 1;
 }
 
@@ -152,7 +152,7 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	if (!spectators.empty()) {
 		Game::addMagicEffect(spectators, position, magicEffect);
 	} else {
-		g_game.addMagicEffect(position, magicEffect);
+		g_game().addMagicEffect(position, magicEffect);
 	}
 
 	pushBoolean(L, true);
@@ -175,7 +175,7 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	if (!spectators.empty()) {
 		Game::addDistanceEffect(spectators, position, positionEx, distanceEffect);
 	} else {
-		g_game.addDistanceEffect(position, positionEx, distanceEffect);
+		g_game().addDistanceEffect(position, positionEx, distanceEffect);
 	}
 
 	pushBoolean(L, true);

@@ -24,7 +24,6 @@
 #include "io/iomap.h"
 #include "game/game.h"
 
-extern Game g_game;
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -58,7 +57,7 @@ Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
 Container::~Container()
 {
 	if (getID() == ITEM_BROWSEFIELD) {
-		g_game.browseFields.erase(getTile());
+		g_game().browseFields.erase(getTile());
 
 		for (Item* item : itemlist) {
 			item->setParent(parent);
@@ -288,7 +287,7 @@ bool Container::isHoldingItem(const Item* item) const
 void Container::onAddContainerItem(Item* item)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send to client
 	for (Creature* spectator : spectators) {
@@ -304,7 +303,7 @@ void Container::onAddContainerItem(Item* item)
 void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newItem)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send to client
 	for (Creature* spectator : spectators) {
@@ -320,7 +319,7 @@ void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newIt
 void Container::onRemoveContainerItem(uint32_t index, Item* item)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send change to client
 	for (Creature* spectator : spectators) {

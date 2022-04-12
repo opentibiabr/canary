@@ -23,7 +23,6 @@
 #include "game/game.h"
 #include "lua/creature/events.h"
 
-extern Game g_game;
 extern Events* g_events;
 
 Party::Party(Player* initLeader) : leader(initLeader)
@@ -42,7 +41,7 @@ void Party::disband()
 
 	currentLeader->setParty(nullptr);
 	currentLeader->sendClosePrivate(CHANNEL_PARTY);
-	g_game.updatePlayerShield(currentLeader);
+	g_game().updatePlayerShield(currentLeader);
 	currentLeader->sendCreatureSkull(currentLeader);
 	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
 
@@ -59,7 +58,7 @@ void Party::disband()
 	}
 
 	for (Player* member : memberList) {
-		g_game.updatePlayerShield(member);
+		g_game().updatePlayerShield(member);
 
 		for (Player* otherMember : memberList) {
 			otherMember->sendCreatureSkull(member);
@@ -107,7 +106,7 @@ bool Party::leaveParty(Player* player)
 
 	player->setParty(nullptr);
 	player->sendClosePrivate(CHANNEL_PARTY);
-	g_game.updatePlayerShield(player);
+	g_game().updatePlayerShield(player);
 
 	for (Player* member : memberList) {
 		member->sendCreatureSkull(player);
@@ -196,7 +195,7 @@ bool Party::joinParty(Player& player)
 
 	player.setParty(this);
 
-	g_game.updatePlayerShield(&player);
+	g_game().updatePlayerShield(&player);
 
 	for (Player* member : memberList) {
 		member->sendCreatureSkull(&player);
@@ -269,7 +268,7 @@ bool Party::invitePlayer(Player& player)
 
 	if (empty()) {
 		ss << " Open the party channel to communicate with your members.";
-		g_game.updatePlayerShield(leader);
+		g_game().updatePlayerShield(leader);
 		leader->sendCreatureSkull(leader);
 	}
 
@@ -440,7 +439,7 @@ void Party::clearPlayerPoints(Player* player)
 
 bool Party::canOpenCorpse(uint32_t ownerId) const
 {
-	if (Player* player = g_game.getPlayerByID(ownerId)) {
+	if (const Player* player = g_game().getPlayerByID(ownerId)) {
 		return leader->getID() == ownerId || player->getParty() == this;
 	}
 	return false;

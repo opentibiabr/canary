@@ -29,26 +29,36 @@ public:
 	 * @brief Convert from char* to int/uint
 	 * @param charString Value to convert
 	 * @return int
-	 */
-	static int intFromChar(const char* charString) { 
-		try {
-			return std::atoi(charString);
-		} catch (std::exception& exception) {
-			SPDLOG_ERROR("[LexicalCast::intFromChar] - Cannot convert {}", exception.what());
-		}
+	*/
+	static int intFromChar(const char* charString) try { 
+		return std::atoi(charString);
+	} catch (const std::exception& exception) {
+		SPDLOG_ERROR("[LexicalCast::intFromChar] - Cannot convert from char* to int {}", exception.what());
+		return 0;
 	}
 	/**
 	 * @brief Convert from char* to float
 	 * 
 	 * @param charString Value to convert
 	 * @return float
-	 */
-	static float floatFromChar(const char* charString) { 
-		try {
-			return std::stof(charString);
-		} catch (std::exception& exception) {
-			SPDLOG_ERROR("[LexicalCast::floatFromChar] - Cannot convert {}", exception.what());
-		}
+	*/
+	static float floatFromChar(const char* charString) try { 
+		return std::stof(charString);
+	} catch (const std::exception& exception) {
+		SPDLOG_ERROR("[LexicalCast::floatFromChar] - Cannot convert from char* to float {}", exception.what());
+		throw exception;
+	}
+	/**
+	 * @brief Convert from char* to double
+	 * 
+	 * @param charString 
+	 * @return double 
+	*/
+	static double doubleFromChar(const char* charString) try { 
+		return std::stod(charString);
+	} catch (const std::exception& exception) {
+		SPDLOG_ERROR("[LexicalCast::doubleFromChar] - Cannot convert from char* to double {}", exception.what());
+		throw exception;
 	}
 };
 

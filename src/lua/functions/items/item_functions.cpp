@@ -160,7 +160,7 @@ int ItemFunctions::luaItemSplit(lua_State* L) {
 	ScriptEnvironment* env = getScriptEnv();
 	uint32_t uid = env->addThing(item);
 
-	Item* newItem = g_game.transformItem(item, item->getID(), diff);
+	Item* newItem = g_game().transformItem(item, item->getID(), diff);
 	if (item->isRemoved()) {
 		env->removeItemByUID(uid);
 	}
@@ -184,7 +184,7 @@ int ItemFunctions::luaItemRemove(lua_State* L) {
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
 		int32_t count = getNumber<int32_t>(L, 2, -1);
-		pushBoolean(L, g_game.internalRemoveItem(item, count) == RETURNVALUE_NOERROR);
+		pushBoolean(L, g_game().internalRemoveItem(item, count) == RETURNVALUE_NOERROR);
 	} else {
 		lua_pushnil(L);
 	}
@@ -620,7 +620,7 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 				break;
 		}
 	} else {
-		toCylinder = g_game.map.getTile(getPosition(L, 2));
+		toCylinder = g_game().map.getTile(getPosition(L, 2));
 	}
 
 	if (!toCylinder) {
@@ -636,10 +636,10 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 	uint32_t flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE);
 
 	if (item->getParent() == VirtualCylinder::virtualCylinder) {
-		pushBoolean(L, g_game.internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
+		pushBoolean(L, g_game().internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
 	} else {
 		Item* moveItem = nullptr;
-		ReturnValue ret = g_game.internalMoveItem(item->getParent(), toCylinder, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags);
+		ReturnValue ret = g_game().internalMoveItem(item->getParent(), toCylinder, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags);
 		if (moveItem) {
 			*itemPtr = moveItem;
 		}
@@ -687,7 +687,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 	ScriptEnvironment* env = getScriptEnv();
 	uint32_t uid = env->addThing(item);
 
-	Item* newItem = g_game.transformItem(item, itemId, subType);
+	Item* newItem = g_game().transformItem(item, itemId, subType);
 	if (item->isRemoved()) {
 		env->removeItemByUID(uid);
 	}
@@ -735,7 +735,7 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 	Slots_t slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
 
 	Item* moveItem = nullptr;
-	ReturnValue ret = g_game.internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
+	ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
 	if (moveItem) {
 		item = moveItem;
 	}

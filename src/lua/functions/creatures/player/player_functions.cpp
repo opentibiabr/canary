@@ -151,12 +151,12 @@ int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 	if (isNumber(L, 2)) {
 		uint32_t id = getNumber<uint32_t>(L, 2);
 		if (id >= 0x10000000 && id <= Player::playerAutoID) {
-			player = g_game.getPlayerByID(id);
+			player = g_game().getPlayerByID(id);
 		} else {
-			player = g_game.getPlayerByGUID(id);
+			player = g_game().getPlayerByGUID(id);
 		}
 	} else if (isString(L, 2)) {
-		ReturnValue ret = g_game.getPlayerByNameWildcard(getString(L, 2), player);
+		ReturnValue ret = g_game().getPlayerByNameWildcard(getString(L, 2), player);
 		if (ret != RETURNVALUE_NOERROR) {
 			lua_pushnil(L);
 			lua_pushnumber(L, ret);
@@ -881,7 +881,7 @@ int PlayerFunctions::luaPlayerAddMana(lua_State* L) {
 		CombatDamage damage;
 		damage.primary.value = manaChange;
 		damage.origin = ORIGIN_NONE;
-		g_game.combatChangeMana(nullptr, player, damage);
+		g_game().combatChangeMana(nullptr, player, damage);
 	}
 	pushBoolean(L, true);
 	return 1;
@@ -904,7 +904,7 @@ int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	if (player) {
 		player->manaMax = getNumber<int32_t>(L, 2);
 		player->mana = std::min<int32_t>(player->mana, player->manaMax);
-		g_game.addPlayerMana(player);
+		g_game().addPlayerMana(player);
 		player->sendStats();
 		pushBoolean(L, true);
 	} else {
@@ -1234,7 +1234,7 @@ int PlayerFunctions::luaPlayerGetItemById(lua_State* L) {
 	bool deepSearch = getBoolean(L, 3);
 	int32_t subType = getNumber<int32_t>(L, 4, -1);
 
-	Item* item = g_game.findItemOfType(player, itemId, deepSearch, subType);
+	Item* item = g_game().findItemOfType(player, itemId, deepSearch, subType);
 	if (item) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -1663,7 +1663,7 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 			return 1;
 		}
 
-		ReturnValue ret = g_game.internalPlayerAddItem(player, item, canDropOnMap, slot);
+		ReturnValue ret = g_game().internalPlayerAddItem(player, item, canDropOnMap, slot);
 		if (ret != RETURNVALUE_NOERROR) {
 			delete item;
 			if (!hasTable) {
@@ -1711,11 +1711,11 @@ int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	ReturnValue returnValue;
 	if (canDropOnMap) {
 		Slots_t slot = getNumber<Slots_t>(L, 4, CONST_SLOT_WHEREEVER);
-		returnValue = g_game.internalPlayerAddItem(player, item, true, slot);
+		returnValue = g_game().internalPlayerAddItem(player, item, true, slot);
 	} else {
 		int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
 		uint32_t flags = getNumber<uint32_t>(L, 5, 0);
-		returnValue = g_game.internalAddItem(player, item, index, flags);
+		returnValue = g_game().internalAddItem(player, item, index, flags);
 	}
 
 	if (returnValue == RETURNVALUE_NOERROR) {
@@ -1836,7 +1836,7 @@ int PlayerFunctions::luaPlayerAddMoney(lua_State* L) {
 	uint64_t money = getNumber<uint64_t>(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		g_game.addMoney(player, money);
+		g_game().addMoney(player, money);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1849,7 +1849,7 @@ int PlayerFunctions::luaPlayerRemoveMoney(lua_State* L) {
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
 		uint64_t money = getNumber<uint64_t>(L, 2);
-		pushBoolean(L, g_game.removeMoney(player, money));
+		pushBoolean(L, g_game().removeMoney(player, money));
 	} else {
 		lua_pushnil(L);
 	}
@@ -2008,7 +2008,7 @@ int PlayerFunctions::luaPlayerOpenChannel(lua_State* L) {
 	uint16_t channelId = getNumber<uint16_t>(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		g_game.playerOpenChannel(player->getID(), channelId);
+		g_game().playerOpenChannel(player->getID(), channelId);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -2147,7 +2147,7 @@ int PlayerFunctions::luaPlayerAddMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		Mount* mount = g_game.mounts.getMountByName(getString(L, 2));
+		Mount* mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2170,7 +2170,7 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 	if (isNumber(L, 2)) {
 		mountId = getNumber<uint8_t>(L, 2);
 	} else {
-		Mount* mount = g_game.mounts.getMountByName(getString(L, 2));
+		Mount* mount = g_game().mounts.getMountByName(getString(L, 2));
 		if (!mount) {
 			lua_pushnil(L);
 			return 1;
@@ -2191,9 +2191,9 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 
 	Mount* mount = nullptr;
 	if (isNumber(L, 2)) {
-		mount = g_game.mounts.getMountByID(getNumber<uint8_t>(L, 2));
+		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
 	} else {
-		mount = g_game.mounts.getMountByName(getString(L, 2));
+		mount = g_game().mounts.getMountByName(getString(L, 2));
 	}
 
 	if (mount) {
@@ -2632,7 +2632,7 @@ int PlayerFunctions::luaPlayerGetHouse(lua_State* L) {
 		return 1;
 	}
 
-	House* house = g_game.map.houses.getHouseByPlayerId(player->getGUID());
+	House* house = g_game().map.houses.getHouseByPlayerId(player->getGUID());
 	if (house) {
 		pushUserdata<House>(L, house);
 		setMetatable(L, -1, "House");
@@ -2702,7 +2702,7 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	const Position& position = player->getPosition();
 
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, position, true, true);
+	g_game().map.getSpectators(spectators, position, true, true);
 	for (Creature* spectator : spectators) {
 		Player* tmpPlayer = spectator->getPlayer();
 		if (tmpPlayer != player && !tmpPlayer->isAccessPlayer()) {
@@ -2717,14 +2717,14 @@ int PlayerFunctions::luaPlayerSetGhostMode(lua_State* L) {
 	}
 
 	if (player->isInGhostMode()) {
-		for (const auto& it : g_game.getPlayers()) {
+		for (const auto& it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
 				it.second->notifyStatusChange(player, VIPSTATUS_OFFLINE);
 			}
 		}
 		IOLoginData::updateOnlineStatus(player->getGUID(), false);
 	} else {
-		for (const auto& it : g_game.getPlayers()) {
+		for (const auto& it : g_game().getPlayers()) {
 			if (!it.second->isAccessPlayer()) {
 				it.second->notifyStatusChange(player, player->statusVipList);
 			}

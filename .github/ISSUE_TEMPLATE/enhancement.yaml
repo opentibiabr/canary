@@ -1,25 +1,11 @@
 name: Report a enhancement
 description: Any thing that is missing
-title: "[Enhancement]: "
 labels: ["Status: Pending Test", "Type: Enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
         Thanks for taking the time to fill out this issue!
-
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority
-      description: How critical is this?
-      options:
-        - Low
-        - Medium
-        - High
-        - Critical
-    validations:
-      required: true
 
   - type: checkboxes
     id: area
@@ -38,15 +24,9 @@ body:
     id: enhancement
     attributes:
       label: Describe the enhancement
-      description: What should be improved
+      description: What should be improved? Attach screenshots, logs, etc, anything that can helps us
     validations:
       required: true
-
-  - type: textarea
-    id: attach
-    attributes:
-      label: Attach any relevant file
-      description: Attach screenshots, logs, etc, anything that can helps us
 
   - type: checkboxes
     id: terms

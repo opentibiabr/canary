@@ -4,6 +4,9 @@ name: Build - Windows
 on:
   workflow_dispatch:
   pull_request:
+  push:
+    branches:
+      - main
 
 env:
   VCPKG_BUILD_TYPE: release

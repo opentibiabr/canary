@@ -1,6 +1,5 @@
 name: Report a problem/bug
 description: Any issues that you have found while using the server
-title: "[Bug]: "
 labels: ["Status: Pending Test", "Type: Bug"]
 body:
   - type: markdown
@@ -21,7 +20,6 @@ body:
     validations:
       required: true
 
-
   - type: checkboxes
     id: area
     attributes:
@@ -39,37 +37,11 @@ body:
     id: what-happened
     attributes:
       label: What happened?
-      description: Describe the problem/bug!
+      description: Describe your problem/bug and add screenshots, logs or anything that can help verifying the bug
       placeholder: Tell us what you see!
       value: "A bug happened!"
     validations:
       required: true
-
-  - type: textarea
-    id: steps-reproduce
-    attributes:
-      label: How to Reproduce?
-      description: Steps to reproduce the problem, position on the map, etc
-      placeholder: Tell us exactly how to reproduce and the position on the map!
-      value: |
-        1 - go to position 134,543,7
-        2 - Try to open the door
-        3 - Door doesn't open!
-    validations:
-      required: true
-
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backtick.
-      render: shell
-
-  - type: textarea
-    id: attach
-    attributes:
-      label: Attach any relevant file
-      description: Attach screenshots, full logs, etc ... that helps verifying the bug
 
   - type: dropdown
     id: os

@@ -1,6 +1,9 @@
 ---
 name: Analysis - Review Dog
-on: [pull_request]
+
+on:
+  pull_request:
+
 jobs:
 
   cppcheck:

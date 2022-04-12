@@ -46,7 +46,7 @@ public:
 		return std::stof(charString);
 	} catch (const std::exception& exception) {
 		SPDLOG_ERROR("[LexicalCast::floatFromChar] - Cannot convert from char* to float {}", exception.what());
-		throw exception;
+		throw;
 	}
 	/**
 	 * @brief Convert from char* to double
@@ -58,7 +58,7 @@ public:
 		return std::stod(charString);
 	} catch (const std::exception& exception) {
 		SPDLOG_ERROR("[LexicalCast::doubleFromChar] - Cannot convert from char* to double {}", exception.what());
-		throw exception;
+		throw;
 	}
 };
 

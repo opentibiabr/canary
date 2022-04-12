@@ -1,7 +1,5 @@
-name: Report a missing content
-description: Any thing that is missing
-title: "[Content]: "
-labels: ["Status: Pending Test", "Type: Missing Content"]
+name: Request
+description: Any request
 body:
   - type: markdown
     attributes:
@@ -14,10 +12,8 @@ body:
       label: Priority
       description: How critical is this?
       options:
-        - Low
-        - Medium
-        - High
-        - Critical
+        - Missing Content
+        - Enhancement
     validations:
       required: true
 
@@ -28,9 +24,9 @@ body:
       description: Where is the problem?
       options:
         - label: Datapack
-        - label: Docker
-        - label: Map
         - label: Source
+        - label: Map
+        - label: Other
     validations:
       required: true
 
@@ -38,22 +34,9 @@ body:
     id: missing-content
     attributes:
       label: What is missing?
-      description: Map, sprite, script, quest, teleport, monster, etc
+      description: Map, sprite, script, quest, teleport, monster, etc. Attach screenshots, logs, etc, anything that can helps us
     validations:
       required: true
-
-  - type: textarea
-    id: logs
-    attributes:
-      label: Relevant log output
-      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backtick.
-      render: shell
-
-  - type: textarea
-    id: attach
-    attributes:
-      label: Attach any relevant file
-      description: Attach screenshots, logs, etc, anything that can helps us
 
   - type: checkboxes
     id: terms

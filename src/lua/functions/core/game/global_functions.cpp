@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "creatures/interactions/chat.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"

@@ -19,7 +19,9 @@
 
 #include "otpch.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
 #include "libzippp.h"
 
 #include "io/iomap.h"
@@ -42,7 +44,7 @@ bool Map::load(const std::string& identifier) {
 }
 
 bool Map::extractMap(const std::string& identifier) const {
-	if (boost::filesystem::exists(identifier)) {
+	if (std::filesystem::exists(identifier)) {
 		return true;
 	}
 	

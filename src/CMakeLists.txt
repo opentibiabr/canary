@@ -3,7 +3,9 @@ project(canary)
 # *****************************************************************************
 # Cmake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(GNUCXX_MINIMUM_VERSION 9)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -27,7 +29,6 @@ option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" ON)
 
-
 # *****************************************************************************
 # Client
 # *****************************************************************************
@@ -36,7 +37,6 @@ if (MSVC)
 else()
   add_executable(${PROJECT_NAME} "")
 endif()
-
 
 # *****************************************************************************
 # DEBUG: Print cmake variables
@@ -97,33 +97,41 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
+# Define "__cplusplus" for use in the compile on visual studio
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:__cplusplus")
+endif()
+
+# Set for supress deprecated declarations (for GCC/GNU)
+# If not is GCC version 11, return message of error
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
+    message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
+  endif()
+endif()
 
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
+find_package(Asio REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(LuaJIT REQUIRED)
+find_package(Threads REQUIRED)
+find_package(libzippp REQUIRED)
+find_package(cryptopp CONFIG REQUIRED)
 if (MSVC)
-  find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
-  find_package(cryptopp CONFIG REQUIRED)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
-  find_package(LuaJIT REQUIRED)
   find_package(MySQL REQUIRED)
   find_package(PugiXML REQUIRED)
-  find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
-  find_package(libzippp CONFIG REQUIRED)
 else()
-  find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
-  find_package(cryptopp CONFIG REQUIRED)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
-  find_package(LuaJIT REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
-  find_package(spdlog CONFIG REQUIRED)
-  find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
-  find_package(libzippp CONFIG REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -279,25 +287,26 @@ target_include_directories(${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/src
     ${MYSQL_INCLUDE_DIR}
     ${LUA_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
     ${PUGIXML_INCLUDE_DIR}
     ${CRYPTOPP_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    ${SPDLOG_INCLUDE_DIR}
+    asio::asio
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     ${MYSQL_CLIENT_LIBS}
     ${LUA_LIBRARIES}
-    ${Boost_LIBRARY_DIRS}
-    ${Boost_LIBRARIES}
     ${PUGIXML_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
+    ${SPDLOG_LIBRARY}
+    fmt::fmt
     jsoncpp_lib
-    spdlog::spdlog
     libzippp::libzippp
+    asio::asio
 )
 
 else()
@@ -310,11 +319,6 @@ else()
 
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
-      Boost::boost
-      Boost::date_time
-      Boost::filesystem
-      Boost::iostreams
-      Boost::system
       cryptopp-static
       CURL::libcurl
       jsoncpp_static

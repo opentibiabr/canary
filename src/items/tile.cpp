@@ -19,7 +19,8 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
+#include <iterator>
+#include <algorithm>
 
 #include "items/tile.h"
 
@@ -1234,10 +1235,10 @@ int32_t Tile::getClientIndexOfCreature(const Player* player, const Creature* cre
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (CreatureVector::const_reverse_iterator it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				++n;
 			}
 		}
@@ -1263,10 +1264,10 @@ int32_t Tile::getStackposOfCreature(const Player* player, const Creature* creatu
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (CreatureVector::const_reverse_iterator it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				if (++n >= 10) {
 					return -1;
 				}

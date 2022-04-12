@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "items/item.h"
 #include "items/weapons/weapons.h"
 #include "creatures/players/imbuements/imbuements.h"

@@ -2,15 +2,10 @@
   "name": "canary",
   "version-string": "1.0.0",
   "dependencies": [
-    "boost-asio",
-    "boost-lockfree",
-    "boost-variant",
-    "boost-filesystem",
-    "boost-iostreams",
-    "boost-system",
     { "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },
+    "asio",
     "pugixml",
     "spdlog",
     "curl",

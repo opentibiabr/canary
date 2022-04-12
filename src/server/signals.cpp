@@ -49,9 +49,9 @@ extern Events* g_events;
 extern Chat* g_chat;
 extern LuaEnvironment g_luaEnvironment;
 
-using ErrorCode = boost::system::error_code;
+using ErrorCode = std::error_code;
 
-Signals::Signals(boost::asio::io_service& service) :
+Signals::Signals(asio::io_service& service) :
 	set(service)
 {
 	set.add(SIGINT);

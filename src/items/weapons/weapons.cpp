@@ -21,8 +21,8 @@
 
 #include "creatures/combat/combat.h"
 #include "game/game.h"
-#include "utils/pugicast.h"
 #include "lua/creature/events.h"
+#include "utils/lexical_cast.hpp"
 #include "items/weapons/weapons.h"
 
 extern Vocations g_vocations;
@@ -165,26 +165,26 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 		SPDLOG_ERROR("[Weapon::configureEvent] - Weapon without id");
 		return false;
 	}
-	id = pugi::cast<uint16_t>(attr.value());
+	id = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 	if ((attr = node.attribute("level"))) {
-		level = pugi::cast<uint32_t>(attr.value());
+		level = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("maglv")) || (attr = node.attribute("maglevel"))) {
-		magLevel = pugi::cast<uint32_t>(attr.value());
+		magLevel = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("mana"))) {
-		mana = pugi::cast<uint32_t>(attr.value());
+		mana = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = pugi::cast<uint32_t>(attr.value());
+		manaPercent = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("soul"))) {
-		soul = pugi::cast<uint32_t>(attr.value());
+		soul = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("prem"))) {
@@ -192,7 +192,7 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("breakchance")) && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
-		breakChance = std::min<uint8_t>(100, pugi::cast<uint16_t>(attr.value()));
+		breakChance = std::min<uint8_t>(100, static_cast<uint16_t>(LexicalCast::intFromChar(attr.value())));
 	}
 
 	if ((attr = node.attribute("action"))) {
@@ -971,11 +971,11 @@ bool WeaponWand::configureEvent(const pugi::xml_node& node)
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("min"))) {
-		minChange = pugi::cast<int32_t>(attr.value());
+		minChange = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("max"))) {
-		maxChange = pugi::cast<int32_t>(attr.value());
+		maxChange = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	attr = node.attribute("type");

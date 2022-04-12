@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "lua/functions/core/libs/bit_functions.hpp"
 
 #ifndef LUAJIT_VERSION

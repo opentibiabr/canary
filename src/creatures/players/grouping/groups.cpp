@@ -21,7 +21,7 @@
 
 #include "creatures/players/grouping/groups.h"
 
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
 const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
@@ -81,12 +81,12 @@ bool Groups::load()
 
 	for (auto groupNode : doc.child("groups").children()) {
 		Group group;
-		group.id = pugi::cast<uint32_t>(groupNode.attribute("id").value());
+		group.id = static_cast<uint32_t>(LexicalCast::intFromChar(groupNode.attribute("id").value()));
 		group.name = groupNode.attribute("name").as_string();
 		group.access = groupNode.attribute("access").as_bool();
-		group.maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
-		group.maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
-		group.flags = pugi::cast<uint64_t>(groupNode.attribute("flags").value());
+		group.maxDepotItems = static_cast<uint32_t>(LexicalCast::intFromChar(groupNode.attribute("maxdepotitems").value()));
+		group.maxVipEntries = static_cast<uint32_t>(LexicalCast::intFromChar(groupNode.attribute("maxvipentries").value()));
+		group.flags = static_cast<uint64_t>(LexicalCast::intFromChar(groupNode.attribute("flags").value()));
 		if (pugi::xml_node node = groupNode.child("flags")) {
 			for (auto flagNode : node.children()) {
 				pugi::xml_attribute attr = flagNode.first_attribute();
@@ -100,9 +100,10 @@ bool Groups::load()
 				}
 			}
 		}
-    group.customflags = pugi::cast<uint64_t>(groupNode.attribute("customflags").value());
-    if (pugi::xml_node node = groupNode.child("customflags")) {
-      for (auto customflagNode : node.children()) {
+		group.customflags = static_cast<uint64_t>(LexicalCast::intFromChar(groupNode.attribute("customflags").value()));
+
+		if (pugi::xml_node node = groupNode.child("customflags")) {
+			for (auto customflagNode : node.children()) {
 				pugi::xml_attribute attr = customflagNode.first_attribute();
 				if (!attr || (attr && !attr.as_bool())) {
 					continue;

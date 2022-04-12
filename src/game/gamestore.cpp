@@ -19,11 +19,9 @@
 
 #include "otpch.h"
 
-#include <boost/algorithm/string.hpp>
-
 #include "database/database.h"
 #include "game/gamestore.h"
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
 uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;
@@ -31,7 +29,8 @@ uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;
 std::vector<std::string> getIconsVector(std::string rawString)
 {
 	std::vector<std::string> icons;
-	boost::split(icons, rawString, boost::is_any_of("|")); //converting the |-separated string to a vector of tokens
+	// Converting the |-separated string to a vector of tokens
+	splitStrings("|", rawString, std::back_inserter(icons));
 	icons.shrink_to_fit();
 	return icons;
 }
@@ -40,8 +39,7 @@ std::vector<uint8_t> getIntVector(std::string rawString)
 {
 	std::vector<uint8_t> ints;
 	std::vector<std::string> rawInts;
-	boost::split(rawInts, rawString, boost::is_any_of("|"));
-
+	splitStrings("|", rawString, std::back_inserter(rawInts));
 	for(std::string numStr : rawInts) {
 		uint8_t i = (uint8_t)std::stoi(numStr) ;
 		ints.push_back(i);
@@ -92,13 +90,14 @@ bool GameStore::loadFromXml()
 			}
 
 			std::string state = categoryNode.attribute("state").as_string("normal");
-			if (boost::iequals(state, "normal")) { //reading state (defaults to normal)
+			//reading state (defaults to normal)
+			if (strcasecmp(state.c_str(), "normal") == 0) {
 				cat->state = StoreState_t::NORMAL;
-			} else if (boost::iequals(state, "new")) {
+			} else if (strcasecmp(state.c_str(), "new") == 0) {
 				cat->state = StoreState_t::NEW;
-			} else if (boost::iequals(state, "sale")) {
+			} else if (strcasecmp(state.c_str(), "sale") == 0) {
 				cat->state = StoreState_t::SALE;
-			} else if (boost::iequals(state, "limitedtime")) {
+			} else if (strcasecmp(state.c_str(), "limitedtime") == 0) {
 				cat->state = StoreState_t::LIMITED_TIME;
 			}
 			cat->icons = getIconsVector(categoryNode.attribute("icons").as_string("default.png"));
@@ -106,16 +105,16 @@ bool GameStore::loadFromXml()
 			for (auto offerNode : categoryNode.children()) {
 				std::string type = offerNode.attribute("type").as_string();
 				BaseOffer *offer = nullptr;
-				if (boost::iequals(type, "namechange")) {
+				if (strcasecmp(type.c_str(), "namechange") == 0) {
 					offer = new BaseOffer();
 					offer->type = NAMECHANGE;
-				} else if (boost::iequals(type, "sexchange")) {
+				} else if (strcasecmp(type.c_str(), "sexchange") == 0) {
 					offer = new BaseOffer();
 					offer->type = SEXCHANGE;
-				} else if (boost::iequals(type, "promotion")) {
+				} else if (strcasecmp(type.c_str(), "promotion") == 0) {
 					offer = new BaseOffer();
 					offer->type = PROMOTION;
-				} else if (boost::iequals(type, "outfit")) {
+				} else if (strcasecmp(type.c_str(), "outfit") == 0) {
 					OutfitOffer *tmp = new OutfitOffer();
 					tmp->type = OUTFIT;
 					tmp->maleLookType = (uint16_t) offerNode.attribute("malelooktype").as_uint();
@@ -129,7 +128,7 @@ bool GameStore::loadFromXml()
 					} else {
 						offer = tmp;
 					}
-				} else if (boost::iequals(type, "addon")) {
+				} else if (strcasecmp(type.c_str(), "addon") == 0) {
 					OutfitOffer *tmp = new OutfitOffer();
 					tmp->type = OUTFIT_ADDON;
 					tmp->maleLookType = (uint16_t) offerNode.attribute("malelooktype").as_uint();
@@ -141,7 +140,7 @@ bool GameStore::loadFromXml()
 					} else {
 						offer = tmp;
 					}
-				} else if (boost::iequals(type, "mount")) {
+				} else if (strcasecmp(type.c_str(), "mount") == 0) {
 					MountOffer *tmp = new MountOffer();
 					tmp->type = MOUNT;
 					tmp->mountId = (uint8_t) offerNode.attribute("mountid").as_uint();
@@ -153,7 +152,7 @@ bool GameStore::loadFromXml()
 					} else {
 						offer = tmp;
 					}
-				} else if (boost::iequals(type, "item")) {
+				} else if (strcasecmp(type.c_str(), "item") == 0) {
 					ItemOffer *tmp = new ItemOffer();
 					tmp->type = ITEM;
 					tmp->productId = (uint16_t) offerNode.attribute("productid").as_uint();
@@ -166,7 +165,7 @@ bool GameStore::loadFromXml()
 					} else {
 						offer = tmp;
 					}
-				} else if (boost::iequals(type, "stackableitem")) {
+				} else if (strcasecmp(type.c_str(), "stackableitem") == 0) {
 					ItemOffer *tmp = new ItemOffer();
 					tmp->type = STACKABLE_ITEM;
 					tmp->productId = (uint16_t) offerNode.attribute("productid").as_uint();
@@ -179,7 +178,7 @@ bool GameStore::loadFromXml()
 					} else {
 						offer = tmp;
 					}
-				} else if (boost::iequals(type, "wrapitem")) {
+				} else if (strcasecmp(type.c_str(), "wrapitem") == 0) {
 					ItemOffer *tmp = new ItemOffer();
 					tmp->type = WRAP_ITEM;
 					tmp->productId = (uint16_t) offerNode.attribute("productid").as_uint();
@@ -191,7 +190,7 @@ bool GameStore::loadFromXml()
 					} else {
 						offer = tmp;
 					}
-				} else if (boost::iequals(type, "bless")) {
+				} else if (strcasecmp(type.c_str(), "bless") == 0) {
 					BlessingOffer* tmp = new BlessingOffer();
 					tmp->blessings = getIntVector(offerNode.attribute("blessnumber").as_string());
 					tmp->type = BLESSING;
@@ -205,7 +204,7 @@ bool GameStore::loadFromXml()
 					}
 
 					offer = tmp;
-				} else if (boost::iequals(type, "teleport")) {
+				} else if (strcasecmp(type.c_str(), "teleport") == 0) {
 					TeleportOffer* tmp = new TeleportOffer();
 					tmp->type = TELEPORT;
 
@@ -218,7 +217,7 @@ bool GameStore::loadFromXml()
 					tmp->position = Position(posX,posY,posZ);
 
 					offer = tmp;
-				} else if (boost::iequals(type, "premiumtime")) {
+				} else if (strcasecmp(type.c_str(), "premiumtime") == 0) {
 					PremiumTimeOffer* tmp = new PremiumTimeOffer();
 					tmp->type = PREMIUM_TIME;
 
@@ -246,15 +245,15 @@ bool GameStore::loadFromXml()
 
 					std::string offerstate = categoryNode.attribute("state").as_string("normal");
 
-					if (boost::iequals(offerstate, "normal")) { //reading state (defaults to normal)
+					if (strcasecmp(offerstate.c_str(), "normal") == 0) { //reading state (defaults to normal)
 						offer->state = StoreState_t::NORMAL;
-					} else if (boost::iequals(offerstate, "new")) {
+					} else if (strcasecmp(offerstate.c_str(), "new") == 0) {
 						offer->state = StoreState_t::NEW;
-					} else if (boost::iequals(offerstate, "sale")) {
+					} else if (strcasecmp(offerstate.c_str(), "sale") == 0) {
 						//offer->state = StoreState_t::SALE;
 						// TODO: Solve the client crash with sale offers. Probably we need to add the previous price to show the strikethrough text indicating a sale.
 						offer->state = StoreState_t::NORMAL;
-					} else if (boost::iequals(offerstate, "limitedtime")) {
+					} else if (strcasecmp(offerstate.c_str(), "limitedtime") == 0) {
 						offer->state = StoreState_t::LIMITED_TIME;
 					}
 
@@ -283,7 +282,7 @@ bool GameStore::loadFromXml()
 int8_t GameStore::getCategoryIndexByName(std::string categoryName)
 {
 	for (uint16_t i = 0; i < storeCategoryOffers.size(); i++) {
-		if (boost::iequals(storeCategoryOffers.at(i)->name, categoryName)) {
+		if (strcasecmp(storeCategoryOffers.at(i)->name.c_str(), categoryName.c_str()) == 0) {
 			return i;
 		}
 	}

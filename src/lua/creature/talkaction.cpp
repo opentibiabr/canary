@@ -21,7 +21,6 @@
 
 #include "creatures/players/player.h"
 #include "lua/creature/talkaction.h"
-#include "utils/pugicast.h"
 
 TalkActions::TalkActions()
 	: scriptInterface("TalkAction Interface") {
@@ -140,7 +139,7 @@ bool TalkAction::configureEvent(const pugi::xml_node& node) {
 
 	pugi::xml_attribute separatorAttribute = node.attribute("separator");
 	if (separatorAttribute) {
-		separator = pugi::cast<char>(separatorAttribute.value());
+		separator = separatorAttribute.value();
 	}
 
 	for (auto word : explodeString(wordsAttribute.as_string(), ";")) {

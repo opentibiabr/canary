@@ -21,7 +21,7 @@
 
 #include "creatures/appearance/outfit/outfit.h"
 
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
 bool Outfits::loadFromXml()
@@ -44,7 +44,7 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		uint16_t type = pugi::cast<uint16_t>(attr.value());
+		uint16_t type = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		if (type > PLAYERSEX_LAST) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
@@ -58,7 +58,7 @@ bool Outfits::loadFromXml()
 
 		outfits[type].emplace_back(
 			outfitNode.attribute("name").as_string(),
-			pugi::cast<uint16_t>(lookTypeAttribute.value()),
+			static_cast<uint16_t>(LexicalCast::intFromChar(lookTypeAttribute.value())),
 			outfitNode.attribute("premium").as_bool(),
 			outfitNode.attribute("unlocked").as_bool(true),
 			outfitNode.attribute("from").as_string()

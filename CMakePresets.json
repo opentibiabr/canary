@@ -66,7 +66,9 @@
       "displayName": "Windows - Debug Build",
       "description": "Build Debug Mode",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_LOG": "ON",
+        "ASAN_ENABLED": "ON"
       },
       "architecture": {
         "value": "x64",
@@ -88,7 +90,9 @@
       "displayName": "Linux - Debug Build",
       "description": "Build Debug Mode",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_LOG": "ON",
+        "ASAN_ENABLED": "ON"
       }
     }
   ],

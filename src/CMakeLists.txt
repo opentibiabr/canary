@@ -25,7 +25,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # *****************************************************************************
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
-option(ASAN_ENABLED "Build this target with AddressSanitizer" ON)
+option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 
 
 # *****************************************************************************

@@ -1,6 +1,6 @@
 name: Report a problem/bug
 description: Any issues that you have found while using the server
-labels: ["Status: Pending Test", "Type: Bug"]
+labels: ["Type: Bug"]
 body:
   - type: markdown
     attributes:
@@ -27,9 +27,9 @@ body:
       description: Where is the problem?
       options:
         - label: Datapack
-        - label: Docker
-        - label: Map
         - label: Source
+        - label: Map
+        - label: Other
     validations:
       required: true
 

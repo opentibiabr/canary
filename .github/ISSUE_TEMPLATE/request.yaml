@@ -1,11 +1,21 @@
-name: Report a enhancement
-description: Any thing that is missing
-labels: ["Status: Pending Test", "Type: Enhancement"]
+name: Request
+description: Any request
 body:
   - type: markdown
     attributes:
       value: |
         Thanks for taking the time to fill out this issue!
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How critical is this?
+      options:
+        - Missing Content
+        - Enhancement
+    validations:
+      required: true
 
   - type: checkboxes
     id: area
@@ -14,17 +24,17 @@ body:
       description: Where is the problem?
       options:
         - label: Datapack
-        - label: Docker
-        - label: Map
         - label: Source
+        - label: Map
+        - label: Other
     validations:
       required: true
 
   - type: textarea
-    id: enhancement
+    id: missing-content
     attributes:
-      label: Describe the enhancement
-      description: What should be improved? Attach screenshots, logs, etc, anything that can helps us
+      label: What is missing?
+      description: Map, sprite, script, quest, teleport, monster, etc. Attach screenshots, logs, etc, anything that can helps us
     validations:
       required: true
 

@@ -3,7 +3,8 @@ project(canary)
 # *****************************************************************************
 # Cmake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -26,7 +27,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 
-
 # *****************************************************************************
 # Client
 # *****************************************************************************
@@ -35,7 +35,6 @@ if (MSVC)
 else()
   add_executable(${PROJECT_NAME} "")
 endif()
-
 
 # *****************************************************************************
 # Options Code
@@ -68,32 +67,31 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:__cplusplus")
+endif()
+
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
+find_package(Asio REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(LuaJIT REQUIRED)
+find_package(Threads REQUIRED)
+find_package(libzippp REQUIRED)
+find_package(cryptopp CONFIG REQUIRED)
 if (MSVC)
-  find_package(Asio REQUIRED)
-  find_package(cryptopp CONFIG REQUIRED)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
-  find_package(LuaJIT REQUIRED)
   find_package(MySQL REQUIRED)
   find_package(PugiXML REQUIRED)
-  find_package(spdlog REQUIRED)
   find_package(Threads REQUIRED)
-  find_package(libzippp CONFIG REQUIRED)
 else()
-  find_package(Asio REQUIRED)
-  find_package(cryptopp CONFIG REQUIRED)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
-  find_package(LuaJIT REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
-  find_package(spdlog REQUIRED)
-  find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
-  find_package(libzippp CONFIG REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -252,7 +250,7 @@ target_include_directories(${PROJECT_NAME}
     ${PUGIXML_INCLUDE_DIR}
     ${CRYPTOPP_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
-    ${spdlog_INCLUDE_DIR}
+    ${SPDLOG_INCLUDE_DIR}
     asio::asio
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
@@ -264,7 +262,7 @@ target_link_libraries(${PROJECT_NAME}
     ${CRYPTOPP_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
-    ${spdlog_LIBRARY}
+    ${SPDLOG_LIBRARY}
     fmt::fmt
     jsoncpp_lib
     libzippp::libzippp

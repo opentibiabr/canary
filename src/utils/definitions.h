@@ -24,15 +24,6 @@ static constexpr auto STATUS_SERVER_NAME = "Canary";
 static constexpr auto STATUS_SERVER_VERSION = "1.2.0";
 static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization, SaiyansKing and Mark Samman";
 
-#ifdef __clang__
-    #define COMPILER std::string("Clang++ " + __clang_major__ + "." __clang_minor__ + "." __clang_patchlevel__)
-#endif
-#ifdef _MSC_VER
-    #define COMPILER "Microsoft Visual C++ " + _MSC_VER
-#else
-    #define COMPILER std::string("G++ " + __GNUC__ + "." __GNUC_MINOR__ + "." __GNUC_PATCHLEVEL__)
-#endif
-
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 

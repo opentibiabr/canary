@@ -1089,9 +1089,9 @@ bool Game::removeCreature(Creature* creature, bool isLogout/* = true*/)
 		spectator->onRemoveCreature(creature, isLogout);
 	}
 
-  if (creature->getMaster() && !creature->getMaster()->isRemoved()) {
-    creature->setMaster(nullptr);
-  }
+	if (creature->getMaster() && !creature->getMaster()->isRemoved()) {
+		creature->setMaster(nullptr);
+	}
 
 	creature->getParent()->postRemoveNotification(creature, nullptr, 0);
 

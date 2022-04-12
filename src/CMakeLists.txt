@@ -25,6 +25,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # *****************************************************************************
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
+option(ASAN_ENABLED "Build this target with AddressSanitizer" ON)
 
 
 # *****************************************************************************
@@ -35,6 +36,16 @@ if (MSVC)
 else()
   add_executable(${PROJECT_NAME} "")
 endif()
+
+
+# *****************************************************************************
+# DEBUG: Print cmake variables
+# *****************************************************************************
+#get_cmake_property(_variableNames VARIABLES)
+#list (SORT _variableNames)
+#foreach (_variableName ${_variableNames})
+#    message(STATUS "${_variableName}=${${_variableName}}")
+#endforeach()
 
 
 # *****************************************************************************
@@ -52,6 +63,7 @@ else()
   log_option_disabled("openmp")
 endif()
 
+
 # === IPO ===
 check_ipo_supported(RESULT result OUTPUT output)
 if(result)
@@ -60,6 +72,23 @@ else()
   message(WARNING "IPO is not supported: ${output}")
 endif()
 
+
+# === ASAN ===
+if(ASAN_ENABLED)
+  log_option_enabled("asan")
+
+  if(MSVC)
+    target_compile_options(${PROJECT_NAME}  PUBLIC /fsanitize=address)
+  else()
+    target_compile_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
+    target_link_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
+  endif()
+else()
+  log_option_disabled("asan")
+endif()
+
+
+# === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..
 if(CMAKE_BUILD_TYPE MATCHES Debug)
   target_compile_definitions(${PROJECT_NAME} PRIVATE -DDEBUG_LOG=ON )
@@ -298,13 +327,6 @@ else()
   )
 
 endif (MSVC)
-
-# print all variables
-# get_cmake_property(_variableNames VARIABLES)
-# list (SORT _variableNames)
-# foreach (_variableName ${_variableNames})
-#     message(STATUS "${_variableName}=${${_variableName}}")
-# endforeach()
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES

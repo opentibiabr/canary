@@ -1,7 +1,7 @@
-name: Report a problem/bug
-description: Any issues that you have found while using the server
-title: "[Bug]: "
-labels: ["Status: Pending Test", "Type: Bug"]
+name: Report a missing content
+description: Any thing that is missing
+title: "[Content]: "
+labels: ["Status: Pending Test", "Type: Missing Content"]
 body:
   - type: markdown
     attributes:
@@ -21,7 +21,6 @@ body:
     validations:
       required: true
 
-
   - type: checkboxes
     id: area
     attributes:
@@ -36,25 +35,10 @@ body:
       required: true
 
   - type: textarea
-    id: what-happened
+    id: missing-content
     attributes:
-      label: What happened?
-      description: Describe the problem/bug!
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
-    validations:
-      required: true
-
-  - type: textarea
-    id: steps-reproduce
-    attributes:
-      label: How to Reproduce?
-      description: Steps to reproduce the problem, position on the map, etc
-      placeholder: Tell us exactly how to reproduce and the position on the map!
-      value: |
-        1 - go to position 134,543,7
-        2 - Try to open the door
-        3 - Door doesn't open!
+      label: What is missing?
+      description: Map, sprite, script, quest, teleport, monster, etc
     validations:
       required: true
 
@@ -69,19 +53,7 @@ body:
     id: attach
     attributes:
       label: Attach any relevant file
-      description: Attach screenshots, full logs, etc ... that helps verifying the bug
-
-  - type: dropdown
-    id: os
-    attributes:
-      label: What OS are you seeing the problem on?
-      multiple: true
-      options:
-        - Linux
-        - Windows
-        - MacOS
-    validations:
-      required: true
+      description: Attach screenshots, logs, etc, anything that can helps us
 
   - type: checkboxes
     id: terms

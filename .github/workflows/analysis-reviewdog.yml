@@ -24,6 +24,7 @@ jobs:
           cppcheck --version
           reviewdog -reporter=github-pr-check -runners=cppcheck
 
+
   luac:
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +45,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           luac -v
           reviewdog -reporter=github-pr-check -runners=luac
+
 
   luacheck:
     runs-on: ubuntu-latest
@@ -66,6 +68,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           reviewdog -reporter=github-pr-check -runners=luacheck
 
+
   shellcheck:
     runs-on: ubuntu-latest
     steps:
@@ -80,6 +83,7 @@ jobs:
           reporter: github-pr-check
           pattern: '*.sh'
           exclude: './.git/*'
+
 
   xmllint:
     runs-on: ubuntu-latest
@@ -102,6 +106,7 @@ jobs:
           xmllint --version
           reviewdog -reporter=github-pr-check -runners=xmllint
 
+
   yamllint:
     runs-on: ubuntu-latest
     steps:
@@ -115,11 +120,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
 
-      - name: Run yamllint
-        uses: reviewdog/action-yamllint@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
 
   hadolint:
     runs-on: ubuntu-latest

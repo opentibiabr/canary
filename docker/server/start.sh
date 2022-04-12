@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB_HOST="${SERVER_DB_HOST:-127.0.0.1}"
+DB_HOST="${SERVER_DB_HOST:-mysql}"
 DB_USER="${SERVER_DB_USER:-canary}"
 DB_PASSWORD="${SERVER_DB_PASSWORD:-canary}"
 DB_DATABASE="${SERVER_DB_DATABASE:-canary}"

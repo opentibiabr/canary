@@ -1,22 +1,24 @@
 # Stage 1: Download all dependencies
 FROM ubuntu:20.04 AS dependencies
 
-RUN apt-get update && apt-get install -y --no-install-recommends cmake
+# Stage 1.1: Setup kitware repository
+## According to: https://apt.kitware.com/
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg wget ca-certificates && \
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
+    apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install kitware-archive-keyring && \
+    rm /usr/share/keyrings/kitware-archive-keyring.gpg
 
-RUN apt-get update && apt-get install -y --no-install-recommends git
-
-RUN apt-get install -y --no-install-recommends \
-	build-essential ca-certificates curl zip unzip tar pkg-config
-
-RUN apt-get install -y --no-install-recommends libluajit-5.1-dev unzip
+# Stage 1.2: Install dependencies
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake git build-essential curl zip unzip tar pkg-config ninja-build libluajit-5.1-dev
 
 WORKDIR /opt
-RUN git clone https://github.com/microsoft/vcpkg --depth=1
-RUN ./vcpkg/bootstrap-vcpkg.sh
+RUN git clone https://github.com/microsoft/vcpkg --depth=1 && \
+    ./vcpkg/bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg
 COPY vcpkg.json /opt/vcpkg/
-RUN /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
+RUN VCPKG_FORCE_SYSTEM_BINARIES=1 /opt/vcpkg/vcpkg --feature-flags=binarycaching,manifests,versions install
 
 # Stage 2: create build
 FROM dependencies AS build
@@ -27,7 +29,7 @@ COPY src /srv/src
 
 WORKDIR /srv/build
 
-RUN cmake -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake .. && make -j`nproc`
+RUN VCPKG_FORCE_SYSTEM_BINARIES=1 cmake -DCMAKE_TOOLCHAIN_FILE=/opt/vcpkg/scripts/buildsystems/vcpkg.cmake .. && make -j`nproc`
 
 # Stage 3: load data and execute
 FROM ubuntu:20.04
@@ -39,7 +41,7 @@ COPY config.lua.dist /canary/config.lua
 
 WORKDIR /canary
 
-RUN apt-get update && apt-get install -y --no-install-recommends libluajit-5.1-dev mariadb-client
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends libluajit-5.1-dev mariadb-client
 
 COPY docker/server/start.sh start.sh
 

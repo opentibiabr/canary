@@ -36,7 +36,6 @@
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
 
-extern Actions actions;
 extern CreatureEvents *g_creatureEvents;
 extern Vocations g_vocations;
 extern Chat *g_chat;

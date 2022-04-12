@@ -97,9 +97,10 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
-# Define "__cplusplus" for use in the compile on visual studio
+# Define flags for use in the compile on visual studio
 if(MSVC)
   target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:__cplusplus")
+  target_compile_options(${PROJECT_NAME}  PUBLIC "/std:c++20")
 endif()
 
 # Set for supress deprecated declarations (for GCC/GNU)

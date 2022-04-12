@@ -84,6 +84,10 @@ Game::~Game()
 	for (const auto& it : guilds) {
 		delete it.second;
 	}
+
+	for (const auto& it : CharmList) {
+		delete it;
+	}
 }
 
 void Game::loadBoostedCreature()
@@ -236,25 +240,25 @@ bool Game::loadScheduleEventFromXml()
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
 				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
-				g_game.setExpSchedule(exprate);
+				g_game().setExpSchedule(exprate);
 				ss << " exp: " << (exprate - 100) << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
 				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
-				g_game.setLootSchedule(lootrate);
+				g_game().setLootSchedule(lootrate);
 				ss << ", loot: " << (lootrate - 100) << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
 				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
-				g_game.setSpawnMonsterSchedule(spawnrate);
+				g_game().setSpawnMonsterSchedule(spawnrate);
 				ss << ", spawn: "  << (spawnrate - 100) << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
 				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
-				g_game.setSkillSchedule(skillrate);
+				g_game().setSkillSchedule(skillrate);
 				ss << ", skill: " << (skillrate - 100) << "%";
 			}
 		}
@@ -1126,7 +1130,7 @@ void Game::playerTeleport(uint32_t playerId, const Position& newPosition) {
     return;
   }
 
-  ReturnValue returnValue = g_game.internalTeleport(player, newPosition, false);
+  ReturnValue returnValue = g_game().internalTeleport(player, newPosition, false);
   if (returnValue != RETURNVALUE_NOERROR) {
     player->sendCancelMessage(returnValue);
   }
@@ -3505,7 +3509,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Pos
 	key = "LookDirection"; item->setCustomAttribute(key, static_cast<int64_t>(direction));
 
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, pos, true);
+	g_game().map.getSpectators(spectators, pos, true);
 
 	// send to client
 	for (Creature* spectator : spectators) {
@@ -4590,7 +4594,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spri
 
 void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses) {
 	if (lootAllCorpses) {
-		Tile *tile = g_game.map.getTile(pos.x, pos.y, pos.z);
+		Tile *tile = g_game().map.getTile(pos.x, pos.y, pos.z);
 		if (!tile) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
@@ -7038,7 +7042,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 
 			uint32_t playerID = player->getID();
 			std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](DBResult_ptr result, bool) {
-				Player* player = g_game.getPlayerByID(playerID);
+				Player* player = g_game().getPlayerByID(playerID);
 				if (!player) {
 					return;
 				}
@@ -7103,7 +7107,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 
 			uint32_t playerID = player->getID();
 			std::function<void(DBResult_ptr, bool)> callback = [playerID, page, entriesPerPage](DBResult_ptr result, bool) {
-				Player* player = g_game.getPlayerByID(playerID);
+				Player* player = g_game().getPlayerByID(playerID);
 				if (!player) {
 					return;
 				}
@@ -7226,7 +7230,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 
 	uint32_t playerID = player->getID();
 	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
-		Player* player = g_game.getPlayerByID(playerID);
+		Player* player = g_game().getPlayerByID(playerID);
 		if (!player) {
 			return;
 		}
@@ -7425,7 +7429,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 	// Check market exhausted
 	if (player->isMarketExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7505,7 +7509,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			}
 		}
 
-		g_game.removeMoney(player, fee, 0, true);
+		g_game().removeMoney(player, fee, 0, true);
 	} else {
 
 		uint64_t totalPrice = price * amount;
@@ -7514,7 +7518,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spr
 			return;
 		}
 
-		g_game.removeMoney(player, totalPrice, 0, true);
+		g_game().removeMoney(player, totalPrice, 0, true);
 	}
 
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, anonymous);
@@ -7551,7 +7555,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// Check market exhausted
 	if (player->isMarketExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7633,7 +7637,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// Check market exhausted
 	if (player->isMarketExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7662,11 +7666,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		}
 
 		Player* buyerPlayer = getPlayerByGUID(offer.playerId);
-		if (player == buyerPlayer) {
-			player->sendFYIBox("You cannot accept your own offer.");
-			return;
-		}
-
 		if (!buyerPlayer) {
 			buyerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
@@ -7675,13 +7674,17 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 		}
 
+		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
+			return;
+		}
+
 		if (it.id == ITEM_STORE_COIN) {
 			account::Account account;
 			account.LoadAccountDB(player->getAccount());
 			uint32_t coins;
 			account.GetCoins(&coins);
-			if (amount > coins)
-			{
+			if (amount > coins) {
 				return;
 			}
 
@@ -7703,6 +7706,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			if (it.stackable) {
 				uint16_t tmpAmount = amount;
 				for (Item* item : itemList) {
+					if (!item) {
+						continue;
+					}
 					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;
 					internalRemoveItem(item, removeCount);
@@ -7713,6 +7719,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 			} else {
 				for (Item* item : itemList) {
+					if (!item) {
+						continue;
+					}
 					internalRemoveItem(item);
 				}
 			}
@@ -7763,9 +7772,18 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			delete buyerPlayer;
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
-		Player* sellerPlayer = getPlayerByGUID(offer.playerId);
-		if (player == sellerPlayer) {
-			player->sendFYIBox("You cannot accept your own offer.");
+
+		Player *sellerPlayer = getPlayerByGUID(offer.playerId);
+		if (!sellerPlayer) {
+			sellerPlayer = new Player(nullptr);
+			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
+				delete sellerPlayer;
+				return;
+			}
+		}
+
+		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
+			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
 			return;
 		}
 
@@ -7783,7 +7801,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			uint64_t remainsPrice = 0;
 			remainsPrice = totalPrice - player->getBankBalance();
 			player->setBankBalance(0);
-			g_game.removeMoney(player, remainsPrice);
+			g_game().removeMoney(player, remainsPrice);
 		}
 
 		if (it.id == ITEM_STORE_COIN) {
@@ -7821,32 +7839,21 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 		}
 
-		if (sellerPlayer) {
-			sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
-			if (it.id == ITEM_STORE_COIN) {
-				account::Account account;
-				account.LoadAccountDB(sellerPlayer->getAccount());
-				account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-												 "Sold on Market");
-			}
-		} else {
-			IOLoginData::increaseBankBalance(offer.playerId, totalPrice);
-			if (it.id == ITEM_STORE_COIN) {
-				sellerPlayer = new Player(nullptr);
-
-				if (IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
-					account::Account account;
-					account.LoadAccountDB(sellerPlayer->getAccount());
-					account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
-													 "Sold on Market");
-				}
-
-				delete sellerPlayer;
-			}
+		sellerPlayer->setBankBalance(sellerPlayer->getBankBalance() + totalPrice);
+		if (it.id == ITEM_STORE_COIN) {
+			account::Account account;
+			account.LoadAccountDB(sellerPlayer->getAccount());
+			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
+											"Sold on Market");
 		}
 
 		if (it.id != ITEM_STORE_COIN) {
 			player->onReceiveMail();
+		}
+
+		if (sellerPlayer->isOffline()) {
+			IOLoginData::savePlayer(sellerPlayer);
+			delete sellerPlayer;
 		}
 	}
 

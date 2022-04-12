@@ -27,7 +27,6 @@
 #include "lua/creature/movement.h"
 #include "creatures/players/imbuements/imbuements.h"
 
-extern Game g_game;
 extern Vocations g_vocations;
 extern Events* g_events;
 extern Imbuements* g_imbuements;
@@ -684,7 +683,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 
 	const ItemType& it = Item::items[item->getID()];
 	if (it.transformEquipTo != 0) {
-		g_game.transformItem(item, it.transformEquipTo);
+		g_game().transformItem(item, it.transformEquipTo);
 	} else {
 		player->setItemAbility(slot, true);
 	}
@@ -696,7 +695,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		}
 
 		player->addItemImbuementStats(imbuementInfo.imbuement);
-		g_game.increasePlayerActiveImbuements(player->getID());
+		g_game().increasePlayerActiveImbuements(player->getID());
 	}
 
 	if (!it.abilities) {
@@ -714,7 +713,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	}
 
 	if (it.abilities->speed != 0) {
-		g_game.changeSpeed(player, it.abilities->speed);
+		g_game().changeSpeed(player, it.abilities->speed);
 	}
 
 	if (it.abilities->conditionSuppressions != 0) {
@@ -783,7 +782,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 
 	const ItemType& it = Item::items[item->getID()];
 	if (it.transformDeEquipTo != 0) {
-		g_game.transformItem(item, it.transformDeEquipTo);
+		g_game().transformItem(item, it.transformDeEquipTo);
 	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -793,7 +792,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 		}
 
 		player->removeItemImbuementStats(imbuementInfo.imbuement);
-		g_game.decreasePlayerActiveImbuements(player->getID());
+		g_game().decreasePlayerActiveImbuements(player->getID());
 	}
 
 	if (!it.abilities) {
@@ -809,7 +808,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	}
 
 	if (it.abilities->speed != 0) {
-		g_game.changeSpeed(player, -it.abilities->speed);
+		g_game().changeSpeed(player, -it.abilities->speed);
 	}
 
 	if (it.abilities->conditionSuppressions != 0) {

@@ -473,7 +473,7 @@ int MonsterTypeFunctions::luaMonsterTypeRaceid(lua_State* L) {
 			lua_pushnumber(L, monsterType->info.raceid);
 		} else {
 			monsterType->info.raceid = getNumber<uint16_t>(L, 2);
-			g_game.addBestiaryList(getNumber<uint16_t>(L, 2), monsterType->name);
+			g_game().addBestiaryList(getNumber<uint16_t>(L, 2), monsterType->name);
 			pushBoolean(L, true);
 		}
 	} else {

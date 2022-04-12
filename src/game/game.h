@@ -59,6 +59,13 @@ class Game
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
 
+		static Game& getInstance() {
+			// Guaranteed to be destroyed
+			static Game instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);
 
@@ -659,5 +666,7 @@ class Game
 
 		std::vector<ItemClassification*> itemsClassifications;
 };
+
+constexpr auto g_game = &Game::getInstance;
 
 #endif  // SRC_GAME_GAME_H_

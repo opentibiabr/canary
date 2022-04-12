@@ -25,7 +25,6 @@
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
 
-extern Game g_game;
 extern Vocations g_vocations;
 extern Weapons* g_weapons;
 extern Events* g_events;
@@ -448,7 +447,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const
 		executeUseWeapon(player, var);
 	} else {
 		Combat::postCombatEffects(player, tile->getPosition(), params);
-		g_game.addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 
 	onUsedWeapon(player, item, tile);
@@ -495,13 +494,13 @@ void Weapon::onUsedWeapon(Player* player, Item* item, Tile* destTile) const
 
 		case WEAPONACTION_REMOVECHARGE: {
 			if (uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
-				g_game.transformItem(item, item->getID(), charges - 1);
+				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 			break;
 		}
 
 		case WEAPONACTION_MOVE:
-			g_game.internalMoveItem(item->getParent(), destTile, INDEX_WHEREEVER, item, 1, nullptr, FLAG_NOLIMIT);
+			g_game().internalMoveItem(item->getParent(), destTile, INDEX_WHEREEVER, item, 1, nullptr, FLAG_NOLIMIT);
 			break;
 
 		default:
@@ -562,9 +561,9 @@ void Weapon::decrementItemCount(Item* item)
 {
 	uint16_t count = item->getItemCount();
 	if (count > 1) {
-		g_game.transformItem(item, item->getID(), count - 1);
+		g_game().transformItem(item, item->getID(), count - 1);
 	} else {
-		g_game.internalRemoveItem(item);
+		g_game().internalRemoveItem(item);
 	}
 }
 
@@ -843,7 +842,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 
 			for (const auto& dir : destList) {
 				// Blocking tiles or tiles without ground ain't valid targets for spears
-				Tile* tmpTile = g_game.map.getTile(destPos.x + dir.first, destPos.y + dir.second, destPos.z);
+				Tile* tmpTile = g_game().map.getTile(static_cast<uint16_t>(destPos.x + dir.first), static_cast<uint16_t>(destPos.y + dir.second), destPos.z);
 				if (tmpTile && !tmpTile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID) && tmpTile->getGround() != nullptr) {
 					destTile = tmpTile;
 					break;

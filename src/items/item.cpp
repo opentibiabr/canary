@@ -37,7 +37,6 @@
 
 #define IMBUEMENT_SLOT 500
 
-extern Game g_game;
 extern Spells* g_spells;
 extern Vocations g_vocations;
 extern Imbuements* g_imbuements;
@@ -315,7 +314,7 @@ void Item::onRemoved()
 	ScriptEnvironment::removeTempItem(this);
 
 	if (hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
-		g_game.removeUniqueItem(getUniqueId());
+		g_game().removeUniqueItem(getUniqueId());
 	}
 }
 
@@ -2412,7 +2411,7 @@ void Item::setUniqueId(uint16_t n)
 		return;
 	}
 
-	if (g_game.addUniqueItem(n, this)) {
+	if (g_game().addUniqueItem(n, this)) {
 		getAttributes()->setUniqueId(n);
 	}
 }

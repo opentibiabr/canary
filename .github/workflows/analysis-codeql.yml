@@ -25,10 +25,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
 
@@ -41,9 +41,9 @@ jobs:
       - name: CCache
         if: ${{ matrix.language == 'cpp' }}
         id: ccache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
-          path: /home/runner/.ccache
+          path: $HOME/.ccache
           key: ccache-${{ runner.os }}-RelWithDebInfo-${{ hashFiles('**/src') }}
           restore-keys: |
             ccache-${{ runner.os }}-RelWithDebInfo-
@@ -51,13 +51,8 @@ jobs:
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/run-vcpkg@v7
+        uses: lukka/run-vcpkg@v10
         with:
-          setupOnly: true
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
-          vcpkgTriplet: x64-linux
-          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
           vcpkgGitCommitId: 773516ecf6014d89cc69b11bb54605ad4be56694
 
       - name: Get latest CMake and ninja
@@ -66,12 +61,10 @@ jobs:
 
       - name: Run CMake
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/run-cmake@v3
+        uses: lukka/run-cmake@v10
         with:
-          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
-          useVcpkgToolchainFile: true
-          buildDirectory: ${{ github.workspace }}/build/
-          cmakeBuildType: RelWithDebInfo
+          configurePreset: linux-debug
+          buildPreset: linux-debug
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2

@@ -31,7 +31,6 @@
 #include "creatures/npcs/npc.h"
 #include "utils/tools.h"
 
-extern Game g_game;
 
 bool Map::load(const std::string& identifier) {
 	IOMap loader;
@@ -1235,12 +1234,12 @@ uint32_t Map::clean() const
 	uint64_t start = OTSYS_TIME();
 	size_t tiles = 0;
 
-	if (g_game.getGameState() == GAME_STATE_NORMAL) {
-		g_game.setGameState(GAME_STATE_MAINTAIN);
+	if (g_game().getGameState() == GAME_STATE_NORMAL) {
+		g_game().setGameState(GAME_STATE_MAINTAIN);
 	}
 
 	std::vector<Item*> toRemove;
-	for (auto tile : g_game.getTilesToClean()) {
+	for (auto tile : g_game().getTilesToClean()) {
     if (!tile) {
       continue;
     }
@@ -1255,14 +1254,14 @@ uint32_t Map::clean() const
 	}
 
   for (auto item : toRemove) {
-		g_game.internalRemoveItem(item, -1);
+		g_game().internalRemoveItem(item, -1);
 	}
 
 	size_t count = toRemove.size();
-	g_game.clearTilesToClean();
+	g_game().clearTilesToClean();
 
-	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
-		g_game.setGameState(GAME_STATE_NORMAL);
+	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
+		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
 	SPDLOG_INFO("CLEAN: Removed {} item{} from {} tile{} in {} seconds",

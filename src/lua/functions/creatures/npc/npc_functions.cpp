@@ -31,9 +31,9 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 	Npc* npc;
 	if (lua_gettop(L) >= 2) {
 		if (isNumber(L, 2)) {
-			npc = g_game.getNpcByID(getNumber<uint32_t>(L, 2));
+			npc = g_game().getNpcByID(getNumber<uint32_t>(L, 2));
 		} else if (isString(L, 2)) {
-			npc = g_game.getNpcByName(getString(L, 2));
+			npc = g_game().getNpcByName(getString(L, 2));
 		} else if (isUserdata(L, 2)) {
 			if (getUserdataType(L, 2) != LuaData_Npc) {
 				lua_pushnil(L);
@@ -164,7 +164,7 @@ int NpcFunctions::luaNpcPlace(lua_State* L) {
 	const Position& position = getPosition(L, 2);
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, true);
-	if (g_game.placeCreature(npc, position, extended, force)) {
+	if (g_game().placeCreature(npc, position, extended, force)) {
 		pushUserdata<Npc>(L, npc);
 		setMetatable(L, -1, "Npc");
 	} else {
@@ -208,9 +208,9 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 	}
 
 	if (position.x != 0) {
-		pushBoolean(L, g_game.internalCreatureSay(npc, type, text, ghost, &spectators, &position));
+		pushBoolean(L, g_game().internalCreatureSay(npc, type, text, ghost, &spectators, &position));
 	} else {
-		pushBoolean(L, g_game.internalCreatureSay(npc, type, text, ghost, &spectators));
+		pushBoolean(L, g_game().internalCreatureSay(npc, type, text, ghost, &spectators));
 	}
 	return 1;
 }
@@ -447,7 +447,7 @@ int NpcFunctions::luaNpcMove(lua_State* L)
 	// npc:move(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
-		g_game.internalMoveCreature(npc, getNumber<Direction>(L, 2));
+		g_game().internalMoveCreature(npc, getNumber<Direction>(L, 2));
 	}
 	return 0;
 }
@@ -457,7 +457,7 @@ int NpcFunctions::luaNpcTurn(lua_State* L)
 	// npc:turn(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
-		g_game.internalCreatureTurn(npc, getNumber<Direction>(L, 2));
+		g_game().internalCreatureTurn(npc, getNumber<Direction>(L, 2));
 	}
 	return 0;
 }
@@ -531,7 +531,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 				item->setActionId(actionId);
 			}
 
-			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+			if (g_game().internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
 				delete item;
 				lua_pushnumber(L, sellCount);
 				return 1;
@@ -547,7 +547,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 				item->setActionId(actionId);
 			}
 
-			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+			if (g_game().internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
 				delete item;
 				lua_pushnumber(L, sellCount);
 				return 1;

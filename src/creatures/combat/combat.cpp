@@ -28,7 +28,6 @@
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
 
-extern Game g_game;
 extern Weapons* g_weapons;
 extern Events* g_events;
 extern Monsters g_monsters;
@@ -70,7 +69,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 					if (params.useCharges) {
 						uint16_t charges = tool->getCharges();
 						if (charges != 0) {
-							g_game.transformItem(tool, tool->getID(), charges - 1);
+							g_game().transformItem(tool, tool->getID(), charges - 1);
 						}
 					}
 				} else {
@@ -94,10 +93,10 @@ void Combat::getCombatArea(const Position& centerPos, const Position& targetPos,
 	if (area) {
 		area->getList(centerPos, targetPos, list);
 	} else {
-		Tile* tile = g_game.map.getTile(targetPos);
+		Tile* tile = g_game().map.getTile(targetPos);
 		if (!tile) {
 			tile = new StaticTile(targetPos.x, targetPos.y, targetPos.z);
-			g_game.map.setTile(targetPos, tile);
+			g_game().map.setTile(targetPos, tile);
 		}
 		list.push_front(tile);
 	}
@@ -366,7 +365,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 			}
 		}
 
-		if (g_game.getWorldType() == WORLD_TYPE_NO_PVP) {
+		if (g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 			if (attacker->getPlayer() || (attackerMaster && attackerMaster->getPlayer())) {
 				if (target->getPlayer()) {
 					if (!isInPvpZone(attacker, target)) {
@@ -510,11 +509,11 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 		}
 	}
 
-	if (g_game.combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
+	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
 	}
 
-	if (g_game.combatChangeHealth(caster, target, damage)) {
+	if (g_game().combatChangeHealth(caster, target, damage)) {
 		CombatConditionFunc(caster, target, params, &damage);
 		CombatDispelFunc(caster, target, params, nullptr);
 	}
@@ -557,7 +556,7 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 			damage.primary.value /= 2;
 		}
 	}
-	if (g_game.combatChangeMana(caster, target, damage)) {
+	if (g_game().combatChangeMana(caster, target, damage)) {
 		CombatConditionFunc(caster, target, params, nullptr);
 		CombatDispelFunc(caster, target, params, nullptr);
 	}
@@ -667,7 +666,7 @@ void Combat::combatTileEffects(const SpectatorHashSet& spectators, Creature* cas
 			}
 
 			if (casterPlayer) {
-				if (g_game.getWorldType() == WORLD_TYPE_NO_PVP || tile->hasFlag(TILESTATE_NOPVPZONE)) {
+				if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || tile->hasFlag(TILESTATE_NOPVPZONE)) {
 					if (itemId == ITEM_FIREFIELD_PVP_FULL) {
 						itemId = ITEM_FIREFIELD_NOPVP;
 					} else if (itemId == ITEM_POISONFIELD_PVP) {
@@ -690,7 +689,7 @@ void Combat::combatTileEffects(const SpectatorHashSet& spectators, Creature* cas
 			item->setOwner(caster->getID());
 		}
 
-		ReturnValue ret = g_game.internalAddItem(tile, item);
+		ReturnValue ret = g_game().internalAddItem(tile, item);
 		if (ret == RETURNVALUE_NOERROR) {
 			item->startDecaying();
 		} else {
@@ -743,7 +742,7 @@ void Combat::addDistanceEffect(Creature* caster, const Position& fromPos, const 
 	}
 
 	if (effect != CONST_ANI_NONE) {
-		g_game.addDistanceEffect(fromPos, toPos, effect);
+		g_game().addDistanceEffect(fromPos, toPos, effect);
 	}
 }
 
@@ -808,7 +807,7 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 
 	const int32_t rangeX = maxX + Map::maxViewportX;
 	const int32_t rangeY = maxY + Map::maxViewportY;
-	g_game.map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
+	g_game().map.getSpectators(spectators, pos, true, true, rangeX, rangeX, rangeY, rangeY);
 
 	int affected = 0;
 	for (Tile* tile : tileList) {
@@ -888,7 +887,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 	if ( (caster && target)
 			&& (caster == target || canCombat)
 			&& (params.impactEffect != CONST_ME_NONE)) {
-		g_game.addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (params.combatType == COMBAT_HEALING && target->getMonster()){
@@ -952,7 +951,7 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 	if ( (caster && target)
 			&& (caster == target || canCombat)
 			&& (params.impactEffect != CONST_ME_NONE)) {
-		g_game.addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if(caster && caster->getPlayer()){
@@ -999,7 +998,7 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
 	if ((caster == target || canCombat) && params.impactEffect != CONST_ME_NONE) {
-		g_game.addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {
@@ -1025,7 +1024,7 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 	if ( (caster && target)
 			&& (caster == target || canCombat)
 			&& (params.impactEffect != CONST_ME_NONE)) {
-		g_game.addMagicEffect(target->getPosition(), params.impactEffect);
+		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {
@@ -1044,7 +1043,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 {
 	if (!params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR)) {
 		SpectatorHashSet spectators;
-		g_game.map.getSpectators(spectators, target->getPosition(), true, true);
+		g_game().map.getSpectators(spectators, target->getPosition(), true, true);
 
 		CombatNullFunc(caster, target, params, nullptr);
 		combatTileEffects(spectators, caster, target->getTile(), params);
@@ -1055,7 +1054,7 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 
 		/*
 		if (params.impactEffect != CONST_ME_NONE) {
-			g_game.addMagicEffect(target->getPosition(), params.impactEffect);
+			g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 		}
 		*/
 
@@ -1136,7 +1135,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 				if (useCharges) {
 					uint16_t charges = tool->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(tool, tool->getID(), charges - 1);
+						g_game().transformItem(tool, tool->getID(), charges - 1);
 					}
 				}
 			}
@@ -1305,15 +1304,13 @@ void AreaCombat::getList(const Position& centerPos, const Position& targetPos, s
 	uint32_t cols = area->getCols();
 	for (uint32_t y = 0, rows = area->getRows(); y < rows; ++y) {
 		for (uint32_t x = 0; x < cols; ++x) {
-			if (area->getValue(y, x) != 0) {
-				if (g_game.isSightClear(targetPos, tmpPos, true)) {
-					Tile* tile = g_game.map.getTile(tmpPos);
-					if (!tile) {
-						tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
-						g_game.map.setTile(tmpPos, tile);
-					}
-					list.push_front(tile);
+			if (area->getValue(y, x) != 0 && g_game().isSightClear(targetPos, tmpPos, true)) {
+				Tile* tile = g_game().map.getTile(tmpPos);
+				if (!tile) {
+					tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
+					g_game().map.setTile(tmpPos, tile);
 				}
+				list.push_front(tile);
 			}
 			tmpPos.x++;
 		}
@@ -1569,7 +1566,7 @@ void MagicField::onStepInField(Creature* creature)
 	//remove magic walls/wild growth
 	if (id == ITEM_MAGICWALL || id == ITEM_WILDGROWTH || id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE || isBlocking()) {
 		if (!creature->isInGhostMode()) {
-			g_game.internalRemoveItem(this, 1);
+			g_game().internalRemoveItem(this, 1);
 		}
 
 		return;
@@ -1582,8 +1579,8 @@ void MagicField::onStepInField(Creature* creature)
 		if (ownerId) {
 			bool harmfulField = true;
 
-			if (g_game.getWorldType() == WORLD_TYPE_NO_PVP || getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
-				Creature* owner = g_game.getCreatureByID(ownerId);
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || getTile()->hasFlag(TILESTATE_NOPVPZONE)) {
+				Creature* owner = g_game().getCreatureByID(ownerId);
 				if (owner) {
 					if (owner->getPlayer() || (owner->isSummon() && owner->getMaster()->getPlayer())) {
 						harmfulField = false;
@@ -1593,7 +1590,7 @@ void MagicField::onStepInField(Creature* creature)
 
 			Player* targetPlayer = creature->getPlayer();
 			if (targetPlayer) {
-				Player* attackerPlayer = g_game.getPlayerByID(ownerId);
+				const Player* attackerPlayer = g_game().getPlayerByID(ownerId);
 				if (attackerPlayer) {
 					if (Combat::isProtected(attackerPlayer, targetPlayer)) {
 						harmfulField = false;

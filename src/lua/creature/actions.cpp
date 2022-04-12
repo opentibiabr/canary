@@ -23,7 +23,7 @@
 #include "items/bed.h"
 #include "items/containers/container.h"
 #include "game/game.h"
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
 
@@ -79,7 +79,7 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("itemid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
+		uint16_t id = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 		auto result = useItemMap.emplace(id, std::move(*action));
 		if (!result.second) {
@@ -95,9 +95,9 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 			return false;
 		}
 
-		uint16_t fromId = pugi::cast<uint16_t>(attr.value());
+		uint16_t fromId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		uint16_t iterId = fromId;
-		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		uint16_t toId = static_cast<uint16_t>(LexicalCast::intFromChar(toIdAttribute.value()));
 
 		auto result = useItemMap.emplace(iterId, *action);
 		if (!result.second) {
@@ -117,7 +117,7 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 		}
 		return success;
 	} else if ((attr = node.attribute("uniqueid"))) {
-		uint16_t uid = pugi::cast<uint16_t>(attr.value());
+		uint16_t uid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 		auto result = uniqueItemMap.emplace(uid, std::move(*action));
 		if (!result.second) {
@@ -133,9 +133,9 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 			return false;
 		}
 
-		uint16_t fromUid = pugi::cast<uint16_t>(attr.value());
+		uint16_t fromUid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		uint16_t iterUid = fromUid;
-		uint16_t toUid = pugi::cast<uint16_t>(toUidAttribute.value());
+		uint16_t toUid = static_cast<uint16_t>(LexicalCast::intFromChar(toUidAttribute.value()));
 
 		auto result = uniqueItemMap.emplace(iterUid, *action);
 		if (!result.second) {
@@ -157,7 +157,7 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 		}
 		return success;
 	} else if ((attr = node.attribute("actionid"))) {
-		uint16_t aid = pugi::cast<uint16_t>(attr.value());
+		uint16_t aid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 		auto result = actionItemMap.emplace(aid, std::move(*action));
 		if (!result.second) {
@@ -173,9 +173,9 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 			return false;
 		}
 
-		uint16_t fromAid = pugi::cast<uint16_t>(attr.value());
+		uint16_t fromAid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		uint16_t iterAid = fromAid;
-		uint16_t toAid = pugi::cast<uint16_t>(toAidAttribute.value());
+		uint16_t toAid = static_cast<uint16_t>(LexicalCast::intFromChar(toAidAttribute.value()));
 
 		auto result = actionItemMap.emplace(iterAid, *action);
 		if (!result.second) {

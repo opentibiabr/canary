@@ -20,7 +20,7 @@
 #include "otpch.h"
 #include "lua/creature/events.h"
 #include "creatures/players/imbuements/imbuements.h"
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 
 extern Events* g_events;
 
@@ -57,13 +57,13 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 			basesImbuement.emplace_back(
-				pugi::cast<uint16_t>(id.value()),
+				static_cast<uint16_t>(LexicalCast::intFromChar(id.value())),
 				baseNode.attribute("name").as_string(),
-				pugi::cast<uint32_t>(baseNode.attribute("price").value()),
-				pugi::cast<uint32_t>(baseNode.attribute("protectionPrice").value()),
-				pugi::cast<uint32_t>(baseNode.attribute("removecost").value()),
-				pugi::cast<int32_t>(baseNode.attribute("duration").value()),
-				pugi::cast<uint16_t>(baseNode.attribute("percent").value())
+				static_cast<uint32_t>(LexicalCast::intFromChar(baseNode.attribute("price").value())),
+				static_cast<uint32_t>(LexicalCast::intFromChar(baseNode.attribute("protectionPrice").value())),
+				static_cast<uint32_t>(LexicalCast::intFromChar(baseNode.attribute("removecost").value())),
+				static_cast<int32_t>(LexicalCast::intFromChar(baseNode.attribute("duration").value())),
+				static_cast<uint16_t>(LexicalCast::intFromChar(baseNode.attribute("percent").value()))
 
 			);
 
@@ -75,7 +75,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 			categoriesImbuement.emplace_back(
-				pugi::cast<uint16_t>(id.value()),
+				static_cast<uint16_t>(LexicalCast::intFromChar(id.value())),
 				baseNode.attribute("name").as_string(),
 				baseNode.attribute("agressive").as_bool(true)
 			);
@@ -89,7 +89,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			uint16_t baseid = pugi::cast<uint32_t>(base.value());
+			uint16_t baseid = static_cast<uint32_t>(LexicalCast::intFromChar(base.value()));
 			auto groupBase = getBaseByID(baseid);
 			if (groupBase == nullptr) {
 				SPDLOG_WARN("Group base '{}' not exist", baseid);
@@ -112,7 +112,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				SPDLOG_WARN("Missing 'iconid' for imbuement entry");
 				continue;
 			}
-			imbuement.icon = pugi::cast<uint16_t>(iconBase.value());
+			imbuement.icon = static_cast<uint16_t>(LexicalCast::intFromChar(iconBase.value()));
 
 			pugi::xml_attribute premiumBase = baseNode.attribute("premium");
 			if (premiumBase) {
@@ -120,7 +120,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 
 			if (pugi::xml_attribute storageBase = baseNode.attribute("storage")) {
-				imbuement.storage = pugi::cast<uint32_t>(storageBase.value());
+				imbuement.storage = static_cast<uint32_t>(LexicalCast::intFromChar(storageBase.value()));
 			}
 
 			pugi::xml_attribute subgroupBase = baseNode.attribute("subgroup");
@@ -134,7 +134,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			uint16_t category = pugi::cast<uint16_t>(categorybase.value());
+			uint16_t category = static_cast<uint16_t>(LexicalCast::intFromChar(categorybase.value()));
 			auto category_p = getCategoryByID(category);
 			if (category_p == nullptr) {
 				SPDLOG_WARN("Category imbuement {} not exist", category);
@@ -162,11 +162,11 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						SPDLOG_WARN("Missing item ID for imbuement name '{}'", imbuement.name);
 						continue;
 					}
-					uint16_t sourceId = pugi::cast<uint16_t>(attr.value());
+					uint16_t sourceId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 					uint16_t count = 1;
 					if ((attr = childNode.attribute("count"))) {
-						count = pugi::cast<uint16_t>(childNode.attribute("count").value());
+						count = static_cast<uint16_t>(LexicalCast::intFromChar(childNode.attribute("count").value()));
 					}
 
 					auto it2 = std::find_if(imbuement.items.begin(), imbuement.items.end(), [sourceId](const std::pair<uint16_t, uint16_t>& source) -> bool {
@@ -244,7 +244,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 								imbuement.name);
 							continue;
 						}
-						int32_t bonus = pugi::cast<int32_t>(attr.value());
+						int32_t bonus = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
 
 						if (usenormalskill == 1) {
 							imbuement.skills[skillId] = bonus;
@@ -254,7 +254,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							imbuement.skills[skillId] = bonus;
 							int32_t chance = 100;
 							if ((attr = childNode.attribute("chance")))
-								chance = std::min<uint32_t>(100, pugi::cast<int32_t>(attr.value()));
+								chance = std::min<uint32_t>(100, static_cast<int32_t>(LexicalCast::intFromChar(attr.value())));
 
 							imbuement.skills[skillId - 1] = chance;
 						}
@@ -276,7 +276,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						uint32_t percent = std::min<uint32_t>(100, pugi::cast<uint32_t>(attr.value()));
+						uint32_t percent = std::min<uint32_t>(100, static_cast<uint32_t>(LexicalCast::intFromChar(attr.value())));
 
 						imbuement.combatType = combatType;
 						imbuement.elementDamage = std::min<int16_t>(100, percent);
@@ -298,7 +298,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						uint32_t percent = std::min<uint32_t>(100, pugi::cast<uint32_t>(attr.value()));
+						uint32_t percent = std::min<uint32_t>(100, static_cast<uint32_t>(LexicalCast::intFromChar(attr.value())));
 
 						imbuement.absorbPercent[combatTypeToIndex(combatType)] = percent;
 					} else if (strcasecmp(effecttype.c_str(), "speed") == 0) {
@@ -307,14 +307,14 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							continue;
 						}
 
-						imbuement.speed = pugi::cast<uint32_t>(attr.value());
+						imbuement.speed = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 					} else if (strcasecmp(effecttype.c_str(), "capacity") == 0) {
 						if (!(attr = childNode.attribute("value"))) {
 							SPDLOG_WARN("Missing cap value for imbuement name {}", imbuement.name);
 							continue;
 						}
 
-						imbuement.capacity = pugi::cast<uint32_t>(attr.value());
+						imbuement.capacity = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 					}
 				}
 			}

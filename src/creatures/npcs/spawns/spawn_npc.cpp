@@ -24,7 +24,7 @@
 #include "creatures/npcs/npc.h"
 #include "game/scheduling/scheduler.h"
 
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 #include "lua/creature/events.h"
 
 extern Npcs g_npcs;
@@ -52,15 +52,15 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 
 	for (auto spawnNode : doc.child("npcs").children()) {
 		Position centerPos(
-			pugi::cast<uint16_t>(spawnNode.attribute("centerx").value()),
-			pugi::cast<uint16_t>(spawnNode.attribute("centery").value()),
-			pugi::cast<uint16_t>(spawnNode.attribute("centerz").value())
+			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centerx").value())),
+			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centery").value())),
+			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centerz").value()))
 		);
 
 		int32_t radius;
 		pugi::xml_attribute radiusAttribute = spawnNode.attribute("radius");
 		if (radiusAttribute) {
-			radius = pugi::cast<int32_t>(radiusAttribute.value());
+			radius = static_cast<int32_t>(LexicalCast::intFromChar(radiusAttribute.value()));
 		} else {
 			radius = -1;
 		}
@@ -84,17 +84,17 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 
 				pugi::xml_attribute directionAttribute = childNode.attribute("direction");
 				if (directionAttribute) {
-					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
+					dir = static_cast<Direction>(LexicalCast::intFromChar(directionAttribute.value()));
 				} else {
 					dir = DIRECTION_NORTH;
 				}
 
 				Position pos(
-					centerPos.x + pugi::cast<uint16_t>(childNode.attribute("x").value()),
-					centerPos.y + pugi::cast<uint16_t>(childNode.attribute("y").value()),
+					centerPos.x + static_cast<uint16_t>(LexicalCast::intFromChar(childNode.attribute("x").value())),
+					centerPos.y + static_cast<uint16_t>(LexicalCast::intFromChar(childNode.attribute("y").value())),
 					centerPos.z
 				);
-				int64_t interval = pugi::cast<int64_t>(childNode.attribute("spawntime").value()) * 1000;
+				int64_t interval = static_cast<int64_t>(LexicalCast::intFromChar(childNode.attribute("spawntime").value())) * 1000;
 				if (interval >= MINSPAWN_INTERVAL && interval <= MAXSPAWN_INTERVAL) {
 					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {

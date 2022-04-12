@@ -19,12 +19,12 @@
 
 #include "otpch.h"
 
-#include "items/functions/item_parse.hpp"
 #include "items/items.h"
+#include "utils/lexical_cast.hpp"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 
-#include "utils/pugicast.h"
+#include "items/functions/item_parse.hpp"
 
 #include <filesystem>
 
@@ -354,7 +354,7 @@ bool Items::loadFromXml()
 	for (auto itemNode : doc.child("items").children()) {
 		pugi::xml_attribute idAttribute = itemNode.attribute("id");
 		if (idAttribute) {
-			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
+			parseItemNode(itemNode, LexicalCast::intFromChar(idAttribute.value()));
 			continue;
 		}
 
@@ -378,8 +378,8 @@ bool Items::loadFromXml()
 			continue;
 		}
 
-		uint16_t id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		uint16_t id = LexicalCast::intFromChar(fromIdAttribute.value());
+		uint16_t toId = LexicalCast::intFromChar(toIdAttribute.value());
 		while (id <= toId) {
 			parseItemNode(itemNode, id++);
 		}

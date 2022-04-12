@@ -28,7 +28,7 @@
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 
 extern Game g_game;
 extern Spells* g_spells;

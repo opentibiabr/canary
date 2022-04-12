@@ -20,7 +20,6 @@
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
-#include "utils/lexical_cast.hpp"
 #include <mysql/mysql.h>
 #include <memory>
 #include <mutex>
@@ -29,6 +28,7 @@
 
 #include "config/configmanager.h"
 #include "declarations.hpp"
+#include "utils/lexical_cast.hpp"
 
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;
@@ -112,13 +112,13 @@ class DBResult
 
 			T data = { 0 };
 			try {
-				data = Cast::lexicalCast<T>(row[it->second]);
+				data = std::stoi(row[it->second]);
 			}
 			catch (std::exception&) {
 				// overflow; tries to get it as uint64 (as big as possible);
 				uint64_t u64data;
 				try {
-					u64data = Cast::lexicalCast<uint64_t>(row[it->second]);
+					u64data = LexicalCast::intFromChar(row[it->second]);
 					if (u64data > 0) {
 						// is a valid! thus truncate into int max for data type;
 						data = std::numeric_limits<T>::max();

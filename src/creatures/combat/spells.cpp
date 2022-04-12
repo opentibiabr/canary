@@ -466,7 +466,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("spellid"))) {
-		spellId = pugi::cast<uint16_t>(attr.value());
+		spellId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("group"))) {
@@ -481,7 +481,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("groupcooldown"))) {
-		groupCooldown = pugi::cast<uint32_t>(attr.value());
+		groupCooldown = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("secondarygroup"))) {
@@ -496,35 +496,35 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("secondarygroupcooldown"))) {
-		secondaryGroupCooldown = pugi::cast<uint32_t>(attr.value());
+		secondaryGroupCooldown = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("level")) || (attr = node.attribute("lvl"))) {
-		level = pugi::cast<uint32_t>(attr.value());
+		level = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("magiclevel")) || (attr = node.attribute("maglv"))) {
-		magLevel = pugi::cast<uint32_t>(attr.value());
+		magLevel = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("mana"))) {
-		mana = pugi::cast<uint32_t>(attr.value());
+		mana = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = pugi::cast<uint32_t>(attr.value());
+		manaPercent = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("soul"))) {
-		soul = pugi::cast<uint32_t>(attr.value());
+		soul = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("range"))) {
-		range = pugi::cast<int32_t>(attr.value());
+		range = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("cooldown")) || (attr = node.attribute("exhaustion"))) {
-		cooldown = pugi::cast<uint32_t>(attr.value());
+		cooldown = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("setPzLocked"))) {
@@ -1163,10 +1163,10 @@ bool RuneSpell::configureEvent(const pugi::xml_node& node)
 		SPDLOG_ERROR("[RuneSpell::configureEvent] - Rune spell without id");
 		return false;
 	}
-	runeId = pugi::cast<uint16_t>(attr.value());
+	runeId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 	if ((attr = node.attribute("charges"))) {
-		charges = pugi::cast<uint32_t>(attr.value());
+		charges = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 	} else {
 		charges = 0;
 	}

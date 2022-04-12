@@ -22,7 +22,7 @@
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
 #include "game/scheduling/scheduler.h"
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 
 GlobalEvents::GlobalEvents() :
 	scriptInterface("GlobalEvent Interface") {
@@ -304,7 +304,7 @@ bool GlobalEvent::configureEvent(const pugi::xml_node& node) {
 			return false;
 		}
 	} else if ((attr = node.attribute("interval"))) {
-		interval = std::max<int32_t>(SCHEDULER_MINTICKS, pugi::cast<int32_t>(attr.value()));
+		interval = std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(LexicalCast::intFromChar(attr.value())));
 		nextExecution = OTSYS_TIME() + interval;
 	} else {
 		SPDLOG_ERROR("[GlobalEvent::configureEvent] - "

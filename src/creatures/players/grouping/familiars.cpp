@@ -19,7 +19,7 @@
 
 #include "otpch.h"
 #include "creatures/players/grouping/familiars.h"
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
 bool Familiars::loadFromXml() {
@@ -42,7 +42,7 @@ bool Familiars::loadFromXml() {
 			continue;
 		}
 
-		uint16_t vocation = pugi::cast<uint16_t>(attr.value());
+		uint16_t vocation = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		if (vocation > VOCATION_LAST) {
 			SPDLOG_WARN("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocation);
 			continue;
@@ -56,7 +56,7 @@ bool Familiars::loadFromXml() {
 
 		familiars[vocation].emplace_back(
 			familiarsNode.attribute("name").as_string(),
-			pugi::cast<uint16_t>(lookTypeAttribute.value()),
+			static_cast<uint16_t>(LexicalCast::intFromChar(lookTypeAttribute.value())),
 			familiarsNode.attribute("premium").as_bool(),
 			familiarsNode.attribute("unlocked").as_bool(true),
 			familiarsNode.attribute("type").as_string());

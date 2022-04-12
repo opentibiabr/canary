@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "lua/creature/actions.h"
 #include "creatures/players/management/ban.h"
 #include "declarations.hpp"
 #include "game/game.h"
@@ -38,7 +37,6 @@
 #include "items/weapons/weapons.h"
 
 extern Game g_game;
-extern Actions actions;
 extern CreatureEvents *g_creatureEvents;
 extern Vocations g_vocations;
 extern Chat *g_chat;

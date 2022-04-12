@@ -19,7 +19,7 @@
 
 #include "otpch.h"
 
-#include "utils/pugicast.h"
+#include "utils/lexical_cast.hpp"
 
 #include "map/house/house.h"
 #include "io/iologindata.h"
@@ -648,7 +648,7 @@ bool Houses::loadHousesXML(const std::string& filename)
 			return false;
 		}
 
-		int32_t houseId = pugi::cast<int32_t>(houseIdAttribute.value());
+		int32_t houseId = static_cast<int32_t>(LexicalCast::intFromChar(houseIdAttribute.value()));
 
 		House* house = getHouse(houseId);
 		if (!house) {
@@ -660,9 +660,9 @@ bool Houses::loadHousesXML(const std::string& filename)
 		house->setName(houseNode.attribute("name").as_string());
 
 		Position entryPos(
-			pugi::cast<uint16_t>(houseNode.attribute("entryx").value()),
-			pugi::cast<uint16_t>(houseNode.attribute("entryy").value()),
-			pugi::cast<uint16_t>(houseNode.attribute("entryz").value())
+			static_cast<uint16_t>(LexicalCast::intFromChar(houseNode.attribute("entryx").value())),
+			static_cast<uint16_t>(LexicalCast::intFromChar(houseNode.attribute("entryy").value())),
+			static_cast<uint16_t>(LexicalCast::intFromChar(houseNode.attribute("entryz").value()))
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
 			SPDLOG_WARN("[Houses::loadHousesXML] - Entry not set for house "
@@ -670,8 +670,8 @@ bool Houses::loadHousesXML(const std::string& filename)
 		}
 		house->setEntryPos(entryPos);
 
-		house->setRent(pugi::cast<uint32_t>(houseNode.attribute("rent").value()));
-		house->setTownId(pugi::cast<uint32_t>(houseNode.attribute("townid").value()));
+		house->setRent(static_cast<uint32_t>(LexicalCast::intFromChar(houseNode.attribute("rent").value())));
+		house->setTownId(static_cast<uint32_t>(LexicalCast::intFromChar(houseNode.attribute("townid").value())));
 
 		house->setOwner(0, false);
 	}

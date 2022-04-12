@@ -19,14 +19,13 @@
 
 #include "otpch.h"
 
-#include "lua/creature/raids.h"
-
-#include "utils/pugicast.h"
-
 #include "game/game.h"
+#include "utils/lexical_cast.hpp"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 #include "server/network/webhook/webhook.h"
+
+#include "lua/creature/raids.h"
 
 extern Game g_game;
 
@@ -75,7 +74,7 @@ bool Raids::loadFromXml() {
 						name, file);
 		}
 
-		interval = pugi::cast<uint32_t>(raidNode.attribute("interval2").value()) * 60;
+		interval = static_cast<uint32_t>(LexicalCast::intFromChar(raidNode.attribute("interval2").value())) * 60;
 		if (interval == 0) {
 			SPDLOG_ERROR("[Raids::loadFromXml] - "
                          "'interval2' tag missing or zero "
@@ -84,7 +83,7 @@ bool Raids::loadFromXml() {
 		}
 
 		if ((attr = raidNode.attribute("margin"))) {
-			margin = pugi::cast<uint32_t>(attr.value()) * 60 * 1000;
+			margin = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value())) * 60 * 1000;
 		} else {
 			SPDLOG_WARN("[Raids::loadFromXml] - "
 						"'margin' tag missing for raid: {}", name);
@@ -284,7 +283,7 @@ bool RaidEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		return false;
 	}
 
-	delay = std::max<uint32_t>(RAID_MINTICKS, pugi::cast<uint32_t>(delayAttribute.value()));
+	delay = std::max<uint32_t>(RAID_MINTICKS, static_cast<uint32_t>(LexicalCast::intFromChar(delayAttribute.value())));
 	return true;
 }
 
@@ -354,7 +353,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	}
 
 	if ((attr = eventNode.attribute("x"))) {
-		position.x = pugi::cast<uint16_t>(attr.value());
+		position.x = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
                     "'X' tag missing for singlespawn event");
@@ -362,7 +361,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	}
 
 	if ((attr = eventNode.attribute("y"))) {
-		position.y = pugi::cast<uint16_t>(attr.value());
+		position.y = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
                     "'Y' tag missing for singlespawn event");
@@ -370,7 +369,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	}
 
 	if ((attr = eventNode.attribute("z"))) {
-		position.z = pugi::cast<uint16_t>(attr.value());
+		position.z = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
                     "'Z' tag missing for singlespawn event");
@@ -403,11 +402,11 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 
 	pugi::xml_attribute attr;
 	if ((attr = eventNode.attribute("radius"))) {
-		int32_t radius = pugi::cast<int32_t>(attr.value());
+		int32_t radius = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
 		Position centerPos;
 
 		if ((attr = eventNode.attribute("centerx"))) {
-			centerPos.x = pugi::cast<uint16_t>(attr.value());
+			centerPos.x = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          ""
@@ -416,7 +415,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("centery"))) {
-			centerPos.y = pugi::cast<uint16_t>(attr.value());
+			centerPos.y = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'centery' tag missing for areaspawn event");
@@ -424,7 +423,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("centerz"))) {
-			centerPos.z = pugi::cast<uint16_t>(attr.value());
+			centerPos.z = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "centerz' tag missing for areaspawn event");
@@ -440,7 +439,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		toPos.z = centerPos.z;
 	} else {
 		if ((attr = eventNode.attribute("fromx"))) {
-			fromPos.x = pugi::cast<uint16_t>(attr.value());
+			fromPos.x = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'fromx' tag missing for areaspawn event");
@@ -448,7 +447,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("fromy"))) {
-			fromPos.y = pugi::cast<uint16_t>(attr.value());
+			fromPos.y = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'fromy' tag missing for areaspawn event");
@@ -456,7 +455,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("fromz"))) {
-			fromPos.z = pugi::cast<uint16_t>(attr.value());
+			fromPos.z = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'fromz' tag missing for areaspawn event");
@@ -464,7 +463,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("tox"))) {
-			toPos.x = pugi::cast<uint16_t>(attr.value());
+			toPos.x = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'tox' tag missing for areaspawn event");
@@ -472,7 +471,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("toy"))) {
-			toPos.y = pugi::cast<uint16_t>(attr.value());
+			toPos.y = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'toy' tag missing for areaspawn event");
@@ -480,7 +479,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("toz"))) {
-			toPos.z = pugi::cast<uint16_t>(attr.value());
+			toPos.z = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'toz' tag missing for areaspawn event");
@@ -501,21 +500,21 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 
 		uint32_t minAmount;
 		if ((attr = monsterNode.attribute("minamount"))) {
-			minAmount = pugi::cast<uint32_t>(attr.value());
+			minAmount = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			minAmount = 0;
 		}
 
 		uint32_t maxAmount;
 		if ((attr = monsterNode.attribute("maxamount"))) {
-			maxAmount = pugi::cast<uint32_t>(attr.value());
+			maxAmount = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 		} else {
 			maxAmount = 0;
 		}
 
 		if (maxAmount == 0 && minAmount == 0) {
 			if ((attr = monsterNode.attribute("amount"))) {
-				minAmount = pugi::cast<uint32_t>(attr.value());
+				minAmount = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
 				maxAmount = minAmount;
 			} else {
 				SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "

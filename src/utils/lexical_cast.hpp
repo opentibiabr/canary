@@ -20,59 +20,36 @@
 #ifndef SRC_UTILS_LEXICAL_CAST_HPP_
 #define SRC_UTILS_LEXICAL_CAST_HPP_
 
-#include <stdlib.h>
-#include <string>
+#include "spdlog/spdlog.h"
+#include <cstdlib>
 
-class Cast {
-	public:
-
-	template<class T>
-	T static lexicalCast(const char * str) {
-		// Reusing has severe (positive) impact on performance
-		static std::istringstream stringstream;
-		T value;
-		stringstream.str(str);
-		stringstream>> value;
-		stringstream.clear();
-		return value;
+class LexicalCast : public std::string {
+public:
+	/**
+	 * @brief Convert from char* to int/uint
+	 * @param charString Value to convert
+	 * @return int
+	 */
+	static int intFromChar(const char* charString) { 
+		try {
+			return std::atoi(charString);
+		} catch (std::exception& exception) {
+			SPDLOG_ERROR("[LexicalCast::intFromChar] - Cannot convert {}", exception.what());
+		}
 	}
-
-	// Trivial conversion
-	template<> static std::string lexicalCast(const char * str) {
-		return str;
+	/**
+	 * @brief Convert from char* to float
+	 * 
+	 * @param charString Value to convert
+	 * @return float
+	 */
+	static float floatFromChar(const char* charString) { 
+		try {
+			return std::stof(charString);
+		} catch (std::exception& exception) {
+			SPDLOG_ERROR("[LexicalCast::floatFromChar] - Cannot convert {}", exception.what());
+		}
 	}
-
-	// Conversions that exist in stl
-	template<> static float lexicalCast(const char * str) {
-		return std::strtof(str, nullptr);
-	}
-	template<> static long lexicalCast(const char * str) {
-		return std::strtol(str, nullptr, 0);
-	}
-	template<> static long long lexicalCast(const char * str) {
-		return std::strtoll(str, nullptr, 0);
-	}
-	template<> static unsigned long lexicalCast(const char * str) {
-		return std::strtoul(str, nullptr, 0);
-	}
-	template<> static unsigned long long lexicalCast(const char * str) {
-		return std::strtoull(str, nullptr, 0);
-	}
-
-	// Conversions that need to be truncated
-	template<> static short lexicalCast(const char * str) {
-		return static_cast <short>(lexicalCast<long>(str));
-	}
-	template<> static int lexicalCast(const char * str) {
-		return static_cast <int>(lexicalCast<long>(str));
-	}
-	template<> static unsigned short lexicalCast(const char * str) {
-		return static_cast <unsigned short>(lexicalCast<unsigned long>(str));
-	}
-	template<> static unsigned int lexicalCast(const char * str) {
-		return static_cast <unsigned int>(lexicalCast<unsigned long>(str));
-	}
-
 };
 
 #endif // SRC_UTILS_LEXICAL_CAST_HPP_

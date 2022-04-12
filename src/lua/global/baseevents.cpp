@@ -21,7 +21,6 @@
 
 #include "lua/global/baseevents.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/pugicast.h"
 #include "utils/tools.h"
 
 extern LuaEnvironment g_luaEnvironment;

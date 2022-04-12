@@ -4,6 +4,7 @@ project(canary)
 # Cmake Features
 # *****************************************************************************
 set(CMAKE_CXX_STANDARD 20)
+set(GNUCXX_MINIMUM_VERSION 9)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -96,8 +97,18 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
+# Define "__cplusplus" for use in the compile on visual studio
 if(MSVC)
   target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:__cplusplus")
+endif()
+
+# Set for supress deprecated declarations (for GCC/GNU)
+# If not is GCC version 11, return message of error
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
+    message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
+  endif()
 endif()
 
 # *****************************************************************************

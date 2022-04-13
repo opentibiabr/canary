@@ -21,6 +21,7 @@
 #define SRC_GAME_GAME_H_
 
 #include <unordered_set>
+#include <ranges>
 
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
@@ -163,7 +164,7 @@ class Game
 			itemsClassifications.push_back(itemsClassification);
 		}
 		ItemClassification* getItemsClassification(uint8_t id, bool create) {
-			auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
+			auto it = std::ranges::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
 				return it->id == id;
 				});
 

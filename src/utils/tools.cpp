@@ -23,6 +23,7 @@
 
 #include <string>
 #include <algorithm>
+#include <ranges>
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -833,7 +834,7 @@ std::string getCombatName(CombatType_t combatType)
 
 CombatType_t getCombatType(const std::string& combatname)
 {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
+	auto it = std::ranges::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
 		return pair.second == combatname;
 	});
 

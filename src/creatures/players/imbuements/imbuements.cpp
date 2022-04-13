@@ -22,6 +22,8 @@
 #include "creatures/players/imbuements/imbuements.h"
 #include "utils/lexical_cast.hpp"
 
+#include <ranges>
+
 extern Events* g_events;
 
 Imbuement* Imbuements::getImbuement(uint16_t id)
@@ -169,7 +171,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						count = static_cast<uint16_t>(LexicalCast::intFromChar(childNode.attribute("count").value()));
 					}
 
-					auto it2 = std::find_if(imbuement.items.begin(), imbuement.items.end(), [sourceId](const std::pair<uint16_t, uint16_t>& source) -> bool {
+					auto it2 = std::ranges::find_if(imbuement.items.begin(), imbuement.items.end(), [sourceId](const std::pair<uint16_t, uint16_t>& source) -> bool {
 						return source.first == sourceId;
 					});
 
@@ -337,7 +339,7 @@ bool Imbuements::reload() {
 
 BaseImbuement* Imbuements::getBaseByID(uint16_t id)
 {
-	auto baseImbuements = std::find_if(basesImbuement.begin(), basesImbuement.end(), [id](const BaseImbuement& groupImbuement) {
+	auto baseImbuements = std::ranges::find_if(basesImbuement.begin(), basesImbuement.end(), [id](const BaseImbuement& groupImbuement) {
 				return groupImbuement.id == id;
 			});
 
@@ -346,7 +348,7 @@ BaseImbuement* Imbuements::getBaseByID(uint16_t id)
 
 CategoryImbuement* Imbuements::getCategoryByID(uint16_t id)
 {
-	auto categoryImbuements = std::find_if(categoriesImbuement.begin(), categoriesImbuement.end(), [id](const CategoryImbuement& categoryImbuement) {
+	auto categoryImbuements = std::ranges::find_if(categoriesImbuement.begin(), categoriesImbuement.end(), [id](const CategoryImbuement& categoryImbuement) {
 				return categoryImbuement.id == id;
 			});
 

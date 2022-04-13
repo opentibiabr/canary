@@ -28,8 +28,6 @@
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 
-#include "utils/lexical_cast.hpp"
-
 extern Spells* g_spells;
 extern Npcs g_npcs;
 

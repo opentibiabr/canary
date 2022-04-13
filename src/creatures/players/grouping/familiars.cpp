@@ -42,7 +42,7 @@ bool Familiars::loadFromXml() {
 			continue;
 		}
 
-		uint16_t vocation = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
+		auto vocation = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		if (vocation > VOCATION_LAST) {
 			SPDLOG_WARN("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocation);
 			continue;

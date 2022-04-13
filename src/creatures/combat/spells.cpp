@@ -446,7 +446,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	//static size_t size = sizeof(reservedList) / sizeof(const char*);
 	//for (size_t i = 0; i < size; ++i) {
-	for (const char* reserved : reservedList) {
+	for (auto reserved : reservedList) {
 		if (strcasecmp(reserved, name.c_str()) == 0) {
 			SPDLOG_ERROR("[Spell::configureSpell] - "
                          "Spell is using a reserved name: {}", reserved);
@@ -456,7 +456,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("spellid"))) {
-		spellId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
+		spellId = static_cast<uint8_t>(LexicalCast::intFromChar(attr.value()));
 	}
 
 	if ((attr = node.attribute("group"))) {
@@ -510,7 +510,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("range"))) {
-		range = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
+		range = LexicalCast::intFromChar(attr.value());
 	}
 
 	if ((attr = node.attribute("cooldown")) || (attr = node.attribute("exhaustion"))) {
@@ -664,7 +664,7 @@ bool Spell::playerSpellCheck(Player* player) const
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;
 		}
-	} else if (!vocSpellMap.empty() && vocSpellMap.find(player->getVocationId()) == vocSpellMap.end()) {
+	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId())) {
 		player->sendCancelMessage(RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -1123,7 +1123,7 @@ bool InstantSpell::canCast(const Player* player) const
 			return true;
 		}
 	} else {
-		if (vocSpellMap.empty() || vocSpellMap.find(player->getVocationId()) != vocSpellMap.end()) {
+		if (vocSpellMap.empty() || vocSpellMap.contains(player->getVocationId())) {
 			return true;
 		}
 	}

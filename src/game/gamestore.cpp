@@ -281,7 +281,7 @@ bool GameStore::loadFromXml()
 
 int8_t GameStore::getCategoryIndexByName(std::string categoryName)
 {
-	for (uint16_t i = 0; i < storeCategoryOffers.size(); i++) {
+	for (uint16_t i = 0; i < static_cast<uint16_t>(storeCategoryOffers.size()); i++) {
 		if (strcasecmp(storeCategoryOffers.at(i)->name.c_str(), categoryName.c_str()) == 0) {
 			return i;
 		}

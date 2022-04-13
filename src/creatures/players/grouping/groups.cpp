@@ -24,7 +24,7 @@
 #include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
-const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
+const std::unordered_map<std::string_view, PlayerFlags> ParsePlayerFlagMap = {
 	{"cannotusecombat", PlayerFlag_CannotUseCombat},
 	{"cannotattackplayer", PlayerFlag_CannotAttackPlayer},
 	{"cannotattackmonster", PlayerFlag_CannotAttackMonster},
@@ -81,7 +81,7 @@ bool Groups::load()
 
 	for (auto groupNode : doc.child("groups").children()) {
 		Group group;
-		group.id = static_cast<uint32_t>(LexicalCast::intFromChar(groupNode.attribute("id").value()));
+		group.id = static_cast<uint16_t>(LexicalCast::intFromChar(groupNode.attribute("id").value()));
 		group.name = groupNode.attribute("name").as_string();
 		group.access = groupNode.attribute("access").as_bool();
 		group.maxDepotItems = static_cast<uint32_t>(LexicalCast::intFromChar(groupNode.attribute("maxdepotitems").value()));

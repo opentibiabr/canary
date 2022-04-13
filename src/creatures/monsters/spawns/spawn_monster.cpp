@@ -56,13 +56,13 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 		Position centerPos(
 			static_cast<uint16_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centerx").value())),
 			static_cast<uint16_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centery").value())),
-			static_cast<uint16_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centerz").value()))
+			static_cast<uint8_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centerz").value()))
 		);
 
 		int32_t radius;
 		pugi::xml_attribute radiusAttribute = spawnMonsterNode.attribute("radius");
 		if (radiusAttribute) {
-			radius = static_cast<int32_t>(LexicalCast::intFromChar(radiusAttribute.value()));
+			radius = LexicalCast::intFromChar(radiusAttribute.value());
 		} else {
 			radius = -1;
 		}
@@ -159,7 +159,7 @@ bool SpawnsMonster::isInZone(const Position& centerPos, int32_t radius, const Po
 void SpawnMonster::startSpawnMonsterCheck()
 {
 	if (checkSpawnMonsterEvent == 0) {
-		checkSpawnMonsterEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
+		checkSpawnMonsterEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind_front(&SpawnMonster::checkSpawnMonster, this)));
 	}
 }
 
@@ -234,7 +234,7 @@ void SpawnMonster::checkSpawnMonster()
 
 	for (auto& it : spawnMonsterMap) {
 		uint32_t spawnMonsterId = it.first;
-		if (spawnedMonsterMap.find(spawnMonsterId) != spawnedMonsterMap.end()) {
+		if (spawnedMonsterMap.contains(spawnMonsterId)) {
 			continue;
 		}
 
@@ -263,7 +263,7 @@ void SpawnMonster::checkSpawnMonster()
 	}
 
 	if (spawnedMonsterMap.size() < spawnMonsterMap.size()) {
-		checkSpawnMonsterEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
+		checkSpawnMonsterEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind_front(&SpawnMonster::checkSpawnMonster, this)));
 	}
 }
 
@@ -273,22 +273,17 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t& sb, uint
 		spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler.addEvent(createSchedulerTask(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL)));
+		g_scheduler.addEvent(createSchedulerTask(1400, std::bind_front(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL)));
 	}
 }
 
 void SpawnMonster::cleanup()
 {
-	auto it = spawnedMonsterMap.begin();
-	while (it != spawnedMonsterMap.end()) {
-            uint32_t spawnMonsterId = it->first;
-		Monster* monster = it->second;
-            if (monster->isRemoved()) {
-               spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
+	for (auto [id, monster] : spawnedMonsterMap) {
+		if (monster->isRemoved()) {
+			spawnMonsterMap[id].lastSpawn = OTSYS_TIME();
 			monster->decrementReferenceCounter();
-			it = spawnedMonsterMap.erase(it);
-		} else {
-			++it;
+			spawnedMonsterMap.clear();
 		}
 	}
 }

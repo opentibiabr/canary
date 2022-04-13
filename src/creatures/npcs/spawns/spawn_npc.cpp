@@ -53,13 +53,13 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 		Position centerPos(
 			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centerx").value())),
 			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centery").value())),
-			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centerz").value()))
+			static_cast<uint8_t>(LexicalCast::intFromChar(spawnNode.attribute("centerz").value()))
 		);
 
 		int32_t radius;
 		pugi::xml_attribute radiusAttribute = spawnNode.attribute("radius");
 		if (radiusAttribute) {
-			radius = static_cast<int32_t>(LexicalCast::intFromChar(radiusAttribute.value()));
+			radius = LexicalCast::intFromChar(radiusAttribute.value());
 		} else {
 			radius = -1;
 		}
@@ -147,7 +147,7 @@ bool SpawnsNpc::isInZone(const Position& centerPos, int32_t radius, const Positi
 void SpawnNpc::startSpawnNpcCheck()
 {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind_front(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -220,7 +220,7 @@ void SpawnNpc::checkSpawnNpc()
 
 	for (auto& it : spawnNpcMap) {
 		uint32_t spawnId = it.first;
-		if (spawnedNpcMap.find(spawnId) != spawnedNpcMap.end()) {
+		if (spawnedNpcMap.contains(spawnId)) {
 			continue;
 		}
 
@@ -241,7 +241,7 @@ void SpawnNpc::checkSpawnNpc()
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind_front(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -251,22 +251,17 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t& sb, uint16_t 
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler.addEvent(createSchedulerTask(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
+		g_scheduler.addEvent(createSchedulerTask(1400, std::bind_front(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
 	}
 }
 
 void SpawnNpc::cleanup()
 {
-	auto it = spawnedNpcMap.begin();
-	while (it != spawnedNpcMap.end()) {
-            uint32_t spawnId = it->first;
-		Npc* npc = it->second;
-            if (npc->isRemoved()) {
-               spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
+	for (auto [id, npc] : spawnedNpcMap) {
+		if (npc->isRemoved()) {
+			spawnNpcMap[id].lastSpawnNpc = OTSYS_TIME();
 			npc->decrementReferenceCounter();
-			it = spawnedNpcMap.erase(it);
-		} else {
-			++it;
+			spawnedNpcMap.clear();
 		}
 	}
 }

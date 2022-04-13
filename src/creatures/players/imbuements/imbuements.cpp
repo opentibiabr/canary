@@ -64,7 +64,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				static_cast<uint32_t>(LexicalCast::intFromChar(baseNode.attribute("price").value())),
 				static_cast<uint32_t>(LexicalCast::intFromChar(baseNode.attribute("protectionPrice").value())),
 				static_cast<uint32_t>(LexicalCast::intFromChar(baseNode.attribute("removecost").value())),
-				static_cast<int32_t>(LexicalCast::intFromChar(baseNode.attribute("duration").value())),
+				LexicalCast::intFromChar(baseNode.attribute("duration").value()),
 				static_cast<uint16_t>(LexicalCast::intFromChar(baseNode.attribute("percent").value()))
 
 			);
@@ -91,7 +91,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			uint16_t baseid = static_cast<uint32_t>(LexicalCast::intFromChar(base.value()));
+			auto baseid = static_cast<uint16_t>(LexicalCast::intFromChar(base.value()));
 			auto groupBase = getBaseByID(baseid);
 			if (groupBase == nullptr) {
 				SPDLOG_WARN("Group base '{}' not exist", baseid);
@@ -136,7 +136,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				continue;
 			}
 
-			uint16_t category = static_cast<uint16_t>(LexicalCast::intFromChar(categorybase.value()));
+			auto category = static_cast<uint16_t>(LexicalCast::intFromChar(categorybase.value()));
 			auto category_p = getCategoryByID(category);
 			if (category_p == nullptr) {
 				SPDLOG_WARN("Category imbuement {} not exist", category);
@@ -164,7 +164,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						SPDLOG_WARN("Missing item ID for imbuement name '{}'", imbuement.name);
 						continue;
 					}
-					uint16_t sourceId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
+					auto sourceId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 
 					uint16_t count = 1;
 					if ((attr = childNode.attribute("count"))) {
@@ -246,7 +246,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 								imbuement.name);
 							continue;
 						}
-						int32_t bonus = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
+						int32_t bonus = LexicalCast::intFromChar(attr.value());
 
 						if (usenormalskill == 1) {
 							imbuement.skills[skillId] = bonus;
@@ -256,7 +256,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 							imbuement.skills[skillId] = bonus;
 							int32_t chance = 100;
 							if ((attr = childNode.attribute("chance")))
-								chance = std::min<uint32_t>(100, static_cast<int32_t>(LexicalCast::intFromChar(attr.value())));
+								chance = std::min<uint32_t>(100, LexicalCast::intFromChar(attr.value()));
 
 							imbuement.skills[skillId - 1] = chance;
 						}
@@ -343,7 +343,7 @@ BaseImbuement* Imbuements::getBaseByID(uint16_t id)
 				return groupImbuement.id == id;
 			});
 
-	return baseImbuements != basesImbuement.end() ? &*baseImbuements : nullptr;
+	return baseImbuements != basesImbuement.end() ? std::to_address(&*baseImbuements) : nullptr;
 }
 
 CategoryImbuement* Imbuements::getCategoryByID(uint16_t id)
@@ -352,7 +352,7 @@ CategoryImbuement* Imbuements::getCategoryByID(uint16_t id)
 				return categoryImbuement.id == id;
 			});
 
-	return categoryImbuements != categoriesImbuement.end() ? &*categoryImbuements : nullptr;
+	return categoryImbuements != categoriesImbuement.end() ? std::to_address(&*categoryImbuements) : nullptr;
 }
 
 std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* item)

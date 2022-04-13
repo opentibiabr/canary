@@ -16,7 +16,6 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-#include <string>
 
 #include "otpch.h"
 
@@ -24,6 +23,9 @@
 
 #include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
+
+#include <string>
+#include <ranges>
 
 bool Mounts::reload()
 {
@@ -45,7 +47,7 @@ bool Mounts::loadFromXml()
 			static_cast<uint8_t>(LexicalCast::intFromChar(mountNode.attribute("id").value())),
 			static_cast<uint16_t>(LexicalCast::intFromChar(mountNode.attribute("clientid").value())),
 			mountNode.attribute("name").as_string(),
-			static_cast<int32_t>(LexicalCast::intFromChar(mountNode.attribute("speed").value())),
+			LexicalCast::intFromChar(mountNode.attribute("speed").value()),
 			mountNode.attribute("premium").as_bool(),
 			mountNode.attribute("type").as_string()
 		);
@@ -56,11 +58,11 @@ bool Mounts::loadFromXml()
 
 Mount* Mounts::getMountByID(uint8_t id)
 {
-	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const Mount& mount) {
+	auto it = std::ranges::find_if(mounts.begin(), mounts.end(), [id](const Mount& mount) {
 		return mount.id == id;
 	});
 
-	return it != mounts.end() ? &*it : nullptr;
+	return it != mounts.end() ? std::to_address(&*it) : nullptr;
 }
 
 Mount* Mounts::getMountByName(const std::string& name) {
@@ -76,9 +78,9 @@ Mount* Mounts::getMountByName(const std::string& name) {
 
 Mount* Mounts::getMountByClientID(uint16_t clientId)
 {
-	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const Mount& mount) {
+	auto it = std::ranges::find_if(mounts.begin(), mounts.end(), [clientId](const Mount& mount) {
 		return mount.clientId == clientId;
 	});
 
-	return it != mounts.end() ? &*it : nullptr;
+	return it != mounts.end() ? std::to_address(&*it) : nullptr;
 }

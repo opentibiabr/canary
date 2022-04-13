@@ -44,7 +44,7 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		uint16_t type = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
+		auto type = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
 		if (type > PLAYERSEX_LAST) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;

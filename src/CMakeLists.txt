@@ -3,8 +3,10 @@ project(canary)
 # *****************************************************************************
 # Cmake Features
 # *****************************************************************************
+# Need c++ 23 for use somes new features instead of boost library and set "/std:c++latest" flag
 set(CMAKE_CXX_STANDARD 23)
-set(GNUCXX_MINIMUM_VERSION 9)
+# Minimum version 11 for use c++ 23
+set(GNUCXX_MINIMUM_VERSION 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)

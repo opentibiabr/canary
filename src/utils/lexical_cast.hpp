@@ -20,7 +20,7 @@
 #ifndef SRC_UTILS_LEXICAL_CAST_HPP_
 #define SRC_UTILS_LEXICAL_CAST_HPP_
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 #include <cstdlib>
 
 class LexicalCast : public std::string {
@@ -30,8 +30,8 @@ public:
 	 * @param charString Value to convert
 	 * @return int
 	*/
-	static int intFromChar(const char* charString) try { 
-		return std::atoi(charString);
+	static long long intFromChar(const char* charString) try {
+		return std::atoll(charString);
 	} catch (const std::exception& exception) {
 		SPDLOG_ERROR("[LexicalCast::intFromChar] - Cannot convert from char* to int {}", exception.what());
 		return 0;
@@ -42,7 +42,7 @@ public:
 	 * @param charString Value to convert
 	 * @return float
 	*/
-	static float floatFromChar(const char* charString) try { 
+	static float floatFromChar(const char* charString) try {
 		return std::stof(charString);
 	} catch (const std::exception& exception) {
 		SPDLOG_ERROR("[LexicalCast::floatFromChar] - Cannot convert from char* to float {}", exception.what());
@@ -54,7 +54,7 @@ public:
 	 * @param charString 
 	 * @return double 
 	*/
-	static double doubleFromChar(const char* charString) try { 
+	static double doubleFromChar(const char* charString) try {
 		return std::stod(charString);
 	} catch (const std::exception& exception) {
 		SPDLOG_ERROR("[LexicalCast::doubleFromChar] - Cannot convert from char* to double {}", exception.what());

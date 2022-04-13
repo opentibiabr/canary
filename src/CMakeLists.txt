@@ -4,6 +4,9 @@ project(canary)
 # Cmake Features
 # *****************************************************************************
 set(CMAKE_CXX_STANDARD 17)
+# Minimum version 8 for use c++ 17
+set(GNUCXX_MINIMUM_VERSION 8)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -97,33 +100,37 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
+# Set for supress deprecated declarations (for GCC/GNU)
+# If not is GNUCXX_MINIMUM_VERSION, return message of error
+if (CMAKE_COMPILER_IS_GNUCXX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
+    message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
+  endif()
+endif()
 
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
+find_package(spdlog REQUIRED)
+find_package(LuaJIT REQUIRED)
+find_package(Threads REQUIRED)
+find_package(libzippp REQUIRED)
+find_package(cryptopp CONFIG REQUIRED)
 if (MSVC)
-  find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
-  find_package(cryptopp CONFIG REQUIRED)
+find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
-  find_package(LuaJIT REQUIRED)
   find_package(MySQL REQUIRED)
   find_package(PugiXML REQUIRED)
-  find_package(spdlog CONFIG REQUIRED)
   find_package(Threads REQUIRED)
-  find_package(libzippp CONFIG REQUIRED)
 else()
-  find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
-  find_package(cryptopp CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
-  find_package(LuaJIT REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
-  find_package(spdlog CONFIG REQUIRED)
-  find_package(Threads REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
-  find_package(libzippp CONFIG REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -283,6 +290,7 @@ target_include_directories(${PROJECT_NAME}
     ${PUGIXML_INCLUDE_DIR}
     ${CRYPTOPP_INCLUDE_DIR}
     ${CURL_INCLUDE_DIRS}
+    ${SPDLOG_INCLUDE_DIR}
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
 target_link_libraries(${PROJECT_NAME}
@@ -295,8 +303,9 @@ target_link_libraries(${PROJECT_NAME}
     ${CRYPTOPP_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
+    ${SPDLOG_LIBRARY}
+    fmt::fmt
     jsoncpp_lib
-    spdlog::spdlog
     libzippp::libzippp
 )
 

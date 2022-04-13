@@ -24,6 +24,7 @@
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
+#include "utils/lexical_cast.hpp"
 
 extern Spells* g_spells;
 extern Monsters g_monsters;

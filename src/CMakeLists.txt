@@ -3,7 +3,7 @@ project(canary)
 # *****************************************************************************
 # Cmake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(GNUCXX_MINIMUM_VERSION 9)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -99,8 +99,10 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 # Define flags for use in the compile on visual studio
 if(MSVC)
+  # __cplusplus is not set by default on vs
   target_compile_options(${PROJECT_NAME} PUBLIC "/Zc:__cplusplus")
-  target_compile_options(${PROJECT_NAME}  PUBLIC "/std:c++20")
+  # Set for use latest c++
+  target_compile_options(${PROJECT_NAME}  PUBLIC "/std:c++latest")
 endif()
 
 # Set for supress deprecated declarations (for GCC/GNU)

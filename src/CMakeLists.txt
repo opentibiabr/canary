@@ -58,7 +58,6 @@ if (MSVC)
   # Need c++23 for use somes new features instead of boost library and set "/std:c++latest" flag
   target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23)
   target_compile_options(${PROJECT_NAME} PRIVATE "/Zc:__cplusplus /std:c++latest")
-
 else()
   target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
   if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -109,7 +108,6 @@ endif()
 # === ASAN ===
 if(ASAN_ENABLED)
   log_option_enabled("asan")
-
   if(MSVC)
     target_compile_options(${PROJECT_NAME}  PUBLIC /fsanitize=address)
   else()
@@ -131,15 +129,6 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 
-# Set for supress deprecated declarations (for GCC/GNU)
-# If not is GNUCXX_MINIMUM_VERSION, return message of error
-if (CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
-    message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
-  endif()
-endif()
-
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
@@ -149,6 +138,7 @@ find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
+
 if (MSVC)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
@@ -167,7 +157,7 @@ include(GNUInstallDirs)
 
 
 # *****************************************************************************
-# otserver configuration
+# Project configuration
 # *****************************************************************************
 target_sources(${PROJECT_NAME}
   PRIVATE
@@ -311,32 +301,32 @@ target_sources(${PROJECT_NAME}
 
 if (MSVC)
 
-target_include_directories(${PROJECT_NAME}
-  PRIVATE
-    ${CMAKE_SOURCE_DIR}/src
-    ${MYSQL_INCLUDE_DIR}
-    ${LUA_INCLUDE_DIR}
-    ${PUGIXML_INCLUDE_DIR}
-    ${CRYPTOPP_INCLUDE_DIR}
-    ${CURL_INCLUDE_DIRS}
-    ${SPDLOG_INCLUDE_DIR}
-    asio::asio
-    $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
+  target_include_directories(${PROJECT_NAME}
+    PRIVATE
+      ${CMAKE_SOURCE_DIR}/src
+      ${MYSQL_INCLUDE_DIR}
+      ${LUA_INCLUDE_DIR}
+      ${PUGIXML_INCLUDE_DIR}
+      ${CRYPTOPP_INCLUDE_DIR}
+      ${CURL_INCLUDE_DIRS}
+      ${SPDLOG_INCLUDE_DIR}
+      asio::asio
+      $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
-target_link_libraries(${PROJECT_NAME}
-  PRIVATE
-    ${MYSQL_CLIENT_LIBS}
-    ${LUA_LIBRARIES}
-    ${PUGIXML_LIBRARIES}
-    ${CRYPTOPP_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${CURL_LIBRARIES}
-    ${SPDLOG_LIBRARY}
-    fmt::fmt
-    jsoncpp_lib
-    libzippp::libzippp
-    asio::asio
-)
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      ${MYSQL_CLIENT_LIBS}
+      ${LUA_LIBRARIES}
+      ${PUGIXML_LIBRARIES}
+      ${CRYPTOPP_LIBRARIES}
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${CURL_LIBRARIES}
+      ${SPDLOG_LIBRARY}
+      fmt::fmt
+      jsoncpp_lib
+      libzippp::libzippp
+      asio::asio
+  )
 
 else()
 
@@ -362,6 +352,6 @@ else()
 endif (MSVC)
 
 set_target_properties(${PROJECT_NAME}
-    PROPERTIES
-      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+  PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )

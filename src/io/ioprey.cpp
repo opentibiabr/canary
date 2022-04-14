@@ -26,7 +26,6 @@
 #include "game/game.h"
 #include "io/ioprey.h"
 
-extern Game g_game;
 extern Monsters g_monsters;
 extern ConfigManager g_config;
 extern IOPrey g_prey;
@@ -82,7 +81,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	// Disabling prey system if the server have less then 36 registered monsters on bestiary because:
 	// - Impossible to generate random lists without duplications on slots.
 	// - Stress the server with unnecessary loops.
-	std::map<uint16_t, std::string> bestiary = g_game.getBestiaryList();
+	std::map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
 	if (bestiary.size() < 36) {
 		return;
 	}
@@ -159,7 +158,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	// Disabling task hunting system if the server have less then 36 registered monsters on bestiary because:
 	// - Impossible to generate random lists without duplications on slots.
 	// - Stress the server with unnecessary loops.
-	std::map<uint16_t, std::string> bestiary = g_game.getBestiaryList();
+	std::map<uint16_t, std::string> bestiary = g_game().getBestiaryList();
 	if (bestiary.size() < 36) {
 		return;
 	}
@@ -321,7 +320,7 @@ void IOPrey::ParsePreyAction(Player* player,
 	}
 
 	if (action == PreyAction_ListReroll) {
-		if (slot->freeRerollTimeStamp > OTSYS_TIME() && !g_game.removeMoney(player, player->getPreyRerollPrice(), 0, true)) {
+		if (slot->freeRerollTimeStamp > OTSYS_TIME() && !g_game().removeMoney(player, player->getPreyRerollPrice(), 0, true)) {
 			player->sendMessageDialog("You don't have enought money to reroll the prey slot.");
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
@@ -429,7 +428,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 			ss << "You need to wait " << ((slot->disabledUntilTimeStamp - OTSYS_TIME()) / 60000) << " minutes to select a new creature on task.";
 			player->sendMessageDialog(ss.str());
 			return;
-		} else if (slot->freeRerollTimeStamp > OTSYS_TIME() && !g_game.removeMoney(player, player->getTaskHuntingRerollPrice(), 0, true)) {
+		} else if (slot->freeRerollTimeStamp > OTSYS_TIME() && !g_game().removeMoney(player, player->getTaskHuntingRerollPrice(), 0, true)) {
 			player->sendMessageDialog("You don't have enought money to reroll the task hunting slot.");
 			return;
 		} else if (slot->freeRerollTimeStamp <= OTSYS_TIME()) {
@@ -488,7 +487,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 			slot->upgrade = upgrade && player->isCreatureUnlockedOnTaskHunting(mtype);
 		}
 	} else if (action == PreyTaskAction_Cancel) {
-		if (!g_game.removeMoney(player, player->getTaskHuntingRerollPrice(), 0, true)) {
+		if (!g_game().removeMoney(player, player->getTaskHuntingRerollPrice(), 0, true)) {
 			player->sendMessageDialog("You don't have enought money to cancel your current task hunting.");
 			return;
 		}
@@ -583,7 +582,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	}
 
 	msg.addByte(0xBA);
-	std::map<uint16_t, std::string> bestiaryList = g_game.getBestiaryList();
+	std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
 	{

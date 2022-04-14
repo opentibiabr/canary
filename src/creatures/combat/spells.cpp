@@ -510,7 +510,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("range"))) {
-		range = LexicalCast::intFromChar(attr.value());
+		range = attr.as_int();
 	}
 
 	if ((attr = node.attribute("cooldown")) || (attr = node.attribute("exhaustion"))) {

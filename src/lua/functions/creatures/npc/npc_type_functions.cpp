@@ -24,7 +24,6 @@
 #include "lua/scripts/scripts.h"
 #include "game/game.h"
 
-extern Game g_game;
 extern Npcs g_npcs;
 extern Scripts* g_scripts;
 
@@ -323,7 +322,7 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 			pushOutfit(L, npcType->info.outfit);
 		} else {
 			Outfit_t outfit = getOutfit(L, 2);
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game.isLookTypeRegistered(outfit.lookType)) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
 				SPDLOG_WARN("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
 				lua_pushnil(L);
 			} else {

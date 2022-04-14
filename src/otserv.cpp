@@ -150,7 +150,7 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((g_game.loadAppearanceProtobuf("data/items/appearances.dat") == ERROR_NONE),
+	modulesLoadHelper((g_game().loadAppearanceProtobuf("data/items/appearances.dat") == ERROR_NONE),
 		"appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");

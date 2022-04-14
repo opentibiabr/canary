@@ -597,7 +597,7 @@ void Party::addPlayerLoot(const Player* player, const Item* item)
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
 		std::map<uint16_t, uint32_t> itemMap {{item->getID(), count}};
-		playerAnalyzer->lootPrice += g_game.getItemMarketPrice(itemMap, false);
+		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
 	}
 	updateTrackerAnalyzer();
 }
@@ -620,7 +620,7 @@ void Party::addPlayerSupply(const Player* player, const Item* item)
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
 		std::map<uint16_t, uint32_t> itemMap {{item->getID(), 1}};
-		playerAnalyzer->supplyPrice += g_game.getItemMarketPrice(itemMap, true);
+		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
 	}
 	updateTrackerAnalyzer();
 }
@@ -675,8 +675,8 @@ void Party::reloadPrices()
 {
 	for (PartyAnalyzer* analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
-			analyzer->lootPrice = g_game.getItemMarketPrice(analyzer->lootMap, false);
-			analyzer->supplyPrice = g_game.getItemMarketPrice(analyzer->supplyMap, true);
+			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
+			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
 			continue;
 		}
 

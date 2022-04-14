@@ -6654,7 +6654,7 @@ void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party)
 	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
 	for (const PartyAnalyzer* analyzer : party->membersData) {
 		msg.add<uint32_t>(analyzer->id);
-		if (const Player* member = g_game.getPlayerByID(analyzer->id);
+		if (const Player* member = g_game().getPlayerByID(analyzer->id);
 			!member || !member->getParty() || member->getParty() != party) {
 			msg.addByte(0);
 		} else {

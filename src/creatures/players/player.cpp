@@ -5612,7 +5612,7 @@ uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) 
 	}
 
 	std::map<uint16_t, uint32_t> itemMap {{itemId, 1}};
-	return g_game.getItemMarketPrice(itemMap, buyPrice);
+	return g_game().getItemMarketPrice(itemMap, buyPrice);
 }
 
 uint16_t Player::getFreeBackpackSlots() const

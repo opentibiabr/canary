@@ -20,7 +20,7 @@ env:
 jobs:
   sonarcloud:
     name: SonarCloud
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v3
@@ -136,7 +136,9 @@ jobs:
             --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
             --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
             --define sonar.cfamily.cache.enabled=true \
-            --define sonar.cfamily.cache.path=$HOME/.cfamily
+            --define sonar.cfamily.cache.path=$HOME/.cfamily \
+            --define sonar.cfamily.cpp20=true
+
 
       - name: SonarQube Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master

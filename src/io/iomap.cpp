@@ -301,7 +301,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 						std::ostringstream ss;
 						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 						setLastErrorString(ss.str());
-						return false;
+						SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
+						break;;
 					}
 
 			if (Teleport* teleport = item->getTeleport()) {
@@ -384,7 +385,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 				setLastErrorString(ss.str());
-				return false;
+				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
+				continue;;
 			}
 
 			if (!item->unserializeItemNode(loader, itemNode, stream)) {

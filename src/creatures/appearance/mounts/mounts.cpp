@@ -44,10 +44,10 @@ bool Mounts::loadFromXml()
 
 	for (auto mountNode : doc.child("mounts").children()) {
 		mounts.emplace_back(
-			static_cast<uint8_t>(LexicalCast::intFromChar(mountNode.attribute("id").value())),
-			static_cast<uint16_t>(LexicalCast::intFromChar(mountNode.attribute("clientid").value())),
+			static_cast<uint8_t>(mountNode.attribute("id").as_int()),
+			static_cast<uint16_t>(mountNode.attribute("clientid").as_int()),
 			mountNode.attribute("name").as_string(),
-			LexicalCast::intFromChar(mountNode.attribute("speed").value()),
+			mountNode.attribute("speed").as_int(),
 			mountNode.attribute("premium").as_bool(),
 			mountNode.attribute("type").as_string()
 		);

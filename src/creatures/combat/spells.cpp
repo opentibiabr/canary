@@ -24,7 +24,6 @@
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/lexical_cast.hpp"
 
 extern Spells* g_spells;
 extern Monsters g_monsters;
@@ -457,7 +456,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("spellid"))) {
-		spellId = static_cast<uint8_t>(LexicalCast::intFromChar(attr.value()));
+		spellId = static_cast<uint8_t>(attr.as_int());
 	}
 
 	if ((attr = node.attribute("group"))) {
@@ -472,7 +471,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("groupcooldown"))) {
-		groupCooldown = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		groupCooldown = attr.as_int();
 	}
 
 	if ((attr = node.attribute("secondarygroup"))) {
@@ -487,27 +486,27 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("secondarygroupcooldown"))) {
-		secondaryGroupCooldown = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		secondaryGroupCooldown = attr.as_int();
 	}
 
 	if ((attr = node.attribute("level")) || (attr = node.attribute("lvl"))) {
-		level = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		level = attr.as_int();
 	}
 
 	if ((attr = node.attribute("magiclevel")) || (attr = node.attribute("maglv"))) {
-		magLevel = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		magLevel = attr.as_int();
 	}
 
 	if ((attr = node.attribute("mana"))) {
-		mana = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		mana = attr.as_int();
 	}
 
 	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		manaPercent = attr.as_int();
 	}
 
 	if ((attr = node.attribute("soul"))) {
-		soul = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		soul = attr.as_int();
 	}
 
 	if ((attr = node.attribute("range"))) {
@@ -515,7 +514,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 	}
 
 	if ((attr = node.attribute("cooldown")) || (attr = node.attribute("exhaustion"))) {
-		cooldown = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		cooldown = attr.as_int();
 	}
 
 	if ((attr = node.attribute("setPzLocked"))) {
@@ -1154,10 +1153,10 @@ bool RuneSpell::configureEvent(const pugi::xml_node& node)
 		SPDLOG_ERROR("[RuneSpell::configureEvent] - Rune spell without id");
 		return false;
 	}
-	runeId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
+	runeId = static_cast<uint16_t>(attr.as_int());
 
 	if ((attr = node.attribute("charges"))) {
-		charges = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
+		charges = attr.as_int();
 	} else {
 		charges = 0;
 	}

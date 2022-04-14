@@ -135,4 +135,15 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	}
 }
 
+/**
+ * @brief These functions are intended to check if a string has only numbers or only letters
+ * @brief If the isNumber function has a letter in the middle of several numbers or has no number, it will return false, the same goes for isAlpha
+ * @param string get string to compare if have number/alpha
+ * @return true if have number/alpha
+ * @return false if no have number/alpha
+ */
+bool isNumber(const std::string& string);
+
+bool isAlpha(const std::string& string);
+
 #endif  // SRC_UTILS_TOOLS_H_

@@ -21,7 +21,6 @@
 
 #include "creatures/interactions/chat.h"
 #include "game/game.h"
-#include "utils/lexical_cast.hpp"
 #include "game/scheduling/scheduler.h"
 
 extern Chat* g_chat;
@@ -302,7 +301,7 @@ bool Chat::load()
 	}
 
 	for (auto channelNode : doc.child("channels").children()) {
-		auto channelId = static_cast<uint16_t>(LexicalCast::intFromChar(channelNode.attribute("id").value()));
+		auto channelId = static_cast<uint16_t>(channelNode.attribute("id").as_int());
 		std::string channelName = channelNode.attribute("name").as_string();
 		bool isPublic = channelNode.attribute("public").as_bool();
 		pugi::xml_attribute scriptAttribute = channelNode.attribute("script");

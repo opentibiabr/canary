@@ -1508,3 +1508,21 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		default: return std::string();
 	}
 }
+
+bool isNumber(const std::string& string) {
+	for (char const &integer : string) {
+		if (std::isdigit(integer) == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool isAlpha(const std::string& string) {
+	for (char const &letter : string) {
+		if (std::isalpha(letter) == 0) {
+			return false;
+		}
+	}
+	return true;
+}

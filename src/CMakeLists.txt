@@ -5,12 +5,12 @@ project(canary)
 # *****************************************************************************
 # Need c++ 23 for use somes new features instead of boost library and set "/std:c++latest" flag
 if(MSVC)
-  # Minimum version 11 for use c++ 23
+  # Minimum version for use c++ standard on visual studio
   set(GNUCXX_MINIMUM_VERSION 11)
   set(CMAKE_CXX_STANDARD 23)
 else()
-  # Minimum version 9 for use c++ 20
-  set(GNUCXX_MINIMUM_VERSION 10)
+  # Minimum version for use c++ standard on GNU compiler
+  set(GNUCXX_MINIMUM_VERSION 9)
   set(CMAKE_CXX_STANDARD 20)
 endif(MSVC)
 

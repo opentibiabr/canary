@@ -24,6 +24,8 @@
 #include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
+#include <cctype>
+
 bool Outfits::loadFromXml()
 {
 	pugi::xml_document doc;
@@ -44,21 +46,35 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		auto type = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
+		auto type = static_cast<uint8_t>(outfitNode.attribute("type").as_int());
 		if (type > PLAYERSEX_LAST) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
-		if (!lookTypeAttribute) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing looktype on outfit");
+		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_int());
+		const std::string outfitName = outfitNode.attribute("name").as_string();
+		const std::string lookTypeString = lookTypeAttribute.as_string();
+		if (!lookTypeAttribute || lookTypeString.empty()) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty looktype on outfit with name {}", outfitName);
+			continue;
+		}
+
+		if (lookType == 0 || !isNumber(lookTypeString)) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
+			continue;
+		}
+
+		pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
+		if (!nameAttribute || outfitName.empty()) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
 			continue;
 		}
 
 		outfits[type].emplace_back(
-			outfitNode.attribute("name").as_string(),
-			static_cast<uint16_t>(LexicalCast::intFromChar(lookTypeAttribute.value())),
+			outfitName,
+			lookType,
 			outfitNode.attribute("premium").as_bool(),
 			outfitNode.attribute("unlocked").as_bool(true),
 			outfitNode.attribute("from").as_string()

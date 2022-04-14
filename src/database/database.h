@@ -112,13 +112,13 @@ class DBResult
 
 			T data = { 0 };
 			try {
-				data = std::stoi(row[it->second]);
+				data = static_cast<T>(std::stoll(row[it->second]));
 			}
 			catch (std::exception&) {
 				// overflow; tries to get it as uint64 (as big as possible);
 				uint64_t u64data;
 				try {
-					u64data = LexicalCast::intFromChar(row[it->second]);
+					u64data = static_cast<uint64_t>(std::stoll((row[it->second])));
 					if (u64data > 0) {
 						// is a valid! thus truncate into int max for data type;
 						data = std::numeric_limits<T>::max();

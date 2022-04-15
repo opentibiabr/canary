@@ -896,7 +896,7 @@ void Monster::doAttacking(uint32_t interval)
 	for (const spellBlock_t& spellBlock : mType->info.attackSpells) {
 		bool inRange = false;
 
-		if (spellBlock == nullptr || spellBlock.spell == nullptr || attackedCreature == nullptr) {
+		if (spellBlock.spell == nullptr || attackedCreature == nullptr) {
 			break;
 		}
 

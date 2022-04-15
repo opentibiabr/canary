@@ -20,7 +20,7 @@ env:
 jobs:
   sonarcloud:
     name: SonarCloud
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v3
@@ -28,9 +28,12 @@ jobs:
         with:
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
+          fetch-depth: '0'
 
       - uses: actions/checkout@v3
-        if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' || github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' }}
+        with:
+          fetch-depth: '0'
 
       - name: Install Linux Dependencies
         run: >
@@ -116,9 +119,11 @@ jobs:
             --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
             --define sonar.cfamily.cache.enabled=true \
             --define sonar.cfamily.cache.path=$HOME/.cfamily \
+            --define sonar.cfamily.cpp20=true \
             --define sonar.pullrequest.key=${{ github.event.pull_request.number }} \
             --define sonar.pullrequest.branch=${{ github.head_ref }} \
             --define sonar.pullrequest.base=${{ github.base_ref }}
+
 
       - name: Run sonar-scanner
         if: ${{ github.event_name == 'push' }}
@@ -131,7 +136,9 @@ jobs:
             --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
             --define sonar.cfamily.threads="${{ env.NUMBER_OF_PROCESSORS  }}" \
             --define sonar.cfamily.cache.enabled=true \
-            --define sonar.cfamily.cache.path=$HOME/.cfamily
+            --define sonar.cfamily.cache.path=$HOME/.cfamily \
+            --define sonar.cfamily.cpp20=true
+
 
       - name: SonarQube Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master

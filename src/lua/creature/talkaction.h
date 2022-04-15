@@ -65,8 +65,7 @@ class TalkAction : public Event {
 
 class TalkActions final : public BaseEvents {
 	public:
-		TalkActions();
-		~TalkActions();
+		TalkActions() = default;
 
 		// non-copyable
 		TalkActions(const TalkActions&) = delete;
@@ -85,7 +84,7 @@ class TalkActions final : public BaseEvents {
 
 		std::map<std::string, TalkAction> talkActions;
 
-		LuaScriptInterface scriptInterface;
+		LuaScriptInterface scriptInterface { "Talkaction Interface" };
 };
 
 #endif  // SRC_LUA_CREATURE_TALKACTION_H_

@@ -131,25 +131,25 @@ bool ChatChannel::removeUser(const Player& player)
 	return true;
 }
 
-bool ChatChannel::hasUser(const Player& player) {
+bool ChatChannel::hasUser(const Player& player) const {
 	return users.contains(player.getID());
 }
 
 void ChatChannel::sendToAll(const std::string& message, SpeakClasses type) const
 {
-	for (const auto& [id, player] : users) {
-		player->sendChannelMessage("", message, type, id);
+	for (const auto& [playerId, player] : users) {
+		player->sendChannelMessage("", message, type, static_cast<uint16_t>(playerId));
 	}
 }
 
-bool ChatChannel::talk(const Player& fromPlayer, SpeakClasses type, const std::string& text)
+bool ChatChannel::talk(const Player& fromPlayer, SpeakClasses type, const std::string& text) const
 {
 	if (!users.contains(fromPlayer.getID())) {
 		return false;
 	}
 
-	for (const auto& [id, player] : users) {
-		player->sendToChannel(&fromPlayer, type, text, id);
+	for (const auto& [playerId, player] : users) {
+		player->sendToChannel(&fromPlayer, type, text, static_cast<uint16_t>(playerId));
 	}
 	return true;
 }
@@ -325,7 +325,7 @@ bool Chat::load()
 			}
 
 			for (UsersMap tempUserMap = std::move(channel.users);
-			const auto& [id, player] : tempUserMap)
+			const auto& [playerId, player] : tempUserMap)
 			{
 				channel.addUser(*player);
 			}

@@ -21,7 +21,6 @@
 
 #include "creatures/appearance/outfit/outfit.h"
 
-#include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
 #include <cctype>
@@ -46,30 +45,36 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		auto type = static_cast<uint8_t>(outfitNode.attribute("type").as_int());
+		auto type = static_cast<uint8_t>(outfitNode.attribute("type").as_uint());
 		if (type > PLAYERSEX_LAST) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
-		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_int());
+		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
 		const std::string outfitName = outfitNode.attribute("name").as_string();
-		const std::string lookTypeString = lookTypeAttribute.as_string();
-		if (!lookTypeAttribute || lookTypeString.empty()) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty looktype on outfit with name {}", outfitName);
-			continue;
-		}
+		if (!lookTypeAttribute.empty()) {
+			const std::string lookTypeString = lookTypeAttribute.as_string();
+			if (lookTypeString.empty() || lookType == 0) {
+				SPDLOG_WARN("[Outfits::loadFromXml] - Empty looktype on outfit with name {}", outfitName);
+				continue;
+			}
 
-		if (lookType == 0 || !isNumber(lookTypeString)) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
-			continue;
-		}
+			if (!isNumber(lookTypeString)) {
+				SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
+				continue;
+			}
 
-		pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
-		if (!nameAttribute || outfitName.empty()) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
-			continue;
+			if (pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
+			!nameAttribute || outfitName.empty())
+			{
+				SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
+				continue;
+			}
+		} else {
+			SPDLOG_WARN("[Outfits::loadFromXml] - "
+						"Missing looktype id for outfit name: {}", outfitName);
 		}
 
 		outfits[type].emplace_back(

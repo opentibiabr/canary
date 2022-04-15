@@ -22,16 +22,6 @@
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
 #include "game/scheduling/scheduler.h"
-#include "utils/lexical_cast.hpp"
-
-GlobalEvents::GlobalEvents() :
-	scriptInterface("GlobalEvent Interface") {
-	scriptInterface.initState();
-}
-
-GlobalEvents::~GlobalEvents() {
-	clear(false);
-}
 
 void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ) {
@@ -231,86 +221,9 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 
 GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Event(interface) {}
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool GlobalEvent::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute nameAttribute = node.attribute("name");
-	if (!nameAttribute) {
-		SPDLOG_ERROR("[GlobalEvent::configureEvent] - Missing name for a globalevent");
-		return false;
-	}
-
-	name = nameAttribute.as_string();
-	eventType = GLOBALEVENT_NONE;
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("time"))) {
-		std::vector<int32_t> params = vectorAtoi(explodeString(attr.as_string(), ":"));
-
-		int32_t hour = params.front();
-		if (hour < 0 || hour > 23) {
-			SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                         "Invalid hour {} for globalevent with name: {}", attr.as_string(), name);
-			return false;
-		}
-
-		interval |= hour << 16;
-
-		int32_t min = 0;
-		int32_t sec = 0;
-		if (params.size() > 1) {
-			min = params[1];
-			if (min < 0 || min > 59) {
-				SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                              "Invalid minute {} for globalevent with name: {}",
-                              attr.as_string(), name);
-				return false;
-			}
-
-			if (params.size() > 2) {
-				sec = params[2];
-				if (sec < 0 || sec > 59) {
-					SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                                 "Invalid second {} for globalevent with name: {}",
-                                 attr.as_string(), name);
-					return false;
-				}
-			}
-		}
-
-		time_t current_time = time(nullptr);
-		tm* timeinfo = localtime(&current_time);
-		timeinfo->tm_hour = hour;
-		timeinfo->tm_min = min;
-		timeinfo->tm_sec = sec;
-
-		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
-		if (difference < 0) {
-			difference += 86400;
-		}
-
-		nextExecution = current_time + difference;
-		eventType = GLOBALEVENT_TIMER;
-	} else if ((attr = node.attribute("type"))) {
-		const char* value = attr.value();
-		if (strcasecmp(value, "startup") == 0) {
-			eventType = GLOBALEVENT_STARTUP;
-		} else if (strcasecmp(value, "shutdown") == 0) {
-			eventType = GLOBALEVENT_SHUTDOWN;
-		} else if (strcasecmp(value, "record") == 0) {
-			eventType = GLOBALEVENT_RECORD;
-		} else {
-			SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                         "No valid type {} for globalevent with name: {}",
-                         attr.as_string(), name);
-			return false;
-		}
-	} else if ((attr = node.attribute("interval"))) {
-		interval = std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(LexicalCast::intFromChar(attr.value())));
-		nextExecution = OTSYS_TIME() + interval;
-	} else {
-		SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                    "No interval for globalevent with name: {}", name);
-		return false;
-	}
 	return true;
 }
 

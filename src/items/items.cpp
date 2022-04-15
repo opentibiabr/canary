@@ -20,7 +20,6 @@
 #include "otpch.h"
 
 #include "items/items.h"
-#include "utils/lexical_cast.hpp"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 
@@ -353,8 +352,10 @@ bool Items::loadFromXml()
 
 	for (auto itemNode : doc.child("items").children()) {
 		pugi::xml_attribute idAttribute = itemNode.attribute("id");
-		if (idAttribute) {
-			parseItemNode(itemNode, LexicalCast::intFromChar(idAttribute.value()));
+		const std::string itemName = itemNode.attribute("name").as_string();
+		uint16_t itemId = static_cast<uint16_t>(idAttribute.as_uint());
+		if (idAttribute && !idAttribute.empty()) {
+			parseItemNode(itemNode, itemId, itemName);
 			continue;
 		}
 
@@ -362,10 +363,10 @@ bool Items::loadFromXml()
 		if (!fromIdAttribute) {
 			if (idAttribute) {
 				SPDLOG_WARN("[Items::loadFromXml] - "
-                            "No item id: {} found",
-                            idAttribute.value());
+                            "Not a valid id range fromid-toid for item id {} with name {}", itemId, itemName);
 			} else {
-				SPDLOG_WARN("[Items::loadFromXml] - No item id found");
+				SPDLOG_WARN("[Items::loadFromXml] - "
+                            "No item id found for item with name {}", itemName);
 			}
 			continue;
 		}
@@ -373,15 +374,19 @@ bool Items::loadFromXml()
 		pugi::xml_attribute toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			SPDLOG_WARN("[Items::loadFromXml] - "
-                        "tag fromid: {} without toid",
-                        fromIdAttribute.value());
+                        "tag fromid: {} without toid", fromIdAttribute.as_uint());
 			continue;
 		}
 
-		uint16_t id = LexicalCast::intFromChar(fromIdAttribute.value());
-		uint16_t toId = LexicalCast::intFromChar(toIdAttribute.value());
-		while (id <= toId) {
-			parseItemNode(itemNode, id++);
+		if (!isNumber(fromIdAttribute.as_string()) || !isNumber(toIdAttribute.as_string())) {
+			SPDLOG_WARN("[Items::loadFromXml] - Wrong item id for item in fromid {}-toid {}, with name {}", fromIdAttribute.as_string(), toIdAttribute.as_string(), itemName);
+			continue;
+		}
+
+		uint16_t fromId = static_cast<uint16_t>(fromIdAttribute.as_uint());
+		uint16_t toId = static_cast<uint16_t>(toIdAttribute.as_uint());
+		while (fromId <= toId) {
+			parseItemNode(itemNode, fromId++, itemName);
 		}
 	}
 	return true;
@@ -409,15 +414,19 @@ void Items::buildInventoryList()
 	std::sort(inventory.begin(), inventory.end());
 }
 
-void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
+void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id, const std::string &itemName) {
 	if (id >= items.size()) {
 		items.resize(id + 1);
 	}
-	ItemType & iType = items[id];
-	iType.id = id;
 
 	ItemType & itemType = getItemType(id);
-	if (itemType.id == 0) {
+	/* Replace the id that comes from the otb by the one that comes from the items.xml?
+	If not, remove the "itemType.id = id;" and the "itemType.id == 0"
+	This is highly not recommended for anyone who wants to use custom items
+	*/
+	itemType.id = id;
+	if (itemType.id == 0 || !isNumber(itemNode.attribute("id").as_string())) {
+		SPDLOG_WARN("[Items::parseItemNode] - Missing or wrong item id for item with name {}", itemName);
 		return;
 	}
 
@@ -426,7 +435,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		return;
 	}
 
-	itemType.name = itemNode.attribute("name").as_string();
+	itemType.name = itemName;
 
 	nameToItems.insert({
 		asLowerCaseString(itemType.name),

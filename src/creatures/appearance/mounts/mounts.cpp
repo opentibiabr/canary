@@ -21,7 +21,6 @@
 
 #include "creatures/appearance/mounts/mounts.h"
 
-#include "utils/lexical_cast.hpp"
 #include "utils/tools.h"
 
 #include <string>
@@ -44,8 +43,8 @@ bool Mounts::loadFromXml()
 
 	for (auto mountNode : doc.child("mounts").children()) {
 		mounts.emplace_back(
-			static_cast<uint8_t>(mountNode.attribute("id").as_int()),
-			static_cast<uint16_t>(mountNode.attribute("clientid").as_int()),
+			static_cast<uint8_t>(mountNode.attribute("id").as_uint()),
+			static_cast<uint16_t>(mountNode.attribute("clientid").as_uint()),
 			mountNode.attribute("name").as_string(),
 			mountNode.attribute("speed").as_int(),
 			mountNode.attribute("premium").as_bool(),
@@ -82,5 +81,5 @@ Mount* Mounts::getMountByClientID(uint16_t clientId)
 		return mount.clientId == clientId;
 	});
 
-	return it != mounts.end() ? std::to_address(&*it) : nullptr;
+	return it != mounts.end() ? std::to_address(it) : nullptr;
 }

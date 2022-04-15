@@ -30,16 +30,6 @@ extern Monsters g_monsters;
 extern Vocations g_vocations;
 extern LuaEnvironment g_luaEnvironment;
 
-Spells::Spells()
-{
-	scriptInterface.initState();
-}
-
-Spells::~Spells()
-{
-	clear(false);
-}
-
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 {
 	std::string str_words = words;
@@ -408,189 +398,10 @@ bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 	return scriptInterface->callFunction(2);
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool Spell::configureSpell(const pugi::xml_node& node)
 {
-	pugi::xml_attribute nameAttribute = node.attribute("name");
-	if (!nameAttribute) {
-		SPDLOG_ERROR("[Spell::configureSpell] - Spell without name");
-		return false;
-	}
-
-	name = nameAttribute.as_string();
-
-	static const char* reservedList[] = {
-		"melee",
-		"physical",
-		"poison",
-		"fire",
-		"energy",
-		"drown",
-		"lifedrain",
-		"manadrain",
-		"healing",
-		"speed",
-		"outfit",
-		"invisible",
-		"drunk",
-		"firefield",
-		"poisonfield",
-		"energyfield",
-		"firecondition",
-		"poisoncondition",
-		"energycondition",
-		"drowncondition",
-		"freezecondition",
-		"cursecondition",
-		"dazzlecondition"
-	};
-
-	//static size_t size = sizeof(reservedList) / sizeof(const char*);
-	//for (size_t i = 0; i < size; ++i) {
-	for (auto reserved : reservedList) {
-		if (strcasecmp(reserved, name.c_str()) == 0) {
-			SPDLOG_ERROR("[Spell::configureSpell] - "
-                         "Spell is using a reserved name: {}", reserved);
-			return false;
-		}
-	}
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("spellid"))) {
-		spellId = static_cast<uint8_t>(attr.as_int());
-	}
-
-	if ((attr = node.attribute("group"))) {
-		std::string tmpStr = asLowerCaseString(attr.as_string());
-		SpellGroup_t spellgroup = stringToSpellGroup(tmpStr);
-		if (spellgroup != SPELLGROUP_NONE) {
-			group = spellgroup;
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Unknown group: {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("groupcooldown"))) {
-		groupCooldown = attr.as_int();
-	}
-
-	if ((attr = node.attribute("secondarygroup"))) {
-		std::string tmpStr = asLowerCaseString(attr.as_string());
-		SpellGroup_t spellgroup = stringToSpellGroup(tmpStr);
-		if (spellgroup != SPELLGROUP_NONE) {
-			secondaryGroup = spellgroup;
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Unknown secondarygroup: {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("secondarygroupcooldown"))) {
-		secondaryGroupCooldown = attr.as_int();
-	}
-
-	if ((attr = node.attribute("level")) || (attr = node.attribute("lvl"))) {
-		level = attr.as_int();
-	}
-
-	if ((attr = node.attribute("magiclevel")) || (attr = node.attribute("maglv"))) {
-		magLevel = attr.as_int();
-	}
-
-	if ((attr = node.attribute("mana"))) {
-		mana = attr.as_int();
-	}
-
-	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = attr.as_int();
-	}
-
-	if ((attr = node.attribute("soul"))) {
-		soul = attr.as_int();
-	}
-
-	if ((attr = node.attribute("range"))) {
-		range = attr.as_int();
-	}
-
-	if ((attr = node.attribute("cooldown")) || (attr = node.attribute("exhaustion"))) {
-		cooldown = attr.as_int();
-	}
-
-	if ((attr = node.attribute("setPzLocked"))) {
-		pzLocked = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("premium")) || (attr = node.attribute("prem"))) {
-		premium = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("enabled"))) {
-		enabled = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("needtarget"))) {
-		needTarget = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("needweapon"))) {
-		needWeapon = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("selftarget"))) {
-		selfTarget = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("needlearn"))) {
-		learnable = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("blocking"))) {
-		blockingSolid = attr.as_bool();
-		blockingCreature = blockingSolid;
-	}
-
-	if ((attr = node.attribute("blocktype"))) {
-		std::string tmpStrValue = asLowerCaseString(attr.as_string());
-		if (tmpStrValue == "all") {
-			blockingSolid = true;
-			blockingCreature = true;
-		} else if (tmpStrValue == "solid") {
-			blockingSolid = true;
-		} else if (tmpStrValue == "creature") {
-			blockingCreature = true;
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Blocktype {} does not exist", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("allowOnSelf"))) {
-		allowOnSelf = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("aggressive"))) {
-		aggressive = booleanString(attr.as_string());
-	}
-
-	if (group == SPELLGROUP_NONE) {
-		group = (aggressive ? SPELLGROUP_ATTACK : SPELLGROUP_HEALING);
-	}
-
-	for (auto vocationNode : node.children()) {
-		if (!(attr = vocationNode.attribute("name"))) {
-			continue;
-		}
-
-		int32_t vocationId = g_vocations.getVocationId(attr.as_string());
-		if (vocationId != -1) {
-			attr = vocationNode.attribute("showInDescription");
-			vocSpellMap[vocationId] = !attr || attr.as_bool();
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Wrong vocation name: {}", attr.as_string());
-		}
-	}
 	return true;
 }
 
@@ -877,36 +688,10 @@ std::string InstantSpell::getScriptEventName() const
 	return "onCastSpell";
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool InstantSpell::configureEvent(const pugi::xml_node& node)
 {
-	if (!Spell::configureSpell(node)) {
-		return false;
-	}
-
-	if (!TalkAction::configureEvent(node)) {
-		return false;
-	}
-
-	spellType = SPELL_INSTANT;
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("params"))) {
-		hasParam = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("playernameparam"))) {
-		hasPlayerNameParam = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("direction"))) {
-		needDirection = attr.as_bool();
-	} else if ((attr = node.attribute("casterTargetOrDirection"))) {
-		casterTargetOrDirection = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("blockwalls"))) {
-		checkLineOfSight = attr.as_bool();
-	}
 	return true;
 }
 
@@ -1136,40 +921,10 @@ std::string RuneSpell::getScriptEventName() const
 	return "onCastSpell";
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool RuneSpell::configureEvent(const pugi::xml_node& node)
 {
-	if (!Spell::configureSpell(node)) {
-		return false;
-	}
-
-	if (!Action::configureEvent(node)) {
-		return false;
-	}
-
-	spellType = SPELL_RUNE;
-
-	pugi::xml_attribute attr;
-	if (!(attr = node.attribute("id"))) {
-		SPDLOG_ERROR("[RuneSpell::configureEvent] - Rune spell without id");
-		return false;
-	}
-	runeId = static_cast<uint16_t>(attr.as_int());
-
-	if ((attr = node.attribute("charges"))) {
-		charges = attr.as_int();
-	} else {
-		charges = 0;
-	}
-
-	hasCharges = (charges > 0);
-	if (magLevel != 0 || level != 0) {
-		//Change information in the ItemType to get accurate description
-		ItemType& iType = Item::items.getItemType(runeId);
-		iType.runeMagLevel = magLevel;
-		iType.runeLevel = level;
-		iType.charges = charges;
-	}
-
 	return true;
 }
 

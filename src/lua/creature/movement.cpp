@@ -21,7 +21,6 @@
 
 #include "game/game.h"
 #include "lua/creature/events.h"
-#include "utils/lexical_cast.hpp"
 #include "lua/creature/movement.h"
 #include "creatures/players/imbuements/imbuements.h"
 
@@ -29,26 +28,13 @@ extern Vocations g_vocations;
 extern Events* g_events;
 extern Imbuements* g_imbuements;
 
-MoveEvents::MoveEvents() :
-	scriptInterface("MoveEvents Interface") {
-	scriptInterface.initState();
-}
-
-MoveEvents::~MoveEvents() {
-	clear(false);
-}
-
 void MoveEvents::clearMap(MoveListMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ++it) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
 			auto& moveEvents = it->second.moveEvent[eventType];
-			for (auto find = moveEvents.begin(); find != moveEvents.end(); ) {
-				if (fromLua == find->fromLua) {
-					find = moveEvents.erase(find);
-				} else {
-					++find;
-				}
-			}
+			std::erase_if(moveEvents, [fromLua](auto moveEvent) {
+				return moveEvent.fromLua == fromLua;
+			});
 		}
 	}
 }
@@ -57,13 +43,9 @@ void MoveEvents::clearPosMap(MovePosListMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ++it) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
 			auto& moveEvents = it->second.moveEvent[eventType];
-			for (auto find = moveEvents.begin(); find != moveEvents.end(); ) {
-				if (fromLua == find->fromLua) {
-					find = moveEvents.erase(find);
-				} else {
-					++find;
-				}
-			}
+			std::erase_if(moveEvents, [fromLua](auto moveEvent) {
+				return moveEvent.fromLua == fromLua;
+			});
 		}
 	}
 }
@@ -97,93 +79,10 @@ bool MoveEvents::isRegistered(uint32_t itemid) {
 	return it != itemIdMap.end();
 }
 
+
+// TODO: Eduardo
+// Remove this function (and all registerEvent of others classes), is no longer used
 bool MoveEvents::registerEvent(Event_ptr event, const pugi::xml_node& node) {
-	MoveEvent_ptr moveEvent{static_cast<MoveEvent*>(event.release())}; //event is guaranteed to be a MoveEvent
-
-	const MoveEvent_t eventType = moveEvent->getEventType();
-	if (eventType == MOVE_EVENT_ADD_ITEM || eventType == MOVE_EVENT_REMOVE_ITEM) {
-		pugi::xml_attribute tileItemAttribute = node.attribute("tileitem");
-		if (tileItemAttribute && static_cast<uint16_t>(LexicalCast::intFromChar(tileItemAttribute.value())) == 1) {
-			switch (eventType) {
-				case MOVE_EVENT_ADD_ITEM:
-					moveEvent->setEventType(MOVE_EVENT_ADD_ITEM_ITEMTILE);
-					break;
-				case MOVE_EVENT_REMOVE_ITEM:
-					moveEvent->setEventType(MOVE_EVENT_REMOVE_ITEM_ITEMTILE);
-					break;
-				default:
-					break;
-			}
-		}
-	}
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("itemid"))) {
-		int32_t id = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
-		if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
-			ItemType& it = Item::items.getItemType(id);
-			it.wieldInfo = moveEvent->getWieldInfo();
-			it.minReqLevel = moveEvent->getReqLevel();
-			it.minReqMagicLevel = moveEvent->getReqMagLv();
-			it.vocationString = moveEvent->getVocationString();
-		}
-		addEvent(std::move(*moveEvent), id, itemIdMap);
-	} else if ((attr = node.attribute("fromid"))) {
-		uint32_t id = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-		uint32_t endId = static_cast<uint32_t>(LexicalCast::intFromChar(node.attribute("toid").value()));
-
-		addEvent(*moveEvent, id, itemIdMap);
-
-		if (moveEvent->getEventType() == MOVE_EVENT_EQUIP) {
-			ItemType& it = Item::items.getItemType(id);
-			it.wieldInfo = moveEvent->getWieldInfo();
-			it.minReqLevel = moveEvent->getReqLevel();
-			it.minReqMagicLevel = moveEvent->getReqMagLv();
-			it.vocationString = moveEvent->getVocationString();
-
-			while (++id <= endId) {
-				addEvent(*moveEvent, id, itemIdMap);
-
-				ItemType& tit = Item::items.getItemType(id);
-				tit.wieldInfo = moveEvent->getWieldInfo();
-				tit.minReqLevel = moveEvent->getReqLevel();
-				tit.minReqMagicLevel = moveEvent->getReqMagLv();
-				tit.vocationString = moveEvent->getVocationString();
-			}
-		} else {
-			while (++id <= endId) {
-				addEvent(*moveEvent, id, itemIdMap);
-			}
-		}
-	} else if ((attr = node.attribute("uniqueid"))) {
-		addEvent(std::move(*moveEvent), static_cast<int32_t>(LexicalCast::intFromChar(attr.value())), uniqueIdMap);
-	} else if ((attr = node.attribute("fromuid"))) {
-		uint32_t id = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-		uint32_t endId = static_cast<uint32_t>(LexicalCast::intFromChar(node.attribute("touid").value()));
-		addEvent(*moveEvent, id, uniqueIdMap);
-		while (++id <= endId) {
-			addEvent(*moveEvent, id, uniqueIdMap);
-		}
-	} else if ((attr = node.attribute("actionid"))) {
-		addEvent(std::move(*moveEvent), static_cast<uint32_t>(LexicalCast::intFromChar(attr.value())), actionIdMap);
-	} else if ((attr = node.attribute("fromaid"))) {
-		uint32_t id = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-		uint32_t endId = static_cast<uint32_t>(LexicalCast::intFromChar(node.attribute("toaid").value()));
-		addEvent(*moveEvent, id, actionIdMap);
-		while (++id <= endId) {
-			addEvent(*moveEvent, id, actionIdMap);
-		}
-	} else if ((attr = node.attribute("pos"))) {
-		std::vector<int32_t> posList = vectorAtoi(explodeString(attr.as_string(), ";"));
-		if (posList.size() < 3) {
-			return false;
-		}
-
-		Position pos(posList[0], posList[1], posList[2]);
-		addEvent(std::move(*moveEvent), pos, positionMap);
-	} else {
-		return false;
-	}
 	return true;
 }
 
@@ -502,125 +401,9 @@ std::string MoveEvent::getScriptEventName() const {
 	}
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool MoveEvent::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute eventAttr = node.attribute("event");
-	if (!eventAttr) {
-		SPDLOG_ERROR("[MoveEvent::configureMoveEvent] - Missing event");
-		return false;
-	}
-
-	std::string tmpStr = asLowerCaseString(eventAttr.as_string());
-	if (tmpStr == "stepin") {
-		eventType = MOVE_EVENT_STEP_IN;
-	} else if (tmpStr == "stepout") {
-		eventType = MOVE_EVENT_STEP_OUT;
-	} else if (tmpStr == "equip") {
-		eventType = MOVE_EVENT_EQUIP;
-	} else if (tmpStr == "deequip") {
-		eventType = MOVE_EVENT_DEEQUIP;
-	} else if (tmpStr == "additem") {
-		eventType = MOVE_EVENT_ADD_ITEM;
-	} else if (tmpStr == "removeitem") {
-		eventType = MOVE_EVENT_REMOVE_ITEM;
-	} else {
-		SPDLOG_ERROR("[MoveEvent::configureMoveEvent] - "
-                    "No valid event name {}", eventAttr.as_string());
-		return false;
-	}
-
-	if (eventType == MOVE_EVENT_EQUIP || eventType == MOVE_EVENT_DEEQUIP) {
-		pugi::xml_attribute slotAttribute = node.attribute("slot");
-		if (slotAttribute) {
-			tmpStr = asLowerCaseString(slotAttribute.as_string());
-			if (tmpStr == "head") {
-				slot = SLOTP_HEAD;
-			} else if (tmpStr == "necklace") {
-				slot = SLOTP_NECKLACE;
-			} else if (tmpStr == "backpack") {
-				slot = SLOTP_BACKPACK;
-			} else if (tmpStr == "armor") {
-				slot = SLOTP_ARMOR;
-			} else if (tmpStr == "right-hand") {
-				slot = SLOTP_RIGHT;
-			} else if (tmpStr == "left-hand") {
-				slot = SLOTP_LEFT;
-			} else if (tmpStr == "hand" || tmpStr == "shield") {
-				slot = SLOTP_RIGHT | SLOTP_LEFT;
-			} else if (tmpStr == "legs") {
-				slot = SLOTP_LEGS;
-			} else if (tmpStr == "feet") {
-				slot = SLOTP_FEET;
-			} else if (tmpStr == "ring") {
-				slot = SLOTP_RING;
-			} else if (tmpStr == "ammo") {
-				slot = SLOTP_AMMO;
-			} else {
-				SPDLOG_WARN("[MoveEvent::configureMoveEvent] - "
-							"Unknown slot type: {}", slotAttribute.as_string());
-			}
-		}
-
-		wieldInfo = 0;
-
-		pugi::xml_attribute levelAttribute = node.attribute("level");
-		if (levelAttribute) {
-			reqLevel = static_cast<uint32_t>(LexicalCast::intFromChar(levelAttribute.value()));
-			if (reqLevel > 0) {
-				wieldInfo |= WIELDINFO_LEVEL;
-			}
-		}
-
-		pugi::xml_attribute magLevelAttribute = node.attribute("maglevel");
-		if (magLevelAttribute) {
-			reqMagLevel = static_cast<uint32_t>(LexicalCast::intFromChar(magLevelAttribute.value()));
-			if (reqMagLevel > 0) {
-				wieldInfo |= WIELDINFO_MAGLV;
-			}
-		}
-
-		pugi::xml_attribute premiumAttribute = node.attribute("premium");
-		if (premiumAttribute) {
-			premium = premiumAttribute.as_bool();
-			if (premium) {
-				wieldInfo |= WIELDINFO_PREMIUM;
-			}
-		}
-
-		//Gather vocation information
-		std::list<std::string> vocStringList;
-		for (auto vocationNode : node.children()) {
-			pugi::xml_attribute vocationNameAttribute = vocationNode.attribute("name");
-			if (!vocationNameAttribute) {
-				continue;
-			}
-
-			int32_t vocationId = g_vocations.getVocationId(vocationNameAttribute.as_string());
-			if (vocationId != -1) {
-				vocEquipMap[vocationId] = true;
-				if (vocationNode.attribute("showInDescription").as_bool(true)) {
-					vocStringList.push_back(asLowerCaseString(vocationNameAttribute.as_string()));
-				}
-			}
-		}
-
-		if (!vocEquipMap.empty()) {
-			wieldInfo |= WIELDINFO_VOCREQ;
-		}
-
-		for (const std::string& str : vocStringList) {
-			if (!vocationString.empty()) {
-				if (str != vocStringList.back()) {
-					vocationString.push_back(',');
-					vocationString.push_back(' ');
-				} else {
-					vocationString += " and ";
-				}
-			}
-
-			vocationString += str;
-			vocationString.push_back('s');
-		}
-	}
 	return true;
 }
 

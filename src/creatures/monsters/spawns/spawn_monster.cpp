@@ -24,7 +24,6 @@
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
 
-#include "utils/lexical_cast.hpp"
 #include "lua/creature/events.h"
 
 extern Monsters g_monsters;
@@ -54,15 +53,15 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
 		Position centerPos(
-			static_cast<uint16_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centerx").value())),
-			static_cast<uint16_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centery").value())),
-			static_cast<uint8_t>(LexicalCast::intFromChar(spawnMonsterNode.attribute("centerz").value()))
+			static_cast<uint16_t>(spawnMonsterNode.attribute("centerx").as_int()),
+			static_cast<uint16_t>(spawnMonsterNode.attribute("centery").as_int()),
+			static_cast<uint8_t>(spawnMonsterNode.attribute("centerz").as_int())
 		);
 
 		int32_t radius;
 		pugi::xml_attribute radiusAttribute = spawnMonsterNode.attribute("radius");
 		if (radiusAttribute) {
-			radius = LexicalCast::intFromChar(radiusAttribute.value());
+			radius = radiusAttribute.as_int();
 		} else {
 			radius = -1;
 		}
@@ -78,22 +77,29 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 		for (auto childMonsterNode : spawnMonsterNode.children()) {
 			if (strcasecmp(childMonsterNode.name(), "monster") == 0) {
 				pugi::xml_attribute nameAttribute = childMonsterNode.attribute("name");
-				if (!nameAttribute) {
+				const std::string monsterName = nameAttribute.as_string();
+				if (!nameAttribute || monsterName.empty()) {
+					SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Missing or empty tag 'name' on monster position {}", centerPos.toString());
+					continue;
+				}
+
+				pugi::xml_attribute directionAttribute = childMonsterNode.attribute("direction");
+				const std::string directionString = directionAttribute.as_string();
+				if (!isNumber(directionAttribute.as_string())) {
+					SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Invalid direction with monster name {}", monsterName);
 					continue;
 				}
 
 				Direction dir;
-
-				pugi::xml_attribute directionAttribute = childMonsterNode.attribute("direction");
 				if (directionAttribute) {
-					dir = static_cast<Direction>(static_cast<uint16_t>(LexicalCast::intFromChar(directionAttribute.value())));
+					dir = static_cast<Direction>(static_cast<uint16_t>(directionAttribute.as_int()));
 				} else {
 					dir = DIRECTION_NORTH;
 				}
 
 				Position pos(
-					centerPos.x + static_cast<uint16_t>(LexicalCast::intFromChar(childMonsterNode.attribute("x").value())),
-					centerPos.y + static_cast<uint16_t>(LexicalCast::intFromChar(childMonsterNode.attribute("y").value())),
+					centerPos.x + static_cast<uint16_t>(childMonsterNode.attribute("x").as_int()),
+					centerPos.y + static_cast<uint16_t>(childMonsterNode.attribute("y").as_int()),
 					centerPos.z
 				);
 
@@ -105,7 +111,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 					boostedrate = 1;
 				}
 
-				uint32_t interval = static_cast<uint32_t>(LexicalCast::intFromChar(childMonsterNode.attribute("spawntime").value())) * 100000 / (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule);
+				uint32_t interval = static_cast<uint32_t>(childMonsterNode.attribute("spawntime").as_int()) * 100000 / (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule);
 				if (interval >= MONSTER_MINSPAWN_INTERVAL && interval <= MONSTER_MAXSPAWN_INTERVAL) {
 					spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {

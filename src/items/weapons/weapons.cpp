@@ -22,22 +22,11 @@
 #include "creatures/combat/combat.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
-#include "utils/lexical_cast.hpp"
 #include "items/weapons/weapons.h"
 
 extern Vocations g_vocations;
 extern Weapons* g_weapons;
 extern Events* g_events;
-
-Weapons::Weapons()
-{
-	scriptInterface.initState();
-}
-
-Weapons::~Weapons()
-{
-	clear(false);
-}
 
 const Weapon* Weapons::getWeapon(const Item* item) const
 {
@@ -54,13 +43,9 @@ const Weapon* Weapons::getWeapon(const Item* item) const
 
 void Weapons::clear(bool fromLua)
 {
-	for (auto it = weapons.begin(); it != weapons.end(); ) {
-		if (fromLua == it->second->fromLua) {
-			it = weapons.erase(it);
-		} else {
-			++it;
-		}
-	}
+	std::erase_if(weapons, [fromLua](auto weapon) {
+		return weapon.second->fromLua == fromLua;
+	});
 
 	reInitState(fromLua);
 }
@@ -158,6 +143,8 @@ int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t
 	}
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool Weapon::configureEvent(const pugi::xml_node& node)
 {
 	pugi::xml_attribute attr;
@@ -165,112 +152,7 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 		SPDLOG_ERROR("[Weapon::configureEvent] - Weapon without id");
 		return false;
 	}
-	id = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-
-	if ((attr = node.attribute("level"))) {
-		level = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	if ((attr = node.attribute("maglv")) || (attr = node.attribute("maglevel"))) {
-		magLevel = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	if ((attr = node.attribute("mana"))) {
-		mana = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	if ((attr = node.attribute("soul"))) {
-		soul = static_cast<uint32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	if ((attr = node.attribute("prem"))) {
-		premium = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("breakchance")) && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
-		breakChance = std::min<uint8_t>(100, static_cast<uint16_t>(LexicalCast::intFromChar(attr.value())));
-	}
-
-	if ((attr = node.attribute("action"))) {
-		action = getWeaponAction(asLowerCaseString(attr.as_string()));
-		if (action == WEAPONACTION_NONE) {
-			SPDLOG_WARN("[Weapon::configureEvent] - "
-                        "Unknown action {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("enabled"))) {
-		enabled = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("unproperly"))) {
-		wieldUnproperly = attr.as_bool();
-	}
-
-	std::list<std::string> vocStringList;
-	for (auto vocationNode : node.children()) {
-		if (!(attr = vocationNode.attribute("name"))) {
-			continue;
-		}
-
-		int32_t vocationId = g_vocations.getVocationId(attr.as_string());
-		if (vocationId != -1) {
-			vocWeaponMap[vocationId] = true;
-			int32_t promotedVocation = g_vocations.getPromotedVocation(vocationId);
-			if (promotedVocation != VOCATION_NONE) {
-				vocWeaponMap[promotedVocation] = true;
-			}
-
-			if (vocationNode.attribute("showInDescription").as_bool(true)) {
-				vocStringList.push_back(asLowerCaseString(attr.as_string()));
-			}
-		}
-	}
-
-	std::string vocationString;
-	for (const std::string& str : vocStringList) {
-		if (!vocationString.empty()) {
-			if (str != vocStringList.back()) {
-				vocationString.push_back(',');
-				vocationString.push_back(' ');
-			} else {
-				vocationString += " and ";
-			}
-		}
-
-		vocationString += str;
-		vocationString.push_back('s');
-	}
-
-	uint32_t wieldInfo = 0;
-	if (getReqLevel() > 0) {
-		wieldInfo |= WIELDINFO_LEVEL;
-	}
-
-	if (getReqMagLv() > 0) {
-		wieldInfo |= WIELDINFO_MAGLV;
-	}
-
-	if (!vocationString.empty()) {
-		wieldInfo |= WIELDINFO_VOCREQ;
-	}
-
-	if (isPremium()) {
-		wieldInfo |= WIELDINFO_PREMIUM;
-	}
-
-	if (wieldInfo != 0) {
-		ItemType& it = Item::items.getItemType(id);
-		it.wieldInfo = wieldInfo;
-		it.vocationString = vocationString;
-		it.minReqLevel = getReqLevel();
-		it.minReqMagicLevel = getReqMagLv();
-	}
-
+	id = static_cast<uint16_t>(attr.as_uint());
 	configureWeapon(Item::items[id]);
 	return true;
 }
@@ -963,42 +845,12 @@ bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& s
 	return true;
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool WeaponWand::configureEvent(const pugi::xml_node& node)
 {
 	if (!Weapon::configureEvent(node)) {
 		return false;
-	}
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("min"))) {
-		minChange = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	if ((attr = node.attribute("max"))) {
-		maxChange = static_cast<int32_t>(LexicalCast::intFromChar(attr.value()));
-	}
-
-	attr = node.attribute("type");
-	if (!attr) {
-		return true;
-	}
-
-	std::string tmpStrValue = asLowerCaseString(attr.as_string());
-	if (tmpStrValue == "earth") {
-		params.combatType = COMBAT_EARTHDAMAGE;
-	} else if (tmpStrValue == "ice") {
-		params.combatType = COMBAT_ICEDAMAGE;
-	} else if (tmpStrValue == "energy") {
-		params.combatType = COMBAT_ENERGYDAMAGE;
-	} else if (tmpStrValue == "fire") {
-		params.combatType = COMBAT_FIREDAMAGE;
-	} else if (tmpStrValue == "death") {
-		params.combatType = COMBAT_DEATHDAMAGE;
-	} else if (tmpStrValue == "holy") {
-		params.combatType = COMBAT_HOLYDAMAGE;
-	} else {
-		SPDLOG_WARN("[WeaponWand::configureEvent] - "
-                    "Type {} does not exist", attr.as_string());
 	}
 	return true;
 }

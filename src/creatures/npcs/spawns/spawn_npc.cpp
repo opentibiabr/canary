@@ -24,7 +24,6 @@
 #include "creatures/npcs/npc.h"
 #include "game/scheduling/scheduler.h"
 
-#include "utils/lexical_cast.hpp"
 #include "lua/creature/events.h"
 
 extern Npcs g_npcs;
@@ -51,15 +50,15 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 
 	for (auto spawnNode : doc.child("npcs").children()) {
 		Position centerPos(
-			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centerx").value())),
-			static_cast<uint16_t>(LexicalCast::intFromChar(spawnNode.attribute("centery").value())),
-			static_cast<uint8_t>(LexicalCast::intFromChar(spawnNode.attribute("centerz").value()))
+			static_cast<uint16_t>(spawnNode.attribute("centerx").as_int()),
+			static_cast<uint16_t>(spawnNode.attribute("centery").as_int()),
+			static_cast<uint8_t>(spawnNode.attribute("centerz").as_int())
 		);
 
 		int32_t radius;
 		pugi::xml_attribute radiusAttribute = spawnNode.attribute("radius");
 		if (radiusAttribute) {
-			radius = LexicalCast::intFromChar(radiusAttribute.value());
+			radius = radiusAttribute.as_int();
 		} else {
 			radius = -1;
 		}
@@ -75,25 +74,32 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 		for (auto childNode : spawnNode.children()) {
 			if (strcasecmp(childNode.name(), "npc") == 0) {
 				pugi::xml_attribute nameAttribute = childNode.attribute("name");
-				if (!nameAttribute) {
+				const std::string npcName = nameAttribute.as_string();
+				if (!nameAttribute || npcName.empty()) {
+					SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Missing or empty tag 'name' on npc position {}", centerPos.toString());
+					continue;
+				}
+
+				pugi::xml_attribute directionAttribute = childNode.attribute("direction");
+				const std::string directionString = directionAttribute.as_string();
+				if (!isNumber(directionAttribute.as_string())) {
+					SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Invalid direction with npc name {}", npcName);
 					continue;
 				}
 
 				Direction dir;
-
-				pugi::xml_attribute directionAttribute = childNode.attribute("direction");
 				if (directionAttribute) {
-					dir = static_cast<Direction>(LexicalCast::intFromChar(directionAttribute.value()));
+					dir = static_cast<Direction>(directionAttribute.as_int());
 				} else {
 					dir = DIRECTION_NORTH;
 				}
 
 				Position pos(
-					centerPos.x + static_cast<uint16_t>(LexicalCast::intFromChar(childNode.attribute("x").value())),
-					centerPos.y + static_cast<uint16_t>(LexicalCast::intFromChar(childNode.attribute("y").value())),
+					centerPos.x + static_cast<uint16_t>(childNode.attribute("x").as_int()),
+					centerPos.y + static_cast<uint16_t>(childNode.attribute("y").as_int()),
 					centerPos.z
 				);
-				int64_t interval = static_cast<int64_t>(LexicalCast::intFromChar(childNode.attribute("spawntime").value())) * 1000;
+				int64_t interval = static_cast<int64_t>(childNode.attribute("spawntime").as_int()) * 1000;
 				if (interval >= MINSPAWN_INTERVAL && interval <= MAXSPAWN_INTERVAL) {
 					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {

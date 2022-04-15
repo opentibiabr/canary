@@ -22,15 +22,6 @@
 #include "creatures/players/player.h"
 #include "lua/creature/talkaction.h"
 
-TalkActions::TalkActions()
-	: scriptInterface("TalkAction Interface") {
-	scriptInterface.initState();
-}
-
-TalkActions::~TalkActions() {
-	clear(false);
-}
-
 void TalkActions::clear(bool fromLua) {
 	for (auto it = talkActions.begin(); it != talkActions.end(); ) {
 		if (fromLua == it->second.fromLua) {
@@ -129,22 +120,9 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 	return TALKACTION_CONTINUE;
 }
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool TalkAction::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute wordsAttribute = node.attribute("words");
-	if (!wordsAttribute) {
-		SPDLOG_ERROR("[TalkAction::configureEvent] "
-                    "Missing words for talkaction or spell");
-		return false;
-	}
-
-	pugi::xml_attribute separatorAttribute = node.attribute("separator");
-	if (separatorAttribute) {
-		separator = separatorAttribute.value();
-	}
-
-	for (auto word : explodeString(wordsAttribute.as_string(), ";")) {
-		setWords(word);
-	}
 	return true;
 }
 

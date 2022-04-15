@@ -39,8 +39,7 @@ using VocEquipMap = std::map<uint16_t, bool>;
 
 class MoveEvents final : public BaseEvents {
 	public:
-		MoveEvents();
-		~MoveEvents();
+		MoveEvents() = default;
 
 		// non-copyable
 		MoveEvents(const MoveEvents&) = delete;
@@ -82,7 +81,7 @@ class MoveEvents final : public BaseEvents {
 		MoveListMap itemIdMap;
 		MovePosListMap positionMap;
 
-		LuaScriptInterface scriptInterface;
+		LuaScriptInterface scriptInterface { "Movement Interface" };
 };
 
 using StepFunction = std::function<uint32_t(Creature* creature, Item* item, const Position& pos)>;

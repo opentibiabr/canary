@@ -80,7 +80,7 @@ class CreatureEvent final : public Event {
 
 class CreatureEvents final : public BaseEvents {
 	public:
-		CreatureEvents();
+		CreatureEvents() = default;
 
 		// non-copyable
 		CreatureEvents(const CreatureEvents&) = delete;
@@ -107,7 +107,7 @@ class CreatureEvents final : public BaseEvents {
 		using CreatureEventMap = std::map<std::string, CreatureEvent>;
 		CreatureEventMap creatureEvents;
 
-		LuaScriptInterface scriptInterface;
+		LuaScriptInterface scriptInterface { "CreatureEvent Interface" };
 };
 
 #endif  // SRC_LUA_CREATURE_CREATUREEVENT_H_

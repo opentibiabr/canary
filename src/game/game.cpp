@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "utils/lexical_cast.hpp"
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"
@@ -239,25 +238,25 @@ bool Game::loadScheduleEventFromXml()
 
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
-				uint16_t exprate = static_cast<uint16_t>(LexicalCast::intFromChar(schedENode.attribute("exprate").value()));
+				uint16_t exprate = static_cast<uint16_t>(schedENode.attribute("exprate").as_uint());
 				g_game().setExpSchedule(exprate);
 				ss << " exp: " << (exprate - 100) << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = static_cast<uint16_t>(LexicalCast::intFromChar(schedENode.attribute("lootrate").value()));
+				uint16_t lootrate = static_cast<uint16_t>(schedENode.attribute("lootrate").as_uint());
 				g_game().setLootSchedule(lootrate);
 				ss << ", loot: " << (lootrate - 100) << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
-				uint32_t spawnrate = static_cast<uint32_t>(LexicalCast::intFromChar(schedENode.attribute("spawnrate").value()));
+				uint32_t spawnrate = schedENode.attribute("spawnrate").as_uint();
 				g_game().setSpawnMonsterSchedule(spawnrate);
 				ss << ", spawn: "  << (spawnrate - 100) << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = static_cast<uint16_t>(LexicalCast::intFromChar(schedENode.attribute("skillrate").value()));
+				uint16_t skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
 				g_game().setSkillSchedule(skillrate);
 				ss << ", skill: " << (skillrate - 100) << "%";
 			}

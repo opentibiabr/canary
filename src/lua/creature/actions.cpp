@@ -23,30 +23,16 @@
 #include "items/bed.h"
 #include "items/containers/container.h"
 #include "game/game.h"
-#include "utils/lexical_cast.hpp"
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
 
 extern Spells* g_spells;
 extern Actions* g_actions;
 
-Actions::Actions() :
-	scriptInterface("Action Interface") {
-	scriptInterface.initState();
-}
-
-Actions::~Actions() {
-	clear(false);
-}
-
 void Actions::clearMap(ActionUseMap& map, bool fromLua) {
-	for (auto it = map.begin(); it != map.end(); ) {
-		if (fromLua == it->second.fromLua) {
-			it = map.erase(it);
-		} else {
-			++it;
-		}
-	}
+	std::erase_if(map, [fromLua](auto action) {
+		return action.second.fromLua == fromLua;
+	});
 }
 
 void Actions::clear(bool fromLua) {
@@ -72,131 +58,10 @@ Event_ptr Actions::getEvent(const std::string& nodeName) {
 	return Event_ptr(new Action(&scriptInterface));
 }
 
+// TODO: Eduardo
+// Remove this function (and all registerEvent of others classes), is no longer used
 bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
-	//event is guaranteed to be an Action
-	Action_ptr action{static_cast<Action*>(event.release())};
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("itemid"))) {
-		uint16_t id = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-
-		auto result = useItemMap.emplace(id, std::move(*action));
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate registered item with "
-				"id: {}", id);
-		}
-		return result.second;
-	} else if ((attr = node.attribute("fromid"))) {
-		pugi::xml_attribute toIdAttribute = node.attribute("toid");
-		if (!toIdAttribute) {
-			SPDLOG_WARN("[Actions::registerEvent] - Missing toid in fromid: {}",
-				attr.as_string());
-			return false;
-		}
-
-		uint16_t fromId = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-		uint16_t iterId = fromId;
-		uint16_t toId = static_cast<uint16_t>(LexicalCast::intFromChar(toIdAttribute.value()));
-
-		auto result = useItemMap.emplace(iterId, *action);
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with id: {} in fromid: {}, toid: {}", iterId, fromId, toId);
-		}
-
-		bool success = result.second;
-		while (++iterId <= toId) {
-			result = useItemMap.emplace(iterId, *action);
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-							"registered item with id: {} in fromid: {}, toid: {}", iterId, fromId, toId);
-				continue;
-			}
-			success = true;
-		}
-		return success;
-	} else if ((attr = node.attribute("uniqueid"))) {
-		uint16_t uid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-
-		auto result = uniqueItemMap.emplace(uid, std::move(*action));
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with uniqueid: {}", uid);
-		}
-		return result.second;
-	} else if ((attr = node.attribute("fromuid"))) {
-		pugi::xml_attribute toUidAttribute = node.attribute("touid");
-		if (!toUidAttribute) {
-			SPDLOG_WARN("[Actions::registerEvent] - Missing touid in fromuid: {}",
-						attr.as_string());
-			return false;
-		}
-
-		uint16_t fromUid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-		uint16_t iterUid = fromUid;
-		uint16_t toUid = static_cast<uint16_t>(LexicalCast::intFromChar(toUidAttribute.value()));
-
-		auto result = uniqueItemMap.emplace(iterUid, *action);
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with unique id: {} in fromuid: {}, touid: {}",
-						iterUid, fromUid, toUid);
-		}
-
-		bool success = result.second;
-		while (++iterUid <= toUid) {
-			result = uniqueItemMap.emplace(iterUid, *action);
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-							"registered item with unique id: {} in fromuid: {}, touid: {}",
-							iterUid, fromUid, toUid);
-				continue;
-			}
-			success = true;
-		}
-		return success;
-	} else if ((attr = node.attribute("actionid"))) {
-		uint16_t aid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-
-		auto result = actionItemMap.emplace(aid, std::move(*action));
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with actionid: {}", aid);
-		}
-		return result.second;
-	} else if ((attr = node.attribute("fromaid"))) {
-		pugi::xml_attribute toAidAttribute = node.attribute("toaid");
-		if (!toAidAttribute) {
-			SPDLOG_WARN("[Actions::registerEvent()] - Missing toaid in fromaid: {}",
-						attr.as_string());
-			return false;
-		}
-
-		uint16_t fromAid = static_cast<uint16_t>(LexicalCast::intFromChar(attr.value()));
-		uint16_t iterAid = fromAid;
-		uint16_t toAid = static_cast<uint16_t>(LexicalCast::intFromChar(toAidAttribute.value()));
-
-		auto result = actionItemMap.emplace(iterAid, *action);
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with action id: {} in fromaid: {}, toaid: {}",
-						iterAid, fromAid, toAid);
-		}
-
-		bool success = result.second;
-		while (++iterAid <= toAid) {
-			result = actionItemMap.emplace(iterAid, *action);
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-							"registered item with action id: {} in fromaid: {}, toaid: {}",
-							iterAid, fromAid, toAid);
-				continue;
-			}
-			success = true;
-		}
-		return success;
-	}
-	return false;
+	return true;
 }
 
 bool Actions::registerLuaEvent(Action* event) {
@@ -549,22 +414,9 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 Action::Action(LuaScriptInterface* interface) :
 	Event(interface), function(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool Action::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute allowFarUseAttr = node.attribute("allowfaruse");
-	if (allowFarUseAttr != nullptr) {
-		allowFarUse = allowFarUseAttr.as_bool();
-	}
-
-	pugi::xml_attribute blockWallsAttr = node.attribute("blockwalls");
-	if (blockWallsAttr != nullptr) {
-		checkLineOfSight = blockWallsAttr.as_bool();
-	}
-
-	pugi::xml_attribute checkFloorAttr = node.attribute("checkfloor");
-	if (checkFloorAttr != nullptr) {
-		checkFloor = checkFloorAttr.as_bool();
-	}
-
 	return true;
 }
 

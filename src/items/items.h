@@ -324,7 +324,7 @@ class Items
 		uint32_t buildNumber = 0;
 
 		bool loadFromXml();
-		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
+		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id, const std::string &itemName);
 
 		void buildInventoryList();
 		const InventoryVector& getInventory() const {

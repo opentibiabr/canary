@@ -124,8 +124,7 @@ class Action : public Event {
 
 class Actions final : public BaseEvents {
 	public:
-		Actions();
-		~Actions();
+		Actions() = default;
 
 		// non-copyable
 		Actions(const Actions&) = delete;
@@ -158,7 +157,7 @@ class Actions final : public BaseEvents {
 		Action* getAction(const Item* item);
 		void clearMap(ActionUseMap& map, bool fromLua);
 
-		LuaScriptInterface scriptInterface;
+		LuaScriptInterface scriptInterface { "Action Interface" };
 };
 
 #endif  // SRC_LUA_CREATURE_ACTIONS_H_

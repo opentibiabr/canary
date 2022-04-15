@@ -29,8 +29,7 @@ using GlobalEventMap = std::map<std::string, GlobalEvent>;
 
 class GlobalEvents final : public BaseEvents {
 	public:
-		GlobalEvents();
-		~GlobalEvents();
+		GlobalEvents() = default;
 
 		// non-copyable
 		GlobalEvents(const GlobalEvents&) = delete;
@@ -59,7 +58,7 @@ class GlobalEvents final : public BaseEvents {
 		LuaScriptInterface& getScriptInterface() override {
 			return scriptInterface;
 		}
-		LuaScriptInterface scriptInterface;
+		LuaScriptInterface scriptInterface { "GlobalEvent Interface" };
 
 		GlobalEventMap thinkMap, serverMap, timerMap;
 		int32_t thinkEventId = 0, timerEventId = 0;

@@ -28,7 +28,6 @@
 
 #include "config/configmanager.h"
 #include "declarations.hpp"
-#include "utils/lexical_cast.hpp"
 
 class DBResult;
 using DBResult_ptr = std::shared_ptr<DBResult>;

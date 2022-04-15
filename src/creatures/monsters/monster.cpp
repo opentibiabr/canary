@@ -896,7 +896,7 @@ void Monster::doAttacking(uint32_t interval)
 	for (const spellBlock_t& spellBlock : mType->info.attackSpells) {
 		bool inRange = false;
 
-		if (attackedCreature == nullptr) {
+		if (spellBlock == nullptr || spellBlock.spell == nullptr || attackedCreature == nullptr) {
 			break;
 		}
 
@@ -920,7 +920,9 @@ void Monster::doAttacking(uint32_t interval)
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
-				spellBlock.spell->castSpell(this, attackedCreature);
+				if (spellBlock.spell) {
+					spellBlock.spell->castSpell(this, attackedCreature);
+				}
 
 				if (spellBlock.isMelee) {
 					extraMeleeAttack = false;

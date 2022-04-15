@@ -23,17 +23,10 @@
 #include "utils/tools.h"
 #include "creatures/players/player.h"
 
-CreatureEvents::CreatureEvents() :
-	scriptInterface("CreatureScript Interface") {
-	scriptInterface.initState();
-}
-
 void CreatureEvents::clear(bool fromLua) {
-	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {
-		if (fromLua == it->second.fromLua) {
-			it->second.clearEvent();
-		}
-	}
+	std::erase_if(creatureEvents, [fromLua](auto creatureEvent) {
+		return creatureEvent.second.fromLua == fromLua;
+	});
 
 	reInitState(fromLua);
 }
@@ -150,54 +143,9 @@ bool CreatureEvents::playerAdvance(Player* player, skills_t skill, uint32_t oldL
 CreatureEvent::CreatureEvent(LuaScriptInterface* interface) :
 	Event(interface), type(CREATURE_EVENT_NONE), loaded(false) {}
 
+// TODO: Eduardo
+// Remove this function (and all configureEvent of others classes), is no longer used
 bool CreatureEvent::configureEvent(const pugi::xml_node& node) {
-	// Name that will be used in monster xml files and
-	// lua function to register events to reference this event
-	pugi::xml_attribute nameAttribute = node.attribute("name");
-	if (!nameAttribute) {
-		SPDLOG_ERROR("[CreatureEvent::configureEvent] - Missing name for creature event");
-		return false;
-	}
-
-	eventName = nameAttribute.as_string();
-
-	pugi::xml_attribute typeAttribute = node.attribute("type");
-	if (!typeAttribute) {
-		SPDLOG_ERROR("[CreatureEvent::configureEvent] - Missing type for creature event: {}", eventName);
-		return false;
-	}
-
-	std::string tmpStr = asLowerCaseString(typeAttribute.as_string());
-	if (tmpStr == "login") {
-		type = CREATURE_EVENT_LOGIN;
-	} else if (tmpStr == "logout") {
-		type = CREATURE_EVENT_LOGOUT;
-	} else if (tmpStr == "think") {
-		type = CREATURE_EVENT_THINK;
-	} else if (tmpStr == "preparedeath") {
-		type = CREATURE_EVENT_PREPAREDEATH;
-	} else if (tmpStr == "death") {
-		type = CREATURE_EVENT_DEATH;
-	} else if (tmpStr == "kill") {
-		type = CREATURE_EVENT_KILL;
-	} else if (tmpStr == "advance") {
-		type = CREATURE_EVENT_ADVANCE;
-	} else if (tmpStr == "modalwindow") {
-		type = CREATURE_EVENT_MODALWINDOW;
-	} else if (tmpStr == "textedit") {
-		type = CREATURE_EVENT_TEXTEDIT;
-	} else if (tmpStr == "healthchange") {
-		type = CREATURE_EVENT_HEALTHCHANGE;
-	} else if (tmpStr == "manachange") {
-		type = CREATURE_EVENT_MANACHANGE;
-	} else if (tmpStr == "extendedopcode") {
-		type = CREATURE_EVENT_EXTENDED_OPCODE;
-	} else {
-		SPDLOG_ERROR("[CreatureEvent::configureEvent] - Invalid type for creature event: {}", eventName);
-		return false;
-	}
-
-	loaded = true;
 	return true;
 }
 

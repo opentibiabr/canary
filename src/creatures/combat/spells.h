@@ -37,8 +37,7 @@ using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
 class Spells final : public BaseEvents
 {
 	public:
-		Spells();
-		~Spells();
+		Spells() = default;
 
 		// non-copyable
 		Spells(const Spells&) = delete;

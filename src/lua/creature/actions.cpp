@@ -40,6 +40,10 @@ void Actions::clear(bool fromLua) {
 	clearMap(uniqueItemMap, fromLua);
 	clearMap(actionItemMap, fromLua);
 
+	std::erase_if(actionPositionMap, [fromLua](auto position) {
+		return position.second.fromLua == fromLua;
+	});
+
 	reInitState(fromLua);
 }
 
@@ -132,6 +136,16 @@ bool Actions::registerLuaEvent(Action* event) {
 			}
 			return true;
 		}
+	} else if (action->getPositions().size() > 0) {
+		if (action->getPositions().size() == 1) {
+			auto result = actionPositionMap.emplace(action->getPositions().at(0), std::move(*action));
+			if (!result.second) {
+				SPDLOG_WARN("[Actions::registerLuaEvent] - Duplicate "
+							"registered script with position: {}",
+							action->getPositions().at(0).toString());
+			}
+			return result.second;
+		}
 	} else {
 		SPDLOG_WARN("[Actions::registerLuaEvent] - "
 					"There is no id/aid/uid set for this event");
@@ -202,6 +216,20 @@ Action* Actions::getAction(const Item* item) {
 	auto it = useItemMap.find(item->getID());
 	if (it != useItemMap.end()) {
 		return &it->second;
+	}
+
+	const Tile * tile = item->getTile();
+	if (tile) {
+		Player* player = item->getHoldingPlayer();
+		if (player && item->getTopParent() == player) {
+			SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map", player->getName());
+			return nullptr;
+		}
+
+		auto iteratePositions = actionPositionMap.find(tile->getPosition());
+		if (iteratePositions != actionPositionMap.end()) {
+			return &iteratePositions->second;
+		}
 	}
 
 	//rune items

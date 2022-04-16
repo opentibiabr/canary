@@ -32,7 +32,8 @@ int ActionFunctions::luaCreateAction(lua_State* L) {
 		pushUserdata<Action>(L, action);
 		setMetatable(L, -1, "Action");
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -48,7 +49,8 @@ int ActionFunctions::luaActionOnUse(lua_State* L) {
 		action->scripted = true;
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -65,8 +67,10 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 		action->getActionIdRange().clear();
 		action->getItemIdRange().clear();
 		action->getUniqueIdRange().clear();
+		action->getPositions().clear();
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -85,7 +89,8 @@ int ActionFunctions::luaActionItemId(lua_State* L) {
 		}
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -104,7 +109,8 @@ int ActionFunctions::luaActionActionId(lua_State* L) {
 		}
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -123,7 +129,8 @@ int ActionFunctions::luaActionUniqueId(lua_State* L) {
 		}
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -135,7 +142,8 @@ int ActionFunctions::luaActionAllowFarUse(lua_State* L) {
 		action->setAllowFarUse(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -147,7 +155,8 @@ int ActionFunctions::luaActionBlockWalls(lua_State* L) {
 		action->setCheckLineOfSight(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -159,7 +168,29 @@ int ActionFunctions::luaActionCheckFloor(lua_State* L) {
 		action->setCheckFloor(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
+	return 1;
+}
+
+int ActionFunctions::luaActionPosition(lua_State* L) {
+	// action:position(positions)
+	Action* action = getUserdata<Action>(L, 1);
+	if (!action) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
+	if (parameters > 1) {
+		for (int i = 0; i < parameters; ++i) {
+			action->setPositions(getPosition(L, 2 + i));
+		}
+	} else {
+		action->setPositions(getPosition(L, 2));
+	}
+	pushBoolean(L, true);
 	return 1;
 }

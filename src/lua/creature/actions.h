@@ -92,6 +92,22 @@ class Action : public Event {
 			aids.emplace_back(id);
 		}
 
+		bool hasPosition(Position position) {
+			auto iteratePosition = std::ranges::find_if(positions.begin(), positions.end(), [position](Position storedPosition) {
+				if (storedPosition == position) {
+					return true;
+				}
+			});
+			return false;
+		}
+
+		std::vector<Position> getPositions() {
+			return positions;
+		}
+		void setPositions(Position pos) {
+			positions.emplace_back(pos);
+		}
+
 		virtual ReturnValue canExecuteAction(const Player* player,
                                              const Position& toPos);
 
@@ -120,6 +136,7 @@ class Action : public Event {
 		std::vector<uint16_t> ids;
 		std::vector<uint16_t> uids;
 		std::vector<uint16_t> aids;
+		std::vector<Position> positions;
 };
 
 class Actions final : public BaseEvents {
@@ -153,6 +170,7 @@ class Actions final : public BaseEvents {
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
 		ActionUseMap actionItemMap;
+		std::map<Position, Action> actionPositionMap;
 
 		Action* getAction(const Item* item);
 		void clearMap(ActionUseMap& map, bool fromLua);

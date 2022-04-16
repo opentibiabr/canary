@@ -811,8 +811,8 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 		}
 
 		int32_t subType;
-		if (it.isFluidContainer() && index < static_cast<int32_t>(sizeof(reverseFluidMap) / sizeof(uint8_t))) {
-			subType = reverseFluidMap[index];
+		if (it.isFluidContainer()) {
+			subType = index;
 		} else {
 			subType = -1;
 		}
@@ -4300,18 +4300,11 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t spriteId, uint8_t count, ui
 		return;
 	}
 
-	uint8_t subType;
-	if (it.isSplash() || it.isFluidContainer()) {
-		subType = clientFluidToServer(count);
-	} else {
-		subType = count;
-	}
-
-	if (!player->hasShopItemForSale(it.id, subType)) {
+	if (!player->hasShopItemForSale(it.id, count)) {
 		return;
 	}
 
-	merchant->onPlayerBuyItem(player, it.id, subType, amount, ignoreCap, inBackpacks);
+	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount, bool ignoreEquipped)
@@ -4335,14 +4328,7 @@ void Game::playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count, u
 		return;
 	}
 
-	uint8_t subType;
-	if (it.isSplash() || it.isFluidContainer()) {
-		subType = clientFluidToServer(count);
-	} else {
-		subType = count;
-	}
-
-	merchant->onPlayerSellItem(player, it.id, subType, amount, ignoreEquipped);
+	merchant->onPlayerSellItem(player, it.id, count, amount, ignoreEquipped);
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -4372,21 +4358,14 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count)
 		return;
 	}
 
-	int32_t subType;
-	if (it.isFluidContainer() || it.isSplash()) {
-		subType = clientFluidToServer(count);
-	} else {
-		subType = count;
-	}
-
-	if (!g_events->eventPlayerOnLookInShop(player, &it, subType)) {
+	if (!g_events->eventPlayerOnLookInShop(player, &it, count)) {
 		return;
 	}
 
 	std::ostringstream ss;
-	ss << "You see " << Item::getDescription(it, 1, nullptr, subType);
+	ss << "You see " << Item::getDescription(it, 1, nullptr, count);
 	player->sendTextMessage(MESSAGE_LOOK, ss.str());
-	merchant->onPlayerCheckItem(player, it.id, subType);
+	merchant->onPlayerCheckItem(player, it.id, count);
 }
 
 void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos)
@@ -5618,7 +5597,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 				case RACE_VENOM:
 					color = TEXTCOLOR_LIGHTGREEN;
 					effect = CONST_ME_HITBYPOISON;
-					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_SLIME);
+					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_LEMONADE);
 					break;
 				case RACE_BLOOD:
 					color = TEXTCOLOR_RED;
@@ -5626,6 +5605,15 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 					if (const Tile* tile = target->getTile()) {
 						if (!tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 							splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_BLOOD);
+						}
+					}
+					break;
+				case RACE_INK:
+					color = TEXTCOLOR_LIGHTGREY;
+					effect = CONST_ME_HITAREA;
+					if (const Tile* tile = target->getTile()) {
+						if (!tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+							splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK);
 						}
 					}
 					break;

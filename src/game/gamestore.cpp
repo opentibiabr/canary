@@ -25,7 +25,7 @@
 
 uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;
 
-std::vector<std::string> getIconsVector(std::string rawString)
+const std::vector<std::string> GameStore::getIconsVector(const std::string& rawString) const
 {
 	std::vector<std::string> icons;
 	// Converting the |-separated string to a vector of tokens
@@ -34,7 +34,7 @@ std::vector<std::string> getIconsVector(std::string rawString)
 	return icons;
 }
 
-std::vector<uint8_t> getIntVector(std::string rawString)
+const std::vector<uint8_t> GameStore::getIntVector(const std::string& rawString) const
 {
 	std::vector<uint8_t> ints;
 	std::vector<std::string> rawInts;
@@ -88,9 +88,11 @@ bool GameStore::loadFromXml()
 				return false;
 			}
 
-			std::string state = categoryNode.attribute("state").as_string("normal");
+			
 			//reading state (defaults to normal)
-			if (strcasecmp(state.c_str(), "normal") == 0) {
+			if (std::string state = categoryNode.attribute("state").as_string("normal");
+			strcasecmp(state.c_str(), "normal") == 0)
+			{
 				cat->state = StoreState_t::NORMAL;
 			} else if (strcasecmp(state.c_str(), "new") == 0) {
 				cat->state = StoreState_t::NEW;
@@ -242,9 +244,10 @@ bool GameStore::loadFromXml()
 					offer->description = offerNode.attribute("description").as_string("");
 					offer->icons = getIconsVector(offerNode.attribute("icons").as_string("default.png"));
 
-					std::string offerstate = categoryNode.attribute("state").as_string("normal");
-
-					if (strcasecmp(offerstate.c_str(), "normal") == 0) { //reading state (defaults to normal)
+					// Reading state (defaults to normal)
+					if (const std::string offerstate = categoryNode.attribute("state").as_string("normal");
+					strcasecmp(offerstate.c_str(), "normal") == 0)
+					{
 						offer->state = StoreState_t::NORMAL;
 					} else if (strcasecmp(offerstate.c_str(), "new") == 0) {
 						offer->state = StoreState_t::NEW;

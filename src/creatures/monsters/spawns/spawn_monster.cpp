@@ -48,9 +48,6 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	this->filemonstername = filemonstername;
 	loaded = true;
 
-	uint32_t eventschedule = g_game().getSpawnMonsterSchedule();
-	std::string boostedNameGet = g_game().getBoostedMonsterName();
-
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
 		Position centerPos(
 			static_cast<uint16_t>(spawnMonsterNode.attribute("centerx").as_int()),
@@ -71,60 +68,65 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 			continue;
 		}
 
-		spawnMonsterList.emplace_front(centerPos, radius);
-		SpawnMonster& spawnMonster = spawnMonsterList.front();
+		parseMonsterNode(spawnMonsterNode, centerPos, radius);
+	}
+	return true;
+}
 
-		for (auto childMonsterNode : spawnMonsterNode.children()) {
-			if (strcasecmp(childMonsterNode.name(), "monster") == 0) {
-				pugi::xml_attribute nameAttribute = childMonsterNode.attribute("name");
-				const std::string monsterName = nameAttribute.as_string();
-				if (!nameAttribute || monsterName.empty()) {
-					SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Missing or empty tag 'name' on monster position {}", centerPos.toString());
-					continue;
-				}
+void SpawnsMonster::parseMonsterNode(pugi::xml_node spawnMonsterNode, Position centerPos, int32_t radius)
+{
+	uint32_t eventschedule = g_game().getSpawnMonsterSchedule();
+	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
-				pugi::xml_attribute directionAttribute = childMonsterNode.attribute("direction");
-				const std::string directionString = directionAttribute.as_string();
-				if (!isNumber(directionAttribute.as_string())) {
-					SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Invalid direction with monster name {}", monsterName);
-					continue;
-				}
+	spawnMonsterList.emplace_front(centerPos, radius);
+	SpawnMonster& spawnMonster = spawnMonsterList.front();
+	for (auto childMonsterNode : spawnMonsterNode.children()) {
+		if (strcasecmp(childMonsterNode.name(), "monster") == 0) {
+			pugi::xml_attribute nameAttribute = childMonsterNode.attribute("name");
+			const std::string monsterName = nameAttribute.as_string();
+			if (!nameAttribute || monsterName.empty()) {
+				SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Missing or empty tag 'name' on monster position {}", centerPos.toString());
+				continue;
+			}
 
-				Direction dir;
-				if (directionAttribute) {
-					dir = static_cast<Direction>(static_cast<uint16_t>(directionAttribute.as_int()));
-				} else {
-					dir = DIRECTION_NORTH;
-				}
+			pugi::xml_attribute directionAttribute = childMonsterNode.attribute("direction");
+			const std::string directionString = directionAttribute.as_string();
+			if (!isNumber(directionAttribute.as_string())) {
+				SPDLOG_WARN("[SpawnsMonster::loadFromXml] - Invalid direction with monster name {}", monsterName);
+				continue;
+			}
 
-				Position pos(
-					centerPos.x + static_cast<uint16_t>(childMonsterNode.attribute("x").as_int()),
-					centerPos.y + static_cast<uint16_t>(childMonsterNode.attribute("y").as_int()),
-					centerPos.z
-				);
+			Direction dir;
+			if (directionAttribute) {
+				dir = static_cast<Direction>(static_cast<uint16_t>(directionAttribute.as_int()));
+			} else {
+				dir = DIRECTION_NORTH;
+			}
 
-				int32_t boostedrate;
-				
-				if (nameAttribute.value() == boostedNameGet) {
-					boostedrate = 2;
-				} else {
-					boostedrate = 1;
-				}
+			Position pos(
+				centerPos.x + static_cast<uint16_t>(childMonsterNode.attribute("x").as_int()),
+				centerPos.y + static_cast<uint16_t>(childMonsterNode.attribute("y").as_int()),
+				centerPos.z
+			);
 
-				uint32_t interval = static_cast<uint32_t>(childMonsterNode.attribute("spawntime").as_int()) * 100000 / (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule);
-				if (interval >= MONSTER_MINSPAWN_INTERVAL && interval <= MONSTER_MAXSPAWN_INTERVAL) {
-					spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
-				} else {
-					if (interval <= MONSTER_MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000);
-					} else {
-						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
-					}
-				}
+			int32_t boostedrate;
+					
+			if (nameAttribute.value() == boostedNameGet) {
+				boostedrate = 2;
+			} else {
+				boostedrate = 1;
+			}
+
+			uint32_t interval = static_cast<uint32_t>(childMonsterNode.attribute("spawntime").as_int()) * 100000 / (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule);
+			if (interval >= MONSTER_MINSPAWN_INTERVAL && interval <= MONSTER_MAXSPAWN_INTERVAL) {
+				spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
+			} else if (interval <= MONSTER_MINSPAWN_INTERVAL) {
+				SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000);
+			} else {
+				SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
 			}
 		}
 	}
-	return true;
 }
 
 void SpawnsMonster::startup()

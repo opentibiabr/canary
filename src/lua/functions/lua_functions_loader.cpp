@@ -80,6 +80,7 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 		case LUA_ERROR_VARIANT_NOT_FOUND: return "Variant not found";
 		case LUA_ERROR_VARIANT_UNKNOWN: return "Unknown variant type";
 		case LUA_ERROR_SPELL_NOT_FOUND: return "Spell not found";
+		case LUA_ERROR_ACTION_NOT_FOUND: return "Action not found";
 		default: return "Bad error code";
 	}
 }

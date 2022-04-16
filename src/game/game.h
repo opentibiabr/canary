@@ -22,6 +22,7 @@
 
 #include <unordered_set>
 #include <ranges>
+#include <numeric>
 
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
@@ -164,8 +165,8 @@ class Game
 			itemsClassifications.push_back(itemsClassification);
 		}
 		ItemClassification* getItemsClassification(uint8_t id, bool create) {
-			auto it = std::ranges::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
-				return it->id == id;
+			const auto it = std::ranges::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* itemClassification) {
+				return itemClassification->id == id;
 				});
 
 			if (it != itemsClassifications.end()) {
@@ -451,7 +452,9 @@ class Game
 		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
-		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
+		const std::vector<ItemClassification*>& getItemsClassifications() const {
+			return itemsClassifications;
+		}
 
 		void addPlayer(Player* player);
 		void removePlayer(Player* player);
@@ -628,7 +631,7 @@ class Game
 		LightState_t lightState = LIGHT_STATE_DAY;
 		LightState_t currentLightState = lightState;
 		uint8_t lightLevel = LIGHT_LEVEL_DAY;
-		int32_t lightHour = SUNRISE + (SUNSET - SUNRISE) / 2;
+		int32_t lightHour = std::midpoint(SUNRISE, SUNSET);
 		// (1440 total light of tibian day)/(3600 real seconds each tibian day) * 10 seconds event interval
 		int32_t lightHourDelta = (LIGHT_DAY_LENGTH * (EVENT_LIGHTINTERVAL_MS/1000)) / DAY_LENGTH_SECONDS;
 

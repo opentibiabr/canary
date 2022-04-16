@@ -27,6 +27,7 @@
 #include <limits>
 #include <iostream>
 #include <iterator>
+#include <ranges>
 
 extern Monsters g_monsters;
 
@@ -610,7 +611,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
-  std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+  std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
     return left.first < right.first;
   });
 

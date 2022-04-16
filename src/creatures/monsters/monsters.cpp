@@ -437,8 +437,9 @@ void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
 MonsterType* Monsters::getMonsterType(const std::string& name)
 {
 	std::string lowerCaseName = asLowerCaseString(name);
-	auto it = monsters.find(lowerCaseName);
-	if (it != monsters.end()) {
+	if (auto it = monsters.find(lowerCaseName);
+	it != monsters.end())
+	{
 		return &it->second;
 	}
 	return nullptr;

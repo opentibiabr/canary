@@ -59,11 +59,11 @@ bool Vocations::loadFromXml()
 		voc.name = attr.as_string();
 
 		if ((attr = vocationNode.attribute("clientid"))) {
-			voc.clientId = static_cast<uint16_t>(attr.as_uint());
+			voc.clientId = static_cast<uint8_t>(attr.as_uint());
 		}
 
 		if ((attr = vocationNode.attribute("baseid"))) {
-			voc.baseId = static_cast<uint16_t>(attr.as_uint());
+			voc.baseId = static_cast<uint8_t>(attr.as_uint());
 		}
 		
 		if ((attr = vocationNode.attribute("description"))) {
@@ -115,7 +115,7 @@ bool Vocations::loadFromXml()
 		}
 
 		if ((attr = vocationNode.attribute("soulmax"))) {
-			voc.soulMax = static_cast<uint16_t>(attr.as_uint());
+			voc.soulMax = static_cast<uint8_t>(attr.as_uint());
 		}
 
 		if ((attr = vocationNode.attribute("gainsoulticks"))) {
@@ -130,7 +130,7 @@ bool Vocations::loadFromXml()
 			if (strcasecmp(childNode.name(), "skill") == 0) {
 				pugi::xml_attribute skillIdAttribute = childNode.attribute("id");
 				if (skillIdAttribute) {
-					uint16_t skill_id = static_cast<uint16_t>(skillIdAttribute.as_uint());
+					auto skill_id = static_cast<uint16_t>(skillIdAttribute.as_uint());
 					if (skill_id <= SKILL_LAST) {
 						voc.skillMultipliers[skill_id] = childNode.attribute("multiplier").as_float();
 					} else {

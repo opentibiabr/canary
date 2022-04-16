@@ -85,6 +85,7 @@ class SpawnsMonster
 		static bool isInZone(const Position& centerPos, int32_t radius, const Position& pos);
 
 		bool loadFromXML(const std::string& filemonstername);
+		void parseMonsterNode(pugi::xml_node spawnMonsterNode, Position centerPos, int32_t radius);
 		void startup();
 		void clear();
 

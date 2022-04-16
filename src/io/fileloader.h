@@ -117,7 +117,7 @@ class FileLoader
 		inline bool safeSeek(uint32_t pos);
 		inline bool safeTell(int32_t& pos);
 
-	protected:
+	private:
 		struct cache {
 			uint8_t* data;
 			uint32_t loaded;
@@ -196,7 +196,7 @@ class PropStream
 			return true;
 		}
 
-	protected:
+	private:
 		const char* p = nullptr;
 		const char* end = nullptr;
 };

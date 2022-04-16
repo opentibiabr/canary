@@ -113,7 +113,7 @@ class DBResult
 			try {
 				data = static_cast<T>(std::stoll(row[it->second]));
 			}
-			catch (std::exception&) {
+			catch (const std::system_error&) {
 				// overflow; tries to get it as uint64 (as big as possible);
 				uint64_t u64data;
 				try {
@@ -123,7 +123,7 @@ class DBResult
 						data = std::numeric_limits<T>::max();
 					}
 				}
-				catch (std::exception &exception) {
+				catch (const std::system_error &exception) {
 					// invalid! discard value.
 					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, exception.what());
 					data = 0;

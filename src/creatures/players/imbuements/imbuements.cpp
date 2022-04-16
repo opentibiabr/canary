@@ -122,13 +122,12 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				imbuement.premium = premiumBase.as_bool();
 			}
 
-			if (pugi::xml_attribute storageBase = baseNode.attribute("storage")) {
-				if (!isNumber(storageBase.as_string())) {
-					SPDLOG_WARN("[Imbuements::loadFromXml] - Wrong 'storage' for imbuement entry with base id {}", baseid);
-					continue;
-				}
-				imbuement.storage = storageBase.as_int();
+			pugi::xml_attribute storageBase = baseNode.attribute("storage");
+			if (storageBase.empty() || !isNumber(storageBase.as_string())) {
+				SPDLOG_WARN("[Imbuements::loadFromXml] - Wrong 'storage' for imbuement entry with base id {}", baseid);
+				continue;
 			}
+			imbuement.storage = storageBase.as_int();
 
 			pugi::xml_attribute subgroupBase = baseNode.attribute("subgroup");
 			if (subgroupBase) {

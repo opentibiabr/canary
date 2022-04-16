@@ -26,6 +26,8 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
+#include <ranges>
+
 extern Monsters g_monsters;
 extern Events* g_events;
 
@@ -349,7 +351,7 @@ void Monster::removeFriend(Creature* creature)
 void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 {
 	assert(creature != this);
-	if (std::find(targetList.begin(), targetList.end(), creature) == targetList.end()) {
+	if (std::ranges::find(targetList.begin(), targetList.end(), creature) == targetList.end()) {
 		creature->incrementReferenceCounter();
 		if (pushFront) {
 			targetList.push_front(creature);
@@ -367,7 +369,7 @@ void Monster::removeTarget(Creature* creature)
 		return;
 	}
 
-	auto it = std::find(targetList.begin(), targetList.end(), creature);
+	auto it = std::ranges::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
@@ -380,27 +382,21 @@ void Monster::removeTarget(Creature* creature)
 
 void Monster::updateTargetList()
 {
-	auto friendIterator = friendList.begin();
-	while (friendIterator != friendList.end()) {
-		Creature* creature = *friendIterator;
+	std::erase_if(friendList, [this](auto friendIterator) {
+		Creature* creature = friendIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
 			creature->decrementReferenceCounter();
-			friendIterator = friendList.erase(friendIterator);
-		} else {
-			++friendIterator;
 		}
-	}
+		return friendIterator;
+	});
 
-	auto targetIterator = targetList.begin();
-	while (targetIterator != targetList.end()) {
-		Creature* creature = *targetIterator;
+	std::erase_if(targetList, [this](auto targetIterator) {
+		Creature* creature = targetIterator;
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
 			creature->decrementReferenceCounter();
-			targetIterator = targetList.erase(targetIterator);
-		} else {
-			++targetIterator;
 		}
-	}
+		return targetIterator;
+	});
 
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, position, true);
@@ -665,7 +661,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 void Monster::onFollowCreatureComplete(const Creature* creature)
 {
 	if (creature) {
-		auto it = std::find(targetList.begin(), targetList.end(), creature);
+		auto it = std::ranges::find(targetList.begin(), targetList.end(), creature);
 		if (it != targetList.end()) {
 			Creature* target = (*it);
 			targetList.erase(it);
@@ -729,7 +725,7 @@ bool Monster::selectTarget(Creature* creature)
 		return false;
 	}
 
-	auto it = std::find(targetList.begin(), targetList.end(), creature);
+	auto it = std::ranges::find(targetList.begin(), targetList.end(), creature);
 	if (it == targetList.end()) {
 		//Target not found in our target list.
 		return false;
@@ -737,7 +733,7 @@ bool Monster::selectTarget(Creature* creature)
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature) && !isSummon()) {
-			g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+			g_dispatcher.addTask(createTask(std::bind_front(&Game::checkCreatureAttack, &g_game(), getID())));
 		}
 	}
 	return setFollowCreature(creature);
@@ -896,7 +892,7 @@ void Monster::doAttacking(uint32_t interval)
 	for (const spellBlock_t& spellBlock : mType->info.attackSpells) {
 		bool inRange = false;
 
-		if (spellBlock.spell == nullptr || attackedCreature == nullptr) {
+		if (attackedCreature == nullptr) {
 			break;
 		}
 
@@ -920,9 +916,7 @@ void Monster::doAttacking(uint32_t interval)
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
-				if (spellBlock.spell) {
-					spellBlock.spell->castSpell(this, attackedCreature);
-				}
+				spellBlock.spell->castSpell(this, attackedCreature);
 
 				if (spellBlock.isMelee) {
 					extraMeleeAttack = false;
@@ -1146,7 +1140,7 @@ bool Monster::pushItem(Item* item)
 		{-1,  1}, {0,  1}, {1,  1}
 	};
 
-	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+	std::ranges::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 
 	for (const auto& it : relList) {
 		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
@@ -1193,7 +1187,7 @@ bool Monster::pushCreature(Creature* creature)
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
 	};
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+	std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	for (Direction dir : dirList) {
 		const Position& tryPos = Spells::getCasterPosition(creature, dir);
@@ -1294,7 +1288,7 @@ bool Monster::getRandomStep(const Position& creaturePos, Direction& moveDirectio
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
 	};
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+	std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	for (Direction dir : dirList) {
 		if (canWalkTo(creaturePos, dir)) {
@@ -1389,7 +1383,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 	}
 
 	if (!dirList.empty()) {
-		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+		std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
 		return true;
 	}

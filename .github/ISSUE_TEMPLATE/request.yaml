@@ -1,6 +1,5 @@
-name: Report a problem/bug
-description: Any issues that you have found while using the server
-labels: ["Type: Bug"]
+name: Request
+description: Any request
 body:
   - type: markdown
     attributes:
@@ -13,10 +12,8 @@ body:
       label: Priority
       description: How critical is this?
       options:
-        - Low
-        - Medium
-        - High
-        - Critical
+        - Missing Content
+        - Enhancement
     validations:
       required: true
 
@@ -34,24 +31,10 @@ body:
       required: true
 
   - type: textarea
-    id: what-happened
+    id: missing-content
     attributes:
-      label: What happened?
-      description: Describe your problem/bug and add screenshots, logs or anything that can help verifying the bug
-      placeholder: Tell us what you see!
-      value: "A bug happened!"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: os
-    attributes:
-      label: What OS are you seeing the problem on?
-      multiple: true
-      options:
-        - Linux
-        - Windows
-        - MacOS
+      label: What is missing?
+      description: Map, sprite, script, quest, teleport, monster, etc. Attach screenshots, logs, etc, anything that can helps us
     validations:
       required: true
 

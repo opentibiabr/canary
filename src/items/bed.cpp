@@ -24,7 +24,6 @@
 #include "io/iologindata.h"
 #include "game/scheduling/scheduler.h"
 
-extern Game g_game;
 
 BedItem::BedItem(uint16_t id) : Item(id)
 {
@@ -44,7 +43,7 @@ Attr_ReadValue BedItem::readAttr(AttrTypes_t attr, PropStream& propStream)
 				std::string name = IOLoginData::getNameByGuid(guid);
 				if (!name.empty()) {
 					setSpecialDescription(name + " is sleeping there.");
-					g_game.setBedSleeper(this, guid);
+					g_game().setBedSleeper(this, guid);
 					sleeperGUID = guid;
 				}
 			}
@@ -86,7 +85,7 @@ BedItem* BedItem::getNextBedItem() const
 	Direction dir = Item::items[id].bedPartnerDir;
 	Position targetPos = getNextPosition(dir, getPosition());
 
-	Tile* tile = g_game.map.getTile(targetPos);
+	const Tile* tile = g_game().map.getTile(targetPos);
 	if (tile == nullptr) {
 		return nullptr;
 	}
@@ -129,7 +128,7 @@ bool BedItem::trySleep(Player* player)
 			wakeUp(nullptr);
 		}
 
-		g_game.addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 	return true;
@@ -154,13 +153,13 @@ bool BedItem::sleep(Player* player)
 	}
 
 	// update the bedSleepersMap
-	g_game.setBedSleeper(this, player->getGUID());
+	g_game().setBedSleeper(this, player->getGUID());
 
 	// make the player walk onto the bed
-	g_game.map.moveCreature(*player, *getTile());
+	g_game().map.moveCreature(*player, *getTile());
 
 	// display 'Zzzz'/sleep effect
-	g_game.addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
+	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
 	g_scheduler.addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&ProtocolGame::logout, player->client, false, false)));
@@ -190,12 +189,12 @@ void BedItem::wakeUp(Player* player)
 			}
 		} else {
 			regeneratePlayer(player);
-			g_game.addCreatureHealth(player);
+			g_game().addCreatureHealth(player);
 		}
 	}
 
 	// update the bedSleepersMap
-	g_game.removeBedSleeper(sleeperGUID);
+	g_game().removeBedSleeper(sleeperGUID);
 
 	BedItem* nextBedItem = getNextBedItem();
 
@@ -248,12 +247,12 @@ void BedItem::updateAppearance(const Player* player)
 		if ((player != nullptr) && it.transformToOnUse[player->getSex()] != 0) {
 			const ItemType& newType = Item::items[it.transformToOnUse[player->getSex()]];
 			if (newType.type == ITEM_TYPE_BED) {
-				g_game.transformItem(this, it.transformToOnUse[player->getSex()]);
+				g_game().transformItem(this, it.transformToOnUse[player->getSex()]);
 			}
 		} else if (it.transformToFree != 0) {
 			const ItemType& newType = Item::items[it.transformToFree];
 			if (newType.type == ITEM_TYPE_BED) {
-				g_game.transformItem(this, it.transformToFree);
+				g_game().transformItem(this, it.transformToFree);
 			}
 		}
 	}

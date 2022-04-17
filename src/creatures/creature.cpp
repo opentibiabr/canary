@@ -466,12 +466,12 @@ void Creature::checkSummonMove(const Position& newPos, bool teleportSummon) cons
 
 			if (Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15))
 			{
-				g_game.internalTeleport(creature, creature->getMaster()->getPosition(), true);
+				g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
 			}
 		}
 
 		for (Creature* despawnCreature : despawnMonsterList) {
-			g_game.removeCreature(despawnCreature, true);
+			g_game().removeCreature(despawnCreature, true);
 		}
 	}
 }

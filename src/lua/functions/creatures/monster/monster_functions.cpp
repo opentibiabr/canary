@@ -33,7 +33,7 @@ int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)
 	Monster* monster;
 	if (isNumber(L, 2)) {
-		monster = g_game.getMonsterByID(getNumber<uint32_t>(L, 2));
+		monster = g_game().getMonsterByID(getNumber<uint32_t>(L, 2));
 	} else if (isUserdata(L, 2)) {
 		if (getUserdataType(L, 2) != LuaData_Monster) {
 			lua_pushnil(L);
@@ -108,7 +108,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		}
 		// Reload creature on spectators
 		SpectatorHashSet spectators;
-		g_game.map.getSpectators(spectators, monster->getPosition(), true);
+		g_game().map.getSpectators(spectators, monster->getPosition(), true);
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {
 				tmpPlayer->sendCreatureReload(monster);
@@ -367,8 +367,8 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	const Position& pos = monster->getPosition();
 	monster->setMasterPos(pos);
 
-	g_game.map.spawnsMonster.getspawnMonsterList().emplace_front(pos, 5);
-	SpawnMonster& spawnMonster = g_game.map.spawnsMonster.getspawnMonsterList().front();
+	g_game().map.spawnsMonster.getspawnMonsterList().emplace_front(pos, 5);
+	SpawnMonster& spawnMonster = g_game().map.spawnsMonster.getspawnMonsterList().front();
 	spawnMonster.addMonster(monster->mType->name, pos, DIRECTION_NORTH, 60000);
 	spawnMonster.startSpawnMonsterCheck();
 

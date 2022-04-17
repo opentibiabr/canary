@@ -27,7 +27,6 @@
 
 #include <limits>
 
-extern Game g_game;
 extern Monsters g_monsters;
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
@@ -117,7 +116,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   }
 
   player->setGUID(result->getNumber<uint32_t>("id"));
-  Group* group = g_game.groups.getGroup(result->getNumber<uint16_t>("group_id"));
+  Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
     SPDLOG_ERROR("Player {} has group id {} whitch doesn't exist", player->name,
 			result->getNumber<uint16_t>("group_id"));
@@ -283,7 +282,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   player->preyBonusRerolls = result->getNumber<uint16_t>("bonus_rerolls");
 
-  Group* group = g_game.groups.getGroup(result->getNumber<uint16_t>("group_id"));
+  Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
     SPDLOG_ERROR("Player {} has group id {} whitch doesn't exist", player->name, result->getNumber<uint16_t>("group_id"));
     return false;
@@ -372,7 +371,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->isDailyReward = result->getNumber<uint16_t>("isreward");
   player->currentOutfit = player->defaultOutfit;
 
-  if (g_game.getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
+  if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
     const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
     if (skullSeconds > 0) {
       //ensure that we round up the number of ticks
@@ -397,7 +396,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
   player->offlineTrainingSkill = result->getNumber<int32_t>("offlinetraining_skill");
 
-  Town* town = g_game.map.towns.getTown(result->getNumber<uint32_t>("town_id"));
+  Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
   if (!town) {
     SPDLOG_ERROR("Player {} has town id {} whitch doesn't exist", player->name,
 			result->getNumber<uint16_t>("town_id"));
@@ -445,10 +444,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     uint32_t playerRankId = result->getNumber<uint32_t>("rank_id");
     player->guildNick = result->getString("nick");
 
-    Guild* guild = g_game.getGuild(guildId);
+    Guild* guild = g_game().getGuild(guildId);
     if (!guild) {
       guild = IOGuild::loadGuild(guildId);
-      g_game.addGuild(guild);
+      g_game().addGuild(guild);
     }
 
     if (guild) {
@@ -938,7 +937,7 @@ bool IOLoginData::savePlayer(Player* player)
 
   query << "`conditions` = " << db.escapeBlob(attributes, attributesSize) << ',';
 
-  if (g_game.getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
+  if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
     int64_t skullTime = 0;
 
     if (player->skullTicks > 0) {
@@ -1290,7 +1289,7 @@ bool IOLoginData::getGuidByNameEx(uint32_t& guid, bool& specialVip, std::string&
 
   name = result->getString("name");
   guid = result->getNumber<uint32_t>("id");
-  Group* group = g_game.groups.getGroup(result->getNumber<uint16_t>("group_id"));
+  const Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
 
   uint64_t flags;
   if (group) {

@@ -158,7 +158,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
 	uint32_t flags = getNumber<uint32_t>(L, 5, 0);
 
-	ReturnValue ret = g_game.internalAddItem(container, item, index, flags);
+	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -191,7 +191,7 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 
 	int32_t index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
 	uint32_t flags = getNumber<uint32_t>(L, 4, 0);
-	ReturnValue ret = g_game.internalAddItem(container, item, index, flags);
+	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
 	}

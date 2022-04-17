@@ -4612,7 +4612,12 @@ void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAl
 				continue;
 			}
 
-			if (!tileCorpse->isRewardCorpse() && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
+			if (!tileCorpse->isRewardCorpse()
+			&& tileCorpse->getCorpseOwner() != 0
+			&& !player->canOpenCorpse(tileCorpse->getCorpseOwner()))
+			{
+				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				SPDLOG_DEBUG("Player {} cannot loot corpse from id {} in position {}", player->getName(), tileItem->getID(), tileItem->getPosition());
 				continue;
 			}
 

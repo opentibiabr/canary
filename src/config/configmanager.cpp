@@ -198,6 +198,7 @@ bool ConfigManager::load()
 	string[STORE_IMAGES_URL] = getGlobalString(L, "coinImagesURL", "");
 	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
+	string[SERVER_SAVE_TIME] = getGlobalString(L, "serverSaveTime", "06:00");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);

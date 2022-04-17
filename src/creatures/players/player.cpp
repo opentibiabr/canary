@@ -4704,7 +4704,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 			return SKULL_YELLOW;
 		}
 
-		if (isPartner(player)) {
+		if (party && party == player->party) {
 			return SKULL_GREEN;
 		}
 	}

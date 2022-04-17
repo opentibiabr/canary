@@ -16,7 +16,7 @@ function Monster.setReward(self, enable)
 end
 
 -- For use of: data\events\scripts\monster.lua
-function Monster:registerReward()
+function Monster:registerRewardBoss(corpse)
 	local mType = self:getType()
 	if mType:isRewardBoss() then
 		corpse:registerReward()
@@ -35,7 +35,7 @@ function MonsterType.createLootItem(self, lootBlock, chance, lootTable)
 		lootTable = {}
 	end
 	local itemCount = 0
-	local randvalue = math.random(0, 100000) / (getConfigInfo("rateLoot") * chance)
+	local randvalue = math.random(0, 100000) / (configManager.getNumber(configKeys.RATE_LOOT) * chance)
 	if randvalue < lootBlock.chance then
 		if (ItemType(lootBlock.itemId):isStackable()) then
 			itemCount = randvalue % lootBlock.maxCount + 1
@@ -76,7 +76,7 @@ end
 
 function MonsterType.getBossReward(self, lootFactor, topScore)
 	local result = {}
-	if getConfigInfo("rateLoot") > 0 then
+	if configManager.getNumber(configKeys.RATE_LOOT) > 0 then
 		local loot = self:getLoot() or {}
 		for i = #loot, 0, -1 do
 			local lootBlock = loot[i]

@@ -15,7 +15,6 @@ function spell.onCastSpell(creature, variant)
 end
 
 spell:name("summon challenge")
-spell:words("###471")
 spell:blockWalls(true)
 spell:needLearn(true)
 spell:register()

@@ -4,7 +4,7 @@ function Monster:onDropLoot(corpse)
 	end
 
 	-- Register reward function from reward boss lib
-	self:registerReward()
+	self:registerRewardBoss(corpse)
 
 	local player = Player(corpse:getCorpseOwner())
 	local mType = self:getType()

@@ -174,11 +174,11 @@ function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	else
 		if potion.health then
-			doTargetCombatHealth(0, target, COMBAT_HEALING, potion.health[1], potion.health[2])
+			doTargetCombatHealth(player, target, COMBAT_HEALING, potion.health[1], potion.health[2])
 		end
 
 		if potion.mana then
-			doTargetCombatMana(0, target, COMBAT_MANADRAIN, potion.mana[1], potion.mana[2])
+			doTargetCombatMana(player, target, COMBAT_MANADRAIN, potion.mana[1], potion.mana[2])
 		end
 
 		if potion.antidote then
@@ -194,6 +194,7 @@ function potions.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		return true
 	end
 
+	player:updateSupplyTracker(item)
 	item:remove(1)
 	return true
 end

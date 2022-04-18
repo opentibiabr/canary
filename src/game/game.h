@@ -233,6 +233,8 @@ class Game
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint32_t>  const &itemMap, bool buyPrice) const;
+
 		void loadPlayersRecord();
 		void checkPlayersRecord();
 

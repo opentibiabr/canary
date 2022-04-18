@@ -124,6 +124,9 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		end
 	end
 
+	-- Execute event function from reward boss lib
+	self:executeRewardEvents(item, toPosition)
+
 	return true
 end
 

@@ -242,9 +242,11 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
       bool found = false;
       for (Item* ammoItem : container->getItemList()) {
         if (ammoItem->getAmmoType() == it.ammoType) {
-          item = ammoItem;
-          found = true;
-          break;
+          if (level >= Item::items[ammoItem->getID()].minReqLevel) {
+            item = ammoItem;
+            found = true;
+            break;
+          }
         }
       }
       if (!found)
@@ -4702,7 +4704,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 			return SKULL_YELLOW;
 		}
 
-		if (isPartner(player)) {
+		if (party && party == player->party) {
 			return SKULL_GREEN;
 		}
 	}

@@ -532,6 +532,12 @@ enum WeaponAction_t : uint8_t {
 	WEAPONACTION_MOVE,
 };
 
+enum PartyAnalyzerAction_t : uint8_t {
+	PARTYANALYZERACTION_RESET = 0,
+	PARTYANALYZERACTION_PRICETYPE = 1,
+	PARTYANALYZERACTION_PRICEVALUE = 2,
+};
+
 enum Skulls_t : uint8_t {
 	SKULL_NONE = 0,
 	SKULL_YELLOW = 1,
@@ -793,6 +799,28 @@ enum PlayerFlags : uint64_t {
 enum PlayerCustomFlags : uint64_t {
   PlayerCustomFlag_CanMapClickTeleport = 1 << 0,
   PlayerCustomFlag_IgnoredByNpcs = 1 << 1
+};
+
+enum Blessings_t : uint8_t {
+	TWIST_OF_FATE = 1,
+	WISDOM_OF_SOLITUDE = 2,
+	SPARK_OF_THE_PHOENIX = 3,
+	FIRE_OF_THE_SUNS = 4,
+	SPIRITUAL_SHIELDING = 5,
+	EMBRACE_OF_TIBIA = 6,
+	BLOOD_OF_THE_MOUNTAIN = 7,
+	HEARTH_OF_THE_MOUNTAIN = 8,
+};
+
+const std::unordered_map<Blessings_t, std::string> BlessingNames = {
+	{TWIST_OF_FATE, "Twist of Fate"},
+	{WISDOM_OF_SOLITUDE, "The Wisdom of Solitude"},
+	{SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix"},
+	{FIRE_OF_THE_SUNS, "The Fire of the Suns"},
+	{SPIRITUAL_SHIELDING, "The Spiritual Shielding"},
+	{EMBRACE_OF_TIBIA, "The Embrace of Tibia"},
+	{BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain"},
+	{HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain"},
 };
 
 #endif  // SRC_UTILS_UTILS_DEFINITIONS_HPP_

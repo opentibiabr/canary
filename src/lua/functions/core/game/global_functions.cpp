@@ -32,7 +32,6 @@
 class Creature;
 
 extern Chat* g_chat;
-extern Game g_game;
 extern LuaEnvironment g_luaEnvironment;
 
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
@@ -85,7 +84,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		ReturnValue ret = g_game.internalPlayerAddItem(player, newItem, canDropOnMap);
+		ReturnValue ret = g_game().internalPlayerAddItem(player, newItem, canDropOnMap);
 		if (ret != RETURNVALUE_NOERROR) {
 			delete newItem;
 			pushBoolean(L, false);
@@ -190,7 +189,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		ReturnValue ret = g_game.internalAddItem(container, newItem);
+		ReturnValue ret = g_game().internalAddItem(container, newItem);
 		if (ret != RETURNVALUE_NOERROR) {
 			delete newItem;
 			pushBoolean(L, false);
@@ -236,14 +235,14 @@ int GlobalFunctions::luaGetDepotId(lua_State* L) {
 
 int GlobalFunctions::luaGetWorldTime(lua_State* L) {
 	// getWorldTime()
-	uint32_t time = g_game.getLightHour();
+	uint32_t time = g_game().getLightHour();
 	lua_pushnumber(L, time);
 	return 1;
 }
 
 int GlobalFunctions::luaGetWorldLight(lua_State* L) {
 	// getWorldLight()
-	LightInfo lightInfo = g_game.getWorldLightInfo();
+	LightInfo lightInfo = g_game().getWorldLightInfo();
 	lua_pushnumber(L, lightInfo.level);
 	lua_pushnumber(L, lightInfo.color);
 	return 2;
@@ -346,6 +345,9 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	CombatParams params;
 	params.combatType = combatType;
 	params.impactEffect = getNumber<uint8_t>(L, 6);
+	if (combatType == COMBAT_HEALING) {
+		params.aggressive = false;
+	}
 
 	CombatDamage damage;
 	damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
@@ -694,13 +696,13 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
-	g_game.saveGameState();
+	g_game().saveGameState();
 	pushBoolean(L, true);
 	return 1;
 }
 
 int GlobalFunctions::luaCleanMap(lua_State* L) {
-	lua_pushnumber(L, g_game.map.clean());
+	lua_pushnumber(L, g_game().map.clean());
 	return 1;
 }
 
@@ -732,7 +734,7 @@ int GlobalFunctions::luaIsInWar(lua_State* L) {
 
 int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 	// getWaypointPositionByName(name)
-	auto& waypoints = g_game.map.waypoints;
+	auto& waypoints = g_game().map.waypoints;
 
 	auto it = waypoints.find(getString(L, -1));
 	if (it != waypoints.end()) {

@@ -92,7 +92,7 @@ function closingDoor.onStepOut(creature, item, position, fromPosition)
 	end
 
 	if query == RETURNVALUE_NOERROR or query ~= RETURNVALUE_NOTENOUGHROOM then
-		doRelocate(position, newPosition)
+		position:relocateTo(newPosition)
 	end
 
 	local i, tileItem, tileCount = 1, true, tile:getThingCount()

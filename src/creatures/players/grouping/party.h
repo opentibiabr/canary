@@ -87,6 +87,37 @@ class Party
 		void updatePlayerMana(const Player* player, uint8_t manaPercent);
 		void updatePlayerVocation(const Player* player);
 
+		void updateTrackerAnalyzer() const;
+		void addPlayerLoot(const Player* player, const Item* item);
+		void addPlayerSupply(const Player* player, const Item* item);
+		void addPlayerDamage(const Player* player, uint64_t amount);
+		void addPlayerHealing(const Player* player, uint64_t amount);
+		void switchAnalyzerPriceType();
+		void resetAnalyzer();
+		void reloadPrices();
+
+		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const
+		{
+			if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
+					return preyIt->id == playerId;
+				}); it != membersData.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		uint32_t getAnalyzerTimeNow() const
+		{
+			return static_cast<uint32_t>(time(nullptr) - trackerTime);
+		}
+
+	public:
+		// Party analyzer
+		time_t trackerTime = time(nullptr);
+		PartyAnalyzer_t priceType = MARKET_PRICE;
+		std::vector<PartyAnalyzer*> membersData;
+
 	private:
 		bool canEnableSharedExperience();
 

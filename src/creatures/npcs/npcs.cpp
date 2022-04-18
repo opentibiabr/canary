@@ -30,14 +30,13 @@
 
 #include "utils/pugicast.h"
 
-extern Game g_game;
 extern Spells* g_spells;
 extern Npcs g_npcs;
 
 bool NpcType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;
-	bool isDay = g_game.gameIsDay();
+	bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
@@ -94,8 +93,18 @@ bool NpcType::loadCallback(LuaScriptInterface* scriptInterface)
 
 void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 {
+	ItemType & iType = Item::items.getItemType(shopBlock.itemId);
+
+	// Registering item prices globaly.
+	if (shopBlock.itemSellPrice > iType.sellPrice) {
+		iType.sellPrice = shopBlock.itemSellPrice;
+	}
+	if (shopBlock.itemBuyPrice > iType.buyPrice) {
+		iType.buyPrice = shopBlock.itemBuyPrice;
+	}
+	
 	if (shopBlock.childShop.empty()) {
-		bool isContainer = Item::items[shopBlock.itemId].isContainer();
+		bool isContainer = iType.isContainer();
 		if (isContainer) {
 			for (ShopBlock child : shopBlock.childShop) {
 				shopBlock.childShop.push_back(child);

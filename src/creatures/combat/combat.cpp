@@ -333,7 +333,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 					}
 				}
 			}
-			
+
 			if (attacker->getMonster() && (!attackerMaster || attackerMaster->getMonster())) {
 				if (attacker->getFaction() != FACTION_DEFAULT && !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
@@ -543,7 +543,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 		/* If damage imbuement is set, we can return without checking other slots */
 		break;
 	}
-	
+
 	return damage;
 }
 
@@ -562,33 +562,37 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	}
 }
 
-void Combat::CombatConditionFunc(Creature* caster, Creature* target, const CombatParams& params, CombatDamage* data)
+void Combat::CombatConditionFunc(Creature* caster, Creature* target,
+	const CombatParams& params, CombatDamage* data)
 {
-	if (params.origin == ORIGIN_MELEE && data && data->primary.value == 0 && data->secondary.value == 0) {
+	if (params.origin == ORIGIN_MELEE && data && data->primary.value == 0
+			&& data->secondary.value == 0) {
 		return;
 	}
 
 	for (const auto& condition : params.conditionList) {
 		//Cleanse charm rune (target as player)
-		Player* player = target->getPlayer();
-		if (player) {
-			if (player->isImmuneCleanse(condition->getType())) {
-				player->sendCancelMessage("You are still immune against this spell.");
-				return;
-			} else if (caster && caster->getMonster()) {
-				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
-				if (playerCharmRaceid != 0) {
-					MonsterType* mType = g_monsters.getMonsterType(caster->getName());
-					if (mType && playerCharmRaceid == mType->info.raceid) {
-						IOBestiary g_bestiary;
-						Charm* charm = g_bestiary.getBestiaryCharm(CHARM_CLEANSE);
-						if (charm && (charm->chance > normal_random(0, 100))) {
-							if (player->hasCondition(condition->getType())) {
-								player->removeCondition(condition->getType());
+		if(target != nullptr) {
+			Player* player = target->getPlayer();
+			if (player) {
+				if (player->isImmuneCleanse(condition->getType())) {
+					player->sendCancelMessage("You are still immune against this spell.");
+					return;
+				} else if (caster && caster->getMonster()) {
+					uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
+					if (playerCharmRaceid != 0) {
+						MonsterType* mType = g_monsters.getMonsterType(caster->getName());
+						if (mType && playerCharmRaceid == mType->info.raceid) {
+							IOBestiary g_bestiary;
+							Charm* charm = g_bestiary.getBestiaryCharm(CHARM_CLEANSE);
+							if (charm && (charm->chance > normal_random(0, 100))) {
+								if (player->hasCondition(condition->getType())) {
+									player->removeCondition(condition->getType());
+								}
+								player->setImmuneCleanse(condition->getType());
+								player->sendCancelMessage(charm->cancelMsg);
+								return;
 							}
-							player->setImmuneCleanse(condition->getType());
-							player->sendCancelMessage(charm->cancelMsg);
-							return;
 						}
 					}
 				}
@@ -890,7 +894,8 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if (params.combatType == COMBAT_HEALING && target->getMonster()){
+	if (params.combatType == COMBAT_HEALING && target != nullptr
+			&& target->getMonster()){
 		if (target != caster)	{
 			return;
 		}
@@ -948,13 +953,13 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& damage, const CombatParams& params)
 {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
-	if ( (caster && target)
+	if ( (caster != nullptr && target != nullptr)
 			&& (caster == target || canCombat)
 			&& (params.impactEffect != CONST_ME_NONE)) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if(caster && caster->getPlayer()){
+	if(caster != nullptr && caster->getPlayer()){
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		if (chance != 0 && uniform_random(1, 100) <= chance) {
@@ -964,7 +969,8 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 		}
 	}
 	if (canCombat) {
-		if (caster && params.distanceEffect != CONST_ANI_NONE) {
+		if (caster != nullptr && target != nullptr
+				&& params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
 
@@ -996,13 +1002,16 @@ void Combat::doCombatCondition(Creature* caster, const Position& position, const
 
 void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatParams& params)
 {
-	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
+	bool canCombat = !params.aggressive
+		|| (caster != target
+			&& Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
+
 	if ((caster == target || canCombat) && params.impactEffect != CONST_ME_NONE) {
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
 	if (canCombat) {
-		if (caster && params.distanceEffect != CONST_ANI_NONE) {
+		if (caster != nullptr && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
 

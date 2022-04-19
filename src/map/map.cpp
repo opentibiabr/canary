@@ -71,6 +71,10 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 	// Load the map
 	this->load(identifier);
 
+	// Create items from lua scripts per position
+	// Example: ActionFunctions::luaActionPosition
+	g_game().createLuaItemsOnMap();
+
 	if (loadMonsters) {
 		if (!IOMap::loadMonsters(this)) {
 			SPDLOG_WARN("Failed to load spawn data");

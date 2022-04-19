@@ -8691,3 +8691,30 @@ bool Game::hasDistanceEffect(uint8_t effectId) {
 	}
 	return false;
 }
+
+void Game::createLuaItemsOnMap() {
+	for (auto const [position, itemId] : mapLuaItemsStored) {
+		Item* item = Item::CreateItem(itemId, 1);
+		if (!item) {
+			SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);
+			continue;
+		}
+
+		if (position.x != 0) {
+			Tile* tile = g_game().map.getTile(position);
+			if (!tile) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Tile is wrong or not found position: {}", position.toString());
+				delete item;
+				continue;
+			}
+
+			// If the item already exists on the map, then ignore it and send warning
+			if (g_game().findItemOfType(tile, itemId, false, -1)) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {} on position {}, item already exists", itemId, position.toString());
+				continue;
+			}
+
+			g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		}
+	}
+}

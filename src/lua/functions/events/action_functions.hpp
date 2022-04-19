@@ -34,6 +34,7 @@ class ActionFunctions final : LuaScriptInterface {
 			registerMethod(L, "Action", "allowFarUse", ActionFunctions::luaActionAllowFarUse);
 			registerMethod(L, "Action", "blockWalls", ActionFunctions::luaActionBlockWalls);
 			registerMethod(L, "Action", "checkFloor", ActionFunctions::luaActionCheckFloor);
+			registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
 		}
 
 	private:
@@ -46,6 +47,7 @@ class ActionFunctions final : LuaScriptInterface {
 		static int luaActionAllowFarUse(lua_State* L);
 		static int luaActionBlockWalls(lua_State* L);
 		static int luaActionCheckFloor(lua_State* L);
+		static int luaActionPosition(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_EVENTS_ACTION_FUNCTIONS_HPP_

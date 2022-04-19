@@ -1106,11 +1106,6 @@ class Player final : public Creature, public Cylinder
 				client->sendLootContainers();
 			}
 		}
-		void sendLootStats(Item* item, uint8_t count) {
-			if (client) {
-				client->sendLootStats(item, count);
-			}
-		}
 
 		//event methods
 		void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem,
@@ -1734,29 +1729,23 @@ class Player final : public Creature, public Cylinder
 			return false;
  		}
 
-		void updateSupplyTracker(const Item* item) {
-			if (client) {
-				client->sendUpdateSupplyTracker(item);
+		void updatePartyTrackerAnalyzer() const
+		{
+			if (client && party) {
+				client->updatePartyTrackerAnalyzer(party);
 			}
 		}
 
-		void updateImpactTracker(CombatType_t type, int32_t amount) {
-			if (client) {
-				client->sendUpdateImpactTracker(type, amount);
-			}
-		}
+		void sendLootStats(Item* item, uint8_t count) const;
+		void updateSupplyTracker(const Item* item) const;
+		void updateImpactTracker(CombatType_t type, int32_t amount)const;
+
 		void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
 			if (client) {
 				client->sendUpdateInputAnalyzer(type, amount, target);
 			}
 		}
 
-   		void updateLootTracker(Item* item)
- 		{
-  			if (client) {
- 				client->sendUpdateLootTracker(item);
- 			}
- 		}
 
    		void createLeaderTeamFinder(NetworkMessage &msg)
  		{
@@ -1776,6 +1765,10 @@ class Player final : public Creature, public Cylinder
  				client->sendTeamFinderList();
  			}
  		}
+		void setItemCustomPrice(uint16_t itemId, uint64_t price)
+		{
+			itemPriceMap[itemId] = price;
+		}
 		uint32_t getCharmPoints() {
 			return charmPoints;
 		}
@@ -1879,6 +1872,7 @@ class Player final : public Creature, public Cylinder
 			return raceid;
 		}
 
+		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
 
 		// Interfaces
@@ -1961,6 +1955,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, DepotChest*> depotChests;
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
+		std::map<uint16_t, uint64_t> itemPriceMap;
 
 		std::map<uint8_t, uint16_t> maxValuePerSkill = {
 			{SKILL_LIFE_LEECH_CHANCE, 100},

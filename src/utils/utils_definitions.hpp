@@ -532,6 +532,12 @@ enum WeaponAction_t : uint8_t {
 	WEAPONACTION_MOVE,
 };
 
+enum PartyAnalyzerAction_t : uint8_t {
+	PARTYANALYZERACTION_RESET = 0,
+	PARTYANALYZERACTION_PRICETYPE = 1,
+	PARTYANALYZERACTION_PRICEVALUE = 2,
+};
+
 enum Skulls_t : uint8_t {
 	SKULL_NONE = 0,
 	SKULL_YELLOW = 1,

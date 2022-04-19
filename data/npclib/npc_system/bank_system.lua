@@ -189,7 +189,7 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 				"knightsample",
 				"paladinsample"
 			}
-			if isInArray(arrayDenied, string.gsub(transfer[playerId], " ", "")) then
+			if table.contains(arrayDenied, string.gsub(transfer[playerId], " ", "")) then
 				npcHandler:say("This player does not exist.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return true

@@ -669,6 +669,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
 		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
 		case 0x2a: addBestiaryTrackerList(msg); break;
+		case 0x2B: parsePartyAnalyzerAction(msg); break;
 		case 0x2c: parseLeaderFinderWindow(msg); break;
 		case 0x2d: parseMemberFinderWindow(msg); break;
 		case 0x28: parseStashWithdraw(msg); break;
@@ -2170,6 +2171,34 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg)
 	}
 	teamAssemble->membersMap = members;
 	g_game().registerTeamFinderAssemble(player->getGUID(), teamAssemble);
+}
+
+void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg) const
+{
+	if (!player) {
+		return;
+	}
+
+	Party* party = player->getParty();
+	if (!party || !party->getLeader() || party->getLeader()->getID() != player->getID()) {
+		return;
+	}
+
+	PartyAnalyzerAction_t action = static_cast<PartyAnalyzerAction_t>(msg.getByte());
+	if (action == PARTYANALYZERACTION_RESET) {
+		party->resetAnalyzer();
+	} else if (action == PARTYANALYZERACTION_PRICETYPE) {
+		party->switchAnalyzerPriceType();
+	} else if (action == PARTYANALYZERACTION_PRICEVALUE) {
+		uint16_t size = msg.get<uint16_t>();
+		for (uint16_t i = 1; i <= size; i++) {
+			uint16_t itemId = msg.get<uint16_t>();
+			uint64_t price = msg.get<uint64_t>();
+			player->setItemCustomPrice(itemId, price);
+		}
+		party->reloadPrices();
+		party->updateTrackerAnalyzer();
+	}
 }
 
 void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg)
@@ -3832,10 +3861,10 @@ void ProtocolGame::sendLootContainers()
 
 void ProtocolGame::sendLootStats(Item *item, uint8_t count)
 {
-	if (!item)
-	{
+	if (!item) {
 		return;
 	}
+
 	Item* lootedItem = nullptr;
 	lootedItem = item->clone();
 	lootedItem->setItemCount(count);
@@ -3844,9 +3873,10 @@ void ProtocolGame::sendLootStats(Item *item, uint8_t count)
 	msg.addByte(0xCF);
 	AddItem(msg, lootedItem);
 	msg.addString(lootedItem->getName());
+	item->setIsLootTrackeable(false);
+	writeToOutputBuffer(msg);
 
 	lootedItem = nullptr;
-	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendShop(Npc *npc)
@@ -6612,6 +6642,46 @@ void ProtocolGame::sendSpecialContainersAvailable()
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party)
+{
+	if (!player || !party || !party->getLeader())
+		return;
+
+	NetworkMessage msg;
+	msg.addByte(0x2B);
+	msg.add<uint32_t>(party->getAnalyzerTimeNow());
+	msg.add<uint32_t>(party->getLeader()->getID());
+	msg.addByte(static_cast<uint8_t>(party->priceType));
+
+	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
+	for (const PartyAnalyzer* analyzer : party->membersData) {
+		msg.add<uint32_t>(analyzer->id);
+		if (const Player* member = g_game().getPlayerByID(analyzer->id);
+			!member || !member->getParty() || member->getParty() != party) {
+			msg.addByte(0);
+		} else {
+			msg.addByte(1);
+		}
+
+		msg.add<uint64_t>(analyzer->lootPrice);
+		msg.add<uint64_t>(analyzer->supplyPrice);
+		msg.add<uint64_t>(analyzer->damage);
+		msg.add<uint64_t>(analyzer->healing);
+	}
+
+	bool showNames = !party->membersData.empty();
+	msg.addByte(showNames ? 0x01 : 0x00);
+	if (showNames) {
+		msg.addByte(static_cast<uint8_t>(party->membersData.size()));
+		for (const PartyAnalyzer* analyzer : party->membersData) {
+			msg.add<uint32_t>(analyzer->id);
+			msg.addString(analyzer->name);
+		}
+	}
+
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::AddCreatureLight(NetworkMessage &msg, const Creature *creature)
 {
 	LightInfo lightInfo = creature->getCreatureLight();
@@ -6700,22 +6770,6 @@ void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, st
 	msg.add<uint32_t>(amount);
 	msg.addByte(getCipbiaElement(type));
 	msg.addString(target);
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendUpdateLootTracker(Item *item)
-{
-	if (!player)
-	{
-		return;
-	}
-
-	NetworkMessage msg;
-	msg.addByte(0xCF);
-	AddItem(msg, item);
-	msg.addString(item->getName());
-	item->setIsLootTrackeable(false);
-
 	writeToOutputBuffer(msg);
 }
 

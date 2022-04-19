@@ -1289,7 +1289,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	local function isKegItem(itemId)
 		return itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END
 	end
-	
+
 	local PARCEL_ID = 3504
 	local isKeg = isKegItem(offerId) 
 
@@ -1346,7 +1346,7 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
 		local decoKit = inbox:addItem(23398, 1)
-		if decoKit then		
+		if decoKit then
 			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
 			decoKit:setCustomAttribute("unWrapId", offerId)
 			if isCaskItem(offerId) then

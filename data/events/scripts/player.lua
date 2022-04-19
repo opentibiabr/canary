@@ -98,14 +98,14 @@ function Player:onLookInShop(itemType, count)
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-	if toPosition.x ~= CONTAINER_POSITION then
-		return true
-	end
-	
 	-- No move items with actionID = 100
 	if item:getActionId() == NOT_MOVEABLE_ACTION then
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
+	end
+
+	if toPosition.x ~= CONTAINER_POSITION then
+		return true
 	end
 
 	if item:getTopParent() == self and bit.band(toPosition.y, 0x40) == 0 then

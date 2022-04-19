@@ -5640,11 +5640,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 				case RACE_INK:
 					color = TEXTCOLOR_LIGHTGREY;
 					effect = CONST_ME_HITAREA;
-					if (const Tile* tile = target->getTile()) {
-						if (!tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-							splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK);
-						}
-					}
+					splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_INK);
 					break;
 				case RACE_UNDEAD:
 					color = TEXTCOLOR_LIGHTGREY;

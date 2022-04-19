@@ -117,6 +117,7 @@ function food.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	else
 		player:feed(itemFood[1] * 12)
 		player:say(itemFood[2], TALKTYPE_MONSTER_SAY)
+		player:updateSupplyTracker(item)
 		item:remove(1)
 	end
 	return true

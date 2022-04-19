@@ -1,5 +1,3 @@
--- Functions from The Forgotten Server
-local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
 function Player.feed(self, food)
 	local condition = self:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
@@ -11,6 +9,7 @@ function Player.feed(self, food)
 			return nil
 		end
 
+		local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 		foodCondition:setTicks(food * 1000)
 		foodCondition:setParameter(CONDITION_PARAM_HEALTHGAIN, vocation:getHealthGainAmount())
 		foodCondition:setParameter(CONDITION_PARAM_HEALTHTICKS, vocation:getHealthGainTicks())
@@ -272,35 +271,35 @@ function Player.getMarriageDescription(thing)
 end
 
 function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
-    local position, random = self:getPosition(), math.random
-    position.x = position.x + random(-7, 7)
-      position.y = position.y + random(-5, 5)
-    local fromPosition = Position(position.x + 1, position.y, position.z)
-       fromPosition.x = position.x - 7
-       fromPosition.y = position.y - 5
-    local tile, getGround
-    for Z = 1, 7 do
-        fromPosition.z = Z
-        position.z = Z
-        tile = Tile(position)
-        if tile then -- If there is a tile, stop checking floors
-            fromPosition:sendDistanceEffect(position, fallEffect)
+	local position, random = self:getPosition(), math.random
+	position.x = position.x + random(-7, 7)
+	  position.y = position.y + random(-5, 5)
+	local fromPosition = Position(position.x + 1, position.y, position.z)
+	   fromPosition.x = position.x - 7
+	   fromPosition.y = position.y - 5
+	local tile, getGround
+	for Z = 1, 7 do
+		fromPosition.z = Z
+		position.z = Z
+		tile = Tile(position)
+		if tile then -- If there is a tile, stop checking floors
+			fromPosition:sendDistanceEffect(position, fallEffect)
 			position:sendMagicEffect(groundEffect, self)
 			getGround = tile:getGround()
-            if getGround and ItemType(getGround:getId()):getFluidSource() == 1 then
-                position:sendMagicEffect(CONST_ME_LOSEENERGY, self)
-            end
-            break
-        end
-    end
-    if thunderEffect and tile and not tile:hasFlag(TILESTATE_PROTECTIONZONE) then
-        if random(2) == 1 then
-            local topCreature = tile:getTopCreature()
-            if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
-                position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
-                doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
-                --self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
-            end
-        end
-    end
+			if getGround and ItemType(getGround:getId()):getFluidSource() == 1 then
+				position:sendMagicEffect(CONST_ME_LOSEENERGY, self)
+			end
+			break
+		end
+	end
+	if thunderEffect and tile and not tile:hasFlag(TILESTATE_PROTECTIONZONE) then
+		if random(2) == 1 then
+			local topCreature = tile:getTopCreature()
+			if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
+				position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
+				doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
+				--self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
+			end
+		end
+	end
 end

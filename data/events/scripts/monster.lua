@@ -3,6 +3,9 @@ function Monster:onDropLoot(corpse)
 		return
 	end
 
+	-- Register reward function from reward boss lib
+	self:registerRewardBoss(corpse)
+
 	local player = Player(corpse:getCorpseOwner())
 	local mType = self:getType()
 	if not player or player:getStamina() > 840 then
@@ -32,4 +35,9 @@ function Monster:onDropLoot(corpse)
 			player:sendTextMessage(MESSAGE_LOOT, text)
 		end
 	end
+end
+
+function Monster:onSpawn(position)
+	-- Register reward function from reward boss lib
+	self:setRewardBoss()
 end

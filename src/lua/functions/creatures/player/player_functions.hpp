@@ -75,8 +75,6 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "updateSupplyTracker", PlayerFunctions::luaPlayerUpdateSupplyTracker);
 			registerMethod(L, "Player", "updateKillTracker", PlayerFunctions::luaPlayerUpdateKillTracker);
 
-			registerMethod(L, "Player", "updateLootTracker", PlayerFunctions::luaPlayerUpdateLootTracker);
-
 			registerMethod(L, "Player", "getDepotLocker", PlayerFunctions::luaPlayerGetDepotLocker);
 			registerMethod(L, "Player", "getDepotChest", PlayerFunctions::luaPlayerGetDepotChest);
 			registerMethod(L, "Player", "getInbox", PlayerFunctions::luaPlayerGetInbox);
@@ -354,7 +352,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSendInventory(lua_State* L);
 		static int luaPlayerSendLootStats(lua_State* L);
 		static int luaPlayerUpdateKillTracker(lua_State* L);
-		static int luaPlayerUpdateLootTracker(lua_State* L);
 		static int luaPlayerUpdateSupplyTracker(lua_State* L);
 
 		static int luaPlayerGetDepotLocker(lua_State* L);

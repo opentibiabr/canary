@@ -583,6 +583,11 @@ enum PlayerAsyncOngoingTaskFlags : uint64_t {
 	PlayerAsyncTask_RecentPvPKills = 1 << 2
 };
 
+enum PartyAnalyzer_t : uint8_t {
+	MARKET_PRICE = 0,
+	LEADER_PRICE = 1
+};
+
 // Structs
 struct Position;
 
@@ -860,6 +865,24 @@ struct Outfit_t {
 struct voiceBlock_t {
 	std::string text;
 	bool yellText;
+};
+
+struct PartyAnalyzer {
+	PartyAnalyzer(uint32_t playerId, std::string playerName) :
+                id(playerId),
+                name(std::move(playerName)) {}
+
+	uint32_t id;
+
+	std::string name;
+
+	uint64_t damage = 0;
+	uint64_t healing = 0;
+	uint64_t lootPrice = 0;
+	uint64_t supplyPrice = 0;
+
+	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
+	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

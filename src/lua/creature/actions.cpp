@@ -229,7 +229,7 @@ bool Actions::registerLuaItemEvent(Action* action) {
 	}
 
 	if (itemIdVector.size() > 1) {
-		std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, action, itemIdVector](uint16_t &itemId) {
+		std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &action, &itemIdVector](uint16_t &itemId) {
 			// Check if the item is already registered and prevent it from being registered again
 			if (hasItemId(itemId)) {
 				SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
@@ -240,8 +240,8 @@ bool Actions::registerLuaItemEvent(Action* action) {
 
 			// Register item in the action item map
 			setItemId(itemId, std::move(*action));
+			return true;
 		});
-		return true;
 	}
 	SPDLOG_WARN("[Actions::registerLuaItemEvent] - "
 				"Missing register an 'id/itemid' param for one action script");
@@ -269,7 +269,7 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 	}
 
 	if (uniqueIdVector.size() > 1) {
-		std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, action, uniqueIdVector](uint16_t &uniqueId) {
+		std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &action, &uniqueIdVector](uint16_t &uniqueId) {
 			// Check if the unique is already registered and prevent it from being registered again
 			if (hasUniqueId(uniqueId)) {
 				SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
@@ -280,8 +280,8 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 
 			// Register unique id the unique item map
 			setUniqueId(uniqueId, std::move(*action));
+			return true;
 		});
-		return true;
 	}
 	SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - "
 				"Missing register an 'uid/uniqueid' param for one action script");
@@ -309,7 +309,7 @@ bool Actions::registerLuaActionEvent(Action* action) {
 	}
 
 	if (actionIdVector.size() > 1) {
-		std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, action, actionIdVector](uint16_t &actionId) {
+		std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
 			// Check if the unique is already registered and prevent it from being registered again
 			if (hasActionId(actionId)) {
 				SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "
@@ -320,8 +320,8 @@ bool Actions::registerLuaActionEvent(Action* action) {
 
 			// Register action in the action item map
 			setActionId(actionId, std::move(*action));
+			return true;
 		});
-		return true;
 	}
 	SPDLOG_WARN("[Actions::registerLuaActionEvent] - "
 				"Missing register an 'aid/actionid' param for one action script");

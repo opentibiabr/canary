@@ -69,15 +69,15 @@ class Action : public Event {
 			checkFloor = state;
 		}
 
-		std::vector<uint16_t> getItemIdsVector() {
+		std::vector<uint16_t> getItemIdsVector() const {
 			return itemIds;
 		}
 
-		void setItemIdVector(uint16_t id) {
+		void setItemIdsVector(uint16_t id) {
 			itemIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getUniqueIdsVector() {
+		std::vector<uint16_t> getUniqueIdsVector() const {
 			return uniqueIds;
 		}
 
@@ -85,7 +85,7 @@ class Action : public Event {
 			uniqueIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getActionIdsVector() {
+		std::vector<uint16_t> getActionIdsVector() const {
 			return actionIds;
 		}
 

@@ -66,10 +66,6 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 			return 1;
 		}
 		pushBoolean(L, g_actions->registerLuaEvent(action));
-		action->getItemIdsVector().clear();
-		action->getUniqueIdsVector().clear();
-		action->getActionIdsVector().clear();
-		action->getPositionsVector().clear();
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -85,10 +81,10 @@ int ActionFunctions::luaActionItemId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->setItemIdVector(getNumber<uint32_t>(L, 2 + i));
+				action->setItemIdsVector(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->setItemIdVector(getNumber<uint32_t>(L, 2));
+			action->setItemIdsVector(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
@@ -105,10 +101,10 @@ int ActionFunctions::luaActionActionId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->setActionIdsVector(getNumber<uint32_t>(L, 2 + i));
+				action->setActionIdsVector(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->setActionIdsVector(getNumber<uint32_t>(L, 2));
+			action->setActionIdsVector(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
@@ -125,50 +121,11 @@ int ActionFunctions::luaActionUniqueId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->setUniqueIdsVector(getNumber<uint32_t>(L, 2 + i));
+				action->setUniqueIdsVector(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->setUniqueIdsVector(getNumber<uint32_t>(L, 2));
+			action->setUniqueIdsVector(getNumber<uint16_t>(L, 2));
 		}
-		pushBoolean(L, true);
-	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
-	}
-	return 1;
-}
-
-int ActionFunctions::luaActionAllowFarUse(lua_State* L) {
-	// action:allowFarUse(bool)
-	Action* action = getUserdata<Action>(L, 1);
-	if (action) {
-		action->setAllowFarUse(getBoolean(L, 2));
-		pushBoolean(L, true);
-	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
-	}
-	return 1;
-}
-
-int ActionFunctions::luaActionBlockWalls(lua_State* L) {
-	// action:blockWalls(bool)
-	Action* action = getUserdata<Action>(L, 1);
-	if (action) {
-		action->setCheckLineOfSight(getBoolean(L, 2));
-		pushBoolean(L, true);
-	} else {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
-		pushBoolean(L, false);
-	}
-	return 1;
-}
-
-int ActionFunctions::luaActionCheckFloor(lua_State* L) {
-	// action:checkFloor(bool)
-	Action* action = getUserdata<Action>(L, 1);
-	if (action) {
-		action->setCheckFloor(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -234,5 +191,44 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 	}
 
 	pushBoolean(L, true);
+	return 1;
+}
+
+int ActionFunctions::luaActionAllowFarUse(lua_State* L) {
+	// action:allowFarUse(bool)
+	Action* action = getUserdata<Action>(L, 1);
+	if (action) {
+		action->setAllowFarUse(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
+int ActionFunctions::luaActionBlockWalls(lua_State* L) {
+	// action:blockWalls(bool)
+	Action* action = getUserdata<Action>(L, 1);
+	if (action) {
+		action->setCheckLineOfSight(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+	}
+	return 1;
+}
+
+int ActionFunctions::luaActionCheckFloor(lua_State* L) {
+	// action:checkFloor(bool)
+	Action* action = getUserdata<Action>(L, 1);
+	if (action) {
+		action->setCheckFloor(getBoolean(L, 2));
+		pushBoolean(L, true);
+	} else {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+	}
 	return 1;
 }

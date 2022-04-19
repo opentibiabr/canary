@@ -582,6 +582,11 @@ enum PlayerAsyncOngoingTaskFlags : uint64_t {
 	PlayerAsyncTask_RecentPvPKills = 1 << 2
 };
 
+enum PartyAnalyzer_t : uint8_t {
+	MARKET_PRICE = 0,
+	LEADER_PRICE = 1
+};
+
 // Structs
 struct Position;
 
@@ -706,30 +711,8 @@ struct HistoryMarketOffer {
 	MarketOfferState_t state;
 };
 
-struct ShopInfo {
-	uint16_t itemClientId;
-	std::string name;
-	int32_t subType;
-	uint32_t buyPrice;
-	uint32_t sellPrice;
-	int32_t storageKey, storageValue;
-
-	ShopInfo() {
-		itemClientId = 0;
-		subType = 1;
-		buyPrice = 0;
-		sellPrice = 0;
-		storageKey = 0;
-		storageValue = 0;
-	}
-
-	explicit ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
-		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), storageKey(newStorageKey), storageValue(newStorageValue), name(std::move(newName)) {}
-};
-
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ShopInfoMap = std::unordered_map<uint16_t, ShopInfo>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 
 struct Familiar {
@@ -830,6 +813,30 @@ struct LootBlock {
 	}
 };
 
+struct ShopBlock {
+	uint16_t itemId;
+	std::string itemName;
+	int32_t itemSubType;
+	uint32_t itemBuyPrice;
+	uint32_t itemSellPrice;
+	int32_t itemStorageKey;
+	int32_t itemStorageValue;
+
+	std::vector<ShopBlock> childShop;
+	ShopBlock() {
+		itemId = 0;
+		itemName = "";
+		itemSubType = 0;
+		itemBuyPrice = 0;
+		itemSellPrice = 0;
+		itemStorageKey = 0;
+		itemStorageValue = 0;
+	}
+
+	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
+		: itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) {}
+};
+
 struct summonBlock_t {
 	std::string name;
 	uint32_t chance;
@@ -857,6 +864,24 @@ struct Outfit_t {
 struct voiceBlock_t {
 	std::string text;
 	bool yellText;
+};
+
+struct PartyAnalyzer {
+	PartyAnalyzer(uint32_t playerId, std::string playerName) :
+                id(playerId),
+                name(std::move(playerName)) {}
+
+	uint32_t id;
+
+	std::string name;
+
+	uint64_t damage = 0;
+	uint64_t healing = 0;
+	uint64_t lootPrice = 0;
+	uint64_t supplyPrice = 0;
+
+	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
+	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

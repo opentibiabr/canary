@@ -31,9 +31,9 @@ int NpcFunctions::luaNpcCreate(lua_State* L) {
 	Npc* npc;
 	if (lua_gettop(L) >= 2) {
 		if (isNumber(L, 2)) {
-			npc = g_game.getNpcByID(getNumber<uint32_t>(L, 2));
+			npc = g_game().getNpcByID(getNumber<uint32_t>(L, 2));
 		} else if (isString(L, 2)) {
-			npc = g_game.getNpcByName(getString(L, 2));
+			npc = g_game().getNpcByName(getString(L, 2));
 		} else if (isUserdata(L, 2)) {
 			if (getUserdataType(L, 2) != LuaData_Npc) {
 				lua_pushnil(L);
@@ -164,7 +164,7 @@ int NpcFunctions::luaNpcPlace(lua_State* L) {
 	const Position& position = getPosition(L, 2);
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, true);
-	if (g_game.placeCreature(npc, position, extended, force)) {
+	if (g_game().placeCreature(npc, position, extended, force)) {
 		pushUserdata<Npc>(L, npc);
 		setMetatable(L, -1, "Npc");
 	} else {
@@ -208,9 +208,9 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 	}
 
 	if (position.x != 0) {
-		pushBoolean(L, g_game.internalCreatureSay(npc, type, text, ghost, &spectators, &position));
+		pushBoolean(L, g_game().internalCreatureSay(npc, type, text, ghost, &spectators, &position));
 	} else {
-		pushBoolean(L, g_game.internalCreatureSay(npc, type, text, ghost, &spectators));
+		pushBoolean(L, g_game().internalCreatureSay(npc, type, text, ghost, &spectators));
 	}
 	return 1;
 }
@@ -406,7 +406,7 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 		return 1;
 	}
 
-	ShopInfoMap shopItems = npc->getShopItems();
+	const std::vector<ShopBlock> shopItems = npc->getShopItemVector();
 
 	if (shopItems.empty()) {
 		pushBoolean(L, false);
@@ -426,21 +426,17 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 		return 1;
 	}
 
-	ShopInfoMap shopItems = npc->getShopItems();
-	const ItemType &itemType = Item::items.getItemIdByClientId(getNumber<uint16_t>(L, 2));
-
-	if (shopItems.find(itemType.id) == shopItems.end()) {
-		reportErrorFunc("No shop item found for clientId");
-		pushBoolean(L, false);
-		return 1;
+	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
+	for (ShopBlock shopBlock : shopVector)
+	{
+		setField(L, "id", shopBlock.itemId);
+		setField(L, "name", shopBlock.itemName);
+		setField(L, "subType", shopBlock.itemSubType);
+		setField(L, "buyPrice", shopBlock.itemBuyPrice);
+		setField(L, "sellPrice", shopBlock.itemSellPrice);
+		setField(L, "storageKey", shopBlock.itemStorageKey);
+		setField(L, "storageValue", shopBlock.itemStorageValue);
 	}
-
-	ShopInfo shopInfo = shopItems[itemType.id];
-	setField(L, "clientId", shopInfo.itemClientId);
-	setField(L, "name", shopInfo.name);
-	setField(L, "subType", shopInfo.subType);
-	setField(L, "buyPrice", shopInfo.buyPrice);
-	setField(L, "sellPrice", shopInfo.sellPrice);
 
 	pushBoolean(L, true);
 	return 1;
@@ -451,7 +447,7 @@ int NpcFunctions::luaNpcMove(lua_State* L)
 	// npc:move(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
-		g_game.internalMoveCreature(npc, getNumber<Direction>(L, 2));
+		g_game().internalMoveCreature(npc, getNumber<Direction>(L, 2));
 	}
 	return 0;
 }
@@ -461,7 +457,7 @@ int NpcFunctions::luaNpcTurn(lua_State* L)
 	// npc:turn(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
-		g_game.internalCreatureTurn(npc, getNumber<Direction>(L, 2));
+		g_game().internalCreatureTurn(npc, getNumber<Direction>(L, 2));
 	}
 	return 0;
 }
@@ -535,7 +531,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 				item->setActionId(actionId);
 			}
 
-			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+			if (g_game().internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
 				delete item;
 				lua_pushnumber(L, sellCount);
 				return 1;
@@ -551,7 +547,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 				item->setActionId(actionId);
 			}
 
-			if (g_game.internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
+			if (g_game().internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
 				delete item;
 				lua_pushnumber(L, sellCount);
 				return 1;

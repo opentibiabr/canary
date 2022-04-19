@@ -158,7 +158,7 @@ int ContainerFunctions::luaContainerAddItem(lua_State* L) {
 	int32_t index = getNumber<int32_t>(L, 4, INDEX_WHEREEVER);
 	uint32_t flags = getNumber<uint32_t>(L, 5, 0);
 
-	ReturnValue ret = g_game.internalAddItem(container, item, index, flags);
+	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -191,7 +191,7 @@ int ContainerFunctions::luaContainerAddItemEx(lua_State* L) {
 
 	int32_t index = getNumber<int32_t>(L, 3, INDEX_WHEREEVER);
 	uint32_t flags = getNumber<uint32_t>(L, 4, 0);
-	ReturnValue ret = g_game.internalAddItem(container, item, index, flags);
+	ReturnValue ret = g_game().internalAddItem(container, item, index, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
 	}
@@ -241,6 +241,29 @@ int ContainerFunctions::luaContainerGetContentDescription(lua_State* L) {
 		pushString(L, container->getContentDescription());
 	} else {
 		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ContainerFunctions::luaContainerGetItems(lua_State* L) {
+	// container:getItems([recursive = false])
+	const Container* container = getUserdata<Container>(L, 1);
+	if (!container) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	bool recursive = getBoolean(L, 2, false);
+	std::vector<Item*> items = container->getItems(recursive);
+
+	lua_createtable(L, static_cast<int>(items.size()), 0);
+
+	int index = 0;
+	for (Item* item : items) {
+		index++;
+		pushUserdata(L, item);
+		setItemMetatable(L, -1, item);
+		lua_rawseti(L, -2, index);
 	}
 	return 1;
 }

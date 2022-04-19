@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
       - dev
       - devel
       - develop
@@ -24,6 +24,3 @@ jobs:
 
       - name: Check out code.
         uses: actions/checkout@v1
-
-      - name: Lua Tests
-        run: lua ${{ github.workspace }}/tests/lua/runtests.lua -v

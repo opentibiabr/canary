@@ -263,7 +263,6 @@ bool Actions::registerLuaActionEvent(Action* action) {
 		return false;
 	}
 
-	uint16_t actionId = actionIdVector.at(0);
 	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
 		// Check if the unique is already registered and prevent it from being registered again
 		if (hasActionId(actionId)) {

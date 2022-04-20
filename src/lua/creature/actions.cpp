@@ -214,34 +214,21 @@ bool Actions::registerLuaItemEvent(Action* action) {
 		return false;
 	}
 
-	if (itemIdVector.size() == 1) {
-		uint16_t itemId = itemIdVector.at(0);
-		// Check if the item id is already registered and prevent it from being registered again
+	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &action, &itemIdVector](uint16_t &itemId) {
+		// Check if the item is already registered and prevent it from being registered again
 		if (hasItemId(itemId)) {
 			SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
-						"registered script with id/itemid: {}", itemId);
+						"registered item with id: {} in range from id: {}, to id: {}",
+						itemId, itemIdVector.at(0), itemIdVector.at(itemIdVector.size() - 1));
 			return false;
 		}
 
-		// Register item id in the action item id map
+		// Register item in the action item map
 		setItemId(itemId, std::move(*action));
-	}
-
-	if (itemIdVector.size() > 1) {
-		std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &action, &itemIdVector](uint16_t &itemId) {
-			// Check if the item is already registered and prevent it from being registered again
-			if (hasItemId(itemId)) {
-				SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
-							"registered item with id: {} in range from id: {}, to id: {}",
-							itemId, itemIdVector.at(0), itemIdVector.at(itemIdVector.size() - 1));
-				return false;
-			}
-
-			// Register item in the action item map
-			setItemId(itemId, std::move(*action));
-		});
-	}
-
+		return true;
+	});
+	itemIdVector.clear();
+	itemIdVector.shrink_to_fit();
 	return true;
 }
 
@@ -251,34 +238,22 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 		return false;
 	}
 
-	if (uniqueIdVector.size() == 1) {
-		uint16_t uniqueId = uniqueIdVector.at(0);
-		// Check if the unique id is already registered and prevent it from being registered again
+	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &action, &uniqueIdVector](uint16_t &uniqueId) {
+		// Check if the unique is already registered and prevent it from being registered again
 		if (hasUniqueId(uniqueId)) {
 			SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
-						"registered script with uid/uniqueId: {}", uniqueId);
+						"registered item with uid: {} in range from uid: {}, to uid: {}",
+						uniqueId, uniqueIdVector.at(0), uniqueIdVector.at(uniqueIdVector.size() - 1));
 			return false;
 		}
 
-		// Register item unique id the action item id map
+		// Register unique id the unique item map
 		setUniqueId(uniqueId, std::move(*action));
-	}
+		return true;
+	});
 
-	if (uniqueIdVector.size() > 1) {
-		std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &action, &uniqueIdVector](uint16_t &uniqueId) {
-			// Check if the unique is already registered and prevent it from being registered again
-			if (hasUniqueId(uniqueId)) {
-				SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
-							"registered item with uid: {} in range from uid: {}, to uid: {}",
-							uniqueId, uniqueIdVector.at(0), uniqueIdVector.at(uniqueIdVector.size() - 1));
-				return false;
-			}
-
-			// Register unique id the unique item map
-			setUniqueId(uniqueId, std::move(*action));
-		});
-	}
-
+	uniqueIdVector.clear();
+	uniqueIdVector.shrink_to_fit();
 	return true;
 }
 
@@ -288,34 +263,23 @@ bool Actions::registerLuaActionEvent(Action* action) {
 		return false;
 	}
 
-	if (actionIdVector.size() == 1) {
-		uint16_t actionId = actionIdVector.at(0);
-		// Check if the action id is already registered and prevent it from being registered again
+	uint16_t actionId = actionIdVector.at(0);
+	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
+		// Check if the unique is already registered and prevent it from being registered again
 		if (hasActionId(actionId)) {
 			SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "
-						"registered script with aid/actionId: {}", actionId);
+						"registered item with aid: {} in range from aid: {}, to aid: {}",
+						actionId, actionIdVector.at(0), actionIdVector.at(actionIdVector.size() - 1));
 			return false;
 		}
 
-		// Register action id in the action action id map
+		// Register action in the action item map
 		setActionId(actionId, std::move(*action));
-	}
+		return true;
+	});
 
-	if (actionIdVector.size() > 1) {
-		std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
-			// Check if the unique is already registered and prevent it from being registered again
-			if (hasActionId(actionId)) {
-				SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "
-							"registered item with aid: {} in range from aid: {}, to aid: {}",
-							actionId, actionIdVector.at(0), actionIdVector.at(actionIdVector.size() - 1));
-				return false;
-			}
-
-			// Register action in the action item map
-			setActionId(actionId, std::move(*action));
-		});
-	}
-
+	actionIdVector.clear();
+	actionIdVector.shrink_to_fit();
 	return true;
 }
 
@@ -325,33 +289,20 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 		return false;
 	}
 
-	if (positionVector.size() == 1) {
-		Position position = positionVector.at(0);
+	for (Position position : positionVector) {
 		// Check if the position is already registered and prevent it from being registered again
 		if (hasPosition(position)) {
 			SPDLOG_WARN("[Actions::registerLuaPositionEvent] - Duplicate "
-						"registered script with position: {}", position.toString());
-			return false;
+						"registered script with range position: {}", position.toString());
+			continue;
 		}
 
 		// Register position in the action position map
 		setPosition(position, std::move(*action));
 	}
 
-	if (positionVector.size() > 1) {
-		for (Position position : positionVector) {
-			// Check if the position is already registered and prevent it from being registered again
-			if (hasPosition(position)) {
-				SPDLOG_WARN("[Actions::registerLuaPositionEvent] - Duplicate "
-						"registered script with range position: {}", position.toString());
-				continue;
-			}
-
-			// Register position in the action position map
-			setPosition(position, std::move(*action));
-		}
-	}
-
+	positionVector.clear();
+	positionVector.shrink_to_fit();
 	return true;
 }
 

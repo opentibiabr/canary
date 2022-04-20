@@ -172,8 +172,14 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 {
 	InstantSpell_ptr instant { event };
 	if (instant) {
-		std::string words = instant->getWords();
-		auto result = instants.emplace(instant->getWords(), std::move(*instant));
+		// If the spell not have the "spell:words()" return a error message
+		if (instant->getWordsMap().empty()) {
+			SPDLOG_ERROR("[Spells::registerInstantLuaEvent] - Missing register words for spell with name {}", instant->getName());
+			return false;
+		}
+
+		const std::string& words = instant->getWords();
+		auto result = instants.emplace(words, std::move(*instant));
 		if (!result.second) {
 			SPDLOG_WARN("[Spells::registerInstantLuaEvent] - "
                         "Duplicate registered instant spell with words: {}", words);

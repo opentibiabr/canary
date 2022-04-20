@@ -582,7 +582,7 @@ class Item : virtual public Thing
 			getAttributes()->setStrAttr(type, value);
 		}
 
-		const int getIntAttr(ItemAttrTypes type) const {
+		int getIntAttr(ItemAttrTypes type) const {
 			if (!attributes) {
 				return 0;
 			}

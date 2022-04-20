@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2019, windows-2022]
-        buildtype: [windows-release, windows-debug]
+        buildtype: [windows-release, windows-release-asan, windows-debug]
         include:
           - os: windows-2019
             triplet: x64-windows

@@ -209,7 +209,7 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 }
 
 bool Actions::registerLuaItemEvent(Action* action) {
-	auto itemIdVector =action->getItemIdsVector();
+	auto itemIdVector = action->getItemIdsVector();
 	if (itemIdVector.empty()) {
 		return false;
 	}
@@ -225,7 +225,6 @@ bool Actions::registerLuaItemEvent(Action* action) {
 
 		// Register item id in the action item id map
 		setItemId(itemId, std::move(*action));
-		return true;
 	}
 
 	if (itemIdVector.size() > 1) {
@@ -240,12 +239,10 @@ bool Actions::registerLuaItemEvent(Action* action) {
 
 			// Register item in the action item map
 			setItemId(itemId, std::move(*action));
-			return true;
 		});
 	}
-	SPDLOG_WARN("[Actions::registerLuaItemEvent] - "
-				"Missing register an 'id/itemid' param for one action script");
-	return false;
+
+	return true;
 }
 
 bool Actions::registerLuaUniqueEvent(Action* action) {
@@ -265,7 +262,6 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 
 		// Register item unique id the action item id map
 		setUniqueId(uniqueId, std::move(*action));
-		return true;
 	}
 
 	if (uniqueIdVector.size() > 1) {
@@ -280,12 +276,10 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 
 			// Register unique id the unique item map
 			setUniqueId(uniqueId, std::move(*action));
-			return true;
 		});
 	}
-	SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - "
-				"Missing register an 'uid/uniqueid' param for one action script");
-	return false;
+
+	return true;
 }
 
 bool Actions::registerLuaActionEvent(Action* action) {
@@ -305,7 +299,6 @@ bool Actions::registerLuaActionEvent(Action* action) {
 
 		// Register action id in the action action id map
 		setActionId(actionId, std::move(*action));
-		return true;
 	}
 
 	if (actionIdVector.size() > 1) {
@@ -320,12 +313,10 @@ bool Actions::registerLuaActionEvent(Action* action) {
 
 			// Register action in the action item map
 			setActionId(actionId, std::move(*action));
-			return true;
 		});
 	}
-	SPDLOG_WARN("[Actions::registerLuaActionEvent] - "
-				"Missing register an 'aid/actionid' param for one action script");
-	return false;
+
+	return true;
 }
 
 bool Actions::registerLuaPositionEvent(Action* action) {
@@ -345,7 +336,6 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 
 		// Register position in the action position map
 		setPosition(position, std::move(*action));
-		return true;
 	}
 
 	if (positionVector.size() > 1) {
@@ -360,12 +350,9 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 			// Register position in the action position map
 			setPosition(position, std::move(*action));
 		}
-
-		return true;
 	}
-	SPDLOG_WARN("[Actions::registerLuaPositionEvent] - "
-				"Missing register an 'position' param for one action script");
-	return false;
+
+	return true;
 }
 
 bool Actions::registerLuaEvent(Action* event) {

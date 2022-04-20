@@ -1247,7 +1247,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		}
 	}
 
-	const BaseImbuement *baseImbuement = g_imbuements.()getBaseByID(imbuement->getBaseID());
+	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
 	if (!baseImbuement)
 	{
 		return;

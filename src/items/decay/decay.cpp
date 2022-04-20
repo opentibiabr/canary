@@ -40,7 +40,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
+	const int duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
 	if (duration <= 0 && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 		internalDecayItem(item);
 		return;

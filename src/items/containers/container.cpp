@@ -682,7 +682,7 @@ void Container::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
-int32_t Container::getThingIndex(const Thing* thing) const
+uint8_t Container::getThingIndex(const Thing* thing) const
 {
 	int32_t index = 0;
 	for (Item* item : itemlist) {

@@ -575,7 +575,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			} else if (caster && caster->getMonster()) {
 				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
 				if (playerCharmRaceid != 0) {
-					MonsterType* mType = g_monsters().getMonsterType(caster->getName());
+					const MonsterType* mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
 						IOBestiary g_bestiary;
 						Charm* charm = g_bestiary.getBestiaryCharm(CHARM_CLEANSE);
@@ -900,7 +900,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
-				MonsterType* mType = g_monsters().getMonsterType(target->getName());
+				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
 					IOBestiary g_bestiary;
 					Charm* charm = g_bestiary.getBestiaryCharm(CHARM_LOW);

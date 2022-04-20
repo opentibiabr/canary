@@ -214,7 +214,7 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 			continue;
 		}
 
-		int32_t vocationId = g_vocations().getVocationId(attr.as_string());
+		uint16_t vocationId = g_vocations().getVocationId(attr.as_string());
 		if (vocationId != -1) {
 			vocWeaponMap[vocationId] = true;
 			int32_t promotedVocation = g_vocations().getPromotedVocation(vocationId);

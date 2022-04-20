@@ -31,7 +31,7 @@
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)
-	uint32_t imbuementId = getNumber<uint32_t>(L, 2);
+	uint16_t imbuementId = getNumber<uint32_t>(L, 2);
 	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
 
 	if (imbuement) {
@@ -119,7 +119,7 @@ int ImbuementFunctions::luaImbuementGetCategory(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t categoryId = imbuement->getCategory();
+	uint16_t categoryId = imbuement->getCategory();
 	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(categoryId);
 
 	if (categoryImbuement) {

@@ -2433,7 +2433,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 	}
 
 	const std::string& spellName = getString(L, 2);
-	InstantSpell* spell = g_spells().getInstantSpellByName(spellName);
+	const InstantSpell* spell = g_spells().getInstantSpellByName(spellName);
 	if (!spell) {
 		reportErrorFunc("Spell \"" + spellName + "\" not found");
 		pushBoolean(L, false);
@@ -3102,9 +3102,9 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 	}
 
 	std::vector<const InstantSpell*> spells;
-	for (auto& spell : g_spells().getInstantSpells()) {
-		if (spell.second.canCast(player)) {
-			spells.push_back(&spell.second);
+	for (auto& [key, spell] : g_spells().getInstantSpells()) {
+		if (spell.canCast(player)) {
+			spells.push_back(&spell);
 		}
 	}
 

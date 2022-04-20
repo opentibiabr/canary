@@ -25,7 +25,7 @@
 
 int VocationFunctions::luaVocationCreate(lua_State* L) {
 	// Vocation(id or name)
-	uint32_t id;
+	uint16_t id;
 	if (isNumber(L, 2)) {
 		id = getNumber<uint32_t>(L, 2);
 	} else {

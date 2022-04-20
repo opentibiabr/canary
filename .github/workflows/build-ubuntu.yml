@@ -71,6 +71,6 @@ jobs:
       - name: Create and Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: canary-${{ runner.os }}-${{ matrix.buildtype }}-${{ github.sha }}
+          name: canary-${{ matrix.buildtype }}-${{ github.sha }}
           path: |
             ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/

@@ -27,7 +27,6 @@
 
 #include <limits>
 
-extern Monsters g_monsters;
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {

@@ -22,7 +22,6 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
-extern Monsters g_monsters;
 
 bool Condition::setParam(ConditionParam_t param, int32_t value)
 {

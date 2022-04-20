@@ -26,7 +26,6 @@
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 
-extern Monsters g_monsters;
 
 bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage)
 {

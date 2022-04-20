@@ -13,20 +13,20 @@ local fluidMessage = {
 	[1] = "Gulp.", -- water
 	[2] = "Aah...", -- wine
 	[3] = "Aah...", -- beer
-	[4] = "Gulp.", -- oil
+	[4] = "Gulp.", -- mud
 	[5] = "Gulp.", -- blood
-	[6] = "Mmmh.", -- lemonade
-	[7] = "Gulp.", -- mud
+	[6] = "Urgh!", -- slime
+	[7] = "Gulp.", -- oil
 	[8] = "Urgh!", -- urine
 	[9] = "Gulp.", -- milk
 	[10] = "Aaaah...", -- manafluid
 	[11] = "Aaaah...", -- lifefluid
-	[12] = "Gulp.", -- tea
-	[13] = "Aah...", -- mead
+	[12] = "Mmmh.", -- lemonade
+	[13] = "Aah...", -- rum
 	[14] = "Mmmh.", -- fruit juice
 	[15] = "Mmmh.", -- coconut milk
-	[16] = "Aah...", -- rum
-	[17] = "Urgh!", -- swamp
+	[16] = "Aah...", -- mead
+	[17] = "Gulp.", -- tea
 	[18] = "Urgh!" -- ink
 }
 

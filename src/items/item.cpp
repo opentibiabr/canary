@@ -112,13 +112,13 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 	}
 
 	// Get imbuement by the id
-	const Imbuement *imbuement = g_imbuements->getImbuement(imbuementId);
+	const Imbuement *imbuement = g_imbuements().getImbuement(imbuementId);
 	if (!imbuement) {
 		return;
 	}
 
 	// Get category imbuement for acess category id
-	const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 		return;
 	}

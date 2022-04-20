@@ -89,6 +89,7 @@ class Imbuements {
 };
 
 constexpr auto g_imbuements = &Imbuements::getInstance;
+
 class Imbuement
 {
 	public:

@@ -6500,11 +6500,11 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 	}
 }
 
-void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId)
+void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId)
 {
 	Imbuement *imbuement = g_imbuements().getImbuement(imbuementId);
 	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
-	CategoryImbuement *categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	const CategoryImbuement *categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 
 	msg.add<uint32_t>(imbuementId);
 	msg.addString(baseImbuement->name + " " + imbuement->getName());

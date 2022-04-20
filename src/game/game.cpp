@@ -5269,6 +5269,10 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir)
 bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std::string& text,
                                bool ghostMode, SpectatorVector* spectatorsPtr/* = nullptr*/, const Position* pos/* = nullptr*/)
 {
+	if (!creature) {
+		return false;
+	}
+
 	if (text.empty()) {
 		return false;
 	}

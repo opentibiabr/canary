@@ -130,6 +130,7 @@ class Creature : virtual public Thing
 			return skull;
 		}
 		virtual Skulls_t getSkullClient(const Creature* creature) const {
+			if (!creature) return SKULL_NONE;
 			return creature->getSkull();
 		}
 		void setSkull(Skulls_t newSkull);
@@ -472,6 +473,7 @@ class Creature : virtual public Thing
 			return tile;
 		}
 		void setParent(Cylinder* cylinder) override final {
+			if (!cylinder) return;
 			tile = static_cast<Tile*>(cylinder);
 			position = tile->getPosition();
 		}

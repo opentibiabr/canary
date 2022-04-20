@@ -4796,6 +4796,10 @@ void ProtocolGame::sendCreatureTurn(const Creature *creature, uint32_t stackPos)
 
 void ProtocolGame::sendCreatureSay(const Creature *creature, SpeakClasses type, const std::string &text, const Position *pos /* = nullptr*/)
 {
+	if (!creature) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 

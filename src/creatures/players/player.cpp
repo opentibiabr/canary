@@ -2759,7 +2759,7 @@ void Player::despawn()
 		}
 
 		if (const Player* player = spectator->getPlayer()) {
-			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getStackposOfCreature(player, this) : -1);
+			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getClientIndexOfCreature(player, this) : -1);
 		}
 		if (Player* player = spectator->getPlayer()) {
 			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);

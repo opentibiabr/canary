@@ -30,8 +30,6 @@
 #define lua_strlen lua_rawlen
 #endif
 
-extern Game g_game;
-
 namespace {
 
 std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue)
@@ -178,6 +176,8 @@ bool ConfigManager::load()
 	boolean[WEATHER_THUNDER] = getGlobalBoolean(L, "thunderEffect", false);
 	boolean[ALL_CONSOLE_LOG] = getGlobalBoolean(L, "allConsoleLog", false);
 	boolean[TOGGLE_FREE_QUEST] = getGlobalBoolean(L, "toggleFreeQuest", true);
+	boolean[AUTOLOOT] = getGlobalBoolean(L, "autoLoot", false);
+	boolean[AUTOBANK] = getGlobalBoolean(L, "autoBank", false);
 	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
 	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
 	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);
@@ -198,6 +198,7 @@ bool ConfigManager::load()
 	string[STORE_IMAGES_URL] = getGlobalString(L, "coinImagesURL", "");
 	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
+	string[SERVER_SAVE_TIME] = getGlobalString(L, "serverSaveTime", "06:00");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
@@ -276,8 +277,8 @@ bool ConfigManager::load()
 bool ConfigManager::reload()
 {
 	bool result = load();
-	if (transformToSHA1(getString(MOTD)) != g_game.getMotdHash()) {
-		g_game.incrementMotdNum();
+	if (transformToSHA1(getString(MOTD)) != g_game().getMotdHash()) {
+		g_game().incrementMotdNum();
 	}
 	return result;
 }

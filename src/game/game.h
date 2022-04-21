@@ -58,6 +58,13 @@ class Game
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
 
+		static Game& getInstance() {
+			// Guaranteed to be destroyed
+			static Game instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);
 
@@ -226,6 +233,8 @@ class Game
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint32_t>  const &itemMap, bool buyPrice) const;
+
 		void loadPlayersRecord();
 		void checkPlayersRecord();
 
@@ -315,8 +324,9 @@ class Game
 		void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
 		void playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos);
 		void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
-		void playerQuickLoot(uint32_t playerId, const Position& pos,
-								uint16_t spriteId, uint8_t stackPos, Item* defaultItem = nullptr);
+		void playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackPos,
+								Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
+		void playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses);
 		void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category,
 								const Position& pos, uint16_t spriteId, uint8_t stackPos);
 		void playerClearLootContainer(uint32_t playerId, ObjectCategory_t category);;
@@ -581,9 +591,6 @@ class Game
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
 
-		size_t lastBucket = 0;
-		size_t lastImbuedBucket = 0;
-
 		WildcardTreeNode wildcardTree { false };
 
 		std::map<uint32_t, Npc*> npcs;
@@ -608,6 +615,7 @@ class Game
 		static constexpr int32_t SUNRISE = 360;
 
 		bool isDay = false;
+		bool browseField = false;
 
 		GameState_t gameState = GAME_STATE_NORMAL;
 		WorldType_t worldType = WORLD_TYPE_PVP;
@@ -638,5 +646,7 @@ class Game
 
 		std::vector<ItemClassification*> itemsClassifications;
 };
+
+constexpr auto g_game = &Game::getInstance;
 
 #endif  // SRC_GAME_GAME_H_

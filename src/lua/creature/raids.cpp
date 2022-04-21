@@ -28,7 +28,6 @@
 #include "creatures/monsters/monster.h"
 #include "server/network/webhook/webhook.h"
 
-extern Game g_game;
 
 Raids::Raids() {
 	scriptInterface.initState();
@@ -208,7 +207,7 @@ bool Raid::loadFromXml(const std::string& filename) {
 		} else if (strcasecmp(eventNode.name(), "areaspawn") == 0) {
 			event = new AreaSpawnEvent();
 		} else if (strcasecmp(eventNode.name(), "script") == 0) {
-			event = new ScriptEvent(&g_game.raids.getScriptInterface());
+			event = new ScriptEvent(&g_game().raids.getScriptInterface());
 		} else {
 			continue;
 		}
@@ -258,8 +257,8 @@ void Raid::executeRaidEvent(RaidEvent* raidEvent) {
 void Raid::resetRaid() {
 	nextEvent = 0;
 	state = RAIDSTATE_IDLE;
-	g_game.raids.setRunning(nullptr);
-	g_game.raids.setLastRaidEnd(OTSYS_TIME());
+	g_game().raids.setRunning(nullptr);
+	g_game().raids.setLastRaidEnd(OTSYS_TIME());
 }
 
 void Raid::stopEvents() {
@@ -334,7 +333,7 @@ bool AnnounceEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 
 bool AnnounceEvent::executeEvent() {
 	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
-	g_game.broadcastMessage(message, messageType);
+	g_game().broadcastMessage(message, messageType);
 	webhook_send_message("Incoming raid!", message, WEBHOOK_COLOR_RAID, url);
 	return true;
 }
@@ -387,7 +386,7 @@ bool SingleSpawnEvent::executeEvent() {
 		return false;
 	}
 
-	if (!g_game.placeCreature(monster, position, false, true)) {
+	if (!g_game().placeCreature(monster, position, false, true)) {
 		delete monster;
 		SPDLOG_ERROR("[SingleSpawnEvent::executeEvent] - Cant create monster {}",
                     monsterName);
@@ -542,8 +541,8 @@ bool AreaSpawnEvent::executeEvent() {
 
 			bool success = false;
 			for (int32_t tries = 0; tries < MAXIMUM_TRIES_PER_MONSTER; tries++) {
-				Tile* tile = g_game.map.getTile(uniform_random(fromPos.x, toPos.x), uniform_random(fromPos.y, toPos.y), uniform_random(fromPos.z, toPos.z));
-				if (tile && !tile->isMoveableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game.placeCreature(monster, tile->getPosition(), false, true)) {
+				const Tile* tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
+				if (tile && !tile->isMoveableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					success = true;
 					break;
 				}

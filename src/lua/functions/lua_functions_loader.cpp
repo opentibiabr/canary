@@ -46,13 +46,12 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 
-extern Game g_game;
 
 class LuaScriptInterface;
 
 void LuaFunctionsLoader::load(lua_State* L) {
 	if (!L) {
-		g_game.dieSafely("Invalid lua state, cannot load lua functions.");
+		g_game().dieSafely("Invalid lua state, cannot load lua functions.");
 	}
 
 	luaL_openlibs(L);
@@ -406,14 +405,14 @@ Creature* LuaFunctionsLoader::getCreature(lua_State* L, int32_t arg) {
 	if (isUserdata(L, arg)) {
 		return getUserdata<Creature>(L, arg);
 	}
-	return g_game.getCreatureByID(getNumber<uint32_t>(L, arg));
+	return g_game().getCreatureByID(getNumber<uint32_t>(L, arg));
 }
 
 Player* LuaFunctionsLoader::getPlayer(lua_State* L, int32_t arg) {
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
 	}
-	return g_game.getPlayerByID(getNumber<uint32_t>(L, arg));
+	return g_game().getPlayerByID(getNumber<uint32_t>(L, arg));
 }
 
 std::string LuaFunctionsLoader::getFieldString(lua_State* L, int32_t arg, const std::string& key) {

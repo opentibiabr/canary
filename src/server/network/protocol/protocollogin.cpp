@@ -33,7 +33,6 @@
 #include <limits>
 #include <vector>
 
-extern Game g_game;
 
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
 {
@@ -64,7 +63,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 		output->addByte(0x14);
 
 		std::ostringstream ss;
-		ss << g_game.getMotdNum() << "\n" << motd;
+		ss << g_game().getMotdNum() << "\n" << motd;
 		output->addString(ss.str());
 	}
 
@@ -114,7 +113,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 
 void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 {
-	if (g_game.getGameState() == GAME_STATE_SHUTDOWN) {
+	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
 		disconnect();
 		return;
 	}
@@ -148,12 +147,12 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	enableXTEAEncryption();
 	setXTEAKey(std::move(key));
 
-	if (g_game.getGameState() == GAME_STATE_STARTUP) {
+	if (g_game().getGameState() == GAME_STATE_STARTUP) {
 		disconnectClient("Gameworld is starting up. Please wait.", version);
 		return;
 	}
 
-	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
+	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
 		disconnectClient("Gameworld is under maintenance.\nPlease re-connect in a while.", version);
 		return;
 	}

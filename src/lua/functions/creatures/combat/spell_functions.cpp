@@ -129,32 +129,37 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 	// spell:register()
 	Spell* spell = getUserdata<Spell>(L, 1);
 
-	if (spell) {
-		if (spell->spellType == SPELL_INSTANT) {
-			InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
-			if (!instant->isScripted()) {
-				pushBoolean(L, false);
-				return 1;
-			}
-			pushBoolean(L, g_spells->registerInstantLuaEvent(instant));
-		} else if (spell->spellType == SPELL_RUNE) {
-			RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
-			if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
-				//Change information in the ItemType to get accurate description
-				ItemType& iType = Item::items.getItemType(rune->getRuneItemId());
-				iType.name = rune->getName();
-				iType.runeMagLevel = rune->getMagicLevel();
-				iType.runeLevel = rune->getLevel();
-				iType.charges = rune->getCharges();
-			}
-			if (!rune->isScripted()) {
-				pushBoolean(L, false);
-				return 1;
-			}
-			pushBoolean(L, g_spells->registerRuneLuaEvent(rune));
+	if (!spell) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (spell->spellType == SPELL_INSTANT) {
+		InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
+		if (!instant->isScripted()) {
+			pushBoolean(L, false);
+			return 1;
 		}
-	} else {
-		lua_pushnil(L);
+		pushBoolean(L, g_spells->registerInstantLuaEvent(instant));
+	} else if (spell->spellType == SPELL_RUNE) {
+		RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
+		if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
+			// Change information in the ItemType to get accurate description
+			ItemType& iType = Item::items.getItemType(rune->getRuneItemId());
+			// If the item is not registered in items.xml then we will register it by rune name
+			if (iType.name.empty()) {
+				iType.name = rune->getName();
+			}
+			iType.runeMagLevel = rune->getMagicLevel();
+			iType.runeLevel = rune->getLevel();
+			iType.charges = rune->getCharges();
+		}
+		if (!rune->isScripted()) {
+			pushBoolean(L, false);
+			return 1;
+		}
+		pushBoolean(L, g_spells->registerRuneLuaEvent(rune));
 	}
 	return 1;
 }

@@ -22,16 +22,15 @@
 #include "game/game.h"
 #include "lua/functions/creatures/player/mount_functions.hpp"
 
-extern Game g_game;
 
 int MountFunctions::luaCreateMount(lua_State* L) {
 	// Mount(id or name)
 	Mount* mount;
 	if (isNumber(L, 2)) {
-		mount = g_game.mounts.getMountByID(getNumber<uint32_t>(L, 2));
+		mount = g_game().mounts.getMountByID(getNumber<uint8_t>(L, 2));
 	} else if (isString(L, 2)) {
 		std::string mountName = getString(L, 2);
-		mount = g_game.mounts.getMountByName(mountName);
+		mount = g_game().mounts.getMountByName(mountName);
 	} else {
 		mount = nullptr;
 	}

@@ -27,7 +27,7 @@ int CharmFunctions::luaCharmCreate(lua_State* L) {
 	// charm(id)
 	if (isNumber(L, 2)) {
 		charmRune_t charmid = getNumber<charmRune_t>(L, 2);
-		std::vector<Charm*> charmList = g_game.getCharmList();
+		std::vector<Charm*> charmList = g_game().getCharmList();
 		for (auto& it : charmList) {
 			Charm* charm = it;
 			if (charm->id == charmid) {

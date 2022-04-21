@@ -22,7 +22,6 @@
 #include "game/scheduling/tasks.h"
 #include "game/game.h"
 
-extern Game g_game;
 
 Task* createTask(std::function<void (void)> f)
 {

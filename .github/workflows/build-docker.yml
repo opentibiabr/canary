@@ -2,13 +2,11 @@
 name: Build - Docker
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:
-      - master
-      - dev
-      - devel
-      - develop
+      - main
 
 env:
   VCPKG_BUILD_TYPE: release
@@ -20,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -39,7 +37,7 @@ jobs:
           install: true
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}

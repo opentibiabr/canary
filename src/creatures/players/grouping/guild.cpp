@@ -23,7 +23,6 @@
 
 #include "game/game.h"
 
-extern Game g_game;
 
 void Guild::addMember(Player* player)
 {
@@ -34,7 +33,7 @@ void Guild::removeMember(Player* player)
 {
 	membersOnline.remove(player);
 	if (membersOnline.empty()) {
-		g_game.removeGuild(id);
+		g_game().removeGuild(id);
 		delete this;
 	}
 }

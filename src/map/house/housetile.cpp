@@ -25,7 +25,6 @@
 #include "map/house/house.h"
 #include "game/game.h"
 
-extern Game g_game;
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, House* initHouse) :
 	DynamicTile(initX, initY, initZ), house(initHouse) {}
@@ -112,13 +111,13 @@ Tile* HouseTile::queryDestination(int32_t& index, const Thing& thing, Item** des
 		if (const Player* player = creature->getPlayer()) {
 			if (!house->isInvited(player)) {
 				const Position& entryPos = house->getEntryPosition();
-				Tile* destTile = g_game.map.getTile(entryPos);
+				Tile* destTile = g_game().map.getTile(entryPos);
 				if (!destTile) {
 					SPDLOG_ERROR("[HouseTile::queryDestination] - "
                                  "Entry not correct for house name: {} "
                                  "with id: {} not found tile: {}",
                                  house->getName(), house->getId(), entryPos.toString());
-					destTile = g_game.map.getTile(player->getTemplePosition());
+					destTile = g_game().map.getTile(player->getTemplePosition());
 					if (!destTile) {
 						destTile = &(Tile::nullptr_tile);
 					}

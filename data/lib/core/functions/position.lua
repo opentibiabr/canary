@@ -349,3 +349,40 @@ function Position:removeItem(itemId, effect)
 		Position(self):sendMagicEffect(effect)
 	end
 end
+
+function Position:relocateTo(toPos)
+	if self == toPos then
+		return false
+	end
+
+	local fromTile = Tile(self)
+	if fromTile == nil then
+		return false
+	end
+
+	if Tile(toPos) == nil then
+		return false
+	end
+
+	for i = fromTile:getThingCount() - 1, 0, -1 do
+		local thing = fromTile:getThing(i)
+		if thing then
+			if thing:isItem() then
+				if ItemType(thing:getId()):isMovable() then
+					thing:moveTo(toPos)
+				end
+			elseif thing:isCreature() then
+				thing:teleportTo(toPos)
+			end
+		end
+	end
+	return true
+end
+
+function Position:isProtectionZoneTile()
+	local tile = Tile(self)
+	if not tile then
+		return false
+	end
+	return tile:hasFlag(TILESTATE_PROTECTIONZONE)
+end

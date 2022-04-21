@@ -185,7 +185,7 @@ GameStore.DefaultDescriptions = {
 GameStore.isItsPacket = function(byte)
 	for k, v in pairs(GameStore.RecivedPackets) do
 		if v == byte then
-			return true
+		  return true
 		end
 	end
 	return false
@@ -530,7 +530,7 @@ function Player.canBuyOffer(self, offer)
 
 	if disabled ~= 1 then
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_POUNCH then
-			local pounch = self:getItemById(26377, true)
+			local pounch = self:getItemById(23721, true)
 			if pounch then
 				disabled = 1
 				disabledReason = "You already have Loot Pouch."
@@ -658,7 +658,6 @@ function sendShowStoreOffers(playerId, category, redirectId)
 		return false
 	end
 
-	local version = player:getClient().version
 	local msg = NetworkMessage()
 	local haveSaleOffer = 0
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
@@ -740,7 +739,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 				if (off.state) then
 					if (off.state == GameStore.States.STATE_SALE) then
-						local daySub = off.validUntil - os.sdate("*t").day
+						local daySub = off.validUntil - os.date("*t").day
 						if (daySub >= 0) then
 							msg:addByte(off.state)
 							msg:addU32(os.time() + daySub * 86400)
@@ -820,7 +819,6 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	if not player then
 		return false
 	end
-	local version = player:getClient().version
 	local totalEntries = GameStore.retrieveHistoryTotalPages(player:getAccountId())
 	local totalPages = math.ceil(totalEntries / entriesPerPage)
 	local entries = GameStore.retrieveHistoryEntries(player:getAccountId(), page, entriesPerPage) -- this makes everything easy!
@@ -835,17 +833,13 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	msg:addByte(#entries)
 
 	for k, entry in ipairs(entries) do
-		if version >= 1220 then
-			msg:addU32(0)
-		end
+		msg:addU32(0)
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode)
 		msg:addU32(entry.amount)
-    	msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
+		msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		msg:addString(entry.description)
-		if version >= 1220 then
-			msg:addByte(0) -- details
-		end
+		msg:addByte(0) -- details
 	end
 	msg:sendToPlayer(player)
 end
@@ -1068,7 +1062,7 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 		repeat
 			local entry = {
 				mode = result.getNumber(resultId, "mode"),
-				description = result.getString(resultId, "description"),
+				description = result.getDataString(resultId, "description"),
 				amount = result.getNumber(resultId, "coin_amount"),
 				time = result.getNumber(resultId, "time"),
 			}
@@ -1247,6 +1241,7 @@ function GameStore.processItemPurchase(player, offerId, offerCount)
 		return error({ code = 0, message = "Please make sure you have free slots in your store inbox."})
 	end
 end
+
 function GameStore.processChargesPurchase(player, itemtype, name, charges)
 	if player:getFreeCapacity() < ItemType(itemtype):getWeight(1) then
 		return error({ code = 0, message = "Please make sure you have free capacity to hold this item."})
@@ -1296,10 +1291,10 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	end
 
     if isKegItem(offerId) then
-    if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(2596):getWeight() then
+    if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(3504):getWeight() then
         return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
     end
-    elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(2596):getWeight() then
+    elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(3504):getWeight() then
         return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
     end
 
@@ -1307,7 +1302,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	if inbox and inbox:getEmptySlots() > 0 then
 		if (isKegItem(offerId)) then
 			if (offerCount >= 500) then
-				local parcel = Item(inbox:addItem(2596, 1):getUniqueId())
+				local parcel = Item(inbox:addItem(3504, 1):getUniqueId())
 				local function changeParcel(parcel)
 					local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
 					if parcel then
@@ -1332,7 +1327,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 				kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
 			end
 		elseif (offerCount > 100) then
-			local parcel = Item(inbox:addItem(2596, 1):getUniqueId())
+			local parcel = Item(inbox:addItem(3504, 1):getUniqueId())
 			local function changeParcel(parcel)
 				local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
 				if parcel then
@@ -1368,7 +1363,7 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
-		local decoKit = inbox:addItem(26054, 1)
+		local decoKit = inbox:addItem(23398, 1)
 		local function changeKit(kit)
 			local decoItemName = ItemType(offerId):getName()
 			if kit then
@@ -1686,7 +1681,6 @@ function sendHomePage(playerId)
 		return
 	end
 
-	local version = player:getClient().version
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
 

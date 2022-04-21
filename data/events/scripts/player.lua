@@ -98,6 +98,12 @@ function Player:onLookInShop(itemType, count)
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	-- No move items with actionID = 100
+	if item:getActionId() == NOT_MOVEABLE_ACTION then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
+
 	if toPosition.x ~= CONTAINER_POSITION then
 		return true
 	end
@@ -214,6 +220,10 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
+	-- No trade items with actionID = 100
+	if item:getActionId() == NOT_MOVEABLE_ACTION then
+		return false
+	end
 	return true
 end
 

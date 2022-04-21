@@ -645,7 +645,7 @@
 	</item>
 	<item id="391" article="a" name="lava hole">
 		<attribute key="description" value="It emits heat and light."/>
-		<attribute key="fluidsource" value="lava"/>
+		<attribute key="fluidsource" value="mud"/>
 	</item>
 	<item fromid="392" toid="393" name="stalagmites"/>
 	<item id="394" article="a" name="hole">

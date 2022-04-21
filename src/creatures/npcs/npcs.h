@@ -106,10 +106,16 @@ class Npcs
 		Npcs& operator=(const Npcs&) = delete;
 
 		NpcType* getNpcType(const std::string& name, bool create = false);
+
+		// Reset npcs informations on reload
 		void reset() {
+			npcType->info = {};
 			npcs.clear();
 			scriptInterface.reset();
 		};
+
+	private:
+		NpcType* npcType;
 
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
 		std::map<std::string, NpcType*> npcs;

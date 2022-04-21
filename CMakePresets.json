@@ -54,6 +54,19 @@
       }
     },
     {
+      "name": "windows-release-asan",
+      "inherits": "windows-release",
+      "displayName": "Windows - Release + ASAN",
+      "description": "Release Mode with ASAN",
+      "cacheVariables": {
+        "ASAN_ENABLED": "ON"
+      },
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
       "name": "windows-debug",
       "inherits": "windows-release",
       "displayName": "Windows - Debug",
@@ -92,6 +105,10 @@
     {
       "name": "windows-release",
       "configurePreset": "windows-release"
+    },
+    {
+      "name": "windows-release-asan",
+      "configurePreset": "windows-release-asan"
     },
     {
       "name": "windows-debug",

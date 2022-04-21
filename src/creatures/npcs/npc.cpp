@@ -72,7 +72,7 @@ Npc::~Npc() {
 void Npc::reset()
 {
 	resetPlayerInteractions();
-	closeAllShopWindows();
+	shopPlayerSet.clear();
 	g_npcs.reset();
 }
 

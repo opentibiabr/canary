@@ -109,14 +109,11 @@ class Npcs
 
 		// Reset npcs informations on reload
 		void reset() {
-			npcType->info = {};
 			npcs.clear();
 			scriptInterface.reset();
 		};
 
 	private:
-		NpcType* npcType;
-
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
 		std::map<std::string, NpcType*> npcs;
 };

@@ -8617,12 +8617,12 @@ bool Game::reload(ReloadTypes_t reloadType)
 			return true;
 		}
 		case RELOAD_TYPE_NPCS: {
+			// Reset informations from npc interface
+			g_npc().reset();
 			// Reload npc scripts
 			g_scripts->loadScripts("npc", false, true);
 			// Reload npclib
 			g_luaEnvironment.loadFile("data/npclib/load.lua");
-			// Reset informations from npc interface
-			g_npc().reset();
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat->load();
@@ -8644,6 +8644,8 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_weapons->clear(true);
 			g_weapons->loadDefaults();
 			g_spells->clear(true);
+			// Reset informations from npc interface
+			g_npc().reset();
 			g_scripts->loadScripts("scripts", false, true);
 			// lean up the monsters interface, ensuring that after reloading the scripts there is no use of any deallocated memory
 			g_scripts->loadScripts("monster", false, true);
@@ -8651,8 +8653,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_scripts->loadScripts("npc", false, true);
 			// Reload npclib
 			g_luaEnvironment.loadFile("data/npclib/load.lua");
-			// Reset informations from npc interface
-			g_npc().reset();
 			return true;
 		}
 

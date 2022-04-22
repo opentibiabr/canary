@@ -617,7 +617,7 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 			vocSpellMap[vocationId] = !attr || attr.as_bool();
 		} else {
 			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Wrong vocation name: {]", attr.as_string());
+                        "Wrong vocation name: {}", attr.as_string());
 		}
 	}
 	return true;

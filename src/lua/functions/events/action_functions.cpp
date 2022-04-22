@@ -21,6 +21,8 @@
 
 #include "lua/creature/actions.h"
 #include "lua/functions/events/action_functions.hpp"
+#include "game/game.h"
+#include "items/item.h"
 
 extern Actions* g_actions;
 
@@ -32,7 +34,8 @@ int ActionFunctions::luaCreateAction(lua_State* L) {
 		pushUserdata<Action>(L, action);
 		setMetatable(L, -1, "Action");
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -48,7 +51,8 @@ int ActionFunctions::luaActionOnUse(lua_State* L) {
 		action->scripted = true;
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -62,11 +66,10 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 			return 1;
 		}
 		pushBoolean(L, g_actions->registerLuaEvent(action));
-		action->getActionIdRange().clear();
-		action->getItemIdRange().clear();
-		action->getUniqueIdRange().clear();
+		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -78,14 +81,15 @@ int ActionFunctions::luaActionItemId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->addItemId(getNumber<uint32_t>(L, 2 + i));
+				action->setItemIdsVector(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->addItemId(getNumber<uint32_t>(L, 2));
+			action->setItemIdsVector(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -97,14 +101,15 @@ int ActionFunctions::luaActionActionId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->addActionId(getNumber<uint32_t>(L, 2 + i));
+				action->setActionIdsVector(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->addActionId(getNumber<uint32_t>(L, 2));
+			action->setActionIdsVector(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -116,15 +121,76 @@ int ActionFunctions::luaActionUniqueId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				action->addUniqueId(getNumber<uint32_t>(L, 2 + i));
+				action->setUniqueIdsVector(getNumber<uint16_t>(L, 2 + i));
 			}
 		} else {
-			action->addUniqueId(getNumber<uint32_t>(L, 2));
+			action->setUniqueIdsVector(getNumber<uint16_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
+	return 1;
+}
+
+int ActionFunctions::luaActionPosition(lua_State* L) {
+	/** @brief Create action position
+	 * @param positions = position or table of positions to set a action script
+	 * @param itemId or @param itemName = if item id or string name is set, the item is created on position (if not exists), this variable is nil by default
+	* action:position(positions, itemId or name)
+	*/
+	Action* action = getUserdata<Action>(L, 1);
+	if (!action) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	Position position = getPosition(L, 2);
+	// The parameter "- 1" because self is a parameter aswell, which we want to skip L 1 (UserData)
+	// isNumber(L, 2) is for skip the itemId
+	if (int parameters = lua_gettop(L) - 1;
+	parameters > 1 && isNumber(L, 2))
+	{
+		for (int i = 0; i < parameters; ++i) {
+			action->setPositionsVector(getPosition(L, 2 + i));
+		}
+	} else {
+		action->setPositionsVector(position);
+	}
+
+	uint16_t itemId;
+	bool createItem = false;
+	if (isNumber(L, 3)) {
+		itemId = getNumber<uint16_t>(L, 3);
+		createItem = true;
+	} else if (isString(L, 3)) {
+		itemId = Item::items.getItemIdByName(getString(L, 3));
+		if (itemId == 0) {
+			reportErrorFunc("Not found item with name: " + getString(L, 3));
+			pushBoolean(L, false);
+			return 1;
+		}
+
+		createItem = true;
+	}
+
+	if (createItem) {
+		if (!Item::items.hasItemType(itemId)) {
+			reportErrorFunc("Not found item with id: " + itemId);
+			pushBoolean(L, false);
+			return 1;
+		}
+
+		if (Item::items.getItemType(itemId).moveable == true) {
+			SPDLOG_WARN("[ActionFunctions::luaActionPosition] - Item with id {}, registered on script position {} is moveable, being created on the map, the item can be moved or removed by a player", itemId, position.toString());
+		}
+
+		g_game().setCreateLuaItems(position, itemId);
+	}
+
+	pushBoolean(L, true);
 	return 1;
 }
 
@@ -135,7 +201,8 @@ int ActionFunctions::luaActionAllowFarUse(lua_State* L) {
 		action->setAllowFarUse(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -147,7 +214,8 @@ int ActionFunctions::luaActionBlockWalls(lua_State* L) {
 		action->setCheckLineOfSight(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }
@@ -159,7 +227,8 @@ int ActionFunctions::luaActionCheckFloor(lua_State* L) {
 		action->setCheckFloor(getBoolean(L, 2));
 		pushBoolean(L, true);
 	} else {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
+		pushBoolean(L, false);
 	}
 	return 1;
 }

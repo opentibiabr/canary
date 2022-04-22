@@ -317,6 +317,15 @@ class Items
 		ItemType& getItemType(size_t id);
 		const ItemType& getItemIdByClientId(uint16_t spriteId) const;
 
+		/**
+		 * @brief Check if the itemid "hasId" is stored on "items", if not, return false
+		 * 
+		 * @param hasId check item id
+		 * @return true if the item exist 
+		 * @return false if the item not exist
+		 */
+		bool hasItemType(size_t hasId) const;
+
 		uint16_t getItemIdByName(const std::string& name);
 
 		ItemTypes_t getLootType(const std::string& strValue);

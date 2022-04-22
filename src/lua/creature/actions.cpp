@@ -54,6 +54,15 @@ void Actions::clear(bool fromLua) {
 	clearMap(uniqueItemMap, fromLua);
 	clearMap(actionItemMap, fromLua);
 
+	// Clear position map
+	for (auto it = actionPositionMap.begin(); it != actionPositionMap.end(); ) {
+		if (fromLua == it->second.fromLua) {
+			it = actionPositionMap.erase(it);
+		} else {
+			++it;
+		}
+	}
+
 	reInitState(fromLua);
 }
 
@@ -199,79 +208,116 @@ bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
 	return false;
 }
 
-bool Actions::registerLuaEvent(Action* event) {
-	Action_ptr action{ event };
-	if (action->getItemIdRange().size() > 0) {
-		if (action->getItemIdRange().size() == 1) {
-			auto result = useItemMap.emplace(action->getItemIdRange().at(0), std::move(*action));
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerLuaEvent] - Duplicate "
-							"registered item with id: {}",
-							action->getItemIdRange().at(0));
-			}
-			return result.second;
-		} else {
-			auto v = action->getItemIdRange();
-			for (auto i = v.begin(); i != v.end(); i++) {
-				auto result = useItemMap.emplace(*i, std::move(*action));
-				if (!result.second) {
-					SPDLOG_WARN("[Actions::registerLuaEvent] - Duplicate "
-								"registered item with id: {} in range from id: {}, to id: {}",
-								*i, v.at(0), v.at(v.size() - 1));
-					continue;
-				}
-			}
-			return true;
-		}
-	} else if (action->getUniqueIdRange().size() > 0) {
-		if (action->getUniqueIdRange().size() == 1) {
-			auto result = uniqueItemMap.emplace(action->getUniqueIdRange().at(0), std::move(*action));
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerLuaEvent] - Duplicate "
-							"registered item with uid: {}",
-							action->getUniqueIdRange().at(0));
-			}
-			return result.second;
-		} else {
-			auto v = action->getUniqueIdRange();
-			for (auto i = v.begin(); i != v.end(); i++) {
-				auto result = uniqueItemMap.emplace(*i, std::move(*action));
-				if (!result.second) {
-					SPDLOG_WARN("[Actions::registerLuaEvent] - Duplicate "
-								"registered item with uid: {} in range from uid: {}, to uid: {}",
-								*i, v.at(0), v.at(v.size() - 1));
-					continue;
-				}
-			}
-			return true;
-		}
-	} else if (action->getActionIdRange().size() > 0) {
-		if (action->getActionIdRange().size() == 1) {
-			auto result = actionItemMap.emplace(action->getActionIdRange().at(0), std::move(*action));
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerLuaEvent] - Duplicate "
-							"registered item with aid: {}",
-							action->getActionIdRange().at(0));
-			}
-			return result.second;
-		} else {
-			auto v = action->getActionIdRange();
-			for (auto i = v.begin(); i != v.end(); i++) {
-				auto result = actionItemMap.emplace(*i, std::move(*action));
-				if (!result.second) {
-					SPDLOG_WARN("[Actions::registerLuaEvent] Duplicate "
-								"registered item with aid: {} in range from aid: {}, to aid: {}",
-								*i, v.at(0), v.at(v.size() - 1));
-					continue;
-				}
-			}
-			return true;
-		}
-	} else {
-		SPDLOG_WARN("[Actions::registerLuaEvent] - "
-					"There is no id/aid/uid set for this event");
+bool Actions::registerLuaItemEvent(Action* action) {
+	auto itemIdVector = action->getItemIdsVector();
+	if (itemIdVector.empty()) {
 		return false;
 	}
+
+	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &action, &itemIdVector](uint16_t &itemId) {
+		// Check if the item is already registered and prevent it from being registered again
+		if (hasItemId(itemId)) {
+			SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
+						"registered item with id: {} in range from id: {}, to id: {}",
+						itemId, itemIdVector.at(0), itemIdVector.at(itemIdVector.size() - 1));
+			return false;
+		}
+
+		// Register item in the action item map
+		setItemId(itemId, std::move(*action));
+		return true;
+	});
+	itemIdVector.clear();
+	itemIdVector.shrink_to_fit();
+	return true;
+}
+
+bool Actions::registerLuaUniqueEvent(Action* action) {
+	auto uniqueIdVector = action->getUniqueIdsVector();
+	if (uniqueIdVector.empty()) {
+		return false;
+	}
+
+	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &action, &uniqueIdVector](uint16_t &uniqueId) {
+		// Check if the unique is already registered and prevent it from being registered again
+		if (hasUniqueId(uniqueId)) {
+			SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
+						"registered item with uid: {} in range from uid: {}, to uid: {}",
+						uniqueId, uniqueIdVector.at(0), uniqueIdVector.at(uniqueIdVector.size() - 1));
+			return false;
+		}
+
+		// Register unique id the unique item map
+		setUniqueId(uniqueId, std::move(*action));
+		return true;
+	});
+
+	uniqueIdVector.clear();
+	uniqueIdVector.shrink_to_fit();
+	return true;
+}
+
+bool Actions::registerLuaActionEvent(Action* action) {
+	auto actionIdVector = action->getActionIdsVector();
+	if (actionIdVector.empty()) {
+		return false;
+	}
+
+	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
+		// Check if the unique is already registered and prevent it from being registered again
+		if (hasActionId(actionId)) {
+			SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "
+						"registered item with aid: {} in range from aid: {}, to aid: {}",
+						actionId, actionIdVector.at(0), actionIdVector.at(actionIdVector.size() - 1));
+			return false;
+		}
+
+		// Register action in the action item map
+		setActionId(actionId, std::move(*action));
+		return true;
+	});
+
+	actionIdVector.clear();
+	actionIdVector.shrink_to_fit();
+	return true;
+}
+
+bool Actions::registerLuaPositionEvent(Action* action) {
+	auto positionVector = action->getPositionsVector();
+	if (positionVector.empty()) {
+		return false;
+	}
+
+	for (Position position : positionVector) {
+		// Check if the position is already registered and prevent it from being registered again
+		if (hasPosition(position)) {
+			SPDLOG_WARN("[Actions::registerLuaPositionEvent] - Duplicate "
+						"registered script with range position: {}", position.toString());
+			continue;
+		}
+
+		// Register position in the action position map
+		setPosition(position, std::move(*action));
+	}
+
+	positionVector.clear();
+	positionVector.shrink_to_fit();
+	return true;
+}
+
+bool Actions::registerLuaEvent(Action* event) {
+	Action_ptr action{ event };
+
+	// Call all register lua events
+	if (registerLuaItemEvent(event) || registerLuaUniqueEvent(event) || registerLuaActionEvent(event) || registerLuaPositionEvent(event)) {
+		return true;
+	} else {
+		SPDLOG_WARN("[Actions::registerLuaEvent] - "
+				"Missing id/aid/uid/position for one script event");
+		return false;
+	}
+	SPDLOG_DEBUG("[Actions::registerLuaEvent] - Missing or incorrect script event");
+	return false;
 }
 
 ReturnValue Actions::canUse(const Player* player, const Position& pos) {
@@ -337,6 +383,23 @@ Action* Actions::getAction(const Item* item) {
 	auto it = useItemMap.find(item->getID());
 	if (it != useItemMap.end()) {
 		return &it->second;
+	}
+
+	if (const Tile * tile = item->getTile();
+	tile)
+	{
+		if (const Player* player = item->getHoldingPlayer();
+		player && item->getTopParent() == player)
+		{
+			SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
+			return nullptr;
+		}
+
+		if (auto iteratePositions = actionPositionMap.find(tile->getPosition());
+		iteratePositions != actionPositionMap.end())
+		{
+			return &iteratePositions->second;
+		}
 	}
 
 	//rune items

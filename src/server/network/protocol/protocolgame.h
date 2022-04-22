@@ -43,6 +43,9 @@ using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 struct TextMessage
 {
+	TextMessage() = default;
+	TextMessage(MessageClasses initType, std::string initText) : type(initType), text(std::move(initText)) {}
+
 	MessageClasses type = MESSAGE_STATUS;
 	std::string text;
 	Position position;
@@ -52,9 +55,6 @@ struct TextMessage
 		int32_t value = 0;
 		TextColor_t color;
 	} primary, secondary;
-
-	TextMessage() = default;
-	TextMessage(MessageClasses initType, std::string initText) : type(initType), text(std::move(initText)) {}
 };
 
 class ProtocolGame final : public Protocol

@@ -71,9 +71,12 @@ Npc::~Npc() {
 
 void Npc::reset()
 {
-	resetPlayerInteractions();
-	shopPlayerSet.clear();
 	g_npcs.reset();
+	// Close shop window from all npcs and reset the shopPlayerSet
+	for (const auto& [npcId, npc] : g_game().getNpcs()) {
+		npc->closeAllShopWindows();
+		npc->resetPlayerInteractions();
+	}
 }
 
 void Npc::addList()
@@ -223,6 +226,12 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t serverId,
                           uint8_t subType, uint8_t amount, bool ignore, bool inBackpacks)
 {
 	if (!player) {
+		return;
+	}
+
+	// Check if the player not have empty slots
+	if (player->getFreeBackpackSlots() == 0) {
+		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
 

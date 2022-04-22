@@ -20,7 +20,8 @@
 #include "otpch.h"
 
 #include <boost/filesystem.hpp>
-#include "libzippp.h"
+#include <fstream>
+#include <libzippp.h>
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"

@@ -251,7 +251,7 @@ function parseTransferCoins(playerId, msg)
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "We couldn't find that player.")
 	end
 
-	local accountId = result.getDataInt(resultId, "account_id")
+	local accountId = result.getNumber(resultId, "account_id")
 	if accountId == player:getAccountId() then
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You cannot transfer coin to a character in the same account.")
 	end
@@ -296,13 +296,13 @@ function parseRequestStoreOffers(playerId, msg)
 	elseif actionType == GameStore.ActionType.OPEN_PREMIUM_BOOST then
 		local subAction = msg:getByte()
 		local category = nil
-		
+
 		if subAction == 0 then
 			category = GameStore.getCategoryByName("Premium Time")
-		else 
+		else
 			category = GameStore.getCategoryByName("Boosts")
 		end
-		
+
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 		end
@@ -315,17 +315,17 @@ function parseRequestStoreOffers(playerId, msg)
 		else
 			category = GameStore.getCategoryByName("Useful Things")
 		end
-		
+
 		-- Third prey slot offerId
 		-- We can't use offerId 0
-		if subAction == 0 then 
+		if subAction == 0 then
 			redirectId = 65008
 		end
 
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, redirectId)
 		end
-	
+
 	elseif actionType == GameStore.ActionType.OPEN_OFFER then
 		local offerId = msg:getU32()
 		local category = GameStore.getCategoryByOffer(offerId)
@@ -423,7 +423,7 @@ function parseBuyStoreOffer(playerId, msg)
 		GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, offer.name, (offerPrice) * -1)
 		local message = string.format("You have purchased %s for %d coins.", offer.name, offerPrice)
 		sendUpdateCoinBalance(playerId)
-		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)		
+		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)
 	end
 	return true
 end
@@ -698,7 +698,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 		end
 		table.insert(offers[name].offers, offer)
 	end
-	
+
 	-- If player doesn't have hireling
 	if category.name == "Hirelings" then
 		if player:getHirelingsCount() < 1 then
@@ -711,7 +711,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 			count = count - 6
 		end
 	end
-	
+
 	msg:addU16(count)
 
 	if count > 0 then
@@ -755,10 +755,10 @@ function sendShowStoreOffers(playerId, category, redirectId)
 					msg:addByte(GameStore.States.STATE_NONE)
 				end
 			end
-			
+
 			local tryOnType = 0
 			local type = convertType(offer.type)
-			
+
 			msg:addByte(type);
 			if type == GameStore.ConverType.SHOW_NONE then
 				msg:addString(offer.icons[1])
@@ -776,7 +776,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				msg:addByte(outfit.lookBody)
 				msg:addByte(outfit.lookLegs)
 				msg:addByte(outfit.lookFeet)
-				
+
 				tryOnType = 1
 			elseif type == GameStore.ConverType.SHOW_HIRELING then
 				if player:getSex() == PLAYERSEX_MALE then
@@ -797,11 +797,11 @@ function sendShowStoreOffers(playerId, category, redirectId)
 			msg:addU16(0) -- Collection (to-do)
 			msg:addU16(0) -- Popularity Score (to-do)
 			msg:addU32(0) -- State New Until (timestamp)
-			
+
 			local configure = useOfferConfigure(offer.type)
 			if configure == GameStore.ConfigureOffers.SHOW_CONFIGURE then
 				msg:addByte(1)
-			else 
+			else
 				msg:addByte(0)
 			end
 
@@ -1042,13 +1042,13 @@ GameStore.insertHistory = function(accountId, mode, description, amount)
 	return db.query(string.format("INSERT INTO `store_history`(`account_id`, `mode`, `description`, `coin_amount`, `time`) VALUES (%s, %s, %s, %s, %s)", accountId, mode, db.escapeString(description), amount, os.time()))
 end
 
-GameStore.retrieveHistoryTotalPages = function (accountId) 
+GameStore.retrieveHistoryTotalPages = function (accountId)
 	local resultId = db.storeQuery("SELECT count(id) as total FROM store_history WHERE account_id = " .. accountId)
 	if resultId == false then
 		return 0
 	end
 
-	local totalPages = result.getDataInt(resultId, "total")
+	local totalPages = result.getNumber(resultId, "total")
 	result.free(resultId)
 	return totalPages
 end
@@ -1061,10 +1061,10 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 	if resultId ~= false then
 		repeat
 			local entry = {
-				mode = result.getDataInt(resultId, "mode"),
+				mode = result.getNumber(resultId, "mode"),
 				description = result.getDataString(resultId, "description"),
-				amount = result.getDataInt(resultId, "coin_amount"),
-				time = result.getDataInt(resultId, "time"),
+				amount = result.getNumber(resultId, "coin_amount"),
+				time = result.getNumber(resultId, "time"),
 			}
 			table.insert(entries, entry)
 		until not result.next(resultId)
@@ -1291,7 +1291,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 	end
 
 	local PARCEL_ID = 3504
-	local isKeg = isKegItem(offerId) 
+	local isKeg = isKegItem(offerId)
 
     if isKeg then
         if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(PARCEL_ID):getWeight() then
@@ -1388,6 +1388,10 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 end
 
 function GameStore.processMountPurchase(player, offerId)
+	if player:hasMount(offerId) then
+		return error({code = 0, message = "You already own this mount."})
+	end
+
 	player:addMount(offerId)
 end
 
@@ -1414,8 +1418,8 @@ function GameStore.processNameChangePurchase(player, offerId, productType, newNa
 
 		player:removeCoinsBalance(offerPrice)
 		GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, offerName, (offerPrice) * -1)
-		
-		local message = string.format("You have purchased %s for %d coins.", offerName, offerPrice) 
+
+		local message = string.format("You have purchased %s for %d coins.", offerName, offerPrice)
 		addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
 
 		newName = newName:lower():gsub("(%l)(%w*)", function(a, b) return string.upper(a) .. b end)
@@ -1574,7 +1578,7 @@ end
 function Player.getCoinsBalance(self)
 	resultId = db.storeQuery("SELECT `coins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
 	if not resultId then return 0 end
-	return result.getDataInt(resultId, "coins")
+	return result.getNumber(resultId, "coins")
 end
 
 function Player.setCoinsBalance(self, coins)
@@ -1665,7 +1669,7 @@ function sendHomePage(playerId)
 
 	local homeOffers = getHomeOffers(player:getId())
 	msg:addU16(#homeOffers) -- offers
-	
+
 	for p, offer in pairs(homeOffers)do
 		msg:addString(offer.name)
 		msg:addByte(0x1) -- ?
@@ -1705,10 +1709,10 @@ function sendHomePage(playerId)
 		msg:addU16(0) -- Collection
 		msg:addU16(0) -- Popularity Score
 		msg:addU32(0) -- State New Until
-		msg:addByte(0) -- User Configuration 
+		msg:addByte(0) -- User Configuration
 		msg:addU16(0) -- Products Capacity
 	end
-	
+
 	local banner = HomeBanners
 	msg:addByte(#banner.images)
 	for m, image in ipairs(banner.images) do

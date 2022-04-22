@@ -39,8 +39,9 @@ bool Map::load(const std::string& identifier) {
 			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
 			return false;
 		}
-	} catch (std::exception const& e) {
-		SPDLOG_ERROR("[Map::loadMap] {}", e.what());
+	}
+	catch(const std::exception) {
+		SPDLOG_ERROR("[Map::load] - The map in folder {} is missing or corrupted", identifier);
 		return false;
 	}
 	return true;

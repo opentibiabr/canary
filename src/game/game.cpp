@@ -669,7 +669,7 @@ bool Game::loadMainMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+	return map.loadMap("data/world/" + filename + ".otbm", true, true, true, true);
 }
 
 bool Game::loadCustomMap(const std::string& filename)
@@ -681,7 +681,7 @@ bool Game::loadCustomMap(const std::string& filename)
 
 void Game::loadMap(const std::string& path)
 {
-	map.loadMap(path, false, false, false);
+	map.loadMap(path);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position& pos) const

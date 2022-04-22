@@ -141,6 +141,16 @@ Event_ptr Spells::getEvent(const std::string& nodeName)
 	return nullptr;
 }
 
+bool Spells::hasInstantSpell(const std::string& word) const
+{
+	if (auto iterate = instants.find(word);
+	iterate != instants.end())
+	{
+		return true;
+	}
+	return false;
+}
+
 bool Spells::registerEvent(Event_ptr event, const pugi::xml_node&)
 {
 	InstantSpell* instant = dynamic_cast<InstantSpell*>(event.get());
@@ -172,13 +182,22 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 {
 	InstantSpell_ptr instant { event };
 	if (instant) {
-		std::string words = instant->getWords();
-		auto result = instants.emplace(instant->getWords(), std::move(*instant));
-		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerInstantLuaEvent] - "
-                        "Duplicate registered instant spell with words: {}", words);
+		// If the spell not have the "spell:words()" return a error message
+		const std::string& instantName = instant->getName();
+		if (instant->getWordsMap().empty()) {
+			SPDLOG_ERROR("[Spells::registerInstantLuaEvent] - Missing register words for spell with name {}", instantName);
+			return false;
 		}
-		return result.second;
+
+		const std::string& words = instant->getWords();
+		// Checks if there is any spell registered with the same name
+		if (hasInstantSpell(words)) {
+			SPDLOG_WARN("[Spells::registerInstantLuaEvent] - "
+                        "Duplicate registered instant spell with words: {}, on spell with name: {}", words, instantName);
+			return false;
+		}
+		// Register spell word in the map
+		setInstantSpell(words, *instant);
 	}
 
 	return false;

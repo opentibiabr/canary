@@ -1675,11 +1675,14 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 	}
 }
 
-void Player::openShopWindow(Npc* npc)
+bool Player::openShopWindow(Npc* npc)
 {
-	closeShopWindow(true);
-	setShopOwner(npc);
+	if (!npc) {
+		SPDLOG_ERROR("[Player::openShopWindow] - Npc is wrong or nullptr");
+		return false;
+	}
 
+	setShopOwner(npc);
 	npc->addShopPlayer(this);
 
 	std::map<uint32_t, uint32_t> tempInventoryMap;
@@ -1687,6 +1690,7 @@ void Player::openShopWindow(Npc* npc)
 
 	sendShop(npc);
 	sendSaleItemList(tempInventoryMap);
+	return true;
 }
 
 bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/)

@@ -669,7 +669,7 @@ bool Game::loadMainMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+	return map.loadMap("data/world/" + filename + ".otbm", true, true, true, true);
 }
 
 bool Game::loadCustomMap(const std::string& filename)
@@ -681,7 +681,7 @@ bool Game::loadCustomMap(const std::string& filename)
 
 void Game::loadMap(const std::string& path)
 {
-	map.loadMap(path, false, false, false);
+	map.loadMap(path);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position& pos) const
@@ -8690,4 +8690,31 @@ bool Game::hasDistanceEffect(uint8_t effectId) {
 		}
 	}
 	return false;
+}
+
+void Game::createLuaItemsOnMap() {
+	for (auto const [position, itemId] : mapLuaItemsStored) {
+		Item* item = Item::CreateItem(itemId, 1);
+		if (!item) {
+			SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);
+			continue;
+		}
+
+		if (position.x != 0) {
+			Tile* tile = g_game().map.getTile(position);
+			if (!tile) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Tile is wrong or not found position: {}", position.toString());
+				delete item;
+				continue;
+			}
+
+			// If the item already exists on the map, then ignore it and send warning
+			if (g_game().findItemOfType(tile, itemId, false, -1)) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {} on position {}, item already exists", itemId, position.toString());
+				continue;
+			}
+
+			g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		}
+	}
 }

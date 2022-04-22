@@ -63,7 +63,7 @@ class Npc final : public Creature
 			}
 		}
 
-		void reset();
+		void reset() const;
 
 		void removeList() override;
 		void addList() override;

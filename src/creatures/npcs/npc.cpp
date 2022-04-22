@@ -69,7 +69,7 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-void Npc::reset()
+void Npc::reset() const
 {
 	g_npcs.reset();
 	// Close shop window from all npcs and reset the shopPlayerSet

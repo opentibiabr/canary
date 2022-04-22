@@ -27,7 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-extern Game g_game;
 extern Npcs g_npcs;
 extern Events* g_events;
 
@@ -72,12 +71,12 @@ Npc::~Npc() {
 
 void Npc::addList()
 {
-	g_game.addNpc(this);
+	g_game().addNpc(this);
 }
 
 void Npc::removeList()
 {
-	g_game.removeNpc(this);
+	g_game().removeNpc(this);
 }
 
 bool Npc::canSee(const Position& pos) const
@@ -200,11 +199,11 @@ void Npc::onThink(uint32_t interval)
 	}
 
 	if (!npcType->canSpawn(position)) {
-		g_game.removeCreature(this);
+		g_game().removeCreature(this);
 	}
 
 	if (!isInSpawnRange(position)) {
-		g_game.internalTeleport(this, masterPos);
+		g_game().internalTeleport(this, masterPos);
 		resetPlayerInteractions();
 		closeAllShopWindows();
 	}
@@ -233,7 +232,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t serverId,
 
 	int64_t totalCost = buyPrice * amount;
 	if (getCurrency() == ITEM_GOLD_COIN) {
-		if (!g_game.removeMoney(player, totalCost, 0, true)) {
+		if (!g_game().removeMoney(player, totalCost, 0, true)) {
 			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), serverId, getName());
 			return;
 		}
@@ -284,7 +283,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t serverId,
 	}
 
 	int64_t totalCost = sellPrice * amount;
-	g_game.addMoney(player, totalCost, 0);
+	g_game().addMoney(player, totalCost, 0);
 
 	// onPlayerSellItem(self, player, itemId, subType, amount, ignore)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
@@ -362,9 +361,9 @@ void Npc::onThinkYell(uint32_t interval)
 			const voiceBlock_t& vb = npcType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game.internalCreatureSay(this, TALKTYPE_YELL, vb.text, false);
+				g_game().internalCreatureSay(this, TALKTYPE_YELL, vb.text, false);
 			} else {
-				g_game.internalCreatureSay(this, TALKTYPE_SAY, vb.text, false);
+				g_game().internalCreatureSay(this, TALKTYPE_SAY, vb.text, false);
 			}
 		}
 	}
@@ -428,7 +427,7 @@ bool Npc::isInSpawnRange(const Position& pos) const
 }
 
 void Npc::setPlayerInteraction(uint32_t playerId, uint16_t topicId /*= 0*/) {
-	Creature* creature = g_game.getCreatureByID(playerId);
+	Creature* creature = g_game().getCreatureByID(playerId);
 	if (!creature) {
 		return;
 	}
@@ -465,7 +464,7 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 		return false;
 	}
 
-	Tile* toTile = g_game.map.getTile(toPos);
+	const Tile* toTile = g_game().map.getTile(toPos);
 	if (!toTile || toTile->queryAdd(0, *this, 1, 0) != RETURNVALUE_NOERROR) {
 		return false;
 	}

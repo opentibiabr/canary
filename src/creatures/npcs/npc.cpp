@@ -69,7 +69,7 @@ Npc::~Npc() {
 
 void Npc::reset() const
 {
-	g_npcs.reset();
+	g_npcs().reset();
 	// Close shop window from all npcs and reset the shopPlayerSet
 	for (const auto& [npcId, npc] : g_game().getNpcs()) {
 		npc->closeAllShopWindows();

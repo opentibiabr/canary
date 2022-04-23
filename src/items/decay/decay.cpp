@@ -40,7 +40,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	const int duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
+	const int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
 	if (duration <= 0 && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 		internalDecayItem(item);
 		return;
@@ -51,7 +51,7 @@ void Decay::startDecay(Item* item)
 			stopDecay(item);
 		}
 
-		int64_t timestamp = OTSYS_TIME() + static_cast<int64_t>(duration);
+		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
 			eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
 		} else {

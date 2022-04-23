@@ -33,9 +33,9 @@ void RSA2::decrypt(uint8_t* msg) const
 {
 	try
 	{
-		CryptoPP::Integer m{reinterpret_cast<uint8_t *>(msg), 128};
+		CryptoPP::Integer m{msg, 128};
 		auto c = pk.CalculateInverse(prng, m);
-		c.Encode(reinterpret_cast<uint8_t *>(msg), 128);
+		c.Encode(msg, 128);
 	}
 	catch (const CryptoPP::Exception &e)
 	{

@@ -183,8 +183,10 @@ int ActionFunctions::luaActionPosition(lua_State* L) {
 			return 1;
 		}
 
-		if (Item::items.getItemType(itemId).moveable == true) {
-			SPDLOG_WARN("[ActionFunctions::luaActionPosition] - Item with id {}, registered on script position {} is moveable, being created on the map, the item can be moved or removed by a player", itemId, position.toString());
+		// If it is an item that can be removed, then it will be set as non-movable.
+		ItemType &itemType = Item::items.getItemType(itemId);
+		if (itemType.moveable == true) {
+			itemType.moveable = false;
 		}
 
 		g_game().setCreateLuaItems(position, itemId);

@@ -669,7 +669,7 @@ bool Game::loadMainMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+	return map.loadMap("data/world/" + filename + ".otbm", true, true, true, true);
 }
 
 bool Game::loadCustomMap(const std::string& filename)
@@ -681,7 +681,7 @@ bool Game::loadCustomMap(const std::string& filename)
 
 void Game::loadMap(const std::string& path)
 {
-	map.loadMap(path, false, false, false);
+	map.loadMap(path);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position& pos) const
@@ -8601,8 +8601,11 @@ bool Game::reload(ReloadTypes_t reloadType)
 			return true;
 		}
 		case RELOAD_TYPE_NPCS: {
-			g_npcs.reset();
-			g_scripts->loadScripts("npclua", false, true);
+			// Reset informations from npc interface
+			g_npc().reset();
+			// Reload npc scripts
+			g_scripts->loadScripts("npc", false, true);
+			// Reload npclib
 			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
@@ -8625,7 +8628,15 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_weapons->clear(true);
 			g_weapons->loadDefaults();
 			g_spells->clear(true);
+			// Reset informations from npc interface
+			g_npc().reset();
 			g_scripts->loadScripts("scripts", false, true);
+			// lean up the monsters interface, ensuring that after reloading the scripts there is no use of any deallocated memory
+			g_scripts->loadScripts("monster", false, true);
+			// Reload npc scripts
+			g_scripts->loadScripts("npc", false, true);
+			// Reload npclib
+			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
 
@@ -8674,4 +8685,31 @@ bool Game::hasDistanceEffect(uint8_t effectId) {
 		}
 	}
 	return false;
+}
+
+void Game::createLuaItemsOnMap() {
+	for (auto const [position, itemId] : mapLuaItemsStored) {
+		Item* item = Item::CreateItem(itemId, 1);
+		if (!item) {
+			SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);
+			continue;
+		}
+
+		if (position.x != 0) {
+			Tile* tile = g_game().map.getTile(position);
+			if (!tile) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Tile is wrong or not found position: {}", position.toString());
+				delete item;
+				continue;
+			}
+
+			// If the item already exists on the map, then ignore it and send warning
+			if (g_game().findItemOfType(tile, itemId, false, -1)) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {} on position {}, item already exists", itemId, position.toString());
+				continue;
+			}
+
+			g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		}
+	}
 }

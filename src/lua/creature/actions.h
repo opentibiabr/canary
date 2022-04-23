@@ -25,6 +25,7 @@
 #include "lua/scripts/luascript.h"
 
 class Action;
+class Position;
 
 using Action_ptr = std::unique_ptr<Action>;
 using ActionFunction =
@@ -68,28 +69,36 @@ class Action : public Event {
 			checkFloor = state;
 		}
 
-		std::vector<uint16_t> getItemIdRange() {
-			return ids;
+		std::vector<uint16_t> getItemIdsVector() const {
+			return itemIds;
 		}
 
-		void addItemId(uint16_t id) {
-			ids.emplace_back(id);
+		void setItemIdsVector(uint16_t id) {
+			itemIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getUniqueIdRange() {
-			return uids;
+		std::vector<uint16_t> getUniqueIdsVector() const {
+			return uniqueIds;
 		}
 
-		void addUniqueId(uint16_t id) {
-			uids.emplace_back(id);
+		void setUniqueIdsVector(uint16_t id) {
+			uniqueIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getActionIdRange() {
-			return aids;
+		std::vector<uint16_t> getActionIdsVector() const {
+			return actionIds;
 		}
 
-		void addActionId(uint16_t id) {
-			aids.emplace_back(id);
+		void setActionIdsVector(uint16_t id) {
+			actionIds.emplace_back(id);
+		}
+
+		std::vector<Position> getPositionsVector() const {
+			return positions;
+		}
+
+		void setPositionsVector(Position pos) {
+			positions.emplace_back(pos);
 		}
 
 		virtual ReturnValue canExecuteAction(const Player* player,
@@ -117,9 +126,10 @@ class Action : public Event {
 		bool checkLineOfSight = true;
 
 		// IDs
-		std::vector<uint16_t> ids;
-		std::vector<uint16_t> uids;
-		std::vector<uint16_t> aids;
+		std::vector<uint16_t> itemIds;
+		std::vector<uint16_t> uniqueIds;
+		std::vector<uint16_t> actionIds;
+		std::vector<Position> positions;
 };
 
 class Actions final : public BaseEvents {
@@ -138,10 +148,71 @@ class Actions final : public BaseEvents {
 		ReturnValue canUse(const Player* player, const Position& pos, const Item* item);
 		ReturnValue canUseFar(const Creature* creature, const Position& toPos, bool checkLineOfSight, bool checkFloor);
 
+		bool registerLuaItemEvent(Action* action);
+		bool registerLuaUniqueEvent(Action* action);
+		bool registerLuaActionEvent(Action* action);
+		bool registerLuaPositionEvent(Action* action);
 		bool registerLuaEvent(Action* event);
 		void clear(bool fromLua) override final;
 
 	private:
+		bool hasPosition(Position position) const {
+			if (auto it = actionPositionMap.find(position);
+			it != actionPositionMap.end())
+			{
+				return true;
+			}
+			return false;
+		}
+
+		std::map<Position, Action> getPositionsMap() const {
+			return actionPositionMap;
+		}
+
+		void setPosition(Position position, Action action) {
+			actionPositionMap.try_emplace(position, action);
+		}
+
+
+		bool hasItemId(uint16_t itemId) const {
+			if (auto it = useItemMap.find(itemId);
+			it != useItemMap.end())
+			{
+				return true;
+			}
+			return false;
+		}
+
+		void setItemId(uint16_t itemId, Action action) {
+			useItemMap.try_emplace(itemId, action);
+		}
+
+		bool hasUniqueId(uint16_t uniqueId) const {
+			if (auto it = uniqueItemMap.find(uniqueId);
+			it != uniqueItemMap.end())
+			{
+				return true;
+			}
+			return false;
+		}
+
+		void setUniqueId(uint16_t uniqueId, Action action) {
+			uniqueItemMap.try_emplace(uniqueId, action);
+		}
+
+		bool hasActionId(uint16_t actionId) const {
+			if (auto it = actionItemMap.find(actionId);
+			it != actionItemMap.end())
+			{
+				return true;
+			}
+			return false;
+		}
+
+		void setActionId(uint16_t actionId, Action action) {
+			actionItemMap.try_emplace(actionId, action);
+		}
+
 		ReturnValue internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
 		static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count);
 
@@ -154,9 +225,12 @@ class Actions final : public BaseEvents {
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
 		ActionUseMap actionItemMap;
+		std::map<Position, Action> actionPositionMap;
 
 		Action* getAction(const Item* item);
 		void clearMap(ActionUseMap& map, bool fromLua);
+
+		friend class ActionFunctions;
 
 		LuaScriptInterface scriptInterface;
 };

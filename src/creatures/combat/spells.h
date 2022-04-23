@@ -65,6 +65,13 @@ class Spells final : public BaseEvents
 		};
 
 		void clearMaps(bool fromLua);
+
+		bool hasInstantSpell(const std::string& word) const;
+
+		void setInstantSpell(const std::string &word, InstantSpell& instant) {
+			instants.try_emplace(word, instant);
+		}
+
 		void clear(bool fromLua) override final;
 		bool registerInstantLuaEvent(InstantSpell* event);
 		bool registerRuneLuaEvent(RuneSpell* event);

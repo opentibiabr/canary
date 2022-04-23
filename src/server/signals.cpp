@@ -35,9 +35,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
 
-
-extern LuaEnvironment g_luaEnvironment;
-
 using ErrorCode = boost::system::error_code;
 
 Signals::Signals(boost::asio::io_service& service) :

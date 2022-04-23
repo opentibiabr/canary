@@ -25,14 +25,14 @@
 
 int VocationFunctions::luaVocationCreate(lua_State* L) {
 	// Vocation(id or name)
-	uint16_t id;
+	uint16_t vocationId;
 	if (isNumber(L, 2)) {
-		id = getNumber<uint32_t>(L, 2);
+		vocationId = getNumber<uint16_t>(L, 2);
 	} else {
-		id = g_vocations().getVocationId(getString(L, 2));
+		vocationId = g_vocations().getVocationId(getString(L, 2));
 	}
 
-	Vocation* vocation = g_vocations().getVocation(id);
+	Vocation* vocation = g_vocations().getVocation(vocationId);
 	if (vocation) {
 		pushUserdata<Vocation>(L, vocation);
 		setMetatable(L, -1, "Vocation");

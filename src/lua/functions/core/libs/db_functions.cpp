@@ -23,9 +23,6 @@
 #include "database/databasetasks.h"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
-
-extern LuaEnvironment g_luaEnvironment;
-
 int DBFunctions::luaDatabaseExecute(lua_State* L) {
 	pushBoolean(L, Database::getInstance().executeQuery(getString(L, -1)));
 	return 1;

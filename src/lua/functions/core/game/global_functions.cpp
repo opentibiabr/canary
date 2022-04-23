@@ -30,9 +30,6 @@
 #include "server/network/protocol/protocolstatus.h"
 
 class Creature;
-
-extern LuaEnvironment g_luaEnvironment;
-
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count, <optional: default: 1> canDropOnMap, <optional: default: 1>subtype)
@@ -749,7 +746,7 @@ int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 
 int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 	// sendChannelMessage(channelId, type, message)
-	uint16_t channelId = getNumber<uint32_t>(L, 1);
+	uint16_t channelId = getNumber<uint16_t>(L, 1);
 	const ChatChannel* channel = g_chat().getChannelById(channelId);
 	if (!channel) {
 		pushBoolean(L, false);

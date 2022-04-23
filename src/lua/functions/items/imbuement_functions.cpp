@@ -31,7 +31,7 @@
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)
-	uint16_t imbuementId = getNumber<uint32_t>(L, 2);
+	uint16_t imbuementId = getNumber<uint16_t>(L, 2);
 	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
 
 	if (imbuement) {

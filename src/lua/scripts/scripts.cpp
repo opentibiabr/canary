@@ -34,9 +34,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 
-
-extern LuaEnvironment g_luaEnvironment;
-
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
 	scriptInterface.initState();

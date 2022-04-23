@@ -29,7 +29,7 @@
 
 static CryptoPP::AutoSeededRandomPool prng;
 
-void RSA2::decrypt(char* msg) const
+void RSA2::decrypt(uint8_t* msg) const
 {
 	try
 	{

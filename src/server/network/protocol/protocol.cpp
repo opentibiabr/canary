@@ -98,7 +98,7 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 		return false;
 	}
 
-	g_RSA().decrypt(reinterpret_cast<char*>(msg.getBuffer()) + msg.getBufferPosition()); //does not break strict aliasing
+	g_RSA().decrypt(msg.getBuffer() + msg.getBufferPosition()); //does not break strict aliasing
 	return msg.getByte() == 0;
 }
 

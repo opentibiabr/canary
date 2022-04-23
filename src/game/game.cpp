@@ -47,9 +47,6 @@
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "server/network/webhook/webhook.h"
-
-extern LuaEnvironment g_luaEnvironment;
-
 Game::Game()
 {
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);

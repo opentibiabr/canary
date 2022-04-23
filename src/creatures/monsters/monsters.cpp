@@ -687,7 +687,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			//
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "{} unknown spell name: {}"
+                         "{} unknown or missing parameter on spell with name: {}"
                          , description, spell->name);
 		}
 

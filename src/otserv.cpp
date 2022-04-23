@@ -165,7 +165,7 @@ void loadModules() {
 		"data/scripts");
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"data/monster");
-	modulesLoadHelper(g_scripts().loadScripts("npclua", false, false),
+	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
 		"data/npclua");
 
 	g_game().loadBoostedCreature();

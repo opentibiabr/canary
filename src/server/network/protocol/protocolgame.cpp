@@ -3600,6 +3600,12 @@ void ProtocolGame::sendPremiumTrigger()
 
 void ProtocolGame::sendTextMessage(const TextMessage &message)
 {
+	if (message.type == MESSAGE_NONE) {
+		SPDLOG_ERROR("[ProtocolGame::sendTextMessage] - Message type is wrong, missing or invalid for player with name {}, on position {}", player->getName(), player->getPosition().toString());
+		player->sendTextMessage(MESSAGE_ADMINISTRADOR, "There was a problem requesting your message, please contact the administrator");
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xB4);
 	msg.addByte(message.type);

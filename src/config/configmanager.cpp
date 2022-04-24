@@ -181,11 +181,11 @@ bool ConfigManager::load()
 	boolean[STAMINA_TRAINER] = getGlobalBoolean(L, "staminaTrainer", false);
 	boolean[STAMINA_PZ] = getGlobalBoolean(L, "staminaPz", false);
 	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);
-	boolean[TOGLE_SAVE_INTERVAL] = getGlobalBoolean(L, "togleSaveInterval", false);
-	boolean[TOGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "togleSaveIntervalCleanMap", false);
+	boolean[TOGGLE_SAVE_INTERVAL] = getGlobalBoolean(L, "toggleSaveInterval", false);
+	boolean[TOGGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "toggleSaveIntervalCleanMap", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
-	boolean[TOGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "togleImbuementShrineStorage", true);
+	boolean[TOGGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "toggleImbuementShrineStorage", true);
 
 	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
 	string[SERVER_NAME] = getGlobalString(L, "serverName", "");

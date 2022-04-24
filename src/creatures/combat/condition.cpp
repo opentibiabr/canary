@@ -22,7 +22,6 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
-
 bool Condition::setParam(ConditionParam_t param, int32_t value)
 {
 	switch (param) {

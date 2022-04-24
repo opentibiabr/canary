@@ -24,7 +24,6 @@
 #include "utils/pugicast.h"
 #include "game/scheduling/scheduler.h"
 
-
 bool PrivateChatChannel::isInvited(uint32_t guid) const
 {
 	if (guid == getOwner()) {

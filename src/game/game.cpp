@@ -5912,7 +5912,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		}
 
 		if (target->hasCondition(CONDITION_MANASHIELD) && damage.primary.type != COMBAT_UNDEFINEDDAMAGE) {
-      int32_t manaDamage = std::min<int32_t>(target->getMana(), healthChange);
+			int32_t manaDamage = std::min<int32_t>(target->getMana(), healthChange);
 			uint16_t manaShield = target->getManaShield();
 			if (manaShield > 0) {
 				if (manaShield > manaDamage) {

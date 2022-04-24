@@ -25,6 +25,7 @@
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
 #include "utils/pugicast.h"
+
 Spells::Spells()
 {
 	scriptInterface.initState();

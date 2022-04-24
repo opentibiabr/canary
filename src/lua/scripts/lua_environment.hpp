@@ -82,4 +82,6 @@ class LuaEnvironment: public LuaScriptInterface {
 		friend class CombatSpell;
 };
 
+inline LuaEnvironment g_luaEnvironment;
+
 #endif  // SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_

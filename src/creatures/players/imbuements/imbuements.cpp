@@ -22,7 +22,6 @@
 #include "creatures/players/imbuements/imbuements.h"
 #include "utils/pugicast.h"
 
-extern Events* g_events;
 
 Imbuement* Imbuements::getImbuement(uint16_t id)
 {

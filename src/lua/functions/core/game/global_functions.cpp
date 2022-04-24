@@ -30,11 +30,6 @@
 #include "server/network/protocol/protocolstatus.h"
 
 class Creature;
-
-extern Chat* g_chat;
-extern Game g_game;
-extern LuaEnvironment g_luaEnvironment;
-
 int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count/subtype, <optional: default: 1> canDropOnMap)
 	// doPlayerAddItem(cid, itemid, <optional: default: 1> count, <optional: default: 1> canDropOnMap, <optional: default: 1>subtype)
@@ -85,7 +80,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		ReturnValue ret = g_game.internalPlayerAddItem(player, newItem, canDropOnMap);
+		ReturnValue ret = g_game().internalPlayerAddItem(player, newItem, canDropOnMap);
 		if (ret != RETURNVALUE_NOERROR) {
 			delete newItem;
 			pushBoolean(L, false);
@@ -190,7 +185,7 @@ int GlobalFunctions::luaDoAddContainerItem(lua_State* L) {
 			subType -= stackCount;
 		}
 
-		ReturnValue ret = g_game.internalAddItem(container, newItem);
+		ReturnValue ret = g_game().internalAddItem(container, newItem);
 		if (ret != RETURNVALUE_NOERROR) {
 			delete newItem;
 			pushBoolean(L, false);
@@ -236,14 +231,14 @@ int GlobalFunctions::luaGetDepotId(lua_State* L) {
 
 int GlobalFunctions::luaGetWorldTime(lua_State* L) {
 	// getWorldTime()
-	uint32_t time = g_game.getLightHour();
+	uint32_t time = g_game().getLightHour();
 	lua_pushnumber(L, time);
 	return 1;
 }
 
 int GlobalFunctions::luaGetWorldLight(lua_State* L) {
 	// getWorldLight()
-	LightInfo lightInfo = g_game.getWorldLightInfo();
+	LightInfo lightInfo = g_game().getWorldLightInfo();
 	lua_pushnumber(L, lightInfo.level);
 	lua_pushnumber(L, lightInfo.color);
 	return 2;
@@ -351,6 +346,12 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.origin = getNumber<CombatOrigin>(L, 7, ORIGIN_SPELL);
 	damage.primary.type = combatType;
 	damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
+
+	// Check if it's a healing then we sould add the non-aggresive tag
+	if (combatType == COMBAT_HEALING ||
+		(combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
+		params.aggressive = false;
+	}
 
 	Combat::doCombatHealth(creature, target, damage, params);
 	pushBoolean(L, true);
@@ -652,7 +653,7 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	eventDesc.scriptId = getScriptEnv()->getScriptId();
 
 	auto& lastTimerEventId = g_luaEnvironment.lastEventTimerId;
-	eventDesc.eventId = g_scheduler.addEvent(createSchedulerTask(
+	eventDesc.eventId = g_scheduler().addEvent(createSchedulerTask(
 					delay, std::bind(&LuaEnvironment::executeTimerEvent, &g_luaEnvironment, lastTimerEventId)
 	));
 
@@ -682,7 +683,7 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 	LuaTimerEventDesc timerEventDesc = std::move(it->second);
 	timerEvents.erase(it);
 
-	g_scheduler.stopEvent(timerEventDesc.eventId);
+	g_scheduler().stopEvent(timerEventDesc.eventId);
 	luaL_unref(globalState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	for (auto parameter : timerEventDesc.parameters) {
@@ -694,13 +695,13 @@ int GlobalFunctions::luaStopEvent(lua_State* L) {
 }
 
 int GlobalFunctions::luaSaveServer(lua_State* L) {
-	g_game.saveGameState();
+	g_game().saveGameState();
 	pushBoolean(L, true);
 	return 1;
 }
 
 int GlobalFunctions::luaCleanMap(lua_State* L) {
-	lua_pushnumber(L, g_game.map.clean());
+	lua_pushnumber(L, g_game().map.clean());
 	return 1;
 }
 
@@ -732,7 +733,7 @@ int GlobalFunctions::luaIsInWar(lua_State* L) {
 
 int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 	// getWaypointPositionByName(name)
-	auto& waypoints = g_game.map.waypoints;
+	auto& waypoints = g_game().map.waypoints;
 
 	auto it = waypoints.find(getString(L, -1));
 	if (it != waypoints.end()) {
@@ -745,8 +746,8 @@ int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {
 
 int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 	// sendChannelMessage(channelId, type, message)
-	uint32_t channelId = getNumber<uint32_t>(L, 1);
-	ChatChannel* channel = g_chat->getChannelById(channelId);
+	uint16_t channelId = getNumber<uint16_t>(L, 1);
+	const ChatChannel* channel = g_chat().getChannelById(channelId);
 	if (!channel) {
 		pushBoolean(L, false);
 		return 1;
@@ -762,7 +763,7 @@ int GlobalFunctions::luaSendChannelMessage(lua_State* L) {
 int GlobalFunctions::luaSendGuildChannelMessage(lua_State* L) {
 	// sendGuildChannelMessage(guildId, type, message)
 	uint32_t guildId = getNumber<uint32_t>(L, 1);
-	ChatChannel* channel = g_chat->getGuildChannelById(guildId);
+	const ChatChannel* channel = g_chat().getGuildChannelById(guildId);
 	if (!channel) {
 		pushBoolean(L, false);
 		return 1;

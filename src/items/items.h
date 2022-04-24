@@ -218,6 +218,8 @@ class ItemType
 		uint32_t minReqLevel = 0;
 		uint32_t minReqMagicLevel = 0;
 		uint32_t charges = 0;
+		uint32_t buyPrice = 0;
+		uint32_t sellPrice = 0;
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;
@@ -314,6 +316,15 @@ class Items
 		const ItemType& getItemType(size_t id) const;
 		ItemType& getItemType(size_t id);
 		const ItemType& getItemIdByClientId(uint16_t spriteId) const;
+
+		/**
+		 * @brief Check if the itemid "hasId" is stored on "items", if not, return false
+		 * 
+		 * @param hasId check item id
+		 * @return true if the item exist 
+		 * @return false if the item not exist
+		 */
+		bool hasItemType(size_t hasId) const;
 
 		uint16_t getItemIdByName(const std::string& name);
 

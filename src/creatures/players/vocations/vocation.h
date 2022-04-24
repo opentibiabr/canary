@@ -99,9 +99,9 @@ class Vocation
 			return fromVocation;
 		}
 
-    bool getMagicShield() const {
-      return magicShield;
-    }
+		bool getMagicShield() const {
+		return magicShield;
+		}
 
 		float meleeDamageMultiplier = 1.0f;
 		float distDamageMultiplier = 1.0f;
@@ -132,7 +132,7 @@ class Vocation
 		uint32_t baseSpeed = 220;
 		uint16_t id;
 
-    bool magicShield = false;
+    	bool magicShield = false;
 
 		uint32_t gainSoulTicks = 120000;
 
@@ -146,15 +146,29 @@ class Vocation
 class Vocations
 {
 	public:
+		Vocations() = default;
+
+		Vocations(Vocations const&) = delete;
+		void operator=(Vocations const&) = delete;
+
+		static Vocations& getInstance() {
+			// Guaranteed to be destroyed
+			static Vocations instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		bool loadFromXml();
 
 		Vocation* getVocation(uint16_t id);
-    const std::map<uint16_t, Vocation>& getVocations() const {return vocationsMap;}
-		int32_t getVocationId(const std::string& name) const;
+    	const std::map<uint16_t, Vocation>& getVocations() const {return vocationsMap;}
+		uint16_t getVocationId(const std::string& name) const;
 		uint16_t getPromotedVocation(uint16_t vocationId) const;
 
 	private:
 		std::map<uint16_t, Vocation> vocationsMap;
 };
+
+constexpr auto g_vocations = &Vocations::getInstance;
 
 #endif  // SRC_CREATURES_PLAYERS_VOCATIONS_VOCATION_H_

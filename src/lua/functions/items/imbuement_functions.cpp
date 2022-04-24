@@ -28,14 +28,11 @@
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
-extern Imbuements* g_imbuements;
-extern Scripts* g_scripts;
-extern Weapons* g_weapons;
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)
-	uint32_t imbuementId = getNumber<uint32_t>(L, 2);
-	Imbuement* imbuement = g_imbuements->getImbuement(imbuementId);
+	uint16_t imbuementId = getNumber<uint16_t>(L, 2);
+	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
 
 	if (imbuement) {
 		pushUserdata<Imbuement>(L, imbuement);
@@ -97,7 +94,7 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 		return 1;
 	}
 
-	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
+	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
 	if (!baseImbuement)
 	{
 		lua_pushnil(L);
@@ -122,8 +119,8 @@ int ImbuementFunctions::luaImbuementGetCategory(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t categoryId = imbuement->getCategory();
-	const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(categoryId);
+	uint16_t categoryId = imbuement->getCategory();
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(categoryId);
 
 	if (categoryImbuement) {
 		lua_createtable(L, 0, 2);

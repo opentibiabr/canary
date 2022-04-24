@@ -23,7 +23,6 @@
 #include "lua/functions/events/creature_event_functions.hpp"
 #include "utils/tools.h"
 
-extern CreatureEvents* g_creatureEvents;
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
@@ -90,7 +89,7 @@ int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_creatureEvents->registerLuaEvent(creature));
+		pushBoolean(L, g_creatureEvents().registerLuaEvent(creature));
 	} else {
 		lua_pushnil(L);
 	}

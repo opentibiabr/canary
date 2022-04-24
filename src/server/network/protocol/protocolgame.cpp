@@ -39,25 +39,17 @@
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
 
-extern Actions actions;
-extern CreatureEvents *g_creatureEvents;
-extern Vocations g_vocations;
-extern Chat *g_chat;
-extern Modules *g_modules;
-extern Spells *g_spells;
-extern Imbuements *g_imbuements;
-extern Monsters g_monsters;
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTask(Callable function, Args &&... args)
 {
-	g_dispatcher.addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
 }
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args)
 {
-	g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
@@ -363,7 +355,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
 		}
 		else
 		{
@@ -394,7 +386,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	player = foundPlayer;
 	player->incrementReferenceCounter();
 
-	g_chat->removeUserFromAllChannels(*player);
+	g_chat().removeUserFromAllChannels(*player);
 	player->clearModalWindows();
 	player->setOperatingSystem(operatingSystem);
 	player->isConnecting = false;
@@ -426,7 +418,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced)
 		}
 	}
 
-	if (removePlayer && !g_creatureEvents->playerLogout(player)) {
+	if (removePlayer && !g_creatureEvents().playerLogout(player)) {
 		return;
 	}
 
@@ -553,7 +545,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
 }
 
 void ProtocolGame::onConnect()
@@ -640,18 +632,18 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 		if (recvbyte != 0x1D && recvbyte != 0x1E) {
 			// keep the connection alive
-			g_scheduler.addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
-			g_scheduler.addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
+			g_scheduler().addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
+			g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
 			return;
 		}
 	}
 
 	// Modules system
 	if(player && recvbyte != 0xD3){
-		g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player->getID(), msg, recvbyte)));
+		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
 	}
 
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
@@ -665,7 +657,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 }
 
 	switch (recvbyte) {
-		case 0x14: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
+		case 0x14: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
 		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
 		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
 		case 0x2a: addBestiaryTrackerList(msg); break;
@@ -743,8 +735,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xCC: parseSeekInContainer(msg); break;
 		case 0xCD: parseInspectionObject(msg); break;
 		case 0xD2: addGameTask(&Game::playerRequestOutfit, player->getID()); break;
-		//g_dispatcher.addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
-		case 0xD3: g_dispatcher.addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
+		//g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
+		case 0xD3: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
 		case 0xD4: parseToggleMount(msg); break;
 		case 0xD5: parseApplyImbuement(msg); break;
 		case 0xD6: parseClearImbuement(msg); break;
@@ -1137,7 +1129,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 	}
 
 	uint16_t startBufferPosition = msg.getBufferPosition();
-	Module *outfitModule = g_modules->getEventByRecvbyte(0xD3, false);
+	Module *outfitModule = g_modules().getEventByRecvbyte(0xD3, false);
 	if (outfitModule)
 	{
 		outfitModule->executeOnRecvbyte(player, msg);
@@ -1639,7 +1631,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addString("(all)");          // All Vocations - hardcoded
 
 	uint32_t selectedVocation = 0xFFFFFFFF;
-	const auto &vocationsMap = g_vocations.getVocations();
+	const auto &vocationsMap = g_vocations().getVocations();
 	for (const auto &it : vocationsMap)
 	{
 		const Vocation &vocation = it.second;
@@ -1771,7 +1763,7 @@ void ProtocolGame::parseBestiarysendRaces()
 		uint16_t count = 0;
 		for (auto rit : mtype_list)
 		{
-			MonsterType *mtype = g_monsters.getMonsterType(rit.second);
+			const MonsterType *mtype = g_monsters().getMonsterType(rit.second);
 			if (!mtype)
 			{
 				return;
@@ -1811,7 +1803,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 	auto ait = mtype_list.find(raceId);
 	if (ait != mtype_list.end())
 	{
-		MonsterType *mType = g_monsters.getMonsterType(ait->second);
+		MonsterType *mType = g_monsters().getMonsterType(ait->second);
 		if (mType)
 		{
 			Class = mType->info.bestiaryClass;
@@ -1945,7 +1937,7 @@ void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg)
 	auto it = mtype_list.find(thisrace);
 	if (it != mtype_list.end())
 	{
-		MonsterType *mtype = g_monsters.getMonsterType(it->second);
+		MonsterType *mtype = g_monsters().getMonsterType(it->second);
 		if (mtype)
 		{
 			player->addBestiaryTrackerList(mtype);
@@ -2456,7 +2448,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg)
 		{
 			if (_it.first == raceid_)
 			{
-				MonsterType *tmpType = g_monsters.getMonsterType(it_.second);
+				MonsterType *tmpType = g_monsters().getMonsterType(it_.second);
 				if (!tmpType)
 				{
 					return;
@@ -3516,7 +3508,7 @@ void ProtocolGame::sendBasicData()
 		msg.addByte(1); // has reached Main (allow player to open Prey window)
 	}
 
-	std::list<uint16_t> spellsList = g_spells->getSpellsByVocation(player->getVocationId());
+	std::list<uint16_t> spellsList = g_spells().getSpellsByVocation(player->getVocationId());
 	msg.add<uint16_t>(spellsList.size());
 	for (uint16_t sid : spellsList)
 	{
@@ -3694,7 +3686,7 @@ void ProtocolGame::sendChannelsDialog()
 	NetworkMessage msg;
 	msg.addByte(0xAB);
 
-	const ChannelList &list = g_chat->getChannelList(*player);
+	const ChannelList &list = g_chat().getChannelList(*player);
 	msg.addByte(list.size());
 	for (ChatChannel *channel : list)
 	{
@@ -4160,7 +4152,7 @@ void ProtocolGame::updateCoinBalance()
 		return;
 	}
 
-	g_dispatcher.addTask(
+	g_dispatcher().addTask(
 		createTask(std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer) {
@@ -6508,11 +6500,11 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 	}
 }
 
-void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId)
+void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const
 {
-	Imbuement *imbuement = g_imbuements->getImbuement(imbuementId);
-	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
-	CategoryImbuement *categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
+	Imbuement *imbuement = g_imbuements().getImbuement(imbuementId);
+	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	const CategoryImbuement *categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 
 	msg.add<uint32_t>(imbuementId);
 	msg.addString(baseImbuement->name + " " + imbuement->getName());
@@ -6570,10 +6562,10 @@ void ProtocolGame::openImbuementWindow(Item *item)
 		msg.addByte(0x01);
 		addImbuementInfo(msg, imbuementInfo.imbuement->getID());
 		msg.add<uint32_t>(imbuementInfo.duration);
-		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
+		msg.add<uint32_t>(g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
 	}
 
-	std::vector<Imbuement *> imbuements = g_imbuements->getImbuements(player, item);
+	std::vector<Imbuement *> imbuements = g_imbuements().getImbuements(player, item);
 	std::unordered_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());

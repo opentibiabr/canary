@@ -29,7 +29,6 @@ double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
 double Creature::speedC = -4795.01;
 
-extern CreatureEvents* g_creatureEvents;
 
 Creature::Creature()
 {
@@ -282,13 +281,13 @@ void Creature::addEventWalk(bool firstStep)
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler.addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
+	eventWalk = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
 }
 
 void Creature::stopEventWalk()
 {
 	if (eventWalk != 0) {
-		g_scheduler.stopEvent(eventWalk);
+		g_scheduler().stopEvent(eventWalk);
 		eventWalk = 0;
 	}
 }
@@ -606,7 +605,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 	if (followCreature && (creature == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher.addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+			g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -620,7 +619,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 		} else {
 			if (hasExtraSwing()) {
 				//our target is moving lets see if we can get in hit
-				g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+				g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
 			}
 
 			if (newTile->getZone() != oldTile->getZone()) {
@@ -769,7 +768,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 
 				if (g_configManager().getBoolean(AUTOLOOT)) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);
-					g_dispatcher.addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getClientID(), pos - 1, nullptr, false, true)));
+					g_dispatcher().addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getClientID(), pos - 1, nullptr, false, true)));
 				}
 			}
 		}
@@ -813,7 +812,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange/* = true
 		g_game().addCreatureHealth(this);
 	}
 	if (health <= 0) {
-		g_dispatcher.addTask(createTask(std::bind(&Game::executeDeath, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind(&Game::executeDeath, &g_game(), getID())));
 	}
 }
 
@@ -1285,7 +1284,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		if (!force && conditionType == CONDITION_PARALYZE) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				g_scheduler.addEvent(createSchedulerTask(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId)));
+				g_scheduler().addEvent(createSchedulerTask(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId)));
 				return;
 			}
 		}
@@ -1468,7 +1467,7 @@ void Creature::setNormalCreatureLight()
 
 bool Creature::registerCreatureEvent(const std::string& name)
 {
-	CreatureEvent* event = g_creatureEvents->getEventByName(name);
+	CreatureEvent* event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}
@@ -1490,7 +1489,7 @@ bool Creature::registerCreatureEvent(const std::string& name)
 
 bool Creature::unregisterCreatureEvent(const std::string& name)
 {
-	CreatureEvent* event = g_creatureEvents->getEventByName(name);
+	const CreatureEvent* event = g_creatureEvents().getEventByName(name);
 	if (!event) {
 		return false;
 	}

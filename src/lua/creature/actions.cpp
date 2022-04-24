@@ -27,8 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
 
-extern Spells* g_spells;
-extern Actions* g_actions;
 
 Actions::Actions() :
 	scriptInterface("Action Interface") {
@@ -404,7 +402,7 @@ Action* Actions::getAction(const Item* item) {
 	}
 
 	//rune items
-	return g_spells->getRuneSpell(item->getID());
+	return g_spells().getRuneSpell(item->getID());
 }
 
 ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey) {
@@ -638,10 +636,10 @@ std::string Action::getScriptEventName() const {
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {
-		return g_actions->canUse(player, toPos);
+		return g_actions().canUse(player, toPos);
 	}
 
-	return g_actions->canUseFar(player, toPos, checkLineOfSight, checkFloor);
+	return g_actions().canUseFar(player, toPos, checkLineOfSight, checkFloor);
 }
 
 Thing* Action::getTarget(Player* player, Creature* targetCreature,

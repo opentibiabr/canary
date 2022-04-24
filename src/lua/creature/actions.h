@@ -141,6 +141,13 @@ class Actions final : public BaseEvents {
 		Actions(const Actions&) = delete;
 		Actions& operator=(const Actions&) = delete;
 
+		static Actions& getInstance() {
+			// Guaranteed to be destroyed
+			static Actions instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		bool useItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
 		bool useItemEx(Player* player, const Position& fromPos, const Position& toPos, uint8_t toStackPos, Item* item, bool isHotkey, Creature* creature = nullptr);
 
@@ -234,5 +241,7 @@ class Actions final : public BaseEvents {
 
 		LuaScriptInterface scriptInterface;
 };
+
+constexpr auto g_actions = &Actions::getInstance;
 
 #endif  // SRC_LUA_CREATURE_ACTIONS_H_

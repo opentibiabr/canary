@@ -30,10 +30,6 @@
 #include "items/item.h"
 #include "lua/functions/creatures/player/player_functions.hpp"
 
-extern Chat* g_chat;
-extern Monsters g_monsters;
-extern Spells* g_spells;
-extern Vocations g_vocations;
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -303,7 +299,7 @@ int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
 	// player:addBestiaryKill(name[, amount = 1])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-			MonsterType* mtype = g_monsters.getMonsterType(getString(L, 2));
+			MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
 			if (mtype) {
 				IOBestiary g_bestiary;
 				g_bestiary.addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
@@ -324,7 +320,7 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 		charmRune_t charmid = getNumber<charmRune_t>(L, 2);
 		uint16_t raceid = player->parseRacebyCharm(charmid, false, 0);
 		if (raceid > 0) {
-			MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceid);
+			MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceid);
 			if (mtype) {
 				pushUserdata<MonsterType>(L, mtype);
 				setMetatable(L, -1, "MonsterType");
@@ -1124,9 +1120,9 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 
 	Vocation* vocation;
 	if (isNumber(L, 2)) {
-		vocation = g_vocations.getVocation(getNumber<uint16_t>(L, 2));
+		vocation = g_vocations().getVocation(getNumber<uint16_t>(L, 2));
 	} else if (isString(L, 2)) {
-		vocation = g_vocations.getVocation(g_vocations.getVocationId(getString(L, 2)));
+		vocation = g_vocations().getVocation(g_vocations().getVocationId(getString(L, 2)));
 	} else if (isUserdata(L, 2)) {
 		vocation = getUserdata<Vocation>(L, 2);
 	} else {
@@ -1917,7 +1913,7 @@ int PlayerFunctions::luaPlayerSendTextMessage(lua_State* L) {
 	TextMessage message(getNumber<MessageClasses>(L, 2), getString(L, 3));
 	if (parameters == 4) {
 		uint16_t channelId = getNumber<uint16_t>(L, 4);
-		ChatChannel* channel = g_chat->getChannel(*player, channelId);
+		ChatChannel* channel = g_chat().getChannel(*player, channelId);
 		if (!channel || !channel->hasUser(*player)) {
 			pushBoolean(L, false);
 			return 1;
@@ -2437,7 +2433,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 	}
 
 	const std::string& spellName = getString(L, 2);
-	InstantSpell* spell = g_spells->getInstantSpellByName(spellName);
+	const InstantSpell* spell = g_spells().getInstantSpellByName(spellName);
 	if (!spell) {
 		reportErrorFunc("Spell \"" + spellName + "\" not found");
 		pushBoolean(L, false);
@@ -3106,9 +3102,9 @@ int PlayerFunctions::luaPlayerGetInstantSpells(lua_State* L) {
 	}
 
 	std::vector<const InstantSpell*> spells;
-	for (auto& spell : g_spells->getInstantSpells()) {
-		if (spell.second.canCast(player)) {
-			spells.push_back(&spell.second);
+	for (auto& [key, spell] : g_spells().getInstantSpells()) {
+		if (spell.canCast(player)) {
+			spells.push_back(&spell);
 		}
 	}
 

@@ -30,19 +30,17 @@
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
-extern Monsters g_monsters;
-extern Scripts* g_scripts;
 
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	// Game.createMonsterType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("MonsterTypes can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	MonsterType* monsterType = g_monsters.getMonsterType(getString(L, 1));
+	MonsterType* monsterType = g_monsters().getMonsterType(getString(L, 1));
 	if (monsterType) {
 		monsterType->info.lootItems.clear();
 		monsterType->info.attackSpells.clear();
@@ -52,8 +50,8 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	} else if (isString(L, 1)) {
 		monsterType = new MonsterType();
 		std::string name = getString(L, 1);
-		g_monsters.addMonsterType(name, monsterType);
-		monsterType = g_monsters.getMonsterType(getString(L, 1));
+		g_monsters().addMonsterType(name, monsterType);
+		monsterType = g_monsters().getMonsterType(getString(L, 1));
 		monsterType->name = name;
 		monsterType->nameDescription = "a " + name;
 		pushUserdata<MonsterType>(L, monsterType);
@@ -66,7 +64,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 	// Game.createNpcType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("NpcType can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -189,7 +187,7 @@ int GameFunctions::luaGameGetPlayers(lua_State* L) {
 int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string& path = getString(L, 1);
-	g_dispatcher.addTask(createTask([path]() {g_game().loadMap(path);}));
+	g_dispatcher().addTask(createTask([path]() {g_game().loadMap(path); }));
 	return 0;
 }
 
@@ -213,7 +211,7 @@ int GameFunctions::luaGameGetNpcCount(lua_State* L) {
 
 int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	// Game.getMonsterTypes()
-	auto& type = g_monsters.monsters;
+	auto& type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
 	for (auto& mType : type) {
@@ -538,7 +536,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("Charm bestiary can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -556,7 +554,7 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateItemClassification(lua_State* L) {
 	// Game.createItemClassification(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("Item classification can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -612,7 +610,7 @@ int GameFunctions::luaGameReload(lua_State* L) {
 	if (reloadType == RELOAD_TYPE_GLOBAL) {
 		pushBoolean(L, g_luaEnvironment.loadFile("data/global.lua") == 0);
 		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
-		pushBoolean(L, g_scripts->loadScripts("scripts/lib", true, true));
+		pushBoolean(L, g_scripts().loadScripts("scripts/lib", true, true));
 	} else if (reloadType == RELOAD_TYPE_STAGES) {
 		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
 	} else {

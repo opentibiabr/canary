@@ -31,6 +31,7 @@
 #include "database/databasetasks.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 #include "io/iomarket.h"
 #include "lua/creature/events.h"
 #include "lua/modules/modules.h"
@@ -45,20 +46,6 @@
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
 #endif
-
-DatabaseTasks g_databaseTasks;
-Dispatcher g_dispatcher;
-Scheduler g_scheduler;
-
-extern Events* g_events;
-extern Imbuements* g_imbuements;
-extern LuaEnvironment g_luaEnvironment;
-extern Modules* g_modules;
-Monsters g_monsters;
-Npcs g_npcs;
-Vocations g_vocations;
-extern Scripts* g_scripts;
-RSA2 g_RSA;
 
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
@@ -96,13 +83,6 @@ void badAllocationHandler() {
 	exit(-1);
 }
 
-void initGlobalScopes() {
-	g_scripts = new Scripts();
-	g_modules = new Modules();
-	g_events = new Events();
-	g_imbuements = new Imbuements();
-}
-
 void modulesLoadHelper(bool loaded, std::string moduleName) {
 	SPDLOG_INFO("Loading {}", moduleName);
 	if (!loaded) {
@@ -120,7 +100,7 @@ void loadModules() {
 
 	// set RSA key
 	try {
-		g_RSA.loadPEM("key.pem");
+		g_RSA().loadPEM("key.pem");
 	} catch(const std::exception& e) {
 		SPDLOG_ERROR(e.what());
 		startupErrorMessage();
@@ -142,7 +122,7 @@ void loadModules() {
 		startupErrorMessage();
 	}
 
-	g_databaseTasks.start();
+	g_databaseTasks().start();
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
@@ -154,8 +134,6 @@ void loadModules() {
 		"items.otb");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
-	modulesLoadHelper(Scripts::getInstance().loadScriptSystems(),
-		"script systems");
 
 	// Lua Env
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/global.lua") == 0),
@@ -167,9 +145,9 @@ void loadModules() {
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/npclib/load.lua") == 0),
 		"data/npclib/load.lua");
 
-	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
+	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
-	modulesLoadHelper(g_vocations.loadFromXml(),
+	modulesLoadHelper(g_vocations().loadFromXml(),
 		"data/XML/vocations.xml");
 	modulesLoadHelper(g_game().loadScheduleEventFromXml(),
 		"data/XML/events.xml");
@@ -177,18 +155,18 @@ void loadModules() {
 		"data/XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
 		"data/XML/familiars.xml");
-	modulesLoadHelper(g_imbuements->loadFromXml(),
+	modulesLoadHelper(g_imbuements().loadFromXml(),
 		"data/XML/imbuements.xml");
-	modulesLoadHelper(g_modules->loadFromXml(),
+	modulesLoadHelper(g_modules().loadFromXml(),
 		"data/modules/modules.xml");
-	modulesLoadHelper(g_events->loadFromXml(),
+	modulesLoadHelper(g_events().loadFromXml(),
 		"data/events/events.xml");
-	modulesLoadHelper(g_scripts->loadScripts("scripts", false, false),
+	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false),
 		"data/scripts");
-	modulesLoadHelper(g_scripts->loadScripts("monster", false, false),
+	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"data/monster");
-	modulesLoadHelper(g_scripts->loadScripts("npc", false, false),
-		"data/npc");
+	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
+		"data/npclua");
 
 	g_game().loadBoostedCreature();
 }
@@ -209,10 +187,10 @@ int main(int argc, char* argv[]) {
 
 	ServiceManager serviceManager;
 
-	g_dispatcher.start();
-	g_scheduler.start();
+	g_dispatcher().start();
+	g_scheduler().start();
 
-	g_dispatcher.addTask(createTask(std::bind(mainLoader, argc, argv,
+	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
 												&serviceManager)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock);
@@ -223,14 +201,14 @@ int main(int argc, char* argv[]) {
 		serviceManager.run();
 	} else {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
-		g_databaseTasks.shutdown();
-		g_dispatcher.shutdown();
+		g_databaseTasks().shutdown();
+		g_dispatcher().shutdown();
 		exit(-1);
 	}
 
-	g_scheduler.join();
-	g_databaseTasks.join();
-	g_dispatcher.join();
+	g_scheduler().join();
+	g_databaseTasks().join();
+	g_dispatcher().join();
 	return 0;
 }
 #endif
@@ -292,7 +270,6 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	}
 
 	// Init and load modules
-	initGlobalScopes();
 	loadModules();
 
 #ifdef _WIN32

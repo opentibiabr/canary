@@ -28,9 +28,6 @@
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
 
-extern Weapons* g_weapons;
-extern Events* g_events;
-extern Monsters g_monsters;
 
 CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 {
@@ -57,7 +54,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 				);
 			} else if (formulaType == COMBAT_FORMULA_SKILL) {
 				Item* tool = player->getWeapon();
-				const Weapon* weapon = g_weapons->getWeapon(tool);
+				const Weapon* weapon = g_weapons().getWeapon(tool);
 				if (weapon) {
 					damage.primary.value = normal_random(
 						static_cast<int32_t>(minb),
@@ -265,7 +262,7 @@ ReturnValue Combat::canDoCombat(Creature* caster, Tile* tile, bool aggressive)
 		return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 	}
 
-	return g_events->eventCreatureOnAreaCombat(caster, tile, aggressive);
+	return g_events().eventCreatureOnAreaCombat(caster, tile, aggressive);
 }
 
 bool Combat::isInPvpZone(const Creature* attacker, const Creature* target)
@@ -381,7 +378,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 			}
 		}
 	}
-	return g_events->eventCreatureOnTargetCombat(attacker, target);
+	return g_events().eventCreatureOnTargetCombat(attacker, target);
 }
 
 void Combat::setPlayerCombatValues(formulaType_t newFormulaType, double newMina, double newMinb, double newMaxa, double newMaxb)
@@ -501,7 +498,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	if (caster && caster->getPlayer()) {
 		Item *item = caster->getPlayer()->getWeapon();
 		damage = applyImbuementElementalDamage(item, damage);
-		g_events->eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
+		g_events().eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
 
 		if (target && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
 			damage.primary.value /= 2;
@@ -578,7 +575,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			} else if (caster && caster->getMonster()) {
 				uint16_t playerCharmRaceid = player->parseRacebyCharm(CHARM_CLEANSE, false, 0);
 				if (playerCharmRaceid != 0) {
-					MonsterType* mType = g_monsters.getMonsterType(caster->getName());
+					const MonsterType* mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
 						IOBestiary g_bestiary;
 						Charm* charm = g_bestiary.getBestiaryCharm(CHARM_CLEANSE);
@@ -903,7 +900,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
-				MonsterType* mType = g_monsters.getMonsterType(target->getName());
+				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
 					IOBestiary g_bestiary;
 					Charm* charm = g_bestiary.getBestiaryCharm(CHARM_LOW);
@@ -1106,7 +1103,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 		case COMBAT_FORMULA_SKILL: {
 			//onGetPlayerMinMaxValues(player, attackSkill, attackValue, attackFactor)
 			Item* tool = player->getWeapon();
-			const Weapon* weapon = g_weapons->getWeapon(tool);
+			const Weapon* weapon = g_weapons().getWeapon(tool);
 			Item* item = nullptr;
 
 			if (weapon) {

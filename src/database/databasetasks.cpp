@@ -22,7 +22,6 @@
 #include "database/databasetasks.h"
 #include "game/scheduling/tasks.h"
 
-extern Dispatcher g_dispatcher;
 
 DatabaseTasks::DatabaseTasks() {
   db_ = &Database::getInstance();
@@ -105,7 +104,7 @@ void DatabaseTasks::runTask(const DatabaseTask& task)
 	}
 
 	if (task.callback) {
-		g_dispatcher.addTask(createTask(std::bind(task.callback, result, success)));
+		g_dispatcher().addTask(createTask(std::bind(task.callback, result, success)));
 	}
 }
 

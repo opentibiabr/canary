@@ -22,7 +22,6 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
-extern Monsters g_monsters;
 
 bool Condition::setParam(ConditionParam_t param, int32_t value)
 {
@@ -1655,7 +1654,7 @@ void ConditionOutfit::serialize(PropWriteStream& propWriteStream)
 bool ConditionOutfit::startCondition(Creature* creature)
 {
 	if ((outfit.lookType == 0 && outfit.lookTypeEx == 0) && !monsterName.empty()) {
-		MonsterType* monsterType = g_monsters.getMonsterType(monsterName);
+		const MonsterType* monsterType = g_monsters().getMonsterType(monsterName);
 		if (monsterType) {
 			setOutfit(monsterType->info.outfit);
 		} else {
@@ -1689,7 +1688,7 @@ void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondi
 
 		const ConditionOutfit& conditionOutfit = static_cast<const ConditionOutfit&>(*addCondition);
 		if (!conditionOutfit.monsterName.empty() && conditionOutfit.monsterName.compare(monsterName) != 0) {
-			MonsterType* monsterType = g_monsters.getMonsterType(conditionOutfit.monsterName);
+			const MonsterType* monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
 			if (monsterType) {
 				setOutfit(monsterType->info.outfit);
 			} else {

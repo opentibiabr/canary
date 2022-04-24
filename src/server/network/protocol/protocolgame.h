@@ -233,7 +233,7 @@ private:
 	void parseCoinTransfer(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId);
+	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	//Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);

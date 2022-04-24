@@ -22,18 +22,17 @@
 #include "creatures/players/vocations/vocation.h"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
-extern Vocations g_vocations;
 
 int VocationFunctions::luaVocationCreate(lua_State* L) {
 	// Vocation(id or name)
-	uint32_t id;
+	uint16_t vocationId;
 	if (isNumber(L, 2)) {
-		id = getNumber<uint32_t>(L, 2);
+		vocationId = getNumber<uint16_t>(L, 2);
 	} else {
-		id = g_vocations.getVocationId(getString(L, 2));
+		vocationId = g_vocations().getVocationId(getString(L, 2));
 	}
 
-	Vocation* vocation = g_vocations.getVocation(id);
+	Vocation* vocation = g_vocations().getVocation(vocationId);
 	if (vocation) {
 		pushUserdata<Vocation>(L, vocation);
 		setMetatable(L, -1, "Vocation");
@@ -269,7 +268,7 @@ int VocationFunctions::luaVocationGetDemotion(lua_State* L) {
 		return 1;
 	}
 
-	Vocation* demotedVocation = g_vocations.getVocation(fromId);
+	Vocation* demotedVocation = g_vocations().getVocation(fromId);
 	if (demotedVocation && demotedVocation != vocation) {
 		pushUserdata<Vocation>(L, demotedVocation);
 		setMetatable(L, -1, "Vocation");
@@ -287,13 +286,13 @@ int VocationFunctions::luaVocationGetPromotion(lua_State* L) {
 		return 1;
 	}
 
-	uint16_t promotedId = g_vocations.getPromotedVocation(vocation->getId());
+	uint16_t promotedId = g_vocations().getPromotedVocation(vocation->getId());
 	if (promotedId == VOCATION_NONE) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	Vocation* promotedVocation = g_vocations.getVocation(promotedId);
+	Vocation* promotedVocation = g_vocations().getVocation(promotedId);
 	if (promotedVocation && promotedVocation != vocation) {
 		pushUserdata<Vocation>(L, promotedVocation);
 		setMetatable(L, -1, "Vocation");

@@ -24,7 +24,6 @@
 #include "game/game.h"
 #include "items/item.h"
 
-extern Actions* g_actions;
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
@@ -65,7 +64,7 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_actions->registerLuaEvent(action));
+		pushBoolean(L, g_actions().registerLuaEvent(action));
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));

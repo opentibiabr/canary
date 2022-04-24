@@ -28,10 +28,6 @@
 
 #include <limits>
 
-class PreySlot;
-
-extern Monsters g_monsters;
-
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {
 		SPDLOG_ERROR("Email {} doesn't match any account.", email);
@@ -418,7 +414,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   uint16_t raceid_t;
   while (propBestStream.read<uint16_t>(raceid_t)) {
-    MonsterType* tmp_tt = g_monsters.getMonsterTypeByRaceId(raceid_t);
+    MonsterType* tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
     if (tmp_tt) {
       player->addBestiaryTrackerList(tmp_tt);
     }

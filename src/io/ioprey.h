@@ -224,7 +224,19 @@ class TaskHuntingOption
 
 class IOPrey
 {
-	public:
+public:
+	IOPrey() = default;
+
+	// non-copyable
+	IOPrey(IOPrey const&) = delete;
+	void operator=(IOPrey const&) = delete;
+
+	static IOPrey& getInstance() {
+		// Guaranteed to be destroyed
+		static IOPrey instance;
+		// Instantiated on first use
+		return instance;
+	}
 
 	void CheckPlayerPreys(Player* player, uint8_t amount) const;
 	void ParsePreyAction(Player* player, PreySlot_t slotId, PreyAction_t action, PreyOption_t option, int8_t index, uint16_t raceId) const;
@@ -245,5 +257,7 @@ class IOPrey
 	NetworkMessage baseDataMessage;
 	std::vector<TaskHuntingOption*> taskOption;
 };
+
+constexpr auto g_ioprey = &IOPrey::getInstance;
 
 #endif  // SRC_IO_IOPREY_H_

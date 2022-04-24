@@ -26,10 +26,6 @@
 #include "game/game.h"
 #include "io/ioprey.h"
 
-extern Monsters g_monsters;
-extern ConfigManager g_config;
-extern IOPrey g_prey;
-
 // Prey class
 PreySlot::PreySlot(PreySlot_t id) :
 									id(id) {
@@ -124,7 +120,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 		}
 
 		blackList.push_back(raceId);
-		const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId);
+		const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0) {
 			continue;
 		} else if (stageOne != 0 && mtype->info.bestiaryStars <= 1) {
@@ -201,7 +197,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 		}
 
 		blackList.push_back(raceId);
-		const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId);
+		const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId);
 		if (!mtype || mtype->info.experience == 0) {
 			continue;
 		} else if (stageOne != 0 && mtype->info.bestiaryStars <= 1) {
@@ -479,7 +475,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 			return;
 		}
 
-		if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId)) {
+		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 			slot->currentKills = 0;
 			slot->selectedRaceId = raceId;
 			slot->removeMonsterType(raceId);
@@ -586,7 +582,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
 	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
 	{
-		const MonsterType* mtype = g_monsters.getMonsterType(mType.second);
+		const MonsterType* mtype = g_monsters().getMonsterType(mType.second);
 		if (!mtype) {
 			return;
 		}
@@ -620,7 +616,7 @@ TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) cons
 		return nullptr;
 	}
 
-	const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(slot->selectedRaceId);
+	const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId);
 	if (!mtype) {
 		return nullptr;
 	}

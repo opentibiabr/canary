@@ -28,7 +28,6 @@
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
 
-
 CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 {
 	CombatDamage damage;
@@ -577,8 +576,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				if (playerCharmRaceid != 0) {
 					const MonsterType* mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
-						IOBestiary g_bestiary;
-						Charm* charm = g_bestiary.getBestiaryCharm(CHARM_CLEANSE);
+						Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
 						if (charm && (charm->chance > normal_random(0, 100))) {
 							if (player->hasCondition(condition->getType())) {
 								player->removeCondition(condition->getType());
@@ -902,8 +900,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			if (playerCharmRaceid != 0) {
 				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
-					IOBestiary g_bestiary;
-					Charm* charm = g_bestiary.getBestiaryCharm(CHARM_LOW);
+					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
 					}

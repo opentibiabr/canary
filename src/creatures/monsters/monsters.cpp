@@ -28,7 +28,6 @@
 
 #include "utils/pugicast.h"
 
-
 spellBlock_t::~spellBlock_t()
 {
 	if (combatSpell) {

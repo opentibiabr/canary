@@ -36,7 +36,6 @@
 #include "items/weapons/weapons.h"
 #include "io/iobestiary.h"
 
-
 MuteCountMap Player::muteCountMap;
 
 uint32_t Player::playerAutoID = 0x10010000;
@@ -72,6 +71,18 @@ Player::~Player()
 
 	for (const auto& it : quickLootContainers) {
 		it.second->decrementReferenceCounter();
+	}
+
+	for (PreySlot* slot : preys) {
+		if (slot) {
+			delete slot;
+		}
+	}
+
+	for (TaskHuntingSlot* slot : taskHunting) {
+		if (slot) {
+			delete slot;
+		}
 	}
 
 	inbox->stopDecaying();
@@ -4403,6 +4414,17 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 				}
 			}
 		}
+	} else if (const Monster* monster = target->getMonster();
+		TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(monster->getRaceId())) {
+		if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {
+			taskSlot->currentKills += 1;
+			if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
+				(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+				taskSlot->state = PreyTaskDataState_Completed;
+				sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
+			}
+			reloadTaskSlot(taskSlot->id);
+		}
 	}
 
 	return unjustified;
@@ -5808,6 +5830,52 @@ void Player::openPlayerContainers()
 	}
 }
 
+void Player::initializePrey()
+{
+	if (preys.empty()) {
+		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+			auto slot = new PreySlot(static_cast<PreySlot_t>(slotId));
+			if (!g_configManager().getBoolean(PREY_ENABLED)) {
+				slot->state = PreyDataState_Inactive;
+			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT)) {
+				slot->state = PreyDataState_Locked;
+			} else {
+				slot->state = PreyDataState_Selection;
+				slot->reloadMonsterGrid(getPreyBlackList(), getLevel());
+			}
+
+			if (!setPreySlotClass(slot)) {
+				delete slot;
+			}
+		}
+	}
+}
+
+void Player::initializeTaskHunting()
+{
+	if (taskHunting.empty()) {
+		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+			auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(slotId));
+			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+				slot->state = PreyTaskDataState_Inactive;
+			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
+				slot->state = PreyTaskDataState_Locked;
+			} else {
+				slot->state = PreyTaskDataState_Selection;
+				slot->reloadMonsterGrid(getTaskHuntingBlackList(), getLevel());
+			}
+
+			if (!setTaskHuntingSlotClass(slot)) {
+				delete slot;
+			}
+		}
+	}
+
+	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
+	}
+}
+
 std::string Player::getBlessingsName() const
 {
 	uint8_t count = 0;
@@ -5839,6 +5907,14 @@ std::string Player::getBlessingsName() const
 	}
 
 	return os.str();
+}
+
+bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
+	if (!mtype) {
+		return false;
+	}
+
+	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
 /*******************************************************************************

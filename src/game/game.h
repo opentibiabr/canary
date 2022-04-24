@@ -36,6 +36,7 @@
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
+#include "io/ioprey.h"
 #include "items/items_classification.hpp"
 
 class ServiceManager;
@@ -44,9 +45,12 @@ class Monster;
 class Npc;
 class CombatInfo;
 class Charm;
+class IOPrey;
 class ItemClassification;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
+static constexpr int32_t EVENT_DECAYINTERVAL = 250;
+static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 
 class Game
 {
@@ -247,6 +251,8 @@ class Game
 		void playerDebugAssert(uint32_t playerId, const std::string& assertLine,
                                const std::string& date, const std::string& description,
                                const std::string& comment);
+		void playerPreyAction(uint32_t playerId, uint8_t slot, uint8_t action, uint8_t option, int8_t index, uint16_t raceId);
+		void playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId);
 		void playerNpcGreet(uint32_t playerId, uint32_t npcId);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId,
                                      uint8_t button, uint8_t choice);

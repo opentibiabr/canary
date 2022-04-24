@@ -170,7 +170,7 @@ void loadModules() {
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"data/monster");
 	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
-		"data/npclua");
+		"data/npc");
 
 	g_game().loadBoostedCreature();
 	g_ioprey().InitializeTaskHuntOptions();

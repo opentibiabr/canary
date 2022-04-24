@@ -385,19 +385,20 @@ Action* Actions::getAction(const Item* item) {
 		return &it->second;
 	}
 
-	if (const Tile * tile = item->getTile();
-	tile)
-	{
-		if (const Player* player = item->getHoldingPlayer();
-		player && item->getTopParent() == player)
-		{
-			SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
-			return nullptr;
-		}
 
-		if (auto iteratePositions = actionPositionMap.find(tile->getPosition());
-		iteratePositions != actionPositionMap.end())
+	if (auto iteratePositions = actionPositionMap.find(item->getPosition());
+	iteratePositions != actionPositionMap.end())
+	{
+		if (const Tile * tile = item->getTile();
+		tile)
 		{
+			if (const Player* player = item->getHoldingPlayer();
+			player && item->getTopParent() == player)
+			{
+				SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
+				return nullptr;
+			}
+
 			return &iteratePositions->second;
 		}
 	}

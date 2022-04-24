@@ -535,7 +535,10 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 			continue;
 		}
 
-		if (imbuementInfo.imbuement->combatType == COMBAT_NONE) {
+		if (imbuementInfo.imbuement->combatType == COMBAT_NONE
+		|| damage.primary.type == COMBAT_HEALING
+		|| damage.secondary.type == COMBAT_HEALING)
+		{
 			continue;
 		}
 

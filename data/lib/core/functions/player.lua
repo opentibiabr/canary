@@ -303,3 +303,63 @@ function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
 		end
 	end
 end
+
+function Player:createFamiliarSpell()
+	local playerPosition = self:getPosition()
+	if not self:isPremium() and self:getAccountType() < ACCOUNT_TYPE_GOD then
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		self:sendCancelMessage("You need a premium account.")
+		return false
+	end
+
+	if #self:getSummons() >= 1 and self:getAccountType() < ACCOUNT_TYPE_GOD then
+		self:sendCancelMessage("You can't have other summons.")
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	local vocation = FAMILIAR_ID[self:getVocation():getBaseId()]
+	local familiarName
+
+	if vocation then
+		familiarName = vocation.name
+	end
+
+	if not familiarName then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	local myFamiliar = Game.createMonster(familiarName, playerPosition, true, false, self)
+	if not myFamiliar then
+		self:sendCancelMessage(RETURNVALUE_NOTENOUGHROOM)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	myFamiliar:setOutfit({lookType = self:getFamiliarLooktype()})
+	myFamiliar:registerEvent("FamiliarDeath")
+	myFamiliar:changeSpeed(math.max(self:getSpeed() - myFamiliar:getBaseSpeed(), 0))
+	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
+	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	-- 15 minute count starts after using the spell
+	self:setStorageValue(Storage.FamiliarSummon, os.time() + 15*60)
+	addEvent(RemoveFamiliar, 15*60*1000, myFamiliar:getId(), self:getId())
+	for sendMessage = 1, #FAMILIAR_TIMER do
+		self:setStorageValue(
+			FAMILIAR_TIMER[sendMessage].storage,
+			addEvent(
+				-- Calling function
+				SendMessageFunction,
+				-- Time for execute event
+				(15 * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
+				-- Param "playerId"
+				self:getId(),
+				-- Param "message"
+				FAMILIAR_TIMER[sendMessage].message
+			)
+		)
+	end
+	return true
+end

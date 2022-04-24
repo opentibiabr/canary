@@ -6,17 +6,17 @@ FAMILIAR_ID = {
 }
 
 FAMILIAR_TIMER = {
-	[1] = {storage=Storage.FamiliarSummonEvent10, countdown=10, message = "10 seconds"},
-	[2] = {storage=Storage.FamiliarSummonEvent60, countdown=60, message = "one minute"}
+	[1] = {storage = Storage.FamiliarSummonEvent10, countdown = 10, message = "10 seconds"},
+	[2] = {storage = Storage.FamiliarSummonEvent60, countdown = 60, message = "one minute"}
 }
 
-function sendMessageFunction(pid, message)
+function SendMessageFunction(pid, message)
 	if Player(pid) then
 		Player(pid):sendTextMessage(MESSAGE_LOOT, "Your summon will disappear in less than " .. message)
 	end
 end
 
-function removeFamiliar(creatureId, playerId)
+function RemoveFamiliar(creatureId, playerId)
 	local creature = Creature(creatureId)
 	local player = Player(playerId)
 	if not creature or not player then

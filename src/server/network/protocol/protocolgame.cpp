@@ -145,7 +145,9 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
     	if (container && item->getWeaponType() == WEAPON_QUIVER && player->getThing(CONST_SLOT_RIGHT) == item) {
       		uint16_t ammoTotal = 0;
       		for (Item* listItem : container->getItemList()) {
-        		ammoTotal += listItem->getItemCount();
+      		    if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
+      		        ammoTotal += listItem->getItemCount();
+      		    }
       		}
       		msg.addByte(0x01);
       		msg.add<uint32_t>(ammoTotal);
@@ -660,6 +662,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
 		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
 		case 0x2a: addBestiaryTrackerList(msg); break;
+		case 0x2B: parsePartyAnalyzerAction(msg); break;
 		case 0x2c: parseLeaderFinderWindow(msg); break;
 		case 0x2d: parseMemberFinderWindow(msg); break;
 		case 0x28: parseStashWithdraw(msg); break;
@@ -1776,7 +1779,7 @@ void ProtocolGame::parseBestiarysendRaces()
 		uint16_t count = 0;
 		for (auto rit : mtype_list)
 		{
-			MonsterType *mtype = g_monsters.getMonsterType(rit.second);
+			MonsterType *mtype = g_monsters().getMonsterType(rit.second);
 			if (!mtype)
 			{
 				return;
@@ -1815,7 +1818,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 	auto ait = mtype_list.find(raceId);
 	if (ait != mtype_list.end())
 	{
-		MonsterType *mType = g_monsters.getMonsterType(ait->second);
+		MonsterType *mType = g_monsters().getMonsterType(ait->second);
 		if (mType)
 		{
 			Class = mType->info.bestiaryClass;
@@ -1949,7 +1952,7 @@ void ProtocolGame::addBestiaryTrackerList(NetworkMessage &msg)
 	auto it = mtype_list.find(thisrace);
 	if (it != mtype_list.end())
 	{
-		MonsterType *mtype = g_monsters.getMonsterType(it->second);
+		MonsterType *mtype = g_monsters().getMonsterType(it->second);
 		if (mtype)
 		{
 			player->addBestiaryTrackerList(mtype);
@@ -2175,6 +2178,34 @@ void ProtocolGame::createLeaderTeamFinder(NetworkMessage &msg)
 	}
 	teamAssemble->membersMap = members;
 	g_game().registerTeamFinderAssemble(player->getGUID(), teamAssemble);
+}
+
+void ProtocolGame::parsePartyAnalyzerAction(NetworkMessage &msg) const
+{
+	if (!player) {
+		return;
+	}
+
+	Party* party = player->getParty();
+	if (!party || !party->getLeader() || party->getLeader()->getID() != player->getID()) {
+		return;
+	}
+
+	PartyAnalyzerAction_t action = static_cast<PartyAnalyzerAction_t>(msg.getByte());
+	if (action == PARTYANALYZERACTION_RESET) {
+		party->resetAnalyzer();
+	} else if (action == PARTYANALYZERACTION_PRICETYPE) {
+		party->switchAnalyzerPriceType();
+	} else if (action == PARTYANALYZERACTION_PRICEVALUE) {
+		uint16_t size = msg.get<uint16_t>();
+		for (uint16_t i = 1; i <= size; i++) {
+			uint16_t itemId = msg.get<uint16_t>();
+			uint64_t price = msg.get<uint64_t>();
+			player->setItemCustomPrice(itemId, price);
+		}
+		party->reloadPrices();
+		party->updateTrackerAnalyzer();
+	}
 }
 
 void ProtocolGame::parseLeaderFinderWindow(NetworkMessage &msg)
@@ -2428,7 +2459,7 @@ void ProtocolGame::parseBestiarysendCreatures(NetworkMessage &msg)
 		{
 			if (_it.first == raceid_)
 			{
-				MonsterType *tmpType = g_monsters.getMonsterType(it_.second);
+				MonsterType *tmpType = g_monsters().getMonsterType(it_.second);
 				if (!tmpType)
 				{
 					return;
@@ -3812,10 +3843,10 @@ void ProtocolGame::sendLootContainers()
 
 void ProtocolGame::sendLootStats(Item *item, uint8_t count)
 {
-	if (!item)
-	{
+	if (!item) {
 		return;
 	}
+
 	Item* lootedItem = nullptr;
 	lootedItem = item->clone();
 	lootedItem->setItemCount(count);
@@ -3824,9 +3855,10 @@ void ProtocolGame::sendLootStats(Item *item, uint8_t count)
 	msg.addByte(0xCF);
 	AddItem(msg, lootedItem);
 	msg.addString(lootedItem->getName());
+	item->setIsLootTrackeable(false);
+	writeToOutputBuffer(msg);
 
 	lootedItem = nullptr;
-	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendShop(Npc *npc)
@@ -6181,7 +6213,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 	} else if (slot->state == PreyDataState_Inactive) {
 			// Empty
 	} else if (slot->state == PreyDataState_Active) {	
-		if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(slot->selectedRaceId)) {
+		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
 			msg.addString(mtype->name);
 			const Outfit_t outfit = mtype->info.outfit;
 			msg.add<uint16_t>(outfit.lookType);
@@ -6204,7 +6236,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
-			if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId)) {
+			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 				msg.addString(mtype->name);
 				const Outfit_t outfit = mtype->info.outfit;
 				msg.add<uint16_t>(outfit.lookType);
@@ -6229,7 +6261,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
-			if (const MonsterType* mtype = g_monsters.getMonsterTypeByRaceId(raceId)) {
+			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 				msg.addString(mtype->name);
 				const Outfit_t outfit = mtype->info.outfit;
 				msg.add<uint16_t>(outfit.lookType);
@@ -6595,9 +6627,9 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 
 void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId)
 {
-	Imbuement *imbuement = g_imbuements->getImbuement(imbuementId);
-	const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuement->getBaseID());
-	CategoryImbuement *categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
+	Imbuement *imbuement = g_imbuements().getImbuement(imbuementId);
+	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	CategoryImbuement *categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 
 	msg.add<uint32_t>(imbuementId);
 	msg.addString(baseImbuement->name + " " + imbuement->getName());
@@ -6655,10 +6687,10 @@ void ProtocolGame::openImbuementWindow(Item *item)
 		msg.addByte(0x01);
 		addImbuementInfo(msg, imbuementInfo.imbuement->getID());
 		msg.add<uint32_t>(imbuementInfo.duration);
-		msg.add<uint32_t>(g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
+		msg.add<uint32_t>(g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
 	}
 
-	std::vector<Imbuement *> imbuements = g_imbuements->getImbuements(player, item);
+	std::vector<Imbuement *> imbuements = g_imbuements().getImbuements(player, item);
 	std::unordered_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());
@@ -6733,6 +6765,46 @@ void ProtocolGame::sendSpecialContainersAvailable()
 	msg.addByte(0x2A);
 	msg.addByte(player->isSupplyStashMenuAvailable() ? 0x01 : 0x00);
 	msg.addByte(player->isMarketMenuAvailable() ? 0x01 : 0x00);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::updatePartyTrackerAnalyzer(const Party* party)
+{
+	if (!player || !party || !party->getLeader())
+		return;
+
+	NetworkMessage msg;
+	msg.addByte(0x2B);
+	msg.add<uint32_t>(party->getAnalyzerTimeNow());
+	msg.add<uint32_t>(party->getLeader()->getID());
+	msg.addByte(static_cast<uint8_t>(party->priceType));
+
+	msg.addByte(static_cast<uint8_t>(party->membersData.size()));
+	for (const PartyAnalyzer* analyzer : party->membersData) {
+		msg.add<uint32_t>(analyzer->id);
+		if (const Player* member = g_game().getPlayerByID(analyzer->id);
+			!member || !member->getParty() || member->getParty() != party) {
+			msg.addByte(0);
+		} else {
+			msg.addByte(1);
+		}
+
+		msg.add<uint64_t>(analyzer->lootPrice);
+		msg.add<uint64_t>(analyzer->supplyPrice);
+		msg.add<uint64_t>(analyzer->damage);
+		msg.add<uint64_t>(analyzer->healing);
+	}
+
+	bool showNames = !party->membersData.empty();
+	msg.addByte(showNames ? 0x01 : 0x00);
+	if (showNames) {
+		msg.addByte(static_cast<uint8_t>(party->membersData.size()));
+		for (const PartyAnalyzer* analyzer : party->membersData) {
+			msg.add<uint32_t>(analyzer->id);
+			msg.addString(analyzer->name);
+		}
+	}
+
 	writeToOutputBuffer(msg);
 }
 
@@ -6859,7 +6931,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg, user](uint16_t raceid)
 		{
 			msg.add<uint16_t>(raceid);
-			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterTypeByRaceId(raceid)) ? 0x01 : 0x00);
+			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(raceid)) ? 0x01 : 0x00);
 		});
 	} else if (slot->state == PreyTaskDataState_ListSelection) {
 		const Player* user = player;
@@ -6868,7 +6940,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto& mType)
 		{
 			msg.add<uint16_t>(mType.first);
-			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters.getMonsterType(mType.second)) ? 0x01 : 0x00);
+			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterType(mType.second)) ? 0x01 : 0x00);
 		});
 	} else if (slot->state == PreyTaskDataState_Active) {
 		if (const TaskHuntingOption* option = g_prey.GetTaskRewardOption(slot)) {

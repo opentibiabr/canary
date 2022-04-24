@@ -351,6 +351,12 @@ int GlobalFunctions::luaDoTargetCombatHealth(lua_State* L) {
 	damage.primary.type = combatType;
 	damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
+	// Check if it's a healing then we sould add the non-aggresive tag
+	if (combatType == COMBAT_HEALING ||
+		(combatType == COMBAT_MANADRAIN && damage.primary.value > 0)) {
+		params.aggressive = false;
+	}
+
 	Combat::doCombatHealth(creature, target, damage, params);
 	pushBoolean(L, true);
 	return 1;

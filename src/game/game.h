@@ -212,6 +212,8 @@ class Game
 		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
                              bool depthSearch = true, int32_t subType = -1) const;
 
+		void createLuaItemsOnMap();
+
 		bool removeMoney(Cylinder* cylinder, uint64_t money,
                          uint32_t flags = 0, bool useBank = false);
 
@@ -236,6 +238,8 @@ class Game
                     ObjectCategory_t category = OBJECTCATEGORY_DEFAULT);
 
 		ObjectCategory_t getObjectCategory(const Item* item);
+
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint32_t>  const &itemMap, bool buyPrice) const;
 
 		void loadPlayersRecord();
 		void checkPlayersRecord();
@@ -572,6 +576,10 @@ class Game
 			return playersActiveImbuements[playerId];
 		}
 
+		void setCreateLuaItems(Position position, uint16_t itemId) {
+			mapLuaItemsStored[position] = itemId;
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -586,6 +594,12 @@ class Game
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
+
+		/* Items stored from the lua scripts positions
+		 * For example: ActionFunctions::luaActionPosition
+		 * This basically works so that the item is created after the map is loaded, because the scripts are loaded before the map is loaded, we will use this table to create items that don't exist in the map natively through each script
+		*/
+		std::map<Position, uint16_t> mapLuaItemsStored;
 
 		std::map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";

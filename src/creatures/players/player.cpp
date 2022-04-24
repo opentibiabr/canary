@@ -255,9 +255,11 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
       bool found = false;
       for (Item* ammoItem : container->getItemList()) {
         if (ammoItem->getAmmoType() == it.ammoType) {
-          item = ammoItem;
-          found = true;
-          break;
+          if (level >= Item::items[ammoItem->getID()].minReqLevel) {
+            item = ammoItem;
+            found = true;
+            break;
+          }
         }
       }
       if (!found)
@@ -981,6 +983,17 @@ void Player::checkLootContainers(const Item* item)
 	}
 }
 
+void Player::sendLootStats(Item* item, uint8_t count) const
+{
+	if (client) {
+		client->sendLootStats(item, count);
+	}
+
+	if (party) {
+		party->addPlayerLoot(this, item);
+	}
+}
+
 bool Player::isNearDepotBox() const
 {
 	const Position& pos = getPosition();
@@ -1115,6 +1128,24 @@ void Player::sendStats()
 	if (client) {
 		client->sendStats();
 		lastStatsTrainingTime = getOfflineTrainingTime() / 60 / 1000;
+	}
+}
+
+void Player::updateSupplyTracker(const Item* item) const
+{
+	if (client) {
+		client->sendUpdateSupplyTracker(item);
+	}
+
+	if (party) {
+		party->addPlayerSupply(this, item);
+	}
+}
+
+void Player::updateImpactTracker(CombatType_t type, int32_t amount) const
+{
+	if (client) {
+		client->sendUpdateImpactTracker(type, amount);
 	}
 }
 
@@ -1657,11 +1688,14 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 	}
 }
 
-void Player::openShopWindow(Npc* npc)
+bool Player::openShopWindow(Npc* npc)
 {
-	closeShopWindow(true);
-	setShopOwner(npc);
+	if (!npc) {
+		SPDLOG_ERROR("[Player::openShopWindow] - Npc is wrong or nullptr");
+		return false;
+	}
 
+	setShopOwner(npc);
 	npc->addShopPlayer(this);
 
 	std::map<uint32_t, uint32_t> tempInventoryMap;
@@ -1669,6 +1703,7 @@ void Player::openShopWindow(Npc* npc)
 
 	sendShop(npc);
 	sendSaleItemList(tempInventoryMap);
+	return true;
 }
 
 bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/)
@@ -4726,7 +4761,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 			return SKULL_YELLOW;
 		}
 
-		if (isPartner(player)) {
+		if (party && party == player->party) {
 			return SKULL_GREEN;
 		}
 	}
@@ -5597,6 +5632,17 @@ void Player::updateRegeneration()
 bool Player::isMarketExhausted() const {
 	uint32_t exhaust_time = 3000; // half second 500
 	return (OTSYS_TIME() - lastMarketInteraction < exhaust_time);
+}
+
+uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) const
+{
+	auto it = itemPriceMap.find(itemId);
+	if (it != itemPriceMap.end()) {
+		return static_cast<uint64_t>(it->second);
+	}
+
+	std::map<uint16_t, uint32_t> itemMap {{itemId, 1}};
+	return g_game().getItemMarketPrice(itemMap, buyPrice);
 }
 
 uint16_t Player::getFreeBackpackSlots() const

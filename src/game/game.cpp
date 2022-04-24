@@ -671,7 +671,7 @@ bool Game::loadMainMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap("data/world/" + filename + ".otbm", true, true, true);
+	return map.loadMap("data/world/" + filename + ".otbm", true, true, true, true);
 }
 
 bool Game::loadCustomMap(const std::string& filename)
@@ -683,7 +683,7 @@ bool Game::loadCustomMap(const std::string& filename)
 
 void Game::loadMap(const std::string& path)
 {
-	map.loadMap(path, false, false, false);
+	map.loadMap(path);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position& pos) const
@@ -1837,14 +1837,14 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			return ret;
 		}
 
-		if (Player* player = actor->getPlayer()) {
+		if (const Player* player = actor->getPlayer()) {
 			const ItemType& it = Item::items[fromCylinder->getItem()->getID()];
 			if (it.id <= 0) {
 				return ret;
 			}
 
 			if (it.corpseType != RACE_NONE && toCylinder->getContainer()->getTopParent() == player && item->getIsLootTrackeable()) {
-				player->updateLootTracker(item);
+				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 			}
 		}
 	}
@@ -2001,7 +2001,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 		ReturnValue remaindRet = internalAddItem(player->getTile(), remainderItem, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		if (remaindRet != RETURNVALUE_NOERROR) {
 			ReleaseItem(remainderItem);
-			player->updateLootTracker(item);
+			player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 		}
 	}
 
@@ -2682,6 +2682,30 @@ ObjectCategory_t Game::getObjectCategory(const Item* item)
 	}
 
 	return category;
+}
+
+uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, bool buyPrice) const
+{
+	uint64_t total = 0;
+	for (const auto& it : itemMap) {
+		if (it.first == ITEM_GOLD_COIN) {
+			total += it.second;
+		} else if (it.first == ITEM_PLATINUM_COIN) {
+			total += 100 * it.second;
+		} else if (it.first == ITEM_CRYSTAL_COIN) {
+			total += 10000 * it.second;
+		} else {
+			auto marketIt = itemsPriceMap.find(it.first);
+			if (marketIt != itemsPriceMap.end()) {
+				total += (*marketIt).second * it.second;
+			} else {
+				const ItemType& iType = Item::items[it.first];
+				total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
+			}
+		}
+	}
+
+	return total;
 }
 
 Item* searchForItem(Container* container, uint16_t itemId)
@@ -4614,7 +4638,12 @@ void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAl
 				continue;
 			}
 
-			if (!tileCorpse->isRewardCorpse() && !player->canOpenCorpse(tileCorpse->getCorpseOwner())) {
+			if (!tileCorpse->isRewardCorpse()
+			&& tileCorpse->getCorpseOwner() != 0
+			&& !player->canOpenCorpse(tileCorpse->getCorpseOwner()))
+			{
+				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				SPDLOG_DEBUG("Player {} cannot loot corpse from id {} in position {}", player->getName(), tileItem->getID(), tileItem->getPosition());
 				continue;
 			}
 
@@ -5747,6 +5776,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (targetPlayer) {
 				targetPlayer->updateImpactTracker(COMBAT_HEALING, realHealthChange);
 			}
+
+			// Party hunt analyzer
+			if (Party* party = attackerPlayer ? attackerPlayer->getParty() : nullptr) {
+				party->addPlayerHealing(attackerPlayer, realHealthChange);
+			}
+
 			std::stringstream ss;
 
 			ss << realHealthChange << (realHealthChange != 1 ? " hitpoints." : " hitpoint.");
@@ -6107,6 +6142,18 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 						charm->type == CHARM_OFFENSIVE && (charm->chance >= normal_random(0, 100))) {
 						g_bestiary.parseCharmCombat(charm, attackerPlayer, target, realDamage);
 					}
+				}
+			}
+
+			// Party hunt analyzer
+			if (Party* party = attackerPlayer->getParty()) {
+				/* Damage on primary type */
+				if (damage.primary.value != 0) {
+					party->addPlayerDamage(attackerPlayer, damage.primary.value);
+				}
+				/* Damage on secondary type */
+				if (damage.secondary.value != 0) {
+					party->addPlayerDamage(attackerPlayer, damage.secondary.value);
 				}
 			}
 		}
@@ -8599,8 +8646,11 @@ bool Game::reload(ReloadTypes_t reloadType)
 			return true;
 		}
 		case RELOAD_TYPE_NPCS: {
-			g_npcs.reset();
-			g_scripts->loadScripts("npclua", false, true);
+			// Reset informations from npc interface
+			g_npc().reset();
+			// Reload npc scripts
+			g_scripts->loadScripts("npc", false, true);
+			// Reload npclib
 			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
@@ -8623,7 +8673,15 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_weapons->clear(true);
 			g_weapons->loadDefaults();
 			g_spells->clear(true);
+			// Reset informations from npc interface
+			g_npc().reset();
 			g_scripts->loadScripts("scripts", false, true);
+			// lean up the monsters interface, ensuring that after reloading the scripts there is no use of any deallocated memory
+			g_scripts->loadScripts("monster", false, true);
+			// Reload npc scripts
+			g_scripts->loadScripts("npc", false, true);
+			// Reload npclib
+			g_luaEnvironment.loadFile("data/npclib/load.lua");
 			return true;
 		}
 
@@ -8672,4 +8730,31 @@ bool Game::hasDistanceEffect(uint8_t effectId) {
 		}
 	}
 	return false;
+}
+
+void Game::createLuaItemsOnMap() {
+	for (auto const [position, itemId] : mapLuaItemsStored) {
+		Item* item = Item::CreateItem(itemId, 1);
+		if (!item) {
+			SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);
+			continue;
+		}
+
+		if (position.x != 0) {
+			Tile* tile = g_game().map.getTile(position);
+			if (!tile) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Tile is wrong or not found position: {}", position.toString());
+				delete item;
+				continue;
+			}
+
+			// If the item already exists on the map, then ignore it and send warning
+			if (g_game().findItemOfType(tile, itemId, false, -1)) {
+				SPDLOG_WARN("[Game::createLuaItemsOnMap] - Cannot create item with id {} on position {}, item already exists", itemId, position.toString());
+				continue;
+			}
+
+			g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+		}
+	}
 }

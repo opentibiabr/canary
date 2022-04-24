@@ -20,7 +20,8 @@
 #include "otpch.h"
 
 #include <boost/filesystem.hpp>
-#include "libzippp.h"
+#include <fstream>
+#include <libzippp.h>
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -31,11 +32,16 @@
 #include "creatures/npcs/npc.h"
 #include "utils/tools.h"
 
-
 bool Map::load(const std::string& identifier) {
-	IOMap loader;
-	if (!loader.loadMap(this, identifier)) {
-		SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
+	try {
+		IOMap loader;
+		if (!loader.loadMap(this, identifier)) {
+			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
+			return false;
+		}
+	}
+	catch(const std::exception) {
+		SPDLOG_ERROR("[Map::load] - The map in folder {} is missing or corrupted", identifier);
 		return false;
 	}
 	return true;
@@ -63,13 +69,26 @@ bool Map::extractMap(const std::string& identifier) const {
 	return true;
 }
 
-bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+bool Map::loadMap(const std::string& identifier,
+	bool mainMap /*= false*/,bool loadHouses /*= false*/,
+	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
-	// Extract the map
-	this->extractMap(identifier);
+	// Only extract map if is loading the main map
+	if (mainMap) {
+		// Extract the map
+		this->extractMap(identifier);
+	}
 
 	// Load the map
 	this->load(identifier);
+
+	// Only create items from lua functions if is loading main map
+	// It needs to be after the load map to ensure the map already exists before creating the items
+	if (mainMap) {
+		// Create items from lua scripts per position
+		// Example: ActionFunctions::luaActionPosition
+		g_game().createLuaItemsOnMap();
+	}
 
 	if (loadMonsters) {
 		if (!IOMap::loadMonsters(this)) {

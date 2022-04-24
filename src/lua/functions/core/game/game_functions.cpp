@@ -189,15 +189,7 @@ int GameFunctions::luaGameGetPlayers(lua_State* L) {
 int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string& path = getString(L, 1);
-	g_dispatcher.addTask(createTask([path]() {
-		try {
-			g_game().loadMap(path);
-		} catch (const std::exception& e) {
-			// FIXME: Should only catch some exceptions
-			SPDLOG_ERROR("[GameFunctions::luaGameLoadMap] - Failed to load map: {}",
-						 e.what());
-		}
-	}));
+	g_dispatcher.addTask(createTask([path]() {g_game().loadMap(path);}));
 	return 0;
 }
 

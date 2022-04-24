@@ -487,6 +487,14 @@ const ItemType& Items::getItemType(size_t id) const
 	return items.front();
 }
 
+bool Items::hasItemType(size_t hasId) const
+{
+	if (hasId < items.size()) {
+		return true;
+	}
+	return false;
+}
+
 const ItemType& Items::getItemIdByClientId(uint16_t spriteId) const
 {
 	auto it = reverseItemMap.find(spriteId);

@@ -54,7 +54,7 @@ int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 
 int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
 	// player:sendLootStats(item, count)
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -80,7 +80,7 @@ int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
 
 int PlayerFunctions::luaPlayerUpdateSupplyTracker(lua_State* L) {
 	// player:updateSupplyTracker(item)
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		lua_pushnil(L);
 		return 1;
@@ -119,26 +119,6 @@ int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
 	}
 
 	player->updateKillTracker(corpse, monster->getName(), monster->getCurrentOutfit());
-	pushBoolean(L, true);
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerUpdateLootTracker(lua_State* L) {
-	// player:updateLootTracker(item)
-	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	Item* item = getUserdata<Item>(L, 2);
-	if (!item) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	player->updateLootTracker(item);
 	pushBoolean(L, true);
 
 	return 1;

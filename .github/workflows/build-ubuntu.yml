@@ -4,6 +4,9 @@ name: Build - Ubuntu
 on:
   workflow_dispatch:
   pull_request:
+  push:
+    branches:
+      - main
 
 env:
   VCPKG_BUILD_TYPE: release
@@ -35,6 +38,12 @@ jobs:
           sudo apt-get update && sudo apt-get install ccache build-essential
           libluajit-5.1-dev zip
 
+      - name: Switch to gcc-11
+        run: |
+          sudo apt install gcc-11 g++-11
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
+          sudo update-alternatives --set gcc /usr/bin/gcc-11
+
       - name: CCache
         id: ccache
         uses: actions/cache@v3
@@ -62,6 +71,6 @@ jobs:
       - name: Create and Upload Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: canary-${{ runner.os }}-${{ matrix.buildtype }}-${{ github.sha }}
+          name: canary-${{ matrix.buildtype }}-${{ github.sha }}
           path: |
             ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/

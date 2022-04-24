@@ -296,6 +296,7 @@ class Creature : virtual public Thing
 		bool isSummon() const {
 			return master != nullptr;
 		}
+
 		/**
         * hasBeenSummoned doesn't guarantee master still exists
         */
@@ -410,6 +411,16 @@ class Creature : virtual public Thing
 
 		virtual void onCreatureAppear(Creature* creature, bool isLogin);
 		virtual void onRemoveCreature(Creature* creature, bool isLogout);
+
+		/**
+		 * @brief Check if the summon can move/spawn and if the familiar can teleport to the master
+		 * 
+		 * @param newPos New position to teleport
+		 * @param teleportSummon Can teleport normal summon? Default value is "false"
+		 * @return true 
+		 * @return false 
+		 */
+		void checkSummonMove(const Position& newPos, bool teleportSummon = false) const;
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
                                    const Tile* oldTile, const Position& oldPos, bool teleport);
 
@@ -427,6 +438,20 @@ class Creature : virtual public Thing
 		size_t getSummonCount() const {
 			return summons.size();
 		}
+
+		/**
+		 * @brief Check if the "summons" list is empty
+		 * 
+		 * @return true = not empty
+		 * @return false = empty
+		 */
+		bool hasSummons() const {
+			if (!summons.empty()) {
+				return true;
+			}
+			return false;
+		}
+		
 		void setDropLoot(bool newLootDrop) {
 			this->lootDrop = newLootDrop;
 		}

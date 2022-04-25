@@ -188,9 +188,10 @@ const std::unordered_map<std::string, RaceType_t> RaceTypesMap = {
 	{"undead", RACE_UNDEAD},
 	{"fire", RACE_FIRE},
 	{"energy", RACE_ENERGY},
+	{"ink", RACE_INK},
 };
 
-const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
+const std::unordered_map<std::string, Fluids_t> FluidTypesMap = {
 	{"water", FLUID_WATER },
 	{"blood", FLUID_BLOOD},
 	{"beer", FLUID_BEER},
@@ -205,11 +206,10 @@ const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
 	{"wine", FLUID_WINE },
 	{"mud", FLUID_MUD },
 	{"fruitjuice", FLUID_FRUITJUICE },
-	{"lava", FLUID_LAVA },
 	{"rum", FLUID_RUM },
-	{"swamp", FLUID_SWAMP },
 	{"tea", FLUID_TEA },
 	{"mead", FLUID_MEAD },
+	{"ink", FLUID_INK },
 };
 
 const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {

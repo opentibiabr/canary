@@ -252,7 +252,7 @@ class ItemType
 		Ammo_t ammoType = AMMO_NONE;
 		ShootType_t shootType = CONST_ANI_NONE;
 		RaceType_t corpseType = RACE_NONE;
-		FluidTypes_t fluidSource = FLUID_NONE;
+		Fluids_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
 		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
 

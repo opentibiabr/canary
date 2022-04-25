@@ -13,20 +13,20 @@ local targetIdList = {
 	--spirit potions caks
 	[25899] = {itemId = 284, transform = 7642}, -- Great Spirit --
 	[25900] = {itemId = 284, transform = 23374}, --Ultimate Spirit --
-	
+
 	--health potions kegs
 	[25903] = {itemId = 285, transform = 266}, -- Health Potion --
 	[25904] = {itemId = 283, transform = 236}, -- Strong Health --
 	[25905] = {itemId = 284, transform = 239}, -- Great Health --
 	[25906] = {itemId = 284, transform = 7643}, -- Ultimate Health --
 	[25907] = {itemId = 284, transform = 23375}, -- Supreme Health --
-	
+
 	--mana potion kegs
 	[25908] = {itemId = 285, transform = 268}, -- Mana Potion --
 	[25909] = {itemId = 283, transform = 237}, -- Strong Mana --
 	[25910] = {itemId = 284, transform = 238}, -- Great Mana --
 	[25911] = {itemId = 284, transform = 23373}, -- Ultimate Mana --
-	
+
 	--spirit potions kegs
 	[25913] = {itemId = 284, transform = 7642}, -- Great Spirit --
 	[25914] = {itemId = 284, transform = 23374} --Ultimate Spirit --

@@ -30,8 +30,6 @@
 
 #include "utils/pugicast.h"
 
-extern Spells* g_spells;
-extern Npcs g_npcs;
 
 bool NpcType::canSpawn(const Position& pos)
 {

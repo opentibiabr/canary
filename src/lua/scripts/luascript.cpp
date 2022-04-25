@@ -27,7 +27,6 @@ ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
 std::multimap <ScriptEnvironment* , Item*> ScriptEnvironment::tempItems;
 
-LuaEnvironment g_luaEnvironment;
 ScriptEnvironment LuaFunctionsLoader::scriptEnv[16];
 int32_t LuaFunctionsLoader::scriptEnvIndex = -1;
 

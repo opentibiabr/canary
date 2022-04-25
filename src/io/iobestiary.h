@@ -60,6 +60,19 @@ class Charm
 class IOBestiary
 {
 	public:
+		IOBestiary() = default;
+
+		// non-copyable
+		IOBestiary(IOBestiary const&) = delete;
+		void operator=(IOBestiary const&) = delete;
+
+		static IOBestiary& getInstance() {
+			// Guaranteed to be destroyed
+			static IOBestiary instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		Charm* getBestiaryCharm(charmRune_t activeCharm, bool force = false);
 		void addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount = 1);
 		bool parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage);
@@ -87,5 +100,7 @@ class IOBestiary
 		std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 
 };
+
+constexpr auto g_iobestiary = &IOBestiary::getInstance;
 
 #endif  // SRC_IO_IOBESTIARY_H_

@@ -23,8 +23,6 @@
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
-extern Npcs g_npcs;
-extern Scripts* g_scripts;
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
@@ -49,7 +47,7 @@ void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector
 
 int NpcTypeFunctions::luaNpcTypeCreate(lua_State* L) {
 	// NpcType(name)
-	NpcType* npcType = g_npcs.getNpcType(getString(L, 1), true);
+	NpcType* npcType = g_npcs().getNpcType(getString(L, 1), true);
 	pushUserdata<NpcType>(L, npcType);
 	setMetatable(L, -1, "NpcType");
 	return 1;
@@ -290,7 +288,7 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 	// npcType:onCheckItem(callback)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
-		if (npcType->loadCallback(&g_scripts->getScriptInterface())) {
+		if (npcType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
 		 }

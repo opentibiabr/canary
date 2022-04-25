@@ -34,7 +34,6 @@ namespace fs = std::filesystem;
 namespace fs = boost::filesystem;
 #endif
 
-extern Weapons* g_weapons;
 
 Items::Items(){}
 
@@ -93,7 +92,7 @@ bool Items::reload()
 		return false;
 	}
 
-	g_weapons->loadDefaults();
+	g_weapons().loadDefaults();
 	return true;
 }
 

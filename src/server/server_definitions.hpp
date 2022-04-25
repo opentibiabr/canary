@@ -59,25 +59,11 @@ enum SessionEndInformations : uint8_t {
 	SESSION_END_UNK3,
 };
 
-enum PreySlotNum_t : uint8_t{
-	PREY_SLOTNUM_FIRST = 0,
-	PREY_SLOTNUM_SECOND = 1,
-	PREY_SLOTNUM_THIRD = 2,
-};
-
-enum PreyState_t : uint8_t
-{
-	PREY_STATE_LOCKED = 0,
-	PREY_STATE_INACTIVE = 1,
-	PREY_STATE_ACTIVE = 2,
-	PREY_STATE_SELECTION = 3,
-	PREY_STATE_SELECTION_CHANGE_MONSTER = 4,
-};
-
 enum Resource_t : uint8_t{
 	RESOURCE_BANK = 0x00,
 	RESOURCE_INVENTORY = 0x01,
-	RESOURCE_PREY = 0x0A,
+	RESOURCE_PREY_CARDS = 0x0A,
+	RESOURCE_TASK_HUNTING = 0x32
 };
 
 enum InspectObjectTypes : uint8_t {

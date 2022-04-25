@@ -26,7 +26,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
 

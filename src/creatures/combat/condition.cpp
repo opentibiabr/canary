@@ -22,7 +22,6 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
-
 bool Condition::setParam(ConditionParam_t param, int32_t value)
 {
 	switch (param) {
@@ -840,7 +839,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					TextMessage message(MESSAGE_HEALED, "You were healed for " + healString);
 					message.position = player->getPosition();
 					message.primary.value = realHealthGain;
-					message.primary.color = TEXTCOLOR_MAYABLUE;
+					message.primary.color = TEXTCOLOR_PASTELRED;
 					player->sendTextMessage(message);
 
 					SpectatorHashSet spectators;

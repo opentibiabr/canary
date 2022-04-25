@@ -42,6 +42,8 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
+#include "io/ioprey.h"
+#include "io/iobestiary.h"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
@@ -169,6 +171,7 @@ void loadModules() {
 		"data/npclua");
 
 	g_game().loadBoostedCreature();
+	g_ioprey().InitializeTaskHuntOptions();
 }
 
 #ifndef UNIT_TESTING

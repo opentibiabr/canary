@@ -27,9 +27,9 @@
 #include "creatures/players/player.h"
 #include "game/game.h"
 #include "io/iologindata.h"
+#include "io/ioprey.h"
 #include "items/item.h"
 #include "lua/functions/creatures/player/player_functions.hpp"
-
 
 int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 	// player:sendInventory()
@@ -176,11 +176,10 @@ int PlayerFunctions::luaPlayerUnlockAllCharmRunes(lua_State* L) {
 	// player:unlockAllCharmRunes()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		IOBestiary g_bestiary;
 		for (int8_t i = CHARM_WOUND; i <= CHARM_LAST; i++) {
-			Charm* charm = g_bestiary.getBestiaryCharm(static_cast<charmRune_t>(i));
+			Charm* charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(i));
 			if (charm) {
-				int32_t value = g_bestiary.bitToggle(player->getUnlockedRunesBit(), charm, true);
+				int32_t value = g_iobestiary().bitToggle(player->getUnlockedRunesBit(), charm, true);
 				player->setUnlockedRunesBit(value);
 			}
 		}
@@ -195,13 +194,12 @@ int PlayerFunctions::luaPlayeraddCharmPoints(lua_State* L) {
 	// player:addCharmPoints()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		IOBestiary g_bestiary;
 		int16_t charms = getNumber<int16_t>(L, 2);
 		if (charms >= 0) {
-			g_bestiary.addCharmPoints(player, static_cast<uint16_t>(charms));
+			g_iobestiary().addCharmPoints(player, static_cast<uint16_t>(charms));
 		} else {
 			charms = -charms;
-			g_bestiary.addCharmPoints(player, static_cast<uint16_t>(charms), true);
+			g_iobestiary().addCharmPoints(player, static_cast<uint16_t>(charms), true);
 		}
 		pushBoolean(L, true);
 	} else {
@@ -301,8 +299,7 @@ int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
 	if (player) {
 			MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
 			if (mtype) {
-				IOBestiary g_bestiary;
-				g_bestiary.addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
+				g_iobestiary().addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
 				pushBoolean(L, true);
 			} else {
 				lua_pushnil(L);
@@ -329,6 +326,128 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 			}
 		} else {
 			lua_pushnil(L);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemovePreyStamina(lua_State* L) {
+	// player:removePreyStamina(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		g_ioprey().CheckPlayerPreys(player, getNumber<uint8_t>(L, 2, 1));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddPreyCards(lua_State* L) {
+	// player:addPreyCards(amount)
+	if (Player* player = getUserdata<Player>(L, 1)) {
+		player->addPreyCards(getNumber<uint64_t>(L, 2, 0));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetPreyCards(lua_State* L) {
+	// player:getPreyCards()
+	if (const Player* player = getUserdata<Player>(L, 1)) {
+		lua_pushnumber(L, static_cast<lua_Number>(player->getPreyCards()));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetPreyExperiencePercentage(lua_State* L) {
+	// player:getPreyExperiencePercentage(raceId)
+	if (const Player* player = getUserdata<Player>(L, 1)) {
+		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+			slot && slot->isOccupied() && slot->bonus == PreyBonus_Experience && slot->bonusTimeLeft > 0) {
+			lua_pushnumber(L, static_cast<lua_Number>(100 + slot->bonusPercentage));
+		} else {
+			lua_pushnumber(L, 100);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
+	// player:removeTaskHuntingPoints(amount)
+	if (Player* player = getUserdata<Player>(L, 1)) {
+		pushBoolean(L, player->useTaskHuntingPoints(getNumber<uint64_t>(L, 2, 0)));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
+	// player:getPreyLootPercentage(raceid)
+	if (const Player* player = getUserdata<Player>(L, 1)) {
+		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
+			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
+			lua_pushnumber(L, 100 + slot->bonusPercentage);
+		} else {
+			lua_pushnumber(L, 100);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerPreyThirdSlot(lua_State* L) {
+	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
+	if (Player* player = getUserdata<Player>(L, 1);
+		PreySlot* slot = player->getPreySlotById(PreySlot_Three)) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, slot->state != PreyDataState_Locked);
+		} else {
+			if (getBoolean(L, 2, false)) {
+				slot->eraseBonus();
+				slot->state = PreyDataState_Selection;
+				slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
+				player->reloadPreySlot(PreySlot_Three);
+			} else {
+				slot->state = PreyDataState_Locked;
+			}
+
+			pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerTaskThirdSlot(lua_State* L) {
+	// get: player:taskHuntingThirdSlot() set: player:taskHuntingThirdSlot(bool)
+	if (Player* player = getUserdata<Player>(L, 1);
+		TaskHuntingSlot* slot = player->getTaskHuntingSlotById(PreySlot_Three)) {
+		if (lua_gettop(L) == 1) {
+			pushBoolean(L, slot->state != PreyTaskDataState_Locked);
+		} else {
+			if (getBoolean(L, 2, false)) {
+				slot->eraseTask();
+				slot->reloadReward();
+				slot->state = PreyTaskDataState_Selection;
+				slot->reloadMonsterGrid(player->getTaskHuntingBlackList(), player->getLevel());
+				player->reloadTaskSlot(PreySlot_Three);
+			} else {
+				slot->state = PreyTaskDataState_Locked;
+			}
+
+			pushBoolean(L, true);
 		}
 	} else {
 		lua_pushnil(L);
@@ -1321,137 +1440,6 @@ int PlayerFunctions::luaPlayerSetSpecialContainersAvailable(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyStamina(lua_State* L) {
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getPreyStamina(column));
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyType(lua_State* L) {
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	if (player) {
-		lua_pushnumber(L, player->getPreyType(column));
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyValue(lua_State* L) {
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	if (player) {
-		lua_pushnumber(L, player->getPreyValue(column));
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyName(lua_State* L) {
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	if (player) {
-		pushString(L, player->getPreyName(column));
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyStamina(lua_State* L) {
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	uint16_t stamina = getNumber<uint16_t>(L, 3);
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->preyStaminaMinutes[column] = std::min<uint16_t>(7200, stamina);
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyType(lua_State* L) {
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	uint16_t type = getNumber<uint16_t>(L, 3);
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->preyBonusType[column] = type;
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyValue(lua_State* L) {
-	uint16_t value = getNumber<uint16_t>(L, 3);
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->preyBonusValue[column] = value;
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyName(lua_State* L) {
-	uint16_t column = getNumber<uint16_t>(L, 2);
-	if (column > 2) {
-		column = 2;
-	}
-
-	std::string name = getString(L, 3);
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->preyBonusName[column] = name;
-	} else {
-		lua_pushnil(L);
-	}
-
 	return 1;
 }
 
@@ -2584,333 +2572,6 @@ int PlayerFunctions::luaPlayerPopupFYI(lua_State* L) {
 	}
 	return 1;
 }
-
-// New Prey
-// GET
-int PlayerFunctions::luaPlayerGetPreyState(lua_State* L) {
-	// player:getPreyState(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyState(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyUnlocked(lua_State* L) {
-	// player:getPreyUnlocked(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyUnlocked(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyCurrentMonster(lua_State* L) {
-	// player:getPreyCurrentMonster(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		pushString(L, player->getPreyCurrentMonster(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyMonsterList(lua_State* L) {
-	// player:getPreyMonsterList(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		pushString(L, player->getPreyMonsterList(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyFreeRerollIn(lua_State* L) {
-	// player:getPreyFreeRerollIn(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyFreeRerollIn(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyTimeLeft(lua_State* L) {
-	// player:getPreyTimeLeft(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyTimeLeft(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyNextUse(lua_State* L) {
-	// player:getPreyNextUse(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyNextUse(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyBonusType(lua_State* L) {
-	// player:getPreyBonusType(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyBonusType(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyBonusValue(lua_State* L) {
-	// player:getPreyBonusValue(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyBonusValue(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyBonusGrade(lua_State* L) {
-	// player:getPreyBonusGrade(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyBonusGrade(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyBonusRerolls(lua_State* L) {
-	// player:getPreyBonusRerolls(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getPreyBonusRerolls());
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetPreyTick(lua_State* L) {
-	// player:getPreyTick(slot)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		lua_pushnumber(L, player->getPreyTick(slot));
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-// SET
-int PlayerFunctions::luaPlayerSetPreyState(lua_State* L) {
-	// player:setPreyState(slot, state)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	uint16_t state = getNumber<uint16_t>(L, 3);
-	if (player) {
-		player->preySlotState[slot] = state;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyUnlocked(lua_State* L) {
-	// player:setPreyUnlocked(slot, mode)
-	Player* player = getUserdata<Player>(L, 1);
-	uint32_t slot = getNumber<uint32_t>(L, 2);
-	uint16_t mode = getNumber<uint16_t>(L, 3);
-	if (player) {
-		player->preySlotUnlocked[slot] = mode;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyCurrentMonster(lua_State* L) {
-	// player:SetPreyCurrentMonster(slot, monster)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		std::string monster = getString(L, 3);
-		player->preySlotCurrentMonster[slot] = monster;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyMonsterList(lua_State* L) {
-	// player:setPreyMonsterList(slot, list)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		std::string list = getString(L, 3);
-		player->preySlotMonsterList[slot] = list;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyFreeRerollIn(lua_State* L) {
-	// player:setPreyFreeRerollIn(slot, time)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		uint16_t time = getNumber<uint16_t>(L, 3);
-		player->preySlotFreeRerollIn[slot] = time;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyTimeLeft(lua_State* L) {
-	// player:setPreyTimeLeft(slot, time)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		uint16_t time = getNumber<uint16_t>(L, 3);
-		player->preySlotTimeLeft[slot] = time;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyNextUse(lua_State* L) {
-	// player:setPreyNextUse(slot, time)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		uint32_t time = getNumber<uint32_t>(L, 3);
-		player->preySlotNextUse[slot] = time;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyBonusType(lua_State* L) {
-	// player:setPreyBonusType(slot, type)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		uint16_t type = getNumber<uint16_t>(L, 3);
-		player->preySlotBonusType[slot] = type;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyBonusValue(lua_State* L) {
-	// player:setPreyBonusValue(slot, value)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		uint16_t value = getNumber<uint16_t>(L, 3);
-		player->preySlotBonusValue[slot] = value;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyBonusGrade(lua_State* L) {
-	// player:getPreyBonusValue(slot, grade)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	if (player) {
-		uint16_t grade = getNumber<uint16_t>(L, 3);
-		player->preySlotBonusGrade[slot] = grade;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyBonusRerolls(lua_State* L) {
-	// player:setPreyBonusRerolls(slot, grade)
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		uint16_t value = getNumber<uint16_t>(L, 2);
-		player->preyBonusRerolls = value;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerSetPreyTick(lua_State* L) {
-	// player:setPreyTick(slot, tick)
-	Player* player = getUserdata<Player>(L, 1);
-	uint16_t slot = getNumber<uint16_t>(L, 2);
-	uint16_t tick = getNumber<uint16_t>(L, 3);
-	if (player) {
-		player->preySlotTick[slot] = tick;
-	}
-	else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-/**/
 
 int PlayerFunctions::luaPlayerIsPzLocked(lua_State* L) {
 	// player:isPzLocked()

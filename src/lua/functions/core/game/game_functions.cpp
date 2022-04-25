@@ -30,7 +30,6 @@
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
-
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	// Game.createMonsterType(name)
@@ -125,7 +124,6 @@ int GameFunctions::luaGameGetBoostedCreature(lua_State* L) {
 
 int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	// Game.getBestiaryList([bool[string or BestiaryType_t]])
-	IOBestiary g_bestiary;
 	lua_newtable(L);
 	int index = 0;
 	bool name = getBoolean(L, 2, false);
@@ -144,7 +142,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	}
 	else {
 		if (isNumber(L, 2)) {
-			std::map<uint16_t, std::string> tmplist = g_bestiary.findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
+			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
 			for (auto itb : tmplist) {
 				if (name) {
 					pushString(L, itb.second);
@@ -156,7 +154,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 			}
 		}
 		else {
-			std::map<uint16_t, std::string> tmplist = g_bestiary.findRaceByName(getString(L, 2));
+			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName(getString(L, 2));
 			for (auto itc : tmplist) {
 				if (name) {
 					pushString(L, itc.second);
@@ -541,9 +539,8 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	IOBestiary g_bestiary;
 
-	if (Charm* charm = g_bestiary.getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
+	if (Charm* charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
 	} else {

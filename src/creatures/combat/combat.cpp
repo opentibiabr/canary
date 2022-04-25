@@ -28,7 +28,6 @@
 #include "creatures/monsters/monsters.h"
 #include "items/weapons/weapons.h"
 
-
 CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 {
 	CombatDamage damage;
@@ -501,8 +500,12 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 		g_events().eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
 
 		if (target && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
-			damage.primary.value /= 2;
-			damage.secondary.value /= 2;
+			if (damage.primary.type != COMBAT_HEALING) {
+				damage.primary.value /= 2;
+			}
+			if (damage.secondary.type != COMBAT_HEALING) {
+				damage.secondary.value /= 2;
+			}
 		}
 	}
 
@@ -527,7 +530,10 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 			continue;
 		}
 
-		if (imbuementInfo.imbuement->combatType == COMBAT_NONE) {
+		if (imbuementInfo.imbuement->combatType == COMBAT_NONE
+		|| damage.primary.type == COMBAT_HEALING
+		|| damage.secondary.type == COMBAT_HEALING)
+		{
 			continue;
 		}
 
@@ -577,8 +583,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				if (playerCharmRaceid != 0) {
 					const MonsterType* mType = g_monsters().getMonsterType(caster->getName());
 					if (mType && playerCharmRaceid == mType->info.raceid) {
-						IOBestiary g_bestiary;
-						Charm* charm = g_bestiary.getBestiaryCharm(CHARM_CLEANSE);
+						Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_CLEANSE);
 						if (charm && (charm->chance > normal_random(0, 100))) {
 							if (player->hasCondition(condition->getType())) {
 								player->removeCondition(condition->getType());
@@ -902,8 +907,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			if (playerCharmRaceid != 0) {
 				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
 				if (mType && playerCharmRaceid == mType->info.raceid) {
-					IOBestiary g_bestiary;
-					Charm* charm = g_bestiary.getBestiaryCharm(CHARM_LOW);
+					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
 					}

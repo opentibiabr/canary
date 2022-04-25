@@ -76,7 +76,7 @@ DailyReward = {
 	storages = {
 		-- Player
 		currentDayStreak = 14897,
-		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.h (STORAGEVALUE_DAILYREWARD)
+		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.hpp (STORAGEVALUE_DAILYREWARD)
 		nextRewardTime = 14899,
 		collectionTokens = 14901,
 		staminaBonus = 14902,
@@ -221,9 +221,9 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	if resultId ~= false then
 		repeat
 			local entry = {
-				description = result.getDataString(resultId, "description"),
-				timestamp = result.getDataInt(resultId, "timestamp"),
-				daystreak = result.getDataInt(resultId, "daystreak"),
+				description = result.getString(resultId, "description"),
+				timestamp = result.getNumber(resultId, "timestamp"),
+				daystreak = result.getNumber(resultId, "daystreak"),
 			}
 			table.insert(entries, entry)
 		until not result.next(resultId)
@@ -266,9 +266,9 @@ DailyReward.pickedReward = function(playerId)
 	end
 
 	player:setStreakLevel(player:getStreakLevel() + 1)
-	player:setStorageValue(DailyReward.storages.avoidDouble, Game.getLastServerSave())
+	player:setStorageValue(DailyReward.storages.avoidDouble, GetDailyRewardLastServerSave())
 	player:setDailyReward(DAILY_REWARD_COLLECTED)
-	player:setNextRewardTime(Game.getLastServerSave() + DailyReward.serverTimeThreshold)
+	player:setNextRewardTime(GetDailyRewardLastServerSave() + DailyReward.serverTimeThreshold)
 	player:getPosition():sendMagicEffect(CONST_ME_FIREWORK_YELLOW)
 	return true
 end
@@ -302,7 +302,7 @@ DailyReward.isRewardTaken = function(playerId)
 		return false
 	end
 	local playerStorage = player:getStorageValue(DailyReward.storages.avoidDouble)
-	if playerStorage == Game.getLastServerSave() then
+	if playerStorage == GetDailyRewardLastServerSave() then
 		return true
 	end
 	return false
@@ -320,10 +320,10 @@ DailyReward.init = function(playerId)
 		player:setJokerTokens(player:getJokerTokens() + 1)
 	end
 
-	local timeMath = Game.getLastServerSave() - player:getNextRewardTime()
-	if player:getNextRewardTime() < Game.getLastServerSave() then
-		if player:getStorageValue(DailyReward.storages.notifyReset) ~= Game.getLastServerSave() then
-			player:setStorageValue(DailyReward.storages.notifyReset, Game.getLastServerSave())
+	local timeMath = GetDailyRewardLastServerSave() - player:getNextRewardTime()
+	if player:getNextRewardTime() < GetDailyRewardLastServerSave() then
+		if player:getStorageValue(DailyReward.storages.notifyReset) ~= GetDailyRewardLastServerSave() then
+			player:setStorageValue(DailyReward.storages.notifyReset, GetDailyRewardLastServerSave())
 			timeMath = math.ceil(timeMath/(DailyReward.serverTimeThreshold))
 			if player:getJokerTokens() >= timeMath then
 				player:setJokerTokens(player:getJokerTokens() - timeMath)
@@ -366,7 +366,7 @@ function Player.sendOpenRewardWall(self, shrine)
 	if DailyReward.testMode or not(DailyReward.isRewardTaken(self:getId())) then
 		msg:addU32(0)
 	else
-		msg:addU32(Game.getLastServerSave() + DailyReward.serverTimeThreshold)
+		msg:addU32(GetDailyRewardLastServerSave() + DailyReward.serverTimeThreshold)
 	end
 	msg:addByte(self:getDayStreak()) -- current reward? day = 0, day 1, ... this should be resetted to 0 every week imo
 	if DailyReward.isRewardTaken(self:getId()) then -- state (player already took reward? but just make sure noone wpe)
@@ -381,7 +381,7 @@ function Player.sendOpenRewardWall(self, shrine)
 	else
 		msg:addByte(0)
 		msg:addByte(2)
-		msg:addU32(Game.getLastServerSave() + DailyReward.serverTimeThreshold) --timeLeft to pickUp reward without loosing streak
+		msg:addU32(GetDailyRewardLastServerSave() + DailyReward.serverTimeThreshold) --timeLeft to pickUp reward without loosing streak
 		msg:addU16(self:getJokerTokens())
 	end
 	msg:addU16(self:getStreakLevel()) -- day strike
@@ -428,9 +428,9 @@ function Player.selectDailyReward(self, msg)
 		-- Creating items table
 		local columnsPicked = msg:getByte() -- Columns picked
 		for i = 1, columnsPicked do
-			local itemId = msg:getU16()
+			local spriteId = msg:getU16()
 			local count = msg:getByte()
-			items[i] = {itemId = itemId, count = count}
+			items[i] = {spriteId = spriteId, count = count}
 		end
 
 		-- Verifying if items if player is picking the correct amount
@@ -459,17 +459,18 @@ function Player.selectDailyReward(self, msg)
 
 		local description = ""
 		for k, v in ipairs(items) do
+			local item = Game.getItemIdByClientId(v.spriteId)
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(v.ItemId, dailyTable.itemCharges) -- adding charges for each item
+					inbox:addItem(item:getId(), dailyTable.itemCharges) -- adding charges for each item
 				end
 			else
-				inbox:addItem(v.ItemId, v.count) -- adding single item w/o charges
+				inbox:addItem(item:getId(), v.count) -- adding single item w/o charges
 			end
 			if k ~= columnsPicked then
-				description = description .. "" .. v.count .. "x " .. getItemName(v.ItemId) .. ", "
+				description = description .. "" .. v.count .. "x " .. ItemType(item:getId()):getName() .. ", "
 			else
-				description = description .. "" .. v.count .. "x " .. getItemName(v.ItemId) .. "."
+				description = description .. "" .. v.count .. "x " .. ItemType(item:getId()):getName() .. "."
 			end
 		end
 
@@ -597,9 +598,9 @@ function Player.readDailyReward(self, msg, currentDay, state)
 			for i = 1, #rewards do
 				local itemId = rewards[i]
 				local itemType = ItemType(itemId)
-				local itemName = itemType:getArticle() .. " " .. getItemName(itemId)
+				local itemName = itemType:getArticle() .. " " .. itemType:getName()
 				local itemWeight = itemType:getWeight()
-				msg:addU16(itemId)
+				msg:addItemId(itemId)
 				msg:addString(itemName)
 				msg:addU32(itemWeight)
 			end

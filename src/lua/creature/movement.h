@@ -26,7 +26,6 @@
 #include "lua/functions/events/move_event_functions.hpp"
 #include "creatures/players/vocations/vocation.h"
 
-extern Vocations g_vocations;
 
 class MoveEvent;
 using MoveEvent_ptr = std::unique_ptr<MoveEvent>;
@@ -45,6 +44,13 @@ class MoveEvents final : public BaseEvents {
 		// non-copyable
 		MoveEvents(const MoveEvents&) = delete;
 		MoveEvents& operator=(const MoveEvents&) = delete;
+
+		static MoveEvents& getInstance() {
+			// Guaranteed to be destroyed
+			static MoveEvents instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		uint32_t onCreatureMove(Creature* creature, const Tile* tile, MoveEvent_t eventType);
 		uint32_t onPlayerEquip(Player* player, Item* item, Slots_t slot, bool isCheck);
@@ -84,6 +90,8 @@ class MoveEvents final : public BaseEvents {
 
 		LuaScriptInterface scriptInterface;
 };
+
+constexpr auto g_moveEvents = &MoveEvents::getInstance;
 
 using StepFunction = std::function<uint32_t(Creature* creature, Item* item, const Position& pos)>;
 using MoveFunction = std::function<uint32_t(Item* item, Item* tileItem, const Position& pos)>;
@@ -136,7 +144,7 @@ class MoveEvent final : public Event {
 			return vocEquipMap;
 		}
 		void addVocEquipMap(std::string vocName) {
-			int32_t vocationId = g_vocations.getVocationId(vocName);
+			int32_t vocationId = g_vocations().getVocationId(vocName);
 			if (vocationId != -1) {
 				vocEquipMap[vocationId] = true;
 			}

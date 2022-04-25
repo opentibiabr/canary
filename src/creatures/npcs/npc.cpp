@@ -27,8 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-extern Npcs g_npcs;
-extern Events* g_events;
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -37,7 +35,7 @@ uint32_t Npc::npcAutoID = 0x80000000;
 
 Npc* Npc::createNpc(const std::string& name)
 {
-	NpcType* npcType = g_npcs.getNpcType(name);
+	NpcType* npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
 		return nullptr;
 	}
@@ -71,7 +69,7 @@ Npc::~Npc() {
 
 void Npc::reset() const
 {
-	g_npcs.reset();
+	g_npcs().reset();
 	// Close shop window from all npcs and reset the shopPlayerSet
 	for (const auto& [npcId, npc] : g_game().getNpcs()) {
 		npc->closeAllShopWindows();

@@ -19,7 +19,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(117)
 rune:name("thunderstorm rune")
 rune:runeId(3202)
 rune:allowFarUse(true)

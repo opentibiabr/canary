@@ -67,6 +67,18 @@ Task* createTask(uint32_t expiration, std::function<void (void)> f);
 
 class Dispatcher : public ThreadHolder<Dispatcher> {
 	public:
+		Dispatcher() = default;
+
+		Dispatcher(Dispatcher const&) = delete;
+		void operator=(Dispatcher const&) = delete;
+
+		static Dispatcher& getInstance() {
+			// Guaranteed to be destroyed
+			static Dispatcher instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void addTask(Task* task, bool push_front = false);
 
 		void shutdown();
@@ -85,6 +97,6 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		uint64_t dispatcherCycle = 0;
 };
 
-extern Dispatcher g_dispatcher;
+constexpr auto g_dispatcher = &Dispatcher::getInstance;
 
 #endif  // SRC_GAME_SCHEDULING_TASKS_H_

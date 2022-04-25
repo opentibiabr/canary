@@ -18,7 +18,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(8)
 rune:name("heavy magic missile rune")
 rune:runeId(3198)
 rune:allowFarUse(true)

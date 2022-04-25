@@ -27,8 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
 
-extern Spells* g_spells;
-extern Actions* g_actions;
 
 Actions::Actions() :
 	scriptInterface("Action Interface") {
@@ -385,25 +383,26 @@ Action* Actions::getAction(const Item* item) {
 		return &it->second;
 	}
 
-	if (const Tile * tile = item->getTile();
-	tile)
-	{
-		if (const Player* player = item->getHoldingPlayer();
-		player && item->getTopParent() == player)
-		{
-			SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
-			return nullptr;
-		}
 
-		if (auto iteratePositions = actionPositionMap.find(tile->getPosition());
-		iteratePositions != actionPositionMap.end())
+	if (auto iteratePositions = actionPositionMap.find(item->getPosition());
+	iteratePositions != actionPositionMap.end())
+	{
+		if (const Tile * tile = item->getTile();
+		tile)
 		{
+			if (const Player* player = item->getHoldingPlayer();
+			player && item->getTopParent() == player)
+			{
+				SPDLOG_DEBUG("[Actions::getAction] - The position only is valid for use item in the map, player name {}", player->getName());
+				return nullptr;
+			}
+
 			return &iteratePositions->second;
 		}
 	}
 
 	//rune items
-	return g_spells->getRuneSpell(item->getID());
+	return g_spells().getRuneSpell(item->getID());
 }
 
 ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey) {
@@ -637,10 +636,10 @@ std::string Action::getScriptEventName() const {
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {
-		return g_actions->canUse(player, toPos);
+		return g_actions().canUse(player, toPos);
 	}
 
-	return g_actions->canUseFar(player, toPos, checkLineOfSight, checkFloor);
+	return g_actions().canUseFar(player, toPos, checkLineOfSight, checkFloor);
 }
 
 Thing* Action::getTarget(Player* player, Creature* targetCreature,

@@ -19,7 +19,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(115)
 rune:name("avalanche rune")
 rune:runeId(3161)
 rune:allowFarUse(true)

@@ -202,13 +202,13 @@ classicAttackSpeed = false
 showScriptsLogInConsole = false
 
 -- Server Save
--- NOTE: serverSaveNotifyDuration in minutes
-serverSaveNotifyMessage = true
-serverSaveNotifyDuration = 5
-serverSaveCleanMap = false
-serverSaveClose = false
-serverSaveShutdown = true
-serverSaveTime = "06:00:00"
+-- NOTE: globalServerSaveNotifyDuration in minutes
+globalServerSaveNotifyMessage = true
+globalServerSaveNotifyDuration = 5
+globalServerSaveCleanMap = false
+globalServerSaveClose = false
+globalServerSaveShutdown = true
+globalServerSaveTime = "06:00:00"
 
 -- Sort loot by chance, most rare items drop first
 -- it is good to be setted when you have a higher

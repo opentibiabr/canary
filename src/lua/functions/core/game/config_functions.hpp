@@ -65,11 +65,11 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST)
 			registerEnumIn(L, "configKeys", FREE_QUEST_STAGE)
 			registerEnumIn(L, "configKeys", ALL_CONSOLE_LOG)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_NOTIFY_MESSAGE)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_NOTIFY_DURATION)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_CLEAN_MAP)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_CLOSE)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_SHUTDOWN)
+			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_NOTIFY_MESSAGE)
+			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_NOTIFY_DURATION)
+			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_CLEAN_MAP)
+			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_CLOSE)
+			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_SHUTDOWN)
 			registerEnumIn(L, "configKeys", MAP_NAME)
 			registerEnumIn(L, "configKeys", TOGGLE_MAP_CUSTOM)
 			registerEnumIn(L, "configKeys", MAP_CUSTOM_NAME)
@@ -179,7 +179,7 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", TOGGLE_SAVE_INTERVAL_CLEAN_MAP)
 			registerEnumIn(L, "configKeys", SAVE_INTERVAL_TIME)
 			registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_SHRINE_STORAGE)
-			registerEnumIn(L, "configKeys", SERVER_SAVE_TIME)
+			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
 
 			#undef registerEnumIn
 		}

@@ -63,7 +63,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 	}
 	else if (it.isSplash() || it.isFluidContainer())
 	{
-		msg.addByte(fluidMap[count & 7]);
+		msg.addByte(count);
 	}
 	else if (it.isContainer())
 	{
@@ -99,7 +99,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 	else if (it.isSplash() || it.isFluidContainer())
 	{
-		msg.addByte(fluidMap[item->getFluidType() & 7]);
+		msg.addByte(static_cast<uint8_t>(item->getFluidType()));  
 	}
 	else if (it.isContainer())
 	{
@@ -7087,7 +7087,7 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 	msg.add<uint16_t>(shopBlock.itemId);
 
 	if (it.isSplash() || it.isFluidContainer()) {
-		msg.addByte(static_cast<int32_t>(serverFluidToClient(shopBlock.itemSubType)));
+		msg.addByte(static_cast<uint8_t>(shopBlock.itemSubType));
 	} else {
 		msg.addByte(0x00);
 	}

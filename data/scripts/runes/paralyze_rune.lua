@@ -19,7 +19,6 @@ function rune.onCastSpell(creature, var)
 end
 
 rune:group("support")
-rune:id(54)
 rune:name("paralyze rune")
 rune:runeId(3165)
 rune:allowFarUse(true)

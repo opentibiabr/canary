@@ -38,7 +38,6 @@ function rune.onCastSpell(creature, variant, isHotkey)
 end
 
 rune:group("support")
-rune:id(12)
 rune:name("convince creature rune")
 rune:runeId(3177)
 rune:allowFarUse(true)

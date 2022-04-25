@@ -26,7 +26,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("healing")
-rune:id(4)
 rune:name("intense healing rune")
 rune:runeId(3152)
 rune:allowFarUse(true)

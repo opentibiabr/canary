@@ -183,6 +183,12 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 	// spell:id(id)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
+		if (spell->spellType != SPELL_INSTANT) {
+			reportErrorFunc("The method: 'spell:id(id)' is only for use of instant spells");
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, spell->getId());
 		} else {

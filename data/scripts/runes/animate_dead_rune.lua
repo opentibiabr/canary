@@ -31,7 +31,6 @@ function rune.onCastSpell(player, variant)
 end
 
 rune:group("support")
-rune:id(83)
 rune:name("animate dead rune")
 rune:runeId(3203)
 rune:allowFarUse(true)

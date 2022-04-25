@@ -33,19 +33,21 @@ class Scripts {
 		Scripts& operator=(const Scripts&) = delete;
 
 		static Scripts& getInstance() {
+			// Guaranteed to be destroyed
 			static Scripts instance;
+			// Instantiated on first use
 			return instance;
 		}
 
-
 		bool loadEventSchedulerScripts(const std::string& fileName);
 		bool loadScripts(std::string folderName, bool isLib, bool reload);
-		bool loadScriptSystems();
 		LuaScriptInterface& getScriptInterface() {
 			return scriptInterface;
 		}
 	private:
 		LuaScriptInterface scriptInterface;
 };
+
+constexpr auto g_scripts = &Scripts::getInstance;
 
 #endif  // SRC_LUA_SCRIPTS_SCRIPTS_H_

@@ -30,8 +30,6 @@
 #define lua_strlen lua_rawlen
 #endif
 
-extern Game g_game;
-
 namespace {
 
 std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue)
@@ -200,6 +198,7 @@ bool ConfigManager::load()
 	string[STORE_IMAGES_URL] = getGlobalString(L, "coinImagesURL", "");
 	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
+	string[SERVER_SAVE_TIME] = getGlobalString(L, "serverSaveTime", "06:00");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
@@ -270,6 +269,24 @@ bool ConfigManager::load()
 	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);
 	floating[RATE_NPC_DEFENSE] = getGlobalFloat(L, "rateNpcDefense", 1.0);
 
+	boolean[PREY_ENABLED] = getGlobalBoolean(L, "preySystemEnabled", true);
+	boolean[PREY_FREE_THIRD_SLOT] = getGlobalBoolean(L, "preyFreeThirdSlot", false);
+	integer[PREY_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "preyRerollPricePerLevel", 200);
+	integer[PREY_SELECTION_LIST_PRICE] = getGlobalNumber(L, "preySelectListPrice", 1);
+	integer[PREY_BONUS_PERCENT_MIN] = getGlobalNumber(L, "preyBonusPercentMin", 5);
+	integer[PREY_BONUS_PERCENT_MAX] = getGlobalNumber(L, "preyBonusPercentMax", 40);
+	integer[PREY_BONUS_TIME] = getGlobalNumber(L, "preyBonusTime", 7200);
+	integer[PREY_BONUS_REROLL_PRICE] = getGlobalNumber(L, "preyBonusRerollPrice", 2);
+	integer[PREY_FREE_REROLL_TIME] = getGlobalNumber(L, "preyFreeRerollTime", 72000);
+
+	boolean[TASK_HUNTING_ENABLED] = getGlobalBoolean(L, "taskHuntingSystemEnabled", true);
+	boolean[TASK_HUNTING_FREE_THIRD_SLOT] = getGlobalBoolean(L, "taskHuntingFreeThirdSlot", false);
+	integer[TASK_HUNTING_LIMIT_EXHAUST] = getGlobalNumber(L, "taskHuntingLimitedTasksExhaust", 72000);
+	integer[TASK_HUNTING_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "taskHuntingRerollPricePerLevel", 200);
+	integer[TASK_HUNTING_SELECTION_LIST_PRICE] = getGlobalNumber(L, "taskHuntingSelectListPrice", 1);
+	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 2);
+	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
+
 	loaded = true;
 	lua_close(L);
 	return true;
@@ -278,8 +295,8 @@ bool ConfigManager::load()
 bool ConfigManager::reload()
 {
 	bool result = load();
-	if (transformToSHA1(getString(MOTD)) != g_game.getMotdHash()) {
-		g_game.incrementMotdNum();
+	if (transformToSHA1(getString(MOTD)) != g_game().getMotdHash()) {
+		g_game().incrementMotdNum();
 	}
 	return result;
 }

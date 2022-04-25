@@ -37,10 +37,6 @@
 
 #define IMBUEMENT_SLOT 500
 
-extern Game g_game;
-extern Spells* g_spells;
-extern Vocations g_vocations;
-extern Imbuements* g_imbuements;
 
 Items Item::items;
 
@@ -95,24 +91,53 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
 	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
 	uint32_t info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
-	imbuementInfo->imbuement = g_imbuements->getImbuement(info & 0xFF);
+	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
-void Item::setImbuement(uint8_t slot, uint16_t id, int32_t duration)
+void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
 	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
-	value.set<int64_t>(duration > 0 ? (duration << 8) | id : 0);
+	value.set<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0);
 	setCustomAttribute(key, value);
+}
+
+void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
+{
+	Player* player = getHoldingPlayer();
+	if (!player) {
+		return;
+	}
+
+	// Get imbuement by the id
+	const Imbuement *imbuement = g_imbuements().getImbuement(imbuementId);
+	if (!imbuement) {
+		return;
+	}
+
+	// Get category imbuement for acess category id
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
+		return;
+	}
+
+	// Checks if the item already has the imbuement category id
+	if (hasImbuementCategoryId(categoryImbuement->id)) {
+		SPDLOG_ERROR("[Item::setImbuement] - An error occurred while player with name {} try to apply imbuement, item already contains imbuement of the same type: {}", player->getName(), imbuement->getName());
+		player->sendImbuementResult("An error ocurred, please reopen imbuement window.");
+		return;
+	}
+
+	setImbuement(slot, imbuementId, duration);
 }
 
 bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-			const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
 			if (categoryImbuement->id == categoryId) {
 				return true;
 			}
@@ -279,7 +304,7 @@ void Item::onRemoved()
 	ScriptEnvironment::removeTempItem(this);
 
 	if (hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
-		g_game.removeUniqueItem(getUniqueId());
+		g_game().removeUniqueItem(getUniqueId());
 	}
 }
 
@@ -1451,7 +1476,7 @@ std::string Item::parseImbuementDescription(const Item* item)
 				continue;
 			}
 
-			const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+			const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
 			if (!baseImbuement)
 			{
 				continue;
@@ -1485,7 +1510,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 	if (it.isRune()) {
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
-			if (RuneSpell* rune = g_spells->getRuneSpell(it.id)) {
+			if (const RuneSpell* rune = g_spells().getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
 				if (item) {
 					tmpSubType = item->getSubType();
@@ -1500,7 +1525,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				showVocMap.reserve(vocMap.size() / 2);
 				for (const auto& voc : vocMap) {
 					if (voc.second) {
-						showVocMap.push_back(g_vocations.getVocation(voc.first));
+						showVocMap.push_back(g_vocations().getVocation(voc.first));
 					}
 				}
 
@@ -2376,7 +2401,7 @@ void Item::setUniqueId(uint16_t n)
 		return;
 	}
 
-	if (g_game.addUniqueItem(n, this)) {
+	if (g_game().addUniqueItem(n, this)) {
 		getAttributes()->setUniqueId(n);
 	}
 }
@@ -2531,12 +2556,12 @@ ItemAttributes::Attribute& ItemAttributes::getAttr(ItemAttrTypes type)
 
 void Item::startDecaying()
 {
-	g_decay.startDecay(this);
+	g_decay().startDecay(this);
 }
 
 void Item::stopDecaying()
 {
-	g_decay.stopDecay(this);
+	g_decay().stopDecay(this);
 }
 
 bool Item::hasMarketAttributes()

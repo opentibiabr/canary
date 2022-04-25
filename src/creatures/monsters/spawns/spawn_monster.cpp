@@ -27,10 +27,6 @@
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
 
-extern Monsters g_monsters;
-extern Game g_game;
-extern Events* g_events;
-
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day
 
@@ -50,8 +46,8 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	this->filemonstername = filemonstername;
 	loaded = true;
 
-	uint32_t eventschedule = g_game.getSpawnMonsterSchedule();
-	std::string boostedNameGet = g_game.getBoostedMonsterName();
+	uint32_t eventschedule = g_game().getSpawnMonsterSchedule();
+	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
 		Position centerPos(
@@ -160,7 +156,7 @@ bool SpawnsMonster::isInZone(const Position& centerPos, int32_t radius, const Po
 void SpawnMonster::startSpawnMonsterCheck()
 {
 	if (checkSpawnMonsterEvent == 0) {
-		checkSpawnMonsterEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
+		checkSpawnMonsterEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
 	}
 }
 
@@ -176,7 +172,7 @@ SpawnMonster::~SpawnMonster()
 bool SpawnMonster::findPlayer(const Position& pos)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, pos, false, true);
+	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
 			return true;
@@ -195,11 +191,11 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, MonsterType* monsterTyp
 	std::unique_ptr<Monster> monster_ptr(new Monster(monsterType));
 	if (startup) {
 		//No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game.internalPlaceCreature(monster_ptr.get(), pos, true)) {
+		if (!g_game().internalPlaceCreature(monster_ptr.get(), pos, true)) {
 			return false;
 		}
 	} else {
-		if (!g_game.placeCreature(monster_ptr.get(), pos, false, true)) {
+		if (!g_game().placeCreature(monster_ptr.get(), pos, false, true)) {
 			return false;
 		}
 	}
@@ -212,7 +208,7 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, MonsterType* monsterTyp
 
 	spawnedMonsterMap.insert(spawned_pair(spawnMonsterId, monster));
 	spawnMonsterMap[spawnMonsterId].lastSpawn = OTSYS_TIME();
-	g_events->eventMonsterOnSpawn(monster, pos);
+	g_events().eventMonsterOnSpawn(monster, pos);
 	return true;
 }
 
@@ -264,7 +260,7 @@ void SpawnMonster::checkSpawnMonster()
 	}
 
 	if (spawnedMonsterMap.size() < spawnMonsterMap.size()) {
-		checkSpawnMonsterEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
+		checkSpawnMonsterEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnMonster::checkSpawnMonster, this)));
 	}
 }
 
@@ -273,8 +269,8 @@ void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t& sb, uint
 	if (interval <= 0) {
 		spawnMonster(spawnMonsterId, sb.monsterType, sb.pos, sb.direction);
 	} else {
-		g_game.addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler.addEvent(createSchedulerTask(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL)));
+		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
+		g_scheduler().addEvent(createSchedulerTask(1400, std::bind(&SpawnMonster::scheduleSpawn, this, spawnMonsterId, sb, interval - NONBLOCKABLE_SPAWN_MONSTER_INTERVAL)));
 	}
 }
 
@@ -296,7 +292,7 @@ void SpawnMonster::cleanup()
 
 bool SpawnMonster::addMonster(const std::string& name, const Position& pos, Direction dir, uint32_t scheduleInterval)
 {
-	MonsterType* monsterType = g_monsters.getMonsterType(name);
+	MonsterType* monsterType = g_monsters().getMonsterType(name);
 	if (!monsterType) {
 		SPDLOG_ERROR("Can not find {}", name);
 		return false;
@@ -330,7 +326,7 @@ void SpawnMonster::removeMonster(Monster* monster)
 void SpawnMonster::stopEvent()
 {
 	if (checkSpawnMonsterEvent != 0) {
-		g_scheduler.stopEvent(checkSpawnMonsterEvent);
+		g_scheduler().stopEvent(checkSpawnMonsterEvent);
 		checkSpawnMonsterEvent = 0;
 	}
 }

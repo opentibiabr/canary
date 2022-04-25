@@ -199,7 +199,7 @@ class Map
 		 * \param loadNpcs if true, the main map npcs is loaded
 		 * \returns true if the main map was loaded successfully
 		*/
-		bool loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs);
+		bool loadMap(const std::string& identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false);
 		/**
 		* Load the custom map
 		 * \param identifier Is the map custom folder

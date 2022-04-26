@@ -110,11 +110,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		return false
 	end
 
-	-- TODO: Remove later
-	print("toPosition.x = " .. toPosition.x)
-	print("toPosition.y = " .. toPosition.y)
-	print("toPosition.z = " .. toPosition.z)
-
 	if toPosition.x ~= CONTAINER_POSITION then
 		-- if item is already in the ground, it should be able to be moved (for instance, unwrapped items)
 		if fromPosition.x == CONTAINER_POSITION then
@@ -122,7 +117,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 				self:sendCancelMessage("This item cannot be moved to ground.")
 				return false
 			end
-	
 			if item:isContainer() then
 				local items = item:getItems(true)
 				for index, value in ipairs(items or { }) do
@@ -159,15 +153,22 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 	local containerTo = self:getContainerById(toPosition.y-64)
 	if (containerTo) then
-		if containerTo:getId() == ITEM_STORE_INBOX then
-			-- allow moving store items back to the store inbox
-			if item:getActionId() == NOT_TRADEABLE_ACTION then
+		if item:getActionId() == NOT_TRADEABLE_ACTION then
+			-- allow moving store items to store and to depot
+			if containerTo:isDepot() or containerTo:getId() == ITEM_STORE_INBOX then
 				return true
+				 -- TODO, if one of the parents container is ITEM_STORE_INBOX or one of the parents container is depot, also return true
+			else
+				self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
+				return false
 			end
-			-- do not allow moving any other items to Store Inbox
+		elseif containerTo:getId() == ITEM_STORE_INBOX then
+			-- do not allow moving non-store items to Store Inbox
 			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
 			return false
+			 -- TODO, if one of the parents container is ITEM_STORE_INBOX, also return false
 		end
+
 		if containerTo:getId() == ITEM_GOLD_POUCH then
 			if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN
 			or item:getId() == ITEM_GOLD_COIN)) then

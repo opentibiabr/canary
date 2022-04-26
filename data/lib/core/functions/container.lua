@@ -69,3 +69,24 @@ function Container.createLootItem(self, item, charm, prey)
 	end
 	return true
 end
+
+function Container.isDepot(self)
+	return (self:getId() == ITEM_DEPOT_I
+	or self:getId() == ITEM_DEPOT_II
+	or self:getId() == ITEM_DEPOT_III
+	or self:getId() == ITEM_DEPOT_IV
+	or self:getId() == ITEM_DEPOT_V
+	or self:getId() == ITEM_DEPOT_VI
+	or self:getId() == ITEM_DEPOT_VII
+	or self:getId() == ITEM_DEPOT_VIII
+	or self:getId() == ITEM_DEPOT_IX
+	or self:getId() == ITEM_DEPOT_X
+	or self:getId() == ITEM_DEPOT_XI
+	or self:getId() == ITEM_DEPOT_XII
+	or self:getId() == ITEM_DEPOT_XIII
+	or self:getId() == ITEM_DEPOT_XIV
+	or self:getId() == ITEM_DEPOT_XV
+	or self:getId() == ITEM_DEPOT_XVI
+	or self:getId() == ITEM_DEPOT_XVII
+	or self:getId() == ITEM_DEPOT_XVIII)
+end

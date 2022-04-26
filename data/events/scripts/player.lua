@@ -64,6 +64,12 @@ function Player:onLook(thing, position, distance)
 			end
 		end
 	end
+
+	if(thing:isItem()) then
+		if(thing:getActionId() == NOT_TRADEABLE_ACTION) then
+			description = string.format("%s\nThis item cannot be traded.", description)
+		end
+	end
 	self:sendTextMessage(MESSAGE_LOOK, description)
 end
 
@@ -129,6 +135,28 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			end
 		end
 	end
+
+	local containerTo = self:getContainerById(toPosition.y-64)
+	if (containerTo) then
+		if containerTo:getId() == ITEM_STORE_INBOX then
+			-- allow moving store items back to the store inbox
+			local containerFrom = self:getContainerById(fromPosition.y-64)
+			if item:getActionId() == NOT_TRADEABLE_ACTION then
+				return true
+			end
+			-- do not allow moving any other items to Store Inbox
+			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
+			return false
+		end
+		if containerTo:getId() == ITEM_GOLD_POUCH then
+			if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN
+			or item:getId() == ITEM_GOLD_COIN)) then
+				self:sendCancelMessage("You can move only money to this container.")
+				return false
+			end
+		end
+	end
+
 
 	-- Execute event function from reward boss lib
 	self:executeRewardEvents(item, toPosition)
@@ -221,7 +249,7 @@ end
 
 function Player:onTradeRequest(target, item)
 	-- No trade items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
 		return false
 	end
 	return true

@@ -127,6 +127,21 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 				end
 			end
 		end
+	elseif toPosition.y == CONST_SLOT_BACKPACK then
+		if item:getActionId() == NOT_TRADEABLE_ACTION then
+			self:sendCancelMessage("This item cannot be moved to your backpack.")
+			return 
+		else
+			if item:isContainer() then
+				local items = item:getItems(true)
+				for index, value in ipairs(items or { }) do
+					if value:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
+						self:sendCancelMessage("This container has an item that cannot be moved to your backpack.")
+						return false
+					end
+				end
+			end		
+		end
 	end
 
 	if item:getTopParent() == self and bit.band(toPosition.y, 0x40) == 0 then

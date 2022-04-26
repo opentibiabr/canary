@@ -53,3 +53,18 @@ function Item.setUniqueId(self, uniqueId)
 
 	self:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, uniqueId)
 end
+
+function Item.isInsideOfId(self, id)
+	local parent = self:getParent()
+	while parent do
+		if parent:isContainer() then
+			if parent:getId() == id then
+				return true
+			end
+			parent = parent:getParent()
+		else
+			break
+		end
+	end
+	return false
+end

@@ -155,18 +155,36 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	if (containerTo) then
 		if item:getActionId() == NOT_TRADEABLE_ACTION then
 			-- allow moving store items to store and to depot
-			if containerTo:isDepot() or containerTo:getId() == ITEM_STORE_INBOX then
+			if containerTo:isDepot() 
+				or containerTo:getId() == ITEM_STORE_INBOX
+				or containerTo:isInsideOfId(ITEM_STORE_INBOX)
+			    or containerTo:isInsideOfId(ITEM_DEPOT_I)
+				or containerTo:isInsideOfId(ITEM_DEPOT_II)
+				or containerTo:isInsideOfId(ITEM_DEPOT_III)
+				or containerTo:isInsideOfId(ITEM_DEPOT_IV)
+				or containerTo:isInsideOfId(ITEM_DEPOT_V)
+				or containerTo:isInsideOfId(ITEM_DEPOT_VI)
+				or containerTo:isInsideOfId(ITEM_DEPOT_VII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_VIII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_IX)
+				or containerTo:isInsideOfId(ITEM_DEPOT_X)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XI)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XIII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XIV)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XV)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XVI)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XVII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XVIII) then
 				return true
-				 -- TODO, if one of the parents container is ITEM_STORE_INBOX or one of the parents container is depot, also return true
 			else
 				self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
 				return false
 			end
-		elseif containerTo:getId() == ITEM_STORE_INBOX then
+		elseif containerTo:getId() == ITEM_STORE_INBOX or containerTo:isInsideOfId(ITEM_STORE_INBOX) then
 			-- do not allow moving non-store items to Store Inbox
 			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
 			return false
-			 -- TODO, if one of the parents container is ITEM_STORE_INBOX, also return false
 		end
 
 		if containerTo:getId() == ITEM_GOLD_POUCH then

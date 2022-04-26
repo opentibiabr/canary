@@ -156,7 +156,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		end
 	end
 
-
 	-- Execute event function from reward boss lib
 	self:executeRewardEvents(item, toPosition)
 
@@ -249,7 +248,18 @@ end
 function Player:onTradeRequest(target, item)
 	-- No trade items with actionID = 100
 	if item:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
+		self:sendCancelMessage("You cannot trade this item.")
 		return false
+	end
+
+	if item:isContainer() then
+		local items = item:getItems(true)
+		for index, value in ipairs(items or { }) do
+			if value:getActionId() == NOT_TRADEABLE_ACTION or item:getActionId() == NOT_MOVEABLE_ACTION then
+				self:sendCancelMessage("This container has an item that cannot be traded.")
+				return false
+			end
+		end
 	end
 	return true
 end

@@ -153,6 +153,14 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 
 	local containerTo = self:getContainerById(toPosition.y-64)
 	if (containerTo) then
+		if containerTo:getId() == ITEM_GOLD_POUCH or containerTo:getItem(toPosition.z) and containerTo:getItem(toPosition.z):getId() == ITEM_GOLD_POUCH then
+			if item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN or item:getId() == ITEM_GOLD_COIN then
+				return true
+			else
+				self:sendCancelMessage("You can move only money to this container.")
+				return false
+			end
+		end
 		if item:getActionId() == NOT_TRADEABLE_ACTION then
 			-- allow moving store items to store and to depot
 			if containerTo:isDepot() 
@@ -185,14 +193,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			-- do not allow moving non-store items to Store Inbox
 			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
 			return false
-		end
-
-		if containerTo:getId() == ITEM_GOLD_POUCH then
-			if (not (item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN
-			or item:getId() == ITEM_GOLD_COIN)) then
-				self:sendCancelMessage("You can move only money to this container.")
-				return false
-			end
 		end
 	end
 

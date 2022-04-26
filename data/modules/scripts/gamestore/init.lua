@@ -1323,7 +1323,8 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 						pack = pendingCount
 					end
 					if isKeg then
-						local kegItem = parcel:addItem(offerId, 1):setActionId(NOT_TRADEABLE_ACTION)
+						local kegItem = parcel:addItem(offerId, 1)
+						kegItem:setActionId(NOT_TRADEABLE_ACTION)
 						kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
 					else
 						parcel:addItem(offerId, pack):setActionId(NOT_TRADEABLE_ACTION)
@@ -1332,9 +1333,12 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 				end
 			end
 		else
-			local item = inbox:addItem(offerId, isKeg and 1 or offerCount):setActionId(NOT_TRADEABLE_ACTION)
-			if item and isKeg then
-				item:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
+			local item = inbox:addItem(offerId, isKeg and 1 or offerCount)
+			if item then
+				item:setActionId(NOT_TRADEABLE_ACTION)
+				if isKeg then
+					item:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
+				end
 			end
 		end
 	else
@@ -1351,8 +1355,9 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
-		local decoKit = inbox:addItem(23398, 1):setActionId(NOT_TRADEABLE_ACTION)
+		local decoKit = inbox:addItem(23398, 1)
 		if decoKit then
+			decoKit:setActionId(NOT_TRADEABLE_ACTION)
 			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
 			decoKit:setCustomAttribute("unWrapId", offerId)
 			if isCaskItem(offerId) then

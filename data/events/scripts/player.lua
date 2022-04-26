@@ -116,23 +116,23 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	print("toPosition.z = " .. toPosition.z)
 
 	if toPosition.x ~= CONTAINER_POSITION then
-		-- TODO: Wrapables podem ser movidos, mesmo tendo a actionid
-		if item:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
-			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
-			return false
-		end
-
-		if item:isContainer() then
-			local items = item:getItems(true)
-			for index, value in ipairs(items or { }) do
-				if value:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
-					self:sendCancelMessage("This container has an item that cannot be moved to ground.")
-					return false
+		-- if item is already in the ground, it should be able to be moved (for instance, unwrapped items)
+		if fromPosition.x == CONTAINER_POSITION then
+			if item:getActionId() == NOT_TRADEABLE_ACTION then
+				self:sendCancelMessage("This item cannot be moved to ground.")
+				return false
+			end
+	
+			if item:isContainer() then
+				local items = item:getItems(true)
+				for index, value in ipairs(items or { }) do
+					if value:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
+						self:sendCancelMessage("This container has an item that cannot be moved to ground.")
+						return false
+					end
 				end
 			end
 		end
-
-		return true
 	end
 
 	if item:getTopParent() == self and bit.band(toPosition.y, 0x40) == 0 then

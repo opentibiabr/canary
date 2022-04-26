@@ -140,7 +140,6 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 	if (containerTo) then
 		if containerTo:getId() == ITEM_STORE_INBOX then
 			-- allow moving store items back to the store inbox
-			local containerFrom = self:getContainerById(fromPosition.y-64)
 			if item:getActionId() == NOT_TRADEABLE_ACTION then
 				return true
 			end

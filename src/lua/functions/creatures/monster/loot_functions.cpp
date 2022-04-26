@@ -22,7 +22,6 @@
 #include "creatures/monsters/monsters.h"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
 
-extern Monsters g_monsters;
 
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item

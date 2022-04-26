@@ -34,7 +34,6 @@ namespace fs = std::filesystem;
 namespace fs = boost::filesystem;
 #endif
 
-extern Weapons* g_weapons;
 
 Items::Items(){}
 
@@ -92,7 +91,7 @@ bool Items::reload()
 		return false;
 	}
 
-	g_weapons->loadDefaults();
+	g_weapons().loadDefaults();
 	return true;
 }
 
@@ -329,4 +328,12 @@ uint16_t Items::getItemIdByName(const std::string& name)
 		return 0;
 
 	return result->second;
+}
+
+bool Items::hasItemType(size_t hasId) const
+{
+	if (hasId < items.size()) {
+		return true;
+	}
+	return false;
 }

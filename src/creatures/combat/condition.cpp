@@ -22,8 +22,6 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
-extern Monsters g_monsters;
-
 bool Condition::setParam(ConditionParam_t param, int32_t value)
 {
 	switch (param) {
@@ -841,7 +839,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					TextMessage message(MESSAGE_HEALED, "You were healed for " + healString);
 					message.position = player->getPosition();
 					message.primary.value = realHealthGain;
-					message.primary.color = TEXTCOLOR_MAYABLUE;
+					message.primary.color = TEXTCOLOR_PASTELRED;
 					player->sendTextMessage(message);
 
 					SpectatorHashSet spectators;
@@ -1660,7 +1658,7 @@ bool ConditionOutfit::startCondition(Creature* creature)
 	}
 
 	if ((outfit.lookType == 0 && outfit.lookTypeEx == 0) && !monsterName.empty()) {
-		MonsterType* monsterType = g_monsters.getMonsterType(monsterName);
+		const MonsterType* monsterType = g_monsters().getMonsterType(monsterName);
 		if (monsterType) {
 			setOutfit(monsterType->info.outfit);
 		} else {
@@ -1699,7 +1697,7 @@ void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondi
 
 		const ConditionOutfit& conditionOutfit = static_cast<const ConditionOutfit&>(*addCondition);
 		if (!conditionOutfit.monsterName.empty() && conditionOutfit.monsterName.compare(monsterName) != 0) {
-			MonsterType* monsterType = g_monsters.getMonsterType(conditionOutfit.monsterName);
+			const MonsterType* monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
 			if (monsterType) {
 				setOutfit(monsterType->info.outfit);
 			} else {

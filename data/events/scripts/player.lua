@@ -98,6 +98,12 @@ function Player:onLookInShop(itemType, count)
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	-- No move items with actionID = 100
+	if item:getActionId() == NOT_MOVEABLE_ACTION then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
+
 	if toPosition.x ~= CONTAINER_POSITION then
 		return true
 	end
@@ -123,6 +129,9 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			end
 		end
 	end
+
+	-- Execute event function from reward boss lib
+	self:executeRewardEvents(item, toPosition)
 
 	return true
 end
@@ -211,6 +220,10 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
+	-- No trade items with actionID = 100
+	if item:getActionId() == NOT_MOVEABLE_ACTION then
+		return false
+	end
 	return true
 end
 
@@ -250,9 +263,11 @@ local function useStamina(player)
 			staminaMinutes = 0
 		end
 		nextUseStaminaTime[playerId] = currentTime + 120
+		player:removePreyStamina(120)
 	else
 		staminaMinutes = staminaMinutes - 1
 		nextUseStaminaTime[playerId] = currentTime + 60
+		player:removePreyStamina(60)
 	end
 	player:setStamina(staminaMinutes)
 end
@@ -283,6 +298,14 @@ function Player:onGainExperience(source, exp, rawExp)
 			exp = exp * 1.5
 		elseif staminaMinutes <= 840 then
 			exp = exp * 0.5
+		end
+	end
+
+	-- Prey system
+	if configManager.getBoolean(configKeys.PREY_ENABLED) then
+		local monsterType = source:getType()
+		if monsterType and monsterType:raceId() > 0 then
+			exp = math.ceil((exp * self:getPreyExperiencePercentage(monsterType:raceId())) / 100)
 		end
 	end
 

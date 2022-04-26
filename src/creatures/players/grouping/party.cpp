@@ -23,7 +23,6 @@
 #include "game/game.h"
 #include "lua/creature/events.h"
 
-extern Events* g_events;
 
 Party::Party(Player* initLeader) : leader(initLeader)
 {
@@ -32,7 +31,7 @@ Party::Party(Player* initLeader) : leader(initLeader)
 
 void Party::disband()
 {
-	if (!g_events->eventPartyOnDisband(this)) {
+	if (!g_events().eventPartyOnDisband(this)) {
 		return;
 	}
 
@@ -68,6 +67,11 @@ void Party::disband()
 		currentLeader->sendCreatureSkull(member);
 	}
 	memberList.clear();
+
+	for (PartyAnalyzer* analyzer : membersData) {
+		delete analyzer;
+	}
+	membersData.clear();
 	delete this;
 }
 
@@ -81,7 +85,7 @@ bool Party::leaveParty(Player* player)
 		return false;
 	}
 
-	if (!g_events->eventPartyOnLeave(this, player)) {
+	if (!g_events().eventPartyOnLeave(this, player)) {
 		return false;
 	}
 
@@ -178,7 +182,7 @@ bool Party::passPartyLeadership(Player* player)
 
 bool Party::joinParty(Player& player)
 {
-	if (!g_events->eventPartyOnJoin(this, &player)) {
+	if (!g_events().eventPartyOnJoin(this, &player)) {
 		return false;
 	}
 
@@ -218,6 +222,7 @@ bool Party::joinParty(Player& player)
 	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") <<
        " party. Open the party channel to communicate with your companions.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
+	updateTrackerAnalyzer();
 	return true;
 }
 
@@ -303,6 +308,7 @@ void Party::updateAllPartyIcons()
 		leader->sendPartyCreatureShield(member);
 	}
 	leader->sendPartyCreatureShield(leader);
+	updateTrackerAnalyzer();
 }
 
 void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/)
@@ -362,7 +368,7 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive)
 void Party::shareExperience(uint64_t experience, Creature* source/* = nullptr*/)
 {
 	uint64_t shareExperience = experience;
-	g_events->eventPartyOnShareExperience(this, shareExperience);
+	g_events().eventPartyOnShareExperience(this, shareExperience);
 	for (Player* member : memberList) {
 		member->onGainSharedExperience(shareExperience, source);
 	}
@@ -557,5 +563,130 @@ void Party::updatePlayerVocation(const Player* player)
 	bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), leader->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), leader->getPosition()) <= maxDistance));
 	if (condition) {
 		leader->sendPartyPlayerVocation(player);
+	}
+}
+
+void Party::updateTrackerAnalyzer() const
+{
+	for (const Player* member : memberList) {
+		member->updatePartyTrackerAnalyzer();
+	}
+
+	if (leader) {
+		leader->updatePartyTrackerAnalyzer();
+	}
+}
+
+void Party::addPlayerLoot(const Player* player, const Item* item)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	if (!playerAnalyzer) {
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
+	}
+
+	uint32_t count = std::max<uint32_t>(1, item->getItemCount());
+	if (auto it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
+		(*it).second += count;
+	} else {
+		playerAnalyzer->lootMap.insert({item->getID(), count});
+	}
+
+	if (priceType == LEADER_PRICE) {
+		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
+	} else {
+		std::map<uint16_t, uint32_t> itemMap {{item->getID(), count}};
+		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
+	}
+	updateTrackerAnalyzer();
+}
+
+void Party::addPlayerSupply(const Player* player, const Item* item)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	if (!playerAnalyzer) {
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
+	}
+
+	if(auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
+		(*it).second += 1;
+	} else {
+		playerAnalyzer->supplyMap.insert({item->getID(), 1});
+	}
+
+	if (priceType == LEADER_PRICE) {
+		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
+	} else {
+		std::map<uint16_t, uint32_t> itemMap {{item->getID(), 1}};
+		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
+	}
+	updateTrackerAnalyzer();
+}
+
+void Party::addPlayerDamage(const Player* player, uint64_t amount)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	if (!playerAnalyzer) {
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
+	}
+
+	playerAnalyzer->damage += amount;
+	updateTrackerAnalyzer();
+}
+
+void Party::addPlayerHealing(const Player* player, uint64_t amount)
+{
+	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
+	if (!playerAnalyzer) {
+		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
+		membersData.push_back(playerAnalyzer);
+	}
+
+	playerAnalyzer->healing += amount;
+	updateTrackerAnalyzer();
+}
+
+void Party::switchAnalyzerPriceType()
+{
+	if (leader == nullptr) {
+		return;
+	}
+
+	priceType = priceType == LEADER_PRICE ? MARKET_PRICE : LEADER_PRICE;
+	reloadPrices();
+	updateTrackerAnalyzer();
+}
+
+void Party::resetAnalyzer()
+{
+	trackerTime = time(nullptr);
+	for (PartyAnalyzer* analyzer : membersData) {
+		delete analyzer;
+	}
+
+	membersData.clear();
+	updateTrackerAnalyzer();
+}
+
+void Party::reloadPrices()
+{
+	for (PartyAnalyzer* analyzer : membersData) {
+		if (priceType == MARKET_PRICE) {
+			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);
+			analyzer->supplyPrice = g_game().getItemMarketPrice(analyzer->supplyMap, true);
+			continue;
+		}
+
+		analyzer->lootPrice = 0;
+		for (const auto it : analyzer->lootMap) {
+			analyzer->lootPrice += leader->getItemCustomPrice(it.first) * it.second;
+		}
+
+		analyzer->supplyPrice = 0;
+		for (const auto it : analyzer->supplyMap) {
+			analyzer->supplyPrice += leader->getItemCustomPrice(it.first, true) * it.second;
+		}
 	}
 }

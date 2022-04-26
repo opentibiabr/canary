@@ -179,7 +179,7 @@ const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
 	{"eastalt", TILESTATE_FLOORCHANGE_EAST_ALT},
 };
 
-const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
+const std::unordered_map<std::string, Fluids_t> FluidTypesMap = {
 	{"water", FLUID_WATER },
 	{"blood", FLUID_BLOOD},
 	{"beer", FLUID_BEER},
@@ -194,11 +194,10 @@ const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
 	{"wine", FLUID_WINE },
 	{"mud", FLUID_MUD },
 	{"fruitjuice", FLUID_FRUITJUICE },
-	{"lava", FLUID_LAVA },
 	{"rum", FLUID_RUM },
-	{"swamp", FLUID_SWAMP },
 	{"tea", FLUID_TEA },
 	{"mead", FLUID_MEAD },
+	{"ink", FLUID_INK },
 };
 
 const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {

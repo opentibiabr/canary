@@ -36,6 +36,7 @@
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
+#include "io/ioprey.h"
 #include "items/items_classification.hpp"
 #include "protobuf/appearances.pb.h"
 
@@ -45,9 +46,12 @@ class Monster;
 class Npc;
 class CombatInfo;
 class Charm;
+class IOPrey;
 class ItemClassification;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
+static constexpr int32_t EVENT_DECAYINTERVAL = 250;
+static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
 
 class Game
 {
@@ -209,6 +213,8 @@ class Game
 		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
                              bool depthSearch = true, int32_t subType = -1) const;
 
+		void createLuaItemsOnMap();
+
 		bool removeMoney(Cylinder* cylinder, uint64_t money,
                          uint32_t flags = 0, bool useBank = false);
 
@@ -234,6 +240,8 @@ class Game
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint32_t>  const &itemMap, bool buyPrice) const;
+
 		void loadPlayersRecord();
 		void checkPlayersRecord();
 
@@ -244,6 +252,8 @@ class Game
 		void playerDebugAssert(uint32_t playerId, const std::string& assertLine,
                                const std::string& date, const std::string& description,
                                const std::string& comment);
+		void playerPreyAction(uint32_t playerId, uint8_t slot, uint8_t action, uint8_t option, int8_t index, uint16_t raceId);
+		void playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId);
 		void playerNpcGreet(uint32_t playerId, uint32_t npcId);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId,
                                      uint8_t button, uint8_t choice);
@@ -337,7 +347,7 @@ class Game
 		void playerRequestAddVip(uint32_t playerId, const std::string& name);
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
 		void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
-		void playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t slot, bool protectionCharm);
+		void playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm);
 		void playerClearImbuement(uint32_t playerid, uint8_t slot);
 		void playerCloseImbuementWindow(uint32_t playerid);
 		void playerTurn(uint32_t playerId, Direction dir);
@@ -581,6 +591,10 @@ class Game
 			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
 		}
 
+		void setCreateLuaItems(Position position, uint16_t itemId) {
+			mapLuaItemsStored[position] = itemId;
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -595,6 +609,12 @@ class Game
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
+
+		/* Items stored from the lua scripts positions
+		 * For example: ActionFunctions::luaActionPosition
+		 * This basically works so that the item is created after the map is loaded, because the scripts are loaded before the map is loaded, we will use this table to create items that don't exist in the map natively through each script
+		*/
+		std::map<Position, uint16_t> mapLuaItemsStored;
 
 		std::map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";

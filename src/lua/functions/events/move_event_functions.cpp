@@ -23,7 +23,6 @@
 #include "lua/creature/movement.h"
 #include "lua/functions/events/move_event_functions.hpp"
 
-extern MoveEvents* g_moveEvents;
 
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()
@@ -79,10 +78,10 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
 		if (!moveevent->isScripted()) {
-			pushBoolean(L, g_moveEvents->registerLuaFunction(moveevent));
+			pushBoolean(L, g_moveEvents().registerLuaFunction(moveevent));
 			return 1;
 		}
-		pushBoolean(L, g_moveEvents->registerLuaEvent(moveevent));
+		pushBoolean(L, g_moveEvents().registerLuaEvent(moveevent));
 		moveevent->getItemIdRange().clear();
 		moveevent->getActionIdRange().clear();
 		moveevent->getUniqueIdRange().clear();

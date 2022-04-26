@@ -217,6 +217,8 @@ class ItemType
 		uint32_t minReqLevel = 0;
 		uint32_t minReqMagicLevel = 0;
 		uint32_t charges = 0;
+		uint32_t buyPrice = 0;
+		uint32_t sellPrice = 0;
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;
@@ -248,7 +250,8 @@ class ItemType
 		WeaponType_t weaponType = WEAPON_NONE;
 		Ammo_t ammoType = AMMO_NONE;
 		ShootType_t shootType = CONST_ANI_NONE;
-		FluidTypes_t fluidSource = FLUID_NONE;
+		RaceType_t corpseType = RACE_NONE;
+		Fluids_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
 		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
@@ -314,6 +317,15 @@ class Items
 		}
 		const ItemType& getItemType(size_t id) const;
 		ItemType& getItemType(size_t id);
+
+		/**
+		 * @brief Check if the itemid "hasId" is stored on "items", if not, return false
+		 * 
+		 * @param hasId check item id
+		 * @return true if the item exist 
+		 * @return false if the item not exist
+		 */
+		bool hasItemType(size_t hasId) const;
 
 		uint16_t getItemIdByName(const std::string& name);
 

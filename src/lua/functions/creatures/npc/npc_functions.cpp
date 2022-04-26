@@ -364,8 +364,7 @@ int NpcFunctions::luaNpcOpenShopWindow(lua_State* L) {
 		return 1;
 	}
 
-	player->openShopWindow(npc);
-	pushBoolean(L, true);
+	pushBoolean(L, player->openShopWindow(npc));
 	return 1;
 }
 
@@ -387,10 +386,6 @@ int NpcFunctions::luaNpcCloseShopWindow(lua_State* L) {
 
 	if (player->getShopOwner() == npc) {
 		player->closeShopWindow(true);
-		// TODO IMPLEMENT CALLBACK PROPERLY.
-		//		if (shopCallback != -1) {
-		//			luaL_unref(L, LUA_REGISTRYINDEX, shopCallback);
-		//		}
 	}
 
 	pushBoolean(L, true);

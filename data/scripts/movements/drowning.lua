@@ -23,7 +23,7 @@ drowning = MoveEvent()
 drowning:type("stepout")
 
 function drowning.onStepOut(creature, item, position, fromPosition)
-	if not creature:isPlayer() then
+	if creature:isPlayer() then
 		creature:removeCondition(CONDITION_DROWN)
 	end
 	return true

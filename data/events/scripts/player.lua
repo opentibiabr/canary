@@ -321,6 +321,7 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	-- Experience Stage Multiplier
 	local expStage = getRateFromTable(experienceStages, self:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
+
 	-- Event scheduler
 	if SCHEDULE_EXP_RATE ~= 100 then
 		expStage = math.max(0, (expStage * SCHEDULE_EXP_RATE)/100)
@@ -334,6 +335,11 @@ function Player:onGainExperience(target, exp, rawExp)
 	local storeXpBoostAmount = stillHasBoost and self:getStoreXpBoost() or 0
 
 	self:setStoreXpBoost(storeXpBoostAmount)
+
+	-- Exp Boost
+	if (storeXpBoostAmount > 0) then
+		exp = exp + (exp * (storeXpBoostAmount/100))
+	end
 
 	-- Stamina Bonus
 	local staminaBoost = 1
@@ -361,7 +367,7 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
-	return (exp / 100 * ((expStage * 100 + storeXpBoostAmount) * staminaBoost))
+	return (exp * expStage) * staminaBoost
 end
 
 function Player:onLoseExperience(exp)

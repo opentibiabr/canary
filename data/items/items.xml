@@ -1,25 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <items>
 	<!--  Liquids -->
-	<item id="1" name="water" />
-	<item id="2" name="blood" />
+	<!--  Fluid type 0 is same as water (id="1") -->
+	<item id="1" name="water" /> 
+	<item id="2" name="wine" />
 	<item id="3" name="beer" />
-	<item id="4" name="slime" />
-	<item id="5" name="lemonade" />
-	<item id="6" name="milk" />
-	<item id="7" name="manafluid" />
-	<item id="10" name="lifefluid" />
-	<item id="11" name="oil" />
-	<item id="13" name="urine" />
-	<item id="14" name="coconut milk" />
-	<item id="15" name="wine" />
-	<item id="19" name="mud" />
-	<item id="21" name="fruit juice" />
-	<item id="26" name="lava" />
-	<item id="27" name="rum" />
-	<item id="28" name="swamp" />
-	<item id="35" name="tea" />
-	<item id="43" name="mead" />
+	<item id="4" name="mud" />
+	<item id="5" name="blood" />
+	<item id="6" name="slime" />
+	<item id="7" name="oil" />
+	<item id="8" name="urine" />
+	<item id="9" name="milk" />
+	<item id="10" name="manafluid" />
+	<item id="11" name="lifefluid" />
+	<item id="12" name="lemonade" />
+	<item id="13" name="rum" />
+	<item id="14" name="fruit juice" />
+	<item id="15" name="coconut milk" />
+	<item id="16" name="mead" />
+	<item id="17" name="tea" />
+	<item id="18" name="ink" />
+	<!-- 12.85 last fluid is 18, 19+ is a loop from 0 to 18 over and over again -->
 
 	<item id="100" name="void"/>
 	<item id="101" name="earth"/>
@@ -644,7 +645,7 @@
 	</item>
 	<item id="391" article="a" name="lava hole">
 		<attribute key="description" value="It emits heat and light."/>
-		<attribute key="fluidsource" value="lava"/>
+		<attribute key="fluidsource" value="mud"/>
 	</item>
 	<item fromid="392" toid="393" name="stalagmites"/>
 	<item id="394" article="a" name="hole">
@@ -36003,9 +36004,7 @@
 		<attribute key="stopduration" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="absorbpercentphysical" value="3"/>
 		<attribute key="transformequipto" value="22134"/>
-		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="550"/>
 	</item>
 	<item id="22062" article="a" name="werewolf helmet">
@@ -36352,7 +36351,9 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="6"/>
 		<attribute key="duration" value="3600"/>
-		<attribute key="decayTo" value="0"/>
+		<attribute key="decayTo" value="22060"/>
+		<attribute key="transformDeEquipTo" value="22061" />
+		<attribute key="duration" value="3600" />
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="550"/>
 	</item>
@@ -43776,26 +43777,26 @@
 	</item>
 	<item fromid="28573" toid="28574" name="unknown item"/>
 	<item id="28575" article="a" name="slain animated feather">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28576" article="a" name="slain animated feather">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28575"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28577" article="a" name="slain animated feather">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28576"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28578" article="a" name="slain animated feather">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28577"/>
 		<attribute key="containersize" value="20"/>
@@ -43826,51 +43827,51 @@
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28583" article="a" name="slain flying book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28584" article="a" name="slain flying book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28583"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28585" article="a" name="slain flying book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28584"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28586" article="a" name="slain flying book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28585"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28587" article="a" name="slain cursed book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28588" article="a" name="slain cursed book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28587"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28589" article="a" name="slain cursed book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28588"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28590" article="a" name="slain cursed book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28589"/>
 		<attribute key="containersize" value="20"/>
@@ -43902,26 +43903,26 @@
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28599" article="a" name="slain ink blob">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28600" article="a" name="slain ink blob">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28599"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28601" article="a" name="slain ink blob">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28600"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28602" article="a" name="slain ink blob">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28601"/>
 		<attribute key="containersize" value="20"/>
@@ -43952,51 +43953,51 @@
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28607" article="a" name="slain biting book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28608" article="a" name="slain biting book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28607"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28609" article="a" name="slain biting book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28608"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28610" article="a" name="slain biting book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28609"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28611" article="a" name="slain librarian">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28612" article="a" name="slain librarian">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28611"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28613" article="a" name="slain librarian">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28612"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28614" article="a" name="slain librarian">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28613"/>
 		<attribute key="containersize" value="20"/>
@@ -44686,27 +44687,27 @@
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28751" article="a" name="dead burning book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28752" article="a" name="dead burning book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28751"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28753" article="a" name="dead burning book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28752"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28754" article="a" name="dead burning book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28753"/>
 		<attribute key="containersize" value="20"/>
@@ -44739,52 +44740,52 @@
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28771" article="a" name="dead icecold book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28772" article="a" name="dead icecold book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28771"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28773" article="a" name="dead icecold book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28772"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28774" article="a" name="dead icecold book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28773"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28775" article="a" name="slain energetic book">
-		<attribute key="corpseType" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
 		<attribute key="duration" value="60"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="28776" article="a" name="slain energetic book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28775"/>
 		<attribute key="containersize" value="10"/>
 	</item>
 	<item id="28777" article="a" name="slain energetic book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="300"/>
 		<attribute key="decayTo" value="28776"/>
 		<attribute key="containersize" value="20"/>
 	</item>
 	<item id="28778" article="a" name="slain energetic book">
-		<attribute key="corpseType" value="blood"/>
-		<attribute key="fluidsource" value="blood"/>
+		<attribute key="corpseType" value="ink"/>
+		<attribute key="fluidsource" value="ink"/>
 		<attribute key="duration" value="10"/>
 		<attribute key="decayTo" value="28777"/>
 		<attribute key="containersize" value="20"/>
@@ -47286,9 +47287,14 @@
 	</item>
 	<item fromid="30374" toid="30392" name="RESERVED SPRITE"/>
 	<item id="30393" article="a" name="cobra crossbow">
+		<attribute key="weaponType" value="distance"/>
 		<attribute key="slotType" value="two-handed"/>
+		<attribute key="ammotype" value="bolt"/>
+		<attribute key="loottype" value="distance"/>
 		<attribute key="skilldist" value="2"/>
 		<attribute key="range" value="6"/>
+		<attribute key="hitChance" value="6"/>
+		<attribute key="attack" value="7"/>
 		<attribute key="weight" value="4000"/>
 		<attribute key="upgradeclassification" value="4"/>
 		<attribute key="imbuementslot" value="2">
@@ -47410,9 +47416,11 @@
 		<attribute key="slotType" value="necklace"/>
 		<attribute key="absorbpercentphysical" value="3"/>
 		<attribute key="absorbpercentpoison" value="14"/>
+		<attribute key="transformDeEquipTo" value="30403" />
 		<attribute key="magicpoints" value="3"/>
+		<attribute key="showduration" value="1" />
 		<attribute key="duration" value="7200"/>
-		<attribute key="decayTo" value="30403"/>
+		<attribute key="decayTo" value="30401"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="500"/>
 	</item>
@@ -47420,6 +47428,9 @@
 		<attribute key="slotType" value="necklace"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="500"/>
+		<attribute key="transformEquipTo" value="30402" />
+		<attribute key="stopduration" value="1" />
+		<attribute key="showduration" value="1" />
 	</item>
 	<item fromid="30404" toid="30406" name="RESERVED SPRITE"/>
 	<item id="30407" article="a" name="sequoia trunk"/>

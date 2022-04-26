@@ -18,7 +18,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(15)
 rune:name("fireball rune")
 rune:runeId(3189)
 rune:allowFarUse(true)

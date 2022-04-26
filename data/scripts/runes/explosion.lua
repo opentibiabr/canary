@@ -20,7 +20,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(18)
 rune:name("explosion rune")
 rune:runeId(3200)
 rune:allowFarUse(true)

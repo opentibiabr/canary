@@ -10,16 +10,24 @@ poison:setParameter(CONDITION_PARAM_TICKINTERVAL, 4000)
 poison:setParameter(CONDITION_PARAM_FORCEUPDATE, true)
 
 local fluidMessage = {
-	[3] = "Aah...",
-	[4] = "Urgh!",
-	[5] = "Mmmh.",
-	[7] = "Aaaah...",
-	[10] = "Aaaah...",
-	[11] = "Urgh!",
-	[13] = "Urgh!",
-	[15] = "Aah...",
-	[19] = "Urgh!",
-	[43] = "Aaaah..."
+	[1] = "Gulp.", -- water
+	[2] = "Aah...", -- wine
+	[3] = "Aah...", -- beer
+	[4] = "Gulp.", -- mud
+	[5] = "Gulp.", -- blood
+	[6] = "Urgh!", -- slime
+	[7] = "Gulp.", -- oil
+	[8] = "Urgh!", -- urine
+	[9] = "Gulp.", -- milk
+	[10] = "Aaaah...", -- manafluid
+	[11] = "Aaaah...", -- lifefluid
+	[12] = "Mmmh.", -- lemonade
+	[13] = "Aah...", -- rum
+	[14] = "Mmmh.", -- fruit juice
+	[15] = "Mmmh.", -- coconut milk
+	[16] = "Aah...", -- mead
+	[17] = "Gulp.", -- tea
+	[18] = "Urgh!" -- ink
 }
 
 local fluid = Action()

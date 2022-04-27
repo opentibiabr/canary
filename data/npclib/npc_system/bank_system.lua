@@ -33,9 +33,6 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 	local player = Player(creature)
 	local playerId = creature:getId()
 	-- Balance
-	local goldCoin = player:getItemIdByCid(ITEM_GOLD_COIN)
-	local platinumCoin = player:getItemIdByCid(ITEM_PLATINUM_COIN)
-	local crystalCoin = player:getItemIdByCid(ITEM_CRYSTAL_COIN)
 	if MsgContains(message, "balance") then
 		if player:getBankBalance() >= 100000000 then
 			npcHandler:say(string.format("I think you must be one of the richest inhabitants in the world! \z
@@ -230,8 +227,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		end
 	elseif npcHandler:getTopic(playerId) == 15 then
 		if MsgContains(message, "yes") then
-			if player:removeItem(goldCoin, count[playerId] * 100) then
-				player:addItem(platinumCoin, count[playerId])
+			if player:removeItem(ITEM_GOLD_COIN, count[playerId] * 100) then
+				player:addItem(ITEM_PLATINUM_COIN, count[playerId])
 				npcHandler:say("Here you are.", npc, creature)
 			else
 				npcHandler:say("Sorry, you do not have enough gold coins.", npc, creature)
@@ -266,8 +263,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		end
 	elseif npcHandler:getTopic(playerId) == 18 then
 		if MsgContains(message, "yes") then
-			if player:removeItem(platinumCoin, count[playerId]) then
-				player:addItem(goldCoin, count[playerId] * 100)
+			if player:removeItem(ITEM_PLATINUM_COIN, count[playerId]) then
+				player:addItem(ITEM_GOLD_COIN, count[playerId] * 100)
 				npcHandler:say("Here you are.", npc, creature)
 			else
 				npcHandler:say("Sorry, you do not have enough platinum coins.", npc, creature)
@@ -288,8 +285,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		end
 	elseif npcHandler:getTopic(playerId) == 20 then
 		if MsgContains(message, "yes") then
-			if player:removeItem(platinumCoin, count[playerId] * 100) then
-				player:addItem(crystalCoin, count[playerId])
+			if player:removeItem(ITEM_PLATINUM_COIN, count[playerId] * 100) then
+				player:addItem(ITEM_CRYSTAL_COIN, count[playerId])
 				npcHandler:say("Here you are.", npc, creature)
 			else
 				npcHandler:say("Sorry, you do not have enough platinum coins.", npc, creature)
@@ -313,8 +310,8 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		end
 	elseif npcHandler:getTopic(playerId) == 22 then
 		if MsgContains(message, "yes") then
-			if player:removeItem(crystalCoin, count[playerId])  then
-				player:addItem(platinumCoin, count[playerId] * 100)
+			if player:removeItem(ITEM_CRYSTAL_COIN, count[playerId])  then
+				player:addItem(ITEM_PLATINUM_COIN, count[playerId] * 100)
 				npcHandler:say("Here you are.", npc, creature)
 			else
 				npcHandler:say("Sorry, you do not have enough crystal coins.", npc, creature)

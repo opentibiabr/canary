@@ -18,11 +18,11 @@
  */
 
 #include "otpch.h"
-
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
+#include "game/game.h"
 
 #include "utils/pugicast.h"
 
@@ -40,7 +40,6 @@ Items::Items(){}
 void Items::clear()
 {
 	items.clear();
-	reverseItemMap.clear();
 	nameToItems.clear();
 }
 
@@ -86,7 +85,7 @@ ItemTypes_t Items::getLootType(const std::string& strValue)
 bool Items::reload()
 {
 	clear();
-	loadFromOtb("data/items/items.otb");
+	loadFromProtobuf();
 
 	if (!loadFromXml()) {
 		return false;
@@ -96,250 +95,84 @@ bool Items::reload()
 	return true;
 }
 
-constexpr auto OTBI = OTB::Identifier{{'O','T', 'B', 'I'}};
-
-FILELOADER_ERRORS Items::loadFromOtb(const std::string& file)
+void Items::loadFromProtobuf()
 {
-	if (!fs::exists(file)) {
-		SPDLOG_ERROR("[Items::loadFromOtb] - Failed to load {}, file doesn't exist", file);
-		return ERROR_NOT_OPEN;
-	}
+	using namespace Canary::protobuf::appearances;
 
-	OTB::Loader loader{file, OTBI};
+	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
+		Appearance object = g_game().appearances.object(it);
 
-	auto& root = loader.parseTree();
-
-	PropStream props;
-	if (loader.getProps(root, props)) {
-		//4 byte flags
-		//attributes
-		//0x01 = version data
-		uint32_t flags;
-		if (!props.read<uint32_t>(flags)) {
-			return ERROR_INVALID_FORMAT;
+		// This scenario should never happen but on custom assets this can break the loader.
+		if (!object.has_flags()) {
+			SPDLOG_WARN("[Items::loadFromProtobuf] - Item with id '{}' is invalid and was ignored.", object.id());
+			continue;
 		}
 
-		uint8_t attr;
-		if (!props.read<uint8_t>(attr)) {
-			return ERROR_INVALID_FORMAT;
+		if (object.id() >= items.size()) {
+			items.resize(object.id() + 1);
 		}
 
-		if (attr == ROOT_ATTR_VERSION) {
-			uint16_t datalen;
-			if (!props.read<uint16_t>(datalen)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			if (datalen != sizeof(VERSIONINFO)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			VERSIONINFO vi;
-			if (!props.read(vi)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			majorVersion = vi.dwMajorVersion; //items otb format file version
-			minorVersion = vi.dwMinorVersion; //client version
-			buildNumber = vi.dwBuildNumber; //revision
-		}
-	}
-
-	if (majorVersion == 0xFFFFFFFF) {
-		SPDLOG_WARN("[Items::loadFromOtb] - items.otb using generic client version");
-	} else if (majorVersion != 3) {
-		SPDLOG_ERROR("[Items::loadFromOtb] - "
-                     "Old version detected, a newer version of items.otb is required");
-		return ERROR_INVALID_FORMAT;
-	} else if (minorVersion < CLIENT_VERSION_1285) {
-		SPDLOG_ERROR("[Items::loadFromOtb] - "
-                     "A newer version of items.otb is required");
-		return ERROR_INVALID_FORMAT;
-	}
-
-	for (auto & itemNode : root.children) {
-		PropStream stream;
-		if (!loader.getProps(itemNode, stream)) {
-			return ERROR_INVALID_FORMAT;
+		ItemType& iType = items[object.id()];
+		if (object.flags().container()) {
+			iType.type = ITEM_TYPE_CONTAINER;
+			iType.group = ITEM_GROUP_CONTAINER;
+		} else if (object.flags().has_bank()) {
+			iType.group = ITEM_GROUP_GROUND;
+		} else if (object.flags().liquidcontainer()) {
+			iType.group = ITEM_GROUP_FLUID;
+		} else if (object.flags().liquidpool()) {
+			iType.group = ITEM_GROUP_SPLASH;
 		}
 
-		uint32_t flags;
-		if (!stream.read<uint32_t>(flags)) {
-			return ERROR_INVALID_FORMAT;
+		if (object.flags().clip()) {
+			iType.alwaysOnTopOrder = 1;
+		} else if (object.flags().top()) {
+			iType.alwaysOnTopOrder = 3;
+		} else if (object.flags().bottom()) {
+			iType.alwaysOnTopOrder = 2;
 		}
 
-		uint16_t serverId = 0;
-		uint16_t clientId = 0;
-		uint16_t speed = 0;
-		uint16_t wareId = 0;
-		uint8_t lightLevel = 0;
-		uint8_t lightColor = 0;
-		uint8_t alwaysOnTopOrder = 0;
-		bool isPodium = false;
-
-		if (clientId == 35973 || clientId == 35974) {
-			isPodium = true;
+		if (object.flags().has_clothes()) {
+			iType.slotPosition |= static_cast<SlotPositionBits>(1 << (object.flags().clothes().slot() - 1));
 		}
 
-		uint8_t attrib;
-		while (stream.read<uint8_t>(attrib)) {
-			uint16_t datalen;
-			if (!stream.read<uint16_t>(datalen)) {
-				return ERROR_INVALID_FORMAT;
-			}
-
-			switch (attrib) {
-				case ITEM_ATTR_SERVERID: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(serverId)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					break;
-				}
-
-				case ITEM_ATTR_CLIENTID: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(clientId)) {
-						return ERROR_INVALID_FORMAT;
-					}
-					break;
-				}
-
-				case ITEM_ATTR_SPEED: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(speed)) {
-						return ERROR_INVALID_FORMAT;
-					}
-					break;
-				}
-
-				case ITEM_ATTR_LIGHT2: {
-					if (datalen != sizeof(lightBlock2)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					lightBlock2 lb2;
-					if (!stream.read(lb2)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					lightLevel = static_cast<uint8_t>(lb2.lightLevel);
-					lightColor = static_cast<uint8_t>(lb2.lightColor);
-					break;
-				}
-
-				case ITEM_ATTR_TOPORDER: {
-					if (datalen != sizeof(uint8_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint8_t>(alwaysOnTopOrder)) {
-						return ERROR_INVALID_FORMAT;
-					}
-					break;
-				}
-
-				case ITEM_ATTR_WAREID: {
-					if (datalen != sizeof(uint16_t)) {
-						return ERROR_INVALID_FORMAT;
-					}
-
-					if (!stream.read<uint16_t>(wareId)) {
-						return ERROR_INVALID_FORMAT;
-					}
-					break;
-				}
-
-				default: {
-					//skip unknown attributes
-					if (!stream.skip(datalen)) {
-						return ERROR_INVALID_FORMAT;
-					}
-					break;
-				}
-			}
+		if (object.flags().has_market()) {
+			iType.type = static_cast<ItemTypes_t>(object.flags().market().category());
 		}
 
-		reverseItemMap.emplace(clientId, serverId);
+		iType.name = object.name();
+		iType.description = object.description();
 
-		// store the found item
-		if (serverId >= items.size()) {
-			items.resize(serverId + 1);
-		}
-		ItemType& iType = items[serverId];
+		iType.upgradeClassification = object.flags().has_upgradeclassification() ? static_cast<uint8_t>(object.flags().upgradeclassification().upgrade_classification()) : 0;
+		iType.lightLevel = object.flags().has_light() ? static_cast<uint8_t>(object.flags().light().brightness()) : 0;
+		iType.lightColor = object.flags().has_light() ? static_cast<uint8_t>(object.flags().light().color()) : 0;
 
-		iType.group = static_cast<ItemGroup_t>(itemNode.type);
-		switch (itemNode.type) {
-			case ITEM_GROUP_CONTAINER:
-				iType.type = ITEM_TYPE_CONTAINER;
-				break;
-			case ITEM_GROUP_DOOR:
-				//not used
-				iType.type = ITEM_TYPE_DOOR;
-				break;
-			// ITEM_GROUP_MAGICFIELD is Deprecated
-			case ITEM_GROUP_MAGICFIELD:
-				//not used
-				iType.type = ITEM_TYPE_MAGICFIELD;
-				break;
-			case ITEM_GROUP_TELEPORT:
-				//not used
-				iType.type = ITEM_TYPE_TELEPORT;
-				break;
-			case ITEM_GROUP_NONE:
-			case ITEM_GROUP_GROUND:
-			case ITEM_GROUP_SPLASH:
-			case ITEM_GROUP_FLUID:
-			case ITEM_GROUP_CHARGES:
-			case ITEM_GROUP_DEPRECATED:
-				break;
-			default:
-				return ERROR_INVALID_FORMAT;
-		}
+		iType.id = static_cast<uint16_t>(object.id());
+		iType.speed = object.flags().has_bank() ? static_cast<uint16_t>(object.flags().bank().waypoints()) : 0;
+		iType.wareId = object.flags().has_market() ? static_cast<uint16_t>(object.flags().market().trade_as_object_id()) : 0;
 
-		iType.blockSolid = hasBitSet(FLAG_BLOCK_SOLID, flags);
-		iType.blockProjectile = hasBitSet(FLAG_BLOCK_PROJECTILE, flags);
-		iType.blockPathFind = hasBitSet(FLAG_BLOCK_PATHFIND, flags);
-		iType.hasHeight = hasBitSet(FLAG_HAS_HEIGHT, flags);
-		iType.useable = hasBitSet(FLAG_USEABLE, flags);
-		iType.pickupable = hasBitSet(FLAG_PICKUPABLE, flags);
-		iType.moveable = hasBitSet(FLAG_MOVEABLE, flags);
-		iType.wrapContainer = hasBitSet(FLAG_WRAPCONTAINER, flags);
-		iType.stackable = hasBitSet(FLAG_STACKABLE, flags);
-
-		iType.alwaysOnTop = hasBitSet(FLAG_ALWAYSONTOP, flags);
-		iType.isVertical = hasBitSet(FLAG_VERTICAL, flags);
-		iType.isHorizontal = hasBitSet(FLAG_HORIZONTAL, flags);
-		iType.isHangable = hasBitSet(FLAG_HANGABLE, flags);
-		iType.allowDistRead = hasBitSet(FLAG_ALLOWDISTREAD, flags);
-		iType.rotatable = hasBitSet(FLAG_ROTATABLE, flags);
-		iType.canReadText = hasBitSet(FLAG_READABLE, flags);
-		iType.lookThrough = hasBitSet(FLAG_LOOKTHROUGH, flags);
-		iType.isAnimation = hasBitSet(FLAG_ANIMATION, flags);
-		// iType.walkStack = !hasBitSet(FLAG_FULLTILE, flags);
-		iType.forceUse = hasBitSet(FLAG_FORCEUSE, flags);
-
-		iType.id = serverId;
-		iType.clientId = clientId;
-		iType.speed = speed;
-		iType.lightLevel = lightLevel;
-		iType.lightColor = lightColor;
-		iType.wareId = wareId;
-		iType.alwaysOnTopOrder = alwaysOnTopOrder;
+		iType.isCorpse = object.flags().corpse() || object.flags().player_corpse();
+		iType.forceUse = object.flags().forceuse();
+		iType.hasHeight = object.flags().has_height();
+		iType.blockSolid = object.flags().unpass();
+		iType.blockProjectile = object.flags().unsight();
+		iType.blockPathFind = object.flags().avoid();
+		iType.pickupable = object.flags().take();
+		iType.rotatable = object.flags().rotate();
+		iType.wrapContainer = object.flags().wrap() || object.flags().unwrap();
+		iType.multiUse = object.flags().multiuse();
+		iType.moveable = object.flags().unmove() == false;
+		iType.canReadText = (object.flags().has_lenshelp() && object.flags().lenshelp().id() == 1112) || (object.flags().has_write() && object.flags().write().max_text_length() != 0) || (object.flags().has_write_once() && object.flags().write_once().max_text_length_once() != 0);
+		iType.canReadText = object.flags().has_write() || object.flags().has_write_once();
+		iType.isVertical = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_SOUTH;
+		iType.isHorizontal = object.flags().has_hook() && object.flags().hook().direction() == HOOK_TYPE_EAST;
+		iType.isHangable = object.flags().hang();
+		iType.lookThrough = object.flags().ignore_look();
+		iType.stackable = object.flags().cumulative();
+		iType.isPodium = object.flags().show_off_socket();
 	}
 
 	items.shrink_to_fit();
-	return ERROR_NONE;
 }
 
 bool Items::loadFromXml()
@@ -402,7 +235,7 @@ void Items::buildInventoryList()
 			type.slotPosition & SLOTP_ARMOR ||
 			type.slotPosition & SLOTP_LEGS)
 		{
-			inventory.push_back(type.clientId);
+			inventory.push_back(type.id);
 		}
 	}
 	inventory.shrink_to_fit();
@@ -421,11 +254,12 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		return;
 	}
 
-	if (!itemType.name.empty()) {
+	if (itemType.loaded) {
 		SPDLOG_WARN("[Items::parseItemNode] - Duplicate item with id: {}", id);
 		return;
 	}
 
+	itemType.loaded = true;
 	itemType.name = itemNode.attribute("name").as_string();
 
 	nameToItems.insert({
@@ -486,23 +320,6 @@ const ItemType& Items::getItemType(size_t id) const
 	return items.front();
 }
 
-bool Items::hasItemType(size_t hasId) const
-{
-	if (hasId < items.size()) {
-		return true;
-	}
-	return false;
-}
-
-const ItemType& Items::getItemIdByClientId(uint16_t spriteId) const
-{
-	auto it = reverseItemMap.find(spriteId);
-	if (it != reverseItemMap.end()) {
-		return getItemType(it->second);
-	}
-	return items.front();
-}
-
 uint16_t Items::getItemIdByName(const std::string& name)
 {
 	auto result = nameToItems.find(asLowerCaseString(name));
@@ -511,4 +328,12 @@ uint16_t Items::getItemIdByName(const std::string& name)
 		return 0;
 
 	return result->second;
+}
+
+bool Items::hasItemType(size_t hasId) const
+{
+	if (hasId < items.size()) {
+		return true;
+	}
+	return false;
 }

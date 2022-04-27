@@ -32,7 +32,7 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-motd = "Bem vindo ao Canary!"
+motd = "Welcome to the Canary!"
 onePlayerOnlinePerAccount = true
 allowClones = false
 serverName = "Canary"
@@ -156,7 +156,7 @@ pushWhenAttacking = false
 -- NOTE: set mapName WITHOUT .otbm at the end
 -- NOTE: unzip the map world.rar
 mapName = "canary"
-mapAuthor = "Eduardo Dantas"
+mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations
 -- max distance in which players in party list are visible
@@ -197,7 +197,7 @@ coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
 
--- Server Save
+-- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
 globalServerSaveNotifyMessage = true
 globalServerSaveNotifyDuration = 5
@@ -260,8 +260,8 @@ startupDatabaseOptimization = true
 
 -- Status server information
 ownerName = "OpenTibiaBR"
-ownerEmail = ""
-url = "https://github.com/opentibiabr/canary"
+ownerEmail = "opentibiabr@outlook.com"
+url = "http://docs.opentibiabr.org/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

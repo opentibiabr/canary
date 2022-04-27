@@ -639,16 +639,6 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGameGetItemByClientId(lua_State* L) {
-	// Game.getItemIdByClientId(itemClientId)
-	int16_t clientId = getNumber<uint16_t>(L, 1);
-
-	const ItemType& itemType = Item::items.getItemIdByClientId(clientId);
-	pushUserdata<const ItemType>(L, &itemType);
-	setMetatable(L, -1, "ItemType");
-	return 1;
-}
-
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 	uint32_t playerId = getNumber<uint32_t>(L,1);
 

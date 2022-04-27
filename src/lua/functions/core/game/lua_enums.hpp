@@ -833,7 +833,6 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, WEAPON_DISTANCE)
 			registerEnum(L, WEAPON_WAND)
 			registerEnum(L, WEAPON_AMMO)
-			registerEnum(L, WEAPON_QUIVER)
 
 			registerEnum(L, AMMO_NONE)
 			registerEnum(L, AMMO_BOLT)

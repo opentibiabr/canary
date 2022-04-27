@@ -1111,8 +1111,14 @@ int MonsterTypeFunctions::luaMonsterTypeOutfit(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			pushOutfit(L, monsterType->info.outfit);
 		} else {
-			monsterType->info.outfit = getOutfit(L, 2);
-			pushBoolean(L, true);
+			Outfit_t outfit = getOutfit(L, 2);
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				lua_pushnil(L);
+			} else {
+				monsterType->info.outfit = outfit;
+				pushBoolean(L, true);
+			}
 		}
 	} else {
 		lua_pushnil(L);

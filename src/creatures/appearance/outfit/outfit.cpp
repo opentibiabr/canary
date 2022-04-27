@@ -23,6 +23,7 @@
 
 #include "utils/pugicast.h"
 #include "utils/tools.h"
+#include "game/game.h"
 
 bool Outfits::loadFromXml()
 {
@@ -54,6 +55,15 @@ bool Outfits::loadFromXml()
 		if (!lookTypeAttribute) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Missing looktype on outfit");
 			continue;
+		}
+
+		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
+				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+				&& !g_game().isLookTypeRegistered(lookType)
+			)
+		{
+			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+			return false;
 		}
 
 		outfits[type].emplace_back(

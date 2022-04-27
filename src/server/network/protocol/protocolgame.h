@@ -341,7 +341,7 @@ private:
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 	void sendOutfitWindow();
-	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos);
+	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackpos);
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
@@ -403,7 +403,7 @@ private:
 
 	//inventory
 	void sendInventoryItem(Slots_t slot, const Item *item);
-	void sendInventoryClientIds();
+	void sendInventoryIds();
 
 	//messages
 	void sendModalWindow(const ModalWindow &modalWindow);

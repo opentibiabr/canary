@@ -132,8 +132,8 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((Item::items.loadFromOtb("data/items/items.otb") == ERROR_NONE),
-		"items.otb");
+	modulesLoadHelper((g_game().loadAppearanceProtobuf("data/items/appearances.dat") == ERROR_NONE),
+		"appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
 
@@ -168,7 +168,7 @@ void loadModules() {
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"data/monster");
 	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
-		"data/npclua");
+		"data/npc");
 
 	g_game().loadBoostedCreature();
 	g_ioprey().InitializeTaskHuntOptions();

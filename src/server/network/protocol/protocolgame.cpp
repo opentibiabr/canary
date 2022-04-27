@@ -55,7 +55,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 {
 	const ItemType &it = Item::items[id];
 
-	msg.add<uint16_t>(it.clientId);
+	msg.add<uint16_t>(it.id);
 
 	if (it.stackable)
 	{
@@ -91,7 +91,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 
 	const ItemType &it = Item::items[item->getID()];
 
-	msg.add<uint16_t>(it.clientId);
+	msg.add<uint16_t>(it.id);
 
 	if (it.stackable)
 	{
@@ -131,7 +131,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		}
 
 		// Quiver ammo count
-    	if (container && item->getWeaponType() == WEAPON_QUIVER && player->getThing(CONST_SLOT_RIGHT) == item) {
+    	if (container && item->isQuiver() && player->getThing(CONST_SLOT_RIGHT) == item) {
       		uint16_t ammoTotal = 0;
       		for (Item* listItem : container->getItemList()) {
       		    if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
@@ -783,8 +783,8 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg)
 	{
 		return;
 	}
-	uint16_t spriteid = msg.get<uint16_t>();
-	addGameTask(&Game::onPressHotkeyEquip, player->getID(), spriteid);
+	uint16_t itemId = msg.get<uint16_t>();
+	addGameTask(&Game::onPressHotkeyEquip, player->getID(), itemId);
 }
 
 void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
@@ -1156,7 +1156,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 			msg.get<uint32_t>();
 		} else if (outfitType == 2) {
 			Position pos = msg.getPosition();
-			uint16_t spriteId = msg.get<uint16_t>();
+			uint16_t itemId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
 			newOutfit.lookMount = msg.get<uint16_t>();
 			newOutfit.lookMountHead = std::min<uint8_t>(132, msg.getByte());
@@ -1165,7 +1165,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
 			uint8_t direction = std::max<uint8_t>(DIRECTION_NORTH, std::min<uint8_t>(DIRECTION_WEST, msg.getByte()));
 			uint8_t podiumVisible = msg.getByte();
-			g_game().playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, spriteId, podiumVisible, direction);
+			g_game().playerSetShowOffSocket(player->getID(), newOutfit, pos, stackpos, itemId, podiumVisible, direction);
 		}
 	}
 }
@@ -1198,30 +1198,30 @@ void ProtocolGame::parseCloseImbuementWindow(NetworkMessage &)
 void ProtocolGame::parseUseItem(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	uint8_t index = msg.getByte();
-	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerUseItem, player->getID(), pos, stackpos, index, spriteId);
+	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerUseItem, player->getID(), pos, stackpos, index, itemId);
 }
 
 void ProtocolGame::parseUseItemEx(NetworkMessage &msg)
 {
 	Position fromPos = msg.getPosition();
-	uint16_t fromSpriteId = msg.get<uint16_t>();
+	uint16_t fromItemId = msg.get<uint16_t>();
 	uint8_t fromStackPos = msg.getByte();
 	Position toPos = msg.getPosition();
-	uint16_t toSpriteId = msg.get<uint16_t>();
+	uint16_t toItemId = msg.get<uint16_t>();
 	uint8_t toStackPos = msg.getByte();
-	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerUseItemEx, player->getID(), fromPos, fromStackPos, fromSpriteId, toPos, toStackPos, toSpriteId);
+	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerUseItemEx, player->getID(), fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId);
 }
 
 void ProtocolGame::parseUseWithCreature(NetworkMessage &msg)
 {
 	Position fromPos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t fromStackPos = msg.getByte();
 	uint32_t creatureId = msg.get<uint32_t>();
-	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerUseWithCreature, player->getID(), fromPos, fromStackPos, creatureId, spriteId);
+	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerUseWithCreature, player->getID(), fromPos, fromStackPos, creatureId, itemId);
 }
 
 void ProtocolGame::parseCloseContainer(NetworkMessage &msg)
@@ -1251,21 +1251,21 @@ void ProtocolGame::parseTeleport(NetworkMessage &msg)
 void ProtocolGame::parseThrow(NetworkMessage &msg)
 {
 	Position fromPos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t fromStackpos = msg.getByte();
 	Position toPos = msg.getPosition();
 	uint8_t count = msg.getByte();
 
 	if (toPos != fromPos)
 	{
-		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerMoveThing, player->getID(), fromPos, spriteId, fromStackpos, toPos, count);
+		addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerMoveThing, player->getID(), fromPos, itemId, fromStackpos, toPos, count);
 	}
 }
 
 void ProtocolGame::parseLookAt(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
-	msg.skipBytes(2); // spriteId
+	msg.skipBytes(2); // Item ID
 	uint8_t stackpos = msg.getByte();
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerLookAt, player->getID(), pos, stackpos);
 }
@@ -1279,11 +1279,11 @@ void ProtocolGame::parseLookInBattleList(NetworkMessage &msg)
 void ProtocolGame::parseQuickLoot(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	bool lootAllCorpses = msg.getByte();
 	bool autoLoot = msg.getByte();
-	addGameTask(&Game::playerQuickLoot, player->getID(), pos, spriteId, stackpos, nullptr, lootAllCorpses, autoLoot);
+	addGameTask(&Game::playerQuickLoot, player->getID(), pos, itemId, stackpos, nullptr, lootAllCorpses, autoLoot);
 }
 
 void ProtocolGame::parseLootContainer(NetworkMessage &msg)
@@ -1293,9 +1293,9 @@ void ProtocolGame::parseLootContainer(NetworkMessage &msg)
 	{
 		ObjectCategory_t category = (ObjectCategory_t)msg.getByte();
 		Position pos = msg.getPosition();
-		uint16_t spriteId = msg.get<uint16_t>();
+		uint16_t itemId = msg.get<uint16_t>();
 		uint8_t stackpos = msg.getByte();
-		addGameTask(&Game::playerSetLootContainer, player->getID(), category, pos, spriteId, stackpos);
+		addGameTask(&Game::playerSetLootContainer, player->getID(), category, pos, itemId, stackpos);
 	}
 	else if (action == 1)
 	{
@@ -1451,10 +1451,10 @@ void ProtocolGame::parsePlayerSellOnShop(NetworkMessage &msg)
 void ProtocolGame::parseRequestTrade(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
 	uint32_t playerId = msg.get<uint32_t>();
-	addGameTask(&Game::playerRequestTrade, player->getID(), pos, stackpos, playerId, spriteId);
+	addGameTask(&Game::playerRequestTrade, player->getID(), pos, stackpos, playerId, itemId);
 }
 
 void ProtocolGame::parseLookInTrade(NetworkMessage &msg)
@@ -1488,17 +1488,17 @@ void ProtocolGame::parseEditVip(NetworkMessage &msg)
 void ProtocolGame::parseRotateItem(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, spriteId);
+	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerRotateItem, player->getID(), pos, stackpos, itemId);
 }
 
 void ProtocolGame::parseWrapableItem(NetworkMessage &msg)
 {
 	Position pos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerWrapableItem, player->getID(), pos, stackpos, spriteId);
+	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerWrapableItem, player->getID(), pos, stackpos, itemId);
 }
 
 void ProtocolGame::parseInspectionObject(NetworkMessage &msg)
@@ -1534,7 +1534,7 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	msg.addByte(cyclopedia ? 0x01 : 0x00);
 	msg.addByte(0x01);
 
-	const ItemType &it = Item::items.getItemIdByClientId(itemId);
+	const ItemType &it = Item::items[itemId];
 
 	if (item)
 	{
@@ -1731,9 +1731,9 @@ void ProtocolGame::parseTournamentLeaderboard(NetworkMessage &msg)
 void ProtocolGame::parseConfigureShowOffSocket(NetworkMessage& msg)
 {
 	Position pos = msg.getPosition();
-	uint16_t spriteId = msg.get<uint16_t>();
+	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t stackpos = msg.getByte();
-	g_game().playerConfigureShowOffSocket(player->getID(), pos, stackpos, spriteId);
+	g_game().playerConfigureShowOffSocket(player->getID(), pos, stackpos, itemId);
 }
 
 void ProtocolGame::parseRuleViolationReport(NetworkMessage &msg)
@@ -1869,7 +1869,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 			break;
 		}
 
-		newmsg.addItemId(shouldAddItem == true ? loot.id : 0);
+		newmsg.add<uint16_t>(shouldAddItem == true ? loot.id : 0);
 		newmsg.addByte(difficult);
 		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
 		if (shouldAddItem == true)
@@ -2659,8 +2659,8 @@ void ProtocolGame::parseCoinTransfer(NetworkMessage &msg)
 void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg)
 {
 	uint8_t type = msg.getByte();
-	uint16_t spriteId = msg.get<uint16_t>();
-	if (Item::items[spriteId].upgradeClassification > 0)
+	uint16_t itemId = msg.get<uint16_t>();
+	if (Item::items[itemId].upgradeClassification > 0)
 	{
 		msg.getByte(); // Tier
 	}
@@ -2669,7 +2669,7 @@ void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg)
 	bool anonymous = (msg.getByte() != 0);
 	if (amount > 0 && price > 0)
 	{
-		addGameTask(&Game::playerCreateMarketOffer, player->getID(), type, spriteId, amount, price, anonymous);
+		addGameTask(&Game::playerCreateMarketOffer, player->getID(), type, itemId, amount, price, anonymous);
 	}
 }
 
@@ -3830,7 +3830,7 @@ void ProtocolGame::sendLootContainers()
 	for (auto it : quickLoot)
 	{
 		msg.addByte(it.first);
-		msg.add<uint16_t>(it.second->getClientID());
+		msg.add<uint16_t>(it.second->getID());
 	}
 
 	writeToOutputBuffer(msg);
@@ -3987,7 +3987,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		it = inventoryMap.find(index);
 		if (it != inventoryMap.end())
 		{
-			msg.addItemId(shopBlock.itemId);
+			msg.add<uint16_t>(shopBlock.itemId);
 			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
@@ -4074,7 +4074,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 		for (auto item : stashToSend)
 		{
 
-			const ItemType &itemType = Item::items[Item::items.getItemIdByClientId(item.first).id];
+			const ItemType &itemType = Item::items[item.first];
 			if (itemType.wareId == 0)
 			{
 				continue;
@@ -4166,7 +4166,7 @@ void ProtocolGame::sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &
 
 	msg.addByte(0xF9);
 	msg.addByte(MARKETREQUEST_ITEM_BROWSE);
-	msg.addItemId(itemId);
+	msg.add<uint16_t>(itemId);
 	if (Item::items[itemId].upgradeClassification > 0) {
 		msg.addByte(0);
 	}
@@ -4200,7 +4200,7 @@ void ProtocolGame::sendMarketAcceptOffer(const MarketOfferEx &offer)
 	NetworkMessage msg;
 	msg.addByte(0xF9);
 	msg.addByte(MARKETREQUEST_ITEM_BROWSE);
-	msg.addItemId(offer.itemId);
+	msg.add<uint16_t>(offer.itemId);
 	if (Item::items[offer.itemId].upgradeClassification > 0) {
 		msg.addByte(0);
 	}
@@ -4240,7 +4240,7 @@ void ProtocolGame::sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, c
 	{
 		msg.add<uint32_t>(offer.timestamp);
 		msg.add<uint16_t>(offer.counter);
-		msg.addItemId(offer.itemId);
+		msg.add<uint16_t>(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
 			msg.addByte(0);
 		}
@@ -4253,7 +4253,7 @@ void ProtocolGame::sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, c
 	{
 		msg.add<uint32_t>(offer.timestamp);
 		msg.add<uint16_t>(offer.counter);
-		msg.addItemId(offer.itemId);
+		msg.add<uint16_t>(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
 			msg.addByte(0);
 		}
@@ -4275,7 +4275,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer)
 		msg.add<uint32_t>(0x01);
 		msg.add<uint32_t>(offer.timestamp);
 		msg.add<uint16_t>(offer.counter);
-		msg.addItemId(offer.itemId);
+		msg.add<uint16_t>(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
 			msg.addByte(0);
 		}
@@ -4289,7 +4289,7 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer)
 		msg.add<uint32_t>(0x01);
 		msg.add<uint32_t>(offer.timestamp);
 		msg.add<uint16_t>(offer.counter);
-		msg.addItemId(offer.itemId);
+		msg.add<uint16_t>(offer.itemId);
 		if (Item::items[offer.itemId].upgradeClassification > 0) {
 			msg.addByte(0);
 		}
@@ -4316,7 +4316,7 @@ void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyO
 	{
 		msg.add<uint32_t>(it->timestamp);
 		msg.add<uint16_t>(counterMap[it->timestamp]++);
-		msg.addItemId(it->itemId);
+		msg.add<uint16_t>(it->itemId);
 		if (Item::items[it->itemId].upgradeClassification > 0) {
 			msg.addByte(0);
 		}
@@ -4333,7 +4333,7 @@ void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyO
 	{
 		msg.add<uint32_t>(it->timestamp);
 		msg.add<uint16_t>(counterMap[it->timestamp]++);
-		msg.addItemId(it->itemId);
+		msg.add<uint16_t>(it->itemId);
 		if (Item::items[it->itemId].upgradeClassification > 0) {
 			msg.addByte(0);
 		}
@@ -4375,7 +4375,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 {
 	NetworkMessage msg;
 	msg.addByte(0xF8);
-	msg.addItemId(itemId);
+	msg.add<uint16_t>(itemId);
 	const ItemType &it = Item::items[itemId];
 
 	if (it.upgradeClassification > 0) {
@@ -5446,7 +5446,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 		}
 	}
 
-	sendInventoryClientIds();
+	sendInventoryIds();
 	Item *slotItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	if (slotItem)
 	{
@@ -5574,9 +5574,9 @@ void ProtocolGame::sendInventoryItem(Slots_t slot, const Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendInventoryClientIds()
+void ProtocolGame::sendInventoryIds()
 {
-	std::map<uint16_t, uint16_t> items = player->getInventoryClientIds();
+	std::map<uint16_t, uint16_t> items = player->getInventoryItemsId();
 
 	NetworkMessage msg;
 	msg.addByte(0xF5);
@@ -5827,7 +5827,7 @@ void ProtocolGame::sendOutfitWindow()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos)
+void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackpos)
 {
 	NetworkMessage msg;
 	msg.addByte(0xC8);
@@ -5944,7 +5944,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(0);
 
 	msg.addPosition(position);
-	msg.add<uint16_t>(spriteId);
+	msg.add<uint16_t>(itemId);
 	msg.addByte(stackpos);
 
 	msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
@@ -6611,7 +6611,7 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 	}
 	else
 	{
-		msg.addItemId(outfit.lookTypeEx);
+		msg.add<uint16_t>(outfit.lookTypeEx);
 	}
 
 	if (addMount)
@@ -6642,7 +6642,7 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) c
 	for (const auto &itm : items)
 	{
 		const ItemType &it = Item::items[itm.first];
-		msg.addItemId(itm.first);
+		msg.add<uint16_t>(itm.first);
 		msg.addString(it.name);
 		msg.add<uint16_t>(itm.second);
 	}
@@ -6663,7 +6663,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 
 	NetworkMessage msg;
 	msg.addByte(0xEB);
-	msg.addItemId(item->getID());
+	msg.add<uint16_t>(item->getID());
 	if (Item::items[item->getID()].upgradeClassification > 0) {
 		msg.addByte(0);
 	}
@@ -6699,7 +6699,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 			if (!needItems.count(itm.first))
 			{
 				needItems[itm.first] = player->getItemTypeCount(itm.first);
-				uint32_t stashCount = player->getStashItemCount(Item::items[itm.first].clientId);
+				uint32_t stashCount = player->getStashItemCount(Item::items[itm.first].id);
 				if (stashCount > 0) {
 					needItems[itm.first] += stashCount;
 				}
@@ -6710,7 +6710,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	msg.add<uint32_t>(needItems.size());
 	for (const auto &itm : needItems)
 	{
-		msg.addItemId(itm.first);
+		msg.add<uint16_t>(itm.first);
 		msg.add<uint16_t>(itm.second);
 	}
 
@@ -6861,7 +6861,7 @@ void ProtocolGame::sendUpdateSupplyTracker(const Item *item)
 
 	NetworkMessage msg;
 	msg.addByte(0xCE);
-	msg.add<uint16_t>(item->getClientID());
+	msg.add<uint16_t>(item->getID());
 
 	writeToOutputBuffer(msg);
 }
@@ -7085,7 +7085,6 @@ void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 
 	const ItemType &it = Item::items[shopBlock.itemId];
 	msg.add<uint16_t>(shopBlock.itemId);
-
 	if (it.isSplash() || it.isFluidContainer()) {
 		msg.addByte(static_cast<uint8_t>(shopBlock.itemSubType));
 	} else {
@@ -7123,7 +7122,7 @@ void ProtocolGame::sendItemsPrice()
 		std::map<uint16_t, uint32_t> items = g_game().getItemsPrice();
 		for (const auto &it : items)
 		{
-			msg.addItemId(it.first);
+			msg.add<uint16_t>(it.first);
 			if (Item::items[it.first].upgradeClassification > 0)
 			{
 				msg.addByte(0);
@@ -7194,31 +7193,31 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 	switch (action)	{
 		case SUPPLY_STASH_ACTION_STOW_ITEM: {
 			Position pos = msg.getPosition();
-			uint16_t spriteId = msg.get<uint16_t>();
+			uint16_t itemId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
 			uint32_t count = msg.getByte();
-			addGameTask(&Game::playerStowItem, player->getID(), pos, spriteId, stackpos, count, false);
+			addGameTask(&Game::playerStowItem, player->getID(), pos, itemId, stackpos, count, false);
 			break;
 		}
 		case SUPPLY_STASH_ACTION_STOW_CONTAINER: {
 			Position pos = msg.getPosition();
-			uint16_t spriteId = msg.get<uint16_t>();
+			uint16_t itemId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
-			addGameTask(&Game::playerStowItem, player->getID(), pos, spriteId, stackpos, 0, false);
+			addGameTask(&Game::playerStowItem, player->getID(), pos, itemId, stackpos, 0, false);
 			break;
 		}
 		case SUPPLY_STASH_ACTION_STOW_STACK: {
 			Position pos = msg.getPosition();
-			uint16_t spriteId = msg.get<uint16_t>();
+			uint16_t itemId = msg.get<uint16_t>();
 			uint8_t stackpos = msg.getByte();
-			addGameTask(&Game::playerStowItem, player->getID(), pos, spriteId, stackpos, 0, true);
+			addGameTask(&Game::playerStowItem, player->getID(), pos, itemId, stackpos, 0, true);
 			break;
 		}
 		case SUPPLY_STASH_ACTION_WITHDRAW: {
-			uint16_t spriteId = msg.get<uint16_t>();
+			uint16_t itemId = msg.get<uint16_t>();
 			uint32_t count = msg.get<uint32_t>();
 			uint8_t stackpos = msg.getByte();
-			addGameTask(&Game::playerStashWithdraw, player->getID(), spriteId, count, stackpos);
+			addGameTask(&Game::playerStashWithdraw, player->getID(), itemId, count, stackpos);
 			break;
 		}
 		default:
@@ -7237,7 +7236,7 @@ void ProtocolGame::sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_
 	msg.add<uint16_t>(count);
 	for (const auto &it : itemMap)
 	{
-		msg.addItemId(it.first);
+		msg.add<uint16_t>(it.first);
 		msg.add<uint16_t>(it.second);
 	}
 

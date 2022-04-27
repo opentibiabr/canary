@@ -44,7 +44,16 @@ function login.onLogin(player)
 	-- Boosted creature
 	player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Today's boosted creature: " .. Game.getBoostedCreature() .. " \
 	Boosted creatures yield more experience points, carry more loot than usual and respawn at a faster rate.")
-	
+
+	if SCHEDULE_EXP_RATE ~= 100 then
+		if SCHEDULE_EXP_RATE > 100 then
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Event! Monsters exp at a faster rate \
+			Happy Hunting!")
+		else
+			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Exp Rate Decreased! Monsters exp at a slower rate.")
+		end
+	end
+
 	if SCHEDULE_SPAWN_RATE ~= 100 then
 		if SCHEDULE_SPAWN_RATE > 100 then
 			player:sendTextMessage(MESSAGE_BOOSTED_CREATURE, "Spawn Rate Event! Monsters respawn at a faster rate \
@@ -75,14 +84,13 @@ function login.onLogin(player)
 	local rateExp = 1
 	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
 		rateExp = getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
-
 		if SCHEDULE_EXP_RATE ~= 100 then
 			rateExp = math.max(0, (rateExp * SCHEDULE_EXP_RATE)/100)
 		end
 	end
 
 	player:setBaseXpGain(rateExp * 100)
-	
+
 	return true
 end
 

@@ -336,11 +336,6 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	self:setStoreXpBoost(storeXpBoostAmount)
 
-	-- Exp Boost
-	if (storeXpBoostAmount > 0) then
-		exp = exp + (exp * (storeXpBoostAmount/100))
-	end
-
 	-- Stamina Bonus
 	local staminaBoost = 1
 	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
@@ -367,7 +362,7 @@ function Player:onGainExperience(target, exp, rawExp)
 		end
 	end
 
-	return (exp * expStage) * staminaBoost
+	return math.max((exp * expStage + (exp * (storeXpBoostAmount/100))) * staminaBoost)
 end
 
 function Player:onLoseExperience(exp)

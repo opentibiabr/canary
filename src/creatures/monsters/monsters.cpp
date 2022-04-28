@@ -28,10 +28,6 @@
 
 #include "utils/pugicast.h"
 
-extern Game g_game;
-extern Spells* g_spells;
-extern Monsters g_monsters;
-
 spellBlock_t::~spellBlock_t()
 {
 	if (combatSpell) {
@@ -82,7 +78,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 bool MonsterType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;
-	bool isDay = g_game.gameIsDay();
+	bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
@@ -166,7 +162,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 		}
 	}
 
-	if (auto spell = g_spells->getSpellByName(name)) {
+	if (auto spell = g_spells().getSpellByName(name)) {
 		sb.spell = spell;
 		return true;
 	}
@@ -185,7 +181,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 		}
 
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, needTarget, needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells->getScriptBaseName() + "/scripts/" + scriptName)) {
+		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + scriptName)) {
 			return false;
 		}
 
@@ -370,7 +366,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 			}
 
 			if ((attr = node.attribute("monster"))) {
-				MonsterType* mType = g_monsters.getMonsterType(attr.as_string());
+				const MonsterType* mType = g_monsters().getMonsterType(attr.as_string());
 				if (mType) {
 					ConditionOutfit* condition = static_cast<ConditionOutfit*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0));
 					condition->setOutfit(mType->info.outfit);
@@ -537,7 +533,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	sb.range = std::min((int) spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
-	sb.spell = g_spells->getSpellByName(spell->name);
+	sb.spell = g_spells().getSpellByName(spell->name);
 
 	if (sb.spell) {
 		return true;
@@ -547,7 +543,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 	if (spell->isScripted) {
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells->getScriptBaseName() + "/scripts/" + spell->scriptName)) {
+		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - Cannot find file: {}",
                          spell->scriptName);
 			return false;
@@ -690,7 +686,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			//
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "{} unknown spell name: {}"
+                         "{} unknown or missing parameter on spell with name: {}"
                          , description, spell->name);
 		}
 
@@ -793,6 +789,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.race = RACE_FIRE;
 		} else if (tmpStrValue == "energy" || tmpInt == 5) {
 			mType->info.race = RACE_ENERGY;
+		} else if (tmpStrValue == "ink" || tmpInt == 6) {
+			mType->info.race = RACE_INK;
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - Unknown race type {}. {}",
                         attr.as_string(), file);
@@ -1468,12 +1466,12 @@ MonsterType* Monsters::getMonsterType(const std::string& name)
 }
 
 MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
-	std::map<uint16_t, std::string> raceid_list = g_game.getBestiaryList();
+	std::map<uint16_t, std::string> raceid_list = g_game().getBestiaryList();
 	auto it = raceid_list.find(thisrace);
 	if (it == raceid_list.end()) {
 		return nullptr;
 	}
-	MonsterType* mtype = g_monsters.getMonsterType(it->second);
+	MonsterType* mtype = g_monsters().getMonsterType(it->second);
 	return (mtype ? mtype : nullptr);
 }
 

@@ -25,17 +25,29 @@
 class Decay
 {
 	public:
+		Decay(Decay const&) = delete;
+		void operator=(Decay const&) = delete;
+
+		static Decay& getInstance() {
+			// Guaranteed to be destroyed
+			static Decay instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void startDecay(Item* item);
 		void stopDecay(Item* item);
 
 	private:
+		Decay() = default;
+
 		void checkDecay();
 		void internalDecayItem(Item* item);
 
-		uint64_t eventId {0};
+		uint32_t eventId {0};
 		std::map<int64_t, std::vector<Item*>> decayMap;
 };
 
-extern Decay g_decay;
+constexpr auto g_decay = &Decay::getInstance;
 
 #endif // SRC_ITEMS_DECAY_DECAY_H_

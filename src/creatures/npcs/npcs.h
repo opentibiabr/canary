@@ -105,14 +105,26 @@ class Npcs
 		Npcs(const Npcs&) = delete;
 		Npcs& operator=(const Npcs&) = delete;
 
+		static Npcs& getInstance() {
+			// Guaranteed to be destroyed
+			static Npcs instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		NpcType* getNpcType(const std::string& name, bool create = false);
+
+		// Reset npcs informations on reload
 		void reset() {
 			npcs.clear();
 			scriptInterface.reset();
 		};
 
+	private:
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
 		std::map<std::string, NpcType*> npcs;
 };
+
+constexpr auto g_npcs = &Npcs::getInstance;
 
 #endif  // SRC_CREATURES_NPCS_NPCS_H_

@@ -27,9 +27,6 @@
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
 
-extern Npcs g_npcs;
-extern Game g_game;
-extern Events* g_events;
 
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -148,7 +145,7 @@ bool SpawnsNpc::isInZone(const Position& centerPos, int32_t radius, const Positi
 void SpawnNpc::startSpawnNpcCheck()
 {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -164,7 +161,7 @@ SpawnNpc::~SpawnNpc()
 bool SpawnNpc::findPlayer(const Position& pos)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, pos, false, true);
+	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator->getPlayer()->hasCustomFlag(PlayerCustomFlag_IgnoredByNpcs)) {
 			return true;
@@ -183,11 +180,11 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position& pos,
 	std::unique_ptr<Npc> npc_ptr(new Npc(npcType));
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game.internalPlaceCreature(npc_ptr.get(), pos, true, false, true)) {
+		if (!g_game().internalPlaceCreature(npc_ptr.get(), pos, true, false, true)) {
 			return false;
 		}
 	} else {
-		if (!g_game.placeCreature(npc_ptr.get(), pos, false, true)) {
+		if (!g_game().placeCreature(npc_ptr.get(), pos, false, true)) {
 			return false;
 		}
 	}
@@ -200,7 +197,7 @@ bool SpawnNpc::spawnNpc(uint32_t spawnId, NpcType* npcType, const Position& pos,
 
 	spawnedNpcMap.insert(spawned_pair(spawnId, npc));
 	spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
-	g_events->eventNpcOnSpawn(npc, pos);
+	g_events().eventNpcOnSpawn(npc, pos);
 	return true;
 }
 
@@ -242,7 +239,7 @@ void SpawnNpc::checkSpawnNpc()
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_scheduler.addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -251,8 +248,8 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t& sb, uint16_t 
 	if (interval <= 0) {
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
-		g_game.addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler.addEvent(createSchedulerTask(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
+		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
+		g_scheduler().addEvent(createSchedulerTask(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
 	}
 }
 
@@ -274,7 +271,7 @@ void SpawnNpc::cleanup()
 
 bool SpawnNpc::addNpc(const std::string& name, const Position& pos, Direction dir, uint32_t scheduleInterval)
 {
-	NpcType* npcType = g_npcs.getNpcType(name);
+	NpcType* npcType = g_npcs().getNpcType(name);
 	if (!npcType) {
 		SPDLOG_ERROR("Can not find {}", name);
 		return false;
@@ -308,7 +305,7 @@ void SpawnNpc::removeNpc(Npc* npc)
 void SpawnNpc::stopEvent()
 {
 	if (checkSpawnNpcEvent != 0) {
-		g_scheduler.stopEvent(checkSpawnNpcEvent);
+		g_scheduler().stopEvent(checkSpawnNpcEvent);
 		checkSpawnNpcEvent = 0;
 	}
 }

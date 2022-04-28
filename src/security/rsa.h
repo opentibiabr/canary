@@ -33,11 +33,20 @@ class RSA2
 		RSA2(const RSA2&) = delete;
 		RSA2& operator=(const RSA2&) = delete;
 
+		static RSA2& getInstance() {
+			// Guaranteed to be destroyed
+			static RSA2 instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void loadPEM(const std::string& filename);
-		void decrypt(char* msg) const;
+		void decrypt(uint8_t* msg) const;
 
 	private:
 		CryptoPP::RSA::PrivateKey pk;
 };
+
+constexpr auto g_RSA = &RSA2::getInstance;
 
 #endif  // SRC_SECURITY_RSA_H_

@@ -225,6 +225,13 @@ class Monsters
 		Monsters(const Monsters&) = delete;
 		Monsters& operator=(const Monsters&) = delete;
 
+		static Monsters& getInstance() {
+			// Guaranteed to be destroyed
+			static Monsters instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		bool loadFromXml(bool reloading = false);
 		bool isLoaded() const {
 			return loaded;
@@ -253,5 +260,7 @@ class Monsters
 
 		bool loaded = false;
 };
+
+constexpr auto g_monsters = &Monsters::getInstance;
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTERS_H_

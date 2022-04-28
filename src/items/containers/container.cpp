@@ -24,7 +24,6 @@
 #include "io/iomap.h"
 #include "game/game.h"
 
-extern Game g_game;
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -58,7 +57,7 @@ Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
 Container::~Container()
 {
 	if (getID() == ITEM_BROWSEFIELD) {
-		g_game.browseFields.erase(getTile());
+		g_game().browseFields.erase(getTile());
 
 		for (Item* item : itemlist) {
 			item->setParent(parent);
@@ -234,7 +233,7 @@ std::ostringstream& Container::getContentDescription(std::ostringstream& os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getClientID() << "|" << item->getNameDescription() << "}";
+		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
 	}
 
 	if (firstitem) {
@@ -284,7 +283,7 @@ bool Container::isHoldingItem(const Item* item) const
 void Container::onAddContainerItem(Item* item)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send to client
 	for (Creature* spectator : spectators) {
@@ -300,7 +299,7 @@ void Container::onAddContainerItem(Item* item)
 void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newItem)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send to client
 	for (Creature* spectator : spectators) {
@@ -316,7 +315,7 @@ void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newIt
 void Container::onRemoveContainerItem(uint32_t index, Item* item)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send change to client
 	for (Creature* spectator : spectators) {
@@ -402,7 +401,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
-  if (getWeaponType() == WEAPON_QUIVER && item->getWeaponType() != WEAPON_AMMO)
+  if (isQuiver() && item->getWeaponType() != WEAPON_AMMO)
     return RETURNVALUE_ONLYAMMOINQUIVER;
 
 	const Cylinder* topParent = getTopParent();
@@ -683,9 +682,9 @@ void Container::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
-int32_t Container::getThingIndex(const Thing* thing) const
+uint8_t Container::getThingIndex(const Thing* thing) const
 {
-	int32_t index = 0;
+	uint8_t index = 0;
 	for (Item* item : itemlist) {
 		if (item == thing) {
 			return index;
@@ -793,17 +792,17 @@ void Container::internalAddThing(uint32_t, Thing* thing)
 
 void Container::startDecaying()
 {
-	g_decay.startDecay(this);
+	g_decay().startDecay(this);
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay.startDecay(*it);
+		g_decay().startDecay(*it);
 	}
 }
 
 void Container::stopDecaying()
 {
-	g_decay.stopDecay(this);
+	g_decay().stopDecay(this);
 	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
-		g_decay.stopDecay(*it);
+		g_decay().stopDecay(*it);
 	}
 }
 

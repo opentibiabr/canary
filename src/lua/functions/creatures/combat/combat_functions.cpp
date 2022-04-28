@@ -23,9 +23,6 @@
 #include "game/game.h"
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
-
-extern LuaEnvironment g_luaEnvironment;
-
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
 	pushUserdata<Combat>(L, g_luaEnvironment.createCombatObject(getScriptEnv()->getScriptInterface()));
@@ -167,7 +164,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 	const LuaVariant& variant = getVariant(L, 3);
 	switch (variant.type) {
 		case VARIANT_NUMBER: {
-			Creature* target = g_game.getCreatureByID(variant.number);
+			Creature* target = g_game().getCreatureByID(variant.number);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;
@@ -191,13 +188,13 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 				combat->doCombat(creature, variant.pos);
 			} else {
 				combat->postCombatEffects(creature, variant.pos);
-				g_game.addMagicEffect(variant.pos, CONST_ME_POFF);
+				g_game().addMagicEffect(variant.pos, CONST_ME_POFF);
 			}
 			break;
 		}
 
 		case VARIANT_STRING: {
-			Player* target = g_game.getPlayerByName(variant.text);
+			Player* target = g_game().getPlayerByName(variant.text);
 			if (!target) {
 				pushBoolean(L, false);
 				return 1;

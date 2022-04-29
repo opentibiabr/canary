@@ -22,6 +22,9 @@ jobs:
       fail-fast: false
       matrix:
         language: ['cpp', 'python']
+        include:
+          - language: cpp
+            buildtype: linux-release
 
     steps:
       - name: Checkout repository
@@ -51,10 +54,10 @@ jobs:
         uses: actions/cache@v3
         with:
           path: $HOME/.ccache
-          key: ccache-${{ runner.os }}-RelWithDebInfo-${{ hashFiles('**/src') }}
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
           restore-keys: |
-            ccache-${{ runner.os }}-RelWithDebInfo-
-            ccache-${{ runner.os }}-
+            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
+            ccache-${{ matrix.os }}-
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: ${{ matrix.language == 'cpp' }}
@@ -70,8 +73,8 @@ jobs:
         if: ${{ matrix.language == 'cpp' }}
         uses: lukka/run-cmake@v10
         with:
-          configurePreset: linux-debug
-          buildPreset: linux-debug
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

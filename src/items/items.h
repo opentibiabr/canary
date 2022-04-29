@@ -218,6 +218,8 @@ class ItemType
 		uint32_t minReqLevel = 0;
 		uint32_t minReqMagicLevel = 0;
 		uint32_t charges = 0;
+		uint32_t buyPrice = 0;
+		uint32_t sellPrice = 0;
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;

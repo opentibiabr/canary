@@ -49,7 +49,6 @@ class ActionFunctions final : LuaScriptInterface {
 		static int luaActionAllowFarUse(lua_State* L);
 		static int luaActionBlockWalls(lua_State* L);
 		static int luaActionCheckFloor(lua_State* L);
-		static int luaActionPosition(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_EVENTS_ACTION_FUNCTIONS_HPP_

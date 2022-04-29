@@ -78,7 +78,7 @@ bool Outfits::loadFromXml()
 						"Missing looktype id for outfit name: {}", outfitName);
 		}
 
-		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
+		if (uint16_t lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
 				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
 				&& !g_game().isLookTypeRegistered(lookType)
 			)

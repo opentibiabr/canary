@@ -15,15 +15,15 @@ function teleportSetDestination.onSay(player, words, param)
 	local position = player:getPosition()
 	position:getNextPosition(player:getDirection(), 1)
 	local split = param:split(",")
-	local teleportId = 1949
-	local teleport = Tile(position):getItemById(teleportId)
-	if teleport and teleport:isTeleport() then
+	local tile = Tile(position)
+	local teleport = tile and tile:getItemByType(ITEM_TYPE_TELEPORT)
+	if teleport then
 		if split then
 			teleport:setDestination(Position(split[1], split[2], split[3]))
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("New position: %s, %s, %s", split[1], split[2], split[3]))
 		end
 	else
-		player:sendCancelMessage("Not is item of id ".. teleportId ..".")
+		player:sendCancelMessage("The item is not a teleport type")
 		return true
 	end
 	return false

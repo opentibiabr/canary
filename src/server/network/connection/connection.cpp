@@ -70,7 +70,7 @@ void Connection::close(bool force)
 	connectionState = CONNECTION_STATE_DISCONNECTED;
 
 	if (protocol) {
-		g_dispatcher.addTask(
+		g_dispatcher().addTask(
 			createTask(std::bind(&Protocol::release, protocol)));
 	}
 
@@ -104,7 +104,7 @@ Connection::~Connection()
 void Connection::accept(Protocol_ptr conProtocol)
 {
 	this->protocol = conProtocol;
-	g_dispatcher.addTask(createTask(std::bind(&Protocol::onConnect, protocol)));
+	g_dispatcher().addTask(createTask(std::bind(&Protocol::onConnect, protocol)));
 	connectionState = CONNECTION_STATE_CONNECTING_STAGE2;
 
 	accept();

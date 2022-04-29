@@ -42,7 +42,7 @@ int ItemTypeFunctions::luaItemTypeIsCorpse(lua_State* L) {
 	// itemType:isCorpse()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
-		pushBoolean(L, itemType->corpseType != RACE_NONE);
+		pushBoolean(L, itemType->isCorpse);
 	} else {
 		lua_pushnil(L);
 	}
@@ -170,11 +170,11 @@ int ItemTypeFunctions::luaItemTypeIsMagicField(lua_State* L) {
 	return 1;
 }
 
-int ItemTypeFunctions::luaItemTypeIsUseable(lua_State* L) {
-	// itemType:isUseable()
+int ItemTypeFunctions::luaItemTypeIsMultiUse(lua_State* L) {
+	// itemType:isMultiUse()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
-		pushBoolean(L, itemType->isUseable());
+		pushBoolean(L, itemType->isMultiUse());
 	} else {
 		lua_pushnil(L);
 	}
@@ -203,6 +203,17 @@ int ItemTypeFunctions::luaItemTypeIsKey(lua_State* L) {
 	return 1;
 }
 
+int ItemTypeFunctions::luaItemTypeIsQuiver(lua_State* L) {
+	// itemType:isQuiver()
+	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		pushBoolean(L, itemType->isQuiver());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int ItemTypeFunctions::luaItemTypeGetType(lua_State* L) {
 	// itemType:getType()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
@@ -219,17 +230,6 @@ int ItemTypeFunctions::luaItemTypeGetId(lua_State* L) {
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->id);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int ItemTypeFunctions::luaItemTypeGetClientId(lua_State* L) {
-	// itemType:getClientId()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
-	if (itemType) {
-		lua_pushnumber(L, itemType->clientId);
 	} else {
 		lua_pushnil(L);
 	}
@@ -432,17 +432,6 @@ int ItemTypeFunctions::luaItemTypeGetAmmoType(lua_State* L) {
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		lua_pushnumber(L, itemType->ammoType);
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int ItemTypeFunctions::luaItemTypeGetCorpseType(lua_State* L) {
-	// itemType:getCorpseType()
-	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
-	if (itemType) {
-		lua_pushnumber(L, itemType->corpseType);
 	} else {
 		lua_pushnil(L);
 	}

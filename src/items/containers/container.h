@@ -155,7 +155,7 @@ class Container : public Item, public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override final;
 
-		int32_t getThingIndex(const Thing* thing) const override final;
+		uint8_t getThingIndex(const Thing* thing) const override final;
 		size_t getFirstIndex() const override final;
 		size_t getLastIndex() const override final;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;

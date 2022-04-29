@@ -24,9 +24,6 @@
 #include "lua/creature/movement.h"
 #include "creatures/players/imbuements/imbuements.h"
 
-extern Vocations g_vocations;
-extern Events* g_events;
-extern Imbuements* g_imbuements;
 
 void MoveEvents::clearMap(MoveListMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ++it) {

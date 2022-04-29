@@ -28,19 +28,16 @@
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
-extern Monsters g_monsters;
-extern Scripts* g_scripts;
-
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	// Game.createMonsterType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("MonsterTypes can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
 	}
 
-	MonsterType* monsterType = g_monsters.getMonsterType(getString(L, 1));
+	MonsterType* monsterType = g_monsters().getMonsterType(getString(L, 1));
 	if (monsterType) {
 		monsterType->info.lootItems.clear();
 		monsterType->info.attackSpells.clear();
@@ -50,8 +47,8 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	} else if (isString(L, 1)) {
 		monsterType = new MonsterType();
 		std::string name = getString(L, 1);
-		g_monsters.addMonsterType(name, monsterType);
-		monsterType = g_monsters.getMonsterType(getString(L, 1));
+		g_monsters().addMonsterType(name, monsterType);
+		monsterType = g_monsters().getMonsterType(getString(L, 1));
 		monsterType->name = name;
 		monsterType->nameDescription = "a " + name;
 		pushUserdata<MonsterType>(L, monsterType);
@@ -64,7 +61,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 	// Game.createNpcType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("NpcType can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -125,7 +122,6 @@ int GameFunctions::luaGameGetBoostedCreature(lua_State* L) {
 
 int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	// Game.getBestiaryList([bool[string or BestiaryType_t]])
-	IOBestiary g_bestiary;
 	lua_newtable(L);
 	int index = 0;
 	bool name = getBoolean(L, 2, false);
@@ -144,7 +140,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	}
 	else {
 		if (isNumber(L, 2)) {
-			std::map<uint16_t, std::string> tmplist = g_bestiary.findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
+			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
 			for (auto itb : tmplist) {
 				if (name) {
 					pushString(L, itb.second);
@@ -156,7 +152,7 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 			}
 		}
 		else {
-			std::map<uint16_t, std::string> tmplist = g_bestiary.findRaceByName(getString(L, 2));
+			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName(getString(L, 2));
 			for (auto itc : tmplist) {
 				if (name) {
 					pushString(L, itc.second);
@@ -187,15 +183,7 @@ int GameFunctions::luaGameGetPlayers(lua_State* L) {
 int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string& path = getString(L, 1);
-	g_dispatcher.addTask(createTask([path]() {
-		try {
-			g_game().loadMap(path);
-		} catch (const std::exception& e) {
-			// FIXME: Should only catch some exceptions
-			SPDLOG_ERROR("[GameFunctions::luaGameLoadMap] - Failed to load map: {}",
-						 e.what());
-		}
-	}));
+	g_dispatcher().addTask(createTask([path]() {g_game().loadMap(path); }));
 	return 0;
 }
 
@@ -219,7 +207,7 @@ int GameFunctions::luaGameGetNpcCount(lua_State* L) {
 
 int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	// Game.getMonsterTypes()
-	auto& type = g_monsters.monsters;
+	auto& type = g_monsters().monsters;
 	lua_createtable(L, type.size(), 0);
 
 	for (auto& mType : type) {
@@ -544,14 +532,13 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("Charm bestiary can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
 	}
-	IOBestiary g_bestiary;
 
-	if (Charm* charm = g_bestiary.getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
+	if (Charm* charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
 	} else {
@@ -562,7 +549,7 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateItemClassification(lua_State* L) {
 	// Game.createItemClassification(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("Item classification can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -602,8 +589,9 @@ int GameFunctions::luaGameStartRaid(lua_State* L) {
 int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 	// Game.getClientVersion()
 	lua_createtable(L, 0, 3);
-	setField(L, "version", g_configManager().getNumber(CLIENT_VERSION));
-	setField(L, "string", g_configManager().getString(CLIENT_VERSION_STR));
+	setField(L, "min", CLIENT_VERSION);
+	setField(L, "max", CLIENT_VERSION);
+	setField(L, "string", std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
 	return 1;
 }
 
@@ -618,7 +606,7 @@ int GameFunctions::luaGameReload(lua_State* L) {
 	if (reloadType == RELOAD_TYPE_GLOBAL) {
 		pushBoolean(L, g_luaEnvironment.loadFile("data/global.lua") == 0);
 		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
-		pushBoolean(L, g_scripts->loadScripts("scripts/lib", true, true));
+		pushBoolean(L, g_scripts().loadScripts("scripts/lib", true, true));
 	} else if (reloadType == RELOAD_TYPE_STAGES) {
 		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
 	} else {
@@ -646,16 +634,6 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 	// Game.hasDistanceEffect(effectId)
 	uint8_t effectId = getNumber<uint8_t>(L, 1);
 	pushBoolean(L, g_game().hasDistanceEffect(effectId));
-	return 1;
-}
-
-int GameFunctions::luaGameGetItemByClientId(lua_State* L) {
-	// Game.getItemIdByClientId(itemClientId)
-	int16_t clientId = getNumber<uint16_t>(L, 1);
-
-	const ItemType& itemType = Item::items.getItemIdByClientId(clientId);
-	pushUserdata<const ItemType>(L, &itemType);
-	setMetatable(L, -1, "ItemType");
 	return 1;
 }
 

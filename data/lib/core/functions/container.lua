@@ -2,7 +2,7 @@ function Container.isContainer(self)
 	return true
 end
 
-function Container.createLootItem(self, item, boolCharm)
+function Container.createLootItem(self, item, charm, prey)
 	if self:getEmptySlots() == 0 then
 		return true
 	end
@@ -16,8 +16,14 @@ function Container.createLootItem(self, item, boolCharm)
 		return
 	end
 
-	if boolCharm and lootBlockType:getType() == ITEM_TYPE_CREATUREPRODUCT then
-		chanceTo = (chanceTo * (GLOBAL_CHARM_GUT + 100))/100
+	-- Bestiary charm bonus
+	if charm and lootBlockType:getType() == ITEM_TYPE_CREATUREPRODUCT then
+		chanceTo = math.ceil((chanceTo * GLOBAL_CHARM_GUT) / 100)
+	end
+
+	-- Active prey loot bonus
+	if prey ~= 100 then
+		chanceTo = math.ceil((chanceTo * prey) / 100)
 	end
 
 	if randvalue < chanceTo then
@@ -40,7 +46,7 @@ function Container.createLootItem(self, item, boolCharm)
 
 		if tmpItem:isContainer() then
 			for i = 1, #item.childLoot do
-				if not tmpItem:createLootItem(item.childLoot[i]) then
+				if not tmpItem:createLootItem(item.childLoot[i], charm, prey) then
 					tmpItem:remove()
 					return false
 				end

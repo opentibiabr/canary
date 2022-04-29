@@ -2,7 +2,7 @@
 local spell = Spell("instant")
 
 function spell.onCastSpell(player, variant)
-	player:CreateFamiliarSpell()
+	player:createFamiliarSpell()
 	return true
 end
 

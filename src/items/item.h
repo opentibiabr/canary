@@ -833,9 +833,6 @@ class Item : virtual public Thing
 		uint16_t getID() const {
 			return id;
 		}
-		uint16_t getClientID() const {
-			return items[id].clientId;
-		}
 		void setID(uint16_t newid);
 
 		// Returns the player that is holding this item in his inventory
@@ -921,7 +918,7 @@ class Item : virtual public Thing
 			return items[id].stackable && items[id].wareId > 0;
 		}
 		bool isAlwaysOnTop() const {
-			return items[id].alwaysOnTop;
+			return items[id].alwaysOnTopOrder != 0;
 		}
 		bool isGroundTile() const {
 			return items[id].isGroundTile();
@@ -936,13 +933,13 @@ class Item : virtual public Thing
 			return items[id].moveable;
 		}
 		bool isCorpse() const {
-			return items[id].corpseType != RACE_NONE;
+			return items[id].isCorpse;
 		}
 		bool isPickupable() const {
 			return items[id].pickupable;
 		}
-		bool isUseable() const {
-			return items[id].useable;
+		bool isMultiUse() const {
+			return items[id].multiUse;
 		}
 		bool isHangable() const {
 			return items[id].isHangable;
@@ -958,6 +955,9 @@ class Item : virtual public Thing
 		}
 		bool hasWalkStack() const {
 			return items[id].walkStack;
+		}
+		bool isQuiver() const {
+			return items[id].isQuiver();
 		}
 
 		const std::string& getName() const {

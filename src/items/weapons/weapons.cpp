@@ -24,9 +24,6 @@
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
 
-extern Vocations g_vocations;
-extern Weapons* g_weapons;
-extern Events* g_events;
 
 const Weapon* Weapons::getWeapon(const Item* item) const
 {
@@ -147,13 +144,6 @@ int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t
 // Remove this function (and all configureEvent of others classes), is no longer used
 bool Weapon::configureEvent(const pugi::xml_node& node)
 {
-	pugi::xml_attribute attr;
-	if (!(attr = node.attribute("id"))) {
-		SPDLOG_ERROR("[Weapon::configureEvent] - Weapon without id");
-		return false;
-	}
-	id = static_cast<uint16_t>(attr.as_uint());
-	configureWeapon(Item::items[id]);
 	return true;
 }
 
@@ -584,7 +574,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 	const ItemType& it = Item::items[id];
 	if (it.weaponType == WEAPON_AMMO) {
 		Item* mainWeaponItem = player->getWeapon(true);
-		const Weapon* mainWeapon = g_weapons->getWeapon(mainWeaponItem);
+		const Weapon* mainWeapon = g_weapons().getWeapon(mainWeaponItem);
 		if (mainWeapon) {
 			damageModifier = mainWeapon->playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
 		} else {

@@ -225,6 +225,13 @@ class Monsters
 		Monsters(const Monsters&) = delete;
 		Monsters& operator=(const Monsters&) = delete;
 
+		static Monsters& getInstance() {
+			// Guaranteed to be destroyed
+			static Monsters instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		MonsterType* getMonsterType(const std::string& name);
 		MonsterType* getMonsterTypeByRaceId(uint16_t thisrace);
 		void addMonsterType(const std::string& name, MonsterType* mType);
@@ -242,5 +249,7 @@ class Monsters
 		void loadLootContainer(const pugi::xml_node& node, LootBlock&);
 		bool loadLootItem(const pugi::xml_node& node, LootBlock&);
 };
+
+constexpr auto g_monsters = &Monsters::getInstance;
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTERS_H_

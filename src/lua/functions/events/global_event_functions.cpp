@@ -24,12 +24,10 @@
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
-extern GlobalEvents* g_globalEvents;
-extern Scripts* g_scripts;
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 	// GlobalEvent(eventName)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("GlobalEvents can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -82,7 +80,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_globalEvents->registerLuaEvent(globalevent));
+		pushBoolean(L, g_globalEvents().registerLuaEvent(globalevent));
 	} else {
 		lua_pushnil(L);
 	}

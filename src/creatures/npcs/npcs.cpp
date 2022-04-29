@@ -28,9 +28,6 @@
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 
-extern Spells* g_spells;
-extern Npcs g_npcs;
-
 bool NpcType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;

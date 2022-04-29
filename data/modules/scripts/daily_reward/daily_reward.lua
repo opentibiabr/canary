@@ -134,7 +134,7 @@ DailyReward = {
 		[6] = {
 			type = DAILY_REWARD_TYPE_ITEM,
 			systemType = DAILY_REWARD_SYSTEM_TYPE_ONE,
-			items = {32124, 32125, 32126, 32127, 32128, 32129},
+			items = {28540, 28541, 28542, 28543, 28544, 28545},
 			freeAccount = 1,
 			premiumAccount = 2,
 			itemCharges = 50
@@ -513,7 +513,7 @@ function Player.selectDailyReward(self, msg)
 	end
 
 	if (dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL) then
-		self:setPreyBonusRerolls(self:getPreyBonusRerolls() + reward)
+		self:addPreyCards(reward)
 		DailyReward.insertHistory(self:getGuid(), self:getDayStreak(), "Claimed reward no. \z
 			" .. self:getDayStreak() + 1 .. ". Picked reward: " .. reward .. "x Prey bonus reroll(s)")
 		DailyReward.processReward(playerId, source)

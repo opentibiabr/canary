@@ -378,3 +378,11 @@ function Position:relocateTo(toPos)
 	end
 	return true
 end
+
+function Position:isProtectionZoneTile()
+	local tile = Tile(self)
+	if not tile then
+		return false
+	end
+	return tile:hasFlag(TILESTATE_PROTECTIONZONE)
+end

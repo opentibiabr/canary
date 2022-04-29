@@ -15,7 +15,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(50)
 rune:name("soulfire rune")
 rune:runeId(3195)
 rune:allowFarUse(true)

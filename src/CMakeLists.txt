@@ -138,6 +138,7 @@ find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
+find_package(Protobuf REQUIRED)
 if (MSVC)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
@@ -200,6 +201,8 @@ target_sources(${PROJECT_NAME}
     io/iomap.cpp
     io/iomapserialize.cpp
     io/iomarket.cpp
+    io/ioprey.cpp
+    protobuf/appearances.pb.cc
     items/bed.cpp
     items/containers/container.cpp
     items/containers/depot/depotchest.cpp
@@ -308,6 +311,7 @@ PRIVATE
   ${CRYPTOPP_INCLUDE_DIR}
   ${CURL_INCLUDE_DIRS}
   ${SPDLOG_INCLUDE_DIR}
+  ${Protobuf_INCLUDE_DIRS}
   asio::asio
   $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
@@ -320,6 +324,7 @@ PRIVATE
   ${CMAKE_THREAD_LIBS_INIT}
   ${CURL_LIBRARIES}
   ${SPDLOG_LIBRARY}
+  protobuf::libprotobuf
   fmt::fmt
   jsoncpp_lib
   libzippp::libzippp
@@ -332,6 +337,7 @@ else()
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUA_INCLUDE_DIR}
+      ${Protobuf_INCLUDE_DIRS}
   )
 
   target_link_libraries(${PROJECT_NAME}
@@ -344,6 +350,7 @@ else()
       spdlog::spdlog
       Threads::Threads
       ${LUA_LIBRARIES}
+      protobuf::libprotobuf
       libzippp::libzippp
   )
 

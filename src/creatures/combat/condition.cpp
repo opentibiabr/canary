@@ -22,8 +22,6 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
-extern Monsters g_monsters;
-
 bool Condition::setParam(ConditionParam_t param, int32_t value)
 {
 	switch (param) {
@@ -841,7 +839,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 					TextMessage message(MESSAGE_HEALED, "You were healed for " + healString);
 					message.position = player->getPosition();
 					message.primary.value = realHealthGain;
-					message.primary.color = TEXTCOLOR_MAYABLUE;
+					message.primary.color = TEXTCOLOR_PASTELRED;
 					player->sendTextMessage(message);
 
 					SpectatorHashSet spectators;
@@ -1654,8 +1652,13 @@ void ConditionOutfit::serialize(PropWriteStream& propWriteStream)
 
 bool ConditionOutfit::startCondition(Creature* creature)
 {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+		SPDLOG_WARN("[ConditionOutfit::startCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+		return false;
+	}
+
 	if ((outfit.lookType == 0 && outfit.lookTypeEx == 0) && !monsterName.empty()) {
-		MonsterType* monsterType = g_monsters.getMonsterType(monsterName);
+		const MonsterType* monsterType = g_monsters().getMonsterType(monsterName);
 		if (monsterType) {
 			setOutfit(monsterType->info.outfit);
 		} else {
@@ -1684,12 +1687,17 @@ void ConditionOutfit::endCondition(Creature* creature)
 
 void ConditionOutfit::addCondition(Creature* creature, const Condition* addCondition)
 {
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+		SPDLOG_WARN("[ConditionOutfit::addCondition] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+		return;
+	}
+
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
 		const ConditionOutfit& conditionOutfit = static_cast<const ConditionOutfit&>(*addCondition);
 		if (!conditionOutfit.monsterName.empty() && conditionOutfit.monsterName.compare(monsterName) != 0) {
-			MonsterType* monsterType = g_monsters.getMonsterType(conditionOutfit.monsterName);
+			const MonsterType* monsterType = g_monsters().getMonsterType(conditionOutfit.monsterName);
 			if (monsterType) {
 				setOutfit(monsterType->info.outfit);
 			} else {

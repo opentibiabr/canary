@@ -26,9 +26,6 @@
 #include "items/weapons/weapons.h"
 #include "game/game.h"
 
-extern Spells* g_spells;
-extern Monsters g_monsters;
-
 spellBlock_t::~spellBlock_t()
 {
 	if (combatSpell) {
@@ -92,7 +89,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	sb.range = std::min((int) spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
-	sb.spell = g_spells->getSpellByName(spell->name);
+	sb.spell = g_spells().getSpellByName(spell->name);
 
 	if (sb.spell) {
 		return true;
@@ -102,7 +99,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 	if (spell->isScripted) {
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells->getScriptBaseName() + "/scripts/" + spell->scriptName)) {
+		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - Cannot find file: {}",
                          spell->scriptName);
 			return false;
@@ -245,7 +242,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			//
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "{} unknown spell name: {}"
+                         "{} unknown or missing parameter on spell with name: {}"
                          , description, spell->name);
 		}
 
@@ -451,7 +448,7 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
 	if (it == raceid_list.end()) {
 		return nullptr;
 	}
-	MonsterType* mtype = g_monsters.getMonsterType(it->second);
+	MonsterType* mtype = g_monsters().getMonsterType(it->second);
 	return (mtype ? mtype : nullptr);
 }
 

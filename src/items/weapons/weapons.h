@@ -27,7 +27,6 @@
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/vocations/vocation.h"
 
-extern Vocations g_vocations;
 
 class Weapon;
 class WeaponMelee;
@@ -44,6 +43,13 @@ class Weapons final : public BaseEvents
 		// non-copyable
 		Weapons(const Weapons&) = delete;
 		Weapons& operator=(const Weapons&) = delete;
+
+		static Weapons& getInstance() {
+			// Guaranteed to be destroyed
+			static Weapons instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		void loadDefaults();
 		const Weapon* getWeapon(const Item* item) const;
@@ -64,6 +70,8 @@ class Weapons final : public BaseEvents
 
 		LuaScriptInterface scriptInterface { "Weapon Interface" };
 };
+
+constexpr auto g_weapons = &Weapons::getInstance;
 
 class Weapon : public Event
 {
@@ -180,7 +188,7 @@ class Weapon : public Event
 		}
 
 		void addVocWeaponMap(std::string vocName) {
-			int32_t vocationId = g_vocations.getVocationId(vocName);
+			int32_t vocationId = g_vocations().getVocationId(vocName);
 			if (vocationId != -1) {
 				vocWeaponMap[vocationId] = true;
 			}

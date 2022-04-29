@@ -20,6 +20,7 @@
 #include "otpch.h"
 
 #include "creatures/appearance/mounts/mounts.h"
+#include "game/game.h"
 
 #include "utils/tools.h"
 
@@ -42,6 +43,12 @@ bool Mounts::loadFromXml()
 	}
 
 	for (auto mountNode : doc.child("mounts").children()) {
+		uint16_t lookType = static_cast<uint16_t>(mountNode.attribute("clientid").as_uint());
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+			SPDLOG_WARN("[Mounts::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+			continue;
+		}
+
 		mounts.emplace_back(
 			static_cast<uint8_t>(mountNode.attribute("id").as_uint()),
 			static_cast<uint16_t>(mountNode.attribute("clientid").as_uint()),

@@ -24,9 +24,6 @@
 
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
-
-extern LuaEnvironment g_luaEnvironment;
-
 class GameFunctions final : LuaScriptInterface {
 	public:
 			static void init(lua_State* L) {
@@ -80,8 +77,6 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "getClientVersion", GameFunctions::luaGameGetClientVersion);
 
 				registerMethod(L, "Game", "reload", GameFunctions::luaGameReload);
-
-				registerMethod(L, "Game", "getItemIdByClientId", GameFunctions::luaGameGetItemByClientId);
 
 				registerMethod(L, "Game", "itemidHasMoveevent", GameFunctions::luaGameItemidHasMoveevent);
 				registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
@@ -139,7 +134,6 @@ class GameFunctions final : LuaScriptInterface {
 
 			static int luaGameReload(lua_State* L);
 
-			static int luaGameGetItemByClientId(lua_State* L);
 			static int luaGameGetOfflinePlayer(lua_State* L);
 			static int luaGameItemidHasMoveevent(lua_State* L);
 			static int luaGameHasEffect(lua_State* L);

@@ -34,21 +34,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 
-Actions* g_actions = nullptr;
-CreatureEvents* g_creatureEvents = nullptr;
-Chat* g_chat = nullptr;
-Events* g_events = nullptr;
-GlobalEvents* g_globalEvents = nullptr;
-Spells* g_spells = nullptr;
-TalkActions* g_talkActions = nullptr;
-MoveEvents* g_moveEvents = nullptr;
-Weapons* g_weapons = nullptr;
-Scripts* g_scripts = nullptr;
-Modules* g_modules = nullptr;
-Imbuements* g_imbuements = nullptr;
-
-extern LuaEnvironment g_luaEnvironment;
-
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
 	scriptInterface.initState();
@@ -56,62 +41,6 @@ Scripts::Scripts() :
 
 Scripts::~Scripts() {
 	scriptInterface.reInitState();
-
-	delete g_events;
-	delete g_weapons;
-	delete g_spells;
-	delete g_actions;
-	delete g_talkActions;
-	delete g_moveEvents;
-	delete g_chat;
-	delete g_creatureEvents;
-	delete g_globalEvents;
-	delete g_imbuements;
-}
-
-bool Scripts::loadScriptSystems() {
-	g_chat = new Chat();
-
-	// XML loads disabled start
-	g_weapons = new Weapons();
-	if (!g_weapons) {
-		return false;
-	}
-
-	g_weapons->loadDefaults();
-
-	g_spells = new Spells();
-	if (!g_spells) {
-		return false;
-	}
-
-	g_actions = new Actions();
-	if (!g_actions) {
-		return false;
-	}
-
-	g_talkActions = new TalkActions();
-	if (!g_talkActions) {
-		return false;
-	}
-
-	g_moveEvents = new MoveEvents();
-	if (!g_moveEvents) {
-		return false;
-	}
-
-	g_creatureEvents = new CreatureEvents();
-	if (!g_creatureEvents) {
-		return false;
-	}
-
-	g_globalEvents = new GlobalEvents();
-	if (!g_globalEvents) {
-		return false;
-	}
-	// XML loads disabled end
-
-	return true;
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {

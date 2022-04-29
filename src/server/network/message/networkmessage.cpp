@@ -101,8 +101,3 @@ void NetworkMessage::addPosition(const Position& pos)
 	add<uint16_t>(pos.y);
 	addByte(pos.z);
 }
-
-void NetworkMessage::addItemId(uint16_t itemId)
-{
-	add<uint16_t>(Item::items[itemId].clientId);
-}

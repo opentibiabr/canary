@@ -5540,6 +5540,8 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			addMagicEffect(targetPos, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
 			addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+		} else if (blockType == BLOCK_ARMOR) {
+			addMagicEffect(targetPos, CONST_ME_DODGE);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -5570,6 +5572,16 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			addMagicEffect(targetPos, hitEffect);
 		}
 	};
+
+	// dodge (ruse)
+	if (Player* targetPlayer = target->getPlayer()) {
+		double_t chance = targetPlayer->getDodgeChance();
+		if (chance > 0 && uniform_random(1, 100) <= chance) {
+			sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
+			targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
+			return true;
+		}
+	}
 
 	bool canHeal = false;
 		CombatDamage damageHeal;

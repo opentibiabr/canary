@@ -2033,6 +2033,29 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
+		double_t getDodgeChance() const {
+			Item* item = inventory[CONST_SLOT_ARMOR];
+			if (!item) {
+				return 0;
+			}
+			return (*dodgeChance.find(static_cast<Tiers_t>(item->getTier()))).second;
+		}
+
+		double_t getFatalChance() const {
+			Item* item = inventory[CONST_SLOT_LEFT];
+			if (!item) {
+				return 0;
+			}
+			return (*fatalChance.find(static_cast<Tiers_t>(item->getTier()))).second;
+		}
+
+		double_t getMomentumChance() const {
+			Item* item = inventory[CONST_SLOT_HEAD];
+			if (!item) {
+				return 0;
+			}
+			return (*momentumChance.find(static_cast<Tiers_t>(item->getTier()))).second;
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;

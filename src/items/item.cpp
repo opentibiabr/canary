@@ -773,6 +773,16 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
+		case ATTR_TIER: {
+			uint8_t tier;
+			if (!propStream.read<uint8_t>(tier)) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+			break;
+		}
+
 		default:
 			return ATTR_READ_ERROR;
 	}
@@ -942,6 +952,11 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_TYPE)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
 		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+		propWriteStream.write<uint8_t>(ATTR_TIER);
+		propWriteStream.write<uint8_t>(getTier());
 	}
 }
 
@@ -2285,6 +2300,10 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	}
 
 	s << parseImbuementDescription(item);
+
+	if (uint16_t classification = item->getClassification(); classification > 1) {
+		s << std::endl << "Classification: " << classification << " Tier: " << item->getTier() << ".";
+	}
 
 	if (lookDistance <= 1) {
 		if (item) {

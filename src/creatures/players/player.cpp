@@ -1984,6 +1984,34 @@ void Player::onThink(uint32_t interval)
 		addMessageBuffer();
 	}
 
+	// momentum(cooldown resets), checks and eligibility (chance to trigger every 2 seconds)
+	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && getMomentumChance() > 0 && uniform_random(1, 100) <= getMomentumChance()) {
+		bool triggered = false;
+		auto it = conditions.begin(), end = conditions.end();
+		while (it != end) {
+			if ((*it)->getEndTime() >= OTSYS_TIME()) {
+				ConditionType_t type = (*it)->getType();
+				uint32_t spellId = (*it)->getSubId();
+				int32_t ticks = (*it)->getTicks();
+				int32_t newTicks = (ticks <= 2000) ? 0 : 2000;
+				if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
+					(*it)->setTicks(newTicks);
+					if (type == CONDITION_SPELLGROUPCOOLDOWN) {
+						sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks);
+					} else {
+						sendSpellCooldown(spellId, newTicks);
+					}
+					triggered = true;
+				}
+			}
+			++it;
+		}
+		if (triggered) {
+			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
+			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
+		}
+	}
+
 	if (!getTile()->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);

@@ -484,6 +484,7 @@ class ItemAttributes
 			checkTypes |= ITEM_ATTRIBUTE_OPENCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+			checkTypes |= ITEM_ATTRIBUTE_TIER;
 			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(ItemAttrTypes type) {
@@ -1094,6 +1095,21 @@ class Item : virtual public Thing
 			}
 
 			return false;
+		}
+
+		uint16_t getTier() const {
+			if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+				return getIntAttr(ITEM_ATTRIBUTE_TIER);
+			}
+			return 0;
+		}
+		void addTier(uint8_t tier) {
+			if (items[id].upgradeClassification) {
+				setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+			}
+		}
+		uint16_t getClassification() const {
+			return items[id].upgradeClassification;
 		}
 
 	protected:

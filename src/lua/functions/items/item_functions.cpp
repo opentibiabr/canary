@@ -799,3 +799,31 @@ int ItemFunctions::luaItemGetImbuementSlot(lua_State* L) {
 	lua_pushnumber(L, item->getImbuementSlot());
 	return 1;
 }
+
+int ItemFunctions::luaItemGetTier(lua_State* L) {
+	// item:getTier()
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	item->getTier();
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ItemFunctions::luaItemAddTier(lua_State* L) {
+	// item:addTier(tier)
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	item->addTier(getNumber<uint8_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}

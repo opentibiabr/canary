@@ -384,7 +384,7 @@ void Monster::updateTargetList()
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
 			creature->decrementReferenceCounter();
 		}
-		return friendIterator;
+		return true;
 	});
 
 	std::erase_if(targetList, [this](auto targetIterator) {
@@ -392,7 +392,7 @@ void Monster::updateTargetList()
 		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
 			creature->decrementReferenceCounter();
 		}
-		return targetIterator;
+		return true;
 	});
 
 	SpectatorHashSet spectators;

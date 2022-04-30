@@ -106,6 +106,7 @@ class Action : public Event {
 				if (storedPosition == position) {
 					return true;
 				}
+				return false;
 			});
 			return false;
 		}

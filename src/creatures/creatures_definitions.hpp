@@ -484,6 +484,12 @@ enum DailyRewardStatus : uint8_t {
 	DAILY_REWARD_NOTAVAILABLE = 2
 };
 
+enum MonsterForgeClassifications_t : uint8_t {
+	FORGESYSTEM_NORMAL_MONSTER = 0,
+	FORGESYSTEM_INFLUENCED_MONSTER = 1,
+	FORGESYSTEM_FIENDISH_MONSTER = 2,
+};
+
 enum OperatingSystem_t : uint8_t {
 	CLIENTOS_NONE = 0,
 

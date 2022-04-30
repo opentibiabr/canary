@@ -3756,7 +3756,7 @@ std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t
 		if (item->getTier() > 0) {
 			continue;
 		}
-		
+
 		if (!item->hasImbuements()) {
 			countMap[item->getID()] += item->getItemCount();
 		}
@@ -3776,6 +3776,7 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMa
 		}
 	}
 }
+
 
 Thing* Player::getThing(size_t index) const
 {
@@ -5514,6 +5515,74 @@ uint64_t Player::getMoney() const
 	return moneyCount;
 }
 
+uint64_t Player::getForgeSlivers() const
+{
+	std::vector<const Container*> containers;
+	uint64_t sliverCount = 0;
+
+	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		const Container* container = item->getContainer();
+		if (container) {
+			containers.push_back(container);
+		} else {
+			sliverCount += item->getForgeSlivers();
+		}
+	}
+
+	size_t i = 0;
+	while (i < containers.size()) {
+		const Container* container = containers[i++];
+		for (const Item* item : container->getItemList()) {
+			const Container* tmpContainer = item->getContainer();
+			if (tmpContainer) {
+				containers.push_back(tmpContainer);
+			} else {
+				sliverCount += item->getForgeSlivers();
+			}
+		}
+	}
+	return sliverCount;
+}
+
+uint64_t Player::getForgeCores() const
+{
+	std::vector<const Container*> containers;
+	uint64_t coreCount = 0;
+
+	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		const Container* container = item->getContainer();
+		if (container) {
+			containers.push_back(container);
+		} else {
+			coreCount += item->getForgeCores();
+		}
+	}
+
+	size_t i = 0;
+	while (i < containers.size()) {
+		const Container* container = containers[i++];
+		for (const Item* item : container->getItemList()) {
+			const Container* tmpContainer = item->getContainer();
+			if (tmpContainer) {
+				containers.push_back(tmpContainer);
+			} else {
+				coreCount += item->getForgeCores();
+			}
+		}
+	}
+	return coreCount;
+}
+
 size_t Player::getMaxVIPEntries() const
 {
 	if (group->maxVipEntries != 0) {
@@ -5934,7 +6003,7 @@ void Player::triggerMomentum() {
 	}
 
 	double_t chance = item->getMomentumChance();
-	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
+	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
 		bool triggered = false;
 		auto it = conditions.begin();
 		while (it != conditions.end()) {
@@ -6302,6 +6371,130 @@ bool Player::saySpell(
 		}
 	}
 	return true;
+}
+
+// Forge system
+void Player::fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
+{
+	Item* item = g_game().findItemOfType(this, itemid, true, -1, true, tier);
+	Item* item2 = g_game().findItemOfType(this, itemid, true, -1, true, tier);
+
+	// Need to change this (maybe removeInternalItem?)
+	removeItemOfType(itemid, 2, -1, true);
+
+	Container* chest = Item::CreateItem(37561, 1)->getContainer();
+
+	Item* newItem = Item::CreateItem(itemid, 1);
+	g_game().internalAddItem(chest, newItem, INDEX_WHEREEVER);
+
+	Item* newItem2 = Item::CreateItem(itemid, 1);
+	g_game().internalAddItem(chest, newItem2, INDEX_WHEREEVER);
+
+	if (success)
+	{
+		newItem->setTier(tier + 1);
+
+		if (bonus != 1)
+		{
+			setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_FUSION_DUST_COST));
+		}
+		if (bonus != 2)
+		{
+			removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true);
+		}
+		if (bonus != 3)
+		{
+			uint64_t cost = 0;
+			for (auto itemClassification : g_game().getItemsClassifications())
+			{
+				if (itemClassification->id != item->getClassification())
+				{
+					continue;
+				}
+
+				for (auto [tier, price] : itemClassification->tiers)
+				{
+					if (tier == item->getTier())
+					{
+						cost = price;
+						break;
+					}
+				}
+				break;
+			}
+			g_game().removeMoney(this, cost, 0, true);
+		}
+
+		if (bonus == 4)
+		{
+			if (tier > 0)
+			{
+				newItem2->setTier(tier - 1);
+			}
+		}
+		else if (bonus == 6)
+		{
+			newItem2->setTier(tier + 1);
+		}
+		else if (bonus == 7)
+		{
+			if (tier + 2 <= newItem->getClassification())
+			{
+				newItem->setTier(tier + 2);
+			}
+		}
+
+		if (bonus != 4 && bonus != 5 && bonus != 6 && bonus != 8)
+		{
+			g_game().internalRemoveItem(newItem2, 1);
+		}
+	}
+	else
+	{
+		uint8_t isTierLost = uniform_random(1, 100) <= (reduceTierLoss ? g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION) : 100);
+		if (isTierLost)
+		{
+			if (newItem2->getTier() >= 1)
+			{
+				newItem2->setTier(tier - 1);
+			}
+			else
+			{
+				g_game().internalRemoveItem(newItem2, 1);
+			}
+		}
+		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_FUSION_DUST_COST));
+		removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true);
+		// RemoveMoney()
+	}
+	g_game().internalAddItem(this, chest, INDEX_WHEREEVER);
+}
+
+void Player::transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondItemId)
+{
+	Item* fromItem = g_game().findItemOfType(this, firstItemId, true, -1, true, tier);
+	Item* toItem = g_game().findItemOfType(this, secondItemId, true, -1, true, tier);
+
+	// Need to change this (maybe removeInternalItem?)
+	removeItemOfType(firstItemId, 1, -1, true);
+	removeItemOfType(secondItemId, 1, -1, true);
+
+	Container* chest = Item::CreateItem(37561, 1)->getContainer();
+
+	Item* newFromItem = Item::CreateItem(firstItemId, 1);
+	g_game().internalAddItem(chest, newFromItem, INDEX_WHEREEVER);
+
+	Item* newToItem = Item::CreateItem(secondItemId, 1);
+	g_game().internalAddItem(chest, newToItem, INDEX_WHEREEVER);
+
+	newFromItem->setTier(0);
+	newToItem->setTier(tier - 1);
+
+	setForgeDusts(getForgeDusts() - 100);
+	removeItemOfType(ITEM_FORGE_CORE, 1, -1, true);
+	// RemoveMoney()
+
+	g_game().internalAddItem(this, chest, INDEX_WHEREEVER);
 }
 
 /*******************************************************************************

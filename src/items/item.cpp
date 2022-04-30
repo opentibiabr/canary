@@ -2502,6 +2502,28 @@ uint32_t Item::getWorth() const
 	}
 }
 
+uint32_t Item::getForgeSlivers() const
+{
+	switch (id) {
+		case ITEM_FORGE_SLIVER:
+			return count;
+
+		default:
+			return 0;
+	}
+}
+
+uint32_t Item::getForgeCores() const
+{
+	switch (id) {
+		case ITEM_FORGE_CORE:
+			return count;
+
+		default:
+			return 0;
+	}
+}
+
 LightInfo Item::getLightInfo() const
 {
 	const ItemType& it = items[id];

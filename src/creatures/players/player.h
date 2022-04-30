@@ -657,6 +657,8 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint64_t getMoney() const;
+		uint64_t getForgeSlivers() const;
+		uint64_t getForgeCores() const;
 
 		//safe-trade functions
 		void setTradeState(TradeState_t state) {
@@ -816,6 +818,11 @@ class Player final : public Creature, public Cylinder
 		void removeAttacked(const Player* attacked);
 		void clearAttacked();
 		void addUnjustifiedDead(const Player* attacked);
+		void sendCreatureEmblem(Creature *creature) const {
+			if (client) {
+				client->sendCreatureEmblem(creature);
+			}
+		}
 		void sendCreatureSkull(const Creature* creature) const {
 			if (client) {
 				client->sendCreatureSkull(creature);
@@ -963,6 +970,11 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureIcon(creature);
 			}
 		}
+		void sendUpdateCreature(const Creature *creature) {
+			if (client) {
+				client->sendUpdateCreature(creature);
+			}
+		}
 		void sendCreatureWalkthrough(const Creature* creature, bool walkthrough) {
 			if (client) {
 				client->sendCreatureWalkthrough(creature, walkthrough);
@@ -993,7 +1005,6 @@ class Player final : public Creature, public Cylinder
 				client->sendUseItemCooldown(time);
 			}
 		}
-
 		void reloadCreature(const Creature* creature) {
 			if (client) {
 				client->reloadCreature(creature);
@@ -2033,7 +2044,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void addTaskHuntingPoints(uint16_t amount) {
+		void addTaskHuntingPoints(uint64_t amount) {
 			taskHuntingPoints += amount;
 			if (client) {
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
@@ -2096,6 +2107,69 @@ class Player final : public Creature, public Cylinder
 			SpectatorHashSet* spectatorsPtr = nullptr,
 			const Position* pos = nullptr
 		);
+
+		// Forge system
+		void fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
+		void transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondItemId);
+		void sendOpenForge() const
+		{
+			if (client)
+			{
+				client->sendOpenForge();
+			}
+		}
+		void closeForgeWindow() const
+		{
+			if (client) {
+				client->closeForgeWindow();
+			}
+		}
+
+		void setForgeDusts(uint64_t amount)
+		{
+			forgeDusts = amount;
+			if (client)
+			{
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		void addForgeDusts(uint64_t amount)
+		{
+			forgeDusts += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		void removeForgeDusts(uint64_t amount)
+		{
+			forgeDusts = std::max<uint64_t>(0, forgeDusts - amount);
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		uint64_t getForgeDusts() const
+		{
+			return forgeDusts;
+		}
+
+		void addForgeDustLevel(uint64_t amount)
+		{
+			forgeDustLevel += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		void removeForgeDustLevel(uint64_t amount)
+		{
+			forgeDustLevel = std::max<uint64_t>(0, forgeDustLevel - amount);
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		uint64_t getForgeDustLevel() const
+		{
+			return forgeDustLevel;
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2227,6 +2301,8 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastQuestlogUpdate = 0;
 		uint64_t preyCards = 0;
 		uint64_t taskHuntingPoints = 0;
+		uint64_t forgeDusts = 0;
+		uint64_t forgeDustLevel = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;

@@ -180,6 +180,16 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_SHRINE_STORAGE)
 			registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
 
+			registerEnumIn(L, "configKeys", FORGE_COST_ONE_SLIVER)
+			registerEnumIn(L, "configKeys", FORGE_SLIVER_AMOUNT)
+			registerEnumIn(L, "configKeys", FORGE_CORE_COST)
+			registerEnumIn(L, "configKeys", FORGE_MAX_DUST)
+			registerEnumIn(L, "configKeys", FORGE_FUSION_DUST_COST)
+			registerEnumIn(L, "configKeys", FORGE_TRANSFER_DUST_COST)
+			registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE)
+			registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE)
+			registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION)
+
 			#undef registerEnumIn
 		}
 

@@ -627,6 +627,9 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, ITEM_GOLD_POUCH)
 			registerEnum(L, ITEM_STORE_INBOX)
 
+			registerEnum(L, ITEM_FORGE_SLIVER)
+			registerEnum(L, ITEM_FORGE_CORE)
+
 			registerEnum(L, CHARM_GUT)
 			registerEnum(L, CHARM_SCAVENGE)
 
@@ -1033,6 +1036,10 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, NPCS_EVENT_PLAYER_SELL)
 			registerEnum(L, NPCS_EVENT_PLAYER_CHECK_ITEM)
 			registerEnum(L, NPCS_EVENT_PLAYER_CLOSE_CHANNEL)
+
+			registerEnum(L, FORGESYSTEM_NORMAL_MONSTER)
+			registerEnum(L, FORGESYSTEM_INFLUENCED_MONSTER)
+			registerEnum(L, FORGESYSTEM_FIENDISH_MONSTER)
 
 			registerEnum(L, LIGHT_STATE_DAY);
 			registerEnum(L, LIGHT_STATE_NIGHT);

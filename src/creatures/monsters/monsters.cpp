@@ -914,6 +914,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 					mType->info.respawnType.period = RESPAWNPERIOD_NIGHT;
 					mType->info.respawnType.underground = true;
 				}
+			} else if (strcasecmp(attrName, "isforgesystemcreature") == 0) {
+				mType->info.isForgeSystemCreature = attr.as_bool();
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
                             "Unknown flag attribute: {}. {}", attrName, file);

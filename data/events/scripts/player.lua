@@ -228,6 +228,10 @@ function Player:onTradeRequest(target, item)
 end
 
 function Player:onTradeAccept(target, item, targetItem)
+	self:closeForge()
+	target:closeForge()
+	self:closeImbuementWindow()
+	target:closeImbuementWindow()
 	return true
 end
 

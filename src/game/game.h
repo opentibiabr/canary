@@ -52,6 +52,7 @@ class ItemClassification;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
+static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 
 class Game
 {
@@ -238,7 +239,7 @@ class Game
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
-		uint64_t getItemMarketPrice(std::map<uint16_t, uint64_t>  const &itemMap, bool buyPrice) const;
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint64_t> const &itemMap, bool buyPrice) const;
 
 		void loadPlayersRecord();
 		void checkPlayersRecord();
@@ -574,7 +575,32 @@ class Game
 			mapLuaItemsStored[position] = itemId;
 		}
 
+		std::set<uint32_t> getFiendishMonsters() const {
+			return fiendishMonsters;
+		}
+
+		std::set<uint32_t> getInfluencedMonsters() const {
+			return influencedMonsters;
+		}
+
+		bool removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monsterForgeClassification, bool create = true);
+		bool removeInfluencedMonster(uint32_t id, bool create = false);
+		bool removeFiendishMonster(uint32_t id, bool create = true);
+		void updateFiendishMonsterStatus(uint32_t monsterId);
+		void createFiendishMonsters();
+		void createInfluencedMonsters();
+		void updateForgeableMonsters();
+		void checkForgeEventId(uint32_t monsterId);
+		uint32_t makeFiendishMonster();
+		uint32_t makeInfluencedMonster();
+
+		bool addInfluencedMonster(Monster *monster);
+		void sendUpdateCreature(Creature *creature);
+
 	private:
+		std::map<uint32_t, int32_t> forgeMonsterEventIds;
+		std::set<uint32_t> fiendishMonsters;
+		std::set<uint32_t> influencedMonsters;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
 		void playerWhisper(Player* player, const std::string& text);
@@ -614,6 +640,7 @@ class Game
 
 		std::map<uint32_t, Npc*> npcs;
 		std::map<uint32_t, Monster*> monsters;
+		std::vector<uint32_t> forgeableMonsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 

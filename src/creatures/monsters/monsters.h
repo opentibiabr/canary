@@ -148,6 +148,7 @@ class MonsterType
 		bool canWalkOnEnergy = true;
 		bool canWalkOnFire = true;
 		bool canWalkOnPoison = true;
+		bool isForgeSystemCreature = true;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};

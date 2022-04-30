@@ -277,6 +277,21 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
+			// Forge Functions
+			registerMethod(L, "Player", "openForge", PlayerFunctions::luaPlayerOpenForge);
+			registerMethod(L, "Player", "closeForge", PlayerFunctions::luaPlayerCloseForge);
+
+			registerMethod(L, "Player", "addForgeDusts", PlayerFunctions::luaPlayerAddForgeDusts);
+			registerMethod(L, "Player", "removeForgeDusts", PlayerFunctions::luaPlayerRemoveForgeDusts);
+			registerMethod(L, "Player", "getForgeDusts", PlayerFunctions::luaPlayerGetForgeDusts);
+
+			registerMethod(L, "Player", "addForgeDustLevel", PlayerFunctions::luaPlayerAddForgeDustLevel);
+			registerMethod(L, "Player", "removeForgeDustLevel", PlayerFunctions::luaPlayerRemoveForgeDustLevel);
+			registerMethod(L, "Player", "getForgeDustLevel", PlayerFunctions::luaPlayerGetForgeDustLevel);
+
+			registerMethod(L, "Player", "getForgeSlivers", PlayerFunctions::luaPlayerGetForgeSlivers);
+			registerMethod(L, "Player", "getForgeCores", PlayerFunctions::luaPlayerGetForgeCores);
+
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
 			MountFunctions::init(L);
@@ -533,6 +548,21 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
+
+		static int luaPlayerOpenForge(lua_State* L);
+		static int luaPlayerCloseForge(lua_State* L);
+		static int luaPlayerSendForgeError(lua_State* L);
+
+		static int luaPlayerAddForgeDusts(lua_State* L);
+		static int luaPlayerRemoveForgeDusts(lua_State* L);
+		static int luaPlayerGetForgeDusts(lua_State* L);
+
+		static int luaPlayerAddForgeDustLevel(lua_State *L);
+		static int luaPlayerRemoveForgeDustLevel(lua_State *L);
+		static int luaPlayerGetForgeDustLevel(lua_State *L);
+
+		static int luaPlayerGetForgeSlivers(lua_State* L);
+		static int luaPlayerGetForgeCores(lua_State* L);
 
 		friend class CreatureFunctions;
 };

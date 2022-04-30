@@ -145,7 +145,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 			for (Item* listItem : container->getItemList()) {
 				if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
 					ammoTotal += listItem->getItemCount();
-      		    }
+				}
 			}
 			msg.addByte(0x01);
 			msg.add<uint32_t>(ammoTotal);
@@ -422,7 +422,6 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
-	player->resetIdleTime();	
 	acceptPackets = true;
 }
 
@@ -772,6 +771,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xB1: parseHighscores(msg); break;
 		case 0xBA: parseTaskHuntingAction(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
+		case 0xBF: parseForgeEnter(msg); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
@@ -2904,6 +2904,25 @@ void ProtocolGame::sendCreatureShield(const Creature *creature)
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendCreatureEmblem(const Creature *creature)
+{
+	if (!canSee(creature))
+	{
+		return;
+	}
+
+	// Remove creature from client and re-add to update
+	Position pos = creature->getPosition();
+	int32_t stackpos = creature->getTile()->getClientIndexOfCreature(player, creature);
+	sendRemoveTileThing(pos, stackpos);
+	NetworkMessage msg;
+	msg.addByte(0x6A);
+	msg.addPosition(pos);
+	msg.addByte(stackpos);
+	AddCreature(msg, creature, false, creature->getID());
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendCreatureSkull(const Creature *creature)
 {
 	if (g_game().getWorldType() != WORLD_TYPE_PVP)
@@ -3964,12 +3983,16 @@ void ProtocolGame::sendGameNews()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/)
+void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/,
+										uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/)
 {
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
 	sendResourceBalance(RESOURCE_TASK_HUNTING, taskHunting);
+	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDust);
+	sendResourceBalance(RESOURCE_FORGE_SLIVER, forgeSliver);
+	sendResourceBalance(RESOURCE_FORGE_CORES, forgeCores);
 }
 
 void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
@@ -4336,7 +4359,7 @@ void ProtocolGame::sendForgingData()
 	msg.addByte(0x86);
 
 	std::vector<ItemClassification*> classifications = g_game().getItemsClassifications();
-	msg.addByte(classifications.size());	
+	msg.addByte(classifications.size());
 	for (ItemClassification* classification : classifications)
 	{
 		msg.addByte(classification->id);
@@ -4349,24 +4372,211 @@ void ProtocolGame::sendForgingData()
 	}
 
 	// Version 12.81
-	for (uint8_t i = 1; i <= 11; ++i) {
-		msg.addByte(0);
-	}
+	// Forge Config Bytes
 
-	uint32_t sliverCount = 0;
-	uint32_t coreCount = 0;
-	if (Item* mainBp = player->getInventoryItem(CONST_SLOT_BACKPACK); mainBp) {
-		for (const Item* item : mainBp->getContainer()->getItems(true)) {
-			if (item->getID() == ITEM_FORGE_SLIVER) {
-				sliverCount += Item::countByType(item, -1);
-			} else if (item->getID() == ITEM_FORGE_CORE) {
-				coreCount += Item::countByType(item, -1);
+	// (conversion) (left column top) Cost to make 1 bottom item - 20
+	msg.addByte(g_configManager().getNumber(FORGE_COST_ONE_SLIVER));
+	// (conversion) (left column bottom) How many items to make - 3
+	msg.addByte(g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+	// (conversion) (middle column top) Cost to make 1 - 50
+	msg.addByte(g_configManager().getNumber(FORGE_CORE_COST));
+	// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
+	msg.addByte(75);
+	// (conversion) (right column bottom) Starting stored dust limit
+	msg.addByte(player->getForgeDustLevel());
+	// (conversion) (right column bottom) Max stored dust limit - 225
+	msg.addByte(g_configManager().getNumber(FORGE_MAX_DUST));
+	// (fusion) Dust cost - 100
+	msg.addByte(g_configManager().getNumber(FORGE_FUSION_DUST_COST));
+	// (transfer) Dust cost - 100
+	msg.addByte(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
+	// (fusion) Base success rate - 50
+	msg.addByte(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	// (fusion) Bonus success rate - 15
+	msg.addByte(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE));
+	// (fusion) Tier loss chance after reduction - 50
+	msg.addByte(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION));
+
+	// We have a better way of refresh client
+	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendOpenForge() {
+	NetworkMessage msg;
+	msg.addByte(0x87);
+
+	msg.addByte(0x01);
+	msg.addByte(0x00);
+	auto itemCountPosition = msg.getBufferPosition();
+	msg.skipBytes(1); // total items count
+
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> items;
+	for (const Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
+		uint8_t maxTier = (item->getClassification() == 4 ? FORGE_MAX_ITEM_TIER : item->getClassification());
+		if (item->getClassification() != 0 && item->getTier() < maxTier) {
+			std::map<uint8_t, uint16_t> itemInfo;
+			itemInfo.insert({ item->getTier(), item->getItemCount() });
+			auto rt = items.insert({ item->getID(), itemInfo });
+			if (!rt.second) {
+				auto rt2 = items[item->getID()].insert({ item->getTier(), item->getItemCount() });
+				if (!rt2.second) {
+					(items[item->getID()])[item->getTier()] += item->getItemCount();
+				}
 			}
 		}
 	}
+	uint8_t itemsCount = 0;
+	for (const auto itemId : items) {
+		for (const auto itemInfo : itemId.second) {
+			if (itemInfo.second >= 2) {
+				msg.add<uint16_t>(itemId.first);	// id
+				msg.addByte(itemInfo.first);		// tier
+				msg.add<uint16_t>(itemInfo.second); // count
+				itemsCount++;
+			}
+		}
+	}
+	auto itemsPosition = msg.getBufferPosition();
+	msg.setBufferPosition(itemCountPosition);
+	msg.addByte(itemsCount);
 
-	// until we have a better way of refresh client, leave this line commented
-	//sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
+	msg.setBufferPosition(itemsPosition);
+	msg.addByte(0x00);
+	msg.addByte(player->getForgeDustLevel());		// Player dust limit
+
+	sendForgingData();
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
+	// 0xBF -> 0 = fusion, 1 = transfer, 2 = dust to sliver, 3 = sliver to core, 4 = increase dust limit
+	uint8_t action = msg.getByte();
+	uint16_t firstItem = msg.get<uint16_t>();
+	uint8_t tier = msg.getByte();
+	uint16_t secondItem = msg.get<uint16_t>();
+	bool usedCore = msg.getByte();
+	bool reduceTierLoss = msg.getByte();
+	if (action == 0) {
+		forgeFusionItem(firstItem, tier, usedCore, reduceTierLoss);
+	} else if (action == 1) {
+		forgeTransferItem(firstItem, tier, secondItem);
+	} else if (action <= 4) {
+		forgeResourceConversion(action);
+	}
+}
+
+void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss)
+{
+	NetworkMessage msg;
+	// WIP
+	msg.addByte(0x8A);
+
+	msg.addByte(0x00); // fusion = 0
+	uint16_t baseSuccess = g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE);
+	uint16_t bonusSuccess = g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE);
+	uint8_t roll = uniform_random(1, 100) <= (usedCore ? bonusSuccess : baseSuccess);
+	bool success = roll ? 1 : 0;
+	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
+	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
+	msg.addByte(success); // success?
+
+	msg.add<uint16_t>(item);	// left item
+	msg.addByte(tier);			// left item tier
+	msg.add<uint16_t>(item);	// right item
+	msg.addByte(tier + 1);		// right item tier
+
+	uint8_t bonus = uniform_random(0, 8);
+	SPDLOG_WARN("bonus: {}", bonus);
+	if (!success)
+		bonus = 0;
+	player->fuseItems(item, tier, success, reduceTierLoss, bonus, coreCount);
+	msg.addByte(bonus); // roll fusion bonus
+	if (bonus == 2)
+	{ // core kept
+		msg.addByte(coreCount);
+	}
+	else if (bonus == 4 || bonus == 5 || bonus == 6 || bonus == 7 || bonus == 8)
+	{
+		SPDLOG_WARN("caiu no if: item id {}, tier {}", item, tier);
+		msg.add<uint16_t>(item);
+		msg.addByte(tier);
+	}
+	writeToOutputBuffer(msg);
+	sendForgingData();
+}
+
+void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
+	NetworkMessage msg;
+	// WIP
+	msg.addByte(0x8A);
+
+	msg.addByte(0x01); // transfer = 1
+
+	msg.add<uint16_t>(firstItem);	// left item
+	msg.addByte(tier);				// left item tier
+	msg.add<uint16_t>(0x01);		// right item
+
+	// player->transferItem(firstItem, tier, secondItem);
+
+	writeToOutputBuffer(msg);
+	sendForgingData();
+}
+
+void ProtocolGame::forgeResourceConversion(uint16_t action) {
+	NetworkMessage msg;
+	// Need tests
+	if (action == 2) {
+		SPDLOG_WARN("DUST TO SLIVER");
+		uint16_t dusts = player->getForgeDusts();
+		uint16_t cost = g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT);
+		if (cost > dusts) {
+			player->sendFYIBox("Not enough dust.");
+		}
+		// player->setForgeSlivers(player->getForgeSlivers() + 3);
+		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+		g_game().internalPlayerAddItem(player, item);
+		player->setForgeDusts(dusts - cost);
+		sendForgingData();
+	} else if (action == 3) {
+		SPDLOG_WARN("SLIVER TO CORE");
+		uint16_t slivers = player->getForgeSlivers();
+		uint16_t cost = g_configManager().getNumber(FORGE_CORE_COST);
+		if (cost > slivers) {
+			player->sendFYIBox("Not enough sliver.");
+		}
+
+		// player->setForgeCores(player->getForgeCores() + 1);
+		// player->setForgeSlivers(player->getForgeSlivers() - cost);
+		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
+		g_game().internalPlayerAddItem(player, item);
+		player->removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
+		sendForgingData();
+	} else { // else if (action == 4)
+		SPDLOG_WARN("LIMIT");
+		uint16_t dustLevel = player->getForgeDustLevel();
+		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST)) {
+			player->sendFYIBox("Maximum level reached.");
+		}
+
+		uint16_t upgradeCost = player->getForgeDustLevel() - 75;
+		uint16_t dusts = player->getForgeDusts();
+		if (upgradeCost > dusts) {
+			player->sendFYIBox("Not enough dust.");
+		}
+
+		SPDLOG_WARN("Total dusts: {}, Dust Level: {}, Upgrade Cost (Formula): {}, Upgrade Cost (Variable): {}", player->getForgeDusts(), player->getForgeDustLevel(), player->getForgeDustLevel() - 75, upgradeCost);
+		player->removeForgeDusts(upgradeCost);
+		player->addForgeDustLevel(1);
+		sendForgingData();
+	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::closeForgeWindow()
+{
+	NetworkMessage msg;
+	msg.addByte(0x89);
 	writeToOutputBuffer(msg);
 }
 
@@ -4670,7 +4880,28 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	msg.add<uint16_t>(0x00);
 
 	// Upgrade and tier detail modifier
-	if (it.upgradeClassification > 0)
+	if (it.upgradeClassification > 0 && tier > 0)
+	{
+		msg.addString(std::to_string(it.upgradeClassification));
+		float chance = 0;
+		std::ostringstream ss;
+
+		ss << static_cast<uint16_t>(tier) << " (";
+		if (it.isWeapon()) {
+			chance = 0.5 * tier + 0.05 * ((tier - 1) * (tier - 1));
+			ss << std::setprecision(2) << std::fixed << chance << "% Onslaught)";
+		}
+		else if (it.isHelmet()) {
+			chance = 2 * tier + 0.05 * ((tier - 1) * (tier - 1));
+			ss << std::setprecision(2) << std::fixed << chance << "% Momentum)";
+		}
+		else if (it.isArmor()) {
+			chance = (0.0307576 * tier * tier) + (0.440697 * tier) + 0.026;
+			ss << std::setprecision(2) << std::fixed << chance << "% Ruse)";
+		}
+		msg.addString(ss.str());
+	}
+	else if (it.upgradeClassification > 0 && tier == 0)
 	{
 		msg.addString(std::to_string(it.upgradeClassification));
 		msg.addString(std::to_string(tier));
@@ -6453,12 +6684,44 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 
 	msg.add<uint16_t>(creature->getStepSpeed() / 2);
 
-	CreatureIcon_t icon = creature->getIcon();
-	msg.addByte(icon != CREATUREICON_NONE); // Icons
-	if (icon != CREATUREICON_NONE) {
-		msg.addByte(icon);
-		msg.addByte(1);
-		msg.add<uint16_t>(0);
+	if (otherPlayer) {
+		CreatureIcon_t icon = creature->getIcon();
+		msg.addByte(icon != CREATUREICON_NONE); // Icons
+		if (icon != CREATUREICON_NONE) {
+			msg.addByte(icon);
+			msg.addByte(1);
+			msg.add<uint16_t>(0);
+		}
+	} else {
+		if (creature->getMonster()) {
+			const Monster *monster = creature->getMonster(); // Convertendo pra monster
+			if (monster) {
+				CreatureIcon_t icon = monster->getIcon();
+				msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
+				if (icon != CREATUREICON_NONE) {
+
+					// Icones com stack (Fiendishs e Influenceds)
+					if (monster->getForgeStack() > 0) {
+						msg.addByte(icon);
+						msg.addByte(1);
+						msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // stack
+					} else {
+						// icones sem numero do lado
+						msg.addByte(icon);
+						msg.addByte(1);
+						msg.add<uint16_t>(0);
+					}
+				}
+			}
+		} else {
+			CreatureIcon_t icon = creature->getIcon();
+			msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
+			if (icon != CREATUREICON_NONE) {
+				msg.addByte(icon);
+				msg.addByte(1);
+				msg.add<uint16_t>(0);
+			}
+		}
 	}
 
 	msg.addByte(player->getSkullClient(creature));
@@ -7329,4 +7592,26 @@ void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
 	Position pos = msg.getPosition();
 
 	addGameTask(&Game::playerRequestOpenContainerFromDepotSearch, player->getID(), pos);
+}
+
+void ProtocolGame::sendUpdateCreature(const Creature* creature)
+{
+    if (!creature || !player) {
+        return; 
+    }
+
+    if (!canSee(creature))
+        return;
+
+    int32_t stackPos = creature->getTile()->getClientIndexOfCreature(player, creature);
+    if (stackPos == -1 || stackPos >= 10) {
+        return;
+    }
+
+    NetworkMessage msg; 
+    msg.addByte(0x6B);
+    msg.addPosition(creature->getPosition());
+    msg.addByte(stackPos);
+    AddCreature(msg, creature, false, 0);
+    writeToOutputBuffer(msg);
 }

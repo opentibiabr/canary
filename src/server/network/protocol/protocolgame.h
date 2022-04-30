@@ -273,7 +273,15 @@ private:
 	void closeImbuementWindow();
 
 	void sendItemsPrice();
+	
+	//Forge System
 	void sendForgingData();
+	void sendOpenForge();
+	void closeForgeWindow();
+	void parseForgeEnter(NetworkMessage &msg);
+	void forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss);
+	void forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t secondItem);
+	void forgeResourceConversion(uint16_t action);
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 	void sendMagicEffect(const Position &pos, uint8_t type);
@@ -327,6 +335,7 @@ private:
 
 	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
 	void sendCreatureShield(const Creature *creature);
+	void sendCreatureEmblem(const Creature *creature);
 	void sendCreatureSkull(const Creature *creature);
 	void sendCreatureType(const Creature *creature, uint8_t creatureType);
 
@@ -334,7 +343,7 @@ private:
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
-	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0);
+	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0, uint64_t forgeDust = 0, uint64_t forgeSliver = 0, uint64_t forgeCores = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
@@ -365,6 +374,7 @@ private:
 
 	void sendCreatureLight(const Creature *creature);
 	void sendCreatureIcon(const Creature* creature);
+	void sendUpdateCreature(const Creature* creature);
 	void sendWorldLight(const LightInfo &lightInfo);
 	void sendTibiaTime(int32_t time);
 

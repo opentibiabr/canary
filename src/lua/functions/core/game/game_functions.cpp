@@ -605,7 +605,7 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
-	uint32_t playerId = getNumber<uint32_t>(L,1);
+	uint32_t playerId = getNumber<uint32_t>(L, 1);
 
 	Player* offlinePlayer = new Player(nullptr);
 	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {
@@ -614,6 +614,59 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 	} else {
 		pushUserdata<Player>(L, offlinePlayer);
 		setMetatable(L, -1, "Player");
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameAddInfluencedMonster(lua_State *L) {
+	// Game.addInfluencedMonster()
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (monster) {
+		lua_pushboolean(L, g_game().addInfluencedMonster(monster));
+	} else {
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetInfluencedMonsters(lua_State *L) {
+	// Game.getInfluencedMonsters()
+	const auto monsters = g_game().getInfluencedMonsters();
+
+	lua_createtable(L, monsters.size(), 0);
+	int index = 0;
+	for (const auto &monsterId : monsters) {
+		lua_pushnumber(L, monsterId);
+		lua_rawseti(L, -2, ++index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameMakeFiendishMonster(lua_State *L) {
+	// Game.makeFiendishMonster()
+	lua_pushnumber(L, g_game().makeFiendishMonster());
+	return 1;
+}
+
+int GameFunctions::luaGameRemoveFiendishMonster(lua_State *L) {
+	// Game.removeFiendishMonster(monsterId)
+	uint32_t monsterId = getNumber<uint32_t>(L, 1);
+	lua_pushnumber(L, g_game().removeFiendishMonster(monsterId));
+	return 1;
+}
+
+int GameFunctions::luaGameGetFiendishMonsters(lua_State *L) {
+	// Game.getFiendishMonsters()
+	const auto monsters = g_game().getFiendishMonsters();
+
+	lua_createtable(L, monsters.size(), 0);
+	int index = 0;
+	for (const auto &monsterId : monsters) {
+		lua_pushnumber(L, monsterId);
+		lua_rawseti(L, -2, ++index);
 	}
 
 	return 1;

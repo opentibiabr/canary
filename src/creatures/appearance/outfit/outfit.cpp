@@ -56,6 +56,13 @@ bool Outfits::loadFromXml()
 		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
 		const std::string outfitName = outfitNode.attribute("name").as_string();
 		if (!lookTypeAttribute.empty()) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+			&& !g_game().isLookTypeRegistered(lookType))
+			{
+				SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+				return false;
+			}
+
 			const std::string lookTypeString = lookTypeAttribute.as_string();
 			if (lookTypeString.empty() || lookType == 0) {
 				SPDLOG_WARN("[Outfits::loadFromXml] - Empty looktype on outfit with name {}", outfitName);
@@ -76,15 +83,6 @@ bool Outfits::loadFromXml()
 		} else {
 			SPDLOG_WARN("[Outfits::loadFromXml] - "
 						"Missing looktype id for outfit name: {}", outfitName);
-		}
-
-		if (uint16_t lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
-				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
-				&& !g_game().isLookTypeRegistered(lookType)
-			)
-		{
-			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
-			return false;
 		}
 
 		outfits[type].emplace_back(

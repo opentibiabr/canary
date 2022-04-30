@@ -84,7 +84,6 @@ bool Items::reload()
 		return false;
 	}
 
-	g_weapons().loadDefaults();
 	return true;
 }
 
@@ -180,7 +179,7 @@ bool Items::loadFromXml()
 	for (auto itemNode : doc.child("items").children()) {
 		pugi::xml_attribute idAttribute = itemNode.attribute("id");
 		const std::string itemName = itemNode.attribute("name").as_string();
-		uint16_t itemId = static_cast<uint16_t>(idAttribute.as_uint());
+		auto itemId = static_cast<uint16_t>(idAttribute.as_uint());
 		if (idAttribute && !idAttribute.empty()) {
 			parseItemNode(itemNode, itemId, itemName);
 			continue;
@@ -210,8 +209,8 @@ bool Items::loadFromXml()
 			continue;
 		}
 
-		uint16_t fromId = static_cast<uint16_t>(fromIdAttribute.as_uint());
-		uint16_t toId = static_cast<uint16_t>(toIdAttribute.as_uint());
+		auto fromId = static_cast<uint16_t>(fromIdAttribute.as_uint());
+		auto toId = static_cast<uint16_t>(toIdAttribute.as_uint());
 		while (fromId <= toId) {
 			parseItemNode(itemNode, fromId++, itemName);
 		}
@@ -238,7 +237,7 @@ void Items::buildInventoryList()
 		}
 	}
 	inventory.shrink_to_fit();
-	std::sort(inventory.begin(), inventory.end());
+	std::ranges::sort(inventory.begin(), inventory.end());
 }
 
 void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id, const std::string &itemName) {

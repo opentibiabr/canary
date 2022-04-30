@@ -175,11 +175,12 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 						itemCount = static_cast<uint16_t>(childNode.attribute("count").as_int());
 					}
 
-					auto iterateItems = std::ranges::find_if(imbuement.items.begin(), imbuement.items.end(), [itemId](const std::pair<uint16_t, uint16_t>& source) -> bool {
+					if (auto iterateItems = std::ranges::find_if(imbuement.items.begin(), imbuement.items.end(), [itemId](const std::pair<uint16_t, uint16_t>& source) {
 						return source.first == itemId;
 					});
-
-					if (iterateItems != imbuement.items.end()) {
+					// Call iterateItems
+					iterateItems != imbuement.items.end())
+					{
 						SPDLOG_WARN("[Imbuements::loadFromXml] - Duplicate item: {}, imbument name: {} ignored", childNode.attribute("value").as_int(), imbuement.name);
 						continue;
 					}

@@ -380,16 +380,18 @@ void Monster::removeTarget(Creature* creature)
 void Monster::updateTargetList()
 {
 	std::erase_if(friendList, [this](auto friendIterator) {
-		Creature* creature = friendIterator;
-		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+		if (Creature* creature = friendIterator;
+		creature->getHealth() <= 0 || !canSee(creature->getPosition()))
+		{
 			creature->decrementReferenceCounter();
 		}
 		return true;
 	});
 
 	std::erase_if(targetList, [this](auto targetIterator) {
-		Creature* creature = targetIterator;
-		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+		if (Creature* creature = targetIterator;
+		creature->getHealth() <= 0 || !canSee(creature->getPosition()))
+		{
 			creature->decrementReferenceCounter();
 		}
 		return true;

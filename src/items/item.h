@@ -248,6 +248,7 @@ class ItemAttributes
 				explicit SerializeVisitor(PropWriteStream& propWriteStream) : propWriteStream(propWriteStream) {}
 
 				void operator()(const std::monostate&) const {
+					return;
 				}
 
 				void operator()(const std::string& v) const {

@@ -102,13 +102,8 @@ bool IOMap::loadMap(Map* map, const std::string& fileName)
 		return false;
 	}
 
-	if (headerVersion > 2) {
-		setLastErrorString("Unknown OTBM version detected.");
-		return false;
-	}
-
-	if (root_header.majorVersionItems < 3) {
-		setLastErrorString("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
+	if (headerVersion > 2 || root_header.majorVersionItems < 3) {
+		setLastErrorString("Unknown OTBM version detected or this map need to be upgraded by using the latest map editor version to be able to load correctly.");
 		return false;
 	}
 
@@ -376,12 +371,11 @@ bool IOMap::parseTileArea(FileLoader& loader, NODE mapDataNode, Map& map, uint32
 						}
 					}
 					break;
-				} default: {
+				} default:
 					std::ostringstream ss;
 					ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown tile attribute.";
 					setLastErrorString(ss.str());
 					return false;
-				}
 			}
 		}
 

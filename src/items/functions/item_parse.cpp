@@ -516,20 +516,20 @@ void ItemParse::parseFieldAbsorbPercent(const std::string& tmpStrValue, pugi::xm
 void ItemParse::parseAbsorbPercent(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "absorbpercentall") {
-		int16_t value = static_cast<int16_t>(valueAttribute.as_int());
+		auto value = static_cast<int16_t>(valueAttribute.as_int());
 		Abilities & abilities = itemType.getAbilities();
 		for (auto & i: abilities.absorbPercent) {
 			i += value;
 		}
 	} else if (stringValue == "absorbpercentelements") {
-		int16_t value = static_cast<int16_t>(valueAttribute.as_int());
+		auto value = static_cast<int16_t>(valueAttribute.as_int());
 		Abilities & abilities = itemType.getAbilities();
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_EARTHDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ICEDAMAGE)] += value;
 	} else if (stringValue == "absorbpercentmagic") {
-		int16_t value = static_cast<int16_t>(valueAttribute.as_int());
+		auto value = static_cast<int16_t>(valueAttribute.as_int());
 		Abilities & abilities = itemType.getAbilities();
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_ENERGYDAMAGE)] += value;
 		abilities.absorbPercent[combatTypeToIndex(COMBAT_FIREDAMAGE)] += value;
@@ -729,7 +729,7 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 		itemType.bedPartnerDir = getDirection(valueAttribute.as_string());
 	}
 
-	uint16_t value = static_cast<uint16_t>(valueAttribute.as_uint());
+	auto value = static_cast<uint16_t>(valueAttribute.as_uint());
 	ItemType & other = Item::items.getItemType(value);
 	if (stringValue == "maletransformto") {
 		itemType.transformToOnUse[PLAYERSEX_MALE] = value;

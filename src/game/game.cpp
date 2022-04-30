@@ -239,7 +239,7 @@ bool Game::loadScheduleEventFromXml()
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
+				auto skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
 				g_game().setSkillSchedule(skillrate);
 				ss << ", skill: " << (skillrate - 100) << "%";
 			}
@@ -8692,9 +8692,8 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_moveEvents().clear(true);
 			g_talkActions().clear(true);
 			g_globalEvents().clear(true);
-			g_weapons().clear(true);
-			g_weapons().loadDefaults();
-			g_spells().clear(true);
+			g_weapons().clear();
+			g_spells().clear();
 			// Reset informations from npc interface
 			g_npc().reset();
 			g_scripts().loadScripts("scripts", false, true);
@@ -8712,8 +8711,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_configManager().reload();
 			raids.reload() && raids.startup();
 			Item::items.reload();
-			g_weapons().clear(true);
-			g_weapons().loadDefaults();
+			g_weapons().clear();
 			mounts.reload();
 			g_events().loadFromXml();
 			g_chat().load();
@@ -8722,7 +8720,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			g_moveEvents().clear(true);
 			g_talkActions().clear(true);
 			g_globalEvents().clear(true);
-			g_spells().clear(true);
+			g_spells().clear();
 			g_scripts().loadScripts("scripts", false, true);
 		}
 	}

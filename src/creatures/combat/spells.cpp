@@ -79,41 +79,19 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 	return TALKACTION_FAILED;
 }
 
-void Spells::clearMaps(bool fromLua)
+void Spells::clearMaps()
 {
-	std::erase_if(instants, [fromLua](auto instant) {
-		return instant.second.fromLua == fromLua;
+	std::erase_if(instants, [](auto instant) {
+		return true;
 	});
-	std::erase_if(runes, [fromLua](auto rune) {
-		return rune.second.fromLua == fromLua;
+	std::erase_if(runes, [](auto rune) {
+		return true;
 	});
 }
 
-void Spells::clear(bool fromLua)
+void Spells::clear()
 {
-	clearMaps(fromLua);
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& Spells::getScriptInterface()
-{
-	return scriptInterface;
-}
-
-std::string Spells::getScriptBaseName() const
-{
-	return "spells";
-}
-
-Event_ptr Spells::getEvent(const std::string& nodeName)
-{
-	if (strcasecmp(nodeName.c_str(), "rune") == 0) {
-		return Event_ptr(new RuneSpell(&scriptInterface));
-	} else if (strcasecmp(nodeName.c_str(), "instant") == 0) {
-		return Event_ptr(new InstantSpell(&scriptInterface));
-	}
-	return nullptr;
+	clearMaps();
 }
 
 bool Spells::hasInstantSpell(const std::string& word) const
@@ -123,33 +101,6 @@ bool Spells::hasInstantSpell(const std::string& word) const
 	{
 		return true;
 	}
-	return false;
-}
-
-bool Spells::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
-	InstantSpell* instant = dynamic_cast<InstantSpell*>(event.get());
-	if (instant) {
-		auto result = instants.emplace(instant->getWords(), std::move(*instant));
-		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerEvent] - "
-                        "Duplicate registered instant spell with words: {}",
-                        instant->getWords());
-		}
-		return result.second;
-	}
-
-	RuneSpell* rune = dynamic_cast<RuneSpell*>(event.get());
-	if (rune) {
-		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
-		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerEvent] - "
-                        "Duplicate registered rune with id: {}",
-                        rune->getRuneItemId());
-		}
-		return result.second;
-	}
-
 	return false;
 }
 
@@ -410,13 +361,6 @@ bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 	LuaScriptInterface::pushVariant(L, var);
 
 	return scriptInterface->callFunction(2);
-}
-
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool Spell::configureSpell(const pugi::xml_node& node)
-{
-	return true;
 }
 
 bool Spell::playerSpellCheck(Player* player) const
@@ -702,13 +646,6 @@ std::string InstantSpell::getScriptEventName() const
 	return "onCastSpell";
 }
 
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool InstantSpell::configureEvent(const pugi::xml_node& node)
-{
-	return true;
-}
-
 bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 {
 	if (!playerSpellCheck(player)) {
@@ -933,13 +870,6 @@ bool InstantSpell::canCast(const Player* player) const
 std::string RuneSpell::getScriptEventName() const
 {
 	return "onCastSpell";
-}
-
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool RuneSpell::configureEvent(const pugi::xml_node& node)
-{
-	return true;
 }
 
 ReturnValue RuneSpell::canExecuteAction(const Player* player, const Position& toPos)

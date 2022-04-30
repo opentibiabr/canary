@@ -25,7 +25,7 @@
 
 uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;
 
-const std::vector<std::string> GameStore::getIconsVector(const std::string& rawString) const
+std::vector<std::string> GameStore::getIconsVector(const std::string& rawString) const
 {
 	std::vector<std::string> icons;
 	// Converting the |-separated string to a vector of tokens
@@ -34,7 +34,7 @@ const std::vector<std::string> GameStore::getIconsVector(const std::string& rawS
 	return icons;
 }
 
-const std::vector<uint8_t> GameStore::getIntVector(const std::string& rawString) const
+std::vector<uint8_t> GameStore::getIntVector(const std::string& rawString) const
 {
 	std::vector<uint8_t> ints;
 	std::vector<std::string> rawInts;

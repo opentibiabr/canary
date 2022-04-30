@@ -84,7 +84,6 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 			return 1;
 		}
 
-		spell->fromLua = true;
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
@@ -97,7 +96,6 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 			return 1;
 		}
 
-		runeSpell->fromLua = true;
 		pushUserdata<Spell>(L, runeSpell);
 		setMetatable(L, -1, "Spell");
 		runeSpell->spellType = SPELL_RUNE;

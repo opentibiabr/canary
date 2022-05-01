@@ -2033,6 +2033,7 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 

@@ -286,6 +286,7 @@ if (MSVC)
 
 target_include_directories(${PROJECT_NAME}
   PRIVATE
+    ${Boost_LIBRARY_DIRS}
     ${CMAKE_SOURCE_DIR}/src
     ${MYSQL_INCLUDE_DIR}
     ${LUA_INCLUDE_DIR}
@@ -301,7 +302,6 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE
     ${MYSQL_CLIENT_LIBS}
     ${LUA_LIBRARIES}
-    ${Boost_LIBRARY_DIRS}
     ${Boost_LIBRARIES}
     ${PUGIXML_LIBRARIES}
     ${CRYPTOPP_LIBRARIES}

@@ -86,7 +86,7 @@ class ItemFunctions final : LuaScriptInterface {
 			registerMethod(L, "Item", "getImbuement", ItemFunctions::luaItemGetImbuement);
 
 			registerMethod(L, "Item", "getTier", ItemFunctions::luaItemGetTier);
-			registerMethod(L, "Item", "addTier", ItemFunctions::luaItemAddTier);
+			registerMethod(L, "Item", "setTier", ItemFunctions::luaItemSetTier);
 
 			ContainerFunctions::init(L);
 			ImbuementFunctions::init(L);
@@ -149,7 +149,7 @@ class ItemFunctions final : LuaScriptInterface {
 		static int luaItemGetImbuement(lua_State* L);
 		
 		static int luaItemGetTier(lua_State* L);
-		static int luaItemAddTier(lua_State* L);
+		static int luaItemSetTier(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

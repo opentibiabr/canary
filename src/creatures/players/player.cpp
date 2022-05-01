@@ -1985,30 +1985,27 @@ void Player::onThink(uint32_t interval)
 	}
 
 	// momentum(cooldown resets), checks and eligibility (chance to trigger every 2 seconds)
-	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && getMomentumChance() > 0 && uniform_random(1, 100) <= getMomentumChance()) {
-		bool triggered = false;
-		auto it = conditions.begin(), end = conditions.end();
-		while (it != end) {
-			if ((*it)->getEndTime() >= OTSYS_TIME()) {
+	if (getInventoryItem(CONST_SLOT_HEAD) != nullptr) {
+		double_t chance = getInventoryItem(CONST_SLOT_HEAD)->getMomentumChance();
+		if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
+			bool triggered = false;
+			auto it = conditions.begin(), end = conditions.end();
+			while (it != end) {
 				ConditionType_t type = (*it)->getType();
 				uint32_t spellId = (*it)->getSubId();
 				int32_t ticks = (*it)->getTicks();
-				int32_t newTicks = (ticks <= 2000) ? 0 : 2000;
+				int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
+				triggered = true;
 				if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 					(*it)->setTicks(newTicks);
-					if (type == CONDITION_SPELLGROUPCOOLDOWN) {
-						sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks);
-					} else {
-						sendSpellCooldown(spellId, newTicks);
-					}
-					triggered = true;
+					type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
 				}
+				++it;
 			}
-			++it;
-		}
-		if (triggered) {
-			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
-			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
+			if (triggered) {
+				g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
+				sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
+			}
 		}
 	}
 

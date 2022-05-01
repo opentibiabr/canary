@@ -5540,7 +5540,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			addMagicEffect(targetPos, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
 			addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
-		} else if (blockType == BLOCK_ARMOR) {
+		} else if (blockType == BLOCK_DODGE) {
 			addMagicEffect(targetPos, CONST_ME_DODGE);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
@@ -5575,11 +5575,13 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 
 	// dodge (ruse)
 	if (Player* targetPlayer = target->getPlayer()) {
-		double_t chance = targetPlayer->getDodgeChance();
-		if (chance > 0 && uniform_random(1, 100) <= chance) {
-			sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
-			targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
-			return true;
+		if (targetPlayer->getInventoryItem(CONST_SLOT_ARMOR) != nullptr) {
+			double_t chance = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR)->getDodgeChance();
+			if (chance > 0 && uniform_random(1, 100) <= chance) {
+				sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
+				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
+				return true;
+			}
 		}
 	}
 
@@ -5943,7 +5945,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, true, true);
 
-		if (damage.critical) {
+		if (damage.fatal) {
+			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);
+		} else if (damage.critical) {
 			addMagicEffect(spectators, targetPos, CONST_ME_CRITICAL_DAMAGE);
 		}
 
@@ -6247,6 +6251,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your attack.";
 					if (damage.extension) {
 						ss << " " << damage.exString;
+					}
+					if (damage.fatal) {
+						ss << " (Onslaught)";
 					}
 					message.type = MESSAGE_DAMAGE_DEALT;
 					message.text = ss.str();

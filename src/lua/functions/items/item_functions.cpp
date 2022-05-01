@@ -814,8 +814,8 @@ int ItemFunctions::luaItemGetTier(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemAddTier(lua_State* L) {
-	// item:addTier(tier)
+int ItemFunctions::luaItemSetTier(lua_State* L) {
+	// item:setTier(tier)
 	Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
@@ -823,7 +823,7 @@ int ItemFunctions::luaItemAddTier(lua_State* L) {
 		return 1;
 	}
 
-	item->addTier(getNumber<uint8_t>(L, 2));
+	item->setTier(getNumber<uint8_t>(L, 2));
 	pushBoolean(L, true);
 	return 1;
 }

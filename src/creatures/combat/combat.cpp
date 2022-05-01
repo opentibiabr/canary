@@ -923,11 +923,13 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		}
 
 		// fatal hit (onslaught)
-		double_t fatalChance = caster->getPlayer()->getFatalChance();
-		if (fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
-			damage.fatal = true;
-			damage.primary.value += (damage.primary.value * 0.6);
-			damage.secondary.value += (damage.secondary.value * 0.6);
+		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+				damage.fatal = true;
+				damage.primary.value += (damage.primary.value * 0.6);
+				damage.secondary.value += (damage.secondary.value * 0.6);
+			}
 		}
 	}
 	if (canCombat) {
@@ -954,11 +956,13 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 			}
 
 			// fatal hit (onslaught)
-			double_t fatalChance = caster->getPlayer()->getFatalChance();
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
-				damage.fatal = true;
-				damage.primary.value += (damage.primary.value * 0.6);
-				damage.secondary.value += (damage.secondary.value * 0.6);
+			if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+				double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+				if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+					damage.fatal = true;
+					damage.primary.value += (damage.primary.value * 0.6);
+					damage.secondary.value += (damage.secondary.value * 0.6);
+				}
 			}
 		}
 	CombatFunc(caster, position, area, params, CombatHealthFunc, &damage);

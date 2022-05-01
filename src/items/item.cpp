@@ -2302,7 +2302,16 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	s << parseImbuementDescription(item);
 
 	if (uint16_t classification = item->getClassification(); classification > 1) {
-		s << std::endl << "Classification: " << classification << " Tier: " << item->getTier() << ".";
+		s << std::endl << "Classification: " << classification << " Tier: " << item->getTier() << " (";
+		if (item->getTier() != 0) {
+			if (it.weaponType != WEAPON_NONE) {
+				s << item->getFatalChance() << "% Fatal).";
+			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
+				s << item->getMomentumChance() << "% Momentum).";
+			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
+				s << item->getDodgeChance() << "% Ruse).";
+			}
+		}
 	}
 
 	if (lookDistance <= 1) {

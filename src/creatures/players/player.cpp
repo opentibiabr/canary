@@ -1989,10 +1989,10 @@ void Player::onThink(uint32_t interval)
 		double_t chance = getInventoryItem(CONST_SLOT_HEAD)->getMomentumChance();
 		if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
 			bool triggered = false;
-			auto it = conditions.begin(), end = conditions.end();
+			auto it = conditions.begin(); auto end = conditions.end();
 			while (it != end) {
 				ConditionType_t type = (*it)->getType();
-				uint32_t spellId = (*it)->getSubId();
+				uint8_t spellId = (*it)->getSubId();
 				int32_t ticks = (*it)->getTicks();
 				int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 				triggered = true;

@@ -802,7 +802,7 @@ int ItemFunctions::luaItemGetImbuementSlot(lua_State* L) {
 
 int ItemFunctions::luaItemGetTier(lua_State* L) {
 	// item:getTier()
-	Item* item = getUserdata<Item>(L, 1);
+	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		pushBoolean(L, false);

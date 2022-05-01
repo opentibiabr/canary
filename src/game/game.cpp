@@ -5574,7 +5574,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 	};
 
 	// dodge (ruse)
-	if (Player* targetPlayer = target->getPlayer()) {
+	if (const Player* targetPlayer = target->getPlayer()) {
 		if (targetPlayer->getInventoryItem(CONST_SLOT_ARMOR) != nullptr) {
 			double_t chance = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR)->getDodgeChance();
 			if (chance > 0 && uniform_random(1, 100) <= chance) {

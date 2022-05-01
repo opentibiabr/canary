@@ -2305,7 +2305,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		s << std::endl << "Classification: " << classification << " Tier: " << item->getTier() << " (";
 		if (item->getTier() != 0) {
 			if (it.weaponType != WEAPON_NONE) {
-				s << item->getFatalChance() << "% Fatal).";
+				s << item->getFatalChance() << "% Onslaught).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
 				s << item->getMomentumChance() << "% Momentum).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {

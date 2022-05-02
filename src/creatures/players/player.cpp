@@ -1992,13 +1992,13 @@ void Player::onThink(uint32_t interval)
 			auto it = conditions.begin(); auto end = conditions.end();
 			while (it != end) {
 				ConditionType_t type = (*it)->getType();
-				uint8_t spellId = (*it)->getSubId();
+				uint32_t spellId = (*it)->getSubId();
 				int32_t ticks = (*it)->getTicks();
 				int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 				triggered = true;
 				if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 					(*it)->setTicks(newTicks);
-					type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(spellId, newTicks);
+					type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
 				}
 				++it;
 			}

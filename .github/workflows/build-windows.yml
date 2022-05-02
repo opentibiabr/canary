@@ -41,6 +41,7 @@ jobs:
       - name: CCache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
+          max-size: "1G"
           variant: "sccache"
           key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
           restore-keys: |

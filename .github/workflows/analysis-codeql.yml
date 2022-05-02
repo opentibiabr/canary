@@ -51,6 +51,7 @@ jobs:
       - name: CCache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
+          max-size: "1G"
           key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
           restore-keys: |
             ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
@@ -72,10 +73,6 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
-
-      - name: Print ccache hit
-        if: ${{ matrix.language == 'cpp' }}
-        run: ccache -s
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

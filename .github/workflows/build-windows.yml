@@ -26,17 +26,26 @@ jobs:
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
               boost-variant boost-lockfree cryptopp curl jsoncpp
-              luajit libmariadb pugixml spdlog libzippp
+              luajit libmariadb pugixml spdlog libzippp sccache
           - os: windows-2022
             triplet: x64-windows
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
               boost-variant boost-lockfree cryptopp curl jsoncpp
-              luajit libmariadb pugixml spdlog libzippp
+              luajit libmariadb pugixml spdlog libzippp sccache
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: CCache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          variant: "sccache"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          restore-keys: |
+            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
+            ccache-${{ matrix.os }}-
 
       - name: Remove Windows pre-installed MySQL
         if: contains( matrix.os, 'windows')

@@ -44,10 +44,8 @@ jobs:
           sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        id: ccache
-        uses: actions/cache@v3
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: $HOME/.ccache
           key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
           restore-keys: |
             ccache-${{ matrix.os }}-${{ matrix.buildtype }}-

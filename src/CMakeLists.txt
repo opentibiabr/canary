@@ -81,13 +81,21 @@ if(ASAN_ENABLED)
   log_option_enabled("asan")
 
   if(MSVC)
-    target_compile_options(${PROJECT_NAME}  PUBLIC /fsanitize=address)
+    target_compile_options(${PROJECT_NAME} PUBLIC /fsanitize=address)
   else()
-    target_compile_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
-    target_link_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
+    target_compile_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
+    target_link_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
   endif()
 else()
   log_option_disabled("asan")
+endif()
+
+
+# === SCCACHE ===
+if(OPTIONS_ENABLE_SCCACHE)
+  if(MSVC)
+    target_compile_options(${PROJECT_NAME} PUBLIC /FS)
+  endif()
 endif()
 
 
@@ -100,7 +108,7 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
-# Set for supress deprecated declarations (for GCC/GNU)
+# Set for suppress deprecated declarations (for GCC/GNU)
 # If not is GNUCXX_MINIMUM_VERSION, return message of error
 if (CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
@@ -118,8 +126,9 @@ find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
+
 if (MSVC)
-find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
+  find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
@@ -127,7 +136,7 @@ find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUI
   find_package(PugiXML REQUIRED)
   find_package(Threads REQUIRED)
 else()
-find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
+  find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
   find_package(pugixml CONFIG REQUIRED)

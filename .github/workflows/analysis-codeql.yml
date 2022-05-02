@@ -8,7 +8,6 @@ on:
       - '**.py'
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
   NODE_OPTIONS: ' --max-old-space-size=8192 '
@@ -16,11 +15,12 @@ env:
 jobs:
   codeql:
     name: CodeQL
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-20.04]
         language: ['cpp', 'python']
         include:
           - language: cpp
@@ -75,6 +75,10 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
+
+      - name: Print ccache hit
+        if: ${{ matrix.language == 'cpp' }}
+        run: ccache -s
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

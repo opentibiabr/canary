@@ -9,7 +9,6 @@ on:
       - main
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
 
@@ -67,6 +66,9 @@ jobs:
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
+
+      - name: Print ccache hit
+        run: ccache -s
 
       - name: Create and Upload Artifact
         uses: actions/upload-artifact@v3

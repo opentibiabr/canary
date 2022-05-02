@@ -286,7 +286,7 @@ target_sources(${PROJECT_NAME}
 
 if (MSVC)
 
-  target_compile_features(${PROJECT_NAME} PUBLIC /MP )
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP )
 
   target_include_directories(${PROJECT_NAME}
     PRIVATE

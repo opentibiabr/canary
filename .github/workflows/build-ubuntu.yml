@@ -49,7 +49,7 @@ jobs:
           max-size: "1G"
           key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ matrix.os }}-
+            ccache-${{ matrix.os }}
 
       - name: Restore artifacts and install vcpkg
         uses: lukka/run-vcpkg@v10

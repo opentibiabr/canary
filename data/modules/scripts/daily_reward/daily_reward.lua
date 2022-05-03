@@ -600,7 +600,7 @@ function Player.readDailyReward(self, msg, currentDay, state)
 				local itemType = ItemType(itemId)
 				local itemName = itemType:getArticle() .. " " .. itemType:getName()
 				local itemWeight = itemType:getWeight()
-				msg:addItemId(itemId)
+				msg:addU16(itemId)
 				msg:addString(itemName)
 				msg:addU32(itemWeight)
 			end

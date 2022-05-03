@@ -64,12 +64,12 @@ constexpr auto g_scripts = &Scripts::getInstance;
 class Script {
 	public:
 		/**
-        * @brief Explicit construtor
-        * explicit, that is, it cannot be used for implicit conversions and
-        * copy-initialization.
-        *
-        * @param interface Lua Script Interface
-        */
+		 * @brief Explicit construtor
+		 * explicit, that is, it cannot be used for implicit conversions and
+		 * copy-initialization.
+		 *
+		 * @param interface Lua Script Interface
+		*/
 		explicit Script(LuaScriptInterface* interface) : scriptInterface(interface) {}
 		virtual ~Script() = default;
 
@@ -87,17 +87,17 @@ class Script {
 		}
 
 		/**
-        * @brief Get the Script Id object
-        *
-        * @return int32_t
-        */
+		 * @brief Get the Script Id object
+		 *
+		 * @return int32_t
+		*/
 		int32_t getScriptId() {
 			return scriptId;
 		}
 
 		// Load revscriptsys callback
 		bool loadCallback() {
-			if (!scriptInterface || scriptId != 0) {
+			if (!scriptInterface || scriptId == 0) {
 				SPDLOG_ERROR("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
 				return false;
 			}

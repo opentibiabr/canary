@@ -81,10 +81,6 @@ class FileLoader
 		FileLoader() = default;
 		~FileLoader();
 
-		// non-copyable
-		FileLoader(const FileLoader&) = delete;
-		FileLoader& operator=(const FileLoader&) = delete;
-
 		bool openFile(const char* filename, const char* identifier);
 		const uint8_t* getProps(const NODE, size_t& size);
 		bool getProps(const NODE, PropStream& props);

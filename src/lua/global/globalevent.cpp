@@ -23,64 +23,17 @@
 #include "utils/tools.h"
 #include "game/scheduling/scheduler.h"
 
-void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
-	for (auto it = map.begin(); it != map.end(); ) {
-		if (fromLua == it->second.fromLua) {
-			it = map.erase(it);
-		} else {
-			++it;
-		}
-	}
-}
-
-void GlobalEvents::clear(bool fromLua) {
+void GlobalEvents::clear() {
+	// Stop events
 	g_scheduler().stopEvent(thinkEventId);
 	thinkEventId = 0;
 	g_scheduler().stopEvent(timerEventId);
 	timerEventId = 0;
 
-	clearMap(thinkMap, fromLua);
-	clearMap(serverMap, fromLua);
-	clearMap(timerMap, fromLua);
-
-	reInitState(fromLua);
-}
-
-Event_ptr GlobalEvents::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "globalevent") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new GlobalEvent(&scriptInterface));
-}
-
-bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&) {
-	GlobalEvent_ptr globalEvent{static_cast<GlobalEvent*>(event.release())}; //event is guaranteed to be a GlobalEvent
-	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
-		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
-		if (result.second) {
-			if (timerEventId == 0) {
-				timerEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this)));
-			}
-			return true;
-		}
-	} else if (globalEvent->getEventType() != GLOBALEVENT_NONE) {
-		auto result = serverMap.emplace(globalEvent->getName(), std::move(*globalEvent));
-		if (result.second) {
-			return true;
-		}
-	} else { // think event
-		auto result = thinkMap.emplace(globalEvent->getName(), std::move(*globalEvent));
-		if (result.second) {
-			if (thinkEventId == 0) {
-				thinkEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::think, this)));
-			}
-			return true;
-		}
-	}
-
-	SPDLOG_WARN("[GlobalEvents::configureEvent] - "
-				"Duplicate registered globalevent with name: {}", globalEvent->getName());
-	return false;
+	// Clear maps
+	thinkMap.clear();
+	serverMap.clear();
+	timerMap.clear();
 }
 
 bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
@@ -219,22 +172,19 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	}
 }
 
-GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Event(interface) {}
+GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Script(interface) {}
 
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool GlobalEvent::configureEvent(const pugi::xml_node& node) {
-	return true;
-}
-
-std::string GlobalEvent::getScriptEventName() const {
+std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {
 		case GLOBALEVENT_STARTUP: return "onStartup";
 		case GLOBALEVENT_SHUTDOWN: return "onShutdown";
 		case GLOBALEVENT_RECORD: return "onRecord";
 		case GLOBALEVENT_TIMER: return "onTime";
 		case GLOBALEVENT_PERIODCHANGE: return "onPeriodChange";
-		default: return "onThink";
+		case GLOBALEVENT_ON_THINK: return "onThink";
+		default:
+			SPDLOG_ERROR("[GlobalEvent::getScriptTypeName] - Invalid event type for script with name {}", getFileName());
+			return std::string();
 	}
 }
 

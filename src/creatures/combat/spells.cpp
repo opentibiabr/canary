@@ -79,19 +79,10 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 	return TALKACTION_FAILED;
 }
 
-void Spells::clearMaps()
-{
-	std::erase_if(instants, [](auto instant) {
-		return true;
-	});
-	std::erase_if(runes, [](auto rune) {
-		return true;
-	});
-}
-
 void Spells::clear()
 {
-	clearMaps();
+	instants.clear();
+	runes.clear();
 }
 
 bool Spells::hasInstantSpell(const std::string& word) const
@@ -258,20 +249,6 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 	return getNextPosition(dir, creature->getPosition());
 }
 
-CombatSpell::CombatSpell(Combat* initCombat, bool initNeedTarget, bool initNeedDirection) :
-	Event(&g_spells().getScriptInterface()),
-	combat(initCombat),
-	needDirection(initNeedDirection),
-	needTarget(initNeedTarget)
-{}
-
-CombatSpell::~CombatSpell()
-{
-	if (!scripted) {
-		delete combat;
-	}
-}
-
 bool CombatSpell::loadScriptCombat()
 {
 	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId);
@@ -280,7 +257,7 @@ bool CombatSpell::loadScriptCombat()
 
 bool CombatSpell::castSpell(Creature* creature)
 {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		LuaVariant var;
 		var.type = VARIANT_POSITION;
 
@@ -306,7 +283,7 @@ bool CombatSpell::castSpell(Creature* creature)
 
 bool CombatSpell::castSpell(Creature* creature, Creature* target)
 {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		LuaVariant var;
 
 		if (combat->hasArea()) {
@@ -323,6 +300,7 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
 		}
+
 		return executeCastSpell(creature, var);
 	}
 
@@ -641,11 +619,6 @@ uint32_t Spell::getManaCost(const Player* player) const
 	return 0;
 }
 
-std::string InstantSpell::getScriptEventName() const
-{
-	return "onCastSpell";
-}
-
 bool InstantSpell::playerCastInstant(Player* player, std::string& param)
 {
 	if (!playerSpellCheck(player)) {
@@ -867,11 +840,6 @@ bool InstantSpell::canCast(const Player* player) const
 	return false;
 }
 
-std::string RuneSpell::getScriptEventName() const
-{
-	return "onCastSpell";
-}
-
 ReturnValue RuneSpell::canExecuteAction(const Player* player, const Position& toPos)
 {
 	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
@@ -900,7 +868,8 @@ bool RuneSpell::executeUse(Player* player, Item* item, const Position&, Thing* t
 		return false;
 	}
 
-	if (!scripted) {
+	// If script not loaded correctly, return
+	if (!isLoadedCallback()) {
 		return false;
 	}
 
@@ -963,7 +932,7 @@ bool RuneSpell::castSpell(Creature* creature, Creature* target)
 bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
 {
 	bool result;
-	if (scripted) {
+	if (isLoadedCallback()) {
 		result = executeCastSpell(creature, var, isHotkey);
 	} else {
 		result = false;

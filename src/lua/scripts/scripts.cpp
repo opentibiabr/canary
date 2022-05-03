@@ -106,7 +106,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 			}
 		}
 
-		if(scriptInterface.loadFile(scriptFile) == -1) {
+		if(scriptInterface.loadFile(scriptFile, it->filename().string()) == -1) {
 			SPDLOG_ERROR(it->filename().string());
 			SPDLOG_ERROR(scriptInterface.getLastLuaError());
 			continue;

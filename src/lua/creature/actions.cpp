@@ -26,44 +26,11 @@
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
 
-
-void Actions::clearMap(ActionUseMap& map, bool fromLua) {
-	std::erase_if(map, [fromLua](auto action) {
-		return action.second.fromLua == fromLua;
-	});
-}
-
-void Actions::clear(bool fromLua) {
-	clearMap(useItemMap, fromLua);
-	clearMap(uniqueItemMap, fromLua);
-	clearMap(actionItemMap, fromLua);
-
-	std::erase_if(actionPositionMap, [fromLua](auto position) {
-		return position.second.fromLua == fromLua;
-	});
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& Actions::getScriptInterface() {
-	return scriptInterface;
-}
-
-std::string Actions::getScriptBaseName() const {
-	return "actions";
-}
-
-Event_ptr Actions::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "action") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new Action(&scriptInterface));
-}
-
-// TODO: Eduardo
-// Remove this function (and all registerEvent of others classes), is no longer used
-bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
-	return true;
+void Actions::clear() {
+	useItemMap.clear();
+	uniqueItemMap.clear();
+	actionItemMap.clear();
+	actionPositionMap.clear();
 }
 
 bool Actions::registerLuaItemEvent(Action* action) {
@@ -76,8 +43,8 @@ bool Actions::registerLuaItemEvent(Action* action) {
 		// Check if the item is already registered and prevent it from being registered again
 		if (hasItemId(itemId)) {
 			SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
-						"registered item with id: {} in range from id: {}, to id: {}",
-						itemId, itemIdVector.at(0), itemIdVector.at(itemIdVector.size() - 1));
+						"registered item with id: {} in range from id: {}, to id: {}, in the file with name {}",
+						itemId, itemIdVector.at(0), itemIdVector.at(itemIdVector.size() - 1), action->getFileName());
 			return false;
 		}
 
@@ -100,8 +67,8 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 		// Check if the unique is already registered and prevent it from being registered again
 		if (hasUniqueId(uniqueId)) {
 			SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
-						"registered item with uid: {} in range from uid: {}, to uid: {}",
-						uniqueId, uniqueIdVector.at(0), uniqueIdVector.at(uniqueIdVector.size() - 1));
+						"registered item with uid: {} in range from uid: {}, to uid: {}, in the file with name {}",
+						uniqueId, uniqueIdVector.at(0), uniqueIdVector.at(uniqueIdVector.size() - 1), action->getFileName());
 			return false;
 		}
 
@@ -125,8 +92,8 @@ bool Actions::registerLuaActionEvent(Action* action) {
 		// Check if the unique is already registered and prevent it from being registered again
 		if (hasActionId(actionId)) {
 			SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "
-						"registered item with aid: {} in range from aid: {}, to aid: {}",
-						actionId, actionIdVector.at(0), actionIdVector.at(actionIdVector.size() - 1));
+						"registered item with aid: {} in range from aid: {}, to aid: {}, in the file with name {}",
+						actionId, actionIdVector.at(0), actionIdVector.at(actionIdVector.size() - 1), action->getFileName());
 			return false;
 		}
 
@@ -150,7 +117,7 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 		// Check if the position is already registered and prevent it from being registered again
 		if (hasPosition(position)) {
 			SPDLOG_WARN("[Actions::registerLuaPositionEvent] - Duplicate "
-						"registered script with range position: {}", position.toString());
+						"registered script with range position: {}, in the file with name {}", position.toString(), action->getFileName());
 			continue;
 		}
 
@@ -163,18 +130,18 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 	return true;
 }
 
-bool Actions::registerLuaEvent(Action* event) {
-	Action_ptr action{ event };
+bool Actions::registerLuaEvent(Action* action) {
+	Action_ptr actionPtr{ action };
 
 	// Call all register lua events
-	if (registerLuaItemEvent(event) || registerLuaUniqueEvent(event) || registerLuaActionEvent(event) || registerLuaPositionEvent(event)) {
+	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
 		return true;
 	} else {
 		SPDLOG_WARN("[Actions::registerLuaEvent] - "
-				"Missing id/aid/uid/position for one script event");
+				"Missing id/aid/uid/position for script with name {}", action->getFileName());
 		return false;
 	}
-	SPDLOG_DEBUG("[Actions::registerLuaEvent] - Missing or incorrect script event");
+	SPDLOG_DEBUG("[Actions::registerLuaEvent] - Missing or incorrect script event with name {}", action->getFileName());
 	return false;
 }
 
@@ -274,11 +241,10 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 
 	Action* action = getAction(item);
 	if (action != nullptr) {
-		if (action->isScripted()) {
+		if (action->isLoadedCallback()) {
 			if (action->executeUse(player, item, pos, nullptr, pos, isHotkey)) {
 				return RETURNVALUE_NOERROR;
 			}
-
 			if (item->isRemoved()) {
 				return RETURNVALUE_CANNOTUSETHISOBJECT;
 			}
@@ -477,18 +443,7 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
 }
 
-Action::Action(LuaScriptInterface* interface) :
-	Event(interface), function(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
-
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool Action::configureEvent(const pugi::xml_node& node) {
-	return true;
-}
-
-std::string Action::getScriptEventName() const {
-	return "onUse";
-}
+Action::Action(LuaScriptInterface* interface) : Script(interface), function(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {
@@ -515,8 +470,8 @@ bool Action::executeUse(Player* player, Item* item, const Position& fromPosition
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* scriptEnvironment = scriptInterface->getScriptEnv();
+	scriptEnvironment->setScriptId(scriptId, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();
 

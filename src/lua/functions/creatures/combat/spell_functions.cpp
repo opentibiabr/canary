@@ -116,7 +116,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			instant->scripted = true;
+			instant->setLoadedCallback(true);
 			pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
 			RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
@@ -124,7 +124,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			rune->scripted = true;
+			rune->setLoadedCallback(true);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -145,7 +145,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 
 	if (spell->spellType == SPELL_INSTANT) {
 		InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
-		if (!instant->isScripted()) {
+		if (!instant->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -163,7 +163,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			iType.runeLevel = rune->getLevel();
 			iType.charges = rune->getCharges();
 		}
-		if (!rune->isScripted()) {
+		if (!rune->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}

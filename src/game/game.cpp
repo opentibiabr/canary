@@ -8687,11 +8687,11 @@ bool Game::reload(ReloadTypes_t reloadType)
 
 		case RELOAD_TYPE_SCRIPTS: {
 			// commented out stuff is TODO, once we approach further in revscriptsys
-			g_actions().clear(true);
-			g_creatureEvents().clear(true);
-			g_moveEvents().clear(true);
-			g_talkActions().clear(true);
-			g_globalEvents().clear(true);
+			g_actions().clear();
+			g_creatureEvents().clear();
+			g_moveEvents().clear();
+			g_talkActions().clear();
+			g_globalEvents().clear();
 			g_weapons().clear();
 			g_spells().clear();
 			// Reset informations from npc interface
@@ -8715,11 +8715,11 @@ bool Game::reload(ReloadTypes_t reloadType)
 			mounts.reload();
 			g_events().loadFromXml();
 			g_chat().load();
-			g_actions().clear(true);
-			g_creatureEvents().clear(true);
-			g_moveEvents().clear(true);
-			g_talkActions().clear(true);
-			g_globalEvents().clear(true);
+			g_actions().clear();
+			g_creatureEvents().clear();
+			g_moveEvents().clear();
+			g_talkActions().clear();
+			g_globalEvents().clear();
 			g_spells().clear();
 			g_scripts().loadScripts("scripts", false, true);
 		}

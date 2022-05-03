@@ -98,44 +98,26 @@ class DBResult
 		DBResult& operator=(const DBResult&) = delete;
 
 		template<typename T>
-		T getNumber(const std::string& s) const {
+		T getNumber(const std::string& s) const
+		{
 			auto it = listNames.find(s);
 			if (it == listNames.end()) {
 				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-				return static_cast<T>(0);
+				return {};
 			}
 
-			if (row[it->second] == nullptr) {
-				return static_cast<T>(0);
+			if (!row[it->second]) {
+				return {};
 			}
 
-			T data = { 0 };
-			try {
-				data = static_cast<T>(std::stoll(row[it->second]));
-			}
-			catch (const std::system_error&) {
-				// overflow; tries to get it as uint64 (as big as possible);
-				uint64_t u64data;
-				try {
-					u64data = static_cast<uint64_t>(std::stoll((row[it->second])));
-					if (u64data > 0) {
-						// is a valid! thus truncate into int max for data type;
-						data = std::numeric_limits<T>::max();
-					}
-				}
-				catch (const std::system_error &exception) {
-					// invalid! discard value.
-					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, exception.what());
-					data = 0;
-				}
-			}
-			return data;
+			return std::stoll(row[it->second]);
 		}
+
 
 		std::string getString(const std::string& s) const;
 		const char* getStream(const std::string& s, unsigned long& size) const;
 
-    size_t countResults() const;
+		size_t countResults() const;
 		bool hasNext() const;
 		bool next();
 

@@ -40,9 +40,7 @@ const Weapon* Weapons::getWeapon(const Item* item) const
 
 void Weapons::clear()
 {
-	std::erase_if(weapons, [](auto weapon) {
-		return true;
-	});
+	weapons.clear();
 }
 
 bool Weapons::registerLuaEvent(Weapon* event)
@@ -318,6 +316,7 @@ void Weapon::decrementItemCount(Item* item)
 
 void WeaponMelee::configureWeapon(const ItemType& it)
 {
+	// Add combat type and blocked attributes to the weapon
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
@@ -419,6 +418,7 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 
 void WeaponDistance::configureWeapon(const ItemType& it)
 {
+	// Add combat type and distance effect to the weapon
 	params.blockedByArmor = true;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
 	params.distanceEffect = it.shootType;

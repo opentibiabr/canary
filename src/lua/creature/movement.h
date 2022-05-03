@@ -20,10 +20,10 @@
 #ifndef SRC_LUA_CREATURE_MOVEMENT_H_
 #define SRC_LUA_CREATURE_MOVEMENT_H_
 
-#include "lua/global/baseevents.h"
 #include "declarations.hpp"
 #include "items/item.h"
 #include "lua/functions/events/move_event_functions.hpp"
+#include "lua/scripts/scripts.h"
 #include "creatures/players/vocations/vocation.h"
 
 
@@ -36,7 +36,7 @@ struct MoveEventList {
 
 using VocEquipMap = std::map<uint16_t, bool>;
 
-class MoveEvents final : public BaseEvents {
+class MoveEvents final : public Scripts {
 	public:
 		MoveEvents() = default;
 
@@ -62,18 +62,12 @@ class MoveEvents final : public BaseEvents {
 
 		bool registerLuaEvent(MoveEvent* event);
 		bool registerLuaFunction(MoveEvent* event);
-		void clear(bool fromLua) override final;
+		void clear();
 
 	private:
 		using MoveListMap = std::map<int32_t, MoveEventList>;
 		using MovePosListMap = std::map<Position, MoveEventList>;
-		void clearMap(MoveListMap& map, bool fromLua);
-		void clearPosMap(MovePosListMap& map, bool fromLua);
-
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
+		void clearMap(MoveListMap& map);
 
 		void addEvent(MoveEvent moveEvent, int32_t id, MoveListMap& map);
 
@@ -86,8 +80,6 @@ class MoveEvents final : public BaseEvents {
 		MoveListMap actionIdMap;
 		MoveListMap itemIdMap;
 		MovePosListMap positionMap;
-
-		LuaScriptInterface scriptInterface { "Movement Interface" };
 };
 
 constexpr auto g_moveEvents = &MoveEvents::getInstance;
@@ -96,15 +88,12 @@ using StepFunction = std::function<uint32_t(Creature* creature, Item* item, cons
 using MoveFunction = std::function<uint32_t(Item* item, Item* tileItem, const Position& pos)>;
 using EquipFunction = std::function<uint32_t(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean)>;
 
-class MoveEvent final : public Event {
+class MoveEvent final : public Script {
 	public:
 		explicit MoveEvent(LuaScriptInterface* interface);
 
 		MoveEvent_t getEventType() const;
 		void setEventType(MoveEvent_t type);
-
-		bool configureEvent(const pugi::xml_node& node) override;
-		bool loadFunction(const pugi::xml_attribute& attr, bool isScripted) override;
 
 		uint32_t fireStepEvent(Creature* creature, Item* item, const Position& pos);
 		uint32_t fireAddRemItem(Item* item, Item* tileItem, const Position& pos);
@@ -178,6 +167,12 @@ class MoveEvent final : public Event {
 		void addPosList(Position pos) {
 			posList.emplace_back(pos);
 		}
+		const std::string& getFileName() const {
+			return fileName;
+		}
+		void setFileName(const std::string& scriptName) {
+			fileName = scriptName;
+		}
 		void setSlot(uint32_t s) {
 			slot = s;
 		}
@@ -221,7 +216,7 @@ class MoveEvent final : public Event {
 		EquipFunction equipFunction;
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override;
 
 		uint32_t slot = SLOTP_WHEREEVER;
 
@@ -238,6 +233,8 @@ class MoveEvent final : public Event {
 		std::vector<uint32_t> actionIdRange;
 		std::vector<uint32_t> uniqueIdRange;
 		std::vector<Position> posList;
+
+		std::string fileName;
 };
 
 #endif  // SRC_LUA_CREATURE_MOVEMENT_H_

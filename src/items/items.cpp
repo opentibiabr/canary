@@ -212,7 +212,8 @@ bool Items::loadFromXml()
 		auto fromId = static_cast<uint16_t>(fromIdAttribute.as_uint());
 		auto toId = static_cast<uint16_t>(toIdAttribute.as_uint());
 		while (fromId <= toId) {
-			parseItemNode(itemNode, fromId++, itemName);
+			uint16_t itemId = fromId++;
+			parseItemNode(itemNode, itemId, itemName);
 		}
 	}
 	return true;

@@ -25,62 +25,29 @@
 #include "creatures/players/imbuements/imbuements.h"
 
 
-void MoveEvents::clearMap(MoveListMap& map, bool fromLua) {
+void MoveEvents::clearMap(MoveListMap& map) {
 	for (auto it = map.begin(); it != map.end(); ++it) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
-			auto& moveEvents = it->second.moveEvent[eventType];
-			std::erase_if(moveEvents, [fromLua](auto moveEvent) {
-				return moveEvent.fromLua == fromLua;
-			});
+			it->second.moveEvent[eventType].clear();
 		}
 	}
 }
 
-void MoveEvents::clearPosMap(MovePosListMap& map, bool fromLua) {
-	for (auto it = map.begin(); it != map.end(); ++it) {
+void MoveEvents::clear() {
+	clearMap(itemIdMap);
+	clearMap(actionIdMap);
+	clearMap(uniqueIdMap);
+	// Clear position map
+	for (auto it = positionMap.begin(); it != positionMap.end(); ++it) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
-			auto& moveEvents = it->second.moveEvent[eventType];
-			std::erase_if(moveEvents, [fromLua](auto moveEvent) {
-				return moveEvent.fromLua == fromLua;
-			});
+			it->second.moveEvent[eventType].clear();
 		}
 	}
-}
-
-void MoveEvents::clear(bool fromLua) {
-	clearMap(itemIdMap, fromLua);
-	clearMap(actionIdMap, fromLua);
-	clearMap(uniqueIdMap, fromLua);
-	clearPosMap(positionMap, fromLua);
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& MoveEvents::getScriptInterface() {
-	return scriptInterface;
-}
-
-std::string MoveEvents::getScriptBaseName() const {
-	return "movements";
-}
-
-Event_ptr MoveEvents::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "movevent") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new MoveEvent(&scriptInterface));
 }
 
 bool MoveEvents::isRegistered(uint32_t itemid) {
 	auto it = itemIdMap.find(itemid);
 	return it != itemIdMap.end();
-}
-
-
-// TODO: Eduardo
-// Remove this function (and all registerEvent of others classes), is no longer used
-bool MoveEvents::registerEvent(Event_ptr event, const pugi::xml_node& node) {
-	return true;
 }
 
 bool MoveEvents::registerLuaFunction(MoveEvent* event) {
@@ -189,7 +156,7 @@ void MoveEvents::addEvent(MoveEvent moveEvent, int32_t id, MoveListMap& map) {
 		for (MoveEvent& existingMoveEvent : moveEventList) {
 			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
 				SPDLOG_WARN("[MoveEvents::addEvent] - "
-							"Duplicate move event found: {}", id);
+							"Duplicate move event found: {}, for script with name {}", id, moveEvent.getFileName());
 			}
 		}
 		moveEventList.push_back(std::move(moveEvent));
@@ -279,7 +246,7 @@ void MoveEvents::addEvent(MoveEvent moveEvent, const Position& pos, MovePosListM
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		if (!moveEventList.empty()) {
 			SPDLOG_WARN("[MoveEvents::addEvent] - "
-						"Duplicate move event found: {}", pos.toString());
+						"Duplicate move event found: {}, for script with name {}", pos.toString(), moveEvent.getFileName());
 		}
 
 		moveEventList.push_back(std::move(moveEvent));
@@ -355,12 +322,16 @@ uint32_t MoveEvents::onItemMove(Item* item, Tile* tile, bool isAdd) {
 	uint32_t ret = 1;
 	MoveEvent* moveEvent = getEvent(tile, eventType1);
 	if (moveEvent) {
-		ret &= moveEvent->fireAddRemItem(item, nullptr, tile->getPosition());
+		if (item && tile) {
+			ret &= moveEvent->fireAddRemItem(item, nullptr, tile->getPosition());
+		}
 	}
 
 	moveEvent = getEvent(item, eventType1);
 	if (moveEvent) {
-		ret &= moveEvent->fireAddRemItem(item, nullptr, tile->getPosition());
+		if (item && tile) {
+			ret &= moveEvent->fireAddRemItem(item, nullptr, tile->getPosition());
+		}
 	}
 
 	for (size_t i = tile->getFirstIndex(), j = tile->getLastIndex(); i < j; ++i) {
@@ -376,15 +347,17 @@ uint32_t MoveEvents::onItemMove(Item* item, Tile* tile, bool isAdd) {
 
 		moveEvent = getEvent(tileItem, eventType2);
 		if (moveEvent) {
-			ret &= moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
+			if (item && tileItem && tile) {
+				ret &= moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());
+			}
 		}
 	}
 	return ret;
 }
 
-MoveEvent::MoveEvent(LuaScriptInterface* interface) : Event(interface) {}
+MoveEvent::MoveEvent(LuaScriptInterface* interface) : Script(interface) {}
 
-std::string MoveEvent::getScriptEventName() const {
+std::string MoveEvent::getScriptTypeName() const {
 	switch (eventType) {
 		case MOVE_EVENT_STEP_IN: return "onStepIn";
 		case MOVE_EVENT_STEP_OUT: return "onStepOut";
@@ -393,15 +366,9 @@ std::string MoveEvent::getScriptEventName() const {
 		case MOVE_EVENT_ADD_ITEM: return "onAddItem";
 		case MOVE_EVENT_REMOVE_ITEM: return "onRemoveItem";
 		default:
-			SPDLOG_ERROR("[MoveEvent::getScriptEventName] - Invalid event type");
+			SPDLOG_ERROR("[MoveEvent::getScriptTypeName] - Invalid event type for script with name {}", getFileName());
 			return std::string();
 	}
-}
-
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool MoveEvent::configureEvent(const pugi::xml_node& node) {
-	return true;
 }
 
 uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position&) {
@@ -419,9 +386,16 @@ uint32_t MoveEvent::StepOutField(Creature*, Item*, const Position&) {
 }
 
 uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position&) {
-	if (MagicField* field = item->getMagicField()) {
-		Tile* tile = item->getTile();
-		if (CreatureVector* creatures = tile->getCreatures()) {
+	if (!item) {
+		SPDLOG_ERROR("[MoveEvent::AddItemField] - Wrong or not found item id");
+		return LUA_ERROR_ITEM_NOT_FOUND;
+	}
+
+	if (MagicField* field = item->getMagicField())
+	{
+		if (Tile* tile = item->getTile();
+		CreatureVector* creatures = tile->getCreatures())
+		{
 			for (Creature* creature : *creatures) {
 				field->onStepInField(creature);
 			}
@@ -628,35 +602,6 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	return 1;
 }
 
-// TODO (EDUARDO): Move this functions for revscriptsys interface
-bool MoveEvent::loadFunction(const pugi::xml_attribute& attr, bool isScripted) {
-	const char* functionName = attr.as_string();
-	if (strcasecmp(functionName, "onstepinfield") == 0) {
-		stepFunction = StepInField;
-	} else if (strcasecmp(functionName, "onstepoutfield") == 0) {
-		stepFunction = StepOutField;
-	} else if (strcasecmp(functionName, "onaddfield") == 0) {
-		moveFunction = AddItemField;
-	} else if (strcasecmp(functionName, "onremovefield") == 0) {
-		moveFunction = RemoveItemField;
-	} else if (strcasecmp(functionName, "onequipitem") == 0) {
-		equipFunction = EquipItem;
-	} else if (strcasecmp(functionName, "ondeequipitem") == 0) {
-		equipFunction = DeEquipItem;
-	} else {
-		if (!isScripted) {
-			SPDLOG_WARN("[MoveEvent::loadFunction] - "
-						"Function {} does not exist", functionName);
-			return false;
-		}
-	}
-
-	if (!isScripted) {
-		scripted = false;
-	}
-	return true;
-}
-
 MoveEvent_t MoveEvent::getEventType() const {
 	return eventType;
 }
@@ -666,7 +611,7 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 }
 
 uint32_t MoveEvent::fireStepEvent(Creature* creature, Item* item, const Position& pos) {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		return executeStep(creature, item, pos);
 	} else {
 		return stepFunction(creature, item, pos);
@@ -699,7 +644,7 @@ bool MoveEvent::executeStep(Creature* creature, Item* item, const Position& pos)
 }
 
 uint32_t MoveEvent::fireEquip(Player* player, Item* item, Slots_t toSlot, bool isCheck) {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		if (!equipFunction || equipFunction(this, player, item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {
 				return 1;
@@ -737,10 +682,12 @@ bool MoveEvent::executeEquip(Player* player, Item* item, Slots_t onSlot, bool is
 }
 
 uint32_t MoveEvent::fireAddRemItem(Item* item, Item* fromTile, const Position& pos) {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
-		return moveFunction(item, fromTile, pos);
+		if (item && fromTile) {
+			return moveFunction(item, fromTile, pos);
+		}
 	}
 }
 

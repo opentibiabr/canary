@@ -34,7 +34,7 @@ private:
 		uint16_t index = END;
 		uint16_t nextNode = END;
 		uint16_t unused = 0;
-		operator bool () const noexcept {
+		explicit operator bool () const noexcept {
 			return index != END;
 		}
 	};
@@ -121,7 +121,7 @@ class LockfreePoolingAllocator : public std::allocator<T>
 {
 public:
 	template <typename U>
-	LockfreePoolingAllocator(const U&) {}
+	explicit LockfreePoolingAllocator(const U&) {}
 	typedef T value_type;
 
 	T* allocate(size_t) const {

@@ -23,56 +23,14 @@
 #include "utils/tools.h"
 #include "creatures/players/player.h"
 
-void CreatureEvents::clear(bool fromLua) {
-	std::erase_if(creatureEvents, [fromLua](auto creatureEvent) {
-		return creatureEvent.second.fromLua == fromLua;
-	});
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& CreatureEvents::getScriptInterface() {
-	return scriptInterface;
-}
-
-std::string CreatureEvents::getScriptBaseName() const {
-	return "creaturescripts";
-}
-
-Event_ptr CreatureEvents::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "event") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new CreatureEvent(&scriptInterface));
-}
-
-bool CreatureEvents::registerEvent(Event_ptr event, const pugi::xml_node&) {
-	CreatureEvent_ptr creatureEvent{static_cast<CreatureEvent*>(event.release())}; //event is guaranteed to be a CreatureEvent
-	if (creatureEvent->getEventType() == CREATURE_EVENT_NONE) {
-		SPDLOG_ERROR("[CreatureEvents::registerEvent] - Trying to register event without type");
-		return false;
-	}
-
-	CreatureEvent* oldEvent = getEventByName(creatureEvent->getName(), false);
-	if (oldEvent) {
-		//if there was an event with the same that is not loaded
-		//(happens when realoading), it is reused
-		if (!oldEvent->isLoaded() && oldEvent->getEventType() == creatureEvent->getEventType()) {
-			oldEvent->copyEvent(creatureEvent.get());
-		}
-
-		return false;
-	} else {
-		//if not, register it normally
-		creatureEvents.emplace(creatureEvent->getName(), std::move(*creatureEvent));
-		return true;
-	}
+void CreatureEvents::clear() {
+	creatureEvents.clear();
 }
 
 bool CreatureEvents::registerLuaEvent(CreatureEvent* event) {
 	CreatureEvent_ptr creatureEvent{ event };
 	if (creatureEvent->getEventType() == CREATURE_EVENT_NONE) {
-		SPDLOG_ERROR("[CreatureEvents::registerLuaEvent] - Trying to register event without type");
+		SPDLOG_ERROR("[CreatureEvents::registerLuaEvent] - Trying to register event without type on script with name {}", creatureEvent->getFileName());
 		return false;
 	}
 
@@ -141,13 +99,7 @@ bool CreatureEvents::playerAdvance(Player* player, skills_t skill, uint32_t oldL
 /////////////////////////////////////
 
 CreatureEvent::CreatureEvent(LuaScriptInterface* interface) :
-	Event(interface), type(CREATURE_EVENT_NONE), loaded(false) {}
-
-// TODO: Eduardo
-// Remove this function (and all configureEvent of others classes), is no longer used
-bool CreatureEvent::configureEvent(const pugi::xml_node& node) {
-	return true;
-}
+	Script(interface), type(CREATURE_EVENT_NONE), loaded(false) {}
 
 void CreatureEvents::removeInvalidEvents() {
 	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {
@@ -157,7 +109,7 @@ void CreatureEvents::removeInvalidEvents() {
 	}
 }
 
-std::string CreatureEvent::getScriptEventName() const {
+std::string CreatureEvent::getScriptTypeName() const {
 	//Depending on the type script event name is different
 	switch (type) {
 		case CREATURE_EVENT_LOGIN:
@@ -205,14 +157,14 @@ std::string CreatureEvent::getScriptEventName() const {
 void CreatureEvent::copyEvent(CreatureEvent* creatureEvent) {
 	scriptId = creatureEvent->scriptId;
 	scriptInterface = creatureEvent->scriptInterface;
-	scripted = creatureEvent->scripted;
+	setLoadedCallback(creatureEvent->loadedCallback);
 	loaded = creatureEvent->loaded;
 }
 
 void CreatureEvent::clearEvent() {
 	scriptId = 0;
 	scriptInterface = nullptr;
-	scripted = false;
+	setLoadedCallback(false);
 	loaded = false;
 }
 
@@ -325,9 +277,7 @@ bool CreatureEvent::executeOnDeath(Creature* creature, Item* corpse, Creature* k
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
-	if (corpse && corpse != 0) {
-		LuaScriptInterface::pushThing(L, corpse);
-	}
+	LuaScriptInterface::pushThing(L, corpse);
 
 	if (killer) {
 		LuaScriptInterface::pushUserdata<Creature>(L, killer);

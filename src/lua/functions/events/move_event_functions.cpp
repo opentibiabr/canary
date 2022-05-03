@@ -28,8 +28,9 @@ int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()
 	MoveEvent* moveevent = new MoveEvent(getScriptEnv()->getScriptInterface());
 	if (moveevent) {
+		// Register script name on moveevent interface
+		moveevent->setFileName(getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 		pushUserdata<MoveEvent>(L, moveevent);
-		moveevent->fromLua = true;
 		setMetatable(L, -1, "MoveEvent");
 	} else {
 		lua_pushnil(L);
@@ -77,7 +78,7 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	// moveevent:register()
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
-		if (!moveevent->isScripted()) {
+		if (!moveevent->isLoadedCallback()) {
 			pushBoolean(L, g_moveEvents().registerLuaFunction(moveevent));
 			return 1;
 		}

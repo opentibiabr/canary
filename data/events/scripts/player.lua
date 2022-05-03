@@ -109,11 +109,11 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
-
+	
 	if toPosition.x ~= CONTAINER_POSITION then
 		-- if item is already in the ground, it should be able to be moved (for instance, unwrapped items)
 		if fromPosition.x == CONTAINER_POSITION then
-			if item:getActionId() == NOT_TRADEABLE_ACTION then
+			if item:getActionId() == NOT_TRADEABLE_ACTION and not item:getId() == ITEM_DECORATION_KIT then
 				self:sendCancelMessage("This item cannot be moved to ground.")
 				return false
 			end
@@ -140,7 +140,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 						return false
 					end
 				end
-			end		
+			end
 		end
 	end
 
@@ -181,7 +181,7 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			if containerTo:isDepot() 
 				or containerTo:getId() == ITEM_STORE_INBOX
 				or containerTo:isInsideOfId(ITEM_STORE_INBOX)
-			    or containerTo:isInsideOfId(ITEM_DEPOT_I)
+				or containerTo:isInsideOfId(ITEM_DEPOT_I)
 				or containerTo:isInsideOfId(ITEM_DEPOT_II)
 				or containerTo:isInsideOfId(ITEM_DEPOT_III)
 				or containerTo:isInsideOfId(ITEM_DEPOT_IV)

@@ -286,7 +286,10 @@ target_sources(${PROJECT_NAME}
 
 if (MSVC)
 
-  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /Z7 )
+  STRING(REGEX REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+  STRING(REGEX REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf )
 
   target_include_directories(${PROJECT_NAME}
     PRIVATE

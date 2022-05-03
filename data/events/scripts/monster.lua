@@ -22,8 +22,14 @@ function Monster:onDropLoot(corpse)
 
 		for i = 1, #monsterLoot do
 			local item = corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost)
+			if self:getName():lower() == Game.getBoostedCreature():lower() then
+				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost)
+				if not itemBoosted then
+					Spdlog.warn(string.format("[Monster:onDropLoot] - Could not add loot item to boosted monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+				end
+			end
 			if not item then
-				Spdlog.info("Could not add loot item to corpse of monster '".. mType:getName() .."'")
+				Spdlog.warn(string.format("[Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
 			end
 		end
 

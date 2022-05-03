@@ -3,9 +3,9 @@ name: Analysis - CodeQL
 
 on:
   pull_request:
-    paths:
-      - 'src/**'
-      - '**.py'
+  push:
+    branches:
+      - main
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: 2

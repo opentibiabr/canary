@@ -47,9 +47,8 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2
         with:
           max-size: "1G"
-          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
             ccache-${{ matrix.os }}-
 
       - name: Restore artifacts and install vcpkg

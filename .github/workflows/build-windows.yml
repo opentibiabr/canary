@@ -43,10 +43,9 @@ jobs:
         with:
           max-size: "1G"
           variant: "sccache"
-          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
-            ccache-${{ matrix.os }}-
+            ccache-${{ matrix.os }}
 
       - name: Remove Windows pre-installed MySQL
         if: contains( matrix.os, 'windows')

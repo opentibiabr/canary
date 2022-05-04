@@ -17,7 +17,8 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
            "type": "FILEPATH"
         },
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "OPTIONS_ENABLE_SCCACHE": "ON"
       },
       "architecture": {
         "value": "x64",
@@ -45,7 +46,8 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
            "type": "FILEPATH"
         },
-        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+        "OPTIONS_ENABLE_CCACHE": "ON"
       },
       "condition": {
         "type": "equals",

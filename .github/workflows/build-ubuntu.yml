@@ -9,7 +9,6 @@ on:
       - main
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
 
@@ -45,14 +44,12 @@ jobs:
           sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        id: ccache
-        uses: actions/cache@v3
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: $HOME/.ccache
-          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          max-size: "1G"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
-            ccache-${{ matrix.os }}-
+            ccache-${{ matrix.os }}
 
       - name: Restore artifacts and install vcpkg
         uses: lukka/run-vcpkg@v10

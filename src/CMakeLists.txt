@@ -110,10 +110,10 @@ endif()
 if(ASAN_ENABLED)
   log_option_enabled("asan")
   if(MSVC)
-    target_compile_options(${PROJECT_NAME}  PUBLIC /fsanitize=address)
+    target_compile_options(${PROJECT_NAME} PUBLIC /fsanitize=address)
   else()
-    target_compile_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
-    target_link_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
+    target_compile_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
+    target_link_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
   endif()
 else()
   log_option_disabled("asan")
@@ -139,6 +139,7 @@ find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
+
 if (MSVC)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
@@ -302,45 +303,57 @@ target_sources(${PROJECT_NAME}
 )
 
 if (MSVC)
-target_include_directories(${PROJECT_NAME}
-PRIVATE
-  ${CMAKE_SOURCE_DIR}/src
-  ${MYSQL_INCLUDE_DIR}
-  ${LUA_INCLUDE_DIR}
-  ${PUGIXML_INCLUDE_DIR}
-  ${CRYPTOPP_INCLUDE_DIR}
-  ${CURL_INCLUDE_DIRS}
-  ${SPDLOG_INCLUDE_DIR}
-  ${Protobuf_INCLUDE_DIRS}
-  asio::asio
-  $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+  elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+  elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+  endif()
 
-target_link_libraries(${PROJECT_NAME}
-PRIVATE
-  ${MYSQL_CLIENT_LIBS}
-  ${LUA_LIBRARIES}
-  ${PUGIXML_LIBRARIES}
-  ${CRYPTOPP_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
-  ${CURL_LIBRARIES}
-  ${SPDLOG_LIBRARY}
-  protobuf::libprotobuf
-  fmt::fmt
-  jsoncpp_lib
-  libzippp::libzippp
-  asio::asio
-)
-
-else()
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf )
 
   target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${MYSQL_INCLUDE_DIR}
+    ${LUA_INCLUDE_DIR}
+    ${PUGIXML_INCLUDE_DIR}
+    ${CRYPTOPP_INCLUDE_DIR}
+    ${CURL_INCLUDE_DIRS}
+    ${SPDLOG_INCLUDE_DIR}
+    ${Protobuf_INCLUDE_DIRS}
+    asio::asio
+    $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
+
+  target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+    ${MYSQL_CLIENT_LIBS}
+    ${LUA_LIBRARIES}
+    ${PUGIXML_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${CURL_LIBRARIES}
+    ${SPDLOG_LIBRARY}
+    protobuf::libprotobuf
+    fmt::fmt
+    jsoncpp_lib
+    libzippp::libzippp
+    asio::asio
+  )
+
+  else()
+    target_include_directories(${PROJECT_NAME}
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUA_INCLUDE_DIR}
       ${Protobuf_INCLUDE_DIRS}
   )
 
-  target_link_libraries(${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME}
     PRIVATE
       cryptopp-static
       CURL::libcurl
@@ -352,9 +365,8 @@ else()
       ${LUA_LIBRARIES}
       protobuf::libprotobuf
       libzippp::libzippp
-  )
-
-endif (MSVC)
+    )
+endif(MSVC)
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES

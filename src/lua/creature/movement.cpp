@@ -179,7 +179,12 @@ MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, Slots_t slot)
 		default: slotp = 0; break;
 	}
 
-  if (item->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+	if (!item) {
+		SPDLOG_ERROR("[MoveEvents::getEvent (item, eventType, slot)] - Item is nullptr");
+		return nullptr;
+	}
+
+	if (item->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
 		MoveListMap::iterator it = actionIdMap.find(item->getActionId());
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
@@ -205,6 +210,10 @@ MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType, Slots_t slot)
 
 MoveEvent* MoveEvents::getEvent(Item* item, MoveEvent_t eventType) {
 	MoveListMap::iterator it;
+	if (!item) {
+		SPDLOG_ERROR("[MoveEvents::getEvent (item, eventType)] - Item is nullptr");
+		return nullptr;
+	}
 
 	if (item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 		it = uniqueIdMap.find(item->getUniqueId());

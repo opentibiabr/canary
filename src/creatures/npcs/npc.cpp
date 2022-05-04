@@ -24,6 +24,7 @@
 #include "creatures/npcs/npcs.h"
 #include "lua/callbacks/creaturecallback.h"
 #include "game/game.h"
+#include "lua/scripts/lua_environment.hpp"
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
@@ -69,6 +70,8 @@ Npc::~Npc() {
 void Npc::reset() const
 {
 	g_npcs().reset();
+	// Reload npclib
+	g_luaEnvironment.loadFile("data/npclib/load.lua");
 	// Close shop window from all npcs and reset the shopPlayerSet
 	for (const auto& [npcId, npc] : g_game().getNpcs()) {
 		npc->closeAllShopWindows();

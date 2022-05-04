@@ -139,6 +139,7 @@ find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(PhysFS REQUIRED)
 
 if (MSVC)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
@@ -163,6 +164,9 @@ include(GNUInstallDirs)
 target_sources(${PROJECT_NAME}
   PRIVATE
     config/configmanager.cpp
+    core/binary_tree.cpp
+    core/file_stream.cpp
+    core/resource_manager.cpp
     creatures/appearance/mounts/mounts.cpp
     creatures/appearance/outfit/outfit.cpp
     creatures/combat/combat.cpp
@@ -195,7 +199,6 @@ target_sources(${PROJECT_NAME}
     game/movement/teleport.cpp
     game/scheduling/scheduler.cpp
     game/scheduling/tasks.cpp
-    io/fileloader.cpp
     io/iobestiary.cpp
     io/ioguild.cpp
     io/iologindata.cpp
@@ -326,6 +329,7 @@ if (MSVC)
     ${CURL_INCLUDE_DIRS}
     ${SPDLOG_INCLUDE_DIR}
     ${Protobuf_INCLUDE_DIRS}
+    ${PHYSFS_INCLUDE_DIR}
     asio::asio
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
@@ -338,6 +342,7 @@ if (MSVC)
     ${CMAKE_THREAD_LIBS_INIT}
     ${CURL_LIBRARIES}
     ${SPDLOG_LIBRARY}
+    ${PHYSFS_LIBRARY}
     protobuf::libprotobuf
     fmt::fmt
     jsoncpp_lib
@@ -351,10 +356,12 @@ if (MSVC)
       ${CMAKE_SOURCE_DIR}/src
       ${LUA_INCLUDE_DIR}
       ${Protobuf_INCLUDE_DIRS}
+      ${PHYSFS_INCLUDE_DIR}
   )
 
     target_link_libraries(${PROJECT_NAME}
     PRIVATE
+      ${PHYSFS_LIBRARY}
       cryptopp-static
       CURL::libcurl
       jsoncpp_static

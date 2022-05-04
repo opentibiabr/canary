@@ -22,7 +22,6 @@
 
 #include "game/movement/position.h"
 #include "items/item.h"
-#include "io/fileloader.h"
 
 #include "utils/tools.h"
 #include "items/tile.h"
@@ -216,6 +215,44 @@ class Map
          */
 		static bool save();
 
+		// OTBM attributes
+		// TODO: Implement this functions instead of hardcoded variables
+		void setHouseFile(const std::string& file) {
+			mapAttributes[OTBM_ATTR_EXT_HOUSE_FILE] = file;
+		}
+		void setSpawnMonsterFile(const std::string& file) {
+			mapAttributes[OTBM_ATTR_EXT_SPAWN_MONSTER_FILE] = file;
+		}
+		void setSpawnNpcFile(const std::string& file) {
+			mapAttributes[OTBM_ATTR_EXT_SPAWN_NPC_FILE] = file;
+		}
+		void setDescription(const std::string& description) {
+			mapAttributes[OTBM_ATTR_DESCRIPTION] = description;
+		}
+
+		void clearDescriptions() {
+			mapAttributes.erase(OTBM_ATTR_DESCRIPTION);
+		}
+		void setWidth(uint16_t width) {
+			mapAttributes[OTBM_ATTR_WIDTH] = width;
+		}
+		void setHeight(uint16_t height) {
+			mapAttributes[OTBM_ATTR_HEIGHT] = height;
+		}
+
+		std::string getHouseFile() {
+			return mapAttributes[OTBM_ATTR_EXT_HOUSE_FILE];
+		}
+		std::string getSpawnMonsterFile() {
+			return mapAttributes[OTBM_ATTR_EXT_SPAWN_MONSTER_FILE];
+		}
+		std::string getSpawnNpcFile() {
+			return mapAttributes[OTBM_ATTR_EXT_SPAWN_NPC_FILE];
+		}
+		std::vector<std::string> getDescriptions() {
+			return split(mapAttributes[OTBM_ATTR_DESCRIPTION], "\n");
+		}
+
 		/**
          * Get a single tile.
          * \returns A pointer to that tile.
@@ -300,6 +337,8 @@ class Map
 	private:
 		SpectatorCache spectatorCache;
 		SpectatorCache playersSpectatorCache;
+
+		std::map<uint8_t, std::string> mapAttributes;
 
 		QTreeNode root;
 

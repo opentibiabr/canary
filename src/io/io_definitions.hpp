@@ -59,7 +59,10 @@ enum OTBM_AttrTypes_t {
 	OTBM_ATTR_SLEEPERGUID = 20,
 	OTBM_ATTR_SLEEPSTART = 21,
 	OTBM_ATTR_CHARGES = 22,
-	OTBM_ATTR_EXT_SPAWN_NPC_FILE = 23
+	OTBM_ATTR_EXT_SPAWN_NPC_FILE = 23,
+	/// just random numbers, they're not actually used by the binary reader...
+	OTBM_ATTR_WIDTH = 129,
+	OTBM_ATTR_HEIGHT = 130
 };
 
 enum OTBM_NodeTypes_t {
@@ -85,7 +88,8 @@ enum OTBM_TileFlag_t : uint32_t {
 	OTBM_TILEFLAG_PROTECTIONZONE = 1 << 0,
 	OTBM_TILEFLAG_NOPVPZONE = 1 << 2,
 	OTBM_TILEFLAG_NOLOGOUT = 1 << 3,
-	OTBM_TILEFLAG_PVPZONE = 1 << 4
+	OTBM_TILEFLAG_PVPZONE = 1 << 4,
+	OTBM_TILEFLAG_HARDCOREZONE = 1 << 5,
 };
 
 // Structs

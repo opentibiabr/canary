@@ -149,40 +149,32 @@ Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return Item::readAttr(attr, propStream);
 }
 
-bool Container::unserializeItemNode(FileLoader& fileLoader, NODE node, PropStream& propStream)
+bool Container::unserializeMapItem(BinaryTree& binaryTree, Position position)
 {
-	bool ret = Item::unserializeItemNode(fileLoader, node, propStream);
+	bool ret = Item::unserializeMapItem(binaryTree, position);
 	if (!ret) {
 		return false;
 	}
 
-	uint32_t type;
-	NODE itemNode = fileLoader.getChildNode(node, type);
-	while (itemNode) {
-		//load container items
-		if (type != OTBM_ITEM) {
-			// unknown type
+	while (binaryTree.canRead()) {
+		if (unlikely(binaryTree.getU8() != OTBM_ITEM)) {
 			return false;
 		}
 
-		PropStream itemPropStream;
-		if (!fileLoader.getProps(itemNode, itemPropStream)) {
-			return false;
-		}
-
-		Item* item = Item::CreateItem(itemPropStream);
+		Item* item = Item::createMapItem(binaryTree);
 		if (!item) {
+			SPDLOG_ERROR("[Container::unserializeMapItem] (1) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
 			return false;
 		}
 
-		if (!item->unserializeItemNode(fileLoader, itemNode, itemPropStream)) {
+		if (!item->unserializeMapItem(binaryTree, position)) {
+			SPDLOG_ERROR("[Container::unserializeMapItem] (2) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
 			return false;
 		}
 
 		addItem(item);
 		updateItemWeight(item->getWeight());
 
-		itemNode = fileLoader.getNextNode(itemNode, type);
 	}
 	return true;
 }

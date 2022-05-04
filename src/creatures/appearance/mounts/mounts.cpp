@@ -95,7 +95,7 @@ Mount* Mounts::getMountByID(uint8_t id)
 		return mount.id == id;
 	});
 
-	return it != mounts.end() ? &*it : nullptr;
+	return it != mounts.end() ? std::to_address(it) : nullptr;
 }
 
 Mount* Mounts::getMountByName(const std::string& name) {

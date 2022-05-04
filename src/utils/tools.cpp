@@ -367,6 +367,16 @@ Iter splitStrings(const std::string &s, const std::string &delim, Iter out)
 	return out;
 }
 
+template<typename T> std::vector<T> split(const std::string& str, const std::string& separators = " ")
+{
+	const std::vector<std::string> splitted = split(str, separators);
+	std::vector<T> results(splitted.size());
+	for (uint64_t i = 0; i < splitted.size(); ++i) {
+		results[i] = safe_cast<T>(splitted[i]);
+	}
+	return results;
+}
+
 void trimString(std::string& str)
 {
 	str.erase(str.find_last_not_of(' ') + 1);

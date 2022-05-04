@@ -198,7 +198,8 @@ class MonsterSpell
 		int32_t conditionMaxDamage = 0;
 		int32_t conditionStartDamage = 0;
 		int32_t tickInterval = 0;
-		int32_t speedChange = 0;
+		int32_t minSpeedChange = 0;
+		int32_t maxSpeedChange = 0;
 		int32_t duration = 0;
 
 		bool isScripted = false;
@@ -245,9 +246,6 @@ class Monsters
 											int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
 
 		MonsterType* loadMonster(const std::string& file, const std::string& monsterName, bool reloading = false);
-
-		void loadLootContainer(const pugi::xml_node& node, LootBlock&);
-		bool loadLootItem(const pugi::xml_node& node, LootBlock&);
 };
 
 constexpr auto g_monsters = &Monsters::getInstance;

@@ -165,47 +165,43 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 	return newItem;
 }
 
-Item* Item::CreateItem(PropStream& propStream)
+Item* Item::createMapItem(BinaryTree &binaryTree)
 {
-	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
-		return nullptr;
-	}
-
-	switch (id) {
+	uint16_t mapItemId = binaryTree.getU16();
+	switch (mapItemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
-			id = ITEM_FIREFIELD_PERSISTENT_FULL;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_FULL;
 			break;
 
 		case ITEM_FIREFIELD_PVP_MEDIUM:
-			id = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
 			break;
 
 		case ITEM_FIREFIELD_PVP_SMALL:
-			id = ITEM_FIREFIELD_PERSISTENT_SMALL;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_SMALL;
 			break;
 
 		case ITEM_ENERGYFIELD_PVP:
-			id = ITEM_ENERGYFIELD_PERSISTENT;
+			mapItemId = ITEM_ENERGYFIELD_PERSISTENT;
 			break;
 
 		case ITEM_POISONFIELD_PVP:
-			id = ITEM_POISONFIELD_PERSISTENT;
+			mapItemId = ITEM_POISONFIELD_PERSISTENT;
 			break;
 
 		case ITEM_MAGICWALL:
-			id = ITEM_MAGICWALL_PERSISTENT;
+			mapItemId = ITEM_MAGICWALL_PERSISTENT;
 			break;
 
 		case ITEM_WILDGROWTH:
-			id = ITEM_WILDGROWTH_PERSISTENT;
+			mapItemId = ITEM_WILDGROWTH_PERSISTENT;
 			break;
 
 		default:
 			break;
 	}
 
-	return Item::CreateItem(id, 0);
+	return Item::CreateItem(mapItemId, 0);
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
@@ -780,6 +776,343 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return ATTR_READ_CONTINUE;
 }
 
+Attr_ReadValue Item::readAttributesMap(AttrTypes_t attr, BinaryTree& binaryTree, Position position)
+{
+	switch (attr) {
+		case ATTR_COUNT: {
+			uint8_t count = binaryTree.getU8();
+			if (count == 0 || count == -1) {
+				count = 1;
+				SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have invalid count, setting count to 1", getID(), position.toString());
+			}
+
+			setItemCount(count);
+			break;
+		}
+		case ATTR_RUNE_CHARGES: {
+			uint8_t charges = binaryTree.getU8();
+			if (charges == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setSubType(charges);
+			break;
+		}
+
+		case ATTR_ACTION_ID: {
+			uint16_t actionId = binaryTree.getU16();
+			if (actionId == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setActionId(actionId);
+			break;
+		}
+
+		case ATTR_UNIQUE_ID: {
+			uint16_t uniqueId = binaryTree.getU16();
+			if (uniqueId == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setUniqueId(uniqueId);
+			break;
+		}
+
+		case ATTR_TEXT: {
+			std::string text = binaryTree.getString();
+			if (text.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setText(text);
+			break;
+		}
+
+		case ATTR_WRITTENDATE: {
+			uint32_t writtenDate = binaryTree.getU32();
+			if (writtenDate == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setDate(writtenDate);
+			break;
+		}
+
+		case ATTR_WRITTENBY: {
+			std::string writer = binaryTree.getString();
+			if (writer.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setWriter(writer);
+			break;
+		}
+
+		case ATTR_DESC: {
+			std::string text = binaryTree.getString();
+			if (text.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setSpecialDescription(text);
+			break;
+		}
+
+		case ATTR_CHARGES: {
+			uint16_t charges = binaryTree.getU16();
+			// If item not have charges, then set to 1 and send warning
+			if (charges == 0 || charges == -1) {
+				charges = 1;
+				SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have invalid charges, setting charge to 1", getID(), position.toString());
+			}
+
+			setSubType(charges);
+			break;
+		}
+
+		case ATTR_DURATION: {
+			int32_t duration = binaryTree.getU32();
+			if (duration == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setDuration(duration);
+			break;
+		}
+
+		case ATTR_DECAYING_STATE: {
+			uint8_t state = binaryTree.getU8();
+			if (state == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			if (state != DECAYING_FALSE) {
+				setDecaying(DECAYING_PENDING);
+			}
+			break;
+		}
+
+		case ATTR_NAME: {
+			std::string name = binaryTree.getString();
+			if (name.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setStrAttr(ITEM_ATTRIBUTE_NAME, name);
+			break;
+		}
+
+		case ATTR_ARTICLE: {
+			std::string article = binaryTree.getString();
+			if (article.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setStrAttr(ITEM_ATTRIBUTE_ARTICLE, article);
+			break;
+		}
+
+		case ATTR_PLURALNAME: {
+			std::string pluralName = binaryTree.getString();
+			if (pluralName.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setStrAttr(ITEM_ATTRIBUTE_PLURALNAME, pluralName);
+			break;
+		}
+
+		case ATTR_WEIGHT: {
+			uint32_t weight = binaryTree.getU32();
+			if (weight == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_WEIGHT, weight);
+			break;
+		}
+
+		case ATTR_ATTACK: {
+			int32_t attack = binaryTree.getU32();
+			if (attack == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_ATTACK, attack);
+			break;
+		}
+
+		case ATTR_DEFENSE: {
+			int32_t defense = binaryTree.getU32();
+			if (defense == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_DEFENSE, defense);
+			break;
+		}
+
+		case ATTR_EXTRADEFENSE: {
+			int32_t extraDefense = binaryTree.getU32();
+			if (extraDefense == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE, extraDefense);
+			break;
+		}
+
+		case ATTR_IMBUEMENT_SLOT: {
+			int32_t imbuementSlot = binaryTree.getU32();
+			if (imbuementSlot == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, imbuementSlot);
+			break;
+		}
+
+		case ATTR_OPENCONTAINER: {
+			uint8_t openContainer = binaryTree.getU8();
+			if (openContainer == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, openContainer);
+			break;
+		}
+
+		case ATTR_ARMOR: {
+			int32_t armor = binaryTree.getU32();
+			if (armor == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_ARMOR, armor);
+			break;
+		}
+
+		case ATTR_HITCHANCE: {
+			int8_t hitChance = binaryTree.getU8();
+			if (hitChance == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_HITCHANCE, hitChance);
+			break;
+		}
+
+		case ATTR_SHOOTRANGE: {
+			uint8_t shootRange = binaryTree.getU8();
+			if (shootRange == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE, shootRange);
+			break;
+		}
+
+		case ATTR_SPECIAL: {
+			std::string special = binaryTree.getString();
+			if (special.empty()) {
+				return ATTR_READ_ERROR;
+			}
+
+			setStrAttr(ITEM_ATTRIBUTE_SPECIAL, special);
+			break;
+		}
+
+		case ATTR_QUICKLOOTCONTAINER: {
+			uint32_t flags = binaryTree.getU32();
+			if (flags == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+			break;
+		}
+
+		//these should be handled through derived classes
+		//If these are called then something has changed in the items.xml since the map was saved
+		//just read the values
+
+		//Depot class
+		case ATTR_DEPOT_ID: {
+			binaryTree.skip(2);
+			break;
+		}
+
+		//Door class
+		case ATTR_HOUSEDOORID: {
+			binaryTree.skip(1);
+			break;
+		}
+
+		//Bed class
+		case ATTR_SLEEPERGUID: {
+			binaryTree.skip(4);
+			break;
+		}
+
+		case ATTR_SLEEPSTART: {
+			binaryTree.skip(4);
+			break;
+		}
+
+		//Teleport class
+		case ATTR_TELE_DEST: {
+			binaryTree.skip(5);
+			break;
+		}
+
+		//Container class
+		case ATTR_CONTAINER_ITEMS: {
+			return ATTR_READ_ERROR;
+		}
+
+		case ATTR_CUSTOM_ATTRIBUTES: {
+			uint64_t size = binaryTree.getU64();
+			if (size == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			for (uint64_t i = 0; i < size; i++) {
+				// Unserialize key type and value
+				std::string key = binaryTree.getString();
+				if (key.empty()) {
+					return ATTR_READ_ERROR;
+				}
+
+				// TODO: Finalize implement this
+				//Unserialize value type and value
+				ItemAttributes::CustomAttribute val;
+				//if (!val.unserialize(propStream)) {
+				//	return ATTR_READ_ERROR;
+				//}
+
+				setCustomAttribute(key, val);
+			}
+			break;
+		}
+
+		case ATTR_IMBUEMENT_TYPE: {
+			std::string imbuementType = binaryTree.getString();
+				if (imbuementType.empty()) {
+					return ATTR_READ_ERROR;
+				}
+
+			setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
+			break;
+		}
+
+		default:
+			return ATTR_READ_ERROR;
+	}
+
+	return ATTR_READ_CONTINUE;
+}
+
 bool Item::unserializeAttr(PropStream& propStream)
 {
 	uint8_t attr_type;
@@ -792,11 +1125,6 @@ bool Item::unserializeAttr(PropStream& propStream)
 		}
 	}
 	return true;
-}
-
-bool Item::unserializeItemNode(FileLoader&, NODE, PropStream& propStream)
-{
-	return unserializeAttr(propStream);
 }
 
 void Item::serializeAttr(PropWriteStream& propWriteStream) const
@@ -2591,5 +2919,25 @@ bool Item::hasMarketAttributes()
 		}
 	}
 
+	return true;
+}
+
+bool Item::unserializeMapItem(BinaryTree& binaryTree, Position position)
+{
+	try {
+		while (binaryTree.canRead()) {
+			uint8_t attributeType = binaryTree.getU8();
+			Attr_ReadValue ret = readAttributesMap(static_cast<AttrTypes_t>(attributeType), binaryTree, position);
+			if (ret == ATTR_READ_ERROR) {
+				SPDLOG_ERROR("[Item::unserializeItem] - Invalid item attribute {}", attributeType);
+				return false;
+			} else if (ret == ATTR_READ_END) {
+				return true;
+			}
+		}
+	} catch (std::system_error& error) {
+		SPDLOG_ERROR("Failed to unserialize OTBM item: {}", error.what());
+		return false;
+	}
 	return true;
 }

@@ -167,10 +167,10 @@ class IOMap
 		}
 
 	private:
-		bool parseMapDataAttributes(FileLoader& loader, NODE mapDataNode, Map& map, const std::string& fileName);
-		bool parseWaypoints(FileLoader& loader, NODE mapDataNode, Map& map, uint32_t type);
-		bool parseTowns(FileLoader& loader, NODE mapDataNode, Map& map, uint32_t type);
-		bool parseTileArea(FileLoader& loader, NODE mapDataNode, Map& map, uint32_t type);
+		bool parseMapDataAttributes(BinaryTree &binaryTreeRoot, Map& map, const std::string& fileName);
+		bool parseTileArea(BinaryTree &binaryTreeMapTileArea, Map& map);
+		bool parseTowns(BinaryTree &binaryTreeMapTileArea, Map& map);
+		bool parseWaypoints(BinaryTree &binaryTreeMapTileArea, Map& map);
 		std::string errorString;
 };
 

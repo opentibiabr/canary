@@ -22,6 +22,8 @@
 
 #include <string>
 
+#include "utils/point.hpp"
+
 enum Direction : uint8_t {
 	DIRECTION_NORTH = 0,
 	DIRECTION_EAST = 1,
@@ -42,6 +44,7 @@ struct Position
 {
 	constexpr Position() = default;
 	constexpr Position(uint16_t initX, uint16_t initY, uint8_t initZ) : x(initX), y(initY), z(initZ) {}
+	Position(const Position& position) = default;
 
 	template<int_fast32_t deltax, int_fast32_t deltay>
 	static bool areInRange(const Position& p1, const Position& p2) {
@@ -125,6 +128,16 @@ struct Position
 
 	Position operator-(const Position& p1) const {
 		return Position(x - p1.x, y - p1.y, z - p1.z);
+	}
+	Position operator+=(const Position& other) {
+		return Position(x += other.x, y += other.y, z += other.z);
+	}
+	// Point conversion
+	Position operator+(const Point& other) const {
+		return Position(x + other.x, y + other.y, z);
+	}
+	Position& operator+=(const Point& other) {
+		return Position(x += other.x, y += other.y, z);
 	}
 
 	std::string toString() const {

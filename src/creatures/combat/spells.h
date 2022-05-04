@@ -109,12 +109,6 @@ class CombatSpell final : public Script, public BaseSpell
 			combat(combat),
 			needDirection(needTarget),
 			needTarget(needDirection) {}
-		// Destructor
-		~CombatSpell() {
-			if (!isLoadedCallback()) {
-				delete combat;
-			}
-		}
 
 		// non-copyable
 		CombatSpell(const CombatSpell&) = delete;

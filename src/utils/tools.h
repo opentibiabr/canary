@@ -70,6 +70,8 @@ std::string convertIPToString(uint32_t ip);
 // Split strings
 template<class Iter>
 Iter splitStrings(const std::string &s, const std::string &delim, Iter out);
+// Always returns at least one element in vector
+std::vector<std::string> split(const std::string& str, const std::string& separators = " ");
 
 void trimString(std::string& str);
 

@@ -23,7 +23,7 @@
 #include <list>
 
 #include "declarations.hpp"
-#include "io/fileloader.h"
+#include "utils/prop_stream.hpp"
 
 class Creature;
 class Player;

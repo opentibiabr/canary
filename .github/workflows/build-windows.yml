@@ -25,12 +25,11 @@ jobs:
             triplet: x64-windows
             packages: >
               asio cryptopp curl jsoncpp
-              luajit libmariadb pugixml spdlog libzippp
+              luajit libmariadb pugixml spdlog libzippp sccache
           - os: windows-2022
             triplet: x64-windows
             packages: >
-              boost-asio boost-iostreams boost-system boost-filesystem
-              boost-variant boost-lockfree cryptopp curl jsoncpp
+              asio cryptopp curl jsoncpp
               luajit libmariadb pugixml spdlog libzippp sccache
 
     steps:

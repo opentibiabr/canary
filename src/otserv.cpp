@@ -37,6 +37,7 @@
 #include "lua/creature/events.h"
 #include "lua/modules/modules.h"
 #include "lua/scripts/lua_environment.hpp"
+#include "core/resource_manager.hpp"
 #include "lua/scripts/scripts.h"
 #include "security/rsa.h"
 #include "server/network/protocol/protocollogin.h"
@@ -232,8 +233,11 @@ int main(int argc, char* argv[]) {
 #else
 	spdlog::set_pattern("[%Y-%d-%m %H:%M:%S.%e] [%^%l%$] %v ");
 #endif
+	std::vector<std::string> args(argv, argv + argc);
 	// Toggle force close button enabled/disabled
 	toggleForceCloseButton();
+	// initialize resources
+	g_resources().init(args[0].c_str());
 
 	// Setup bad allocation handler
 	std::set_new_handler(badAllocationHandler);
@@ -256,6 +260,7 @@ int main(int argc, char* argv[]) {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
 		g_databaseTasks().shutdown();
 		g_dispatcher().shutdown();
+		g_resources().terminate();
 		exit(-1);
 	}
 
@@ -314,6 +319,12 @@ SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
 		}
 	} else {
 		c_test.close();
+	}
+
+	// Mount working directory from PHYSFS
+	if (g_resources().discoverWorkDir("config.lua")) {
+		g_resources().addSearchPath(g_resources().getWorkDir() + "/data", true);
+		g_resources().setupUserWriteDir(asLowerCaseString(STATUS_SERVER_NAME));
 	}
 
 	// Init and load modules

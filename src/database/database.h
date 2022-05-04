@@ -110,7 +110,7 @@ class DBResult
 				return {};
 			}
 
-			return std::stoll(row[it->second]);
+			return static_cast<T>(std::stoll(row[it->second]));
 		}
 
 

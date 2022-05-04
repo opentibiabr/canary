@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "items/cylinder.h"
+#include "core/binary_tree.hpp"
 #include "items/thing.h"
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
@@ -37,6 +38,7 @@
 #include <limits>
 
 class Creature;
+class BinaryTree;
 class Player;
 class Container;
 class Depot;
@@ -525,7 +527,7 @@ class Item : virtual public Thing
 		//Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* CreateItem(PropStream& propStream);
+		static Item* createMapItem(BinaryTree &binaryTree);
 		static Items items;
 
 		// Constructor for items
@@ -819,8 +821,9 @@ class Item : virtual public Thing
 
 		//serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
+		virtual Attr_ReadValue readAttributesMap(AttrTypes_t attr, BinaryTree &binaryTree, Position position);
 		bool unserializeAttr(PropStream& propStream);
-		virtual bool unserializeItemNode(FileLoader& fileLoader, NODE node, PropStream& propStream);
+		virtual bool unserializeMapItem(BinaryTree &binaryTree, Position position);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 
@@ -959,6 +962,9 @@ class Item : virtual public Thing
 		}
 		bool isQuiver() const {
 			return items[id].isQuiver();
+		}
+		bool isContainer() const {
+			return items[id].isContainer();
 		}
 
 		const std::string& getName() const {

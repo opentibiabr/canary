@@ -16,6 +16,7 @@
       "name": "luajit",
       "platform": "windows"
     },
-    "protobuf"
+    "protobuf",
+    "physfs"
   ]
 }

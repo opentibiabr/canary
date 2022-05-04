@@ -81,10 +81,10 @@ if(ASAN_ENABLED)
   log_option_enabled("asan")
 
   if(MSVC)
-    target_compile_options(${PROJECT_NAME}  PUBLIC /fsanitize=address)
+    target_compile_options(${PROJECT_NAME} PUBLIC /fsanitize=address)
   else()
-    target_compile_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
-    target_link_options(${PROJECT_NAME}  PUBLIC -fsanitize=address)
+    target_compile_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
+    target_link_options(${PROJECT_NAME} PUBLIC -fsanitize=address)
   endif()
 else()
   log_option_disabled("asan")
@@ -100,7 +100,8 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
-# Set for supress deprecated declarations (for GCC/GNU)
+
+# Set for suppress deprecated declarations (for GCC/GNU)
 # If not is GNUCXX_MINIMUM_VERSION, return message of error
 if (CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
@@ -118,8 +119,9 @@ find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(cryptopp CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
+
 if (MSVC)
-find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
+  find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
   set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
@@ -127,7 +129,7 @@ find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUI
   find_package(PugiXML REQUIRED)
   find_package(Threads REQUIRED)
 else()
-find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
+  find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
@@ -284,35 +286,49 @@ target_sources(${PROJECT_NAME}
 
 if (MSVC)
 
-target_include_directories(${PROJECT_NAME}
-  PRIVATE
-    ${Boost_LIBRARY_DIRS}
-    ${CMAKE_SOURCE_DIR}/src
-    ${MYSQL_INCLUDE_DIR}
-    ${LUA_INCLUDE_DIR}
-    ${Boost_INCLUDE_DIRS}
-    ${PUGIXML_INCLUDE_DIR}
-    ${CRYPTOPP_INCLUDE_DIR}
-    ${CURL_INCLUDE_DIRS}
-    ${Protobuf_INCLUDE_DIRS}
-    ${SPDLOG_INCLUDE_DIR}
-    $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+  elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE}")
+  elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
+  endif()
 
-target_link_libraries(${PROJECT_NAME}
-  PRIVATE
-    ${MYSQL_CLIENT_LIBS}
-    ${LUA_LIBRARIES}
-    ${Boost_LIBRARIES}
-    ${PUGIXML_LIBRARIES}
-    ${CRYPTOPP_LIBRARIES}
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${CURL_LIBRARIES}
-    ${Protobuf_LIBRARIES}
-    ${SPDLOG_LIBRARY}
-    fmt::fmt
-    jsoncpp_lib
-    libzippp::libzippp
-)
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf )
+
+  target_include_directories(${PROJECT_NAME}
+    PRIVATE
+      ${Boost_LIBRARY_DIRS}
+      ${CMAKE_SOURCE_DIR}/src
+      ${MYSQL_INCLUDE_DIR}
+      ${LUA_INCLUDE_DIR}
+      ${Boost_INCLUDE_DIRS}
+      ${PUGIXML_INCLUDE_DIR}
+      ${CRYPTOPP_INCLUDE_DIR}
+      ${CURL_INCLUDE_DIRS}
+      ${Protobuf_INCLUDE_DIRS}
+      ${SPDLOG_INCLUDE_DIR}
+      $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>
+  )
+
+  target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+      ${MYSQL_CLIENT_LIBS}
+      ${LUA_LIBRARIES}
+      ${Boost_LIBRARIES}
+      ${PUGIXML_LIBRARIES}
+      ${CRYPTOPP_LIBRARIES}
+      ${CMAKE_THREAD_LIBS_INIT}
+      ${CURL_LIBRARIES}
+      ${Protobuf_LIBRARIES}
+      ${SPDLOG_LIBRARY}
+      fmt::fmt
+      jsoncpp_lib
+      libzippp::libzippp
+  )
 
 else()
 

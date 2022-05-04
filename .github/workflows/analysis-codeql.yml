@@ -8,7 +8,6 @@ on:
       - '**.py'
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
   NODE_OPTIONS: ' --max-old-space-size=8192 '
@@ -16,12 +15,16 @@ env:
 jobs:
   codeql:
     name: CodeQL
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-20.04]
         language: ['cpp', 'python']
+        include:
+          - language: cpp
+            buildtype: linux-release
 
     steps:
       - name: Checkout repository
@@ -46,15 +49,12 @@ jobs:
           sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        if: ${{ matrix.language == 'cpp' }}
-        id: ccache
-        uses: actions/cache@v3
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: $HOME/.ccache
-          key: ccache-${{ runner.os }}-RelWithDebInfo-${{ hashFiles('**/src') }}
+          max-size: "1G"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ runner.os }}-RelWithDebInfo-
-            ccache-${{ runner.os }}-
+            ccache-${{ matrix.os }}
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: ${{ matrix.language == 'cpp' }}
@@ -70,8 +70,8 @@ jobs:
         if: ${{ matrix.language == 'cpp' }}
         uses: lukka/run-cmake@v10
         with:
-          configurePreset: linux-debug
-          buildPreset: linux-debug
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2

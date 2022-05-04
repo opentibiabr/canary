@@ -459,10 +459,9 @@ function Player.selectDailyReward(self, msg)
 
 		local description = ""
 		for k, v in ipairs(items) do
-			local item = Game.getItemIdByClientId(v.spriteId)
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(item:getId(), dailyTable.itemCharges) -- adding charges for each item
+					inbox:addItem(v.ItemId, dailyTable.itemCharges) -- adding charges for each item
 				end
 			else
 				inbox:addItem(item:getId(), v.count) -- adding single item w/o charges

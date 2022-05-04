@@ -155,6 +155,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "setSpecialContainersAvailable", PlayerFunctions::luaPlayerSetSpecialContainersAvailable);
 			registerMethod(L, "Player", "getStashCount", PlayerFunctions::luaPlayerGetStashCounter);
 			registerMethod(L, "Player", "openStash", PlayerFunctions::luaPlayerOpenStash);
+			registerMethod(L, "Player", "openForge", PlayerFunctions::luaPlayerOpenForge);
 
 			registerMethod(L, "Player", "getStamina", PlayerFunctions::luaPlayerGetStamina);
 			registerMethod(L, "Player", "setStamina", PlayerFunctions::luaPlayerSetStamina);
@@ -405,6 +406,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerIsSupplyStashAvailable(lua_State* L);
 		static int luaPlayerGetStashCounter(lua_State* L);
 		static int luaPlayerOpenStash(lua_State* L);
+		static int luaPlayerOpenForge(lua_State* L);
 		static int luaPlayerSetSpecialContainersAvailable(lua_State* L);
 
 		static int luaPlayerGetStamina(lua_State* L);

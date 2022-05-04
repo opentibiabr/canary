@@ -292,6 +292,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
   player->addTaskHuntingPoints(result->getNumber<uint16_t>("task_points"));
+  player->setForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -878,6 +879,7 @@ bool IOLoginData::savePlayer(Player* player)
 
   query << "`prey_wildcard` = " << player->getPreyCards() << ',';
   query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
+  query << "`forge_dusts` = " << player->getForgeDusts() << ',';
 
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';

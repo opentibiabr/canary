@@ -1122,7 +1122,7 @@ class Item : virtual public Thing
 			return false;
 		}
 
-		uint8_t getTier() const {
+		uint16_t getTier() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
 				return getIntAttr(ITEM_ATTRIBUTE_TIER);
 			}

@@ -1504,7 +1504,7 @@ class Player final : public Creature, public Cylinder
 
 		void sendOpenStash(bool isNpc = false) {
 			if (client && ((getLastDepotId() != -1) || isNpc)) {
-        		client->sendOpenStash();
+				client->sendOpenStash();
 			}
 		}
 		bool isStashExhausted() const;
@@ -2033,6 +2033,36 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
+		void sendOpenForge() {
+			if (client) {
+				client->sendOpenForge();
+			}
+		}
+
+		void setForgeSlivers(uint64_t amount) {
+			forgeSlivers = amount;
+		}
+
+		void setForgeCores(uint64_t amount) {
+			forgeCores = amount;
+		}
+
+		void setForgeDusts(uint64_t amount) {
+			forgeDusts = amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+
+		uint64_t getForgeDusts() const {
+			return forgeDusts;
+		}
+		uint64_t getForgeSlivers() const {
+			return forgeSlivers;
+		}
+		uint64_t getForgeCores() const {
+			return forgeCores;
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2155,6 +2185,9 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastQuestlogUpdate = 0;
 		uint64_t preyCards = 0;
 		uint64_t taskHuntingPoints = 0;
+		uint64_t forgeDusts = 0;
+		uint64_t forgeSlivers = 0;
+		uint64_t forgeCores = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;

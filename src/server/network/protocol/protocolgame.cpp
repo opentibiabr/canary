@@ -719,6 +719,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xB1: parseHighscores(msg); break;
 		case 0xBA: parseTaskHuntingAction(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
+		case 0xBF: parseForgeClick(msg); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
@@ -3907,12 +3908,16 @@ void ProtocolGame::sendGameNews()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/)
+void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/,
+										uint64_t forgeDusts /*= 0*/, uint64_t forgeSlivers /*= 0*/, uint64_t forgeCores /*= 0*/)
 {
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
 	sendResourceBalance(RESOURCE_TASK_HUNTING, taskHunting);
+	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDusts);
+	sendResourceBalance(RESOURCE_FORGE_SLIVER, forgeSlivers);
+	sendResourceBalance(RESOURCE_FORGE_CORES, forgeCores);
 }
 
 void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
@@ -4368,6 +4373,39 @@ void ProtocolGame::sendForgingData()
 		msg.addByte(0);
 	}
 
+	uint32_t sliverCount = 0;
+	uint32_t coreCount = 0;
+	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+		Item* item = player->inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		if (item->getID() == ITEM_FORGE_SLIVER) {
+			sliverCount += Item::countByType(item, -1);
+		}
+
+		if (item->getID() == ITEM_FORGE_CORE) {
+			coreCount += Item::countByType(item, -1);
+		}
+
+		if (Container* container = item->getContainer()) {
+			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				if ((*it)->getID() == ITEM_FORGE_SLIVER) {
+					sliverCount += Item::countByType(*it, -1);
+				}
+
+				if ((*it)->getID() == ITEM_FORGE_CORE) {
+					coreCount += Item::countByType(*it, -1);
+				}
+			}
+		}
+	}
+
+	player->setForgeSlivers(sliverCount);
+	player->setForgeCores(coreCount);
+
+	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
 	writeToOutputBuffer(msg);
 }
 
@@ -7247,6 +7285,71 @@ void ProtocolGame::sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_
 		msg.add<uint16_t>(it.first);
 		msg.add<uint16_t>(it.second);
 	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendOpenForge() {
+	NetworkMessage msg;
+	msg.addByte(0x87);
+
+	msg.addByte(0x01);
+	msg.addByte(0x00);
+	uint16_t total = 0;
+	for (Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
+		if (item->getClassification() != 0 && item->getTier() < 10) {
+			total++;
+		}
+	}
+	msg.addByte(total);
+	for (Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
+		if (item->getClassification() != 0 && item->getTier() < 10) {
+			msg.add<uint16_t>(item->getID());
+			msg.addByte(item->getTier());
+			msg.add<uint16_t>(item->getItemCount());
+		}
+	}
+	msg.addByte(0x00);
+
+	msg.addByte(0x6E); // dust limit
+	sendForgingData();
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::parseForgeClick(NetworkMessage& msg) {
+	uint8_t byte1 = msg.getByte(); // BF -> 0 = indica fusion, 1 = indica transfer, 2 = indica converter dust para sliver, 3 = converter sliver para core, 4 = aumentar limite de dust
+	uint8_t byte2 = msg.getByte();
+	uint8_t byte3 = msg.getByte();
+	uint8_t byte4 = msg.getByte();
+	uint8_t byte5 = msg.getByte();
+	uint8_t byte6 = msg.getByte();
+	uint8_t byte7 = msg.getByte();
+	uint8_t byte8 = msg.getByte();
+
+	std::ostringstream ss;
+	std::copy(msg.getBodyBuffer(), msg.getBodyBuffer()+sizeof(msg.getBodyBuffer()), std::ostream_iterator<int>(ss, "-"));
+	std::cout << ss.str() << std::endl;
+
+	raiseItemTier();
+}
+
+void ProtocolGame::raiseItemTier() {
+	NetworkMessage msg;
+	msg.addByte(0x8A);
+
+	msg.addByte(0x00); // deixa o item da direita piscando preto
+	msg.addByte(0x01); // sucesso ou falha
+
+	msg.addByte(0x2E); // Sprite do item da esquerda
+	msg.addByte(0x85); // Sprite do item da esquerda (as duas sprites somam ex. 0x2e + 0x85 = 0x2e85)
+	msg.addByte(0x01); // Tier do item da esquerda
+
+	msg.addByte(0x2E); // Sprite do item da direita
+	msg.addByte(0x85); // Sprite do item da direita
+	msg.addByte(0x02); // Tier do item da direita
+
+	msg.addByte(0x02); // chance de nao consumir dust ou exalted core
+	msg.addByte(0x09); // quantidade de dust ou exalted core nao consumida. colocar apenas se o byte anterior for > 0
 
 	writeToOutputBuffer(msg);
 }

@@ -12,7 +12,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(33)
 rune:name("energy wall rune")
 rune:runeId(3166)
 rune:allowFarUse(true)

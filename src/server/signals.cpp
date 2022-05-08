@@ -35,20 +35,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
 
-extern Scheduler g_scheduler;
-extern DatabaseTasks g_databaseTasks;
-extern Dispatcher g_dispatcher;
-
-extern Actions* g_actions;
-extern Monsters g_monsters;
-extern TalkActions* g_talkActions;
-extern Spells* g_spells;
-extern CreatureEvents* g_creatureEvents;
-extern GlobalEvents* g_globalEvents;
-extern Events* g_events;
-extern Chat* g_chat;
-extern LuaEnvironment g_luaEnvironment;
-
 using ErrorCode = boost::system::error_code;
 
 Signals::Signals(boost::asio::io_service& service) :
@@ -89,25 +75,25 @@ void Signals::dispatchSignalHandler(int signal)
 {
 	switch(signal) {
 		case SIGINT: //Shuts the server down
-			g_dispatcher.addTask(createTask(sigintHandler));
+			g_dispatcher().addTask(createTask(sigintHandler));
 			break;
 		case SIGTERM: //Shuts the server down
-			g_dispatcher.addTask(createTask(sigtermHandler));
+			g_dispatcher().addTask(createTask(sigtermHandler));
 			break;
 #ifndef _WIN32
 		case SIGHUP: //Reload config/data
-			g_dispatcher.addTask(createTask(sighupHandler));
+			g_dispatcher().addTask(createTask(sighupHandler));
 			break;
 		case SIGUSR1: //Saves game state
-			g_dispatcher.addTask(createTask(sigusr1Handler));
+			g_dispatcher().addTask(createTask(sigusr1Handler));
 			break;
 #else
 		case SIGBREAK: //Shuts the server down
-			g_dispatcher.addTask(createTask(sigbreakHandler));
+			g_dispatcher().addTask(createTask(sigbreakHandler));
 			// hold the thread until other threads end
-			g_scheduler.join();
-			g_databaseTasks.join();
-			g_dispatcher.join();
+			g_scheduler().join();
+			g_databaseTasks().join();
+			g_dispatcher().join();
 			break;
 #endif
 		default:
@@ -154,10 +140,10 @@ void Signals::sighupHandler()
 	g_game().mounts.reload();
 	SPDLOG_INFO("Reloaded mounts");
 
-	g_events->loadFromXml();
+	g_events().loadFromXml();
 	SPDLOG_INFO("Reloaded events");
 
-	g_chat->load();
+	g_chat().load();
 	SPDLOG_INFO("Reloaded chatchannels");
 
 	g_luaEnvironment.loadFile("data/global.lua");

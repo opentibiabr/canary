@@ -23,9 +23,6 @@
 #include "game/game.h"
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
-
-extern LuaEnvironment g_luaEnvironment;
-
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
 	pushUserdata<Combat>(L, g_luaEnvironment.createCombatObject(getScriptEnv()->getScriptInterface()));

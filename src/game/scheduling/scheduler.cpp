@@ -51,7 +51,7 @@ void Scheduler::threadMain()
 			eventLockUnique.unlock();
 
 			task->setDontExpire();
-			g_dispatcher.addTask(task, true);
+			g_dispatcher().addTask(task, true);
 		} else {
 			eventLockUnique.unlock();
 		}

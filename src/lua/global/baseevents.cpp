@@ -23,9 +23,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "utils/pugicast.h"
 #include "utils/tools.h"
-
-extern LuaEnvironment g_luaEnvironment;
-
 bool BaseEvents::loadFromXml() {
 	if (loaded) {
 		SPDLOG_ERROR("[BaseEvents::loadFromXml] - It's already loaded.");

@@ -19,7 +19,6 @@ function rune.onCastSpell(creature, variant, isHotkey)
 end
 
 rune:group("support")
-rune:id(30)
 rune:name("destroy field rune")
 rune:runeId(3148)
 rune:allowFarUse(true)

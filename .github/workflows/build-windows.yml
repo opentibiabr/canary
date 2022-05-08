@@ -9,7 +9,6 @@ on:
       - main
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
 
@@ -27,21 +26,30 @@ jobs:
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
               boost-variant boost-lockfree cryptopp curl jsoncpp
-              luajit libmariadb pugixml spdlog libzippp
+              luajit libmariadb pugixml spdlog libzippp sccache
           - os: windows-2022
             triplet: x64-windows
             packages: >
               boost-asio boost-iostreams boost-system boost-filesystem
               boost-variant boost-lockfree cryptopp curl jsoncpp
-              luajit libmariadb pugixml spdlog libzippp
+              luajit libmariadb pugixml spdlog libzippp sccache
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: CCache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: "1G"
+          variant: "sccache"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
+          restore-keys: |
+            ccache-${{ matrix.os }}
+
       - name: Remove Windows pre-installed MySQL
-        run: rm -r -fo C:/mysql*
         if: contains( matrix.os, 'windows')
+        run: rm -r -fo C:/mysql*
 
       - name: Restore artifacts and install vcpkg
         uses: lukka/run-vcpkg@v10

@@ -77,9 +77,21 @@ class Events {
 	};
 
 	public:
+	
 		Events();
 
 		bool loadFromXml();
+
+		// non-copyable
+		Events(Events const&) = delete;
+		void operator=(Events const&) = delete;
+
+		static Events& getInstance() {
+			// Guaranteed to be destroyed
+			static Events instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		// Creature
 		bool eventCreatureOnChangeOutfit(Creature* creature, const Outfit_t& outfit);
@@ -129,5 +141,7 @@ class Events {
 		LuaScriptInterface scriptInterface;
 		EventsInfo info;
 };
+
+constexpr auto g_events = &Events::getInstance;
 
 #endif  // SRC_LUA_CREATURE_EVENTS_H_

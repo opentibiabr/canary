@@ -29,7 +29,6 @@ function rune.onCastSpell(creature, variant, isHotkey)
 end
 
 rune:group("support")
-rune:id(14)
 rune:name("chameleon rune")
 rune:runeId(3178)
 rune:allowFarUse(true)

@@ -22,7 +22,6 @@
 #include "lua/creature/talkaction.h"
 #include "lua/functions/events/talk_action_functions.hpp"
 
-extern TalkActions* g_talkActions;
 
 int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 	// TalkAction(words)
@@ -63,7 +62,7 @@ int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_talkActions->registerLuaEvent(talk));
+		pushBoolean(L, g_talkActions().registerLuaEvent(talk));
 	} else {
 		lua_pushnil(L);
 	}

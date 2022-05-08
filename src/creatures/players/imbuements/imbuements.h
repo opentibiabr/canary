@@ -53,8 +53,21 @@ struct CategoryImbuement {
 
 class Imbuements {
 	public:
+		Imbuements() = default;
+
 		bool loadFromXml(bool reloading = false);
 		bool reload();
+
+		// non-copyable
+		Imbuements(const Imbuements&) = delete;
+		Imbuements& operator=(const Imbuements&) = delete;
+
+		static Imbuements& getInstance() {
+			// Guaranteed to be destroyed
+			static Imbuements instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		Imbuement* getImbuement(uint16_t id);
 
@@ -74,6 +87,8 @@ class Imbuements {
 
 		uint32_t runningid = 0;
 };
+
+constexpr auto g_imbuements = &Imbuements::getInstance;
 
 class Imbuement
 {

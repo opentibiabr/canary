@@ -37,9 +37,6 @@
 
 #define IMBUEMENT_SLOT 500
 
-extern Spells* g_spells;
-extern Vocations g_vocations;
-extern Imbuements* g_imbuements;
 
 Items Item::items;
 
@@ -48,10 +45,6 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 	Item* newItem = nullptr;
 
 	const ItemType& it = Item::items[type];
-	if (it.group == ITEM_GROUP_DEPRECATED) {
-		return nullptr;
-	}
-
 	if (it.stackable && count == 0) {
 		count = 1;
 	}
@@ -85,6 +78,8 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 		}
 
 		newItem->incrementReferenceCounter();
+	} else if (type != 0) {
+		SPDLOG_WARN("[Item::CreateItem] Item with id '{}' is not registered and cannot be created.", type);
 	}
 
 	return newItem;
@@ -94,7 +89,7 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
 	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
 	uint32_t info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
-	imbuementInfo->imbuement = g_imbuements->getImbuement(info & 0xFF);
+	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
@@ -115,13 +110,13 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 	}
 
 	// Get imbuement by the id
-	const Imbuement *imbuement = g_imbuements->getImbuement(imbuementId);
+	const Imbuement *imbuement = g_imbuements().getImbuement(imbuementId);
 	if (!imbuement) {
 		return;
 	}
 
 	// Get category imbuement for acess category id
-	const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuement->getCategory());
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 	if (!hasImbuementType(static_cast<ImbuementTypes_t>(categoryImbuement->id), imbuement->getBaseID())) {
 		return;
 	}
@@ -140,7 +135,7 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
-			const CategoryImbuement* categoryImbuement = g_imbuements->getCategoryByID(imbuementInfo.imbuement->getCategory());
+			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
 			if (categoryImbuement->id == categoryId) {
 				return true;
 			}
@@ -151,8 +146,17 @@ bool Item::hasImbuementCategoryId(uint16_t categoryId) {
 
 Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 {
-	const ItemType& it = Item::items[type];
-	if (it.id == 0 || it.group == ITEM_GROUP_DEPRECATED || it.stackable || it.useable || it.moveable || it.pickupable || it.isDepot() || it.isSplash() || it.isDoor()) {
+	if (const ItemType& it = Item::items[type];
+			it.id == 0
+			|| it.stackable
+			|| it.multiUse
+			|| it.moveable
+			|| it.pickupable
+			|| it.isDepot()
+			|| it.isSplash()
+			|| it.isDoor()
+		)
+	{
 		return nullptr;
 	}
 
@@ -1479,7 +1483,7 @@ std::string Item::parseImbuementDescription(const Item* item)
 				continue;
 			}
 
-			const BaseImbuement *baseImbuement = g_imbuements->getBaseByID(imbuementInfo.imbuement->getBaseID());
+			const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID());
 			if (!baseImbuement)
 			{
 				continue;
@@ -1513,7 +1517,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 	if (it.isRune()) {
 		if (it.runeLevel > 0 || it.runeMagLevel > 0) {
-			if (RuneSpell* rune = g_spells->getRuneSpell(it.id)) {
+			if (const RuneSpell* rune = g_spells().getRuneSpell(it.id)) {
 				int32_t tmpSubType = subType;
 				if (item) {
 					tmpSubType = item->getSubType();
@@ -1528,7 +1532,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				showVocMap.reserve(vocMap.size() / 2);
 				for (const auto& voc : vocMap) {
 					if (voc.second) {
-						showVocMap.push_back(g_vocations.getVocation(voc.first));
+						showVocMap.push_back(g_vocations().getVocation(voc.first));
 					}
 				}
 
@@ -2559,12 +2563,12 @@ ItemAttributes::Attribute& ItemAttributes::getAttr(ItemAttrTypes type)
 
 void Item::startDecaying()
 {
-	g_decay.startDecay(this);
+	g_decay().startDecay(this);
 }
 
 void Item::stopDecaying()
 {
-	g_decay.stopDecay(this);
+	g_decay().stopDecay(this);
 }
 
 bool Item::hasMarketAttributes()

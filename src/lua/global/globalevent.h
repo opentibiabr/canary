@@ -36,6 +36,13 @@ class GlobalEvents final : public BaseEvents {
 		GlobalEvents(const GlobalEvents&) = delete;
 		GlobalEvents& operator=(const GlobalEvents&) = delete;
 
+		static GlobalEvents& getInstance() {
+			// Guaranteed to be destroyed
+			static GlobalEvents instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void startup() const;
 
 		void timer();
@@ -64,6 +71,8 @@ class GlobalEvents final : public BaseEvents {
 		GlobalEventMap thinkMap, serverMap, timerMap;
 		int32_t thinkEventId = 0, timerEventId = 0;
 };
+
+constexpr auto g_globalEvents = &GlobalEvents::getInstance;
 
 class GlobalEvent final : public Event {
 	public:

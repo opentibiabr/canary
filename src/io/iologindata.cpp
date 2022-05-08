@@ -24,10 +24,9 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
+#include "io/ioprey.h"
 
 #include <limits>
-
-extern Monsters g_monsters;
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {
@@ -141,111 +140,6 @@ bool IOLoginData::loadPlayerById(Player* player, uint32_t id)
   return loadPlayer(player, db.storeQuery(query.str()));
 }
 
-// New Prey
-bool IOLoginData::loadPlayerPreyData(Player* player)
-{
-  Database& db = Database::getInstance();
-  DBResult_ptr result;
-  std::ostringstream query;
-  query << "SELECT `num`, `state`, `unlocked`, `current`, `monster_list`, `free_reroll_in`, `time_left`, `next_use`, `bonus_type`, `bonus_value`, `bonus_grade`, `tick` FROM `prey_slots` WHERE `player_id` = " << player->getGUID();
-  if ((result = db.storeQuery(query.str()))) {
-    do {
-      uint16_t slotNum = result->getNumber<uint16_t>("num");
-      player->preySlotState[slotNum] = result->getNumber<uint16_t>("state");
-      player->preySlotUnlocked[slotNum] = result->getNumber<uint16_t>("unlocked");
-      player->preySlotCurrentMonster[slotNum] = result->getString("current");
-      player->preySlotMonsterList[slotNum] = result->getString("monster_list");
-      player->preySlotFreeRerollIn[slotNum] = result->getNumber<uint16_t>("free_reroll_in");
-      player->preySlotTimeLeft[slotNum] = result->getNumber<uint16_t>("time_left");
-      player->preySlotNextUse[slotNum] = result->getNumber<uint32_t>("next_use");
-      player->preySlotBonusType[slotNum] = result->getNumber<uint16_t>("bonus_type");
-      player->preySlotBonusValue[slotNum] = result->getNumber<uint16_t>("bonus_value");
-      player->preySlotBonusGrade[slotNum] = result->getNumber<uint16_t>("bonus_grade");
-      player->preySlotTick[slotNum] = result->getNumber<uint16_t>("tick");
-    } while (result->next());
-  }
-  else {
-    query.str(std::string());
-    DBInsert preyDataQuery("INSERT INTO `prey_slots` (`player_id`, `num`, `state`, `unlocked`, `current`, `monster_list`, `free_reroll_in`, `time_left`, `next_use`, `bonus_type`, `bonus_value`, `bonus_grade`, `tick`) VALUES ");
-    for (size_t num = 0; num < PREY_SLOTNUM_THIRD + 1; num++) {
-      query << player->getGUID() << ',' << num << ',' << 0 << ',' << 0 << ',' << db.escapeString("") << ',' << db.escapeString("") << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0 << ',' << 0;
-      if (!preyDataQuery.addRow(query)) {
-        return false;
-      }
-    }
-    if (!preyDataQuery.execute()) {
-      return false;
-    }
-    // Reload player data
-    return loadPlayerPreyData(player);
-  }
-
-  return true;
-}
-
-bool IOLoginData::loadPlayerPreyById(Player* player, uint32_t id)
-{
-  Database& db = Database::getInstance();
-  std::ostringstream query;
-  query << "SELECT `player_id`, `bonus_type1`, `bonus_value1`, `bonus_name1`, `bonus_type2`, `bonus_value2`, `bonus_name2`, `bonus_type3`, `bonus_value3`, `bonus_name3` FROM `player_preytimes` WHERE `player_id` = " << id;
-  DBResult_ptr result = db.storeQuery(query.str());
-
-  if (!result) {
-    return false;
-  }
-
-  player->preyBonusType[0] = result->getNumber<uint16_t>("bonus_type1");
-  player->preyBonusType[1] = result->getNumber<uint16_t>("bonus_type2");
-  player->preyBonusType[2] = result->getNumber<uint16_t>("bonus_type3");
-
-  player->preyBonusValue[0] = result->getNumber<uint16_t>("bonus_value1");
-  player->preyBonusValue[1] = result->getNumber<uint16_t>("bonus_value2");
-  player->preyBonusValue[2] = result->getNumber<uint16_t>("bonus_value3");
-
-  player->preyBonusName[0] = result->getString("bonus_name1");
-  player->preyBonusName[1] = result->getString("bonus_name2");
-  player->preyBonusName[2] = result->getString("bonus_name3");
-
-  return true;
-}
-
-bool IOLoginData::savePlayerPreyById(Player* player, uint32_t id)
-{
-  Database& db = Database::getInstance();
-  std::ostringstream querycheck;
-  std::ostringstream query;
-  querycheck << "SELECT `bonus_type1` FROM `player_preytimes` WHERE `player_id` = " << id;
-  DBResult_ptr returnQuery = db.storeQuery(querycheck.str());
-
-  if (!returnQuery) {
-    query << "INSERT INTO `player_preytimes` (`player_id`, `bonus_type1`, `bonus_value1`, `bonus_name1`, `bonus_type2`, `bonus_value2`, `bonus_name2`, `bonus_type3`, `bonus_value3`, `bonus_name3`) VALUES (";
-    query << id << ", ";
-    query << player->getPreyType(0) << ", ";
-    query << player->getPreyValue(0) << ", ";
-    query << db.escapeString(player->getPreyName(0)) << ", ";
-    query << player->getPreyType(1) << ", ";
-    query << player->getPreyValue(1) << ", ";
-    query << db.escapeString(player->getPreyName(1)) << ", ";
-    query << player->getPreyType(2) << ", ";
-    query << player->getPreyValue(2) << ", ";
-    query << db.escapeString(player->getPreyName(2)) << ")";
-  } else {
-    query << "UPDATE `player_preytimes` SET ";
-    query << "`bonus_type1` = " << player->getPreyType(0) << ',';
-    query << "`bonus_value1` = " << player->getPreyValue(0) << ',';
-    query << "`bonus_name1` = " << db.escapeString(player->getPreyName(0)) << ',';
-    query << "`bonus_type2` = " << player->getPreyType(1) << ',';
-    query << "`bonus_value2` = " << player->getPreyValue(1) << ',';
-    query << "`bonus_name2` = " << db.escapeString(player->getPreyName(1)) << ',';
-    query << "`bonus_type3` = " << player->getPreyType(2) << ',';
-    query << "`bonus_value3` = " << player->getPreyValue(2) << ',';
-    query << "`bonus_name3` = " << db.escapeString(player->getPreyName(2));
-    query << " WHERE `player_id` = " << id;
-  }
-
-  return db.executeQuery(query.str());
-}
-
 bool IOLoginData::loadPlayerByName(Player* player, const std::string& name)
 {
   Database& db = Database::getInstance();
@@ -279,8 +173,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   acc.GetCoins(&(player->coinBalance));
-
-  player->preyBonusRerolls = result->getNumber<uint16_t>("bonus_rerolls");
 
   Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
@@ -358,6 +250,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->healthMax = result->getNumber<int32_t>("healthmax");
 
   player->defaultOutfit.lookType = result->getNumber<uint16_t>("looktype");
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookType)) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
+		return false;
+	}
   player->defaultOutfit.lookHead = result->getNumber<uint16_t>("lookhead");
   player->defaultOutfit.lookBody = result->getNumber<uint16_t>("lookbody");
   player->defaultOutfit.lookLegs = result->getNumber<uint16_t>("looklegs");
@@ -368,6 +264,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->defaultOutfit.lookMountLegs = result->getNumber<uint16_t>("lookmountlegs");
   player->defaultOutfit.lookMountFeet = result->getNumber<uint16_t>("lookmountfeet");
   player->defaultOutfit.lookFamiliarsType = result->getNumber<uint16_t>("lookfamiliarstype");
+	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
+		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
+		return false;
+	}
   player->isDailyReward = result->getNumber<uint16_t>("isreward");
   player->currentOutfit = player->defaultOutfit;
 
@@ -390,6 +290,9 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->loginPosition.y = result->getNumber<uint16_t>("posy");
   player->loginPosition.z = result->getNumber<uint16_t>("posz");
 
+  player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
+  player->addTaskHuntingPoints(result->getNumber<uint16_t>("task_points"));
+
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
 
@@ -411,10 +314,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   player->staminaMinutes = result->getNumber<uint16_t>("stamina");
-  player->preyStaminaMinutes[0] = result->getNumber<uint16_t>("prey_stamina_1");
-  player->preyStaminaMinutes[1] = result->getNumber<uint16_t>("prey_stamina_2");
-  player->preyStaminaMinutes[2] = result->getNumber<uint16_t>("prey_stamina_3");
-
   player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
   player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
 
@@ -523,7 +422,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   uint16_t raceid_t;
   while (propBestStream.read<uint16_t>(raceid_t)) {
-    MonsterType* tmp_tt = g_monsters.getMonsterTypeByRaceId(raceid_t);
+    MonsterType* tmp_tt = g_monsters().getMonsterTypeByRaceId(raceid_t);
     if (tmp_tt) {
       player->addBestiaryTrackerList(tmp_tt);
     }
@@ -755,7 +654,73 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     } while (result->next());
   }
 
-  loadPlayerPreyData(player);
+  // Load prey class
+  if (g_configManager().getBoolean(PREY_ENABLED)) {
+    query.str(std::string());
+    query << "SELECT * FROM `player_prey` WHERE `player_id` = " << player->getGUID();
+    if (result = db.storeQuery(query.str())) {
+      do {
+        auto slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+        slot->state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+        slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
+        slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
+        slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
+        slot->bonusRarity = static_cast<uint8_t>(result->getNumber<uint16_t>("bonus_rarity"));
+        slot->bonusPercentage = result->getNumber<uint16_t>("bonus_percentage");
+        slot->bonusTimeLeft = result->getNumber<uint16_t>("bonus_time");
+        slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
+
+        unsigned long preySize;
+        const char* preyStream = result->getStream("monster_list", preySize);
+        PropStream propPreyStream;
+        propPreyStream.init(preyStream, preySize);
+
+        uint16_t raceId;
+        while (propPreyStream.read<uint16_t>(raceId)) {
+          slot->raceIdList.push_back(raceId);
+        }
+
+        player->setPreySlotClass(slot);
+      } while (result->next());
+    }
+  }
+
+  // Load task hunting class
+  if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+    query.str(std::string());
+    query << "SELECT * FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
+    if (result = db.storeQuery(query.str())) {
+      do {
+        auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
+        slot->state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+        slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
+        slot->upgrade = result->getNumber<bool>("upgrade");
+        slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));
+        slot->currentKills = result->getNumber<uint16_t>("kills");
+        slot->disabledUntilTimeStamp = result->getNumber<int64_t>("disabled_time");
+        slot->freeRerollTimeStamp = result->getNumber<int64_t>("free_reroll");
+
+        unsigned long taskHuntSize;
+        const char* taskHuntStream = result->getStream("monster_list", taskHuntSize);
+        PropStream propTaskHuntStream;
+        propTaskHuntStream.init(taskHuntStream, taskHuntSize);
+
+        uint16_t raceId;
+        while (propTaskHuntStream.read<uint16_t>(raceId)) {
+          slot->raceIdList.push_back(raceId);
+        }
+
+        if (slot->state == PreyTaskDataState_Inactive && slot->disabledUntilTimeStamp < OTSYS_TIME()) {
+          slot->state = PreyTaskDataState_Selection;
+        }
+
+        player->setTaskHuntingSlotClass(slot);
+      } while (result->next());
+    }
+  }
+
+  player->initializePrey();
+	player->initializeTaskHunting();
   player->updateBaseSpeed();
   player->updateInventoryWeight();
   player->updateInventoryImbuement(true);
@@ -859,7 +824,6 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 
 bool IOLoginData::savePlayer(Player* player)
 {
-  savePlayerPreyById(player, player->getGUID());
   if (player->getHealth() <= 0) {
     player->changeHealth(1);
   }
@@ -912,6 +876,9 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`posy` = " << loginPosition.getY() << ',';
   query << "`posz` = " << loginPosition.getZ() << ',';
 
+  query << "`prey_wildcard` = " << player->getPreyCards() << ',';
+  query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
+
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';
 
@@ -960,10 +927,6 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`offlinetraining_time` = " << player->getOfflineTrainingTime() / 1000 << ',';
   query << "`offlinetraining_skill` = " << player->getOfflineTrainingSkill() << ',';
   query << "`stamina` = " << player->getStaminaMinutes() << ',';
-  query << "`prey_stamina_1` = " << player->getPreyStamina(0) << ",";
-  query << "`prey_stamina_2` = " << player->getPreyStamina(1) << ",";
-  query << "`prey_stamina_3` = " << player->getPreyStamina(2) << ",";
-
   query << "`skill_fist` = " << player->skills[SKILL_FIST].level << ',';
   query << "`skill_fist_tries` = " << player->skills[SKILL_FIST].tries << ',';
   query << "`skill_club` = " << player->skills[SKILL_CLUB].level << ',';
@@ -994,7 +957,6 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`max_manashield` = " << player->getMaxManaShield() << ',';
   query << "`xpboost_value` = " << player->getStoreXpBoost() << ',';
   query << "`xpboost_stamina` = " << player->getExpBoostStamina() << ',';
-  query << "`bonus_rerolls` = " << player->getPreyBonusRerolls() << ',';
   query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ',';
 
   if (!player->isOffline()) {
@@ -1204,26 +1166,87 @@ bool IOLoginData::savePlayer(Player* player)
     return false;
   }
 
-  // New Prey
-  query.str(std::string());
-  query << "DELETE FROM `prey_slots` WHERE `player_id` = " << player->getGUID();
-  if (!db.executeQuery(query.str())) {
-    SPDLOG_WARN("[IOLoginData::savePlayer] - Failed to delete table 'prey_slosts' from player: {}", player->getName());
-    return false;
-  }
-
-  query.str(std::string());
-  DBInsert preyDataQuery("INSERT INTO `prey_slots` (`player_id`, `num`, `state`, `unlocked`, `current`, `monster_list`, `free_reroll_in`, `time_left`, `next_use`, `bonus_type`, `bonus_value`, `bonus_grade`, `tick`) VALUES ");
-  for (size_t num = 0; num < PREY_SLOTNUM_THIRD + 1; num++) {
-    query << player->getGUID() << ',' << num << ',' << player->preySlotState[num] << ',' << player->preySlotUnlocked[num] << ',' << db.escapeString(player->preySlotCurrentMonster[num]) << ',' << db.escapeString(player->preySlotMonsterList[num]) << ',' << player->preySlotFreeRerollIn[num] << ',' << player->preySlotTimeLeft[num] << ',' << player->preySlotNextUse[num] << ',' << player->preySlotBonusType[num] << ',' << player->preySlotBonusValue[num] << ',' << player->preySlotBonusGrade[num] << ',' << player->preySlotTick[num];
-    if (!preyDataQuery.addRow(query)) {
+  // Save prey class
+  if (g_configManager().getBoolean(PREY_ENABLED)) {
+    query.str(std::string());
+    query << "DELETE FROM `player_prey` WHERE `player_id` = " << player->getGUID();
+    if (!db.executeQuery(query.str())) {
       return false;
+    }
+
+    for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+      PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
+      if (slot) {
+        query.str(std::string());
+        query << "INSERT INTO `player_prey` (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) VALUES (";
+          query << player->getGUID() << ", ";
+          query << static_cast<uint16_t>(slot->id) << ", ";
+          query << static_cast<uint16_t>(slot->state) << ", ";
+          query << slot->selectedRaceId << ", ";
+          query << static_cast<uint16_t>(slot->option) << ", ";
+          query << static_cast<uint16_t>(slot->bonus) << ", ";
+          query << static_cast<uint16_t>(slot->bonusRarity) << ", ";
+          query << slot->bonusPercentage << ", ";
+          query << slot->bonusTimeLeft << ", ";
+          query << slot->freeRerollTimeStamp << ", ";
+
+        PropWriteStream propPreyStream;
+        std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId)
+        {
+            propPreyStream.write<uint16_t>(raceId);
+        });
+
+        size_t preySize;
+        const char* preyList = propPreyStream.getStream(preySize);
+        query << db.escapeBlob(preyList, static_cast<uint32_t>(preySize)) << ")";
+
+        if (!db.executeQuery(query.str())) {
+          SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
+          return false;
+        }
+      }
     }
   }
 
-  if (!preyDataQuery.execute()) {
-    SPDLOG_WARN("[IOLoginData::savePlayer] - Failed for save prey from playerr: {}", player->getName());
-    return false;
+  // Save task hunting class
+  if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+    query.str(std::string());
+    query << "DELETE FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
+    if (!db.executeQuery(query.str())) {
+      return false;
+    }
+
+    for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+      TaskHuntingSlot* slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId));
+      if (slot) {
+        query.str(std::string());
+        query << "INSERT INTO `player_taskhunt` (`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, `kills`, `disabled_time`, `free_reroll`, `monster_list`) VALUES (";
+          query << player->getGUID() << ", ";
+          query << static_cast<uint16_t>(slot->id) << ", ";
+          query << static_cast<uint16_t>(slot->state) << ", ";
+          query << slot->selectedRaceId << ", ";
+          query << (slot->upgrade ? 1 : 0) << ", ";
+          query << static_cast<uint16_t>(slot->rarity) << ", ";
+          query << slot->currentKills << ", ";
+          query << slot->disabledUntilTimeStamp << ", ";
+          query << slot->freeRerollTimeStamp << ", ";
+
+        PropWriteStream propTaskHuntingStream;
+        std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propTaskHuntingStream](uint16_t raceId)
+        {
+            propTaskHuntingStream.write<uint16_t>(raceId);
+        });
+
+        size_t taskHuntingSize;
+        const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
+        query << db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize)) << ")";
+
+        if (!db.executeQuery(query.str())) {
+          SPDLOG_WARN("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
+          return false;
+        }
+      }
+    }
   }
 
   query.str(std::string());

@@ -1552,6 +1552,15 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);
+	} else if (!isLogin) {
+		std::string bless = getBlessingsName();
+		std::ostringstream lostBlesses;
+		if (bless.length() == 0) {
+			lostBlesses << "You lost all your blesses.";
+		} else {
+			lostBlesses << "You are still blessed with " << bless;
+		}
+		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 	}
 }
 
@@ -2636,14 +2645,6 @@ void Player::death(Creature* lastHitCreature)
 				removeBlessing(i, 1);
 			}
 		}
-
-		std::ostringstream lostBlesses;
-		if (bless.length() == 0) {
-			lostBlesses << "You lost all your blesses.";
-		} else {
-			lostBlesses << "You are still blessed with " << bless;
-		}
-		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 
 		sendStats();
 		sendSkills();

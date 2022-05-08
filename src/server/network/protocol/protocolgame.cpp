@@ -719,7 +719,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xB1: parseHighscores(msg); break;
 		case 0xBA: parseTaskHuntingAction(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
-		case 0xBF: parseForgeClick(msg); break;
+		case 0xBF: parseForgeEnter(msg); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
@@ -7296,16 +7296,17 @@ void ProtocolGame::sendOpenForge() {
 	msg.addByte(0x01);
 	msg.addByte(0x00);
 	uint16_t total = 0;
-	for (Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
+	const Container* backpack = player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer();
+	for (const Item* item : backpack->getItems(true)) {
 		if (item->getClassification() != 0 && item->getTier() < 10) {
 			total++;
 		}
 	}
 	msg.addByte(total);
-	for (Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
+	for (const Item* item : backpack->getItems(true)) {
 		if (item->getClassification() != 0 && item->getTier() < 10) {
 			msg.add<uint16_t>(item->getID());
-			msg.addByte(item->getTier());
+			msg.addByte(static_cast<uint8_t>(item->getTier()));
 			msg.add<uint16_t>(item->getItemCount());
 		}
 	}
@@ -7316,40 +7317,81 @@ void ProtocolGame::sendOpenForge() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::parseForgeClick(NetworkMessage& msg) {
-	uint8_t byte1 = msg.getByte(); // BF -> 0 = indica fusion, 1 = indica transfer, 2 = indica converter dust para sliver, 3 = converter sliver para core, 4 = aumentar limite de dust
-	uint8_t byte2 = msg.getByte();
-	uint8_t byte3 = msg.getByte();
-	uint8_t byte4 = msg.getByte();
-	uint8_t byte5 = msg.getByte();
-	uint8_t byte6 = msg.getByte();
-	uint8_t byte7 = msg.getByte();
-	uint8_t byte8 = msg.getByte();
+void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
+	uint16_t action = msg.getByte(); // BF -> 0 = indica fusion, 1 = indica transfer, 2 = indica converter dust para sliver, 3 = converter sliver para core, 4 = aumentar limite de dust
+	uint16_t leftItem = msg.get<uint16_t>();
+	uint16_t leftItemTier = msg.getByte();
+	uint16_t rightItem = msg.get<uint16_t>();
+	uint16_t chance = msg.getByte();
+	uint16_t tierLoss = msg.getByte();
+	if (action == 0) {
+		forgeFusionItem(leftItem, leftItemTier, rightItem, chance, tierLoss);
+	} else if (action == 1) {
+		forgeTransferItem(leftItem, leftItemTier, rightItem);
+	} else if (action <= 4) {
+		forgeResourceConversion(action);
+	}
 
-	std::ostringstream ss;
-	std::copy(msg.getBodyBuffer(), msg.getBodyBuffer()+sizeof(msg.getBodyBuffer()), std::ostream_iterator<int>(ss, "-"));
-	std::cout << ss.str() << std::endl;
-
-	raiseItemTier();
+	SPDLOG_WARN("action {}", action);
+	SPDLOG_WARN("byte2 {}", leftItem);
+	SPDLOG_WARN("byte3 {}", leftItemTier);
+	SPDLOG_WARN("byte4 {}", rightItem);
+	SPDLOG_WARN("byte5 {}", chance);
+	SPDLOG_WARN("byte6 {}", tierLoss);
 }
 
-void ProtocolGame::raiseItemTier() {
+void ProtocolGame::forgeFusionItem(uint16_t leftItem, uint16_t leftItemTier, uint16_t rightItem, uint16_t chance, uint16_t tierLoss) {
 	NetworkMessage msg;
+	// WIP
 	msg.addByte(0x8A);
 
-	msg.addByte(0x00); // deixa o item da direita piscando preto
-	msg.addByte(0x01); // sucesso ou falha
+	msg.addByte(0x00); // fusion or transfer
+	msg.addByte(0x01); // sucess?
 
-	msg.addByte(0x2E); // Sprite do item da esquerda
-	msg.addByte(0x85); // Sprite do item da esquerda (as duas sprites somam ex. 0x2e + 0x85 = 0x2e85)
-	msg.addByte(0x01); // Tier do item da esquerda
+	msg.add<uint16_t>(leftItem); // left item
+	msg.addByte(leftItemTier); // left item tier
 
-	msg.addByte(0x2E); // Sprite do item da direita
-	msg.addByte(0x85); // Sprite do item da direita
-	msg.addByte(0x02); // Tier do item da direita
+	msg.add<uint16_t>(rightItem); // right item
+	msg.addByte(leftItemTier + 1); // right item tier
+	//Item::Item(rightItem).setTier(leftItemTier + 1);
 
 	msg.addByte(0x02); // chance de nao consumir dust ou exalted core
 	msg.addByte(0x09); // quantidade de dust ou exalted core nao consumida. colocar apenas se o byte anterior for > 0
 
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::forgeTransferItem(uint16_t leftItem, uint16_t leftItemTier, uint16_t rightItem) {
+	NetworkMessage msg;
+	// WIP
+	msg.addByte(0x8A);
+
+	msg.addByte(0x01); // fusion or transfer
+
+	msg.add<uint16_t>(leftItem); // left item
+	msg.addByte(leftItemTier); // left item tier
+	msg.add<uint16_t>(rightItem); // right item
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::forgeResourceConversion(uint16_t action) {
+	NetworkMessage msg;
+	// WIP
+	msg.addByte(0x8A);
+	msg.addByte(action); // fusion or transfer
+	if (action == 2) {
+		uint16_t dusts = player->getForgeDusts();
+		uint16_t cost = 20 * 3;
+		if (cost > dusts) {
+			player->sendFYIBox("Not enough dust.");
+		}
+
+		player->setForgeSlivers(player->getForgeSlivers() + 3);
+		player->setForgeDusts(dusts - cost);
+		sendForgingData();
+	} else if (action == 3) {
+
+	}
 	writeToOutputBuffer(msg);
 }

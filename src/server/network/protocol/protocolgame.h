@@ -462,8 +462,10 @@ private:
 
 	//Forge System
 	void sendOpenForge();
-	void parseForgeClick(NetworkMessage &msg);
-	void raiseItemTier();
+	void parseForgeEnter(NetworkMessage &msg);
+	void forgeFusionItem(uint16_t leftItem, uint16_t leftItemTier, uint16_t rightItem, uint16_t chance, uint16_t tierLoss);
+	void forgeTransferItem(uint16_t leftItem, uint16_t leftItemTier, uint16_t rightItem);
+	void forgeResourceConversion(uint16_t action);
 
 	friend class Player;
 

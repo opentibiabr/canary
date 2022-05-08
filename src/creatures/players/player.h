@@ -2033,7 +2033,7 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
-		void sendOpenForge() {
+		void sendOpenForge() const {
 			if (client) {
 				client->sendOpenForge();
 			}

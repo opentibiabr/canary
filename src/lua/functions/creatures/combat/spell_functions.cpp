@@ -23,8 +23,6 @@
 #include "creatures/players/vocations/vocation.h"
 #include "lua/functions/creatures/combat/spell_functions.hpp"
 
-extern Spells* g_spells;
-extern Vocations g_vocations;
 
 int SpellFunctions::luaSpellCreate(lua_State* L) {
 	// Spell(words, name or id) to get an existing spell
@@ -40,7 +38,7 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 
 	if (isNumber(L, 2)) {
 		int32_t id = getNumber<int32_t>(L, 2);
-		RuneSpell* rune = g_spells->getRuneSpell(id);
+		RuneSpell* rune = g_spells().getRuneSpell(id);
 
 		if (rune) {
 			pushUserdata<Spell>(L, rune);
@@ -51,19 +49,19 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 		spellType = static_cast<SpellType_t>(id);
 	} else if (isString(L, 2)) {
 		std::string arg = getString(L, 2);
-		InstantSpell* instant = g_spells->getInstantSpellByName(arg);
+		InstantSpell* instant = g_spells().getInstantSpellByName(arg);
 		if (instant) {
 			pushUserdata<Spell>(L, instant);
 			setMetatable(L, -1, "Spell");
 			return 1;
 		}
-		instant = g_spells->getInstantSpell(arg);
+		instant = g_spells().getInstantSpell(arg);
 		if (instant) {
 			pushUserdata<Spell>(L, instant);
 			setMetatable(L, -1, "Spell");
 			return 1;
 		}
-		RuneSpell* rune = g_spells->getRuneSpellByName(arg);
+		RuneSpell* rune = g_spells().getRuneSpellByName(arg);
 		if (rune) {
 			pushUserdata<Spell>(L, rune);
 			setMetatable(L, -1, "Spell");
@@ -141,7 +139,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_spells->registerInstantLuaEvent(instant));
+		pushBoolean(L, g_spells().registerInstantLuaEvent(instant));
 	} else if (spell->spellType == SPELL_RUNE) {
 		RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
 		if (rune->getMagicLevel() != 0 || rune->getLevel() != 0) {
@@ -159,7 +157,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		pushBoolean(L, g_spells->registerRuneLuaEvent(rune));
+		pushBoolean(L, g_spells().registerRuneLuaEvent(rune));
 	}
 	return 1;
 }
@@ -185,6 +183,12 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 	// spell:id(id)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
+		if (spell->spellType != SPELL_INSTANT) {
+			reportErrorFunc("The method: 'spell:id(id)' is only for use of instant spells");
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, spell->getId());
 		} else {
@@ -578,7 +582,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 				++it;
 				std::string s = std::to_string(it);
 				char const *pchar = s.c_str();
-				std::string name = g_vocations.getVocation(voc.first)->getVocName();
+				std::string name = g_vocations().getVocation(voc.first)->getVocName();
 				setField(L, pchar, name);
 			}
 			setMetatable(L, -1, "Spell");
@@ -587,7 +591,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 			for (int i = 0; i < parameters; ++i) {
 				if (getString(L, 2 + i).find(";") != std::string::npos) {
 					std::vector<std::string> vocList = explodeString(getString(L, 2 + i), ";");
-					int32_t vocationId = g_vocations.getVocationId(vocList[0]);
+					int32_t vocationId = g_vocations().getVocationId(vocList[0]);
 					if (vocList.size() > 0) {
 						if (vocList[1] == "true") {
 							spell->addVocMap(vocationId, true);
@@ -596,7 +600,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 						}
 					}
 				} else {
-					int32_t vocationId = g_vocations.getVocationId(getString(L, 2 + i));
+					int32_t vocationId = g_vocations().getVocationId(getString(L, 2 + i));
 					spell->addVocMap(vocationId, false);
 				}
 			}

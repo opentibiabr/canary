@@ -11,7 +11,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(26)
 rune:name("poison field rune")
 rune:runeId(3172)
 rune:allowFarUse(true)

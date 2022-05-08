@@ -38,6 +38,18 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 {
 	public:
 		DatabaseTasks();
+
+		// non-copyable
+		DatabaseTasks(DatabaseTasks const&) = delete;
+		void operator=(DatabaseTasks const&) = delete;
+
+		static DatabaseTasks& getInstance() {
+			// Guaranteed to be destroyed
+			static DatabaseTasks instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		bool SetDatabaseInterface(Database *database);
 		void start();
 		void startThread();
@@ -59,6 +71,6 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		bool flushTasks = false;
 };
 
-extern DatabaseTasks g_databaseTasks;
+constexpr auto g_databaseTasks = &DatabaseTasks::getInstance;
 
 #endif  // SRC_DATABASE_DATABASETASKS_H_

@@ -26,9 +26,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-extern Monsters g_monsters;
-extern Events* g_events;
-
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
 
@@ -36,7 +33,7 @@ uint32_t Monster::monsterAutoID = 0x40000000;
 
 Monster* Monster::createMonster(const std::string& name)
 {
-	MonsterType* mType = g_monsters.getMonsterType(name);
+	MonsterType* mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
@@ -737,7 +734,7 @@ bool Monster::selectTarget(Creature* creature)
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature) && !isSummon()) {
-			g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+			g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
 		}
 	}
 	return setFollowCreature(creature);
@@ -2042,7 +2039,7 @@ void Monster::updateLookDirection()
 void Monster::dropLoot(Container* corpse, Creature*)
 {
 	if (corpse && lootDrop) {
-		g_events->eventMonsterOnDropLoot(this, corpse);
+		g_events().eventMonsterOnDropLoot(this, corpse);
 	}
 }
 

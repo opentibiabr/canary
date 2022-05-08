@@ -15,7 +15,6 @@ end
 
 spell:name("Wild Growth Rune")
 spell:group("attack")
-spell:id(94)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:level(27)

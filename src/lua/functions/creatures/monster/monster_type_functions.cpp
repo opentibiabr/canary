@@ -25,8 +25,6 @@
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
-extern Monsters g_monsters;
-extern Scripts* g_scripts;
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock>& lootList) {
 	lua_createtable(L, lootList.size(), 0);
@@ -56,9 +54,9 @@ int MonsterTypeFunctions::luaMonsterTypeCreate(lua_State* L) {
 	// MonsterType(name or raceid)
 	MonsterType* monsterType = nullptr;
 	if (isNumber(L, 2)) {
-		monsterType = g_monsters.getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
+		monsterType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 	} else {
-		monsterType = g_monsters.getMonsterType(getString(L, 2));
+		monsterType = g_monsters().getMonsterType(getString(L, 2));
 	}
 
 	if (monsterType) {
@@ -774,7 +772,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddAttack(lua_State* L) {
 		MonsterSpell* spell = getUserdata<MonsterSpell>(L, 2);
 		if (spell) {
 			spellBlock_t sb;
-			if (g_monsters.deserializeSpell(spell, sb, monsterType->name)) {
+			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
 				monsterType->info.attackSpells.push_back(std::move(sb));
 			} else {
 				SPDLOG_WARN("Monster: {}, cant load spell: {}", monsterType->name,
@@ -826,7 +824,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddDefense(lua_State* L) {
 		MonsterSpell* spell = getUserdata<MonsterSpell>(L, 2);
 		if (spell) {
 			spellBlock_t sb;
-			if (g_monsters.deserializeSpell(spell, sb, monsterType->name)) {
+			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
 				monsterType->info.defenseSpells.push_back(std::move(sb));
 			} else {
 				SPDLOG_WARN("Monster: {}, Cant load spell: {}", monsterType->name,
@@ -998,7 +996,7 @@ int MonsterTypeFunctions::luaMonsterTypeEventOnCallback(lua_State* L) {
 	// monsterType:onSay(callback)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
-		if (monsterType->loadCallback(&g_scripts->getScriptInterface())) {
+		if (monsterType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
 		 }
@@ -1113,8 +1111,14 @@ int MonsterTypeFunctions::luaMonsterTypeOutfit(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			pushOutfit(L, monsterType->info.outfit);
 		} else {
-			monsterType->info.outfit = getOutfit(L, 2);
-			pushBoolean(L, true);
+			Outfit_t outfit = getOutfit(L, 2);
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				lua_pushnil(L);
+			} else {
+				monsterType->info.outfit = outfit;
+				pushBoolean(L, true);
+			}
 		}
 	} else {
 		lua_pushnil(L);
@@ -1140,6 +1144,8 @@ int MonsterTypeFunctions::luaMonsterTypeRace(lua_State* L) {
 				monsterType->info.race = RACE_FIRE;
 			} else if (race == "energy") {
 				monsterType->info.race = RACE_ENERGY;
+			} else if (race == "ink") {
+				monsterType->info.race = RACE_INK;
 			} else {
 				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeRace] - "
 							"Unknown race type {}", race);

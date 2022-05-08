@@ -18,7 +18,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(114)
 rune:name("icicle rune")
 rune:runeId(3158)
 rune:allowFarUse(true)

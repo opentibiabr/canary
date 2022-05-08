@@ -27,9 +27,6 @@
 #include "lua/creature/movement.h"
 #include "creatures/players/imbuements/imbuements.h"
 
-extern Vocations g_vocations;
-extern Events* g_events;
-extern Imbuements* g_imbuements;
 
 MoveEvents::MoveEvents() :
 	scriptInterface("MoveEvents Interface") {
@@ -596,7 +593,7 @@ bool MoveEvent::configureEvent(const pugi::xml_node& node) {
 				continue;
 			}
 
-			int32_t vocationId = g_vocations.getVocationId(vocationNameAttribute.as_string());
+			int32_t vocationId = g_vocations().getVocationId(vocationNameAttribute.as_string());
 			if (vocationId != -1) {
 				vocEquipMap[vocationId] = true;
 				if (vocationNode.attribute("showInDescription").as_bool(true)) {

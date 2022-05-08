@@ -26,11 +26,6 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "utils/pugicast.h"
 
-extern Spells* g_spells;
-extern Monsters g_monsters;
-extern Vocations g_vocations;
-extern LuaEnvironment g_luaEnvironment;
-
 Spells::Spells()
 {
 	scriptInterface.initState();
@@ -141,6 +136,16 @@ Event_ptr Spells::getEvent(const std::string& nodeName)
 	return nullptr;
 }
 
+bool Spells::hasInstantSpell(const std::string& word) const
+{
+	if (auto iterate = instants.find(word);
+	iterate != instants.end())
+	{
+		return true;
+	}
+	return false;
+}
+
 bool Spells::registerEvent(Event_ptr event, const pugi::xml_node&)
 {
 	InstantSpell* instant = dynamic_cast<InstantSpell*>(event.get());
@@ -172,13 +177,22 @@ bool Spells::registerInstantLuaEvent(InstantSpell* event)
 {
 	InstantSpell_ptr instant { event };
 	if (instant) {
-		std::string words = instant->getWords();
-		auto result = instants.emplace(instant->getWords(), std::move(*instant));
-		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerInstantLuaEvent] - "
-                        "Duplicate registered instant spell with words: {}", words);
+		// If the spell not have the "spell:words()" return a error message
+		const std::string& instantName = instant->getName();
+		if (instant->getWordsMap().empty()) {
+			SPDLOG_ERROR("[Spells::registerInstantLuaEvent] - Missing register words for spell with name {}", instantName);
+			return false;
 		}
-		return result.second;
+
+		const std::string& words = instant->getWords();
+		// Checks if there is any spell registered with the same name
+		if (hasInstantSpell(words)) {
+			SPDLOG_WARN("[Spells::registerInstantLuaEvent] - "
+                        "Duplicate registered instant spell with words: {}, on spell with name: {}", words, instantName);
+			return false;
+		}
+		// Register spell word in the map
+		setInstantSpell(words, *instant);
 	}
 
 	return false;
@@ -314,7 +328,7 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 }
 
 CombatSpell::CombatSpell(Combat* initCombat, bool initNeedTarget, bool initNeedDirection) :
-	Event(&g_spells->getScriptInterface()),
+	Event(&g_spells().getScriptInterface()),
 	combat(initCombat),
 	needDirection(initNeedDirection),
 	needTarget(initNeedTarget)
@@ -592,13 +606,13 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 			continue;
 		}
 
-		int32_t vocationId = g_vocations.getVocationId(attr.as_string());
+		int32_t vocationId = g_vocations().getVocationId(attr.as_string());
 		if (vocationId != -1) {
 			attr = vocationNode.attribute("showInDescription");
 			vocSpellMap[vocationId] = !attr || attr.as_bool();
 		} else {
 			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Wrong vocation name: {]", attr.as_string());
+                        "Wrong vocation name: {}", attr.as_string());
 		}
 	}
 	return true;

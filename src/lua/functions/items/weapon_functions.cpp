@@ -28,12 +28,10 @@
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
-extern Scripts* g_scripts;
-extern Weapons* g_weapons;
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts->getScriptInterface()) {
+	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
 		reportErrorFunc("Weapons can only be registered in the Scripts interface.");
 		lua_pushnil(L);
 		return 1;
@@ -137,7 +135,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 		}
 
 		weapon->configureWeapon(it);
-		pushBoolean(L, g_weapons->registerLuaEvent(weapon));
+		pushBoolean(L, g_weapons().registerLuaEvent(weapon));
 		weapon = nullptr; // Releases weapon, removing the luascript reference
 	} else {
 		lua_pushnil(L);

@@ -19,7 +19,6 @@ function rune.onCastSpell(creature, var, isHotkey)
 end
 
 rune:group("attack")
-rune:id(116)
 rune:name("stone shower rune")
 rune:runeId(3175)
 rune:allowFarUse(true)

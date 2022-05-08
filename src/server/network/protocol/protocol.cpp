@@ -24,7 +24,6 @@
 #include "security/rsa.h"
 #include "security/xtea.h"
 
-extern RSA2 g_RSA;
 
 void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 {
@@ -99,7 +98,7 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 		return false;
 	}
 
-	g_RSA.decrypt(reinterpret_cast<char*>(msg.getBuffer()) + msg.getBufferPosition()); //does not break strict aliasing
+	g_RSA().decrypt(msg.getBuffer() + msg.getBufferPosition()); //does not break strict aliasing
 	return msg.getByte() == 0;
 }
 

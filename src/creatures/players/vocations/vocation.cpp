@@ -171,7 +171,7 @@ Vocation* Vocations::getVocation(uint16_t id)
 	return &it->second;
 }
 
-int32_t Vocations::getVocationId(const std::string& name) const
+uint16_t Vocations::getVocationId(const std::string& name) const
 {
 	for (const auto& it : vocationsMap) {
 		if (strcasecmp(it.second.name.c_str(), name.c_str()) == 0) {

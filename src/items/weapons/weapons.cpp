@@ -25,9 +25,6 @@
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
 
-extern Vocations g_vocations;
-extern Weapons* g_weapons;
-extern Events* g_events;
 
 Weapons::Weapons()
 {
@@ -217,10 +214,10 @@ bool Weapon::configureEvent(const pugi::xml_node& node)
 			continue;
 		}
 
-		int32_t vocationId = g_vocations.getVocationId(attr.as_string());
+		uint16_t vocationId = g_vocations().getVocationId(attr.as_string());
 		if (vocationId != -1) {
 			vocWeaponMap[vocationId] = true;
-			int32_t promotedVocation = g_vocations.getPromotedVocation(vocationId);
+			int32_t promotedVocation = g_vocations().getPromotedVocation(vocationId);
 			if (promotedVocation != VOCATION_NONE) {
 				vocWeaponMap[promotedVocation] = true;
 			}
@@ -702,7 +699,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 	const ItemType& it = Item::items[id];
 	if (it.weaponType == WEAPON_AMMO) {
 		Item* mainWeaponItem = player->getWeapon(true);
-		const Weapon* mainWeapon = g_weapons->getWeapon(mainWeaponItem);
+		const Weapon* mainWeapon = g_weapons().getWeapon(mainWeaponItem);
 		if (mainWeapon) {
 			damageModifier = mainWeapon->playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
 		} else {

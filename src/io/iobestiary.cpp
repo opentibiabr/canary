@@ -26,7 +26,6 @@
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 
-extern Monsters g_monsters;
 
 bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage)
 {
@@ -127,14 +126,14 @@ std::map<uint16_t, std::string> IOBestiary::findRaceByName(const std::string &ra
 
 	if (Onlystring) {
 		for (auto it : best_list) {
-			MonsterType* tmpType = g_monsters.getMonsterType(it.second);
+			const MonsterType* tmpType = g_monsters().getMonsterType(it.second);
 			if (tmpType && tmpType->info.bestiaryClass == race) {
 				race_list.insert({it.first, it.second});
 			}
 		}
 	} else {
 		for (auto itn : best_list) {
-			MonsterType* tmpType = g_monsters.getMonsterType(itn.second);
+			const MonsterType* tmpType = g_monsters().getMonsterType(itn.second);
 			if (tmpType && tmpType->info.bestiaryRace == raceNumber) {
 				race_list.insert({itn.first, itn.second});
 			}
@@ -203,7 +202,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race
 	std::map<uint16_t, std::string> besty_l = g_game().getBestiaryList();
 
 	for (auto it : besty_l) {
-		MonsterType* mtype = g_monsters.getMonsterType(it.second);
+		const MonsterType* mtype = g_monsters().getMonsterType(it.second);
 		if (mtype && mtype->info.bestiaryRace == race && player->getBestiaryKillCount(mtype->info.raceid) > 0) {
 			count++;
 		}
@@ -427,7 +426,7 @@ std::list<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const
 	for (auto nt : besty_l) {
 		uint16_t raceid = nt.first;
 		uint32_t thisKilled = player->getBestiaryKillCount(raceid);
-		MonsterType* mtype = g_monsters.getMonsterType(nt.second);
+		const MonsterType* mtype = g_monsters().getMonsterType(nt.second);
 		if (mtype && thisKilled >= mtype->info.bestiaryToUnlock) {
 			finishedMonsters.push_front(raceid);
 		}

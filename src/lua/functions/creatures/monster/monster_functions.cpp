@@ -27,7 +27,6 @@
 #include "creatures/monsters/monsters.h"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 
-extern Monsters g_monsters;
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)
@@ -77,9 +76,9 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 	if (monster) {
 		MonsterType* monsterType = nullptr;
 		if (isNumber(L, 2)) {
-			monsterType = g_monsters.getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
+			monsterType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 		} else {
-			monsterType = g_monsters.getMonsterType(getString(L, 2));
+			monsterType = g_monsters().getMonsterType(getString(L, 2));
 		}
 		// Unregister creature events (current MonsterType)
 		for (const std::string& scriptName : monster->mType->info.scripts) {

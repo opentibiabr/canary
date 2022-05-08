@@ -97,19 +97,6 @@ int ItemFunctions::luaItemGetId(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemGetClientId(lua_State* L) {
-	// item:getClientId()
-	Item* item = getUserdata<Item>(L, 1);
-	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
-	lua_pushnumber(L, item->getClientID());
-	return 1;
-}
-
 int ItemFunctions::luaItemClone(lua_State* L) {
 	// item:clone()
 	Item* item = getUserdata<Item>(L, 1);
@@ -422,9 +409,9 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 			case ITEM_ATTRIBUTE_DECAYSTATE: {
 				ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
 				if (decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
-					g_decay.stopDecay(item);
+					g_decay().stopDecay(item);
 				} else {
-					g_decay.startDecay(item);
+					g_decay().startDecay(item);
 				}
 				pushBoolean(L, true);
 				return 1;
@@ -432,7 +419,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 			case ITEM_ATTRIBUTE_DURATION: {
 				item->setDecaying(DECAYING_PENDING);
 				item->setDuration(getNumber<int32_t>(L, 3));
-				g_decay.startDecay(item);
+				g_decay().startDecay(item);
 				pushBoolean(L, true);
 				return 1;
 			}

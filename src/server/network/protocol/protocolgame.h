@@ -360,6 +360,7 @@ private:
 
 	void sendSpellCooldown(uint8_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
+	void sendUseItemCooldown(uint32_t time);
 
 	void sendCoinBalance();
 

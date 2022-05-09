@@ -7783,37 +7783,45 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
 											 "Sold on Market");
 		} else {
-			uint16_t stashminus = player->getStashItemCount(it.wareId);
-			amount = (amount - (amount > stashminus ? stashminus : amount));
-			std::forward_list<Item*> itemList = getMarketItemList(it.wareId, amount, depotLocker);
-			if (itemList.empty() && amount > 0) {
-				return;
-			}
-
-			if (stashminus > 0) {
-				player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
-			}
-
-			if (it.stackable) {
-				uint16_t tmpAmount = amount;
-				for (Item* item : itemList) {
-					if (!item) {
-						continue;
-					}
-					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
-					tmpAmount -= removeCount;
-					internalRemoveItem(item, removeCount);
-
-					if (tmpAmount == 0) {
-						break;
-					}
+			uint16_t removeAmount = amount;
+			uint16_t stashCount = player->getStashItemCount(it.wareId);
+			if (stashCount > 0) {
+				if (removeAmount > stashCount && player->withdrawItem(it.wareId, stashCount)) {
+					removeAmount -= stashCount;
+				} else if (player->withdrawItem(it.wareId, removeAmount)) {
+					removeAmount = 0;
+				} else {
+					return;
 				}
-			} else {
-				for (Item* item : itemList) {
-					if (!item) {
-						continue;
+			}
+
+			if (removeAmount > 0) {
+				std::forward_list<Item*> itemList = getMarketItemList(it.wareId, removeAmount, depotLocker);
+				if (itemList.empty() && removeAmount > 0) {
+					return;
+				}
+	
+				if (it.stackable) {
+					uint16_t tmpAmount = removeAmount;
+					for (Item* item : itemList) {
+						if (!item) {
+							continue;
+						}
+						uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
+						tmpAmount -= removeCount;
+						internalRemoveItem(item, removeCount);
+
+						if (tmpAmount == 0) {
+							break;
+						}
 					}
-					internalRemoveItem(item);
+				} else {
+					for (Item* item : itemList) {
+						if (!item) {
+							continue;
+						}
+						internalRemoveItem(item);
+					}
 				}
 			}
 		}

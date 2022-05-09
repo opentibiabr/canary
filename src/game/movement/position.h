@@ -57,13 +57,13 @@ struct Position
 	}
 
 	static int_fast32_t getOffsetX(const Position& p1, const Position& p2) {
-		return p1.getX() - p2.getX();
+		return p1.x - p2.x;
 	}
 	static int_fast32_t getOffsetY(const Position& p1, const Position& p2) {
-		return p1.getY() - p2.getY();
+		return p1.y - p2.y;
 	}
 	static int_fast16_t getOffsetZ(const Position& p1, const Position& p2) {
-		return p1.getZ() - p2.getZ();
+		return p1.z - p2.z;
 	}
 
 	static int32_t getDistanceX(const Position& p1, const Position& p2) {
@@ -82,44 +82,44 @@ struct Position
 	uint16_t y = 0;
 	uint8_t z = 0;
 
-	bool operator<(const Position& p) const {
-		if (z < p.z) {
+	bool operator<(const Position& newPosition) const {
+		if (z < newPosition.z) {
 			return true;
 		}
 
-		if (z > p.z) {
+		if (z > newPosition.z) {
 			return false;
 		}
 
-		if (y < p.y) {
+		if (y < newPosition.y) {
 			return true;
 		}
 
-		if (y > p.y) {
+		if (y > newPosition.y) {
 			return false;
 		}
 
-		if (x < p.x) {
+		if (x < newPosition.x) {
 			return true;
 		}
 
-		if (x > p.x) {
+		if (x > newPosition.x) {
 			return false;
 		}
 
 		return false;
 	}
 
-	bool operator>(const Position& p) const {
-		return ! (*this < p);
+	bool operator>(const Position& newPosition) const {
+		return ! (*this < newPosition);
 	}
 
-	bool operator==(const Position& p) const {
-		return p.x == x && p.y == y && p.z == z;
+	bool operator==(const Position& newPosition) const {
+		return newPosition.x == x && newPosition.y == y && newPosition.z == z;
 	}
 
-	bool operator!=(const Position& p) const {
-		return p.x != x || p.y != y || p.z != z;
+	bool operator!=(const Position& newPosition) const {
+		return newPosition.x != x || newPosition.y != y || newPosition.z != z;
 	}
 
 	Position operator+(const Position& p1) const {
@@ -129,31 +129,37 @@ struct Position
 	Position operator-(const Position& p1) const {
 		return Position(x - p1.x, y - p1.y, z - p1.z);
 	}
-	Position operator+=(const Position& other) {
-		return Position(x += other.x, y += other.y, z += other.z);
+	Position operator+=(const Position& newPosition) {
+		return Position(x += newPosition.x, y += newPosition.y, z += newPosition.z);
 	}
 	// Point conversion
-	Position operator+(const Point& other) const {
-		return Position(x + other.x, y + other.y, z);
+	Position operator+(const Point& newPosition) const {
+		return Position(x + newPosition.x, y + newPosition.y, z);
 	}
-	Position& operator+=(const Point& other) {
-		return Position(x += other.x, y += other.y, z);
+	Position operator+=(const Point& newPosition) {
+		return Position(x += newPosition.x, y += newPosition.y, z);
 	}
 
 	std::string toString() const {
 		std::string str;
 		return str.append("( ")
-                  .append(std::to_string(getX()))
+                  .append(std::to_string(x))
                   .append(" / ")
-                  .append(std::to_string(getY()))
+                  .append(std::to_string(y))
                   .append(" / ")
-                  .append(std::to_string(getZ()))
+                  .append(std::to_string(z))
                   .append(" )");
 	}
 
-	int_fast32_t getX() const { return x; }
-	int_fast32_t getY() const { return y; }
-	int_fast16_t getZ() const { return z; }
+	int_fast32_t getX() const {
+		return x;
+	}
+	int_fast32_t getY() const {
+		return y;
+	}
+	int_fast16_t getZ() const {
+		return z;
+	}
 };
 
 std::ostream& operator<<(std::ostream&, const Position&);

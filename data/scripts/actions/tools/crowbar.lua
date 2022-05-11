@@ -1,8 +1,7 @@
 local crowbar = Action()
 
 function crowbar.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	return ActionsLib.useCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
-	or ActionsLib.destroyItem(player, target, toPosition)
+	return onUseCrowbar(player, item, fromPosition, target, toPosition, isHotkey)
 end
 
 crowbar:id(3304)

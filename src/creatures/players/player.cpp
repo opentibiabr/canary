@@ -1556,7 +1556,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		std::string bless = getBlessingsName();
 		std::ostringstream lostBlesses;
 		if (bless.length() == 0) {
-			lostBlesses << "You lost all your blesses.";
+			lostBlesses << "You lost all your blessings.";
 		} else {
 			lostBlesses << "You are still blessed with " << bless;
 		}

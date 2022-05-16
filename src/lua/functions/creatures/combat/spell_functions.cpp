@@ -78,17 +78,27 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 
 	if (spellType == SPELL_INSTANT) {
 		InstantSpell* spell = new InstantSpell(getScriptEnv()->getScriptInterface());
-		spell->fromLua = true;
+		if (!spell) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushUserdata<Spell>(L, spell);
 		setMetatable(L, -1, "Spell");
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
-		RuneSpell* spell = new RuneSpell(getScriptEnv()->getScriptInterface());
-		spell->fromLua = true;
-		pushUserdata<Spell>(L, spell);
+		RuneSpell* runeSpell = new RuneSpell(getScriptEnv()->getScriptInterface());
+		if (!runeSpell) {
+			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
+			pushBoolean(L, false);
+			return 1;
+		}
+
+		pushUserdata<Spell>(L, runeSpell);
 		setMetatable(L, -1, "Spell");
-		spell->spellType = SPELL_RUNE;
+		runeSpell->spellType = SPELL_RUNE;
 		return 1;
 	}
 
@@ -106,7 +116,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			instant->scripted = true;
+			instant->setLoadedCallback(true);
 			pushBoolean(L, true);
 		} else if (spell->spellType == SPELL_RUNE) {
 			RuneSpell* rune = dynamic_cast<RuneSpell*>(getUserdata<Spell>(L, 1));
@@ -114,7 +124,7 @@ int SpellFunctions::luaSpellOnCastSpell(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			rune->scripted = true;
+			rune->setLoadedCallback(true);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -135,7 +145,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 
 	if (spell->spellType == SPELL_INSTANT) {
 		InstantSpell* instant = dynamic_cast<InstantSpell*>(getUserdata<Spell>(L, 1));
-		if (!instant->isScripted()) {
+		if (!instant->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -153,7 +163,7 @@ int SpellFunctions::luaSpellRegister(lua_State* L) {
 			iType.runeLevel = rune->getLevel();
 			iType.charges = rune->getCharges();
 		}
-		if (!rune->isScripted()) {
+		if (!rune->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}

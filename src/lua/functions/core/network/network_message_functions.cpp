@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "lua/functions/core/network/network_message_functions.hpp"
 #include "creatures/players/player.h"
 #include "server/network/protocol/protocolstatus.h"

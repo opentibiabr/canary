@@ -21,7 +21,6 @@
 
 #include "creatures/players/vocations/vocation.h"
 
-#include "utils/pugicast.h"
 #include "utils/tools.h"
 
 bool Vocations::loadFromXml()
@@ -35,96 +34,105 @@ bool Vocations::loadFromXml()
 
 	for (auto vocationNode : doc.child("vocations").children()) {
 		pugi::xml_attribute attr;
-		if (!(attr = vocationNode.attribute("id"))) {
-			SPDLOG_WARN("[Vocations::loadFromXml] - Missing vocation id");
+		if (attr = vocationNode.attribute("id");
+		!attr || !isNumber(attr.as_string()))
+		{
+			SPDLOG_WARN("[Vocations::loadFromXml] - Missing or wrong vocation id");
 			continue;
 		}
 
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
+		auto vocationId = static_cast<uint16_t>(attr.as_uint());
 
-		auto res = vocationsMap.emplace(std::piecewise_construct,
-				std::forward_as_tuple(id), std::forward_as_tuple(id));
-		Vocation& voc = res.first->second;
+		auto [id, vocation] = vocationsMap.emplace(
+			std::piecewise_construct,
+			std::forward_as_tuple(vocationId),
+			std::forward_as_tuple(vocationId)
+		);
 
-		if ((attr = vocationNode.attribute("name"))) {
-			voc.name = attr.as_string();
+		Vocation& voc = id->second;
+		if (attr = vocationNode.attribute("name");
+		!attr || attr.empty())
+		{
+			SPDLOG_WARN("[Vocations::loadFromXml] - Missing or wrong vocation name for vocation id {}", vocationNode.attribute("id").as_string());
+			continue;
 		}
+		voc.name = attr.as_string();
 
 		if ((attr = vocationNode.attribute("clientid"))) {
-			voc.clientId = pugi::cast<uint16_t>(attr.value());
+			voc.clientId = static_cast<uint8_t>(attr.as_uint());
 		}
 
 		if ((attr = vocationNode.attribute("baseid"))) {
-			voc.baseId = pugi::cast<uint16_t>(attr.value());
+			voc.baseId = static_cast<uint8_t>(attr.as_uint());
 		}
 		
 		if ((attr = vocationNode.attribute("description"))) {
 			voc.description = attr.as_string();
 		}
 
-    if ((attr = vocationNode.attribute("magicshield"))) {
-      voc.magicShield = attr.as_bool();
-    }
+		if ((attr = vocationNode.attribute("magicshield"))) {
+			voc.magicShield = attr.as_bool();
+		}
 
 		if ((attr = vocationNode.attribute("gaincap"))) {
-			voc.gainCap = pugi::cast<uint32_t>(attr.value()) * 100;
+			voc.gainCap = attr.as_uint() * 100;
 		}
 
 		if ((attr = vocationNode.attribute("gainhp"))) {
-			voc.gainHP = pugi::cast<uint32_t>(attr.value());
+			voc.gainHP = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("gainmana"))) {
-			voc.gainMana = pugi::cast<uint32_t>(attr.value());
+			voc.gainMana = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("gainhpticks"))) {
-			voc.gainHealthTicks = pugi::cast<uint32_t>(attr.value());
+			voc.gainHealthTicks = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("gainhpamount"))) {
-			voc.gainHealthAmount = pugi::cast<uint32_t>(attr.value());
+			voc.gainHealthAmount = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("gainmanaticks"))) {
-			voc.gainManaTicks = pugi::cast<uint32_t>(attr.value());
+			voc.gainManaTicks = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("gainmanaamount"))) {
-			voc.gainManaAmount = pugi::cast<uint32_t>(attr.value());
+			voc.gainManaAmount = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("manamultiplier"))) {
-			voc.manaMultiplier = pugi::cast<float>(attr.value());
+			voc.manaMultiplier = attr.as_float();
 		}
 
 		if ((attr = vocationNode.attribute("attackspeed"))) {
-			voc.attackSpeed = pugi::cast<uint32_t>(attr.value());
+			voc.attackSpeed = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("basespeed"))) {
-			voc.baseSpeed = pugi::cast<uint32_t>(attr.value());
+			voc.baseSpeed = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("soulmax"))) {
-			voc.soulMax = pugi::cast<uint16_t>(attr.value());
+			voc.soulMax = static_cast<uint8_t>(attr.as_uint());
 		}
 
 		if ((attr = vocationNode.attribute("gainsoulticks"))) {
-			voc.gainSoulTicks = pugi::cast<uint32_t>(attr.value());
+			voc.gainSoulTicks = attr.as_uint();
 		}
 
 		if ((attr = vocationNode.attribute("fromvoc"))) {
-			voc.fromVocation = pugi::cast<uint32_t>(attr.value());
+			voc.fromVocation = attr.as_uint();
 		}
 
 		for (auto childNode : vocationNode.children()) {
 			if (strcasecmp(childNode.name(), "skill") == 0) {
 				pugi::xml_attribute skillIdAttribute = childNode.attribute("id");
 				if (skillIdAttribute) {
-					uint16_t skill_id = pugi::cast<uint16_t>(skillIdAttribute.value());
+					auto skill_id = static_cast<uint16_t>(skillIdAttribute.as_uint());
 					if (skill_id <= SKILL_LAST) {
-						voc.skillMultipliers[skill_id] = pugi::cast<float>(childNode.attribute("multiplier").value());
+						voc.skillMultipliers[skill_id] = childNode.attribute("multiplier").as_float();
 					} else {
 						SPDLOG_WARN("[Vocations::loadFromXml] - "
                                     "No valid skill id: {} for vocation: {}",
@@ -137,22 +145,22 @@ bool Vocations::loadFromXml()
 			} else if (strcasecmp(childNode.name(), "formula") == 0) {
 				pugi::xml_attribute meleeDamageAttribute = childNode.attribute("meleeDamage");
 				if (meleeDamageAttribute) {
-					voc.meleeDamageMultiplier = pugi::cast<float>(meleeDamageAttribute.value());
+					voc.meleeDamageMultiplier = meleeDamageAttribute.as_float();
 				}
 
 				pugi::xml_attribute distDamageAttribute = childNode.attribute("distDamage");
 				if (distDamageAttribute) {
-					voc.distDamageMultiplier = pugi::cast<float>(distDamageAttribute.value());
+					voc.distDamageMultiplier = distDamageAttribute.as_float();
 				}
 
 				pugi::xml_attribute defenseAttribute = childNode.attribute("defense");
 				if (defenseAttribute) {
-					voc.defenseMultiplier = pugi::cast<float>(defenseAttribute.value());
+					voc.defenseMultiplier = defenseAttribute.as_float();
 				}
 
 				pugi::xml_attribute armorAttribute = childNode.attribute("armor");
 				if (armorAttribute) {
-					voc.armorMultiplier = pugi::cast<float>(armorAttribute.value());
+					voc.armorMultiplier = armorAttribute.as_float();
 				}
 			}
 		}
@@ -171,7 +179,7 @@ Vocation* Vocations::getVocation(uint16_t id)
 	return &it->second;
 }
 
-uint16_t Vocations::getVocationId(const std::string& name) const
+int32_t Vocations::getVocationId(const std::string& name) const
 {
 	for (const auto& it : vocationsMap) {
 		if (strcasecmp(it.second.name.c_str(), name.c_str()) == 0) {

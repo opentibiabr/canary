@@ -23,63 +23,14 @@
 #include "utils/tools.h"
 #include "creatures/players/player.h"
 
-CreatureEvents::CreatureEvents() :
-	scriptInterface("CreatureScript Interface") {
-	scriptInterface.initState();
-}
-
-void CreatureEvents::clear(bool fromLua) {
-	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {
-		if (fromLua == it->second.fromLua) {
-			it->second.clearEvent();
-		}
-	}
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& CreatureEvents::getScriptInterface() {
-	return scriptInterface;
-}
-
-std::string CreatureEvents::getScriptBaseName() const {
-	return "creaturescripts";
-}
-
-Event_ptr CreatureEvents::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "event") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new CreatureEvent(&scriptInterface));
-}
-
-bool CreatureEvents::registerEvent(Event_ptr event, const pugi::xml_node&) {
-	CreatureEvent_ptr creatureEvent{static_cast<CreatureEvent*>(event.release())}; //event is guaranteed to be a CreatureEvent
-	if (creatureEvent->getEventType() == CREATURE_EVENT_NONE) {
-		SPDLOG_ERROR("[CreatureEvents::registerEvent] - Trying to register event without type");
-		return false;
-	}
-
-	CreatureEvent* oldEvent = getEventByName(creatureEvent->getName(), false);
-	if (oldEvent) {
-		//if there was an event with the same that is not loaded
-		//(happens when realoading), it is reused
-		if (!oldEvent->isLoaded() && oldEvent->getEventType() == creatureEvent->getEventType()) {
-			oldEvent->copyEvent(creatureEvent.get());
-		}
-
-		return false;
-	} else {
-		//if not, register it normally
-		creatureEvents.emplace(creatureEvent->getName(), std::move(*creatureEvent));
-		return true;
-	}
+void CreatureEvents::clear() {
+	creatureEvents.clear();
 }
 
 bool CreatureEvents::registerLuaEvent(CreatureEvent* event) {
 	CreatureEvent_ptr creatureEvent{ event };
 	if (creatureEvent->getEventType() == CREATURE_EVENT_NONE) {
-		SPDLOG_ERROR("[CreatureEvents::registerLuaEvent] - Trying to register event without type");
+		SPDLOG_ERROR("[CreatureEvents::registerLuaEvent] - Trying to register event without type on script with name {}", creatureEvent->getFileName());
 		return false;
 	}
 
@@ -148,58 +99,7 @@ bool CreatureEvents::playerAdvance(Player* player, skills_t skill, uint32_t oldL
 /////////////////////////////////////
 
 CreatureEvent::CreatureEvent(LuaScriptInterface* interface) :
-	Event(interface), type(CREATURE_EVENT_NONE), loaded(false) {}
-
-bool CreatureEvent::configureEvent(const pugi::xml_node& node) {
-	// Name that will be used in monster xml files and
-	// lua function to register events to reference this event
-	pugi::xml_attribute nameAttribute = node.attribute("name");
-	if (!nameAttribute) {
-		SPDLOG_ERROR("[CreatureEvent::configureEvent] - Missing name for creature event");
-		return false;
-	}
-
-	eventName = nameAttribute.as_string();
-
-	pugi::xml_attribute typeAttribute = node.attribute("type");
-	if (!typeAttribute) {
-		SPDLOG_ERROR("[CreatureEvent::configureEvent] - Missing type for creature event: {}", eventName);
-		return false;
-	}
-
-	std::string tmpStr = asLowerCaseString(typeAttribute.as_string());
-	if (tmpStr == "login") {
-		type = CREATURE_EVENT_LOGIN;
-	} else if (tmpStr == "logout") {
-		type = CREATURE_EVENT_LOGOUT;
-	} else if (tmpStr == "think") {
-		type = CREATURE_EVENT_THINK;
-	} else if (tmpStr == "preparedeath") {
-		type = CREATURE_EVENT_PREPAREDEATH;
-	} else if (tmpStr == "death") {
-		type = CREATURE_EVENT_DEATH;
-	} else if (tmpStr == "kill") {
-		type = CREATURE_EVENT_KILL;
-	} else if (tmpStr == "advance") {
-		type = CREATURE_EVENT_ADVANCE;
-	} else if (tmpStr == "modalwindow") {
-		type = CREATURE_EVENT_MODALWINDOW;
-	} else if (tmpStr == "textedit") {
-		type = CREATURE_EVENT_TEXTEDIT;
-	} else if (tmpStr == "healthchange") {
-		type = CREATURE_EVENT_HEALTHCHANGE;
-	} else if (tmpStr == "manachange") {
-		type = CREATURE_EVENT_MANACHANGE;
-	} else if (tmpStr == "extendedopcode") {
-		type = CREATURE_EVENT_EXTENDED_OPCODE;
-	} else {
-		SPDLOG_ERROR("[CreatureEvent::configureEvent] - Invalid type for creature event: {}", eventName);
-		return false;
-	}
-
-	loaded = true;
-	return true;
-}
+	Script(interface), type(CREATURE_EVENT_NONE), loaded(false) {}
 
 void CreatureEvents::removeInvalidEvents() {
 	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {
@@ -209,7 +109,7 @@ void CreatureEvents::removeInvalidEvents() {
 	}
 }
 
-std::string CreatureEvent::getScriptEventName() const {
+std::string CreatureEvent::getScriptTypeName() const {
 	//Depending on the type script event name is different
 	switch (type) {
 		case CREATURE_EVENT_LOGIN:
@@ -257,14 +157,14 @@ std::string CreatureEvent::getScriptEventName() const {
 void CreatureEvent::copyEvent(CreatureEvent* creatureEvent) {
 	scriptId = creatureEvent->scriptId;
 	scriptInterface = creatureEvent->scriptInterface;
-	scripted = creatureEvent->scripted;
+	setLoadedCallback(creatureEvent->loadedCallback);
 	loaded = creatureEvent->loaded;
 }
 
 void CreatureEvent::clearEvent() {
 	scriptId = 0;
 	scriptInterface = nullptr;
-	scripted = false;
+	setLoadedCallback(false);
 	loaded = false;
 }
 

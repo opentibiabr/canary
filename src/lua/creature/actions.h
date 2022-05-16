@@ -20,7 +20,7 @@
 #ifndef SRC_LUA_CREATURE_ACTIONS_H_
 #define SRC_LUA_CREATURE_ACTIONS_H_
 
-#include "lua/global/baseevents.h"
+#include "lua/scripts/scripts.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 
@@ -34,11 +34,9 @@ using ActionFunction =
                             const Position& toPosition, bool isHotkey
                        )>;
 
-class Action : public Event {
+class Action : public Script {
 	public:
 		explicit Action(LuaScriptInterface* interface);
-
-		bool configureEvent(const pugi::xml_node& node) override;
 
 		// Scripting
 		virtual bool executeUse(Player* player, Item* item,
@@ -101,6 +99,30 @@ class Action : public Event {
 			positions.emplace_back(pos);
 		}
 
+		bool hasPosition(Position position) {
+			auto iteratePosition = std::ranges::find_if(positions.begin(), positions.end(), [position](Position storedPosition) {
+				if (storedPosition == position) {
+					return true;
+				}
+				return false;
+			});
+			return false;
+		}
+
+		std::vector<Position> getPositions() {
+			return positions;
+		}
+		void setPositions(Position pos) {
+			positions.emplace_back(pos);
+		}
+
+		const std::string& getFileName() const {
+			return fileName;
+		}
+		void setFileName(const std::string& scriptName) {
+			fileName = scriptName;
+		}
+
 		virtual ReturnValue canExecuteAction(const Player* player,
                                              const Position& toPos);
 
@@ -118,7 +140,9 @@ class Action : public Event {
 		ActionFunction function;
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override {
+			return "onUse";
+		}
 
 		// Atributes
 		bool allowFarUse = false;
@@ -130,12 +154,13 @@ class Action : public Event {
 		std::vector<uint16_t> uniqueIds;
 		std::vector<uint16_t> actionIds;
 		std::vector<Position> positions;
+
+		std::string fileName;
 };
 
-class Actions final : public BaseEvents {
+class Actions final : public Scripts {
 	public:
-		Actions();
-		~Actions();
+		Actions() = default;
 
 		// non-copyable
 		Actions(const Actions&) = delete;
@@ -160,7 +185,8 @@ class Actions final : public BaseEvents {
 		bool registerLuaActionEvent(Action* action);
 		bool registerLuaPositionEvent(Action* action);
 		bool registerLuaEvent(Action* event);
-		void clear(bool fromLua) override final;
+		// Clear maps for reloading
+		void clear();
 
 	private:
 		bool hasPosition(Position position) const {
@@ -223,11 +249,6 @@ class Actions final : public BaseEvents {
 		ReturnValue internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
 		static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count);
 
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
 		using ActionUseMap = std::map<uint16_t, Action>;
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
@@ -235,11 +256,6 @@ class Actions final : public BaseEvents {
 		std::map<Position, Action> actionPositionMap;
 
 		Action* getAction(const Item* item);
-		void clearMap(ActionUseMap& map, bool fromLua);
-
-		friend class ActionFunctions;
-
-		LuaScriptInterface scriptInterface;
 };
 
 constexpr auto g_actions = &Actions::getInstance;

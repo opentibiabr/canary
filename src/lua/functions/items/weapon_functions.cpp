@@ -19,15 +19,12 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "game/game.h"
 #include "items/item.h"
 #include "items/weapons/weapons.h"
 #include "lua/functions/items/weapon_functions.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
-
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
@@ -42,12 +39,11 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			WeaponMelee* weapon = new WeaponMelee(getScriptEnv()->getScriptInterface());
+			WeaponMelee* weapon = new WeaponMelee();
 			if (weapon) {
 				pushUserdata<WeaponMelee>(L, weapon);
 				setMetatable(L, -1, "Weapon");
 				weapon->weaponType = type;
-				weapon->fromLua = true;
 			} else {
 				lua_pushnil(L);
 			}
@@ -55,24 +51,22 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		}
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			WeaponDistance* weapon = new WeaponDistance(getScriptEnv()->getScriptInterface());
+			WeaponDistance* weapon = new WeaponDistance();
 			if (weapon) {
 				pushUserdata<WeaponDistance>(L, weapon);
 				setMetatable(L, -1, "Weapon");
 				weapon->weaponType = type;
-				weapon->fromLua = true;
 			} else {
 				lua_pushnil(L);
 			}
 			break;
 		}
 		case WEAPON_WAND: {
-			WeaponWand* weapon = new WeaponWand(getScriptEnv()->getScriptInterface());
+			WeaponWand* weapon = new WeaponWand();
 			if (weapon) {
 				pushUserdata<WeaponWand>(L, weapon);
 				setMetatable(L, -1, "Weapon");
 				weapon->weaponType = type;
-				weapon->fromLua = true;
 			} else {
 				lua_pushnil(L);
 			}
@@ -147,10 +141,6 @@ int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
-		if (!weapon->loadCallback()) {
-			pushBoolean(L, false);
-			return 1;
-		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

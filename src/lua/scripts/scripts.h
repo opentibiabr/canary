@@ -44,10 +44,84 @@ class Scripts {
 		LuaScriptInterface& getScriptInterface() {
 			return scriptInterface;
 		}
+		/**
+		 * @brief Get the Script Id object
+		 *
+		 * @return int32_t
+		*/
+		int32_t getScriptId() {
+			return scriptId;
+		}
+
 	private:
+		int32_t scriptId = 0;
+		std::string scriptName;
 		LuaScriptInterface scriptInterface;
 };
 
 constexpr auto g_scripts = &Scripts::getInstance;
+
+class Script {
+	public:
+		/**
+		 * @brief Explicit construtor
+		 * explicit, that is, it cannot be used for implicit conversions and
+		 * copy-initialization.
+		 *
+		 * @param interface Lua Script Interface
+		*/
+		explicit Script(LuaScriptInterface* interface) : scriptInterface(interface) {}
+		virtual ~Script() = default;
+
+		/**
+		 * @brief Check if script is loaded
+		 *
+		 * @return true
+		 * @return false
+		*/
+		bool isLoadedCallback() const {
+			return loadedCallback;
+		}
+		void setLoadedCallback(bool loaded) {
+			loadedCallback = loaded;
+		}
+
+		/**
+		 * @brief Get the Script Id object
+		 *
+		 * @return int32_t
+		*/
+		int32_t getScriptId() {
+			return scriptId;
+		}
+
+		// Load revscriptsys callback
+		bool loadCallback() {
+			if (!scriptInterface || scriptId != 0) {
+				SPDLOG_ERROR("[Script::loadCallback] scriptInterface is nullptr, scriptid = {}, scriptName {}", scriptId, scriptInterface->getLoadingScriptName());
+				return false;
+			}
+
+			int32_t id = scriptInterface->getEvent();
+			if (id == -1) {
+				SPDLOG_ERROR("[Script::loadCallback] Event {} not found for script with name {}", getScriptTypeName(), scriptInterface->getLoadingScriptName());
+				return false;
+			}
+
+			setLoadedCallback(true);
+			scriptId = id;
+			return true;
+		}
+
+
+	protected:
+		// If script is loaded callback
+		bool loadedCallback = false;
+
+		// Script type (Action, CreatureEvent, GlobalEvent, MoveEvent, Spell, Weapon)
+		virtual std::string getScriptTypeName() const = 0;
+		int32_t scriptId = 0;
+		LuaScriptInterface* scriptInterface = nullptr;
+};
 
 #endif  // SRC_LUA_SCRIPTS_SCRIPTS_H_

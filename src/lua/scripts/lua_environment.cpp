@@ -19,8 +19,8 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include <utility>
+#include <ranges>
 
 #include "declarations.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -164,7 +164,7 @@ void LuaEnvironment::executeTimerEvent(uint32_t eventIndex) {
 	lua_rawgeti(luaState, LUA_REGISTRYINDEX, timerEventDesc.function);
 
 	// push parameters
-	for (auto parameter: boost::adaptors::reverse(timerEventDesc.parameters)) {
+	for (auto parameter: std::views::reverse(timerEventDesc.parameters)) {
 		lua_rawgeti(luaState, LUA_REGISTRYINDEX, parameter);
 	}
 

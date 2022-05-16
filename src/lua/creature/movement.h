@@ -20,10 +20,10 @@
 #ifndef SRC_LUA_CREATURE_MOVEMENT_H_
 #define SRC_LUA_CREATURE_MOVEMENT_H_
 
-#include "lua/global/baseevents.h"
 #include "declarations.hpp"
 #include "items/item.h"
 #include "lua/functions/events/move_event_functions.hpp"
+#include "lua/scripts/scripts.h"
 #include "creatures/players/vocations/vocation.h"
 
 class MoveEvent;
@@ -32,10 +32,12 @@ struct MoveEventList {
 	std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
 };
 
-class MoveEvents final : public BaseEvents {
+using VocEquipMap = std::map<uint16_t, bool>;
+
+class MoveEvents final : public Scripts {
 	public:
 		MoveEvents() = default;
-		~MoveEvents() override = default;
+		~MoveEvents() = default;
 
 		// non-copyable
 		MoveEvents(const MoveEvents&) = delete;
@@ -159,8 +161,6 @@ class MoveEvents final : public BaseEvents {
 		std::map<int32_t, MoveEventList> actionIdMap;
 		std::map<int32_t, MoveEventList> itemIdMap;
 		std::map<Position, MoveEventList> positionsMap;
-
-		LuaScriptInterface scriptInterface {"MoveEvent interface"};
 };
 
 constexpr auto g_moveEvents = &MoveEvents::getInstance;
@@ -171,10 +171,6 @@ class MoveEvent final : public Event {
 
 		MoveEvent_t getEventType() const;
 		void setEventType(MoveEvent_t type);
-
-		bool configureEvent([[maybe_unused]] const pugi::xml_node& node) override {
-			return false;
-		}
 
 		uint32_t fireStepEvent(Creature& creature, Item& item, const Position& pos);
 		// No have item
@@ -255,6 +251,12 @@ class MoveEvent final : public Event {
 		void setPosition(Position pos) {
 			positionVector.emplace_back(pos);
 		}
+		const std::string& getFileName() const {
+			return fileName;
+		}
+		void setFileName(const std::string& scriptName) {
+			fileName = scriptName;
+		}
 		void setSlot(uint32_t s) {
 			slot = s;
 		}
@@ -315,10 +317,6 @@ class MoveEvent final : public Event {
 		)> equipFunction;
 
 	private:
-		std::string getScriptEventName() const override {
-			return "";
-		}
-
 		uint32_t slot = SLOTP_WHEREEVER;
 
 		//onEquip information

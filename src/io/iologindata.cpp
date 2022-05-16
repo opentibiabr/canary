@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include "io/iologindata.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
@@ -27,6 +26,9 @@
 #include "io/ioprey.h"
 
 #include <limits>
+#include <iostream>
+#include <iterator>
+#include <ranges>
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {
@@ -508,7 +510,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
-  std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+  std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
     return left.first < right.first;
   });
 
@@ -583,8 +585,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
     //second loop (this time a reverse one) to insert the items in the correct order
     //for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-    for (const auto& it : boost::adaptors::reverse(itemMap)) {
-      const std::pair<Item*, int32_t>& pair = it.second;
+    for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+      const std::pair<Item*, int32_t>& pair = it->second;
       Item* item = pair.first;
 
       int32_t pid = pair.second;

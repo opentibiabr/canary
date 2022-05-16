@@ -23,7 +23,7 @@
 #include "config/configmanager.h"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
-#include "io/fileloader.h"
+#include "utils/prop_stream.hpp"
 #include "game/movement/position.h"
 
 struct Abilities {
@@ -332,7 +332,7 @@ class Items
 		ItemTypes_t getLootType(const std::string& strValue);
 
 		bool loadFromXml();
-		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
+		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id, const std::string &itemName);
 
 		void buildInventoryList();
 		const InventoryVector& getInventory() const {

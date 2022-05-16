@@ -37,6 +37,9 @@ class GameStore {
 		bool loadFromXml();
 		uint16_t getOffersCount();
 
+		std::vector<std::string> getIconsVector(const std::string& rawString) const;
+		std::vector<uint8_t> getIntVector(const std::string& rawString) const;
+
 		uint16_t getCategoryCount() {
 			return (uint16_t) storeCategoryOffers.size();
 		}

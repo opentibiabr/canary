@@ -31,6 +31,19 @@ static constexpr auto CLIENT_VERSION = 1286;
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
 
+#define NONCOPYABLE(Type) Type(const Type&)=delete; Type& operator=(const Type&)=delete
+
+/// Branch Prediction.  See the GCC Manual for more information.
+ /// NB: These are used when speed is need most; do not use in normal
+ /// code, they may slow down stuff.
+#if defined(__clang__) || defined(__GNUC__)
+#define likely(x)     __builtin_expect(!!(x), 1)
+#define unlikely(x)    __builtin_expect(!!(x), 0)
+#else
+#define likely(x)    (x)
+#define unlikely(x)    (x)
+#endif
+
 #ifndef __FUNCTION__
 #define __FUNCTION__ __func__
 #endif

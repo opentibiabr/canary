@@ -35,6 +35,7 @@ class ActionFunctions final : LuaScriptInterface {
 			registerMethod(L, "Action", "allowFarUse", ActionFunctions::luaActionAllowFarUse);
 			registerMethod(L, "Action", "blockWalls", ActionFunctions::luaActionBlockWalls);
 			registerMethod(L, "Action", "checkFloor", ActionFunctions::luaActionCheckFloor);
+			registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
 		}
 
 	private:

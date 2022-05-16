@@ -23,7 +23,6 @@
 #include <random>
 #include <string>
 #include <regex>
-#include <boost/algorithm/string.hpp>
 
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
@@ -58,6 +57,8 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
+std::string fromIntToString(const int intType);
+
 Direction getDirection(const std::string& string);
 Position getNextPosition(Direction direction, Position pos);
 Direction getDirectionTo(const Position& from, const Position& to);
@@ -67,6 +68,10 @@ std::string getFirstLine(const std::string& str);
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
 std::string convertIPToString(uint32_t ip);
+
+// Split strings
+template<class Iter>
+Iter splitStrings(const std::string &s, const std::string &delim, Iter out);
 
 void trimString(std::string& str);
 
@@ -128,5 +133,16 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 		default: return CIPBIA_ELEMENTAL_UNDEFINED;
 	}
 }
+
+/**
+ * @brief These functions are intended to check if a string has only numbers or only letters
+ * @brief If the isNumber function has a letter in the middle of several numbers or has no number, it will return false, the same goes for isAlpha
+ * @param string get string to compare if have number/alpha
+ * @return true if have number/alpha
+ * @return false if no have number/alpha
+ */
+bool isNumber(const std::string& string);
+
+bool isAlpha(const std::string& string);
 
 #endif  // SRC_UTILS_TOOLS_H_

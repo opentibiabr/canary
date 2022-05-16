@@ -19,9 +19,10 @@
 
 #include "otpch.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <fstream>
-#include <libzippp.h>
+#include <iostream>
+#include "libzippp.h"
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -34,9 +35,18 @@
 
 bool Map::load(const std::string& identifier) {
 	try {
+		DiskNodeFileReadHandle initializeMapFile(identifier, StringVector(1, "OTBM"));
+		if(!initializeMapFile.isLoaded()) {
+			SPDLOG_ERROR("Couldn't open file for reading. The error reported was: {}", initializeMapFile.getErrorMessage().c_str());
+			return false;
+		}
+		// Storage map file name before load otbm
+		setMapFileName(identifier);
+
 		IOMap loader;
-		if (!loader.loadMap(this, identifier)) {
+		if (!loader.loadMap(this, initializeMapFile, identifier)) {
 			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
+			getMapFileName().clear();
 			return false;
 		}
 	}
@@ -48,7 +58,7 @@ bool Map::load(const std::string& identifier) {
 }
 
 bool Map::extractMap(const std::string& identifier) const {
-	if (boost::filesystem::exists(identifier)) {
+	if (std::filesystem::exists(identifier)) {
 		return true;
 	}
 	

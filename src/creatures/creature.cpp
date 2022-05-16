@@ -25,6 +25,8 @@
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
 
+#include <ranges>
+
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
 double Creature::speedC = -4795.01;
@@ -280,7 +282,7 @@ void Creature::addEventWalk(bool firstStep)
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
+	eventWalk = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind_front(&Game::checkCreatureWalk, &g_game(), getID())));
 }
 
 void Creature::stopEventWalk()
@@ -604,7 +606,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 	if (followCreature && (creature == this || creature == followCreature)) {
 		if (hasFollowPath) {
 			isUpdatingPath = true;
-			g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+			g_dispatcher().addTask(createTask(std::bind_front(&Game::updateCreatureWalk, &g_game(), getID())));
 		}
 
 		if (newPos.z != oldPos.z || !canSee(followCreature->getPosition())) {
@@ -618,7 +620,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 		} else {
 			if (hasExtraSwing()) {
 				//our target is moving lets see if we can get in hit
-				g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+				g_dispatcher().addTask(createTask(std::bind_front(&Game::checkCreatureAttack, &g_game(), getID())));
 			}
 
 			if (newTile->getZone() != oldTile->getZone()) {
@@ -771,7 +773,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 
 				if (g_configManager().getBoolean(AUTOLOOT)) {
 					int32_t pos = tile->getStackposOfItem(player, corpse);
-					g_dispatcher().addTask(createTask(std::bind(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true)));
+					g_dispatcher().addTask(createTask(std::bind_front(&Game::playerQuickLoot, &g_game(), mostDamageCreature->getID(), this->getPosition(), corpse->getID(), pos - 1, nullptr, false, true)));
 				}
 			}
 		}
@@ -815,7 +817,7 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange/* = true
 		g_game().addCreatureHealth(this);
 	}
 	if (health <= 0) {
-		g_dispatcher().addTask(createTask(std::bind(&Game::executeDeath, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind_front(&Game::executeDeath, &g_game(), getID())));
 	}
 }
 
@@ -1154,9 +1156,10 @@ bool Creature::onKilledCreature(Creature* target, bool lastHit)
 		master->onKilledCreature(target, lastHit);
 	}
 
-	//scripting event - onKill
-	const CreatureEventList& killEvents = getCreatureEvents(CREATURE_EVENT_KILL);
-	for (CreatureEvent* killEvent : killEvents) {
+	// Scripting event - onKill
+	for (const CreatureEventList& killEvents = getCreatureEvents(CREATURE_EVENT_KILL);
+	CreatureEvent* killEvent : killEvents)
+	{
 		killEvent->executeOnKill(this, target, lastHit);
 	}
 	return false;
@@ -1217,7 +1220,7 @@ bool Creature::setMaster(Creature* newMaster, bool reloadCreature/* = false*/) {
 	master = newMaster;
 
 	if (oldMaster) {
-		auto summon = std::find(oldMaster->summons.begin(), oldMaster->summons.end(), this);
+		auto summon = std::ranges::find(oldMaster->summons.begin(), oldMaster->summons.end(), this);
 		if (summon != oldMaster->summons.end()) {
 			oldMaster->summons.erase(summon);
 			decrementReferenceCounter();
@@ -1294,7 +1297,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		if (!force && conditionType == CONDITION_PARALYZE) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				g_scheduler().addEvent(createSchedulerTask(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId)));
+				g_scheduler().addEvent(createSchedulerTask(walkDelay, std::bind_front(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId)));
 				return;
 			}
 		}
@@ -1324,7 +1327,7 @@ void Creature::removeCombatCondition(ConditionType_t type)
 
 void Creature::removeCondition(Condition* condition)
 {
-	auto it = std::find(conditions.begin(), conditions.end(), condition);
+	auto it = std::ranges::find(conditions.begin(), conditions.end(), condition);
 	if (it == conditions.end()) {
 		return;
 	}
@@ -1629,7 +1632,7 @@ bool FrozenPathingConditionCall::operator()(const Position& startPos, const Posi
 
 bool Creature::isInvisible() const
 {
-	return std::find_if(conditions.begin(), conditions.end(), [] (const Condition* condition) {
+	return std::ranges::find_if(conditions.begin(), conditions.end(), [] (const Condition* condition) {
 		return condition->getType() == CONDITION_INVISIBLE;
 	}) != conditions.end();
 }

@@ -22,7 +22,7 @@
 
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"
-#include "lua/global/baseevents.h"
+#include "lua/scripts/scripts.h"
 #include "creatures/combat/combat.h"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/vocations/vocation.h"
@@ -35,11 +35,10 @@ class WeaponWand;
 
 using Weapon_ptr = std::unique_ptr<Weapon>;
 
-class Weapons final : public BaseEvents
+class Weapons final : public Scripts
 {
 	public:
-		Weapons();
-		~Weapons();
+		Weapons() = default;
 
 		// non-copyable
 		Weapons(const Weapons&) = delete;
@@ -52,37 +51,23 @@ class Weapons final : public BaseEvents
 			return instance;
 		}
 
-		void loadDefaults();
 		const Weapon* getWeapon(const Item* item) const;
 
 		static int32_t getMaxMeleeDamage(int32_t attackSkill, int32_t attackValue);
 		static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
 		bool registerLuaEvent(Weapon* event);
-		void clear(bool fromLua) override final;
+		void clear();
 
 	private:
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
 		std::map<uint32_t, Weapon*> weapons;
-
-		LuaScriptInterface scriptInterface { "Weapon Interface" };
 };
 
 constexpr auto g_weapons = &Weapons::getInstance;
 
-class Weapon : public Event
+class Weapon
 {
 	public:
-		explicit Weapon(LuaScriptInterface* interface) : Event(interface) {}
-
-		bool configureEvent(const pugi::xml_node& node) override;
-		bool loadFunction(const pugi::xml_attribute&, bool) final {
-			return true;
-		}
 		virtual void configureWeapon(const ItemType& it);
 		virtual bool interruptSwing() const {
 			return false;
@@ -235,9 +220,6 @@ class Weapon : public Event
 		bool wieldUnproperly = false;
 		std::string vocationString = "";
 
-		std::string getScriptEventName() const override final;
-
-		bool executeUseWeapon(Player* player, const LuaVariant& var) const;
 		void onUsedWeapon(Player* player, Item* item, Tile* destTile) const;
 
 		static void decrementItemCount(Item* item);
@@ -248,8 +230,6 @@ class Weapon : public Event
 class WeaponMelee final : public Weapon
 {
 	public:
-		explicit WeaponMelee(LuaScriptInterface* interface);
-
 		void configureWeapon(const ItemType& it) override;
 
 		bool useWeapon(Player* player, Item* item, Creature* target) const override;
@@ -269,8 +249,6 @@ class WeaponMelee final : public Weapon
 class WeaponDistance final : public Weapon
 {
 	public:
-		explicit WeaponDistance(LuaScriptInterface* interface);
-
 		void configureWeapon(const ItemType& it) override;
 		bool interruptSwing() const override {
 			return true;
@@ -292,9 +270,6 @@ class WeaponDistance final : public Weapon
 class WeaponWand final : public Weapon
 {
 	public:
-		explicit WeaponWand(LuaScriptInterface* interface) : Weapon(interface) {}
-
-		bool configureEvent(const pugi::xml_node& node) override;
 		void configureWeapon(const ItemType& it) override;
 
 		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;

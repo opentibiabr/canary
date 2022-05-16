@@ -22,7 +22,7 @@
 
 #include "game/movement/position.h"
 #include "items/item.h"
-#include "io/fileloader.h"
+#include "utils/prop_stream.hpp"
 
 #include "utils/tools.h"
 #include "items/tile.h"
@@ -287,6 +287,13 @@ class Map
 			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
 		}
 
+		std::string getMapFileName() {
+			return mapFileName;
+		}
+		void setMapFileName(const std::string &newName) {
+			mapFileName = newName;
+		}
+
 		// Storage made by "loadFromXML" of houses, monsters and npcs for main map
 		SpawnsMonster spawnsMonster;
 		SpawnsNpc spawnsNpc;
@@ -303,6 +310,7 @@ class Map
 
 		QTreeNode root;
 
+		std::string mapFileName;
 		std::string monsterfile;
 		std::string housefile;
 		std::string npcfile;

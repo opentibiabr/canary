@@ -21,9 +21,10 @@
 
 #include "creatures/appearance/outfit/outfit.h"
 
-#include "utils/pugicast.h"
 #include "utils/tools.h"
 #include "game/game.h"
+
+#include <cctype>
 
 bool Outfits::loadFromXml()
 {
@@ -45,30 +46,48 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		uint16_t type = pugi::cast<uint16_t>(attr.value());
+		auto type = static_cast<uint8_t>(outfitNode.attribute("type").as_uint());
 		if (type > PLAYERSEX_LAST) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
-		if (!lookTypeAttribute) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing looktype on outfit");
-			continue;
-		}
+		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
+		const std::string outfitName = outfitNode.attribute("name").as_string();
+		if (!lookTypeAttribute.empty()) {
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+			&& !g_game().isLookTypeRegistered(lookType))
+			{
+				SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+				return false;
+			}
 
-		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
-				&& !g_game().isLookTypeRegistered(lookType)
-			)
-		{
-			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
-			return false;
+			const std::string lookTypeString = lookTypeAttribute.as_string();
+			if (lookTypeString.empty() || lookType == 0) {
+				SPDLOG_WARN("[Outfits::loadFromXml] - Empty looktype on outfit with name {}", outfitName);
+				continue;
+			}
+
+			if (!isNumber(lookTypeString)) {
+				SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
+				continue;
+			}
+
+			if (pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
+			!nameAttribute || outfitName.empty())
+			{
+				SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
+				continue;
+			}
+		} else {
+			SPDLOG_WARN("[Outfits::loadFromXml] - "
+						"Missing looktype id for outfit name: {}", outfitName);
 		}
 
 		outfits[type].emplace_back(
-			outfitNode.attribute("name").as_string(),
-			pugi::cast<uint16_t>(lookTypeAttribute.value()),
+			outfitName,
+			lookType,
 			outfitNode.attribute("premium").as_bool(),
 			outfitNode.attribute("unlocked").as_bool(true),
 			outfitNode.attribute("from").as_string()

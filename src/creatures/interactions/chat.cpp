@@ -21,7 +21,6 @@
 
 #include "creatures/interactions/chat.h"
 #include "game/game.h"
-#include "utils/pugicast.h"
 #include "game/scheduling/scheduler.h"
 
 bool PrivateChatChannel::isInvited(uint32_t guid) const
@@ -29,7 +28,7 @@ bool PrivateChatChannel::isInvited(uint32_t guid) const
 	if (guid == getOwner()) {
 		return true;
 	}
-	return invites.find(guid) != invites.end();
+	return invites.contains(guid);
 }
 
 bool PrivateChatChannel::removeInvite(uint32_t guid)
@@ -85,7 +84,7 @@ void PrivateChatChannel::closeChannel() const
 
 bool ChatChannel::addUser(Player& player)
 {
-	if (users.find(player.getID()) != users.end()) {
+	if (users.contains(player.getID())) {
 		return false;
 	}
 
@@ -97,7 +96,7 @@ bool ChatChannel::addUser(Player& player)
 	if (id == CHANNEL_GUILD) {
 		Guild* guild = player.getGuild();
 		if (guild && !guild->getMotd().empty()) {
-			g_scheduler().addEvent(createSchedulerTask(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getID())));
+			g_scheduler().addEvent(createSchedulerTask(150, std::bind_front(&Game::sendGuildMotd, &g_game(), player.getID())));
 		}
 	}
 
@@ -130,25 +129,25 @@ bool ChatChannel::removeUser(const Player& player)
 	return true;
 }
 
-bool ChatChannel::hasUser(const Player& player) {
-	return users.find(player.getID()) != users.end();
+bool ChatChannel::hasUser(const Player& player) const {
+	return users.contains(player.getID());
 }
 
 void ChatChannel::sendToAll(const std::string& message, SpeakClasses type) const
 {
-	for (const auto& it : users) {
-		it.second->sendChannelMessage("", message, type, id);
+	for (const auto& [playerId, player] : users) {
+		player->sendChannelMessage("", message, type, static_cast<uint16_t>(playerId));
 	}
 }
 
-bool ChatChannel::talk(const Player& fromPlayer, SpeakClasses type, const std::string& text)
+bool ChatChannel::talk(const Player& fromPlayer, SpeakClasses type, const std::string& text) const
 {
-	if (users.find(fromPlayer.getID()) == users.end()) {
+	if (!users.contains(fromPlayer.getID())) {
 		return false;
 	}
 
-	for (const auto& it : users) {
-		it.second->sendToChannel(&fromPlayer, type, text, id);
+	for (const auto& [playerId, player] : users) {
+		player->sendToChannel(&fromPlayer, type, text, static_cast<uint16_t>(playerId));
 	}
 	return true;
 }
@@ -300,7 +299,7 @@ bool Chat::load()
 	}
 
 	for (auto channelNode : doc.child("channels").children()) {
-		uint16_t channelId = pugi::cast<uint16_t>(channelNode.attribute("id").value());
+		auto channelId = static_cast<uint16_t>(channelNode.attribute("id").as_int());
 		std::string channelName = channelNode.attribute("name").as_string();
 		bool isPublic = channelNode.attribute("public").as_bool();
 		pugi::xml_attribute scriptAttribute = channelNode.attribute("script");
@@ -323,9 +322,10 @@ bool Chat::load()
 				}
 			}
 
-			UsersMap tempUserMap = std::move(channel.users);
-			for (const auto& pair : tempUserMap) {
-				channel.addUser(*pair.second);
+			for (UsersMap tempUserMap = std::move(channel.users);
+			const auto& [playerId, player] : tempUserMap)
+			{
+				channel.addUser(*player);
 			}
 			continue;
 		}
@@ -471,28 +471,26 @@ bool Chat::removeUserFromChannel(const Player& player, uint16_t channelId)
 
 void Chat::removeUserFromAllChannels(const Player& player)
 {
-	for (auto& it : normalChannels) {
-		it.second.removeUser(player);
+	for (auto& [id, channel] : normalChannels) {
+		channel.removeUser(player);
 	}
 
-	for (auto& it : partyChannels) {
-		it.second.removeUser(player);
+	for (auto& [id, channel] : partyChannels) {
+		channel.removeUser(player);
 	}
 
-	for (auto& it : guildChannels) {
-		it.second.removeUser(player);
+	for (auto& [id, channel] : guildChannels) {
+		channel.removeUser(player);
 	}
 
-	auto it = privateChannels.begin();
-	while (it != privateChannels.end()) {
-		PrivateChatChannel* channel = &it->second;
-		channel->removeInvite(player.getGUID());
-		channel->removeUser(player);
-		if (channel->getOwner() == player.getGUID()) {
-			channel->closeChannel();
-			it = privateChannels.erase(it);
-		} else {
-			++it;
+	for (auto [id, channel] : privateChannels) {
+		PrivateChatChannel* privateChannel = &channel;
+		privateChannel->removeInvite(player.getGUID());
+		privateChannel->removeUser(player);
+		// Close and delete the channel if the owner logout
+		if (privateChannel->getOwner() == player.getGUID()) {
+			privateChannel->closeChannel();
+			privateChannels.clear();
 		}
 	}
 }

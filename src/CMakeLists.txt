@@ -1,11 +1,11 @@
 project(canary)
 
 # *****************************************************************************
-# Cmake Features
+# CMake Features
 # *****************************************************************************
-set(CMAKE_CXX_STANDARD 17)
-# Minimum version 8 for use c++ 17
-set(GNUCXX_MINIMUM_VERSION 8)
+set(CMAKE_CXX_STANDARD 20)
+set(GNUCXX_MINIMUM_VERSION 9)
+set(MSVC_MINIMUM_VERSION "19.32")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -25,6 +25,26 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 # *****************************************************************************
+# Sanity Check
+# *****************************************************************************
+
+# === GCC Minimum Version ===
+if (CMAKE_COMPILER_IS_GNUCXX)
+  message("-- Compiler: GCC - Version: ${CMAKE_CXX_COMPILER_VERSION}")
+  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
+    message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
+  endif()
+endif()
+
+# === Minimum required version for visual studio ===
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  message("-- Compiler: Visual Studio - Version: ${CMAKE_CXX_COMPILER_VERSION}")
+  if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS MSVC_MINIMUM_VERSION)
+    message(FATAL_ERROR "Visual Studio version must be at least ${MSVC_MINIMUM_VERSION}")
+  endif()
+endif()
+
+# *****************************************************************************
 # Options
 # *****************************************************************************
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
@@ -33,7 +53,7 @@ option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
 
 
 # *****************************************************************************
-# Client
+# Project
 # *****************************************************************************
 if (MSVC)
   add_executable(${PROJECT_NAME} "" ../cmake/canary.rc)
@@ -41,6 +61,13 @@ else()
   add_executable(${PROJECT_NAME} "")
 endif()
 
+
+# *****************************************************************************
+# Build flags
+# *****************************************************************************
+if (CMAKE_COMPILER_IS_GNUCXX)
+  target_compile_options(${PROJECT_NAME}  PRIVATE  -Wno-deprecated-declarations)
+endif()
 
 # *****************************************************************************
 # DEBUG: Print cmake variables
@@ -80,7 +107,6 @@ endif()
 # === ASAN ===
 if(ASAN_ENABLED)
   log_option_enabled("asan")
-
   if(MSVC)
     target_compile_options(${PROJECT_NAME} PUBLIC /fsanitize=address)
   else()
@@ -101,19 +127,10 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   log_option_disabled("DEBUG LOG")
 endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
-
-# Set for suppress deprecated declarations (for GCC/GNU)
-# If not is GNUCXX_MINIMUM_VERSION, return message of error
-if (CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
-  if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS GNUCXX_MINIMUM_VERSION)
-    message(FATAL_ERROR "GCC version must be at least ${GNUCXX_MINIMUM_VERSION}!")
-  endif()
-endif()
-
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
+find_package(Asio REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
@@ -122,14 +139,12 @@ find_package(Protobuf REQUIRED)
 find_package(GMP REQUIRED)
 
 if (MSVC)
-  find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
   find_package(MySQL REQUIRED)
   find_package(PugiXML REQUIRED)
   find_package(Threads REQUIRED)
 else()
-  find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
@@ -140,11 +155,12 @@ include(GNUInstallDirs)
 
 
 # *****************************************************************************
-# otserver configuration
+# Projetct configuration
 # *****************************************************************************
 target_sources(${PROJECT_NAME}
   PRIVATE
     config/configmanager.cpp
+    core/file_handle.cpp
     creatures/appearance/mounts/mounts.cpp
     creatures/appearance/outfit/outfit.cpp
     creatures/combat/combat.cpp
@@ -178,7 +194,6 @@ target_sources(${PROJECT_NAME}
     game/scheduling/scheduler.cpp
     game/scheduling/events_scheduler.cpp
     game/scheduling/tasks.cpp
-    io/fileloader.cpp
     io/iobestiary.cpp
     io/ioguild.cpp
     io/iologindata.cpp
@@ -286,7 +301,6 @@ target_sources(${PROJECT_NAME}
 )
 
 if (MSVC)
-
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
@@ -301,66 +315,59 @@ if (MSVC)
   target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf )
 
   target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    ${MYSQL_INCLUDE_DIR}
+    ${LUAJIT_INCLUDE_DIRS}
+    ${PUGIXML_INCLUDE_DIR}
+    ${CRYPTOPP_INCLUDE_DIR}
+    ${CURL_INCLUDE_DIRS}
+    ${SPDLOG_INCLUDE_DIR}
+    ${Protobuf_INCLUDE_DIRS}
+    ${GMP_INCLUDE_DIR}
+    asio::asio
+    $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
+
+  target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+    ${MYSQL_CLIENT_LIBS}
+    ${LUAJIT_LIBRARIES}
+    ${PUGIXML_LIBRARIES}
+    ${CRYPTOPP_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${CURL_LIBRARIES}
+    ${SPDLOG_LIBRARY}
+    ${GMP_LIBRARIES}
+    protobuf::libprotobuf
+    fmt::fmt
+    jsoncpp_lib
+    libzippp::libzippp
+    asio::asio
+  )
+
+  else()
+    target_include_directories(${PROJECT_NAME}
     PRIVATE
-      ${Boost_LIBRARY_DIRS}
       ${CMAKE_SOURCE_DIR}/src
-      ${MYSQL_INCLUDE_DIR}
       ${LUAJIT_INCLUDE_DIRS}
-      ${Boost_INCLUDE_DIRS}
-      ${PUGIXML_INCLUDE_DIR}
-      ${CURL_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
-      ${SPDLOG_INCLUDE_DIR}
       ${GMP_INCLUDE_DIR}
-      $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>
   )
 
-  target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-      ${MYSQL_CLIENT_LIBS}
-      ${LUAJIT_LIBRARIES}
-      ${Boost_LIBRARIES}
-      ${PUGIXML_LIBRARIES}
-      ${CMAKE_THREAD_LIBS_INIT}
-      ${CURL_LIBRARIES}
-      ${Protobuf_LIBRARIES}
-      ${SPDLOG_LIBRARY}
-      ${GMP_LIBRARIES}
-      fmt::fmt
-      jsoncpp_lib
-      libzippp::libzippp
-  )
-
-else()
-
-  target_include_directories(${PROJECT_NAME}
-    PRIVATE
-      ${CMAKE_SOURCE_DIR}/src
-      ${LUAJIT_INCLUDE_DIRS}
-      ${Protobuf_INCLUDE_DIRS}
-      ${GMP_INCLUDE_DIRS}
-  )
-
-  target_link_libraries(${PROJECT_NAME}
+    target_link_libraries(${PROJECT_NAME}
     PRIVATE
       ${LUAJIT_LIBRARIES}
-      ${Protobuf_LIBRARIES}
       ${GMP_LIBRARIES}
-      Boost::boost
-      Boost::date_time
-      Boost::filesystem
-      Boost::iostreams
-      Boost::system
       CURL::libcurl
       jsoncpp_static
       unofficial::libmariadb unofficial::mariadbclient
       pugixml::pugixml
       spdlog::spdlog
       Threads::Threads
+      protobuf::libprotobuf
       libzippp::libzippp
-  )
-
-endif (MSVC)
+    )
+endif(MSVC)
 
 set_target_properties(${PROJECT_NAME}
     PROPERTIES

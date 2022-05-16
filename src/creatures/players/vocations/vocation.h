@@ -161,8 +161,8 @@ class Vocations
 		bool loadFromXml();
 
 		Vocation* getVocation(uint16_t id);
-    	const std::map<uint16_t, Vocation>& getVocations() const {return vocationsMap;}
-		uint16_t getVocationId(const std::string& name) const;
+		const std::map<uint16_t, Vocation>& getVocations() const {return vocationsMap;}
+		int32_t getVocationId(const std::string& name) const;
 		uint16_t getPromotedVocation(uint16_t vocationId) const;
 
 	private:

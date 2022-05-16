@@ -21,6 +21,10 @@
 
 #include "utils/tools.h"
 
+#include <string>
+#include <algorithm>
+#include <ranges>
+
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -344,6 +348,31 @@ bool boolean_random(double probability/* = 0.5*/)
 {
 	static std::bernoulli_distribution booleanRand;
 	return booleanRand(getRandomGenerator(), std::bernoulli_distribution::param_type(probability));
+}
+
+std::string fromIntToString(const int intType)
+{
+	static std::stringstream stringStream;
+	stringStream.str("");
+	stringStream << intType;
+	return stringStream.str();
+}
+
+template<class Iter>
+Iter splitStrings(const std::string &s, const std::string &delim, Iter out)
+{
+	if (delim.empty()) {
+		*out++ = s;
+		return out;
+	}
+	size_t a = 0, b = s.find(delim);
+	for ( ; b != std::string::npos;
+		a = b + delim.length(), b = s.find(delim, a))
+	{
+		*out++ = std::move(s.substr(a, b - a));
+	}
+	*out++ = std::move(s.substr(a, s.length() - a));
+	return out;
 }
 
 void trimString(std::string& str)
@@ -813,7 +842,7 @@ std::string getCombatName(CombatType_t combatType)
 
 CombatType_t getCombatType(const std::string& combatname)
 {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
+	auto it = std::ranges::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
 		return pair.second == combatname;
 	});
 
@@ -1408,7 +1437,7 @@ NameEval_t validateName(const std::string &name)
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
-	boost::split(toks, name, boost::is_any_of(" '"));
+	splitStrings(" '", name, std::back_inserter(toks));
 	if(name.length()<3 || name.length()>14) {
 		return INVALID_LENGTH;
 	}
@@ -1466,4 +1495,22 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+bool isNumber(const std::string& string) {
+	for (char const &integer : string) {
+		if (std::isdigit(integer) == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool isAlpha(const std::string& string) {
+	for (char const &letter : string) {
+		if (std::isalpha(letter) == 0) {
+			return false;
+		}
+	}
+	return true;
 }

@@ -21,20 +21,9 @@
 
 #include "creatures/combat/combat.h"
 #include "game/game.h"
-#include "utils/pugicast.h"
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
 
-
-Weapons::Weapons()
-{
-	scriptInterface.initState();
-}
-
-Weapons::~Weapons()
-{
-	clear(false);
-}
 
 const Weapon* Weapons::getWeapon(const Item* item) const
 {
@@ -49,87 +38,9 @@ const Weapon* Weapons::getWeapon(const Item* item) const
 	return it->second;
 }
 
-void Weapons::clear(bool fromLua)
+void Weapons::clear()
 {
-	for (auto it = weapons.begin(); it != weapons.end(); ) {
-		if (fromLua == it->second->fromLua) {
-			it = weapons.erase(it);
-		} else {
-			++it;
-		}
-	}
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& Weapons::getScriptInterface()
-{
-	return scriptInterface;
-}
-
-std::string Weapons::getScriptBaseName() const
-{
-	return "weapons";
-}
-
-void Weapons::loadDefaults()
-{
-	for (size_t i = 100, size = Item::items.size(); i < size; ++i) {
-		const ItemType& it = Item::items.getItemType(i);
-		if (it.id == 0 || weapons.find(i) != weapons.end()) {
-			continue;
-		}
-
-		switch (it.weaponType) {
-			case WEAPON_AXE:
-			case WEAPON_SWORD:
-			case WEAPON_CLUB: {
-				WeaponMelee* weapon = new WeaponMelee(&scriptInterface);
-				weapon->configureWeapon(it);
-				weapons[i] = weapon;
-				break;
-			}
-
-			case WEAPON_AMMO:
-			case WEAPON_DISTANCE: {
-				if (it.weaponType == WEAPON_DISTANCE && it.ammoType != AMMO_NONE) {
-					continue;
-				}
-
-				WeaponDistance* weapon = new WeaponDistance(&scriptInterface);
-				weapon->configureWeapon(it);
-				weapons[i] = weapon;
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-}
-
-Event_ptr Weapons::getEvent(const std::string& nodeName)
-{
-	if (strcasecmp(nodeName.c_str(), "melee") == 0) {
-		return Event_ptr(new WeaponMelee(&scriptInterface));
-	} else if (strcasecmp(nodeName.c_str(), "distance") == 0) {
-		return Event_ptr(new WeaponDistance(&scriptInterface));
-	} else if (strcasecmp(nodeName.c_str(), "wand") == 0) {
-		return Event_ptr(new WeaponWand(&scriptInterface));
-	}
-	return nullptr;
-}
-
-bool Weapons::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
-	Weapon* weapon = static_cast<Weapon*>(event.release()); //event is guaranteed to be a Weapon
-
-	auto result = weapons.emplace(weapon->getID(), weapon);
-	if (!result.second) {
-		SPDLOG_WARN("[Weapons::registerEvent] - "
-                    "Duplicate registered item with id: {}", weapon->getID());
-	}
-	return result.second;
+	weapons.clear();
 }
 
 bool Weapons::registerLuaEvent(Weapon* event)
@@ -155,131 +66,9 @@ int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t
 	}
 }
 
-bool Weapon::configureEvent(const pugi::xml_node& node)
-{
-	pugi::xml_attribute attr;
-	if (!(attr = node.attribute("id"))) {
-		SPDLOG_ERROR("[Weapon::configureEvent] - Weapon without id");
-		return false;
-	}
-	id = pugi::cast<uint16_t>(attr.value());
-
-	if ((attr = node.attribute("level"))) {
-		level = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("maglv")) || (attr = node.attribute("maglevel"))) {
-		magLevel = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("mana"))) {
-		mana = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("soul"))) {
-		soul = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("prem"))) {
-		premium = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("breakchance")) && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
-		breakChance = std::min<uint8_t>(100, pugi::cast<uint16_t>(attr.value()));
-	}
-
-	if ((attr = node.attribute("action"))) {
-		action = getWeaponAction(asLowerCaseString(attr.as_string()));
-		if (action == WEAPONACTION_NONE) {
-			SPDLOG_WARN("[Weapon::configureEvent] - "
-                        "Unknown action {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("enabled"))) {
-		enabled = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("unproperly"))) {
-		wieldUnproperly = attr.as_bool();
-	}
-
-	std::list<std::string> vocStringList;
-	for (auto vocationNode : node.children()) {
-		if (!(attr = vocationNode.attribute("name"))) {
-			continue;
-		}
-
-		uint16_t vocationId = g_vocations().getVocationId(attr.as_string());
-		if (vocationId != -1) {
-			vocWeaponMap[vocationId] = true;
-			int32_t promotedVocation = g_vocations().getPromotedVocation(vocationId);
-			if (promotedVocation != VOCATION_NONE) {
-				vocWeaponMap[promotedVocation] = true;
-			}
-
-			if (vocationNode.attribute("showInDescription").as_bool(true)) {
-				vocStringList.push_back(asLowerCaseString(attr.as_string()));
-			}
-		}
-	}
-
-	std::string vocationString;
-	for (const std::string& str : vocStringList) {
-		if (!vocationString.empty()) {
-			if (str != vocStringList.back()) {
-				vocationString.push_back(',');
-				vocationString.push_back(' ');
-			} else {
-				vocationString += " and ";
-			}
-		}
-
-		vocationString += str;
-		vocationString.push_back('s');
-	}
-
-	uint32_t wieldInfo = 0;
-	if (getReqLevel() > 0) {
-		wieldInfo |= WIELDINFO_LEVEL;
-	}
-
-	if (getReqMagLv() > 0) {
-		wieldInfo |= WIELDINFO_MAGLV;
-	}
-
-	if (!vocationString.empty()) {
-		wieldInfo |= WIELDINFO_VOCREQ;
-	}
-
-	if (isPremium()) {
-		wieldInfo |= WIELDINFO_PREMIUM;
-	}
-
-	if (wieldInfo != 0) {
-		ItemType& it = Item::items.getItemType(id);
-		it.wieldInfo = wieldInfo;
-		it.vocationString = vocationString;
-		it.minReqLevel = getReqLevel();
-		it.minReqMagicLevel = getReqMagLv();
-	}
-
-	configureWeapon(Item::items[id]);
-	return true;
-}
-
 void Weapon::configureWeapon(const ItemType& it)
 {
 	id = it.id;
-}
-
-std::string Weapon::getScriptEventName() const
-{
-	return "onUseWeapon";
 }
 
 int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shootRange) const
@@ -403,50 +192,34 @@ bool Weapon::useFist(Player* player, Creature* target)
 
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const
 {
-	if (scripted) {
-		LuaVariant var;
-		var.type = VARIANT_NUMBER;
-		var.number = target->getID();
-		executeUseWeapon(player, var);
+	CombatDamage damage;
+	WeaponType_t weaponType = item->getWeaponType();
+	if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+		damage.origin = ORIGIN_RANGED;
 	} else {
-		CombatDamage damage;
-		WeaponType_t weaponType = item->getWeaponType();
-		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
-			damage.origin = ORIGIN_RANGED;
-		} else {
-			damage.origin = ORIGIN_MELEE;
-		}
-
-		damage.primary.type = params.combatType;
-		damage.secondary.type = getElementType();
-
-    if (damage.secondary.type == COMBAT_NONE) {
-    	damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-    	damage.secondary.value = 0;
-    } else {
-    	damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-    	damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
-    }
-
-      	Combat::doCombatHealth(player, target, damage, params);
+		damage.origin = ORIGIN_MELEE;
 	}
+
+	damage.primary.type = params.combatType;
+	damage.secondary.type = getElementType();
+
+	if (damage.secondary.type == COMBAT_NONE) {
+		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+		damage.secondary.value = 0;
+	} else {
+		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+		damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
+	}
+
+	Combat::doCombatHealth(player, target, damage, params);
 
 	onUsedWeapon(player, item, target->getTile());
 }
 
-
 void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const
 {
-	if (scripted) {
-		LuaVariant var;
-		var.type = VARIANT_TARGETPOSITION;
-		var.pos = tile->getPosition();
-		executeUseWeapon(player, var);
-	} else {
-		Combat::postCombatEffects(player, tile->getPosition(), params);
-		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
-	}
-
+	Combat::postCombatEffects(player, tile->getPosition(), params);
+	g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	onUsedWeapon(player, item, tile);
 }
 
@@ -531,29 +304,6 @@ int32_t Weapon::getHealthCost(const Player* player) const
 	return (player->getMaxHealth() * healthPercent) / 100;
 }
 
-bool Weapon::executeUseWeapon(Player* player, const LuaVariant& var) const
-{
-	//onUseWeapon(player, var)
-	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[Weapon::executeUseWeapon - Player {} weaponId {}]"
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     player->getName(), getID());
-		return false;
-	}
-
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
-
-	lua_State* L = scriptInterface->getLuaState();
-
-	scriptInterface->pushFunction(scriptId);
-	LuaScriptInterface::pushUserdata<Player>(L, player);
-	LuaScriptInterface::setMetatable(L, -1, "Player");
-	scriptInterface->pushVariant(L, var);
-
-	return scriptInterface->callFunction(2);
-}
-
 void Weapon::decrementItemCount(Item* item)
 {
 	uint16_t count = item->getItemCount();
@@ -564,16 +314,13 @@ void Weapon::decrementItemCount(Item* item)
 	}
 }
 
-WeaponMelee::WeaponMelee(LuaScriptInterface* interface) :
-	Weapon(interface)
+void WeaponMelee::configureWeapon(const ItemType& it)
 {
+	// Add combat type and blocked attributes to the weapon
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
-}
 
-void WeaponMelee::configureWeapon(const ItemType& it)
-{
 	if (it.abilities) {
 		elementType = it.abilities->elementType;
 		elementDamage = it.abilities->elementDamage;
@@ -669,15 +416,11 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 	return -normal_random(minValue, maxValue);
 }
 
-WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
-	Weapon(interface)
-{
-	params.blockedByArmor = true;
-	params.combatType = COMBAT_PHYSICALDAMAGE;
-}
-
 void WeaponDistance::configureWeapon(const ItemType& it)
 {
+	// Add combat type and distance effect to the weapon
+	params.blockedByArmor = true;
+	params.combatType = COMBAT_PHYSICALDAMAGE;
 	params.distanceEffect = it.shootType;
 
 	if (it.abilities) {
@@ -833,7 +576,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 				{-1,  0}, {0,  0}, {1,  0},
 				{-1,  1}, {0,  1}, {1,  1}
 			};
-			std::shuffle(destList.begin(), destList.end(), getRandomGenerator());
+			std::ranges::shuffle(destList.begin(), destList.end(), getRandomGenerator());
 
 			Position destPos = target->getPosition();
 
@@ -960,50 +703,10 @@ bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& s
 	return true;
 }
 
-bool WeaponWand::configureEvent(const pugi::xml_node& node)
-{
-	if (!Weapon::configureEvent(node)) {
-		return false;
-	}
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("min"))) {
-		minChange = pugi::cast<int32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("max"))) {
-		maxChange = pugi::cast<int32_t>(attr.value());
-	}
-
-	attr = node.attribute("type");
-	if (!attr) {
-		return true;
-	}
-
-	std::string tmpStrValue = asLowerCaseString(attr.as_string());
-	if (tmpStrValue == "earth") {
-		params.combatType = COMBAT_EARTHDAMAGE;
-	} else if (tmpStrValue == "ice") {
-		params.combatType = COMBAT_ICEDAMAGE;
-	} else if (tmpStrValue == "energy") {
-		params.combatType = COMBAT_ENERGYDAMAGE;
-	} else if (tmpStrValue == "fire") {
-		params.combatType = COMBAT_FIREDAMAGE;
-	} else if (tmpStrValue == "death") {
-		params.combatType = COMBAT_DEATHDAMAGE;
-	} else if (tmpStrValue == "holy") {
-		params.combatType = COMBAT_HOLYDAMAGE;
-	} else {
-		SPDLOG_WARN("[WeaponWand::configureEvent] - "
-                    "Type {} does not exist", attr.as_string());
-	}
-	return true;
-}
-
 void WeaponWand::configureWeapon(const ItemType& it)
 {
 	params.distanceEffect = it.shootType;
-  const_cast<ItemType&>(it).combatType = params.combatType;
+	const_cast<ItemType&>(it).combatType = params.combatType;
 	const_cast<ItemType&>(it).maxHitChance = (minChange + maxChange) / 2;
 	Weapon::configureWeapon(it);
 }

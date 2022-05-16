@@ -19,7 +19,8 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
+#include <iterator>
+#include <algorithm>
 
 #include "items/tile.h"
 
@@ -1077,7 +1078,7 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 	if (creature) {
 		CreatureVector* creatures = getCreatures();
 		if (creatures) {
-			auto it = std::find(creatures->begin(), creatures->end(), thing);
+			auto it = std::ranges::find(creatures->begin(), creatures->end(), thing);
 			if (it != creatures->end()) {
 				g_game().map.clearSpectatorCache();
 				creatures->erase(it);
@@ -1233,10 +1234,10 @@ int32_t Tile::getClientIndexOfCreature(const Player* player, const Creature* cre
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				++n;
 			}
 		}
@@ -1262,10 +1263,10 @@ int32_t Tile::getStackposOfCreature(const Player* player, const Creature* creatu
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				if (++n >= 10) {
 					return -1;
 				}

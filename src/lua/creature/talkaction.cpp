@@ -20,58 +20,11 @@
 #include "otpch.h"
 
 #include "creatures/players/player.h"
+#include "lua/scripts/scripts.h"
 #include "lua/creature/talkaction.h"
-#include "utils/pugicast.h"
 
-TalkActions::TalkActions()
-	: scriptInterface("TalkAction Interface") {
-	scriptInterface.initState();
-}
-
-TalkActions::~TalkActions() {
-	clear(false);
-}
-
-void TalkActions::clear(bool fromLua) {
-	for (auto it = talkActions.begin(); it != talkActions.end(); ) {
-		if (fromLua == it->second.fromLua) {
-			it = talkActions.erase(it);
-		} else {
-			++it;
-		}
-	}
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& TalkActions::getScriptInterface() {
-	return scriptInterface;
-}
-
-std::string TalkActions::getScriptBaseName() const {
-	return "talkactions";
-}
-
-Event_ptr TalkActions::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "talkaction") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new TalkAction(&scriptInterface));
-}
-
-bool TalkActions::registerEvent(Event_ptr event, const pugi::xml_node&) {
-	TalkAction_ptr talkAction{static_cast<TalkAction*>(event.release())}; // event is guaranteed to be a TalkAction
-	std::vector<std::string> words = talkAction->getWordsMap();
-
-	for (size_t i = 0; i < words.size(); i++) {
-		if (i == words.size() - 1) {
-			talkActions.emplace(words[i], std::move(*talkAction));
-		} else {
-			talkActions.emplace(words[i], *talkAction);
-		}
-	}
-
-	return true;
+void TalkActions::clear() {
+	talkActions.clear();
 }
 
 bool TalkActions::registerLuaEvent(TalkAction* event) {
@@ -130,29 +83,6 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 	return TALKACTION_CONTINUE;
 }
 
-bool TalkAction::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute wordsAttribute = node.attribute("words");
-	if (!wordsAttribute) {
-		SPDLOG_ERROR("[TalkAction::configureEvent] "
-                    "Missing words for talkaction or spell");
-		return false;
-	}
-
-	pugi::xml_attribute separatorAttribute = node.attribute("separator");
-	if (separatorAttribute) {
-		separator = pugi::cast<char>(separatorAttribute.value());
-	}
-
-	for (auto word : explodeString(wordsAttribute.as_string(), ";")) {
-		setWords(word);
-	}
-	return true;
-}
-
-std::string TalkAction::getScriptEventName() const {
-	return "onSay";
-}
-
 bool TalkAction::executeSay(Player* player, const std::string& words, const std::string& param, SpeakClasses type) const {
 	//onSay(player, words, param, type)
 	if (!scriptInterface->reserveScriptEnv()) {
@@ -162,8 +92,8 @@ bool TalkAction::executeSay(Player* player, const std::string& words, const std:
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* scriptEnvironment = scriptInterface->getScriptEnv();
+	scriptEnvironment->setScriptId(scriptId, scriptInterface);
 
 	lua_State* L = scriptInterface->getLuaState();
 

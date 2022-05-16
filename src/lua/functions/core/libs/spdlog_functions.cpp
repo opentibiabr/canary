@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "lua/functions/core/libs/spdlog_functions.hpp"
 
 int SpdlogFunctions::luaSpdlogInfo(lua_State* L) {

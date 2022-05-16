@@ -22,76 +22,18 @@
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
 #include "game/scheduling/scheduler.h"
-#include "utils/pugicast.h"
 
-
-GlobalEvents::GlobalEvents() :
-	scriptInterface("GlobalEvent Interface") {
-	scriptInterface.initState();
-}
-
-GlobalEvents::~GlobalEvents() {
-	clear(false);
-}
-
-void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
-	for (auto it = map.begin(); it != map.end(); ) {
-		if (fromLua == it->second.fromLua) {
-			it = map.erase(it);
-		} else {
-			++it;
-		}
-	}
-}
-
-void GlobalEvents::clear(bool fromLua) {
+void GlobalEvents::clear() {
+	// Stop events
 	g_scheduler().stopEvent(thinkEventId);
 	thinkEventId = 0;
 	g_scheduler().stopEvent(timerEventId);
 	timerEventId = 0;
 
-	clearMap(thinkMap, fromLua);
-	clearMap(serverMap, fromLua);
-	clearMap(timerMap, fromLua);
-
-	reInitState(fromLua);
-}
-
-Event_ptr GlobalEvents::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "globalevent") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new GlobalEvent(&scriptInterface));
-}
-
-bool GlobalEvents::registerEvent(Event_ptr event, const pugi::xml_node&) {
-	GlobalEvent_ptr globalEvent{static_cast<GlobalEvent*>(event.release())}; //event is guaranteed to be a GlobalEvent
-	if (globalEvent->getEventType() == GLOBALEVENT_TIMER) {
-		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
-		if (result.second) {
-			if (timerEventId == 0) {
-				timerEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this)));
-			}
-			return true;
-		}
-	} else if (globalEvent->getEventType() != GLOBALEVENT_NONE) {
-		auto result = serverMap.emplace(globalEvent->getName(), std::move(*globalEvent));
-		if (result.second) {
-			return true;
-		}
-	} else { // think event
-		auto result = thinkMap.emplace(globalEvent->getName(), std::move(*globalEvent));
-		if (result.second) {
-			if (thinkEventId == 0) {
-				thinkEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::think, this)));
-			}
-			return true;
-		}
-	}
-
-	SPDLOG_WARN("[GlobalEvents::configureEvent] - "
-				"Duplicate registered globalevent with name: {}", globalEvent->getName());
-	return false;
+	// Clear maps
+	thinkMap.clear();
+	serverMap.clear();
+	timerMap.clear();
 }
 
 bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
@@ -230,99 +172,19 @@ GlobalEventMap GlobalEvents::getEventMap(GlobalEvent_t type) {
 	}
 }
 
-GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Event(interface) {}
+GlobalEvent::GlobalEvent(LuaScriptInterface* interface) : Script(interface) {}
 
-bool GlobalEvent::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute nameAttribute = node.attribute("name");
-	if (!nameAttribute) {
-		SPDLOG_ERROR("[GlobalEvent::configureEvent] - Missing name for a globalevent");
-		return false;
-	}
-
-	name = nameAttribute.as_string();
-	eventType = GLOBALEVENT_NONE;
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("time"))) {
-		std::vector<int32_t> params = vectorAtoi(explodeString(attr.as_string(), ":"));
-
-		int32_t hour = params.front();
-		if (hour < 0 || hour > 23) {
-			SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                         "Invalid hour {} for globalevent with name: {}", attr.as_string(), name);
-			return false;
-		}
-
-		interval |= hour << 16;
-
-		int32_t min = 0;
-		int32_t sec = 0;
-		if (params.size() > 1) {
-			min = params[1];
-			if (min < 0 || min > 59) {
-				SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                              "Invalid minute {} for globalevent with name: {}",
-                              attr.as_string(), name);
-				return false;
-			}
-
-			if (params.size() > 2) {
-				sec = params[2];
-				if (sec < 0 || sec > 59) {
-					SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                                 "Invalid second {} for globalevent with name: {}",
-                                 attr.as_string(), name);
-					return false;
-				}
-			}
-		}
-
-		time_t current_time = time(nullptr);
-		tm* timeinfo = localtime(&current_time);
-		timeinfo->tm_hour = hour;
-		timeinfo->tm_min = min;
-		timeinfo->tm_sec = sec;
-
-		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
-		if (difference < 0) {
-			difference += 86400;
-		}
-
-		nextExecution = current_time + difference;
-		eventType = GLOBALEVENT_TIMER;
-	} else if ((attr = node.attribute("type"))) {
-		const char* value = attr.value();
-		if (strcasecmp(value, "startup") == 0) {
-			eventType = GLOBALEVENT_STARTUP;
-		} else if (strcasecmp(value, "shutdown") == 0) {
-			eventType = GLOBALEVENT_SHUTDOWN;
-		} else if (strcasecmp(value, "record") == 0) {
-			eventType = GLOBALEVENT_RECORD;
-		} else {
-			SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                         "No valid type {} for globalevent with name: {}",
-                         attr.as_string(), name);
-			return false;
-		}
-	} else if ((attr = node.attribute("interval"))) {
-		interval = std::max<int32_t>(SCHEDULER_MINTICKS, pugi::cast<int32_t>(attr.value()));
-		nextExecution = OTSYS_TIME() + interval;
-	} else {
-		SPDLOG_ERROR("[GlobalEvent::configureEvent] - "
-                    "No interval for globalevent with name: {}", name);
-		return false;
-	}
-	return true;
-}
-
-std::string GlobalEvent::getScriptEventName() const {
+std::string GlobalEvent::getScriptTypeName() const {
 	switch (eventType) {
 		case GLOBALEVENT_STARTUP: return "onStartup";
 		case GLOBALEVENT_SHUTDOWN: return "onShutdown";
 		case GLOBALEVENT_RECORD: return "onRecord";
 		case GLOBALEVENT_TIMER: return "onTime";
 		case GLOBALEVENT_PERIODCHANGE: return "onPeriodChange";
-		default: return "onThink";
+		case GLOBALEVENT_ON_THINK: return "onThink";
+		default:
+			SPDLOG_ERROR("[GlobalEvent::getScriptTypeName] - Invalid event type for script with name {}", getFileName());
+			return std::string();
 	}
 }
 

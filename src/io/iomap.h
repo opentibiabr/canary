@@ -25,12 +25,12 @@
 #include "declarations.hpp"
 
 #include "config/configmanager.h"
+#include "core/file_handle.hpp"
 #include "map/house/house.h"
 #include "items/item.h"
 #include "map/map.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
-
 
 #pragma pack(1)
 
@@ -60,7 +60,7 @@ class IOMap
 	static Tile* createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
 
 	public:
-		bool loadMap(Map* map, const std::string& identifier);
+		bool loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fileName);
 
 		/**
 		* Load main map monsters
@@ -167,10 +167,10 @@ class IOMap
 		}
 
 	private:
-		bool parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::string& fileName);
-		bool parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map);
-		bool parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map);
-		bool parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map);
+		bool parseMapDataAttributes(BinaryNode &binaryNodeMapData, Map& map, const std::string& fileName);
+		bool parseWaypoints(BinaryNode &binaryNodeMapData, Map& map);
+		bool parseTowns(BinaryNode &binaryNodeMapData, Map& map);
+		bool parseTileArea(BinaryNode &binaryNodeMapData, Map& map);
 		std::string errorString;
 };
 

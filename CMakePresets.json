@@ -98,15 +98,18 @@
   "buildPresets": [
     {
       "name": "linux-release",
-      "configurePreset": "linux-release"
+      "configurePreset": "linux-release",
+      "jobs": 2
     },
     {
       "name": "linux-debug",
-      "configurePreset": "linux-debug"
+      "configurePreset": "linux-debug",
+      "jobs": 2
     },
     {
       "name": "windows-release",
-      "configurePreset": "windows-release"
+      "configurePreset": "windows-release",
+      "jobs": 2
     },
     {
       "name": "windows-release-asan",
@@ -114,7 +117,8 @@
     },
     {
       "name": "windows-debug",
-      "configurePreset": "windows-debug"
+      "configurePreset": "windows-debug",
+      "jobs": 2
     }
   ]
 }

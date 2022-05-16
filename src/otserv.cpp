@@ -26,6 +26,7 @@
 #endif
 
 #include "declarations.hpp"
+#include "utils/definitions.h"
 #include "creatures/combat/spells.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
@@ -65,6 +66,55 @@ void toggleForceCloseButton() {
 	HWND hwnd = GetConsoleWindow();
 	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
+	#endif
+}
+
+std::string getCompiler() {
+	std::string compiler;
+	#if defined(__clang__)
+		return compiler = "Clang++ " + std::to_string(__clang_major__) + "." + std::to_string(__clang_minor__) + "." + std::to_string(__clang_patchlevel__) +"";
+	#elif defined(_MSC_VER)
+		return compiler = "Microsoft Visual Studio " + std::to_string(_MSC_VER) +"";
+	#elif defined(__GNUC__)
+		return compiler = "G++ " + std::to_string(__GNUC__) + "." + std::to_string(__GNUC_MINOR__) + "." + std::to_string(__GNUC_PATCHLEVEL__) +"";
+	#else
+		return compiler = "unknown";
+	#endif
+}
+
+std::string getCppVersion() {
+	std::string cppVersion;
+	// c++ 20 or higher still doesn't have a definitive version
+	if (__cplusplus > 201703L) {
+		return cppVersion = "C++20 or higher";
+	}
+	else if (__cplusplus == 201703L) {
+		return cppVersion = "C++17";
+	}
+	else if (__cplusplus == 201402L) {
+		return cppVersion = "C++14";
+	}
+	else if (__cplusplus == 201103L) {
+		return cppVersion = "C++11";
+	}
+	else if (__cplusplus == 199711L) {
+		return cppVersion = "C++98";
+	}
+	else {
+		return "C++ unknown";
+	}
+}
+
+std::string getPlatform() {
+	std::string platform;
+	#if defined(__amd64__) || defined(_M_X64)
+		return platform = "x64";
+	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
+		return platform = "x86";
+	#elif defined(__arm__)
+		return platform = "ARM";
+	#else
+		return platform = "unknown";
 	#endif
 }
 
@@ -230,8 +280,12 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 #ifdef _WIN32
-	SetConsoleTitle(STATUS_SERVER_NAME);
-#endif
+#ifdef UNICODE
+SetConsoleTitle(reinterpret_cast<LPCWSTR>(STATUS_SERVER_NAME));
+#else
+SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
+#endif  // !UNICODE
+#endif  // _WIN32
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	SPDLOG_INFO("{} - Version [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
@@ -242,20 +296,10 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
-	SPDLOG_INFO("Compiled with {}", BOOST_COMPILER);
-
-	std::string platform;
-	#if defined(__amd64__) || defined(_M_X64)
-		platform = "x64";
-	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
-		platform = "x86";
-	#elif defined(__arm__)
-		platform = "ARM";
-	#else
-		platform = "unknown";
-	#endif
-
-	SPDLOG_INFO("Compiled on {} {} for platform {}\n", __DATE__, __TIME__, platform);
+	// Increment compiller information
+	SPDLOG_INFO("Compiled with {}, linked with standard {}", getCompiler(), getCppVersion());
+	// Increment platform information
+	SPDLOG_INFO("Compiled on {} {} for platform {}\n", __DATE__, __TIME__, getPlatform());
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);
@@ -265,7 +309,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("Visit our website for updates, support, and resources: "
 		"https://docs.opentibiabr.org/");
 
-	// check if config.lua or config.lua.dist exist
+	// Check if config.lua or config.lua.dist exist
 	std::ifstream c_test("./config.lua");
 	if (!c_test.is_open()) {
 		std::ifstream config_lua_dist("./config.lua.dist");

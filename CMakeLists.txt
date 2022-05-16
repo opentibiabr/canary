@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 # VCPKG
 # cmake -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake ..
-# ./vcpkg install boost-asio boost-lockfree boost-variant boost-filesystem boost-iostreams boost-system libmariadb pugixml spdlog
+# ./vcpkg install asio libmariadb pugixml spdlog luajit
 if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       CACHE STRING "")
@@ -92,7 +92,6 @@ if(OPTIONS_ENABLE_IPO)
 else()
   log_option_disabled("ipo")
 endif()
-
 
 # *****************************************************************************
 # Add project

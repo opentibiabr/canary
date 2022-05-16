@@ -20,13 +20,13 @@
 #ifndef SRC_SERVER_SIGNALS_H_
 #define SRC_SERVER_SIGNALS_H_
 
-#include <boost/asio.hpp>
+#include <asio.hpp>
 
 class Signals
 {
-	boost::asio::signal_set set;
+	asio::signal_set set;
 	public:
-		explicit Signals(boost::asio::io_service& service);
+		explicit Signals(asio::io_service& service);
 
 	private:
 		void asyncWait();

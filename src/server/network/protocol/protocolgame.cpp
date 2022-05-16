@@ -19,9 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
-#include "lua/creature/actions.h"
 #include "creatures/players/management/ban.h"
 #include "declarations.hpp"
 #include "game/game.h"
@@ -151,7 +148,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		const ItemAttributes::CustomAttribute* lookDirection = item->getCustomAttribute("LookDirection");
 
 		if (lookType) {
-			uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookType->value));
+			uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookType->value));
 			msg.add<uint16_t>(look);
 
 			if(look != 0) {
@@ -160,20 +157,20 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookLegs");
 				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookFeet");
 
-				msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-				msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-				msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-				msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
+				msg.addByte(lookHead ? static_cast<uint8_t>(std::get<int64_t>(lookHead->value)) : 0);
+				msg.addByte(lookBody ? static_cast<uint8_t>(std::get<int64_t>(lookBody->value)) : 0);
+				msg.addByte(lookLegs ? static_cast<uint8_t>(std::get<int64_t>(lookLegs->value)) : 0);
+				msg.addByte(lookFeet ? static_cast<uint8_t>(std::get<int64_t>(lookFeet->value)) : 0);
 
 				const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
-				msg.addByte(lookAddons ? static_cast<uint8_t>(boost::get<int64_t>(lookAddons->value)) : 0);
+				msg.addByte(lookAddons ? static_cast<uint8_t>(std::get<int64_t>(lookAddons->value)) : 0);
 			}
 		} else {
 			msg.add<uint16_t>(0);
 		}
 
 		if (lookMount) {
-			uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookMount->value));
+			uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookMount->value));
 			msg.add<uint16_t>(look);
 
 			if (look != 0) {
@@ -182,17 +179,17 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookMountLegs");
 				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookMountFeet");
 
-				msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-				msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-				msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-				msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
+				msg.addByte(lookHead ? static_cast<uint8_t>(std::get<int64_t>(lookHead->value)) : 0);
+				msg.addByte(lookBody ? static_cast<uint8_t>(std::get<int64_t>(lookBody->value)) : 0);
+				msg.addByte(lookLegs ? static_cast<uint8_t>(std::get<int64_t>(lookLegs->value)) : 0);
+				msg.addByte(lookFeet ? static_cast<uint8_t>(std::get<int64_t>(lookFeet->value)) : 0);
 			}
 		} else {
 			msg.add<uint16_t>(0);
 		}
 
-		msg.addByte(lookDirection ? static_cast<uint8_t>(boost::get<int64_t>(lookDirection->value)) : 2);
-		msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
+		msg.addByte(lookDirection ? static_cast<uint8_t>(std::get<int64_t>(lookDirection->value)) : 2);
+		msg.addByte(podiumVisible ? static_cast<uint8_t>(std::get<int64_t>(podiumVisible->value)) : 0x01);
 	}
 	if (it.upgradeClassification > 0) {
 		msg.addByte(0);
@@ -823,8 +820,9 @@ void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
 	if (creatures)
 	{
 		bool playerAdded = false;
-		for (const Creature *creature : boost::adaptors::reverse(*creatures))
+		for (CreatureVector::const_reverse_iterator it = creatures->rbegin(); it != creatures->rend(); ++it)
 		{
+			const Creature *creature = *it;
 			if (!player->canSeeCreature(creature))
 			{
 				continue;
@@ -5840,7 +5838,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	bool mounted = false;
 
 	if (lookType) {
-		uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookType->value));
+		uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookType->value));
 		outfited = (look != 0);
 		msg.add<uint16_t>(look);
 
@@ -5850,20 +5848,20 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookLegs");
 			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookFeet");
 
-			msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
+			msg.addByte(lookHead ? static_cast<uint8_t>(std::get<int64_t>(lookHead->value)) : 0);
+			msg.addByte(lookBody ? static_cast<uint8_t>(std::get<int64_t>(lookBody->value)) : 0);
+			msg.addByte(lookLegs ? static_cast<uint8_t>(std::get<int64_t>(lookLegs->value)) : 0);
+			msg.addByte(lookFeet ? static_cast<uint8_t>(std::get<int64_t>(lookFeet->value)) : 0);
 
 			const ItemAttributes::CustomAttribute* lookAddons = podium->getCustomAttribute("LookAddons");
-			msg.addByte(lookAddons ? static_cast<uint8_t>(boost::get<int64_t>(lookAddons->value)) : 0);
+			msg.addByte(lookAddons ? static_cast<uint8_t>(std::get<int64_t>(lookAddons->value)) : 0);
 		}
 	} else {
 		msg.add<uint16_t>(0);
 	}
 
 	if (lookMount) {
-		uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookMount->value));
+		uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookMount->value));
 		mounted = (look != 0);
 		msg.add<uint16_t>(look);
 
@@ -5873,10 +5871,10 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookMountLegs");
 			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookMountFeet");
 
-			msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
+			msg.addByte(lookHead ? static_cast<uint8_t>(std::get<int64_t>(lookHead->value)) : 0);
+			msg.addByte(lookBody ? static_cast<uint8_t>(std::get<int64_t>(lookBody->value)) : 0);
+			msg.addByte(lookLegs ? static_cast<uint8_t>(std::get<int64_t>(lookLegs->value)) : 0);
+			msg.addByte(lookFeet ? static_cast<uint8_t>(std::get<int64_t>(lookFeet->value)) : 0);
 		}
 	} else {
 		msg.add<uint16_t>(0);
@@ -5946,9 +5944,9 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(itemId);
 	msg.addByte(stackpos);
 
-	msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
+	msg.addByte(podiumVisible ? static_cast<uint8_t>(std::get<int64_t>(podiumVisible->value)) : 0x01);
 	msg.addByte(outfited ? 0x01 : 0x00);
-	msg.addByte(lookDirection ? static_cast<uint8_t>(boost::get<int64_t>(lookDirection->value)) : 2);
+	msg.addByte(lookDirection ? static_cast<uint8_t>(std::get<int64_t>(lookDirection->value)) : 2);
 	writeToOutputBuffer(msg);
 }
 

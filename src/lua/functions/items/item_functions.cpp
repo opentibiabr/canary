@@ -19,13 +19,10 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "game/game.h"
 #include "items/item.h"
 #include "lua/functions/items/item_functions.hpp"
 #include "items/decay/decay.h"
-
 
 class Imbuement;
 
@@ -510,7 +507,7 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 
 	std::string key;
 	if (isNumber(L, 2)) {
-		key = boost::lexical_cast<std::string>(getNumber<int64_t>(L, 2));
+		key = std::to_string(getNumber<int64_t>(L, 2));
 	} else if (isString(L, 2)) {
 		key = getString(L, 2);
 	} else {

@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 #include "creatures/players/grouping/familiars.h"
-#include "utils/pugicast.h"
 #include "utils/tools.h"
 
 bool Familiars::loadFromXml() {
@@ -42,33 +41,53 @@ bool Familiars::loadFromXml() {
 			continue;
 		}
 
-		uint16_t vocation = pugi::cast<uint16_t>(attr.value());
-		if (vocation > VOCATION_LAST) {
-			SPDLOG_WARN("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocation);
+		auto vocationId = static_cast<uint16_t>(attr.as_uint());
+		if (vocationId > VOCATION_LAST) {
+			SPDLOG_WARN("[Familiars::loadFromXml] - Invalid familiar vocation {}", vocationId);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = familiarsNode.attribute("lookType");
-		if (!lookTypeAttribute) {
-			SPDLOG_WARN("[Familiars::loadFromXml] - Missing looktype on familiar.");
-			continue;
+		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
+		const std::string familiarName = familiarsNode.attribute("name").as_string();
+		if (!lookTypeAttribute.empty()) {
+			const std::string lookTypeString = lookTypeAttribute.as_string();
+			if (lookTypeString.empty() || lookType == 0) {
+				SPDLOG_WARN("[Familiars::loadFromXml] - Empty looktype on outfit with name {}", familiarName);
+				continue;
+			}
+
+			if (!isNumber(lookTypeString)) {
+				SPDLOG_WARN("[Familiars::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, familiarName);
+				continue;
+			}
+
+			if (pugi::xml_attribute nameAttribute = familiarsNode.attribute("name");
+			!nameAttribute || familiarName.empty())
+			{
+				SPDLOG_WARN("[Familiars::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
+				continue;
+			}
+		} else {
+			SPDLOG_WARN("[Familiars::loadFromXml] - "
+						"Missing looktype id for outfit name: {}", familiarName);
 		}
 
-		familiars[vocation].emplace_back(
-			familiarsNode.attribute("name").as_string(),
-			pugi::cast<uint16_t>(lookTypeAttribute.value()),
+		familiars[vocationId].emplace_back(
+			familiarName,
+			lookType,
 			familiarsNode.attribute("premium").as_bool(),
 			familiarsNode.attribute("unlocked").as_bool(true),
 			familiarsNode.attribute("type").as_string());
 	}
-	for (uint16_t vocation = VOCATION_NONE; vocation <= VOCATION_LAST; ++vocation) {
-		familiars[vocation].shrink_to_fit();
+	for (uint16_t vocationId = VOCATION_NONE; vocationId <= VOCATION_LAST; ++vocationId) {
+		familiars[vocationId].shrink_to_fit();
 	}
 	return true;
 }
 
-const Familiar* Familiars::getFamiliarByLookType(uint16_t vocation, uint16_t lookType) const {
-	for (const Familiar& familiar : familiars[vocation]) {
+const Familiar* Familiars::getFamiliarByLookType(uint16_t vocationId, uint16_t lookType) const {
+	for (const Familiar& familiar : familiars[vocationId]) {
 		if (familiar.lookType == lookType) {
 			return &familiar;
 		}

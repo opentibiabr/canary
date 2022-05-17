@@ -2064,6 +2064,8 @@ class Player final : public Creature, public Cylinder
 			return forgeCores;
 		}
 
+		void fuseItems(uint16_t itemid, uint16_t tier, bool usedCore, bool tierLoss, uint8_t bonus);
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 

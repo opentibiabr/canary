@@ -5927,6 +5927,27 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
+void Player::fuseItems(uint16_t itemid, uint16_t tier, bool usedCore, bool tierLoss, uint8_t bonus) {
+	Item* item = g_game().findItemOfType(this, itemid);
+	g_game().internalRemoveItem(item, 1);
+	Container* chest = Item::CreateItem(37561, 1)->getContainer(); // create chest
+	g_game().internalAddItem(this, chest, INDEX_WHEREEVER); // move chest to player
+	Item* newItem = Item::CreateItem(itemid, 1); // create result
+	newItem->setTier(tier + 1); // set new item tier
+	g_game().internalAddItem(chest, newItem, INDEX_WHEREEVER); // add tier+1 item to chest
+	if (bonus != 3) {
+		uint64_t cost = 120000;
+		g_game().removeMoney(this, cost);
+	}
+	if (bonus != 2) {
+		setForgeDusts(getForgeDusts() - 100);
+	}
+
+	if (usedCore) {
+		setForgeCores(getForgeCores() - 1);
+	}
+}
+
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/

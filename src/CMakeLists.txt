@@ -276,7 +276,7 @@ target_sources(${PROJECT_NAME}
     server/network/message/networkmessage.cpp
     server/network/message/outputmessage.cpp
     server/network/protocol/protocol.cpp
-    server/network/protocol/protocolgame10.cpp
+    server/network/protocol/protocolgame.cpp
     server/network/protocol/protocollogin.cpp
     server/network/protocol/protocolstatus.cpp
     server/network/webhook/webhook.cpp

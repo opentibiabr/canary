@@ -360,6 +360,7 @@ docker/**/otserver
 settings.json
 c_cpp_properties.json
 .history
+core
 
 # CLion (JetBrains)
 .idea/

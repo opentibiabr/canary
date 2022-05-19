@@ -5,7 +5,7 @@ docker-compose up --build -d
 cd ..
 mkdir build
 cd build
-cmake -DPACKAGE_TESTS=On .. ; make -j`nproc`
+cmake -DUT=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake .. ; make -j`nproc`
 ./tests/canary_unittest  --reporter compact --success -d yes
 cd  ..
 cd tests

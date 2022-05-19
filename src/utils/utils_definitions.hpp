@@ -20,6 +20,8 @@
 #ifndef SRC_UTILS_UTILS_DEFINITIONS_HPP_
 #define SRC_UTILS_UTILS_DEFINITIONS_HPP_
 
+#include <unordered_map>
+
 // Enums
 enum Icons_t {
 	ICON_POISON = 1 << 0,

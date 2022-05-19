@@ -21,6 +21,7 @@
 #define SRC_GAME_GAME_DEFINITIONS_HPP_
 
 #include "movement/position.h"
+#include <list>
 
 // Enums
 enum Offer_t {

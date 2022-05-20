@@ -32,6 +32,7 @@ PreySlot::PreySlot(PreySlot_t id) :
 		eraseBonus();
 		reloadBonusValue();
 		reloadBonusType();
+		freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000;
 }
 
 void PreySlot::reloadBonusType()
@@ -143,6 +144,11 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 }
 
 // Task hunting class
+TaskHuntingSlot::TaskHuntingSlot(PreySlot_t id) :
+									id(id) {
+	freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_FREE_REROLL_TIME) * 1000;
+}
+
 void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level)
 {
 	raceIdList.clear();

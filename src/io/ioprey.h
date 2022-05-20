@@ -156,7 +156,7 @@ class TaskHuntingSlot
 {
  public:
 	TaskHuntingSlot() = default;
-	explicit TaskHuntingSlot(PreySlot_t id) : id(id) { }
+	explicit TaskHuntingSlot(PreySlot_t id);
 	virtual ~TaskHuntingSlot() = default;
 
 	bool isOccupied() const {

@@ -39,13 +39,13 @@
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTask(Callable function, Args &&... args)
 {
-	g_dispatcher().addTask(createTask(std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(createTask(std::bind_front(function, &g_game(), std::forward<Args>(args)...)));
 }
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTaskTimed(uint32_t delay, Callable function, Args &&... args)
 {
-	g_dispatcher().addTask(createTask(delay, std::bind(function, &g_game(), std::forward<Args>(args)...)));
+	g_dispatcher().addTask(createTask(delay, std::bind_front(function, &g_game(), std::forward<Args>(args)...)));
 }
 
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
@@ -148,7 +148,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		const ItemAttributes::CustomAttribute* lookDirection = item->getCustomAttribute("LookDirection");
 
 		if (lookType) {
-			uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookType->value));
+			auto look = static_cast<uint16_t>(std::get<int64_t>(lookType->value));
 			msg.add<uint16_t>(look);
 
 			if(look != 0) {
@@ -170,7 +170,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		}
 
 		if (lookMount) {
-			uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookMount->value));
+			auto look = static_cast<uint16_t>(std::get<int64_t>(lookMount->value));
 			msg.add<uint16_t>(look);
 
 			if (look != 0) {
@@ -325,7 +325,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->lastIP = player->getIP();
-		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+		player->lastLoginSaved = std::max<time_t>(g_game().getTimeNow(), player->lastLoginSaved + 1);
 		acceptPackets = true;
 	}
 	else
@@ -342,7 +342,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
+			eventConnect = g_scheduler().addEvent(createSchedulerTask(1000, std::bind_front(&ProtocolGame::connect, getThis(), foundPlayer->getID(), operatingSystem)));
 		}
 		else
 		{
@@ -382,7 +382,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
-	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+	player->lastLoginSaved = std::max<time_t>(g_game().getTimeNow(), player->lastLoginSaved + 1);
 	acceptPackets = true;
 }
 
@@ -531,7 +531,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
+	g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::login, getThis(), characterName, accountId, operatingSystem)));
 }
 
 void ProtocolGame::onConnect()
@@ -549,7 +549,7 @@ void ProtocolGame::onConnect()
 	output->addByte(0x1F);
 
 	// Add timestamp & random number
-	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
+	challengeTimestamp = static_cast<uint32_t>(g_game().getTimeNow());
 	output->add<uint32_t>(challengeTimestamp);
 
 	challengeRandom = randNumber(generator);
@@ -618,18 +618,18 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 		if (recvbyte != 0x1D && recvbyte != 0x1E) {
 			// keep the connection alive
-			g_scheduler().addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
-			g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
+			g_scheduler().addEvent(createSchedulerTask(500, std::bind_front(&ProtocolGame::sendPing, getThis())));
+			g_scheduler().addEvent(createSchedulerTask(1000, std::bind_front(&ProtocolGame::sendPingBack, getThis())));
 			return;
 		}
 	}
 
 	// Modules system
 	if(player && recvbyte != 0xD3){
-		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
+		g_dispatcher().addTask(createTask(std::bind_front(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
 	}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+		g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
@@ -643,7 +643,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 }
 
 	switch (recvbyte) {
-		case 0x14: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
+		case 0x14: g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::logout, getThis(), true, false))); break;
 		case 0x1D: addGameTask(&Game::playerReceivePingBack, player->getID()); break;
 		case 0x1E: addGameTask(&Game::playerReceivePing, player->getID()); break;
 		case 0x2a: addBestiaryTrackerList(msg); break;
@@ -722,8 +722,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xCC: parseSeekInContainer(msg); break;
 		case 0xCD: parseInspectionObject(msg); break;
 		case 0xD2: addGameTask(&Game::playerRequestOutfit, player->getID()); break;
-		//g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
-		case 0xD3: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
+		//g_dispatcher().addTask(createTask(std::bind_front(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
+		case 0xD3: g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
 		case 0xD4: parseToggleMount(msg); break;
 		case 0xD5: parseApplyImbuement(msg); break;
 		case 0xD6: parseClearImbuement(msg); break;
@@ -1695,7 +1695,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
+	msg.add<uint32_t>(g_game().getTimeNow()); // Last Update
 
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
@@ -3508,7 +3508,7 @@ void ProtocolGame::sendBasicData()
 	if (player->isPremium())
 	{
 		msg.addByte(1);
-		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		msg.add<uint32_t>(g_game().getTimeNow() + (player->premiumDays * 86400));
 	}
 	else
 	{
@@ -4136,7 +4136,7 @@ void ProtocolGame::updateCoinBalance()
 	}
 
 	g_dispatcher().addTask(
-		createTask(std::bind([](uint32_t playerId) {
+		createTask(std::bind_front([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
 			if (threadPlayer) {
 				account::Account account;
@@ -5838,7 +5838,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	bool mounted = false;
 
 	if (lookType) {
-		uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookType->value));
+		auto look = static_cast<uint16_t>(std::get<int64_t>(lookType->value));
 		outfited = (look != 0);
 		msg.add<uint16_t>(look);
 
@@ -5861,7 +5861,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	}
 
 	if (lookMount) {
-		uint16_t look = static_cast<uint16_t>(std::get<int64_t>(lookMount->value));
+		auto look = static_cast<uint16_t>(std::get<int64_t>(lookMount->value));
 		mounted = (look != 0);
 		msg.add<uint16_t>(look);
 

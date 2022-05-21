@@ -342,9 +342,9 @@ HistoryStoreOfferList IOGameStore::getHistoryEntries(uint32_t account_id, uint32
 			HistoryStoreOffer entry;
 
 			entry.description = result->getString("description");
-			entry.mode = result->getNumber<uint8_t>("mode");
-			entry.amount = result->getNumber<uint32_t>("coin_amount");
-			entry.time = result->getNumber<uint32_t>("time");
+			entry.mode = result->getU8("mode");
+			entry.amount = result->getU32("coin_amount");
+			entry.time = result->getU32("time");
 
 			historyStoreOfferList.push_back(entry);
 		} while (result->next());

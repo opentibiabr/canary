@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include "utils/pugicast.h"
-
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/scripts/scripts.h"
 
@@ -82,25 +80,25 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
-				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
+				uint16_t exprate = static_cast<uint16_t>(schedENode.attribute("exprate").as_uint());
 				g_eventsScheduler().setExpSchedule(exprate);
 				ss << " exp: " << exprate << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
+				uint16_t lootrate = static_cast<uint16_t>(schedENode.attribute("lootrate").as_uint());
 				g_eventsScheduler().setLootSchedule(lootrate);
 				ss << ", loot: " << lootrate << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
-				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
+				uint32_t spawnrate = schedENode.attribute("spawnrate").as_uint();
 				g_eventsScheduler().setSpawnMonsterSchedule(spawnrate);
 				ss << ", spawn: "  << spawnrate << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
+				uint16_t skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
 				g_eventsScheduler().setSkillSchedule(skillrate);
 				ss << ", skill: " << skillrate << "%";
 				break;

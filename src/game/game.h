@@ -569,6 +569,10 @@ class Game
 			mapLuaItemsStored[position] = itemId;
 		}
 
+		static std::time_t getTimeNow() {
+			return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);

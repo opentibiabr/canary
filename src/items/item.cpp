@@ -27,7 +27,9 @@
 #include "items/trashholder.h"
 #include "items/containers/mailbox/mailbox.h"
 #include "map/house/house.h"
+#include "io/iologindata.h"
 #include "game/game.h"
+#include "game/movement/teleport.h"
 #include "items/bed.h"
 #include "containers/rewards/rewardchest.h"
 #include "creatures/players/imbuements/imbuements.h"
@@ -445,13 +447,13 @@ Attr_ReadValue Item::readAttributesMap(AttrTypes_t attr, BinaryNode& binaryNode,
 {
 	switch (attr) {
 		case ATTR_COUNT: {
-			uint8_t count = binaryNode.getU8();
-			if (count == 0 || count == -1) {
-				count = 1;
+			uint8_t attrItemCount = binaryNode.getU8();
+			if (attrItemCount == 0 || attrItemCount == -1) {
+				attrItemCount = 1;
 				SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have invalid count, setting count to 1", getID(), position.toString());
 			}
 
-			setItemCount(count);
+			setItemCount(attrItemCount);
 			break;
 		}
 		case ATTR_RUNE_CHARGES: {
@@ -697,42 +699,72 @@ Attr_ReadValue Item::readAttributesMap(AttrTypes_t attr, BinaryNode& binaryNode,
 			break;
 		}
 
-		//these should be handled through derived classes
-		//If these are called then something has changed in the items.xml since the map was saved
-		//just read the values
-
-		//Depot class
 		case ATTR_DEPOT_ID: {
-			binaryNode.skip(2);
+			uint16_t attrDepotId = binaryNode.getU16();
+			if (attrDepotId == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setDepotId(attrDepotId);
 			break;
 		}
 
-		//Door class
 		case ATTR_HOUSEDOORID: {
-			binaryNode.skip(1);
+			uint8_t attrDoorId = binaryNode.getU8();
+			if (attrDoorId == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setDoorId(attrDoorId);
 			break;
 		}
 
-		//Bed class
 		case ATTR_SLEEPERGUID: {
-			binaryNode.skip(4);
+			uint32_t guid = binaryNode.getU32();
+			if (guid == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			std::string name = IOLoginData::getNameByGuid(guid);
+			if (!name.empty()) {
+				setSpecialDescription(name + " is sleeping there.");
+				g_game().setBedSleeper(getBed(), guid);
+				setSleeperGuid(guid);
+			}
 			break;
 		}
 
 		case ATTR_SLEEPSTART: {
-			binaryNode.skip(4);
+			uint32_t attrSleepStart = binaryNode.getU32();
+			if (attrSleepStart == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setSleepStart(attrSleepStart);
 			break;
 		}
 
-		//Teleport class
 		case ATTR_TELE_DEST: {
-			binaryNode.skip(5);
+			uint16_t x = binaryNode.getU16();
+			uint16_t y = binaryNode.getU16();
+			uint16_t z = binaryNode.getU8();
+			Position position(x, y, z);
+			if (x == 0 || y == 0 || z == 0) {
+				SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have empty destination", getID(), position.toString());
+			}
+
+			setDestination(position);
 			break;
 		}
 
-		//Container class
 		case ATTR_CONTAINER_ITEMS: {
-			return ATTR_READ_ERROR;
+			uint32_t attrSerializationCount = binaryNode.getU32();
+			if (attrSerializationCount == 0) {
+				return ATTR_READ_ERROR;
+			}
+
+			setSerializationCount(attrSerializationCount);
+			break;
 		}
 
 		case ATTR_CUSTOM_ATTRIBUTES: {

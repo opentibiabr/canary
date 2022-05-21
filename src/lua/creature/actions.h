@@ -28,11 +28,6 @@ class Action;
 class Position;
 
 using Action_ptr = std::unique_ptr<Action>;
-using ActionFunction =
-                       std::function<bool(Player* player, Item* item,
-                            const Position& fromPosition, Thing* target,
-                            const Position& toPosition, bool isHotkey
-                       )>;
 
 class Action : public Script {
 	public:
@@ -109,7 +104,7 @@ class Action : public Script {
 			return false;
 		}
 
-		std::vector<Position> getPositions() {
+		std::vector<Position> getPositions() const {
 			return positions;
 		}
 		void setPositions(Position pos) {
@@ -133,11 +128,11 @@ class Action : public Script {
 		virtual Thing* getTarget(Player* player, Creature* targetCreature,
 						const Position& toPosition, uint8_t toStackPos) const;
 
-		/**ActionFunction = std::function<bool(Player* player, Item* item,
-        * const Position& fromPosition, Thing* target,
-        * const Position& toPosition, bool isHotkey)>;
-		**/
-		ActionFunction function;
+		std::function<bool(
+			Player* player, Item* item,
+			const Position& fromPosition, Thing* target,
+			const Position& toPosition, bool isHotkey
+		)> function;
 
 	private:
 		std::string getScriptTypeName() const override {

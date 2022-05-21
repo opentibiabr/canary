@@ -20,6 +20,7 @@
 #include "otpch.h"
 
 #include "lua/functions/events/global_event_functions.hpp"
+#include "game/game.h"
 #include "lua/global/globalevent.h"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
@@ -140,7 +141,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			}
 		}
 
-		time_t current_time = time(nullptr);
+		time_t current_time = g_game().getTimeNow();
 		tm* timeinfo = localtime(&current_time);
 		timeinfo->tm_hour = hour;
 		timeinfo->tm_min = min;

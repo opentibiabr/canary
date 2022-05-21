@@ -37,14 +37,11 @@ class DepotLocker final : public Container
 
 		void removeInbox(Inbox* inbox);
 
-		//serialization
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-
-		uint16_t getDepotId() const {
-			return depotId;
+		uint16_t getDepotId() const override {
+			return Item::getDepotId();
 		}
-		void setDepotId(uint16_t newDepotId) {
-			this->depotId = newDepotId;
+		void setDepotId(uint16_t newDepotId) override {
+			Item::setDepotId(newDepotId);
 		}
 
 		//cylinder implementations

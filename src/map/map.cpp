@@ -45,7 +45,7 @@ bool Map::load(const std::string& identifier) {
 
 		IOMap loader;
 		if (!loader.loadMap(this, initializeMapFile, identifier)) {
-			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
+			SPDLOG_ERROR("[Map::load] - Cannot load map file: {}", identifier);
 			getMapFileName().clear();
 			return false;
 		}

@@ -22,26 +22,14 @@
 #include "game/movement/teleport.h"
 #include "game/game.h"
 
-
-Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
-{
-	if (attr == ATTR_TELE_DEST) {
-		if (!propStream.read<uint16_t>(destPos.x) || !propStream.read<uint16_t>(destPos.y) || !propStream.read<uint8_t>(destPos.z)) {
-			return ATTR_READ_ERROR;
-		}
-		return ATTR_READ_CONTINUE;
-	}
-	return Item::readAttr(attr, propStream);
-}
-
 void Teleport::serializeAttr(PropWriteStream& propWriteStream) const
 {
 	Item::serializeAttr(propWriteStream);
 
 	propWriteStream.write<uint8_t>(ATTR_TELE_DEST);
-	propWriteStream.write<uint16_t>(destPos.x);
-	propWriteStream.write<uint16_t>(destPos.y);
-	propWriteStream.write<uint8_t>(destPos.z);
+	propWriteStream.write<uint16_t>(getDestination().x);
+	propWriteStream.write<uint16_t>(getDestination().y);
+	propWriteStream.write<uint8_t>(getDestination().z);
 }
 
 ReturnValue Teleport::queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature*) const
@@ -70,7 +58,7 @@ bool Teleport::checkInfinityLoop(Tile* destTile) {
 	}
 
 	if (Teleport* teleport = destTile->getTeleportItem()) {
-		const Position& nextDestPos = teleport->getDestPos();
+		const Position& nextDestPos = teleport->getDestination();
 		if (getPosition() == nextDestPos) {
 			return true;
 		}
@@ -86,7 +74,7 @@ void Teleport::addThing(Thing* thing)
 
 void Teleport::addThing(int32_t, Thing* thing)
 {
-	Tile* destTile = g_game().map.getTile(destPos);
+	Tile* destTile = g_game().map.getTile(getDestination());
 	if (!destTile) {
 		return;
 	}
@@ -103,7 +91,7 @@ void Teleport::addThing(int32_t, Thing* thing)
 
 	if (Creature* creature = thing->getCreature()) {
 		Position origPos = creature->getPosition();
-		g_game().internalCreatureTurn(creature, origPos.x > destPos.x ? DIRECTION_WEST : DIRECTION_EAST);
+		g_game().internalCreatureTurn(creature, origPos.x > getDestination().x ? DIRECTION_WEST : DIRECTION_EAST);
 		g_game().map.moveCreature(*creature, *destTile);
 		if (effect != CONST_ME_NONE) {
 			g_game().addMagicEffect(origPos, effect);

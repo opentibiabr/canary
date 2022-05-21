@@ -23,7 +23,6 @@
 
 #include <mysql/errmsg.h>
 
-
 Database::~Database()
 {
 	if (handle != nullptr) {
@@ -52,7 +51,7 @@ bool Database::connect()
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getNumber<uint64_t>("Value");
+		maxPacketSize = result->getU64("Value");
 	}
 	return true;
 }
@@ -79,7 +78,7 @@ bool Database::connect(const char *host, const char *user, const char *password,
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getNumber<uint64_t>("Value");
+		maxPacketSize = result->getU64("Value");
 	}
 	return true;
 }
@@ -247,6 +246,197 @@ DBResult::DBResult(MYSQL_RES* res)
 DBResult::~DBResult()
 {
 	mysql_free_result(handle);
+}
+
+// Sometimes the result can be "0", so in case of any problem we will return "-1"
+// If any table returns value "-1", then we have a problem
+size_t DBResult::getResult(const std::string& string) const
+{
+	auto it = listNames.find(string);
+	if (it == listNames.end()) {
+		SPDLOG_ERROR("[DBResult::getResult] - Column '{}' doesn't exist in the result set", string);
+		return -1;
+	}
+
+	if (row[it->second] == nullptr) {
+		SPDLOG_ERROR("[DBResult::getResult] - Result is nullptr");
+		return -1;
+	}
+
+	// Return the table size
+	SPDLOG_DEBUG("Database result founded: {}", it->second);
+	return it->second;
+}
+
+// The get8 returns the same conversion of u16 (std::stoi)
+// There is no proper conversion for in8 as stoi already converts their max size
+int8_t DBResult::get8(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::get8] - Failed to get size_t");
+		return 0;
+	}
+
+	return std::atoi(row[result]);
+}
+
+int16_t DBResult::get16(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::get16] - Failed to get size_t");
+		return 0;
+	}
+
+	return std::atoi(row[result]);
+}
+
+int32_t DBResult::get32(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::get32] - Failed to get size_t");
+		return 0;
+	}
+
+	return std::atol(row[result]);
+}
+
+int64_t DBResult::get64(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::get64] - Failed to get size_t");
+		return 0;
+	}
+
+	return std::atoll(row[result]);
+}
+
+// The getU8/getU16 returns the same conversion of u32 (std::stoul)
+// There is no proper conversion for uint8/16 as stoul already converts their max size
+uint8_t DBResult::getU8(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::getU8] - Failed to get size_t");
+		return 0;
+	}
+
+	try
+	{
+		return std::stoul(row[result]);
+	}
+	catch(std::invalid_argument const& argument)
+	{
+		SPDLOG_ERROR("[DBResult::getU8] - Invalid argument: ", argument.what());
+	}
+	catch(std::out_of_range const& range)
+	{
+		SPDLOG_ERROR("[DBResult::getU8] - Out of range: ", range.what());
+	}
+	return 0;
+}
+
+uint16_t DBResult::getU16(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::getU16] - Failed to get size_t");
+		return 0;
+	}
+
+	try
+	{
+		return std::stoul(row[result]);
+	}
+	catch(std::invalid_argument const& argument)
+	{
+		SPDLOG_ERROR("[DBResult::getU16] - Invalid argument: ", argument.what());
+	}
+	catch(std::out_of_range const& range)
+	{
+		SPDLOG_ERROR("[DBResult::getU16] - Out of range: ", range.what());
+	}
+	return 0;
+}
+
+uint32_t DBResult::getU32(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::getU32] - Failed to get size_t");
+		return 0;
+	}
+
+	try
+	{
+		return std::stoul(row[result]);
+	}
+	catch(std::invalid_argument const& argument)
+	{
+		SPDLOG_ERROR("[DBResult::getU32] - Invalid argument: ", argument.what());
+	}
+	catch(std::out_of_range const& range)
+	{
+		SPDLOG_ERROR("[DBResult::getU32] - Out of range: ", range.what());
+	}
+	return 0;
+}
+
+uint64_t DBResult::getU64(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::getU64] - Failed to get size_t");
+		return 0;
+	}
+
+	try
+	{
+		return std::stoull(row[result]);
+	}
+	catch(std::invalid_argument const& argument)
+	{
+		SPDLOG_ERROR("[DBResult::getU64] - Invalid argument: ", argument.what());
+	}
+	catch(std::out_of_range const& range)
+	{
+		SPDLOG_ERROR("[DBResult::getU64] - Out of range: ", range.what());
+	}
+	return 0;
+}
+
+time_t DBResult::getTime(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::getTime] - Failed to get size_t");
+		return 0;
+	}
+
+	return std::atoll(row[result]);
+}
+
+bool DBResult::getBoolean(const std::string& tableName) const
+{
+	size_t result = getResult(tableName);
+	if (std::cmp_less(result, -1)) {
+		SPDLOG_ERROR("[DBResult::getU64] - Failed to get size_t");
+		return 0;
+	}
+
+	auto databaseResut = std::atoi(row[result]);
+	// Here we will check if result is true or false (0/1)
+	// If it is different from true or false, we will return a message warning
+	if (databaseResut >= 2)
+	{
+		SPDLOG_WARN("[DBResult::getBoolean] - Boolean result '{}' is not true or false, valid value is only '0' or '1'", databaseResut);
+		return 0;
+	}
+
+	return databaseResut;
 }
 
 std::string DBResult::getString(const std::string& s) const

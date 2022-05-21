@@ -287,7 +287,7 @@ class Map
 			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
 		}
 
-		std::string getMapFileName() {
+		std::string getMapFileName() const {
 			return mapFileName;
 		}
 		void setMapFileName(const std::string &newName) {

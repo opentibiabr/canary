@@ -87,15 +87,15 @@ void Game::loadBoostedCreature()
 		return;
 	}
 
-	uint16_t date = result->getNumber<uint16_t>("date");
+	uint16_t date = result->getU16("date");
 	std::string name = "";
-	time_t now = std::time(0);
+	std::time_t now = getTimeNow();
 	tm *ltm = localtime(&now);
 	uint8_t today = ltm->tm_mday;
 	if (date == today) {
 		name = result->getString("boostname");
 	} else {
-		uint16_t oldrace = result->getNumber<uint16_t>("raceid");
+		uint16_t oldrace = result->getU16("raceid");
 		std::map<uint16_t, std::string> monsterlist = getBestiaryList();
 		uint16_t newrace = 0;
 		uint8_t k = 1;
@@ -143,7 +143,7 @@ void Game::start(ServiceManager* manager)
 {
 	serviceManager = manager;
 
-	time_t now = std::time(0);
+	std::time_t now = getTimeNow();
 	const tm* tms = localtime(&now);
 	int minutes = tms->tm_min;
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
@@ -546,11 +546,11 @@ bool Game::loadItemsPrice()
 
 	do {
 		query2.str(std::string());
-		uint16_t itemId = result->getNumber<uint16_t>("itemtype");
+		uint16_t itemId = result->getU16("itemtype");
 		query2 << "SELECT `price` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
 		DBResult_ptr resultQuery2 = db.storeQuery(query2.str());
 		if (resultQuery2) {
-			itemsPriceMap[itemId] = resultQuery2->getNumber<uint32_t>("price");
+			itemsPriceMap[itemId] = resultQuery2->getU32("price");
 			itemsSaleCount++;
 		}
 
@@ -3640,7 +3640,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 		if (writeItem->getText() != text) {
 			writeItem->setText(text);
 			writeItem->setWriter(player->getName());
-			writeItem->setDate(std::time(nullptr));
+			writeItem->setDate(getTimeNow());
 		}
 	} else {
 		writeItem->resetText();
@@ -6782,8 +6782,8 @@ void Game::updateCreatureType(Creature* creature)
 
 void Game::updatePremium(account::Account& account)
 {
-bool save = false;
-	time_t timeNow = std::time(nullptr);
+	bool save = false;
+	std::time_t timeNow = getTimeNow();
 	uint32_t rem_days = 0;
 	time_t last_day;
 	account.GetPremiumRemaningDays(&rem_days);
@@ -6829,7 +6829,7 @@ void Game::loadMotdNum()
 
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'motd_num'");
 	if (result) {
-		motdNum = result->getNumber<uint32_t>("value");
+		motdNum = result->getU32("value");
 	} else {
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('motd_num', '0')");
 	}
@@ -6887,7 +6887,7 @@ void Game::loadPlayersRecord()
 
 	DBResult_ptr result = db.storeQuery("SELECT `value` FROM `server_config` WHERE `config` = 'players_record'");
 	if (result) {
-		playersRecord = result->getNumber<uint32_t>("value");
+		playersRecord = result->getU32("value");
 	} else {
 		db.executeQuery("INSERT INTO `server_config` (`config`, `value`) VALUES ('players_record', '0')");
 	}
@@ -7076,7 +7076,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 					return;
 				}
 
-				uint32_t pages = result->getNumber<uint32_t>("entries");
+				uint32_t pages = result->getU32("entries");
 				pages += entriesPerPage - 1;
 				pages /= entriesPerPage;
 
@@ -7087,7 +7087,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 					std::string cause2 = result->getString("mostdamage_by");
 
 					std::ostringstream cause;
-					cause << "Died at Level " << result->getNumber<uint32_t>("level") << " by";
+					cause << "Died at Level " << result->getU32("level") << " by";
 					if (!cause1.empty()) {
 						const char& character = cause1.front();
 						if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
@@ -7112,7 +7112,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 						cause << cause2;
 					}
 					cause << '.';
-					entries.emplace_back(std::move(cause.str()), result->getNumber<uint32_t>("time"));
+					entries.emplace_back(std::move(cause.str()), result->getU32("time"));
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 			};
@@ -7141,7 +7141,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 					return;
 				}
 
-				uint32_t pages = result->getNumber<uint32_t>("entries");
+				uint32_t pages = result->getU32("entries");
 				pages += entriesPerPage - 1;
 				pages /= entriesPerPage;
 
@@ -7154,18 +7154,18 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 
 					uint8_t status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
 					if (player->getName() == cause1) {
-						if (result->getNumber<uint32_t>("unjustified") == 1) {
+						if (result->getU32("unjustified") == 1) {
 							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 						}
 					} else if (player->getName() == cause2) {
-						if (result->getNumber<uint32_t>("mostdamage_unjustified") == 1) {
+						if (result->getU32("mostdamage_unjustified") == 1) {
 							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 						}
 					}
 
 					std::ostringstream description;
 					description << "Killed " << name << '.';
-					entries.emplace_back(std::move(description.str()), result->getNumber<uint32_t>("time"), status);
+					entries.emplace_back(std::move(description.str()), result->getU32("time"), status);
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
 			};
@@ -7264,8 +7264,8 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 			return;
 		}
 
-		uint16_t page = result->getNumber<uint16_t>("page");
-		uint32_t pages = result->getNumber<uint32_t>("entries");
+		uint16_t page = result->getU16("page");
+		uint32_t pages = result->getU32("entries");
 		pages += entriesPerPage - 1;
 		pages /= entriesPerPage;
 
@@ -7273,13 +7273,13 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 		characters.reserve(result->countResults());
 		do {
 			uint8_t characterVocation;
-			const Vocation* voc = g_vocations().getVocation(result->getNumber<uint16_t>("vocation"));
+			const Vocation* voc = g_vocations().getVocation(result->getU16("vocation"));
 			if (voc) {
 				characterVocation = voc->getClientId();
 			} else {
 				characterVocation = 0;
 			}
-			characters.emplace_back(std::move(result->getString("name")), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
+			characters.emplace_back(std::move(result->getString("name")), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation);
 		} while (result->next());
 		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
 	};
@@ -7326,7 +7326,7 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string& assertLine, c
 	// TODO: move debug assertions to database
 	FILE* file = fopen("client_assertions.txt", "a");
 	if (file) {
-		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(std::time(nullptr)).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
+		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(getTimeNow()).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
 		fprintf(file, "%s\n%s\n%s\n%s\n", assertLine.c_str(), date.c_str(), description.c_str(), comment.c_str());
 		fclose(file);
 	}
@@ -7910,9 +7910,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION);
 
-	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, std::time(nullptr), OFFERSTATE_ACCEPTEDEX);
+	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, getTimeNow(), OFFERSTATE_ACCEPTEDEX);
 
-	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, std::time(nullptr), OFFERSTATE_ACCEPTED);
+	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, getTimeNow(), OFFERSTATE_ACCEPTED);
 
 	offer.amount -= amount;
 

@@ -251,7 +251,7 @@ int main(int argc, char* argv[]) {
 	g_dispatcher().start();
 	g_scheduler().start();
 
-	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
+	g_dispatcher().addTask(createTask(std::bind_front(mainLoader, argc, argv,
 												&serviceManager)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock);

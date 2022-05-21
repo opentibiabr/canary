@@ -25,6 +25,7 @@
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
 #include "server/server.h"
+#include "game/game.h"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service& io_service, ConstServicePort_ptr servicePort)
 {
@@ -51,7 +52,8 @@ void ConnectionManager::closeAll()
 			std::error_code error;
 			connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
 			connection->socket.close(error);
-		} catch (std::system_error&) {
+		} catch (std::system_error& systemError) {
+			SPDLOG_ERROR("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", systemError.what());
 		}
 	}
 	connections.clear();
@@ -167,7 +169,7 @@ void Connection::parseProxyIdentification(const std::error_code& error)
 			if (remainder > 0) {
 				connectionState = CONNECTION_STATE_READINGS;
 				try {
-					readTimer.expires_from_now(posix_time::seconds(CONNECTION_READ_TIMEOUT));
+					readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 					readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 					// Read the remainder of proxy identification
@@ -210,7 +212,7 @@ void Connection::parseHeader(const std::error_code& error)
 		return;
 	}
 
-	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
+	uint32_t timePassed = std::max<uint32_t>(1, (g_game().getTimeNow() - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
 		SPDLOG_WARN("{} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();
@@ -218,7 +220,7 @@ void Connection::parseHeader(const std::error_code& error)
 	}
 
 	if (timePassed > 2) {
-		timeConnected = time(nullptr);
+		timeConnected = g_game().getTimeNow();
 		packetsSent = 0;
 	}
 
@@ -229,7 +231,7 @@ void Connection::parseHeader(const std::error_code& error)
 	}
 
 	try {
-		readTimer.expires_from_now(posix_time::seconds(CONNECTION_READ_TIMEOUT));
+		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 		// Read packet content
@@ -298,7 +300,7 @@ void Connection::parsePacket(const std::error_code& error)
 	}
 
 	try {
-		readTimer.expires_from_now(posix_time::seconds(CONNECTION_READ_TIMEOUT));
+		readTimer.expires_from_now(std::chrono::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 		if (!skipReadingNextPacket) {
@@ -336,7 +338,7 @@ void Connection::send(const OutputMessage_ptr& outputMessage)
 	if (noPendingWrite) {
 		// Make asio thread handle xtea encryption instead of dispatcher
 		try {
-			socket.get_io_service().post(std::bind(&Connection::internalWorker, shared_from_this()));
+			asio::post(socket.get_executor(), std::bind(&Connection::internalWorker, shared_from_this()));
 		} catch (const std::system_error& e) {
 			SPDLOG_ERROR("[Connection::send] - error: {}", e.what());
 			messageQueue.clear();
@@ -376,7 +378,7 @@ uint32_t Connection::getIP()
 void Connection::internalSend(const OutputMessage_ptr& outputMessage)
 {
 	try {
-		writeTimer.expires_from_now(posix_time::seconds(CONNECTION_WRITE_TIMEOUT));
+		writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
 		writeTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
 
 		asio::async_write(socket,

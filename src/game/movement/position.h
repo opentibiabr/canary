@@ -138,6 +138,12 @@ struct Position
                   .append(" )");
 	}
 
+	void setPosition(Position position) {
+		x = std::move(position.x);
+		y = std::move(position.y);
+		z = std::move(position.z);
+	}
+
 	int_fast32_t getX() const { return x; }
 	int_fast32_t getY() const { return y; }
 	int_fast16_t getZ() const { return z; }

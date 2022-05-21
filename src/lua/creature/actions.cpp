@@ -443,7 +443,13 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
 }
 
-Action::Action(LuaScriptInterface* interface) : Script(interface), function(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
+Action::Action(LuaScriptInterface* interface) : Script(interface)
+{
+	function = nullptr;
+	allowFarUse = false;
+	checkFloor = true;
+	checkLineOfSight = true;
+}
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {

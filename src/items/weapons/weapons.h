@@ -68,6 +68,8 @@ constexpr auto g_weapons = &Weapons::getInstance;
 class Weapon
 {
 	public:
+		Weapon() = default;
+		virtual ~Weapon() = default;
 		virtual void configureWeapon(const ItemType& it);
 		virtual bool interruptSwing() const {
 			return false;
@@ -187,11 +189,6 @@ class Weapon
 			vocationString = str;
 		}
 
-		WeaponAction_t action = WEAPONACTION_NONE;
-		CombatParams params;
-		WeaponType_t weaponType;
-		std::map<uint16_t, bool> vocWeaponMap;
-
 	protected:
 		void internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const;
 		void internalUseWeapon(Player* player, Item* item, Tile* tile) const;
@@ -224,7 +221,16 @@ class Weapon
 
 		static void decrementItemCount(Item* item);
 
+		WeaponAction_t action = WEAPONACTION_NONE;
+		CombatParams params;
+		WeaponType_t weaponType;
+		std::map<uint16_t, bool> vocWeaponMap;
+
 		friend class Combat;
+		friend class WeaponWand;
+		friend class WeaponMelee;
+		friend class WeaponDistance;
+		friend class WeaponFunctions;
 };
 
 class WeaponMelee final : public Weapon

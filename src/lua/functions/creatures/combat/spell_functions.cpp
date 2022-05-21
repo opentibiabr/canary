@@ -89,7 +89,7 @@ int SpellFunctions::luaSpellCreate(lua_State* L) {
 		spell->spellType = SPELL_INSTANT;
 		return 1;
 	} else if (spellType == SPELL_RUNE) {
-		RuneSpell* runeSpell = new RuneSpell(getScriptEnv()->getScriptInterface());
+		auto runeSpell = new RuneSpell(getScriptEnv()->getScriptInterface());
 		if (!runeSpell) {
 			reportErrorFunc(getErrorDesc(LUA_ERROR_SPELL_NOT_FOUND));
 			pushBoolean(L, false);

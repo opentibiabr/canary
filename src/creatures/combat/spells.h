@@ -104,21 +104,15 @@ class CombatSpell final : public Script, public BaseSpell
 {
 	public:
 		// Constructor
-		CombatSpell(Combat* combat, bool needTarget, bool needDirection) :
+		CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection) :
 			Script(&g_spells().getScriptInterface()),
-			combat(combat),
-			needDirection(needTarget),
+			combat(newCombat),
+			needDirection(newNeedTarget),
 			needTarget(needDirection) {}
 		// Destructor
-		~CombatSpell() {
-			if (!isLoadedCallback()) {
-				delete combat;
-			}
-		}
+		~CombatSpell() = default;
 
-		// non-copyable
-		CombatSpell(const CombatSpell&) = delete;
-		CombatSpell& operator=(const CombatSpell&) = delete;
+		NONCOPYABLE(CombatSpell);
 
 		bool castSpell(Creature* creature) override;
 		bool castSpell(Creature* creature, Creature* target) override;

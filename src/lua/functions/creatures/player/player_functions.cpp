@@ -1239,7 +1239,7 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	if (isNumber(L, 2)) {
 		vocation = g_vocations().getVocation(getNumber<uint16_t>(L, 2));
 	} else if (isString(L, 2)) {
-		vocation = g_vocations().getVocation(g_vocations().getVocationId(getString(L, 2)));
+		vocation = g_vocations().getVocation(static_cast<uint16_t>(g_vocations().getVocationId(getString(L, 2))));
 	} else if (isUserdata(L, 2)) {
 		vocation = getUserdata<Vocation>(L, 2);
 	} else {

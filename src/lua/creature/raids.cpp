@@ -114,7 +114,7 @@ bool Raids::startup() {
 
 	setLastRaidEnd(OTSYS_TIME());
 
-	checkRaidsEvent = g_scheduler().addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this)));
+	checkRaidsEvent = g_scheduler().addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind_front(&Raids::checkRaids, this)));
 
 	started = true;
 	return started;
@@ -140,7 +140,7 @@ void Raids::checkRaids() {
 		}
 	}
 
-	checkRaidsEvent = g_scheduler().addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this)));
+	checkRaidsEvent = g_scheduler().addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind_front(&Raids::checkRaids, this)));
 }
 
 void Raids::clear() {
@@ -229,7 +229,7 @@ void Raid::startRaid() {
 	RaidEvent* raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
-		nextEventEvent = g_scheduler().addEvent(createSchedulerTask(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent)));
+		nextEventEvent = g_scheduler().addEvent(createSchedulerTask(raidEvent->getDelay(), std::bind_front(&Raid::executeRaidEvent, this, raidEvent)));
 	}
 }
 
@@ -240,7 +240,7 @@ void Raid::executeRaidEvent(RaidEvent* raidEvent) {
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
-			nextEventEvent = g_scheduler().addEvent(createSchedulerTask(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent)));
+			nextEventEvent = g_scheduler().addEvent(createSchedulerTask(ticks, std::bind_front(&Raid::executeRaidEvent, this, newRaidEvent)));
 		} else {
 			resetRaid();
 		}
@@ -364,7 +364,7 @@ bool SingleSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 	}
 
 	if ((attr = eventNode.attribute("z"))) {
-		position.z = static_cast<uint16_t>(attr.as_uint());
+		position.z = static_cast<uint8_t>(attr.as_uint());
 	} else {
 		SPDLOG_ERROR("[SingleSpawnEvent::configureRaidEvent] - "
                     "'Z' tag missing for singlespawn event");
@@ -418,7 +418,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("centerz"))) {
-			centerPos.z = static_cast<uint16_t>(attr.as_uint());
+			centerPos.z = static_cast<uint8_t>(attr.as_uint());
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "centerz' tag missing for areaspawn event");
@@ -450,7 +450,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("fromz"))) {
-			fromPos.z = static_cast<uint16_t>(attr.as_uint());
+			fromPos.z = static_cast<uint8_t>(attr.as_uint());
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'fromz' tag missing for areaspawn event");
@@ -474,7 +474,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node& eventNode) {
 		}
 
 		if ((attr = eventNode.attribute("toz"))) {
-			toPos.z = static_cast<uint16_t>(attr.as_uint());
+			toPos.z = static_cast<uint8_t>(attr.as_uint());
 		} else {
 			SPDLOG_ERROR("[AreaSpawnEvent::configureRaidEvent] - "
                          "'toz' tag missing for areaspawn event");

@@ -101,7 +101,7 @@ class PropWriteStream
 
 		template <typename T>
 		void write(T add) {
-			char* addr = reinterpret_cast<char*>(&add);
+			auto addr = reinterpret_cast<char*>(&add);
 			std::copy(addr, addr + sizeof(T), std::back_inserter(buffer));
 		}
 
@@ -116,7 +116,7 @@ class PropWriteStream
 			std::copy(str.begin(), str.end(), std::back_inserter(buffer));
 		}
 
-	protected:
+	private:
 		std::vector<char> buffer;
 };
 

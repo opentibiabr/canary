@@ -66,48 +66,50 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 			continue;
 		}
 
-		spawnNpcList.emplace_front(centerPos, radius);
-		SpawnNpc& spawnNpc = spawnNpcList.front();
-
+		// Store spawn npc
+		setSpawnNpcList(centerPos, radius);
 		for (auto childNode : spawnNode.children()) {
-			if (strcasecmp(childNode.name(), "npc") == 0) {
-				pugi::xml_attribute nameAttribute = childNode.attribute("name");
-				const std::string npcName = nameAttribute.as_string();
-				if (!nameAttribute || npcName.empty()) {
-					SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Missing or empty tag 'name' on npc position {}", centerPos.toString());
-					continue;
-				}
-
-				pugi::xml_attribute directionAttribute = childNode.attribute("direction");
-				const std::string directionString = directionAttribute.as_string();
-				if (!isNumber(directionAttribute.as_string())) {
-					SPDLOG_WARN("[SpawnsNpc::loadFromXml] - Invalid direction with npc name {}", npcName);
-					continue;
-				}
-
-				Direction dir;
-				if (directionAttribute) {
-					dir = static_cast<Direction>(directionAttribute.as_int());
-				} else {
-					dir = DIRECTION_NORTH;
-				}
-
-				Position pos(
-					centerPos.x + static_cast<uint16_t>(childNode.attribute("x").as_int()),
-					centerPos.y + static_cast<uint16_t>(childNode.attribute("y").as_int()),
-					centerPos.z
-				);
-				int64_t interval = static_cast<int64_t>(childNode.attribute("spawntime").as_int()) * 1000;
-				if (interval >= MINSPAWN_INTERVAL && interval <= MAXSPAWN_INTERVAL) {
-					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
-				} else {
-					if (interval <= MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
-					} else {
-						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MAXSPAWN_INTERVAL / 1000);
-					}
-				}
+			if (childNode.name() == "npc") {
+				continue;
 			}
+
+			pugi::xml_attribute nameAttribute = childNode.attribute("name");
+			const std::string npcName = nameAttribute.as_string();
+			if (!nameAttribute || npcName.empty()) {
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - Missing or empty tag 'name' on npc position {}", centerPos.toString());
+				continue;
+			}
+
+			pugi::xml_attribute directionAttribute = childNode.attribute("direction");
+			const std::string directionString = directionAttribute.as_string();
+			if (!isNumber(directionAttribute.as_string())) {
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - Invalid direction with npc name {}", npcName);
+				continue;
+			}
+
+			Position spawnPosition(
+				centerPos.x + static_cast<uint16_t>(childNode.attribute("x").as_int()),
+				centerPos.y + static_cast<uint16_t>(childNode.attribute("y").as_int()),
+				centerPos.z
+			);
+
+			int64_t interval = static_cast<int64_t>(childNode.attribute("spawntime").as_int()) * 1000;
+			if (interval < MINSPAWN_INTERVAL) {
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds, discarding spawn", nameAttribute.as_string(), spawnPosition.toString(), MINSPAWN_INTERVAL / 1000);
+				continue;
+			} else if (interval > MAXSPAWN_INTERVAL){
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds, discarding spawn", nameAttribute.as_string(), spawnPosition.toString(), MAXSPAWN_INTERVAL / 1000);
+				continue;
+			}
+
+			Direction npcDirection;
+			if (directionAttribute) {
+				npcDirection = static_cast<Direction>(directionAttribute.as_int());
+			} else {
+				npcDirection = DIRECTION_NORTH;
+			}
+
+			getSpawnNpc().addNpc(nameAttribute.as_string(), spawnPosition, npcDirection, static_cast<uint32_t>(interval));
 		}
 	}
 	return true;

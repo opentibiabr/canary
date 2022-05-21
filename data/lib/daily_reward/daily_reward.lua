@@ -95,8 +95,9 @@ end
 function RetrieveGlobalStorage(key)
 	local resultId = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. key)
 	if resultId ~= false then
-		local val = result.getNumber(resultId, "value")
-		result.free(resultId)
+		-- The table global_storage is int type (uint16_t)
+		local val = Result.getU16(resultId, "value")
+		Result.free(resultId)
 		return val
 	end
 	return 1

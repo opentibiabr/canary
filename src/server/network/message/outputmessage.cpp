@@ -28,7 +28,7 @@ const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY {10};
 
 void OutputMessagePool::scheduleSendAll()
 {
-	auto function = std::bind(&OutputMessagePool::sendAll, this);
+	auto function = std::bind_front(&OutputMessagePool::sendAll, this);
 	g_scheduler().addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), function));
 }
 

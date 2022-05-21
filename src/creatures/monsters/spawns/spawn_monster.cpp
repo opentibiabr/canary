@@ -76,7 +76,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 
 void SpawnsMonster::parseMonsterNode(pugi::xml_node spawnMonsterNode, Position centerPos, int32_t radius)
 {
-	uint32_t eventschedule = g_game().getSpawnMonsterSchedule();
+	uint32_t eventschedule = g_eventsScheduler().getSpawnMonsterSchedule();
 	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
 	spawnMonsterList.emplace_front(centerPos, radius);

@@ -68,7 +68,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 {
 	public:
 		// Constructor
-		Connection(boost::asio::io_service& initIoService,
+		Connection(asio::io_service& initIoService,
 			ConstServicePort_ptr initservicePort);
 		// Constructor end
 

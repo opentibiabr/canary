@@ -110,6 +110,16 @@ class SpawnsNpc
 			return spawnNpcList;
 		}
 
+		// Set the position and radius on "spawnNpcList"
+		void setSpawnNpcList(Position &position, int32_t &radius) {
+			spawnNpcList.emplace_front(position, radius);
+		}
+
+		// Retuns the "SpawnNpc" stored on "spawnNpcList"
+		SpawnNpc& getSpawnNpc() {
+			return spawnNpcList.front();
+		}
+
 	private:
 		std::forward_list<SpawnNpc> spawnNpcList;
 		std::string fileName;

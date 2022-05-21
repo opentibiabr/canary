@@ -818,13 +818,58 @@ class Item : virtual public Thing
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
-		//serialization
-		virtual Attr_ReadValue readAttributesMap(AttrTypes_t attr, BinaryNode &binaryNode, Position position);
+		// Serialization items
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 		bool unserializeAttr(PropStream& propStream);
+
+		// Serialization map items
+		virtual Attr_ReadValue readAttributesMap(AttrTypes_t attr, BinaryNode &binaryNode, Position position);
 		virtual bool unserializeMapItem(BinaryNode &binaryNode, Position position);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
+
+		// Serialization functions for classes: Teleport, Bed, Container, DepotLocker, Door
+		// Depot class
+		virtual uint16_t getDepotId() const {
+			return depotId;
+		}
+		virtual void setDepotId(uint16_t newDepotId) {
+			depotId = newDepotId;
+		}
+		// Door class
+		virtual void setDoorId(uint32_t doorId) {
+			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
+		}
+		virtual uint32_t getDoorId() const {
+			return getIntAttr(ITEM_ATTRIBUTE_DOORID);
+		}
+		// Bed class
+		virtual const uint32_t& getSleeperGUID() const {
+			return sleeperGUID;
+		}
+		virtual void setSleeperGuid(uint32_t newSleeperGuid) {
+			sleeperGUID = newSleeperGuid;
+		}
+		virtual const uint32_t& getSleepStart() const {
+			return sleepStart;
+		}
+		virtual void setSleepStart(uint32_t newSleepStart) {
+			sleepStart = newSleepStart;
+		}
+		// Teleport class
+		virtual const Position& getDestination() const {
+			return destinationPosition;
+		}
+		virtual void setDestination(Position position) {
+			destinationPosition = std::move(position);
+		}
+		// Container class
+		virtual const uint32_t getSerializationCount() const {
+			return serializationCount;
+		}
+		virtual void setSerializationCount(uint32_t newCount) {
+			serializationCount = newCount;
+		}
 
 		bool isPushable() const override final {
 			return isMoveable();
@@ -1124,9 +1169,16 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 	
 	private:
+		uint16_t depotId;
+		uint32_t sleeperGUID;
+		uint32_t sleepStart;
+		Position destinationPosition;
+		uint32_t serializationCount = 0;
+
 		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
+		friend class IOMapSerialize;
 };
 
 using ItemList = std::list<Item*>;

@@ -101,7 +101,7 @@ error_t Account::GetCoins(uint32_t *coins) {
       return ERROR_DB;
   }
 
-  *coins = result->getNumber<uint32_t>("coins");
+  *coins = result->getU32("coins");
   return ERROR_NO;
 }
 
@@ -212,12 +212,12 @@ error_t Account::LoadAccountDB(std::ostringstream &query) {
       return false;
   }
 
-  this->SetID(result->getNumber<uint32_t>("id"));
+  this->SetID(result->getU32("id"));
   this->SetEmail(result->getString("email"));
-  this->SetAccountType(static_cast<AccountType>(result->getNumber<int32_t>("type")));
+  this->SetAccountType(static_cast<AccountType>(result->get32("type")));
   this->SetPassword(result->getString("password"));
-  this->SetPremiumRemaningDays(result->getNumber<uint16_t>("premdays"));
-  this->SetPremiumLastDay(result->getNumber<time_t>("lastday"));
+  this->SetPremiumRemaningDays(result->getU16("premdays"));
+  this->SetPremiumLastDay(result->get64("lastday"));
 
   return ERROR_NO;
 }
@@ -232,12 +232,12 @@ error_t Account::LoadAccountPlayerDB(Player *player, std::string& characterName)
 				<< id_ << " AND `name` = " << db_->escapeString(characterName) << " ORDER BY `name` ASC";
 
 	DBResult_ptr result = db_->storeQuery(query.str());
-	if (!result || result->getNumber<uint64_t>("deletion") != 0) {
+	if (!result || result->getU64("deletion") != 0) {
 		return ERROR_PLAYER_NOT_FOUND;
 	}
 
 	player->name = result->getString("name");
-	player->deletion = result->getNumber<uint64_t>("deletion");
+	player->deletion = result->getU64("deletion");
 
 	return ERROR_NO;
 }
@@ -256,10 +256,10 @@ error_t Account::LoadAccountPlayersDB(std::vector<Player> *players) {
   }
 
   do {
-    if (result->getNumber<uint64_t>("deletion") == 0) {
+    if (result->getU64("deletion") == 0) {
       Player new_player;
       new_player.name = result->getString("name");
-      new_player.deletion = result->getNumber<uint64_t>("deletion");
+      new_player.deletion = result->getU64("deletion");
       players->push_back(new_player);
     }
   } while (result->next());

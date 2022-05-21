@@ -68,7 +68,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 
 		// Remove players from beds
 		for (BedItem* bed : bedsList) {
-			if (bed->getSleeper() != 0) {
+			if (bed->getSleeperGUID() != 0) {
 				bed->wakeUp(nullptr);
 			}
 		}
@@ -84,7 +84,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		}
 	} else {
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
-		time_t currentTime = time(nullptr);
+		time_t currentTime = g_game().getTimeNow();
 		if (strRentPeriod == "yearly") {
            currentTime += 24 * 60 * 60 * 365;
 		} else if (strRentPeriod == "monthly") {
@@ -116,7 +116,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		if (!name.empty()) {
 			owner = guid;
 			ownerName = name;
-			ownerAccountId =  result->getNumber<uint32_t>("account_id");
+			ownerAccountId =  result->getU32("account_id");
 		}
 	}
 
@@ -553,20 +553,6 @@ void AccessList::getList(std::string& retList) const
 
 Door::Door(uint16_t type) :	Item(type) {}
 
-Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream& propStream)
-{
-	if (attr == ATTR_HOUSEDOORID) {
-		uint8_t doorId;
-		if (!propStream.read<uint8_t>(doorId)) {
-			return ATTR_READ_ERROR;
-		}
-
-		setDoorId(doorId);
-		return ATTR_READ_CONTINUE;
-	}
-	return Item::readAttr(attr, propStream);
-}
-
 void Door::setHouse(House* newHouse)
 {
 	if (this->house != nullptr) {
@@ -660,7 +646,7 @@ bool Houses::loadHousesXML(const std::string& filename)
 		Position entryPos(
 			static_cast<uint16_t>(houseNode.attribute("entryx").as_uint()),
 			static_cast<uint16_t>(houseNode.attribute("entryy").as_uint()),
-			static_cast<uint16_t>(houseNode.attribute("entryz").as_uint())
+			static_cast<uint8_t>(houseNode.attribute("entryz").as_uint())
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
 			SPDLOG_WARN("[Houses::loadHousesXML] - Entry not set for house "
@@ -682,7 +668,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 		return;
 	}
 
-	time_t currentTime = time(nullptr);
+	time_t currentTime = g_game().getTimeNow();
 	for (const auto& it : houseMap) {
 		House* house = it.second;
 		if (house->getOwner() == 0) {

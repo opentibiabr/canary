@@ -32,29 +32,6 @@
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
 
-#pragma pack(1)
-
-struct OTBM_root_header {
-	uint32_t version;
-	uint16_t width;
-	uint16_t height;
-	uint32_t majorVersionItems;
-	uint32_t minorVersionItems;
-};
-
-struct OTBM_Destination_coords {
-	uint16_t x;
-	uint16_t y;
-	uint8_t z;
-};
-
-struct OTBM_Tile_coords {
-	uint8_t x;
-	uint8_t y;
-};
-
-#pragma pack()
-
 class IOMap
 {
 	static Tile* createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
@@ -158,20 +135,11 @@ class IOMap
 			return map->housesCustom.loadHousesXML(map->housefile);
 		}
 
-		const std::string& getLastErrorString() const {
-			return errorString;
-		}
-
-		void setLastErrorString(std::string error) {
-			errorString = std::move(error);
-		}
-
 	private:
-		bool parseMapDataAttributes(BinaryNode &binaryNodeMapData, Map& map, const std::string& fileName);
-		bool parseWaypoints(BinaryNode &binaryNodeMapData, Map& map);
-		bool parseTowns(BinaryNode &binaryNodeMapData, Map& map);
-		bool parseTileArea(BinaryNode &binaryNodeMapData, Map& map);
-		std::string errorString;
+		bool parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map, const std::string& fileName);
+		bool parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
+		bool parseTowns(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
+		bool parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
 };
 
 #endif // SRC_IO_IOMAP_H_

@@ -21,6 +21,7 @@
 
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
+#include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
 void GlobalEvents::clear() {
@@ -42,7 +43,7 @@ bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
 		auto result = timerMap.emplace(globalEvent->getName(), std::move(*globalEvent));
 		if (result.second) {
 			if (timerEventId == 0) {
-				timerEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::timer, this)));
+				timerEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind_front(&GlobalEvents::timer, this)));
 			}
 			return true;
 		}
@@ -55,7 +56,7 @@ bool GlobalEvents::registerLuaEvent(GlobalEvent* event) {
 		auto result = thinkMap.emplace(globalEvent->getName(), std::move(*globalEvent));
 		if (result.second) {
 			if (thinkEventId == 0) {
-				thinkEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind(&GlobalEvents::think, this)));
+				thinkEventId = g_scheduler().addEvent(createSchedulerTask(SCHEDULER_MINTICKS, std::bind_front(&GlobalEvents::think, this)));
 			}
 			return true;
 		}
@@ -70,7 +71,7 @@ void GlobalEvents::startup() const {
 }
 
 void GlobalEvents::timer() {
-	time_t now = time(nullptr);
+	time_t now = g_game().getTimeNow();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 
@@ -105,7 +106,7 @@ void GlobalEvents::timer() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		timerEventId = g_scheduler().addEvent(createSchedulerTask(std::max<int64_t>(1000, nextScheduledTime * 1000),
-											std::bind(&GlobalEvents::timer, this)));
+											std::bind_front(&GlobalEvents::timer, this)));
 	}
 }
 
@@ -138,7 +139,7 @@ void GlobalEvents::think() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		thinkEventId = g_scheduler().addEvent(createSchedulerTask(nextScheduledTime, std::bind(&GlobalEvents::think, this)));
+		thinkEventId = g_scheduler().addEvent(createSchedulerTask(nextScheduledTime, std::bind_front(&GlobalEvents::think, this)));
 	}
 }
 

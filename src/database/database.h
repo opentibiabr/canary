@@ -97,23 +97,21 @@ class DBResult
 		DBResult(const DBResult&) = delete;
 		DBResult& operator=(const DBResult&) = delete;
 
-		template<typename T>
-		T getNumber(const std::string& s) const
-		{
-			auto it = listNames.find(s);
-			if (it == listNames.end()) {
-				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-				return {};
-			}
-
-			if (!row[it->second]) {
-				return {};
-			}
-
-			return std::stoll(row[it->second]);
-		}
-
-
+		// Get size of the table
+		size_t getResult(const std::string& string) const;
+		// Get signed intenger
+		int8_t get8(const std::string& tableName) const;
+		int16_t get16(const std::string& tableName) const;
+		int32_t get32(const std::string& tableName) const;
+		int64_t get64(const std::string& tableName) const;
+		// Get unsigned intenger
+		uint8_t getU8(const std::string& tableName) const;
+		uint16_t getU16(const std::string& tableName) const;
+		uint32_t getU32(const std::string& tableName) const;
+		uint64_t getU64(const std::string& tableName) const;
+		// Others conversions
+		time_t getTime(const std::string& tableName) const;
+		bool getBoolean(const std::string& tableName) const;
 		std::string getString(const std::string& s) const;
 		const char* getStream(const std::string& s, unsigned long& size) const;
 

@@ -42,7 +42,7 @@ int TeleportFunctions::luaTeleportGetDestination(lua_State* L) {
 	// teleport:getDestination()
 	Teleport* teleport = getUserdata<Teleport>(L, 1);
 	if (teleport) {
-		pushPosition(L, teleport->getDestPos());
+		pushPosition(L, teleport->getDestination());
 	} else {
 		lua_pushnil(L);
 	}
@@ -53,7 +53,7 @@ int TeleportFunctions::luaTeleportSetDestination(lua_State* L) {
 	// teleport:setDestination(position)
 	Teleport* teleport = getUserdata<Teleport>(L, 1);
 	if (teleport) {
-		teleport->setDestPos(getPosition(L, 2));
+		teleport->setDestination(getPosition(L, 2));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

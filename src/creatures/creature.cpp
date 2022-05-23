@@ -745,7 +745,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			g_game().internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
-			bool corpses = corpse->isRewardCorpse() && (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
+			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			if (mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				Player* player = mostDamageCreature->getPlayer();
 				if (g_configManager().getBoolean(AUTOBANK)) {

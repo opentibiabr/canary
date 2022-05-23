@@ -116,8 +116,8 @@ message Appearance {
 	optional uint32 id = 1;
 	repeated FrameGroup frame_group = 2;
 	optional AppearanceFlags flags = 3;
-	optional string name = 4;
-	optional string description = 5;
+	optional bytes name = 4;
+	optional bytes description = 5;
 }
 
 message AppearanceFlags {
@@ -218,12 +218,12 @@ message AppearanceFlagMarket {
 }
 
 message AppearanceFlagNPC {
-	optional string name = 1;
-	optional string location = 2;
+	optional bytes name = 1;
+	optional bytes location = 2;
 	optional uint32 sale_price = 3;
 	optional uint32 buy_price = 4;
 	optional uint32 currency_object_type_id = 5;
-	optional string currency_quest_flag_display_name = 6;
+	optional bytes currency_quest_flag_display_name = 6;
 }
 
 message AppearanceFlagAutomap {

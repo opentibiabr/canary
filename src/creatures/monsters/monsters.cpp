@@ -1453,13 +1453,11 @@ MonsterType* Monsters::getMonsterType(const std::string& name)
 {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
-	it != monsters.end())
+	it != monsters.end()
+	// We will only return the MonsterType if it match the exact name of the monster
+	&& it->first.find(lowerCaseName) != it->first.npos)
 	{
-		// We will only return the MonsterType if it match the exact name of the monster
-		if ((it->first.find(lowerCaseName)) != it->first.npos)
-		{
-			return it->second;
-		}
+		return it->second;
 	}
 	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
 	return nullptr;

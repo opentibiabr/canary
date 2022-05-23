@@ -50,6 +50,6 @@ class RSA
 		mpz_t n, d;
 };
 
-constexpr auto g_rsa = &RSA::getInstance;
+constexpr auto g_RSA = &RSA::getInstance;
 
 #endif  // SRC_SECURITY_RSA_H_

@@ -819,7 +819,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetDefenseList(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeGetTypeName(lua_State* L) {
 	// monsterType:getTypeName()
-	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	const MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (!monsterType) {
 		return 1;
 	}

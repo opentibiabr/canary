@@ -100,6 +100,9 @@ class Player final : public Creature, public Cylinder
 		void setName(std::string newName) {
 			this->name = std::move(newName);
 		}
+		const std::string& getTypeName() const override {
+			return name;
+		}
 		const std::string& getNameDescription() const override {
 			return name;
 		}

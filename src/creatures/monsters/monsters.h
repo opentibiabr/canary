@@ -154,11 +154,7 @@ class MonsterType
 
 	public:
 		MonsterType() = default;
-		MonsterType(std::string initName) : name(initName) {
-			typeName = initName;
-			nameDescription = initName;
-		};
-
+		explicit MonsterType(const std::string initName) : name(initName), typeName(initName), nameDescription(initName) {};
 
 		// non-copyable
 		MonsterType(const MonsterType&) = delete;

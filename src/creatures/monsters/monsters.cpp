@@ -1456,8 +1456,7 @@ MonsterType* Monsters::getMonsterType(const std::string& name)
 	it != monsters.end())
 	{
 		// We will only return the MonsterType if it match the exact name of the monster
-		int found;
-		if ((found = it->first.find(lowerCaseName)) != it->first.npos)
+		if ((it->first.find(lowerCaseName)) != it->first.npos)
 		{
 			return it->second;
 		}

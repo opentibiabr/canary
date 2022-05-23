@@ -24,6 +24,10 @@
       "name": "gmp",
       "platform": "linux"
     },
+    {
+      "name": "mpir",
+      "platform": "windows"
+    },
     "protobuf"
   ]
 }

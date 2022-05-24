@@ -92,6 +92,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		void accept(Protocol_ptr protocol);
 		void accept();
 
+		void resumeWork();
 		void send(const OutputMessage_ptr& msg);
 
 		uint32_t getIP();

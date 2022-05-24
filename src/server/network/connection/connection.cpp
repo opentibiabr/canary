@@ -284,6 +284,19 @@ void Connection::parsePacket(const boost::system::error_code& error)
 	}
 }
 
+void Connection::resumeWork()
+{
+	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
+
+	try {
+		// Wait to the next packet
+		boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+	} catch (boost::system::system_error& e) {
+		SPDLOG_ERROR("[Connection::resumeWork] - {}", e.what());
+		close(FORCE_CLOSE);
+	}
+}
+
 void Connection::send(const OutputMessage_ptr& conMsg)
 {
 	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);

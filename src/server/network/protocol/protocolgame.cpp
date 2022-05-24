@@ -432,9 +432,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
 
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		enableCompact();
-	}
+	// if (operatingSystem <= CLIENTOS_NEW_MAC) {
+	// 	enableCompact();
+	// }
 
 	version = msg.get<uint16_t>(); // Protocol version
 
@@ -451,13 +451,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	xtea::key key;
-	key[0] = msg.get<uint32_t>();
-	key[1] = msg.get<uint32_t>();
-	key[2] = msg.get<uint32_t>();
-	key[3] = msg.get<uint32_t>();
+	uint32_t key[4] = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
-	setXTEAKey(std::move(key));
+	setXTEAKey(key);
 
 	msg.skipBytes(1); // gamemaster flag
 

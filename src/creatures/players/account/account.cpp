@@ -39,7 +39,7 @@ Account::Account(const uint32_t& id)
     m_account.accountType = ACCOUNT_TYPE_NORMAL;
 }
 
-Account::Account(std::string email)
+Account::Account(const std::string& email)
     : m_email(std::move(email))
 {
     m_account.id = 0;
@@ -249,8 +249,8 @@ error_t Account::setAccountType(const AccountType& accountType)
     return ERROR_NO;
 }
 
-std::tuple<std::map<std::string, uint64_t>, error_t>
-Account::getAccountPlayers()
+std::tuple<std::unordered_map<std::string, uint64_t>, error_t>
+Account::getAccountPlayers() const
 {
     if (!m_accLoaded) {
         return { m_account.players, ERROR_NOT_INITIALIZED };

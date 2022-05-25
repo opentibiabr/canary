@@ -896,7 +896,8 @@ ReturnValue Game::getPlayerByNameWildcard(const std::string& s, Player*& player)
 Player* Game::getPlayerByAccount(uint32_t acc)
 {
 	for (const auto& it : players) {
-		if (it.second->getAccount() == acc) {
+		if (nullptr != it.second->getAccount()
+                && it.second->getAccount()->getID() == acc) {
 			return it.second;
 		}
 	}
@@ -1757,7 +1758,7 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 	}
 
 	Item* quiver = toCylinder->getItem();
-	if (quiver && quiver->isQuiver() 
+	if (quiver && quiver->isQuiver()
                && quiver->getHoldingPlayer()
                && quiver->getHoldingPlayer()->getThing(CONST_SLOT_RIGHT) == quiver) {
 		quiver->getHoldingPlayer()->sendInventoryItem(CONST_SLOT_RIGHT, quiver);
@@ -5163,8 +5164,11 @@ bool Game::playerYell(Player* player, const std::string& text)
 		return false;
 	}
 
-	if (player->getAccountType() < account::AccountType::ACCOUNT_TYPE_GAMEMASTER) {
-		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_YELLTICKS, 30000, 0);
+	if (nullptr != player->getAccount()
+            && player->getAccount()->getAccountType()
+                < account::AccountType::ACCOUNT_TYPE_GAMEMASTER) {
+		Condition* condition = Condition::createCondition(CONDITIONID_DEFAULT,
+            CONDITION_YELLTICKS, 30000, 0);
 		player->addCondition(condition);
 	}
 
@@ -5181,7 +5185,11 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 		return false;
 	}
 
-	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlag_CanTalkRedPrivate) || player->getAccountType() >= account::AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
+	if (type == TALKTYPE_PRIVATE_RED_TO
+            && (player->hasFlag(PlayerFlag_CanTalkRedPrivate)
+            || (player->getAccount()
+                && player->getAccount()->getAccountType()
+                    >= account::AccountType::ACCOUNT_TYPE_GAMEMASTER))) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
 		type = TALKTYPE_PRIVATE_FROM;
@@ -5771,7 +5779,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				{
 					continue;
 				}
-				
+
 				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 					ss.str({});
 					ss << "You heal " << target->getNameDescription() << " for " << damageString;
@@ -5893,7 +5901,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (charmRune_t activeCharm = g_iobestiary().getCharmFromTarget(targetPlayer, g_monsters().getMonsterTypeByRaceId(attackerMonster->getRaceId()));
 				activeCharm != CHARM_NONE && activeCharm != CHARM_CLEANSE) {
 				if (Charm* charm = g_iobestiary().getBestiaryCharm(activeCharm);
-					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) && 
+					charm->type == CHARM_DEFENSIVE && charm->chance > normal_random(0, 100) &&
 					g_iobestiary().parseCharmCombat(charm, targetPlayer, attacker, (damage.primary.value + damage.secondary.value))) {
 					return false; // Dodge charm
 				}
@@ -6060,7 +6068,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			if (normal_random(0, 100) < lifeChance) {
 				// Vampiric charm rune
 				if (targetMonster) {
-					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0); 
+					if (uint16_t playerCharmRaceidVamp = attackerPlayer->parseRacebyCharm(CHARM_VAMP, false, 0);
 						playerCharmRaceidVamp != 0 && playerCharmRaceidVamp == targetMonster->getRaceId()) {
 						if (const Charm* lifec = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 							lifeSkill += lifec->percent;
@@ -6783,45 +6791,51 @@ void Game::updateCreatureType(Creature* creature)
 
 void Game::updatePremium(account::Account& account)
 {
-bool save = false;
-	time_t timeNow = time(nullptr);
-	uint32_t rem_days = 0;
-	time_t last_day;
-	account.GetPremiumRemaningDays(&rem_days);
-	account.GetPremiumLastDay(&last_day);
-	std::string email;
-	if (rem_days != 0) {
-		if (last_day == 0) {
-			account.SetPremiumLastDay(timeNow);
-			save = true;
-		} else {
-			uint32_t days = (timeNow - last_day) / 86400;
-			if (days > 0) {
-				if (days >= rem_days) {
-					if(!account.SetPremiumRemaningDays(0) || !account.SetPremiumLastDay(0)) {
-						account.GetEmail(&email);
-						SPDLOG_ERROR("Failed to set account premium days, account email: {}",
-							email);
-					}
-				} else {
-					account.SetPremiumRemaningDays((rem_days - days));
-					time_t remainder = (timeNow - last_day) % 86400;
-					account.SetPremiumLastDay(timeNow - remainder);
-				}
+    bool save = false;
+    time_t timeNow = time(nullptr);
+    uint32_t rem_days = 0;
+    time_t last_day;
+    rem_days = account.getPremiumRemainingDays();
+    last_day = account.getPremiumLastDay();
 
-				save = true;
-			}
-		}
-	}
-	else if (last_day != 0) {
-		account.SetPremiumLastDay(0);
-		save = true;
-	}
+    if (rem_days != 0) {
+        if (last_day == 0) {
+            if(account::ERROR_NO == account.setPremiumLastDay(timeNow))
+            {
+                save = true;
+            }
+        } else {
+            uint32_t days = (timeNow - last_day) / 86400;
+            if (days > 0) {
+                if (days >= rem_days) {
+                    if(account::ERROR_NO != account.setPremiumRemainingDays(0)
+                            || account::ERROR_NO != account.setPremiumLastDay(0)) {
+                        SPDLOG_ERROR("Failed to set account [{}] premium days!",
+                            account.getEmail());
+                    }
+                    save = true;
+                } else {
+                    if(account::ERROR_NO == account.setPremiumRemaningDays(
+                            (rem_days - days))) {
+                            time_t remainder = (timeNow - last_day) % 86400;
+                        if(account::ERROR_NO == account.setPremiumLastDay(
+                                timeNow - remainder)) {
+                            save = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if (last_day != 0) {
+        if(account::ERROR_NO == account.SetPremiumLastDay(0)) {
+            save = true;
+        }
+    }
 
-	if (save && !account.SaveAccountDB()) {
-		account.GetEmail(&email);
-		SPDLOG_ERROR("Failed to save account: {}", email);
-	}
+    if (save && (account::ERROR_NO == account.saveAccount())) {
+        SPDLOG_ERROR("Failed to save account: [{}]", account.getEmail());
+    }
 }
 
 void Game::loadMotdNum()
@@ -7753,7 +7767,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				if (itemList.empty() && removeAmount > 0) {
 					return;
 				}
-	
+
 				if (it.stackable) {
 					uint16_t tmpAmount = removeAmount;
 					for (Item* item : itemList) {
@@ -8213,12 +8227,11 @@ void Game::playerBuyStoreOffer(uint32_t playerId, uint32_t offerId,
 			}
 		} else if (offer -> type == PREMIUM_TIME) {
 			PremiumTimeOffer * premiumTimeOffer = (PremiumTimeOffer * ) offer;
-			account.LoadAccountDB(player -> getAccount());
-			account.RemoveCoins(offer -> price);
-			account.RegisterCoinsTransaction(account::COIN_REMOVE, offer -> price,
-				offer -> name);
-			account.GetCoins( & coins);
-			player -> setPremiumDays(player -> premiumDays + premiumTimeOffer -> days);
+            coins = player->getAccount()->getCoins();
+            player->getAccount()->setPremiumRemainingDays(
+                player->getAccount()->getPremiumRemainingDays()
+                    + premiumTimeOffer->days);
+            player->sendBasicData();
 			IOLoginData::addPremiumDays(player -> getAccount(), premiumTimeOffer -> days);
 			message << "You've successfully bought " << premiumTimeOffer -> days << " days of premium time.";
 			player -> sendStorePurchaseSuccessful(message.str(), coins);

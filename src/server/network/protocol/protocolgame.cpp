@@ -529,7 +529,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 	}
 
 	uint32_t accountId;
-	if (!IOLoginData::gameWorldAuthentication(email, password, characterName, &accountId)) {
+	if (!IOLoginData::gameWorldAuthentication(email, password, characterName, accountId)) {
 		disconnectClient("Email or password is not correct.");
 		return;
 	}

@@ -239,8 +239,8 @@ int PlayerFunctions::luaPlayerGetIp(lua_State* L) {
 int PlayerFunctions::luaPlayerGetAccountId(lua_State* L) {
 	// player:getAccountId()
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getAccount());
+	if ((nullptr != player) && (nullptr != player->getAccount())) {
+		lua_pushnumber(L, player->getAccount()->getID());
 	} else {
 		lua_pushnil(L);
 	}
@@ -2268,32 +2268,58 @@ int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
-	// player:getTibiaCoins()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-	account::Account account(player->getAccount());
-	account.LoadAccountDB();
-	uint32_t coins;
-	account.GetCoins(&coins);
-	lua_pushnumber(L, coins);
-  } else {
-		lua_pushnil(L);
-	}
-	return 1;
+    // player:getTibiaCoins()
+    Player* player = getUserdata<Player>(L, 1);
+    if (nullptr == player) {
+        lua_pushnil(L);
+        return 1;
+    }
+
+    account::Account account(player->getAccount());
+    account.setAccountStorageInterface(g_accStorage);
+    account.loadAccount();
+
+    int result = 0;
+    uint32_t coins = 0;
+    if (auto [ coins, result ] = account.getCoins(account::CoinType::COIN);
+            account::ERROR_NO != result) {
+        SPDLOG_ERROR("Failed to get account [{}] coins. (Error: [{}])",
+        account.getID(), result);
+        lua_pushnil(L);
+    }
+    else {
+        lua_pushnumber(L, coins);
+    }
+
+    return 1;
 }
 
 int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
-	// player:addTibiaCoins(coins)
-	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
-		lua_pushnil(L);
-		return 1;
-	}
+    // player:addTibiaCoins(coins)
+    Player* player = getUserdata<Player>(L, 1);
+    if (!player) {
+        lua_pushnil(L);
+        return 1;
+    }
 
-  uint32_t coins = getNumber<uint32_t>(L, 2);
+    uint32_t coins = getNumber<uint32_t>(L, 2);
 
-  account::Account account(player->getAccount());
-  account.LoadAccountDB();
+    account::Account account(player->getAccount());
+    account.setAccountStorageInterface(g_accStorage);
+    account.loadAccount();
+
+    int result = 0;
+    uint32_t coins = 0;
+    if (auto [ coins, result ] = account.getCoins(account::CoinType::COIN);
+            account::ERROR_NO != result) {
+        SPDLOG_ERROR("Failed to get account [{}] coins. (Error: [{}])",
+        account.getID(), result);
+        lua_pushnil(L);
+        return 0;
+    }
+
+
+
   if(account.AddCoins(coins)) {
 	account.GetCoins(&(player->coinBalance));
 	pushBoolean(L, true);
@@ -2485,7 +2511,7 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 		pushBoolean(L, false);
 		return 1;
 	}
-	
+
 	Item* item = getUserdata<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));

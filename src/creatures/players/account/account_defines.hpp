@@ -21,7 +21,7 @@
 #define SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_DEFINES_HPP_
 
 #include <cstdint>
-#include <map>
+#include <unordered_map>
 #include <string>
 
 namespace account
@@ -71,7 +71,7 @@ using AccountInfo = struct AccountInfo{
     uint32_t premiumRemainingDays = 0;
     time_t premiumLastDay = 0;
     AccountType accountType = ACCOUNT_TYPE_NORMAL;
-    std::map<std::string, uint64_t> players;
+    std::unordered_map<std::string, uint64_t> players;
 
 #if defined(_MSC_VER)
 };

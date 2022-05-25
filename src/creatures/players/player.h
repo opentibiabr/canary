@@ -67,6 +67,8 @@ using MuteCountMap = std::map<uint32_t, uint32_t>;
 static constexpr int32_t PLAYER_MAX_SPEED = 4500;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 
+extern account::AccountStorage* g_accStorage;
+
 class Player final : public Creature, public Cylinder
 {
 	public:
@@ -361,7 +363,7 @@ class Player final : public Creature, public Cylinder
 		uint8_t getBlessingCount(uint8_t index) const {
 			return blessings[index - 1];
 		}
-		std::string getBlessingsName() const; 
+		std::string getBlessingsName() const;
 
 		bool isOffline() const {
 			return (getID() == 0);
@@ -439,12 +441,6 @@ class Player final : public Creature, public Cylinder
 			ghostMode = !ghostMode;
 		}
 
-		uint32_t getAccount() const {
-			return accountNumber;
-		}
-		account::AccountType getAccountType() const {
-			return accountType;
-		}
 		uint32_t getLevel() const {
 			return level;
 		}
@@ -467,7 +463,6 @@ class Player final : public Creature, public Cylinder
 			return group->access;
 		}
 		bool isPremium() const;
-		void setPremiumDays(int32_t v);
 
 		void setTibiaCoins(int32_t v);
 
@@ -1823,9 +1818,29 @@ class Player final : public Creature, public Cylinder
 		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
 
-		// Interfaces
-		error_t SetAccountInterface(account::Account *account);
-		error_t GetAccountInterface(account::Account *account);
+        // Account
+        bool setAccount(uint32_t account_id)
+        {
+            if(m_account == nullptr)
+            {
+                // This is not the best way of doing this but with the mess that is
+                // this class we need to refactor it to see a better way of creating
+                // or associating the player with the account
+                m_account = new account::Account(account_id);
+                m_account->setAccountStorageInterface(g_accStorage);
+                if(account::ERROR_NO != m_account->loadAccount())
+                {
+                    return false;
+                }
+                return true;
+            }
+            SPDLOG_WARN("Account already setted/created!");
+            return false;
+        }
+
+        account::Account* getAccount() {
+           return m_account;
+        }
 
 		void sendMessageDialog(const std::string& message) const
 		{
@@ -2070,7 +2085,7 @@ class Player final : public Creature, public Cylinder
 		Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) override;
 
 		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
+		ReturnValue queryAdd(int32_t index, Thing& thing, uint32_t count,
                              uint32_t flags, Creature* actor = nullptr) const override;
 		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count,
                                   uint32_t& maxQueryCount,
@@ -2208,7 +2223,6 @@ class Player final : public Creature, public Cylinder
 		uint32_t walkTaskEvent = 0;
 		uint32_t MessageBufferTicks = 0;
 		uint32_t lastIP = 0;
-		uint32_t accountNumber = 0;
 		uint32_t guid = 0;
 		uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;
 		uint32_t windowTextId = 0;
@@ -2218,7 +2232,6 @@ class Player final : public Creature, public Cylinder
 		int32_t varStats[STAT_LAST + 1] = {};
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
-		uint32_t premiumDays = 0;
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
 		int32_t offlineTrainingSkill = -1;
@@ -2275,7 +2288,6 @@ class Player final : public Creature, public Cylinder
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		TradeState_t tradeState = TRADE_NONE;
 		FightMode_t fightMode = FIGHTMODE_ATTACK;
-		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
 		VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 
@@ -2353,7 +2365,7 @@ class Player final : public Creature, public Cylinder
 		friend class MoveEvent;
 		friend class BedItem;
 
-  account::Account *account_;
+        account::Account* m_account = nullptr;
 };
 
 #endif  // SRC_CREATURES_PLAYERS_PLAYER_H_

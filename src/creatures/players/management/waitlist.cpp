@@ -102,10 +102,11 @@ std::size_t WaitingList::getTime(std::size_t slot)
 	}
 }
 
-bool WaitingList::clientLogin(const Player* player)
+bool WaitingList::clientLogin(Player* player)
 {
 	if (player->hasFlag(PlayerFlag_CanAlwaysLogin) ||
-		player->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER) {
+		(nullptr != player->getAccount() 
+            && player->getAccount()->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER)) {
 		return true;
 	}
 

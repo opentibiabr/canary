@@ -33,6 +33,7 @@
 #include <limits>
 #include <vector>
 
+extern account::AccountStorage* g_accStorage;
 
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
 {
@@ -45,13 +46,17 @@ void ProtocolLogin::disconnectClient(const std::string& message, uint16_t versio
 	disconnect();
 }
 
-void ProtocolLogin::getCharacterList(const std::string& email, const std::string& password, uint16_t version)
+void ProtocolLogin::getCharacterList(const std::string& email,
+    const std::string& password, uint16_t version)
 {
-	account::Account account;
-	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
-		disconnectClient("Email or password is not correct", version);
-		return;
-	}
+    account::Account account(email);
+    if(account::ERROR_NO != account.setAccountStorageInterface(g_accStorage)
+        || account::ERROR_NO != account.loadAccount()
+        || !IOLoginData::authenticateAccountPassword(email, password, &account))
+    {
+       disconnectClient("Email or password is not correct", version);
+       return;
+    }
 
 	// Update premium days
 	Game::updatePremium(account);

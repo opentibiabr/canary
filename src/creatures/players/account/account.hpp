@@ -52,7 +52,7 @@ public:
      *
      * @param name Account Name/E-Mail
      */
-    explicit Account(std::string email);
+    explicit Account(const std::string& email);
 
     /***************************************************************************
      * Interfaces
@@ -80,7 +80,7 @@ public:
      * @return uint32_t Number of coins
      * @return error_t ERROR_NO(0) Success, otherwise Fail.
      */
-    std::tuple<uint32_t, error_t> getCoins(const CoinType& type) const;
+    [[nodiscard]] std::tuple<uint32_t, error_t> getCoins(const CoinType& type) const;
 
     /**
      * @brief Add coins to the account.
@@ -131,7 +131,7 @@ public:
      * Setters and Getters
      **************************************************************************/
 
-    inline uint32_t getID() const
+    [[nodiscard]] inline uint32_t getID() const
     {
         return m_account.id;
     };
@@ -144,24 +144,24 @@ public:
     std::string getPassword();
 
     error_t setPremiumRemainingDays(const uint32_t& days);
-    inline uint32_t getPremiumRemainingDays() const
+    [[nodiscard]] inline uint32_t getPremiumRemainingDays() const
     {
         return m_account.premiumRemainingDays;
     }
 
     error_t setPremiumLastDay(const time_t& lastDay);
-    inline time_t getPremiumLastDay() const
+    [[nodiscard]] inline time_t getPremiumLastDay() const
     {
         return m_account.premiumLastDay;
     }
 
     error_t setAccountType(const AccountType& accountType);
-    inline AccountType getAccountType() const
+    [[nodiscard]] inline AccountType getAccountType() const
     {
         return m_account.accountType;
     }
 
-    std::tuple<std::map<std::string, uint64_t>, error_t> getAccountPlayers();
+    std::tuple<std::unordered_map<std::string, uint64_t>, error_t> getAccountPlayers() const;
 
 private:
     AccountStorage* m_storageInterface = nullptr;

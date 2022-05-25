@@ -2085,7 +2085,7 @@ class Player final : public Creature, public Cylinder
 		Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) override;
 
 		//cylinder implementations
-		ReturnValue queryAdd(int32_t index, Thing& thing, uint32_t count,
+		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
                              uint32_t flags, Creature* actor = nullptr) const override;
 		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count,
                                   uint32_t& maxQueryCount,

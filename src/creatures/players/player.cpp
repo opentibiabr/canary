@@ -2987,7 +2987,7 @@ bool Player::hasCapacity(const Item* item, uint32_t count) const
 	return itemWeight <= getFreeCapacity();
 }
 
-ReturnValue Player::queryAdd(int32_t index, Thing& thing, uint32_t count, uint32_t flags, Creature*) const
+ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, uint32_t flags, Creature*) const
 {
 	const Item* item = thing.getItem();
 	if (item == nullptr) {

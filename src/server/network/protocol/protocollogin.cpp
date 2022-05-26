@@ -52,7 +52,7 @@ void ProtocolLogin::getCharacterList(const std::string& email,
     account::Account account(email);
     if(account::ERROR_NO != account.setAccountStorageInterface(g_accStorage)
         || account::ERROR_NO != account.loadAccount()
-        || !IOLoginData::authenticateAccountPassword(email, password, &account))
+        || !IOLoginData::authenticateAccountPassword(account, password))
     {
        disconnectClient("Email or password is not correct", version);
        return;

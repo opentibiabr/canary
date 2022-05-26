@@ -85,6 +85,8 @@ class ItemFunctions final : LuaScriptInterface {
 			registerMethod(L, "Item", "getImbuementSlot", ItemFunctions::luaItemGetImbuementSlot);
 			registerMethod(L, "Item", "getImbuement", ItemFunctions::luaItemGetImbuement);
 
+			registerMethod(L, "Item", "setDuration", ItemFunctions::luaItemSetDuration);
+
 			registerMethod(L, "Item", "getTier", ItemFunctions::luaItemGetTier);
 			registerMethod(L, "Item", "setTier", ItemFunctions::luaItemSetTier);
 
@@ -147,7 +149,9 @@ class ItemFunctions final : LuaScriptInterface {
 
 		static int luaItemGetImbuementSlot(lua_State* L);
 		static int luaItemGetImbuement(lua_State* L);
-		
+
+		static int luaItemSetDuration(lua_State* L);
+
 		static int luaItemGetTier(lua_State* L);
 		static int luaItemSetTier(lua_State* L);
 };

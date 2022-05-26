@@ -7337,22 +7337,22 @@ void ProtocolGame::sendOpenForge() {
 
 void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
 	// 0xBF -> 0 = fusion, 1 - transfer, 2 = dust to silver, 3 = silver to core, 4 = increase dust limit
-	uint16_t action = msg.getByte();
-	uint16_t leftItem = msg.get<uint16_t>();
-	uint16_t leftItemTier = msg.getByte();
-	uint16_t rightItem = msg.get<uint16_t>();
+	uint8_t action = msg.getByte();
+	uint16_t firstItem = msg.get<uint16_t>();
+	uint8_t tier = msg.getByte();
+	uint16_t secondItem = msg.get<uint16_t>();
 	bool usedCore = msg.getByte();
 	bool tierLoss = msg.getByte();
 	if (action == 0) {
-		forgeFusionItem(leftItem, leftItemTier, usedCore, tierLoss);
+		forgeFusionItem(firstItem, tier, usedCore, tierLoss);
 	} else if (action == 1) {
-		forgeTransferItem(leftItem, leftItemTier, rightItem);
+		forgeTransferItem(firstItem, tier, secondItem);
 	} else if (action <= 4) {
 		forgeResourceConversion(action);
 	}
 }
 
-void ProtocolGame::forgeFusionItem(uint16_t item, uint16_t tier, bool usedCore, bool tierLoss) {
+void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool tierLoss) {
 	NetworkMessage msg;
 	// WIP
 	msg.addByte(0x8A);
@@ -7361,39 +7361,40 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint16_t tier, bool usedCore, 
 	uint8_t roll = uniform_random(1, 100) <= (usedCore ? 65 : 50);
 	bool sucess = roll ? 1 : 0;
 	SPDLOG_WARN("sucess? roll: {}, {}", sucess, roll);
-	msg.addByte(roll); // sucess?
+	msg.addByte(sucess); // sucess?
 
 	msg.add<uint16_t>(item); // left item
 	msg.addByte(tier); // left item tier
 	msg.add<uint16_t>(item); // right item
 	msg.addByte(tier + 1); // right item tier
 
-	uint8_t bonus = uniform_random(0, 8);
-	//uint8_t bonus = 8;
+	//uint8_t bonus = uniform_random(0, 8);
+	uint8_t bonus = 6;
 	SPDLOG_WARN("bonus {}", bonus);
 	if (sucess) {
 		player->fuseItems(item, tier, usedCore, tierLoss, bonus);
-		msg.addByte(bonus); // roll fusion bonus
-		if (bonus == 2) { // core keep
-			msg.addByte(0x09);
-		} else if (bonus == 4 || bonus == 5 || bonus == 6 || bonus == 7 || bonus == 8) { 
-			msg.add<uint16_t>(item);
-			msg.addByte(tier);
-		}
+	}
+	msg.addByte(bonus); // roll fusion bonus
+	if (bonus == 2) { // core keep
+		msg.addByte(0x09);
+	} else if (bonus == 4 || bonus == 5 || bonus == 6 || bonus == 7 || bonus == 8) {
+		SPDLOG_WARN("caiu no if: item id, tier, {}, {}", item, tier);
+		msg.add<uint16_t>(item);
+		msg.addByte(tier);
 	}
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::forgeTransferItem(uint16_t leftItem, uint16_t leftItemTier, uint16_t rightItem) {
+void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
 	NetworkMessage msg;
 	// WIP
 	msg.addByte(0x8A);
 
 	msg.addByte(0x01); // transfer = 1
 
-	msg.add<uint16_t>(leftItem); // left item
-	msg.addByte(leftItemTier); // left item tier
-	msg.add<uint16_t>(rightItem); // right item
+	msg.add<uint16_t>(firstItem); // left item
+	msg.addByte(tier); // left item tier
+	msg.add<uint16_t>(secondItem); // right item
 
 	writeToOutputBuffer(msg);
 }

@@ -211,7 +211,7 @@ class Game
                                           Slots_t slot = CONST_SLOT_WHEREEVER);
 
 		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
-                             bool depthSearch = true, int32_t subType = -1) const;
+                             bool depthSearch = true, int32_t subType = -1, uint16_t tier = 0) const;
 
 		void createLuaItemsOnMap();
 

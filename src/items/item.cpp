@@ -1517,6 +1517,24 @@ std::string Item::parseImbuementDescription(const Item* item)
 	return s.str();
 }
 
+std::string Item::parseClassificationDescription(const Item* item) {
+	std::ostringstream string;
+	if (uint16_t classification = item->getClassification(); classification > 1) {
+		string << std::endl << "Classification: " << classification << " Tier: " << item->getTier();
+		if (item->getTier() != 0) {
+			string  << " (";
+			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
+				string << item->getFatalChance() << "% Onslaught).";
+			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
+				string << item->getMomentumChance() << "% Momentum).";
+			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
+				string << item->getDodgeChance() << "% Ruse).";
+			}
+		}
+	}
+	return string.str();
+}
+
 std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
                                  const Item* item /*= nullptr*/,
                                  int32_t subType /*= -1*/, bool addArticle /*= true*/)
@@ -2301,19 +2319,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 	s << parseImbuementDescription(item);
 
-	if (uint16_t classification = item->getClassification(); classification > 1) {
-		s << std::endl << "Classification: " << classification << " Tier: " << item->getTier();
-		if (item->getTier() != 0) {
-			s  << " (";
-			if (it.weaponType != WEAPON_NONE) {
-				s << item->getFatalChance() << "% Onslaught).";
-			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
-				s << item->getMomentumChance() << "% Momentum).";
-			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
-				s << item->getDodgeChance() << "% Ruse).";
-			}
-		}
-	}
+	s << parseClassificationDescription(item);
 
 	if (lookDistance <= 1) {
 		if (item) {

@@ -796,6 +796,7 @@ class Item : virtual public Thing
 		}
 
 		static std::string parseImbuementDescription(const Item* item);
+		static std::string parseClassificationDescription(const Item* item);
 
 		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
                                     const Item* item = nullptr);

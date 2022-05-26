@@ -2850,6 +2850,7 @@
 	<item id="2128" article="a" name="magic wall">
 		<attribute key="type" value="magicfield"/>
 		<attribute key="duration" value="20"/>
+		<attribute key="blocking" value="1"/>
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="2129" article="a" name="magic wall">

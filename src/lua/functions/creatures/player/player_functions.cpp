@@ -272,8 +272,8 @@ int PlayerFunctions::luaPlayerGetLastLogout(lua_State* L) {
 int PlayerFunctions::luaPlayerGetAccountType(lua_State* L) {
 	// player:getAccountType()
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->getAccountType());
+	if (nullptr != player && nullptr != player->getAccount()) {
+		lua_pushnumber(L, player->getAccount()->getAccountType());
 	} else {
 		lua_pushnil(L);
 	}
@@ -283,9 +283,10 @@ int PlayerFunctions::luaPlayerGetAccountType(lua_State* L) {
 int PlayerFunctions::luaPlayerSetAccountType(lua_State* L) {
 	// player:setAccountType(accountType)
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->accountType = getNumber<account::AccountType>(L, 2);
-		IOLoginData::setAccountType(player->getAccount(), player->accountType);
+	if ((nullptr != player && nullptr != player->getAccount())
+		    && (account::ERROR_NO != player->getAccount()->setAccountType(
+                getNumber<account::AccountType>(L, 2)))
+		    && (account::ERROR_NO != player->getAccount()->saveAccount())) {
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -2219,8 +2220,8 @@ int PlayerFunctions::luaPlayerGetFamiliarLooktype(lua_State* L) {
 int PlayerFunctions::luaPlayerGetPremiumDays(lua_State* L) {
 	// player:getPremiumDays()
 	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		lua_pushnumber(L, player->premiumDays);
+	if ((nullptr != player) && (nullptr != player->getAccount())) {
+		lua_pushnumber(L, player->getAccount()->getPremiumRemainingDays());
 	} else {
 		lua_pushnil(L);
 	}
@@ -2230,61 +2231,75 @@ int PlayerFunctions::luaPlayerGetPremiumDays(lua_State* L) {
 int PlayerFunctions::luaPlayerAddPremiumDays(lua_State* L) {
 	// player:addPremiumDays(days)
 	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
+	if ((nullptr != player) && (nullptr != player->getAccount())) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->premiumDays != std::numeric_limits<uint16_t>::max()) {
+    uint32_t premium_days = player->getAccount()->getPremiumRemainingDays();
+	if (premium_days != std::numeric_limits<uint16_t>::max()) {
 		uint16_t days = getNumber<uint16_t>(L, 2);
-		int32_t addDays = std::min<int32_t>(0xFFFE - player->premiumDays, days);
-		if (addDays > 0) {
-			player->setPremiumDays(player->premiumDays + addDays);
-			IOLoginData::addPremiumDays(player->getAccount(), addDays);
-		}
-	}
-	pushBoolean(L, true);
+		int32_t addDays = std::min<int32_t>(0xFFFE - premium_days, days);
+		if (addDays > 0
+            && (account::ERROR_NO == player->getAccount()->setPremiumRemainingDays(
+                premium_days + addDays))
+            && (account::ERROR_NO == player->getAccount()->saveAccount()))
+        {
+            pushBoolean(L, true);
+        }
+        else
+        {
+            pushBoolean(L, false);
+        }
+    }
+
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerRemovePremiumDays(lua_State* L) {
 	// player:removePremiumDays(days)
 	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
+	if ((nullptr != player) && (nullptr != player->getAccount())) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (player->premiumDays != std::numeric_limits<uint16_t>::max()) {
+    uint32_t premium_days = player->getAccount()->getPremiumRemainingDays();
+	if (premium_days != std::numeric_limits<uint16_t>::max()) {
 		uint16_t days = getNumber<uint16_t>(L, 2);
-		int32_t removeDays = std::min<int32_t>(player->premiumDays, days);
-		if (removeDays > 0) {
-			player->setPremiumDays(player->premiumDays - removeDays);
-			IOLoginData::removePremiumDays(player->getAccount(), removeDays);
-		}
+		int32_t removeDays = std::min<int32_t>(premium_days, days);
+		if (removeDays > 0
+            && (account::ERROR_NO == player->getAccount()->setPremiumRemainingDays(
+                premium_days - removeDays))
+            && (account::ERROR_NO == player->getAccount()->saveAccount()))
+        {
+            pushBoolean(L, true);
+        }
+        else
+        {
+        	pushBoolean(L, false);
+        }
 	}
-	pushBoolean(L, true);
+
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
     // player:getTibiaCoins()
     Player* player = getUserdata<Player>(L, 1);
-    if (nullptr == player) {
+    if (nullptr == player || nullptr == player->getAccount()) {
         lua_pushnil(L);
         return 1;
     }
 
-    account::Account account(player->getAccount());
-    account.setAccountStorageInterface(g_accStorage);
-    account.loadAccount();
-
     int result = 0;
     uint32_t coins = 0;
-    if (auto [ coins, result ] = account.getCoins(account::CoinType::COIN);
-            account::ERROR_NO != result) {
+    if (auto [ coins, result ] = player->getAccount()->getCoins(
+            account::CoinType::COIN);
+            account::ERROR_NO != result)
+    {
         SPDLOG_ERROR("Failed to get account [{}] coins. (Error: [{}])",
-        account.getID(), result);
+        player->getAccount()->getID(), result);
         lua_pushnil(L);
     }
     else {
@@ -2297,35 +2312,25 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
     // player:addTibiaCoins(coins)
     Player* player = getUserdata<Player>(L, 1);
-    if (!player) {
+    if (nullptr == player || nullptr == player->getAccount()) {
         lua_pushnil(L);
         return 1;
     }
 
     uint32_t coins = getNumber<uint32_t>(L, 2);
-
-    account::Account account(player->getAccount());
-    account.setAccountStorageInterface(g_accStorage);
-    account.loadAccount();
-
-    int result = 0;
-    uint32_t coins = 0;
-    if (auto [ coins, result ] = account.getCoins(account::CoinType::COIN);
-            account::ERROR_NO != result) {
-        SPDLOG_ERROR("Failed to get account [{}] coins. (Error: [{}])",
-        account.getID(), result);
-        lua_pushnil(L);
-        return 0;
+    if (account::ERROR_NO == player->getAccount()->addCoins(
+            account::CoinType::COIN, coins))
+    {
+        if(account::ERROR_NO != player->getAccount()->saveAccount()) {
+            SPDLOG_WARN("Failed to save account[{}] after adding coins!",
+                player->getAccount()->getID());
+        }
+        pushBoolean(L, true);
     }
-
-
-
-  if(account.AddCoins(coins)) {
-	account.GetCoins(&(player->coinBalance));
-	pushBoolean(L, true);
-  } else {
-	lua_pushnil(L);
-  }
+    else
+    {
+        pushBoolean(L, false);
+    }
 
 	return 1;
 }
@@ -2338,16 +2343,20 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-  uint32_t coins = getNumber<uint32_t>(L, 2);
-
-  account::Account account(player->getAccount());
-  account.LoadAccountDB();
-  if (account.RemoveCoins(coins)) {
-	account.GetCoins(&(player->coinBalance));
-	pushBoolean(L, true);
-  } else {
-	lua_pushnil(L);
-  }
+    uint32_t coins = getNumber<uint32_t>(L, 2);
+    if (account::ERROR_NO == player->getAccount()->removeCoins(
+            account::CoinType::COIN, coins))
+    {
+        if(account::ERROR_NO != player->getAccount()->saveAccount()) {
+            SPDLOG_WARN("Failed to save account[{}] after adding coins!",
+                player->getAccount()->getID());
+        }
+        pushBoolean(L, true);
+    }
+    else
+    {
+        pushBoolean(L, false);
+    }
 
 	return 1;
 }

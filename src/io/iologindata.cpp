@@ -87,13 +87,6 @@ account::AccountType IOLoginData::getAccountType(uint32_t accountId)
   return static_cast<account::AccountType>(result->getNumber<uint16_t>("type"));
 }
 
-void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accountType)
-{
-  std::ostringstream query;
-  query << "UPDATE `accounts` SET `type` = " << static_cast<uint16_t>(accountType) << " WHERE `id` = " << accountId;
-  Database::getInstance().executeQuery(query.str());
-}
-
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login)
 {
   if (g_configManager().getBoolean(ALLOW_CLONES)) {
@@ -1452,19 +1445,5 @@ void IOLoginData::removeVIPEntry(uint32_t accountId, uint32_t guid)
 {
   std::ostringstream query;
   query << "DELETE FROM `account_viplist` WHERE `account_id` = " << accountId << " AND `player_id` = " << guid;
-  Database::getInstance().executeQuery(query.str());
-}
-
-void IOLoginData::addPremiumDays(uint32_t accountId, int32_t addDays)
-{
-  std::ostringstream query;
-  query << "UPDATE `accounts` SET `premdays` = `premdays` + " << addDays << " WHERE `id` = " << accountId;
-  Database::getInstance().executeQuery(query.str());
-}
-
-void IOLoginData::removePremiumDays(uint32_t accountId, int32_t removeDays)
-{
-  std::ostringstream query;
-  query << "UPDATE `accounts` SET `premdays` = `premdays` - " << removeDays << " WHERE `id` = " << accountId;
   Database::getInstance().executeQuery(query.str());
 }

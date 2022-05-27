@@ -40,7 +40,7 @@ Account::Account(const uint32_t& id)
 }
 
 Account::Account(const std::string& email)
-    : m_email(std::move(email))
+    : m_email(email)
 {
     m_account.id = 0;
     m_account.premiumRemainingDays = 0;

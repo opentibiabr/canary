@@ -77,26 +77,32 @@ void ProtocolLogin::getCharacterList(const std::string& email,
 	output->addString(email + "\n" + password);
 
 	// Add char list
-	std::vector<account::Player> players;
-	account.GetAccountPlayers(&players);
-	output->addByte(0x64);
+    std::unordered_map<std::string, uint64_t> players;
+    error_t result;
+    std::tie(players, result) = account.getAccountPlayers();
+    if(account::ERROR_NO != result)
+    {
+        SPDLOG_WARN("Account[{}] failed to load players!",
+            account.getID());
+    }
+    output->addByte(0x64);
 
-	output->addByte(1);  // number of worlds
+    output->addByte(1); // number of worlds
 
-	output->addByte(0);  // world id
-	output->addString(g_configManager().getString(SERVER_NAME));
-	output->addString(g_configManager().getString(IP));
+    output->addByte(0); // world id
+    output->addString(g_configManager().getString(SERVER_NAME));
+    output->addString(g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_configManager().getShortNumber(GAME_PORT));
+    output->add<uint16_t>(g_configManager().getShortNumber(GAME_PORT));
 
-	output->addByte(0);
+    output->addByte(0);
 
-	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(),
-                                  players.size());
-	output->addByte(size);
-	for (uint8_t i = 0; i < size; i++) {
-		output->addByte(0);
-		output->addString(players[i].name);
+    uint8_t size =
+        std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
+    output->addByte(size);
+    for( const auto& player : players ) {
+        output->addByte(0);
+        output->addString(player.first);
 	}
 
 	// Add premium days
@@ -105,8 +111,7 @@ void ProtocolLogin::getCharacterList(const std::string& email,
 		output->addByte(1);
 		output->add<uint32_t>(0);
 	} else {
-	uint32_t days;
-	account.GetPremiumRemaningDays(&days);
+    uint32_t days = account.getPremiumRemainingDays();
 	output->addByte(0);
 	output->add<uint32_t>(time(nullptr) + (days * 86400));
   }

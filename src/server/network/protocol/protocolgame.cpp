@@ -99,7 +99,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 	else if (it.isSplash() || it.isFluidContainer())
 	{
-		msg.addByte(static_cast<uint8_t>(item->getFluidType()));  
+		msg.addByte(static_cast<uint8_t>(item->getFluidType()));
 	}
 	else if (it.isContainer())
 	{
@@ -249,13 +249,21 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT) && !player->isPremium() && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER || player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER))
+		if (g_configManager().getBoolean(ONLY_PREMIUM_ACCOUNT)
+            && !player->isPremium()
+            && (player->getGroup()->id < account::GROUP_TYPE_GAMEMASTER
+                || (nullptr != player->getAccount()
+                    && player->getAccount()->getAccountType() < 
+                        account::ACCOUNT_TYPE_GAMEMASTER)))
 		{
 			disconnectClient("Your premium time for this account is out.\n\nTo play please buy additional premium time from our website");
 			return;
 		}
 
-		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT) && player->getAccountType() < account::ACCOUNT_TYPE_GAMEMASTER && g_game().getPlayerByAccount(player->getAccount()))
+		if (g_configManager().getBoolean(ONE_PLAYER_ON_ACCOUNT)
+            && player->getAccount() && player->getAccount()->getAccountType()
+                < account::ACCOUNT_TYPE_GAMEMASTER
+                && g_game().getPlayerByAccount(player->getAccount()->getID()))
 		{
 			disconnectClient("You may only login with one character\nof your account at the same time.");
 			return;
@@ -608,7 +616,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			if (!player) {
 				return;
 			}
-			
+
 			if (!player->spawn()) {
 				disconnect();
 				g_game().removeCreature(player);
@@ -3507,10 +3515,10 @@ void ProtocolGame::sendBasicData()
 {
 	NetworkMessage msg;
 	msg.addByte(0x9F);
-	if (player->isPremium())
+	if (nullptr != player && nullptr != player->getAccount() && player->isPremium())
 	{
 		msg.addByte(1);
-		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		msg.add<uint32_t>(time(nullptr) + (player->getAccount()->getPremiumRemainingDays() * 86400));
 	}
 	else
 	{
@@ -4133,23 +4141,21 @@ void ProtocolGame::sendCoinBalance()
 
 void ProtocolGame::updateCoinBalance()
 {
-	if (!player) {
+	if (nullptr == player) {
 		return;
 	}
 
 	g_dispatcher().addTask(
 		createTask(std::bind([](uint32_t playerId) {
 			Player* threadPlayer = g_game().getPlayerByID(playerId);
-			if (threadPlayer) {
-				account::Account account;
-				account.LoadAccountDB(threadPlayer->getAccount());
+			if (nullptr != threadPlayer && nullptr != threadPlayer->getAccount()) {
 				uint32_t coins;
-				account.GetCoins(&coins);
+				std::tie(coins, std::ignore) = threadPlayer->getAccount()->getCoins(account::CoinType::COIN);
 				threadPlayer->coinBalance = coins;
 				threadPlayer->sendCoinBalance();
 			}
 		},
-                              player->getID())));
+        player->getAccount()->getID())));
 }
 
 void ProtocolGame::sendMarketLeave()
@@ -4350,7 +4356,7 @@ void ProtocolGame::sendForgingData()
 	msg.addByte(0x86);
 
 	std::vector<ItemClassification*> classifications = g_game().getItemsClassifications();
-	msg.addByte(classifications.size());	
+	msg.addByte(classifications.size());
 	for (ItemClassification* classification : classifications)
 	{
 		msg.addByte(classification->id);
@@ -5322,11 +5328,15 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 		if (isLogin)
 		{
-			if (const Player *creaturePlayer = creature->getPlayer())
+			if (Player *creaturePlayer = const_cast<Player*>(creature->getPlayer()))
 			{
-				if (!creaturePlayer->isAccessPlayer() ||
-					creaturePlayer->getAccountType() == account::ACCOUNT_TYPE_NORMAL)
-					sendMagicEffect(pos, CONST_ME_TELEPORT);
+				if (!creaturePlayer->isAccessPlayer()
+                    || (nullptr != creaturePlayer->getAccount()
+                    && creaturePlayer->getAccount()->getAccountType()
+                        == account::ACCOUNT_TYPE_NORMAL))
+                {
+                    sendMagicEffect(pos, CONST_ME_TELEPORT);
+                }
 			}
 			else
 			{
@@ -5348,7 +5358,8 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	msg.addDouble(Creature::speedC, 3);
 
 	// can report bugs?
-	if (player->getAccountType() >= account::ACCOUNT_TYPE_NORMAL)
+	if (nullptr != player->getAccount()
+        && player->getAccount()->getAccountType() >= account::ACCOUNT_TYPE_NORMAL)
 	{
 		msg.addByte(0x01);
 	}
@@ -5404,46 +5415,50 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	//player light level
 	sendCreatureLight(creature);
 
-	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccount());
+    if(player->getAccount())
+    {
+	    const std::forward_list<VIPEntry> &vipEntries =
+            IOLoginData::getVIPEntries(player->getAccount()->getID());
 
-	if (player->isAccessPlayer())
-	{
-		for (const VIPEntry &entry : vipEntries)
-		{
-			VipStatus_t vipStatus;
+        if (player->isAccessPlayer())
+        {
+            for (const VIPEntry &entry : vipEntries)
+            {
+                VipStatus_t vipStatus;
 
-			const Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
-			if (!vipPlayer)
-			{
-				vipStatus = VIPSTATUS_OFFLINE;
-			}
-			else
-			{
-				vipStatus = vipPlayer->statusVipList;
-			}
+                const Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
+                if (!vipPlayer)
+                {
+                    vipStatus = VIPSTATUS_OFFLINE;
+                }
+                else
+                {
+                    vipStatus = vipPlayer->statusVipList;
+                }
 
-			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
-		}
-	}
-	else
-	{
-		for (const VIPEntry &entry : vipEntries)
-		{
-			VipStatus_t vipStatus;
+                sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
+            }
+        }
+        else
+        {
+            for (const VIPEntry &entry : vipEntries)
+            {
+                VipStatus_t vipStatus;
 
-			const Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
-			if (!vipPlayer || vipPlayer->isInGhostMode())
-			{
-				vipStatus = VIPSTATUS_OFFLINE;
-			}
-			else
-			{
-				vipStatus = vipPlayer->statusVipList;
-			}
+                const Player *vipPlayer = g_game().getPlayerByGUID(entry.guid);
+                if (!vipPlayer || vipPlayer->isInGhostMode())
+                {
+                    vipStatus = VIPSTATUS_OFFLINE;
+                }
+                else
+                {
+                    vipStatus = vipPlayer->statusVipList;
+                }
 
-			sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
-		}
-	}
+                sendVIP(entry.guid, entry.name, entry.description, entry.icon, entry.notify, vipStatus);
+            }
+        }
+    }
 
 	sendInventoryIds();
 	Item *slotItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
@@ -6214,7 +6229,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(player->isPremium() ? 0x01 : 0x00);
 	} else if (slot->state == PreyDataState_Inactive) {
 			// Empty
-	} else if (slot->state == PreyDataState_Active) {	
+	} else if (slot->state == PreyDataState_Active) {
 		if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
 			msg.addString(mtype->name);
 			const Outfit_t outfit = mtype->info.outfit;

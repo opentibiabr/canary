@@ -411,9 +411,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	if (lua_gettop(L) >= 5) {
 		Creature* master = getCreature(L, 5);
 		if (master) {
-			monster->setMaster(master);
-			monster->setDropLoot(false);
-			monster->setSkillLoss(false);
+			monster->setMaster(master, true);
 			isSummon = true;
 		}
 	}

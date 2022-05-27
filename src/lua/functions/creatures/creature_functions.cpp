@@ -278,6 +278,20 @@ int CreatureFunctions::luaCreatureGetMaster(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureReload(lua_State* L)
+{
+	// creature:reload()
+	Creature* creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	g_game().reloadCreature(creature);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 	// creature:setMaster(master)
 	Creature* creature = getUserdata<Creature>(L, 1);
@@ -286,8 +300,9 @@ int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
-	g_game().updateCreatureType(creature);
+	pushBoolean(L, creature->setMaster(getCreature(L, 2), true));
+	// Reloading creature icon/knownCreature
+	CreatureFunctions::luaCreatureReload(L);
 	return 1;
 }
 

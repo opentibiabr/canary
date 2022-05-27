@@ -5435,6 +5435,19 @@ void Game::updateCreatureIcon(const Creature* creature)
 	}
 }
 
+void Game::reloadCreature(const Creature* creature)
+{
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true);
+	for (Creature* spectator : spectators) {
+		Player* tmpPlayer = spectator->getPlayer();
+		if (!tmpPlayer) {
+			continue;
+		}
+		tmpPlayer->reloadCreature(creature);
+	}
+}
+
 bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* target, bool checkDefense, bool checkArmor, bool field)
 {
 	if (damage.primary.type == COMBAT_NONE && damage.secondary.type == COMBAT_NONE) {

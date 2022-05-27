@@ -408,6 +408,7 @@ class Game
 		void internalCreatureChangeVisible(Creature* creature, bool visible);
 		void changeLight(const Creature* creature);
 		void updateCreatureIcon(const Creature* creature);
+		void reloadCreature(const Creature* creature);
 		void updateCreatureSkull(const Creature* player);
 		void updatePlayerShield(Player* player);
 		void updateCreatureType(Creature* creature);

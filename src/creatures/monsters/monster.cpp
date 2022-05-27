@@ -714,7 +714,7 @@ bool Monster::isTarget(const Creature* creature) const
 		return false;
 	}
 	Faction_t targetFaction = creature->getFaction();
-	if (getFaction() != FACTION_DEFAULT && master->getMonster()) {
+	if (getFaction() != FACTION_DEFAULT && master && master->getMonster()) {
 		return isEnemyFaction(targetFaction);
 	}
 	return true;

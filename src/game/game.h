@@ -108,8 +108,6 @@ class Game
 		void removeTeamFinderListed(uint32_t leaderGuid) {
 			teamFinderMap.erase(leaderGuid);
 		}
-		// Event schedule xml load
-		bool loadScheduleEventFromXml();
 
 		Cylinder* internalGetCylinder(Player* player, const Position& pos) const;
 		Thing* internalGetThing(Player* player, const Position& pos, int32_t index,
@@ -515,35 +513,6 @@ class Game
 			tilesToClean.clear();
 		}
 
-		// Event schedule
-		uint16_t getExpSchedule() const {
-			return expSchedule;
-		}
-		void setExpSchedule(uint16_t exprate) {
-			expSchedule = (expSchedule * exprate)/100;
-		}
-
-		uint16_t getLootSchedule() const {
-			return lootSchedule;
-		}
-		void setLootSchedule(uint16_t lootrate) {
-			lootSchedule = (lootSchedule * lootrate)/100;
-		}
-
-		uint32_t getSpawnMonsterSchedule() const {
-			return spawnMonsterSchedule;
-		}
-		void setSpawnMonsterSchedule(uint32_t spawnrate) {
-			spawnMonsterSchedule = (spawnMonsterSchedule * spawnrate)/100;
-		}
-
-		uint16_t getSkillSchedule() const {
-			return skillSchedule;
-		}
-		void setSkillSchedule(uint16_t skillrate) {
-			skillSchedule = (skillSchedule * skillrate)/100;
-		}
-
 		void playerInspectItem(Player* player, const Position& pos);
 		void playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia);
 
@@ -659,12 +628,6 @@ class Game
 
 		GameState_t gameState = GAME_STATE_NORMAL;
 		WorldType_t worldType = WORLD_TYPE_PVP;
-
-		// Event schedule
-		uint16_t expSchedule = 100;
-		uint16_t lootSchedule = 100;
-		uint16_t skillSchedule = 100;
-		uint32_t spawnMonsterSchedule = 100;
 
 		LightState_t lightState = LIGHT_STATE_DAY;
 		LightState_t currentLightState = lightState;

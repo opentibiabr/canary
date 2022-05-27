@@ -33,25 +33,17 @@
 // Game
 int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 	// Game.createMonsterType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("MonsterTypes can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
-	MonsterType* monsterType = g_monsters().getMonsterType(getString(L, 1));
-	if (monsterType) {
-		monsterType->info.lootItems.clear();
-		monsterType->info.attackSpells.clear();
-		monsterType->info.defenseSpells.clear();
-		pushUserdata<MonsterType>(L, monsterType);
-		setMetatable(L, -1, "MonsterType");
-	} else if (isString(L, 1)) {
-		monsterType = new MonsterType();
+	if (isString(L, 1)) {
 		std::string name = getString(L, 1);
+		auto monsterType = new MonsterType(name);
 		g_monsters().addMonsterType(name, monsterType);
-		monsterType = g_monsters().getMonsterType(getString(L, 1));
-		monsterType->name = name;
+		if (!monsterType) {
+			reportErrorFunc("MonsterType is nullptr");
+			pushBoolean(L, false);
+			delete monsterType;
+			return 1;
+		}
+
 		monsterType->nameDescription = "a " + name;
 		pushUserdata<MonsterType>(L, monsterType);
 		setMetatable(L, -1, "MonsterType");
@@ -195,7 +187,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	lua_createtable(L, type.size(), 0);
 
 	for (auto& mType : type) {
-		pushUserdata<MonsterType>(L, &mType.second);
+		pushUserdata<MonsterType>(L, mType.second);
 		setMetatable(L, -1, "MonsterType");
 		lua_setfield(L, -2, mType.first.c_str());
 	}

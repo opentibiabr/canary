@@ -103,6 +103,8 @@ class Creature : virtual public Thing
 		}
 
 		virtual const std::string& getName() const = 0;
+		// Real creature name, set on creature creation "createNpcType(typeName) and createMonsterType(typeName)"
+		virtual const std::string& getTypeName() const = 0;
 		virtual const std::string& getNameDescription() const = 0;
 
 		virtual CreatureType_t getType() const = 0;

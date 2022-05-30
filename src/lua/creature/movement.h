@@ -136,10 +136,8 @@ class MoveEvents final : public BaseEvents {
 		void clear();
 
 	private:
-		using MoveListMap = std::map<int32_t, MoveEventList>;
-		using MovePosListMap = std::map<Position, MoveEventList>;
-		void clearMap(MoveListMap& map, bool fromLua);
-		void clearPosMap(MovePosListMap& map, bool fromLua);
+		void clearMap(std::map<int32_t, MoveEventList>& map, bool fromLua);
+		void clearPosMap(std::map<Position, MoveEventList>& map, bool fromLua);
 
 		LuaScriptInterface& getScriptInterface() override {
 			return scriptInterface;
@@ -152,25 +150,21 @@ class MoveEvents final : public BaseEvents {
 			return false;
 		}
 
-		void registerEvent(MoveEvent& moveEvent, int32_t id, MoveListMap& moveListMap);
-		void registerEvent(MoveEvent& moveEvent, const Position& position, MovePosListMap& moveListMap);
+		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap);
+		void registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap);
 		MoveEvent* getEvent(Tile& tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType, Slots_t slot);
 
-		MoveListMap uniqueIdMap;
-		MoveListMap actionIdMap;
-		MoveListMap itemIdMap;
-		MovePosListMap positionsMap;
+		std::map<int32_t, MoveEventList> uniqueIdMap;
+		std::map<int32_t, MoveEventList> actionIdMap;
+		std::map<int32_t, MoveEventList> itemIdMap;
+		std::map<Position, MoveEventList> positionsMap;
 
 		LuaScriptInterface scriptInterface {"MoveEvent interface"};
 };
 
 constexpr auto g_moveEvents = &MoveEvents::getInstance;
-
-using StepFunction = std::function<uint32_t(Creature* creature, Item* item, const Position& pos)>;
-using MoveFunction = std::function<uint32_t(Item* item, Item* tileItem, const Position& pos)>;
-using EquipFunction = std::function<uint32_t(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean)>;
 
 class MoveEvent final : public Event {
 	public:
@@ -303,9 +297,26 @@ class MoveEvent final : public Event {
 		static uint32_t DeEquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
 		MoveEvent_t eventType = MOVE_EVENT_NONE;
-		StepFunction stepFunction;
-		MoveFunction moveFunction;
-		EquipFunction equipFunction;
+		// Step function structure
+		std::function<uint32_t(
+			Creature* creature,
+			Item* item,
+			const Position& pos
+		)>stepFunction;
+		// Move function structure
+		std::function<uint32_t(
+			Item* item,
+			Item* tileItem,
+			const Position& pos
+		)> moveFunction;
+		// Equip function structure
+		std::function<uint32_t(
+			MoveEvent* moveEvent,
+			Player* player,
+			Item* item,
+			Slots_t slot,
+			bool boolean
+		)> equipFunction;
 
 	private:
 		std::string getScriptEventName() const override {

@@ -147,7 +147,7 @@ bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
 	return false;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, MoveListMap& moveListMap) {
+void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -182,7 +182,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 	}
 
 	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
-		MoveListMap::iterator it = actionIdMap.find(item.getActionId());
+		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 			for (MoveEvent& moveEvent : moveEventList) {
@@ -206,7 +206,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 }
 
 MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
-	MoveListMap::iterator it;
+	std::map<int32_t, MoveEventList>::iterator it;
 	if (item.hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 		it = uniqueIdMap.find(item.getUniqueId());
 		if (it != uniqueIdMap.end()) {
@@ -237,7 +237,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	return nullptr;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, MovePosListMap& moveListMap) {
+void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) {
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -356,12 +356,12 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 MoveEvent::MoveEvent(LuaScriptInterface* interface) : Event(interface) {}
 
 uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position&) {
-	if (!creature) {
+	if (creature == nullptr) {
 		SPDLOG_ERROR("[MoveEvent::StepInField] - Creature is nullptr");
 		return 0;
 	}
 
-	if (!item) {
+	if (item == nullptr) {
 		SPDLOG_ERROR("[MoveEvent::StepInField] - Item is nullptr");
 		return 0;
 	}
@@ -380,19 +380,30 @@ uint32_t MoveEvent::StepOutField(Creature*, Item*, const Position&) {
 }
 
 uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position&) {
-	if (!item) {
+	if (item == nullptr) {
 		SPDLOG_ERROR("[MoveEvent::AddItemField] - Item is nullptr");
 		return 0;
 	}
 
 	if (MagicField* field = item->getMagicField())
 	{
-		if (Tile* tile = item->getTile();
-		CreatureVector* creatures = tile->getCreatures())
-		{
-			for (Creature* creature : *creatures) {
-				field->onStepInField(*creature);
+		Tile* tile = item->getTile();
+		if (tile == nullptr) {
+			SPDLOG_DEBUG("[MoveEvent::AddItemField] - Tile is nullptr");
+			return 0;
+		}
+		CreatureVector* creatures = tile->getCreatures();
+		if (creatures == nullptr) {
+			SPDLOG_DEBUG("[MoveEvent::AddItemField] - Creatures is nullptr");
+			return 0;
+		}
+		for (Creature* creature : *creatures) {
+			if (field == nullptr) {
+				SPDLOG_DEBUG("[MoveEvent::AddItemField] - MagicField is nullptr");
+				return 0;
 			}
+
+			field->onStepInField(*creature);
 		}
 		return 1;
 	}
@@ -404,12 +415,12 @@ uint32_t MoveEvent::RemoveItemField(Item*, Item*, const Position&) {
 }
 
 uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool isCheck) {
-	if (!player) {
-		SPDLOG_ERROR("[MoveEvent::EquipItem] - Creature is nullptr");
+	if (player == nullptr) {
+		SPDLOG_ERROR("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
 	}
 
-	if (!item) {
+	if (item == nullptr) {
 		SPDLOG_ERROR("[MoveEvent::EquipItem] - Item is nullptr");
 		return 0;
 	}
@@ -530,12 +541,12 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 }
 
 uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t slot, bool) {
-	if (!player) {
-		SPDLOG_ERROR("[MoveEvent::EquipItem] - Creature is nullptr");
+	if (player == nullptr) {
+		SPDLOG_ERROR("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
 	}
 
-	if (!item) {
+	if (item == nullptr) {
 		SPDLOG_ERROR("[MoveEvent::EquipItem] - Item is nullptr");
 		return 0;
 	}

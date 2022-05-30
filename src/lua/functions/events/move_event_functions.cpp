@@ -78,14 +78,11 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
 		if (!moveevent->isScripted()) {
-			pushBoolean(L, g_moveEvents().registerLuaFunction(moveevent));
+			pushBoolean(L, g_moveEvents().registerLuaFunction(*moveevent));
 			return 1;
 		}
-		pushBoolean(L, g_moveEvents().registerLuaEvent(moveevent));
-		moveevent->getItemIdRange().clear();
-		moveevent->getActionIdRange().clear();
-		moveevent->getUniqueIdRange().clear();
-		moveevent->getPosList().clear();
+
+		pushBoolean(L, g_moveEvents().registerLuaEvent(*moveevent));
 	} else {
 		lua_pushnil(L);
 	}
@@ -100,6 +97,7 @@ int MoveEventFunctions::luaMoveEventOnCallback(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
+
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -236,10 +234,10 @@ int MoveEventFunctions::luaMoveEventItemId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				moveevent->addItemId(getNumber<uint32_t>(L, 2 + i));
+				moveevent->setItemId(getNumber<uint32_t>(L, 2 + i));
 			}
 		} else {
-			moveevent->addItemId(getNumber<uint32_t>(L, 2));
+			moveevent->setItemId(getNumber<uint32_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
@@ -255,10 +253,10 @@ int MoveEventFunctions::luaMoveEventActionId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				moveevent->addActionId(getNumber<uint32_t>(L, 2 + i));
+				moveevent->setActionId(getNumber<uint32_t>(L, 2 + i));
 			}
 		} else {
-			moveevent->addActionId(getNumber<uint32_t>(L, 2));
+			moveevent->setActionId(getNumber<uint32_t>(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {
@@ -274,10 +272,10 @@ int MoveEventFunctions::luaMoveEventUniqueId(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				moveevent->addUniqueId(getNumber<uint32_t>(L, 2 + i));
+				moveevent->setUniqueId(getNumber<uint32_t>(L, 2 + i));
 			}
 		} else {
-			moveevent->addUniqueId(getNumber<uint32_t>(L, 2));
+			moveevent->setUniqueId(getNumber<uint32_t>(L, 2));
 		}
 	pushBoolean(L, true);
 	} else {
@@ -293,10 +291,10 @@ int MoveEventFunctions::luaMoveEventPosition(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				moveevent->addPosList(getPosition(L, 2 + i));
+				moveevent->setPosition(getPosition(L, 2 + i));
 			}
 		} else {
-			moveevent->addPosList(getPosition(L, 2));
+			moveevent->setPosition(getPosition(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {

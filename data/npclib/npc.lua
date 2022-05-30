@@ -16,6 +16,15 @@ function MsgContains(message, keyword)
 		return true
 	end
 
+	return lowerMessage:find(lowerKeyword) and not lowerMessage:find('(%w+)' .. lowerKeyword)
+end
+
+function MsgFind(message, keyword)
+	local lowerMessage, lowerKeyword = message:lower(), keyword:lower()
+	if lowerMessage == lowerKeyword then
+		return true
+	end
+
 	return string.find(lowerMessage, lowerKeyword)
 		and string.find(lowerMessage, lowerKeyword.. '(%w+)')
 		and string.find(lowerMessage, '(%w+)' .. lowerKeyword)

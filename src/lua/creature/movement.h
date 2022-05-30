@@ -35,7 +35,7 @@ struct MoveEventList {
 class MoveEvents final : public BaseEvents {
 	public:
 		MoveEvents() = default;
-		~MoveEvents() = default;
+		~MoveEvents() override = default;
 
 		// non-copyable
 		MoveEvents(const MoveEvents&) = delete;
@@ -53,7 +53,7 @@ class MoveEvents final : public BaseEvents {
 		uint32_t onPlayerDeEquip(Player& player, Item& item, Slots_t slot);
 		uint32_t onItemMove(Item& item, Tile& tile, bool isAdd);
 
-		void clear(bool fromLua) override final {
+		void clear(bool fromLua) override {
 			fromLua = false;
 		}
 
@@ -127,7 +127,6 @@ class MoveEvents final : public BaseEvents {
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType);
 
-		bool registerLuaFunction(MoveEvent& moveEvent);
 		bool registerLuaItemEvent(MoveEvent& moveEvent);
 		bool registerLuaActionEvent(MoveEvent& moveEvent);
 		bool registerLuaUniqueEvent(MoveEvent& moveEvent);
@@ -150,8 +149,8 @@ class MoveEvents final : public BaseEvents {
 			return false;
 		}
 
-		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap);
-		void registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap);
+		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
+		void registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
 		MoveEvent* getEvent(Tile& tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType, Slots_t slot);
@@ -175,9 +174,6 @@ class MoveEvent final : public Event {
 
 		bool configureEvent([[maybe_unused]] const pugi::xml_node& node) override {
 			return false;
-		}
-		bool loadFunction(const pugi::xml_attribute& attr, bool isScripted) override {
-			return Event::loadFunction(attr, isScripted);
 		}
 
 		uint32_t fireStepEvent(Creature& creature, Item& item, const Position& pos);
@@ -235,25 +231,25 @@ class MoveEvent final : public Event {
 		void setTileItem(bool b) {
 			tileItem = b;
 		}
-		std::vector<uint32_t> getItemIdsVector() {
+		std::vector<uint32_t> getItemIdsVector() const {
 			return itemIdVector;
 		}
 		void setItemId(uint32_t id) {
 			itemIdVector.emplace_back(id);
 		}
-		std::vector<uint32_t> getActionIdsVector() {
+		std::vector<uint32_t> getActionIdsVector() const {
 			return actionIdVector;
 		}
 		void setActionId(uint32_t id) {
 			actionIdVector.emplace_back(id);
 		}
-		std::vector<uint32_t> getUniqueIdsVector() {
+		std::vector<uint32_t> getUniqueIdsVector() const {
 			return uniqueIdVector;
 		}
 		void setUniqueId(uint32_t id) {
 			uniqueIdVector.emplace_back(id);
 		}
-		std::vector<Position> getPositionsVector() {
+		std::vector<Position> getPositionsVector() const {
 			return positionVector;
 		}
 		void setPosition(Position pos) {

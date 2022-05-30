@@ -77,8 +77,10 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	// moveevent:register()
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
+		// If not scripted, register item event
+		// Example: unscripted_equipments.lua
 		if (!moveevent->isScripted()) {
-			pushBoolean(L, g_moveEvents().registerLuaFunction(*moveevent));
+			pushBoolean(L, g_moveEvents().registerLuaItemEvent(*moveevent));
 			return 1;
 		}
 

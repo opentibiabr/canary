@@ -38,36 +38,13 @@ Event_ptr MoveEvents::getEvent(const std::string& nodeName) {
 	return Event_ptr(new MoveEvent(&scriptInterface));
 }
 
-bool MoveEvents::registerLuaFunction(MoveEvent& moveEvent) {
-	auto itemIdVector = moveEvent.getItemIdsVector();
-	if (itemIdVector.empty()) {
-		return false;
-	}
-
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](uint32_t &itemId) {
-		registerEvent(moveEvent, itemId, itemIdMap);
-		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
-			ItemType& it = Item::items.getItemType(itemId);
-			it.wieldInfo = moveEvent.getWieldInfo();
-			it.minReqLevel = moveEvent.getReqLevel();
-			it.minReqMagicLevel = moveEvent.getReqMagLv();
-			it.vocationString = moveEvent.getVocationString();
-		}
-		return true;
-	});
-	itemIdVector.clear();
-	itemIdVector.shrink_to_fit();
-	return true;
-}
-
 bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 	auto itemIdVector = moveEvent.getItemIdsVector();
 	if (itemIdVector.empty()) {
 		return false;
 	}
 
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](uint32_t &itemId) {
-		registerEvent(moveEvent, itemId, itemIdMap);
+	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
 		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
 			it.wieldInfo = moveEvent.getWieldInfo();
@@ -75,7 +52,7 @@ bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 			it.minReqMagicLevel = moveEvent.getReqMagLv();
 			it.vocationString = moveEvent.getVocationString();
 		}
-		return true;
+		return registerEvent(moveEvent, itemId, itemIdMap);
 	});
 	itemIdVector.clear();
 	itemIdVector.shrink_to_fit();
@@ -88,9 +65,8 @@ bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](uint32_t &actionId) {
-		registerEvent(moveEvent, actionId, actionIdMap);
-		return true;
+	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
+		return registerEvent(moveEvent, actionId, actionIdMap);
 	});
 
 	actionIdVector.clear();
@@ -104,9 +80,8 @@ bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](uint32_t &uniqueId) {
-		registerEvent(moveEvent, uniqueId, uniqueIdMap);
-		return true;
+	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
+		return registerEvent(moveEvent, uniqueId, uniqueIdMap);
 	});
 
 	uniqueIdVector.clear();
@@ -120,9 +95,8 @@ bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](Position &position) {
-		registerEvent(moveEvent, position, positionsMap);
-		return true;
+	std::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
+		return registerEvent(moveEvent, position, positionsMap);
 	});
 
 	positionVector.clear();
@@ -147,7 +121,7 @@ bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
 	return false;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) {
+void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -237,7 +211,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	return nullptr;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) {
+void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
@@ -255,8 +229,9 @@ void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, s
 }
 
 MoveEvent* MoveEvents::getEvent(Tile& tile, MoveEvent_t eventType) {
-	auto it = positionsMap.find(tile.getPosition());
-	if (it != positionsMap.end()) {
+	if (auto it = positionsMap.find(tile.getPosition());
+	it != positionsMap.end())
+	{
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
 			return &(*moveEventList.begin());
@@ -392,7 +367,7 @@ uint32_t MoveEvent::AddItemField(Item* item, Item*, const Position&) {
 			SPDLOG_DEBUG("[MoveEvent::AddItemField] - Tile is nullptr");
 			return 0;
 		}
-		CreatureVector* creatures = tile->getCreatures();
+		const CreatureVector* creatures = tile->getCreatures();
 		if (creatures == nullptr) {
 			SPDLOG_DEBUG("[MoveEvent::AddItemField] - Creatures is nullptr");
 			return 0;

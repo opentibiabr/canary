@@ -266,25 +266,24 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		return;
 	}
 
-	bool isNameRegistered = !itemType.name.empty();
-	if (isNameRegistered && itemType.name != itemNode.attribute("name").as_string()) {
-		if (auto result = nameToItems.find(asLowerCaseString(itemType.name)); 
-			result != nameToItems.end()) {
-			nameToItems.erase(result);
-			isNameRegistered = false;
+	if (std::string xmlName = itemNode.attribute("name").as_string();
+			!xmlName.empty() && itemType.name != xmlName) {
+		if (!itemType.name.empty()) {
+			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
+					return nameMapIt.second == id;
+				}); it != nameToItems.end()) {
+				nameToItems.erase(it);
+			}
 		}
-	}
 
-	itemType.loaded = true;
-	itemType.name = itemNode.attribute("name").as_string();
-
-	if (!isNameRegistered) {
+		itemType.name = xmlName;
 		nameToItems.insert({
 			asLowerCaseString(itemType.name),
 			id
 		});
 	}
 
+	itemType.loaded = true;
 	pugi::xml_attribute articleAttribute = itemNode.attribute("article");
 	if (articleAttribute) {
 		itemType.article = articleAttribute.as_string();

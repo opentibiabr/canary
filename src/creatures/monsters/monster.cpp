@@ -714,7 +714,7 @@ bool Monster::isTarget(const Creature* creature) const
 		return false;
 	}
 	Faction_t targetFaction = creature->getFaction();
-	if (getFaction() != FACTION_DEFAULT) {
+	if (getFaction() != FACTION_DEFAULT && master && master->getMonster()) {
 		return isEnemyFaction(targetFaction);
 	}
 	return true;
@@ -733,7 +733,7 @@ bool Monster::selectTarget(Creature* creature)
 	}
 
 	if (isHostile() || isSummon()) {
-		if (setAttackedCreature(creature) && !isSummon()) {
+		if (setAttackedCreature(creature)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
 		}
 	}
@@ -1091,9 +1091,7 @@ void Monster::onThinkDefense(uint32_t interval)
 			Monster* summon = Monster::createMonster(summonBlock.name);
 			if (summon) {
 				if (g_game().placeCreature(summon, getPosition(), false, summonBlock.force)) {
-					summon->setDropLoot(false);
-					summon->setSkillLoss(false);
-					summon->setMaster(this);
+					summon->setMaster(this, true);
 					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
 					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
 				} else {

@@ -46,10 +46,12 @@ class CreatureFunctions final : LuaScriptInterface {
 			registerMethod(L, "Creature", "getParent", CreatureFunctions::luaCreatureGetParent);
 			registerMethod(L, "Creature", "getId", CreatureFunctions::luaCreatureGetId);
 			registerMethod(L, "Creature", "getName", CreatureFunctions::luaCreatureGetName);
+			registerMethod(L, "Creature", "getTypeName", CreatureFunctions::luaCreatureGetTypeName);
 			registerMethod(L, "Creature", "getTarget", CreatureFunctions::luaCreatureGetTarget);
 			registerMethod(L, "Creature", "setTarget", CreatureFunctions::luaCreatureSetTarget);
 			registerMethod(L, "Creature", "getFollowCreature", CreatureFunctions::luaCreatureGetFollowCreature);
 			registerMethod(L, "Creature", "setFollowCreature", CreatureFunctions::luaCreatureSetFollowCreature);
+			registerMethod(L, "Creature", "reload", CreatureFunctions::luaCreatureReload);
 			registerMethod(L, "Creature", "getMaster", CreatureFunctions::luaCreatureGetMaster);
 			registerMethod(L, "Creature", "setMaster", CreatureFunctions::luaCreatureSetMaster);
 			registerMethod(L, "Creature", "getLight", CreatureFunctions::luaCreatureGetLight);
@@ -116,12 +118,15 @@ class CreatureFunctions final : LuaScriptInterface {
 
 		static int luaCreatureGetId(lua_State* L);
 		static int luaCreatureGetName(lua_State* L);
+		static int luaCreatureGetTypeName(lua_State* L);
 
 		static int luaCreatureGetTarget(lua_State* L);
 		static int luaCreatureSetTarget(lua_State* L);
 
 		static int luaCreatureGetFollowCreature(lua_State* L);
 		static int luaCreatureSetFollowCreature(lua_State* L);
+
+		static int luaCreatureReload(lua_State* L);
 
 		static int luaCreatureGetMaster(lua_State* L);
 		static int luaCreatureSetMaster(lua_State* L);

@@ -5392,7 +5392,7 @@ void Game::changePlayerSpeed(Player& player, int32_t varSpeedDelta)
 
 	player.setSpeed(varSpeed);
 
-	// Send to spectators
+	// Send new player speed to the spectators
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player.getPosition(), false, true);
 	for (Creature* creatureSpectator : spectators) {

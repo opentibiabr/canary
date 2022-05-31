@@ -5392,11 +5392,22 @@ void Game::changePlayerSpeed(Player& player, int32_t varSpeedDelta)
 
 	player.setSpeed(varSpeed);
 
-	//send to clients
+	// Send to spectators
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player.getPosition(), false, true);
-	for (Creature* spectator : spectators) {
-		spectator->getPlayer()->sendChangeSpeed(&player, player.getStepSpeed());
+	for (Creature* creatureSpectator : spectators) {
+		if (creatureSpectator == nullptr) {
+			SPDLOG_ERROR("[Game::changePlayerSpeed] - Creature spectator is nullptr");
+			continue;
+		}
+
+		const Player *playerSpectator = creatureSpectator->getPlayer();
+		if (playerSpectator == nullptr) {
+			SPDLOG_ERROR("[Game::changePlayerSpeed] - Player spectator is nullptr");
+			continue;
+		}
+
+		playerSpectator->sendChangeSpeed(&player, player.getStepSpeed());
 	}
 }
 

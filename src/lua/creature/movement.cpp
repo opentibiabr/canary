@@ -274,7 +274,6 @@ uint32_t MoveEvents::onPlayerEquip(Player& player, Item& item, Slots_t slot, boo
 	if (!moveEvent) {
 		return 1;
 	}
-
 	return moveEvent->fireEquip(player, item, slot, isCheck);
 }
 

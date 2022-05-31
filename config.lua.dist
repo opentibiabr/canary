@@ -214,12 +214,13 @@ globalServerSaveTime = "06:00:00"
 sortLootByChance = false
 
 -- Rates
--- NOTE: rateExp, rateSkill and rateMagic is used as a fallback only
+-- NOTE: rateExp, rateSkill and rateMagic are only used when 'rateUseStages = false'
 -- To configure rates see file data/stages.lua
+rateUseStages = false
 rateExp = 1
-rateSkill = 50
-rateLoot = 3
-rateMagic = 25
+rateSkill = 1
+rateLoot = 1
+rateMagic = 1
 rateSpawn = 1
 
 -- Today regeneration condition over an loop every 1 second,

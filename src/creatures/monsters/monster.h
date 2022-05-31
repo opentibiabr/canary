@@ -64,6 +64,10 @@ class Monster final : public Creature
 		const std::string& getName() const override {
 			return mType->name;
 		}
+		// Real monster name, set on monster creation "createMonsterType(typeName)"
+		const std::string& getTypeName() const override {
+			return mType->typeName;
+		}
 		const std::string& getNameDescription() const override {
 			return mType->nameDescription;
 		}

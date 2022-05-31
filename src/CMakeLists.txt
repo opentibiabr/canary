@@ -176,6 +176,7 @@ target_sources(${PROJECT_NAME}
     game/movement/position.cpp
     game/movement/teleport.cpp
     game/scheduling/scheduler.cpp
+    game/scheduling/events_scheduler.cpp
     game/scheduling/tasks.cpp
     io/fileloader.cpp
     io/iobestiary.cpp
@@ -242,6 +243,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/creatures/player/vocation_functions.cpp
     lua/functions/events/action_functions.cpp
     lua/functions/events/creature_event_functions.cpp
+    lua/functions/events/events_scheduler_functions.cpp
     lua/functions/events/global_event_functions.cpp
     lua/functions/events/move_event_functions.cpp
     lua/functions/events/talk_action_functions.cpp

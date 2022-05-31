@@ -49,6 +49,37 @@ function startup.onStartup()
 		local position = town:getTemplePosition()
 		db.query("INSERT INTO `towns` (`id`, `name`, `posx`, `posy`, `posz`) VALUES (" .. town:getId() .. ", " .. db.escapeString(town:getName()) .. ", " .. position.x .. ", " .. position.y .. ", " .. position.z .. ")")
 	end
+
+	do -- Event Schedule rates
+		local lootRate = EventsScheduler.getEventSLoot()
+		if lootRate ~= 100 then
+			SCHEDULE_LOOT_RATE = lootRate
+		end
+	
+		local expRate = EventsScheduler.getEventSExp()
+		if expRate ~= 100 then
+			SCHEDULE_EXP_RATE = expRate
+		end
+	
+		local skillRate = EventsScheduler.getEventSSkill()
+		if skillRate ~= 100 then
+			SCHEDULE_SKILL_RATE = skillRate
+		end
+	
+		local spawnRate = EventsScheduler.getSpawnMonsterSchedule()
+		if spawnRate ~= 100 then
+			SCHEDULE_SPAWN_RATE = spawnRate
+		end
+
+		if expRate ~= 100 or lootRate ~= 100 or spawnRate ~= 100 or skillRate ~= 100 then
+		Spdlog.info("Events: " .. "Exp: " .. expRate .. "%, " .. "loot: " .. lootRate .. "%, " .. "Spawn: " .. spawnRate .. "%, " .. "Skill: ".. skillRate .."%")
+		end
+	end
+
+    -- Client XP Display Mode
+	-- 0 = ignore exp rate /stage
+	-- 1 = include exp rate / stage
+	Game.setStorageValue(GlobalStorage.XpDisplayMode, 1)
 end
 
 startup:register()

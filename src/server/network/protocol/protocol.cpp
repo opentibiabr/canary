@@ -24,36 +24,31 @@
 #include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 
-Protocol::~Protocol()
-{
-	if (compreesionEnabled) {
-		deflateEnd(defStream.get());
-	}
-}
+Protocol::~Protocol() = default;
 
 void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 {
 	if (!rawMessages) {
-		uint32_t _compression = 0;
-		if (compreesionEnabled && msg->getLength() >= 128) {
-			if (compression(*msg)) {
-				_compression = (1U << 31);
-			}
+		uint32_t sendMessageChecksum = 0;
+		if (compreesionEnabled && msg->getLength() >= 128 && compression(*msg)) {
+			sendMessageChecksum = (1U << 31);
 		}
 
 		msg->writeMessageLength();
 
-		if (encryptionEnabled) {
-			XTEA_encrypt(*msg);
-			if (checksumMethod == CHECKSUM_METHOD_NONE) {
-				msg->addCryptoHeader(false, 0);
-			} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
-				msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
-			} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-				msg->addCryptoHeader(true, _compression | (++serverSequenceNumber));
-				if (serverSequenceNumber >= 0x7FFFFFFF) {
-					serverSequenceNumber = 0;
-				}
+		if (!encryptionEnabled) {
+			return;
+		}
+
+		XTEA_encrypt(*msg);
+		if (checksumMethod == CHECKSUM_METHOD_NONE) {
+			msg->addCryptoHeader(false, 0);
+		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
+			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
+		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
+			if (serverSequenceNumber >= 0x7FFFFFFF) {
+				serverSequenceNumber = 0;
 			}
 		}
 	}
@@ -98,14 +93,12 @@ bool Protocol::onRecvMessage(NetworkMessage& msg)
 		return false;
 	}
 
-	using ProtocolWeak_ptr = std::weak_ptr<Protocol>;
-	ProtocolWeak_ptr protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
-
+	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
 	std::function<void (void)> callback = [protocolWeak, &msg]() {
 		if (auto protocol = protocolWeak.lock()) {
-			if (auto connection = protocol->getConnection()) {
+			if (auto protocolConnection = protocol->getConnection()) {
 				protocol->parsePacket(msg);
-				connection->resumeWork();
+				protocolConnection->resumeWork();
 			}
 		}
 	};
@@ -248,10 +241,10 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	//SSE2 unroll - only if AVX2 disabled
 	#if !defined(__AVX2__)
 	while (readPos <= messageLength) {
-		const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data3 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data4 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 48)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data3 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data4 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 48)), _MM_SHUFFLE(3, 1, 2, 0));
 		__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
 		__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
 		__m128i vdata3 = _mm_unpacklo_epi64(data3, data4);
@@ -275,8 +268,8 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	#endif
 
 	if (readPos <= messageLength) {
-		const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
 		__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
 		__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
 		for (int32_t i = 0; i < 32; ++i) {
@@ -424,10 +417,10 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	//SSE2 unroll - only if AVX2 disabled
 	#if !defined(__AVX2__)
 	while (readPos <= messageLength) {
-		const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data2 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data3 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 48)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data2 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 32)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data3 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 48)), _MM_SHUFFLE(3, 1, 2, 0));
 		__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
 		__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
 		__m128i vdata2 = _mm_unpacklo_epi64(data2, data3);
@@ -451,8 +444,8 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	#endif
 
 	if (readPos <= messageLength) {
-		const __m128i data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
-		const __m128i data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data0 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos)), _MM_SHUFFLE(3, 1, 2, 0));
+		auto data1 = _mm_shuffle_epi32(_mm_loadu_si128(reinterpret_cast<const __m128i*>(buffer + readPos + 16)), _MM_SHUFFLE(3, 1, 2, 0));
 		__m128i vdata0 = _mm_unpacklo_epi64(data0, data1);
 		__m128i vdata1 = _mm_unpackhi_epi64(data0, data1);
 		for (int32_t i = 0; i < 32; ++i) {
@@ -498,11 +491,13 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 
 uint32_t Protocol::getIP() const
 {
-	if (auto connection = getConnection()) {
-		return connection->getIP();
+	auto protocolConnection = getConnection();
+	if (protocolConnection == nullptr) {
+		SPDLOG_ERROR("[Protocol::getIP] - Connection is nullptr");
+		return 0;
 	}
 
-	return 0;
+	return protocolConnection->getIP();
 }
 
 void Protocol::enableCompression()
@@ -524,7 +519,7 @@ void Protocol::enableCompression()
 	}
 }
 
-bool Protocol::compression(OutputMessage& msg)
+bool Protocol::compression(OutputMessage& msg) const
 {
 	static thread_local uint8_t defBuffer[NETWORKMESSAGE_MAXSIZE];
 	defStream->next_in = msg.getOutputBuffer();
@@ -536,7 +531,7 @@ bool Protocol::compression(OutputMessage& msg)
 	if (ret != Z_OK && ret != Z_STREAM_END) {
 		return false;
 	}
-	uint32_t totalSize = static_cast<uint32_t>(defStream->total_out);
+	auto totalSize = static_cast<uint32_t>(defStream->total_out);
 	deflateReset(defStream.get());
 	if (totalSize == 0) {
 		return false;

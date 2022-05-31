@@ -60,22 +60,30 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		}
 
 		void send(OutputMessage_ptr msg) const {
-			if (auto connection = getConnection()) {
-				connection->send(msg);
+			auto protocolConnection = getConnection();
+			if (protocolConnection == nullptr) {
+				SPDLOG_ERROR("[Protocol::send] - Connection is nullptr");
+				return;
 			}
+
+			protocolConnection->send(msg);
 		}
 
 	protected:
 		void disconnect() const {
-			if (auto connection = getConnection()) {
-				connection->close();
+			auto protocolConnection = getConnection();
+			if (protocolConnection == nullptr) {
+				SPDLOG_ERROR("[Protocol::disconnect] - Connection is nullptr");
+				return;
 			}
+
+			protocolConnection->close();
 		}
 		void enableXTEAEncryption() {
 			encryptionEnabled = true;
 		}
-		void setXTEAKey(const uint32_t* key) {
-			memcpy(this->key, key, sizeof(*key) * 4);
+		void setXTEAKey(const uint32_t* newKey) {
+			memcpy(this->key, newKey, sizeof(*newKey) * 4);
 		}
 		void setChecksumMethod(ChecksumMethods_t method) {
 			checksumMethod = method;
@@ -93,7 +101,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 	private:
 		void XTEA_encrypt(OutputMessage& msg) const;
 		bool XTEA_decrypt(NetworkMessage& msg) const;
-		bool compression(OutputMessage& msg);
+		bool compression(OutputMessage& msg) const;
 
 		friend class Connection;
 

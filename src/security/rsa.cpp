@@ -30,11 +30,7 @@ RSA::RSA()
 	mpz_init2(d, 1024);
 }
 
-RSA::~RSA()
-{
-	mpz_clear(n);
-	mpz_clear(d);
-}
+RSA::~RSA() = default;
 
 void RSA::setKey(const char* pString, const char* qString, int base/* = 10*/)
 {
@@ -95,7 +91,7 @@ void RSA::decrypt(char* msg) const
 	mpz_clear(m);
 }
 
-std::string RSA::base64Decrypt(const std::string& input)
+std::string RSA::base64Decrypt(const std::string& input) const
 {
 	auto posOfCharacter = [](const unsigned char chr) -> unsigned int {
 		if (chr >= 'A' && chr <= 'Z') {
@@ -109,7 +105,8 @@ std::string RSA::base64Decrypt(const std::string& input)
 		} else if (chr == '/' || chr == '_') {
 			return 63;
 		}
-		throw std::runtime_error("Invalid base64.");
+		SPDLOG_ERROR("[RSA::base64Decrypt] - Invalid argument 'base64'");
+		return std::string();
 	};
 
 	if (input.empty()) {
@@ -119,7 +116,8 @@ std::string RSA::base64Decrypt(const std::string& input)
 	size_t length = input.length();
 	size_t pos = 0;
 
-	std::stringExtended output(length / 4 * 3);
+	std::string output;
+	output.reserve(length / 4 * 3);
 	while (pos < length) {
 		unsigned int pos1 = posOfCharacter(input[pos + 1]);
 		output.push_back(static_cast<std::string::value_type>(((posOfCharacter(input[pos])) << 2) + ((pos1 & 0x30) >> 4)));
@@ -153,12 +151,13 @@ enum
 bool RSA::loadPEM(const std::string& filename)
 {
 	auto DecodeLength = [](char*& pos) -> unsigned int {
-		unsigned int length = static_cast<unsigned int>(static_cast<unsigned char>(*pos++));
+		auto length = static_cast<unsigned int>(static_cast<unsigned char>(*pos++));
 		if (length & 0x80) {
 			unsigned char buffer[4];
 			length &= 0x7F;
 			if (length > 4) {
-				throw std::runtime_error("Invalid length.");
+				SPDLOG_ERROR("[RSA::loadPEM] - Invalid argument 'length'");
+				return false;
 			}
 			buffer[0] = buffer[1] = buffer[2] = buffer[3] = 0;
 			switch (length) {
@@ -166,6 +165,7 @@ bool RSA::loadPEM(const std::string& filename)
 				case 3: buffer[2] = static_cast<unsigned char>(*pos++);
 				case 2: buffer[1] = static_cast<unsigned char>(*pos++);
 				case 1: buffer[0] = static_cast<unsigned char>(*pos++);
+				default: break;
 			}
 			memcpy(&length, buffer, sizeof(length));
 		}
@@ -175,7 +175,7 @@ bool RSA::loadPEM(const std::string& filename)
 	auto ReadHexString = [](char*& pos, unsigned int length, std::string& output) {
 		output.reserve(static_cast<size_t>(length) * 2);
 		for (unsigned int i = 0; i < length; ++i) {
-			unsigned char hex = static_cast<unsigned char>(*pos++);
+			auto hex = static_cast<unsigned char>(*pos++);
 			output.push_back("0123456789ABCDEF"[(hex >> 4) & 15]);
 			output.push_back("0123456789ABCDEF"[hex & 15]);
 		}
@@ -188,28 +188,33 @@ bool RSA::loadPEM(const std::string& filename)
 
 		if (key.compare(0, header_old.size(), header_old) == 0) {
 			if (key.compare(key.size() - footer_old.size(), footer_old.size(), footer_old) != 0) {
-				throw std::runtime_error("Missing RSA private key footer.");
+				SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer.");
+				return false;
 			}
 
 			key = std::move(base64Decrypt(key.substr(header_old.size(), key.size() - header_old.size() - footer_old.size())));
 		} else if (key.compare(0, header_new.size(), header_new) == 0) {
 			if (key.compare(key.size() - footer_new.size(), footer_new.size(), footer_new) != 0) {
-				throw std::runtime_error("Missing RSA private key footer.");
+				SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer.");
+				return false;
 			}
 
 			key = std::move(base64Decrypt(key.substr(header_new.size(), key.size() - header_new.size() - footer_new.size())));
 		} else {
-			throw std::runtime_error("Missing RSA private key header.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key header.");
+			return false;
 		}
 
 		char* pos = &key[0];
 		if (static_cast<unsigned char>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-			throw std::runtime_error("Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			return false;
 		}
 
 		unsigned int length = DecodeLength(pos);
 		if (length != key.length() - std::distance(&key[0], pos)) {
-			throw std::runtime_error("Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			return false;
 		}
 
 		unsigned char tag = static_cast<unsigned char>(*pos++);
@@ -226,31 +231,36 @@ bool RSA::loadPEM(const std::string& filename)
 				++pos;
 			}
 			if (static_cast<unsigned char>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-				throw std::runtime_error("Invalid unsupported RSA key.");
+				SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+				return false;
 			}
 
 			length = DecodeLength(pos);
 			if (length != key.length() - std::distance(&key[0], pos)) {
-				throw std::runtime_error("Invalid unsupported RSA key.");
+				SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+				return false;
 			}
 
 			tag = static_cast<unsigned char>(*pos++);
 		}
 
 		if (tag != CRYPT_RSA_ASN1_INTEGER) {
-			throw std::runtime_error("Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			return false;
 		}
 
 		length = DecodeLength(pos);
 		pos += length;
 		if (length != 1 || static_cast<unsigned char>(*pos) > 2) {
 			//public key - we don't have any interest in it
-			throw std::runtime_error("Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			return false;
 		}
 
 		tag = static_cast<unsigned char>(*pos++);
 		if (tag != CRYPT_RSA_ASN1_INTEGER) {
-			throw std::runtime_error("Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			return false;
 		}
 
 		length = DecodeLength(pos);

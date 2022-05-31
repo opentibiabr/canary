@@ -108,8 +108,9 @@ void loadModules() {
 			SPDLOG_ERROR("File key.pem doesn't exist - loading standard rsa key\n");
 			g_RSA().setKey(p, q);
 		}
-	} catch (std::exception const& e) {
-		SPDLOG_ERROR("Loading RSA Key from key.pem failed: {}\n", e.what());
+	} catch (std::system_error const& e) {
+		SPDLOG_ERROR("Loading RSA Key from key.pem failed with error: {}\n", e.what());
+		SPDLOG_ERROR("Switching to a default key...");
 		g_RSA().setKey(p, q);
 	}
 

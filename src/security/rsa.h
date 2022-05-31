@@ -45,7 +45,7 @@ class RSA
 		void setKey(const char* pString, const char* qString, int base = 10);
 		void decrypt(char* msg) const;
 
-		std::string base64Decrypt(const std::string& input);
+		std::string base64Decrypt(const std::string& input) const;
 		bool loadPEM(const std::string& filename);
 
 	private:

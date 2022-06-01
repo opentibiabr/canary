@@ -590,13 +590,6 @@ int GameFunctions::luaGameReload(lua_State* L) {
 	return 1;
 }
 
-int GameFunctions::luaGameItemidHasMoveevent(lua_State* L) {
-	// Game.itemidHasMoveevent(itemid)
-	uint32_t itemid = getNumber<uint32_t>(L, 1);
-	pushBoolean(L, g_game().itemidHasMoveevent(itemid));
-	return 1;
-}
-
 int GameFunctions::luaGameHasEffect(lua_State* L) {
 	// Game.hasEffect(effectId)
 	uint8_t effectId = getNumber<uint8_t>(L, 1);

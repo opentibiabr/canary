@@ -343,7 +343,7 @@ class MagicField final : public Item
 			}
 			return 0;
 		}
-		void onStepInField(Creature* creature);
+		void onStepInField(Creature& creature);
 
 	private:
 		int64_t createTime;

@@ -150,13 +150,13 @@ enum
 
 bool RSA::loadPEM(const std::string& filename)
 {
-	auto DecodeLength = [](char*& pos) -> unsigned int {
+	unsigned char buffer[4];
+	auto DecodeLength = [&buffer](char*& pos) -> unsigned int {
 		auto length = static_cast<unsigned int>(static_cast<unsigned char>(*pos++));
 		if (length & 0x80) {
-			unsigned char buffer[4];
 			length &= 0x7F;
 			if (length > 4) {
-				SPDLOG_ERROR("[RSA::loadPEM] - Invalid argument 'length'");
+				SPDLOG_ERROR("[RSA::loadPEM] - Invalid 'length'");
 				return false;
 			}
 			buffer[0] = buffer[1] = buffer[2] = buffer[3] = 0;
@@ -217,7 +217,7 @@ bool RSA::loadPEM(const std::string& filename)
 			return false;
 		}
 
-		unsigned char tag = static_cast<unsigned char>(*pos++);
+		auto tag = static_cast<unsigned char>(*pos++);
 		if (tag == CRYPT_RSA_ASN1_INTEGER && static_cast<unsigned char>(*(pos + 0)) == 0x01 && static_cast<unsigned char>(*(pos + 1)) == 0x00 && static_cast<unsigned char>(*(pos + 2)) == 0x30) {
 			pos += 3;
 			tag = CRYPT_RSA_ASN1_SEQUENCE;
@@ -281,6 +281,7 @@ bool RSA::loadPEM(const std::string& filename)
 		pos += length + 1;//Prime Exponent Q - we don't care
 		length = DecodeLength(pos);
 		pos += length + 1;//Coefficient - we don't care
+		length = DecodeLength(pos);
 
 		setKey(pString.c_str(), qString.c_str(), 16);
 		return true;

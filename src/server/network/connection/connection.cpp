@@ -113,33 +113,28 @@ void Connection::accept(Protocol_ptr protocolPtr)
 	this->protocol = protocolPtr;
 	g_dispatcher().addTask(createSchedulerTask(1000, std::bind(&Protocol::onConnect, protocolPtr)));
 
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
-	try {
-		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
-
-		// Read header bytes to identify if it is proxy identification
-		boost::asio::async_read(socket,
-								boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
-								std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
-	}
-	catch (boost::system::system_error& e) {
-		SPDLOG_ERROR("[Connection::accept] - error: {}", e.what());
-		close(FORCE_CLOSE);
-	}
+	// Call second accept for not duplicate code
+	accept(false);
 }
 
-void Connection::accept()
+void Connection::accept(bool toggleParseHeader /* = true */)
 {
-	std::lock_guard<std::recursive_mutex> lockClass(connectionLock);
 	try {
 		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
 		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
-
-		// Read size of the first packet
-		boost::asio::async_read(socket,
-		                        boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
-		                        std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+		
+		// If toggleParseHeader is true, execute the parseHeader, if not, execute parseProxyIdentification
+		if (toggleParseHeader) {
+			// Read size of the first packet
+			boost::asio::async_read(socket,
+									boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
+									std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
+		} else {
+			// Read header bytes to identify if it is proxy identification
+			boost::asio::async_read(socket,
+									boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
+									std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
+		}
 	} catch (boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::accept] - error: {}", e.what());
 		close(FORCE_CLOSE);
@@ -199,18 +194,7 @@ void Connection::parseProxyIdentification(const boost::system::error_code& error
 		}
 	}
 
-	try {
-		readTimer.expires_from_now(boost::posix_time::seconds(CONNECTION_READ_TIMEOUT));
-		readTimer.async_wait(std::bind(&Connection::handleTimeout, std::weak_ptr<Connection>(shared_from_this()), std::placeholders::_1));
-
-		// Wait to the next packet
-		boost::asio::async_read(socket,
-		                        boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
-		                        std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
-	} catch (boost::system::system_error& e) {
-		SPDLOG_ERROR("Connection::parseProxyIdentification] - error: {}", e.what());
-		close(FORCE_CLOSE);
-	}
+	accept(true);
 }
 
 void Connection::parseHeader(const boost::system::error_code& error)
@@ -367,11 +351,11 @@ void Connection::internalWorker()
 {
 	std::unique_lock<std::recursive_mutex> lockClass(connectionLock);
 	if (!messageQueue.empty()) {
-		const OutputMessage_ptr& msg = messageQueue.front();
+		const OutputMessage_ptr& outputMessage = messageQueue.front();
 		lockClass.unlock();
-		protocol->onSendMessage(msg);
+		protocol->onSendMessage(outputMessage);
 		lockClass.lock();
-		internalSend(msg);
+		internalSend(outputMessage);
 	} else if (connectionState == CONNECTION_STATE_CLOSED) {
 		closeSocket();
 	}

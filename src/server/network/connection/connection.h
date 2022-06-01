@@ -81,7 +81,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		void close(bool force = false);
 		// Used by protocols that require server to send first
 		void accept(Protocol_ptr protocolPtr);
-		void accept();
+		void accept(bool toggleParseHeader = true);
 
 		void resumeWork();
 		void send(const OutputMessage_ptr& outputMessage);

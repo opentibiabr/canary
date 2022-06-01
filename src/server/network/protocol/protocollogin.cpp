@@ -118,11 +118,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		// clientVersion >= 830
-		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
-	}
+	msg.skipBytes(2); // client OS
 
 	uint16_t version = msg.get<uint16_t>();
 
@@ -143,6 +139,8 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	uint32_t key[4] = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
 	setXTEAKey(key);
+
+	setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 
 	if (g_game().getGameState() == GAME_STATE_STARTUP) {
 		disconnectClient("Gameworld is starting up. Please wait.", version);

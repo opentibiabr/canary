@@ -330,7 +330,9 @@ void IOPrey::ParsePreyAction(Player* player,
 		}
 
 		slot->eraseBonus(true);
-		slot->state = PreyDataState_SelectionChangeMonster;
+		if (slot->bonus != PreyBonus_None) {
+			slot->state = PreyDataState_SelectionChangeMonster;
+		}
 		slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
 	} else if (action == PreyAction_ListAll_Cards) {
 		if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)))) {

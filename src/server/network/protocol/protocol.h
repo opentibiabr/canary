@@ -62,7 +62,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		void send(OutputMessage_ptr msg) const {
 			auto protocolConnection = getConnection();
 			if (protocolConnection == nullptr) {
-				SPDLOG_ERROR("[Protocol::send] - Connection is nullptr");
+				SPDLOG_DEBUG("[Protocol::send] - Connection is nullptr");
 				return;
 			}
 

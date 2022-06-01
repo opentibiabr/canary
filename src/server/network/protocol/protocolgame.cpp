@@ -432,9 +432,8 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
 
-	// if (operatingSystem <= CLIENTOS_NEW_MAC) {
-	// 	enableCompact();
-	// }
+	setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+	enableCompression();
 
 	version = msg.get<uint16_t>(); // Protocol version
 

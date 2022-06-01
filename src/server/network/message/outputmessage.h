@@ -53,14 +53,14 @@ class OutputMessage : public NetworkMessage
 
 		void append(const NetworkMessage& msg) {
 			auto msgLen = msg.getLength();
-			memcpy(buffer + info.position, msg.getBuffer() + 8, msgLen);
+			memcpy(buffer + info.position, msg.getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 			info.length += msgLen;
 			info.position += msgLen;
 		}
 
 		void append(const OutputMessage_ptr& msg) {
 			auto msgLen = msg->getLength();
-			memcpy(buffer + info.position, msg->getBuffer() + 8, msgLen);
+			memcpy(buffer + info.position, msg->getBuffer() + INITIAL_BUFFER_POSITION, msgLen);
 			info.length += msgLen;
 			info.position += msgLen;
 		}

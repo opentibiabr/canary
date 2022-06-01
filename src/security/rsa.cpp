@@ -105,8 +105,8 @@ std::string RSA::base64Decrypt(const std::string& input) const
 		} else if (chr == '/' || chr == '_') {
 			return 63;
 		}
-		SPDLOG_ERROR("[RSA::base64Decrypt] - Invalid argument 'base64'");
-		return std::string();
+		SPDLOG_ERROR("[RSA::base64Decrypt] - Invalid base6409");
+		return 0;
 	};
 
 	if (input.empty()) {

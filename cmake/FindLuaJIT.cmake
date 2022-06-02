@@ -1,7 +1,7 @@
 # - Try to find luajit
 # Once done this will define
 #  LUAJIT_FOUND - System has luajit
-#  LUAJIT_INCLUDE_DIRS - The luajit include directories
+#  LUAJIT_INCLUDE_DIRSS - The luajit include directories
 #  LUAJIT_LIBRARIES - The libraries needed to use luajit
 
 find_package(PkgConfig)
@@ -11,8 +11,8 @@ endif()
 
 set(LUAJIT_DEFINITIONS ${PC_LUAJIT_CFLAGS_OTHER})
 
-find_path(LUAJIT_INCLUDE_DIR luajit.h
-          PATHS ${PC_LUAJIT_INCLUDEDIR} ${PC_LUAJIT_INCLUDE_DIRS}
+find_path(LUAJIT_INCLUDE_DIRS luajit.h
+          PATHS ${PC_LUAJIT_INCLUDEDIR} ${PC_LUAJIT_INCLUDE_DIRSS}
           PATH_SUFFIXES luajit-2.0 luajit-2.1)
 
 if(MSVC)
@@ -27,12 +27,12 @@ find_library(LUAJIT_LIBRARIES NAMES ${LUAJIT_NAMES}
              PATHS ${PC_LUAJIT_LIBDIR} ${PC_LUAJIT_LIBRARIES_DIRS})
 
 set(LUAJIT_LIBRARIES ${LUAJIT_LIBRARIES})
-set(LUAJIT_INCLUDE_DIRS ${LUAJIT_INCLUDE_DIR})
+set(LUAJIT_INCLUDE_DIRSS ${LUAJIT_INCLUDE_DIRS})
 
 include(FindPackageHandleStandardArgs)
 # handle the QUIETLY and REQUIRED arguments and set LUAJIT_FOUND to TRUE
 # if all listed variables are TRUE
 find_package_handle_standard_args(LuaJit DEFAULT_MSG
-                                  LUAJIT_LIBRARIES LUAJIT_INCLUDE_DIR)
+                                  LUAJIT_LIBRARIES LUAJIT_INCLUDE_DIRS)
 
-mark_as_advanced(LUAJIT_INCLUDE_DIR LUAJIT_LIBRARIES)
+mark_as_advanced(LUAJIT_INCLUDE_DIRS LUAJIT_LIBRARIES)

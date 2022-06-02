@@ -306,7 +306,7 @@ if (MSVC)
       ${Boost_LIBRARY_DIRS}
       ${CMAKE_SOURCE_DIR}/src
       ${MYSQL_INCLUDE_DIR}
-      ${LUAJIT_INCLUDE_DIR}
+      ${LUAJIT_INCLUDE_DIRS}
       ${Boost_INCLUDE_DIRS}
       ${PUGIXML_INCLUDE_DIR}
       ${CRYPTOPP_INCLUDE_DIR}
@@ -337,7 +337,7 @@ else()
   target_include_directories(${PROJECT_NAME}
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
-      ${LUAJIT_INCLUDE_DIR}
+      ${LUAJIT_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
   )
 

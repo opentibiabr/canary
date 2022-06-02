@@ -113,7 +113,7 @@ class PreySlot
 	}
 
 	bool canSelect() const {
-		return (state == PreyDataState_Selection || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
+		return (state == PreyDataState_Selection || state == PreyDataState_SelectionChangeMonster || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
 	}
 
 	void eraseBonus(bool maintainBonus = false) {

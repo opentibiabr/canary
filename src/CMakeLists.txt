@@ -306,7 +306,7 @@ if (MSVC)
       ${Boost_LIBRARY_DIRS}
       ${CMAKE_SOURCE_DIR}/src
       ${MYSQL_INCLUDE_DIR}
-      ${LUA_INCLUDE_DIR}
+      ${LUAJIT_INCLUDE_DIR}
       ${Boost_INCLUDE_DIRS}
       ${PUGIXML_INCLUDE_DIR}
       ${CRYPTOPP_INCLUDE_DIR}
@@ -319,7 +319,7 @@ if (MSVC)
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
       ${MYSQL_CLIENT_LIBS}
-      ${LUA_LIBRARIES}
+      ${LUAJIT_LIBRARIES}
       ${Boost_LIBRARIES}
       ${PUGIXML_LIBRARIES}
       ${CRYPTOPP_LIBRARIES}
@@ -337,7 +337,7 @@ else()
   target_include_directories(${PROJECT_NAME}
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
-      ${LUA_INCLUDE_DIR}
+      ${LUAJIT_INCLUDE_DIR}
       ${Protobuf_INCLUDE_DIRS}
   )
 
@@ -355,7 +355,7 @@ else()
       pugixml::pugixml
       spdlog::spdlog
       Threads::Threads
-      ${LUA_LIBRARIES}
+      ${LUAJIT_LIBRARIES}
       ${Protobuf_LIBRARIES}
       libzippp::libzippp
   )

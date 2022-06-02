@@ -1,62 +1,38 @@
-# Locate LuaJIT library
-# This module defines
-#  LUAJIT_FOUND, if false, do not try to link to Lua
-#  LUA_LIBRARIES
-#  LUA_INCLUDE_DIR, where to find lua.h
-#  LUAJIT_VERSION_STRING, the version of Lua found (since CMake 2.8.8)
+# - Try to find luajit
+# Once done this will define
+#  LUAJIT_FOUND - System has luajit
+#  LUAJIT_INCLUDE_DIRS - The luajit include directories
+#  LUAJIT_LIBRARIES - The libraries needed to use luajit
 
-## Copied from default CMake FindLua51.cmake
-
-find_path(LUA_INCLUDE_DIR luajit.h
-  HINTS
-    ENV LUA_DIR
-  PATH_SUFFIXES include/luajit-2.0 include/luajit-2.1 include luajit
-  PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /sw # Fink
-  /opt/local # DarwinPorts
-  /opt/csw # Blastwave
-  /opt
-)
-
-find_library(LUA_LIBRARY
-  NAMES luajit-5.1 lua51
-  HINTS
-    ENV LUA_DIR
-  PATH_SUFFIXES lib
-  PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /sw
-  /opt/local
-  /opt/csw
-  /opt
-)
-
-if(LUA_LIBRARY)
-  # include the math library for Unix
-  if(UNIX AND NOT APPLE)
-    find_library(LUA_MATH_LIBRARY m)
-    set( LUA_LIBRARIES "${LUA_LIBRARY};${LUA_MATH_LIBRARY}" CACHE STRING "Lua Libraries")
-  # For Windows and Mac, don't need to explicitly include the math library
-  else()
-    set( LUA_LIBRARIES "${LUA_LIBRARY}" CACHE STRING "Lua Libraries")
-  endif()
+find_package(PkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_check_modules(PC_LUAJIT QUIET luajit)
 endif()
 
-if(LUA_INCLUDE_DIR AND EXISTS "${LUA_INCLUDE_DIR}/luajit.h")
-  file(STRINGS "${LUA_INCLUDE_DIR}/luajit.h" luajit_version_str REGEX "^#define[ \t]+LUAJIT_VERSION[ \t]+\"LuaJIT .+\"")
+set(LUAJIT_DEFINITIONS ${PC_LUAJIT_CFLAGS_OTHER})
 
-  string(REGEX REPLACE "^#define[ \t]+LUAJIT_VERSION[ \t]+\"LuaJIT ([^\"]+)\".*" "\\1" LUAJIT_VERSION_STRING "${luajit_version_str}")
-  unset(luajit_version_str)
+find_path(LUAJIT_INCLUDE_DIR luajit.h
+          PATHS ${PC_LUAJIT_INCLUDEDIR} ${PC_LUAJIT_INCLUDE_DIRS}
+          PATH_SUFFIXES luajit-2.0 luajit-2.1)
+
+if(MSVC)
+  list(APPEND LUAJIT_NAMES lua51)
+elseif(MINGW)
+  list(APPEND LUAJIT_NAMES libluajit libluajit-5.1)
+else()
+  list(APPEND LUAJIT_NAMES luajit-5.1)
 endif()
+
+find_library(LUAJIT_LIBRARIES NAMES ${LUAJIT_NAMES}
+             PATHS ${PC_LUAJIT_LIBDIR} ${PC_LUAJIT_LIBRARIES_DIRS})
+
+set(LUAJIT_LIBRARIES ${LUAJIT_LIBRARIES})
+set(LUAJIT_INCLUDE_DIRS ${LUAJIT_INCLUDE_DIR})
 
 include(FindPackageHandleStandardArgs)
-# handle the QUIETLY and REQUIRED arguments and set LUA_FOUND to TRUE if
-# all listed variables are TRUE
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LuaJIT
-                                  REQUIRED_VARS LUA_LIBRARIES LUA_INCLUDE_DIR
-                                  VERSION_VAR LUAJIT_VERSION_STRING)
+# handle the QUIETLY and REQUIRED arguments and set LUAJIT_FOUND to TRUE
+# if all listed variables are TRUE
+find_package_handle_standard_args(LuaJit DEFAULT_MSG
+                                  LUAJIT_LIBRARIES LUAJIT_INCLUDE_DIR)
 
-mark_as_advanced(LUA_INCLUDE_DIR LUA_LIBRARIES LUA_LIBRARY LUA_MATH_LIBRARY)
+mark_as_advanced(LUAJIT_INCLUDE_DIR LUAJIT_LIBRARIES)

@@ -17,10 +17,7 @@
     "jsoncpp",
     "cryptopp",
     "libzippp",
-    {
-      "name": "luajit",
-      "platform": "windows"
-    },
+    "luajit",
     "protobuf"
   ]
 }

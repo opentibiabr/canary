@@ -2204,7 +2204,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					internalRemoveItem(item);
 					return nullptr;
 				} else if (newItemId != newId) {
-					//Replacing the the old item with the new while maintaining the old position
+					// Replacing the the old item with the new while maintaining the old position
 					Item* newItem = Item::CreateItem(newItemId, 1);
 					if (newItem == nullptr) {
 						return nullptr;
@@ -5382,6 +5382,32 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta)
 	map.getSpectators(spectators, creature->getPosition(), false, true);
 	for (Creature* spectator : spectators) {
 		spectator->getPlayer()->sendChangeSpeed(creature, creature->getStepSpeed());
+	}
+}
+
+void Game::changePlayerSpeed(Player& player, int32_t varSpeedDelta)
+{
+	int32_t varSpeed = player.getSpeed() - player.getBaseSpeed();
+	varSpeed += varSpeedDelta;
+
+	player.setSpeed(varSpeed);
+
+	// Send new player speed to the spectators
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, player.getPosition(), false, true);
+	for (Creature* creatureSpectator : spectators) {
+		if (creatureSpectator == nullptr) {
+			SPDLOG_ERROR("[Game::changePlayerSpeed] - Creature spectator is nullptr");
+			continue;
+		}
+
+		const Player *playerSpectator = creatureSpectator->getPlayer();
+		if (playerSpectator == nullptr) {
+			SPDLOG_ERROR("[Game::changePlayerSpeed] - Player spectator is nullptr");
+			continue;
+		}
+
+		playerSpectator->sendChangeSpeed(&player, player.getStepSpeed());
 	}
 }
 
@@ -8617,7 +8643,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			// commented out stuff is TODO, once we approach further in revscriptsys
 			g_actions().clear(true);
 			g_creatureEvents().clear(true);
-			g_moveEvents().clear(true);
+			g_moveEvents().clear();
 			g_talkActions().clear(true);
 			g_globalEvents().clear(true);
 			g_weapons().clear(true);
@@ -8655,11 +8681,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 		}
 	}
 	return true;
-}
-
-bool Game::itemidHasMoveevent(uint32_t itemid)
-{
-	return g_moveEvents().isRegistered(itemid);
 }
 
 bool Game::hasEffect(uint8_t effectId) {

@@ -21,6 +21,7 @@
 #define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOL_H_
 
 #include "server/network/connection/connection.h"
+#include "security/xtea.h"
 
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
@@ -71,9 +72,19 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		void enableXTEAEncryption() {
 			encryptionEnabled = true;
 		}
-		void setXTEAKey(const uint32_t* key) {
-			memcpy(this->key, key, sizeof(*key) * 4);
+		void setXTEAKey(xtea::key key) {
+			this->key = std::move(key);
 		}
+		void disableChecksum() {
+			checksumEnabled = false;
+		}
+		void enableCompact() {
+			compactCrypt = true;
+		}
+		bool isCompact() {
+			return compactCrypt;
+		}
+
 		static bool RSA_decrypt(NetworkMessage& msg);
 
 		void setRawMessages(bool value) {
@@ -91,7 +102,8 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		OutputMessage_ptr outputBuffer;
 
 		const ConnectionWeak_ptr connection;
-		uint32_t key[4] = {};
+		xtea::key key;
+		uint32_t sequenceNumber = 0;
 		bool encryptionEnabled = false;
 		bool checksumEnabled = true;
 		bool compactCrypt = false;

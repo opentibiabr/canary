@@ -22,6 +22,7 @@
 #include "server/network/protocol/protocol.h"
 #include "server/network/message/outputmessage.h"
 #include "security/rsa.h"
+#include "security/xtea.h"
 
 
 void Protocol::onSendMessage(const OutputMessage_ptr& msg)

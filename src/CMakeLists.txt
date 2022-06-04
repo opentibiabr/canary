@@ -117,23 +117,23 @@ find_package(spdlog REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
+find_package(cryptopp CONFIG REQUIRED)
 find_package(Protobuf REQUIRED)
 
 if (MSVC)
   find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
+  set(CRYPTOPP_LIBRARIES "cryptopp-static")
   find_package(CURL REQUIRED)
   find_package(jsoncpp REQUIRED)
   find_package(MySQL REQUIRED)
   find_package(PugiXML REQUIRED)
   find_package(Threads REQUIRED)
-  find_package(GMP REQUIRED)
 else()
   find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
   find_package(CURL CONFIG REQUIRED)
   find_package(jsoncpp CONFIG REQUIRED)
   find_package(pugixml CONFIG REQUIRED)
   find_package(unofficial-libmariadb CONFIG REQUIRED)
-  find_package(GMP REQUIRED)
 endif (MSVC)
 
 include(GNUInstallDirs)
@@ -269,6 +269,7 @@ target_sources(${PROJECT_NAME}
     otpch.cpp
     otserv.cpp
     security/rsa.cpp
+    security/xtea.cpp
     server/network/connection/connection.cpp
     server/network/message/networkmessage.cpp
     server/network/message/outputmessage.cpp
@@ -306,8 +307,8 @@ if (MSVC)
       ${LUA_INCLUDE_DIR}
       ${Boost_INCLUDE_DIRS}
       ${PUGIXML_INCLUDE_DIR}
+      ${CRYPTOPP_INCLUDE_DIR}
       ${CURL_INCLUDE_DIRS}
-      ${GMP_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
       ${SPDLOG_INCLUDE_DIR}
       $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>
@@ -319,9 +320,9 @@ if (MSVC)
       ${LUA_LIBRARIES}
       ${Boost_LIBRARIES}
       ${PUGIXML_LIBRARIES}
+      ${CRYPTOPP_LIBRARIES}
       ${CMAKE_THREAD_LIBS_INIT}
       ${CURL_LIBRARIES}
-      ${GMP_LIBRARIES}
       ${Protobuf_LIBRARIES}
       ${SPDLOG_LIBRARY}
       fmt::fmt
@@ -335,7 +336,6 @@ else()
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUA_INCLUDE_DIR}
-      ${GMP_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
   )
 
@@ -346,6 +346,7 @@ else()
       Boost::filesystem
       Boost::iostreams
       Boost::system
+      cryptopp-static
       CURL::libcurl
       jsoncpp_static
       unofficial::libmariadb unofficial::mariadbclient
@@ -355,7 +356,6 @@ else()
       ${LUA_LIBRARIES}
       ${Protobuf_LIBRARIES}
       libzippp::libzippp
-      ${GMP_LIBRARIES}
   )
 
 endif (MSVC)

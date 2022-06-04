@@ -139,9 +139,13 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	uint32_t key[4] = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
+	xtea::key key;
+	key[0] = msg.get<uint32_t>();
+	key[1] = msg.get<uint32_t>();
+	key[2] = msg.get<uint32_t>();
+	key[3] = msg.get<uint32_t>();
 	enableXTEAEncryption();
-	setXTEAKey(key);
+	setXTEAKey(std::move(key));
 
 	if (g_game().getGameState() == GAME_STATE_STARTUP) {
 		disconnectClient("Gameworld is starting up. Please wait.", version);

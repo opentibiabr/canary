@@ -17,36 +17,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_SECURITY_RSA_H_
-#define SRC_SECURITY_RSA_H_
+#ifndef SRC_SECURITY_XTEA_H_
+#define SRC_SECURITY_XTEA_H_
 
-#include <cryptopp/rsa.h>
+namespace xtea {
 
-#include <string>
+using key = std::array<uint32_t, 4>;
 
-class RSA2
-{
-	public:
-		RSA2() = default;
+void encrypt(uint8_t* data, size_t length, const key& k);
+void decrypt(uint8_t* data, size_t length, const key& k);
 
-		// non-copyable
-		RSA2(const RSA2&) = delete;
-		RSA2& operator=(const RSA2&) = delete;
+} // namespace xtea
 
-		static RSA2& getInstance() {
-			// Guaranteed to be destroyed
-			static RSA2 instance;
-			// Instantiated on first use
-			return instance;
-		}
-
-		void loadPEM(const std::string& filename);
-		void decrypt(uint8_t* msg) const;
-
-	private:
-		CryptoPP::RSA::PrivateKey pk;
-};
-
-constexpr auto g_RSA = &RSA2::getInstance;
-
-#endif  // SRC_SECURITY_RSA_H_
+#endif  // SRC_SECURITY_XTEA_H_

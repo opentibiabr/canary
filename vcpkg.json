@@ -15,17 +15,10 @@
     "spdlog",
     "curl",
     "jsoncpp",
+    "cryptopp",
     "libzippp",
     {
       "name": "luajit",
-      "platform": "windows"
-    },
-    {
-      "name": "gmp",
-      "platform": "linux"
-    },
-    {
-      "name": "mpir",
       "platform": "windows"
     },
     "protobuf"

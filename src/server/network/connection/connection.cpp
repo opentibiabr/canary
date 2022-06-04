@@ -101,7 +101,7 @@ void Connection::closeSocket()
 			boost::system::error_code error;
 			socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, error);
 			socket.close(error);
-		} catch (boost::system::system_error& e) {
+		} catch (const boost::system::system_error& e) {
 			SPDLOG_ERROR("[Connection::closeSocket] - error: {}", e.what());
 		}
 	}
@@ -135,7 +135,7 @@ void Connection::accept(bool toggleParseHeader /* = true */)
 									boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH),
 									std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
 		}
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::accept] - error: {}", e.what());
 		close(FORCE_CLOSE);
 	}
@@ -154,9 +154,10 @@ void Connection::parseProxyIdentification(const boost::system::error_code& error
 	}
 
 	uint8_t* msgBuffer = msg.getBuffer();
+	auto charData = static_cast<char*>(static_cast<void*>(msgBuffer));
 	std::string serverName = g_configManager().getString(SERVER_NAME) + "\n";
 	if (connectionState == CONNECTION_STATE_IDENTIFYING) {
-		if (msgBuffer[1] == 0x00 || strncasecmp(reinterpret_cast<char*>(msgBuffer), &serverName[0], 2) != 0) {
+		if (msgBuffer[1] == 0x00 || strncasecmp(charData, &serverName[0], 2) != 0) {
 			//Probably not proxy identification so let's try standard parsing method
 			connectionState = CONNECTION_STATE_OPEN;
 			parseHeader(error);
@@ -174,7 +175,7 @@ void Connection::parseProxyIdentification(const boost::system::error_code& error
 											boost::asio::buffer(msg.getBuffer(), remainder),
 											std::bind(&Connection::parseProxyIdentification, shared_from_this(), std::placeholders::_1));
 				}
-				catch (boost::system::system_error& e) {
+				catch (const boost::system::system_error& e) {
 					SPDLOG_ERROR("Connection::parseProxyIdentification] - error: {}", e.what());
 					close(FORCE_CLOSE);
 				}
@@ -185,7 +186,7 @@ void Connection::parseProxyIdentification(const boost::system::error_code& error
 		}
 	} else if (connectionState == CONNECTION_STATE_READINGS) {
 		size_t remainder = serverName.length() - 2;
-		if (strncasecmp(reinterpret_cast<char*>(msgBuffer), &serverName[2], remainder) == 0) {
+		if (strncasecmp(charData, &serverName[2], remainder) == 0) {
 			connectionState = CONNECTION_STATE_OPEN;
 		} else {
 			SPDLOG_ERROR("Connection::parseProxyIdentification] Invalid Client Login! Server Name mismatch!");
@@ -236,7 +237,7 @@ void Connection::parseHeader(const boost::system::error_code& error)
 		boost::asio::async_read(socket,
 								boost::asio::buffer(msg.getBodyBuffer(), size),
 		                        std::bind(&Connection::parsePacket, shared_from_this(), std::placeholders::_1));
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::parseHeader] - error: {}", e.what());
 		close(FORCE_CLOSE);
 	}
@@ -262,8 +263,9 @@ void Connection::parsePacket(const boost::system::error_code& error)
 		if (!protocol) {
 			//Check packet checksum
 			uint32_t checksum;
-			int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
-			if (len > 0) {
+			if (int32_t len = msg.getLength() - msg.getBufferPosition() - CHECKSUM_LENGTH;
+			len > 0)
+			{
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition() + CHECKSUM_LENGTH, len);
 			} else {
 				checksum = 0;
@@ -303,7 +305,7 @@ void Connection::parsePacket(const boost::system::error_code& error)
 			// Wait to the next packet
 			boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
 		}
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::parsePacket] - error: {}", e.what());
 		close(FORCE_CLOSE);
 	}
@@ -316,7 +318,7 @@ void Connection::resumeWork()
 	try {
 		// Wait to the next packet
 		boost::asio::async_read(socket, boost::asio::buffer(msg.getBuffer(), HEADER_LENGTH), std::bind(&Connection::parseHeader, shared_from_this(), std::placeholders::_1));
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::resumeWork] - error: {}", e.what());
 		close(FORCE_CLOSE);
 	}
@@ -339,7 +341,7 @@ void Connection::send(const OutputMessage_ptr& outputMessage)
 			#else
 			socket.get_io_service().post(std::bind(&Connection::internalWorker, shared_from_this()));
 			#endif
-		} catch (boost::system::system_error& e) {
+		} catch (const boost::system::system_error& e) {
 			SPDLOG_ERROR("[Connection::send] - error: {}", e.what());
 			messageQueue.clear();
 			close(FORCE_CLOSE);
@@ -384,7 +386,7 @@ void Connection::internalSend(const OutputMessage_ptr& outputMessage)
 		boost::asio::async_write(socket,
 		                         boost::asio::buffer(outputMessage->getOutputBuffer(), outputMessage->getLength()),
 		                         std::bind(&Connection::onWriteOperation, shared_from_this(), std::placeholders::_1));
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_ERROR("[Connection::internalSend] - error: {}", e.what());
 	}
 }

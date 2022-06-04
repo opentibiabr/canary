@@ -105,7 +105,7 @@ void loadModules() {
 	try {
 		if (!g_RSA().loadPEM("key.pem")) {
 			// file doesn't exist - switch to base10-hardcoded keys
-			SPDLOG_ERROR("File key.pem doesn't exist - loading standard rsa key\n");
+			SPDLOG_ERROR("File key.pem not found or have problem on loading... Setting standard rsa key\n");
 			g_RSA().setKey(p, q);
 		}
 	} catch (std::system_error const& e) {

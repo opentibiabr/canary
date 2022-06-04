@@ -101,7 +101,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		uint32_t key[4] = {};
 		uint32_t serverSequenceNumber = 0;
 		uint32_t clientSequenceNumber = 0;
-		std::underlying_type<ChecksumMethods_t>::type checksumMethod = CHECKSUM_METHOD_NONE;
+		std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 		bool encryptionEnabled = false;
 		bool rawMessages = false;
 		bool compreesionEnabled = false;

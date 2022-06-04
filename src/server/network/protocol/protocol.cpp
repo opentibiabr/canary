@@ -96,8 +96,9 @@ bool Protocol::onRecvMessage(NetworkMessage& msg)
 			}
 		} else {
 			uint32_t checksum;
-			int32_t len = msg.getLength() - msg.getBufferPosition();
-			if (len > 0) {
+			if (int32_t len = msg.getLength() - msg.getBufferPosition();
+			len > 0)
+			{
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
 			} else {
 				checksum = 0;
@@ -136,7 +137,7 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	}
 
 	uint8_t* buffer = msg.getOutputBuffer();
-	int32_t messageLength = static_cast<int32_t>(msg.getLength());
+	auto messageLength = static_cast<int32_t>(msg.getLength());
 	int32_t readPos = 0;
 	const uint32_t k[] = {key[0], key[1], key[2], key[3]};
 	uint32_t precachedControlSum[32][2];
@@ -168,7 +169,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	const uint32_t delta = 0x61C88647;
 
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	int32_t messageLength = static_cast<int32_t>(msgLength);
+	auto messageLength = static_cast<int32_t>(msgLength);
 	int32_t readPos = 0;
 	const uint32_t k[] = {key[0], key[1], key[2], key[3]};
 	uint32_t precachedControlSum[32][2];
@@ -204,7 +205,9 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 		return false;
 	}
 
-	g_RSA().decrypt(reinterpret_cast<char*>(msg.getBuffer()) + msg.getBufferPosition()); //does not break strict aliasing
+	auto charData = static_cast<char*>(static_cast<void*>(msg.getBuffer()));
+	// Does not break strict aliasing
+	g_RSA().decrypt(charData + msg.getBufferPosition());
 	return (msg.getByte() == 0);
 }
 
@@ -246,8 +249,9 @@ bool Protocol::compression(OutputMessage& msg) const
 	defStream->next_out = defBuffer;
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
-	int32_t ret = deflate(defStream.get(), Z_FINISH);
-	if (ret != Z_OK && ret != Z_STREAM_END) {
+	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
+	ret != Z_OK && ret != Z_STREAM_END)
+	{
 		return false;
 	}
 	auto totalSize = static_cast<uint32_t>(defStream->total_out);
@@ -257,6 +261,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	}
 
 	msg.reset();
-	msg.addBytes(reinterpret_cast<const char*>(defBuffer), static_cast<size_t>(totalSize));
+	auto charData = static_cast<char*>(static_cast<void*>(defBuffer));
+	msg.addBytes(charData, static_cast<size_t>(totalSize));
 	return true;
 }

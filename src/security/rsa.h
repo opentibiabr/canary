@@ -46,10 +46,13 @@ class RSA
 		void decrypt(char* msg) const;
 
 		std::string base64Decrypt(const std::string& input) const;
+		uint16_t decodeLength(char*& pos) const;
+		void readHexString(char*& pos, uint16_t length, std::string& output) const;
 		bool loadPEM(const std::string& filename);
 
 	private:
-		mpz_t n, d;
+		mpz_t n;
+		mpz_t d;
 };
 
 constexpr auto g_RSA = &RSA::getInstance;

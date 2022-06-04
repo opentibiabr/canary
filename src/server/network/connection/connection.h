@@ -122,7 +122,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		time_t timeConnected;
 		uint32_t packetsSent = 0;
 
-		std::underlying_type<ConnectionState_t>::type connectionState = CONNECTION_STATE_OPEN;
+		std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
 		bool receivedFirst = false;
 
 		friend class ServicePort;

@@ -72,7 +72,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 			encryptionEnabled = true;
 		}
 		void setXTEAKey(const uint32_t* newKey) {
-			memcpy(this->key, newKey, sizeof(*newKey) * 4);
+			memcpy(this->key.data(), newKey, sizeof(*newKey) * 4);
 		}
 		void setChecksumMethod(ChecksumMethods_t method) {
 			checksumMethod = method;
@@ -98,7 +98,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		std::unique_ptr<z_stream> defStream;
 
 		const ConnectionWeak_ptr connection;
-		uint32_t key[4] = {};
+		std::array<uint32_t, 4> key = {};
 		uint32_t serverSequenceNumber = 0;
 		uint32_t clientSequenceNumber = 0;
 		std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;

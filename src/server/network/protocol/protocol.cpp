@@ -85,7 +85,8 @@ bool Protocol::onRecvMessage(NetworkMessage& msg)
 				return false;
 			}
 
-			uint32_t checksum = ++clientSequenceNumber;
+			uint32_t checksum;
+			checksum = ++clientSequenceNumber;
 			if (clientSequenceNumber >= 0x7FFFFFFF) {
 				clientSequenceNumber = 0;
 			}
@@ -139,22 +140,23 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	uint8_t* buffer = msg.getOutputBuffer();
 	auto messageLength = static_cast<int32_t>(msg.getLength());
 	int32_t readPos = 0;
-	const uint32_t k[] = {key[0], key[1], key[2], key[3]};
+	const std::array<uint32_t, 4> newKey = {key[0], key[1], key[2], key[3]};
+	// TODO: refactor this for not use c-style
 	uint32_t precachedControlSum[32][2];
 	uint32_t sum = 0;
 	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + k[sum & 3]);
+		precachedControlSum[i][0] = (sum + newKey[sum & 3]);
 		sum -= delta;
-		precachedControlSum[i][1] = (sum + k[(sum >> 11) & 3]);
+		precachedControlSum[i][1] = (sum + newKey[(sum >> 11) & 3]);
 	}
 	while (readPos < messageLength) {
-		uint32_t vData[2];
-		memcpy(vData, buffer + readPos, 8);
+		std::array<uint32_t, 2> vData = {};
+		memcpy(vData.data(), buffer + readPos, 8);
 		for (int32_t i = 0; i < 32; ++i) {
 			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][0];
 			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][1];
 		}
-		memcpy(buffer + readPos, vData, 8);
+		memcpy(buffer + readPos, vData.data(), 8);
 		readPos += 8;
 	}
 }
@@ -171,22 +173,23 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	auto messageLength = static_cast<int32_t>(msgLength);
 	int32_t readPos = 0;
-	const uint32_t k[] = {key[0], key[1], key[2], key[3]};
+	const std::array<uint32_t, 4> newKey = {key[0], key[1], key[2], key[3]};
+	// TODO: refactor this for not use c-style
 	uint32_t precachedControlSum[32][2];
 	uint32_t sum = 0xC6EF3720;
 	for (int32_t i = 0; i < 32; ++i) {
-		precachedControlSum[i][0] = (sum + k[(sum >> 11) & 3]);
+		precachedControlSum[i][0] = (sum + newKey[(sum >> 11) & 3]);
 		sum += delta;
-		precachedControlSum[i][1] = (sum + k[sum & 3]);
+		precachedControlSum[i][1] = (sum + newKey[sum & 3]);
 	}
 	while (readPos < messageLength) {
-		uint32_t vData[2];
-		memcpy(vData, buffer + readPos, 8);
+		std::array<uint32_t, 2> vData = {};
+		memcpy(vData.data(), buffer + readPos, 8);
 		for (int32_t i = 0; i < 32; ++i) {
 			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][0];
 			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][1];
 		}
-		memcpy(buffer + readPos, vData, 8);
+		memcpy(buffer + readPos, vData.data(), 8);
 		readPos += 8;
 	}
 
@@ -243,10 +246,10 @@ void Protocol::enableCompression()
 
 bool Protocol::compression(OutputMessage& msg) const
 {
-	static thread_local uint8_t defBuffer[NETWORKMESSAGE_MAXSIZE];
+	static thread_local std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> defBuffer;
 	defStream->next_in = msg.getOutputBuffer();
 	defStream->avail_in = msg.getLength();
-	defStream->next_out = defBuffer;
+	defStream->next_out = defBuffer.data();
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
 	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
@@ -261,7 +264,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	}
 
 	msg.reset();
-	auto charData = static_cast<char*>(static_cast<void*>(defBuffer));
+	auto charData = static_cast<char*>(static_cast<void*>(defBuffer.data()));
 	msg.addBytes(charData, static_cast<size_t>(totalSize));
 	return true;
 }

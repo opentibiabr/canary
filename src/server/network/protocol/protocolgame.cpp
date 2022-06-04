@@ -454,9 +454,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	uint32_t key[4] = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
+	std::array<uint32_t, 4> key = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
-	setXTEAKey(key);
+	setXTEAKey(key.data());
 
 	msg.skipBytes(1); // gamemaster flag
 

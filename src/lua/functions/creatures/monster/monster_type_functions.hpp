@@ -81,6 +81,8 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 				registerMethod(L, "MonsterType", "getDefenseList", MonsterTypeFunctions::luaMonsterTypeGetDefenseList);
 				registerMethod(L, "MonsterType", "addDefense", MonsterTypeFunctions::luaMonsterTypeAddDefense);
 
+				registerMethod(L, "MonsterType", "getTypeName", MonsterTypeFunctions::luaMonsterTypeGetTypeName);
+
 				registerMethod(L, "MonsterType", "getElementList", MonsterTypeFunctions::luaMonsterTypeGetElementList);
 				registerMethod(L, "MonsterType", "addElement", MonsterTypeFunctions::luaMonsterTypeAddElement);
 
@@ -200,6 +202,8 @@ class MonsterTypeFunctions final : LuaScriptInterface {
 
 		static int luaMonsterTypeGetDefenseList(lua_State* L);
 		static int luaMonsterTypeAddDefense(lua_State* L);
+
+		static int luaMonsterTypeGetTypeName(lua_State* L);
 
 		static int luaMonsterTypeGetElementList(lua_State* L);
 		static int luaMonsterTypeAddElement(lua_State* L);

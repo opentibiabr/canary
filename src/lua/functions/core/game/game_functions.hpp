@@ -32,10 +32,6 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 				registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);
 
-				registerMethod(L, "Game", "getEventSLoot", GameFunctions::luaGamegetEventSLoot);
-				registerMethod(L, "Game", "getEventSSkill", GameFunctions::luaGamegetEventSSkill);
-				registerMethod(L, "Game", "getEventSExp", GameFunctions::luaGamegetEventSExp);
-
 				registerMethod(L, "Game", "getSpectators", GameFunctions::luaGameGetSpectators);
 
 				registerMethod(L, "Game", "getBoostedCreature", GameFunctions::luaGameGetBoostedCreature);
@@ -78,7 +74,6 @@ class GameFunctions final : LuaScriptInterface {
 
 				registerMethod(L, "Game", "reload", GameFunctions::luaGameReload);
 
-				registerMethod(L, "Game", "itemidHasMoveevent", GameFunctions::luaGameItemidHasMoveevent);
 				registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
 				registerMethod(L, "Game", "hasEffect", GameFunctions::luaGameHasEffect);
 				registerMethod(L, "Game", "getOfflinePlayer", GameFunctions::luaGameGetOfflinePlayer);
@@ -87,10 +82,6 @@ class GameFunctions final : LuaScriptInterface {
 	private:
 			static int luaGameCreateMonsterType(lua_State* L);
 			static int luaGameCreateNpcType(lua_State* L);
-
-			static int luaGamegetEventSLoot(lua_State* L);
-			static int luaGamegetEventSSkill(lua_State* L);
-			static int luaGamegetEventSExp(lua_State* L);
 
 			static int luaGameGetSpectators(lua_State* L);
 
@@ -135,7 +126,6 @@ class GameFunctions final : LuaScriptInterface {
 			static int luaGameReload(lua_State* L);
 
 			static int luaGameGetOfflinePlayer(lua_State* L);
-			static int luaGameItemidHasMoveevent(lua_State* L);
 			static int luaGameHasEffect(lua_State* L);
 			static int luaGameHasDistanceEffect(lua_State* L);
 };

@@ -1,16 +1,21 @@
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_EARTH)
-
-function onCreateMagicWall(creature, tile)
-	local item = Game.createItem(Game.getWorldType() == WORLD_TYPE_NO_PVP and ITEM_WILDGROWTH_SAFE or ITEM_WILDGROWTH, 1, tile)
-	item:setAttribute(ITEM_ATTRIBUTE_DURATION, math.random(38000, 45000))
+function onCreateWildGrowth(creature, tile)
+	local wildGrowth
+	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
+		wildGrowth = ITEM_WILDGROWTH_SAFE
+	else
+		wildGrowth = ITEM_WILDGROWTH
+	end
+	local item = Game.createItem(wildGrowth, 1, tile)
+	item:setDuration(30, 60)
 end
 
-combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onCreateMagicWall")
+local combat = Combat()
+combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
+combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onCreateWildGrowth")
 
 local spell = Spell("rune")
 function spell.onCastSpell(creature, variant, isHotkey)
-    return combat:execute(creature, variant)
+	return combat:execute(creature, variant)
 end
 
 spell:name("Wild Growth Rune")

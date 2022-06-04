@@ -759,13 +759,13 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 	if (reloading) {
 		auto it = monsters.find(asLowerCaseString(monsterName));
 		if (it != monsters.end()) {
-			mType = &it->second;
+			mType = it->second;
 			mType->info = {};
 		}
 	}
 
 	if (!mType) {
-		mType = &monsters[asLowerCaseString(monsterName)];
+		mType = monsters[asLowerCaseString(monsterName)];
 	}
 
 	mType->name = attr.as_string();
@@ -1452,17 +1452,15 @@ void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
 MonsterType* Monsters::getMonsterType(const std::string& name)
 {
 	std::string lowerCaseName = asLowerCaseString(name);
-
-	auto it = monsters.find(lowerCaseName);
-	if (it == monsters.end()) {
-		auto it2 = unloadedMonsters.find(lowerCaseName);
-		if (it2 == unloadedMonsters.end()) {
-			return nullptr;
-		}
-
-		return loadMonster(it2->second, name);
+	if (auto it = monsters.find(lowerCaseName);
+	it != monsters.end()
+	// We will only return the MonsterType if it match the exact name of the monster
+	&& it->first.find(lowerCaseName) != it->first.npos)
+	{
+		return it->second;
 	}
-	return &it->second;
+	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	return nullptr;
 }
 
 MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
@@ -1477,8 +1475,6 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
 
 void Monsters::addMonsterType(const std::string& name, MonsterType* mType)
 {
-	// Suppress [-Werror=unused-but-set-parameter]
-	// https://stackoverflow.com/questions/1486904/how-do-i-best-silence-a-warning-about-unused-variables
-	(void) mType;
-	mType = &monsters[asLowerCaseString(name)];
+	std::string lowerName = asLowerCaseString(name);
+	monsters[lowerName] = mType;
 }

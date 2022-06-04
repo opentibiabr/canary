@@ -1562,11 +1562,11 @@ void AreaCombat::setupExtArea(const std::list<uint32_t>& list, uint32_t rows)
 
 //**********************************************************//
 
-void MagicField::onStepInField(Creature* creature)
+void MagicField::onStepInField(Creature& creature)
 {
 	//remove magic walls/wild growth
 	if (id == ITEM_MAGICWALL || id == ITEM_WILDGROWTH || id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE || isBlocking()) {
-		if (!creature->isInGhostMode()) {
+		if (!creature.isInGhostMode()) {
 			g_game().internalRemoveItem(this, 1);
 		}
 
@@ -1589,7 +1589,7 @@ void MagicField::onStepInField(Creature* creature)
 				}
 			}
 
-			Player* targetPlayer = creature->getPlayer();
+			Player* targetPlayer = creature.getPlayer();
 			if (targetPlayer) {
 				const Player* attackerPlayer = g_game().getPlayerByID(ownerId);
 				if (attackerPlayer) {
@@ -1599,11 +1599,11 @@ void MagicField::onStepInField(Creature* creature)
 				}
 			}
 
-			if (!harmfulField || (OTSYS_TIME() - createTime <= 5000) || creature->hasBeenAttacked(ownerId)) {
+			if (!harmfulField || (OTSYS_TIME() - createTime <= 5000) || creature.hasBeenAttacked(ownerId)) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, ownerId);
 			}
 		}
 
-		creature->addCondition(conditionCopy);
+		creature.addCondition(conditionCopy);
 	}
 }

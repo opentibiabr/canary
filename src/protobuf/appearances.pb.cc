@@ -923,8 +923,8 @@ const char descriptor_table_protodef_appearances_2eproto[] PROTOBUF_SECTION_VARI
   "earance\022\n\n\002id\030\001 \001(\r\022<\n\013frame_group\030\002 \003(\013"
   "2\'.Canary.protobuf.appearances.FrameGrou"
   "p\022;\n\005flags\030\003 \001(\0132,.Canary.protobuf.appea"
-  "rances.AppearanceFlags\022\014\n\004name\030\004 \001(\t\022\023\n\013"
-  "description\030\005 \001(\t\"\335\r\n\017AppearanceFlags\022=\n"
+  "rances.AppearanceFlags\022\014\n\004name\030\004 \001(\014\022\023\n\013"
+  "description\030\005 \001(\014\"\335\r\n\017AppearanceFlags\022=\n"
   "\004bank\030\001 \001(\0132/.Canary.protobuf.appearance"
   "s.AppearanceFlagBank\022\014\n\004clip\030\002 \001(\010\022\016\n\006bo"
   "ttom\030\003 \001(\010\022\013\n\003top\030\004 \001(\010\022\021\n\tcontainer\030\005 \001"
@@ -987,11 +987,11 @@ const char descriptor_table_protodef_appearances_2eproto[] PROTOBUF_SECTION_VARI
   "ect_id\030\003 \001(\r\022N\n\026restrict_to_profession\030\005"
   " \003(\0162..Canary.protobuf.appearances.PLAYE"
   "R_PROFESSION\022\025\n\rminimum_level\030\006 \001(\r\"\245\001\n\021"
-  "AppearanceFlagNPC\022\014\n\004name\030\001 \001(\t\022\020\n\010locat"
-  "ion\030\002 \001(\t\022\022\n\nsale_price\030\003 \001(\r\022\021\n\tbuy_pri"
+  "AppearanceFlagNPC\022\014\n\004name\030\001 \001(\014\022\020\n\010locat"
+  "ion\030\002 \001(\014\022\022\n\nsale_price\030\003 \001(\r\022\021\n\tbuy_pri"
   "ce\030\004 \001(\r\022\037\n\027currency_object_type_id\030\005 \001("
   "\r\022(\n currency_quest_flag_display_name\030\006 "
-  "\001(\t\"&\n\025AppearanceFlagAutomap\022\r\n\005color\030\001 "
+  "\001(\014\"&\n\025AppearanceFlagAutomap\022\r\n\005color\030\001 "
   "\001(\r\"O\n\022AppearanceFlagHook\0229\n\tdirection\030\001"
   " \001(\0162&.Canary.protobuf.appearances.HOOK_"
   "TYPE\"$\n\026AppearanceFlagLenshelp\022\n\n\002id\030\001 \001"
@@ -3565,26 +3565,20 @@ const char* Appearance::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         } else
           goto handle_unusual;
         continue;
-      // optional string name = 4;
+      // optional bytes name = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 34)) {
           auto str = _internal_mutable_name();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          #ifndef NDEBUG
-          ::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Canary.protobuf.appearances.Appearance.name");
-          #endif  // !NDEBUG
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional string description = 5;
+      // optional bytes description = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 42)) {
           auto str = _internal_mutable_description();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          #ifndef NDEBUG
-          ::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Canary.protobuf.appearances.Appearance.description");
-          #endif  // !NDEBUG
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -3642,23 +3636,15 @@ uint8_t* Appearance::_InternalSerialize(
         3, _Internal::flags(this), target, stream);
   }
 
-  // optional string name = 4;
+  // optional bytes name = 4;
   if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "Canary.protobuf.appearances.Appearance.name");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         4, this->_internal_name(), target);
   }
 
-  // optional string description = 5;
+  // optional bytes description = 5;
   if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_description().data(), static_cast<int>(this->_internal_description().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "Canary.protobuf.appearances.Appearance.description");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         5, this->_internal_description(), target);
   }
 
@@ -3687,17 +3673,17 @@ size_t Appearance::ByteSizeLong() const {
 
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x0000000fu) {
-    // optional string name = 4;
+    // optional bytes name = 4;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
           this->_internal_name());
     }
 
-    // optional string description = 5;
+    // optional bytes description = 5;
     if (cached_has_bits & 0x00000002u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
           this->_internal_description());
     }
 
@@ -7864,26 +7850,20 @@ const char* AppearanceFlagNPC::_InternalParse(const char* ptr, ::PROTOBUF_NAMESP
     uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // optional string name = 1;
+      // optional bytes name = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           auto str = _internal_mutable_name();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          #ifndef NDEBUG
-          ::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Canary.protobuf.appearances.AppearanceFlagNPC.name");
-          #endif  // !NDEBUG
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // optional string location = 2;
+      // optional bytes location = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           auto str = _internal_mutable_location();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          #ifndef NDEBUG
-          ::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Canary.protobuf.appearances.AppearanceFlagNPC.location");
-          #endif  // !NDEBUG
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -7915,14 +7895,11 @@ const char* AppearanceFlagNPC::_InternalParse(const char* ptr, ::PROTOBUF_NAMESP
         } else
           goto handle_unusual;
         continue;
-      // optional string currency_quest_flag_display_name = 6;
+      // optional bytes currency_quest_flag_display_name = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 50)) {
           auto str = _internal_mutable_currency_quest_flag_display_name();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          #ifndef NDEBUG
-          ::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "Canary.protobuf.appearances.AppearanceFlagNPC.currency_quest_flag_display_name");
-          #endif  // !NDEBUG
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -7958,23 +7935,15 @@ uint8_t* AppearanceFlagNPC::_InternalSerialize(
   (void) cached_has_bits;
 
   cached_has_bits = _has_bits_[0];
-  // optional string name = 1;
+  // optional bytes name = 1;
   if (cached_has_bits & 0x00000001u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_name().data(), static_cast<int>(this->_internal_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "Canary.protobuf.appearances.AppearanceFlagNPC.name");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         1, this->_internal_name(), target);
   }
 
-  // optional string location = 2;
+  // optional bytes location = 2;
   if (cached_has_bits & 0x00000002u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_location().data(), static_cast<int>(this->_internal_location().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "Canary.protobuf.appearances.AppearanceFlagNPC.location");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         2, this->_internal_location(), target);
   }
 
@@ -7996,13 +7965,9 @@ uint8_t* AppearanceFlagNPC::_InternalSerialize(
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_currency_object_type_id(), target);
   }
 
-  // optional string currency_quest_flag_display_name = 6;
+  // optional bytes currency_quest_flag_display_name = 6;
   if (cached_has_bits & 0x00000004u) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->_internal_currency_quest_flag_display_name().data(), static_cast<int>(this->_internal_currency_quest_flag_display_name().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::SERIALIZE,
-      "Canary.protobuf.appearances.AppearanceFlagNPC.currency_quest_flag_display_name");
-    target = stream->WriteStringMaybeAliased(
+    target = stream->WriteBytesMaybeAliased(
         6, this->_internal_currency_quest_flag_display_name(), target);
   }
 
@@ -8024,24 +7989,24 @@ size_t AppearanceFlagNPC::ByteSizeLong() const {
 
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x0000003fu) {
-    // optional string name = 1;
+    // optional bytes name = 1;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
           this->_internal_name());
     }
 
-    // optional string location = 2;
+    // optional bytes location = 2;
     if (cached_has_bits & 0x00000002u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
           this->_internal_location());
     }
 
-    // optional string currency_quest_flag_display_name = 6;
+    // optional bytes currency_quest_flag_display_name = 6;
     if (cached_has_bits & 0x00000004u) {
       total_size += 1 +
-        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
           this->_internal_currency_quest_flag_display_name());
     }
 

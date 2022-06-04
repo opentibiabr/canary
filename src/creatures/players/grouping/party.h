@@ -66,7 +66,7 @@ class Party
 		}
 		bool canOpenCorpse(uint32_t ownerId) const;
 
-		void shareExperience(uint64_t experience, Creature* source = nullptr);
+		void shareExperience(uint64_t experience, Creature* target = nullptr);
 		bool setSharedExperience(Player* player, bool sharedExpActive);
 		bool isSharedExperienceActive() const {
 			return sharedExpActive;

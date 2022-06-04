@@ -44,7 +44,7 @@ function music.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		if instrument.monster and chance then
 			local monster = Game.createMonster(instrument.monster, player:getPosition(), true)
 			if monster then
-				player:addSummon(monster)
+				player:setSummon(monster)
 			end
 		elseif instrument.itemId and chance then
 			player:addItem(instrument.itemId, instrument.itemCount)

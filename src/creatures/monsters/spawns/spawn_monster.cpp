@@ -23,6 +23,7 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/events_scheduler.hpp"
 
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
@@ -46,7 +47,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	this->filemonstername = filemonstername;
 	loaded = true;
 
-	uint32_t eventschedule = g_game().getSpawnMonsterSchedule();
+	uint32_t eventschedule = g_eventsScheduler().getSpawnMonsterSchedule();
 	std::string boostedNameGet = g_game().getBoostedMonsterName();
 
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
@@ -94,20 +95,18 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 					centerPos.z
 				);
 
-				int32_t boostedrate;
+				int32_t boostedrate = 1;
 				
 				if (nameAttribute.value() == boostedNameGet) {
 					boostedrate = 2;
-				} else {
-					boostedrate = 1;
 				}
 
-				uint32_t interval = pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value()) * 100000 / (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule);
+				uint32_t interval = pugi::cast<uint32_t>(childMonsterNode.attribute("spawntime").value()) * 1000 * 100 / std::max((uint32_t)1, (g_configManager().getNumber(RATE_SPAWN) * boostedrate * eventschedule));
 				if (interval >= MONSTER_MINSPAWN_INTERVAL && interval <= MONSTER_MAXSPAWN_INTERVAL) {
 					spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
 				} else {
 					if (interval <= MONSTER_MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000);
+						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime cannot be less than {} seconds, set to {} by default.", nameAttribute.as_string(), pos.toString(), MONSTER_MINSPAWN_INTERVAL / 1000, MONSTER_MINSPAWN_INTERVAL / 1000); spawnMonster.addMonster(nameAttribute.as_string(), pos, dir, MONSTER_MINSPAWN_INTERVAL);
 					} else {
 						SPDLOG_WARN("[SpawnsMonster::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MONSTER_MAXSPAWN_INTERVAL / 1000);
 					}

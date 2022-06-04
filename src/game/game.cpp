@@ -164,92 +164,6 @@ void Game::setWorldType(WorldType_t type)
 	worldType = type;
 }
 
-bool Game::loadScheduleEventFromXml()
-{
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/events.xml");
-	if (!result) {
-		printXMLError("Error - Game::loadScheduleEventFromXml", "data/XML/events.xml", result);
-		return false;
-	}
-
-		int16_t daysNow;
-		time_t t = time(NULL);
-		tm* timePtr = localtime(&t);
-		int16_t daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
-
-	for (auto schedNode : doc.child("events").children()) {
-		std::string ss_d;
-		std::stringstream ss;
-
-		pugi::xml_attribute attr;
-		if ((attr = schedNode.attribute("name"))) {
-			ss_d = attr.as_string();
-			ss << "> " << ss_d << " event";
-		}
-
-		int year;
-		int day;
-		int month;
-
-		if (!(attr = schedNode.attribute("enddate"))) {
-			continue;
-		} else {
-			ss_d = attr.as_string();
-			sscanf(ss_d.c_str(), "%d/%d/%d", &month, &day, &year);
-			daysNow = ((year * 365) + (month * 30) + day);
-			if (daysMath > daysNow) {
-				continue;
-			}
-		}
-
-		if (!(attr = schedNode.attribute("startdate"))) {
-			continue;
-		} else {
-			ss_d = attr.as_string();
-			sscanf(ss_d.c_str(), "%d/%d/%d", &month, &day, &year);
-			daysNow = ((year * 365) + (month * 30) + day);
-			if (daysMath < daysNow) {
-				continue;
-			}
-		}
-
-		if ((attr = schedNode.attribute("script")) && !(g_scripts().loadEventSchedulerScripts(attr.as_string()))) {
-			SPDLOG_WARN("Can not load the file '{}' on '/events/scripts/scheduler/'",
-			attr.as_string());
-			return false;
-		}
-
-		for (auto schedENode : schedNode.children()) {
-			if ((schedENode.attribute("exprate"))) {
-				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
-				g_game().setExpSchedule(exprate);
-				ss << " exp: " << (exprate - 100) << "%";
-			}
-
-			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
-				g_game().setLootSchedule(lootrate);
-				ss << ", loot: " << (lootrate - 100) << "%";
-			}
-
-			if ((schedENode.attribute("spawnrate"))) {
-				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
-				g_game().setSpawnMonsterSchedule(spawnrate);
-				ss << ", spawn: "  << (spawnrate - 100) << "%";
-			}
-
-			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
-				g_game().setSkillSchedule(skillrate);
-				ss << ", skill: " << (skillrate - 100) << "%";
-			}
-		}
-		SPDLOG_INFO(ss.str());
-	}
-	return true;
-}
-
 void Game::setGameState(GameState_t newState)
 {
 	if (gameState == GAME_STATE_SHUTDOWN) {
@@ -2290,7 +2204,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 					internalRemoveItem(item);
 					return nullptr;
 				} else if (newItemId != newId) {
-					//Replacing the the old item with the new while maintaining the old position
+					// Replacing the the old item with the new while maintaining the old position
 					Item* newItem = Item::CreateItem(newItemId, 1);
 					if (newItem == nullptr) {
 						return nullptr;
@@ -5471,6 +5385,32 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta)
 	}
 }
 
+void Game::changePlayerSpeed(Player& player, int32_t varSpeedDelta)
+{
+	int32_t varSpeed = player.getSpeed() - player.getBaseSpeed();
+	varSpeed += varSpeedDelta;
+
+	player.setSpeed(varSpeed);
+
+	// Send new player speed to the spectators
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, player.getPosition(), false, true);
+	for (Creature* creatureSpectator : spectators) {
+		if (creatureSpectator == nullptr) {
+			SPDLOG_ERROR("[Game::changePlayerSpeed] - Creature spectator is nullptr");
+			continue;
+		}
+
+		const Player *playerSpectator = creatureSpectator->getPlayer();
+		if (playerSpectator == nullptr) {
+			SPDLOG_ERROR("[Game::changePlayerSpeed] - Player spectator is nullptr");
+			continue;
+		}
+
+		playerSpectator->sendChangeSpeed(&player, player.getStepSpeed());
+	}
+}
+
 void Game::internalCreatureChangeOutfit(Creature* creature, const Outfit_t& outfit)
 {
 	if (!g_events().eventCreatureOnChangeOutfit(creature, outfit)) {
@@ -5518,6 +5458,19 @@ void Game::updateCreatureIcon(const Creature* creature)
 	map.getSpectators(spectators, creature->getPosition(), true, true);
 	for (Creature* spectator : spectators) {
 		spectator->getPlayer()->sendCreatureIcon(creature);
+	}
+}
+
+void Game::reloadCreature(const Creature* creature)
+{
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, creature->getPosition(), false, true);
+	for (Creature* spectator : spectators) {
+		Player* tmpPlayer = spectator->getPlayer();
+		if (!tmpPlayer) {
+			continue;
+		}
+		tmpPlayer->reloadCreature(creature);
 	}
 }
 
@@ -8690,7 +8643,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			// commented out stuff is TODO, once we approach further in revscriptsys
 			g_actions().clear(true);
 			g_creatureEvents().clear(true);
-			g_moveEvents().clear(true);
+			g_moveEvents().clear();
 			g_talkActions().clear(true);
 			g_globalEvents().clear(true);
 			g_weapons().clear(true);
@@ -8728,11 +8681,6 @@ bool Game::reload(ReloadTypes_t reloadType)
 		}
 	}
 	return true;
-}
-
-bool Game::itemidHasMoveevent(uint32_t itemid)
-{
-	return g_moveEvents().isRegistered(itemid);
 }
 
 bool Game::hasEffect(uint8_t effectId) {

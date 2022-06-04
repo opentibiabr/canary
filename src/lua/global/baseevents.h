@@ -167,6 +167,8 @@ class BaseEvents {
 		virtual void clear(bool) = 0;
 
 		bool loaded = false;
+
+		friend class MoveEvents;
 };
 
 /**

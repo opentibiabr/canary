@@ -1,18 +1,22 @@
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
-
 function onCreateMagicWall(creature, tile)
-	local item = Game.createItem(Game.getWorldType() == WORLD_TYPE_NO_PVP and ITEM_MAGICWALL_SAFE or ITEM_MAGICWALL, 1, tile)
-	item:setAttribute(ITEM_ATTRIBUTE_DURATION, math.random(14000, 20000))
+	local magicWall
+	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
+		magicWall = ITEM_MAGICWALL_SAFE
+	else
+		magicWall = ITEM_MAGICWALL
+	end
+	local item = Game.createItem(magicWall, 1, tile)
+	item:setDuration(16, 24)
 end
 
+local combat = Combat()
+combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
 combat:setCallback(CALLBACK_PARAM_TARGETTILE, "onCreateMagicWall")
 
 local spell = Spell("rune")
 function spell.onCastSpell(creature, variant, isHotkey)
-    return combat:execute(creature, variant)
+	return combat:execute(creature, variant)
 end
-
 
 spell:name("Magic Wall Rune")
 spell:group("attack")

@@ -103,6 +103,8 @@ class Creature : virtual public Thing
 		}
 
 		virtual const std::string& getName() const = 0;
+		// Real creature name, set on creature creation "createNpcType(typeName) and createMonsterType(typeName)"
+		virtual const std::string& getTypeName() const = 0;
 		virtual const std::string& getNameDescription() const = 0;
 
 		virtual CreatureType_t getType() const = 0;
@@ -284,7 +286,7 @@ class Creature : virtual public Thing
 		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
                                     bool checkDefense = false, bool checkArmor = false, bool field = false);
 
-		bool setMaster(Creature* newMaster);
+		bool setMaster(Creature* newMaster, bool reloadCreature = false);
 
 		void removeMaster() {
 			if (master) {

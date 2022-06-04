@@ -32,7 +32,7 @@ function rune.onCastSpell(creature, variant, isHotkey)
 
 	creature:addMana(-manaCost)
 	creature:addManaSpent(manaCost)
-	creature:addSummon(target)
+	creature:setSummon(target)
 	creature:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 	return true
 end

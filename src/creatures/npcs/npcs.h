@@ -81,13 +81,14 @@ class NpcType
 
 	public:
 		NpcType() = default;
-		NpcType(std::string name) : name(name), nameDescription(name) {};
+		explicit NpcType(const std::string &initName) : name(initName), typeName(initName), nameDescription(initName) {};
 
 		// non-copyable
 		NpcType(const NpcType&) = delete;
 		NpcType& operator=(const NpcType&) = delete;
 
 		std::string name;
+		std::string typeName;
 		std::string nameDescription;
 		NpcInfo info;
 

@@ -54,6 +54,26 @@ void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 	}
 }
 
+bool Protocol::sendRecvMessageCallback(NetworkMessage& msg)
+{
+	if (encryptionEnabled && !XTEA_decrypt(msg)) {
+		SPDLOG_ERROR("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
+		return false;
+	}
+
+	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
+	std::function<void (void)> callback = [protocolWeak, &msg]() {
+		if (auto protocol = protocolWeak.lock()) {
+			if (auto protocolConnection = protocol->getConnection()) {
+				protocol->parsePacket(msg);
+				protocolConnection->resumeWork();
+			}
+		}
+	};
+	g_dispatcher().addTask(createTask(callback));
+	return true;
+}
+
 bool Protocol::onRecvMessage(NetworkMessage& msg)
 {
 	if (checksumMethod != CHECKSUM_METHOD_NONE) {
@@ -89,22 +109,8 @@ bool Protocol::onRecvMessage(NetworkMessage& msg)
 			}
 		}
 	}
-	if (encryptionEnabled && !XTEA_decrypt(msg)) {
-		SPDLOG_ERROR("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
-		return false;
-	}
 
-	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
-	std::function<void (void)> callback = [protocolWeak, &msg]() {
-		if (auto protocol = protocolWeak.lock()) {
-			if (auto protocolConnection = protocol->getConnection()) {
-				protocol->parsePacket(msg);
-				protocolConnection->resumeWork();
-			}
-		}
-	};
-	g_dispatcher().addTask(createTask(callback));
-	return true;
+	return sendRecvMessageCallback(msg);
 }
 
 OutputMessage_ptr Protocol::getOutputBuffer(int32_t size)

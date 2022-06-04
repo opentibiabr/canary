@@ -39,6 +39,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 
 		virtual void onSendMessage(const OutputMessage_ptr& msg);
 		bool onRecvMessage(NetworkMessage& msg);
+		bool sendRecvMessageCallback(NetworkMessage& msg);
 		virtual void onRecvFirstMessage(NetworkMessage& msg) = 0;
 		virtual void onConnect() {}
 
@@ -60,24 +61,12 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		}
 
 		void send(OutputMessage_ptr msg) const {
-			auto protocolConnection = getConnection();
-			if (protocolConnection == nullptr) {
-				SPDLOG_DEBUG("[Protocol::send] - Connection is nullptr");
-				return;
-			}
-
-			protocolConnection->send(msg);
+			getConnection()->send(msg);
 		}
 
 	protected:
 		void disconnect() const {
-			auto protocolConnection = getConnection();
-			if (protocolConnection == nullptr) {
-				SPDLOG_ERROR("[Protocol::disconnect] - Connection is nullptr");
-				return;
-			}
-
-			protocolConnection->close();
+			getConnection()->close();
 		}
 		void enableXTEAEncryption() {
 			encryptionEnabled = true;

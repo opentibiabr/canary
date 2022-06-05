@@ -94,6 +94,9 @@ autoLoot = false
 -- deposited to your bank account.
 autoBank = false
 
+-- configure maximum value of critical imbuement
+criticalChance = 10
+
 -- Stamina in Trainers
 staminaTrainer = false
 staminaTrainerDelay = 5

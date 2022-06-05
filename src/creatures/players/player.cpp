@@ -2739,6 +2739,8 @@ void Player::despawn()
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	g_game().playerSetAttackedCreature(this->getID(), 0);
+	g_game().playerFollowCreature(this->getID(), 0);
 
 	// remove check
 	Game::removeCreatureCheck(this);

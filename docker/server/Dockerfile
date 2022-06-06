@@ -34,7 +34,7 @@ COPY config.lua.dist /canary/config.lua
 WORKDIR /canary
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	mariadb-client libgmp-dev \
+	mariadb-client \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

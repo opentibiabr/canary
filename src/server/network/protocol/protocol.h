@@ -28,7 +28,7 @@
 class Protocol : public std::enable_shared_from_this<Protocol>
 {
 	public:
-		explicit Protocol(Connection_ptr initConnection) : connection(initConnection) {}
+		explicit Protocol(Connection_ptr initConnection) : connectionPtr(initConnection) {}
 		virtual ~Protocol();
 
 		// non-copyable
@@ -44,11 +44,11 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		virtual void onConnect() {}
 
 		bool isConnectionExpired() const {
-			return connection.expired();
+			return connectionPtr.expired();
 		}
 
 		Connection_ptr getConnection() const {
-			return connection.lock();
+			return connectionPtr.lock();
 		}
 
 		uint32_t getIP() const;
@@ -61,12 +61,18 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		}
 
 		void send(OutputMessage_ptr msg) const {
-			getConnection()->send(msg);
+			if (auto connection = getConnection();
+			connection != nullptr) {
+				connection->send(msg);
+			}
 		}
 
 	protected:
 		void disconnect() const {
-			getConnection()->close();
+			if (auto connection = getConnection();
+			connection != nullptr) {
+				connection->close();
+			}
 		}
 		void enableXTEAEncryption() {
 			encryptionEnabled = true;
@@ -92,12 +98,11 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		bool XTEA_decrypt(NetworkMessage& msg) const;
 		bool compression(OutputMessage& msg) const;
 
-		friend class Connection;
 
 		OutputMessage_ptr outputBuffer;
 		std::unique_ptr<z_stream> defStream;
 
-		const ConnectionWeak_ptr connection;
+		const ConnectionWeak_ptr connectionPtr;
 		std::array<uint32_t, 4> key = {};
 		uint32_t serverSequenceNumber = 0;
 		uint32_t clientSequenceNumber = 0;
@@ -105,6 +110,8 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		bool encryptionEnabled = false;
 		bool rawMessages = false;
 		bool compreesionEnabled = false;
+
+		friend class Connection;
 };
 
 #endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOL_H_

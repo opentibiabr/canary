@@ -202,39 +202,36 @@ bool RSA::loadPEM(const std::string& filename)
 	std::string key;
 	std::string pString;
 	std::string qString;
-	for (std::string line; std::getline(file, line); key.append(line)) {
-		size_t size = line.size();
-		++size;
-	}
+	for (std::string line; std::getline(file, line); key.append(line));
 
 	if (key.compare(0, header_old.size(), header_old) == 0) {
 		if (key.compare(key.size() - footer_old.size(), footer_old.size(), footer_old) != 0) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer");
 			return false;
 		}
 
 		key = base64Decrypt(key.substr(header_old.size(), key.size() - header_old.size() - footer_old.size()));
 	} else if (key.compare(0, header_new.size(), header_new) == 0) {
 		if (key.compare(key.size() - footer_new.size(), footer_new.size(), footer_new) != 0) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key footer");
 			return false;
 		}
 
 		key = base64Decrypt(key.substr(header_new.size(), key.size() - header_new.size() - footer_new.size()));
 	} else {
-		SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key header.");
+		SPDLOG_ERROR("[RSA::loadPEM] - Missing RSA private key header");
 		return false;
 	}
 
 	char* pos = &key[0];
 	if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
 	uint16_t length = decodeLength(pos);
 	if (length != key.length() - std::distance(&key[0], pos)) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
@@ -252,13 +249,13 @@ bool RSA::loadPEM(const std::string& filename)
 			++pos;
 		}
 		if (static_cast<uint8_t>(*pos++) != CRYPT_RSA_ASN1_SEQUENCE) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 			return false;
 		}
 
 		length = decodeLength(pos);
 		if (length != key.length() - std::distance(&key[0], pos)) {
-			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+			SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 			return false;
 		}
 
@@ -266,7 +263,7 @@ bool RSA::loadPEM(const std::string& filename)
 	}
 
 	if (tag != CRYPT_RSA_ASN1_INTEGER) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
@@ -274,22 +271,22 @@ bool RSA::loadPEM(const std::string& filename)
 	pos += length;
 	if (length != 1 || static_cast<uint8_t>(*pos) > 2) {
 		//public key - we don't have any interest in it
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
 	tag = static_cast<uint8_t>(*pos++);
 	if (tag != CRYPT_RSA_ASN1_INTEGER) {
-		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key.");
+		SPDLOG_ERROR("[RSA::loadPEM] - Invalid unsupported RSA key");
 		return false;
 	}
 
 	length = decodeLength(pos);
-	pos += length + 1; //Modulus - we don't care
+	pos += length + 1; // Modulus - we don't care
 	length = decodeLength(pos);
-	pos += length + 1; //Public Exponent - we don't care
+	pos += length + 1; // Public Exponent - we don't care
 	length = decodeLength(pos);
-	pos += length + 1; //Private Exponent - we don't care
+	pos += length + 1; // Private Exponent - we don't care
 	length = decodeLength(pos);
 	readHexString(pos, length, pString);
 	++pos;
@@ -297,11 +294,11 @@ bool RSA::loadPEM(const std::string& filename)
 	readHexString(pos, length, qString);
 	++pos;
 	length = decodeLength(pos);
-	pos += length + 1; //Prime Exponent P - we don't care
+	pos += length + 1; // Prime Exponent P - we don't care
 	length = decodeLength(pos);
-	pos += length + 1; //Prime Exponent Q - we don't care
+	pos += length + 1; // Prime Exponent Q - we don't care
 	length = decodeLength(pos);
-	pos += length + 1; //Coefficient - we don't care
+	pos += length + 1; // Coefficient - we don't care
 	++pos;
 
 	setKey(pString.c_str(), qString.c_str(), 16);

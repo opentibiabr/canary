@@ -38,7 +38,7 @@ jobs:
       - name: Install Linux Dependencies
         if: ${{ matrix.language == 'cpp' }}
         run: >
-          sudo apt-get update && sudo apt-get install ccache build-essential zip
+          sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
 
       - name: Switch to gcc-11
         if: ${{ matrix.language == 'cpp' }}

@@ -79,7 +79,7 @@ find_library(LUAJIT_LIB
 		../bin${_lib_suffix} ../bin)
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Luajit DEFAULT_MSG LUAJIT_LIB LUAJIT_INCLUDE_DIR)
+find_package_handle_standard_args(LuaJIT DEFAULT_MSG LUAJIT_LIB LUAJIT_INCLUDE_DIR)
 mark_as_advanced(LUAJIT_INCLUDE_DIR LUAJIT_LIB)
 
 if(LUAJIT_FOUND)

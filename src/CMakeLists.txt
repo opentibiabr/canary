@@ -115,7 +115,7 @@ endif()
 # Packages / Libs
 # *****************************************************************************
 find_package(spdlog REQUIRED)
-find_package(Luajit REQUIRED)
+find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
 find_package(libzippp REQUIRED)
 find_package(Protobuf REQUIRED)

@@ -18,13 +18,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-2019, windows-2022]
+        os: [windows-2022]
         buildtype: [windows-release, windows-release-asan, windows-debug]
         include:
-          - os: windows-2019
-            triplet: x64-windows
-            packages: >
-              sccache
           - os: windows-2022
             triplet: x64-windows
             packages: >

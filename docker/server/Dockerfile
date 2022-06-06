@@ -2,8 +2,8 @@
 FROM ubuntu:22.04 AS dependencies
 
 RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
-	libluajit-5.1-dev unzip	build-essential ca-certificates curl zip unzip tar \
-	pkg-config ninja-build \
+	unzip build-essential ca-certificates curl zip unzip tar \
+	pkg-config ninja-build autoconf automake libtool \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -34,7 +34,7 @@ COPY config.lua.dist /canary/config.lua
 WORKDIR /canary
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	libluajit-5.1-dev mariadb-client \
+	mariadb-client \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

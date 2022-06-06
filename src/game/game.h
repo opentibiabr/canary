@@ -404,6 +404,7 @@ class Game
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor) const;
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
+		void changePlayerSpeed(Player& player, int32_t varSpeedDelta);
 		void internalCreatureChangeOutfit(Creature* creature, const Outfit_t& oufit);
 		void internalCreatureChangeVisible(Creature* creature, bool visible);
 		void changeLight(const Creature* creature);
@@ -490,7 +491,6 @@ class Game
 
 		bool reload(ReloadTypes_t reloadType);
 
-		bool itemidHasMoveevent(uint32_t itemid);
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);
 

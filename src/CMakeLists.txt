@@ -343,7 +343,7 @@ else()
 
   target_link_libraries(${PROJECT_NAME}
     PRIVATE
-      ${LUA_LIBRARIES}
+      ${LUAJIT_LIBRARIES}
       ${Protobuf_LIBRARIES}
       ${GMP_LIBRARIES}
       Boost::boost

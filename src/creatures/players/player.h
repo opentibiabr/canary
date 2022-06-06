@@ -1152,7 +1152,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendDistanceShoot(const Position& from, const Position& to,
-                               unsigned char type) const {
+                               uint8_t type) const {
 			if (client) {
 				client->sendDistanceShoot(from, to, type);
 			}

@@ -38,8 +38,7 @@ jobs:
       - name: Install Linux Dependencies
         if: ${{ matrix.language == 'cpp' }}
         run: >
-          sudo apt-get update && sudo apt-get install ccache build-essential
-          libluajit-5.1-dev zip
+          sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
 
       - name: Switch to gcc-11
         if: ${{ matrix.language == 'cpp' }}
@@ -60,7 +59,7 @@ jobs:
         if: ${{ matrix.language == 'cpp' }}
         uses: lukka/run-vcpkg@v10
         with:
-          vcpkgGitCommitId: 773516ecf6014d89cc69b11bb54605ad4be56694
+          vcpkgGitCommitId: 8d41d43e1f7f5933622b02e16430312da649361e
 
       - name: Get latest CMake and ninja
         if: ${{ matrix.language == 'cpp' }}

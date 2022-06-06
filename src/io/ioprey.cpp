@@ -298,7 +298,6 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
 				}
 
 				slot->eraseBonus();
-				slot->state = PreyDataState_Inactive;
 				player->reloadPreySlot(static_cast<PreySlot_t>(slotId));
 			} else {
 				slot->bonusTimeLeft -= amount;

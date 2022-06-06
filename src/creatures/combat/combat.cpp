@@ -1566,7 +1566,7 @@ void MagicField::onStepInField(Creature& creature)
 {
 	//remove magic walls/wild growth
 	if (!isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE || id == ITEM_WILDGROWTH_SAFE) {
-		if (!creature->isInGhostMode()) {
+		if (!creature.isInGhostMode()) {
 			g_game().internalRemoveItem(this, 1);
 		}
 

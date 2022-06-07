@@ -302,10 +302,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			}
 		}
 
-		WaitingList &waitingList = WaitingList::getInstance();
-		if (!waitingList.clientLogin(player)) {
-			uint32_t currentSlot = waitingList.getClientSlot(player);
-			uint32_t retryTime = WaitingList::getTime(currentSlot);
+		std::size_t currentSlot;
+		if (!WaitingList::getInstance().clientLogin(player, currentSlot)) {
+			int64_t retryTime = WaitingList::getTime(currentSlot);
 			std::ostringstream ss;
 
 			ss << "Too many players online.\nYou are at place "
@@ -314,7 +313,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			auto output = OutputMessagePool::getOutputMessage();
 			output->addByte(0x16);
 			output->addString(ss.str());
-			output->addByte(retryTime);
+			output->addByte(static_cast<uint8_t>(retryTime));
 			send(output);
 			disconnect();
 			return;
@@ -3321,7 +3320,7 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 
 void ProtocolGame::sendTournamentLeaderboard() {
 	NetworkMessage msg;
-	//playermsg.reset();
+	// playermsg.reset();
 	msg.addByte(0xC5);
 	msg.addByte(0);
 	msg.addByte(0x01);

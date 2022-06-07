@@ -288,7 +288,7 @@ DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
 bool DiskNodeFileReadHandle::renewCache()
 {
 	if (!cache) {
-		cache = (uint8_t*)malloc(cacheSize);
+		cache = new uint8_t[cacheSize];
 	}
 	cacheLenght = fread(cache, 1, cacheSize, file);
 
@@ -607,7 +607,7 @@ DiskNodeFileWriteHandle::DiskNodeFileWriteHandle(const std::string& initName, co
 
 	fwrite(initIdentifier.c_str(), 1, 4, file);
 	if (!cache) {
-		cache = (uint8_t*)std::malloc(cacheSize+1);
+		cache = new uint8_t[cacheSize+1];
 	}
 	localWriteIndex = 0;
 }
@@ -622,7 +622,7 @@ void DiskNodeFileWriteHandle::renewCache()
 			setErrorCode(FILE_WRITE_ERROR);
 		}
 	} else {
-		cache = (uint8_t*)malloc(cacheSize+1);
+		cache = new uint8_t[cacheSize+1];
 	}
 	localWriteIndex = 0;
 }
@@ -633,7 +633,7 @@ void DiskNodeFileWriteHandle::renewCache()
 MemoryNodeFileWriteHandle::MemoryNodeFileWriteHandle()
 {
 	if (!cache) {
-		cache = (uint8_t*)malloc(cacheSize+1);
+		cache = new uint8_t[cacheSize+1];
 	}
 	localWriteIndex = 0;
 }
@@ -660,12 +660,13 @@ void MemoryNodeFileWriteHandle::renewCache()
 {
 	if (cache) {
 		cacheSize = cacheSize * 2;
-		cache = (uint8_t*)realloc(cache, cacheSize);
+		delete cache;
+		cache = new uint8_t[cacheSize];
 		if (!cache) {
 			exit(1);
 		}
 	} else {
-		cache = (uint8_t*)malloc(cacheSize+1);
+		cache = new uint8_t[cacheSize+1];
 	}
 }
 

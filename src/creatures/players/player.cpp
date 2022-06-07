@@ -2153,7 +2153,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText/* = fal
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2247,7 +2247,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		message.primary.color = TEXTCOLOR_RED;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2713,7 +2713,7 @@ bool Player::spawn()
 		return false;
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game().map.getSpectators(spectators, position, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
@@ -2755,7 +2755,7 @@ void Player::despawn()
 
 	std::vector<int32_t> oldStackPosVector;
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game().map.getSpectators(spectators, tile->getPosition(), true);
 	size_t i = 0;
 	for (Creature* spectator : spectators) {

@@ -141,11 +141,11 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (lua_gettop(L) >= 3) {
 		Player* player = getPlayer(L, 3);
 		if (player) {
-			spectators.insert(player);
+			spectators.emplace_back(player);
 		}
 	}
 
@@ -169,11 +169,11 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (lua_gettop(L) >= 4) {
 		Player* player = getPlayer(L, 4);
 		if (player) {
-			spectators.insert(player);
+			spectators.emplace_back(player);
 		}
 	}
 

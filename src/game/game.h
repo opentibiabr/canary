@@ -228,7 +228,7 @@ class Game
 		bool internalCreatureSay(Creature* creature, SpeakClasses type,
                                  const std::string& text,
                                  bool ghostMode,
-                                 SpectatorHashSet* spectatorsPtr = nullptr,
+                                 SpectatorVector* spectatorsPtr = nullptr,
                                  const Position* pos = nullptr);
 
 		void internalQuickLootCorpse(Player* player, Container* corpse);
@@ -435,13 +435,13 @@ class Game
 
 		// Animation help functions
 		void addCreatureHealth(const Creature* target);
-		static void addCreatureHealth(const SpectatorHashSet& spectators, const Creature* target);
+		static void addCreatureHealth(const SpectatorVector& spectators, const Creature* target);
 		void addPlayerMana(const Player* target);
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position& pos, uint8_t effect);
-		static void addMagicEffect(const SpectatorHashSet& spectators, const Position& pos, uint8_t effect);
+		static void addMagicEffect(const SpectatorVector& spectators, const Position& pos, uint8_t effect);
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
-		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
+		static void addDistanceEffect(const SpectatorVector& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
 		int32_t getLightHour() const {
 			return lightHour;
@@ -651,6 +651,6 @@ class Game
 		std::vector<ItemClassification*> itemsClassifications;
 };
 
-constexpr auto ()g_game = &Game::getInstance;
+constexpr auto g_game = &Game::getInstance;
 
 #endif  // SRC_GAME_GAME_H_

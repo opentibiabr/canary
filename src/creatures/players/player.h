@@ -2120,7 +2120,7 @@ class Player final : public Creature, public Cylinder {
 			SpeakClasses type,
 			const std::string &text,
 			bool ghostMode,
-			SpectatorHashSet* spectatorsPtr = nullptr,
+			SpectatorVector* spectatorsPtr = nullptr,
 			const Position* pos = nullptr
 		);
 

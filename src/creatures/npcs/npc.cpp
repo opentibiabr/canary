@@ -189,7 +189,7 @@ void Npc::onThink(uint32_t interval) {
 		closeAllShopWindows();
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	// Get a set of spectators that are within the visible range of the NPC
 	g_game().map.getSpectators(spectators, position, false, false);
 	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag

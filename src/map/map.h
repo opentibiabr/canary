@@ -63,7 +63,7 @@ class AStarNodes {
 		int_fast32_t closedNodes;
 };
 
-using SpectatorCache = std::map<Position, SpectatorHashSet>;
+using SpectatorCache = std::map<Position, SpectatorVector>;
 
 static constexpr int32_t FLOOR_BITS = 3;
 static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
@@ -226,9 +226,9 @@ class Map {
 
 		void moveCreature(Creature &creature, Tile &newTile, bool forceTeleport = false);
 
-		void getSpectators(SpectatorHashSet &spectators, const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
+		void getSpectators(SpectatorVector &spectators, const Position &centerPos, bool multifloor = false, bool onlyPlayers = false, int32_t minRangeX = 0, int32_t maxRangeX = 0, int32_t minRangeY = 0, int32_t maxRangeY = 0);
 
-		void clearSpectatorCache();
+		void clearSpectatorCache(bool clearPlayer);
 
 		/**
 		 * Checks if you can throw an object to that position
@@ -289,7 +289,7 @@ class Map {
 		uint32_t height = 0;
 
 		// Actually scans the map for spectators
-		void getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const;
+		void getSpectatorsInternal(SpectatorVector &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const;
 
 		friend class Game;
 		friend class IOMap;

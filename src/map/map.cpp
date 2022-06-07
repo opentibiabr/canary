@@ -316,9 +316,30 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 
 	bool teleport = forceTeleport || !newTile.getGround() || !Position::areInRange<1, 1, 0>(oldPos, newPos);
 
-	SpectatorHashSet spectators;
-	getSpectators(spectators, oldPos, true);
-	getSpectators(spectators, newPos, true);
+	SpectatorVector spectators;
+	if (!teleport) {
+		int32_t minRangeX = maxViewportX;
+		int32_t maxRangeX = maxViewportX;
+		int32_t minRangeY = maxViewportY;
+		int32_t maxRangeY = maxViewportY;
+		if (oldPos.y > newPos.y) {
+			++minRangeY;
+		} else if (oldPos.y < newPos.y) {
+			++maxRangeY;
+		}
+
+		if (oldPos.x < newPos.x) {
+			++maxRangeX;
+		} else if (oldPos.x > newPos.x) {
+			++minRangeX;
+		}
+		getSpectators(spectators, oldPos, true, false, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	} else {
+		SpectatorVector newspectators;
+		getSpectators(spectators, oldPos, true);
+		getSpectators(newspectators, newPos, true);
+		spectators.mergeSpectators(newspectators);
+	}
 
 	std::vector<int32_t> oldStackPosVector;
 	for (Creature* spectator : spectators) {
@@ -379,9 +400,11 @@ void Map::moveCreature(Creature &creature, Tile &newTile, bool forceTeleport /* 
 
 	oldTile.postRemoveNotification(&creature, &newTile, 0);
 	newTile.postAddNotification(&creature, &oldTile, 0);
+
+	clearSpectatorCache(creature.getPlayer());
 }
 
-void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
+void Map::getSpectatorsInternal(SpectatorVector &spectators, const Position &centerPos, int32_t minRangeX, int32_t maxRangeX, int32_t minRangeY, int32_t maxRangeY, int32_t minRangeZ, int32_t maxRangeZ, bool onlyPlayers) const {
 	int32_t min_y = centerPos.y - minRangeY;
 	int32_t min_x = centerPos.x - minRangeX;
 	int32_t max_y = centerPos.y + maxRangeY;
@@ -420,7 +443,7 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 					if (static_cast<uint32_t>(static_cast<int32_t>(cpos.z) - minRangeZ) <= depth) {
 						int_fast16_t offsetZ = Position::getOffsetZ(centerPos, cpos);
 						if (static_cast<uint32_t>(static_cast<int32_t>(cpos.x - offsetZ) - min_x) <= width && static_cast<uint32_t>(static_cast<int32_t>(cpos.y - offsetZ) - min_y) <= height) {
-							spectators.insert(creature);
+							spectators.emplace_back(creature);
 						}
 					}
 				}
@@ -436,9 +459,10 @@ void Map::getSpectatorsInternal(SpectatorHashSet &spectators, const Position &ce
 			leafS = QTreeNode::getLeafStatic<const QTreeLeafNode*, const QTreeNode*>(&root, startx1, ny + FLOOR_SIZE);
 		}
 	}
+	spectators.shrink_to_fit();
 }
 
-void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/) {
+void Map::getSpectators(SpectatorVector &spectators, const Position &centerPos, bool multifloor /*= false*/, bool onlyPlayers /*= false*/, int32_t minRangeX /*= 0*/, int32_t maxRangeX /*= 0*/, int32_t minRangeY /*= 0*/, int32_t maxRangeY /*= 0*/) {
 	if (centerPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -455,8 +479,8 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 			auto it = playersSpectatorCache.find(centerPos);
 			if (it != playersSpectatorCache.end()) {
 				if (!spectators.empty()) {
-					const SpectatorHashSet &cachedSpectators = it->second;
-					spectators.insert(cachedSpectators.begin(), cachedSpectators.end());
+					const SpectatorVector &cachedSpectators = it->second;
+					spectators.insert(spectators.end(), cachedSpectators.begin(), cachedSpectators.end());
 				} else {
 					spectators = it->second;
 				}
@@ -470,16 +494,16 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 			if (it != spectatorCache.end()) {
 				if (!onlyPlayers) {
 					if (!spectators.empty()) {
-						const SpectatorHashSet &cachedSpectators = it->second;
-						spectators.insert(cachedSpectators.begin(), cachedSpectators.end());
+						const SpectatorVector &cachedSpectators = it->second;
+						spectators.insert(spectators.end(), cachedSpectators.begin(), cachedSpectators.end());
 					} else {
 						spectators = it->second;
 					}
 				} else {
-					const SpectatorHashSet &cachedSpectators = it->second;
+					const SpectatorVector &cachedSpectators = it->second;
 					for (Creature* spectator : cachedSpectators) {
 						if (spectator->getPlayer()) {
-							spectators.insert(spectator);
+							spectators.emplace_back(spectator);
 						}
 					}
 				}
@@ -515,6 +539,9 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 			minRangeZ = centerPos.z;
 			maxRangeZ = centerPos.z;
 		}
+		if (spectators.capacity() < 32) {
+			spectators.reserve(32);
+		}
 
 		getSpectatorsInternal(spectators, centerPos, minRangeX, maxRangeX, minRangeY, maxRangeY, minRangeZ, maxRangeZ, onlyPlayers);
 		if (cacheResult) {
@@ -527,9 +554,11 @@ void Map::getSpectators(SpectatorHashSet &spectators, const Position &centerPos,
 	}
 }
 
-void Map::clearSpectatorCache() {
+void Map::clearSpectatorCache(bool clearPlayer) {
 	spectatorCache.clear();
-	playersSpectatorCache.clear();
+	if (clearPlayer) {
+		playersSpectatorCache.clear();
+	}
 }
 
 bool Map::canThrowObjectTo(const Position &fromPos, const Position &toPos, bool checkLineOfSight /*= true*/, int32_t rangex /*= Map::maxClientViewportX*/, int32_t rangey /*= Map::maxClientViewportY*/) const {

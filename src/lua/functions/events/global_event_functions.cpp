@@ -58,13 +58,16 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 
 int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 	// globalevent:register()
-	GlobalEvent* globalevent = getUserdata<GlobalEvent>(L, 1);
-	if (globalevent) {
+	GlobalEvent** globaleventPtr = getRawUserdata<GlobalEvent>(L, 1);
+	if (globaleventPtr && *globaleventPtr) {
+		GlobalEvent* globalevent = *globaleventPtr;
 		if (!globalevent->isLoadedCallback()) {
 			pushBoolean(L, false);
-			return 1;
+			delete globalevent;
+		} else {
+			pushBoolean(L, g_globalEvents().registerLuaEvent(globalevent));
 		}
-		pushBoolean(L, g_globalEvents().registerLuaEvent(globalevent));
+		*globaleventPtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);
 	}

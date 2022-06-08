@@ -183,21 +183,19 @@ bool FileReadHandle::seekRelative(size_t offset)
 //=============================================================================
 // Node file read handle
 
-NodeFileReadHandle::NodeFileReadHandle()
-{
-	lastWasStart = false;
-	cache = nullptr;
-	cacheSize = 32768;
-	cacheLenght = 0;
-	localReadIndex = 0;
-	binaryRootNode = nullptr;
-}
+NodeFileReadHandle::NodeFileReadHandle() :
+lastWasStart(false),
+cache(nullptr),
+cacheSize(32768),
+cacheLenght(0),
+localReadIndex(0),
+binaryRootNode(nullptr) {}
 
 NodeFileReadHandle::~NodeFileReadHandle() = default;
 
 std::shared_ptr<BinaryNode> NodeFileReadHandle::getNode(std::shared_ptr<BinaryNode> parent)
 {
-	std::shared_ptr<BinaryNode> newNode = std::make_shared<BinaryNode>();
+	auto newNode = std::make_shared<BinaryNode>();
 	newNode->init(this, parent);
 	return newNode;
 }
@@ -252,8 +250,8 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 		return;
 	}
 
-	char ver[4];
-	if (fread(ver, 1, 4, file) != 4) {
+	std::string ver;
+	if (fread(ver.data(), 1, 4, file) != 4) {
 		fclose(file);
 		setErrorCode(FILE_SYNTAX_ERROR);
 		return;
@@ -265,7 +263,7 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 		for(std::vector<std::string>::const_iterator id_iter = fileAcceptableIdentifiers.begin();
 		id_iter != fileAcceptableIdentifiers.end(); ++id_iter)
 		{
-			if (memcmp(ver, id_iter->c_str(), 4) == 0) {
+			if (memcmp(ver.data(), id_iter->c_str(), 4) == 0) {
 				accepted = true;
 				break;
 			}
@@ -673,11 +671,8 @@ void MemoryNodeFileWriteHandle::renewCache()
 //=============================================================================
 // Node file write handle
 
-NodeFileWriteHandle::NodeFileWriteHandle()
+NodeFileWriteHandle::NodeFileWriteHandle() : cache(nullptr), cacheSize(0x7FFF), localWriteIndex(0)
 {
-	cache = nullptr;
-	cacheSize = 0x7FFF;
-	localWriteIndex = 0;
 }
 
 NodeFileWriteHandle::~NodeFileWriteHandle() = default;
@@ -721,43 +716,43 @@ bool NodeFileWriteHandle::addByte(uint8_t u8)
 
 bool NodeFileWriteHandle::addU16(uint16_t u16)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&u16), sizeof(u16));
+	writeBytes(std::bit_cast<uint8_t*>(&u16), sizeof(u16));
 	return errorCode == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addU32(uint32_t u32)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&u32), sizeof(u32));
+	writeBytes(std::bit_cast<uint8_t*>(&u32), sizeof(u32));
 	return errorCode == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addU64(uint64_t u64)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&u64), sizeof(u64));
+	writeBytes(std::bit_cast<uint8_t*>(&u64), sizeof(u64));
 	return errorCode == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt8(int8_t int8)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&int8), sizeof(int8));
+	writeBytes(std::bit_cast<uint8_t*>(&int8), sizeof(int8));
 	return errorCode == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt16(int16_t int16)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&int16), sizeof(int16));
+	writeBytes(std::bit_cast<uint8_t*>(&int16), sizeof(int16));
 	return errorCode == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt32(int32_t int32)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&int32), sizeof(int32));
+	writeBytes(std::bit_cast<uint8_t*>(&int32), sizeof(int32));
 	return errorCode == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt64(int64_t int64)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(&int64), sizeof(int64));
+	writeBytes(std::bit_cast<uint8_t*>(&int64), sizeof(int64));
 	return errorCode == FILE_NO_ERROR;
 }
 
@@ -781,7 +776,7 @@ bool NodeFileWriteHandle::addLongString(const std::string& str)
 
 bool NodeFileWriteHandle::addRAW(std::string& str)
 {
-	writeBytes(reinterpret_cast<uint8_t*>(const_cast<char*>(str.data())), str.size());
+	writeBytes(std::bit_cast<uint8_t*>(const_cast<char*>(str.data())), str.size());
 	return errorCode == FILE_NO_ERROR;
 }
 

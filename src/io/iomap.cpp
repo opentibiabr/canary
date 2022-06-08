@@ -137,7 +137,7 @@ bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fi
 	return true;
 }
 
-bool IOMap::parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map, const std::string& fileName)
+bool IOMap::parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map, const std::string& fileName) const
 {
 	if (binaryNodeMapData->getU8() != OTBM_MAP_DATA) {
 		SPDLOG_ERROR("[IOMap::parseMapDataAttributes] - Could not read root data node");
@@ -404,7 +404,7 @@ bool IOMap::parseTowns(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map)
 }
 
 // Parse waypoints information data
-bool IOMap::parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map)
+bool IOMap::parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const
 {
 	for(std::shared_ptr<BinaryNode> binaryNodeWaypoint = binaryNodeMapData->getChild();
 	binaryNodeWaypoint != nullptr; binaryNodeWaypoint = binaryNodeWaypoint->advance())

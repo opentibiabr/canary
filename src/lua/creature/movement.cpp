@@ -24,7 +24,7 @@
 #include "lua/creature/movement.h"
 #include "creatures/players/imbuements/imbuements.h"
 
-void MoveEvents::clearMap(std::map<int32_t, MoveEventList>& map) {
+void MoveEvents::clearMap(std::map<int32_t, MoveEventList>& map) const {
 	for (auto it = map.begin(); it != map.end(); ++it) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
 			it->second.moveEvent[eventType].clear();

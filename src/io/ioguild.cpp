@@ -36,7 +36,7 @@ Guild* IOGuild::loadGuild(uint32_t guildId)
 
 		if ((result = db.storeQuery(query.str()))) {
 			do {
-				guild->addRank(result->getU32("id"), result->getString("name"), result->getU16("level"));
+				guild->addRank(result->getU32("id"), result->getString("name"), result->getU8("level"));
 			} while (result->next());
 		}
 		return guild;

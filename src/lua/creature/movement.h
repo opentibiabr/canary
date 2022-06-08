@@ -133,7 +133,7 @@ class MoveEvents final : public Scripts {
 		void clear();
 
 	private:
-		void clearMap(std::map<int32_t, MoveEventList>& map);
+		void clearMap(std::map<int32_t, MoveEventList>& map) const;
 		void clearPosMap(std::map<Position, MoveEventList>& map);
 
 		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;

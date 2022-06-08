@@ -69,7 +69,7 @@ int ResultFunctions::luaResultGet64(lua_State* L) {
 	}
 
 	const std::string& resultString = getString(L, 2);
-	lua_pushnumber(L, result->get64(resultString));
+	lua_pushnumber(L, static_cast<lua_Number>(result->get64(resultString)));
 	return 1;
 }
 
@@ -121,7 +121,7 @@ int ResultFunctions::luaResultGetU64(lua_State* L) {
 	}
 
 	const std::string& resultString = getString(L, 2);
-	lua_pushnumber(L, result->getU64(resultString));
+	lua_pushnumber(L, static_cast<lua_Number>(result->getU64(resultString)));
 	return 1;
 }
 
@@ -134,7 +134,7 @@ int ResultFunctions::luaResultGetTime(lua_State* L) {
 	}
 
 	const std::string& resultString = getString(L, 2);
-	lua_pushnumber(L, result->getTime(resultString));
+	lua_pushnumber(L, static_cast<lua_Number>(result->getTime(resultString)));
 	return 1;
 }
 

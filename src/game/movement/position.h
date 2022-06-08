@@ -111,9 +111,7 @@ struct Position
 		return ! (*this < p);
 	}
 
-	bool operator==(const Position& p) const {
-		return p.x == x && p.y == y && p.z == z;
-	}
+	bool operator==(const Position& p) const = default;
 
 	bool operator!=(const Position& p) const {
 		return p.x != x || p.y != y || p.z != z;
@@ -139,9 +137,9 @@ struct Position
 	}
 
 	void setPosition(Position position) {
-		x = std::move(position.x);
-		y = std::move(position.y);
-		z = std::move(position.z);
+		x = position.x;
+		y = position.y;
+		z = position.z;
 	}
 
 	int_fast32_t getX() const { return x; }

@@ -23,9 +23,7 @@
 
 #include "items/containers/depot/depotlocker.h"
 
-DepotLocker::DepotLocker(uint16_t type) : Container(type, 4) {
-	depotId = 0;
-}
+DepotLocker::DepotLocker(uint16_t type) : Container(type, 4), depotId(0) {}
 
 ReturnValue DepotLocker::queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature*) const
 {

@@ -325,7 +325,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->lastIP = player->getIP();
-		player->lastLoginSaved = std::max<time_t>(g_game().getTimeNow(), player->lastLoginSaved + 1);
+		player->lastLoginSaved = std::max<time_t>(Game::getTimeNow(), player->lastLoginSaved + 1);
 		acceptPackets = true;
 	}
 	else
@@ -382,7 +382,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
-	player->lastLoginSaved = std::max<time_t>(g_game().getTimeNow(), player->lastLoginSaved + 1);
+	player->lastLoginSaved = std::max<time_t>(Game::getTimeNow(), player->lastLoginSaved + 1);
 	acceptPackets = true;
 }
 
@@ -434,7 +434,6 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 	} else {
 		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}
-	
 
 	version = msg.get<uint16_t>(); // Protocol version
 
@@ -549,7 +548,7 @@ void ProtocolGame::onConnect()
 	output->addByte(0x1F);
 
 	// Add timestamp & random number
-	challengeTimestamp = static_cast<uint32_t>(g_game().getTimeNow());
+	challengeTimestamp = static_cast<uint32_t>(Game::getTimeNow());
 	output->add<uint32_t>(challengeTimestamp);
 
 	challengeRandom = randNumber(generator);
@@ -629,7 +628,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		g_dispatcher().addTask(createTask(std::bind_front(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
 	}
 
-		g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
@@ -722,7 +721,6 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xCC: parseSeekInContainer(msg); break;
 		case 0xCD: parseInspectionObject(msg); break;
 		case 0xD2: addGameTask(&Game::playerRequestOutfit, player->getID()); break;
-		//g_dispatcher().addTask(createTask(std::bind_front(&Modules::executeOnRecvbyte, g_modules, player, msg, recvbyte)));
 		case 0xD3: g_dispatcher().addTask(createTask(std::bind_front(&ProtocolGame::parseSetOutfit, getThis(), msg))); break;
 		case 0xD4: parseToggleMount(msg); break;
 		case 0xD5: parseApplyImbuement(msg); break;
@@ -1695,7 +1693,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(g_game().getTimeNow()); // Last Update
+	msg.add<uint32_t>(static_cast<uint32_t>(Game::getTimeNow())); // Last Update
 
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
@@ -3508,7 +3506,7 @@ void ProtocolGame::sendBasicData()
 	if (player->isPremium())
 	{
 		msg.addByte(1);
-		msg.add<uint32_t>(g_game().getTimeNow() + (player->premiumDays * 86400));
+		msg.add<uint32_t>(static_cast<uint32_t>(Game::getTimeNow() + (player->premiumDays * 86400)));
 	}
 	else
 	{

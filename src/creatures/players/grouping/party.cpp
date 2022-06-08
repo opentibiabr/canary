@@ -661,7 +661,7 @@ void Party::switchAnalyzerPriceType()
 
 void Party::resetAnalyzer()
 {
-	trackerTime = time(nullptr);
+	trackerTime = Game::getTimeNow();
 	for (PartyAnalyzer* analyzer : membersData) {
 		delete analyzer;
 	}
@@ -689,4 +689,9 @@ void Party::reloadPrices()
 			analyzer->supplyPrice += leader->getItemCustomPrice(it.first, true) * it.second;
 		}
 	}
+}
+
+uint32_t Party::getAnalyzerTimeNow() const
+{
+	return static_cast<uint32_t>(Game::getTimeNow() - trackerTime);
 }

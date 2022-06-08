@@ -95,13 +95,12 @@ class Action : public Script {
 		}
 
 		bool hasPosition(Position position) {
-			auto iteratePosition = std::ranges::find_if(positions.begin(), positions.end(), [position](Position storedPosition) {
+			return std::ranges::find_if(positions.begin(), positions.end(), [position](Position storedPosition) {
 				if (storedPosition == position) {
 					return true;
 				}
 				return false;
-			});
-			return false;
+			}) != positions.end();
 		}
 
 		std::vector<Position> getPositions() const {
@@ -128,16 +127,16 @@ class Action : public Script {
 		virtual Thing* getTarget(Player* player, Creature* targetCreature,
 						const Position& toPosition, uint8_t toStackPos) const;
 
-		std::function<bool(
-			Player* player, Item* item,
-			const Position& fromPosition, Thing* target,
-			const Position& toPosition, bool isHotkey
-		)> function;
-
 	private:
 		std::string getScriptTypeName() const override {
 			return "onUse";
 		}
+
+		std::function<bool(
+			Player* player, Item* item,
+			const Position& fromPosition, Thing* target,
+			const Position& toPosition, bool isHotkey
+		)> useFunction;
 
 		// Atributes
 		bool allowFarUse = false;
@@ -151,6 +150,8 @@ class Action : public Script {
 		std::vector<Position> positions;
 
 		std::string fileName;
+
+		friend class Actions;
 };
 
 class Actions final : public Scripts {

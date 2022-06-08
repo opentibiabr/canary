@@ -46,10 +46,7 @@ enum NodeType {
 class FileHandle
 {
 public:
-	FileHandle() {
-		errorCode = FILE_NO_ERROR;
-		file = nullptr;
-	}
+	FileHandle() : errorCode(FILE_NO_ERROR), file(nullptr) {}
 
 	virtual ~FileHandle() = default;
 
@@ -126,11 +123,7 @@ public:
 	NONCOPYABLE(BinaryNode);
 
 	std::shared_ptr<BinaryNode> getPtr() {
-		if (this != nullptr) {
-			return this->shared_from_this();
-		}
-		SPDLOG_ERROR("[BinaryNode::getPtr] - The pointer 'this' is nullptr");
-		return nullptr;
+		return this->shared_from_this();
 	}
 
 	void init(NodeFileReadHandle* file, std::shared_ptr<BinaryNode> parent);
@@ -229,7 +222,7 @@ public:
 private:
 	bool renewCache() override;
 
-	const std::string& fileName;
+	const std::string fileName;
 	const std::vector<std::string>& fileAcceptableIdentifiers;
 
 	size_t fileSize = 0;
@@ -257,8 +250,6 @@ public:
 	}
 private:
 	bool renewCache() override;
-
-	uint8_t* index;
 };
 
 class FileWriteHandle : public FileHandle
@@ -267,17 +258,29 @@ public:
 	explicit FileWriteHandle(const std::string& initName);
 	~FileWriteHandle() override;
 
-	inline bool addU8(uint8_t u8) {return addType(u8);}
-	inline bool addByte(uint8_t u8) {return addType(u8);}
-	inline bool addU16(uint16_t u16) {return addType(u16);}
-	inline bool addU32(uint32_t u32) {return addType(u32);}
-	inline bool addU64(uint64_t u64) {return addType(u64);}
+	inline bool addU8(uint8_t u8) {
+		return addType(u8);
+	}
+	inline bool addByte(uint8_t u8) {
+		return addType(u8);
+	}
+	inline bool addU16(uint16_t u16) {
+		return addType(u16);
+	}
+	inline bool addU32(uint32_t u32) {
+		return addType(u32);
+	}
+	inline bool addU64(uint64_t u64) {
+		return addType(u64);
+	}
 	bool addString(const std::string& str);
 	bool addString(const char* str);
 	bool addLongString(const std::string& str);
 	bool addRAW(const std::string& str);
 	bool addRAW(const uint8_t* ptr, size_t sz);
-	bool addRAW(const char* c) {return addRAW(reinterpret_cast<const uint8_t*>(c), strlen(c));}
+	bool addRAW(const char* str) {
+		return addRAW(std::bit_cast<const uint8_t*>(str), strlen(str));
+	}
 
 protected:
 	template<class T>
@@ -310,8 +313,8 @@ public:
 	bool addLongString(const std::string& str);
 	bool addRAW(std::string& str);
 	bool addRAW(const uint8_t* ptr, size_t sz);
-	bool addRAW(const char* c) {
-		return addRAW(reinterpret_cast<const uint8_t*>(c), strlen(c));
+	bool addRAW(const char* str) {
+		return addRAW(std::bit_cast<const uint8_t*>(str), strlen(str));
 	}
 
 private:

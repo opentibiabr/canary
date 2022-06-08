@@ -46,9 +46,6 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	this->filemonstername = filemonstername;
 	loaded = true;
 
-	uint32_t eventschedule = g_eventsScheduler().getSpawnMonsterSchedule();
-	std::string boostedNameGet = g_game().getBoostedMonsterName();
-
 	for (auto spawnMonsterNode : doc.child("monsters").children()) {
 		Position centerPos(
 			static_cast<uint16_t>(spawnMonsterNode.attribute("centerx").as_int()),

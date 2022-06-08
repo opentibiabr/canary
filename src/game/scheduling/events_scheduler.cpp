@@ -20,6 +20,7 @@
 #include "otpch.h"
 
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/game.h"
 #include "lua/scripts/scripts.h"
 
 bool EventsScheduler::loadScheduleEventFromXml() const
@@ -32,7 +33,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 	}
 
 	int daysNow;
-	time_t t = time(nullptr);
+	time_t t = Game::getTimeNow();
 	const tm* timePtr = localtime(&t);
 	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
 
@@ -80,13 +81,13 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
-				uint16_t exprate = static_cast<uint16_t>(schedENode.attribute("exprate").as_uint());
+				auto exprate = static_cast<uint16_t>(schedENode.attribute("exprate").as_uint());
 				g_eventsScheduler().setExpSchedule(exprate);
 				ss << " exp: " << exprate << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = static_cast<uint16_t>(schedENode.attribute("lootrate").as_uint());
+				auto lootrate = static_cast<uint16_t>(schedENode.attribute("lootrate").as_uint());
 				g_eventsScheduler().setLootSchedule(lootrate);
 				ss << ", loot: " << lootrate << "%";
 			}
@@ -98,7 +99,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
+				auto skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
 				g_eventsScheduler().setSkillSchedule(skillrate);
 				ss << ", skill: " << skillrate << "%";
 				break;

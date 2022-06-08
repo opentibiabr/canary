@@ -278,7 +278,7 @@ int8_t DBResult::get8(const std::string& tableName) const
 		return 0;
 	}
 
-	return std::atoi(row[result]);
+	return static_cast<int8_t>(std::atoi(row[result]));
 }
 
 int16_t DBResult::get16(const std::string& tableName) const
@@ -289,7 +289,7 @@ int16_t DBResult::get16(const std::string& tableName) const
 		return 0;
 	}
 
-	return std::atoi(row[result]);
+	return static_cast<int16_t>(std::atoi(row[result]));
 }
 
 int32_t DBResult::get32(const std::string& tableName) const
@@ -300,7 +300,7 @@ int32_t DBResult::get32(const std::string& tableName) const
 		return 0;
 	}
 
-	return std::atol(row[result]);
+	return static_cast<int32_t>(std::atol(row[result]));
 }
 
 int64_t DBResult::get64(const std::string& tableName) const
@@ -326,7 +326,7 @@ uint8_t DBResult::getU8(const std::string& tableName) const
 
 	try
 	{
-		return std::stoul(row[result]);
+		return static_cast<uint8_t>(std::stoul(row[result]));
 	}
 	catch(std::invalid_argument const& argument)
 	{
@@ -349,7 +349,7 @@ uint16_t DBResult::getU16(const std::string& tableName) const
 
 	try
 	{
-		return std::stoul(row[result]);
+		return static_cast<uint16_t>(std::stoul(row[result]));
 	}
 	catch(std::invalid_argument const& argument)
 	{
@@ -372,7 +372,7 @@ uint32_t DBResult::getU32(const std::string& tableName) const
 
 	try
 	{
-		return std::stoul(row[result]);
+		return static_cast<uint32_t>(std::stoul(row[result]));
 	}
 	catch(std::invalid_argument const& argument)
 	{
@@ -423,8 +423,8 @@ bool DBResult::getBoolean(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
 	if (std::cmp_less(result, -1)) {
-		SPDLOG_ERROR("[DBResult::getU64] - Failed to get size_t");
-		return 0;
+		SPDLOG_ERROR("[DBResult::getBoolean] - Failed to get size_t");
+		return false;
 	}
 
 	auto databaseResut = std::atoi(row[result]);
@@ -433,7 +433,7 @@ bool DBResult::getBoolean(const std::string& tableName) const
 	if (databaseResut >= 2)
 	{
 		SPDLOG_WARN("[DBResult::getBoolean] - Boolean result '{}' is not true or false, valid value is only '0' or '1'", databaseResut);
-		return 0;
+		return false;
 	}
 
 	return databaseResut;

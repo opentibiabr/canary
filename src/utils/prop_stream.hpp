@@ -58,7 +58,7 @@ class PropStream
 				return false;
 			}
 
-			char* str = new char[strLen + 1];
+			auto str = new char[strLen + 1];
 			memcpy(str, p, strLen);
 			str[strLen] = 0;
 			ret.assign(str, strLen);

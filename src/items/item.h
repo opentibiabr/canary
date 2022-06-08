@@ -841,7 +841,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
 		}
 		virtual uint32_t getDoorId() const {
-			return getIntAttr(ITEM_ATTRIBUTE_DOORID);
+			return static_cast<uint32_t>(getIntAttr(ITEM_ATTRIBUTE_DOORID));
 		}
 		// Bed class
 		virtual const uint32_t& getSleeperGUID() const {

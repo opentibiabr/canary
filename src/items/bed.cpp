@@ -179,7 +179,7 @@ void BedItem::wakeUp(Player* player)
 
 void BedItem::regeneratePlayer(Player* player) const
 {
-	const uint32_t sleptTime = time(nullptr) - getSleepStart();
+	const auto sleptTime = static_cast<uint32_t>(Game::getTimeNow() - getSleepStart());
 
 	Condition* condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	if (condition != nullptr) {
@@ -227,7 +227,7 @@ void BedItem::internalSetSleeper(const Player* player)
 	std::string desc_str = player->getName() + " is sleeping there.";
 
 	setSleeperGuid(player->getGUID());
-	setSleepStart(time(nullptr));
+	setSleepStart(static_cast<uint32_t>(Game::getTimeNow()));
 	setSpecialDescription(desc_str);
 }
 

@@ -187,7 +187,7 @@ TEST_CASE("Get Premium Days Remaining - Nullptr", "[UnitTest]") {
 TEST_CASE("Set/Get Premium Last Day", "[UnitTest]") {
 	account::Account account;
   error_t result;
-  time_t last_day = time(nullptr);
+  time_t last_day = Game::getTimeNow();
   result = account.SetPremiumLastDay(last_day);
   REQUIRE(result == account::ERROR_NO);
 
@@ -757,7 +757,7 @@ TEST_CASE("Save Account", "[IntegrationTest]") {
   result = account.SetPremiumRemaningDays(new_premium_remaining_days);
   CHECK(result == account::ERROR_NO);
 
-  time_t new_premium_last_day = time(nullptr);
+  time_t new_premium_last_day = Game::getTimeNow();
   result = account.SetPremiumLastDay(new_premium_last_day);
   CHECK(result == account::ERROR_NO);
 

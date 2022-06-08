@@ -747,13 +747,13 @@ Attr_ReadValue Item::readAttributesMap(AttrTypes_t attr, BinaryNode& binaryNode,
 		case ATTR_TELE_DEST: {
 			uint16_t x = binaryNode.getU16();
 			uint16_t y = binaryNode.getU16();
-			uint16_t z = binaryNode.getU8();
-			Position position(x, y, z);
+			uint8_t z = binaryNode.getU8();
+			Position newPosition(x, y, z);
 			if (x == 0 || y == 0 || z == 0) {
-				SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have empty destination", getID(), position.toString());
+				SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have empty destination", getID(), newPosition.toString());
 			}
 
-			setDestination(position);
+			setDestination(newPosition);
 			break;
 		}
 

@@ -248,8 +248,8 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 			if (item->isRemoved()) {
 				return RETURNVALUE_CANNOTUSETHISOBJECT;
 			}
-		} else if (action->function) {
-			if (action->function(player, item, pos, nullptr, pos, isHotkey)) {
+		} else if (action->useFunction) {
+			if (action->useFunction(player, item, pos, nullptr, pos, isHotkey)) {
 				return RETURNVALUE_NOERROR;
 			}
 		}
@@ -409,8 +409,8 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 		showUseHotkeyMessage(player, item, player->getItemTypeCount(item->getID(), subType != item->getItemCount() ? subType : -1));
 	}
 
-	if (action->function) {
-		if (action->function(player, item, fromPos, action->getTarget(player, creature, toPos, toStackPos), toPos, isHotkey)) {
+	if (action->useFunction) {
+		if (action->useFunction(player, item, fromPos, action->getTarget(player, creature, toPos, toStackPos), toPos, isHotkey)) {
 			return true;
 		}
 		return false;
@@ -443,13 +443,7 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
 }
 
-Action::Action(LuaScriptInterface* interface) : Script(interface)
-{
-	function = nullptr;
-	allowFarUse = false;
-	checkFloor = true;
-	checkLineOfSight = true;
-}
+Action::Action(LuaScriptInterface* interface) : Script(interface), useFunction(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {

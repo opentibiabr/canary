@@ -103,7 +103,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 	uint32_t days;
 	account.GetPremiumRemaningDays(&days);
 	output->addByte(0);
-	output->add<uint32_t>(time(nullptr) + (days * 86400));
+	output->add<uint32_t>(Game::getTimeNow() + (days * 86400));
   }
 
 	send(output);

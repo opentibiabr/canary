@@ -141,7 +141,7 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			}
 		}
 
-		time_t current_time = g_game().getTimeNow();
+		time_t current_time = Game::getTimeNow();
 		tm* timeinfo = localtime(&current_time);
 		timeinfo->tm_hour = hour;
 		timeinfo->tm_min = min;

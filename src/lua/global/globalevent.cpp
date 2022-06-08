@@ -71,7 +71,7 @@ void GlobalEvents::startup() const {
 }
 
 void GlobalEvents::timer() {
-	time_t now = g_game().getTimeNow();
+	time_t now = Game::getTimeNow();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 
@@ -113,7 +113,7 @@ void GlobalEvents::timer() {
 void GlobalEvents::think() {
 	int64_t now = OTSYS_TIME();
 
-	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
+	uint32_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 	for (auto& it : thinkMap) {
 		GlobalEvent& globalEvent = it.second;
 

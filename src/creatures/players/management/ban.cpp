@@ -22,6 +22,7 @@
 #include "creatures/players/management/ban.h"
 #include "database/database.h"
 #include "database/databasetasks.h"
+#include "game/game.h"
 #include "utils/tools.h"
 
 bool Ban::acceptConnection(uint32_t clientIP)
@@ -71,7 +72,7 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 	}
 
 	int64_t expiresAt = result->get64("expires_at");
-	if (expiresAt != 0 && time(nullptr) > expiresAt) {
+	if (expiresAt != 0 && Game::getTimeNow() > expiresAt) {
 		// Move the ban to history if it has expired
 		query.str(std::string());
 		query << "INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" << accountId << ',' << db.escapeString(result->getString("reason")) << ',' << result->get64("banned_at") << ',' << expiresAt << ',' << result->getU32("banned_by") << ')';
@@ -106,7 +107,7 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo)
 	}
 
 	int64_t expiresAt = result->get64("expires_at");
-	if (expiresAt != 0 && time(nullptr) > expiresAt) {
+	if (expiresAt != 0 && Game::getTimeNow() > expiresAt) {
 		query.str(std::string());
 		query << "DELETE FROM `ip_bans` WHERE `ip` = " << clientIP;
 		g_databaseTasks().addTask(query.str());

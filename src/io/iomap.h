@@ -136,8 +136,8 @@ class IOMap
 		}
 
 	private:
-		bool parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map, const std::string& fileName);
-		bool parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
+		bool parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map, const std::string& fileName) const;
+		bool parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const;
 		bool parseTowns(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
 		bool parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
 };

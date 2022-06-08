@@ -189,7 +189,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 void IOMarket::checkExpiredOffers()
 {
-	const time_t lastExpireDate = time(nullptr) - g_configManager().getNumber(MARKET_OFFER_DURATION);
+	const time_t lastExpireDate = Game::getTimeNow() - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::ostringstream query;
 	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
@@ -249,7 +249,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 void IOMarket::createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, bool anonymous)
 {
 	std::ostringstream query;
-	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `created`, `anonymous`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << price << ',' << time(nullptr) << ',' << anonymous << ')';
+	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `created`, `anonymous`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << price << ',' << Game::getTimeNow() << ',' << anonymous << ')';
 	Database::getInstance().executeQuery(query.str());
 }
 
@@ -272,7 +272,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	std::ostringstream query;
 	query << "INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`) VALUES ("
 		<< playerId << ',' << type << ',' << itemId << ',' << amount << ',' << price << ','
-		<< timestamp << ',' << time(nullptr) << ',' << state << ')';
+		<< timestamp << ',' << Game::getTimeNow() << ',' << state << ')';
 	g_databaseTasks().addTask(query.str());
 }
 
@@ -294,7 +294,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 		return false;
 	}
 
-	appendHistory(result->getU32("player_id"), static_cast<MarketAction_t>(result->getU16("sale")), result->getU16("itemtype"), result->getU16("amount"), result->getU32("price"), time(nullptr), state);
+	appendHistory(result->getU32("player_id"), static_cast<MarketAction_t>(result->getU16("sale")), result->getU16("itemtype"), result->getU16("amount"), result->getU32("price"), Game::getTimeNow(), state);
 	return true;
 }
 

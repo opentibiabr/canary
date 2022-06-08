@@ -7112,7 +7112,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 						cause << cause2;
 					}
 					cause << '.';
-					entries.emplace_back(std::move(cause.str()), result->getU32("time"));
+					entries.emplace_back(cause.str(), result->getU32("time"));
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentDeaths(page, static_cast<uint16_t>(pages), entries);
 			};
@@ -7148,24 +7148,20 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 				std::vector<RecentPvPKillEntry> entries;
 				entries.reserve(result->countResults());
 				do {
-					std::string cause1 = result->getString("killed_by");
-					std::string cause2 = result->getString("mostdamage_by");
+					std::string killedBy = result->getString("killed_by");
+					std::string mostDamageBy = result->getString("mostdamage_by");
 					std::string name = result->getString("name");
 
 					uint8_t status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
-					if (player->getName() == cause1) {
-						if (result->getU32("unjustified") == 1) {
-							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
-						}
-					} else if (player->getName() == cause2) {
-						if (result->getU32("mostdamage_unjustified") == 1) {
-							status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
-						}
+					if (player->getName() == killedBy && result->getU32("unjustified") == 1) {
+						status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
+					} else if (player->getName() == mostDamageBy && result->getU32("mostdamage_unjustified") == 1) {
+						status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
 					}
 
 					std::ostringstream description;
 					description << "Killed " << name << '.';
-					entries.emplace_back(std::move(description.str()), result->getU32("time"), status);
+					entries.emplace_back(description.str(), result->getU32("time"), status);
 				} while (result->next());
 				player->sendCyclopediaCharacterRecentPvPKills(page, static_cast<uint16_t>(pages), entries);
 			};
@@ -7264,7 +7260,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 			return;
 		}
 
-		uint16_t page = result->getU16("page");
+		uint16_t resultPage = result->getU16("page");
 		uint32_t pages = result->getU32("entries");
 		pages += entriesPerPage - 1;
 		pages /= entriesPerPage;
@@ -7279,9 +7275,9 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 			} else {
 				characterVocation = 0;
 			}
-			characters.emplace_back(std::move(result->getString("name")), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation);
+			characters.emplace_back(result->getString("name"), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation);
 		} while (result->next());
-		player->sendHighscores(characters, category, vocation, page, static_cast<uint16_t>(pages));
+		player->sendHighscores(characters, category, vocation, resultPage, static_cast<uint16_t>(pages));
 	};
 	g_databaseTasks().addTask(query.str(), callback, true);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);

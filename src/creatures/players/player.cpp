@@ -1537,7 +1537,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		int32_t offlineTime;
 		if (getLastLogout() != 0) {
 			// Not counting more than 21 days to prevent overflow when multiplying with 1000 (for milliseconds).
-			offlineTime = std::min<int32_t>(time(nullptr) - getLastLogout(), 86400 * 21);
+			offlineTime = std::min<int32_t>(Game::getTimeNow() - getLastLogout(), 86400 * 21);
 		} else {
 			offlineTime = 0;
 		}
@@ -1635,7 +1635,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 			clearPartyInvitations();
 		}
 
-		lastLogout = time(nullptr);
+		lastLogout = Game::getTimeNow();
 
 		if (eventWalk != 0) {
 			setFollowCreature(nullptr);
@@ -4721,7 +4721,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player == this) {
 			for (const auto& kill : unjustifiedKills) {
-				if (kill.unavenged && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
+				if (kill.unavenged && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
 					return SKULL_ORANGE;
 				}
 			}
@@ -4745,7 +4745,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 bool Player::hasKilled(const Player* player) const
 {
 	for (const auto& kill : unjustifiedKills) {
-		if (kill.target == player->getGUID() && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
+		if (kill.target == player->getGUID() && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
 			return true;
 		}
 	}
@@ -4796,14 +4796,14 @@ void Player::addUnjustifiedDead(const Player* attacked)
 
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
-	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	unjustifiedKills.emplace_back(attacked->getGUID(), Game::getTimeNow(), true);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
 	uint8_t monthKills = 0;
 
 	for (const auto& kill : unjustifiedKills) {
-		const auto diff = time(nullptr) - kill.time;
+		const auto diff = Game::getTimeNow() - kill.time;
 		if (diff <= 4 * 60 * 60) {
 			dayKills += 1;
 		}
@@ -5099,7 +5099,7 @@ void Player::sendUnjustifiedPoints()
 		double monthKills = 0;
 
 		for (const auto& kill : unjustifiedKills) {
-			const auto diff = time(nullptr) - kill.time;
+			const auto diff = Game::getTimeNow() - kill.time;
 			if (diff <= 24 * 60 * 60) {
 				dayKills += 1;
 			}

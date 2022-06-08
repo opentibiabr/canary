@@ -206,12 +206,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     player->levelPercent = 0;
   }
 
-  player->soul = result->getU16("soul");
+  player->soul = result->getU8("soul");
   player->capacity = result->getU32("cap") * 100;
   for (int i = 1; i <= 8; i++) {
     std::ostringstream ss;
     ss << "blessings" << i;
-    player->addBlessing(i, result->getU16(ss.str()));
+    player->addBlessing(i, result->getU8(ss.str()));
   }
 
   unsigned long attrSize;
@@ -256,25 +256,25 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
 		return false;
 	}
-  player->defaultOutfit.lookHead = result->getU16("lookhead");
-  player->defaultOutfit.lookBody = result->getU16("lookbody");
-  player->defaultOutfit.lookLegs = result->getU16("looklegs");
-  player->defaultOutfit.lookFeet = result->getU16("lookfeet");
-  player->defaultOutfit.lookAddons = result->getU16("lookaddons");
-  player->defaultOutfit.lookMountHead = result->getU16("lookmounthead");
-  player->defaultOutfit.lookMountBody = result->getU16("lookmountbody");
-  player->defaultOutfit.lookMountLegs = result->getU16("lookmountlegs");
-  player->defaultOutfit.lookMountFeet = result->getU16("lookmountfeet");
-  player->defaultOutfit.lookFamiliarsType = result->getU16("lookfamiliarstype");
+  player->defaultOutfit.lookHead = result->getU8("lookhead");
+  player->defaultOutfit.lookBody = result->getU8("lookbody");
+  player->defaultOutfit.lookLegs = result->getU8("looklegs");
+  player->defaultOutfit.lookFeet = result->getU8("lookfeet");
+  player->defaultOutfit.lookAddons = result->getU8("lookaddons");
+  player->defaultOutfit.lookMountHead = result->getU8("lookmounthead");
+  player->defaultOutfit.lookMountBody = result->getU8("lookmountbody");
+  player->defaultOutfit.lookMountLegs = result->getU8("lookmountlegs");
+  player->defaultOutfit.lookMountFeet = result->getU8("lookmountfeet");
+  player->defaultOutfit.lookFamiliarsType = result->getU8("lookfamiliarstype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
 		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
 		return false;
 	}
-  player->isDailyReward = result->getU16("isreward");
+  player->isDailyReward = result->getU8("isreward");
   player->currentOutfit = player->defaultOutfit;
 
   if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
-    const time_t skullSeconds = result->getTime("skulltime") - g_game().getTimeNow();
+    const time_t skullSeconds = result->getTime("skulltime") - Game::getTimeNow();
     if (skullSeconds > 0) {
       //ensure that we round up the number of ticks
       player->skullTicks = (skullSeconds + 2);
@@ -290,7 +290,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   player->loginPosition.x = result->getU16("posx");
   player->loginPosition.y = result->getU16("posy");
-  player->loginPosition.z = result->getU16("posz");
+  player->loginPosition.z = result->getU8("posz");
 
   player->addPreyCards(result->getU64("prey_wildcard"));
   player->addTaskHuntingPoints(result->getU16("task_points"));
@@ -359,7 +359,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `id` = " << playerRankId;
 
         if ((result = db.storeQuery(query.str()))) {
-          guild->addRank(result->getU32("id"), result->getString("name"), result->getU16("level"));
+          guild->addRank(result->getU32("id"), result->getString("name"), result->getU8("level"));
         }
 
         rank = guild->getRankById(playerRankId);
@@ -453,7 +453,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   if ((result = db.storeQuery(query.str()))) {
     do {
       time_t killTime = result->getTime("time");
-      if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
+      if ((Game::getTimeNow() - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
         player->unjustifiedKills.emplace_back(result->getU32("target"), killTime, result->getBoolean("unavenged"));
       }
     } while (result->next());
@@ -468,13 +468,14 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     loadItems(itemMap, result);
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-      const std::pair<Item*, int32_t>& pair = it->second;
-      Item* item = pair.first;
-      if (!item) {
+      const auto& [itemPair, itemIdPair] = it->second;
+      Item* item = itemPair;
+      if (item == nullptr) {
+        SPDLOG_ERROR("[IOLoginData::loadPlayer (1)] - Item is nullptr");
         continue;
       }
 
-      int32_t pid = pair.second;
+      int32_t pid = itemIdPair;
 
       if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
         player->internalAddThing(pid, item);
@@ -514,9 +515,9 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     return left.first < right.first;
   });
 
-  for (auto& it : openContainersList) {
-    player->addContainer(it.first - 1, it.second);
-    player->onSendContainer(it.second);
+  for (auto& [containerCidPair, openContainerPair] : openContainersList) {
+    player->addContainer(containerCidPair - 1, openContainerPair);
+    player->onSendContainer(openContainerPair);
   }
 
   // Store Inbox
@@ -533,10 +534,14 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     loadItems(itemMap, result);
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-      const std::pair<Item*, int32_t>& pair = it->second;
-      Item* item = pair.first;
+      const auto& [itemPair, itemIdPair] = it->second;
+      Item* item = itemPair;
+      if (item == nullptr) {
+        SPDLOG_ERROR("[IOLoginData::loadPlayer (2)] - Item is nullptr");
+        continue;
+      }
 
-      int32_t pid = pair.second;
+      int32_t pid = itemIdPair;
       if (pid >= 0 && pid < 100) {
         DepotChest* depotChest = player->getDepotChest(pid, true);
         if (depotChest) {
@@ -568,15 +573,19 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
     //first loop handles the reward containers to retrieve its date attribute
     //for (ItemMap::iterator it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
-    for (auto& it : itemMap) {
-      const std::pair<Item*, int32_t>& pair = it.second;
-      Item* item = pair.first;
+    for (auto& [itemMapPairFirst, itemMapPairSecond] : itemMap) {
+      const auto& [itemPair, itemIdPair] = itemMapPairSecond;
+      Item* item = itemPair;
+      if (item == nullptr) {
+        SPDLOG_ERROR("[IOLoginData:loadPlayer] - Item is nullptr");
+        continue;
+      }
 
-      int32_t pid = pair.second;
+      int32_t pid = itemIdPair;
       if (pid >= 0 && pid < 100) {
         Reward* reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
         if (reward) {
-          it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
+          itemMapPairSecond = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
         }
       } else {
         break;
@@ -586,10 +595,14 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     //second loop (this time a reverse one) to insert the items in the correct order
     //for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-      const std::pair<Item*, int32_t>& pair = it->second;
-      Item* item = pair.first;
+      const auto& [itemPair, itemIdPair] = it->second;
+      Item* item = itemPair;
+      if (item == nullptr) {
+        SPDLOG_ERROR("[IOLoginData::loadPlayer (3)] - Item is nullptr");
+        continue;
+      }
 
-      int32_t pid = pair.second;
+      int32_t pid = itemIdPair;
       if (pid >= 0 && pid < 100) {
         break;
       }
@@ -615,9 +628,14 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     loadItems(itemMap, result);
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-      const std::pair<Item*, int32_t>& pair = it->second;
-      Item* item = pair.first;
-      int32_t pid = pair.second;
+      const auto& [itemPair, itemIdPair] = it->second;
+      Item* item = itemPair;
+      if (item == nullptr) {
+        SPDLOG_ERROR("[IOLoginData::loadPlayer (4)] - Item is nullptr");
+        continue;
+      }
+
+      int32_t pid = itemIdPair;
 
       if (pid >= 0 && pid < 100) {
         player->getInbox()->internalAddThing(item);
@@ -742,9 +760,12 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
   int32_t runningId = 100;
 
   const auto& openContainers = player->getOpenContainers();
-  for (const auto& it : itemList) {
-    int32_t pid = it.first;
-    Item* item = it.second;
+  for (const auto& [itemIdPair, itemPair] : itemList) {
+    int32_t pid = itemIdPair;
+    Item* item = itemPair;
+    if (item == nullptr) {
+      SPDLOG_ERROR("[IOLoginData::saveItems] - Item is nullptr");
+    }
     ++runningId;
 
     if (Container* container = item->getContainer()) {
@@ -753,12 +774,12 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
       }
 
       if (!openContainers.empty()) {
-        for (const auto& its : openContainers) {
-          auto openContainer = its.second;
+        for (const auto& [containerCidPair, openContainerPair] : openContainers) {
+          auto openContainer = openContainerPair;
           auto opcontainer = openContainer.container;
 
           if (opcontainer == container) {
-            container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)its.first) + 1);
+            container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
             break;
           }
         }
@@ -797,12 +818,11 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
         }
 
         if (!openContainers.empty()) {
-          for (const auto& it : openContainers) {
-            auto openContainer = it.second;
+          for (const auto& [containerType, openContainer] : openContainers) {
             auto opcontainer = openContainer.container;
 
             if (opcontainer == subContainer) {
-              subContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)it.first) + 1);
+              subContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerType) + 1);
               break;
             }
           }
@@ -910,7 +930,7 @@ bool IOLoginData::savePlayer(Player* player)
     int64_t skullTime = 0;
 
     if (player->skullTicks > 0) {
-      skullTime = time(nullptr) + player->skullTicks;
+      skullTime = Game::getTimeNow() + player->skullTicks;
     }
 
     query << "`skulltime` = " << skullTime << ',';
@@ -962,7 +982,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ',';
 
   if (!player->isOffline()) {
-    query << "`onlinetime` = `onlinetime` + " << (time(nullptr) - player->lastLoginSaved) << ',';
+    query << "`onlinetime` = `onlinetime` + " << (Game::getTimeNow() - player->lastLoginSaved) << ',';
   }
   for (int i = 1; i <= 8; i++) {
     query << "`blessings" << i << "`" << " = " << static_cast<uint32_t>(player->getBlessingCount(i)) << ((i == 8) ? ' ' : ',');
@@ -982,12 +1002,12 @@ bool IOLoginData::savePlayer(Player* player)
   query.str(std::string());
   query << "DELETE FROM `player_stash` WHERE `player_id` = " << player->getGUID();
   db.executeQuery(query.str());
-  for (auto it : player->getStashItems()) {
+  for (auto [itemIdPair, itemAmountPair] : player->getStashItems()) {
 	query.str(std::string());
     query << "INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES (";
     query << player->getGUID() << ", ";
-    query << it.first << ", ";
-    query << it.second << ")";
+    query << itemIdPair << ", ";
+    query << itemAmountPair << ")";
 	db.executeQuery(query.str());
   }
 
@@ -1109,10 +1129,15 @@ bool IOLoginData::savePlayer(Player* player)
     DBInsert depotQuery("INSERT INTO `player_depotitems` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
     itemList.clear();
 
-    for (const auto& it : player->depotChests) {
-      DepotChest* depotChest = it.second;
+    for (const auto& [itemDepotIdPair, itemDepotChestPair] : player->depotChests) {
+      DepotChest* depotChest = itemDepotChestPair;
+      if (depotChest == nullptr) {
+        SPDLOG_ERROR("[IOLoginData::savePlayer] - Depot chest is nullptr");
+        continue;
+      }
+
       for (Item* item : depotChest->getItemList()) {
-        itemList.emplace_back(it.first, item);
+        itemList.emplace_back(itemDepotIdPair, item);
       }
     }
 
@@ -1140,7 +1165,7 @@ bool IOLoginData::savePlayer(Player* player)
     for (const auto& rewardId : rewardList) {
       Reward* reward = player->getReward(rewardId, false);
       // rewards that are empty or older than 7 days aren't stored
-      if (!reward->empty() && (time(nullptr) - rewardId <= 60 * 60 * 24 * 7)) {
+      if (!reward->empty() && (Game::getTimeNow() - rewardId <= 60 * 60 * 24 * 7)) {
         itemList.emplace_back(++running, reward);
       }
     }
@@ -1262,8 +1287,8 @@ bool IOLoginData::savePlayer(Player* player)
   DBInsert storageQuery("INSERT INTO `player_storage` (`player_id`, `key`, `value`) VALUES ");
   player->genReservedStorageRange();
 
-  for (const auto& it : player->storageMap) {
-    query << player->getGUID() << ',' << it.first << ',' << it.second;
+  for (const auto& [storageIdPair, storageIdValue] : player->storageMap) {
+    query << player->getGUID() << ',' << storageIdPair << ',' << storageIdValue;
     if (!storageQuery.addRow(query)) {
       return false;
     }

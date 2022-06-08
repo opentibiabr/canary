@@ -60,7 +60,7 @@ class Spells final : public BaseEvents
 
 		InstantSpell* getInstantSpellById(uint32_t spellId);
 
-		TalkActionResult_t playerSaySpell(Player* player, std::string& words);
+		TalkActionResult_t playerSaySpell(Player* player, std::string& words, const std::string& lowerWords);
 
 		static Position getCasterPosition(Creature* creature, Direction dir);
 		std::string getScriptBaseName() const override;

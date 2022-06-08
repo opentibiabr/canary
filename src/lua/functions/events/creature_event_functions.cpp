@@ -72,13 +72,16 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 
 int CreatureEventFunctions::luaCreatureEventRegister(lua_State* L) {
 	// creatureevent:register()
-	CreatureEvent* creature = getUserdata<CreatureEvent>(L, 1);
-	if (creature) {
+	CreatureEvent** creaturePtr = getRawUserdata<CreatureEvent>(L, 1);
+	if (creaturePtr && *creaturePtr) {
+		CreatureEvent* creature = *creaturePtr;
 		if (!creature->isLoadedCallback()) {
 			pushBoolean(L, false);
-			return 1;
+			delete creature;
+		} else {
+			pushBoolean(L, g_creatureEvents().registerLuaEvent(creature));
 		}
-		pushBoolean(L, g_creatureEvents().registerLuaEvent(creature));
+		*creaturePtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);
 	}

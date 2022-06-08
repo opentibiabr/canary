@@ -18,7 +18,8 @@
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
-TalkActionResult_t Spells::playerSaySpell(Player* player, std::string &words) {
+TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words, const std::string& lowerWords)
+{
 	std::string str_words = words;
 
 	// strip trailing spaces

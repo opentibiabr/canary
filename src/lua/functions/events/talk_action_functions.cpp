@@ -44,13 +44,15 @@ int TalkActionFunctions::luaTalkActionOnSay(lua_State* L) {
 
 int TalkActionFunctions::luaTalkActionRegister(lua_State* L) {
 	// talkAction:register()
-	TalkAction* talk = getUserdata<TalkAction>(L, 1);
-	if (talk) {
+	TalkAction** talkPtr = getRawUserdata<TalkAction>(L, 1);
+	if (talkPtr && *talkPtr) {
+		TalkAction_ptr talk { *talkPtr };
 		if (!talk->isLoadedCallback()) {
 			pushBoolean(L, false);
-			return 1;
+		} else {
+			pushBoolean(L, g_talkActions().registerLuaEvent(talk));
 		}
-		pushBoolean(L, g_talkActions().registerLuaEvent(talk));
+		*talkPtr = nullptr; // Remove luascript reference
 	} else {
 		lua_pushnil(L);
 	}
@@ -61,7 +63,8 @@ int TalkActionFunctions::luaTalkActionSeparator(lua_State* L) {
 	// talkAction:separator(sep)
 	TalkAction* talk = getUserdata<TalkAction>(L, 1);
 	if (talk) {
-		talk->setSeparator(getString(L, 2).c_str());
+		std::string sep = getString(L, 2);
+		talk->setSeparator((sep.empty() ? '"' : sep[0]));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

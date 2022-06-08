@@ -17,7 +17,7 @@
 #include "lua/scripts/scripts.h"
 
 class TalkAction;
-using TalkAction_ptr = std::unique_ptr<TalkAction>;
+using TalkAction_ptr = std::shared_ptr<TalkAction>;
 
 class TalkAction : public Script {
 	public:
@@ -33,10 +33,10 @@ class TalkAction : public Script {
 			words = word;
 			wordsMap.push_back(word);
 		}
-		std::string getSeparator() const {
+		char getSeparator() const {
 			return separator;
 		}
-		void setSeparator(std::string sep) {
+		void setSeparator(char sep) {
 			separator = sep;
 		}
 
@@ -51,7 +51,7 @@ class TalkAction : public Script {
 
 		std::string words;
 		std::vector<std::string> wordsMap;
-		std::string separator = "\"";
+		char separator = '"';
 };
 
 class TalkActions final : public Scripts {
@@ -72,11 +72,11 @@ class TalkActions final : public Scripts {
 
 		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string &words) const;
 
-		bool registerLuaEvent(TalkAction* event);
+		bool registerLuaEvent(TalkAction_ptr& event);
 		void clear();
 
 	private:
-		std::map<std::string, TalkAction> talkActions;
+		std::unordered_map<std::string, TalkAction> talkActions;
 };
 
 constexpr auto g_talkActions = &TalkActions::getInstance;

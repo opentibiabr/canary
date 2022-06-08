@@ -200,7 +200,7 @@ void Game::setGameState(GameState_t newState)
 				gameStore.startup();
 			}
 
-			size_t maxPlayers = static_cast<size_t>(g_config.getNumber(MAX_PLAYERS));
+			size_t maxPlayers = static_cast<size_t>(g_configManager().getNumber(MAX_PLAYERS));
 			if (maxPlayers > 0) {
 				players.reserve(maxPlayers);
 				mappedPlayerNames.reserve(maxPlayers);

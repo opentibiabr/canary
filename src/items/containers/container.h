@@ -90,6 +90,9 @@ class Container : public Item, public Cylinder
 		virtual const Reward* getReward() const {
 			return nullptr;
 		}
+		virtual bool isInbox() const {
+			return false;
+		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;

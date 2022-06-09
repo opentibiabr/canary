@@ -239,7 +239,7 @@ void IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
 		return;
 	}
 
-	std::forward_list<Item*> items;
+	std::vector<Item*> items;
 	uint16_t count = 0;
 	for (Item* item : *tileItems) {
 		const ItemType& it = Item::items[item->getID()];
@@ -250,7 +250,7 @@ void IOMapSerialize::saveTile(PropWriteStream& stream, const Tile* tile)
 			continue;
 		}
 
-		items.push_front(item);
+		items.push_back(item);
 		++count;
 	}
 

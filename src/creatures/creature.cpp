@@ -237,13 +237,13 @@ bool Creature::getNextStep(Direction& dir, uint32_t&)
 		return false;
 	}
 
-	dir = listWalkDir.front();
-	listWalkDir.pop_front();
+	dir = listWalkDir.back();
+	listWalkDir.pop_back();
 	onWalk(dir);
 	return true;
 }
 
-void Creature::startAutoWalk(const std::forward_list<Direction>& listDir)
+void Creature::startAutoWalk(const std::vector<Direction>& listDir)
 {
 	if (hasCondition(CONDITION_ROOTED)) {
 		return;
@@ -448,7 +448,7 @@ void Creature::checkSummonMove(const Position& newPos, bool teleportSummon) cons
 {
 	if (hasSummons()) {
 		// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
-		std::forward_list<Creature*> despawnMonsterList;
+		std::vector<Creature*> despawnMonsterList;
 		for (Creature* creature : getSummons()) {
 			if (!creature) {
 				continue;
@@ -978,7 +978,7 @@ void Creature::goToFollowCreature()
 
 			if (dir != DIRECTION_NONE) {
 				listWalkDir.clear();
-				listWalkDir.push_front(dir);
+				listWalkDir.emplace_back(dir);
 
 				hasFollowPath = true;
 				startAutoWalk(listWalkDir);
@@ -1645,12 +1645,12 @@ bool Creature::isInvisible() const
 	}) != conditions.end();
 }
 
-bool Creature::getPathTo(const Position& targetPos, std::forward_list<Direction>& dirList, const FindPathParams& fpp) const
+bool Creature::getPathTo(const Position& targetPos, std::vector<Direction>& dirList, const FindPathParams& fpp) const
 {
 	return g_game().map.getPathMatching(*this, dirList, FrozenPathingConditionCall(targetPos), fpp);
 }
 
-bool Creature::getPathTo(const Position& targetPos, std::forward_list<Direction>& dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 0*/) const
+bool Creature::getPathTo(const Position& targetPos, std::vector<Direction>& dirList, int32_t minTargetDist, int32_t maxTargetDist, bool fullPathSearch /*= true*/, bool clearSight /*= true*/, int32_t maxSearchDist /*= 0*/) const
 {
 	FindPathParams fpp;
 	fpp.fullPathSearch = fullPathSearch;

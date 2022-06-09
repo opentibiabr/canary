@@ -4892,13 +4892,13 @@ double Player::getLostPercent() const
 void Player::learnInstantSpell(const std::string& spellName)
 {
 	if (!hasLearnedInstantSpell(spellName)) {
-		learnedInstantSpellList.push_front(spellName);
+		learnedInstantSpellList.emplace(spellName);
 	}
 }
 
 void Player::forgetInstantSpell(const std::string& spellName)
 {
-	learnedInstantSpellList.remove(spellName);
+	learnedInstantSpellList.erase(spellName);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string& spellName) const
@@ -5433,7 +5433,10 @@ bool Player::hasModalWindowOpen(uint32_t modalWindowId) const
 
 void Player::onModalWindowHandled(uint32_t modalWindowId)
 {
-	modalWindows.remove(modalWindowId);
+	auto it = std::find(modalWindows.begin(), modalWindows.end(), modalWindowId);
+	if (it != modalWindows.end()) {
+		modalWindows.erase(it);
+	}
 }
 
 void Player::sendModalWindow(const ModalWindow& modalWindow)
@@ -5442,7 +5445,7 @@ void Player::sendModalWindow(const ModalWindow& modalWindow)
 		return;
 	}
 
-	modalWindows.push_front(modalWindow.id);
+	modalWindows.push_back(modalWindow.id);
 	client->sendModalWindow(modalWindow);
 }
 

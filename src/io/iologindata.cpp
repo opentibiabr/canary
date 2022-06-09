@@ -420,7 +420,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	query << "SELECT `player_id`, `name` FROM `player_spells` WHERE `player_id` = " << player->getGUID();
 	if ((result = db.storeQuery(query.str()))) {
 		do {
-			player->learnedInstantSpellList.emplace_front(result->getString("name"));
+			player->learnedInstantSpellList.emplace(result->getString("name"));
 		} while (result->next());
 	}
 
@@ -1304,8 +1304,8 @@ bool IOLoginData::hasBiddedOnHouse(uint32_t guid) {
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
-std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
-	std::forward_list<VIPEntry> entries;
+std::vector<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
+	std::vector<VIPEntry> entries;
 
 	std::ostringstream query;
 	query << "SELECT `player_id`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `name`, `description`, `icon`, `notify` FROM `account_viplist` WHERE `account_id` = " << accountId;
@@ -1313,7 +1313,7 @@ std::forward_list<VIPEntry> IOLoginData::getVIPEntries(uint32_t accountId) {
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (result) {
 		do {
-			entries.emplace_front(
+			entries.emplace_back(
 				result->getNumber<uint32_t>("player_id"),
 				result->getString("name"),
 				result->getString("description"),

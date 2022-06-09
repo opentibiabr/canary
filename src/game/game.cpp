@@ -933,7 +933,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 
 	if (!Position::areInRange<1, 1, 0>(movingCreatureOrigPos, player->getPosition())) {
 		// need to walk to the creature first before moving it
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(movingCreatureOrigPos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -1204,7 +1204,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 
 	if (!Position::areInRange<1, 1>(playerPos, mapFromPos)) {
 		// need to walk to the item first before using it
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(item->getPosition(), listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -1261,7 +1261,7 @@ void Game::playerMoveItem(Player* player, const Position &fromPos, uint16_t item
 				internalGetPosition(moveItem, itemPos, itemStackPos);
 			}
 
-			std::forward_list<Direction> listDir;
+			std::vector<Direction> listDir;
 			if (player->getPathTo(walkPos, listDir, 0, 0, true, true)) {
 				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -2489,7 +2489,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::forward_list<Direction> { direction });
+	player->startAutoWalk(std::vector<Direction> { direction });
 }
 
 bool Game::playerBroadcastMessage(Player* player, const std::string &text) const {
@@ -2658,7 +2658,7 @@ void Game::playerReceivePingBack(uint32_t playerId) {
 	player->sendPingBack();
 }
 
-void Game::playerAutoWalk(uint32_t playerId, const std::forward_list<Direction> &listDir) {
+void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir) {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -2736,7 +2736,7 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 				internalGetPosition(moveItem, itemPos, itemStackPos);
 			}
 
-			std::forward_list<Direction> listDir;
+			std::vector<Direction> listDir;
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
 				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -2836,7 +2836,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 	ReturnValue ret = g_actions().canUse(player, pos);
 	if (ret != RETURNVALUE_NOERROR) {
 		if (ret == RETURNVALUE_TOOFARAWAY) {
-			std::forward_list<Direction> listDir;
+			std::vector<Direction> listDir;
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -2960,7 +2960,7 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 				internalGetPosition(moveItem, itemPos, itemStackPos);
 			}
 
-			std::forward_list<Direction> listDir;
+			std::vector<Direction> listDir;
 			if (player->getPathTo(walkToPos, listDir, 0, 1, true, true)) {
 				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -3104,7 +3104,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position &pos, uint8_t stac
 	}
 
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -3140,7 +3140,7 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position &pos, 
 	}
 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 			SchedulerTask* task;
@@ -3195,7 +3195,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
@@ -3317,7 +3317,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -3457,7 +3457,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 	}
 
 	if (!Position::areInRange<1, 1>(playerPos, pos)) {
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 			SchedulerTask* task = createSchedulerTask(400, std::bind(&Game::playerBrowseField, this, playerId, pos));
@@ -3698,7 +3698,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (!Position::areInRange<1, 1>(tradeItemPosition, playerPosition)) {
-		std::forward_list<Direction> listDir;
+		std::vector<Direction> listDir;
 		if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 
@@ -4223,7 +4223,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 	if (!autoLoot && pos.x != 0xffff) {
 		if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
 			// need to walk to the corpse first before looting it
-			std::forward_list<Direction> listDir;
+			std::vector<Direction> listDir;
 			if (player->getPathTo(pos, listDir, 0, 1, true, true)) {
 				g_dispatcher().addTask(createTask(std::bind(&Game::playerAutoWalk, this, player->getID(), listDir)));
 				SchedulerTask* task = createSchedulerTask(0, std::bind(&Game::playerQuickLoot, this, player->getID(), pos, itemId, stackPos, defaultItem, lootAllCorpses, autoLoot));
@@ -4944,10 +4944,8 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 
 void Game::playerWhisper(Player* player, const std::string &text) {
 	SpectatorVector spectators;
-	const Position& pos = player->getPosition();
-	map.getSpectatorsInternal(spectators, pos, 
-			Map::maxClientViewportX, Map::maxClientViewportX,
-			Map::maxClientViewportY, Map::maxClientViewportY, pos.z, pos.z, false);
+	const Position &pos = player->getPosition();
+	map.getSpectatorsInternal(spectators, pos, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY, pos.z, pos.z, false);
 
 	// send to client + event method
 	for (Creature* spectator : spectators) {
@@ -5081,18 +5079,12 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
 		// the temporary when it's not used).
 		// Use getSpectatorsInternal here because we won't get any cached spectators anyway
 		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
-			map.getSpectatorsInternal(spectators, *pos, 
-					Map::maxClientViewportX, Map::maxClientViewportX,
-					Map::maxClientViewportY, Map::maxClientViewportY, pos->z, pos->z, false);
+			map.getSpectatorsInternal(spectators, *pos, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY, pos->z, pos->z, false);
 		} else {
 			if (pos->z < 8) {
-				map.getSpectatorsInternal(spectators, *pos, 
-						(Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
-						(Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2, 0, 7, false);
+				map.getSpectatorsInternal(spectators, *pos, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2, 0, 7, false);
 			} else {
-				map.getSpectatorsInternal(spectators, *pos,
-						(Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
-						(Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2, pos->z, pos->z, false);
+				map.getSpectatorsInternal(spectators, *pos, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2, pos->z, pos->z, false);
 			}
 		}
 	} else {
@@ -8100,7 +8092,7 @@ void Game::playerSetBossPodium(uint32_t playerId, uint32_t bossRaceId, const Pos
 	}
 
 	if (!Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
-		if (std::forward_list<Direction> listDir;
+		if (std::vector<Direction> listDir;
 			player->getPathTo(pos, listDir, 0, 1, true, false)) {
 			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
 			SchedulerTask* task = createSchedulerTask(400, std::bind_front(&Game::playerBrowseField, this, playerId, pos));
@@ -8165,7 +8157,7 @@ void Game::playerRotatePodium(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (pos.x != 0xFFFF && !Position::areInRange<1, 1, 0>(pos, player->getPosition())) {
-		if (std::forward_list<Direction> listDir;
+		if (std::vector<Direction> listDir;
 			player->getPathTo(pos, listDir, 0, 1, true, true)) {
 			g_dispatcher().addTask(createTask(std::bind_front(&Game::playerAutoWalk, this, player->getID(), listDir)));
 

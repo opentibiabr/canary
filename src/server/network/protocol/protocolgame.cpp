@@ -1250,33 +1250,34 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 
 	msg.skipBytes(numdirs);
 
-	std::forward_list<Direction> path;
+	std::vector<Direction> path;
+	path.reserve(numdirs);
 	for (uint8_t i = 0; i < numdirs; ++i) {
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir) {
 			case 1:
-				path.push_front(DIRECTION_EAST);
+				path.emplace_back(DIRECTION_EAST);
 				break;
 			case 2:
-				path.push_front(DIRECTION_NORTHEAST);
+				path.emplace_back(DIRECTION_NORTHEAST);
 				break;
 			case 3:
-				path.push_front(DIRECTION_NORTH);
+				path.emplace_back(DIRECTION_NORTH);
 				break;
 			case 4:
-				path.push_front(DIRECTION_NORTHWEST);
+				path.emplace_back(DIRECTION_NORTHWEST);
 				break;
 			case 5:
-				path.push_front(DIRECTION_WEST);
+				path.emplace_back(DIRECTION_WEST);
 				break;
 			case 6:
-				path.push_front(DIRECTION_SOUTHWEST);
+				path.emplace_back(DIRECTION_SOUTHWEST);
 				break;
 			case 7:
-				path.push_front(DIRECTION_SOUTH);
+				path.emplace_back(DIRECTION_SOUTH);
 				break;
 			case 8:
-				path.push_front(DIRECTION_SOUTHEAST);
+				path.emplace_back(DIRECTION_SOUTHEAST);
 				break;
 			default:
 				break;
@@ -5165,7 +5166,7 @@ void ProtocolGame::sendAddCreature(const Creature* creature, const Position &pos
 	// player light level
 	sendCreatureLight(creature);
 
-	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccount());
+	const std::vector<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccount());
 
 	if (player->isAccessPlayer()) {
 		for (const VIPEntry &entry : vipEntries) {

@@ -255,9 +255,9 @@ class Map {
 
 		const Tile* canWalkTo(const Creature &creature, const Position &pos) const;
 
-		bool getPathMatching(const Creature &creature, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
+		bool getPathMatching(const Creature &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
 
-		bool getPathMatching(const Position &startPos, std::forward_list<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
+		bool getPathMatching(const Position &startPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) const;
 
 		std::map<std::string, Position> waypoints;
 

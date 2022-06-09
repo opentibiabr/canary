@@ -3774,7 +3774,27 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 	msg.addByte(hasParent ? 0x01 : 0x00);
 
 	// Depot search
-	msg.addByte((container->getDepotLocker() && player->isDepotSearchAvailable()) ? 0x01 : 0x00);
+	bool showDepotSearch = false;
+	if (player->isDepotSearchAvailable()) {
+		if (container->getDepotLocker() || container->isDepotChest() || container->isInbox()) {
+			showDepotSearch = true;
+		} else if (const Container* parent = container->getParent() ? container->getParent()->getContainer() : nullptr; parent) {
+			while (parent) {
+				if (parent->getDepotLocker() || parent->isDepotChest()) {
+					showDepotSearch = true;
+					break;
+				}
+
+				parent = parent->getParent() ? parent->getParent()->getContainer() : nullptr;
+			}
+		}
+	}
+
+	if (showDepotSearch) {
+		msg.addByte(0x01);
+	} else {
+		msg.addByte(0x00);
+	}
 
 	msg.addByte(container->isUnlocked() ? 0x01 : 0x00); // Drag and drop
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination
@@ -7277,13 +7297,13 @@ void ProtocolGame::sendDepotSearchResultDetail(uint16_t itemId,
 	}
 
 	msg.add<uint32_t>(depotCount);
-	msg.addByte(static_cast<uint32_t>(depotItems.size()));
+	msg.addByte(static_cast<uint8_t>(depotItems.size()));
 	for (auto item : depotItems) {
 		AddItem(msg, item);
 	}
 
 	msg.add<uint32_t>(inboxCount);
-	msg.addByte(static_cast<uint32_t>(inboxItems.size()));
+	msg.addByte(static_cast<uint8_t>(inboxItems.size()));
 	for (auto item : inboxItems) {
 		AddItem(msg, item);
 	}
@@ -7318,13 +7338,6 @@ void ProtocolGame::parseDepotSearchItemRequest(NetworkMessage &msg)
 	addGameTask(&Game::playerRequestDepotSearchItem, player->getID(), itemId, itemTier);
 }
 
-void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
-{
-	Position pos = msg.getPosition();
-
-	SPDLOG_INFO("parseOpenParentContainer x: {}, y: {}, z: {}", pos.x, pos.y, pos.z);
-}
-
 void ProtocolGame::parseRetrieveDepotSearch(NetworkMessage &msg)
 {
 	uint16_t itemId = msg.get<uint16_t>();
@@ -7335,4 +7348,11 @@ void ProtocolGame::parseRetrieveDepotSearch(NetworkMessage &msg)
 	uint8_t type = msg.getByte();
 	
 	addGameTask(&Game::playerRequestDepotSearchRetrieve, player->getID(), itemId, itemTier, type);
+}
+
+void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
+{
+	Position pos = msg.getPosition();
+
+	addGameTask(&Game::playerRequestOpenContainerFromDepotSearch, player->getID(), pos);
 }

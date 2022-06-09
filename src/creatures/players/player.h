@@ -1008,7 +1008,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		//inventory
-		void sendDepotItems(std::map<uint16_t, std::map<uint8_t, uint32_t>> itemMap, uint16_t count) {
+		void sendDepotItems(ItemsTierCountList itemMap, uint16_t count) {
 			if (client) {
 				client->sendDepotItems(itemMap, count);
 			}
@@ -2077,6 +2077,7 @@ class Player final : public Creature, public Cylinder
 		void requestDepotItems();
 		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
 		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
+		void openContainerFromDepotSearch(const Position& pos);
 		Item* getItemFromDepotSearch(uint16_t itemId, uint8_t tier, const Position& pos);
 
 	private:

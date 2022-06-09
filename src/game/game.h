@@ -346,6 +346,7 @@ class Game
 		void playerRequestCloseDepotSearch(uint32_t playerId);
 		void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
 		void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
+		void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos);
 		void playerMoveThingFromDepotSearch(Player* player,
 											uint16_t itemId,
 											uint8_t tier,

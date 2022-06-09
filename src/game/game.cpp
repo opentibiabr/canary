@@ -704,6 +704,11 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 		// '0x20' -> From depot.
 		// '0x21' -> From inbox.
 		// Both only when the item is from depot search window.
+		if (!player->isDepotSearchOpenOnItem(itemId, index)) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return nullptr;
+		}
+
 		return player->getItemFromDepotSearch(itemId, index, pos);
 	} else if (pos.y == 0 && pos.z == 0) {
 		const ItemType& it = Item::items[itemId];
@@ -3093,6 +3098,11 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 	}
 
 	g_actions().useItemEx(player, fromPos, toPos, toStackPos, item, isHotkey);
+
+	// Refresh depot search window if necessary
+	if (player->isDepotSearchOpenOnItem(fromItemId, fromStackPos)) {
+		player->requestDepotSearchItem(fromItemId, fromStackPos);
+	}
 }
 
 void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPos,
@@ -3178,6 +3188,11 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 	player->setNextActionTask(nullptr);
 
 	g_actions().useItem(player, pos, index, item, isHotkey);
+
+	// Refresh depot search window if necessary
+	if (player->isDepotSearchOpenOnItem(itemId, stackPos)) {
+		player->requestDepotSearchItem(itemId, stackPos);
+	}
 }
 
 void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId)
@@ -4786,6 +4801,16 @@ void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, 
 	}
 
 	player->retrieveAllItemsFromDepotSearch(itemId, tier, type == 1);
+}
+
+void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || !player->isDepotSearchOpen()) {
+		return;
+	}
+
+	player->openContainerFromDepotSearch(pos);
 }
 /*******************************************************************************/
 

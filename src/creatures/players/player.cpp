@@ -5960,8 +5960,10 @@ void Player::requestDepotItems()
 	for (auto item : getStashItems()) {
 		auto itemMap_it = itemMap.find(item.first);
 
-		// To-Do: When forge is complete, change this to item->getTier() + 1 only
 		uint8_t itemTier = Item::items[item.first].upgradeClassification > 0 ? 1 : 0;
+		/* To-Do: When forge is complete, change to this:
+			uint8_t itemTier = (*it)->getClassification() > 0 ? ((*it)->getTier() + 1) : 0;
+		*/
 
 		if (itemMap_it == itemMap.end()) {
 			std::map<uint8_t, uint32_t> itemTierMap;
@@ -6056,6 +6058,28 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	}
 
 	requestDepotSearchItem(itemId, tier);
+}
+
+void Player::openContainerFromDepotSearch(const Position& pos)
+{
+	if (!isDepotSearchOpen()) {
+		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	Item* item = getItemFromDepotSearch(depotSearchOnItem.first, depotSearchOnItem.second, pos);
+	if (!item) {
+		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	Container* container = item->getParent() ? item->getParent()->getContainer() : nullptr;
+	if (!container) {
+		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	g_actions().useItem(this, pos, 0, container, false);
 }
 
 Item* Player::getItemFromDepotSearch(uint16_t itemId, uint8_t tier, const Position& pos)

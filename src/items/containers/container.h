@@ -93,6 +93,9 @@ class Container : public Item, public Cylinder
 		virtual bool isInbox() const {
 			return false;
 		}
+		virtual bool isDepotChest() const {
+			return false;
+		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;

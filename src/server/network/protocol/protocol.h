@@ -83,6 +83,7 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		void setChecksumMethod(ChecksumMethods_t method) {
 			checksumMethod = method;
 		}
+
 		void enableCompression();
 
 		static bool RSA_decrypt(NetworkMessage& msg);
@@ -97,7 +98,6 @@ class Protocol : public std::enable_shared_from_this<Protocol>
 		void XTEA_encrypt(OutputMessage& msg) const;
 		bool XTEA_decrypt(NetworkMessage& msg) const;
 		bool compression(OutputMessage& msg) const;
-
 
 		OutputMessage_ptr outputBuffer;
 		std::unique_ptr<z_stream> defStream;

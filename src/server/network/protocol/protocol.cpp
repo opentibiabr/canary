@@ -246,9 +246,15 @@ void Protocol::enableCompression()
 
 bool Protocol::compression(OutputMessage& msg) const
 {
-	static thread_local std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> defBuffer;
+	auto outputMessageSize = msg.getLength();
+	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
+		SPDLOG_INFO("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
+		return false;
+	}
+
+	static thread_local std::array<char, NETWORKMESSAGE_MAXSIZE> defBuffer;
 	defStream->next_in = msg.getOutputBuffer();
-	defStream->avail_in = msg.getLength();
+	defStream->avail_in = outputMessageSize;
 	defStream->next_out = defBuffer.data();
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 

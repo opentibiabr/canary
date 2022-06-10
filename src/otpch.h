@@ -22,6 +22,7 @@
 
 // Definitions should be global.
 #include "utils/definitions.h"
+#include "utils/simd.hpp"
 
 #include <algorithm>
 #include <chrono>

@@ -108,8 +108,6 @@ class Game
 		void removeTeamFinderListed(uint32_t leaderGuid) {
 			teamFinderMap.erase(leaderGuid);
 		}
-		// Event schedule xml load
-		bool loadScheduleEventFromXml();
 
 		Cylinder* internalGetCylinder(Player* player, const Position& pos) const;
 		Thing* internalGetThing(Player* player, const Position& pos, int32_t index,
@@ -406,10 +404,12 @@ class Game
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor) const;
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
+		void changePlayerSpeed(Player& player, int32_t varSpeedDelta);
 		void internalCreatureChangeOutfit(Creature* creature, const Outfit_t& oufit);
 		void internalCreatureChangeVisible(Creature* creature, bool visible);
 		void changeLight(const Creature* creature);
 		void updateCreatureIcon(const Creature* creature);
+		void reloadCreature(const Creature* creature);
 		void updateCreatureSkull(const Creature* player);
 		void updatePlayerShield(Player* player);
 		void updateCreatureType(Creature* creature);
@@ -491,7 +491,6 @@ class Game
 
 		bool reload(ReloadTypes_t reloadType);
 
-		bool itemidHasMoveevent(uint32_t itemid);
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);
 
@@ -513,35 +512,6 @@ class Game
 		}
 		void clearTilesToClean() {
 			tilesToClean.clear();
-		}
-
-		// Event schedule
-		uint16_t getExpSchedule() const {
-			return expSchedule;
-		}
-		void setExpSchedule(uint16_t exprate) {
-			expSchedule = (expSchedule * exprate)/100;
-		}
-
-		uint16_t getLootSchedule() const {
-			return lootSchedule;
-		}
-		void setLootSchedule(uint16_t lootrate) {
-			lootSchedule = (lootSchedule * lootrate)/100;
-		}
-
-		uint32_t getSpawnMonsterSchedule() const {
-			return spawnMonsterSchedule;
-		}
-		void setSpawnMonsterSchedule(uint32_t spawnrate) {
-			spawnMonsterSchedule = (spawnMonsterSchedule * spawnrate)/100;
-		}
-
-		uint16_t getSkillSchedule() const {
-			return skillSchedule;
-		}
-		void setSkillSchedule(uint16_t skillrate) {
-			skillSchedule = (skillSchedule * skillrate)/100;
 		}
 
 		void playerInspectItem(Player* player, const Position& pos);
@@ -659,12 +629,6 @@ class Game
 
 		GameState_t gameState = GAME_STATE_NORMAL;
 		WorldType_t worldType = WORLD_TYPE_PVP;
-
-		// Event schedule
-		uint16_t expSchedule = 100;
-		uint16_t lootSchedule = 100;
-		uint16_t skillSchedule = 100;
-		uint32_t spawnMonsterSchedule = 100;
 
 		LightState_t lightState = LIGHT_STATE_DAY;
 		LightState_t currentLightState = lightState;

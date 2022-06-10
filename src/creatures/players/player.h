@@ -100,6 +100,9 @@ class Player final : public Creature, public Cylinder
 		void setName(std::string newName) {
 			this->name = std::move(newName);
 		}
+		const std::string& getTypeName() const override {
+			return name;
+		}
 		const std::string& getNameDescription() const override {
 			return name;
 		}
@@ -768,7 +771,7 @@ class Player final : public Creature, public Cylinder
 		void onTargetCreatureGainHealth(Creature* target, int32_t points) override;
 		bool onKilledCreature(Creature* target, bool lastHit = true) override;
 		void onGainExperience(uint64_t gainExp, Creature* target) override;
-		void onGainSharedExperience(uint64_t gainExp, Creature* source);
+		void onGainSharedExperience(uint64_t gainExp, Creature* target);
 		void onAttackedCreatureBlockHit(BlockType_t blockType) override;
 		void onBlockHit() override;
 		void onChangeZone(ZoneType_t zone) override;
@@ -1149,7 +1152,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendDistanceShoot(const Position& from, const Position& to,
-                               unsigned char type) const {
+                               uint8_t type) const {
 			if (client) {
 				client->sendDistanceShoot(from, to, type);
 			}
@@ -2074,8 +2077,8 @@ class Player final : public Creature, public Cylinder
 
 		void checkLootContainers(const Item* item);
 
-		void gainExperience(uint64_t exp, Creature* source);
-		void addExperience(Creature* source, uint64_t exp, bool sendText = false);
+		void gainExperience(uint64_t exp, Creature* target);
+		void addExperience(Creature* target, uint64_t exp, bool sendText = false);
 		void removeExperience(uint64_t exp, bool sendText = false);
 
 		void updateInventoryWeight();

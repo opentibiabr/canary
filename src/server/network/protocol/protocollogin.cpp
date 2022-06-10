@@ -118,20 +118,17 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-
-	if (operatingSystem <= CLIENTOS_NEW_MAC)
-		enableCompact();
+	msg.skipBytes(2); // client OS
 
 	uint16_t version = msg.get<uint16_t>();
 
 	msg.skipBytes(17);
 	/*
-     * Skipped bytes:
-     * 4 bytes: client version
-     * 12 bytes: dat, spr, pic signatures (4 bytes each)
-     * 1 byte: 0
-     */
+	 - Skipped bytes:
+	 - 4 bytes: client version (971+)
+	 - 12 bytes: dat, spr, pic signatures (4 bytes each)
+	 - 1 byte: preview world(971+)
+	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {
 		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
@@ -139,13 +136,11 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	xtea::key key;
-	key[0] = msg.get<uint32_t>();
-	key[1] = msg.get<uint32_t>();
-	key[2] = msg.get<uint32_t>();
-	key[3] = msg.get<uint32_t>();
+	std::array<uint32_t, 4> key = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
-	setXTEAKey(std::move(key));
+	setXTEAKey(key.data());
+
+	setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 
 	if (g_game().getGameState() == GAME_STATE_STARTUP) {
 		disconnectClient("Gameworld is starting up. Please wait.", version);

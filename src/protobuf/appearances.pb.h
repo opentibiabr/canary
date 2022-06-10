@@ -2031,7 +2031,7 @@ class Appearance final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Canary::protobuf::appearances::FrameGroup >&
       frame_group() const;
 
-  // optional string name = 4;
+  // optional bytes name = 4;
   bool has_name() const;
   private:
   bool _internal_has_name() const;
@@ -2049,7 +2049,7 @@ class Appearance final :
   std::string* _internal_mutable_name();
   public:
 
-  // optional string description = 5;
+  // optional bytes description = 5;
   bool has_description() const;
   private:
   bool _internal_has_description() const;
@@ -4869,7 +4869,7 @@ class AppearanceFlagNPC final :
     kBuyPriceFieldNumber = 4,
     kCurrencyObjectTypeIdFieldNumber = 5,
   };
-  // optional string name = 1;
+  // optional bytes name = 1;
   bool has_name() const;
   private:
   bool _internal_has_name() const;
@@ -4887,7 +4887,7 @@ class AppearanceFlagNPC final :
   std::string* _internal_mutable_name();
   public:
 
-  // optional string location = 2;
+  // optional bytes location = 2;
   bool has_location() const;
   private:
   bool _internal_has_location() const;
@@ -4905,7 +4905,7 @@ class AppearanceFlagNPC final :
   std::string* _internal_mutable_location();
   public:
 
-  // optional string currency_quest_flag_display_name = 6;
+  // optional bytes currency_quest_flag_display_name = 6;
   bool has_currency_quest_flag_display_name() const;
   private:
   bool _internal_has_currency_quest_flag_display_name() const;
@@ -7374,7 +7374,7 @@ inline void Appearance::set_allocated_flags(::Canary::protobuf::appearances::App
   // @@protoc_insertion_point(field_set_allocated:Canary.protobuf.appearances.Appearance.flags)
 }
 
-// optional string name = 4;
+// optional bytes name = 4;
 inline bool Appearance::_internal_has_name() const {
   bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -7394,7 +7394,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Appearance::set_name(ArgT0&& arg0, ArgT... args) {
  _has_bits_[0] |= 0x00000001u;
- name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ name_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.Appearance.name)
 }
 inline std::string* Appearance::mutable_name() {
@@ -7443,7 +7443,7 @@ inline void Appearance::set_allocated_name(std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:Canary.protobuf.appearances.Appearance.name)
 }
 
-// optional string description = 5;
+// optional bytes description = 5;
 inline bool Appearance::_internal_has_description() const {
   bool value = (_has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -7463,7 +7463,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void Appearance::set_description(ArgT0&& arg0, ArgT... args) {
  _has_bits_[0] |= 0x00000002u;
- description_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ description_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.Appearance.description)
 }
 inline std::string* Appearance::mutable_description() {
@@ -10313,7 +10313,7 @@ inline void AppearanceFlagMarket::set_minimum_level(uint32_t value) {
 
 // AppearanceFlagNPC
 
-// optional string name = 1;
+// optional bytes name = 1;
 inline bool AppearanceFlagNPC::_internal_has_name() const {
   bool value = (_has_bits_[0] & 0x00000001u) != 0;
   return value;
@@ -10333,7 +10333,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void AppearanceFlagNPC::set_name(ArgT0&& arg0, ArgT... args) {
  _has_bits_[0] |= 0x00000001u;
- name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ name_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlagNPC.name)
 }
 inline std::string* AppearanceFlagNPC::mutable_name() {
@@ -10382,7 +10382,7 @@ inline void AppearanceFlagNPC::set_allocated_name(std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:Canary.protobuf.appearances.AppearanceFlagNPC.name)
 }
 
-// optional string location = 2;
+// optional bytes location = 2;
 inline bool AppearanceFlagNPC::_internal_has_location() const {
   bool value = (_has_bits_[0] & 0x00000002u) != 0;
   return value;
@@ -10402,7 +10402,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void AppearanceFlagNPC::set_location(ArgT0&& arg0, ArgT... args) {
  _has_bits_[0] |= 0x00000002u;
- location_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ location_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlagNPC.location)
 }
 inline std::string* AppearanceFlagNPC::mutable_location() {
@@ -10535,7 +10535,7 @@ inline void AppearanceFlagNPC::set_currency_object_type_id(uint32_t value) {
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlagNPC.currency_object_type_id)
 }
 
-// optional string currency_quest_flag_display_name = 6;
+// optional bytes currency_quest_flag_display_name = 6;
 inline bool AppearanceFlagNPC::_internal_has_currency_quest_flag_display_name() const {
   bool value = (_has_bits_[0] & 0x00000004u) != 0;
   return value;
@@ -10555,7 +10555,7 @@ template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
 void AppearanceFlagNPC::set_currency_quest_flag_display_name(ArgT0&& arg0, ArgT... args) {
  _has_bits_[0] |= 0x00000004u;
- currency_quest_flag_display_name_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+ currency_quest_flag_display_name_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
   // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlagNPC.currency_quest_flag_display_name)
 }
 inline std::string* AppearanceFlagNPC::mutable_currency_quest_flag_display_name() {

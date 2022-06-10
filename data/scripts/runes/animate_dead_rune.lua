@@ -12,7 +12,7 @@ function rune.onCastSpell(player, variant)
 					local summon = Game.createMonster("Skeleton", position, true, true)
 					if summon then
 						corpse:remove()
-						player:addSummon(summon)
+						player:setSummon(summon)
 						position:sendMagicEffect(CONST_ME_MAGIC_BLUE)
 						return true
 					end

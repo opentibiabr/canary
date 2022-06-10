@@ -154,6 +154,7 @@ class MonsterType
 
 	public:
 		MonsterType() = default;
+		explicit MonsterType(const std::string &initName) : name(initName), typeName(initName), nameDescription(initName) {};
 
 		// non-copyable
 		MonsterType(const MonsterType&) = delete;
@@ -162,6 +163,7 @@ class MonsterType
 		bool loadCallback(LuaScriptInterface* scriptInterface);
 
 		std::string name;
+		std::string typeName;
 		std::string nameDescription;
 
 		MonsterInfo info;
@@ -244,7 +246,7 @@ class Monsters
 		bool deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description = "");
 
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
-		std::map<std::string, MonsterType> monsters;
+		std::map<std::string, MonsterType*> monsters;
 
 	private:
 		ConditionDamage* getDamageCondition(ConditionType_t conditionType,

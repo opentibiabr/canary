@@ -255,7 +255,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	static thread_local std::array<char, NETWORKMESSAGE_MAXSIZE> defBuffer;
 	defStream->next_in = msg.getOutputBuffer();
 	defStream->avail_in = outputMessageSize;
-	defStream->next_out = defBuffer.data();
+	defStream->next_out = (Bytef*)defBuffer.data();
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
 	if (int32_t ret = deflate(defStream.get(), Z_FINISH);

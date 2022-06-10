@@ -194,8 +194,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	}
 
 	uint16_t innerLength = msg.get<uint16_t>();
-	if (std::cmp_greater(innerLength, msgLength - 2)) {
-		SPDLOG_ERROR("[Protocol::XTEA_decrypt] - Lenght is wrong");
+	if (innerLength > msgLength - 2) {
 		return false;
 	}
 
@@ -230,60 +229,48 @@ void Protocol::enableCompression()
 {
 	if (!compreesionEnabled) {
 		int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
-		if (std::cmp_equal(compressionLevel, Z_NO_COMPRESSION) || std::cmp_equal(compressionLevel, Z_DEFAULT_COMPRESSION))
-		{
-			SPDLOG_INFO("Packet Compression is disabled");
-			return;
+		if (compressionLevel != 0) {
+			defStream.reset(new z_stream);
+			defStream->zalloc = Z_NULL;
+			defStream->zfree = Z_NULL;
+			defStream->opaque = Z_NULL;
+			if (deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
+				defStream.reset();
+				SPDLOG_ERROR("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
+			} else {
+				compreesionEnabled = true;
+			}
 		}
-
-		// If is invalid compression level (greater of best compression = 9, then set default for best compression and send warning)
-		if (std::cmp_greater(compressionLevel, Z_BEST_COMPRESSION)) {
-			compressionLevel = Z_BEST_COMPRESSION;
-			SPDLOG_WARN("[Protocol::compression] - Compression level is invalid, valid compression is from 1 to 9 and 0 for disable");
-		}
-
-		defStream.reset(new z_stream);
-		defStream->zalloc = Z_NULL;
-		defStream->zfree = Z_NULL;
-		defStream->opaque = Z_NULL;
-
-		int32_t deflateInitReturn = deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY);
-		if (deflateInitReturn != Z_OK) {
-			SPDLOG_ERROR("[Protocol::enableCompression] - deflateInit failed");
-			return;
-		}
-
-		compreesionEnabled = true;
 	}
 }
 
 bool Protocol::compression(OutputMessage& msg) const
 {
+	auto outputMessageSize = msg.getLength();
+	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
+		SPDLOG_ERROR("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
+		return false;
+	}
+
 	static thread_local std::array<char, NETWORKMESSAGE_MAXSIZE> defBuffer;
 	defStream->next_in = msg.getOutputBuffer();
-	defStream->avail_in = msg.getLength();
+	defStream->avail_in = outputMessageSize;
 	defStream->next_out = std::bit_cast<Bytef*>(defBuffer.data());
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
-	int32_t deflateReturn = deflate(defStream.get(), Z_FINISH);
-	if (deflateReturn != Z_OK && deflateReturn != Z_STREAM_END) {
-		deflateEnd(defStream.get());
-		SPDLOG_ERROR("[Protocol::compression] - Failed to deflate");
+	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
+	ret != Z_OK && ret != Z_STREAM_END)
+	{
 		return false;
 	}
 	auto totalSize = static_cast<uint32_t>(defStream->total_out);
+	deflateReset(defStream.get());
 	if (totalSize == 0) {
-		SPDLOG_ERROR("[Protocol::compression] - Total Size is 0");
-		return false;
-	}
-	int32_t deflateResetReturn = deflateReset(defStream.get());
-	if (deflateResetReturn != Z_OK) {
-		SPDLOG_ERROR("[Protocol::compression] - Failed to reset deflate");
 		return false;
 	}
 
 	msg.reset();
-	const auto buffer = defBuffer.data();
-	msg.addBytes(buffer, static_cast<size_t>(totalSize));
+	auto charData = std::bit_cast<const char*>(defBuffer.data());
+	msg.addBytes(charData, static_cast<size_t>(totalSize));
 	return true;
 }

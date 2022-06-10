@@ -248,7 +248,7 @@ bool Protocol::compression(OutputMessage& msg) const
 {
 	auto outputMessageSize = msg.getLength();
 	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
-		SPDLOG_INFO("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
+		SPDLOG_ERROR("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
 		return false;
 	}
 

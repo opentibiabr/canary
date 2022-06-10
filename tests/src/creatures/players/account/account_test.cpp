@@ -8,7 +8,7 @@
 #include "creatures/players/account/account.hpp"
 #include "creatures/players/account/account_storage.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch.hpp>
 #include <limits>
 
 #define account_id 123
@@ -90,7 +90,7 @@ TEST_CASE("Set Storage Interface", "[UnitTest]")
 {
     account::Account account(account_id);
     error_t result;
-    account::AccountStorageStub accStorage();
+    account::AccountStorageStub accStorage;
     result = account.setAccountStorageInterface(nullptr);
     CHECK(result == account::ERROR_NULLPTR);
 }
@@ -136,7 +136,7 @@ TEST_CASE("Load Account ID", "[UnitTest]")
     REQUIRE(result == account::ERROR_NO);
 
     // Get Account Players
-    std::map<std::string, uint64_t> players;
+    std::unordered_map<std::string, uint64_t> players;
     std::tie(players, result) = account.getAccountPlayers();
     REQUIRE(result == account::ERROR_NO);
 
@@ -180,7 +180,7 @@ TEST_CASE("Load Account Email", "[UnitTest]")
     REQUIRE(result == account::ERROR_NO);
 
     // Get Account Players
-    std::map<std::string, uint64_t> players;
+    std::unordered_map<std::string, uint64_t> players;
     std::tie(players, result) = account.getAccountPlayers();
     REQUIRE(result == account::ERROR_NO);
 
@@ -290,7 +290,7 @@ TEST_CASE("RE-Load Account", "[UnitTest]")
     REQUIRE(account.getAccountType() == account::ACCOUNT_TYPE_NORMAL);
 
     // Get Account Players
-    std::map<std::string, uint64_t> players;
+    std::unordered_map<std::string, uint64_t> players;
     std::tie(players, result) = account.getAccountPlayers();
     REQUIRE(result == account::ERROR_NO);
     REQUIRE(players.size() == 3);
@@ -941,7 +941,7 @@ TEST_CASE("Get Account Players Not Initialized", "[UnitTest]")
 
     // Get Account Players
     error_t result;
-    std::map<std::string, uint64_t> players;
+    std::unordered_map<std::string, uint64_t> players;
     std::tie(players, result) = account.getAccountPlayers();
     CHECK(result == account::ERROR_NOT_INITIALIZED);
     CHECK(players.size() == 0);
@@ -971,7 +971,7 @@ TEST_CASE("Get Account Players", "[UnitTest]")
     REQUIRE(result == account::ERROR_NO);
 
     // Get Account Players
-    std::map<std::string, uint64_t> players;
+    std::unordered_map<std::string, uint64_t> players;
     std::tie(players, result) = account.getAccountPlayers();
     CHECK(result == account::ERROR_NO);
     CHECK(players.size() == 3);

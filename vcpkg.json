@@ -30,5 +30,7 @@
       "name": "mpir",
       "platform": "windows"
     }
+    "protobuf",
+    "catch2"
   ]
 }

@@ -50,7 +50,6 @@ jobs:
           reviewdog -reporter=github-pr-check -runners=luac
 
 
-
   luacheck:
     runs-on: ubuntu-latest
     steps:

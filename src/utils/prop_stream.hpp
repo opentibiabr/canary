@@ -101,8 +101,8 @@ class PropWriteStream
 
 		template <typename T>
 		void write(T add) {
-			auto addr = reinterpret_cast<char*>(&add);
-			std::copy(addr, addr + sizeof(T), std::back_inserter(buffer));
+			auto charPointer = std::bit_cast<char*>(&add);
+			std::copy(charPointer, charPointer + sizeof(T), std::back_inserter(buffer));
 		}
 
 		void writeString(const std::string& str) {

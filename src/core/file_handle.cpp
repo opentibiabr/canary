@@ -30,6 +30,8 @@ uint8_t NodeFileWriteHandle::NODE_START = ::NODE_START;
 uint8_t NodeFileWriteHandle::NODE_END = ::NODE_END;
 uint8_t NodeFileWriteHandle::ESCAPE_CHAR = ::ESCAPE_CHAR;
 
+FileHandle::FileHandle() = default;
+
 void FileHandle::close()
 {
 	if (file) {
@@ -183,13 +185,7 @@ bool FileReadHandle::seekRelative(size_t offset)
 //=============================================================================
 // Node file read handle
 
-NodeFileReadHandle::NodeFileReadHandle() :
-lastWasStart(false),
-cache(nullptr),
-cacheSize(32768),
-cacheLenght(0),
-localReadIndex(0),
-binaryRootNode(nullptr) {}
+NodeFileReadHandle::NodeFileReadHandle() = default;
 
 NodeFileReadHandle::~NodeFileReadHandle() = default;
 
@@ -314,6 +310,60 @@ std::shared_ptr<BinaryNode> DiskNodeFileReadHandle::getRootNode()
 
 //=============================================================================
 // Binary file node
+// Get signed int
+int8_t BinaryNode::get8() {
+	int8_t value = 0;
+	if (readOffsetSize + 1 > stringData.size()) {
+		readOffsetSize = stringData.size();
+		SPDLOG_ERROR("[BinaryNode::getU8] - Failed to read value", value);
+		return value;
+	}
+	value = *(int8_t*)(stringData.data() + readOffsetSize);
+
+	readOffsetSize += 1;
+	return value;
+}
+
+int16_t BinaryNode::get16() {
+	int16_t value = 0;
+	if (readOffsetSize + 2 > stringData.size()) {
+		readOffsetSize = stringData.size();
+		SPDLOG_ERROR("[BinaryNode::getU16] - Failed to read value", value);
+		return value;
+	}
+	value = *(int16_t*)(stringData.data() + readOffsetSize);
+
+	readOffsetSize += 2;
+	return value;
+}
+
+int32_t BinaryNode::get32() {
+	int32_t value = 0;
+	if (readOffsetSize + 4 > stringData.size()) {
+		readOffsetSize = stringData.size();
+		SPDLOG_ERROR("[BinaryNode::getU32] - Failed to read value", value);
+		return 0;
+	}
+	value = *(int32_t*)(stringData.data() + readOffsetSize);
+
+	readOffsetSize += 4;
+	return value;
+}
+
+int64_t BinaryNode::get64() {
+	int64_t value = 0;
+	if (readOffsetSize + 8 > stringData.size()) {
+		readOffsetSize = stringData.size();
+		SPDLOG_ERROR("[BinaryNode::getU64] - Failed to read value", value);
+		return value;
+	}
+	value = *(int64_t*)(stringData.data() + readOffsetSize);
+
+	readOffsetSize += 8;
+	return value;
+}
+
+// Get unsigned int
 uint8_t BinaryNode::getU8() {
 	uint8_t value = 0;
 	if (readOffsetSize + 1 > stringData.size()) {
@@ -364,6 +414,31 @@ uint64_t BinaryNode::getU64() {
 
 	readOffsetSize += 8;
 	return value;
+}
+
+double BinaryNode::getDouble() {
+	double value = 0;
+	if (readOffsetSize > stringData.size()) {
+		readOffsetSize = stringData.size();
+		SPDLOG_ERROR("[BinaryNode::getDouble] - Failed to read value", value);
+		return value;
+	}
+
+	value = *(double*)(stringData.data() + readOffsetSize);
+	return value;
+}
+
+bool BinaryNode::getBoolean() {
+	bool booleanValue;
+	if (getU8() == 0) {
+		booleanValue = false;
+	} else if (getU8() == 1) {
+		booleanValue = true;
+	} else {
+		SPDLOG_ERROR("[BinaryNode::getBoolean] - Value is not a boolean");
+		return false;
+	}
+	return booleanValue;
 }
 
 void BinaryNode::init(NodeFileReadHandle* nodeFileHeadHandle, std::shared_ptr<BinaryNode> binaryNodeParent) {
@@ -671,9 +746,7 @@ void MemoryNodeFileWriteHandle::renewCache()
 //=============================================================================
 // Node file write handle
 
-NodeFileWriteHandle::NodeFileWriteHandle() : cache(nullptr), cacheSize(0x7FFF), localWriteIndex(0)
-{
-}
+NodeFileWriteHandle::NodeFileWriteHandle() = default;
 
 NodeFileWriteHandle::~NodeFileWriteHandle() = default;
 

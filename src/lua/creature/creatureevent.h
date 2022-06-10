@@ -79,8 +79,8 @@ class CreatureEvent final : public Script {
 
 		std::string eventName;
 		std::string fileName;
-		CreatureEventType_t type;
-		bool loaded;
+		CreatureEventType_t type = CREATURE_EVENT_NONE;
+		bool loaded = false;
 };
 
 class CreatureEvents final : public Scripts {

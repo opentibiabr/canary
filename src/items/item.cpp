@@ -782,12 +782,12 @@ Attr_ReadValue Item::readAttributesMap(AttrTypes_t attr, BinaryNode& binaryNode,
 
 				// TODO: Finalize implement this
 				//Unserialize value type and value
-				ItemAttributes::CustomAttribute val;
-				//if (!val.unserialize(propStream)) {
-				//	return ATTR_READ_ERROR;
-				//}
+				ItemAttributes::CustomAttribute attribute;
+				if (!attribute.unserialize(binaryNode)) {
+					return ATTR_READ_ERROR;
+				}
 
-				setCustomAttribute(key, val);
+				setCustomAttribute(key, attribute);
 			}
 			break;
 		}

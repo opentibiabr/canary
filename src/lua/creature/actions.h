@@ -136,7 +136,7 @@ class Action : public Script {
 			Player* player, Item* item,
 			const Position& fromPosition, Thing* target,
 			const Position& toPosition, bool isHotkey
-		)> useFunction;
+		)> useFunction = nullptr;
 
 		// Atributes
 		bool allowFarUse = false;

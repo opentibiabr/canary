@@ -96,10 +96,13 @@ bool CreatureEvents::playerAdvance(Player* player, skills_t skill, uint32_t oldL
 	return true;
 }
 
-/////////////////////////////////////
+/*
+ =======================
+ CreatureEvent interface
+ =======================
+*/
 
-CreatureEvent::CreatureEvent(LuaScriptInterface* interface) :
-	Script(interface), type(CREATURE_EVENT_NONE), loaded(false) {}
+CreatureEvent::CreatureEvent(LuaScriptInterface* interface) : Script(interface) {}
 
 void CreatureEvents::removeInvalidEvents() {
 	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {

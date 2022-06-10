@@ -136,7 +136,7 @@ void badAllocationHandler() {
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {
-	SPDLOG_INFO("Loading {}", moduleName);
+	SPDLOG_INFO("Loaded {}", moduleName);
 	if (!loaded) {
 		SPDLOG_ERROR("Cannot load: {}", moduleName);
 		startupErrorMessage();
@@ -281,9 +281,9 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 #ifdef _WIN32
 #ifdef UNICODE
-SetConsoleTitle(reinterpret_cast<LPCWSTR>(STATUS_SERVER_NAME));
+SetConsoleTitle(std::bit_cast<LPCWSTR>(STATUS_SERVER_NAME));
 #else
-SetConsoleTitle(reinterpret_cast<LPCSTR>(STATUS_SERVER_NAME));
+SetConsoleTitle(std::bit_cast<LPCSTR>(STATUS_SERVER_NAME));
 #endif  // !UNICODE
 #endif  // _WIN32
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE

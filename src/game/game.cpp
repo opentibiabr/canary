@@ -3640,7 +3640,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 		if (writeItem->getText() != text) {
 			writeItem->setText(text);
 			writeItem->setWriter(player->getName());
-			writeItem->setDate(getTimeNow());
+			writeItem->setDate(static_cast<int32_t>(getTimeNow()));
 		}
 	} else {
 		writeItem->resetText();

@@ -318,6 +318,58 @@ class ItemAttributes
 				}
 				return true;
 			}
+
+			bool unserialize(BinaryNode& binaryNode) {
+				// This is hard coded so it's not general, depends on the position of the variants.
+				uint8_t position = binaryNode.getU8();
+				if (position == 0) {
+					SPDLOG_ERROR("[Item::unserialize] - Variant position is wrong");
+					return false;
+				}
+
+				switch (position) {
+					case 1:  {
+						std::string string = binaryNode.getString();
+						if (string.empty()) {
+							SPDLOG_ERROR("[Item::unserialize] - String is empty");
+							return false;
+						}
+						value = string;
+						break;
+					}
+
+					case 2: {
+						int64_t int64 = binaryNode.get64();
+						if (int64 == 0) {
+							SPDLOG_ERROR("[Item::unserialize] - Failed to get64");
+							return false;
+						}
+						value = int64;
+						break;
+					}
+
+					case 3: {
+						double doubleValue = binaryNode.getDouble();
+						if (doubleValue == 0) {
+							SPDLOG_ERROR("[Item::unserialize] - Failed to getDouble");
+							return false;
+						}
+						value = doubleValue;
+						break;
+					}
+
+					case 4: {
+						value = binaryNode.getBoolean();
+						break;
+					}
+
+					default: {
+						value = std::monostate();
+						return false;
+					}
+				}
+				return true;
+			}
 		};
 
 	private:

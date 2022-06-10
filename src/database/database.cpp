@@ -273,7 +273,7 @@ size_t DBResult::getResult(const std::string& string) const
 int8_t DBResult::get8(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::get8] - Failed to get size_t");
 		return 0;
 	}
@@ -284,7 +284,7 @@ int8_t DBResult::get8(const std::string& tableName) const
 int16_t DBResult::get16(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::get16] - Failed to get size_t");
 		return 0;
 	}
@@ -295,7 +295,7 @@ int16_t DBResult::get16(const std::string& tableName) const
 int32_t DBResult::get32(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::get32] - Failed to get size_t");
 		return 0;
 	}
@@ -306,7 +306,7 @@ int32_t DBResult::get32(const std::string& tableName) const
 int64_t DBResult::get64(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::get64] - Failed to get size_t");
 		return 0;
 	}
@@ -319,7 +319,7 @@ int64_t DBResult::get64(const std::string& tableName) const
 uint8_t DBResult::getU8(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::getU8] - Failed to get size_t");
 		return 0;
 	}
@@ -342,7 +342,7 @@ uint8_t DBResult::getU8(const std::string& tableName) const
 uint16_t DBResult::getU16(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::getU16] - Failed to get size_t");
 		return 0;
 	}
@@ -365,7 +365,7 @@ uint16_t DBResult::getU16(const std::string& tableName) const
 uint32_t DBResult::getU32(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::getU32] - Failed to get size_t");
 		return 0;
 	}
@@ -388,7 +388,7 @@ uint32_t DBResult::getU32(const std::string& tableName) const
 uint64_t DBResult::getU64(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::getU64] - Failed to get size_t");
 		return 0;
 	}
@@ -411,7 +411,7 @@ uint64_t DBResult::getU64(const std::string& tableName) const
 time_t DBResult::getTime(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::getTime] - Failed to get size_t");
 		return 0;
 	}
@@ -422,17 +422,17 @@ time_t DBResult::getTime(const std::string& tableName) const
 bool DBResult::getBoolean(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_less(result, -1)) {
+	if (std::cmp_equal(result, -1)) {
 		SPDLOG_ERROR("[DBResult::getBoolean] - Failed to get size_t");
 		return false;
 	}
 
 	auto databaseResut = std::atoi(row[result]);
-	// Here we will check if result is true or false (0/1)
-	// If it is different from true or false, we will return a message warning
+	// Here we will check if result is false or true (0/1)
+	// Was not false or true, we will return a message warning
 	if (databaseResut >= 2)
 	{
-		SPDLOG_WARN("[DBResult::getBoolean] - Boolean result '{}' is not true or false, valid value is only '0' or '1'", databaseResut);
+		SPDLOG_WARN("[DBResult::getBoolean] - Boolean result '{}' is not false or true, valid value is only '0' or '1'", databaseResut);
 		return false;
 	}
 

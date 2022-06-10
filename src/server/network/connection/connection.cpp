@@ -212,7 +212,7 @@ void Connection::parseHeader(const std::error_code& error)
 		return;
 	}
 
-	uint32_t timePassed = std::max<uint32_t>(1, (Game::getTimeNow() - timeConnected) + 1);
+	uint32_t timePassed = std::max<uint32_t>(1, static_cast<uint32_t>((Game::getTimeNow() - timeConnected) + 1));
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
 		SPDLOG_WARN("{} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();

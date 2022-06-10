@@ -113,7 +113,7 @@ void GlobalEvents::timer() {
 void GlobalEvents::think() {
 	int64_t now = OTSYS_TIME();
 
-	uint32_t nextScheduledTime = std::numeric_limits<int64_t>::max();
+	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 	for (auto& it : thinkMap) {
 		GlobalEvent& globalEvent = it.second;
 
@@ -139,7 +139,8 @@ void GlobalEvents::think() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		thinkEventId = g_scheduler().addEvent(createSchedulerTask(nextScheduledTime, std::bind_front(&GlobalEvents::think, this)));
+		auto delay = static_cast<uint32_t>(nextScheduledTime);
+		thinkEventId = g_scheduler().addEvent(createSchedulerTask(delay, std::bind_front(&GlobalEvents::think, this)));
 	}
 }
 

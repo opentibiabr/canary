@@ -248,10 +248,10 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 			if (item->isRemoved()) {
 				return RETURNVALUE_CANNOTUSETHISOBJECT;
 			}
-		} else if (action->useFunction) {
-			if (action->useFunction(player, item, pos, nullptr, pos, isHotkey)) {
-				return RETURNVALUE_NOERROR;
-			}
+		} else if (action->useFunction
+		&& action->useFunction(player, item, pos, nullptr, pos, isHotkey))
+		{
+			return RETURNVALUE_NOERROR;
 		}
 	}
 
@@ -443,7 +443,15 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
 }
 
-Action::Action(LuaScriptInterface* interface) : Script(interface), useFunction(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
+
+/*
+ ================
+ Action interface
+ ================
+*/
+
+// Action constructor
+Action::Action(LuaScriptInterface* interface) : Script(interface) {}
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {

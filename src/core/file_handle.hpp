@@ -46,7 +46,7 @@ enum NodeType {
 class FileHandle
 {
 public:
-	FileHandle() : errorCode(FILE_NO_ERROR), file(nullptr) {}
+	FileHandle();
 
 	virtual ~FileHandle() = default;
 
@@ -65,8 +65,8 @@ public:
 	}
 	std::string getErrorMessage() const;
 public:
-	FileHandleError errorCode;
-	FILE* file;
+	FileHandleError errorCode = FILE_NO_ERROR;
+	FILE* file = nullptr;
 };
 
 class FileReadHandle : public FileHandle
@@ -127,11 +127,17 @@ public:
 	}
 
 	void init(NodeFileReadHandle* file, std::shared_ptr<BinaryNode> parent);
+	int8_t get8();
+	int16_t get16();
+	int32_t get32();
+	int64_t get64();
+
 	uint8_t getU8();
 	uint16_t getU16();
 	uint32_t getU32();
 	uint64_t getU64();
-	int8_t get8();
+	double getDouble();
+	bool getBoolean();
 	bool skip(size_t sz) {
 		if(readOffsetSize + sz > stringData.size()) {
 			readOffsetSize = stringData.size();
@@ -189,13 +195,13 @@ private:
 	// Returns false when end-of-file is reached
 	virtual bool renewCache() = 0;
 
-	bool lastWasStart;
-	uint8_t* cache;
-	size_t cacheSize;
-	size_t cacheLenght;
-	size_t localReadIndex;
+	bool lastWasStart = false;
+	uint8_t* cache = nullptr;
+	size_t cacheSize = 32768;
+	size_t cacheLenght = 0;
+	size_t localReadIndex = 0;
 
-	std::shared_ptr<BinaryNode> binaryRootNode;
+	std::shared_ptr<BinaryNode> binaryRootNode = nullptr;
 
 	friend class BinaryNode;
 	friend class MemoryNodeFileReadHandle;
@@ -324,9 +330,9 @@ private:
 	static uint8_t NODE_END;
 	static uint8_t ESCAPE_CHAR;
 
-	uint8_t* cache;
-	size_t cacheSize;
-	size_t localWriteIndex;
+	uint8_t* cache = nullptr;
+	size_t cacheSize = 0x7FFF;
+	size_t localWriteIndex = 0;
 
 	inline void writeBytes(const uint8_t* ptr, size_t size) {
 		if(!size) {

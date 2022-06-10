@@ -938,9 +938,9 @@ Container* Player::getLootContainer(ObjectCategory_t category) const
 
 void Player::checkLootContainers(const Item* item)
 {
-  if (!item) {
-    return;
-  }
+	if (!item) {
+		return;
+	}
 
 	const Container* container = item->getContainer();
 	if (!container) {
@@ -948,10 +948,8 @@ void Player::checkLootContainers(const Item* item)
 	}
 
 	bool shouldSend = false;
-
-	auto it = quickLootContainers.begin();
-	while (it != quickLootContainers.end()) {
-		Container* lootContainer = (*it).second;
+	std::erase_if(quickLootContainers, [this, item, container, &shouldSend](auto quicklootIterator) {
+		Container* lootContainer = quicklootIterator.second;
 
 		bool remove = false;
 		if (item->getHoldingPlayer() != this && (item == lootContainer || container->isHoldingItem(lootContainer))) {
@@ -960,13 +958,11 @@ void Player::checkLootContainers(const Item* item)
 
 		if (remove) {
 			shouldSend = true;
-			it = quickLootContainers.erase(it);
 			lootContainer->decrementReferenceCounter();
 			lootContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-		} else {
-			++it;
 		}
-	}
+		return true;
+	});
 
 	if (shouldSend) {
 		sendLootContainers();
@@ -1724,7 +1720,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (hasFollowPath && (creature == followCreature || (creature == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind_front(&Game::updateCreatureWalk, &g_game(), getID())));
 	}
 
 	if (creature != this) {
@@ -3919,7 +3915,7 @@ bool Player::updateSaleShopList(const Item* item)
 	if (!itemId || !item)
 		return true;
 
-	g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID())));
+	g_dispatcher().addTask(createTask(std::bind_front(&Game::updatePlayerSaleItems, &g_game(), getID())));
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -3991,7 +3987,7 @@ bool Player::setAttackedCreature(Creature* creature)
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind_front(&Game::checkCreatureAttack, &g_game(), getID())));
 	}
 	return true;
 }
@@ -4047,7 +4043,7 @@ void Player::doAttacking(uint32_t)
 			result = Weapon::useFist(this, attackedCreature);
 		}
 
-		SchedulerTask* task = createSchedulerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		SchedulerTask* task = createSchedulerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind_front(&Game::checkCreatureAttack, &g_game(), getID()));
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {

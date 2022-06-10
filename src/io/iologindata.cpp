@@ -211,7 +211,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   for (int i = 1; i <= 8; i++) {
     std::ostringstream ss;
     ss << "blessings" << i;
-    player->addBlessing(i, result->getU8(ss.str()));
+    player->addBlessing(static_cast<uint8_t>(i), result->getU8(ss.str()));
   }
 
   unsigned long attrSize;
@@ -773,15 +773,18 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
         container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
       }
 
-      if (!openContainers.empty()) {
-        for (const auto& [containerCidPair, openContainerPair] : openContainers) {
-          auto openContainer = openContainerPair;
-          auto opcontainer = openContainer.container;
+      if (openContainers.empty()) {
+        SPDLOG_DEBUG("[IOLoginData::saveItems] - Player open containers is empty");
+        continue;
+      }
 
-          if (opcontainer == container) {
-            container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
-            break;
-          }
+      for (const auto& [containerCidPair, openContainerPair] : openContainers) {
+        auto openContainer = openContainerPair;
+        auto opcontainer = openContainer.container;
+
+        if (opcontainer == container) {
+          container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
+          break;
         }
       }
 

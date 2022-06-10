@@ -57,9 +57,6 @@ class DepotLocker final : public Container
 		bool isRemoved() const override {
 			return false;
 		}
-
-	private:
-		uint16_t depotId;
 };
 
 #endif  // SRC_ITEMS_CONTAINERS_DEPOT_DEPOTLOCKER_H_

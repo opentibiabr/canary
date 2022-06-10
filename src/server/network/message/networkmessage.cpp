@@ -59,8 +59,7 @@ void NetworkMessage::addString(const std::string& value)
 {
 	size_t stringLen = value.length();
 	if (value.empty()) {
-		SPDLOG_ERROR("[NetworkMessage::addBytes] - Value string is empty");
-		return;
+		SPDLOG_DEBUG("[NetworkMessage::addString] - Value string is empty");
 	}
 	if (!canAdd(stringLen + 2)) {
 		SPDLOG_ERROR("[NetworkMessage::addString] - NetworkMessage size is wrong: {}", stringLen);

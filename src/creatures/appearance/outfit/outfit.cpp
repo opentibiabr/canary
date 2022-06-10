@@ -26,16 +26,10 @@
 
 #include <cctype>
 
-bool Outfits::loadFromXml()
+bool Outfits::parseOutfitNode()
 {
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/outfits.xml");
-	if (!result) {
-		printXMLError("[Outfits::loadFromXml] - ", "data/XML/outfits.xml", result);
-		return false;
-	}
-
-	for (auto outfitNode : doc.child("outfits").children()) {
+	pugi::xml_document document;
+	for (auto outfitNode : document.child("outfits").children()) {
 		pugi::xml_attribute attr;
 		if ((attr = outfitNode.attribute("enabled")) && !attr.as_bool()) {
 			continue;
@@ -55,34 +49,35 @@ bool Outfits::loadFromXml()
 		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
 		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
 		const std::string outfitName = outfitNode.attribute("name").as_string();
-		if (!lookTypeAttribute.empty()) {
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
-			&& !g_game().isLookTypeRegistered(lookType))
-			{
-				SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
-				return false;
-			}
-
-			const std::string lookTypeString = lookTypeAttribute.as_string();
-			if (lookTypeString.empty() || lookType == 0) {
-				SPDLOG_WARN("[Outfits::loadFromXml] - Empty looktype on outfit with name {}", outfitName);
-				continue;
-			}
-
-			if (!isNumber(lookTypeString)) {
-				SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
-				continue;
-			}
-
-			if (pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
-			!nameAttribute || outfitName.empty())
-			{
-				SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
-				continue;
-			}
-		} else {
+		if (lookTypeAttribute.empty()) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - "
 						"Missing looktype id for outfit name: {}", outfitName);
+			continue;
+		}
+
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+		&& !g_game().isLookTypeRegistered(lookType))
+		{
+			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
+			continue;
+		}
+
+		const std::string lookTypeString = lookTypeAttribute.as_string();
+		if (lookTypeString.empty() || lookType == 0) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Empty looktype on outfit with name {}", outfitName);
+			continue;
+		}
+
+		if (!isNumber(lookTypeString)) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
+			continue;
+		}
+
+		if (pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
+		!nameAttribute || outfitName.empty())
+		{
+			SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
+			continue;
 		}
 
 		outfits[type].emplace_back(
@@ -93,6 +88,23 @@ bool Outfits::loadFromXml()
 			outfitNode.attribute("from").as_string()
 		);
 	}
+	return true;
+}
+
+bool Outfits::loadFromXml()
+{
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file("data/XML/outfits.xml");
+	if (!result) {
+		printXMLError("[Outfits::loadFromXml] - ", "data/XML/outfits.xml", result);
+		return false;
+	}
+
+	if (!parseOutfitNode()) {
+		SPDLOG_ERROR("[Outfits::loadFromXml] - Error to load outfit node");
+		return false;
+	}
+
 	for (uint8_t sex = PLAYERSEX_FEMALE; sex <= PLAYERSEX_LAST; ++sex) {
 		outfits[sex].shrink_to_fit();
 	}

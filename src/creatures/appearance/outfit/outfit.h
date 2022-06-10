@@ -54,6 +54,7 @@ class Outfits
 
 		const Outfit* getOpositeSexOutfitByLookType(PlayerSex_t sex, uint16_t lookType);
 
+		bool parseOutfitNode();
 		bool loadFromXml();
 
 		const Outfit* getOutfitByLookType(PlayerSex_t sex, uint16_t lookType) const;

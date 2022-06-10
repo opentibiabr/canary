@@ -59,16 +59,15 @@ void NetworkMessage::addString(const std::string& value)
 {
 	size_t stringLen = value.length();
 	if (value.empty()) {
-		SPDLOG_INFO("[NetworkMessage::addBytes] - Value string is empty");
+		SPDLOG_ERROR("[NetworkMessage::addBytes] - Value string is empty");
 		return;
 	}
 	if (!canAdd(stringLen + 2)) {
-		SPDLOG_INFO("[NetworkMessage::addString] - NetworkMessage size is wrong: {}", stringLen);
+		SPDLOG_ERROR("[NetworkMessage::addString] - NetworkMessage size is wrong: {}", stringLen);
 		return;
 	}
-
 	if (stringLen > NETWORKMESSAGE_MAXSIZE) {
-		SPDLOG_INFO("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, stringLen);
+		SPDLOG_ERROR("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, stringLen);
 		return;
 	}
 
@@ -87,15 +86,15 @@ void NetworkMessage::addDouble(double value, uint8_t precision/* = 2*/)
 void NetworkMessage::addBytes(const char* bytes, size_t size)
 {
 	if (bytes == nullptr) {
-		SPDLOG_INFO("[NetworkMessage::addBytes] - Bytes is nullptr");
+		SPDLOG_ERROR("[NetworkMessage::addBytes] - Bytes is nullptr");
 		return;
 	}
 	if (!canAdd(size)) {
-		SPDLOG_INFO("[NetworkMessage::addBytes] - NetworkMessage size is wrong: {}", size);
+		SPDLOG_ERROR("[NetworkMessage::addBytes] - NetworkMessage size is wrong: {}", size);
 		return;
 	}
 	if (size > NETWORKMESSAGE_MAXSIZE) {
-		SPDLOG_INFO("[NetworkMessage::addBytes] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, size);
+		SPDLOG_ERROR("[NetworkMessage::addBytes] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, size);
 		return;
 	}
 

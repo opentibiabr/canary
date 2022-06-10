@@ -1,62 +1,88 @@
-# Locate LuaJIT library
-# This module defines
-#  LUAJIT_FOUND, if false, do not try to link to Lua
-#  LUA_LIBRARIES
-#  LUA_INCLUDE_DIR, where to find lua.h
-#  LUAJIT_VERSION_STRING, the version of Lua found (since CMake 2.8.8)
+# Once done these will be defined:
+#
+#  LUAJIT_FOUND
+#  LUAJIT_INCLUDE_DIRS
+#  LUAJIT_LIBRARIES
+#
+# For use in OBS: 
+#
+#  LUAJIT_INCLUDE_DIR
 
-## Copied from default CMake FindLua51.cmake
+IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	SET(_LIB_SUFFIX 64)
+ELSE()
+	SET(_LIB_SUFFIX 32)
+ENDIF()
 
-find_path(LUA_INCLUDE_DIR luajit.h
-  HINTS
-    ENV LUA_DIR
-  PATH_SUFFIXES include/luajit-2.0 include/luajit-2.1 include luajit
-  PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /sw # Fink
-  /opt/local # DarwinPorts
-  /opt/csw # Blastwave
-  /opt
-)
+FIND_PATH(LUAJIT_INCLUDE_DIR
+	NAMES lua.h lualib.h
+	HINTS
+		ENV LuajitPath${_LIB_SUFFIX}
+		ENV LuajitPath
+		ENV DepsPath${_LIB_SUFFIX}
+		ENV DepsPath
+		${LuajitPath${_LIB_SUFFIX}}
+		${LuajitPath}
+		${DepsPath${_LIB_SUFFIX}}
+		${DepsPath}
+		${_LUAJIT_INCLUDE_DIRS}
+	PATHS
+		/usr/include
+		/usr/local/include
+		/opt/local/include
+		/opt/local
+		/sw/include
+		~/Library/Frameworks
+		/Library/Frameworks
+	PATH_SUFFIXES
+		include
+		luajit
+		luajit/src
+		include/luajit
+		include/luajit/src
+		luajit-2.0
+		include/luajit-2.0
+		luajit2.0
+		include/luajit2.0
+		luajit-2.1
+		include/luajit-2.1
+		luajit2.1
+		include/luajit2.1
+		)
 
-find_library(LUA_LIBRARY
-  NAMES luajit-5.1 lua51
-  HINTS
-    ENV LUA_DIR
-  PATH_SUFFIXES lib
-  PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /sw
-  /opt/local
-  /opt/csw
-  /opt
-)
-
-if(LUA_LIBRARY)
-  # include the math library for Unix
-  if(UNIX AND NOT APPLE)
-    find_library(LUA_MATH_LIBRARY m)
-    set( LUA_LIBRARIES "${LUA_LIBRARY};${LUA_MATH_LIBRARY}" CACHE STRING "Lua Libraries")
-  # For Windows and Mac, don't need to explicitly include the math library
-  else()
-    set( LUA_LIBRARIES "${LUA_LIBRARY}" CACHE STRING "Lua Libraries")
-  endif()
-endif()
-
-if(LUA_INCLUDE_DIR AND EXISTS "${LUA_INCLUDE_DIR}/luajit.h")
-  file(STRINGS "${LUA_INCLUDE_DIR}/luajit.h" luajit_version_str REGEX "^#define[ \t]+LUAJIT_VERSION[ \t]+\"LuaJIT .+\"")
-
-  string(REGEX REPLACE "^#define[ \t]+LUAJIT_VERSION[ \t]+\"LuaJIT ([^\"]+)\".*" "\\1" LUAJIT_VERSION_STRING "${luajit_version_str}")
-  unset(luajit_version_str)
-endif()
+find_library(LUAJIT_LIB
+	NAMES ${_LUAJIT_LIBRARIES} luajit luajit-51 luajit-5.1 lua51
+	HINTS
+		ENV LuajitPath${_lib_suffix}
+		ENV LuajitPath
+		ENV DepsPath${_lib_suffix}
+		ENV DepsPath
+		${LuajitPath${_lib_suffix}}
+		${LuajitPath}
+		${DepsPath${_lib_suffix}}
+		${DepsPath}
+		${_LUAJIT_LIBRARY_DIRS}
+	PATHS
+		/usr/lib
+		/usr/local/lib
+		/opt/local/lib
+		/opt/local
+		/sw/lib
+		~/Library/Frameworks
+		/Library/Frameworks
+	PATH_SUFFIXES
+		lib${_lib_suffix} lib
+		libs${_lib_suffix} libs
+		bin${_lib_suffix} bin
+		../lib${_lib_suffix} ../lib
+		../libs${_lib_suffix} ../libs
+		../bin${_lib_suffix} ../bin)
 
 include(FindPackageHandleStandardArgs)
-# handle the QUIETLY and REQUIRED arguments and set LUA_FOUND to TRUE if
-# all listed variables are TRUE
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LuaJIT
-                                  REQUIRED_VARS LUA_LIBRARIES LUA_INCLUDE_DIR
-                                  VERSION_VAR LUAJIT_VERSION_STRING)
+find_package_handle_standard_args(LuaJIT DEFAULT_MSG LUAJIT_LIB LUAJIT_INCLUDE_DIR)
+mark_as_advanced(LUAJIT_INCLUDE_DIR LUAJIT_LIB)
 
-mark_as_advanced(LUA_INCLUDE_DIR LUA_LIBRARIES LUA_LIBRARY LUA_MATH_LIBRARY)
+if(LUAJIT_FOUND)
+	set(LUAJIT_INCLUDE_DIRS ${LUAJIT_INCLUDE_DIR})
+	set(LUAJIT_LIBRARIES ${LUAJIT_LIB})
+endif()

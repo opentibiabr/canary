@@ -22,32 +22,97 @@
 #include "server/network/protocol/protocol.h"
 #include "server/network/message/outputmessage.h"
 #include "security/rsa.h"
-#include "security/xtea.h"
+#include "game/scheduling/tasks.h"
 
+Protocol::~Protocol() = default;
 
 void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 {
 	if (!rawMessages) {
+		uint32_t sendMessageChecksum = 0;
+		if (compreesionEnabled && msg->getLength() >= 128 && compression(*msg)) {
+			sendMessageChecksum = (1U << 31);
+		}
+
 		msg->writeMessageLength();
 
-		if (encryptionEnabled) {
-			XTEA_encrypt(*msg);
-			if (!compactCrypt) {
-				msg->addCryptoHeader((checksumEnabled ? 1 : 0), sequenceNumber);
-			} else {
-				msg->addCryptoHeader(2, sequenceNumber);
+		if (!encryptionEnabled) {
+			return;
+		}
+
+		XTEA_encrypt(*msg);
+		if (checksumMethod == CHECKSUM_METHOD_NONE) {
+			msg->addCryptoHeader(false, 0);
+		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
+			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
+		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
+			if (serverSequenceNumber >= 0x7FFFFFFF) {
+				serverSequenceNumber = 0;
 			}
 		}
 	}
 }
 
-void Protocol::onRecvMessage(NetworkMessage& msg)
+bool Protocol::sendRecvMessageCallback(NetworkMessage& msg)
 {
 	if (encryptionEnabled && !XTEA_decrypt(msg)) {
-		return;
+		SPDLOG_ERROR("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
+		return false;
 	}
 
-	parsePacket(msg);
+	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
+	std::function<void (void)> callback = [protocolWeak, &msg]() {
+		if (auto protocol = protocolWeak.lock()) {
+			if (auto protocolConnection = protocol->getConnection()) {
+				protocol->parsePacket(msg);
+				protocolConnection->resumeWork();
+			}
+		}
+	};
+	g_dispatcher().addTask(createTask(callback));
+	return true;
+}
+
+bool Protocol::onRecvMessage(NetworkMessage& msg)
+{
+	if (checksumMethod != CHECKSUM_METHOD_NONE) {
+		uint32_t recvChecksum = msg.get<uint32_t>();
+		if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+			if (recvChecksum == 0) {
+				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
+				// since we don't need that packet skip it
+				return false;
+			}
+
+			uint32_t checksum;
+			checksum = ++clientSequenceNumber;
+			if (clientSequenceNumber >= 0x7FFFFFFF) {
+				clientSequenceNumber = 0;
+			}
+
+			if (recvChecksum != checksum) {
+				// incorrect packet - skip it
+				return false;
+			}
+		} else {
+			uint32_t checksum;
+			if (int32_t len = msg.getLength() - msg.getBufferPosition();
+			len > 0)
+			{
+				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
+			} else {
+				checksum = 0;
+			}
+
+			if (recvChecksum != checksum) {
+				// incorrect packet - skip it
+				return false;
+			}
+		}
+	}
+
+	return sendRecvMessageCallback(msg);
 }
 
 OutputMessage_ptr Protocol::getOutputBuffer(int32_t size)
@@ -64,27 +129,72 @@ OutputMessage_ptr Protocol::getOutputBuffer(int32_t size)
 
 void Protocol::XTEA_encrypt(OutputMessage& msg) const
 {
+	const uint32_t delta = 0x61C88647;
+
 	// The message must be a multiple of 8
-	size_t paddingBytes = msg.getLength() % 8u;
+	size_t paddingBytes = msg.getLength() & 7;
 	if (paddingBytes != 0) {
 		msg.addPaddingBytes(8 - paddingBytes);
 	}
 
 	uint8_t* buffer = msg.getOutputBuffer();
-	xtea::encrypt(buffer, msg.getLength(), key);
+	auto messageLength = static_cast<int32_t>(msg.getLength());
+	int32_t readPos = 0;
+	const std::array<uint32_t, 4> newKey = {key[0], key[1], key[2], key[3]};
+	// TODO: refactor this for not use c-style
+	uint32_t precachedControlSum[32][2];
+	uint32_t sum = 0;
+	for (int32_t i = 0; i < 32; ++i) {
+		precachedControlSum[i][0] = (sum + newKey[sum & 3]);
+		sum -= delta;
+		precachedControlSum[i][1] = (sum + newKey[(sum >> 11) & 3]);
+	}
+	while (readPos < messageLength) {
+		std::array<uint32_t, 2> vData = {};
+		memcpy(vData.data(), buffer + readPos, 8);
+		for (int32_t i = 0; i < 32; ++i) {
+			vData[0] += ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][0];
+			vData[1] += ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][1];
+		}
+		memcpy(buffer + readPos, vData.data(), 8);
+		readPos += 8;
+	}
 }
 
 bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 {
-	if (((msg.getLength() - 6) & 7) != 0) {
+	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
+	if ((msgLength & 7) != 0) {
 		return false;
 	}
 
+	const uint32_t delta = 0x61C88647;
+
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	xtea::decrypt(buffer, msg.getLength() - 6, key);
+	auto messageLength = static_cast<int32_t>(msgLength);
+	int32_t readPos = 0;
+	const std::array<uint32_t, 4> newKey = {key[0], key[1], key[2], key[3]};
+	// TODO: refactor this for not use c-style
+	uint32_t precachedControlSum[32][2];
+	uint32_t sum = 0xC6EF3720;
+	for (int32_t i = 0; i < 32; ++i) {
+		precachedControlSum[i][0] = (sum + newKey[(sum >> 11) & 3]);
+		sum += delta;
+		precachedControlSum[i][1] = (sum + newKey[sum & 3]);
+	}
+	while (readPos < messageLength) {
+		std::array<uint32_t, 2> vData = {};
+		memcpy(vData.data(), buffer + readPos, 8);
+		for (int32_t i = 0; i < 32; ++i) {
+			vData[1] -= ((vData[0] << 4 ^ vData[0] >> 5) + vData[0]) ^ precachedControlSum[i][0];
+			vData[0] -= ((vData[1] << 4 ^ vData[1] >> 5) + vData[1]) ^ precachedControlSum[i][1];
+		}
+		memcpy(buffer + readPos, vData.data(), 8);
+		readPos += 8;
+	}
 
 	uint16_t innerLength = msg.get<uint16_t>();
-	if (innerLength + 8 > msg.getLength()) {
+	if (innerLength > msgLength - 2) {
 		return false;
 	}
 
@@ -98,15 +208,63 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 		return false;
 	}
 
-	g_RSA().decrypt(msg.getBuffer() + msg.getBufferPosition()); //does not break strict aliasing
-	return msg.getByte() == 0;
+	auto charData = static_cast<char*>(static_cast<void*>(msg.getBuffer()));
+	// Does not break strict aliasing
+	g_RSA().decrypt(charData + msg.getBufferPosition());
+	return (msg.getByte() == 0);
 }
 
 uint32_t Protocol::getIP() const
 {
-	if (auto conn = getConnection()) {
-		return conn->getIP();
+	auto protocolConnection = getConnection();
+	if (protocolConnection == nullptr) {
+		SPDLOG_ERROR("[Protocol::getIP] - Connection is nullptr");
+		return 0;
 	}
 
-	return 0;
+	return protocolConnection->getIP();
+}
+
+void Protocol::enableCompression()
+{
+	if (!compreesionEnabled) {
+		int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
+		if (compressionLevel != 0) {
+			defStream.reset(new z_stream);
+			defStream->zalloc = Z_NULL;
+			defStream->zfree = Z_NULL;
+			defStream->opaque = Z_NULL;
+			if (deflateInit2(defStream.get(), compressionLevel, Z_DEFLATED, -15, 9, Z_DEFAULT_STRATEGY) != Z_OK) {
+				defStream.reset();
+				SPDLOG_ERROR("[Protocol::enableCompression()] - Zlib deflateInit2 error: {}", (defStream->msg ? defStream->msg : " unknown error"));
+			} else {
+				compreesionEnabled = true;
+			}
+		}
+	}
+}
+
+bool Protocol::compression(OutputMessage& msg) const
+{
+	static thread_local std::array<uint8_t, NETWORKMESSAGE_MAXSIZE> defBuffer;
+	defStream->next_in = msg.getOutputBuffer();
+	defStream->avail_in = msg.getLength();
+	defStream->next_out = defBuffer.data();
+	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
+
+	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
+	ret != Z_OK && ret != Z_STREAM_END)
+	{
+		return false;
+	}
+	auto totalSize = static_cast<uint32_t>(defStream->total_out);
+	deflateReset(defStream.get());
+	if (totalSize == 0) {
+		return false;
+	}
+
+	msg.reset();
+	auto charData = static_cast<char*>(static_cast<void*>(defBuffer.data()));
+	msg.addBytes(charData, static_cast<size_t>(totalSize));
+	return true;
 }

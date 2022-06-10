@@ -39,7 +39,7 @@ jobs:
         uses: reviewdog/action-setup@v1
 
       - name: Setup Lua/Luacheck
-        run: sudo apt-get update && sudo apt-get install -y lua5.1 liblua5.1-0-dev lua-check
+        run: sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check
 
       - name: luac
         env:
@@ -61,7 +61,7 @@ jobs:
         uses: reviewdog/action-setup@v1
 
       - name: Setup Lua/Luacheck
-        run: sudo apt-get update && sudo apt-get install -y lua5.1 liblua5.1-0-dev lua-check
+        run: sudo apt-get update && sudo apt-get install -y libluajit-5.1-dev lua-check
 
       - name: luacheck
         env:

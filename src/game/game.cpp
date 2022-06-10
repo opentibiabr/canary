@@ -1839,9 +1839,9 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 	}
 
 	// Refresh depot search window if necessary
-	// To-Do: Set item tier here on the '0' values when tier system is ready.
+	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
 	if (Player* playerActor = actor ? actor->getPlayer() : nullptr;
-			playerActor && playerActor->isDepotSearchOpenOnItem(item->getID(), 0)) {
+			playerActor && playerActor->isDepotSearchOpenOnItem(item->getID(), 0) && item->isInsideDepot(true)) {
 		playerActor->requestDepotSearchItem(item->getID(), 0);
 	}
 
@@ -3101,7 +3101,18 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 
 	// Refresh depot search window if necessary
 	if (player->isDepotSearchOpenOnItem(fromItemId, fromStackPos)) {
-		player->requestDepotSearchItem(fromItemId, fromStackPos);
+		bool mustReloadDepotSearch = item->isInsideDepot(true);
+
+		if (!mustReloadDepotSearch) {
+			if (Thing* targetThing = internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
+					targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
+				mustReloadDepotSearch = true;
+			}
+		}
+
+		if (mustReloadDepotSearch) {
+			player->requestDepotSearchItem(fromItemId, fromStackPos);
+		}
 	}
 }
 
@@ -3190,7 +3201,7 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 	g_actions().useItem(player, pos, index, item, isHotkey);
 
 	// Refresh depot search window if necessary
-	if (player->isDepotSearchOpenOnItem(itemId, stackPos)) {
+	if (player->isDepotSearchOpenOnItem(itemId, stackPos) && item->isInsideDepot(true)) {
 		player->requestDepotSearchItem(itemId, stackPos);
 	}
 }
@@ -3808,7 +3819,8 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 	player->stowItem(item, count, allItems);
 
 	// Refresh depot search window if necessary
-	if (player->isDepotSearchOpenOnItem(itemId, 0)) {
+	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
+	if (player->isDepotSearchOpenOnItem(itemId, 0) && item->isInsideDepot(true)) {
 		player->requestDepotSearchItem(itemId, 0);
 	}
 }

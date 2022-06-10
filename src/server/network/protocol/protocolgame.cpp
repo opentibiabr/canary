@@ -3774,23 +3774,11 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 	msg.addByte(hasParent ? 0x01 : 0x00);
 
 	// Depot search
-	bool showDepotSearch = false;
-	if (player->isDepotSearchAvailable()) {
-		if (container->getDepotLocker() || container->isDepotChest() || container->isInbox()) {
-			showDepotSearch = true;
-		} else if (const Container* parent = container->getParent() ? container->getParent()->getContainer() : nullptr; parent) {
-			while (parent) {
-				if (parent->getDepotLocker() || parent->isDepotChest()) {
-					showDepotSearch = true;
-					break;
-				}
-
-				parent = parent->getParent() ? parent->getParent()->getContainer() : nullptr;
-			}
-		}
-	}
-
-	if (showDepotSearch) {
+	if (player->isDepotSearchAvailable() &&
+			(container->getDepotLocker() ||
+			container->isDepotChest() ||
+			container->isInbox() ||
+			container->isInsideDepot(true))) {
 		msg.addByte(0x01);
 	} else {
 		msg.addByte(0x00);

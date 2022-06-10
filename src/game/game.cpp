@@ -1826,7 +1826,16 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			return ret;
 		}
 
-		if (const Player* player = actor->getPlayer()) {
+		if (Player* player = actor->getPlayer()) {
+
+			// Refresh depot search window if necessary
+			// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
+			if (player->isDepotSearchOpenOnItem(item->getID(), 0) &&
+				((fromCylinder->getItem() && fromCylinder->getItem()->isInsideDepot(true)) ||
+				(toCylinder->getItem() && toCylinder->getItem()->isInsideDepot(true)))) {
+				player->requestDepotSearchItem(item->getID(), 0);
+			}
+
 			const ItemType& it = Item::items[fromCylinder->getItem()->getID()];
 			if (it.id <= 0) {
 				return ret;
@@ -1836,13 +1845,6 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 				player->sendLootStats(item, static_cast<uint8_t>(item->getItemCount()));
 			}
 		}
-	}
-
-	// Refresh depot search window if necessary
-	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
-	if (Player* playerActor = actor ? actor->getPlayer() : nullptr;
-			playerActor && playerActor->isDepotSearchOpenOnItem(item->getID(), 0) && item->isInsideDepot(true)) {
-		playerActor->requestDepotSearchItem(item->getID(), 0);
 	}
 
 	return ret;
@@ -3097,22 +3099,23 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 		player->setNextActionTask(nullptr);
 	}
 
-	g_actions().useItemEx(player, fromPos, toPos, toStackPos, item, isHotkey);
-
 	// Refresh depot search window if necessary
+	bool mustReloadDepotSearch = false;
 	if (player->isDepotSearchOpenOnItem(fromItemId, fromStackPos)) {
-		bool mustReloadDepotSearch = item->isInsideDepot(true);
-
-		if (!mustReloadDepotSearch) {
+		if (item->isInsideDepot(true)) {
+			mustReloadDepotSearch = true;
+		} else {
 			if (Thing* targetThing = internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
 					targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
 				mustReloadDepotSearch = true;
 			}
 		}
+	}
 
-		if (mustReloadDepotSearch) {
-			player->requestDepotSearchItem(fromItemId, fromStackPos);
-		}
+	g_actions().useItemEx(player, fromPos, toPos, toStackPos, item, isHotkey);
+
+	if (mustReloadDepotSearch) {
+		player->requestDepotSearchItem(fromItemId, fromStackPos);
 	}
 }
 
@@ -3198,10 +3201,15 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 	player->resetIdleTime();
 	player->setNextActionTask(nullptr);
 
+	// Refresh depot search window if necessary
+	bool refreshDepotSearch = false;
+	if (player->isDepotSearchOpenOnItem(itemId, stackPos) && item->isInsideDepot(true)) {
+		refreshDepotSearch = true;
+	}
+
 	g_actions().useItem(player, pos, index, item, isHotkey);
 
-	// Refresh depot search window if necessary
-	if (player->isDepotSearchOpenOnItem(itemId, stackPos) && item->isInsideDepot(true)) {
+	if (refreshDepotSearch) {
 		player->requestDepotSearchItem(itemId, stackPos);
 	}
 }
@@ -3816,11 +3824,17 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
-	player->stowItem(item, count, allItems);
 
 	// Refresh depot search window if necessary
 	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
-	if (player->isDepotSearchOpenOnItem(itemId, 0) && item->isInsideDepot(true)) {
+	bool refreshDepotSearch = false;
+	if (player->isDepotSearchOpenOnItem(itemId, 0)) {
+		refreshDepotSearch = true;
+	}
+
+	player->stowItem(item, count, allItems);
+
+	if (refreshDepotSearch) {
 		player->requestDepotSearchItem(itemId, 0);
 	}
 }

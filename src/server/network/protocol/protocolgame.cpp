@@ -3774,15 +3774,7 @@ void ProtocolGame::sendContainer(uint8_t cid, const Container *container, bool h
 	msg.addByte(hasParent ? 0x01 : 0x00);
 
 	// Depot search
-	if (player->isDepotSearchAvailable() &&
-			(container->getDepotLocker() ||
-			container->isDepotChest() ||
-			container->isInbox() ||
-			container->isInsideDepot(true))) {
-		msg.addByte(0x01);
-	} else {
-		msg.addByte(0x00);
-	}
+	msg.addByte((player->isDepotSearchAvailable() && container->isInsideDepot(true)) ? 0x01 : 0x00);
 
 	msg.addByte(container->isUnlocked() ? 0x01 : 0x00); // Drag and drop
 	msg.addByte(container->hasPagination() ? 0x01 : 0x00); // Pagination

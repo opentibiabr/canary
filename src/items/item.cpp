@@ -2596,6 +2596,13 @@ bool Item::hasMarketAttributes()
 
 bool Item::isInsideDepot(bool includeDepot/* = false*/) const
 {
+	if (const Container* thisContainer = getContainer(); thisContainer &&
+			(thisContainer->getDepotLocker() ||
+			thisContainer->isDepotChest() ||
+			(includeDepot && thisContainer->isInbox()))) {
+		return true;
+	}
+
 	const Cylinder* cylinder = getParent();
 	if (!cylinder) {
 		return false;

@@ -4707,6 +4707,15 @@ Skulls_t Player::getSkull() const
 	return skull;
 }
 
+Skulls_t Player::getSkullUnjustified() const
+{
+	for (const auto& kill : unjustifiedKills) {
+		if (kill.unavenged && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
+			return SKULL_ORANGE;
+		}
+	}
+}
+
 Skulls_t Player::getSkullClient(const Creature* creature) const
 {
 	if (!creature || g_game().getWorldType() != WORLD_TYPE_PVP) {
@@ -4716,11 +4725,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 	const Player* player = creature->getPlayer();
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player == this) {
-			for (const auto& kill : unjustifiedKills) {
-				if (kill.unavenged && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
-					return SKULL_ORANGE;
-				}
-			}
+			return getSkullUnjustified();
 		}
 
 		if (player->hasKilled(this)) {

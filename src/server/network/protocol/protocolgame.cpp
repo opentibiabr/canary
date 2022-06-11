@@ -431,10 +431,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 	}
 
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-
 	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		enableCompact();
+		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+		enableCompression();
+	} else {
+		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
 	}
+	
 
 	version = msg.get<uint16_t>(); // Protocol version
 
@@ -451,13 +454,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
-	xtea::key key;
-	key[0] = msg.get<uint32_t>();
-	key[1] = msg.get<uint32_t>();
-	key[2] = msg.get<uint32_t>();
-	key[3] = msg.get<uint32_t>();
+	std::array<uint32_t, 4> key = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
-	setXTEAKey(std::move(key));
+	setXTEAKey(key.data());
 
 	msg.skipBytes(1); // gamemaster flag
 
@@ -6261,7 +6260,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(static_cast<uint8_t>(slot->bonus));
 		msg.add<uint16_t>(slot->bonusPercentage);
 		msg.addByte(slot->bonusRarity);
-		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
+		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
 			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {

@@ -616,6 +616,10 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			}
 
 			sendAddCreature(player, player->getPosition(), 0, false);
+			std::string bless = player->getBlessingsName();
+			std::ostringstream lostBlesses;
+			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 			return;
 		}
 

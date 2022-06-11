@@ -125,12 +125,13 @@ int32_t FileReadHandle::get32() {
 	return value;
 }
 
-std::string FileReadHandle::getRawString(size_t sz)
+std::string FileReadHandle::getRawString(size_t size)
 {
 	std::string string;
-	string.resize(sz);
-	size_t o = fread(const_cast<char*>(string.data()), 1, sz, file);
-	if (o != sz) {
+	string.resize(size);
+	if (size_t o = fread(string.data(), 1, size, file);
+	o != size)
+	{
 		setErrorCode(FILE_READ_ERROR);
 		return std::string();
 	}
@@ -245,10 +246,10 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 	// 0x00 00 00 00 is accepted as a wildcard version
 	if (ver[0] != 0 || ver[1] != 0 || ver[2] != 0 || ver[3] != 0) {
 		bool accepted = false;
-		for(std::vector<std::string>::const_iterator id_iter = fileAcceptableIdentifiers.begin();
-		id_iter != fileAcceptableIdentifiers.end(); ++id_iter)
+		for (auto iterator = fileAcceptableIdentifiers.begin();
+		iterator != fileAcceptableIdentifiers.end(); ++iterator)
 		{
-			if (memcmp(ver.data(), id_iter->c_str(), 4) == 0) {
+			if (memcmp(ver.data(), iterator->c_str(), 4) == 0) {
 				accepted = true;
 				break;
 			}
@@ -511,7 +512,7 @@ std::shared_ptr<BinaryNode> BinaryNode::advance()
 	// Last was end (0xff)
 	// Read next byte to decide if there is another node following this
 	uint8_t*& cache = file->cache;
-	size_t& cacheLenght = file->cacheLenght;
+	const size_t& cacheLenght = file->cacheLenght;
 	size_t& localReadIndex = file->localReadIndex;
 
 	// Failed to renew, exit
@@ -546,7 +547,7 @@ void BinaryNode::load()
 	assert(file);
 	// Read until next node starts
 	uint8_t*& cache = file->cache;
-	size_t& cacheLenght = file->cacheLenght;
+	const size_t& cacheLenght = file->cacheLenght;
 	size_t& localReadIndex = file->localReadIndex;
 	while(true) {
 		// Failed to renew, exit
@@ -559,30 +560,23 @@ void BinaryNode::load()
 		++localReadIndex;
 
 		switch(op) {
-			case NODE_START: {
-				file->lastWasStart = true;
+		case NODE_START:
+			file->lastWasStart = true;
+			return;
+		case NODE_END:
+			file->lastWasStart = false;
+			return;
+		case ESCAPE_CHAR:
+			// Failed to renew, exit
+			if (localReadIndex >= cacheLenght && !file->renewCache()) {
+				file->setErrorCode(FILE_PREMATURE_END);
 				return;
 			}
-
-			case NODE_END: {
-				file->lastWasStart = false;
-				return;
-			}
-
-			case ESCAPE_CHAR: {
-				// Failed to renew, exit
-				if (localReadIndex >= cacheLenght && !file->renewCache()) {
-					file->setErrorCode(FILE_PREMATURE_END);
-					return;
-				}
-
-				op = cache[localReadIndex];
-				++localReadIndex;
-				break;
-			}
-
-			default:
-				break;
+			op = cache[localReadIndex];
+			++localReadIndex;
+			break;
+		default:
+			break;
 		}
 		SPDLOG_DEBUG("[BinaryNode::load] - Appending map data...");
 		stringData.append(1, op);
@@ -838,12 +832,12 @@ bool NodeFileWriteHandle::addLongString(const std::string& str)
 
 bool NodeFileWriteHandle::addRAW(std::string& str)
 {
-	writeBytes(std::bit_cast<uint8_t*>(const_cast<char*>(str.data())), str.size());
+	writeBytes(std::bit_cast<uint8_t*>(str.data()), str.size());
 	return errorCode == FILE_NO_ERROR;
 }
 
-bool NodeFileWriteHandle::addRAW(const uint8_t* ptr, size_t sz)
+bool NodeFileWriteHandle::addRAW(const uint8_t* ptr, size_t size)
 {
-	writeBytes(ptr, sz);
+	writeBytes(ptr, size);
 	return errorCode == FILE_NO_ERROR;
 }

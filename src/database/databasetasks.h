@@ -53,7 +53,7 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		void runTask(const DatabaseTask& task);
 
 		Database *db_;
-		std::thread thread;
+		std::jthread thread;
 		std::list<DatabaseTask> tasks;
 		std::mutex taskLock;
 		std::condition_variable taskSignal;

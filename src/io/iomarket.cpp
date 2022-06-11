@@ -92,7 +92,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		offer.price = result->getU32("price");
 		offer.timestamp = result->getU32("expires_at");
 
-		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getU16("state"));
+		auto offerState = static_cast<MarketOfferState_t>(result->getU16("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
 			offerState = OFFERSTATE_ACCEPTED;
 		}

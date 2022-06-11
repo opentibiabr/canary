@@ -53,7 +53,8 @@ public:
 		errorCode = newErrorCode;
 	}
 	std::string getErrorMessage() const;
-public:
+
+protected:
 	FileHandleError errorCode = FILE_NO_ERROR;
 	FILE* file = nullptr;
 };
@@ -72,7 +73,7 @@ public:
 	int8_t get8();
 	int32_t get32();
 
-	std::string getRawString(size_t sz);
+	std::string getRawString(size_t size);
 	std::string getString();
 	std::string getLongString();
 
@@ -127,12 +128,12 @@ public:
 	uint64_t getU64();
 	double getDouble();
 	bool getBoolean();
-	bool skip(size_t sz) {
-		if(readOffsetSize + sz > stringData.size()) {
+	bool skip(size_t size) {
+		if(readOffsetSize + size > stringData.size()) {
 			readOffsetSize = stringData.size();
 			return false;
 		}
-		readOffsetSize += sz;
+		readOffsetSize += size;
 		return true;
 	}
 	std::string getRawString(size_t size);
@@ -240,7 +241,7 @@ public:
 	size_t tell() override {
 		return localReadIndex;
 	}
-	bool isLoaded() {
+	bool isLoaded() override {
 		return true;
 	}
 private:
@@ -272,7 +273,7 @@ public:
 	bool addString(const char* str);
 	bool addLongString(const std::string& str);
 	bool addRAW(const std::string& str);
-	bool addRAW(const uint8_t* ptr, size_t sz);
+	bool addRAW(const uint8_t* ptr, size_t size);
 	bool addRAW(const char* str) {
 		return addRAW(std::bit_cast<const uint8_t*>(str), strlen(str));
 	}
@@ -307,7 +308,7 @@ public:
 	bool addString(const std::string& str);
 	bool addLongString(const std::string& str);
 	bool addRAW(std::string& str);
-	bool addRAW(const uint8_t* ptr, size_t sz);
+	bool addRAW(const uint8_t* ptr, size_t size);
 	bool addRAW(const char* str) {
 		return addRAW(std::bit_cast<const uint8_t*>(str), strlen(str));
 	}

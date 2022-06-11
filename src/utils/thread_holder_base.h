@@ -22,7 +22,7 @@ class ThreadHolder
 		ThreadHolder() {}
 		void start() {
 			setState(THREAD_STATE_RUNNING);
-			thread = std::thread(&Derived::threadMain, static_cast<Derived*>(this));
+			thread = std::jthread(&Derived::threadMain, static_cast<Derived*>(this));
 		}
 
 		void stop() {
@@ -44,7 +44,7 @@ class ThreadHolder
 		}
 	private:
 		std::atomic<ThreadState> threadState{THREAD_STATE_TERMINATED};
-		std::thread thread;
+		std::jthread thread;
 };
 
 #endif  // SRC_UTILS_THREAD_HOLDER_H_

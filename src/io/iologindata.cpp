@@ -1,7 +1,7 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
  * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
- * Repository: https://github.com/opentibiabr/canary
+ * <https://github.com/opentibiabr/canary>
  * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
  * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
  * Website: https://docs.opentibiabr.org/
@@ -748,7 +748,6 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
   std::list<ContainerBlock> queue;
 
   int32_t runningId = 100;
-
   const auto& openContainers = player->getOpenContainers();
   for (const auto& [itemIdPair, itemPair] : itemList) {
     int32_t pid = itemIdPair;
@@ -758,28 +757,33 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
     }
     ++runningId;
 
-    if (Container* container = item->getContainer()) {
-      if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-        container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
-      }
-
-      if (openContainers.empty()) {
-        SPDLOG_DEBUG("[IOLoginData::saveItems] - Player open containers is empty");
-        continue;
-      }
-
-      for (const auto& [containerCidPair, openContainerPair] : openContainers) {
-        auto openContainer = openContainerPair;
-        auto opcontainer = openContainer.container;
-
-        if (opcontainer == container) {
-          container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
-          break;
-        }
-      }
-
-      queue.emplace_back(container, runningId);
+    Container* container = item->getContainer();
+    if (container == nullptr)
+    {
+      SPDLOG_DEBUG("[IOLoginData::saveItems] - Container is nullptr");
+      continue;
     }
+
+    if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
+      container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
+    }
+
+    if (openContainers.empty()) {
+      SPDLOG_DEBUG("[IOLoginData::saveItems] - Player open containers is empty");
+      continue;
+    }
+
+    for (const auto& [containerCidPair, openContainerPair] : openContainers) {
+      auto openContainer = openContainerPair;
+      auto opcontainer = openContainer.container;
+
+      if (opcontainer == container) {
+        container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
+        break;
+      }
+    }
+
+    queue.emplace_back(container, runningId);
 
     propWriteStream.clear();
     item->serializeAttr(propWriteStream);

@@ -6260,7 +6260,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(static_cast<uint8_t>(slot->bonus));
 		msg.add<uint16_t>(slot->bonusPercentage);
 		msg.addByte(slot->bonusRarity);
-		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
+		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
 			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {

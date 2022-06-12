@@ -2,10 +2,10 @@
 ---@version 1.0
 ---@since 1.0
 MonsterStorage = {
-    Spawn = {
-        info = 550000,
-        monster_spawn_object = 550001,
-    }
+	Spawn = {
+		info = 550000,
+		monster_spawn_object = 550001,
+	}
 }
 Spawn = {}
 SpawnMetatables = {}
@@ -33,8 +33,8 @@ setmetatable(Spawn, {
 					end
 				}
 			}
-        }
-		local mt = setmetatable(spawn_data, {__index = Spawn})
+		}
+		local mt = setmetatable(spawn_data, { __index = Spawn })
 		table.insert(SpawnMetatables, mt)
 		return mt
 	end
@@ -47,7 +47,7 @@ end
 
 function Spawn.setPositions(self, pos)
 	if type(pos) ~= "table" then
-        pos = {pos}
+		pos = { pos }
 	end
 	self.positions = pos
 end
@@ -92,7 +92,7 @@ function Spawn.addFunction(self, table, func, functionName)
 		error("Param is not a function")
 		return false
 	end
-	local pos = functionName or #table+1
+	local pos = functionName or #table + 1
 	if type(table) == "table" then
 		table[pos] = func
 	else
@@ -139,7 +139,12 @@ function Spawn.spawnMonsterTimer(self, config, func)
 			end, i * 1000)
 		end
 		addEvent(function()
-			local monster = Game.createMonster(config.monster, config.pos, true, true)
+			local monster = Game.createMonster(config.monster, config.pos, false, false)
+			if not monster then
+				Spdlog.error("[Spawn] Error on spawn monster: " .. config.monster)
+				return false
+			end
+
 			if func ~= nil and func ~= false then
 				func(monster)
 			end

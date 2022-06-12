@@ -251,6 +251,9 @@ bool ConfigManager::load()
 	integer[DEPOTCHEST] = getGlobalNumber(L, "depotChest", 4);
 	integer[CRITICALCHANCE] = getGlobalNumber(L, "criticalChance", 10);
 
+	boolean[INVENTORY_GLOW] = getGlobalBoolean(L, "inventoryGlowOnFiveBless", false);
+	integer[ADVENTURERSBLESSING_LEVEL] = getGlobalNumber(L, "adventurersBlessingLevel", 21);
+
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
 	floating[RATE_MANA_REGEN] = getGlobalFloat(L, "rateManaRegen", 1.0);

@@ -616,10 +616,12 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			}
 
 			sendAddCreature(player, player->getPosition(), 0, false);
+
 			std::string bless = player->getBlessingsName();
 			std::ostringstream lostBlesses;
 			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
+			player->addAdventurerBlessing();
 			return;
 		}
 
@@ -636,7 +638,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
 	}
 
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
+	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
@@ -722,6 +724,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xB1: parseHighscores(msg); break;
 		case 0xBA: parseTaskHuntingAction(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
+		case 0xCF: sendBlessDialog(msg); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
@@ -3567,9 +3570,45 @@ void ProtocolGame::sendBlessStatus()
 
 	msg.addByte(0x9C);
 
-	msg.add<uint16_t>((blessCount >= 5) ? (flag | 1) : flag);         //Show up the glowing effect in items if have all blesses
+	bool glow = g_configManager().getBoolean(INVENTORY_GLOW) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
+	msg.add<uint16_t>(glow ? 1 : 0); //Show up the glowing effect in items if have all blesses or adventurer's blessing
 	msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	// msg.add<uint16_t>(0);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendBlessDialog(NetworkMessage &msg)
+{
+	msg.addByte(0x9B);
+
+	int totalblessings = 8;
+	msg.addByte(totalblessings); // total blessings
+	for (int i = 1; i <= totalblessings; i++) {
+		msg.add<uint16_t>(i); // bless id?
+		msg.addByte(1); // get blessing count
+		msg.addByte(0); // store blessing count
+	}
+
+	msg.addByte(2); // premium?
+	msg.addByte((player->isPromoted()) ? 30 : 0); //lower xp loss if promoted
+	msg.addByte(60); // XP/Skill loss min pvp death
+	msg.addByte(50); // XP/Skill loss max pvp death
+	msg.addByte(40); // XP/Skill pve death
+	msg.addByte(100); // equipped container lose pvp death
+	msg.addByte(100); // equipped container pve death
+
+	msg.addByte(1); //is red/black skull
+	msg.addByte(1);
+
+	// History
+	int historyAmount = 1;
+	msg.addByte(historyAmount); //History log count
+	for (int count = 1; count <= historyAmount; count++) {
+		msg.add<uint32_t>(OTSYS_TIME()); //timestamp
+		msg.add<uint32_t>(1); //Color message (1 - Red | 0 = White loss)
+		msg.addString("Blessing Purchased"); //History message
+	}
 
 	writeToOutputBuffer(msg);
 }

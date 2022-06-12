@@ -20,11 +20,9 @@ Blessings.Credits = {
 }
 
 Blessings.Config = {
-	AdventurerBlessingLevel = 0, -- Free full bless until level
 	HasToF = false, -- Enables/disables twist of fate
 	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplied by henricus
 	SkulledDeathLoseStoreItem = true, -- Destroy all items on store when dying with red/blackskull
-	InventoryGlowOnFiveBless = true, -- Glow in yellow inventory items when the player has 5 or more bless,
 	Debug = false -- Prin debug messages in console if enabled
 }
 
@@ -233,17 +231,6 @@ Blessings.checkBless = function(player)
 	return true
 end
 
-Blessings.doAdventurerBlessing = function(player)
-	if player:getLevel() > Blessings.Config.AdventurerBlessingLevel then
-		return true
-	end
-	player:addMissingBless(true, true)
-
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE,'You received adventurers blessings for you being level lower than ' .. Blessings.Config.AdventurerBlessingLevel .. '!')
-	player:getPosition():sendMagicEffect(CONST_ME_HOLYDAMAGE)
-	return true
-end
-
 Blessings.getInquisitionPrice = function(player)
 	-- Find how many missing bless we have and give out the price
 	inquifilter = function(b) return b.inquisition end
@@ -391,5 +378,5 @@ function Player.addMissingBless(self, all, tof)
 			end
 		end
 	end
-	Blessings.sendBlessStatus(self)
+	--Blessings.sendBlessStatus(self)
 end

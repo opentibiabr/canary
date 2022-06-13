@@ -428,12 +428,10 @@ bool DBResult::getBoolean(const std::string& tableName) const
 
 	char* rowResult = row[result];
 	auto databaseResut = std::atoi(rowResult);
-	// Here we will check if result is false or true (0/1)
-	// Was not false or true, we will return a message warning
+	// Here we will check if result is false or true (0/1), was not false or true, we will return warning message
 	if (databaseResut >= 2)
 	{
 		SPDLOG_WARN("[DBResult::getBoolean] - Boolean result '{}' is not false or true, valid value is only '0' or '1'", databaseResut);
-		return false;
 	}
 
 	return databaseResut;

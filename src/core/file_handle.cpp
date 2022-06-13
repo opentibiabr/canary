@@ -71,8 +71,12 @@ uint8_t FileReadHandle::getU8() {
 		return 0;
 	}
 
-	fread(&value, 1, 1, file);
-	return value;
+	auto size = fread(&value, 1, 1, file);
+	if (size != 0) {
+		return value;
+	}
+
+	return 0;
 }
 
 uint16_t FileReadHandle::getU16() {
@@ -81,8 +85,12 @@ uint16_t FileReadHandle::getU16() {
 		return 0;
 	}
 
-	fread(&value, 2, 1, file);
-	return value;
+	auto size = fread(&value, 2, 1, file);
+	if (size != 0) {
+		return value;
+	}
+
+	return 0;
 }
 
 uint32_t FileReadHandle::getU32() {
@@ -91,8 +99,12 @@ uint32_t FileReadHandle::getU32() {
 		return 0;
 	}
 
-	fread(&value, 4, 1, file);
-	return value;
+	auto size = fread(&value, 4, 1, file);
+	if (size != 0) {
+		return value;
+	}
+
+	return 0;
 }
 
 uint64_t FileReadHandle::getU64() {
@@ -101,8 +113,12 @@ uint64_t FileReadHandle::getU64() {
 		return 0;
 	}
 
-	fread(&value, 8, 1, file);
-	return value;
+	auto size = fread(&value, 8, 1, file);
+	if (size != 0) {
+		return value;
+	}
+
+	return 0;
 }
 
 int8_t FileReadHandle::get8() {
@@ -111,8 +127,12 @@ int8_t FileReadHandle::get8() {
 		return 0;
 	}
 
-	fread(&value, 1, 1, file);
-	return value;
+	auto size = fread(&value, 1, 1, file);
+	if (size != 0) {
+		return value;
+	}
+
+	return 0;
 }
 
 int32_t FileReadHandle::get32() {
@@ -121,8 +141,12 @@ int32_t FileReadHandle::get32() {
 		return 0;
 	}
 
-	fread(&value, 4, 1, file);
-	return value;
+	auto size = fread(&value, 4, 1, file);
+	if (size != 0) {
+		return value;
+	}
+
+	return 0;
 }
 
 std::string FileReadHandle::getRawString(size_t size)

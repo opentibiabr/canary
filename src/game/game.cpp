@@ -79,10 +79,8 @@ void Game::loadBoostedCreature()
 
 	uint16_t date = result->getU16("date");
 	std::string name = "";
-	std::time_t now = getTimeNow();
-	tm *ltm = localtime(&now);
-	uint8_t today = ltm->tm_mday;
-	if (date == today) {
+	uint16_t day = static_cast<unsigned int>(getDate().day());
+	if (day == date) {
 		name = result->getString("boostname");
 	} else {
 		uint16_t oldrace = result->getU16("raceid");
@@ -104,7 +102,7 @@ void Game::loadBoostedCreature()
 
 		query.str(std::string());
 		query << "UPDATE `boosted_creature` SET ";
-		query << "`date` = '" << ltm->tm_mday << "',";
+		query << "`date` = '" << day << "',";
 		query << "`boostname` = " << db.escapeString(name) << ",";
 
 		if (monsterType) {
@@ -133,9 +131,7 @@ void Game::start(ServiceManager* manager)
 {
 	serviceManager = manager;
 
-	std::time_t now = getTimeNow();
-	const tm* tms = localtime(&now);
-	int minutes = tms->tm_min;
+	auto minutes = getTimeMinutes().count();
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind_front(&Game::checkLight, this)));
@@ -1039,6 +1035,25 @@ void Game::playerInspectItem(Player* player, const Position& pos) {
 
 void Game::playerInspectItem(Player* player, uint16_t itemId, uint8_t itemCount, bool cyclopedia) {
 	player->sendItemInspection(itemId, itemCount, nullptr, cyclopedia);
+}
+
+std::time_t Game::getTimeNow() {
+	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+}
+
+std::chrono::year_month_day Game::getDate() {
+	using namespace std::chrono;
+	auto dp = floor<days>(zoned_time{current_zone(), system_clock::now()}.get_local_time());
+	year_month_day ymd{dp};
+	return ymd;
+}
+
+std::chrono::minutes Game::getTimeMinutes() {
+	using namespace std::chrono;
+	auto tp = zoned_time{current_zone(), system_clock::now()}.get_local_time();
+	auto dp = floor<days>(tp);
+	hh_mm_ss time{floor<milliseconds>(tp-dp)};
+	return time.minutes();
 }
 
 FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string& file)

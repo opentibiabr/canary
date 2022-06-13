@@ -71,7 +71,7 @@ class Scheduler : public ThreadHolder<Scheduler>
 		void threadMain();
 
 	private:
-		std::thread thread;
+		std::jthread thread;
 		std::mutex eventLock;
 		std::condition_variable eventSignal;
 

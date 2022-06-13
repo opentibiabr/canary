@@ -94,7 +94,7 @@ void DatabaseTasks::runTask(const DatabaseTask& task)
 	}
 
 	if (task.callback) {
-		g_dispatcher().addTask(createTask(std::bind(task.callback, result, success)));
+		g_dispatcher().addTask(createTask(std::bind_front(task.callback, result, success)));
 	}
 }
 

@@ -101,9 +101,7 @@ struct Position
 		return ! (*this < p);
 	}
 
-	bool operator==(const Position& p) const {
-		return p.x == x && p.y == y && p.z == z;
-	}
+	bool operator==(const Position& p) const = default;
 
 	Position operator+(const Position& p1) const {
 		return Position(x + p1.x, y + p1.y, z + p1.z);

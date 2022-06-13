@@ -558,10 +558,24 @@ class Game
 		void setCreateLuaItems(Position position, uint16_t itemId) {
 			mapLuaItemsStored[position] = itemId;
 		}
+		
+		// Return time now
+		static std::time_t getTimeNow();
 
-		static std::time_t getTimeNow() {
-			return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-		}
+		/*
+		 * This function return year, month and day
+		 * How to use
+		 * getTime.year() = return year
+		 * getTime.day() = return day
+		 * getTime.month() = return month
+		*/
+		static std::chrono::year_month_day getDate();
+
+		/*
+		 * This function return minutes
+		 * getTime().minutes() = return minutes
+		*/
+		static std::chrono::minutes getTimeMinutes();
 
 	private:
 		void checkImbuements();

@@ -18,8 +18,9 @@
 
 bool Outfits::parseOutfitNode()
 {
-	pugi::xml_document document;
-	for (auto outfitNode : document.child("outfits").children()) {
+	for (pugi::xml_document document;
+	auto outfitNode : document.child("outfits").children())
+	{
 		pugi::xml_attribute attr;
 		if ((attr = outfitNode.attribute("enabled")) && !attr.as_bool()) {
 			continue;

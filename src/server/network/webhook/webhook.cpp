@@ -1,6 +1,7 @@
 #include "otpch.h"
 
 #include "server/network/webhook/webhook.h"
+#include "game/game.h"
 
 #include <curl/curl.h>
 #include <json/json.h>
@@ -63,8 +64,7 @@ void webhook_send_message(std::string title, std::string message, int color, std
 }
 
 static std::string get_payload(std::string title, std::string message, int color) {
-	time_t now;
-	time(&now);
+	time_t now = Game::getTimeNow();
 	struct tm tm;
 
 #ifdef _MSC_VER

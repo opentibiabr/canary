@@ -5994,8 +5994,8 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 	uint32_t inboxCount = 0;
 
 	uint32_t stashCount = 0;
-	const ItemType& it = Item::items[itemId];
-	if (it.stackable && it.wareId > 0) {
+	const ItemType& iType = Item::items[itemId];
+	if (iType.stackable && iType.wareId > 0) {
 		stashCount = static_cast<uint32_t>(getStashItemCount(itemId));
 	}
 

@@ -3825,16 +3825,11 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 		return;
 	}
 
-	// Refresh depot search window if necessary
-	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
-	bool refreshDepotSearch = false;
-	if (player->isDepotSearchOpenOnItem(itemId, 0)) {
-		refreshDepotSearch = true;
-	}
-
 	player->stowItem(item, count, allItems);
 
-	if (refreshDepotSearch) {
+	// Refresh depot search window if necessary
+	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
+	if (player->isDepotSearchOpenOnItem(itemId, 0)) {
 		player->requestDepotSearchItem(itemId, 0);
 	}
 }

@@ -562,20 +562,15 @@ class Game
 		// Return time now
 		static std::time_t getTimeNow();
 
-		/*
-		 * This function return year, month and day
-		 * How to use
-		 * getTime.year() = return year
-		 * getTime.day() = return day
-		 * getTime.month() = return month
-		*/
-		static std::chrono::year_month_day getDate();
+		static tm* getTime();
 
-		/*
-		 * This function return minutes
-		 * getTime().minutes() = return minutes
-		*/
-		static std::chrono::minutes getTimeMinutes();
+		// Return actual day
+		static uint16_t getDateDay();
+		static uint16_t getDateMonth();
+		static int32_t getDateYear();
+
+		// Return actual minute
+		static int32_t getTimeMinutes();
 
 	private:
 		void checkImbuements();

@@ -23,8 +23,10 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 	}
 
 	int daysNow;
-	auto date = Game::getDate();
-	int daysMath = ((static_cast<int>(date.year()) + 1900) * 365) + ((static_cast<unsigned int>(date.month()) + 1) * 30) + (static_cast<unsigned int>(date.day()));
+	auto day = Game::getDateDay();
+	auto month = Game::getDateMonth();
+	auto year = Game::getDateYear();
+	int daysMath = ((year + 1900) * 365) + ((month + 1) * 30) + (day);
 
 	for (auto schedNode : doc.child("events").children()) {
 		std::string ss_d;

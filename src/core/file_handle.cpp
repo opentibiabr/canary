@@ -311,7 +311,12 @@ std::shared_ptr<BinaryNode> DiskNodeFileReadHandle::getRootNode()
 {
 	assert(binaryRootNode == nullptr); // You should never do this twice
 	uint8_t first;
-	fread(&first, 1, 1, file);
+	auto size = fread(&first, 1, 1, file);
+	if (size == 0) {
+		SPDLOG_ERROR("[DiskNodeFileReadHandle::getRootNode] - Size is 0");
+		return nullptr;
+	}
+
 	if (first == NODE_START) {
 		binaryRootNode = getNode(nullptr);
 		binaryRootNode->load();

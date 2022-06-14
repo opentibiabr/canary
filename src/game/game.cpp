@@ -79,7 +79,7 @@ void Game::loadBoostedCreature()
 
 	uint16_t date = result->getU16("date");
 	std::string name = "";
-	uint16_t day = static_cast<unsigned int>(getDate().day());
+	auto day = getDateDay();
 	if (day == date) {
 		name = result->getString("boostname");
 	} else {
@@ -131,7 +131,7 @@ void Game::start(ServiceManager* manager)
 {
 	serviceManager = manager;
 
-	auto minutes = getTimeMinutes().count();
+	auto minutes = getTimeMinutes();
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind_front(&Game::checkLight, this)));
@@ -1041,19 +1041,63 @@ std::time_t Game::getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-std::chrono::year_month_day Game::getDate() {
-	using namespace std::chrono;
-	auto dp = floor<days>(zoned_time{current_zone(), system_clock::now()}.get_local_time());
-	year_month_day ymd{dp};
-	return ymd;
+tm* Game::getTime() {
+	auto timeNow = getTimeNow();
+	tm* time = localtime(&timeNow);
+	if (time == nullptr) {
+		SPDLOG_ERROR("[Game::getTime] - Time is wrong");
+		return 0;
+	}
+
+	return time;
 }
 
-std::chrono::minutes Game::getTimeMinutes() {
-	using namespace std::chrono;
-	auto tp = zoned_time{current_zone(), system_clock::now()}.get_local_time();
-	auto dp = floor<days>(tp);
-	hh_mm_ss time{floor<milliseconds>(tp-dp)};
-	return time.minutes();
+uint16_t Game::getDateDay() {
+	#if defined(_MSC_VER)
+	auto tp = std::chrono::zoned_time{std::chrono::current_zone(), std::chrono::system_clock::now()}.get_local_time();
+	auto dp = std::chrono::floor<std::chrono::days>(tp);
+	std::chrono::year_month_day ymd{dp};
+	return static_cast<unsigned int>(ymd.day());
+	#else
+	auto time = getTime();
+	return time->tm_mday;
+	#endif
+}
+
+uint16_t Game::getDateMonth() {
+	#if defined(_MSC_VER)
+	auto tp = std::chrono::zoned_time{std::chrono::current_zone(), std::chrono::system_clock::now()}.get_local_time();
+	auto dp = std::chrono::floor<std::chrono::days>(tp);
+	std::chrono::year_month_day ymd{dp};
+	return static_cast<unsigned int>(ymd.month());
+	#else
+	auto time = getTime();
+	return time->tm_mon;
+	#endif
+}
+
+int32_t Game::getDateYear() {
+	#if defined(_MSC_VER)
+	auto tp = std::chrono::zoned_time{std::chrono::current_zone(), std::chrono::system_clock::now()}.get_local_time();
+	auto dp = std::chrono::floor<std::chrono::days>(tp);
+	std::chrono::year_month_day ymd{dp};
+	return static_cast<int>(ymd.year());
+	#else
+	auto time = getTime();
+	return time->tm_year;
+	#endif
+}
+
+int32_t Game::getTimeMinutes() {
+	#if defined(_MSC_VER)
+	auto tp = std::chrono::zoned_time{std::chrono::current_zone(), std::chrono::system_clock::now()}.get_local_time();
+	auto dp = std::chrono::floor<std::chrono::days>(tp);
+	std::chrono::hh_mm_ss time{std::chrono::floor<std::chrono::milliseconds>(tp-dp)};
+	return time.minutes().count();
+	#else
+	auto time = getTime();
+	return time->tm_min;
+	#endif
 }
 
 FILELOADER_ERRORS Game::loadAppearanceProtobuf(const std::string& file)

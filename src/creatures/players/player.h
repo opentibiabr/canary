@@ -772,7 +772,7 @@ class Player final : public Creature, public Cylinder
 		LightInfo getCreatureLight() const override;
 
 		Skulls_t getSkull() const override;
-		Skulls_t getSkullUnjustified() const;
+		Skulls_t getSkullUnjustified(const Creature &creature) const;
 		Skulls_t getSkullClient(const Creature* creature) const override;
 		int64_t getSkullTicks() const { return skullTicks; }
 		void setSkullTicks(int64_t ticks) { skullTicks = ticks; }

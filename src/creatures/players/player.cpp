@@ -4697,13 +4697,14 @@ Skulls_t Player::getSkull() const
 	return skull;
 }
 
-Skulls_t Player::getSkullUnjustified() const
+Skulls_t Player::getSkullUnjustified(const Creature &creature) const
 {
 	for (const auto& kill : unjustifiedKills) {
 		if (kill.unavenged && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
 			return SKULL_ORANGE;
 		}
 	}
+	return Creature::getSkullClient(&creature);
 }
 
 Skulls_t Player::getSkullClient(const Creature* creature) const
@@ -4715,7 +4716,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 	const Player* player = creature->getPlayer();
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player == this) {
-			return getSkullUnjustified();
+			return getSkullUnjustified(*creature);
 		}
 
 		if (player->hasKilled(this)) {

@@ -1523,7 +1523,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		int32_t offlineTime;
 		if (getLastLogout() != 0) {
 			// Not counting more than 21 days to prevent overflow when multiplying with 1000 (for milliseconds).
-			offlineTime = static_cast<const int32_t>(std::min<int32_t>(Game::getTimeNow() - getLastLogout(), 86400 * 21));
+			offlineTime = std::min<int32_t>(static_cast<const int32_t>(Game::getTimeNow() - getLastLogout()), 86400 * 21);
 		} else {
 			offlineTime = 0;
 		}

@@ -562,7 +562,7 @@ class Game
 		// Return time now
 		static std::time_t getTimeNow();
 
-		static tm* getTime();
+		static tm getTime();
 
 		// Return actual day
 		static uint16_t getDateDay();

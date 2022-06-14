@@ -79,8 +79,9 @@ void Game::loadBoostedCreature()
 
 	uint16_t date = result->getU16("date");
 	std::string name = "";
-	auto day = getDateDay();
-	if (day == date) {
+	if (auto day = getDateDay();
+	day == date)
+	{
 		name = result->getString("boostname");
 	} else {
 		uint16_t oldrace = result->getU16("raceid");
@@ -1041,14 +1042,14 @@ std::time_t Game::getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-tm* Game::getTime() {
+tm Game::getTime() {
 	auto timeNow = getTimeNow();
-	tm* time = localtime(&timeNow);
-	if (time == nullptr) {
-		SPDLOG_ERROR("[Game::getTime] - Time is wrong");
-		return 0;
-	}
-
+	struct tm time;
+	#if defined(_MSC_VER)
+	localtime_s(&time, &timeNow);
+	#else
+	localtime_r(&timeNow, &time);
+	#endif
 	return time;
 }
 
@@ -1060,7 +1061,7 @@ uint16_t Game::getDateDay() {
 	return static_cast<unsigned int>(ymd.day());
 	#else
 	auto time = getTime();
-	return time->tm_mday;
+	return static_cast<uint16_t>(time.tm_mday);
 	#endif
 }
 
@@ -1072,7 +1073,7 @@ uint16_t Game::getDateMonth() {
 	return static_cast<unsigned int>(ymd.month());
 	#else
 	auto time = getTime();
-	return time->tm_mon;
+	return static_cast<uint16_t>(time.tm_mon);
 	#endif
 }
 
@@ -1084,7 +1085,7 @@ int32_t Game::getDateYear() {
 	return static_cast<int>(ymd.year());
 	#else
 	auto time = getTime();
-	return time->tm_year;
+	return time.tm_year;
 	#endif
 }
 
@@ -1096,7 +1097,7 @@ int32_t Game::getTimeMinutes() {
 	return time.minutes().count();
 	#else
 	auto time = getTime();
-	return time->tm_min;
+	return time.tm_min;
 	#endif
 }
 

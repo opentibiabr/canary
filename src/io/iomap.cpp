@@ -179,56 +179,95 @@ void IOMap::readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile
 
 std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
-    Item* item = Item::createMapItem(*binaryNodeMapTile);
-    if (!item) {
-        SPDLOG_ERROR("[IOMap::parseTileArea] - Failed to create item on position: {}", tilePosition.toString());
-        return std::make_tuple(nullptr, nullptr);
-    }
+	Item* item = Item::createMapItem(*binaryNodeMapTile);
+	if (!item) {
+		SPDLOG_ERROR("[IOMap::readAttributeTileItem] - Failed to create item on position: {}", tilePosition.toString());
+		return std::make_tuple(nullptr, nullptr);
+	}
 
-    if (const Teleport* teleport = item->getTeleport()) {
-        // Teleport position / teleport destination
-        teleportMap.emplace(tilePosition, teleport->getDestination());
-        if (teleportMap.contains(teleport->getDestination())) {
-            SPDLOG_WARN("[IOMap::parseTileArea] - "
-                        "Teleport in position: {} "
-                        "is leading to another teleport", tilePosition.toString());
-            return std::make_tuple(nullptr, nullptr);
-        }
-        for (auto const& [mapTeleportPosition, mapDestinationPosition] : teleportMap) {
-            if (mapDestinationPosition == tilePosition) {
-                SPDLOG_WARN("IOMap::parseTileArea] - "
-                            "Teleport in position: {} "
-                            "is leading to another teleport",
-                            mapDestinationPosition.toString());
-                continue;
-            }
-        }
-    }
+	if (const Teleport* teleport = item->getTeleport()) {
+		// Teleport position / teleport destination
+		teleportMap.emplace(tilePosition, teleport->getDestination());
+		if (teleportMap.contains(teleport->getDestination())) {
+			SPDLOG_WARN("[IOMap::readAttributeTileItem] - "
+						"Teleport in position: {} "
+						"is leading to another teleport", tilePosition.toString());
+			return std::make_tuple(nullptr, nullptr);
+		}
+		for (auto const& [mapTeleportPosition, mapDestinationPosition] : teleportMap) {
+			if (mapDestinationPosition == tilePosition) {
+				SPDLOG_WARN("IOMap::readAttributeTileItem] - "
+							"Teleport in position: {} "
+							"is leading to another teleport",
+							mapDestinationPosition.toString());
+				continue;
+			}
+		}
+	}
 
-    if (isHouseTile && item->isMoveable()) {
-        SPDLOG_WARN("[IOMap::parseTileArea] - "
-                    "Moveable item with ID: {}, in house: {}, "
-                    "at position: {}, discarding item",
-                    item->getID(), house.getId(), tilePosition.toString());
-        delete item;
-        return std::make_tuple(nullptr, nullptr);
-    }
+	if (isHouseTile && item->isMoveable()) {
+		SPDLOG_WARN("[IOMap::readAttributeTileItem] - "
+					"Moveable item with ID: {}, in house: {}, "
+					"at position: {}, discarding item",
+					item->getID(), house.getId(), tilePosition.toString());
+		delete item;
+		return std::make_tuple(nullptr, nullptr);
+	}
 
-    // Check if is house items
-    if (tile) {
-        tile->internalAddThing(0, item);
-        item->startDecaying();
-        item->setLoadedFromMap(true);
-    } else if (item->isGroundTile()) {
-        delete groundItem;
-        groundItem = item;
-    } else {
-        // Creating walls and others blocking items
-        tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
-        tile->internalAddThing(item);
-        item->startDecaying();
-        item->setLoadedFromMap(true);
-    }
+	// Check if is house items
+	if (tile) {
+		tile->internalAddThing(0, item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	} else if (item->isGroundTile()) {
+		delete groundItem;
+		groundItem = item;
+	} else {
+		// Creating walls and others blocking items
+		tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	}
+	return std::make_tuple(tile, groundItem);
+}
+
+std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(std::shared_ptr<BinaryNode> nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
+{
+	Item* item = Item::createMapItem(*nodeItem);
+	if (!item) {
+		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to create item on position {}", tilePosition.toString());
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	if (!item->unserializeMapItem(*nodeItem, tilePosition)) {
+		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to load item with id: {}, on position {}", item->getID(), tilePosition.toString());
+		delete item;
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	if (isHouseTile && item->isMoveable()) {
+		SPDLOG_WARN("[IOMap::parseCreateTileItem] - "
+					"Moveable item with ID: {}, in house: {}, "
+					"at position: {}, discarding item",
+					item->getID(), house.getId(), tilePosition.toString());
+		delete item;
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	if (tile) {
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	} else if (item->isGroundTile()) {
+		delete groundItem;
+		groundItem = item;
+	} else {
+		tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	}
 	return std::make_tuple(tile, groundItem);
 }
 
@@ -291,44 +330,11 @@ bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& ma
 
 		for (std::shared_ptr<BinaryNode> nodeItem = binaryNodeMapTile->getChild(); nodeItem != nullptr; nodeItem = nodeItem->advance()) {
 			if (nodeItem->getU8() != OTBM_ITEM) {
-				SPDLOG_ERROR("[[IOMap::parseTileArea] - Unknown item node with type {}, at position {}", type, tilePosition.toString());
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Unknown item node with type {}, at position {}", type, tilePosition.toString());
 				continue;
 			}
 
-			Item* item = Item::createMapItem(*nodeItem);
-			if (!item) {
-				SPDLOG_ERROR("[[IOMap::parseTileArea] - Failed to create item on position {}", tilePosition.toString());
-				continue;;
-			}
-
-			if (!item->unserializeMapItem(*nodeItem, tilePosition)) {
-				SPDLOG_ERROR("[[IOMap::parseTileArea] - Failed to load item with id: {}, on position {}", item->getID(), tilePosition.toString());
-				delete item;
-				continue;
-			}
-
-			if (isHouseTile && item->isMoveable()) {
-				SPDLOG_WARN("[IOMap::parseTileArea] - "
-							"Moveable item with ID: {}, in house: {}, "
-							"at position: {}, discarding item",
-							item->getID(), house->getId(), tilePosition.toString());
-				delete item;
-				continue;
-			}
-
-			if (tile) {
-				tile->internalAddThing(item);
-				item->startDecaying();
-				item->setLoadedFromMap(true);
-			} else if (item->isGroundTile()) {
-				delete groundItem;
-				groundItem = item;
-			} else {
-				tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
-				tile->internalAddThing(item);
-				item->startDecaying();
-				item->setLoadedFromMap(true);
-			}
+			std::tie(tile, groundItem) = parseCreateTileItem(nodeItem, isHouseTile, *house, groundItem, tile, tilePosition);
 		}
 
 		if (!tile) {
@@ -336,7 +342,7 @@ bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& ma
 		}
 
 		// Sanity check, it will probably never happen, but it doesn't hurt to put this
-		if (!tile) {
+		if (tile == nullptr) {
 			SPDLOG_ERROR("[IOMap::parseTileArea] - Tile is nullptr");
 			continue;
 		}

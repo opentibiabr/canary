@@ -86,16 +86,7 @@ class Party
 		void resetAnalyzer();
 		void reloadPrices();
 
-		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const
-		{
-			if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
-					return preyIt->id == playerId;
-				}); it != membersData.end()) {
-				return *it;
-			}
-
-			return nullptr;
-		}
+		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const;
 
 		uint32_t getAnalyzerTimeNow() const;
 

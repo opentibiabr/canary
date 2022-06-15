@@ -150,8 +150,7 @@ class ItemAttributes
 
 		struct CustomAttribute
 		{
-			typedef std::variant<std::monostate, std::string, int64_t, double, bool> VariantAttribute;
-			VariantAttribute value;
+			std::variant<std::monostate, std::string, int64_t, double, bool> value;
 
 			CustomAttribute() : value(std::monostate()) {}
 
@@ -257,6 +256,41 @@ class ItemAttributes
 				std::visit(SerializeVisitor(propWriteStream), value);
 			}
 
+			// BinaryNode unserialize parses
+			bool unserializeString(BinaryNode &binaryNode)
+			{
+				std::string string = binaryNode.getString();
+				if (string.empty()) {
+					SPDLOG_ERROR("[Item::unserializeString] - String is empty");
+					return false;
+				}
+
+				value = string;
+				return true;
+			}
+			bool unserializeInt(BinaryNode &binaryNode)
+			{
+				int64_t int64 = binaryNode.get64();
+				if (int64 == 0) {
+					SPDLOG_ERROR("[Item::unserializeInt] - Failed to get64");
+					return false;
+				}
+
+				value = int64;
+				return true;
+			}
+			bool unserializeDouble(BinaryNode &binaryNode)
+			{
+				double doubleValue = binaryNode.getDouble();
+				if (doubleValue == 0) {
+					SPDLOG_ERROR("[Item::unserializeDouble] - Failed to getDouble");
+					return false;
+				}
+
+				value = doubleValue;
+				return true;
+			}
+
 			bool unserialize(PropStream& propStream) {
 				// This is hard coded so it's not general, depends on the position of the variants.
 				uint8_t pos;
@@ -318,45 +352,27 @@ class ItemAttributes
 				}
 
 				switch (position) {
-					case 1:  {
-						std::string string = binaryNode.getString();
-						if (string.empty()) {
-							SPDLOG_ERROR("[Item::unserialize] - String is empty");
+					case 1:
+						if (!unserializeString(binaryNode)) {
 							return false;
 						}
-						value = string;
 						break;
-					}
-
-					case 2: {
-						int64_t int64 = binaryNode.get64();
-						if (int64 == 0) {
-							SPDLOG_ERROR("[Item::unserialize] - Failed to get64");
+					case 2:
+						if (!unserializeInt(binaryNode)) {
 							return false;
 						}
-						value = int64;
 						break;
-					}
-
-					case 3: {
-						double doubleValue = binaryNode.getDouble();
-						if (doubleValue == 0) {
-							SPDLOG_ERROR("[Item::unserialize] - Failed to getDouble");
+					case 3:
+						if (!unserializeDouble(binaryNode)) {
 							return false;
 						}
-						value = doubleValue;
 						break;
-					}
-
-					case 4: {
+					case 4:
 						value = binaryNode.getBoolean();
 						break;
-					}
-
-					default: {
+					default:
 						value = std::monostate();
 						return false;
-					}
 				}
 				return true;
 			}
@@ -576,6 +592,7 @@ class Item : virtual public Thing
 		Item(const Item& i);
 		virtual Item* clone() const;
 
+		Item() = default;
 		virtual ~Item() = default;
 
 		// non-assignable
@@ -865,7 +882,6 @@ class Item : virtual public Thing
 		bool unserializeAttr(PropStream& propStream);
 
 		// Serialization map items
-		virtual Attr_ReadValue readAttributesMap(AttrTypes_t attr, BinaryNode &binaryNode, Position position);
 		virtual bool unserializeMapItem(BinaryNode &binaryNode, Position position);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
@@ -906,7 +922,7 @@ class Item : virtual public Thing
 			destinationPosition = std::move(position);
 		}
 		// Container class
-		virtual const uint32_t getSerializationCount() const {
+		virtual uint32_t getSerializationCount() const {
 			return serializationCount;
 		}
 		virtual void setSerializationCount(uint32_t newCount) {
@@ -1222,6 +1238,8 @@ class Item : virtual public Thing
 		friend class Decay;
 		friend class IOMapSerialize;
 };
+
+inline Item g_item;
 
 using ItemList = std::list<Item*>;
 using ItemDeque = std::deque<Item*>;

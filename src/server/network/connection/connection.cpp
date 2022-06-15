@@ -42,7 +42,7 @@ void ConnectionManager::closeAll()
 			std::error_code error;
 			connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
 			connection->socket.close(error);
-		} catch (std::system_error& systemError) {
+		} catch (const std::system_error& systemError) {
 			SPDLOG_ERROR("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", systemError.what());
 		}
 	}

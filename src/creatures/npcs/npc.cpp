@@ -224,8 +224,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 
 	uint32_t buyPrice = 0;
 	const ItemType& itemType = Item::items[itemId];
-	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
+	for (const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	ShopBlock shopBlock : shopVector)
 	{
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
 		{
@@ -271,8 +271,8 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 
 	uint32_t sellPrice = 0;
 	const ItemType& itemType = Item::items[itemId];
-	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
+	for (const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	ShopBlock shopBlock : shopVector)
 	{
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0)
 		{
@@ -447,7 +447,7 @@ void Npc::updatePlayerInteractions(Player* player) {
 }
 
 void Npc::removePlayerInteraction(uint32_t playerId) {
-	if (playerInteractions.find(playerId) != playerInteractions.end()) {
+	if (playerInteractions.contains(playerId)) {
 		playerInteractions.erase(playerId);
 	}
 }
@@ -456,6 +456,13 @@ void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
 }
 
+bool Npc::isInteractingWithPlayer(uint32_t playerId) {
+	if (!playerInteractions.contains(playerId)) {
+		return false;
+	}
+
+	return true;
+}
 bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 {
 	if (npcType->info.walkRadius == 0) {

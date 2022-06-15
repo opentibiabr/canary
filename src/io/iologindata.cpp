@@ -505,7 +505,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     return left.first < right.first;
   });
 
-  for (auto& [containerCidPair, openContainerPair] : openContainersList) {
+  for (const auto& [containerCidPair, openContainerPair] : openContainersList) {
     player->addContainer(containerCidPair - 1, openContainerPair);
     player->onSendContainer(openContainerPair);
   }
@@ -525,18 +525,20 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const auto& [itemPair, itemIdPair] = it->second;
-      Item* item = itemPair;
+      const Item* item = itemPair;
       if (item == nullptr) {
         SPDLOG_ERROR("[IOLoginData::loadPlayer (2)] - Item is nullptr");
         continue;
       }
 
+      // Casting item for send non const item, keep in mind that the cast item must never be modified, in the future we must modify the functions so that they always accept the const item
+      auto castItem = std::bit_cast<Item*>(item);
       int32_t pid = itemIdPair;
       if (pid >= 0 && pid < 100) {
         DepotChest* depotChest = player->getDepotChest(pid, true);
         if (depotChest) {
-          depotChest->internalAddThing(item);
-          item->startDecaying();
+          depotChest->internalAddThing(castItem);
+          castItem->startDecaying();
         }
       } else {
         ItemMap::const_iterator it2 = itemMap.find(pid);
@@ -546,8 +548,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
         Container* container = it2->second.first->getContainer();
         if (container) {
-          container->internalAddThing(item);
-          item->startDecaying();
+          container->internalAddThing(castItem);
+          castItem->startDecaying();
         }
       }
     }
@@ -1127,7 +1129,7 @@ bool IOLoginData::savePlayer(Player* player)
     itemList.clear();
 
     for (const auto& [itemDepotIdPair, itemDepotChestPair] : player->depotChests) {
-      DepotChest* depotChest = itemDepotChestPair;
+      const DepotChest* depotChest = itemDepotChestPair;
       if (depotChest == nullptr) {
         SPDLOG_ERROR("[IOLoginData::savePlayer] - Depot chest is nullptr");
         continue;
@@ -1215,7 +1217,7 @@ bool IOLoginData::savePlayer(Player* player)
           query << slot->freeRerollTimeStamp << ", ";
 
         PropWriteStream propPreyStream;
-        std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId)
+        std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propPreyStream](uint16_t raceId)
         {
             propPreyStream.write<uint16_t>(raceId);
         });
@@ -1256,7 +1258,7 @@ bool IOLoginData::savePlayer(Player* player)
           query << slot->freeRerollTimeStamp << ", ";
 
         PropWriteStream propTaskHuntingStream;
-        std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propTaskHuntingStream](uint16_t raceId)
+        std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&propTaskHuntingStream](uint16_t raceId)
         {
             propTaskHuntingStream.write<uint16_t>(raceId);
         });

@@ -49,7 +49,7 @@ void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol)
 void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
 {
 	//dispatcher thread
-	auto it = std::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
+	auto it = std::ranges::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
 	if (it != bufferedProtocols.end()) {
 		*it = bufferedProtocols.back();
 		bufferedProtocols.pop_back();

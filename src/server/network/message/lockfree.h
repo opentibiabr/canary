@@ -62,7 +62,8 @@ public:
 	}
 private:
 	Node internal_pop(std::atomic<Node>& listHead) noexcept {
-		Node currentHead, nextNode;
+		Node currentHead;
+		Node nextNode;
 		currentHead = listHead.load(std::memory_order_acquire);
 		do {
 			if (!currentHead) {
@@ -112,26 +113,26 @@ class LockfreePoolingAllocator : public std::allocator<T>
 public:
 	template <typename U>
 	explicit LockfreePoolingAllocator(const U&) {}
-	typedef T value_type;
+	using ValueType = T;
 
-	T* allocate(size_t) const {
-		T* p;
+	ValueType* allocate(size_t) const {
+		ValueType* p;
 		if (!getFreeList().pop(p)) {
-			//Acquire memory without calling the constructor of T
-			p = static_cast<T*>(operator new (sizeof(T)));
+			//Acquire memory without calling the constructor of ValueType
+			p = static_cast<ValueType*>(operator new (sizeof(ValueType)));
 		}
 		return p;
 	}
 
-	void deallocate(T* p, size_t) const {
+	void deallocate(ValueType* p, size_t) const {
 		if (!getFreeList().push(p)) {
-			//Release memory without calling the destructor of T
+			//Release memory without calling the destructor of ValueType
 			//(it has already been called at this point)
 			operator delete(p);
 		}
 	}
 private:
-	typedef LockfreeBoundedStack<T*, OUTPUTMESSAGE_FREE_LIST_CAPACITY> FreeList;
+	using FreeList = LockfreeBoundedStack<T*, OUTPUTMESSAGE_FREE_LIST_CAPACITY>;
 	static FreeList& getFreeList() noexcept {
 		static FreeList freeList;
 		return freeList;

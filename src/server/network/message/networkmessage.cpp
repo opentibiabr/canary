@@ -33,7 +33,7 @@ std::string NetworkMessage::getString(uint16_t stringLen/* = 0*/)
 
 	auto charBuffer = buffer;
 	// Does not break strict aliasing
-	char* charValue = std::bit_cast<char*>(charBuffer) + info.position;
+	const char* charValue = std::bit_cast<char*>(charBuffer) + info.position;
 	info.position += stringLen;
 	return std::string(charValue, stringLen);
 }

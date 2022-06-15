@@ -314,8 +314,16 @@ int32_t Player::getArmor() const
 {
 	int32_t armor = 0;
 
-	static const Slots_t armorSlots[] = {CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING};
-	for (Slots_t slot : armorSlots) {
+	for (static const Slots_t armorSlots[] = {
+		CONST_SLOT_HEAD,
+		CONST_SLOT_NECKLACE,
+		CONST_SLOT_ARMOR,
+		CONST_SLOT_LEGS,
+		CONST_SLOT_FEET,
+		CONST_SLOT_RING
+	};
+	Slots_t slot : armorSlots)
+	{
 		Item* inventoryItem = inventory[slot];
 		if (inventoryItem) {
 			armor += inventoryItem->getArmor();
@@ -446,6 +454,22 @@ uint32_t Player::getClientIcons() const
 		}
 	}
 	return icon_bitset.to_ulong();
+}
+
+void Player::addBestiaryTrackerList(MonsterType* mtype)
+{
+	if (client == nullptr|| mtype == nullptr) {
+		SPDLOG_ERROR("[Player::addBestiaryTrackerList] - Client or MonsterType is nullptr");
+		return;
+	}
+
+	auto it = std::ranges::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
+	if (it == BestiaryTracker.end()) {
+		BestiaryTracker.push_front(mtype);
+	} else {
+		BestiaryTracker.remove(mtype);
+	}
+	client->refreshBestiaryTracker(BestiaryTracker);
 }
 
 void Player::updateInventoryWeight()
@@ -3918,7 +3942,7 @@ bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const
 
 	const ItemType& itemType = Item::items[itemId];
 	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector();
-	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
+	return std::ranges::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
 		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
 	});
 }
@@ -4751,7 +4775,7 @@ bool Player::hasAttacked(const Player* attacked) const
 		return false;
 	}
 
-	return attackedSet.find(attacked->guid) != attackedSet.end();
+	return attackedSet.contains(attacked->guid);
 }
 
 void Player::addAttacked(const Player* attacked)
@@ -4925,7 +4949,7 @@ bool Player::isInWar(const Player* player) const
 
 bool Player::isInWarList(uint32_t guildId) const
 {
-	return std::find(guildWarVector.begin(), guildWarVector.end(), guildId) != guildWarVector.end();
+	return std::ranges::find(guildWarVector.begin(), guildWarVector.end(), guildId) != guildWarVector.end();
 }
 
 bool Player::isPremium() const
@@ -5035,7 +5059,7 @@ void Player::sendPlayerPartyIcons(Player* player)
 
 bool Player::addPartyInvitation(Party* newParty)
 {
-	auto it = std::find(invitePartyList.begin(), invitePartyList.end(), newParty);
+	auto it = std::ranges::find(invitePartyList.begin(), invitePartyList.end(), newParty);
 	if (it != invitePartyList.end()) {
 		return false;
 	}
@@ -5415,7 +5439,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 
 bool Player::hasModalWindowOpen(uint32_t modalWindowId) const
 {
-	return find(modalWindows.begin(), modalWindows.end(), modalWindowId) != modalWindows.end();
+	return std::ranges::find(modalWindows.begin(), modalWindows.end(), modalWindowId) != modalWindows.end();
 }
 
 void Player::onModalWindowHandled(uint32_t modalWindowId)
@@ -5598,6 +5622,20 @@ void Player::updateRegeneration()
 bool Player::isMarketExhausted() const {
 	uint32_t exhaust_time = 3000; // half second 500
 	return (OTSYS_TIME() - lastMarketInteraction < exhaust_time);
+}
+
+bool Player::isQuickLootListedItem(const Item* item) const
+{
+	if (!item) {
+		return false;
+	}
+
+	auto it = std::ranges::find(
+		quickLootListItemIds.begin(),
+		quickLootListItemIds.end(),
+		item->getID()
+	);
+	return it != quickLootListItemIds.end();
 }
 
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) const
@@ -5798,7 +5836,7 @@ void Player::openPlayerContainers()
 		}
 	}
 
-	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
+	std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
 		return left.first < right.first;
 	});
 
@@ -5857,7 +5895,7 @@ void Player::initializeTaskHunting()
 std::string Player::getBlessingsName() const
 {
 	uint8_t count = 0;
-	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
+	std::ranges::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
 		if (amount != 0) {
 			count++;
 		}
@@ -5893,6 +5931,76 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	}
 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+}
+
+PreySlot* Player::getPreySlotById(PreySlot_t slotid)
+{
+	if (auto it = std::ranges::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+			return preyIt->id == slotid;
+		}); it != preys.end()) {
+		return *std::to_address(it);
+	}
+
+	return nullptr;
+}
+
+PreySlot* Player::getPreyWithMonster(uint16_t raceId) const
+{
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
+		return nullptr;
+	}
+
+	if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
+			return it->selectedRaceId == raceId;
+		}); it != preys.end()) {
+		return *std::to_address(it);
+	}
+
+	return nullptr;
+}
+
+TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid)
+{
+	if (auto it = std::ranges::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
+			return itTask->id == slotid;
+		}); it != taskHunting.end()) {
+		return *std::to_address(it);
+	}
+
+	return nullptr;
+}
+
+std::vector<uint16_t> Player::getTaskHuntingBlackList() const
+{
+	std::vector<uint16_t> raceVector;
+
+	std::ranges::for_each(taskHunting.begin(), taskHunting.end(), [&raceVector](const TaskHuntingSlot* slot)
+	{
+		if (slot->isOccupied()) {
+			raceVector.push_back(slot->selectedRaceId);
+		} else {
+			std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&raceVector](uint16_t raceId)
+			{
+				raceVector.push_back(raceId);
+			});
+		}
+	});
+
+	return raceVector;
+}
+
+TaskHuntingSlot* Player::getTaskHuntingWithCreature(uint16_t raceId) const {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		return nullptr;
+	}
+
+	if (auto it = std::ranges::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
+			return itTask->selectedRaceId == raceId;
+		}); it != taskHunting.end()) {
+		return *std::to_address(it);
+	}
+
+	return nullptr;
 }
 
 /*******************************************************************************

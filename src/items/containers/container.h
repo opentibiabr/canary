@@ -82,14 +82,8 @@ class Container : public Item, public Cylinder
 		}
 
 		bool unserializeMapItem(BinaryNode& binaryNode, Position position) override;
+
 		std::string getContentDescription() const;
-		
-		const uint32_t getSerializationCount() const override {
-			return Item::getSerializationCount();
-		}
-		void setSerializationCount(uint32_t newCount) override {
-			Item::setSerializationCount(newCount);
-		}
 
 		size_t size() const {
 			return itemlist.size();

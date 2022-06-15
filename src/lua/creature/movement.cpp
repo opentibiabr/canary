@@ -40,7 +40,7 @@ bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
+	std::ranges::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
 		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
 			it.wieldInfo = moveEvent.getWieldInfo();
@@ -61,7 +61,7 @@ bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
+	std::ranges::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
 		return registerEvent(moveEvent, actionId, actionIdMap);
 	});
 
@@ -76,7 +76,7 @@ bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
+	std::ranges::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
 		return registerEvent(moveEvent, uniqueId, uniqueIdMap);
 	});
 
@@ -91,7 +91,7 @@ bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
+	std::ranges::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
 		return registerEvent(moveEvent, position, positionsMap);
 	});
 
@@ -182,7 +182,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 		if (it != uniqueIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 			if (!moveEventList.empty()) {
-				return &(*moveEventList.begin());
+				return std::to_address(moveEventList.begin());
 			}
 		}
 	}
@@ -192,7 +192,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 			if (!moveEventList.empty()) {
-				return &(*moveEventList.begin());
+				return std::to_address(moveEventList.begin());
 			}
 		}
 	}
@@ -201,7 +201,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	if (it != itemIdMap.end()) {
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
-			return &(*moveEventList.begin());
+			return std::to_address(moveEventList.begin());
 		}
 	}
 	return nullptr;
@@ -230,7 +230,7 @@ MoveEvent* MoveEvents::getEvent(Tile& tile, MoveEvent_t eventType) {
 	{
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
 		if (!moveEventList.empty()) {
-			return &(*moveEventList.begin());
+			return std::to_address(moveEventList.begin());
 		}
 	}
 	return nullptr;
@@ -429,7 +429,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		}
 
 		const std::map<uint16_t, bool>& vocEquipMap = moveEvent->getVocEquipMap();
-		if (!vocEquipMap.empty() && vocEquipMap.find(player->getVocationId()) == vocEquipMap.end()) {
+		if (!vocEquipMap.empty() && !vocEquipMap.contains(player->getVocationId())) {
 			return 0;
 		}
 	}

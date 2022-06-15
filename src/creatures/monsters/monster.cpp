@@ -71,6 +71,15 @@ void Monster::removeList()
 	g_game().removeMonster(this);
 }
 
+bool Monster::isEnemyFaction(Faction_t faction) const
+{
+	if (master && master->getMonster()) {
+		return master->getMonster()->isEnemyFaction(faction);
+	}
+
+	return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
+}
+
 bool Monster::canSee(const Position& pos) const
 {
 	return Creature::canSee(getPosition(), pos, 10, 10); //jlcvp FIX - range 10 Avoids killing monster without reaction

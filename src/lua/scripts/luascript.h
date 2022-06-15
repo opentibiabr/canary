@@ -50,7 +50,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 
 			return loadingScriptName;
 		}
-		void setLoadingScriptName(const std::string &scriptName) {
+		void setLoadingScriptName(std::string_view scriptName) {
 			loadingScriptName = scriptName;
 		}
 

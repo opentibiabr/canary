@@ -337,7 +337,7 @@ BaseImbuement* Imbuements::getBaseByID(uint16_t id)
 				return groupImbuement.id == id;
 			});
 
-	return baseImbuements != basesImbuement.end() ? std::to_address(&*baseImbuements) : nullptr;
+	return baseImbuements != basesImbuement.end() ? std::to_address(baseImbuements) : nullptr;
 }
 
 CategoryImbuement* Imbuements::getCategoryByID(uint16_t id)
@@ -346,7 +346,7 @@ CategoryImbuement* Imbuements::getCategoryByID(uint16_t id)
 				return categoryImbuement.id == id;
 			});
 
-	return categoryImbuements != categoriesImbuement.end() ? std::to_address(&*categoryImbuements) : nullptr;
+	return categoryImbuements != categoriesImbuement.end() ? std::to_address(categoryImbuements) : nullptr;
 }
 
 std::vector<Imbuement*> Imbuements::getImbuements(const Player* player, Item* item)

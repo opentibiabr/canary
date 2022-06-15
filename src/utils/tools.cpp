@@ -257,7 +257,7 @@ void trim_left(std::string& source, char t)
 
 void toLowerCaseString(std::string& source)
 {
-	std::transform(source.begin(), source.end(), source.begin(), tolower);
+	std::ranges::transform(source.begin(), source.end(), source.begin(), tolower);
 }
 
 std::string asLowerCaseString(std::string source)
@@ -268,7 +268,7 @@ std::string asLowerCaseString(std::string source)
 
 std::string asUpperCaseString(std::string source)
 {
-	std::transform(source.begin(), source.end(), source.begin(), toupper);
+	std::ranges::transform(source.begin(), source.end(), source.begin(), toupper);
 	return source;
 }
 
@@ -350,19 +350,21 @@ std::string fromIntToString(const int intType)
 }
 
 template<class Iter>
-Iter splitStrings(const std::string &s, const std::string &delim, Iter out)
+Iter splitStrings(std::string_view string, const std::string &delim, Iter out)
 {
+	const std::string & newString = string.data();
 	if (delim.empty()) {
-		*out++ = s;
+		*out++ = string.data();
 		return out;
 	}
-	size_t a = 0, b = s.find(delim);
+	size_t a = 0;
+	size_t b = newString.find(delim);
 	for ( ; b != std::string::npos;
-		a = b + delim.length(), b = s.find(delim, a))
+		a = b + delim.length(), b = newString.find(delim, a))
 	{
-		*out++ = std::move(s.substr(a, b - a));
+		*out++ = std::move(newString.substr(a, b - a));
 	}
-	*out++ = std::move(s.substr(a, s.length() - a));
+	*out++ = std::move(newString.substr(a, newString.length() - a));
 	return out;
 }
 
@@ -1434,7 +1436,8 @@ NameEval_t validateName(const std::string &name)
 	for(std::string str : toks) {
 		if(str.length()<2)
 			return INVALID_TOKEN_LENGTH;
-		else if(std::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) { //searching for prohibited words
+		// Searching for prohibited words
+		else if(std::ranges::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) {
 			return INVALID_FORBIDDEN;
 		}
 	}

@@ -29,7 +29,7 @@ bool Actions::registerLuaItemEvent(Action* action) {
 		return false;
 	}
 
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &action, &itemIdVector](uint16_t &itemId) {
+	std::ranges::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &action, &itemIdVector](uint16_t &itemId) {
 		// Check if the item is already registered and prevent it from being registered again
 		if (hasItemId(itemId)) {
 			SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
@@ -53,7 +53,7 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 		return false;
 	}
 
-	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &action, &uniqueIdVector](uint16_t &uniqueId) {
+	std::ranges::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &action, &uniqueIdVector](uint16_t &uniqueId) {
 		// Check if the unique is already registered and prevent it from being registered again
 		if (hasUniqueId(uniqueId)) {
 			SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
@@ -78,7 +78,7 @@ bool Actions::registerLuaActionEvent(Action* action) {
 		return false;
 	}
 
-	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
+	std::ranges::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &action, &actionIdVector](uint16_t &actionId) {
 		// Check if the unique is already registered and prevent it from being registered again
 		if (hasActionId(actionId)) {
 			SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "

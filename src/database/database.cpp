@@ -268,7 +268,7 @@ int8_t DBResult::get8(const std::string& tableName) const
 		return 0;
 	}
 
-	char* rowResult = row[result];
+	const char* rowResult = row[result];
 	return static_cast<int8_t>(std::atoi(rowResult));
 }
 
@@ -280,7 +280,7 @@ int16_t DBResult::get16(const std::string& tableName) const
 		return 0;
 	}
 
-	char* rowResult = row[result];
+	const char* rowResult = row[result];
 	return static_cast<int16_t>(std::atoi(rowResult));
 }
 
@@ -292,7 +292,7 @@ int32_t DBResult::get32(const std::string& tableName) const
 		return 0;
 	}
 
-	char* rowResult = row[result];
+	const char* rowResult = row[result];
 	return static_cast<int32_t>(std::atol(rowResult));
 }
 
@@ -304,7 +304,7 @@ int64_t DBResult::get64(const std::string& tableName) const
 		return 0;
 	}
 
-	char* rowResult = row[result];
+	const char* rowResult = row[result];
 	return std::atoll(rowResult);
 }
 
@@ -320,7 +320,7 @@ uint8_t DBResult::getU8(const std::string& tableName) const
 
 	try
 	{
-		char* rowResult = row[result];
+		const char* rowResult = row[result];
 		return static_cast<uint8_t>(std::stoul(rowResult));
 	}
 	catch(std::invalid_argument const& argument)
@@ -344,7 +344,7 @@ uint16_t DBResult::getU16(const std::string& tableName) const
 
 	try
 	{
-		char* rowResult = row[result];
+		const char* rowResult = row[result];
 		return static_cast<uint16_t>(std::stoul(rowResult));
 	}
 	catch(std::invalid_argument const& argument)
@@ -368,7 +368,7 @@ uint32_t DBResult::getU32(const std::string& tableName) const
 
 	try
 	{
-		char* rowResult = row[result];
+		const char* rowResult = row[result];
 		return static_cast<uint32_t>(std::stoul(rowResult));
 	}
 	catch(std::invalid_argument const& argument)
@@ -392,7 +392,7 @@ uint64_t DBResult::getU64(const std::string& tableName) const
 
 	try
 	{
-		char* rowResult = row[result];
+		const char* rowResult = row[result];
 		return std::stoull(rowResult);
 	}
 	catch(std::invalid_argument const& argument)
@@ -414,7 +414,7 @@ time_t DBResult::getTime(const std::string& tableName) const
 		return 0;
 	}
 
-	char* rowResult = row[result];
+	const char* rowResult = row[result];
 	return std::atoll(rowResult);
 }
 
@@ -426,7 +426,7 @@ bool DBResult::getBoolean(const std::string& tableName) const
 		return false;
 	}
 
-	char* rowResult = row[result];
+	const char* rowResult = row[result];
 	auto databaseResut = std::atoi(rowResult);
 	// Here we will check if result is false or true (0/1), was not false or true, we will return warning message
 	if (databaseResut >= 2)

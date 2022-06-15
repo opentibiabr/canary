@@ -95,15 +95,15 @@ class PropWriteStream
 			std::copy(charPointer, charPointer + sizeof(T), std::back_inserter(buffer));
 		}
 
-		void writeString(const std::string& str) {
-			size_t strLength = str.size();
+		void writeString(std::string_view string) {
+			size_t strLength = string.size();
 			if (strLength > std::numeric_limits<uint16_t>::max()) {
 				write<uint16_t>(0);
 				return;
 			}
 
 			write(static_cast<uint16_t>(strLength));
-			std::copy(str.begin(), str.end(), std::back_inserter(buffer));
+			std::ranges::copy(string.begin(), string.end(), std::back_inserter(buffer));
 		}
 
 	private:

@@ -71,8 +71,10 @@ uint8_t FileReadHandle::getU8() {
 		return 0;
 	}
 
-	auto size = fread(&value, 1, 1, file);
-	if (size != 0) {
+	
+	if (auto size = fread(&value, 1, 1, file);
+	size != 0)
+	{
 		return value;
 	}
 
@@ -85,8 +87,9 @@ uint16_t FileReadHandle::getU16() {
 		return 0;
 	}
 
-	auto size = fread(&value, 2, 1, file);
-	if (size != 0) {
+	if (auto size = fread(&value, 2, 1, file);
+	size != 0)
+	{
 		return value;
 	}
 
@@ -99,8 +102,9 @@ uint32_t FileReadHandle::getU32() {
 		return 0;
 	}
 
-	auto size = fread(&value, 4, 1, file);
-	if (size != 0) {
+	if (auto size = fread(&value, 4, 1, file);
+	size != 0)
+	{
 		return value;
 	}
 
@@ -113,8 +117,9 @@ uint64_t FileReadHandle::getU64() {
 		return 0;
 	}
 
-	auto size = fread(&value, 8, 1, file);
-	if (size != 0) {
+	if (auto size = fread(&value, 8, 1, file);
+	size != 0)
+	{
 		return value;
 	}
 
@@ -127,8 +132,9 @@ int8_t FileReadHandle::get8() {
 		return 0;
 	}
 
-	auto size = fread(&value, 1, 1, file);
-	if (size != 0) {
+	if (auto size = fread(&value, 1, 1, file);
+	size != 0)
+	{
 		return value;
 	}
 
@@ -141,8 +147,9 @@ int32_t FileReadHandle::get32() {
 		return 0;
 	}
 
-	auto size = fread(&value, 4, 1, file);
-	if (size != 0) {
+	if (auto size = fread(&value, 4, 1, file);
+	size != 0)
+	{
 		return value;
 	}
 
@@ -311,8 +318,9 @@ std::shared_ptr<BinaryNode> DiskNodeFileReadHandle::getRootNode()
 {
 	assert(binaryRootNode == nullptr); // You should never do this twice
 	uint8_t first;
-	auto size = fread(&first, 1, 1, file);
-	if (size == 0) {
+	if (auto size = fread(&first, 1, 1, file);
+	size == 0)
+	{
 		SPDLOG_ERROR("[DiskNodeFileReadHandle::getRootNode] - Size is 0");
 		return nullptr;
 	}

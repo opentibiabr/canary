@@ -45,7 +45,7 @@ void ServiceManager::stop()
 		try {
 			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
 		} catch (const std::system_error& e) {
-			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
+			SPDLOG_WARN("[ServiceManager::stop] - Error code: {}", e.what());
 		}
 	}
 
@@ -174,6 +174,7 @@ void ServicePort::open(uint16_t port)
 
 		accept();
 	} catch (const std::system_error& e) {
+		SPDLOG_WARN("[ServicePort::open] - Error code: {}", e.what());
 		pendingStart = true;
 		g_scheduler().addEvent(createSchedulerTask(15000,
                             std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
@@ -190,7 +191,7 @@ void ServicePort::close()
 
 bool ServicePort::add_service(const Service_ptr& new_svc)
 {
-	if (std::any_of(services.begin(), services.end(), [](const Service_ptr& svc) {return svc->is_single_socket();})) {
+	if (std::ranges::any_of(services.begin(), services.end(), [](const Service_ptr& svc) {return svc->is_single_socket();})) {
 		return false;
 	}
 

@@ -94,13 +94,9 @@ class CombatSpell final : public Script, public BaseSpell
 {
 	public:
 		// Constructor
-		CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection) :
-			Script(&g_spells().getScriptInterface()),
-			combat(newCombat),
-			needDirection(newNeedTarget),
-			needTarget(needDirection) {}
+		CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection);
 		// Destructor
-		~CombatSpell() = default;
+		~CombatSpell() override;
 
 		NONCOPYABLE(CombatSpell);
 

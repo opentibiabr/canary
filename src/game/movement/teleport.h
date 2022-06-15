@@ -27,13 +27,6 @@ class Teleport final : public Item, public Cylinder
 		//serialization
 		void serializeAttr(PropWriteStream& propWriteStream) const override;
 
-		const Position& getDestination() const override {
-			return Item::getDestination();
-		}
-		void setDestination(Position position) override {
-			Item::setDestination(position);
-		}
-
 		bool checkInfinityLoop(Tile* destTile);
 
 		//cylinder implementations

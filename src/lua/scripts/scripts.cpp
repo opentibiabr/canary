@@ -82,7 +82,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 			v.push_back(it->path());
 		}
 	}
-	sort(v.begin(), v.end());
+	std::ranges::sort(v.begin(), v.end());
 	std::string redir;
 	for (auto it = v.begin(); it != v.end(); ++it) {
 		const std::string scriptFile = it->string();

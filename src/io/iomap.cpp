@@ -206,8 +206,9 @@ bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& ma
 			switch (tileAttr) {
 			case OTBM_ATTR_TILE_FLAGS:
 			{
-				const uint32_t flags = binaryNodeMapTile->getU32();
-				if ((flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0) {
+				if (const uint32_t flags = binaryNodeMapTile->getU32();
+				(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
+				{
 					tileflags |= TILESTATE_PROTECTIONZONE;
 				} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
 					tileflags |= TILESTATE_NOPVPZONE;

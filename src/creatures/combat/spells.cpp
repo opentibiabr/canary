@@ -239,6 +239,17 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 	return getNextPosition(dir, creature->getPosition());
 }
 
+CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection) :
+	Script(&g_spells().getScriptInterface()),
+	combat(newCombat),
+	needDirection(newNeedTarget),
+	needTarget(needDirection)
+{
+// Empty
+}
+
+CombatSpell::~CombatSpell() = default;
+
 bool CombatSpell::loadScriptCombat()
 {
 	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId);

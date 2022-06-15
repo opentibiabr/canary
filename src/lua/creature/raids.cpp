@@ -206,8 +206,8 @@ bool Raid::loadFromXml(const std::string& filename) {
 		}
 	}
 
-	//sort by delay time
-	std::sort(raidEvents.begin(), raidEvents.end(), [](const RaidEvent* lhs, const RaidEvent* rhs) {
+	// Sort by delay time
+	std::ranges::sort(raidEvents.begin(), raidEvents.end(), [](const RaidEvent* lhs, const RaidEvent* rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
 

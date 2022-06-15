@@ -106,7 +106,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
 
-		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {
+		if (std::ranges::count(blackList.begin(), blackList.end(), raceId) != 0) {
 			continue;
 		}
 
@@ -188,7 +188,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
 
-		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {
+		if (std::ranges::count(blackList.begin(), blackList.end(), raceId) != 0) {
 			continue;
 		}
 
@@ -577,7 +577,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	msg.addByte(0xBA);
 	std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
+	std::ranges::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
 	{
 		const MonsterType* mtype = g_monsters().getMonsterType(mType.second);
 		if (!mtype) {
@@ -595,7 +595,7 @@ void IOPrey::InitializeTaskHuntOptions()
 	});
 
 	msg.addByte(static_cast<uint8_t>(taskOption.size()));
-	std::for_each(taskOption.begin(), taskOption.end(), [&msg](const TaskHuntingOption* option)
+	std::ranges::for_each(taskOption.begin(), taskOption.end(), [&msg](const TaskHuntingOption* option)
 	{
 		msg.addByte(static_cast<uint8_t>(option->difficult));
 		msg.addByte(option->rarity);
@@ -627,7 +627,7 @@ TaskHuntingOption* IOPrey::GetTaskRewardOption(const TaskHuntingSlot* slot) cons
 		difficult = PreyTaskDifficult_Hard;
 	}
 
-	if (auto it = std::find_if(taskOption.begin(), taskOption.end(), [difficult, slot](const TaskHuntingOption* optionIt) {
+	if (auto it = std::ranges::find_if(taskOption.begin(), taskOption.end(), [difficult, slot](const TaskHuntingOption* optionIt) {
 			return optionIt->difficult == difficult && optionIt->rarity == slot->rarity;
 		}); it != taskOption.end()) {
 		return *it;

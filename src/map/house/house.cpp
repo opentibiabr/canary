@@ -318,7 +318,7 @@ void House::addDoor(Door* door)
 
 void House::removeDoor(Door* door)
 {
-	auto it = std::find(doorList.begin(), doorList.end(), door);
+	auto it = std::ranges::find(doorList.begin(), doorList.end(), door);
 	if (it != doorList.end()) {
 		door->decrementReferenceCounter();
 		doorList.erase(it);
@@ -533,7 +533,7 @@ bool AccessList::isInList(const Player* player)
 	}
 
 	GuildRank_ptr rank = player->getGuildRank();
-	return rank && guildRankList.find(rank->id) != guildRankList.end();
+	return rank && guildRankList.contains(rank->id);
 }
 
 void AccessList::getList(std::string& retList) const

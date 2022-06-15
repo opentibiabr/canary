@@ -170,7 +170,7 @@ class TaskHuntingSlot
 	}
 
 	bool isCreatureOnList(uint16_t raceId) const {
-		auto it = std::find_if(raceIdList.begin(), raceIdList.end(), [raceId](uint16_t it) {
+		auto it = std::ranges::find_if(raceIdList.begin(), raceIdList.end(), [raceId](uint16_t it) {
 			return it == raceId;
 		});
 

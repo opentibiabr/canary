@@ -409,8 +409,8 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 		return 1;
 	}
 
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
+	for (const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
+	ShopBlock shopBlock : shopVector)
 	{
 		setField(L, "id", shopBlock.itemId);
 		setField(L, "name", shopBlock.itemName);

@@ -95,7 +95,7 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shoo
 		}
 
 		if (!vocWeaponMap.empty()) {
-			if (vocWeaponMap.find(player->getVocationId()) == vocWeaponMap.end()) {
+			if (!vocWeaponMap.contains(player->getVocationId())) {
 				return 0;
 			}
 		}

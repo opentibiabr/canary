@@ -808,7 +808,7 @@ void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
 	if (creatures)
 	{
 		bool playerAdded = false;
-		for (CreatureVector::const_reverse_iterator it = creatures->rbegin(); it != creatures->rend(); ++it)
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it)
 		{
 			const Creature *creature = *it;
 			if (!player->canSeeCreature(creature))
@@ -1622,10 +1622,9 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addString("(all)");          // All Vocations - hardcoded
 
 	uint32_t selectedVocation = 0xFFFFFFFF;
-	const auto &vocationsMap = g_vocations().getVocations();
-	for (const auto &it : vocationsMap)
+	for (const auto &vocationsMap = g_vocations().getVocations();
+	const auto [vocationId, vocation] : vocationsMap)
 	{
-		const Vocation &vocation = it.second;
 		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId()))
 		{
 			msg.add<uint32_t>(vocation.getFromVocation()); // Vocation Id
@@ -2368,9 +2367,8 @@ void ProtocolGame::BestiarysendCharms()
 	msg.addByte(4); // Unknown
 
 	std::list<uint16_t> finishedMonsters = g_iobestiary().getBestiaryFinished(player);
-	std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
-
-	for (charmRune_t charmRune : usedRunes)
+	for (std::list<charmRune_t> usedRunes = g_iobestiary().getCharmUsedRuneBitAll(player);
+	charmRune_t charmRune : usedRunes)
 	{
 		Charm *tmpCharm = g_iobestiary().getBestiaryCharm(charmRune);
 		uint16_t tmp_raceid = player->parseRacebyCharm(tmpCharm->id, false, 0);
@@ -3269,8 +3267,8 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	auto startOutfits = msg.getBufferPosition();
 	msg.skipBytes(2);
 
-	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
-	for (const Outfit &outfit : outfits)
+	for (const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const Outfit &outfit : outfits)
 	{
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons))
@@ -3338,8 +3336,8 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	uint16_t familiarsSize = 0;
 	auto startFamiliars = msg.getBufferPosition();
 	msg.skipBytes(2);
-	const auto &familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
-	for (const Familiar &familiar : familiars)
+	for (const auto &familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
+	const Familiar &familiar : familiars)
 	{
 		const std::string type = familiar.type;
 		if (!player->getFamiliar(familiar))
@@ -5068,7 +5066,7 @@ void ProtocolGame::sendPartyCreatureUpdate(const Creature* target)
 void ProtocolGame::sendPartyCreatureShield(const Creature* target)
 {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5087,7 +5085,7 @@ void ProtocolGame::sendPartyCreatureSkull(const Creature* target)
 	}
 
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5102,7 +5100,7 @@ void ProtocolGame::sendPartyCreatureSkull(const Creature* target)
 void ProtocolGame::sendPartyCreatureHealth(const Creature* target, uint8_t healthPercent)
 {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5117,7 +5115,7 @@ void ProtocolGame::sendPartyCreatureHealth(const Creature* target, uint8_t healt
 void ProtocolGame::sendPartyPlayerMana(const Player* target, uint8_t manaPercent)
 {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 	}
 
@@ -5132,7 +5130,7 @@ void ProtocolGame::sendPartyPlayerMana(const Player* target, uint8_t manaPercent
 void ProtocolGame::sendPartyCreatureShowStatus(const Creature* target, bool showStatus)
 {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 	}
 
@@ -5147,7 +5145,7 @@ void ProtocolGame::sendPartyCreatureShowStatus(const Creature* target, bool show
 void ProtocolGame::sendPartyPlayerVocation(const Player* target)
 {
 	uint32_t cid = target->getID();
-	if (knownCreatureSet.find(cid) == knownCreatureSet.end()) {
+	if (!knownCreatureSet.contains(cid)) {
 		sendPartyCreatureUpdate(target);
 		return;
 	}
@@ -5734,9 +5732,9 @@ void ProtocolGame::sendOutfitWindow()
 		++outfitSize;
 	}
 
-	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
-
-	for (const Outfit& outfit : outfits) {
+	for (const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const Outfit& outfit : outfits)
+	{
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
 			continue;
@@ -5761,8 +5759,9 @@ void ProtocolGame::sendOutfitWindow()
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto& mounts = g_game().mounts.getMounts();
-	for (const Mount& mount : mounts) {
+	for (const auto& mounts = g_game().mounts.getMounts();
+	const Mount& mount : mounts)
+	{
 		if (player->hasMount(&mount)) {
 			msg.add<uint16_t>(mount.clientId);
 			msg.addString(mount.name);
@@ -5783,9 +5782,9 @@ void ProtocolGame::sendOutfitWindow()
 	uint16_t familiarSize = 0;
 	msg.skipBytes(2);
 
-	const auto& familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
-
-	for (const Familiar& familiar : familiars) {
+	for (const auto& familiars = Familiars::getInstance().getFamiliars(player->getVocationId());
+	const Familiar& familiar : familiars)
+	{
 		if (!player->getFamiliar(familiar)) {
 			continue;
 		}
@@ -5878,8 +5877,9 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
-	for (const Outfit& outfit : outfits) {
+	for (const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const Outfit& outfit : outfits)
+	{
 		uint8_t addons;
 		if (!player->getOutfitAddons(outfit, addons)) {
 			continue;
@@ -5904,8 +5904,9 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto& mounts = g_game().mounts.getMounts();
-	for (const Mount& mount : mounts) {
+	for (const auto& mounts = g_game().mounts.getMounts();
+	const Mount& mount : mounts)
+	{
 		if (player->hasMount(&mount)) {
 			msg.add<uint16_t>(mount.clientId);
 			msg.addString(mount.name);
@@ -6222,7 +6223,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		}
 	} else if (slot->state == PreyDataState_Selection) {
 		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
-		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
+		std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
 			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 				msg.addString(mtype->name);
@@ -6247,7 +6248,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.add<uint16_t>(slot->bonusPercentage);
 		msg.addByte(slot->bonusRarity);
 		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
-		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
+		std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
 			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {
 				msg.addString(mtype->name);
@@ -6270,7 +6271,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 	} else if (slot->state == PreyDataState_ListSelection) {
 		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
+		std::ranges::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
 		{
 			msg.add<uint16_t>(mType.first);
 		});
@@ -6687,24 +6688,24 @@ void ProtocolGame::openImbuementWindow(Item *item)
 		addImbuementInfo(msg, imbuement->getID());
 
 		const auto &items = imbuement->getItems();
-		for (const auto &itm : items)
+		for (const auto [itemId, itemCount] : items)
 		{
-			if (!needItems.count(itm.first))
+			if (!needItems.contains(itemId))
 			{
-				needItems[itm.first] = player->getItemTypeCount(itm.first);
-				uint32_t stashCount = player->getStashItemCount(Item::items[itm.first].id);
+				needItems[itemId] = player->getItemTypeCount(itemId);
+				uint32_t stashCount = player->getStashItemCount(Item::items[itemId].id);
 				if (stashCount > 0) {
-					needItems[itm.first] += stashCount;
+					needItems[itemId] += stashCount;
 				}
 			}
 		}
 	}
 
 	msg.add<uint32_t>(needItems.size());
-	for (const auto &itm : needItems)
+	for (const auto [itemId, itemCount] : needItems)
 	{
-		msg.add<uint16_t>(itm.first);
-		msg.add<uint16_t>(itm.second);
+		msg.add<uint16_t>(itemId);
+		msg.add<uint16_t>(itemCount);
 	}
 
 	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints());
@@ -6900,7 +6901,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 	} else if (slot->state == PreyTaskDataState_Selection) {
 		const Player* user = player;
 		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
-		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg, user](uint16_t raceid)
+		std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg, user](uint16_t raceid)
 		{
 			msg.add<uint16_t>(raceid);
 			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterTypeByRaceId(raceid)) ? 0x01 : 0x00);
@@ -6909,7 +6910,7 @@ void ProtocolGame::sendTaskHuntingData(const TaskHuntingSlot* slot)
 		const Player* user = player;
 		const std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
 		msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
-		std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto& mType)
+		std::ranges::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg, user](auto& mType)
 		{
 			msg.add<uint16_t>(mType.first);
 			msg.addByte(user->isCreatureUnlockedOnTaskHunting(g_monsters().getMonsterType(mType.second)) ? 0x01 : 0x00);
@@ -7140,7 +7141,7 @@ void ProtocolGame::reloadCreature(const Creature *creature)
 
 	NetworkMessage msg;
 
-	std::unordered_set<uint32_t>::iterator it = std::find(knownCreatureSet.begin(), knownCreatureSet.end(), creature->getID());
+	std::unordered_set<uint32_t>::iterator it = std::ranges::find(knownCreatureSet.begin(), knownCreatureSet.end(), creature->getID());
 	if (it != knownCreatureSet.end())
 	{
 		msg.addByte(0x6B);

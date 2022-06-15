@@ -33,21 +33,6 @@ class BedItem final : public Item
 			return house == nullptr;
 		}
 
-		const uint32_t& getSleeperGUID() const override {
-			return Item::getSleeperGUID();
-		}
-
-		void setSleeperGuid(uint32_t newSleeperGuid) override {
-			Item::setSleepStart(newSleeperGuid);
-		}
-		const uint32_t& getSleepStart() const override {
-			return Item::getSleepStart();
-		}
-
-		void setSleepStart(uint32_t newSleepStart) override {
-			Item::setSleepStart(newSleepStart);
-		}
-
 		void setHouse(House* h) {
 			house = h;
 		}

@@ -263,7 +263,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id, const st
 	if (std::string xmlName = itemNode.attribute("name").as_string();
 			!xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
-			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
+			if (auto it = std::ranges::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
 				}); it != nameToItems.end()) {
 				nameToItems.erase(it);

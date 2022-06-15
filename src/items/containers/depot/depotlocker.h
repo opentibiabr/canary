@@ -27,13 +27,6 @@ class DepotLocker final : public Container
 
 		void removeInbox(Inbox* inbox);
 
-		uint16_t getDepotId() const override {
-			return Item::getDepotId();
-		}
-		void setDepotId(uint16_t newDepotId) override {
-			Item::setDepotId(newDepotId);
-		}
-
 		//cylinder implementations
 		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
 				uint32_t flags, Creature* actor = nullptr) const override;

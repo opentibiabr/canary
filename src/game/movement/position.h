@@ -71,8 +71,6 @@ struct Position
 
 	auto operator<=>(const Position& p) const = default;
 
-	bool operator==(const Position& p) const = default;
-
 	Position operator+(const Position& p1) const {
 		return Position(x + p1.x, y + p1.y, z + p1.z);
 	}

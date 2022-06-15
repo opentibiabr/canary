@@ -2401,8 +2401,9 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 		return 1;
 	}
 
-	const auto& vocMap = spell->getVocMap();
-	if (!vocMap.contains(player->getVocationId())) {
+	if (const auto& vocMap = spell->getVocMap();
+	!vocMap.contains(player->getVocationId()))
+	{
 		pushBoolean(L, false);
 	} else if (player->getLevel() < spell->getLevel()) {
 		pushBoolean(L, false);

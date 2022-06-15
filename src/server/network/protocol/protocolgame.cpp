@@ -1601,7 +1601,7 @@ void ProtocolGame::sendHighscoresNoData()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages)
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint16_t page, uint16_t pages)
 {
 	NetworkMessage msg;
 	msg.addByte(0xB1);
@@ -6692,7 +6692,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 		{
 			if (!needItems.contains(itemId))
 			{
-				needItems[itemId] = player->getItemTypeCount(itemId);
+				needItems[itemId] = static_cast<uint16_t>(player->getItemTypeCount(itemId));
 				uint32_t stashCount = player->getStashItemCount(Item::items[itemId].id);
 				if (stashCount > 0) {
 					needItems[itemId] += stashCount;
@@ -7141,7 +7141,7 @@ void ProtocolGame::reloadCreature(const Creature *creature)
 
 	NetworkMessage msg;
 
-	std::unordered_set<uint32_t>::iterator it = std::ranges::find(knownCreatureSet.begin(), knownCreatureSet.end(), creature->getID());
+	auto it = std::ranges::find(knownCreatureSet.begin(), knownCreatureSet.end(), creature->getID());
 	if (it != knownCreatureSet.end())
 	{
 		msg.addByte(0x6B);

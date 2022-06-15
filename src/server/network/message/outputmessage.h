@@ -98,9 +98,11 @@ class OutputMessagePool
 class OutputMessageAllocator
 {
 	public:
-		typedef OutputMessage value_type;
+		using value_type = OutputMessage;
 		template<typename U>
-		struct rebind {typedef LockfreePoolingAllocator<U> other;};
+		struct rebind {
+			using other = LockfreePoolingAllocator<U>;
+		};
 };
 
 #endif  // SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_

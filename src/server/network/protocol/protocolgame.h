@@ -134,7 +134,7 @@ private:
 	void parseHighscores(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
+	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint16_t page, uint16_t pages);
 
 	void parseTournamentLeaderboard(NetworkMessage &msg);
 

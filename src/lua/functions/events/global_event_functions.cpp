@@ -132,12 +132,12 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 		}
 
 		time_t current_time = Game::getTimeNow();
-		tm* timeinfo = localtime(&current_time);
-		timeinfo->tm_hour = hour;
-		timeinfo->tm_min = min;
-		timeinfo->tm_sec = sec;
+		auto timeinfo = Game::getTime();
+		timeinfo.tm_hour = hour;
+		timeinfo.tm_min = min;
+		timeinfo.tm_sec = sec;
 
-		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
+		time_t difference = static_cast<time_t>(difftime(mktime(&timeinfo), current_time));
 		if (difference < 0) {
 			difference += 86400;
 		}

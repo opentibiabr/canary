@@ -456,13 +456,15 @@ void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
 }
 
-bool Npc::isInteractingWithPlayer(uint32_t playerId) {
+bool Npc::isInteractingWithPlayer(uint32_t playerId) const 
+{
 	if (!playerInteractions.contains(playerId)) {
 		return false;
 	}
 
 	return true;
 }
+
 bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 {
 	if (npcType->info.walkRadius == 0) {

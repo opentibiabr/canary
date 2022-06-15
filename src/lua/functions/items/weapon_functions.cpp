@@ -129,7 +129,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 
 int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
-	Weapon* weapon = getUserdata<Weapon>(L, 1);
+	const Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
 		pushBoolean(L, true);
 	} else {

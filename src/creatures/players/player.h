@@ -1440,10 +1440,10 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendHighscores(const std::vector<HighscoreCharacter>& characters,
-                            uint8_t categoryId, uint32_t vocationId,
+                            uint8_t categoryId,
                             uint16_t page, uint16_t pages) {
 			if (client) {
-				client->sendHighscores(characters, categoryId, vocationId, page, pages);
+				client->sendHighscores(characters, categoryId, page, pages);
 			}
 		}
 		void addAsyncOngoingTask(uint64_t flags) {

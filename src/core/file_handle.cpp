@@ -267,20 +267,19 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 		return;
 	}
 
-	std::string ver;
-	if (fread(ver.data(), 1, 4, file) != 4) {
+	std::string identifier;
+	if (fread(identifier.data(), 1, 4, file) != 4) {
 		fclose(file);
 		setErrorCode(FILE_SYNTAX_ERROR);
 		return;
 	}
 
 	// 0x00 00 00 00 is accepted as a wildcard version
-	if (ver[0] != 0 || ver[1] != 0 || ver[2] != 0 || ver[3] != 0) {
+	if (identifier[0] != 0 || identifier[1] != 0 || identifier[2] != 0 || identifier[3] != 0) {
 		bool accepted = false;
-		for (auto iterator = fileAcceptableIdentifiers.begin();
-		iterator != fileAcceptableIdentifiers.end(); ++iterator)
+		for (auto fileIdentifiers : fileAcceptableIdentifiers)
 		{
-			if (memcmp(ver.data(), iterator->c_str(), 4) == 0) {
+			if (memcmp(identifier.data(), fileIdentifiers.c_str(), 4) == 0) {
 				accepted = true;
 				break;
 			}

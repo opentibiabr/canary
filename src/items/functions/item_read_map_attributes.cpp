@@ -408,11 +408,14 @@ Attr_ReadValue ItemReadMapAttributes::readAttributeSleeperGuid(BinaryNode& binar
 	}
 
 	std::string name = IOLoginData::getNameByGuid(guid);
-	if (!name.empty()) {
-		g_item.setSpecialDescription(name + " is sleeping there.");
-		g_game().setBedSleeper(g_item.getBed(), guid);
-		g_item.setSleeperGuid(guid);
+	if (name.empty()) {
+		SPDLOG_ERROR("[ItemReadMapAttributes::readAttributeSleeperGuid] - Sleeper name is wrong");
+		return ATTR_READ_ERROR;
 	}
+
+	g_item.setSpecialDescription(name + " is sleeping there.");
+	g_game().setBedSleeper(g_item.getBed(), guid);
+	g_item.setSleeperGuid(guid);
 	return ATTR_READ_CONTINUE;
 }
 

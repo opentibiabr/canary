@@ -16,7 +16,7 @@ class ItemReadMapAttributes : public Item
 {
 public:
 	ItemReadMapAttributes();
-	~ItemReadMapAttributes();
+	~ItemReadMapAttributes() override;
 
 	NONCOPYABLE(ItemReadMapAttributes);
 

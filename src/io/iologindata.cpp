@@ -459,17 +459,19 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const auto& [itemPair, itemIdPair] = it->second;
-      Item* item = itemPair;
+      const Item* item = itemPair;
       if (item == nullptr) {
         SPDLOG_ERROR("[IOLoginData::loadPlayer (1)] - Item is nullptr");
         continue;
       }
 
       int32_t pid = itemIdPair;
+      // Casting item for send non const item, keep in mind that the cast item must never be modified, in the future we must modify the functions so that they always accept the const item
+      auto castItem = std::bit_cast<Item*>(item);
 
       if (pid >= CONST_SLOT_FIRST && pid <= CONST_SLOT_LAST) {
-        player->internalAddThing(pid, item);
-        item->startDecaying();
+        player->internalAddThing(pid, castItem);
+        castItem->startDecaying();
       } else {
         ItemMap::const_iterator it2 = itemMap.find(pid);
         if (it2 == itemMap.end()) {
@@ -478,12 +480,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
         Container* container = it2->second.first->getContainer();
         if (container) {
-          container->internalAddThing(item);
-          item->startDecaying();
+          container->internalAddThing(castItem);
+          castItem->startDecaying();
         }
       }
 
-      Container* itemContainer = item->getContainer();
+      Container* itemContainer = castItem->getContainer();
       if (itemContainer) {
         int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
         if (cid > 0) {

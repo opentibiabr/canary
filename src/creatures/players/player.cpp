@@ -463,8 +463,9 @@ void Player::addBestiaryTrackerList(MonsterType* mtype)
 		return;
 	}
 
-	auto it = std::ranges::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
-	if (it == BestiaryTracker.end()) {
+	if (auto it = std::ranges::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
+	it == BestiaryTracker.end())
+	{
 		BestiaryTracker.push_front(mtype);
 	} else {
 		BestiaryTracker.remove(mtype);
@@ -5950,8 +5951,8 @@ PreySlot* Player::getPreyWithMonster(uint16_t raceId) const
 		return nullptr;
 	}
 
-	if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
-			return it->selectedRaceId == raceId;
+	if (auto it = std::ranges::find_if(preys.begin(), preys.end(), [raceId](auto preySlot) {
+			return preySlot->selectedRaceId == raceId;
 		}); it != preys.end()) {
 		return *std::to_address(it);
 	}

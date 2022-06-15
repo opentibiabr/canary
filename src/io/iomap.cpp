@@ -160,6 +160,78 @@ bool IOMap::parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData
 	return true;
 }
 
+void IOMap::readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile, uint32_t &tileflags)
+{
+	if (const uint32_t flags = binaryNodeMapTile->getU32();
+	(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
+	{
+		tileflags |= TILESTATE_PROTECTIONZONE;
+	} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
+		tileflags |= TILESTATE_NOPVPZONE;
+	} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
+		tileflags |= TILESTATE_PVPZONE;
+	}
+
+	if ((tileflags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
+		tileflags |= TILESTATE_NOLOGOUT;
+	}
+}
+
+std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, House &house, Item *groundItem, Tile *tile, Position tilePosition)
+{
+    Item* item = Item::createMapItem(*binaryNodeMapTile);
+    if (!item) {
+        SPDLOG_ERROR("[IOMap::parseTileArea] - Failed to create item on position: {}", tilePosition.toString());
+        return std::make_tuple(nullptr, nullptr);
+    }
+
+    if (const Teleport* teleport = item->getTeleport()) {
+        // Teleport position / teleport destination
+        teleportMap.emplace(tilePosition, teleport->getDestination());
+        if (teleportMap.contains(teleport->getDestination())) {
+            SPDLOG_WARN("[IOMap::parseTileArea] - "
+                        "Teleport in position: {} "
+                        "is leading to another teleport", tilePosition.toString());
+            return std::make_tuple(nullptr, nullptr);
+        }
+        for (auto const& [mapTeleportPosition, mapDestinationPosition] : teleportMap) {
+            if (mapDestinationPosition == tilePosition) {
+                SPDLOG_WARN("IOMap::parseTileArea] - "
+                            "Teleport in position: {} "
+                            "is leading to another teleport",
+                            mapDestinationPosition.toString());
+                continue;
+            }
+        }
+    }
+
+    if (isHouseTile && item->isMoveable()) {
+        SPDLOG_WARN("[IOMap::parseTileArea] - "
+                    "Moveable item with ID: {}, in house: {}, "
+                    "at position: {}, discarding item",
+                    item->getID(), house.getId(), tilePosition.toString());
+        delete item;
+        return std::make_tuple(nullptr, nullptr);
+    }
+
+    // Check if is house items
+    if (tile) {
+        tile->internalAddThing(0, item);
+        item->startDecaying();
+        item->setLoadedFromMap(true);
+    } else if (item->isGroundTile()) {
+        delete groundItem;
+        groundItem = item;
+    } else {
+        // Creating walls and others blocking items
+        tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+        tile->internalAddThing(item);
+        item->startDecaying();
+        item->setLoadedFromMap(true);
+    }
+	return std::make_tuple(tile, groundItem);
+}
+
 bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map)
 {
 	Position baseMapPosition;
@@ -205,80 +277,13 @@ bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& ma
 			const uint8_t tileAttr = binaryNodeMapTile->getU8();
 			switch (tileAttr) {
 			case OTBM_ATTR_TILE_FLAGS:
-			{
-				if (const uint32_t flags = binaryNodeMapTile->getU32();
-				(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
-				{
-					tileflags |= TILESTATE_PROTECTIONZONE;
-				} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
-					tileflags |= TILESTATE_NOPVPZONE;
-				} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
-					tileflags |= TILESTATE_PVPZONE;
-				}
-
-				if ((tileflags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
-					tileflags |= TILESTATE_NOLOGOUT;
-				}
+				readAttributeTileFlags(binaryNodeMapTile, tileflags);
 				break;
-			}
 			case OTBM_ATTR_ITEM:
-			{
-				Item* item = Item::createMapItem(*binaryNodeMapTile);
-				if (!item) {
-					SPDLOG_ERROR("[IOMap::parseTileArea] - Failed to create item on position: {}", tilePosition.toString());
-					continue;
-				}
-
-				if (const Teleport* teleport = item->getTeleport()) {
-					// Teleport position / teleport destination
-					teleportMap.emplace(tilePosition, teleport->getDestination());
-					if (teleportMap.contains(teleport->getDestination())) {
-						SPDLOG_WARN("[IOMap::parseTileArea] - "
-									"Teleport in position: {} "
-									"is leading to another teleport", tilePosition.toString());
-						continue;
-					}
-					for (auto const& [mapTeleportPosition, mapDestinationPosition] : teleportMap) {
-						if (mapDestinationPosition == tilePosition) {
-							SPDLOG_WARN("IOMap::parseTileArea] - "
-										"Teleport in position: {} "
-										"is leading to another teleport",
-										mapDestinationPosition.toString());
-							continue;
-						}
-					}
-				}
-
-				if (isHouseTile && item->isMoveable()) {
-					SPDLOG_WARN("[IOMap::parseTileArea] - "
-								"Moveable item with ID: {}, in house: {}, "
-								"at position: {}, discarding item",
-								item->getID(), house->getId(), tilePosition.toString());
-					delete item;
-					continue;
-				}
-
-				// Check if is house items
-				if (tile) {
-					tile->internalAddThing(0, item);
-					item->startDecaying();
-					item->setLoadedFromMap(true);
-				} else if (item->isGroundTile()) {
-					delete groundItem;
-					groundItem = item;
-				} else {
-					// Creating walls and others blocking items
-					tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
-					tile->internalAddThing(item);
-					item->startDecaying();
-					item->setLoadedFromMap(true);
-				}
+				std::tie(tile, groundItem) = readAttributeTileItem(binaryNodeMapTile, teleportMap, isHouseTile, *house, groundItem, tile, tilePosition);
 				break;
 			}
-			default:
-				SPDLOG_ERROR("[[IOMap::parseTileArea] - Invalid tile attribute: {}, at position: {}", tileAttr, tilePosition.toString());
-				return false;
-			}
+
 		}
 
 		for (std::shared_ptr<BinaryNode> nodeItem = binaryNodeMapTile->getChild(); nodeItem != nullptr; nodeItem = nodeItem->advance()) {

@@ -61,7 +61,7 @@ std::string convertIPToString(uint32_t ip);
 
 // Split strings
 template<class Iter>
-Iter splitStrings(std::string_view string, const std::string &delim, Iter out);
+Iter splitStrings(const std::string_view string, const std::string_view delim, Iter out);
 
 void trimString(std::string& str);
 

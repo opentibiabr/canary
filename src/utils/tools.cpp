@@ -350,7 +350,7 @@ std::string fromIntToString(const int intType)
 }
 
 template<class Iter>
-Iter splitStrings(std::string_view string, const std::string &delim, Iter out)
+Iter splitStrings(const std::string_view string, const std::string_view delim, Iter out)
 {
 	const std::string & newString = string.data();
 	if (delim.empty()) {
@@ -388,7 +388,7 @@ std::string convertIPToString(uint32_t ip)
 
 std::string formatDate(time_t time)
 {
-	auto timeNow = Game::getTime();
+	auto timeNow = Game::getTime(time);
 
 	char buffer[20];
 	int res = snprintf(buffer, sizeof(buffer), "%02d/%02d/%04d %02d:%02d:%02d", timeNow.tm_mday, timeNow.tm_mon + 1, timeNow.tm_year + 1900, timeNow.tm_hour, timeNow.tm_min, timeNow.tm_sec);
@@ -400,7 +400,7 @@ std::string formatDate(time_t time)
 
 std::string formatDateShort(time_t time)
 {
-	const auto timeNow = Game::getTime();
+	const auto timeNow = Game::getTime(time);
 
 	char buffer[12];
 	size_t res = strftime(buffer, 12, "%d %b %Y", &timeNow);
@@ -1486,20 +1486,20 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 }
 
 bool isNumber(const std::string& string) {
-	for (char const &integer : string) {
+	if (std::ranges::all_of(string.cbegin(), string.cend(), [](auto integer){
 		if (std::isdigit(integer) == 0) {
 			return false;
 		}
-	}
+	}))
 	return true;
 }
 
 bool isAlpha(const std::string& string) {
-	for (char const &letter : string) {
+	if (std::ranges::all_of(string.cbegin(), string.cend(), [](auto letter){
 		if (std::isalpha(letter) == 0) {
 			return false;
 		}
-	}
+	}))
 	return true;
 }
 

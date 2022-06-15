@@ -1042,8 +1042,10 @@ std::time_t Game::getTimeNow() {
 	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
-tm Game::getTime() {
-	auto timeNow = getTimeNow();
+tm Game::getTime(time_t timeNow) {
+	if (timeNow == 0) {
+		timeNow = getTimeNow();
+	}
 	struct tm time;
 	#if defined(_MSC_VER)
 	localtime_s(&time, &timeNow);
@@ -7327,7 +7329,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 			}
 			characters.emplace_back(result->getString("name"), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation);
 		} while (result->next());
-		player->sendHighscores(characters, category, vocation, resultPage, static_cast<uint16_t>(pages));
+		player->sendHighscores(characters, category, resultPage, static_cast<uint16_t>(pages));
 	};
 	g_databaseTasks().addTask(query.str(), callback, true);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
@@ -7372,7 +7374,7 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string& assertLine, c
 	// TODO: move debug assertions to database
 	FILE* file = fopen("client_assertions.txt", "a");
 	if (file) {
-		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(getTimeNow()).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
+		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(0).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
 		fprintf(file, "%s\n%s\n%s\n%s\n", assertLine.c_str(), date.c_str(), description.c_str(), comment.c_str());
 		fclose(file);
 	}

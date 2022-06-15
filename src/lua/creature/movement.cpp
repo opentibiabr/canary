@@ -15,9 +15,9 @@
 #include "creatures/players/imbuements/imbuements.h"
 
 void MoveEvents::clearMap(std::map<int32_t, MoveEventList>& map) const {
-	for (auto it = map.begin(); it != map.end(); ++it) {
+	for (auto [mapTypeId, moveEventList] : map) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
-			it->second.moveEvent[eventType].clear();
+			moveEventList.moveEvent[eventType].clear();
 		}
 	}
 }
@@ -27,9 +27,9 @@ void MoveEvents::clear() {
 	clearMap(actionIdMap);
 	clearMap(uniqueIdMap);
 	// Clear position map
-	for (auto it = positionsMap.begin(); it != positionsMap.end(); ++it) {
+	for (auto [position, moveEventList] : positionsMap) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
-			it->second.moveEvent[eventType].clear();
+			moveEventList.moveEvent[eventType].clear();
 		}
 	}
 }

@@ -277,7 +277,7 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 	// 0x00 00 00 00 is accepted as a wildcard version
 	if (identifier[0] != 0 || identifier[1] != 0 || identifier[2] != 0 || identifier[3] != 0) {
 		bool accepted = false;
-		for (auto fileIdentifiers : fileAcceptableIdentifiers)
+		for (auto const fileIdentifiers : fileAcceptableIdentifiers)
 		{
 			if (memcmp(identifier.data(), fileIdentifiers.c_str(), 4) == 0) {
 				accepted = true;

@@ -7300,7 +7300,7 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 	}
 
 	uint32_t playerID = player->getID();
-	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, vocation, entriesPerPage](DBResult_ptr result, bool) {
+	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, entriesPerPage](DBResult_ptr result, bool) {
 		Player* player = g_game().getPlayerByID(playerID);
 		if (!player) {
 			return;

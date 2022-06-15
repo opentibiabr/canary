@@ -130,8 +130,8 @@ class IOMap
 		bool parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const;
 		bool parseTowns(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
 
-		void readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile, uint32_t &tileflags);
-		std::tuple<Tile*, Item*> readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, House &house, Item *groundItem, Tile *tile, Position tilePosition);
+		void readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile, uint32_t &tileflags) const;
+		std::tuple<Tile*, Item*> readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
 		bool parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
 };
 

@@ -160,7 +160,7 @@ bool IOMap::parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData
 	return true;
 }
 
-void IOMap::readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile, uint32_t &tileflags)
+void IOMap::readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile, uint32_t &tileflags) const
 {
 	if (const uint32_t flags = binaryNodeMapTile->getU32();
 	(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
@@ -177,7 +177,7 @@ void IOMap::readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile
 	}
 }
 
-std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, House &house, Item *groundItem, Tile *tile, Position tilePosition)
+std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
     Item* item = Item::createMapItem(*binaryNodeMapTile);
     if (!item) {

@@ -282,6 +282,9 @@ bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& ma
 			case OTBM_ATTR_ITEM:
 				std::tie(tile, groundItem) = readAttributeTileItem(binaryNodeMapTile, teleportMap, isHouseTile, *house, groundItem, tile, tilePosition);
 				break;
+			default:
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid tile attribute: {}, at position: {}", tileAttr, tilePosition.toString());
+				return false;
 			}
 
 		}

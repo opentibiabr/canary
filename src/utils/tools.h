@@ -135,4 +135,6 @@ bool isNumber(const std::string& string);
 
 bool isAlpha(const std::string& string);
 
+size_t strnlength(const char* string, size_t size);
+
 #endif  // SRC_UTILS_TOOLS_H_

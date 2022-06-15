@@ -391,7 +391,7 @@ std::string formatDate(time_t time)
 	auto timeNow = Game::getTime();
 
 	char buffer[20];
-	int res = sprintf(buffer, "%02d/%02d/%04d %02d:%02d:%02d", timeNow.tm_mday, timeNow.tm_mon + 1, timeNow.tm_year + 1900, timeNow.tm_hour, timeNow.tm_min, timeNow.tm_sec);
+	int res = snprintf(buffer, sizeof(buffer), "%02d/%02d/%04d %02d:%02d:%02d", timeNow.tm_mday, timeNow.tm_mon + 1, timeNow.tm_year + 1900, timeNow.tm_hour, timeNow.tm_min, timeNow.tm_sec);
 	if (res < 0) {
 		return {};
 	}
@@ -1501,4 +1501,11 @@ bool isAlpha(const std::string& string) {
 		}
 	}
 	return true;
+}
+
+size_t strnlength(const char* string, size_t size) 
+{
+	const char* found;
+	memcpy(&found, &string, size);
+	return found ? (size_t)(found-string) : size; 
 }

@@ -274,9 +274,7 @@ public:
 	bool addLongString(const std::string& str);
 	bool addRAW(const std::string& str);
 	bool addRAW(const uint8_t* ptr, size_t size);
-	bool addRAW(const char* str) {
-		return addRAW(std::bit_cast<const uint8_t*>(str), strlen(str));
-	}
+	bool addRAW(const char* str);
 
 protected:
 	template<class T>
@@ -309,9 +307,7 @@ public:
 	bool addLongString(const std::string& str);
 	bool addRAW(std::string& str);
 	bool addRAW(const uint8_t* ptr, size_t size);
-	bool addRAW(const char* str) {
-		return addRAW(std::bit_cast<const uint8_t*>(str), strlen(str));
-	}
+	bool addRAW(const char* str);
 
 private:
 	virtual void renewCache() = 0;

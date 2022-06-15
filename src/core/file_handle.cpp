@@ -650,7 +650,7 @@ bool FileWriteHandle::addString(const std::string& str)
 
 bool FileWriteHandle::addString(const char* str)
 {
-	size_t len = strlen(str);
+	size_t len = strnlength(str, sizeof(str));
 	if (len > 0xFFFF) {
 		setErrorCode(FILE_STRING_TOO_LONG);
 		return false;
@@ -677,6 +677,17 @@ bool FileWriteHandle::addRAW(const uint8_t* ptr, size_t byte)
 {
 	fwrite(ptr, 1, byte, file);
 	return ferror(file) == 0;
+}
+
+bool FileWriteHandle::addRAW(const char* str)
+{
+	size_t size = strnlength(str, sizeof(str));
+	if (size == 0) {
+		SPDLOG_ERROR("[FileWriteHandle::addRAW] - Size is 0");
+		return false;
+	}
+
+	return addRAW(std::bit_cast<const uint8_t*>(str), size);
 }
 
 //=============================================================================
@@ -877,4 +888,15 @@ bool NodeFileWriteHandle::addRAW(const uint8_t* ptr, size_t size)
 {
 	writeBytes(ptr, size);
 	return errorCode == FILE_NO_ERROR;
+}
+
+bool NodeFileWriteHandle::addRAW(const char* str)
+{
+	size_t size = strnlength(str, sizeof(str));
+	if (size == 0) {
+		SPDLOG_ERROR("[NodeFileWriteHandle::addRAW] - Size is 0");
+		return false;
+	}
+
+	return addRAW(std::bit_cast<const uint8_t*>(str), size);
 }

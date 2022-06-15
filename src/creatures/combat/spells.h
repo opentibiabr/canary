@@ -338,7 +338,7 @@ class Spell : public BaseSpell
 class InstantSpell final : public TalkAction, public Spell
 {
 	public:
-		explicit InstantSpell(LuaScriptInterface* interface) : TalkAction(interface) {}
+		using TalkAction::TalkAction;
 
 		virtual bool playerCastInstant(Player* player, std::string& param);
 

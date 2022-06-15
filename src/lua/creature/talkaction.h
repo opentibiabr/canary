@@ -21,7 +21,7 @@ using TalkAction_ptr = std::unique_ptr<TalkAction>;
 
 class TalkAction : public Script {
 	public:
-		explicit TalkAction(LuaScriptInterface* interface) : Script(interface) {}
+		using Script::Script;
 
 		const std::string& getWords() const {
 			return words;

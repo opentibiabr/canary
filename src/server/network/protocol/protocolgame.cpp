@@ -621,10 +621,10 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			std::ostringstream lostBlesses;
 			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-			if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+			if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
 				for (int i = 2; i <= 6; i++) {
-					if (!hasBlessing(i)) {
-						addBlessing(i, 1);
+					if (!player->hasBlessing(i)) {
+						player->addBlessing(i, 1);
 					}
 				}
 				sendBlessStatus();

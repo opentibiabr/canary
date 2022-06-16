@@ -362,21 +362,6 @@ class Player final : public Creature, public Cylinder
 			return blessings[index - 1];
 		}
 		std::string getBlessingsName() const; 
-		void addAdventurerBlessing() {
-			uint16_t adventurerLevel = g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
-			if (getLevel() < adventurerLevel) {
-				for (int i = 1; i <= 8; i++) {
-					if (!hasBlessing(i)) {
-						addBlessing(i, 1);
-					}
-				}
-				sendBlessStatus();
-
-				std::ostringstream string;
-				string << "You received adventurer's blessing for being lower than level " << adventurerLevel << "!";
-				sendTextMessage(MESSAGE_EVENT_ADVANCE, string.str());
-			}
-		}
 
 		bool isOffline() const {
 			return (getID() == 0);

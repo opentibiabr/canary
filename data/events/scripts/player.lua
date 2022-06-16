@@ -64,6 +64,12 @@ function Player:onLook(thing, position, distance)
 			end
 		end
 	end
+
+	if(thing:isItem()) then
+		if(thing:getActionId() == NOT_TRADEABLE_ACTION) then
+			description = string.format("%s\nThis item cannot be traded.", description)
+		end
+	end
 	self:sendTextMessage(MESSAGE_LOOK, description)
 end
 
@@ -103,9 +109,39 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 		return false
 	end
-
+	
 	if toPosition.x ~= CONTAINER_POSITION then
-		return true
+		-- if item is already in the ground, it should be able to be moved (for instance, unwrapped items)
+		if fromPosition.x == CONTAINER_POSITION then
+			if item:getActionId() == NOT_TRADEABLE_ACTION and not item:getId() == ITEM_DECORATION_KIT then
+				self:sendCancelMessage("This item cannot be moved to ground.")
+				return false
+			end
+			if item:isContainer() then
+				local items = item:getItems(true)
+				for index, value in ipairs(items or { }) do
+					if value:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
+						self:sendCancelMessage("This container has an item that cannot be moved to ground.")
+						return false
+					end
+				end
+			end
+		end
+	elseif toPosition.y == CONST_SLOT_BACKPACK then
+		if item:getActionId() == NOT_TRADEABLE_ACTION then
+			self:sendCancelMessage("This item cannot be moved to your backpack.")
+			return 
+		else
+			if item:isContainer() then
+				local items = item:getItems(true)
+				for index, value in ipairs(items or { }) do
+					if value:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
+						self:sendCancelMessage("This container has an item that cannot be moved to your backpack.")
+						return false
+					end
+				end
+			end
+		end
 	end
 
 	if item:getTopParent() == self and bit.band(toPosition.y, 0x40) == 0 then
@@ -127,6 +163,51 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			else
 				return moveItem:moveTo(parent)
 			end
+		end
+	end
+
+	local containerTo = self:getContainerById(toPosition.y-64)
+	if (containerTo) then
+		if containerTo:getId() == ITEM_GOLD_POUCH or containerTo:getItem(toPosition.z) and containerTo:getItem(toPosition.z):getId() == ITEM_GOLD_POUCH then
+			if item:getId() == ITEM_CRYSTAL_COIN or item:getId() == ITEM_PLATINUM_COIN or item:getId() == ITEM_GOLD_COIN then
+				return true
+			else
+				self:sendCancelMessage("You can move only money to this container.")
+				return false
+			end
+		end
+		if item:getActionId() == NOT_TRADEABLE_ACTION then
+			-- allow moving store items to store and to depot
+			if containerTo:isDepot() 
+				or containerTo:getId() == ITEM_STORE_INBOX
+				or containerTo:isInsideOfId(ITEM_STORE_INBOX)
+				or containerTo:isInsideOfId(ITEM_DEPOT_I)
+				or containerTo:isInsideOfId(ITEM_DEPOT_II)
+				or containerTo:isInsideOfId(ITEM_DEPOT_III)
+				or containerTo:isInsideOfId(ITEM_DEPOT_IV)
+				or containerTo:isInsideOfId(ITEM_DEPOT_V)
+				or containerTo:isInsideOfId(ITEM_DEPOT_VI)
+				or containerTo:isInsideOfId(ITEM_DEPOT_VII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_VIII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_IX)
+				or containerTo:isInsideOfId(ITEM_DEPOT_X)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XI)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XIII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XIV)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XV)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XVI)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XVII)
+				or containerTo:isInsideOfId(ITEM_DEPOT_XVIII) then
+				return true
+			else
+				self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
+				return false
+			end
+		elseif containerTo:getId() == ITEM_STORE_INBOX or containerTo:isInsideOfId(ITEM_STORE_INBOX) then
+			-- do not allow moving non-store items to Store Inbox
+			self:sendCancelMessage(RETURNVALUE_CONTAINERNOTENOUGHROOM)
+			return false
 		end
 	end
 
@@ -221,8 +302,19 @@ end
 
 function Player:onTradeRequest(target, item)
 	-- No trade items with actionID = 100
-	if item:getActionId() == NOT_MOVEABLE_ACTION then
+	if item:getActionId() == NOT_MOVEABLE_ACTION or item:getActionId() == NOT_TRADEABLE_ACTION then
+		self:sendCancelMessage("You cannot trade this item.")
 		return false
+	end
+
+	if item:isContainer() then
+		local items = item:getItems(true)
+		for index, value in ipairs(items or { }) do
+			if value:getActionId() == NOT_TRADEABLE_ACTION or item:getActionId() == NOT_MOVEABLE_ACTION then
+				self:sendCancelMessage("This container has an item that cannot be traded.")
+				return false
+			end
+		end
 	end
 	return true
 end

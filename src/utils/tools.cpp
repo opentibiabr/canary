@@ -1485,7 +1485,7 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 	}
 }
 
-bool isNumber(const std::string& string) {
+bool isNumber(const std::string_view string) {
 	if (std::ranges::all_of(string.cbegin(), string.cend(), [](auto integer){
 		if (std::isdigit(integer) == 0) {
 			return false;
@@ -1494,7 +1494,7 @@ bool isNumber(const std::string& string) {
 	return true;
 }
 
-bool isAlpha(const std::string& string) {
+bool isAlpha(const std::string_view string) {
 	if (std::ranges::all_of(string.cbegin(), string.cend(), [](auto letter){
 		if (std::isalpha(letter) == 0) {
 			return false;

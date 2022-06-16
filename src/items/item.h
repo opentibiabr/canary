@@ -389,7 +389,7 @@ class ItemAttributes
 		static double emptyDouble;
 		static bool emptyBool;
 
-		typedef std::unordered_map<std::string_view, CustomAttribute> CustomAttributeMap;
+		using CustomAttributeMap = std::unordered_map<std::string_view, CustomAttribute>;
 
 		struct Attribute {
 			union {

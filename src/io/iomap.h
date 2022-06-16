@@ -134,7 +134,7 @@ class IOMap
 		std::tuple<Tile*, Item*> readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
 		
 		std::tuple<Tile*, Item*> parseCreateTileItem(std::shared_ptr<BinaryNode> nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
-		bool parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
+		bool parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const;
 };
 
 #endif // SRC_IO_IOMAP_H_

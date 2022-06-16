@@ -57,6 +57,7 @@ public:
 protected:
 	FileHandleError errorCode = FILE_NO_ERROR;
 	FILE* file = nullptr;
+	std::unique_ptr<uint8_t[]> cachePtr;
 };
 
 class FileReadHandle : public FileHandle

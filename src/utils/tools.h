@@ -131,9 +131,9 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  * @return true if have number/alpha
  * @return false if no have number/alpha
  */
-bool isNumber(const std::string& string);
+bool isNumber(const std::string_view string);
 
-bool isAlpha(const std::string& string);
+bool isAlpha(const std::string_view string);
 
 size_t strnlength(const char* string, size_t size);
 

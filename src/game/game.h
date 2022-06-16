@@ -255,6 +255,7 @@ class Game
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
+		static void playerSendHighscoreTask(DBResult_ptr result, bool, uint32_t playerID, uint8_t category, uint8_t entriesPerPage);
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage);
 
 		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);

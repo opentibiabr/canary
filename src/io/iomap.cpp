@@ -271,7 +271,7 @@ std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(std::shared_ptr<BinaryNode> 
 	return std::make_tuple(tile, groundItem);
 }
 
-bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map)
+bool IOMap::parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const
 {
 	Position baseMapPosition;
 	baseMapPosition.x = binaryNodeMapData->getU16();

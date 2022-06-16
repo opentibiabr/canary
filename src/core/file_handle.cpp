@@ -277,7 +277,7 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 	// 0x00 00 00 00 is accepted as a wildcard version
 	if (identifier[0] != 0 || identifier[1] != 0 || identifier[2] != 0 || identifier[3] != 0) {
 		bool accepted = false;
-		for (auto const fileIdentifiers : fileAcceptableIdentifiers)
+		for (const auto &fileIdentifiers : fileAcceptableIdentifiers)
 		{
 			if (memcmp(identifier.data(), fileIdentifiers.c_str(), 4) == 0) {
 				accepted = true;
@@ -302,7 +302,8 @@ DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
 bool DiskNodeFileReadHandle::renewCache()
 {
 	if (!cache) {
-		cache = new uint8_t[cacheSize];
+		cachePtr.reset(new uint8_t[cacheSize]);
+		cache = cachePtr.get();
 	}
 	cacheLenght = fread(cache, 1, cacheSize, file);
 
@@ -710,7 +711,8 @@ DiskNodeFileWriteHandle::DiskNodeFileWriteHandle(const std::string& initName, co
 
 	fwrite(initIdentifier.c_str(), 1, 4, file);
 	if (!cache) {
-		cache = new uint8_t[cacheSize+1];
+		cachePtr.reset(new uint8_t[cacheSize+1]);
+		cache = cachePtr.get();
 	}
 	localWriteIndex = 0;
 }
@@ -725,7 +727,8 @@ void DiskNodeFileWriteHandle::renewCache()
 			setErrorCode(FILE_WRITE_ERROR);
 		}
 	} else {
-		cache = new uint8_t[cacheSize+1];
+		cachePtr.reset(new uint8_t[cacheSize+1]);
+		cache = cachePtr.get();
 	}
 	localWriteIndex = 0;
 }
@@ -736,7 +739,8 @@ void DiskNodeFileWriteHandle::renewCache()
 MemoryNodeFileWriteHandle::MemoryNodeFileWriteHandle()
 {
 	if (!cache) {
-		cache = new uint8_t[cacheSize+1];
+		cachePtr.reset(new uint8_t[cacheSize+1]);
+		cache = cachePtr.get();
 	}
 	localWriteIndex = 0;
 }
@@ -764,12 +768,14 @@ void MemoryNodeFileWriteHandle::renewCache()
 	if (cache) {
 		cacheSize = cacheSize * 2;
 		delete cache;
-		cache = new uint8_t[cacheSize];
+		cachePtr.reset(new uint8_t[cacheSize]);
+		cache = cachePtr.get();
 		if (!cache) {
 			exit(1);
 		}
 	} else {
-		cache = new uint8_t[cacheSize+1];
+		cachePtr.reset(new uint8_t[cacheSize+1]);
+		cache = cachePtr.get();
 	}
 }
 

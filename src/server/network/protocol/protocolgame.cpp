@@ -1623,7 +1623,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 
 	uint32_t selectedVocation = 0xFFFFFFFF;
 	for (const auto &vocationsMap = g_vocations().getVocations();
-	auto const [vocationId, vocation] : vocationsMap)
+	const auto &[vocationId, vocation] : vocationsMap)
 	{
 		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId()))
 		{

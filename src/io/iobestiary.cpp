@@ -192,7 +192,7 @@ uint16_t IOBestiary::getBestiaryRaceUnlocked(Player* player, BestiaryType_t race
 	uint16_t count = 0;
 
 	for (std::map<uint16_t, std::string> bestiaryMap = g_game().getBestiaryList();
-	auto const [raceIdMap, raceNameMap] : bestiaryMap)
+	const auto &[raceIdMap, raceNameMap] : bestiaryMap)
 	{
 		const MonsterType* mtype = g_monsters().getMonsterType(raceNameMap);
 		if (mtype && mtype->info.bestiaryRace == race && player->getBestiaryKillCount(mtype->info.raceid) > 0) {
@@ -415,7 +415,7 @@ std::list<uint16_t> IOBestiary::getBestiaryFinished(Player* player) const
 {
 	std::list<uint16_t> finishedMonsters = {};
 	for (std::map<uint16_t, std::string> bestiaryMap = g_game().getBestiaryList();
-	auto const [raceIdMap, raceMapName] : bestiaryMap)
+	const auto &[raceIdMap, raceMapName] : bestiaryMap)
 	{
 		uint32_t thisKilled = player->getBestiaryKillCount(raceIdMap);
 		const MonsterType* mtype = g_monsters().getMonsterType(raceMapName);

@@ -288,7 +288,6 @@ class ItemType
 class Items
 {
 	public:
-		using NameMap = std::unordered_multimap<std::string, uint16_t>;
 		using InventoryVector = std::vector<uint16_t>;
 
 		Items();
@@ -333,7 +332,7 @@ class Items
 			return items.size();
 		}
 
-		NameMap nameToItems;
+		std::unordered_multimap<std::string, uint16_t> nameToItems;
 
 	private:
 

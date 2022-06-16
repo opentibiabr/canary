@@ -7232,6 +7232,38 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 	}
 }
 
+void Game::playerSendHighscoreTask(DBResult_ptr result, bool store, uint32_t playerID, uint8_t category, uint8_t entriesPerPage) {
+	Player* player = g_game().getPlayerByID(playerID);
+	if (!player) {
+		return;
+	}
+
+	player->resetAsyncOngoingTask(PlayerAsyncTask_Highscore);
+	if (!result) {
+		player->sendHighscoresNoData();
+		return;
+	}
+
+	uint16_t resultPage = result->getU16("page");
+	uint32_t pages = result->getU32("entries");
+	pages += entriesPerPage - 1;
+	pages /= entriesPerPage;
+
+	std::vector<HighscoreCharacter> characters;
+	characters.reserve(result->countResults());
+	do {
+		uint8_t characterVocation;
+		const Vocation* voc = g_vocations().getVocation(result->getU16("vocation"));
+		if (voc) {
+			characterVocation = voc->getClientId();
+		} else {
+			characterVocation = 0;
+		}
+		characters.emplace_back(result->getString("name"), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation);
+	} while (result->next());
+	player->sendHighscores(characters, category, resultPage, static_cast<uint16_t>(pages));
+};
+
 void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string&, uint16_t page, uint8_t entriesPerPage)
 {
 	if (player->hasAsyncOngoingTask(PlayerAsyncTask_Highscore)) {
@@ -7300,37 +7332,10 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 	}
 
 	uint32_t playerID = player->getID();
-	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, entriesPerPage](DBResult_ptr result, bool) {
-		Player* player = g_game().getPlayerByID(playerID);
-		if (!player) {
-			return;
-		}
-
-		player->resetAsyncOngoingTask(PlayerAsyncTask_Highscore);
-		if (!result) {
-			player->sendHighscoresNoData();
-			return;
-		}
-
-		uint16_t resultPage = result->getU16("page");
-		uint32_t pages = result->getU32("entries");
-		pages += entriesPerPage - 1;
-		pages /= entriesPerPage;
-
-		std::vector<HighscoreCharacter> characters;
-		characters.reserve(result->countResults());
-		do {
-			uint8_t characterVocation;
-			const Vocation* voc = g_vocations().getVocation(result->getU16("vocation"));
-			if (voc) {
-				characterVocation = voc->getClientId();
-			} else {
-				characterVocation = 0;
-			}
-			characters.emplace_back(result->getString("name"), result->getU64("points"), result->getU32("id"), result->getU32("rank"), result->getU16("level"), characterVocation);
-		} while (result->next());
-		player->sendHighscores(characters, category, resultPage, static_cast<uint16_t>(pages));
+	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, entriesPerPage](DBResult_ptr result, bool store) {
+		Game::playerSendHighscoreTask(result, store, playerID, category, entriesPerPage);
 	};
+
 	g_databaseTasks().addTask(query.str(), callback, true);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
 }

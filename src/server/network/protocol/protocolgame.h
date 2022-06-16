@@ -436,7 +436,6 @@ private:
 	void AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool addMount = true);
 	void AddPlayerSkills(NetworkMessage &msg);
 	void sendBlessStatus();
-	void sendBlessDialog(NetworkMessage &msg);
 	void sendPremiumTrigger();
 	void sendMessageDialog(const std::string &message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);

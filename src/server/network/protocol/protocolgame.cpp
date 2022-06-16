@@ -622,7 +622,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
 			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
 			if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
-				for (int i = 2; i <= 6; i++) {
+				for (uint8_t i = 2; i <= 6; i++) {
 					if (!player->hasBlessing(i)) {
 						player->addBlessing(i, 1);
 					}

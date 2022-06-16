@@ -1553,7 +1553,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);
 		if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
-			for (int i = 2; i <= 6; i++) {
+			for (uint8_t i = 2; i <= 6; i++) {
 				if (!hasBlessing(i)) {
 					addBlessing(i, 1);
 				}

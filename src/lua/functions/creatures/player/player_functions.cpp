@@ -1133,19 +1133,6 @@ int PlayerFunctions::luaPlayerOpenStash(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerOpenForge(lua_State* L) {
-	// player:openForge()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->sendOpenForge();
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
-	}
-
-	return 1;
-}
-
 int PlayerFunctions::luaPlayerGetItemCount(lua_State* L) {
 	// player:getItemCount(itemId[, subType = -1])
 	Player* player = getUserdata<Player>(L, 1);

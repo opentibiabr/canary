@@ -5928,51 +5928,6 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
-void Player::fuseItems(uint16_t itemid, uint16_t tier, bool usedCore, bool tierLoss, uint8_t bonus) {
-	SPDLOG_WARN("bonus: {}", bonus);
-	Item* item = g_game().findItemOfType(this, itemid, true, -1, tier);
-	g_game().internalRemoveItem(item, 1);
-	Container* chest = Item::CreateItem(37561, 1)->getContainer(); // create chest
-	g_game().internalAddItem(this, chest, INDEX_WHEREEVER); // move chest to player
-	Item* newItem = Item::CreateItem(itemid, 1); // create result
-	newItem->setTier(tier + 1); // set new item tier
-	g_game().internalAddItem(chest, newItem, INDEX_WHEREEVER); // add tier+1 item to chest
-	Item* item2 = g_game().findItemOfType(this, itemid, true, -1, tier); // seconditem
-	if (bonus != 3) {
-		uint64_t cost = 0;
-		for (auto itemClassification : g_game().getItemsClassifications()) {
-			if (itemClassification->id != item->getClassification()) {
-				continue;
-			}
-
-			for (auto [tier, price] : itemClassification->tiers) {
-				if (tier== item->getTier()) {
-					cost = price;
-					break;
-				}
-			}
-			break;
-		}
-		g_game().removeMoney(this, cost);
-	}
-
-	if (bonus != 2) {
-		setForgeDusts(getForgeDusts() - 100);
-	}
-
-	if (bonus == 6) {
-		item2->setTier(tier + 1);
-		g_game().internalMoveItem(this, chest, INDEX_WHEREEVER, item2, item2->getItemCount(), nullptr);
-	}
-	if (bonus != 4 && bonus != 5 && bonus != 6 && bonus != 8) {
-		g_game().internalRemoveItem(item2, 1);
-	}
-
-	if (usedCore) {
-		setForgeCores(getForgeCores() - 1);
-	}
-}
-
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/

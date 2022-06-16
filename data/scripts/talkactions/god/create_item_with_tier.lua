@@ -1,10 +1,10 @@
-local tier = TalkAction("/testtier")
+local itemwithtier = TalkAction("/itemwithtier")
 
--- usage: /testtier item id or name, tier
--- example: /testtier falcon coif, 8
+-- usage: /itemwithtier item id or name, tier
+-- example: /itemwithtier falcon coif, 8
 -- make sure to move the item at least 1 time to refresh item tier icon
 
-function tier.onSay(player, words, param)
+function itemwithtier.onSay(player, words, param)
 	local split = param:split(",")
 	local itemType = ItemType(split[1])
 	if itemType:getId() == 0 then
@@ -24,5 +24,5 @@ function tier.onSay(player, words, param)
 	return false
 end
 
-tier:separator(" ")
-tier:register()
+itemwithtier:separator(" ")
+itemwithtier:register()

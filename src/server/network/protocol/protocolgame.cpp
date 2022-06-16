@@ -4399,7 +4399,8 @@ void ProtocolGame::sendForgingData()
 	player->setForgeSlivers(sliverCount);
 	player->setForgeCores(coreCount);
 
-	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
+	// until we have a better way of refresh client, leave this line commented
+	//sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
 	writeToOutputBuffer(msg);
 }
 

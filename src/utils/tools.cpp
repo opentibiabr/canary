@@ -1486,20 +1486,20 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 }
 
 bool isNumber(const std::string_view string) {
-	if (std::ranges::all_of(string.cbegin(), string.cend(), [](auto integer){
+	for(auto integer : string) {
 		if (std::isdigit(integer) == 0) {
 			return false;
 		}
-	}))
+	}
 	return true;
 }
 
 bool isAlpha(const std::string_view string) {
-	if (std::ranges::all_of(string.cbegin(), string.cend(), [](auto letter){
+	for(auto letter : string) {
 		if (std::isalpha(letter) == 0) {
 			return false;
 		}
-	}))
+	}
 	return true;
 }
 

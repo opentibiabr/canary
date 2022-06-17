@@ -847,7 +847,7 @@ int ItemFunctions::luaItemGetTier(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L,item->getTier());
+	lua_pushnumber(L, item->getTier());
 	return 1;
 }
 

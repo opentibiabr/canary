@@ -1519,8 +1519,8 @@ std::string Item::parseImbuementDescription(const Item* item)
 
 std::string Item::parseClassificationDescription(const Item* item) {
 	std::ostringstream string;
-	if (uint16_t classification = item->getClassification(); classification > 1) {
-		string << std::endl << "Classification: " << classification << " Tier: " << item->getTier();
+	if (item && item->getClassification() > 1) {
+		string << std::endl << "Classification: " << item->getClassification() << " Tier: " << item->getTier();
 		if (item->getTier() != 0) {
 			string  << " (";
 			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {

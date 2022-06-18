@@ -1385,7 +1385,16 @@ void Player::openImbuementWindow(Item* item)
 
 void Player::sendMarketEnter(uint32_t depotId)
 {
-	if (!client || this->getLastDepotId() == -1 || !depotId) {
+	if (client == nullptr) {
+		SPDLOG_ERROR("[Player::sendMarketEnter] - Client is nullptr");
+		return;
+	}
+	if (this->getLastDepotId() == -1) {
+		SPDLOG_ERROR("[Player::sendMarketEnter] - Invalid last depot id");
+		return;
+	}
+	if (depotId == -1) {
+		SPDLOG_ERROR("[Player::sendMarketEnter] - Invalid depot id");
 		return;
 	}
 	
@@ -5934,12 +5943,16 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
-PreySlot* Player::getPreySlotById(PreySlot_t slotid)
+PreySlot* Player::getPreySlotById(PreySlot_t slotid) const
 {
-	if (auto it = std::ranges::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
-			return preyIt->id == slotid;
-		}); it != preys.end()) {
-		return *std::to_address(it);
+	for (auto preySlot : preys) {
+		if (!preySlot) {
+			continue;
+		}
+
+		if (preySlot->id == slotid) {
+			return preySlot;
+		}
 	}
 
 	return nullptr;
@@ -5951,21 +5964,29 @@ PreySlot* Player::getPreyWithMonster(uint16_t raceId) const
 		return nullptr;
 	}
 
-	if (auto it = std::ranges::find_if(preys.begin(), preys.end(), [raceId](auto preySlot) {
-			return preySlot->selectedRaceId == raceId;
-		}); it != preys.end()) {
-		return *std::to_address(it);
+	for (auto preySlot : preys) {
+		if (!preySlot) {
+			continue;
+		}
+
+		if (preySlot->selectedRaceId == raceId) {
+			return preySlot;
+		}
 	}
 
 	return nullptr;
 }
 
-TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid)
+TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) const
 {
-	if (auto it = std::ranges::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
-			return itTask->id == slotid;
-		}); it != taskHunting.end()) {
-		return *std::to_address(it);
+	for (auto taskHuntingSlot : taskHunting) {
+		if (!taskHuntingSlot) {
+			continue;
+		}
+
+		if (taskHuntingSlot->id == slotid) {
+			return taskHuntingSlot;
+		}
 	}
 
 	return nullptr;

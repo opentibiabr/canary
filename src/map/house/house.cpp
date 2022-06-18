@@ -20,6 +20,11 @@ House::House(uint32_t houseId) : id(houseId) {}
 
 void House::addTile(HouseTile* tile)
 {
+	if (tile == nullptr) {
+		SPDLOG_DEBUG("[House::addTile] - Tile is nullptr");
+		return;
+	}
+
 	tile->setFlag(TILESTATE_PROTECTIONZONE);
 	houseTiles.push_back(tile);
 }

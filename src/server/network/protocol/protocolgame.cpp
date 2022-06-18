@@ -3991,10 +3991,11 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	msg.addByte(std::min<uint32_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max()));
 
 	DepotLocker *depotLocker = player->getDepotLocker(depotId);
-	if (!depotLocker)
+	if (depotLocker == nullptr)
 	{
 		msg.add<uint16_t>(0x00);
 		writeToOutputBuffer(msg);
+		SPDLOG_ERROR("[ProtocolGame::sendMarketEnter] - DepotLocker is nullptr");
 		return;
 	}
 
@@ -4006,16 +4007,18 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	do
 	{
 		Container *container = containerList.front();
-		if (!container)
+		if (container == nullptr)
 		{
+			SPDLOG_ERROR("[ProtocolGame::sendMarketEnter] - Container is nullptr");
 			continue;
 		}
 		containerList.pop_front();
 
 		for (Item *item : container->getItemList())
 		{
-			if (!item)
+			if (item == nullptr)
 			{
+				SPDLOG_ERROR("[ProtocolGame::sendMarketEnter] - Item is nullptr");
 				continue;
 			}
 

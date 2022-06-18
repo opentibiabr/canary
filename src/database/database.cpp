@@ -245,12 +245,12 @@ size_t DBResult::getResult(const std::string& string) const
 	auto it = listNames.find(string);
 	if (it == listNames.end()) {
 		SPDLOG_ERROR("[DBResult::getResult] - Column '{}' doesn't exist in the result set", string);
-		return -1;
+		return 0;
 	}
 
 	if (row[it->second] == nullptr) {
 		SPDLOG_ERROR("[DBResult::getResult] - Result is nullptr");
-		return -1;
+		return 0;
 	}
 
 	// Return the table size
@@ -263,11 +263,6 @@ size_t DBResult::getResult(const std::string& string) const
 int8_t DBResult::get8(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
-	if (std::cmp_equal(result, -1)) {
-		SPDLOG_ERROR("[DBResult::get8] - Failed to get size_t");
-		return 0;
-	}
-
 	const char* rowResult = row[result];
 	return static_cast<int8_t>(std::atoi(rowResult));
 }
@@ -308,8 +303,6 @@ int64_t DBResult::get64(const std::string& tableName) const
 	return std::atoll(rowResult);
 }
 
-// The getU8/getU16 returns the same conversion of u32 (std::stoul)
-// There is no proper conversion for uint8/16 as stoul already converts their max size
 uint8_t DBResult::getU8(const std::string& tableName) const
 {
 	size_t result = getResult(tableName);
@@ -318,20 +311,8 @@ uint8_t DBResult::getU8(const std::string& tableName) const
 		return 0;
 	}
 
-	try
-	{
-		const char* rowResult = row[result];
-		return static_cast<uint8_t>(std::stoul(rowResult));
-	}
-	catch(std::invalid_argument const& argument)
-	{
-		SPDLOG_ERROR("[DBResult::getU8] - Invalid argument: ", argument.what());
-	}
-	catch(std::out_of_range const& range)
-	{
-		SPDLOG_ERROR("[DBResult::getU8] - Out of range: ", range.what());
-	}
-	return 0;
+	const char* rowResult = row[result];
+	return static_cast<uint8_t>(std::atoi(rowResult));
 }
 
 uint16_t DBResult::getU16(const std::string& tableName) const
@@ -342,20 +323,9 @@ uint16_t DBResult::getU16(const std::string& tableName) const
 		return 0;
 	}
 
-	try
-	{
-		const char* rowResult = row[result];
-		return static_cast<uint16_t>(std::stoul(rowResult));
-	}
-	catch(std::invalid_argument const& argument)
-	{
-		SPDLOG_ERROR("[DBResult::getU16] - Invalid argument: ", argument.what());
-	}
-	catch(std::out_of_range const& range)
-	{
-		SPDLOG_ERROR("[DBResult::getU16] - Out of range: ", range.what());
-	}
-	return 0;
+	const char* rowResult = row[result];
+	return static_cast<uint16_t>(std::atoi(rowResult));
+	
 }
 
 uint32_t DBResult::getU32(const std::string& tableName) const
@@ -366,20 +336,8 @@ uint32_t DBResult::getU32(const std::string& tableName) const
 		return 0;
 	}
 
-	try
-	{
-		const char* rowResult = row[result];
-		return static_cast<uint32_t>(std::stoul(rowResult));
-	}
-	catch(std::invalid_argument const& argument)
-	{
-		SPDLOG_ERROR("[DBResult::getU32] - Invalid argument: ", argument.what());
-	}
-	catch(std::out_of_range const& range)
-	{
-		SPDLOG_ERROR("[DBResult::getU32] - Out of range: ", range.what());
-	}
-	return 0;
+	const char* rowResult = row[result];
+	return static_cast<uint32_t>(std::atoi(rowResult));
 }
 
 uint64_t DBResult::getU64(const std::string& tableName) const
@@ -390,20 +348,8 @@ uint64_t DBResult::getU64(const std::string& tableName) const
 		return 0;
 	}
 
-	try
-	{
-		const char* rowResult = row[result];
-		return std::stoull(rowResult);
-	}
-	catch(std::invalid_argument const& argument)
-	{
-		SPDLOG_ERROR("[DBResult::getU64] - Invalid argument: ", argument.what());
-	}
-	catch(std::out_of_range const& range)
-	{
-		SPDLOG_ERROR("[DBResult::getU64] - Out of range: ", range.what());
-	}
-	return 0;
+	const char* rowResult = row[result];
+	return static_cast<uint64_t>(std::atoi(rowResult));
 }
 
 time_t DBResult::getTime(const std::string& tableName) const

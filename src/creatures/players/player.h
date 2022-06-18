@@ -1833,7 +1833,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		PreySlot* getPreySlotById(PreySlot_t slotid);
+		PreySlot* getPreySlotById(PreySlot_t slotid) const;
 
 		bool setPreySlotClass(PreySlot* slot) {
 			if (getPreySlotById(slot->id)) {
@@ -1909,7 +1909,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid);
+		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) const;
 
 		std::vector<uint16_t> getTaskHuntingBlackList() const;
 

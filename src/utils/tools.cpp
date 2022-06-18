@@ -350,7 +350,7 @@ std::string fromIntToString(const int intType)
 }
 
 template<class Iter>
-Iter splitStrings(const std::string_view string, const std::string_view delim, Iter out)
+Iter splitStrings(const std::string string, const std::string delim, Iter out)
 {
 	const std::string & newString = string.data();
 	if (delim.empty()) {
@@ -1485,7 +1485,7 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 	}
 }
 
-bool isNumber(const std::string_view string) {
+bool isNumber(const std::string string) {
 	for(auto integer : string) {
 		if (std::isdigit(integer) == 0) {
 			return false;
@@ -1494,7 +1494,7 @@ bool isNumber(const std::string_view string) {
 	return true;
 }
 
-bool isAlpha(const std::string_view string) {
+bool isAlpha(const std::string string) {
 	for(auto letter : string) {
 		if (std::isalpha(letter) == 0) {
 			return false;

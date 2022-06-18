@@ -280,7 +280,7 @@ class Map
 		std::string getMapFileName() const {
 			return mapFileName;
 		}
-		void setMapFileName(std::string_view newName) {
+		void setMapFileName(std::string newName) {
 			mapFileName = newName;
 		}
 

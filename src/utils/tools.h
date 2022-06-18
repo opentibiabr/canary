@@ -61,7 +61,7 @@ std::string convertIPToString(uint32_t ip);
 
 // Split strings
 template<class Iter>
-Iter splitStrings(const std::string_view string, const std::string_view delim, Iter out);
+Iter splitStrings(const std::string string, const std::string delim, Iter out);
 
 void trimString(std::string& str);
 
@@ -131,9 +131,9 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
  * @return true if have number/alpha
  * @return false if no have number/alpha
  */
-bool isNumber(const std::string_view string);
+bool isNumber(const std::string string);
 
-bool isAlpha(const std::string_view string);
+bool isAlpha(const std::string string);
 
 size_t strnlength(const char* string, size_t size);
 

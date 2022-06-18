@@ -399,7 +399,7 @@ class InstantSpell final : public TalkAction, public Spell
 class RuneSpell final : public Action, public Spell
 {
 	public:
-		explicit RuneSpell(LuaScriptInterface* interface) : Action(interface) {}
+		using Action::Action;
 
 		ReturnValue canExecuteAction(const Player* player, const Position& toPos) override;
 		bool hasOwnErrorHandler() override {

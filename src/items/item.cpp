@@ -30,7 +30,6 @@
 
 #define IMBUEMENT_SLOT 500
 
-
 Items Item::items;
 
 Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)

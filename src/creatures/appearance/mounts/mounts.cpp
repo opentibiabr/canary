@@ -61,19 +61,19 @@ bool Mounts::loadFromXml()
 				SPDLOG_WARN("[Mounts::loadFromXml] - Missing or empty name on mount with clientid {}", clientIdString);
 				continue;
 			}
+
+			mounts.emplace_back(
+				static_cast<uint8_t>(mountNode.attribute("id").as_uint()),
+				clientId,
+				mountName,
+				mountNode.attribute("speed").as_int(),
+				mountNode.attribute("premium").as_bool(),
+				mountNode.attribute("type").as_string()
+			);
 		} else {
 			SPDLOG_WARN("[Mounts::loadFromXml] - "
 						"Missing clientid id for mount name: {}", mountName);
 		}
-
-		mounts.emplace_back(
-			static_cast<uint8_t>(mountNode.attribute("id").as_uint()),
-			static_cast<uint16_t>(mountNode.attribute("clientid").as_uint()),
-			mountNode.attribute("name").as_string(),
-			mountNode.attribute("speed").as_int(),
-			mountNode.attribute("premium").as_bool(),
-			mountNode.attribute("type").as_string()
-		);
 	}
 	mounts.shrink_to_fit();
 	return true;

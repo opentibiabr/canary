@@ -519,19 +519,19 @@ Direction getDirectionTo(const Position& from, const Position& to)
 	return dir;
 }
 
-using MagicEffectNames = std::unordered_map<std::string_view, MagicEffectClasses>;
-using ShootTypeNames = std::unordered_map<std::string_view, ShootType_t>;
+using MagicEffectNames = std::unordered_map<std::string, MagicEffectClasses>;
+using ShootTypeNames = std::unordered_map<std::string, ShootType_t>;
 using CombatTypeNames = std::unordered_map<CombatType_t, std::string, std::hash<int32_t>>;
-using AmmoTypeNames = std::unordered_map<std::string_view, Ammo_t>;
-using WeaponActionNames = std::unordered_map<std::string_view, WeaponAction_t>;
-using SkullNames = std::unordered_map<std::string_view, Skulls_t>;
-using ImbuementTypeNames = std::unordered_map<std::string_view, ImbuementTypes_t>;
+using AmmoTypeNames = std::unordered_map<std::string, Ammo_t>;
+using WeaponActionNames = std::unordered_map<std::string, WeaponAction_t>;
+using SkullNames = std::unordered_map<std::string, Skulls_t>;
+using ImbuementTypeNames = std::unordered_map<std::string, ImbuementTypes_t>;
 
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
-using SpawnTypeNames = std::unordered_map<std::string_view, SpawnType_t>;
+using SpawnTypeNames = std::unordered_map<std::string, SpawnType_t>;
 
 MagicEffectNames magicEffectNames = {
 	{"assassin",			CONST_ME_ASSASSIN},

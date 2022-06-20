@@ -36,7 +36,7 @@ class CreatureEvent final : public Script {
 		const std::string& getFileName() const {
 			return fileName;
 		}
-		void setFileName(std::string_view scriptName) {
+		void setFileName(std::string scriptName) {
 			fileName = scriptName;
 		}
 		bool isLoaded() const {

@@ -17,9 +17,10 @@
 void MoveEvents::clearMap(std::map<int32_t, MoveEventList>& map) const {
 	for (auto [mapTypeId, moveEventList] : map) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
-			moveEventList.moveEvent[eventType].clear();
+			moveEventList.moveEventPtr[eventType].reset();
 		}
 	}
+	map.clear();
 }
 
 void MoveEvents::clear() {
@@ -29,40 +30,41 @@ void MoveEvents::clear() {
 	// Clear position map
 	for (auto [position, moveEventList] : positionsMap) {
 		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
-			moveEventList.moveEvent[eventType].clear();
+			moveEventList.moveEventPtr[eventType].reset();
 		}
 	}
+	positionsMap.clear();
 }
 
-bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
-	auto itemIdVector = moveEvent.getItemIdsVector();
+bool MoveEvents::registerLuaItemEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto itemIdVector = moveEventPtr->getItemIdsVector();
 	if (itemIdVector.empty()) {
 		return false;
 	}
 
-	std::ranges::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
-		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
+	std::ranges::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEventPtr](const uint32_t &itemId) {
+		if (moveEventPtr->getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
-			it.wieldInfo = moveEvent.getWieldInfo();
-			it.minReqLevel = moveEvent.getReqLevel();
-			it.minReqMagicLevel = moveEvent.getReqMagLv();
-			it.vocationString = moveEvent.getVocationString();
+			it.wieldInfo = moveEventPtr->getWieldInfo();
+			it.minReqLevel = moveEventPtr->getReqLevel();
+			it.minReqMagicLevel = moveEventPtr->getReqMagLv();
+			it.vocationString = moveEventPtr->getVocationString();
 		}
-		return registerEvent(moveEvent, itemId, itemIdMap);
+		return registerEvent(moveEventPtr, itemId, itemIdMap);
 	});
 	itemIdVector.clear();
 	itemIdVector.shrink_to_fit();
 	return true;
 }
 
-bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
-	auto actionIdVector = moveEvent.getActionIdsVector();
+bool MoveEvents::registerLuaActionEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto actionIdVector = moveEventPtr->getActionIdsVector();
 	if (actionIdVector.empty()) {
 		return false;
 	}
 
-	std::ranges::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
-		return registerEvent(moveEvent, actionId, actionIdMap);
+	std::ranges::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEventPtr](const uint32_t &actionId) {
+		return registerEvent(moveEventPtr, actionId, actionIdMap);
 	});
 
 	actionIdVector.clear();
@@ -70,14 +72,14 @@ bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
 	return true;
 }
 
-bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
-	auto uniqueIdVector = moveEvent.getUniqueIdsVector();
+bool MoveEvents::registerLuaUniqueEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto uniqueIdVector = moveEventPtr->getUniqueIdsVector();
 	if (uniqueIdVector.empty()) {
 		return false;
 	}
 
-	std::ranges::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
-		return registerEvent(moveEvent, uniqueId, uniqueIdMap);
+	std::ranges::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEventPtr](const uint32_t &uniqueId) {
+		return registerEvent(moveEventPtr, uniqueId, uniqueIdMap);
 	});
 
 	uniqueIdVector.clear();
@@ -85,14 +87,14 @@ bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
 	return true;
 }
 
-bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
-	auto positionVector = moveEvent.getPositionsVector();
+bool MoveEvents::registerLuaPositionEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto positionVector = moveEventPtr->getPositionsVector();
 	if (positionVector.empty()) {
 		return false;
 	}
 
-	std::ranges::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
-		return registerEvent(moveEvent, position, positionsMap);
+	std::ranges::for_each(positionVector.begin(), positionVector.end(), [this, &moveEventPtr](const Position &position) {
+		return registerEvent(moveEventPtr, position, positionsMap);
 	});
 
 	positionVector.clear();
@@ -100,38 +102,41 @@ bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
 	return true;
 }
 
-bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
+bool MoveEvents::registerLuaEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
 	// Check if event is correct
-	if (registerLuaItemEvent(moveEvent)
-	|| registerLuaUniqueEvent(moveEvent)
-	|| registerLuaActionEvent(moveEvent)
-	|| registerLuaPositionEvent(moveEvent))
+	if (registerLuaItemEvent(moveEventPtr)
+	|| registerLuaUniqueEvent(moveEventPtr)
+	|| registerLuaActionEvent(moveEventPtr)
+	|| registerLuaPositionEvent(moveEventPtr))
 	{
 		return true;
 	} else {
 		SPDLOG_WARN("[MoveEvents::registerLuaEvent] - "
-				"Missing id, aid, uid or position for script with name {}", moveEvent.getFileName());
+				"Missing id, aid, uid or position for script with name {}", moveEventPtr->getFileName());
 		return false;
 	}
-	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for script with name {}", moveEvent.getFileName());
+	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for script with name {}", moveEventPtr->getFileName());
 	return false;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
+void MoveEvents::registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
+	
+	if (moveListMap.contains(id)) {
+		// Won't show the warning if they are different events, example StepIn/StepOut
+		if (!moveListMap[id].moveEventPtr[moveEventPtr->getEventType()]) {
+			return;
+		}
+
+		SPDLOG_WARN("[MoveEvents::registerEvent] - "
+					"Duplicate move event found: {}, for script with name {}", id, moveEventPtr->getFileName());
+		return;
+	}
+
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
-		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
-		moveListMap[id] = moveEventList;
+		moveListMap[id].moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	} else {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
-		for (MoveEvent& existingMoveEvent : moveEventList) {
-			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
-				SPDLOG_WARN("[MoveEvents::registerEvent] - "
-							"Duplicate move event found: {}, for script with name {}", id, moveEvent.getFileName());
-			}
-		}
-		moveEventList.push_back(std::move(moveEvent));
+		it->second.moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	}
 }
 
@@ -152,24 +157,20 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 	}
 
 	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
-		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getActionId());
+		auto it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
-			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-			for (MoveEvent& moveEvent : moveEventList) {
-				if ((moveEvent.getSlot() & slotp) != 0) {
-					return &moveEvent;
-				}
+			MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+			if (moveEvent && (moveEvent->getSlot() & slotp) != 0) {
+				return moveEvent;
 			}
 		}
 	}
 
 	auto it = itemIdMap.find(item.getID());
 	if (it != itemIdMap.end()) {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-		for (MoveEvent& moveEvent : moveEventList) {
-			if ((moveEvent.getSlot() & slotp) != 0) {
-				return &moveEvent;
-			}
+		MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+		if (moveEvent && (moveEvent->getSlot() & slotp) != 0) {
+			return moveEvent;
 		}
 	}
 	return nullptr;
@@ -180,9 +181,9 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	if (item.hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 		it = uniqueIdMap.find(item.getUniqueId());
 		if (it != uniqueIdMap.end()) {
-			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-			if (!moveEventList.empty()) {
-				return std::to_address(moveEventList.begin());
+			MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+			if (moveEvent) {
+				return moveEvent;
 			}
 		}
 	}
@@ -190,37 +191,39 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
 		it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
-			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-			if (!moveEventList.empty()) {
-				return std::to_address(moveEventList.begin());
+			MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+			if (moveEvent) {
+				return moveEvent;
 			}
 		}
 	}
 
 	it = itemIdMap.find(item.getID());
 	if (it != itemIdMap.end()) {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-		if (!moveEventList.empty()) {
-			return std::to_address(moveEventList.begin());
+		MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+		if (moveEvent) {
+			return moveEvent;
 		}
 	}
 	return nullptr;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
-	auto it = moveListMap.find(position);
-	if (it == moveListMap.end()) {
-		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
-		moveListMap[position] = moveEventList;
-	} else {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
-		if (!moveEventList.empty()) {
-			SPDLOG_WARN("[MoveEvents::registerEvent] - "
-						"Duplicate move event found: {}, for script with name {}", position.toString(), moveEvent.getFileName());
+void MoveEvents::registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
+	if (moveListMap.contains(position)) {
+		// Won't show the warning if they are different events, example StepIn/StepOut
+		if (!moveListMap[position].moveEventPtr[moveEventPtr->getEventType()]) {
+			return;
 		}
 
-		moveEventList.push_back(std::move(moveEvent));
+		SPDLOG_WARN("[MoveEvents::registerEvent] - "
+					"Duplicate move event found: {}, for script with name {}", position.toString(), moveEventPtr->getFileName());
+		return;
+	}
+	auto it = moveListMap.find(position);
+	if (it == moveListMap.end()) {
+		moveListMap[position].moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
+	} else {
+		it->second.moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	}
 }
 
@@ -228,9 +231,9 @@ MoveEvent* MoveEvents::getEvent(Tile& tile, MoveEvent_t eventType) {
 	if (auto it = positionsMap.find(tile.getPosition());
 	it != positionsMap.end())
 	{
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-		if (!moveEventList.empty()) {
-			return std::to_address(moveEventList.begin());
+		MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+		if (moveEvent) {
+			return moveEvent;
 		}
 	}
 	return nullptr;

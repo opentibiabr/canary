@@ -68,14 +68,15 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	// moveevent:register()
 	MoveEvent* moveevent = getUserdata<MoveEvent>(L, 1);
 	if (moveevent) {
+		std::shared_ptr<MoveEvent> moveEventPtr{moveevent};
 		// If not scripted, register item event
 		// Example: unscripted_equipments.lua
 		if (!moveevent->isLoadedCallback()) {
-			pushBoolean(L, g_moveEvents().registerLuaItemEvent(*moveevent));
+			pushBoolean(L, g_moveEvents().registerLuaItemEvent(moveEventPtr));
 			return 1;
 		}
 
-		pushBoolean(L, g_moveEvents().registerLuaEvent(*moveevent));
+		pushBoolean(L, g_moveEvents().registerLuaEvent(moveEventPtr));
 	} else {
 		lua_pushnil(L);
 	}

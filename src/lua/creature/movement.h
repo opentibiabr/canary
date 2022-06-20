@@ -19,7 +19,7 @@
 class MoveEvent;
 
 struct MoveEventList {
-	std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
+	std::shared_ptr<MoveEvent> moveEventPtr[MOVE_EVENT_LAST];
 };
 
 using VocEquipMap = std::map<uint16_t, bool>;
@@ -115,19 +115,19 @@ class MoveEvents final : public Scripts {
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType);
 
-		bool registerLuaItemEvent(MoveEvent& moveEvent);
-		bool registerLuaActionEvent(MoveEvent& moveEvent);
-		bool registerLuaUniqueEvent(MoveEvent& moveEvent);
-		bool registerLuaPositionEvent(MoveEvent& moveEvent);
-		bool registerLuaEvent(MoveEvent& moveEvent);
+		bool registerLuaItemEvent(std::shared_ptr<MoveEvent> moveEventPtr);
+		bool registerLuaActionEvent(std::shared_ptr<MoveEvent> moveEventPtr);
+		bool registerLuaUniqueEvent(std::shared_ptr<MoveEvent> moveEventPtr);
+		bool registerLuaPositionEvent(std::shared_ptr<MoveEvent> moveEventPtr);
+		bool registerLuaEvent(std::shared_ptr<MoveEvent> moveEventPtr);
 		void clear();
 
 	private:
 		void clearMap(std::map<int32_t, MoveEventList>& map) const;
 		void clearPosMap(std::map<Position, MoveEventList>& map);
 
-		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
-		void registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
+		void registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
+		void registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
 		MoveEvent* getEvent(Tile& tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType, Slots_t slot);
@@ -229,7 +229,7 @@ class MoveEvent final : public Script {
 		const std::string& getFileName() const {
 			return fileName;
 		}
-		void setFileName(std::string_view scriptName) {
+		void setFileName(std::string scriptName) {
 			fileName = scriptName;
 		}
 		void setSlot(uint32_t s) {

@@ -220,11 +220,11 @@ NodeFileReadHandle::NodeFileReadHandle() = default;
 
 NodeFileReadHandle::~NodeFileReadHandle() = default;
 
-std::shared_ptr<BinaryNode> NodeFileReadHandle::getNode(std::shared_ptr<BinaryNode> parent)
+BinaryNode* NodeFileReadHandle::getNode(std::shared_ptr<BinaryNode> parent)
 {
 	auto newNode = std::make_shared<BinaryNode>();
 	newNode->init(this, parent);
-	return newNode;
+	return newNode.get();
 }
 
 /*
@@ -356,6 +356,9 @@ BinaryNode* DiskNodeFileReadHandle::getRootNode()
  * Class BinaryNode
   =================
 */
+
+BinaryNode::BinaryNode() = default;
+BinaryNode::~BinaryNode() = default;
 
 // Get signed int
 int8_t BinaryNode::get8() {

@@ -41,7 +41,7 @@ bool Map::load(const std::string& identifier) {
 		}
 	}
 	catch(const std::exception) {
-		SPDLOG_ERROR("[Map::load] - The map in folder {} is missing or corrupted", identifier);
+		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);
 		return false;
 	}
 	return true;

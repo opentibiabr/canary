@@ -37,7 +37,7 @@ class FileHandle
 public:
 	FileHandle();
 
-	virtual ~FileHandle() = default;
+	virtual ~FileHandle();
 
 	// Ensure it's not copyable
 	NONCOPYABLE(FileHandle);
@@ -108,10 +108,11 @@ class MemoryNodeFileReadHandle;
 class BinaryNode : public std::enable_shared_from_this<BinaryNode>
 {
 public:
-	BinaryNode() = default;
-	~BinaryNode() = default;
-
+	BinaryNode();
+	~BinaryNode();
 	NONCOPYABLE(BinaryNode);
+
+	void clear();
 
 	std::shared_ptr<BinaryNode> getPtr() {
 		return this->shared_from_this();
@@ -141,9 +142,9 @@ public:
 	std::string getString();
 	std::string getLongString();
 
-	std::shared_ptr<BinaryNode> getChild();
+	BinaryNode* getChild();
 	// Returns this on success, nullptr on failure
-	std::shared_ptr<BinaryNode> advance();
+	BinaryNode* advance();
 
 	std::string getStringData() const {
 		return stringData;
@@ -165,11 +166,10 @@ private:
 	std::shared_ptr<BinaryNode> parent;
 	std::shared_ptr<BinaryNode> child;
 
+	friend class NodeFileReadHandle;
 	friend class DiskNodeFileReadHandle;
 	friend class MemoryNodeFileReadHandle;
 };
-
-inline BinaryNode g_binaryNode;
 
 class NodeFileReadHandle : public FileHandle
 {
@@ -177,7 +177,8 @@ public:
 	NodeFileReadHandle();
 	~NodeFileReadHandle() override;
 
-	virtual std::shared_ptr<BinaryNode> getRootNode() = 0;
+	virtual BinaryNode* getRootNode() = 0;
+	void freeNode(BinaryNode* node);
 
 	virtual size_t size() = 0;
 	virtual size_t tell() = 0;
@@ -205,7 +206,9 @@ public:
 	DiskNodeFileReadHandle(const std::string& initName, const std::vector<std::string>& initAcceptableIdentifiers);
 	~DiskNodeFileReadHandle() override;
 
-	std::shared_ptr<BinaryNode> getRootNode() override;
+	BinaryNode* getRootNode() override;
+
+	void close();
 
 	size_t size() override {
 		return fileSize;
@@ -234,7 +237,7 @@ public:
 
 	void assign(uint8_t* data, size_t size);
 
-	std::shared_ptr<BinaryNode> getRootNode() override;
+	BinaryNode* getRootNode() override;
 
 	size_t size() override {
 		return cacheSize;

@@ -126,15 +126,15 @@ class IOMap
 		}
 
 	private:
-		bool parseMapDataAttributes(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map, const std::string& fileName) const;
-		bool parseWaypoints(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const;
-		bool parseTowns(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map);
+		bool parseMapDataAttributes(BinaryNode* binaryNodeMapData, Map& map, const std::string& fileName) const;
+		bool parseWaypoints(BinaryNode* binaryNodeMapData, Map& map) const;
+		bool parseTowns(BinaryNode* binaryNodeMapData, Map& map);
 
-		void readAttributeTileFlags(std::shared_ptr<BinaryNode> binaryNodeMapTile, uint32_t &tileflags) const;
-		std::tuple<Tile*, Item*> readAttributeTileItem(std::shared_ptr<BinaryNode> binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
+		void readAttributeTileFlags(BinaryNode* binaryNodeMapTile, uint32_t &tileflags) const;
+		std::tuple<Tile*, Item*> readAttributeTileItem(BinaryNode* binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
 		
-		std::tuple<Tile*, Item*> parseCreateTileItem(std::shared_ptr<BinaryNode> nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
-		bool parseTileArea(std::shared_ptr<BinaryNode> binaryNodeMapData, Map& map) const;
+		std::tuple<Tile*, Item*> parseCreateTileItem(BinaryNode* nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
+		bool parseTileArea(BinaryNode* binaryNodeMapData, Map& map) const;
 };
 
 #endif // SRC_IO_IOMAP_H_

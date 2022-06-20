@@ -220,11 +220,11 @@ NodeFileReadHandle::NodeFileReadHandle() = default;
 
 NodeFileReadHandle::~NodeFileReadHandle() = default;
 
-BinaryNode* NodeFileReadHandle::getNode(std::shared_ptr<BinaryNode> parent)
+std::shared_ptr<BinaryNode> NodeFileReadHandle::getNode(std::shared_ptr<BinaryNode> parent)
 {
 	auto newNode = std::make_shared<BinaryNode>();
 	newNode->init(this, parent);
-	return newNode.get();
+	return newNode;
 }
 
 /*

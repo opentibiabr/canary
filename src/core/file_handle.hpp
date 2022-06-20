@@ -183,7 +183,7 @@ public:
 	virtual size_t size() = 0;
 	virtual size_t tell() = 0;
 private:
-	BinaryNode* getNode(std::shared_ptr<BinaryNode> parent);
+	std::shared_ptr<BinaryNode> getNode(std::shared_ptr<BinaryNode> parent);
 	// Returns false when end-of-file is reached
 	virtual bool renewCache() = 0;
 

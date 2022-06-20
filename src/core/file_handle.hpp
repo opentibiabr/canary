@@ -178,7 +178,6 @@ public:
 	~NodeFileReadHandle() override;
 
 	virtual BinaryNode* getRootNode() = 0;
-	void freeNode(BinaryNode* node);
 
 	virtual size_t size() = 0;
 	virtual size_t tell() = 0;

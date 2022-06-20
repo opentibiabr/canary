@@ -288,6 +288,11 @@ bool IOMap::parseTileArea(BinaryNode* binaryNodeMapData, Map& map) const
 	for (BinaryNode* binaryNodeMapTile = binaryNodeMapData->getChild();
 	binaryNodeMapTile != nullptr; binaryNodeMapTile = binaryNodeMapTile->advance()) {
 		const uint8_t type = binaryNodeMapTile->getU8();
+		if (binaryNodeMapTile == nullptr) {
+			SPDLOG_ERROR("[IOMap::parseTileArea] - binaryNodeMapTile is nullptr");
+			return false;
+		}
+
 		if (type == 0) {
 			SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid node tile with type {}", type);
 			break;

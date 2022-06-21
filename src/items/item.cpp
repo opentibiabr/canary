@@ -14,7 +14,6 @@
 #include "items/functions/item_parse.hpp"
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
-#include "game/movement/teleport.h"
 #include "items/trashholder.h"
 #include "items/containers/mailbox/mailbox.h"
 #include "map/house/house.h"
@@ -223,16 +222,16 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 Item::Item(const Item& i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
 {
-	if (i.attributes) {
-		attributes.reset(new ItemAttributes(*i.attributes));
+	if (i.itemAttributesPtr) {
+		itemAttributesPtr.reset(new ItemAttributes(*i.itemAttributesPtr));
 	}
 }
 
 Item* Item::clone() const
 {
 	Item* item = Item::CreateItem(id, count);
-	if (attributes) {
-		item->attributes.reset(new ItemAttributes(*attributes));
+	if (itemAttributesPtr) {
+		item->itemAttributesPtr.reset(new ItemAttributes(*itemAttributesPtr));
 	}
 	return item;
 }
@@ -247,20 +246,20 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
-	if (!attributes) {
-		return !otherItem->attributes;
+	if (!itemAttributesPtr) {
+		return !otherItem->itemAttributesPtr;
 	}
 
-	const auto& otherAttributes = otherItem->attributes;
+	const auto& otherAttributes = otherItem->itemAttributesPtr;
 	if (!otherAttributes) {
 		return false;
 	}
 
-	if (attributes->attributeBits != otherAttributes->attributeBits) {
+	if (itemAttributesPtr->attributeBits != otherAttributes->attributeBits) {
 		return false;
 	}
 
-	for (const auto& attribute : attributes->attributes) {
+	for (const auto& attribute : itemAttributesPtr->attributes) {
 		for (const auto& otherAttribute : otherAttributes->attributes) {
 			if (attribute.type != otherAttribute.type) {
 				continue;
@@ -786,8 +785,8 @@ bool Item::unserializeMapItem(BinaryNode &binaryNode, Position position)
 {
 	try {
 		while (binaryNode.canRead()) {
-		uint8_t attributeType = binaryNode.getU8();
-			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), binaryNode, position);
+			uint8_t attributeType = binaryNode.getU8();
+			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, binaryNode, position);
 			if (ret == ATTR_READ_ERROR) {
 				SPDLOG_ERROR("[Item::unserializeItem] - Invalid item attribute {}", attributeType);
 				return false;
@@ -925,7 +924,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-		const ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getCustomAttributeMap();
+		const ItemAttributes::CustomAttributeMap* customAttrMap = itemAttributesPtr->getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
 		propWriteStream.write<uint64_t>(customAttrMap->size());
 		for (const auto &entry : *customAttrMap) {
@@ -2576,11 +2575,11 @@ void Item::stopDecaying()
 
 bool Item::hasMarketAttributes()
 {
-	if (!attributes) {
+	if (!itemAttributesPtr || itemAttributesPtr->attributeBits == 0) {
 		return true;
 	}
 
-	for (const auto& attribute : attributes->getList()) {
+	for (const auto& attribute : itemAttributesPtr->getList()) {
 		if (attribute.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
 			return false;
 		}

@@ -12,50 +12,45 @@
 
 #include "declarations.hpp"
 
-class ItemReadMapAttributes : public Item
+class ItemReadMapAttributes final : public Item
 {
 public:
-	ItemReadMapAttributes();
-	~ItemReadMapAttributes() override;
-
-	NONCOPYABLE(ItemReadMapAttributes);
-
-	static Attr_ReadValue readAttributesMap(AttrTypes_t attr, BinaryNode& binaryNode, Position position);
+	static Attr_ReadValue readAttributesMap(AttrTypes_t attr, Item &item, BinaryNode& binaryNode, Position position);
 
 private:
-	static Attr_ReadValue readAttributeCount(BinaryNode& binaryNode, Position position);
-	static Attr_ReadValue readAttributeRuneCharge(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeActionId(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeUniqueId(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeText(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeWrittenDate(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeWrittenBy(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeDescription(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeCharge(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeDuration(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeDecayingState(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeName(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeArticle(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributePluralName(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeWeight(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeAttack(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeDefense(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeExtraDefense(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeImbuementSlot(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeOpenContainer(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeArmor(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeHitChance(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeShootRange(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeSpecial(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeQuicklootContainer(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeDepotId(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeHouseDoorId(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeSleeperGuid(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeSleepStart(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeTeleportDestination(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeContainerItems(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeCustomAttributes(BinaryNode& binaryNode);
-	static Attr_ReadValue readAttributeImbuementType(BinaryNode& binaryNode);
+	static bool readAttributeCount(BinaryNode& binaryNode, Item &item, Position position);
+	static bool readAttributeRuneCharge(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeActionId(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeUniqueId(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeText(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeWrittenDate(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeWrittenBy(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeDescription(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeCharge(BinaryNode& binaryNode, Item &item, Position position);
+	static bool readAttributeDuration(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeDecayingState(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeName(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeArticle(BinaryNode& binaryNode, Item &item);
+	static bool readAttributePluralName(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeWeight(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeAttack(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeDefense(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeExtraDefense(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeImbuementSlot(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeOpenContainer(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeArmor(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeHitChance(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeShootRange(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeSpecial(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeQuicklootContainer(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeDepotId(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeHouseDoorId(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeSleeperGuid(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeSleepStart(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeTeleportDestination(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeContainerItems(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeCustomAttributes(BinaryNode& binaryNode, Item &item);
+	static bool readAttributeImbuementType(BinaryNode& binaryNode, Item &item);
 };
 
 #endif // SRC_ITEMS_FUNCTIONS_READ_ATTRIBUTE_MAP_HPP_

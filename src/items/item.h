@@ -449,6 +449,7 @@ class ItemAttributes
 		std::vector<Attribute> attributes;
 		std::underlying_type_t<ItemAttrTypes> attributeBits = 0;
 
+	public:
 		const std::string& getStrAttr(ItemAttrTypes type) const;
 		void setStrAttr(ItemAttrTypes type, const std::string& value);
 
@@ -530,7 +531,6 @@ class ItemAttributes
 			return false;
 		}
 
-	public:
 		static bool isIntAttrType(ItemAttrTypes type) {
 			std::underlying_type_t<ItemAttrTypes> checkTypes = 0;
 			checkTypes |= ITEM_ATTRIBUTE_ACTIONID;
@@ -644,20 +644,20 @@ class Item : virtual public Thing
 		}
 
 		const std::string& getStrAttr(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return ItemAttributes::emptyString;
 			}
-			return attributes->getStrAttr(type);
+			return itemAttributesPtr->getStrAttr(type);
 		}
 		void setStrAttr(ItemAttrTypes type, const std::string& value) {
 			getAttributes()->setStrAttr(type, value);
 		}
 
 		int64_t getIntAttr(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
-			return attributes->getIntAttr(type);
+			return itemAttributesPtr->getIntAttr(type);
 		}
 		void setIntAttr(ItemAttrTypes type, int64_t value) {
 			getAttributes()->setIntAttr(type, value);
@@ -675,15 +675,15 @@ class Item : virtual public Thing
 		}
 
 		void removeAttribute(ItemAttrTypes type) {
-			if (attributes) {
-				attributes->removeAttribute(type);
+			if (itemAttributesPtr) {
+				itemAttributesPtr->removeAttribute(type);
 			}
 		}
 		bool hasAttribute(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return false;
 			}
-			return attributes->hasAttribute(type);
+			return itemAttributesPtr->hasAttribute(type);
 		}
 
 		template<typename R>
@@ -703,15 +703,15 @@ class Item : virtual public Thing
 			return getAttributes()->getCustomAttribute(key);
 		}
 		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return nullptr;
 			}
 
-			if (!attributes->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+			if (!itemAttributesPtr->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				return nullptr;
 			}
 
-			ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
+			ItemAttributes::CustomAttributeMap* customAttrMap = itemAttributesPtr->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
 			if (!customAttrMap) {
 				return nullptr;
 			}
@@ -777,14 +777,14 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_ACTIONID, n);
 		}
 		uint16_t getActionId() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_ACTIONID));
 		}
 
 		uint16_t getUniqueId() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_UNIQUEID));
@@ -794,7 +794,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_CHARGES, n);
 		}
 		uint16_t getCharges() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_CHARGES));
@@ -804,7 +804,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_FLUIDTYPE, n);
 		}
 		uint16_t getFluidType() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_FLUIDTYPE));
@@ -814,7 +814,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_OWNER, owner);
 		}
 		uint32_t getOwner() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return getIntAttr(ITEM_ATTRIBUTE_OWNER);
@@ -824,7 +824,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_CORPSEOWNER, corpseOwner);
 		}
 		uint32_t getCorpseOwner() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return getIntAttr(ITEM_ATTRIBUTE_CORPSEOWNER);
@@ -859,7 +859,7 @@ class Item : virtual public Thing
 			}
 		}
 		ItemDecayState_t getDecaying() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return DECAYING_FALSE;
 			}
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
@@ -1141,10 +1141,10 @@ class Item : virtual public Thing
 		bool hasMarketAttributes();
 
 		std::unique_ptr<ItemAttributes>& getAttributes() {
-			if (!attributes) {
-				attributes.reset(new ItemAttributes());
+			if (!itemAttributesPtr) {
+				itemAttributesPtr.reset(new ItemAttributes());
 			}
-			return attributes;
+			return itemAttributesPtr;
 		}
 
 		void incrementReferenceCounter() {
@@ -1216,7 +1216,6 @@ class Item : virtual public Thing
 		std::string getWeightDescription(uint32_t weight) const;
 
 		Cylinder* parent = nullptr;
-		std::unique_ptr<ItemAttributes> attributes;
 
 		uint32_t referenceCounter = 0;
 
@@ -1227,6 +1226,7 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 	
 	private:
+		std::unique_ptr<ItemAttributes> itemAttributesPtr;
 		uint16_t depotId;
 		uint32_t sleeperGUID;
 		uint32_t sleepStart;

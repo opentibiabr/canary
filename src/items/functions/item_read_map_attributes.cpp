@@ -14,110 +14,239 @@
 #include "game/game.h"
 #include "io/iologindata.h"
 
-ItemReadMapAttributes::ItemReadMapAttributes() = default;
-ItemReadMapAttributes::~ItemReadMapAttributes() = default;
-
-Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, BinaryNode& binaryNode, Position position)
+Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &item, BinaryNode& binaryNode, Position position)
 {
 	switch (attr) {
 	case ATTR_COUNT:
-		readAttributeCount(binaryNode, position);
+		if (!readAttributeCount(binaryNode, item, position)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read count attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_RUNE_CHARGES:
-		readAttributeRuneCharge(binaryNode);
+		if (!readAttributeRuneCharge(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read rune charge attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+
 		break;
-	case ATTR_ACTION_ID: 
-		readAttributeActionId(binaryNode);
+	case ATTR_ACTION_ID:
+		if (!readAttributeActionId(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read action id attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_UNIQUE_ID:
-		readAttributeUniqueId(binaryNode);
+		if (!readAttributeUniqueId(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read unique id attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_TEXT:
-		readAttributeText(binaryNode);
+		if (!readAttributeText(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read text attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_WRITTENDATE:
-		readAttributeWrittenDate(binaryNode);
+		if (!readAttributeWrittenDate(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read written date attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
-	case ATTR_WRITTENBY: 
-		readAttributeWrittenBy(binaryNode);
+	case ATTR_WRITTENBY:
+		if (!readAttributeWrittenBy(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read written by attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_DESC:
-		readAttributeDescription(binaryNode);
+		if (!readAttributeDescription(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read description attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_CHARGES:
-		readAttributeCharge(binaryNode);
+		if (!readAttributeCharge(binaryNode, item, position)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read charge attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_DURATION:
-		readAttributeDuration(binaryNode);
+		if (!readAttributeDuration(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read duration attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_DECAYING_STATE:
-		readAttributeDecayingState(binaryNode);
+		if (!readAttributeDecayingState(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read decaying state attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_NAME:
-		readAttributeName(binaryNode);
+		if (!readAttributeName(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read name attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_ARTICLE:
-		readAttributeArticle(binaryNode);
+		if (!readAttributeArticle(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read article attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_PLURALNAME:
-		readAttributePluralName(binaryNode);
+		if (!readAttributePluralName(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read plural name attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_WEIGHT:
-		readAttributeWeight(binaryNode);
+		if (!readAttributeWeight(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read weight attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_ATTACK:
-		readAttributeAttack(binaryNode);
+		if (!readAttributeAttack(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read attack attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_DEFENSE:
-		readAttributeDefense(binaryNode);
+		if (!readAttributeDefense(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read defense attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_EXTRADEFENSE:
-		readAttributeExtraDefense(binaryNode);
+		if (!readAttributeExtraDefense(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read extra defense attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_IMBUEMENT_SLOT:
-		readAttributeImbuementSlot(binaryNode);
+		if (!readAttributeImbuementSlot(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read imbuement slot attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_OPENCONTAINER:
-		readAttributeOpenContainer(binaryNode);
+		if (!readAttributeOpenContainer(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read open container attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_ARMOR:
-		readAttributeArmor(binaryNode);
+		if (!readAttributeArmor(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read armor attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_HITCHANCE:
-		readAttributeHitChance(binaryNode);
+		if (!readAttributeHitChance(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read hit chance attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_SHOOTRANGE:
-		readAttributeShootRange(binaryNode);
+		if (!readAttributeShootRange(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read shoot range attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_SPECIAL:
-		readAttributeSpecial(binaryNode);
+		if (!readAttributeSpecial(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read special attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_QUICKLOOTCONTAINER:
-		readAttributeQuicklootContainer(binaryNode);
+		if (!readAttributeQuicklootContainer(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read quickloot container attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_DEPOT_ID:
-		readAttributeDepotId(binaryNode);
+		if (!readAttributeDepotId(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read depot id attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_HOUSEDOORID:
-		readAttributeHouseDoorId(binaryNode);
+		if (!readAttributeHouseDoorId(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read house door id attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_SLEEPERGUID:
-		readAttributeSleeperGuid(binaryNode);
+		if (!readAttributeSleeperGuid(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read sleeper guid attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_SLEEPSTART:
-		readAttributeSleepStart(binaryNode);
+		if (!readAttributeSleepStart(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read sleeper start attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_TELE_DEST:
-		readAttributeTeleportDestination(binaryNode);
+		if (!readAttributeTeleportDestination(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read teleport destination attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_CONTAINER_ITEMS:
-		readAttributeContainerItems(binaryNode);
+		if (!readAttributeContainerItems(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read container items attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+
 		break;
 	case ATTR_CUSTOM_ATTRIBUTES:
-		readAttributeCustomAttributes(binaryNode);
+		if (!readAttributeCustomAttributes(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read custom attributes for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	case ATTR_IMBUEMENT_TYPE:
-		readAttributeImbuementType(binaryNode);
+		if (!readAttributeImbuementType(binaryNode, item)) {
+			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read imbuement type attribute for item with id {}, on position {}", item.getID(), position.toString());
+			return ATTR_READ_ERROR;
+		}
+		
 		break;
 	default:
 		return ATTR_READ_ERROR;
@@ -126,363 +255,363 @@ Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Binary
 	return ATTR_READ_CONTINUE;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeCount(BinaryNode& binaryNode, Position position) {
+bool ItemReadMapAttributes::readAttributeCount(BinaryNode& binaryNode, Item &item, Position position) {
 	uint8_t attrItemCount = binaryNode.getU8();
 	if (attrItemCount == 0 || attrItemCount == -1) {
 		attrItemCount = 1;
-		SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have invalid count, setting count to 1", getID(), position.toString());
+		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have invalid count, setting count to 1", getID(), position.toString());
 	}
 
-	g_item.setItemCount(attrItemCount);
-	return ATTR_READ_CONTINUE;
+	item.setItemCount(attrItemCount);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeRuneCharge(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeRuneCharge(BinaryNode& binaryNode, Item &item) {
 	uint8_t charges = binaryNode.getU8();
 	if (charges == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setSubType(charges);
-	return ATTR_READ_CONTINUE;
+	item.setSubType(charges);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeActionId(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeActionId(BinaryNode& binaryNode, Item &item) {
 	uint16_t actionId = binaryNode.getU16();
 	if (actionId == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setActionId(actionId);
-	return ATTR_READ_CONTINUE;
+	item.setActionId(actionId);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeUniqueId(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeUniqueId(BinaryNode& binaryNode, Item &item) {
 	uint16_t uniqueId = binaryNode.getU16();
 	if (uniqueId == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setUniqueId(uniqueId);
-	return ATTR_READ_CONTINUE;
+	item.setUniqueId(uniqueId);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeText(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeText(BinaryNode& binaryNode, Item &item) {
 	std::string text = binaryNode.getString();
 	if (text.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setText(text);
-	return ATTR_READ_CONTINUE;
+	item.setText(text);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeWrittenDate(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeWrittenDate(BinaryNode& binaryNode, Item &item) {
 	uint32_t writtenDate = binaryNode.getU32();
 	if (writtenDate == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setDate(writtenDate);
-	return ATTR_READ_CONTINUE;
+	item.setDate(writtenDate);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeWrittenBy(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeWrittenBy(BinaryNode& binaryNode, Item &item) {
 	std::string writer = binaryNode.getString();
 	if (writer.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setWriter(writer);
-	return ATTR_READ_CONTINUE;
+	item.setWriter(writer);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeDescription(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeDescription(BinaryNode& binaryNode, Item &item) {
 	std::string text = binaryNode.getString();
 	if (text.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setSpecialDescription(text);
-	return ATTR_READ_CONTINUE;
+	item.setSpecialDescription(text);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeCharge(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeCharge(BinaryNode& binaryNode, Item &item, Position position) {
 	uint16_t charges = binaryNode.getU16();
 	// If item not have charges, then set to 1 and send warning
 	if (charges == 0 || charges == -1) {
 		charges = 1;
-		SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have invalid charges, setting charge to 1", getID(), position.toString());
+		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have invalid charges, setting charge to 1", getID(), position.toString());
 	}
 
-	g_item.setSubType(charges);
-	return ATTR_READ_CONTINUE;
+	item.setSubType(charges);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeDuration(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeDuration(BinaryNode& binaryNode, Item &item) {
 	int32_t duration = binaryNode.getU32();
 	if (duration == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setDuration(duration);
-	return ATTR_READ_CONTINUE;
+	item.setDuration(duration);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeDecayingState(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeDecayingState(BinaryNode& binaryNode, Item &item) {
 	uint8_t state = binaryNode.getU8();
 	if (state == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
 	if (state != DECAYING_FALSE) {
-		g_item.setDecaying(DECAYING_PENDING);
+		item.setDecaying(DECAYING_PENDING);
 	}
-	return ATTR_READ_CONTINUE;
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeName(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeName(BinaryNode& binaryNode, Item &item) {
 	std::string name = binaryNode.getString();
 	if (name.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setStrAttr(ITEM_ATTRIBUTE_NAME, name);
-	return ATTR_READ_CONTINUE;
+	item.setStrAttr(ITEM_ATTRIBUTE_NAME, name);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeArticle(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeArticle(BinaryNode& binaryNode, Item &item) {
 	std::string article = binaryNode.getString();
 	if (article.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setStrAttr(ITEM_ATTRIBUTE_ARTICLE, article);
-	return ATTR_READ_CONTINUE;
+	item.setStrAttr(ITEM_ATTRIBUTE_ARTICLE, article);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributePluralName(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributePluralName(BinaryNode& binaryNode, Item &item) {
 	std::string pluralName = binaryNode.getString();
 	if (pluralName.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setStrAttr(ITEM_ATTRIBUTE_PLURALNAME, pluralName);
-	return ATTR_READ_CONTINUE;
+	item.setStrAttr(ITEM_ATTRIBUTE_PLURALNAME, pluralName);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeWeight(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeWeight(BinaryNode& binaryNode, Item &item) {
 	uint32_t weight = binaryNode.getU32();
 	if (weight == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_WEIGHT, weight);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_WEIGHT, weight);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeAttack(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeAttack(BinaryNode& binaryNode, Item &item) {
 	int32_t attack = binaryNode.getU32();
 	if (attack == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_ATTACK, attack);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_ATTACK, attack);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeDefense(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeDefense(BinaryNode& binaryNode, Item &item) {
 	int32_t defense = binaryNode.getU32();
 	if (defense == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_DEFENSE, defense);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_DEFENSE, defense);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeExtraDefense(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeExtraDefense(BinaryNode& binaryNode, Item &item) {
 	int32_t extraDefense = binaryNode.getU32();
 	if (extraDefense == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE, extraDefense);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE, extraDefense);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeImbuementSlot(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeImbuementSlot(BinaryNode& binaryNode, Item &item) {
 	int32_t imbuementSlot = binaryNode.getU32();
 	if (imbuementSlot == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, imbuementSlot);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, imbuementSlot);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeOpenContainer(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeOpenContainer(BinaryNode& binaryNode, Item &item) {
 	uint8_t openContainer = binaryNode.getU8();
 	if (openContainer == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, openContainer);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, openContainer);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeArmor(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeArmor(BinaryNode& binaryNode, Item &item) {
 	int32_t armor = binaryNode.getU32();
 	if (armor == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_ARMOR, armor);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_ARMOR, armor);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeHitChance(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeHitChance(BinaryNode& binaryNode, Item &item) {
 	int8_t hitChance = binaryNode.getU8();
 	if (hitChance == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_HITCHANCE, hitChance);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_HITCHANCE, hitChance);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeShootRange(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeShootRange(BinaryNode& binaryNode, Item &item) {
 	uint8_t shootRange = binaryNode.getU8();
 	if (shootRange == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE, shootRange);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE, shootRange);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeSpecial(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeSpecial(BinaryNode& binaryNode, Item &item) {
 	std::string special = binaryNode.getString();
 	if (special.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setStrAttr(ITEM_ATTRIBUTE_SPECIAL, special);
-	return ATTR_READ_CONTINUE;
+	item.setStrAttr(ITEM_ATTRIBUTE_SPECIAL, special);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeQuicklootContainer(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeQuicklootContainer(BinaryNode& binaryNode, Item &item) {
 	uint32_t flags = binaryNode.getU32();
 	if (flags == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
-	return ATTR_READ_CONTINUE;
+	item.setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeDepotId(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeDepotId(BinaryNode& binaryNode, Item &item) {
 	uint16_t attrDepotId = binaryNode.getU16();
 	if (attrDepotId == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setDepotId(attrDepotId);
-	return ATTR_READ_CONTINUE;
+	item.setDepotId(attrDepotId);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeHouseDoorId(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeHouseDoorId(BinaryNode& binaryNode, Item &item) {
 	uint8_t attrDoorId = binaryNode.getU8();
 	if (attrDoorId == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setDoorId(attrDoorId);
-	return ATTR_READ_CONTINUE;
+	item.setDoorId(attrDoorId);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeSleeperGuid(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeSleeperGuid(BinaryNode& binaryNode, Item &item) {
 	uint32_t guid = binaryNode.getU32();
 	if (guid == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
 	std::string name = IOLoginData::getNameByGuid(guid);
 	if (name.empty()) {
 		SPDLOG_ERROR("[ItemReadMapAttributes::readAttributeSleeperGuid] - Sleeper name is wrong");
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setSpecialDescription(name + " is sleeping there.");
-	g_game().setBedSleeper(g_item.getBed(), guid);
-	g_item.setSleeperGuid(guid);
-	return ATTR_READ_CONTINUE;
+	item.setSpecialDescription(name + " is sleeping there.");
+	g_game().setBedSleeper(item.getBed(), guid);
+	item.setSleeperGuid(guid);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeSleepStart(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeSleepStart(BinaryNode& binaryNode, Item &item) {
 	uint32_t attrSleepStart = binaryNode.getU32();
 	if (attrSleepStart == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setSleepStart(attrSleepStart);
-	return ATTR_READ_CONTINUE;
+	item.setSleepStart(attrSleepStart);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeTeleportDestination(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeTeleportDestination(BinaryNode& binaryNode, Item &item) {
 	uint16_t x = binaryNode.getU16();
 	uint16_t y = binaryNode.getU16();
 	uint8_t z = binaryNode.getU8();
 	Position newPosition(x, y, z);
 	if (x == 0 || y == 0 || z == 0) {
-		SPDLOG_DEBUG("[Item::readAttributesMap] - Item with id {} on position {} have empty destination", getID(), newPosition.toString());
+		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have empty destination", getID(), newPosition.toString());
 	}
 
-	g_item.setDestination(newPosition);
-	return ATTR_READ_CONTINUE;
+	item.setDestination(newPosition);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeContainerItems(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeContainerItems(BinaryNode& binaryNode, Item &item) {
 	uint32_t attrSerializationCount = binaryNode.getU32();
 	if (attrSerializationCount == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setSerializationCount(attrSerializationCount);
-	return ATTR_READ_CONTINUE;
+	item.setSerializationCount(attrSerializationCount);
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeCustomAttributes(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeCustomAttributes(BinaryNode& binaryNode, Item &item) {
 	uint64_t size = binaryNode.getU64();
 	if (size == 0) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
 	for (uint64_t i = 0; i < size; i++) {
 		// Unserialize key type and value
 		std::string key = binaryNode.getString();
 		if (key.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 		}
 
 		// TODO: Finalize implement this
 		//Unserialize value type and value
 		ItemAttributes::CustomAttribute attribute;
 		if (!attribute.unserialize(binaryNode)) {
-		return ATTR_READ_ERROR;
+			return false;
 		}
 
-		g_item.setCustomAttribute(key, attribute);
+		item.setCustomAttribute(key, attribute);
 	}
-	return ATTR_READ_CONTINUE;
+	return true;
 }
 
-Attr_ReadValue ItemReadMapAttributes::readAttributeImbuementType(BinaryNode& binaryNode) {
+bool ItemReadMapAttributes::readAttributeImbuementType(BinaryNode& binaryNode, Item &item) {
 	std::string imbuementType = binaryNode.getString();
 	if (imbuementType.empty()) {
-		return ATTR_READ_ERROR;
+		return false;
 	}
 
-	g_item.setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
-	return ATTR_READ_CONTINUE;
+	item.setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
+	return true;
 }

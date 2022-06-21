@@ -45,7 +45,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string& email, const std::s
 
 	account::Player player;
 	if (account::ERROR_NO != account.GetAccountPlayer(&player, characterName)) {
-		SPDLOG_ERROR("Player not found or deleted for account.");
+		SPDLOG_ERROR("Account for player with name {} not found or deleted", characterName);
 		return false;
 	}
 
@@ -196,7 +196,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		player->levelPercent = 0;
 	}
 
-	player->soul = result->getU8("soul");
+	player->soul = result->getU16("soul");
 	player->capacity = result->getU32("cap") * 100;
 	for (int i = 1; i <= 8; i++) {
 		std::ostringstream ss;
@@ -246,21 +246,21 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookType);
 		return false;
 	}
-	player->defaultOutfit.lookHead = result->getU8("lookhead");
-	player->defaultOutfit.lookBody = result->getU8("lookbody");
-	player->defaultOutfit.lookLegs = result->getU8("looklegs");
-	player->defaultOutfit.lookFeet = result->getU8("lookfeet");
-	player->defaultOutfit.lookAddons = result->getU8("lookaddons");
-	player->defaultOutfit.lookMountHead = result->getU8("lookmounthead");
-	player->defaultOutfit.lookMountBody = result->getU8("lookmountbody");
-	player->defaultOutfit.lookMountLegs = result->getU8("lookmountlegs");
-	player->defaultOutfit.lookMountFeet = result->getU8("lookmountfeet");
-	player->defaultOutfit.lookFamiliarsType = result->getU8("lookfamiliarstype");
+	player->defaultOutfit.lookHead = result->getU16("lookhead");
+	player->defaultOutfit.lookBody = result->getU16("lookbody");
+	player->defaultOutfit.lookLegs = result->getU16("looklegs");
+	player->defaultOutfit.lookFeet = result->getU16("lookfeet");
+	player->defaultOutfit.lookAddons = result->getU16("lookaddons");
+	player->defaultOutfit.lookMountHead = result->getU16("lookmounthead");
+	player->defaultOutfit.lookMountBody = result->getU16("lookmountbody");
+	player->defaultOutfit.lookMountLegs = result->getU16("lookmountlegs");
+	player->defaultOutfit.lookMountFeet = result->getU16("lookmountfeet");
+	player->defaultOutfit.lookFamiliarsType = result->getU16("lookfamiliarstype");
 	if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && player->defaultOutfit.lookFamiliarsType != 0 && !g_game().isLookTypeRegistered(player->defaultOutfit.lookFamiliarsType)) {
 		SPDLOG_WARN("[IOLoginData::loadPlayer] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", player->defaultOutfit.lookFamiliarsType);
 		return false;
 	}
-	player->isDailyReward = result->getU8("isreward");
+	player->isDailyReward = result->getU16("isreward");
 	player->currentOutfit = player->defaultOutfit;
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {

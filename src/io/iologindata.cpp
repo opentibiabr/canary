@@ -838,7 +838,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 		++runningId;
 
 		if (!saveOpenContainerItems(*item, openContainers, queue, runningId)) {
-			SPDLOG_WARN("[IOLoginData::saveItems] - Error for saving open container item");
+			SPDLOG_DEBUG("Player not have container for save");
 			continue;
 		}
 
@@ -865,7 +865,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
 			++runningId;
 
 			if (!saveOpenSubContainerItems(*item, openContainers, queue, runningId)) {
-				SPDLOG_WARN("[IOLoginData::saveItems] - Error for saving open sub container item");
+				SPDLOG_DEBUG("Player not have container for save");
 				continue;
 			}
 

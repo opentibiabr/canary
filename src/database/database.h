@@ -88,7 +88,7 @@ class DBResult
 		DBResult& operator=(const DBResult&) = delete;
 
 		// Get size of the table
-		size_t getResult(const std::string& string) const;
+		const char* getResult(const std::string& string) const;
 		// Get signed intenger
 		int8_t get8(const std::string& tableName) const;
 		int16_t get16(const std::string& tableName) const;

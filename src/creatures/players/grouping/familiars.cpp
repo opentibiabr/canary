@@ -58,17 +58,17 @@ bool Familiars::loadFromXml() {
 				SPDLOG_WARN("[Familiars::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
 				continue;
 			}
+			familiars[vocationId].emplace_back(
+				familiarName,
+				lookType,
+				familiarsNode.attribute("premium").as_bool(),
+				familiarsNode.attribute("unlocked").as_bool(true),
+				familiarsNode.attribute("type").as_string()
+			);
 		} else {
 			SPDLOG_WARN("[Familiars::loadFromXml] - "
 						"Missing looktype id for outfit name: {}", familiarName);
 		}
-
-		familiars[vocationId].emplace_back(
-			familiarName,
-			lookType,
-			familiarsNode.attribute("premium").as_bool(),
-			familiarsNode.attribute("unlocked").as_bool(true),
-			familiarsNode.attribute("type").as_string());
 	}
 	for (uint16_t vocationId = VOCATION_NONE; vocationId <= VOCATION_LAST; ++vocationId) {
 		familiars[vocationId].shrink_to_fit();

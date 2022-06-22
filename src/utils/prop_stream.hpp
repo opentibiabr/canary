@@ -18,56 +18,55 @@
 class PropStream
 {
 	public:
-		void init(const char* a, size_t size) {
-			p = a;
-			end = a + size;
+		void init(const char* initBuffer, size_t initSize) {
+			buffer = initBuffer;
+			end = buffer + initSize;
 		}
 
 		size_t size() const {
-			return end - p;
+			return end - buffer;
 		}
 
 		template <typename T>
-		bool read(T& ret) {
+		bool read(T& byteType) {
 			if (size() < sizeof(T)) {
 				return false;
 			}
 
-			memcpy(&ret, p, sizeof(T));
-			p += sizeof(T);
+			memcpy(&byteType, buffer, sizeof(T));
+			buffer += sizeof(T);
 			return true;
 		}
 
-		bool readString(std::string& ret) {
-			uint16_t strLen;
-			if (!read<uint16_t>(strLen)) {
+		bool readString(std::string& byteString) {
+			uint16_t byte;
+			if (!read<uint16_t>(byte)) {
 				return false;
 			}
 
-			if (size() < strLen) {
+			if (size() < byte) {
 				return false;
 			}
 
-			auto str = new char[strLen + 1];
-			memcpy(str, p, strLen);
-			str[strLen] = 0;
-			ret.assign(str, strLen);
-			delete[] str;
-			p += strLen;
+			std::unique_ptr<char[]> string = std::make_unique<char[]>(byte + 1);
+			memcpy(string.get(), buffer, byte);
+			string[byte] = 0;
+			byteString.assign(string.get(), byte);
+			buffer += byte;
 			return true;
 		}
 
-		bool skip(size_t n) {
-			if (size() < n) {
+		bool skip(size_t skipByte) {
+			if (size() < skipByte) {
 				return false;
 			}
 
-			p += n;
+			buffer += skipByte;
 			return true;
 		}
 
 	private:
-		const char* p = nullptr;
+		const char* buffer = nullptr;
 		const char* end = nullptr;
 };
 
@@ -76,9 +75,7 @@ class PropWriteStream
 	public:
 		PropWriteStream() = default;
 
-		// non-copyable
-		PropWriteStream(const PropWriteStream&) = delete;
-		PropWriteStream& operator=(const PropWriteStream&) = delete;
+		NONCOPYABLE(PropWriteStream);
 
 		const char* getStream(size_t& size) const {
 			size = buffer.size();

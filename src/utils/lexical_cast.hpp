@@ -29,10 +29,10 @@ inline const std::string convertNumericToString(const Type& arg, const char* fmt
 template<typename Type>
 inline const Type convertStringToNumeric(const std::string& arg) {
 
-	char* end = 0;
+	char* end = nullptr;
 	double result = std::strtod(arg.c_str(), &end);
 
-	if (!end || *end != 0) {
+	if (end == nullptr) {
 		SPDLOG_ERROR("[LexicalCast::convertStringToNumeric] - Failed to convert from string to numeric");
 		return static_cast<Type>(0);
 	}

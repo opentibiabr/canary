@@ -254,7 +254,7 @@ bool MemoryNodeFileReadHandle::renewCache()
 	return false;
 }
 
-BinaryNode* MemoryNodeFileReadHandle::getRootNode()
+std::shared_ptr<BinaryNode> MemoryNodeFileReadHandle::getRootNode()
 {
 	assert(binaryRootNode == nullptr); // You should never do this twice
 
@@ -262,7 +262,7 @@ BinaryNode* MemoryNodeFileReadHandle::getRootNode()
 	lastWasStart = true;
 	binaryRootNode = getNode(nullptr);
 	binaryRootNode->load();
-	return binaryRootNode.get();
+	return binaryRootNode;
 }
 
 /*
@@ -330,7 +330,7 @@ bool DiskNodeFileReadHandle::renewCache()
 	return true;
 }
 
-BinaryNode* DiskNodeFileReadHandle::getRootNode()
+std::shared_ptr<BinaryNode> DiskNodeFileReadHandle::getRootNode()
 {
 	assert(binaryRootNode == nullptr); // You should never do this twice
 	uint8_t first;
@@ -344,7 +344,7 @@ BinaryNode* DiskNodeFileReadHandle::getRootNode()
 	if (first == NODE_START) {
 		binaryRootNode = getNode(nullptr);
 		binaryRootNode->load();
-		return binaryRootNode.get();
+		return binaryRootNode;
 	} else {
 		setErrorCode(FILE_SYNTAX_ERROR);
 		return nullptr;
@@ -497,7 +497,7 @@ void BinaryNode::init(NodeFileReadHandle* nodeFileHeadHandle, std::shared_ptr<Bi
 	child.reset();
 }
 
-BinaryNode* BinaryNode::getChild()
+std::shared_ptr<BinaryNode> BinaryNode::getChild()
 {
 	assert(file);
 	assert(child == nullptr);
@@ -505,7 +505,7 @@ BinaryNode* BinaryNode::getChild()
 	if (file->lastWasStart) {
 		child = file->getNode(getPtr());
 		child->load();
-		return child.get();
+		return child;
 	}
 	return nullptr;
 }
@@ -545,7 +545,7 @@ std::string BinaryNode::getLongString()
 	return string;
 }
 
-BinaryNode* BinaryNode::advance()
+std::shared_ptr<BinaryNode> BinaryNode::advance()
 {
 	// Advance this to the next position
 	assert(file);
@@ -589,7 +589,7 @@ BinaryNode* BinaryNode::advance()
 		readOffsetSize = 0;
 		stringData.clear();
 		load();
-		return this;
+		return getPtr();
 	} else if (op == NODE_END) {
 		// End of this child-tree
 		parent->child.reset();

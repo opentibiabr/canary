@@ -142,9 +142,9 @@ public:
 	std::string getString();
 	std::string getLongString();
 
-	BinaryNode* getChild();
+	std::shared_ptr<BinaryNode> getChild();
 	// Returns this on success, nullptr on failure
-	BinaryNode* advance();
+	std::shared_ptr<BinaryNode> advance();
 
 	std::string getStringData() const {
 		return stringData;
@@ -177,7 +177,7 @@ public:
 	NodeFileReadHandle();
 	~NodeFileReadHandle() override;
 
-	virtual BinaryNode* getRootNode() = 0;
+	virtual std::shared_ptr<BinaryNode> getRootNode() = 0;
 
 	virtual size_t size() = 0;
 	virtual size_t tell() = 0;
@@ -205,7 +205,7 @@ public:
 	DiskNodeFileReadHandle(const std::string& initName, const std::vector<std::string>& initAcceptableIdentifiers);
 	~DiskNodeFileReadHandle() override;
 
-	BinaryNode* getRootNode() override;
+	std::shared_ptr<BinaryNode> getRootNode() override;
 
 	void close();
 
@@ -236,7 +236,7 @@ public:
 
 	void assign(uint8_t* data, size_t size);
 
-	BinaryNode* getRootNode() override;
+	std::shared_ptr<BinaryNode> getRootNode() override;
 
 	size_t size() override {
 		return cacheSize;

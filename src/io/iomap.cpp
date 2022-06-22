@@ -60,7 +60,7 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fileName)
 {
 	int64_t start = OTSYS_TIME();
-	BinaryNode* binaryNodeRoot = mapFile.getRootNode();
+	std::shared_ptr<BinaryNode> binaryNodeRoot = mapFile.getRootNode();
 	if (binaryNodeRoot == nullptr) {
 		SPDLOG_ERROR("[IOMap::loadMap] - BinaryNode is nullptr");
 		return false;
@@ -95,30 +95,30 @@ bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fi
 	}
 
 	// This get node of "OTBM_MAP_DATA"
-	BinaryNode* binaryNodeMapData = binaryNodeRoot->getChild();
+	std::shared_ptr<BinaryNode> binaryNodeMapData = binaryNodeRoot->getChild();
 	if (binaryNodeMapData == nullptr) {
 		SPDLOG_ERROR("[IOMap::loadMap] - binaryNodeMapData is nullptr");
 		return false;
 	}
 	// Parsing map data attributes information (monster, npc, house, etc)
-	if (!parseMapDataAttributes(binaryNodeMapData, *map, fileName)) {
+	if (!parseMapDataAttributes(*binaryNodeMapData, *map, fileName)) {
 		return false;
 	}
 
-	for (BinaryNode* binaryNodeMapTileArea = binaryNodeMapData->getChild();
+	for (std::shared_ptr<BinaryNode> binaryNodeMapTileArea = binaryNodeMapData->getChild();
 	binaryNodeMapTileArea != nullptr; binaryNodeMapTileArea = binaryNodeMapTileArea->advance())
 	{
 		const uint8_t mapDataType = binaryNodeMapTileArea->getU8();
 		if (mapDataType == OTBM_TILE_AREA) {
-			if (!parseTileArea(binaryNodeMapTileArea, *map)) {
+			if (!parseTileArea(*binaryNodeMapTileArea, *map)) {
 				continue;
 			}
 		} else if (mapDataType == OTBM_TOWNS) {
-			if (!parseTowns(binaryNodeMapTileArea, *map)) {
+			if (!parseTowns(*binaryNodeMapTileArea, *map)) {
 				continue;
 			}
 		} else if (mapDataType == OTBM_WAYPOINTS) {
-			if (!parseWaypoints(binaryNodeMapTileArea, *map)) {
+			if (!parseWaypoints(*binaryNodeMapTileArea, *map)) {
 				continue;
 			}
 		} else {
@@ -133,16 +133,16 @@ bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fi
 	return true;
 }
 
-bool IOMap::parseMapDataAttributes(BinaryNode* binaryNodeMapData, Map& map, const std::string& fileName) const
+bool IOMap::parseMapDataAttributes(BinaryNode &binaryNodeMapData, Map& map, const std::string& fileName) const
 {
-	if (binaryNodeMapData->getU8() != OTBM_MAP_DATA) {
+	if (binaryNodeMapData.getU8() != OTBM_MAP_DATA) {
 		SPDLOG_ERROR("[IOMap::parseMapDataAttributes] - Could not read root data node");
 		return false;
 	}
 
-	while (binaryNodeMapData->canRead()) {
-		const uint8_t attribute = binaryNodeMapData->getU8();
-		std::string mapDataString = binaryNodeMapData->getString();
+	while (binaryNodeMapData.canRead()) {
+		const uint8_t attribute = binaryNodeMapData.getU8();
+		std::string mapDataString = binaryNodeMapData.getString();
 		switch (attribute) {
 			case OTBM_ATTR_DESCRIPTION:
 				break;
@@ -166,9 +166,9 @@ bool IOMap::parseMapDataAttributes(BinaryNode* binaryNodeMapData, Map& map, cons
 	return true;
 }
 
-void IOMap::readAttributeTileFlags(BinaryNode* binaryNodeMapTile, uint32_t &tileflags) const
+void IOMap::readAttributeTileFlags(BinaryNode &binaryNodeMapTile, uint32_t &tileflags) const
 {
-	if (const uint32_t flags = binaryNodeMapTile->getU32();
+	if (const uint32_t flags = binaryNodeMapTile.getU32();
 	(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
 	{
 		tileflags |= TILESTATE_PROTECTIONZONE;
@@ -183,9 +183,9 @@ void IOMap::readAttributeTileFlags(BinaryNode* binaryNodeMapTile, uint32_t &tile
 	}
 }
 
-std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode* binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
+std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
-	Item* item = Item::createMapItem(*binaryNodeMapTile);
+	Item* item = Item::createMapItem(binaryNodeMapTile);
 	if (!item) {
 		SPDLOG_ERROR("[IOMap::readAttributeTileItem] - Failed to create item on position: {}", tilePosition.toString());
 		return std::make_tuple(nullptr, nullptr);
@@ -238,15 +238,15 @@ std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode* binaryNodeMapT
 	return std::make_tuple(tile, groundItem);
 }
 
-std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode* nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
+std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
-	Item* item = Item::createMapItem(*nodeItem);
+	Item* item = Item::createMapItem(nodeItem);
 	if (!item) {
 		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to create item on position {}", tilePosition.toString());
 		return std::make_tuple(nullptr, nullptr);
 	}
 
-	if (!item->unserializeMapItem(*nodeItem, tilePosition)) {
+	if (!item->unserializeMapItem(nodeItem, tilePosition)) {
 		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to load item with id: {}, on position {}", item->getID(), tilePosition.toString());
 		delete item;
 		return std::make_tuple(nullptr, nullptr);
@@ -277,15 +277,15 @@ std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode* nodeItem, bool i
 	return std::make_tuple(tile, groundItem);
 }
 
-bool IOMap::parseTileArea(BinaryNode* binaryNodeMapData, Map& map) const
+bool IOMap::parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const
 {
 	Position baseMapPosition;
-	baseMapPosition.x = binaryNodeMapData->getU16();
-	baseMapPosition.y = binaryNodeMapData->getU16();
-	baseMapPosition.z = binaryNodeMapData->getU8();
+	baseMapPosition.x = binaryNodeMapData.getU16();
+	baseMapPosition.y = binaryNodeMapData.getU16();
+	baseMapPosition.z = binaryNodeMapData.getU8();
 
 	static std::map<Position, Position> teleportMap;
-	for (BinaryNode* binaryNodeMapTile = binaryNodeMapData->getChild();
+	for (std::shared_ptr<BinaryNode> binaryNodeMapTile = binaryNodeMapData.getChild();
 	binaryNodeMapTile != nullptr; binaryNodeMapTile = binaryNodeMapTile->advance()) {
 		const uint8_t type = binaryNodeMapTile->getU8();
 		if (binaryNodeMapTile == nullptr) {
@@ -327,10 +327,10 @@ bool IOMap::parseTileArea(BinaryNode* binaryNodeMapData, Map& map) const
 			const uint8_t tileAttr = binaryNodeMapTile->getU8();
 			switch (tileAttr) {
 			case OTBM_ATTR_TILE_FLAGS:
-				readAttributeTileFlags(binaryNodeMapTile, tileflags);
+				readAttributeTileFlags(*binaryNodeMapTile, tileflags);
 				break;
 			case OTBM_ATTR_ITEM:
-				std::tie(tile, groundItem) = readAttributeTileItem(binaryNodeMapTile, teleportMap, isHouseTile, *house, groundItem, tile, tilePosition);
+				std::tie(tile, groundItem) = readAttributeTileItem(*binaryNodeMapTile, teleportMap, isHouseTile, *house, groundItem, tile, tilePosition);
 				break;
 			default:
 				SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid tile attribute: {}, at position: {}", tileAttr, tilePosition.toString());
@@ -339,13 +339,13 @@ bool IOMap::parseTileArea(BinaryNode* binaryNodeMapData, Map& map) const
 
 		}
 
-		for (BinaryNode* nodeItem = binaryNodeMapTile->getChild(); nodeItem != nullptr; nodeItem = nodeItem->advance()) {
+		for (std::shared_ptr<BinaryNode> nodeItem = binaryNodeMapTile->getChild(); nodeItem != nullptr; nodeItem = nodeItem->advance()) {
 			if (nodeItem->getU8() != OTBM_ITEM) {
 				SPDLOG_ERROR("[IOMap::parseTileArea] - Unknown item node with type {}, at position {}", type, tilePosition.toString());
 				continue;
 			}
 
-			std::tie(tile, groundItem) = parseCreateTileItem(nodeItem, isHouseTile, *house, groundItem, tile, tilePosition);
+			std::tie(tile, groundItem) = parseCreateTileItem(*nodeItem, isHouseTile, *house, groundItem, tile, tilePosition);
 		}
 
 		if (!tile) {
@@ -365,10 +365,10 @@ bool IOMap::parseTileArea(BinaryNode* binaryNodeMapData, Map& map) const
 }
 
 // Parse towns information data
-bool IOMap::parseTowns(BinaryNode* binaryNodeMapData, Map& map)
+bool IOMap::parseTowns(BinaryNode &binaryNodeMapData, Map& map)
 {
 	Town *town = nullptr;
-	for (BinaryNode* binaryNodeTown = binaryNodeMapData->getChild();
+	for (std::shared_ptr<BinaryNode> binaryNodeTown = binaryNodeMapData.getChild();
 	binaryNodeTown != nullptr; binaryNodeTown = binaryNodeTown->advance())
 	{
 		if (binaryNodeTown->getU8() != OTBM_TOWN) {
@@ -420,9 +420,9 @@ bool IOMap::parseTowns(BinaryNode* binaryNodeMapData, Map& map)
 }
 
 // Parse waypoints information data
-bool IOMap::parseWaypoints(BinaryNode* binaryNodeMapData, Map& map) const
+bool IOMap::parseWaypoints(BinaryNode & binaryNodeMapData, Map& map) const
 {
-	for(BinaryNode* binaryNodeWaypoint = binaryNodeMapData->getChild();
+	for(std::shared_ptr<BinaryNode> binaryNodeWaypoint = binaryNodeMapData.getChild();
 	binaryNodeWaypoint != nullptr; binaryNodeWaypoint = binaryNodeWaypoint->advance())
 	{
 		if (binaryNodeWaypoint->getU8() != OTBM_WAYPOINT) {

@@ -10,6 +10,7 @@
 #include "otpch.h"
 
 #include "database/database.h"
+#include "utils/lexical_cast.hpp"
 
 #include <mysql/errmsg.h>
 
@@ -258,15 +259,12 @@ const char* DBResult::getResult(const std::string& string) const
 
 int8_t DBResult::get8(const std::string& tableName) const
 {
-	uint16_t value = 0;
 	auto rowResult = getResult(tableName);
 	if (rowResult == nullptr) {
-		return value;
+		return 0;
 	}
 
-	std::istringstream stream(rowResult);
-	stream >> value;
-	return value;
+	return LexicalCast::stringToNumeric<int8_t>(rowResult);
 }
 
 int16_t DBResult::get16(const std::string& tableName) const
@@ -301,28 +299,22 @@ int64_t DBResult::get64(const std::string& tableName) const
 
 uint8_t DBResult::getU8(const std::string& tableName) const
 {
-	uint8_t value = 0;
 	auto rowResult = getResult(tableName);
 	if (rowResult == nullptr) {
-		return value;
+		return 0;
 	}
 
-	std::istringstream stream(rowResult);
-	stream >> value;
-	return value;
+	return LexicalCast::stringToNumeric<uint8_t>(rowResult);
 }
 
 uint16_t DBResult::getU16(const std::string& tableName) const
 {
-	uint16_t value = 0;
 	auto rowResult = getResult(tableName);
 	if (rowResult == nullptr) {
-		return value;
+		return 0;
 	}
 
-	std::istringstream stream(rowResult);
-	stream >> value;
-	return value;
+	return LexicalCast::stringToNumeric<uint16_t>(rowResult);
 }
 
 uint32_t DBResult::getU32(const std::string& tableName) const

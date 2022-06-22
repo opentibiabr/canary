@@ -303,6 +303,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	const Position& loginPos = player->loginPosition;
 	if (loginPos.x == 0 && loginPos.y == 0 && loginPos.z == 0) {
 		player->loginPosition = player->getTemplePosition();
+		SPDLOG_WARN("[IOLoginData::loadPlayer] - Failed to get login position for player with name {}, setting default temple position", player->getName());
 	}
 
 	player->staminaMinutes = result->getU16("stamina");
@@ -1031,10 +1032,12 @@ bool IOLoginData::savePlayer(Player* player)
 
 	DBTransaction transaction;
 	if (!transaction.begin()) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to begin transaction for player with name {}", player->getName());
 		return false;
 	}
 
 	if (!db.executeQuery(query.str())) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute query for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1064,18 +1067,21 @@ bool IOLoginData::savePlayer(Player* player)
 	for (const std::string& spellName : player->learnedInstantSpellList) {
 		query << player->getGUID() << ',' << db.escapeString(spellName);
 		if (!spellsQuery.addRow(query)) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to add spells row for player with name {}", player->getName());
 			return false;
 		}
 	}
 
 	if (!spellsQuery.execute()) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute spells query for player with name {}", player->getName());
 		return false;
 	}
 
-	//player kills
+	// Player kills
 	query.str(std::string());
 	query << "DELETE FROM `player_kills` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute query skills for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1127,11 +1133,13 @@ bool IOLoginData::savePlayer(Player* player)
 	for (const auto& kill : player->unjustifiedKills) {
 		query << player->getGUID() << ',' << kill.target << ',' << kill.time << ',' << kill.unavenged;
 		if (!killsQuery.addRow(query)) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to add kills row for player with name {}", player->getName());
 			return false;
 		}
 	}
 
 	if (!killsQuery.execute()) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute kills query for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1158,11 +1166,12 @@ bool IOLoginData::savePlayer(Player* player)
 	}
 
 	if (player->lastDepotId != -1) {
-		//save depot items
+		// Save depot items
 		query.str(std::string());
 		query << "DELETE FROM `player_depotitems` WHERE `player_id` = " << player->getGUID();
 
 		if (!db.executeQuery(query.str())) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute depot query for player with name {}", player->getName());
 			return false;
 		}
 
@@ -1182,15 +1191,17 @@ bool IOLoginData::savePlayer(Player* player)
 		}
 
 		if (!saveItems(player, itemList, depotQuery, propWriteStream)) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to save depot items for player with name {}", player->getName());
 			return false;
 		}
 	}
 
-	//save reward items
+	// Save reward items
 	query.str(std::string());
 	query << "DELETE FROM `player_rewards` WHERE `player_id` = " << player->getGUID();
 
 	if (!db.executeQuery(query.str())) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute reward query for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1211,14 +1222,16 @@ bool IOLoginData::savePlayer(Player* player)
 		}
 
 		if (!saveItems(player, itemList, rewardQuery, propWriteStream)) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to save reward items for player with name {}", player->getName());
 			return false;
 		}
 	}
 
-	//save inbox items
+	// Save inbox items
 	query.str(std::string());
 	query << "DELETE FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute inbox items query for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1230,6 +1243,7 @@ bool IOLoginData::savePlayer(Player* player)
 	}
 
 	if (!saveItems(player, itemList, inboxQuery, propWriteStream)) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to save inbox items query for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1238,6 +1252,7 @@ bool IOLoginData::savePlayer(Player* player)
 		query.str(std::string());
 		query << "DELETE FROM `player_prey` WHERE `player_id` = " << player->getGUID();
 		if (!db.executeQuery(query.str())) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute prey query for player with name {}", player->getName());
 			return false;
 		}
 
@@ -1280,6 +1295,7 @@ bool IOLoginData::savePlayer(Player* player)
 		query.str(std::string());
 		query << "DELETE FROM `player_taskhunt` WHERE `player_id` = " << player->getGUID();
 		if (!db.executeQuery(query.str())) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute player taskhunt database query for player with name {}", player->getName());
 			return false;
 		}
 
@@ -1319,6 +1335,7 @@ bool IOLoginData::savePlayer(Player* player)
 	query.str(std::string());
 	query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();
 	if (!db.executeQuery(query.str())) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute database player storage query for player with name {}", player->getName());
 		return false;
 	}
 
@@ -1330,11 +1347,13 @@ bool IOLoginData::savePlayer(Player* player)
 	for (const auto& [storageIdPair, storageIdValue] : player->storageMap) {
 		query << player->getGUID() << ',' << storageIdPair << ',' << storageIdValue;
 		if (!storageQuery.addRow(query)) {
+			SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to add storage row for player with name {}", player->getName());
 			return false;
 		}
 	}
 
 	if (!storageQuery.execute()) {
+		SPDLOG_ERROR("[IOLoginData::savePlayer] - Failed to execute storage query for player with name {}", player->getName());
 		return false;
 	}
 

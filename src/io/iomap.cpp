@@ -183,7 +183,7 @@ void IOMap::readAttributeTileFlags(BinaryNode &binaryNodeMapTile, uint32_t &tile
 	}
 }
 
-std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
+std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
 	Item* item = Item::createMapItem(binaryNodeMapTile);
 	if (!item) {
@@ -211,11 +211,11 @@ std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapT
 		}
 	}
 
-	if (isHouseTile && item->isMoveable()) {
+	if (isHouseTile && house && item->isMoveable()) {
 		SPDLOG_WARN("[IOMap::readAttributeTileItem] - "
 					"Moveable item with ID: {}, in house: {}, "
 					"at position: {}, discarding item",
-					item->getID(), house.getId(), tilePosition.toString());
+					item->getID(), house->getId(), tilePosition.toString());
 		delete item;
 		return std::make_tuple(nullptr, nullptr);
 	}
@@ -238,7 +238,7 @@ std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapT
 	return std::make_tuple(tile, groundItem);
 }
 
-std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const
+std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
 	Item* item = Item::createMapItem(nodeItem);
 	if (!item) {
@@ -252,11 +252,11 @@ std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool i
 		return std::make_tuple(nullptr, nullptr);
 	}
 
-	if (isHouseTile && item->isMoveable()) {
+	if (isHouseTile && house && item->isMoveable()) {
 		SPDLOG_WARN("[IOMap::parseCreateTileItem] - "
 					"Moveable item with ID: {}, in house: {}, "
 					"at position: {}, discarding item",
-					item->getID(), house.getId(), tilePosition.toString());
+					item->getID(), house->getId(), tilePosition.toString());
 		delete item;
 		return std::make_tuple(nullptr, nullptr);
 	}
@@ -313,12 +313,17 @@ bool IOMap::parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const
 		if (type == OTBM_HOUSETILE) {
 			const uint32_t houseId = binaryNodeMapTile->getU32();
 			house = map.houses.addHouse(houseId);
-			if (!house) {
+			if (house == nullptr) {
 				SPDLOG_ERROR("[IOMap::parseTileArea] - Could not create house id: {}, on position: {}", houseId, tilePosition.toString());
 				continue;
 			}
 
 			tile = new HouseTile(tilePosition.x, tilePosition.y, tilePosition.z, house);
+			if (tile == nullptr) {
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Tile is nullptr, discarding house id: {}, on position: {}", houseId, tilePosition.toString());
+				continue;
+			}
+
 			house->addTile(static_cast<HouseTile*>(tile));
 			isHouseTile = true;
 		}
@@ -330,7 +335,7 @@ bool IOMap::parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const
 				readAttributeTileFlags(*binaryNodeMapTile, tileflags);
 				break;
 			case OTBM_ATTR_ITEM:
-				std::tie(tile, groundItem) = readAttributeTileItem(*binaryNodeMapTile, teleportMap, isHouseTile, *house, groundItem, tile, tilePosition);
+				std::tie(tile, groundItem) = readAttributeTileItem(*binaryNodeMapTile, teleportMap, isHouseTile, house, groundItem, tile, tilePosition);
 				break;
 			default:
 				SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid tile attribute: {}, at position: {}", tileAttr, tilePosition.toString());
@@ -345,10 +350,10 @@ bool IOMap::parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const
 				continue;
 			}
 
-			std::tie(tile, groundItem) = parseCreateTileItem(*nodeItem, isHouseTile, *house, groundItem, tile, tilePosition);
+			std::tie(tile, groundItem) = parseCreateTileItem(*nodeItem, isHouseTile, house, groundItem, tile, tilePosition);
 		}
 
-		if (!tile) {
+		if (tile == nullptr) {
 			tile = createTile(groundItem, nullptr, tilePosition.x, tilePosition.y, tilePosition.z);
 		}
 

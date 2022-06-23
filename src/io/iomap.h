@@ -131,9 +131,9 @@ class IOMap
 		bool parseTowns(BinaryNode &binaryNodeMapData, Map& map);
 
 		void readAttributeTileFlags(BinaryNode &binaryNodeMapTile, uint32_t &tileflags) const;
-		std::tuple<Tile*, Item*> readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
+		std::tuple<Tile*, Item*> readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const;
 		
-		std::tuple<Tile*, Item*> parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House &house, Item *groundItem, Tile *tile, Position tilePosition) const;
+		std::tuple<Tile*, Item*> parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const;
 		bool parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const;
 };
 

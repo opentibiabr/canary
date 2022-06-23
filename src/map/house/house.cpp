@@ -21,7 +21,7 @@ House::House(uint32_t houseId) : id(houseId) {}
 void House::addTile(HouseTile* tile)
 {
 	if (tile == nullptr) {
-		SPDLOG_DEBUG("[House::addTile] - Tile is nullptr");
+		SPDLOG_ERROR("[House::addTile] - Tile is nullptr");
 		return;
 	}
 

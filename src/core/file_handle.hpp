@@ -54,7 +54,27 @@ public:
 	}
 	std::string getErrorMessage() const;
 
-protected:
+	FILE* getFile() const {
+		return file;
+	}
+
+	void setFile(FILE* newFile) {
+		file = newFile;
+	}
+
+	FileHandleError getErrorCode() const {
+		return errorCode;
+	}
+
+	const std::unique_ptr<uint8_t[]>& getCachePtr() const {
+		return cachePtr;
+	}
+
+	void createUniquePtr(std::unique_ptr<uint8_t[]> newPtr) {
+		cachePtr = std::move(newPtr);
+	}
+
+private:
 	FileHandleError errorCode = FILE_NO_ERROR;
 	FILE* file = nullptr;
 	std::unique_ptr<uint8_t[]> cachePtr;
@@ -85,8 +105,8 @@ public:
 		return fileSize;
 	}
 	size_t tell() const {
-		if(file) {
-			return ftell(file);
+		if(getFile()) {
+			return ftell(getFile());
 		}
 		return 0;
 	}
@@ -211,8 +231,8 @@ public:
 		return fileSize;
 	}
 	size_t tell() override {
-		if(file) {
-			return ftell(file);
+		if(getFile()) {
+			return ftell(getFile());
 		}
 		return 0;
 	}
@@ -280,8 +300,8 @@ public:
 protected:
 	template<class T>
 	bool addType(T classType) {
-		fwrite(&classType, sizeof(classType), 1, file);
-		return ferror(file) == 0;
+		fwrite(&classType, sizeof(classType), 1, getFile());
+		return ferror(getFile()) == 0;
 	}
 };
 

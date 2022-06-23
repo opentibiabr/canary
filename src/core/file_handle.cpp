@@ -57,16 +57,16 @@ std::string FileHandle::getErrorMessage() const
 FileReadHandle::FileReadHandle(const std::string& initName) : fileName(initName)
 {
 #if defined __VISUALC__ && defined _UNICODE
-	file = _wfopen(string2wstring(initName).c_str(), L"rb");
+	setFile(_wfopen(string2wstring(initName).c_str(), L"rb"));
 #else
-	file = fopen(initName.c_str(), "rb");
+	setFile(fopen(initName.c_str(), "rb"));
 #endif
-	if (!file || ferror(file)) {
+	if (getFile() == nullptr || ferror(getFile())) {
 		setErrorCode(FILE_COULD_NOT_OPEN);
 	} else {
-		fseek(file, 0, SEEK_END);
-		fileSize = ftell(file);
-		fseek(file, 0, SEEK_SET);
+		fseek(getFile(), 0, SEEK_END);
+		fileSize = ftell(getFile());
+		fseek(getFile(), 0, SEEK_SET);
 	}
 }
 
@@ -74,12 +74,12 @@ FileReadHandle::~FileReadHandle() = default;
 
 uint8_t FileReadHandle::getU8() {
 	uint8_t value = 0;
-	if (ferror(file) != 0) {
+	if (ferror(getFile()) != 0) {
 		return 0;
 	}
 
 	
-	if (auto size = fread(&value, 1, 1, file);
+	if (auto size = fread(&value, 1, 1, getFile());
 	size != 0)
 	{
 		return value;
@@ -90,11 +90,11 @@ uint8_t FileReadHandle::getU8() {
 
 uint16_t FileReadHandle::getU16() {
 	uint16_t value;
-	if (ferror(file) != 0) {
+	if (ferror(getFile()) != 0) {
 		return 0;
 	}
 
-	if (auto size = fread(&value, 2, 1, file);
+	if (auto size = fread(&value, 2, 1, getFile());
 	size != 0)
 	{
 		return value;
@@ -105,11 +105,11 @@ uint16_t FileReadHandle::getU16() {
 
 uint32_t FileReadHandle::getU32() {
 	uint32_t value;
-	if (ferror(file) != 0) {
+	if (ferror(getFile()) != 0) {
 		return 0;
 	}
 
-	if (auto size = fread(&value, 4, 1, file);
+	if (auto size = fread(&value, 4, 1, getFile());
 	size != 0)
 	{
 		return value;
@@ -120,11 +120,11 @@ uint32_t FileReadHandle::getU32() {
 
 uint64_t FileReadHandle::getU64() {
 	uint64_t value;
-	if (ferror(file) != 0) {
+	if (ferror(getFile()) != 0) {
 		return 0;
 	}
 
-	if (auto size = fread(&value, 8, 1, file);
+	if (auto size = fread(&value, 8, 1, getFile());
 	size != 0)
 	{
 		return value;
@@ -135,11 +135,11 @@ uint64_t FileReadHandle::getU64() {
 
 int8_t FileReadHandle::get8() {
 	int8_t value;
-	if (ferror(file) != 0) {
+	if (ferror(getFile()) != 0) {
 		return 0;
 	}
 
-	if (auto size = fread(&value, 1, 1, file);
+	if (auto size = fread(&value, 1, 1, getFile());
 	size != 0)
 	{
 		return value;
@@ -150,11 +150,11 @@ int8_t FileReadHandle::get8() {
 
 int32_t FileReadHandle::get32() {
 	uint32_t value;
-	if (ferror(file) != 0) {
+	if (ferror(getFile()) != 0) {
 		return 0;
 	}
 
-	if (auto size = fread(&value, 4, 1, file);
+	if (auto size = fread(&value, 4, 1, getFile());
 	size != 0)
 	{
 		return value;
@@ -167,7 +167,7 @@ std::string FileReadHandle::getRawString(size_t size)
 {
 	std::string string;
 	string.resize(size);
-	if (size_t o = fread(string.data(), 1, size, file);
+	if (size_t o = fread(string.data(), 1, size, getFile());
 	o != size)
 	{
 		setErrorCode(FILE_READ_ERROR);
@@ -202,12 +202,12 @@ std::string FileReadHandle::getLongString()
 
 bool FileReadHandle::seek(size_t offset)
 {
-	return fseek(file, long(offset), SEEK_SET) == 0;
+	return fseek(getFile(), long(offset), SEEK_SET) == 0;
 }
 
 bool FileReadHandle::seekRelative(size_t offset)
 {
-	return fseek(file, long(offset), SEEK_CUR) == 0;
+	return fseek(getFile(), long(offset), SEEK_CUR) == 0;
 }
 
 /*
@@ -274,18 +274,18 @@ std::shared_ptr<BinaryNode> MemoryNodeFileReadHandle::getRootNode()
 DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, const std::vector<std::string>& initAcceptableIdentifiers) : fileName(initName), fileAcceptableIdentifiers(initAcceptableIdentifiers)
 {
 #if defined __VISUALC__ && defined _UNICODE
-	file = _wfopen(string2wstring(initName).c_str(), L"rb");
+	setFile(_wfopen(string2wstring(initName).c_str(), L"rb"));
 #else
-	file = fopen(initName.c_str(), "rb");
+	setFile(fopen(initName.c_str(), "rb"));
 #endif
-	if (!file || ferror(file)) {
+	if (getFile() == nullptr || ferror(getFile())) {
 		setErrorCode(FILE_COULD_NOT_OPEN);
 		return;
 	}
 
 	std::string identifier;
-	if (fread(identifier.data(), 1, 4, file) != 4) {
-		fclose(file);
+	if (fread(identifier.data(), 1, 4, getFile()) != 4) {
+		fclose(getFile());
 		setErrorCode(FILE_SYNTAX_ERROR);
 		return;
 	}
@@ -302,15 +302,15 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 		}
 
 		if (!accepted) {
-			fclose(file);
+			fclose(getFile());
 			setErrorCode(FILE_SYNTAX_ERROR);
 			return;
 		}
 	}
 
-	fseek(file, 0, SEEK_END);
-	fileSize = ftell(file);
-	fseek(file, 4, SEEK_SET);
+	fseek(getFile(), 0, SEEK_END);
+	fileSize = ftell(getFile());
+	fseek(getFile(), 4, SEEK_SET);
 }
 
 DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
@@ -318,12 +318,12 @@ DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
 bool DiskNodeFileReadHandle::renewCache()
 {
 	if (!cache) {
-		cachePtr = std::make_unique<uint8_t[]>(cacheSize);
-		cache = cachePtr.get();
+		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize));
+		cache = getCachePtr().get();
 	}
-	cacheLenght = fread(cache, 1, cacheSize, file);
+	cacheLenght = fread(cache, 1, cacheSize, getFile());
 
-	if (cacheLenght == 0 || ferror(file)) {
+	if (cacheLenght == 0 || ferror(getFile())) {
 		return false;
 	}
 	localReadIndex = 0;
@@ -334,7 +334,7 @@ std::shared_ptr<BinaryNode> DiskNodeFileReadHandle::getRootNode()
 {
 	assert(binaryRootNode == nullptr); // You should never do this twice
 	uint8_t first;
-	if (auto size = fread(&first, 1, 1, file);
+	if (auto size = fread(&first, 1, 1, getFile());
 	size == 0)
 	{
 		SPDLOG_ERROR("[DiskNodeFileReadHandle::getRootNode] - Size is 0");
@@ -550,7 +550,7 @@ std::shared_ptr<BinaryNode> BinaryNode::advance()
 	// Advance this to the next position
 	assert(file);
 
-	if (file->errorCode != FILE_NO_ERROR)
+	if (file->getErrorCode() != FILE_NO_ERROR)
 		return nullptr;
 
 	if (child == nullptr) {
@@ -648,11 +648,11 @@ void BinaryNode::load()
 FileWriteHandle::FileWriteHandle(const std::string& initName)
 {
 #if defined __VISUALC__ && defined _UNICODE
-	file = _wfopen(string2wstring(initName).c_str(), L"wb");
+	setFile(_wfopen(string2wstring(initName).c_str(), L"wb"));
 #else
-	file = fopen(initName.c_str(), "wb");
+	setFile(fopen(initName.c_str(), "wb"));
 #endif
-	if (file == nullptr || ferror(file)) {
+	if (getFile() == nullptr || ferror(getFile())) {
 		setErrorCode(FILE_COULD_NOT_OPEN);
 	}
 }
@@ -678,7 +678,7 @@ bool FileWriteHandle::addString(const char* str)
 		return false;
 	}
 	addU16(uint16_t(len));
-	fwrite(str, 1, len, file);
+	fwrite(str, 1, len, getFile());
 	return true;
 }
 
@@ -691,14 +691,14 @@ bool FileWriteHandle::addLongString(const std::string& str)
 
 bool FileWriteHandle::addRAW(const std::string& str)
 {
-	fwrite(str.c_str(), 1, str.size(), file);
-	return ferror(file) == 0;
+	fwrite(str.c_str(), 1, str.size(), getFile());
+	return ferror(getFile()) == 0;
 }
 
 bool FileWriteHandle::addRAW(const uint8_t* ptr, size_t byte)
 {
-	fwrite(ptr, 1, byte, file);
-	return ferror(file) == 0;
+	fwrite(ptr, 1, byte, getFile());
+	return ferror(getFile()) == 0;
 }
 
 bool FileWriteHandle::addRAW(const char* str)
@@ -718,11 +718,11 @@ bool FileWriteHandle::addRAW(const char* str)
 DiskNodeFileWriteHandle::DiskNodeFileWriteHandle(const std::string& initName, const std::string& initIdentifier)
 {
 #if defined __VISUALC__ && defined _UNICODE
-	file = _wfopen(string2wstring(initName).c_str(), L"wb");
+	setFile(_wfopen(string2wstring(initName).c_str(), L"wb"));
 #else
-	file = fopen(initName.c_str(), "wb");
+	setFile(fopen(initName.c_str(), "wb"));
 #endif
-	if (!file || ferror(file)) {
+	if (getFile() == nullptr || ferror(getFile())) {
 		setErrorCode(FILE_COULD_NOT_OPEN);
 		return;
 	}
@@ -731,10 +731,10 @@ DiskNodeFileWriteHandle::DiskNodeFileWriteHandle(const std::string& initName, co
 		return;
 	}
 
-	fwrite(initIdentifier.c_str(), 1, 4, file);
+	fwrite(initIdentifier.c_str(), 1, 4, getFile());
 	if (!cache) {
-		cachePtr = std::make_unique<uint8_t[]>(cacheSize+1);
-		cache = cachePtr.get();
+		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
+		cache = getCachePtr().get();
 	}
 	localWriteIndex = 0;
 }
@@ -744,13 +744,13 @@ DiskNodeFileWriteHandle::~DiskNodeFileWriteHandle() = default;
 void DiskNodeFileWriteHandle::renewCache()
 {
 	if (cache) {
-		fwrite(cache, localWriteIndex, 1, file);
-		if (ferror(file) != 0) {
+		fwrite(cache, localWriteIndex, 1, getFile());
+		if (ferror(getFile()) != 0) {
 			setErrorCode(FILE_WRITE_ERROR);
 		}
 	} else {
-		cachePtr = std::make_unique<uint8_t[]>(cacheSize+1);
-		cache = cachePtr.get();
+		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
+		cache = getCachePtr().get();
 	}
 	localWriteIndex = 0;
 }
@@ -761,8 +761,8 @@ void DiskNodeFileWriteHandle::renewCache()
 MemoryNodeFileWriteHandle::MemoryNodeFileWriteHandle()
 {
 	if (!cache) {
-		cachePtr = std::make_unique<uint8_t[]>(cacheSize+1);
-		cache = cachePtr.get();
+		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
+		cache = getCachePtr().get();
 	}
 	localWriteIndex = 0;
 }
@@ -789,14 +789,14 @@ void MemoryNodeFileWriteHandle::renewCache()
 {
 	if (cache) {
 		cacheSize = cacheSize * 2;
-		cachePtr = std::make_unique<uint8_t[]>(cacheSize);
-		cache = cachePtr.get();
+		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize));
+		cache = getCachePtr().get();
 		if (!cache) {
 			exit(1);
 		}
 	} else {
-		cachePtr = std::make_unique<uint8_t[]>(cacheSize+1);
-		cache = cachePtr.get();
+		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
+		cache = getCachePtr().get();
 	}
 }
 
@@ -819,7 +819,7 @@ bool NodeFileWriteHandle::addNode(uint8_t nodetype)
 		renewCache();
 	}
 
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::endNode()
@@ -829,61 +829,61 @@ bool NodeFileWriteHandle::endNode()
 		renewCache();
 	}
 
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addU8(uint8_t u8)
 {
 	writeBytes(&u8, sizeof(u8));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addByte(uint8_t u8)
 {
 	writeBytes(&u8, sizeof(u8));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addU16(uint16_t u16)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&u16), sizeof(u16));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addU32(uint32_t u32)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&u32), sizeof(u32));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addU64(uint64_t u64)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&u64), sizeof(u64));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt8(int8_t int8)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&int8), sizeof(int8));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt16(int16_t int16)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&int16), sizeof(int16));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt32(int32_t int32)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&int32), sizeof(int32));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addInt64(int64_t int64)
 {
 	writeBytes(std::bit_cast<uint8_t*>(&int64), sizeof(int64));
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addString(const std::string& str)
@@ -894,26 +894,26 @@ bool NodeFileWriteHandle::addString(const std::string& str)
 	}
 	addU16(uint16_t(str.size()));
 	addRAW((const uint8_t*)str.c_str(), str.size());
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addLongString(const std::string& str)
 {
 	addU32(uint32_t(str.size()));
 	addRAW((const uint8_t*)str.c_str(), str.size());
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addRAW(std::string& str)
 {
 	writeBytes(std::bit_cast<uint8_t*>(str.data()), str.size());
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addRAW(const uint8_t* ptr, size_t size)
 {
 	writeBytes(ptr, size);
-	return errorCode == FILE_NO_ERROR;
+	return getErrorCode() == FILE_NO_ERROR;
 }
 
 bool NodeFileWriteHandle::addRAW(const char* str)

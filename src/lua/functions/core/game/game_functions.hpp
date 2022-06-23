@@ -77,6 +77,17 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
 				registerMethod(L, "Game", "hasEffect", GameFunctions::luaGameHasEffect);
 				registerMethod(L, "Game", "getOfflinePlayer", GameFunctions::luaGameGetOfflinePlayer);
+				registerMethod(L, "Game", "registerAchievement", GameFunctions::luaGameRegisterAchievement);
+				registerMethod(L, "Game", "getAchievementInfoById", GameFunctions::luaGameGetAchievementInfoById);
+				registerMethod(L, "Game", "getAchievementInfoByName", GameFunctions::luaGameGetAchievementInfoByName);
+				registerMethod(L, "Game", "getSecretAchievements", GameFunctions::luaGameGetSecretAchievements);
+				registerMethod(L, "Game", "getPublicAchievements", GameFunctions::luaGameGetPublicAchievements);
+				registerMethod(L, "Game", "getAchievements", GameFunctions::luaGameGetAchievements);
+				registerMethod(L, "Game", "getMounts", GameFunctions::luaGameGetMounts);
+				registerMethod(L, "Game", "getOutfits", GameFunctions::luaGameGetOutfits);
+				registerMethod(L, "Game", "getHighscoresLeaderId", GameFunctions::luaGameGetHighscoresLeaderId);
+				registerMethod(L, "Game", "getBestiaryRaceAmount", GameFunctions::luaGameGetBestiaryRaceAmount);
+				registerMethod(L, "Game", "registerPlayerTitle", GameFunctions::luaGameRegisterPlayerTitle);
 			}
 
 	private:
@@ -128,6 +139,17 @@ class GameFunctions final : LuaScriptInterface {
 			static int luaGameGetOfflinePlayer(lua_State* L);
 			static int luaGameHasEffect(lua_State* L);
 			static int luaGameHasDistanceEffect(lua_State* L);
+			static int luaGameRegisterAchievement(lua_State* L);
+			static int luaGameGetAchievementInfoById(lua_State* L);
+			static int luaGameGetAchievementInfoByName(lua_State* L);
+			static int luaGameGetSecretAchievements(lua_State* L);
+			static int luaGameGetPublicAchievements(lua_State* L);
+			static int luaGameGetAchievements(lua_State* L);
+			static int luaGameGetMounts(lua_State* L);
+			static int luaGameGetOutfits(lua_State* L);
+			static int luaGameGetHighscoresLeaderId(lua_State* L);
+			static int luaGameGetBestiaryRaceAmount(lua_State* L);
+			static int luaGameRegisterPlayerTitle(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

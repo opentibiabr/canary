@@ -1559,38 +1559,35 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 
 void ProtocolGame::parseCyclopediaCharacterInfo(NetworkMessage &msg)
 {
-	uint32_t characterID;
-	CyclopediaCharacterInfoType_t characterInfoType;
-	characterID = msg.get<uint32_t>();
-	characterInfoType = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
-	uint16_t entriesPerPage = 0, page = 0;
-	if (characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS || characterInfoType == CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS)
-	{
-		entriesPerPage = std::min<uint16_t>(30, std::max<uint16_t>(5, msg.get<uint16_t>()));
-		page = std::max<uint16_t>(1, msg.get<uint16_t>());
+	uint32_t characterId = msg.get<uint32_t>();
+	auto state = static_cast<CyclopediaCharacterInfoType_t>(msg.getByte());
+	uint16_t itemsPerPage = 0;
+	uint16_t requestedPage = 0;
+	if (state == CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS || state == CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS) {
+		itemsPerPage = msg.get<uint16_t>();
+		requestedPage = msg.get<uint16_t>();
 	}
-	if (characterID == 0)
-	{
-		characterID = player->getGUID();
-	}
-	g_game().playerCyclopediaCharacterInfo(player, characterID, characterInfoType, entriesPerPage, page);
+
+	addGameTask(&Game::playerCyclopediaCharacterInfo, player->getID(), characterId, state, itemsPerPage, requestedPage);
 }
 
 void ProtocolGame::parseHighscores(NetworkMessage &msg)
 {
-	HighscoreType_t type = static_cast<HighscoreType_t>(msg.getByte());
+	uint8_t type = msg.getByte();
 	uint8_t category = msg.getByte();
 	uint32_t vocation = msg.get<uint32_t>();
 	uint16_t page = 1;
-	const std::string worldName = msg.getString();
-	msg.getByte(); // Game World Category
-	msg.getByte(); // BattlEye World Type
-	if (type == HIGHSCORE_GETENTRIES)
-	{
+	msg.getString();	// World name
+	uint8_t gameWorldCategory = msg.getByte();	// Game World Category
+	for (int i = 0; i < gameWorldCategory; i++) {
+		msg.getByte(); // Game world category type. (Pvp, non-pvp ...)
+	}
+	msg.getByte();	// BattlEye World Type
+	if (type == HIGHSCORE_GETENTRIES) {
 		page = std::max<uint16_t>(1, msg.get<uint16_t>());
 	}
 	uint8_t entriesPerPage = std::min<uint8_t>(30, std::max<uint8_t>(5, msg.getByte()));
-	g_game().playerHighscores(player, type, category, vocation, worldName, page, entriesPerPage);
+	addGameTask(&Game::playerHighscores, player->getID(), type, category, vocation, page, entriesPerPage);
 }
 
 void ProtocolGame::parseTaskHuntingAction(NetworkMessage &msg)
@@ -1615,92 +1612,83 @@ void ProtocolGame::sendHighscoresNoData()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages)
+void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter>& characters, uint8_t type,
+							uint8_t category, uint32_t vocation, uint16_t page, uint8_t entriesPerPage)
 {
 	NetworkMessage msg;
 	msg.addByte(0xB1);
-	msg.addByte(0x00); // No data available
+	msg.addByte(0x00); // All data available
 
-	msg.addByte(1); // Worlds
+	msg.addByte(0x01); // Worlds
 	msg.addString(g_configManager().getString(SERVER_NAME)); // First World
-	msg.addString(g_configManager().getString(SERVER_NAME)); // Selected World
 
-	msg.addByte(0); // Game World Category: 0xFF(-1) - Selected World
-	msg.addByte(0); // BattlEye World Type
+	msg.addString(g_configManager().getString(SERVER_NAME)); // Selected World
+	msg.addByte(0x00); // Game World Category: 0xFF(-1) - Selected World
+	msg.addByte(0x00); // BattlEye World Type
 
 	auto vocationPosition = msg.getBufferPosition();
 	uint8_t vocations = 1;
 
 	msg.skipBytes(1); // Vocation Count
 	msg.add<uint32_t>(0xFFFFFFFF); // All Vocations - hardcoded
-	msg.addString("(all)");          // All Vocations - hardcoded
+	msg.addString("(all)"); // All Vocations - hardcoded
 
-	uint32_t selectedVocation = 0xFFFFFFFF;
 	const auto &vocationsMap = g_vocations().getVocations();
-	for (const auto &it : vocationsMap)
-	{
-		const Vocation &vocation = it.second;
-		if (vocation.getFromVocation() == static_cast<uint32_t>(vocation.getId()))
-		{
-			msg.add<uint32_t>(vocation.getFromVocation()); // Vocation Id
-			msg.addString(vocation.getVocName());          // Vocation Name
+	for (const auto &it : vocationsMap) {
+		const Vocation &vocation_it = it.second;
+		if (vocation_it.getFromVocation() == static_cast<uint32_t>(vocation_it.getId())) {
+			msg.add<uint32_t>(static_cast<uint32_t>(vocation_it.getClientId())); // Vocation Id
+			msg.addString(vocation_it.getVocName()); // Vocation Name
 			++vocations;
-			if (vocation.getFromVocation() == vocationId)
-			{
-				selectedVocation = vocationId;
-			}
 		}
 	}
-	msg.add<uint32_t>(selectedVocation); // Selected Vocation
+	msg.add<uint32_t>(vocation); // Selected Vocation
 
-	HighscoreCategory highscoreCategories[] =
-		{
-			{"Experience Points", HIGHSCORE_CATEGORY_EXPERIENCE},
-			{"Fist Fighting", HIGHSCORE_CATEGORY_FIST_FIGHTING},
-			{"Club Fighting", HIGHSCORE_CATEGORY_CLUB_FIGHTING},
-			{"Sword Fighting", HIGHSCORE_CATEGORY_SWORD_FIGHTING},
-			{"Axe Fighting", HIGHSCORE_CATEGORY_AXE_FIGHTING},
-			{"Distance Fighting", HIGHSCORE_CATEGORY_DISTANCE_FIGHTING},
-			{"Shielding", HIGHSCORE_CATEGORY_SHIELDING},
-			{"Fishing", HIGHSCORE_CATEGORY_FISHING},
-			{"Magic Level", HIGHSCORE_CATEGORY_MAGIC_LEVEL}};
-
-	uint8_t selectedCategory = 0;
-	msg.addByte(sizeof(highscoreCategories) / sizeof(HighscoreCategory)); // Category Count
-	for (HighscoreCategory &category : highscoreCategories)
-	{
-		msg.addByte(category.id); // Category Id
-		msg.addString(category.name); // Category Name
-		if (category.id == categoryId)
-		{
-			selectedCategory = categoryId;
-		}
+	msg.addByte(static_cast<uint8_t>(highscoreCategoriesNames.size()));
+	for (const auto it : highscoreCategoriesNames) {
+		msg.addByte(it.first); // Category Id
+		msg.addString(it.second); // Category Name
 	}
-	msg.addByte(selectedCategory); // Selected Category
+	msg.addByte(category); // Selected Category
 
-	msg.add<uint16_t>(page);  // Current page
-	msg.add<uint16_t>(pages); // Pages
+	uint16_t totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(characters.size()) / entriesPerPage));
+	uint16_t currentPage = std::min<uint16_t>(page, totalPages);
 
-	msg.addByte(characters.size()); // Character Count
-	for (const HighscoreCharacter &character : characters)
-	{
+	uint16_t firstObject = (currentPage - 1) * entriesPerPage;
+	uint16_t finalObject = firstObject + entriesPerPage;
+
+	msg.add<uint16_t>(currentPage);
+	msg.add<uint16_t>(totalPages);
+	auto characterPosition = msg.getBufferPosition();
+	uint8_t charactersCount = 0;
+
+	msg.skipBytes(1); // Characters Count
+	for (uint16_t i = firstObject; i < finalObject; i++) {
+		const HighscoreCharacter &character = characters[i];
+		if (vocation != 0xFFFFFFFF && vocation != character.vocation) {
+			continue;
+		}
 		msg.add<uint32_t>(character.rank); // Rank
 		msg.addString(character.name); // Character Name
 		msg.addString(""); // Probably Character Title(not visible in window)
 		msg.addByte(character.vocation); // Vocation Id
 		msg.addString(g_configManager().getString(SERVER_NAME)); // World
 		msg.add<uint16_t>(character.level); // Level
-		msg.addByte((player->getGUID() == character.id)); // Player Indicator Boolean
+		msg.addByte(player->getGUID() == character.id ? 0x01 : 0x00); // Player Indicator Boolean
 		msg.add<uint64_t>(character.points); // Points
+		charactersCount++;
 	}
 
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
+	msg.add<uint32_t>(g_game().getHighscoreRefresTimestamp());
 
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
+
+	msg.setBufferPosition(characterPosition);
+	msg.addByte(charactersCount);
 	writeToOutputBuffer(msg);
 }
 
@@ -2923,8 +2911,13 @@ void ProtocolGame::sendAddMarker(const Position &pos, uint8_t markType, const st
 	writeToOutputBuffer(msg);
 }
 
+// Cyclopedia character info
 void ProtocolGame::sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode)
 {
+	// Error 1: 'No data available at the moment.'
+	// Error 2: 'You are not allowed to see this character's data.'
+	// Error 3: 'You are not allowed to inspect this character.'
+
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(static_cast<uint8_t>(characterInfoType));
@@ -2937,15 +2930,15 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BASEINFORMATION);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
 	msg.addString(player->getName());
 	msg.addString(player->getVocation()->getVocName());
 	msg.add<uint16_t>(player->getLevel());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(0x00); // hide stamina
-	msg.addByte(0x00); // enable store summary & character titles
-	msg.addString(""); // character title
+	msg.addByte(g_configManager().getBoolean(STAMINA_SYSTEM) ? 0x00 : 0x01); // Hide stamina
+	msg.addByte(0x01); // Store summary & Character titles
+	msg.addString("Titulo teste"); // character title
 	writeToOutputBuffer(msg);
 }
 
@@ -2954,24 +2947,19 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_GENERALSTATS);
-	msg.addByte(0x00);
+	msg.addByte(0x00);	// 0x00 Here means 'no error'
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
 	msg.addByte(player->getLevelPercent());
-	// BaseXPGainRate
-	msg.add<uint16_t>(100);
-	// TournamentXPFactor
-	msg.add<int32_t>(0);
-	// LowLevelBonus
-	msg.add<uint16_t>(0);
-	// XPBoost
-	msg.add<uint16_t>(0);
-	// StaminaMultiplier(100=x1.0)
-	msg.add<uint16_t>(100);
-	// xpBoostRemainingTime
-	msg.add<uint16_t>(0);
-	// canBuyXpBoost
-	msg.addByte(0x00);
+	msg.add<uint16_t>(player->getBaseXpGain());
+	msg.add<int32_t>(0);	// TournamentFactor (Experience)
+	// Refazer essa parte dos bonus de EXP
+	msg.add<uint16_t>(player->getGrindingXpBoost());
+	msg.add<uint16_t>(player->getStoreXpBoost());
+	msg.add<uint16_t>(player->getStaminaXpBoost());
+	msg.add<uint16_t>(player->getExpBoostStamina());
+	msg.addByte(player->getExpBoostStamina() > 0 ? 0x00 : 0x01);	// Can buy store XP boost
+
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
@@ -2980,34 +2968,35 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
 	Condition *condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
-	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
+	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);	// Regeneration
+
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 	msg.add<uint16_t>(player->getSpeed() / 2);
 	msg.add<uint16_t>(player->getBaseSpeed() / 2);
-	msg.add<uint32_t>(player->getCapacity());
-	msg.add<uint32_t>(player->getCapacity());
+	msg.add<uint32_t>(player->getBonusCapacity());
+	msg.add<uint32_t>(player->getBaseCapacity());
 	msg.add<uint32_t>(player->getFreeCapacity());
-	msg.addByte(8);
-	msg.addByte(1);
+	msg.addByte(0x08);	// Skills amount
+
+	// Magic level (Skill)
+	msg.addByte(1);	// Magic level skill ID
 	msg.add<uint16_t>(player->getMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
 	// loyalty bonus
 	msg.add<uint16_t>(player->getBaseMagicLevel());
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
-	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i)
-	{
-		static const uint8_t HardcodedSkillIds[] = {11, 9, 8, 10, 7, 6, 13};
+	static const uint8_t HardcodedSkillIds[] = {11, 9, 8, 10, 7, 6, 13};
+	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		msg.addByte(HardcodedSkillIds[i]);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(i));
+		msg.add<uint16_t>(player->getRawSkill(i));
 		// loyalty bonus
 		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 
-	// Version 12.70
-	msg.addByte(0x00);
+	msg.addByte(0x00);	// MagicBoost system (Elemend and Value)
 
 	writeToOutputBuffer(msg);
 }
@@ -3017,33 +3006,33 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_COMBATSTATS);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(0);
+		msg.add<uint16_t>(0x00);	// Loyality bonus
 	}
 
-	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i) {
-		msg.add<uint16_t>(0);
-		msg.add<uint16_t>(0);
-	}
-
-	// Cleave (12.70)
-	msg.add<uint16_t>(0);
-	// Magic shield capacity (12.70)
-	msg.add<uint16_t>(0); // Direct bonus
-	msg.add<uint16_t>(0); // Percentage bonus
-
-	// Perfect shot range (12.70)
-	for (uint16_t i = 1; i <= 5; i++)
-	{
+	/*
+		1: Fatal skill level
+		2: Fatal skill loyality bonus
+		3: Dodge skill level
+		4: Dodge skill loyality bonus
+		5: Momentum skill level
+		6: Momentum skill loyality bonus
+		7: Cleave
+		8: Magic shield bonus
+		9: Magic shield bercentage
+		10: Perfect shot range 1
+		11: Perfect shot range 2
+		12: Perfect shot range 3
+		13: Perfect shot range 4
+		14: Perfect shot range 5
+		15: Damage reflection
+	*/
+	for (uint8_t i = 1; i <= 15; i++) {
 		msg.add<uint16_t>(0x00);
 	}
-
-	// Damage reflection
-	msg.add<uint16_t>(0);
 
 	uint8_t haveBlesses = 0;
 	uint8_t blessings = 8;
@@ -3201,8 +3190,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		}
 	}
 
-	// Concoctions potions (12.70)
-	msg.addByte(0x00);
+	msg.addByte(0x00);	// Concotions skills size
 
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
@@ -3210,64 +3198,144 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries)
+void ProtocolGame::sendCyclopediaCharacterRecentDeaths(uint16_t requestedPage, uint16_t itemsPerPage, const std::vector<RecentDeathEntry> &entries)
 {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTDEATHS);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(page);
-	msg.add<uint16_t>(pages);
-	msg.add<uint16_t>(entries.size());
-	for (const RecentDeathEntry &entry : entries)
-	{
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+
+	uint16_t totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / itemsPerPage));
+	uint16_t currentPage = std::min<uint16_t>(requestedPage, totalPages);
+
+	uint16_t firstObject = (currentPage - 1) * itemsPerPage;
+	uint16_t finalObject = firstObject + itemsPerPage;
+
+	msg.add<uint16_t>(currentPage);
+	msg.add<uint16_t>(totalPages);
+	msg.add<uint16_t>(itemsPerPage);
+	for (uint16_t i = firstObject; i < finalObject; i++) {
+		RecentDeathEntry entry = entries[i];
 		msg.add<uint32_t>(entry.timestamp);
 		msg.addString(entry.cause);
 	}
+
+	SPDLOG_WARN("[ProtocolGame::sendCyclopediaCharacterRecentDeaths] - requestedPage: {}, itemsPerPage: {}, totalPages: {}, currentPage: {}, firstObject: {}, finalObject: {}",
+				requestedPage, itemsPerPage, totalPages, currentPage, firstObject, finalObject);
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries)
+void ProtocolGame::sendCyclopediaCharacterRecentPvPKills(uint16_t requestedPage, uint16_t itemsPerPage, const std::vector<RecentPvPKillEntry> &entries)
 {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_RECENTPVPKILLS);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(page);
-	msg.add<uint16_t>(pages);
-	msg.add<uint16_t>(entries.size());
-	for (const RecentPvPKillEntry &entry : entries)
-	{
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+
+	uint16_t totalPages = static_cast<uint16_t>(std::ceil(static_cast<double>(entries.size()) / itemsPerPage));
+	uint16_t currentPage = std::min<uint16_t>(requestedPage, totalPages);
+
+	uint16_t firstObject = (currentPage - 1) * itemsPerPage;
+	uint16_t finalObject = firstObject + itemsPerPage;
+
+	msg.add<uint16_t>(currentPage);
+	msg.add<uint16_t>(totalPages);
+	msg.add<uint16_t>(itemsPerPage);
+	for (uint16_t i = firstObject; i < finalObject; i++) {
+		RecentPvPKillEntry entry = entries[i];
 		msg.add<uint32_t>(entry.timestamp);
 		msg.addString(entry.description);
 		msg.addByte(entry.status);
 	}
+
+	SPDLOG_WARN("[ProtocolGame::sendCyclopediaCharacterRecentPvPKills] - requestedPage: {}, itemsPerPage: {}, totalPages: {}, currentPage: {}, firstObject: {}, finalObject: {}",
+				requestedPage, itemsPerPage, totalPages, currentPage, firstObject, finalObject);
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterAchievements()
+void ProtocolGame::sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked,
+							std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked)
 {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ACHIEVEMENTS);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+	msg.add<uint16_t>(player->getAchievementsPoints());
+	msg.add<uint16_t>(secretsUnlocked);
+	msg.add<uint16_t>(static_cast<uint16_t>(achievementsUnlocked.size()));
+	for (auto achievement : achievementsUnlocked) {
+		// achievement.first -> struc Achievement
+		// achievement.second -> Timestamp when it was unlocked
+		msg.add<uint16_t>(achievement.first.id);
+		msg.add<uint32_t>(achievement.second);
+		if (achievement.first.secret) {
+			msg.addByte(0x01);
+			msg.addString(achievement.first.name);
+			msg.addString(achievement.first.description);
+			msg.addByte(achievement.first.grade);
+		} else {
+			msg.addByte(0x00);
+		}
+	}
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterItemSummary()
+void ProtocolGame::sendCyclopediaCharacterItemSummary(StashItemList inventoryItems,
+														StashItemList storeInboxItems,
+														StashItemList supplyStashItems,
+														StashItemList depotBoxItems,
+														StashItemList inboxItems)
 {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+
+	msg.add<uint16_t>(static_cast<uint16_t>(inventoryItems.size()));
+	for (auto item_it : inventoryItems) {
+		msg.add<uint16_t>(item_it.first);
+		if (Item::items[item_it.first].upgradeClassification > 0) {
+			msg.addByte(0x00); // Tier
+		}
+		msg.add<uint32_t>(item_it.second);
+	}
+
+	msg.add<uint16_t>(static_cast<uint16_t>(storeInboxItems.size()));
+	for (auto item_it : storeInboxItems) {
+		msg.add<uint16_t>(item_it.first);
+		if (Item::items[item_it.first].upgradeClassification > 0) {
+			msg.addByte(0x00); // Tier
+		}
+		msg.add<uint32_t>(item_it.second);
+	}
+
+	msg.add<uint16_t>(static_cast<uint16_t>(supplyStashItems.size()));
+	for (auto item_it : supplyStashItems) {
+		msg.add<uint16_t>(item_it.first);
+		if (Item::items[item_it.first].upgradeClassification > 0) {
+			msg.addByte(0x00); // Tier
+		}
+		msg.add<uint32_t>(item_it.second);
+	}
+
+	msg.add<uint16_t>(static_cast<uint16_t>(depotBoxItems.size()));
+	for (auto item_it : depotBoxItems) {
+		msg.add<uint16_t>(item_it.first);
+		if (Item::items[item_it.first].upgradeClassification > 0) {
+			msg.addByte(0x00); // Tier
+		}
+		msg.add<uint32_t>(item_it.second);
+	}
+
+	msg.add<uint16_t>(static_cast<uint16_t>(inboxItems.size()));
+	for (auto item_it : inboxItems) {
+		msg.add<uint16_t>(item_it.first);
+		if (Item::items[item_it.first].upgradeClassification > 0) {
+			msg.addByte(0x00); // Tier
+		}
+		msg.add<uint32_t>(item_it.second);
+	}
+
 	writeToOutputBuffer(msg);
 }
 
@@ -3276,7 +3344,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_OUTFITSMOUNTS);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
 	Outfit_t currentOutfit = player->getDefaultOutfit();
 
 	uint16_t outfitSize = 0;
@@ -3384,18 +3452,52 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
-	msg.addByte(0x00);
-	msg.add<uint32_t>(0);
-	msg.add<uint32_t>(0);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+	msg.add<uint32_t>(0x00);	// Store Xp time
+	msg.add<uint32_t>(0x00);	// Daily reward time
+
+	msg.addByte(static_cast<uint8_t>(BlessingNames.size()));
+	for (const auto it : BlessingNames) {
+		msg.addString(it.second);
+		msg.addByte(static_cast<uint8_t>((player->getBlessingsObtained())[it.first]));
+	}
+
+	// Prey third slot unlocked
+	uint8_t preySlotsUnlocked= 0;
+	if (PreySlot* slot =  player->getPreySlotById(PreySlot_Three);
+			slot && slot->state != PreyDataState_Locked) {
+		preySlotsUnlocked++;
+	}
+
+	// Task hunting third slot unlocked
+	if (TaskHuntingSlot* slot =  player->getTaskHuntingSlotById(PreySlot_Three);
+			slot && slot->state != PreyTaskDataState_Locked) {
+		preySlotsUnlocked++;
+	}
+	msg.addByte(preySlotsUnlocked);
+
+	msg.addByte(static_cast<uint8_t>(player->getPreyCardsObtained()));
+	msg.addByte(static_cast<uint8_t>(player->getRewardCollectionObtained()));
+	msg.addByte(player->hasCharmExpansion() ? 0x01 : 0x00);
+	msg.addByte(static_cast<uint8_t>(player->getHirelingsObtained()));
+
+	msg.addByte(static_cast<uint8_t>(player->getHirelinsJobsObtained().size()));
+	for (const auto job_it : player->getHirelinsJobsObtained()) {
+		msg.addByte(job_it);
+	}
+
+	msg.addByte(static_cast<uint8_t>(player->getHirelinsOutfitsObtained().size()));
+	for (const auto lookType_it : player->getHirelinsOutfitsObtained()) {
+		msg.add<uint16_t>(lookType_it);	// To-Do: Checar se esse é uint16_t msm ou byte
+	}
+
+	msg.add<uint16_t>(static_cast<uint16_t>(player->getHouseItemsObtained().size()));
+	for (const auto item_it : player->getHouseItemsObtained()) {
+		msg.add<uint16_t>(item_it.first);
+		msg.addString(Item::items[item_it.first].name);
+		msg.addByte(static_cast<uint8_t>(item_it.second));
+	}
+
 	writeToOutputBuffer(msg);
 }
 
@@ -3404,7 +3506,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_INSPECTION);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
 	uint8_t inventoryItems = 0;
 	auto startInventory = msg.getBufferPosition();
 	msg.skipBytes(1);
@@ -3418,7 +3520,24 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 			msg.addByte(slot);
 			msg.addString(inventoryItem->getName());
 			AddItem(msg, inventoryItem);
-			msg.addByte(0);
+
+			uint8_t itemImbuements = 0;
+			auto startImbuements = msg.getBufferPosition();
+			msg.skipBytes(1);
+			for (uint8_t slotid = 0; slotid < inventoryItem->getImbuementSlot(); slotid++) {
+				ImbuementInfo imbuementInfo;
+				if (!inventoryItem->getImbuementInfo(slotid, &imbuementInfo)) {
+					continue;
+				}
+
+				msg.add<uint16_t>(imbuementInfo.imbuement->getID());
+				itemImbuements++;
+			}
+
+			auto endImbuements = msg.getBufferPosition();
+			msg.setBufferPosition(startImbuements);
+			msg.addByte(itemImbuements);
+			msg.setBufferPosition(endImbuements);
 
 			auto descriptions = Item::getDescriptions(Item::items[inventoryItem->getID()], inventoryItem);
 			msg.addByte(descriptions.size());
@@ -3432,26 +3551,76 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	msg.addString(player->getName());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(3);
+	// Player overall summary
+	uint8_t playerDescriptionSize = 0;
+	auto playerDescriptionPosition = msg.getBufferPosition();
+	msg.skipBytes(1);
+
+	// Level description
+	playerDescriptionSize++;
 	msg.addString("Level");
 	msg.addString(std::to_string(player->getLevel()));
+
+	// Vocation description
+	playerDescriptionSize++;
 	msg.addString("Vocation");
 	msg.addString(player->getVocation()->getVocName());
-	msg.addString("Outfit");
 
-	const Outfit *outfit = Outfits::getInstance().getOutfitByLookType(
-                           player->getSex(),
-                           player->getDefaultOutfit().lookType);
-	if (outfit)
-	{
-		msg.addString(outfit->name);
+	// Loyalty title
+	if (player->getLoyaltyTitle().length() != 0) {
+		playerDescriptionSize++;
+		msg.addString("Loyalty Title");
+		msg.addString(player->getLoyaltyTitle());
 	}
-	else
-	{
+
+	// Prey description
+	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+		if (PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId)); slot && slot->isOccupied()) {
+			playerDescriptionSize++;
+			std::ostringstream ss;
+			ss << "Active Prey " << (slotId + 1) << ":";
+			msg.addString(ss.str());
+			ss.str("");
+			ss.clear();
+
+			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(slot->selectedRaceId)) {
+				ss << mtype->name;
+			} else {
+				ss << "Unknown creature";
+			}
+
+			if (slot->bonus == PreyBonus_Damage) {
+				ss << " (Improved Damage +";
+			} else if (slot->bonus == PreyBonus_Defense) {
+				ss << " (Improved Defense +";
+			} else if (slot->bonus == PreyBonus_Experience) {
+				ss << " (Improved Experience +";
+			} else if (slot->bonus == PreyBonus_Loot) {
+				ss << " (Improved Loot +";
+			}
+			ss << slot->bonusPercentage << "%, remaining ";
+			uint8_t hours = slot->bonusTimeLeft / 3600;
+			uint8_t minutes = (slot->bonusTimeLeft - (hours * 3600)) / 60;
+    		ss << std::to_string(hours) << ":" << (minutes < 10 ? "0" : "") << std::to_string(minutes) << "h)";
+			msg.addString(ss.str());
+		}
+	}
+
+	// Outfit description
+	playerDescriptionSize++;
+	msg.addString("Outfit");
+	if (const Outfit *outfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), player->getDefaultOutfit().lookType)) {
+		msg.addString(outfit->name);
+	} else {
 		msg.addString("unknown");
 	}
+
 	msg.setBufferPosition(startInventory);
 	msg.addByte(inventoryItems);
+
+	msg.setBufferPosition(playerDescriptionPosition);
+	msg.addByte(playerDescriptionSize);
+
 	writeToOutputBuffer(msg);
 }
 
@@ -3466,16 +3635,26 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterTitles()
+void ProtocolGame::sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles, uint8_t currentTitle)
 {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
-	msg.addByte(0x00);
+	msg.addByte(0x00); // 0x00 Here means 'no error'
+
+	msg.addByte(currentTitle);
+	msg.addByte(static_cast<uint8_t>(titles.size()));
+	for (const auto title : titles) {
+		msg.addByte(title.first);
+		msg.addString(player->getSex() == PLAYERSEX_MALE ? title.second.maleName : title.second.femaleName);
+		msg.addString(title.second.description);
+		msg.addByte(title.second.permanent ? 0x01 : 0x00);
+		msg.addByte(player->isTitleUnlocked(title.first) ? 0x01 : 0x00);
+	}
+
 	writeToOutputBuffer(msg);
 }
+// End Cyclopedia character info
 
 void ProtocolGame::sendTournamentLeaderboard()
 {
@@ -5575,7 +5754,7 @@ void ProtocolGame::sendInventoryItem(Slots_t slot, const Item *item)
 
 void ProtocolGame::sendInventoryIds()
 {
-	std::map<uint16_t, uint16_t> items = player->getInventoryItemsId();
+	StashItemList items = player->getInventoryItemsId();
 
 	NetworkMessage msg;
 	msg.addByte(0xF5);
@@ -6582,7 +6761,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(i));
+		msg.add<uint16_t>(player->getRawSkill(i));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
@@ -6590,7 +6769,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getBaseSkill(i));
+		msg.add<uint16_t>(player->getRawSkill(i));
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)

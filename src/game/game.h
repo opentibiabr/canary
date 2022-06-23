@@ -71,6 +71,7 @@ class Game
 		}
 
 		void loadBoostedCreature();
+		void initializeGameWorldHighscores();
 		void start(ServiceManager* manager);
 
 		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
@@ -261,9 +262,7 @@ class Game
                                              const std::string& comment,
                                              const std::string& translation);
 
-		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
-
-		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage);
+		void playerHighscores(uint32_t playerId, uint8_t type, uint8_t category, uint32_t vocation, uint16_t page, uint8_t entriesPerPage);
 
 		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
 
@@ -374,6 +373,9 @@ class Game
 		void playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t productType, const std::string& additionalInfo="");
 		void playerCoinTransfer(uint32_t playerId, const std::string& receiverName, uint32_t amount);
 		void playerStoreTransactionHistory(uint32_t playerId, uint32_t page);
+		void playerCyclopediaCharacterInfo(uint32_t playerId, uint32_t characterId, CyclopediaCharacterInfoType_t type,
+											uint16_t itemsPerPage, uint16_t requestedPage);
+
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
@@ -565,6 +567,79 @@ class Game
 			mapLuaItemsStored[position] = itemId;
 		}
 
+		void registerAchievement(uint16_t id, std::string name, std::string description, bool secret, uint8_t grade, uint8_t points) {
+			achievements[id] = Achievement();
+			achievements[id].id = id;
+			achievements[id].name = name;
+			achievements[id].description = description;
+			achievements[id].secret = secret;
+			achievements[id].grade = grade;
+			achievements[id].points = points;
+		}
+
+		Achievement getAchievementById(uint16_t id) {
+			return achievements[id];
+		}
+
+		Achievement getAchievementByName(std::string name) {
+			uint16_t id = 0;
+			auto it = std::find_if(achievementsNameToId.begin(), achievementsNameToId.end(), [name](auto it) {
+				return it.first == name;
+				});
+
+			if (it != achievementsNameToId.end()) {
+				id = (*it).second;
+			}
+
+			return getAchievementById(id);
+		}
+
+		std::vector<Achievement> getSecretAchievements() {
+			std::vector<Achievement> secrets;
+			for (auto achievement : achievements) {
+				if (achievement.second.secret) {
+					secrets.emplace_back(achievement.second);
+				}
+			}
+
+			return secrets;
+		}
+
+		std::vector<Achievement> getPublicAchievements() {
+			std::vector<Achievement> publics;
+			for (auto achievement : achievements) {
+				if (!achievement.second.secret) {
+					publics.emplace_back(achievement.second);
+				}
+			}
+
+			return publics;
+		}
+
+		std::map<uint16_t, Achievement> getAchievements() {
+			return achievements;
+		}
+
+		int64_t getHighscoreRefresTimestamp() const {
+			return lastHighscoreRefresh;
+		}
+
+		std::vector<HighscoreCharacter> getHighscoreByCategory(HighscoreCategories_t type) {
+			return highscores[static_cast<uint8_t>(type)];
+		}
+
+		void registerPlayerTitle(uint8_t id, std::string male_name, std::string female_name, std::string description, bool permanent) {
+			playerTitles[id] = PlayerTitle();
+			playerTitles[id].id = id;
+			playerTitles[id].maleName = male_name;
+			playerTitles[id].femaleName = female_name;
+			playerTitles[id].description = description;
+			playerTitles[id].permanent = permanent;
+		}
+		std::map<uint8_t, PlayerTitle> getPlayerTitles() const {
+			return playerTitles;
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -649,6 +724,12 @@ class Game
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;
+		std::map<uint16_t, Achievement> achievements;
+		std::map<std::string, uint16_t> achievementsNameToId;
+		std::map<uint8_t, PlayerTitle> playerTitles;
+
+		std::map<uint8_t, std::vector<HighscoreCharacter>> highscores;
+		int64_t lastHighscoreRefresh = 0;
 };
 
 constexpr auto g_game = &Game::getInstance;

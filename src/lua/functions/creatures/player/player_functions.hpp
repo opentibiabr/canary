@@ -276,6 +276,38 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
+			registerMethod(L, "Player", "hasAchievement", PlayerFunctions::luaPlayerHasAchievement);
+			registerMethod(L, "Player", "addAchievement", PlayerFunctions::luaPlayerAddAchievement);
+			registerMethod(L, "Player", "removeAchievement", PlayerFunctions::luaPlayerRemoveAchievement);
+			registerMethod(L, "Player", "getAchievementsPoints", PlayerFunctions::luaPlayerGetAchievementsPoints);
+			registerMethod(L, "Player", "addAchievementsPoints", PlayerFunctions::luaPlayerAddAchievementsPoints);
+
+			registerMethod(L, "Player", "addHirelingOutfitObtained", PlayerFunctions::luaPlayerAddHirelingOutfitObtained);
+			registerMethod(L, "Player", "addHirelingJobsObtained", PlayerFunctions::luaPlayerAddHirelingJobsObtained);
+			registerMethod(L, "Player", "addBlessingsObtained", PlayerFunctions::luaPlayerAddBlessingsObtained);
+			registerMethod(L, "Player", "addHouseItemsObtained", PlayerFunctions::luaPlayerAddHouseItemsObtained);
+			registerMethod(L, "Player", "addXpBoostsObtained", PlayerFunctions::luaPlayerAddXpBoostsObtained);
+			registerMethod(L, "Player", "addRewardCollectionObtained", PlayerFunctions::luaPlayerAddRewardCollectionObtained);
+			registerMethod(L, "Player", "addHirelingsObtained", PlayerFunctions::luaPlayerAddHirelingsObtained);
+			registerMethod(L, "Player", "addPreyCardsObtained", PlayerFunctions::luaPlayerAddPreyCardsObtained);
+			registerMethod(L, "Player", "addLoginStreak", PlayerFunctions::luaPlayerAddLoginStreak);
+			registerMethod(L, "Player", "addTaskHuntingPointsObtained", PlayerFunctions::luaPlayerAddTaskHuntingPointsObtained);
+			registerMethod(L, "Player", "addMapAreaDiscoveredPercentage", PlayerFunctions::luaPlayerAddMapAreaDiscoveredPercentage);
+
+			registerMethod(L, "Player", "setLoyaltyBonus", PlayerFunctions::luaPlayerSetLoyaltyBonus);
+			registerMethod(L, "Player", "getLoyaltyBonus", PlayerFunctions::luaPlayerGetLoyaltyBonus);
+			registerMethod(L, "Player", "getLoyaltyPoints", PlayerFunctions::luaPlayerGetLoyaltyPoints);
+			registerMethod(L, "Player", "getLoyaltyTitle", PlayerFunctions::luaPlayerGetLoyaltyTitle);
+			registerMethod(L, "Player", "setLoyaltyTitle", PlayerFunctions::luaPlayerSetLoyaltyTitle);
+
+			registerMethod(L, "Player", "getBestiaryRaceEntries", PlayerFunctions::luaPlayerGetBestiaryRaceEntries);
+			registerMethod(L, "Player", "getLoginStreak", PlayerFunctions::luaPlayerGetLoginStreak);
+			registerMethod(L, "Player", "getTaskHuntingPointsObtained", PlayerFunctions::luaPlayerGetTaskHuntingPointsObtained);
+			registerMethod(L, "Player", "getMapAreaDiscoveredPercentage", PlayerFunctions::luaPlayerGetMapAreaDiscoveredPercentage);
+
+			registerMethod(L, "Player", "addTitle", PlayerFunctions::luaPlayerAddTitle);
+			registerMethod(L, "Player", "getTitles", PlayerFunctions::luaPlayerGetTitles);
+
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
 			MountFunctions::init(L);
@@ -531,6 +563,38 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
+
+		static int luaPlayerHasAchievement(lua_State* L);
+		static int luaPlayerAddAchievement(lua_State* L);
+		static int luaPlayerRemoveAchievement(lua_State* L);
+		static int luaPlayerGetAchievementsPoints(lua_State* L);
+		static int luaPlayerAddAchievementsPoints(lua_State* L);
+
+		static int luaPlayerAddHirelingOutfitObtained(lua_State* L);
+		static int luaPlayerAddHirelingJobsObtained(lua_State* L);
+		static int luaPlayerAddBlessingsObtained(lua_State* L);
+		static int luaPlayerAddHouseItemsObtained(lua_State* L);
+		static int luaPlayerAddXpBoostsObtained(lua_State* L);
+		static int luaPlayerAddRewardCollectionObtained(lua_State* L);
+		static int luaPlayerAddHirelingsObtained(lua_State* L);
+		static int luaPlayerAddPreyCardsObtained(lua_State* L);
+		static int luaPlayerAddLoginStreak(lua_State* L);
+		static int luaPlayerAddTaskHuntingPointsObtained(lua_State* L);
+		static int luaPlayerAddMapAreaDiscoveredPercentage(lua_State* L);
+
+		static int luaPlayerSetLoyaltyBonus(lua_State* L);
+		static int luaPlayerGetLoyaltyBonus(lua_State* L);
+		static int luaPlayerGetLoyaltyPoints(lua_State* L);
+		static int luaPlayerGetLoyaltyTitle(lua_State* L);
+		static int luaPlayerSetLoyaltyTitle(lua_State* L);
+		static int luaPlayerGetLoginStreak(lua_State* L);
+		static int luaPlayerGetTaskHuntingPointsObtained(lua_State* L);
+		static int luaPlayerGetMapAreaDiscoveredPercentage(lua_State* L);
+
+		static int luaPlayerGetBestiaryRaceEntries(lua_State* L);
+
+		static int luaPlayerAddTitle(lua_State* L);
+		static int luaPlayerGetTitles(lua_State* L);
 
 		friend class CreatureFunctions;
 };

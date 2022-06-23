@@ -245,8 +245,10 @@ void IOBestiary::addBestiaryKill(Player* player, MonsterType* mtype, uint32_t am
 		player->sendTextMessage(MESSAGE_STATUS, ss.str());
 		player->sendBestiaryEntryChanged(raceid);
 
-		if ((curCount + amount) >= mtype->info.bestiaryToUnlock)
+		if ((curCount + amount) >= mtype->info.bestiaryToUnlock) {
 			addCharmPoints(player, mtype->info.bestiaryCharmsPoints);
+			player->addCharmsPointsObtained(amount);
+		}
 	}
 
 	std::list<MonsterType*> trackerList = player->getBestiaryTrackerList();

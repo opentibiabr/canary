@@ -571,6 +571,13 @@ class Player final : public Creature, public Cylinder
 			return capacity + bonusCapacity;
 		}
 
+		uint32_t getBonusCapacity() const {
+			if (hasFlag(PlayerFlag_CannotPickupItem) || hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+				return std::numeric_limits<uint32_t>::max();
+			}
+			return bonusCapacity;
+		}
+
 		uint32_t getFreeCapacity() const {
 			if (hasFlag(PlayerFlag_CannotPickupItem)) {
 				return 0;
@@ -727,6 +734,9 @@ class Player final : public Creature, public Cylinder
 			return skillLevel;
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
+			return skills[skill].level;
+		}
+		uint16_t getRawSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
 		double_t getSkillPercent(uint8_t skill) const {
@@ -1410,22 +1420,22 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaCharacterRecentDeaths(page, pages, entries);
 			}
 		}
-		void sendCyclopediaCharacterRecentPvPKills(
-                                                   uint16_t page, uint16_t pages,
+		void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages,
                                                    const std::vector<
                                                    RecentPvPKillEntry>& entries) {
 			if (client) {
 				client->sendCyclopediaCharacterRecentPvPKills(page, pages, entries);
 			}
 		}
-		void sendCyclopediaCharacterAchievements() {
+		void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked) {
 			if (client) {
-				client->sendCyclopediaCharacterAchievements();
+				client->sendCyclopediaCharacterAchievements(secretsUnlocked, achievementsUnlocked);
 			}
 		}
-		void sendCyclopediaCharacterItemSummary() {
+		void sendCyclopediaCharacterItemSummary(StashItemList inventoryItems, StashItemList storeInboxItems, StashItemList supplyStashItems,
+											StashItemList depotBoxItems, StashItemList inboxItems) {
 			if (client) {
-				client->sendCyclopediaCharacterItemSummary();
+				client->sendCyclopediaCharacterItemSummary(inventoryItems, storeInboxItems, supplyStashItems, depotBoxItems, inboxItems);
 			}
 		}
 		void sendCyclopediaCharacterOutfitsMounts() {
@@ -1448,9 +1458,9 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaCharacterBadges();
 			}
 		}
-		void sendCyclopediaCharacterTitles() {
+		void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles, uint8_t currentTitle) {
 			if (client) {
-				client->sendCyclopediaCharacterTitles();
+				client->sendCyclopediaCharacterTitles(titles, currentTitle);
 			}
 		}
 		void sendHighscoresNoData() {
@@ -1458,11 +1468,10 @@ class Player final : public Creature, public Cylinder
 				client->sendHighscoresNoData();
 			}
 		}
-		void sendHighscores(const std::vector<HighscoreCharacter>& characters,
-                            uint8_t categoryId, uint32_t vocationId,
-                            uint16_t page, uint16_t pages) {
+		void sendHighscores(const std::vector<HighscoreCharacter>& characters, uint8_t type,
+							uint8_t category, uint32_t vocation, uint16_t page, uint8_t entriesPerPage) {
 			if (client) {
-				client->sendHighscores(characters, categoryId, vocationId, page, pages);
+				client->sendHighscores(characters, type, category, vocation, page, entriesPerPage);
 			}
 		}
 		void addAsyncOngoingTask(uint64_t flags) {
@@ -2036,6 +2045,190 @@ class Player final : public Creature, public Cylinder
 			return nullptr;
 		}
 
+		std::vector<RecentDeathEntry> getDeathHistory() const {
+			return deathHistory;
+		}
+
+		std::vector<RecentPvPKillEntry> getPvpKillsHistory() const {
+			return pvpKills;
+		}
+
+		void insertDeathOnHistory(std::string cause, uint32_t timestamp) {
+			deathHistory.emplace_back(std::move(cause), timestamp);
+		}
+
+		void insertPvpKillOnHistory(std::string cause, uint32_t timestamp, uint8_t status) {
+			pvpKills.emplace_back(std::move(cause), timestamp, status);
+		}
+
+		// Achievements
+		bool addAchievement(uint16_t id, bool message = true, uint32_t timestamp = 0);
+		bool removeAchievement(uint16_t id);
+		bool hasAchievement(uint16_t id) const {
+			if (id == 0) {
+				return false;
+			}
+
+			if (auto it = std::find_if(achievementsUnlocked.begin(), achievementsUnlocked.end(), [id](auto achievement_it) {
+					return achievement_it.first == id;
+				}); it != achievementsUnlocked.end()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		uint16_t getAchievementsPoints() const {
+			return achievementsPoints;
+		}
+
+		void addAchievementsPoints(uint16_t points) {
+			achievementsPoints += points;
+		}
+
+		void removeAchievementsPoints(uint16_t points) {
+			achievementsPoints -= std::min<uint16_t>(achievementsPoints, points);
+		}
+
+		std::vector<std::pair<uint16_t, uint32_t>> getAchievementsUnlocked() const {
+			return achievementsUnlocked;
+		}
+
+		StashItemList getDepotItemsIds();
+		StashItemList getInboxItemsIds();
+
+		uint16_t getLoyaltyPoints() const {
+			return loyaltyPoints;
+		}
+
+		void setLoyaltyBonus(uint8_t bonus) {
+			loyaltyBonusPercent = bonus;
+		}
+		void setLoyaltyTitle(std::string title) {
+			loyaltyTitle = title;
+		}
+		std::string getLoyaltyTitle() const {
+			return loyaltyTitle;
+		}
+		uint8_t getLoyaltyBonus() const {
+			return loyaltyBonusPercent;
+		}
+
+		// Player summary region
+		// Get:
+		std::vector<uint16_t> getHirelinsOutfitsObtained() const {
+			return hirelingOutfitsObtained;
+		}
+		std::vector<uint8_t> getHirelinsJobsObtained() const {
+			return hirelingJobsObtained;
+		}
+		std::map<Blessings_t, uint16_t> getBlessingsObtained() const {
+			return blessingsObtained;
+		}
+		StashItemList getHouseItemsObtained() const {
+			return houseItemsObtained;
+		}
+		uint16_t getXpBoostsObtained() const {
+			return storeXpBoostsObtained;
+		}
+		uint16_t getRewardCollectionObtained() const {
+			return dailyRewardCollectionsObtained;
+		}
+		uint16_t getHirelingsObtained() const {
+			return hirelingsObtained;
+		}
+		uint16_t getPreyCardsObtained() const {
+			return preyCardsObtained;
+		}
+		uint16_t getCharmsPointsObtained() const {
+			return charmsObtained;
+		}
+		uint16_t getGoshnarTaintsObtained() const {
+			return goshnarObtained;
+		}
+		uint16_t getDromePointsObtained() const {
+			return dromeObtained;
+		}
+		uint16_t getLoginStreak() const {
+			return loginStreak;
+		}
+		uint16_t getTaskHuntingPointsObtained() const {
+			return taskHuntingPointsObtained;
+		}
+		uint16_t getMapAreaDiscoveredPercentage() const {
+			return mapAreaDiscoveredPercentage;
+		}
+
+		// Player summary region
+		// Set:
+		void addHirelingOutfitObtained(uint16_t lookType) {
+			hirelingOutfitsObtained.push_back(lookType);
+		}
+		void addHirelingJobsObtained(uint8_t jobId) {
+			hirelingJobsObtained.push_back(jobId);
+		}
+		void addBlessingsObtained(Blessings_t id, uint16_t amount) {
+			blessingsObtained[id] += amount;
+		}
+		void addHouseItemsObtained(uint16_t itemId, uint32_t amount) {
+			houseItemsObtained[itemId] += amount;
+		}
+		void addXpBoostsObtained(uint16_t amount) {
+			storeXpBoostsObtained += amount;
+		}
+		void addRewardCollectionObtained(uint16_t amount) {
+			dailyRewardCollectionsObtained += amount;
+		}
+		void addHirelingsObtained(uint16_t amount) {
+			hirelingsObtained += amount;
+		}
+		void addPreyCardsObtained(uint16_t amount) {
+			preyCardsObtained += amount;
+		}
+		void addCharmsPointsObtained(uint16_t amount) {
+			charmsObtained += amount;
+		}
+		void addGoshnarTaintsObtained(uint16_t amount) {
+			goshnarObtained += amount;
+		}
+		void addDromePointsObtained(uint16_t amount) {
+			dromeObtained += amount;
+		}
+		void addLoginStreak(uint16_t amount) {
+			loginStreak += amount;
+		}
+		void addTaskHuntingPointsObtained(uint16_t amount) {
+			taskHuntingPointsObtained += amount;
+		}
+		void addMapAreaDiscoveredPercentage(uint16_t amount) {
+			mapAreaDiscoveredPercentage += amount;
+		}
+
+		voic addTitle(uint8_t id) {
+			titles.push_front(id);
+		}
+		std::vector<uint8_t> getTitles() const {
+			return titles;
+		}
+		bool isTitleUnlocked(uint8_t id) const {
+			if (auto it = std::find_if(titles.begin(), titles.end(), [id](uint8_t title_it) {
+					return title_it == id;
+				}); it != titles.end()) {
+				return true;
+			}
+
+			return false;
+		}
+		uint8_t getCurrentTitle() const {
+			return currentTitle;
+		}
+		void setCurrentTitle(uint8_t id) {
+			if (!isTitleUnlocked(id)) {
+				return;
+			}
+
+			currentTitle = id;
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2095,7 +2288,8 @@ class Player final : public Creature, public Cylinder
 		void stashContainer(StashContainerList itemDict);
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		std::map<uint16_t, uint16_t> getInventoryItemsId() const;
+		StashItemList getInventoryItemsId() const;
+		StashItemList getStoreInboxItemsId() const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 
@@ -2130,6 +2324,10 @@ class Player final : public Creature, public Cylinder
 		std::vector<PreySlot*> preys;
 		std::vector<TaskHuntingSlot*> taskHunting;
 
+		std::vector<std::pair<uint16_t, uint32_t>> achievementsUnlocked; // {achievement ID, time when it was unlocked}
+		std::vector<RecentDeathEntry> deathHistory;
+		std::vector<RecentPvPKillEntry> pvpKills;
+
 		GuildWarVector guildWarVector;
 
 		std::forward_list<Party*> invitePartyList;
@@ -2142,6 +2340,7 @@ class Player final : public Creature, public Cylinder
 
 		std::string name;
 		std::string guildNick;
+		std::string loyaltyTitle;
 
 		Skill skills[SKILL_LAST + 1];
 		LightInfo itemsLight;
@@ -2210,6 +2409,7 @@ class Player final : public Creature, public Cylinder
 		uint32_t lastIP = 0;
 		uint32_t accountNumber = 0;
 		uint32_t guid = 0;
+		uint32_t loyaltyPoints = 1;
 		uint8_t isDailyReward = DAILY_REWARD_NOTCOLLECTED;
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
@@ -2226,6 +2426,7 @@ class Player final : public Creature, public Cylinder
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
 		uint16_t expBoostStamina = 0;
+		uint16_t achievementsPoints = 0;
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;
@@ -2239,6 +2440,23 @@ class Player final : public Creature, public Cylinder
 		int16_t lastDepotId = -1;
 		StashItemList stashItems; // [ItemID] = amount
 		uint32_t movedItems = 0;
+
+		// Player summary
+		std::vector<uint16_t> hirelingOutfitsObtained;
+		std::vector<uint8_t> hirelingJobsObtained;
+		std::vector<uint8_t> titles;
+		std::map<Blessings_t, uint16_t> blessingsObtained;
+		StashItemList houseItemsObtained;
+		uint16_t storeXpBoostsObtained = 0;
+		uint16_t dailyRewardCollectionsObtained = 0;
+		uint16_t hirelingsObtained = 0;
+		uint16_t preyCardsObtained = 0;
+		uint16_t charmsObtained = 0;
+		uint16_t goshnarObtained = 0;
+		uint16_t dromeObtained = 0;
+		uint16_t loginStreak = 0;
+		uint16_t taskHuntingPointsObtained = 0;
+		uint16_t mapAreaDiscoveredPercentage = 0;
 
 		// Bestiary
 		bool charmExpansion = false;
@@ -2268,6 +2486,8 @@ class Player final : public Creature, public Cylinder
 
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;
+		uint8_t loyaltyBonusPercent = 0;
+		uint8_t currentTitle = 0;
 		double_t magLevelPercent = 0;
 
 		PlayerSex_t sex = PLAYERSEX_FEMALE;

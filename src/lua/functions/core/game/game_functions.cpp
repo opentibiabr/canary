@@ -618,3 +618,191 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 
 	return 1;
 }
+
+int GameFunctions::luaGameRegisterAchievement(lua_State* L) {
+	// Game.registerAchievement(id, name, description, secret, grade, points)
+	if (lua_gettop(L) < 6) {
+		reportErrorFunc("Achievement can only be registered with all params.");
+		lua_pushnil(L);
+	} else {
+		uint16_t id = getNumber<uint16_t>(L, 1);
+		std::string name = getString(L, 2);
+		std::string description = getString(L, 3);
+		bool secret = getBoolean(L, 4);
+		uint8_t grade = getNumber<uint8_t>(L, 5);
+		uint8_t points = getNumber<uint8_t>(L, 6);
+		g_game().registerAchievement(id, name, description, secret, grade, points);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievementInfoById(lua_State* L) {
+	// Game.getAchievementInfoById(id)
+	uint16_t id = getNumber<uint16_t>(L, 1);
+	Achievement achievement = g_game().getAchievementById(id);
+	if (achievement.id != 0) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievementInfoByName(lua_State* L) {
+	// Game.getAchievementInfoByName(name)
+	std::string name = getString(L, 1);
+	Achievement achievement = g_game().getAchievementByName(name);
+	if (achievement.id != 0) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetSecretAchievements(lua_State* L) {
+	// Game.getSecretAchievements()
+	std::vector<Achievement> achievements = g_game().getSecretAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto& achievement : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetPublicAchievements(lua_State* L) {
+	// Game.getPublicAchievements()
+	std::vector<Achievement> achievements = g_game().getPublicAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto& achievement : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement.id);
+		setField(L, "name", achievement.name);
+		setField(L, "description", achievement.description);
+		setField(L, "points", achievement.points);
+		setField(L, "grade", achievement.grade);
+		setField(L, "secret", achievement.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetAchievements(lua_State* L) {
+	// Game.getAchievements()
+	std::map<uint16_t, Achievement> achievements = g_game().getAchievements();
+	int index = 0;
+	lua_createtable(L, achievements.size(), 0);
+	for (const auto& achievement_it : achievements) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", achievement_it.first);
+		setField(L, "name", achievement_it.second.name);
+		setField(L, "description", achievement_it.second.description);
+		setField(L, "points", achievement_it.second.points);
+		setField(L, "grade", achievement_it.second.grade);
+		setField(L, "secret", achievement_it.second.secret);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetMounts(lua_State* L) {
+	// Game.getMounts()
+	int index = 0;
+	const auto& mounts = g_game().mounts.getMounts();
+	lua_createtable(L, mounts.size(), 0);
+	for (const auto& mount : mounts) {
+		lua_createtable(L, 0, 6);
+		setField(L, "id", mount.id);
+		setField(L, "clientId", mount.clientId);
+		setField(L, "name", mount.name);
+		setField(L, "speed", mount.speed);
+		setField(L, "premium", mount.premium);
+		setField(L, "type", mount.type);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetOutfits(lua_State* L) {
+	// Game.getOutfits()
+	int index = 0;
+	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
+	lua_createtable(L, mounts.size(), 0);
+	for (const auto& outfit : outfits) {
+		lua_createtable(L, 0, 6);
+		setField(L, "lookType", outfit.lookType);
+		setField(L, "clientId", outfit.clientId);
+		setField(L, "name", outfit.name);
+		setField(L, "unlocked", outfit.unlocked);
+		setField(L, "premium", outfit.premium);
+		setField(L, "from", outfit.from);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}
+
+int GameFunctions::luaGameGetHighscoresLeaderId(lua_State* L) {
+	// Game.getHighscoresLeaderId(skill)
+	const auto highscoreVector = g_game().getHighscoreByCategory(static_cast<HighscoreCategories_t>(getNumber<uint16_t>(L, 1, 0)));
+	if (highscoreVector.size() != 0) {
+		lua_pushnumber(L, highscoreVector.front().id);
+	} else {
+		lua_pushnumber(L, 0);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameGetBestiaryRaceAmount(lua_State* L) {
+	// Game.getBestiaryRaceAmount(race)
+	uint16_t entries = 0;
+	BestiaryType_t race = static_cast<BestiaryType_t>(getNumber<uint16_t>(L, 1, 0));
+	for (const auto mType_it : g_game().getBestiaryList()) {
+		if (const MonsterType *mtype = g_monsters().getMonsterType(rit.second);
+				mType && mType->info.bestiaryRace == race) {
+			entries++;
+		}
+	}
+
+	lua_pushnumber(L, entries);
+	return 1;
+}
+
+int GameFunctions::luaGameRegisterPlayerTitle(lua_State* L) {
+	// Game.registerPlayerTitle(id, male_name, female_name, description, permanent)
+	if (lua_gettop(L) < 5) {
+		reportErrorFunc("Achievement can only be registered with all params.");
+		lua_pushnil(L);
+	} else {
+		uint16_t id = getNumber<uint16_t>(L, 1);
+		std::string male_name = getString(L, 2);
+		std::string female_name = getString(L, 3);
+		std::string description = getString(L, 4);
+		bool permanent = getBoolean(L, 5);
+		g_game().registerPlayerTitle(id, male_name, female_name, description, permanent);
+		pushBoolean(L, true);
+	}
+	return 1;
+}

@@ -34,6 +34,9 @@ static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;
 static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
 
+// Highscore interval time to reload from database in seconds
+static constexpr int64_t EVENT_HIGHSCORE_INTERVAL = 3600;
+
 // This is in miliseconds
 static constexpr int32_t EVENT_IMBUEMENT_INTERVAL = 1000;
 static constexpr uint8_t IMBUEMENT_MAX_TIER = 3;

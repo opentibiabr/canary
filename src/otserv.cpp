@@ -179,6 +179,7 @@ void loadModules() {
 		"data/npc");
 
 	g_game().loadBoostedCreature();
+	g_game().initializeGameWorldHighscores();
 	g_ioprey().InitializeTaskHuntOptions();
 }
 

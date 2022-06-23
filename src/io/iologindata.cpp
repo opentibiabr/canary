@@ -104,6 +104,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   if (!g_configManager().getBoolean(FREE_PREMIUM)) {
     query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
   }
+  query << ", (SELECT `creation` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `creation_timestamp`";
   query << " FROM `players` WHERE `name` = " << db.escapeString(name);
   DBResult_ptr result = db.storeQuery(query.str());
   if (!result) {
@@ -121,6 +122,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
 			result->getNumber<uint16_t>("group_id"));
     return false;
   }
+
   player->setGroup(group);
   player->accountNumber = result->getNumber<uint32_t>("account_id");
   player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
@@ -129,6 +131,22 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   } else {
     player->premiumDays = std::numeric_limits<uint16_t>::max();
   }
+
+  /*
+    Loyalty system:
+    - If creation timestamp is 0, that means it's the first time the player is trying to login on this account.
+    - Since it's the first login, we must update the database manually.
+    - This should be handled by the account manager, but not all of then do it so we handle it by ourself.
+  */
+	time_t creation = result->getNumber<time_t>("creation_timestamp");
+  if (creation == 0) {
+    query.str(std::string());
+    query << "UPDATE `accounts` SET `creation` = " << static_cast<uint32_t>(time(nullptr)) << " WHERE `id` = " << player->accountNumber;
+    db.storeQuery(query.str());
+  } else {
+		player->loyaltyPoints = static_cast<uint32_t>(std::ceil((static_cast<double>(time(nullptr) - creation)) / 86400));
+  }
+
   return true;
 }
 
@@ -292,7 +310,6 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
   player->addTaskHuntingPoints(result->getNumber<uint16_t>("task_points"));
-
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
 
@@ -719,6 +736,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
+  loadPlayerSummary(player);
+  loadPlayerDeathHistory(player);
   player->initializePrey();
 	player->initializeTaskHunting();
   player->updateBaseSpeed();
@@ -726,6 +745,141 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->updateInventoryImbuement(true);
   player->updateItemsLight(true);
   return true;
+}
+
+void IOLoginData::loadPlayerSummary(Player* player)
+{
+  DBResult_ptr result;
+  std::ostringstream query;
+  Database& db = Database::getInstance();
+
+  // Load death history
+  query << "SELECT * FROM `player_summary` WHERE `player_id` = " << player->getGUID();
+  if (result = db.storeQuery(query.str())) {
+    player->addXpBoostsObtained(result->getNumber<uint16_t>("xp_boosts"));
+    player->addRewardCollectionObtained(result->getNumber<uint16_t>("rewards_collection"));
+    player->addHirelingsObtained(result->getNumber<uint16_t>("hirelings"));
+    player->addPreyCardsObtained(result->getNumber<uint16_t>("prey_cards"));
+    player->addCharmsPointsObtained(result->getNumber<uint16_t>("charms"));
+    player->addGoshnarTaintsObtained(result->getNumber<uint16_t>("goshnar"));
+    player->addDromePointsObtained(result->getNumber<uint16_t>("drome"));
+    player->addAchievementsPoints(result->getNumber<uint16_t>("achievements_points"));
+    player->addLoginStreak(result->getNumber<uint16_t>("login_streak"));
+    player->addTaskHuntingPointsObtained(result->getNumber<uint16_t>("task_points"));
+    player->addMapAreaDiscoveredPercentage(result->getNumber<uint16_t>("map_area"));
+
+    uint16_t u16;
+    uint16_t u16_2;
+    uint32_t u32;
+    unsigned long size;
+    PropStream propStream;
+
+    const char* stream = result->getStream("hireling_outfits", size);
+    propStream.init(stream, size);
+    while (propStream.read<uint16_t>(u16)) {
+      player->addHirelingOutfitObtained(u16);
+    }
+
+    stream = result->getStream("hireling_jobs", size);
+    propStream.init(stream, size);
+    while (propStream.read<uint16_t>(u16)) {
+      player->addHirelingJobsObtained(static_cast<uint8_t>(u16));
+    }
+
+    stream = result->getStream("house_items", size);
+    propStream.init(stream, size);
+    while (propStream.read<uint16_t>(u16) && propStream.read<uint32_t>(u32)) {
+      player->addHouseItemsObtained(u16, u32);
+    }
+
+    stream = result->getStream("blessings", size);
+    propStream.init(stream, size);
+    while (propStream.read<uint16_t>(u16) && propStream.read<uint16_t>(u16_2)) {
+      player->addBlessingsObtained(static_cast<Blessings_t>(u16), u16_2);
+    }
+
+    stream = result->getStream("achievements_unlockeds", size);
+    propStream.init(stream, size);
+    while (propStream.read<uint16_t>(u16) && propStream.read<uint32_t>(u32)) {
+      player->addAchievement(u16, false, u32);
+    }
+
+  } else {
+    query.str(std::string());
+    query << "INSERT INTO `player_summary` (`player_id`) VALUES (" << player->getGUID() << ')';
+    Database::getInstance().executeQuery(query.str());
+  }
+
+}
+
+void IOLoginData::loadPlayerDeathHistory(Player* player)
+{
+  DBResult_ptr result;
+  std::ostringstream query;
+  Database& db = Database::getInstance();
+
+  // Load death history
+  query << "SELECT `time`, `level`, `killed_by`, `mostdamage_by` FROM `player_deaths` WHERE `player_id` = " << player->getGUID();
+  if (result = db.storeQuery(query.str())) {
+    do {
+      std::string cause1 = result->getString("killed_by");
+      std::string cause2 = result->getString("mostdamage_by");
+      std::ostringstream description;
+      description << "Died at Level " << result->getNumber<uint32_t>("level") << " by";
+      if (!cause1.empty()) {
+        const char& character = cause1.front();
+        if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
+          description << " an ";
+        } else {
+          description << " a ";
+        }
+        description << cause1;
+      }
+
+      if (!cause2.empty()) {
+        if (!cause1.empty()) {
+          description << " and ";
+        }
+
+        const char& character = cause2.front();
+        if (character == 'a' || character == 'e' || character == 'i' || character == 'o' || character == 'u') {
+          description << " an ";
+        } else {
+          description << " a ";
+        }
+        description << cause2;
+      }
+      description << '.';
+
+      player->insertDeathOnHistory(std::move(description.str()), result->getNumber<uint32_t>("time"));
+    } while (result->next());
+  }
+
+  // Load pvp kills
+  query.str(std::string());
+	const std::string& escapedName = db.escapeString(player->getName());
+  query << "SELECT `d`.`time`, `d`.`killed_by`, `d`.`mostdamage_by`, `d`.`unjustified`, `d`.`mostdamage_unjustified`, `p`.`name` FROM `player_deaths` AS `d` INNER JOIN `players` AS `p` ON `d`.`player_id` = `p`.`id` WHERE ((`d`.`killed_by` = " << escapedName << " AND `d`.`is_player` = 1) OR (`d`.`mostdamage_by` = " << escapedName << " AND `d`.`mostdamage_is_player` = 1))";
+  if (result = db.storeQuery(query.str())) {
+    std::string cause1 = result->getString("killed_by");
+    std::string cause2 = result->getString("mostdamage_by");
+    std::string name = result->getString("name");
+
+    uint8_t status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_JUSTIFIED;
+    if (player->getName() == cause1) {
+      if (result->getNumber<uint32_t>("unjustified") == 1) {
+        status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
+      }
+    } else if (player->getName() == cause2) {
+      if (result->getNumber<uint32_t>("mostdamage_unjustified") == 1) {
+        status = CYCLOPEDIA_CHARACTERINFO_RECENTKILLSTATUS_UNJUSTIFIED;
+      }
+    }
+
+    std::ostringstream description;
+    description << "Killed " << name << '.';
+    player->insertPvpKillOnHistory(std::move(description.str()), result->getNumber<uint32_t>("time"), status);
+  }
+
 }
 
 bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream)
@@ -1271,8 +1425,95 @@ bool IOLoginData::savePlayer(Player* player)
     return false;
   }
 
+  if (!savePlayerSummary(player)) {
+    return false;
+  }
+
   //End the transaction
   return transaction.commit();
+}
+
+bool IOLoginData::savePlayerSummary(const Player* player)
+{
+  std::ostringstream query;
+  Database& db = Database::getInstance();
+
+  // Player store summary
+  query.str(std::string());
+  query << "UPDATE `player_summary` SET ";
+  query << "`charms` = " << player->getCharmsPointsObtained() << ',';
+  query << "`goshnar` = " << player->getGoshnarTaintsObtained() << ',';
+  query << "`drome` = " << player->getDromePointsObtained() << ',';
+  query << "`xp_boosts` = " << player->getXpBoostsObtained() << ',';
+  query << "`rewards_collection` = " << player->getRewardCollectionObtained() << ',';
+  query << "`hirelings` = " << player->getHirelingsObtained() << ',';
+  query << "`prey_cards` = " << player->getPreyCardsObtained() << ',';
+  query << "`achievements_points` = " << player->getAchievementsPoints() << ',';
+  query << "`login_streak` = " << player->getLoginStreak() << ',';
+  query << "`task_points` = " << player->getTaskHuntingPointsObtained() << ',';
+  query << "`map_area` = " << player->getMapAreaDiscoveredPercentage() << ',';
+
+  // Hirelings outfits purchased
+  PropWriteStream propHirelingOutfitsStream;
+  for (const auto lookType_it : player->getHirelinsOutfitsObtained()) {
+   propHirelingOutfitsStream.write<uint16_t>(lookType_it);
+  }
+  size_t hirelingOutfitsSize;
+  const char* hirelingOutfitsList = propHirelingOutfitsStream.getStream(hirelingOutfitsSize);
+  query << " `hireling_outfits` = " << db.escapeBlob(hirelingOutfitsList, hirelingOutfitsSize) << ',';
+
+
+  // Hirelings jobs purchased
+  PropWriteStream propHirelingJobsStream;
+  for (const auto job_it : player->getHirelinsJobsObtained()) {
+   propHirelingJobsStream.write<uint16_t>(static_cast<uint16_t>(job_it));
+  }
+  size_t hirelingJobsSize;
+  const char* hirelingJobsList = propHirelingJobsStream.getStream(hirelingJobsSize);
+  query << " `hireling_jobs` = " << db.escapeBlob(hirelingJobsList, hirelingJobsSize) << ',';
+
+
+  // House items purchased
+  PropWriteStream propHouseItemsStream;
+  for (const auto item_it : player->getHouseItemsObtained()) {
+   propHouseItemsStream.write<uint16_t>(item_it.first);
+   propHouseItemsStream.write<uint32_t>(item_it.second);
+  }
+  size_t houseItemsSize;
+  const char* houseItemsList = propHouseItemsStream.getStream(houseItemsSize);
+  query << " `house_items` = " << db.escapeBlob(houseItemsList, houseItemsSize) << ',';
+
+
+  // Blessings purchased
+  PropWriteStream propBlessingsStream;
+  for (const auto bless_it : player->getBlessingsObtained()) {
+   propBlessingsStream.write<uint16_t>(static_cast<uint16_t>(bless_it.first));
+   propBlessingsStream.write<uint16_t>(bless_it.first);
+  }
+  size_t blessingsSize;
+  const char* blessingsList = propBlessingsStream.getStream(blessingsSize);
+  query << " `blessings` = " << db.escapeBlob(blessingsList, blessingsSize) << ',';
+
+
+  // Achievements unlocked
+  PropWriteStream propAchievementsStream;
+  for (const auto achievementPair : player->getAchievementsUnlocked()) {
+   propAchievementsStream.write<uint16_t>(achievementPair.first);
+   propAchievementsStream.write<uint32_t>(achievementPair.second);
+  }
+  size_t unlockedsSize;
+  const char* unlockedsList = propAchievementsStream.getStream(unlockedsSize);
+  query << " `achievements_unlockeds` = " << db.escapeBlob(unlockedsList, unlockedsSize);
+
+
+  query << " WHERE `player_id` = " << player->getGUID();
+
+  if (!db.executeQuery(query.str())) {
+    SPDLOG_WARN("[IOLoginData::savePlayerStoreTransactionSummary] - Error saving store transactions summary from player: {}", player->getName());
+    return false;
+  }
+
+  return true;
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid)

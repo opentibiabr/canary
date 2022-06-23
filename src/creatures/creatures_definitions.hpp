@@ -885,4 +885,30 @@ struct PartyAnalyzer {
 	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
 };
 
+struct Achievement {
+	Achievement() {}
+
+	std::string name;
+	std::string description;
+
+	bool secret = false;
+
+	uint8_t grade = 0;
+	uint8_t points = 0;
+
+	uint16_t id = 0;
+};
+
+struct PlayerTitle {
+	PlayerTitle() {}
+
+	std::string maleName;
+	std::string femaleName;
+	std::string description;
+
+	bool permanent = false;
+
+	uint16_t id = 0;
+};
+
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

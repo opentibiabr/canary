@@ -2994,3 +2994,375 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerHasAchievement(lua_State* L) {
+	// player:hasAchievement(id or name)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->hasAchievement(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievement(lua_State* L) {
+	// player:addAchievement(id or name[, sendMessage = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->addAchievement(achievementId, getBoolean(L, 3, true)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveAchievement(lua_State* L) {
+	// player:removeAchievement(id or name)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint16_t achievementId = 0;
+	if (isNumber(L, 2)) {
+		achievementId = getNumber<uint16_t>(L, 2);
+	} else {
+		achievementId = g_game().getAchievementByName(getString(L, 2)).id;
+	}
+
+	pushBoolean(L, player->removeAchievement(achievementId));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetAchievementsPoints(lua_State* L) {
+	// player:getAchievementsPoints()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		lua_pushnumber(L, player->getAchievementsPoints());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddAchievementsPoints(lua_State* L) {
+	// player:addAchievementsPoints(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int16_t points = getNumber<int16_t>(L, 2);
+	if (points > 0) {
+		player->addAchievementsPoints(static_cast<uint16_t>(points));
+	} else if (points < 0) {
+		player->removeAchievementsPoints(static_cast<uint16_t>(points));
+	}
+
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddHirelingOutfitObtained(lua_State* L) {
+	// player:addHirelingOutfitObtained(lookType)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addHirelingOutfitObtained(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddHirelingJobsObtained(lua_State* L) {
+	// player:addHirelingJobsObtained(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addHirelingJobsObtained(getNumber<uint8_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddBlessingsObtained(lua_State* L) {
+	// player:addBlessingsObtained(id, amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addBlessingsObtained(static_cast<Blessings_t>(getNumber<uint8_t>(L, 2)), getNumber<uint16_t>(L, 3));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddHouseItemsObtained(lua_State* L) {
+	// player:addHouseItemsObtained(id, amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addHouseItemsObtained(getNumber<uint16_t>(L, 2), getNumber<uint32_t>(L, 3));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddXpBoostsObtained(lua_State* L) {
+	// player:addXpBoostsObtained(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addXpBoostsObtained(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddRewardCollectionObtained(lua_State* L) {
+	// player:addRewardCollectionObtained(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addRewardCollectionObtained(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddHirelingsObtained(lua_State* L) {
+	// player:addHirelingsObtained(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addHirelingsObtained(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddPreyCardsObtained(lua_State* L) {
+	// player:addPreyCardsObtained(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addPreyCardsObtained(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddLoginStreak(lua_State* L) {
+	// player:addLoginStreak(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addLoginStreak(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddTaskHuntingPointsObtained(lua_State* L) {
+	// player:addTaskHuntingPointsObtained(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addTaskHuntingPointsObtained(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddMapAreaDiscoveredPercentage(lua_State* L) {
+	// player:addMapAreaDiscoveredPercentage(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addMapAreaDiscoveredPercentage(getNumber<uint16_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLoyaltyBonus(lua_State* L) {
+	// player:setLoyaltyBonus(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->setLoyaltyBonus(getNumber<uint8_t>(L, 2));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyBonus(lua_State* L) {
+	// player:getLoyaltyBonus()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoyaltyBonus());
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyPoints(lua_State* L) {
+	// player:getLoyaltyPoints()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoyaltyPoints());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoyaltyTitle(lua_State* L) {
+	// player:getLoyaltyTitle()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushString(L, player->getLoyaltyTitle());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLoyaltyTitle(lua_State* L) {
+	// player:setLoyaltyTitle(name)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->setLoyaltyTitle(getString(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetBestiaryRaceEntries(lua_State* L) {
+	// player:getBestiaryRaceEntries(race)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, g_iobestiary().getBestiaryRaceUnlocked(player, static_cast<BestiaryType_t>(getNumber<uint16_t>(L, 2, 0))));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLoginStreak(lua_State* L) {
+	// player:getLoginStreak()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getLoginStreak());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTaskHuntingPointsObtained(lua_State* L) {
+	// player:getTaskHuntingPointsObtained()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getTaskHuntingPointsObtained());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetMapAreaDiscoveredPercentage(lua_State* L) {
+	// player:getMapAreaDiscoveredPercentage()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, player->getMapAreaDiscoveredPercentage());
+	return 1;
+}
+
+
+
+int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
+	// player:addTitle(id)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addTitle(getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
+	// player:getTitles()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int index = 0;
+	lua_createtable(L, player->getTitles().size(), 0);
+	for (const auto id : player->getTitles()) {
+		lua_pushnumber(L, id);
+		lua_rawseti(L, -2, ++index);
+	}
+	return 1;
+}

@@ -144,7 +144,8 @@ private:
 	void parseHighscores(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
-	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
+	void sendHighscores(const std::vector<HighscoreCharacter>& characters, uint8_t type,
+						uint8_t category, uint32_t vocation, uint16_t page, uint8_t entriesPerPage);
 
 	void parseTournamentLeaderboard(NetworkMessage &msg);
 
@@ -302,15 +303,16 @@ private:
 	void sendCyclopediaCharacterBaseInformation();
 	void sendCyclopediaCharacterGeneralStats();
 	void sendCyclopediaCharacterCombatStats();
-	void sendCyclopediaCharacterRecentDeaths(uint16_t page, uint16_t pages, const std::vector<RecentDeathEntry> &entries);
-	void sendCyclopediaCharacterRecentPvPKills(uint16_t page, uint16_t pages, const std::vector<RecentPvPKillEntry> &entries);
-	void sendCyclopediaCharacterAchievements();
-	void sendCyclopediaCharacterItemSummary();
+	void sendCyclopediaCharacterRecentDeaths(uint16_t requestedPage, uint16_t itemsPerPage, const std::vector<RecentDeathEntry> &entries);
+	void sendCyclopediaCharacterRecentPvPKills(uint16_t requestedPage, uint16_t itemsPerPage, const std::vector<RecentPvPKillEntry> &entries);
+	void sendCyclopediaCharacterAchievements(uint16_t secretsUnlocked, std::vector<std::pair<Achievement, uint32_t>> achievementsUnlocked);
+	void sendCyclopediaCharacterItemSummary(StashItemList inventoryItems, StashItemList storeInboxItems, StashItemList supplyStashItems,
+											StashItemList depotBoxItems, StashItemList inboxItems);
 	void sendCyclopediaCharacterOutfitsMounts();
 	void sendCyclopediaCharacterStoreSummary();
 	void sendCyclopediaCharacterInspection();
 	void sendCyclopediaCharacterBadges();
-	void sendCyclopediaCharacterTitles();
+	void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles, uint8_t currentTitle);
 
 	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
 	void sendCreatureShield(const Creature *creature);

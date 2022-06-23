@@ -86,20 +86,20 @@ public:
 	explicit FileReadHandle(const std::string& initName);
 	~FileReadHandle() override;
 
-	uint8_t getU8();
-	uint16_t getU16();
-	uint32_t getU32();
-	uint64_t getU64();
+	uint8_t getU8() const;
+	uint16_t getU16() const;
+	uint32_t getU32() const;
+	uint64_t getU64() const;
 
-	int8_t get8();
-	int32_t get32();
+	int8_t get8() const;
+	int32_t get32() const;
 
 	std::string getRawString(size_t size);
 	std::string getString();
 	std::string getLongString();
 
-	bool seek(size_t offset);
-	bool seekRelative(size_t offset);
+	bool seek(size_t offset) const;
+	bool seekRelative(size_t offset) const;
 	void skip(size_t offset) {seekRelative(offset);}
 	size_t size() const {
 		return fileSize;
@@ -293,13 +293,13 @@ public:
 	bool addString(const std::string& str);
 	bool addString(const char* str);
 	bool addLongString(const std::string& str);
-	bool addRAW(const std::string& str);
-	bool addRAW(const uint8_t* ptr, size_t size);
+	bool addRAW(const std::string& str) const;
+	bool addRAW(const uint8_t* ptr, size_t size) const;
 	bool addRAW(const char* str);
 
 protected:
 	template<class T>
-	bool addType(T classType) {
+	bool addType(T classType)  const {
 		fwrite(&classType, sizeof(classType), 1, getFile());
 		return ferror(getFile()) == 0;
 	}

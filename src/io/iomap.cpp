@@ -96,10 +96,6 @@ bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fi
 
 	// This get node of "OTBM_MAP_DATA"
 	std::shared_ptr<BinaryNode> binaryNodeMapData = binaryNodeRoot->getChild();
-	if (binaryNodeMapData == nullptr) {
-		SPDLOG_ERROR("[IOMap::loadMap] - binaryNodeMapData is nullptr");
-		return false;
-	}
 	// Parsing map data attributes information (monster, npc, house, etc)
 	if (!parseMapDataAttributes(*binaryNodeMapData, *map, fileName)) {
 		return false;
@@ -288,11 +284,6 @@ bool IOMap::parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const
 	for (std::shared_ptr<BinaryNode> binaryNodeMapTile = binaryNodeMapData.getChild();
 	binaryNodeMapTile != nullptr; binaryNodeMapTile = binaryNodeMapTile->advance()) {
 		const uint8_t type = binaryNodeMapTile->getU8();
-		if (binaryNodeMapTile == nullptr) {
-			SPDLOG_ERROR("[IOMap::parseTileArea] - binaryNodeMapTile is nullptr");
-			return false;
-		}
-
 		if (type == 0) {
 			SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid node tile with type {}", type);
 			break;

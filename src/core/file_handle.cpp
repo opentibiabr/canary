@@ -19,8 +19,6 @@ uint8_t NodeFileWriteHandle::NODE_START = ::NODE_START;
 uint8_t NodeFileWriteHandle::NODE_END = ::NODE_END;
 uint8_t NodeFileWriteHandle::ESCAPE_CHAR = ::ESCAPE_CHAR;
 
-inline BinaryNode g_binaryNode;
-
 FileHandle::FileHandle() = default;
 
 FileHandle::~FileHandle() = default;
@@ -72,7 +70,8 @@ FileReadHandle::FileReadHandle(const std::string& initName) : fileName(initName)
 
 FileReadHandle::~FileReadHandle() = default;
 
-uint8_t FileReadHandle::getU8() {
+uint8_t FileReadHandle::getU8() const
+{
 	uint8_t value = 0;
 	if (ferror(getFile()) != 0) {
 		return 0;
@@ -88,7 +87,8 @@ uint8_t FileReadHandle::getU8() {
 	return 0;
 }
 
-uint16_t FileReadHandle::getU16() {
+uint16_t FileReadHandle::getU16() const
+{
 	uint16_t value;
 	if (ferror(getFile()) != 0) {
 		return 0;
@@ -103,7 +103,8 @@ uint16_t FileReadHandle::getU16() {
 	return 0;
 }
 
-uint32_t FileReadHandle::getU32() {
+uint32_t FileReadHandle::getU32() const
+{
 	uint32_t value;
 	if (ferror(getFile()) != 0) {
 		return 0;
@@ -118,7 +119,8 @@ uint32_t FileReadHandle::getU32() {
 	return 0;
 }
 
-uint64_t FileReadHandle::getU64() {
+uint64_t FileReadHandle::getU64() const
+{
 	uint64_t value;
 	if (ferror(getFile()) != 0) {
 		return 0;
@@ -133,7 +135,8 @@ uint64_t FileReadHandle::getU64() {
 	return 0;
 }
 
-int8_t FileReadHandle::get8() {
+int8_t FileReadHandle::get8() const
+{
 	int8_t value;
 	if (ferror(getFile()) != 0) {
 		return 0;
@@ -148,7 +151,8 @@ int8_t FileReadHandle::get8() {
 	return 0;
 }
 
-int32_t FileReadHandle::get32() {
+int32_t FileReadHandle::get32() const
+{
 	uint32_t value;
 	if (ferror(getFile()) != 0) {
 		return 0;
@@ -179,8 +183,9 @@ std::string FileReadHandle::getRawString(size_t size)
 std::string FileReadHandle::getString()
 {
 	std::string string;
-	uint16_t value = g_binaryNode.getU16();
-	if (!value) {
+	BinaryNode binaryNode;
+	const uint16_t value = binaryNode.getU16();
+	if (value == 0) {
 		setErrorCode(FILE_READ_ERROR);
 		return std::string();
 	}
@@ -191,8 +196,9 @@ std::string FileReadHandle::getString()
 std::string FileReadHandle::getLongString()
 {
 	std::string string;
-	uint32_t value = g_binaryNode.getU32();
-	if (!value) {
+	BinaryNode binaryNode;
+	const uint32_t value = binaryNode.getU32();
+	if (value == 0) {
 		setErrorCode(FILE_READ_ERROR);
 		return std::string();
 	}
@@ -200,12 +206,12 @@ std::string FileReadHandle::getLongString()
 	return string;
 }
 
-bool FileReadHandle::seek(size_t offset)
+bool FileReadHandle::seek(size_t offset) const
 {
 	return fseek(getFile(), long(offset), SEEK_SET) == 0;
 }
 
-bool FileReadHandle::seekRelative(size_t offset)
+bool FileReadHandle::seekRelative(size_t offset) const
 {
 	return fseek(getFile(), long(offset), SEEK_CUR) == 0;
 }
@@ -365,7 +371,7 @@ int8_t BinaryNode::get8() {
 	int8_t value = 0;
 	if (readOffsetSize + 1 > stringData.size()) {
 		readOffsetSize = stringData.size();
-		SPDLOG_ERROR("[BinaryNode::getU8] - Failed to read value", value);
+		SPDLOG_ERROR("[BinaryNode::get8] - Failed to read value", value);
 		return value;
 	}
 	value = *(int8_t*)(stringData.data() + readOffsetSize);
@@ -378,7 +384,7 @@ int16_t BinaryNode::get16() {
 	int16_t value = 0;
 	if (readOffsetSize + 2 > stringData.size()) {
 		readOffsetSize = stringData.size();
-		SPDLOG_ERROR("[BinaryNode::getU16] - Failed to read value", value);
+		SPDLOG_ERROR("[BinaryNode::get16] - Failed to read value", value);
 		return value;
 	}
 	value = *(int16_t*)(stringData.data() + readOffsetSize);
@@ -391,7 +397,7 @@ int32_t BinaryNode::get32() {
 	int32_t value = 0;
 	if (readOffsetSize + 4 > stringData.size()) {
 		readOffsetSize = stringData.size();
-		SPDLOG_ERROR("[BinaryNode::getU32] - Failed to read value", value);
+		SPDLOG_ERROR("[BinaryNode::get32] - Failed to read value", value);
 		return 0;
 	}
 	value = *(int32_t*)(stringData.data() + readOffsetSize);
@@ -404,7 +410,7 @@ int64_t BinaryNode::get64() {
 	int64_t value = 0;
 	if (readOffsetSize + 8 > stringData.size()) {
 		readOffsetSize = stringData.size();
-		SPDLOG_ERROR("[BinaryNode::getU64] - Failed to read value", value);
+		SPDLOG_ERROR("[BinaryNode::get64] - Failed to read value", value);
 		return value;
 	}
 	value = *(int64_t*)(stringData.data() + readOffsetSize);
@@ -689,13 +695,13 @@ bool FileWriteHandle::addLongString(const std::string& str)
 	return true;
 }
 
-bool FileWriteHandle::addRAW(const std::string& str)
+bool FileWriteHandle::addRAW(const std::string& str) const
 {
 	fwrite(str.c_str(), 1, str.size(), getFile());
 	return ferror(getFile()) == 0;
 }
 
-bool FileWriteHandle::addRAW(const uint8_t* ptr, size_t byte)
+bool FileWriteHandle::addRAW(const uint8_t* ptr, size_t byte) const
 {
 	fwrite(ptr, 1, byte, getFile());
 	return ferror(getFile()) == 0;

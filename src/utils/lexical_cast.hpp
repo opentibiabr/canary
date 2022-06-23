@@ -17,13 +17,13 @@ template<typename Type>
 inline const std::string convertNumericToString(const Type& arg, const char* fmt) {
 
 	enum { MAX_SIZE = ( std::numeric_limits<Type>::digits10 + 1 ) + 1 };
-	char buffer[MAX_SIZE] = { 0 };
+	std::string buffer[MAX_SIZE] = { 0 };
 
 	if (sprintf(buffer, fmt, arg) < 0) {
 		SPDLOG_ERROR("[LexicalCast::convertNumericToString] - Failed to convert from numeric to string");
 		return std::string();
 	}
-	return (std::string(buffer));
+	return buffer;
 }
 
 template<typename Type>

@@ -274,7 +274,7 @@ int16_t DBResult::get16(const std::string& tableName) const
 		return 0;
 	}
 
-	return std::atoi(rowResult);
+	return LexicalCast::stringToNumeric<int16_t>(rowResult);
 }
 
 int32_t DBResult::get32(const std::string& tableName) const
@@ -284,7 +284,7 @@ int32_t DBResult::get32(const std::string& tableName) const
 		return 0;
 	}
 
-	return std::atol(rowResult);
+	return LexicalCast::stringToNumeric<int32_t>(rowResult);
 }
 
 int64_t DBResult::get64(const std::string& tableName) const
@@ -324,19 +324,7 @@ uint32_t DBResult::getU32(const std::string& tableName) const
 		return 0;
 	}
 
-	try
-	{
-		return std::stoul(rowResult);
-	}
-	catch(std::invalid_argument const& argument)
-	{
-		SPDLOG_ERROR("[DBResult::getU32] - Invalid argument: ", argument.what());
-	}
-	catch(std::out_of_range const& range)
-	{
-		SPDLOG_ERROR("[DBResult::getU32] - Out of range: ", range.what());
-	}
-	return 0;
+	return LexicalCast::stringToNumeric<uint32_t>(rowResult);
 }
 
 uint64_t DBResult::getU64(const std::string& tableName) const
@@ -346,19 +334,7 @@ uint64_t DBResult::getU64(const std::string& tableName) const
 		return 0;
 	}
 
-	try
-	{
-		return std::stoull(rowResult);
-	}
-	catch(std::invalid_argument const& argument)
-	{
-		SPDLOG_ERROR("[DBResult::getU64] - Invalid argument: ", argument.what());
-	}
-	catch(std::out_of_range const& range)
-	{
-		SPDLOG_ERROR("[DBResult::getU64] - Out of range: ", range.what());
-	}
-	return 0;
+	return LexicalCast::stringToNumeric<uint64_t>(rowResult);
 }
 
 time_t DBResult::getTime(const std::string& tableName) const

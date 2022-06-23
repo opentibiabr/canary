@@ -207,8 +207,6 @@ public:
 
 	std::shared_ptr<BinaryNode> getRootNode() override;
 
-	void close();
-
 	size_t size() override {
 		return fileSize;
 	}

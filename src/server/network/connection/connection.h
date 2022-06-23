@@ -48,7 +48,7 @@ class ConnectionManager
 	private:
 		ConnectionManager() = default;
 
-		std::unordered_set<Connection_ptr> connections;
+		phmap::flat_hash_set<Connection_ptr> connections;
 		std::mutex connectionManagerLock;
 };
 

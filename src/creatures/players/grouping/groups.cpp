@@ -13,7 +13,7 @@
 
 #include "utils/tools.h"
 
-const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
+const phmap::flat_hash_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
 	{"cannotusecombat", PlayerFlag_CannotUseCombat},
 	{"cannotattackplayer", PlayerFlag_CannotAttackPlayer},
 	{"cannotattackmonster", PlayerFlag_CannotAttackMonster},
@@ -54,7 +54,7 @@ const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
 	{"isalwayspremium", PlayerFlag_IsAlwaysPremium}
 };
 
-const std::unordered_map<std::string, PlayerCustomFlags> ParsePlayerCustomFlagMap = {
+const phmap::flat_hash_map<std::string, PlayerCustomFlags> ParsePlayerCustomFlagMap = {
 	{"canmapclickteleport", PlayerCustomFlag_CanMapClickTeleport},
 	{"ignoredbynpcs", PlayerCustomFlag_IgnoredByNpcs}
 };

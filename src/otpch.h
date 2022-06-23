@@ -36,5 +36,6 @@
 #include <pugixml.hpp>
 
 #include "spdlog/spdlog.h"
+#include "parallel_hashmap/phmap.h"
 
 #endif  // SRC_OTPCH_H_

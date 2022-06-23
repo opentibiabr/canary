@@ -389,7 +389,7 @@ class ItemAttributes
 		static double emptyDouble;
 		static bool emptyBool;
 
-		using CustomAttributeMap = std::unordered_map<std::string, CustomAttribute>;
+		using CustomAttributeMap = phmap::flat_hash_map<std::string, CustomAttribute>;
 
 		struct Attribute {
 			union {

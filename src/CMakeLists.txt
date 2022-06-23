@@ -351,12 +351,14 @@ if (MSVC)
       ${LUAJIT_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
       ${GMP_INCLUDE_DIR}
+      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
   )
 
     target_link_libraries(${PROJECT_NAME}
     PRIVATE
       ${LUAJIT_LIBRARIES}
       ${GMP_LIBRARIES}
+      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
       CURL::libcurl
       jsoncpp_static
       unofficial::libmariadb unofficial::mariadbclient

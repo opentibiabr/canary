@@ -13,6 +13,7 @@
     "curl",
     "jsoncpp",
     "libzippp",
+    "parallel-hashmap",
     "protobuf",
     {
       "name": "luajit",

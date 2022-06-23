@@ -745,19 +745,13 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 bool IOLoginData::saveOpenContainerItems(const Item &item, const std::map<uint8_t, OpenContainer>& openContainers, std::list<ContainerPair>& queue, int32_t runningId)
 {
-	const Container* container = item.getContainer();
-	if (container != nullptr)
+	if (const Container* container = item.getContainer();
+		container != nullptr)
 	{
 		// Casting item for send non const item, keep in mind that the cast item must never be modified, in the future we must refactor the Item class so that they always accept the const item
-		auto castContainer = std::bit_cast<Container*>(container);
-		auto &attributes = castContainer->getAttributes();
+		auto setContainer = std::bit_cast<Container*>(container);
 		if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-			// We will not use the "setIntAttr" because it is not allowed to use modifiers in const pointer
-			if (!attributes->isIntAttrType(ITEM_ATTRIBUTE_OPENCONTAINER)) {
-				return false;
-			}
-
-			attributes->getAttr(ITEM_ATTRIBUTE_OPENCONTAINER).value.integer = 0;
+			setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
 		}
 
 		if (openContainers.empty()) {
@@ -766,15 +760,10 @@ bool IOLoginData::saveOpenContainerItems(const Item &item, const std::map<uint8_
 		}
 
 		for (const auto& [containerCidPair, openContainerPair] : openContainers) {
-			auto openContainer = openContainerPair.container;
-
-			if (openContainer == container) {
-				// We will not use the "setIntAttr" because it is not allowed to use modifiers in const pointer
-				if (!attributes->isIntAttrType(ITEM_ATTRIBUTE_OPENCONTAINER)) {
-					return false;
-				}
-
-				attributes->getAttr(ITEM_ATTRIBUTE_OPENCONTAINER).value.integer = ((int)containerCidPair) + 1;
+			if (auto openContainer = openContainerPair.container;
+				openContainer == container)
+			{
+				setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
 				break;
 			}
 		}
@@ -786,31 +775,22 @@ bool IOLoginData::saveOpenContainerItems(const Item &item, const std::map<uint8_
 
 bool IOLoginData::saveOpenSubContainerItems(const Item &item, const std::map<uint8_t, OpenContainer>& openContainers, std::list<ContainerPair>& queue, int32_t runningId)
 {
-	const Container* container = item.getContainer();
-	if (container) {
+	if (const Container* container = item.getContainer();
+		container != nullptr)
+	{
 		queue.emplace_back(container, runningId);
 		// Casting item for send non const item, keep in mind that the cast item must never be modified, in the future we must refactor the Item class so that they always accept the const item
-		auto castContainer = std::bit_cast<Container*>(container);
-		auto &attributes = castContainer->getAttributes();
+		auto setContainer = std::bit_cast<Container*>(container);
 		if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-			// We will not use the "setIntAttr" because it is not allowed to use modifiers in const pointer
-			if (!attributes->isIntAttrType(ITEM_ATTRIBUTE_OPENCONTAINER)) {
-				return false;
-			}
-
-			attributes->getAttr(ITEM_ATTRIBUTE_OPENCONTAINER).value.integer = 0;
+			setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
 		}
 
 		if (!openContainers.empty()) {
 			for (const auto& [containerCidPair, openContainerPair] : openContainers) {
-				auto openContainer = openContainerPair.container;
-				if (openContainer == container) {
-					// We will not use the "setIntAttr" because it is not allowed to use modifiers in const pointer
-					if (!attributes->isIntAttrType(ITEM_ATTRIBUTE_OPENCONTAINER)) {
-						return false;
-					}
-
-					attributes->getAttr(ITEM_ATTRIBUTE_OPENCONTAINER).value.integer = ((int)containerCidPair) + 1;
+				if (auto openContainer = openContainerPair.container;
+					openContainer == container)
+				{
+					setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
 					break;
 				}
 			}

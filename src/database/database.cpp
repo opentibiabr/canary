@@ -373,12 +373,13 @@ time_t DBResult::getTime(const std::string& tableName) const
 
 bool DBResult::getBoolean(const std::string& tableName) const
 {
-	auto value = getU8(tableName);
-	if (std::cmp_equal(value, 1)) {
-		return true;
+	if (auto value = getU8(tableName);
+		std::cmp_equal(value, 0))
+	{
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 std::string DBResult::getString(const std::string& s) const

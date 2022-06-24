@@ -1526,9 +1526,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 			bed->wakeUp(this);
 		}
 
-		if (isLogin) {
-			SPDLOG_INFO("{} has logged in", name);
-		}
+		SPDLOG_INFO("{} has logged in", name);
 
 		if (guild) {
 			guild->addMember(this);
@@ -1554,6 +1552,14 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 
 		g_game().checkPlayersRecord();
 		IOLoginData::updateOnlineStatus(guid, true);
+		if (getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+			for (uint8_t i = 2; i <= 6; i++) {
+				if (!hasBlessing(i)) {
+					addBlessing(i, 1);
+				}
+			}
+			sendBlessStatus();
+		}
 	}
 }
 
@@ -1629,13 +1635,20 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 
 	if (creature == this) {
 		if (isLogout) {
+			if (party) {
+				party->leaveParty(this);
+			}
+			if (guild) {
+				guild->removeMember(this);
+			}
+
 			loginPosition = getPosition();
+			lastLogout = time(nullptr);
 			SPDLOG_INFO("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(*this);
 			clearPartyInvitations();
+			IOLoginData::updateOnlineStatus(guid, false);
 		}
-
-		lastLogout = time(nullptr);
 
 		if (eventWalk != 0) {
 			setFollowCreature(nullptr);
@@ -1646,16 +1659,6 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 		}
 
 		closeShopWindow();
-
-		if (party && isLogout) {
-			party->leaveParty(this);
-		}
-
-		if (guild && isLogout) {
-			guild->removeMember(this);
-		}
-
-		IOLoginData::updateOnlineStatus(guid, false);
 
 		bool saved = false;
 		for (uint32_t tries = 0; tries < 3; ++tries) {
@@ -2642,14 +2645,6 @@ void Player::death(Creature* lastHitCreature)
 			}
 		}
 
-		std::ostringstream lostBlesses;
-		if (bless.length() == 0) {
-			lostBlesses << "You lost all your blesses.";
-		} else {
-			lostBlesses << "You are still blessed with " << bless;
-		}
-		sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-
 		sendStats();
 		sendSkills();
 		sendReLoginWindow(unfairFightReduction);
@@ -2729,8 +2724,7 @@ bool Player::spawn()
 
 	getParent()->postAddNotification(this, nullptr, 0);
 	g_game().addCreatureCheck(this);
-
-	addList();
+	g_game().addPlayer(this);
 	return true;
 }
 
@@ -2743,6 +2737,8 @@ void Player::despawn()
 	listWalkDir.clear();
 	stopEventWalk();
 	onWalkAborted();
+	g_game().playerSetAttackedCreature(this->getID(), 0);
+	g_game().playerFollowCreature(this->getID(), 0);
 
 	// remove check
 	Game::removeCreatureCheck(this);

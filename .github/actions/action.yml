@@ -1,3 +1,4 @@
+---
 name: Automated Version Bump
 description: Automated version bump for npm packages.
 runs:
@@ -35,7 +36,7 @@ inputs:
     default: 'false'
     required: false
   skip-push:
-    description: 'If true, skip pushing any commits or tags created after the version bump'
+    description: 'Skip pushing any commits or tags created after the version bump'
     default: false
     required: false
   PACKAGEJSON_DIR:

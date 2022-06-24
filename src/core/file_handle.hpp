@@ -100,25 +100,12 @@ public:
 
 	bool seek(size_t offset) const;
 	bool seekRelative(size_t offset) const;
-	void skip(size_t offset) {seekRelative(offset);}
-	size_t size() const {
-		return fileSize;
-	}
-	size_t tell() const {
-		if(getFile()) {
-			return ftell(getFile());
-		}
-		return 0;
-	}
+	void skip(size_t offset) const;
+	size_t size() const;
+	size_t tell() const;
 private:
 	size_t fileSize = 0;
 	std::string fileName;
-
-	template<class T>
-	bool getType(T& classType) {
-		fread(&classType, sizeof(classType), 1, file);
-		return ferror(file) == 0;
-	}
 };
 
 class NodeFileReadHandle;
@@ -130,6 +117,7 @@ class BinaryNode : public std::enable_shared_from_this<BinaryNode>
 public:
 	BinaryNode();
 	~BinaryNode();
+
 	NONCOPYABLE(BinaryNode);
 
 	void clear();
@@ -150,14 +138,7 @@ public:
 	uint64_t getU64();
 	double getDouble();
 	bool getBoolean();
-	bool skip(size_t size) {
-		if(readOffsetSize + size > stringData.size()) {
-			readOffsetSize = stringData.size();
-			return false;
-		}
-		readOffsetSize += size;
-		return true;
-	}
+	bool skip(size_t size);
 	std::string getRawString(size_t size);
 	std::string getString();
 	std::string getLongString();
@@ -275,27 +256,17 @@ public:
 	explicit FileWriteHandle(const std::string& initName);
 	~FileWriteHandle() override;
 
-	inline bool addU8(uint8_t u8) {
-		return addType(u8);
-	}
-	inline bool addByte(uint8_t u8) {
-		return addType(u8);
-	}
-	inline bool addU16(uint16_t u16) {
-		return addType(u16);
-	}
-	inline bool addU32(uint32_t u32) {
-		return addType(u32);
-	}
-	inline bool addU64(uint64_t u64) {
-		return addType(u64);
-	}
+	bool addU8(uint8_t value) const;
+	bool addByte(uint8_t value) const;
+	bool addU16(uint16_t value) const;
+	bool addU32(uint32_t value) const;
+	bool addU64(uint64_t value) const;
 	bool addString(const std::string& str);
 	bool addString(const char* str);
 	bool addLongString(const std::string& str);
 	bool addRAW(const std::string& str) const;
 	bool addRAW(const uint8_t* ptr, size_t size) const;
-	bool addRAW(const char* str);
+	bool addRAW(const char* str) const;
 
 protected:
 	template<class T>

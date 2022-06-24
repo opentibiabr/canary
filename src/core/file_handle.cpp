@@ -216,6 +216,24 @@ bool FileReadHandle::seekRelative(size_t offset) const
 	return fseek(getFile(), long(offset), SEEK_CUR) == 0;
 }
 
+void FileReadHandle::skip(size_t offset) const
+{
+	seekRelative(offset);
+}
+
+size_t FileReadHandle::size() const
+{
+	return fileSize;
+}
+
+size_t FileReadHandle::tell() const
+{
+	if(getFile()) {
+		return ftell(getFile());
+	}
+	return 0;
+}
+
 /*
  ==============================
  * Class NodeFileReadhandle
@@ -496,6 +514,16 @@ bool BinaryNode::getBoolean() {
 	return booleanValue;
 }
 
+bool BinaryNode::skip(size_t size)
+{
+	if(readOffsetSize + size > stringData.size()) {
+		readOffsetSize = stringData.size();
+		return false;
+	}
+	readOffsetSize += size;
+	return true;
+}
+
 void BinaryNode::init(NodeFileReadHandle* nodeFileHeadHandle, std::shared_ptr<BinaryNode> binaryNodeParent) {
 	readOffsetSize = 0;
 	file = nodeFileHeadHandle;
@@ -665,6 +693,31 @@ FileWriteHandle::FileWriteHandle(const std::string& initName)
 
 FileWriteHandle::~FileWriteHandle() = default;
 
+bool FileWriteHandle::addU8(uint8_t value) const
+{
+	return addType(value);
+}
+
+bool FileWriteHandle::addByte(uint8_t value) const
+{
+	return addType(value);
+}
+
+bool FileWriteHandle::addU16(uint16_t value) const
+{
+	return addType(value);
+}
+
+bool FileWriteHandle::addU32(uint32_t value) const
+{
+	return addType(value);
+}
+
+bool FileWriteHandle::addU64(uint64_t value) const
+{
+	return addType(value);
+}
+
 bool FileWriteHandle::addString(const std::string& str)
 {
 	if (str.size() > 0xFFFF) {
@@ -707,7 +760,7 @@ bool FileWriteHandle::addRAW(const uint8_t* ptr, size_t byte) const
 	return ferror(getFile()) == 0;
 }
 
-bool FileWriteHandle::addRAW(const char* str)
+bool FileWriteHandle::addRAW(const char* str) const
 {
 	size_t size = strnlength(str, sizeof(str));
 	if (size == 0) {

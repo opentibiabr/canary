@@ -342,6 +342,7 @@ DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
 void DiskNodeFileReadHandle::clearCache() {
 	// Clear cache from cache ptr vector
 	getCachePtr().get()->clear();
+	binaryRootNode->file->getCachePtr().get()->clear();
 }
 
 bool DiskNodeFileReadHandle::renewCache()
@@ -542,7 +543,6 @@ std::shared_ptr<BinaryNode> BinaryNode::getChild()
 	assert(child == nullptr);
 
 	if (file->lastWasStart) {
-		file->getCachePtr().get()->clear();
 		child = file->getNode(getPtr());
 		child->load();
 		return child;
@@ -634,8 +634,6 @@ std::shared_ptr<BinaryNode> BinaryNode::advance()
 		// End of this child-tree
 		parent->child.reset();
 		file->lastWasStart = false;
-		// Clear cache from cache ptr vector
-		file->getCachePtr().get()->clear();
 		return nullptr;
 	} else {
 		file->setErrorCode(FILE_SYNTAX_ERROR);

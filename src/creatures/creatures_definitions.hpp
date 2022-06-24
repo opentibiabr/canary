@@ -578,9 +578,8 @@ enum CombatType_t : uint16_t {
 };
 
 enum PlayerAsyncOngoingTaskFlags : uint64_t {
-	PlayerAsyncTask_Highscore = 1 << 0,
-	PlayerAsyncTask_RecentDeaths = 1 << 1,
-	PlayerAsyncTask_RecentPvPKills = 1 << 2
+	PlayerAsyncTask_RecentDeaths = 1 << 0,
+	PlayerAsyncTask_RecentPvPKills = 1 << 1
 };
 
 enum PartyAnalyzer_t : uint8_t {

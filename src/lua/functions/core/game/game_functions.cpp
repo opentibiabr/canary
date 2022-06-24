@@ -746,14 +746,13 @@ int GameFunctions::luaGameGetMounts(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOutfits(lua_State* L) {
-	// Game.getOutfits()
+	// Game.getOutfits(sex)
 	int index = 0;
-	const auto& outfits = Outfits::getInstance().getOutfits(player->getSex());
-	lua_createtable(L, mounts.size(), 0);
+	const auto& outfits = Outfits::getInstance().getOutfits(static_cast<PlayerSex_t>(getNumber<uint8_t>(L, 1, 1)));
+	lua_createtable(L, outfits.size(), 0);
 	for (const auto& outfit : outfits) {
-		lua_createtable(L, 0, 6);
+		lua_createtable(L, 0, 5);
 		setField(L, "lookType", outfit.lookType);
-		setField(L, "clientId", outfit.clientId);
 		setField(L, "name", outfit.name);
 		setField(L, "unlocked", outfit.unlocked);
 		setField(L, "premium", outfit.premium);
@@ -780,7 +779,7 @@ int GameFunctions::luaGameGetBestiaryRaceAmount(lua_State* L) {
 	uint16_t entries = 0;
 	BestiaryType_t race = static_cast<BestiaryType_t>(getNumber<uint16_t>(L, 1, 0));
 	for (const auto mType_it : g_game().getBestiaryList()) {
-		if (const MonsterType *mtype = g_monsters().getMonsterType(rit.second);
+		if (const MonsterType *mType = g_monsters().getMonsterType(mType_it.second);
 				mType && mType->info.bestiaryRace == race) {
 			entries++;
 		}

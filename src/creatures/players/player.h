@@ -736,9 +736,6 @@ class Player final : public Creature, public Cylinder
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
-		uint16_t getRawSkill(uint8_t skill) const {
-			return skills[skill].level;
-		}
 		double_t getSkillPercent(uint8_t skill) const {
 			return skills[skill].percent;
 		}
@@ -1458,9 +1455,9 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaCharacterBadges();
 			}
 		}
-		void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles, uint8_t currentTitle) {
+		void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles) {
 			if (client) {
-				client->sendCyclopediaCharacterTitles(titles, currentTitle);
+				client->sendCyclopediaCharacterTitles(titles);
 			}
 		}
 		void sendHighscoresNoData() {
@@ -2204,8 +2201,12 @@ class Player final : public Creature, public Cylinder
 			mapAreaDiscoveredPercentage += amount;
 		}
 
-		voic addTitle(uint8_t id) {
-			titles.push_front(id);
+		void addTitle(uint8_t id) {
+			if (isTitleUnlocked(id)) {
+				return;
+			}
+
+			titles.emplace_back(id);
 		}
 		std::vector<uint8_t> getTitles() const {
 			return titles;
@@ -2219,11 +2220,12 @@ class Player final : public Creature, public Cylinder
 
 			return false;
 		}
+		std::string getCurrentTitleName() const;
 		uint8_t getCurrentTitle() const {
 			return currentTitle;
 		}
 		void setCurrentTitle(uint8_t id) {
-			if (!isTitleUnlocked(id)) {
+			if (id != 0 && !isTitleUnlocked(id)) {
 				return;
 			}
 

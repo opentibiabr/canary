@@ -263,7 +263,7 @@ class Game
                                              const std::string& translation);
 
 		void playerHighscores(uint32_t playerId, uint8_t type, uint8_t category, uint32_t vocation, uint16_t page, uint8_t entriesPerPage);
-
+		void playerFriendSystemAction(uint32_t playerId, uint8_t type, uint8_t titleId);
 		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
 
 		void updatePlayerSaleItems(uint32_t playerId);
@@ -638,6 +638,9 @@ class Game
 		}
 		std::map<uint8_t, PlayerTitle> getPlayerTitles() const {
 			return playerTitles;
+		}
+		PlayerTitle getTitle(uint8_t id) {
+			return playerTitles[id];
 		}
 
 	private:

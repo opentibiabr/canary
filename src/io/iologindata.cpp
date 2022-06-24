@@ -767,7 +767,10 @@ void IOLoginData::loadPlayerSummary(Player* player)
     player->addLoginStreak(result->getNumber<uint16_t>("login_streak"));
     player->addTaskHuntingPointsObtained(result->getNumber<uint16_t>("task_points"));
     player->addMapAreaDiscoveredPercentage(result->getNumber<uint16_t>("map_area"));
-
+    player->addMapAreaDiscoveredPercentage(result->getNumber<uint16_t>("map_area"));
+    player->addTitle(static_cast<uint8_t>(result->getNumber<uint16_t>("title")));
+    player->setCurrentTitle(static_cast<uint8_t>(result->getNumber<uint16_t>("title")));
+  
     uint16_t u16;
     uint16_t u16_2;
     uint32_t u32;
@@ -1441,6 +1444,7 @@ bool IOLoginData::savePlayerSummary(const Player* player)
   // Player store summary
   query.str(std::string());
   query << "UPDATE `player_summary` SET ";
+  query << "`title` = " << static_cast<uint16_t>(player->getCurrentTitle()) << ',';
   query << "`charms` = " << player->getCharmsPointsObtained() << ',';
   query << "`goshnar` = " << player->getGoshnarTaintsObtained() << ',';
   query << "`drome` = " << player->getDromePointsObtained() << ',';

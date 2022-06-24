@@ -16,6 +16,9 @@ function login.onLogin(player)
 	-- Loyalty system
 	player:initializeLoyaltySystem()
 
+	-- Title system
+	player:initializeTitleSystem()
+
 	-- Stamina
 	nextUseStaminaTime[player.uid] = 0
 

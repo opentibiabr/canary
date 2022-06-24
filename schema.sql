@@ -676,6 +676,7 @@ CREATE TABLE IF NOT EXISTS `player_storage` (
 -- Table structure `player_summary`
 CREATE TABLE IF NOT EXISTS `player_summary` (
     `player_id` int(11) NOT NULL,
+    `title` VARCHAR(250) NOT NULL DEFAULT '0',
     `charms` VARCHAR(250) NOT NULL DEFAULT '0',
     `goshnar` VARCHAR(250) NOT NULL DEFAULT '0',
     `drome` VARCHAR(250) NOT NULL DEFAULT '0',

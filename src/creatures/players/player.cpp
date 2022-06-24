@@ -133,6 +133,10 @@ std::string Player::getDescription(int32_t lookDistance) const
 			s << " You are a " << loyaltyTitle << ".";
 		}
 
+		if (getCurrentTitle() != 0) {
+			s << " You are a " << getCurrentTitleName() << ".";
+		}
+
 	} else {
 		s << name;
 		if (!group->access) {
@@ -159,6 +163,14 @@ std::string Player::getDescription(int32_t lookDistance) const
 				s << " She is a " << loyaltyTitle << ".";
 			} else {
 				s << " He is a " << loyaltyTitle << ".";
+			}
+		}
+
+		if (getCurrentTitle() != 0) {
+			if (getSex() == PLAYERSEX_MALE) {
+				s << "He is a " << getCurrentTitleName() << ".";
+			} else {
+				s << "She is a " << getCurrentTitleName() << ".";
 			}
 		}
 
@@ -2675,7 +2687,6 @@ void Player::death(Creature* lastHitCreature)
 				lastHitCreature->getMaster()->getPlayer()->insertPvpKillOnHistory(std::move(description.str()), OTSYS_TIME() / 1000, status);
 			}
 		} else {
-			std::ostringstream description;
 			description << "Died at Level " << getLevel() << " by";
 			if (lastHitCreature) {
 				const char& character = lastHitCreature->getName().front();
@@ -6070,6 +6081,19 @@ bool Player::removeAchievement(uint16_t id) {
 	}
 
 	return false;
+}
+
+std::string Player::getCurrentTitleName() const
+{
+	if (getCurrentTitle() == 0)  {
+		return "";
+	}
+
+	if (getSex() == PLAYERSEX_MALE) {
+		return g_game().getTitle(getCurrentTitle()).maleName;
+	}
+
+	return g_game().getTitle(getCurrentTitle()).femaleName;
 }
 
 /*******************************************************************************

@@ -299,6 +299,8 @@ private:
 
 	void sendTournamentLeaderboard();
 
+	void parseFriendSystemAction(NetworkMessage &msg);
+
 	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 	void sendCyclopediaCharacterBaseInformation();
 	void sendCyclopediaCharacterGeneralStats();
@@ -312,7 +314,7 @@ private:
 	void sendCyclopediaCharacterStoreSummary();
 	void sendCyclopediaCharacterInspection();
 	void sendCyclopediaCharacterBadges();
-	void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles, uint8_t currentTitle);
+	void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles);
 
 	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
 	void sendCreatureShield(const Creature *creature);

@@ -7098,10 +7098,25 @@ void Game::playerCyclopediaCharacterInfo(uint32_t playerId, uint32_t characterId
 	} else if (type == CYCLOPEDIA_CHARACTERINFO_BADGES) {
 		player->sendCyclopediaCharacterBadges(); //
 	} else if (type == CYCLOPEDIA_CHARACTERINFO_TITLES) {
-		player->sendCyclopediaCharacterTitles(getPlayerTitles(), player->getCurrentTitle());
+		player->sendCyclopediaCharacterTitles(getPlayerTitles());
 	} else {
 		player->sendCyclopediaCharacterNoData(type, 1);
 		SPDLOG_WARN("[Game::playerCyclopediaCharacterInfo] - Unknown type {}", type);
+	}
+}
+
+void Game::playerFriendSystemAction(uint32_t playerId, uint8_t type, uint8_t titleId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (type == 0x0E) {
+		player->setCurrentTitle(titleId);
+		player->sendCyclopediaCharacterBaseInformation();
+		player->sendCyclopediaCharacterTitles(getPlayerTitles());
+		return;
 	}
 }
 
@@ -8621,13 +8636,50 @@ void Game::initializeGameWorldHighscores()
 
 		uint16_t characterLevel;
 		uint64_t characterPoints;
+		uint8_t titleId;
 		uint32_t characterId = result->getNumber<uint32_t>("id");
 		std::string characterName = std::move(result->getString("name"));
 		Player* player = getPlayerByID(characterId);
 		if (player) {
 			characterLevel = player->getLevel();
+			titleId = player->getCurrentTitle();
 		} else {
 			characterLevel = result->getNumber<uint16_t>("level");
+		}
+
+		// Achievements, charms, drome and goshnar taints points query.
+		for (uint8_t i = HIGHSCORE_CATEGORY_ACHIEVEMENTS; i <= HIGHSCORE_CATEGORY_GOSHNAR; i++) {
+			characterPoints = 0;
+			if (player) {
+				switch (static_cast<HighscoreCategories_t>(i)) {
+					case HIGHSCORE_CATEGORY_ACHIEVEMENTS: characterPoints = static_cast<uint64_t>(player->getAchievementsPoints()); break;
+					case HIGHSCORE_CATEGORY_CHARMS: characterPoints = static_cast<uint64_t>(player->getCharmsPointsObtained()); break;
+					case HIGHSCORE_CATEGORY_DROME: characterPoints = static_cast<uint64_t>(player->getDromePointsObtained()); break;
+					case HIGHSCORE_CATEGORY_GOSHNAR: characterPoints = static_cast<uint64_t>(player->getGoshnarTaintsObtained()); break;
+					default: {
+						break;
+					}
+				}
+			} else {
+				query.str(std::string());
+				query <<  "SELECT * FROM `player_summary` WHERE `player_id`=" << characterId;
+				if (childResult = db.storeQuery(query.str())) {
+					titleId = static_cast<uint8_t>(childResult->getNumber<uint16_t>("title"));
+					switch (static_cast<HighscoreCategories_t>(i)) {
+						case HIGHSCORE_CATEGORY_ACHIEVEMENTS: characterPoints = childResult->getNumber<uint64_t>("achievements_points"); break;
+						case HIGHSCORE_CATEGORY_CHARMS: characterPoints = childResult->getNumber<uint64_t>("charms"); break;
+						case HIGHSCORE_CATEGORY_DROME: characterPoints = childResult->getNumber<uint64_t>("drome"); break;
+						case HIGHSCORE_CATEGORY_GOSHNAR: characterPoints = childResult->getNumber<uint64_t>("goshnar"); break;
+						default: {
+							break;
+						}
+					}
+				}
+			}
+
+			if (characterPoints != 0) {
+				highscores[i].emplace_back(characterName, characterPoints, characterId, characterLevel, characterVocation, titleId);
+			}
 		}
 
 		// Regular skills query.
@@ -8666,41 +8718,7 @@ void Game::initializeGameWorldHighscores()
 			}
 
 			if (characterPoints != 0) {
-				highscores[i].emplace_back(characterName, characterPoints, characterId, characterLevel, characterVocation);
-			}
-		}
-
-		// Achievements, charms, drome and goshnar taints points query.
-		for (uint8_t i = HIGHSCORE_CATEGORY_ACHIEVEMENTS; i <= HIGHSCORE_CATEGORY_GOSHNAR; i++) {
-			characterPoints = 0;
-			if (player) {
-				switch (static_cast<HighscoreCategories_t>(i)) {
-					case HIGHSCORE_CATEGORY_ACHIEVEMENTS: characterPoints = static_cast<uint64_t>(player->getAchievementsPoints()); break;
-					case HIGHSCORE_CATEGORY_CHARMS: characterPoints = static_cast<uint64_t>(player->getCharmsPointsObtained()); break;
-					case HIGHSCORE_CATEGORY_DROME: characterPoints = static_cast<uint64_t>(player->getDromePointsObtained()); break;
-					case HIGHSCORE_CATEGORY_GOSHNAR: characterPoints = static_cast<uint64_t>(player->getGoshnarTaintsObtained()); break;
-					default: {
-						break;
-					}
-				}
-			} else {
-				query.str(std::string());
-				query <<  "SELECT * FROM `player_summary` WHERE `player_id`=" << characterId;
-				if (childResult = db.storeQuery(query.str())) {
-					switch (static_cast<HighscoreCategories_t>(i)) {
-						case HIGHSCORE_CATEGORY_ACHIEVEMENTS: characterPoints = childResult->getNumber<uint64_t>("achievements_points"); break;
-						case HIGHSCORE_CATEGORY_CHARMS: characterPoints = childResult->getNumber<uint64_t>("charms"); break;
-						case HIGHSCORE_CATEGORY_DROME: characterPoints = childResult->getNumber<uint64_t>("drome"); break;
-						case HIGHSCORE_CATEGORY_GOSHNAR: characterPoints = childResult->getNumber<uint64_t>("goshnar"); break;
-						default: {
-							break;
-						}
-					}
-				}
-			}
-
-			if (characterPoints != 0) {
-				highscores[i].emplace_back(characterName, characterPoints, characterId, characterLevel, characterVocation);
+				highscores[i].emplace_back(characterName, characterPoints, characterId, characterLevel, characterVocation, titleId);
 			}
 		}
 
@@ -8716,7 +8734,7 @@ void Game::initializeGameWorldHighscores()
 			}
 		}
 		if (characterPoints != 0) {
-			highscores[static_cast<uint8_t>(HIGHSCORE_CATEGORY_LOYALTY)].emplace_back(characterName, characterPoints, characterId, characterLevel, characterVocation);
+			highscores[static_cast<uint8_t>(HIGHSCORE_CATEGORY_LOYALTY)].emplace_back(characterName, characterPoints, characterId, characterLevel, characterVocation, titleId);
 		}
 
 	} while (result->next());

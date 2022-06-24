@@ -680,6 +680,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0x7E: parseLookInTrade(msg); break;
 		case 0x7F: addGameTask(&Game::playerAcceptTrade, player->getID()); break;
 		case 0x80: addGameTask(&Game::playerCloseTrade, player->getID()); break;
+		case 0x81: parseFriendSystemAction(msg); break;
 		case 0x82: parseUseItem(msg); break;
 		case 0x83: parseUseItemEx(msg); break;
 		case 0x84: parseUseWithCreature(msg); break;
@@ -1668,14 +1669,18 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter>& charact
 		if (vocation != 0xFFFFFFFF && vocation != character.vocation) {
 			continue;
 		}
-		msg.add<uint32_t>(character.rank); // Rank
-		msg.addString(character.name); // Character Name
-		msg.addString(""); // Probably Character Title(not visible in window)
-		msg.addByte(character.vocation); // Vocation Id
-		msg.addString(g_configManager().getString(SERVER_NAME)); // World
-		msg.add<uint16_t>(character.level); // Level
-		msg.addByte(player->getGUID() == character.id ? 0x01 : 0x00); // Player Indicator Boolean
-		msg.add<uint64_t>(character.points); // Points
+		msg.add<uint32_t>(character.rank);
+		msg.addString(character.name);
+		if (character.title != 0) {
+			msg.addString(g_game().getTitle(character.title).maleName);
+		} else {
+			msg.add<uint16_t>(0x00);
+		}
+		msg.addByte(character.vocation);
+		msg.addString(g_configManager().getString(SERVER_NAME));
+		msg.add<uint16_t>(character.level);
+		msg.addByte(player->getGUID() == character.id ? 0x01 : 0x00);
+		msg.add<uint64_t>(character.points);
 		charactersCount++;
 	}
 
@@ -2911,6 +2916,15 @@ void ProtocolGame::sendAddMarker(const Position &pos, uint8_t markType, const st
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::parseFriendSystemAction(NetworkMessage &msg)
+{
+	uint8_t state = msg.getByte();
+	if (state == 0x0E) {
+		uint8_t titleId = msg.getByte();
+		addGameTask(&Game::playerFriendSystemAction, player->getID(), state, titleId);
+	}
+}
+
 // Cyclopedia character info
 void ProtocolGame::sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode)
 {
@@ -2938,7 +2952,7 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 
 	msg.addByte(g_configManager().getBoolean(STAMINA_SYSTEM) ? 0x00 : 0x01); // Hide stamina
 	msg.addByte(0x01); // Store summary & Character titles
-	msg.addString("Titulo teste"); // character title
+	msg.addString(player->getCurrentTitleName());
 	writeToOutputBuffer(msg);
 }
 
@@ -2990,7 +3004,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	for (uint8_t i = SKILL_FIRST; i < SKILL_CRITICAL_HIT_CHANCE; ++i) {
 		msg.addByte(HardcodedSkillIds[i]);
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getRawSkill(i));
+		msg.add<uint16_t>(player->getBaseSkill(i));
 		// loyalty bonus
 		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
@@ -3566,6 +3580,13 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 	msg.addString("Vocation");
 	msg.addString(player->getVocation()->getVocName());
 
+	// Player title
+	if (player->getCurrentTitle() != 0) {
+		playerDescriptionSize++;
+		msg.addString("Title");
+		msg.addString(player->getCurrentTitleName());
+	}
+
 	// Loyalty title
 	if (player->getLoyaltyTitle().length() != 0) {
 		playerDescriptionSize++;
@@ -3578,7 +3599,7 @@ void ProtocolGame::sendCyclopediaCharacterInspection()
 		if (PreySlot* slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId)); slot && slot->isOccupied()) {
 			playerDescriptionSize++;
 			std::ostringstream ss;
-			ss << "Active Prey " << (slotId + 1) << ":";
+			ss << "Active Prey " << (slotId + 1);
 			msg.addString(ss.str());
 			ss.str("");
 			ss.clear();
@@ -3635,14 +3656,14 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles, uint8_t currentTitle)
+void ProtocolGame::sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles)
 {
 	NetworkMessage msg;
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_TITLES);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	msg.addByte(currentTitle);
+	msg.addByte(player->getCurrentTitle());
 	msg.addByte(static_cast<uint8_t>(titles.size()));
 	for (const auto title : titles) {
 		msg.addByte(title.first);
@@ -6761,7 +6782,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getRawSkill(i));
+		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
@@ -6769,7 +6790,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
-		msg.add<uint16_t>(player->getRawSkill(i));
+		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)

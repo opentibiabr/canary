@@ -339,11 +339,16 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 
 DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
 
+void DiskNodeFileReadHandle::clearCache() {
+	// Clear cache from cache ptr vector
+	getCachePtr().get()->clear();
+}
+
 bool DiskNodeFileReadHandle::renewCache()
 {
-	if (!cache) {
-		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize));
-		cache = getCachePtr().get();
+	if (cache == nullptr) {
+		createUniquePtr(std::make_unique<std::vector<uint8_t>>(cacheSize));
+		cache = getCachePtr().get()->data();
 	}
 	cacheLenght = fread(cache, 1, cacheSize, getFile());
 
@@ -741,7 +746,7 @@ bool FileWriteHandle::addString(const char* str)
 	return true;
 }
 
-bool FileWriteHandle::addLongString(const std::string& str)
+bool FileWriteHandle::addLongString(const std::string& str) const
 {
 	addU32(uint32_t(str.size()));
 	addRAW(str);
@@ -792,8 +797,8 @@ DiskNodeFileWriteHandle::DiskNodeFileWriteHandle(const std::string& initName, co
 
 	fwrite(initIdentifier.c_str(), 1, 4, getFile());
 	if (!cache) {
-		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
-		cache = getCachePtr().get();
+		createUniquePtr(std::make_unique<std::vector<uint8_t>>(cacheSize + 1));
+		cache = getCachePtr().get()->data();
 	}
 	localWriteIndex = 0;
 }
@@ -808,8 +813,8 @@ void DiskNodeFileWriteHandle::renewCache()
 			setErrorCode(FILE_WRITE_ERROR);
 		}
 	} else {
-		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
-		cache = getCachePtr().get();
+		createUniquePtr(std::make_unique<std::vector<uint8_t>>(cacheSize + 1));
+		cache = getCachePtr().get()->data();
 	}
 	localWriteIndex = 0;
 }
@@ -820,8 +825,8 @@ void DiskNodeFileWriteHandle::renewCache()
 MemoryNodeFileWriteHandle::MemoryNodeFileWriteHandle()
 {
 	if (!cache) {
-		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
-		cache = getCachePtr().get();
+		createUniquePtr(std::make_unique<std::vector<uint8_t>>(cacheSize + 1));
+		cache = getCachePtr().get()->data();
 	}
 	localWriteIndex = 0;
 }
@@ -848,14 +853,14 @@ void MemoryNodeFileWriteHandle::renewCache()
 {
 	if (cache) {
 		cacheSize = cacheSize * 2;
-		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize));
-		cache = getCachePtr().get();
+		createUniquePtr(std::make_unique<std::vector<uint8_t>>(cacheSize));
+		cache = getCachePtr().get()->data();
 		if (!cache) {
 			exit(1);
 		}
 	} else {
-		createUniquePtr(std::make_unique<uint8_t[]>(cacheSize + 1));
-		cache = getCachePtr().get();
+		createUniquePtr(std::make_unique<std::vector<uint8_t>>(cacheSize + 1));
+		cache = getCachePtr().get()->data();
 	}
 }
 

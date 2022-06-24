@@ -39,6 +39,9 @@ bool Map::load(const std::string& identifier) {
 			getMapFileName().clear();
 			return false;
 		}
+
+		// Clear cache from cache ptr vector
+		initializeMapFile.clearCache();
 	}
 	catch(const std::exception) {
 		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);

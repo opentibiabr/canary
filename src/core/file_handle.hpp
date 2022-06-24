@@ -66,18 +66,18 @@ public:
 		return errorCode;
 	}
 
-	const std::unique_ptr<uint8_t[]>& getCachePtr() const {
+	const std::unique_ptr<std::vector<uint8_t>>& getCachePtr() const {
 		return cachePtr;
 	}
 
-	void createUniquePtr(std::unique_ptr<uint8_t[]> newPtr) {
+	void createUniquePtr(std::unique_ptr<std::vector<uint8_t>> newPtr) {
 		cachePtr = std::move(newPtr);
 	}
 
 private:
 	FileHandleError errorCode = FILE_NO_ERROR;
 	FILE* file = nullptr;
-	std::unique_ptr<uint8_t[]> cachePtr;
+	std::unique_ptr<std::vector<uint8_t>> cachePtr;
 };
 
 class FileReadHandle : public FileHandle
@@ -206,6 +206,9 @@ public:
 	DiskNodeFileReadHandle(const std::string& initName, const std::vector<std::string>& initAcceptableIdentifiers);
 	~DiskNodeFileReadHandle() override;
 
+	// Clear cache from cache ptr vector
+	void clearCache();
+
 	std::shared_ptr<BinaryNode> getRootNode() override;
 
 	size_t size() override {
@@ -263,14 +266,14 @@ public:
 	bool addU64(uint64_t value) const;
 	bool addString(const std::string& str);
 	bool addString(const char* str);
-	bool addLongString(const std::string& str);
+	bool addLongString(const std::string& str) const;
 	bool addRAW(const std::string& str) const;
 	bool addRAW(const uint8_t* ptr, size_t size) const;
 	bool addRAW(const char* str) const;
 
 protected:
 	template<class T>
-	bool addType(T classType)  const {
+	bool addType(T classType) const {
 		fwrite(&classType, sizeof(classType), 1, getFile());
 		return ferror(getFile()) == 0;
 	}

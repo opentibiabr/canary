@@ -207,7 +207,7 @@ public:
 	~DiskNodeFileReadHandle() override;
 
 	// Clear cache from cache ptr vector
-	void clearCache();
+	void clearCache() const;
 
 	std::shared_ptr<BinaryNode> getRootNode() override;
 

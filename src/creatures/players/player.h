@@ -1826,12 +1826,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void reloadPreySlot(PreySlot_t slotid) {
-			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
-				client->sendPreyData(getPreySlotById(slotid));
-				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
-			}
-		}
+		void reloadPreySlot(PreySlot_t slotid) const;
 
 		PreySlot* getPreySlotById(PreySlot_t slotid) const;
 
@@ -1902,12 +1897,7 @@ class Player final : public Creature, public Cylinder
 			return true;
 		}
 
-		void reloadTaskSlot(PreySlot_t slotid) {
-			if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
-				client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
-				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
-			}
-		}
+		void reloadTaskSlot(PreySlot_t slotid) const;
 
 		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) const;
 

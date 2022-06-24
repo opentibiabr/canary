@@ -339,7 +339,8 @@ DiskNodeFileReadHandle::DiskNodeFileReadHandle(const std::string& initName, cons
 
 DiskNodeFileReadHandle::~DiskNodeFileReadHandle() = default;
 
-void DiskNodeFileReadHandle::clearCache() {
+void DiskNodeFileReadHandle::clearCache() const
+{
 	// Clear cache from cache ptr vector
 	getCachePtr().get()->clear();
 	binaryRootNode->file->getCachePtr().get()->clear();

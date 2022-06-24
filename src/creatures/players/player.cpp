@@ -314,7 +314,7 @@ int32_t Player::getArmor() const
 {
 	int32_t armor = 0;
 
-	for (static const Slots_t armorSlots[] = {
+	for (static const std::vector<Slots_t> armorSlots = {
 		CONST_SLOT_HEAD,
 		CONST_SLOT_NECKLACE,
 		CONST_SLOT_ARMOR,
@@ -1663,7 +1663,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 			}
 
 			loginPosition = getPosition();
-			lastLogout = time(nullptr);
+			lastLogout = Game::getTimeNow();
 			SPDLOG_INFO("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(*this);
 			clearPartyInvitations();
@@ -5873,6 +5873,14 @@ void Player::initializePrey()
 	}
 }
 
+void Player::reloadPreySlot(PreySlot_t slotid) const
+{
+	if (g_configManager().getBoolean(PREY_ENABLED) && client) {
+		client->sendPreyData(getPreySlotById(slotid));
+		client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+	}
+}
+
 void Player::initializeTaskHunting()
 {
 	if (taskHunting.empty()) {
@@ -5895,6 +5903,14 @@ void Player::initializeTaskHunting()
 
 	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 		client->writeToOutputBuffer(g_ioprey().GetTaskHuntingBaseDate());
+	}
+}
+
+void Player::reloadTaskSlot(PreySlot_t slotid) const
+{
+	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
+		client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
+		client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 	}
 }
 

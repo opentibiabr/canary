@@ -1,0 +1,71 @@
+name: Automated Version Bump
+description: Automated version bump for npm packages.
+runs:
+  using: node12
+  main: index.js
+branding:
+  icon: chevron-up
+  color: blue
+inputs:
+  tag-prefix:
+    description: 'Prefix that is used for the git tag'
+    default: ''
+    required: false
+  minor-wording:
+    description: 'Words list that trigger a minor version bump'
+    default: 'feat,minor'
+    required: false
+  major-wording:
+    description: 'Words list that trigger a major version bump'
+    default: 'BREAKING CHANGE,major'
+    required: false
+  patch-wording:
+    description: 'Words list that trigger a patch version bump'
+    required: false
+  rc-wording:
+    description: 'Words list that trigger a rc version bump'
+    default: 'pre-alpha,pre-beta,pre-rc'
+    required: false
+  skip-tag:
+    description: 'Avoid to add a TAG to the version update commit'
+    default: 'false'
+    required: false
+  skip-commit:
+    description: 'Avoid to add a commit after the version is bumped'
+    default: 'false'
+    required: false
+  skip-push:
+    description: 'If true, skip pushing any commits or tags created after the version bump'
+    default: false
+    required: false
+  PACKAGEJSON_DIR:
+    description: 'Custom dir to the package'
+    default: ''
+    required: false
+  target-branch:
+    description: 'A separate branch to perform the version bump on'
+    default: ''
+    required: false
+  default:
+    description: 'Set a default version bump to use'
+    default: 'patch'
+    required: false
+  preid:
+    description: 'Set a custom preid for prerelease build'
+    default: 'rc'
+    required: false
+  commit-message:
+    description: 'Set a custom commit message for version bump commit'
+    default: ''
+    required: false
+  bump-policy:
+    description: 'Set version bump ignore policy'
+    default: 'all'
+    required: false
+  push:
+    description: '[DEPRECATED] Set to false to skip pushing the new tag'
+    default: 'true'
+    required: false
+outputs:
+  newTag:
+    description: 'The newly created tag'

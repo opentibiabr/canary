@@ -201,6 +201,10 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
+-- configure maximum value of critical imbuement
+criticalChance = 10
+inventoryGlowOnFiveBless = false
+adventurersBlessingLevel = 21
 
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes

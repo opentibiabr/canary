@@ -19,6 +19,9 @@ function login.onLogin(player)
 	-- Title system
 	player:initializeTitleSystem()
 
+	-- Badge system
+	player:initializeBadgeSystem()
+
 	-- Stamina
 	nextUseStaminaTime[player.uid] = 0
 

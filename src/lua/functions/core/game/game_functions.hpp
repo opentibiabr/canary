@@ -88,6 +88,7 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "getHighscoresLeaderId", GameFunctions::luaGameGetHighscoresLeaderId);
 				registerMethod(L, "Game", "getBestiaryRaceAmount", GameFunctions::luaGameGetBestiaryRaceAmount);
 				registerMethod(L, "Game", "registerPlayerTitle", GameFunctions::luaGameRegisterPlayerTitle);
+				registerMethod(L, "Game", "registerPlayerBadges", GameFunctions::luaGameRegisterPlayerBadges);
 			}
 
 	private:
@@ -150,6 +151,7 @@ class GameFunctions final : LuaScriptInterface {
 			static int luaGameGetHighscoresLeaderId(lua_State* L);
 			static int luaGameGetBestiaryRaceAmount(lua_State* L);
 			static int luaGameRegisterPlayerTitle(lua_State* L);
+			static int luaGameRegisterPlayerBadges(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

@@ -4,7 +4,7 @@
 --	To-Do 'isUnlocked' list:
 --	 - "Admirer of the Crown"
 --	 - "Jack of all Taints"
---	  - "Reigning Drome Champion"
+--	 - "Reigning Drome Champion"
 --
 if TitleSystem == nil then
 	TitleSystem = {
@@ -135,6 +135,26 @@ if TitleSystem == nil then
 			end},
 		}
 	}
+	--
+	do
+		if not(TitleSystem.enabled) then
+			return
+		end
+		--
+		for _, titleSystem_it in pairs(TitleSystem) do
+			if type(titleSystem_it) == "table" and #titleSystem_it > 0 then
+				for __, it in pairs(titleSystem_it) do
+					if it.id ~= nil then
+						if it.names ~= nil then
+							Game.registerPlayerTitle(it.id, it.names.male, it.names.female, it.description, it.permanent)
+						else
+							Game.registerPlayerTitle(it.id, it.name, it.name, it.description, it.permanent)
+						end
+					end
+				end
+			end
+		end
+	end
 end
 --
 -- Gold section
@@ -252,7 +272,7 @@ end
 --
 function Player.initializeTitleSystem(self)
 	if not(TitleSystem.enabled) then
-		return true
+		return false
 	end
 	--
 	-- Gold section
@@ -356,25 +376,5 @@ function Player.initializeTitleSystem(self)
 	--
 	--
 	return true
-end
---
-do
-	if TitleSystem == nil or not(TitleSystem.enabled) then
-		return
-	end
-
-	for _, titleSystem_it in pairs(TitleSystem) do
-		if type(titleSystem_it) == "table" and #titleSystem_it > 0 then
-			for __, it in pairs(titleSystem_it) do
-				if it.id ~= nil then
-					if it.names ~= nil then
-						Game.registerPlayerTitle(it.id, it.names.male, it.names.female, it.description, it.permanent)
-					else
-						Game.registerPlayerTitle(it.id, it.name, it.name, it.description, it.permanent)
-					end
-				end
-			end
-		end
-	end
 end
 --@endofthefile

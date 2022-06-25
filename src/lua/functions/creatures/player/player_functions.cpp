@@ -3335,8 +3335,6 @@ int PlayerFunctions::luaPlayerGetMapAreaDiscoveredPercentage(lua_State* L) {
 	return 1;
 }
 
-
-
 int PlayerFunctions::luaPlayerAddTitle(lua_State* L) {
 	// player:addTitle(id)
 	Player* player = getUserdata<Player>(L, 1);
@@ -3364,5 +3362,45 @@ int PlayerFunctions::luaPlayerGetTitles(lua_State* L) {
 		lua_pushnumber(L, id);
 		lua_rawseti(L, -2, ++index);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetAccountLevelVocation(lua_State* L) {
+	// player:getAccountLevelVocation()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	int index = 0;
+	int size = 0;
+	std::map<uint8_t, std::vector<uint16_t>> accountData = player->getAccountLevelVocation();
+	for (const auto data : accountData) {
+		size += data.second.size();
+	}
+
+	lua_createtable(L, size, 0);
+	for (const auto data : accountData) {
+		for (const auto level : data.second) {
+			lua_createtable(L, 0, 2);
+			setField(L, "vocation", data.first);
+			setField(L, "level", level);
+			lua_rawseti(L, -2, ++index);
+		}
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddBadge(lua_State* L) {
+	// player:addBadge(id)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->addBadge(getNumber<uint8_t>(L, 2, 0));
+	pushBoolean(L, true);
 	return 1;
 }

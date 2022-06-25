@@ -1450,9 +1450,9 @@ class Player final : public Creature, public Cylinder
 				client->sendCyclopediaCharacterInspection();
 			}
 		}
-		void sendCyclopediaCharacterBadges() {
+		void sendCyclopediaCharacterBadges(std::map<uint8_t, std::string> badges) {
 			if (client) {
-				client->sendCyclopediaCharacterBadges();
+				client->sendCyclopediaCharacterBadges(badges);
 			}
 		}
 		void sendCyclopediaCharacterTitles(std::map<uint8_t, PlayerTitle> titles) {
@@ -2232,6 +2232,26 @@ class Player final : public Creature, public Cylinder
 			currentTitle = id;
 		}
 
+		bool hasBadge(uint8_t id) const {
+			if (auto it = std::find_if(badges.begin(), badges.end(), [id](uint8_t badge_it) {
+					return badge_it == id;
+				}); it != badges.end()) {
+				return true;
+			}
+
+			return false;
+		}
+		void addBadge(uint8_t id) {
+			if (hasBadge(id)) {
+				return;
+			}
+
+			badges.emplace_back(id);
+		}
+		std::map<uint8_t, std::vector<uint16_t>> getAccountLevelVocation() const {
+			return accountLevelSummary;
+		}
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -2329,6 +2349,7 @@ class Player final : public Creature, public Cylinder
 		std::vector<std::pair<uint16_t, uint32_t>> achievementsUnlocked; // {achievement ID, time when it was unlocked}
 		std::vector<RecentDeathEntry> deathHistory;
 		std::vector<RecentPvPKillEntry> pvpKills;
+		std::map<uint8_t, std::vector<uint16_t>> accountLevelSummary; // [VocationID] = {{level}}
 
 		GuildWarVector guildWarVector;
 
@@ -2447,6 +2468,7 @@ class Player final : public Creature, public Cylinder
 		std::vector<uint16_t> hirelingOutfitsObtained;
 		std::vector<uint8_t> hirelingJobsObtained;
 		std::vector<uint8_t> titles;
+		std::vector<uint8_t> badges;
 		std::map<Blessings_t, uint16_t> blessingsObtained;
 		StashItemList houseItemsObtained;
 		uint16_t storeXpBoostsObtained = 0;

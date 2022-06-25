@@ -642,6 +642,12 @@ class Game
 		PlayerTitle getTitle(uint8_t id) {
 			return playerTitles[id];
 		}
+		void registerPlayerBadges(uint8_t id, std::string name) {
+			playerBadges[id] = name;
+		}
+		std::map<uint8_t, std::string> getPlayerBadges() const {
+			return playerBadges;
+		}
 
 	private:
 		void checkImbuements();
@@ -730,6 +736,7 @@ class Game
 		std::map<uint16_t, Achievement> achievements;
 		std::map<std::string, uint16_t> achievementsNameToId;
 		std::map<uint8_t, PlayerTitle> playerTitles;
+		std::map<uint8_t, std::string> playerBadges;
 
 		std::map<uint8_t, std::vector<HighscoreCharacter>> highscores;
 		int64_t lastHighscoreRefresh = 0;

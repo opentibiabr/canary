@@ -7094,9 +7094,9 @@ void Game::playerCyclopediaCharacterInfo(uint32_t playerId, uint32_t characterId
 	} else if (type == CYCLOPEDIA_CHARACTERINFO_STORESUMMARY) {
 		player->sendCyclopediaCharacterStoreSummary();
 	} else if (type == CYCLOPEDIA_CHARACTERINFO_INSPECTION) {
-		player->sendCyclopediaCharacterInspection();
+		player->sendCyclopediaCharacterInspection();;
 	} else if (type == CYCLOPEDIA_CHARACTERINFO_BADGES) {
-		player->sendCyclopediaCharacterBadges(); //
+		player->sendCyclopediaCharacterBadges(getPlayerBadges());
 	} else if (type == CYCLOPEDIA_CHARACTERINFO_TITLES) {
 		player->sendCyclopediaCharacterTitles(getPlayerTitles());
 	} else {

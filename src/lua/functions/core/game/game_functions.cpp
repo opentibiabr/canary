@@ -805,3 +805,15 @@ int GameFunctions::luaGameRegisterPlayerTitle(lua_State* L) {
 	}
 	return 1;
 }
+
+int GameFunctions::luaGameRegisterPlayerBadges(lua_State* L) {
+	// Game.registerPlayerBadges(id, name)
+	if (lua_gettop(L) < 2) {
+		reportErrorFunc("Achievement can only be registered with all params.");
+		lua_pushnil(L);
+	} else {
+		g_game().registerPlayerBadges(getNumber<uint8_t>(L, 1), getString(L, 2));
+		pushBoolean(L, true);
+	}
+	return 1;
+}

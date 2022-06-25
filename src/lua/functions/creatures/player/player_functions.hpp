@@ -307,6 +307,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "addTitle", PlayerFunctions::luaPlayerAddTitle);
 			registerMethod(L, "Player", "getTitles", PlayerFunctions::luaPlayerGetTitles);
+			registerMethod(L, "Player", "getAccountLevelVocation", PlayerFunctions::luaPlayerGetAccountLevelVocation);
+			registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -595,6 +597,10 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerAddTitle(lua_State* L);
 		static int luaPlayerGetTitles(lua_State* L);
+
+		static int luaPlayerGetAccountLevelVocation(lua_State* L);
+
+		static int luaPlayerAddBadge(lua_State* L);
 
 		friend class CreatureFunctions;
 };

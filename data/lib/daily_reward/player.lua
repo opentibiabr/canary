@@ -1,17 +1,17 @@
 function Player.getCollectionTokens(self)
-	return self:getCollectionTokens()
+	return math.max(self:getStorageValue(DailyReward.storages.collectionTokens), 0)
 end
 
 function Player.getJokerTokens(self)
-	return self:getJokerTokens()
+	return math.max(self:getStorageValue(DailyReward.storages.jokerTokens), 0)
 end
 
 function Player.setJokerTokens(self, value)
-	self:addJokerTokens(value - self:getJokerTokens())
+	self:setStorageValue(DailyReward.storages.jokerTokens, value)
 end
 
 function Player.setCollectionTokens(self, value)
-	self:addCollectionTokens(value - self:getCollectionTokens())
+	self:setStorageValue(DailyReward.storages.collectionTokens, value)
 end
 
 function Player.getDayStreak(self)

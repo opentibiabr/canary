@@ -25,7 +25,7 @@
 #include "lua/scripts/luascript.h"
 
 class Action;
-class Position;
+struct Position;
 
 using Action_ptr = std::unique_ptr<Action>;
 using ActionFunction =

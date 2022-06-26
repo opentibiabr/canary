@@ -99,7 +99,7 @@ void Items::loadFromProtobuf()
 {
 	using namespace Canary::protobuf::appearances;
 
-	for (uint32_t it = 0; it < g_game().appearances.object_size(); ++it) {
+	for (int it = 0; it < g_game().appearances.object_size(); ++it) {
 		Appearance object = g_game().appearances.object(it);
 
 		// This scenario should never happen but on custom assets this can break the loader.

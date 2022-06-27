@@ -8,10 +8,6 @@ del /q .\build\*
 mkdir .\build
 pushd .\build
 
-@REM TODO(fusion): Unity builds would speed this up by more than 10x but would require the code to be sanitized beforehand.
-
-@REM TODO(fusion): Remove all these sub directories.
-
 @REM NOTE(fusion): Don't mess with the %INCLUDE% variable as the visual studio cmd prompt will already setup paths to the stdlib and windows sdk libraries. If we set it to something else, we'll have problems with including any standard header file.
 
 @SET INCL=-I"../src" -I"../vcpkg_installed/x64-windows-static/include"

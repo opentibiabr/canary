@@ -22,6 +22,7 @@ jobs:
         id: version-bump
         uses: './.github/actions/'
         with:
+          skip-tag:  'true'
           tag-prefix: 'v'
           major-wording: '#MAJOR,#major'
           minor-wording: '#MINOR,#minor'

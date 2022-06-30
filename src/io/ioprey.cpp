@@ -32,6 +32,7 @@ PreySlot::PreySlot(PreySlot_t id) :
 		eraseBonus();
 		reloadBonusValue();
 		reloadBonusType();
+		freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(PREY_FREE_REROLL_TIME) * 1000;
 }
 
 void PreySlot::reloadBonusType()
@@ -39,12 +40,12 @@ void PreySlot::reloadBonusType()
 	if (bonusRarity == 10) {
 		PreyBonus_t bonus_tmp = bonus;
 		while (bonus_tmp == bonus) {
-			bonus = static_cast<PreyBonus_t>(normal_random(PreyBonus_First, PreyBonus_Last));
+			bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
 		}
 		return;
 	}
 
-	bonus = static_cast<PreyBonus_t>(normal_random(PreyBonus_First, PreyBonus_Last));
+	bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
 }
 
 void PreySlot::reloadBonusValue()
@@ -55,7 +56,7 @@ void PreySlot::reloadBonusValue()
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
 	} else {
-		bonusRarity = static_cast<uint8_t>(normal_random(bonusRarity + 1, 10));
+		bonusRarity = static_cast<uint8_t>(uniform_random(bonusRarity + 1, 10));
 	}
 
 	bonusPercentage = stagePercent * bonusRarity;
@@ -112,7 +113,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	uint8_t tries = 0;
 	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
-		uint16_t raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
+		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
 
 		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {
@@ -143,6 +144,11 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 }
 
 // Task hunting class
+TaskHuntingSlot::TaskHuntingSlot(PreySlot_t id) :
+									id(id) {
+	freeRerollTimeStamp = OTSYS_TIME() + g_configManager().getNumber(TASK_HUNTING_FREE_REROLL_TIME) * 1000;
+}
+
 void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level)
 {
 	raceIdList.clear();
@@ -189,7 +195,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	uint8_t tries = 0;
 	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
-		uint16_t raceId = (*(std::next(bestiary.begin(), normal_random(0, maxIndex)))).first;
+		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
 
 		if (std::count(blackList.begin(), blackList.end(), raceId) != 0) {
@@ -232,13 +238,13 @@ void TaskHuntingSlot::reloadReward()
 
 	int32_t chance;
 	if (rarity == 0) {
-		chance = normal_random(0, 100);
+		chance = uniform_random(0, 100);
 	} else if (rarity == 1) {
-		chance = normal_random(0, 70);
+		chance = uniform_random(0, 70);
 	} else if (rarity == 2) {
-		chance = normal_random(0, 45);
+		chance = uniform_random(0, 45);
 	} else if (rarity == 3) {
-		chance = normal_random(0, 20);
+		chance = uniform_random(0, 20);
 	} else {
 		return;
 	}
@@ -292,7 +298,6 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
 				}
 
 				slot->eraseBonus();
-				slot->state = PreyDataState_Inactive;
 				player->reloadPreySlot(static_cast<PreySlot_t>(slotId));
 			} else {
 				slot->bonusTimeLeft -= amount;
@@ -324,7 +329,9 @@ void IOPrey::ParsePreyAction(Player* player,
 		}
 
 		slot->eraseBonus(true);
-		slot->state = PreyDataState_Selection;
+		if (slot->bonus != PreyBonus_None) {
+			slot->state = PreyDataState_SelectionChangeMonster;
+		}
 		slot->reloadMonsterGrid(player->getPreyBlackList(), player->getLevel());
 	} else if (action == PreyAction_ListAll_Cards) {
 		if (!player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_SELECTION_LIST_PRICE)))) {
@@ -500,7 +507,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 
 		if (const TaskHuntingOption* option = GetTaskRewardOption(slot)) {
 			uint16_t reward;
-			int32_t boostChange = normal_random(0, 100);
+			int32_t boostChange = uniform_random(0, 100);
 			if (slot->rarity >= 4 && boostChange <= 5) {
 				boostChange = 20;
 			} else if (slot->rarity >= 4 && boostChange <= 10) {

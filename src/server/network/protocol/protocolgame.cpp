@@ -616,6 +616,19 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 			}
 
 			sendAddCreature(player, player->getPosition(), 0, false);
+
+			std::string bless = player->getBlessingsName();
+			std::ostringstream lostBlesses;
+			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
+			if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+				for (uint8_t i = 2; i <= 6; i++) {
+					if (!player->hasBlessing(i)) {
+						player->addBlessing(i, 1);
+					}
+				}
+				sendBlessStatus();
+			}
 			return;
 		}
 
@@ -3563,7 +3576,8 @@ void ProtocolGame::sendBlessStatus()
 
 	msg.addByte(0x9C);
 
-	msg.add<uint16_t>((blessCount >= 5) ? (flag | 1) : flag);         //Show up the glowing effect in items if have all blesses
+	bool glow = g_configManager().getBoolean(INVENTORY_GLOW) || player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
+	msg.add<uint16_t>(glow ? 1 : 0); //Show up the glowing effect in items if have all blesses or adventurer's blessing
 	msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	// msg.add<uint16_t>(0);
 
@@ -6260,7 +6274,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 		msg.addByte(static_cast<uint8_t>(slot->bonus));
 		msg.add<uint16_t>(slot->bonusPercentage);
 		msg.addByte(slot->bonusRarity);
-		msg.add<uint16_t>(static_cast<uint16_t>(slot->raceIdList.size()));
+		msg.addByte(static_cast<uint8_t>(slot->raceIdList.size()));
 		std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&msg](uint16_t raceId)
 		{
 			if (const MonsterType* mtype = g_monsters().getMonsterTypeByRaceId(raceId)) {

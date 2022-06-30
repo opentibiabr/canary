@@ -745,7 +745,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			g_game().internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
-			bool corpses = corpse->isRewardCorpse() && (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
+			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			if (mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				Player* player = mostDamageCreature->getPlayer();
 				if (g_configManager().getBoolean(AUTOBANK)) {
@@ -912,7 +912,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 bool Creature::setAttackedCreature(Creature* creature)
 {
 	if (creature) {
-		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
 
@@ -1193,7 +1193,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	}
 }
 
-bool Creature::setMaster(Creature* newMaster) {
+bool Creature::setMaster(Creature* newMaster, bool reloadCreature/* = false*/) {
 	// Persists if this creature has ever been a summon
 	this->summoned = true;
 
@@ -1201,6 +1201,13 @@ bool Creature::setMaster(Creature* newMaster) {
 		return false;
 	}
 
+	// Reloading summon icon/knownCreature and reset informations (follow/dropLoot/skillLoss)
+	if (reloadCreature) {
+		setFollowCreature(nullptr);
+		setDropLoot(false);
+		setSkillLoss(false);
+		g_game().reloadCreature(this);
+	}
 	if (newMaster) {
 		incrementReferenceCounter();
 		newMaster->summons.push_back(this);

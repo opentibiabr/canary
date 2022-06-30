@@ -170,6 +170,13 @@ void Items::loadFromProtobuf()
 		iType.lookThrough = object.flags().ignore_look();
 		iType.stackable = object.flags().cumulative();
 		iType.isPodium = object.flags().show_off_socket();
+
+		if (!iType.name.empty()) {
+			nameToItems.insert({
+				asLowerCaseString(iType.name),
+				iType.id
+			});
+		}
 	}
 
 	items.shrink_to_fit();
@@ -259,14 +266,24 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 		return;
 	}
 
+	if (std::string xmlName = itemNode.attribute("name").as_string();
+			!xmlName.empty() && itemType.name != xmlName) {
+		if (!itemType.name.empty()) {
+			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
+					return nameMapIt.second == id;
+				}); it != nameToItems.end()) {
+				nameToItems.erase(it);
+			}
+		}
+
+		itemType.name = xmlName;
+		nameToItems.insert({
+			asLowerCaseString(itemType.name),
+			id
+		});
+	}
+
 	itemType.loaded = true;
-	itemType.name = itemNode.attribute("name").as_string();
-
-	nameToItems.insert({
-		asLowerCaseString(itemType.name),
-		id
-	});
-
 	pugi::xml_attribute articleAttribute = itemNode.attribute("article");
 	if (articleAttribute) {
 		itemType.article = articleAttribute.as_string();

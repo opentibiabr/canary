@@ -41,14 +41,14 @@ trap:register()
 trap = MoveEvent()
 trap:type("removeitem")
 
-function trap.onRemoveItem(moveitem, tileitem, position)
-	local itemPosition = moveitem:getPosition()
+function trap.onRemoveItem(item, position)
+	local itemPosition = item:getPosition()
 	if itemPosition:getDistance(position) > 0 then
-		tileitem:transform(tileitem.itemid - 1)
+		item:transform(tileitem.itemid - 1)
 		position:sendMagicEffect(CONST_ME_POFF)
 	end
 	return true
 end
 
-trap:id(2579)
+trap:id(3482)
 trap:register()

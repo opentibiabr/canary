@@ -700,7 +700,7 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 
 		uint8_t slot = pos.z;
 		return parentContainer->getItemByIndex(player->getContainerIndex(fromCid) + slot);
-	} else if (pos.y == 0x20 || pos.z == 0x21) {
+	} else if (pos.y == 0x20 || pos.y == 0x21) {
 		// '0x20' -> From depot.
 		// '0x21' -> From inbox.
 		// Both only when the item is from depot search window.

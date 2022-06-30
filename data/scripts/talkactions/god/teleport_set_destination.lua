@@ -14,17 +14,26 @@ function teleportSetDestination.onSay(player, words, param)
 
 	local position = player:getPosition()
 	position:getNextPosition(player:getDirection(), 1)
-	local split = param:split(",")
 	local tile = Tile(position)
 	local teleport = tile and tile:getItemByType(ITEM_TYPE_TELEPORT)
 	if teleport then
-		if split then
-			teleport:setDestination(Position(split[1], split[2], split[3]))
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("New position: %s, %s, %s", split[1], split[2], split[3]))
+		local split = param:split(",") -- Split always return a table, even if it's empty
+		if #split ~= 3 then
+			player:sendCancelMessage("You need to declare the X, Y of Z of destination. Please use \"/teleport X, Y, Z\".")
+			return false
+		else
+			local destPosition = Position(split[1], split[2], split[3])
+			if destPosition and destPosition:getTile() then
+				teleport:setDestination(destPosition)
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("New position: %s", param))
+			else
+				player:sendCancelMessage("Destination position is not valid.")
+				return false
+			end
 		end
 	else
 		player:sendCancelMessage("The item is not a teleport type")
-		return true
+		return false
 	end
 	return false
 end

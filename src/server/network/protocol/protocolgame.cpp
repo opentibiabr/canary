@@ -597,7 +597,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		return;
 	}
 
-	//a dead player can not performs actions
+	// A dead player can not performs actions
 	if (player->isDead() || player->getHealth() <= 0) {
 		if (recvbyte == 0x14) {
 			disconnect();
@@ -641,7 +641,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	}
 
 	// Modules system
-	if(player && recvbyte != 0xD3){
+	if (player && recvbyte != 0xD3) {
 		g_dispatcher().addTask(createTask(std::bind(&Modules::executeOnRecvbyte, &g_modules(), player->getID(), msg, recvbyte)));
 	}
 

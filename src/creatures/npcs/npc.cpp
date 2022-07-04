@@ -27,7 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
 
@@ -244,14 +243,16 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	int64_t totalCost = buyPrice * amount;
+	uint32_t totalCost = buyPrice * amount;
 	if (getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game().removeMoney(player, totalCost, 0, true)) {
 			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 			return;
 		}
-	} else if(!player->removeItemOfType(getCurrency(), buyPrice, -1, false)) {
+	} else if(!player->removeItemOfType(getCurrency(), totalCost, -1, false)) {
 		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 

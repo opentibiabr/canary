@@ -14,7 +14,10 @@
     "jsoncpp",
     "libzippp",
     "protobuf",
-    "luajit",
+    {
+      "name": "luajit",
+      "platform": "!arm"
+    },
     { "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },

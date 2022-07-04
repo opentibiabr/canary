@@ -249,6 +249,10 @@ bool ConfigManager::load()
 	integer[MAX_ALLOWED_ON_A_DUMMY] = getGlobalNumber(L, "maxAllowedOnADummy", 1);
 	integer[FREE_QUEST_STAGE] = getGlobalNumber(L, "freeQuestStage", 1);
 	integer[DEPOTCHEST] = getGlobalNumber(L, "depotChest", 4);
+	integer[CRITICALCHANCE] = getGlobalNumber(L, "criticalChance", 10);
+
+	boolean[INVENTORY_GLOW] = getGlobalBoolean(L, "inventoryGlowOnFiveBless", false);
+	integer[ADVENTURERSBLESSING_LEVEL] = getGlobalNumber(L, "adventurersBlessingLevel", 21);
 
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);

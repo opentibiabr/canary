@@ -3610,7 +3610,7 @@ void Player::stashContainer(StashContainerList itemDict)
 		if (g_game().internalRemoveItem(stashIterator.first, stashIterator.second) == RETURNVALUE_NOERROR) {
 			addItemOnStash(iteratorCID, stashIterator.second);
 			totalStowed += stashIterator.second;
-			if (isDepotSearchOpenOnItem(iteratorCID, 0)) {
+			if (isDepotSearchOpenOnItem(iteratorCID)) {
 				refreshDepotSearchOnItem = iteratorCID;
 			}
 		}
@@ -5735,7 +5735,7 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	}
 
 	// This check is necessary because we need to block it when we retrieve an item from depot search.
-	if (!isDepotSearchOpenOnItem(itemId, 0)) {
+	if (!isDepotSearchOpenOnItem(itemId)) {
 		sendOpenStash();
 	}
 
@@ -6009,7 +6009,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 				c && !c->empty()) {
 			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 				if (Item* item = *it;
-						item && item->getID() == itemId) { // To-Do: When forge is complete check for item tier here.
+						item && item->getID() == itemId) { // To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
 					if (c->isInbox()) {
 						inboxItems.push_back(item);
 						inboxCount += Item::countByType(item, -1);
@@ -6033,26 +6033,30 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 		return;
 	}
 
+	std::vector<Item*> itemsVector;
 	for (Item* locker : depotLocker->getItemList()) {
 		if (Container* c = locker->getContainer();
 			c && !c->empty() &&
 				((c->isInbox() && !isDepot) ||				// Retrieve from inbox.
 				(!c->isInbox() && isDepot))) {				// Retrieve from depot.
 			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-				if (Item* item = *it;
-						item && item->getID() == itemId) {	// To-Do: When forge is complete check for item tier here.
-					// First lets try to retrieve the item to the stash retrieve container.
-					if (ReturnValue ret = g_game().internalQuickLootItem(this, item, OBJECTCATEGORY_STASHRETRIEVE);
-						ret != RETURNVALUE_NOERROR) {
-
-						// If the retrieve fails to move the item to the stash retrieve container, let's add the item anywhere.
-						if (ret = g_game().internalMoveItem(item->getParent(), this, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
-							ret != RETURNVALUE_NOERROR) {
-								sendCancelMessage(ret);
-								return;
-						}
-					}
+				if (Item* item = *it; item && item->getID() == itemId) {	// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+					itemsVector.push_back(item);
 				}
+			}
+		}
+	}
+
+	for (Item* item : itemsVector) {
+		// First lets try to retrieve the item to the stash retrieve container.
+		if (ReturnValue ret = g_game().internalQuickLootItem(this, item, OBJECTCATEGORY_STASHRETRIEVE);
+			ret != RETURNVALUE_NOERROR) {
+
+			// If the retrieve fails to move the item to the stash retrieve container, let's add the item anywhere.
+			if (ret = g_game().internalMoveItem(item->getParent(), this, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
+					ret != RETURNVALUE_NOERROR) {
+				sendCancelMessage(ret);
+				return;
 			}
 		}
 	}
@@ -6067,7 +6071,7 @@ void Player::openContainerFromDepotSearch(const Position& pos)
 		return;
 	}
 
-	Item* item = getItemFromDepotSearch(depotSearchOnItem.first, depotSearchOnItem.second, pos);
+	Item* item = getItemFromDepotSearch(depotSearchOnItem.first, pos);
 	if (!item) {
 		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -6082,7 +6086,7 @@ void Player::openContainerFromDepotSearch(const Position& pos)
 	g_actions().useItem(this, pos, 0, container, false);
 }
 
-Item* Player::getItemFromDepotSearch(uint16_t itemId, uint8_t tier, const Position& pos)
+Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 {
 	DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
 	if (!depotLocker) {
@@ -6097,7 +6101,7 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, uint8_t tier, const Positi
 				(!c->isInbox() && pos.y == 0x20))) {		// From depot.
 			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 				if (Item* item = *it;
-						item && item->getID() == itemId) {	//  To-Do: When forge is complete check for item tier here.
+						item && item->getID() == itemId) {	//  To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
 					if (pos.z == index) {
 						return item;
 					}

@@ -421,8 +421,8 @@ class Player final : public Creature, public Cylinder
 		bool isDepotSearchOpen() const {
 			return depotSearchOnItem.first != 0;
 		}
-		bool isDepotSearchOpenOnItem(uint16_t itemId, uint8_t tier) const {
-			return depotSearchOnItem.first == itemId && depotSearchOnItem.second == tier;
+		bool isDepotSearchOpenOnItem(uint16_t itemId) const {
+			return depotSearchOnItem.first == itemId;
 		}
 		void setDepotSearchIsOpen(uint16_t itemId, uint8_t tier) {
 			depotSearchOnItem = {itemId, tier};
@@ -2078,7 +2078,13 @@ class Player final : public Creature, public Cylinder
 		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
 		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
 		void openContainerFromDepotSearch(const Position& pos);
-		Item* getItemFromDepotSearch(uint16_t itemId, uint8_t tier, const Position& pos);
+		Item* getItemFromDepotSearch(uint16_t itemId, const Position& pos);
+		bool isDepotSearchExhausted() const {
+			return (OTSYS_TIME() - lastDepotSearchInteraction < 1000);
+		}
+		void updateDepotSearchExhausted() {
+			lastDepotSearchInteraction = OTSYS_TIME();
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2207,6 +2213,7 @@ class Player final : public Creature, public Cylinder
 		int64_t lastToggleMount = 0;
 		int64_t lastMarketInteraction = 0; // Market exhaust.
 		int64_t lastStashInteraction = 0;
+		int64_t lastDepotSearchInteraction = 0;
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;

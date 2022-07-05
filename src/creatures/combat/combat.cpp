@@ -46,7 +46,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 			if (params.valueCallback) {
 				params.valueCallback->getMinMaxValues(player, damage, params.useCharges);
 			} else if (formulaType == COMBAT_FORMULA_LEVELMAGIC) {
-				int32_t levelFormula = player->getLevel() * 2 + player->getMagicLevel() * 3;
+				int32_t levelFormula = player->getLevel() * 2 + (player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type)) * 3;
 				damage.primary.value = normal_random(
 					static_cast<int32_t>(levelFormula * mina + minb),
 					static_cast<int32_t>(levelFormula * maxa + maxb)
@@ -838,14 +838,14 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 	}
 	//
 	CombatDamage tmpDamage;
-    if(data) {
-        tmpDamage.origin = data->origin;
-        tmpDamage.primary.type = data->primary.type;
-        tmpDamage.primary.value = data->primary.value;
-        tmpDamage.secondary.type = data->secondary.type;
-        tmpDamage.secondary.value = data->secondary.value;
-        tmpDamage.critical = data->critical;
-    }
+	if(data) {
+		tmpDamage.origin = data->origin;
+		tmpDamage.primary.type = data->primary.type;
+		tmpDamage.primary.value = data->primary.value;
+		tmpDamage.secondary.type = data->secondary.type;
+		tmpDamage.secondary.value = data->secondary.value;
+		tmpDamage.critical = data->critical;
+	}
 	tmpDamage.affected = affected;
 	for (Tile* tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
@@ -902,7 +902,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		// Charm low blow rune)
-		if (target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
+		if (!damage.cleave && target && target->getMonster() && damage.primary.type != COMBAT_HEALING) {
 			uint16_t playerCharmRaceid = caster->getPlayer()->parseRacebyCharm(CHARM_LOW, false, 0);
 			if (playerCharmRaceid != 0) {
 				const MonsterType* mType = g_monsters().getMonsterType(target->getName());
@@ -1099,7 +1099,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 		case COMBAT_FORMULA_LEVELMAGIC: {
 			//onGetPlayerMinMaxValues(player, level, maglevel)
 			lua_pushnumber(L, player->getLevel());
-			lua_pushnumber(L, player->getMagicLevel());
+			lua_pushnumber(L, player->getMagicLevel() + player->getSpecializedMagicLevel(damage.primary.type));
 			parameters += 2;
 			break;
 		}

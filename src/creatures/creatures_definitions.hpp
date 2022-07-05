@@ -211,6 +211,7 @@ enum CombatOrigin {
 	ORIGIN_SPELL,
 	ORIGIN_MELEE,
 	ORIGIN_RANGED,
+	ORIGIN_REFLECT,
 };
 
 enum CallBackParam_t {
@@ -411,7 +412,8 @@ enum BlockType_t : uint8_t {
 	BLOCK_NONE,
 	BLOCK_DEFENSE,
 	BLOCK_ARMOR,
-	BLOCK_IMMUNITY
+	BLOCK_IMMUNITY,
+	BLOCK_DODGE
 };
 
 enum BestiaryType_t : uint8_t {
@@ -755,6 +757,7 @@ struct CombatDamage {
 	bool critical;
 	int affected;
 	bool extension;
+	bool cleave;
 	std::string exString;
 
 	CombatDamage() {
@@ -764,6 +767,7 @@ struct CombatDamage {
 		critical = false;
 		affected = 1;
 		extension = false;
+		cleave = false;
 		exString = "";
 	}
 };

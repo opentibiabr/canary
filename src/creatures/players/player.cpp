@@ -2384,6 +2384,9 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
                               bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/)
 {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
+	bool isReflected = false;
+	CombatDamage reflectDamage;
+
 
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
@@ -2441,6 +2444,24 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 
 						Combat::doCombatHealth(this, attacker, reflectDamage, params);
 					}
+
+					if (combatType == COMBAT_PHYSICALDAMAGE) {
+						if (it.abilities->damageReflection != 0) {
+							const int16_t calculatedDamage = std::round(attacker->getMaxHealth() * 0.01);
+
+							if (calculatedDamage >= it.abilities->damageReflection) {
+								reflectDamage.primary.value += it.abilities->damageReflection;
+							} else { 
+								reflectDamage.primary.value += calculatedDamage;
+							}
+
+							if (reflectDamage.primary.value > std::round(attacker->getMaxHealth() * 0.01) || reflectDamage.primary.value >= it.abilities->damageReflection) {
+								reflectDamage.primary.value = it.abilities->damageReflection;
+							}
+
+							isReflected = true;
+						}
+					}
 				}
 			}
 
@@ -2459,6 +2480,17 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 				}
 			}
 
+		}
+
+		if (isReflected) {
+			CombatParams params;
+			params.combatType = COMBAT_PHYSICALDAMAGE;
+			params.impactEffect = CONST_ME_HITAREA;
+			
+			reflectDamage.origin = ORIGIN_REFLECT;
+			reflectDamage.primary.type = COMBAT_PHYSICALDAMAGE;
+
+			Combat::doCombatHealth(this, attacker, reflectDamage, params);
 		}
 
 		if (damage <= 0) {

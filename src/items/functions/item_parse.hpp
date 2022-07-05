@@ -118,6 +118,16 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"absorbpercentdrown", ITEM_PARSE_ABSORBPERCENTDROWN},
 	{"absorbpercentphysical", ITEM_PARSE_ABSORBPERCENTPHYSICAL},
 	{"absorbpercenthealing", ITEM_PARSE_ABSORBPERCENTHEALING},
+	{"perfectshotdamage", ITEM_PARSE_PERFECTSHOTDAMAGE},
+	{"perfectshotrange", ITEM_PARSE_PERFECTSHOTRANGE},
+	{"deathmagiclevelpoints", ITEM_PARSE_DEATHMAGICLEVELPOINTS},
+	{"energymagiclevelpoints", ITEM_PARSE_PERFECTSHOTRANGE},
+	{"earthmagiclevelpoints", ITEM_PARSE_EARTHMAGICLEVELPOINTS},
+	{"firemagiclevelpoints", ITEM_PARSE_FIREMAGICLEVELPOINTS},
+	{"holymagiclevelpoints", ITEM_PARSE_HEALINGMAGICLEVELPOINTS},
+	{"healingmagiclevelpoints", ITEM_PARSE_HOLYMAGICLEVELPOINTS},
+	{"icemagiclevelpoints", ITEM_PARSE_ICEMAGICLEVELPOINTS},
+	{"physicalmagiclevelpoints", ITEM_PARSE_PHYSICALMAGICLEVELPOINTS},
 	{"suppressdrunk", ITEM_PARSE_SUPPRESSDRUNK},
 	{"suppressenergy", ITEM_PARSE_SUPPRESSENERGY},
 	{"suppressfire", ITEM_PARSE_SUPPRESSFIRE},
@@ -147,6 +157,10 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"blocking", ITEM_PARSE_BLOCK_SOLID},
 	{"allowdistread", ITEM_PARSE_ALLOWDISTREAD},
 	{"imbuementslot", ITEM_PARSE_IMBUEMENT},
+	{"damagereflection", ITEM_PARSE_DAMAGE_REFLECTION},
+	{"magicshieldcapacitypercent", ITEM_PARSE_MAGIC_SHIELD_CAPACITY_PERCENT},
+	{"magicshieldcapacityflat", ITEM_PARSE_MAGIC_SHIELD_CAPACITY_FLAT},
+	{"cleavepercent", ITEM_PARSE_CLEAVE},
 };
 
 const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -280,6 +294,9 @@ class ItemParse : public Items
 	static void parseFieldAbsorbPercent(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAbsorbPercent(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseSupressDrunk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseElementalMagicLevel(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parsePerfectShotDamage(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parsePerfectShotRange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseField(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseReplaceable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseLevelDoor(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -288,6 +305,9 @@ class ItemParse : public Items
 	static void parseWalk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseDamageReflection(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseMagicShieldCapacity(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseCleave(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
 	private:
 	// Parent of the function: static void parseField

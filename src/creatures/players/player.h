@@ -305,6 +305,56 @@ class Player final : public Creature, public Cylinder
 		Party* getParty() const {
 			return party;
 		}
+
+		uint16_t getCleavePercent() const {
+			return cleavePercent;
+		}
+
+		void setCleavePercent(uint16_t value) {
+			cleavePercent += value;
+		}
+
+		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
+			return specializedMagicLevel[combatTypeToIndex(combat)];
+		}
+
+		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
+			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
+		}
+
+		int32_t getPerfectShotDamage(uint8_t range) const {
+			auto it = perfectShot.find(range);
+			if (it != perfectShot.end())
+				return it->second;
+			return 0;
+		}	
+
+		void setPerfectShotDamage(uint8_t range, int32_t damage) {
+			int32_t actualDamage = getPerfectShotDamage(range);
+			bool aboveZero = (actualDamage != 0);
+			actualDamage += damage;
+			if (actualDamage == 0 && aboveZero)
+				perfectShot.erase(range);
+			else
+				perfectShot[range] = actualDamage;
+		}
+
+		int32_t getMagicShieldCapacityFlat() const {
+			return magicShieldCapacityFlat;
+		}
+
+		int16_t getMagicShieldCapacityPercent() const {
+			return magicShieldCapacityPercent;
+		}
+
+		void setMagicShieldCapacityFlat(int32_t value) {
+			magicShieldCapacityFlat += value;
+		}
+
+		void setMagicShieldCapacityPercent(int16_t value) {
+			magicShieldCapacityPercent += value;
+		}
+
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
 		bool isPartner(const Player* player) const;
@@ -1507,7 +1557,7 @@ class Player final : public Creature, public Cylinder
 
 		void sendOpenStash(bool isNpc = false) {
 			if (client && ((getLastDepotId() != -1) || isNpc)) {
-        		client->sendOpenStash();
+				client->sendOpenStash();
 			}
 		}
 		bool isStashExhausted() const;
@@ -2035,7 +2085,7 @@ class Player final : public Creature, public Cylinder
 
 			return nullptr;
 		}
-
+		
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2297,6 +2347,12 @@ class Player final : public Creature, public Cylinder
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
+
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		std::map<uint8_t, int32_t> perfectShot;
+		int32_t magicShieldCapacityFlat = 0;
+		int16_t magicShieldCapacityPercent = 0;
+		uint16_t cleavePercent = 0;
 
 		static uint32_t playerAutoID;
 

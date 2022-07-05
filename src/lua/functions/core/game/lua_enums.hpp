@@ -878,6 +878,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, ORIGIN_SPELL)
 			registerEnum(L, ORIGIN_MELEE)
 			registerEnum(L, ORIGIN_RANGED)
+			registerEnum(L, ORIGIN_REFLECT)
 
 			// Use with house:getAccessList, house:setAccessList
 			registerEnum(L, GUEST_LIST)

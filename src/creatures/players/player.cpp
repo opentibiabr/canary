@@ -5955,26 +5955,26 @@ void Player::requestDepotItems()
 		}
 	}
 
-	for (StashItemList item : getStashItems()) {
-		auto itemMap_it = itemMap.find(item.first);
+	for (const auto& [id, count] : getStashItems()) {
+		auto itemMap_it = itemMap.find(id);
 
-		uint8_t itemTier = Item::items[item.first].upgradeClassification > 0 ? 1 : 0;
+		uint8_t itemTier = Item::items[id].upgradeClassification > 0 ? 1 : 0;
 		/* To-Do: When forge is complete, change to this:
 			uint8_t itemTier = (*it)->getClassification() > 0 ? ((*it)->getTier() + 1) : 0;
 		*/
 
 		if (itemMap_it == itemMap.end()) {
 			std::map<uint8_t, uint32_t> itemTierMap;
-			itemTierMap[itemTier] = item.second;
-			itemMap[item.first] = itemTierMap;
+			itemTierMap[itemTier] = count;
+			itemMap[id] = itemTierMap;
 			count++;
 		} else {
-			auto itemTier_it = itemMap[item.first].find(itemTier);
-			if (itemTier_it == itemMap[item.first].end()) {
-				itemMap[item.first][itemTier] = item.second;
+			auto itemTier_it = itemMap[id].find(itemTier);
+			if (itemTier_it == itemMap[id].end()) {
+				itemMap[id][itemTier] = count;
 				count++;
 			} else {
-				itemMap[item.first][itemTier] += item.second;
+				itemMap[id][itemTier] += count;
 			}
 		}
 	}

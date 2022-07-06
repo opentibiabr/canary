@@ -704,12 +704,12 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 		// '0x20' -> From depot.
 		// '0x21' -> From inbox.
 		// Both only when the item is from depot search window.
-		if (!player->isDepotSearchOpenOnItem(itemId)) {
+		if (!player->isDepotSearchOpenOnItem(static_cast<uint16_t>(itemId))) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return nullptr;
 		}
 
-		return player->getItemFromDepotSearch(itemId, pos);
+		return player->getItemFromDepotSearch(static_cast<uint16_t>(itemId), pos);
 	} else if (pos.y == 0 && pos.z == 0) {
 		const ItemType& it = Item::items[itemId];
 		if (it.id == 0) {
@@ -1124,14 +1124,12 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	if (fromPos.x == 0xFFFF) {
 		if (fromPos.y & 0x40) {
 			fromIndex = fromPos.z;
-		} else if (fromPos.y == 0x20 || fromPos.y == 0x21) {
+		} else if ((fromPos.y == 0x20 || fromPos.y == 0x21) && !player->isDepotSearchOpenOnItem(itemId)) {
 			// '0x20' -> From depot.
 			// '0x21' -> From inbox.
 			// Both only when the item is being moved from depot search window.
-			if (!player->isDepotSearchOpenOnItem(itemId)) {
-				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-				return;
-			}
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
 		} else {
 			fromIndex = static_cast<uint8_t>(fromPos.y);
 		}
@@ -3830,7 +3828,7 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 	}
 }
 
-void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t count, uint8_t stackpos)
+void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t count, uint8_t)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {

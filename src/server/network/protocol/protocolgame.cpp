@@ -7249,19 +7249,19 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 	player->updateStashExhausted();
 }
 
-void ProtocolGame::sendDepotItems(ItemsTierCountList itemMap, uint16_t count)
+void ProtocolGame::sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count)
 {
 	NetworkMessage msg;
 	msg.addByte(0x94);
 
-	msg.add<uint16_t>(count);				// List size
-	for (const auto &it : itemMap) {
-		for (const auto &itt : it.second) {
-			msg.add<uint16_t>(it.first);	// Item ID
-			if (itt.first > 0) {			// Item tier
-				msg.addByte(itt.first - 1);	// The tier is -1 to avoid identify item upgradeClassification with the need of calling each ItemType
+	msg.add<uint16_t>(count);	// List size
+	for (const auto &itemMap_it : itemMap) {
+		for (const auto& [itemTier, itemCount] : itemMap_it.second) {
+			msg.add<uint16_t>(itemMap_it.first);	// Item ID
+			if (itemTier > 0) {
+				msg.addByte(itemTier - 1);
 			}
-			msg.add<uint16_t>(itt.second);	// Item count
+			msg.add<uint16_t>(static_cast<uint16_t>(itemCount));
 		}
 	}
 
@@ -7278,9 +7278,9 @@ void ProtocolGame::sendCloseDepotSearch()
 void ProtocolGame::sendDepotSearchResultDetail(uint16_t itemId,
 												uint8_t tier,
 												uint32_t depotCount,
-												const ItemVector depotItems,
+												const ItemVector &depotItems,
 												uint32_t inboxCount,
-												const ItemVector inboxItems,
+												const ItemVector &inboxItems,
 												uint32_t stashCount)
 {
 	NetworkMessage msg;
@@ -7292,13 +7292,13 @@ void ProtocolGame::sendDepotSearchResultDetail(uint16_t itemId,
 
 	msg.add<uint32_t>(depotCount);
 	msg.addByte(static_cast<uint8_t>(depotItems.size()));
-	for (auto item : depotItems) {
+	for (const auto& item : depotItems) {
 		AddItem(msg, item);
 	}
 
 	msg.add<uint32_t>(inboxCount);
 	msg.addByte(static_cast<uint8_t>(inboxItems.size()));
-	for (auto item : inboxItems) {
+	for (const auto& item : inboxItems) {
 		AddItem(msg, item);
 	}
 

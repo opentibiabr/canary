@@ -39,7 +39,7 @@ class DepotChest final : public Container
 		void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 
-		bool isDepotChest() const final {
+		bool isDepotChest() const override {
 			return true;
 		}
 

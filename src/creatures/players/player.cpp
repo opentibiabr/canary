@@ -5919,41 +5919,43 @@ void Player::requestDepotItems()
 {
 	ItemsTierCountList itemMap;
 	uint16_t count = 0;
-	DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
 	if (!depotLocker) {
 		return;
 	}
 
 	for (Item* locker : depotLocker->getItemList()) {
-		if (Container* c = locker->getContainer();
-				c && !c->empty()) {
-			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-				auto itemMap_it = itemMap.find((*it)->getID());
+		const Container* c = locker->getContainer();
+		if (!c || c->empty()) {
+			continue;
+		}
 
-				uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? 1 : 0;
-				/* To-Do: When forge is complete, change to this:
-					uint8_t itemTier = (*it)->getClassification() > 0 ? ((*it)->getTier() + 1) : 0;
-				*/
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			auto itemMap_it = itemMap.find((*it)->getID());
 
-				if (itemMap_it == itemMap.end()) {
-					std::map<uint8_t, uint32_t> itemTierMap;
-					itemTierMap[itemTier] = Item::countByType((*it), -1);
-					itemMap[(*it)->getID()] = itemTierMap;
+			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? 1 : 0;
+			/* To-Do: When forge is complete, change to this:
+				uint8_t itemTier = (*it)->getClassification() > 0 ? ((*it)->getTier() + 1) : 0;
+			*/
+
+			if (itemMap_it == itemMap.end()) {
+				std::map<uint8_t, uint32_t> itemTierMap;
+				itemTierMap[itemTier] = Item::countByType((*it), -1);
+				itemMap[(*it)->getID()] = itemTierMap;
+				count++;
+			} else {
+				auto itemTier_it = itemMap[(*it)->getID()].find(itemTier);
+				if (itemTier_it == itemMap[(*it)->getID()].end()) {
+					itemMap[(*it)->getID()][itemTier] = Item::countByType((*it), -1);
 					count++;
 				} else {
-					auto itemTier_it = itemMap[(*it)->getID()].find(itemTier);
-					if (itemTier_it == itemMap[(*it)->getID()].end()) {
-						itemMap[(*it)->getID()][itemTier] = Item::countByType((*it), -1);
-						count++;
-					} else {
-						itemMap[(*it)->getID()][itemTier] += Item::countByType((*it), -1);
-					}
+					itemMap[(*it)->getID()][itemTier] += Item::countByType((*it), -1);
 				}
 			}
 		}
 	}
 
-	for (auto item : getStashItems()) {
+	for (StashItemList item : getStashItems()) {
 		auto itemMap_it = itemMap.find(item.first);
 
 		uint8_t itemTier = Item::items[item.first].upgradeClassification > 0 ? 1 : 0;
@@ -5984,36 +5986,40 @@ void Player::requestDepotItems()
 void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 {
 	ItemVector depotItems;
-	uint32_t depotCount = 0;
-
 	ItemVector inboxItems;
+	uint32_t depotCount = 0;
 	uint32_t inboxCount = 0;
-
 	uint32_t stashCount = 0;
-	const ItemType& iType = Item::items[itemId];
-	if (iType.stackable && iType.wareId > 0) {
+
+	if (const ItemType& iType = Item::items[itemId];
+			iType.stackable && iType.wareId > 0) {
 		stashCount = static_cast<uint32_t>(getStashItemCount(itemId));
 	}
 
-	DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
 	if (!depotLocker) {
 		return;
 	}
 
 	for (Item* locker : depotLocker->getItemList()) {
-		if (Container* c = locker->getContainer();
-				c && !c->empty()) {
-			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-				if (Item* item = *it;
-						item && item->getID() == itemId) { // To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-					if (c->isInbox()) {
-						inboxItems.push_back(item);
-						inboxCount += Item::countByType(item, -1);
-					} else {
-						depotItems.push_back(item);
-						depotCount += Item::countByType(item, -1);
-					}
-				}
+		const Container* c = locker->getContainer();
+		if (!c || c->empty()) {
+			continue;
+		}
+
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			Item* item = *it;
+			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+			if (!item || item->getID() != itemId) {
+				continue;
+			}
+
+			if (c->isInbox()) {
+				inboxItems.push_back(item);
+				inboxCount += Item::countByType(item, -1);
+			} else {
+				depotItems.push_back(item);
+				depotCount += Item::countByType(item, -1);
 			}
 		}
 	}
@@ -6024,37 +6030,42 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 
 void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot)
 {
-	DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
 	if (!depotLocker) {
 		return;
 	}
 
 	std::vector<Item*> itemsVector;
 	for (Item* locker : depotLocker->getItemList()) {
-		if (Container* c = locker->getContainer();
-			c && !c->empty() &&
-				((c->isInbox() && !isDepot) ||				// Retrieve from inbox.
-				(!c->isInbox() && isDepot))) {				// Retrieve from depot.
-			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-				if (Item* item = *it; item && item->getID() == itemId) {	// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-					itemsVector.push_back(item);
-				}
+		const Container* c = locker->getContainer();
+		if (!c || c->empty() ||
+			(c->isInbox() && isDepot) ||	// Retrieve from inbox.
+			(!c->isInbox() && !isDepot)) {	// Retrieve from depot.
+			continue;
+		}
+
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+			if (Item* item = *it; item && item->getID() == itemId) {
+				itemsVector.push_back(item);
 			}
 		}
 	}
 
+	ReturnValue ret = RETURNVALUE_NOERROR;
 	for (Item* item : itemsVector) {
 		// First lets try to retrieve the item to the stash retrieve container.
-		if (ReturnValue ret = g_game().internalQuickLootItem(this, item, OBJECTCATEGORY_STASHRETRIEVE);
-			ret != RETURNVALUE_NOERROR) {
-
-			// If the retrieve fails to move the item to the stash retrieve container, let's add the item anywhere.
-			if (ret = g_game().internalMoveItem(item->getParent(), this, INDEX_WHEREEVER, item, item->getItemCount(), nullptr);
-					ret != RETURNVALUE_NOERROR) {
-				sendCancelMessage(ret);
-				return;
-			}
+		if (ret = g_game().internalQuickLootItem(this, item, OBJECTCATEGORY_STASHRETRIEVE); ret == RETURNVALUE_NOERROR) {
+			continue;
 		}
+
+		// If the retrieve fails to move the item to the stash retrieve container, let's add the item anywhere.
+		if (ret = g_game().internalMoveItem(item->getParent(), this, INDEX_WHEREEVER, item, item->getItemCount(), nullptr); ret == RETURNVALUE_NOERROR) {
+			continue;
+		}
+
+		sendCancelMessage(ret);
+		return;
 	}
 
 	requestDepotSearchItem(itemId, tier);
@@ -6067,7 +6078,7 @@ void Player::openContainerFromDepotSearch(const Position& pos)
 		return;
 	}
 
-	Item* item = getItemFromDepotSearch(depotSearchOnItem.first, pos);
+	const Item* item = getItemFromDepotSearch(depotSearchOnItem.first, pos);
 	if (!item) {
 		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -6084,27 +6095,31 @@ void Player::openContainerFromDepotSearch(const Position& pos)
 
 Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 {
-	DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
 	if (!depotLocker) {
 		return nullptr;
 	}
 
 	uint8_t index = 0;
 	for (Item* locker : depotLocker->getItemList()) {
-		if (Container* c = locker->getContainer();
-				c && !c->empty() &&
-				((c->isInbox() && pos.y == 0x21) ||			// From inbox.
-				(!c->isInbox() && pos.y == 0x20))) {		// From depot.
-			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-				if (Item* item = *it;
-						item && item->getID() == itemId) {	//  To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-					if (pos.z == index) {
-						return item;
-					}
+		const Container* c = locker->getContainer();
+		if (!c || c->empty() ||
+			(c->isInbox() && pos.y != 0x21) ||	// From inbox.
+			(!c->isInbox() && pos.y != 0x20)) {	// From depot.
+			continue;
+		}
 
-					index++;
-				}
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			Item* item = *it;
+			//  To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+			if (!item || item->getID() != itemId) {
+				continue;
 			}
+
+			if (pos.z == index) {
+				return item;
+			}
+			index++;
 		}
 	}
 

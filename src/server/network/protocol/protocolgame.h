@@ -128,14 +128,14 @@ private:
 	void parseQuickLootBlackWhitelist(NetworkMessage &msg);
 
 	// Depot search
-	void sendDepotItems(ItemsTierCountList itemMap, uint16_t count);
+	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
 	void sendCloseDepotSearch();
 	void sendDepotSearchResultDetail(uint16_t itemId,
 									uint8_t tier,
 									uint32_t depotCount,
-									const ItemVector depotItems,
+									const ItemVector &depotItems,
 									uint32_t inboxCount,
-									const ItemVector inboxItems,
+									const ItemVector &inboxItems,
 									uint32_t stashCount);
 	void parseOpenDepotSearch();
 	void parseCloseDepotSearch();

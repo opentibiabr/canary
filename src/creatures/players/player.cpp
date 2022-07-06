@@ -5934,23 +5934,17 @@ void Player::requestDepotItems()
 			auto itemMap_it = itemMap.find((*it)->getID());
 
 			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? 1 : 0;
-			/* To-Do: When forge is complete, change to this:
-				uint8_t itemTier = (*it)->getClassification() > 0 ? ((*it)->getTier() + 1) : 0;
-			*/
-
+			// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
 			if (itemMap_it == itemMap.end()) {
 				std::map<uint8_t, uint32_t> itemTierMap;
 				itemTierMap[itemTier] = Item::countByType((*it), -1);
 				itemMap[(*it)->getID()] = itemTierMap;
 				count++;
+			} else if (auto itemTier_it = itemMap[(*it)->getID()].find(itemTier); itemTier_it == itemMap[(*it)->getID()].end()) {
+				itemMap[(*it)->getID()][itemTier] = Item::countByType((*it), -1);
+				count++;
 			} else {
-				auto itemTier_it = itemMap[(*it)->getID()].find(itemTier);
-				if (itemTier_it == itemMap[(*it)->getID()].end()) {
-					itemMap[(*it)->getID()][itemTier] = Item::countByType((*it), -1);
-					count++;
-				} else {
-					itemMap[(*it)->getID()][itemTier] += Item::countByType((*it), -1);
-				}
+				itemMap[(*it)->getID()][itemTier] += Item::countByType((*it), -1);
 			}
 		}
 	}
@@ -5959,23 +5953,17 @@ void Player::requestDepotItems()
 		auto itemMap_it = itemMap.find(itemId);
 
 		uint8_t itemTier = Item::items[itemId].upgradeClassification > 0 ? 1 : 0;
-		/* To-Do: When forge is complete, change to this:
-			uint8_t itemTier = (*it)->getClassification() > 0 ? ((*it)->getTier() + 1) : 0;
-		*/
-
+		// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
 		if (itemMap_it == itemMap.end()) {
 			std::map<uint8_t, uint32_t> itemTierMap;
 			itemTierMap[itemTier] = itemCount;
 			itemMap[itemId] = itemTierMap;
 			count++;
+		} else if (auto itemTier_it = itemMap[itemId].find(itemTier); itemTier_it == itemMap[itemId].end()) {
+			itemMap[itemId][itemTier] = itemCount;
+			count++;
 		} else {
-			auto itemTier_it = itemMap[itemId].find(itemTier);
-			if (itemTier_it == itemMap[itemId].end()) {
-				itemMap[itemId][itemTier] = itemCount;
-				count++;
-			} else {
-				itemMap[itemId][itemTier] += itemCount;
-			}
+			itemMap[itemId][itemTier] += itemCount;
 		}
 	}
 

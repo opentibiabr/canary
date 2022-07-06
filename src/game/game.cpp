@@ -1413,14 +1413,12 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		if (fromPos.x == 0xFFFF) {
 			if (fromPos.y & 0x40) {
 				fromIndex = fromPos.z;
-			} else if (fromPos.y == 0x20 || fromPos.y == 0x21) {
+			} else if ((fromPos.y == 0x20 || fromPos.y == 0x21) && !player->isDepotSearchOpenOnItem(itemId)) {
 				// '0x20' -> From depot.
 				// '0x21' -> From inbox.
 				// Both only when the item is being moved from depot search window.
-				if (!player->isDepotSearchOpenOnItem(itemId)) {
-					player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-					return;
-				}
+				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				return;
 			} else {
 				fromIndex = static_cast<uint8_t>(fromPos.y);
 			}

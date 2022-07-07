@@ -1,0 +1,8 @@
+{
+  "name": "opentibiabr-canary",
+  "version": "1.3.29",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opentibiabr/canary.git"
+  }
+}

@@ -98,6 +98,9 @@ autoLoot = false
 -- autoBank = true, the dropped coins from monsters will be automatically 
 -- deposited to your bank account.
 autoBank = false
+-- teleporte summon
+-- true will never remove the summon
+teleportSummons = false
 
 -- Stamina in Trainers
 staminaTrainer = false

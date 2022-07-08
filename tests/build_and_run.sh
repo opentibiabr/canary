@@ -4,9 +4,9 @@ docker-compose down --rmi all -v --remove-orphans
 docker-compose up --build -d
 cd ..
 mkdir build
-cd build
-cmake -DPACKAGE_TESTS=On .. ; make -j`nproc`
+cd build || exit
+cmake -DUT=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake .. ; make -j$(nproc)
 ./tests/canary_unittest  --reporter compact --success -d yes
 cd  ..
-cd tests
+cd tests || exit
 docker-compose down --rmi all -v --remove-orphans

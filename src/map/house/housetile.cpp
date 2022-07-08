@@ -78,7 +78,7 @@ ReturnValue HouseTile::queryAdd(int32_t index, const Thing& thing, uint32_t coun
 {
 	if (const Creature* creature = thing.getCreature()) {
 		if (const Player* player = creature->getPlayer()) {
-			if (!house->isInvited(player)) {
+			if (!house->isInvited(const_cast<Player*>(player))) {
 				return RETURNVALUE_PLAYERISNOTINVITED;
 			}
 		}
@@ -109,7 +109,7 @@ Tile* HouseTile::queryDestination(int32_t& index, const Thing& thing, Item** des
 {
 	if (const Creature* creature = thing.getCreature()) {
 		if (const Player* player = creature->getPlayer()) {
-			if (!house->isInvited(player)) {
+			if (!house->isInvited(const_cast<Player*>(player))) {
 				const Position& entryPos = house->getEntryPosition();
 				Tile* destTile = g_game().map.getTile(entryPos);
 				if (!destTile) {

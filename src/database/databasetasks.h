@@ -21,6 +21,8 @@
 #define SRC_DATABASE_DATABASETASKS_H_
 
 #include <condition_variable>
+#include <list>
+
 #include "utils/thread_holder_base.h"
 #include "database/database.h"
 #include "declarations.hpp"

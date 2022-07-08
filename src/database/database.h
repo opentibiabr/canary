@@ -20,6 +20,9 @@
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
+#include "declarations.hpp"
+#include "spdlog/spdlog.h"
+
 #include <boost/lexical_cast.hpp>
 #include <mysql/mysql.h>
 #include <memory>
@@ -102,7 +105,7 @@ class DBResult
 		T getNumber(const std::string& s) const {
 			auto it = listNames.find(s);
 			if (it == listNames.end()) {
-				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
+				SPDLOG_ERROR("[DBResult::getNumber] - Column [{}] doesn't exist in the result set", s);
 				return static_cast<T>(0);
 			}
 

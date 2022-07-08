@@ -29,8 +29,9 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 CREATE TABLE IF NOT EXISTS `coins_transactions` (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `account_id` int(11) UNSIGNED NOT NULL,
-    `type` tinyint(1) UNSIGNED NOT NULL,
-    `amount` int(12) UNSIGNED NOT NULL,
+    `transaction_type` tinyint(1) UNSIGNED NOT NULL,
+    `coin_type` tinyint(1) UNSIGNED NOT NULL,
+    `coins` int(12) UNSIGNED NOT NULL,
     `description` varchar(3500) NOT NULL,
     `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
     INDEX `account_id` (`account_id`),

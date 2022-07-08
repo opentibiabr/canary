@@ -159,6 +159,7 @@ target_sources(${PROJECT_NAME}
     creatures/npcs/npcs.cpp
     creatures/npcs/spawns/spawn_npc.cpp
     creatures/players/account/account.cpp
+    creatures/players/account/account_storage_db.cpp
     creatures/players/grouping/familiars.cpp
     creatures/players/grouping/groups.cpp
     creatures/players/grouping/guild.cpp

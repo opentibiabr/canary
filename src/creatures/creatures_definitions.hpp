@@ -20,6 +20,10 @@
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 
+#include <list>
+#include <cmath>
+#include <map>
+
 // Enum
 
 enum SkillsId_t {

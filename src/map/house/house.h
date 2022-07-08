@@ -82,7 +82,7 @@ class Door final : public Item
 			return getIntAttr(ITEM_ATTRIBUTE_DOORID);
 		}
 
-		bool canUse(const Player* player);
+		bool canUse(Player* player);
 
 		void setAccessList(const std::string& textlist);
 		bool getAccessList(std::string& list) const;
@@ -124,17 +124,18 @@ class House
 		void addTile(HouseTile* tile);
 		void updateDoorDescription() const;
 
-		bool canEditAccessList(uint32_t listId, const Player* player);
+		bool canEditAccessList(uint32_t listId, Player* player);
 		// listId special = values:
 		// GUEST_LIST = guest list
 		// SUBOWNER_LIST = subowner list
 		void setAccessList(uint32_t listId, const std::string& textlist);
 		bool getAccessList(uint32_t listId, std::string& list) const;
 
-		bool isInvited(const Player* player);
+		bool isInvited(Player* player);
 
-		AccessHouseLevel_t getHouseAccessLevel(const Player* player);
+		AccessHouseLevel_t getHouseAccessLevel(Player* player);
 		bool kickPlayer(Player* player, Player* target);
+
 
 		void setEntryPos(Position pos) {
 			posEntry = pos;

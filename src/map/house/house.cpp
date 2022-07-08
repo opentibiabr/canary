@@ -143,14 +143,15 @@ void House::updateDoorDescription() const
 	}
 }
 
-AccessHouseLevel_t House::getHouseAccessLevel(const Player* player)
+AccessHouseLevel_t House::getHouseAccessLevel(Player* player)
 {
 	if (!player) {
 		return HOUSE_OWNER;
 	}
 
 	if (g_configManager().getBoolean(HOUSE_OWNED_BY_ACCOUNT)) {
-		if (ownerAccountId == player->getAccount()) {
+		if (nullptr != player->getAccount()
+                && player->getAccount()->getID() == ownerAccountId ) {
 			return HOUSE_OWNER;
 		}
 	}
@@ -314,7 +315,7 @@ bool House::getAccessList(uint32_t listId, std::string& list) const
 	return door->getAccessList(list);
 }
 
-bool House::isInvited(const Player* player)
+bool House::isInvited(Player* player)
 {
 	return getHouseAccessLevel(player) != HOUSE_NOT_INVITED;
 }
@@ -362,7 +363,7 @@ Door* House::getDoorByPosition(const Position& pos)
 	return nullptr;
 }
 
-bool House::canEditAccessList(uint32_t listId, const Player* player)
+bool House::canEditAccessList(uint32_t listId, Player* player)
 {
 	switch (getHouseAccessLevel(player)) {
 		case HOUSE_OWNER:
@@ -581,7 +582,7 @@ void Door::setHouse(House* newHouse)
 	}
 }
 
-bool Door::canUse(const Player* player)
+bool Door::canUse(Player* player)
 {
 	if (!house) {
 		return true;

@@ -91,6 +91,10 @@ Player::~Player()
 	setWriteItem(nullptr);
 	setEditHouse(nullptr);
 	logged = false;
+    if(nullptr != m_account )
+    {
+        delete(m_account);
+    }
 }
 
 bool Player::setVocation(uint16_t vocId)
@@ -1377,7 +1381,7 @@ void Player::sendMarketEnter(uint32_t depotId)
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
-	
+
 	client->sendMarketEnter(depotId);
 }
 
@@ -2883,8 +2887,11 @@ bool Player::removeVIP(uint32_t vipGuid)
 		return false;
 	}
 
-	IOLoginData::removeVIPEntry(accountNumber, vipGuid);
-	return true;
+    if(nullptr != m_account)
+    {
+        IOLoginData::removeVIPEntry(m_account->getID(), vipGuid);
+    }
+    return true;
 }
 
 bool Player::addVIP(uint32_t vipGuid, const std::string& vipName, VipStatus_t status)
@@ -2900,10 +2907,14 @@ bool Player::addVIP(uint32_t vipGuid, const std::string& vipName, VipStatus_t st
 		return false;
 	}
 
-	IOLoginData::addVIPEntry(accountNumber, vipGuid, "", 0, false);
-	if (client) {
-		client->sendVIP(vipGuid, vipName, "", 0, false, status);
-	}
+    if(nullptr != m_account)
+    {
+        IOLoginData::addVIPEntry(m_account->getID(), vipGuid, "", 0,
+            false);
+    }
+    if (client) {
+        client->sendVIP(vipGuid, vipName, "", 0, false, status);
+    }
 	return true;
 }
 
@@ -2923,7 +2934,11 @@ bool Player::editVIP(uint32_t vipGuid, const std::string& description, uint32_t 
 		return false; // player is not in VIP
 	}
 
-	IOLoginData::editVIPEntry(accountNumber, vipGuid, description, icon, notify);
+    if(nullptr != m_account)
+    {
+	    IOLoginData::editVIPEntry(m_account->getID(), vipGuid,
+            description, icon, notify);
+    }
 	return true;
 }
 
@@ -4934,17 +4949,17 @@ bool Player::isInWarList(uint32_t guildId) const
 
 bool Player::isPremium() const
 {
-	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlag_IsAlwaysPremium)) {
+	if (g_configManager().getBoolean(FREE_PREMIUM)
+        || hasFlag(PlayerFlag_IsAlwaysPremium)) {
 		return true;
 	}
 
-	return premiumDays > 0;
-}
+    if(nullptr != m_account)
+    {
+        return m_account->getPremiumRemainingDays() > 0;
+    }
 
-void Player::setPremiumDays(int32_t v)
-{
-	premiumDays = v;
-	sendBasicData();
+    return false;
 }
 
 void Player::setTibiaCoins(int32_t v)
@@ -5870,7 +5885,7 @@ std::string Player::getBlessingsName() const
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
 			blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {
@@ -5898,22 +5913,3 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
-
-/*******************************************************************************
- * Interfaces
- ******************************************************************************/
-
-error_t Player::SetAccountInterface(account::Account* account) {
-	if (account == nullptr) {
-		return account::ERROR_NULLPTR;
-	}
-
-	account_ = account;
-	return account::ERROR_NO;
-}
-
-error_t Player::GetAccountInterface(account::Account* account) {
-	account = account_;
-	return account::ERROR_NO;
-}
-

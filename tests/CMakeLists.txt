@@ -1,24 +1,45 @@
-find_package(Catch2 REQUIRED)
-# include_directories(BEFORE ${PROJECT_SOURCE_DIR})
+project(canary_unittest)
+
+find_package(spdlog CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
+
 include_directories(SYSTEM ${MYSQL_INCLUDE_DIR} ${LUA_INCLUDE_DIR}
                     ${Boost_INCLUDE_DIRS} ${PUGIXML_INCLUDE_DIR}
                     ${CRYPTOPP_INCLUDE_DIR})
 
-project(canary_unittest)
+add_executable(canary_unittest)
 
-set(CMAKE_CXX_FLAGS     "-pipe -O0 -g -Wno-everything -std=c++11 -lstdc++ -lpthread -ldl")
+target_sources(${PROJECT_NAME}
+  PRIVATE
+  # Server files
+  # Test Files
 
-add_executable(canary_unittest
-							main.cpp
-							account_test.cpp)
+  # Account
+    ../src/creatures/players/account/account.cpp
+    src/creatures/players/account/account_test.cpp
+    src/creatures/players/account/account_storage_stub.cpp
+)
 
 target_compile_definitions(canary_unittest PUBLIC -DUNIT_TESTING -DDEBUG_LOG)
 
-target_link_libraries(canary_unittest Catch2::Catch2 canary_lib ${MYSQL_CLIENT_LIBS} ${LUA_LIBRARIES}
-						${Boost_LIBRARIES} ${Boost_FILESYSTEM_LIBRARY}
-						${PUGIXML_LIBRARIES} ${CRYPTOPP_LIBRARIES}
-						${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(${PROJECT_NAME}
+  PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+    INTERFACE_INCLUDE_DIRECTORIES>)
 
-include(CTest)
-include(Catch)
-catch_discover_tests(canary_unittest)
+target_link_libraries(${PROJECT_NAME}
+  PRIVATE
+    spdlog::spdlog
+    Catch2::Catch2
+    Catch2::Catch2WithMain
+)
+
+# target_compile_definitions(${PROJECT_NAME} PUBLIC "-g -O0 --coverage")
+target_compile_options(${PROJECT_NAME} PUBLIC -g -O0 --coverage)
+target_link_options(${PROJECT_NAME} PUBLIC --coverage)
+
+set_target_properties(${PROJECT_NAME}
+    PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)

@@ -27,6 +27,8 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
+#include "creatures/players/account/account_storage.hpp"
+#include "creatures/players/account/account_storage_db.hpp"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
@@ -52,6 +54,10 @@
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
 std::unique_lock<std::mutex> g_loaderUniqueLock(g_loaderLock);
+
+//Account Storage
+account::AccountStorageDB accStorageDB;
+account::AccountStorage* g_accStorage = &accStorageDB;
 
 /**
  *It is preferable to keep the close button off as it closes the server without saving (this can cause the player to lose items from houses and others informations, since windows automatically closes the process in five seconds, when forcing the close)
@@ -180,6 +186,7 @@ void loadModules() {
 
 	g_game().loadBoostedCreature();
 	g_ioprey().InitializeTaskHuntOptions();
+    accStorageDB.setDatabaseInterface(&Database::getInstance());
 }
 
 #ifndef UNIT_TESTING

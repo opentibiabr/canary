@@ -93,6 +93,17 @@
         "DEBUG_LOG": "ON",
         "ASAN_ENABLED": "ON"
       }
+    },
+    {
+      "name": "linux-ut",
+      "inherits": "linux-release",
+      "displayName": "Linux - Debug Build With Unit Test",
+      "description": "Build Debug Mode with Unit Test",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "DEBUG_LOG": "ON",
+        "UT": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -103,6 +114,10 @@
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
+    },
+    {
+      "name": "linux-ut",
+      "configurePreset": "linux-ut"
     },
     {
       "name": "windows-release",

@@ -632,14 +632,14 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const
 			Tile* firstTile = g_game().map.getTile(pos);
 			Tile* secondTile = g_game().map.getTile(pos2);
 
-			if (firstTile) {
+			if (firstTile && !firstTile->isMoveableBlocking()) {
 					
 				for (Creature* creature : *firstTile->getCreatures()) {
 					if (creature->getMonster() || (creature->getPlayer() && !player->hasSecureMode()))
 						internalUseWeapon(player, item, creature, damageModifier, true);
 				}
 			}
-			if (secondTile) {
+			if (secondTile && !secondTile->isMoveableBlocking()) {
 				for (Creature* creature : *secondTile->getCreatures()) {
 					if (creature->getMonster() || (creature->getPlayer() && !player->hasSecureMode()))
 						internalUseWeapon(player, item, creature, damageModifier, true);

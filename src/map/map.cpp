@@ -22,6 +22,7 @@
 #include <boost/filesystem.hpp>
 #include <fstream>
 #include <libzippp.h>
+#include <curl/curl.h>
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -51,7 +52,18 @@ bool Map::extractMap(const std::string& identifier) const {
 	if (boost::filesystem::exists(identifier)) {
 		return true;
 	}
-	
+
+	if (CURL *curl = curl_easy_init()) {
+		SPDLOG_INFO("Downloading world.zip to world folder");
+		FILE *fp = fopen("data/world/world.zip", "wb");
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_URL, "https://www.dropbox.com/s/nmc8w82one8mmp9/world.zip?dl=1");
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+		CURLcode res = curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+		fclose(fp);
+	}
+
 	using namespace libzippp;
 	std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
 	SPDLOG_INFO("Unzipping " + mapName + " to world folder");

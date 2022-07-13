@@ -58,7 +58,7 @@ bool Map::extractMap(const std::string& identifier) const {
 		FILE *fp = fopen("data/world/world.zip", "wb");
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 		curl_easy_setopt(curl, CURLOPT_URL, "https://www.dropbox.com/s/nmc8w82one8mmp9/world.zip?dl=1");
-		curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+		curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 		curl_easy_perform(curl);
 		curl_easy_cleanup(curl);

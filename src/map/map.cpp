@@ -21,7 +21,6 @@
 
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <libzippp.h>
 #include <curl/curl.h>
 
 #include "io/iomap.h"
@@ -31,7 +30,6 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
-#include "utils/tools.h"
 
 bool Map::load(const std::string& identifier) {
 	try {
@@ -48,48 +46,22 @@ bool Map::load(const std::string& identifier) {
 	return true;
 }
 
-bool Map::extractMap(const std::string& identifier) const {
-	if (boost::filesystem::exists(identifier)) {
-		return true;
-	}
-
-	if (CURL *curl = curl_easy_init()) {
-		SPDLOG_INFO("Downloading world.zip to world folder");
-		FILE *fp = fopen("data/world/world.zip", "wb");
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-		curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/world.zip");
-		curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-		curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
-		fclose(fp);
-	}
-
-	using namespace libzippp;
-	std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
-	SPDLOG_INFO("Unzipping " + mapName + " to world folder");
-	ZipArchive zf("data/world/world.zip");
-
-	if (!zf.open(ZipArchive::ReadOnly)) {
-		SPDLOG_ERROR("[Map::extractMap] - Failed to unzip world.zip, file doesn't exist");
-		consoleHandlerExit();
-		return false;
-	}
-
-	std::ofstream unzippedFile("data/world/" + mapName, std::ofstream::binary);
-	zf.getEntry(mapName).readContent(unzippedFile, ZipArchive::Current);
-	zf.close();
-	return true;
-}
-
 bool Map::loadMap(const std::string& identifier,
 	bool mainMap /*= false*/,bool loadHouses /*= false*/,
 	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
-	// Only extract map if is loading the main map
-	if (mainMap) {
-		// Extract the map
-		this->extractMap(identifier);
+	// Only download map if is loading the main map and it is not already downloaded
+	if (mainMap && !boost::filesystem::exists(identifier)) {
+		if (CURL *curl = curl_easy_init()) {
+			SPDLOG_INFO("Downloading canary.otbm to world folder");
+			FILE *otbm = fopen("data/world/canary.otbm", "wb");
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+			curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/canary.otbm");
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
+			curl_easy_perform(curl);
+			curl_easy_cleanup(curl);
+			fclose(otbm);
+		}
 	}
 
 	// Load the map

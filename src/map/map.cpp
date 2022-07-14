@@ -57,7 +57,7 @@ bool Map::extractMap(const std::string& identifier) const {
 		SPDLOG_INFO("Downloading world.zip to world folder");
 		FILE *fp = fopen("data/world/world.zip", "wb");
 		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-		curl_easy_setopt(curl, CURLOPT_URL, "https://www.dropbox.com/s/nmc8w82one8mmp9/world.zip?dl=1");
+		curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/world.zip");
 		curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 		curl_easy_perform(curl);

@@ -1054,7 +1054,7 @@ class Item : virtual public Thing
 			return !parent || parent->isRemoved();
 		}
 
-		bool isInsideDepot(bool includeDepot = false) const;
+		bool isInsideDepot(bool includeInbox = false) const;
 
 		/**
 		 * @brief Get the Imbuement Info object

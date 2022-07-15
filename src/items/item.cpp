@@ -2594,12 +2594,12 @@ bool Item::hasMarketAttributes()
 	return true;
 }
 
-bool Item::isInsideDepot(bool includeDepot/* = false*/) const
+bool Item::isInsideDepot(bool includeInbox/* = false*/) const
 {
 	if (const Container* thisContainer = getContainer(); thisContainer &&
 			(thisContainer->getDepotLocker() ||
 			thisContainer->isDepotChest() ||
-			(includeDepot && thisContainer->isInbox()))) {
+			(includeInbox && thisContainer->isInbox()))) {
 		return true;
 	}
 
@@ -2614,7 +2614,7 @@ bool Item::isInsideDepot(bool includeDepot/* = false*/) const
 	}
 
 	while (container) {
-		if (container->getDepotLocker() || container->isDepotChest() || (includeDepot && container->isInbox())) {
+		if (container->getDepotLocker() || container->isDepotChest() || (includeInbox && container->isInbox())) {
 			return true;
 		}
 

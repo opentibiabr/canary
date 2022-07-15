@@ -49705,7 +49705,9 @@
 		<attribute key="containersize" value="6"/>
 		<attribute key="weight" value="1700"/>
 	</item>
-    <item fromid="35851" toid="35858" article="a" name="magnificent bed"/>
+	<item fromid="35851" toid="35858" article="a" name="magnificent bed">
+		<attribute key="type" value="bed"/>
+	</item>
 	<item id="35859" article="a" name="magnificent bed">
 		<attribute key="type" value="bed"/>
 		<attribute key="bedpart" value="pillow"/>

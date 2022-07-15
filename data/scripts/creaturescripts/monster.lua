@@ -21,4 +21,4 @@ function monsterDeathBoss.onDeath(creature, corpse, killer, mostDamage, unjustif
 end
 
 monsterDeathBoss:register()
-monsterDeath:register() 
+monsterDeath:register()

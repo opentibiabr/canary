@@ -58,6 +58,7 @@ bool Map::loadMap(const std::string& identifier,
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/canary.otbm");
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
+			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 			curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
 			fclose(otbm);

@@ -36,11 +36,19 @@ class Npc final : public Creature
 		static int32_t despawnRadius;
 
 		explicit Npc(NpcType* npcType);
+		Npc() = default;
 		~Npc();
 
-		// non-copyable
-		Npc(const Npc&) = delete;
-		Npc& operator=(const Npc&) = delete;
+		// Singleton - ensures we don't accidentally copy it
+		Npc(Npc const&) = delete;
+		void operator=(Npc const&) = delete;
+
+		static Npc& getInstance() {
+			// Guaranteed to be destroyed
+			static Npc instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		Npc* getNpc() override {
 			return this;
@@ -55,11 +63,17 @@ class Npc final : public Creature
 			}
 		}
 
+		void reset() const;
+
 		void removeList() override;
 		void addList() override;
 
 		const std::string& getName() const override {
 			return npcType->name;
+		}
+		// Real npc name, set on npc creation "createNpcType(typeName)"
+		const std::string& getTypeName() const override {
+			return npcType->typeName;
 		}
 		const std::string& getNameDescription() const override {
 			return npcType->nameDescription;
@@ -126,9 +140,9 @@ class Npc final : public Creature
 		void resetPlayerInteractions();
 
 		bool isInteractingWithPlayer(uint32_t playerId) {
-         if (playerInteractions.find(playerId) == playerInteractions.end()) {
-           return false;
-         }
+		if (playerInteractions.find(playerId) == playerInteractions.end()) {
+			return false;
+		}
 			return true;
 		}
 
@@ -194,5 +208,7 @@ class Npc final : public Creature
 		friend class LuaScriptInterface;
 		friend class Map;
 };
+
+constexpr auto g_npc = &Npc::getInstance;
 
 #endif  // SRC_CREATURES_NPCS_NPC_H_

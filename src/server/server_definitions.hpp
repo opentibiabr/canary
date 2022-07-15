@@ -29,12 +29,11 @@ enum {XTEA_MULTIPLE = 8};
 enum {MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE};
 enum {MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10};
 
-enum ConnectionState_t : int8_t {
-	CONNECTION_STATE_DISCONNECTED,
-	CONNECTION_STATE_CONNECTING_STAGE1,
-	CONNECTION_STATE_CONNECTING_STAGE2,
-	CONNECTION_STATE_GAME,
-	CONNECTION_STATE_PENDING
+enum ConnectionState_t : uint8_t {
+	CONNECTION_STATE_OPEN,
+	CONNECTION_STATE_IDENTIFYING,
+	CONNECTION_STATE_READINGS,
+	CONNECTION_STATE_CLOSED
 };
 // Connection and networkmessage.
 
@@ -50,6 +49,12 @@ enum RequestedInfo_t : uint16_t {
 	REQUEST_SERVER_SOFTWARE_INFO = 1 << 7,
 };
 
+enum ChecksumMethods_t : uint8_t {
+	CHECKSUM_METHOD_NONE,
+	CHECKSUM_METHOD_ADLER32,
+	CHECKSUM_METHOD_SEQUENCE
+};
+
 enum SessionEndInformations : uint8_t {
 	// Guessing unknown types are ban/protocol error or something.
 	// But since there aren't any difference from logout should we care?
@@ -59,25 +64,11 @@ enum SessionEndInformations : uint8_t {
 	SESSION_END_UNK3,
 };
 
-enum PreySlotNum_t : uint8_t{
-	PREY_SLOTNUM_FIRST = 0,
-	PREY_SLOTNUM_SECOND = 1,
-	PREY_SLOTNUM_THIRD = 2,
-};
-
-enum PreyState_t : uint8_t
-{
-	PREY_STATE_LOCKED = 0,
-	PREY_STATE_INACTIVE = 1,
-	PREY_STATE_ACTIVE = 2,
-	PREY_STATE_SELECTION = 3,
-	PREY_STATE_SELECTION_CHANGE_MONSTER = 4,
-};
-
 enum Resource_t : uint8_t{
 	RESOURCE_BANK = 0x00,
 	RESOURCE_INVENTORY = 0x01,
-	RESOURCE_PREY = 0x0A,
+	RESOURCE_PREY_CARDS = 0x0A,
+	RESOURCE_TASK_HUNTING = 0x32
 };
 
 enum InspectObjectTypes : uint8_t {

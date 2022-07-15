@@ -1,15 +1,16 @@
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_RED)
+combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_UNDEFINEDDAMAGE)
 
 local condition = Condition(CONDITION_PARALYZE)
-condition:setParameter(CONDITION_PARAM_TICKS, 20 * 1000)
+condition:setParameter(CONDITION_PARAM_TICKS, 6000)
 condition:setFormula(-1, 81, -1, 81)
 combat:addCondition(condition)
 
-local spell = Spell("rune")
+local rune = Spell("rune")
 
-function spell.onCastSpell(creature, variant, isHotkey)
-	if not combat:execute(creature, variant) then
+function rune.onCastSpell(creature, var)
+	if not combat:execute(creature, var) then
 		return false
 	end
 
@@ -17,18 +18,18 @@ function spell.onCastSpell(creature, variant, isHotkey)
 	return true
 end
 
-spell:name("Paralyze Rune")
-spell:group("attack")
-spell:vocation("druid;true", "elder druid")
-spell:id(54)
-spell:cooldown(2 * 1000)
-spell:groupCooldown(2 * 1000)
-spell:level(54)
-spell:mana(1400)
-spell:magicLevel(18)
-spell:runeId(3165)
-spell:charges(1)
-spell:needTarget(true)
-spell:isBlocking(true)
-spell:allowFarUse(true)
-spell:register()
+rune:group("support")
+rune:name("paralyze rune")
+rune:runeId(3165)
+rune:allowFarUse(true)
+rune:charges(1)
+rune:setPzLocked(true)
+rune:level(54)
+rune:magicLevel(18)
+rune:cooldown(2 * 1000)
+rune:groupCooldown(2 * 1000)
+rune:mana(1400)
+rune:needTarget(true)
+rune:isBlocking(true) -- True = Solid / False = Creature
+rune:vocation("druid;true", "elder druid;true")
+rune:register()

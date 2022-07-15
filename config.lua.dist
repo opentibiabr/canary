@@ -32,7 +32,7 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-motd = "Bem vindo ao Canary!"
+motd = "Welcome to the Canary!"
 onePlayerOnlinePerAccount = true
 allowClones = false
 serverName = "Canary"
@@ -42,9 +42,10 @@ maxPacketsPerSecond = 25
 maxItem = 2000
 maxContainer = 100
 
--- Version
-clientVersion = 1285
-clientVersionStr = "12.85"
+-- Packet Compression
+-- Minimize network bandwith and reduce ping
+-- Levels: 0 = disabled, 1 = best speed, 9 = best compression
+packetCompressionLevel = 6
 
 -- Depot Limit
 freeDepotLimit = 2000
@@ -53,6 +54,34 @@ depotBoxes = 18
 
 -- GameStore
 gamestoreByModules = true
+
+-- Prey system
+-- NOTE: preyRerollPricePerLevel: Price multiplier in gold coin for rerolling prey list.
+-- NOTE: preySelectListPrice: Price to manually select creature on list and to lock prey slot.
+-- NOTE: preyBonusRerollPrice: Price to manually reroll bonus type and to enable automatic reroll.
+-- NOTE: preyBonusTime: Time in seconds that players will have of prey bonus.
+-- NOTE: preyFreeRerollTime: Time in seconds that players will have to wait to get a new free prey list.
+preySystemEnabled = true
+preyFreeThirdSlot = false
+preyRerollPricePerLevel = 200
+preySelectListPrice = 1
+preyBonusRerollPrice = 2
+preyBonusPercentMin = 5
+preyBonusPercentMax = 40
+preyBonusTime = 2 * 60 * 60
+preyFreeRerollTime = 20 * 60 * 60
+
+-- Task hunting system
+-- NOTE: taskHuntingLimitedTasksExhaust: Time to wait to select a new creature on the task hunting slot after claiming the reward.
+-- NOTE: taskHuntingRerollPricePerLevel: Price multiplier in gold coin for rerolling task hunting list.
+-- NOTE: taskHuntingFreeRerollTime: Time in seconds that players will have to wait to get a new free task hunting list.
+taskHuntingSystemEnabled = true
+taskHuntingFreeThirdSlot = false
+taskHuntingLimitedTasksExhaust = 20 * 60 * 60
+taskHuntingRerollPricePerLevel = 200
+taskHuntingSelectListPrice = 1
+taskHuntingBonusRerollPrice = 2
+taskHuntingFreeRerollTime = 20 * 60 * 60
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
@@ -83,17 +112,17 @@ staminaPzGain = 1
 maxAllowedOnADummy = 1
 
 -- Save interval per time
--- NOTE: togleSaveInterval: true = enable the save interval, false = disable the save interval
+-- NOTE: toggleSaveInterval: true = enable the save interval, false = disable the save interval
 -- NOTE: saveIntervalType: "minute", "second" or "hour"
--- NOTE: togleSaveIntervalCleanMap: true = enable the clean map, false = disable the clean map
+-- NOTE: toggleSaveIntervalCleanMap: true = enable the clean map, false = disable the clean map
 -- NOTE: saveIntervalTime: time based on what was set in "saveIntervalType"
-togleSaveInterval = true
+toggleSaveInterval = true
 saveIntervalType = "hour"
-togleSaveIntervalCleanMap = true
+toggleSaveIntervalCleanMap = true
 saveIntervalTime = 1
 
 -- Imbuement
-togleImbuementShrineStorage = false
+toggleImbuementShrineStorage = false
 
 -- Free quests
 -- Add quest access to player when logging in
@@ -132,7 +161,7 @@ pushWhenAttacking = false
 -- NOTE: set mapName WITHOUT .otbm at the end
 -- NOTE: unzip the map world.rar
 mapName = "canary"
-mapAuthor = "Eduardo Dantas"
+mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations
 -- max distance in which players in party list are visible
@@ -172,14 +201,19 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
+-- configure maximum value of critical imbuement
+criticalChance = 10
+inventoryGlowOnFiveBless = false
+adventurersBlessingLevel = 21
 
--- Server Save
--- NOTE: serverSaveNotifyDuration in minutes
-serverSaveNotifyMessage = true
-serverSaveNotifyDuration = 5
-serverSaveCleanMap = false
-serverSaveClose = false
-serverSaveShutdown = true
+-- Global server Save
+-- NOTE: globalServerSaveNotifyDuration in minutes
+globalServerSaveNotifyMessage = true
+globalServerSaveNotifyDuration = 5
+globalServerSaveCleanMap = false
+globalServerSaveClose = false
+globalServerSaveShutdown = true
+globalServerSaveTime = "06:00:00"
 
 -- Sort loot by chance, most rare items drop first
 -- it is good to be setted when you have a higher
@@ -189,12 +223,13 @@ serverSaveShutdown = true
 sortLootByChance = false
 
 -- Rates
--- NOTE: rateExp, rateSkill and rateMagic is used as a fallback only
+-- NOTE: rateExp, rateSkill and rateMagic are only used when 'rateUseStages = false'
 -- To configure rates see file data/stages.lua
+rateUseStages = false
 rateExp = 1
-rateSkill = 50
-rateLoot = 3
-rateMagic = 25
+rateSkill = 1
+rateLoot = 1
+rateMagic = 1
 rateSpawn = 1
 
 -- Today regeneration condition over an loop every 1 second,
@@ -235,8 +270,8 @@ startupDatabaseOptimization = true
 
 -- Status server information
 ownerName = "OpenTibiaBR"
-ownerEmail = ""
-url = "https://github.com/opentibiabr/canary"
+ownerEmail = "opentibiabr@outlook.com"
+url = "http://docs.opentibiabr.org/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

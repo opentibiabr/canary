@@ -8,7 +8,6 @@ on:
       - '**.py'
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
   NODE_OPTIONS: ' --max-old-space-size=8192 '
@@ -16,49 +15,51 @@ env:
 jobs:
   codeql:
     name: CodeQL
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-20.04]
         language: ['cpp', 'python']
+        include:
+          - language: cpp
+            buildtype: linux-release
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
+        uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
 
       - name: Install Linux Dependencies
         if: ${{ matrix.language == 'cpp' }}
         run: >
-          sudo apt-get update && sudo apt-get install ccache build-essential
-          libluajit-5.1-dev zip
+          sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
+
+      - name: Switch to gcc-11
+        if: ${{ matrix.language == 'cpp' }}
+        run: |
+          sudo apt install gcc-11 g++-11
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
+          sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        if: ${{ matrix.language == 'cpp' }}
-        id: ccache
-        uses: actions/cache@v2
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: /home/runner/.ccache
-          key: ccache-${{ runner.os }}-RelWithDebInfo-${{ hashFiles('**/src') }}
+          max-size: "1G"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ runner.os }}-RelWithDebInfo-
-            ccache-${{ runner.os }}-
+            ccache-${{ matrix.os }}
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/run-vcpkg@v7
+        uses: lukka/run-vcpkg@v10
         with:
-          setupOnly: true
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
-          vcpkgTriplet: x64-linux
-          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
-          vcpkgGitCommitId: 653912591af709c162fba2d4000a6b3362c8d3c9
+          vcpkgGitCommitId: 8d41d43e1f7f5933622b02e16430312da649361e
 
       - name: Get latest CMake and ninja
         if: ${{ matrix.language == 'cpp' }}
@@ -66,12 +67,10 @@ jobs:
 
       - name: Run CMake
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/run-cmake@v3
+        uses: lukka/run-cmake@v10
         with:
-          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
-          useVcpkgToolchainFile: true
-          buildDirectory: ${{ github.workspace }}/build/
-          cmakeBuildType: RelWithDebInfo
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
+        uses: github/codeql-action/analyze@v2

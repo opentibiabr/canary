@@ -23,7 +23,7 @@
 #include "config/configmanager.h"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
-#include "items/itemloader.h"
+#include "io/fileloader.h"
 #include "game/movement/position.h"
 
 struct Abilities {
@@ -159,8 +159,11 @@ class ItemType
 		bool isPickupable() const {
 			return (allowPickupable || pickupable);
 		}
-		bool isUseable() const {
-			return (useable);
+		bool isMultiUse() const {
+			return multiUse;
+		}
+		bool isQuiver() const {
+			return (type == ITEM_TYPE_QUIVER);
 		}
 		bool hasSubType() const {
 			return (isFluidContainer() || isSplash() || stackable || charges != 0);
@@ -196,10 +199,6 @@ class ItemType
 		ItemGroup_t group = ITEM_GROUP_NONE;
 		ItemTypes_t type = ITEM_TYPE_NONE;
 		uint16_t id = 0;
-		uint16_t clientId = 0;
-		bool stackable = false;
-		bool isAnimation = false;
-		bool isPodium = false;
 
 		std::string name;
 		std::string article;
@@ -218,6 +217,8 @@ class ItemType
 		uint32_t minReqLevel = 0;
 		uint32_t minReqMagicLevel = 0;
 		uint32_t charges = 0;
+		uint32_t buyPrice = 0;
+		uint32_t sellPrice = 0;
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;
@@ -252,7 +253,7 @@ class ItemType
 		Ammo_t ammoType = AMMO_NONE;
 		ShootType_t shootType = CONST_ANI_NONE;
 		RaceType_t corpseType = RACE_NONE;
-		FluidTypes_t fluidSource = FLUID_NONE;
+		Fluids_t fluidSource = FLUID_NONE;
 		TileFlags_t floorChange = TILESTATE_NONE;
 		std::map<ImbuementTypes_t, uint16_t> imbuementTypes;
 
@@ -279,9 +280,8 @@ class ItemType
 		bool rotatable = false;
 		bool wrapable = false;
 		bool wrapContainer = false;
-		bool useable = false;
+		bool multiUse = false;
 		bool moveable = false;
-		bool alwaysOnTop = false;
 		bool canReadText = false;
 		bool canWriteText = false;
 		bool isVertical = false;
@@ -291,6 +291,10 @@ class ItemType
 		bool lookThrough = false;
 		bool stopTime = false;
 		bool showCount = true;
+		bool stackable = false;
+		bool isPodium = false;
+		bool isCorpse = false;
+		bool loaded = false;
 };
 
 class Items
@@ -308,22 +312,26 @@ class Items
 		bool reload();
 		void clear();
 
-		FILELOADER_ERRORS loadFromOtb(const std::string& file);
+		void loadFromProtobuf();
 
 		const ItemType& operator[](size_t id) const {
 			return getItemType(id);
 		}
 		const ItemType& getItemType(size_t id) const;
 		ItemType& getItemType(size_t id);
-		const ItemType& getItemIdByClientId(uint16_t spriteId) const;
+
+		/**
+		 * @brief Check if the itemid "hasId" is stored on "items", if not, return false
+		 * 
+		 * @param hasId check item id
+		 * @return true if the item exist 
+		 * @return false if the item not exist
+		 */
+		bool hasItemType(size_t hasId) const;
 
 		uint16_t getItemIdByName(const std::string& name);
 
 		ItemTypes_t getLootType(const std::string& strValue);
-
-		uint32_t majorVersion = 0;
-		uint32_t minorVersion = 0;
-		uint32_t buildNumber = 0;
 
 		bool loadFromXml();
 		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
@@ -341,7 +349,6 @@ class Items
 
 	private:
 
-		std::map<uint16_t, uint16_t> reverseItemMap;
 		std::vector<ItemType> items;
 		InventoryVector inventory;
 };

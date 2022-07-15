@@ -8,17 +8,25 @@
     "boost-filesystem",
     "boost-iostreams",
     "boost-system",
-    { "name": "libmariadb",
-      "features": [ "mariadbclient" ]
-    },
     "pugixml",
     "spdlog",
     "curl",
     "jsoncpp",
-    "cryptopp",
     "libzippp",
+    "protobuf",
     {
       "name": "luajit",
+      "platform": "!arm"
+    },
+    { "name": "libmariadb",
+      "features": [ "mariadbclient" ]
+    },
+    {
+      "name": "gmp",
+      "platform": "linux"
+    },
+    {
+      "name": "mpir",
       "platform": "windows"
     }
   ]

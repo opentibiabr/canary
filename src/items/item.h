@@ -483,6 +483,7 @@ class ItemAttributes
 			checkTypes |= ITEM_ATTRIBUTE_IMBUEMENT_SLOT;
 			checkTypes |= ITEM_ATTRIBUTE_OPENCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
+			checkTypes |= ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
 			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(ItemAttrTypes type) {
@@ -822,9 +823,6 @@ class Item : virtual public Thing
 		uint16_t getID() const {
 			return id;
 		}
-		uint16_t getClientID() const {
-			return items[id].clientId;
-		}
 		void setID(uint16_t newid);
 
 		// Returns the player that is holding this item in his inventory
@@ -910,7 +908,7 @@ class Item : virtual public Thing
 			return items[id].stackable && items[id].wareId > 0;
 		}
 		bool isAlwaysOnTop() const {
-			return items[id].alwaysOnTop;
+			return items[id].alwaysOnTopOrder != 0;
 		}
 		bool isGroundTile() const {
 			return items[id].isGroundTile();
@@ -925,13 +923,13 @@ class Item : virtual public Thing
 			return items[id].moveable;
 		}
 		bool isCorpse() const {
-			return items[id].corpseType != RACE_NONE;
+			return items[id].isCorpse;
 		}
 		bool isPickupable() const {
 			return items[id].pickupable;
 		}
-		bool isUseable() const {
-			return items[id].useable;
+		bool isMultiUse() const {
+			return items[id].multiUse;
 		}
 		bool isHangable() const {
 			return items[id].isHangable;
@@ -947,6 +945,9 @@ class Item : virtual public Thing
 		}
 		bool hasWalkStack() const {
 			return items[id].walkStack;
+		}
+		bool isQuiver() const {
+			return items[id].isQuiver();
 		}
 
 		const std::string& getName() const {
@@ -1062,7 +1063,20 @@ class Item : virtual public Thing
 		 * @return false
 		 */
 		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
-		void setImbuement(uint8_t slot, uint16_t id, int32_t duration);
+		void addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
+		/**
+		 * @brief Decay imbuement time duration, only use this for decay the imbuement time
+		 * 
+		 * @param slot Slot id to decay
+		 * @param imbuementId Imbuement id to decay
+		 * @param duration New duration
+		 */
+		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, int32_t duration) {
+			return setImbuement(slot, imbuementId, duration);
+		}
+		void clearImbuement(uint8_t slot, uint16_t imbuementId) {
+			return setImbuement(slot, imbuementId, 0);
+		}
 		bool hasImbuementType(ImbuementTypes_t imbuementType, uint16_t imbuementTier) {
 			auto it = items[id].imbuementTypes.find(imbuementType);
 			if (it != items[id].imbuementTypes.end()) {
@@ -1095,7 +1109,9 @@ class Item : virtual public Thing
 
 		bool loadedFromMap = false;
 		bool isLootTrackeable = false;
-
+	
+	private:
+		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
 };

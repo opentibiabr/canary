@@ -86,6 +86,13 @@ class CreatureEvents final : public BaseEvents {
 		CreatureEvents(const CreatureEvents&) = delete;
 		CreatureEvents& operator=(const CreatureEvents&) = delete;
 
+		static CreatureEvents& getInstance() {
+			// Guaranteed to be destroyed
+			static CreatureEvents instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		// global events
 		bool playerLogin(Player* player) const;
 		bool playerLogout(Player* player) const;
@@ -109,5 +116,7 @@ class CreatureEvents final : public BaseEvents {
 
 		LuaScriptInterface scriptInterface;
 };
+
+constexpr auto g_creatureEvents = &CreatureEvents::getInstance;
 
 #endif  // SRC_LUA_CREATURE_CREATUREEVENT_H_

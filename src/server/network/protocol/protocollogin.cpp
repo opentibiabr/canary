@@ -33,7 +33,6 @@
 #include <limits>
 #include <vector>
 
-extern Game g_game;
 
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
 {
@@ -64,7 +63,7 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 		output->addByte(0x14);
 
 		std::ostringstream ss;
-		ss << g_game.getMotdNum() << "\n" << motd;
+		ss << g_game().getMotdNum() << "\n" << motd;
 		output->addString(ss.str());
 	}
 
@@ -114,25 +113,22 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 
 void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 {
-	if (g_game.getGameState() == GAME_STATE_SHUTDOWN) {
+	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
 		disconnect();
 		return;
 	}
 
-	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-
-	if (operatingSystem <= CLIENTOS_NEW_MAC)
-		enableCompact();
+	msg.skipBytes(2); // client OS
 
 	uint16_t version = msg.get<uint16_t>();
 
 	msg.skipBytes(17);
 	/*
-     * Skipped bytes:
-     * 4 bytes: client version
-     * 12 bytes: dat, spr, pic signatures (4 bytes each)
-     * 1 byte: 0
-     */
+	 - Skipped bytes:
+	 - 4 bytes: client version (971+)
+	 - 12 bytes: dat, spr, pic signatures (4 bytes each)
+	 - 1 byte: preview world(971+)
+	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {
 		SPDLOG_WARN("[ProtocolLogin::onRecvFirstMessage] - RSA Decrypt Failed");
@@ -140,20 +136,18 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 		return;
 	}
 
-	xtea::key key;
-	key[0] = msg.get<uint32_t>();
-	key[1] = msg.get<uint32_t>();
-	key[2] = msg.get<uint32_t>();
-	key[3] = msg.get<uint32_t>();
+	std::array<uint32_t, 4> key = {msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>(), msg.get<uint32_t>()};
 	enableXTEAEncryption();
-	setXTEAKey(std::move(key));
+	setXTEAKey(key.data());
 
-	if (g_game.getGameState() == GAME_STATE_STARTUP) {
+	setChecksumMethod(CHECKSUM_METHOD_ADLER32);
+
+	if (g_game().getGameState() == GAME_STATE_STARTUP) {
 		disconnectClient("Gameworld is starting up. Please wait.", version);
 		return;
 	}
 
-	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
+	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
 		disconnectClient("Gameworld is under maintenance.\nPlease re-connect in a while.", version);
 		return;
 	}
@@ -188,5 +182,5 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher.addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, email, password, version)));
+	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, email, password, version)));
 }

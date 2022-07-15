@@ -23,9 +23,6 @@
 #include "database/databasetasks.h"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
-
-extern LuaEnvironment g_luaEnvironment;
-
 int DBFunctions::luaDatabaseExecute(lua_State* L) {
 	pushBoolean(L, Database::getInstance().executeQuery(getString(L, -1)));
 	return 1;
@@ -56,7 +53,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
-	g_databaseTasks.addTask(getString(L, -1), callback);
+	g_databaseTasks().addTask(getString(L, -1), callback);
 	return 0;
 }
 
@@ -98,7 +95,7 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
-	g_databaseTasks.addTask(getString(L, -1), callback, true);
+	g_databaseTasks().addTask(getString(L, -1), callback, true);
 	return 0;
 }
 

@@ -22,9 +22,8 @@
 #include "creatures/npcs/npcs.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
+#include "game/game.h"
 
-extern Npcs g_npcs;
-extern Scripts* g_scripts;
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
@@ -49,7 +48,7 @@ void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector
 
 int NpcTypeFunctions::luaNpcTypeCreate(lua_State* L) {
 	// NpcType(name)
-	NpcType* npcType = g_npcs.getNpcType(getString(L, 1), true);
+	NpcType* npcType = g_npcs().getNpcType(getString(L, 1), true);
 	pushUserdata<NpcType>(L, npcType);
 	setMetatable(L, -1, "NpcType");
 	return 1;
@@ -290,7 +289,7 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 	// npcType:onCheckItem(callback)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
-		if (npcType->loadCallback(&g_scripts->getScriptInterface())) {
+		if (npcType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
 		 }
@@ -320,8 +319,14 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			pushOutfit(L, npcType->info.outfit);
 		} else {
-			npcType->info.outfit = getOutfit(L, 2);
-			pushBoolean(L, true);
+			Outfit_t outfit = getOutfit(L, 2);
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+				SPDLOG_WARN("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				lua_pushnil(L);
+			} else {
+				npcType->info.outfit = getOutfit(L, 2);
+				pushBoolean(L, true);
+			}
 		}
 	} else {
 		lua_pushnil(L);

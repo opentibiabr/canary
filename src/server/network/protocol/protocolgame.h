@@ -28,6 +28,7 @@
 #include "creatures/creature.h"
 #include "game/scheduling/tasks.h"
 #include "game/gamestore.h"
+#include "io/ioprey.h"
 
 class NetworkMessage;
 class Player;
@@ -38,12 +39,17 @@ class Tile;
 class Connection;
 class Quest;
 class ProtocolGame;
+class PreySlot;
+class TaskHuntingSlot;
+class TaskHuntingOption;
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
-extern Game g_game;
 
 struct TextMessage
 {
+	TextMessage() = default;
+	TextMessage(MessageClasses initType, std::string initText) : type(initType), text(std::move(initText)) {}
+
 	MessageClasses type = MESSAGE_STATUS;
 	std::string text;
 	Position position;
@@ -53,9 +59,6 @@ struct TextMessage
 		int32_t value = 0;
 		TextColor_t color;
 	} primary, secondary;
-
-	TextMessage() = default;
-	TextMessage(MessageClasses initType, std::string initText) : type(initType), text(std::move(initText)) {}
 };
 
 class ProtocolGame final : public Protocol
@@ -81,12 +84,18 @@ public:
 
 	void sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_t count);
 
-	uint32_t getVersion() const
+	uint16_t getVersion() const
 	{
 		return version;
 	}
 
 private:
+	// Helpers so we don't need to bind every time
+	template <typename Callable, typename... Args>
+	void addGameTask(Callable function, Args &&... args);
+	template <typename Callable, typename... Args>
+	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args);
+
 	ProtocolGame_ptr getThis()
 	{
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -133,6 +142,7 @@ private:
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
 
 	void parseHighscores(NetworkMessage &msg);
+	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages);
 
@@ -141,6 +151,7 @@ private:
 	void parseGreet(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
+	void parsePreyAction(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarysendRaces();
@@ -151,11 +162,13 @@ private:
 	void sendTeamFinderList();
 	void sendLeaderTeamFinder(bool reset);
 	void createLeaderTeamFinder(NetworkMessage &msg);
+	void parsePartyAnalyzerAction(NetworkMessage &msg) const;
 	void parseLeaderFinderWindow(NetworkMessage &msg);
 	void parseMemberFinderWindow(NetworkMessage &msg);
 	void parseSendBuyCharmRune(NetworkMessage &msg);
 	void parseBestiarysendMonsterData(NetworkMessage &msg);
 	void addBestiaryTrackerList(NetworkMessage &msg);
+	void parseObjectInfo(NetworkMessage &msg);
 
 	void parseTeleport(NetworkMessage &msg);
 	void parseThrow(NetworkMessage &msg);
@@ -226,7 +239,7 @@ private:
 	void parseCoinTransfer(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint32_t imbuementId);
+	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
 	//Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -269,12 +282,7 @@ private:
 
 	// Unjust Panel
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
-
-	// Send preyInfo
-	void initPreyData();
-	void sendPreyRerollPrice(uint32_t price = 0, uint8_t wildcard = 0, uint8_t directly = 0);
-	void sendPreyData(PreySlotNum_t slot, PreyState_t slotState);
-
+  
 	void sendCancelWalk();
 	void sendChangeSpeed(const Creature *creature, uint32_t speed);
 	void sendCancelTarget();
@@ -313,7 +321,7 @@ private:
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
-	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t prey = 0);
+	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint32_t, uint32_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
@@ -327,12 +335,13 @@ private:
 	void sendMarketDetail(uint16_t itemId);
 	void sendTradeItemRequest(const std::string &traderName, const Item *item, bool ack);
 	void sendCloseTrade();
+	void updatePartyTrackerAnalyzer(const Party* party);
 
 	void sendTextWindow(uint32_t windowTextId, Item *item, uint16_t maxlen, bool canWrite);
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 	void sendOutfitWindow();
-	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos);
+	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackpos);
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
@@ -351,6 +360,7 @@ private:
 
 	void sendSpellCooldown(uint8_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
+	void sendUseItemCooldown(uint32_t time);
 
 	void sendCoinBalance();
 
@@ -359,6 +369,11 @@ private:
 	void sendStoreError(GameStoreError_t error, const std::string &message);
 	void sendStorePurchaseSuccessful(const std::string &message, const uint32_t coinBalance);
 	void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType);
+
+	void sendPreyTimeLeft(const PreySlot* slot);
+	void sendPreyData(const PreySlot* slot);
+	void sendPreyPrices();
+
 	void sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint32_t page, uint8_t entriesPerPage);
 	void parseStoreOpenTransactionHistory(NetworkMessage &msg);
 	void parseStoreRequestTransactionHistory(NetworkMessage &msg);
@@ -389,7 +404,7 @@ private:
 
 	//inventory
 	void sendInventoryItem(Slots_t slot, const Item *item);
-	void sendInventoryClientIds();
+	void sendInventoryIds();
 
 	//messages
 	void sendModalWindow(const ModalWindow &modalWindow);
@@ -399,7 +414,6 @@ private:
 	void sendUpdateSupplyTracker(const Item *item);
 	void sendUpdateImpactTracker(CombatType_t type, int32_t amount);
 	void sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target);
-	void sendUpdateLootTracker(Item *item);
 
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);
@@ -423,11 +437,14 @@ private:
 	void AddPlayerSkills(NetworkMessage &msg);
 	void sendBlessStatus();
 	void sendPremiumTrigger();
+	void sendMessageDialog(const std::string &message);
 	void AddWorldLight(NetworkMessage &msg, LightInfo lightInfo);
 	void AddCreatureLight(NetworkMessage &msg, const Creature *creature);
 
 	//tiles
 	static void RemoveTileThing(NetworkMessage &msg, const Position &pos, uint32_t stackpos);
+
+	void sendTaskHuntingData(const TaskHuntingSlot* slot);
 
 	void MoveUpCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
 	void MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos);
@@ -444,25 +461,12 @@ private:
 
 	friend class Player;
 
-	// Helpers so we don't need to bind every time
-	template <typename Callable, typename... Args>
-	void addGameTask(Callable function, Args &&... args)
-	{
-		g_dispatcher.addTask(createTask(std::bind(function, &g_game, std::forward<Args>(args)...)));
-	}
-
-	template <typename Callable, typename... Args>
-	void addGameTaskTimed(uint32_t delay, Callable function, Args &&... args)
-	{
-		g_dispatcher.addTask(createTask(delay, std::bind(function, &g_game, std::forward<Args>(args)...)));
-	}
-
 	std::unordered_set<uint32_t> knownCreatureSet;
 	Player *player = nullptr;
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint32_t version = g_configManager().getNumber(CLIENT_VERSION);
+	uint16_t version = CLIENT_VERSION;
 	int32_t clientVersion = 0;
 
 	uint8_t challengeRandom = 0;

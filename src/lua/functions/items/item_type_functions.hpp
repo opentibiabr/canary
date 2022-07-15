@@ -41,13 +41,13 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "isBlocking", ItemTypeFunctions::luaItemTypeIsBlocking);
 			registerMethod(L, "ItemType", "isGroundTile", ItemTypeFunctions::luaItemTypeIsGroundTile);
 			registerMethod(L, "ItemType", "isMagicField", ItemTypeFunctions::luaItemTypeIsMagicField);
-			registerMethod(L, "ItemType", "isUseable", ItemTypeFunctions::luaItemTypeIsUseable);
+			registerMethod(L, "ItemType", "isMultiUse", ItemTypeFunctions::luaItemTypeIsMultiUse);
 			registerMethod(L, "ItemType", "isPickupable", ItemTypeFunctions::luaItemTypeIsPickupable);
 			registerMethod(L, "ItemType", "isKey", ItemTypeFunctions::luaItemTypeIsKey);
+			registerMethod(L, "ItemType", "isQuiver", ItemTypeFunctions::luaItemTypeIsQuiver);
 
 			registerMethod(L, "ItemType", "getType", ItemTypeFunctions::luaItemTypeGetType);
 			registerMethod(L, "ItemType", "getId", ItemTypeFunctions::luaItemTypeGetId);
-			registerMethod(L, "ItemType", "getClientId", ItemTypeFunctions::luaItemTypeGetClientId);
 			registerMethod(L, "ItemType", "getName", ItemTypeFunctions::luaItemTypeGetName);
 			registerMethod(L, "ItemType", "getPluralName", ItemTypeFunctions::luaItemTypeGetPluralName);
 			registerMethod(L, "ItemType", "getArticle", ItemTypeFunctions::luaItemTypeGetArticle);
@@ -78,7 +78,6 @@ class ItemTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "ItemType", "getDecayId", ItemTypeFunctions::luaItemTypeGetDecayId);
 			registerMethod(L, "ItemType", "getRequiredLevel", ItemTypeFunctions::luaItemTypeGetRequiredLevel);
 			registerMethod(L, "ItemType", "getAmmoType", ItemTypeFunctions::luaItemTypeGetAmmoType);
-			registerMethod(L, "ItemType", "getCorpseType", ItemTypeFunctions::luaItemTypeGetCorpseType);
 
 			registerMethod(L, "ItemType", "getDecayTime", ItemTypeFunctions::luaItemTypeGetDecayTime);
 			registerMethod(L, "ItemType", "getShowDuration", ItemTypeFunctions::luaItemTypeGetShowDuration);
@@ -106,13 +105,13 @@ class ItemTypeFunctions final : LuaScriptInterface {
 		static int luaItemTypeIsBlocking(lua_State* L);
 		static int luaItemTypeIsGroundTile(lua_State* L);
 		static int luaItemTypeIsMagicField(lua_State* L);
-		static int luaItemTypeIsUseable(lua_State* L);
+		static int luaItemTypeIsMultiUse(lua_State* L);
 		static int luaItemTypeIsPickupable(lua_State* L);
 		static int luaItemTypeIsKey(lua_State* L);
+		static int luaItemTypeIsQuiver(lua_State* L);
 
 		static int luaItemTypeGetType(lua_State* L);
 		static int luaItemTypeGetId(lua_State* L);
-		static int luaItemTypeGetClientId(lua_State* L);
 		static int luaItemTypeGetName(lua_State* L);
 		static int luaItemTypeGetPluralName(lua_State* L);
 		static int luaItemTypeGetArticle(lua_State* L);
@@ -142,7 +141,6 @@ class ItemTypeFunctions final : LuaScriptInterface {
 		static int luaItemTypeGetDecayId(lua_State* L);
 		static int luaItemTypeGetRequiredLevel(lua_State* L);
 		static int luaItemTypeGetAmmoType(lua_State* L);
-		static int luaItemTypeGetCorpseType(lua_State* L);
 
 		static int luaItemTypeGetSpeed(lua_State* L);
 		static int luaItemTypeGetBaseSpeed(lua_State* L);

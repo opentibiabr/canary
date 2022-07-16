@@ -3740,35 +3740,19 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 	return countMap;
 }
 
-std::map<uint16_t, uint16_t> Player::getInventoryItemsId() const
+std::map<uint16_t, std::map<uint8_t, uint16_t>> Player::getInventoryItemsId() const
 {
-	std::map<uint16_t, uint16_t> itemMap;
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
-		auto rootSearch = itemMap.find(item->getID());
-		if (rootSearch != itemMap.end()) {
-			itemMap[item->getID()] = itemMap[item->getID()] + static_cast<uint16_t>(Item::countByType(item, -1));
-		}
-		else
-		{
-			itemMap.emplace(item->getID(), static_cast<uint16_t>(Item::countByType(item, -1)));
-		}
-
+		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto containerSearch = itemMap.find((*it)->getID());
-				if (containerSearch != itemMap.end()) {
-					itemMap[(*it)->getID()] = itemMap[(*it)->getID()] + static_cast<uint16_t>(Item::countByType(*it, -1));
-				}
-				else
-				{
-					itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
-				}
-				itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
+				(itemMap[(*it)->getID()])[(*it)->getTier()] += Item::countByType(*it, -1);
 			}
 		}
 	}

@@ -209,7 +209,7 @@ class Game
                                           Slots_t slot = CONST_SLOT_WHEREEVER);
 
 		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
-                             bool depthSearch = true, int32_t subType = -1, uint16_t tier = 0) const;
+                             bool depthSearch = true, int32_t subType = -1, bool hasTier = false, uint8_t tier = 0) const;
 
 		void createLuaItemsOnMap();
 
@@ -283,7 +283,7 @@ class Game
 		void playerMoveItemByPlayerID(uint32_t playerId, const Position& fromPos, uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count);
 		void playerMoveItem(Player* player, const Position& fromPos,
 							uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
-		void playerEquipItem(uint32_t playerId, uint16_t itemId);
+		void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
 		void playerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string& name);

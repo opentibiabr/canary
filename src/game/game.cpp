@@ -1956,7 +1956,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 	return ret;
 }
 
-Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/, uint16_t tier /*= 0*/) const
+Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/, bool hasTier /*= false*/, uint8_t tier /*= 0*/) const
 {
 	if (cylinder == nullptr) {
 		return nullptr;
@@ -1975,7 +1975,7 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId, bool depthSearch
 		}
 
 		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
-			if (item->getTier() == tier) {
+			if (!hasTier || item->getTier() == tier) {
 				return item;
 			}
 		}
@@ -1993,7 +1993,9 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId, bool depthSearch
 		Container* container = containers[i++];
 		for (Item* item : container->getItemList()) {
 			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
-				return item;
+				if (!hasTier || item->getTier() == tier) {
+					return item;
+				}
 			}
 
 			Container* subContainer = item->getContainer();
@@ -2653,11 +2655,13 @@ uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, b
 	return total;
 }
 
-Item* searchForItem(Container* container, uint16_t itemId)
+Item* searchForItem(Container* container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/)
 {
 	for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 		if ((*it)->getID() == itemId) {
-			return *it;
+			if (!hasTier || (*it)->getTier() == tier) {
+				return *it;
+			}
 		}
 	}
 
@@ -2693,7 +2697,7 @@ Slots_t getSlotType(const ItemType& it)
 }
 
 //Implementation of player invoked events
-void Game::playerEquipItem(uint32_t playerId, uint16_t itemId)
+void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -2714,7 +2718,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId)
 	Slots_t slot = getSlotType(it);
 
 	Item* slotItem = player->getInventoryItem(slot);
-	Item* equipItem = searchForItem(backpack, it.id);
+	Item* equipItem = searchForItem(backpack, it.id, hasTier, tier);
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {

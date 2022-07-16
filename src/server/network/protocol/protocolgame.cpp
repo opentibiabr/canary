@@ -796,7 +796,8 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg)
 		return;
 	}
 	uint16_t itemId = msg.get<uint16_t>();
-	addGameTask(&Game::onPressHotkeyEquip, player->getID(), itemId);
+	uint8_t tier = msg.get<uint8_t>();
+	addGameTask(&Game::playerEquipItem, player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
 }
 
 void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
@@ -5620,7 +5621,7 @@ void ProtocolGame::sendInventoryItem(Slots_t slot, const Item *item)
 
 void ProtocolGame::sendInventoryIds()
 {
-	std::map<uint16_t, uint16_t> items = player->getInventoryItemsId();
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> items = player->getInventoryItemsId();
 
 	NetworkMessage msg;
 	msg.addByte(0xF5);
@@ -5633,11 +5634,13 @@ void ProtocolGame::sendInventoryIds()
 		msg.add<uint16_t>(0x01);
 	}
 
-	for (const auto &it : items)
+	for (const auto it : items)
 	{
-		msg.add<uint16_t>(it.first);
-		msg.addByte(0x00);
-		msg.add<uint16_t>(it.second);
+		for (const auto itemInfo : it.second) {
+			msg.add<uint16_t>(it.first); // id
+			msg.addByte(itemInfo.first); // tier
+			msg.add<uint16_t>(itemInfo.second); // count
+		}
 	}
 	writeToOutputBuffer(msg);
 }

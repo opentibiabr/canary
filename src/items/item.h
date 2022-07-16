@@ -952,31 +952,6 @@ class Item : virtual public Thing
 			return items[id].isQuiver();
 		}
 
-		double_t calculateTierBonus(uint8_t tier, double_t x, double_t y) const {
-			return x * tier + y * ((tier - 1) * (tier - 1));
-		}
-
-		double_t getDodgeChance() const {
-			if (getTier() == 0) {
-				return 0;
-			}
-			return calculateTierBonus(getTier(), 0.5, 0.03);
-		}
-
-		double_t getFatalChance() const {
-			if (getTier() == 0) {
-				return 0;
-			}
-			return calculateTierBonus(getTier(), 0.5, 0.05);
-		}
-
-		double_t getMomentumChance() const {
-			if (getTier() == 0) {
-				return 0;
-			}
-			return calculateTierBonus(getTier(), 2, 0.05);
-		}
-
 		const std::string& getName() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_NAME)) {
 				return getStrAttr(ITEM_ATTRIBUTE_NAME);
@@ -1123,7 +1098,28 @@ class Item : virtual public Thing
 			return false;
 		}
 
-		uint16_t getTier() const {
+		double_t getDodgeChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 0.5 * getTier() + 0.03 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		double_t getFatalChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 0.5 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		double_t getMomentumChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 2 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		uint8_t getTier() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
 				return getIntAttr(ITEM_ATTRIBUTE_TIER);
 			}

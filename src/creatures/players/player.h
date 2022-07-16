@@ -2095,7 +2095,7 @@ class Player final : public Creature, public Cylinder
 		void stashContainer(StashContainerList itemDict);
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		std::map<uint16_t, uint16_t> getInventoryItemsId() const;
+		std::map<uint16_t, std::map<uint8_t, uint16_t>> getInventoryItemsId() const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 

@@ -52,11 +52,13 @@ bool Map::loadMap(const std::string& identifier,
 {
 	// Only download map if is loading the main map and it is not already downloaded
 	if (mainMap && !boost::filesystem::exists(identifier)) {
-		if (CURL *curl = curl_easy_init()) {
-			SPDLOG_INFO("Downloading canary.otbm to world folder");
-			FILE *otbm = fopen("data/world/canary.otbm", "wb");
+		CURL *curl;
+		curl_global_init(CURL_GLOBAL_DEFAULT);
+		if (curl = curl_easy_init()) {
+			SPDLOG_INFO("Downloading otservbr.otbm to world folder");
+			FILE *otbm = fopen("data/world/otservbr.otbm", "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-			curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/canary.otbm");
+			curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/otservbr.otbm");
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 			curl_easy_perform(curl);

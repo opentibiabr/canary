@@ -247,7 +247,7 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 
 	MoveEvent* moveEvent = getEvent(tile, eventType);
 	if (moveEvent) {
-		ret &= moveEvent->fireStepEvent(creature, pos);
+		ret &= moveEvent->fireStepEvent(creature, nullptr, pos);
 	}
 
 	for (size_t i = tile.getFirstIndex(), j = tile.getLastIndex(); i < j; ++i) {
@@ -263,7 +263,7 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 
 		moveEvent = getEvent(*tileItem, eventType);
 		if (moveEvent) {
-			ret &= moveEvent->fireStepEvent(creature, *tileItem, pos);
+			ret &= moveEvent->fireStepEvent(creature, tileItem, pos);
 		}
 	}
 	return ret;
@@ -609,21 +609,29 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 	eventType = type;
 }
 
-uint32_t MoveEvent::fireStepEvent(Creature& creature, Item& item, const Position& pos) {
+uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position& pos) {
 	if (isScripted()) {
 		return executeStep(creature, item, pos);
 	} else {
-		return stepFunction(&creature, &item, pos);
+		return stepFunction(&creature, item, pos);
 	}
 }
 
-bool MoveEvent::executeStep(Creature& creature, Item& item, const Position& pos) {
+bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos) {
 	//onStepIn(creature, item, pos, fromPosition)
 	//onStepOut(creature, item, pos, fromPosition)
 	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[MoveEvent::executeStep - Creature {} item {}] "
-                    "Call stack overflow. Too many lua script calls being nested.",
-                    creature.getName(), item.getName());
+		if (item != nullptr) {
+			SPDLOG_ERROR("[MoveEvent::executeStep - Creature {} item {}, position {}] "
+				"Call stack overflow. Too many lua script calls being nested.",
+				creature.getName(), item->getName(), pos.toString()
+			);
+		} else {
+			SPDLOG_ERROR("[MoveEvent::executeStep - Creature {}, position {}] "
+				"Call stack overflow. Too many lua script calls being nested.",
+				creature.getName(), pos.toString()
+			);
+		}
 		return false;
 	}
 
@@ -635,43 +643,11 @@ bool MoveEvent::executeStep(Creature& creature, Item& item, const Position& pos)
 	scriptInterface->pushFunction(scriptId);
 	LuaScriptInterface::pushUserdata<Creature>(L, &creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, &creature);
-	LuaScriptInterface::pushThing(L, &item);
+	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, pos);
 	LuaScriptInterface::pushPosition(L, creature.getLastPosition());
 
 	return scriptInterface->callFunction(4);
-}
-
-uint32_t MoveEvent::fireStepEvent(Creature& creature, const Position& pos) {
-	if (isScripted()) {
-		return executeStep(creature, pos);
-	} else {
-		return stepFunction(&creature, nullptr, pos);
-	}
-}
-
-bool MoveEvent::executeStep(Creature& creature, const Position& pos) {
-	//onStepIn(creature, pos, fromPosition)
-	//onStepOut(creature, pos, fromPosition)
-	if (!scriptInterface->reserveScriptEnv()) {
-		SPDLOG_ERROR("[MoveEvent::executeStep - Creature {}] "
-                    "Call stack overflow. Too many lua script calls being nested.",
-                    creature.getName());
-		return false;
-	}
-
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
-
-	lua_State* L = scriptInterface->getLuaState();
-
-	scriptInterface->pushFunction(scriptId);
-	LuaScriptInterface::pushUserdata<Creature>(L, &creature);
-	LuaScriptInterface::setCreatureMetatable(L, -1, &creature);
-	LuaScriptInterface::pushPosition(L, pos);
-	LuaScriptInterface::pushPosition(L, creature.getLastPosition());
-
-	return scriptInterface->callFunction(3);
 }
 
 uint32_t MoveEvent::fireEquip(Player& player, Item& item, Slots_t toSlot, bool isCheck) {

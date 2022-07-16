@@ -176,9 +176,7 @@ class MoveEvent final : public Event {
 			return false;
 		}
 
-		uint32_t fireStepEvent(Creature& creature, Item& item, const Position& pos);
-		// No have item
-		uint32_t fireStepEvent(Creature& creature, const Position& pos);
+		uint32_t fireStepEvent(Creature& creature, Item* item, const Position& pos);
 		uint32_t fireAddRemItem(Item& item, Item& tileItem, const Position& pos);
 		uint32_t fireAddRemItem(Item& item, const Position& pos);
 		uint32_t fireEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
@@ -188,9 +186,7 @@ class MoveEvent final : public Event {
 		}
 
 		// Scripting to lua interface
-		bool executeStep(Creature& creature, Item& item, const Position& pos);
-		// No have item
-		bool executeStep(Creature& creature, const Position& pos);
+		bool executeStep(Creature& creature, Item* item, const Position& pos);
 		bool executeEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
 		bool executeAddRemItem(Item& item, Item& tileItem, const Position& pos);
 		// No have tile item

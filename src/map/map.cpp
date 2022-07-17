@@ -21,7 +21,7 @@
 
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <libzippp.h>
+#include <libzippp/libzippp.h>
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"

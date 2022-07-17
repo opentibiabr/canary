@@ -357,6 +357,7 @@ MigrationBackup/
 docker/**/otserver
 
 # VSCode
+*.vscode/
 settings.json
 c_cpp_properties.json
 .history
@@ -365,6 +366,8 @@ c_cpp_properties.json
 .idea/
 
 ## CUSTOM
+# Directories
+*local/
 # Files
 config.lua
 client_assertions.txt

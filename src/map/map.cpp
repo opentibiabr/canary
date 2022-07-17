@@ -51,12 +51,19 @@ bool Map::loadMap(const std::string& identifier,
 	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
 	// Only download map if is loading the main map and it is not already downloaded
-	if (mainMap && !boost::filesystem::exists(identifier)) {
-		if (CURL *curl = curl_easy_init()) {
-			SPDLOG_INFO("Downloading otservbr.otbm to world folder");
-			FILE *otbm = fopen("data/world/otservbr.otbm", "wb");
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !boost::filesystem::exists(identifier)) {
+		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
+		if (mapDownloadUrl.empty()) {
+			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
+		}
+
+		if (CURL *curl = curl_easy_init();
+			curl && !mapDownloadUrl.empty())
+		{
+			SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + " to world folder");
+			FILE *otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-			curl_easy_setopt(curl, CURLOPT_URL, "https://github.com/opentibiabr/otservbr-global/releases/download/patch-v1.3.1/otservbr.otbm");
+			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 			curl_easy_perform(curl);

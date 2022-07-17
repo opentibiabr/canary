@@ -797,7 +797,7 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg)
 	}
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t tier = msg.get<uint8_t>();
-	addGameTask(&Game::playerEquipItem, player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
+	addGameTask(&Game::onPressHotkeyEquip, player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
 }
 
 void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
@@ -5635,20 +5635,19 @@ void ProtocolGame::sendInventoryIds()
 		msg.add<uint16_t>(0x01);
 	}
 
-	uint16_t count = 0;
-	for (const auto it : items)
-	{
-		for (const auto itemInfo : it.second) {
-			msg.add<uint16_t>(it.first); // id
-			msg.addByte(itemInfo.first); // tier
-			msg.add<uint16_t>(itemInfo.second); // count
-			count++;
+	uint16_t itemCount = 0;
+	for (auto [itemId, item] : items) {
+		for (const auto [tier, count] : item) {
+			msg.add<uint16_t>(itemId);
+			msg.addByte(tier);
+			msg.add<uint16_t>(count);
+			itemCount++;
 		}
 	}
 
 	auto position = msg.getBufferPosition();
 	msg.setBufferPosition(countPosition);
-	msg.add<uint16_t>(count + 11);
+	msg.add<uint16_t>(itemCount + 11);
 	msg.setBufferPosition(position);
 	writeToOutputBuffer(msg);
 }

@@ -1121,7 +1121,7 @@ class Item : virtual public Thing
 
 		uint8_t getTier() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
-				return getIntAttr(ITEM_ATTRIBUTE_TIER);
+				return static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
 			}
 			return 0;
 		}

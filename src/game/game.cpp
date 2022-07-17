@@ -250,7 +250,7 @@ void Game::setGameState(GameState_t newState)
 	}
 }
 
-void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
+void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId, bool hasTier /*= false*/, uint8_t tier /*= 0*/)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -287,12 +287,12 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 			}
 		}
 	} else {
-		item = findItemOfType(player, itemType.id);
+		item = findItemOfType(player, itemType.id, hasTier, tier);
 
 		if (!item) {
-			item = findItemOfType(player, itemType.transformEquipTo);
+			item = findItemOfType(player, itemType.transformEquipTo, hasTier, tier);
 			if (!item) {
-				item = findItemOfType(player, itemType.transformDeEquipTo);
+				item = findItemOfType(player, itemType.transformDeEquipTo, hasTier, tier);
 			}
 			if (!item) {
 				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
@@ -457,7 +457,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 							break;
 						}
 						Container* mainBP = player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer();
-						Item* _item = findItemOfType(mainBP, item->getID());
+						Item* _item = findItemOfType(mainBP, item->getID(), hasTier, tier);
 
 						if (!_item) {
 							break;
@@ -2655,7 +2655,7 @@ uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, b
 	return total;
 }
 
-Item* searchForItem(Container* container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/)
+Item* searchForItem(const Container* container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/)
 {
 	for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 		if ((*it)->getID() == itemId) {

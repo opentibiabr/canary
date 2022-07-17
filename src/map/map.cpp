@@ -57,13 +57,11 @@ bool Map::loadMap(const std::string& identifier,
 			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
 		}
 
-		if (CURL *curl = curl_easy_init();
-			curl && !mapDownloadUrl.empty())
-		{
+		if (CURL *curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
 			SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + " to world folder");
 			FILE *otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl);
+			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 			curl_easy_perform(curl);

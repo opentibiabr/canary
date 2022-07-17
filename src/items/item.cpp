@@ -1520,7 +1520,7 @@ std::string Item::parseImbuementDescription(const Item* item)
 std::string Item::parseClassificationDescription(const Item* item) {
 	std::ostringstream string;
 	if (item && item->getClassification() > 1) {
-		string << std::endl << "Classification: " << item->getClassification() << " Tier: " << item->getTier();
+		string << std::endl << "Classification: " << item->getClassification() << " Tier: " << static_cast<uint16_t>(item->getTier());
 		if (item->getTier() != 0) {
 			string  << " (";
 			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {

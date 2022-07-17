@@ -2342,6 +2342,8 @@ class Player final : public Creature, public Cylinder
 			return dead;
 		}
 
+		void triggerMomentum();
+
 		friend class Game;
 		friend class Npc;
 		friend class PlayerFunctions;

@@ -797,7 +797,7 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg)
 	}
 	uint16_t itemId = msg.get<uint16_t>();
 	uint8_t tier = msg.get<uint8_t>();
-	addGameTask(&Game::onPressHotkeyEquip, player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
+	addGameTask(&Game::playerEquipItem, player->getID(), itemId, Item::items[itemId].upgradeClassification > 0, tier);
 }
 
 void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)

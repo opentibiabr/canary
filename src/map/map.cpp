@@ -52,9 +52,7 @@ bool Map::loadMap(const std::string& identifier,
 {
 	// Only download map if is loading the main map and it is not already downloaded
 	if (mainMap && !boost::filesystem::exists(identifier)) {
-		CURL *curl;
-		curl_global_init(CURL_GLOBAL_DEFAULT);
-		if (curl = curl_easy_init()) {
+		if (CURL *curl = curl_easy_init()) {
 			SPDLOG_INFO("Downloading otservbr.otbm to world folder");
 			FILE *otbm = fopen("data/world/otservbr.otbm", "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);

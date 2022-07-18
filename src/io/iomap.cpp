@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+#include <boost/filesystem.hpp>
 
 #include "io/iomap.h"
 
@@ -69,6 +70,11 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 
 bool IOMap::loadMap(Map* map, const std::string& fileName)
 {
+	if (!boost::filesystem::exists(fileName)) {
+		setLastErrorString("Failed to load " + fileName + ": File doesn't exist.");
+		return false;
+	}
+	
 	int64_t start = OTSYS_TIME();
 	OTB::Loader loader{fileName, OTB::Identifier{{'O', 'T', 'B', 'M'}}};
 	auto& root = loader.parseTree();
@@ -457,8 +463,7 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 
 		Town* town = map.towns.getTown(townId);
 		if (!town) {
-			town = new Town(townId);
-			map.towns.addTown(townId, town);
+			town = map.towns.addTown(townId);
 		}
 
 		std::string townName;

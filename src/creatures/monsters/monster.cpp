@@ -116,12 +116,6 @@ uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
 	return 0;
 }
 
-void Monster::onAttackedCreatureDisappear(bool)
-{
-	attackTicks = 0;
-	extraMeleeAttack = true;
-}
-
 void Monster::onCreatureAppear(Creature* creature, bool isLogin)
 {
 	Creature::onCreatureAppear(creature, isLogin);
@@ -161,7 +155,7 @@ void Monster::onCreatureAppear(Creature* creature, bool isLogin)
 
 		updateTargetList();
 		updateIdleStatus();
-	} else {
+	} else if (canSee(creature->getPosition())) {
 		onCreatureEnter(creature);
 	}
 }
@@ -199,6 +193,7 @@ void Monster::onRemoveCreature(Creature* creature, bool isLogout)
 
 	if (creature == this) {
 		if (spawnMonster) {
+			spawnMonster->removeMonster(this);
 			spawnMonster->startSpawnMonsterCheck();
 		}
 
@@ -399,7 +394,7 @@ void Monster::updateTargetList()
 		}
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game().map.getSpectators(spectators, position, true);
 	spectators.erase(this);
 	for (Creature* spectator : spectators) {
@@ -751,6 +746,7 @@ void Monster::setIdle(bool idle)
 	if (!isIdle) {
 		g_game().addCreatureCheck(this);
 	} else {
+		attackTicks = 0;
 		onIdleStatus();
 		clearTargetList();
 		clearFriendList();
@@ -838,7 +834,6 @@ void Monster::onThink(uint32_t interval)
 
 	if (!isInSpawnRange(position)) {
 		g_game().internalTeleport(this, masterPos);
-		setIdle(true);
 	} else {
 		updateIdleStatus();
 
@@ -920,14 +915,14 @@ void Monster::doAttacking(uint32_t interval)
 				spellBlock.spell->castSpell(this, attackedCreature);
 
 				if (spellBlock.isMelee) {
-					extraMeleeAttack = false;
+					lastMeleeAttack = OTSYS_TIME();
 				}
 			}
 		}
 
 		if (!inRange && spellBlock.isMelee) {
 			//melee swing out of reach
-			extraMeleeAttack = true;
+			lastMeleeAttack = 0;
 		}
 	}
 
@@ -960,17 +955,11 @@ bool Monster::canUseSpell(const Position& pos, const Position& targetPos,
 {
 	inRange = true;
 
-	if (sb.isMelee && isFleeing()) {
-		return false;
-	}
-
-	if (extraMeleeAttack) {
-		lastMeleeAttack = OTSYS_TIME();
-	} else if (sb.isMelee && (OTSYS_TIME() - lastMeleeAttack) < 1500) {
-		return false;
-	}
-
-	if (!sb.isMelee || !extraMeleeAttack) {
+	if (sb.isMelee) {
+		if (isFleeing() || (OTSYS_TIME() - lastMeleeAttack) < sb.speed) {
+			return false;
+		}
+	} else {
 		if (sb.speed > attackTicks) {
 			resetTicks = false;
 			return false;
@@ -1133,11 +1122,11 @@ bool Monster::pushItem(Item* item)
 {
 	const Position& centerPos = item->getPosition();
 
-	static std::vector<std::pair<int32_t, int32_t>> relList {
+	static std::array<std::pair<int32_t, int32_t>, 8> relList { {
 		{-1, -1}, {0, -1}, {1, -1},
 		{-1,  0},          {1,  0},
 		{-1,  1}, {0,  1}, {1,  1}
-	};
+	}};
 
 	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 
@@ -1181,7 +1170,7 @@ void Monster::pushItems(Tile* tile)
 
 bool Monster::pushCreature(Creature* creature)
 {
-	static std::vector<Direction> dirList {
+	static std::array<Direction, 4> dirList {
 			DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
@@ -1282,7 +1271,7 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 
 bool Monster::getRandomStep(const Position& creaturePos, Direction& moveDirection) const
 {
-	static std::vector<Direction> dirList{
+	static std::array<Direction, 4> dirList{
 			DIRECTION_NORTH,
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
@@ -1319,7 +1308,8 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 		return false;
 	}
 
-	std::vector<Direction> dirList;
+	std::array<Direction, 4> dirList;
+	size_t directions = static_cast<size_t>(-1);
 
 	if (!keepDistance || offset_y >= 0) {
 		uint32_t tmpDist = std::max<uint32_t>(distance_x, std::abs((creaturePos.getY() - 1) - centerPos.getY()));
@@ -1331,7 +1321,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(DIRECTION_NORTH);
+				dirList[++directions] = DIRECTION_NORTH;
 			}
 		}
 	}
@@ -1346,7 +1336,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(DIRECTION_SOUTH);
+				dirList[++directions] = DIRECTION_SOUTH;
 			}
 		}
 	}
@@ -1361,7 +1351,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(DIRECTION_EAST);
+				dirList[++directions] = DIRECTION_EAST;
 			}
 		}
 	}
@@ -1376,14 +1366,13 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 			}
 
 			if (result) {
-				dirList.push_back(DIRECTION_WEST);
+				dirList[++directions] = DIRECTION_WEST;
 			}
 		}
 	}
 
-	if (!dirList.empty()) {
-		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
-		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
+	if (directions <= 4) {
+		direction = dirList[uniform_random(0, directions)];
 		return true;
 	}
 	return false;

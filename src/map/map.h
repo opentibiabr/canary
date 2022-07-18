@@ -75,7 +75,7 @@ class AStarNodes
 		int_fast32_t closedNodes;
 };
 
-using SpectatorCache = std::map<Position, SpectatorHashSet>;
+using SpectatorCache = std::map<Position, SpectatorVector>;
 
 static constexpr int32_t FLOOR_BITS = 3;
 static constexpr int32_t FLOOR_SIZE = (1 << FLOOR_BITS);
@@ -239,11 +239,11 @@ class Map
 
 		void moveCreature(Creature& creature, Tile& newTile, bool forceTeleport = false);
 
-		void getSpectators(SpectatorHashSet& spectators, const Position& centerPos, bool multifloor = false, bool onlyPlayers = false,
+		void getSpectators(SpectatorVector& spectators, const Position& centerPos, bool multifloor = false, bool onlyPlayers = false,
                            int32_t minRangeX = 0, int32_t maxRangeX = 0,
                            int32_t minRangeY = 0, int32_t maxRangeY = 0);
 
-		void clearSpectatorCache();
+		void clearSpectatorCache(bool clearPlayer);
 
 		/**
          * Checks if you can throw an object to that position
@@ -254,7 +254,7 @@ class Map
          *	\param checkLineOfSight checks if there is any blocking objects in the way
          *	\returns The result if you can throw there or not
          */
-		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
+		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, SightLines_t lineOfSight = SightLine_CheckSightLine,
                               int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
 
 		/**
@@ -270,10 +270,10 @@ class Map
 
 		const Tile* canWalkTo(const Creature& creature, const Position& pos) const;
 
-		bool getPathMatching(const Creature& creature, std::forward_list<Direction>& dirList,
+		bool getPathMatching(const Creature& creature, std::vector<Direction>& dirList,
 						const FrozenPathingConditionCall& pathCondition, const FindPathParams& fpp) const;
 
-		bool getPathMatching(const Position& startPos, std::forward_list<Direction>& dirList,
+		bool getPathMatching(const Position& startPos, std::vector<Direction>& dirList,
 			const FrozenPathingConditionCall& pathCondition, const FindPathParams& fpp) const;
 
 		std::map<std::string, Position> waypoints;
@@ -306,7 +306,7 @@ class Map
 		uint32_t height = 0;
 
 		// Actually scans the map for spectators
-		void getSpectatorsInternal(SpectatorHashSet& spectators, const Position& centerPos,
+		void getSpectatorsInternal(SpectatorVector& spectators, const Position& centerPos,
                                    int32_t minRangeX, int32_t maxRangeX,
                                    int32_t minRangeY, int32_t maxRangeY,
                                    int32_t minRangeZ, int32_t maxRangeZ,

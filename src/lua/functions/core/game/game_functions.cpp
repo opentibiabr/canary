@@ -76,7 +76,7 @@ int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	int32_t minRangeY = getNumber<int32_t>(L, 6, 0);
 	int32_t maxRangeY = getNumber<int32_t>(L, 7, 0);
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game().map.getSpectators(spectators, position, multifloor, onlyPlayers, minRangeX, maxRangeX, minRangeY, maxRangeY);
 
 	lua_createtable(L, spectators.size(), 0);
@@ -196,12 +196,12 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 
 int GameFunctions::luaGameGetTowns(lua_State* L) {
 	// Game.getTowns()
-	const auto& towns = g_game().map.towns.getTowns();
+	auto& towns = g_game().map.towns.getTowns();
 	lua_createtable(L, towns.size(), 0);
 
 	int index = 0;
-	for (auto townEntry : towns) {
-		pushUserdata<Town>(L, townEntry.second);
+	for (auto& townEntry : towns) {
+		pushUserdata<Town>(L, &townEntry.second);
 		setMetatable(L, -1, "Town");
 		lua_rawseti(L, -2, ++index);
 	}
@@ -210,12 +210,12 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 
 int GameFunctions::luaGameGetHouses(lua_State* L) {
 	// Game.getHouses()
-	const auto& houses = g_game().map.houses.getHouses();
+	auto& houses = g_game().map.houses.getHouses();
 	lua_createtable(L, houses.size(), 0);
 
 	int index = 0;
-	for (auto houseEntry : houses) {
-		pushUserdata<House>(L, houseEntry.second);
+	for (auto& houseEntry : houses) {
+		pushUserdata<House>(L, &houseEntry.second);
 		setMetatable(L, -1, "House");
 		lua_rawseti(L, -2, ++index);
 	}

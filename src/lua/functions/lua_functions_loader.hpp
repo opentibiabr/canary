@@ -127,6 +127,14 @@ class LuaFunctionsLoader {
 		static Player* getPlayer(lua_State* L, int32_t arg);
 
 		template<typename T>
+		static typename std::enable_if<std::is_same<T, bool>::value, T>::type
+			getField(lua_State* L, int32_t arg, const std::string& key)
+		{
+			lua_getfield(L, arg, key.c_str());
+			return getBoolean(L, -1);
+		}
+
+		template<typename T>
 		static T getField(lua_State* L, int32_t arg, const std::string& key)
 		{
 			lua_getfield(L, arg, key.c_str());

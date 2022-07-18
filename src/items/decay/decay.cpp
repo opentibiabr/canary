@@ -70,6 +70,10 @@ void Decay::startDecay(Item* item)
 
 void Decay::stopDecay(Item* item)
 {
+	if (!item) {
+		return;
+	}
+
 	if (item->hasAttribute(ITEM_ATTRIBUTE_DECAYSTATE)) {
 		int64_t timestamp = item->getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
 		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {

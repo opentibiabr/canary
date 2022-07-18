@@ -26,7 +26,7 @@
 #include "lua/scripts/luascript.h"
 
 class TalkAction;
-using TalkAction_ptr = std::unique_ptr<TalkAction>;
+using TalkAction_ptr = std::shared_ptr<TalkAction>;
 
 class TalkAction : public Event {
 	public:
@@ -44,10 +44,10 @@ class TalkAction : public Event {
 			words = word;
 			wordsMap.push_back(word);
 		}
-		std::string getSeparator() const {
+		char getSeparator() const {
 			return separator;
 		}
-		void setSeparator(std::string sep) {
+		void setSeparator(char sep) {
 			separator = sep;
 		}
 
@@ -60,7 +60,7 @@ class TalkAction : public Event {
 
 		std::string words;
 		std::vector<std::string> wordsMap;
-		std::string separator = "\"";
+		char separator = '"';
 };
 
 class TalkActions final : public BaseEvents {
@@ -81,7 +81,7 @@ class TalkActions final : public BaseEvents {
 
 		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const;
 
-		bool registerLuaEvent(TalkAction* event);
+		bool registerLuaEvent(TalkAction_ptr& event);
 		void clear(bool fromLua) override final;
 
 	private:
@@ -90,7 +90,7 @@ class TalkActions final : public BaseEvents {
 		Event_ptr getEvent(const std::string& nodeName) override;
 		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
 
-		std::map<std::string, TalkAction> talkActions;
+		std::unordered_map<std::string, TalkAction> talkActions;
 
 		LuaScriptInterface scriptInterface;
 };

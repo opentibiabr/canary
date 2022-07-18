@@ -307,7 +307,7 @@ int32_t Player::getWeaponSkill(const Item* item) const
 			break;
 		}
 
-		case WEAPON_DISTANCE: {
+		case WEAPON_DISTANCE: case WEAPON_AMMO: {
 			attackSkill = getSkillLevel(SKILL_DISTANCE);
 			break;
 		}
@@ -1409,9 +1409,11 @@ void Player::sendAddContainerItem(const Container* container, const Item* item)
 				slot = containerSize;
 			}
 		} else if (openContainer.index >= container->capacity()) {
-			item = container->getItemByIndex(openContainer.index - 1);
+			item = container->getItemByIndex(openContainer.index);
 		}
-		client->sendAddContainerItem(it.first, slot, item);
+		if (item) {
+			client->sendAddContainerItem(it.first, slot, item);
+		}
 	}
 }
 
@@ -2156,7 +2158,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText/* = fal
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2250,7 +2252,7 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		message.primary.color = TEXTCOLOR_RED;
 		sendTextMessage(message);
 
-		SpectatorHashSet spectators;
+		SpectatorVector spectators;
 		g_game().map.getSpectators(spectators, position, false, true);
 		spectators.erase(this);
 		if (!spectators.empty()) {
@@ -2708,7 +2710,7 @@ bool Player::spawn()
 		return false;
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game().map.getSpectators(spectators, position, false, true);
 	for (Creature* spectator : spectators) {
 		if (!spectator) {
@@ -2751,7 +2753,7 @@ void Player::despawn()
 
 	std::vector<int32_t> oldStackPosVector;
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	g_game().map.getSpectators(spectators, tile->getPosition(), true);
 	size_t i = 0;
 	for (Creature* spectator : spectators) {
@@ -4886,13 +4888,13 @@ double Player::getLostPercent() const
 void Player::learnInstantSpell(const std::string& spellName)
 {
 	if (!hasLearnedInstantSpell(spellName)) {
-		learnedInstantSpellList.push_front(spellName);
+		learnedInstantSpellList.emplace(spellName);
 	}
 }
 
 void Player::forgetInstantSpell(const std::string& spellName)
 {
-	learnedInstantSpellList.remove(spellName);
+	learnedInstantSpellList.erase(spellName);
 }
 
 bool Player::hasLearnedInstantSpell(const std::string& spellName) const
@@ -5044,13 +5046,16 @@ bool Player::addPartyInvitation(Party* newParty)
 		return false;
 	}
 
-	invitePartyList.push_front(newParty);
+	invitePartyList.push_back(newParty);
 	return true;
 }
 
 void Player::removePartyInvitation(Party* remParty)
 {
-	invitePartyList.remove(remParty);
+	auto it = std::find(invitePartyList.begin(), invitePartyList.end(), remParty);
+	if (it != invitePartyList.end()) {
+		invitePartyList.erase(it);
+	}
 }
 
 void Player::clearPartyInvitations()
@@ -5424,7 +5429,10 @@ bool Player::hasModalWindowOpen(uint32_t modalWindowId) const
 
 void Player::onModalWindowHandled(uint32_t modalWindowId)
 {
-	modalWindows.remove(modalWindowId);
+	auto it = std::find(modalWindows.begin(), modalWindows.end(), modalWindowId);
+	if (it != modalWindows.end()) {
+		modalWindows.erase(it);
+	}
 }
 
 void Player::sendModalWindow(const ModalWindow& modalWindow)
@@ -5433,7 +5441,7 @@ void Player::sendModalWindow(const ModalWindow& modalWindow)
 		return;
 	}
 
-	modalWindows.push_front(modalWindow.id);
+	modalWindows.push_back(modalWindow.id);
 	client->sendModalWindow(modalWindow);
 }
 
@@ -5537,9 +5545,9 @@ size_t Player::getMaxDepotItems() const
 	return g_configManager().getNumber(FREE_DEPOT_LIMIT);
 }
 
-std::forward_list<Condition*> Player::getMuteConditions() const
+std::vector<Condition*> Player::getMuteConditions() const
 {
-	std::forward_list<Condition*> muteConditions;
+	std::vector<Condition*> muteConditions;
 	for (Condition* condition : conditions) {
 		if (condition->getTicks() <= 0) {
 			continue;
@@ -5550,7 +5558,7 @@ std::forward_list<Condition*> Player::getMuteConditions() const
 			continue;
 		}
 
-		muteConditions.push_front(condition);
+		muteConditions.push_back(condition);
 	}
 	return muteConditions;
 }

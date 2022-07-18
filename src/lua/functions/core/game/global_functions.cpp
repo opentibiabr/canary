@@ -89,8 +89,7 @@ int GlobalFunctions::luaDoPlayerAddItem(lua_State* L) {
 
 		if (--itemCount == 0) {
 			if (newItem->getParent()) {
-				uint32_t uid = getScriptEnv()->addThing(newItem);
-				lua_pushnumber(L, uid);
+				lua_pushnumber(L, getScriptEnv()->addThing(newItem));
 				return 1;
 			} else {
 				// stackable item stacked with existing object, newItem will be released
@@ -438,7 +437,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint8_t>(L, 5);
-		params.conditionList.emplace_front(condition);
+		params.conditionList.emplace_back(condition);
 		Combat::doCombatCondition(creature, getPosition(L, 2), area, params);
 		pushBoolean(L, true);
 	} else {
@@ -473,7 +472,7 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 
 	CombatParams params;
 	params.impactEffect = getNumber<uint8_t>(L, 4);
-	params.conditionList.emplace_front(condition->clone());
+	params.conditionList.emplace_back(condition->clone());
 	Combat::doCombatCondition(creature, target, params);
 	pushBoolean(L, true);
 	return 1;
@@ -642,8 +641,11 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 	}
 
 	LuaTimerEventDesc eventDesc;
-	for (int i = 0; i < parameters - 2; ++i) { // -2 because addEvent needs at least two parameters
-		eventDesc.parameters.push_back(luaL_ref(globalState, LUA_REGISTRYINDEX));
+	if (parameters > 2) {
+		eventDesc.parameters.resize(static_cast<size_t>(parameters - 2));
+		for (int i = 0; i < parameters - 2; ++i) { //-2 because addEvent needs at least two parameters
+			eventDesc.parameters[i] = luaL_ref(globalState, LUA_REGISTRYINDEX);
+		}
 	}
 
 	uint32_t delay = std::max<uint32_t>(100, getNumber<uint32_t>(globalState, 2));

@@ -287,11 +287,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			}
 		}
 
-		WaitingList &waitingList = WaitingList::getInstance();
-		if (!waitingList.clientLogin(player))
-		{
-			uint32_t currentSlot = waitingList.getClientSlot(player);
-			uint32_t retryTime = WaitingList::getTime(currentSlot);
+		std::size_t currentSlot;
+		if (!WaitingList::getInstance().clientLogin(player, currentSlot)) {
+			int64_t retryTime = WaitingList::getTime(currentSlot);
 			std::ostringstream ss;
 
 			ss << "Too many players online.\nYou are at place "
@@ -300,7 +298,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			auto output = OutputMessagePool::getOutputMessage();
 			output->addByte(0x16);
 			output->addString(ss.str());
-			output->addByte(retryTime);
+			output->addByte(static_cast<uint8_t>(retryTime));
 			send(output);
 			disconnect();
 			return;
@@ -1083,35 +1081,36 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg)
 
 	msg.skipBytes(numdirs);
 
-	std::forward_list<Direction> path;
+	std::vector<Direction> path;
+	path.reserve(numdirs);
 	for (uint8_t i = 0; i < numdirs; ++i)
 	{
 		uint8_t rawdir = msg.getPreviousByte();
 		switch (rawdir)
 		{
 		case 1:
-			path.push_front(DIRECTION_EAST);
+			path.emplace_back(DIRECTION_EAST);
 			break;
 		case 2:
-			path.push_front(DIRECTION_NORTHEAST);
+			path.emplace_back(DIRECTION_NORTHEAST);
 			break;
 		case 3:
-			path.push_front(DIRECTION_NORTH);
+			path.emplace_back(DIRECTION_NORTH);
 			break;
 		case 4:
-			path.push_front(DIRECTION_NORTHWEST);
+			path.emplace_back(DIRECTION_NORTHWEST);
 			break;
 		case 5:
-			path.push_front(DIRECTION_WEST);
+			path.emplace_back(DIRECTION_WEST);
 			break;
 		case 6:
-			path.push_front(DIRECTION_SOUTHWEST);
+			path.emplace_back(DIRECTION_SOUTHWEST);
 			break;
 		case 7:
-			path.push_front(DIRECTION_SOUTH);
+			path.emplace_back(DIRECTION_SOUTH);
 			break;
 		case 8:
-			path.push_front(DIRECTION_SOUTHEAST);
+			path.emplace_back(DIRECTION_SOUTHEAST);
 			break;
 		default:
 			break;
@@ -1371,9 +1370,9 @@ void ProtocolGame::parseSay(NetworkMessage &msg)
 		break;
 	}
 
-	const std::string text = msg.getString();
-	if (text.length() > 255)
-	{
+	std::string text = msg.getString();
+	trimString(text);
+	if (text.empty() || text.length() > 255) {
 		return;
 	}
 
@@ -3493,6 +3492,7 @@ void ProtocolGame::sendCyclopediaCharacterTitles()
 void ProtocolGame::sendTournamentLeaderboard()
 {
 	NetworkMessage msg;
+	//playermsg.reset();
 	msg.addByte(0xC5);
 	msg.addByte(0);
 	msg.addByte(0x01);
@@ -4031,7 +4031,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	player->setInMarket(true);
 
 	std::map<uint16_t, uint32_t> depotItems;
-	std::forward_list<Container *> containerList{depotLocker};
+	std::vector<Container *> containerList{depotLocker};
 
 	do
 	{
@@ -4040,7 +4040,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 		{
 			continue;
 		}
-		containerList.pop_front();
+		containerList.pop_back();
 
 		for (Item *item : container->getItemList())
 		{
@@ -4052,7 +4052,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 			Container *c = item->getContainer();
 			if (c && !c->empty())
 			{
-				containerList.push_front(c);
+				containerList.push_back(c);
 				continue;
 			}
 
@@ -4810,6 +4810,10 @@ void ProtocolGame::sendCreatureTurn(const Creature *creature, uint32_t stackPos)
 
 void ProtocolGame::sendCreatureSay(const Creature *creature, SpeakClasses type, const std::string &text, const Position *pos /* = nullptr*/)
 {
+	if (!creature) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 
@@ -5067,7 +5071,7 @@ void ProtocolGame::sendCreatureHealth(const Creature *creature)
 	msg.addByte(0x8C);
 	msg.add<uint32_t>(creature->getID());
 
-	if (creature->isHealthHidden())
+	if (creature->isHealthHidden() && creature != player)
 	{
 		msg.addByte(0x00);
 	}
@@ -5379,6 +5383,8 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 
 	msg.addByte(shouldAddExivaRestrictions ? 0x01 : 0x00); // exiva button enabled
 	msg.addByte(0x00); // Tournament button
+	msg.addByte(0x0A); // sendPendingStateEntered
+	msg.addByte(0x0F); // sendEnterWorld
 
 	writeToOutputBuffer(msg);
 
@@ -5418,7 +5424,7 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	//player light level
 	sendCreatureLight(creature);
 
-	const std::forward_list<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccount());
+	const std::vector<VIPEntry> &vipEntries = IOLoginData::getVIPEntries(player->getAccount());
 
 	if (player->isAccessPlayer())
 	{
@@ -6384,8 +6390,14 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow)
 		msg.addByte(it.second);
 	}
 
-	msg.addByte(modalWindow.defaultEscapeButton);
-	msg.addByte(modalWindow.defaultEnterButton);
+	OperatingSystem_t regularOS = player->getOperatingSystem();
+	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) {
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	} else {
+		msg.addByte(modalWindow.defaultEscapeButton);
+		msg.addByte(modalWindow.defaultEnterButton);
+	}
 	msg.addByte(modalWindow.priority ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);
@@ -6439,7 +6451,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		}
 	}
 
-	if (creature->isHealthHidden())
+	if (creatureType == CREATURETYPE_HIDDEN && creature != player)
 	{
 		msg.addByte(0x00);
 	}

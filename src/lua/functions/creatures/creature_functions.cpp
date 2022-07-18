@@ -152,7 +152,11 @@ int CreatureFunctions::luaCreatureCanSeeCreature(lua_State* L) {
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
 		const Creature* otherCreature = getCreature(L, 2);
-		pushBoolean(L, creature->canSeeCreature(otherCreature));
+		if (otherCreature) {
+			pushBoolean(L, creature->canSeeCreature(otherCreature));
+		} else {
+			pushBoolean(L, false);
+		}
 	} else {
 		lua_pushnil(L);
 	}
@@ -814,9 +818,9 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 		return 1;
 	}
 
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (target) {
-		spectators.insert(target);
+		spectators.emplace_back(target);
 	}
 
 	if (position.x != 0) {
@@ -836,7 +840,7 @@ int CreatureFunctions::luaCreatureGetDamageMap(lua_State* L) {
 	}
 
 	lua_createtable(L, creature->damageMap.size(), 0);
-	for (auto damageEntry : creature->damageMap) {
+	for (const auto& damageEntry : creature->damageMap) {
 		lua_createtable(L, 0, 2);
 		setField(L, "total", damageEntry.second.total);
 		setField(L, "ticks", damageEntry.second.ticks);
@@ -905,7 +909,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	std::forward_list<Direction> dirList;
+	std::vector<Direction> dirList;
 	if (creature->getPathTo(position, dirList, fpp)) {
 		lua_newtable(L);
 

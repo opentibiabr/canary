@@ -197,14 +197,15 @@ enum BugReportType_t : uint8_t {
 struct LuaVariant {
 	LuaVariantType_t type = VARIANT_NONE;
 	std::string text;
-	Position pos;
 	uint32_t number = 0;
+	Position pos;
+	bool directionalArea = false;
 };
 
 struct LuaTimerEventDesc {
 	int32_t scriptId = -1;
 	int32_t function = -1;
-	std::list<int32_t> parameters;
+	std::vector<int32_t> parameters;
 	uint32_t eventId = 0;
 
 	LuaTimerEventDesc() = default;

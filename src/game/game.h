@@ -228,7 +228,7 @@ class Game
 		bool internalCreatureSay(Creature* creature, SpeakClasses type,
                                  const std::string& text,
                                  bool ghostMode,
-                                 SpectatorHashSet* spectatorsPtr = nullptr,
+                                 SpectatorVector* spectatorsPtr = nullptr,
                                  const Position* pos = nullptr);
 
 		void internalQuickLootCorpse(Player* player, Container* corpse);
@@ -297,7 +297,7 @@ class Game
 		void playerCloseNpcChannel(uint32_t playerId);
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
-		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir);
+		void playerAutoWalk(uint32_t playerId, const std::vector<Direction>& listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos,
                               uint16_t fromItemId, const Position& toPos, uint8_t toStackPos, uint16_t toItemId);
@@ -377,7 +377,7 @@ class Game
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
+		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
 
 		static void updatePremium(account::Account& account);
 
@@ -399,7 +399,7 @@ class Game
 
 		void onPressHotkeyEquip(uint32_t playerId, uint16_t itemId);
 
-		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
+		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, SightLines_t lineOfSight = SightLine_CheckSightLine,
                               int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor) const;
 
@@ -435,13 +435,13 @@ class Game
 
 		// Animation help functions
 		void addCreatureHealth(const Creature* target);
-		static void addCreatureHealth(const SpectatorHashSet& spectators, const Creature* target);
+		static void addCreatureHealth(const SpectatorVector& spectators, const Creature* target);
 		void addPlayerMana(const Player* target);
 		void addPlayerVocation(const Player* target);
 		void addMagicEffect(const Position& pos, uint8_t effect);
-		static void addMagicEffect(const SpectatorHashSet& spectators, const Position& pos, uint8_t effect);
+		static void addMagicEffect(const SpectatorVector& spectators, const Position& pos, uint8_t effect);
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
-		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
+		static void addDistanceEffect(const SpectatorVector& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
 		int32_t getLightHour() const {
 			return lightHour;
@@ -459,7 +459,7 @@ class Game
 
 		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
 		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
-		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
+		const std::unordered_map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
 		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
 
@@ -576,6 +576,8 @@ class Game
 		std::unordered_map<uint32_t, Player*> players;
 		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
 		std::unordered_map<std::string, Player*> mappedPlayerNames;
+		std::unordered_map<uint32_t, Npc*> npcs;
+		std::unordered_map<uint32_t, Monster*> monsters;
 		std::unordered_map<uint32_t, Guild*> guilds;
 		std::unordered_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
@@ -602,9 +604,6 @@ class Game
 		size_t lastImbuedBucket = 0;
 
 		WildcardTreeNode wildcardTree { false };
-
-		std::map<uint32_t, Npc*> npcs;
-		std::map<uint32_t, Monster*> monsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 

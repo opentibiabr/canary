@@ -166,9 +166,8 @@ class Player final : public Creature, public Cylinder
 		void addList() override;
 		void removePlayer(bool displayEffect, bool forced = true);
 
-		static uint64_t getExpForLevel(int32_t lv) {
-			lv--;
-			return ((50ULL * lv * lv * lv) - (150ULL * lv * lv) + (400ULL * lv)) / 3ULL;
+		static uint64_t getExpForLevel(uint64_t lv) {
+			return (((lv - 6ULL) * lv + 17ULL) * lv - 12ULL) / 6ULL * 100ULL;
 		}
 
 		uint16_t getStaminaMinutes() const {
@@ -225,7 +224,7 @@ class Player final : public Creature, public Cylinder
 			return guildNick;
 		}
 		void setGuildNick(std::string nick) {
-			guildNick = nick;
+			guildNick = std::move(nick);
 		}
 
 		bool isInWar(const Player* player) const;
@@ -2038,7 +2037,7 @@ class Player final : public Creature, public Cylinder
 
 
 	private:
-		std::forward_list<Condition*> getMuteConditions() const;
+		std::vector<Condition*> getMuteConditions() const;
 
 		void checkTradeState(const Item* item);
 		bool hasCapacity(const Item* item, uint32_t count) const;
@@ -2132,11 +2131,11 @@ class Player final : public Creature, public Cylinder
 
 		GuildWarVector guildWarVector;
 
-		std::forward_list<Party*> invitePartyList;
-		std::forward_list<uint32_t> modalWindows;
-		std::forward_list<std::string> learnedInstantSpellList;
+		std::vector<Party*> invitePartyList;
+		std::vector<uint32_t> modalWindows;
+		std::unordered_set<std::string> learnedInstantSpellList;
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
-		std::forward_list<Condition*> storedConditionList;
+		std::vector<Condition*> storedConditionList;
 
 		std::list<MonsterType*> BestiaryTracker;
 

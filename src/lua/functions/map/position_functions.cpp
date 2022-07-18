@@ -114,7 +114,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 	fpp.clearSight = getBoolean(L, 6, fpp.clearSight);
 	fpp.maxSearchDist = getNumber<int32_t>(L, 7, fpp.maxSearchDist);
 
-	std::forward_list<Direction> dirList;
+	std::vector<Direction> dirList;
 	if (g_game().map.getPathMatching(pos, dirList, FrozenPathingConditionCall(position), fpp)) {
 		lua_newtable(L);
 
@@ -141,11 +141,11 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (lua_gettop(L) >= 3) {
 		Player* player = getPlayer(L, 3);
 		if (player) {
-			spectators.insert(player);
+			spectators.emplace_back(player);
 		}
 	}
 
@@ -169,11 +169,11 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
-	SpectatorHashSet spectators;
+	SpectatorVector spectators;
 	if (lua_gettop(L) >= 4) {
 		Player* player = getPlayer(L, 4);
 		if (player) {
-			spectators.insert(player);
+			spectators.emplace_back(player);
 		}
 	}
 

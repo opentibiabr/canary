@@ -4248,10 +4248,10 @@ void Game::internalCloseTrade(Player* player)
 	}
 }
 
-void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount,
+void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount,
                               bool ignoreCap/* = false*/, bool inBackpacks/* = false*/)
 {
-	if (amount == 0 || amount > 100) {
+	if (amount == 0) {
 		return;
 	}
 
@@ -4277,9 +4277,9 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
 }
 
-void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount, bool ignoreEquipped)
+void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreEquipped)
 {
-	if (amount == 0 || amount > 100) {
+	if (amount == 0) {
 		return;
 	}
 

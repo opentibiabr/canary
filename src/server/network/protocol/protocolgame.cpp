@@ -4100,17 +4100,15 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	uint16_t itemsToSend = std::min<size_t>(depotItems.size(), std::numeric_limits<uint16_t>::max());
 	msg.add<uint16_t>(itemsToSend);
 
-	std::map<uint16_t, std::map<uint8_t, uint32_t>> depotItemsTwo;
-
 	uint16_t i = 0;
-	for (auto it = depotItemsTwo.begin(); i < itemsToSend; ++it, ++i)
+	for (std::map<uint16_t, uint32_t>::const_iterator it = depotItems.begin(); i < itemsToSend; ++it, ++i)
 	{
 		msg.add<uint16_t>(it->first);
 		if (Item::items[it->first].upgradeClassification > 0)
 		{
-			msg.addByte(it->second);
+			msg.addByte(0);
 		}
-		msg.add<uint16_t>(it->second);
+		msg.add<uint16_t>(std::min<uint32_t>(0xFFFF, it->second));
 	}
 
 	writeToOutputBuffer(msg);

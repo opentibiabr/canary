@@ -21,7 +21,7 @@ burstarrow.onUseWeapon = function(player, variant)
 	return burstCombat:execute(player, variant)
 end
 
-burstarrow:id(2546)
+burstarrow:id(3449)
 burstarrow:action("removecount")
 burstarrow:register()
 
@@ -41,7 +41,7 @@ poisonarrow.onUseWeapon = function(player, variant)
 	return true
 end
 
-poisonarrow:id(2545)
+poisonarrow:id(3448)
 poisonarrow:action("removecount")
 poisonarrow:register()
 

@@ -305,29 +305,26 @@ bool Combat::isProtected(const Player* attacker, const Player* target)
 
 ReturnValue Combat::canDoCombatTarget(const Creature *attacker, const Player *targetPlayer)
 {
-	const Player *attackerPlayer = attacker->getPlayer();
-	if (attackerPlayer)
+	if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)
+	|| isProtected(attackerPlayer, targetPlayer))
 	{
-		if (attackerPlayer->hasFlag(PlayerFlag_CannotAttackPlayer)
-		|| isProtected(attackerPlayer, targetPlayer))
-		{
-			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-		}
-
-		// No pvp-zone
-		const Tile *targetPlayerTile = targetPlayer->getTile();
-		if (!targetPlayerTile)
-		{
-			return RETURNVALUE_NOERROR;
-		}
-
-		if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)
-		|| (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)
-		&& !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)))
-		{
-			return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
-		}
+		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 	}
+
+	// No pvp-zone
+	const Tile *targetPlayerTile = targetPlayer->getTile();
+	if (!targetPlayerTile)
+	{
+		return RETURNVALUE_NOERROR;
+	}
+
+	if (targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE)
+	|| (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE)
+	&& !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)))
+	{
+		return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
+	}
+
 	return RETURNVALUE_NOERROR;
 }
 
@@ -349,18 +346,6 @@ ReturnValue Combat::canDoCombatMaster(const Creature *attackerMaster, const Play
 		return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 	}
 
-	return RETURNVALUE_NOERROR;
-}
-
-ReturnValue Combat::canDoCombatMonster(const Creature *attacker, const Creature *attackerMaster, const Player *targetPlayer)
-{
-	if (attacker->getMonster()
-	&& (!attackerMaster || attackerMaster->getMonster()
-	&& attacker->getFaction() != FACTION_DEFAULT
-	&& !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())))
-	{
-		return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
-	}
 	return RETURNVALUE_NOERROR;
 }
 
@@ -430,9 +415,24 @@ ReturnValue Combat::canDoCombat(const Creature *attacker, const Creature *target
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
 
-		canDoCombatTarget(attacker, targetPlayer);
-		canDoCombatMaster(attackerMaster, targetPlayer);
-		canDoCombatMonster(attacker, attackerMaster, targetPlayer);
+		const Player *attackerPlayer = attacker->getPlayer();
+		if (attackerPlayer) {
+			return canDoCombatTarget(attacker, targetPlayer);
+		}
+
+		const Player *masterAttackerPlayer = attackerMaster->getPlayer();
+		if (masterAttackerPlayer)
+		{
+			return canDoCombatMaster(attackerMaster, targetPlayer);
+		}
+
+		if (attacker->getMonster()
+		&& (!attackerMaster || attackerMaster->getMonster()
+		&& attacker->getFaction() != FACTION_DEFAULT
+		&& !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())))
+		{
+			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+		}
 	}
 	else if (target && target->getMonster())
 	{
@@ -444,13 +444,13 @@ ReturnValue Combat::canDoCombat(const Creature *attacker, const Creature *target
 			return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 		}
 
-		canDoCombatSummon(attacker, attackerMaster, target);
+		return canDoCombatSummon(attacker, attackerMaster, target);
 	}
 
 	// Block attack players in world is no pvp mode
 	if (g_game.getWorldType() == WORLD_TYPE_NO_PVP) {
 		if (attacker->getPlayer() || (attackerMaster && attackerMaster->getPlayer())) {
-			canDoCombatNoPVP(attacker, target);
+			return canDoCombatNoPVP(attacker, target);
 		}
 	}
 

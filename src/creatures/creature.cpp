@@ -447,29 +447,38 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone)
 void Creature::checkSummonMove(const Position& newPos, bool teleportSummon) const
 {
 	if (hasSummons()) {
-		// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
-		std::forward_list<Creature*> despawnMonsterList;
+		std::vector<Creature*> despawnMonsterList;
 		for (Creature* creature : getSummons()) {
 			if (!creature) {
 				continue;
 			}
 
-			const Monster* monster = creature->getMonster();
-			// Check is is familiar for teleport to the master, if "teleportSummon" is true, this is not executed
 			const Position& pos = creature->getPosition();
-			if (!teleportSummon && !monster->isFamiliar()) {
-				SPDLOG_DEBUG("[Creature::checkSummonMove] - Creature name {}", creature->getName());
+			const Monster* monster = creature->getMonster();
+			bool protectionZoneCheck = this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE);
+			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
+			bool checkSummonDist = Position::getDistanceZ(newPos, pos) > 0 ||
+				(std::max<int32_t>(Position::getDistanceX(newPos, pos),
+					Position::getDistanceY(newPos, pos)) > 15);
+			// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
+			bool checkRemoveDist = Position::getDistanceZ(newPos, pos) > 2 ||
+				(std::max<int32_t>(Position::getDistanceX(newPos, pos),
+					Position::getDistanceY(newPos, pos)) > 30);
+
+			if (monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
+				g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
 				continue;
 			}
 
-			if (Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15))
-			{
-				g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
+			if (monster->isSummon() && !monster->isFamiliar() && !teleportSummon && checkRemoveDist) {
+				despawnMonsterList.push_back(creature);
 			}
 		}
 
 		for (Creature* despawnCreature : despawnMonsterList) {
-			g_game().removeCreature(despawnCreature, true);
+			if (!despawnMonsterList.empty()) {
+				g_game().removeCreature(despawnCreature, true);
+			}
 		}
 	}
 }
@@ -493,7 +502,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			stopEventWalk();
 		}
 
-		checkSummonMove(newPos, false);
+		checkSummonMove(newPos, g_configManager().getBoolean(TELEPORT_SUMMONS));
 
 		if (Player* player = creature->getPlayer()) {
 			if (player->isExerciseTraining()){
@@ -745,7 +754,7 @@ bool Creature::dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreatur
 			g_game().internalAddItem(tile, corpse, INDEX_WHEREEVER, FLAG_NOLIMIT);
 			dropLoot(corpse->getContainer(), lastHitCreature);
 			corpse->startDecaying();
-			bool corpses = corpse->isRewardCorpse() && (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
+			bool corpses = corpse->isRewardCorpse() || (corpse->getID() == ITEM_MALE_CORPSE || corpse->getID() == ITEM_FEMALE_CORPSE);
 			if (mostDamageCreature && mostDamageCreature->getPlayer() && !corpses) {
 				Player* player = mostDamageCreature->getPlayer();
 				if (g_configManager().getBoolean(AUTOBANK)) {
@@ -912,7 +921,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 bool Creature::setAttackedCreature(Creature* creature)
 {
 	if (creature) {
-		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		if (this->getMonster() && this->getMonster()->isFamiliar() && this->getTile() && this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return false;
 		}
 
@@ -1193,7 +1202,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 	}
 }
 
-bool Creature::setMaster(Creature* newMaster) {
+bool Creature::setMaster(Creature* newMaster, bool reloadCreature/* = false*/) {
 	// Persists if this creature has ever been a summon
 	this->summoned = true;
 
@@ -1201,6 +1210,13 @@ bool Creature::setMaster(Creature* newMaster) {
 		return false;
 	}
 
+	// Reloading summon icon/knownCreature and reset informations (follow/dropLoot/skillLoss)
+	if (reloadCreature) {
+		setFollowCreature(nullptr);
+		setDropLoot(false);
+		setSkillLoss(false);
+		g_game().reloadCreature(this);
+	}
 	if (newMaster) {
 		incrementReferenceCounter();
 		newMaster->summons.push_back(this);

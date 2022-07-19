@@ -336,7 +336,9 @@ if (MSVC)
     ${CURL_LIBRARIES}
     ${SPDLOG_LIBRARY}
     ${GMP_LIBRARIES}
+    protobuf::libprotoc
     protobuf::libprotobuf
+    protobuf::libprotobuf-lite
     fmt::fmt
     jsoncpp_lib
     asio::asio
@@ -361,7 +363,9 @@ if (MSVC)
       pugixml::pugixml
       spdlog::spdlog
       Threads::Threads
+      protobuf::libprotoc
       protobuf::libprotobuf
+      protobuf::libprotobuf-lite
     )
 endif(MSVC)
 

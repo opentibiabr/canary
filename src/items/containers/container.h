@@ -80,6 +80,12 @@ class Container : public Item, public Cylinder
 		virtual const Reward* getReward() const {
 			return nullptr;
 		}
+		virtual bool isInbox() const {
+			return false;
+		}
+		virtual bool isDepotChest() const {
+			return false;
+		}
 
 		bool unserializeMapItem(BinaryNode& binaryNode, Position position) override;
 

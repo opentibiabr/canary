@@ -686,6 +686,16 @@ Thing* Game::internalGetThing(Player* player, const Position& pos, int32_t index
 
 		uint8_t slot = pos.z;
 		return parentContainer->getItemByIndex(player->getContainerIndex(fromCid) + slot);
+	} else if (pos.y == 0x20 || pos.y == 0x21) {
+		// '0x20' -> From depot.
+		// '0x21' -> From inbox.
+		// Both only when the item is from depot search window.
+		if (!player->isDepotSearchOpenOnItem(static_cast<uint16_t>(itemId))) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return nullptr;
+		}
+
+		return player->getItemFromDepotSearch(static_cast<uint16_t>(itemId), pos);
 	} else if (pos.y == 0 && pos.z == 0) {
 		const ItemType& it = Item::items[itemId];
 		if (it.id == 0) {
@@ -1165,6 +1175,12 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	if (fromPos.x == 0xFFFF) {
 		if (fromPos.y & 0x40) {
 			fromIndex = fromPos.z;
+		} else if ((fromPos.y == 0x20 || fromPos.y == 0x21) && !player->isDepotSearchOpenOnItem(itemId)) {
+			// '0x20' -> From depot.
+			// '0x21' -> From inbox.
+			// Both only when the item is being moved from depot search window.
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
 		} else {
 			fromIndex = static_cast<uint8_t>(fromPos.y);
 		}
@@ -1172,7 +1188,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 		fromIndex = fromStackPos;
 	}
 
-	Thing* thing = internalGetThing(player, fromPos, fromIndex, 0, STACKPOS_MOVE);
+	Thing* thing = internalGetThing(player, fromPos, fromIndex, itemId, STACKPOS_MOVE);
 	if (!thing) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -1448,6 +1464,12 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		if (fromPos.x == 0xFFFF) {
 			if (fromPos.y & 0x40) {
 				fromIndex = fromPos.z;
+			} else if ((fromPos.y == 0x20 || fromPos.y == 0x21) && !player->isDepotSearchOpenOnItem(itemId)) {
+				// '0x20' -> From depot.
+				// '0x21' -> From inbox.
+				// Both only when the item is being moved from depot search window.
+				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				return;
 			} else {
 				fromIndex = static_cast<uint8_t>(fromPos.y);
 			}
@@ -1455,7 +1477,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 			fromIndex = fromStackPos;
 		}
 
-		Thing* thing = internalGetThing(player, fromPos, fromIndex, 0, STACKPOS_MOVE);
+		Thing* thing = internalGetThing(player, fromPos, fromIndex, itemId, STACKPOS_MOVE);
 		if (!thing || !thing->getItem()) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
@@ -1469,7 +1491,22 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		return;
 	}
 
-	Cylinder* fromCylinder = internalGetCylinder(player, fromPos);
+	Cylinder* fromCylinder = nullptr;
+	if (fromPos.x == 0xFFFF &&
+			(fromPos.y == 0x20 || fromPos.y == 0x21)) {
+		// '0x20' -> From depot.
+		// '0x21' -> From inbox.
+		// Both only when the item is being moved from depot search window.
+		if (!player->isDepotSearchOpenOnItem(itemId)) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
+		fromCylinder = item->getParent();
+	} else {
+		fromCylinder = internalGetCylinder(player, fromPos);
+	}
+
 	if (fromCylinder == nullptr) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -1832,7 +1869,16 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 			return ret;
 		}
 
-		if (const Player* player = actor->getPlayer()) {
+		if (Player* player = actor->getPlayer()) {
+
+			// Refresh depot search window if necessary
+			// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
+			if (player->isDepotSearchOpenOnItem(item->getID()) &&
+				((fromCylinder->getItem() && fromCylinder->getItem()->isInsideDepot(true)) ||
+				(toCylinder->getItem() && toCylinder->getItem()->isInsideDepot(true)))) {
+				player->requestDepotSearchItem(item->getID(), 0);
+			}
+
 			const ItemType& it = Item::items[fromCylinder->getItem()->getID()];
 			if (it.id <= 0) {
 				return ret;
@@ -3096,7 +3142,24 @@ void Game::playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t f
 		player->setNextActionTask(nullptr);
 	}
 
+	// Refresh depot search window if necessary
+	bool mustReloadDepotSearch = false;
+	if (player->isDepotSearchOpenOnItem(fromItemId)) {
+		if (item->isInsideDepot(true)) {
+			mustReloadDepotSearch = true;
+		} else {
+			if (Thing* targetThing = internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
+					targetThing && targetThing->getItem() && targetThing->getItem()->isInsideDepot(true)) {
+				mustReloadDepotSearch = true;
+			}
+		}
+	}
+
 	g_actions().useItemEx(player, fromPos, toPos, toStackPos, item, isHotkey);
+
+	if (mustReloadDepotSearch) {
+		player->requestDepotSearchItem(fromItemId, fromStackPos);
+	}
 }
 
 void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPos,
@@ -3181,7 +3244,17 @@ void Game::playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPo
 	player->resetIdleTime();
 	player->setNextActionTask(nullptr);
 
+	// Refresh depot search window if necessary
+	bool refreshDepotSearch = false;
+	if (player->isDepotSearchOpenOnItem(itemId) && item->isInsideDepot(true)) {
+		refreshDepotSearch = true;
+	}
+
 	g_actions().useItem(player, pos, index, item, isHotkey);
+
+	if (refreshDepotSearch) {
+		player->requestDepotSearchItem(itemId, stackPos);
+	}
 }
 
 void Game::playerUseWithCreature(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId)
@@ -3388,7 +3461,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stac
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackPos, 0, STACKPOS_TOPDOWN_ITEM);
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!thing) {
 		return;
 	}
@@ -3427,7 +3500,7 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position& pos, 
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackPos, 0, STACKPOS_TOPDOWN_ITEM);
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!thing) {
 		return;
 	}
@@ -3463,7 +3536,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Pos
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackPos, 0, STACKPOS_TOPDOWN_ITEM);
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!thing) {
 		return;
 	}
@@ -3553,7 +3626,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackPos, 0, STACKPOS_TOPDOWN_ITEM);
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!thing) {
 		return;
 	}
@@ -3780,7 +3853,7 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackpos, 0, STACKPOS_TOPDOWN_ITEM);
+	Thing* thing = internalGetThing(player, pos, stackpos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!thing)
 		return;
 
@@ -3794,7 +3867,14 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
+
 	player->stowItem(item, count, allItems);
+
+	// Refresh depot search window if necessary
+	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
+	if (player->isDepotSearchOpenOnItem(itemId)) {
+		player->requestDepotSearchItem(itemId, 0);
+	}
 }
 
 void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t count, uint8_t)
@@ -3864,6 +3944,11 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 	} else {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 	}
+
+	// Refresh depot search window if necessary
+	if (player->isDepotSearchOpenOnItem(itemId)) {
+		player->requestDepotSearchItem(itemId, 0);
+	}
 }
 
 void Game::playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index)
@@ -3930,7 +4015,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-	Thing* tradeThing = internalGetThing(player, pos, stackPos, 0, STACKPOS_TOPDOWN_ITEM);
+	Thing* tradeThing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_TOPDOWN_ITEM);
 	if (!tradeThing) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -4390,14 +4475,14 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count)
 	merchant->onPlayerCheckItem(player, it.id, count);
 }
 
-void Game::playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos)
+void Game::playerLookAt(uint32_t playerId, uint16_t itemId, const Position& pos, uint8_t stackPos)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	Thing* thing = internalGetThing(player, pos, stackPos, 0, STACKPOS_LOOK);
+	Thing* thing = internalGetThing(player, pos, stackPos, itemId, STACKPOS_LOOK);
 	if (!thing) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -4738,42 +4823,64 @@ void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t fi
 	player->quickLootListItemIds = itemIds;
 }
 
-void Game::playerRequestLockFind(uint32_t playerId)
+/*******************************************************************************
+ * Depot search system
+ ******************************************************************************/
+void Game::playerRequestDepotItems(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player) {
+	if (!player || !player->isDepotSearchAvailable() || player->isDepotSearchExhausted()) {
 		return;
 	}
 
-	std::map<uint16_t, uint16_t> itemMap;
-	uint16_t count = 0;
-	DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
-	if (!depotLocker) {
-		return;
-	}
-
-	for (Item* locker : depotLocker->getItemList()) {
-		Container* c = locker->getContainer();
-		if (c && c->empty()) {
-			continue;
-		}
-
-		if (c) {
-			for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-				auto itt = itemMap.find((*it)->getID());
-				if (itt == itemMap.end()) {
-					itemMap[(*it)->getID()] = Item::countByType((*it), -1);
-					count++;
-				} else {
-					itemMap[(*it)->getID()] += Item::countByType((*it), -1);
-				}
-			}
-		}
-	}
-
-	player->sendLockerItems(itemMap, count);
-	return;
+	player->requestDepotItems();
+	player->updateDepotSearchExhausted();
 }
+
+void Game::playerRequestCloseDepotSearch(uint32_t playerId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || !player->isDepotSearchOpen()) {
+		return;
+	}
+
+	player->setDepotSearchIsOpen(0, 0);
+	player->sendCloseDepotSearch();
+}
+
+void Game::playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || !player->isDepotSearchOpen() || player->isDepotSearchExhausted()) {
+		return;
+	}
+
+	player->requestDepotSearchItem(itemId, tier);
+	player->updateDepotSearchExhausted();
+}
+
+void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || !player->isDepotSearchOpenOnItem(itemId) || player->isDepotSearchExhausted()) {
+		return;
+	}
+
+	player->retrieveAllItemsFromDepotSearch(itemId, tier, type == 1);
+	player->updateDepotSearchExhausted();
+}
+
+void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player || !player->isDepotSearchOpen() || player->isDepotSearchExhausted()) {
+		return;
+	}
+
+	player->openContainerFromDepotSearch(pos);
+	player->updateDepotSearchExhausted();
+}
+/*******************************************************************************/
 
 void Game::playerCancelAttackAndFollow(uint32_t playerId)
 {

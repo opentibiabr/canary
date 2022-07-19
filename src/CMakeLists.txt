@@ -312,7 +312,7 @@ if (MSVC)
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
   endif()
 
-  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf )
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
   target_include_directories(${PROJECT_NAME}
   PRIVATE

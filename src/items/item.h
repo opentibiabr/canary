@@ -1170,6 +1170,8 @@ class Item : virtual public Thing
 			return !parent || parent->isRemoved();
 		}
 
+		bool isInsideDepot(bool includeInbox = false) const;
+
 		/**
 		 * @brief Get the Imbuement Info object
 		 *

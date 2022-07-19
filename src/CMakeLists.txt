@@ -30,6 +30,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
+option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 
 
 # *****************************************************************************
@@ -297,7 +298,18 @@ if (MSVC)
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
   endif()
 
-  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
+
+  if(BUILD_STATIC_LIBRARY)
+    log_option_enabled("STATIC_LIBRARY")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+    find_package(unofficial-libmariadb CONFIG REQUIRED)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    target_link_libraries(${PROJECT_NAME}  PRIVATE unofficial::libmariadb unofficial::mariadbclient jsoncpp_static)
+  else()
+    log_option_disabled("STATIC_LIBRARY")
+    target_link_libraries(${PROJECT_NAME}  PRIVATE jsoncpp_lib)
+    target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
+  endif()
 
   target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -312,7 +324,6 @@ if (MSVC)
       ${Protobuf_INCLUDE_DIRS}
       ${SPDLOG_INCLUDE_DIR}
       ${GMP_INCLUDE_DIR}
-      $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>
   )
 
   target_link_libraries(${PROJECT_NAME}
@@ -327,7 +338,6 @@ if (MSVC)
       ${SPDLOG_LIBRARY}
       ${GMP_LIBRARIES}
       fmt::fmt
-      jsoncpp_lib
   )
 
 else()

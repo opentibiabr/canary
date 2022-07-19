@@ -4,7 +4,6 @@
 project(protobuf)
 
 find_package(Protobuf REQUIRED)
-set (Protobuf_USE_STATIC_LIBS ON)
 
 include_directories(${PROTOBUF_INCLUDE_DIRS})
 
@@ -12,7 +11,7 @@ file(GLOB ProtoFiles
 	"${CMAKE_CURRENT_SOURCE_DIR}/appearances.proto"
 )
 PROTOBUF_GENERATE_CPP(ProtoSources ProtoHeaders ${ProtoFiles})
-add_library(${PROJECT_NAME} STATIC ${ProtoSources} ${ProtoHeaders})
+add_library(${PROJECT_NAME} ${ProtoSources} ${ProtoHeaders})
 target_link_libraries(${PROJECT_NAME} ${PROTOBUF_LIBRARY})
 
 add_custom_command(

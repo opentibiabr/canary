@@ -134,7 +134,6 @@ find_package(Asio REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
-find_package(libzippp REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(GMP REQUIRED)
 
@@ -364,7 +363,6 @@ if (MSVC)
       spdlog::spdlog
       Threads::Threads
       protobuf::libprotobuf
-      libzippp::libzippp
     )
 endif(MSVC)
 

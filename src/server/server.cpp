@@ -54,7 +54,7 @@ void ServiceManager::stop()
 	for (auto& servicePortIt : acceptors) {
 		try {
 			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
-		} catch (boost::system::system_error& e) {
+		} catch (const boost::system::system_error& e) {
 			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
 		}
 	}
@@ -183,7 +183,7 @@ void ServicePort::open(uint16_t port)
 		acceptor->set_option(boost::asio::ip::tcp::no_delay(true));
 
 		accept();
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_WARN("[ServicePort::open] - Error: {}", e.what());
 
 		pendingStart = true;

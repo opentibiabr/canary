@@ -9,7 +9,6 @@ on:
       - main
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
 
@@ -21,12 +20,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
+        os: [ubuntu-20.04, ubuntu-22.04]
         buildtype: [linux-release, linux-debug]
         include:
-          - os: ubuntu-18.04
-            triplet: x64-linux
           - os: ubuntu-20.04
+            triplet: x64-linux
+          - os: ubuntu-22.04
             triplet: x64-linux
 
     steps:
@@ -35,8 +34,7 @@ jobs:
 
       - name: Install Linux Dependencies
         run: >
-          sudo apt-get update && sudo apt-get install ccache build-essential
-          libluajit-5.1-dev zip
+          sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
 
       - name: Switch to gcc-11
         run: |
@@ -45,19 +43,17 @@ jobs:
           sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        id: ccache
-        uses: actions/cache@v3
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: $HOME/.ccache
-          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          max-size: "1G"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
-            ccache-${{ matrix.os }}-
+            ccache-${{ matrix.os }}
 
       - name: Restore artifacts and install vcpkg
         uses: lukka/run-vcpkg@v10
         with:
-          vcpkgGitCommitId: 773516ecf6014d89cc69b11bb54605ad4be56694
+          vcpkgGitCommitId: 8b62d95a81afcb9efe74bebeb62f04c1e0e2a003
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@latest

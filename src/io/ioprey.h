@@ -113,7 +113,7 @@ class PreySlot
 	}
 
 	bool canSelect() const {
-		return (state == PreyDataState_Selection || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
+		return (state == PreyDataState_Selection || state == PreyDataState_SelectionChangeMonster || state == PreyDataState_ListSelection || state == PreyDataState_Inactive);
 	}
 
 	void eraseBonus(bool maintainBonus = false) {
@@ -156,7 +156,7 @@ class TaskHuntingSlot
 {
  public:
 	TaskHuntingSlot() = default;
-	explicit TaskHuntingSlot(PreySlot_t id) : id(id) { }
+	explicit TaskHuntingSlot(PreySlot_t id);
 	virtual ~TaskHuntingSlot() = default;
 
 	bool isOccupied() const {

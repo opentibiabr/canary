@@ -339,7 +339,6 @@ if (MSVC)
     protobuf::libprotobuf
     fmt::fmt
     jsoncpp_lib
-    libzippp::libzippp
     asio::asio
   )
 

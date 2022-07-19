@@ -3600,11 +3600,15 @@ void Player::stashContainer(StashContainerList itemDict)
 
 	uint32_t totalStowed = 0;
 	std::ostringstream retString;
+	uint16_t refreshDepotSearchOnItem = 0;
 	for (auto stashIterator : itemDict) {
 		uint16_t iteratorCID = (stashIterator.first)->getID();
 		if (g_game().internalRemoveItem(stashIterator.first, stashIterator.second) == RETURNVALUE_NOERROR) {
 			addItemOnStash(iteratorCID, stashIterator.second);
 			totalStowed += stashIterator.second;
+			if (isDepotSearchOpenOnItem(iteratorCID)) {
+				refreshDepotSearchOnItem = iteratorCID;
+			}
 		}
 	}
 
@@ -3619,6 +3623,11 @@ void Player::stashContainer(StashContainerList itemDict)
 		movedItems = 0;
 	}
 	sendTextMessage(MESSAGE_STATUS, retString.str());
+
+	// Refresh depot search window if necessary
+	if (refreshDepotSearchOnItem != 0) {
+		requestDepotSearchItem(refreshDepotSearchOnItem, 0);
+	}
 }
 
 bool Player::canSellImbuedItem(Item *item, bool ignoreImbued)
@@ -5721,7 +5730,11 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 		}
 	}
 
-	sendOpenStash();
+	// This check is necessary because we need to block it when we retrieve an item from depot search.
+	if (!isDepotSearchOpenOnItem(itemId)) {
+		sendOpenStash();
+	}
+
 	return true;
 }
 
@@ -5897,6 +5910,208 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	}
 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+}
+
+/*******************************************************************************
+ * Depot search system
+ ******************************************************************************/
+void Player::requestDepotItems()
+{
+	ItemsTierCountList itemMap;
+	uint16_t count = 0;
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	if (!depotLocker) {
+		return;
+	}
+
+	for (Item* locker : depotLocker->getItemList()) {
+		const Container* c = locker->getContainer();
+		if (!c || c->empty()) {
+			continue;
+		}
+
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			auto itemMap_it = itemMap.find((*it)->getID());
+
+			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? 1 : 0;
+			// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
+			if (itemMap_it == itemMap.end()) {
+				std::map<uint8_t, uint32_t> itemTierMap;
+				itemTierMap[itemTier] = Item::countByType((*it), -1);
+				itemMap[(*it)->getID()] = itemTierMap;
+				count++;
+			} else if (auto itemTier_it = itemMap[(*it)->getID()].find(itemTier); itemTier_it == itemMap[(*it)->getID()].end()) {
+				itemMap[(*it)->getID()][itemTier] = Item::countByType((*it), -1);
+				count++;
+			} else {
+				itemMap[(*it)->getID()][itemTier] += Item::countByType((*it), -1);
+			}
+		}
+	}
+
+	for (const auto& [itemId, itemCount] : getStashItems()) {
+		auto itemMap_it = itemMap.find(itemId);
+
+		uint8_t itemTier = Item::items[itemId].upgradeClassification > 0 ? 1 : 0;
+		// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
+		if (itemMap_it == itemMap.end()) {
+			std::map<uint8_t, uint32_t> itemTierMap;
+			itemTierMap[itemTier] = itemCount;
+			itemMap[itemId] = itemTierMap;
+			count++;
+		} else if (auto itemTier_it = itemMap[itemId].find(itemTier); itemTier_it == itemMap[itemId].end()) {
+			itemMap[itemId][itemTier] = itemCount;
+			count++;
+		} else {
+			itemMap[itemId][itemTier] += itemCount;
+		}
+	}
+
+	setDepotSearchIsOpen(1, 0);
+	sendDepotItems(itemMap, count);
+}
+
+void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
+{
+	ItemVector depotItems;
+	ItemVector inboxItems;
+	uint32_t depotCount = 0;
+	uint32_t inboxCount = 0;
+	uint32_t stashCount = 0;
+
+	if (const ItemType& iType = Item::items[itemId];
+			iType.stackable && iType.wareId > 0) {
+		stashCount = static_cast<uint32_t>(getStashItemCount(itemId));
+	}
+
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	if (!depotLocker) {
+		return;
+	}
+
+	for (Item* locker : depotLocker->getItemList()) {
+		const Container* c = locker->getContainer();
+		if (!c || c->empty()) {
+			continue;
+		}
+
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			Item* item = *it;
+			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+			if (!item || item->getID() != itemId) {
+				continue;
+			}
+
+			if (c->isInbox()) {
+				inboxItems.push_back(item);
+				inboxCount += Item::countByType(item, -1);
+			} else {
+				depotItems.push_back(item);
+				depotCount += Item::countByType(item, -1);
+			}
+		}
+	}
+
+	setDepotSearchIsOpen(itemId, tier);
+	sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
+}
+
+void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot)
+{
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	if (!depotLocker) {
+		return;
+	}
+
+	std::vector<Item*> itemsVector;
+	for (Item* locker : depotLocker->getItemList()) {
+		const Container* c = locker->getContainer();
+		if (!c || c->empty() ||
+			(c->isInbox() && isDepot) ||	// Retrieve from inbox.
+			(!c->isInbox() && !isDepot)) {	// Retrieve from depot.
+			continue;
+		}
+
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+			if (Item* item = *it; item && item->getID() == itemId) {
+				itemsVector.push_back(item);
+			}
+		}
+	}
+
+	ReturnValue ret = RETURNVALUE_NOERROR;
+	for (Item* item : itemsVector) {
+		// First lets try to retrieve the item to the stash retrieve container.
+		if (ret = g_game().internalQuickLootItem(this, item, OBJECTCATEGORY_STASHRETRIEVE); ret == RETURNVALUE_NOERROR) {
+			continue;
+		}
+
+		// If the retrieve fails to move the item to the stash retrieve container, let's add the item anywhere.
+		if (ret = g_game().internalMoveItem(item->getParent(), this, INDEX_WHEREEVER, item, item->getItemCount(), nullptr); ret == RETURNVALUE_NOERROR) {
+			continue;
+		}
+
+		sendCancelMessage(ret);
+		return;
+	}
+
+	requestDepotSearchItem(itemId, tier);
+}
+
+void Player::openContainerFromDepotSearch(const Position& pos)
+{
+	if (!isDepotSearchOpen()) {
+		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	const Item* item = getItemFromDepotSearch(depotSearchOnItem.first, pos);
+	if (!item) {
+		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	Container* container = item->getParent() ? item->getParent()->getContainer() : nullptr;
+	if (!container) {
+		sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
+	g_actions().useItem(this, pos, 0, container, false);
+}
+
+Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
+{
+	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
+	if (!depotLocker) {
+		return nullptr;
+	}
+
+	uint8_t index = 0;
+	for (Item* locker : depotLocker->getItemList()) {
+		const Container* c = locker->getContainer();
+		if (!c || c->empty() ||
+			(c->isInbox() && pos.y != 0x21) ||	// From inbox.
+			(!c->isInbox() && pos.y != 0x20)) {	// From depot.
+			continue;
+		}
+
+		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
+			Item* item = *it;
+			//  To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
+			if (!item || item->getID() != itemId) {
+				continue;
+			}
+
+			if (pos.z == index) {
+				return item;
+			}
+			index++;
+		}
+	}
+
+	return nullptr;
 }
 
 /*******************************************************************************

@@ -2593,3 +2593,33 @@ bool Item::hasMarketAttributes()
 
 	return true;
 }
+
+bool Item::isInsideDepot(bool includeInbox/* = false*/) const
+{
+	if (const Container* thisContainer = getContainer(); thisContainer &&
+			(thisContainer->getDepotLocker() ||
+			thisContainer->isDepotChest() ||
+			(includeInbox && thisContainer->isInbox()))) {
+		return true;
+	}
+
+	const Cylinder* cylinder = getParent();
+	if (!cylinder) {
+		return false;
+	}
+
+	const Container* container = cylinder->getContainer();
+	if (!container) {
+		return false;
+	}
+
+	while (container) {
+		if (container->getDepotLocker() || container->isDepotChest() || (includeInbox && container->isInbox())) {
+			return true;
+		}
+
+		container = container->getParent() ? container->getParent()->getContainer() : nullptr;
+	}
+
+	return false;
+}

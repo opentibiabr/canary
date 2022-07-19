@@ -716,6 +716,16 @@ using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 
+using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
+/*
+	> ItemsTierCountList structure:
+	|- [itemID]
+		|- [itemTier]
+			|- Count
+		| ...
+	| ...
+*/
+
 struct Familiar {
 	Familiar(std::string initName, uint16_t initLookType,
              bool initPremium, bool initUnlocked, std::string initType) :

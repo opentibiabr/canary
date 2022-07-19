@@ -1019,12 +1019,12 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendDepotSearchResultDetail(uint16_t itemId,
-									uint8_t tier,
-									uint32_t depotCount,
-									const ItemVector &depotItems,
-									uint32_t inboxCount,
-									const ItemVector &inboxItems,
-									uint32_t stashCount) const {
+                                         uint8_t tier,
+                                         uint32_t depotCount,
+                                         const ItemVector &depotItems,
+                                         uint32_t inboxCount,
+                                         const ItemVector &inboxItems,
+                                         uint32_t stashCount) const {
 			if (client) {
 				client->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 			}

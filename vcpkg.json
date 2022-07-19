@@ -9,7 +9,7 @@
     "jsoncpp",
     {
       "name": "protobuf",
-      "version>=": "21.0"
+      "version>=": "3.18.0"
     }, 
     {
       "name": "luajit",

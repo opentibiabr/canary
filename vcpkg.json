@@ -12,7 +12,6 @@
     "spdlog",
     "curl",
     "jsoncpp",
-    "libzippp",
     "protobuf",
     {
       "name": "luajit",

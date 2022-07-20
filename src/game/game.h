@@ -329,7 +329,7 @@ class Game
 		void playerFollowCreature(uint32_t playerId, uint32_t creatureId);
 		void playerCancelAttackAndFollow(uint32_t playerId);
 		void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
-		void playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos);
+		void playerLookAt(uint32_t playerId, uint16_t itemId, const Position& pos, uint8_t stackPos);
 		void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
 		void playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t itemId, uint8_t stackPos,
 								Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
@@ -341,7 +341,20 @@ class Game
 		void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 		void playerQuickLootBlackWhitelist(uint32_t playerId,
 								QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
-		void playerRequestLockFind(uint32_t playerId);
+
+		void playerRequestDepotItems(uint32_t playerId);
+		void playerRequestCloseDepotSearch(uint32_t playerId);
+		void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
+		void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
+		void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos);
+		void playerMoveThingFromDepotSearch(Player* player,
+											uint16_t itemId,
+											uint8_t tier,
+											uint8_t count,
+											const Position& fromPos,
+											const Position& toPos,
+											bool allItems = false);
+
 		void playerRequestAddVip(uint32_t playerId, const std::string& name);
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
 		void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);

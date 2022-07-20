@@ -98,6 +98,9 @@ autoLoot = false
 -- autoBank = true, the dropped coins from monsters will be automatically 
 -- deposited to your bank account.
 autoBank = false
+-- teleporte summon
+-- true will never remove the summon
+teleportSummons = false
 
 -- Stamina in Trainers
 staminaTrainer = false
@@ -159,8 +162,11 @@ pushWhenAttacking = false
 
 -- Map
 -- NOTE: set mapName WITHOUT .otbm at the end
--- NOTE: unzip the map world.rar
+-- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
+-- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
+toggleDownloadMap = false
 mapName = "canary"
+mapDownloadUrl = ""
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations

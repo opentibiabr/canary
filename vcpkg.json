@@ -7,10 +7,7 @@
     "spdlog",
     "curl",
     "jsoncpp",
-    {
-      "name": "protobuf",
-      "version>=": "3.18.0"
-    }, 
+    "protobuf",
     {
       "name": "luajit",
       "platform": "!arm"
@@ -26,6 +23,5 @@
       "name": "mpir",
       "platform": "windows"
     }
-  ],
-  "builtin-baseline": "678c0ea99b778c7871e648182d61e1db7cee8892"
+  ]
 }

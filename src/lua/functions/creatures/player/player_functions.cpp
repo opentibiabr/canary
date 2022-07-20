@@ -391,6 +391,19 @@ int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetTaskHuntingPoints(lua_State* L) {
+	// player:getTaskHuntingPoints()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, static_cast<double>(player->getTaskHuntingPoints()));
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (const Player* player = getUserdata<Player>(L, 1)) {

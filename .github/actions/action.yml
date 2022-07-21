@@ -37,8 +37,8 @@ inputs:
     required: false
   skip-push:
     description: 'Skip pushing any commits/tags created after the version bump'
-    default: false
-    required: false
+    default: true
+    required: true
   PACKAGEJSON_DIR:
     description: 'Custom dir to the package'
     default: ''

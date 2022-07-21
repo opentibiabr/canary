@@ -33,8 +33,8 @@ inputs:
     required: false
   skip-commit:
     description: 'Avoid to add a commit after the version is bumped'
-    default: 'true'
-    required: true
+    default: 'false'
+    required: false
   skip-push:
     description: 'Skip pushing any commits/tags created after the version bump'
     default: false

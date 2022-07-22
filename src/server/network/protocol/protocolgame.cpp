@@ -73,6 +73,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 	if (it.isPodium) {
 		msg.add<uint16_t>(0);
 		msg.add<uint16_t>(0);
+		msg.add<uint16_t>(0);
 
 		msg.addByte(2);
 		msg.addByte(0x01);
@@ -175,8 +176,11 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 
 				const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
 				msg.addByte(lookAddons ? static_cast<uint8_t>(boost::get<int64_t>(lookAddons->value)) : 0);
+			} else {
+				msg.add<uint16_t>(0);
 			}
 		} else {
+			msg.add<uint16_t>(0);
 			msg.add<uint16_t>(0);
 		}
 

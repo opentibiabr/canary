@@ -376,10 +376,10 @@ class Game
 		void playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpActive);
 		void playerToggleMount(uint32_t playerId, bool mount);
 		void playerLeaveMarket(uint32_t playerId);
-		void playerBrowseMarket(uint32_t playerId, uint16_t itemId);
+		void playerBrowseMarket(uint32_t playerId, uint16_t itemId, uint8_t tier);
 		void playerBrowseMarketOwnOffers(uint32_t playerId);
 		void playerBrowseMarketOwnHistory(uint32_t playerId);
-		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous);
+		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, uint8_t tier, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
 		void playerStoreOpen(uint32_t playerId, uint8_t serviceType);
@@ -390,7 +390,7 @@ class Game
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
+		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker);
 
 		static void updatePremium(account::Account& account);
 

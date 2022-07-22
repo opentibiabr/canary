@@ -1296,10 +1296,9 @@ class Player final : public Creature, public Cylinder
 				client->sendMarketLeave();
 			}
 		}
-		void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList& buyOffers,
-                                  const MarketOfferList& sellOffers) const {
+		void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList& buyOffers, const MarketOfferList& sellOffers, uint8_t tier) const {
 			if (client) {
-				client->sendMarketBrowseItem(itemId, buyOffers, sellOffers);
+				client->sendMarketBrowseItem(itemId, buyOffers, sellOffers, tier);
 			}
 		}
 		void sendMarketBrowseOwnOffers(const MarketOfferList& buyOffers,
@@ -1314,9 +1313,9 @@ class Player final : public Creature, public Cylinder
 				client->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 			}
 		}
-		void sendMarketDetail(uint16_t itemId) const {
+		void sendMarketDetail(uint16_t itemId, uint8_t tier) const {
 			if (client) {
-				client->sendMarketDetail(itemId);
+				client->sendMarketDetail(itemId, tier);
 			}
 		}
 		void sendMarketAcceptOffer(const MarketOfferEx& offer) const {
@@ -2144,7 +2143,7 @@ class Player final : public Creature, public Cylinder
 		void stashContainer(StashContainerList itemDict);
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		std::map<uint16_t, std::map<uint8_t, uint16_t>> getInventoryItemsId() const;
+		ItemsTierCountList getInventoryItemsId() const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 

@@ -7264,7 +7264,7 @@ void Game::playerLeaveMarket(uint32_t playerId)
 	player->setInMarket(false);
 }
 
-void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId)
+void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId, uint8_t tier)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -7284,10 +7284,10 @@ void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId)
 		return;
 	}
 
-	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id);
-	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
-	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers);
-	player->sendMarketDetail(it.id);
+	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
+	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
+	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
+	player->sendMarketDetail(it.id, tier);
 }
 
 void Game::playerBrowseMarketOwnOffers(uint32_t playerId)
@@ -7322,7 +7322,7 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 	player->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 }
 
-void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
+void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, uint8_t tier, bool anonymous)
 {
 	// 64000 is size of the client limitation (uint16_t)
 	if (amount == 0 || amount > 64000) {
@@ -7407,7 +7407,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
 			amount = (amount - (amount > stashminus ? stashminus : amount));
 
-			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, amount, depotLocker);
+			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, amount, tier, depotLocker);
 			if (itemList.empty() && amount > 0) {
 				return;
 			}
@@ -7441,7 +7441,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		g_game().removeMoney(player, totalPrice, 0, true);
 	}
 
-	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, anonymous);
+	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
 
 	auto ColorItem = itemsPriceMap.find(it.id);
 	if (ColorItem == itemsPriceMap.end()) {
@@ -7453,9 +7453,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
-	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id);
-	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
-	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers);
+	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
+	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
+	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
 
 	// Exhausted for create offert in the market
 	player->updateMarketExhausted();
@@ -7625,7 +7625,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			if (removeAmount > 0) {
-				std::forward_list<Item*> itemList = getMarketItemList(it.wareId, removeAmount, depotLocker);
+				std::forward_list<Item*> itemList = getMarketItemList(it.wareId, removeAmount, offer.tier, depotLocker);
 				if (itemList.empty() && removeAmount > 0) {
 					return;
 				}
@@ -8237,7 +8237,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 	}
 }
 
-std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker)
+std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker)
 {
 	std::forward_list<Item*> itemList;
 	uint16_t count = 0;
@@ -8264,6 +8264,10 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 			}
 
 			if (!item->hasMarketAttributes()) {
+				continue;
+			}
+
+			if (!item->getTier() == tier) {
 				continue;
 			}
 

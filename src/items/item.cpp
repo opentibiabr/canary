@@ -2624,6 +2624,10 @@ bool Item::hasMarketAttributes()
 		if (attribute.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
 			return false;
 		}
+
+		if (attribute.type == ITEM_ATTRIBUTE_TIER) { //to-do tier/classification check idk
+			return false;
+		}
 	}
 
 	return true;

@@ -340,12 +340,12 @@ private:
 	void sendMarketEnter(uint32_t depotId);
 	void updateCoinBalance();
 	void sendMarketLeave();
-	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
+	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers, uint8_t tier);
 	void sendMarketAcceptOffer(const MarketOfferEx &offer);
 	void sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
 	void sendMarketCancelOffer(const MarketOfferEx &offer);
 	void sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers);
-	void sendMarketDetail(uint16_t itemId);
+	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const Item *item, bool ack);
 	void sendCloseTrade();
 	void updatePartyTrackerAnalyzer(const Party* party);

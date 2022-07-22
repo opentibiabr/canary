@@ -3726,9 +3726,9 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 	return countMap;
 }
 
-std::map<uint16_t, std::map<uint8_t, uint16_t>> Player::getInventoryItemsId() const
+ItemsTierCountList Player::getInventoryItemsId() const
 {
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemMap;
+	ItemsTierCountList itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {

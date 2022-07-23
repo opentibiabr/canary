@@ -633,8 +633,8 @@ std::shared_ptr<BinaryNode> BinaryNode::advance()
 		return getPtr();
 	} else if (op == NODE_END) {
 		// End of this child-tree
-		parent->child.reset();
 		file->lastWasStart = false;
+		parent->child.reset();
 		return nullptr;
 	} else {
 		file->setErrorCode(FILE_SYNTAX_ERROR);

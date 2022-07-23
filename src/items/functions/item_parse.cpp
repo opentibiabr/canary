@@ -351,18 +351,18 @@ void ItemParse::parseDuration(const std::string& tmpStrValue, pugi::xml_attribut
 }
 
 void ItemParse::parseTransform(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "transformequipto") {
+	std::string lowerStringValue = asLowerCaseString(tmpStrValue);
+	if (lowerStringValue == "transformequipto") {
 		itemType.transformEquipTo = static_cast<uint16_t>(valueAttribute.as_uint());
 		if (ItemType& transform = Item::items.getItemType(itemType.transformEquipTo);
 			transform.type == ITEM_TYPE_NONE) {
 			transform.type = itemType.type;
 		}
-	} else if (stringValue == "transformdeequipto") {
+	} else if (lowerStringValue == "transformdeequipto") {
 		itemType.transformDeEquipTo = static_cast<uint16_t>(valueAttribute.as_uint());
-	} else if (stringValue == "transformto") {
+	} else if (lowerStringValue == "transformto") {
 		itemType.transformToFree = static_cast<uint16_t>(valueAttribute.as_uint());
-	} else if (stringValue == "destroyto") {
+	} else if (lowerStringValue == "destroyto") {
 		itemType.destroyTo = static_cast<uint16_t>(valueAttribute.as_uint());
 	}
 }

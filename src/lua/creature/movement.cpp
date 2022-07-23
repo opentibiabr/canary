@@ -42,7 +42,7 @@ bool MoveEvents::registerLuaItemEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
 		return false;
 	}
 
-	std::ranges::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEventPtr](const uint32_t &itemId) {
+	for (uint16_t itemId : itemIdVector) {
 		if (moveEventPtr->getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
 			it.wieldInfo = moveEventPtr->getWieldInfo();
@@ -50,8 +50,8 @@ bool MoveEvents::registerLuaItemEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
 			it.minReqMagicLevel = moveEventPtr->getReqMagLv();
 			it.vocationString = moveEventPtr->getVocationString();
 		}
-		return registerEvent(moveEventPtr, itemId, itemIdMap);
-	});
+		registerEvent(moveEventPtr, itemId, itemIdMap);
+	}
 	itemIdVector.clear();
 	itemIdVector.shrink_to_fit();
 	return true;
@@ -120,22 +120,15 @@ bool MoveEvents::registerLuaEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
 }
 
 void MoveEvents::registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
-	
-	if (moveListMap.contains(id)) {
-		// Won't show the warning if they are different events, example StepIn/StepOut
-		if (!moveListMap[id].moveEventPtr[moveEventPtr->getEventType()]) {
-			return;
-		}
-
-		SPDLOG_WARN("[MoveEvents::registerEvent] - "
-					"Duplicate move event found: {}, for script with name {}", id, moveEventPtr->getFileName());
-		return;
-	}
-
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		moveListMap[id].moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	} else {
+		// Won't show the warning if they are different events, example StepIn/StepOut
+		if (moveListMap.contains(id) && moveListMap[id].moveEventPtr[moveEventPtr->getEventType()]) {
+			SPDLOG_WARN("[MoveEvents::registerEvent] - "
+                        "Duplicate move event found: {}, for script with name {}", id, moveEventPtr->getFileName());
+		}
 		it->second.moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	}
 }

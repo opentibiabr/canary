@@ -1502,14 +1502,14 @@ std::string Item::parseImbuementDescription(const Item* item)
 	return s.str();
 }
 
-std::string Item::parseShowAttributesDescription(const Item &item, const uint16_t itemId)
+std::string Item::parseShowAttributesDescription(const Item *item, const uint16_t itemId)
 {
 	std::ostringstream itemDescription;
 	const ItemType& itemType = Item::items[itemId];
-	if (itemType.armor != 0 || (item.getArmor() != 0) || itemType.showAttributes) {
+	if (itemType.armor != 0 || (item->getArmor() != 0) || itemType.showAttributes) {
 		bool begin = true;
 
-		int32_t armor = (&item ? item.getArmor() : itemType.armor);
+		int32_t armor = (item ? item->getArmor() : itemType.armor);
 		if (armor != 0) {
 			itemDescription << " (Arm:" << armor;
 			begin = false;

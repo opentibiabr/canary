@@ -234,8 +234,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 	}
 
 	uint32_t buyPrice = 0;
-	for (const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	ShopBlock shopBlock : shopVector)
+	const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	for (ShopBlock shopBlock : shopVector)
 	{
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
 		{

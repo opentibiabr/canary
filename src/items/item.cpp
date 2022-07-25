@@ -2207,9 +2207,9 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	}
 
 	if (it.transformEquipTo != 0) {
-		s << parseShowAttributesDescription(*item, it.transformEquipTo);
+		s << parseShowAttributesDescription(item, it.transformEquipTo);
 	} else {
-		s << parseShowAttributesDescription(*item, it.id);
+		s << parseShowAttributesDescription(item, it.id);
 	}
 
 	if (it.showCharges) {

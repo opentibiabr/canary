@@ -5360,6 +5360,16 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 
 void Game::playerSpeakToNpc(Player* player, const std::string& text)
 {
+	if (player == nullptr) {
+		SPDLOG_ERROR("[Game::playerSpeakToNpc] - Player is nullptr");
+	}
+
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
@@ -5367,6 +5377,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 		}
 	}
+	player->updateNpcExhausted();
 }
 
 //--

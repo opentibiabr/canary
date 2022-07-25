@@ -1672,6 +1672,8 @@ class Player final : public Creature, public Cylinder
 		void updateMarketExhausted() {
 			lastMarketInteraction = OTSYS_TIME();
 		}
+		bool isNpcExhausted() const;
+		void updateNpcExhausted();
 
 		bool isQuickLootListedItem(const Item* item) const;
 
@@ -2118,7 +2120,8 @@ class Player final : public Creature, public Cylinder
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
 		int64_t lastToggleMount = 0;
-		int64_t lastMarketInteraction = 0; // Market exhaust.
+		int64_t lastMarketInteraction = 0;
+		int64_t lastNpcInteraction = 0;
 		int64_t lastStashInteraction = 0;
 		int64_t lastDepotSearchInteraction = 0;
 		int64_t lastPing;

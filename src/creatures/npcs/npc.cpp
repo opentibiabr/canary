@@ -161,7 +161,6 @@ void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position
 void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text)
 {
 	Creature::onCreatureSay(creature, type, text);
-
 	if (!creature->getPlayer()) {
 		return;
 	}
@@ -218,7 +217,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 	}
 
 	const ItemType& itemType = Item::items[itemId];
-	if (!itemType.stackable && amount > 1 && player->getFreeBackpackSlots() == 1 || player->getFreeBackpackSlots() == 0) {
+	if (!itemType.stackable && player->getFreeBackpackSlots() < amount || player->getFreeBackpackSlots() == 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}

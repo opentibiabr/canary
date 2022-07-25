@@ -5638,6 +5638,17 @@ bool Player::isMarketExhausted() const {
 	return (OTSYS_TIME() - lastMarketInteraction < exhaust_time);
 }
 
+// Player talk with npc exhausted
+bool Player::isNpcExhausted() const {
+	// One second = 1000
+	uint32_t exhaustionTime = 1000;
+	return (OTSYS_TIME() - lastNpcInteraction < exhaustionTime);
+}
+
+void Player::updateNpcExhausted() {
+	lastNpcInteraction = OTSYS_TIME();
+}
+
 bool Player::isQuickLootListedItem(const Item* item) const
 {
 	if (!item) {

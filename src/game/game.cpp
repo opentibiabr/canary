@@ -7650,7 +7650,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			uint16_t tmpAmount = amount;
-			for (Item *item : itemList) {
+			for (Item *item : itemVector) {
 				if (!it.stackable) {
 					internalRemoveItem(item);
 					continue;
@@ -7867,7 +7867,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	
 				if (it.stackable) {
 					uint16_t tmpAmount = removeAmount;
-					for (Item* item : itemList) {
+					for (Item* item : itemVector) {
 						if (!item) {
 							continue;
 						}
@@ -7880,7 +7880,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 						}
 					}
 				} else {
-					for (Item* item : itemList) {
+					for (Item* item : itemVector) {
 						if (!item) {
 							continue;
 						}

@@ -8484,9 +8484,9 @@ std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientC
 	do {
 		Container* container = containers[i];
 		for (Item* item : container->getItemList()) {
-			Container* containerList = item->getContainer();
-			if (containerList && !containerList->empty()) {
-				containers.push_back(containerList);
+			Container* itemContainer = item->getContainer();
+			if (itemContainer && !itemContainer->empty()) {
+				containers.push_back(itemContainer);
 				continue;
 			}
 
@@ -8495,7 +8495,7 @@ std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientC
 				continue;
 			}
 
-			if (containerList && (!itemType.isContainer() || containerList->capacity() != itemType.maxItems)) {
+			if (itemContainer && (!itemType.isContainer() || itemContainer->capacity() != itemType.maxItems)) {
 				continue;
 			}
 

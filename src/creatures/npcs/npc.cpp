@@ -228,7 +228,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 	}
 
 	const ItemType& itemType = Item::items[itemId];
-	if (!itemType.stackable && amount > 1 && player->getFreeBackpackSlots() == 1 || player->getFreeBackpackSlots() == 0) {
+	if (!itemType.stackable && player->getFreeBackpackSlots() != amount || player->getFreeBackpackSlots() == 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}

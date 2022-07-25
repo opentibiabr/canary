@@ -1506,7 +1506,7 @@ std::string Item::parseShowAttributesDescription(const Item *item, const uint16_
 {
 	std::ostringstream itemDescription;
 	const ItemType& itemType = Item::items[itemId];
-	if (itemType.armor != 0 || (item->getArmor() != 0) || itemType.showAttributes) {
+	if (itemType.armor != 0 || (item && item->getArmor() != 0) || itemType.showAttributes) {
 		bool begin = true;
 
 		int32_t armor = (item ? item->getArmor() : itemType.armor);

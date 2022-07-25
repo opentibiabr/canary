@@ -275,7 +275,15 @@ bool House::transferToDepot(Player* player) const
 					std::ostringstream ss;
 					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
 					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
-					moveItemList.push_back(newItem);
+					if (!newItem->isRemoved() && newItem->getParent()) {
+						moveItemList.push_back(newItem);
+					} else {
+						const Position& tilePosition = tile->getPosition();
+						SPDLOG_WARN("[House::transferToDepot] - Item removed during wrapping - check ground type - "
+									"player name: {} item id: {} "
+									"position: {},{},{}",
+									player->getName(), itemID, tilePosition.x, tilePosition.y, tilePosition.z);
+					}
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
 				} else {

@@ -5613,6 +5613,17 @@ bool Player::isMarketExhausted() const {
 	return (OTSYS_TIME() - lastMarketInteraction < exhaust_time);
 }
 
+// Player talk with npc exhausted
+bool Player::isNpcExhausted() const {
+	// One second = 1000
+	uint32_t exhaustionTime = 500;
+	return (OTSYS_TIME() - lastNpcInteraction < exhaustionTime);
+}
+
+void Player::updateNpcExhausted() {
+	lastNpcInteraction = OTSYS_TIME();
+}
+
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) const
 {
 	auto it = itemPriceMap.find(itemId);

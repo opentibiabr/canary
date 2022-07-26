@@ -3548,9 +3548,9 @@ void Player::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
-uint8_t Player::getThingIndex(const Thing* thing) const
+int32_t Player::getThingIndex(const Thing* thing) const
 {
-	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
 		if (inventory[i] == thing) {
 			return i;
 		}

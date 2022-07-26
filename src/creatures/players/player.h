@@ -2046,7 +2046,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override;
 
-		uint8_t getThingIndex(const Thing* thing) const override;
+		int32_t getThingIndex(const Thing* thing) const override;
 		size_t getFirstIndex() const override;
 		size_t getLastIndex() const override;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;

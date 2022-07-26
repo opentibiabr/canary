@@ -211,7 +211,7 @@ class Tile : public Cylinder
 
 		void removeCreature(Creature* creature);
 
-		uint8_t getThingIndex(const Thing* thing) const override final;
+		int32_t getThingIndex(const Thing* thing) const override final;
 		size_t getFirstIndex() const override final;
 		size_t getLastIndex() const override final;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;

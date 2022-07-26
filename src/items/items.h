@@ -225,7 +225,6 @@ class ItemType
 		int32_t defense = 0;
 		int32_t extraDefense = 0;
 		int32_t armor = 0;
-		int32_t imbuementSlot = 0;
 		int32_t rotateTo = 0;
 		int32_t runeMagLevel = 0;
 		int32_t runeLevel = 0;
@@ -260,6 +259,7 @@ class ItemType
 		uint8_t lightLevel = 0;
 		uint8_t lightColor = 0;
 		uint8_t shootRange = 1;
+		uint8_t imbuementSlot = 0;
 		int8_t hitChance = 0;
 
 		bool forceUse = false;

@@ -5325,6 +5325,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 {
 	if (player == nullptr) {
 		SPDLOG_ERROR("[Game::playerSpeakToNpc] - Player is nullptr");
+		return;
 	}
 
 	// Check npc say exhausted

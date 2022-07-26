@@ -7702,8 +7702,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
 			amount = (amount - (amount > stashminus ? stashminus : amount));
 
-			std::vector<Item*> itemList = getMarketItemList(it.wareId, amount, depotLocker, player->getInbox());
-			if (itemList.empty() && amount > 0) {
+			std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
+			if (itemVector.empty() && amount > 0) {
 				SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell item list is empty");
 				return;
 			}
@@ -7713,7 +7713,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			uint16_t tmpAmount = amount;
-			for (Item *item : itemList) {
+			for (Item *item : itemVector) {
 				if (!it.stackable) {
 					internalRemoveItem(item);
 					continue;
@@ -7922,15 +7922,15 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			if (removeAmount > 0) {
-				std::vector<Item*> itemList = getMarketItemList(it.wareId, amount, depotLocker, player->getInbox());
-				if (itemList.empty()) {
+				std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
+				if (itemVector.empty()) {
 					SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Buy item list is empty");
 					return;
 				}
 	
 				if (it.stackable) {
 					uint16_t tmpAmount = removeAmount;
-					for (Item* item : itemList) {
+					for (Item* item : itemVector) {
 						if (!item) {
 							continue;
 						}
@@ -7943,7 +7943,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 						}
 					}
 				} else {
-					for (Item* item : itemList) {
+					for (Item* item : itemVector) {
 						if (!item) {
 							continue;
 						}
@@ -8534,7 +8534,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 	}
 }
 
-std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker, Inbox* inbox)
+std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker)
 {
 	std::vector<Item*> itemVector;
 	itemVector.reserve(std::max<size_t>(32, depotLocker->size()));
@@ -8547,9 +8547,9 @@ std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientC
 	do {
 		Container* container = containers[i];
 		for (Item* item : container->getItemList()) {
-			Container* containerList = item->getContainer();
-			if (containerList && !containerList->empty()) {
-				containers.push_back(containerList);
+			Container* itemContainer = item->getContainer();
+			if (itemContainer && !itemContainer->empty()) {
+				containers.push_back(itemContainer);
 				continue;
 			}
 
@@ -8558,7 +8558,7 @@ std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientC
 				continue;
 			}
 
-			if (containerList && (!itemType.isContainer() || containerList->capacity() != itemType.maxItems)) {
+			if (itemContainer && (!itemType.isContainer() || itemContainer->capacity() != itemType.maxItems)) {
 				continue;
 			}
 

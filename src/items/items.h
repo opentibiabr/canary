@@ -215,7 +215,7 @@ class ItemType
 		int32_t defense = 0;
 		int32_t extraDefense = 0;
 		int32_t armor = 0;
-		int32_t imbuementSlot = 0;
+		uint8_t imbuementSlot = 0;
 		int32_t rotateTo = 0;
 		int32_t runeMagLevel = 0;
 		int32_t runeLevel = 0;

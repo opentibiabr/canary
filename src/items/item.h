@@ -989,7 +989,7 @@ class Item : virtual public Thing
 			}
 			return items[id].extraDefense;
 		}
-		int32_t getImbuementSlot() const {
+		uint8_t getImbuementSlot() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)) {
 				return getIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT);
 			}

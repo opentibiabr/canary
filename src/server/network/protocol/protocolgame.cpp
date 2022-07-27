@@ -962,7 +962,7 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 				continue;
 			}
 			// We need to protect party players from removing
-			Creature* creature = g_game.getCreatureByID(*it);
+			Creature* creature = g_game().getCreatureByID(*it);
 			Player* checkPlayer;
 			if (creature && (checkPlayer = creature->getPlayer()) != nullptr) {
 				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {

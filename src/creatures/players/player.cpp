@@ -5614,7 +5614,7 @@ bool Player::isMarketExhausted() const {
 }
 
 // Player talk with npc exhausted
-bool Player::isNpcExhausted(uint32_t exhaustionTime) const {
+bool Player::isNpcExhausted(uint32_t exhaustionTime /*= 250*/) const {
 	return (OTSYS_TIME() - lastNpcInteraction < exhaustionTime);
 }
 

@@ -795,6 +795,7 @@ class Item : virtual public Thing
 		}
 
 		static std::string parseImbuementDescription(const Item* item);
+		static std::string parseShowAttributesDescription(const Item *item, const uint16_t itemId);
 
 		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
                                     const Item* item = nullptr);
@@ -1062,6 +1063,8 @@ class Item : virtual public Thing
 		bool isRemoved() const override {
 			return !parent || parent->isRemoved();
 		}
+
+		bool isInsideDepot(bool includeInbox = false) const;
 
 		/**
 		 * @brief Get the Imbuement Info object

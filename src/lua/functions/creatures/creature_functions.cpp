@@ -755,13 +755,15 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position& position = getPosition(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
-	if (!creature) {
-		lua_pushnil(L);
+	if (creature == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
 		return 1;
 	}
 
 	const Position oldPosition = creature->getPosition();
 	if (g_game().internalTeleport(creature, position, pushMovement) != RETURNVALUE_NOERROR) {
+		reportErrorFunc("Could not teleport creature.");
 		pushBoolean(L, false);
 		return 1;
 	}

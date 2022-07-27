@@ -305,56 +305,6 @@ class Player final : public Creature, public Cylinder
 		Party* getParty() const {
 			return party;
 		}
-
-		uint16_t getCleavePercent() const {
-			return cleavePercent;
-		}
-
-		void setCleavePercent(uint16_t value) {
-			cleavePercent += value;
-		}
-
-		int32_t getSpecializedMagicLevel(CombatType_t combat) const {
-			return specializedMagicLevel[combatTypeToIndex(combat)];
-		}
-
-		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
-			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
-		}
-
-		int32_t getPerfectShotDamage(uint8_t range) const {
-			auto it = perfectShot.find(range);
-			if (it != perfectShot.end())
-				return it->second;
-			return 0;
-		}	
-
-		void setPerfectShotDamage(uint8_t range, int32_t damage) {
-			int32_t actualDamage = getPerfectShotDamage(range);
-			bool aboveZero = (actualDamage != 0);
-			actualDamage += damage;
-			if (actualDamage == 0 && aboveZero)
-				perfectShot.erase(range);
-			else
-				perfectShot[range] = actualDamage;
-		}
-
-		int32_t getMagicShieldCapacityFlat() const {
-			return magicShieldCapacityFlat;
-		}
-
-		int16_t getMagicShieldCapacityPercent() const {
-			return magicShieldCapacityPercent;
-		}
-
-		void setMagicShieldCapacityFlat(int32_t value) {
-			magicShieldCapacityFlat += value;
-		}
-
-		void setMagicShieldCapacityPercent(int16_t value) {
-			magicShieldCapacityPercent += value;
-		}
-
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
 		bool isPartner(const Player* player) const;
@@ -450,14 +400,35 @@ class Player final : public Creature, public Cylinder
 		bool isInMarket() const {
 			return inMarket;
 		}
-		void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool) {
+		void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool, bool depotSearchBool) {
+
+			// Closing depot search when player have special container disabled and it's still open.
+			if (isDepotSearchOpen() && !depotSearchBool && depotSearch) {
+				depotSearchOnItem = {0, 0};
+				sendCloseDepotSearch();
+			}
+
 			// Menu option 'stow, stow container ...'
 			// Menu option 'show in market'
+			// Menu option to open depot search
 			supplyStash = supplyStashBool;
 			marketMenu = marketMenuBool;
+			depotSearch = depotSearchBool;
 			if (client) {
 				client->sendSpecialContainersAvailable();
 			}
+		}
+		bool isDepotSearchOpen() const {
+			return depotSearchOnItem.first != 0;
+		}
+		bool isDepotSearchOpenOnItem(uint16_t itemId) const {
+			return depotSearchOnItem.first == itemId;
+		}
+		void setDepotSearchIsOpen(uint16_t itemId, uint8_t tier) {
+			depotSearchOnItem = {itemId, tier};
+		}
+		bool isDepotSearchAvailable() const {
+			return depotSearch;
 		}
 		bool isSupplyStashMenuAvailable() {
 			return supplyStash;
@@ -1037,9 +1008,25 @@ class Player final : public Creature, public Cylinder
 		}
 
 		//inventory
-		void sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_t count) {
+		void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) const {
 			if (client) {
-				client->sendLockerItems(itemMap, count);
+				client->sendDepotItems(itemMap, count);
+			}
+		}
+		void sendCloseDepotSearch() const {
+			if (client) {
+				client->sendCloseDepotSearch();
+			}
+		}
+		void sendDepotSearchResultDetail(uint16_t itemId,
+                                         uint8_t tier,
+                                         uint32_t depotCount,
+                                         const ItemVector &depotItems,
+                                         uint32_t inboxCount,
+                                         const ItemVector &inboxItems,
+                                         uint32_t stashCount) const {
+			if (client) {
+				client->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 			}
 		}
 		void sendCoinBalance() {
@@ -1557,7 +1544,7 @@ class Player final : public Creature, public Cylinder
 
 		void sendOpenStash(bool isNpc = false) {
 			if (client && ((getLastDepotId() != -1) || isNpc)) {
-				client->sendOpenStash();
+        		client->sendOpenStash();
 			}
 		}
 		bool isStashExhausted() const;
@@ -2085,7 +2072,19 @@ class Player final : public Creature, public Cylinder
 
 			return nullptr;
 		}
-		
+
+		// Depot search system
+		void requestDepotItems();
+		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
+		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
+		void openContainerFromDepotSearch(const Position& pos);
+		Item* getItemFromDepotSearch(uint16_t itemId, const Position& pos);
+		bool isDepotSearchExhausted() const {
+			return (OTSYS_TIME() - lastDepotSearchInteraction < 1000);
+		}
+		void updateDepotSearchExhausted() {
+			lastDepotSearchInteraction = OTSYS_TIME();
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2214,6 +2213,7 @@ class Player final : public Creature, public Cylinder
 		int64_t lastToggleMount = 0;
 		int64_t lastMarketInteraction = 0; // Market exhaust.
 		int64_t lastStashInteraction = 0;
+		int64_t lastDepotSearchInteraction = 0;
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;
@@ -2290,6 +2290,10 @@ class Player final : public Creature, public Cylinder
 		StashItemList stashItems; // [ItemID] = amount
 		uint32_t movedItems = 0;
 
+		// Depot search system
+		bool depotSearch = false;
+		std::pair<uint16_t, uint8_t> depotSearchOnItem;
+
 		// Bestiary
 		bool charmExpansion = false;
 		uint16_t charmRuneWound = 0;
@@ -2347,12 +2351,6 @@ class Player final : public Creature, public Cylinder
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
-
-		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
-		std::map<uint8_t, int32_t> perfectShot;
-		int32_t magicShieldCapacityFlat = 0;
-		int16_t magicShieldCapacityPercent = 0;
-		uint16_t cleavePercent = 0;
 
 		static uint32_t playerAutoID;
 

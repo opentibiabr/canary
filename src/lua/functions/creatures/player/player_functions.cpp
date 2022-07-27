@@ -391,6 +391,19 @@ int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerGetTaskHuntingPoints(lua_State* L) {
+	// player:getTaskHuntingPoints()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, static_cast<double>(player->getTaskHuntingPoints()));
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (const Player* player = getUserdata<Player>(L, 1)) {
@@ -1454,12 +1467,13 @@ int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerSetSpecialContainersAvailable(lua_State* L) {
-	// player:setSpecialContainersAvailable(stashMenu, marketMenu)
+	// player:setSpecialContainersAvailable(stashMenu, marketMenu, depotSearchMenu)
 	bool supplyStashMenu = getBoolean(L, 2, false);
 	bool marketMenu = getBoolean(L, 3, false);
+	bool depotSearchMenu = getBoolean(L, 4, false);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setSpecialMenuAvailable(supplyStashMenu, marketMenu);
+		player->setSpecialMenuAvailable(supplyStashMenu, marketMenu, depotSearchMenu);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

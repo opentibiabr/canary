@@ -456,24 +456,35 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 						if (count == 100) {
 							break;
 						}
-						Container* mainBP = player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer();
-						Item* _item = findItemOfType(mainBP, item->getID());
-
-						if (!_item) {
+						Item* playerItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+						if(playerItem == nullptr) {
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} has no backpack. Item is nullptr.", player->getName());
+							break;
+						}
+						Container* mainBP = playerItem->getContainer();
+						if(mainBP == nullptr) {
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} backpack is not a container. Container is nullptr.", player->getName());
+							break;
+						}
+						Item* removeItem = findItemOfType(mainBP, item->getID());
+						if (removeItem == nullptr) {
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} item is nullptr {}.", player->getName());
 							break;
 						}
 
-						if (_item->getItemCount() > 100 - count) {
-							internalRemoveItem(_item, 100 - count);
+						if (removeItem->getItemCount() > 100 - count) {
+							internalRemoveItem(removeItem, 100 - count);
 							count = 100;
 						}
 						else {
-							count = count + _item->getItemCount();
-							internalRemoveItem(_item, _item->getItemCount());
+							count = count + removeItem->getItemCount();
+							internalRemoveItem(removeItem, removeItem->getItemCount());
 						}
 					}
 					Item* newSlotitem = Item::CreateItem(item->getID(), count);
-					internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
+					if(newSlotitem && count > 0) {
+						internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
+					}
 					return;
 				}
 				else {

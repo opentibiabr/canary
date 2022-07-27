@@ -4373,7 +4373,14 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
+	player->updateNpcExhausted();
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount, bool ignoreEquipped)
@@ -4397,7 +4404,14 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	merchant->onPlayerSellItem(player, it.id, count, amount, ignoreEquipped);
+	player->updateNpcExhausted();
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -5323,6 +5337,17 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 
 void Game::playerSpeakToNpc(Player* player, const std::string& text)
 {
+	if (player == nullptr) {
+		SPDLOG_ERROR("[Game::playerSpeakToNpc] - Player is nullptr");
+		return;
+	}
+
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
@@ -5330,6 +5355,8 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 		}
 	}
+
+	player->updateNpcExhausted();
 }
 
 //--

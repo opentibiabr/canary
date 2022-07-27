@@ -1692,7 +1692,7 @@ class Player final : public Creature, public Cylinder
 			lastMarketInteraction = OTSYS_TIME();
 		}
 
-		bool isNpcExhausted() const;
+		bool isNpcExhausted(uint32_t exhaustionTime = 150) const;
 		void updateNpcExhausted();
 
 		bool isQuickLootListedItem(const Item* item) const {

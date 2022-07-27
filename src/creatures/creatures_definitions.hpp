@@ -412,7 +412,7 @@ enum BlockType_t : uint8_t {
 	BLOCK_NONE,
 	BLOCK_DEFENSE,
 	BLOCK_ARMOR,
-	BLOCK_IMMUNITY	
+	BLOCK_IMMUNITY
 };
 
 enum BestiaryType_t : uint8_t {

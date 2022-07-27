@@ -5639,8 +5639,6 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		CombatDamage damageReflected;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
-	primaryBlockType = BLOCK_NONE;
-	secondaryBlockType = BLOCK_NONE;
 	if (damage.primary.type != COMBAT_NONE) {
 		// Damage reflection primary
 		if (attacker && target->getMonster()) {
@@ -5662,12 +5660,12 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 				canHeal = true;
 			}
 		}
-		if (damage.origin != ORIGIN_REFLECT) {
-			primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
-		}
+		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
 		sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition());
+	} else {
+		primaryBlockType = BLOCK_NONE;
 	}
 
 	if (damage.secondary.type != COMBAT_NONE) {
@@ -5697,12 +5695,12 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			}
 		}
 
-		if (damage.origin != ORIGIN_REFLECT) {
-			secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
-		}
+		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 				
 		damage.secondary.value = -damage.secondary.value;
 		sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition());
+	} else {
+		secondaryBlockType = BLOCK_NONE;
 	}
 	if (canReflect) {
 		combatChangeHealth(target, attacker, damageReflected, false);

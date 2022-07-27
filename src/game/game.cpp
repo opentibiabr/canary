@@ -416,38 +416,41 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				Thing* ammothing = player->getThing(slotP);
 				if (ammothing) {
 					Item* ammoItem = ammothing->getItem();
-					if (ammoItem) {
-						ObjectCategory_t category = getObjectCategory(ammoItem);
-						if (ammoItem->getID() == item->getID()) {
-							if (item->getDuration() > 0 ||
-								ammoItem->getItemCount() == 100 ||
-								ammoItem->getItemCount() == player->getItemTypeCount(ammoItem->getID())) {
-								ret = internalQuickLootItem(player, ammoItem, category);
-								if (ret != RETURNVALUE_NOERROR) {
-									ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
-								}
-								if (ret != RETURNVALUE_NOERROR) {
-									player->sendCancelMessage(ret);
-								}
-								return;
-							}
-						}
-						else {
+					if (ammoItem == nullptr) {
+						SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} ammoItem is nullptr {}.", player->getName());
+						return;
+					}
+
+					ObjectCategory_t category = getObjectCategory(ammoItem);
+					if (ammoItem->getID() == item->getID()){
+						if (item->getDuration() > 0 ||
+						ammoItem->getItemCount() == 100 ||
+						ammoItem->getItemCount() == player->getItemTypeCount(ammoItem->getID()))
+						{
 							ret = internalQuickLootItem(player, ammoItem, category);
 							if (ret != RETURNVALUE_NOERROR) {
 								ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
 							}
+							if (ret != RETURNVALUE_NOERROR) {
+								player->sendCancelMessage(ret);
+							}
+							return;
 						}
 					}
 					else {
-						return;
+						ret = internalQuickLootItem(player, ammoItem, category);
+						if (ret != RETURNVALUE_NOERROR) {
+							ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
+						}
 					}
 				}
-				ReturnValue ret2 = player->queryAdd(slotP, *item, item->getItemCount(), 0);
-				if (ret2 != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret2);
+				if (ReturnValue returnQueryAdd = player->queryAdd(slotP, *item, item->getItemCount(), 0);
+				returnQueryAdd != RETURNVALUE_NOERROR)
+				{
+					player->sendCancelMessage(returnQueryAdd);
 					return;
 				}
+
 				if (item->getItemCount() < 100 &&
 					item->getItemCount() < player->getItemTypeCount(item->getID(), -1) &&
 					item->getDuration() <= 0) {
@@ -468,7 +471,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 						}
 						Item* removeItem = findItemOfType(mainBP, item->getID());
 						if (removeItem == nullptr) {
-							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} item is nullptr {}.", player->getName());
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} item is nullptr.", player->getName());
 							break;
 						}
 
@@ -481,8 +484,9 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 							internalRemoveItem(removeItem, removeItem->getItemCount());
 						}
 					}
-					Item* newSlotitem = Item::CreateItem(item->getID(), count);
-					if(newSlotitem && count > 0) {
+					if(Item* newSlotitem = Item::CreateItem(item->getID(), count);
+					newSlotitem && count > 0)
+					{
 						internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
 					}
 					return;
@@ -495,14 +499,14 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				Thing* slotthing = player->getThing(slotP);
 				if (slotthing) {
 					Item* slotItem = slotthing->getItem();
-					if (slotItem) {
-						ret = internalMoveItem(slotItem->getParent(), player, 0, slotItem, slotItem->getItemCount(), nullptr);
-						if (slotItem->getID() == item->getID()) {
-							removed = true;
-						}
-					}
-					else {
+					if (slotItem == nullptr) {
+						SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} slotitem is nullptr.", player->getName());
 						return;
+					}
+
+					ret = internalMoveItem(slotItem->getParent(), player, 0, slotItem, slotItem->getItemCount(), nullptr);
+					if (slotItem->getID() == item->getID()) {
+						removed = true;
 					}
 				}
 				if (!removed) {
@@ -515,7 +519,6 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	}
-	return;
 }
 
 void Game::saveGameState()

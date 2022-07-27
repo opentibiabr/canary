@@ -56,7 +56,7 @@ struct Abilities {
 		CombatType_t elementType = COMBAT_NONE;
 
 		//specialized magic level
-		int32_t std::vector<COMBAT_COUNT> specializedMagicLevel;
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 
 		//magic shield capacity
 		int16_t magicShieldCapacityPercent = 0;

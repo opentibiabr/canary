@@ -1636,60 +1636,60 @@ std::string Item::parseShowAttributesDescription(const Item *item, const uint16_
 			}
 
 			for (uint8_t i = 1; i <= 11; i++) {
-				if (it.abilities->specializedMagicLevel[i]) {
+				if (itemType.abilities->specializedMagicLevel[i]) {
 					if (begin) {
 						begin = false;
-						s << " (";
+						itemDescription << " (";
 					} else {
-						s << ", ";
+						itemDescription << ", ";
 					}
 
-					s << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << it.abilities->specializedMagicLevel[i] << std::noshowpos;
+					itemDescription << getCombatName(indexToCombatType(i)) << " magic level " << std::showpos << itemType.abilities->specializedMagicLevel[i] << std::noshowpos;
 				}
 			}
 
-			if (it.abilities->cleavePercent) {
+			if (itemType.abilities->cleavePercent) {
 				if (begin) {
 					begin = false;
-					s << " (";
+					itemDescription << " (";
 				} else {
-					s << ", ";
+					itemDescription << ", ";
 				}
 
-				s << "cleave " << std::showpos << (it.abilities->cleavePercent) << std::noshowpos << "%";
+				itemDescription << "cleave " << std::showpos << (itemType.abilities->cleavePercent) << std::noshowpos << "%";
 			}
 
-			if (it.abilities->magicShieldCapacityFlat || it.abilities->magicShieldCapacityPercent) {
+			if (itemType.abilities->magicShieldCapacityFlat || itemType.abilities->magicShieldCapacityPercent) {
 				if (begin) {
 					begin = false;
-					s << " (";
+					itemDescription << " (";
 				} else {
-					s << ", ";
+					itemDescription << ", ";
 				}
 
-				s << "magic shield capacity " << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+				itemDescription << "magic shield capacity " << std::showpos << itemType.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << itemType.abilities->magicShieldCapacityPercent << "%";
 			}
 
-			if (it.abilities->perfectShotRange) {
+			if (itemType.abilities->perfectShotRange) {
 				if (begin) {
 					begin = false;
-					s << " (";
+					itemDescription << " (";
 				} else {
-					s << ", ";
+					itemDescription << ", ";
 				}
 
-				s << "perfect shot " << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(it.abilities->perfectShotRange);
+				itemDescription << "perfect shot " << std::showpos << itemType.abilities->perfectShotDamage << std::noshowpos << " at range " << unsigned(itemType.abilities->perfectShotRange);
 			}
 
-			if (it.abilities->damageReflection) {
+			if (itemType.abilities->damageReflection) {
 				if (begin) {
 					begin = false;
-					s << " (";
+					itemDescription << " (";
 				} else {
-					s << ", ";
+					itemDescription << ", ";
 				}
 
-				s << "damage reflection " << std::showpos << it.abilities->damageReflection << std::noshowpos;
+				itemDescription << "damage reflection " << std::showpos << itemType.abilities->damageReflection << std::noshowpos;
 			}
 
 			int16_t show = itemType.abilities->absorbPercent[0];

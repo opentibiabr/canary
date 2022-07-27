@@ -2401,7 +2401,7 @@ class Player final : public Creature, public Cylinder
 		bool dead = false;
 
 		// 12.70 Eldritch Skills
-		std::vector<COMBAT_COUNT> specializedMagicLevel;
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 		std::map<uint8_t, int32_t> perfectShot;
 		int32_t magicShieldCapacityFlat = 0;
 		int16_t magicShieldCapacityPercent = 0;

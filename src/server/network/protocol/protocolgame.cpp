@@ -947,8 +947,8 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 
 void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &removedKnown)
 {
-	auto result = knownCreatureSet.insert(id);
-	if (!result.second)
+	if (auto [creatureKnown, creatureInserted] = knownCreatureSet.insert(id);
+	!creatureInserted)
 	{
 		known = true;
 		return;
@@ -963,13 +963,13 @@ void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &remo
 			}
 			// We need to protect party players from removing
 			Creature* creature = g_game().getCreatureByID(*it);
-			Player* checkPlayer;
-			if (creature && (checkPlayer = creature->getPlayer()) != nullptr) {
-				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
-					removedKnown = *it;
-					knownCreatureSet.erase(it);
-					return;
-				}
+			if (const Player* checkPlayer = creature->getPlayer();
+			creature && checkPlayer &&
+			player->getParty() != checkPlayer->getParty() && !canSee(creature))
+			{
+				removedKnown = *it;
+				knownCreatureSet.erase(it);
+				return;
 			} else if (!canSee(creature)) {
 				removedKnown = *it;
 				knownCreatureSet.erase(it);

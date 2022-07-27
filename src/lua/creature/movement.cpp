@@ -485,8 +485,9 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 	}
 
 	for (uint16_t combat = 0; combat <= 11; combat++) {
-		if (it.abilities->specializedMagicLevel[combat] != 0)
+		if (it.abilities->specializedMagicLevel[combat] != 0) {
 			player->setSpecializedMagicLevel(indexToCombatType(combat), it.abilities->specializedMagicLevel[combat]); 
+		}
 	}
 
 	if (it.abilities->perfectShotRange != 0) {

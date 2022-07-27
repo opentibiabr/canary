@@ -849,15 +849,6 @@ class Item : virtual public Thing
 			}
 			return items[id].weight;
 		}
-		int16_t getPerfectShotDamage() const {
-			return items[id].abilities->perfectShotDamage;
-		}
-		int8_t getPerfectShotRange() const {
-			return items[id].abilities->perfectShotRange;
-		}
-		int16_t getCleavePercent() const {
-			return items[id].abilities->cleavePercent;
-		}
 		int32_t getAttack() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {
 				return getIntAttr(ITEM_ATTRIBUTE_ATTACK);

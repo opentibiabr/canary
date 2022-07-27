@@ -818,28 +818,6 @@ int PlayerFunctions::luaPlayerGetLevel(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L)
-{
-	// player:getMagicShieldCapacityFlat()
-	if (Player* player = getUserdata<Player>(L, 1); player) {
-		lua_pushnumber(L, player->getMagicShieldCapacityFlat());
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
-int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L)
-{
-	// player:getMagicShieldCapacityPercent()
-	if (Player* player = getUserdata<Player>(L, 1); player) {
-		lua_pushnumber(L, player->getMagicShieldCapacityPercent());
-	} else {
-		lua_pushnil(L);
-	}
-	return 1;
-}
-
 int PlayerFunctions::luaPlayerGetMagicLevel(lua_State* L) {
 	// player:getMagicLevel()
 	Player* player = getUserdata<Player>(L, 1);
@@ -3028,5 +3006,27 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 
 	player->sendMarketEnter(player->getLastDepotId());
 	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L)
+{
+	// player:getMagicShieldCapacityFlat()
+	if (Player* player = getUserdata<Player>(L, 1); player) {
+		lua_pushnumber(L, player->getMagicShieldCapacityFlat());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L)
+{
+	// player:getMagicShieldCapacityPercent()
+	if (Player* player = getUserdata<Player>(L, 1); player) {
+		lua_pushnumber(L, player->getMagicShieldCapacityPercent());
+	} else {
+		lua_pushnil(L);
+	}
 	return 1;
 }

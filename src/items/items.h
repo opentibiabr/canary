@@ -40,38 +40,28 @@ struct Abilities {
 
 		int32_t speed = 0;
 
-		int32_t damageReflection = 0;
-
 		// field damage abilities modifiers
 		int16_t fieldAbsorbPercent[COMBAT_COUNT] = { 0 };
 
 		//damage abilities modifiers
 		int16_t absorbPercent[COMBAT_COUNT] = { 0 };
 
-		//relfect abilities modifires
-		int16_t reflectPercent[COMBAT_COUNT] = { 0 };
-
 		//elemental damage
 		uint16_t elementDamage = 0;
 		CombatType_t elementType = COMBAT_NONE;
 
-		//specialized magic level
-		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
-
-		//magic shield capacity
-		int16_t magicShieldCapacityPercent = 0;
-		int32_t magicShieldCapacityFlat = 0;
-
-		// perfect shot
-		int32_t perfectShotDamage = 0;
-		uint8_t perfectShotRange = 0;
-
-		//cleave
-		int16_t cleavePercent = 0;
-
 		bool manaShield = false;
 		bool invisible = false;
 		bool regeneration = false;
+
+		// 12.70 Eldritch Skills
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		int16_t cleavePercent = 0;
+		int32_t perfectShotDamage = 0;
+		uint8_t perfectShotRange = 0;
+		int16_t magicShieldCapacityPercent = 0;
+		int32_t magicShieldCapacityFlat = 0;
+		int32_t damageReflection = 0;
 
 		void setHealthGain(uint32_t value) {
 			healthGain = value;

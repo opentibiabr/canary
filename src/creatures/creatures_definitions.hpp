@@ -412,8 +412,7 @@ enum BlockType_t : uint8_t {
 	BLOCK_NONE,
 	BLOCK_DEFENSE,
 	BLOCK_ARMOR,
-	BLOCK_IMMUNITY,
-	BLOCK_DODGE
+	BLOCK_IMMUNITY	
 };
 
 enum BestiaryType_t : uint8_t {
@@ -767,8 +766,8 @@ struct CombatDamage {
 	bool critical;
 	int affected;
 	bool extension;
-	bool cleave;
 	std::string exString;
+	bool cleave;
 
 	CombatDamage() {
 		origin = ORIGIN_NONE;
@@ -777,8 +776,8 @@ struct CombatDamage {
 		critical = false;
 		affected = 1;
 		extension = false;
-		cleave = false;
 		exString = "";
+		cleave = false;
 	}
 };
 

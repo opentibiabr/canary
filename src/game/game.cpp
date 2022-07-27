@@ -5600,8 +5600,6 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			addMagicEffect(targetPos, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
 			addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
-		} else if (blockType == BLOCK_DODGE) {
-			addMagicEffect(targetPos, CONST_ME_DODGE);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -5641,6 +5639,8 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		CombatDamage damageReflected;
 
 	BlockType_t primaryBlockType, secondaryBlockType;
+	primaryBlockType = BLOCK_NONE;
+	secondaryBlockType = BLOCK_NONE;
 	if (damage.primary.type != COMBAT_NONE) {
 		// Damage reflection primary
 		if (attacker && target->getMonster()) {
@@ -5668,8 +5668,6 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 
 		damage.primary.value = -damage.primary.value;
 		sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition());
-	} else {
-		primaryBlockType = BLOCK_NONE;
 	}
 
 	if (damage.secondary.type != COMBAT_NONE) {
@@ -5705,8 +5703,6 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 				
 		damage.secondary.value = -damage.secondary.value;
 		sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition());
-	} else {
-		secondaryBlockType = BLOCK_NONE;
 	}
 	if (canReflect) {
 		combatChangeHealth(target, attacker, damageReflected, false);

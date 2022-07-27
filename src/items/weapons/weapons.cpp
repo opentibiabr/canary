@@ -412,8 +412,8 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		executeUseWeapon(player, var);
 	} else {
 		CombatDamage damage;
-		WeaponType_t weaponType = item->getWeaponType();
-		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_WAND) {
+		if (WeaponType_t weaponType = item->getWeaponType();
+			weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_WAND) {
 			damage.origin = ORIGIN_RANGED;
 		} else {
 			damage.origin = ORIGIN_MELEE;
@@ -693,7 +693,7 @@ int32_t WeaponMelee::getElementDamage(const Player* player, const Creature*, con
 	int32_t attackSkill = player->getWeaponSkill(item);
 	int32_t attackValue = elementDamage;
 	if (cleavePercent != 0)
-		attackValue = std::round(attackValue * cleavePercent / 100.);
+		attackValue = static_cast<int32_t>(std::round(attackValue * cleavePercent / 100.));
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
 	int32_t minValue = level / 5;
@@ -714,7 +714,7 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 	int32_t attackValue = std::max<int32_t>(0, item->getAttack());
 	float attackFactor = player->getAttackFactor();
 	if (cleavePercent != 0)
-		attackValue = std::round(attackValue * cleavePercent / 100.);
+		attackValue = static_cast<int32_t>(std::round(attackValue * cleavePercent / 100.));
 	uint32_t level = player->getLevel();
 
 	int32_t maxValue = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);

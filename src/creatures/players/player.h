@@ -2103,8 +2103,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		int32_t getPerfectShotDamage(uint8_t range) const {
-			auto it = perfectShot.find(range);
-			if (it != perfectShot.end())
+			if (auto it = perfectShot.find(range); it != perfectShot.end())
 				return it->second;
 			return 0;
 		}	
@@ -2402,7 +2401,7 @@ class Player final : public Creature, public Cylinder
 		bool dead = false;
 
 		// 12.70 Eldritch Skills
-		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		std::vector<COMBAT_COUNT> specializedMagicLevel;
 		std::map<uint8_t, int32_t> perfectShot;
 		int32_t magicShieldCapacityFlat = 0;
 		int16_t magicShieldCapacityPercent = 0;

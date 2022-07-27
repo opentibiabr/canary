@@ -821,8 +821,7 @@ int PlayerFunctions::luaPlayerGetLevel(lua_State* L) {
 int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L)
 {
 	// player:getMagicShieldCapacityFlat()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
+	if (Player* player = getUserdata<Player>(L, 1); player) {
 		lua_pushnumber(L, player->getMagicShieldCapacityFlat());
 	} else {
 		lua_pushnil(L);
@@ -833,8 +832,7 @@ int PlayerFunctions::luaPlayerGetMagicShieldCapacityFlat(lua_State* L)
 int PlayerFunctions::luaPlayerGetMagicShieldCapacityPercent(lua_State* L)
 {
 	// player:getMagicShieldCapacityPercent()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
+	if (Player* player = getUserdata<Player>(L, 1); player) {
 		lua_pushnumber(L, player->getMagicShieldCapacityPercent());
 	} else {
 		lua_pushnil(L);
@@ -1007,7 +1005,7 @@ int PlayerFunctions::luaPlayerGetSkillPercent(lua_State* L) {
 int PlayerFunctions::luaPlayerGetSkillTries(lua_State* L) {
 	// player:getSkillTries(skillType)
 	skills_t skillType = getNumber<skills_t>(L, 2);
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (player && skillType <= SKILL_LAST) {
 		lua_pushnumber(L, player->skills[skillType].tries);
 	} else {
@@ -1531,7 +1529,7 @@ int PlayerFunctions::luaPlayerAddSoul(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetMaxSoul(lua_State* L) {
 	// player:getMaxSoul()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (player && player->vocation) {
 		lua_pushnumber(L, player->vocation->getSoulMax());
 	} else {

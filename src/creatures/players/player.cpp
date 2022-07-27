@@ -2431,13 +2431,11 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 					}
 				}
 				if (attacker) {
-					const int16_t& reflectPercent = it.abilities->reflectPercent[combatTypeToIndex(combatType)];
-					if (reflectPercent != 0) {
+					if (const int16_t& reflectPercent = it.abilities->reflectPercent[combatTypeToIndex(combatType)]; reflectPercent != 0) {
 						CombatParams params;
 						params.combatType = combatType;
 						params.impactEffect = CONST_ME_MAGIC_BLUE;
 
-						CombatDamage reflectDamage;
 						reflectDamage.origin = ORIGIN_SPELL;
 						reflectDamage.primary.type = combatType;
 						reflectDamage.primary.value = std::round(-damage * (reflectPercent / 100.));
@@ -2445,22 +2443,19 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 						Combat::doCombatHealth(this, attacker, reflectDamage, params);
 					}
 
-					if (combatType == COMBAT_PHYSICALDAMAGE) {
-						if (it.abilities->damageReflection != 0) {
-							const int16_t calculatedDamage = std::round(attacker->getMaxHealth() * 0.01);
-
-							if (calculatedDamage >= it.abilities->damageReflection) {
-								reflectDamage.primary.value += it.abilities->damageReflection;
-							} else { 
-								reflectDamage.primary.value += calculatedDamage;
-							}
-
-							if (reflectDamage.primary.value > std::round(attacker->getMaxHealth() * 0.01) || reflectDamage.primary.value >= it.abilities->damageReflection) {
-								reflectDamage.primary.value = it.abilities->damageReflection;
-							}
-
-							isReflected = true;
+					if (combatType == COMBAT_PHYSICALDAMAGE && it.abilities->damageReflection != 0) {
+						if (const int16_t calculatedDamage = static_cast<int16_t>(std::round(attacker->getMaxHealth() * 0.01));
+							calculatedDamage >= it.abilities->damageReflection) {
+							reflectDamage.primary.value += it.abilities->damageReflection;
+						} else { 
+							reflectDamage.primary.value += calculatedDamage;
 						}
+
+						if (reflectDamage.primary.value > std::round(attacker->getMaxHealth() * 0.01) || reflectDamage.primary.value >= it.abilities->damageReflection) {
+							reflectDamage.primary.value = it.abilities->damageReflection;
+						}
+
+						isReflected = true;
 					}
 				}
 			}

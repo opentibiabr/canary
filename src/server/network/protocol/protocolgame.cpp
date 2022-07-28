@@ -947,46 +947,51 @@ void ProtocolGame::GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y
 
 void ProtocolGame::checkCreatureAsKnown(uint32_t id, bool &known, uint32_t &removedKnown)
 {
-	known = !knownCreatureSet.insert(id).second;
-	if (known) {
+	if (auto [creatureKnown, creatureInserted] = knownCreatureSet.insert(id);
+	!creatureInserted)
+	{
+		known = true;
 		return;
 	}
-
-	if (knownCreatureSet.size() < 1300) {
-		removedKnown = 0;
-		return;
-	}
-
-	// Look for a creature to remove
-	for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
-		if (*it == id) {
-			continue;
+	known = false;
+	if (knownCreatureSet.size() > 1300)
+	{
+		// Look for a creature to remove
+		for (auto it = knownCreatureSet.begin(), end = knownCreatureSet.end(); it != end; ++it) {
+			if (*it == id) {
+				continue;
+			}
+			// We need to protect party players from removing
+			Creature* creature = g_game().getCreatureByID(*it);
+			if (const Player* checkPlayer;
+			creature && (checkPlayer = creature->getPlayer()) != nullptr)
+			{
+				if (player->getParty() != checkPlayer->getParty() && !canSee(creature)) {
+					removedKnown = *it;
+					knownCreatureSet.erase(it);
+					return;
+				}
+			} else if (!canSee(creature)) {
+				removedKnown = *it;
+				knownCreatureSet.erase(it);
+				return;
+			}
 		}
 
-		Creature* creature = g_game().getCreatureByID(*it);
-		if (!creature || canSee(creature)) {
-			continue;
-		}
-
-		const Player* checkPlayer = creature->getPlayer();
-		if (!checkPlayer) {
-			removedKnown = *it;
-			knownCreatureSet.erase(it);
-			return;
-		}
-
-		// We need to protect party players from removing
-		if (checkPlayer && player->getParty() != checkPlayer->getParty()) {
-			removedKnown = *it;
-			knownCreatureSet.erase(it);
-			return;
+		// Bad situation. Let's just remove anyone.
+		auto it = knownCreatureSet.begin();
+		if (*it == id)
+		{
+			++it;
 		}
 
 		removedKnown = *it;
+		knownCreatureSet.erase(it);
 	}
-
-	/* Bad situation. Let's just remove the last valid one. */
-	knownCreatureSet.erase(removedKnown);
+	else
+	{
+		removedKnown = 0;
+	}
 }
 
 bool ProtocolGame::canSee(const Creature *c) const

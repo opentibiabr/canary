@@ -21,7 +21,7 @@
 
 #include <boost/filesystem.hpp>
 #include <fstream>
-#include <libzippp.h>
+#include <curl/curl.h>
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -30,7 +30,6 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
-#include "utils/tools.h"
 
 bool Map::load(const std::string& identifier) {
 	try {
@@ -47,36 +46,28 @@ bool Map::load(const std::string& identifier) {
 	return true;
 }
 
-bool Map::extractMap(const std::string& identifier) const {
-	if (boost::filesystem::exists(identifier)) {
-		return true;
-	}
-	
-	using namespace libzippp;
-	std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
-	SPDLOG_INFO("Unzipping " + mapName + " to world folder");
-	ZipArchive zf("data/world/world.zip");
-
-	if (!zf.open(ZipArchive::ReadOnly)) {
-		SPDLOG_ERROR("[Map::extractMap] - Failed to unzip world.zip, file doesn't exist");
-		consoleHandlerExit();
-		return false;
-	}
-
-	std::ofstream unzippedFile("data/world/" + mapName, std::ofstream::binary);
-	zf.getEntry(mapName).readContent(unzippedFile, ZipArchive::Current);
-	zf.close();
-	return true;
-}
-
 bool Map::loadMap(const std::string& identifier,
 	bool mainMap /*= false*/,bool loadHouses /*= false*/,
 	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
-	// Only extract map if is loading the main map
-	if (mainMap) {
-		// Extract the map
-		this->extractMap(identifier);
+	// Only download map if is loading the main map and it is not already downloaded
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !boost::filesystem::exists(identifier)) {
+		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
+		if (mapDownloadUrl.empty()) {
+			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
+		}
+
+		if (CURL *curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
+			SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
+			FILE *otbm = fopen(identifier.c_str(), "wb");
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
+			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+			curl_easy_perform(curl);
+			curl_easy_cleanup(curl);
+			fclose(otbm);
+		}
 	}
 
 	// Load the map

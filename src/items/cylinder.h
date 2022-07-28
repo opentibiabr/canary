@@ -136,7 +136,7 @@ class Cylinder : virtual public Thing
 		 * \param thing the object to get the index value from
 		 * \returns the index of the object, returns -1 if not found
 		 */
-		virtual uint8_t getThingIndex(const Thing* thing) const;
+		virtual int32_t getThingIndex(const Thing* thing) const;
 
 		/**
 		 * Returns the first index

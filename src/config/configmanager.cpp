@@ -105,14 +105,16 @@ bool ConfigManager::load()
 		return false;
 	}
 
-	//parse config
-	if (!loaded) { //info that must be loaded one time (unless we reset the modules involved)
+	// Parse config
+	// Info that must be loaded one time (unless we reset the modules involved)
+	if (!loaded) {
 		boolean[BIND_ONLY_GLOBAL_ADDRESS] = getGlobalBoolean(L, "bindOnlyGlobalAddress", false);
 		boolean[OPTIMIZE_DATABASE] = getGlobalBoolean(L, "startupDatabaseOptimization", true);
 		boolean[TOGGLE_MAP_CUSTOM] = getGlobalBoolean(L, "toggleMapCustom", true);
 
 		string[IP] = getGlobalString(L, "ip", "127.0.0.1");
 		string[MAP_NAME] = getGlobalString(L, "mapName", "canary");
+		string[MAP_DOWNLOAD_URL] = getGlobalString(L, "mapDownloadUrl", "");
 		string[MAP_AUTHOR] = getGlobalString(L, "mapAuthor", "Eduardo Dantas");
 
 		string[MAP_CUSTOM_NAME] = getGlobalString(L, "mapCustomName", "");
@@ -181,10 +183,13 @@ bool ConfigManager::load()
 	boolean[SORT_LOOT_BY_CHANCE] = getGlobalBoolean(L, "sortLootByChance", false);
 	boolean[TOGGLE_SAVE_INTERVAL] = getGlobalBoolean(L, "toggleSaveInterval", false);
 	boolean[TOGGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "toggleSaveIntervalCleanMap", false);
+	boolean[TELEPORT_SUMMONS] = getGlobalBoolean(L, "teleportSummons", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 	boolean[RATE_USE_STAGES] = getGlobalBoolean(L, "rateUseStages", false);
 	boolean[TOGGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "toggleImbuementShrineStorage", true);
+
+	boolean[TOGGLE_DOWNLOAD_MAP] = getGlobalBoolean(L, "toggleDownloadMap", false);
 
 	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
 	string[SERVER_NAME] = getGlobalString(L, "serverName", "");
@@ -249,6 +254,10 @@ bool ConfigManager::load()
 	integer[MAX_ALLOWED_ON_A_DUMMY] = getGlobalNumber(L, "maxAllowedOnADummy", 1);
 	integer[FREE_QUEST_STAGE] = getGlobalNumber(L, "freeQuestStage", 1);
 	integer[DEPOTCHEST] = getGlobalNumber(L, "depotChest", 4);
+	integer[CRITICALCHANCE] = getGlobalNumber(L, "criticalChance", 10);
+
+	boolean[INVENTORY_GLOW] = getGlobalBoolean(L, "inventoryGlowOnFiveBless", false);
+	integer[ADVENTURERSBLESSING_LEVEL] = getGlobalNumber(L, "adventurersBlessingLevel", 21);
 
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);

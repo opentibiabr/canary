@@ -87,6 +87,8 @@ class ItemFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Item", "setDuration", ItemFunctions::luaItemSetDuration);
 
+			registerMethod(L, "Item", "isInsideDepot", ItemFunctions::luaItemIsInsideDepot);
+
 			ContainerFunctions::init(L);
 			ImbuementFunctions::init(L);
 			ItemTypeFunctions::init(L);
@@ -148,6 +150,8 @@ class ItemFunctions final : LuaScriptInterface {
 		static int luaItemGetImbuement(lua_State* L);
 
 		static int luaItemSetDuration(lua_State* L);
+
+		static int luaItemIsInsideDepot(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

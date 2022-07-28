@@ -1692,6 +1692,9 @@ class Player final : public Creature, public Cylinder
 			lastMarketInteraction = OTSYS_TIME();
 		}
 
+		bool isNpcExhausted(uint32_t exhaustionTime = 150) const;
+		void updateNpcExhausted();
+
 		bool isQuickLootListedItem(const Item* item) const {
 			if (!item) {
 				return false;
@@ -2137,7 +2140,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override;
 
-		uint8_t getThingIndex(const Thing* thing) const override;
+		int32_t getThingIndex(const Thing* thing) const override;
 		size_t getFirstIndex() const override;
 		size_t getLastIndex() const override;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
@@ -2211,7 +2214,8 @@ class Player final : public Creature, public Cylinder
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
 		int64_t lastToggleMount = 0;
-		int64_t lastMarketInteraction = 0; // Market exhaust.
+		int64_t lastMarketInteraction = 0;
+		int64_t lastNpcInteraction = 0;
 		int64_t lastStashInteraction = 0;
 		int64_t lastDepotSearchInteraction = 0;
 		int64_t lastPing;

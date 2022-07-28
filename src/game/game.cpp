@@ -402,38 +402,41 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				Thing* ammothing = player->getThing(slotP);
 				if (ammothing) {
 					Item* ammoItem = ammothing->getItem();
-					if (ammoItem) {
-						ObjectCategory_t category = getObjectCategory(ammoItem);
-						if (ammoItem->getID() == item->getID()) {
-							if (item->getDuration() > 0 ||
-								ammoItem->getItemCount() == 100 ||
-								ammoItem->getItemCount() == player->getItemTypeCount(ammoItem->getID())) {
-								ret = internalQuickLootItem(player, ammoItem, category);
-								if (ret != RETURNVALUE_NOERROR) {
-									ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
-								}
-								if (ret != RETURNVALUE_NOERROR) {
-									player->sendCancelMessage(ret);
-								}
-								return;
-							}
-						}
-						else {
+					if (ammoItem == nullptr) {
+						SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} ammoItem is nullptr {}.", player->getName());
+						return;
+					}
+
+					ObjectCategory_t category = getObjectCategory(ammoItem);
+					if (ammoItem->getID() == item->getID()){
+						if (item->getDuration() > 0 ||
+						ammoItem->getItemCount() == 100 ||
+						ammoItem->getItemCount() == player->getItemTypeCount(ammoItem->getID()))
+						{
 							ret = internalQuickLootItem(player, ammoItem, category);
 							if (ret != RETURNVALUE_NOERROR) {
 								ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
 							}
+							if (ret != RETURNVALUE_NOERROR) {
+								player->sendCancelMessage(ret);
+							}
+							return;
 						}
 					}
 					else {
-						return;
+						ret = internalQuickLootItem(player, ammoItem, category);
+						if (ret != RETURNVALUE_NOERROR) {
+							ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
+						}
 					}
 				}
-				ReturnValue ret2 = player->queryAdd(slotP, *item, item->getItemCount(), 0);
-				if (ret2 != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret2);
+				if (ReturnValue returnQueryAdd = player->queryAdd(slotP, *item, item->getItemCount(), 0);
+				returnQueryAdd != RETURNVALUE_NOERROR)
+				{
+					player->sendCancelMessage(returnQueryAdd);
 					return;
 				}
+
 				if (item->getItemCount() < 100 &&
 					item->getItemCount() < player->getItemTypeCount(item->getID(), -1) &&
 					item->getDuration() <= 0) {
@@ -442,24 +445,36 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 						if (count == 100) {
 							break;
 						}
-						Container* mainBP = player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer();
-						Item* _item = findItemOfType(mainBP, item->getID());
-
-						if (!_item) {
+						Item* playerItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+						if(playerItem == nullptr) {
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} has no backpack. Item is nullptr.", player->getName());
+							break;
+						}
+						Container* mainBP = playerItem->getContainer();
+						if(mainBP == nullptr) {
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} backpack is not a container. Container is nullptr.", player->getName());
+							break;
+						}
+						Item* removeItem = findItemOfType(mainBP, item->getID());
+						if (removeItem == nullptr) {
+							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} item is nullptr.", player->getName());
 							break;
 						}
 
-						if (_item->getItemCount() > 100 - count) {
-							internalRemoveItem(_item, 100 - count);
+						if (removeItem->getItemCount() > 100 - count) {
+							internalRemoveItem(removeItem, 100 - count);
 							count = 100;
 						}
 						else {
-							count = count + _item->getItemCount();
-							internalRemoveItem(_item, _item->getItemCount());
+							count = count + removeItem->getItemCount();
+							internalRemoveItem(removeItem, removeItem->getItemCount());
 						}
 					}
-					Item* newSlotitem = Item::CreateItem(item->getID(), count);
-					internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
+					if(Item* newSlotitem = Item::CreateItem(item->getID(), count);
+					newSlotitem && count > 0)
+					{
+						internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
+					}
 					return;
 				}
 				else {
@@ -470,14 +485,14 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				Thing* slotthing = player->getThing(slotP);
 				if (slotthing) {
 					Item* slotItem = slotthing->getItem();
-					if (slotItem) {
-						ret = internalMoveItem(slotItem->getParent(), player, 0, slotItem, slotItem->getItemCount(), nullptr);
-						if (slotItem->getID() == item->getID()) {
-							removed = true;
-						}
-					}
-					else {
+					if (slotItem == nullptr) {
+						SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} slotitem is nullptr.", player->getName());
 						return;
+					}
+
+					ret = internalMoveItem(slotItem->getParent(), player, 0, slotItem, slotItem->getItemCount(), nullptr);
+					if (slotItem->getID() == item->getID()) {
+						removed = true;
 					}
 				}
 				if (!removed) {
@@ -490,7 +505,6 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
 	}
-	return;
 }
 
 void Game::saveGameState()
@@ -4410,7 +4424,14 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
+	player->updateNpcExhausted();
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount, bool ignoreEquipped)
@@ -4434,7 +4455,14 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	merchant->onPlayerSellItem(player, it.id, count, amount, ignoreEquipped);
+	player->updateNpcExhausted();
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -5362,6 +5390,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 {
 	if (player == nullptr) {
 		SPDLOG_ERROR("[Game::playerSpeakToNpc] - Player is nullptr");
+		return;
 	}
 
 	// Check npc say exhausted

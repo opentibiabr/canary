@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_UTILS_UTILS_DEFINITIONS_HPP_
 #define SRC_UTILS_UTILS_DEFINITIONS_HPP_
@@ -683,7 +673,7 @@ enum item_t : uint16_t {
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.
-const std::unordered_map<item_t, item_t> ItemTransformationMap = {
+const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
 	{ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING},
 	{ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING},
 	{ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING},
@@ -753,7 +743,7 @@ enum Blessings_t : uint8_t {
 	HEARTH_OF_THE_MOUNTAIN = 8,
 };
 
-const std::unordered_map<Blessings_t, std::string> BlessingNames = {
+const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
 	{TWIST_OF_FATE, "Twist of Fate"},
 	{WISDOM_OF_SOLITUDE, "The Wisdom of Solitude"},
 	{SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix"},

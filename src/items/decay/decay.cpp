@@ -1,20 +1,10 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
 */
 
 #include "otpch.h"
@@ -53,11 +43,11 @@ void Decay::startDecay(Item* item)
 
 		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
+			eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<const int32_t>(duration)), std::bind_front(&Decay::checkDecay, this)));
 		} else {
 			if (timestamp < decayMap.begin()->first) {
 				g_scheduler().stopEvent(eventId);
-				eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
+				eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<const int32_t>(duration)), std::bind_front(&Decay::checkDecay, this)));
 			}
 		}
 
@@ -146,7 +136,7 @@ void Decay::checkDecay()
 	}
 
 	if (it != end) {
-		eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this)));
+		eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind_front(&Decay::checkDecay, this)));
 	}
 }
 

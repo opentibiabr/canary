@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -324,8 +314,16 @@ int32_t Player::getArmor() const
 {
 	int32_t armor = 0;
 
-	static const Slots_t armorSlots[] = {CONST_SLOT_HEAD, CONST_SLOT_NECKLACE, CONST_SLOT_ARMOR, CONST_SLOT_LEGS, CONST_SLOT_FEET, CONST_SLOT_RING};
-	for (Slots_t slot : armorSlots) {
+	for (static const std::vector<Slots_t> armorSlots = {
+		CONST_SLOT_HEAD,
+		CONST_SLOT_NECKLACE,
+		CONST_SLOT_ARMOR,
+		CONST_SLOT_LEGS,
+		CONST_SLOT_FEET,
+		CONST_SLOT_RING
+	};
+	Slots_t slot : armorSlots)
+	{
 		Item* inventoryItem = inventory[slot];
 		if (inventoryItem) {
 			armor += inventoryItem->getArmor();
@@ -456,6 +454,23 @@ uint32_t Player::getClientIcons() const
 		}
 	}
 	return icon_bitset.to_ulong();
+}
+
+void Player::addBestiaryTrackerList(MonsterType* mtype)
+{
+	if (client == nullptr|| mtype == nullptr) {
+		SPDLOG_ERROR("[Player::addBestiaryTrackerList] - Client or MonsterType is nullptr");
+		return;
+	}
+
+	if (auto it = std::ranges::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
+	it == BestiaryTracker.end())
+	{
+		BestiaryTracker.push_front(mtype);
+	} else {
+		BestiaryTracker.remove(mtype);
+	}
+	client->refreshBestiaryTracker(BestiaryTracker);
 }
 
 void Player::updateInventoryWeight()
@@ -938,9 +953,9 @@ Container* Player::getLootContainer(ObjectCategory_t category) const
 
 void Player::checkLootContainers(const Item* item)
 {
-  if (!item) {
-    return;
-  }
+	if (!item) {
+		return;
+	}
 
 	const Container* container = item->getContainer();
 	if (!container) {
@@ -948,10 +963,8 @@ void Player::checkLootContainers(const Item* item)
 	}
 
 	bool shouldSend = false;
-
-	auto it = quickLootContainers.begin();
-	while (it != quickLootContainers.end()) {
-		Container* lootContainer = (*it).second;
+	std::erase_if(quickLootContainers, [this, item, container, &shouldSend](auto quicklootIterator) {
+		Container* lootContainer = quicklootIterator.second;
 
 		bool remove = false;
 		if (item->getHoldingPlayer() != this && (item == lootContainer || container->isHoldingItem(lootContainer))) {
@@ -960,13 +973,11 @@ void Player::checkLootContainers(const Item* item)
 
 		if (remove) {
 			shouldSend = true;
-			it = quickLootContainers.erase(it);
 			lootContainer->decrementReferenceCounter();
 			lootContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-		} else {
-			++it;
 		}
-	}
+		return true;
+	});
 
 	if (shouldSend) {
 		sendLootContainers();
@@ -1374,7 +1385,16 @@ void Player::openImbuementWindow(Item* item)
 
 void Player::sendMarketEnter(uint32_t depotId)
 {
-	if (!client || this->getLastDepotId() == -1 || !depotId) {
+	if (client == nullptr) {
+		SPDLOG_ERROR("[Player::sendMarketEnter] - Client is nullptr");
+		return;
+	}
+	if (this->getLastDepotId() == -1) {
+		SPDLOG_ERROR("[Player::sendMarketEnter] - Invalid last depot id");
+		return;
+	}
+	if (depotId == -1) {
+		SPDLOG_ERROR("[Player::sendMarketEnter] - Invalid depot id");
 		return;
 	}
 	
@@ -1509,7 +1529,6 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			Item* item = inventory[slot];
 			if (item) {
-				item->startDecaying();
 				g_moveEvents().onPlayerEquip(*this, *item, static_cast<Slots_t>(slot), false);
 			}
 		}
@@ -1535,7 +1554,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		int32_t offlineTime;
 		if (getLastLogout() != 0) {
 			// Not counting more than 21 days to prevent overflow when multiplying with 1000 (for milliseconds).
-			offlineTime = std::min<int32_t>(time(nullptr) - getLastLogout(), 86400 * 21);
+			offlineTime = std::min<int32_t>(static_cast<const int32_t>(Game::getTimeNow() - getLastLogout()), 86400 * 21);
 		} else {
 			offlineTime = 0;
 		}
@@ -1643,7 +1662,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout)
 			}
 
 			loginPosition = getPosition();
-			lastLogout = time(nullptr);
+			lastLogout = Game::getTimeNow();
 			SPDLOG_INFO("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(*this);
 			clearPartyInvitations();
@@ -1727,7 +1746,7 @@ void Player::onCreatureMove(Creature* creature, const Tile* newTile, const Posit
 
 	if (hasFollowPath && (creature == followCreature || (creature == this && followCreature))) {
 		isUpdatingPath = false;
-		g_dispatcher().addTask(createTask(std::bind(&Game::updateCreatureWalk, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind_front(&Game::updateCreatureWalk, &g_game(), getID())));
 	}
 
 	if (creature != this) {
@@ -3924,7 +3943,7 @@ bool Player::updateSaleShopList(const Item* item)
 	if (!itemId || !item)
 		return true;
 
-	g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerSaleItems, &g_game(), getID())));
+	g_dispatcher().addTask(createTask(std::bind_front(&Game::updatePlayerSaleItems, &g_game(), getID())));
 	scheduledSaleUpdate = true;
 	return true;
 }
@@ -3937,7 +3956,7 @@ bool Player::hasShopItemForSale(uint16_t itemId, uint8_t subType) const
 
 	const ItemType& itemType = Item::items[itemId];
 	std::vector<ShopBlock> shoplist = shopOwner->getShopItemVector();
-	return std::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
+	return std::ranges::any_of(shoplist.begin(), shoplist.end(), [&](const ShopBlock& shopBlock) {
 		return shopBlock.itemId == itemId && shopBlock.itemBuyPrice != 0 && (!itemType.isFluidContainer() || shopBlock.itemSubType == subType);
 	});
 }
@@ -3996,7 +4015,7 @@ bool Player::setAttackedCreature(Creature* creature)
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+		g_dispatcher().addTask(createTask(std::bind_front(&Game::checkCreatureAttack, &g_game(), getID())));
 	}
 	return true;
 }
@@ -4052,7 +4071,7 @@ void Player::doAttacking(uint32_t)
 			result = Weapon::useFist(this, attackedCreature);
 		}
 
-		SchedulerTask* task = createSchedulerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
+		SchedulerTask* task = createSchedulerTask(std::max<uint32_t>(SCHEDULER_MINTICKS, delay), std::bind_front(&Game::checkCreatureAttack, &g_game(), getID()));
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
 		} else {
@@ -4716,6 +4735,16 @@ Skulls_t Player::getSkull() const
 	return skull;
 }
 
+Skulls_t Player::getSkullUnjustified(const Creature &creature) const
+{
+	for (const auto& kill : unjustifiedKills) {
+		if (kill.unavenged && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
+			return SKULL_ORANGE;
+		}
+	}
+	return Creature::getSkullClient(&creature);
+}
+
 Skulls_t Player::getSkullClient(const Creature* creature) const
 {
 	if (!creature || g_game().getWorldType() != WORLD_TYPE_PVP) {
@@ -4725,11 +4754,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 	const Player* player = creature->getPlayer();
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player == this) {
-			for (const auto& kill : unjustifiedKills) {
-				if (kill.unavenged && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
-					return SKULL_ORANGE;
-				}
-			}
+			return getSkullUnjustified(*creature);
 		}
 
 		if (player->hasKilled(this)) {
@@ -4750,7 +4775,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const
 bool Player::hasKilled(const Player* player) const
 {
 	for (const auto& kill : unjustifiedKills) {
-		if (kill.target == player->getGUID() && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
+		if (kill.target == player->getGUID() && (Game::getTimeNow() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
 			return true;
 		}
 	}
@@ -4764,7 +4789,7 @@ bool Player::hasAttacked(const Player* attacked) const
 		return false;
 	}
 
-	return attackedSet.find(attacked->guid) != attackedSet.end();
+	return attackedSet.contains(attacked->guid);
 }
 
 void Player::addAttacked(const Player* attacked)
@@ -4801,14 +4826,14 @@ void Player::addUnjustifiedDead(const Player* attacked)
 
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
-	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	unjustifiedKills.emplace_back(attacked->getGUID(), Game::getTimeNow(), true);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
 	uint8_t monthKills = 0;
 
 	for (const auto& kill : unjustifiedKills) {
-		const auto diff = time(nullptr) - kill.time;
+		const auto diff = Game::getTimeNow() - kill.time;
 		if (diff <= 4 * 60 * 60) {
 			dayKills += 1;
 		}
@@ -4938,7 +4963,7 @@ bool Player::isInWar(const Player* player) const
 
 bool Player::isInWarList(uint32_t guildId) const
 {
-	return std::find(guildWarVector.begin(), guildWarVector.end(), guildId) != guildWarVector.end();
+	return std::ranges::find(guildWarVector.begin(), guildWarVector.end(), guildId) != guildWarVector.end();
 }
 
 bool Player::isPremium() const
@@ -5048,7 +5073,7 @@ void Player::sendPlayerPartyIcons(Player* player)
 
 bool Player::addPartyInvitation(Party* newParty)
 {
-	auto it = std::find(invitePartyList.begin(), invitePartyList.end(), newParty);
+	auto it = std::ranges::find(invitePartyList.begin(), invitePartyList.end(), newParty);
 	if (it != invitePartyList.end()) {
 		return false;
 	}
@@ -5104,7 +5129,7 @@ void Player::sendUnjustifiedPoints()
 		double monthKills = 0;
 
 		for (const auto& kill : unjustifiedKills) {
-			const auto diff = time(nullptr) - kill.time;
+			const auto diff = Game::getTimeNow() - kill.time;
 			if (diff <= 24 * 60 * 60) {
 				dayKills += 1;
 			}
@@ -5428,7 +5453,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 
 bool Player::hasModalWindowOpen(uint32_t modalWindowId) const
 {
-	return find(modalWindows.begin(), modalWindows.end(), modalWindowId) != modalWindows.end();
+	return std::ranges::find(modalWindows.begin(), modalWindows.end(), modalWindowId) != modalWindows.end();
 }
 
 void Player::onModalWindowHandled(uint32_t modalWindowId)
@@ -5456,7 +5481,7 @@ uint16_t Player::getHelpers() const
 	uint16_t helpers;
 
 	if (guild && party) {
-		std::unordered_set<Player*> helperSet;
+		phmap::flat_hash_set<Player*> helperSet;
 
 		const auto& guildMembers = guild->getMembersOnline();
 		helperSet.insert(guildMembers.begin(), guildMembers.end());
@@ -5620,6 +5645,20 @@ bool Player::isNpcExhausted(uint32_t exhaustionTime /*= 250*/) const {
 
 void Player::updateNpcExhausted() {
 	lastNpcInteraction = OTSYS_TIME();
+}
+
+bool Player::isQuickLootListedItem(const Item* item) const
+{
+	if (!item) {
+		return false;
+	}
+
+	auto it = std::ranges::find(
+		quickLootListItemIds.begin(),
+		quickLootListItemIds.end(),
+		item->getID()
+	);
+	return it != quickLootListItemIds.end();
 }
 
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) const
@@ -5824,7 +5863,7 @@ void Player::openPlayerContainers()
 		}
 	}
 
-	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
+	std::ranges::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
 		return left.first < right.first;
 	});
 
@@ -5855,6 +5894,14 @@ void Player::initializePrey()
 	}
 }
 
+void Player::reloadPreySlot(PreySlot_t slotid) const
+{
+	if (g_configManager().getBoolean(PREY_ENABLED) && client) {
+		client->sendPreyData(getPreySlotById(slotid));
+		client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+	}
+}
+
 void Player::initializeTaskHunting()
 {
 	if (taskHunting.empty()) {
@@ -5880,10 +5927,18 @@ void Player::initializeTaskHunting()
 	}
 }
 
+void Player::reloadTaskSlot(PreySlot_t slotid) const
+{
+	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
+		client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
+		client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+	}
+}
+
 std::string Player::getBlessingsName() const
 {
 	uint8_t count = 0;
-	std::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
+	std::ranges::for_each(blessings.begin(), blessings.end(), [&count](uint8_t amount) {
 		if (amount != 0) {
 			count++;
 		}
@@ -5919,6 +5974,88 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	}
 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+}
+
+PreySlot* Player::getPreySlotById(PreySlot_t slotid) const
+{
+	for (auto preySlot : preys) {
+		if (!preySlot) {
+			continue;
+		}
+
+		if (preySlot->id == slotid) {
+			return preySlot;
+		}
+	}
+
+	return nullptr;
+}
+
+PreySlot* Player::getPreyWithMonster(uint16_t raceId) const
+{
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
+		return nullptr;
+	}
+
+	for (auto preySlot : preys) {
+		if (!preySlot) {
+			continue;
+		}
+
+		if (preySlot->selectedRaceId == raceId) {
+			return preySlot;
+		}
+	}
+
+	return nullptr;
+}
+
+TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) const
+{
+	for (auto taskHuntingSlot : taskHunting) {
+		if (!taskHuntingSlot) {
+			continue;
+		}
+
+		if (taskHuntingSlot->id == slotid) {
+			return taskHuntingSlot;
+		}
+	}
+
+	return nullptr;
+}
+
+std::vector<uint16_t> Player::getTaskHuntingBlackList() const
+{
+	std::vector<uint16_t> raceVector;
+
+	std::ranges::for_each(taskHunting.begin(), taskHunting.end(), [&raceVector](const TaskHuntingSlot* slot)
+	{
+		if (slot->isOccupied()) {
+			raceVector.push_back(slot->selectedRaceId);
+		} else {
+			std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&raceVector](uint16_t raceId)
+			{
+				raceVector.push_back(raceId);
+			});
+		}
+	});
+
+	return raceVector;
+}
+
+TaskHuntingSlot* Player::getTaskHuntingWithCreature(uint16_t raceId) const {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		return nullptr;
+	}
+
+	if (auto it = std::ranges::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
+			return itTask->selectedRaceId == raceId;
+		}); it != taskHunting.end()) {
+		return *std::to_address(it);
+	}
+
+	return nullptr;
 }
 
 /*******************************************************************************

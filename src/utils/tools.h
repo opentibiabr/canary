@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_UTILS_TOOLS_H_
 #define SRC_UTILS_TOOLS_H_
@@ -23,7 +13,6 @@
 #include <random>
 #include <string>
 #include <regex>
-#include <boost/algorithm/string.hpp>
 
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
@@ -58,6 +47,8 @@ int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);
 bool boolean_random(double probability = 0.5);
 
+std::string fromIntToString(const int intType);
+
 Direction getDirection(const std::string& string);
 Position getNextPosition(Direction direction, Position pos);
 Direction getDirectionTo(const Position& from, const Position& to);
@@ -67,6 +58,10 @@ std::string getFirstLine(const std::string& str);
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
 std::string convertIPToString(uint32_t ip);
+
+// Split strings
+template<class Iter>
+Iter splitStrings(const std::string string, const std::string delim, Iter out);
 
 void trimString(std::string& str);
 
@@ -128,5 +123,18 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 		default: return CIPBIA_ELEMENTAL_UNDEFINED;
 	}
 }
+
+/**
+ * @brief These functions are intended to check if a string has only numbers or only letters
+ * @brief If the isNumber function has a letter in the middle of several numbers or has no number, it will return false, the same goes for isAlpha
+ * @param string get string to compare if have number/alpha
+ * @return true if have number/alpha
+ * @return false if no have number/alpha
+ */
+bool isNumber(const std::string string);
+
+bool isAlpha(const std::string string);
+
+size_t strnlength(const char* string, size_t size);
 
 #endif  // SRC_UTILS_TOOLS_H_

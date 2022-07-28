@@ -1,38 +1,21 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
-#include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 #include "game/game.h"
 
-#include "utils/pugicast.h"
+#include "items/functions/item_parse.hpp"
 
-#ifdef __cpp_lib_filesystem
 #include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
 
 
 Items::Items(){}
@@ -43,7 +26,7 @@ void Items::clear()
 	nameToItems.clear();
 }
 
-using LootTypeNames = std::unordered_map<std::string, ItemTypes_t>;
+using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
 
 LootTypeNames lootTypeNames = {
 	{"armor", ITEM_TYPE_ARMOR},
@@ -91,7 +74,6 @@ bool Items::reload()
 		return false;
 	}
 
-	g_weapons().loadDefaults();
 	return true;
 }
 
@@ -193,8 +175,10 @@ bool Items::loadFromXml()
 
 	for (auto itemNode : doc.child("items").children()) {
 		pugi::xml_attribute idAttribute = itemNode.attribute("id");
-		if (idAttribute) {
-			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
+		const std::string itemName = itemNode.attribute("name").as_string();
+		auto itemId = static_cast<uint16_t>(idAttribute.as_uint());
+		if (idAttribute && !idAttribute.empty()) {
+			parseItemNode(itemNode, itemId, itemName);
 			continue;
 		}
 
@@ -202,10 +186,10 @@ bool Items::loadFromXml()
 		if (!fromIdAttribute) {
 			if (idAttribute) {
 				SPDLOG_WARN("[Items::loadFromXml] - "
-                            "No item id: {} found",
-                            idAttribute.value());
+                            "Not a valid id range fromid-toid for item id {} with name {}", itemId, itemName);
 			} else {
-				SPDLOG_WARN("[Items::loadFromXml] - No item id found");
+				SPDLOG_WARN("[Items::loadFromXml] - "
+                            "No item id found for item with name {}", itemName);
 			}
 			continue;
 		}
@@ -213,15 +197,21 @@ bool Items::loadFromXml()
 		pugi::xml_attribute toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
 			SPDLOG_WARN("[Items::loadFromXml] - "
-                        "tag fromid: {} without toid",
-                        fromIdAttribute.value());
+                        "tag fromid: {} without toid", fromIdAttribute.as_uint());
 			continue;
 		}
 
-		uint16_t id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
-		while (id <= toId) {
-			parseItemNode(itemNode, id++);
+		if (!isNumber(fromIdAttribute.as_string()) || !isNumber(toIdAttribute.as_string())) {
+			SPDLOG_WARN("[Items::loadFromXml] - Wrong item id for item in fromid {}-toid {}, with name {}", fromIdAttribute.as_string(), toIdAttribute.as_string(), itemName);
+			continue;
+		}
+
+		auto fromId = static_cast<uint16_t>(fromIdAttribute.as_uint());
+		auto toId = static_cast<uint16_t>(toIdAttribute.as_uint());
+		while (fromId <= toId) {
+			uint16_t fromItemIdNode;
+			fromItemIdNode = fromId++;
+			parseItemNode(itemNode, fromItemIdNode, itemName);
 		}
 	}
 	return true;
@@ -246,18 +236,22 @@ void Items::buildInventoryList()
 		}
 	}
 	inventory.shrink_to_fit();
-	std::sort(inventory.begin(), inventory.end());
+	std::ranges::sort(inventory.begin(), inventory.end());
 }
 
-void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
+void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id, const std::string &itemName) {
 	if (id >= items.size()) {
 		items.resize(id + 1);
 	}
-	ItemType & iType = items[id];
-	iType.id = id;
 
 	ItemType & itemType = getItemType(id);
-	if (itemType.id == 0) {
+	/* Replace the id that comes from the otb by the one that comes from the items.xml?
+	If not, remove the "itemType.id = id;" and the "itemType.id == 0"
+	This is highly not recommended for anyone who wants to use custom items
+	*/
+	itemType.id = id;
+	if (itemType.id == 0 || !isNumber(itemNode.attribute("id").as_string())) {
+		SPDLOG_WARN("[Items::parseItemNode] - Missing or wrong item id for item with name {}", itemName);
 		return;
 	}
 
@@ -269,7 +263,7 @@ void Items::parseItemNode(const pugi::xml_node & itemNode, uint16_t id) {
 	if (std::string xmlName = itemNode.attribute("name").as_string();
 			!xmlName.empty() && itemType.name != xmlName) {
 		if (!itemType.name.empty()) {
-			if (auto it = std::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
+			if (auto it = std::ranges::find_if(nameToItems.begin(), nameToItems.end(), [id](const auto nameMapIt) {
 					return nameMapIt.second == id;
 				}); it != nameToItems.end()) {
 				nameToItems.erase(it);

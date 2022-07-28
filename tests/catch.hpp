@@ -9740,7 +9740,7 @@ namespace Catch {
         auto const setRngSeed = [&]( std::string const& seed ) {
                 if( seed != "time" )
                     return clara::detail::convertInto( seed, config.rngSeed );
-                config.rngSeed = static_cast<unsigned int>( std::time(nullptr) );
+                config.rngSeed = static_cast<unsigned int>( std::Game::getTimeNow() );
                 return ParserResult::ok( ParseResultType::Matched );
             };
         auto const setColourUsage = [&]( std::string const& useColour ) {

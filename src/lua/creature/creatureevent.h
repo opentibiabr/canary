@@ -1,37 +1,25 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_LUA_CREATURE_CREATUREEVENT_H_
 #define SRC_LUA_CREATURE_CREATUREEVENT_H_
 
-#include "lua/global/baseevents.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
+#include "lua/scripts/scripts.h"
 
 class CreatureEvent;
 using CreatureEvent_ptr = std::unique_ptr<CreatureEvent>;
 
-class CreatureEvent final : public Event {
+class CreatureEvent final : public Script {
 	public:
 		explicit CreatureEvent(LuaScriptInterface* interface);
-
-		bool configureEvent(const pugi::xml_node& node) override;
 
 		CreatureEventType_t getEventType() const {
 			return type;
@@ -44,6 +32,12 @@ class CreatureEvent final : public Event {
 		}
 		void setName(const std::string& name) {
 			eventName = name;
+		}
+		const std::string& getFileName() const {
+			return fileName;
+		}
+		void setFileName(std::string scriptName) {
+			fileName = scriptName;
 		}
 		bool isLoaded() const {
 			return loaded;
@@ -71,16 +65,17 @@ class CreatureEvent final : public Event {
 		//
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override;
 
 		std::string eventName;
-		CreatureEventType_t type;
-		bool loaded;
+		std::string fileName;
+		CreatureEventType_t type = CREATURE_EVENT_NONE;
+		bool loaded = false;
 };
 
-class CreatureEvents final : public BaseEvents {
+class CreatureEvents final : public Scripts {
 	public:
-		CreatureEvents();
+		CreatureEvents() = default;
 
 		// non-copyable
 		CreatureEvents(const CreatureEvents&) = delete;
@@ -102,19 +97,12 @@ class CreatureEvents final : public BaseEvents {
 
 		bool registerLuaEvent(CreatureEvent* event);
 		void removeInvalidEvents();
-		void clear(bool fromLua) override final;
+		void clear();
 
 	private:
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
 		//creature events
 		using CreatureEventMap = std::map<std::string, CreatureEvent>;
 		CreatureEventMap creatureEvents;
-
-		LuaScriptInterface scriptInterface;
 };
 
 constexpr auto g_creatureEvents = &CreatureEvents::getInstance;

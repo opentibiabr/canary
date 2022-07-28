@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -200,7 +190,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 						return false;
 					}
 				} else if (BedItem* bedItem = dynamic_cast<BedItem*>(dummy.get())) {
-					uint32_t sleeperGUID = bedItem->getSleeper();
+					uint32_t sleeperGUID = bedItem->getSleeperGUID();
 					if (sleeperGUID != 0) {
 						g_game().removeBedSleeper(sleeperGUID);
 					}
@@ -276,20 +266,20 @@ bool IOMapSerialize::loadHouseInfo()
 	}
 
 	do {
-		House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("id"));
+		House* house = g_game().map.houses.getHouse(result->getU32("id"));
 		if (house) {
-			house->setOwner(result->getNumber<uint32_t>("owner"), false);
-			house->setPaidUntil(result->getNumber<time_t>("paid"));
-			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
+			house->setOwner(result->getU32("owner"), false);
+			house->setPaidUntil(result->getTime("paid"));
+			house->setPayRentWarnings(result->getU32("warnings"));
 		}
 	} while (result->next());
 
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");
 	if (result) {
 		do {
-			House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
+			House* house = g_game().map.houses.getHouse(result->getU32("house_id"));
 			if (house) {
-				house->setAccessList(result->getNumber<uint32_t>("listid"), result->getString("list"));
+				house->setAccessList(result->getU32("listid"), result->getString("list"));
 			}
 		} while (result->next());
 	}

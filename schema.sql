@@ -531,7 +531,7 @@ CREATE TABLE IF NOT EXISTS `player_hirelings` (
     `sex` tinyint unsigned NOT NULL DEFAULT '0',
     `posx` int(11) NOT NULL DEFAULT '0',
     `posy` int(11) NOT NULL DEFAULT '0',
-    `posz` int(11) NOT NULL DEFAULT '0',
+    `posz` tinyint(2) NOT NULL DEFAULT '0',
     `lookbody` int(11) NOT NULL DEFAULT '0',
     `lookfeet` int(11) NOT NULL DEFAULT '0',
     `lookhead` int(11) NOT NULL DEFAULT '0',

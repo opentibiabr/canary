@@ -1,25 +1,20 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
 #include "utils/tools.h"
+#include "game/game.h"
+
+#include <string>
+#include <algorithm>
+#include <ranges>
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -262,7 +257,7 @@ void trim_left(std::string& source, char t)
 
 void toLowerCaseString(std::string& source)
 {
-	std::transform(source.begin(), source.end(), source.begin(), tolower);
+	std::ranges::transform(source.begin(), source.end(), source.begin(), tolower);
 }
 
 std::string asLowerCaseString(std::string source)
@@ -273,7 +268,7 @@ std::string asLowerCaseString(std::string source)
 
 std::string asUpperCaseString(std::string source)
 {
-	std::transform(source.begin(), source.end(), source.begin(), toupper);
+	std::ranges::transform(source.begin(), source.end(), source.begin(), toupper);
 	return source;
 }
 
@@ -346,6 +341,33 @@ bool boolean_random(double probability/* = 0.5*/)
 	return booleanRand(getRandomGenerator(), std::bernoulli_distribution::param_type(probability));
 }
 
+std::string fromIntToString(const int intType)
+{
+	static std::stringstream stringStream;
+	stringStream.str("");
+	stringStream << intType;
+	return stringStream.str();
+}
+
+template<class Iter>
+Iter splitStrings(const std::string string, const std::string delim, Iter out)
+{
+	const std::string & newString = string.data();
+	if (delim.empty()) {
+		*out++ = string.data();
+		return out;
+	}
+	size_t a = 0;
+	size_t b = newString.find(delim);
+	for ( ; b != std::string::npos;
+		a = b + delim.length(), b = newString.find(delim, a))
+	{
+		*out++ = std::move(newString.substr(a, b - a));
+	}
+	*out++ = std::move(newString.substr(a, newString.length() - a));
+	return out;
+}
+
 void trimString(std::string& str)
 {
 	str.erase(str.find_last_not_of(' ') + 1);
@@ -366,13 +388,10 @@ std::string convertIPToString(uint32_t ip)
 
 std::string formatDate(time_t time)
 {
-	const tm* tms = localtime(&time);
-	if (!tms) {
-		return {};
-	}
+	auto timeNow = Game::getTime(time);
 
 	char buffer[20];
-	int res = sprintf(buffer, "%02d/%02d/%04d %02d:%02d:%02d", tms->tm_mday, tms->tm_mon + 1, tms->tm_year + 1900, tms->tm_hour, tms->tm_min, tms->tm_sec);
+	int res = snprintf(buffer, sizeof(buffer), "%02d/%02d/%04d %02d:%02d:%02d", timeNow.tm_mday, timeNow.tm_mon + 1, timeNow.tm_year + 1900, timeNow.tm_hour, timeNow.tm_min, timeNow.tm_sec);
 	if (res < 0) {
 		return {};
 	}
@@ -381,13 +400,10 @@ std::string formatDate(time_t time)
 
 std::string formatDateShort(time_t time)
 {
-	const tm* tms = localtime(&time);
-	if (!tms) {
-		return {};
-	}
+	const auto timeNow = Game::getTime(time);
 
 	char buffer[12];
-	size_t res = strftime(buffer, 12, "%d %b %Y", tms);
+	size_t res = strftime(buffer, 12, "%d %b %Y", &timeNow);
 	if (res == 0) {
 		return {};
 	}
@@ -503,19 +519,19 @@ Direction getDirectionTo(const Position& from, const Position& to)
 	return dir;
 }
 
-using MagicEffectNames = std::unordered_map<std::string, MagicEffectClasses>;
-using ShootTypeNames = std::unordered_map<std::string, ShootType_t>;
-using CombatTypeNames = std::unordered_map<CombatType_t, std::string, std::hash<int32_t>>;
-using AmmoTypeNames = std::unordered_map<std::string, Ammo_t>;
-using WeaponActionNames = std::unordered_map<std::string, WeaponAction_t>;
-using SkullNames = std::unordered_map<std::string, Skulls_t>;
-using ImbuementTypeNames = std::unordered_map<std::string, ImbuementTypes_t>;
+using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;
+using ShootTypeNames = phmap::flat_hash_map<std::string, ShootType_t>;
+using CombatTypeNames = phmap::flat_hash_map<CombatType_t, std::string, std::hash<int32_t>>;
+using AmmoTypeNames = phmap::flat_hash_map<std::string, Ammo_t>;
+using WeaponActionNames = phmap::flat_hash_map<std::string, WeaponAction_t>;
+using SkullNames = phmap::flat_hash_map<std::string, Skulls_t>;
+using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
 
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
-using SpawnTypeNames = std::unordered_map<std::string, SpawnType_t>;
+using SpawnTypeNames = phmap::flat_hash_map<std::string, SpawnType_t>;
 
 MagicEffectNames magicEffectNames = {
 	{"assassin",			CONST_ME_ASSASSIN},
@@ -813,7 +829,7 @@ std::string getCombatName(CombatType_t combatType)
 
 CombatType_t getCombatType(const std::string& combatname)
 {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
+	auto it = std::ranges::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
 		return pair.second == combatname;
 	});
 
@@ -1408,7 +1424,7 @@ NameEval_t validateName(const std::string &name)
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
-	boost::split(toks, name, boost::is_any_of(" '"));
+	splitStrings(" '", name, std::back_inserter(toks));
 	if(name.length()<3 || name.length()>14) {
 		return INVALID_LENGTH;
 	}
@@ -1420,7 +1436,8 @@ NameEval_t validateName(const std::string &name)
 	for(std::string str : toks) {
 		if(str.length()<2)
 			return INVALID_TOKEN_LENGTH;
-		else if(std::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) { //searching for prohibited words
+		// Searching for prohibited words
+		else if(std::ranges::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) {
 			return INVALID_FORBIDDEN;
 		}
 	}
@@ -1466,4 +1483,29 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+bool isNumber(const std::string string) {
+	for(auto integer : string) {
+		if (std::isdigit(integer) == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+bool isAlpha(const std::string string) {
+	for(auto letter : string) {
+		if (std::isalpha(letter) == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+size_t strnlength(const char* string, size_t size) 
+{
+	const char* found;
+	memcpy(&found, &string, size);
+	return found ? (size_t)(found-string) : size; 
 }

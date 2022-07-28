@@ -1,28 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_UTILS_DEFINITIONS_H_
 #define SRC_UTILS_DEFINITIONS_H_
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
 static constexpr auto STATUS_SERVER_VERSION = "1.4.0";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization, SaiyansKing and Mark Samman";
+static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization and contributors";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;
@@ -30,6 +20,19 @@ static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 static constexpr auto CLIENT_VERSION = 1286;
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
+
+#define NONCOPYABLE(Type) Type(const Type&)=delete; Type& operator=(const Type&)=delete
+
+/// Branch Prediction.  See the GCC Manual for more information.
+ /// NB: These are used when speed is need most; do not use in normal
+ /// code, they may slow down stuff.
+#if defined(__clang__) || defined(__GNUC__)
+#define likely(x)     __builtin_expect(!!(x), 1)
+#define unlikely(x)    __builtin_expect(!!(x), 0)
+#else
+#define likely(x)    (x)
+#define unlikely(x)    (x)
+#endif
 
 #ifndef __FUNCTION__
 #define __FUNCTION__ __func__

@@ -1,40 +1,27 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
 #include "creatures/appearance/outfit/outfit.h"
 
-#include "utils/pugicast.h"
 #include "utils/tools.h"
 #include "game/game.h"
 
-bool Outfits::loadFromXml()
-{
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/outfits.xml");
-	if (!result) {
-		printXMLError("[Outfits::loadFromXml] - ", "data/XML/outfits.xml", result);
-		return false;
-	}
+#include <cctype>
 
-	for (auto outfitNode : doc.child("outfits").children()) {
+bool Outfits::parseOutfitNode()
+{
+	pugi::xml_document document;
+	document.load_file("data/XML/outfits.xml");
+	for (auto outfitNode : document.child("outfits").children())
+	{
 		pugi::xml_attribute attr;
 		if ((attr = outfitNode.attribute("enabled")) && !attr.as_bool()) {
 			continue;
@@ -45,35 +32,71 @@ bool Outfits::loadFromXml()
 			continue;
 		}
 
-		uint16_t type = pugi::cast<uint16_t>(attr.value());
+		auto type = static_cast<uint8_t>(outfitNode.attribute("type").as_uint());
 		if (type > PLAYERSEX_LAST) {
 			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid outfit type {}", type);
 			continue;
 		}
 
 		pugi::xml_attribute lookTypeAttribute = outfitNode.attribute("looktype");
-		if (!lookTypeAttribute) {
-			SPDLOG_WARN("[Outfits::loadFromXml] - Missing looktype on outfit");
+		auto lookType = static_cast<uint16_t>(lookTypeAttribute.as_uint());
+		const std::string outfitName = outfitNode.attribute("name").as_string();
+		if (lookTypeAttribute.empty()) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - "
+						"Missing looktype id for outfit name: {}", outfitName);
 			continue;
 		}
 
-		if (uint16_t lookType = pugi::cast<uint16_t>(lookTypeAttribute.value());
-				g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
-				&& !g_game().isLookTypeRegistered(lookType)
-			)
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0
+		&& !g_game().isLookTypeRegistered(lookType))
 		{
 			SPDLOG_WARN("[Outfits::loadFromXml] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", lookType);
-			return false;
+			continue;
+		}
+
+		const std::string lookTypeString = lookTypeAttribute.as_string();
+		if (lookTypeString.empty() || lookType == 0) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Empty looktype on outfit with name {}", outfitName);
+			continue;
+		}
+
+		if (!isNumber(lookTypeString)) {
+			SPDLOG_WARN("[Outfits::loadFromXml] - Invalid looktype {} with name {}", lookTypeString, outfitName);
+			continue;
+		}
+
+		if (pugi::xml_attribute nameAttribute = outfitNode.attribute("name");
+		!nameAttribute || outfitName.empty())
+		{
+			SPDLOG_WARN("[Outfits::loadFromXml] - Missing or empty name on outfit with looktype {}", lookTypeString);
+			continue;
 		}
 
 		outfits[type].emplace_back(
-			outfitNode.attribute("name").as_string(),
-			pugi::cast<uint16_t>(lookTypeAttribute.value()),
+			outfitName,
+			lookType,
 			outfitNode.attribute("premium").as_bool(),
 			outfitNode.attribute("unlocked").as_bool(true),
 			outfitNode.attribute("from").as_string()
 		);
 	}
+	return true;
+}
+
+bool Outfits::loadFromXml()
+{
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file("data/XML/outfits.xml");
+	if (!result) {
+		printXMLError("[Outfits::loadFromXml] - ", "data/XML/outfits.xml", result);
+		return false;
+	}
+
+	if (!parseOutfitNode()) {
+		SPDLOG_ERROR("[Outfits::loadFromXml] - Error to load outfit node");
+		return false;
+	}
+
 	for (uint8_t sex = PLAYERSEX_FEMALE; sex <= PLAYERSEX_LAST; ++sex) {
 		outfits[sex].shrink_to_fit();
 	}

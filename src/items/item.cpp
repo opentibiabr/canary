@@ -1,33 +1,25 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
 #include "items/item.h"
+#include "items/functions/item_read_map_attributes.hpp"
 #include "items/functions/item_parse.hpp"
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
-#include "game/movement/teleport.h"
 #include "items/trashholder.h"
 #include "items/containers/mailbox/mailbox.h"
 #include "map/house/house.h"
+#include "io/iologindata.h"
 #include "game/game.h"
+#include "game/movement/teleport.h"
 #include "items/bed.h"
 #include "containers/rewards/rewardchest.h"
 #include "creatures/players/imbuements/imbuements.h"
@@ -36,7 +28,6 @@
 #include "creatures/combat/spells.h"
 
 #define IMBUEMENT_SLOT 500
-
 
 Items Item::items;
 
@@ -96,7 +87,7 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
-	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
+	auto key = std::to_string(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute value;
 	value.set<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0);
 	setCustomAttribute(key, value);
@@ -165,47 +156,43 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 	return newItem;
 }
 
-Item* Item::CreateItem(PropStream& propStream)
+Item* Item::createMapItem(BinaryNode &binaryNode)
 {
-	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
-		return nullptr;
-	}
-
-	switch (id) {
+	uint16_t mapItemId = binaryNode.getU16();
+	switch (mapItemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
-			id = ITEM_FIREFIELD_PERSISTENT_FULL;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_FULL;
 			break;
 
 		case ITEM_FIREFIELD_PVP_MEDIUM:
-			id = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
 			break;
 
 		case ITEM_FIREFIELD_PVP_SMALL:
-			id = ITEM_FIREFIELD_PERSISTENT_SMALL;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_SMALL;
 			break;
 
 		case ITEM_ENERGYFIELD_PVP:
-			id = ITEM_ENERGYFIELD_PERSISTENT;
+			mapItemId = ITEM_ENERGYFIELD_PERSISTENT;
 			break;
 
 		case ITEM_POISONFIELD_PVP:
-			id = ITEM_POISONFIELD_PERSISTENT;
+			mapItemId = ITEM_POISONFIELD_PERSISTENT;
 			break;
 
 		case ITEM_MAGICWALL:
-			id = ITEM_MAGICWALL_PERSISTENT;
+			mapItemId = ITEM_MAGICWALL_PERSISTENT;
 			break;
 
 		case ITEM_WILDGROWTH:
-			id = ITEM_WILDGROWTH_PERSISTENT;
+			mapItemId = ITEM_WILDGROWTH_PERSISTENT;
 			break;
 
 		default:
 			break;
 	}
 
-	return Item::CreateItem(id, 0);
+	return Item::CreateItem(mapItemId, 0);
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
@@ -235,16 +222,16 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 Item::Item(const Item& i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
 {
-	if (i.attributes) {
-		attributes.reset(new ItemAttributes(*i.attributes));
+	if (i.itemAttributesPtr) {
+		itemAttributesPtr.reset(new ItemAttributes(*i.itemAttributesPtr));
 	}
 }
 
 Item* Item::clone() const
 {
 	Item* item = Item::CreateItem(id, count);
-	if (attributes) {
-		item->attributes.reset(new ItemAttributes(*attributes));
+	if (itemAttributesPtr) {
+		item->itemAttributesPtr.reset(new ItemAttributes(*itemAttributesPtr));
 	}
 	return item;
 }
@@ -259,20 +246,20 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
-	if (!attributes) {
-		return !otherItem->attributes;
+	if (!itemAttributesPtr) {
+		return !otherItem->itemAttributesPtr;
 	}
 
-	const auto& otherAttributes = otherItem->attributes;
+	const auto& otherAttributes = otherItem->itemAttributesPtr;
 	if (!otherAttributes) {
 		return false;
 	}
 
-	if (attributes->attributeBits != otherAttributes->attributeBits) {
+	if (itemAttributesPtr->attributeBits != otherAttributes->attributeBits) {
 		return false;
 	}
 
-	for (const auto& attribute : attributes->attributes) {
+	for (const auto& attribute : itemAttributesPtr->attributes) {
 		for (const auto& otherAttribute : otherAttributes->attributes) {
 			if (attribute.type != otherAttribute.type) {
 				continue;
@@ -794,9 +781,24 @@ bool Item::unserializeAttr(PropStream& propStream)
 	return true;
 }
 
-bool Item::unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream)
+bool Item::unserializeMapItem(BinaryNode &binaryNode, Position position)
 {
-	return unserializeAttr(propStream);
+	try {
+		while (binaryNode.canRead()) {
+			uint8_t attributeType = binaryNode.getU8();
+			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, binaryNode, position);
+			if (ret == ATTR_READ_ERROR) {
+				SPDLOG_ERROR("[Item::unserializeItem] - Invalid item attribute {}", attributeType);
+				return false;
+			} else if (ret == ATTR_READ_END) {
+				return true;
+			}
+		}
+	} catch (const std::system_error& error) {
+		SPDLOG_ERROR("[Item::unserializeMapItem] - Failed to unserialize map item with id: {}, error code: {}", getID(), error.what());
+		return false;
+	}
+	return true;
 }
 
 void Item::serializeAttr(PropWriteStream& propWriteStream) const
@@ -922,7 +924,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-		const ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getCustomAttributeMap();
+		const ItemAttributes::CustomAttributeMap* customAttrMap = itemAttributesPtr->getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
 		propWriteStream.write<uint64_t>(customAttrMap->size());
 		for (const auto &entry : *customAttrMap) {
@@ -2588,11 +2590,11 @@ void Item::stopDecaying()
 
 bool Item::hasMarketAttributes()
 {
-	if (!attributes) {
+	if (!itemAttributesPtr || itemAttributesPtr->attributeBits == 0) {
 		return true;
 	}
 
-	for (const auto& attribute : attributes->getList()) {
+	for (const auto& attribute : itemAttributesPtr->getList()) {
 		if (attribute.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
 			return false;
 		}

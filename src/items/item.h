@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_ITEMS_ITEM_H_
 #define SRC_ITEMS_ITEM_H_
@@ -24,15 +14,18 @@
 #include <vector>
 
 #include "items/cylinder.h"
+#include "core/file_handle.hpp"
 #include "items/thing.h"
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
 #include "utils/tools.h"
-#include <typeinfo>
 
-#include <boost/variant.hpp>
-#include <boost/lexical_cast.hpp>
+#include <typeinfo>
 #include <deque>
+#include <iostream>
+#include <string>
+#include <variant>
+#include <limits>
 
 class Creature;
 class Player;
@@ -157,10 +150,9 @@ class ItemAttributes
 
 		struct CustomAttribute
 		{
-			typedef boost::variant<boost::blank, std::string, int64_t, double, bool> VariantAttribute;
-			VariantAttribute value;
+			std::variant<std::monostate, std::string, int64_t, double, bool> value;
 
-			CustomAttribute() : value(boost::blank()) {}
+			CustomAttribute() : value(std::monostate()) {}
 
 			template<typename T>
 			explicit CustomAttribute(const T& v) : value(v) {}
@@ -171,43 +163,51 @@ class ItemAttributes
 			}
 
 			const std::string& getString() const {
-				if (value.type() == typeid(std::string)) {
-					return boost::get<std::string>(value);
+				try {
+					return std::get<std::string>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is string: {}]", ex.what());
+				}
 				return emptyString;
 			}
 
 			const int64_t& getInt() const {
-				if (value.type() == typeid(int64_t)) {
-					return boost::get<int64_t>(value);
+				try {
+					return std::get<int64_t>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is int64_t: {}", ex.what());
+				}
 				return emptyInt;
 			}
 
 			const double& getDouble() const {
-				if (value.type() == typeid(double)) {
-					return boost::get<double>(value);
+				try {
+					return std::get<double>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is double {}", ex.what());
+				}
 				return emptyDouble;
 			}
 
 			const bool& getBool() const {
-				if (value.type() == typeid(bool)) {
-					return boost::get<bool>(value);
+				try {
+					return std::get<bool>(value);
 				}
-
+				catch (const std::bad_variant_access& ex) {
+					SPDLOG_ERROR("[CustomAttribute::std::string& getString() - Object not is bool: {}", ex.what());
+				}
 				return emptyBool;
 			}
 
-			struct PushLuaVisitor : public boost::static_visitor<> {
+			struct PushLuaVisitor {
 				lua_State* L;
 
-				explicit PushLuaVisitor(lua_State* L) : boost::static_visitor<>(), L(L) {}
+				explicit PushLuaVisitor(lua_State* L) : L(L) {}
 
-				void operator()(const boost::blank&) const {
+				void operator()(const std::monostate&) const {
 					lua_pushnil(L);
 				}
 
@@ -229,15 +229,16 @@ class ItemAttributes
 			};
 
 			void pushToLua(lua_State* L) const {
-				boost::apply_visitor(PushLuaVisitor(L), value);
+				std::visit(PushLuaVisitor(L), value);
 			}
 
-			struct SerializeVisitor : public boost::static_visitor<> {
+			struct SerializeVisitor {
 				PropWriteStream& propWriteStream;
 
-				explicit SerializeVisitor(PropWriteStream& propWriteStream) : boost::static_visitor<>(), propWriteStream(propWriteStream) {}
+				explicit SerializeVisitor(PropWriteStream& propWriteStream) : propWriteStream(propWriteStream) {}
 
-				void operator()(const boost::blank&) const {
+				void operator()(const std::monostate&) const {
+					return;
 				}
 
 				void operator()(const std::string& v) const {
@@ -251,8 +252,43 @@ class ItemAttributes
 			};
 
 			void serialize(PropWriteStream& propWriteStream) const {
-				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.which()));
-				boost::apply_visitor(SerializeVisitor(propWriteStream), value);
+				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.index()));
+				std::visit(SerializeVisitor(propWriteStream), value);
+			}
+
+			// BinaryNode unserialize parses
+			bool unserializeString(BinaryNode &binaryNode)
+			{
+				std::string string = binaryNode.getString();
+				if (string.empty()) {
+					SPDLOG_ERROR("[Item::unserializeString] - String is empty");
+					return false;
+				}
+
+				value = string;
+				return true;
+			}
+			bool unserializeInt(BinaryNode &binaryNode)
+			{
+				int64_t int64 = binaryNode.get64();
+				if (int64 == 0) {
+					SPDLOG_ERROR("[Item::unserializeInt] - Failed to get64");
+					return false;
+				}
+
+				value = int64;
+				return true;
+			}
+			bool unserializeDouble(BinaryNode &binaryNode)
+			{
+				double doubleValue = binaryNode.getDouble();
+				if (doubleValue == 0) {
+					SPDLOG_ERROR("[Item::unserializeDouble] - Failed to getDouble");
+					return false;
+				}
+
+				value = doubleValue;
+				return true;
 			}
 
 			bool unserialize(PropStream& propStream) {
@@ -300,9 +336,43 @@ class ItemAttributes
 					}
 
 					default: {
-						value = boost::blank();
+						value = std::monostate();
 						return false;
 					}
+				}
+				return true;
+			}
+
+			bool unserialize(BinaryNode& binaryNode) {
+				// This is hard coded so it's not general, depends on the position of the variants.
+				uint8_t position = binaryNode.getU8();
+				if (position == 0) {
+					SPDLOG_ERROR("[Item::unserialize] - Variant position is wrong");
+					return false;
+				}
+
+				switch (position) {
+					case 1:
+						if (!unserializeString(binaryNode)) {
+							return false;
+						}
+						break;
+					case 2:
+						if (!unserializeInt(binaryNode)) {
+							return false;
+						}
+						break;
+					case 3:
+						if (!unserializeDouble(binaryNode)) {
+							return false;
+						}
+						break;
+					case 4:
+						value = binaryNode.getBoolean();
+						break;
+					default:
+						value = std::monostate();
+						return false;
 				}
 				return true;
 			}
@@ -319,7 +389,7 @@ class ItemAttributes
 		static double emptyDouble;
 		static bool emptyBool;
 
-		typedef std::unordered_map<std::string, CustomAttribute> CustomAttributeMap;
+		using CustomAttributeMap = phmap::flat_hash_map<std::string, CustomAttribute>;
 
 		struct Attribute {
 			union {
@@ -379,6 +449,7 @@ class ItemAttributes
 		std::vector<Attribute> attributes;
 		std::underlying_type_t<ItemAttrTypes> attributeBits = 0;
 
+	public:
 		const std::string& getStrAttr(ItemAttrTypes type) const;
 		void setStrAttr(ItemAttrTypes type, const std::string& value);
 
@@ -460,7 +531,6 @@ class ItemAttributes
 			return false;
 		}
 
-	public:
 		static bool isIntAttrType(ItemAttrTypes type) {
 			std::underlying_type_t<ItemAttrTypes> checkTypes = 0;
 			checkTypes |= ITEM_ATTRIBUTE_ACTIONID;
@@ -514,7 +584,7 @@ class Item : virtual public Thing
 		//Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* CreateItem(PropStream& propStream);
+		static Item* createMapItem(BinaryNode &binaryNode);
 		static Items items;
 
 		// Constructor for items
@@ -522,6 +592,7 @@ class Item : virtual public Thing
 		Item(const Item& i);
 		virtual Item* clone() const;
 
+		Item() = default;
 		virtual ~Item() = default;
 
 		// non-assignable
@@ -573,20 +644,20 @@ class Item : virtual public Thing
 		}
 
 		const std::string& getStrAttr(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return ItemAttributes::emptyString;
 			}
-			return attributes->getStrAttr(type);
+			return itemAttributesPtr->getStrAttr(type);
 		}
 		void setStrAttr(ItemAttrTypes type, const std::string& value) {
 			getAttributes()->setStrAttr(type, value);
 		}
 
 		int64_t getIntAttr(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
-			return attributes->getIntAttr(type);
+			return itemAttributesPtr->getIntAttr(type);
 		}
 		void setIntAttr(ItemAttrTypes type, int64_t value) {
 			getAttributes()->setIntAttr(type, value);
@@ -604,15 +675,15 @@ class Item : virtual public Thing
 		}
 
 		void removeAttribute(ItemAttrTypes type) {
-			if (attributes) {
-				attributes->removeAttribute(type);
+			if (itemAttributesPtr) {
+				itemAttributesPtr->removeAttribute(type);
 			}
 		}
 		bool hasAttribute(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return false;
 			}
-			return attributes->hasAttribute(type);
+			return itemAttributesPtr->hasAttribute(type);
 		}
 
 		template<typename R>
@@ -632,15 +703,15 @@ class Item : virtual public Thing
 			return getAttributes()->getCustomAttribute(key);
 		}
 		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return nullptr;
 			}
 
-			if (!attributes->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+			if (!itemAttributesPtr->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				return nullptr;
 			}
 
-			ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
+			ItemAttributes::CustomAttributeMap* customAttrMap = itemAttributesPtr->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
 			if (!customAttrMap) {
 				return nullptr;
 			}
@@ -706,14 +777,14 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_ACTIONID, n);
 		}
 		uint16_t getActionId() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_ACTIONID));
 		}
 
 		uint16_t getUniqueId() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_UNIQUEID));
@@ -723,7 +794,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_CHARGES, n);
 		}
 		uint16_t getCharges() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_CHARGES));
@@ -733,7 +804,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_FLUIDTYPE, n);
 		}
 		uint16_t getFluidType() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_FLUIDTYPE));
@@ -743,7 +814,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_OWNER, owner);
 		}
 		uint32_t getOwner() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return getIntAttr(ITEM_ATTRIBUTE_OWNER);
@@ -753,7 +824,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_CORPSEOWNER, corpseOwner);
 		}
 		uint32_t getCorpseOwner() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return getIntAttr(ITEM_ATTRIBUTE_CORPSEOWNER);
@@ -788,7 +859,7 @@ class Item : virtual public Thing
 			}
 		}
 		ItemDecayState_t getDecaying() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return DECAYING_FALSE;
 			}
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
@@ -807,12 +878,57 @@ class Item : virtual public Thing
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
-		//serialization
+		// Serialization items
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 		bool unserializeAttr(PropStream& propStream);
-		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream);
+
+		// Serialization map items
+		virtual bool unserializeMapItem(BinaryNode &binaryNode, Position position);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
+
+		// Serialization functions for classes: Teleport, Bed, Container, DepotLocker, Door
+		// Depot class
+		virtual uint16_t getDepotId() const {
+			return depotId;
+		}
+		virtual void setDepotId(uint16_t newDepotId) {
+			depotId = newDepotId;
+		}
+		// Door class
+		virtual void setDoorId(uint32_t doorId) {
+			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
+		}
+		virtual uint32_t getDoorId() const {
+			return static_cast<uint32_t>(getIntAttr(ITEM_ATTRIBUTE_DOORID));
+		}
+		// Bed class
+		virtual const uint32_t& getSleeperGUID() const {
+			return sleeperGUID;
+		}
+		virtual void setSleeperGuid(uint32_t newSleeperGuid) {
+			sleeperGUID = newSleeperGuid;
+		}
+		virtual const uint32_t& getSleepStart() const {
+			return sleepStart;
+		}
+		virtual void setSleepStart(uint32_t newSleepStart) {
+			sleepStart = newSleepStart;
+		}
+		// Teleport class
+		virtual const Position& getDestination() const {
+			return destinationPosition;
+		}
+		virtual void setDestination(Position position) {
+			destinationPosition = std::move(position);
+		}
+		// Container class
+		virtual uint32_t getSerializationCount() const {
+			return serializationCount;
+		}
+		virtual void setSerializationCount(uint32_t newCount) {
+			serializationCount = newCount;
+		}
 
 		bool isPushable() const override final {
 			return isMoveable();
@@ -1026,10 +1142,10 @@ class Item : virtual public Thing
 		bool hasMarketAttributes();
 
 		std::unique_ptr<ItemAttributes>& getAttributes() {
-			if (!attributes) {
-				attributes.reset(new ItemAttributes());
+			if (!itemAttributesPtr) {
+				itemAttributesPtr.reset(new ItemAttributes());
 			}
-			return attributes;
+			return itemAttributesPtr;
 		}
 
 		void incrementReferenceCounter() {
@@ -1103,7 +1219,6 @@ class Item : virtual public Thing
 		std::string getWeightDescription(uint32_t weight) const;
 
 		Cylinder* parent = nullptr;
-		std::unique_ptr<ItemAttributes> attributes;
 
 		uint32_t referenceCounter = 0;
 
@@ -1114,9 +1229,17 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 	
 	private:
+		std::unique_ptr<ItemAttributes> itemAttributesPtr;
+		uint16_t depotId;
+		uint32_t sleeperGUID;
+		uint32_t sleepStart;
+		Position destinationPosition;
+		uint32_t serializationCount = 0;
+
 		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
+		friend class IOMapSerialize;
 };
 
 using ItemList = std::list<Item*>;

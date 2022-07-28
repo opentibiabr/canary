@@ -1,23 +1,11 @@
 /**
- * @file monster.cpp
- *
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -25,6 +13,8 @@
 #include "game/game.h"
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
+
+#include <ranges>
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -79,6 +69,15 @@ void Monster::addList()
 void Monster::removeList()
 {
 	g_game().removeMonster(this);
+}
+
+bool Monster::isEnemyFaction(Faction_t faction) const
+{
+	if (master && master->getMonster()) {
+		return master->getMonster()->isEnemyFaction(faction);
+	}
+
+	return mType->info.enemyFactions.empty() ? false : mType->info.enemyFactions.contains(faction);
 }
 
 bool Monster::canSee(const Position& pos) const
@@ -346,7 +345,7 @@ void Monster::removeFriend(Creature* creature)
 void Monster::addTarget(Creature* creature, bool pushFront/* = false*/)
 {
 	assert(creature != this);
-	if (std::find(targetList.begin(), targetList.end(), creature) == targetList.end()) {
+	if (std::ranges::find(targetList.begin(), targetList.end(), creature) == targetList.end()) {
 		creature->incrementReferenceCounter();
 		if (pushFront) {
 			targetList.push_front(creature);
@@ -364,7 +363,7 @@ void Monster::removeTarget(Creature* creature)
 		return;
 	}
 
-	auto it = std::find(targetList.begin(), targetList.end(), creature);
+	auto it = std::ranges::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
 		creature->decrementReferenceCounter();
 		targetList.erase(it);
@@ -377,27 +376,23 @@ void Monster::removeTarget(Creature* creature)
 
 void Monster::updateTargetList()
 {
-	auto friendIterator = friendList.begin();
-	while (friendIterator != friendList.end()) {
-		Creature* creature = *friendIterator;
-		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+	std::erase_if(friendList, [this](auto friendIterator) {
+		if (Creature* creature = friendIterator;
+		creature->getHealth() <= 0 || !canSee(creature->getPosition()))
+		{
 			creature->decrementReferenceCounter();
-			friendIterator = friendList.erase(friendIterator);
-		} else {
-			++friendIterator;
 		}
-	}
+		return true;
+	});
 
-	auto targetIterator = targetList.begin();
-	while (targetIterator != targetList.end()) {
-		Creature* creature = *targetIterator;
-		if (creature->getHealth() <= 0 || !canSee(creature->getPosition())) {
+	std::erase_if(targetList, [this](auto targetIterator) {
+		if (Creature* creature = targetIterator;
+		creature->getHealth() <= 0 || !canSee(creature->getPosition()))
+		{
 			creature->decrementReferenceCounter();
-			targetIterator = targetList.erase(targetIterator);
-		} else {
-			++targetIterator;
 		}
-	}
+		return true;
+	});
 
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, position, true);
@@ -662,7 +657,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 void Monster::onFollowCreatureComplete(const Creature* creature)
 {
 	if (creature) {
-		auto it = std::find(targetList.begin(), targetList.end(), creature);
+		auto it = std::ranges::find(targetList.begin(), targetList.end(), creature);
 		if (it != targetList.end()) {
 			Creature* target = (*it);
 			targetList.erase(it);
@@ -726,7 +721,7 @@ bool Monster::selectTarget(Creature* creature)
 		return false;
 	}
 
-	auto it = std::find(targetList.begin(), targetList.end(), creature);
+	auto it = std::ranges::find(targetList.begin(), targetList.end(), creature);
 	if (it == targetList.end()) {
 		//Target not found in our target list.
 		return false;
@@ -734,7 +729,7 @@ bool Monster::selectTarget(Creature* creature)
 
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
-			g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+			g_dispatcher().addTask(createTask(std::bind_front(&Game::checkCreatureAttack, &g_game(), getID())));
 		}
 	}
 	return setFollowCreature(creature);
@@ -1139,7 +1134,7 @@ bool Monster::pushItem(Item* item)
 		{-1,  1}, {0,  1}, {1,  1}
 	};
 
-	std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+	std::ranges::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 
 	for (const auto& it : relList) {
 		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
@@ -1186,7 +1181,7 @@ bool Monster::pushCreature(Creature* creature)
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
 	};
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+	std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	for (Direction dir : dirList) {
 		const Position& tryPos = Spells::getCasterPosition(creature, dir);
@@ -1287,7 +1282,7 @@ bool Monster::getRandomStep(const Position& creaturePos, Direction& moveDirectio
 		DIRECTION_WEST, DIRECTION_EAST,
 			DIRECTION_SOUTH
 	};
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+	std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	for (Direction dir : dirList) {
 		if (canWalkTo(creaturePos, dir)) {
@@ -1382,7 +1377,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 	}
 
 	if (!dirList.empty()) {
-		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+		std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
 		return true;
 	}

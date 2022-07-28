@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -43,11 +33,11 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 
 	do {
 		MarketOffer offer;
-		offer.amount = result->getNumber<uint16_t>("amount");
-		offer.price = result->getNumber<uint32_t>("price");
-		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
-		if (result->getNumber<uint16_t>("anonymous") == 0) {
+		offer.amount = result->getU16("amount");
+		offer.price = result->getU32("price");
+		offer.timestamp = result->getU32("created") + marketOfferDuration;
+		offer.counter = result->getU32("id") & 0xFFFF;
+		if (result->getU16("anonymous") == 0) {
 			offer.playerName = result->getString("player_name");
 		} else {
 			offer.playerName = "Anonymous";
@@ -73,11 +63,11 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 
 	do {
 		MarketOffer offer;
-		offer.amount = result->getNumber<uint16_t>("amount");
-		offer.price = result->getNumber<uint32_t>("price");
-		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
-		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
-		offer.itemId = result->getNumber<uint16_t>("itemtype");
+		offer.amount = result->getU16("amount");
+		offer.price = result->getU32("price");
+		offer.timestamp = result->getU32("created") + marketOfferDuration;
+		offer.counter = result->getU32("id") & 0xFFFF;
+		offer.itemId = result->getU16("itemtype");
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -97,12 +87,12 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 
 	do {
 		HistoryMarketOffer offer;
-		offer.itemId = result->getNumber<uint16_t>("itemtype");
-		offer.amount = result->getNumber<uint16_t>("amount");
-		offer.price = result->getNumber<uint32_t>("price");
-		offer.timestamp = result->getNumber<uint32_t>("expires_at");
+		offer.itemId = result->getU16("itemtype");
+		offer.amount = result->getU16("amount");
+		offer.price = result->getU32("price");
+		offer.timestamp = result->getU32("expires_at");
 
-		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getNumber<uint16_t>("state"));
+		auto offerState = static_cast<MarketOfferState_t>(result->getU16("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
 			offerState = OFFERSTATE_ACCEPTED;
 		}
@@ -121,14 +111,14 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 	}
 
 	do {
-		if (!IOMarket::moveOfferToHistory(result->getNumber<uint32_t>("id"), OFFERSTATE_EXPIRED)) {
+		if (!IOMarket::moveOfferToHistory(result->getU32("id"), OFFERSTATE_EXPIRED)) {
 			continue;
 		}
 
-		const uint32_t playerId = result->getNumber<uint32_t>("player_id");
-		const uint16_t amount = result->getNumber<uint16_t>("amount");
-		if (result->getNumber<uint16_t>("sale") == 1) {
-			const ItemType& itemType = Item::items[result->getNumber<uint16_t>("itemtype")];
+		const uint32_t playerId = result->getU32("player_id");
+		const uint16_t amount = result->getU16("amount");
+		if (result->getU16("sale") == 1) {
+			const ItemType& itemType = Item::items[result->getU16("itemtype")];
 			if (itemType.id == 0) {
 				continue;
 			}
@@ -175,7 +165,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				delete player;
 			}
 		} else {
-			uint64_t totalPrice = result->getNumber<uint64_t>("price") * amount;
+			uint64_t totalPrice = result->getU64("price") * amount;
 
 			Player* player = g_game().getPlayerByGUID(playerId);
 			if (player) {
@@ -189,7 +179,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 void IOMarket::checkExpiredOffers()
 {
-	const time_t lastExpireDate = time(nullptr) - g_configManager().getNumber(MARKET_OFFER_DURATION);
+	const time_t lastExpireDate = Game::getTimeNow() - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::ostringstream query;
 	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
@@ -212,7 +202,7 @@ uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId)
 	if (!result) {
 		return 0;
 	}
-	return result->getNumber<int32_t>("count");
+	return result->get32("count");
 }
 
 MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
@@ -230,15 +220,15 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 		return offer;
 	}
 
-	offer.id = result->getNumber<uint32_t>("id");
-	offer.type = static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale"));
-	offer.amount = result->getNumber<uint16_t>("amount");
-	offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
-	offer.timestamp = result->getNumber<uint32_t>("created");
-	offer.price = result->getNumber<uint32_t>("price");
-	offer.itemId = result->getNumber<uint16_t>("itemtype");
-	offer.playerId = result->getNumber<uint32_t>("player_id");
-	if (result->getNumber<uint16_t>("anonymous") == 0) {
+	offer.id = result->getU32("id");
+	offer.type = static_cast<MarketAction_t>(result->getU16("sale"));
+	offer.amount = result->getU16("amount");
+	offer.counter = result->getU32("id") & 0xFFFF;
+	offer.timestamp = result->getU32("created");
+	offer.price = result->getU32("price");
+	offer.itemId = result->getU16("itemtype");
+	offer.playerId = result->getU32("player_id");
+	if (result->getU16("anonymous") == 0) {
 		offer.playerName = result->getString("player_name");
 	} else {
 		offer.playerName = "Anonymous";
@@ -249,7 +239,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 void IOMarket::createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, bool anonymous)
 {
 	std::ostringstream query;
-	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `created`, `anonymous`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << price << ',' << time(nullptr) << ',' << anonymous << ')';
+	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `created`, `anonymous`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << price << ',' << Game::getTimeNow() << ',' << anonymous << ')';
 	Database::getInstance().executeQuery(query.str());
 }
 
@@ -272,7 +262,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	std::ostringstream query;
 	query << "INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`) VALUES ("
 		<< playerId << ',' << type << ',' << itemId << ',' << amount << ',' << price << ','
-		<< timestamp << ',' << time(nullptr) << ',' << state << ')';
+		<< timestamp << ',' << Game::getTimeNow() << ',' << state << ')';
 	g_databaseTasks().addTask(query.str());
 }
 
@@ -294,7 +284,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 		return false;
 	}
 
-	appendHistory(result->getNumber<uint32_t>("player_id"), static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")), result->getNumber<uint16_t>("itemtype"), result->getNumber<uint16_t>("amount"), result->getNumber<uint32_t>("price"), time(nullptr), state);
+	appendHistory(result->getU32("player_id"), static_cast<MarketAction_t>(result->getU16("sale")), result->getU16("itemtype"), result->getU16("amount"), result->getU32("price"), Game::getTimeNow(), state);
 	return true;
 }
 
@@ -309,16 +299,16 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics;
-		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
-			statistics = &purchaseStatistics[result->getNumber<uint16_t>("itemtype")];
+		if (result->getU16("sale") == MARKETACTION_BUY) {
+			statistics = &purchaseStatistics[result->getU16("itemtype")];
 		} else {
-			statistics = &saleStatistics[result->getNumber<uint16_t>("itemtype")];
+			statistics = &saleStatistics[result->getU16("itemtype")];
 		}
 
-		statistics->numTransactions = result->getNumber<uint32_t>("num");
-		statistics->lowestPrice = result->getNumber<uint32_t>("min");
-		statistics->totalPrice = result->getNumber<uint64_t>("sum");
-		statistics->highestPrice = result->getNumber<uint32_t>("max");
+		statistics->numTransactions = result->getU32("num");
+		statistics->lowestPrice = result->getU32("min");
+		statistics->totalPrice = result->getU64("sum");
+		statistics->highestPrice = result->getU32("max");
 	} while (result->next());
 }
 

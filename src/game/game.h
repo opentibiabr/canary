@@ -1,26 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
 */
 
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
 
 #include <unordered_set>
+#include <ranges>
+#include <numeric>
 
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
@@ -165,9 +157,9 @@ class Game
 		void addItemsClassification(ItemClassification* itemsClassification) {
 			itemsClassifications.push_back(itemsClassification);
 		}
-		ItemClassification* getItemsClassification(uint8_t id, bool create) {
-			auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
-				return it->id == id;
+		const ItemClassification* getItemsClassification(uint8_t id, bool create) {
+			const auto it = std::ranges::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](const ItemClassification* itemClassification) {
+				return itemClassification->id == id;
 				});
 
 			if (it != itemsClassifications.end()) {
@@ -263,6 +255,7 @@ class Game
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
+		static void playerSendHighscoreTask(DBResult_ptr result, bool, uint32_t playerID, uint8_t category, uint8_t entriesPerPage);
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage);
 
 		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
@@ -471,10 +464,12 @@ class Game
 		void sendOfflineTrainingDialog(Player* player);
 
 		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
-		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
+		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
-		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
+		const std::vector<ItemClassification*>& getItemsClassifications() const {
+			return itemsClassifications;
+		}
 
 		void addPlayer(Player* player);
 		void removePlayer(Player* player);
@@ -490,7 +485,7 @@ class Game
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position& pos);
 
-		std::unordered_map<Tile*, Container*> browseFields;
+		phmap::flat_hash_map<Tile*, Container*> browseFields;
 
 		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
 
@@ -514,7 +509,7 @@ class Game
 		GameStore gameStore;
 		Canary::protobuf::appearances::Appearances appearances;
 
-		std::unordered_set<Tile*> getTilesToClean() const {
+		phmap::flat_hash_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
 		}
 		void addTileToClean(Tile* tile) {
@@ -563,20 +558,33 @@ class Game
 
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
 		bool isMagicEffectRegistered(uint8_t type) const {
-			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
+			return std::ranges::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
 		}
 
 		bool isDistanceEffectRegistered(uint8_t type) const {
-			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
+			return std::ranges::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
 		}
 
 		bool isLookTypeRegistered(uint16_t type) const {
-			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
+			return std::ranges::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
 		}
 
 		void setCreateLuaItems(Position position, uint16_t itemId) {
 			mapLuaItemsStored[position] = itemId;
 		}
+		
+		// Return time now
+		static std::time_t getTimeNow();
+
+		static tm getTime(time_t timeNow = 0);
+
+		// Return actual day
+		static uint16_t getDateDay();
+		static uint16_t getDateMonth();
+		static int32_t getDateYear();
+
+		// Return actual minute
+		static int32_t getTimeMinutes();
 
 	private:
 		void checkImbuements();
@@ -586,11 +594,11 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
-		std::unordered_map<uint32_t, Player*> players;
-		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
-		std::unordered_map<std::string, Player*> mappedPlayerNames;
-		std::unordered_map<uint32_t, Guild*> guilds;
-		std::unordered_map<uint16_t, Item*> uniqueItems;
+		phmap::flat_hash_map<uint32_t, Player*> players;
+		phmap::flat_hash_map<uint32_t, uint8_t> playersActiveImbuements;
+		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
+		phmap::flat_hash_map<uint32_t, Guild*> guilds;
+		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
 
 		/* Items stored from the lua scripts positions
@@ -626,7 +634,7 @@ class Game
 
 		std::map<uint32_t, BedItem*> bedSleepersMap;
 
-		std::unordered_set<Tile*> tilesToClean;
+		phmap::flat_hash_set<Tile*> tilesToClean;
 
 		ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 
@@ -646,7 +654,7 @@ class Game
 		LightState_t lightState = LIGHT_STATE_DAY;
 		LightState_t currentLightState = lightState;
 		uint8_t lightLevel = LIGHT_LEVEL_DAY;
-		int32_t lightHour = SUNRISE + (SUNSET - SUNRISE) / 2;
+		int32_t lightHour = std::midpoint(SUNRISE, SUNSET);
 		// (1440 total light of tibian day)/(3600 real seconds each tibian day) * 10 seconds event interval
 		int32_t lightHourDelta = (LIGHT_DAY_LENGTH * (EVENT_LIGHTINTERVAL_MS/1000)) / DAY_LENGTH_SECONDS;
 

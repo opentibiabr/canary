@@ -1,26 +1,15 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
-#include <boost/lexical_cast.hpp>
 #include <mysql/mysql.h>
 #include <memory>
 #include <mutex>
@@ -85,7 +74,7 @@ class Database
 		std::recursive_mutex databaseLock;
 		uint64_t maxPacketSize = 1048576;
 
-	friend class DBTransaction;
+		friend class DBTransaction;
 };
 
 class DBResult
@@ -98,45 +87,25 @@ class DBResult
 		DBResult(const DBResult&) = delete;
 		DBResult& operator=(const DBResult&) = delete;
 
-		template<typename T>
-		T getNumber(const std::string& s) const {
-			auto it = listNames.find(s);
-			if (it == listNames.end()) {
-				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-				return static_cast<T>(0);
-			}
-
-			if (row[it->second] == nullptr) {
-				return static_cast<T>(0);
-			}
-
-			T data = { 0 };
-			try {
-				data = boost::lexical_cast<T>(row[it->second]);
-			}
-			catch (boost::bad_lexical_cast&) {
-				// overflow; tries to get it as uint64 (as big as possible);
-				uint64_t u64data;
-				try {
-					u64data = boost::lexical_cast<uint64_t>(row[it->second]);
-					if (u64data > 0) {
-						// is a valid! thus truncate into int max for data type;
-						data = std::numeric_limits<T>::max();
-					}
-				}
-				catch (boost::bad_lexical_cast &e) {
-					// invalid! discard value.
-					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, e.what());
-					data = 0;
-				}
-			}
-			return data;
-		}
-
+		// Get size of the table
+		const char* getResult(const std::string& string) const;
+		// Get signed intenger
+		int8_t get8(const std::string& tableName) const;
+		int16_t get16(const std::string& tableName) const;
+		int32_t get32(const std::string& tableName) const;
+		int64_t get64(const std::string& tableName) const;
+		// Get unsigned intenger
+		uint8_t getU8(const std::string& tableName) const;
+		uint16_t getU16(const std::string& tableName) const;
+		uint32_t getU32(const std::string& tableName) const;
+		uint64_t getU64(const std::string& tableName) const;
+		// Others conversions
+		time_t getTime(const std::string& tableName) const;
+		bool getBoolean(const std::string& tableName) const;
 		std::string getString(const std::string& s) const;
 		const char* getStream(const std::string& s, unsigned long& size) const;
 
-    size_t countResults() const;
+		size_t countResults() const;
 		bool hasNext() const;
 		bool next();
 
@@ -145,8 +114,7 @@ class DBResult
 		MYSQL_ROW row;
 
 		std::map<std::string, size_t> listNames;
-
-	friend class Database;
+		friend class Database;
 };
 
 /**

@@ -1,72 +1,70 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
 #include "game/game.h"
 #include "lua/creature/events.h"
-
-#include "utils/pugicast.h"
-
 #include "lua/creature/movement.h"
 #include "creatures/players/imbuements/imbuements.h"
 
+void MoveEvents::clearMap(std::map<int32_t, MoveEventList>& map) const {
+	for (auto [mapTypeId, moveEventList] : map) {
+		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
+			moveEventList.moveEventPtr[eventType].reset();
+		}
+	}
+	map.clear();
+}
+
 void MoveEvents::clear() {
-	uniqueIdMap.clear();
-	actionIdMap.clear();
-	itemIdMap.clear();
+	clearMap(itemIdMap);
+	clearMap(actionIdMap);
+	clearMap(uniqueIdMap);
+	// Clear position map
+	for (auto [position, moveEventList] : positionsMap) {
+		for (int eventType = MOVE_EVENT_STEP_IN; eventType < MOVE_EVENT_LAST; ++eventType) {
+			moveEventList.moveEventPtr[eventType].reset();
+		}
+	}
 	positionsMap.clear();
 }
 
-Event_ptr MoveEvents::getEvent(const std::string& nodeName) {
-	return Event_ptr(new MoveEvent(&scriptInterface));
-}
-
-bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
-	auto itemIdVector = moveEvent.getItemIdsVector();
+bool MoveEvents::registerLuaItemEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto itemIdVector = moveEventPtr->getItemIdsVector();
 	if (itemIdVector.empty()) {
 		return false;
 	}
 
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
-		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
+	for (uint16_t itemId : itemIdVector) {
+		if (moveEventPtr->getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
-			it.wieldInfo = moveEvent.getWieldInfo();
-			it.minReqLevel = moveEvent.getReqLevel();
-			it.minReqMagicLevel = moveEvent.getReqMagLv();
-			it.vocationString = moveEvent.getVocationString();
+			it.wieldInfo = moveEventPtr->getWieldInfo();
+			it.minReqLevel = moveEventPtr->getReqLevel();
+			it.minReqMagicLevel = moveEventPtr->getReqMagLv();
+			it.vocationString = moveEventPtr->getVocationString();
 		}
-		return registerEvent(moveEvent, itemId, itemIdMap);
-	});
+		registerEvent(moveEventPtr, itemId, itemIdMap);
+	}
 	itemIdVector.clear();
 	itemIdVector.shrink_to_fit();
 	return true;
 }
 
-bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
-	auto actionIdVector = moveEvent.getActionIdsVector();
+bool MoveEvents::registerLuaActionEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto actionIdVector = moveEventPtr->getActionIdsVector();
 	if (actionIdVector.empty()) {
 		return false;
 	}
 
-	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
-		return registerEvent(moveEvent, actionId, actionIdMap);
+	std::ranges::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEventPtr](const uint32_t &actionId) {
+		return registerEvent(moveEventPtr, actionId, actionIdMap);
 	});
 
 	actionIdVector.clear();
@@ -74,14 +72,14 @@ bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
 	return true;
 }
 
-bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
-	auto uniqueIdVector = moveEvent.getUniqueIdsVector();
+bool MoveEvents::registerLuaUniqueEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto uniqueIdVector = moveEventPtr->getUniqueIdsVector();
 	if (uniqueIdVector.empty()) {
 		return false;
 	}
 
-	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
-		return registerEvent(moveEvent, uniqueId, uniqueIdMap);
+	std::ranges::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEventPtr](const uint32_t &uniqueId) {
+		return registerEvent(moveEventPtr, uniqueId, uniqueIdMap);
 	});
 
 	uniqueIdVector.clear();
@@ -89,14 +87,14 @@ bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
 	return true;
 }
 
-bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
-	auto positionVector = moveEvent.getPositionsVector();
+bool MoveEvents::registerLuaPositionEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
+	auto positionVector = moveEventPtr->getPositionsVector();
 	if (positionVector.empty()) {
 		return false;
 	}
 
-	std::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
-		return registerEvent(moveEvent, position, positionsMap);
+	std::ranges::for_each(positionVector.begin(), positionVector.end(), [this, &moveEventPtr](const Position &position) {
+		return registerEvent(moveEventPtr, position, positionsMap);
 	});
 
 	positionVector.clear();
@@ -104,38 +102,34 @@ bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
 	return true;
 }
 
-bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
+bool MoveEvents::registerLuaEvent(std::shared_ptr<MoveEvent> moveEventPtr) {
 	// Check if event is correct
-	if (registerLuaItemEvent(moveEvent)
-	|| registerLuaUniqueEvent(moveEvent)
-	|| registerLuaActionEvent(moveEvent)
-	|| registerLuaPositionEvent(moveEvent))
+	if (registerLuaItemEvent(moveEventPtr)
+	|| registerLuaUniqueEvent(moveEventPtr)
+	|| registerLuaActionEvent(moveEventPtr)
+	|| registerLuaPositionEvent(moveEventPtr))
 	{
 		return true;
 	} else {
 		SPDLOG_WARN("[MoveEvents::registerLuaEvent] - "
-				"Missing id, aid, uid or position");
+				"Missing id, aid, uid or position for script with name {}", moveEventPtr->getFileName());
 		return false;
 	}
-	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for some script");
+	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for script with name {}", moveEventPtr->getFileName());
 	return false;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
+void MoveEvents::registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
-		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
-		moveListMap[id] = moveEventList;
+		moveListMap[id].moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	} else {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
-		for (MoveEvent& existingMoveEvent : moveEventList) {
-			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
-				SPDLOG_WARN("[MoveEvents::registerEvent] - "
-							"Duplicate move event found: {}", id);
-			}
+		// Won't show the warning if they are different events, example StepIn/StepOut
+		if (moveListMap.contains(id) && moveListMap[id].moveEventPtr[moveEventPtr->getEventType()]) {
+			SPDLOG_WARN("[MoveEvents::registerEvent] - "
+                        "Duplicate move event found: {}, for script with name {}", id, moveEventPtr->getFileName());
 		}
-		moveEventList.push_back(std::move(moveEvent));
+		it->second.moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	}
 }
 
@@ -156,24 +150,20 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 	}
 
 	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
-		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getActionId());
+		auto it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
-			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-			for (MoveEvent& moveEvent : moveEventList) {
-				if ((moveEvent.getSlot() & slotp) != 0) {
-					return &moveEvent;
-				}
+			MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+			if (moveEvent && (moveEvent->getSlot() & slotp) != 0) {
+				return moveEvent;
 			}
 		}
 	}
 
 	auto it = itemIdMap.find(item.getID());
 	if (it != itemIdMap.end()) {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-		for (MoveEvent& moveEvent : moveEventList) {
-			if ((moveEvent.getSlot() & slotp) != 0) {
-				return &moveEvent;
-			}
+		MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+		if (moveEvent && (moveEvent->getSlot() & slotp) != 0) {
+			return moveEvent;
 		}
 	}
 	return nullptr;
@@ -184,9 +174,9 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	if (item.hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
 		it = uniqueIdMap.find(item.getUniqueId());
 		if (it != uniqueIdMap.end()) {
-			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-			if (!moveEventList.empty()) {
-				return &(*moveEventList.begin());
+			MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+			if (moveEvent) {
+				return moveEvent;
 			}
 		}
 	}
@@ -194,37 +184,39 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
 		it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
-			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-			if (!moveEventList.empty()) {
-				return &(*moveEventList.begin());
+			MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+			if (moveEvent) {
+				return moveEvent;
 			}
 		}
 	}
 
 	it = itemIdMap.find(item.getID());
 	if (it != itemIdMap.end()) {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-		if (!moveEventList.empty()) {
-			return &(*moveEventList.begin());
+		MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+		if (moveEvent) {
+			return moveEvent;
 		}
 	}
 	return nullptr;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
-	auto it = moveListMap.find(position);
-	if (it == moveListMap.end()) {
-		MoveEventList moveEventList;
-		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
-		moveListMap[position] = moveEventList;
-	} else {
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
-		if (!moveEventList.empty()) {
-			SPDLOG_WARN("[MoveEvents::registerEvent] - "
-						"Duplicate move event found: {}", position.toString());
+void MoveEvents::registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
+	if (moveListMap.contains(position)) {
+		// Won't show the warning if they are different events, example StepIn/StepOut
+		if (!moveListMap[position].moveEventPtr[moveEventPtr->getEventType()]) {
+			return;
 		}
 
-		moveEventList.push_back(std::move(moveEvent));
+		SPDLOG_WARN("[MoveEvents::registerEvent] - "
+					"Duplicate move event found: {}, for script with name {}", position.toString(), moveEventPtr->getFileName());
+		return;
+	}
+	auto it = moveListMap.find(position);
+	if (it == moveListMap.end()) {
+		moveListMap[position].moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
+	} else {
+		it->second.moveEventPtr[moveEventPtr->getEventType()] = std::move(moveEventPtr);
 	}
 }
 
@@ -232,9 +224,9 @@ MoveEvent* MoveEvents::getEvent(Tile& tile, MoveEvent_t eventType) {
 	if (auto it = positionsMap.find(tile.getPosition());
 	it != positionsMap.end())
 	{
-		std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
-		if (!moveEventList.empty()) {
-			return &(*moveEventList.begin());
+		MoveEvent* moveEvent = it->second.moveEventPtr[eventType].get();
+		if (moveEvent) {
+			return moveEvent;
 		}
 	}
 	return nullptr;
@@ -245,7 +237,7 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 
 	uint32_t ret = 1;
 
-	MoveEvent* moveEvent = getEvent(tile, eventType);
+	MoveEvent *moveEvent = getEvent(tile, eventType);
 	if (moveEvent) {
 		ret &= moveEvent->fireStepEvent(creature, nullptr, pos);
 	}
@@ -270,7 +262,7 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 }
 
 uint32_t MoveEvents::onPlayerEquip(Player& player, Item& item, Slots_t slot, bool isCheck) {
-	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
+	MoveEvent *moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -278,7 +270,7 @@ uint32_t MoveEvents::onPlayerEquip(Player& player, Item& item, Slots_t slot, boo
 }
 
 uint32_t MoveEvents::onPlayerDeEquip(Player& player, Item& item, Slots_t slot) {
-	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
+	MoveEvent *moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -296,15 +288,13 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 	}
 
 	uint32_t ret = 1;
-	MoveEvent* moveEvent = getEvent(tile, eventType1);
+	MoveEvent *moveEvent = getEvent(tile, eventType1);
 	if (moveEvent) {
-		// No tile item
 		ret &= moveEvent->fireAddRemItem(item, tile.getPosition());
 	}
 
 	moveEvent = getEvent(item, eventType1);
 	if (moveEvent) {
-		// No tile item
 		ret &= moveEvent->fireAddRemItem(item, tile.getPosition());
 	}
 
@@ -323,11 +313,33 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 		if (moveEvent) {
 			ret &= moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
 		}
+
 	}
+
 	return ret;
 }
 
-MoveEvent::MoveEvent(LuaScriptInterface* interface) : Event(interface) {}
+MoveEvent::MoveEvent(LuaScriptInterface* interface) : Script(interface) {}
+
+std::string MoveEvent::getScriptTypeName() const {
+	switch (eventType) {
+	case MOVE_EVENT_STEP_IN:
+		return "onStepIn";
+	case MOVE_EVENT_STEP_OUT:
+		return "onStepOut";
+	case MOVE_EVENT_EQUIP:
+		return "onEquip";
+	case MOVE_EVENT_DEEQUIP:
+		return "onDeEquip";
+	case MOVE_EVENT_ADD_ITEM:
+		return "onAddItem";
+	case MOVE_EVENT_REMOVE_ITEM:
+		return "onRemoveItem";
+	default:
+		SPDLOG_ERROR("[MoveEvent::getScriptTypeName] - Invalid event type for script with name {}", getFileName());
+		return std::string();
+	}
+}
 
 uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position&) {
 	if (creature == nullptr) {
@@ -413,7 +425,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		}
 
 		const std::map<uint16_t, bool>& vocEquipMap = moveEvent->getVocEquipMap();
-		if (!vocEquipMap.empty() && vocEquipMap.find(player->getVocationId()) == vocEquipMap.end()) {
+		if (!vocEquipMap.empty() && !vocEquipMap.contains(player->getVocationId())) {
 			return 0;
 		}
 	}
@@ -610,7 +622,7 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 }
 
 uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position& pos) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		return executeStep(creature, item, pos);
 	} else {
 		return stepFunction(&creature, item, pos);
@@ -651,7 +663,7 @@ bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos)
 }
 
 uint32_t MoveEvent::fireEquip(Player& player, Item& item, Slots_t toSlot, bool isCheck) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		if (!equipFunction || equipFunction(this, &player, &item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {
 				return 1;
@@ -689,7 +701,7 @@ bool MoveEvent::executeEquip(Player& player, Item& item, Slots_t onSlot, bool is
 }
 
 uint32_t MoveEvent::fireAddRemItem(Item& item, Item& fromTile, const Position& pos) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
 		return moveFunction(&item, &fromTile, pos);
@@ -722,7 +734,7 @@ bool MoveEvent::executeAddRemItem(Item& item, Item& fromTile, const Position& po
 }
 
 uint32_t MoveEvent::fireAddRemItem(Item& item, const Position& pos) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		return executeAddRemItem(item, pos);
 	} else {
 		return moveFunction(&item, nullptr, pos);

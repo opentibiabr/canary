@@ -2,16 +2,12 @@
   "name": "canary",
   "version-string": "1.0.0",
   "dependencies": [
-    "boost-asio",
-    "boost-lockfree",
-    "boost-variant",
-    "boost-filesystem",
-    "boost-iostreams",
-    "boost-system",
+    "asio",
     "pugixml",
     "spdlog",
     "curl",
     "jsoncpp",
+    "parallel-hashmap",
     "protobuf",
     {
       "name": "luajit",

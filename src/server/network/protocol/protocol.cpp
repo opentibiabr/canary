@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -194,7 +184,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	}
 
 	uint16_t innerLength = msg.get<uint16_t>();
-	if (innerLength > msgLength - 2) {
+	if (std::cmp_greater(innerLength, msgLength - 2)) {
 		return false;
 	}
 
@@ -216,13 +206,12 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 
 uint32_t Protocol::getIP() const
 {
-	auto protocolConnection = getConnection();
-	if (protocolConnection == nullptr) {
-		SPDLOG_ERROR("[Protocol::getIP] - Connection is nullptr");
-		return 0;
+	if (auto protocolConnection = getConnection();
+	protocolConnection)
+	{
+		return protocolConnection->getIP();
 	}
-
-	return protocolConnection->getIP();
+	return 0;
 }
 
 void Protocol::enableCompression()
@@ -255,7 +244,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	static thread_local std::array<char, NETWORKMESSAGE_MAXSIZE> defBuffer;
 	defStream->next_in = msg.getOutputBuffer();
 	defStream->avail_in = outputMessageSize;
-	defStream->next_out = (Bytef*)defBuffer.data();
+	defStream->next_out = std::bit_cast<Bytef*>(defBuffer.data());
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
 	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
@@ -270,7 +259,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	}
 
 	msg.reset();
-	auto charData = static_cast<char*>(static_cast<void*>(defBuffer.data()));
+	auto charData = std::bit_cast<const char*>(defBuffer.data());
 	msg.addBytes(charData, static_cast<size_t>(totalSize));
 	return true;
 }

@@ -1,25 +1,14 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
-#include "utils/pugicast.h"
 
 #include "map/house/house.h"
 #include "io/iologindata.h"
@@ -31,6 +20,11 @@ House::House(uint32_t houseId) : id(houseId) {}
 
 void House::addTile(HouseTile* tile)
 {
+	if (tile == nullptr) {
+		SPDLOG_ERROR("[House::addTile] - Tile is nullptr");
+		return;
+	}
+
 	tile->setFlag(TILESTATE_PROTECTIONZONE);
 	houseTiles.push_back(tile);
 }
@@ -69,7 +63,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 
 		// Remove players from beds
 		for (BedItem* bed : bedsList) {
-			if (bed->getSleeper() != 0) {
+			if (bed->getSleeperGUID() != 0) {
 				bed->wakeUp(nullptr);
 			}
 		}
@@ -85,7 +79,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		}
 	} else {
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
-		time_t currentTime = time(nullptr);
+		time_t currentTime = Game::getTimeNow();
 		if (strRentPeriod == "yearly") {
            currentTime += 24 * 60 * 60 * 365;
 		} else if (strRentPeriod == "monthly") {
@@ -117,7 +111,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		if (!name.empty()) {
 			owner = guid;
 			ownerName = name;
-			ownerAccountId =  result->getNumber<uint32_t>("account_id");
+			ownerAccountId =  result->getU32("account_id");
 		}
 	}
 
@@ -329,7 +323,7 @@ void House::addDoor(Door* door)
 
 void House::removeDoor(Door* door)
 {
-	auto it = std::find(doorList.begin(), doorList.end(), door);
+	auto it = std::ranges::find(doorList.begin(), doorList.end(), door);
 	if (it != doorList.end()) {
 		door->decrementReferenceCounter();
 		doorList.erase(it);
@@ -544,7 +538,7 @@ bool AccessList::isInList(const Player* player)
 	}
 
 	GuildRank_ptr rank = player->getGuildRank();
-	return rank && guildRankList.find(rank->id) != guildRankList.end();
+	return rank && guildRankList.contains(rank->id);
 }
 
 void AccessList::getList(std::string& retList) const
@@ -553,20 +547,6 @@ void AccessList::getList(std::string& retList) const
 }
 
 Door::Door(uint16_t type) :	Item(type) {}
-
-Attr_ReadValue Door::readAttr(AttrTypes_t attr, PropStream& propStream)
-{
-	if (attr == ATTR_HOUSEDOORID) {
-		uint8_t doorId;
-		if (!propStream.read<uint8_t>(doorId)) {
-			return ATTR_READ_ERROR;
-		}
-
-		setDoorId(doorId);
-		return ATTR_READ_CONTINUE;
-	}
-	return Item::readAttr(attr, propStream);
-}
 
 void Door::setHouse(House* newHouse)
 {
@@ -647,7 +627,7 @@ bool Houses::loadHousesXML(const std::string& filename)
 			return false;
 		}
 
-		int32_t houseId = pugi::cast<int32_t>(houseIdAttribute.value());
+		int32_t houseId = houseIdAttribute.as_int();
 
 		House* house = getHouse(houseId);
 		if (!house) {
@@ -659,9 +639,9 @@ bool Houses::loadHousesXML(const std::string& filename)
 		house->setName(houseNode.attribute("name").as_string());
 
 		Position entryPos(
-			pugi::cast<uint16_t>(houseNode.attribute("entryx").value()),
-			pugi::cast<uint16_t>(houseNode.attribute("entryy").value()),
-			pugi::cast<uint16_t>(houseNode.attribute("entryz").value())
+			static_cast<uint16_t>(houseNode.attribute("entryx").as_uint()),
+			static_cast<uint16_t>(houseNode.attribute("entryy").as_uint()),
+			static_cast<uint8_t>(houseNode.attribute("entryz").as_uint())
 		);
 		if (entryPos.x == 0 && entryPos.y == 0 && entryPos.z == 0) {
 			SPDLOG_WARN("[Houses::loadHousesXML] - Entry not set for house "
@@ -669,8 +649,8 @@ bool Houses::loadHousesXML(const std::string& filename)
 		}
 		house->setEntryPos(entryPos);
 
-		house->setRent(pugi::cast<uint32_t>(houseNode.attribute("rent").value()));
-		house->setTownId(pugi::cast<uint32_t>(houseNode.attribute("townid").value()));
+		house->setRent(houseNode.attribute("rent").as_uint());
+		house->setTownId(houseNode.attribute("townid").as_uint());
 
 		house->setOwner(0, false);
 	}
@@ -683,7 +663,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 		return;
 	}
 
-	time_t currentTime = time(nullptr);
+	time_t currentTime = Game::getTimeNow();
 	for (const auto& it : houseMap) {
 		House* house = it.second;
 		if (house->getOwner() == 0) {

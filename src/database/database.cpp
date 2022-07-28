@@ -1,28 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
 #include "database/database.h"
+#include "utils/lexical_cast.hpp"
 
 #include <mysql/errmsg.h>
-
 
 Database::~Database()
 {
@@ -52,7 +42,7 @@ bool Database::connect()
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getNumber<uint64_t>("Value");
+		maxPacketSize = result->getU64("Value");
 	}
 	return true;
 }
@@ -79,7 +69,7 @@ bool Database::connect(const char *host, const char *user, const char *password,
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getNumber<uint64_t>("Value");
+		maxPacketSize = result->getU64("Value");
 	}
 	return true;
 }
@@ -113,10 +103,10 @@ bool Database::rollback()
 
 bool Database::commit()
 {
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return false;
-  }
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return false;
+	}
 
 	if (mysql_commit(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -130,10 +120,10 @@ bool Database::commit()
 
 bool Database::executeQuery(const std::string& query)
 {
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return false;
-  }
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return false;
+	}
 
 	bool success = true;
 
@@ -163,10 +153,10 @@ bool Database::executeQuery(const std::string& query)
 
 DBResult_ptr Database::storeQuery(const std::string& query)
 {
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return nullptr;
-  }
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return nullptr;
+	}
 
 	databaseLock.lock();
 
@@ -247,6 +237,125 @@ DBResult::DBResult(MYSQL_RES* res)
 DBResult::~DBResult()
 {
 	mysql_free_result(handle);
+}
+
+const char* DBResult::getResult(const std::string& string) const
+{
+	auto it = listNames.find(string);
+	if (it == listNames.end()) {
+		SPDLOG_ERROR("[DBResult::getResult] - Column '{}' doesn't exist in the result set", string);
+		return nullptr;
+	}
+
+	if (row[it->second] == nullptr) {
+		SPDLOG_DEBUG("Database result is nullptr");
+		return nullptr;
+	}
+
+	// Return the table size
+	SPDLOG_DEBUG("Database result founded: {}", it->second);
+	return row[it->second];
+}
+
+int8_t DBResult::get8(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<int8_t>(rowResult);
+}
+
+int16_t DBResult::get16(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<int16_t>(rowResult);
+}
+
+int32_t DBResult::get32(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<int32_t>(rowResult);
+}
+
+int64_t DBResult::get64(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return std::atoll(rowResult);
+}
+
+uint8_t DBResult::getU8(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<uint8_t>(rowResult);
+}
+
+uint16_t DBResult::getU16(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<uint16_t>(rowResult);
+}
+
+uint32_t DBResult::getU32(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<uint32_t>(rowResult);
+}
+
+uint64_t DBResult::getU64(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return LexicalCast::stringToNumeric<uint64_t>(rowResult);
+}
+
+time_t DBResult::getTime(const std::string& tableName) const
+{
+	auto rowResult = getResult(tableName);
+	if (rowResult == nullptr) {
+		return 0;
+	}
+
+	return std::atoi(rowResult);
+}
+
+bool DBResult::getBoolean(const std::string& tableName) const
+{
+	if (auto value = getU8(tableName);
+		std::cmp_equal(value, 0))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 std::string DBResult::getString(const std::string& s) const

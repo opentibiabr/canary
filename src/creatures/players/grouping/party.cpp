@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -103,7 +93,7 @@ bool Party::leaveParty(Player* player)
 	}
 
 	//since we already passed the leadership, we remove the player from the list
-	auto it = std::find(memberList.begin(), memberList.end(), player);
+	auto it = std::ranges::find(memberList.begin(), memberList.end(), player);
 	if (it != memberList.end()) {
 		memberList.erase(it);
 	}
@@ -147,7 +137,7 @@ bool Party::passPartyLeadership(Player* player)
 	}
 
 	//Remove it before to broadcast the message correctly
-	auto it = std::find(memberList.begin(), memberList.end(), player);
+	auto it = std::ranges::find(memberList.begin(), memberList.end(), player);
 	if (it != memberList.end()) {
 		memberList.erase(it);
 	}
@@ -186,7 +176,7 @@ bool Party::joinParty(Player& player)
 		return false;
 	}
 
-	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
+	auto it = std::ranges::find(inviteList.begin(), inviteList.end(), &player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -228,7 +218,7 @@ bool Party::joinParty(Player& player)
 
 bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 {
-	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
+	auto it = std::ranges::find(inviteList.begin(), inviteList.end(), &player);
 	if (it == inviteList.end()) {
 		return false;
 	}
@@ -294,7 +284,7 @@ bool Party::invitePlayer(Player& player)
 
 bool Party::isPlayerInvited(const Player* player) const
 {
-	return std::find(inviteList.begin(), inviteList.end(), player) != inviteList.end();
+	return std::ranges::find(inviteList.begin(), inviteList.end(), player) != inviteList.end();
 }
 
 void Party::updateAllPartyIcons()
@@ -661,7 +651,7 @@ void Party::switchAnalyzerPriceType()
 
 void Party::resetAnalyzer()
 {
-	trackerTime = time(nullptr);
+	trackerTime = Game::getTimeNow();
 	for (PartyAnalyzer* analyzer : membersData) {
 		delete analyzer;
 	}
@@ -689,4 +679,20 @@ void Party::reloadPrices()
 			analyzer->supplyPrice += leader->getItemCustomPrice(it.first, true) * it.second;
 		}
 	}
+}
+
+PartyAnalyzer* Party::getPlayerPartyAnalyzerStruct(uint32_t playerId) const
+{
+	if (auto it = std::ranges::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
+			return preyIt->id == playerId;
+		}); it != membersData.end()) {
+		return *it;
+	}
+
+	return nullptr;
+}
+
+uint32_t Party::getAnalyzerTimeNow() const
+{
+	return static_cast<uint32_t>(Game::getTimeNow() - trackerTime);
 }

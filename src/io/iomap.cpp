@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -54,7 +44,7 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 		return new StaticTile(x, y, z);
 	}
 
-	Tile* tile;
+	Tile *tile;
 	if ((item && item->isBlocking()) || ground->isBlocking()) {
 		tile = new StaticTile(x, y, z);
 	} else {
@@ -67,448 +57,392 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 	return tile;
 }
 
-bool IOMap::loadMap(Map* map, const std::string& fileName)
+bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fileName)
 {
 	int64_t start = OTSYS_TIME();
-	OTB::Loader loader{fileName, OTB::Identifier{{'O', 'T', 'B', 'M'}}};
-	auto& root = loader.parseTree();
-
-	PropStream propStream;
-	if (!loader.getProps(root, propStream)) {
-		setLastErrorString("Could not read root property.");
+	std::shared_ptr<BinaryNode> binaryNodeRoot = mapFile.getRootNode();
+	if (binaryNodeRoot == nullptr) {
+		SPDLOG_ERROR("[IOMap::loadMap] - BinaryNode is nullptr");
 		return false;
 	}
 
-	OTBM_root_header root_header;
-	if (!propStream.read(root_header)) {
-		setLastErrorString("Could not read header.");
+	// Skip type byte (uint8_t), this is outdated
+	if (!binaryNodeRoot->skip(1)) {
+		SPDLOG_ERROR("[IOMap::loadMap] - Could not skip type byte");
+		return false;
+	}
+	// Skip one uint32_t from the map version (deprecated before protobuf)
+	if (!binaryNodeRoot->skip(4)) {
+		SPDLOG_ERROR("[IOMap::loadMap] - Could not skip map version byte");
 		return false;
 	}
 
-	uint32_t headerVersion = root_header.version;
-	if (headerVersion <= 0) {
-		//In otbm version 1 the count variable after splashes/fluidcontainers and stackables
-		//are saved as attributes instead, this solves alot of problems with items
-		//that is changed (stackable/charges/fluidcontainer/splash) during an update.
-		setLastErrorString("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
+	uint16_t mapWidth = binaryNodeRoot->getU16();
+	uint16_t mapHeigth = binaryNodeRoot->getU16();
+	// Sanity check, if there is a problem loading the byte then we will know where it is
+	if (mapWidth == 0 || mapHeigth == 0) {
+		SPDLOG_ERROR("[IOMap::loadMap] - Cannot read map width or map weight");
 		return false;
 	}
 
-	if (headerVersion > 2) {
-		setLastErrorString("Unknown OTBM version detected.");
+	map->width = mapWidth;
+	map->height = mapHeigth;
+	SPDLOG_INFO("Map size: {}x{}", map->width, map->height);
+	// Skip two U32 from otb version major and minor (outdated before implementation of protobuf)
+	if (!binaryNodeRoot->skip(4)) {
+		SPDLOG_ERROR("[IOMap::loadMap] - Could not skip otb major and minor version byte");
 		return false;
 	}
 
-	if (root_header.majorVersionItems < 3) {
-		setLastErrorString("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
+	// This get node of "OTBM_MAP_DATA"
+	std::shared_ptr<BinaryNode> binaryNodeMapData = binaryNodeRoot->getChild();
+	// Parsing map data attributes information (monster, npc, house, etc)
+	if (!parseMapDataAttributes(*binaryNodeMapData, *map, fileName)) {
 		return false;
 	}
 
-	SPDLOG_INFO("Map size: {}x{}", root_header.width, root_header.height);
-	map->width = root_header.width;
-	map->height = root_header.height;
-
-	if (root.children.size() != 1 || root.children[0].type != OTBM_MAP_DATA) {
-		setLastErrorString("Could not read data node.");
-		return false;
-	}
-
-	auto& mapNode = root.children[0];
-	if (!parseMapDataAttributes(loader, mapNode, *map, fileName)) {
-		return false;
-	}
-
-	for (auto& mapDataNode : mapNode.children) {
-		if (mapDataNode.type == OTBM_TILE_AREA) {
-			if (!parseTileArea(loader, mapDataNode, *map)) {
-				return false;
+	for (std::shared_ptr<BinaryNode> binaryNodeMapTileArea = binaryNodeMapData->getChild();
+	binaryNodeMapTileArea != nullptr; binaryNodeMapTileArea = binaryNodeMapTileArea->advance())
+	{
+		const uint8_t mapDataType = binaryNodeMapTileArea->getU8();
+		if (mapDataType == OTBM_TILE_AREA) {
+			if (!parseTileArea(*binaryNodeMapTileArea, *map)) {
+				continue;
 			}
-		} else if (mapDataNode.type == OTBM_TOWNS) {
-			if (!parseTowns(loader, mapDataNode, *map)) {
-				return false;
+		} else if (mapDataType == OTBM_TOWNS) {
+			if (!parseTowns(*binaryNodeMapTileArea, *map)) {
+				continue;
 			}
-		} else if (mapDataNode.type == OTBM_WAYPOINTS && headerVersion > 1) {
-			if (!parseWaypoints(loader, mapDataNode, *map)) {
-				return false;
+		} else if (mapDataType == OTBM_WAYPOINTS) {
+			if (!parseWaypoints(*binaryNodeMapTileArea, *map)) {
+				continue;
 			}
 		} else {
-			setLastErrorString("Unknown map node.");
-			return false;
+			SPDLOG_ERROR("[IOMap::loadMap] - Unknown map data node");
+			continue;
 		}
 	}
+
+	mapFile.close();
 
 	SPDLOG_INFO("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
 	return true;
 }
 
-bool IOMap::parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::string& fileName)
+bool IOMap::parseMapDataAttributes(BinaryNode &binaryNodeMapData, Map& map, const std::string& fileName) const
 {
-	PropStream propStream;
-	if (!loader.getProps(mapNode, propStream)) {
-		setLastErrorString("Could not read map data attributes.");
+	if (binaryNodeMapData.getU8() != OTBM_MAP_DATA) {
+		SPDLOG_ERROR("[IOMap::parseMapDataAttributes] - Could not read root data node");
 		return false;
 	}
 
-	std::string mapDescription;
-	std::string tmp;
-
-	uint8_t attribute;
-	while (propStream.read<uint8_t>(attribute)) {
+	while (binaryNodeMapData.canRead()) {
+		const uint8_t attribute = binaryNodeMapData.getU8();
+		std::string mapDataString = binaryNodeMapData.getString();
 		switch (attribute) {
 			case OTBM_ATTR_DESCRIPTION:
-				if (!propStream.readString(mapDescription)) {
-					setLastErrorString("Invalid description tag.");
-					return false;
-				}
 				break;
-
 			case OTBM_ATTR_EXT_SPAWN_MONSTER_FILE:
-				if (!propStream.readString(tmp)) {
-					setLastErrorString("Invalid monster spawn tag. Make sure you are using the correct version of the map editor.");
-					return false;
-				}
-
 				map.monsterfile = fileName.substr(0, fileName.rfind('/') + 1);
-				map.monsterfile += tmp;
+				map.monsterfile += mapDataString;
 				break;
-
 			case OTBM_ATTR_EXT_HOUSE_FILE:
-				if (!propStream.readString(tmp)) {
-					setLastErrorString("Invalid house tag.");
-					return false;
-				}
-
 				map.housefile = fileName.substr(0, fileName.rfind('/') + 1);
-				map.housefile += tmp;
+				map.housefile += mapDataString;
 				break;
-
 			case OTBM_ATTR_EXT_SPAWN_NPC_FILE:
-				if (!propStream.readString(tmp)) {
-					setLastErrorString("Invalid npc spawn tag. Make sure you are using the correct version of the map editor.");
-					return false;
-				}
-
 				map.npcfile = fileName.substr(0, fileName.rfind('/') + 1);
-				map.npcfile += tmp;
+				map.npcfile += mapDataString;
 				break;
-
 			default:
-				setLastErrorString("Unknown header node.");
+				SPDLOG_ERROR("[IOMap::parseMapDataAttributes] - Could not get map data node. Invalid map data attribute: {}", attribute);
 				return false;
 		}
 	}
 	return true;
 }
 
-bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map)
+void IOMap::readAttributeTileFlags(BinaryNode &binaryNodeMapTile, uint32_t &tileflags) const
 {
-	PropStream propStream;
-	if (!loader.getProps(tileAreaNode, propStream)) {
-		setLastErrorString("Invalid map node.");
-		return false;
+	if (const uint32_t flags = binaryNodeMapTile.getU32();
+	(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
+	{
+		tileflags |= TILESTATE_PROTECTIONZONE;
+	} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
+		tileflags |= TILESTATE_NOPVPZONE;
+	} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
+		tileflags |= TILESTATE_PVPZONE;
 	}
 
-	OTBM_Destination_coords area_coord;
-	if (!propStream.read(area_coord)) {
-		setLastErrorString("Invalid map node.");
-		return false;
+	if ((tileflags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
+		tileflags |= TILESTATE_NOLOGOUT;
+	}
+}
+
+std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const
+{
+	Item* item = Item::createMapItem(binaryNodeMapTile);
+	if (!item) {
+		SPDLOG_ERROR("[IOMap::readAttributeTileItem] - Failed to create item on position: {}", tilePosition.toString());
+		return std::make_tuple(nullptr, nullptr);
 	}
 
-	uint16_t base_x = area_coord.x;
-	uint16_t base_y = area_coord.y;
-	uint16_t z = area_coord.z;
+	if (const Teleport* teleport = item->getTeleport()) {
+		// Teleport position / teleport destination
+		teleportMap.emplace(tilePosition, teleport->getDestination());
+		if (teleportMap.contains(teleport->getDestination())) {
+			SPDLOG_WARN("[IOMap::readAttributeTileItem] - "
+						"Teleport in position: {} "
+						"is leading to another teleport", tilePosition.toString());
+			return std::make_tuple(nullptr, nullptr);
+		}
+		for (auto const& [mapTeleportPosition, mapDestinationPosition] : teleportMap) {
+			if (mapDestinationPosition == tilePosition) {
+				SPDLOG_WARN("IOMap::readAttributeTileItem] - "
+							"Teleport in position: {} "
+							"is leading to another teleport",
+							mapDestinationPosition.toString());
+				continue;
+			}
+		}
+	}
 
-	static std::map<uint64_t, uint64_t> teleportMap;
+	if (isHouseTile && house && item->isMoveable()) {
+		SPDLOG_WARN("[IOMap::readAttributeTileItem] - "
+					"Moveable item with ID: {}, in house: {}, "
+					"at position: {}, discarding item",
+					item->getID(), house->getId(), tilePosition.toString());
+		delete item;
+		return std::make_tuple(nullptr, nullptr);
+	}
 
-	for (auto& tileNode : tileAreaNode.children) {
-		if (tileNode.type != OTBM_TILE && tileNode.type != OTBM_HOUSETILE) {
-			setLastErrorString("Unknown tile node.");
-			return false;
+	// Check if is house items
+	if (tile) {
+		tile->internalAddThing(0, item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	} else if (item->isGroundTile()) {
+		delete groundItem;
+		groundItem = item;
+	} else {
+		// Creating walls and others blocking items
+		tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	}
+	return std::make_tuple(tile, groundItem);
+}
+
+std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const
+{
+	Item* item = Item::createMapItem(nodeItem);
+	if (!item) {
+		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to create item on position {}", tilePosition.toString());
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	if (!item->unserializeMapItem(nodeItem, tilePosition)) {
+		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to load item with id: {}, on position {}", item->getID(), tilePosition.toString());
+		delete item;
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	if (isHouseTile && house && item->isMoveable()) {
+		SPDLOG_WARN("[IOMap::parseCreateTileItem] - "
+					"Moveable item with ID: {}, in house: {}, "
+					"at position: {}, discarding item",
+					item->getID(), house->getId(), tilePosition.toString());
+		delete item;
+		return std::make_tuple(nullptr, nullptr);
+	}
+
+	if (tile) {
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	} else if (item->isGroundTile()) {
+		delete groundItem;
+		groundItem = item;
+	} else {
+		tile = createTile(groundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	}
+	return std::make_tuple(tile, groundItem);
+}
+
+bool IOMap::parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const
+{
+	Position baseMapPosition;
+	baseMapPosition.x = binaryNodeMapData.getU16();
+	baseMapPosition.y = binaryNodeMapData.getU16();
+	baseMapPosition.z = binaryNodeMapData.getU8();
+
+	static std::map<Position, Position> teleportMap;
+	for (std::shared_ptr<BinaryNode> binaryNodeMapTile = binaryNodeMapData.getChild();
+	binaryNodeMapTile != nullptr; binaryNodeMapTile = binaryNodeMapTile->advance()) {
+		const uint8_t type = binaryNodeMapTile->getU8();
+		if (type == 0) {
+			SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid node tile with type {}", type);
+			break;
 		}
 
-		if (!loader.getProps(tileNode, propStream)) {
-			setLastErrorString("Could not read node data.");
-			return false;
-		}
-
-		OTBM_Tile_coords tile_coord;
-		if (!propStream.read(tile_coord)) {
-			setLastErrorString("Could not read tile position.");
-			return false;
-		}
-
-		uint16_t x = base_x + tile_coord.x;
-		uint16_t y = base_y + tile_coord.y;
+		Position tilePosition;
+		tilePosition.x = baseMapPosition.x + binaryNodeMapTile->getU8();
+		tilePosition.y = baseMapPosition.y + binaryNodeMapTile->getU8();
+		tilePosition.z = baseMapPosition.z;
 
 		bool isHouseTile = false;
-		House* house = nullptr;
-		Tile* tile = nullptr;
-		Item* ground_item = nullptr;
+		House *house = nullptr;
+		Tile *tile = nullptr;
+		Item *groundItem = nullptr;
 		uint32_t tileflags = TILESTATE_NONE;
 
-		if (tileNode.type == OTBM_HOUSETILE) {
-			uint32_t houseId;
-			if (!propStream.read<uint32_t>(houseId)) {
-				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not read house id.";
-				setLastErrorString(ss.str());
-				return false;
-			}
-
+		// Parsing houses load and creation
+		if (type == OTBM_HOUSETILE) {
+			const uint32_t houseId = binaryNodeMapTile->getU32();
 			house = map.houses.addHouse(houseId);
-			if (!house) {
-				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not create house id: " << houseId;
-				setLastErrorString(ss.str());
-				return false;
+			if (house == nullptr) {
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Could not create house id: {}, on position: {}", houseId, tilePosition.toString());
+				continue;
 			}
 
-			tile = new HouseTile(x, y, z, house);
+			tile = new HouseTile(tilePosition.x, tilePosition.y, tilePosition.z, house);
+			if (tile == nullptr) {
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Tile is nullptr, discarding house id: {}, on position: {}", houseId, tilePosition.toString());
+				continue;
+			}
+
 			house->addTile(static_cast<HouseTile*>(tile));
 			isHouseTile = true;
 		}
 
-		uint8_t attribute;
-		//read tile attributes
-		while (propStream.read<uint8_t>(attribute)) {
-			switch (attribute) {
-				case OTBM_ATTR_TILE_FLAGS: {
-					uint32_t flags;
-					if (!propStream.read<uint32_t>(flags)) {
-						std::ostringstream ss;
-						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to read tile flags.";
-						setLastErrorString(ss.str());
-						return false;
-					}
-
-					if ((flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0) {
-						tileflags |= TILESTATE_PROTECTIONZONE;
-					} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
-						tileflags |= TILESTATE_NOPVPZONE;
-					} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
-						tileflags |= TILESTATE_PVPZONE;
-					}
-
-					if ((flags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
-						tileflags |= TILESTATE_NOLOGOUT;
-					}
-					break;
-				}
-
-				case OTBM_ATTR_ITEM: {
-					Item* item = Item::CreateItem(propStream);
-					if (!item) {
-						std::ostringstream ss;
-						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
-						setLastErrorString(ss.str());
-						SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
-						break;;
-					}
-
-			if (Teleport* teleport = item->getTeleport()) {
-				const Position& destPos = teleport->getDestPos();
-				uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
-				uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
-				teleportMap.emplace(teleportPosition, destinationPosition);
-				auto it = teleportMap.find(destinationPosition);
-				if (it != teleportMap.end()) {
-					SPDLOG_WARN("[IOMap::loadMap] - "
-                                "Teleport in position: x {}, y {}, z {} "
-                                "is leading to another teleport", x, y, z);
-				}
-				for (auto const& it2 : teleportMap) {
-					if (it2.second == teleportPosition) {
-						uint16_t fx = (it2.first >> 24) & 0xFFFF;
-						uint16_t fy = (it2.first >> 8) & 0xFFFF;
-						uint8_t fz = (it2.first) & 0xFF;
-						SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Teleport in position: x {}, y {}, z {} "
-                                    "is leading to another teleport",
-                                    fx, fy, static_cast<uint16_t>(fz));
-					}
-				}
-
+		while (binaryNodeMapTile->canRead()) {
+			const uint8_t tileAttr = binaryNodeMapTile->getU8();
+			switch (tileAttr) {
+			case OTBM_ATTR_TILE_FLAGS:
+				readAttributeTileFlags(*binaryNodeMapTile, tileflags);
+				break;
+			case OTBM_ATTR_ITEM:
+				std::tie(tile, groundItem) = readAttributeTileItem(*binaryNodeMapTile, teleportMap, isHouseTile, house, groundItem, tile, tilePosition);
+				break;
+			default:
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Invalid tile attribute: {}, at position: {}", tileAttr, tilePosition.toString());
+				return false;
 			}
 
-					if (isHouseTile && item->isMoveable()) {
-						SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Moveable item with ID: {}, in house: {}, "
-                                    "at position: x {}, y {}, z {}",
-                                    item->getID(), house->getId(), x, y, z);
-						delete item;
-					} else {
-						if (item->getItemCount() <= 0) {
-							item->setItemCount(1);
-						}
-
-						if (tile) {
-							tile->internalAddThing(item);
-							item->startDecaying();
-							item->setLoadedFromMap(true);
-						} else if (item->isGroundTile()) {
-							delete ground_item;
-							ground_item = item;
-						} else {
-							tile = createTile(ground_item, item, x, y, z);
-							tile->internalAddThing(item);
-							item->startDecaying();
-							item->setLoadedFromMap(true);
-						}
-					}
-					break;
-				}
-
-				default:
-					std::ostringstream ss;
-					ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown tile attribute.";
-					setLastErrorString(ss.str());
-					return false;
-			}
 		}
 
-		for (auto& itemNode : tileNode.children) {
-			if (itemNode.type != OTBM_ITEM) {
-				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown node type.";
-				setLastErrorString(ss.str());
-				return false;
+		for (std::shared_ptr<BinaryNode> nodeItem = binaryNodeMapTile->getChild(); nodeItem != nullptr; nodeItem = nodeItem->advance()) {
+			if (nodeItem->getU8() != OTBM_ITEM) {
+				SPDLOG_ERROR("[IOMap::parseTileArea] - Unknown item node with type {}, at position {}", type, tilePosition.toString());
+				continue;
 			}
 
-			PropStream stream;
-			if (!loader.getProps(itemNode, stream)) {
-				setLastErrorString("Invalid item node.");
-				return false;
-			}
-
-			Item* item = Item::CreateItem(stream);
-			if (!item) {
-				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
-				setLastErrorString(ss.str());
-				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
-				continue;;
-			}
-
-			if (!item->unserializeItemNode(loader, itemNode, stream)) {
-				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
-				setLastErrorString(ss.str());
-				delete item;
-				return false;
-			}
-
-			if (isHouseTile && item->isMoveable()) {
-				SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Moveable item with ID: {}, in house: {}, "
-                                    "at position: x {}, y {}, z {}",
-                                    item->getID(), house->getId(), x, y, z);
-				delete item;
-			} else {
-				if (item->getItemCount() <= 0) {
-					item->setItemCount(1);
-				}
-
-				if (tile) {
-					tile->internalAddThing(item);
-					item->startDecaying();
-					item->setLoadedFromMap(true);
-				} else if (item->isGroundTile()) {
-					delete ground_item;
-					ground_item = item;
-				} else {
-					tile = createTile(ground_item, item, x, y, z);
-					tile->internalAddThing(item);
-					item->startDecaying();
-					item->setLoadedFromMap(true);
-				}
-			}
+			std::tie(tile, groundItem) = parseCreateTileItem(*nodeItem, isHouseTile, house, groundItem, tile, tilePosition);
 		}
 
-		if (!tile) {
-			tile = createTile(ground_item, nullptr, x, y, z);
+		if (tile == nullptr) {
+			tile = createTile(groundItem, nullptr, tilePosition.x, tilePosition.y, tilePosition.z);
+		}
+
+		// Sanity check, it will probably never happen, but it doesn't hurt to put this
+		if (tile == nullptr) {
+			SPDLOG_ERROR("[IOMap::parseTileArea] - Tile is nullptr");
+			continue;
 		}
 
 		tile->setFlag(static_cast<TileFlags_t>(tileflags));
-
-		map.setTile(x, y, z, tile);
+		map.setTile(tilePosition, tile);
 	}
 	return true;
 }
 
-bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map)
+// Parse towns information data
+bool IOMap::parseTowns(BinaryNode &binaryNodeMapData, Map& map)
 {
-	for (auto& townNode : townsNode.children) {
-		PropStream propStream;
-		if (townNode.type != OTBM_TOWN) {
-			setLastErrorString("Unknown town node.");
-			return false;
+	Town *town = nullptr;
+	for (std::shared_ptr<BinaryNode> binaryNodeTown = binaryNodeMapData.getChild();
+	binaryNodeTown != nullptr; binaryNodeTown = binaryNodeTown->advance())
+	{
+		if (binaryNodeTown->getU8() != OTBM_TOWN) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Invalid town node");
+			continue;
 		}
 
-		if (!loader.getProps(townNode, propStream)) {
-			setLastErrorString("Could not read town data.");
-			return false;
+		// Sanity check, if the town id is wrong then we know where the problem is
+		const uint32_t townId = binaryNodeTown->getU32();
+		if (townId == 0) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Invalid town id");
+			continue;
 		}
 
-		uint32_t townId;
-		if (!propStream.read<uint32_t>(townId)) {
-			setLastErrorString("Could not read town id.");
-			return false;
+		town = map.towns.getTown(townId);
+		if(town) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Duplicate town with id: {}, discarding town", townId);
+			continue;
 		}
 
-		Town* town = map.towns.getTown(townId);
-		if (!town) {
-			town = new Town(townId);
-			map.towns.addTown(townId, town);
+		// Creating new town variable to avoid use of "new"
+		town = new Town(townId);
+		if(!map.towns.addTown(townId, town)) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Cannot create town with id: {}, discarding town", townId);
+			delete town;
+			continue;
 		}
 
-		std::string townName;
-		if (!propStream.readString(townName)) {
-			setLastErrorString("Could not read town name.");
-			return false;
+		// Sanity check, if the string is empty then we know where the problem is
+		const std::string townName = binaryNodeTown->getString();
+		if (townName.empty()) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Could not read town name");
+			continue;
 		}
-
 		town->setName(townName);
 
-		OTBM_Destination_coords town_coords;
-		if (!propStream.read(town_coords)) {
-			setLastErrorString("Could not read town coordinates.");
-			return false;
+		uint16_t positionX = binaryNodeTown->getU16();
+		uint16_t positionY = binaryNodeTown->getU16();
+		uint8_t positionZ = binaryNodeTown->getU8();
+		// Sanity check, if there is an error in the get, we will know where the problem is
+		if(positionX == 0 || positionY == 0 || positionZ == 0) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Invalid town position");
+			continue;
 		}
 
-		town->setTemplePos(Position(town_coords.x, town_coords.y, town_coords.z));
+		town->setTemplePos(Position(positionX, positionY, positionZ));
 	}
 	return true;
 }
 
-
-bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map)
+// Parse waypoints information data
+bool IOMap::parseWaypoints(BinaryNode & binaryNodeMapData, Map& map) const
 {
-	PropStream propStream;
-	for (auto& node : waypointsNode.children) {
-		if (node.type != OTBM_WAYPOINT) {
-			setLastErrorString("Unknown waypoint node.");
-			return false;
+	for(std::shared_ptr<BinaryNode> binaryNodeWaypoint = binaryNodeMapData.getChild();
+	binaryNodeWaypoint != nullptr; binaryNodeWaypoint = binaryNodeWaypoint->advance())
+	{
+		if (binaryNodeWaypoint->getU8() != OTBM_WAYPOINT) {
+			SPDLOG_ERROR("[IOMap::parseWaypoints] - Invalid waypoint node");
+			continue;
 		}
 
-		if (!loader.getProps(node, propStream)) {
-			setLastErrorString("Could not read waypoint data.");
-			return false;
+		// Sanity check, if the string is empty then we know where the problem is
+		const std::string waypointName = binaryNodeWaypoint->getString();
+		if (waypointName.empty()) {
+			SPDLOG_ERROR("[IOMap::parseWaypoints] - Could not read waypoint name");
+			continue;
 		}
 
-		std::string name;
-		if (!propStream.readString(name)) {
-			setLastErrorString("Could not read waypoint name.");
-			return false;
+		uint16_t positionX = binaryNodeWaypoint->getU16();
+		uint16_t positionY = binaryNodeWaypoint->getU16();
+		uint8_t positionZ = binaryNodeWaypoint->getU8();
+		// Sanity check, if there is an error in the get, we will know where the problem is
+		if(positionX == 0 || positionY == 0 || positionZ == 0) {
+			SPDLOG_ERROR("[IOMap::parseWaypoints] - Invalid waypoint position");
+			continue;
 		}
 
-		OTBM_Destination_coords waypoint_coords;
-		if (!propStream.read(waypoint_coords)) {
-			setLastErrorString("Could not read waypoint coordinates.");
-			return false;
-		}
-
-		map.waypoints[name] = Position(waypoint_coords.x, waypoint_coords.y, waypoint_coords.z);
+		map.waypoints[waypointName] = Position(positionX, positionY, positionZ);
 	}
 	return true;
 }
-

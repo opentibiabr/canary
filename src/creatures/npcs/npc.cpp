@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -171,7 +161,6 @@ void Npc::onCreatureMove(Creature* creature, const Tile* newTile, const Position
 void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text)
 {
 	Creature::onCreatureSay(creature, type, text);
-
 	if (!creature->getPlayer()) {
 		return;
 	}
@@ -234,8 +223,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 	}
 
 	uint32_t buyPrice = 0;
-	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
+	for (const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	ShopBlock shopBlock : shopVector)
 	{
 		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
 		{
@@ -283,8 +272,8 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 
 	uint32_t sellPrice = 0;
 	const ItemType& itemType = Item::items[itemId];
-	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
+	for (const std::vector<ShopBlock> &shopVector = getShopItemVector();
+	ShopBlock shopBlock : shopVector)
 	{
 		if (itemType.id == shopBlock.itemId && shopBlock.itemSellPrice != 0)
 		{
@@ -459,13 +448,22 @@ void Npc::updatePlayerInteractions(Player* player) {
 }
 
 void Npc::removePlayerInteraction(uint32_t playerId) {
-	if (playerInteractions.find(playerId) != playerInteractions.end()) {
+	if (playerInteractions.contains(playerId)) {
 		playerInteractions.erase(playerId);
 	}
 }
 
 void Npc::resetPlayerInteractions() {
 	playerInteractions.clear();
+}
+
+bool Npc::isInteractingWithPlayer(uint32_t playerId) const 
+{
+	if (!playerInteractions.contains(playerId)) {
+		return false;
+	}
+
+	return true;
 }
 
 bool Npc::canWalkTo(const Position& fromPos, Direction dir) const

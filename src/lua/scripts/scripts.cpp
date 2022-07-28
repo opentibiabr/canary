@@ -1,25 +1,15 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include "creatures/combat/spells.h"
 #include "creatures/interactions/chat.h"
@@ -44,17 +34,15 @@ Scripts::~Scripts() {
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
-	namespace fs = boost::filesystem;
-
-	const auto dir = fs::current_path() / "data" / "events" / "scripts" / "scheduler";
-	if(!fs::exists(dir) || !fs::is_directory(dir)) {
+	const auto dir = std::filesystem::current_path() / "data" / "events" / "scripts" / "scheduler";
+	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
 		SPDLOG_WARN("Can not load folder 'scheduler' on '/data/events/scripts'");
 		return false;
 	}
 
-	fs::recursive_directory_iterator endit;
-	for(fs::recursive_directory_iterator it(dir); it != endit; ++it) {
-		if(fs::is_regular_file(*it) && it->path().extension() == ".lua") {
+	std::filesystem::recursive_directory_iterator endit;
+	for(std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
+		if(std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			if (it->path().filename().string() == fileName) {
 				if(scriptInterface.loadFile(it->path().string()) == -1) {
 					SPDLOG_ERROR(it->path().string());
@@ -69,23 +57,21 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 }
 
 bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
-	namespace fs = boost::filesystem;
-
-	const auto dir = fs::current_path() / "data" / folderName;
-	if(!fs::exists(dir) || !fs::is_directory(dir)) {
+	const auto dir = std::filesystem::current_path() / "data" / folderName;
+	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
 		SPDLOG_ERROR("Can not load folder {}", folderName);
 		return false;
 	}
 
-	fs::recursive_directory_iterator endit;
-	std::vector<fs::path> v;
+	std::filesystem::recursive_directory_iterator endit;
+	std::vector<std::filesystem::path> v;
 	std::string disable = ("#");
-	for(fs::recursive_directory_iterator it(dir); it != endit; ++it) {
+	for(std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
 		auto fn = it->path().parent_path().filename();
 		if ((fn == "lib" && !isLib) || fn == "events") {
 			continue;
 		}
-		if(fs::is_regular_file(*it) && it->path().extension() == ".lua") {
+		if(std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			size_t found = it->path().filename().string().find(disable);
 			if (found != std::string::npos) {
 				if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
@@ -96,7 +82,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 			v.push_back(it->path());
 		}
 	}
-	sort(v.begin(), v.end());
+	std::ranges::sort(v.begin(), v.end());
 	std::string redir;
 	for (auto it = v.begin(); it != v.end(); ++it) {
 		const std::string scriptFile = it->string();
@@ -110,7 +96,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 			}
 		}
 
-		if(scriptInterface.loadFile(scriptFile) == -1) {
+		if(scriptInterface.loadFile(scriptFile, it->filename().string()) == -1) {
 			SPDLOG_ERROR(it->filename().string());
 			SPDLOG_ERROR(scriptInterface.getLastLuaError());
 			continue;

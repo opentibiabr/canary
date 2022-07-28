@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
@@ -138,47 +128,32 @@ StashContainerList Container::getStowableItems() const
 	return toReturnList;
 }
 
-Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream& propStream)
+bool Container::unserializeMapItem(BinaryNode &binaryNode, Position position)
 {
-	if (attr == ATTR_CONTAINER_ITEMS) {
-		if (!propStream.read<uint32_t>(serializationCount)) {
-			return ATTR_READ_ERROR;
-		}
-		return ATTR_READ_END;
-	}
-	return Item::readAttr(attr, propStream);
-}
-
-bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream)
-{
-	bool ret = Item::unserializeItemNode(loader, node, propStream);
+	bool ret = Item::unserializeMapItem(binaryNode, position);
 	if (!ret) {
 		return false;
 	}
 
-	for (auto& itemNode : node.children) {
-		//load container items
-		if (itemNode.type != OTBM_ITEM) {
-			// unknown type
+	while (binaryNode.canRead()) {
+		if (binaryNode.getU8() != OTBM_ITEM) [[unlikely]] {
 			return false;
 		}
 
-		PropStream itemPropStream;
-		if (!loader.getProps(itemNode, itemPropStream)) {
-			return false;
-		}
-
-		Item* item = Item::CreateItem(itemPropStream);
+		Item* item = Item::createMapItem(binaryNode);
 		if (!item) {
+			SPDLOG_ERROR("[Container::unserializeMapItem] (1) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
 			return false;
 		}
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
+		if (!item->unserializeMapItem(binaryNode, position)) {
+			SPDLOG_ERROR("[Container::unserializeMapItem] (2) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
 			return false;
 		}
 
 		addItem(item);
 		updateItemWeight(item->getWeight());
+
 	}
 	return true;
 }

@@ -1,27 +1,16 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
-#include "utils/pugicast.h"
-
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/game.h"
 #include "lua/scripts/scripts.h"
 
 bool EventsScheduler::loadScheduleEventFromXml() const
@@ -34,9 +23,10 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 	}
 
 	int daysNow;
-	time_t t = time(nullptr);
-	const tm* timePtr = localtime(&t);
-	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	auto dayNow = Game::getDateDay();
+	auto monthNow = Game::getDateMonth();
+	auto yearNow = Game::getDateYear();
+	int daysMath = ((yearNow + 1900) * 365) + ((monthNow + 1) * 30) + dayNow;
 
 	for (auto schedNode : doc.child("events").children()) {
 		std::string ss_d;
@@ -82,25 +72,25 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
-				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
+				auto exprate = static_cast<uint16_t>(schedENode.attribute("exprate").as_uint());
 				g_eventsScheduler().setExpSchedule(exprate);
 				ss << " exp: " << exprate << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
+				auto lootrate = static_cast<uint16_t>(schedENode.attribute("lootrate").as_uint());
 				g_eventsScheduler().setLootSchedule(lootrate);
 				ss << ", loot: " << lootrate << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
-				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
+				uint32_t spawnrate = schedENode.attribute("spawnrate").as_uint();
 				g_eventsScheduler().setSpawnMonsterSchedule(spawnrate);
 				ss << ", spawn: "  << spawnrate << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
+				auto skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
 				g_eventsScheduler().setSkillSchedule(skillrate);
 				ss << ", skill: " << skillrate << "%";
 				break;

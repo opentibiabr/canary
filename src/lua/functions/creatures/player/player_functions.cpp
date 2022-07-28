@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
 
 #include "creatures/combat/spells.h"
 #include "creatures/creature.h"
@@ -1254,7 +1242,7 @@ int PlayerFunctions::luaPlayerSetVocation(lua_State* L) {
 	if (isNumber(L, 2)) {
 		vocation = g_vocations().getVocation(getNumber<uint16_t>(L, 2));
 	} else if (isString(L, 2)) {
-		vocation = g_vocations().getVocation(g_vocations().getVocationId(getString(L, 2)));
+		vocation = g_vocations().getVocation(static_cast<uint16_t>(g_vocations().getVocationId(getString(L, 2))));
 	} else if (isUserdata(L, 2)) {
 		vocation = getUserdata<Vocation>(L, 2);
 	} else {
@@ -1895,7 +1883,7 @@ int PlayerFunctions::luaPlayerSendTextMessage(lua_State* L) {
 	TextMessage message(getNumber<MessageClasses>(L, 2), getString(L, 3));
 	if (parameters == 4) {
 		uint16_t channelId = getNumber<uint16_t>(L, 4);
-		ChatChannel* channel = g_chat().getChannel(*player, channelId);
+		const ChatChannel* channel = g_chat().getChannel(*player, channelId);
 		if (!channel || !channel->hasUser(*player)) {
 			pushBoolean(L, false);
 			return 1;
@@ -2416,7 +2404,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 
 	const std::string& spellName = getString(L, 2);
 	const InstantSpell* spell = g_spells().getInstantSpellByName(spellName);
-	if (!spell) {
+	if (spell == nullptr) {
 		reportErrorFunc("Spell \"" + spellName + "\" not found");
 		pushBoolean(L, false);
 		return 1;
@@ -2427,8 +2415,9 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 		return 1;
 	}
 
-	const auto& vocMap = spell->getVocMap();
-	if (vocMap.count(player->getVocationId()) == 0) {
+	if (const auto& vocMap = spell->getVocMap();
+	!vocMap.contains(player->getVocationId()))
+	{
 		pushBoolean(L, false);
 	} else if (player->getLevel() < spell->getLevel()) {
 		pushBoolean(L, false);

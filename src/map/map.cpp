@@ -1,27 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <fstream>
 #include <curl/curl.h>
+#include <iostream>
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -33,14 +24,26 @@
 
 bool Map::load(const std::string& identifier) {
 	try {
-		IOMap loader;
-		if (!loader.loadMap(this, identifier)) {
-			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
+		DiskNodeFileReadHandle initializeMapFile(identifier, StringVector(1, "OTBM"));
+		if(!initializeMapFile.isLoaded()) {
+			SPDLOG_ERROR("Couldn't open file for reading. The error reported was: {}", initializeMapFile.getErrorMessage().c_str());
 			return false;
 		}
+		// Storage map file name before load otbm
+		setMapFileName(identifier);
+
+		IOMap loader;
+		if (!loader.loadMap(this, initializeMapFile, identifier)) {
+			SPDLOG_ERROR("[Map::load] - Cannot load map file: {}", identifier);
+			getMapFileName().clear();
+			return false;
+		}
+
+		// Clear cache from cache ptr vector
+		initializeMapFile.clearCache();
 	}
 	catch(const std::exception) {
-		SPDLOG_ERROR("[Map::load] - The map in folder {} is missing or corrupted", identifier);
+		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);
 		return false;
 	}
 	return true;
@@ -51,7 +54,7 @@ bool Map::loadMap(const std::string& identifier,
 	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
 	// Only download map if is loading the main map and it is not already downloaded
-	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !boost::filesystem::exists(identifier)) {
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
@@ -281,10 +284,10 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 		std::vector<std::pair<int32_t, int32_t>>& relList = (extendedPos ? extendedRelList : normalRelList);
 
 		if (extendedPos) {
-			std::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
-			std::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
+			std::ranges::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
+			std::ranges::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
 		} else {
-			std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+			std::ranges::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 		}
 
 		for (const auto& it : relList) {
@@ -430,8 +433,9 @@ void Map::getSpectatorsInternal(SpectatorHashSet& spectators, const Position& ce
 		leafE = leafS;
 		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
-				const CreatureVector& node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
-				for (Creature* creature : node_list) {
+				for (const CreatureVector& creatureVector = (onlyPlayers ? leafE->player_list : leafE->creature_list);
+				Creature* creature : creatureVector)
+				{
 					const Position& cpos = creature->getPosition();
 					if (minRangeZ > cpos.z || maxRangeZ < cpos.z) {
 						continue;
@@ -1226,13 +1230,13 @@ void QTreeLeafNode::addCreature(Creature* c)
 
 void QTreeLeafNode::removeCreature(Creature* c)
 {
-	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
+	auto iter = std::ranges::find(creature_list.begin(), creature_list.end(), c);
 	assert(iter != creature_list.end());
 	*iter = creature_list.back();
 	creature_list.pop_back();
 
 	if (c->getPlayer()) {
-		iter = std::find(player_list.begin(), player_list.end(), c);
+		iter = std::ranges::find(player_list.begin(), player_list.end(), c);
 		assert(iter != player_list.end());
 		*iter = player_list.back();
 		player_list.pop_back();

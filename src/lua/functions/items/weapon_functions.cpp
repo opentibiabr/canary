@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
 
 #include "game/game.h"
 #include "items/item.h"
@@ -27,7 +15,6 @@
 #include "lua/functions/items/weapon_functions.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
-
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
@@ -42,12 +29,11 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			WeaponMelee* weapon = new WeaponMelee(getScriptEnv()->getScriptInterface());
+			auto weapon = new WeaponMelee();
 			if (weapon) {
 				pushUserdata<WeaponMelee>(L, weapon);
 				setMetatable(L, -1, "Weapon");
 				weapon->weaponType = type;
-				weapon->fromLua = true;
 			} else {
 				lua_pushnil(L);
 			}
@@ -55,24 +41,22 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		}
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			WeaponDistance* weapon = new WeaponDistance(getScriptEnv()->getScriptInterface());
+			auto weapon = new WeaponDistance();
 			if (weapon) {
 				pushUserdata<WeaponDistance>(L, weapon);
 				setMetatable(L, -1, "Weapon");
 				weapon->weaponType = type;
-				weapon->fromLua = true;
 			} else {
 				lua_pushnil(L);
 			}
 			break;
 		}
 		case WEAPON_WAND: {
-			WeaponWand* weapon = new WeaponWand(getScriptEnv()->getScriptInterface());
+			auto weapon = new WeaponWand();
 			if (weapon) {
 				pushUserdata<WeaponWand>(L, weapon);
 				setMetatable(L, -1, "Weapon");
 				weapon->weaponType = type;
-				weapon->fromLua = true;
 			} else {
 				lua_pushnil(L);
 			}
@@ -145,12 +129,8 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 
 int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
-	Weapon* weapon = getUserdata<Weapon>(L, 1);
+	const Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
-		if (!weapon->loadCallback()) {
-			pushBoolean(L, false);
-			return 1;
-		}
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

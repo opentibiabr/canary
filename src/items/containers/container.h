@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_ITEMS_CONTAINERS_CONTAINER_H_
 #define SRC_ITEMS_CONTAINERS_CONTAINER_H_
@@ -97,8 +87,8 @@ class Container : public Item, public Cylinder
 			return false;
 		}
 
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;
+		bool unserializeMapItem(BinaryNode& binaryNode, Position position) override;
+
 		std::string getContentDescription() const;
 
 		size_t size() const {
@@ -184,7 +174,6 @@ class Container : public Item, public Cylinder
 		uint32_t maxSize;
 		uint32_t totalWeight = 0;
 		ItemDeque itemlist;
-		uint32_t serializationCount = 0;
 
 		bool unlocked;
 		bool pagination;

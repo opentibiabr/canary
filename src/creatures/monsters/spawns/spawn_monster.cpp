@@ -166,6 +166,7 @@ SpawnMonster::~SpawnMonster()
 		monster->setSpawnMonster(nullptr);
 		monster->decrementReferenceCounter();
 	}
+	spawnedMonsterMap.clear();
 }
 
 bool SpawnMonster::findPlayer(const Position& pos)
@@ -279,7 +280,6 @@ void SpawnMonster::cleanup()
 		if (monster->isRemoved()) {
 			spawnMonsterMap[id].lastSpawn = OTSYS_TIME();
 			monster->decrementReferenceCounter();
-			spawnedMonsterMap.clear();
 		}
 	}
 }

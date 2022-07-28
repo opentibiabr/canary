@@ -154,6 +154,7 @@ SpawnNpc::~SpawnNpc()
 		npc->setSpawnNpc(nullptr);
 		npc->decrementReferenceCounter();
 	}
+	spawnedNpcMap.clear();
 }
 
 bool SpawnNpc::findPlayer(const Position& pos)
@@ -257,7 +258,6 @@ void SpawnNpc::cleanup()
 		if (npc->isRemoved()) {
 			spawnNpcMap[id].lastSpawnNpc = OTSYS_TIME();
 			npc->decrementReferenceCounter();
-			spawnedNpcMap.clear();
 		}
 	}
 }

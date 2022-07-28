@@ -13,6 +13,7 @@
     "curl",
     "jsoncpp",
     "protobuf",
+    "parallel-hashmap",
     {
       "name": "luajit",
       "platform": "!arm"

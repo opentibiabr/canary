@@ -87,7 +87,7 @@ class Scheduler : public ThreadHolder<Scheduler>
 
 		uint32_t lastEventId {0};
 		std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
-		std::unordered_set<uint32_t> eventIds;
+		phmap::flat_hash_set<uint32_t> eventIds;
 };
 
 constexpr auto g_scheduler = &Scheduler::getInstance;

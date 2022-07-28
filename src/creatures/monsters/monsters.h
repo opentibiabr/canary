@@ -131,7 +131,7 @@ class MonsterType
 		bool targetPreferMaster = false;
 
 		Faction_t faction = FACTION_DEFAULT;
-		std::unordered_set<Faction_t> enemyFactions;
+		phmap::flat_hash_set<Faction_t> enemyFactions;
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;

@@ -5456,7 +5456,7 @@ uint16_t Player::getHelpers() const
 	uint16_t helpers;
 
 	if (guild && party) {
-		std::unordered_set<Player*> helperSet;
+		phmap::flat_hash_set<Player*> helperSet;
 
 		const auto& guildMembers = guild->getMembersOnline();
 		helperSet.insert(guildMembers.begin(), guildMembers.end());

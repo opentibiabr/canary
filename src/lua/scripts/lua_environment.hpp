@@ -59,16 +59,16 @@ class LuaEnvironment: public LuaScriptInterface {
 	private:
 		void executeTimerEvent(uint32_t eventIndex);
 
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		LuaTimerEventDesc > timerEvents;
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		Combat * > combatMap;
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		AreaCombat * > areaMap;
 
-		std::unordered_map < LuaScriptInterface * ,
+		phmap::flat_hash_map < LuaScriptInterface * ,
 		std::vector < uint32_t >> combatIdMap;
-		std::unordered_map < LuaScriptInterface * ,
+		phmap::flat_hash_map < LuaScriptInterface * ,
 		std::vector < uint32_t >> areaIdMap;
 
 		LuaScriptInterface * testInterface = nullptr;

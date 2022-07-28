@@ -474,7 +474,7 @@ private:
 
 	friend class Player;
 
-	std::unordered_set<uint32_t> knownCreatureSet;
+	phmap::flat_hash_set<uint32_t> knownCreatureSet;
 	Player *player = nullptr;
 
 	uint32_t eventConnect = 0;

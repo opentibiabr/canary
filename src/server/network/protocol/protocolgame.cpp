@@ -6712,7 +6712,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	}
 
 	std::vector<Imbuement *> imbuements = g_imbuements().getImbuements(player, item);
-	std::unordered_map<uint16_t, uint16_t> needItems;
+	phmap::flat_hash_map<uint16_t, uint16_t> needItems;
 
 	msg.add<uint16_t>(imbuements.size());
 	for (const Imbuement *imbuement : imbuements)
@@ -7173,7 +7173,7 @@ void ProtocolGame::reloadCreature(const Creature *creature)
 
 	NetworkMessage msg;
 
-	std::unordered_set<uint32_t>::iterator it = std::find(knownCreatureSet.begin(), knownCreatureSet.end(), creature->getID());
+	phmap::flat_hash_set<uint32_t>::iterator it = std::find(knownCreatureSet.begin(), knownCreatureSet.end(), creature->getID());
 	if (it != knownCreatureSet.end())
 	{
 		msg.addByte(0x6B);

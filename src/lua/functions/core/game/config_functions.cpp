@@ -21,6 +21,8 @@
 
 #include "lua/functions/core/game/config_functions.hpp"
 
+#include "config/configmanager.h"
+
 
 int ConfigFunctions::luaConfigManagerGetString(lua_State* L) {
 	pushString(L, g_configManager().getString(getNumber<stringConfig_t>(L, -1)));

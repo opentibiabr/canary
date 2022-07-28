@@ -25,7 +25,6 @@
 #include "utils/pugicast.h"
 
 #include "lua/creature/movement.h"
-#include "creatures/players/imbuements/imbuements.h"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();

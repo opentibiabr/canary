@@ -22,7 +22,6 @@
 #include "server/network/protocol/protocollogin.h"
 
 #include "server/network/message/outputmessage.h"
-#include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 #include "creatures/players/account/account.hpp"
 #include "io/iologindata.h"

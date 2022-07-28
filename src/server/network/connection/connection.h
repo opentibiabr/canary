@@ -22,7 +22,6 @@
 #ifndef SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 #define SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 
-#include <thread>
 #include <unordered_set>
 
 #include "declarations.hpp"

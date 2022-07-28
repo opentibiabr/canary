@@ -21,6 +21,8 @@
 
 #include "utils/tools.h"
 
+#include <regex>
+
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());

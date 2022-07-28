@@ -22,7 +22,6 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "io/iobestiary.h"
-#include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 

@@ -20,7 +20,6 @@
 #include "otpch.h"
 
 #include <fstream>
-#include "utils/pugicast.h"
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"

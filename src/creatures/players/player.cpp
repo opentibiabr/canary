@@ -33,6 +33,7 @@
 #include "creatures/monsters/monsters.h"
 #include "lua/creature/movement.h"
 #include "game/scheduling/scheduler.h"
+#include "grouping/familiars.h"
 #include "items/weapons/weapons.h"
 #include "io/iobestiary.h"
 

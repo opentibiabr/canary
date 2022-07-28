@@ -29,7 +29,6 @@
 #include "creatures/creature.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
 
 bool Map::load(const std::string& identifier) {
 	try {

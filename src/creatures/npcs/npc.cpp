@@ -24,8 +24,6 @@
 #include "creatures/npcs/npcs.h"
 #include "lua/callbacks/creaturecallback.h"
 #include "game/game.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/events.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;

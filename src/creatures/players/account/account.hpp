@@ -22,7 +22,6 @@
 
 #include <string>
 #include <vector>
-#include <limits.h>
 
 #include "database/database.h"
 #include "database/databasetasks.h"

@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "game/movement/teleport.h"
 #include "items/item.h"
 #include "lua/functions/map/teleport_functions.hpp"

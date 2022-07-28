@@ -21,7 +21,6 @@
 #define SRC_SERVER_SERVER_H_
 
 #include "server/network/connection/connection.h"
-#include "config/configmanager.h"
 #include "server/signals.h"
 #include <memory>
 

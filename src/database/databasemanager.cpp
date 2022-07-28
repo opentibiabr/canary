@@ -21,6 +21,7 @@
 
 #include "database/databasemanager.h"
 
+#include "config/configmanager.h"
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.h"
 

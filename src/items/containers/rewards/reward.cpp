@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include <iostream>
 #include "items/containers/rewards/reward.h"
 
 

@@ -20,9 +20,7 @@
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_FAMILIARS_H_
 #define SRC_CREATURES_PLAYERS_GROUPING_FAMILIARS_H_
 
-#include <utility>
 #include <vector>
-#include <string>
 
 #include "declarations.hpp"
 

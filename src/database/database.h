@@ -25,9 +25,7 @@
 #include <memory>
 #include <mutex>
 #include <map>
-#include <iostream>
 
-#include "config/configmanager.h"
 #include "declarations.hpp"
 
 class DBResult;

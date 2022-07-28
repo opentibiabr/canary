@@ -22,7 +22,6 @@
 
 #include <random>
 #include <string>
-#include <regex>
 #include <boost/algorithm/string.hpp>
 
 #include "utils/utils_definitions.hpp"

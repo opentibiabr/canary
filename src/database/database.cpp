@@ -23,6 +23,8 @@
 
 #include <mysql/errmsg.h>
 
+#include "config/configmanager.h"
+
 
 Database::~Database()
 {

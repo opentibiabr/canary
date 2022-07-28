@@ -20,7 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_
 
-#include "config/configmanager.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 

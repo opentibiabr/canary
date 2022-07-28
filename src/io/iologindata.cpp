@@ -22,7 +22,6 @@
 #include <boost/range/adaptor/reversed.hpp>
 #include "io/iologindata.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
 

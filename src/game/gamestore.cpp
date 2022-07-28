@@ -23,7 +23,6 @@
 
 #include "database/database.h"
 #include "game/gamestore.h"
-#include "utils/pugicast.h"
 #include "utils/tools.h"
 
 uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;

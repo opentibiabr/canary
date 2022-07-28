@@ -24,6 +24,7 @@
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "creatures/combat/spells.h"
+#include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
 
 int32_t Monster::despawnRange;

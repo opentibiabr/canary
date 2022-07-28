@@ -31,8 +31,9 @@
 #include <typeinfo>
 
 #include <boost/variant.hpp>
-#include <boost/lexical_cast.hpp>
 #include <deque>
+
+#include "io/fileloader.h"
 
 class Creature;
 class Player;

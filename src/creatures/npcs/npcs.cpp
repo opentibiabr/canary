@@ -23,12 +23,8 @@
 #include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
 #include "creatures/combat/spells.h"
-#include "items/weapons/weapons.h"
-
-#include "utils/pugicast.h"
 
 
 bool NpcType::canSpawn(const Position& pos)

@@ -20,7 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_
 
-#include "creatures/monsters/monsters.h"
 #include "lua/scripts/luascript.h"
 
 class MonsterSpellFunctions final : LuaScriptInterface {

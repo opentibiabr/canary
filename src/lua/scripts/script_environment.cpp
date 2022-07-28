@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include <limits>
 #include <map>
 

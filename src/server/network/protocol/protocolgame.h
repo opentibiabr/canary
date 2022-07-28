@@ -24,11 +24,7 @@
 
 #include "server/network/protocol/protocol.h"
 #include "creatures/interactions/chat.h"
-#include "config/configmanager.h"
 #include "creatures/creature.h"
-#include "game/scheduling/tasks.h"
-#include "game/gamestore.h"
-#include "io/ioprey.h"
 
 class NetworkMessage;
 class Player;

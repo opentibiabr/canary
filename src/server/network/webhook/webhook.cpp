@@ -6,8 +6,9 @@
 #include <json/json.h>
 
 #include <ctime>
-#include <iostream>
 #include <memory>
+
+#include "config/configmanager.h"
 
 // Tread no further, adventurer!
 // Go back while you still can.

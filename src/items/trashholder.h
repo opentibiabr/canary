@@ -22,7 +22,6 @@
 
 #include "items/item.h"
 #include "items/cylinder.h"
-#include "utils/utils_definitions.hpp"
 
 class TrashHolder final : public Item, public Cylinder
 {

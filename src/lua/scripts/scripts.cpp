@@ -21,17 +21,9 @@
 
 #include <boost/filesystem.hpp>
 
-#include "creatures/combat/spells.h"
-#include "creatures/interactions/chat.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "items/weapons/weapons.h"
-#include "lua/creature/actions.h"
-#include "lua/creature/events.h"
 #include "lua/creature/movement.h"
-#include "lua/creature/talkaction.h"
-#include "lua/global/globalevent.h"
-#include "lua/modules/modules.h"
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 
 Scripts::Scripts() :

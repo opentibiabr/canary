@@ -19,8 +19,6 @@
 
 #include "otpch.h"
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include "creatures/players/player.h"
 #include "lua/functions/core/game/modal_window_functions.hpp"
 

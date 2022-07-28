@@ -20,7 +20,6 @@
 #include "otpch.h"
 
 #include "creatures/monsters/monsters.h"
-#include "creatures/monsters/monster.h"
 #include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
 #include "items/weapons/weapons.h"

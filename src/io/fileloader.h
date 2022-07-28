@@ -24,8 +24,6 @@
 #include <vector>
 #include <boost/iostreams/device/mapped_file.hpp>
 
-#include "declarations.hpp"
-
 class PropStream;
 
 namespace OTB {

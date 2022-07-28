@@ -21,7 +21,6 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "lua/creature/actions.h"
 #include "creatures/players/management/ban.h"
 #include "declarations.hpp"
 #include "game/game.h"
@@ -33,6 +32,7 @@
 #include "creatures/monsters/monsters.h"
 #include "server/network/message/outputmessage.h"
 #include "creatures/players/player.h"
+#include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/combat/spells.h"

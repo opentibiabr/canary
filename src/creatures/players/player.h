@@ -27,8 +27,6 @@
 #include "declarations.hpp"
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
-#include "grouping/familiars.h"
-#include "game/gamestore.h"
 #include "grouping/groups.h"
 #include "grouping/guild.h"
 #include "imbuements/imbuements.h"

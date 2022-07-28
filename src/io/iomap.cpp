@@ -21,7 +21,6 @@
 
 #include "io/iomap.h"
 
-#include "items/bed.h"
 #include "game/movement/teleport.h"
 
 /*

@@ -23,6 +23,7 @@
 
 #include "server/network/protocol/protocolstatus.h"
 #include "game/game.h"
+#include "game/scheduling/tasks.h"
 #include "server/network/message/outputmessage.h"
 
 

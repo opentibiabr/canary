@@ -529,6 +529,9 @@ void Game::saveGameState()
 
 	SPDLOG_INFO("Saving server...");
 
+	DBTransaction transaction;
+	transaction.begin();
+
 	for (const auto& it : players) {
 		it.second->loginPosition = it.second->getPosition();
 		IOLoginData::savePlayer(it.second);
@@ -539,6 +542,8 @@ void Game::saveGameState()
 	}
 
 	Map::save();
+
+	transaction.commit();
 
 	g_databaseTasks().flush();
 

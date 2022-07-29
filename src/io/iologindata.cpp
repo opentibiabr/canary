@@ -829,6 +829,8 @@ bool IOLoginData::savePlayer(Player* player)
   }
   Database& db = Database::getInstance();
 
+  db.executeQuery("set autocommit = 0;");
+
   std::ostringstream query;
   query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();
   DBResult_ptr result = db.storeQuery(query.str());

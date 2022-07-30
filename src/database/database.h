@@ -20,12 +20,6 @@
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
-#include <boost/lexical_cast.hpp>
-#include <mysql/mysql.h>
-#include <memory>
-#include <mutex>
-#include <map>
-
 #include "declarations.hpp"
 
 class DBResult;

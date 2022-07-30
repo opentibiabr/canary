@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/algorithm/string.hpp>
+#include "pch.hpp"
 
 #include "database/database.h"
 #include "game/gamestore.h"

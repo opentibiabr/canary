@@ -20,10 +20,6 @@
 #ifndef SRC_IO_FILELOADER_H_
 #define SRC_IO_FILELOADER_H_
 
-#include <limits>
-#include <vector>
-#include <boost/iostreams/device/mapped_file.hpp>
-
 class PropStream;
 
 namespace OTB {

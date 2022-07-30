@@ -17,12 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/combat.h"
 #include "game/game.h"
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
+
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
 	pushUserdata<Combat>(L, g_luaEnvironment.createCombatObject(getScriptEnv()->getScriptInterface()));

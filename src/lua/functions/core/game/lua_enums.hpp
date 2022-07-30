@@ -20,7 +20,7 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/account/account.hpp"
 #include "declarations.hpp"

@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/spells.h"
 #include "creatures/monsters/monster.h"
@@ -33,7 +33,6 @@
 #include "lua/functions/items/item_functions.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/functions/map/map_functions.hpp"
-
 
 class LuaScriptInterface;
 

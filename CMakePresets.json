@@ -17,6 +17,8 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
+        "BUILD_STATIC_LIBRARY": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "OPTIONS_ENABLE_SCCACHE": "ON"
       },
@@ -56,21 +58,6 @@
       }
     },
     {
-      "name": "windows-release-static-library",
-      "inherits": "windows-release",
-      "displayName": "Windows - Release + Static library",
-      "description": "Release Mode static library",
-      "cacheVariables": {
-        "BUILD_STATIC_LIBRARY": "ON",
-        "BUILD_SHARED_LIBS": "NO",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static"
-      },
-      "architecture": {
-        "value": "x64",
-        "strategy": "external"
-      }
-    },
-    {
       "name": "windows-release-asan",
       "inherits": "windows-release",
       "displayName": "Windows - Release + ASAN",
@@ -91,7 +78,9 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "DEBUG_LOG": "ON",
-        "ASAN_ENABLED": "ON"
+        "ASAN_ENABLED": "ON",
+        "BUILD_STATIC_LIBRARY": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
       },
       "architecture": {
         "value": "x64",
@@ -122,10 +111,6 @@
     {
       "name": "windows-release",
       "configurePreset": "windows-release"
-    },
-    {
-      "name": "windows-release-static-library",
-      "configurePreset": "windows-release-static-library"
     },
     {
       "name": "windows-release-asan",

@@ -20,8 +20,6 @@
 #ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
 #define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
 
-#include <string>
-
 #include "server/network/protocol/protocol.h"
 #include "creatures/interactions/chat.h"
 #include "creatures/creature.h"

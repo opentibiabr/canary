@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/actions.h"
 #include "lua/functions/events/action_functions.hpp"
 #include "game/game.h"
 #include "items/item.h"
-
 
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()

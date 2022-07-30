@@ -22,7 +22,6 @@
 
 #include "server/network/connection/connection.h"
 #include "server/signals.h"
-#include <memory>
 
 class Protocol;
 

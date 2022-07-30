@@ -20,8 +20,6 @@
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
 
-#include <unordered_set>
-
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
 #include "items/containers/container.h"

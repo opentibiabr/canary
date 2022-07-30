@@ -20,10 +20,6 @@
 #ifndef SRC_UTILS_TOOLS_H_
 #define SRC_UTILS_TOOLS_H_
 
-#include <random>
-#include <string>
-#include <boost/algorithm/string.hpp>
-
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.h"

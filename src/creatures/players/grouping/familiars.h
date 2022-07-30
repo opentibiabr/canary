@@ -20,8 +20,6 @@
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_FAMILIARS_H_
 #define SRC_CREATURES_PLAYERS_GROUPING_FAMILIARS_H_
 
-#include <vector>
-
 #include "declarations.hpp"
 
 class Familiars {

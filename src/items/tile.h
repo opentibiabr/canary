@@ -20,8 +20,6 @@
 #ifndef SRC_ITEMS_TILE_H_
 #define SRC_ITEMS_TILE_H_
 
-#include <unordered_set>
-
 #include "items/cylinder.h"
 #include "declarations.hpp"
 #include "items/item.h"

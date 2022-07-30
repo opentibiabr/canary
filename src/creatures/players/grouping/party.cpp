@@ -17,12 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/grouping/party.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
-
 
 Party::Party(Player* initLeader) : leader(initLeader)
 {

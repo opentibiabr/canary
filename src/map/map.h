@@ -22,7 +22,6 @@
 
 #include "game/movement/position.h"
 #include "items/item.h"
-
 #include "items/tile.h"
 #include "map/town.h"
 #include "map/house/house.h"

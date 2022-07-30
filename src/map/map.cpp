@@ -17,11 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/filesystem.hpp>
-#include <fstream>
-#include <curl/curl.h>
+#include "pch.hpp"
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"

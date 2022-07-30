@@ -17,14 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/tile.h"
 #include "creatures/monsters/monster.h"
 #include "map/house/housetile.h"
 #include "map/house/house.h"
 #include "game/game.h"
-
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, House* initHouse) :
 	DynamicTile(initX, initY, initZ), house(initHouse) {}

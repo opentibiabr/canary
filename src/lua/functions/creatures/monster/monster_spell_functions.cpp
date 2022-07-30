@@ -17,10 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/functions/creatures/monster/monster_spell_functions.hpp"
-
 #include "creatures/monsters/monsters.h"
 
 int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {

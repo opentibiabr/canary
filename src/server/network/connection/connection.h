@@ -22,8 +22,6 @@
 #ifndef SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 #define SRC_SERVER_NETWORK_CONNECTION_CONNECTION_H_
 
-#include <unordered_set>
-
 #include "declarations.hpp"
 #include "server/network/message/networkmessage.h"
 

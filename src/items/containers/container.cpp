@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
 #include "io/iomap.h"
 #include "game/game.h"
-
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {

@@ -21,6 +21,7 @@
 #define SRC_LUA_FUNCTIONS_CORE_NETWORK_NETWORK_MESSAGE_FUNCTIONS_HPP_
 
 #include "lua/scripts/luascript.h"
+
 class NetworkMessageFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {

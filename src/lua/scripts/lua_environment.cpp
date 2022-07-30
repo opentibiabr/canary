@@ -17,10 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
-#include <utility>
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "lua/scripts/lua_environment.hpp"

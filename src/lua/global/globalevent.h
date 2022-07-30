@@ -19,6 +19,7 @@
 
 #ifndef SRC_LUA_GLOBAL_GLOBALEVENT_H_
 #define SRC_LUA_GLOBAL_GLOBALEVENT_H_
+
 #include "lua/global/baseevents.h"
 
 class GlobalEvent;

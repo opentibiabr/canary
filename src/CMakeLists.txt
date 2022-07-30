@@ -95,12 +95,12 @@ endif()
 
 # === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(DEBUG_LOG)
   target_compile_definitions(${PROJECT_NAME} PRIVATE -DDEBUG_LOG=ON )
   log_option_enabled("DEBUG LOG")
   else()
   log_option_disabled("DEBUG LOG")
-endif(CMAKE_BUILD_TYPE MATCHES Debug)
+endif(DEBUG_LOG)
 
 
 # Set for suppress deprecated declarations (for GCC/GNU)
@@ -268,7 +268,6 @@ target_sources(${PROJECT_NAME}
     map/house/house.cpp
     map/house/housetile.cpp
     map/map.cpp
-    otpch.cpp
     otserv.cpp
     security/rsa.cpp
     server/network/connection/connection.cpp
@@ -297,7 +296,6 @@ if (MSVC)
     string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
   endif()
-
 
   if(BUILD_STATIC_LIBRARY)
     log_option_enabled("STATIC_LIBRARY")

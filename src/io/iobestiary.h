@@ -20,9 +20,6 @@
 #ifndef SRC_IO_IOBESTIARY_H_
 #define SRC_IO_IOBESTIARY_H_
 
-#include <map>
-#include <string>
-
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 #include "creatures/players/player.h"

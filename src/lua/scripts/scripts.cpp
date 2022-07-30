@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/filesystem.hpp>
+#include "pch.hpp"
 
 #include "creatures/players/imbuements/imbuements.h"
 #include "items/weapons/weapons.h"

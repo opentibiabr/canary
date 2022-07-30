@@ -20,8 +20,6 @@
 #ifndef SRC_GAME_MOVEMENT_POSITION_H_
 #define SRC_GAME_MOVEMENT_POSITION_H_
 
-#include <string>
-
 enum Direction : uint8_t {
 	DIRECTION_NORTH = 0,
 	DIRECTION_EAST = 1,

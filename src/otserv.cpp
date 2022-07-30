@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <fstream>
+#include "pch.hpp"
 
 #ifdef OS_WINDOWS
 	#include "conio.h"

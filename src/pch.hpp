@@ -17,8 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_OTPCH_H_
-#define SRC_OTPCH_H_
+#ifndef SRC_PCH_H_
+#define SRC_PCH_H_
 
 // Definitions should be global.
 #include "utils/definitions.h"
@@ -72,4 +72,4 @@
 #include <pugixml.hpp>
 #include <zlib.h>
 
-#endif  // SRC_OTPCH_H_
+#endif  // SRC_PCH_H_

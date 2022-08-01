@@ -491,7 +491,7 @@ void Player::updateInventoryWeight()
 void Player::updateInventoryImbuement(bool init /* = false */)
 {
 	uint8_t imbuementsToCheck = g_game().getPlayerActiveImbuements(getID());
-	for (int items = CONST_SLOT_FIRST; items <= CONST_SLOT_LAST; ++items) {
+	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 		/*
 		 * Small optimization to avoid unneeded iteration.
 		 */
@@ -499,8 +499,8 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			break;
 		}
 
-		Item* item = inventory[items];
-		if (!item) {
+		Item* item = inventory[slot];
+		if (item == nullptr) {
 			continue;
 		}
 
@@ -1317,12 +1317,12 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 
 	// Update imbuement stats item if the item is equipped
 	if (item->getParent() == this) {
 		addItemImbuementStats(imbuement);
 	}
+	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }
 
@@ -5723,8 +5723,6 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 		sendStats();
 		sendSkills();
 	}
-
-	return;
 }
 
 void Player::removeItemImbuementStats(const Imbuement* imbuement)

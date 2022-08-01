@@ -7677,11 +7677,11 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			account.RemoveCoins(static_cast<uint32_t>(amount));
 		} else {
+			uint16_t stashmath = amount;
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
-			amount = (amount - (amount > stashminus ? stashminus : amount));
-
-			std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
-			if (itemVector.empty() && amount > 0) {
+			stashmath = (amount - (amount > stashminus ? stashminus : amount));
+			std::vector<Item*> itemVector = getMarketItemList(it.wareId, stashmath, depotLocker);
+			if (itemVector.empty() && stashmath > 0) {
 				SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell item list is empty");
 				return;
 			}

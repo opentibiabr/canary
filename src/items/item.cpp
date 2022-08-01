@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/item.h"
 #include "items/functions/item_parse.hpp"
@@ -31,7 +31,6 @@
 #include "items/bed.h"
 #include "containers/rewards/rewardchest.h"
 #include "creatures/players/imbuements/imbuements.h"
-
 #include "lua/creature/actions.h"
 #include "creatures/combat/spells.h"
 

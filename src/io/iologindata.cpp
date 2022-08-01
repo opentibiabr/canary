@@ -17,16 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include "io/iologindata.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
-
-#include <limits>
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {

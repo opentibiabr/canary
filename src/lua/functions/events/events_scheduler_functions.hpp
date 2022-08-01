@@ -20,9 +20,6 @@
 #ifndef SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_FUNCTIONS_HPP_
 #define SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_FUNCTIONS_HPP_
 
-#include <set>
-
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
 
 class EventsSchedulerFunctions final : private LuaScriptInterface {

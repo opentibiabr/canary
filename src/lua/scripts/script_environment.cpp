@@ -17,17 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
-#include <limits>
-#include <map>
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/script_environment.hpp"
-
 
 ScriptEnvironment::ScriptEnvironment() {
 	resetEnv();

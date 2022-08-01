@@ -20,8 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/scripts/luascript.h"
 #include "lua/functions/creatures/monster/charm_functions.hpp"
 #include "lua/functions/creatures/monster/loot_functions.hpp"

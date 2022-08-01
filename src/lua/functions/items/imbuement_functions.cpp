@@ -17,17 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "items/item.h"
 #include "items/weapons/weapons.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "lua/functions/items/imbuement_functions.hpp"
-#include "lua/scripts/scripts.h"
-#include "utils/tools.h"
-
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)

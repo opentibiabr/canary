@@ -20,8 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_COMBAT_VARIANT_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_COMBAT_VARIANT_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/scripts/luascript.h"
 
 class VariantFunctions final : LuaScriptInterface {

@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/global/baseevents.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/pugicast.h"
 #include "utils/tools.h"
+
 bool BaseEvents::loadFromXml() {
 	if (loaded) {
 		SPDLOG_ERROR("[BaseEvents::loadFromXml] - It's already loaded.");

@@ -20,10 +20,8 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_
 
-#include <set>
-
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
+
 class GameFunctions final : LuaScriptInterface {
 	public:
 			static void init(lua_State* L) {

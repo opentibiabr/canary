@@ -17,11 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-#include "lua/creature/events.h"
+#include "pch.hpp"
 #include "creatures/players/imbuements/imbuements.h"
+#include "lua/creature/events.h"
 #include "utils/pugicast.h"
-
 
 Imbuement* Imbuements::getImbuement(uint16_t id)
 {

@@ -17,12 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "lua/functions/core/libs/db_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
+
 int DBFunctions::luaDatabaseExecute(lua_State* L) {
 	pushBoolean(L, Database::getInstance().executeQuery(getString(L, -1)));
 	return 1;

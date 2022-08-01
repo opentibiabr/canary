@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "items/item.h"
@@ -27,7 +25,6 @@
 #include "lua/functions/items/weapon_functions.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
-
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)

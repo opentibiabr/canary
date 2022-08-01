@@ -17,11 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <iostream>
 #include "items/containers/rewards/reward.h"
-
 
 Reward::Reward() :
 	Container(ITEM_REWARD_CONTAINER)

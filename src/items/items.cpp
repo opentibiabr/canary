@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
+
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
-#include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 #include "game/game.h"
-
 #include "utils/pugicast.h"
 
 #ifdef __cpp_lib_filesystem
@@ -33,7 +32,6 @@ namespace fs = std::filesystem;
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 #endif
-
 
 Items::Items(){}
 

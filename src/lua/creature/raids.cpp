@@ -17,17 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/raids.h"
-
 #include "utils/pugicast.h"
-
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 #include "server/network/webhook/webhook.h"
-
 
 Raids::Raids() {
 	scriptInterface.initState();

@@ -17,16 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
-#include <utility>
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
-#include "lua/scripts/scripts.h"
 
 LuaEnvironment::LuaEnvironment(): LuaScriptInterface("Main Interface") {}
 

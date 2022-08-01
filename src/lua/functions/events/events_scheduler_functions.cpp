@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/functions/events/events_scheduler_functions.hpp"

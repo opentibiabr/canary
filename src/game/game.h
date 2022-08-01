@@ -20,8 +20,6 @@
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
 
-#include <unordered_set>
-
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
 #include "items/containers/container.h"
@@ -36,7 +34,6 @@
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
-#include "io/ioprey.h"
 #include "items/items_classification.hpp"
 #include "protobuf/appearances.pb.h"
 

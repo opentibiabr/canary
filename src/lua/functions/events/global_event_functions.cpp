@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/functions/events/global_event_functions.hpp"
 #include "lua/global/globalevent.h"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
-
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 	// GlobalEvent(eventName)

@@ -21,9 +21,6 @@
 #define SRC_GAME_SCHEDULING_SCHEDULER_H_
 
 #include "game/scheduling/tasks.h"
-#include <unordered_set>
-#include <queue>
-
 #include "utils/thread_holder_base.h"
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;

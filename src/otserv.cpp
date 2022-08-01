@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <fstream>
+#include "pch.hpp"
 
 #ifdef OS_WINDOWS
 	#include "conio.h"
@@ -27,6 +25,7 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
+#include "creatures/players/grouping/familiars.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
@@ -43,7 +42,6 @@
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
 #include "io/ioprey.h"
-#include "io/iobestiary.h"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"

@@ -17,15 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "lua/creature/events.h"
-
 #include "utils/pugicast.h"
-
 #include "lua/creature/movement.h"
-#include "creatures/players/imbuements/imbuements.h"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();

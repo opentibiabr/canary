@@ -17,15 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "utils/pugicast.h"
-
 #include "map/house/house.h"
 #include "io/iologindata.h"
 #include "game/game.h"
 #include "items/bed.h"
-
 
 House::House(uint32_t houseId) : id(houseId) {}
 

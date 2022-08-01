@@ -19,11 +19,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/monsters/monster.h"
-#include "game/game.h"
 #include "creatures/combat/spells.h"
+#include "game/game.h"
+#include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
 
 int32_t Monster::despawnRange;

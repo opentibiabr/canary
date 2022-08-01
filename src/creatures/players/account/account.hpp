@@ -20,10 +20,6 @@
 #ifndef SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_
 #define SRC_CREATURES_PLAYERS_ACCOUNT_ACCOUNT_HPP_
 
-#include <string>
-#include <vector>
-#include <limits.h>
-
 #include "database/database.h"
 #include "database/databasetasks.h"
 #include "utils/definitions.h"

@@ -17,22 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "server/network/protocol/protocollogin.h"
-
 #include "server/network/message/outputmessage.h"
-#include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 #include "creatures/players/account/account.hpp"
 #include "io/iologindata.h"
 #include "creatures/players/management/ban.h"
 #include "game/game.h"
-
-#include <algorithm>
-#include <limits>
-#include <vector>
-
 
 void ProtocolLogin::disconnectClient(const std::string& message, uint16_t version)
 {

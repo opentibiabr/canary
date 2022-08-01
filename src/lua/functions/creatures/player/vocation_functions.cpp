@@ -17,11 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/vocations/vocation.h"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
-
 
 int VocationFunctions::luaVocationCreate(lua_State* L) {
 	// Vocation(id or name)

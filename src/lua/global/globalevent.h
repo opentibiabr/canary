@@ -19,9 +19,8 @@
 
 #ifndef SRC_LUA_GLOBAL_GLOBALEVENT_H_
 #define SRC_LUA_GLOBAL_GLOBALEVENT_H_
-#include "lua/global/baseevents.h"
 
-#include "utils/utils_definitions.hpp"
+#include "lua/global/baseevents.h"
 
 class GlobalEvent;
 using GlobalEvent_ptr = std::unique_ptr<GlobalEvent>;

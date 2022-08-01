@@ -17,15 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "declarations.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
-#include "lua/callbacks/creaturecallback.h"
+#include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/events.h"
+#include "lua/callbacks/creaturecallback.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;

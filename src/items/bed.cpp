@@ -98,6 +98,14 @@ bool BedItem::canUse(Player* player)
 		return false;
 	}
 
+	if (getNextBedItem() == nullptr) {
+		return false;
+	}
+
+	if (Item::items[id].bedPart != BED_PILLOW_PART) {
+		return false;
+	}
+
 	if (sleeperGUID == 0) {
 		return true;
 	}

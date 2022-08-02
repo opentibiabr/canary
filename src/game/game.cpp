@@ -3597,11 +3597,12 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	Item* item = thing->getItem();
 	Tile* tile = map.getTile(item->getPosition());
 	HouseTile* houseTile = dynamic_cast<HouseTile*>(tile);
+	House* getHouse = houseTile->getHouse();
 	if (!tile->hasFlag(TILESTATE_PROTECTIONZONE) || !houseTile) {
 		player->sendCancelMessage("You may construct this only inside a house.");
 		return;
 	}
-	if (houseTile->getHouse() != house) {
+	if (getHouse != house) {
 		player->sendCancelMessage("Only owners can wrap/unwrap inside a house.");
 			return;
 	}
@@ -3657,6 +3658,9 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			hiddenCharges = item->getSubType();
 		}
 		uint16_t oldItemID = item->getID();
+		if (Item::items.getItemType(item->getID()).isBed()) {
+			getHouse->removeBed(item->getBed());
+		}
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
 		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 		ItemAttributes::CustomAttribute val;
@@ -3671,7 +3675,15 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	}
 	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
 		uint16_t hiddenCharges = item->getDate();
+		const ItemType& newiType = Item::items.getItemType(unWrapId);
+		if (newiType.isBed() && getHouse->getBedCount() + 1 > getHouse->getMaxBeds()) {
+			player->sendCancelMessage("You reached the maximum beds in this house");
+			return;
+		}
 		Item* newItem = transformItem(item, unWrapId);
+		if (newiType.isBed()) {
+			getHouse->addBed(newItem->getBed());
+		}
 		if (newItem) {
 			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
 				newItem->setSubType(hiddenCharges);

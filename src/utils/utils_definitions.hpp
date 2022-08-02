@@ -513,6 +513,12 @@ enum GuildEmblems_t : uint8_t {
 	GUILDEMBLEM_OTHER = 5,
 };
 
+enum BedItemPart_t : uint8_t {
+	BED_NONE_PART,
+	BED_PILLOW_PART,
+	BED_BLANKET_PART,
+};
+
 enum ReloadTypes_t : uint8_t  {
 	RELOAD_TYPE_ALL,
 	RELOAD_TYPE_CHAT,

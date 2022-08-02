@@ -751,6 +751,12 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 			itemType.transformToOnUse[PLAYERSEX_MALE] = value;
 		}
 	}
+
+	if (stringValue == "bedpart") {
+		itemType.bedPart = getBedPart(valueAttribute.as_string());
+	} else if (stringValue == "bedpartof") {
+		itemType.bedPartOf = pugi::cast<uint16_t>(valueAttribute.value());
+	}
 }
 
 void ItemParse::parseElement(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {

@@ -394,6 +394,16 @@ std::string formatDateShort(time_t time)
 	return {buffer, 11};
 }
 
+BedItemPart_t getBedPart(std::string_view string)
+{
+	if (string == "pillow" || string == "1") {
+		return BED_PILLOW_PART;
+	} else if (string == "blanket" || string == "2") {
+		return BED_BLANKET_PART;
+	}
+	return BED_NONE_PART;
+}
+
 Direction getDirection(const std::string& string)
 {
 	Direction direction = DIRECTION_NORTH;

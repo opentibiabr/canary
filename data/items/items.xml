@@ -49705,26 +49705,49 @@
 		<attribute key="containersize" value="6"/>
 		<attribute key="weight" value="1700"/>
 	</item>
-	<item id="35851" name="magnificent bed"/>
-	<item id="35852" name="magnificent bed">
-		<attribute key="description" value="Somebody is sleeping there"/>
+	<item fromid="35851" toid="35858" article="a" name="magnificent bed">
+		<attribute key="type" value="bed"/>
 	</item>
-	<item id="35853" name="magnificent bed"/>
-	<item id="35854" name="magnificent bed">
-		<attribute key="description" value="Somebody is sleeping there"/>
+	<item id="35859" article="a" name="magnificent bed">
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="35860"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="femaletransformto" value="35855"/>
+		<attribute key="maletransformto" value="35851"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="35861"/>
 	</item>
-	<item id="35855" name="magnificent bed"/>
-	<item id="35856" name="magnificent bed">
-		<attribute key="description" value="Somebody is sleeping there"/>
+	<item id="35860" article="a" name="magnificent bed">
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="35859"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="femaletransformto" value="35856"/>
+		<attribute key="maletransformto" value="35852"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="35862"/>
 	</item>
-	<item id="35857" name="magnificent bed"/>
-	<item id="35858" name="magnificent bed">
-		<attribute key="description" value="Somebody is sleeping there"/>
+	<item id="35861" article="a" name="magnificent bed">
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="35862"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="femaletransformto" value="35857"/>
+		<attribute key="maletransformto" value="35853"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="35859"/>
 	</item>
-	<item id="35859" name="magnificent bed"/>
-	<item id="35860" name="magnificent bed"/>
-	<item id="35861" name="magnificent bed"/>
-	<item id="35862" name="magnificent bed"/>
+	<item id="35862" article="a" name="magnificent bed">
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="35861"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="femaletransformto" value="35858"/>
+		<attribute key="maletransformto" value="35854"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="35860"/>
+	</item>
 	<item id="35863" name="ornate bed"/>
 	<item id="35864" name="ornate bed">
 		<attribute key="description" value="Somebody is sleeping there"/>

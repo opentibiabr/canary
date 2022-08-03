@@ -829,6 +829,8 @@ bool IOLoginData::savePlayer(Player* player)
   }
   Database& db = Database::getInstance();
 
+  db.executeQuery("set autocommit = 0;");
+
   std::ostringstream query;
   query << "SELECT `save` FROM `players` WHERE `id` = " << player->getGUID();
   DBResult_ptr result = db.storeQuery(query.str());
@@ -966,11 +968,6 @@ bool IOLoginData::savePlayer(Player* player)
     query << "`blessings" << i << "`" << " = " << static_cast<uint32_t>(player->getBlessingCount(i)) << ((i == 8) ? ' ' : ',');
   }
   query << " WHERE `id` = " << player->getGUID();
-
-  DBTransaction transaction;
-  if (!transaction.begin()) {
-    return false;
-  }
 
   if (!db.executeQuery(query.str())) {
     return false;
@@ -1271,8 +1268,7 @@ bool IOLoginData::savePlayer(Player* player)
     return false;
   }
 
-  //End the transaction
-  return transaction.commit();
+  return true;
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid)

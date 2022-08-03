@@ -215,7 +215,15 @@ PROTOBUF_CONSTEXPR AppearanceFlags::AppearanceFlags(
   , /*decltype(_impl_.player_corpse_)*/false
   , /*decltype(_impl_.ammo_)*/false
   , /*decltype(_impl_.show_off_socket_)*/false
-  , /*decltype(_impl_.reportable_)*/false} {}
+  , /*decltype(_impl_.reportable_)*/false
+  , /*decltype(_impl_.reverse_addons_east_)*/false
+  , /*decltype(_impl_.reverse_addons_west_)*/false
+  , /*decltype(_impl_.reverse_addons_south_)*/false
+  , /*decltype(_impl_.reverse_addons_north_)*/false
+  , /*decltype(_impl_.wearout_)*/false
+  , /*decltype(_impl_.clockexpire_)*/false
+  , /*decltype(_impl_.expire_)*/false
+  , /*decltype(_impl_.expirestop_)*/false} {}
 struct AppearanceFlagsDefaultTypeInternal {
   PROTOBUF_CONSTEXPR AppearanceFlagsDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
@@ -663,6 +671,14 @@ const uint32_t TableStruct_appearances_2eproto::offsets[] PROTOBUF_SECTION_VARIA
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.show_off_socket_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.reportable_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.upgradeclassification_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.reverse_addons_east_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.reverse_addons_west_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.reverse_addons_south_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.reverse_addons_north_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.wearout_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.clockexpire_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.expire_),
+  PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlags, _impl_.expirestop_),
   0,
   15,
   16,
@@ -711,6 +727,14 @@ const uint32_t TableStruct_appearances_2eproto::offsets[] PROTOBUF_SECTION_VARIA
   45,
   46,
   14,
+  47,
+  48,
+  49,
+  50,
+  51,
+  52,
+  53,
+  54,
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlagUpgradeClassification, _impl_._has_bits_),
   PROTOBUF_FIELD_OFFSET(::Canary::protobuf::appearances::AppearanceFlagUpgradeClassification, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -889,24 +913,24 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 70, 85, -1, sizeof(::Canary::protobuf::appearances::SpriteInfo)},
   { 94, 103, -1, sizeof(::Canary::protobuf::appearances::FrameGroup)},
   { 106, 117, -1, sizeof(::Canary::protobuf::appearances::Appearance)},
-  { 122, 176, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlags)},
-  { 224, 231, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagUpgradeClassification)},
-  { 232, 239, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagBank)},
-  { 240, 247, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagWrite)},
-  { 248, 255, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagWriteOnce)},
-  { 256, 264, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagLight)},
-  { 266, 273, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagHeight)},
-  { 274, 282, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagShift)},
-  { 284, 291, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagClothes)},
-  { 292, 299, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagDefaultAction)},
-  { 300, 311, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagMarket)},
-  { 316, 328, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagNPC)},
-  { 334, 341, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagAutomap)},
-  { 342, 349, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagHook)},
-  { 350, 357, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagLenshelp)},
-  { 358, 365, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagChangedToExpire)},
-  { 366, 373, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagCyclopedia)},
-  { 374, 386, -1, sizeof(::Canary::protobuf::appearances::SpecialMeaningAppearanceIds)},
+  { 122, 184, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlags)},
+  { 240, 247, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagUpgradeClassification)},
+  { 248, 255, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagBank)},
+  { 256, 263, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagWrite)},
+  { 264, 271, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagWriteOnce)},
+  { 272, 280, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagLight)},
+  { 282, 289, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagHeight)},
+  { 290, 298, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagShift)},
+  { 300, 307, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagClothes)},
+  { 308, 315, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagDefaultAction)},
+  { 316, 327, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagMarket)},
+  { 332, 344, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagNPC)},
+  { 350, 357, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagAutomap)},
+  { 358, 365, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagHook)},
+  { 366, 373, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagLenshelp)},
+  { 374, 381, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagChangedToExpire)},
+  { 382, 389, -1, sizeof(::Canary::protobuf::appearances::AppearanceFlagCyclopedia)},
+  { 390, 402, -1, sizeof(::Canary::protobuf::appearances::SpecialMeaningAppearanceIds)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -975,7 +999,7 @@ const char descriptor_table_protodef_appearances_2eproto[] PROTOBUF_SECTION_VARI
   "2\'.Canary.protobuf.appearances.FrameGrou"
   "p\022;\n\005flags\030\003 \001(\0132,.Canary.protobuf.appea"
   "rances.AppearanceFlags\022\014\n\004name\030\004 \001(\014\022\023\n\013"
-  "description\030\005 \001(\014\"\335\r\n\017AppearanceFlags\022=\n"
+  "description\030\005 \001(\014\"\235\017\n\017AppearanceFlags\022=\n"
   "\004bank\030\001 \001(\0132/.Canary.protobuf.appearance"
   "s.AppearanceFlagBank\022\014\n\004clip\030\002 \001(\010\022\016\n\006bo"
   "ttom\030\003 \001(\010\022\013\n\003top\030\004 \001(\010\022\021\n\tcontainer\030\005 \001"
@@ -1019,81 +1043,86 @@ const char descriptor_table_protodef_appearances_2eproto[] PROTOBUF_SECTION_VARI
   "how_off_socket\030. \001(\010\022\022\n\nreportable\030/ \001(\010"
   "\022_\n\025upgradeclassification\0300 \001(\0132@.Canary"
   ".protobuf.appearances.AppearanceFlagUpgr"
-  "adeClassification\"E\n#AppearanceFlagUpgra"
-  "deClassification\022\036\n\026upgrade_classificati"
-  "on\030\001 \001(\r\"\'\n\022AppearanceFlagBank\022\021\n\twaypoi"
-  "nts\030\001 \001(\r\".\n\023AppearanceFlagWrite\022\027\n\017max_"
-  "text_length\030\001 \001(\r\"7\n\027AppearanceFlagWrite"
-  "Once\022\034\n\024max_text_length_once\030\001 \001(\r\"8\n\023Ap"
-  "pearanceFlagLight\022\022\n\nbrightness\030\001 \001(\r\022\r\n"
-  "\005color\030\002 \001(\r\")\n\024AppearanceFlagHeight\022\021\n\t"
-  "elevation\030\001 \001(\r\"+\n\023AppearanceFlagShift\022\t"
-  "\n\001x\030\001 \001(\r\022\t\n\001y\030\002 \001(\r\"%\n\025AppearanceFlagCl"
-  "othes\022\014\n\004slot\030\001 \001(\r\"Y\n\033AppearanceFlagDef"
-  "aultAction\022:\n\006action\030\001 \001(\0162*.Canary.prot"
-  "obuf.appearances.PLAYER_ACTION\"\362\001\n\024Appea"
-  "ranceFlagMarket\022<\n\010category\030\001 \001(\0162*.Cana"
-  "ry.protobuf.appearances.ITEM_CATEGORY\022\032\n"
-  "\022trade_as_object_id\030\002 \001(\r\022\031\n\021show_as_obj"
-  "ect_id\030\003 \001(\r\022N\n\026restrict_to_profession\030\005"
-  " \003(\0162..Canary.protobuf.appearances.PLAYE"
-  "R_PROFESSION\022\025\n\rminimum_level\030\006 \001(\r\"\245\001\n\021"
-  "AppearanceFlagNPC\022\014\n\004name\030\001 \001(\014\022\020\n\010locat"
-  "ion\030\002 \001(\014\022\022\n\nsale_price\030\003 \001(\r\022\021\n\tbuy_pri"
-  "ce\030\004 \001(\r\022\037\n\027currency_object_type_id\030\005 \001("
-  "\r\022(\n currency_quest_flag_display_name\030\006 "
-  "\001(\014\"&\n\025AppearanceFlagAutomap\022\r\n\005color\030\001 "
-  "\001(\r\"O\n\022AppearanceFlagHook\0229\n\tdirection\030\001"
-  " \001(\0162&.Canary.protobuf.appearances.HOOK_"
-  "TYPE\"$\n\026AppearanceFlagLenshelp\022\n\n\002id\030\001 \001"
-  "(\r\"=\n\035AppearanceFlagChangedToExpire\022\034\n\024f"
-  "ormer_object_typeid\030\001 \001(\r\"3\n\030AppearanceF"
-  "lagCyclopedia\022\027\n\017cyclopedia_type\030\001 \001(\r\"\261"
-  "\001\n\033SpecialMeaningAppearanceIds\022\024\n\014gold_c"
-  "oin_id\030\001 \001(\r\022\030\n\020platinum_coin_id\030\002 \001(\r\022\027"
-  "\n\017crystal_coin_id\030\003 \001(\r\022\025\n\rtibia_coin_id"
-  "\030\004 \001(\r\022\031\n\021stamped_letter_id\030\005 \001(\r\022\027\n\017sup"
-  "ply_stash_id\030\006 \001(\r*\224\001\n\rPLAYER_ACTION\022\026\n\022"
-  "PLAYER_ACTION_NONE\020\000\022\026\n\022PLAYER_ACTION_LO"
-  "OK\020\001\022\025\n\021PLAYER_ACTION_USE\020\002\022\026\n\022PLAYER_AC"
-  "TION_OPEN\020\003\022$\n PLAYER_ACTION_AUTOWALK_HI"
-  "GHLIGHT\020\004*\315\005\n\rITEM_CATEGORY\022\030\n\024ITEM_CATE"
-  "GORY_ARMORS\020\001\022\031\n\025ITEM_CATEGORY_AMULETS\020\002"
-  "\022\027\n\023ITEM_CATEGORY_BOOTS\020\003\022\034\n\030ITEM_CATEGO"
-  "RY_CONTAINERS\020\004\022\034\n\030ITEM_CATEGORY_DECORAT"
-  "ION\020\005\022\026\n\022ITEM_CATEGORY_FOOD\020\006\022\036\n\032ITEM_CA"
-  "TEGORY_HELMETS_HATS\020\007\022\026\n\022ITEM_CATEGORY_L"
-  "EGS\020\010\022\030\n\024ITEM_CATEGORY_OTHERS\020\t\022\031\n\025ITEM_"
-  "CATEGORY_POTIONS\020\n\022\027\n\023ITEM_CATEGORY_RING"
-  "S\020\013\022\027\n\023ITEM_CATEGORY_RUNES\020\014\022\031\n\025ITEM_CAT"
-  "EGORY_SHIELDS\020\r\022\027\n\023ITEM_CATEGORY_TOOLS\020\016"
-  "\022\033\n\027ITEM_CATEGORY_VALUABLES\020\017\022\034\n\030ITEM_CA"
-  "TEGORY_AMMUNITION\020\020\022\026\n\022ITEM_CATEGORY_AXE"
-  "S\020\021\022\027\n\023ITEM_CATEGORY_CLUBS\020\022\022\"\n\036ITEM_CAT"
-  "EGORY_DISTANCE_WEAPONS\020\023\022\030\n\024ITEM_CATEGOR"
-  "Y_SWORDS\020\024\022\034\n\030ITEM_CATEGORY_WANDS_RODS\020\025"
-  "\022!\n\035ITEM_CATEGORY_PREMIUM_SCROLLS\020\026\022\035\n\031I"
-  "TEM_CATEGORY_TIBIA_COINS\020\027\022#\n\037ITEM_CATEG"
-  "ORY_CREATURE_PRODUCTS\020\030\022\030\n\024ITEM_CATEGORY"
-  "_QUIVER\020\031*\355\001\n\021PLAYER_PROFESSION\022\"\n\025PLAYE"
-  "R_PROFESSION_ANY\020\377\377\377\377\377\377\377\377\377\001\022\032\n\026PLAYER_PR"
-  "OFESSION_NONE\020\000\022\034\n\030PLAYER_PROFESSION_KNI"
-  "GHT\020\001\022\035\n\031PLAYER_PROFESSION_PALADIN\020\002\022\036\n\032"
-  "PLAYER_PROFESSION_SORCERER\020\003\022\033\n\027PLAYER_P"
-  "ROFESSION_DRUID\020\004\022\036\n\032PLAYER_PROFESSION_P"
-  "ROMOTED\020\n*\203\001\n\023ANIMATION_LOOP_TYPE\022)\n\034ANI"
-  "MATION_LOOP_TYPE_PINGPONG\020\377\377\377\377\377\377\377\377\377\001\022 \n\034"
-  "ANIMATION_LOOP_TYPE_INFINITE\020\000\022\037\n\033ANIMAT"
-  "ION_LOOP_TYPE_COUNTED\020\001*4\n\tHOOK_TYPE\022\023\n\017"
-  "HOOK_TYPE_SOUTH\020\001\022\022\n\016HOOK_TYPE_EAST\020\002*\201\001"
-  "\n\021FIXED_FRAME_GROUP\022!\n\035FIXED_FRAME_GROUP"
-  "_OUTFIT_IDLE\020\000\022#\n\037FIXED_FRAME_GROUP_OUTF"
-  "IT_MOVING\020\001\022$\n FIXED_FRAME_GROUP_OBJECT_"
-  "INITIAL\020\002"
+  "adeClassification\022\033\n\023reverse_addons_east"
+  "\0301 \001(\010\022\033\n\023reverse_addons_west\0302 \001(\010\022\034\n\024r"
+  "everse_addons_south\0303 \001(\010\022\034\n\024reverse_add"
+  "ons_north\0304 \001(\010\022\017\n\007wearout\0305 \001(\010\022\023\n\013cloc"
+  "kexpire\0306 \001(\010\022\016\n\006expire\0307 \001(\010\022\022\n\nexpires"
+  "top\0308 \001(\010\"E\n#AppearanceFlagUpgradeClassi"
+  "fication\022\036\n\026upgrade_classification\030\001 \001(\r"
+  "\"\'\n\022AppearanceFlagBank\022\021\n\twaypoints\030\001 \001("
+  "\r\".\n\023AppearanceFlagWrite\022\027\n\017max_text_len"
+  "gth\030\001 \001(\r\"7\n\027AppearanceFlagWriteOnce\022\034\n\024"
+  "max_text_length_once\030\001 \001(\r\"8\n\023Appearance"
+  "FlagLight\022\022\n\nbrightness\030\001 \001(\r\022\r\n\005color\030\002"
+  " \001(\r\")\n\024AppearanceFlagHeight\022\021\n\televatio"
+  "n\030\001 \001(\r\"+\n\023AppearanceFlagShift\022\t\n\001x\030\001 \001("
+  "\r\022\t\n\001y\030\002 \001(\r\"%\n\025AppearanceFlagClothes\022\014\n"
+  "\004slot\030\001 \001(\r\"Y\n\033AppearanceFlagDefaultActi"
+  "on\022:\n\006action\030\001 \001(\0162*.Canary.protobuf.app"
+  "earances.PLAYER_ACTION\"\362\001\n\024AppearanceFla"
+  "gMarket\022<\n\010category\030\001 \001(\0162*.Canary.proto"
+  "buf.appearances.ITEM_CATEGORY\022\032\n\022trade_a"
+  "s_object_id\030\002 \001(\r\022\031\n\021show_as_object_id\030\003"
+  " \001(\r\022N\n\026restrict_to_profession\030\005 \003(\0162..C"
+  "anary.protobuf.appearances.PLAYER_PROFES"
+  "SION\022\025\n\rminimum_level\030\006 \001(\r\"\245\001\n\021Appearan"
+  "ceFlagNPC\022\014\n\004name\030\001 \001(\014\022\020\n\010location\030\002 \001("
+  "\014\022\022\n\nsale_price\030\003 \001(\r\022\021\n\tbuy_price\030\004 \001(\r"
+  "\022\037\n\027currency_object_type_id\030\005 \001(\r\022(\n cur"
+  "rency_quest_flag_display_name\030\006 \001(\014\"&\n\025A"
+  "ppearanceFlagAutomap\022\r\n\005color\030\001 \001(\r\"O\n\022A"
+  "ppearanceFlagHook\0229\n\tdirection\030\001 \001(\0162&.C"
+  "anary.protobuf.appearances.HOOK_TYPE\"$\n\026"
+  "AppearanceFlagLenshelp\022\n\n\002id\030\001 \001(\r\"=\n\035Ap"
+  "pearanceFlagChangedToExpire\022\034\n\024former_ob"
+  "ject_typeid\030\001 \001(\r\"3\n\030AppearanceFlagCyclo"
+  "pedia\022\027\n\017cyclopedia_type\030\001 \001(\r\"\261\001\n\033Speci"
+  "alMeaningAppearanceIds\022\024\n\014gold_coin_id\030\001"
+  " \001(\r\022\030\n\020platinum_coin_id\030\002 \001(\r\022\027\n\017crysta"
+  "l_coin_id\030\003 \001(\r\022\025\n\rtibia_coin_id\030\004 \001(\r\022\031"
+  "\n\021stamped_letter_id\030\005 \001(\r\022\027\n\017supply_stas"
+  "h_id\030\006 \001(\r*\224\001\n\rPLAYER_ACTION\022\026\n\022PLAYER_A"
+  "CTION_NONE\020\000\022\026\n\022PLAYER_ACTION_LOOK\020\001\022\025\n\021"
+  "PLAYER_ACTION_USE\020\002\022\026\n\022PLAYER_ACTION_OPE"
+  "N\020\003\022$\n PLAYER_ACTION_AUTOWALK_HIGHLIGHT\020"
+  "\004*\315\005\n\rITEM_CATEGORY\022\030\n\024ITEM_CATEGORY_ARM"
+  "ORS\020\001\022\031\n\025ITEM_CATEGORY_AMULETS\020\002\022\027\n\023ITEM"
+  "_CATEGORY_BOOTS\020\003\022\034\n\030ITEM_CATEGORY_CONTA"
+  "INERS\020\004\022\034\n\030ITEM_CATEGORY_DECORATION\020\005\022\026\n"
+  "\022ITEM_CATEGORY_FOOD\020\006\022\036\n\032ITEM_CATEGORY_H"
+  "ELMETS_HATS\020\007\022\026\n\022ITEM_CATEGORY_LEGS\020\010\022\030\n"
+  "\024ITEM_CATEGORY_OTHERS\020\t\022\031\n\025ITEM_CATEGORY"
+  "_POTIONS\020\n\022\027\n\023ITEM_CATEGORY_RINGS\020\013\022\027\n\023I"
+  "TEM_CATEGORY_RUNES\020\014\022\031\n\025ITEM_CATEGORY_SH"
+  "IELDS\020\r\022\027\n\023ITEM_CATEGORY_TOOLS\020\016\022\033\n\027ITEM"
+  "_CATEGORY_VALUABLES\020\017\022\034\n\030ITEM_CATEGORY_A"
+  "MMUNITION\020\020\022\026\n\022ITEM_CATEGORY_AXES\020\021\022\027\n\023I"
+  "TEM_CATEGORY_CLUBS\020\022\022\"\n\036ITEM_CATEGORY_DI"
+  "STANCE_WEAPONS\020\023\022\030\n\024ITEM_CATEGORY_SWORDS"
+  "\020\024\022\034\n\030ITEM_CATEGORY_WANDS_RODS\020\025\022!\n\035ITEM"
+  "_CATEGORY_PREMIUM_SCROLLS\020\026\022\035\n\031ITEM_CATE"
+  "GORY_TIBIA_COINS\020\027\022#\n\037ITEM_CATEGORY_CREA"
+  "TURE_PRODUCTS\020\030\022\030\n\024ITEM_CATEGORY_QUIVER\020"
+  "\031*\355\001\n\021PLAYER_PROFESSION\022\"\n\025PLAYER_PROFES"
+  "SION_ANY\020\377\377\377\377\377\377\377\377\377\001\022\032\n\026PLAYER_PROFESSION"
+  "_NONE\020\000\022\034\n\030PLAYER_PROFESSION_KNIGHT\020\001\022\035\n"
+  "\031PLAYER_PROFESSION_PALADIN\020\002\022\036\n\032PLAYER_P"
+  "ROFESSION_SORCERER\020\003\022\033\n\027PLAYER_PROFESSIO"
+  "N_DRUID\020\004\022\036\n\032PLAYER_PROFESSION_PROMOTED\020"
+  "\n*\203\001\n\023ANIMATION_LOOP_TYPE\022)\n\034ANIMATION_L"
+  "OOP_TYPE_PINGPONG\020\377\377\377\377\377\377\377\377\377\001\022 \n\034ANIMATIO"
+  "N_LOOP_TYPE_INFINITE\020\000\022\037\n\033ANIMATION_LOOP"
+  "_TYPE_COUNTED\020\001*4\n\tHOOK_TYPE\022\023\n\017HOOK_TYP"
+  "E_SOUTH\020\001\022\022\n\016HOOK_TYPE_EAST\020\002*\201\001\n\021FIXED_"
+  "FRAME_GROUP\022!\n\035FIXED_FRAME_GROUP_OUTFIT_"
+  "IDLE\020\000\022#\n\037FIXED_FRAME_GROUP_OUTFIT_MOVIN"
+  "G\020\001\022$\n FIXED_FRAME_GROUP_OBJECT_INITIAL\020"
+  "\002"
   ;
 static ::_pbi::once_flag descriptor_table_appearances_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_appearances_2eproto = {
-    false, false, 6009, descriptor_table_protodef_appearances_2eproto,
+    false, false, 6201, descriptor_table_protodef_appearances_2eproto,
     "appearances.proto",
     &descriptor_table_appearances_2eproto_once, nullptr, 0, 26,
     schemas, file_default_instances, TableStruct_appearances_2eproto::offsets,
@@ -4024,6 +4053,30 @@ class AppearanceFlags::_Internal {
   static void set_has_upgradeclassification(HasBits* has_bits) {
     (*has_bits)[0] |= 16384u;
   }
+  static void set_has_reverse_addons_east(HasBits* has_bits) {
+    (*has_bits)[1] |= 32768u;
+  }
+  static void set_has_reverse_addons_west(HasBits* has_bits) {
+    (*has_bits)[1] |= 65536u;
+  }
+  static void set_has_reverse_addons_south(HasBits* has_bits) {
+    (*has_bits)[1] |= 131072u;
+  }
+  static void set_has_reverse_addons_north(HasBits* has_bits) {
+    (*has_bits)[1] |= 262144u;
+  }
+  static void set_has_wearout(HasBits* has_bits) {
+    (*has_bits)[1] |= 524288u;
+  }
+  static void set_has_clockexpire(HasBits* has_bits) {
+    (*has_bits)[1] |= 1048576u;
+  }
+  static void set_has_expire(HasBits* has_bits) {
+    (*has_bits)[1] |= 2097152u;
+  }
+  static void set_has_expirestop(HasBits* has_bits) {
+    (*has_bits)[1] |= 4194304u;
+  }
 };
 
 const ::Canary::protobuf::appearances::AppearanceFlagBank&
@@ -4145,7 +4198,15 @@ AppearanceFlags::AppearanceFlags(const AppearanceFlags& from)
     , decltype(_impl_.player_corpse_){}
     , decltype(_impl_.ammo_){}
     , decltype(_impl_.show_off_socket_){}
-    , decltype(_impl_.reportable_){}};
+    , decltype(_impl_.reportable_){}
+    , decltype(_impl_.reverse_addons_east_){}
+    , decltype(_impl_.reverse_addons_west_){}
+    , decltype(_impl_.reverse_addons_south_){}
+    , decltype(_impl_.reverse_addons_north_){}
+    , decltype(_impl_.wearout_){}
+    , decltype(_impl_.clockexpire_){}
+    , decltype(_impl_.expire_){}
+    , decltype(_impl_.expirestop_){}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_bank()) {
@@ -4194,8 +4255,8 @@ AppearanceFlags::AppearanceFlags(const AppearanceFlags& from)
     _this->_impl_.upgradeclassification_ = new ::Canary::protobuf::appearances::AppearanceFlagUpgradeClassification(*from._impl_.upgradeclassification_);
   }
   ::memcpy(&_impl_.clip_, &from._impl_.clip_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.reportable_) -
-    reinterpret_cast<char*>(&_impl_.clip_)) + sizeof(_impl_.reportable_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.expirestop_) -
+    reinterpret_cast<char*>(&_impl_.clip_)) + sizeof(_impl_.expirestop_));
   // @@protoc_insertion_point(copy_constructor:Canary.protobuf.appearances.AppearanceFlags)
 }
 
@@ -4254,6 +4315,14 @@ inline void AppearanceFlags::SharedCtor(
     , decltype(_impl_.ammo_){false}
     , decltype(_impl_.show_off_socket_){false}
     , decltype(_impl_.reportable_){false}
+    , decltype(_impl_.reverse_addons_east_){false}
+    , decltype(_impl_.reverse_addons_west_){false}
+    , decltype(_impl_.reverse_addons_south_){false}
+    , decltype(_impl_.reverse_addons_north_){false}
+    , decltype(_impl_.wearout_){false}
+    , decltype(_impl_.clockexpire_){false}
+    , decltype(_impl_.expire_){false}
+    , decltype(_impl_.expirestop_){false}
   };
 }
 
@@ -4379,10 +4448,15 @@ void AppearanceFlags::Clear() {
         reinterpret_cast<char*>(&_impl_.wrap_) -
         reinterpret_cast<char*>(&_impl_.rotate_)) + sizeof(_impl_.wrap_));
   }
-  if (cached_has_bits & 0x00007f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     ::memset(&_impl_.unwrap_, 0, static_cast<size_t>(
-        reinterpret_cast<char*>(&_impl_.reportable_) -
-        reinterpret_cast<char*>(&_impl_.unwrap_)) + sizeof(_impl_.reportable_));
+        reinterpret_cast<char*>(&_impl_.reverse_addons_east_) -
+        reinterpret_cast<char*>(&_impl_.unwrap_)) + sizeof(_impl_.reverse_addons_east_));
+  }
+  if (cached_has_bits & 0x007f0000u) {
+    ::memset(&_impl_.reverse_addons_west_, 0, static_cast<size_t>(
+        reinterpret_cast<char*>(&_impl_.expirestop_) -
+        reinterpret_cast<char*>(&_impl_.reverse_addons_west_)) + sizeof(_impl_.expirestop_));
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -4815,6 +4889,78 @@ const char* AppearanceFlags::_InternalParse(const char* ptr, ::_pbi::ParseContex
         } else
           goto handle_unusual;
         continue;
+      // optional bool reverse_addons_east = 49;
+      case 49:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 136)) {
+          _Internal::set_has_reverse_addons_east(&_impl_._has_bits_);
+          _impl_.reverse_addons_east_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool reverse_addons_west = 50;
+      case 50:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 144)) {
+          _Internal::set_has_reverse_addons_west(&_impl_._has_bits_);
+          _impl_.reverse_addons_west_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool reverse_addons_south = 51;
+      case 51:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 152)) {
+          _Internal::set_has_reverse_addons_south(&_impl_._has_bits_);
+          _impl_.reverse_addons_south_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool reverse_addons_north = 52;
+      case 52:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 160)) {
+          _Internal::set_has_reverse_addons_north(&_impl_._has_bits_);
+          _impl_.reverse_addons_north_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool wearout = 53;
+      case 53:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 168)) {
+          _Internal::set_has_wearout(&_impl_._has_bits_);
+          _impl_.wearout_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool clockexpire = 54;
+      case 54:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 176)) {
+          _Internal::set_has_clockexpire(&_impl_._has_bits_);
+          _impl_.clockexpire_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool expire = 55;
+      case 55:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 184)) {
+          _Internal::set_has_expire(&_impl_._has_bits_);
+          _impl_.expire_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // optional bool expirestop = 56;
+      case 56:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 192)) {
+          _Internal::set_has_expirestop(&_impl_._has_bits_);
+          _impl_.expirestop_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
       default:
         goto handle_unusual;
     }  // switch
@@ -5164,6 +5310,55 @@ uint8_t* AppearanceFlags::_InternalSerialize(
         _Internal::upgradeclassification(this).GetCachedSize(), target, stream);
   }
 
+  cached_has_bits = _impl_._has_bits_[1];
+  // optional bool reverse_addons_east = 49;
+  if (cached_has_bits & 0x00008000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(49, this->_internal_reverse_addons_east(), target);
+  }
+
+  // optional bool reverse_addons_west = 50;
+  if (cached_has_bits & 0x00010000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(50, this->_internal_reverse_addons_west(), target);
+  }
+
+  // optional bool reverse_addons_south = 51;
+  if (cached_has_bits & 0x00020000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(51, this->_internal_reverse_addons_south(), target);
+  }
+
+  // optional bool reverse_addons_north = 52;
+  if (cached_has_bits & 0x00040000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(52, this->_internal_reverse_addons_north(), target);
+  }
+
+  // optional bool wearout = 53;
+  if (cached_has_bits & 0x00080000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(53, this->_internal_wearout(), target);
+  }
+
+  // optional bool clockexpire = 54;
+  if (cached_has_bits & 0x00100000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(54, this->_internal_clockexpire(), target);
+  }
+
+  // optional bool expire = 55;
+  if (cached_has_bits & 0x00200000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(55, this->_internal_expire(), target);
+  }
+
+  // optional bool expirestop = 56;
+  if (cached_has_bits & 0x00400000u) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(56, this->_internal_expirestop(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -5429,7 +5624,7 @@ size_t AppearanceFlags::ByteSizeLong() const {
     }
 
   }
-  if (cached_has_bits & 0x00007f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     // optional bool unwrap = 38;
     if (cached_has_bits & 0x00000100u) {
       total_size += 2 + 1;
@@ -5462,6 +5657,48 @@ size_t AppearanceFlags::ByteSizeLong() const {
 
     // optional bool reportable = 47;
     if (cached_has_bits & 0x00004000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool reverse_addons_east = 49;
+    if (cached_has_bits & 0x00008000u) {
+      total_size += 2 + 1;
+    }
+
+  }
+  if (cached_has_bits & 0x007f0000u) {
+    // optional bool reverse_addons_west = 50;
+    if (cached_has_bits & 0x00010000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool reverse_addons_south = 51;
+    if (cached_has_bits & 0x00020000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool reverse_addons_north = 52;
+    if (cached_has_bits & 0x00040000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool wearout = 53;
+    if (cached_has_bits & 0x00080000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool clockexpire = 54;
+    if (cached_has_bits & 0x00100000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool expire = 55;
+    if (cached_has_bits & 0x00200000u) {
+      total_size += 2 + 1;
+    }
+
+    // optional bool expirestop = 56;
+    if (cached_has_bits & 0x00400000u) {
       total_size += 2 + 1;
     }
 
@@ -5636,7 +5873,7 @@ void AppearanceFlags::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;
   }
-  if (cached_has_bits & 0x00007f00u) {
+  if (cached_has_bits & 0x0000ff00u) {
     if (cached_has_bits & 0x00000100u) {
       _this->_impl_.unwrap_ = from._impl_.unwrap_;
     }
@@ -5657,6 +5894,33 @@ void AppearanceFlags::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
     }
     if (cached_has_bits & 0x00004000u) {
       _this->_impl_.reportable_ = from._impl_.reportable_;
+    }
+    if (cached_has_bits & 0x00008000u) {
+      _this->_impl_.reverse_addons_east_ = from._impl_.reverse_addons_east_;
+    }
+    _this->_impl_._has_bits_[1] |= cached_has_bits;
+  }
+  if (cached_has_bits & 0x007f0000u) {
+    if (cached_has_bits & 0x00010000u) {
+      _this->_impl_.reverse_addons_west_ = from._impl_.reverse_addons_west_;
+    }
+    if (cached_has_bits & 0x00020000u) {
+      _this->_impl_.reverse_addons_south_ = from._impl_.reverse_addons_south_;
+    }
+    if (cached_has_bits & 0x00040000u) {
+      _this->_impl_.reverse_addons_north_ = from._impl_.reverse_addons_north_;
+    }
+    if (cached_has_bits & 0x00080000u) {
+      _this->_impl_.wearout_ = from._impl_.wearout_;
+    }
+    if (cached_has_bits & 0x00100000u) {
+      _this->_impl_.clockexpire_ = from._impl_.clockexpire_;
+    }
+    if (cached_has_bits & 0x00200000u) {
+      _this->_impl_.expire_ = from._impl_.expire_;
+    }
+    if (cached_has_bits & 0x00400000u) {
+      _this->_impl_.expirestop_ = from._impl_.expirestop_;
     }
     _this->_impl_._has_bits_[1] |= cached_has_bits;
   }
@@ -5681,8 +5945,8 @@ void AppearanceFlags::InternalSwap(AppearanceFlags* other) {
   swap(_impl_._has_bits_[1], other->_impl_._has_bits_[1]);
   _impl_.npcsaledata_.InternalSwap(&other->_impl_.npcsaledata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(AppearanceFlags, _impl_.reportable_)
-      + sizeof(AppearanceFlags::_impl_.reportable_)
+      PROTOBUF_FIELD_OFFSET(AppearanceFlags, _impl_.expirestop_)
+      + sizeof(AppearanceFlags::_impl_.expirestop_)
       - PROTOBUF_FIELD_OFFSET(AppearanceFlags, _impl_.bank_)>(
           reinterpret_cast<char*>(&_impl_.bank_),
           reinterpret_cast<char*>(&other->_impl_.bank_));

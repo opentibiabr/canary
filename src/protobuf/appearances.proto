@@ -169,6 +169,14 @@ message AppearanceFlags {
 	optional bool show_off_socket = 46;
 	optional bool reportable = 47;
 	optional AppearanceFlagUpgradeClassification upgradeclassification = 48;
+	optional bool reverse_addons_east = 49;
+	optional bool reverse_addons_west = 50;
+	optional bool reverse_addons_south = 51;
+	optional bool reverse_addons_north = 52;
+	optional bool wearout = 53;
+	optional bool clockexpire = 54;
+	optional bool expire = 55;
+	optional bool expirestop = 56;
 }
 
 message AppearanceFlagUpgradeClassification {

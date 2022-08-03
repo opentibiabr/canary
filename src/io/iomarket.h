@@ -31,7 +31,7 @@ class IOMarket
 			return instance;
 		}
 
-		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId);
+		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
 		static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
 		static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
 
@@ -41,7 +41,7 @@ class IOMarket
 		static uint32_t getPlayerOfferCount(uint32_t playerId);
 		static MarketOfferEx getOfferByCounter(uint32_t timestamp, uint16_t counter);
 
-		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, bool anonymous);
+		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, uint8_t tier, bool anonymous);
 		static void acceptOffer(uint32_t offerId, uint16_t amount);
 		static void deleteOffer(uint32_t offerId);
 

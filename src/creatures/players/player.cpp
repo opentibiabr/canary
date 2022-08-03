@@ -1987,6 +1987,8 @@ void Player::onThink(uint32_t interval)
 		addMessageBuffer();
 	}
 
+	triggerMomentum(); // momentum (cooldown resets)
+
 	if (!getTile()->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
 		idleTime += interval;
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
@@ -3724,35 +3726,19 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 	return countMap;
 }
 
-std::map<uint16_t, uint16_t> Player::getInventoryItemsId() const
+ItemsTierCountList Player::getInventoryItemsId() const
 {
-	std::map<uint16_t, uint16_t> itemMap;
+	ItemsTierCountList itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
-		auto rootSearch = itemMap.find(item->getID());
-		if (rootSearch != itemMap.end()) {
-			itemMap[item->getID()] = itemMap[item->getID()] + static_cast<uint16_t>(Item::countByType(item, -1));
-		}
-		else
-		{
-			itemMap.emplace(item->getID(), static_cast<uint16_t>(Item::countByType(item, -1)));
-		}
-
+		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto containerSearch = itemMap.find((*it)->getID());
-				if (containerSearch != itemMap.end()) {
-					itemMap[(*it)->getID()] = itemMap[(*it)->getID()] + static_cast<uint16_t>(Item::countByType(*it, -1));
-				}
-				else
-				{
-					itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
-				}
-				itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
+				(itemMap[(*it)->getID()])[(*it)->getTier()] += Item::countByType(*it, -1);
 			}
 		}
 	}
@@ -5919,6 +5905,32 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	}
 
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
+}
+
+void Player::triggerMomentum() {
+	if (getInventoryItem(CONST_SLOT_HEAD) != nullptr) {
+		double_t chance = getInventoryItem(CONST_SLOT_HEAD)->getMomentumChance();
+		if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
+			bool triggered = false;
+			auto it = conditions.begin();
+			while (it != conditions.end()) {
+				ConditionType_t type = (*it)->getType();
+				uint32_t spellId = (*it)->getSubId();
+				int32_t ticks = (*it)->getTicks();
+				int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
+				triggered = true;
+				if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
+					(*it)->setTicks(newTicks);
+					type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
+				}
+				++it;
+			}
+			if (triggered) {
+				g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
+				sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
+			}
+		}
+	}
 }
 
 /*******************************************************************************

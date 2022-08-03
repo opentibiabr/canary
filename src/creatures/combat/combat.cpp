@@ -838,14 +838,16 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 	}
 	//
 	CombatDamage tmpDamage;
-    if(data) {
-        tmpDamage.origin = data->origin;
-        tmpDamage.primary.type = data->primary.type;
-        tmpDamage.primary.value = data->primary.value;
-        tmpDamage.secondary.type = data->secondary.type;
-        tmpDamage.secondary.value = data->secondary.value;
-        tmpDamage.critical = data->critical;
-    }
+	if (data) {
+		tmpDamage.origin = data->origin;
+		tmpDamage.primary.type = data->primary.type;
+		tmpDamage.primary.value = data->primary.value;
+		tmpDamage.secondary.type = data->secondary.type;
+		tmpDamage.secondary.value = data->secondary.value;
+		tmpDamage.critical = data->critical;
+		tmpDamage.fatal = data->fatal;
+	}
+
 	tmpDamage.affected = affected;
 	for (Tile* tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
@@ -919,6 +921,16 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
+
+		// fatal hit (onslaught)
+		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+				damage.fatal = true;
+				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 1.6));
+				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 1.6));
+			}
+		}
 	}
 	if (canCombat) {
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
@@ -936,11 +948,21 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 {
 		if(caster && caster->getPlayer()){
 			// Critical damage
-			uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-			if (damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance) {
+			if (uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
+			damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance) {
 				damage.critical = true;
 				damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 				damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+			}
+
+			// fatal hit (onslaught)
+			if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+				double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+				if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+					damage.fatal = true;
+					damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 1.6));
+					damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 1.6));
+				}
 			}
 		}
 	CombatFunc(caster, position, area, params, CombatHealthFunc, &damage);

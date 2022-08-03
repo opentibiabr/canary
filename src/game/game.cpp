@@ -250,277 +250,6 @@ void Game::setGameState(GameState_t newState)
 	}
 }
 
-void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
-{
-	Player* player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
-
-	Item* item;
-	const ItemType& itemType = Item::items[itemId];
-
-	if (itemType.id == 0) {
-		return;
-	}
-
-	bool removed = false;
-	ReturnValue ret = RETURNVALUE_NOERROR;
-
-	if (itemType.weaponType == WEAPON_AMMO) {
-		Thing* quiverThing = player->getThing(CONST_SLOT_RIGHT);
-		Thing* backpackThing = player->getThing(CONST_SLOT_BACKPACK);
-		if (quiverThing && backpackThing) {
-			Item* quiver = quiverThing->getItem();
-			Item* backpack = backpackThing->getItem();
-			if (quiver && quiver->isQuiver() && backpack) {
-				item = findItemOfType(backpack->getContainer(), itemType.id);
-				if (item) {
-					ret = internalMoveItem(item->getParent(), quiver->getContainer(), 0, item, item->getItemCount(), nullptr);
-				}
-				else {
-					ret = RETURNVALUE_NOTPOSSIBLE;
-				}
-			}
-			else {
-				ret = RETURNVALUE_NOTPOSSIBLE;
-			}
-		}
-	} else {
-		item = findItemOfType(player, itemType.id);
-
-		if (!item) {
-			item = findItemOfType(player, itemType.transformEquipTo);
-			if (!item) {
-				item = findItemOfType(player, itemType.transformDeEquipTo);
-			}
-			if (!item) {
-				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
-				return;
-			}
-		}
-
-		const ItemType& newitemType = Item::items[item->getID()];
-
-		if (newitemType.id == 0) {
-			return;
-		}
-
-		int32_t slotP = newitemType.slotPosition;
-		if (itemType.weaponType == WEAPON_SHIELD || itemType.type == ITEM_TYPE_QUIVER) {
-			slotP = CONST_SLOT_RIGHT;
-		}
-		else if (hasBitSet(SLOTP_HEAD, slotP)) {
-			slotP = CONST_SLOT_HEAD;
-		}
-		else if (hasBitSet(SLOTP_RING, slotP)) {
-			slotP = CONST_SLOT_RING;
-		}
-		else if (hasBitSet(SLOTP_NECKLACE, slotP)) {
-			slotP = CONST_SLOT_NECKLACE;
-		}
-		else if (hasBitSet(SLOTP_ARMOR, slotP)) {
-			slotP = CONST_SLOT_ARMOR;
-		}
-		else if (hasBitSet(SLOTP_LEGS, slotP)) {
-			slotP = CONST_SLOT_LEGS;
-		}
-		else if (hasBitSet(SLOTP_FEET, slotP)) {
-			slotP = CONST_SLOT_FEET;
-		}
-		else if (hasBitSet(SLOTP_AMMO, slotP)) {
-			slotP = CONST_SLOT_AMMO;
-		}
-		else if (hasBitSet(SLOTP_LEFT, slotP) && !hasBitSet(SLOTP_TWO_HAND, slotP)) {
-			slotP = CONST_SLOT_LEFT;
-		}
-
-		if (hasBitSet(SLOTP_TWO_HAND, slotP)) {
-			Thing* leftthing = player->getThing(CONST_SLOT_LEFT);
-			if (leftthing) {
-				Item* slotLeft_item = leftthing->getItem();
-				if (slotLeft_item) {
-					if (slotLeft_item->getID() == item->getID()) {
-						removed = true;
-					}
-					ret = internalMoveItem(slotLeft_item->getParent(), player, 0, slotLeft_item, slotLeft_item->getItemCount(), nullptr);
-				}
-			}
-			Thing* rightthing = player->getThing(CONST_SLOT_RIGHT);
-			if (rightthing) {
-				Item* slotRight_Item = rightthing->getItem();
-				if (slotRight_Item) {
-					if (newitemType.weaponType != WEAPON_DISTANCE || !slotRight_Item->isQuiver())
-						ret = internalMoveItem(slotRight_Item->getParent(), player, 0, slotRight_Item, slotRight_Item->getItemCount(), nullptr);
-				}
-				else {
-					return;
-				}
-			}
-			if (!removed) {
-				ret = internalMoveItem(item->getParent(), player, CONST_SLOT_LEFT, item, item->getItemCount(), nullptr);
-			}
-		}
-		else if (hasBitSet(SLOTP_RING, slotP)) {
-			Thing* ringthing = player->getThing(CONST_SLOT_RING);
-			if (ringthing) {
-				Item* slotRing_Item = ringthing->getItem();
-				if (slotRing_Item) {
-					ret = internalMoveItem(slotRing_Item->getParent(), player, 0, slotRing_Item, slotRing_Item->getItemCount(), nullptr);
-					if (slotRing_Item->getID() == item->getID()) {
-						removed = true;
-					}
-				}
-				else {
-					return;
-				}
-			}
-			if (!removed) {
-				ret = internalMoveItem(item->getParent(), player, CONST_SLOT_RING, item, item->getItemCount(), nullptr);
-			}
-		}
-		else if (slotP == CONST_SLOT_RIGHT) {
-			Thing* rightthing = player->getThing(CONST_SLOT_RIGHT);
-			if (rightthing) {
-				Item* slotRight_Item = rightthing->getItem();
-				if (slotRight_Item) {
-					if (slotRight_Item->getID() == item->getID()) {
-						removed = true;
-					}
-					ret = internalMoveItem(slotRight_Item->getParent(), player, 0, slotRight_Item, slotRight_Item->getItemCount(), nullptr);
-				}
-				else {
-					return;
-				}
-			}
-			Thing* leftthing = player->getThing(CONST_SLOT_LEFT);
-			if (leftthing) {
-				Item* slotLeft_item = leftthing->getItem();
-				if (slotLeft_item) {
-					ItemType& it = Item::items.getItemType(slotLeft_item->getID());
-					if (hasBitSet(SLOTP_TWO_HAND, it.slotPosition)) {
-						if (newitemType.type != ITEM_TYPE_QUIVER || slotLeft_item->getWeaponType() != WEAPON_DISTANCE)
-							ret = internalMoveItem(slotLeft_item->getParent(), player, 0, slotLeft_item, slotLeft_item->getItemCount(), nullptr);
-					}
-				}
-				else {
-					return;
-				}
-			}
-			if (!removed) {
-				ret = internalMoveItem(item->getParent(), player, slotP, item, item->getItemCount(), nullptr);
-			}
-		}
-		else if (slotP) {
-			if (newitemType.stackable) {
-				Thing* ammothing = player->getThing(slotP);
-				if (ammothing) {
-					Item* ammoItem = ammothing->getItem();
-					if (ammoItem == nullptr) {
-						SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} ammoItem is nullptr {}.", player->getName());
-						return;
-					}
-
-					ObjectCategory_t category = getObjectCategory(ammoItem);
-					if (ammoItem->getID() == item->getID()){
-						if (item->getDuration() > 0 ||
-						ammoItem->getItemCount() == 100 ||
-						ammoItem->getItemCount() == player->getItemTypeCount(ammoItem->getID()))
-						{
-							ret = internalQuickLootItem(player, ammoItem, category);
-							if (ret != RETURNVALUE_NOERROR) {
-								ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
-							}
-							if (ret != RETURNVALUE_NOERROR) {
-								player->sendCancelMessage(ret);
-							}
-							return;
-						}
-					}
-					else {
-						ret = internalQuickLootItem(player, ammoItem, category);
-						if (ret != RETURNVALUE_NOERROR) {
-							ret = internalMoveItem(ammoItem->getParent(), player, 0, ammoItem, ammoItem->getItemCount(), nullptr);
-						}
-					}
-				}
-				if (ReturnValue returnQueryAdd = player->queryAdd(slotP, *item, item->getItemCount(), 0);
-				returnQueryAdd != RETURNVALUE_NOERROR)
-				{
-					player->sendCancelMessage(returnQueryAdd);
-					return;
-				}
-
-				if (item->getItemCount() < 100 &&
-					item->getItemCount() < player->getItemTypeCount(item->getID(), -1) &&
-					item->getDuration() <= 0) {
-					uint16_t count = 0;
-					while (player->getItemTypeCount(item->getID())) {
-						if (count == 100) {
-							break;
-						}
-						Item* playerItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-						if(playerItem == nullptr) {
-							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} has no backpack. Item is nullptr.", player->getName());
-							break;
-						}
-						Container* mainBP = playerItem->getContainer();
-						if(mainBP == nullptr) {
-							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} backpack is not a container. Container is nullptr.", player->getName());
-							break;
-						}
-						Item* removeItem = findItemOfType(mainBP, item->getID());
-						if (removeItem == nullptr) {
-							SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} item is nullptr.", player->getName());
-							break;
-						}
-
-						if (removeItem->getItemCount() > 100 - count) {
-							internalRemoveItem(removeItem, 100 - count);
-							count = 100;
-						}
-						else {
-							count = count + removeItem->getItemCount();
-							internalRemoveItem(removeItem, removeItem->getItemCount());
-						}
-					}
-					if(Item* newSlotitem = Item::CreateItem(item->getID(), count);
-					newSlotitem && count > 0)
-					{
-						internalAddItem(player, newSlotitem, slotP, FLAG_NOLIMIT);
-					}
-					return;
-				}
-				else {
-					ret = internalMoveItem(item->getParent(), player, slotP, item, item->getItemCount(), nullptr);
-				}
-			}
-			else {
-				Thing* slotthing = player->getThing(slotP);
-				if (slotthing) {
-					Item* slotItem = slotthing->getItem();
-					if (slotItem == nullptr) {
-						SPDLOG_DEBUG("[Game::onPressHotkeyEquip] - Player {} slotitem is nullptr.", player->getName());
-						return;
-					}
-
-					ret = internalMoveItem(slotItem->getParent(), player, 0, slotItem, slotItem->getItemCount(), nullptr);
-					if (slotItem->getID() == item->getID()) {
-						removed = true;
-					}
-				}
-				if (!removed) {
-					ret = internalMoveItem(item->getParent(), player, slotP, item, item->getItemCount(), nullptr);
-				}
-			}
-		}
-	}
-
-	if (ret != RETURNVALUE_NOERROR) {
-		player->sendCancelMessage(ret);
-	}
-}
-
 void Game::saveGameState()
 {
 	if (gameState == GAME_STATE_NORMAL) {
@@ -2016,8 +1745,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 	return ret;
 }
 
-Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId,
-                           bool depthSearch /*= true*/, int32_t subType /*= -1*/) const
+Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/, bool hasTier /*= false*/, uint8_t tier /*= 0*/) const
 {
 	if (cylinder == nullptr) {
 		return nullptr;
@@ -2035,7 +1763,7 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId,
 			continue;
 		}
 
-		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
+		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType()) && (!hasTier || item->getTier() == tier)) {
 			return item;
 		}
 
@@ -2051,7 +1779,7 @@ Item* Game::findItemOfType(Cylinder* cylinder, uint16_t itemId,
 	while (i < containers.size()) {
 		Container* container = containers[i++];
 		for (Item* item : container->getItemList()) {
-			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
+			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType()) && (!hasTier || item->getTier() == tier)) {
 				return item;
 			}
 
@@ -2712,10 +2440,10 @@ uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, b
 	return total;
 }
 
-Item* searchForItem(Container* container, uint16_t itemId)
+Item* searchForItem(const Container* container, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/)
 {
 	for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-		if ((*it)->getID() == itemId) {
+		if ((*it)->getID() == itemId && (!hasTier || (*it)->getTier() == tier)) {
 			return *it;
 		}
 	}
@@ -2752,7 +2480,7 @@ Slots_t getSlotType(const ItemType& it)
 }
 
 //Implementation of player invoked events
-void Game::playerEquipItem(uint32_t playerId, uint16_t itemId)
+void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* = false*/, uint8_t tier /* = 0*/)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -2764,7 +2492,7 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId)
 		return;
 	}
 
-	Container* backpack = item->getContainer();
+	const Container* backpack = item->getContainer();
 	if (!backpack) {
 		return;
 	}
@@ -2773,10 +2501,18 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId)
 	Slots_t slot = getSlotType(it);
 
 	Item* slotItem = player->getInventoryItem(slot);
-	Item* equipItem = searchForItem(backpack, it.id);
+	Item* equipItem = searchForItem(backpack, it.id, hasTier, tier);
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
+		if (it.weaponType == WEAPON_AMMO) {
+			Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
+			if (quiver && quiver->isQuiver()) {
+				internalMoveItem(equipItem->getParent(), quiver->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
+				return;
+			}
+		}
+
 		internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);
 	}
 }
@@ -5641,6 +5377,8 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			addMagicEffect(targetPos, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
 			addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+		} else if (blockType == BLOCK_DODGE) {
+			addMagicEffect(targetPos, CONST_ME_DODGE);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -5671,6 +5409,18 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			addMagicEffect(targetPos, hitEffect);
 		}
 	};
+
+	// dodge (ruse)
+	if (const Player* targetPlayer = target->getPlayer()) {
+		if (targetPlayer->getInventoryItem(CONST_SLOT_ARMOR) != nullptr) {
+			double_t chance = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR)->getDodgeChance();
+			if (chance > 0 && uniform_random(1, 100) <= chance) {
+				sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
+				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
+				return true;
+			}
+		}
+	}
 
 	bool canHeal = false;
 		CombatDamage damageHeal;
@@ -6032,7 +5782,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 		SpectatorHashSet spectators;
 		map.getSpectators(spectators, targetPos, true, true);
 
-		if (damage.critical) {
+		if (damage.fatal) {
+			addMagicEffect(spectators, targetPos, CONST_ME_FATAL);
+		} else if (damage.critical) {
 			addMagicEffect(spectators, targetPos, CONST_ME_CRITICAL_DAMAGE);
 		}
 
@@ -6336,6 +6088,9 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 					ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your attack.";
 					if (damage.extension) {
 						ss << " " << damage.exString;
+					}
+					if (damage.fatal) {
+						ss << " (Onslaught)";
 					}
 					message.type = MESSAGE_DAMAGE_DEALT;
 					message.text = ss.str();
@@ -7536,7 +7291,7 @@ void Game::playerLeaveMarket(uint32_t playerId)
 	player->setInMarket(false);
 }
 
-void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId)
+void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId, uint8_t tier)
 {
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
@@ -7556,10 +7311,10 @@ void Game::playerBrowseMarket(uint32_t playerId, uint16_t itemId)
 		return;
 	}
 
-	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id);
-	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
-	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers);
-	player->sendMarketDetail(it.id);
+	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
+	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
+	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
+	player->sendMarketDetail(it.id, tier);
 }
 
 void Game::playerBrowseMarketOwnOffers(uint32_t playerId)
@@ -7594,7 +7349,7 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 	player->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 }
 
-void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
+void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, uint8_t tier, bool anonymous)
 {
 	// 64000 is size of the client limitation (uint16_t)
 	if (amount == 0 || amount > 64000) {
@@ -7680,7 +7435,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
 			amount = (amount - (amount > stashminus ? stashminus : amount));
 
-			std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
+			std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, tier, depotLocker);
 			if (itemVector.empty() && amount > 0) {
 				SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell item list is empty");
 				return;
@@ -7715,7 +7470,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		g_game().removeMoney(player, totalPrice, 0, true);
 	}
 
-	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, anonymous);
+	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t>(type), it.id, amount, price, tier, anonymous);
 
 	auto ColorItem = itemsPriceMap.find(it.id);
 	if (ColorItem == itemsPriceMap.end()) {
@@ -7727,9 +7482,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
-	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id);
-	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id);
-	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers);
+	const MarketOfferList& buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
+	const MarketOfferList& sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
+	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
 
 	// Exhausted for create offert in the market
 	player->updateMarketExhausted();
@@ -7900,7 +7655,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			if (removeAmount > 0) {
-				std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
+				std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, offer.tier, depotLocker);
 				if (itemVector.empty()) {
 					SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Buy item list is empty");
 					return;
@@ -8512,7 +8267,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 	}
 }
 
-std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker)
+std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker)
 {
 	std::vector<Item*> itemVector;
 	itemVector.reserve(std::max<size_t>(32, depotLocker->size()));
@@ -8541,6 +8296,10 @@ std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientC
 			}
 
 			if (!item->hasMarketAttributes()) {
+				continue;
+			}
+
+			if (!item->getTier() == tier) {
 				continue;
 			}
 

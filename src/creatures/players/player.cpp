@@ -1310,6 +1310,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 	if (item->getParent() == this) {
 		addItemImbuementStats(imbuement);
 	}
+	updateInventoryImbuement(true);
 	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
 }

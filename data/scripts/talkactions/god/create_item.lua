@@ -24,18 +24,28 @@ function createItem.onSay(player, words, param)
 		return false
 	end
 
+	local charges = itemType:getCharges()
 	local count = tonumber(split[2])
 	if count then
 		if itemType:isStackable() then
 			count = math.min(10000, math.max(1, count))
 		elseif not itemType:isFluidContainer() then
-			count = math.min(100, math.max(1, count))
+			local min = 100;
+			if(charges > 0) then
+				min = charges;
+			end
+			count = math.min(min, math.max(1, count))
 		else
 			count = math.max(0, count)
 		end
 	else
 		if not itemType:isFluidContainer() then
-			count = 1
+			if charges > 0 then
+				player:addItem(itemType:getId(), 0)
+				return false
+			else
+				count = 1
+			end
 		else
 			count = 0
 		end

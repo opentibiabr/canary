@@ -319,7 +319,7 @@ class ItemAttributes
 		static double emptyDouble;
 		static bool emptyBool;
 
-		typedef std::unordered_map<std::string, CustomAttribute> CustomAttributeMap;
+		typedef phmap::flat_hash_map<std::string, CustomAttribute> CustomAttributeMap;
 
 		struct Attribute {
 			union {
@@ -796,6 +796,7 @@ class Item : virtual public Thing
 		}
 
 		static std::string parseImbuementDescription(const Item* item);
+		static std::string parseShowAttributesDescription(const Item *item, const uint16_t itemId);
 		static std::string parseClassificationDescription(const Item* item);
 
 		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
@@ -874,7 +875,7 @@ class Item : virtual public Thing
 			}
 			return items[id].extraDefense;
 		}
-		int32_t getImbuementSlot() const {
+		uint8_t getImbuementSlot() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)) {
 				return getIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT);
 			}

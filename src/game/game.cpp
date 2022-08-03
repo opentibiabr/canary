@@ -4109,7 +4109,14 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
+	player->updateNpcExhausted();
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount, bool ignoreEquipped)
@@ -4133,7 +4140,14 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	merchant->onPlayerSellItem(player, it.id, count, amount, ignoreEquipped);
+	player->updateNpcExhausted();
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -5059,6 +5073,17 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 
 void Game::playerSpeakToNpc(Player* player, const std::string& text)
 {
+	if (player == nullptr) {
+		SPDLOG_ERROR("[Game::playerSpeakToNpc] - Player is nullptr");
+		return;
+	}
+
+	// Check npc say exhausted
+	if (player->isNpcExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, player->getPosition());
 	for (Creature* spectator : spectators) {
@@ -5066,6 +5091,8 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 			spectator->onCreatureSay(player, TALKTYPE_PRIVATE_PN, text);
 		}
 	}
+
+	player->updateNpcExhausted();
 }
 
 //--
@@ -7388,7 +7415,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		}
 
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
-		if (!depotLocker) {
+		if (depotLocker == nullptr) {
+			SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell depot chest is nullptr");
 			return;
 		}
 
@@ -7407,8 +7435,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			uint16_t stashminus = player->getStashItemCount(it.wareId);
 			amount = (amount - (amount > stashminus ? stashminus : amount));
 
-			std::forward_list<Item *> itemList = getMarketItemList(it.wareId, amount, tier, depotLocker);
-			if (itemList.empty() && amount > 0) {
+			std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, tier, depotLocker);
+			if (itemVector.empty() && amount > 0) {
+				SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell item list is empty");
 				return;
 			}
 
@@ -7417,7 +7446,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			}
 
 			uint16_t tmpAmount = amount;
-			for (Item *item : itemList) {
+			for (Item *item : itemVector) {
 				if (!it.stackable) {
 					internalRemoveItem(item);
 					continue;
@@ -7581,7 +7610,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
-		if (!depotLocker) {
+		if (depotLocker == nullptr) {
+			SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Buy depot chest is nullptr");
 			return;
 		}
 
@@ -7625,14 +7655,15 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			if (removeAmount > 0) {
-				std::forward_list<Item*> itemList = getMarketItemList(it.wareId, removeAmount, offer.tier, depotLocker);
-				if (itemList.empty() && removeAmount > 0) {
+				std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, offer.tier, depotLocker);
+				if (itemVector.empty()) {
+					SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Buy item list is empty");
 					return;
 				}
 	
 				if (it.stackable) {
 					uint16_t tmpAmount = removeAmount;
-					for (Item* item : itemList) {
+					for (Item* item : itemVector) {
 						if (!item) {
 							continue;
 						}
@@ -7645,7 +7676,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 						}
 					}
 				} else {
-					for (Item* item : itemList) {
+					for (Item* item : itemVector) {
 						if (!item) {
 							continue;
 						}
@@ -7700,7 +7731,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			delete buyerPlayer;
 		}
 	} else if (offer.type == MARKETACTION_SELL) {
-
 		Player *sellerPlayer = getPlayerByGUID(offer.playerId);
 		if (!sellerPlayer) {
 			sellerPlayer = new Player(nullptr);
@@ -8237,20 +8267,22 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 	}
 }
 
-std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker)
+std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker)
 {
-	std::forward_list<Item*> itemList;
+	std::vector<Item*> itemVector;
+	itemVector.reserve(std::max<size_t>(32, depotLocker->size()));
+
+	std::vector<Container*> containers{ depotLocker };
+	containers.reserve(32);
+
 	uint16_t count = 0;
-
-	std::list<Container*> containers {depotLocker};
+	size_t i = 0;
 	do {
-		Container* container = containers.front();
-		containers.pop_front();
-
+		Container* container = containers[i];
 		for (Item* item : container->getItemList()) {
-			Container* c = item->getContainer();
-			if (c && !c->empty()) {
-				containers.push_back(c);
+			Container* itemContainer = item->getContainer();
+			if (itemContainer && !itemContainer->empty()) {
+				containers.push_back(itemContainer);
 				continue;
 			}
 
@@ -8259,7 +8291,7 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 				continue;
 			}
 
-			if (c && (!itemType.isContainer() || c->capacity() != itemType.maxItems)) {
+			if (itemContainer && (!itemType.isContainer() || itemContainer->capacity() != itemType.maxItems)) {
 				continue;
 			}
 
@@ -8271,15 +8303,17 @@ std::forward_list<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t suffi
 				continue;
 			}
 
-			itemList.push_front(item);
+			itemVector.push_back(item);
 
 			count += Item::countByType(item, -1);
 			if (count >= sufficientCount) {
-				return itemList;
+				return itemVector;
 			}
 		}
-	} while (!containers.empty());
-	return std::forward_list<Item*>();
+	} while (++i < containers.size());
+
+	itemVector.clear();
+	return itemVector;
 }
 
 void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionType, ConditionId_t conditionId)

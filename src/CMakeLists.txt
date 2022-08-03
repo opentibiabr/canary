@@ -308,6 +308,7 @@ if (MSVC)
       ${Boost_INCLUDE_DIRS}
       ${PUGIXML_INCLUDE_DIR}
       ${CURL_INCLUDE_DIRS}
+      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
       ${SPDLOG_INCLUDE_DIR}
       ${GMP_INCLUDE_DIR}
@@ -335,6 +336,7 @@ else()
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUAJIT_INCLUDE_DIRS}
+      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
       ${GMP_INCLUDE_DIRS}
   )

@@ -390,7 +390,7 @@ class Game
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker);
+		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker);
 
 		static void updatePremium(account::Account& account);
 
@@ -469,7 +469,7 @@ class Game
 		void sendOfflineTrainingDialog(Player* player);
 
 		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
-		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
+		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
 		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
@@ -488,7 +488,7 @@ class Game
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position& pos);
 
-		std::unordered_map<Tile*, Container*> browseFields;
+		phmap::flat_hash_map<Tile*, Container*> browseFields;
 
 		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
 
@@ -512,7 +512,7 @@ class Game
 		GameStore gameStore;
 		Canary::protobuf::appearances::Appearances appearances;
 
-		std::unordered_set<Tile*> getTilesToClean() const {
+		phmap::flat_hash_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
 		}
 		void addTileToClean(Tile* tile) {
@@ -584,11 +584,11 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
-		std::unordered_map<uint32_t, Player*> players;
-		std::unordered_map<uint32_t, uint8_t> playersActiveImbuements;
-		std::unordered_map<std::string, Player*> mappedPlayerNames;
-		std::unordered_map<uint32_t, Guild*> guilds;
-		std::unordered_map<uint16_t, Item*> uniqueItems;
+		phmap::flat_hash_map<uint32_t, Player*> players;
+		phmap::flat_hash_map<uint32_t, uint8_t> playersActiveImbuements;
+		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
+		phmap::flat_hash_map<uint32_t, Guild*> guilds;
+		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
 
 		/* Items stored from the lua scripts positions
@@ -624,7 +624,7 @@ class Game
 
 		std::map<uint32_t, BedItem*> bedSleepersMap;
 
-		std::unordered_set<Tile*> tilesToClean;
+		phmap::flat_hash_set<Tile*> tilesToClean;
 
 		ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 

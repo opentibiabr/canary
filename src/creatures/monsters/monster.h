@@ -28,7 +28,7 @@ class Creature;
 class Game;
 class Spawn;
 
-using CreatureHashSet = std::unordered_set<Creature*>;
+using CreatureHashSet = phmap::flat_hash_set<Creature*>;
 using CreatureList = std::list<Creature*>;
 
 class Monster final : public Creature

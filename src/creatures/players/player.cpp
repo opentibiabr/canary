@@ -3531,7 +3531,7 @@ void Player::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
-uint8_t Player::getThingIndex(const Thing* thing) const
+int32_t Player::getThingIndex(const Thing* thing) const
 {
 	for (uint8_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
 		if (inventory[i] == thing) {
@@ -5442,7 +5442,7 @@ uint16_t Player::getHelpers() const
 	uint16_t helpers;
 
 	if (guild && party) {
-		std::unordered_set<Player*> helperSet;
+		phmap::flat_hash_set<Player*> helperSet;
 
 		const auto& guildMembers = guild->getMembersOnline();
 		helperSet.insert(guildMembers.begin(), guildMembers.end());
@@ -5597,6 +5597,15 @@ void Player::updateRegeneration()
 bool Player::isMarketExhausted() const {
 	uint32_t exhaust_time = 3000; // half second 500
 	return (OTSYS_TIME() - lastMarketInteraction < exhaust_time);
+}
+
+// Player talk with npc exhausted
+bool Player::isNpcExhausted(uint32_t exhaustionTime /*= 250*/) const {
+	return (OTSYS_TIME() - lastNpcInteraction < exhaustionTime);
+}
+
+void Player::updateNpcExhausted() {
+	lastNpcInteraction = OTSYS_TIME();
 }
 
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) const

@@ -4104,7 +4104,6 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 			(depotItems[itemType.wareId])[0] += item.second;
 		}
 	} while (size > 0);
-	uint16_t itemsToSend = std::min<size_t>(depotItems.size(), std::numeric_limits<uint16_t>::max());
 	auto countPosition = msg.getBufferPosition();
 	msg.skipBytes(2); // total items count
 
@@ -4113,16 +4112,16 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 			for (const auto [tier, count] : item) {
 				SPDLOG_WARN("{} {} {}", itemId, tier, count);
 				msg.add<uint16_t>(itemId);
-				msg.addByte(tier);
+				if (Item::items[itemId].upgradeClassification > 0) {
+					msg.addByte(tier);
+				}
 				msg.add<uint16_t>(count);
 				itemCount++;
 			}
 	}
 
-	auto position = msg.getBufferPosition();
 	msg.setBufferPosition(countPosition);
 	msg.add<uint16_t>(itemCount);
-	msg.setBufferPosition(position);
 	writeToOutputBuffer(msg);
 
 	updateCoinBalance();
@@ -4395,30 +4394,11 @@ void ProtocolGame::sendForgingData()
 
 	uint32_t sliverCount = 0;
 	uint32_t coreCount = 0;
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-		Item* item = player->inventory[i];
-		if (!item) {
-			continue;
-		}
-
+	for (Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
 		if (item->getID() == ITEM_FORGE_SLIVER) {
 			sliverCount += Item::countByType(item, -1);
-		}
-
-		if (item->getID() == ITEM_FORGE_CORE) {
+		} else if (item->getID() == ITEM_FORGE_CORE) {
 			coreCount += Item::countByType(item, -1);
-		}
-
-		if (Container* container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if ((*it)->getID() == ITEM_FORGE_SLIVER) {
-					sliverCount += Item::countByType(*it, -1);
-				}
-
-				if ((*it)->getID() == ITEM_FORGE_CORE) {
-					coreCount += Item::countByType(*it, -1);
-				}
-			}
 		}
 	}
 
@@ -5656,10 +5636,8 @@ void ProtocolGame::sendInventoryIds()
 		}
 	}
 
-	auto position = msg.getBufferPosition();
 	msg.setBufferPosition(countPosition);
 	msg.add<uint16_t>(itemCount + 11);
-	msg.setBufferPosition(position);
 	writeToOutputBuffer(msg);
 }
 

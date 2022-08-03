@@ -2640,7 +2640,7 @@ bool Item::hasMarketAttributes()
 			return false;
 		}
 
-		if (attribute.type == ITEM_ATTRIBUTE_TIER) { //to-do tier/classification check idk
+		if (attribute.type == ITEM_ATTRIBUTE_TIER && static_cast<uint32_t>(attribute.value.integer) != getTier()) {
 			return false;
 		}
 	}

@@ -23,7 +23,7 @@
 
 VirtualCylinder* VirtualCylinder::virtualCylinder = new VirtualCylinder;
 
-uint8_t Cylinder::getThingIndex(const Thing*) const
+int32_t Cylinder::getThingIndex(const Thing*) const
 {
 	return -1;
 }

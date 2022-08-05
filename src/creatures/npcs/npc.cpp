@@ -222,7 +222,8 @@ void Npc::onThink(uint32_t interval)
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
                           uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks)
 {
-	if (!player) {
+	if (player == nullptr) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 

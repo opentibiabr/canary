@@ -837,3 +837,16 @@ int ItemFunctions::luaItemSetDuration(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
+	// item:isInsideDepot([includeInbox = false])
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, item->isInsideDepot(getBoolean(L, 2, false)));
+	return 1;
+}

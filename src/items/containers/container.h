@@ -90,6 +90,12 @@ class Container : public Item, public Cylinder
 		virtual const Reward* getReward() const {
 			return nullptr;
 		}
+		virtual bool isInbox() const {
+			return false;
+		}
+		virtual bool isDepotChest() const {
+			return false;
+		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;
@@ -155,7 +161,7 @@ class Container : public Item, public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override final;
 
-		uint8_t getThingIndex(const Thing* thing) const override final;
+		int32_t getThingIndex(const Thing* thing) const override final;
 		size_t getFirstIndex() const override final;
 		size_t getLastIndex() const override final;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;

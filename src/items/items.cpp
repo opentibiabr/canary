@@ -43,7 +43,7 @@ void Items::clear()
 	nameToItems.clear();
 }
 
-using LootTypeNames = std::unordered_map<std::string, ItemTypes_t>;
+using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
 
 LootTypeNames lootTypeNames = {
 	{"armor", ITEM_TYPE_ARMOR},

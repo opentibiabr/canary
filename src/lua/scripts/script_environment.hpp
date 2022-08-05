@@ -98,7 +98,7 @@ class ScriptEnvironment {
 		static std::multimap < ScriptEnvironment * , Item * > tempItems;
 
 		// local item map
-		std::unordered_map < uint32_t, Item * > localMap;
+		phmap::flat_hash_map < uint32_t, Item * > localMap;
 		uint32_t lastUID = std::numeric_limits < uint16_t > ::max();
 
 		// script file id

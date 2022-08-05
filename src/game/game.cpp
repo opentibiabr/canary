@@ -4270,6 +4270,10 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	if ((it.stackable && amount > 10000) || (!it.stackable && amount > 100)) {
+		return;
+	}
+
 	if (!player->hasShopItemForSale(it.id, count)) {
 		return;
 	}
@@ -4295,6 +4299,10 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 
 	const ItemType& it = Item::items[itemId];
 	if (it.id == 0) {
+		return;
+	}
+
+	if ((it.stackable && amount > 10000) || (!it.stackable && amount > 100)) {
 		return;
 	}
 
@@ -6687,6 +6695,10 @@ void Game::ReleaseCreature(Creature* creature)
 
 void Game::ReleaseItem(Item* item)
 {
+	if (!item) {
+		return;
+	}
+
 	ToReleaseItems.push_back(item);
 }
 

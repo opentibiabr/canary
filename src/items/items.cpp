@@ -170,8 +170,6 @@ void Items::loadFromProtobuf()
 		iType.lookThrough = object.flags().ignore_look();
 		iType.stackable = object.flags().cumulative();
 		iType.isPodium = object.flags().show_off_socket();
-
-		// 12.90
 		iType.wearOut = object.flags().wearout();
 		iType.clockExpire = object.flags().clockexpire();
 		iType.expire = object.flags().expire();

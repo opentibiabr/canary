@@ -83,11 +83,11 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 	}
 	if (it.expire || it.expireStop || it.clockExpire) {
 		msg.add<uint32_t>(it.decayTime);
-		msg.addByte(0x01); // Unknown byte
+		msg.addByte(0x01); // Brand-new
 	}
 	if (it.wearOut) {
-		msg.add<uint32_t>(0);
-		msg.addByte(0x01); // Unknown byte
+		msg.add<uint32_t>(it.charges);
+		msg.addByte(0x01); // Brand-new
 	}
 }
 
@@ -213,20 +213,22 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	if (it.expire || it.expireStop || it.clockExpire) {
 		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 			msg.add<uint32_t>(item->getDuration() / 1000);
+			msg.addByte((item->getDuration() / 1000) == it.decayTime ? 0x01 : 0x00); // Brand-new
 		} else {
 			msg.add<uint32_t>(it.decayTime);
+			msg.addByte(0x01); // Brand-new
 		}
-		msg.addByte(0x01); // Unknown byte
 	}
 
 	// Charge
 	if (it.wearOut) {
 		if (item->getSubType() == 0) {
 			msg.add<uint32_t>(it.charges);
+			msg.addByte(0x01); // Brand-new
 		} else {
 			msg.add<uint32_t>(static_cast<uint32_t>(item->getSubType()));
+			msg.addByte(item->getSubType() == it.charges ? 0x01 : 0x00); // Brand-new
 		}
-		msg.addByte(0x01); // Unknown byte
 	}
 }
 

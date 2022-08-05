@@ -216,13 +216,11 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 
 uint32_t Protocol::getIP() const
 {
-	auto protocolConnection = getConnection();
-	if (protocolConnection == nullptr) {
-		SPDLOG_ERROR("[Protocol::getIP] - Connection is nullptr");
-		return 0;
+	if (auto protocolConnection = getConnection()) {
+		return protocolConnection->getIP();
 	}
 
-	return protocolConnection->getIP();
+	return 0;
 }
 
 void Protocol::enableCompression()

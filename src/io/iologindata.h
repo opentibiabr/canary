@@ -14,8 +14,6 @@
 #include "creatures/players/player.h"
 #include "database/database.h"
 
-using ItemBlockList = std::list<std::pair<int32_t, Item*>>;
-
 class IOLoginData
 {
 	public:
@@ -51,13 +49,8 @@ class IOLoginData
 		static void removePremiumDays(uint32_t accountId, int32_t removeDays);
 
 	private:
-		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
-		using ContainerPair = std::pair<const Container*, int32_t>;
-
-		static void loadItems(ItemMap& itemMap, DBResult_ptr result);
-		static bool saveOpenContainerItems(const Item &item, const std::map<uint8_t, OpenContainer>& openContainers, std::list<ContainerPair>& queue, int32_t runningId);
-		static bool saveOpenSubContainerItems(const Item &item, const std::map<uint8_t, OpenContainer>& openContainers, std::list<ContainerPair>& queue, int32_t runningId);
-		static bool saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& stream);
+		static void loadItems(std::map<uint32_t, std::pair<Item*, uint32_t>>& itemMap, DBResult_ptr result);
+		static bool saveItems(const Player* player, const std::list<std::pair<int32_t, Item*>>& itemList, DBInsert& queryInsert, PropWriteStream& stream);
 };
 
 #endif  // SRC_IO_IOLOGINDATA_H_

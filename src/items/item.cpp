@@ -439,6 +439,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_RUNE_CHARGES: {
 			uint8_t charges;
 			if (!propStream.read<uint8_t>(charges)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read charges");
 				return ATTR_READ_ERROR;
 			}
 
@@ -449,6 +450,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_ACTION_ID: {
 			uint16_t actionId;
 			if (!propStream.read<uint16_t>(actionId)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read actionId");
 				return ATTR_READ_ERROR;
 			}
 
@@ -459,6 +461,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_UNIQUE_ID: {
 			uint16_t uniqueId;
 			if (!propStream.read<uint16_t>(uniqueId)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read uniqueId");
 				return ATTR_READ_ERROR;
 			}
 
@@ -469,6 +472,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_TEXT: {
 			std::string text;
 			if (!propStream.readString(text)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read text");
 				return ATTR_READ_ERROR;
 			}
 
@@ -479,6 +483,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_WRITTENDATE: {
 			uint32_t writtenDate;
 			if (!propStream.read<uint32_t>(writtenDate)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read writtenDate");
 				return ATTR_READ_ERROR;
 			}
 
@@ -489,6 +494,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_WRITTENBY: {
 			std::string writer;
 			if (!propStream.readString(writer)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read writer");
 				return ATTR_READ_ERROR;
 			}
 
@@ -499,6 +505,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_DESC: {
 			std::string text;
 			if (!propStream.readString(text)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read description");
 				return ATTR_READ_ERROR;
 			}
 
@@ -509,6 +516,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_CHARGES: {
 			uint16_t charges;
 			if (!propStream.read<uint16_t>(charges)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read charges");
 				return ATTR_READ_ERROR;
 			}
 
@@ -519,6 +527,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_DURATION: {
 			int32_t duration;
 			if (!propStream.read<int32_t>(duration)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read duration");
 				return ATTR_READ_ERROR;
 			}
 
@@ -529,6 +538,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_DECAYING_STATE: {
 			uint8_t state;
 			if (!propStream.read<uint8_t>(state)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read decaying state");
 				return ATTR_READ_ERROR;
 			}
 
@@ -541,6 +551,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_NAME: {
 			std::string name;
 			if (!propStream.readString(name)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read name");
 				return ATTR_READ_ERROR;
 			}
 
@@ -551,6 +562,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_ARTICLE: {
 			std::string article;
 			if (!propStream.readString(article)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read article");
 				return ATTR_READ_ERROR;
 			}
 
@@ -561,6 +573,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_PLURALNAME: {
 			std::string pluralName;
 			if (!propStream.readString(pluralName)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read pluralName");
 				return ATTR_READ_ERROR;
 			}
 
@@ -571,6 +584,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_WEIGHT: {
 			uint32_t weight;
 			if (!propStream.read<uint32_t>(weight)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read weight");
 				return ATTR_READ_ERROR;
 			}
 
@@ -581,6 +595,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_ATTACK: {
 			int32_t attack;
 			if (!propStream.read<int32_t>(attack)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read attack");
 				return ATTR_READ_ERROR;
 			}
 
@@ -591,6 +606,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_DEFENSE: {
 			int32_t defense;
 			if (!propStream.read<int32_t>(defense)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read defense");
 				return ATTR_READ_ERROR;
 			}
 
@@ -601,6 +617,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_EXTRADEFENSE: {
 			int32_t extraDefense;
 			if (!propStream.read<int32_t>(extraDefense)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read extraDefense");
 				return ATTR_READ_ERROR;
 			}
 
@@ -611,6 +628,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_IMBUEMENT_SLOT: {
 			int32_t imbuementSlot;
 			if (!propStream.read<int32_t>(imbuementSlot)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read imbuementSlot");
 				return ATTR_READ_ERROR;
 			}
 
@@ -631,6 +649,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_ARMOR: {
 			int32_t armor;
 			if (!propStream.read<int32_t>(armor)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read armor");
 				return ATTR_READ_ERROR;
 			}
 
@@ -641,6 +660,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_HITCHANCE: {
 			int8_t hitChance;
 			if (!propStream.read<int8_t>(hitChance)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read hitChance");
 				return ATTR_READ_ERROR;
 			}
 
@@ -651,6 +671,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_SHOOTRANGE: {
 			uint8_t shootRange;
 			if (!propStream.read<uint8_t>(shootRange)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read shootRange");
 				return ATTR_READ_ERROR;
 			}
 
@@ -661,6 +682,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_SPECIAL: {
 			std::string special;
 			if (!propStream.readString(special)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read special");
 				return ATTR_READ_ERROR;
 			}
 
@@ -671,6 +693,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_QUICKLOOTCONTAINER: {
 			uint32_t flags;
 			if (!propStream.read<uint32_t>(flags)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read quickLootContainer");
 				return ATTR_READ_ERROR;
 			}
 
@@ -678,57 +701,89 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			break;
 		}
 
-		//these should be handled through derived classes
-		//If these are called then something has changed in the items.xml since the map was saved
-		//just read the values
-
 		//Depot class
 		case ATTR_DEPOT_ID: {
-			if (!propStream.skip(2)) {
+			uint16_t attrDepotId;
+			if (!propStream.read<uint16_t>(attrDepotId)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read depotId");
 				return ATTR_READ_ERROR;
 			}
+
+			setDepotId(attrDepotId);
 			break;
 		}
 
 		//Door class
 		case ATTR_HOUSEDOORID: {
-			if (!propStream.skip(1)) {
+			uint8_t attrDoorId;
+			if (!propStream.read<uint8_t>(attrDoorId)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read doorId");
 				return ATTR_READ_ERROR;
 			}
+
+			setDoorId(attrDoorId);
 			break;
 		}
 
 		//Bed class
 		case ATTR_SLEEPERGUID: {
-			if (!propStream.skip(4)) {
+			uint32_t guid;
+			if (!propStream.read<uint32_t>(guid)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read sleeperGuid");
 				return ATTR_READ_ERROR;
 			}
+
+			std::string name = IOLoginData::getNameByGuid(guid);
+			if (name.empty()) {
+				SPDLOG_ERROR("[ItemReadMapAttributes::readAttributeSleeperGuid] - Sleeper name is wrong");
+				return ATTR_READ_ERROR;
+			}
+
+			setSpecialDescription(name + " is sleeping there.");
+			g_game().setBedSleeper(getBed(), guid);
+			setSleeperGuid(guid);
 			break;
 		}
 
 		case ATTR_SLEEPSTART: {
-			if (!propStream.skip(4)) {
+			uint32_t attrSleepStart;
+			if (!propStream.read<uint32_t>(attrSleepStart)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read sleepStart");
 				return ATTR_READ_ERROR;
 			}
+
+			setSleepStart(attrSleepStart);
 			break;
 		}
 
 		//Teleport class
 		case ATTR_TELE_DEST: {
-			if (!propStream.skip(5)) {
-				return ATTR_READ_ERROR;
+			uint16_t x;
+			uint16_t y;
+			uint8_t z;
+			if (!propStream.read<uint16_t>(x) || !propStream.read<uint16_t>(y) || !propStream.read<uint8_t>(z)) {
+				SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have empty destination", getID(), getPosition().toString());
 			}
+
+			setDestination(Position(x, y, z));
 			break;
 		}
 
 		//Container class
 		case ATTR_CONTAINER_ITEMS: {
-			return ATTR_READ_ERROR;
+			uint32_t attrSerializationCount;
+			if (!propStream.read<uint32_t>(attrSerializationCount)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read containerItems");
+				return ATTR_READ_ERROR;
+			}
+
+			return ATTR_READ_END;
 		}
 
 		case ATTR_CUSTOM_ATTRIBUTES: {
 			uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read customAttributes");
 				return ATTR_READ_ERROR;
 			}
 
@@ -736,12 +791,14 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				// Unserialize key type and value
 				std::string key;
 				if (!propStream.readString(key)) {
+					SPDLOG_ERROR("[Item::readAttr] Cannot read customAttribute key");
 					return ATTR_READ_ERROR;
 				};
 
 				// Unserialize value type and value
 				ItemAttributes::CustomAttribute val;
 				if (!val.unserialize(propStream)) {
+					SPDLOG_ERROR("[Item::readAttr] Cannot read customAttribute value");
 					return ATTR_READ_ERROR;
 				}
 
@@ -753,6 +810,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		case ATTR_IMBUEMENT_TYPE: {
 			std::string imbuementType;
 			if (!propStream.readString(imbuementType)) {
+				SPDLOG_ERROR("[Item::readAttr] Cannot read imbuementType");
 				return ATTR_READ_ERROR;
 			}
 
@@ -761,6 +819,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 		}
 
 		default:
+			SPDLOG_ERROR("[Item::readAttr] Attribute type {} not known", attr);
 			return ATTR_READ_ERROR;
 	}
 
@@ -769,14 +828,20 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 
 bool Item::unserializeAttr(PropStream& propStream)
 {
-	uint8_t attr_type;
-	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
-		Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
-		if (ret == ATTR_READ_ERROR) {
-			return false;
-		} else if (ret == ATTR_READ_END) {
-			return true;
+	try {
+		uint8_t attributeType;
+		while (propStream.read<uint8_t>(attributeType) && attributeType != 0) {
+			Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attributeType), propStream);
+			if (ret == ATTR_READ_ERROR) {
+				SPDLOG_ERROR("{} - Invalid attribute: {}, for item with id: {}", __FUNCTION__, attributeType, getID());
+				return false;
+			} else if (ret == ATTR_READ_END) {
+				return true;
+			}
 		}
+	} catch (const std::system_error& error) {
+		SPDLOG_ERROR("{} - Failed to unserialize map item with id: {}, error code: {}", __FUNCTION__, getID(), error.what());
+		return false;
 	}
 	return true;
 }
@@ -788,14 +853,14 @@ bool Item::unserializeMapItem(BinaryNode &binaryNode, Position position)
 			uint8_t attributeType = binaryNode.getU8();
 			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, binaryNode, position);
 			if (ret == ATTR_READ_ERROR) {
-				SPDLOG_ERROR("[Item::unserializeItem] - Invalid item attribute {}", attributeType);
+				SPDLOG_ERROR("{} - Invalid item attribute {}", __FUNCTION__, attributeType);
 				return false;
 			} else if (ret == ATTR_READ_END) {
 				return true;
 			}
 		}
 	} catch (const std::system_error& error) {
-		SPDLOG_ERROR("[Item::unserializeMapItem] - Failed to unserialize map item with id: {}, error code: {}", getID(), error.what());
+		SPDLOG_ERROR("{} - Failed to unserialize map item with id: {}, error code: {}", __FUNCTION__, getID(), error.what());
 		return false;
 	}
 	return true;

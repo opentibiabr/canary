@@ -437,7 +437,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	}
 
 	//load inventory items
-	ItemMap itemMap;
+	std::map<uint32_t, std::pair<Item*, uint32_t>> itemMap;
 
 	query.str(std::string());
 	query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
@@ -458,7 +458,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	if ((result = db.storeQuery(query.str()))) {
 		loadItems(itemMap, result);
 
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+		for (auto it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
 			const auto& [itemPair, itemIdPair] = it->second;
 			const Item* item = itemPair;
 			if (item == nullptr) {
@@ -474,12 +474,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 				player->internalAddThing(pid, castItem);
 				castItem->startDecaying();
 			} else {
-				ItemMap::const_iterator it2 = itemMap.find(pid);
-				if (it2 == itemMap.end()) {
+				auto iterator = itemMap.find(pid);
+				if (iterator == itemMap.end()) {
 					continue;
 				}
 
-				Container* container = it2->second.first->getContainer();
+				Container* container = iterator->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(castItem);
 					castItem->startDecaying();
@@ -489,7 +489,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 			Container* itemContainer = castItem->getContainer();
 			if (itemContainer) {
 				int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
-				if (cid > 0) {
+				if ( cid >0) {
 					openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 				}
 				if (item->hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
@@ -526,7 +526,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	if ((result = db.storeQuery(query.str()))) {
 		loadItems(itemMap, result);
 
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+		for (auto it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
 			const auto& [itemPair, itemIdPair] = it->second;
 			const Item* item = itemPair;
 			if (item == nullptr) {
@@ -544,12 +544,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 					castItem->startDecaying();
 				}
 			} else {
-				ItemMap::const_iterator it2 = itemMap.find(pid);
-				if (it2 == itemMap.end()) {
+				auto iterator = itemMap.find(pid);
+				if (iterator == itemMap.end()) {
 					continue;
 				}
 
-				Container* container = it2->second.first->getContainer();
+				Container* container = iterator->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(castItem);
 					castItem->startDecaying();
@@ -567,7 +567,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		loadItems(itemMap, result);
 
 		//first loop handles the reward containers to retrieve its date attribute
-		//for (ItemMap::iterator it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
+		//for (auto it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
 		for (auto& [itemMapPairFirst, itemMapPairSecond] : itemMap) {
 			const auto& [itemPair, itemIdPair] = itemMapPairSecond;
 			Item* item = itemPair;
@@ -588,8 +588,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 		}
 
 		//second loop (this time a reverse one) to insert the items in the correct order
-		//for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+		//for (auto it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+		for (auto it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
 			const auto& [itemPair, itemIdPair] = it->second;
 			Item* item = itemPair;
 			if (item == nullptr) {
@@ -602,12 +602,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 				break;
 			}
 
-			ItemMap::const_iterator it2 = itemMap.find(pid);
-			if (it2 == itemMap.end()) {
+			auto iterator = itemMap.find(pid);
+			if (iterator == itemMap.end()) {
 				continue;
 			}
 
-			Container* container = it2->second.first->getContainer();
+			Container* container = iterator->second.first->getContainer();
 			if (container) {
 				container->internalAddThing(item);
 			}
@@ -622,7 +622,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	if ((result = db.storeQuery(query.str()))) {
 		loadItems(itemMap, result);
 
-		for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+		for (auto it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
 			const auto& [itemPair, itemIdPair] = it->second;
 			Item* item = itemPair;
 			if (item == nullptr) {
@@ -636,13 +636,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 				player->getInbox()->internalAddThing(item);
 				item->startDecaying();
 			} else {
-				ItemMap::const_iterator it2 = itemMap.find(pid);
-
-				if (it2 == itemMap.end()) {
+				auto iterator = itemMap.find(pid);
+				if (iterator == itemMap.end()) {
 					continue;
 				}
 
-				Container* container = it2->second.first->getContainer();
+				Container* container = iterator->second.first->getContainer();
 				if (container) {
 					container->internalAddThing(item);
 					item->startDecaying();
@@ -743,123 +742,105 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	return true;
 }
 
-bool IOLoginData::saveOpenContainerItems(const Item &item, const std::map<uint8_t, OpenContainer>& openContainers, std::list<ContainerPair>& queue, int32_t runningId)
+bool IOLoginData::saveItems(const Player *player, const std::list<std::pair<int32_t, Item*>> &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream)
 {
-	if (const Container* container = item.getContainer();
-		container != nullptr)
-	{
-		// Casting item for send non const item, keep in mind that the cast item must never be modified, in the future we must refactor the Item class so that they always accept the const item
-		auto setContainer = std::bit_cast<Container*>(container);
-		if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-			setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
-		}
+	Database &db = Database::getInstance();
 
-		if (openContainers.empty()) {
-			SPDLOG_DEBUG("[IOLoginData::saveItems] - Player open containers is empty");
-			return false;
-		}
+	std::ostringstream stringStream;
 
-		for (const auto& [containerCidPair, openContainerPair] : openContainers) {
-			if (auto openContainer = openContainerPair.container;
-				openContainer == container)
-			{
-				setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
-				break;
-			}
-		}
-
-		queue.emplace_back(container, runningId);
-	}
-	return true;
-}
-
-bool IOLoginData::saveOpenSubContainerItems(const Item &item, const std::map<uint8_t, OpenContainer>& openContainers, std::list<ContainerPair>& queue, int32_t runningId)
-{
-	if (const Container* container = item.getContainer();
-		container != nullptr)
-	{
-		queue.emplace_back(container, runningId);
-		// Casting item for send non const item, keep in mind that the cast item must never be modified, in the future we must refactor the Item class so that they always accept the const item
-		auto setContainer = std::bit_cast<Container*>(container);
-		if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-			setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
-		}
-
-		if (!openContainers.empty()) {
-			for (const auto& [containerCidPair, openContainerPair] : openContainers) {
-				if (auto openContainer = openContainerPair.container;
-					openContainer == container)
-				{
-					setContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)containerCidPair) + 1);
-					break;
-				}
-			}
-		}
-	}
-	return true;
-}
-
-bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream)
-{
-	Database& db = Database::getInstance();
-
-	std::ostringstream ss;
-
-	std::list<ContainerPair> queue;
+	std::list<std::pair<Container*, int32_t>> loadingContainers;
 
 	int32_t runningId = 100;
-	const auto& openContainers = player->getOpenContainers();
-	for (const auto& [itemIdPair, itemPair] : itemList) {
-		int32_t pid = itemIdPair;
-		Item* item = itemPair;
-		if (item == nullptr) {
-			SPDLOG_ERROR("[IOLoginData::saveItems] - Item is nullptr");
-			continue;
-		}
+
+	const auto &openContainers = player->getOpenContainers();
+	for (const auto &[playerId, item]: itemList)
+	{
 		++runningId;
 
-		if (!saveOpenContainerItems(*item, openContainers, queue, runningId)) {
-			SPDLOG_DEBUG("Player not have container for save");
-			continue;
+		if (Container *container = item->getContainer())
+		{
+			if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0)
+			{
+				container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
+			}
+
+			if (!openContainers.empty())
+			{
+				for (const auto &[parentId, openContainer]: openContainers)
+				{
+					if (openContainer.container == container)
+					{
+						container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)parentId) + 1);
+						break;
+					}
+				}
+			}
+
+			loadingContainers.emplace_back(container, runningId);
 		}
 
 		propWriteStream.clear();
 		item->serializeAttr(propWriteStream);
 
 		size_t attributesSize;
-		const char* attributes = propWriteStream.getStream(attributesSize);
+		const char *attributes = propWriteStream.getStream(attributesSize);
 
-		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, attributesSize);
-		if (!query_insert.addRow(ss)) {
+		stringStream << player->getGUID() << ',' << playerId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, attributesSize);
+		if (!query_insert.addRow(stringStream))
+		{
+			SPDLOG_ERROR("{} - Could not add row {} to query", __FUNCTION__, stringStream.str());
 			return false;
 		}
-
 	}
 
-	while (!queue.empty()) {
-		const auto& [container, parentId] = queue.front();
-		queue.pop_front();
+	while (!loadingContainers.empty())
+	{
+		const auto &[container, parentId] = loadingContainers.front();
+		loadingContainers.pop_front();
 
-		for (Item* item : container->getItemList()) {
+		for (Item *item: container->getItemList())
+		{
 			++runningId;
 
-			if (!saveOpenSubContainerItems(*item, openContainers, queue, runningId)) {
-				SPDLOG_DEBUG("Player not have container for save");
-				continue;
+			Container *subContainer = item->getContainer();
+			if (subContainer)
+			{
+				loadingContainers.emplace_back(subContainer, runningId);
+				if (subContainer->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0)
+				{
+					subContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
+				}
+
+				if (!openContainers.empty())
+				{
+					for (const auto &it: openContainers)
+					{
+						auto openContainer = it.second;
+						auto opcontainer = openContainer.container;
+
+						if (opcontainer == subContainer)
+						{
+							subContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int) it.first) + 1);
+							break;
+						}
+					}
+				}
 			}
 
 			propWriteStream.clear();
 			item->serializeAttr(propWriteStream);
 
 			size_t attributesSize;
-			const char* attributes = propWriteStream.getStream(attributesSize);
+			const char *attributes = propWriteStream.getStream(attributesSize);
 
-			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, attributesSize);
-			if (!query_insert.addRow(ss)) {
+			stringStream << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, attributesSize);
+			if (!query_insert.addRow(stringStream))
+			{
 				return false;
 			}
 		}
 	}
+
 	return query_insert.execute();
 }
 
@@ -1130,7 +1111,7 @@ bool IOLoginData::savePlayer(Player* player)
 
 	DBInsert itemsQuery("INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
-	ItemBlockList itemList;
+	std::list<std::pair<int32_t, Item*>> itemList;
 	for (int32_t slotId = CONST_SLOT_FIRST; slotId <= CONST_SLOT_LAST; ++slotId) {
 		Item* item = player->inventory[slotId];
 		if (item) {
@@ -1405,7 +1386,7 @@ bool IOLoginData::formatPlayerName(std::string& name)
 	return true;
 }
 
-void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
+void IOLoginData::loadItems(std::map<uint32_t, std::pair<Item*, uint32_t>>& itemMap, DBResult_ptr result)
 {
 	do {
 		uint32_t sid = result->getU32("sid");

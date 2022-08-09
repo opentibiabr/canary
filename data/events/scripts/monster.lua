@@ -3,8 +3,11 @@ function Monster:onDropLoot(corpse)
 		return
 	end
 
-	-- Register reward function from reward boss lib
-	self:registerRewardBoss(corpse)
+	local mType = self:getType()
+	if mType:isRewardBoss() then
+		corpse:registerReward()
+		return
+	end
 
 	local player = Player(corpse:getCorpseOwner())
 	local mType = self:getType()
@@ -34,7 +37,12 @@ function Monster:onDropLoot(corpse)
 		end
 
 		if player then
-			local text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
+			local text = {}
+			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
+				 text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
+			else
+				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())			
+			end
 			if preyChanceBoost ~= 100 then
 				text = text .. " (active prey bonus)"
 			end
@@ -47,6 +55,7 @@ function Monster:onDropLoot(corpse)
 			else
 				player:sendTextMessage(MESSAGE_LOOT, text)
 			end
+			player:updateKillTracker(self, corpse)
 		end
 	else
 		local text = ("Loot of %s: nothing (due to low stamina)"):format(mType:getNameDescription())
@@ -60,6 +69,7 @@ function Monster:onDropLoot(corpse)
 end
 
 function Monster:onSpawn(position)
-	-- Register reward function from reward boss lib
-	self:setRewardBoss()
+	if self:getType():isRewardBoss() then
+		self:setReward(true)
+	end
 end

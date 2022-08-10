@@ -86,6 +86,7 @@ class MonsterType
 
 		LightInfo light = {};
 		uint16_t lookcorpse = 0;
+		uint16_t baseSpeed = 100;
 
 		uint64_t experience = 0;
 
@@ -97,7 +98,6 @@ class MonsterType
 		uint32_t changeTargetSpeed = 0;
 		uint32_t conditionImmunities = 0;
 		uint32_t damageImmunities = 0;
-		uint32_t baseSpeed = 200;
 
 		// Bestiary
 		uint8_t bestiaryOccurrence = 0;
@@ -168,15 +168,15 @@ class MonsterType
 
 		MonsterInfo info;
 
-		uint32_t getClientBaseSpeed() const {
+		uint16_t getClientBaseSpeed() const {
 			return info.baseSpeed * 2;
 		}
 
-		uint32_t getBaseSpeed() const {
+		uint16_t getBaseSpeed() const {
 			return info.baseSpeed;
 		}
 
-		void setBaseSpeed(const uint32_t initBaseSpeed) {
+		void setBaseSpeed(const uint16_t initBaseSpeed) {
 			info.baseSpeed = initBaseSpeed;
 		}
 

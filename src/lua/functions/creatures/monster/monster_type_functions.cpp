@@ -1209,7 +1209,7 @@ int MonsterTypeFunctions::luaMonsterTypeBaseSpeed(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, monsterType->getBaseSpeed());
 		} else {
-			monsterType->setBaseSpeed(getNumber<uint32_t>(L, 2));
+			monsterType->setBaseSpeed(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

@@ -1944,7 +1944,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 		newmsg.addByte(0x2);
 		newmsg.add<uint32_t>(mtype->info.healthMax);
 		newmsg.add<uint32_t>(mtype->info.experience);
-		newmsg.add<uint16_t>(mtype->info.baseSpeed);
+		newmsg.add<uint16_t>(mtype->getClientBaseSpeed() / 2);
 		newmsg.add<uint16_t>(mtype->info.armor);
 	}
 

@@ -168,6 +168,18 @@ class MonsterType
 
 		MonsterInfo info;
 
+		uint32_t getClientBaseSpeed() const {
+			return info.baseSpeed * 2;
+		}
+
+		uint32_t getBaseSpeed() const {
+			return info.baseSpeed;
+		}
+
+		void setBaseSpeed(const uint32_t initBaseSpeed) {
+			info.baseSpeed = initBaseSpeed;
+		}
+
 		void loadLoot(MonsterType* monsterType, LootBlock lootblock);
 
 		bool canSpawn(const Position& pos);

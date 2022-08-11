@@ -168,10 +168,6 @@ class MonsterType
 
 		MonsterInfo info;
 
-		uint16_t getClientBaseSpeed() const {
-			return info.baseSpeed;
-		}
-
 		uint16_t getBaseSpeed() const {
 			return info.baseSpeed;
 		}

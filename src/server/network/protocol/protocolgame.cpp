@@ -4830,7 +4830,7 @@ void ProtocolGame::sendCancelTarget()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendChangeSpeed(const Creature *creature, uint32_t speed)
+void ProtocolGame::sendChangeSpeed(const Creature *creature, uint16_t speed)
 {
 	NetworkMessage msg;
 	msg.addByte(0x8F);

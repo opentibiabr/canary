@@ -189,6 +189,11 @@ function Player:onLook(thing, position, distance)
 		)
 
 		if thing:isCreature() then
+			local speedBase = thing:getBaseSpeed()
+			local speed = thing:getSpeed()
+			description = string.format("%s\nSpeedBase: %d", description, speedBase)
+			description = string.format("%s\nSpeed: %d", description, speed)
+
 			if thing:isPlayer() then
 				description = string.format("%s\nIP: %s.", description, Game.convertIpToString(thing:getIp()))
 			end

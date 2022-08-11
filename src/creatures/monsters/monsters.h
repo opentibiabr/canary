@@ -86,7 +86,7 @@ class MonsterType
 
 		LightInfo light = {};
 		uint16_t lookcorpse = 0;
-		uint16_t baseSpeed = 100;
+		uint16_t baseSpeed = 110;
 
 		uint64_t experience = 0;
 
@@ -169,7 +169,7 @@ class MonsterType
 		MonsterInfo info;
 
 		uint16_t getClientBaseSpeed() const {
-			return info.baseSpeed * 2;
+			return info.baseSpeed;
 		}
 
 		uint16_t getBaseSpeed() const {

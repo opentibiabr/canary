@@ -1,0 +1,77 @@
+namespace canary.kmap;
+
+table Map {
+	header: MapHeader;
+	data: MapData;
+}
+
+table MapHeader {
+	width: ushort;
+	height: ushort;
+	version: ushort;
+	monster_spawn_file: string;
+	npc_spawn_file: string;
+	house_file: string;
+	description: string;
+}
+
+table MapData {
+	areas: [Area];
+	towns: [Town];
+	waypoints: [Waypoint];
+}
+
+table Area {
+	tiles: [Tile];
+	position: Position;
+}
+
+table Tile {
+	items: [Item];
+	x: ubyte;
+	y: ubyte;
+	flags: uint32;
+	tile_id: ushort;
+	house_info: HouseInfo;
+	action_attributes: ActionAttributes;
+}
+
+table Item {
+	items: [Item];
+	id: ushort;
+	count: ubyte;
+	depot_id: ushort;
+	rune_charges: ushort;
+	text: string;
+	action_attributes: ActionAttributes;
+}
+
+table HouseInfo {
+	id: uint32;
+	door_id: ubyte;
+}
+
+table ActionAttributes {
+	action_id: ushort;
+	unique_id: ushort;
+	teleport_position: Position;
+}
+
+table Town {
+  id: ubyte;
+  name: string;
+  position: Position;
+}
+
+table Waypoint {
+  name: string;
+  position: Position;
+}
+
+table Position {
+	x: ushort;
+	y: ushort;
+	z: ubyte;
+}
+
+root_type Map;

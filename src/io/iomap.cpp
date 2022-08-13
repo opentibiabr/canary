@@ -14,6 +14,10 @@
 #include "items/bed.h"
 #include "game/movement/teleport.h"
 
+#include "map/flatbuffer/map_generated.h"
+
+#include <fstream>
+
 /*
 	OTBM_ROOTV1
 	|
@@ -57,75 +61,57 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 	return tile;
 }
 
-bool IOMap::loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fileName)
+bool IOMap::loadMap(Map &serverMap, const std::string& fileName)
 {
 	int64_t start = OTSYS_TIME();
-	std::shared_ptr<BinaryNode> binaryNodeRoot = mapFile.getRootNode();
-	if (binaryNodeRoot == nullptr) {
-		SPDLOG_ERROR("[IOMap::loadMap] - BinaryNode is nullptr");
+	std::fstream fileStream(fileName, std::ios::in | std::ios::binary);
+	if( !fileStream.is_open() ) {
+		SPDLOG_ERROR("Unable to load {}, could not find the file", fileName);
 		return false;
 	}
 
-	// Skip type byte (uint8_t), this is outdated
-	if (!binaryNodeRoot->skip(1)) {
-		SPDLOG_ERROR("[IOMap::loadMap] - Could not skip type byte");
-		return false;
-	}
-	// Skip one uint32_t from the map version (deprecated before protobuf)
-	if (!binaryNodeRoot->skip(4)) {
-		SPDLOG_ERROR("[IOMap::loadMap] - Could not skip map version byte");
-		return false;
+	if (fileStream.good()) {
+		// Read Binary data using streambuffer iterators
+		std::vector<uint8_t> fileBuffer((std::istreambuf_iterator<char>(fileStream)), (std::istreambuf_iterator<char>()));
+		buffer = fileBuffer;
+		fileStream.close();
+		SPDLOG_INFO("Map buffer size: {}", buffer.size());
 	}
 
-	uint16_t mapWidth = binaryNodeRoot->getU16();
-	uint16_t mapHeigth = binaryNodeRoot->getU16();
-	// Sanity check, if there is a problem loading the byte then we will know where it is
-	if (mapWidth == 0 || mapHeigth == 0) {
-		SPDLOG_ERROR("[IOMap::loadMap] - Cannot read map width or map weight");
-		return false;
-	}
+	fileLoaded = true;
 
-	map->width = mapWidth;
-	map->height = mapHeigth;
-	SPDLOG_INFO("Map size: {}x{}", map->width, map->height);
-	// Skip two U32 from otb version major and minor (outdated before implementation of protobuf)
-	if (!binaryNodeRoot->skip(4)) {
-		SPDLOG_ERROR("[IOMap::loadMap] - Could not skip otb major and minor version byte");
-		return false;
-	}
+	using namespace canary::kmap;
+	uint8_t *buffer_pointer = buffer.data();
+	// Get a pointer to the root object inside the buffer
+	auto map = GetMap(buffer_pointer);
+	auto header = map->header();
+	serverMap.width = header->width();
+	serverMap.height = header->height();
+	SPDLOG_INFO("Map size: {}x{}", serverMap.width, serverMap.height);
 
-	// This get node of "OTBM_MAP_DATA"
-	std::shared_ptr<BinaryNode> binaryNodeMapData = binaryNodeRoot->getChild();
-	// Parsing map data attributes information (monster, npc, house, etc)
-	if (!parseMapDataAttributes(*binaryNodeMapData, *map, fileName)) {
-		return false;
-	}
+	uint16_t version = header->version();
+	SPDLOG_INFO("Map version: {}", version);
 
-	for (std::shared_ptr<BinaryNode> binaryNodeMapTileArea = binaryNodeMapData->getChild();
-	binaryNodeMapTileArea != nullptr; binaryNodeMapTileArea = binaryNodeMapTileArea->advance())
-	{
-		const uint8_t mapDataType = binaryNodeMapTileArea->getU8();
-		if (mapDataType == OTBM_TILE_AREA) {
-			if (!parseTileArea(*binaryNodeMapTileArea, *map)) {
-				continue;
-			}
-		} else if (mapDataType == OTBM_TOWNS) {
-			if (!parseTowns(*binaryNodeMapTileArea, *map)) {
-				continue;
-			}
-		} else if (mapDataType == OTBM_WAYPOINTS) {
-			if (!parseWaypoints(*binaryNodeMapTileArea, *map)) {
-				continue;
-			}
-		} else {
-			SPDLOG_ERROR("[IOMap::loadMap] - Unknown map data node");
-			continue;
-		}
-	}
+	//std::string descriptionFile = header->description()->str();
+	std::string monsterFile = header->monster_spawn_file()->str();
+	SPDLOG_INFO("Map monster: {}", monsterFile);
+	std::string npcFile = header->npc_spawn_file()->str();
+	std::string houseFile = header->house_file()->str();
+	SPDLOG_INFO("Map house: {}", houseFile);
 
-	mapFile.close();
+	//SPDLOG_INFO("Map description: {}", descriptionFile);
+
+	serverMap.monsterfile = fileName.substr(0, fileName.rfind('/') + 1);
+	serverMap.monsterfile += monsterFile;
+
+	serverMap.npcfile = fileName.substr(0, fileName.rfind('/') + 1);
+	serverMap.npcfile += npcFile;
+
+	serverMap.housefile = fileName.substr(0, fileName.rfind('/') + 1);
+	serverMap.housefile += houseFile;
 
 	SPDLOG_INFO("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
+	buffer.clear();
 	return true;
 }
 

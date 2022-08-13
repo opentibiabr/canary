@@ -24,23 +24,13 @@
 
 bool Map::load(const std::string& identifier) {
 	try {
-		DiskNodeFileReadHandle initializeMapFile(identifier, StringVector(1, "OTBM"));
-		if(!initializeMapFile.isLoaded()) {
-			SPDLOG_ERROR("Couldn't open file for reading. The error reported was: {}", initializeMapFile.getErrorMessage().c_str());
-			return false;
-		}
-		// Storage map file name before load otbm
-		setMapFileName(identifier);
-
 		IOMap loader;
-		if (!loader.loadMap(this, initializeMapFile, identifier)) {
+		if (!loader.loadMap(*this, identifier)) {
 			SPDLOG_ERROR("[Map::load] - Cannot load map file: {}", identifier);
 			getMapFileName().clear();
 			return false;
 		}
 
-		// Clear cache from cache ptr vector
-		initializeMapFile.clearCache();
 	}
 	catch(const std::exception) {
 		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);

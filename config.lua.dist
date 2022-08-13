@@ -161,12 +161,12 @@ pushDistanceDelay = 1500
 pushWhenAttacking = false
 
 -- Map
--- NOTE: set mapName WITHOUT .otbm at the end
+-- NOTE: set mapName WITHOUT .kmap at the end
 -- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
-toggleDownloadMap = false
+toggleDownloadMap = true
 mapName = "canary"
-mapDownloadUrl = ""
+mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/stable-v1.4.0/canary.kmap"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations

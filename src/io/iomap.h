@@ -27,7 +27,7 @@ class IOMap
 	static Tile* createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
 
 	public:
-		bool loadMap(Map* map, NodeFileReadHandle& mapFile, const std::string& fileName);
+		bool loadMap(Map &serverMap, const std::string& fileName);
 
 		/**
 		* Load main map monsters
@@ -135,6 +135,9 @@ class IOMap
 		
 		std::tuple<Tile*, Item*> parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const;
 		bool parseTileArea(BinaryNode &binaryNodeMapData, Map& map) const;
+
+		bool fileLoaded = false;
+		std::vector<uint8_t> buffer;
 };
 
 #endif // SRC_IO_IOMAP_H_

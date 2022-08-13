@@ -135,6 +135,7 @@ find_package(spdlog REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(Flatbuffers CONFIG REQUIRED)
 find_package(GMP REQUIRED)
 
 if (MSVC)
@@ -324,6 +325,7 @@ if (MSVC)
     ${SPDLOG_INCLUDE_DIR}
     ${Protobuf_INCLUDE_DIRS}
     ${GMP_INCLUDE_DIR}
+    flatbuffers::flatbuffers
     asio::asio
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
@@ -336,6 +338,7 @@ if (MSVC)
     ${CURL_LIBRARIES}
     ${SPDLOG_LIBRARY}
     ${GMP_LIBRARIES}
+    flatbuffers::flatbuffers
     protobuf::libprotoc
     protobuf::libprotobuf
     protobuf::libprotobuf-lite

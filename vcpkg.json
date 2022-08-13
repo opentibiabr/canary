@@ -9,6 +9,7 @@
     "jsoncpp",
     "parallel-hashmap",
     "protobuf",
+    "flatbuffers",
     {
       "name": "luajit",
       "platform": "!arm"

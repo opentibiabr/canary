@@ -19,22 +19,18 @@
 
 #include "otpch.h"
 
-#include "game/scheduling/tasks.h"
 #include "game/game.h"
+#include "game/scheduling/tasks.h"
 
-
-Task* createTask(std::function<void (void)> f)
-{
+Task* createTask(std::function<void(void)> f) {
 	return new Task(std::move(f));
 }
 
-Task* createTask(uint32_t expiration, std::function<void (void)> f)
-{
+Task* createTask(uint32_t expiration, std::function<void(void)> f) {
 	return new Task(expiration, std::move(f));
 }
 
-void Dispatcher::threadMain()
-{
+void Dispatcher::threadMain() {
 	// NOTE: second argument defer_lock is to prevent from immediate locking
 	std::unique_lock<std::mutex> taskLockUnique(taskLock, std::defer_lock);
 
@@ -65,8 +61,7 @@ void Dispatcher::threadMain()
 	}
 }
 
-void Dispatcher::addTask(Task* task, bool push_front /*= false*/)
-{
+void Dispatcher::addTask(Task* task, bool push_front /*= false*/) {
 	bool do_signal = false;
 
 	taskLock.lock();
@@ -91,8 +86,7 @@ void Dispatcher::addTask(Task* task, bool push_front /*= false*/)
 	}
 }
 
-void Dispatcher::shutdown()
-{
+void Dispatcher::shutdown() {
 	Task* task = createTask([this]() {
 		setState(THREAD_STATE_TERMINATED);
 		taskSignal.notify_one();

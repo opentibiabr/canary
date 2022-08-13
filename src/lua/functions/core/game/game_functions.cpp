@@ -23,9 +23,9 @@
 
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
-#include "items/item.h"
 #include "io/iobestiary.h"
 #include "io/iologindata.h"
+#include "items/item.h"
 #include "lua/functions/core/game/game_functions.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
@@ -107,33 +107,28 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 		for (auto ita : mtype_list) {
 			if (name) {
 				pushString(L, ita.second);
-			}
-			else {
+			} else {
 				lua_pushnumber(L, ita.first);
 			}
 			lua_rawseti(L, -2, ++index);
 		}
-	}
-	else {
+	} else {
 		if (isNumber(L, 2)) {
 			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName("CANARY", false, getNumber<BestiaryType_t>(L, 2));
 			for (auto itb : tmplist) {
 				if (name) {
 					pushString(L, itb.second);
-				}
-				else {
+				} else {
 					lua_pushnumber(L, itb.first);
 				}
 				lua_rawseti(L, -2, ++index);
 			}
-		}
-		else {
+		} else {
 			std::map<uint16_t, std::string> tmplist = g_iobestiary().findRaceByName(getString(L, 2));
 			for (auto itc : tmplist) {
 				if (name) {
 					pushString(L, itc.second);
-				}
-				else {
+				} else {
 					lua_pushnumber(L, itc.first);
 				}
 				lua_rawseti(L, -2, ++index);
@@ -159,7 +154,7 @@ int GameFunctions::luaGameGetPlayers(lua_State* L) {
 int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string& path = getString(L, 1);
-	g_dispatcher().addTask(createTask([path]() {g_game().loadMap(path); }));
+	g_dispatcher().addTask(createTask([path]() { g_game().loadMap(path); }));
 	return 0;
 }
 
@@ -605,7 +600,7 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
-	uint32_t playerId = getNumber<uint32_t>(L,1);
+	uint32_t playerId = getNumber<uint32_t>(L, 1);
 
 	Player* offlinePlayer = new Player(nullptr);
 	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {

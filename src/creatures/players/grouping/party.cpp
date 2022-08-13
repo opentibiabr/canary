@@ -23,14 +23,12 @@
 #include "game/game.h"
 #include "lua/creature/events.h"
 
-
-Party::Party(Player* initLeader) : leader(initLeader)
-{
+Party::Party(Player* initLeader)
+	: leader(initLeader) {
 	leader->setParty(this);
 }
 
-void Party::disband()
-{
+void Party::disband() {
 	if (!g_events().eventPartyOnDisband(this)) {
 		return;
 	}
@@ -75,8 +73,7 @@ void Party::disband()
 	delete this;
 }
 
-bool Party::leaveParty(Player* player)
-{
+bool Party::leaveParty(Player* player) {
 	if (!player) {
 		return false;
 	}
@@ -140,8 +137,7 @@ bool Party::leaveParty(Player* player)
 	return true;
 }
 
-bool Party::passPartyLeadership(Player* player)
-{
+bool Party::passPartyLeadership(Player* player) {
 	if (!player || leader == player || player->getParty() != this) {
 		return false;
 	}
@@ -180,8 +176,7 @@ bool Party::passPartyLeadership(Player* player)
 	return true;
 }
 
-bool Party::joinParty(Player& player)
-{
+bool Party::joinParty(Player& player) {
 	if (!g_events().eventPartyOnJoin(this, &player)) {
 		return false;
 	}
@@ -219,15 +214,13 @@ bool Party::joinParty(Player& player)
 
 	const std::string& leaderName = leader->getName();
 	ss.str(std::string());
-	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") <<
-       " party. Open the party channel to communicate with your companions.";
+	ss << "You have joined " << leaderName << "'" << (leaderName.back() == 's' ? "" : "s") << " party. Open the party channel to communicate with your companions.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
 	updateTrackerAnalyzer();
 	return true;
 }
 
-bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
-{
+bool Party::removeInvite(Player& player, bool removeFromPlayer /* = true*/) {
 	auto it = std::find(inviteList.begin(), inviteList.end(), &player);
 	if (it == inviteList.end()) {
 		return false;
@@ -249,8 +242,7 @@ bool Party::removeInvite(Player& player, bool removeFromPlayer/* = true*/)
 	return true;
 }
 
-void Party::revokeInvitation(Player& player)
-{
+void Party::revokeInvitation(Player& player) {
 	std::ostringstream ss;
 	ss << leader->getName() << " has revoked " << (leader->getSex() == PLAYERSEX_FEMALE ? "her" : "his") << " invitation.";
 	player.sendTextMessage(MESSAGE_PARTY_MANAGEMENT, ss.str());
@@ -262,8 +254,7 @@ void Party::revokeInvitation(Player& player)
 	removeInvite(player);
 }
 
-bool Party::invitePlayer(Player& player)
-{
+bool Party::invitePlayer(Player& player) {
 	if (isPlayerInvited(&player)) {
 		return false;
 	}
@@ -292,13 +283,11 @@ bool Party::invitePlayer(Player& player)
 	return true;
 }
 
-bool Party::isPlayerInvited(const Player* player) const
-{
+bool Party::isPlayerInvited(const Player* player) const {
 	return std::find(inviteList.begin(), inviteList.end(), player) != inviteList.end();
 }
 
-void Party::updateAllPartyIcons()
-{
+void Party::updateAllPartyIcons() {
 	for (Player* member : memberList) {
 		for (Player* otherMember : memberList) {
 			member->sendPartyCreatureShield(otherMember);
@@ -311,8 +300,7 @@ void Party::updateAllPartyIcons()
 	updateTrackerAnalyzer();
 }
 
-void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/)
-{
+void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& msg, bool sendToInvitations /*= false*/) {
 	for (Player* member : memberList) {
 		member->sendTextMessage(msgClass, msg);
 	}
@@ -326,8 +314,7 @@ void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& ms
 	}
 }
 
-void Party::updateSharedExperience()
-{
+void Party::updateSharedExperience() {
 	if (sharedExpActive) {
 		bool result = canEnableSharedExperience();
 		if (result != sharedExpEnabled) {
@@ -337,8 +324,7 @@ void Party::updateSharedExperience()
 	}
 }
 
-bool Party::setSharedExperience(Player* player, bool newSharedExpActive)
-{
+bool Party::setSharedExperience(Player* player, bool newSharedExpActive) {
 	if (!player || leader != player) {
 		return false;
 	}
@@ -365,8 +351,7 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive)
 	return true;
 }
 
-void Party::shareExperience(uint64_t experience, Creature* target/* = nullptr*/)
-{
+void Party::shareExperience(uint64_t experience, Creature* target /* = nullptr*/) {
 	uint64_t shareExperience = experience;
 	g_events().eventPartyOnShareExperience(this, shareExperience);
 	for (Player* member : memberList) {
@@ -375,8 +360,7 @@ void Party::shareExperience(uint64_t experience, Creature* target/* = nullptr*/)
 	leader->onGainSharedExperience(shareExperience, target);
 }
 
-bool Party::canUseSharedExperience(const Player* player) const
-{
+bool Party::canUseSharedExperience(const Player* player) const {
 	if (memberList.empty()) {
 		return false;
 	}
@@ -412,8 +396,7 @@ bool Party::canUseSharedExperience(const Player* player) const
 	return true;
 }
 
-bool Party::canEnableSharedExperience()
-{
+bool Party::canEnableSharedExperience() {
 	if (!canUseSharedExperience(leader)) {
 		return false;
 	}
@@ -426,16 +409,14 @@ bool Party::canEnableSharedExperience()
 	return true;
 }
 
-void Party::updatePlayerTicks(Player* player, uint32_t points)
-{
+void Party::updatePlayerTicks(Player* player, uint32_t points) {
 	if (points != 0 && !player->hasFlag(PlayerFlag_NotGainInFight)) {
 		ticksMap[player->getID()] = OTSYS_TIME();
 		updateSharedExperience();
 	}
 }
 
-void Party::clearPlayerPoints(Player* player)
-{
+void Party::clearPlayerPoints(Player* player) {
 	auto it = ticksMap.find(player->getID());
 	if (it != ticksMap.end()) {
 		ticksMap.erase(it);
@@ -443,16 +424,14 @@ void Party::clearPlayerPoints(Player* player)
 	}
 }
 
-bool Party::canOpenCorpse(uint32_t ownerId) const
-{
+bool Party::canOpenCorpse(uint32_t ownerId) const {
 	if (const Player* player = g_game().getPlayerByID(ownerId)) {
 		return leader->getID() == ownerId || player->getParty() == this;
 	}
 	return false;
 }
 
-void Party::showPlayerStatus(Player* player, Player* member, bool showStatus)
-{
+void Party::showPlayerStatus(Player* player, Player* member, bool showStatus) {
 	player->sendPartyCreatureShowStatus(member, showStatus);
 	member->sendPartyCreatureShowStatus(player, showStatus);
 	if (showStatus) {
@@ -478,8 +457,7 @@ void Party::showPlayerStatus(Player* player, Player* member, bool showStatus)
 	}
 }
 
-void Party::updatePlayerStatus(Player* player)
-{
+void Party::updatePlayerStatus(Player* player) {
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (Player* member : memberList) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
@@ -497,8 +475,7 @@ void Party::updatePlayerStatus(Player* player)
 	}
 }
 
-void Party::updatePlayerStatus(Player* player, const Position& oldPos, const Position& newPos)
-{
+void Party::updatePlayerStatus(Player* player, const Position& oldPos, const Position& newPos) {
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	if (maxDistance != 0) {
 		for (Player* member : memberList) {
@@ -521,8 +498,7 @@ void Party::updatePlayerStatus(Player* player, const Position& oldPos, const Pos
 	}
 }
 
-void Party::updatePlayerHealth(const Player* player, const Creature* target, uint8_t healthPercent)
-{
+void Party::updatePlayerHealth(const Player* player, const Creature* target, uint8_t healthPercent) {
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (Player* member : memberList) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
@@ -536,8 +512,7 @@ void Party::updatePlayerHealth(const Player* player, const Creature* target, uin
 	}
 }
 
-void Party::updatePlayerMana(const Player* player, uint8_t manaPercent)
-{
+void Party::updatePlayerMana(const Player* player, uint8_t manaPercent) {
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (Player* member : memberList) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
@@ -551,8 +526,7 @@ void Party::updatePlayerMana(const Player* player, uint8_t manaPercent)
 	}
 }
 
-void Party::updatePlayerVocation(const Player* player)
-{
+void Party::updatePlayerVocation(const Player* player) {
 	int32_t maxDistance = g_configManager().getNumber(PARTY_LIST_MAX_DISTANCE);
 	for (Player* member : memberList) {
 		bool condition = (maxDistance == 0 || (Position::getDistanceX(player->getPosition(), member->getPosition()) <= maxDistance && Position::getDistanceY(player->getPosition(), member->getPosition()) <= maxDistance));
@@ -566,8 +540,7 @@ void Party::updatePlayerVocation(const Player* player)
 	}
 }
 
-void Party::updateTrackerAnalyzer() const
-{
+void Party::updateTrackerAnalyzer() const {
 	for (const Player* member : memberList) {
 		member->updatePartyTrackerAnalyzer();
 	}
@@ -577,8 +550,7 @@ void Party::updateTrackerAnalyzer() const
 	}
 }
 
-void Party::addPlayerLoot(const Player* player, const Item* item)
-{
+void Party::addPlayerLoot(const Player* player, const Item* item) {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
@@ -589,43 +561,41 @@ void Party::addPlayerLoot(const Player* player, const Item* item)
 	if (auto it = playerAnalyzer->lootMap.find(item->getID()); it != playerAnalyzer->lootMap.end()) {
 		(*it).second += count;
 	} else {
-		playerAnalyzer->lootMap.insert({item->getID(), count});
+		playerAnalyzer->lootMap.insert({ item->getID(), count });
 	}
 
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
-		std::map<uint16_t, uint32_t> itemMap {{item->getID(), count}};
+		std::map<uint16_t, uint32_t> itemMap { { item->getID(), count } };
 		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
 	}
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerSupply(const Player* player, const Item* item)
-{
+void Party::addPlayerSupply(const Player* player, const Item* item) {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
 		membersData.push_back(playerAnalyzer);
 	}
 
-	if(auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
+	if (auto it = playerAnalyzer->supplyMap.find(item->getID()); it != playerAnalyzer->supplyMap.end()) {
 		(*it).second += 1;
 	} else {
-		playerAnalyzer->supplyMap.insert({item->getID(), 1});
+		playerAnalyzer->supplyMap.insert({ item->getID(), 1 });
 	}
 
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		std::map<uint16_t, uint32_t> itemMap {{item->getID(), 1}};
+		std::map<uint16_t, uint32_t> itemMap { { item->getID(), 1 } };
 		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
 	}
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerDamage(const Player* player, uint64_t amount)
-{
+void Party::addPlayerDamage(const Player* player, uint64_t amount) {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
@@ -636,8 +606,7 @@ void Party::addPlayerDamage(const Player* player, uint64_t amount)
 	updateTrackerAnalyzer();
 }
 
-void Party::addPlayerHealing(const Player* player, uint64_t amount)
-{
+void Party::addPlayerHealing(const Player* player, uint64_t amount) {
 	PartyAnalyzer* playerAnalyzer = getPlayerPartyAnalyzerStruct(player->getID());
 	if (!playerAnalyzer) {
 		playerAnalyzer = new PartyAnalyzer(player->getID(), player->getName());
@@ -648,8 +617,7 @@ void Party::addPlayerHealing(const Player* player, uint64_t amount)
 	updateTrackerAnalyzer();
 }
 
-void Party::switchAnalyzerPriceType()
-{
+void Party::switchAnalyzerPriceType() {
 	if (leader == nullptr) {
 		return;
 	}
@@ -659,8 +627,7 @@ void Party::switchAnalyzerPriceType()
 	updateTrackerAnalyzer();
 }
 
-void Party::resetAnalyzer()
-{
+void Party::resetAnalyzer() {
 	trackerTime = time(nullptr);
 	for (PartyAnalyzer* analyzer : membersData) {
 		delete analyzer;
@@ -670,8 +637,7 @@ void Party::resetAnalyzer()
 	updateTrackerAnalyzer();
 }
 
-void Party::reloadPrices()
-{
+void Party::reloadPrices() {
 	for (PartyAnalyzer* analyzer : membersData) {
 		if (priceType == MARKET_PRICE) {
 			analyzer->lootPrice = g_game().getItemMarketPrice(analyzer->lootMap, false);

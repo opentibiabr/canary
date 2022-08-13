@@ -39,10 +39,10 @@ int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 		return 1;
 	}
 
-	 player->sendInventoryIds();
+	player->sendInventoryIds();
 	pushBoolean(L, true);
 
-	 return 1;
+	return 1;
 }
 
 int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
@@ -53,22 +53,22 @@ int PlayerFunctions::luaPlayerSendLootStats(lua_State* L) {
 		return 1;
 	}
 
-	 Item* item = getUserdata<Item>(L, 2);
+	Item* item = getUserdata<Item>(L, 2);
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
 	uint8_t count = getNumber<uint8_t>(L, 3, 0);
-	if(count == 0) {
+	if (count == 0) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	 player->sendLootStats(item, count);
+	player->sendLootStats(item, count);
 	pushBoolean(L, true);
 
-	 return 1;
+	return 1;
 }
 
 int PlayerFunctions::luaPlayerUpdateSupplyTracker(lua_State* L) {
@@ -79,16 +79,16 @@ int PlayerFunctions::luaPlayerUpdateSupplyTracker(lua_State* L) {
 		return 1;
 	}
 
-	 Item* item = getUserdata<Item>(L, 2);
+	Item* item = getUserdata<Item>(L, 2);
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	 player->updateSupplyTracker(item);
+	player->updateSupplyTracker(item);
 	pushBoolean(L, true);
 
-	 return 1;
+	return 1;
 }
 
 int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
@@ -297,13 +297,13 @@ int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
 	// player:addBestiaryKill(name[, amount = 1])
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-			MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
-			if (mtype) {
-				g_iobestiary().addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
-				pushBoolean(L, true);
-			} else {
-				lua_pushnil(L);
-			}
+		MonsterType* mtype = g_monsters().getMonsterType(getString(L, 2));
+		if (mtype) {
+			g_iobestiary().addBestiaryKill(player, mtype, getNumber<uint32_t>(L, 3, 1));
+			pushBoolean(L, true);
+		} else {
+			lua_pushnil(L);
+		}
 	} else {
 		lua_pushnil(L);
 	}
@@ -521,8 +521,7 @@ int PlayerFunctions::luaPlayerSetTraining(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L)
-{
+int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L) {
 	// player:isTraining()
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
@@ -1068,7 +1067,6 @@ int PlayerFunctions::luaPlayerAddOfflineTrainingTime(lua_State* L) {
 	}
 	return 1;
 }
-
 
 int PlayerFunctions::luaPlayerGetOfflineTrainingTime(lua_State* L) {
 	// player:getOfflineTrainingTime()
@@ -1843,11 +1841,9 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	Item* item;
 	if (isNumber(L, 2)) {
 		item = Item::CreateItem(getNumber<uint16_t>(L, 2));
-	}
-	else if (isString(L, 2)) {
+	} else if (isString(L, 2)) {
 		item = Item::CreateItem(Item::items.getItemIdByName(getString(L, 2)));
-	}
-	else if (isUserdata(L, 2)) {
+	} else if (isUserdata(L, 2)) {
 		if (getUserdataType(L, 2) != LuaData_Item) {
 			pushBoolean(L, false);
 			return 1;
@@ -2285,12 +2281,12 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 	// player:getTibiaCoins()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-	account::Account account(player->getAccount());
-	account.LoadAccountDB();
-	uint32_t coins;
-	account.GetCoins(&coins);
-	lua_pushnumber(L, coins);
-  } else {
+		account::Account account(player->getAccount());
+		account.LoadAccountDB();
+		uint32_t coins;
+		account.GetCoins(&coins);
+		lua_pushnumber(L, coins);
+	} else {
 		lua_pushnil(L);
 	}
 	return 1;
@@ -2304,16 +2300,16 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-  uint32_t coins = getNumber<uint32_t>(L, 2);
+	uint32_t coins = getNumber<uint32_t>(L, 2);
 
-  account::Account account(player->getAccount());
-  account.LoadAccountDB();
-  if(account.AddCoins(coins)) {
-	account.GetCoins(&(player->coinBalance));
-	pushBoolean(L, true);
-  } else {
-	lua_pushnil(L);
-  }
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.AddCoins(coins)) {
+		account.GetCoins(&(player->coinBalance));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
 
 	return 1;
 }
@@ -2326,16 +2322,16 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 		return 1;
 	}
 
-  uint32_t coins = getNumber<uint32_t>(L, 2);
+	uint32_t coins = getNumber<uint32_t>(L, 2);
 
-  account::Account account(player->getAccount());
-  account.LoadAccountDB();
-  if (account.RemoveCoins(coins)) {
-	account.GetCoins(&(player->coinBalance));
-	pushBoolean(L, true);
-  } else {
-	lua_pushnil(L);
-  }
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.RemoveCoins(coins)) {
+		account.GetCoins(&(player->coinBalance));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
 
 	return 1;
 }
@@ -2499,7 +2495,7 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 		pushBoolean(L, false);
 		return 1;
 	}
-	
+
 	Item* item = getUserdata<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
@@ -2818,7 +2814,7 @@ int PlayerFunctions::luaPlayerGetFightMode(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetBaseXpGain(lua_State *L) {
+int PlayerFunctions::luaPlayerGetBaseXpGain(lua_State* L) {
 	// player:getBaseXpGain()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2829,7 +2825,7 @@ int PlayerFunctions::luaPlayerGetBaseXpGain(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetBaseXpGain(lua_State *L) {
+int PlayerFunctions::luaPlayerSetBaseXpGain(lua_State* L) {
 	// player:setBaseXpGain(value)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2842,7 +2838,7 @@ int PlayerFunctions::luaPlayerSetBaseXpGain(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetVoucherXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerGetVoucherXpBoost(lua_State* L) {
 	// player:getVoucherXpBoost()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2853,7 +2849,7 @@ int PlayerFunctions::luaPlayerGetVoucherXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetVoucherXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerSetVoucherXpBoost(lua_State* L) {
 	// player:setVoucherXpBoost(value)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2866,7 +2862,7 @@ int PlayerFunctions::luaPlayerSetVoucherXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetGrindingXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerGetGrindingXpBoost(lua_State* L) {
 	// player:getGrindingXpBoost()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2877,7 +2873,7 @@ int PlayerFunctions::luaPlayerGetGrindingXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetGrindingXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerSetGrindingXpBoost(lua_State* L) {
 	// player:setGrindingXpBoost(value)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2890,7 +2886,7 @@ int PlayerFunctions::luaPlayerSetGrindingXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetStoreXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerGetStoreXpBoost(lua_State* L) {
 	// player:getStoreXpBoost()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2901,7 +2897,7 @@ int PlayerFunctions::luaPlayerGetStoreXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetStoreXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerSetStoreXpBoost(lua_State* L) {
 	// player:setStoreXpBoost(value)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2914,7 +2910,7 @@ int PlayerFunctions::luaPlayerSetStoreXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetStaminaXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerGetStaminaXpBoost(lua_State* L) {
 	// player:getStaminaXpBoost()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
@@ -2925,7 +2921,7 @@ int PlayerFunctions::luaPlayerGetStaminaXpBoost(lua_State *L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSetStaminaXpBoost(lua_State *L) {
+int PlayerFunctions::luaPlayerSetStaminaXpBoost(lua_State* L) {
 	// player:setStaminaXpBoost(value)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {

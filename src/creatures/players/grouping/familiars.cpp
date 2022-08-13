@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+
 #include "creatures/players/grouping/familiars.h"
 #include "utils/pugicast.h"
 #include "utils/tools.h"

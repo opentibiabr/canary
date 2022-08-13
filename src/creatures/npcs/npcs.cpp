@@ -20,24 +20,21 @@
 #include "otpch.h"
 
 #include "creatures/combat/combat.h"
+#include "creatures/combat/spells.h"
 #include "creatures/creature.h"
-#include "declarations.hpp"
-#include "game/game.h"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
-#include "creatures/combat/spells.h"
+#include "declarations.hpp"
+#include "game/game.h"
 #include "items/weapons/weapons.h"
 
 #include "utils/pugicast.h"
 
-
-bool NpcType::canSpawn(const Position& pos)
-{
+bool NpcType::canSpawn(const Position& pos) {
 	bool canSpawn = true;
 	bool isDay = g_game().gameIsDay();
 
-	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
-		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
+	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) || (!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
 		canSpawn = (pos.z > 7 && info.respawnType.underground);
 	}
@@ -45,8 +42,7 @@ bool NpcType::canSpawn(const Position& pos)
 	return canSpawn;
 }
 
-bool NpcType::loadCallback(LuaScriptInterface* scriptInterface)
-{
+bool NpcType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		SPDLOG_WARN("[NpcType::loadCallback] - Event not found");
@@ -89,9 +85,8 @@ bool NpcType::loadCallback(LuaScriptInterface* scriptInterface)
 	return true;
 }
 
-void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
-{
-	ItemType & iType = Item::items.getItemType(shopBlock.itemId);
+void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock) {
+	ItemType& iType = Item::items.getItemType(shopBlock.itemId);
 
 	// Registering item prices globaly.
 	if (shopBlock.itemSellPrice > iType.sellPrice) {
@@ -100,7 +95,7 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 	if (shopBlock.itemBuyPrice > iType.buyPrice) {
 		iType.buyPrice = shopBlock.itemBuyPrice;
 	}
-	
+
 	if (shopBlock.childShop.empty()) {
 		bool isContainer = iType.isContainer();
 		if (isContainer) {
@@ -114,8 +109,7 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 	}
 }
 
-NpcType* Npcs::getNpcType(const std::string& name, bool create /* = false*/)
-{
+NpcType* Npcs::getNpcType(const std::string& name, bool create /* = false*/) {
 	std::string key = asLowerCaseString(name);
 	auto it = npcs.find(key);
 

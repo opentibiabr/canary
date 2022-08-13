@@ -21,8 +21,8 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "lua/functions/core/network/network_message_functions.hpp"
 #include "creatures/players/player.h"
+#include "lua/functions/core/network/network_message_functions.hpp"
 #include "server/network/protocol/protocolstatus.h"
 
 int NetworkMessageFunctions::luaNetworkMessageCreate(lua_State* L) {

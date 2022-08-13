@@ -68,8 +68,7 @@
 
 #ifdef _MSC_VER
 #include <intrin.h>
-__forceinline unsigned int _mm_ctz(unsigned int value)
-{
+__forceinline unsigned int _mm_ctz(unsigned int value) {
 	unsigned long i = 0;
 	_BitScanForward(&i, value);
 	return static_cast<unsigned int>(i);
@@ -78,4 +77,4 @@ __forceinline unsigned int _mm_ctz(unsigned int value)
 #define _mm_ctz __builtin_ctz
 #endif
 
-#endif  // SRC_UTILS_SIMD_HPP_
+#endif // SRC_UTILS_SIMD_HPP_

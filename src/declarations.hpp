@@ -20,8 +20,8 @@
 #ifndef SRC_DECLARATIONS_HPP_
 #define SRC_DECLARATIONS_HPP_
 
-#include "utils/const.hpp"
 #include "config/config_definitions.hpp"
+#include "utils/const.hpp"
 
 #include "creatures/creatures_definitions.hpp"
 #include "database/database_definitions.hpp"
@@ -33,4 +33,4 @@
 #include "server/server_definitions.hpp"
 #include "utils/utils_definitions.hpp"
 
-#endif  // SRC_DECLARATIONS_HPP_
+#endif // SRC_DECLARATIONS_HPP_

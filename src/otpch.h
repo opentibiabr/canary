@@ -45,7 +45,7 @@
 
 #include <pugixml.hpp>
 
-#include "spdlog/spdlog.h"
 #include "parallel_hashmap/phmap.h"
+#include "spdlog/spdlog.h"
 
-#endif  // SRC_OTPCH_H_
+#endif // SRC_OTPCH_H_

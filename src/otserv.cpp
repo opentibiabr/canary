@@ -22,7 +22,7 @@
 #include <fstream>
 
 #ifdef OS_WINDOWS
-	#include "conio.h"
+#include "conio.h"
 #endif
 
 #include "declarations.hpp"
@@ -31,9 +31,11 @@
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/scheduling/scheduler.h"
+#include "io/iobestiary.h"
 #include "io/iomarket.h"
+#include "io/ioprey.h"
 #include "lua/creature/events.h"
 #include "lua/modules/modules.h"
 #include "lua/scripts/lua_environment.hpp"
@@ -43,11 +45,9 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
-#include "io/ioprey.h"
-#include "io/iobestiary.h"
 
 #if __has_include("gitmetadata.h")
-	#include "gitmetadata.h"
+#include "gitmetadata.h"
 #endif
 
 std::mutex g_loaderLock;
@@ -62,11 +62,11 @@ std::unique_lock<std::mutex> g_loaderUniqueLock(g_loaderLock);
  * \param MF_ENABLED Enable the "x" (force close) button
 */
 void toggleForceCloseButton() {
-	#ifdef OS_WINDOWS
+#ifdef OS_WINDOWS
 	HWND hwnd = GetConsoleWindow();
 	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
-	#endif
+#endif
 }
 
 void startupErrorMessage() {
@@ -81,7 +81,7 @@ void mainLoader(int argc, char* argv[], ServiceManager* servicer);
 void badAllocationHandler() {
 	// Use functions that only use stack allocation
 	SPDLOG_ERROR("Allocation failed, server out of memory, "
-                 "decrease the size of your map or compile in 64 bits mode");
+				 "decrease the size of your map or compile in 64 bits mode");
 	getchar();
 	exit(-1);
 }
@@ -127,7 +127,7 @@ void loadModules() {
 	SPDLOG_INFO("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
 		SPDLOG_ERROR("The database you have specified in config.lua is empty, "
-			"please import the schema.sql to your database.");
+					 "please import the schema.sql to your database.");
 		startupErrorMessage();
 	}
 
@@ -135,7 +135,7 @@ void loadModules() {
 	DatabaseManager::updateDatabase();
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
-			&& !DatabaseManager::optimizeTables()) {
+		&& !DatabaseManager::optimizeTables()) {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
@@ -203,13 +203,13 @@ int main(int argc, char* argv[]) {
 	g_scheduler().start();
 
 	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
-												&serviceManager)));
+		&serviceManager)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock);
 
 	if (serviceManager.is_running()) {
 		SPDLOG_INFO("{} {}", g_configManager().getString(SERVER_NAME),
-                    "server online!");
+			"server online!");
 		serviceManager.run();
 	} else {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
@@ -235,10 +235,10 @@ void mainLoader(int, char*[], ServiceManager* services) {
 #endif
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	SPDLOG_INFO("{} - Version [{}] dated [{}]",
-                STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
-	#if GIT_IS_DIRTY
+		STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
+#if GIT_IS_DIRTY
 	SPDLOG_WARN("DIRTY - NOT OFFICIAL RELEASE");
-	#endif
+#endif
 #else
 	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
@@ -246,15 +246,15 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("Compiled with {}", BOOST_COMPILER);
 
 	std::string platform;
-	#if defined(__amd64__) || defined(_M_X64)
-		platform = "x64";
-	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
-		platform = "x86";
-	#elif defined(__arm__)
-		platform = "ARM";
-	#else
-		platform = "unknown";
-	#endif
+#if defined(__amd64__) || defined(_M_X64)
+	platform = "x64";
+#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
+	platform = "x86";
+#elif defined(__arm__)
+	platform = "ARM";
+#else
+	platform = "unknown";
+#endif
 
 	SPDLOG_INFO("Compiled on {} {} for platform {}\n", __DATE__, __TIME__, platform);
 
@@ -264,7 +264,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	SPDLOG_INFO("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
 	SPDLOG_INFO("Visit our website for updates, support, and resources: "
-		"https://docs.opentibiabr.org/");
+				"https://docs.opentibiabr.org/");
 
 	// check if config.lua or config.lua.dist exist
 	std::ifstream c_test("./config.lua");
@@ -302,7 +302,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		SPDLOG_ERROR("Unknown world type: {}, valid world types are: pvp, no-pvp "
-			"and pvp-enforced", g_configManager().getString(WORLD_TYPE));
+					 "and pvp-enforced",
+			g_configManager().getString(WORLD_TYPE));
 		startupErrorMessage();
 	}
 
@@ -357,8 +358,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 #ifndef _WIN32
 	if (getuid() == 0 || geteuid() == 0) {
 		SPDLOG_WARN("{} has been executed as root user, "
-                    "please consider running it as a normal user",
-                    STATUS_SERVER_NAME);
+					"please consider running it as a normal user",
+			STATUS_SERVER_NAME);
 	}
 #endif
 

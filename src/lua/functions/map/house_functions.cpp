@@ -19,10 +19,10 @@
 
 #include "otpch.h"
 
-#include "items/bed.h"
 #include "game/game.h"
 #include "game/movement/position.h"
 #include "io/iologindata.h"
+#include "items/bed.h"
 #include "lua/functions/map/house_functions.hpp"
 #include "map/house/house.h"
 
@@ -289,7 +289,6 @@ int HouseFunctions::luaHouseGetItems(lua_State* L) {
 				pushUserdata<Item>(L, item);
 				setItemMetatable(L, -1, item);
 				lua_rawseti(L, -2, ++index);
-
 			}
 		}
 	}

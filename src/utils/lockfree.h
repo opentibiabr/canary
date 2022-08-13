@@ -34,44 +34,41 @@
  * boost::lockfree::stack<void*, boost::lockfree::capacity<CAPACITY> lockfreeFreeList;
  */
 template <std::size_t TSize, size_t CAPACITY>
-struct LockfreeFreeList
-{
+struct LockfreeFreeList {
 	using FreeList = boost::lockfree::stack<void*, boost::lockfree::capacity<CAPACITY>>;
-	static FreeList& get()
-	{
+	static FreeList& get() {
 		static FreeList freeList;
 		return freeList;
 	}
 };
 
 template <typename T, size_t CAPACITY>
-class LockfreePoolingAllocator : public std::allocator<T>
-{
-	public:
-		LockfreePoolingAllocator() = default;
+class LockfreePoolingAllocator : public std::allocator<T> {
+public:
+	LockfreePoolingAllocator() = default;
 
-		template <typename U, class = typename std::enable_if<!std::is_same<U, T>::value>::type>
-		explicit constexpr LockfreePoolingAllocator(const U&) {}
-		using value_type = T;
+	template <typename U, class = typename std::enable_if<!std::is_same<U, T>::value>::type>
+	explicit constexpr LockfreePoolingAllocator(const U&) { }
+	using value_type = T;
 
-		T* allocate(size_t) const {
-			auto& inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
-			void* p; // NOTE: p doesn't have to be initialized
-			if (!inst.pop(p)) {
-				//Acquire memory without calling the constructor of T
-				p = operator new (sizeof(T));
-			}
-			return static_cast<T*>(p);
+	T* allocate(size_t) const {
+		auto& inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
+		void* p; // NOTE: p doesn't have to be initialized
+		if (!inst.pop(p)) {
+			//Acquire memory without calling the constructor of T
+			p = operator new(sizeof(T));
 		}
+		return static_cast<T*>(p);
+	}
 
-		void deallocate(T* p, size_t) const {
-			auto& inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
-			if (!inst.bounded_push(p)) {
-				//Release memory without calling the destructor of T
-				//(it has already been called at this point)
-				operator delete(p);
-			}
+	void deallocate(T* p, size_t) const {
+		auto& inst = LockfreeFreeList<sizeof(T), CAPACITY>::get();
+		if (!inst.bounded_push(p)) {
+			//Release memory without calling the destructor of T
+			//(it has already been called at this point)
+			operator delete(p);
 		}
+	}
 };
 
-#endif  // SRC_UTILS_LOCKFREE_H_
+#endif // SRC_UTILS_LOCKFREE_H_

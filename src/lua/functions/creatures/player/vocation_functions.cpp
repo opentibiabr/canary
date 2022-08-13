@@ -22,7 +22,6 @@
 #include "creatures/players/vocations/vocation.h"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
-
 int VocationFunctions::luaVocationCreate(lua_State* L) {
 	// Vocation(id or name)
 	uint16_t vocationId;

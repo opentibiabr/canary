@@ -22,10 +22,9 @@
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "game/game.h"
+#include "items/decay/decay.h"
 #include "items/item.h"
 #include "lua/functions/items/item_functions.hpp"
-#include "items/decay/decay.h"
-
 
 class Imbuement;
 
@@ -428,7 +427,8 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 				pushBoolean(L, false);
 				return 1;
 			}
-			default: break;
+			default:
+				break;
 		}
 
 		item->setIntAttr(attribute, getNumber<int64_t>(L, 3));
@@ -755,8 +755,7 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemGetImbuement(lua_State* L)
-{
+int ItemFunctions::luaItemGetImbuement(lua_State* L) {
 	// item:getImbuement()
 	Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
@@ -771,7 +770,7 @@ int ItemFunctions::luaItemGetImbuement(lua_State* L)
 			continue;
 		}
 
-		Imbuement *imbuement = imbuementInfo.imbuement;
+		Imbuement* imbuement = imbuementInfo.imbuement;
 		if (!imbuement) {
 			continue;
 		}

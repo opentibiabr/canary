@@ -211,4 +211,4 @@ struct LuaTimerEventDesc {
 	LuaTimerEventDesc(LuaTimerEventDesc&& other) = default;
 };
 
-#endif  // SRC_LUA_LUA_DEFINITIONS_HPP_
+#endif // SRC_LUA_LUA_DEFINITIONS_HPP_

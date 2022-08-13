@@ -46,7 +46,6 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 
-
 class LuaScriptInterface;
 
 void LuaFunctionsLoader::load(lua_State* L) {
@@ -65,23 +64,40 @@ void LuaFunctionsLoader::load(lua_State* L) {
 
 std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 	switch (code) {
-		case LUA_ERROR_PLAYER_NOT_FOUND: return "Player not found";
-		case LUA_ERROR_CREATURE_NOT_FOUND: return "Creature not found";
-		case LUA_ERROR_NPC_NOT_FOUND: return "Npc not found";
-		case LUA_ERROR_NPC_TYPE_NOT_FOUND: return "Npc type not found";
-		case LUA_ERROR_ITEM_NOT_FOUND: return "Item not found";
-		case LUA_ERROR_THING_NOT_FOUND: return "Thing not found";
-		case LUA_ERROR_TILE_NOT_FOUND: return "Tile not found";
-		case LUA_ERROR_HOUSE_NOT_FOUND: return "House not found";
-		case LUA_ERROR_COMBAT_NOT_FOUND: return "Combat not found";
-		case LUA_ERROR_CONDITION_NOT_FOUND: return "Condition not found";
-		case LUA_ERROR_AREA_NOT_FOUND: return "Area not found";
-		case LUA_ERROR_CONTAINER_NOT_FOUND: return "Container not found";
-		case LUA_ERROR_VARIANT_NOT_FOUND: return "Variant not found";
-		case LUA_ERROR_VARIANT_UNKNOWN: return "Unknown variant type";
-		case LUA_ERROR_SPELL_NOT_FOUND: return "Spell not found";
-		case LUA_ERROR_ACTION_NOT_FOUND: return "Action not found";
-		default: return "Bad error code";
+		case LUA_ERROR_PLAYER_NOT_FOUND:
+			return "Player not found";
+		case LUA_ERROR_CREATURE_NOT_FOUND:
+			return "Creature not found";
+		case LUA_ERROR_NPC_NOT_FOUND:
+			return "Npc not found";
+		case LUA_ERROR_NPC_TYPE_NOT_FOUND:
+			return "Npc type not found";
+		case LUA_ERROR_ITEM_NOT_FOUND:
+			return "Item not found";
+		case LUA_ERROR_THING_NOT_FOUND:
+			return "Thing not found";
+		case LUA_ERROR_TILE_NOT_FOUND:
+			return "Tile not found";
+		case LUA_ERROR_HOUSE_NOT_FOUND:
+			return "House not found";
+		case LUA_ERROR_COMBAT_NOT_FOUND:
+			return "Combat not found";
+		case LUA_ERROR_CONDITION_NOT_FOUND:
+			return "Condition not found";
+		case LUA_ERROR_AREA_NOT_FOUND:
+			return "Area not found";
+		case LUA_ERROR_CONTAINER_NOT_FOUND:
+			return "Container not found";
+		case LUA_ERROR_VARIANT_NOT_FOUND:
+			return "Variant not found";
+		case LUA_ERROR_VARIANT_UNKNOWN:
+			return "Unknown variant type";
+		case LUA_ERROR_SPELL_NOT_FOUND:
+			return "Spell not found";
+		case LUA_ERROR_ACTION_NOT_FOUND:
+			return "Action not found";
+		default:
+			return "Bad error code";
 	}
 }
 
@@ -95,7 +111,7 @@ int LuaFunctionsLoader::protectedCall(lua_State* L, int nargs, int nresults) {
 	return ret;
 }
 
-void LuaFunctionsLoader::reportError(const char* function, const std::string& error_desc, bool stack_trace/* = false*/) {
+void LuaFunctionsLoader::reportError(const char* function, const std::string& error_desc, bool stack_trace /* = false*/) {
 	int32_t scriptId;
 	int32_t callbackId;
 	bool timerEvent;
@@ -103,15 +119,13 @@ void LuaFunctionsLoader::reportError(const char* function, const std::string& er
 	getScriptEnv()->getEventInfo(scriptId, scriptInterface, callbackId, timerEvent);
 
 	SPDLOG_ERROR("Lua script error: \nscriptInterface: [{}]\nscriptId: [{}]"
-                              "\ntimerEvent: [{}]\n callbackId:[{}]\nfunction: [{}]\nerror [{}]",
-                              scriptInterface ? scriptInterface->getInterfaceName() : "",
-                              scriptId 				? scriptInterface->getFileById(scriptId) : "",
-                              timerEvent 			? "in a timer event called from:" : "",
-                              callbackId 			? scriptInterface->getFileById(callbackId) : "",
-                              function 				? scriptInterface->getInterfaceName() : "",
-                              (stack_trace && scriptInterface) ?
-                              scriptInterface->getStackTrace(error_desc) : error_desc
-	);
+				 "\ntimerEvent: [{}]\n callbackId:[{}]\nfunction: [{}]\nerror [{}]",
+		scriptInterface ? scriptInterface->getInterfaceName() : "",
+		scriptId ? scriptInterface->getFileById(scriptId) : "",
+		timerEvent ? "in a timer event called from:" : "",
+		callbackId ? scriptInterface->getFileById(callbackId) : "",
+		function ? scriptInterface->getInterfaceName() : "",
+		(stack_trace && scriptInterface) ? scriptInterface->getStackTrace(error_desc) : error_desc);
 }
 
 int LuaFunctionsLoader::luaErrorHandler(lua_State* L) {
@@ -222,13 +236,13 @@ void LuaFunctionsLoader::setWeakMetatable(lua_State* L, int32_t index, const std
 		luaL_newmetatable(L, weakName.c_str());
 		int metatable = lua_gettop(L);
 
-		static const std::vector<std::string> methodKeys = {"__index", "__metatable", "__eq"};
+		static const std::vector<std::string> methodKeys = { "__index", "__metatable", "__eq" };
 		for (const std::string& metaKey : methodKeys) {
 			lua_getfield(L, childMetatable, metaKey.c_str());
 			lua_setfield(L, metatable, metaKey.c_str());
 		}
 
-		static const std::vector<int> methodIndexes = {'h', 'p', 't'};
+		static const std::vector<int> methodIndexes = { 'h', 'p', 't' };
 		for (int metaIndex : methodIndexes) {
 			lua_rawgeti(L, childMetatable, metaIndex);
 			lua_rawseti(L, metatable, metaIndex);
@@ -372,7 +386,7 @@ Thing* LuaFunctionsLoader::getThing(lua_State* L, int32_t arg) {
 	Thing* thing;
 	if (lua_getmetatable(L, arg) != 0) {
 		lua_rawgeti(L, -1, 't');
-		switch(getNumber<uint32_t>(L, -1)) {
+		switch (getNumber<uint32_t>(L, -1)) {
 			case LuaData_Item:
 				thing = getUserdata<Item>(L, arg);
 				break;
@@ -459,7 +473,7 @@ void LuaFunctionsLoader::pushInstantSpell(lua_State* L, const InstantSpell& spel
 	setMetatable(L, -1, "Spell");
 }
 
-void LuaFunctionsLoader::pushPosition(lua_State* L, const Position& position, int32_t stackpos/* = 0*/) {
+void LuaFunctionsLoader::pushPosition(lua_State* L, const Position& position, int32_t stackpos /* = 0*/) {
 	lua_createtable(L, 0, 4);
 
 	setField(L, "x", position.x);
@@ -487,7 +501,7 @@ void LuaFunctionsLoader::pushOutfit(lua_State* L, const Outfit_t& outfit) {
 	setField(L, "lookFamiliarsType", outfit.lookFamiliarsType);
 }
 
-void LuaFunctionsLoader::registerClass(lua_State* L, const std::string& className, const std::string& baseClass, lua_CFunction newFunction/* = nullptr*/) {
+void LuaFunctionsLoader::registerClass(lua_State* L, const std::string& className, const std::string& baseClass, lua_CFunction newFunction /* = nullptr*/) {
 	// className = {}
 	lua_newtable(L);
 	lua_pushvalue(L, -1);

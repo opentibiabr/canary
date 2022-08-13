@@ -24,56 +24,56 @@
 #include "lua/scripts/script_environment.hpp"
 
 class LuaScriptInterface : public LuaFunctionsLoader {
-	public:
-		explicit LuaScriptInterface(std::string interfaceName);
-		virtual ~LuaScriptInterface();
+public:
+	explicit LuaScriptInterface(std::string interfaceName);
+	virtual ~LuaScriptInterface();
 
-		// non-copyable
-		LuaScriptInterface(const LuaScriptInterface&) = delete;
-		LuaScriptInterface& operator=(const LuaScriptInterface&) = delete;
+	// non-copyable
+	LuaScriptInterface(const LuaScriptInterface&) = delete;
+	LuaScriptInterface& operator=(const LuaScriptInterface&) = delete;
 
-		virtual bool initState();
-		bool reInitState();
+	virtual bool initState();
+	bool reInitState();
 
-		int32_t loadFile(const std::string& file);
+	int32_t loadFile(const std::string& file);
 
-		const std::string& getFileById(int32_t scriptId);
-		int32_t getEvent(const std::string& eventName);
-		int32_t getEvent();
-		int32_t getMetaEvent(const std::string& globalName, const std::string& eventName);
+	const std::string& getFileById(int32_t scriptId);
+	int32_t getEvent(const std::string& eventName);
+	int32_t getEvent();
+	int32_t getMetaEvent(const std::string& globalName, const std::string& eventName);
 
-		const std::string& getInterfaceName() const {
-			return interfaceName;
-		}
-		const std::string& getLastLuaError() const {
-			return lastLuaError;
-		}
-		const std::string& getLoadingFile() const {
-			return loadingFile;
-		}
+	const std::string& getInterfaceName() const {
+		return interfaceName;
+	}
+	const std::string& getLastLuaError() const {
+		return lastLuaError;
+	}
+	const std::string& getLoadingFile() const {
+		return loadingFile;
+	}
 
-		lua_State* getLuaState() const {
-			return luaState;
-		}
+	lua_State* getLuaState() const {
+		return luaState;
+	}
 
-		bool pushFunction(int32_t functionId);
+	bool pushFunction(int32_t functionId);
 
-		bool callFunction(int params);
-		void callVoidFunction(int params);
+	bool callFunction(int params);
+	void callVoidFunction(int params);
 
-		std::string getStackTrace(const std::string& error_desc);
+	std::string getStackTrace(const std::string& error_desc);
 
-	protected:
-		virtual bool closeState();
-		lua_State* luaState = nullptr;
-		int32_t eventTableRef = -1;
-		int32_t runningEventId = EVENT_ID_USER;
-		std::map<int32_t, std::string> cacheFiles;
+protected:
+	virtual bool closeState();
+	lua_State* luaState = nullptr;
+	int32_t eventTableRef = -1;
+	int32_t runningEventId = EVENT_ID_USER;
+	std::map<int32_t, std::string> cacheFiles;
 
-	private:
-		std::string lastLuaError;
-		std::string interfaceName;
-		std::string loadingFile;
+private:
+	std::string lastLuaError;
+	std::string interfaceName;
+	std::string loadingFile;
 };
 
-#endif  // SRC_LUA_SCRIPTS_LUASCRIPT_H_
+#endif // SRC_LUA_SCRIPTS_LUASCRIPT_H_

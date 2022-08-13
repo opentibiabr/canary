@@ -20,14 +20,16 @@
 #ifndef SRC_LUA_CREATURE_RAIDS_H_
 #define SRC_LUA_CREATURE_RAIDS_H_
 
-#include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.h"
 #include "lua/global/baseevents.h"
+#include "utils/utils_definitions.hpp"
 
 struct MonsterSpawn {
-	MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :
-		name(std::move(initName)), minAmount(initMinAmount), maxAmount(initMaxAmount) {}
+	MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount)
+		: name(std::move(initName))
+		, minAmount(initMinAmount)
+		, maxAmount(initMaxAmount) { }
 
 	std::string name;
 	uint32_t minAmount;
@@ -43,183 +45,187 @@ class Raid;
 class RaidEvent;
 
 class Raids {
-	public:
-		Raids();
-		~Raids();
+public:
+	Raids();
+	~Raids();
 
-		// non-copyable
-		Raids(const Raids&) = delete;
-		Raids& operator=(const Raids&) = delete;
+	// non-copyable
+	Raids(const Raids&) = delete;
+	Raids& operator=(const Raids&) = delete;
 
-		bool loadFromXml();
-		bool startup();
+	bool loadFromXml();
+	bool startup();
 
-		void clear();
-		bool reload();
+	void clear();
+	bool reload();
 
-		bool isLoaded() const {
-			return loaded;
-		}
-		bool isStarted() const {
-			return started;
-		}
+	bool isLoaded() const {
+		return loaded;
+	}
+	bool isStarted() const {
+		return started;
+	}
 
-		Raid* getRunning() {
-			return running;
-		}
-		void setRunning(Raid* newRunning) {
-			running = newRunning;
-		}
+	Raid* getRunning() {
+		return running;
+	}
+	void setRunning(Raid* newRunning) {
+		running = newRunning;
+	}
 
-		Raid* getRaidByName(const std::string& name);
+	Raid* getRaidByName(const std::string& name);
 
-		uint64_t getLastRaidEnd() const {
-			return lastRaidEnd;
-		}
-		void setLastRaidEnd(uint64_t newLastRaidEnd) {
-			lastRaidEnd = newLastRaidEnd;
-		}
+	uint64_t getLastRaidEnd() const {
+		return lastRaidEnd;
+	}
+	void setLastRaidEnd(uint64_t newLastRaidEnd) {
+		lastRaidEnd = newLastRaidEnd;
+	}
 
-		void checkRaids();
+	void checkRaids();
 
-		LuaScriptInterface& getScriptInterface() {
-			return scriptInterface;
-		}
+	LuaScriptInterface& getScriptInterface() {
+		return scriptInterface;
+	}
 
-	private:
-		LuaScriptInterface scriptInterface{"Raid Interface"};
+private:
+	LuaScriptInterface scriptInterface { "Raid Interface" };
 
-		std::list<Raid*> raidList;
-		Raid* running = nullptr;
-		uint64_t lastRaidEnd = 0;
-		uint32_t checkRaidsEvent = 0;
-		bool loaded = false;
-		bool started = false;
+	std::list<Raid*> raidList;
+	Raid* running = nullptr;
+	uint64_t lastRaidEnd = 0;
+	uint32_t checkRaidsEvent = 0;
+	bool loaded = false;
+	bool started = false;
 };
 
 class Raid {
-	public:
-		Raid(std::string initName, uint32_t initInterval, uint32_t initMarginTime, bool initRepeat) :
-			name(std::move(initName)), interval(initInterval), margin(initMarginTime), repeat(initRepeat) {}
-		~Raid();
+public:
+	Raid(std::string initName, uint32_t initInterval, uint32_t initMarginTime, bool initRepeat)
+		: name(std::move(initName))
+		, interval(initInterval)
+		, margin(initMarginTime)
+		, repeat(initRepeat) { }
+	~Raid();
 
-		// non-copyable
-		Raid(const Raid&) = delete;
-		Raid& operator=(const Raid&) = delete;
+	// non-copyable
+	Raid(const Raid&) = delete;
+	Raid& operator=(const Raid&) = delete;
 
-		bool loadFromXml(const std::string& filename);
+	bool loadFromXml(const std::string& filename);
 
-		void startRaid();
+	void startRaid();
 
-		void executeRaidEvent(RaidEvent* raidEvent);
-		void resetRaid();
+	void executeRaidEvent(RaidEvent* raidEvent);
+	void resetRaid();
 
-		RaidEvent* getNextRaidEvent();
-		void setState(RaidState_t newState) {
-			state = newState;
-		}
-		const std::string& getName() const {
-			return name;
-		}
+	RaidEvent* getNextRaidEvent();
+	void setState(RaidState_t newState) {
+		state = newState;
+	}
+	const std::string& getName() const {
+		return name;
+	}
 
-		bool isLoaded() const {
-			return loaded;
-		}
-		uint64_t getMargin() const {
-			return margin;
-		}
-		uint32_t getInterval() const {
-			return interval;
-		}
-		bool canBeRepeated() const {
-			return repeat;
-		}
+	bool isLoaded() const {
+		return loaded;
+	}
+	uint64_t getMargin() const {
+		return margin;
+	}
+	uint32_t getInterval() const {
+		return interval;
+	}
+	bool canBeRepeated() const {
+		return repeat;
+	}
 
-		void stopEvents();
+	void stopEvents();
 
-	private:
-		std::vector<RaidEvent*> raidEvents;
-		std::string name;
-		uint32_t interval;
-		uint32_t nextEvent = 0;
-		uint64_t margin;
-		RaidState_t state = RAIDSTATE_IDLE;
-		uint32_t nextEventEvent = 0;
-		bool loaded = false;
-		bool repeat;
+private:
+	std::vector<RaidEvent*> raidEvents;
+	std::string name;
+	uint32_t interval;
+	uint32_t nextEvent = 0;
+	uint64_t margin;
+	RaidState_t state = RAIDSTATE_IDLE;
+	uint32_t nextEventEvent = 0;
+	bool loaded = false;
+	bool repeat;
 };
 
 class RaidEvent {
-	public:
-		virtual ~RaidEvent() = default;
+public:
+	virtual ~RaidEvent() = default;
 
-		virtual bool configureRaidEvent(const pugi::xml_node& eventNode);
+	virtual bool configureRaidEvent(const pugi::xml_node& eventNode);
 
-		virtual bool executeEvent() = 0;
-		uint32_t getDelay() const {
-			return delay;
-		}
+	virtual bool executeEvent() = 0;
+	uint32_t getDelay() const {
+		return delay;
+	}
 
-	private:
-		uint32_t delay;
+private:
+	uint32_t delay;
 };
 
 class AnnounceEvent final : public RaidEvent {
-	public:
-		AnnounceEvent() = default;
+public:
+	AnnounceEvent() = default;
 
-		bool configureRaidEvent(const pugi::xml_node& eventNode) override;
+	bool configureRaidEvent(const pugi::xml_node& eventNode) override;
 
-		bool executeEvent() override;
+	bool executeEvent() override;
 
-	private:
-		std::string message;
-		MessageClasses messageType = MESSAGE_EVENT_ADVANCE;
+private:
+	std::string message;
+	MessageClasses messageType = MESSAGE_EVENT_ADVANCE;
 };
 
 class SingleSpawnEvent final : public RaidEvent {
-	public:
-		bool configureRaidEvent(const pugi::xml_node& eventNode) override;
+public:
+	bool configureRaidEvent(const pugi::xml_node& eventNode) override;
 
-		bool executeEvent() override;
+	bool executeEvent() override;
 
-	private:
-		std::string monsterName;
-		Position position;
+private:
+	std::string monsterName;
+	Position position;
 };
 
 class AreaSpawnEvent final : public RaidEvent {
-	public:
-		bool configureRaidEvent(const pugi::xml_node& eventNode) override;
+public:
+	bool configureRaidEvent(const pugi::xml_node& eventNode) override;
 
-		bool executeEvent() override;
+	bool executeEvent() override;
 
-	private:
-		std::list<MonsterSpawn> spawnMonsterList;
-		Position fromPos, toPos;
+private:
+	std::list<MonsterSpawn> spawnMonsterList;
+	Position fromPos, toPos;
 };
 
 class ScriptEvent final : public RaidEvent, public Event {
-	public:
-		explicit ScriptEvent(LuaScriptInterface* interface) : Event(interface) {}
+public:
+	explicit ScriptEvent(LuaScriptInterface* interface)
+		: Event(interface) { }
 
-		bool configureRaidEvent(const pugi::xml_node& eventNode) override;
-		bool configureEvent(const pugi::xml_node&) override {
-			return false;
-		}
+	bool configureRaidEvent(const pugi::xml_node& eventNode) override;
+	bool configureEvent(const pugi::xml_node&) override {
+		return false;
+	}
 
-		std::string& getScriptName() {
-			return scriptName;
-		}
-		void setScriptName(std::string name) {
-			scriptName = name;
-		}
+	std::string& getScriptName() {
+		return scriptName;
+	}
+	void setScriptName(std::string name) {
+		scriptName = name;
+	}
 
-		bool executeEvent() override;
+	bool executeEvent() override;
 
-	private:
-		std::string getScriptEventName() const override;
-		std::string scriptName;
+private:
+	std::string getScriptEventName() const override;
+	std::string scriptName;
 };
 
-#endif  // SRC_LUA_CREATURE_RAIDS_H_
+#endif // SRC_LUA_CREATURE_RAIDS_H_

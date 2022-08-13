@@ -21,12 +21,11 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "game/game.h"
 #include "creatures/creature.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
+#include "game/game.h"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
-
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)
@@ -324,8 +323,7 @@ int MonsterFunctions::luaMonsterChangeTargetDistance(lua_State* L) {
 	if (monster) {
 		int32_t distance = getNumber<int32_t>(L, 2, 1);
 		pushBoolean(L, monster->changeTargetDistance(distance));
-	}
-	else {
+	} else {
 		lua_pushnil(L);
 	}
 	return 1;

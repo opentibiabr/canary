@@ -19,24 +19,22 @@
 
 #include "otpch.h"
 
-#include "creatures/monsters/monsters.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
-#include "items/weapons/weapons.h"
+#include "creatures/combat/spells.h"
+#include "creatures/monsters/monster.h"
+#include "creatures/monsters/monsters.h"
 #include "game/game.h"
+#include "items/weapons/weapons.h"
 
 #include "utils/pugicast.h"
 
-spellBlock_t::~spellBlock_t()
-{
+spellBlock_t::~spellBlock_t() {
 	if (combatSpell) {
 		delete spell;
 	}
 }
 
-void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
-{
+void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock) {
 	if (lootBlock.childLoot.empty()) {
 		bool isContainer = Item::items[lootBlock.id].isContainer();
 		if (isContainer) {
@@ -50,8 +48,7 @@ void MonsterType::loadLoot(MonsterType* monsterType, LootBlock lootBlock)
 	}
 }
 
-bool Monsters::loadFromXml(bool reloading /*= false*/)
-{
+bool Monsters::loadFromXml(bool reloading /*= false*/) {
 	unloadedMonsters = {};
 	pugi::xml_document doc;
 
@@ -75,13 +72,11 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 	return true;
 }
 
-bool MonsterType::canSpawn(const Position& pos)
-{
+bool MonsterType::canSpawn(const Position& pos) {
 	bool canSpawn = true;
 	bool isDay = g_game().gameIsDay();
 
-	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
-		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
+	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) || (!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
 		canSpawn = (pos.z > 7 && info.respawnType.underground);
 	}
@@ -89,8 +84,7 @@ bool MonsterType::canSpawn(const Position& pos)
 	return canSpawn;
 }
 
-bool Monsters::reload()
-{
+bool Monsters::reload() {
 	loaded = false;
 
 	scriptInterface.reset();
@@ -99,8 +93,7 @@ bool Monsters::reload()
 }
 
 ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
-		int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval)
-{
+	int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) {
 	ConditionDamage* condition = static_cast<ConditionDamage*>(Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0));
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
@@ -110,8 +103,7 @@ ConditionDamage* Monsters::getDamageCondition(ConditionType_t conditionType,
 	return condition;
 }
 
-bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, const std::string& description)
-{
+bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, const std::string& description) {
 	std::string name;
 	std::string scriptName;
 	bool isScripted;
@@ -407,13 +399,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_POISONFIELD_PVP);
 		} else if (tmpName == "energyfield") {
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
-		} else if (tmpName == "firecondition" || tmpName == "energycondition" ||
-                   tmpName == "earthcondition" || tmpName == "poisoncondition" ||
-                   tmpName == "icecondition" || tmpName == "freezecondition" ||
-                   tmpName == "deathcondition" || tmpName == "cursecondition" ||
-                   tmpName == "holycondition" || tmpName == "dazzlecondition" ||
-                   tmpName == "drowncondition" || tmpName == "bleedcondition" ||
-                   tmpName == "physicalcondition") {
+		} else if (tmpName == "firecondition" || tmpName == "energycondition" || tmpName == "earthcondition" || tmpName == "poisoncondition" || tmpName == "icecondition" || tmpName == "freezecondition" || tmpName == "deathcondition" || tmpName == "cursecondition" || tmpName == "holycondition" || tmpName == "dazzlecondition" || tmpName == "drowncondition" || tmpName == "bleedcondition" || tmpName == "physicalcondition") {
 			ConditionType_t conditionType = CONDITION_NONE;
 			uint32_t tickInterval = 2000;
 
@@ -469,7 +455,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 			//
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - {} unknown spell name: {}",
-                         description, name);
+				description, name);
 			delete combat;
 			return false;
 		}
@@ -487,8 +473,8 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 							combat->setParam(COMBAT_PARAM_DISTANCEEFFECT, shoot);
 						} else {
 							SPDLOG_WARN("[Monsters::deserializeSpell] - "
-                                        "{} unknown shootEffect: {}",
-                                        description, attr.as_string());
+										"{} unknown shootEffect: {}",
+								description, attr.as_string());
 						}
 					}
 				} else if (strcasecmp(value, "areaeffect") == 0) {
@@ -498,14 +484,14 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 							combat->setParam(COMBAT_PARAM_EFFECT, effect);
 						} else {
 							SPDLOG_WARN("[Monsters::deserializeSpell] - "
-                                        "{} unknown areaEffect: {}",
-                                        description, attr.as_string());
+										"{} unknown areaEffect: {}",
+								description, attr.as_string());
 						}
 					}
 				} else {
 					SPDLOG_WARN("[Monsters::deserializeSpells] - "
-                                "Effect type {} does not exist",
-                                attr.as_string());
+								"Effect type {} does not exist",
+						attr.as_string());
 				}
 			}
 		}
@@ -518,8 +504,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 	return true;
 }
 
-bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description)
-{
+bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description) {
 	if (!spell->scriptName.empty()) {
 		spell->isScripted = true;
 	} else if (!spell->name.empty()) {
@@ -529,8 +514,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	}
 
 	sb.speed = spell->interval;
-	sb.chance = std::min((int) spell->chance, 100);
-	sb.range = std::min((int) spell->range, Map::maxViewportX * 2);
+	sb.chance = std::min((int)spell->chance, 100);
+	sb.range = std::min((int)spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
 	sb.spell = g_spells().getSpellByName(spell->name);
@@ -545,7 +530,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
 		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - Cannot find file: {}",
-                         spell->scriptName);
+				spell->scriptName);
 			return false;
 		}
 
@@ -556,7 +541,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		combatSpell = combatSpellPtr.release();
 		combatSpell->getCombat()->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
 	} else {
-		std::unique_ptr<Combat> combat{ new Combat };
+		std::unique_ptr<Combat> combat { new Combat };
 		sb.combatSpell = true;
 
 		if (spell->length > 0) {
@@ -642,8 +627,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 				condition->setOutfit(outfit);
 			} else {
 				SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                             "Missing outfit monster or item in outfit spell for: {}",
-                            description);
+							 "Missing outfit monster or item in outfit spell for: {}",
+					description);
 				return false;
 			}
 
@@ -677,8 +662,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		} else if (tmpName == "condition") {
 			if (spell->conditionType == CONDITION_NONE) {
 				SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                             "{} condition is not set for: {}"
-                             , description, spell->name);
+							 "{} condition is not set for: {}",
+					description, spell->name);
 			}
 		} else if (tmpName == "strength") {
 			//
@@ -686,8 +671,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			//
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "{} unknown or missing parameter on spell with name: {}"
-                         , description, spell->name);
+						 "{} unknown or missing parameter on spell with name: {}",
+				description, spell->name);
 		}
 
 		if (spell->shoot != CONST_ANI_NONE) {
@@ -732,8 +717,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	return true;
 }
 
-MonsterType* Monsters::loadMonster(const std::string& file, const std::string& monsterName, bool reloading /*= false*/)
-{
+MonsterType* Monsters::loadMonster(const std::string& file, const std::string& monsterName, bool reloading /*= false*/) {
 	MonsterType* mType = nullptr;
 
 	pugi::xml_document doc;
@@ -746,7 +730,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 	pugi::xml_node monsterNode = doc.child("monster");
 	if (!monsterNode) {
 		SPDLOG_ERROR("[Monsters::loadMonster] - Missing monster node in: {}",
-                     file);
+			file);
 		return nullptr;
 	}
 
@@ -793,7 +777,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.race = RACE_INK;
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - Unknown race type {}. {}",
-                        attr.as_string(), file);
+				attr.as_string(), file);
 		}
 	}
 
@@ -876,7 +860,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				uint32_t staticAttack = pugi::cast<uint32_t>(attr.value());
 				if (staticAttack > 100) {
 					SPDLOG_WARN("[Monsters::loadMonster] - "
-                                "Staticattack greater than 100. {}", file);
+								"Staticattack greater than 100. {}",
+						file);
 					staticAttack = 100;
 				}
 
@@ -916,7 +901,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				}
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Unknown flag attribute: {}. {}", attrName, file);
+							"Unknown flag attribute: {}. {}",
+					attrName, file);
 			}
 		}
 
@@ -932,14 +918,16 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.changeTargetSpeed = pugi::cast<uint32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing targetchange speed. {}", file);
+						"Missing targetchange speed. {}",
+				file);
 		}
 
 		if ((attr = node.attribute("chance"))) {
 			mType->info.changeTargetChance = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing targetchange chance. {}", file);
+						"Missing targetchange chance. {}",
+				file);
 		}
 	}
 
@@ -948,28 +936,32 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.strategiesTargetNearest = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing strategiesTargetNearest. {}", file);
+						"Missing strategiesTargetNearest. {}",
+				file);
 		}
 
 		if ((attr = node.attribute("health"))) {
 			mType->info.strategiesTargetHealth = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing strategiesTargetHealth. {}", file);
+						"Missing strategiesTargetHealth. {}",
+				file);
 		}
 
 		if ((attr = node.attribute("damage"))) {
 			mType->info.strategiesTargetDamage = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing strategiesTargetDamage. {}", file);
+						"Missing strategiesTargetDamage. {}",
+				file);
 		}
 
 		if ((attr = node.attribute("random"))) {
 			mType->info.strategiesTargetRandom = pugi::cast<int32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing strategiesTargetRandom. {}", file);
+						"Missing strategiesTargetRandom. {}",
+				file);
 		}
 	}
 
@@ -1000,7 +992,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.outfit.lookTypeEx = pugi::cast<uint16_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing look type/typeex. {}", file);
+						"Missing look type/typeex. {}",
+				file);
 		}
 
 		if ((attr = node.attribute("mount"))) {
@@ -1019,7 +1012,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.attackSpells.emplace_back(std::move(sb));
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Cant load spell. {}", file);
+							"Cant load spell. {}",
+					file);
 			}
 		}
 	}
@@ -1039,7 +1033,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.defenseSpells.emplace_back(std::move(sb));
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Cant load spell. {}", file);
+							"Cant load spell. {}",
+					file);
 			}
 		}
 	}
@@ -1057,8 +1052,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				} else if (tmpStrValue == "fire") {
 					mType->info.damageImmunities |= COMBAT_FIREDAMAGE;
 					mType->info.conditionImmunities |= CONDITION_FIRE;
-				} else if (tmpStrValue == "poison" ||
-							tmpStrValue == "earth") {
+				} else if (tmpStrValue == "poison" || tmpStrValue == "earth") {
 					mType->info.damageImmunities |= COMBAT_EARTHDAMAGE;
 					mType->info.conditionImmunities |= CONDITION_POISON;
 				} else if (tmpStrValue == "drown") {
@@ -1089,8 +1083,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 					mType->info.conditionImmunities |= CONDITION_BLEEDING;
 				} else {
 					SPDLOG_WARN("[Monsters::loadMonster] - "
-                                "Unknown immunity name {}. {}",
-                                attr.as_string(), file);
+								"Unknown immunity name {}. {}",
+						attr.as_string(), file);
 				}
 			} else if ((attr = immunityNode.attribute("physical"))) {
 				if (attr.as_bool()) {
@@ -1162,7 +1156,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				}
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Unknown immunity. {}", file);
+							"Unknown immunity. {}",
+					file);
 			}
 		}
 	}
@@ -1172,14 +1167,16 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.yellSpeedTicks = pugi::cast<uint32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing voices speed. {}", file);
+						"Missing voices speed. {}",
+				file);
 		}
 
 		if ((attr = node.attribute("chance"))) {
 			mType->info.yellChance = pugi::cast<uint32_t>(attr.value());
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing voices chance. {}", file);
+						"Missing voices chance. {}",
+				file);
 		}
 
 		for (auto voiceNode : node.children()) {
@@ -1188,7 +1185,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				vb.text = attr.as_string();
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Missing voice sentence. {}", file);
+							"Missing voice sentence. {}",
+					file);
 			}
 
 			if ((attr = voiceNode.attribute("yell"))) {
@@ -1207,7 +1205,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.lootItems.emplace_back(std::move(lootBlock));
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Cant load loot. {}", file);
+							"Cant load loot. {}",
+					file);
 			}
 		}
 	}
@@ -1236,7 +1235,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.elementMap[COMBAT_MANADRAIN] = pugi::cast<int32_t>(attr.value());
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Unknown element percent. {}", file);
+							"Unknown element percent. {}",
+					file);
 			}
 		}
 	}
@@ -1246,7 +1246,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 			mType->info.maxSummons = std::min<uint32_t>(pugi::cast<uint32_t>(attr.value()), 100);
 		} else {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Missing summons maxSummons. {}", file);
+						"Missing summons maxSummons. {}",
+				file);
 		}
 
 		for (auto summonNode : node.children()) {
@@ -1281,7 +1282,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.summons.emplace_back(sb);
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Missing summon name. {}", file);
+							"Missing summon name. {}",
+					file);
 			}
 		}
 	}
@@ -1292,7 +1294,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.scripts.emplace_back(attr.as_string());
 			} else {
 				SPDLOG_WARN("[Monsters::loadMonster] - "
-                            "Missing name for script event. {}", file);
+							"Missing name for script event. {}",
+					file);
 			}
 		}
 	}
@@ -1306,8 +1309,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 	return mType;
 }
 
-bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface)
-{
+bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface) {
 	int32_t id = scriptInterface->getEvent();
 	if (id == -1) {
 		SPDLOG_WARN("[MonsterType::loadCallback] - Event not found");
@@ -1329,8 +1331,7 @@ bool MonsterType::loadCallback(LuaScriptInterface* scriptInterface)
 	return true;
 }
 
-bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
-{
+bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock) {
 	pugi::xml_attribute attr;
 	if ((attr = node.attribute("id"))) {
 		lootBlock.id = pugi::cast<int32_t>(attr.value());
@@ -1340,7 +1341,8 @@ bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Unknown loot item {}", name);
+						"Unknown loot item {}",
+				name);
 			return false;
 		}
 
@@ -1348,7 +1350,8 @@ bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
 
 		if (std::next(ids.first) != ids.second) {
 			SPDLOG_WARN("[Monsters::loadMonster] - "
-                        "Non-unique loot item {}", name);
+						"Non-unique loot item {}",
+				name);
 			return false;
 		}
 
@@ -1439,8 +1442,7 @@ bool Monsters::loadLootItem(const pugi::xml_node& node, LootBlock& lootBlock)
 	return true;
 }
 
-void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
-{
+void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock) {
 	for (auto subNode : node.children()) {
 		LootBlock lootBlock;
 		if (loadLootItem(subNode, lootBlock)) {
@@ -1449,14 +1451,12 @@ void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
 	}
 }
 
-MonsterType* Monsters::getMonsterType(const std::string& name)
-{
+MonsterType* Monsters::getMonsterType(const std::string& name) {
 	std::string lowerCaseName = asLowerCaseString(name);
 	if (auto it = monsters.find(lowerCaseName);
-	it != monsters.end()
-	// We will only return the MonsterType if it match the exact name of the monster
-	&& it->first.find(lowerCaseName) != it->first.npos)
-	{
+		it != monsters.end()
+		// We will only return the MonsterType if it match the exact name of the monster
+		&& it->first.find(lowerCaseName) != it->first.npos) {
 		return it->second;
 	}
 	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
@@ -1473,8 +1473,7 @@ MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
 	return (mtype ? mtype : nullptr);
 }
 
-void Monsters::addMonsterType(const std::string& name, MonsterType* mType)
-{
+void Monsters::addMonsterType(const std::string& name, MonsterType* mType) {
 	std::string lowerName = asLowerCaseString(name);
 	monsters[lowerName] = mType;
 }

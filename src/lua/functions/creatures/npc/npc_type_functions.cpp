@@ -20,10 +20,9 @@
 #include "otpch.h"
 
 #include "creatures/npcs/npcs.h"
+#include "game/game.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
-#include "game/game.h"
-
 
 void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector) {
 	lua_createtable(L, shopVector.size(), 0);
@@ -92,8 +91,7 @@ int NpcTypeFunctions::luaNpcTypeCanSpawn(lua_State* L) {
 	const Position& position = getPosition(L, 2);
 	if (npcType) {
 		pushBoolean(L, npcType->canSpawn(position));
-	}
-	else {
+	} else {
 		lua_pushnil(L);
 	}
 	return 1;
@@ -292,7 +290,7 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 		if (npcType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
-		 }
+		}
 		pushBoolean(L, false);
 	} else {
 		lua_pushnil(L);
@@ -408,11 +406,11 @@ int NpcTypeFunctions::luaNpcTypeYellChance(lua_State* L) {
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
 			if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.yellChance);
-		} else {
-			npcType->info.yellChance = getNumber<uint32_t>(L, 2);
-			pushBoolean(L, true);
-		}
+				lua_pushnumber(L, npcType->info.yellChance);
+			} else {
+				npcType->info.yellChance = getNumber<uint32_t>(L, 2);
+				pushBoolean(L, true);
+			}
 		} else {
 			npcType->info.yellChance = getNumber<uint32_t>(L, 2);
 			pushBoolean(L, true);

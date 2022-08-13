@@ -100,4 +100,4 @@ struct MarketStatistics {
 	uint32_t lowestPrice;
 };
 
-#endif  // SRC_IO_IO_DEFINITIONS_HPP_
+#endif // SRC_IO_IO_DEFINITIONS_HPP_

@@ -23,18 +23,17 @@
 #include "creatures/creature.h"
 
 class Shop {
-	public:
-		Shop() = default;
+public:
+	Shop() = default;
 
-		// non-copyable
-		Shop(const Shop&) = delete;
-		Shop& operator=(const Shop&) = delete;
+	// non-copyable
+	Shop(const Shop&) = delete;
+	Shop& operator=(const Shop&) = delete;
 
-		ShopBlock shopBlock;
+	ShopBlock shopBlock;
 };
 
-class NpcType
-{
+class NpcType {
 	struct NpcInfo {
 		LuaScriptInterface* scriptInterface;
 
@@ -79,53 +78,55 @@ class NpcType
 		NpcsEvent_t eventType = NPCS_EVENT_NONE;
 	};
 
-	public:
-		NpcType() = default;
-		explicit NpcType(const std::string &initName) : name(initName), typeName(initName), nameDescription(initName) {};
+public:
+	NpcType() = default;
+	explicit NpcType(const std::string& initName)
+		: name(initName)
+		, typeName(initName)
+		, nameDescription(initName) {};
 
-		// non-copyable
-		NpcType(const NpcType&) = delete;
-		NpcType& operator=(const NpcType&) = delete;
+	// non-copyable
+	NpcType(const NpcType&) = delete;
+	NpcType& operator=(const NpcType&) = delete;
 
-		std::string name;
-		std::string typeName;
-		std::string nameDescription;
-		NpcInfo info;
+	std::string name;
+	std::string typeName;
+	std::string nameDescription;
+	NpcInfo info;
 
-		void loadShop(NpcType* npcType, ShopBlock shopBlock);
+	void loadShop(NpcType* npcType, ShopBlock shopBlock);
 
-		bool loadCallback(LuaScriptInterface* scriptInterface);
-		bool canSpawn(const Position& pos);
+	bool loadCallback(LuaScriptInterface* scriptInterface);
+	bool canSpawn(const Position& pos);
 };
 
-class Npcs
-{
-	public:
-		Npcs() = default;
-		// non-copyable
-		Npcs(const Npcs&) = delete;
-		Npcs& operator=(const Npcs&) = delete;
+class Npcs {
+public:
+	Npcs() = default;
+	// non-copyable
+	Npcs(const Npcs&) = delete;
+	Npcs& operator=(const Npcs&) = delete;
 
-		static Npcs& getInstance() {
-			// Guaranteed to be destroyed
-			static Npcs instance;
-			// Instantiated on first use
-			return instance;
-		}
+	static Npcs& getInstance() {
+		// Guaranteed to be destroyed
+		static Npcs instance;
+		// Instantiated on first use
+		return instance;
+	}
 
-		NpcType* getNpcType(const std::string& name, bool create = false);
+	NpcType* getNpcType(const std::string& name, bool create = false);
 
-		// Reset npcs informations on reload
-		void reset() {
-			npcs.clear();
-			scriptInterface.reset();
-		};
+	// Reset npcs informations on reload
+	void reset() {
+		npcs.clear();
+		scriptInterface.reset();
+	};
 
-	private:
-		std::unique_ptr<LuaScriptInterface> scriptInterface;
-		std::map<std::string, NpcType*> npcs;
+private:
+	std::unique_ptr<LuaScriptInterface> scriptInterface;
+	std::map<std::string, NpcType*> npcs;
 };
 
 constexpr auto g_npcs = &Npcs::getInstance;
 
-#endif  // SRC_CREATURES_NPCS_NPCS_H_
+#endif // SRC_CREATURES_NPCS_NPCS_H_

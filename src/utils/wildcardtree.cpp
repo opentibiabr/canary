@@ -23,8 +23,7 @@
 
 #include "utils/wildcardtree.h"
 
-WildcardTreeNode* WildcardTreeNode::getChild(char ch)
-{
+WildcardTreeNode* WildcardTreeNode::getChild(char ch) {
 	auto it = children.find(ch);
 	if (it == children.end()) {
 		return nullptr;
@@ -32,8 +31,7 @@ WildcardTreeNode* WildcardTreeNode::getChild(char ch)
 	return &it->second;
 }
 
-const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const
-{
+const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const {
 	auto it = children.find(ch);
 	if (it == children.end()) {
 		return nullptr;
@@ -41,8 +39,7 @@ const WildcardTreeNode* WildcardTreeNode::getChild(char ch) const
 	return &it->second;
 }
 
-WildcardTreeNode* WildcardTreeNode::addChild(char ch, bool breakp)
-{
+WildcardTreeNode* WildcardTreeNode::addChild(char ch, bool breakp) {
 	WildcardTreeNode* child = getChild(ch);
 	if (child) {
 		if (breakp && !child->breakpoint) {
@@ -50,14 +47,13 @@ WildcardTreeNode* WildcardTreeNode::addChild(char ch, bool breakp)
 		}
 	} else {
 		auto pair = children.emplace(std::piecewise_construct,
-				std::forward_as_tuple(ch), std::forward_as_tuple(breakp));
+			std::forward_as_tuple(ch), std::forward_as_tuple(breakp));
 		child = &pair.first->second;
 	}
 	return child;
 }
 
-void WildcardTreeNode::insert(const std::string& str)
-{
+void WildcardTreeNode::insert(const std::string& str) {
 	WildcardTreeNode* cur = this;
 
 	size_t length = str.length() - 1;
@@ -68,8 +64,7 @@ void WildcardTreeNode::insert(const std::string& str)
 	cur->addChild(str[length], true);
 }
 
-void WildcardTreeNode::remove(const std::string& str)
-{
+void WildcardTreeNode::remove(const std::string& str) {
 	WildcardTreeNode* cur = this;
 
 	std::stack<WildcardTreeNode*> path;
@@ -102,8 +97,7 @@ void WildcardTreeNode::remove(const std::string& str)
 	} while (true);
 }
 
-ReturnValue WildcardTreeNode::findOne(const std::string& query, std::string& result) const
-{
+ReturnValue WildcardTreeNode::findOne(const std::string& query, std::string& result) const {
 	const WildcardTreeNode* cur = this;
 	for (char pos : query) {
 		cur = cur->getChild(pos);

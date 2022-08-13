@@ -19,23 +19,20 @@
 
 #include "otpch.h"
 
+#include "game/scheduling/scheduler.h"
 #include "outputmessage.h"
 #include "server/network/protocol/protocol.h"
 #include "utils/lockfree.h"
-#include "game/scheduling/scheduler.h"
-
 
 const uint16_t OUTPUTMESSAGE_FREE_LIST_CAPACITY = 2048;
-const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY {10};
+const std::chrono::milliseconds OUTPUTMESSAGE_AUTOSEND_DELAY { 10 };
 
-void OutputMessagePool::scheduleSendAll()
-{
+void OutputMessagePool::scheduleSendAll() {
 	auto function = std::bind(&OutputMessagePool::sendAll, this);
 	g_scheduler().addEvent(createSchedulerTask(OUTPUTMESSAGE_AUTOSEND_DELAY.count(), function));
 }
 
-void OutputMessagePool::sendAll()
-{
+void OutputMessagePool::sendAll() {
 	//dispatcher thread
 	for (auto& protocol : bufferedProtocols) {
 		auto& msg = protocol->getCurrentBuffer();
@@ -49,8 +46,7 @@ void OutputMessagePool::sendAll()
 	}
 }
 
-void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol)
-{
+void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol) {
 	//dispatcher thread
 	if (bufferedProtocols.empty()) {
 		scheduleSendAll();
@@ -58,8 +54,7 @@ void OutputMessagePool::addProtocolToAutosend(Protocol_ptr protocol)
 	bufferedProtocols.emplace_back(protocol);
 }
 
-void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
-{
+void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol) {
 	//dispatcher thread
 	auto it = std::find(bufferedProtocols.begin(), bufferedProtocols.end(), protocol);
 	if (it != bufferedProtocols.end()) {
@@ -68,8 +63,7 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
 	}
 }
 
-OutputMessage_ptr OutputMessagePool::getOutputMessage()
-{
+OutputMessage_ptr OutputMessagePool::getOutputMessage() {
 	// LockfreePoolingAllocator<void,...> will leave (void* allocate) ill-formed because
 	// of sizeof(T), so this guaranatees that only one list will be initialized
 	return std::allocate_shared<OutputMessage>(LockfreePoolingAllocator<void, OUTPUTMESSAGE_FREE_LIST_CAPACITY>());

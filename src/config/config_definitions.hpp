@@ -79,7 +79,7 @@ enum booleanConfig_t {
 	TOGGLE_DOWNLOAD_MAP,
 
 	LAST_BOOLEAN_CONFIG
-	};
+};
 
 enum stringConfig_t {
 	MAP_NAME,
@@ -108,7 +108,7 @@ enum stringConfig_t {
 	GLOBAL_SERVER_SAVE_TIME,
 
 	LAST_STRING_CONFIG
-	};
+};
 
 enum integerConfig_t {
 	SQL_PORT,
@@ -209,4 +209,4 @@ enum floatingConfig_t {
 	LAST_FLOATING_CONFIG
 };
 
-#endif  // SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
+#endif // SRC_CONFIG_CONFIG_DEFINITIONS_HPP_

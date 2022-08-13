@@ -24,21 +24,19 @@
 #include "game/movement/position.h"
 #include "utils/tools.h"
 
-Direction Position::getRandomDirection()
-{
-	static std::vector<Direction> dirList{
-					DIRECTION_NORTH,
-					DIRECTION_WEST,
-					DIRECTION_EAST,
-					DIRECTION_SOUTH
+Direction Position::getRandomDirection() {
+	static std::vector<Direction> dirList {
+		DIRECTION_NORTH,
+		DIRECTION_WEST,
+		DIRECTION_EAST,
+		DIRECTION_SOUTH
 	};
 	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	return dirList.front();
 }
 
-std::ostream& operator<<(std::ostream& os, const Position& pos)
-{
+std::ostream& operator<<(std::ostream& os, const Position& pos) {
 	os << "( " << std::setw(5) << std::setfill('0') << pos.x;
 	os << " / " << std::setw(5) << std::setfill('0') << pos.y;
 	os << " / " << std::setw(3) << std::setfill('0') << pos.getZ();
@@ -46,8 +44,7 @@ std::ostream& operator<<(std::ostream& os, const Position& pos)
 	return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const Direction& dir)
-{
+std::ostream& operator<<(std::ostream& os, const Direction& dir) {
 	switch (dir) {
 		case DIRECTION_NORTH:
 			os << "North";

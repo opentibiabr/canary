@@ -24,7 +24,7 @@
 enum Icons_t {
 	ICON_POISON = 1 << 0,
 	ICON_BURN = 1 << 1,
-	ICON_ENERGY =  1 << 2,
+	ICON_ENERGY = 1 << 2,
 	ICON_DRUNK = 1 << 3,
 	ICON_MANASHIELD = 1 << 4,
 	ICON_PARALYZE = 1 << 5,
@@ -90,8 +90,7 @@ enum ThreadState {
 	THREAD_STATE_TERMINATED,
 };
 
-enum SpawnType_t
-{
+enum SpawnType_t {
 	RESPAWN_IN_ALL = 0,
 	RESPAWN_IN_DAY = 1,
 	RESPAWN_IN_NIGHT = 2,
@@ -363,7 +362,8 @@ enum SpeakClasses : uint8_t {
 enum MessageClasses : uint8_t {
 	MESSAGE_NONE = 0, /* None */
 
-	MESSAGE_GAMEMASTER_CONSOLE = 13, /* Red message in the console*/ /* TALKTYPE_BROADCAST */
+	MESSAGE_GAMEMASTER_CONSOLE = 13,
+	/* Red message in the console*/ /* TALKTYPE_BROADCAST */
 
 	MESSAGE_LOGIN = 17, /* White message at the bottom of the game window and in the console*/
 	MESSAGE_ADMINISTRADOR = 18, /* Red message in game window and in the console*/
@@ -513,7 +513,7 @@ enum GuildEmblems_t : uint8_t {
 	GUILDEMBLEM_OTHER = 5,
 };
 
-enum ReloadTypes_t : uint8_t  {
+enum ReloadTypes_t : uint8_t {
 	RELOAD_TYPE_ALL,
 	RELOAD_TYPE_CHAT,
 	RELOAD_TYPE_COMMANDS,
@@ -684,16 +684,16 @@ enum item_t : uint16_t {
 
 // A map which contains items that, when on creating, should be transformed to the default type.
 const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
-	{ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING},
-	{ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING},
-	{ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING},
-	{ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING},
-	{ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING},
-	{ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING},
-	{ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS},
-	{ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING},
-	{ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING},
-	{ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW},
+	{ ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING },
+	{ ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING },
+	{ ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING },
+	{ ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING },
+	{ ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING },
+	{ ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING },
+	{ ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS },
+	{ ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING },
+	{ ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING },
+	{ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW },
 };
 
 enum PlayerFlags : uint64_t {
@@ -738,8 +738,8 @@ enum PlayerFlags : uint64_t {
 };
 
 enum PlayerCustomFlags : uint64_t {
-  PlayerCustomFlag_CanMapClickTeleport = 1 << 0,
-  PlayerCustomFlag_IgnoredByNpcs = 1 << 1
+	PlayerCustomFlag_CanMapClickTeleport = 1 << 0,
+	PlayerCustomFlag_IgnoredByNpcs = 1 << 1
 };
 
 enum Blessings_t : uint8_t {
@@ -754,14 +754,14 @@ enum Blessings_t : uint8_t {
 };
 
 const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
-	{TWIST_OF_FATE, "Twist of Fate"},
-	{WISDOM_OF_SOLITUDE, "The Wisdom of Solitude"},
-	{SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix"},
-	{FIRE_OF_THE_SUNS, "The Fire of the Suns"},
-	{SPIRITUAL_SHIELDING, "The Spiritual Shielding"},
-	{EMBRACE_OF_TIBIA, "The Embrace of Tibia"},
-	{BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain"},
-	{HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain"},
+	{ TWIST_OF_FATE, "Twist of Fate" },
+	{ WISDOM_OF_SOLITUDE, "The Wisdom of Solitude" },
+	{ SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix" },
+	{ FIRE_OF_THE_SUNS, "The Fire of the Suns" },
+	{ SPIRITUAL_SHIELDING, "The Spiritual Shielding" },
+	{ EMBRACE_OF_TIBIA, "The Embrace of Tibia" },
+	{ BLOOD_OF_THE_MOUNTAIN, "Blood of the Mountain" },
+	{ HEARTH_OF_THE_MOUNTAIN, "Heart of the Mountain" },
 };
 
-#endif  // SRC_UTILS_UTILS_DEFINITIONS_HPP_
+#endif // SRC_UTILS_UTILS_DEFINITIONS_HPP_

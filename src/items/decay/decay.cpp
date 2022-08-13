@@ -19,13 +19,11 @@
 
 #include "otpch.h"
 
-#include "items/decay/decay.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
+#include "items/decay/decay.h"
 
-
-void Decay::startDecay(Item* item)
-{
+void Decay::startDecay(Item* item) {
 	if (!item) {
 		return;
 	}
@@ -68,8 +66,7 @@ void Decay::startDecay(Item* item)
 	}
 }
 
-void Decay::stopDecay(Item* item)
-{
+void Decay::stopDecay(Item* item) {
 	if (item->hasAttribute(ITEM_ATTRIBUTE_DECAYSTATE)) {
 		int64_t timestamp = item->getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
 		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
@@ -114,12 +111,11 @@ void Decay::stopDecay(Item* item)
 	}
 }
 
-void Decay::checkDecay()
-{
+void Decay::checkDecay() {
 	int64_t timestamp = OTSYS_TIME();
 
 	std::vector<Item*> tempItems;
-	tempItems.reserve(32);// Small preallocation
+	tempItems.reserve(32); // Small preallocation
 
 	auto it = decayMap.begin(), end = decayMap.end();
 	while (it != end) {
@@ -150,8 +146,7 @@ void Decay::checkDecay()
 	}
 }
 
-void Decay::internalDecayItem(Item* item)
-{
+void Decay::internalDecayItem(Item* item) {
 	const ItemType& it = Item::items[item->getID()];
 	if (it.decayTo != 0) {
 		Player* player = item->getHoldingPlayer();
@@ -194,8 +189,8 @@ void Decay::internalDecayItem(Item* item)
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			SPDLOG_ERROR("[Decay::internalDecayItem] - internalDecayItem failed, "
-                         "error code: {}, item id: {}",
-                         static_cast<uint32_t>(ret), item->getID());
+						 "error code: {}, item id: {}",
+				static_cast<uint32_t>(ret), item->getID());
 		}
 	}
 }

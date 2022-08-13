@@ -23,7 +23,6 @@
 #include "creatures/players/vocations/vocation.h"
 #include "lua/functions/creatures/combat/spell_functions.hpp"
 
-
 int SpellFunctions::luaSpellCreate(lua_State* L) {
 	// Spell(words, name or id) to get an existing spell
 	// Spell(type) ex: Spell(SPELL_INSTANT) or Spell(SPELL_RUNE) to create a new spell
@@ -220,14 +219,16 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(group);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown group: {}", getString(L, 2));
+								"Unknown group: {}",
+						getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
 				pushBoolean(L, true);
 			} else {
 				SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-							"Unknown group: {}", getString(L, 2));
+							"Unknown group: {}",
+					getString(L, 2));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -244,7 +245,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setGroup(primaryGroup);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown primaryGroup: {}", getString(L, 2));
+								"Unknown primaryGroup: {}",
+						getString(L, 2));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -253,7 +255,8 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 					spell->setSecondaryGroup(secondaryGroup);
 				} else {
 					SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
-								"Unknown secondaryGroup: {}", getString(L, 3));
+								"Unknown secondaryGroup: {}",
+						getString(L, 3));
 					pushBoolean(L, false);
 					return 1;
 				}
@@ -261,7 +264,7 @@ int SpellFunctions::luaSpellGroup(lua_State* L) {
 			} else {
 				SPDLOG_WARN("[SpellFunctions::luaSpellGroup] - "
 							"Unknown primaryGroup: {} or secondaryGroup: {}",
-							getString(L, 2), getString(L, 3));
+					getString(L, 2), getString(L, 3));
 				pushBoolean(L, false);
 				return 1;
 			}
@@ -537,8 +540,7 @@ int SpellFunctions::luaSpellAggressive(lua_State* L) {
 	return 1;
 }
 
-int SpellFunctions::luaSpellAllowOnSelf(lua_State* L)
-{
+int SpellFunctions::luaSpellAllowOnSelf(lua_State* L) {
 	// spell:allowOnSelf(bool)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
@@ -554,8 +556,7 @@ int SpellFunctions::luaSpellAllowOnSelf(lua_State* L)
 	return 1;
 }
 
-int SpellFunctions::luaSpellPzLocked(lua_State* L)
-{
+int SpellFunctions::luaSpellPzLocked(lua_State* L) {
 	// spell:isPzLocked(bool)
 	Spell* spell = getUserdata<Spell>(L, 1);
 	if (spell) {
@@ -581,7 +582,7 @@ int SpellFunctions::luaSpellVocation(lua_State* L) {
 			for (auto voc : spell->getVocMap()) {
 				++it;
 				std::string s = std::to_string(it);
-				char const *pchar = s.c_str();
+				char const* pchar = s.c_str();
 				std::string name = g_vocations().getVocation(voc.first)->getVocName();
 				setField(L, pchar, name);
 			}

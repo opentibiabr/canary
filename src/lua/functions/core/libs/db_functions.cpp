@@ -34,23 +34,23 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
 		callback = [ref, scriptId](DBResult_ptr, bool success) {
-				lua_State* luaState = g_luaEnvironment.getLuaState();
-				if (!luaState) {
-					return;
-				}
+			lua_State* luaState = g_luaEnvironment.getLuaState();
+			if (!luaState) {
+				return;
+			}
 
-				if (!DBFunctions::reserveScriptEnv()) {
-					luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
-					return;
-				}
-
-				lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
-				pushBoolean(luaState, success);
-				auto env = getScriptEnv();
-				env->setScriptId(scriptId, &g_luaEnvironment);
-				g_luaEnvironment.callFunction(1);
-
+			if (!DBFunctions::reserveScriptEnv()) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+				return;
+			}
+
+			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
+			pushBoolean(luaState, success);
+			auto env = getScriptEnv();
+			env->setScriptId(scriptId, &g_luaEnvironment);
+			g_luaEnvironment.callFunction(1);
+
+			luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
 	g_databaseTasks().addTask(getString(L, -1), callback);
@@ -72,27 +72,27 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
 		auto scriptId = getScriptEnv()->getScriptId();
 		callback = [ref, scriptId](DBResult_ptr result, bool) {
-				lua_State* luaState = g_luaEnvironment.getLuaState();
-				if (!luaState) {
-					return;
-				}
+			lua_State* luaState = g_luaEnvironment.getLuaState();
+			if (!luaState) {
+				return;
+			}
 
-				if (!DBFunctions::reserveScriptEnv()) {
-					luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
-					return;
-				}
-
-				lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
-				if (result) {
-					lua_pushnumber(luaState, ScriptEnvironment::addResult(result));
-				} else {
-					pushBoolean(luaState, false);
-				}
-				auto env = getScriptEnv();
-				env->setScriptId(scriptId, &g_luaEnvironment);
-				g_luaEnvironment.callFunction(1);
-
+			if (!DBFunctions::reserveScriptEnv()) {
 				luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
+				return;
+			}
+
+			lua_rawgeti(luaState, LUA_REGISTRYINDEX, ref);
+			if (result) {
+				lua_pushnumber(luaState, ScriptEnvironment::addResult(result));
+			} else {
+				pushBoolean(luaState, false);
+			}
+			auto env = getScriptEnv();
+			env->setScriptId(scriptId, &g_luaEnvironment);
+			g_luaEnvironment.callFunction(1);
+
+			luaL_unref(luaState, LUA_REGISTRYINDEX, ref);
 		};
 	}
 	g_databaseTasks().addTask(getString(L, -1), callback, true);

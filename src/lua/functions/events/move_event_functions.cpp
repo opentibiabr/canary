@@ -23,7 +23,6 @@
 #include "lua/creature/movement.h"
 #include "lua/functions/events/move_event_functions.hpp"
 
-
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()
 	MoveEvent* moveevent = new MoveEvent(getScriptEnv()->getScriptInterface());
@@ -63,7 +62,8 @@ int MoveEventFunctions::luaMoveEventType(lua_State* L) {
 			moveevent->moveFunction = moveevent->RemoveItemField;
 		} else {
 			SPDLOG_ERROR("[MoveEventFunctions::luaMoveEventType] - "
-                         "No valid event name: {}", typeName);
+						 "No valid event name: {}",
+				typeName);
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -141,7 +141,8 @@ int MoveEventFunctions::luaMoveEventSlot(lua_State* L) {
 			moveevent->setSlot(SLOTP_AMMO);
 		} else {
 			SPDLOG_WARN("[MoveEventFunctions::luaMoveEventSlot] - "
-						"Unknown slot type: {}", slotName);
+						"Unknown slot type: {}",
+				slotName);
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -279,7 +280,7 @@ int MoveEventFunctions::luaMoveEventUniqueId(lua_State* L) {
 		} else {
 			moveevent->setUniqueId(getNumber<uint32_t>(L, 2));
 		}
-	pushBoolean(L, true);
+		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
 	}

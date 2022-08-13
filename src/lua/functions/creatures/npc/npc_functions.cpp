@@ -21,9 +21,9 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-#include "game/game.h"
 #include "creatures/creature.h"
 #include "creatures/npcs/npc.h"
+#include "game/game.h"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
 
 int NpcFunctions::luaNpcCreate(lua_State* L) {
@@ -421,9 +421,8 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 		return 1;
 	}
 
-	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
-	{
+	const std::vector<ShopBlock>& shopVector = npc->getShopItemVector();
+	for (ShopBlock shopBlock : shopVector) {
 		setField(L, "id", shopBlock.itemId);
 		setField(L, "name", shopBlock.itemName);
 		setField(L, "subType", shopBlock.itemSubType);
@@ -437,8 +436,7 @@ int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
 	return 1;
 }
 
-int NpcFunctions::luaNpcMove(lua_State* L)
-{
+int NpcFunctions::luaNpcMove(lua_State* L) {
 	// npc:move(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
@@ -447,8 +445,7 @@ int NpcFunctions::luaNpcMove(lua_State* L)
 	return 0;
 }
 
-int NpcFunctions::luaNpcTurn(lua_State* L)
-{
+int NpcFunctions::luaNpcTurn(lua_State* L) {
 	// npc:turn(direction)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (npc) {
@@ -457,8 +454,7 @@ int NpcFunctions::luaNpcTurn(lua_State* L)
 	return 0;
 }
 
-int NpcFunctions::luaNpcFollow(lua_State* L)
-{
+int NpcFunctions::luaNpcFollow(lua_State* L) {
 	// npc:follow(player)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {
@@ -470,8 +466,7 @@ int NpcFunctions::luaNpcFollow(lua_State* L)
 	return 1;
 }
 
-int NpcFunctions::luaNpcGetId(lua_State* L)
-{
+int NpcFunctions::luaNpcGetId(lua_State* L) {
 	// npc:getId()
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {
@@ -479,13 +474,12 @@ int NpcFunctions::luaNpcGetId(lua_State* L)
 		lua_pushnil(L);
 		return 1;
 	}
-	
+
 	lua_pushnumber(L, npc->getID());
 	return 1;
 }
 
-int NpcFunctions::luaNpcSellItem(lua_State* L)
-{
+int NpcFunctions::luaNpcSellItem(lua_State* L) {
 	// npc:sellItem(player, itemid, amount, <optional> subtype, <optional> actionid, <optional: default: 1> canDropOnMap)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {
@@ -556,8 +550,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 	return 1;
 }
 
-int NpcFunctions::luaNpcGetDistanceTo(lua_State* L)
-{
+int NpcFunctions::luaNpcGetDistanceTo(lua_State* L) {
 	//npc:getDistanceTo(uid)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {

@@ -26,8 +26,7 @@ int ItemClassificationFunctions::luaItemClassificationCreate(lua_State* L) {
 	// ItemClassification(id)
 	if (isNumber(L, 2)) {
 		ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 2), false);
-		if (itemClassification)
-		{
+		if (itemClassification) {
 			pushUserdata<ItemClassification>(L, itemClassification);
 			setMetatable(L, -1, "ItemClassification");
 			pushBoolean(L, true);

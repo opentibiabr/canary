@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"

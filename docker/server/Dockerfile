@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-RUN git clone https://github.com/microsoft/vcpkg --depth=1
+RUN git clone https://github.com/opentibiabr/vcpkg --depth=1
 RUN ./vcpkg/bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg

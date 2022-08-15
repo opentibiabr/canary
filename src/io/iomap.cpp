@@ -17,6 +17,7 @@
 #include "map/flatbuffer/map_generated.h"
 
 #include <fstream>
+#include <filesystem>
 
 /*
 	OTBM_ROOTV1
@@ -64,19 +65,27 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 bool IOMap::loadMap(Map &serverMap, const std::string& fileName)
 {
 	int64_t start = OTSYS_TIME();
-	std::fstream fileStream(fileName, std::ios::in | std::ios::binary);
-	if( !fileStream.is_open() ) {
-		SPDLOG_ERROR("Unable to load {}, could not find the file", fileName);
+	if (!std::filesystem::exists(fileName) || fileName.extension() != "kmap") {
+		SPDLOG_ERROR("Unable to load {}, file not exist or have a invalid type '.knary'", fileName);
 		return false;
 	}
 
-	if (fileStream.good()) {
-		// Read Binary data using streambuffer iterators
-		std::vector<uint8_t> fileBuffer((std::istreambuf_iterator<char>(fileStream)), (std::istreambuf_iterator<char>()));
-		buffer = fileBuffer;
-		fileStream.close();
-		SPDLOG_INFO("Map buffer size: {}", buffer.size());
+	std::fstream fileStream(fileName, std::ios::in | std::ios::binary);
+	if( !fileStream.is_open()) {
+		SPDLOG_ERROR("Unable to load {}, could not open file", fileName);
+		return false;
 	}
+
+	if (!fileStream.good()) {
+		SPDLOG_ERROR("Unable to load {}, error for read file", fileName);
+		return false;
+	}
+
+	// Read Binary data using streambuffer iterators
+	std::vector<uint8_t> fileBuffer((std::istreambuf_iterator<char>(fileStream)), (std::istreambuf_iterator<char>()));
+	buffer = fileBuffer;
+	fileStream.close();
+	SPDLOG_INFO("Map buffer size: {}", buffer.size());
 
 	fileLoaded = true;
 

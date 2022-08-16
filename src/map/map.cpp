@@ -31,6 +31,8 @@ bool Map::load(const std::string& identifier) {
 			return false;
 		}
 
+		loader.clearBuffer();
+
 	}
 	catch(const std::exception) {
 		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);

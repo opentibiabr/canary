@@ -325,7 +325,6 @@ if (MSVC)
     ${SPDLOG_INCLUDE_DIR}
     ${Protobuf_INCLUDE_DIRS}
     ${GMP_INCLUDE_DIR}
-    asio::asio
     $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>)
 
   target_link_libraries(${PROJECT_NAME}
@@ -337,13 +336,13 @@ if (MSVC)
     ${CURL_LIBRARIES}
     ${SPDLOG_LIBRARY}
     ${GMP_LIBRARIES}
-    flatbuffers::flatbuffers
     protobuf::libprotoc
     protobuf::libprotobuf
     protobuf::libprotobuf-lite
     fmt::fmt
     jsoncpp_lib
     asio::asio
+    flatbuffers::flatbuffers
   )
 
   else()
@@ -354,34 +353,6 @@ if (MSVC)
       ${Protobuf_INCLUDE_DIRS}
       ${GMP_INCLUDE_DIR}
       ${PARALLEL_HASHMAP_INCLUDE_DIRS}
-      ${CURL_INCLUDE_DIRS}
-  )
-
-  target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-      ${MYSQL_CLIENT_LIBS}
-      ${LUAJIT_LIBRARIES}
-      ${Boost_LIBRARIES}
-      ${PUGIXML_LIBRARIES}
-      ${CMAKE_THREAD_LIBS_INIT}
-      ${CURL_LIBRARIES}
-      ${Protobuf_LIBRARIES}
-      ${SPDLOG_LIBRARY}
-      ${GMP_LIBRARIES}
-      flatbuffers::flatbuffers
-      fmt::fmt
-      jsoncpp_lib
-  )
-
-else()
-
-  target_include_directories(${PROJECT_NAME}
-    PRIVATE
-      ${CMAKE_SOURCE_DIR}/src
-      ${LUAJIT_INCLUDE_DIRS}
-      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
-      ${Protobuf_INCLUDE_DIRS}
-      ${GMP_INCLUDE_DIRS}
   )
 
   target_link_libraries(${PROJECT_NAME}
@@ -398,6 +369,7 @@ else()
       protobuf::libprotoc
       protobuf::libprotobuf
       protobuf::libprotobuf-lite
+      flatbuffers::flatbuffers
     )
 endif(MSVC)
 

@@ -305,7 +305,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true))
 		{
 			disconnectClient("Temple position is wrong. Please, contact the administrator.");
-			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
+			SPDLOG_ERROR("Player {} temple position is wrong", player->getName());
 			return;
 		}
 

@@ -158,6 +158,11 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 
 Item* Item::createMapItem(uint16_t mapItemId)
 {
+	if (!items.hasItemType(mapItemId)) {
+		SPDLOG_ERROR("{} - Item with id {} not exist", __FUNCTION__, mapItemId);
+		return nullptr;
+	}
+
 	switch (mapItemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
 			mapItemId = ITEM_FIREFIELD_PERSISTENT_FULL;

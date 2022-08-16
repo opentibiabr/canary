@@ -584,7 +584,7 @@ class Item : virtual public Thing
 		//Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* createMapItem(BinaryNode &binaryNode);
+		static Item* createMapItem(uint16_t mapItemId);
 		static Items items;
 
 		// Constructor for items

@@ -156,9 +156,8 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 	return newItem;
 }
 
-Item* Item::createMapItem(BinaryNode &binaryNode)
+Item* Item::createMapItem(uint16_t mapItemId)
 {
-	uint16_t mapItemId = binaryNode.getU16();
 	switch (mapItemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
 			mapItemId = ITEM_FIREFIELD_PERSISTENT_FULL;
@@ -192,7 +191,7 @@ Item* Item::createMapItem(BinaryNode &binaryNode)
 			break;
 	}
 
-	return Item::CreateItem(mapItemId, 0);
+	return Item::CreateItem(mapItemId, 1);
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :

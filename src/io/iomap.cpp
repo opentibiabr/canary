@@ -65,11 +65,6 @@ Tile* IOMap::createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8
 bool IOMap::loadMap(Map &serverMap, const std::string& fileName)
 {
 	int64_t start = OTSYS_TIME();
-	if (!std::filesystem::exists(fileName) || fileName.extension() != "kmap") {
-		SPDLOG_ERROR("Unable to load {}, file not exist or have a invalid type '.knary'", fileName);
-		return false;
-	}
-
 	std::fstream fileStream(fileName, std::ios::in | std::ios::binary);
 	if( !fileStream.is_open()) {
 		SPDLOG_ERROR("Unable to load {}, could not open file", fileName);
@@ -89,10 +84,9 @@ bool IOMap::loadMap(Map &serverMap, const std::string& fileName)
 
 	fileLoaded = true;
 
-	using namespace canary::kmap;
 	uint8_t *buffer_pointer = buffer.data();
 	// Get a pointer to the root object inside the buffer
-	auto map = GetMap(buffer_pointer);
+	auto map = canary::kmap::GetMap(buffer_pointer);
 	auto header = map->header();
 	serverMap.width = header->width();
 	serverMap.height = header->height();
@@ -105,6 +99,7 @@ bool IOMap::loadMap(Map &serverMap, const std::string& fileName)
 	std::string monsterFile = header->monster_spawn_file()->str();
 	SPDLOG_INFO("Map monster: {}", monsterFile);
 	std::string npcFile = header->npc_spawn_file()->str();
+	SPDLOG_INFO("Map npc: {}", npcFile);
 	std::string houseFile = header->house_file()->str();
 	SPDLOG_INFO("Map house: {}", houseFile);
 
@@ -118,6 +113,243 @@ bool IOMap::loadMap(Map &serverMap, const std::string& fileName)
 
 	serverMap.housefile = fileName.substr(0, fileName.rfind('/') + 1);
 	serverMap.housefile += houseFile;
+
+	auto mapData = map->data();
+	// Areas vector
+	int i = 0;
+	for (auto area : *mapData->areas()) {
+		auto areaPosition = area->position();
+		// Teleport vector
+		static std::map<Position, Position> teleportMap;
+
+		// Tiles vector reading
+		for (auto tile : *area->tiles()) {
+			Position tilePosition;
+			tilePosition.x = areaPosition->x() + tile->x();
+			tilePosition.y = areaPosition->y() + tile->y();
+			tilePosition.z = areaPosition->z();
+
+			bool isHouseTile = false;
+			House *mapHouse = nullptr;
+			Tile *mapTile = nullptr;
+			Item *mapGroundItem = nullptr;
+			uint32_t mapTileFlags = TILESTATE_NONE;
+
+			// Parse house info
+			auto houseInfo = tile->house_info();
+			if (houseInfo) {
+				const uint32_t houseId = houseInfo->id();
+				SPDLOG_INFO("Found house id {}, on position {}", houseId, tilePosition.toString());
+				mapHouse = serverMap.houses.addHouse(houseId);
+				if (mapHouse == nullptr) {
+					SPDLOG_ERROR("{} - Could not create house id: {}, on position: {}", __FUNCTION__, houseId, tilePosition.toString());
+					continue;
+				}
+
+				mapTile = new HouseTile(tilePosition.x, tilePosition.y, tilePosition.z, mapHouse);
+				if (mapTile == nullptr) {
+					SPDLOG_ERROR("{} - Tile is nullptr, discarding house id: {}, on position: {}", __FUNCTION__, houseId, tilePosition.toString());
+					continue;
+				}
+
+				mapHouse->addTile(static_cast<HouseTile*>(mapTile));
+				isHouseTile = true;
+			}
+
+			// Parse tile flags
+			if (const uint32_t flags = tile->flags();
+			(flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0)
+			{
+				mapTileFlags |= TILESTATE_PROTECTIONZONE;
+			} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
+				mapTileFlags |= TILESTATE_NOPVPZONE;
+			} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
+				mapTileFlags |= TILESTATE_PVPZONE;
+			}
+
+			if ((mapTileFlags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
+				mapTileFlags |= TILESTATE_NOLOGOUT;
+			}
+
+			// Items vector
+			for (auto items : *tile->items()) {
+				if (items->id() > 50000 || items->id() == 0) {
+					continue;
+				}
+
+				Item* item = Item::createMapItem(items->id());
+				if (item == nullptr) {
+					SPDLOG_ERROR("{} (1) - Failed to create item on position: {}, item flatbuffer id {}, it {}", __FUNCTION__, tilePosition.toString(), items->id(), i);
+					break;
+				}
+				//SPDLOG_INFO("Item flatbuffer id {}, it {}", items->id(), i);
+
+				if (const Teleport* teleport = item->getTeleport()) {
+					// Teleport position / teleport destination
+					teleportMap.emplace(tilePosition, teleport->getDestination());
+					if (teleportMap.contains(teleport->getDestination())) {
+						SPDLOG_WARN("{} - "
+									"Teleport in position: {} "
+									"is leading to another teleport", __FUNCTION__, tilePosition.toString());
+						continue;
+					}
+					for (auto const& [mapTeleportPosition, mapDestinationPosition] : teleportMap) {
+						if (mapDestinationPosition == tilePosition) {
+							SPDLOG_WARN("{} - "
+										"Teleport in position: {} "
+										"is leading to another teleport", __FUNCTION__,
+										mapDestinationPosition.toString());
+							continue;
+						}
+					}
+				}
+
+				if (isHouseTile && mapHouse && item->isMoveable()) {
+					SPDLOG_WARN("{} - "
+								"Moveable item with ID: {}, in house: {}, "
+								"at position: {}, discarding item", __FUNCTION__,
+								item->getID(), mapHouse->getId(), tilePosition.toString());
+					delete item;
+					continue;
+				}
+
+				// Check if is house items
+				if (mapTile) {
+					mapTile->internalAddThing(0, item);
+					item->startDecaying();
+					item->setLoadedFromMap(true);
+				} else if (item->isGroundTile()) {
+					delete mapGroundItem;
+					mapGroundItem = item;
+				} else {
+					// Creating walls and others blocking items
+					mapTile = createTile(mapGroundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+					mapTile->internalAddThing(item);
+					item->startDecaying();
+					item->setLoadedFromMap(true);
+				}
+			}
+
+			/*for (auto items : *tile->items()) {
+				Item* item = Item::createMapItem(items->id());
+				if (item == nullptr) {
+					//SPDLOG_ERROR("{} (2) - Failed to create item on position {}", __FUNCTION__, tilePosition.toString());
+					continue;
+				}
+
+				if (!item->unserializeMapItem(nodeItem, tilePosition)) {
+					SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to load item with id: {}, on position {}", item->getID(), tilePosition.toString());
+					delete item;
+					return std::make_tuple(nullptr, nullptr);
+				}
+
+				if (isHouseTile && mapHouse && item->isMoveable()) {
+					SPDLOG_WARN("{} - "
+								"Moveable item with ID: {}, in house: {}, "
+								"at position: {}, discarding item", __FUNCTION__,
+								item->getID(), mapHouse->getId(), tilePosition.toString());
+					delete item;
+					continue;
+				}
+
+				if (mapTile) {
+					mapTile->internalAddThing(item);
+					item->startDecaying();
+					item->setLoadedFromMap(true);
+				} else if (item->isGroundTile()) {
+					delete mapGroundItem;
+					mapGroundItem = item;
+				} else {
+					mapTile = createTile(mapGroundItem, item, tilePosition.x, tilePosition.y, tilePosition.z);
+					mapTile->internalAddThing(item);
+					item->startDecaying();
+					item->setLoadedFromMap(true);
+				}
+			}*/
+
+			if (mapTile == nullptr) {
+				mapTile = createTile(mapGroundItem, nullptr, tilePosition.x, tilePosition.y, tilePosition.z);
+			}
+
+			// Sanity check, it will probably never happen, but it doesn't hurt to put this
+			if (tile == nullptr) {
+				SPDLOG_ERROR("{} - Tile is nullptr", __FUNCTION__);
+				continue;
+			}
+
+			mapTile->setFlag(static_cast<TileFlags_t>(mapTileFlags));
+			serverMap.setTile(tilePosition, mapTile);
+
+			i++;
+		}
+	}
+
+	Town *town = nullptr;
+	for (auto towns : *mapData->towns()) {
+		// Sanity check, if the town id is wrong then we know where the problem is
+		const uint32_t townId = towns->id();
+		if (townId == 0) {
+			SPDLOG_ERROR("{} - Invalid town id", __FUNCTION__);
+			continue;
+		}
+
+		town = serverMap.towns.getTown(townId);
+		if(town) {
+			SPDLOG_ERROR("{} - Duplicate town with id: {}, discarding town", __FUNCTION__, townId);
+			continue;
+		}
+
+		// Creating new town variable to avoid use of "new"
+		town = new Town(townId);
+		if(!serverMap.towns.addTown(townId, town)) {
+			SPDLOG_ERROR("{} - Cannot create town with id: {}, discarding town", __FUNCTION__, townId);
+			delete town;
+			continue;
+		}
+
+		// Sanity check, if the string is empty then we know where the problem is
+		const std::string townName = towns->name()->str();
+		if (townName.empty()) {
+			SPDLOG_ERROR("{} - Could not read town name", __FUNCTION__);
+			continue;
+		}
+		town->setName(townName);
+
+		Position townPosition;
+		townPosition.x = towns->position()->x();
+		townPosition.y = towns->position()->y();
+		townPosition.z = towns->position()->z();
+		// Sanity check, if there is an error in the get, we will know where the problem is
+		if(townPosition.x == 0 || townPosition.y == 0 || townPosition.z == 0) {
+			SPDLOG_ERROR("{} - Invalid town position", __FUNCTION__);
+			continue;
+		}
+
+		// Set towns in the map
+		town->setTemplePos(Position(768, 768, 7));
+	}
+
+	for (auto waypoints : *mapData->waypoints()) {
+		// Sanity check, if the string is empty then we know where the problem is
+		const std::string waypointName = waypoints->name()->str();
+		if (waypointName.empty()) {
+			SPDLOG_ERROR("{} - Could not read waypoint name", __FUNCTION__);
+			continue;
+		}
+
+		Position waypointPosition;
+		waypointPosition.x = waypoints->position()->x();
+		waypointPosition.y = waypoints->position()->y();
+		waypointPosition.z = waypoints->position()->z();
+		// Sanity check, if there is an error in the get, we will know where the problem is
+		if(waypointPosition.x == 0 || waypointPosition.y == 0 || waypointPosition.z == 0) {
+			SPDLOG_ERROR("{} - Invalid waypoint position", __FUNCTION__);
+			continue;
+		}
+
+		// Set waypoints in the map
+		serverMap.waypoints[waypointName] = waypointPosition;
+	}
 
 	SPDLOG_INFO("Map loading time: {} seconds", (OTSYS_TIME() - start) / (1000.));
 	buffer.clear();
@@ -176,7 +408,7 @@ void IOMap::readAttributeTileFlags(BinaryNode &binaryNodeMapTile, uint32_t &tile
 
 std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapTile, std::map<Position, Position> &teleportMap, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
-	Item* item = Item::createMapItem(binaryNodeMapTile);
+	/*Item* item = Item::createMapItem(binaryNodeMapTile);
 	if (!item) {
 		SPDLOG_ERROR("[IOMap::readAttributeTileItem] - Failed to create item on position: {}", tilePosition.toString());
 		return std::make_tuple(nullptr, nullptr);
@@ -225,13 +457,13 @@ std::tuple<Tile*, Item*> IOMap::readAttributeTileItem(BinaryNode &binaryNodeMapT
 		tile->internalAddThing(item);
 		item->startDecaying();
 		item->setLoadedFromMap(true);
-	}
+	}*/
 	return std::make_tuple(tile, groundItem);
 }
 
 std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool isHouseTile, const House *house, Item *groundItem, Tile *tile, Position tilePosition) const
 {
-	Item* item = Item::createMapItem(nodeItem);
+	/*Item* item = Item::createMapItem(nodeItem);
 	if (!item) {
 		SPDLOG_ERROR("[IOMap::parseCreateTileItem] - Failed to create item on position {}", tilePosition.toString());
 		return std::make_tuple(nullptr, nullptr);
@@ -264,7 +496,7 @@ std::tuple<Tile*, Item*> IOMap::parseCreateTileItem(BinaryNode &nodeItem, bool i
 		tile->internalAddThing(item);
 		item->startDecaying();
 		item->setLoadedFromMap(true);
-	}
+	}*/
 	return std::make_tuple(tile, groundItem);
 }
 

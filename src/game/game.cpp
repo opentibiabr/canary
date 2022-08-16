@@ -38,6 +38,7 @@
 #include "protobuf/appearances.pb.h"
 
 #include <fstream>
+#include <filesystem>
 
 Game::Game()
 {
@@ -565,7 +566,13 @@ bool Game::loadMainMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap("data/world/" + filename + ".kmap", true, true, true, true);
+	std::filesystem::path filePath = "data/world/" + filename + ".kmap";
+	if (filePath.extension() != ".kmap") {
+		SPDLOG_ERROR("Unable to load {}, file have a different type of '.kmap'", filename);
+		return false;
+	}
+
+	return map.loadMap(filePath.string(), true, true, true, true);
 }
 
 bool Game::loadCustomMap(const std::string& filename)

@@ -58,14 +58,14 @@ table ActionAttributes {
 }
 
 table Town {
-  id: ubyte;
-  name: string;
-  position: Position;
+	id: ubyte;
+	name: string;
+	position: Position;
 }
 
 table Waypoint {
-  name: string;
-  position: Position;
+	name: string;
+	position: Position;
 }
 
 table Position {

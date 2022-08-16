@@ -140,7 +140,7 @@ bool Container::unserializeMapItem(BinaryNode &binaryNode, Position position)
 			return false;
 		}
 
-		Item* item = Item::createMapItem(binaryNode);
+		/*Item* item = Item::createMapItem(binaryNode);
 		if (!item) {
 			SPDLOG_ERROR("[Container::unserializeMapItem] (1) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
 			return false;
@@ -152,7 +152,7 @@ bool Container::unserializeMapItem(BinaryNode &binaryNode, Position position)
 		}
 
 		addItem(item);
-		updateItemWeight(item->getWeight());
+		updateItemWeight(item->getWeight());*/
 
 	}
 	return true;

@@ -751,7 +751,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position oldPosition = creature->getPosition();
 	if (g_game().internalTeleport(creature, position, pushMovement) != RETURNVALUE_NOERROR) {
-		reportErrorFunc("Could not teleport creature.");
+		SPDLOG_WARN("[{}] - Cannot teleport creature with name: {}, fromPosition {}, toPosition {}", __FUNCTION__, creature->getName(), oldPosition.toString(), position.toString());
 		pushBoolean(L, false);
 		return 1;
 	}

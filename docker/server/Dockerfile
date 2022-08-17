@@ -3,14 +3,14 @@ FROM ubuntu:22.04 AS dependencies
 
 # Stage 1.1: Setup kitware repository
 ## According to: https://apt.kitware.com/
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg wget ca-certificates && \
+RUN apt-get update && apt-get upgrade -y && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends gpg wget ca-certificates && \
     wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null && \
     echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null && \
     apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install kitware-archive-keyring && \
     rm /usr/share/keyrings/kitware-archive-keyring.gpg
 
 # Stage 1.2: Install dependencies
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake git \
+RUN apt-get update && apt-get upgrade -y && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake git \
 	unzip build-essential ca-certificates curl zip unzip tar \
 	pkg-config ninja-build autoconf automake libtool \
 	&& apt-get clean \

@@ -14,10 +14,7 @@
     "jsoncpp",
     "protobuf",
     "parallel-hashmap",
-    {
-      "name": "luajit",
-      "platform": "!arm"
-    },
+    "luajit",
     { "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },

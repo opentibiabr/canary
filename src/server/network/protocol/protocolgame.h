@@ -82,8 +82,6 @@ public:
 	void AddItem(NetworkMessage &msg, const Item *item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count);
 
-	void sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_t count);
-
 	uint16_t getVersion() const
 	{
 		return version;
@@ -128,7 +126,22 @@ private:
 	void parseQuickLoot(NetworkMessage &msg);
 	void parseLootContainer(NetworkMessage &msg);
 	void parseQuickLootBlackWhitelist(NetworkMessage &msg);
-	void parseRequestLockItems();
+
+	// Depot search
+	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
+	void sendCloseDepotSearch();
+	void sendDepotSearchResultDetail(uint16_t itemId,
+									uint8_t tier,
+									uint32_t depotCount,
+									const ItemVector &depotItems,
+									uint32_t inboxCount,
+									const ItemVector &inboxItems,
+									uint32_t stashCount);
+	void parseOpenDepotSearch();
+	void parseCloseDepotSearch();
+	void parseDepotSearchItemRequest(NetworkMessage &msg);
+	void parseOpenParentContainer(NetworkMessage &msg);
+	void parseRetrieveDepotSearch(NetworkMessage &msg);
 
 	void parseFightModes(NetworkMessage &msg);
 	void parseAttack(NetworkMessage &msg);
@@ -461,7 +474,7 @@ private:
 
 	friend class Player;
 
-	std::unordered_set<uint32_t> knownCreatureSet;
+	phmap::flat_hash_set<uint32_t> knownCreatureSet;
 	Player *player = nullptr;
 
 	uint32_t eventConnect = 0;

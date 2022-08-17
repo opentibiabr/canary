@@ -28,7 +28,7 @@
 
 class ConditionDamage;
 
-const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributesMap = {
+const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttributesMap = {
 	{"type", ITEM_PARSE_TYPE},
 	{"description", ITEM_PARSE_DESCRIPTION},
 	{"runespellname", ITEM_PARSE_RUNESPELLNAME},
@@ -149,7 +149,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"imbuementslot", ITEM_PARSE_IMBUEMENT},
 };
 
-const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
+const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{"key", ITEM_TYPE_KEY},
 	{"magicfield", ITEM_TYPE_MAGICFIELD},
 	{"container", ITEM_TYPE_CONTAINER},
@@ -169,7 +169,7 @@ const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{"potion", ITEM_TYPE_POTION},
 };
 
-const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
+const phmap::flat_hash_map<std::string, TileFlags_t> TileStatesMap = {
 	{"down", TILESTATE_FLOORCHANGE_DOWN},
 	{"north", TILESTATE_FLOORCHANGE_NORTH},
 	{"south", TILESTATE_FLOORCHANGE_SOUTH},
@@ -179,7 +179,7 @@ const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
 	{"eastalt", TILESTATE_FLOORCHANGE_EAST_ALT},
 };
 
-const std::unordered_map<std::string, Fluids_t> FluidTypesMap = {
+const phmap::flat_hash_map<std::string, Fluids_t> FluidTypesMap = {
 	{"water", FLUID_WATER },
 	{"blood", FLUID_BLOOD},
 	{"beer", FLUID_BEER},
@@ -200,7 +200,7 @@ const std::unordered_map<std::string, Fluids_t> FluidTypesMap = {
 	{"ink", FLUID_INK },
 };
 
-const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
+const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"sword", WEAPON_SWORD},
 	{"club", WEAPON_CLUB},
 	{"axe", WEAPON_AXE},
@@ -210,7 +210,7 @@ const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"ammunition", WEAPON_AMMO}
 };
 
-const std::unordered_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
+const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
 	{"life leech", IMBUEMENT_LIFE_LEECH},
 	{"mana leech", IMBUEMENT_MANA_LEECH},

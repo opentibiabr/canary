@@ -116,7 +116,7 @@ class ServiceManager
 	private:
 		void die();
 
-		std::unordered_map<uint16_t, ServicePort_ptr> acceptors;
+		phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
 		boost::asio::io_service io_service;
 		Signals signals{io_service};

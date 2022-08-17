@@ -1166,9 +1166,9 @@ void Tile::removeCreature(Creature* creature)
 	removeThing(creature, 0);
 }
 
-uint8_t Tile::getThingIndex(const Thing* thing) const
+int32_t Tile::getThingIndex(const Thing* thing) const
 {
-	uint8_t n = -1;
+	int32_t n = -1;
 	if (ground) {
 		if (ground == thing) {
 			return 0;

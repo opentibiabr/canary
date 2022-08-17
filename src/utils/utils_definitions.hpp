@@ -683,7 +683,7 @@ enum item_t : uint16_t {
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.
-const std::unordered_map<item_t, item_t> ItemTransformationMap = {
+const phmap::flat_hash_map<item_t, item_t> ItemTransformationMap = {
 	{ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING},
 	{ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING},
 	{ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING},
@@ -753,7 +753,7 @@ enum Blessings_t : uint8_t {
 	HEARTH_OF_THE_MOUNTAIN = 8,
 };
 
-const std::unordered_map<Blessings_t, std::string> BlessingNames = {
+const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {
 	{TWIST_OF_FATE, "Twist of Fate"},
 	{WISDOM_OF_SOLITUDE, "The Wisdom of Solitude"},
 	{SPARK_OF_THE_PHOENIX, "The Spark of the Phoenix"},

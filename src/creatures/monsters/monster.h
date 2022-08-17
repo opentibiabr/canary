@@ -28,7 +28,7 @@ class Creature;
 class Game;
 class Spawn;
 
-using CreatureHashSet = std::unordered_set<Creature*>;
+using CreatureHashSet = phmap::flat_hash_set<Creature*>;
 using CreatureList = std::list<Creature*>;
 
 class Monster final : public Creature
@@ -63,6 +63,10 @@ class Monster final : public Creature
 
 		const std::string& getName() const override {
 			return mType->name;
+		}
+		// Real monster name, set on monster creation "createMonsterType(typeName)"
+		const std::string& getTypeName() const override {
+			return mType->typeName;
 		}
 		const std::string& getNameDescription() const override {
 			return mType->nameDescription;
@@ -207,6 +211,9 @@ class Monster final : public Creature
 		}
 		bool getIgnoreFieldDamage() const {
 			return ignoreFieldDamage;
+		}
+		uint16_t getRaceId() const {
+			return mType->info.raceid;
 		}
 
 		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,

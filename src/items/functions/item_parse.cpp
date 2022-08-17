@@ -36,11 +36,9 @@ void ItemParse::initParse(const std::string& tmpStrValue, pugi::xml_node attribu
 	ItemParse::parseWrapContainer(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWrapableTo(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseMoveable(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parsePodium(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseBlockProjectTile(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parsePickupable(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFloorChange(tmpStrValue, valueAttribute, itemType);
-	ItemParse::parseCorpseType(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseContainerSize(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseFluidSource(tmpStrValue, valueAttribute, itemType);
 	ItemParse::parseWriteables(tmpStrValue, valueAttribute, itemType);
@@ -180,13 +178,6 @@ void ItemParse::parseMoveable(const std::string& tmpStrValue, pugi::xml_attribut
 	}
 }
 
-void ItemParse::parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "podium") {
-		itemType.isPodium = valueAttribute.as_bool();
-	}
-}
-
 void ItemParse::parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "blockprojectile") {
@@ -196,7 +187,7 @@ void ItemParse::parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_
 
 void ItemParse::parsePickupable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
-	if (stringValue == "pickupable") {
+	if (stringValue == "allowpickupable" || stringValue == "pickupable") {
 		itemType.allowPickupable = valueAttribute.as_bool();
 	}
 }
@@ -210,20 +201,6 @@ void ItemParse::parseFloorChange(const std::string& tmpStrValue, pugi::xml_attri
 			itemType.floorChange = itemMap->second;
 		} else {
 			SPDLOG_WARN("[ItemParse::parseFloorChange] - Unknown floorChange {}",
-                        valueAttribute.as_string());
-		}
-	}
-}
-
-void ItemParse::parseCorpseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "corpsetype") {
-		stringValue = asLowerCaseString(valueAttribute.as_string());
-		auto itemMap = RaceTypesMap.find(stringValue);
-		if (itemMap != RaceTypesMap.end()) {
-			itemType.corpseType = itemMap->second;
-		} else {
-			SPDLOG_WARN("[ItemParse::parseCorpseType] - Unknown corpseType {}",
                         valueAttribute.as_string());
 		}
 	}
@@ -281,6 +258,7 @@ void ItemParse::parseWeaponType(const std::string& tmpStrValue, pugi::xml_attrib
 void ItemParse::parseSlotType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "slottype") {
+		itemType.slotPosition = SLOTP_HAND;
 		stringValue = asLowerCaseString(valueAttribute.as_string());
 		if (stringValue == "head") {
 			itemType.slotPosition |= SLOTP_HEAD;
@@ -386,6 +364,10 @@ void ItemParse::parseTransform(const std::string& tmpStrValue, pugi::xml_attribu
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "transformequipto") {
 		itemType.transformEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
+		if (ItemType& transform = Item::items.getItemType(itemType.transformEquipTo);
+			transform.type == ITEM_TYPE_NONE) {
+			transform.type = itemType.type;
+		}
 	} else if (stringValue == "transformdeequipto") {
 		itemType.transformDeEquipTo = pugi::cast<uint16_t>(valueAttribute.value());
 	} else if (stringValue == "transformto") {
@@ -405,8 +387,8 @@ void ItemParse::parseCharges(const std::string& tmpStrValue, pugi::xml_attribute
 }
 
 void ItemParse::parseShowAttributes(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "showattributes") {
+	std::string lowerStringValue = asLowerCaseString(tmpStrValue);
+	if (lowerStringValue == "showattributes") {
 		itemType.showAttributes = valueAttribute.as_bool();
 	}
 }
@@ -804,7 +786,7 @@ void ItemParse::parseWalk(const std::string& tmpStrValue, pugi::xml_attribute va
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "walkstack") {
 		itemType.walkStack = valueAttribute.as_bool();
-	} else if (stringValue == "block_solid") {
+	} else if (stringValue == "blocking") {
 		itemType.blockSolid = valueAttribute.as_bool();
 	}
 }

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
 #ifndef SRC_IO_IOMAP_H_
 #define SRC_IO_IOMAP_H_
@@ -62,6 +62,11 @@ class IOMap
 	public:
 		bool loadMap(Map* map, const std::string& identifier);
 
+		/**
+		* Load main map monsters
+		 * \param map Is the map class
+		 * \returns true if the monsters spawn map was loaded successfully
+		*/
 		static bool loadMonsters(Map* map) {
 			if (map->monsterfile.empty()) {
 				// OTBM file doesn't tell us about the monsterfile,
@@ -73,6 +78,11 @@ class IOMap
 			return map->spawnsMonster.loadFromXML(map->monsterfile);
 		}
 
+		/**
+		* Load main map npcs
+		 * \param map Is the map class
+		 * \returns true if the npcs spawn map was loaded successfully
+		*/
 		static bool loadNpcs(Map* map) {
 			if (map->npcfile.empty()) {
 				// OTBM file doesn't tell us about the npcfile,
@@ -84,6 +94,11 @@ class IOMap
 			return map->spawnsNpc.loadFromXml(map->npcfile);
 		}
 
+		/**
+		* Load main map houses
+		 * \param map Is the map class
+		 * \returns true if the main map houses was loaded successfully
+		*/
 		static bool loadHouses(Map* map) {
 			if (map->housefile.empty()) {
 				// OTBM file doesn't tell us about the housefile,
@@ -93,6 +108,54 @@ class IOMap
 			}
 
 			return map->houses.loadHousesXML(map->housefile);
+		}
+
+		/**
+		* Load custom  map monsters
+		 * \param map Is the map class
+		 * \returns true if the monsters spawn map custom was loaded successfully
+		*/
+		static bool loadMonstersCustom(Map* map) {
+			if (map->monsterfile.empty()) {
+				// OTBM file doesn't tell us about the monsterfile,
+				// Lets guess it is mapname-monster.xml.
+				map->monsterfile = g_configManager().getString(MAP_CUSTOM_NAME);
+				map->monsterfile += "-monster.xml";
+			}
+
+			return map->spawnsMonsterCustom.loadFromXML(map->monsterfile);
+		}
+
+		/**
+		* Load custom map npcs
+		 * \param map Is the map class
+		 * \returns true if the npcs spawn map custom was loaded successfully
+		*/
+		static bool loadNpcsCustom(Map* map) {
+			if (map->npcfile.empty()) {
+				// OTBM file doesn't tell us about the npcfile,
+				// Lets guess it is mapname-npc.xml.
+				map->npcfile = g_configManager().getString(MAP_CUSTOM_NAME);
+				map->npcfile += "-npc.xml";
+			}
+
+			return map->spawnsNpcCustom.loadFromXml(map->npcfile);
+		}
+
+		/**
+		* Load custom map houses
+		 * \param map Is the map class
+		 * \returns true if the map custom houses was loaded successfully
+		*/
+		static bool loadHousesCustom(Map* map) {
+			if (map->housefile.empty()) {
+				// OTBM file doesn't tell us about the housefile,
+				// Lets guess it is mapname-house.xml.
+				map->housefile = g_configManager().getString(MAP_CUSTOM_NAME);
+				map->housefile += "-house.xml";
+			}
+
+			return map->housesCustom.loadHousesXML(map->housefile);
 		}
 
 		const std::string& getLastErrorString() const {
@@ -111,4 +174,4 @@ class IOMap
 		std::string errorString;
 };
 
-#endif  // SRC_IO_IOMAP_H_
+#endif // SRC_IO_IOMAP_H_

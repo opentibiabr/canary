@@ -2,25 +2,18 @@
 name: Build - Docker
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:
-      - master
-      - dev
-      - devel
-      - develop
-
-env:
-  VCPKG_BUILD_TYPE: release
-  CMAKE_BUILD_PARALLEL_LEVEL: 2
-  MAKEFLAGS: '-j 2'
+      - main
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -39,7 +32,7 @@ jobs:
           install: true
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -59,8 +52,8 @@ jobs:
         with:
           file: docker/server/Dockerfile
           tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}
 
       - name: Build and push
         id: docker_build
@@ -70,17 +63,17 @@ jobs:
           file: docker/server/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+          cache-from: type=gha, scope=${{ github.workflow }}
+          cache-to: type=gha, scope=${{ github.workflow }}
 
       - name: Image digest
         if: ${{ github.event_name == 'push' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-      # Temp fix
-      # https://github.com/docker/build-push-action/issues/252
-      # https://github.com/moby/buildkit/issues/1896
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      # # Temp fix
+      # # https://github.com/docker/build-push-action/issues/252
+      # # https://github.com/moby/buildkit/issues/1896
+      # - name: Move cache
+      #   run: |
+      #     rm -rf /tmp/.buildx-cache
+      #     mv /tmp/.buildx-cache-new /tmp/.buildx-cache

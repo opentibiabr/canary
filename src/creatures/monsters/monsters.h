@@ -131,7 +131,7 @@ class MonsterType
 		bool targetPreferMaster = false;
 
 		Faction_t faction = FACTION_DEFAULT;
-		std::unordered_set<Faction_t> enemyFactions;
+		phmap::flat_hash_set<Faction_t> enemyFactions;
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;
@@ -154,6 +154,7 @@ class MonsterType
 
 	public:
 		MonsterType() = default;
+		explicit MonsterType(const std::string &initName) : name(initName), typeName(initName), nameDescription(initName) {};
 
 		// non-copyable
 		MonsterType(const MonsterType&) = delete;
@@ -162,6 +163,7 @@ class MonsterType
 		bool loadCallback(LuaScriptInterface* scriptInterface);
 
 		std::string name;
+		std::string typeName;
 		std::string nameDescription;
 
 		MonsterInfo info;
@@ -225,6 +227,13 @@ class Monsters
 		Monsters(const Monsters&) = delete;
 		Monsters& operator=(const Monsters&) = delete;
 
+		static Monsters& getInstance() {
+			// Guaranteed to be destroyed
+			static Monsters instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		bool loadFromXml(bool reloading = false);
 		bool isLoaded() const {
 			return loaded;
@@ -237,7 +246,7 @@ class Monsters
 		bool deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description = "");
 
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
-		std::map<std::string, MonsterType> monsters;
+		std::map<std::string, MonsterType*> monsters;
 
 	private:
 		ConditionDamage* getDamageCondition(ConditionType_t conditionType,
@@ -253,5 +262,7 @@ class Monsters
 
 		bool loaded = false;
 };
+
+constexpr auto g_monsters = &Monsters::getInstance;
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTERS_H_

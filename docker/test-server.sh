@@ -18,7 +18,6 @@ apt-get install -y \
 	curl \
 	git \
 	libapache2-mod-php \
-	libluajit-5.1-dev \
 	php \
 	php-mysql \
 	pkg-config \

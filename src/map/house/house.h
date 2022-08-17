@@ -46,8 +46,8 @@ class AccessList
 
 	private:
 		std::string list;
-		std::unordered_set<uint32_t> playerList;
-		std::unordered_set<uint32_t> guildRankList;
+		phmap::flat_hash_set<uint32_t> playerList;
+		phmap::flat_hash_set<uint32_t> guildRankList;
 		bool allowEveryone = false;
 };
 

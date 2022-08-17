@@ -23,8 +23,6 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
-extern Game g_game;
-Decay g_decay;
 
 void Decay::startDecay(Item* item)
 {
@@ -42,7 +40,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
+	const int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
 	if (duration <= 0 && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
 		internalDecayItem(item);
 		return;
@@ -53,13 +51,13 @@ void Decay::startDecay(Item* item)
 			stopDecay(item);
 		}
 
-		int64_t timestamp = OTSYS_TIME() + static_cast<int64_t>(duration);
+		int64_t timestamp = OTSYS_TIME() + duration;
 		if (decayMap.empty()) {
-			eventId = g_scheduler.addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
+			eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
 		} else {
 			if (timestamp < decayMap.begin()->first) {
-				g_scheduler.stopEvent(eventId);
-				eventId = g_scheduler.addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
+				g_scheduler().stopEvent(eventId);
+				eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, duration), std::bind(&Decay::checkDecay, this)));
 			}
 		}
 
@@ -87,7 +85,7 @@ void Decay::stopDecay(Item* item)
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
-						g_game.ReleaseItem(item);
+						g_game().ReleaseItem(item);
 
 						decayMap.erase(it);
 					}
@@ -100,7 +98,7 @@ void Decay::stopDecay(Item* item)
 							item->setDuration(item->getDuration());
 						}
 						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
-						g_game.ReleaseItem(item);
+						g_game().ReleaseItem(item);
 
 						decayItems[i] = decayItems.back();
 						decayItems.pop_back();
@@ -144,11 +142,11 @@ void Decay::checkDecay()
 			internalDecayItem(item);
 		}
 
-		g_game.ReleaseItem(item);
+		g_game().ReleaseItem(item);
 	}
 
 	if (it != end) {
-		eventId = g_scheduler.addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this)));
+		eventId = g_scheduler().addEvent(createSchedulerTask(std::max<int32_t>(SCHEDULER_MINTICKS, static_cast<int32_t>(it->first - timestamp)), std::bind(&Decay::checkDecay, this)));
 	}
 }
 
@@ -191,9 +189,9 @@ void Decay::internalDecayItem(Item* item)
 				player->sendSkills();
 			}
 		}
-		g_game.transformItem(item, it.decayTo);
+		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
-		ReturnValue ret = g_game.internalRemoveItem(item);
+		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			SPDLOG_ERROR("[Decay::internalDecayItem] - internalDecayItem failed, "
                          "error code: {}, item id: {}",

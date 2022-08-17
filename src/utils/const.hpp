@@ -24,7 +24,11 @@ const uint32_t MAX_LOOTCHANCE = 100000;
 const uint32_t MAX_STATICWALK = 100;
 
 static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
-static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 24590;
+static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 65500;
+
+// QT clients probably have bigger input buffer because of exiva options
+// But for now we don't support exiva options
+static constexpr int32_t INPUTMESSAGE_MAXSIZE = 2048;
 
 static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;

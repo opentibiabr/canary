@@ -30,7 +30,12 @@ local reloadTypes = {
 	["raids"] = RELOAD_TYPE_RAIDS,
 
 	["scripts"] = RELOAD_TYPE_SCRIPTS,
-	["libs"] = RELOAD_TYPE_GLOBAL
+
+	["libs"] = RELOAD_TYPE_GLOBAL,
+
+	["stages"] = RELOAD_TYPE_STAGES,
+
+	["imbuements"] = RELOAD_TYPE_IMBUEMENTS
 }
 
 local reload = TalkAction("/reload")

@@ -97,14 +97,12 @@ std::string getWeaponName(WeaponType_t weaponType);
 size_t combatTypeToIndex(CombatType_t combatType);
 CombatType_t indexToCombatType(size_t v);
 
-uint8_t serverFluidToClient(uint8_t serverFluid);
-uint8_t clientFluidToServer(uint8_t clientFluid);
-
 ItemAttrTypes stringToItemAttribute(const std::string& str);
 
 const char* getReturnMessage(ReturnValue value);
 
 void capitalizeWords(std::string &source);
+void consoleHandlerExit();
 NameEval_t validateName(const std::string &name);
 
 bool isCaskItem(uint16_t itemId);

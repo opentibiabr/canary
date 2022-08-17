@@ -10,10 +10,6 @@
 	<module type="recvbyte" byte="253" script="gamestore/gamestore.lua"/>
 	<module type="recvbyte" byte="254" script="gamestore/gamestore.lua"/>
 
-	<!-- Prey System -->
-	<module type="recvbyte" byte="235" script="prey_system/prey.lua" />
-	<module type="recvbyte" byte="237" script="prey_system/prey.lua" />
-
 	<!-- Blessings -->
 	<module type="recvbyte" byte="207" script="blessings/blessings.lua" />
 

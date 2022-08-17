@@ -24,6 +24,7 @@
 
 #include "items/cylinder.h"
 #include "items/item.h"
+#include "items/tile.h"
 
 class Container;
 class DepotChest;
@@ -88,6 +89,12 @@ class Container : public Item, public Cylinder
 		}
 		virtual const Reward* getReward() const {
 			return nullptr;
+		}
+		virtual bool isInbox() const {
+			return false;
+		}
+		virtual bool isDepotChest() const {
+			return false;
 		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
@@ -160,6 +167,8 @@ class Container : public Item, public Cylinder
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const override final;
 		Thing* getThing(size_t index) const override final;
+		
+		ItemVector getItems(bool recursive = false) const;
 
 		void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;

@@ -59,16 +59,16 @@ class LuaEnvironment: public LuaScriptInterface {
 	private:
 		void executeTimerEvent(uint32_t eventIndex);
 
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		LuaTimerEventDesc > timerEvents;
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		Combat * > combatMap;
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		AreaCombat * > areaMap;
 
-		std::unordered_map < LuaScriptInterface * ,
+		phmap::flat_hash_map < LuaScriptInterface * ,
 		std::vector < uint32_t >> combatIdMap;
-		std::unordered_map < LuaScriptInterface * ,
+		phmap::flat_hash_map < LuaScriptInterface * ,
 		std::vector < uint32_t >> areaIdMap;
 
 		LuaScriptInterface * testInterface = nullptr;
@@ -81,5 +81,7 @@ class LuaEnvironment: public LuaScriptInterface {
 				friend class GlobalFunctions;
 		friend class CombatSpell;
 };
+
+inline LuaEnvironment g_luaEnvironment;
 
 #endif  // SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_

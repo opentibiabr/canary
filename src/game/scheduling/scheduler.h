@@ -61,6 +61,18 @@ struct TaskComparator {
 class Scheduler : public ThreadHolder<Scheduler>
 {
 	public:
+		Scheduler() = default;
+		
+		Scheduler(Scheduler const&) = delete;
+		void operator=(Scheduler const&) = delete;
+
+		static Scheduler& getInstance() {
+			// Guaranteed to be destroyed
+			static Scheduler instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		uint32_t addEvent(SchedulerTask* task);
 		bool stopEvent(uint32_t eventId);
 
@@ -75,9 +87,9 @@ class Scheduler : public ThreadHolder<Scheduler>
 
 		uint32_t lastEventId {0};
 		std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
-		std::unordered_set<uint32_t> eventIds;
+		phmap::flat_hash_set<uint32_t> eventIds;
 };
 
-extern Scheduler g_scheduler;
+constexpr auto g_scheduler = &Scheduler::getInstance;
 
 #endif  // SRC_GAME_SCHEDULING_SCHEDULER_H_

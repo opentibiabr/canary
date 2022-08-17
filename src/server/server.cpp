@@ -54,7 +54,7 @@ void ServiceManager::stop()
 	for (auto& servicePortIt : acceptors) {
 		try {
 			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
-		} catch (boost::system::system_error& e) {
+		} catch (const boost::system::system_error& e) {
 			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
 		}
 	}
@@ -124,7 +124,7 @@ void ServicePort::onAccept(Connection_ptr connection, const boost::system::error
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_scheduler.addEvent(createSchedulerTask(15000,
+			g_scheduler().addEvent(createSchedulerTask(15000,
                                 std::bind(&ServicePort::openAcceptor,
                                 std::weak_ptr<ServicePort>(shared_from_this()),
                                 serverPort)));
@@ -183,11 +183,11 @@ void ServicePort::open(uint16_t port)
 		acceptor->set_option(boost::asio::ip::tcp::no_delay(true));
 
 		accept();
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_WARN("[ServicePort::open] - Error: {}", e.what());
 
 		pendingStart = true;
-		g_scheduler.addEvent(createSchedulerTask(15000,
+		g_scheduler().addEvent(createSchedulerTask(15000,
                             std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
 	}
 }

@@ -21,7 +21,6 @@
 
 #include "utils/tools.h"
 
-
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -504,19 +503,19 @@ Direction getDirectionTo(const Position& from, const Position& to)
 	return dir;
 }
 
-using MagicEffectNames = std::unordered_map<std::string, MagicEffectClasses>;
-using ShootTypeNames = std::unordered_map<std::string, ShootType_t>;
-using CombatTypeNames = std::unordered_map<CombatType_t, std::string, std::hash<int32_t>>;
-using AmmoTypeNames = std::unordered_map<std::string, Ammo_t>;
-using WeaponActionNames = std::unordered_map<std::string, WeaponAction_t>;
-using SkullNames = std::unordered_map<std::string, Skulls_t>;
-using ImbuementTypeNames = std::unordered_map<std::string, ImbuementTypes_t>;
+using MagicEffectNames = phmap::flat_hash_map<std::string, MagicEffectClasses>;
+using ShootTypeNames = phmap::flat_hash_map<std::string, ShootType_t>;
+using CombatTypeNames = phmap::flat_hash_map<CombatType_t, std::string, std::hash<int32_t>>;
+using AmmoTypeNames = phmap::flat_hash_map<std::string, Ammo_t>;
+using WeaponActionNames = phmap::flat_hash_map<std::string, WeaponAction_t>;
+using SkullNames = phmap::flat_hash_map<std::string, Skulls_t>;
+using ImbuementTypeNames = phmap::flat_hash_map<std::string, ImbuementTypes_t>;
 
 /**
  * @Deprecated
  * It will be dropped with monsters. Use RespawnPeriod_t instead.
  */
-using SpawnTypeNames = std::unordered_map<std::string, SpawnType_t>;
+using SpawnTypeNames = phmap::flat_hash_map<std::string, SpawnType_t>;
 
 MagicEffectNames magicEffectNames = {
 	{"assassin",			CONST_ME_ASSASSIN},
@@ -624,6 +623,15 @@ MagicEffectNames magicEffectNames = {
 	{"watercreature",		CONST_ME_WATERCREATURE},
 	{"watersplash",			CONST_ME_WATERSPLASH},
 	{"whiteenergyspark",	CONST_ME_WHITE_ENERGY_SPARK },
+	{"fatal", 				CONST_ME_FATAL},
+	{"dodge", 				CONST_ME_DODGE},
+	{"hourglass",			CONST_ME_HOURGLASS},
+	{"ferumbras1",			CONST_ME_FERUMBRAS_1},
+	{"gazharagoth",			CONST_ME_GAZHARAGOTH},
+	{"madmage",				CONST_ME_MAD_MAGE},
+	{"horestis",			CONST_ME_HORESTIS},
+	{"devovorga",			CONST_ME_DEVOVORGA},
+	{"ferumbras2",			CONST_ME_FERUMBRAS_2},
 };
 
 ShootTypeNames shootTypeNames = {
@@ -1028,26 +1036,6 @@ CombatType_t indexToCombatType(size_t v)
 	return static_cast<CombatType_t>(1 << v);
 }
 
-uint8_t serverFluidToClient(uint8_t serverFluid)
-{
-	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(uint8_t);
-	for (uint8_t i = 0; i < size; ++i) {
-		if (clientToServerFluidMap[i] == serverFluid) {
-			return i;
-		}
-	}
-	return 0;
-}
-
-uint8_t clientFluidToServer(uint8_t clientFluid)
-{
-	uint8_t size = sizeof(clientToServerFluidMap) / sizeof(uint8_t);
-	if (clientFluid >= size) {
-		return 0;
-	}
-	return clientToServerFluidMap[clientFluid];
-}
-
 ItemAttrTypes stringToItemAttribute(const std::string& str)
 {
 	if (str == "aid") {
@@ -1399,6 +1387,18 @@ void capitalizeWords(std::string& source)
 			source[i] = (char)toupper(source[i]);
 		}
 	}
+}
+
+/**
+ * @details
+ * Prevents the console from closing so there is time to read the error information
+ * Then can press any key to close
+*/
+void consoleHandlerExit()
+{
+	SPDLOG_ERROR("The program will close after pressing the enter key...");
+	getchar();
+	return;
 }
 
 NameEval_t validateName(const std::string &name)

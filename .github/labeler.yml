@@ -1,12 +1,12 @@
 ---
-source:
+"Area: Source":
   - any: ['src/**/*']
 
-data:
+"Area: Datapack":
   - any: ['data/**/*', '!data/world/*']
 
-map:
+"Area: Map":
   - any: ['data/world/*']
 
-docker:
+"Area: Docker":
   - any: ['docker/**/*']

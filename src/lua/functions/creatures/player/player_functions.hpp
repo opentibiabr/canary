@@ -61,6 +61,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "removePreyStamina", PlayerFunctions::luaPlayerRemovePreyStamina);
 			registerMethod(L, "Player", "addPreyCards", PlayerFunctions::luaPlayerAddPreyCards);
 			registerMethod(L, "Player", "removeTaskHuntingPoints", PlayerFunctions::luaPlayerRemoveTaskHuntingPoints);
+			registerMethod(L, "Player", "getTaskHuntingPoints", PlayerFunctions::luaPlayerGetTaskHuntingPoints);
 
 			registerMethod(L, "Player", "getCapacity", PlayerFunctions::luaPlayerGetCapacity);
 			registerMethod(L, "Player", "setCapacity", PlayerFunctions::luaPlayerSetCapacity);
@@ -173,7 +174,6 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addItemEx", PlayerFunctions::luaPlayerAddItemEx);
 			registerMethod(L, "Player", "removeStashItem", PlayerFunctions::luaPlayerRemoveStashItem);
 			registerMethod(L, "Player", "removeItem", PlayerFunctions::luaPlayerRemoveItem);
-			registerMethod(L, "Player", "getItemIdByCid", PlayerFunctions::luaPlayerGetItemIdByCid);
 			registerMethod(L, "Player", "sendContainer", PlayerFunctions::luaPlayerSendContainer);
 
 			registerMethod(L, "Player", "getMoney", PlayerFunctions::luaPlayerGetMoney);
@@ -312,6 +312,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddPreyCards(lua_State* L);
 		static int luaPlayerGetPreyExperiencePercentage(lua_State* L);
 		static int luaPlayerRemoveTaskHuntingPoints(lua_State* L);
+		static int luaPlayerGetTaskHuntingPoints(lua_State* L);
 
 		static int luaPlayerGetCapacity(lua_State* L);
 		static int luaPlayerSetCapacity(lua_State* L);
@@ -425,7 +426,6 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddItemEx(lua_State* L);
 		static int luaPlayerRemoveStashItem(lua_State* L);
 		static int luaPlayerRemoveItem(lua_State* L);
-		static int luaPlayerGetItemIdByCid(lua_State* L);
 		static int luaPlayerSendContainer(lua_State* L);
 
 		static int luaPlayerGetMoney(lua_State* L);

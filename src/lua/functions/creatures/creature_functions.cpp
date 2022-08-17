@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
 
 #include "game/game.h"
 #include "creatures/creature.h"
@@ -189,10 +177,21 @@ int CreatureFunctions::luaCreatureGetId(lua_State* L) {
 }
 
 int CreatureFunctions::luaCreatureGetName(lua_State* L) {
-	// creature:getName()
+	// creature:getTypeName()
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
 		pushString(L, creature->getName());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureGetTypeName(lua_State* L) {
+	// creature:getName()
+	const Creature* creature = getUserdata<const Creature>(L, 1);
+	if (creature) {
+		pushString(L, creature->getTypeName());
 	} else {
 		lua_pushnil(L);
 	}
@@ -278,6 +277,20 @@ int CreatureFunctions::luaCreatureGetMaster(lua_State* L) {
 	return 1;
 }
 
+int CreatureFunctions::luaCreatureReload(lua_State* L)
+{
+	// creature:reload()
+	Creature* creature = getUserdata<Creature>(L, 1);
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	g_game().reloadCreature(creature);
+	pushBoolean(L, true);
+	return 1;
+}
+
 int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 	// creature:setMaster(master)
 	Creature* creature = getUserdata<Creature>(L, 1);
@@ -286,8 +299,9 @@ int CreatureFunctions::luaCreatureSetMaster(lua_State* L) {
 		return 1;
 	}
 
-	pushBoolean(L, creature->setMaster(getCreature(L, 2)));
-	g_game().updateCreatureType(creature);
+	pushBoolean(L, creature->setMaster(getCreature(L, 2), true));
+	// Reloading creature icon/knownCreature
+	CreatureFunctions::luaCreatureReload(L);
 	return 1;
 }
 
@@ -590,7 +604,13 @@ int CreatureFunctions::luaCreatureSetOutfit(lua_State* L) {
 	// creature:setOutfit(outfit)
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature) {
-		creature->defaultOutfit = getOutfit(L, 2);
+		Outfit_t outfit = getOutfit(L, 2);
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+			SPDLOG_WARN("[CreatureFunctions::luaCreatureSetOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+			return 1;
+		}
+
+		creature->defaultOutfit = outfit;
 		g_game().internalCreatureChangeOutfit(creature, creature->defaultOutfit);
 		pushBoolean(L, true);
 	} else {
@@ -723,13 +743,15 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position& position = getPosition(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
-	if (!creature) {
-		lua_pushnil(L);
+	if (creature == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
+		pushBoolean(L, false);
 		return 1;
 	}
 
 	const Position oldPosition = creature->getPosition();
 	if (g_game().internalTeleport(creature, position, pushMovement) != RETURNVALUE_NOERROR) {
+		SPDLOG_WARN("[{}] - Cannot teleport creature with name: {}, fromPosition {}, toPosition {}", __FUNCTION__, creature->getName(), oldPosition.toString(), position.toString());
 		pushBoolean(L, false);
 		return 1;
 	}

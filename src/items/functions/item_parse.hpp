@@ -28,7 +28,7 @@
 
 class ConditionDamage;
 
-const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributesMap = {
+const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttributesMap = {
 	{"type", ITEM_PARSE_TYPE},
 	{"description", ITEM_PARSE_DESCRIPTION},
 	{"runespellname", ITEM_PARSE_RUNESPELLNAME},
@@ -38,19 +38,16 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"defense", ITEM_PARSE_DEFENSE},
 	{"extradef", ITEM_PARSE_EXTRADEF},
 	{"attack", ITEM_PARSE_ATTACK},
-	{"upgradeclassification", ITEM_PARSE_UPGRADE_CLASS},
 	{"rotateto", ITEM_PARSE_ROTATETO},
 	{"wrapcontainer", ITEM_PARSE_WRAPCONTAINER},
 	{"wrapableto", ITEM_PARSE_WRAPABLETO},
 	{"unwrapableto", ITEM_PARSE_WRAPABLETO},
 	{"moveable", ITEM_PARSE_MOVEABLE},
 	{"movable", ITEM_PARSE_MOVEABLE},
-	{"ispodium", ITEM_PARSE_PODIUM},
 	{"blockprojectile", ITEM_PARSE_BLOCKPROJECTILE},
 	{"allowpickupable", ITEM_PARSE_PICKUPABLE},
 	{"pickupable", ITEM_PARSE_PICKUPABLE},
 	{"floorchange", ITEM_PARSE_FLOORCHANGE},
-	{"corpsetype", ITEM_PARSE_CORPSETYPE},
 	{"containersize", ITEM_PARSE_CONTAINERSIZE},
 	{"fluidsource", ITEM_PARSE_FLUIDSOURCE},
 	{"readable", ITEM_PARSE_READABLE},
@@ -152,7 +149,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"imbuementslot", ITEM_PARSE_IMBUEMENT},
 };
 
-const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
+const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{"key", ITEM_TYPE_KEY},
 	{"magicfield", ITEM_TYPE_MAGICFIELD},
 	{"container", ITEM_TYPE_CONTAINER},
@@ -172,7 +169,7 @@ const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{"potion", ITEM_TYPE_POTION},
 };
 
-const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
+const phmap::flat_hash_map<std::string, TileFlags_t> TileStatesMap = {
 	{"down", TILESTATE_FLOORCHANGE_DOWN},
 	{"north", TILESTATE_FLOORCHANGE_NORTH},
 	{"south", TILESTATE_FLOORCHANGE_SOUTH},
@@ -182,16 +179,7 @@ const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
 	{"eastalt", TILESTATE_FLOORCHANGE_EAST_ALT},
 };
 
-const std::unordered_map<std::string, RaceType_t> RaceTypesMap = {
-	{"venom", RACE_VENOM},
-	{"blood", RACE_BLOOD},
-	{"undead", RACE_UNDEAD},
-	{"fire", RACE_FIRE},
-	{"energy", RACE_ENERGY},
-	{"ink", RACE_INK},
-};
-
-const std::unordered_map<std::string, Fluids_t> FluidTypesMap = {
+const phmap::flat_hash_map<std::string, Fluids_t> FluidTypesMap = {
 	{"water", FLUID_WATER },
 	{"blood", FLUID_BLOOD},
 	{"beer", FLUID_BEER},
@@ -212,18 +200,17 @@ const std::unordered_map<std::string, Fluids_t> FluidTypesMap = {
 	{"ink", FLUID_INK },
 };
 
-const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
+const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"sword", WEAPON_SWORD},
 	{"club", WEAPON_CLUB},
 	{"axe", WEAPON_AXE},
 	{"shield", WEAPON_SHIELD},
 	{"distance", WEAPON_DISTANCE},
 	{"wand", WEAPON_WAND},
-	{"ammunition", WEAPON_AMMO},
-	{"quiver", WEAPON_QUIVER},
+	{"ammunition", WEAPON_AMMO}
 };
 
-const std::unordered_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
+const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
 	{"life leech", IMBUEMENT_LIFE_LEECH},
 	{"mana leech", IMBUEMENT_MANA_LEECH},
@@ -259,16 +246,13 @@ class ItemParse : public Items
 	static void parseDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseExtraDefense(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseUpgradeClassification(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseMoveable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePickupable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFloorChange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseCorpseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseContainerSize(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFluidSource(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWriteables(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

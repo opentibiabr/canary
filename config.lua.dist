@@ -32,7 +32,7 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-motd = "Bem vindo ao Canary!"
+motd = "Welcome to the Canary!"
 onePlayerOnlinePerAccount = true
 allowClones = false
 serverName = "Canary"
@@ -42,9 +42,10 @@ maxPacketsPerSecond = 25
 maxItem = 2000
 maxContainer = 100
 
--- Version
-clientVersion = 1285
-clientVersionStr = "12.85"
+-- Packet Compression
+-- Minimize network bandwith and reduce ping
+-- Levels: 0 = disabled, 1 = best speed, 9 = best compression
+packetCompressionLevel = 6
 
 -- Depot Limit
 freeDepotLimit = 2000
@@ -97,6 +98,9 @@ autoLoot = false
 -- autoBank = true, the dropped coins from monsters will be automatically 
 -- deposited to your bank account.
 autoBank = false
+-- teleporte summon
+-- true will never remove the summon
+teleportSummons = false
 
 -- Stamina in Trainers
 staminaTrainer = false
@@ -158,9 +162,12 @@ pushWhenAttacking = false
 
 -- Map
 -- NOTE: set mapName WITHOUT .otbm at the end
--- NOTE: unzip the map world.rar
+-- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
+-- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
+toggleDownloadMap = false
 mapName = "canary"
-mapAuthor = "Eduardo Dantas"
+mapDownloadUrl = ""
+mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations
 -- max distance in which players in party list are visible
@@ -200,8 +207,12 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
+-- configure maximum value of critical imbuement
+criticalChance = 10
+inventoryGlowOnFiveBless = false
+adventurersBlessingLevel = 21
 
--- Server Save
+-- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
 globalServerSaveNotifyMessage = true
 globalServerSaveNotifyDuration = 5
@@ -218,12 +229,13 @@ globalServerSaveTime = "06:00:00"
 sortLootByChance = false
 
 -- Rates
--- NOTE: rateExp, rateSkill and rateMagic is used as a fallback only
+-- NOTE: rateExp, rateSkill and rateMagic are only used when 'rateUseStages = false'
 -- To configure rates see file data/stages.lua
+rateUseStages = false
 rateExp = 1
-rateSkill = 50
-rateLoot = 3
-rateMagic = 25
+rateSkill = 1
+rateLoot = 1
+rateMagic = 1
 rateSpawn = 1
 
 -- Today regeneration condition over an loop every 1 second,
@@ -264,8 +276,8 @@ startupDatabaseOptimization = true
 
 -- Status server information
 ownerName = "OpenTibiaBR"
-ownerEmail = ""
-url = "https://github.com/opentibiabr/canary"
+ownerEmail = "opentibiabr@outlook.com"
+url = "http://docs.opentibiabr.org/"
 location = "South America"
 
 -- Sends Discord webhook notifications on startup, raids and shutdown.

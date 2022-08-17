@@ -82,9 +82,7 @@ public:
 	void AddItem(NetworkMessage &msg, const Item *item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count);
 
-	void sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_t count);
-
-	uint32_t getVersion() const
+	uint16_t getVersion() const
 	{
 		return version;
 	}
@@ -128,7 +126,22 @@ private:
 	void parseQuickLoot(NetworkMessage &msg);
 	void parseLootContainer(NetworkMessage &msg);
 	void parseQuickLootBlackWhitelist(NetworkMessage &msg);
-	void parseRequestLockItems();
+
+	// Depot search
+	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
+	void sendCloseDepotSearch();
+	void sendDepotSearchResultDetail(uint16_t itemId,
+									uint8_t tier,
+									uint32_t depotCount,
+									const ItemVector &depotItems,
+									uint32_t inboxCount,
+									const ItemVector &inboxItems,
+									uint32_t stashCount);
+	void parseOpenDepotSearch();
+	void parseCloseDepotSearch();
+	void parseDepotSearchItemRequest(NetworkMessage &msg);
+	void parseOpenParentContainer(NetworkMessage &msg);
+	void parseRetrieveDepotSearch(NetworkMessage &msg);
 
 	void parseFightModes(NetworkMessage &msg);
 	void parseAttack(NetworkMessage &msg);
@@ -341,7 +354,7 @@ private:
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 	void sendOutfitWindow();
-	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t spriteId, uint8_t stackpos);
+	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackpos);
 
 	void sendUpdatedVIPStatus(uint32_t guid, VipStatus_t newStatus);
 	void sendVIP(uint32_t guid, const std::string &name, const std::string &description, uint32_t icon, bool notify, VipStatus_t status);
@@ -360,6 +373,7 @@ private:
 
 	void sendSpellCooldown(uint8_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);
+	void sendUseItemCooldown(uint32_t time);
 
 	void sendCoinBalance();
 
@@ -403,7 +417,7 @@ private:
 
 	//inventory
 	void sendInventoryItem(Slots_t slot, const Item *item);
-	void sendInventoryClientIds();
+	void sendInventoryIds();
 
 	//messages
 	void sendModalWindow(const ModalWindow &modalWindow);
@@ -460,12 +474,12 @@ private:
 
 	friend class Player;
 
-	std::unordered_set<uint32_t> knownCreatureSet;
+	phmap::flat_hash_set<uint32_t> knownCreatureSet;
 	Player *player = nullptr;
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint32_t version = g_configManager().getNumber(CLIENT_VERSION);
+	uint16_t version = CLIENT_VERSION;
 	int32_t clientVersion = 0;
 
 	uint8_t challengeRandom = 0;

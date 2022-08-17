@@ -97,19 +97,6 @@ int ItemFunctions::luaItemGetId(lua_State* L) {
 	return 1;
 }
 
-int ItemFunctions::luaItemGetClientId(lua_State* L) {
-	// item:getClientId()
-	Item* item = getUserdata<Item>(L, 1);
-	if (!item) {
-		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
-		pushBoolean(L, false);
-		return 1;
-	}
-
-	lua_pushnumber(L, item->getClientID());
-	return 1;
-}
-
 int ItemFunctions::luaItemClone(lua_State* L) {
 	// item:clone()
 	Item* item = getUserdata<Item>(L, 1);
@@ -810,5 +797,56 @@ int ItemFunctions::luaItemGetImbuementSlot(lua_State* L) {
 	}
 
 	lua_pushnumber(L, item->getImbuementSlot());
+	return 1;
+}
+
+int ItemFunctions::luaItemSetDuration(lua_State* L) {
+	// item:setDuration(minDuration, maxDuration = 0, decayTo = 0, showDuration = true)
+	// Example: item:setDuration(10000, 20000, 2129, false) = random duration from range 10000/20000
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	uint32_t minDuration = getNumber<uint32_t>(L, 2);
+	uint32_t maxDuration = 0;
+	if (lua_gettop(L) > 2) {
+		maxDuration = uniform_random(minDuration, getNumber<uint32_t>(L, 3));
+	}
+
+	uint16_t itemid = 0;
+	if (lua_gettop(L) > 3) {
+		itemid = getNumber<uint16_t>(L, 4);
+	}
+	bool showDuration = true;
+	if (lua_gettop(L) > 4) {
+		showDuration = getBoolean(L, 5);
+	}
+
+	ItemType& it = Item::items.getItemType(item->getID());
+	if (maxDuration == 0) {
+		it.decayTime = minDuration;
+	} else {
+		it.decayTime = maxDuration;
+	}
+	it.showDuration = showDuration;
+	it.decayTo = itemid;
+	item->startDecaying();
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
+	// item:isInsideDepot([includeInbox = false])
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, item->isInsideDepot(getBoolean(L, 2, false)));
 	return 1;
 }

@@ -40,7 +40,6 @@ class ItemFunctions final : LuaScriptInterface {
 			registerMethod(L, "Item", "getTopParent", ItemFunctions::luaItemGetTopParent);
 
 			registerMethod(L, "Item", "getId", ItemFunctions::luaItemGetId);
-			registerMethod(L, "Item", "getClientId", ItemFunctions::luaItemGetClientId);
 
 			registerMethod(L, "Item", "clone", ItemFunctions::luaItemClone);
 			registerMethod(L, "Item", "split", ItemFunctions::luaItemSplit);
@@ -86,6 +85,10 @@ class ItemFunctions final : LuaScriptInterface {
 			registerMethod(L, "Item", "getImbuementSlot", ItemFunctions::luaItemGetImbuementSlot);
 			registerMethod(L, "Item", "getImbuement", ItemFunctions::luaItemGetImbuement);
 
+			registerMethod(L, "Item", "setDuration", ItemFunctions::luaItemSetDuration);
+
+			registerMethod(L, "Item", "isInsideDepot", ItemFunctions::luaItemIsInsideDepot);
+
 			ContainerFunctions::init(L);
 			ImbuementFunctions::init(L);
 			ItemTypeFunctions::init(L);
@@ -101,7 +104,6 @@ class ItemFunctions final : LuaScriptInterface {
 		static int luaItemGetTopParent(lua_State* L);
 
 		static int luaItemGetId(lua_State* L);
-		static int luaItemGetClientId(lua_State* L);
 
 		static int luaItemClone(lua_State* L);
 		static int luaItemSplit(lua_State* L);
@@ -146,6 +148,10 @@ class ItemFunctions final : LuaScriptInterface {
 
 		static int luaItemGetImbuementSlot(lua_State* L);
 		static int luaItemGetImbuement(lua_State* L);
+
+		static int luaItemSetDuration(lua_State* L);
+
+		static int luaItemIsInsideDepot(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_

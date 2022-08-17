@@ -233,7 +233,7 @@ std::ostringstream& Container::getContentDescription(std::ostringstream& os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getClientID() << "|" << item->getNameDescription() << "}";
+		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
 	}
 
 	if (firstitem) {
@@ -401,7 +401,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
-  if (getWeaponType() == WEAPON_QUIVER && item->getWeaponType() != WEAPON_AMMO)
+  if (isQuiver() && item->getWeaponType() != WEAPON_AMMO)
     return RETURNVALUE_ONLYAMMOINQUIVER;
 
 	const Cylinder* topParent = getTopParent();
@@ -682,9 +682,9 @@ void Container::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
-uint8_t Container::getThingIndex(const Thing* thing) const
+int32_t Container::getThingIndex(const Thing* thing) const
 {
-	uint8_t index = 0;
+	int32_t index = 0;
 	for (Item* item : itemlist) {
 		if (item == thing) {
 			return index;

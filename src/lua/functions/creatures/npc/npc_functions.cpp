@@ -413,7 +413,7 @@ int NpcFunctions::luaNpcIsMerchant(lua_State* L) {
 }
 
 int NpcFunctions::luaNpcGetShopItem(lua_State* L) {
-	//npc:getShopItem(clientId)
+	//npc:getShopItem(itemId)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));

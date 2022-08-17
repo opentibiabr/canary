@@ -62,7 +62,8 @@ function getFormattedWorldTime()
 end
 
 function getLootRandom()
-	return math.random(0, MAX_LOOTCHANCE) * 100 / (configManager.getNumber(configKeys.RATE_LOOT) * SCHEDULE_LOOT_RATE)
+	local multi = (configManager.getNumber(configKeys.RATE_LOOT) * SCHEDULE_LOOT_RATE)
+	return math.random(0, MAX_LOOTCHANCE) * 100 / math.max(1, multi)
 end
 
 local start = os.time()
@@ -81,9 +82,11 @@ debug.sethook(function(event, line)
 end, "l")
 
 function getRateFromTable(t, level, default)
-	for _, rate in ipairs(t) do
-		if level >= rate.minlevel and (not rate.maxlevel or level <= rate.maxlevel) then
-			return rate.multiplier
+	if (t ~= nil) then
+		for _, rate in ipairs(t) do
+			if level >= rate.minlevel and (not rate.maxlevel or level <= rate.maxlevel) then
+				return rate.multiplier
+			end
 		end
 	end
 	return default

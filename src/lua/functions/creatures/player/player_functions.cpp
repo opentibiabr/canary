@@ -39,7 +39,7 @@ int PlayerFunctions::luaPlayerSendInventory(lua_State* L) {
 		return 1;
 	}
 
-	 player->sendInventoryClientIds();
+	 player->sendInventoryIds();
 	pushBoolean(L, true);
 
 	 return 1;
@@ -388,6 +388,19 @@ int PlayerFunctions::luaPlayerRemoveTaskHuntingPoints(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetTaskHuntingPoints(lua_State* L) {
+	// player:getTaskHuntingPoints()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, static_cast<double>(player->getTaskHuntingPoints()));
 	return 1;
 }
 
@@ -1182,7 +1195,7 @@ int PlayerFunctions::luaPlayerGetStashItemCount(lua_State* L) {
 		return 1;
 	}
 
-	lua_pushnumber(L, player->getStashItemCount(itemType.clientId));
+	lua_pushnumber(L, player->getStashItemCount(itemType.id));
 	return 1;
 }
 
@@ -1430,12 +1443,13 @@ int PlayerFunctions::luaPlayerSetGroup(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerSetSpecialContainersAvailable(lua_State* L) {
-	// player:setSpecialContainersAvailable(stashMenu, marketMenu)
+	// player:setSpecialContainersAvailable(stashMenu, marketMenu, depotSearchMenu)
 	bool supplyStashMenu = getBoolean(L, 2, false);
 	bool marketMenu = getBoolean(L, 3, false);
+	bool depotSearchMenu = getBoolean(L, 4, false);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->setSpecialMenuAvailable(supplyStashMenu, marketMenu);
+		player->setSpecialMenuAvailable(supplyStashMenu, marketMenu, depotSearchMenu);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1724,7 +1738,7 @@ int PlayerFunctions::luaPlayerRemoveStashItem(lua_State* L) {
 	}
 
 	uint32_t count = getNumber<uint32_t>(L, 3);
-	pushBoolean(L, player->withdrawItem(itemType.clientId, count));
+	pushBoolean(L, player->withdrawItem(itemType.id, count));
 	return 1;
 }
 
@@ -1754,26 +1768,6 @@ int PlayerFunctions::luaPlayerRemoveItem(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerGetItemIdByCid(lua_State* L) {
-	// player:getItemIdByCid(itemId)
-	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	uint16_t itemId;
-	itemId = Item::items.getItemIdByClientId(getNumber<uint16_t>(L, 2)).id;
-
-	if (itemId == 0) {
-		lua_pushnil(L);
-		return 1;
-	}
-
-	lua_pushnumber(L, itemId);
-	return 1;
-}
-
 int PlayerFunctions::luaPlayerSendContainer(lua_State* L) {
 	// player:sendContainer(container)
 	Player* player = getUserdata<Player>(L, 1);
@@ -1788,7 +1782,7 @@ int PlayerFunctions::luaPlayerSendContainer(lua_State* L) {
 		return 1;
 	}
 
-	player->sendContainer(container->getClientID(), container, container->hasParent(), container->getFirstIndex());
+	player->sendContainer(static_cast<uint8_t>(container->getID()), container, container->hasParent(), static_cast<uint8_t>(container->getFirstIndex()));
 	pushBoolean(L, true);
 	return 1;
 }

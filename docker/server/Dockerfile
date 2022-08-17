@@ -1,7 +1,7 @@
 # Stage 1: Download all dependencies
 FROM ubuntu:22.04 AS dependencies
 
-RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends cmake git \
 	unzip build-essential ca-certificates curl zip unzip tar \
 	pkg-config ninja-build autoconf automake libtool \
 	&& apt-get clean \

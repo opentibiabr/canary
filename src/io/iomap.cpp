@@ -14,35 +14,11 @@
 #include "items/bed.h"
 #include "game/movement/teleport.h"
 
-#include "map/flatbuffer/map_generated.h"
+#include "map/flatbuffer/kmap_generated.h"
 #include "flatbuffers/flatbuffers.h"
 
 #include <fstream>
 #include <filesystem>
-
-/*
-	OTBM_ROOTV1
-	|
-	|--- OTBM_MAP_DATA
-	|	|
-	|	|--- OTBM_TILE_AREA
-	|	|	|--- OTBM_TILE
-	|	|	|--- OTBM_TILE_SQUARE (not implemented)
-	|	|	|--- OTBM_TILE_REF (not implemented)
-	|	|	|--- OTBM_HOUSETILE
-	|	|
-	|	|--- OTBM_SPAWNS (not implemented)
-	|	|	|--- OTBM_SPAWN_AREA (not implemented)
-	|	|	|--- OTBM_MONSTER (not implemented)
-	|	|
-	|	|--- OTBM_TOWNS
-	|	|	|--- OTBM_TOWN
-	|	|
-	|	|--- OTBM_WAYPOINTS
-	|		|--- OTBM_WAYPOINT
-	|
-	|--- OTBM_ITEM_DEF (not implemented)
-*/
 
 Tile* IOMap::createTile(Item* ground, Item* item, uint16_t x, uint16_t y, uint8_t z)
 {
@@ -88,7 +64,7 @@ bool IOMap::loadMap(Map &serverMap, const std::string &fileName)
 	fileLoaded = true;
 
 	// Get a pointer to the root object inside the buffer
-	auto map = canary::kmap::GetMap(buffer.data());
+	auto map = Kmap::GetMap(buffer.data());
 	auto header = map->header();
 	serverMap.width = header->width();
 	serverMap.height = header->height();

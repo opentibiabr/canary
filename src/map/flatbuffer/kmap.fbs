@@ -1,4 +1,4 @@
-namespace canary.kmap;
+namespace Kmap;
 
 table Map {
 	header: MapHeader;

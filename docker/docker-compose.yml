@@ -5,6 +5,7 @@ services:
     build:
       context: ../
       dockerfile: docker/server/Dockerfile
+    restart: always
     ports:
       - 7171:7171
       - 7172:7172
@@ -46,24 +47,27 @@ services:
     depends_on:
       - mysql
 
-  login:
-    image: opentibiabr/login-server:latest
+  login-server:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
     restart: unless-stopped
     ports:
-      - 80:8080
+      - 80:80
+      - 9090:9090
     depends_on:
       - mysql
     environment:
-      - DB_DATABASE=canary
-      - DB_HOSTNAME=mysql
-      - DB_PORT=3306
-      - DB_PASSWORD=canary
-      - DB_USERNAME=canary
-      - ENV_LOG_LEVEL=verbose
-      - ENV_TYPE=dev
-      - LOGIN_PORT=8080
+      - LOGIN_HTTP_PORT=80
+      - LOGIN_GRPC_PORT=9090
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_DBNAME=canary
+      - MYSQL_USER=canary
+      - MYSQL_PASS=canary
       - SERVER_NAME=Canary
-      - SERVER_LOCATION=Bra
       - SERVER_IP=127.0.0.1
       - SERVER_PORT=7172
-#      - VOCATIONS -- map your custom vocations here, if needed, comma separated
+      - SERVER_LOCATION=NL
+      - RATE_LIMITER_RATE=3000000000000
+      - RATE_LIMITER_BURST=53000000000000

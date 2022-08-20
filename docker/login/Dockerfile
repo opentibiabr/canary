@@ -1,3 +1,3 @@
-FROM lucasggrossi/otbr_login:go-login1.0
+FROM opentibiabr/login-server:latest
 
-ENTRYPOINT ["/login-server/loginserver-linux-x64"]
+ENTRYPOINT ["/bin/login-server"]

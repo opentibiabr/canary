@@ -128,12 +128,8 @@ bool IOMap::loadMap(Map &serverMap, const std::string &fileName)
 			House* house = nullptr;
 	
 			// Create house tiles
-			auto houseInfo = tiles->house_info();
-			if (houseInfo) {
-				uint32_t houseId = 0;
-				if (houseInfo) {
-					houseId = houseInfo->id();
-				}
+			auto houseId = tiles->house_id();
+			if (houseId != 0) {
 				//SPDLOG_INFO("Found house id {}, on position {}", houseId, tilePosition.toString());
 				house = serverMap.houses.addHouse(houseId);
 				if (house == nullptr)
@@ -153,7 +149,7 @@ bool IOMap::loadMap(Map &serverMap, const std::string &fileName)
 			}
 
 			// Create tile items
-			Item *itemTile = Item::createMapItem(tiles->tile_id());
+			Item *itemTile = Item::createMapItem(0);
 			if (itemTile) {
 				// Load house item tiles
 				if (tile) {

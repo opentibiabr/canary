@@ -15,6 +15,7 @@
 #include <iostream>
 
 #include "io/iomap.h"
+#include "map/kmap_loader.hpp"
 #include "io/iomapserialize.h"
 #include "creatures/combat/combat.h"
 #include "creatures/creature.h"
@@ -24,15 +25,12 @@
 
 bool Map::load(const std::string& identifier) {
 	try {
-		IOMap loader;
-		if (!loader.loadMap(*this, identifier)) {
+		KmapLoader kmapLoader;
+		if (!kmapLoader.load(*this, identifier)) {
 			SPDLOG_ERROR("[Map::load] - Cannot load map file: {}", identifier);
 			getMapFileName().clear();
 			return false;
 		}
-
-		loader.clearBuffer();
-
 	}
 	catch(const std::exception) {
 		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);

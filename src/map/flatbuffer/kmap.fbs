@@ -28,33 +28,36 @@ table Area {
 
 table Tile {
 	items: [Item];
+	tile: Item;
 	x: ubyte;
 	y: ubyte;
 	flags: uint32;
-	tile_id: ushort;
-	house_info: HouseInfo;
-	action_attributes: ActionAttributes;
+	house_id: uint32;
 }
 
 table Item {
-	items: [Item];
 	id: ushort;
+	details: ItemDetails;
+	attributes: ItemAttributes;
+}
+
+table ItemAttributes {
 	count: ubyte;
-	depot_id: ushort;
-	rune_charges: ushort;
 	text: string;
-	action_attributes: ActionAttributes;
+	description: string;
+	action: Action;
 }
 
-table HouseInfo {
-	id: uint32;
-	door_id: ubyte;
+table ItemDetails {
+	container_items: [Item];
+	depot_id: ushort;
+	door_id: ushort;
+	teleport: Position;
 }
 
-table ActionAttributes {
+table Action {
 	action_id: ushort;
 	unique_id: ushort;
-	teleport_position: Position;
 }
 
 table Town {

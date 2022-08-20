@@ -283,6 +283,7 @@ target_sources(${PROJECT_NAME}
     lua/scripts/scripts.cpp
     map/house/house.cpp
     map/house/housetile.cpp
+    map/kmap_loader.cpp
     map/map.cpp
     otpch.cpp
     otserv.cpp

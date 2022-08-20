@@ -14,7 +14,7 @@ services:
     depends_on:
       - mysql
       - website
-      - login
+      - login-server
     links:
       - mysql
     environment:

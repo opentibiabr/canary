@@ -2601,7 +2601,6 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg)
 	{
 		uint16_t itemId = msg.get<uint16_t>();
 		uint8_t tier = msg.get<uint8_t>();
-		SPDLOG_WARN("tier {}", tier);
 		player->sendMarketEnter(player->getLastDepotId());
 		addGameTask(&Game::playerBrowseMarket, player->getID(), itemId, tier);
 	}
@@ -4110,7 +4109,6 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	uint16_t itemCount = 0;
 	for (auto [itemId, item] : depotItems) {
 			for (const auto [tier, count] : item) {
-				SPDLOG_WARN("{} {} {}", itemId, tier, count);
 				msg.add<uint16_t>(itemId);
 				if (Item::items[itemId].upgradeClassification > 0) {
 					msg.addByte(tier);
@@ -4718,7 +4716,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	// Item tier modifier (12.82)
 	msg.add<uint16_t>(0x00);
 
-	MarketStatistics *statistics = IOMarket::getInstance().getPurchaseStatistics(itemId);
+	MarketStatistics *statistics = IOMarket::getInstance().getPurchaseStatistics(itemId, tier);
 	if (statistics)
 	{
 		msg.addByte(0x01);
@@ -4726,13 +4724,14 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.add<uint64_t>(statistics->totalPrice);
 		msg.add<uint64_t>(statistics->highestPrice);
 		msg.add<uint64_t>(statistics->lowestPrice);
+		//msg.add<uint16_t>(statistics->tier); todo
 	}
 	else
 	{
 		msg.addByte(0x00);
 	}
 
-	statistics = IOMarket::getInstance().getSaleStatistics(itemId);
+	statistics = IOMarket::getInstance().getSaleStatistics(itemId, tier);
 	if (statistics)
 	{
 		msg.addByte(0x01);
@@ -4740,6 +4739,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
 		msg.add<uint64_t>(statistics->highestPrice);
 		msg.add<uint64_t>(statistics->lowestPrice);
+		//msg.add<uint16_t>(statistics->tier); todo
 	}
 	else
 	{

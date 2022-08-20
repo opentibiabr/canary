@@ -31,7 +31,7 @@ class IOMarket
 			return instance;
 		}
 
-		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
+		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint16_t tier);
 		static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
 		static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
 
@@ -41,21 +41,23 @@ class IOMarket
 		static uint32_t getPlayerOfferCount(uint32_t playerId);
 		static MarketOfferEx getOfferByCounter(uint32_t timestamp, uint16_t counter);
 
-		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, uint8_t tier, bool anonymous);
+		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, uint16_t tier, bool anonymous);
 		static void acceptOffer(uint32_t offerId, uint16_t amount);
 		static void deleteOffer(uint32_t offerId);
 
-		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint32_t price, time_t timestamp, MarketOfferState_t state);
+		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint32_t price, time_t timestamp, uint16_t tier, MarketOfferState_t state);
 		static bool moveOfferToHistory(uint32_t offerId, MarketOfferState_t state);
 
 		void updateStatistics();
 
-		MarketStatistics* getPurchaseStatistics(uint16_t itemId);
-		MarketStatistics* getSaleStatistics(uint16_t itemId);
+		MarketStatistics* getPurchaseStatistics(uint16_t itemId, uint16_t tier);
+		MarketStatistics* getSaleStatistics(uint16_t itemId, uint16_t tier);
 
 	private:
 		IOMarket() = default;
 
+		//std::map<uint16_t, std::map<MarketStatistics, uint16_t>> purchaseStatistics;
+		//std::map<uint16_t, std::map<MarketStatistics, uint16_t>> saleStatistics;
 		std::map<uint16_t, MarketStatistics> purchaseStatistics;
 		std::map<uint16_t, MarketStatistics> saleStatistics;
 };

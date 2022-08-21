@@ -70,7 +70,7 @@ class AStarNodes
 	private:
 		AStarNode nodes[MAX_NODES];
 		bool openNodes[MAX_NODES];
-		std::unordered_map<uint32_t, AStarNode*> nodeTable;
+		phmap::flat_hash_map<uint32_t, AStarNode*> nodeTable;
 		size_t curNode;
 		int_fast32_t closedNodes;
 };
@@ -186,11 +186,6 @@ class Map
          * \returns true if the map was loaded successfully
          */
 		bool load(const std::string& identifier);
-		/**
-         * Extract the map.
-         * \returns true if the map was extracted successfully
-         */
-		bool extractMap(const std::string& identifier) const;
 		/**
 		* Load the main map
 		 * \param identifier Is the main map name (name of file .otbm)

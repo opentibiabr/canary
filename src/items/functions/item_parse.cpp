@@ -387,8 +387,8 @@ void ItemParse::parseCharges(const std::string& tmpStrValue, pugi::xml_attribute
 }
 
 void ItemParse::parseShowAttributes(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
-	std::string stringValue = tmpStrValue;
-	if (stringValue == "showattributes") {
+	std::string lowerStringValue = asLowerCaseString(tmpStrValue);
+	if (lowerStringValue == "showattributes") {
 		itemType.showAttributes = valueAttribute.as_bool();
 	}
 }

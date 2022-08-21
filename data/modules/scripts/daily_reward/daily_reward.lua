@@ -467,9 +467,9 @@ function Player.selectDailyReward(self, msg)
 				inbox:addItem(v.ItemId, v.count) -- adding single item w/o charges
 			end
 			if k ~= columnsPicked then
-				description = description .. "" .. v.count .. "x " .. ItemType(item:getId()):getName() .. ", "
+				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "
 			else
-				description = description .. "" .. v.count .. "x " .. ItemType(item:getId()):getName() .. "."
+				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. "."
 			end
 		end
 

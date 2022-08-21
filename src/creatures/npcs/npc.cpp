@@ -27,7 +27,6 @@
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
 
-
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
 
@@ -223,18 +222,18 @@ void Npc::onThink(uint32_t interval)
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
                           uint8_t subType, uint8_t amount, bool ignore, bool inBackpacks)
 {
-	if (!player) {
+	if (player == nullptr) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 
-	// Check if the player not have empty slots
-	if (player->getFreeBackpackSlots() == 0) {
+	const ItemType& itemType = Item::items[itemId];
+	if (!itemType.stackable && player->getFreeBackpackSlots() < amount || player->getFreeBackpackSlots() == 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
 
 	uint32_t buyPrice = 0;
-	const ItemType& itemType = Item::items[itemId];
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
 	for (ShopBlock shopBlock : shopVector)
 	{
@@ -244,14 +243,16 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	int64_t totalCost = buyPrice * amount;
+	uint32_t totalCost = buyPrice * amount;
 	if (getCurrency() == ITEM_GOLD_COIN) {
 		if (!g_game().removeMoney(player, totalCost, 0, true)) {
 			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 			return;
 		}
-	} else if(!player->removeItemOfType(getCurrency(), buyPrice, -1, false)) {
+	} else if(!player->removeItemOfType(getCurrency(), totalCost, -1, false)) {
 		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 

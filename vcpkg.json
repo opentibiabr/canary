@@ -12,8 +12,8 @@
     "spdlog",
     "curl",
     "jsoncpp",
-    "libzippp",
     "protobuf",
+    "parallel-hashmap",
     {
       "name": "luajit",
       "platform": "!arm"

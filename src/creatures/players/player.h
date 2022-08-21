@@ -400,14 +400,35 @@ class Player final : public Creature, public Cylinder
 		bool isInMarket() const {
 			return inMarket;
 		}
-		void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool) {
+		void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool, bool depotSearchBool) {
+
+			// Closing depot search when player have special container disabled and it's still open.
+			if (isDepotSearchOpen() && !depotSearchBool && depotSearch) {
+				depotSearchOnItem = {0, 0};
+				sendCloseDepotSearch();
+			}
+
 			// Menu option 'stow, stow container ...'
 			// Menu option 'show in market'
+			// Menu option to open depot search
 			supplyStash = supplyStashBool;
 			marketMenu = marketMenuBool;
+			depotSearch = depotSearchBool;
 			if (client) {
 				client->sendSpecialContainersAvailable();
 			}
+		}
+		bool isDepotSearchOpen() const {
+			return depotSearchOnItem.first != 0;
+		}
+		bool isDepotSearchOpenOnItem(uint16_t itemId) const {
+			return depotSearchOnItem.first == itemId;
+		}
+		void setDepotSearchIsOpen(uint16_t itemId, uint8_t tier) {
+			depotSearchOnItem = {itemId, tier};
+		}
+		bool isDepotSearchAvailable() const {
+			return depotSearch;
 		}
 		bool isSupplyStashMenuAvailable() {
 			return supplyStash;
@@ -994,9 +1015,25 @@ class Player final : public Creature, public Cylinder
 		}
 
 		//inventory
-		void sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_t count) {
+		void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) const {
 			if (client) {
-				client->sendLockerItems(itemMap, count);
+				client->sendDepotItems(itemMap, count);
+			}
+		}
+		void sendCloseDepotSearch() const {
+			if (client) {
+				client->sendCloseDepotSearch();
+			}
+		}
+		void sendDepotSearchResultDetail(uint16_t itemId,
+                                         uint8_t tier,
+                                         uint32_t depotCount,
+                                         const ItemVector &depotItems,
+                                         uint32_t inboxCount,
+                                         const ItemVector &inboxItems,
+                                         uint32_t stashCount) const {
+			if (client) {
+				client->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 			}
 		}
 		void sendCoinBalance() {
@@ -1661,6 +1698,9 @@ class Player final : public Creature, public Cylinder
 			lastMarketInteraction = OTSYS_TIME();
 		}
 
+		bool isNpcExhausted(uint32_t exhaustionTime = 150) const;
+		void updateNpcExhausted();
+
 		bool isQuickLootListedItem(const Item* item) const {
 			if (!item) {
 				return false;
@@ -2252,6 +2292,19 @@ class Player final : public Creature, public Cylinder
 			return accountLevelSummary;
 		}
 
+		// Depot search system
+		void requestDepotItems();
+		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
+		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
+		void openContainerFromDepotSearch(const Position& pos);
+		Item* getItemFromDepotSearch(uint16_t itemId, const Position& pos);
+		bool isDepotSearchExhausted() const {
+			return (OTSYS_TIME() - lastDepotSearchInteraction < 1000);
+		}
+		void updateDepotSearchExhausted() {
+			lastDepotSearchInteraction = OTSYS_TIME();
+		}
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 
@@ -2303,7 +2356,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override;
 
-		uint8_t getThingIndex(const Thing* thing) const override;
+		int32_t getThingIndex(const Thing* thing) const override;
 		size_t getFirstIndex() const override;
 		size_t getLastIndex() const override;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
@@ -2318,9 +2371,9 @@ class Player final : public Creature, public Cylinder
 		void internalAddThing(Thing* thing) override;
 		void internalAddThing(uint32_t index, Thing* thing) override;
 
-		std::unordered_set<uint32_t> attackedSet;
+		phmap::flat_hash_set<uint32_t> attackedSet;
 
-		std::unordered_set<uint32_t> VIPList;
+		phmap::flat_hash_set<uint32_t> VIPList;
 
 		std::map<uint8_t, OpenContainer> openContainers;
 		std::map<uint32_t, DepotLocker*> depotLockerMap;
@@ -2384,8 +2437,10 @@ class Player final : public Creature, public Cylinder
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
 		int64_t lastToggleMount = 0;
-		int64_t lastMarketInteraction = 0; // Market exhaust.
+		int64_t lastMarketInteraction = 0;
+		int64_t lastNpcInteraction = 0;
 		int64_t lastStashInteraction = 0;
+		int64_t lastDepotSearchInteraction = 0;
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;
@@ -2481,6 +2536,10 @@ class Player final : public Creature, public Cylinder
 		uint16_t loginStreak = 0;
 		uint16_t taskHuntingPointsObtained = 0;
 		uint16_t mapAreaDiscoveredPercentage = 0;
+
+		// Depot search system
+		bool depotSearch = false;
+		std::pair<uint16_t, uint8_t> depotSearchOnItem;
 
 		// Bestiary
 		bool charmExpansion = false;

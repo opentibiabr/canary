@@ -117,7 +117,6 @@ endif()
 find_package(spdlog REQUIRED)
 find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
-find_package(libzippp REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(GMP REQUIRED)
 
@@ -298,7 +297,7 @@ if (MSVC)
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
   endif()
 
-  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf )
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
   target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -309,6 +308,7 @@ if (MSVC)
       ${Boost_INCLUDE_DIRS}
       ${PUGIXML_INCLUDE_DIR}
       ${CURL_INCLUDE_DIRS}
+      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
       ${SPDLOG_INCLUDE_DIR}
       ${GMP_INCLUDE_DIR}
@@ -328,7 +328,6 @@ if (MSVC)
       ${GMP_LIBRARIES}
       fmt::fmt
       jsoncpp_lib
-      libzippp::libzippp
   )
 
 else()
@@ -337,6 +336,7 @@ else()
     PRIVATE
       ${CMAKE_SOURCE_DIR}/src
       ${LUAJIT_INCLUDE_DIRS}
+      ${PARALLEL_HASHMAP_INCLUDE_DIRS}
       ${Protobuf_INCLUDE_DIRS}
       ${GMP_INCLUDE_DIRS}
   )
@@ -357,7 +357,6 @@ else()
       pugixml::pugixml
       spdlog::spdlog
       Threads::Threads
-      libzippp::libzippp
   )
 
 endif (MSVC)

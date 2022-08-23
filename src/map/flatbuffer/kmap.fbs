@@ -28,7 +28,7 @@ table Area {
 
 table Tile {
 	items: [Item];
-	tile: Item;
+	ground: Item;
 	x: ubyte;
 	y: ubyte;
 	flags: uint32;

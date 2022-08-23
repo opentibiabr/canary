@@ -94,23 +94,26 @@ void KmapLoader::loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position
 		areaPosition->z()
 	);
 
-	Tile *mapTile = nullptr;
+	Tile *tiles = nullptr;
 	House *house = nullptr;
-	loadHouses(map, mapTile, house, tilePosition, tile->house_id());
+	loadHouses(map, tiles, house, tilePosition, tile->house_id());
 	
-	auto ground = tile->tile();
+	auto ground = tile->ground();
+	if (ground == nullptr) {
+		return;
+	}
 	// Create tile items
 	Item *itemTile = Item::createMapItem(ground->id());
 	if (itemTile) {
-		mapTile = createTile(itemTile, nullptr, tilePosition);
-		mapTile->internalAddThing(itemTile);
-		itemTile->startDecaying();
-		itemTile->setLoadedFromMap(true);
+        Tile *mapTile = nullptr;
+		mapTile = createTile(itemTile, itemTile, tilePosition);
+        mapTile->setFlag(static_cast<TileFlags_t>(mapTileFlags));
+        map.setTile(tilePosition, mapTile);
 	}
 
 	for (auto item : *tile->items())
 	{
-		loadItem(map, item);
+		loadItem(map, item, mapTileFlags, tilePosition);
 	}
 }
 
@@ -137,9 +140,17 @@ void KmapLoader::loadHouses(Map &map, Tile *tile, House *house, const Position &
 	}
 }
 
-void KmapLoader::loadItem(Map &map, const Kmap::Item *item)
+void KmapLoader::loadItem(Map &map, const Kmap::Item *item, TileFlags_t mapTileFlags, const Position &tilePosition)
 {
-	item->id();
+	Item *createItem = Item::createMapItem(item->id());
+    if (createItem) {
+        Tile *tile = nullptr;
+        tile = createTile(createItem, createItem, tilePosition);
+        tile->internalAddThing(createItem);
+        tile->setFlag(static_cast<TileFlags_t>(mapTileFlags));
+        map.setTile(tilePosition, tile);
+    }
+
 	if (auto details = item->details();
 	details)
 	{
@@ -149,7 +160,7 @@ void KmapLoader::loadItem(Map &map, const Kmap::Item *item)
 
 		for (auto containerItem: *details->container_items())
 		{
-			loadItem(map, containerItem);
+			loadItem(map, containerItem, mapTileFlags, tilePosition);
 		}
 	}
 

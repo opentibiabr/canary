@@ -35,12 +35,6 @@ struct ItemDetailsBuilder;
 struct Action;
 struct ActionBuilder;
 
-struct HouseInfo;
-struct HouseInfoBuilder;
-
-struct ActionAttributes;
-struct ActionAttributesBuilder;
-
 struct Town;
 struct TownBuilder;
 
@@ -383,7 +377,7 @@ struct Tile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef TileBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_ITEMS = 4,
-    VT_TILE = 6,
+    VT_GROUND = 6,
     VT_X = 8,
     VT_Y = 10,
     VT_FLAGS = 12,
@@ -392,8 +386,8 @@ struct Tile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<flatbuffers::Offset<Kmap::Item>> *items() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Kmap::Item>> *>(VT_ITEMS);
   }
-  const Kmap::Item *tile() const {
-    return GetPointer<const Kmap::Item *>(VT_TILE);
+  const Kmap::Item *ground() const {
+    return GetPointer<const Kmap::Item *>(VT_GROUND);
   }
   uint8_t x() const {
     return GetField<uint8_t>(VT_X, 0);
@@ -412,8 +406,8 @@ struct Tile FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffset(verifier, VT_ITEMS) &&
            verifier.VerifyVector(items()) &&
            verifier.VerifyVectorOfTables(items()) &&
-           VerifyOffset(verifier, VT_TILE) &&
-           verifier.VerifyTable(tile()) &&
+           VerifyOffset(verifier, VT_GROUND) &&
+           verifier.VerifyTable(ground()) &&
            VerifyField<uint8_t>(verifier, VT_X, 1) &&
            VerifyField<uint8_t>(verifier, VT_Y, 1) &&
            VerifyField<uint32_t>(verifier, VT_FLAGS, 4) &&
@@ -429,8 +423,8 @@ struct TileBuilder {
   void add_items(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Kmap::Item>>> items) {
     fbb_.AddOffset(Tile::VT_ITEMS, items);
   }
-  void add_tile(flatbuffers::Offset<Kmap::Item> tile) {
-    fbb_.AddOffset(Tile::VT_TILE, tile);
+  void add_ground(flatbuffers::Offset<Kmap::Item> ground) {
+    fbb_.AddOffset(Tile::VT_GROUND, ground);
   }
   void add_x(uint8_t x) {
     fbb_.AddElement<uint8_t>(Tile::VT_X, x, 0);
@@ -458,7 +452,7 @@ struct TileBuilder {
 inline flatbuffers::Offset<Tile> CreateTile(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Kmap::Item>>> items = 0,
-    flatbuffers::Offset<Kmap::Item> tile = 0,
+    flatbuffers::Offset<Kmap::Item> ground = 0,
     uint8_t x = 0,
     uint8_t y = 0,
     uint32_t flags = 0,
@@ -466,7 +460,7 @@ inline flatbuffers::Offset<Tile> CreateTile(
   TileBuilder builder_(_fbb);
   builder_.add_house_id(house_id);
   builder_.add_flags(flags);
-  builder_.add_tile(tile);
+  builder_.add_ground(ground);
   builder_.add_items(items);
   builder_.add_y(y);
   builder_.add_x(x);
@@ -476,7 +470,7 @@ inline flatbuffers::Offset<Tile> CreateTile(
 inline flatbuffers::Offset<Tile> CreateTileDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<flatbuffers::Offset<Kmap::Item>> *items = nullptr,
-    flatbuffers::Offset<Kmap::Item> tile = 0,
+    flatbuffers::Offset<Kmap::Item> ground = 0,
     uint8_t x = 0,
     uint8_t y = 0,
     uint32_t flags = 0,
@@ -485,7 +479,7 @@ inline flatbuffers::Offset<Tile> CreateTileDirect(
   return Kmap::CreateTile(
       _fbb,
       items__,
-      tile,
+      ground,
       x,
       y,
       flags,
@@ -780,119 +774,6 @@ inline flatbuffers::Offset<Action> CreateAction(
     uint16_t action_id = 0,
     uint16_t unique_id = 0) {
   ActionBuilder builder_(_fbb);
-  builder_.add_unique_id(unique_id);
-  builder_.add_action_id(action_id);
-  return builder_.Finish();
-}
-
-struct HouseInfo FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  typedef HouseInfoBuilder Builder;
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_ID = 4,
-    VT_DOOR_ID = 6
-  };
-  uint32_t id() const {
-    return GetField<uint32_t>(VT_ID, 0);
-  }
-  uint8_t door_id() const {
-    return GetField<uint8_t>(VT_DOOR_ID, 0);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_ID, 4) &&
-           VerifyField<uint8_t>(verifier, VT_DOOR_ID, 1) &&
-           verifier.EndTable();
-  }
-};
-
-struct HouseInfoBuilder {
-  typedef HouseInfo Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_id(uint32_t id) {
-    fbb_.AddElement<uint32_t>(HouseInfo::VT_ID, id, 0);
-  }
-  void add_door_id(uint8_t door_id) {
-    fbb_.AddElement<uint8_t>(HouseInfo::VT_DOOR_ID, door_id, 0);
-  }
-  explicit HouseInfoBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  flatbuffers::Offset<HouseInfo> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<HouseInfo>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<HouseInfo> CreateHouseInfo(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    uint32_t id = 0,
-    uint8_t door_id = 0) {
-  HouseInfoBuilder builder_(_fbb);
-  builder_.add_id(id);
-  builder_.add_door_id(door_id);
-  return builder_.Finish();
-}
-
-struct ActionAttributes FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  typedef ActionAttributesBuilder Builder;
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_ACTION_ID = 4,
-    VT_UNIQUE_ID = 6,
-    VT_TELEPORT_POSITION = 8
-  };
-  uint16_t action_id() const {
-    return GetField<uint16_t>(VT_ACTION_ID, 0);
-  }
-  uint16_t unique_id() const {
-    return GetField<uint16_t>(VT_UNIQUE_ID, 0);
-  }
-  const Kmap::Position *teleport_position() const {
-    return GetPointer<const Kmap::Position *>(VT_TELEPORT_POSITION);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyField<uint16_t>(verifier, VT_ACTION_ID, 2) &&
-           VerifyField<uint16_t>(verifier, VT_UNIQUE_ID, 2) &&
-           VerifyOffset(verifier, VT_TELEPORT_POSITION) &&
-           verifier.VerifyTable(teleport_position()) &&
-           verifier.EndTable();
-  }
-};
-
-struct ActionAttributesBuilder {
-  typedef ActionAttributes Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_action_id(uint16_t action_id) {
-    fbb_.AddElement<uint16_t>(ActionAttributes::VT_ACTION_ID, action_id, 0);
-  }
-  void add_unique_id(uint16_t unique_id) {
-    fbb_.AddElement<uint16_t>(ActionAttributes::VT_UNIQUE_ID, unique_id, 0);
-  }
-  void add_teleport_position(flatbuffers::Offset<Kmap::Position> teleport_position) {
-    fbb_.AddOffset(ActionAttributes::VT_TELEPORT_POSITION, teleport_position);
-  }
-  explicit ActionAttributesBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  flatbuffers::Offset<ActionAttributes> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<ActionAttributes>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<ActionAttributes> CreateActionAttributes(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    uint16_t action_id = 0,
-    uint16_t unique_id = 0,
-    flatbuffers::Offset<Kmap::Position> teleport_position = 0) {
-  ActionAttributesBuilder builder_(_fbb);
-  builder_.add_teleport_position(teleport_position);
   builder_.add_unique_id(unique_id);
   builder_.add_action_id(action_id);
   return builder_.Finish();

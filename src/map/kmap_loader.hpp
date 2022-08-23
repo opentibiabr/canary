@@ -33,7 +33,7 @@ class KmapLoader {
 		void loadData(Map &map, const Kmap::MapData *mapData);
 		void loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position *areaPosition);
 		void loadHouses(Map &map, Tile *tile, House *house, const Position &tilePosition, const uint32_t houseId);
-		void loadItem(Map &map, const Kmap::Item *item);
+		void loadItem(Map &map, const Kmap::Item *item, TileFlags_t mapTileFlags, const Position &tilePosition);
 		void loadTown(Map &map, const Kmap::Town *town);
 		void loadWaypoint(Map &map, const Kmap::Waypoint *waypoint);
 

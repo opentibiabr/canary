@@ -53,9 +53,10 @@ bool KmapLoader::loadFile(const std::string &fileName)
 }
 
 void KmapLoader::loadHeader(
-	Map &map, const Kmap::MapHeader *header, const std::string &fileName
-)
-{
+	Map &map,
+	const Kmap::MapHeader *header,
+	const std::string &fileName
+) {
 	map.width = header->width();
 	map.height = header->height();
 	SPDLOG_INFO("Map size: {}x{}", map.width, map.height);
@@ -79,15 +80,6 @@ void KmapLoader::loadData(Map &map, const Kmap::MapData *mapData)
 	{
 		loadTown(map, town);
 	}
-
-	if (auto waypoints = mapData->waypoints();
-	waypoints)
-	{
-		for (auto waypoint: *waypoints)
-		{
-			loadWaypoint(map, waypoint);
-		}
-	}
 }
 
 void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Position* areaPosition)
@@ -99,17 +91,22 @@ void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Positio
 	);
 
 	Item* groundItem = nullptr;
+	// Load houses
 	Tile *tile = loadHouses(map, tilePosition, kTile->house_id());
 
+	// Create house grounds
 	if (groundItem = loadItem(kTile->ground(), tile); groundItem)
 	{
 		if (tile == nullptr)
 		{
 			tile = createTile(tilePosition, groundItem);
 		}
+		tile->internalAddThing(groundItem);
+		groundItem->startDecaying();
 		groundItem->setLoadedFromMap(true);
 	}
 
+	// Create ground items
 	auto kItems = kTile->items();
 	if (kItems != nullptr) {
 		for (auto kItem : *kItems)
@@ -121,12 +118,7 @@ void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Positio
 				continue;
 			}
 
-			if (tile) {
-				tile->internalAddThing(item);
-				item->startDecaying();
-				item->setLoadedFromMap(true);
-			}
-
+			// Create grounds
 			if (tile == nullptr)
 			{
 				if (item->isGroundTile())
@@ -136,15 +128,18 @@ void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Positio
 					continue;
 				}
 
-				tile = createTile(tilePosition, groundItem, item);
+				// Create items from grounds
+				tile = createTile(tilePosition, nullptr, item);
 			}
 
+			// Set items from ground attributes
 			tile->internalAddThing(item);
 			item->startDecaying();
 			item->setLoadedFromMap(true);
 		}
 	}
 
+	// Create grounds from tile
 	if (tile == nullptr)
 	{
 		tile = createTile(tilePosition, groundItem);
@@ -229,7 +224,12 @@ Item* KmapLoader::loadItem(const Kmap::Item *kItem, Tile *tile)
 
 		for (auto containerItem: *kContainerItem)
 		{
-			loadItem(containerItem, tile);
+			auto container = item->getContainer();
+			if (container == nullptr) {
+				continue;
+			}
+			auto item = loadItem(containerItem, tile);
+			container->addItem(item);
 		}
 	}
 
@@ -245,53 +245,14 @@ void KmapLoader::loadTown(Map &map, const Kmap::Town *kTown)
 		return;
 	}
 
-	Town *town = new Town(townId);
+	auto position = kTown.position();
+	Town *town = new Town(kTown.name()->str(), townId, Position(position->x(), position->y(), position->z()));
 	if (!map.towns.addTown(townId, town))
 	{
 		SPDLOG_ERROR("{} - Cannot create town with id: {}, discarding town", __FUNCTION__, townId);
 		delete town;
 		return;
 	}
-
-	const std::string townName = kTown->name()->str();
-	if (townName.empty())
-	{
-		SPDLOG_WARN("{} - Could not read town name for town id {}", __FUNCTION__, townId);
-	}
-	town->setName(townName);
-
-	Position townPosition(
-		kTown->position()->x(),
-		kTown->position()->y(),
-		kTown->position()->z()
-	);
-	// Sanity check, if there is an error in the get, we will know where the problem is
-	if (townPosition.x == 0 || townPosition.y == 0 || townPosition.z == 0)
-	{
-		SPDLOG_ERROR("{} - Invalid town position", __FUNCTION__);
-		return;
-	}
-
-	town->setTemplePos(townPosition);
-}
-
-void KmapLoader::loadWaypoint(Map &map, const Kmap::Waypoint *waypoint)
-{
-	const std::string waypointName = waypoint->name()->str();
-
-	Position waypointPosition(
-		waypoint->position()->x(),
-		waypoint->position()->y(),
-		waypoint->position()->z()
-	);
-
-	if (waypointPosition.x == 0 || waypointPosition.y == 0 || waypointPosition.z == 0 || waypointName.empty())
-	{
-		SPDLOG_ERROR("{} - Invalid waypoint.", __FUNCTION__);
-		return;
-	}
-
-	map.waypoints[waypointName] = waypointPosition;
 }
 
 std::string KmapLoader::readResourceFile(
@@ -342,6 +303,6 @@ Tile* KmapLoader::createTile(const Position &position, Item* ground/* = nullptr*
 			: tile = new DynamicTile(position.x, position.y, position.z);
 
 	tile->internalAddThing(ground);
-
+	ground = nullptr;
 	return tile;
 }

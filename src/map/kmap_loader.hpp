@@ -18,8 +18,6 @@
 
 class Map;
 
-using ItemsVector = const flatbuffers::Vector<flatbuffers::Offset<Kmap::Item>>;
-
 class KmapLoader {
 
 	public:

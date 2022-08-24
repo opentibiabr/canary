@@ -285,6 +285,7 @@ target_sources(${PROJECT_NAME}
     map/house/housetile.cpp
     map/kmap_loader.cpp
     map/map.cpp
+    map/town.cpp
     otpch.cpp
     otserv.cpp
     security/rsa.cpp

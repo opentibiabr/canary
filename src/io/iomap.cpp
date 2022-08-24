@@ -203,7 +203,7 @@ bool IOMap::loadMap(Map &serverMap, const std::string &fileName)
 		}
 	}
 
-	for (auto towns: *mapData->towns())
+	/*for (auto towns: *mapData->towns())
 	{
 		Town *town = nullptr;
 		// Sanity check, if the town id is wrong then we know where the problem is
@@ -253,7 +253,7 @@ bool IOMap::loadMap(Map &serverMap, const std::string &fileName)
 
 		// Set towns in the map
 		town->setTemplePos(townPosition);
-	}
+	}*/
 
 	for (auto waypoints: *mapData->waypoints())
 	{
@@ -541,7 +541,7 @@ bool IOMap::parseTowns(BinaryNode &binaryNodeMapData, Map& map)
 		}
 
 		// Creating new town variable to avoid use of "new"
-		town = new Town(townId);
+		//town = new Town(townId);
 		if(!map.towns.addTown(townId, town)) {
 			SPDLOG_ERROR("[IOMap::parseTowns] - Cannot create town with id: {}, discarding town", townId);
 			delete town;

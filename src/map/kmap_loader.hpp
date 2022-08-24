@@ -33,6 +33,7 @@ class KmapLoader {
 		void loadData(Map &map, const Kmap::MapData *mapData);
 		void loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position *areaPosition);
 		std::tuple<Tile*, Item*> loadItems(const Kmap::Tile &kTile, Tile* tile, Item *groundItem, const Position &tilePosition);
+		void persistTile(Map &map, const Position& tilePosition, Item* groundItem, const Kmap::Tile &kTile, Tile* tile);
 		Tile* loadHouses(Map &map, const Position &tilePosition, const uint32_t houseId);
 		Item* loadItem(const Kmap::Item *kItem, Tile *tile);
 		void loadTown(Map &map, const Kmap::Town *kTown);
@@ -41,7 +42,7 @@ class KmapLoader {
 		std::string readResourceFile(const std::string &fileName, const flatbuffers::String &resourceFile);
 		TileFlags_t readFlags(uint32_t encodedflags);
 
-		Tile* createTile(const Position &position, Item* ground = nullptr, Item* item = nullptr);
+		Tile* createTile(const Position &position, bool isBlocking);
 };
 
 #endif // SRC_MAP_KMAP_LOADER_HPP_

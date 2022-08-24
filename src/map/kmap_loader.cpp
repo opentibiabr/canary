@@ -91,61 +91,63 @@ void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Positio
 	);
 
 	Item* groundItem = nullptr;
+
 	// Load houses
 	Tile *tile = loadHouses(map, tilePosition, kTile->house_id());
 
-	// Create house grounds
-	if (groundItem = loadItem(kTile->ground(), tile); groundItem)
+	// Create ground tiles, if no house tiles yet.
+	if (groundItem = loadItem(kTile->ground(), tile); groundItem && tile == nullptr)
 	{
+		tile = createTile(tilePosition, groundItem->isBlocking());
+	}
+
+	// If there are no items, we can just persist the tile and move on.
+	if (!kTile->items()) {
+		persistTile(map, tilePosition, groundItem, *kTile, tile);
+		return;
+	}
+
+	// Create ground items
+	for (auto kItem : *kTile->items())
+	{
+		Item *item = loadItem(kItem, tile);
+
+		if (item == nullptr) continue;
+
+		// Create tiles from ground items (if no tile was created yet)
 		if (tile == nullptr)
 		{
-			tile = createTile(tilePosition, groundItem);
+			if (item->isGroundTile())
+			{
+				delete groundItem;
+				groundItem = item;
+				continue;
+			}
+
+			// Create items from grounds
+			tile = createTile(tilePosition, item && item->isBlocking());
 		}
+
+		// Set items from ground attributes
+		tile->internalAddThing(item);
+		item->startDecaying();
+		item->setLoadedFromMap(true);
+	}
+
+	persistTile(map, tilePosition, groundItem, *kTile, tile);
+}
+
+void KmapLoader::persistTile(Map &map, const Position& tilePosition, Item* groundItem, const Kmap::Tile &kTile, Tile* tile)
+{
+	tile = !tile ? createTile(tilePosition, groundItem || groundItem->isBlocking()) : tile;
+
+	if (groundItem) {
 		tile->internalAddThing(groundItem);
 		groundItem->startDecaying();
 		groundItem->setLoadedFromMap(true);
 	}
 
-	// Create ground items
-	auto kItems = kTile->items();
-	if (kItems != nullptr) {
-		for (auto kItem : *kItems)
-		{
-			Item *item = loadItem(kItem, tile);
-
-			if (item == nullptr)
-			{
-				continue;
-			}
-
-			// Create grounds
-			if (tile == nullptr)
-			{
-				if (item->isGroundTile())
-				{
-					delete groundItem;
-					groundItem = item;
-					continue;
-				}
-
-				// Create items from grounds
-				tile = createTile(tilePosition, nullptr, item);
-			}
-
-			// Set items from ground attributes
-			tile->internalAddThing(item);
-			item->startDecaying();
-			item->setLoadedFromMap(true);
-		}
-	}
-
-	// Create grounds from tile
-	if (tile == nullptr)
-	{
-		tile = createTile(tilePosition, groundItem);
-	}
-
-	tile->setFlag(static_cast<TileFlags_t>(readFlags(kTile->flags())));
+	tile->setFlag(static_cast<TileFlags_t>(readFlags(kTile.flags())));
 	map.setTile(tilePosition, tile);
 }
 
@@ -224,12 +226,9 @@ Item* KmapLoader::loadItem(const Kmap::Item *kItem, Tile *tile)
 
 		for (auto containerItem: *kContainerItem)
 		{
-			auto container = item->getContainer();
-			if (container == nullptr) {
-				continue;
+			if (auto container = item->getContainer(); container != nullptr) {
+				container->addItem(loadItem(containerItem, tile));
 			}
-			auto item = loadItem(containerItem, tile);
-			container->addItem(item);
 		}
 	}
 
@@ -246,11 +245,11 @@ void KmapLoader::loadTown(Map &map, const Kmap::Town *kTown)
 	}
 
 	auto position = kTown->position();
-	Town *town = new Town(kTown->name()->str(), townId, Position(position->x(), position->y(), position->z()));
-	if (!map.towns.addTown(townId, town))
+	auto newPosition = Position(position->x(), position->y(), position->z());
+	std::unique_ptr<Town> townPtr(new Town(kTown->name()->str(), townId, newPosition));
+	if (!map.towns.addTown(townId, townPtr.get()))
 	{
 		SPDLOG_ERROR("{} - Cannot create town with id: {}, discarding town", __FUNCTION__, townId);
-		delete town;
 		return;
 	}
 }
@@ -292,17 +291,10 @@ TileFlags_t KmapLoader::readFlags(uint32_t encodedflags)
 	return static_cast<TileFlags_t>(tileFlags);
 }
 
-Tile* KmapLoader::createTile(const Position &position, Item* ground/* = nullptr*/, Item* item/* = nullptr*/)
+Tile* KmapLoader::createTile(const Position &position, bool isBlocking)
 {
-	if (!ground) {
+	if (isBlocking) {
 		return new StaticTile(position.x, position.y, position.z);
 	}
-
-	Tile *tile = ((item && item->isBlocking()) || ground->isBlocking())
-			? new StaticTile(position.x, position.y, position.z)
-			: tile = new DynamicTile(position.x, position.y, position.z);
-
-	tile->internalAddThing(ground);
-	ground = nullptr;
-	return tile;
+	return new DynamicTile(position.x, position.y, position.z);
 }

@@ -277,7 +277,7 @@ TileFlags_t KmapLoader::readFlags(uint32_t encodedflags)
 		{
 			OTBM_TILEFLAG_NOLOGOUT, TILESTATE_NOLOGOUT;
 		}
-	};
+	}
 
 	uint32_t tileFlags = TILESTATE_NONE;
 	for (auto const &[encodedFlag, tileFlag]: flagConvertionMap)

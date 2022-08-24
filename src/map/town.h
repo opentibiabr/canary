@@ -15,7 +15,7 @@
 class Town
 {
 	public:
-		explicit Town(uint32_t initId) : id(initId) {}
+		explicit Town(uint8_t initId) : id(initId) {}
 
 		const Position& getTemplePosition() const {
 			return templePosition;
@@ -30,7 +30,7 @@ class Town
 		void setName(std::string newName) {
 			this->name = std::move(newName);
 		}
-		uint32_t getID() const {
+		uint8_t getID() const {
 			return id;
 		}
 
@@ -40,7 +40,7 @@ class Town
 		Position templePosition;
 };
 
-using TownMap = std::map<uint32_t, Town*>;
+using TownMap = std::map<uint8_t, Town*>;
 
 class Towns
 {
@@ -56,7 +56,7 @@ class Towns
 		Towns(const Towns&) = delete;
 		Towns& operator=(const Towns&) = delete;
 
-		bool addTown(uint32_t townId, Town* town) {
+		bool addTown(uint8_t townId, Town* town) {
 			return townMap.emplace(townId, town).second;
 		}
 
@@ -69,7 +69,7 @@ class Towns
 			return nullptr;
 		}
 
-		Town* getTown(uint32_t townId) const {
+		Town* getTown(uint8_t townId) const {
 			auto it = townMap.find(townId);
 			if (it == townMap.end()) {
 				return nullptr;

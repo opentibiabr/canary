@@ -291,10 +291,10 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	player->offlineTrainingTime = result->get32("offlinetraining_time") * 1000;
 	player->offlineTrainingSkill = result->get32("offlinetraining_skill");
 
-	Town* town = g_game().map.towns.getTown(result->getU32("town_id"));
+	Town* town = g_game().map.towns.getTown(result->getU8("town_id"));
 	if (!town) {
 		SPDLOG_ERROR("Player {} has town id {} whitch doesn't exist", player->name,
-					 result->getU16("town_id"));
+					 result->getU8("town_id"));
 		return false;
 	}
 

@@ -18,6 +18,8 @@
 
 class Map;
 
+using ItemsVector = const flatbuffers::Vector<flatbuffers::Offset<Kmap::Item>>;
+
 class KmapLoader {
 
 	public:
@@ -32,15 +34,16 @@ class KmapLoader {
 		void loadHeader(Map &map, const Kmap::MapHeader *header, const std::string &fileName);
 		void loadData(Map &map, const Kmap::MapData *mapData);
 		void loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position *areaPosition);
-		void loadHouses(Map &map, Tile *tile, House *house, const Position &tilePosition, const uint32_t houseId);
-		void loadItem(Map &map, const Kmap::Item *item, TileFlags_t mapTileFlags, const Position &tilePosition);
-		void loadTown(Map &map, const Kmap::Town *town);
+		std::tuple<Tile*, Item*> loadItems(const Kmap::Tile &kTile, Tile* tile, Item *groundItem, const Position &tilePosition);
+		Tile* loadHouses(Map &map, const Position &tilePosition, const uint32_t houseId);
+		Item* loadItem(const Kmap::Item *kItem, Tile *tile);
+		void loadTown(Map &map, const Kmap::Town *kTown);
 		void loadWaypoint(Map &map, const Kmap::Waypoint *waypoint);
 
 		std::string readResourceFile(const std::string &fileName, const flatbuffers::String &resourceFile);
 		TileFlags_t readFlags(uint32_t encodedflags);
 
-		Tile* createTile(Item* ground, Item* item, const Position &position);
+		Tile* createTile(const Position &position, Item* ground = nullptr, Item* item = nullptr);
 };
 
 #endif // SRC_MAP_KMAP_LOADER_HPP_

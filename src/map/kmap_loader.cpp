@@ -1,11 +1,12 @@
 /**
- *Canary - A free and open-source MMORPG server emulator
- *Copyright (©) 2019-2022 OpenTibiaBR<opentibiabr@outlook.com>
- *Repository: https://github.com/opentibiabr/canary
- *License: https://github.com/opentibiabr/canary/blob/main/LICENSE
- *Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- *Website: https://docs.opentibiabr.org/
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
+
 #include "otpch.h"
 
 #include "map/kmap_loader.hpp"
@@ -79,138 +80,205 @@ void KmapLoader::loadData(Map &map, const Kmap::MapData *mapData)
 		loadTown(map, town);
 	}
 
-	for (auto waypoint: *mapData->waypoints())
+	if (auto waypoints = mapData->waypoints();
+	waypoints)
 	{
-		loadWaypoint(map, waypoint);
+		for (auto waypoint: *waypoints)
+		{
+			loadWaypoint(map, waypoint);
+		}
 	}
 }
 
-void KmapLoader::loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position *areaPosition)
+void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Position* areaPosition)
 {
-	TileFlags_t mapTileFlags = readFlags(tile->flags());
 	const Position tilePosition(
-		areaPosition->x() + tile->x(),
-		areaPosition->y() + tile->y(),
+		areaPosition->x() + kTile->x(),
+		areaPosition->y() + kTile->y(),
 		areaPosition->z()
 	);
 
-	Tile *tiles = nullptr;
-	House *house = nullptr;
-	loadHouses(map, tiles, house, tilePosition, tile->house_id());
-	
-	auto ground = tile->ground();
-	if (ground == nullptr) {
-		return;
-	}
-	// Create tile items
-	Item *itemTile = Item::createMapItem(ground->id());
-	if (itemTile) {
-        Tile *mapTile = nullptr;
-		mapTile = createTile(itemTile, itemTile, tilePosition);
-        mapTile->setFlag(static_cast<TileFlags_t>(mapTileFlags));
-        map.setTile(tilePosition, mapTile);
-	}
+	Item* groundItem = nullptr;
+	Tile *tile = loadHouses(map, tilePosition, kTile->house_id());
 
-	for (auto item : *tile->items())
+	if (groundItem = loadItem(kTile->ground(), tile); groundItem)
 	{
-		loadItem(map, item, mapTileFlags, tilePosition);
-	}
-}
-
-void KmapLoader::loadHouses(Map &map, Tile *tile, House *house, const Position &tilePosition, const uint32_t houseId)
-{
-	// Create house tiles
-	if (houseId != 0)
-	{
-		//SPDLOG_INFO("Found house id {}, on position {}", houseId, tilePosition.toString());
-		house = map.houses.addHouse(houseId);
-		if (house == nullptr)
-		{
-			SPDLOG_ERROR("{} - Could not create house id: {}, on position: {}", __FUNCTION__, houseId, tilePosition.toString());
-			return;
-		}
-		tile = new HouseTile(tilePosition.x, tilePosition.y, tilePosition.z, house);
 		if (tile == nullptr)
 		{
-			SPDLOG_ERROR("{} - Tile is nullptr, discarding house id: {}, on position: {}", __FUNCTION__, houseId, tilePosition.toString());
-			return;
+			tile = createTile(tilePosition, groundItem);
 		}
-
-		house->addTile(static_cast<HouseTile*>(tile));
+		groundItem->setLoadedFromMap(true);
 	}
+
+	auto kItems = kTile->items();
+	if (kItems != nullptr) {
+		for (auto kItem : *kItems)
+		{
+			Item *item = loadItem(kItem, tile);
+
+			if (item == nullptr)
+			{
+				continue;
+			}
+
+			if (tile) {
+				tile->internalAddThing(item);
+				item->startDecaying();
+				item->setLoadedFromMap(true);
+			}
+
+			if (tile == nullptr)
+			{
+				if (item->isGroundTile())
+				{
+					delete groundItem;
+					groundItem = item;
+					continue;
+				}
+
+				tile = createTile(tilePosition, groundItem, item);
+			}
+
+			tile->internalAddThing(item);
+			item->startDecaying();
+			item->setLoadedFromMap(true);
+		}
+	}
+
+	if (tile == nullptr)
+	{
+		tile = createTile(tilePosition, groundItem);
+	}
+
+	tile->setFlag(static_cast<TileFlags_t>(readFlags(kTile->flags())));
+	map.setTile(tilePosition, tile);
 }
 
-void KmapLoader::loadItem(Map &map, const Kmap::Item *item, TileFlags_t mapTileFlags, const Position &tilePosition)
+Tile* KmapLoader::loadHouses(Map &map, const Position &tilePosition, const uint32_t houseId)
 {
-	Item *createItem = Item::createMapItem(item->id());
-    if (createItem) {
-        Tile *tile = nullptr;
-        tile = createTile(createItem, createItem, tilePosition);
-        tile->internalAddThing(createItem);
-        tile->setFlag(static_cast<TileFlags_t>(mapTileFlags));
-        map.setTile(tilePosition, tile);
-    }
-
-	if (auto details = item->details();
-	details)
+	if (houseId == 0)
 	{
-		details->depot_id();
-		details->door_id();
-		details->teleport();
-
-		for (auto containerItem: *details->container_items())
-		{
-			loadItem(map, containerItem, mapTileFlags, tilePosition);
-		}
+		return nullptr;
 	}
 
-	if (auto attributes = item->attributes();
-	attributes)
+	if (House* house = map.houses.addHouse(houseId))
+	{
+		Tile* tile = new HouseTile(tilePosition.x, tilePosition.y, tilePosition.z, house);
+		house->addTile(static_cast<HouseTile*>(tile));
+		return tile;
+	}
+
+	SPDLOG_ERROR("{} - Could not create house id: {}, on position: {}", __FUNCTION__, houseId, tilePosition.toString());
+	return nullptr;
+}
+
+Item* KmapLoader::loadItem(const Kmap::Item *kItem, Tile *tile)
+{
+	if (kItem == nullptr)
+	{
+		return nullptr;
+	}
+
+	Item *item = Item::CreateItem(kItem->id(), 1);
+
+	if (item == nullptr)
+	{
+		SPDLOG_WARN("{} - Failed to create item #{}.", __FUNCTION__, kItem->id());
+		return nullptr;
+	}
+
+	HouseTile* houseTile = dynamic_cast<HouseTile*>(tile);
+	if (houseTile && item->isMoveable())
+	{
+		SPDLOG_WARN("{} - Failed to create moveable item #{} inside a house.", __FUNCTION__, kItem->id());
+		delete item;
+		return item;
+	}
+
+	if (auto attributes = kItem->attributes(); attributes)
 	{
 		attributes->count();
 		attributes->count();
 		attributes->description();
 
-		if (auto action = attributes->action();
-		action)
+		if (auto action = attributes->action(); action)
 		{
 			action->action_id();
 			action->unique_id();
 		}
 	}
+
+	if (auto details = kItem->details(); details)
+	{
+		details->depot_id();
+		details->door_id();
+		details->teleport();
+
+		auto kContainerItem = details->container_items();
+		if (kContainerItem == nullptr)
+		{
+			return item;
+		}
+
+		if (const ItemType &itemType = Item::items[item->getID()];
+		!itemType.isContainer() && kContainerItem->size() > 0)
+		{
+			SPDLOG_ERROR("{} - Container items found, but item {} is not a container.", __FUNCTION__, kItem->id());
+			return item;
+		}
+
+		for (auto containerItem: *kContainerItem)
+		{
+			loadItem(containerItem, tile);
+		}
+	}
+
+	return item;
 }
 
-void KmapLoader::loadTown(Map &map, const Kmap::Town *town)
+void KmapLoader::loadTown(Map &map, const Kmap::Town *kTown)
 {
-	uint8_t townId = town->id();
+	auto townId = kTown->id();
 	if (townId == 0)
 	{
 		SPDLOG_ERROR("{} - Invalid town id", __FUNCTION__);
 		return;
 	}
 
-	Position townPosition(town->position()->x(), town->position()->y(), town->position()->z());
-
-	Town newTown(town->id());
-	newTown.setName(town->name()->str());
-	newTown.setTemplePos(townPosition);
-
-	if (townPosition.x == 0 || townPosition.y == 0 || townPosition.z == 0 || newTown.getName().empty())
+	Town *town = new Town(townId);
+	if (!map.towns.addTown(townId, town))
 	{
-		SPDLOG_ERROR("{} - Town {} is not valid.", __FUNCTION__, townId);
+		SPDLOG_ERROR("{} - Cannot create town with id: {}, discarding town", __FUNCTION__, townId);
+		delete town;
 		return;
 	}
 
-	if (!map.towns.addTown(townId, &newTown))
+	const std::string townName = kTown->name()->str();
+	if (townName.empty())
 	{
-		SPDLOG_ERROR("{} - Duplicate town with id: {}, discarding town", __FUNCTION__, townId);
+		SPDLOG_WARN("{} - Could not read town name for town id {}", __FUNCTION__, townId);
+	}
+	town->setName(townName);
+
+	Position townPosition(
+		kTown->position()->x(),
+		kTown->position()->y(),
+		kTown->position()->z()
+	);
+	// Sanity check, if there is an error in the get, we will know where the problem is
+	if (townPosition.x == 0 || townPosition.y == 0 || townPosition.z == 0)
+	{
+		SPDLOG_ERROR("{} - Invalid town position", __FUNCTION__);
 		return;
 	}
+
+	town->setTemplePos(townPosition);
 }
 
 void KmapLoader::loadWaypoint(Map &map, const Kmap::Waypoint *waypoint)
 {
 	const std::string waypointName = waypoint->name()->str();
+
 	Position waypointPosition(
 		waypoint->position()->x(),
 		waypoint->position()->y(),
@@ -263,21 +331,17 @@ TileFlags_t KmapLoader::readFlags(uint32_t encodedflags)
 	return static_cast<TileFlags_t>(tileFlags);
 }
 
-Tile* KmapLoader::createTile(Item* ground, Item* item, const Position &position)
+Tile* KmapLoader::createTile(const Position &position, Item* ground/* = nullptr*/, Item* item/* = nullptr*/)
 {
 	if (!ground) {
 		return new StaticTile(position.x, position.y, position.z);
 	}
 
-	Tile *tile;
-	if ((item && item->isBlocking()) || ground->isBlocking()) {
-		tile = new StaticTile(position.x, position.y, position.z);
-	} else {
-		tile = new DynamicTile(position.x, position.y, position.z);
-	}
+	Tile *tile = ((item && item->isBlocking()) || ground->isBlocking())
+			? new StaticTile(position.x, position.y, position.z)
+			: tile = new DynamicTile(position.x, position.y, position.z);
 
 	tile->internalAddThing(ground);
-	ground->startDecaying();
-	ground = nullptr;
+
 	return tile;
 }

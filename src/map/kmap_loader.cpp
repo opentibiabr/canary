@@ -245,8 +245,8 @@ void KmapLoader::loadTown(Map &map, const Kmap::Town *kTown)
 		return;
 	}
 
-	auto position = kTown.position();
-	Town *town = new Town(kTown.name()->str(), townId, Position(position->x(), position->y(), position->z()));
+	auto position = kTown->position();
+	Town *town = new Town(kTown->name()->str(), townId, Position(position->x(), position->y(), position->z()));
 	if (!map.towns.addTown(townId, town))
 	{
 		SPDLOG_ERROR("{} - Cannot create town with id: {}, discarding town", __FUNCTION__, townId);

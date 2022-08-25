@@ -15,6 +15,7 @@
 #include "map/house/house.h"
 #include "game/game.h"
 
+HouseTile::HouseTile(Position initPos, House* initHouse) : DynamicTile(initPos), house(initHouse) {}
 
 HouseTile::HouseTile(int32_t initX, int32_t initY, int32_t initZ, House* initHouse) :
 	DynamicTile(initX, initY, initZ), house(initHouse) {}

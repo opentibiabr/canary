@@ -31,11 +31,11 @@ class KmapLoader {
 		bool loadFile(const std::string &fileName);
 		void loadHeader(Map &map, const Kmap::MapHeader *header, const std::string &fileName);
 		void loadData(Map &map, const Kmap::MapData *mapData);
-		void loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position *areaPosition);
+		Tile* loadTile(Map &map, const Kmap::Tile *tile, const Kmap::Position *areaPosition);
 		std::tuple<Tile*, Item*> loadItems(const Kmap::Tile &kTile, Tile* tile, Item *groundItem, const Position &tilePosition);
-		void persistTile(Map &map, const Position& tilePosition, Item* groundItem, const Kmap::Tile &kTile, Tile* tile);
+		Tile* persistTile(const Position& tilePosition, Item* groundItem, Tile* tile);
 		Tile* loadHouses(Map &map, const Position &tilePosition, const uint32_t houseId);
-		Item* loadItem(const Kmap::Item *kItem, Tile *tile);
+		Item* loadItem(const Kmap::Item *kItem);
 		void loadTown(Map &map, const Kmap::Town *kTown);
 		void loadWaypoint(Map &map, const Kmap::Waypoint *waypoint);
 

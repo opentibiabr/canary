@@ -70,9 +70,11 @@ void KmapLoader::loadData(Map &map, const Kmap::MapData *mapData)
 {
 	for (auto area: *mapData->areas())
 	{
-		for (auto tile: *area->tiles())
+		for (auto kTile: *area->tiles())
 		{
-			loadTile(map, tile, area->position());
+			Tile* tile = loadTile(map, kTile, area->position());
+			tile->setFlag(readFlags(kTile->flags()));
+			map.setTile(tile->getPosition(), tile);
 		}
 	}
 
@@ -82,7 +84,7 @@ void KmapLoader::loadData(Map &map, const Kmap::MapData *mapData)
 	}
 }
 
-void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Position* areaPosition)
+Tile* KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Position* areaPosition)
 {
 	const Position tilePosition(
 		areaPosition->x() + kTile->x(),
@@ -96,21 +98,20 @@ void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Positio
 	Tile *tile = loadHouses(map, tilePosition, kTile->house_id());
 
 	// Create ground tiles, if no house tiles yet.
-	if (groundItem = loadItem(kTile->ground(), tile); groundItem && tile == nullptr)
+	if (groundItem = loadItem(kTile->ground()); groundItem && tile == nullptr)
 	{
 		tile = createTile(tilePosition, groundItem->isBlocking());
 	}
 
 	// If there are no items, we can just persist the tile and move on.
 	if (!kTile->items()) {
-		persistTile(map, tilePosition, groundItem, *kTile, tile);
-		return;
+		return persistTile(tilePosition, groundItem, tile);
 	}
 
 	// Create ground items
 	for (auto kItem : *kTile->items())
 	{
-		Item *item = loadItem(kItem, tile);
+		Item *item = loadItem(kItem);
 
 		if (item == nullptr) continue;
 
@@ -134,12 +135,12 @@ void KmapLoader::loadTile(Map& map, const Kmap::Tile* kTile, const Kmap::Positio
 		item->setLoadedFromMap(true);
 	}
 
-	persistTile(map, tilePosition, groundItem, *kTile, tile);
+	return persistTile(tilePosition, groundItem, tile);
 }
 
-void KmapLoader::persistTile(Map &map, const Position& tilePosition, Item* groundItem, const Kmap::Tile &kTile, Tile* tile)
+Tile* KmapLoader::persistTile(const Position& tilePosition, Item* groundItem, Tile* tile)
 {
-	tile = !tile ? createTile(tilePosition, groundItem || groundItem->isBlocking()) : tile;
+	tile = !tile ? createTile(tilePosition, groundItem && groundItem->isBlocking()) : tile;
 
 	if (groundItem) {
 		tile->internalAddThing(groundItem);
@@ -147,8 +148,7 @@ void KmapLoader::persistTile(Map &map, const Position& tilePosition, Item* groun
 		groundItem->setLoadedFromMap(true);
 	}
 
-	tile->setFlag(static_cast<TileFlags_t>(readFlags(kTile.flags())));
-	map.setTile(tilePosition, tile);
+	return tile;
 }
 
 Tile* KmapLoader::loadHouses(Map &map, const Position &tilePosition, const uint32_t houseId)
@@ -160,7 +160,7 @@ Tile* KmapLoader::loadHouses(Map &map, const Position &tilePosition, const uint3
 
 	if (House* house = map.houses.addHouse(houseId))
 	{
-		Tile* tile = new HouseTile(tilePosition.x, tilePosition.y, tilePosition.z, house);
+		Tile* tile = new HouseTile(tilePosition, house);
 		house->addTile(static_cast<HouseTile*>(tile));
 		return tile;
 	}
@@ -169,7 +169,7 @@ Tile* KmapLoader::loadHouses(Map &map, const Position &tilePosition, const uint3
 	return nullptr;
 }
 
-Item* KmapLoader::loadItem(const Kmap::Item *kItem, Tile *tile)
+Item* KmapLoader::loadItem(const Kmap::Item *kItem)
 {
 	if (kItem == nullptr)
 	{
@@ -182,14 +182,6 @@ Item* KmapLoader::loadItem(const Kmap::Item *kItem, Tile *tile)
 	{
 		SPDLOG_WARN("{} - Failed to create item #{}.", __FUNCTION__, kItem->id());
 		return nullptr;
-	}
-
-	HouseTile* houseTile = dynamic_cast<HouseTile*>(tile);
-	if (houseTile && item->isMoveable())
-	{
-		SPDLOG_WARN("{} - Failed to create moveable item #{} inside a house.", __FUNCTION__, kItem->id());
-		delete item;
-		return item;
 	}
 
 	if (auto attributes = kItem->attributes(); attributes)
@@ -227,7 +219,7 @@ Item* KmapLoader::loadItem(const Kmap::Item *kItem, Tile *tile)
 		for (auto containerItem: *kContainerItem)
 		{
 			if (auto container = item->getContainer(); container != nullptr) {
-				container->addItem(loadItem(containerItem, tile));
+				container->addItem(loadItem(containerItem));
 			}
 		}
 	}
@@ -245,8 +237,14 @@ void KmapLoader::loadTown(Map &map, const Kmap::Town *kTown)
 	}
 
 	auto position = kTown->position();
-	auto newPosition = Position(position->x(), position->y(), position->z());
-	std::unique_ptr<Town> townPtr(new Town(kTown->name()->str(), townId, newPosition));
+	std::unique_ptr<Town> townPtr(
+			new Town(
+				kTown->name()->str(),
+				townId,
+				Position(position->x(), position->y(), position->z())
+			)
+	);
+
 	if (!map.towns.addTown(townId, townPtr.get()))
 	{
 		SPDLOG_ERROR("{} - Cannot create town with id: {}, discarding town", __FUNCTION__, townId);
@@ -263,24 +261,15 @@ std::string KmapLoader::readResourceFile(
 
 TileFlags_t KmapLoader::readFlags(uint32_t encodedflags)
 {
-	std::map<uint32_t, TileFlags_t> flagConvertionMap;
-	{
-		{
-			OTBM_TILEFLAG_PROTECTIONZONE, TILESTATE_PROTECTIONZONE;
-		}
-		{
-			OTBM_TILEFLAG_NOPVPZONE, TILESTATE_NOPVPZONE;
-		}
-		{
-			OTBM_TILEFLAG_PVPZONE, TILESTATE_PVPZONE;
-		}
-		{
-			OTBM_TILEFLAG_NOLOGOUT, TILESTATE_NOLOGOUT;
-		}
-	}
+	std::map<uint32_t, TileFlags_t> flagConvertionMap {
+		{ OTBM_TILEFLAG_PROTECTIONZONE, TILESTATE_PROTECTIONZONE },
+		{ OTBM_TILEFLAG_NOPVPZONE, TILESTATE_NOPVPZONE },
+		{ OTBM_TILEFLAG_PVPZONE, TILESTATE_PVPZONE },
+		{ OTBM_TILEFLAG_NOLOGOUT, TILESTATE_NOLOGOUT }
+	};
 
 	uint32_t tileFlags = TILESTATE_NONE;
-	for (auto const &[encodedFlag, tileFlag]: flagConvertionMap)
+	for (auto const &[encodedFlag, tileFlag] : flagConvertionMap)
 	{
 		if ((encodedflags & encodedFlag) != 0)
 		{
@@ -294,7 +283,7 @@ TileFlags_t KmapLoader::readFlags(uint32_t encodedflags)
 Tile* KmapLoader::createTile(const Position &position, bool isBlocking)
 {
 	if (isBlocking) {
-		return new StaticTile(position.x, position.y, position.z);
+		return new StaticTile(position);
 	}
-	return new DynamicTile(position.x, position.y, position.z);
+	return new DynamicTile(position);
 }

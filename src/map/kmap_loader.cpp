@@ -35,13 +35,13 @@ bool KmapLoader::loadFile(const std::string &fileName)
 	std::fstream fileStream(fileName, std::ios:: in | std::ios::binary);
 	if (!fileStream.is_open())
 	{
-		SPDLOG_ERROR("Unable to load {}, could not open file", fileName);
+		SPDLOG_ERROR("Unable to load :{}, could not open file", fileName);
 		return false;
 	}
 
 	if (!fileStream.good())
 	{
-		SPDLOG_ERROR("Unable to load {}, error for read file", fileName);
+		SPDLOG_ERROR("Unable to load :{}, error for read file", fileName);
 		return false;
 	}
 
@@ -180,7 +180,7 @@ Item* KmapLoader::loadItem(const Kmap::Item *kItem)
 
 	if (item == nullptr)
 	{
-		SPDLOG_WARN("{} - Failed to create item #{}.", __FUNCTION__, kItem->id());
+		SPDLOG_WARN("{} - Failed to create item :{}.", __FUNCTION__, kItem->id());
 		return nullptr;
 	}
 
@@ -212,7 +212,7 @@ Item* KmapLoader::loadItem(const Kmap::Item *kItem)
 		if (const ItemType &itemType = Item::items[item->getID()];
 		!itemType.isContainer() && kContainerItem->size() > 0)
 		{
-			SPDLOG_ERROR("{} - Container items found, but item {} is not a container.", __FUNCTION__, kItem->id());
+			SPDLOG_ERROR("{} - Container items found, but item :{} is not a container.", __FUNCTION__, kItem->id());
 			return item;
 		}
 

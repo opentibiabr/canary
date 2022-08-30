@@ -244,7 +244,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 			slotsNedeed = inBackpacks ? std::ceil(static_cast<double>(amount) / shoppingBagSlots) : static_cast<double>(amount);
 		}
 
-		if ((tile->getItemList()->size() + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return;
 		}
@@ -252,10 +252,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 
 	uint32_t buyPrice = 0;
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
-	{
-		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
-		{
+	for (ShopBlock shopBlock : shopVector) {
+		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
 		}
 	}

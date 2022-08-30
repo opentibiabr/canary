@@ -4037,7 +4037,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		if (it != inventoryMap.end())
 		{
 			msg.add<uint16_t>(shopBlock.itemId);
-			msg.add<uint16_t>(std::min<uint32_t>(it->second, std::numeric_limits<uint16_t>::max()));
+			msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
 				break;

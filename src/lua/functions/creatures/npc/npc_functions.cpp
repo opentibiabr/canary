@@ -503,7 +503,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 
 	uint16_t itemId = getNumber<uint16_t>(L, 3);
 	double amount = getNumber<double>(L, 4);
-	uint32_t subType = getNumber<int32_t>(L, 5, 1);
+	uint16_t subType = getNumber<uint16_t>(L, 5, 1);
 	uint16_t actionId = getNumber<uint16_t>(L, 6, 0);
 	bool ignoreCap = getBoolean(L, 7, false);
 	bool inBackpacks = getBoolean(L, 8, false);
@@ -524,7 +524,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 			slotsNedeed = inBackpacks ? std::ceil(amount / shoppingBagSlots) : amount;
 		}
 
-		if ((tile->getItemList()->size() + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
 			pushBoolean(L, false);
 			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 			return 1;
@@ -543,7 +543,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
     uint32_t itemsPurchased = 0;
 	uint8_t backpacksPurchased = 0;
 	uint8_t internalCount = it.stackable ? 100 : 1;
-	uint32_t remainingAmount = static_cast<uint32_t>(amount);
+	auto remainingAmount = static_cast<uint32_t>(amount);
 	if (inBackpacks) {
 		while (remainingAmount > 0) {
 			Item* container = Item::CreateItem(ITEM_SHOPPING_BAG);

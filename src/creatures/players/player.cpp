@@ -1002,17 +1002,6 @@ bool Player::isNearDepotBox() const
 	return false;
 }
 
-DepotChest* Player::getDepotBox()
-{
-	DepotChest* depotBoxs = new DepotChest(ITEM_DEPOT);
-	depotBoxs->incrementReferenceCounter();
-	depotBoxs->setMaxDepotItems(getMaxDepotItems());
-	for (uint32_t index = 1; index <= 18; ++index) {
-		depotBoxs->internalAddThing(getDepotChest(19 - index, true));
-	}
-	return depotBoxs;
-}
-
 DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 {
 	auto it = depotChests.find(depotId);
@@ -1027,9 +1016,12 @@ DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 	DepotChest* depotChest;
 	if (depotId > 0 && depotId < 18) {
 		depotChest = new DepotChest(ITEM_DEPOT_NULL + depotId);
-	}
-	else {
+	} else if (depotId  == 18) {
 		depotChest = new DepotChest(ITEM_DEPOT_XVIII);
+	} else if (depotId  == 19) {
+		depotChest = new DepotChest(ITEM_DEPOT_XIX);
+	} else {
+		depotChest = new DepotChest(ITEM_DEPOT_XX);
 	}
 
 	depotChest->incrementReferenceCounter();
@@ -5777,7 +5769,7 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 		itemDict = item->getContainer()->getStowableItems();
 		for (Item* containerItem : item->getContainer()->getItems(true)) {
 			uint32_t depotChest = g_configManager().getNumber(DEPOTCHEST);
-			bool validDepot = depotChest > 0 && depotChest < 19;
+			bool validDepot = depotChest > 0 && depotChest < 21;
 			if (g_configManager().getBoolean(STASH_MOVING) && containerItem && !containerItem->isStackable() && validDepot) {
 				g_game().internalMoveItem(containerItem->getParent(), getDepotChest(depotChest, true), INDEX_WHEREEVER, containerItem, containerItem->getItemCount(), nullptr);
 				movedItems++;

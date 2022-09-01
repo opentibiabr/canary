@@ -6012,10 +6012,14 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 			}
 
 			if (c->isInbox()) {
-				inboxItems.push_back(item);
+				if (inboxItems.size() < 255) {
+					inboxItems.push_back(item);
+				}
 				inboxCount += Item::countByType(item, -1);
 			} else {
-				depotItems.push_back(item);
+				if (depotItems.size() < 255) {
+					depotItems.push_back(item);
+				}
 				depotCount += Item::countByType(item, -1);
 			}
 		}

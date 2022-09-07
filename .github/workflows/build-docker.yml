@@ -42,7 +42,7 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: docker.io
+          registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -51,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           file: docker/server/Dockerfile
-          tags: docker.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
 
@@ -62,7 +62,7 @@ jobs:
         with:
           file: docker/server/Dockerfile
           push: true
-          tags: docker.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
+          tags: ghcr.io/${{ github.repository }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha, scope=${{ github.workflow }}
           cache-to: type=gha, scope=${{ github.workflow }}
 

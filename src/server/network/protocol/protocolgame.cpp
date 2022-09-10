@@ -4076,7 +4076,6 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 				continue;
 			}
 
-			//depotItems[itemType.wareId] += Item::countByType(item, -1);
 			(depotItems[itemType.wareId])[item->getTier()] += Item::countByType(item, -1);
 		}
 	} while (!containerList.empty());
@@ -4099,7 +4098,6 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 			}
 
 			size = size - item.second;
-			//depotItems[itemType.wareId] += item.second;
 			(depotItems[itemType.wareId])[0] += item.second;
 		}
 	} while (size > 0);
@@ -4390,13 +4388,14 @@ void ProtocolGame::sendForgingData()
 		msg.addByte(0);
 	}
 
-	uint32_t sliverCount = 0;
-	uint32_t coreCount = 0;
-	for (Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
-		if (item->getID() == ITEM_FORGE_SLIVER) {
-			sliverCount += Item::countByType(item, -1);
-		} else if (item->getID() == ITEM_FORGE_CORE) {
-			coreCount += Item::countByType(item, -1);
+	uint32_t sliverCount = 0, coreCount = 0;
+	if (Item* mainBp = player->getInventoryItem(CONST_SLOT_BACKPACK); mainBp) {
+		for (Item* item : mainBp->getContainer()->getItems(true)) {
+			if (item->getID() == ITEM_FORGE_SLIVER) {
+				sliverCount += Item::countByType(item, -1);
+			} else if (item->getID() == ITEM_FORGE_CORE) {
+				coreCount += Item::countByType(item, -1);
+			}
 		}
 	}
 
@@ -4724,7 +4723,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.add<uint64_t>(statistics->totalPrice);
 		msg.add<uint64_t>(statistics->highestPrice);
 		msg.add<uint64_t>(statistics->lowestPrice);
-		//msg.add<uint16_t>(statistics->tier); todo
 	}
 	else
 	{
@@ -4739,7 +4737,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
 		msg.add<uint64_t>(statistics->highestPrice);
 		msg.add<uint64_t>(statistics->lowestPrice);
-		//msg.add<uint16_t>(statistics->tier); todo
 	}
 	else
 	{

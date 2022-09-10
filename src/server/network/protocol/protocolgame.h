@@ -80,7 +80,7 @@ public:
 	void logout(bool displayEffect, bool forced);
 
 	void AddItem(NetworkMessage &msg, const Item *item);
-	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count);
+	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier);
 
 	uint16_t getVersion() const
 	{
@@ -351,7 +351,6 @@ private:
 	void updatePartyTrackerAnalyzer(const Party* party);
 
 	void sendTextWindow(uint32_t windowTextId, Item *item, uint16_t maxlen, bool canWrite);
-	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 	void sendOutfitWindow();
 	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackpos);

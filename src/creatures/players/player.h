@@ -1263,11 +1263,6 @@ class Player final : public Creature, public Cylinder
 				client->sendTextWindow(windowTextId, item, maxlen, canWrite);
 			}
 		}
-		void sendTextWindow(uint32_t itemId, const std::string& text) const {
-			if (client) {
-				client->sendTextWindow(windowTextId, itemId, text);
-			}
-		}
 		void sendToChannel(const Creature* creature, SpeakClasses type,
                            const std::string& text, uint16_t channelId) const {
 			if (client) {

@@ -130,7 +130,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 		const uint32_t playerId = result->getNumber<uint32_t>("player_id");
 		const uint16_t amount = result->getNumber<uint16_t>("amount");
-		const uint8_t tier = static_cast<uint8_t>(result->getNumber<uint16_t>("tier"));
+		const auto tier = static_cast<uint8_t>(result->getNumber<uint16_t>("tier"));
 		if (result->getNumber<uint16_t>("sale") == 1) {
 			const ItemType& itemType = Item::items[result->getNumber<uint16_t>("itemtype")];
 			if (itemType.id == 0) {

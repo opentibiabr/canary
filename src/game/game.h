@@ -208,7 +208,7 @@ class Game
                                           bool dropOnMap = true,
                                           Slots_t slot = CONST_SLOT_WHEREEVER);
 
-		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
+		Item* findItemOfType(const Cylinder* cylinder, uint16_t itemId,
                              bool depthSearch = true, int32_t subType = -1, bool hasTier = false, uint8_t tier = 0) const;
 
 		void createLuaItemsOnMap();
@@ -390,7 +390,7 @@ class Game
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
-		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker);
+		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, uint8_t tier, DepotLocker* depotLocker) const;
 
 		static void updatePremium(account::Account& account);
 

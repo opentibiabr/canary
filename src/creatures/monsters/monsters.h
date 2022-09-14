@@ -17,11 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SRC_CREATURES_MONSTERS_MONSTERS_H_
-#define SRC_CREATURES_MONSTERS_MONSTERS_H_
+#ifndef FS_MONSTERS_H
+#define FS_MONSTERS_H
 
-#include "creatures/creature.h"
-#include "declarations.hpp"
+#include "creature.h"
+#include "enums.h"
+
+const uint32_t MAX_LOOTCHANCE = 100000;
+const uint32_t MAX_STATICWALK = 100;
 
 class Loot {
 	public:
@@ -123,15 +126,15 @@ class MonsterType
 		int32_t changeTargetChance = 0;
 		int32_t defense = 0;
 		int32_t armor = 0;
-		int32_t strategiesTargetNearest = 0;
-		int32_t strategiesTargetHealth = 0;
-		int32_t strategiesTargetDamage = 0;
-		int32_t strategiesTargetRandom = 0;
+		int32_t targetStrategiesNearestPercent = 0;
+		int32_t targetStrategiesLowerHPPercent = 0;
+		int32_t targetStrategiesMostDamagePercent = 0;
+		int32_t targetStrategiesRandom = 0;
 		bool targetPreferPlayer = false;
 		bool targetPreferMaster = false;
 
 		Faction_t faction = FACTION_DEFAULT;
-		phmap::flat_hash_set<Faction_t> enemyFactions;
+		std::unordered_set<Faction_t> enemyFactions;
 
 		bool canPushItems = false;
 		bool canPushCreatures = false;
@@ -143,18 +146,18 @@ class MonsterType
 		bool isHostile = true;
 		bool hiddenHealth = false;
 		bool isBlockable = false;
-		bool isFamiliar = false;
+		bool isPet = false;
 		bool isRewardBoss = false;
 		bool canWalkOnEnergy = true;
 		bool canWalkOnFire = true;
 		bool canWalkOnPoison = true;
+    bool notForgeSystemCreature = false;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};
 
 	public:
 		MonsterType() = default;
-		explicit MonsterType(const std::string &initName) : name(initName), typeName(initName), nameDescription(initName) {};
 
 		// non-copyable
 		MonsterType(const MonsterType&) = delete;
@@ -163,7 +166,6 @@ class MonsterType
 		bool loadCallback(LuaScriptInterface* scriptInterface);
 
 		std::string name;
-		std::string typeName;
 		std::string nameDescription;
 
 		MonsterInfo info;
@@ -227,13 +229,6 @@ class Monsters
 		Monsters(const Monsters&) = delete;
 		Monsters& operator=(const Monsters&) = delete;
 
-		static Monsters& getInstance() {
-			// Guaranteed to be destroyed
-			static Monsters instance;
-			// Instantiated on first use
-			return instance;
-		}
-
 		bool loadFromXml(bool reloading = false);
 		bool isLoaded() const {
 			return loaded;
@@ -246,7 +241,7 @@ class Monsters
 		bool deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std::string& description = "");
 
 		std::unique_ptr<LuaScriptInterface> scriptInterface;
-		std::map<std::string, MonsterType*> monsters;
+		std::map<std::string, MonsterType> monsters;
 
 	private:
 		ConditionDamage* getDamageCondition(ConditionType_t conditionType,
@@ -263,6 +258,4 @@ class Monsters
 		bool loaded = false;
 };
 
-constexpr auto g_monsters = &Monsters::getInstance;
-
-#endif  // SRC_CREATURES_MONSTERS_MONSTERS_H_
+#endif // FS_MONSTERS_H

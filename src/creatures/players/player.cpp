@@ -1016,9 +1016,11 @@ DepotChest* Player::getDepotChest(uint32_t depotId, bool autoCreate)
 	DepotChest* depotChest;
 	if (depotId > 0 && depotId < 18) {
 		depotChest = new DepotChest(ITEM_DEPOT_NULL + depotId);
-	} else {
+	} else if (depotId  == 18) {
 		depotChest = new DepotChest(ITEM_DEPOT_XVIII);
+	} else if (depotId  == 19) {
 		depotChest = new DepotChest(ITEM_DEPOT_XIX);
+	} else {
 		depotChest = new DepotChest(ITEM_DEPOT_XX);
 	}
 

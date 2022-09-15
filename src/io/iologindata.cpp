@@ -162,6 +162,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   acc.SetDatabaseInterface(&db);
   acc.LoadAccountDB(accountId);
 
+  bool oldProtocol = g_configManager().getBoolean(OLD_PROTOCOL) && player->getProtocolVersion() < 1200;
   player->setGUID(result->getNumber<uint32_t>("id"));
   player->name = result->getString("name");
   acc.GetID(&(player->accountNumber));
@@ -493,9 +494,11 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       Container* itemContainer = item->getContainer();
       if (itemContainer) {
-        int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
-        if (player->getProtocolVersion() > 1200 && cid > 0) {
-          openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+        if (!oldProtocol) {
+          int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+          if (cid > 0) {
+            openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+          }
         }
         if (item->hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
           int64_t flags = item->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
@@ -509,7 +512,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
-  if (!acc.getProtocolCompat()) {
+  if (!oldProtocol) {
     std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
       return left.first < right.first;
     });

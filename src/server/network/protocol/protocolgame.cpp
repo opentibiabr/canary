@@ -124,7 +124,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 
 	if (it.stackable) {
-		msg.addByte(std::min<uint8_t>(0xFF, item->getItemCount()));
+		msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(std::numeric_limits<uint8_t>::max(), item->getItemCount())));
 	}
 
 	if (it.isSplash() || it.isFluidContainer()) {
@@ -4170,6 +4170,10 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 
 	msg.addByte(0x7B);
 
+	if (oldProtocol) {
+		msg.add<uint64_t>(player->getMoney() + player->getBankBalance());
+	}
+
 	uint8_t itemsToSend = 0;
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
@@ -4192,7 +4196,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		{
 			msg.add<uint16_t>(shopBlock.itemId);
 			if (oldProtocol) {
-				msg.addByte(std::min<uint8_t>(it->second, std::numeric_limits<uint8_t>::max()));
+				msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint8_t>::max())));
 			} else {
 				msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
 			}
@@ -4217,7 +4221,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 		msg.add<uint64_t>(player->getBankBalance());
 	}
 
-	msg.addByte(std::min<uint8_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max()));
+	msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max())));
 
 	DepotLocker *depotLocker = player->getDepotLocker(depotId);
 	if (!depotLocker)
@@ -4307,7 +4311,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 		{
 			msg.addByte(0);
 		}
-		msg.add<uint16_t>(std::min<uint16_t>(0xFFFF, it->second));
+		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), it->second)));
 	}
 
 	writeToOutputBuffer(msg);
@@ -5357,7 +5361,7 @@ void ProtocolGame::sendCreatureHealth(const Creature *creature)
 	if (creature->isHealthHidden()) {
 		msg.addByte(0x00);
 	} else {
-		msg.addByte(std::min<uint8_t>(100, std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100)));
+		msg.addByte(static_cast<uint8_t>(std::min<double>(100, std::ceil((static_cast<double>(creature->getHealth()) / std::max<int32_t>(creature->getMaxHealth(), 1)) * 100))));
 	}
 
 	writeToOutputBuffer(msg);
@@ -5446,7 +5450,7 @@ void ProtocolGame::sendPartyPlayerMana(const Player* target, uint8_t manaPercent
 	msg.addByte(0x8B);
 	msg.add<uint32_t>(cid);
 	msg.addByte(11);  // mana percent
-	msg.addByte(manaPercent);
+	msg.addByte(std::min<uint8_t>(100, manaPercent));
 	writeToOutputBuffer(msg);
 }
 
@@ -5785,6 +5789,11 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	player->sendClientCheck();
 	player->sendGameNews();
 	player->sendIcons();
+
+	// We need to manually send the open containers on player login, on IOLoginData it won't work.
+	if (isLogin && oldProtocol) {
+		player->openPlayerContainers();
+	}
 }
 
 void ProtocolGame::sendMoveCreature(const Creature *creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport)
@@ -6333,7 +6342,7 @@ void ProtocolGame::sendSpellCooldown(uint8_t spellId, uint32_t time)
 	NetworkMessage msg;
 	msg.addByte(0xA4);
 	if (oldProtocol && spellId >= 170) {
-		msg.addByte(150);
+		msg.addByte(170);
 	} else {
 		msg.addByte(spellId);
 	}
@@ -6468,7 +6477,7 @@ void ProtocolGame::sendPreyData(const PreySlot* slot)
 	}
 
 	if (oldProtocol) {
-		msg.add<uint16_t>(std::max<uint32_t>(std::min<uint16_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000), std::numeric_limits<uint16_t>::max()), 0));
+		msg.add<uint16_t>(static_cast<uint16_t>(std::max<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0), 0)));
 	} else {
 		msg.add<uint32_t>(std::max<uint32_t>(static_cast<uint32_t>(((slot->freeRerollTimeStamp - OTSYS_TIME()) / 1000)), 0));
 		msg.addByte(static_cast<uint8_t>(slot->option));
@@ -6685,9 +6694,9 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 
 	if (oldProtocol) {
-		msg.addByte(std::min<uint8_t>(player->getMagicLevel(), std::numeric_limits<uint8_t>::max()));
-		msg.addByte(std::min<uint8_t>(player->getBaseMagicLevel(), std::numeric_limits<uint8_t>::max()));
-		msg.addByte(std::min<uint8_t>(player->getMagicLevelPercent(), 100));
+		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint8_t>::max())));
+		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint8_t>::max())));
+		msg.addByte(std::min<uint8_t>(static_cast<uint8_t>(player->getMagicLevelPercent()), 100));
 	}
 
 	msg.addByte(player->getSoul());
@@ -6718,26 +6727,26 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
 			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 			msg.add<uint16_t>(player->getBaseSkill(i));
-			msg.addByte(std::min<uint8_t>(100, player->getSkillPercent(i)));
+			msg.addByte(std::min<uint8_t>(100, static_cast<uint8_t>(player->getSkillPercent(i))));
 		}
 	} else {
-		msg.add<uint16_t>(player->getMagicLevel());
-		msg.add<uint16_t>(player->getBaseMagicLevel());
-		msg.add<uint16_t>(player->getBaseMagicLevel());
-		msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
+		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint16_t>::max())));
+		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint16_t>::max())));
+		msg.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getBaseMagicLevel(), std::numeric_limits<uint16_t>::max())));
+		msg.add<uint16_t>(std::min<uint16_t>(static_cast<uint16_t>(player->getMagicLevelPercent()), 100));
 
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
 		{
-			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+			msg.add<uint16_t>(player->getSkillLevel(i));
 			msg.add<uint16_t>(player->getBaseSkill(i));
 			msg.add<uint16_t>(player->getBaseSkill(i));
-			msg.add<uint16_t>(player->getSkillPercent(i) * 100);
+			msg.add<uint16_t>(static_cast<uint8_t>(player->getSkillPercent(i)) * 100);
 		}
 	}
 
 	for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i)
 	{
-		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
+		msg.add<uint16_t>(player->getSkillLevel(i));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
 

@@ -21,13 +21,13 @@
 #define SRC_UTILS_DEFINITIONS_H_
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
-static constexpr auto STATUS_SERVER_VERSION = "1.4.0";
+static constexpr auto STATUS_SERVER_VERSION = "1.5.0";
 static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization, SaiyansKing and Mark Samman";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 
-static constexpr auto CLIENT_VERSION = 1286;
+static constexpr auto CLIENT_VERSION = 1291;
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
 

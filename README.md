@@ -1,6 +1,6 @@
 # OpenTibiaBR - Canary
 
-[![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/3NxYnyV)
+[![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/X3mSnMH8jg)
 [![GitHub issues](https://img.shields.io/github/issues/opentibiabr/canary)](https://github.com/opentibiabr/canary/issues)
 [![GitHub pull request](https://img.shields.io/github/issues-pr/opentibiabr/canary)](https://github.com/opentibiabr/canary/pulls)
 [![Contributors](https://img.shields.io/github/contributors/opentibiabr/canary.svg?style=flat-square)](https://github.com/opentibiabr/canary/graphs/contributors)
@@ -30,17 +30,16 @@ It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-gl
 
 This project was created with the intention of being a base as clean as possible, to work as an MMORPG engine and not necessarily linked to Tibia Global, although it will also work. The OpenTibiaBR - Global was adapted to work with the source of the Canary, so that it will be the first repository to use this engine.
 
-To connect to the server and to take a stable experience, you can use our [own client](https://github.com/opentibiabr/otclient) or [tibia client](https://forums.otserv.com.br/index.php?/forums/topic/167933-otservbr-global-cliente-tibia-12/) and if you want to edit something, check our [customized tools](https://github.com/opentibiabr/tools).
+To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient) or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check our [customized tools](https://majestyotbr.gitbook.io/opentibiabr/others/downloads#tools).
 
-If you want edit the map, use the [own remere's map editor](https://github.com/opentibiabr/remeres-map-editor/tree/canary).
+If you want edit the map, use the [own remere's map editor](https://github.com/opentibiabr/remeres-map-editor/).
 
 You are subject to our code of conduct, read at [this link](https://github.com/opentibiabr/canary/blob/master/CODE_OF_CONDUCT.md).
 
 ### Getting **Started**
 
-* **WARNING: YOU NEED TO UNZIP THE MAP BEFORE START THE SERVER.**
-* [Compiling on Windows](https://forums.otserv.com.br/index.php?/forums/topic/169235-windowsvc2019-compilando-sources-canary/), alternatively if you are ****not** going to change anything on the source** you can download the latest compiled version for windows from [nightly builds for Windows](https://github.com/opentibiabr/canary/actions/workflows/build-windows.yml?query=branch%3Amain).
-* Wiki: Compiling ([Ubuntu/Debian](https://github.com/opentibiabr/canary/wiki/Compiling-on-Ubuntu-or-Debian-GNU-Linux), [Windows](https://github.com/opentibiabr/canary/wiki/Compiling-on-Windows-(vcpkg)))
+* [Gitbook](https://majestyotbr.gitbook.io/opentibiabr/projects/canary).
+* [Wiki](https://github.com/opentibiabr/canary/wiki).
 
 ### Issues
 

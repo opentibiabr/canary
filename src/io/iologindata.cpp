@@ -28,9 +28,9 @@
 
 #include <limits>
 
-bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
-	if (account::ERROR_NO != account->LoadAccountDB(email)) {
-		SPDLOG_ERROR("Email {} doesn't match any account.", email);
+bool IOLoginData::authenticateAccountPassword(const std::string& accountIdentifier, const std::string& password, account::Account *account) {
+	if (account::ERROR_NO != account->LoadAccountDB(accountIdentifier)) {
+		SPDLOG_ERROR("{} {} doesn't match any account.", account->getProtocolCompat() ? "Username" : "Email", accountIdentifier);
 		return false;
 	}
 
@@ -44,10 +44,11 @@ bool IOLoginData::authenticateAccountPassword(const std::string& email, const st
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string& email, const std::string& password, std::string& characterName, uint32_t *accountId)
+bool IOLoginData::gameWorldAuthentication(const std::string& accountIdentifier, const std::string& password, std::string& characterName, uint32_t *accountId, bool oldProtocol)
 {
 	account::Account account;
-	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
+	account.setProtocolCompat(oldProtocol);
+	if (!IOLoginData::authenticateAccountPassword(accountIdentifier, password, &account)) {
 		return false;
 	}
 
@@ -493,7 +494,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
       Container* itemContainer = item->getContainer();
       if (itemContainer) {
         int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
-        if (cid > 0) {
+        if (player->getProtocolVersion() > 1200 && cid > 0) {
           openContainersList.emplace_back(std::make_pair(cid, itemContainer));
         }
         if (item->hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
@@ -508,13 +509,15 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
-  std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
-    return left.first < right.first;
-  });
+  if (!acc.getProtocolCompat()) {
+    std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*> &left, const std::pair<uint8_t, Container*> &right) {
+      return left.first < right.first;
+    });
 
-  for (auto& it : openContainersList) {
-    player->addContainer(it.first - 1, it.second);
-    player->onSendContainer(it.second);
+    for (auto& it : openContainersList) {
+      player->addContainer(it.first - 1, it.second);
+      player->onSendContainer(it.second);
+    }
   }
 
   // Store Inbox

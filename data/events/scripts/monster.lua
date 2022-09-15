@@ -34,7 +34,7 @@ function Monster:onDropLoot(corpse)
 		end
 
 		if player then
-			local text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
+			local text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription(player:getClient().version < 1200))
 			if preyChanceBoost ~= 100 then
 				text = text .. " (active prey bonus)"
 			end

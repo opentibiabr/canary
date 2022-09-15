@@ -59,7 +59,6 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO)
 			registerEnumIn(L, "configKeys", REMOVE_WEAPON_CHARGES)
 			registerEnumIn(L, "configKeys", REMOVE_POTION_CHARGES)
-			registerEnumIn(L, "configKeys", STOREMODULES)
 			registerEnumIn(L, "configKeys", WEATHER_RAIN)
 			registerEnumIn(L, "configKeys", WEATHER_THUNDER)
 			registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST)

@@ -357,6 +357,8 @@ enum SpeakClasses : uint8_t {
 	TALKTYPE_MONSTER_SAY = 36,
 	TALKTYPE_MONSTER_YELL = 37,
 
+	TALKTYPE_MONSTER_LAST_OLDPROTOCOL = 38, /* Dont forget about the CHANNEL_R2*/
+
 	TALKTYPE_CHANNEL_R2 = 0xFF, //#d
 };
 
@@ -385,6 +387,8 @@ enum MessageClasses : uint8_t {
 	MESSAGE_PARTY_MANAGEMENT = 34, /* Green message in game window and in the console*/
 	MESSAGE_PARTY = 35, /* White message on the console*/
 
+	MESSAGE_LAST_OLDPROTOCOL = 37, /* Last Message on old protocol*/
+
 	MESSAGE_REPORT = 38, /* White message on the game window and in the console*/
 	MESSAGE_HOTKEY_PRESSED = 39, /* Green message in game window and in the console*/
 	MESSAGE_TUTORIAL_HINT = 40, /* no effect (?)*/
@@ -397,6 +401,7 @@ enum MessageClasses : uint8_t {
 	MESSAGE_OFFLINE_TRAINING = 50, /* White message on the game window and in the console*/
 	MESSAGE_TRANSACTION = 51, /* White message on the game window and in the console*/
 	MESSAGE_POTION = 52, /* Orange creature say*/
+
 };
 
 enum Fluids_t : uint8_t {

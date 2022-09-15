@@ -27,7 +27,6 @@
 #include "config/configmanager.h"
 #include "creatures/creature.h"
 #include "game/scheduling/tasks.h"
-#include "game/gamestore.h"
 #include "io/ioprey.h"
 
 class NetworkMessage;
@@ -126,6 +125,8 @@ private:
 	void parseQuickLoot(NetworkMessage &msg);
 	void parseLootContainer(NetworkMessage &msg);
 	void parseQuickLootBlackWhitelist(NetworkMessage &msg);
+
+	void sendCreatureHelpers(uint32_t creatureId, uint16_t helpers);
 
 	// Depot search
 	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count);
@@ -245,12 +246,6 @@ private:
 	void parseOpenPrivateChannel(NetworkMessage &msg);
 	void parseCloseChannel(NetworkMessage &msg);
 
-	//Store methods
-	void parseStoreOpen(NetworkMessage &message);
-	void parseStoreRequestOffers(NetworkMessage &message);
-	void parseStoreBuyOffer(NetworkMessage &message);
-	void parseCoinTransfer(NetworkMessage &msg);
-
 	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
@@ -302,7 +297,6 @@ private:
 	void sendCreatureOutfit(const Creature *creature, const Outfit_t &outfit);
 	void sendStats();
 	void sendBasicData();
-	void sendStoreHighlight();
 	void sendTextMessage(const TextMessage &message);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
 
@@ -377,19 +371,9 @@ private:
 
 	void sendCoinBalance();
 
-	void sendOpenStore(uint8_t serviceType);
-	void sendStoreCategoryOffers(StoreCategory *category);
-	void sendStoreError(GameStoreError_t error, const std::string &message);
-	void sendStorePurchaseSuccessful(const std::string &message, const uint32_t coinBalance);
-	void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType);
-
 	void sendPreyTimeLeft(const PreySlot* slot);
 	void sendPreyData(const PreySlot* slot);
 	void sendPreyPrices();
-
-	void sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint32_t page, uint8_t entriesPerPage);
-	void parseStoreOpenTransactionHistory(NetworkMessage &msg);
-	void parseStoreRequestTransactionHistory(NetworkMessage &msg);
 
 	//tiles
 	void sendMapDescription(const Position &pos);
@@ -489,6 +473,8 @@ private:
 
 	bool loggedIn = false;
 	bool shouldAddExivaRestrictions = false;
+
+	bool oldProtocol = false;
 
 	void sendInventory();
 

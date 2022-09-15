@@ -138,6 +138,8 @@ bool ConfigManager::load()
 		integer[PREMIUM_DEPOT_LIMIT] = getGlobalNumber(L, "premiumDepotLimit", 8000);
 		integer[DEPOT_BOXES] = getGlobalNumber(L, "depotBoxes", 20);
 		integer[STASH_ITEMS] = getGlobalNumber(L, "stashItemCount", 5000);
+
+		boolean[OLD_PROTOCOL] = getGlobalBoolean(L, "allowOldProtocol", false);
 	}
 
 	boolean[ALLOW_CHANGEOUTFIT] = getGlobalBoolean(L, "allowChangeOutfit", true);
@@ -168,7 +170,6 @@ bool ConfigManager::load()
 	boolean[HOUSE_OWNED_BY_ACCOUNT] = getGlobalBoolean(L, "houseOwnedByAccount", false);
 	boolean[CLEAN_PROTECTION_ZONES] = getGlobalBoolean(L, "cleanProtectionZones", false);
 	boolean[GLOBAL_SERVER_SAVE_SHUTDOWN] = getGlobalBoolean(L, "globalServerSaveShutdown", true);
-	boolean[STOREMODULES] = getGlobalBoolean(L, "gamestoreByModules", true);
 	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
 	boolean[PUSH_WHEN_ATTACKING] = getGlobalBoolean(L, "pushWhenAttacking", false);
 

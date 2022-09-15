@@ -203,6 +203,12 @@ enum ItemDecayState_t : uint8_t {
 	DECAYING_STOPPING,
 };
 
+enum ItemAnimation_t : uint8_t {
+	ANIMATION_NONE = 0,
+	ANIMATION_RANDOM = 1,
+	ANIMATION_DESYNC = 2,
+};
+
 enum AttrTypes_t {
 	//ATTR_DESCRIPTION = 1,
 	//ATTR_EXT_FILE = 2,

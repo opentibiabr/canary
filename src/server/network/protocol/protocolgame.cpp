@@ -1594,7 +1594,7 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	else
 	{
 		msg.addString(it.name);
-		AddItem(msg, it.id, itemCount, item->getTier());
+		AddItem(msg, it.id, itemCount, 0);
 	}
 	msg.addByte(0);
 

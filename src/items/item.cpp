@@ -1466,6 +1466,10 @@ std::vector<std::pair<std::string, std::string>>
 		} else if (it.slotPosition & SLOTP_TWO_HAND || it.slotPosition & SLOTP_LEFT || it.slotPosition & SLOTP_RIGHT) {
 			descriptions.emplace_back("Body Position", "Hand");
 		}
+
+		if (it.upgradeClassification > 0) {
+			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
+		}
 	}
 	descriptions.shrink_to_fit();
 	return descriptions;
@@ -1522,7 +1526,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 	if (item && item->getClassification() > 1) {
 		string << std::endl << "Classification: " << item->getClassification() << " Tier: " << static_cast<uint16_t>(item->getTier());
 		if (item->getTier() != 0) {
-			string  << " (";
+			string << " (";
 			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
 				string << item->getFatalChance() << "% Onslaught).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {

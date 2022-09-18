@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+
 #include "lua/creature/events.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "utils/pugicast.h"

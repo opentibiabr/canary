@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+
 #include "creatures/appearance/mounts/mounts.h"
 #include "game/game.h"
 #include "lua/functions/creatures/player/mount_functions.hpp"

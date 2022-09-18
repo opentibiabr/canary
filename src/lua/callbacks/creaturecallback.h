@@ -21,7 +21,9 @@
 #define SRC_LUA_CALLBACKS_CREATURECALLBACK_H_
 
 #include "otpch.h"
+
 #include "creatures/creature.h"
+
 class Creature;
 
 class CreatureCallback {

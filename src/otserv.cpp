@@ -26,6 +26,7 @@
 #endif
 
 #include "declarations.hpp"
+
 #include "creatures/combat/spells.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"

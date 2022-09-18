@@ -1,0 +1,27 @@
+---
+name: Run clang-format Linter
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: DoozyX/clang-format-lint-action@v0.14
+        with:
+          source: "."
+          exclude: "./lib"
+          extensions: "hpp,h,cpp,c"
+          clangFormatVersion: 10
+          inplace: True
+      - uses: EndBug/add-and-commit@v4
+        with:
+          author_name: GitHub Actions - Linter
+          author_email: noreply@opentibiabr.com
+          message: "update code format"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -26,14 +26,12 @@
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 
-bool Mounts::reload()
-{
+bool Mounts::reload() {
 	mounts.clear();
 	return loadFromXml();
 }
 
-bool Mounts::loadFromXml()
-{
+bool Mounts::loadFromXml() {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file("data/XML/mounts.xml");
 	if (!result) {
@@ -54,15 +52,13 @@ bool Mounts::loadFromXml()
 			mountNode.attribute("name").as_string(),
 			pugi::cast<int32_t>(mountNode.attribute("speed").value()),
 			mountNode.attribute("premium").as_bool(),
-			mountNode.attribute("type").as_string()
-		);
+			mountNode.attribute("type").as_string());
 	}
 	mounts.shrink_to_fit();
 	return true;
 }
 
-Mount* Mounts::getMountByID(uint8_t id)
-{
+Mount* Mounts::getMountByID(uint8_t id) {
 	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const Mount& mount) {
 		return mount.id == id;
 	});
@@ -81,8 +77,7 @@ Mount* Mounts::getMountByName(const std::string& name) {
 	return nullptr;
 }
 
-Mount* Mounts::getMountByClientID(uint16_t clientId)
-{
+Mount* Mounts::getMountByClientID(uint16_t clientId) {
 	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const Mount& mount) {
 		return mount.clientId == clientId;
 	});

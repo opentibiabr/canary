@@ -32,8 +32,7 @@
 
 namespace {
 
-std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue)
-{
+std::string getGlobalString(lua_State* L, const char* identifier, const char* defaultValue) {
 	lua_getglobal(L, identifier);
 	if (!lua_isstring(L, -1)) {
 		return defaultValue;
@@ -45,8 +44,7 @@ std::string getGlobalString(lua_State* L, const char* identifier, const char* de
 	return ret;
 }
 
-int32_t getGlobalNumber(lua_State* L, const char* identifier, const int32_t defaultValue = 0)
-{
+int32_t getGlobalNumber(lua_State* L, const char* identifier, const int32_t defaultValue = 0) {
 	lua_getglobal(L, identifier);
 	if (!lua_isnumber(L, -1)) {
 		return defaultValue;
@@ -57,8 +55,7 @@ int32_t getGlobalNumber(lua_State* L, const char* identifier, const int32_t defa
 	return val;
 }
 
-bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultValue)
-{
+bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultValue) {
 	lua_getglobal(L, identifier);
 	if (!lua_isboolean(L, -1)) {
 		if (!lua_isstring(L, -1)) {
@@ -76,8 +73,7 @@ bool getGlobalBoolean(lua_State* L, const char* identifier, const bool defaultVa
 	return val != 0;
 }
 
-float getGlobalFloat(lua_State* L, const char* identifier, const float defaultValue = 0.0)
-{
+float getGlobalFloat(lua_State* L, const char* identifier, const float defaultValue = 0.0) {
 	lua_getglobal(L, identifier);
 	if (!lua_isnumber(L, -1)) {
 		return defaultValue;
@@ -90,8 +86,7 @@ float getGlobalFloat(lua_State* L, const char* identifier, const float defaultVa
 
 }
 
-bool ConfigManager::load()
-{
+bool ConfigManager::load() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
 		throw std::runtime_error("Failed to allocate memory");
@@ -269,7 +264,7 @@ bool ConfigManager::load()
 	floating[RATE_ATTACK_SPEED] = getGlobalFloat(L, "rateAttackSpeed", 1.0);
 	floating[RATE_OFFLINE_TRAINING_SPEED] = getGlobalFloat(L, "rateOfflineTrainingSpeed", 1.0);
 	floating[RATE_EXERCISE_TRAINING_SPEED] = getGlobalFloat(L, "rateExerciseTrainingSpeed", 1.0);
-	
+
 	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
 	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);
 	floating[RATE_MONSTER_DEFENSE] = getGlobalFloat(L, "rateMonsterDefense", 1.0);
@@ -301,8 +296,7 @@ bool ConfigManager::load()
 	return true;
 }
 
-bool ConfigManager::reload()
-{
+bool ConfigManager::reload() {
 	bool result = load();
 	if (transformToSHA1(getString(MOTD)) != g_game().getMotdHash()) {
 		g_game().incrementMotdNum();
@@ -312,8 +306,7 @@ bool ConfigManager::reload()
 
 static std::string dummyStr;
 
-const std::string& ConfigManager::getString(stringConfig_t what) const
-{
+const std::string& ConfigManager::getString(stringConfig_t what) const {
 	if (what >= LAST_STRING_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getString] - Accessing invalid index: {}", what);
 		return dummyStr;
@@ -321,8 +314,7 @@ const std::string& ConfigManager::getString(stringConfig_t what) const
 	return string[what];
 }
 
-int32_t ConfigManager::getNumber(integerConfig_t what) const
-{
+int32_t ConfigManager::getNumber(integerConfig_t what) const {
 	if (what >= LAST_INTEGER_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getNumber] - Accessing invalid index: {}", what);
 		return 0;
@@ -330,8 +322,7 @@ int32_t ConfigManager::getNumber(integerConfig_t what) const
 	return integer[what];
 }
 
-int16_t ConfigManager::getShortNumber(integerConfig_t what) const
-{
+int16_t ConfigManager::getShortNumber(integerConfig_t what) const {
 	if (what >= LAST_INTEGER_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getShortNumber] - Accessing invalid index: {}", what);
 		return 0;
@@ -339,8 +330,7 @@ int16_t ConfigManager::getShortNumber(integerConfig_t what) const
 	return integer[what];
 }
 
-bool ConfigManager::getBoolean(booleanConfig_t what) const
-{
+bool ConfigManager::getBoolean(booleanConfig_t what) const {
 	if (what >= LAST_BOOLEAN_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getBoolean] - Accessing invalid index: {}", what);
 		return false;
@@ -348,8 +338,7 @@ bool ConfigManager::getBoolean(booleanConfig_t what) const
 	return boolean[what];
 }
 
-float ConfigManager::getFloat(floatingConfig_t what) const
-{
+float ConfigManager::getFloat(floatingConfig_t what) const {
 	if (what >= LAST_FLOATING_CONFIG) {
 		SPDLOG_WARN("[ConfigManager::getFLoat] - Accessing invalid index: {}", what);
 		return 0;

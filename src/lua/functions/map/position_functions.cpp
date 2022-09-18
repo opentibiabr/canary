@@ -92,13 +92,7 @@ int PositionFunctions::luaPositionGetDistance(lua_State* L) {
 	// position:getDistance(positionEx)
 	const Position& positionEx = getPosition(L, 2);
 	const Position& position = getPosition(L, 1);
-	lua_pushnumber(L, std::max<int32_t>(
-		std::max<int32_t>(
-			std::abs(Position::getDistanceX(position, positionEx)),
-			std::abs(Position::getDistanceY(position, positionEx))
-		),
-		std::abs(Position::getDistanceZ(position, positionEx))
-	));
+	lua_pushnumber(L, std::max<int32_t>(std::max<int32_t>(std::abs(Position::getDistanceX(position, positionEx)), std::abs(Position::getDistanceY(position, positionEx))), std::abs(Position::getDistanceZ(position, positionEx))));
 	return 1;
 }
 
@@ -123,8 +117,7 @@ int PositionFunctions::luaPositionGetPathTo(lua_State* L) {
 			lua_pushnumber(L, dir);
 			lua_rawseti(L, -2, ++index);
 		}
-	}
-	else {
+	} else {
 		pushBoolean(L, false);
 	}
 	return 1;

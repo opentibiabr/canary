@@ -21,9 +21,9 @@
 #define SRC_LUA_SCRIPTS_LUAJIT_SYNC_HPP_
 
 #if __has_include("luajit/lua.hpp")
-	#include <luajit/lua.hpp>
+#include <luajit/lua.hpp>
 #else
-	#include <lua.hpp>
+#include <lua.hpp>
 #endif
 
 #if LUA_VERSION_NUM >= 502
@@ -37,4 +37,4 @@
 #endif
 #endif
 
-#endif  // SRC_LUA_SCRIPTS_LUAJIT_SYNC_HPP_
+#endif // SRC_LUA_SCRIPTS_LUAJIT_SYNC_HPP_

@@ -21,36 +21,36 @@
 #define SRC_GAME_SCHEDULING_SCHEDULER_H_
 
 #include "game/scheduling/tasks.h"
-#include <unordered_set>
 #include <queue>
+#include <unordered_set>
 
 #include "utils/thread_holder_base.h"
 
 static constexpr int32_t SCHEDULER_MINTICKS = 50;
 
-class SchedulerTask : public Task
-{
-	public:
-		void setEventId(uint32_t id) {
-			eventId = id;
-		}
-		uint32_t getEventId() const {
-			return eventId;
-		}
+class SchedulerTask : public Task {
+public:
+	void setEventId(uint32_t id) {
+		eventId = id;
+	}
+	uint32_t getEventId() const {
+		return eventId;
+	}
 
-		std::chrono::system_clock::time_point getCycle() const {
-			return expiration;
-		}
+	std::chrono::system_clock::time_point getCycle() const {
+		return expiration;
+	}
 
-	private:
-		SchedulerTask(uint32_t delay, std::function<void (void)>&& f) : Task(delay, std::move(f)) {}
+private:
+	SchedulerTask(uint32_t delay, std::function<void(void)>&& f)
+		: Task(delay, std::move(f)) { }
 
-		uint32_t eventId = 0;
+	uint32_t eventId = 0;
 
-		friend SchedulerTask* createSchedulerTask(uint32_t, std::function<void (void)>);
+	friend SchedulerTask* createSchedulerTask(uint32_t, std::function<void(void)>);
 };
 
-SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void (void)> f);
+SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f);
 
 struct TaskComparator {
 	bool operator()(const SchedulerTask* lhs, const SchedulerTask* rhs) const {
@@ -58,38 +58,37 @@ struct TaskComparator {
 	}
 };
 
-class Scheduler : public ThreadHolder<Scheduler>
-{
-	public:
-		Scheduler() = default;
-		
-		Scheduler(Scheduler const&) = delete;
-		void operator=(Scheduler const&) = delete;
+class Scheduler : public ThreadHolder<Scheduler> {
+public:
+	Scheduler() = default;
 
-		static Scheduler& getInstance() {
-			// Guaranteed to be destroyed
-			static Scheduler instance;
-			// Instantiated on first use
-			return instance;
-		}
+	Scheduler(Scheduler const&) = delete;
+	void operator=(Scheduler const&) = delete;
 
-		uint32_t addEvent(SchedulerTask* task);
-		bool stopEvent(uint32_t eventId);
+	static Scheduler& getInstance() {
+		// Guaranteed to be destroyed
+		static Scheduler instance;
+		// Instantiated on first use
+		return instance;
+	}
 
-		void shutdown();
+	uint32_t addEvent(SchedulerTask* task);
+	bool stopEvent(uint32_t eventId);
 
-		void threadMain();
+	void shutdown();
 
-	private:
-		std::thread thread;
-		std::mutex eventLock;
-		std::condition_variable eventSignal;
+	void threadMain();
 
-		uint32_t lastEventId {0};
-		std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
-		phmap::flat_hash_set<uint32_t> eventIds;
+private:
+	std::thread thread;
+	std::mutex eventLock;
+	std::condition_variable eventSignal;
+
+	uint32_t lastEventId { 0 };
+	std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
+	phmap::flat_hash_set<uint32_t> eventIds;
 };
 
 constexpr auto g_scheduler = &Scheduler::getInstance;
 
-#endif  // SRC_GAME_SCHEDULING_SCHEDULER_H_
+#endif // SRC_GAME_SCHEDULING_SCHEDULER_H_

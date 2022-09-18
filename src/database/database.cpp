@@ -23,16 +23,13 @@
 
 #include <mysql/errmsg.h>
 
-
-Database::~Database()
-{
+Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);
 	}
 }
 
-bool Database::connect()
-{
+bool Database::connect() {
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
@@ -57,8 +54,8 @@ bool Database::connect()
 	return true;
 }
 
-bool Database::connect(const char *host, const char *user, const char *password,
-                      const char *database, uint32_t port, const char *sock) {
+bool Database::connect(const char* host, const char* user, const char* password,
+	const char* database, uint32_t port, const char* sock) {
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
@@ -72,7 +69,7 @@ bool Database::connect(const char *host, const char *user, const char *password,
 
 	// connects to database
 	if (!mysql_real_connect(handle, host, user, password, database, port, sock,
-                          0)) {
+			0)) {
 		SPDLOG_ERROR("MySQL Error Message: {}", mysql_error(handle));
 		return false;
 	}
@@ -84,8 +81,7 @@ bool Database::connect(const char *host, const char *user, const char *password,
 	return true;
 }
 
-bool Database::beginTransaction()
-{
+bool Database::beginTransaction() {
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
@@ -94,8 +90,7 @@ bool Database::beginTransaction()
 	return true;
 }
 
-bool Database::rollback()
-{
+bool Database::rollback() {
 	if (!handle) {
 		SPDLOG_ERROR("Database not initialized!");
 		return false;
@@ -111,12 +106,11 @@ bool Database::rollback()
 	return true;
 }
 
-bool Database::commit()
-{
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return false;
-  }
+bool Database::commit() {
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return false;
+	}
 
 	if (mysql_commit(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -128,12 +122,11 @@ bool Database::commit()
 	return true;
 }
 
-bool Database::executeQuery(const std::string& query)
-{
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return false;
-  }
+bool Database::executeQuery(const std::string& query) {
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return false;
+	}
 
 	bool success = true;
 
@@ -144,7 +137,7 @@ bool Database::executeQuery(const std::string& query)
 		SPDLOG_ERROR("Query: {}", query.substr(0, 256));
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		auto error = mysql_errno(handle);
-		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053/*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
+		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053 /*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
 			success = false;
 			break;
 		}
@@ -161,21 +154,20 @@ bool Database::executeQuery(const std::string& query)
 	return success;
 }
 
-DBResult_ptr Database::storeQuery(const std::string& query)
-{
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return nullptr;
-  }
+DBResult_ptr Database::storeQuery(const std::string& query) {
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return nullptr;
+	}
 
 	databaseLock.lock();
 
-	retry:
+retry:
 	while (mysql_real_query(handle, query.c_str(), query.length()) != 0) {
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		auto error = mysql_errno(handle);
-		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053/*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
+		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053 /*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
 			break;
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -188,7 +180,7 @@ DBResult_ptr Database::storeQuery(const std::string& query)
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		auto error = mysql_errno(handle);
-		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053/*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
+		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053 /*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
 			databaseLock.unlock();
 			return nullptr;
 		}
@@ -204,13 +196,11 @@ DBResult_ptr Database::storeQuery(const std::string& query)
 	return result;
 }
 
-std::string Database::escapeString(const std::string& s) const
-{
+std::string Database::escapeString(const std::string& s) const {
 	return escapeBlob(s.c_str(), s.length());
 }
 
-std::string Database::escapeBlob(const char* s, uint32_t length) const
-{
+std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	// the worst case is 2n + 1
 	size_t maxLength = (length * 2) + 1;
 
@@ -229,8 +219,7 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const
 	return escaped;
 }
 
-DBResult::DBResult(MYSQL_RES* res)
-{
+DBResult::DBResult(MYSQL_RES* res) {
 	handle = res;
 
 	size_t i = 0;
@@ -244,13 +233,11 @@ DBResult::DBResult(MYSQL_RES* res)
 	row = mysql_fetch_row(handle);
 }
 
-DBResult::~DBResult()
-{
+DBResult::~DBResult() {
 	mysql_free_result(handle);
 }
 
-std::string DBResult::getString(const std::string& s) const
-{
+std::string DBResult::getString(const std::string& s) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
 		SPDLOG_ERROR("Column '{}' does not exist in result set", s);
@@ -264,8 +251,7 @@ std::string DBResult::getString(const std::string& s) const
 	return std::string(row[it->second]);
 }
 
-const char* DBResult::getStream(const std::string& s, unsigned long& size) const
-{
+const char* DBResult::getStream(const std::string& s, unsigned long& size) const {
 	auto it = listNames.find(s);
 	if (it == listNames.end()) {
 		SPDLOG_ERROR("Column '{}' doesn't exist in the result set", s);
@@ -282,33 +268,29 @@ const char* DBResult::getStream(const std::string& s, unsigned long& size) const
 	return row[it->second];
 }
 
-size_t DBResult::countResults() const
-{
+size_t DBResult::countResults() const {
 	return static_cast<size_t>(mysql_num_rows(handle));
 }
 
-bool DBResult::hasNext() const
-{
+bool DBResult::hasNext() const {
 	return row != nullptr;
 }
 
-bool DBResult::next()
-{
-  if (!handle) {
-    SPDLOG_ERROR("Database not initialized!");
-    return false;
-  }
+bool DBResult::next() {
+	if (!handle) {
+		SPDLOG_ERROR("Database not initialized!");
+		return false;
+	}
 	row = mysql_fetch_row(handle);
 	return row != nullptr;
 }
 
-DBInsert::DBInsert(std::string insertQuery) : query(std::move(insertQuery))
-{
+DBInsert::DBInsert(std::string insertQuery)
+	: query(std::move(insertQuery)) {
 	this->length = this->query.length();
 }
 
-bool DBInsert::addRow(const std::string& row)
-{
+bool DBInsert::addRow(const std::string& row) {
 	// adds new row to buffer
 	const size_t rowLength = row.length();
 	length += rowLength;
@@ -331,15 +313,13 @@ bool DBInsert::addRow(const std::string& row)
 	return true;
 }
 
-bool DBInsert::addRow(std::ostringstream& row)
-{
+bool DBInsert::addRow(std::ostringstream& row) {
 	bool ret = addRow(row.str());
 	row.str(std::string());
 	return ret;
 }
 
-bool DBInsert::execute()
-{
+bool DBInsert::execute() {
 	if (values.empty()) {
 		return true;
 	}

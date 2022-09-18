@@ -280,7 +280,7 @@ int ItemTypeFunctions::luaItemTypeGetDescription(lua_State* L) {
 	return 1;
 }
 
-int ItemTypeFunctions::luaItemTypeGetSlotPosition(lua_State *L) {
+int ItemTypeFunctions::luaItemTypeGetSlotPosition(lua_State* L) {
 	// itemType:getSlotPosition()
 	const ItemType* itemType = getUserdata<const ItemType>(L, 1);
 	if (itemType) {

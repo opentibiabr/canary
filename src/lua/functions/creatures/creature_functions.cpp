@@ -9,8 +9,8 @@
 
 #include "otpch.h"
 
-#include "game/game.h"
 #include "creatures/creature.h"
+#include "game/game.h"
 #include "lua/functions/creatures/creature_functions.hpp"
 
 int CreatureFunctions::luaCreatureCreate(lua_State* L) {
@@ -277,8 +277,7 @@ int CreatureFunctions::luaCreatureGetMaster(lua_State* L) {
 	return 1;
 }
 
-int CreatureFunctions::luaCreatureReload(lua_State* L)
-{
+int CreatureFunctions::luaCreatureReload(lua_State* L) {
 	// creature:reload()
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (!creature) {

@@ -38,17 +38,19 @@ enum Direction : uint8_t {
 	DIRECTION_NONE = 8,
 };
 
-struct Position
-{
+struct Position {
 	constexpr Position() = default;
-	constexpr Position(uint16_t initX, uint16_t initY, uint8_t initZ) : x(initX), y(initY), z(initZ) {}
+	constexpr Position(uint16_t initX, uint16_t initY, uint8_t initZ)
+		: x(initX)
+		, y(initY)
+		, z(initZ) { }
 
-	template<int_fast32_t deltax, int_fast32_t deltay>
+	template <int_fast32_t deltax, int_fast32_t deltay>
 	static bool areInRange(const Position& p1, const Position& p2) {
 		return Position::getDistanceX(p1, p2) <= deltax && Position::getDistanceY(p1, p2) <= deltay;
 	}
 
-	template<int_fast32_t deltax, int_fast32_t deltay, int_fast16_t deltaz>
+	template <int_fast32_t deltax, int_fast32_t deltay, int_fast16_t deltaz>
 	static bool areInRange(const Position& p1, const Position& p2) {
 		return Position::getDistanceX(p1, p2) <= deltax && Position::getDistanceY(p1, p2) <= deltay && Position::getDistanceZ(p1, p2) <= deltaz;
 	}
@@ -108,7 +110,7 @@ struct Position
 	}
 
 	bool operator>(const Position& p) const {
-		return ! (*this < p);
+		return !(*this < p);
 	}
 
 	bool operator==(const Position& p) const {
@@ -130,12 +132,12 @@ struct Position
 	std::string toString() const {
 		std::string str;
 		return str.append("( ")
-                  .append(std::to_string(getX()))
-                  .append(" / ")
-                  .append(std::to_string(getY()))
-                  .append(" / ")
-                  .append(std::to_string(getZ()))
-                  .append(" )");
+			.append(std::to_string(getX()))
+			.append(" / ")
+			.append(std::to_string(getY()))
+			.append(" / ")
+			.append(std::to_string(getZ()))
+			.append(" )");
 	}
 
 	int_fast32_t getX() const { return x; }
@@ -146,4 +148,4 @@ struct Position
 std::ostream& operator<<(std::ostream&, const Position&);
 std::ostream& operator<<(std::ostream&, const Direction&);
 
-#endif  // SRC_GAME_MOVEMENT_POSITION_H_
+#endif // SRC_GAME_MOVEMENT_POSITION_H_

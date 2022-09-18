@@ -71,14 +71,16 @@ int ShopFunctions::luaShopSetIdFromName(lua_State* L) {
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			SPDLOG_WARN("[ShopFunctions::luaShopSetIdFromName] - "
-						"Unknown shop item {}", name);
+						"Unknown shop item {}",
+				name);
 			lua_pushnil(L);
 			return 1;
 		}
 
 		if (std::next(ids.first) != ids.second) {
 			SPDLOG_WARN("[ShopFunctions::luaShopSetIdFromName] - "
-						"Non-unique shop item {}", name);
+						"Non-unique shop item {}",
+				name);
 			lua_pushnil(L);
 			return 1;
 		}

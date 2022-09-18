@@ -19,15 +19,14 @@
 
 #include "otpch.h"
 
-#include "server/network/protocol/protocol.h"
-#include "server/network/message/outputmessage.h"
-#include "security/rsa.h"
 #include "game/scheduling/tasks.h"
+#include "security/rsa.h"
+#include "server/network/message/outputmessage.h"
+#include "server/network/protocol/protocol.h"
 
 Protocol::~Protocol() = default;
 
-void Protocol::onSendMessage(const OutputMessage_ptr& msg)
-{
+void Protocol::onSendMessage(const OutputMessage_ptr& msg) {
 	if (!rawMessages) {
 		uint32_t sendMessageChecksum = 0;
 		if (compreesionEnabled && msg->getLength() >= 128 && compression(*msg)) {
@@ -54,15 +53,14 @@ void Protocol::onSendMessage(const OutputMessage_ptr& msg)
 	}
 }
 
-bool Protocol::sendRecvMessageCallback(NetworkMessage& msg)
-{
+bool Protocol::sendRecvMessageCallback(NetworkMessage& msg) {
 	if (encryptionEnabled && !XTEA_decrypt(msg)) {
 		SPDLOG_ERROR("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
 		return false;
 	}
 
 	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
-	std::function<void (void)> callback = [protocolWeak, &msg]() {
+	std::function<void(void)> callback = [protocolWeak, &msg]() {
 		if (auto protocol = protocolWeak.lock()) {
 			if (auto protocolConnection = protocol->getConnection()) {
 				protocol->parsePacket(msg);
@@ -74,8 +72,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage& msg)
 	return true;
 }
 
-bool Protocol::onRecvMessage(NetworkMessage& msg)
-{
+bool Protocol::onRecvMessage(NetworkMessage& msg) {
 	if (checksumMethod != CHECKSUM_METHOD_NONE) {
 		uint32_t recvChecksum = msg.get<uint32_t>();
 		if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
@@ -98,8 +95,7 @@ bool Protocol::onRecvMessage(NetworkMessage& msg)
 		} else {
 			uint32_t checksum;
 			if (int32_t len = msg.getLength() - msg.getBufferPosition();
-			len > 0)
-			{
+				len > 0) {
 				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
 			} else {
 				checksum = 0;
@@ -115,8 +111,7 @@ bool Protocol::onRecvMessage(NetworkMessage& msg)
 	return sendRecvMessageCallback(msg);
 }
 
-OutputMessage_ptr Protocol::getOutputBuffer(int32_t size)
-{
+OutputMessage_ptr Protocol::getOutputBuffer(int32_t size) {
 	//dispatcher thread
 	if (!outputBuffer) {
 		outputBuffer = OutputMessagePool::getOutputMessage();
@@ -127,8 +122,7 @@ OutputMessage_ptr Protocol::getOutputBuffer(int32_t size)
 	return outputBuffer;
 }
 
-void Protocol::XTEA_encrypt(OutputMessage& msg) const
-{
+void Protocol::XTEA_encrypt(OutputMessage& msg) const {
 	const uint32_t delta = 0x61C88647;
 
 	// The message must be a multiple of 8
@@ -140,7 +134,7 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	uint8_t* buffer = msg.getOutputBuffer();
 	auto messageLength = static_cast<int32_t>(msg.getLength());
 	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = {key[0], key[1], key[2], key[3]};
+	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
 	// TODO: refactor this for not use c-style
 	uint32_t precachedControlSum[32][2];
 	uint32_t sum = 0;
@@ -161,8 +155,7 @@ void Protocol::XTEA_encrypt(OutputMessage& msg) const
 	}
 }
 
-bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
-{
+bool Protocol::XTEA_decrypt(NetworkMessage& msg) const {
 	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
 	if ((msgLength & 7) != 0) {
 		return false;
@@ -173,7 +166,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	auto messageLength = static_cast<int32_t>(msgLength);
 	int32_t readPos = 0;
-	const std::array<uint32_t, 4> newKey = {key[0], key[1], key[2], key[3]};
+	const std::array<uint32_t, 4> newKey = { key[0], key[1], key[2], key[3] };
 	// TODO: refactor this for not use c-style
 	uint32_t precachedControlSum[32][2];
 	uint32_t sum = 0xC6EF3720;
@@ -202,8 +195,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	return true;
 }
 
-bool Protocol::RSA_decrypt(NetworkMessage& msg)
-{
+bool Protocol::RSA_decrypt(NetworkMessage& msg) {
 	if ((msg.getLength() - msg.getBufferPosition()) < 128) {
 		return false;
 	}
@@ -214,8 +206,7 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 	return (msg.getByte() == 0);
 }
 
-uint32_t Protocol::getIP() const
-{
+uint32_t Protocol::getIP() const {
 	if (auto protocolConnection = getConnection()) {
 		return protocolConnection->getIP();
 	}
@@ -223,8 +214,7 @@ uint32_t Protocol::getIP() const
 	return 0;
 }
 
-void Protocol::enableCompression()
-{
+void Protocol::enableCompression() {
 	if (!compreesionEnabled) {
 		int32_t compressionLevel = g_configManager().getNumber(COMPRESSION_LEVEL);
 		if (compressionLevel != 0) {
@@ -242,8 +232,7 @@ void Protocol::enableCompression()
 	}
 }
 
-bool Protocol::compression(OutputMessage& msg) const
-{
+bool Protocol::compression(OutputMessage& msg) const {
 	auto outputMessageSize = msg.getLength();
 	if (outputMessageSize > NETWORKMESSAGE_MAXSIZE) {
 		SPDLOG_ERROR("[NetworkMessage::compression] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, outputMessageSize);
@@ -257,8 +246,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
 	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
-	ret != Z_OK && ret != Z_STREAM_END)
-	{
+		ret != Z_OK && ret != Z_STREAM_END) {
 		return false;
 	}
 	auto totalSize = static_cast<uint32_t>(defStream->total_out);

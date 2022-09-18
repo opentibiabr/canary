@@ -24,9 +24,7 @@
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.h"
 
-
-bool DatabaseManager::optimizeTables()
-{
+bool DatabaseManager::optimizeTables() {
 	Database& db = Database::getInstance();
 	std::ostringstream query;
 
@@ -55,8 +53,7 @@ bool DatabaseManager::optimizeTables()
 	return true;
 }
 
-bool DatabaseManager::tableExists(const std::string& tableName)
-{
+bool DatabaseManager::tableExists(const std::string& tableName) {
 	Database& db = Database::getInstance();
 
 	std::ostringstream query;
@@ -64,16 +61,14 @@ bool DatabaseManager::tableExists(const std::string& tableName)
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
-bool DatabaseManager::isDatabaseSetup()
-{
+bool DatabaseManager::isDatabaseSetup() {
 	Database& db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `TABLE_NAME` FROM `information_schema`.`tables` WHERE `TABLE_SCHEMA` = " << db.escapeString(g_configManager().getString(MYSQL_DB));
 	return db.storeQuery(query.str()).get() != nullptr;
 }
 
-int32_t DatabaseManager::getDatabaseVersion()
-{
+int32_t DatabaseManager::getDatabaseVersion() {
 	if (!tableExists("server_config")) {
 		Database& db = Database::getInstance();
 		db.executeQuery("CREATE TABLE `server_config` (`config` VARCHAR(50) NOT NULL, `value` VARCHAR(256) NOT NULL DEFAULT '', UNIQUE(`config`)) ENGINE = InnoDB");
@@ -88,8 +83,7 @@ int32_t DatabaseManager::getDatabaseVersion()
 	return -1;
 }
 
-void DatabaseManager::updateDatabase()
-{
+void DatabaseManager::updateDatabase() {
 	lua_State* L = luaL_newstate();
 	if (!L) {
 		return;
@@ -104,8 +98,9 @@ void DatabaseManager::updateDatabase()
 		std::ostringstream ss;
 		ss << "data/migrations/" << version << ".lua";
 		if (luaL_dofile(L, ss.str().c_str()) != 0) {
-			SPDLOG_ERROR("DatabaseManager::updateDatabase - Version: {}""] {}",
-                         version, lua_tostring(L, -1));
+			SPDLOG_ERROR("DatabaseManager::updateDatabase - Version: {}"
+						 "] {}",
+				version, lua_tostring(L, -1));
 			break;
 		}
 
@@ -117,7 +112,7 @@ void DatabaseManager::updateDatabase()
 		if (lua_pcall(L, 0, 1, 0) != 0) {
 			LuaScriptInterface::resetScriptEnv();
 			SPDLOG_WARN("[DatabaseManager::updateDatabase - Version: {}] {}",
-                         version, lua_tostring(L, -1));
+				version, lua_tostring(L, -1));
 			break;
 		}
 
@@ -135,8 +130,7 @@ void DatabaseManager::updateDatabase()
 	lua_close(L);
 }
 
-bool DatabaseManager::getDatabaseConfig(const std::string& config, int32_t& value)
-{
+bool DatabaseManager::getDatabaseConfig(const std::string& config, int32_t& value) {
 	Database& db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `value` FROM `server_config` WHERE `config` = " << db.escapeString(config);
@@ -150,8 +144,7 @@ bool DatabaseManager::getDatabaseConfig(const std::string& config, int32_t& valu
 	return true;
 }
 
-void DatabaseManager::registerDatabaseConfig(const std::string& config, int32_t value)
-{
+void DatabaseManager::registerDatabaseConfig(const std::string& config, int32_t value) {
 	Database& db = Database::getInstance();
 	std::ostringstream query;
 

@@ -26,27 +26,27 @@
 **/
 
 class TeamFinder {
- public:
+public:
 	TeamFinder() = default;
 	TeamFinder(uint16_t initMinLevel, uint16_t initMaxLevel, uint8_t initVocationIDs,
-               uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool,
-               uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID,
-               uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID,
-               uint32_t initLeaderGuid, std::map<uint32_t, uint8_t> initMembersMap) :
-            minLevel(initMinLevel),
-            maxLevel(initMaxLevel),
-            vocationIDs(initVocationIDs),
-            teamSlots(initTeamSlots),
-            freeSlots(initFreeSlots),
-            partyBool(initPartyBool),
-            timestamp(initTimestamp),
-            teamType(initTeamType),
-            bossID(initBossID),
-            hunt_type(initHunt_type),
-            hunt_area(initHunt_area),
-            questID(initQuestID),
-            leaderGuid(initLeaderGuid),
-            membersMap(initMembersMap) {}
+		uint16_t initTeamSlots, uint16_t initFreeSlots, bool initPartyBool,
+		uint32_t initTimestamp, uint8_t initTeamType, uint16_t initBossID,
+		uint16_t initHunt_type, uint16_t initHunt_area, uint16_t initQuestID,
+		uint32_t initLeaderGuid, std::map<uint32_t, uint8_t> initMembersMap)
+		: minLevel(initMinLevel)
+		, maxLevel(initMaxLevel)
+		, vocationIDs(initVocationIDs)
+		, teamSlots(initTeamSlots)
+		, freeSlots(initFreeSlots)
+		, partyBool(initPartyBool)
+		, timestamp(initTimestamp)
+		, teamType(initTeamType)
+		, bossID(initBossID)
+		, hunt_type(initHunt_type)
+		, hunt_area(initHunt_area)
+		, questID(initQuestID)
+		, leaderGuid(initLeaderGuid)
+		, membersMap(initMembersMap) { }
 	virtual ~TeamFinder() = default;
 
 	uint16_t minLevel = 0;
@@ -67,4 +67,4 @@ class TeamFinder {
 	std::map<uint32_t, uint8_t> membersMap = {};
 };
 
-#endif  // SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_
+#endif // SRC_CREATURES_PLAYERS_GROUPING_TEAM_FINDER_HPP_

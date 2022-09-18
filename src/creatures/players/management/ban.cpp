@@ -24,8 +24,7 @@
 #include "database/databasetasks.h"
 #include "utils/tools.h"
 
-bool Ban::acceptConnection(uint32_t clientIP)
-{
+bool Ban::acceptConnection(uint32_t clientIP) {
 	std::lock_guard<std::recursive_mutex> lockClass(lock);
 
 	uint64_t currentTime = OTSYS_TIME();
@@ -58,8 +57,7 @@ bool Ban::acceptConnection(uint32_t clientIP)
 	return true;
 }
 
-bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
-{
+bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo) {
 	Database& db = Database::getInstance();
 
 	std::ostringstream query;
@@ -89,8 +87,7 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 	return true;
 }
 
-bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo)
-{
+bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo) {
 	if (clientIP == 0) {
 		return false;
 	}
@@ -119,8 +116,7 @@ bool IOBan::isIpBanned(uint32_t clientIP, BanInfo& banInfo)
 	return true;
 }
 
-bool IOBan::isPlayerNamelocked(uint32_t playerId)
-{
+bool IOBan::isPlayerNamelocked(uint32_t playerId) {
 	std::ostringstream query;
 	query << "SELECT 1 FROM `player_namelocks` WHERE `player_id` = " << playerId;
 	return Database::getInstance().storeQuery(query.str()).get() != nullptr;

@@ -21,12 +21,12 @@
 
 #include "otpch.h"
 
-#include "lua/modules/modules.h"
 #include "creatures/players/player.h"
 #include "game/game.h"
+#include "lua/modules/modules.h"
 
-Modules::Modules() :
-	scriptInterface("Modules Interface") {
+Modules::Modules()
+	: scriptInterface("Modules Interface") {
 	scriptInterface.initState();
 }
 
@@ -56,7 +56,7 @@ Event_ptr Modules::getEvent(const std::string& nodeName) {
 }
 
 bool Modules::registerEvent(Event_ptr event, const pugi::xml_node&) {
-	Module_ptr module {static_cast<Module*>(event.release())};
+	Module_ptr module { static_cast<Module*>(event.release()) };
 	if (module->getEventType() == MODULE_TYPE_NONE) {
 		SPDLOG_ERROR("Trying to register event without type!");
 		return false;
@@ -105,9 +105,10 @@ void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage& msg, uint8_t 
 	}
 }
 
-
-Module::Module(LuaScriptInterface* interface) :
-	Event(interface), type(MODULE_TYPE_NONE), loaded(false) {}
+Module::Module(LuaScriptInterface* interface)
+	: Event(interface)
+	, type(MODULE_TYPE_NONE)
+	, loaded(false) { }
 
 bool Module::configureEvent(const pugi::xml_node& node) {
 	delay = 0;

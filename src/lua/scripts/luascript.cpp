@@ -19,18 +19,18 @@
 
 #include "otpch.h"
 
-#include "lua/scripts/luascript.h"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
-std::multimap <ScriptEnvironment* , Item*> ScriptEnvironment::tempItems;
+std::multimap<ScriptEnvironment*, Item*> ScriptEnvironment::tempItems;
 
 ScriptEnvironment LuaFunctionsLoader::scriptEnv[16];
 int32_t LuaFunctionsLoader::scriptEnvIndex = -1;
 
-LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) : interfaceName(std::move(initInterfaceName)) {
+LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName)
+	: interfaceName(std::move(initInterfaceName)) {
 	if (!g_luaEnvironment.getLuaState()) {
 		g_luaEnvironment.initState();
 	}

@@ -21,42 +21,39 @@
 
 #include "otpch.h"
 
-#include <stack>
 #include "io/fileloader.h"
-
+#include <stack>
 
 namespace OTB {
 
-constexpr Identifier wildcard = {{'\0', '\0', '\0', '\0'}};
+constexpr Identifier wildcard = { { '\0', '\0', '\0', '\0' } };
 
-Loader::Loader(const std::string& fileName, const Identifier& acceptedIdentifier):
-	fileContents(fileName)
-{
+Loader::Loader(const std::string& fileName, const Identifier& acceptedIdentifier)
+	: fileContents(fileName) {
 	constexpr auto minimalSize = sizeof(Identifier) + sizeof(Node::START) + sizeof(Node::type) + sizeof(Node::END);
 	if (fileContents.size() <= minimalSize) {
-		throw InvalidOTBFormat{};
+		throw InvalidOTBFormat {};
 	}
 
 	Identifier fileIdentifier;
 	std::copy(fileContents.begin(), fileContents.begin() + fileIdentifier.size(), fileIdentifier.begin());
 	if (fileIdentifier != acceptedIdentifier && fileIdentifier != wildcard) {
-		throw InvalidOTBFormat{};
+		throw InvalidOTBFormat {};
 	}
 }
 
 using NodeStack = std::stack<Node*, std::vector<Node*>>;
 static Node& getCurrentNode(const NodeStack& nodeStack) {
 	if (nodeStack.empty()) {
-		throw InvalidOTBFormat{};
+		throw InvalidOTBFormat {};
 	}
 	return *nodeStack.top();
 }
 
-const Node& Loader::parseTree()
-{
+const Node& Loader::parseTree() {
 	auto it = fileContents.begin() + sizeof(Identifier);
 	if (static_cast<uint8_t>(*it) != Node::START) {
-		throw InvalidOTBFormat{};
+		throw InvalidOTBFormat {};
 	}
 	root.type = *(++it);
 	root.propsBegin = ++it;
@@ -64,7 +61,7 @@ const Node& Loader::parseTree()
 	parseStack.push(&root);
 
 	for (; it != fileContents.end(); ++it) {
-		switch(static_cast<uint8_t>(*it)) {
+		switch (static_cast<uint8_t>(*it)) {
 			case Node::START: {
 				auto& currentNode = getCurrentNode(parseStack);
 				if (currentNode.children.empty()) {
@@ -73,7 +70,7 @@ const Node& Loader::parseTree()
 				currentNode.children.emplace_back();
 				auto& child = currentNode.children.back();
 				if (++it == fileContents.end()) {
-					throw InvalidOTBFormat{};
+					throw InvalidOTBFormat {};
 				}
 				child.type = *it;
 				child.propsBegin = it + sizeof(Node::type);
@@ -90,7 +87,7 @@ const Node& Loader::parseTree()
 			}
 			case Node::ESCAPE: {
 				if (++it == fileContents.end()) {
-					throw InvalidOTBFormat{};
+					throw InvalidOTBFormat {};
 				}
 				break;
 			}
@@ -100,14 +97,13 @@ const Node& Loader::parseTree()
 		}
 	}
 	if (!parseStack.empty()) {
-		throw InvalidOTBFormat{};
+		throw InvalidOTBFormat {};
 	}
 
 	return root;
 }
 
-bool Loader::getProps(const Node& node, PropStream& props)
-{
+bool Loader::getProps(const Node& node, PropStream& props) {
 	auto size = std::distance(node.propsBegin, node.propsEnd);
 	if (size == 0) {
 		return false;

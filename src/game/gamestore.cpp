@@ -26,37 +26,34 @@
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 
-uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE=16;
+uint16_t GameStore::HISTORY_ENTRIES_PER_PAGE = 16;
 
-std::vector<std::string> getIconsVector(std::string rawString)
-{
+std::vector<std::string> getIconsVector(std::string rawString) {
 	std::vector<std::string> icons;
 	boost::split(icons, rawString, boost::is_any_of("|")); //converting the |-separated string to a vector of tokens
 	icons.shrink_to_fit();
 	return icons;
 }
 
-std::vector<uint8_t> getIntVector(std::string rawString)
-{
+std::vector<uint8_t> getIntVector(std::string rawString) {
 	std::vector<uint8_t> ints;
 	std::vector<std::string> rawInts;
 	boost::split(rawInts, rawString, boost::is_any_of("|"));
 
-	for(std::string numStr : rawInts) {
-		uint8_t i = (uint8_t)std::stoi(numStr) ;
+	for (std::string numStr : rawInts) {
+		uint8_t i = (uint8_t)std::stoi(numStr);
 		ints.push_back(i);
 	}
 	ints.shrink_to_fit();
 	return ints;
 }
 
-bool GameStore::reload()
-{
-	for (auto category:storeCategoryOffers) {
-		for (auto offer:category->offers) {
+bool GameStore::reload() {
+	for (auto category : storeCategoryOffers) {
+		for (auto offer : category->offers) {
 			offer->icons.clear();
 			if (offer->type == BLESSING) {
-				((BlessingOffer *) offer)->blessings.clear();
+				((BlessingOffer*)offer)->blessings.clear();
 			}
 			free(offer); //offer is a pointer, so it needs to be released manually
 		}
@@ -69,8 +66,7 @@ bool GameStore::reload()
 	return loadFromXml();
 }
 
-bool GameStore::loadFromXml()
-{
+bool GameStore::loadFromXml() {
 	if (isLoaded()) {
 		return true;
 	} else {
@@ -83,7 +79,7 @@ bool GameStore::loadFromXml()
 		}
 
 		for (auto categoryNode : doc.child("gamestore").children()) { //category iterator
-			StoreCategory *cat = new StoreCategory();
+			StoreCategory* cat = new StoreCategory();
 			cat->name = categoryNode.attribute("name").as_string();
 			cat->description = categoryNode.attribute("description").as_string("");
 			if (!cat->name.length()) {
@@ -105,7 +101,7 @@ bool GameStore::loadFromXml()
 
 			for (auto offerNode : categoryNode.children()) {
 				std::string type = offerNode.attribute("type").as_string();
-				BaseOffer *offer = nullptr;
+				BaseOffer* offer = nullptr;
 				if (boost::iequals(type, "namechange")) {
 					offer = new BaseOffer();
 					offer->type = NAMECHANGE;
@@ -116,25 +112,25 @@ bool GameStore::loadFromXml()
 					offer = new BaseOffer();
 					offer->type = PROMOTION;
 				} else if (boost::iequals(type, "outfit")) {
-					OutfitOffer *tmp = new OutfitOffer();
+					OutfitOffer* tmp = new OutfitOffer();
 					tmp->type = OUTFIT;
-					tmp->maleLookType = (uint16_t) offerNode.attribute("malelooktype").as_uint();
-					tmp->femaleLookType = (uint16_t) offerNode.attribute("femalelooktype").as_uint();
-					tmp->addonNumber = (uint8_t) offerNode.attribute("addon").as_uint(0);
+					tmp->maleLookType = (uint16_t)offerNode.attribute("malelooktype").as_uint();
+					tmp->femaleLookType = (uint16_t)offerNode.attribute("femalelooktype").as_uint();
+					tmp->addonNumber = (uint8_t)offerNode.attribute("addon").as_uint(0);
 					if (!tmp->femaleLookType || !tmp->maleLookType || tmp->addonNumber > 3) {
 						printXMLError("Error parsing XML outfit offer  - GameStore::loadFromXml",
-									"data/XML/gamestore.xml",
-									result);
+							"data/XML/gamestore.xml",
+							result);
 						return false;
 					} else {
 						offer = tmp;
 					}
 				} else if (boost::iequals(type, "addon")) {
-					OutfitOffer *tmp = new OutfitOffer();
+					OutfitOffer* tmp = new OutfitOffer();
 					tmp->type = OUTFIT_ADDON;
-					tmp->maleLookType = (uint16_t) offerNode.attribute("malelooktype").as_uint();
-					tmp->femaleLookType = (uint16_t) offerNode.attribute("femalelooktype").as_uint();
-					tmp->addonNumber = (uint8_t) offerNode.attribute("addon").as_uint(0);
+					tmp->maleLookType = (uint16_t)offerNode.attribute("malelooktype").as_uint();
+					tmp->femaleLookType = (uint16_t)offerNode.attribute("femalelooktype").as_uint();
+					tmp->addonNumber = (uint8_t)offerNode.attribute("addon").as_uint(0);
 					if (!tmp->femaleLookType || !tmp->maleLookType || !tmp->addonNumber || tmp->addonNumber > 3) {
 						printXMLError("Error parsing XML addon offer - GameStore::loadFromXml", "data/XML/gamestore.xml", result);
 						return false;
@@ -142,51 +138,51 @@ bool GameStore::loadFromXml()
 						offer = tmp;
 					}
 				} else if (boost::iequals(type, "mount")) {
-					MountOffer *tmp = new MountOffer();
+					MountOffer* tmp = new MountOffer();
 					tmp->type = MOUNT;
-					tmp->mountId = (uint8_t) offerNode.attribute("mountid").as_uint();
+					tmp->mountId = (uint8_t)offerNode.attribute("mountid").as_uint();
 					if (!tmp->mountId) {
 						printXMLError(
-								"Error parsing XML mountID number not specified for an mount offer - GameStore::loadFromXml",
-								"data/XML/gamestore.xml", result);
+							"Error parsing XML mountID number not specified for an mount offer - GameStore::loadFromXml",
+							"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
 					}
 				} else if (boost::iequals(type, "item")) {
-					ItemOffer *tmp = new ItemOffer();
+					ItemOffer* tmp = new ItemOffer();
 					tmp->type = ITEM;
-					tmp->productId = (uint16_t) offerNode.attribute("productid").as_uint();
-					tmp->count = (uint16_t) offerNode.attribute("count").as_uint();
+					tmp->productId = (uint16_t)offerNode.attribute("productid").as_uint();
+					tmp->count = (uint16_t)offerNode.attribute("count").as_uint();
 
 					if (!tmp->productId || !tmp->count) {
 						printXMLError("Error parsing XML Item Offer - GameStore::loadFromXml",
-									"data/XML/gamestore.xml", result);
+							"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
 					}
 				} else if (boost::iequals(type, "stackableitem")) {
-					ItemOffer *tmp = new ItemOffer();
+					ItemOffer* tmp = new ItemOffer();
 					tmp->type = STACKABLE_ITEM;
-					tmp->productId = (uint16_t) offerNode.attribute("productid").as_uint();
-					tmp->count = (uint16_t) offerNode.attribute("count").as_uint();
+					tmp->productId = (uint16_t)offerNode.attribute("productid").as_uint();
+					tmp->count = (uint16_t)offerNode.attribute("count").as_uint();
 
 					if (!tmp->productId || !tmp->count) {
 						printXMLError("Error parsing XML Stackable Item Offer - GameStore::loadFromXml",
-									"data/XML/gamestore.xml", result);
+							"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
 					}
 				} else if (boost::iequals(type, "wrapitem")) {
-					ItemOffer *tmp = new ItemOffer();
+					ItemOffer* tmp = new ItemOffer();
 					tmp->type = WRAP_ITEM;
-					tmp->productId = (uint16_t) offerNode.attribute("productid").as_uint();
-					tmp->count = (uint16_t) offerNode.attribute("count").as_uint();
+					tmp->productId = (uint16_t)offerNode.attribute("productid").as_uint();
+					tmp->count = (uint16_t)offerNode.attribute("count").as_uint();
 					if (!tmp->productId || !tmp->count) {
 						printXMLError("Error parsing XML Wrappable Item Offer - GameStore::loadFromXml",
-									"data/XML/gamestore.xml", result);
+							"data/XML/gamestore.xml", result);
 						return false;
 					} else {
 						offer = tmp;
@@ -198,9 +194,9 @@ bool GameStore::loadFromXml()
 					if (!tmp->blessings.size()) {
 						//no number was found
 						printXMLError("Error Parsing XML bless offer - "
-									"no blessnumber specified  - "
-									"GameStore::loadFromXml",
-									"data/XML/gamestore.xml", result);
+									  "no blessnumber specified  - "
+									  "GameStore::loadFromXml",
+							"data/XML/gamestore.xml", result);
 						return false;
 					}
 
@@ -215,7 +211,7 @@ bool GameStore::loadFromXml()
 					posY = (uint16_t)offerNode.attribute("y").as_uint();
 					posZ = (uint8_t)offerNode.attribute("z").as_uint();
 
-					tmp->position = Position(posX,posY,posZ);
+					tmp->position = Position(posX, posY, posZ);
 
 					offer = tmp;
 				} else if (boost::iequals(type, "premiumtime")) {
@@ -225,10 +221,10 @@ bool GameStore::loadFromXml()
 					tmp->days = (uint16_t)offerNode.attribute("days").as_uint();
 					if (tmp->days == 0) {
 						printXMLError("Error parsing XML premiumtime offer type "
-									"- required 'days' attribute not found - "
-									"GameStore::loadFromXml",
-									"data/XML/gamestore.xml",
-									result);
+									  "- required 'days' attribute not found - "
+									  "GameStore::loadFromXml",
+							"data/XML/gamestore.xml",
+							result);
 						return false;
 					}
 
@@ -280,8 +276,7 @@ bool GameStore::loadFromXml()
 	}
 }
 
-int8_t GameStore::getCategoryIndexByName(std::string categoryName)
-{
+int8_t GameStore::getCategoryIndexByName(std::string categoryName) {
 	for (uint16_t i = 0; i < storeCategoryOffers.size(); i++) {
 		if (boost::iequals(storeCategoryOffers.at(i)->name, categoryName)) {
 			return i;
@@ -291,8 +286,7 @@ int8_t GameStore::getCategoryIndexByName(std::string categoryName)
 	return -1;
 }
 
-bool GameStore::haveCategoryByState(StoreState_t state)
-{
+bool GameStore::haveCategoryByState(StoreState_t state) {
 	for (auto category : storeCategoryOffers) {
 		if (category->state == state) {
 			return true;
@@ -302,20 +296,18 @@ bool GameStore::haveCategoryByState(StoreState_t state)
 	return false;
 }
 
-uint16_t GameStore::getOffersCount()
-{
+uint16_t GameStore::getOffersCount() {
 	uint16_t count = 0;
-	for(auto category:storeCategoryOffers) {
-		count+= category->offers.size();
+	for (auto category : storeCategoryOffers) {
+		count += category->offers.size();
 	}
 
 	return count;
 }
 
-const BaseOffer *GameStore::getOfferByOfferId(uint32_t offerId)
-{
-	for(StoreCategory* category : storeCategoryOffers) {
-		for (BaseOffer *offer : category->offers) {
+const BaseOffer* GameStore::getOfferByOfferId(uint32_t offerId) {
+	for (StoreCategory* category : storeCategoryOffers) {
+		for (BaseOffer* offer : category->offers) {
 			if (offer->id == offerId) {
 				return offer;
 			}
@@ -325,15 +317,14 @@ const BaseOffer *GameStore::getOfferByOfferId(uint32_t offerId)
 	return nullptr;
 }
 
-HistoryStoreOfferList IOGameStore::getHistoryEntries(uint32_t account_id, uint32_t page)
-{
+HistoryStoreOfferList IOGameStore::getHistoryEntries(uint32_t account_id, uint32_t page) {
 	HistoryStoreOfferList historyStoreOfferList;
 
 	std::ostringstream query;
 
-	query << "SELECT `description`,`mode`,`coin_amount`,`time` FROM `store_history` WHERE `account_id` = " <<account_id << " ORDER BY `time` DESC LIMIT "
-			<< (std::max<int>((page-1), 0)*GameStore::HISTORY_ENTRIES_PER_PAGE)
-			<< "," << GameStore::HISTORY_ENTRIES_PER_PAGE <<";";
+	query << "SELECT `description`,`mode`,`coin_amount`,`time` FROM `store_history` WHERE `account_id` = " << account_id << " ORDER BY `time` DESC LIMIT "
+		  << (std::max<int>((page - 1), 0) * GameStore::HISTORY_ENTRIES_PER_PAGE)
+		  << "," << GameStore::HISTORY_ENTRIES_PER_PAGE << ";";
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 
 	if (result) {

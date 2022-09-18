@@ -23,41 +23,41 @@
 #include "declarations.hpp"
 
 class GameStore {
-	public:
-		static uint16_t HISTORY_ENTRIES_PER_PAGE;
-		static void startup() {
-			HISTORY_ENTRIES_PER_PAGE=16;
-		}
+public:
+	static uint16_t HISTORY_ENTRIES_PER_PAGE;
+	static void startup() {
+		HISTORY_ENTRIES_PER_PAGE = 16;
+	}
 
-		bool isLoaded() {
-			return loaded;
-		}
+	bool isLoaded() {
+		return loaded;
+	}
 
-		bool reload();
-		bool loadFromXml();
-		uint16_t getOffersCount();
+	bool reload();
+	bool loadFromXml();
+	uint16_t getOffersCount();
 
-		uint16_t getCategoryCount() {
-			return (uint16_t) storeCategoryOffers.size();
-		}
+	uint16_t getCategoryCount() {
+		return (uint16_t)storeCategoryOffers.size();
+	}
 
-		std::vector<StoreCategory*> getCategoryOffers() {
-			return storeCategoryOffers;
-		};
+	std::vector<StoreCategory*> getCategoryOffers() {
+		return storeCategoryOffers;
+	};
 
-		int8_t getCategoryIndexByName(std::string categoryName);
-		bool haveCategoryByState(StoreState_t state);
-		const BaseOffer* getOfferByOfferId(uint32_t offerId);
+	int8_t getCategoryIndexByName(std::string categoryName);
+	bool haveCategoryByState(StoreState_t state);
+	const BaseOffer* getOfferByOfferId(uint32_t offerId);
 
-	private:
-		uint32_t offerCount=0;
-		bool loaded=false;
-		std::vector<StoreCategory*> storeCategoryOffers;
+private:
+	uint32_t offerCount = 0;
+	bool loaded = false;
+	std::vector<StoreCategory*> storeCategoryOffers;
 };
 
 class IOGameStore {
-	public:
-		static HistoryStoreOfferList getHistoryEntries(uint32_t account_id, uint32_t page);
+public:
+	static HistoryStoreOfferList getHistoryEntries(uint32_t account_id, uint32_t page);
 };
 
-#endif  // SRC_GAME_GAMESTORE_H_
+#endif // SRC_GAME_GAMESTORE_H_

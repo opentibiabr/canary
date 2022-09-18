@@ -20,11 +20,11 @@
 #ifndef SRC_IO_IOPREY_H_
 #define SRC_IO_IOPREY_H_
 
-#include <string>
-#include <iostream>
-#include <vector>
-#include <algorithm>
 #include "server/network/protocol/protocolgame.h"
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
 
 enum PreySlot_t : uint8_t {
 	PreySlot_One = 0,
@@ -56,7 +56,7 @@ enum PreyBonus_t : uint8_t {
 	PreyBonus_Last = PreyBonus_Loot
 };
 
-enum PreyOption_t : uint8_t {	
+enum PreyOption_t : uint8_t {
 	PreyOption_None = 0,
 	PreyOption_AutomaticReroll = 1,
 	PreyOption_Locked = 2
@@ -101,9 +101,8 @@ enum PreyTaskDifficult_t : uint8_t {
 
 class NetworkMessage;
 
-class PreySlot
-{
- public:
+class PreySlot {
+public:
 	PreySlot() = default;
 	explicit PreySlot(PreySlot_t id);
 	virtual ~PreySlot() = default;
@@ -152,9 +151,8 @@ class PreySlot
 	int64_t freeRerollTimeStamp = 0;
 };
 
-class TaskHuntingSlot
-{
- public:
+class TaskHuntingSlot {
+public:
 	TaskHuntingSlot() = default;
 	explicit TaskHuntingSlot(PreySlot_t id);
 	virtual ~TaskHuntingSlot() = default;
@@ -206,9 +204,8 @@ class TaskHuntingSlot
 	std::vector<uint16_t> raceIdList;
 };
 
-class TaskHuntingOption
-{
- public:
+class TaskHuntingOption {
+public:
 	TaskHuntingOption() = default;
 	virtual ~TaskHuntingOption() = default;
 
@@ -222,8 +219,7 @@ class TaskHuntingOption
 	uint16_t secondReward = 0;
 };
 
-class IOPrey
-{
+class IOPrey {
 public:
 	IOPrey() = default;
 
@@ -260,4 +256,4 @@ public:
 
 constexpr auto g_ioprey = &IOPrey::getInstance;
 
-#endif  // SRC_IO_IOPREY_H_
+#endif // SRC_IO_IOPREY_H_

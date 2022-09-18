@@ -23,7 +23,6 @@
 #include "lua/functions/events/creature_event_functions.hpp"
 #include "utils/tools.h"
 
-
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
 	CreatureEvent* creature = new CreatureEvent(getScriptEnv()->getScriptInterface());
@@ -70,7 +69,8 @@ int CreatureEventFunctions::luaCreatureEventType(lua_State* L) {
 			creature->setEventType(CREATURE_EVENT_EXTENDED_OPCODE);
 		} else {
 			SPDLOG_ERROR("[CreatureEventFunctions::luaCreatureEventType] - "
-                         "Invalid type for creature event: {}", typeName);
+						 "Invalid type for creature event: {}",
+				typeName);
 			pushBoolean(L, false);
 		}
 		creature->setLoaded(true);

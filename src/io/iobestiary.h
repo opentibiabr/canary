@@ -23,21 +23,25 @@
 #include <map>
 #include <string>
 
-#include "declarations.hpp"
-#include "game/game.h"
-#include "lua/scripts/luascript.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
+#include "declarations.hpp"
+#include "game/game.h"
+#include "lua/scripts/luascript.h"
 
 class Game;
 
-class Charm
-{
- public:
+class Charm {
+public:
 	Charm() = default;
-	Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charm_t inittype, uint16_t initpoints, int32_t initbinary) :
-		name(initname), id(initcharmRune_t), description(initdescription), type(inittype), points(initpoints), binary(initbinary) {}
+	Charm(std::string initname, charmRune_t initcharmRune_t, std::string initdescription, charm_t inittype, uint16_t initpoints, int32_t initbinary)
+		: name(initname)
+		, id(initcharmRune_t)
+		, description(initdescription)
+		, type(inittype)
+		, points(initpoints)
+		, binary(initbinary) { }
 	virtual ~Charm() = default;
 
 	std::string name;
@@ -54,53 +58,50 @@ class Charm
 	int8_t chance = 0;
 	uint16_t points = 0;
 	int32_t binary = 0;
-
 };
 
-class IOBestiary
-{
-	public:
-		IOBestiary() = default;
+class IOBestiary {
+public:
+	IOBestiary() = default;
 
-		// non-copyable
-		IOBestiary(IOBestiary const&) = delete;
-		void operator=(IOBestiary const&) = delete;
+	// non-copyable
+	IOBestiary(IOBestiary const&) = delete;
+	void operator=(IOBestiary const&) = delete;
 
-		static IOBestiary& getInstance() {
-			// Guaranteed to be destroyed
-			static IOBestiary instance;
-			// Instantiated on first use
-			return instance;
-		}
+	static IOBestiary& getInstance() {
+		// Guaranteed to be destroyed
+		static IOBestiary instance;
+		// Instantiated on first use
+		return instance;
+	}
 
-		Charm* getBestiaryCharm(charmRune_t activeCharm, bool force = false);
-		void addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount = 1);
-		bool parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage);
-		void addCharmPoints(Player* player, uint16_t amount, bool negative = false);
-		void sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid);
-		void setCharmRuneCreature(Player* player, Charm* charm, uint16_t raceid);
-		void resetCharmRuneCreature(Player* player, Charm* charm);
+	Charm* getBestiaryCharm(charmRune_t activeCharm, bool force = false);
+	void addBestiaryKill(Player* player, MonsterType* mtype, uint32_t amount = 1);
+	bool parseCharmCombat(Charm* charm, Player* player, Creature* target, int32_t realDamage);
+	void addCharmPoints(Player* player, uint16_t amount, bool negative = false);
+	void sendBuyCharmRune(Player* player, charmRune_t runeID, uint8_t action, uint16_t raceid);
+	void setCharmRuneCreature(Player* player, Charm* charm, uint16_t raceid);
+	void resetCharmRuneCreature(Player* player, Charm* charm);
 
-		int8_t calculateDifficult(uint32_t chance) const;
-		uint8_t getKillStatus(MonsterType* mtype, uint32_t killAmount) const;
+	int8_t calculateDifficult(uint32_t chance) const;
+	uint8_t getKillStatus(MonsterType* mtype, uint32_t killAmount) const;
 
-		uint16_t getBestiaryRaceUnlocked(Player* player, BestiaryType_t race) const;
+	uint16_t getBestiaryRaceUnlocked(Player* player, BestiaryType_t race) const;
 
-		int32_t bitToggle(int32_t input, Charm* charm, bool on) const;
+	int32_t bitToggle(int32_t input, Charm* charm, bool on) const;
 
-		bool hasCharmUnlockedRuneBit(Charm* charm, int32_t input) const;
+	bool hasCharmUnlockedRuneBit(Charm* charm, int32_t input) const;
 
-		std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
-		std::list<uint16_t> getBestiaryFinished(Player* player) const;
+	std::list<charmRune_t> getCharmUsedRuneBitAll(Player* player);
+	std::list<uint16_t> getBestiaryFinished(Player* player) const;
 
-		charmRune_t getCharmFromTarget(Player* player, MonsterType* mtype);
+	charmRune_t getCharmFromTarget(Player* player, MonsterType* mtype);
 
-		std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
-		std::map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
-		std::map<uint16_t, std::string> findRaceByName(const std::string &race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
-
+	std::map<uint16_t, uint32_t> getBestiaryKillCountByMonsterIDs(Player* player, std::map<uint16_t, std::string> mtype_list) const;
+	std::map<uint8_t, int16_t> getMonsterElements(MonsterType* mtype) const;
+	std::map<uint16_t, std::string> findRaceByName(const std::string& race, bool Onlystring = true, BestiaryType_t raceNumber = BESTY_RACE_NONE) const;
 };
 
 constexpr auto g_iobestiary = &IOBestiary::getInstance;
 
-#endif  // SRC_IO_IOBESTIARY_H_
+#endif // SRC_IO_IOBESTIARY_H_

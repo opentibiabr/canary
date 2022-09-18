@@ -41,4 +41,4 @@ enum RentPeriod_t {
 	RENTPERIOD_NEVER,
 };
 
-#endif  // SRC_MAP_MAP_DEFINITIONS_HPP_
+#endif // SRC_MAP_MAP_DEFINITIONS_HPP_

@@ -22,7 +22,6 @@
 #include "creatures/monsters/monsters.h"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
 
-
 int LootFunctions::luaCreateLoot(lua_State* L) {
 	// Loot() will create a new loot item
 	Loot* loot = new Loot();
@@ -72,14 +71,16 @@ int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 
 		if (ids.first == Item::items.nameToItems.cend()) {
 			SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-						"Unknown loot item {}", name);
+						"Unknown loot item {}",
+				name);
 			lua_pushnil(L);
 			return 1;
 		}
 
 		if (std::next(ids.first) != ids.second) {
 			SPDLOG_WARN("[LootFunctions::luaLootSetIdFromName] - "
-						"Non-unique loot item {}", name);
+						"Non-unique loot item {}",
+				name);
 			lua_pushnil(L);
 			return 1;
 		}

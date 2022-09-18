@@ -21,13 +21,12 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
+#include "creatures/players/imbuements/imbuements.h"
 #include "items/item.h"
 #include "items/weapons/weapons.h"
-#include "creatures/players/imbuements/imbuements.h"
 #include "lua/functions/items/imbuement_functions.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
-
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)
@@ -94,9 +93,8 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 		return 1;
 	}
 
-	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
-	if (!baseImbuement)
-	{
+	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement) {
 		lua_pushnil(L);
 		return 1;
 	}

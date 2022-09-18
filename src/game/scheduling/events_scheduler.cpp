@@ -24,8 +24,7 @@
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/scripts/scripts.h"
 
-bool EventsScheduler::loadScheduleEventFromXml() const
-{
+bool EventsScheduler::loadScheduleEventFromXml() const {
 	pugi::xml_document doc;
 	if (pugi::xml_parse_result result = doc.load_file("data/XML/events.xml"); !result) {
 		printXMLError("Error - EventsScheduler::loadScheduleEventFromXml", "data/XML/events.xml", result);
@@ -75,9 +74,9 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		}
 
 		if ((attr = schedNode.attribute("script")) && (!(g_scripts().loadEventSchedulerScripts(attr.as_string())))) {
-				SPDLOG_WARN("Can not load the file '{}' on '/events/scripts/scheduler/'",
+			SPDLOG_WARN("Can not load the file '{}' on '/events/scripts/scheduler/'",
 				attr.as_string());
-				return false;
+			return false;
 		}
 
 		for (auto schedENode : schedNode.children()) {
@@ -96,7 +95,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 			if ((schedENode.attribute("spawnrate"))) {
 				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
 				g_eventsScheduler().setSpawnMonsterSchedule(spawnrate);
-				ss << ", spawn: "  << spawnrate << "%";
+				ss << ", spawn: " << spawnrate << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {

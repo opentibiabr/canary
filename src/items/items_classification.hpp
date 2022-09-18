@@ -21,16 +21,14 @@
 #define SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
 
 // Classification class for forging system and market.
-class ItemClassification
-{
- public:
+class ItemClassification {
+public:
 	ItemClassification() = default;
-	explicit ItemClassification(uint8_t id) :
-		id(id) {}
+	explicit ItemClassification(uint8_t id)
+		: id(id) { }
 	virtual ~ItemClassification() = default;
 
-	void addTier(uint8_t id, uint64_t price)
-	{
+	void addTier(uint8_t id, uint64_t price) {
 		for (std::pair<uint8_t, uint64_t> tier : tiers) {
 			if (tier.first == id) {
 				tier.second = price;
@@ -45,4 +43,4 @@ class ItemClassification
 	std::vector<std::pair<uint8_t, uint64_t>> tiers;
 };
 
-#endif  // SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_
+#endif // SRC_ITEMS_ITEMS_CLASSIFICATION_HPP_

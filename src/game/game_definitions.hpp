@@ -24,15 +24,15 @@
 
 // Enums
 enum Offer_t {
-	DISABLED=0,
-	ITEM=1,
-	STACKABLE_ITEM=2,
-	OUTFIT=3,
-	OUTFIT_ADDON=4,
-	MOUNT=5,
-	NAMECHANGE=6,
-	SEXCHANGE=7,
-	PROMOTION=8,
+	DISABLED = 0,
+	ITEM = 1,
+	STACKABLE_ITEM = 2,
+	OUTFIT = 3,
+	OUTFIT_ADDON = 4,
+	MOUNT = 5,
+	NAMECHANGE = 6,
+	SEXCHANGE = 7,
+	PROMOTION = 8,
 	PREMIUM_TIME,
 	TELEPORT,
 	BLESSING,
@@ -41,20 +41,20 @@ enum Offer_t {
 	WRAP_ITEM
 };
 
-enum ClientOffer_t{
-	SIMPLE=0,
-	ADDITIONALINFO=1
+enum ClientOffer_t {
+	SIMPLE = 0,
+	ADDITIONALINFO = 1
 };
 
 enum StoreState_t {
-	NORMAL=0,
+	NORMAL = 0,
 	NEW,
 	SALE,
 	LIMITED_TIME
 };
 
-enum GameStoreError_t{
-	STORE_ERROR_PURCHASE=0,
+enum GameStoreError_t {
+	STORE_ERROR_PURCHASE = 0,
 	STORE_ERROR_NETWORK,
 	STORE_ERROR_HISTORY,
 	STORE_ERROR_TRANSFER,
@@ -176,16 +176,16 @@ struct ModalWindow {
 	uint8_t defaultEnterButton, defaultEscapeButton;
 	bool priority;
 
-	ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage) :
-                    title(std::move(newTitle)),
-                    message(std::move(newMessage)),
-                    id(newId),
-                    defaultEnterButton(0xFF),
-                    defaultEscapeButton(0xFF),
-					priority(false) {}
+	ModalWindow(uint32_t newId, std::string newTitle, std::string newMessage)
+		: title(std::move(newTitle))
+		, message(std::move(newMessage))
+		, id(newId)
+		, defaultEnterButton(0xFF)
+		, defaultEscapeButton(0xFF)
+		, priority(false) { }
 };
 
-struct BaseOffer{
+struct BaseOffer {
 	uint32_t id;
 	std::string name;
 	std::string description;
@@ -195,12 +195,12 @@ struct BaseOffer{
 	std::vector<std::string> icons;
 };
 
-struct ItemOffer : BaseOffer{
+struct ItemOffer : BaseOffer {
 	uint16_t productId;
 	uint16_t count;
 };
 
-struct MountOffer: BaseOffer{
+struct MountOffer : BaseOffer {
 	uint8_t mountId;
 };
 
@@ -210,19 +210,19 @@ struct OutfitOffer : BaseOffer {
 	uint8_t addonNumber;
 };
 
-struct TeleportOffer : BaseOffer{
+struct TeleportOffer : BaseOffer {
 	Position position;
 };
 
-struct PremiumTimeOffer : BaseOffer{
+struct PremiumTimeOffer : BaseOffer {
 	uint16_t days;
 };
 
-struct BlessingOffer : BaseOffer{
+struct BlessingOffer : BaseOffer {
 	std::vector<uint8_t> blessings;
 };
 
-struct StoreCategory{
+struct StoreCategory {
 	std::string name;
 	std::string description;
 	StoreState_t state;
@@ -230,4 +230,4 @@ struct StoreCategory{
 	std::vector<BaseOffer*> offers;
 };
 
-#endif  // SRC_GAME_GAME_DEFINITIONS_HPP_
+#endif // SRC_GAME_GAME_DEFINITIONS_HPP_

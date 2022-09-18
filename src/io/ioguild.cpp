@@ -19,18 +19,17 @@
 
 #include "otpch.h"
 
-#include "database/database.h"
 #include "creatures/players/grouping/guild.h"
+#include "database/database.h"
 #include "io/ioguild.h"
 
-Guild* IOGuild::loadGuild(uint32_t guildId)
-{
+Guild* IOGuild::loadGuild(uint32_t guildId) {
 	Database& db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `name`, `balance` FROM `guilds` WHERE `id` = " << guildId;
 	if (DBResult_ptr result = db.storeQuery(query.str())) {
 		Guild* guild = new Guild(guildId, result->getString("name"));
-    guild->setBankBalance(result->getNumber<uint64_t>("balance"));
+		guild->setBankBalance(result->getNumber<uint64_t>("balance"));
 		query.str(std::string());
 		query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `guild_id` = " << guildId;
 
@@ -45,18 +44,17 @@ Guild* IOGuild::loadGuild(uint32_t guildId)
 }
 
 void IOGuild::saveGuild(Guild* guild) {
-  if (!guild)
-    return;
-  Database& db = Database::getInstance();
-  std::ostringstream updateQuery;
-  updateQuery << "UPDATE `guilds` SET ";
-  updateQuery << "`balance` = " << guild->getBankBalance();
-  updateQuery << " WHERE `id` = " << guild->getId();
-  db.executeQuery(updateQuery.str());
+	if (!guild)
+		return;
+	Database& db = Database::getInstance();
+	std::ostringstream updateQuery;
+	updateQuery << "UPDATE `guilds` SET ";
+	updateQuery << "`balance` = " << guild->getBankBalance();
+	updateQuery << " WHERE `id` = " << guild->getId();
+	db.executeQuery(updateQuery.str());
 }
 
-uint32_t IOGuild::getGuildIdByName(const std::string& name)
-{
+uint32_t IOGuild::getGuildIdByName(const std::string& name) {
 	Database& db = Database::getInstance();
 
 	std::ostringstream query;
@@ -69,8 +67,7 @@ uint32_t IOGuild::getGuildIdByName(const std::string& name)
 	return result->getNumber<uint32_t>("id");
 }
 
-void IOGuild::getWarList(uint32_t guildId, GuildWarVector& guildWarVector)
-{
+void IOGuild::getWarList(uint32_t guildId, GuildWarVector& guildWarVector) {
 	std::ostringstream query;
 	query << "SELECT `guild1`, `guild2` FROM `guild_wars` WHERE (`guild1` = " << guildId << " OR `guild2` = " << guildId << ") AND `ended` = 0 AND `status` = 1";
 

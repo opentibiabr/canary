@@ -85,6 +85,9 @@ class Npc final : public Creature
 		void setName(std::string newName) {
 			npcType->name = newName;
 		}
+		void setTypeName(std::string newName) {
+			npcType->typeName = newName;
+		}
 
 		CreatureType_t getType() const override {
 			return CREATURETYPE_NPC;

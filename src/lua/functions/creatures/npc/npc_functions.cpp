@@ -139,6 +139,19 @@ int NpcFunctions::luaNpcGetName(lua_State* L) {
 	return 1;
 }
 
+int NpcFunctions::luaNpcGetTypeName(lua_State* L) {
+	// npc:getTypeName()
+	Npc* npc = getUserdata<Npc>(L, 1);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	pushString(L, npc->getTypeName());
+	return 1;
+}
+
 int NpcFunctions::luaNpcSetName(lua_State* L) {
 	// npc:setName(name)
 	Npc* npc = getUserdata<Npc>(L, 1);
@@ -149,6 +162,19 @@ int NpcFunctions::luaNpcSetName(lua_State* L) {
 	}
 
 	npc->setName(name);
+	return 1;
+}
+
+int NpcFunctions::luaNpcSetTypeName(lua_State* L) {
+	// npc:setTypeName(name)
+	Npc* npc = getUserdata<Npc>(L, 1);
+	const std::string& name = getString(L, 2);
+	if (!npc) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
+		lua_pushnil(L);
+	}
+
+	npc->setTypeName(name);
 	return 1;
 }
 

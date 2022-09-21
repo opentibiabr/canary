@@ -73,12 +73,21 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count)
 	if (it.isPodium) {
 		msg.add<uint16_t>(0);
 		msg.add<uint16_t>(0);
+		msg.add<uint16_t>(0);
 
 		msg.addByte(2);
 		msg.addByte(0x01);
 	}
 	if (it.upgradeClassification > 0) {
 		msg.addByte(0);
+	}
+	if (it.expire || it.expireStop || it.clockExpire) {
+		msg.add<uint32_t>(it.decayTime);
+		msg.addByte(0x01); // Brand-new
+	}
+	if (it.wearOut) {
+		msg.add<uint32_t>(it.charges);
+		msg.addByte(0x01); // Brand-new
 	}
 }
 
@@ -167,8 +176,11 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 
 				const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
 				msg.addByte(lookAddons ? static_cast<uint8_t>(boost::get<int64_t>(lookAddons->value)) : 0);
+			} else {
+				msg.add<uint16_t>(0);
 			}
 		} else {
+			msg.add<uint16_t>(0);
 			msg.add<uint16_t>(0);
 		}
 
@@ -196,6 +208,27 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 	if (it.upgradeClassification > 0) {
 		msg.addByte(0);
+	}
+	// Timer
+	if (it.expire || it.expireStop || it.clockExpire) {
+		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+			msg.add<uint32_t>(item->getDuration() / 1000);
+			msg.addByte((item->getDuration() / 1000) == it.decayTime ? 0x01 : 0x00); // Brand-new
+		} else {
+			msg.add<uint32_t>(it.decayTime);
+			msg.addByte(0x01); // Brand-new
+		}
+	}
+
+	// Charge
+	if (it.wearOut) {
+		if (item->getSubType() == 0) {
+			msg.add<uint32_t>(it.charges);
+			msg.addByte(0x01); // Brand-new
+		} else {
+			msg.add<uint32_t>(static_cast<uint32_t>(item->getSubType()));
+			msg.addByte(item->getSubType() == it.charges ? 0x01 : 0x00); // Brand-new
+		}
 	}
 }
 
@@ -1448,7 +1481,7 @@ void ProtocolGame::parsePlayerBuyOnShop(NetworkMessage &msg)
 {
 	uint16_t id = msg.get<uint16_t>();
 	uint8_t count = msg.getByte();
-	uint8_t amount = msg.getByte();
+	uint16_t amount = msg.get<uint16_t>();
 	bool ignoreCap = msg.getByte() != 0;
 	bool inBackpacks = msg.getByte() != 0;
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerBuyItem, player->getID(), id, count, amount, ignoreCap, inBackpacks);
@@ -1458,7 +1491,7 @@ void ProtocolGame::parsePlayerSellOnShop(NetworkMessage &msg)
 {
 	uint16_t id = msg.get<uint16_t>();
 	uint8_t count = std::max(msg.getByte(), (uint8_t) 1);
-	uint8_t amount = msg.getByte();
+	uint16_t amount = msg.get<uint16_t>();
 	bool ignoreEquipped = msg.getByte() != 0;
 
 	addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerSellItem, player->getID(), id, count, amount, ignoreEquipped);
@@ -3982,12 +4015,10 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	}
 
 	msg.addByte(0x7B);
-	msg.add<uint64_t>(playerMoney);
 
 	uint8_t itemsToSend = 0;
 	auto msgPosition = msg.getBufferPosition();
 	msg.skipBytes(1);
-
 
 	for (ShopBlock shopBlock : shopVector)
 	{
@@ -4006,7 +4037,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		if (it != inventoryMap.end())
 		{
 			msg.add<uint16_t>(shopBlock.itemId);
-			msg.addByte(std::min<uint32_t>(it->second, std::numeric_limits<uint8_t>::max()));
+			msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
 			if (++itemsToSend >= 0xFF)
 			{
 				break;

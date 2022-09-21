@@ -2296,6 +2296,24 @@ int PlayerFunctions::luaPlayerGetTibiaCoins(lua_State* L) {
 	return 1;
 }
 
+//INICIO //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+int PlayerFunctions::luaPlayerGetTournamentsCoins(lua_State* L) {
+	// player:getTournamentsCoins()
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		account::Account account(player->getAccount());
+		account.LoadAccountDB();
+		uint32_t coins;
+		account.GetCoinsTournaments(&coins);
+		lua_pushnumber(L, coins);
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+
 int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 	// player:addTibiaCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
@@ -2318,6 +2336,31 @@ int PlayerFunctions::luaPlayerAddTibiaCoins(lua_State* L) {
 	return 1;
 }
 
+//INICIO //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+int PlayerFunctions::luaPlayerAddTournamentsCoins(lua_State* L) {
+	// player:AddTournamentCoins(coins)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint32_t coins = getNumber<uint32_t>(L, 2);
+
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.AddCoinsTournaments(coins)) {
+		account.GetCoinsTournaments(&(player->coinBalanceTournaments));
+		pushBoolean(L, true);
+	}
+	else {
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+
 int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 	// player:removeTibiaCoins(coins)
 	Player* player = getUserdata<Player>(L, 1);
@@ -2339,6 +2382,32 @@ int PlayerFunctions::luaPlayerRemoveTibiaCoins(lua_State* L) {
 
 	return 1;
 }
+
+//INICIO //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+int PlayerFunctions::luaPlayerRemoveTournamentsCoins(lua_State* L) {
+	// player:removeTournamentsCoins(coins)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint32_t coins = getNumber<uint32_t>(L, 2);
+
+	account::Account account(player->getAccount());
+	account.LoadAccountDB();
+	if (account.RemoveCoinsTournaments(coins)) {
+		account.GetCoinsTournaments(&(player->coinBalanceTournaments));
+		pushBoolean(L, true);
+	}
+	else {
+		lua_pushnil(L);
+	}
+
+	return 1;
+}
+
+//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
 
 int PlayerFunctions::luaPlayerHasBlessing(lua_State* L) {
 	// player:hasBlessing(blessing)

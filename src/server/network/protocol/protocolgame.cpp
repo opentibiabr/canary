@@ -4145,7 +4145,7 @@ void ProtocolGame::sendCoinBalance()
 	msg.add<uint32_t>(player->coinBalance); // Normal Coins
 	msg.add<uint32_t>(player->coinBalance); // Transferable Coins
 	msg.add<uint32_t>(player->coinBalance); // Reserved Auction Coins
-	msg.add<uint32_t>(0);					// Tournament Coins
+	msg.add<uint32_t>(player->coinBalanceTournaments);// Tournament Coins
 
 	writeToOutputBuffer(msg);
 }
@@ -4163,8 +4163,13 @@ void ProtocolGame::updateCoinBalance()
 				account::Account account;
 				account.LoadAccountDB(threadPlayer->getAccount());
 				uint32_t coins;
+				uint32_t coinstournaments;
 				account.GetCoins(&coins);
+				account.GetCoinsTournaments(&coinstournaments);
 				threadPlayer->coinBalance = coins;
+				//INICIO //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+				threadPlayer->coinBalanceTournaments = coinstournaments;
+				//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
 				threadPlayer->sendCoinBalance();
 			}
 		},

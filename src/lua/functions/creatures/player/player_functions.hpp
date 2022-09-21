@@ -217,6 +217,12 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addTibiaCoins", PlayerFunctions::luaPlayerAddTibiaCoins);
 			registerMethod(L, "Player", "removeTibiaCoins", PlayerFunctions::luaPlayerRemoveTibiaCoins);
 
+			//INICIO //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+			registerMethod(L, "Player", "getTournamentsCoins", PlayerFunctions::luaPlayerGetTournamentsCoins);
+			registerMethod(L, "Player", "addTournamentsCoins", PlayerFunctions::luaPlayerAddTournamentsCoins);
+			registerMethod(L, "Player", "removeTournamentsCoins", PlayerFunctions::luaPlayerRemoveTournamentsCoins);
+			//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+
 			registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 			registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 			registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -469,6 +475,12 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetTibiaCoins(lua_State* L);
 		static int luaPlayerAddTibiaCoins(lua_State* L);
 		static int luaPlayerRemoveTibiaCoins(lua_State* L);
+
+		//INICIO //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+		static int luaPlayerGetTournamentsCoins(lua_State* L);
+		static int luaPlayerAddTournamentsCoins(lua_State* L);
+		static int luaPlayerRemoveTournamentsCoins(lua_State* L);
+		//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
 
 		static int luaPlayerHasBlessing(lua_State* L);
 		static int luaPlayerAddBlessing(lua_State* L);

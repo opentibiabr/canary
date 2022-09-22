@@ -267,7 +267,7 @@ enum MagicEffectClasses : uint8_t {
 	CONST_ME_DEVOVORGA = 239,
 	CONST_ME_FERUMBRAS_2 = 240,
 
-	CONST_ME_LAST = CONST_ME_TELEPORT_LIGHTBLUE
+	CONST_ME_LAST = CONST_ME_FERUMBRAS_2
 };
 
 enum ShootType_t : uint8_t {

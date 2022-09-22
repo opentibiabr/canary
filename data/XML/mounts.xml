@@ -181,4 +181,28 @@
 	<mount id="179" clientid="1389" name="Void Watcher" speed="20" premium="no" type="store" />
 	<mount id="180" clientid="1390" name="Rune Watcher" speed="20" premium="no" type="store" />
 	<mount id="181" clientid="1391" name="Rift Watcher" speed="20" premium="no" type="store" />
+	<mount id="182" clientid="1417" name="Phant" speed="20" premium="yes" type="arena" />
+	<mount id="183" clientid="1430" name="Shellodon" speed="20" premium="yes" type="quest" />
+	<mount id="184" clientid="1431" name="Singeing Steed" speed="20" premium="yes" type="quest" />
+	<mount id="185" clientid="1439" name="Hyacinth" speed="20" premium="no" type="store" />
+	<mount id="186" clientid="1440" name="Peony" speed="20" premium="no" type="store" />
+	<mount id="187" clientid="1441" name="Dandelion" speed="20" premium="no" type="store" />
+	<mount id="188" clientid="1446" name="Rustwurm" speed="20" premium="no" type="store" />
+	<mount id="189" clientid="1447" name="Bogwurm" speed="20" premium="no" type="store" />
+	<mount id="190" clientid="1448" name="Gloomwurm" speed="20" premium="no" type="store" />
+	<mount id="191" clientid="1453" name="Emerald Raven" speed="20" premium="no" type="store" />
+	<mount id="192" clientid="1454" name="Mystic Raven" speed="20" premium="no" type="store" />
+	<mount id="193" clientid="1455" name="Radiant Raven" speed="20" premium="no" type="store" />
+	<mount id="194" clientid="1459" name="Gloothomotive" speed="20" premium="yes" type="store" />
+	<mount id="195" clientid="1491" name="Topaz Shrine" speed="20" premium="no" type="store" />
+	<mount id="196" clientid="1492" name="Jade Shrine" speed="20" premium="no" type="store" />
+	<mount id="197" clientid="1493" name="Obsidian Shrine" speed="20" premium="no" type="store" />
+	<mount id="198" clientid="1526" name="Poppy ibex" speed="20" premium="no" type="store" />
+	<mount id="199" clientid="1527" name="Mint ibex" speed="20" premium="no" type="store" />
+	<mount id="200" clientid="1528" name="Cinnamon ibex" speed="20" premium="no" type="store" />
+	<mount id="201" clientid="1536" name="Giant Beaver" speed="20" premium="yes" type="quest" />
+	<mount id="202" clientid="1577" name="Noxious Ripptor" speed="20" premium="yes" type="quest" />
+	<mount id="203" clientid="1578" name="Parade Horse" speed="20" premium="no" type="store" />
+	<mount id="204" clientid="1579" name="Jousting Horse" speed="20" premium="no" type="store" />
+	<mount id="205" clientid="1580" name="Tourney Horse" speed="20" premium="no" type="store" />
 </mounts>

@@ -28,14 +28,11 @@
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
-extern Imbuements* g_imbuements;
-extern Scripts* g_scripts;
-extern Weapons* g_weapons;
 
 int ImbuementFunctions::luaCreateImbuement(lua_State* L) {
 	// Imbuement(id)
-	uint32_t imbuementId = getNumber<uint32_t>(L, 2);
-	Imbuement* imbuement = g_imbuements->getImbuement(imbuementId);
+	uint16_t imbuementId = getNumber<uint16_t>(L, 2);
+	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
 
 	if (imbuement) {
 		pushUserdata<Imbuement>(L, imbuement);
@@ -61,7 +58,7 @@ int ImbuementFunctions::luaImbuementGetId(lua_State* L) {
 	// imbuement:getId()
 	Imbuement* imbuement = getUserdata<Imbuement>(L, 1);
 	if (imbuement) {
-		lua_pushnumber(L, imbuement->getId());
+		lua_pushnumber(L, imbuement->getID());
 	} else {
 		lua_pushnil(L);
 	}
@@ -96,22 +93,22 @@ int ImbuementFunctions::luaImbuementGetBase(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t basid = imbuement->getBaseID();
-	BaseImbue* base = g_imbuements->getBaseByID(basid);
 
-	if (base) {
-		lua_createtable(L, 0, 7);
-		setField(L, "id", base->id);
-		setField(L, "name", base->name);
-		setField(L, "price", base->price);
-		setField(L, "protection", base->protection);
-		setField(L, "percent", base->percent);
-		setField(L, "removecust", base->removecust);
-		setField(L, "duration", base->duration);
-	} else {
+	const BaseImbuement *baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	if (!baseImbuement)
+	{
 		lua_pushnil(L);
+		return 1;
 	}
 
+	lua_createtable(L, 0, 7);
+	setField(L, "id", baseImbuement->id);
+	setField(L, "name", baseImbuement->name);
+	setField(L, "price", baseImbuement->price);
+	setField(L, "protection", baseImbuement->protectionPrice);
+	setField(L, "percent", baseImbuement->percent);
+	setField(L, "removeCost", baseImbuement->removeCost);
+	setField(L, "duration", baseImbuement->duration);
 	return 1;
 }
 
@@ -122,13 +119,13 @@ int ImbuementFunctions::luaImbuementGetCategory(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
-	uint32_t catid = imbuement->getCategory();
-	Category* category = g_imbuements->getCategoryByID(catid);
+	uint16_t categoryId = imbuement->getCategory();
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(categoryId);
 
-	if (category) {
+	if (categoryImbuement) {
 		lua_createtable(L, 0, 2);
-		setField(L, "id", category->id);
-		setField(L, "name", category->name);
+		setField(L, "id", categoryImbuement->id);
+		setField(L, "name", categoryImbuement->name);
 	} else {
 		lua_pushnil(L);
 	}

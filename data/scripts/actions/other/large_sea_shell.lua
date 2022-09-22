@@ -5,7 +5,7 @@ function largeSeaShell.onUse(player, item, fromPosition, target, toPosition, isH
 		local chance = math.random(100)
 		local msg = ""
 		if chance <= 16 then
-			doTargetCombat(0, player, COMBAT_PHYSICALDAMAGE, -200, -200, CONST_ME_NONE)
+			doTargetCombatHealth(0, player, COMBAT_PHYSICALDAMAGE, -200, -200, CONST_ME_NONE)
 			msg = "Ouch! You squeezed your fingers."
 		elseif chance > 16 and chance <= 64 then
 			Game.createItem(math.random(281,282), 1, player:getPosition())

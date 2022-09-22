@@ -29,12 +29,12 @@ int TileFunctions::luaTileCreate(lua_State* L) {
 	// Tile(position)
 	Tile* tile;
 	if (isTable(L, 2)) {
-		tile = g_game.map.getTile(getPosition(L, 2));
+		tile = g_game().map.getTile(getPosition(L, 2));
 	} else {
 		uint8_t z = getNumber<uint8_t>(L, 4);
 		uint16_t y = getNumber<uint16_t>(L, 3);
 		uint16_t x = getNumber<uint16_t>(L, 2);
-		tile = g_game.map.getTile(x, y, z);
+		tile = g_game().map.getTile(x, y, z);
 	}
 
 	if (tile) {
@@ -208,7 +208,7 @@ int TileFunctions::luaTileGetItemById(lua_State* L) {
 	}
 	int32_t subType = getNumber<int32_t>(L, 3, -1);
 
-	Item* item = g_game.findItemOfType(tile, itemId, false, subType);
+	Item* item = g_game().findItemOfType(tile, itemId, false, subType);
 	if (item) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -611,7 +611,7 @@ int TileFunctions::luaTileAddItem(lua_State* L) {
 
 	uint32_t flags = getNumber<uint32_t>(L, 4, 0);
 
-	ReturnValue ret = g_game.internalAddItem(tile, item, INDEX_WHEREEVER, flags);
+	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		pushUserdata<Item>(L, item);
 		setItemMetatable(L, -1, item);
@@ -643,7 +643,7 @@ int TileFunctions::luaTileAddItemEx(lua_State* L) {
 	}
 
 	uint32_t flags = getNumber<uint32_t>(L, 3, 0);
-	ReturnValue ret = g_game.internalAddItem(tile, item, INDEX_WHEREEVER, flags);
+	ReturnValue ret = g_game().internalAddItem(tile, item, INDEX_WHEREEVER, flags);
 	if (ret == RETURNVALUE_NOERROR) {
 		ScriptEnvironment::removeTempItem(item);
 	}

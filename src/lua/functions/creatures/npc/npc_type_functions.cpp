@@ -22,13 +22,33 @@
 #include "creatures/npcs/npcs.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/scripts.h"
+#include "game/game.h"
 
-extern Npcs g_npcs;
-extern Scripts* g_scripts;
+
+void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector<ShopBlock>& shopVector) {
+	lua_createtable(L, shopVector.size(), 0);
+
+	int index = 0;
+	for (const auto& shopBlock : shopVector) {
+		lua_createtable(L, 0, 5);
+
+		setField(L, "itemId", shopBlock.itemId);
+		setField(L, "itemName", shopBlock.itemName);
+		setField(L, "itemBuyPrice", shopBlock.itemBuyPrice);
+		setField(L, "itemSellPrice", shopBlock.itemSellPrice);
+		setField(L, "itemStorageKey", shopBlock.itemStorageKey);
+		setField(L, "itemStorageValue", shopBlock.itemStorageValue);
+
+		createNpcTypeShopLuaTable(L, shopBlock.childShop);
+		lua_setfield(L, -2, "childShop");
+
+		lua_rawseti(L, -2, ++index);
+	}
+}
 
 int NpcTypeFunctions::luaNpcTypeCreate(lua_State* L) {
 	// NpcType(name)
-	NpcType* npcType = g_npcs.getNpcType(getString(L, 1), true);
+	NpcType* npcType = g_npcs().getNpcType(getString(L, 1), true);
 	pushUserdata<NpcType>(L, npcType);
 	setMetatable(L, -1, "NpcType");
 	return 1;
@@ -176,33 +196,20 @@ int NpcTypeFunctions::luaNpcTypeMaxHealth(lua_State* L) {
 }
 
 int NpcTypeFunctions::luaNpcTypeAddShopItem(lua_State* L) {
-	// npcType:addShopItem(shopItem)
+	// npcType:addShopItem(shop)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (!npcType) {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (!isTable(L, 2)) {
-		reportErrorFunc("Shop Item is not a table");
-		pushBoolean(L, false);
-		return 1;
+	Shop* shop = getUserdata<Shop>(L, 2);
+	if (shop) {
+		npcType->loadShop(npcType, shop->shopBlock);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
 	}
-
-	const auto table = lua_gettop(L);
-	ShopInfo shopItem;
-
-	shopItem.itemClientId = static_cast<uint16_t>(getField<uint32_t>(L, table, "clientId"));
-	shopItem.buyPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "buy"));
-	shopItem.sellPrice = static_cast<uint16_t>(getField<uint32_t>(L, table, "sell"));
-	shopItem.subType = static_cast<uint16_t>(getField<uint32_t>(L, table, "count"));
-
-	const ItemType &it = Item::items.getItemIdByClientId(shopItem.itemClientId);
-
-	shopItem.name = it.name;
-
-	npcType->addShopItem(it.id, shopItem);
-
 	return 1;
 }
 
@@ -277,12 +284,12 @@ int NpcTypeFunctions::luaNpcTypeEventOnCallback(lua_State* L) {
 	// npcType:onDisappear(callback)
 	// npcType:onMove(callback)
 	// npcType:onSay(callback)
-	// npcType:onPlayerBuyItem(callback)
-	// npcType:onPlayerSellItem(callback)
-	// npcType:onPlayerCheckItem(callback)
+	// npcType:onBuyItem(callback)
+	// npcType:onSellItem(callback)
+	// npcType:onCheckItem(callback)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
-		if (npcType->loadCallback(&g_scripts->getScriptInterface())) {
+		if (npcType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
 		 }
@@ -312,8 +319,14 @@ int NpcTypeFunctions::luaNpcTypeOutfit(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			pushOutfit(L, npcType->info.outfit);
 		} else {
-			npcType->info.outfit = getOutfit(L, 2);
-			pushBoolean(L, true);
+			Outfit_t outfit = getOutfit(L, 2);
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+				SPDLOG_WARN("[NpcTypeFunctions::luaNpcTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				lua_pushnil(L);
+			} else {
+				npcType->info.outfit = getOutfit(L, 2);
+				pushBoolean(L, true);
+			}
 		}
 	} else {
 		lua_pushnil(L);
@@ -458,6 +471,44 @@ int NpcTypeFunctions::luaNpcTypeRespawnTypeIsUnderground(lua_State* L) {
 		}
 	} else {
 		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeSpeechBubble(lua_State* L) {
+	// get = npcType:speechBubble()
+	// set = npcType:speechBubble(newSpeechBubble)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, npcType->info.speechBubble);
+	} else {
+		npcType->info.speechBubble = getNumber<uint8_t>(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
+int NpcTypeFunctions::luaNpcTypeCurrency(lua_State* L) {
+	// get = npcType:currency()
+	// set = npcType:currency(newCurrency)
+	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	if (!npcType) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_TYPE_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, npcType->info.currencyId);
+	} else {
+		npcType->info.currencyId = getNumber<uint16_t>(L, 2);
+		pushBoolean(L, true);
 	}
 	return 1;
 }

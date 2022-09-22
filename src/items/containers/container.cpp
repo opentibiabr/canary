@@ -20,10 +20,10 @@
 #include "otpch.h"
 
 #include "items/containers/container.h"
+#include "items/decay/decay.h"
 #include "io/iomap.h"
 #include "game/game.h"
 
-extern Game g_game;
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -57,7 +57,7 @@ Container::Container(Tile* tile) : Container(ITEM_BROWSEFIELD, 30, false, true)
 Container::~Container()
 {
 	if (getID() == ITEM_BROWSEFIELD) {
-		g_game.browseFields.erase(getTile());
+		g_game().browseFields.erase(getTile());
 
 		for (Item* item : itemlist) {
 			item->setParent(parent);
@@ -233,7 +233,7 @@ std::ostringstream& Container::getContentDescription(std::ostringstream& os) con
 			os << ", ";
 		}
 
-		os << "{" << item->getClientID() << "|" << item->getNameDescription() << "}";
+		os << "{" << item->getID() << "|" << item->getNameDescription() << "}";
 	}
 
 	if (firstitem) {
@@ -283,7 +283,7 @@ bool Container::isHoldingItem(const Item* item) const
 void Container::onAddContainerItem(Item* item)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send to client
 	for (Creature* spectator : spectators) {
@@ -299,7 +299,7 @@ void Container::onAddContainerItem(Item* item)
 void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newItem)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send to client
 	for (Creature* spectator : spectators) {
@@ -315,7 +315,7 @@ void Container::onUpdateContainerItem(uint32_t index, Item* oldItem, Item* newIt
 void Container::onRemoveContainerItem(uint32_t index, Item* item)
 {
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
+	g_game().map.getSpectators(spectators, getPosition(), false, true, 2, 2, 2, 2);
 
 	//send change to client
 	for (Creature* spectator : spectators) {
@@ -383,10 +383,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 	}
 
 	if (const Container* topParentContainer = getTopParentContainer()) {
-		uint32_t maxItem = static_cast<uint32_t>(g_config.getNumber(MAX_ITEM));
+		uint32_t maxItem = static_cast<uint32_t>(g_configManager().getNumber(MAX_ITEM));
 		if (const Container* addContainer = item->getContainer()) {
 			uint32_t addContainerCount = addContainer->getContainerHoldingCount() + 1;
-			uint32_t maxContainer = static_cast<uint32_t>(g_config.getNumber(MAX_CONTAINER));
+			uint32_t maxContainer = static_cast<uint32_t>(g_configManager().getNumber(MAX_CONTAINER));
 			if (addContainerCount + topParentContainer->getContainerHoldingCount() > maxContainer) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
@@ -401,7 +401,7 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
-  if (getWeaponType() == WEAPON_QUIVER && item->getWeaponType() != WEAPON_AMMO)
+  if (isQuiver() && item->getWeaponType() != WEAPON_AMMO)
     return RETURNVALUE_ONLYAMMOINQUIVER;
 
 	const Cylinder* topParent = getTopParent();
@@ -728,6 +728,21 @@ Thing* Container::getThing(size_t index) const
 	return getItemByIndex(index);
 }
 
+ItemVector Container::getItems(bool recursive /*= false*/) const
+{
+	ItemVector containerItems;
+	if (recursive) {
+		for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+			containerItems.push_back(*it);
+		}
+	} else {
+		for (Item* item : itemlist) {
+			containerItems.push_back(item);
+		}
+	}
+	return containerItems;
+}
+
 void Container::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t)
 {
 	Cylinder* topParent = getTopParent();
@@ -777,8 +792,17 @@ void Container::internalAddThing(uint32_t, Thing* thing)
 
 void Container::startDecaying()
 {
-	for (Item* item : itemlist) {
-		item->startDecaying();
+	g_decay().startDecay(this);
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		g_decay().startDecay(*it);
+	}
+}
+
+void Container::stopDecaying()
+{
+	g_decay().stopDecay(this);
+	for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
+		g_decay().stopDecay(*it);
 	}
 }
 

@@ -9,10 +9,6 @@
 #include <iostream>
 #include <memory>
 
-#include "config/configmanager.h"
-
-extern ConfigManager g_config;
-
 // Tread no further, adventurer!
 // Go back while you still can.
 
@@ -38,8 +34,7 @@ void webhook_init() {
 static int webhook_send_message_(const char *url, const char *payload, std::string *response_body);
 static std::string get_payload(std::string title, std::string message, int color);
 
-void webhook_send_message(std::string title, std::string message, int color) {
-	std::string url = g_config.getString(DISCORD_WEBHOOK_URL);
+void webhook_send_message(std::string title, std::string message, int color, std::string url) {
 	if (url.empty()) {
 		return;
 	}
@@ -83,8 +78,8 @@ static std::string get_payload(std::string title, std::string message, int color
 
 	std::stringstream footer_text;
 	footer_text
-			<< g_config.getString(IP) << ":"
-			<< g_config.getNumber(GAME_PORT) << " | "
+			<< g_configManager().getString(IP) << ":"
+			<< g_configManager().getNumber(GAME_PORT) << " | "
 			<< time_buf << " UTC";
 
 	Json::Value footer(Json::objectValue);
@@ -114,12 +109,6 @@ static std::string get_payload(std::string title, std::string message, int color
 	return out.str();
 }
 
-// Can't labmda this for some reason
-static size_t write_data(void *ptr, size_t size, size_t nmemb, void *userdata) {
-	(*static_cast<std::string *>(userdata)).append(static_cast<char *>(ptr), size * nmemb);
-	return size * nmemb;
-}
-
 static int webhook_send_message_(const char *url, const char *payload, std::string *response_body) {
 	CURL *curl = curl_easy_init();
 	if (!curl) {
@@ -130,10 +119,7 @@ static int webhook_send_message_(const char *url, const char *payload, std::stri
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_POST, 1L);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, payload);
-
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &write_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, reinterpret_cast<void *>(&response_body));
-
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "canary (https://github.com/Hydractify/canary)");
 

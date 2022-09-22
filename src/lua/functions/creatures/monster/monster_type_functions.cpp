@@ -25,8 +25,6 @@
 #include "lua/functions/creatures/monster/monster_type_functions.hpp"
 #include "lua/scripts/scripts.h"
 
-extern Monsters g_monsters;
-extern Scripts* g_scripts;
 
 void MonsterTypeFunctions::createMonsterTypeLootLuaTable(lua_State* L, const std::vector<LootBlock>& lootList) {
 	lua_createtable(L, lootList.size(), 0);
@@ -56,9 +54,9 @@ int MonsterTypeFunctions::luaMonsterTypeCreate(lua_State* L) {
 	// MonsterType(name or raceid)
 	MonsterType* monsterType = nullptr;
 	if (isNumber(L, 2)) {
-		monsterType = g_monsters.getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
+		monsterType = g_monsters().getMonsterTypeByRaceId(getNumber<uint16_t>(L, 2));
 	} else {
-		monsterType = g_monsters.getMonsterType(getString(L, 2));
+		monsterType = g_monsters().getMonsterType(getString(L, 2));
 	}
 
 	if (monsterType) {
@@ -150,14 +148,14 @@ int MonsterTypeFunctions::luaMonsterTypeIsHostile(lua_State* L) {
 	return 1;
 }
 
-int MonsterTypeFunctions::luaMonsterTypeIsPet(lua_State* L) {
-	// get: monsterType:isPet() set: monsterType:isPet(bool)
+int MonsterTypeFunctions::luaMonsterTypeFamiliar(lua_State* L) {
+	// get: monsterType:familiar() set: monsterType:familiar(bool)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			pushBoolean(L, monsterType->info.isPet);
+			pushBoolean(L, monsterType->info.isFamiliar);
 		} else {
-			monsterType->info.isPet = getBoolean(L, 2);
+			monsterType->info.isFamiliar = getBoolean(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -473,7 +471,7 @@ int MonsterTypeFunctions::luaMonsterTypeRaceid(lua_State* L) {
 			lua_pushnumber(L, monsterType->info.raceid);
 		} else {
 			monsterType->info.raceid = getNumber<uint16_t>(L, 2);
-			g_game.addBestiaryList(getNumber<uint16_t>(L, 2), monsterType->name);
+			g_game().addBestiaryList(getNumber<uint16_t>(L, 2), monsterType->name);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -777,7 +775,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddAttack(lua_State* L) {
 		MonsterSpell* spell = getUserdata<MonsterSpell>(L, 2);
 		if (spell) {
 			spellBlock_t sb;
-			if (g_monsters.deserializeSpell(spell, sb, monsterType->name)) {
+			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
 				monsterType->info.attackSpells.push_back(std::move(sb));
 			} else {
 				SPDLOG_WARN("Monster: {}, cant load spell: {}", monsterType->name,
@@ -822,6 +820,17 @@ int MonsterTypeFunctions::luaMonsterTypeGetDefenseList(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeGetTypeName(lua_State* L) {
+	// monsterType:getTypeName()
+	const MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		return 1;
+	}
+
+	pushString(L, monsterType->typeName);
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeAddDefense(lua_State* L) {
 	// monsterType:addDefense(monsterspell)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
@@ -829,7 +838,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddDefense(lua_State* L) {
 		MonsterSpell* spell = getUserdata<MonsterSpell>(L, 2);
 		if (spell) {
 			spellBlock_t sb;
-			if (g_monsters.deserializeSpell(spell, sb, monsterType->name)) {
+			if (g_monsters().deserializeSpell(spell, sb, monsterType->name)) {
 				monsterType->info.defenseSpells.push_back(std::move(sb));
 			} else {
 				SPDLOG_WARN("Monster: {}, Cant load spell: {}", monsterType->name,
@@ -1001,7 +1010,7 @@ int MonsterTypeFunctions::luaMonsterTypeEventOnCallback(lua_State* L) {
 	// monsterType:onSay(callback)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
-		if (monsterType->loadCallback(&g_scripts->getScriptInterface())) {
+		if (monsterType->loadCallback(&g_scripts().getScriptInterface())) {
 			pushBoolean(L, true);
 			return 1;
 		 }
@@ -1045,12 +1054,13 @@ int MonsterTypeFunctions::luaMonsterTypeGetSummonList(lua_State* L) {
 }
 
 int MonsterTypeFunctions::luaMonsterTypeAddSummon(lua_State* L) {
-	// monsterType:addSummon(name, interval, chance)
+	// monsterType:addSummon(name, interval, chance[, count = 1])
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		summonBlock_t summon;
 		summon.name = getString(L, 2);
 		summon.speed = getNumber<int32_t>(L, 3);
+		summon.count = getNumber<int32_t>(L, 5, 1);
 		summon.chance = getNumber<int32_t>(L, 4);
 		monsterType->info.summons.push_back(summon);
 		pushBoolean(L, true);
@@ -1115,8 +1125,14 @@ int MonsterTypeFunctions::luaMonsterTypeOutfit(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			pushOutfit(L, monsterType->info.outfit);
 		} else {
-			monsterType->info.outfit = getOutfit(L, 2);
-			pushBoolean(L, true);
+			Outfit_t outfit = getOutfit(L, 2);
+			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && outfit.lookType != 0 && !g_game().isLookTypeRegistered(outfit.lookType)) {
+				SPDLOG_WARN("[MonsterTypeFunctions::luaMonsterTypeOutfit] An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", outfit.lookType);
+				lua_pushnil(L);
+			} else {
+				monsterType->info.outfit = outfit;
+				pushBoolean(L, true);
+			}
 		}
 	} else {
 		lua_pushnil(L);

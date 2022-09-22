@@ -1,5 +1,3 @@
--- Functions from The Forgotten Server
-local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 
 function Player.feed(self, food)
 	local condition = self:getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
@@ -11,11 +9,12 @@ function Player.feed(self, food)
 			return nil
 		end
 
+		local foodCondition = Condition(CONDITION_REGENERATION, CONDITIONID_DEFAULT)
 		foodCondition:setTicks(food * 1000)
 		foodCondition:setParameter(CONDITION_PARAM_HEALTHGAIN, vocation:getHealthGainAmount())
-		foodCondition:setParameter(CONDITION_PARAM_HEALTHTICKS, vocation:getHealthGainTicks() * 1000)
+		foodCondition:setParameter(CONDITION_PARAM_HEALTHTICKS, vocation:getHealthGainTicks())
 		foodCondition:setParameter(CONDITION_PARAM_MANAGAIN, vocation:getManaGainAmount())
-		foodCondition:setParameter(CONDITION_PARAM_MANATICKS, vocation:getManaGainTicks() * 1000)
+		foodCondition:setParameter(CONDITION_PARAM_MANATICKS, vocation:getManaGainTicks())
 
 		self:addCondition(foodCondition)
 	end
@@ -134,10 +133,7 @@ function Player.transferMoneyTo(self, target, amount)
 
 	local targetPlayer = Player(target)
 	if targetPlayer then
-		local town = targetPlayer:getTown()
-		if town and town:getId() ~= TOWNS_LIST.DAWNPORT or town:getId() ~= TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
-			targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
-		end
+		targetPlayer:setBankBalance(targetPlayer:getBankBalance() + amount)
 	else
 		if not playerExists(target) then
 			return false
@@ -145,13 +141,6 @@ function Player.transferMoneyTo(self, target, amount)
 
 		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) ..' LIMIT 1;')
 		if query_town ~= false then
-			local town = result.getNumber(query_town, "town_id")
-			if town then
-				local town_id = Town(town) and Town(town):getId()
-				if town_id and town_id  == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
-					return false
-				end
-			end
 			result.free(consulta)
 			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
 		end
@@ -282,35 +271,95 @@ function Player.getMarriageDescription(thing)
 end
 
 function Player.sendWeatherEffect(self, groundEffect, fallEffect, thunderEffect)
-    local position, random = self:getPosition(), math.random
-    position.x = position.x + random(-7, 7)
-      position.y = position.y + random(-5, 5)
-    local fromPosition = Position(position.x + 1, position.y, position.z)
-       fromPosition.x = position.x - 7
-       fromPosition.y = position.y - 5
-    local tile, getGround
-    for Z = 1, 7 do
-        fromPosition.z = Z
-        position.z = Z
-        tile = Tile(position)
-        if tile then -- If there is a tile, stop checking floors
-            fromPosition:sendDistanceEffect(position, fallEffect)
+	local position, random = self:getPosition(), math.random
+	position.x = position.x + random(-7, 7)
+	  position.y = position.y + random(-5, 5)
+	local fromPosition = Position(position.x + 1, position.y, position.z)
+	   fromPosition.x = position.x - 7
+	   fromPosition.y = position.y - 5
+	local tile, getGround
+	for Z = 1, 7 do
+		fromPosition.z = Z
+		position.z = Z
+		tile = Tile(position)
+		if tile then -- If there is a tile, stop checking floors
+			fromPosition:sendDistanceEffect(position, fallEffect)
 			position:sendMagicEffect(groundEffect, self)
 			getGround = tile:getGround()
-            if getGround and ItemType(getGround:getId()):getFluidSource() == 1 then
-                position:sendMagicEffect(CONST_ME_LOSEENERGY, self)
-            end
-            break
-        end
-    end
-    if thunderEffect and tile and not tile:hasFlag(TILESTATE_PROTECTIONZONE) then
-        if random(2) == 1 then
-            local topCreature = tile:getTopCreature()
-            if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
-                position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
-                doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
-                --self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
-            end
-        end
-    end
+			if getGround and ItemType(getGround:getId()):getFluidSource() == 1 then
+				position:sendMagicEffect(CONST_ME_LOSEENERGY, self)
+			end
+			break
+		end
+	end
+	if thunderEffect and tile and not tile:hasFlag(TILESTATE_PROTECTIONZONE) then
+		if random(2) == 1 then
+			local topCreature = tile:getTopCreature()
+			if topCreature and topCreature:isPlayer() and topCreature:getAccountType() < ACCOUNT_TYPE_SENIORTUTOR then
+				position:sendMagicEffect(CONST_ME_BIGCLOUDS, self)
+				doTargetCombatHealth(0, self, COMBAT_ENERGYDAMAGE, -weatherConfig.minDMG, -weatherConfig.maxDMG, CONST_ME_NONE)
+				--self:sendTextMessage(MESSAGE_STATUS_CONSOLE_BLUE, "You were hit by lightning and lost some health.")
+			end
+		end
+	end
+end
+
+function Player:createFamiliarSpell()
+	local playerPosition = self:getPosition()
+	if not self:isPremium() and self:getAccountType() < ACCOUNT_TYPE_GOD then
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		self:sendCancelMessage("You need a premium account.")
+		return false
+	end
+
+	if #self:getSummons() >= 1 and self:getAccountType() < ACCOUNT_TYPE_GOD then
+		self:sendCancelMessage("You can't have other summons.")
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	local vocation = FAMILIAR_ID[self:getVocation():getBaseId()]
+	local familiarName
+
+	if vocation then
+		familiarName = vocation.name
+	end
+
+	if not familiarName then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	local myFamiliar = Game.createMonster(familiarName, playerPosition, true, false, self)
+	if not myFamiliar then
+		self:sendCancelMessage(RETURNVALUE_NOTENOUGHROOM)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	myFamiliar:setOutfit({lookType = self:getFamiliarLooktype()})
+	myFamiliar:registerEvent("FamiliarDeath")
+	myFamiliar:changeSpeed(math.max(self:getSpeed() - myFamiliar:getBaseSpeed(), 0))
+	playerPosition:sendMagicEffect(CONST_ME_MAGIC_BLUE)
+	myFamiliar:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+	-- 15 minute count starts after using the spell
+	self:setStorageValue(Storage.FamiliarSummon, os.time() + 15*60)
+	addEvent(RemoveFamiliar, 15*60*1000, myFamiliar:getId(), self:getId())
+	for sendMessage = 1, #FAMILIAR_TIMER do
+		self:setStorageValue(
+			FAMILIAR_TIMER[sendMessage].storage,
+			addEvent(
+				-- Calling function
+				SendMessageFunction,
+				-- Time for execute event
+				(15 * 60 - FAMILIAR_TIMER[sendMessage].countdown) * 1000,
+				-- Param "playerId"
+				self:getId(),
+				-- Param "message"
+				FAMILIAR_TIMER[sendMessage].message
+			)
+		)
+	end
+	return true
 end

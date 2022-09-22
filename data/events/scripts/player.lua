@@ -5,32 +5,12 @@ end
 function Player:onLook(thing, position, distance)
 	local description = "You see "
 	description = description .. thing:getDescription(distance)
-	if thing:isItem() then
-		local itemType = thing:getType()
-		if (itemType and itemType:getImbuingSlots() > 0) then
-			local imbuingSlots = "Imbuements: ("
-			for slot = 0, itemType:getImbuingSlots() - 1 do
-				if slot > 0 then
-					imbuingSlots = string.format("%s, ", imbuingSlots)
-				end
-				local duration = thing:getImbuementDuration(slot)
-				if duration > 0 then
-					local imbue = thing:getImbuement(slot)
-					imbuingSlots = string.format("%s%s %s %s",
-						imbuingSlots, imbue:getBase().name, imbue:getName(), getTime(duration))
-				else
-					imbuingSlots = string.format("%sEmpty Slot", imbuingSlots)
-				end
-			end
-			imbuingSlots = string.format("%s).", imbuingSlots)
-			description = string.gsub(description, "It weighs", imbuingSlots.. "\nIt weighs")
-		end
-	elseif thing:isMonster() then
+	if thing:isMonster() then
 		description = description .. thing:getDescription(distance)
 		local master = thing:getMaster()
 		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
 			description = description..' (Master: ' .. master:getName() .. '). \z
-				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.PetSummon) - os.time())
+				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
 		end
 	end
 
@@ -118,6 +98,12 @@ function Player:onLookInShop(itemType, count)
 end
 
 function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+	-- No move items with actionID = 100
+	if item:getActionId() == NOT_MOVEABLE_ACTION then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
+
 	if toPosition.x ~= CONTAINER_POSITION then
 		return true
 	end
@@ -144,6 +130,9 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 		end
 	end
 
+	-- Execute event function from reward boss lib
+	self:executeRewardEvents(item, toPosition)
+
 	return true
 end
 
@@ -151,6 +140,11 @@ function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder,
 end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
+	local player = creature:getPlayer()
+	if player and onExerciseTraining[player:getId()] and self:getGroup():hasFlag(PlayerFlag_CanPushAllCreatures) == false then
+		self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		return false
+	end
 	return true
 end
 
@@ -226,6 +220,10 @@ function Player:onTurn(direction)
 end
 
 function Player:onTradeRequest(target, item)
+	-- No trade items with actionID = 100
+	if item:getActionId() == NOT_MOVEABLE_ACTION then
+		return false
+	end
 	return true
 end
 
@@ -238,12 +236,20 @@ soulCondition:setTicks(4 * 60 * 1000)
 soulCondition:setParameter(CONDITION_PARAM_SOULGAIN, 1)
 
 local function useStamina(player)
+	if not player then
+		return false
+	end
+
 	local staminaMinutes = player:getStamina()
 	if staminaMinutes == 0 then
 		return
 	end
 
 	local playerId = player:getId()
+	if not playerId then
+		return false
+	end
+
 	local currentTime = os.time()
 	local timePassed = currentTime - nextUseStaminaTime[playerId]
 	if timePassed <= 0 then
@@ -257,43 +263,106 @@ local function useStamina(player)
 			staminaMinutes = 0
 		end
 		nextUseStaminaTime[playerId] = currentTime + 120
+		player:removePreyStamina(120)
 	else
 		staminaMinutes = staminaMinutes - 1
 		nextUseStaminaTime[playerId] = currentTime + 60
+		player:removePreyStamina(60)
 	end
 	player:setStamina(staminaMinutes)
 end
 
-function Player:onGainExperience(source, exp, rawExp)
-	if not source or source:isPlayer() then
+local function useStaminaXpBoost(player)
+	if not player then
+		return false
+	end
+
+	local staminaMinutes = player:getExpBoostStamina() / 60
+	if staminaMinutes == 0 then
+		return
+	end
+
+	local playerId = player:getId()
+	if not playerId then
+		return false
+	end
+
+	local currentTime = os.time()
+	local timePassed = currentTime - nextUseXpStamina[playerId]
+	if timePassed <= 0 then
+		return
+	end
+
+	if timePassed > 60 then
+		if staminaMinutes > 2 then
+			staminaMinutes = staminaMinutes - 2
+		else
+			staminaMinutes = 0
+		end
+		nextUseXpStamina[playerId] = currentTime + 120
+	else
+		staminaMinutes = staminaMinutes - 1
+		nextUseXpStamina[playerId] = currentTime + 60
+	end
+	player:setExpBoostStamina(staminaMinutes * 60)
+end
+
+function Player:onGainExperience(target, exp, rawExp)
+	if not target or target:isPlayer() then
 		return exp
 	end
 
 	-- Soul regeneration
 	local vocation = self:getVocation()
 	if self:getSoul() < vocation:getMaxSoul() and exp >= self:getLevel() then
-		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks() * 1000)
+		soulCondition:setParameter(CONDITION_PARAM_SOULTICKS, vocation:getSoulGainTicks())
 		self:addCondition(soulCondition)
 	end
 
 	-- Experience Stage Multiplier
-	local expStage = getRateFromTable(experienceStages, self:getLevel(), configManager.getNumber(configKeys.RATE_EXP))
-	exp = exp * expStage
-	baseExp = rawExp * expStage
+	local expStage = getRateFromTable(experienceStages, self:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
 
-	-- Stamina modifier
+	-- Event scheduler
+	if SCHEDULE_EXP_RATE ~= 100 then
+		expStage = math.max(0, (expStage * SCHEDULE_EXP_RATE)/100)
+	end
+
+	-- Store Bonus
+	useStaminaXpBoost(self) -- Use store boost stamina
+
+	local Boost = self:getExpBoostStamina()
+	local stillHasBoost = Boost > 0
+	local storeXpBoostAmount = stillHasBoost and self:getStoreXpBoost() or 0
+
+	self:setStoreXpBoost(storeXpBoostAmount)
+
+	-- Stamina Bonus
+	local staminaBoost = 1
 	if configManager.getBoolean(configKeys.STAMINA_SYSTEM) then
 		useStamina(self)
-
 		local staminaMinutes = self:getStamina()
-		if staminaMinutes > 2400 and self:isPremium() then
-			exp = exp * 1.5
-		elseif staminaMinutes <= 840 then
-			exp = exp * 0.5
+			if staminaMinutes > 2340 and self:isPremium() then
+				staminaBoost = 1.5
+			elseif staminaMinutes <= 840 then
+				staminaBoost = 0.5 --TODO destroy loot of people with 840- stamina
+			end
+		self:setStaminaXpBoost(staminaBoost * 100)
+	end
+
+	-- Boosted creature
+	if target:getName():lower() == (Game.getBoostedCreature()):lower() then
+		exp = exp * 2
+	end
+
+	-- Prey system
+	if configManager.getBoolean(configKeys.PREY_ENABLED) then
+		local monsterType = target:getType()
+		if monsterType and monsterType:raceId() > 0 then
+			exp = math.ceil((exp * self:getPreyExperiencePercentage(monsterType:raceId())) / 100)
 		end
 	end
 
-	return exp
+	return math.max((exp * expStage + (exp * (storeXpBoostAmount/100))) * staminaBoost)
 end
 
 function Player:onLoseExperience(exp)
@@ -305,10 +374,24 @@ function Player:onGainSkillTries(skill, tries)
 		return tries
 	end
 
-	if skill == SKILL_MAGLEVEL then
-		return tries * configManager.getNumber(configKeys.RATE_MAGIC)
+	-- Event scheduler skill rate
+	local STAGES_DEFAULT = skillsStages or nil
+	local SKILL_DEFAULT = self:getSkillLevel(skill)
+	local RATE_DEFAULT = configManager.getNumber(configKeys.RATE_SKILL)
+
+	if(skill == SKILL_MAGLEVEL) then -- Magic Level
+		STAGES_DEFAULT = magicLevelStages or nil
+		SKILL_DEFAULT = self:getBaseMagicLevel()
+		RATE_DEFAULT = configManager.getNumber(configKeys.RATE_MAGIC)
 	end
-	return tries * configManager.getNumber(configKeys.RATE_SKILL)
+
+	skillOrMagicRate = getRateFromTable(STAGES_DEFAULT, SKILL_DEFAULT, RATE_DEFAULT)
+
+	if SCHEDULE_SKILL_RATE ~= 100 then
+		skillOrMagicRate = math.max(0, (skillOrMagicRate * SCHEDULE_SKILL_RATE) / 100)
+	end
+
+	return tries / 100 * (skillOrMagicRate * 100)
 end
 
 function Player:onChangeZone(zone)
@@ -345,159 +428,4 @@ function Player:onChangeZone(zone)
 		end
 	end
 	return false
-end
-
-function Player:canBeAppliedImbuement(imbuement, item)
-	local categories = {}
-	local slots = ItemType(item:getId()):getImbuingSlots()
-	if slots > 0 then
-		for slot = 0, slots - 1 do
-			local duration = item:getImbuementDuration(slot)
-			if duration > 0 then
-				local imbuementlot = item:getImbuement(slot)
-				local categoryId = imbuementlot:getCategory().id
-				table.insert(categories, categoryId)
-			end
-		end
-	end
-
-	if table.contains(categories, imbuement:getCategory().id) then
-		return false
-	end
-
-	if imbuement:isPremium() and self:getPremiumDays() < 1 then
-		return false
-	end
-
-	if self:getStorageValue(Storage.Imbuement) > 0 then
-		imbuable = true
-	else
-		imbuable = false
-	end
-
-	if not self:canImbueItem(imbuement, item) then
-		return false
-	end
-
-	return true
-end
-
-function Player:onApplyImbuement(imbuement, item, slot, protectionCharm)
-	for slot = CONST_SLOT_HEAD, CONST_SLOT_AMMO do
-		local slotItem = self:getSlotItem(slot)
-		if slotItem and slotItem == item then
-			self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "You can't imbue a equipped item.")
-			self:closeImbuementWindow()
-			return true
-		end
-	end
-
-	for _, pid in pairs(imbuement:getItems()) do
-		if (self:getItemCount(pid.itemid) + self:getStashItemCount(pid.itemid)) < pid.count then
-			self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "You don't have all necessary items.")
-			return false
-		end
-	end
-
-	if item:getImbuementDuration(slot) > 0 then
-		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ERROR, "An error ocurred, please reopen imbuement window.")
-		return false
-	end
-
-	local base = imbuement:getBase()
-	local price = base.price + (protectionCharm and base.protection or 0)
-
-	local chance = protectionCharm and 100 or base.percent
-	if math.random(100) > chance then -- failed attempt
-		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "Oh no!\n\nThe imbuement has failed. You have lost the astral sources and gold you needed for the imbuement.\n\nNext time use a protection charm to better your chances.")
-		-- Removing items
-		for _, pid in pairs(imbuement:getItems()) do
-			self:removeItem(pid.itemid, pid.count)
-		end
-		-- Removing money
-		self:removeMoneyBank(price)
-		-- Refreshing shrine window
-		local nitem = Item(item.uid)
-		self:sendImbuementPanel(nitem)
-		return false
-	end
-
-	-- Removing items
-	for _, pid in pairs(imbuement:getItems()) do
-		local invertoryItemCount = self:getItemCount(pid.itemid)
-		if invertoryItemCount >= pid.count then
-			if not(self:removeItem(pid.itemid, pid.count)) then
-				self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ERROR, "An error ocurred, please reopen imbuement window.")
-				return false
-			end
-		else
-			local mathItemCount = pid.count
-			if invertoryItemCount > 0 and self:removeItem(pid.itemid, invertoryItemCount) then
-				mathItemCount = mathItemCount - invertoryItemCount
-			end
-
-			if not(self:removeStashItem(pid.itemid, mathItemCount)) then
-				self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ERROR, "An error ocurred, please reopen imbuement window.")
-				return false
-			end
-		end
-	end
-
-	if not self:removeMoneyBank(price) then
-		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "You don't have enough money " ..price.. " gps.")
-		return false
-	end
-
-	if not item:addImbuement(slot, imbuement:getId()) then
-		self:sendImbuementResult(MESSAGEDIALOG_IMBUEMENT_ROLL_FAILED, "Item failed to apply imbuement.")
-		return false
-	end
-
-	-- Update item
-	local imbueItem = Item(item.uid)
-	self:sendImbuementPanel(imbueItem)
-	return true
-end
-
-function Player:clearImbuement(item, slot)
-	local slots = ItemType(item:getId()):getImbuingSlots()
-	if slots < slot then
-		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR, "Sorry, not possible.")
-		return false
-	end
-
-	if item:getTopParent() ~= self or item:getParent() == self then
-		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
-			"An error occurred while applying the clearing charm to the item.")
-		return false
-	end
-
-	-- slot is not used
-	local info = item:getImbuementDuration(slot)
-	if info == 0 then
-		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
-			"An error occurred while applying the clearing charm to the item.")
-		return false
-	end
-
-	local imbuement = item:getImbuement(slot)
-	if not self:removeMoneyBank(imbuement:getBase().removecust) then
-		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
-			"You don't have enough money " ..imbuement:getBase().removecust.. " gps.")
-		return false
-	end
-
-	if not item:cleanImbuement(slot) then
-		self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_ERROR,
-			"An error occurred while applying the clearing charm to the item.")
-		return false
-	end
-
-	-- Update item
-	local nitem = Item(item.uid)
-	self:sendImbuementResult(MESSAGEDIALOG_CLEARING_CHARM_SUCCESS,
-		"Congratulations! You have successfully applied the clearing charm to your item.");
-	self:sendImbuementPanel(nitem)
-
-	return true
 end

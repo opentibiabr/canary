@@ -36,12 +36,14 @@ Storage = {
 	StoreExaust = 30001,
 	DelayLargeSeaShell = 30002,
 	Promotion = 30003,
-	PetSummonEvent10 = 30004,
-	PetSummonEvent60 = 30005,
-	Imbuement = 30006
+	Imbuement = 30004,
+	FamiliarSummon = 30005,
+	FamiliarSummonEvent10 = 30006,
+	FamiliarSummonEvent60 = 30007
 }
 
 GlobalStorage = {
+	XpDisplayMode = 65006,
 	ExampleQuest = {
 		Example = 60000
 	}
@@ -58,7 +60,6 @@ local function extractValues(tab, ret)
 	end
 end
 
-local benchmark = os.clock()
 local extraction = {}
 extractValues(Storage, extraction) -- Call function
 table.sort(extraction) -- Sort the table
@@ -71,7 +72,6 @@ if #extraction > 1 then
 		if extraction[i] == extraction[i+1] then
 			Spdlog.warn(string.format("Duplicate storage value found: %d",
 				extraction[i]))
-			Spdlog.warn(string.format("Processed in %.4f(s)", os.clock() - benchmark))
 		end
 	end
 end

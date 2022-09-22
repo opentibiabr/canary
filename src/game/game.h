@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+*/
 
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
@@ -36,6 +36,9 @@
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
+#include "io/ioprey.h"
+#include "items/items_classification.hpp"
+#include "protobuf/appearances.pb.h"
 
 class ServiceManager;
 class Creature;
@@ -43,12 +46,12 @@ class Monster;
 class Npc;
 class CombatInfo;
 class Charm;
+class IOPrey;
+class ItemClassification;
 
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
-static constexpr int32_t EVENT_IMBUEMENTINTERVAL = 250;
-static constexpr int32_t EVENT_IMBUEMENT_BUCKETS = 4;
 
 class Game
 {
@@ -60,13 +63,30 @@ class Game
 		Game(const Game&) = delete;
 		Game& operator=(const Game&) = delete;
 
+		static Game& getInstance() {
+			// Guaranteed to be destroyed
+			static Game instance;
+			// Instantiated on first use
+			return instance;
+		}
+
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);
 
-		void forceAddCondition(uint32_t creatureId, Condition* condition);
-		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type);
+		void forceRemoveCondition(uint32_t creatureId, ConditionType_t type, ConditionId_t conditionId);
 
+		/**
+		* Load the main map
+		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
+		 * \returns true if the custom map was loaded successfully
+		*/
 		bool loadMainMap(const std::string& filename);
+		/**
+		* Load the custom map
+		 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
+		 * \returns true if the custom map was loaded successfully
+		*/
+		bool loadCustomMap(const std::string& filename);
 		void loadMap(const std::string& path);
 
 		void getMapDimensions(uint32_t& width, uint32_t& height) const {
@@ -88,12 +108,10 @@ class Game
 		void removeTeamFinderListed(uint32_t leaderGuid) {
 			teamFinderMap.erase(leaderGuid);
 		}
-		// Event schedule xml load
-		bool loadScheduleEventFromXml();
 
 		Cylinder* internalGetCylinder(Player* player, const Position& pos) const;
 		Thing* internalGetThing(Player* player, const Position& pos, int32_t index,
-								uint32_t spriteId, StackPosType_t type) const;
+								uint32_t itemId, StackPosType_t type) const;
 		static void internalGetPosition(Item* item, Position& pos, uint8_t& stackpos);
 
 		static std::string getTradeErrorDescription(ReturnValue ret, Item* item);
@@ -144,6 +162,25 @@ class Game
 			return itemsSaleCount;
 		}
 
+		void addItemsClassification(ItemClassification* itemsClassification) {
+			itemsClassifications.push_back(itemsClassification);
+		}
+		ItemClassification* getItemsClassification(uint8_t id, bool create) {
+			auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
+				return it->id == id;
+				});
+
+			if (it != itemsClassifications.end()) {
+				return *it;
+			} else if (create) {
+				ItemClassification* itemClassification = new ItemClassification(id);
+				addItemsClassification(itemClassification);
+				return itemClassification;
+			}
+
+			return nullptr;
+		}
+
 		LightInfo getWorldLightInfo() const;
 
 		bool gameIsDay();
@@ -174,6 +211,8 @@ class Game
 		Item* findItemOfType(Cylinder* cylinder, uint16_t itemId,
                              bool depthSearch = true, int32_t subType = -1) const;
 
+		void createLuaItemsOnMap();
+
 		bool removeMoney(Cylinder* cylinder, uint64_t money,
                          uint32_t flags = 0, bool useBank = false);
 
@@ -199,6 +238,8 @@ class Game
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint32_t>  const &itemMap, bool buyPrice) const;
+
 		void loadPlayersRecord();
 		void checkPlayersRecord();
 
@@ -209,6 +250,8 @@ class Game
 		void playerDebugAssert(uint32_t playerId, const std::string& assertLine,
                                const std::string& date, const std::string& description,
                                const std::string& comment);
+		void playerPreyAction(uint32_t playerId, uint8_t slot, uint8_t action, uint8_t option, int8_t index, uint16_t raceId);
+		void playerTaskHuntingAction(uint32_t playerId, uint8_t slot, uint8_t action, bool upgrade, uint16_t raceId);
 		void playerNpcGreet(uint32_t playerId, uint32_t npcId);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId,
                                      uint8_t button, uint8_t choice);
@@ -233,14 +276,14 @@ class Game
 
 		//Implementation of player invoked events
 		void playerTeleport(uint32_t playerId, const Position& pos);
-		void playerMoveThing(uint32_t playerId, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos,
+		void playerMoveThing(uint32_t playerId, const Position& fromPos, uint16_t itemId, uint8_t fromStackPos,
                               const Position& toPos, uint8_t count);
 		void playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position& movingCreatureOrigPos, const Position& toPos);
 		void playerMoveCreature(Player* playerId, Creature* movingCreature, const Position& movingCreatureOrigPos, Tile* toTile);
-		void playerMoveItemByPlayerID(uint32_t playerId, const Position& fromPos, uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count);
+		void playerMoveItemByPlayerID(uint32_t playerId, const Position& fromPos, uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count);
 		void playerMoveItem(Player* player, const Position& fromPos,
-							uint16_t spriteId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
-		void playerEquipItem(uint32_t playerId, uint16_t spriteId);
+							uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
+		void playerEquipItem(uint32_t playerId, uint16_t itemId);
 		void playerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string& name);
@@ -249,66 +292,75 @@ class Game
 		void playerOpenChannel(uint32_t playerId, uint16_t channelId);
 		void playerCloseChannel(uint32_t playerId, uint16_t channelId);
 		void playerOpenPrivateChannel(uint32_t playerId, std::string& receiver);
-		void playerStowItem(uint32_t playerId, const Position& pos, uint16_t spriteId, uint8_t stackpos, uint8_t count, bool allItems);
-		void playerStashWithdraw(uint32_t playerId, uint16_t spriteId, uint32_t count, uint8_t stackpos);
+		void playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemId, uint8_t stackpos, uint8_t count, bool allItems);
+		void playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t count, uint8_t stackpos);
 		void playerCloseNpcChannel(uint32_t playerId);
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos,
-                              uint16_t fromSpriteId, const Position& toPos, uint8_t toStackPos, uint16_t toSpriteId);
-		void playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPos, uint8_t index, uint16_t spriteId);
-		void playerUseWithCreature(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t spriteId);
+                              uint16_t fromItemId, const Position& toPos, uint8_t toStackPos, uint16_t toItemId);
+		void playerUseItem(uint32_t playerId, const Position& pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
+		void playerUseWithCreature(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos, uint32_t creatureId, uint16_t itemId);
 		void playerCloseContainer(uint32_t playerId, uint8_t cid);
 		void playerMoveUpContainer(uint32_t playerId, uint8_t cid);
 		void playerUpdateContainer(uint32_t playerId, uint8_t cid);
-		void playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
-		void playerConfigureShowOffSocket(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
-		void playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Position& pos, uint8_t stackPos, const uint16_t spriteId, uint8_t podiumVisible, uint8_t direction);
-		void playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t spriteId);
+		void playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t itemId);
+		void playerConfigureShowOffSocket(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t itemId);
+		void playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Position& pos, uint8_t stackPos, const uint16_t itemId, uint8_t podiumVisible, uint8_t direction);
+		void playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t stackPos, const uint16_t itemId);
 		void playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::string& text);
 		void playerBrowseField(uint32_t playerId, const Position& pos);
 		void playerSeekInContainer(uint32_t playerId, uint8_t containerId, uint16_t index);
 		void playerUpdateHouseWindow(uint32_t playerId, uint8_t listId, uint32_t windowTextId, const std::string& text);
 		void playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t stackPos,
-								uint32_t tradePlayerId, uint16_t spriteId);
+								uint32_t tradePlayerId, uint16_t itemId);
 		void playerAcceptTrade(uint32_t playerId);
 		void playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t index);
-		void playerBuyItem(uint32_t playerId, uint16_t spriteId, uint8_t count, uint8_t amount,
+		void playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount,
 								bool ignoreCap = false, bool inBackpacks = false);
-		void playerSellItem(uint32_t playerId, uint16_t spriteId, uint8_t count,
-								uint8_t amount, bool ignoreEquipped = false);
+		void playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count,
+								uint16_t amount, bool ignoreEquipped = false);
 		void playerCloseShop(uint32_t playerId);
-		void playerLookInShop(uint32_t playerId, uint16_t spriteId, uint8_t count);
+		void playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count);
 		void playerCloseTrade(uint32_t playerId);
 		void playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId);
 		void playerFollowCreature(uint32_t playerId, uint32_t creatureId);
 		void playerCancelAttackAndFollow(uint32_t playerId);
 		void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
-		void playerLookAt(uint32_t playerId, const Position& pos, uint8_t stackPos);
+		void playerLookAt(uint32_t playerId, uint16_t itemId, const Position& pos, uint8_t stackPos);
 		void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
+		void playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t itemId, uint8_t stackPos,
+								Item* defaultItem = nullptr, bool lootAllCorpses = false, bool autoLoot = false);
 		void playerLootAllCorpses(Player* player, const Position& pos, bool lootAllCorpses);
-		void playerQuickLoot(uint32_t playerId,
-							const Position& pos,
-							uint16_t spriteId,
-							uint8_t stackPos,
-							Item* defaultItem = nullptr,
-							bool lootAllCorpses = false);
 		void playerSetLootContainer(uint32_t playerId, ObjectCategory_t category,
-								const Position& pos, uint16_t spriteId, uint8_t stackPos);
+								const Position& pos, uint16_t itemId, uint8_t stackPos);
 		void playerClearLootContainer(uint32_t playerId, ObjectCategory_t category);;
 		void playerOpenLootContainer(uint32_t playerId, ObjectCategory_t category);
 		void playerSetQuickLootFallback(uint32_t playerId, bool fallback);
 		void playerQuickLootBlackWhitelist(uint32_t playerId,
-								QuickLootFilter_t filter, std::vector<uint16_t> clientIds);
-		void playerRequestLockFind(uint32_t playerId);
+								QuickLootFilter_t filter, const std::vector<uint16_t> itemIds);
+
+		void playerRequestDepotItems(uint32_t playerId);
+		void playerRequestCloseDepotSearch(uint32_t playerId);
+		void playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier);
+		void playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type);
+		void playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos);
+		void playerMoveThingFromDepotSearch(Player* player,
+											uint16_t itemId,
+											uint8_t tier,
+											uint8_t count,
+											const Position& fromPos,
+											const Position& toPos,
+											bool allItems = false);
+
 		void playerRequestAddVip(uint32_t playerId, const std::string& name);
 		void playerRequestRemoveVip(uint32_t playerId, uint32_t guid);
 		void playerRequestEditVip(uint32_t playerId, uint32_t guid, const std::string& description, uint32_t icon, bool notify);
-		void playerApplyImbuement(uint32_t playerId, uint32_t imbuementid, uint8_t slot, bool protectionCharm);
-		void playerClearingImbuement(uint32_t playerid, uint8_t slot);
-		void playerCloseImbuingWindow(uint32_t playerid);
+		void playerApplyImbuement(uint32_t playerId, uint16_t imbuementid, uint8_t slot, bool protectionCharm);
+		void playerClearImbuement(uint32_t playerid, uint8_t slot);
+		void playerCloseImbuementWindow(uint32_t playerid);
 		void playerTurn(uint32_t playerId, Direction dir);
 		void playerRequestOutfit(uint32_t playerId);
 		void playerShowQuestLog(uint32_t playerId);
@@ -324,10 +376,10 @@ class Game
 		void playerEnableSharedPartyExperience(uint32_t playerId, bool sharedExpActive);
 		void playerToggleMount(uint32_t playerId, bool mount);
 		void playerLeaveMarket(uint32_t playerId);
-		void playerBrowseMarket(uint32_t playerId, uint16_t spriteId);
+		void playerBrowseMarket(uint32_t playerId, uint16_t itemId);
 		void playerBrowseMarketOwnOffers(uint32_t playerId);
 		void playerBrowseMarketOwnHistory(uint32_t playerId);
-		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t spriteId, uint16_t amount, uint32_t price, bool anonymous);
+		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
 		void playerStoreOpen(uint32_t playerId, uint8_t serviceType);
@@ -338,7 +390,7 @@ class Game
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
-		std::forward_list<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
+		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
 
 		static void updatePremium(account::Account& account);
 
@@ -358,17 +410,19 @@ class Game
 			return boostedCreature;
 		}
 
-		void onPressHotkeyEquip(uint32_t playerId, uint16_t spriteid);
+		void onPressHotkeyEquip(uint32_t playerId, uint16_t itemId);
 
 		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, bool checkLineOfSight = true,
                               int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
 		bool isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor) const;
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
+		void changePlayerSpeed(Player& player, int32_t varSpeedDelta);
 		void internalCreatureChangeOutfit(Creature* creature, const Outfit_t& oufit);
 		void internalCreatureChangeVisible(Creature* creature, bool visible);
 		void changeLight(const Creature* creature);
 		void updateCreatureIcon(const Creature* creature);
+		void reloadCreature(const Creature* creature);
 		void updateCreatureSkull(const Creature* player);
 		void updatePlayerShield(Player* player);
 		void updateCreatureType(Creature* creature);
@@ -402,12 +456,6 @@ class Game
 		void addDistanceEffect(const Position& fromPos, const Position& toPos, uint8_t effect);
 		static void addDistanceEffect(const SpectatorHashSet& spectators, const Position& fromPos, const Position& toPos, uint8_t effect);
 
-		void startImbuementCountdown(Item* item) {
-			item->incrementReferenceCounter();
-			toImbuedItems.push_front(item);
-		}
-
-		void startDecay(Item* item);
 		int32_t getLightHour() const {
 			return lightHour;
 		}
@@ -423,8 +471,10 @@ class Game
 		void sendOfflineTrainingDialog(Player* player);
 
 		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
-		const std::unordered_map<uint32_t, Player*>& getPlayers() const { return players; }
+		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
+
+		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
 
 		void addPlayer(Player* player);
 		void removePlayer(Player* player);
@@ -440,7 +490,7 @@ class Game
 		void removeGuild(uint32_t guildId);
 		void decreaseBrowseFieldRef(const Position& pos);
 
-		std::unordered_map<Tile*, Container*> browseFields;
+		phmap::flat_hash_map<Tile*, Container*> browseFields;
 
 		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
 
@@ -454,7 +504,6 @@ class Game
 
 		bool reload(ReloadTypes_t reloadType);
 
-		bool itemidHasMoveevent(uint32_t itemid);
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);
 
@@ -463,10 +512,9 @@ class Game
 		Mounts mounts;
 		Raids raids;
 		GameStore gameStore;
+		Canary::protobuf::appearances::Appearances appearances;
 
-		std::forward_list<Item*> toDecayItems;
-
-		std::unordered_set<Tile*> getTilesToClean() const {
+		phmap::flat_hash_set<Tile*> getTilesToClean() const {
 			return tilesToClean;
 		}
 		void addTileToClean(Tile* tile) {
@@ -477,37 +525,6 @@ class Game
 		}
 		void clearTilesToClean() {
 			tilesToClean.clear();
-		}
-
-		std::forward_list<Item*> toImbuedItems;
-
-		// Event schedule
-		uint16_t getExpSchedule() const {
-			return expSchedule;
-		}
-		void setExpSchedule(uint16_t exprate) {
-			expSchedule = (expSchedule * exprate)/100;
-		}
-
-		uint16_t getLootSchedule() const {
-			return lootSchedule;
-		}
-		void setLootSchedule(uint16_t lootrate) {
-			lootSchedule = (lootSchedule * lootrate)/100;
-		}
-
-		uint32_t getSpawnMonsterSchedule() const {
-			return spawnMonsterSchedule;
-		}
-		void setSpawnMonsterSchedule(uint32_t spawnrate) {
-			spawnMonsterSchedule = (spawnMonsterSchedule * spawnrate)/100;
-		}
-
-		uint16_t getSkillSchedule() const {
-			return skillSchedule;
-		}
-		void setSkillSchedule(uint16_t skillrate) {
-			skillSchedule = (skillSchedule * skillrate)/100;
 		}
 
 		void playerInspectItem(Player* player, const Position& pos);
@@ -523,6 +540,44 @@ class Game
 			return CharmList;
 		}
 
+		void increasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
+		}
+
+		void decreasePlayerActiveImbuements(uint32_t playerId) {
+			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] - 1);
+		}
+
+		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
+			if (value <= 0) {
+				playersActiveImbuements.erase(playerId);
+				return;
+			}
+			
+			playersActiveImbuements[playerId] = std::min<uint8_t>(255, value);
+		}
+
+		uint8_t getPlayerActiveImbuements(uint32_t playerId) {
+			return playersActiveImbuements[playerId];
+		}
+
+		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
+		bool isMagicEffectRegistered(uint8_t type) const {
+			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
+		}
+
+		bool isDistanceEffectRegistered(uint8_t type) const {
+			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
+		}
+
+		bool isLookTypeRegistered(uint16_t type) const {
+			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
+		}
+
+		void setCreateLuaItems(Position position, uint16_t itemId) {
+			mapLuaItemsStored[position] = itemId;
+		}
+
 	private:
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
@@ -531,18 +586,18 @@ class Game
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
-		void checkDecay();
-		void internalDecayItem(Item* item);
-
-		std::unordered_map<uint32_t, Player*> players;
-		std::unordered_map<std::string, Player*> mappedPlayerNames;
-		std::unordered_map<uint32_t, Guild*> guilds;
-		std::unordered_map<uint16_t, Item*> uniqueItems;
+		phmap::flat_hash_map<uint32_t, Player*> players;
+		phmap::flat_hash_map<uint32_t, uint8_t> playersActiveImbuements;
+		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
+		phmap::flat_hash_map<uint32_t, Guild*> guilds;
+		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;
 		std::map<uint32_t, uint32_t> stages;
 
-		std::list<Item*> decayItems[EVENT_DECAY_BUCKETS];
-
-		std::list<Item*> imbuedItems[EVENT_IMBUEMENT_BUCKETS];
+		/* Items stored from the lua scripts positions
+		 * For example: ActionFunctions::luaActionPosition
+		 * This basically works so that the item is created after the map is loaded, because the scripts are loaded before the map is loaded, we will use this table to create items that don't exist in the map natively through each script
+		*/
+		std::map<Position, uint16_t> mapLuaItemsStored;
 
 		std::map<uint16_t, std::string> BestiaryList;
 		std::string boostedCreature = "";
@@ -551,6 +606,10 @@ class Game
 		std::vector<Creature*> ToReleaseCreatures;
 		std::vector<Creature*> checkCreatureLists[EVENT_CREATURECOUNT];
 		std::vector<Item*> ToReleaseItems;
+
+		std::vector<uint8_t> registeredMagicEffects;
+		std::vector<uint8_t> registeredDistanceEffects;
+		std::vector<uint16_t> registeredLookTypes;
 
 		size_t lastBucket = 0;
 		size_t lastImbuedBucket = 0;
@@ -567,7 +626,7 @@ class Game
 
 		std::map<uint32_t, BedItem*> bedSleepersMap;
 
-		std::unordered_set<Tile*> tilesToClean;
+		phmap::flat_hash_set<Tile*> tilesToClean;
 
 		ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 
@@ -583,12 +642,6 @@ class Game
 
 		GameState_t gameState = GAME_STATE_NORMAL;
 		WorldType_t worldType = WORLD_TYPE_PVP;
-
-		// Event schedule
-		uint16_t expSchedule = 100;
-		uint16_t lootSchedule = 100;
-		uint16_t skillSchedule = 100;
-		uint32_t spawnMonsterSchedule = 100;
 
 		LightState_t lightState = LIGHT_STATE_DAY;
 		LightState_t currentLightState = lightState;
@@ -607,6 +660,10 @@ class Game
 
 		std::map<uint16_t, uint32_t> itemsPriceMap;
 		uint16_t itemsSaleCount;
+
+		std::vector<ItemClassification*> itemsClassifications;
 };
+
+constexpr auto g_game = &Game::getInstance;
 
 #endif  // SRC_GAME_GAME_H_

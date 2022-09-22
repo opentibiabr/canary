@@ -101,7 +101,7 @@ end
 GameStore.ClientOfferTypes = {
 	CLIENT_STORE_OFFER_OTHER = 0,
 	CLIENT_STORE_OFFER_NAMECHANGE = 1,
-	CLIENT_STORE_OFFER_HIRELING = 10,
+	CLIENT_STORE_OFFER_HIRELING = 3,
 }
 
 GameStore.HistoryTypes = {
@@ -185,7 +185,7 @@ GameStore.DefaultDescriptions = {
 GameStore.isItsPacket = function(byte)
 	for k, v in pairs(GameStore.RecivedPackets) do
 		if v == byte then
-			return true
+		  return true
 		end
 	end
 	return false
@@ -296,13 +296,13 @@ function parseRequestStoreOffers(playerId, msg)
 	elseif actionType == GameStore.ActionType.OPEN_PREMIUM_BOOST then
 		local subAction = msg:getByte()
 		local category = nil
-		
+
 		if subAction == 0 then
 			category = GameStore.getCategoryByName("Premium Time")
-		else 
+		else
 			category = GameStore.getCategoryByName("Boosts")
 		end
-		
+
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 		end
@@ -315,17 +315,17 @@ function parseRequestStoreOffers(playerId, msg)
 		else
 			category = GameStore.getCategoryByName("Useful Things")
 		end
-		
+
 		-- Third prey slot offerId
 		-- We can't use offerId 0
-		if subAction == 0 then 
+		if subAction == 0 then
 			redirectId = 65008
 		end
 
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, redirectId)
 		end
-	
+
 	elseif actionType == GameStore.ActionType.OPEN_OFFER then
 		local offerId = msg:getU32()
 		local category = GameStore.getCategoryByOffer(offerId)
@@ -390,8 +390,8 @@ function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE     then local newName = msg:getString(); GameStore.processNameChangePurchase(player, offer.id, productType, newName, offer.name, offerPrice)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE      then GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST       then GameStore.processExpBoostPuchase(player)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT       then GameStore.processPreySlotPurchase(player)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT    then GameStore.processPreyHuntingSlotPurchase(player)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT       then GameStore.processPreyThirdSlot(player)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT    then GameStore.processTaskHuntingThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS      then GameStore.processPreyBonusReroll(player, offer.count)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_TEMPLE         then GameStore.processTempleTeleportPurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES        then GameStore.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges)
@@ -423,7 +423,7 @@ function parseBuyStoreOffer(playerId, msg)
 		GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, offer.name, (offerPrice) * -1)
 		local message = string.format("You have purchased %s for %d coins.", offer.name, offerPrice)
 		sendUpdateCoinBalance(playerId)
-		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)		
+		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)
 	end
 	return true
 end
@@ -530,7 +530,7 @@ function Player.canBuyOffer(self, offer)
 
 	if disabled ~= 1 then
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_POUNCH then
-			local pounch = self:getItemById(26377, true)
+			local pounch = self:getItemById(23721, true)
 			if pounch then
 				disabled = 1
 				disabledReason = "You already have Loot Pouch."
@@ -587,7 +587,7 @@ function Player.canBuyOffer(self, offer)
 				disabledReason = "You already have maximum of reward tokens."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then
-			if self:getPreyBonusRerolls() >= 50 then
+			if self:getPreyCards()>= 50 then
 				disabled = 1
 				disabledReason = "You already have maximum of prey wildcards."
 			end
@@ -596,8 +596,13 @@ function Player.canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You already have charm expansion."
 			end
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
+			if self:taskHuntingThirdSlot() then
+				disabled = 1
+				disabledReason = "You already have 3 slots released."
+			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
-			if self:getStorageValue(Prey.Config.StoreSlotStorage) == 1 then
+			if self:preyThirdSlot() then
 				disabled = 1
 				disabledReason = "You already have 3 slots released."
 			end
@@ -658,7 +663,6 @@ function sendShowStoreOffers(playerId, category, redirectId)
 		return false
 	end
 
-	local version = player:getClient().version
 	local msg = NetworkMessage()
 	local haveSaleOffer = 0
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
@@ -699,7 +703,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 		end
 		table.insert(offers[name].offers, offer)
 	end
-	
+
 	-- If player doesn't have hireling
 	if category.name == "Hirelings" then
 		if player:getHirelingsCount() < 1 then
@@ -712,7 +716,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 			count = count - 6
 		end
 	end
-	
+
 	msg:addU16(count)
 
 	if count > 0 then
@@ -740,7 +744,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 				if (off.state) then
 					if (off.state == GameStore.States.STATE_SALE) then
-						local daySub = off.validUntil - os.sdate("*t").day
+						local daySub = off.validUntil - os.date("*t").day
 						if (daySub >= 0) then
 							msg:addByte(off.state)
 							msg:addU32(os.time() + daySub * 86400)
@@ -756,10 +760,10 @@ function sendShowStoreOffers(playerId, category, redirectId)
 					msg:addByte(GameStore.States.STATE_NONE)
 				end
 			end
-			
+
 			local tryOnType = 0
 			local type = convertType(offer.type)
-			
+
 			msg:addByte(type);
 			if type == GameStore.ConverType.SHOW_NONE then
 				msg:addString(offer.icons[1])
@@ -769,7 +773,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 
 				tryOnType = 1
 			elseif type == GameStore.ConverType.SHOW_ITEM then
-				msg:addU16(ItemType(offer.itemtype):getClientId())
+				msg:addU16(offer.itemtype)
 			elseif type == GameStore.ConverType.SHOW_OUTFIT then
 				msg:addU16(player:getSex() == PLAYERSEX_FEMALE and offer.sexId.female or offer.sexId.male)
 				local outfit = player:getOutfit()
@@ -777,7 +781,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				msg:addByte(outfit.lookBody)
 				msg:addByte(outfit.lookLegs)
 				msg:addByte(outfit.lookFeet)
-				
+
 				tryOnType = 1
 			elseif type == GameStore.ConverType.SHOW_HIRELING then
 				if player:getSex() == PLAYERSEX_MALE then
@@ -798,11 +802,11 @@ function sendShowStoreOffers(playerId, category, redirectId)
 			msg:addU16(0) -- Collection (to-do)
 			msg:addU16(0) -- Popularity Score (to-do)
 			msg:addU32(0) -- State New Until (timestamp)
-			
+
 			local configure = useOfferConfigure(offer.type)
 			if configure == GameStore.ConfigureOffers.SHOW_CONFIGURE then
 				msg:addByte(1)
-			else 
+			else
 				msg:addByte(0)
 			end
 
@@ -820,7 +824,6 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	if not player then
 		return false
 	end
-	local version = player:getClient().version
 	local totalEntries = GameStore.retrieveHistoryTotalPages(player:getAccountId())
 	local totalPages = math.ceil(totalEntries / entriesPerPage)
 	local entries = GameStore.retrieveHistoryEntries(player:getAccountId(), page, entriesPerPage) -- this makes everything easy!
@@ -835,17 +838,13 @@ function sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	msg:addByte(#entries)
 
 	for k, entry in ipairs(entries) do
-		if version >= 1220 then
-			msg:addU32(0)
-		end
+		msg:addU32(0)
 		msg:addU32(entry.time)
 		msg:addByte(entry.mode)
 		msg:addU32(entry.amount)
-    	msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
+		msg:addByte(0x0) -- 0 = transferable tibia coin, 1 = normal tibia coin
 		msg:addString(entry.description)
-		if version >= 1220 then
-			msg:addByte(0) -- details
-		end
+		msg:addByte(0) -- details
 	end
 	msg:sendToPlayer(player)
 end
@@ -1048,7 +1047,7 @@ GameStore.insertHistory = function(accountId, mode, description, amount)
 	return db.query(string.format("INSERT INTO `store_history`(`account_id`, `mode`, `description`, `coin_amount`, `time`) VALUES (%s, %s, %s, %s, %s)", accountId, mode, db.escapeString(description), amount, os.time()))
 end
 
-GameStore.retrieveHistoryTotalPages = function (accountId) 
+GameStore.retrieveHistoryTotalPages = function (accountId)
 	local resultId = db.storeQuery("SELECT count(id) as total FROM store_history WHERE account_id = " .. accountId)
 	if resultId == false then
 		return 0
@@ -1068,7 +1067,7 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 		repeat
 			local entry = {
 				mode = result.getNumber(resultId, "mode"),
-				description = result.getString(resultId, "description"),
+				description = result.getDataString(resultId, "description"),
 				amount = result.getNumber(resultId, "coin_amount"),
 				time = result.getNumber(resultId, "time"),
 			}
@@ -1247,6 +1246,7 @@ function GameStore.processItemPurchase(player, offerId, offerCount)
 		return error({ code = 0, message = "Please make sure you have free slots in your store inbox."})
 	end
 end
+
 function GameStore.processChargesPurchase(player, itemtype, name, charges)
 	if player:getFreeCapacity() < ItemType(itemtype):getWeight(1) then
 		return error({ code = 0, message = "Please make sure you have free capacity to hold this item."})
@@ -1295,64 +1295,46 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		return itemId >= ITEM_KEG_START and itemId <= ITEM_KEG_END
 	end
 
-    if isKegItem(offerId) then
-    if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(2596):getWeight() then
-        return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
-    end
-    elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(2596):getWeight() then
+	local PARCEL_ID = 3504
+	local isKeg = isKegItem(offerId)
+
+    if isKeg then
+        if player:getFreeCapacity() < ItemType(offerId):getWeight(1) + ItemType(PARCEL_ID):getWeight() then
+            return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
+        end
+    elseif player:getFreeCapacity() < ItemType(offerId):getWeight(offerCount) + ItemType(PARCEL_ID):getWeight() then
         return error({code = 0, message = "Please make sure you have free capacity to hold this item."})
     end
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
-		if (isKegItem(offerId)) then
-			if (offerCount >= 500) then
-				local parcel = Item(inbox:addItem(2596, 1):getUniqueId())
-				local function changeParcel(parcel)
-					local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
-					if parcel then
-						parcel:setAttribute(ITEM_ATTRIBUTE_NAME, packagename)
-						local pendingCount = offerCount
-						while (pendingCount > 0) do
-							local pack
-							if (pendingCount > 500) then
-								pack = 500
-							else
-								pack = pendingCount
-							end
-							local kegItem = parcel:addItem(offerId, 1)
-							kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
-							pendingCount = pendingCount - pack
-						end
+		if (isKeg and offerCount > 500) or offerCount > 100 then
+			local parcel = inbox:addItem(PARCEL_ID, 1)
+			if parcel then
+				parcel:setAttribute(ITEM_ATTRIBUTE_NAME, '' .. offerCount .. 'x ' .. offerName .. ' package.')
+				local pendingCount = offerCount
+				local limit = isKeg and 500 or 100
+				while (pendingCount > 0) do
+					local pack
+					if (pendingCount > limit) then
+						pack = limit
+					else
+						pack = pendingCount
 					end
-				end
-				addEvent(function() changeParcel(parcel) end, 250)
-			else
-				local kegItem = inbox:addItem(offerId, 1)
-				kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
-			end
-		elseif (offerCount > 100) then
-			local parcel = Item(inbox:addItem(2596, 1):getUniqueId())
-			local function changeParcel(parcel)
-				local packagename = '' .. offerCount .. 'x ' .. offerName .. ' package.'
-				if parcel then
-					parcel:setAttribute(ITEM_ATTRIBUTE_NAME, packagename)
-					local pendingCount = offerCount
-					while (pendingCount > 0) do
-						local pack
-						if (pendingCount > 100) then
-							pack = 100
-						else
-							pack = pendingCount
-						end
+					if isKeg then
+						local kegItem = parcel:addItem(offerId, 1)
+						kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
+					else
 						parcel:addItem(offerId, pack)
-						pendingCount = pendingCount - pack
 					end
+					pendingCount = pendingCount - pack
 				end
 			end
-			addEvent(function() changeParcel(parcel) end, 250)
 		else
-			inbox:addItem(offerId, offerCount)
+			local item = inbox:addItem(offerId, isKeg and 1 or offerCount)
+			if item and isKeg then
+				item:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
+			end
 		end
 	else
 		return error({code = 0, message = "Please make sure you have free slots in your store inbox."})
@@ -1368,19 +1350,14 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	if inbox and inbox:getEmptySlots() > 0 then
-		local decoKit = inbox:addItem(26054, 1)
-		local function changeKit(kit)
-			local decoItemName = ItemType(offerId):getName()
-			if kit then
-				kit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. decoItemName .. ">.")
-				kit:setCustomAttribute("unWrapId", offerId)
-
-				if isCaskItem(offerId) then
-					kit:setAttribute(ITEM_ATTRIBUTE_DATE, offerCount)
-				end
+		local decoKit = inbox:addItem(23398, 1)
+		if decoKit then
+			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
+			decoKit:setCustomAttribute("unWrapId", offerId)
+			if isCaskItem(offerId) then
+				decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offerCount)
 			end
 		end
-		addEvent(function() changeKit(decoKit) end, 250)
 	else
 		return error({code = 0, message = "Please make sure you have free slots in your store inbox."})
 	end
@@ -1416,6 +1393,10 @@ function GameStore.processOutfitPurchase(player, offerSexIdTable, addon)
 end
 
 function GameStore.processMountPurchase(player, offerId)
+	if player:hasMount(offerId) then
+		return error({code = 0, message = "You already own this mount."})
+	end
+
 	player:addMount(offerId)
 end
 
@@ -1442,8 +1423,8 @@ function GameStore.processNameChangePurchase(player, offerId, productType, newNa
 
 		player:removeCoinsBalance(offerPrice)
 		GameStore.insertHistory(player:getAccountId(), GameStore.HistoryTypes.HISTORY_TYPE_NONE, offerName, (offerPrice) * -1)
-		
-		local message = string.format("You have purchased %s for %d coins.", offerName, offerPrice) 
+
+		local message = string.format("You have purchased %s for %d coins.", offerName, offerPrice)
 		addPlayerEvent(sendStorePurchaseSuccessful, 500, playerId, message)
 
 		newName = newName:lower():gsub("(%l)(%w*)", function(a, b) return string.upper(a) .. b end)
@@ -1482,33 +1463,25 @@ function GameStore.processExpBoostPuchase(player)
 	player:setStorageValue(GameStore.Storages.expBoostCount, expBoostCount + 1)
 end
 
-function GameStore.processPreySlotPurchase(player)
-	if player:getStorageValue(Prey.Config.StoreSlotStorage) < 1 then
-		player:setStorageValue(Prey.Config.StoreSlotStorage, 1)
-		player:setPreyUnlocked(CONST_PREY_SLOT_THIRD, 2)
-		player:setPreyState(CONST_PREY_SLOT_THIRD, 1)
-
-		-- Update Prey Data
-		for slot = CONST_PREY_SLOT_FIRST, CONST_PREY_SLOT_THIRD do
-			player:sendPreyData(slot)
-		end
+function GameStore.processPreyThirdSlot(player)
+	if player:preyThirdSlot() then
+		return error({code = 1, message = "You already have unlocked all prey slots."})
 	end
+	player:preyThirdSlot(true)
 end
 
-function GameStore.processPreyHuntingSlotPurchase(player)
-	if player:getStorageValue(CONST_HUNTING_STORAGE) < 1 then
-		player:setStorageValue(CONST_HUNTING_STORAGE, 1)
-
-		-- Update Prey Data
-		player:sendPreyHuntingData(CONST_PREY_SLOT_THIRD)
+function GameStore.processTaskHuntingThirdSlot(player)
+	if player:taskHuntingThirdSlot() then
+		return error({code = 1, message = "You already have unlocked all task hunting slots."})
 	end
+	player:taskHuntingThirdSlot(true)
 end
 
 function GameStore.processPreyBonusReroll(player, offerCount)
-	if player:getPreyBonusRerolls() + offerCount >= 51 then
+	if player:getPreyCards() + offerCount >= 51 then
 		return error({code = 1, message = "You cannot own more than 50 prey wildcards."})
 	end
-	player:setPreyBonusRerolls(player:getPreyBonusRerolls() + offerCount)
+	player:addPreyCards(offerCount)
 end
 
 function GameStore.processTempleTeleportPurchase(player)
@@ -1682,7 +1655,6 @@ function sendHomePage(playerId)
 		return
 	end
 
-	local version = player:getClient().version
 	local msg = NetworkMessage()
 	msg:addByte(GameStore.SendingPackets.S_StoreOffers)
 
@@ -1694,7 +1666,7 @@ function sendHomePage(playerId)
 
 	local homeOffers = getHomeOffers(player:getId())
 	msg:addU16(#homeOffers) -- offers
-	
+
 	for p, offer in pairs(homeOffers)do
 		msg:addString(offer.name)
 		msg:addByte(0x1) -- ?
@@ -1720,7 +1692,7 @@ function sendHomePage(playerId)
 			local mount = Mount(offer.id)
 			msg:addU16(mount:getClientId())
 		elseif type == GameStore.ConverType.SHOW_ITEM then
-			msg:addU16(ItemType(offer.itemtype):getClientId())
+			msg:addU16(offer.itemtype)
 		elseif type == GameStore.ConverType.SHOW_OUTFIT then
 			msg:addU16(player:getSex() == PLAYERSEX_FEMALE and offer.sexId.female or offer.sexId.male)
 			local outfit = player:getOutfit()
@@ -1734,10 +1706,10 @@ function sendHomePage(playerId)
 		msg:addU16(0) -- Collection
 		msg:addU16(0) -- Popularity Score
 		msg:addU32(0) -- State New Until
-		msg:addByte(0) -- User Configuration 
+		msg:addByte(0) -- User Configuration
 		msg:addU16(0) -- Products Capacity
 	end
-	
+
 	local banner = HomeBanners
 	msg:addByte(#banner.images)
 	for m, image in ipairs(banner.images) do

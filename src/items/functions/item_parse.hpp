@@ -28,7 +28,7 @@
 
 class ConditionDamage;
 
-const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributesMap = {
+const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttributesMap = {
 	{"type", ITEM_PARSE_TYPE},
 	{"description", ITEM_PARSE_DESCRIPTION},
 	{"runespellname", ITEM_PARSE_RUNESPELLNAME},
@@ -40,17 +40,14 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"attack", ITEM_PARSE_ATTACK},
 	{"rotateto", ITEM_PARSE_ROTATETO},
 	{"wrapcontainer", ITEM_PARSE_WRAPCONTAINER},
-	{"imbuingslot", ITEM_PARSE_IMBUINGSLOT},
 	{"wrapableto", ITEM_PARSE_WRAPABLETO},
 	{"unwrapableto", ITEM_PARSE_WRAPABLETO},
 	{"moveable", ITEM_PARSE_MOVEABLE},
 	{"movable", ITEM_PARSE_MOVEABLE},
-	{"ispodium", ITEM_PARSE_PODIUM},
 	{"blockprojectile", ITEM_PARSE_BLOCKPROJECTILE},
 	{"allowpickupable", ITEM_PARSE_PICKUPABLE},
 	{"pickupable", ITEM_PARSE_PICKUPABLE},
 	{"floorchange", ITEM_PARSE_FLOORCHANGE},
-	{"corpsetype", ITEM_PARSE_CORPSETYPE},
 	{"containersize", ITEM_PARSE_CONTAINERSIZE},
 	{"fluidsource", ITEM_PARSE_FLUIDSOURCE},
 	{"readable", ITEM_PARSE_READABLE},
@@ -91,10 +88,10 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"skillfist", ITEM_PARSE_SKILLFIST},
 	{"criticalhitchance", ITEM_PARSE_CRITICALHITCHANCE},
 	{"criticalhitdamage", ITEM_PARSE_CRITICALHITDAMAGE},
-	{"skilllifechance", ITEM_PARSE_LIFELEECHCHANCE},
-	{"skilllifeamount", ITEM_PARSE_LIFELEECHAMOUNT},
-	{"skillmanachance", ITEM_PARSE_MANALEECHCHANCE},
-	{"skillmanaamount", ITEM_PARSE_MANALEECHAMOUNT},
+	{"lifeleechchance", ITEM_PARSE_LIFELEECHCHANCE},
+	{"lifeleechamount", ITEM_PARSE_LIFELEECHAMOUNT},
+	{"manaleechchance", ITEM_PARSE_MANALEECHCHANCE},
+	{"manaleechamount", ITEM_PARSE_MANALEECHAMOUNT},
 	{"maxhitpoints", ITEM_PARSE_MAXHITPOINTS},
 	{"maxhitpointspercent", ITEM_PARSE_MAXHITPOINTSPERCENT},
 	{"maxmanapoints", ITEM_PARSE_MAXMANAPOINTS},
@@ -149,7 +146,8 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"walkstack", ITEM_PARSE_WALKSTACK},
 	{"blocking", ITEM_PARSE_BLOCK_SOLID},
 	{"allowdistread", ITEM_PARSE_ALLOWDISTREAD},
-	// news 12.72 modifiers
+	{"imbuementslot", ITEM_PARSE_IMBUEMENT},
+	// 12.72 modifiers
 	{"deathmagiclevelpoints", ITEM_PARSE_DEATHMAGICLEVELPOINTS},
 	{"energymagiclevelpoints", ITEM_PARSE_ENERGYMAGICLEVELPOINTS},
 	{"earthmagiclevelpoints", ITEM_PARSE_EARTHMAGICLEVELPOINTS},
@@ -167,7 +165,7 @@ const std::unordered_map<std::string, ItemParseAttributes_t> ItemParseAttributes
 	{"reflectpercentall", ITEM_PARSE_REFLECTPERCENTALL},
 };
 
-const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
+const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{"key", ITEM_TYPE_KEY},
 	{"magicfield", ITEM_TYPE_MAGICFIELD},
 	{"container", ITEM_TYPE_CONTAINER},
@@ -187,7 +185,7 @@ const std::unordered_map<std::string, ItemTypes_t> ItemTypesMap = {
 	{"potion", ITEM_TYPE_POTION},
 };
 
-const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
+const phmap::flat_hash_map<std::string, TileFlags_t> TileStatesMap = {
 	{"down", TILESTATE_FLOORCHANGE_DOWN},
 	{"north", TILESTATE_FLOORCHANGE_NORTH},
 	{"south", TILESTATE_FLOORCHANGE_SOUTH},
@@ -197,15 +195,7 @@ const std::unordered_map<std::string, TileFlags_t> TileStatesMap = {
 	{"eastalt", TILESTATE_FLOORCHANGE_EAST_ALT},
 };
 
-const std::unordered_map<std::string, RaceType_t> RaceTypesMap = {
-	{"venom", RACE_VENOM},
-	{"blood", RACE_BLOOD},
-	{"undead", RACE_UNDEAD},
-	{"fire", RACE_FIRE},
-	{"energy", RACE_ENERGY},
-};
-
-const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
+const phmap::flat_hash_map<std::string, Fluids_t> FluidTypesMap = {
 	{"water", FLUID_WATER },
 	{"blood", FLUID_BLOOD},
 	{"beer", FLUID_BEER},
@@ -220,30 +210,49 @@ const std::unordered_map<std::string, FluidTypes_t> FluidTypesMap = {
 	{"wine", FLUID_WINE },
 	{"mud", FLUID_MUD },
 	{"fruitjuice", FLUID_FRUITJUICE },
-	{"lava", FLUID_LAVA },
 	{"rum", FLUID_RUM },
-	{"swamp", FLUID_SWAMP },
 	{"tea", FLUID_TEA },
 	{"mead", FLUID_MEAD },
+	{"ink", FLUID_INK },
 };
 
-const std::unordered_map<std::string, WeaponType_t> WeaponTypesMap = {
+const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
 	{"sword", WEAPON_SWORD},
 	{"club", WEAPON_CLUB},
 	{"axe", WEAPON_AXE},
 	{"shield", WEAPON_SHIELD},
 	{"distance", WEAPON_DISTANCE},
 	{"wand", WEAPON_WAND},
-	{"ammunition", WEAPON_AMMO},
-	{"quiver", WEAPON_QUIVER},
+	{"ammunition", WEAPON_AMMO}
 };
 
-class ItemParse final : public Items
+const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
+	{"elemental damage", IMBUEMENT_ELEMENTAL_DAMAGE},
+	{"life leech", IMBUEMENT_LIFE_LEECH},
+	{"mana leech", IMBUEMENT_MANA_LEECH},
+	{"critical hit", IMBUEMENT_CRITICAL_HIT},
+	{"elemental protection death", IMBUEMENT_ELEMENTAL_PROTECTION_DEATH},
+	{"elemental protection earth", IMBUEMENT_ELEMENTAL_PROTECTION_EARTH},
+	{"elemental protection fire", IMBUEMENT_ELEMENTAL_PROTECTION_FIRE},
+	{"elemental protection ice", IMBUEMENT_ELEMENTAL_PROTECTION_ICE},
+	{"elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY},
+	{"elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY},
+	{"increase speed", IMBUEMENT_INCREASE_SPEED},
+	{"skillboost axe", IMBUEMENT_SKILLBOOST_AXE},
+	{"skillboost sword", IMBUEMENT_SKILLBOOST_SWORD},
+	{"skillboost club", IMBUEMENT_SKILLBOOST_CLUB},
+	{"skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING},
+	{"skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE},
+	{"skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL},
+	{"increase capacity", IMBUEMENT_INCREASE_CAPACITY}
+};
+
+class ItemParse : public Items
 {
 	public:
-	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void initParse(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute keyAttribute, pugi::xml_attribute valueAttribute, ItemType& itemType);
 
-	private:
+	protected:
 	static void parseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseDescription(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRuneSpellName(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -255,14 +264,11 @@ class ItemParse final : public Items
 	static void parseAttack(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRotateTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapContainer(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseImbuingSlot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWrapableTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseMoveable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parsePodium(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseBlockProjectTile(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePickupable(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFloorChange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
-	static void parseCorpseType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseContainerSize(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseFluidSource(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWriteables(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -273,6 +279,7 @@ class ItemParse final : public Items
 	static void parseMagicEffect(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseLootType(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseRange(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseDecayTo(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseDuration(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseTransform(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseCharges(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
@@ -296,6 +303,7 @@ class ItemParse final : public Items
 	static void parseElement(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseWalk(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseAllowDistanceRead(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
+	static void parseImbuement(const std::string& tmpStrValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseSpecializedMagicLevelPoint(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parseMagicShieldCapacity(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);
 	static void parsePerfecShot(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType);

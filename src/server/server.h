@@ -21,6 +21,7 @@
 #define SRC_SERVER_SERVER_H_
 
 #include "server/network/connection/connection.h"
+#include "config/configmanager.h"
 #include "server/signals.h"
 #include <memory>
 
@@ -115,7 +116,7 @@ class ServiceManager
 	private:
 		void die();
 
-		std::unordered_map<uint16_t, ServicePort_ptr> acceptors;
+		phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
 		boost::asio::io_service io_service;
 		Signals signals{io_service};

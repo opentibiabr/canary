@@ -36,11 +36,19 @@ class Npc final : public Creature
 		static int32_t despawnRadius;
 
 		explicit Npc(NpcType* npcType);
+		Npc() = default;
 		~Npc();
 
-		// non-copyable
-		Npc(const Npc&) = delete;
-		Npc& operator=(const Npc&) = delete;
+		// Singleton - ensures we don't accidentally copy it
+		Npc(Npc const&) = delete;
+		void operator=(Npc const&) = delete;
+
+		static Npc& getInstance() {
+			// Guaranteed to be destroyed
+			static Npc instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		Npc* getNpc() override {
 			return this;
@@ -55,11 +63,17 @@ class Npc final : public Creature
 			}
 		}
 
+		void reset() const;
+
 		void removeList() override;
 		void addList() override;
 
 		const std::string& getName() const override {
 			return npcType->name;
+		}
+		// Real npc name, set on npc creation "createNpcType(typeName)"
+		const std::string& getTypeName() const override {
+			return npcType->typeName;
 		}
 		const std::string& getNameDescription() const override {
 			return npcType->nameDescription;
@@ -83,8 +97,6 @@ class Npc final : public Creature
 			masterPos = pos;
 		}
 
-		void onPlayerCloseChannel(Player* player);
-
 		uint8_t getSpeechBubble() const override {
 			return npcType->info.speechBubble;
 		}
@@ -92,16 +104,15 @@ class Npc final : public Creature
 			npcType->info.speechBubble = bubble;
 		}
 
-		uint16_t getCurrencyTrading() const {
-			return Item::items[npcType->info.currencyServerId].clientId;
-		}
-
 		uint16_t getCurrency() const {
-			return npcType->info.currencyServerId;
+			return npcType->info.currencyId;
+		}
+		void setCurrency(uint16_t currency) {
+			npcType->info.currencyId = currency;
 		}
 
-		ShopInfoMap getShopItems() {
-			return npcType->info.shopItems;
+		std::vector<ShopBlock> getShopItemVector() {
+			return npcType->info.shopItemVector;
 		}
 
 		bool isPushable() const override {
@@ -129,9 +140,9 @@ class Npc final : public Creature
 		void resetPlayerInteractions();
 
 		bool isInteractingWithPlayer(uint32_t playerId) {
-         if (playerInteractions.find(playerId) == playerInteractions.end()) {
-           return false;
-         }
+		if (playerInteractions.find(playerId) == playerInteractions.end()) {
+			return false;
+		}
 			return true;
 		}
 
@@ -149,11 +160,12 @@ class Npc final : public Creature
 		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text) override;
 		void onThink(uint32_t interval) override;
 		void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint8_t amount, bool ignore, bool inBackpacks);
+                            uint16_t amount, bool ignore, bool inBackpacks);
 		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint8_t amount, bool ignore);
+                            uint16_t amount, bool ignore);
 		void onPlayerCheckItem(Player* player, uint16_t itemid,
                           uint8_t count);
+		void onPlayerCloseChannel(Creature* creature);
 		void onPlacedCreature() override;
 
 		bool canWalkTo(const Position& fromPos, Direction dir) const;
@@ -196,5 +208,7 @@ class Npc final : public Creature
 		friend class LuaScriptInterface;
 		friend class Map;
 };
+
+constexpr auto g_npc = &Npc::getInstance;
 
 #endif  // SRC_CREATURES_NPCS_NPC_H_

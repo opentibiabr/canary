@@ -2,13 +2,9 @@
 name: Analysis - Codacy Security Scan
 
 on:
-  pull_request:
   push:
     branches:
-      - master
-      - dev
-      - devel
-      - develop
+      - main
 
 jobs:
   codacy:
@@ -16,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Run Codacy Analysis CLI
         uses: codacy/codacy-analysis-cli-action@master

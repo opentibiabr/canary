@@ -1,5 +1,653 @@
 local items = {
 	{
+		-- 25 years backpack
+		itemid = 39693,
+		type = "equip",
+		slot = "backpack"
+	},
+	{
+		-- 25 years backpack
+		itemid = 39693,
+		type = "deequip",
+		slot = "backpack"
+	},
+	{
+		-- turtle amulet
+		itemid = 39235,
+		type = "equip",
+		slot = "necklace",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+	},
+	{
+		-- enchanted turtle amulet
+		itemid = 39235,
+		type = "deequip",
+		slot = "necklace"
+	},
+	{
+		-- enchanted turtle amulet
+		itemid = 39234,
+		type = "equip",
+		slot = "necklace",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+	},
+	{
+		-- enchanted turtle amulet
+		itemid = 39234,
+		type = "deequip",
+		slot = "necklace"
+	},
+	{
+		-- enchanted turtle amulet
+		itemid = 39233,
+		type = "equip",
+		slot = "necklace",
+		level = 200,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		},
+	},
+	{
+		-- enchanted turtle amulet
+		itemid = 39233,
+		type = "deequip",
+		slot = "necklace"
+	},
+	{
+		-- arboreal ring
+		itemid = 39188,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- arboreal ring
+		itemid = 39188,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged arboreal ring
+		itemid = 39187,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- charged arboreal ring
+		itemid = 39187,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged arboreal ring
+		itemid = 39186,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- charged arboreal ring
+		itemid = 39186,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- arcanomancer sigil
+		itemid = 39185,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- arcanomancer sigil
+		itemid = 39185,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged arcanomancer ring
+		itemid = 39184,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- charged arcanomancer ring
+		itemid = 39184,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged arcanomancer sigil
+		itemid = 39183,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- charged arcanomancer sigil
+		itemid = 39183,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- alicorn ring
+		itemid = 39182,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- charged alicorn ring
+		itemid = 39182,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged alicorn ring
+		itemid = 39181,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- charged alicorn ring
+		itemid = 39181,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged alicorn ring
+		itemid = 39180,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- charged alicorn ring
+		itemid = 39180,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- spiritthorn ring
+		itemid = 39179,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- spiritthorn ring
+		itemid = 39179,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged spiritthorn ring
+		itemid = 39178,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- charged spiritthorn ring
+		itemid = 39178,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- charged spiritthorn ring
+		itemid = 39177,
+		type = "equip",
+		slot = "ring",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- charged spiritthorn ring
+		itemid = 39177,
+		type = "deequip",
+		slot = "ring"
+	},
+	{
+		-- midnight sarong
+		itemid = 39167,
+		type = "equip",
+		slot = "legs",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- midnight sarong
+		itemid = 39167,
+		type = "deequip",
+		slot = "legs"
+	},
+	{
+		-- dawnfire pantaloons
+		itemid = 39166,
+		type = "equip",
+		slot = "legs",
+		level = 300,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- dawnfire pantaloons
+		itemid = 39166,
+		type = "deequip",
+		slot = "legs"
+	},
+	{
+		-- midnight tunic
+		itemid = 39165,
+		type = "equip",
+		slot = "armor",
+		level = 300,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- midnight tunic
+		itemid = 39165,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- dawnfire sherwani
+		itemid = 39164,
+		type = "equip",
+		slot = "armor",
+		level = 270,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- dawnfire sherwani
+		itemid = 39164,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- naga rod
+		itemid = 39163,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- naga rod
+		itemid = 39163,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- naga wand
+		itemid = 39162,
+		type = "equip",
+		slot = "hand",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- naga wand
+		itemid = 39162,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- feverbloom boots
+		itemid = 39161,
+		type = "equip",
+		slot = "feet",
+		level = 270,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- feverbloom boots
+		itemid = 39161,
+		type = "deequip",
+		slot = "feet",
+	},
+	{
+		-- naga quiver
+		itemid = 39160,
+		type = "equip",
+		slot = "right-hand",
+		level = 250,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- naga quiver
+		itemid = 39160,
+		type = "deequip",
+		slot = "right-hand"
+	},
+	{
+		-- naga crossbow
+		itemid = 39159,
+		type = "equip",
+		slot = "hand",
+		level = 300,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- naga crossbow
+		itemid = 39159,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- frostflower boots
+		itemid = 39158,
+		type = "equip",
+		slot = "feet",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- frostflower boots
+		itemid = 39158,
+		type = "deequip",
+		slot = "feet",
+	},
+	{
+		-- naga club
+		itemid = 39157,
+		type = "equip",
+		slot = "hand",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- naga club
+		itemid = 39157,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- naga axe
+		itemid = 39156,
+		type = "equip",
+		slot = "hand",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- naga axe
+		itemid = 39156,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- naga sword
+		itemid = 39155,
+		type = "equip",
+		slot = "hand",
+		level = 300,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- naga sword
+		itemid = 39155,
+		type = "deequip",
+		slot = "hand"
+	},
+	{
+		-- arboreal tome
+		itemid = 39154,
+		type = "equip",
+		slot = "shield",
+		level = 400,
+		vocation = {
+			{"Druid", true, true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- arboreal tome
+		itemid = 39154,
+		type = "deequip",
+		slot = "shield"
+	},
+	{
+		-- arboreal crown
+		itemid = 39153,
+		type = "equip",
+		slot = "head",
+		level = 400,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- arboreal crown
+		itemid = 39153,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- arcanomancer folio
+		itemid = 39152,
+		type = "equip",
+		slot = "shield",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true, true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- arcanomancer folio
+		itemid = 39152,
+		type = "deequip",
+		slot = "shield"
+	},
+	{
+		-- arcanomancer regalia
+		itemid = 39151,
+		type = "equip",
+		slot = "head",
+		level = 400,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- arcanomancer regalia
+		itemid = 39151,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- alicorn quiver
+		itemid = 39150,
+		type = "equip",
+		slot = "right-hand",
+		level = 400,
+		vocation = {
+			{"Paladin", true, true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- alicorn quiver
+		itemid = 39150,
+		type = "deequip",
+		slot = "right-hand"
+	},
+	{
+		-- alicorn headguard
+		itemid = 39149,
+		type = "equip",
+		slot = "head",
+		level = 400,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- alicorn headguard
+		itemid = 39149,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- spiritthorn helmet
+		itemid = 39148,
+		type = "equip",
+		slot = "head",
+		level = 400,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- spiritthorn helmet
+		itemid = 39148,
+		type = "deequip",
+		slot = "head"
+	},
+	{
+		-- spiritthorn armor
+		itemid = 39147,
+		type = "equip",
+		slot = "armor",
+		level = 400,
+		vocation = {
+			{"Knight", true, true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- spiritthorn armor
+		itemid = 39147,
+		type = "deequip",
+		slot = "armor"
+	},
+	{
+		-- changing backpack
+		itemid = 37536,
+		type = "equip",
+		slot = "backpack"
+	},
+	{
+		-- changing backpack
+		itemid = 37536,
+		type = "deequip",
+		slot = "backpack"
+	},
+	{
+		-- lilypad backpack
+		itemid = 37554,
+		type = "equip",
+		slot = "backpack"
+	},
+	{
+		-- lilypad backpack
+		itemid = 37554,
+		type = "deequip",
+		slot = "backpack"
+	},
+	{
 		-- gilded eldritch rod
 		itemid = 36675,
 		type = "equip",

@@ -24,9 +24,6 @@
 
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
-
-extern LuaEnvironment g_luaEnvironment;
-
 class NetworkMessageFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
@@ -50,7 +47,6 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 			registerMethod(L, "NetworkMessage", "addPosition", NetworkMessageFunctions::luaNetworkMessageAddPosition);
 			registerMethod(L, "NetworkMessage", "addDouble", NetworkMessageFunctions::luaNetworkMessageAddDouble);
 			registerMethod(L, "NetworkMessage", "addItem", NetworkMessageFunctions::luaNetworkMessageAddItem);
-			registerMethod(L, "NetworkMessage", "addItemId", NetworkMessageFunctions::luaNetworkMessageAddItemId);
 
 			registerMethod(L, "NetworkMessage", "reset", NetworkMessageFunctions::luaNetworkMessageReset);
 			registerMethod(L, "NetworkMessage", "skipBytes", NetworkMessageFunctions::luaNetworkMessageSkipBytes);
@@ -76,7 +72,6 @@ class NetworkMessageFunctions final : LuaScriptInterface {
 		static int luaNetworkMessageAddPosition(lua_State* L);
 		static int luaNetworkMessageAddDouble(lua_State* L);
 		static int luaNetworkMessageAddItem(lua_State* L);
-		static int luaNetworkMessageAddItemId(lua_State* L);
 
 		static int luaNetworkMessageReset(lua_State* L);
 		static int luaNetworkMessageSkipBytes(lua_State* L);

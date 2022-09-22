@@ -108,7 +108,6 @@ class NetworkMessage
 
 		// write functions for complex types
 		void addPosition(const Position& pos);
-		void addItemId(uint16_t itemId);
 
 		MsgSize_t getLength() const {
 			return info.length;
@@ -122,9 +121,9 @@ class NetworkMessage
 			return info.position;
 		}
 
-    void setBufferPosition(MsgSize_t newPosition) {
-      info.position = newPosition;
-    }
+		void setBufferPosition(MsgSize_t newPosition) {
+			info.position = newPosition;
+		}
 
 		uint16_t getLengthHeader() const {
 			return static_cast<uint16_t>(buffer[0] | buffer[1] << 8);

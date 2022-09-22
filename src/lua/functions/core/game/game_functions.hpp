@@ -24,9 +24,6 @@
 
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
-
-extern LuaEnvironment g_luaEnvironment;
-
 class GameFunctions final : LuaScriptInterface {
 	public:
 			static void init(lua_State* L) {
@@ -34,10 +31,6 @@ class GameFunctions final : LuaScriptInterface {
 
 				registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 				registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);
-
-				registerMethod(L, "Game", "getEventSLoot", GameFunctions::luaGamegetEventSLoot);
-				registerMethod(L, "Game", "getEventSSkill", GameFunctions::luaGamegetEventSSkill);
-				registerMethod(L, "Game", "getEventSExp", GameFunctions::luaGamegetEventSExp);
 
 				registerMethod(L, "Game", "getSpectators", GameFunctions::luaGameGetSpectators);
 
@@ -71,6 +64,8 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "createTile", GameFunctions::luaGameCreateTile);
 				registerMethod(L, "Game", "createBestiaryCharm", GameFunctions::luaGameCreateBestiaryCharm);
 
+				registerMethod(L, "Game", "createItemClassification", GameFunctions::luaGameCreateItemClassification);
+
 				registerMethod(L, "Game", "getBestiaryCharm", GameFunctions::luaGameGetBestiaryCharm);
 
 				registerMethod(L, "Game", "startRaid", GameFunctions::luaGameStartRaid);
@@ -79,9 +74,6 @@ class GameFunctions final : LuaScriptInterface {
 
 				registerMethod(L, "Game", "reload", GameFunctions::luaGameReload);
 
-				registerMethod(L, "Game", "getItemIdByClientId", GameFunctions::luaGameGetItemByClientId);
-
-				registerMethod(L, "Game", "itemidHasMoveevent", GameFunctions::luaGameItemidHasMoveevent);
 				registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
 				registerMethod(L, "Game", "hasEffect", GameFunctions::luaGameHasEffect);
 				registerMethod(L, "Game", "getOfflinePlayer", GameFunctions::luaGameGetOfflinePlayer);
@@ -90,10 +82,6 @@ class GameFunctions final : LuaScriptInterface {
 	private:
 			static int luaGameCreateMonsterType(lua_State* L);
 			static int luaGameCreateNpcType(lua_State* L);
-
-			static int luaGamegetEventSLoot(lua_State* L);
-			static int luaGamegetEventSSkill(lua_State* L);
-			static int luaGamegetEventSExp(lua_State* L);
 
 			static int luaGameGetSpectators(lua_State* L);
 
@@ -129,15 +117,15 @@ class GameFunctions final : LuaScriptInterface {
 			static int luaGameGetBestiaryCharm(lua_State* L);
 			static int luaGameCreateBestiaryCharm(lua_State* L);
 
+			static int luaGameCreateItemClassification(lua_State* L);
+
 			static int luaGameStartRaid(lua_State* L);
 
 			static int luaGameGetClientVersion(lua_State* L);
 
 			static int luaGameReload(lua_State* L);
 
-			static int luaGameGetItemByClientId(lua_State* L);
 			static int luaGameGetOfflinePlayer(lua_State* L);
-			static int luaGameItemidHasMoveevent(lua_State* L);
 			static int luaGameHasEffect(lua_State* L);
 			static int luaGameHasDistanceEffect(lua_State* L);
 };

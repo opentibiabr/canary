@@ -19,7 +19,6 @@
 
 #include "otpch.h"
 
-#include "config/configmanager.h"
 #include "creatures/combat/spells.h"
 #include "creatures/interactions/chat.h"
 #include "creatures/monsters/monster.h"
@@ -47,13 +46,12 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 
-extern Game g_game;
 
 class LuaScriptInterface;
 
 void LuaFunctionsLoader::load(lua_State* L) {
 	if (!L) {
-		g_game.dieSafely("Invalid lua state, cannot load lua functions.");
+		g_game().dieSafely("Invalid lua state, cannot load lua functions.");
 	}
 
 	luaL_openlibs(L);
@@ -70,6 +68,7 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 		case LUA_ERROR_PLAYER_NOT_FOUND: return "Player not found";
 		case LUA_ERROR_CREATURE_NOT_FOUND: return "Creature not found";
 		case LUA_ERROR_NPC_NOT_FOUND: return "Npc not found";
+		case LUA_ERROR_NPC_TYPE_NOT_FOUND: return "Npc type not found";
 		case LUA_ERROR_ITEM_NOT_FOUND: return "Item not found";
 		case LUA_ERROR_THING_NOT_FOUND: return "Thing not found";
 		case LUA_ERROR_TILE_NOT_FOUND: return "Tile not found";
@@ -81,6 +80,7 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 		case LUA_ERROR_VARIANT_NOT_FOUND: return "Variant not found";
 		case LUA_ERROR_VARIANT_UNKNOWN: return "Unknown variant type";
 		case LUA_ERROR_SPELL_NOT_FOUND: return "Spell not found";
+		case LUA_ERROR_ACTION_NOT_FOUND: return "Action not found";
 		default: return "Bad error code";
 	}
 }
@@ -406,14 +406,14 @@ Creature* LuaFunctionsLoader::getCreature(lua_State* L, int32_t arg) {
 	if (isUserdata(L, arg)) {
 		return getUserdata<Creature>(L, arg);
 	}
-	return g_game.getCreatureByID(getNumber<uint32_t>(L, arg));
+	return g_game().getCreatureByID(getNumber<uint32_t>(L, arg));
 }
 
 Player* LuaFunctionsLoader::getPlayer(lua_State* L, int32_t arg) {
 	if (isUserdata(L, arg)) {
 		return getUserdata<Player>(L, arg);
 	}
-	return g_game.getPlayerByID(getNumber<uint32_t>(L, arg));
+	return g_game().getPlayerByID(getNumber<uint32_t>(L, arg));
 }
 
 std::string LuaFunctionsLoader::getFieldString(lua_State* L, int32_t arg, const std::string& key) {

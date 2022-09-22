@@ -66,9 +66,6 @@ class Events {
 		int32_t playerOnRequestQuestLine = -1;
 		int32_t playerOnStorageUpdate = -1;
 		int32_t playerOnRemoveCount = -1;
-		int32_t playerCanBeAppliedImbuement = -1;
-		int32_t playerOnApplyImbuement = -1;
-		int32_t playerClearImbuement = -1;
 		int32_t playerOnCombat = -1;
 
 		// Monster
@@ -80,9 +77,21 @@ class Events {
 	};
 
 	public:
+	
 		Events();
 
 		bool loadFromXml();
+
+		// non-copyable
+		Events(Events const&) = delete;
+		void operator=(Events const&) = delete;
+
+		static Events& getInstance() {
+			// Guaranteed to be destroyed
+			static Events instance;
+			// Instantiated on first use
+			return instance;
+		}
 
 		// Creature
 		bool eventCreatureOnChangeOutfit(Creature* creature, const Outfit_t& outfit);
@@ -112,16 +121,13 @@ class Events {
 		bool eventPlayerOnTurn(Player* player, Direction direction);
 		bool eventPlayerOnTradeRequest(Player* player, Player* target, Item* item);
 		bool eventPlayerOnTradeAccept(Player* player, Player* target, Item* item, Item* targetItem);
-		void eventPlayerOnGainExperience(Player* player, Creature* source, uint64_t& exp, uint64_t rawExp);
+		void eventPlayerOnGainExperience(Player* player, Creature* target, uint64_t& exp, uint64_t rawExp);
 		void eventPlayerOnLoseExperience(Player* player, uint64_t& exp);
 		void eventPlayerOnGainSkillTries(Player* player, skills_t skill, uint64_t& tries);
 		bool eventPlayerOnRemoveCount(Player* player, Item * item);
 		void eventPlayerOnRequestQuestLog(Player* player);
 		void eventPlayerOnRequestQuestLine(Player* player, uint16_t questId);
 		void eventOnStorageUpdate(Player* player, const uint32_t key, const int32_t value, int32_t oldValue, uint64_t currentTime);
-		bool eventPlayerCanBeAppliedImbuement(Player* player, Imbuement* imbuement, Item* item);
-		void eventPlayerOnApplyImbuement(Player* player, Imbuement* imbuement, Item* item, uint8_t slot, bool protectionCharm);
-		void eventPlayerClearImbuement(Player* player, Item* item, uint8_t slot);
 		void eventPlayerOnCombat(Player* player, Creature* target, Item* item, CombatDamage& damage);
 
 		// Monster
@@ -135,5 +141,7 @@ class Events {
 		LuaScriptInterface scriptInterface;
 		EventsInfo info;
 };
+
+constexpr auto g_events = &Events::getInstance;
 
 #endif  // SRC_LUA_CREATURE_EVENTS_H_

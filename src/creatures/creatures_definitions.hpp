@@ -274,8 +274,9 @@ enum MarketAction_t {
 };
 
 enum MarketRequest_t {
-	MARKETREQUEST_OWN_OFFERS = 0xFFFE,
-	MARKETREQUEST_OWN_HISTORY = 0xFFFF,
+	MARKETREQUEST_OWN_HISTORY = 1,
+	MARKETREQUEST_OWN_OFFERS = 2,
+	MARKETREQUEST_ITEM_BROWSE = 3,
 };
 
 enum MarketOfferState_t {
@@ -492,7 +493,8 @@ enum NpcsEvent_t : uint8_t {
 	NPCS_EVENT_SAY = 5,
 	NPCS_EVENT_PLAYER_BUY = 6,
 	NPCS_EVENT_PLAYER_SELL = 7,
-	NPCS_EVENT_PLAYER_CHECK_ITEM = 8
+	NPCS_EVENT_PLAYER_CHECK_ITEM = 8,
+	NPCS_EVENT_PLAYER_CLOSE_CHANNEL = 9
 };
 
 enum DailyRewardBonus : uint8_t {
@@ -613,6 +615,11 @@ enum PlayerAsyncOngoingTaskFlags : uint64_t {
 	PlayerAsyncTask_Highscore = 1 << 0,
 	PlayerAsyncTask_RecentDeaths = 1 << 1,
 	PlayerAsyncTask_RecentPvPKills = 1 << 2
+};
+
+enum PartyAnalyzer_t : uint8_t {
+	MARKET_PRICE = 0,
+	LEADER_PRICE = 1
 };
 
 // Structs
@@ -739,28 +746,19 @@ struct HistoryMarketOffer {
 	MarketOfferState_t state;
 };
 
-struct ShopInfo {
-	uint16_t itemClientId;
-	std::string name;
-	int32_t subType;
-	uint32_t buyPrice;
-	uint32_t sellPrice;
-
-	ShopInfo() {
-		itemClientId = 0;
-		subType = 1;
-		buyPrice = 0;
-		sellPrice = 0;
-	}
-
-	ShopInfo(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, std::string newName = "")
-		: itemClientId(newItemId), subType(newSubType), buyPrice(newBuyPrice), sellPrice(newSellPrice), name(std::move(newName)) {}
-};
-
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ShopInfoMap = std::unordered_map<uint16_t, ShopInfo>;
 using StashItemList = std::map<uint16_t, uint32_t>;
+
+using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
+/*
+	> ItemsTierCountList structure:
+	|- [itemID]
+		|- [itemTier]
+			|- Count
+		| ...
+	| ...
+*/
 
 struct Familiar {
 	Familiar(std::string initName, uint16_t initLookType,
@@ -863,11 +861,35 @@ struct LootBlock {
 	}
 };
 
+struct ShopBlock {
+	uint16_t itemId;
+	std::string itemName;
+	int32_t itemSubType;
+	uint32_t itemBuyPrice;
+	uint32_t itemSellPrice;
+	int32_t itemStorageKey;
+	int32_t itemStorageValue;
+
+	std::vector<ShopBlock> childShop;
+	ShopBlock() {
+		itemId = 0;
+		itemName = "";
+		itemSubType = 0;
+		itemBuyPrice = 0;
+		itemSellPrice = 0;
+		itemStorageKey = 0;
+		itemStorageValue = 0;
+	}
+
+	explicit ShopBlock(uint16_t newItemId, int32_t newSubType = 0, uint32_t newBuyPrice = 0, uint32_t newSellPrice = 0, int32_t newStorageKey = 0, int32_t newStorageValue = 0, std::string newName = "")
+		: itemId(newItemId), itemSubType(newSubType), itemBuyPrice(newBuyPrice), itemSellPrice(newSellPrice), itemStorageKey(newStorageKey), itemStorageValue(newStorageValue), itemName(std::move(newName)) {}
+};
+
 struct summonBlock_t {
 	std::string name;
 	uint32_t chance;
 	uint32_t speed;
-	uint32_t max;
+	uint32_t count;
 	bool force = false;
 };
 
@@ -890,6 +912,24 @@ struct Outfit_t {
 struct voiceBlock_t {
 	std::string text;
 	bool yellText;
+};
+
+struct PartyAnalyzer {
+	PartyAnalyzer(uint32_t playerId, std::string playerName) :
+                id(playerId),
+                name(std::move(playerName)) {}
+
+	uint32_t id;
+
+	std::string name;
+
+	uint64_t damage = 0;
+	uint64_t healing = 0;
+	uint64_t lootPrice = 0;
+	uint64_t supplyPrice = 0;
+
+	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
+	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

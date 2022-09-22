@@ -2,16 +2,13 @@
 name: Build - Ubuntu
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches:
-      - master
-      - dev
-      - devel
-      - develop
+      - main
 
 env:
-  VCPKG_BUILD_TYPE: release
   CMAKE_BUILD_PARALLEL_LEVEL: 2
   MAKEFLAGS: '-j 2'
 
@@ -23,78 +20,53 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04]
-        buildtype: [Debug, RelWithDebInfo]
+        os: [ubuntu-20.04, ubuntu-22.04]
+        buildtype: [linux-release, linux-debug]
         include:
-          - os: ubuntu-18.04
-            triplet: x64-linux
           - os: ubuntu-20.04
+            triplet: x64-linux
+          - os: ubuntu-22.04
             triplet: x64-linux
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Linux Dependencies
         run: >
-          sudo apt-get update && sudo apt-get install ccache build-essential
-          libluajit-5.1-dev zip
+          sudo apt-get update && sudo apt-get install ccache linux-headers-$(uname -r)
+
+      - name: Switch to gcc-11
+        run: |
+          sudo apt install gcc-11 g++-11
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 --slave /usr/bin/g++ g++ /usr/bin/g++-11 --slave /usr/bin/gcov gcov /usr/bin/gcov-11
+          sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        id: ccache
-        uses: actions/cache@v2
+        uses: hendrikmuhs/ccache-action@v1.2
         with:
-          path: /home/runner/.ccache
-          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}-${{ hashFiles('**/src') }}
+          max-size: "1G"
+          key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
           restore-keys: |
-            ccache-${{ matrix.os }}-${{ matrix.buildtype }}-
-            ccache-${{ matrix.os }}-
+            ccache-${{ matrix.os }}
 
-      - name: Restore artifacts, or setup vcpkg (do not install any package)
-        uses: lukka/run-vcpkg@v7
+      - name: Restore artifacts and install vcpkg
+        uses: lukka/run-vcpkg@v10
         with:
-          setupOnly: true
-          vcpkgDirectory: ${{ github.workspace }}/vcpkg
-          appendedCacheKey: ${{ hashFiles( '**/vcpkg.json' ) }}
-          vcpkgTriplet: ${{ matrix.triplet }}
-          additionalCachedPaths: ${{ github.workspace }}/build/vcpkg_installed
-          vcpkgGitCommitId: 653912591af709c162fba2d4000a6b3362c8d3c9
+          vcpkgGitCommitId: 8b62d95a81afcb9efe74bebeb62f04c1e0e2a003
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@latest
 
       - name: Run CMake
-        uses: lukka/run-cmake@v3
+        uses: lukka/run-cmake@v10
         with:
-          cmakeListsTxtPath: ${{ github.workspace }}/CMakeLists.txt
-          useVcpkgToolchainFile: true
-          buildDirectory: ${{ github.workspace }}/build/
-          cmakeBuildType: ${{ matrix.buildtype }}
+          configurePreset: ${{ matrix.buildtype }}
+          buildPreset: ${{ matrix.buildtype }}
 
-      - name: Prepare artifact contents
-        shell: bash
-        run: |
-          ccache -s
-          mv config.lua.dist config.lua
-          mv build/bin/canary .
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+      - name: Create and Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ runner.os }}-canary-amd64-${{ matrix.buildtype }}-${{ github.sha }}
+          name: canary-${{ matrix.buildtype }}-${{ github.sha }}
           path: |
-            ${{ github.workspace }}
-            !${{ github.workspace }}/build/
-            !${{ github.workspace }}/vcpkg/
-            !${{ github.workspace }}/.git/
-            !${{ github.workspace }}/.github/
-            !${{ github.workspace }}/.appveyor.yml
-            !${{ github.workspace }}/.editorconfig
-            !${{ github.workspace }}/.gitignore
-            !${{ github.workspace }}/.reviewdog.yml
-            !${{ github.workspace }}/.travis.yml
-            !${{ github.workspace }}/tests/
-            !${{ github.workspace }}/cmake/
-            !${{ github.workspace }}/sonar-project.properties
-            !${{ github.workspace }}/Jenkinsfile
-            !${{ github.workspace }}/GitVersion.yml
+            ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/

@@ -22,10 +22,8 @@
 #include "server/network/message/outputmessage.h"
 #include "server/server.h"
 #include "game/scheduling/scheduler.h"
-#include "config/configmanager.h"
 #include "creatures/players/management/ban.h"
 
-extern ConfigManager g_config;
 Ban g_bans;
 
 ServiceManager::~ServiceManager()
@@ -56,7 +54,7 @@ void ServiceManager::stop()
 	for (auto& servicePortIt : acceptors) {
 		try {
 			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
-		} catch (boost::system::system_error& e) {
+		} catch (const boost::system::system_error& e) {
 			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
 		}
 	}
@@ -126,7 +124,7 @@ void ServicePort::onAccept(Connection_ptr connection, const boost::system::error
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_scheduler.addEvent(createSchedulerTask(15000,
+			g_scheduler().addEvent(createSchedulerTask(15000,
                                 std::bind(&ServicePort::openAcceptor,
                                 std::weak_ptr<ServicePort>(shared_from_this()),
                                 serverPort)));
@@ -169,12 +167,12 @@ void ServicePort::open(uint16_t port)
 	pendingStart = false;
 
 	try {
-		if (g_config.getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
+		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
 			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service,
                            boost::asio::ip::tcp::endpoint(
                            boost::asio::ip::address(
                            boost::asio::ip::address_v4::from_string(
-                           g_config.getString(IP))), serverPort)));
+                           g_configManager().getString(IP))), serverPort)));
 		} else {
 			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service,
                            boost::asio::ip::tcp::endpoint(
@@ -185,11 +183,11 @@ void ServicePort::open(uint16_t port)
 		acceptor->set_option(boost::asio::ip::tcp::no_delay(true));
 
 		accept();
-	} catch (boost::system::system_error& e) {
+	} catch (const boost::system::system_error& e) {
 		SPDLOG_WARN("[ServicePort::open] - Error: {}", e.what());
 
 		pendingStart = true;
-		g_scheduler.addEvent(createSchedulerTask(15000,
+		g_scheduler().addEvent(createSchedulerTask(15000,
                             std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
 	}
 }

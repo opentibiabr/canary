@@ -25,13 +25,13 @@
 	#include "conio.h"
 #endif
 
-#include "config/configmanager.h"
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
+#include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.h"
 #include "lua/creature/events.h"
 #include "lua/modules/modules.h"
@@ -42,26 +42,12 @@
 #include "server/network/protocol/protocolstatus.h"
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
+#include "io/ioprey.h"
+#include "io/iobestiary.h"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
 #endif
-
-DatabaseTasks g_databaseTasks;
-Dispatcher g_dispatcher;
-Scheduler g_scheduler;
-
-Game g_game;
-ConfigManager g_config;
-extern Events* g_events;
-extern Imbuements* g_imbuements;
-extern LuaEnvironment g_luaEnvironment;
-extern Modules* g_modules;
-Monsters g_monsters;
-Npcs g_npcs;
-Vocations g_vocations;
-extern Scripts* g_scripts;
-RSA2 g_RSA;
 
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
@@ -99,13 +85,6 @@ void badAllocationHandler() {
 	exit(-1);
 }
 
-void initGlobalScopes() {
-	g_scripts = new Scripts();
-	g_modules = new Modules();
-	g_events = new Events();
-	g_imbuements = new Imbuements();
-}
-
 void modulesLoadHelper(bool loaded, std::string moduleName) {
 	SPDLOG_INFO("Loading {}", moduleName);
 	if (!loaded) {
@@ -115,18 +94,24 @@ void modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void loadModules() {
-	modulesLoadHelper(g_config.load(),
+	modulesLoadHelper(g_configManager().load(),
 		"config.lua");
 
-	SPDLOG_INFO("Server protocol: {}",
-		g_config.getString(CLIENT_VERSION_STR));
+	SPDLOG_INFO("Server protocol: {}.{}",
+		CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
 
-	// set RSA key
+	const char* p("14299623962416399520070177382898895550795403345466153217470516082934737582776038882967213386204600674145392845853859217990626450972452084065728686565928113");
+	const char* q("7630979195970404721891201847792002125535401292779123937207447574596692788513647179235335529307251350570728407373705564708871762033017096809910315212884101");
 	try {
-		g_RSA.loadPEM("key.pem");
-	} catch(const std::exception& e) {
-		SPDLOG_ERROR(e.what());
-		startupErrorMessage();
+		if (!g_RSA().loadPEM("key.pem")) {
+			// file doesn't exist - switch to base10-hardcoded keys
+			SPDLOG_ERROR("File key.pem not found or have problem on loading... Setting standard rsa key\n");
+			g_RSA().setKey(p, q);
+		}
+	} catch (std::system_error const& e) {
+		SPDLOG_ERROR("Loading RSA Key from key.pem failed with error: {}\n", e.what());
+		SPDLOG_ERROR("Switching to a default key...");
+		g_RSA().setKey(p, q);
 	}
 
 	// Database
@@ -145,53 +130,56 @@ void loadModules() {
 		startupErrorMessage();
 	}
 
-	g_databaseTasks.start();
+	g_databaseTasks().start();
 	DatabaseManager::updateDatabase();
 
-	if (g_config.getBoolean(OPTIMIZE_DATABASE)
+	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
 			&& !DatabaseManager::optimizeTables()) {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((Item::items.loadFromOtb("data/items/items.otb") == ERROR_NONE),
-		"items.otb");
+	modulesLoadHelper((g_game().loadAppearanceProtobuf("data/items/appearances.dat") == ERROR_NONE),
+		"appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
-	modulesLoadHelper(Scripts::getInstance().loadScriptSystems(),
-		"script systems");
 
 	// Lua Env
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/global.lua") == 0),
 		"data/global.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile("data/stages.lua") == 0),
-		"data/stages.lua");
+	if (g_configManager().getBoolean(RATE_USE_STAGES)) {
+		modulesLoadHelper((g_luaEnvironment.loadFile("data/stages.lua") == 0),
+			"data/stages.lua");
+	}
 	modulesLoadHelper((g_luaEnvironment.loadFile("data/startup/startup.lua") == 0),
 		"data/startup/startup.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile("data/npclib/load.lua") == 0),
+		"data/npclib/load.lua");
 
-	modulesLoadHelper(g_scripts->loadScripts("scripts/lib", true, false),
+	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
 		"data/scripts/libs");
-	modulesLoadHelper(g_vocations.loadFromXml(),
+	modulesLoadHelper(g_vocations().loadFromXml(),
 		"data/XML/vocations.xml");
-	modulesLoadHelper(g_game.loadScheduleEventFromXml(),
+	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),
 		"data/XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
 		"data/XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
 		"data/XML/familiars.xml");
-	modulesLoadHelper(g_imbuements->loadFromXml(),
+	modulesLoadHelper(g_imbuements().loadFromXml(),
 		"data/XML/imbuements.xml");
-	modulesLoadHelper(g_modules->loadFromXml(),
+	modulesLoadHelper(g_modules().loadFromXml(),
 		"data/modules/modules.xml");
-	modulesLoadHelper(g_events->loadFromXml(),
+	modulesLoadHelper(g_events().loadFromXml(),
 		"data/events/events.xml");
-	modulesLoadHelper(g_scripts->loadScripts("scripts", false, false),
+	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false),
 		"data/scripts");
-	modulesLoadHelper(g_scripts->loadScripts("monster", false, false),
+	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"data/monster");
-	modulesLoadHelper(g_scripts->loadScripts("npclua", false, false),
-		"data/npclua");
+	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
+		"data/npc");
 
-	g_game.loadBoostedCreature();
+	g_game().loadBoostedCreature();
+	g_ioprey().InitializeTaskHuntOptions();
 }
 
 #ifndef UNIT_TESTING
@@ -210,48 +198,48 @@ int main(int argc, char* argv[]) {
 
 	ServiceManager serviceManager;
 
-	g_dispatcher.start();
-	g_scheduler.start();
+	g_dispatcher().start();
+	g_scheduler().start();
 
-	g_dispatcher.addTask(createTask(std::bind(mainLoader, argc, argv,
+	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
 												&serviceManager)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock);
 
 	if (serviceManager.is_running()) {
-		SPDLOG_INFO("{} {}", g_config.getString(SERVER_NAME),
+		SPDLOG_INFO("{} {}", g_configManager().getString(SERVER_NAME),
                     "server online!");
 		serviceManager.run();
 	} else {
 		SPDLOG_ERROR("No services running. The server is NOT online!");
-		g_databaseTasks.shutdown();
-		g_dispatcher.shutdown();
+		g_databaseTasks().shutdown();
+		g_dispatcher().shutdown();
 		exit(-1);
 	}
 
-	g_scheduler.join();
-	g_databaseTasks.join();
-	g_dispatcher.join();
+	g_scheduler().join();
+	g_databaseTasks().join();
+	g_dispatcher().join();
 	return 0;
 }
 #endif
 
 void mainLoader(int, char*[], ServiceManager* services) {
 	// dispatcher thread
-	g_game.setGameState(GAME_STATE_STARTUP);
+	g_game().setGameState(GAME_STATE_STARTUP);
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 #ifdef _WIN32
 	SetConsoleTitle(STATUS_SERVER_NAME);
 #endif
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	SPDLOG_INFO("{} - Based on [{}] dated [{}]",
+	SPDLOG_INFO("{} - Version [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
 	SPDLOG_WARN("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
 #else
-	SPDLOG_INFO("{} - Based on {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
+	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
 	SPDLOG_INFO("Compiled with {}", BOOST_COMPILER);
@@ -274,8 +262,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 #endif
 
 	SPDLOG_INFO("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
-	SPDLOG_INFO("Visit our forum for updates, support, and resources: "
-		"https://forums.otserv.com.br");
+	SPDLOG_INFO("Visit our website for updates, support, and resources: "
+		"https://docs.opentibiabr.org/");
 
 	// check if config.lua or config.lua.dist exist
 	std::ifstream c_test("./config.lua");
@@ -293,11 +281,10 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	}
 
 	// Init and load modules
-	initGlobalScopes();
 	loadModules();
 
 #ifdef _WIN32
-	const std::string& defaultPriority = g_config.getString(DEFAULT_PRIORITY);
+	const std::string& defaultPriority = g_configManager().getString(DEFAULT_PRIORITY);
 	if (strcasecmp(defaultPriority.c_str(), "high") == 0) {
 		SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS);
 	} else if (strcasecmp(defaultPriority.c_str(), "above-normal") == 0) {
@@ -305,38 +292,47 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	}
 #endif
 
-	std::string worldType = asLowerCaseString(g_config.getString(WORLD_TYPE));
+	std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE));
 	if (worldType == "pvp") {
-		g_game.setWorldType(WORLD_TYPE_PVP);
+		g_game().setWorldType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
-		g_game.setWorldType(WORLD_TYPE_NO_PVP);
+		g_game().setWorldType(WORLD_TYPE_NO_PVP);
 	} else if (worldType == "pvp-enforced") {
-		g_game.setWorldType(WORLD_TYPE_PVP_ENFORCED);
+		g_game().setWorldType(WORLD_TYPE_PVP_ENFORCED);
 	} else {
 		SPDLOG_ERROR("Unknown world type: {}, valid world types are: pvp, no-pvp "
-			"and pvp-enforced", g_config.getString(WORLD_TYPE));
+			"and pvp-enforced", g_configManager().getString(WORLD_TYPE));
 		startupErrorMessage();
 	}
 
 	SPDLOG_INFO("World type set as {}", asUpperCaseString(worldType));
 
 	SPDLOG_INFO("Loading map...");
-	if (!g_game.loadMainMap(g_config.getString(MAP_NAME))) {
+	if (!g_game().loadMainMap(g_configManager().getString(MAP_NAME))) {
 		SPDLOG_ERROR("Failed to load map");
 		startupErrorMessage();
 	}
 
+	// If "mapCustomEnabled" is true on config.lua, then load the custom map
+	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+		SPDLOG_INFO("Loading custom map...");
+		if (!g_game().loadCustomMap(g_configManager().getString(MAP_CUSTOM_NAME))) {
+			SPDLOG_ERROR("Failed to load custom map");
+			startupErrorMessage();
+		}
+	}
+
 	SPDLOG_INFO("Initializing gamestate...");
-	g_game.setGameState(GAME_STATE_INIT);
+	g_game().setGameState(GAME_STATE_INIT);
 
 	// Game client protocols
-	services->add<ProtocolGame>(static_cast<uint16_t>(g_config.getNumber(GAME_PORT)));
-	services->add<ProtocolLogin>(static_cast<uint16_t>(g_config.getNumber(LOGIN_PORT)));
+	services->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT)));
+	services->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT)));
 	// OT protocols
-	services->add<ProtocolStatus>(static_cast<uint16_t>(g_config.getNumber(STATUS_PORT)));
+	services->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT)));
 
 	RentPeriod_t rentPeriod;
-	std::string strRentPeriod = asLowerCaseString(g_config.getString(HOUSE_RENT_PERIOD));
+	std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
 
 	if (strRentPeriod == "yearly") {
 		rentPeriod = RENTPERIOD_YEARLY;
@@ -350,7 +346,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		rentPeriod = RENTPERIOD_NEVER;
 	}
 
-	g_game.map.houses.payHouses(rentPeriod);
+	g_game().map.houses.payHouses(rentPeriod);
 
 	IOMarket::checkExpiredOffers();
 	IOMarket::getInstance().updateStatistics();
@@ -365,11 +361,13 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	}
 #endif
 
-	g_game.start(services);
-	g_game.setGameState(GAME_STATE_NORMAL);
+	g_game().start(services);
+	g_game().setGameState(GAME_STATE_NORMAL);
 
 	webhook_init();
-	webhook_send_message("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE);
+
+	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
+	webhook_send_message("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE, url);
 
 	g_loaderSignal.notify_all();
 }

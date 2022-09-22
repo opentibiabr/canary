@@ -34,6 +34,7 @@
 #include "imbuements/imbuements.h"
 #include "items/containers/inbox/inbox.h"
 #include "io/ioguild.h"
+#include "io/ioprey.h"
 #include "creatures/appearance/mounts/mounts.h"
 #include "creatures/appearance/outfit/outfit.h"
 #include "grouping/party.h"
@@ -53,6 +54,8 @@ class SchedulerTask;
 class Bed;
 class Guild;
 class Imbuement;
+class PreySlot;
+class TaskHuntingSlot;
 
 struct OpenContainer {
 	Container* container;
@@ -61,7 +64,7 @@ struct OpenContainer {
 
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
-static constexpr int32_t PLAYER_MAX_SPEED = 4500;
+static constexpr int32_t PLAYER_MAX_SPEED = 70000;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 
 class Player final : public Creature, public Cylinder
@@ -96,6 +99,9 @@ class Player final : public Creature, public Cylinder
 		}
 		void setName(std::string newName) {
 			this->name = std::move(newName);
+		}
+		const std::string& getTypeName() const override {
+			return name;
 		}
 		const std::string& getNameDescription() const override {
 			return name;
@@ -158,7 +164,7 @@ class Player final : public Creature, public Cylinder
 
 		void removeList() override;
 		void addList() override;
-		void kickPlayer(bool displayEffect);
+		void removePlayer(bool displayEffect, bool forced = true);
 
 		static uint64_t getExpForLevel(int32_t lv) {
 			lv--;
@@ -173,69 +179,6 @@ class Player final : public Creature, public Cylinder
 			if (client) {
 				client->sendItemsPrice();
 			}
-		}
-
-		// New Prey
-		uint16_t getPreyState(uint16_t slot) const {
-			return preySlotState[slot];
-		}
-
-		uint16_t getPreyUnlocked(uint16_t slot) const {
-			return preySlotUnlocked[slot];
-		}
-
-		std::string getPreyCurrentMonster(uint16_t slot) const {
-			return preySlotCurrentMonster[slot];
-		}
-
-		std::string getPreyMonsterList(uint16_t slot) const {
-			return preySlotMonsterList[slot];
-		}
-
-		uint16_t getPreyFreeRerollIn(uint16_t slot) const {
-			return preySlotFreeRerollIn[slot];
-		}
-
-		uint16_t getPreyTimeLeft(uint16_t slot) const {
-			return preySlotTimeLeft[slot];
-		}
-
-		uint32_t getPreyNextUse(uint16_t slot) const {
-			return preySlotNextUse[slot];
-		}
-
-		uint16_t getPreyBonusType(uint16_t slot) const {
-			return preySlotBonusType[slot];
-		}
-
-		uint16_t getPreyBonusValue(uint16_t slot) const {
-			return preySlotBonusValue[slot];
-		}
-
-		uint16_t getPreyBonusGrade(uint16_t slot) const {
-			return preySlotBonusGrade[slot];
-		}
-
-		uint16_t getPreyBonusRerolls() const {
-			return preyBonusRerolls;
-		}
-
-		uint16_t getPreyTick(uint16_t slot) const {
-			return preySlotTick[slot];
-		}
-		//
-
-		uint16_t getPreyStamina(uint16_t index) const {
-			return preyStaminaMinutes[index];
-		}
-		uint16_t getPreyType(uint16_t index) const {
-			return preyBonusType[index];
-		}
-		uint16_t getPreyValue(uint16_t index) const {
-			return preyBonusValue[index];
-		}
-		std::string getPreyName(uint16_t index) const {
-			return preyBonusName[index];
 		}
 
 		bool addOfflineTrainingTries(skills_t skill, uint64_t tries);
@@ -434,10 +377,10 @@ class Player final : public Creature, public Cylinder
 			bedItem = b;
 		}
 
-		bool inImbuing() {
-			return imbuing != nullptr;
+		bool hasImbuingItem() {
+			return imbuingItem != nullptr;
 		}
-		void inImbuing(Item* item);
+		void setImbuingItem(Item* item);
 
 		void addBlessing(uint8_t index, uint8_t count) {
 			if (blessings[index - 1] == 255) {
@@ -459,6 +402,7 @@ class Player final : public Creature, public Cylinder
 		uint8_t getBlessingCount(uint8_t index) const {
 			return blessings[index - 1];
 		}
+		std::string getBlessingsName() const; 
 
 		bool isOffline() const {
 			return (getID() == 0);
@@ -497,14 +441,35 @@ class Player final : public Creature, public Cylinder
 		bool isInMarket() const {
 			return inMarket;
 		}
-		void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool) {
+		void setSpecialMenuAvailable(bool supplyStashBool, bool marketMenuBool, bool depotSearchBool) {
+
+			// Closing depot search when player have special container disabled and it's still open.
+			if (isDepotSearchOpen() && !depotSearchBool && depotSearch) {
+				depotSearchOnItem = {0, 0};
+				sendCloseDepotSearch();
+			}
+
 			// Menu option 'stow, stow container ...'
 			// Menu option 'show in market'
+			// Menu option to open depot search
 			supplyStash = supplyStashBool;
 			marketMenu = marketMenuBool;
+			depotSearch = depotSearchBool;
 			if (client) {
 				client->sendSpecialContainersAvailable();
 			}
+		}
+		bool isDepotSearchOpen() const {
+			return depotSearchOnItem.first != 0;
+		}
+		bool isDepotSearchOpenOnItem(uint16_t itemId) const {
+			return depotSearchOnItem.first == itemId;
+		}
+		void setDepotSearchIsOpen(uint16_t itemId, uint8_t tier) {
+			depotSearchOnItem = {itemId, tier};
+		}
+		bool isDepotSearchAvailable() const {
+			return depotSearch;
 		}
 		bool isSupplyStashMenuAvailable() {
 			return supplyStash;
@@ -613,31 +578,32 @@ class Player final : public Creature, public Cylinder
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false) const;
+		bool canSellImbuedItem(Item *item, bool ignoreImbued);
+		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool ignoreImbued = true) const;
 
-		void addItemOnStash(uint16_t clientId, uint32_t amount) {
-			auto it = stashItems.find(clientId);
+		void addItemOnStash(uint16_t itemId, uint32_t amount) {
+			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
-				stashItems[clientId] += amount;
+				stashItems[itemId] += amount;
 				return;
 			}
 
-			stashItems[clientId] = amount;
+			stashItems[itemId] = amount;
 		}
-		uint16_t getStashItemCount(uint16_t clientId) const {
-			auto it = stashItems.find(clientId);
+		uint16_t getStashItemCount(uint16_t itemId) const {
+			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
 				return static_cast<uint16_t>(it->second);
 			}
 			return 0;
 		}
-		bool withdrawItem(uint16_t clientId, uint32_t amount) {
-			auto it = stashItems.find(clientId);
+		bool withdrawItem(uint16_t itemId, uint32_t amount) {
+			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
 				if (it->second > amount) {
-					stashItems[clientId] -= amount;
+					stashItems[itemId] -= amount;
 				} else if (it->second == amount) {
-					stashItems.erase(clientId);
+					stashItems.erase(itemId);
 				} else {
 					return false;
 				}
@@ -708,7 +674,6 @@ class Player final : public Creature, public Cylinder
 		void getRewardList(std::vector<uint32_t>& rewards);
 		RewardChest* getRewardChest();
 
-		DepotChest* getDepotBox();
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);
 		void onReceiveMail() const;
@@ -769,10 +734,10 @@ class Player final : public Creature, public Cylinder
 		void onWalkComplete() override;
 
 		void stopWalk();
-		void openShopWindow(Npc* npc);
+		bool openShopWindow(Npc* npc);
 		bool closeShopWindow(bool sendCloseShopWindow = true);
 		bool updateSaleShopList(const Item* item);
-		bool hasShopItemForSale(uint32_t itemId, uint8_t subType) const;
+		bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
 		void setChaseMode(bool mode);
 		void setFightMode(FightMode_t mode) {
@@ -813,11 +778,14 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const {
-			if (skill == SKILL_LIFE_LEECH_CHANCE || skill == SKILL_MANA_LEECH_CHANCE) {
-				return std::min<uint16_t>(100, std::max<uint16_t>(0, skills[skill].level + varSkills[skill]));
+			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+
+			auto it = maxValuePerSkill.find(skill);
+			if (it != maxValuePerSkill.end()) {
+				skillLevel = std::min<uint16_t>(it->second, skillLevel);
 			}
 
-			return std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+			return skillLevel;
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
@@ -864,7 +832,7 @@ class Player final : public Creature, public Cylinder
 		void onTargetCreatureGainHealth(Creature* target, int32_t points) override;
 		bool onKilledCreature(Creature* target, bool lastHit = true) override;
 		void onGainExperience(uint64_t gainExp, Creature* target) override;
-		void onGainSharedExperience(uint64_t gainExp, Creature* source);
+		void onGainSharedExperience(uint64_t gainExp, Creature* target);
 		void onAttackedCreatureBlockHit(BlockType_t blockType) override;
 		void onBlockHit() override;
 		void onChangeZone(ZoneType_t zone) override;
@@ -891,13 +859,13 @@ class Player final : public Creature, public Cylinder
 		}
 		void checkSkullTicks(int64_t ticks);
 
-		bool canWear(uint32_t lookType, uint8_t addons) const;
+		bool canWear(uint16_t lookType, uint8_t addons) const;
 		void addOutfit(uint16_t lookType, uint8_t addons);
 		bool removeOutfit(uint16_t lookType);
 		bool removeOutfitAddon(uint16_t lookType, uint8_t addons);
 		bool getOutfitAddons(const Outfit& outfit, uint8_t& addons) const;
 
-		bool canFamiliar(uint32_t lookType) const;
+		bool canFamiliar(uint16_t lookType) const;
 		void addFamiliar(uint16_t lookType);
 		bool removeFamiliar(uint16_t lookType);
 		bool getFamiliar(const Familiar& familiar) const;
@@ -1056,6 +1024,11 @@ class Player final : public Creature, public Cylinder
 				client->sendSpellGroupCooldown(groupId, time);
 			}
 		}
+		void sendUseItemCooldown(uint32_t time) const {
+			if (client) {
+				client->sendUseItemCooldown(time);
+			}
+		}
 
 		void reloadCreature(const Creature* creature) {
 			if (client) {
@@ -1075,9 +1048,25 @@ class Player final : public Creature, public Cylinder
 		}
 
 		//inventory
-		void sendLockerItems(std::map<uint16_t, uint16_t> itemMap, uint16_t count) {
+		void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) const {
 			if (client) {
-				client->sendLockerItems(itemMap, count);
+				client->sendDepotItems(itemMap, count);
+			}
+		}
+		void sendCloseDepotSearch() const {
+			if (client) {
+				client->sendCloseDepotSearch();
+			}
+		}
+		void sendDepotSearchResultDetail(uint16_t itemId,
+                                         uint8_t tier,
+                                         uint32_t depotCount,
+                                         const ItemVector &depotItems,
+                                         uint32_t inboxCount,
+                                         const ItemVector &inboxItems,
+                                         uint32_t stashCount) const {
+			if (client) {
+				client->sendDepotSearchResultDetail(itemId, tier, depotCount, depotItems, inboxCount, inboxItems, stashCount);
 			}
 		}
 		void sendCoinBalance() {
@@ -1090,9 +1079,9 @@ class Player final : public Creature, public Cylinder
 				client->sendInventoryItem(slot, item);
 			}
 		}
-		void sendInventoryClientIds() {
+		void sendInventoryIds() {
 			if (client) {
-				client->sendInventoryClientIds();
+				client->sendInventoryIds();
 			}
 		}
 
@@ -1140,11 +1129,6 @@ class Player final : public Creature, public Cylinder
 		void sendLootContainers() {
 			if (client) {
 				client->sendLootContainers();
-			}
-		}
-		void sendLootStats(Item* item, uint8_t count) {
-			if (client) {
-				client->sendLootStats(item, count);
 			}
 		}
 
@@ -1245,7 +1229,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendDistanceShoot(const Position& from, const Position& to,
-                               unsigned char type) const {
+                               uint8_t type) const {
 			if (client) {
 				client->sendDistanceShoot(from, to, type);
 			}
@@ -1336,10 +1320,10 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
-      if (client && shopOwner) {
-        client->sendSaleItemList(shopOwner->getShopItems(), inventoryMap);
-      }
-    }
+			if (client && shopOwner) {
+				client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
+			}
+		}
 		void sendCloseShop() const {
 			if (client) {
 				client->sendCloseShop();
@@ -1416,16 +1400,38 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenPrivateChannel(receiver);
 			}
 		}
+		void sendExperienceTracker(int64_t rawExp, int64_t finalExp) const {
+			if (client) {
+				client->sendExperienceTracker(rawExp, finalExp);
+			}
+		}
 		void sendOutfitWindow() {
 			if (client) {
 				client->sendOutfitWindow();
 			}
 		}
-		void sendImbuementWindow(Item* item);
+		// Imbuements
+		void onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bool protectionCharm);
+		void onClearImbuement(Item* item, uint8_t slot);
+		void openImbuementWindow(Item* item);
+		void sendImbuementResult(const std::string message)
+		{
+			if (client)
+			{
+				client->sendImbuementResult(message);
+			}
+		}
+		void closeImbuementWindow() const
+		{
+			if(client)
+			{
+				client->closeImbuementWindow();
+			}
+		}
 		void sendPodiumWindow(const Item* podium, const Position& position,
-                              uint16_t spriteId, uint8_t stackpos) {
+                              uint16_t itemId, uint8_t stackpos) {
 			if (client) {
-				client->sendPodiumWindow(podium, position, spriteId, stackpos);
+				client->sendPodiumWindow(podium, position, itemId, stackpos);
 			}
 		}
 		void sendCloseContainer(uint8_t cid) {
@@ -1718,22 +1724,25 @@ class Player final : public Creature, public Cylinder
 
 		void setTraining(bool value);
 
-		void onEquipImbueItem(Imbuement* imbuement);
-		void onDeEquipImbueItem(Imbuement* imbuement);
+		void addItemImbuementStats(const Imbuement* imbuement);
+		void removeItemImbuementStats(const Imbuement* imbuement);
 
 		bool isMarketExhausted() const;
 		void updateMarketExhausted() {
 			lastMarketInteraction = OTSYS_TIME();
 		}
 
+		bool isNpcExhausted(uint32_t exhaustionTime = 150) const;
+		void updateNpcExhausted();
+
 		bool isQuickLootListedItem(const Item* item) const {
 			if (!item) {
 				return false;
 			}
 
-			auto it = std::find(quickLootListClientIds.begin(),
-                                quickLootListClientIds.end(), item->getClientID());
-			return it != quickLootListClientIds.end();
+			auto it = std::find(quickLootListItemIds.begin(),
+                                quickLootListItemIds.end(), item->getID());
+			return it != quickLootListItemIds.end();
 		}
 
 		bool updateKillTracker(Container* corpse,
@@ -1748,29 +1757,23 @@ class Player final : public Creature, public Cylinder
 			return false;
  		}
 
-		void updateSupplyTracker(const Item* item) {
-			if (client) {
-				client->sendUpdateSupplyTracker(item);
+		void updatePartyTrackerAnalyzer() const
+		{
+			if (client && party) {
+				client->updatePartyTrackerAnalyzer(party);
 			}
 		}
 
-		void updateImpactTracker(CombatType_t type, int32_t amount) {
-			if (client) {
-				client->sendUpdateImpactTracker(type, amount);
-			}
-		}
+		void sendLootStats(Item* item, uint8_t count) const;
+		void updateSupplyTracker(const Item* item) const;
+		void updateImpactTracker(CombatType_t type, int32_t amount)const;
+
 		void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
 			if (client) {
 				client->sendUpdateInputAnalyzer(type, amount, target);
 			}
 		}
 
-   		void updateLootTracker(Item* item)
- 		{
-  			if (client) {
- 				client->sendUpdateLootTracker(item);
- 			}
- 		}
 
    		void createLeaderTeamFinder(NetworkMessage &msg)
  		{
@@ -1790,6 +1793,10 @@ class Player final : public Creature, public Cylinder
  				client->sendTeamFinderList();
  			}
  		}
+		void setItemCustomPrice(uint16_t itemId, uint64_t price)
+		{
+			itemPriceMap[itemId] = price;
+		}
 		uint32_t getCharmPoints() {
 			return charmPoints;
 		}
@@ -1893,12 +1900,234 @@ class Player final : public Creature, public Cylinder
 			return raceid;
 		}
 
+		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
 
 		// Interfaces
 		error_t SetAccountInterface(account::Account *account);
 		error_t GetAccountInterface(account::Account *account);
 
+		void sendMessageDialog(const std::string& message) const
+		{
+			if (client) {
+				client->sendMessageDialog(message);
+			}
+		}
+
+		// Prey system
+		void initializePrey();
+
+		void sendPreyData() const {
+			if (client) {
+				for (const PreySlot* slot : preys) {
+					client->sendPreyData(slot);
+				}
+
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards());
+			}
+		}
+
+		void sendPreyTimeLeft(const PreySlot* slot) const {
+			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
+				client->sendPreyTimeLeft(slot);
+			}
+		}
+
+		void reloadPreySlot(PreySlot_t slotid) {
+			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
+				client->sendPreyData(getPreySlotById(slotid));
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+		}
+
+		PreySlot* getPreySlotById(PreySlot_t slotid) {
+			if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+					return preyIt->id == slotid;
+				}); it != preys.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		bool setPreySlotClass(PreySlot* slot) {
+			if (getPreySlotById(slot->id)) {
+				return false;
+			}
+
+			preys.push_back(slot);
+			return true;
+		}
+
+		bool usePreyCards(uint16_t amount) {
+			if (preyCards < amount) {
+				return false;
+			}
+
+			preyCards -= amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+			return true;
+		}
+
+		void addPreyCards(uint64_t amount) {
+			preyCards += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+		}
+
+		uint64_t getPreyCards() const {
+			return preyCards;
+		}
+
+		uint32_t getPreyRerollPrice() const {
+			return getLevel() * g_configManager().getNumber(PREY_REROLL_PRICE_LEVEL);
+		}
+
+		std::vector<uint16_t> getPreyBlackList() const {
+			std::vector<uint16_t> rt;
+			for (const PreySlot* slot : preys) {
+				if (slot) {
+					if (slot->isOccupied()) {
+						rt.push_back(slot->selectedRaceId);
+					}
+					for (uint16_t raceId : slot->raceIdList) {
+						rt.push_back(raceId);
+					}
+				}
+			}
+
+			return rt;
+		}
+
+		PreySlot* getPreyWithMonster(uint16_t raceId) const {
+			if (!g_configManager().getBoolean(PREY_ENABLED)) {
+				return nullptr;
+			}
+
+			if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
+					return it->selectedRaceId == raceId;
+				}); it != preys.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		// Task hunting system
+		void initializeTaskHunting();
+		bool isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const;
+
+		bool setTaskHuntingSlotClass(TaskHuntingSlot* slot) {
+			if (getTaskHuntingSlotById(slot->id)) {
+				return false;
+			}
+
+			taskHunting.push_back(slot);
+			return true;
+		}
+
+		void reloadTaskSlot(PreySlot_t slotid) {
+			if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
+				client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+		}
+
+		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) {
+			if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
+					return itTask->id == slotid;
+				}); it != taskHunting.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		std::vector<uint16_t> getTaskHuntingBlackList() const {
+			std::vector<uint16_t> rt;
+
+			std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot)
+			{
+				if (slot->isOccupied()) {
+					rt.push_back(slot->selectedRaceId);
+				} else {
+					std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId)
+					{
+						rt.push_back(raceId);
+					});
+				}
+			});
+
+			return rt;
+		}
+
+		void sendTaskHuntingData() const {
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+				for (const TaskHuntingSlot* slot : taskHunting) {
+					if (slot) {
+						client->sendTaskHuntingData(slot);
+					}
+				}
+			}
+		}
+
+		void addTaskHuntingPoints(uint16_t amount) {
+			taskHuntingPoints += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+		}
+
+		bool useTaskHuntingPoints(uint64_t amount) {
+			if (taskHuntingPoints < amount) {
+				return false;
+			}
+
+			taskHuntingPoints -= amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
+			}
+			return true;
+		}
+
+		uint64_t getTaskHuntingPoints() const {
+			return taskHuntingPoints;
+		}
+
+		uint32_t getTaskHuntingRerollPrice() const {
+			return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
+		}
+
+		TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const {
+			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+				return nullptr;
+			}
+
+			if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
+					return itTask->selectedRaceId == raceId;
+				}); it != taskHunting.end()) {
+				return *it;
+			}
+
+			return nullptr;
+		}
+
+		// Depot search system
+		void requestDepotItems();
+		void requestDepotSearchItem(uint16_t itemId, uint8_t tier);
+		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
+		void openContainerFromDepotSearch(const Position& pos);
+		Item* getItemFromDepotSearch(uint16_t itemId, const Position& pos);
+		bool isDepotSearchExhausted() const {
+			return (OTSYS_TIME() - lastDepotSearchInteraction < 1000);
+		}
+		void updateDepotSearchExhausted() {
+			lastDepotSearchInteraction = OTSYS_TIME();
+		}
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -1908,11 +2137,16 @@ class Player final : public Creature, public Cylinder
 
 		void checkLootContainers(const Item* item);
 
-		void gainExperience(uint64_t exp, Creature* source);
-		void addExperience(Creature* source, uint64_t exp, bool sendText = false);
+		void gainExperience(uint64_t exp, Creature* target);
+		void addExperience(Creature* target, uint64_t exp, bool sendText = false);
 		void removeExperience(uint64_t exp, bool sendText = false);
 
 		void updateInventoryWeight();
+		/**
+		 * @brief Starts checking the imbuements in the item so that the time decay is performed
+		 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
+		 */
+		void updateInventoryImbuement(bool init = false);
 
 		void setNextWalkActionTask(SchedulerTask* task);
 		void setNextWalkTask(SchedulerTask* task);
@@ -1921,6 +2155,8 @@ class Player final : public Creature, public Cylinder
 		void setNextPotionActionTask(SchedulerTask* task);
 
 		void death(Creature* lastHitCreature) override;
+		bool spawn();
+		void despawn();
 		bool dropCorpse(Creature* lastHitCreature, Creature* mostDamageCreature,
                         bool lastHitUnjustified, bool mostDamageUnjustified) override;
 		Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) override;
@@ -1951,31 +2187,40 @@ class Player final : public Creature, public Cylinder
 		void stashContainer(StashContainerList itemDict);
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		Item* getItemByClientId(uint16_t clientId) const;
-		std::map<uint16_t, uint16_t> getInventoryClientIds() const;
+		std::map<uint16_t, uint16_t> getInventoryItemsId() const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 
 		void internalAddThing(Thing* thing) override;
 		void internalAddThing(uint32_t index, Thing* thing) override;
 
-		std::unordered_set<uint32_t> attackedSet;
+		phmap::flat_hash_set<uint32_t> attackedSet;
 
-		std::unordered_set<uint32_t> VIPList;
+		phmap::flat_hash_set<uint32_t> VIPList;
 
 		std::map<uint8_t, OpenContainer> openContainers;
 		std::map<uint32_t, DepotLocker*> depotLockerMap;
 		std::map<uint32_t, DepotChest*> depotChests;
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
+		std::map<uint16_t, uint64_t> itemPriceMap;
+
+		std::map<uint8_t, uint16_t> maxValuePerSkill = {
+			{SKILL_LIFE_LEECH_CHANCE, 100},
+			{SKILL_MANA_LEECH_CHANCE, 100},
+			{SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE)}
+		};
 
 		std::map<uint32_t, Reward*> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
-		std::vector<uint16_t> quickLootListClientIds;
+		std::vector<uint16_t> quickLootListItemIds;
 
 		std::vector<OutfitEntry> outfits;
 		std::vector<FamiliarEntry> familiars;
+
+		std::vector<PreySlot*> preys;
+		std::vector<TaskHuntingSlot*> taskHunting;
 
 		GuildWarVector guildWarVector;
 
@@ -2003,12 +2248,16 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastAttack = 0;
 		uint64_t bankBalance = 0;
 		uint64_t lastQuestlogUpdate = 0;
+		uint64_t preyCards = 0;
+		uint64_t taskHuntingPoints = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
 		int64_t lastToggleMount = 0;
-		int64_t lastMarketInteraction = 0; // Market exhaust.
+		int64_t lastMarketInteraction = 0;
+		int64_t lastNpcInteraction = 0;
 		int64_t lastStashInteraction = 0;
+		int64_t lastDepotSearchInteraction = 0;
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;
@@ -2024,7 +2273,7 @@ class Player final : public Creature, public Cylinder
 		GuildRank_ptr guildRank;
 		Group* group = nullptr;
 		Inbox* inbox;
-		Item* imbuing = nullptr; // for intarnal use
+		Item* imbuingItem = nullptr;
 		Item* tradeItem = nullptr;
  		Item* inventory[CONST_SLOT_LAST + 1] = {};
 		Item* writeItem = nullptr;
@@ -2074,10 +2323,6 @@ class Player final : public Creature, public Cylinder
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;
-		std::vector<uint16_t> preyStaminaMinutes = {7200, 7200, 7200};
-		std::vector<uint16_t> preyBonusType = {0, 0, 0};
-		std::vector<uint16_t> preyBonusValue = {0, 0, 0};
-		std::vector<std::string> preyBonusName = {"", "", ""};
 		std::vector<uint8_t> blessings = { 0, 0, 0, 0, 0, 0, 0, 0 };
 		uint16_t maxWriteLen = 0;
 		uint16_t baseXpGain = 100;
@@ -2086,7 +2331,12 @@ class Player final : public Creature, public Cylinder
 		uint16_t storeXpBoost = 0;
 		uint16_t staminaXpBoost = 100;
 		int16_t lastDepotId = -1;
-		StashItemList stashItems; // [ClientID] = amount
+		StashItemList stashItems; // [ItemID] = amount
+		uint32_t movedItems = 0;
+
+		// Depot search system
+		bool depotSearch = false;
+		std::pair<uint16_t, uint8_t> depotSearchOnItem;
 
 		// Bestiary
 		bool charmExpansion = false;
@@ -2114,20 +2364,6 @@ class Player final : public Creature, public Cylinder
 		int32_t UnlockedRunesBit = 0;
 		std::pair<ConditionType_t, uint64_t> cleanseCondition = {CONDITION_NONE, 0};
 
-		// New Prey
-		uint16_t preyBonusRerolls = 0;
-		std::vector<uint16_t> preySlotState = {0, 0, 0};
-		std::vector<uint16_t> preySlotUnlocked = {0, 0, 0};
-		std::vector<std::string> preySlotCurrentMonster = { "", "", "" };
-		std::vector<std::string> preySlotMonsterList = { "", "", "" };
-		std::vector<uint16_t> preySlotFreeRerollIn = { 0, 0, 0 };
-		std::vector<uint16_t> preySlotTimeLeft = {7200, 7200, 7200};
-		std::vector<uint32_t> preySlotNextUse = { 0, 0, 0 };
-		std::vector<uint16_t> preySlotBonusType = {0, 0, 0};
-		std::vector<uint16_t> preySlotBonusValue = {0, 0, 0};
-		std::vector<uint16_t> preySlotBonusGrade = { 0, 0, 0 };
-		std::vector<uint16_t> preySlotTick = { 0, 0, 0 };
-
 		uint8_t soul = 0;
 		uint8_t levelPercent = 0;
 		double_t magLevelPercent = 0;
@@ -2139,6 +2375,7 @@ class Player final : public Creature, public Cylinder
 		FightMode_t fightMode = FIGHTMODE_ATTACK;
 		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
+		VipStatus_t statusVipList = VIPSTATUS_ONLINE;
 
 		bool chaseMode = false;
 		bool secureMode = true;
@@ -2156,6 +2393,8 @@ class Player final : public Creature, public Cylinder
 		bool supplyStash = false; // Menu option 'stow, stow container ...'
 		bool marketMenu = false; // Menu option 'show in market'
 		bool exerciseTraining = false;
+		bool moved = false;
+		bool dead = false;
 
 		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
 		int32_t cleavePercent = 0;
@@ -2200,6 +2439,13 @@ class Player final : public Creature, public Cylinder
 		uint16_t getLookCorpse() const override;
 		void getPathSearchParams(const Creature* creature, FindPathParams& fpp) const override;
 
+		void setDead(bool isDead) {
+			dead = isDead;
+		}
+		bool isDead() const {
+			return dead;
+		}
+
 		friend class Game;
 		friend class Npc;
 		friend class PlayerFunctions;
@@ -2208,6 +2454,8 @@ class Player final : public Creature, public Cylinder
 		friend class Actions;
 		friend class IOLoginData;
 		friend class ProtocolGame;
+		friend class MoveEvent;
+		friend class BedItem;
 
   account::Account *account_;
 };

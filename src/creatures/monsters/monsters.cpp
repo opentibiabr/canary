@@ -24,15 +24,9 @@
 #include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
 #include "items/weapons/weapons.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 
 #include "utils/pugicast.h"
-
-extern Game g_game;
-extern Spells* g_spells;
-extern Monsters g_monsters;
-extern ConfigManager g_config;
 
 spellBlock_t::~spellBlock_t()
 {
@@ -66,7 +60,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 	for (auto monsterNode : doc.child("monsters").children()) {
 		std::string name = asLowerCaseString(monsterNode.attribute("name").as_string());
 		std::string file = "data/monster/" + std::string(monsterNode.attribute("file").as_string());
-		auto forceLoad = g_config.getBoolean(FORCE_MONSTERTYPE_LOAD);
+		auto forceLoad = g_configManager().getBoolean(FORCE_MONSTERTYPE_LOAD);
 		if (forceLoad) {
 			loadMonster(file, name, true);
 			continue;
@@ -84,7 +78,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 bool MonsterType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;
-	bool isDay = g_game.gameIsDay();
+	bool isDay = g_game().gameIsDay();
 
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
@@ -168,7 +162,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 		}
 	}
 
-	if (auto spell = g_spells->getSpellByName(name)) {
+	if (auto spell = g_spells().getSpellByName(name)) {
 		sb.spell = spell;
 		return true;
 	}
@@ -187,7 +181,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 		}
 
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, needTarget, needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells->getScriptBaseName() + "/scripts/" + scriptName)) {
+		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + scriptName)) {
 			return false;
 		}
 
@@ -372,7 +366,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 			}
 
 			if ((attr = node.attribute("monster"))) {
-				MonsterType* mType = g_monsters.getMonsterType(attr.as_string());
+				const MonsterType* mType = g_monsters().getMonsterType(attr.as_string());
 				if (mType) {
 					ConditionOutfit* condition = static_cast<ConditionOutfit*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_OUTFIT, duration, 0));
 					condition->setOutfit(mType->info.outfit);
@@ -539,7 +533,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	sb.range = std::min((int) spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
-	sb.spell = g_spells->getSpellByName(spell->name);
+	sb.spell = g_spells().getSpellByName(spell->name);
 
 	if (sb.spell) {
 		return true;
@@ -549,7 +543,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 	if (spell->isScripted) {
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells->getScriptBaseName() + "/scripts/" + spell->scriptName)) {
+		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - Cannot find file: {}",
                          spell->scriptName);
 			return false;
@@ -692,7 +686,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			//
 		} else {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
-                         "{} unknown spell name: {}"
+                         "{} unknown or missing parameter on spell with name: {}"
                          , description, spell->name);
 		}
 
@@ -765,13 +759,13 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 	if (reloading) {
 		auto it = monsters.find(asLowerCaseString(monsterName));
 		if (it != monsters.end()) {
-			mType = &it->second;
+			mType = it->second;
 			mType->info = {};
 		}
 	}
 
 	if (!mType) {
-		mType = &monsters[asLowerCaseString(monsterName)];
+		mType = monsters[asLowerCaseString(monsterName)];
 	}
 
 	mType->name = attr.as_string();
@@ -866,8 +860,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				mType->info.isAttackable = attr.as_bool();
 			} else if (strcasecmp(attrName, "hostile") == 0) {
 				mType->info.isHostile = attr.as_bool();
-			} else if (strcasecmp(attrName, "pet") == 0) {
-				mType->info.isPet = attr.as_bool();
+			} else if (strcasecmp(attrName, "familiar") == 0) {
+				mType->info.isFamiliar = attr.as_bool();
 			} else if (strcasecmp(attrName, "illusionable") == 0) {
 				mType->info.isIllusionable = attr.as_bool();
 			} else if (strcasecmp(attrName, "convinceable") == 0) {
@@ -1258,7 +1252,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 		for (auto summonNode : node.children()) {
 			int32_t chance = 100;
 			int32_t speed = 1000;
-			int32_t max = mType->info.maxSummons;
+			int32_t count = mType->info.maxSummons;
 			bool force = false;
 
 			if ((attr = summonNode.attribute("speed")) || (attr = summonNode.attribute("interval"))) {
@@ -1269,8 +1263,8 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				chance = pugi::cast<int32_t>(attr.value());
 			}
 
-			if ((attr = summonNode.attribute("max"))) {
-				max = pugi::cast<uint32_t>(attr.value());
+			if ((attr = summonNode.attribute("count"))) {
+				count = pugi::cast<uint32_t>(attr.value());
 			}
 
 			if ((attr = summonNode.attribute("force"))) {
@@ -1282,7 +1276,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 				sb.name = attr.as_string();
 				sb.speed = speed;
 				sb.chance = chance;
-				sb.max = max;
+				sb.count = count;
 				sb.force = force;
 				mType->info.summons.emplace_back(sb);
 			} else {
@@ -1458,33 +1452,29 @@ void Monsters::loadLootContainer(const pugi::xml_node& node, LootBlock& lBlock)
 MonsterType* Monsters::getMonsterType(const std::string& name)
 {
 	std::string lowerCaseName = asLowerCaseString(name);
-
-	auto it = monsters.find(lowerCaseName);
-	if (it == monsters.end()) {
-		auto it2 = unloadedMonsters.find(lowerCaseName);
-		if (it2 == unloadedMonsters.end()) {
-			return nullptr;
-		}
-
-		return loadMonster(it2->second, name);
+	if (auto it = monsters.find(lowerCaseName);
+	it != monsters.end()
+	// We will only return the MonsterType if it match the exact name of the monster
+	&& it->first.find(lowerCaseName) != it->first.npos)
+	{
+		return it->second;
 	}
-	return &it->second;
+	SPDLOG_ERROR("[Monsters::getMonsterType] - Monster with name {} not exist", lowerCaseName);
+	return nullptr;
 }
 
 MonsterType* Monsters::getMonsterTypeByRaceId(uint16_t thisrace) {
-	std::map<uint16_t, std::string> raceid_list = g_game.getBestiaryList();
+	std::map<uint16_t, std::string> raceid_list = g_game().getBestiaryList();
 	auto it = raceid_list.find(thisrace);
 	if (it == raceid_list.end()) {
 		return nullptr;
 	}
-	MonsterType* mtype = g_monsters.getMonsterType(it->second);
+	MonsterType* mtype = g_monsters().getMonsterType(it->second);
 	return (mtype ? mtype : nullptr);
 }
 
 void Monsters::addMonsterType(const std::string& name, MonsterType* mType)
 {
-	// Suppress [-Werror=unused-but-set-parameter]
-	// https://stackoverflow.com/questions/1486904/how-do-i-best-silence-a-warning-about-unused-variables
-	(void) mType;
-	mType = &monsters[asLowerCaseString(name)];
+	std::string lowerName = asLowerCaseString(name);
+	monsters[lowerName] = mType;
 }

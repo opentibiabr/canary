@@ -22,15 +22,9 @@
 #include "otpch.h"
 
 #include "creatures/monsters/monster.h"
-#include "config/configmanager.h"
 #include "game/game.h"
 #include "creatures/combat/spells.h"
 #include "lua/creature/events.h"
-
-extern Game g_game;
-extern Monsters g_monsters;
-extern Events* g_events;
-extern ConfigManager g_config;
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -39,7 +33,7 @@ uint32_t Monster::monsterAutoID = 0x40000000;
 
 Monster* Monster::createMonster(const std::string& name)
 {
-	MonsterType* mType = g_monsters.getMonsterType(name);
+	MonsterType* mType = g_monsters().getMonsterType(name);
 	if (!mType) {
 		return nullptr;
 	}
@@ -54,7 +48,7 @@ Monster::Monster(MonsterType* mType) :
 	defaultOutfit = mType->info.outfit;
 	currentOutfit = mType->info.outfit;
 	skull = mType->info.skull;
-	float multiplier = g_config.getFloat(RATE_MONSTER_HEALTH);
+	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health*multiplier;
 	healthMax = mType->info.healthMax*multiplier;
 	baseSpeed = mType->info.baseSpeed;
@@ -79,12 +73,12 @@ Monster::~Monster()
 
 void Monster::addList()
 {
-	g_game.addMonster(this);
+	g_game().addMonster(this);
 }
 
 void Monster::removeList()
 {
-	g_game.removeMonster(this);
+	g_game().removeMonster(this);
 }
 
 bool Monster::canSee(const Position& pos) const
@@ -284,7 +278,7 @@ void Monster::onCreatureMove(Creature* creature, const Tile* newTile, const Posi
 					Direction dir = getDirectionTo(pos, followPosition);
 					const Position& checkPosition = getNextPosition(dir, pos);
 
-					Tile* nextTile = g_game.map.getTile(checkPosition);
+					const Tile* nextTile = g_game().map.getTile(checkPosition);
 					if (nextTile) {
 						Creature* topCreature = nextTile->getTopCreature();
 						if (topCreature && followCreature != topCreature && isOpponent(topCreature)) {
@@ -407,7 +401,7 @@ void Monster::updateTargetList()
 	}
 
 	SpectatorHashSet spectators;
-	g_game.map.getSpectators(spectators, position, true);
+	g_game().map.getSpectators(spectators, position, true);
 	spectators.erase(this);
 	for (Creature* spectator : spectators) {
 		if (canSee(spectator->getPosition())) {
@@ -721,7 +715,7 @@ bool Monster::isTarget(const Creature* creature) const
 		return false;
 	}
 	Faction_t targetFaction = creature->getFaction();
-	if (getFaction() != FACTION_DEFAULT) {
+	if (getFaction() != FACTION_DEFAULT && !isSummon()) {
 		return isEnemyFaction(targetFaction);
 	}
 	return true;
@@ -740,8 +734,8 @@ bool Monster::selectTarget(Creature* creature)
 	}
 
 	if (isHostile() || isSummon()) {
-		if (setAttackedCreature(creature) && !isSummon()) {
-			g_dispatcher.addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game, getID())));
+		if (setAttackedCreature(creature)) {
+			g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
 		}
 	}
 	return setFollowCreature(creature);
@@ -756,7 +750,7 @@ void Monster::setIdle(bool idle)
 	isIdle = idle;
 
 	if (!isIdle) {
-		g_game.addCreatureCheck(this);
+		g_game().addCreatureCheck(this);
 	} else {
 		onIdleStatus();
 		clearTargetList();
@@ -835,16 +829,16 @@ void Monster::onThink(uint32_t interval)
 		if (challengeMeleeDuration <= 0) {
 			challengeMeleeDuration = 0;
 			targetDistance = mType->info.targetDistance;
-			g_game.updateCreatureIcon(this);
+			g_game().updateCreatureIcon(this);
 		}
 	}
 
 	if (!mType->canSpawn(position)) {
-		g_game.removeCreature(this);
+		g_game().removeCreature(this);
 	}
 
 	if (!isInSpawnRange(position)) {
-		g_game.internalTeleport(this, masterPos);
+		g_game().internalTeleport(this, masterPos);
 		setIdle(true);
 	} else {
 		updateIdleStatus();
@@ -917,9 +911,9 @@ void Monster::doAttacking(uint32_t interval)
 
 				float multiplier;
 				if (maxCombatValue > 0) { //defense
-					multiplier = g_config.getFloat(RATE_MONSTER_DEFENSE);
+					multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
 				} else { //attack
-					multiplier = g_config.getFloat(RATE_MONSTER_ATTACK);
+					multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
@@ -954,7 +948,7 @@ bool Monster::canUseAttack(const Position& pos, const Creature* target) const
 		uint32_t distance = std::max<uint32_t>(Position::getDistanceX(pos, targetPos), Position::getDistanceY(pos, targetPos));
 		for (const spellBlock_t& spellBlock : mType->info.attackSpells) {
 			if (spellBlock.range != 0 && distance <= spellBlock.range) {
-				return g_game.isSightClear(pos, targetPos, true);
+				return g_game().isSightClear(pos, targetPos, true);
 			}
 		}
 		return false;
@@ -1091,7 +1085,7 @@ void Monster::onThinkDefense(uint32_t interval)
 				}
 			}
 
-			if (summonCount >= summonBlock.max) {
+			if (summonCount >= summonBlock.count) {
 				continue;
 			}
 
@@ -1101,12 +1095,10 @@ void Monster::onThinkDefense(uint32_t interval)
 
 			Monster* summon = Monster::createMonster(summonBlock.name);
 			if (summon) {
-				if (g_game.placeCreature(summon, getPosition(), false, summonBlock.force)) {
-					summon->setDropLoot(false);
-					summon->setSkillLoss(false);
-					summon->setMaster(this);
-					g_game.addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
-					g_game.addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
+				if (g_game().placeCreature(summon, getPosition(), false, summonBlock.force)) {
+					summon->setMaster(this, true);
+					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
+					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
 				} else {
 					delete summon;
 				}
@@ -1134,9 +1126,9 @@ void Monster::onThinkYell(uint32_t interval)
 			const voiceBlock_t& vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
-				g_game.internalCreatureSay(this, TALKTYPE_MONSTER_YELL, vb.text, false);
+				g_game().internalCreatureSay(this, TALKTYPE_MONSTER_YELL, vb.text, false);
 			} else {
-				g_game.internalCreatureSay(this, TALKTYPE_MONSTER_SAY, vb.text, false);
+				g_game().internalCreatureSay(this, TALKTYPE_MONSTER_SAY, vb.text, false);
 			}
 		}
 	}
@@ -1156,11 +1148,9 @@ bool Monster::pushItem(Item* item)
 
 	for (const auto& it : relList) {
 		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
-		Tile* tile = g_game.map.getTile(tryPos);
-		if (tile && g_game.canThrowObjectTo(centerPos, tryPos)) {
-			if (g_game.internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
-				return true;
-			}
+		Tile* tile = g_game().map.getTile(tryPos);
+		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
+			return true;
 		}
 	}
 	return false;
@@ -1182,14 +1172,14 @@ void Monster::pushItems(Tile* tile)
 					|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getActionId() != 100 /* non-moveable action*/) {
 				if (moveCount < 20 && Monster::pushItem(item)) {
 					++moveCount;
-				} else if (!item->isCorpse() && g_game.internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
 					++removeCount;
 				}
 			}
 		}
 
 		if (removeCount > 0) {
-			g_game.addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 		}
 	}
 }
@@ -1205,11 +1195,9 @@ bool Monster::pushCreature(Creature* creature)
 
 	for (Direction dir : dirList) {
 		const Position& tryPos = Spells::getCasterPosition(creature, dir);
-		Tile* toTile = g_game.map.getTile(tryPos);
-		if (toTile && !toTile->hasFlag(TILESTATE_BLOCKPATH)) {
-			if (g_game.internalMoveCreature(creature, dir) == RETURNVALUE_NOERROR) {
-				return true;
-			}
+		const Tile* toTile = g_game().map.getTile(tryPos);
+		if (toTile && !toTile->hasFlag(TILESTATE_BLOCKPATH) && g_game().internalMoveCreature(creature, dir) == RETURNVALUE_NOERROR) {
+			return true;
 		}
 	}
 	return false;
@@ -1240,7 +1228,7 @@ void Monster::pushCreatures(Tile* tile)
 		}
 
 		if (removeCount > 0) {
-			g_game.addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
+			g_game().addMagicEffect(tile->getPosition(), CONST_ME_BLOCKHIT);
 		}
 	}
 }
@@ -1282,7 +1270,7 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 
 	if (result && (canPushItems() || canPushCreatures())) {
 		const Position& pos = Spells::getCasterPosition(this, direction);
-		Tile* posTile = g_game.map.getTile(pos);
+		Tile* posTile = g_game().map.getTile(pos);
 		if (posTile) {
 			if (canPushItems()) {
 				Monster::pushItems(posTile);
@@ -1413,9 +1401,7 @@ bool Monster::getDistanceStep(const Position& targetPos, Direction& moveDirectio
 	int_fast32_t dx = Position::getDistanceX(creaturePos, targetPos);
 	int_fast32_t dy = Position::getDistanceY(creaturePos, targetPos);
 
-	int32_t distance = std::max<int32_t>(dx, dy);
-
-	if (!flee && (distance > targetDistance || !g_game.isSightClear(creaturePos, targetPos, true))) {
+	if (int32_t distance = std::max<int32_t>(static_cast<int32_t>(dx), static_cast<int32_t>(dy)); !flee && (distance > targetDistance || !g_game().isSightClear(creaturePos, targetPos, true))) {
 		return false; // let the A* calculate it
 	} else if (!flee && distance == targetDistance) {
 		return true; // we don't really care here, since it's what we wanted to reach (a dancestep will take of dancing in that position)
@@ -1909,7 +1895,7 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) const
 			return false;
 		}
 
-		Tile* tile = g_game.map.getTile(pos);
+		const Tile* tile = g_game().map.getTile(pos);
 		if (tile && tile->getTopVisibleCreature(this) == nullptr &&
 					tile->queryAdd(0, *this, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 			return true;
@@ -1984,9 +1970,9 @@ bool Monster::getCombatValues(int32_t& min, int32_t& max)
 
 	float multiplier;
 	if (maxCombatValue > 0) { //defense
-		multiplier = g_config.getFloat(RATE_MONSTER_DEFENSE);
+		multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
 	} else { //attack
-		multiplier = g_config.getFloat(RATE_MONSTER_ATTACK);
+		multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
 	}
 
 	min = minCombatValue * multiplier;
@@ -2050,13 +2036,13 @@ void Monster::updateLookDirection()
 		}
 	}
 
-	g_game.internalCreatureTurn(this, newDir);
+	g_game().internalCreatureTurn(this, newDir);
 }
 
 void Monster::dropLoot(Container* corpse, Creature*)
 {
 	if (corpse && lootDrop) {
-		g_events->eventMonsterOnDropLoot(this, corpse);
+		g_events().eventMonsterOnDropLoot(this, corpse);
 	}
 }
 
@@ -2116,7 +2102,7 @@ bool Monster::changeTargetDistance(int32_t distance)
 	targetDistance = distance;
 
 	if (shouldUpdate) {
-		g_game.updateCreatureIcon(this);
+		g_game().updateCreatureIcon(this);
 	}
 	return true;
 }

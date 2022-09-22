@@ -5,7 +5,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
       - dev
       - devel
       - develop
@@ -20,10 +20,7 @@ jobs:
         run: sudo apt-get update
 
       - name: Setup Lua
-        run: sudo apt-get install -y lua5.1 liblua5.1-0-dev
+        run: sudo apt-get install -y libluajit-5.1-dev
 
       - name: Check out code.
         uses: actions/checkout@v1
-
-      - name: Lua Tests
-        run: lua ${{ github.workspace }}/tests/lua/runtests.lua -v

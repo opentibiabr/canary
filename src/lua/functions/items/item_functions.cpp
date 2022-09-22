@@ -24,6 +24,10 @@
 #include "game/game.h"
 #include "items/item.h"
 #include "lua/functions/items/item_functions.hpp"
+#include "items/decay/decay.h"
+
+
+class Imbuement;
 
 // Item
 int ItemFunctions::luaItemCreate(lua_State* L) {
@@ -143,7 +147,7 @@ int ItemFunctions::luaItemSplit(lua_State* L) {
 	ScriptEnvironment* env = getScriptEnv();
 	uint32_t uid = env->addThing(item);
 
-	Item* newItem = g_game.transformItem(item, item->getID(), diff);
+	Item* newItem = g_game().transformItem(item, item->getID(), diff);
 	if (item->isRemoved()) {
 		env->removeItemByUID(uid);
 	}
@@ -167,7 +171,7 @@ int ItemFunctions::luaItemRemove(lua_State* L) {
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
 		int32_t count = getNumber<int32_t>(L, 2, -1);
-		pushBoolean(L, g_game.internalRemoveItem(item, count) == RETURNVALUE_NOERROR);
+		pushBoolean(L, g_game().internalRemoveItem(item, count) == RETURNVALUE_NOERROR);
 	} else {
 		lua_pushnil(L);
 	}
@@ -369,6 +373,11 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 	}
 
 	if (ItemAttributes::isIntAttrType(attribute)) {
+		if (attribute == ITEM_ATTRIBUTE_DURATION) {
+			lua_pushnumber(L, item->getDuration());
+			return 1;
+		}
+
 		lua_pushnumber(L, item->getIntAttr(attribute));
 	} else if (ItemAttributes::isStrAttrType(attribute)) {
 		pushString(L, item->getStrAttr(attribute));
@@ -396,7 +405,33 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 	}
 
 	if (ItemAttributes::isIntAttrType(attribute)) {
-		item->setIntAttr(attribute, getNumber<int32_t>(L, 3));
+		switch (attribute) {
+			case ITEM_ATTRIBUTE_DECAYSTATE: {
+				ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
+				if (decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
+					g_decay().stopDecay(item);
+				} else {
+					g_decay().startDecay(item);
+				}
+				pushBoolean(L, true);
+				return 1;
+			}
+			case ITEM_ATTRIBUTE_DURATION: {
+				item->setDecaying(DECAYING_PENDING);
+				item->setDuration(getNumber<int32_t>(L, 3));
+				g_decay().startDecay(item);
+				pushBoolean(L, true);
+				return 1;
+			}
+			case ITEM_ATTRIBUTE_DURATION_TIMESTAMP: {
+				reportErrorFunc("Attempt to set protected key \"duration timestamp\"");
+				pushBoolean(L, false);
+				return 1;
+			}
+			default: break;
+		}
+
+		item->setIntAttr(attribute, getNumber<int64_t>(L, 3));
 		pushBoolean(L, true);
 	} else if (ItemAttributes::isStrAttrType(attribute)) {
 		item->setStrAttr(attribute, getString(L, 3));
@@ -424,9 +459,14 @@ int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {
 		attribute = ITEM_ATTRIBUTE_NONE;
 	}
 
-	bool ret = attribute != ITEM_ATTRIBUTE_UNIQUEID;
+	bool ret = (attribute != ITEM_ATTRIBUTE_UNIQUEID);
 	if (ret) {
-		item->removeAttribute(attribute);
+		ret = (attribute != ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+		if (ret) {
+			item->removeAttribute(attribute);
+		} else {
+			reportErrorFunc("Attempt to erase protected key \"duration timestamp\"");
+		}
 	} else {
 		reportErrorFunc("Attempt to erase protected key \"uid\"");
 	}
@@ -567,7 +607,7 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 				break;
 		}
 	} else {
-		toCylinder = g_game.map.getTile(getPosition(L, 2));
+		toCylinder = g_game().map.getTile(getPosition(L, 2));
 	}
 
 	if (!toCylinder) {
@@ -583,10 +623,10 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 	uint32_t flags = getNumber<uint32_t>(L, 3, FLAG_NOLIMIT | FLAG_IGNOREBLOCKITEM | FLAG_IGNOREBLOCKCREATURE | FLAG_IGNORENOTMOVEABLE);
 
 	if (item->getParent() == VirtualCylinder::virtualCylinder) {
-		pushBoolean(L, g_game.internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
+		pushBoolean(L, g_game().internalAddItem(toCylinder, item, INDEX_WHEREEVER, flags) == RETURNVALUE_NOERROR);
 	} else {
 		Item* moveItem = nullptr;
-		ReturnValue ret = g_game.internalMoveItem(item->getParent(), toCylinder, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags);
+		ReturnValue ret = g_game().internalMoveItem(item->getParent(), toCylinder, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem, flags);
 		if (moveItem) {
 			*itemPtr = moveItem;
 		}
@@ -604,7 +644,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 	}
 
 	Item*& item = *itemPtr;
-	if (!item || item->isRemoved()) {
+	if (!item) {
 		lua_pushnil(L);
 		return 1;
 	}
@@ -634,7 +674,7 @@ int ItemFunctions::luaItemTransform(lua_State* L) {
 	ScriptEnvironment* env = getScriptEnv();
 	uint32_t uid = env->addThing(item);
 
-	Item* newItem = g_game.transformItem(item, itemId, subType);
+	Item* newItem = g_game().transformItem(item, itemId, subType);
 	if (item->isRemoved()) {
 		env->removeItemByUID(uid);
 	}
@@ -652,7 +692,12 @@ int ItemFunctions::luaItemDecay(lua_State* L) {
 	// item:decay(decayId)
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		g_game.startDecay(item);
+		if (isNumber(L, 2)) {
+			ItemType& it = Item::items.getItemType(item->getID());
+			it.decayTo = getNumber<int32_t>(L, 2);
+		}
+
+		item->startDecaying();
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -677,7 +722,7 @@ int ItemFunctions::luaItemMoveToSlot(lua_State* L) {
 	Slots_t slot = getNumber<Slots_t>(L, 3, CONST_SLOT_WHEREEVER);
 
 	Item* moveItem = nullptr;
-	ReturnValue ret = g_game.internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
+	ReturnValue ret = g_game().internalMoveItem(item->getParent(), player, slot, item, item->getItemCount(), nullptr);
 	if (moveItem) {
 		item = moveItem;
 	}
@@ -707,5 +752,101 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int ItemFunctions::luaItemGetImbuement(lua_State* L)
+{
+	// item:getImbuement()
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			continue;
+		}
+
+		Imbuement *imbuement = imbuementInfo.imbuement;
+		if (!imbuement) {
+			continue;
+		}
+
+		pushUserdata<Imbuement>(L, imbuement);
+		setMetatable(L, -1, "Imbuement");
+
+		lua_createtable(L, 0, 3);
+		setField(L, "id", imbuement->getID());
+		setField(L, "name", imbuement->getName());
+		setField(L, "duration", imbuementInfo.duration);
+	}
+	return 1;
+}
+
+int ItemFunctions::luaItemGetImbuementSlot(lua_State* L) {
+	// item:getImbuementSlot()
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, item->getImbuementSlot());
+	return 1;
+}
+
+int ItemFunctions::luaItemSetDuration(lua_State* L) {
+	// item:setDuration(minDuration, maxDuration = 0, decayTo = 0, showDuration = true)
+	// Example: item:setDuration(10000, 20000, 2129, false) = random duration from range 10000/20000
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	uint32_t minDuration = getNumber<uint32_t>(L, 2);
+	uint32_t maxDuration = 0;
+	if (lua_gettop(L) > 2) {
+		maxDuration = uniform_random(minDuration, getNumber<uint32_t>(L, 3));
+	}
+
+	uint16_t itemid = 0;
+	if (lua_gettop(L) > 3) {
+		itemid = getNumber<uint16_t>(L, 4);
+	}
+	bool showDuration = true;
+	if (lua_gettop(L) > 4) {
+		showDuration = getBoolean(L, 5);
+	}
+
+	ItemType& it = Item::items.getItemType(item->getID());
+	if (maxDuration == 0) {
+		it.decayTime = minDuration;
+	} else {
+		it.decayTime = maxDuration;
+	}
+	it.showDuration = showDuration;
+	it.decayTo = itemid;
+	item->startDecaying();
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
+	// item:isInsideDepot([includeInbox = false])
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, item->isInsideDepot(getBoolean(L, 2, false)));
 	return 1;
 }

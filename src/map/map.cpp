@@ -19,6 +19,10 @@
 
 #include "otpch.h"
 
+#include <boost/filesystem.hpp>
+#include <fstream>
+#include <curl/curl.h>
+
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
 #include "creatures/combat/combat.h"
@@ -27,14 +31,54 @@
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
 
-extern Game g_game;
-
-bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
-{
-	IOMap loader;
-	if (!loader.loadMap(this, identifier)) {
-		SPDLOG_ERROR("[Map::loadMap] - {}", loader.getLastErrorString());
+bool Map::load(const std::string& identifier) {
+	try {
+		IOMap loader;
+		if (!loader.loadMap(this, identifier)) {
+			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
+			return false;
+		}
+	}
+	catch(const std::exception) {
+		SPDLOG_ERROR("[Map::load] - The map in folder {} is missing or corrupted", identifier);
 		return false;
+	}
+	return true;
+}
+
+bool Map::loadMap(const std::string& identifier,
+	bool mainMap /*= false*/,bool loadHouses /*= false*/,
+	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
+{
+	// Only download map if is loading the main map and it is not already downloaded
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !boost::filesystem::exists(identifier)) {
+		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
+		if (mapDownloadUrl.empty()) {
+			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
+		}
+
+		if (CURL *curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
+			SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
+			FILE *otbm = fopen(identifier.c_str(), "wb");
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
+			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+			curl_easy_perform(curl);
+			curl_easy_cleanup(curl);
+			fclose(otbm);
+		}
+	}
+
+	// Load the map
+	this->load(identifier);
+
+	// Only create items from lua functions if is loading main map
+	// It needs to be after the load map to ensure the map already exists before creating the items
+	if (mainMap) {
+		// Create items from lua scripts per position
+		// Example: ActionFunctions::luaActionPosition
+		g_game().createLuaItemsOnMap();
 	}
 
 	if (loadMonsters) {
@@ -48,13 +92,55 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 			SPDLOG_WARN("Failed to load house data");
 		}
 
-		IOMapSerialize::loadHouseInfo();
-		IOMapSerialize::loadHouseItems(this);
+		/**
+		 * Only load houses items if map custom load is disabled
+		 * If map custom is enabled, then it is load in loadMapCustom function
+		 * NOTE: This will ensure that the information is not duplicated
+		*/
+		if (!g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+			IOMapSerialize::loadHouseInfo();
+			IOMapSerialize::loadHouseItems(this);
+		}
 	}
 
 	if (loadNpcs) {
 		if (!IOMap::loadNpcs(this)) {
 			SPDLOG_WARN("Failed to load npc spawn data");
+		}
+	}
+
+	// Files need to be cleaned up if custom map is enabled to open, or will try to load main map files
+	if (g_configManager().getBoolean(TOGGLE_MAP_CUSTOM)) {
+		this->monsterfile.clear();
+		this->housefile.clear();
+		this->npcfile.clear();
+	}
+	return true;
+}
+
+bool Map::loadMapCustom(const std::string& identifier, bool loadHouses, bool loadMonsters, bool loadNpcs)
+{
+	// Load the map
+	this->load(identifier);
+
+	if (loadMonsters) {
+		if (!IOMap::loadMonstersCustom(this)) {
+			SPDLOG_WARN("Failed to load monster custom data");
+		}
+	}
+
+	if (loadHouses) {
+		if (!IOMap::loadHousesCustom(this)) {
+			SPDLOG_WARN("Failed to load house custom data");
+		}
+
+		IOMapSerialize::loadHouseInfo();
+		IOMapSerialize::loadHouseItems(this);
+	}
+
+	if (loadNpcs) {
+		if (!IOMap::loadNpcsCustom(this)) {
+			SPDLOG_WARN("Failed to load npc custom spawn data");
 		}
 	}
 	return true;
@@ -63,25 +149,15 @@ bool Map::loadMap(const std::string& identifier, bool loadHouses, bool loadMonst
 bool Map::save()
 {
 	bool saved = false;
-	for (uint32_t tries = 0; tries < 3; tries++) {
+	for (uint32_t tries = 0; tries < 6; tries++) {
 		if (IOMapSerialize::saveHouseInfo()) {
 			saved = true;
-			break;
+		}
+		if (saved && IOMapSerialize::saveHouseItems()) {
+			return true;
 		}
 	}
-
-	if (!saved) {
-		return false;
-	}
-
-	saved = false;
-	for (uint32_t tries = 0; tries < 3; tries++) {
-		if (IOMapSerialize::saveHouseItems()) {
-			saved = true;
-			break;
-		}
-	}
-	return saved;
+	return false;
 }
 
 Tile* Map::getTile(uint16_t x, uint16_t y, uint8_t z) const
@@ -1168,12 +1244,12 @@ uint32_t Map::clean() const
 	uint64_t start = OTSYS_TIME();
 	size_t tiles = 0;
 
-	if (g_game.getGameState() == GAME_STATE_NORMAL) {
-		g_game.setGameState(GAME_STATE_MAINTAIN);
+	if (g_game().getGameState() == GAME_STATE_NORMAL) {
+		g_game().setGameState(GAME_STATE_MAINTAIN);
 	}
 
 	std::vector<Item*> toRemove;
-	for (auto tile : g_game.getTilesToClean()) {
+	for (auto tile : g_game().getTilesToClean()) {
     if (!tile) {
       continue;
     }
@@ -1188,14 +1264,14 @@ uint32_t Map::clean() const
 	}
 
   for (auto item : toRemove) {
-		g_game.internalRemoveItem(item, -1);
+		g_game().internalRemoveItem(item, -1);
 	}
 
 	size_t count = toRemove.size();
-	g_game.clearTilesToClean();
+	g_game().clearTilesToClean();
 
-	if (g_game.getGameState() == GAME_STATE_MAINTAIN) {
-		g_game.setGameState(GAME_STATE_NORMAL);
+	if (g_game().getGameState() == GAME_STATE_MAINTAIN) {
+		g_game().setGameState(GAME_STATE_NORMAL);
 	}
 
 	SPDLOG_INFO("CLEAN: Removed {} item{} from {} tile{} in {} seconds",

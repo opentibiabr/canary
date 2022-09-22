@@ -2374,7 +2374,7 @@ class Player final : public Creature, public Cylinder
 		bool isPromoted() const;
 
 		uint32_t getAttackSpeed() const {
-			return vocation->getAttackSpeed();
+			return (vocation->getAttackSpeed() - (getSkillLevel(SKILL_FIST) * 3));
 		}
 
 		static double_t getPercentLevel(uint64_t count, uint64_t nextLevelCount);

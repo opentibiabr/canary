@@ -5702,7 +5702,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		if (!damage.extension && attacker) {
 			if (targetPlayer && attacker->getMonster() && damage.primary.type != COMBAT_HEALING) {
 				// Charm rune (target as player)
-				MonsterType* mType = g_monsters.getMonsterType(attacker->getName());
+				MonsterType* mType = g_monsters().getMonsterType(attacker->getName());
 				if (mType) {
 					IOBestiary g_bestiary;
 					charmRune_t activeCharm = g_bestiary.getCharmFromTarget(targetPlayer, mType);
@@ -5873,10 +5873,6 @@ void Game::combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColo
 				case RACE_ENERGY:
 					color = TEXTCOLOR_PURPLE;
 					effect = CONST_ME_ENERGYHIT;
-					break;
-				case RACE_INK:
-					color = TEXTCOLOR_DARKGREY;
-					effect = CONST_ME_BLACKHIT;
 					break;
 				default:
 					color = TEXTCOLOR_NONE;
@@ -6087,7 +6083,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				Item* item = attackerPlayer->getWeapon();
 				if (item && item->getWeaponType() == WEAPON_DISTANCE) {
 					Item* quiver = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
-					if (quiver->getWeaponType() == WEAPON_QUIVER) {
+					if (quiver->getWeaponType()) {
 						if (quiver->getPerfectShotRange() == distanceX)
 							damageX -= quiver->getPerfectShotDamage();
 						else if (quiver->getPerfectShotRange() == distanceY)
@@ -6126,9 +6122,17 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			addMagicEffect(spectators, targetPos, CONST_ME_CRITICAL_DAMAGE);
 		}
 
+		Monster* attackerMonster;
+		if (attackerMonster) {
+			attackerMonster = attacker->getMonster();
+		}
+		else {
+			attackerMonster = nullptr;
+		}
+
 		if (!damage.extension && attackerMonster && targetPlayer) {
 			// Charm rune (target as player)
-			MonsterType* mType = g_monsters.getMonsterType(attacker->getName());
+			MonsterType* mType = g_monsters().getMonsterType(attacker->getName());
 			if (mType) {
 				IOBestiary g_bestiary;
 				charmRune_t activeCharm = g_bestiary.getCharmFromTarget(targetPlayer, mType);
@@ -6293,6 +6297,14 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 		}
 
+		Monster* targetMonster;
+		if (targetMonster) {
+			targetMonster = target->getMonster();
+		}
+		else {
+			targetMonster = nullptr;
+		}
+
 		target->drainHealth(attacker, realDamage);
 		if (realDamage > 0 && targetMonster) {
 			if (attackerPlayer && attackerPlayer->getPlayer()) {
@@ -6356,7 +6368,7 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			}
 			//Charm rune (attacker as player)
 			if (target && target->getMonster()) {
-				MonsterType* mType = g_monsters.getMonsterType(target->getName());
+				MonsterType* mType = g_monsters().getMonsterType(target->getName());
 				if (mType) {
 					IOBestiary g_bestiary;
 					charmRune_t activeCharm = g_bestiary.getCharmFromTarget(attackerPlayer, mType);

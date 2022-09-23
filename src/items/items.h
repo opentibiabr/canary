@@ -53,10 +53,6 @@ struct Abilities {
 		uint16_t elementDamage = 0;
 		CombatType_t elementType = COMBAT_NONE;
 
-		bool manaShield = false;
-		bool invisible = false;
-		bool regeneration = false;
-
 		// 12.72 modifiers
 		// Specialized magic level modifiers
 		int32_t reflectFlat[COMBAT_COUNT] = { 0 };
@@ -76,6 +72,7 @@ struct Abilities {
 		bool manaShield = false;
 		bool invisible = false;
 		bool regeneration = false;
+
 		void setHealthGain(uint32_t value) {
 			healthGain = value;
 		}

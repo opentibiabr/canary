@@ -3145,12 +3145,13 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 				bool imbueDmg = false;
 				Item* weaponNC = player->getWeapon(true);
 				if (weaponNC) {
-					uint8_t slots = Item::items[weaponNC->getID()].imbuingSlots;
+					uint8_t slots = Item::items[weaponNC->getID()].imbuementSlot;
 					if (slots > 0) {
 						for (uint8_t i = 0; i < slots; i++) {
-							uint32_t info = weaponNC->getImbuement(i);
+							ImbuementInfo imbuementInfo;
+							uint32_t info = weaponNC->getImbuementInfo(i, &imbuementInfo);
 							if (info >> 8) {
-								Imbuement* ib = g_imbuements->getImbuement(info & 0xFF);
+								Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
 								if (ib->combatType != COMBAT_NONE) {
 									msg.addByte(static_cast<uint32_t>(ib->elementDamage));
 									msg.addByte(getCipbiaElement(ib->combatType));
@@ -3189,12 +3190,13 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 				bool imbueDmg = false;
 				Item* weaponNC = player->getWeapon();
 				if (weaponNC) {
-					uint8_t slots = Item::items[weaponNC->getID()].imbuingSlots;
+					uint8_t slots = Item::items[weaponNC->getID()].imbuementSlot;
 					if (slots > 0) {
 						for (uint8_t i = 0; i < slots; i++) {
-							uint32_t info = weaponNC->getImbuement(i);
+							ImbuementInfo imbuementInfo;
+							uint32_t info = weaponNC->getImbuementInfo(i, &imbuementInfo);
 							if (info >> 8) {
-								Imbuement* ib = g_imbuements->getImbuement(info & 0xFF);
+								Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
 								if (ib->combatType != COMBAT_NONE) {
 									msg.addByte(static_cast<uint32_t>(ib->elementDamage));
 									msg.addByte(getCipbiaElement(ib->combatType));
@@ -3255,12 +3257,13 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
 			absorbs[i] *= (std::floor(100 - it.abilities->absorbPercent[i]) / 100.);
 		}
-		uint8_t slots = Item::items[item->getID()].imbuingSlots;
+		uint8_t slots = Item::items[item->getID()].imbuementSlot;
 		if (slots > 0) {
 			for (uint8_t i = 0; i < slots; i++) {
-				uint32_t info = item->getImbuement(i);
+				ImbuementInfo imbuementInfo;
+				uint32_t info = item->getImbuementInfo(i, &imbuementInfo);
 				if (info >> 8) {
-					Imbuement* ib = g_imbuements->getImbuement(info & 0xFF);
+					Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
 					for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
 						const int16_t& absorbPercent2 = ib->absorbPercent[i];
 
@@ -3301,7 +3304,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	for (int itemID = ITEM_TIBIADROME_POTION_START; itemID <= ITEM_TIBIADROME_POTION_END; itemID++) {
 		Condition* condition = player->getCondition(CONDITION_TIBIADROMEPOTIONS, CONDITIONID_DEFAULT, itemID);
 		if (condition && condition->getEndTime()/1000 >= timeNow) {
-			msg.addItemId(itemID);
+			msg.add<uint16_t>(itemID);
 			msg.add<uint16_t>(static_cast<uint16_t>(std::floor(condition->getEndTime()/1000-timeNow)));
 			total++;
 		}
@@ -3377,7 +3380,7 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 		if (inventoryItem)
 		{
 			++inventoryItems;
-			msg.add<uint16_t>(inventoryItem->getClientID());
+			msg.add<uint16_t>(inventoryItem->getID());
 			msg.add<uint32_t>(inventoryItem->getItemCount());
 		}
 		// TODO show / count items in backpack

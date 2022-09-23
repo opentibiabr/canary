@@ -632,8 +632,8 @@ bool WeaponMelee::useWeapon(Player* player, Item* item, Creature* target) const
 				else
 					secondCleaveTargetPos.y++;
 			}
-			Tile* firstTile = g_game.map.getTile(firstCleaveTargetPos.x, firstCleaveTargetPos.y, firstCleaveTargetPos.z);
-			Tile* secondTile = g_game.map.getTile(secondCleaveTargetPos.x, secondCleaveTargetPos.y, secondCleaveTargetPos.z);
+			Tile* firstTile = g_game().map.getTile(firstCleaveTargetPos.x, firstCleaveTargetPos.y, firstCleaveTargetPos.z);
+			Tile* secondTile = g_game().map.getTile(secondCleaveTargetPos.x, secondCleaveTargetPos.y, secondCleaveTargetPos.z);
 
 			if (firstTile) {
 				if (CreatureVector* tileCreatures = firstTile->getCreatures()) {
@@ -785,7 +785,7 @@ bool WeaponDistance::useWeapon(Player* player, Item* item, Creature* target) con
 
 	if (it.weaponType == WEAPON_DISTANCE) {
 		Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
-		if (quiver->getWeaponType() == WEAPON_QUIVER) {
+		if (quiver->getWeaponType()) {
 			if (quiver->getPerfectShotRange() == distanceX)
 				damageX -= quiver->getPerfectShotDamage();
 			else if (quiver->getPerfectShotRange() == distanceY)

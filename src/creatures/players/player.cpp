@@ -4977,7 +4977,7 @@ int32_t Player::getCleavePercent(bool useCharges) const {
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}
@@ -5008,7 +5008,7 @@ int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}
@@ -5037,7 +5037,7 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}
@@ -5066,7 +5066,7 @@ int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}
@@ -5095,7 +5095,7 @@ int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}
@@ -5124,7 +5124,7 @@ int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}
@@ -5153,7 +5153,7 @@ int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
 				if (useCharges) {
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						g_game.transformItem(item, item->getID(), charges - 1);
+						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}
 			}

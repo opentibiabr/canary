@@ -7609,11 +7609,6 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
 {
 	// 64000 is size of the client limitation (uint16_t)
-	if (amount == 0 || amount > 64000)
-	{
-		return;
-	}
-
 	if (price == 0 || price > 999999999)
 	{
 		return;
@@ -7643,6 +7638,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
+	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
+	{
+		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
+		return;
+	}
+
 	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium())
 	{
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
@@ -7657,11 +7658,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	const ItemType &it = Item::items[itt.wareId];
 	if (it.id == 0 || it.wareId == 0)
-	{
-		return;
-	}
-
-	if (!it.stackable && amount > 2000)
 	{
 		return;
 	}
@@ -7863,11 +7859,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount)
 {
-	// Limit of 64k of items to create offer
-	if (amount == 0 || amount > 64000) {
-		return;
-	}
-
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -7881,6 +7872,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	if (player->isMarketExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+		return;
+	}
+
+	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
+	{
+		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
 		return;
 	}
 

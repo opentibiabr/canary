@@ -360,7 +360,8 @@ enum PlayerSex_t : uint8_t {
 	PLAYERSEX_LAST = PLAYERSEX_MALE
 };
 
-enum skills_t : uint8_t {
+enum skills_t : int8_t {
+	SKILL_NONE = -1,
 	SKILL_FIST = 0,
 	SKILL_CLUB = 1,
 	SKILL_SWORD = 2,

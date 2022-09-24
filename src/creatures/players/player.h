@@ -633,7 +633,6 @@ class Player final : public Creature, public Cylinder
 		void getRewardList(std::vector<uint32_t>& rewards);
 		RewardChest* getRewardChest();
 
-		DepotChest* getDepotBox();
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);
 		void onReceiveMail() const;

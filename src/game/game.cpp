@@ -4347,10 +4347,10 @@ void Game::internalCloseTrade(Player* player)
 	}
 }
 
-void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount,
+void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount,
                               bool ignoreCap/* = false*/, bool inBackpacks/* = false*/)
 {
-	if (amount == 0 || amount > 100) {
+	if (amount == 0) {
 		return;
 	}
 
@@ -4366,6 +4366,10 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 
 	const ItemType& it = Item::items[itemId];
 	if (it.id == 0) {
+		return;
+	}
+
+	if ((it.stackable && amount > 10000) || (!it.stackable && amount > 100)) {
 		return;
 	}
 
@@ -4383,9 +4387,9 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 	player->updateNpcExhausted();
 }
 
-void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount, bool ignoreEquipped)
+void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreEquipped)
 {
-	if (amount == 0 || amount > 100) {
+	if (amount == 0) {
 		return;
 	}
 
@@ -4401,6 +4405,10 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 
 	const ItemType& it = Item::items[itemId];
 	if (it.id == 0) {
+		return;
+	}
+
+	if ((it.stackable && amount > 10000) || (!it.stackable && amount > 100)) {
 		return;
 	}
 
@@ -6835,6 +6843,10 @@ void Game::ReleaseCreature(Creature* creature)
 
 void Game::ReleaseItem(Item* item)
 {
+	if (!item) {
+		return;
+	}
+
 	ToReleaseItems.push_back(item);
 }
 

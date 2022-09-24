@@ -2299,6 +2299,14 @@ class AppearanceFlags final :
     kAmmoFieldNumber = 45,
     kShowOffSocketFieldNumber = 46,
     kReportableFieldNumber = 47,
+    kReverseAddonsEastFieldNumber = 49,
+    kReverseAddonsWestFieldNumber = 50,
+    kReverseAddonsSouthFieldNumber = 51,
+    kReverseAddonsNorthFieldNumber = 52,
+    kWearoutFieldNumber = 53,
+    kClockexpireFieldNumber = 54,
+    kExpireFieldNumber = 55,
+    kExpirestopFieldNumber = 56,
   };
   // repeated .Canary.protobuf.appearances.AppearanceFlagNPC npcsaledata = 40;
   int npcsaledata_size() const;
@@ -3004,6 +3012,110 @@ class AppearanceFlags final :
   void _internal_set_reportable(bool value);
   public:
 
+  // optional bool reverse_addons_east = 49;
+  bool has_reverse_addons_east() const;
+  private:
+  bool _internal_has_reverse_addons_east() const;
+  public:
+  void clear_reverse_addons_east();
+  bool reverse_addons_east() const;
+  void set_reverse_addons_east(bool value);
+  private:
+  bool _internal_reverse_addons_east() const;
+  void _internal_set_reverse_addons_east(bool value);
+  public:
+
+  // optional bool reverse_addons_west = 50;
+  bool has_reverse_addons_west() const;
+  private:
+  bool _internal_has_reverse_addons_west() const;
+  public:
+  void clear_reverse_addons_west();
+  bool reverse_addons_west() const;
+  void set_reverse_addons_west(bool value);
+  private:
+  bool _internal_reverse_addons_west() const;
+  void _internal_set_reverse_addons_west(bool value);
+  public:
+
+  // optional bool reverse_addons_south = 51;
+  bool has_reverse_addons_south() const;
+  private:
+  bool _internal_has_reverse_addons_south() const;
+  public:
+  void clear_reverse_addons_south();
+  bool reverse_addons_south() const;
+  void set_reverse_addons_south(bool value);
+  private:
+  bool _internal_reverse_addons_south() const;
+  void _internal_set_reverse_addons_south(bool value);
+  public:
+
+  // optional bool reverse_addons_north = 52;
+  bool has_reverse_addons_north() const;
+  private:
+  bool _internal_has_reverse_addons_north() const;
+  public:
+  void clear_reverse_addons_north();
+  bool reverse_addons_north() const;
+  void set_reverse_addons_north(bool value);
+  private:
+  bool _internal_reverse_addons_north() const;
+  void _internal_set_reverse_addons_north(bool value);
+  public:
+
+  // optional bool wearout = 53;
+  bool has_wearout() const;
+  private:
+  bool _internal_has_wearout() const;
+  public:
+  void clear_wearout();
+  bool wearout() const;
+  void set_wearout(bool value);
+  private:
+  bool _internal_wearout() const;
+  void _internal_set_wearout(bool value);
+  public:
+
+  // optional bool clockexpire = 54;
+  bool has_clockexpire() const;
+  private:
+  bool _internal_has_clockexpire() const;
+  public:
+  void clear_clockexpire();
+  bool clockexpire() const;
+  void set_clockexpire(bool value);
+  private:
+  bool _internal_clockexpire() const;
+  void _internal_set_clockexpire(bool value);
+  public:
+
+  // optional bool expire = 55;
+  bool has_expire() const;
+  private:
+  bool _internal_has_expire() const;
+  public:
+  void clear_expire();
+  bool expire() const;
+  void set_expire(bool value);
+  private:
+  bool _internal_expire() const;
+  void _internal_set_expire(bool value);
+  public:
+
+  // optional bool expirestop = 56;
+  bool has_expirestop() const;
+  private:
+  bool _internal_has_expirestop() const;
+  public:
+  void clear_expirestop();
+  bool expirestop() const;
+  void set_expirestop(bool value);
+  private:
+  bool _internal_expirestop() const;
+  void _internal_set_expirestop(bool value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Canary.protobuf.appearances.AppearanceFlags)
  private:
   class _Internal;
@@ -3062,6 +3174,14 @@ class AppearanceFlags final :
     bool ammo_;
     bool show_off_socket_;
     bool reportable_;
+    bool reverse_addons_east_;
+    bool reverse_addons_west_;
+    bool reverse_addons_south_;
+    bool reverse_addons_north_;
+    bool wearout_;
+    bool clockexpire_;
+    bool expire_;
+    bool expirestop_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_appearances_2eproto;
@@ -9841,6 +9961,230 @@ inline void AppearanceFlags::set_allocated_upgradeclassification(::Canary::proto
   }
   _impl_.upgradeclassification_ = upgradeclassification;
   // @@protoc_insertion_point(field_set_allocated:Canary.protobuf.appearances.AppearanceFlags.upgradeclassification)
+}
+
+// optional bool reverse_addons_east = 49;
+inline bool AppearanceFlags::_internal_has_reverse_addons_east() const {
+  bool value = (_impl_._has_bits_[1] & 0x00008000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_reverse_addons_east() const {
+  return _internal_has_reverse_addons_east();
+}
+inline void AppearanceFlags::clear_reverse_addons_east() {
+  _impl_.reverse_addons_east_ = false;
+  _impl_._has_bits_[1] &= ~0x00008000u;
+}
+inline bool AppearanceFlags::_internal_reverse_addons_east() const {
+  return _impl_.reverse_addons_east_;
+}
+inline bool AppearanceFlags::reverse_addons_east() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_east)
+  return _internal_reverse_addons_east();
+}
+inline void AppearanceFlags::_internal_set_reverse_addons_east(bool value) {
+  _impl_._has_bits_[1] |= 0x00008000u;
+  _impl_.reverse_addons_east_ = value;
+}
+inline void AppearanceFlags::set_reverse_addons_east(bool value) {
+  _internal_set_reverse_addons_east(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_east)
+}
+
+// optional bool reverse_addons_west = 50;
+inline bool AppearanceFlags::_internal_has_reverse_addons_west() const {
+  bool value = (_impl_._has_bits_[1] & 0x00010000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_reverse_addons_west() const {
+  return _internal_has_reverse_addons_west();
+}
+inline void AppearanceFlags::clear_reverse_addons_west() {
+  _impl_.reverse_addons_west_ = false;
+  _impl_._has_bits_[1] &= ~0x00010000u;
+}
+inline bool AppearanceFlags::_internal_reverse_addons_west() const {
+  return _impl_.reverse_addons_west_;
+}
+inline bool AppearanceFlags::reverse_addons_west() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_west)
+  return _internal_reverse_addons_west();
+}
+inline void AppearanceFlags::_internal_set_reverse_addons_west(bool value) {
+  _impl_._has_bits_[1] |= 0x00010000u;
+  _impl_.reverse_addons_west_ = value;
+}
+inline void AppearanceFlags::set_reverse_addons_west(bool value) {
+  _internal_set_reverse_addons_west(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_west)
+}
+
+// optional bool reverse_addons_south = 51;
+inline bool AppearanceFlags::_internal_has_reverse_addons_south() const {
+  bool value = (_impl_._has_bits_[1] & 0x00020000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_reverse_addons_south() const {
+  return _internal_has_reverse_addons_south();
+}
+inline void AppearanceFlags::clear_reverse_addons_south() {
+  _impl_.reverse_addons_south_ = false;
+  _impl_._has_bits_[1] &= ~0x00020000u;
+}
+inline bool AppearanceFlags::_internal_reverse_addons_south() const {
+  return _impl_.reverse_addons_south_;
+}
+inline bool AppearanceFlags::reverse_addons_south() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_south)
+  return _internal_reverse_addons_south();
+}
+inline void AppearanceFlags::_internal_set_reverse_addons_south(bool value) {
+  _impl_._has_bits_[1] |= 0x00020000u;
+  _impl_.reverse_addons_south_ = value;
+}
+inline void AppearanceFlags::set_reverse_addons_south(bool value) {
+  _internal_set_reverse_addons_south(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_south)
+}
+
+// optional bool reverse_addons_north = 52;
+inline bool AppearanceFlags::_internal_has_reverse_addons_north() const {
+  bool value = (_impl_._has_bits_[1] & 0x00040000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_reverse_addons_north() const {
+  return _internal_has_reverse_addons_north();
+}
+inline void AppearanceFlags::clear_reverse_addons_north() {
+  _impl_.reverse_addons_north_ = false;
+  _impl_._has_bits_[1] &= ~0x00040000u;
+}
+inline bool AppearanceFlags::_internal_reverse_addons_north() const {
+  return _impl_.reverse_addons_north_;
+}
+inline bool AppearanceFlags::reverse_addons_north() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_north)
+  return _internal_reverse_addons_north();
+}
+inline void AppearanceFlags::_internal_set_reverse_addons_north(bool value) {
+  _impl_._has_bits_[1] |= 0x00040000u;
+  _impl_.reverse_addons_north_ = value;
+}
+inline void AppearanceFlags::set_reverse_addons_north(bool value) {
+  _internal_set_reverse_addons_north(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.reverse_addons_north)
+}
+
+// optional bool wearout = 53;
+inline bool AppearanceFlags::_internal_has_wearout() const {
+  bool value = (_impl_._has_bits_[1] & 0x00080000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_wearout() const {
+  return _internal_has_wearout();
+}
+inline void AppearanceFlags::clear_wearout() {
+  _impl_.wearout_ = false;
+  _impl_._has_bits_[1] &= ~0x00080000u;
+}
+inline bool AppearanceFlags::_internal_wearout() const {
+  return _impl_.wearout_;
+}
+inline bool AppearanceFlags::wearout() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.wearout)
+  return _internal_wearout();
+}
+inline void AppearanceFlags::_internal_set_wearout(bool value) {
+  _impl_._has_bits_[1] |= 0x00080000u;
+  _impl_.wearout_ = value;
+}
+inline void AppearanceFlags::set_wearout(bool value) {
+  _internal_set_wearout(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.wearout)
+}
+
+// optional bool clockexpire = 54;
+inline bool AppearanceFlags::_internal_has_clockexpire() const {
+  bool value = (_impl_._has_bits_[1] & 0x00100000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_clockexpire() const {
+  return _internal_has_clockexpire();
+}
+inline void AppearanceFlags::clear_clockexpire() {
+  _impl_.clockexpire_ = false;
+  _impl_._has_bits_[1] &= ~0x00100000u;
+}
+inline bool AppearanceFlags::_internal_clockexpire() const {
+  return _impl_.clockexpire_;
+}
+inline bool AppearanceFlags::clockexpire() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.clockexpire)
+  return _internal_clockexpire();
+}
+inline void AppearanceFlags::_internal_set_clockexpire(bool value) {
+  _impl_._has_bits_[1] |= 0x00100000u;
+  _impl_.clockexpire_ = value;
+}
+inline void AppearanceFlags::set_clockexpire(bool value) {
+  _internal_set_clockexpire(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.clockexpire)
+}
+
+// optional bool expire = 55;
+inline bool AppearanceFlags::_internal_has_expire() const {
+  bool value = (_impl_._has_bits_[1] & 0x00200000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_expire() const {
+  return _internal_has_expire();
+}
+inline void AppearanceFlags::clear_expire() {
+  _impl_.expire_ = false;
+  _impl_._has_bits_[1] &= ~0x00200000u;
+}
+inline bool AppearanceFlags::_internal_expire() const {
+  return _impl_.expire_;
+}
+inline bool AppearanceFlags::expire() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.expire)
+  return _internal_expire();
+}
+inline void AppearanceFlags::_internal_set_expire(bool value) {
+  _impl_._has_bits_[1] |= 0x00200000u;
+  _impl_.expire_ = value;
+}
+inline void AppearanceFlags::set_expire(bool value) {
+  _internal_set_expire(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.expire)
+}
+
+// optional bool expirestop = 56;
+inline bool AppearanceFlags::_internal_has_expirestop() const {
+  bool value = (_impl_._has_bits_[1] & 0x00400000u) != 0;
+  return value;
+}
+inline bool AppearanceFlags::has_expirestop() const {
+  return _internal_has_expirestop();
+}
+inline void AppearanceFlags::clear_expirestop() {
+  _impl_.expirestop_ = false;
+  _impl_._has_bits_[1] &= ~0x00400000u;
+}
+inline bool AppearanceFlags::_internal_expirestop() const {
+  return _impl_.expirestop_;
+}
+inline bool AppearanceFlags::expirestop() const {
+  // @@protoc_insertion_point(field_get:Canary.protobuf.appearances.AppearanceFlags.expirestop)
+  return _internal_expirestop();
+}
+inline void AppearanceFlags::_internal_set_expirestop(bool value) {
+  _impl_._has_bits_[1] |= 0x00400000u;
+  _impl_.expirestop_ = value;
+}
+inline void AppearanceFlags::set_expirestop(bool value) {
+  _internal_set_expirestop(value);
+  // @@protoc_insertion_point(field_set:Canary.protobuf.appearances.AppearanceFlags.expirestop)
 }
 
 // -------------------------------------------------------------------

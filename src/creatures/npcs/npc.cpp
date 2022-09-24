@@ -220,43 +220,63 @@ void Npc::onThink(uint32_t interval)
 }
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint8_t amount, bool ignore, bool inBackpacks)
+                          uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks)
 {
 	if (player == nullptr) {
 		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 
-	const ItemType& itemType = Item::items[itemId];
-	if (!itemType.stackable && player->getFreeBackpackSlots() < amount || player->getFreeBackpackSlots() == 0) {
+	// Check if the player not have empty slots
+	if (!ignore && player->getFreeBackpackSlots() == 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
 
+	uint32_t shoppingBagPrice = 20;
+	uint32_t shoppingBagSlots = 20;
+	const ItemType& itemType = Item::items[itemId];
+	if (const Tile* tile = ignore ? player->getTile() : nullptr; tile) {
+		double slotsNedeed = 0;
+		if (itemType.stackable) {
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / 100);
+		} else {
+			slotsNedeed = inBackpacks ? std::ceil(static_cast<double>(amount) / shoppingBagSlots) : static_cast<double>(amount);
+		}
+
+		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+			return;
+		}
+	}
+
 	uint32_t buyPrice = 0;
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
-	{
-		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
-		{
+	for (ShopBlock shopBlock : shopVector) {
+		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
 		}
 	}
 
 	uint32_t totalCost = buyPrice * amount;
-	if (getCurrency() == ITEM_GOLD_COIN) {
-		if (!g_game().removeMoney(player, totalCost, 0, true)) {
-			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
-			return;
-		}
-	} else if(!player->removeItemOfType(getCurrency(), totalCost, -1, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+	uint32_t bagsCost = 0;
+	if (inBackpacks && itemType.stackable) {
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots));
+	} else if (inBackpacks && !itemType.stackable) {
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(static_cast<double>(amount) / shoppingBagSlots));
+	}
+
+	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		return;
+	} else if (getCurrency() != ITEM_GOLD_COIN && (player->getItemTypeCount(getCurrency()) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost))) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 
-	// onPlayerBuyItem(self, player, itemId, subType, amount, ignore inBackpacks)
+	// npc:onBuyItem(player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerBuyEvent)) {
 		callback.pushSpecificCreature(this);
@@ -264,8 +284,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 		callback.pushNumber(itemId);
 		callback.pushNumber(subType);
 		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
 		callback.pushBoolean(inBackpacks);
-		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
 	}
 
@@ -275,7 +295,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 }
 
 void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint8_t amount, bool ignore)
+                          uint8_t subType, uint16_t amount, bool ignore)
 {
 	if (!player) {
 		return;
@@ -292,7 +312,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	if(!player->removeItemOfType(itemId, amount, -1, false, false)) {
+	if(!player->removeItemOfType(itemId, amount, -1, ignore, false)) {
 		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
@@ -300,7 +320,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 	int64_t totalCost = sellPrice * amount;
 	g_game().addMoney(player, totalCost, 0);
 
-	// onPlayerSellItem(self, player, itemId, subType, amount, ignore)
+	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
 		callback.pushSpecificCreature(this);
@@ -308,6 +328,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		callback.pushNumber(itemType.id);
 		callback.pushNumber(subType);
 		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
 	}

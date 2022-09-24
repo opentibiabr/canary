@@ -7638,18 +7638,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
-	{
-		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
-		return;
-	}
-
-	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium())
-	{
-		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
-		return;
-	}
-
 	const ItemType &itt = Item::items[itemId];
 	if (itt.id == 0 || itt.wareId == 0)
 	{
@@ -7659,6 +7647,19 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	const ItemType &it = Item::items[itt.wareId];
 	if (it.id == 0 || it.wareId == 0)
 	{
+		return;
+	}
+
+	const ItemType& it = Item::items[offer.itemId];
+	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
+	{
+		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
+		return;
+	}
+
+	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium())
+	{
+		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
 		return;
 	}
 
@@ -7875,6 +7876,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
+	const ItemType& it = Item::items[offer.itemId];
 	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
 	{
 		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
@@ -7890,7 +7892,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	const ItemType& it = Item::items[offer.itemId];
 	if (it.id == 0) {
 		return;
 	}

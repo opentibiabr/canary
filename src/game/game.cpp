@@ -7613,7 +7613,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	if (price == 0 || price > 999999999) {
+	if (price == 0 || price > 999999999999) {
 		return;
 	}
 

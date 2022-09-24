@@ -7185,7 +7185,6 @@ void ProtocolGame::sendItemsPrice()
 				msg.addByte(0);
 			}
 			msg.add<uint64_t>(itemPrice);
-			msg.add<uint32_t>(0);
 		}
 	}
 

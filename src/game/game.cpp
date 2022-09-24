@@ -7613,10 +7613,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	if (price == 0 || price > 999999999999) {
-		return;
-	}
-
 	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL) {
 		return;
 	}
@@ -7627,6 +7623,11 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	if (!player->isInMarket()) {
+		return;
+	}
+
+	if (price == 0 || price > 999999999999) {
+		SPDLOG_ERROR("{} - Player with name {} is trying to sell an item with a higher than allowed value", __FUNCTION__, player->getName());
 		return;
 	}
 

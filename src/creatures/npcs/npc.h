@@ -160,9 +160,9 @@ class Npc final : public Creature
 		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text) override;
 		void onThink(uint32_t interval) override;
 		void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint8_t amount, bool ignore, bool inBackpacks);
+                            uint16_t amount, bool ignore, bool inBackpacks);
 		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint8_t amount, bool ignore);
+                            uint16_t amount, bool ignore);
 		void onPlayerCheckItem(Player* player, uint16_t itemid,
                           uint8_t count);
 		void onPlayerCloseChannel(Creature* creature);

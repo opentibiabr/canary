@@ -7662,7 +7662,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	uint64_t calcFee = static_cast<uint64_t>((price / 100.) * amount);
+	uint64_t calcFee = (static_cast<double>(price / 100.)) * amount;
 	uint64_t minFee = std::min<uint64_t>(100000, calcFee);
 	uint64_t fee = std::max<uint64_t>(20, minFee);
 

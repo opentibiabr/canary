@@ -297,7 +297,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->lastLogout = result->getNumber<time_t>("lastlogout");
 
   player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
-  player->offlineTrainingSkill = result->getNumber<int32_t>("offlinetraining_skill");
+  player->offlineTrainingSkill = result->getNumber<int8_t>("offlinetraining_skill");
 
   Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
   if (!town) {

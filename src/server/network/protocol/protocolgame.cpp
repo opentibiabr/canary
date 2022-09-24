@@ -7176,15 +7176,15 @@ void ProtocolGame::sendItemsPrice()
 	msg.add<uint16_t>(g_game().getItemsPriceCount());
 	if (g_game().getItemsPriceCount() > 0)
 	{
-		std::map<uint16_t, uint32_t> items = g_game().getItemsPrice();
-		for (const auto &it : items)
+		std::map<uint16_t, uint64_t> items = g_game().getItemsPrice();
+		for (const auto &[itemId, itemPrice] : items)
 		{
-			msg.add<uint16_t>(it.first);
-			if (Item::items[it.first].upgradeClassification > 0)
+			msg.add<uint16_t>(itemId);
+			if (Item::items[itemId].upgradeClassification > 0)
 			{
 				msg.addByte(0);
 			}
-			msg.add<uint32_t>(it.second);
+			msg.add<uint64_t>(itemPrice);
 			msg.add<uint32_t>(0);
 		}
 	}

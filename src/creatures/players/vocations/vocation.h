@@ -100,7 +100,10 @@ class Vocation
 		}
 
 		bool getMagicShield() const {
-		return magicShield;
+			return magicShield;
+		}
+		bool canCombat() const {
+			return combat;
 		}
 
 		float meleeDamageMultiplier = 1.0f;
@@ -132,7 +135,8 @@ class Vocation
 		uint32_t baseSpeed = 220;
 		uint16_t id;
 
-    	bool magicShield = false;
+		bool magicShield = false;
+		bool combat = true;
 
 		uint32_t gainSoulTicks = 120000;
 

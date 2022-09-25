@@ -2088,6 +2088,8 @@ class Player final : public Creature, public Cylinder
 			lastDepotSearchInteraction = OTSYS_TIME();
 		}
 
+		std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> requestLockerItems(DepotLocker *depotLocker);
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 

@@ -1952,6 +1952,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 {
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
+		SPDLOG_DEBUG("{} - Clylinder is nullpt", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	Tile* fromTile = cylinder->getTile();
@@ -1967,9 +1968,11 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	//check if we can remove this item
 	ReturnValue ret = cylinder->queryRemove(*item, count, flags | FLAG_IGNORENOTMOVEABLE);
 	if (ret != RETURNVALUE_NOERROR) {
+		SPDLOG_DEBUG("{} - Failed to execute query remove", __FUNCTION__);
 		return ret;
 	}
 	if (!item->canRemove()) {
+		SPDLOG_DEBUG("{} - Failed to remove item", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	if (!test) {
@@ -7608,64 +7611,54 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 
 void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
 {
-	if (price == 0 || price > 999999999)
-	{
+	if (price == 0 || price > 999999999) {
 		return;
 	}
 
-	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL)
-	{
+	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL) {
 		return;
 	}
 
 	Player *player = getPlayerByID(playerId);
-	if (!player)
-	{
+	if (!player) {
 		return;
 	}
 
-	if (!player->isInMarket())
-	{
+	if (!player->isInMarket()) {
 		return;
 	}
 
 	// Check market exhausted
-	if (player->isMarketExhausted())
-	{
+	if (player->isMarketExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
 	const ItemType &itt = Item::items[itemId];
-	if (itt.id == 0 || itt.wareId == 0)
-	{
+	if (itt.id == 0 || itt.wareId == 0) {
 		return;
 	}
 
 	const ItemType &it = Item::items[itt.wareId];
-	if (it.id == 0 || it.wareId == 0)
-	{
+	if (it.id == 0 || it.wareId == 0) {
 		return;
 	}
 
-	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
-	{
+	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000) {
 		SPDLOG_ERROR("{} - Player: {} invalid offer amount: {}", __FUNCTION__, player->getName(), amount);
 		return;
 	}
 
 	SPDLOG_INFO("{} - Amount: {}", __FUNCTION__, amount);
 
-	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium())
-	{
+	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
 		return;
 	}
 
 	const uint32_t maxOfferCount = g_configManager().getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
-	if (maxOfferCount != 0 && IOMarket::getPlayerOfferCount(player->getGUID()) >= maxOfferCount)
-	{
+	if (maxOfferCount != 0 && IOMarket::getPlayerOfferCount(player->getGUID()) >= maxOfferCount) {
 		return;
 	}
 
@@ -7673,82 +7666,85 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	uint32_t minFee = std::min<uint32_t> (100000, calcFee);
 	uint32_t fee = std::max<uint32_t> (20, minFee);
 
-	if (type == MARKETACTION_SELL)
-	{
-		if (fee > (player->getBankBalance() + player->getMoney()))
-		{
+	if (type == MARKETACTION_SELL) {
+		if (fee > (player->getBankBalance() + player->getMoney())) {
 			return;
 		}
 
 		DepotLocker *depotLocker = player->getDepotLocker(player->getLastDepotId());
-		if (depotLocker == nullptr)
-		{
+		if (depotLocker == nullptr) {
 			SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell depot chest is nullptr for player {}", player->getName());
 			return;
 		}
 
-		if (it.id == ITEM_STORE_COIN)
-		{
+		if (it.id == ITEM_STORE_COIN) {
 			account::Account account(player->getAccount());
 			account.LoadAccountDB();
 			uint32_t coins;
 			account.GetCoins(&coins);
 
-			if (amount > coins)
-			{
+			if (amount > coins) {
 				return;
 			}
 
 			account.RemoveCoins(static_cast<uint32_t> (amount));
-		}
-		else
-		{
-			uint16_t stashmath;
-			uint16_t stashminus = player->getStashItemCount(it.wareId);
-			stashmath = (amount - (amount > stashminus ? stashminus : amount));
-			std::vector<Item*> itemVector = getMarketItemList(it.wareId, stashmath, depotLocker);
-			if (itemVector.empty() && stashmath > 0)
-			{
-				SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell item list is empty for player {}", player->getName());
-				return;
-			}
+		} else {
+			uint16_t stashItemCount = player->getStashItemCount(it.wareId);
+			uint16_t amountMath = (amount > stashItemCount ? stashItemCount : amount);
+			uint16_t stashMath = (amount - amountMath);
 
-			if (stashminus > 0)
-			{
-				player->withdrawItem(it.wareId, (amount > stashminus ? stashminus : amount));
-			}
+			auto [itemVector, itemMap] = player->requestLockerItems(depotLocker);
+			if (it.stackable) {
+				for (auto [itemId, itemCount] : itemMap) {
+					SPDLOG_INFO("{} - ITEM ID {}, ITEM COUNT {}, AMOUNT {}, AMOUNT MATH {}", __FUNCTION__, itemId, itemCount, amount, amountMath);
 
-			if (it.stackable)
-			{
-				uint16_t tmpAmount = stashmath;
-				for (Item *item: itemVector)
-				{
-					uint16_t removeCount = std::min<uint16_t> (tmpAmount, item->getItemCount());
+					const ItemType &it = Item::items[itemId];
+					if (it.wareId != itemId) {
+						SPDLOG_ERROR("{} - Ware id {}, name {}, not math with item id {}, name {}", __FUNCTION__, it.wareId, it.name, itemId, it.name);
+						continue;
+					}
+
+					if (amount > itemCount) {
+						SPDLOG_ERROR("{} - Player {} not have the minimum count of items", __FUNCTION__, player->getName());
+						continue;
+					}
+
+					if (stashItemCount > 0) {
+						player->withdrawItem(it.wareId, amountMath);
+					}
+				}
+
+				for (auto item : itemVector) {
+					uint16_t tmpAmount = stashMath;
+					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;
 					internalRemoveItem(item, removeCount);
-					if (tmpAmount == 0)
-					{
+					if (stashMath == 0) {
 						break;
 					}
 				}
-			}
-			else
-			{
-				for (Item *item: itemVector)
-				{
-					internalRemoveItem(item);
+			} else {
+				uint32_t count = 0;
+				for (auto item : itemVector) {
+					count += Item::countByType(item, -1);
+					if (count > amount) {
+						break;
+					}
+					SPDLOG_DEBUG("{} - Item depot count: {}, offer amount {}", __FUNCTION__, count, amount);
+					auto ret = internalRemoveItem(item);
+					if (ret != RETURNVALUE_NOERROR) {
+						SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
+						continue;
+					}
 				}
 			}
 		}
 
 		g_game().removeMoney(player, fee, 0, true);
-	}
-	else
-	{
+	} else {
 		uint64_t totalPrice = price * amount;
 		totalPrice += fee;
-		if (totalPrice > (player->getMoney() + player->getBankBalance()))
-		{
+		if (totalPrice > (player->getMoney() + player->getBankBalance())) {
 			return;
 		}
 
@@ -7758,13 +7754,10 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t> (type), it.id, amount, price, anonymous);
 
 	auto ColorItem = itemsPriceMap.find(it.id);
-	if (ColorItem == itemsPriceMap.end())
-	{
+	if (ColorItem == itemsPriceMap.end()) {
 		itemsPriceMap[it.id] = price;
 		itemsSaleCount++;
-	}
-	else if (ColorItem->second < price)
-	{
+	} else if (ColorItem->second < price) {
 		itemsPriceMap[it.id] = price;
 	}
 
@@ -7943,32 +7936,28 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			}
 
 			if (removeAmount > 0) {
-				std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
-				if (itemVector.empty()) {
-					SPDLOG_ERROR("{} - Buy item list is empty", __FUNCTION__);
-					return;
-				}
-	
-				if (it.stackable) {
-					uint16_t tmpAmount = removeAmount;
-					for (Item* item : itemVector) {
-						if (!item) {
-							continue;
-						}
-						uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
-						tmpAmount -= removeCount;
+				auto [itemVector, itemMap] = player->requestLockerItems(depotLocker);
+				uint32_t count = 0;
+				for (auto item : itemVector) {
+					if (it.stackable) {
+						uint16_t removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
+						removeAmount -= removeCount;
 						internalRemoveItem(item, removeCount);
 
-						if (tmpAmount == 0) {
+						if (removeAmount == 0) {
 							break;
 						}
-					}
-				} else {
-					for (Item* item : itemVector) {
-						if (!item) {
+					} else {
+						count += Item::countByType(item, -1);
+						if (count > amount) {
+							break;
+						}
+						SPDLOG_DEBUG("{} - Item depot count: {}, offer amount {}", __FUNCTION__, count, amount);
+						auto ret = internalRemoveItem(item);
+						if (ret != RETURNVALUE_NOERROR) {
+							SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
 							continue;
 						}
-						internalRemoveItem(item);
 					}
 				}
 			}
@@ -8556,51 +8545,6 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 	for (CreatureEvent* creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
 		creatureEvent->executeExtendedOpcode(player, opcode, buffer);
 	}
-}
-
-std::vector<Item*> Game::getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker)
-{
-	std::vector<Item*> itemVector;
-	itemVector.reserve(std::max<size_t>(32, depotLocker->size()));
-
-	std::vector<Container*> containers{ depotLocker };
-	containers.reserve(32);
-
-	uint16_t count = 0;
-	size_t i = 0;
-	do {
-		Container* container = containers[i];
-		for (Item* item : container->getItemList()) {
-			Container* itemContainer = item->getContainer();
-			if (itemContainer && !itemContainer->empty()) {
-				containers.push_back(itemContainer);
-				continue;
-			}
-
-			const ItemType& itemType = Item::items[item->getID()];
-			if (itemType.wareId != wareId) {
-				continue;
-			}
-
-			if (itemContainer && (!itemType.isContainer() || itemContainer->capacity() != itemType.maxItems)) {
-				continue;
-			}
-
-			if (!item->hasMarketAttributes()) {
-				continue;
-			}
-
-			itemVector.push_back(item);
-
-			count += Item::countByType(item, -1);
-			if (count >= sufficientCount) {
-				return itemVector;
-			}
-		}
-	} while (++i < containers.size());
-
-	itemVector.clear();
-	return itemVector;
 }
 
 void Game::forceRemoveCondition(uint32_t creatureId, ConditionType_t conditionType, ConditionId_t conditionId)

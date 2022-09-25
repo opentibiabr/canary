@@ -6119,6 +6119,66 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	return nullptr;
 }
 
+std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker)
+{
+	std::map<uint16_t, uint32_t> marketItems;
+	std::vector<Item*> itemVector;
+	std::vector<Container*> containers{ depotLocker };
+
+	size_t ic = 0;
+	do {
+		Container* container = containers[ic++];
+
+		for (Item* item : container->getItemList()) {
+			Container* c = item->getContainer();
+			if (c && !c->empty()) {
+				containers.push_back(c);
+				continue;
+			}
+
+			const ItemType& itemType = Item::items[item->getID()];
+			if (itemType.wareId == 0) {
+				continue;
+			}
+
+			if (c && (!itemType.isContainer() || c->capacity() != itemType.maxItems)) {
+				continue;
+			}
+
+			if (!item->hasMarketAttributes()) {
+				continue;
+			}
+
+			marketItems[itemType.wareId] += Item::countByType(item, -1);
+			itemVector.push_back(item);
+		}
+	} while (ic < containers.size());
+	StashItemList stashToSend = getStashItems();
+	uint16_t size = 0;
+	for (auto item : stashToSend)
+	{
+		size += ceil(item.second);
+	}
+
+	do
+	{
+		for (auto item : stashToSend)
+		{
+
+			const ItemType &itemType = Item::items[item.first];
+			if (itemType.wareId == 0)
+			{
+				continue;
+			}
+
+			size = size - item.second;
+			marketItems[itemType.wareId] += item.second;
+		}
+	} while (size > 0);
+
+	return std::make_pair(itemVector, marketItems);
+}
+
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/

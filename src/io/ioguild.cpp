@@ -27,10 +27,12 @@ Guild* IOGuild::loadGuild(uint32_t guildId)
 {
 	Database& db = Database::getInstance();
 	std::ostringstream query;
-	query << "SELECT `name`, `balance` FROM `guilds` WHERE `id` = " << guildId;
+	query << "SELECT `name`, `balance`, `level`, `points` FROM `guilds` WHERE `id` = " << guildId;
 	if (DBResult_ptr result = db.storeQuery(query.str())) {
 		Guild* guild = new Guild(guildId, result->getString("name"));
     guild->setBankBalance(result->getNumber<uint64_t>("balance"));
+		guild->setLevel(result->getNumber<uint32_t>("level"));
+		guild->setPoints(result->getNumber<uint32_t>("points"));
 		query.str(std::string());
 		query << "SELECT `id`, `name`, `level` FROM `guild_ranks` WHERE `guild_id` = " << guildId;
 
@@ -87,4 +89,20 @@ void IOGuild::getWarList(uint32_t guildId, GuildWarVector& guildWarVector)
 			guildWarVector.push_back(result->getNumber<uint32_t>("guild2"));
 		}
 	} while (result->next());
+}
+
+void IOGuild::setLevel(uint32_t guildId, uint32_t newlevel)
+{
+	Database& db = Database::getInstance();
+	std::ostringstream query;
+	query << "UPDATE `guilds` SET `level` = " << newlevel << " WHERE `id` = " << guildId;
+	db.executeQuery(query.str());
+}
+
+void IOGuild::setPoints(uint32_t guildId, uint32_t newPoints)
+{
+	Database& db = Database::getInstance();
+	std::ostringstream query;
+	query << "UPDATE `guilds` SET `points` = " << newPoints << " WHERE `id` = " << guildId;
+	db.executeQuery(query.str());
 }

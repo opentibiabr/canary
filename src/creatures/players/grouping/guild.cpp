@@ -72,3 +72,13 @@ void Guild::addRank(uint32_t rankId, const std::string& rankName, uint8_t level)
 {
 	ranks.emplace_back(std::make_shared<GuildRank>(rankId,rankName,level));
 }
+
+void Guild::setPoints(uint32_t _points) {
+	points = _points;
+	IOGuild::setPoints(id, points);
+}
+
+void Guild::setLevel(uint32_t _level) {
+	level = _level;
+	IOGuild::setLevel(id, level);
+}

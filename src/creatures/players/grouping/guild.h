@@ -62,6 +62,16 @@ class Guild
       bankBalance = balance;
     }
 
+		uint32_t getLevel() const {
+			return level;
+		}
+		uint32_t getPoints() const {
+			return points;
+		}
+
+		void setPoints(uint32_t _points);
+		void setLevel(uint32_t _level);
+
 		const std::vector<GuildRank_ptr>& getRanks() const {
 			return ranks;
 		}
@@ -81,6 +91,8 @@ class Guild
 	private:
 		std::list<Player*> membersOnline;
 		std::vector<GuildRank_ptr> ranks;
+		uint32_t points = 0;
+		uint32_t level = 1;
 		std::string name;
     uint64_t bankBalance = 0;
 		std::string motd;

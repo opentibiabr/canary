@@ -23,6 +23,64 @@
 #include "creatures/players/grouping/guild.h"
 #include "lua/functions/creatures/player/guild_functions.hpp"
 
+
+
+int GuildFunctions::luaGuildGetLevel(lua_State* L)
+{
+	// guild:getLevel()
+	Guild* guild = getUserdata<Guild>(L, 1);
+	if (guild) {
+		lua_pushnumber(L, guild->getLevel());
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GuildFunctions::luaGuildGetPoints(lua_State* L)
+{
+	// guild:getPoints()
+	Guild* guild = getUserdata<Guild>(L, 1);
+	if (guild) {
+		lua_pushnumber(L, guild->getPoints());
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GuildFunctions::luaGuildSetLevel(lua_State* L)
+{
+	// guild:setLevel(newlevel)
+	Guild* guild = getUserdata<Guild>(L, 1);
+	uint32_t newlevel = getNumber<uint32_t>(L, 2);
+	if (guild) {
+		guild->setLevel(newlevel);
+		pushBoolean(L, true);
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int GuildFunctions::luaGuildSetPoints(lua_State* L)
+{
+	// guild:setPoints(newpoints)
+	Guild* guild = getUserdata<Guild>(L, 1);
+	uint32_t newpoints = getNumber<uint32_t>(L, 2);
+	if (guild) {
+		guild->setPoints(newpoints);
+		pushBoolean(L, true);
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int GuildFunctions::luaGuildCreate(lua_State* L) {
 	// Guild(id)
 	uint32_t id = getNumber<uint32_t>(L, 2);

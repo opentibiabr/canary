@@ -3,7 +3,7 @@ function onUpdateDatabase()
 	db.query(
 		[[
 			ALTER TABLE `players`
-				MODIFY offlinetraining_skill tinyint(1) NOT NULL DEFAULT '-1';
+				MODIFY offlinetraining_skill tinyint(2) NOT NULL DEFAULT '-1';
 		]]
 	)
 

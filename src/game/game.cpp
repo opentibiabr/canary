@@ -7703,11 +7703,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 						continue;
 					}
 
-					if (amount > itemCount) {
-						SPDLOG_ERROR("{} - Player {} not have the minimum count of items", __FUNCTION__, player->getName());
-						continue;
-					}
-
 					if (stashItemCount > 0) {
 						player->withdrawItem(it.wareId, amountMath);
 					}

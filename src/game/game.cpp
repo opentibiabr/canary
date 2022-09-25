@@ -7608,7 +7608,6 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 
 void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
 {
-	// 64000 is size of the client limitation (uint16_t)
 	if (price == 0 || price > 999999999)
 	{
 		return;
@@ -7650,12 +7649,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	const ItemType& it = Item::items[offer.itemId];
 	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
 	{
-		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
+		SPDLOG_ERROR("{} - Player: {} invalid offer amount: {}", __FUNCTION__, player->getName(), amount);
 		return;
 	}
+
+	SPDLOG_INFO("{} - Amount: {}", __FUNCTION__, amount);
 
 	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium())
 	{
@@ -7876,23 +7876,19 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	const ItemType& it = Item::items[offer.itemId];
-	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000)
-	{
-		SPDLOG_ERROR("{} - Player {} offer amount ({}) is invalid", __FUNCTION__, player->getName(), amount);
-		return;
-	}
-
 	MarketOfferEx offer = IOMarket::getOfferByCounter(timestamp, counter);
 	if (offer.id == 0) {
 		return;
 	}
 
-	if (amount > offer.amount) {
+	const ItemType& it = Item::items[offer.itemId];
+	if (it.id == 0) {
 		return;
 	}
 
-	if (it.id == 0) {
+	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000 || amount > offer.amount)
+	{
+		SPDLOG_ERROR("{} - Player: {} invalid offer amount: {}", __FUNCTION__, player->getName(), amount);
 		return;
 	}
 
@@ -7903,7 +7899,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	if (offer.type == MARKETACTION_BUY) {
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
 		if (depotLocker == nullptr) {
-			SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Buy depot chest is nullptr");
+			SPDLOG_ERROR("{} - Buy depot chest is nullptr", __FUNCTION__);
 			return;
 		}
 
@@ -7949,7 +7945,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			if (removeAmount > 0) {
 				std::vector<Item*> itemVector = getMarketItemList(it.wareId, amount, depotLocker);
 				if (itemVector.empty()) {
-					SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Buy item list is empty");
+					SPDLOG_ERROR("{} - Buy item list is empty", __FUNCTION__);
 					return;
 				}
 	

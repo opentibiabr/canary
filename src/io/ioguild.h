@@ -30,6 +30,8 @@ class IOGuild
     static void saveGuild(Guild* guild);
 		static uint32_t getGuildIdByName(const std::string& name);
 		static void getWarList(uint32_t guildId, GuildWarVector& guildWarVector);
+		static void setPoints(uint32_t guildId, uint32_t newPoints);
+		static void setLevel(uint32_t guildId, uint32_t newlevel);
 };
 
 #endif  // SRC_IO_IOGUILD_H_

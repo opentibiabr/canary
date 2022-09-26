@@ -41,6 +41,12 @@ class GuildFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Guild", "getMotd", GuildFunctions::luaGuildGetMotd);
 			registerMethod(L, "Guild", "setMotd", GuildFunctions::luaGuildSetMotd);
+
+
+			registerMethod(L, "Guild", "getPoints", GuildFunctions::luaGuildGetPoints);
+			registerMethod(L, "Guild", "setPoints", GuildFunctions::luaGuildSetPoints);
+			registerMethod(L, "Guild", "getLevel", GuildFunctions::luaGuildGetLevel);
+			registerMethod(L, "Guild", "setLevel", GuildFunctions::luaGuildSetLevel);
 		}
 
 	private:
@@ -59,6 +65,11 @@ class GuildFunctions final : LuaScriptInterface {
 
 		static int luaGuildGetMotd(lua_State* L);
 		static int luaGuildSetMotd(lua_State* L);
+
+		static int luaGuildGetPoints(lua_State* L);
+		static int luaGuildSetPoints(lua_State* L);
+		static int luaGuildGetLevel(lua_State* L);
+		static int luaGuildSetLevel(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_CREATURES_PLAYER_GUILD_FUNCTIONS_HPP_

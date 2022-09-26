@@ -85,6 +85,10 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, FACTION_PLAYER)
 			registerEnum(L, FACTION_LION)
 			registerEnum(L, FACTION_LIONUSURPERS)
+
+			registerEnum(L, FACTION_WOE_OWNER)
+			registerEnum(L, FACTION_WOE_ENEMY)
+
 			registerEnum(L, FACTION_LAST)
 
 			registerEnum(L, COMBAT_NONE)

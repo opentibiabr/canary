@@ -331,6 +331,7 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 			}
 			
 			if (attacker->getMonster() && (!attackerMaster || attackerMaster->getMonster())) {
+					//se atacante for diferente de FACTION_DEFAULT e summon nao for da faction enemy, não atacar.
 				if (attacker->getFaction() != FACTION_DEFAULT && !attacker->getMonster()->isEnemyFaction(targetPlayer->getFaction())) {
 					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 				}

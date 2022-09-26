@@ -708,7 +708,11 @@ class Player final : public Creature, public Cylinder
 		}
 
 		Faction_t getFaction() const override {
-			return FACTION_PLAYER;
+			return faction;
+		}
+
+		void setFaction(Faction_t factionId) {
+			faction = factionId;
 		}
 
 		//combat functions
@@ -2334,6 +2338,7 @@ class Player final : public Creature, public Cylinder
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		TradeState_t tradeState = TRADE_NONE;
 		FightMode_t fightMode = FIGHTMODE_ATTACK;
+		Faction_t faction = FACTION_PLAYER;
 		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
 		VipStatus_t statusVipList = VIPSTATUS_ONLINE;

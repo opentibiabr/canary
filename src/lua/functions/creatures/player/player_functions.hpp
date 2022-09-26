@@ -223,6 +223,11 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "removeTournamentsCoins", PlayerFunctions::luaPlayerRemoveTournamentsCoins);
 			//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
 
+			//INICIO //GUSTAVO LIBER - 26/09/2022 - LUA CHANGE FACTION PLAYER
+			registerMethod(L, "Player", "setFaction", PlayerFunctions::luaPlayerSetFaction);
+			registerMethod(L, "Player", "getFaction", PlayerFunctions::luaPlayerGetFaction);
+			//FIM //GUSTAVO LIBER - 26/09/2022 - LUA CHANGE FACTION PLAYER
+
 			registerMethod(L, "Player", "hasBlessing", PlayerFunctions::luaPlayerHasBlessing);
 			registerMethod(L, "Player", "addBlessing", PlayerFunctions::luaPlayerAddBlessing);
 			registerMethod(L, "Player", "removeBlessing", PlayerFunctions::luaPlayerRemoveBlessing);
@@ -481,6 +486,9 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddTournamentsCoins(lua_State* L);
 		static int luaPlayerRemoveTournamentsCoins(lua_State* L);
 		//FIM //GUSTAVO LIBER - 09/09/2022 - COIN TOURNAMENTS ADD
+
+		static int luaPlayerSetFaction(lua_State* L);
+		static int luaPlayerGetFaction(lua_State* L);
 
 		static int luaPlayerHasBlessing(lua_State* L);
 		static int luaPlayerAddBlessing(lua_State* L);

@@ -3077,3 +3077,29 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
+	// player:setFaction(factionId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	Faction_t factionId = getNumber<Faction_t>(L, 2);
+	player->setFaction(factionId);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
+	// player:getFaction()
+	Player* player = getUserdata<Player>(L, 1);
+	
+	if (player) {
+		lua_pushnumber(L, player->getFaction());
+	}
+	else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

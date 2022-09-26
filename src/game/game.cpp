@@ -7635,12 +7635,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	const ItemType &itt = Item::items[itemId];
-	if (itt.id == 0 || itt.wareId == 0) {
-		return;
-	}
-
-	const ItemType &it = Item::items[itt.wareId];
+	const ItemType &it = Item::items[itemId];
 	if (it.id == 0 || it.wareId == 0) {
 		return;
 	}

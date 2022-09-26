@@ -10,7 +10,7 @@ function rune.onCastSpell(creature, variant, isHotkey)
 
 	local monsterType = target:getType()
 	if not creature:hasFlag(PlayerFlag_CanConvinceAll) then
-		if not monsterType:isConvinceable() or monsterType:getMaster() then
+		if not monsterType:isConvinceable() or creature:getMaster() then
 			creature:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return false

@@ -1952,7 +1952,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 {
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
-		SPDLOG_DEBUG("{} - Clylinder is nullpt", __FUNCTION__);
+		SPDLOG_DEBUG("{} - Cylinder is nullpt", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	Tile* fromTile = cylinder->getTile();

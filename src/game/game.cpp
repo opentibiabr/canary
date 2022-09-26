@@ -7688,14 +7688,14 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			account.RemoveCoins(static_cast<uint32_t> (amount));
 		} else {
-			uint16_t stashItemCount = player->getStashItemCount(it.wareId);
+			auto stashItemCount = player->getStashItemCount(it.wareId);
 			uint16_t amountMath = (amount > stashItemCount ? stashItemCount : amount);
 			uint16_t stashMath = (amount - amountMath);
 
 			auto [itemVector, itemMap] = player->requestLockerItems(depotLocker);
 			if (it.stackable) {
 				for (auto [itemId, itemCount] : itemMap) {
-					SPDLOG_INFO("{} - ITEM ID {}, ITEM COUNT {}, AMOUNT {}, AMOUNT MATH {}", __FUNCTION__, itemId, itemCount, amount, amountMath);
+					SPDLOG_DEBUG("{} - [Information] Item id {}, count {}, amount {}, amount math {}", __FUNCTION__, itemId, itemCount, amount, amountMath);
 
 					const ItemType &it = Item::items[itemId];
 					if (it.wareId != itemId) {
@@ -7703,9 +7703,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 						continue;
 					}
 
-					if (stashItemCount > 0) {
-						player->withdrawItem(it.wareId, amountMath);
-					}
+					player->withdrawItem(it.wareId, amountMath);
 				}
 
 				for (auto item : itemVector) {
@@ -7918,7 +7916,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 											 "Sold on Market");
 		} else {
 			uint16_t removeAmount = amount;
-			uint16_t stashCount = player->getStashItemCount(it.wareId);
+			auto stashCount = player->getStashItemCount(it.wareId);
 			if (stashCount > 0) {
 				if (removeAmount > stashCount && player->withdrawItem(it.wareId, stashCount)) {
 					removeAmount -= stashCount;

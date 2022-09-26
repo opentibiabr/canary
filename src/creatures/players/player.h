@@ -549,10 +549,10 @@ class Player final : public Creature, public Cylinder
 
 			stashItems[itemId] = amount;
 		}
-		uint16_t getStashItemCount(uint16_t itemId) const {
+		uint32_t getStashItemCount(uint16_t itemId) const {
 			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
-				return static_cast<uint16_t>(it->second);
+				return it->second;
 			}
 			return 0;
 		}

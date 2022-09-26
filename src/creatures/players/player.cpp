@@ -5982,7 +5982,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 
 	if (const ItemType& iType = Item::items[itemId];
 			iType.stackable && iType.wareId > 0) {
-		stashCount = static_cast<uint32_t>(getStashItemCount(itemId));
+		stashCount = getStashItemCount(itemId);
 	}
 
 	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());

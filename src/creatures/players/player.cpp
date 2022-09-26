@@ -6119,20 +6119,21 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	return nullptr;
 }
 
-std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker)
+std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker) const
 {
 	std::map<uint16_t, uint32_t> marketItems;
 	std::vector<Item*> itemVector;
 	std::vector<Container*> containers{ depotLocker };
 
-	size_t ic = 0;
+	size_t size = 0;
 	do {
-		Container* container = containers[ic++];
+		const Container* container = containers[size];
+		size++;
 
 		for (Item* item : container->getItemList()) {
-			Container* c = item->getContainer();
-			if (c && !c->empty()) {
-				containers.push_back(c);
+			Container* lockerContainers = item->getContainer();
+			if (lockerContainers && !lockerContainers->empty()) {
+				containers.push_back(lockerContainers);
 				continue;
 			}
 
@@ -6141,7 +6142,7 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 				continue;
 			}
 
-			if (c && (!itemType.isContainer() || c->capacity() != itemType.maxItems)) {
+			if (lockerContainers && (!itemType.isContainer() || lockerContainers->capacity() != itemType.maxItems)) {
 				continue;
 			}
 
@@ -6152,29 +6153,28 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 			marketItems[itemType.wareId] += Item::countByType(item, -1);
 			itemVector.push_back(item);
 		}
-	} while (ic < containers.size());
+	} while (size < containers.size());
 	StashItemList stashToSend = getStashItems();
-	uint16_t size = 0;
-	for (auto item : stashToSend)
+	uint16_t countSize = 0;
+	for (auto [itemId, itemCount] : stashToSend)
 	{
-		size += ceil(item.second);
+		countSize += itemCount;
 	}
 
 	do
 	{
-		for (auto item : stashToSend)
+		for (auto [itemId, itemCount] : stashToSend)
 		{
-
-			const ItemType &itemType = Item::items[item.first];
+			const ItemType &itemType = Item::items[itemId];
 			if (itemType.wareId == 0)
 			{
 				continue;
 			}
 
-			size = size - item.second;
-			marketItems[itemType.wareId] += item.second;
+			countSize = countSize - itemCount;
+			marketItems[itemType.wareId] += itemCount;
 		}
-	} while (size > 0);
+	} while (countSize > 0);
 
 	return std::make_pair(itemVector, marketItems);
 }

@@ -7694,16 +7694,16 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			auto [itemVector, itemMap] = player->requestLockerItems(depotLocker);
 			if (it.stackable) {
-				for (auto [itemId, itemCount] : itemMap) {
-					SPDLOG_DEBUG("{} - [Information] Item id {}, count {}, amount {}, amount math {}", __FUNCTION__, itemId, itemCount, amount, amountMath);
+				for (auto [itemMapId, itemMapCount] : itemMap) {
+					SPDLOG_DEBUG("{} - [Information] Item id {}, count {}, amount {}, amount math {}", __FUNCTION__, itemMapId, itemMapCount, amount, amountMath);
 
-					const ItemType &it = Item::items[itemId];
-					if (it.wareId != itemId) {
-						SPDLOG_ERROR("{} - Ware id {}, name {}, not math with item id {}, name {}", __FUNCTION__, it.wareId, it.name, itemId, it.name);
+					const ItemType &itemType = Item::items[itemMapId];
+					if (itemType.wareId != itemMapId) {
+						SPDLOG_ERROR("{} - Ware id {}, name {}, not math with item id {}, name {}", __FUNCTION__, itemType.wareId, itemType.name, itemMapId, itemType.name);
 						continue;
 					}
 
-					player->withdrawItem(it.wareId, amountMath);
+					player->withdrawItem(itemType.wareId, amountMath);
 				}
 
 				for (auto item : itemVector) {
@@ -7711,7 +7711,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 					uint16_t removeCount = std::min<uint16_t>(tmpAmount, item->getItemCount());
 					tmpAmount -= removeCount;
 					internalRemoveItem(item, removeCount);
-					if (stashMath == 0) {
+					if (tmpAmount == 0) {
 						break;
 					}
 				}

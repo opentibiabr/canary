@@ -4068,7 +4068,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker);
-	uint16_t itemsToSend = std::min<size_t>(lockerItems.size(), std::numeric_limits<uint16_t>::max());
+	auto itemsToSend = static_cast<uint16_t>(std::min<size_t>(lockerItems.size(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;

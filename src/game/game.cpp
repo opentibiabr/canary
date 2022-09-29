@@ -521,7 +521,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 	}
 }
 
-void Game::saveGameState()
+void Game::saveGameState(bool crash /*= false*/)
 {
 	if (gameState == GAME_STATE_NORMAL) {
 		setGameState(GAME_STATE_MAINTAIN);
@@ -530,7 +530,11 @@ void Game::saveGameState()
 	SPDLOG_INFO("Saving server...");
 
 	for (const auto& it : players) {
-		it.second->loginPosition = it.second->getPosition();
+		if (crash) {
+			it.second->loginPosition = it.second->getTown()->getTemplePosition();
+		} else {
+			it.second->loginPosition = it.second->getPosition();
+		}
 		IOLoginData::savePlayer(it.second);
 	}
 

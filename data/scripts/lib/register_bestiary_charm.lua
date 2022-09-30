@@ -29,7 +29,6 @@ registerCharm.sounds = function(charm, mask)
 	if mask.sounds then
 		if mask.sounds.castSound then
 			charm:castSound(mask.sounds.castSound)
-			print(charm:castSound())
 		end
 		if mask.sounds.impactSound then
 			charm:impactSound(mask.sounds.impactSound)

@@ -108,7 +108,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 			return propStream.read<uint32_t>(subId);
 		}
 
-		case CONDITION_PARAM_SOUND_TICK: {
+		case CONDITIONATTR_TICKSOUND: {
 			uint16_t value;
 			if (!propStream.read<uint16_t>(value)) {
 				return false;
@@ -118,7 +118,7 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 			return true;
 		}
 
-		case CONDITION_PARAM_SOUND_ADD: {
+		case CONDITIONATTR_ADDSOUND: {
 			uint16_t value;
 			if (!propStream.read<uint16_t>(value)) {
 				return false;
@@ -153,10 +153,10 @@ void Condition::serialize(PropWriteStream& propWriteStream)
 	propWriteStream.write<uint8_t>(CONDITIONATTR_SUBID);
 	propWriteStream.write<uint32_t>(subId);
 
-	propWriteStream.write<uint8_t>(CONDITION_PARAM_SOUND_TICK);
+	propWriteStream.write<uint8_t>(CONDITIONATTR_TICKSOUND);
 	propWriteStream.write<uint16_t>(static_cast<uint16_t>(tickSound));
 
-	propWriteStream.write<uint8_t>(CONDITION_PARAM_SOUND_ADD);
+	propWriteStream.write<uint8_t>(CONDITIONATTR_ADDSOUND);
 	propWriteStream.write<uint16_t>(static_cast<uint16_t>(addSound));
 }
 

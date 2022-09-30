@@ -50,6 +50,8 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 			registerMethod(L, "MonsterSpell", "setCombatEffect", MonsterSpellFunctions::luaMonsterSpellSetCombatEffect);
 			registerMethod(L, "MonsterSpell", "setOutfitMonster", MonsterSpellFunctions::luaMonsterSpellSetOutfitMonster);
 			registerMethod(L, "MonsterSpell", "setOutfitItem", MonsterSpellFunctions::luaMonsterSpellSetOutfitItem);
+			registerMethod(L, "MonsterSpell", "castSound", MonsterSpellFunctions::luaMonsterSpellCastSound);
+			registerMethod(L, "MonsterSpell", "impactSound", MonsterSpellFunctions::luaMonsterSpellImpactSound);
 		}
 
 	private:
@@ -76,6 +78,8 @@ class MonsterSpellFunctions final : LuaScriptInterface {
 		static int luaMonsterSpellSetCombatEffect(lua_State* L);
 		static int luaMonsterSpellSetOutfitMonster(lua_State* L);
 		static int luaMonsterSpellSetOutfitItem(lua_State* L);
+		static int luaMonsterSpellCastSound(lua_State* L);
+		static int luaMonsterSpellImpactSound(lua_State* L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_SPELL_FUNCTIONS_HPP_

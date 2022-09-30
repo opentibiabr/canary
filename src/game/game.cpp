@@ -1821,6 +1821,15 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		}
 	}
 
+	SoundEffect_t soundEffect = item->getMovementSound(toCylinder);
+	if (toCylinder && soundEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (toCylinder->getContainer() && actor && actor->getPlayer() && (toCylinder->getContainer()->isInsideDepot(true) || toCylinder->getContainer()->getHoldingPlayer())) {
+            actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SOUND_SOURCE_TYPE_OWN);
+		} else {
+			sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, actor);
+		}
+	}
+
 	//we could not move all, inform the player
 	if (item->isStackable() && maxQueryCount < count) {
 		return retMaxCount;
@@ -5630,6 +5639,55 @@ void Game::reloadCreature(const Creature* creature)
 	}
 }
 
+void Game::sendSingleSoundEffect(const Position& pos, SoundEffect_t soundId, Creature* actor/* = nullptr*/)
+{
+	if (soundId == SOUND_EFFECT_TYPE_SILENCE) {
+		return;
+	}
+
+    SpectatorHashSet spectators;
+    map.getSpectators(spectators, pos, false, true);
+    for (Creature* spectator : spectators) {
+        if (Player* tmpPlayer = spectator->getPlayer()) {
+            SourceEffect_t source = SOUND_SOURCE_TYPE_CREATURES;
+            if (!actor || actor->getNpc()) {
+                source = SOUND_SOURCE_TYPE_GLOBAL;
+            } else if (actor == spectator) {
+                source = SOUND_SOURCE_TYPE_OWN;
+            } else if (actor->getPlayer()) {
+                source = SOUND_SOURCE_TYPE_OTHERS;
+            }
+
+            tmpPlayer->sendSingleSoundEffect(pos, soundId, source);
+        }
+    }
+}
+
+void Game::sendDoubleSoundEffect(const Position& pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor/* = nullptr*/)
+{
+	if (secondarySoundEffect == SOUND_EFFECT_TYPE_SILENCE) {
+		sendSingleSoundEffect(pos, mainSoundEffect, actor);
+		return;
+	}
+
+    SpectatorHashSet spectators;
+    map.getSpectators(spectators, pos, false, true);
+    for (Creature* spectator : spectators) {
+        if (Player* tmpPlayer = spectator->getPlayer()) {
+            SourceEffect_t source = SOUND_SOURCE_TYPE_CREATURES;
+            if (!actor || actor->getNpc()) {
+                source = SOUND_SOURCE_TYPE_GLOBAL;
+            } else if (actor == spectator) {
+                source = SOUND_SOURCE_TYPE_OWN;
+            } else if (actor->getPlayer()) {
+                source = SOUND_SOURCE_TYPE_OTHERS;
+            }
+
+            tmpPlayer->sendDoubleSoundEffect(pos, mainSoundEffect, source, secondarySoundEffect, source);
+        }
+    }
+}
+
 bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* target, bool checkDefense, bool checkArmor, bool field)
 {
 	if (damage.primary.type == COMBAT_NONE && damage.secondary.type == COMBAT_NONE) {
@@ -5644,7 +5702,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		return false;
 	}
 
-	static const auto sendBlockEffect = [this](BlockType_t blockType, CombatType_t combatType, const Position& targetPos) {
+	static const auto sendBlockEffect = [this](BlockType_t blockType, CombatType_t combatType, const Position& targetPos, Creature* source) {
 		if (blockType == BLOCK_DEFENSE) {
 			addMagicEffect(targetPos, CONST_ME_POFF);
 		} else if (blockType == BLOCK_ARMOR) {
@@ -5678,6 +5736,8 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			}
 			addMagicEffect(targetPos, hitEffect);
 		}
+
+		sendSingleSoundEffect(targetPos, SOUND_EFFECT_TYPE_NO_DAMAGE, source);
 	};
 
 	bool canHeal = false;
@@ -5712,7 +5772,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
 
 		damage.primary.value = -damage.primary.value;
-		sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition());
+		sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
 	} else {
 		primaryBlockType = BLOCK_NONE;
 	}
@@ -5746,7 +5806,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
 
 		damage.secondary.value = -damage.secondary.value;
-		sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition());
+		sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);
 	} else {
 		secondaryBlockType = BLOCK_NONE;
 	}

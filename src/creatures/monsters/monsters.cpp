@@ -131,6 +131,15 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 		sb.speed = std::max<int32_t>(1, pugi::cast<int32_t>(attr.value()));
 	}
 
+	if ((attr = node.attribute("impactSound"))) {
+		sb.soundImpactEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(attr.value()));
+		
+	}
+
+	if ((attr = node.attribute("castSound"))) {
+		sb.soundCastEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(attr.value()));
+	}
+
 	if ((attr = node.attribute("chance"))) {
 		uint32_t chance = pugi::cast<uint32_t>(attr.value());
 		if (chance > 100) {
@@ -502,6 +511,28 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
                                         description, attr.as_string());
 						}
 					}
+				} else if (strcasecmp(value, "castSound") == 0) {
+					if ((attr = attributeNode.attribute("value"))) {
+						SoundEffect_t effect = static_cast<SoundEffect_t>(pugi::cast<uint32_t>(attr.value()));
+						if (effect != SOUND_EFFECT_TYPE_SILENCE) {
+							combat->setParam(COMBAT_PARAM_CASTSOUND, effect);
+						} else {
+							SPDLOG_WARN("[Monsters::deserializeSpell] - "
+                                        "{} unknown castSound: {}",
+                                        description, attr.as_string());
+						}
+					}
+				} else if (strcasecmp(value, "impactSound") == 0) {
+					if ((attr = attributeNode.attribute("value"))) {
+						SoundEffect_t effect = static_cast<SoundEffect_t>(pugi::cast<uint32_t>(attr.value()));
+						if (effect != SOUND_EFFECT_TYPE_SILENCE) {
+							combat->setParam(COMBAT_PARAM_IMPACTSOUND, effect);
+						} else {
+							SPDLOG_WARN("[Monsters::deserializeSpell] - "
+                                        "{} unknown impactSound: {}",
+                                        description, attr.as_string());
+						}
+					}
 				} else {
 					SPDLOG_WARN("[Monsters::deserializeSpells] - "
                                 "Effect type {} does not exist",
@@ -533,6 +564,8 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 	sb.range = std::min((int) spell->range, Map::maxViewportX * 2);
 	sb.minCombatValue = std::min(spell->minCombatValue, spell->maxCombatValue);
 	sb.maxCombatValue = std::max(spell->minCombatValue, spell->maxCombatValue);
+	sb.soundCastEffect = spell->soundCastEffect;
+	sb.soundImpactEffect = spell->soundImpactEffect;
 	sb.spell = g_spells().getSpellByName(spell->name);
 
 	if (sb.spell) {
@@ -724,6 +757,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		combat->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
 		combatSpell = new CombatSpell(combat.release(), spell->needTarget, spell->needDirection);
 	}
+
+	combatSpell->soundCastEffect = sb.soundCastEffect;
+	combatSpell->soundImpactEffect = sb.soundImpactEffect;
 
 	sb.spell = combatSpell;
 	if (combatSpell) {

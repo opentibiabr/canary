@@ -142,6 +142,7 @@ class Imbuement
 		uint32_t capacity = 0;
 		int16_t absorbPercent[COMBAT_COUNT] = {};
 		int16_t elementDamage = 0;
+		SoundEffect_t soundEffect = SOUND_EFFECT_TYPE_SILENCE;
 
 		CombatType_t combatType = COMBAT_NONE;
 

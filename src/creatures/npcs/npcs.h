@@ -71,6 +71,10 @@ class NpcType
 		bool canPushCreatures = false;
 		bool pushable = false;
 		bool floorChange = false;
+ 
+		uint32_t soundChance = 0;
+		uint32_t soundSpeedTicks = 0;
+		std::vector<SoundEffect_t> soundVector;
 
 		std::vector<voiceBlock_t> voiceVector;
 		std::vector<std::string> scripts;

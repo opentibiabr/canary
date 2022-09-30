@@ -275,7 +275,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "isOffline", PlayerFunctions::luaPlayerIsOffline);
 
-			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
+			registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
+			registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -533,6 +534,9 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
+
+		static int luaPlayerSendSingleSoundEffect(lua_State* L);
+		static int luaPlayerSendDoubleSoundEffect(lua_State* L);
 
 		friend class CreatureFunctions;
 };

@@ -21,6 +21,17 @@ npcConfig.outfit = {
 	lookMount = 42
 }
 
+npcConfig.sounds = {
+	ticks = 5000,
+	chance = 25,
+	ids = {
+		SOUND_EFFECT_TYPE_ACTION_HITING_FORGE,
+		SOUND_EFFECT_TYPE_ACTION_WOOD_HIT,
+		SOUND_EFFECT_TYPE_ACTION_CRATE_BREAK_MAGIC_DUST,
+		SOUND_EFFECT_TYPE_ACTION_SWORD_DRAWN
+	}
+}
+
 npcConfig.voices = {
 	interval = 15000,
 	chance = 20,

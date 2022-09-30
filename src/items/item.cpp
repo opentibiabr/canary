@@ -1502,6 +1502,49 @@ std::string Item::parseImbuementDescription(const Item* item)
 	return s.str();
 }
 
+SoundEffect_t Item::getMovementSound(Cylinder* toCylinder)
+{
+	if (!toCylinder) {
+		return SOUND_EFFECT_TYPE_ITEM_MOVE_DEFAULT;
+	}
+
+	Container* toContainer = toCylinder->getContainer();
+	if (toContainer && toContainer->getHoldingPlayer()) {
+		return SOUND_EFFECT_TYPE_ITEM_MOVE_BACKPACK;
+	}
+
+    switch (items[id].type) {
+		case ITEM_TYPE_ARMOR: { return SOUND_EFFECT_TYPE_ITEM_MOVE_ARMORS; }
+		case ITEM_TYPE_AMULET: { return SOUND_EFFECT_TYPE_ITEM_MOVE_NECKLACES; }
+		case ITEM_TYPE_BOOTS: { return SOUND_EFFECT_TYPE_ITEM_MOVE_BOOTS; }
+		case ITEM_TYPE_CONTAINER: { return SOUND_EFFECT_TYPE_ITEM_MOVE_BACKPACK; }
+		case ITEM_TYPE_HELMET: { return SOUND_EFFECT_TYPE_ITEM_MOVE_HELMETS; }
+		case ITEM_TYPE_LEGS: { return SOUND_EFFECT_TYPE_ITEM_MOVE_LEGS; }
+		case ITEM_TYPE_RING: { return SOUND_EFFECT_TYPE_ITEM_MOVE_RINGS; }
+		case ITEM_TYPE_DISTANCE: { return SOUND_EFFECT_TYPE_ITEM_MOVE_DISTANCE; }
+		case ITEM_TYPE_QUIVER: { return SOUND_EFFECT_TYPE_ITEM_MOVE_QUIVERS; }
+		case ITEM_TYPE_VALUABLE: { return SOUND_EFFECT_TYPE_ITEM_MOVE_STACKABLE; }
+
+		case ITEM_TYPE_WAND:
+		case ITEM_TYPE_SHIELD:
+		case ITEM_TYPE_TOOLS:
+		case ITEM_TYPE_AMMO: {
+			return SOUND_EFFECT_TYPE_ITEM_MOVE_WOOD;
+		}
+
+		case ITEM_TYPE_AXE:
+		case ITEM_TYPE_SWORD:
+		case ITEM_TYPE_CLUB: {
+			return SOUND_EFFECT_TYPE_ITEM_MOVE_METALIC;
+		}
+
+        default:
+			break;
+    }
+
+	return SOUND_EFFECT_TYPE_ITEM_MOVE_DEFAULT;
+}
+
 std::string Item::parseShowAttributesDescription(const Item *item, const uint16_t itemId)
 {
 	std::ostringstream itemDescription;

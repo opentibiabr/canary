@@ -428,6 +428,14 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
     	damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
     }
 
+		if (player) {
+			if (params.soundCastEffect == SOUND_EFFECT_TYPE_SILENCE) {
+				g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+			} else {
+				g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+			}
+		}
+
       	Combat::doCombatHealth(player, target, damage, params);
 	}
 
@@ -445,6 +453,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const
 	} else {
 		Combat::postCombatEffects(player, tile->getPosition(), params);
 		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+		g_game().sendSingleSoundEffect(tile->getPosition(), SOUND_EFFECT_TYPE_PHYSICAL_RANGE_MISS, player);
 	}
 
 	onUsedWeapon(player, item, tile);

@@ -243,6 +243,20 @@ registerMonsterType.respawnType = function(mtype, mask)
 		end
 	end
 end
+registerMonsterType.sounds = function(mtype, mask)
+	if type(mask.sounds) == "table" then
+		if mask.sounds.death then
+			mtype:deathSound(mask.sounds.death)
+		end
+		if mask.sounds.ticks and mask.sounds.chance and mask.sounds.ids and type(mask.sounds.ids) == "table" and #(mask.sounds.ids) > 0 then
+			mtype:soundSpeedTicks(mask.sounds.ticks)
+			mtype:soundChance(mask.sounds.chance)
+			for _, v in pairs(mask.sounds.ids) do
+				mtype:addSound(v)
+			end
+		end
+	end
+end
 registerMonsterType.voices = function(mtype, mask)
 	if type(mask.voices) == "table" then
 		local interval, chance
@@ -502,6 +516,12 @@ function readSpell(incomingLua)
 			if incomingLua.effect then
 				spell:setCombatEffect(incomingLua.effect)
 			end
+			if incomingLua.soundCast then
+				spell:castSound(incomingLua.soundCast)
+			end
+			if incomingLua.impactCast then
+				spell:impactSound(incomingLua.impactCast)
+			end
 		else
 			spell:setType(incomingLua.name)
 			if incomingLua.type then
@@ -545,6 +565,12 @@ function readSpell(incomingLua)
 			end
 			if incomingLua.outfitItem then
 				spell:setOutfitItem(incomingLua.outfitItem)
+			end
+			if incomingLua.soundCast then
+				spell:castSound(incomingLua.soundCast)
+			end
+			if incomingLua.impactCast then
+				spell:impactSound(incomingLua.impactCast)
 			end
 			if incomingLua.minDamage and incomingLua.maxDamage then
 				if incomingLua.name == "combat" or Spell(incomingLua.name) then
@@ -593,6 +619,12 @@ function readSpell(incomingLua)
 		end
 		if incomingLua.target then
 			spell:setNeedTarget(incomingLua.target)
+		end
+		if incomingLua.soundCast then
+			spell:castSound(incomingLua.soundCast)
+		end
+		if incomingLua.impactCast then
+			spell:impactSound(incomingLua.impactCast)
 		end
 	end
 

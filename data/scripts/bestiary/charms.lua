@@ -25,7 +25,11 @@ local charms = {
 		messageCancel = "You enflamed the monster.",
 		messageServerLog = "[Enflame charm]",
 		effect = CONST_ME_HITBYFIRE,
-		points = 1000
+		points = 1000,
+		sounds = {
+			impactSound = SOUND_EFFECT_TYPE_MAGICAL_RANGE_ATK,
+			castSound = SOUND_EFFECT_TYPE_MONSTER_SPELL_SINGLE_TARGET_FIRE
+		}
 	},
 	-- Poison charm
 	[3] = {
@@ -220,6 +224,9 @@ for charmId, chamsTable in ipairs(charms) do
 	end
 	if chamsTable.description then
 		charmConfig.description = chamsTable.description
+	end
+	if chamsTable.sounds then
+		charmConfig.sounds = chamsTable.sounds
 	end
 	if chamsTable.type then
 		charmConfig.type = chamsTable.type

@@ -66,6 +66,7 @@ using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr int32_t PLAYER_MAX_SPEED = 70000;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
+static constexpr int32_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder
 {
@@ -452,6 +453,22 @@ class Player final : public Creature, public Cylinder
 		void resetIdleTime() {
 			idleTime = 0;
 		}
+
+		void sendSingleSoundEffect(const Position& pos, SoundEffect_t id, SourceEffect_t source) {
+			if (client) {
+				client->sendSingleSoundEffect(pos, id, source);
+			}
+		}
+
+		void sendDoubleSoundEffect(const Position& pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource,
+													SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) {
+			if (client) {
+				client->sendDoubleSoundEffect(pos, mainSoundId, mainSource, secondarySoundId, secondarySource);
+			}
+		}
+
+		SoundEffect_t getAttackSoundEffect();
+		SoundEffect_t getHitSoundEffect();
 
 		bool isInGhostMode() const override {
 			return ghostMode;

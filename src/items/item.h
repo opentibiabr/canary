@@ -572,6 +572,8 @@ class Item : virtual public Thing
 			return nullptr;
 		}
 
+		SoundEffect_t getMovementSound(Cylinder* toCylinder);
+
 		const std::string& getStrAttr(ItemAttrTypes type) const {
 			if (!attributes) {
 				return ItemAttributes::emptyString;

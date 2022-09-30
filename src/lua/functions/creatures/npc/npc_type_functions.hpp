@@ -75,6 +75,12 @@ class NpcTypeFunctions final : LuaScriptInterface {
 			registerMethod(L, "NpcType", "currency", NpcTypeFunctions::luaNpcTypeCurrency);
 
 			registerMethod(L, "NpcType", "addShopItem", NpcTypeFunctions::luaNpcTypeAddShopItem);
+
+			registerMethod(L, "NpcType", "soundChance", NpcTypeFunctions::luaNpcTypeSoundChance);
+			registerMethod(L, "NpcType", "soundSpeedTicks", NpcTypeFunctions::luaNpcTypeSoundSpeedTicks);
+			registerMethod(L, "NpcType", "addSound", NpcTypeFunctions::luaNpcTypeAddSound);
+			registerMethod(L, "NpcType", "getSounds", NpcTypeFunctions::luaNpcTypeGetSounds);
+
 		}
 
 	private:
@@ -121,6 +127,11 @@ class NpcTypeFunctions final : LuaScriptInterface {
 		static int luaNpcTypeCurrency(lua_State* L);
 
 		static int luaNpcTypeAddShopItem(lua_State* L);
+
+		static int luaNpcTypeSoundChance(lua_State* L);
+		static int luaNpcTypeSoundSpeedTicks(lua_State* L);
+		static int luaNpcTypeAddSound(lua_State* L);
+		static int luaNpcTypeGetSounds(lua_State* L);
 
 		friend class GameFunctions;
 };

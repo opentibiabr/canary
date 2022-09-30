@@ -2474,6 +2474,7 @@ void Player::death(Creature* lastHitCreature)
 {
 	loginPosition = town->getTemplePosition();
 
+	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SOUND_EFFECT_TYPE_HUMAN_FEMALE_DEATH : SOUND_EFFECT_TYPE_HUMAN_MALE_DEATH, this);
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -4475,6 +4476,10 @@ bool Player::lastHitIsPlayer(Creature* lastHitCreature)
 
 void Player::changeHealth(int32_t healthChange, bool sendHealthChange/* = true*/)
 {
+	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
+		g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SOUND_EFFECT_TYPE_HUMAN_FEMALE_BARK : SOUND_EFFECT_TYPE_HUMAN_MALE_BARK, this);
+	}
+
 	Creature::changeHealth(healthChange, sendHealthChange);
 	sendStats();
 }
@@ -6117,6 +6122,86 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	}
 
 	return nullptr;
+}
+
+SoundEffect_t Player::getHitSoundEffect()
+{
+	// Distance sound effects
+	if (Item* tool = getWeapon()) {
+    	const ItemType& it = Item::items[tool->getID()];
+		if (it.weaponType == WEAPON_AMMO) {
+			if (it.ammoType == AMMO_BOLT) {
+				return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW_SHOT;
+			} else if (it.ammoType == AMMO_ARROW) {
+				if (it.shootType == CONST_ANI_BURSTARROW) {
+					return SOUND_EFFECT_TYPE_BURST_ARROW_EFFECT;
+				} else if (it.shootType == CONST_ANI_DIAMONDARROW) {
+					return SOUND_EFFECT_TYPE_DIAMOND_ARROW_EFFECT;
+				}
+			} else {
+				return SOUND_EFFECT_TYPE_DIST_ATK_THROW_SHOT;
+			}
+		} else if (it.weaponType == WEAPON_DISTANCE) {
+			if (tool->getAmmoType() == AMMO_BOLT) {
+				return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW_SHOT;
+			} else if (tool->getAmmoType() == AMMO_ARROW) {
+				return SOUND_EFFECT_TYPE_DIST_ATK_BOW_SHOT;
+			} else {
+				return SOUND_EFFECT_TYPE_DIST_ATK_THROW_SHOT;
+			}
+		} else if (it.weaponType == WEAPON_WAND) {
+			// Separate between wand and rod here
+			//return SOUND_EFFECT_TYPE_DIST_ATK_ROD_SHOT;
+			return SOUND_EFFECT_TYPE_DIST_ATK_WAND_SHOT;
+		}
+	}
+
+	return SOUND_EFFECT_TYPE_SILENCE;
+}
+
+SoundEffect_t Player::getAttackSoundEffect()
+{
+	Item* tool = getWeapon();
+	if (!tool) {
+		return SOUND_EFFECT_TYPE_HUMAN_CLOSE_ATK_FIST;
+	}
+
+    const ItemType& it = Item::items[tool->getID()];
+	if (it.weaponType == WEAPON_NONE || it.weaponType == WEAPON_SHIELD) {
+		return SOUND_EFFECT_TYPE_HUMAN_CLOSE_ATK_FIST;
+	}
+
+	switch (it.weaponType) {
+		case WEAPON_AXE: {
+			return SOUND_EFFECT_TYPE_MELEE_ATK_AXE;
+		}
+		case WEAPON_SWORD: {
+			return SOUND_EFFECT_TYPE_MELEE_ATK_SWORD;
+		}
+		case WEAPON_CLUB: {
+			return SOUND_EFFECT_TYPE_MELEE_ATK_CLUB;
+		}
+		case WEAPON_AMMO:
+		case WEAPON_DISTANCE: {
+			if (tool->getAmmoType() == AMMO_BOLT) {
+				return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW;
+			} else if (tool->getAmmoType() == AMMO_ARROW) {
+				return SOUND_EFFECT_TYPE_DIST_ATK_BOW;
+			} else {
+				return SOUND_EFFECT_TYPE_DIST_ATK_THROW;
+			}
+			
+			break;
+		}
+		case WEAPON_WAND: {
+			return SOUND_EFFECT_TYPE_MAGICAL_RANGE_ATK;
+		}
+		default: {
+			return SOUND_EFFECT_TYPE_SILENCE;
+		}
+	}
+
+	return SOUND_EFFECT_TYPE_SILENCE;
 }
 
 /*******************************************************************************

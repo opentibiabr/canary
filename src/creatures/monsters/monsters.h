@@ -60,6 +60,9 @@ struct spellBlock_t {
 	int32_t maxCombatValue = 0;
 	bool combatSpell = false;
 	bool isMelee = false;
+
+	SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
+	SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SILENCE;
 };
 
 class MonsterType
@@ -110,6 +113,11 @@ class MonsterType
 		std::string bestiaryLocations;
 		std::string bestiaryClass; // String (addString)
 		BestiaryType_t bestiaryRace = BESTY_RACE_NONE; // Number (addByte)
+
+		uint32_t soundChance = 0;
+		uint32_t soundSpeedTicks = 0;
+		std::vector<SoundEffect_t> soundVector;
+		SoundEffect_t deathSound = SOUND_EFFECT_TYPE_SILENCE;
 
 		int32_t creatureAppearEvent = -1;
 		int32_t creatureDisappearEvent = -1;
@@ -217,6 +225,9 @@ class MonsterSpell
 		MagicEffectClasses effect = CONST_ME_NONE;
 		ConditionType_t conditionType = CONDITION_NONE;
 		CombatType_t combatType = COMBAT_UNDEFINEDDAMAGE;
+
+		SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
+		SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SILENCE;
 };
 
 class Monsters

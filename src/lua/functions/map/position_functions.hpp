@@ -38,6 +38,9 @@ class PositionFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Position", "sendMagicEffect", PositionFunctions::luaPositionSendMagicEffect);
 			registerMethod(L, "Position", "sendDistanceEffect", PositionFunctions::luaPositionSendDistanceEffect);
+
+			registerMethod(L, "Position", "sendSingleSoundEffect", PositionFunctions::luaPositionSendSingleSoundEffect);
+			registerMethod(L, "Position", "sendDoubleSoundEffect", PositionFunctions::luaPositionSendDoubleSoundEffect);
 		}
 
 	private:
@@ -52,6 +55,9 @@ class PositionFunctions final : LuaScriptInterface {
 
 		static int luaPositionSendMagicEffect(lua_State* L);
 		static int luaPositionSendDistanceEffect(lua_State* L);
+
+		static int luaPositionSendSingleSoundEffect(lua_State* L);
+		static int luaPositionSendDoubleSoundEffect(lua_State* L);
 };
 
 #endif

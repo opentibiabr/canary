@@ -10,6 +10,8 @@ burstCombat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONAREA)
 burstCombat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_BURSTARROW)
 burstCombat:setParameter(COMBAT_PARAM_BLOCKARMOR, true)
 burstCombat:setFormula(COMBAT_FORMULA_SKILL, 0, 0, 1, 0)
+burstCombat:setParameter(COMBAT_PARAM_IMPACTSOUND, SOUND_EFFECT_TYPE_BURST_ARROW_EFFECT)
+burstCombat:setParameter(COMBAT_PARAM_CASTSOUND, SOUND_EFFECT_TYPE_DIST_ATK_BOW)
 burstCombat:setArea(burstArea)
 
 local burstarrow = Weapon(WEAPON_AMMO)

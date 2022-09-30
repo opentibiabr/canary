@@ -190,6 +190,23 @@ void Npc::onCreatureSay(Creature* creature, SpeakClasses type, const std::string
 	}
 }
 
+void Npc::onThinkSound(uint32_t interval)
+{
+	if (npcType->info.soundSpeedTicks == 0) {
+		return;
+	}
+
+	soundTicks += interval;
+	if (soundTicks >= npcType->info.soundSpeedTicks) {
+		soundTicks = 0;
+
+		if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
+			uint32_t index = uniform_random(0, npcType->info.soundVector.size() - 1);
+			g_game().sendSingleSoundEffect(this->getPosition(), npcType->info.soundVector[index], this);
+		}
+	}
+}
+
 void Npc::onThink(uint32_t interval)
 {
 	Creature::onThink(interval);
@@ -217,6 +234,7 @@ void Npc::onThink(uint32_t interval)
 
 	onThinkYell(interval);
 	onThinkWalk(interval);
+	onThinkSound(interval);
 }
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,

@@ -369,6 +369,14 @@ bool CombatSpell::castSpell(Creature* creature)
 		pos = creature->getPosition();
 	}
 
+	if (soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, soundCastEffect);
+	}
+
+	if (soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, soundImpactEffect);
+	}
+
 	combat->doCombat(creature, pos);
 	return true;
 }
@@ -393,6 +401,14 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 			var.number = target->getID();
 		}
 		return executeCastSpell(creature, var);
+	}
+
+	if (soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, soundCastEffect);
+	}
+
+	if (soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, soundImpactEffect);
 	}
 
 	if (combat->hasArea()) {
@@ -523,6 +539,14 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 	if ((attr = node.attribute("mana"))) {
 		mana = pugi::cast<uint32_t>(attr.value());
+	}
+
+	if ((attr = node.attribute("castSound"))) {
+		soundCastEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(attr.value()));
+	}
+
+	if ((attr = node.attribute("impactSound"))) {
+		soundImpactEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(attr.value()));
 	}
 
 	if ((attr = node.attribute("manapercent"))) {
@@ -859,6 +883,10 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 
 		if (aggressive) {
 			player->addInFightTicks();
+		}
+
+		if (player && soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), soundCastEffect, soundImpactEffect, player);
 		}
 	}
 

@@ -113,6 +113,11 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 			}
 			imbuement.icon = pugi::cast<uint16_t>(iconBase.value());
 
+			pugi::xml_attribute soundBase = baseNode.attribute("sound");
+			if (soundBase) {
+				imbuement.soundEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(soundBase.value()));
+			}
+
 			pugi::xml_attribute premiumBase = baseNode.attribute("premium");
 			if (premiumBase) {
 				imbuement.premium = premiumBase.as_bool();

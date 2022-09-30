@@ -40,6 +40,16 @@ bool Condition::setParam(ConditionParam_t param, int32_t value)
 			return true;
 		}
 
+		case CONDITION_PARAM_SOUND_TICK: {
+			tickSound = static_cast<SoundEffect_t>(value);
+			return true;
+		}
+
+		case CONDITION_PARAM_SOUND_ADD: {
+			addSound = static_cast<SoundEffect_t>(value);
+			return true;
+		}
+
 		default: {
 			return false;
 		}
@@ -98,6 +108,26 @@ bool Condition::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 			return propStream.read<uint32_t>(subId);
 		}
 
+		case CONDITION_PARAM_SOUND_TICK: {
+			uint16_t value;
+			if (!propStream.read<uint16_t>(value)) {
+				return false;
+			}
+
+			tickSound = static_cast<SoundEffect_t>(value);
+			return true;
+		}
+
+		case CONDITION_PARAM_SOUND_ADD: {
+			uint16_t value;
+			if (!propStream.read<uint16_t>(value)) {
+				return false;
+			}
+
+			addSound = static_cast<SoundEffect_t>(value);
+			return true;
+		}
+
 		case CONDITIONATTR_END:
 			return true;
 
@@ -122,6 +152,12 @@ void Condition::serialize(PropWriteStream& propWriteStream)
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_SUBID);
 	propWriteStream.write<uint32_t>(subId);
+
+	propWriteStream.write<uint8_t>(CONDITION_PARAM_SOUND_TICK);
+	propWriteStream.write<uint16_t>(static_cast<uint16_t>(tickSound));
+
+	propWriteStream.write<uint8_t>(CONDITION_PARAM_SOUND_ADD);
+	propWriteStream.write<uint16_t>(static_cast<uint16_t>(addSound));
 }
 
 void Condition::setTicks(int32_t newTicks)
@@ -130,7 +166,7 @@ void Condition::setTicks(int32_t newTicks)
 	endTime = ticks + OTSYS_TIME();
 }
 
-bool Condition::executeCondition(Creature*, int32_t interval)
+bool Condition::executeCondition(Creature* creature, int32_t interval)
 {
 	if (ticks == -1) {
 		return true;
@@ -138,7 +174,15 @@ bool Condition::executeCondition(Creature*, int32_t interval)
 
 	//Not using set ticks here since it would reset endTime
 	ticks = std::max<int32_t>(0, ticks - interval);
-	return getEndTime() >= OTSYS_TIME();
+	if (getEndTime() < OTSYS_TIME()) {
+		return false;
+	}
+
+	if (creature && tickSound != SOUND_EFFECT_TYPE_SILENCE) {
+		g_game().sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
+	}
+
+	return true;
 }
 
 Condition* Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param/* = 0*/, bool buff/* = false*/, uint32_t subId/* = 0*/)
@@ -311,10 +355,14 @@ void ConditionGeneric::endCondition(Creature*)
 	//
 }
 
-void ConditionGeneric::addCondition(Creature*, const Condition* addCondition)
+void ConditionGeneric::addCondition(Creature* creature, const Condition* addCondition)
 {
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
+
+		if (creature && addSound != SOUND_EFFECT_TYPE_SILENCE) {
+			g_game().sendSingleSoundEffect(creature->getPosition(), addSound, creature);
+		}
 	}
 }
 
@@ -1330,6 +1378,11 @@ bool ConditionDamage::doDamage(Creature* creature, int32_t healthChange)
 	if (g_game().combatBlockHit(damage, attacker, creature, false, false, field)) {
 		return false;
 	}
+
+	if (creature && tickSound != SOUND_EFFECT_TYPE_SILENCE) {
+		g_game().sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
+	}
+
 	return g_game().combatChangeHealth(attacker, creature, damage);
 }
 

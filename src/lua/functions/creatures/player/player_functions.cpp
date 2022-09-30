@@ -3008,3 +3008,36 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 	pushBoolean(L, true);
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
+{
+    // player:sendSingleSoundEffect(soundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+	}
+
+    SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
+    bool actor = getBoolean(L, 3, true);
+
+	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
+    pushBoolean(L, true);
+    return 1;
+}
+
+int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L)
+{
+    // player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		lua_pushnil(L);
+	}
+
+    SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
+    SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
+    bool actor = getBoolean(L, 4, true);
+
+	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL, secondarySoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
+    pushBoolean(L, true);
+    return 1;
+}

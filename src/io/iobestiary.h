@@ -50,6 +50,9 @@ class Charm
 	CombatType_t dmgtype = COMBAT_NONE;
 	uint8_t effect = CONST_ME_NONE;
 
+	SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
+	SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SILENCE;
+
 	int8_t percent = 0;
 	int8_t chance = 0;
 	uint16_t points = 0;

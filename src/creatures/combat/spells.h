@@ -107,6 +107,9 @@ class BaseSpell
 
 		virtual bool castSpell(Creature* creature) = 0;
 		virtual bool castSpell(Creature* creature, Creature* target) = 0;
+
+		SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
+		SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SPELL_OR_RUNE;
 };
 
 class CombatSpell final : public Event, public BaseSpell

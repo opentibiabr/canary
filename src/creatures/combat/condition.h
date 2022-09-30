@@ -83,6 +83,9 @@ class Condition
 		ConditionId_t id;
 		bool isBuff;
 
+		SoundEffect_t tickSound = SOUND_EFFECT_TYPE_SILENCE;
+		SoundEffect_t addSound = SOUND_EFFECT_TYPE_SILENCE;
+
 		virtual bool updateCondition(const Condition* addCondition);
 };
 

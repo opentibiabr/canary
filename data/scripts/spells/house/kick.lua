@@ -14,6 +14,7 @@ end
 
 spell:name("House Kick")
 spell:words("alana sio")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_KICK_GUEST)
 spell:hasParams(true)
 spell:hasPlayerNameParam(true)
 spell:isAggressive(false)

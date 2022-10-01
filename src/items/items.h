@@ -46,12 +46,28 @@ struct Abilities {
 		//damage abilities modifiers
 		int16_t absorbPercent[COMBAT_COUNT] = { 0 };
 
-		//relfect abilities modifires
+		//reflect abilities modifires
 		int16_t reflectPercent[COMBAT_COUNT] = { 0 };
 
 		//elemental damage
 		uint16_t elementDamage = 0;
 		CombatType_t elementType = COMBAT_NONE;
+
+		// 12.72 modifiers
+		// Specialized magic level modifiers
+		int32_t reflectFlat[COMBAT_COUNT] = { 0 };
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+
+		//magic shield capacity
+		int32_t magicShieldCapacityPercent = 0;
+		int32_t magicShieldCapacityFlat = 0;
+		
+		//cleave
+		int32_t cleavePercent = 0;
+		
+		// perfect shot
+		int32_t perfectShotDamage = 0;
+		uint8_t perfectShotRange = 0;
 
 		bool manaShield = false;
 		bool invisible = false;

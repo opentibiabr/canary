@@ -570,7 +570,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 	if (it.abilities->regeneration) {
 		player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
 	}
-
+	
 	//skill/stats modifiers
 	bool needUpdate = false;
 

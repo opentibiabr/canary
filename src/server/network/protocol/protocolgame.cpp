@@ -2917,25 +2917,21 @@ void ProtocolGame::sendCreatureSkull(const Creature *creature)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendCreatureType(const Creature *creature, uint8_t creatureType)
+
+void ProtocolGame::sendCreatureUpdate(const Creature *creature)
 {
-	NetworkMessage msg;
-	msg.addByte(0x95);
-	msg.add<uint32_t>(creature->getID());
-	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
-		creatureType = CREATURETYPE_SUMMON_PLAYER;
-	}
-	msg.addByte(creatureType); // type or any byte idk
-	if (creatureType == CREATURETYPE_SUMMON_PLAYER) {
-		const Creature* master = creature->getMaster();
-		if (master) {
-			msg.add<uint32_t>(master->getID());
-		} else {
-			msg.add<uint32_t>(0);
+	if (creature && !creature->isRemoved())
+	{
+		const Tile* tile = creature->getTile();
+		const Player* player = creature->getPlayer();
+		if (tile)
+		{
+			const Position& position = creature->getPosition();
+			int32_t stackpos = tile->getClientIndexOfCreature(player, creature);
+
+			sendUpdateTileCreature(position, stackpos, creature);
 		}
 	}
-
-	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendCreatureSquare(const Creature *creature, SquareColor_t color)
@@ -2993,9 +2989,9 @@ void ProtocolGame::sendCyclopediaCharacterBaseInformation()
 	msg.add<uint16_t>(player->getLevel());
 	AddOutfit(msg, player->getDefaultOutfit(), false);
 
-	msg.addByte(0x00); // hide stamina
-	msg.addByte(0x00); // enable store summary & character titles
-	msg.addString(""); // character title
+	msg.addByte(0x01); // hide stamina
+	msg.addByte(0x01); // enable store summary & character titles
+	msg.addString("Loyal"); // character title
 	writeToOutputBuffer(msg);
 }
 
@@ -3056,9 +3052,18 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 
-	// Version 12.70
-	msg.addByte(0x00);
-
+	auto bufferPosition = msg.getBufferPosition();
+	msg.skipBytes(1);
+	uint8_t total = 0;
+	for (size_t i = 0; i < COMBAT_COUNT; i++) {
+		if (player->getSpecializedMagicLevel(indexToCombatType(i)) > 0) {
+			++total;
+			msg.addByte(getCipbiaElement(indexToCombatType(i)));
+			msg.add<uint16_t>(static_cast<uint16_t>(player->getSpecializedMagicLevel(indexToCombatType(i))));
+		}
+	}
+	msg.setBufferPosition(bufferPosition);
+	msg.addByte(total);
 	writeToOutputBuffer(msg);
 }
 
@@ -3074,26 +3079,16 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 		msg.add<uint16_t>(0);
 	}
 
-	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i) {
-		msg.add<uint16_t>(0);
-		msg.add<uint16_t>(0);
+	msg.add<uint16_t>(static_cast<uint16_t>(player->getCleavePercent())); //cleave %
+	msg.add<uint16_t>(static_cast<uint16_t>(player->getMagicShieldCapacityFlat())); //direct bonus
+	msg.add<uint16_t>(static_cast<uint16_t>(player->getMagicShieldCapacityPercent())); //percent bonus
+
+	// at range
+	for (uint8_t range = 1; range <= 5; range++) {
+		msg.add<uint16_t>(static_cast<uint16_t>(player->getPerfectShotDamage(range)));
 	}
 
-	// Cleave (12.70)
-	msg.add<uint16_t>(0);
-	// Magic shield capacity (12.70)
-	msg.add<uint16_t>(0); // Direct bonus
-	msg.add<uint16_t>(0); // Percentage bonus
-
-	// Perfect shot range (12.70)
-	for (uint16_t i = 1; i <= 5; i++)
-	{
-		msg.add<uint16_t>(0x00);
-	}
-
-	// Damage reflection
-	msg.add<uint16_t>(0);
+	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE))); //damage deflection
 
 	uint8_t haveBlesses = 0;
 	uint8_t blessings = 8;
@@ -3147,8 +3142,30 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 			}
 			else
 			{
-				msg.addByte(0);
-				msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+				bool imbueDmg = false;
+				Item* weaponNC = player->getWeapon(true);
+				if (weaponNC) {
+					uint8_t slots = Item::items[weaponNC->getID()].imbuementSlot;
+					if (slots > 0) {
+						for (uint8_t i = 0; i < slots; i++) {
+							ImbuementInfo imbuementInfo;
+							uint32_t info = weaponNC->getImbuementInfo(i, &imbuementInfo);
+							if (info >> 8) {
+								Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
+								if (ib->combatType != COMBAT_NONE) {
+									msg.addByte(static_cast<uint32_t>(ib->elementDamage));
+									msg.addByte(getCipbiaElement(ib->combatType));
+									imbueDmg = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+				if (!imbueDmg) {
+					msg.addByte(0);
+					msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+				}
 			}
 		}
 		else
@@ -3170,8 +3187,30 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 			}
 			else
 			{
-				msg.addByte(0);
-				msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+				bool imbueDmg = false;
+				Item* weaponNC = player->getWeapon();
+				if (weaponNC) {
+					uint8_t slots = Item::items[weaponNC->getID()].imbuementSlot;
+					if (slots > 0) {
+						for (uint8_t i = 0; i < slots; i++) {
+							ImbuementInfo imbuementInfo;
+							uint32_t info = weaponNC->getImbuementInfo(i, &imbuementInfo);
+							if (info >> 8) {
+								Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
+								if (ib->combatType != COMBAT_NONE) {
+									msg.addByte(static_cast<uint32_t>(ib->elementDamage));
+									msg.addByte(getCipbiaElement(ib->combatType));
+									imbueDmg = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+				if (!imbueDmg) {
+					msg.addByte(0);
+					msg.addByte(CIPBIA_ELEMENTAL_UNDEFINED);
+				}
 			}
 		}
 	}
@@ -3195,7 +3234,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	auto startCombats = msg.getBufferPosition();
 	msg.skipBytes(1);
 
-	alignas(16) int16_t absorbs[COMBAT_COUNT] = {};
+	alignas(16) int16_t absorbs[COMBAT_COUNT] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
 	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot)
 	{
 		if (!player->isItemAbilityEnabled(static_cast<Slots_t>(slot)))
@@ -3215,47 +3254,63 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 			continue;
 		}
 
-		if (COMBAT_COUNT == 12)
-		{
-			absorbs[0] += it.abilities->absorbPercent[0];
-			absorbs[1] += it.abilities->absorbPercent[1];
-			absorbs[2] += it.abilities->absorbPercent[2];
-			absorbs[3] += it.abilities->absorbPercent[3];
-			absorbs[4] += it.abilities->absorbPercent[4];
-			absorbs[5] += it.abilities->absorbPercent[5];
-			absorbs[6] += it.abilities->absorbPercent[6];
-			absorbs[7] += it.abilities->absorbPercent[7];
-			absorbs[8] += it.abilities->absorbPercent[8];
-			absorbs[9] += it.abilities->absorbPercent[9];
-			absorbs[10] += it.abilities->absorbPercent[10];
-			absorbs[11] += it.abilities->absorbPercent[11];
+		for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
+			absorbs[i] *= (std::floor(100 - it.abilities->absorbPercent[i]) / 100.);
 		}
-		else
+		uint8_t slots = Item::items[item->getID()].imbuementSlot;
+		if (slots > 0) {
+			for (uint8_t i = 0; i < slots; i++) {
+				ImbuementInfo imbuementInfo;
+				uint32_t info = item->getImbuementInfo(i, &imbuementInfo);
+				if (info >> 8) {
+					Imbuement* ib = g_imbuements().getImbuement(info & 0xFF);
+					for (uint16_t i = 0; i < COMBAT_COUNT; ++i) {
+						const int16_t& absorbPercent2 = ib->absorbPercent[i];
+
+						if (absorbPercent2 != 0) {
+							absorbs[i] *= (std::floor(100 - absorbPercent2) / 100.);
+						}
+					}
+				}
+			}
+		}
+	}
+	int32_t value;
+	for (size_t i = 0; i < COMBAT_COUNT; ++i)
+	{
+		if (absorbs[i] != 100)
 		{
-			for (size_t i = 0; i < COMBAT_COUNT; ++i)
-			{
-				absorbs[i] += it.abilities->absorbPercent[i];
+			if (value != -1) {
+				msg.addByte(getCipbiaElement(indexToCombatType(i)));
+				msg.addByte(std::max<int16_t>(-100, std::min<int16_t>(100, (100 - absorbs[i]) ) ) );
+				++combats;
 			}
 		}
 	}
 
-	static const Cipbia_Elementals_t cipbiaCombats[] = {CIPBIA_ELEMENTAL_PHYSICAL, CIPBIA_ELEMENTAL_ENERGY, CIPBIA_ELEMENTAL_EARTH, CIPBIA_ELEMENTAL_FIRE, CIPBIA_ELEMENTAL_UNDEFINED,
-														CIPBIA_ELEMENTAL_LIFEDRAIN, CIPBIA_ELEMENTAL_UNDEFINED, CIPBIA_ELEMENTAL_HEALING, CIPBIA_ELEMENTAL_DROWN, CIPBIA_ELEMENTAL_ICE, CIPBIA_ELEMENTAL_HOLY, CIPBIA_ELEMENTAL_DEATH};
-	for (size_t i = 0; i < COMBAT_COUNT; ++i)
-	{
-		if (absorbs[i] != 0)
-		{
-			msg.addByte(cipbiaCombats[i]);
-			msg.addByte(std::max<int16_t>(-100, std::min<int16_t>(100, absorbs[i])));
-			++combats;
-		}
-	}
+	auto actual = msg.getBufferPosition();
 
 	// Concoctions potions (12.70)
 	msg.addByte(0x00);
 
 	msg.setBufferPosition(startCombats);
 	msg.addByte(combats);
+
+	msg.setBufferPosition(actual);
+
+	msg.skipBytes(1);
+	uint8_t total = 0;
+	int64_t timeNow = OTSYS_TIME()/1000;
+	for (int itemID = ITEM_TIBIADROME_POTION_START; itemID <= ITEM_TIBIADROME_POTION_END; itemID++) {
+		Condition* condition = player->getCondition(CONDITION_TIBIADROMEPOTIONS, CONDITIONID_DEFAULT, itemID);
+		if (condition && condition->getEndTime()/1000 >= timeNow) {
+			msg.add<uint16_t>(itemID);
+			msg.add<uint16_t>(static_cast<uint16_t>(std::floor(condition->getEndTime()/1000-timeNow)));
+			total++;
+		}
+	}
+	msg.setBufferPosition(actual);
+	msg.addByte(total);
 
 	writeToOutputBuffer(msg);
 }
@@ -3313,11 +3368,66 @@ void ProtocolGame::sendCyclopediaCharacterItemSummary()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_ITEMSUMMARY);
 	msg.addByte(0x00);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
-	msg.add<uint16_t>(0);
+
+	// Inventory
+	auto startInventoryItems = msg.getBufferPosition();
+	uint16_t inventoryItems = 0;
+	msg.skipBytes(2);
+
+	for (std::underlying_type<Slots_t>::type slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_AMMO; slot++)
+	{
+		Item *inventoryItem = player->getInventoryItem(static_cast<Slots_t>(slot));
+		if (inventoryItem)
+		{
+			++inventoryItems;
+			msg.add<uint16_t>(inventoryItem->getID());
+			msg.add<uint32_t>(inventoryItem->getItemCount());
+		}
+		// TODO show / count items in backpack
+	}
+
+	// Stash
+	// TODO Why does it display items in the store inbox?
+	auto startStashItems = msg.getBufferPosition();
+	StashItemList stashItems = player->getStashItems();
+	msg.skipBytes(2);
+
+	for (auto item : stashItems) {
+		msg.add<uint16_t>(item.first);
+		msg.add<uint32_t>(item.second);
+	}
+
+	// DepotItems
+	auto startDepotItems = msg.getBufferPosition();
+	uint16_t depotItems = 0;
+	msg.skipBytes(2);
+
+	// StoreInboxItems
+	auto startStoreInboxItems = msg.getBufferPosition();
+	uint16_t storeInboxItems = 0;
+	msg.skipBytes(2);
+
+	// InboxItems
+	auto startInboxItems = msg.getBufferPosition();
+	uint16_t inboxItems = 0;
+	msg.skipBytes(2);
+
+	// execute
+	msg.setBufferPosition(startInventoryItems);
+	msg.add<uint16_t>(inventoryItems);
+
+	msg.setBufferPosition(startDepotItems);
+	msg.add<uint16_t>(depotItems);
+
+	msg.setBufferPosition(startStashItems);
+	msg.add<uint16_t>(stashItems.size());
+
+	msg.setBufferPosition(startInboxItems);
+	msg.add<uint16_t>(inboxItems);
+
+	msg.setBufferPosition(startStoreInboxItems);
+	msg.add<uint16_t>(storeInboxItems);
+
 	writeToOutputBuffer(msg);
 }
 
@@ -3435,7 +3545,9 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_STORESUMMARY);
 	msg.addByte(0x00);
-	msg.add<uint32_t>(0);
+	// Remaining Store Xp Boost Time
+	msg.add<uint32_t>(player->getExpBoostStamina());
+	// RemainingDailyRewardXpBoostTime
 	msg.add<uint32_t>(0);
 	msg.addByte(0x00);
 	msg.addByte(0x00);
@@ -3511,8 +3623,18 @@ void ProtocolGame::sendCyclopediaCharacterBadges()
 	msg.addByte(0xDA);
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_BADGES);
 	msg.addByte(0x00);
-	// enable badges
+	// ShowAccountInformation
+	msg.addByte(0x01);
+	// if ShowAccountInformation show IsOnline, IsPremium, character title, badges
+	// IsOnline
+	msg.addByte(0x01);
+	// IsPremium (GOD has always 'Premium')
+	msg.addByte(player->isPremium() ? 0x01 : 0x00);
+	// character title
+	msg.addString("");
+	// badges
 	msg.addByte(0x00);
+	// Todo badges loop
 	writeToOutputBuffer(msg);
 }
 
@@ -4084,7 +4206,6 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 			{
 				continue;
 			}
-
 			Container *c = item->getContainer();
 			if (c && !c->empty())
 			{
@@ -4631,7 +4752,25 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 				separator = true;
 			}
 
-			ss << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			ss << " magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+		}
+
+		// Version 12.72 (Specialized magic level modifier)
+		for (uint8_t i = 1; i <= 11; i++)
+		{
+			if (it.abilities->specializedMagicLevel[i])
+			{
+				if (separator)
+				{
+					ss << ", ";
+				}
+				else
+				{
+					separator = true;
+				}
+				std::string combatName = getCombatName(indexToCombatType(i));
+				ss << std::showpos << combatName << std::noshowpos << " magic level +" << it.abilities->specializedMagicLevel[i];
+			}
 		}
 
 		if (it.abilities->speed != 0)
@@ -4710,21 +4849,52 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	// Magic shield capacity modifier (12.70)
-	msg.add<uint16_t>(0x00);
-	// Cleave modifier (12.70)
-	msg.add<uint16_t>(0x00);
-	// Damage reflection modifier (12.70)
-	msg.add<uint16_t>(0x00);
-	// Perfect shot modifier (12.70)
-	msg.add<uint16_t>(0x00);
+	// Version 12.70
+	//cleave
+	if (it.abilities) {
 
-	if (it.upgradeClassification > 0)
-	{
-		msg.addString(std::to_string(it.upgradeClassification));
-	}
-	else
-	{
+		std::ostringstream string;
+		if (it.abilities->magicShieldCapacityFlat > 0)
+		{
+			string.clear();
+			string << std::showpos << it.abilities->magicShieldCapacityFlat << std::noshowpos << " and " << it.abilities->magicShieldCapacityPercent << "%";
+			msg.addString(string.str());
+		}
+		else {
+			msg.add<uint16_t>(0x00);
+		}
+
+		if (it.abilities->cleavePercent > 0) {
+			string.clear();
+			string << it.abilities->cleavePercent << "%";
+			msg.addString(string.str());
+		} else {
+			msg.add<uint16_t>(0x00);
+		}
+
+		if (it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE] > 0) {
+			string.clear();
+			string << it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE];
+			msg.addString(string.str());
+		} else {
+			msg.add<uint16_t>(0x00);
+		}
+
+		if (it.abilities->perfectShotDamage > 0) {
+			string.clear();
+			string << std::showpos << it.abilities->perfectShotDamage << std::noshowpos << " at " << it.abilities->perfectShotRange << "%";
+			msg.addString(string.str());
+		} else {
+			msg.add<uint16_t>(0x00);
+		}
+	} else {
+		//cleave
+		msg.add<uint16_t>(0x00);
+		//magic shield capacity
+		msg.add<uint16_t>(0x00);
+		//perfect shot
+		msg.add<uint16_t>(0x00);
+		//damage deflect
 		msg.add<uint16_t>(0x00);
 	}
 
@@ -5291,6 +5461,25 @@ void ProtocolGame::sendRemoveTileThing(const Position &pos, uint32_t stackpos)
 
 	NetworkMessage msg;
 	RemoveTileThing(msg, pos, stackpos);
+	writeToOutputBuffer(msg);
+}
+void ProtocolGame::sendUpdateTileCreature(const Position& pos, uint32_t stackpos, const Creature* creature)
+{
+	if (!canSee(pos))
+	{
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x6B);
+	msg.addPosition(pos);
+	msg.addByte(stackpos);
+
+	bool known;
+	uint32_t removedKnown;
+	checkCreatureAsKnown(creature->getID(), known, removedKnown);
+	AddCreature(msg, creature, false, removedKnown);
+
 	writeToOutputBuffer(msg);
 }
 

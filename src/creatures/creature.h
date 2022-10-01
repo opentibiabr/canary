@@ -425,7 +425,45 @@ class Creature : virtual public Thing
 		void checkSummonMove(const Position& newPos, bool teleportSummon = false) const;
 		virtual void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos,
                                    const Tile* oldTile, const Position& oldPos, bool teleport);
+								   
+		virtual int32_t getReflectPercent(CombatType_t combatType, bool useCharges = false) const {
+			return reflectPercent[combatTypeToIndex(combatType)];
+		}
+		virtual int32_t getReflectFlat(CombatType_t combatType, bool useCharges = false) const {
+			return reflectFlat[combatTypeToIndex(combatType)];
+		}
 
+		virtual void setReflectPercent(CombatType_t combatType, int32_t value) {
+			this->reflectPercent[combatTypeToIndex(combatType)] = std::max(0, this->reflectPercent[combatTypeToIndex(combatType)] + value);
+		}
+		virtual void setReflectFlat(CombatType_t combatType, int32_t value) {
+			this->reflectFlat[combatTypeToIndex(combatType)] = std::max(0, this->reflectFlat[combatTypeToIndex(combatType)] + value);
+		}
+
+		int32_t getAbsorbFlat(CombatType_t combat) const {
+			return absorbFlat[combatTypeToIndex(combat)];
+		}
+
+		void setAbsorbFlat(CombatType_t combat, int32_t value) {
+			absorbFlat[combatTypeToIndex(combat)] += value;
+		}
+
+		int32_t getAbsorbPercent(CombatType_t combat) const {
+			return absorbPercent[combatTypeToIndex(combat)];
+		}
+
+		void setAbsorbPercent(CombatType_t combat, int32_t value) {
+			absorbPercent[combatTypeToIndex(combat)] += value;
+		}
+
+		int32_t getIncreasePercent(CombatType_t combat) const {
+			return increasePercent[combatTypeToIndex(combat)];
+		}
+
+		void setIncreasePercent(CombatType_t combat, int32_t value) {
+			increasePercent[combatTypeToIndex(combat)] += value;
+		}
+		
 		virtual void onAttackedCreatureDisappear(bool) {}
 		virtual void onFollowCreatureDisappear(bool) {}
 
@@ -571,7 +609,14 @@ class Creature : virtual public Thing
 
 		uint16_t manaShield = 0;
 		uint16_t maxManaShield = 0;
-		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
+		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
+
+		int32_t reflectPercent[COMBAT_COUNT] = { 0 };
+		int32_t reflectFlat[COMBAT_COUNT] = { 0 };
+
+		int32_t absorbPercent[COMBAT_COUNT] = { 0 };
+		int32_t increasePercent[COMBAT_COUNT] = { 0 };
+		int32_t absorbFlat[COMBAT_COUNT] = { 0 };
 
 		Outfit_t currentOutfit;
 		Outfit_t defaultOutfit;

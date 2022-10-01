@@ -233,29 +233,40 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
-    const ItemType& it = Item::items[item->getID()];
-    if (it.ammoType != AMMO_NONE) {
-      Item* quiver = inventory[CONST_SLOT_RIGHT];
-      if (!quiver || !quiver->isQuiver())
-        return nullptr;
-      Container* container = quiver->getContainer();
-      if (!container)
-        return nullptr;
-      bool found = false;
-      for (Item* ammoItem : container->getItemList()) {
-        if (ammoItem->getAmmoType() == it.ammoType) {
-          if (level >= Item::items[ammoItem->getID()].minReqLevel) {
-            item = ammoItem;
-            found = true;
-            break;
-          }
-        }
-      }
-      if (!found)
-        return nullptr;
-    }
-  }
+	if (!ignoreAmmo && weaponType == WEAPON_DISTANCE)
+	{
+		const ItemType& it = Item::items[item->getID()];
+		if (it.ammoType != AMMO_NONE)
+		{
+			Item* quiver = inventory[CONST_SLOT_RIGHT];
+			if (!quiver || !quiver->isQuiver())
+			{
+				return nullptr;
+			}
+			Container* container = quiver->getContainer();
+			if (!container)
+			{
+				return nullptr;
+			}
+			bool found = false;
+			for (Item* ammoItem : container->getItemList())
+			{
+				if (ammoItem->getAmmoType() == it.ammoType)
+				{
+					if (level >= Item::items[ammoItem->getID()].minReqLevel)
+					{
+						item = ammoItem;
+						found = true;
+						break;
+					}
+				}
+			}
+			if (!found)
+			{
+				return nullptr;
+			}
+		}
+	}
 	return item;
 }
 
@@ -2419,21 +2430,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 						}
 					}
 				}
-				if (attacker) {
-					const int16_t& reflectPercent = it.abilities->reflectPercent[combatTypeToIndex(combatType)];
-					if (reflectPercent != 0) {
-						CombatParams params;
-						params.combatType = combatType;
-						params.impactEffect = CONST_ME_MAGIC_BLUE;
-
-						CombatDamage reflectDamage;
-						reflectDamage.origin = ORIGIN_SPELL;
-						reflectDamage.primary.type = combatType;
-						reflectDamage.primary.value = std::round(-damage * (reflectPercent / 100.));
-
-						Combat::doCombatHealth(this, attacker, reflectDamage, params);
-					}
-				}
 			}
 
 			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
@@ -3348,7 +3344,7 @@ Cylinder* Player::queryDestination(int32_t& index, const Thing& thing, Item** de
 						return tmpContainer;
 					}
 
-					n--;
+					--n;
 				}
 
 				for (Item* tmpContainerItem : tmpContainer->getItemList()) {
@@ -3556,7 +3552,7 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				if ((*it)->getID() == itemId) {
+				if ((*it) && (*it)->getID() == itemId) {
 					count += Item::countByType(*it, subType);
 				}
 			}
@@ -4174,8 +4170,16 @@ void Player::onAddCombatCondition(ConditionType_t type)
 			sendTextMessage(MESSAGE_FAILURE, "You are drunk.");
 			break;
 
+		case CONDITION_LESSERHEX:
+		case CONDITION_INTENSEHEX:
+		case CONDITION_GREATERHEX:
+			sendTextMessage(MESSAGE_FAILURE, "You are hexed.");
+			break;
 		case CONDITION_ROOTED:
 			sendTextMessage(MESSAGE_FAILURE, "You are rooted.");
+			break;
+		case CONDITION_FEARED:
+			sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 			break;
 
 		case CONDITION_CURSED:
@@ -4951,6 +4955,211 @@ void Player::setPremiumDays(int32_t v)
 void Player::setTibiaCoins(int32_t v)
 {
 	coinBalance = v;
+}
+
+int32_t Player::getCleavePercent(bool useCharges) const {
+	int32_t result = cleavePercent;
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			const int32_t& itemValue = it.abilities->cleavePercent;
+			if (itemValue != 0) {
+				result += itemValue;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int32_t Player::getPerfectShotDamage(uint8_t range, bool useCharges) const {
+	int32_t result = 0;
+	auto it = perfectShot.find(range);
+	if (it != perfectShot.end())
+		result = it->second;
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			if (it.abilities->perfectShotRange == range) {
+				result += it.abilities->perfectShotDamage;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) const {
+	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			int32_t itemValue = it.abilities->specializedMagicLevel[combatTypeToIndex(combat)]; 
+			if (itemValue != 0) {
+				result += itemValue;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int32_t Player::getMagicShieldCapacityFlat(bool useCharges) const {
+	int32_t result = magicShieldCapacityFlat;
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			int32_t itemValue = it.abilities->magicShieldCapacityFlat; 
+			if (itemValue != 0) {
+				result += itemValue;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int32_t Player::getMagicShieldCapacityPercent(bool useCharges) const {
+	int32_t result = magicShieldCapacityPercent;
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			int32_t itemValue = it.abilities->magicShieldCapacityPercent; 
+			if (itemValue != 0) {
+				result += itemValue;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int32_t Player::getReflectPercent(CombatType_t combat, bool useCharges) const {
+	int32_t result = reflectPercent[combatTypeToIndex(combat)];
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			int32_t itemValue = it.abilities->reflectPercent[combatTypeToIndex(combat)]; 
+			if (itemValue != 0) {
+				result += itemValue;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int32_t Player::getReflectFlat(CombatType_t combat, bool useCharges) const {
+	int32_t result = reflectFlat[combatTypeToIndex(combat)];
+	for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
+			continue;
+		}
+
+		Item* item = inventory[slot];
+		if (!item) {
+			continue;
+		}
+
+		const ItemType& it = Item::items[item->getID()];
+		if (it.abilities) {
+			int32_t itemValue = it.abilities->reflectFlat[combatTypeToIndex(combat)]; 
+			if (itemValue != 0) {
+				result += itemValue;
+				if (useCharges) {
+					uint16_t charges = item->getCharges();
+					if (charges != 0) {
+						g_game().transformItem(item, item->getID(), charges - 1);
+					}
+				}
+			}
+		}
+	}
+	return result;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const

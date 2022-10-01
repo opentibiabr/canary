@@ -305,6 +305,47 @@ class Player final : public Creature, public Cylinder
 		Party* getParty() const {
 			return party;
 		}
+
+		int32_t getCleavePercent(bool useCharges = false) const;
+
+		void setCleavePercent(int32_t value) {
+			cleavePercent = std::max(0, cleavePercent + value);
+		}
+
+		int32_t getPerfectShotDamage(uint8_t range, bool useCharges = false) const;
+
+		void setPerfectShotDamage(uint8_t range, int32_t damage) {
+			int32_t actualDamage = getPerfectShotDamage(range);
+			bool aboveZero = (actualDamage != 0);
+			actualDamage += damage;
+			if (actualDamage == 0 && aboveZero)
+				perfectShot.erase(range);
+			else
+				perfectShot[range] = actualDamage;
+		}
+
+		int32_t getSpecializedMagicLevel(CombatType_t combat, bool useCharges = false) const;
+
+		void setSpecializedMagicLevel(CombatType_t combat, int32_t value) {
+			specializedMagicLevel[combatTypeToIndex(combat)] = std::max(0, specializedMagicLevel[combatTypeToIndex(combat)] + value);
+		}
+
+		int32_t getMagicShieldCapacityFlat(bool useCharges = false) const;
+
+		void setMagicShieldCapacityFlat(int32_t value) {
+			magicShieldCapacityFlat += value;
+		}
+
+		int32_t getMagicShieldCapacityPercent(bool useCharges = false) const;
+
+		void setMagicShieldCapacityPercent(int32_t value) {
+			magicShieldCapacityPercent += value;
+		}
+
+		int32_t getReflectPercent(CombatType_t combat, bool useCharges = false) const override;
+
+		int32_t getReflectFlat(CombatType_t combat, bool useCharges = false) const override;
+
 		PartyShields_t getPartyShield(const Player* player) const;
 		bool isInviting(const Player* player) const;
 		bool isPartner(const Player* player) const;
@@ -968,9 +1009,9 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureShield(creature);
 			}
 		}
-		void sendCreatureType(const Creature* creature, uint8_t creatureType) {
+		void sendCreatureUpdate(const Creature* creature) {
 			if (client) {
-				client->sendCreatureType(creature, creatureType);
+				client->sendCreatureUpdate(creature);
 			}
 		}
 		void sendSpellCooldown(uint8_t spellId, uint32_t time) {
@@ -2354,6 +2395,12 @@ class Player final : public Creature, public Cylinder
 		bool exerciseTraining = false;
 		bool moved = false;
 		bool dead = false;
+
+		int32_t specializedMagicLevel[COMBAT_COUNT] = { 0 };
+		int32_t cleavePercent = 0;
+		std::map<uint8_t, int32_t> perfectShot;
+		int32_t magicShieldCapacityFlat = 0;
+		int32_t magicShieldCapacityPercent = 0;
 
 		static uint32_t playerAutoID;
 

@@ -5739,6 +5739,20 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	return true;
 }
 
+void sendStowItems(Item &item, Item &stowItem, StashContainerList &itemDict) {
+	if (stowItem.getID() == item.getID()) {
+		itemDict.push_back(std::pair<Item*, uint32_t>(&stowItem, stowItem.getItemCount()));
+	}
+
+	if (Container* container = stowItem.getContainer()) {
+		for (auto stowable_it : container->getStowableItems()) {
+			if ((stowable_it.first)->getID() == item.getID()) {
+				itemDict.push_back(stowable_it);
+			}
+		}
+	}
+}
+
 void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	if (!item || !item->isItemStorable()) {
 		sendCancelMessage("This item cannot be stowed here.");
@@ -5747,22 +5761,23 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 
 	StashContainerList itemDict;
 	if (allItems) {
-		for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-			Item* inventoryItem = inventory[i];
-			if (!inventoryItem) {
-				continue;
+		auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
+		if (inventoryItem)
+		{
+			sendStowItems(*item, *inventoryItem, itemDict);
+			DepotLocker *depotLocker = getDepotLocker(getLastDepotId());
+			if (depotLocker == nullptr) {
+				return;
 			}
-
-			if (inventoryItem->getID() == item->getID()) {
-				itemDict.push_back(std::pair<Item*, uint32_t>(inventoryItem, inventoryItem->getItemCount()));
-			}
-
-			if (Container* container = inventoryItem->getContainer()) {
-				for (auto stowable_it : container->getStowableItems()) {
-					if ((stowable_it.first)->getID() == item->getID()) {
-						itemDict.push_back(stowable_it);
-					}
+			auto [itemVector, itemMap] = requestLockerItems(depotLocker);
+			for (auto lockerItem : itemVector)
+			{
+				if (lockerItem == nullptr)
+				{
+					break;
 				}
+
+				sendStowItems(*item, *lockerItem, itemDict);
 			}
 		}
 	} else if (item->getContainer()) {

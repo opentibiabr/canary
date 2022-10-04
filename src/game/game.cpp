@@ -7621,8 +7621,13 @@ bool canFinishOfferTransaction(Player &player, std::string &offerStatus) {
 void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, std::string offerStatus)
 {
 	uint16_t removeAmount = amount;
-	auto stashItemCount = player.getStashItemCount(itemType.wareId);
-	if (stashItemCount > 0) {
+	if (
+		// Init-statement
+		auto stashItemCount = player.getStashItemCount(itemType.wareId);
+		// Condition
+		stashItemCount > 0
+	)
+	{
 		if (removeAmount > stashItemCount && player.withdrawItem(itemType.wareId, stashItemCount)) {
 			removeAmount -= stashItemCount;
 		} else if (player.withdrawItem(itemType.wareId, removeAmount)) {
@@ -7640,8 +7645,13 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 			if (itemType.stackable) {
 				uint16_t removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
 				removeAmount -= removeCount;
-				auto ret = g_game().internalRemoveItem(item, removeCount);
-				if (ret != RETURNVALUE_NOERROR) {
+				if (
+					// Init-statement
+					auto ret = g_game().internalRemoveItem(item, removeCount);
+					// Condition
+					ret != RETURNVALUE_NOERROR
+				)
+				{
 					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
 					offerStatus = "Failed to remove items from player";
 					break;
@@ -8050,8 +8060,13 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			while (tmpAmount > 0) {
 				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
-				auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
-				if (ret != RETURNVALUE_NOERROR) {
+				if (
+					// init-statement
+					auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+					// Condition
+					ret != RETURNVALUE_NOERROR
+				)
+				{
 					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, ret);
 					offerStatus = "Failed to add inbox stackable item for sell offer";
 					delete item;
@@ -8703,7 +8718,7 @@ void Game::decreaseBrowseFieldRef(const Position& pos)
 	}
 }
 
-void Game::internalRemoveItems(std::vector<Item*> itemVector, uint32_t amount, bool stackable)
+void Game::internalRemoveItems(const std::vector<Item*> itemVector, uint32_t amount, bool stackable)
 {
 	if (stackable) {
 		for (Item* item : itemVector) {

@@ -5744,7 +5744,7 @@ void sendStowItems(Item &item, Item &stowItem, StashContainerList &itemDict) {
 		itemDict.push_back(std::pair<Item*, uint32_t>(&stowItem, stowItem.getItemCount()));
 	}
 
-	if (Container* container = stowItem.getContainer()) {
+	if (auto container = stowItem.getContainer()) {
 		for (auto stowable_it : container->getStowableItems()) {
 			if ((stowable_it.first)->getID() == item.getID()) {
 				itemDict.push_back(stowable_it);
@@ -5761,22 +5761,25 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 
 	StashContainerList itemDict;
 	if (allItems) {
-		auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
-		if (inventoryItem)
+		// Stow player backpack
+		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
+			!item->isInsideDepot(true))
 		{
 			sendStowItems(*item, *inventoryItem, itemDict);
-			DepotLocker *depotLocker = getDepotLocker(getLastDepotId());
-			if (depotLocker == nullptr) {
-				return;
-			}
-			auto [itemVector, itemMap] = requestLockerItems(depotLocker);
-			for (auto lockerItem : itemVector)
-			{
-				if (lockerItem == nullptr)
-				{
-					break;
-				}
+		}
 
+		// Stow locker items
+		DepotLocker *depotLocker = getDepotLocker(getLastDepotId());
+		auto [itemVector, itemMap] = requestLockerItems(depotLocker);
+		for (auto lockerItem : itemVector)
+		{
+			if (lockerItem == nullptr)
+			{
+				break;
+			}
+
+			if (item->isInsideDepot(true))
+			{
 				sendStowItems(*item, *lockerItem, itemDict);
 			}
 		}
@@ -6136,9 +6139,14 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 
 std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker) const
 {
+	if (depotLocker == nullptr) {
+		SPDLOG_ERROR("{} - Depot locker or inbox is nullptr", __FUNCTION__);
+		return {};
+	}
+
 	std::map<uint16_t, uint32_t> marketItems;
 	std::vector<Item*> itemVector;
-	std::vector<Container*> containers{ depotLocker };
+	std::vector<Container*> containers {depotLocker};
 
 	size_t size = 0;
 	do {
@@ -6170,7 +6178,7 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 		}
 	} while (size < containers.size());
 	StashItemList stashToSend = getStashItems();
-	uint16_t countSize = 0;
+	uint32_t countSize = 0;
 	for (auto [itemId, itemCount] : stashToSend)
 	{
 		countSize += itemCount;

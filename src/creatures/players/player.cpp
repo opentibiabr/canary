@@ -6140,7 +6140,7 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker) const
 {
 	if (depotLocker == nullptr) {
-		SPDLOG_ERROR("{} - Depot locker or inbox is nullptr", __FUNCTION__);
+		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
 		return {};
 	}
 

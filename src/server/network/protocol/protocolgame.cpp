@@ -4066,78 +4066,13 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 
 	player->setInMarket(true);
 
-	std::map<uint16_t, uint32_t> depotItems;
-	std::forward_list<Container *> containerList{depotLocker};
-
-	do
-	{
-		Container *container = containerList.front();
-		if (!container)
-		{
-			continue;
-		}
-		containerList.pop_front();
-
-		for (Item *item : container->getItemList())
-		{
-			if (!item)
-			{
-				continue;
-			}
-
-			Container *c = item->getContainer();
-			if (c && !c->empty())
-			{
-				containerList.push_front(c);
-				continue;
-			}
-
-			const ItemType &itemType = Item::items[item->getID()];
-			if (itemType.wareId == 0)
-			{
-				continue;
-			}
-
-			if (c && (!itemType.isContainer() || c->capacity() != itemType.maxItems))
-			{
-				continue;
-			}
-
-			if (!item->hasMarketAttributes())
-			{
-				continue;
-			}
-
-			depotItems[itemType.wareId] += Item::countByType(item, -1);
-		}
-	} while (!containerList.empty());
-	StashItemList stashToSend = player->getStashItems();
-	uint16_t size = 0;
-	for (auto item : stashToSend)
-	{
-		size += ceil(item.second);
-	}
-
-	do
-	{
-		for (auto item : stashToSend)
-		{
-
-			const ItemType &itemType = Item::items[item.first];
-			if (itemType.wareId == 0)
-			{
-				continue;
-			}
-
-			size = size - item.second;
-			depotItems[itemType.wareId] += item.second;
-		}
-	} while (size > 0);
-	uint16_t itemsToSend = std::min<size_t>(depotItems.size(), std::numeric_limits<uint16_t>::max());
+	// Only use here locker items, itemVector is for use of Game::createMarketOffer
+	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker);
+	auto itemsToSend = static_cast<uint16_t>(std::min<size_t>(lockerItems.size(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(itemsToSend);
 
 	uint16_t i = 0;
-	for (std::map<uint16_t, uint32_t>::const_iterator it = depotItems.begin(); i < itemsToSend; ++it, ++i)
+	for (auto it = lockerItems.begin(); i < itemsToSend; ++it, ++i)
 	{
 		msg.add<uint16_t>(it->first);
 		if (Item::items[it->first].upgradeClassification > 0)

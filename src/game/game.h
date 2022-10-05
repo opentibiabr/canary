@@ -390,8 +390,6 @@ class Game
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
-		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
-
 		static void updatePremium(account::Account& account);
 
 		void cleanup();
@@ -492,7 +490,7 @@ class Game
 
 		phmap::flat_hash_map<Tile*, Container*> browseFields;
 
-		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
+		void internalRemoveItems(const std::vector<Item*> itemVector, uint32_t amount, bool stackable);
 
 		BedItem* getBedBySleeper(uint32_t guid) const;
 		void setBedSleeper(BedItem* bed, uint32_t guid);

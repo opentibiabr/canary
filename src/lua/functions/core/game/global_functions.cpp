@@ -438,7 +438,8 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 	if (area || areaId == 0) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint8_t>(L, 5);
-		params.conditionList.emplace_front(condition);
+		params.conditionList.emplace_back(condition);
+		params.conditionList.shrink_to_fit();
 		Combat::doCombatCondition(creature, getPosition(L, 2), area, params);
 		pushBoolean(L, true);
 	} else {
@@ -473,7 +474,8 @@ int GlobalFunctions::luaDoTargetCombatCondition(lua_State* L) {
 
 	CombatParams params;
 	params.impactEffect = getNumber<uint8_t>(L, 4);
-	params.conditionList.emplace_front(condition->clone());
+	params.conditionList.emplace_back(condition->clone());
+	params.conditionList.shrink_to_fit();
 	Combat::doCombatCondition(creature, target, params);
 	pushBoolean(L, true);
 	return 1;

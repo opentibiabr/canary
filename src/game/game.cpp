@@ -6928,7 +6928,11 @@ void Game::updateCreatureType(Creature* creature)
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
 		for (Creature* spectator : spectators) {
 			Player* player = spectator->getPlayer();
-			if (masterPlayer == player) {
+			if (!player) {
+				continue;
+			}
+
+			if (player == masterPlayer) {
 				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
 			} else {
 				player->sendCreatureType(creature, creatureType);

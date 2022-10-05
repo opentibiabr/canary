@@ -7642,6 +7642,10 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 		auto [itemVector, itemMap] = player.requestLockerItems(&depotLocker);
 		uint32_t count = 0;
 		for (auto item : itemVector) {
+			if (itemType.id != item->getID()) {
+				continue;
+			}
+
 			if (itemType.stackable) {
 				uint16_t removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
 				removeAmount -= removeCount;
@@ -7680,6 +7684,17 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 {
 	// Before creating the offer we will compare it with the RETURN VALUE ERROR
 	std::string offerStatus = "No error.";
+	Player *player = getPlayerByID(playerId);
+	if (!player) {
+		offerStatus = "Failed to load player";
+		return;
+	}
+
+	if (!player->isInMarket()) {
+		offerStatus = "Failed to load market";
+		return;
+	}
+
 	if (price == 0) {
 		SPDLOG_ERROR("{} - Player with name {} selling offer with a invalid price", __FUNCTION__, player->getName());
 		offerStatus = "Failed to process price";
@@ -7694,17 +7709,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL) {
 		offerStatus = "Failed to process type";
-		return;
-	}
-
-	Player *player = getPlayerByID(playerId);
-	if (!player) {
-		offerStatus = "Failed to load player";
-		return;
-	}
-
-	if (!player->isInMarket()) {
-		offerStatus = "Failed to load market";
 		return;
 	}
 

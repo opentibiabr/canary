@@ -7771,7 +7771,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	}
 
 	if (offer.type == MARKETACTION_BUY) {
-		player->setBankBalance( player->getBankBalance() + static_cast<uint64_t>(offer.price) * offer.amount);
+		player->setBankBalance( player->getBankBalance() + offer.price * offer.amount);
 		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {

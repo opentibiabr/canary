@@ -45,7 +45,7 @@ class IOMarket
 		static void acceptOffer(uint32_t offerId, uint16_t amount);
 		static void deleteOffer(uint32_t offerId);
 
-		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint32_t price, time_t timestamp, MarketOfferState_t state);
+		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint64_t price, time_t timestamp, MarketOfferState_t state);
 		static bool moveOfferToHistory(uint32_t offerId, MarketOfferState_t state);
 
 		void updateStatistics();

@@ -7176,8 +7176,7 @@ void ProtocolGame::sendItemsPrice()
 	msg.add<uint16_t>(g_game().getItemsPriceCount());
 	if (g_game().getItemsPriceCount() > 0)
 	{
-		std::map<uint16_t, uint64_t> items = g_game().getItemsPrice();
-		for (const auto &[itemId, itemPrice] : items)
+		for (const auto &[itemId, itemPrice] : g_game().getItemsPrice())
 		{
 			msg.add<uint16_t>(itemId);
 			if (Item::items[itemId].upgradeClassification > 0)

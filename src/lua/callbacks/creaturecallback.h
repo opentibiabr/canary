@@ -22,12 +22,14 @@
 
 #include "otpch.h"
 #include "creatures/creature.h"
+
 class Creature;
 
-class CreatureCallback {
+class CreatureCallback
+{
 	public:
-		CreatureCallback(LuaScriptInterface* scriptInterface, Creature* targetCreature)
-			: scriptInterface(scriptInterface), targetCreature(targetCreature) {};
+		CreatureCallback(LuaScriptInterface* initScriptInterface, Creature* initTargetCreature)
+			: scriptInterface(initScriptInterface), targetCreature(initTargetCreature) {};
 		~CreatureCallback() {}
 
 		bool startScriptInterface(int32_t scriptId);
@@ -68,10 +70,10 @@ class CreatureCallback {
 		static std::string getCreatureClass(Creature *creature);
 
 	private:
-		LuaScriptInterface* scriptInterface;
-		Creature* targetCreature;
+		LuaScriptInterface* scriptInterface = nullptr;
+		Creature* targetCreature = nullptr;
 		uint32_t params = 0;
-		lua_State* L;
+		lua_State* L = nullptr;
 };
 
 #endif  // SRC_LUA_CALLBACKS_CREATURECALLBACK_H_

@@ -1535,14 +1535,7 @@ int PlayerFunctions::luaPlayerSetBankBalance(lua_State* L) {
 		return 1;
 	}
 
-	int64_t balance = getNumber<int64_t>(L, 2);
-	if (balance < 0) {
-		reportErrorFunc("Invalid bank balance value.");
-		lua_pushnil(L);
-		return 1;
-	}
-
-	player->setBankBalance(balance);
+	player->setBankBalance(getNumber<uint64_t>(L, 2));
 	pushBoolean(L, true);
 	return 1;
 }

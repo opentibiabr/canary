@@ -1952,7 +1952,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 {
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
-		SPDLOG_DEBUG("{} - Cylinder is nullpt", __FUNCTION__);
+		SPDLOG_DEBUG("{} - Cylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	Tile* fromTile = cylinder->getTile();
@@ -7642,6 +7642,10 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 		auto [itemVector, itemMap] = player.requestLockerItems(&depotLocker);
 		uint32_t count = 0;
 		for (auto item : itemVector) {
+			if (itemType.id != item->getID()) {
+				continue;
+			}
+
 			if (itemType.stackable) {
 				uint16_t removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
 				removeAmount -= removeCount;
@@ -7676,29 +7680,33 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 	}
 }
 
-void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
+bool checkCanInitCreateMarketOffer(Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::string offerStatus)
 {
-	// Before creating the offer we will compare it with the RETURN VALUE ERROR
-	std::string offerStatus = "No error.";
-	if (price == 0 || price > 999999999) {
-		offerStatus = "Failed to process price";
-		return;
-	}
-
-	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL) {
-		offerStatus = "Failed to process type";
-		return;
-	}
-
-	Player *player = getPlayerByID(playerId);
 	if (!player) {
 		offerStatus = "Failed to load player";
-		return;
+		return false;
 	}
 
 	if (!player->isInMarket()) {
 		offerStatus = "Failed to load market";
-		return;
+		return false;
+	}
+
+	if (price == 0) {
+		SPDLOG_ERROR("{} - Player with name {} selling offer with a invalid price", __FUNCTION__, player->getName());
+		offerStatus = "Failed to process price";
+		return false;
+	}
+
+	if (price > 999999999999) {
+		SPDLOG_ERROR("{} - Player with name {} is trying to sell an item with a higher than allowed value", __FUNCTION__, player->getName());
+		offerStatus = "Player is trying to sell an item with a higher than allowed value";
+		return false;
+	}
+
+	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL) {
+		offerStatus = "Failed to process type";
+		return false;
 	}
 
 	// Check market exhausted
@@ -7706,37 +7714,54 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		offerStatus = "Market exhausted";
-		return;
+		return false;
 	}
 
-	const ItemType &it = Item::items[itemId];
 	if (it.id == 0 || it.wareId == 0) {
 		offerStatus = "Failed to load offer or item id";
-		return;
+		return false;
 	}
 
 	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000) {
 		SPDLOG_ERROR("{} - Player: {} invalid offer amount: {}", __FUNCTION__, player->getName(), amount);
 		offerStatus = "Failed to load amount";
-		return;
+		return false;
 	}
 	SPDLOG_DEBUG("{} - Offer amount: {}", __FUNCTION__, amount);
 
 	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
 		offerStatus = "Only premium can create offers";
-		return;
+		return false;
 	}
 
 	const uint32_t maxOfferCount = g_configManager().getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
 	if (maxOfferCount != 0 && IOMarket::getPlayerOfferCount(player->getGUID()) >= maxOfferCount) {
 		offerStatus = "Excedeed max offer count";
+		return false;
+	}
+
+	return true;
+}
+
+void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint64_t price, bool anonymous)
+{
+	// Initialize variables
+	// Before creating the offer we will compare it with the RETURN VALUE ERROR
+	std::string offerStatus = "No error.";
+	Player *player = getPlayerByID(playerId);
+	const ItemType &it = Item::items[itemId];
+
+	// Make sure everything is ok before the create market offer starts
+	if (!checkCanInitCreateMarketOffer(player, type, it, amount, price, offerStatus)) {
+		SPDLOG_ERROR("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus);
 		return;
 	}
 
-	uint64_t calcFee = (price / 100.) *amount;
-	uint32_t minFee = std::min<uint32_t> (100000, calcFee);
-	uint32_t fee = std::max<uint32_t> (20, minFee);
+	uint64_t calcFee = (price / 100) * amount;
+	uint64_t minFee = std::min<uint64_t>(100000, calcFee);
+	uint64_t fee = std::max<uint64_t>(20, minFee);
+
 	if (type == MARKETACTION_SELL) {
 		if (fee > (player->getBankBalance() + player->getMoney())) {
 			offerStatus = "Fee is greater than player money";
@@ -7829,7 +7854,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	}
 
 	if (offer.type == MARKETACTION_BUY) {
-		player->setBankBalance( player->getBankBalance() + static_cast<uint64_t>(offer.price) * offer.amount);
+		player->setBankBalance( player->getBankBalance() + offer.price * offer.amount);
 		// Send market window again for update stats
 		player->sendMarketEnter(player->getLastDepotId());
 	} else {

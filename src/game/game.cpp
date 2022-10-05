@@ -7626,7 +7626,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		return;
 	}
 
-	if (price == 0 || price > 999999999999) {
+	if (price == 0) {
+		SPDLOG_ERROR("{} - Player with name {} selling offer with a invalid price", __FUNCTION__, player->getName());
+		return;
+	}
+
+	if (price > 999999999999) {
 		SPDLOG_ERROR("{} - Player with name {} is trying to sell an item with a higher than allowed value", __FUNCTION__, player->getName());
 		return;
 	}

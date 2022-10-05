@@ -80,34 +80,27 @@ int GuildFunctions::luaGuildGetMembersOnline(lua_State* L) {
 }
 
 int GuildFunctions::luaGuildGetBankBalance(lua_State* L) {
-  // guild:getBankBalance()
-  Guild* guild = getUserdata<Guild>(L, 1);
-  if (guild) {
-	lua_pushnumber(L, guild->getBankBalance());
-  } else {
-	lua_pushnil(L);
-  }
-  return 1;
+	// guild:getBankBalance()
+	Guild* guild = getUserdata<Guild>(L, 1);
+	if (guild) {
+		lua_pushnumber(L, guild->getBankBalance());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
 }
 
 int GuildFunctions::luaGuildSetBankBalance(lua_State* L) {
-  // guild:setBankBalance(bankBalance)
-  Guild* guild = getUserdata<Guild>(L, 1);
-  if (!guild) {
-	lua_pushnil(L);
-	return 1;
-  }
+	// guild:setBankBalance(bankBalance)
+	Guild* guild = getUserdata<Guild>(L, 1);
+	if (!guild) {
+		lua_pushnil(L);
+		return 1;
+	}
 
-  int64_t balance = getNumber<int64_t>(L, 2);
-  if (balance < 0) {
-	reportErrorFunc("Invalid bank balance value.");
-	lua_pushnil(L);
+	guild->setBankBalance(getNumber<uint64_t>(L, 2));
+	pushBoolean(L, true);
 	return 1;
-  }
-
-  guild->setBankBalance(balance);
-  pushBoolean(L, true);
-  return 1;
 }
 
 int GuildFunctions::luaGuildAddRank(lua_State* L) {

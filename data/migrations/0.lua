@@ -1,5 +1,5 @@
 function onUpdateDatabase()
-	Spdlog.info("Updating database to version 19 (Prey system rework + Task hunting system)")
+	Spdlog.info("Updating database to version 1 (Prey system rework + Task hunting system)")
 	db.query([[
 		ALTER TABLE `players`
 			DROP `prey_stamina_1`,

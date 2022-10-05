@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '1'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '2'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -423,7 +423,7 @@ CREATE TABLE IF NOT EXISTS `market_history` (
     `sale` tinyint(1) NOT NULL DEFAULT '0',
     `itemtype` int(10) UNSIGNED NOT NULL,
     `amount` smallint(5) UNSIGNED NOT NULL,
-    `price` int(10) UNSIGNED NOT NULL DEFAULT '0',
+    `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `expires_at` bigint(20) UNSIGNED NOT NULL,
     `inserted` bigint(20) UNSIGNED NOT NULL,
     `state` tinyint(1) UNSIGNED NOT NULL,
@@ -443,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
     `amount` smallint(5) UNSIGNED NOT NULL,
     `created` bigint(20) UNSIGNED NOT NULL,
     `anonymous` tinyint(1) NOT NULL DEFAULT '0',
-    `price` int(10) UNSIGNED NOT NULL DEFAULT '0',
+    `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     INDEX `sale` (`sale`,`itemtype`),
     INDEX `created` (`created`),
     INDEX `player_id` (`player_id`),

@@ -1106,6 +1106,8 @@ std::string getFirstLine(const std::string& str)
 const char* getReturnMessage(ReturnValue value)
 {
 	switch (value) {
+		case RETURNVALUE_NOERROR:
+			return "No error.";
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
@@ -1148,8 +1150,8 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_CONTAINERNOTENOUGHROOM:
 			return "You cannot put more objects in this container.";
 
-    case RETURNVALUE_ONLYAMMOINQUIVER:
-      return "This quiver only holds arrows and bolts.\nYou cannot put any other items in it.";
+		case RETURNVALUE_ONLYAMMOINQUIVER:
+			return "This quiver only holds arrows and bolts.\nYou cannot put any other items in it.";
 
 		case RETURNVALUE_NEEDEXCHANGE:
 		case RETURNVALUE_NOTENOUGHROOM:

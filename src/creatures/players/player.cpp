@@ -5739,6 +5739,20 @@ bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 	return true;
 }
 
+void sendStowItems(Item &item, Item &stowItem, StashContainerList &itemDict) {
+	if (stowItem.getID() == item.getID()) {
+		itemDict.push_back(std::pair<Item*, uint32_t>(&stowItem, stowItem.getItemCount()));
+	}
+
+	if (auto container = stowItem.getContainer()) {
+		for (auto stowable_it : container->getStowableItems()) {
+			if ((stowable_it.first)->getID() == item.getID()) {
+				itemDict.push_back(stowable_it);
+			}
+		}
+	}
+}
+
 void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	if (!item || !item->isItemStorable()) {
 		sendCancelMessage("This item cannot be stowed here.");
@@ -5747,22 +5761,26 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 
 	StashContainerList itemDict;
 	if (allItems) {
-		for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-			Item* inventoryItem = inventory[i];
-			if (!inventoryItem) {
-				continue;
+		// Stow player backpack
+		if (auto inventoryItem = getInventoryItem(CONST_SLOT_BACKPACK);
+			!item->isInsideDepot(true))
+		{
+			sendStowItems(*item, *inventoryItem, itemDict);
+		}
+
+		// Stow locker items
+		DepotLocker *depotLocker = getDepotLocker(getLastDepotId());
+		auto [itemVector, itemMap] = requestLockerItems(depotLocker);
+		for (auto lockerItem : itemVector)
+		{
+			if (lockerItem == nullptr)
+			{
+				break;
 			}
 
-			if (inventoryItem->getID() == item->getID()) {
-				itemDict.push_back(std::pair<Item*, uint32_t>(inventoryItem, inventoryItem->getItemCount()));
-			}
-
-			if (Container* container = inventoryItem->getContainer()) {
-				for (auto stowable_it : container->getStowableItems()) {
-					if ((stowable_it.first)->getID() == item->getID()) {
-						itemDict.push_back(stowable_it);
-					}
-				}
+			if (item->isInsideDepot(true))
+			{
+				sendStowItems(*item, *lockerItem, itemDict);
 			}
 		}
 	} else if (item->getContainer()) {
@@ -5982,7 +6000,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 
 	if (const ItemType& iType = Item::items[itemId];
 			iType.stackable && iType.wareId > 0) {
-		stashCount = static_cast<uint32_t>(getStashItemCount(itemId));
+		stashCount = getStashItemCount(itemId);
 	}
 
 	const DepotLocker* depotLocker = getDepotLocker(getLastDepotId());
@@ -6117,6 +6135,71 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	}
 
 	return nullptr;
+}
+
+std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker) const
+{
+	if (depotLocker == nullptr) {
+		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
+		return {};
+	}
+
+	std::map<uint16_t, uint32_t> marketItems;
+	std::vector<Item*> itemVector;
+	std::vector<Container*> containers {depotLocker};
+
+	size_t size = 0;
+	do {
+		const Container* container = containers[size];
+		size++;
+
+		for (Item* item : container->getItemList()) {
+			Container* lockerContainers = item->getContainer();
+			if (lockerContainers && !lockerContainers->empty()) {
+				containers.push_back(lockerContainers);
+				continue;
+			}
+
+			const ItemType& itemType = Item::items[item->getID()];
+			if (itemType.wareId == 0) {
+				continue;
+			}
+
+			if (lockerContainers && (!itemType.isContainer() || lockerContainers->capacity() != itemType.maxItems)) {
+				continue;
+			}
+
+			if (!item->hasMarketAttributes()) {
+				continue;
+			}
+
+			marketItems[itemType.wareId] += Item::countByType(item, -1);
+			itemVector.push_back(item);
+		}
+	} while (size < containers.size());
+	StashItemList stashToSend = getStashItems();
+	uint32_t countSize = 0;
+	for (auto [itemId, itemCount] : stashToSend)
+	{
+		countSize += itemCount;
+	}
+
+	do
+	{
+		for (auto [itemId, itemCount] : stashToSend)
+		{
+			const ItemType &itemType = Item::items[itemId];
+			if (itemType.wareId == 0)
+			{
+				continue;
+			}
+
+			countSize = countSize - itemCount;
+			marketItems[itemType.wareId] += itemCount;
+		}
+	} while (countSize > 0);
+
+	return std::make_pair(itemVector, marketItems);
 }
 
 /*******************************************************************************

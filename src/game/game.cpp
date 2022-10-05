@@ -7676,7 +7676,7 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 	}
 }
 
-void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous)
+void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint64_t price, bool anonymous)
 {
 	// Before creating the offer we will compare it with the RETURN VALUE ERROR
 	std::string offerStatus = "No error.";

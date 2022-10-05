@@ -7680,8 +7680,15 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 {
 	// Before creating the offer we will compare it with the RETURN VALUE ERROR
 	std::string offerStatus = "No error.";
-	if (price == 0 || price > 999999999) {
+	if (price == 0) {
+		SPDLOG_ERROR("{} - Player with name {} selling offer with a invalid price", __FUNCTION__, player->getName());
 		offerStatus = "Failed to process price";
+		return;
+	}
+
+	if (price > 999999999999) {
+		SPDLOG_ERROR("{} - Player with name {} is trying to sell an item with a higher than allowed value", __FUNCTION__, player->getName());
+		offerStatus = "Player is trying to sell an item with a higher than allowed value";
 		return;
 	}
 
@@ -7698,16 +7705,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	if (!player->isInMarket()) {
 		offerStatus = "Failed to load market";
-		return;
-	}
-
-	if (price == 0) {
-		SPDLOG_ERROR("{} - Player with name {} selling offer with a invalid price", __FUNCTION__, player->getName());
-		return;
-	}
-
-	if (price > 999999999999) {
-		SPDLOG_ERROR("{} - Player with name {} is trying to sell an item with a higher than allowed value", __FUNCTION__, player->getName());
 		return;
 	}
 

@@ -32,7 +32,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 	MarketOfferList offerList;
 
 	std::ostringstream query;
-	query << "SELECT `id`, `amount`, `price`, `tier`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = " << action << " AND `itemtype` = " << itemId << " AND `tier` = " << tier;
+	query << "SELECT `id`, `amount`, `price`, `tier`, `created`, `anonymous`, (SELECT `name` FROM `players` WHERE `id` = `player_id`) AS `player_name` FROM `market_offers` WHERE `sale` = " << action << " AND `itemtype` = " << itemId << " AND `tier` = " << std::to_string(tier);
 
 	DBResult_ptr result = Database::getInstance().storeQuery(query.str());
 	if (!result) {
@@ -286,7 +286,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	std::ostringstream query;
 	query << "INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`, `tier`) VALUES ("
 		<< playerId << ',' << type << ',' << itemId << ',' << amount << ',' << price << ','
-		<< timestamp << ',' << time(nullptr) << ',' << state << ',' << tier << ')';
+		<< timestamp << ',' << time(nullptr) << ',' << state << ',' << std::to_string(tier) << ')';
 	g_databaseTasks().addTask(query.str());
 }
 

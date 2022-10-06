@@ -578,9 +578,8 @@ enum CombatType_t : uint16_t {
 };
 
 enum PlayerAsyncOngoingTaskFlags : uint64_t {
-	PlayerAsyncTask_Highscore = 1 << 0,
-	PlayerAsyncTask_RecentDeaths = 1 << 1,
-	PlayerAsyncTask_RecentPvPKills = 1 << 2
+	PlayerAsyncTask_RecentDeaths = 1 << 0,
+	PlayerAsyncTask_RecentPvPKills = 1 << 1
 };
 
 enum PartyAnalyzer_t : uint8_t {
@@ -893,6 +892,32 @@ struct PartyAnalyzer {
 
 	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
 	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
+};
+
+struct Achievement {
+	Achievement() {}
+
+	std::string name;
+	std::string description;
+
+	bool secret = false;
+
+	uint8_t grade = 0;
+	uint8_t points = 0;
+
+	uint16_t id = 0;
+};
+
+struct PlayerTitle {
+	PlayerTitle() {}
+
+	std::string maleName;
+	std::string femaleName;
+	std::string description;
+
+	bool permanent = false;
+
+	uint16_t id = 0;
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

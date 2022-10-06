@@ -124,14 +124,14 @@ struct HighscoreCategory {
 
 struct HighscoreCharacter {
 	HighscoreCharacter(std::string name, uint64_t points,
-                       uint32_t id, uint32_t rank,
-                       uint16_t level, uint8_t vocation) :
+                       uint32_t id, uint16_t level,
+					   uint8_t vocation, uint8_t title) :
         name(std::move(name)),
         points(points),
         id(id),
-        rank(rank),
         level(level),
-        vocation(vocation) {}
+        vocation(vocation),
+		title(title) {}
 
 	std::string name;
 	uint64_t points;
@@ -139,6 +139,7 @@ struct HighscoreCharacter {
 	uint32_t rank;
 	uint16_t level;
 	uint8_t vocation;
+	uint8_t title;
 };
 
 #endif  // SRC_SERVER_SERVER_DEFINITIONS_HPP_

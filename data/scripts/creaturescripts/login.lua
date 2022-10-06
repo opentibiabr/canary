@@ -13,6 +13,15 @@ function login.onLogin(player)
 		player:sendTextMessage(MESSAGE_LOGIN, string.format("Your last visit in ".. SERVER_NAME ..": %s.", os.date("%d. %b %Y %X", player:getLastLoginSaved())))
 	end
 
+	-- Loyalty system
+	player:initializeLoyaltySystem()
+
+	-- Title system
+	player:initializeTitleSystem()
+
+	-- Badge system
+	player:initializeBadgeSystem()
+
 	-- Stamina
 	nextUseStaminaTime[player.uid] = 0
 

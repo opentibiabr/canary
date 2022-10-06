@@ -4065,86 +4065,22 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 
 	player->setInMarket(true);
 
-	ItemsTierCountList depotItems;
-	std::forward_list<Container *> containerList{depotLocker};
-
-	do
-	{
-		Container *container = containerList.front();
-		if (!container)
-		{
-			continue;
-		}
-		containerList.pop_front();
-
-		for (Item *item : container->getItemList())
-		{
-			if (!item)
-			{
-				continue;
-			}
-
-			Container *c = item->getContainer();
-			if (c && !c->empty())
-			{
-				containerList.push_front(c);
-				continue;
-			}
-
-			const ItemType &itemType = Item::items[item->getID()];
-			if (itemType.wareId == 0)
-			{
-				continue;
-			}
-
-			if (c && (!itemType.isContainer() || c->capacity() != itemType.maxItems))
-			{
-				continue;
-			}
-
-			if (!item->hasMarketAttributes())
-			{
-				continue;
-			}
-
-			(depotItems[itemType.wareId])[item->getTier()] += Item::countByType(item, -1);
-		}
-	} while (!containerList.empty());
-	StashItemList stashToSend = player->getStashItems();
-	uint16_t size = 0;
-	for (auto item : stashToSend)
-	{
-		size += ceil(item.second);
-	}
-
-	do
-	{
-		for (auto item : stashToSend)
-		{
-
-			const ItemType &itemType = Item::items[item.first];
-			if (itemType.wareId == 0)
-			{
-				continue;
-			}
-
-			size = size - item.second;
-			(depotItems[itemType.wareId])[0] += item.second;
-		}
-	} while (size > 0);
+	// Only use here locker items, itemVector is for use of Game::createMarketOffer
+	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker);
 	auto countPosition = msg.getBufferPosition();
 	msg.skipBytes(2); // total items count
 
 	uint16_t itemCount = 0;
-	for (const auto [itemId, item] : depotItems) {
-			for (const auto [tier, count] : item) {
-				msg.add<uint16_t>(itemId);
-				if (Item::items[itemId].upgradeClassification > 0) {
-					msg.addByte(tier);
-				}
-				msg.add<uint16_t>(static_cast<uint16_t>(count));
-				itemCount++;
+	for (const auto [itemId, tierAndCountMap] : lockerItems)
+	{
+		for (const auto [tier, count] : tierAndCountMap) {
+			msg.add<uint16_t>(itemId);
+			if (Item::items[itemId].upgradeClassification > 0) {
+				msg.addByte(tier);
 			}
+			msg.add<uint16_t>(static_cast<uint16_t>(count));
+			itemCount++;
+		}
 	}
 
 	msg.setBufferPosition(countPosition);
@@ -7185,16 +7121,14 @@ void ProtocolGame::sendItemsPrice()
 	msg.add<uint16_t>(g_game().getItemsPriceCount());
 	if (g_game().getItemsPriceCount() > 0)
 	{
-		std::map<uint16_t, uint32_t> items = g_game().getItemsPrice();
-		for (const auto &it : items)
+		for (const auto &[itemId, itemPrice] : g_game().getItemsPrice())
 		{
-			msg.add<uint16_t>(it.first);
-			if (Item::items[it.first].upgradeClassification > 0)
+			msg.add<uint16_t>(itemId);
+			if (Item::items[itemId].upgradeClassification > 0)
 			{
 				msg.addByte(Item(it.first).getTier());
 			}
-			msg.add<uint32_t>(it.second);
-			msg.add<uint32_t>(0);
+			msg.add<uint64_t>(itemPrice);
 		}
 	}
 

@@ -374,7 +374,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 #ifndef _WIN32
 __attribute__ ((used)) void saveServer() {
-	if(g_game.getPlayersOnline() > 0)
+	if(g_game().getPlayersOnline() > 0)
 		g_game().saveGameState(true);
 }
 #endif

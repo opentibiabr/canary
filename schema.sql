@@ -427,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `market_history` (
     `expires_at` bigint(20) UNSIGNED NOT NULL,
     `inserted` bigint(20) UNSIGNED NOT NULL,
     `state` tinyint(1) UNSIGNED NOT NULL,
-    `tier` smallint UNSIGNED NOT NULL DEFAULT '0',
+    `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
     INDEX `player_id` (`player_id`,`sale`),
     CONSTRAINT `market_history_pk` PRIMARY KEY (`id`),
     CONSTRAINT `market_history_players_fk`
@@ -445,7 +445,7 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
     `created` bigint(20) UNSIGNED NOT NULL,
     `anonymous` tinyint(1) NOT NULL DEFAULT '0',
     `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
-    `tier` smallint UNSIGNED NOT NULL DEFAULT '0',
+    `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
     INDEX `sale` (`sale`,`itemtype`),
     INDEX `created` (`created`),
     INDEX `player_id` (`player_id`),

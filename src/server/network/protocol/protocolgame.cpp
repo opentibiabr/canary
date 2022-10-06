@@ -7126,7 +7126,7 @@ void ProtocolGame::sendItemsPrice()
 			msg.add<uint16_t>(itemId);
 			if (Item::items[itemId].upgradeClassification > 0)
 			{
-				msg.addByte(Item(it.first).getTier());
+				msg.addByte(Item(itemId).getTier());
 			}
 			msg.add<uint64_t>(itemPrice);
 		}

@@ -27,7 +27,7 @@
 #include "game/scheduling/scheduler.h"
 
 
-MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId, uint16_t tier)
+MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier)
 {
 	MarketOfferList offerList;
 
@@ -336,7 +336,7 @@ void IOMarket::updateStatistics()
 	} while (result->next());
 }
 
-MarketStatistics* IOMarket::getPurchaseStatistics(uint16_t itemId, uint16_t tier)
+MarketStatistics* IOMarket::getPurchaseStatistics(uint16_t itemId, uint8_t tier)
 {
 	auto it = purchaseStatistics.find(itemId);
 	if (it == purchaseStatistics.end()) {
@@ -346,7 +346,7 @@ MarketStatistics* IOMarket::getPurchaseStatistics(uint16_t itemId, uint16_t tier
 	// todo: implement purchase statistics
 }
 
-MarketStatistics* IOMarket::getSaleStatistics(uint16_t itemId, uint16_t tier)
+MarketStatistics* IOMarket::getSaleStatistics(uint16_t itemId, uint8_t tier)
 {
 	auto it = saleStatistics.find(itemId);
 	if (it == saleStatistics.end()) {

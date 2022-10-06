@@ -267,7 +267,6 @@ target_sources(${PROJECT_NAME}
     map/house/house.cpp
     map/house/housetile.cpp
     map/map.cpp
-    otpch.cpp
     otserv.cpp
     security/rsa.cpp
     server/network/connection/connection.cpp

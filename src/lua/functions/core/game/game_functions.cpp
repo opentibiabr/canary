@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
@@ -27,7 +25,9 @@
 #include "io/iobestiary.h"
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
+#include "game/scheduling/tasks.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
+#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 
 // Game

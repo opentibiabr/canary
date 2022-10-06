@@ -20,8 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_ITEMS_ITEM_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/functions/items/container_functions.hpp"
 #include "lua/functions/items/imbuement_functions.hpp"
 #include "lua/functions/items/item_type_functions.hpp"

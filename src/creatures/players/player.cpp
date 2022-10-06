@@ -6149,14 +6149,14 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	return nullptr;
 }
 
-std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker) const
+std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(DepotLocker *depotLocker, uint8_t tier /*= tier*/) const
 {
 	if (depotLocker == nullptr) {
 		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
 		return {};
 	}
 
-	std::map<uint16_t, uint32_t> marketItems;
+	std::map<uint16_t, std::map<uint8_t, uint32_t>> lockerItems;
 	std::vector<Item*> itemVector;
 	std::vector<Container*> containers {depotLocker};
 
@@ -6185,7 +6185,11 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 				continue;
 			}
 
-			marketItems[itemType.wareId] += Item::countByType(item, -1);
+			if (tier != 0 && item->getTier() != tier) {
+				continue;
+			}
+
+			(lockerItems[itemType.wareId])[item->getTier()] += Item::countByType(item, -1);
 			itemVector.push_back(item);
 		}
 	} while (size < containers.size());
@@ -6207,11 +6211,11 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 			}
 
 			countSize = countSize - itemCount;
-			marketItems[itemType.wareId] += itemCount;
+			(lockerItems[itemType.wareId])[0] += itemCount;
 		}
 	} while (countSize > 0);
 
-	return std::make_pair(itemVector, marketItems);
+	return std::make_pair(itemVector, lockerItems);
 }
 
 /*******************************************************************************

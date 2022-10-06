@@ -150,13 +150,14 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				uint16_t tmpAmount = amount;
 				while (tmpAmount > 0) {
 					uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
-					if (Item* item = Item::CreateItem(itemType.id, stackCount); g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-						if (tier != 0) {
-							item->setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
-						}
-
+					Item* item = Item::CreateItem(itemType.id, stackCount);
+					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
 						delete item;
 						break;
+					}
+
+					if (tier != 0) {
+						item->setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
 					}
 
 					tmpAmount -= stackCount;
@@ -172,12 +173,12 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				for (uint16_t i = 0; i < amount; ++i) {
 					Item* item = Item::CreateItem(itemType.id, subType);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-						if (tier != 0) {
-							item->setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
-						}
-
 						delete item;
 						break;
+					}
+
+					if (tier != 0) {
+						item->setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
 					}
 				}
 			}

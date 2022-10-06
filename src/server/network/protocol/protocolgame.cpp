@@ -5585,7 +5585,7 @@ void ProtocolGame::sendInventoryIds()
 	NetworkMessage msg;
 	msg.addByte(0xF5);
 	auto countPosition = msg.getBufferPosition();
-	msg.skipBytes(2); // total items count
+	msg.skipBytes(2); // Total items count
 
 	for (uint16_t i = 1; i <= 11; i++)
 	{
@@ -5594,18 +5594,18 @@ void ProtocolGame::sendInventoryIds()
 		msg.add<uint16_t>(0x01);
 	}
 
-	uint16_t itemCount = 0;
+	uint16_t totalItemsCount = 0;
 	for (const auto [itemId, item] : items) {
 		for (const auto [tier, count] : item) {
 			msg.add<uint16_t>(itemId);
 			msg.addByte(tier);
 			msg.add<uint16_t>(count);
-			itemCount++;
+			totalItemsCount++;
 		}
 	}
 
 	msg.setBufferPosition(countPosition);
-	msg.add<uint16_t>(itemCount + 11);
+	msg.add<uint16_t>(totalItemsCount + 11);
 	writeToOutputBuffer(msg);
 }
 

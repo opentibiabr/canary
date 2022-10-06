@@ -31,7 +31,7 @@ class IOMarket
 			return instance;
 		}
 
-		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint16_t tier);
+		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
 		static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
 		static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
 
@@ -50,8 +50,8 @@ class IOMarket
 
 		void updateStatistics();
 
-		MarketStatistics* getPurchaseStatistics(uint16_t itemId, uint16_t tier);
-		MarketStatistics* getSaleStatistics(uint16_t itemId, uint16_t tier);
+		MarketStatistics* getPurchaseStatistics(uint16_t itemId, uint8_t tier);
+		MarketStatistics* getSaleStatistics(uint16_t itemId, uint8_t tier);
 
 	private:
 		IOMarket() = default;

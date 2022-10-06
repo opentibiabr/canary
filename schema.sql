@@ -424,10 +424,10 @@ CREATE TABLE IF NOT EXISTS `market_history` (
     `itemtype` int(10) UNSIGNED NOT NULL,
     `amount` smallint(5) UNSIGNED NOT NULL,
     `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
-    `tier` smallint UNSIGNED NOT NULL DEFAULT '0',
     `expires_at` bigint(20) UNSIGNED NOT NULL,
     `inserted` bigint(20) UNSIGNED NOT NULL,
     `state` tinyint(1) UNSIGNED NOT NULL,
+    `tier` smallint UNSIGNED NOT NULL DEFAULT '0',
     INDEX `player_id` (`player_id`,`sale`),
     CONSTRAINT `market_history_pk` PRIMARY KEY (`id`),
     CONSTRAINT `market_history_players_fk`

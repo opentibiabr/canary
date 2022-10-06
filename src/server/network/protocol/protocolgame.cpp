@@ -2711,13 +2711,16 @@ void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg)
 {
 	uint8_t type = msg.getByte();
 	uint16_t itemId = msg.get<uint16_t>();
-	uint8_t tier = msg.getByte();
+	uint8_t itemTier = 0;
+	if (Item::items[itemId].upgradeClassification > 0) {
+		itemTier = msg.getByte();
+	}
 	uint16_t amount = msg.get<uint16_t>();
 	uint64_t price = msg.get<uint64_t>();
 	bool anonymous = (msg.getByte() != 0);
 	if (amount > 0 && price > 0)
 	{
-		addGameTask(&Game::playerCreateMarketOffer, player->getID(), type, itemId, amount, price, tier, anonymous);
+		addGameTask(&Game::playerCreateMarketOffer, player->getID(), type, itemId, amount, price, itemTier, anonymous);
 	}
 }
 
@@ -4067,10 +4070,10 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker);
-	auto countPosition = msg.getBufferPosition();
-	msg.skipBytes(2); // total items count
+	auto totalItemsCountPosition = msg.getBufferPosition();
+	msg.skipBytes(2); // Total items count
 
-	uint16_t itemCount = 0;
+	uint16_t totalItemsCount = 0;
 	for (const auto [itemId, tierAndCountMap] : lockerItems)
 	{
 		for (const auto [tier, count] : tierAndCountMap) {
@@ -4079,12 +4082,12 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 				msg.addByte(tier);
 			}
 			msg.add<uint16_t>(static_cast<uint16_t>(count));
-			itemCount++;
+			totalItemsCount++;
 		}
 	}
 
-	msg.setBufferPosition(countPosition);
-	msg.add<uint16_t>(itemCount);
+	msg.setBufferPosition(totalItemsCountPosition);
+	msg.add<uint16_t>(totalItemsCount);
 	writeToOutputBuffer(msg);
 
 	updateCoinBalance();
@@ -4380,7 +4383,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	const ItemType &it = Item::items[itemId];
 
 	if (it.upgradeClassification > 0) {
-		msg.addByte(tier);
+		msg.addByte(it.upgradeClassification);
 	}
 
 	if (it.armor != 0)

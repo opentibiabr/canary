@@ -7364,16 +7364,7 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 	player->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 }
 
-bool canFinishOfferTransaction(Player &player, std::string &offerStatus) {
-	if (offerStatus != getReturnMessage(RETURNVALUE_NOERROR)) {
-		player.sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
-		return false;
-	}
-
-	return true;
-}
-
-void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::string offerStatus)
+void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus)
 {
 	uint16_t removeAmount = amount;
 	if (
@@ -7388,7 +7379,7 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 		} else if (player.withdrawItem(itemType.wareId, removeAmount)) {
 			removeAmount = 0;
 		} else {
-			offerStatus = "Failed to remove stash items from player";
+			offerStatus << "Failed to remove stash items from player " << player.getName();
 			return;
 		}
 	}
@@ -7412,7 +7403,7 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 				)
 				{
 					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
-					offerStatus = "Failed to remove items from player";
+					offerStatus << "Failed to remove items from player " << player.getName();
 					break;
 				}
 
@@ -7427,7 +7418,7 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 				auto ret = g_game().internalRemoveItem(item);
 				if (ret != RETURNVALUE_NOERROR) {
 					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
-					offerStatus = "Failed to remove items from player";
+					offerStatus << "Failed to remove items from player " << player.getName();
 					break;
 				}
 			}
@@ -7435,32 +7426,30 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 	}
 }
 
-bool checkCanInitCreateMarketOffer(Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::string offerStatus)
+bool checkCanInitCreateMarketOffer(Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus)
 {
 	if (!player) {
-		offerStatus = "Failed to load player";
+		offerStatus << "Failed to load player";
 		return false;
 	}
 
 	if (!player->isInMarket()) {
-		offerStatus = "Failed to load market";
+		offerStatus << "Failed to load market for player " << player->getName();
 		return false;
 	}
 
 	if (price == 0) {
-		SPDLOG_ERROR("{} - Player with name {} selling offer with a invalid price", __FUNCTION__, player->getName());
-		offerStatus = "Failed to process price";
+		offerStatus << "Failed to process price for player " << player->getName();
 		return false;
 	}
 
 	if (price > 999999999999) {
-		SPDLOG_ERROR("{} - Player with name {} is trying to sell an item with a higher than allowed value", __FUNCTION__, player->getName());
-		offerStatus = "Player is trying to sell an item with a higher than allowed value";
+		offerStatus << "Player " << player->getName() << " is trying to sell an item with a higher than allowed value";
 		return false;
 	}
 
 	if (type != MARKETACTION_BUY && type != MARKETACTION_SELL) {
-		offerStatus = "Failed to process type";
+		offerStatus << "Failed to process type " << type << "for player " << player->getName();
 		return false;
 	}
 
@@ -7468,31 +7457,29 @@ bool checkCanInitCreateMarketOffer(Player *player, uint8_t type, const ItemType 
 	if (player->isMarketExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
-		offerStatus = "Market exhausted";
 		return false;
 	}
 
 	if (it.id == 0 || it.wareId == 0) {
-		offerStatus = "Failed to load offer or item id";
+		offerStatus << "Failed to load offer or item id";
 		return false;
 	}
 
 	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000) {
-		SPDLOG_ERROR("{} - Player: {} invalid offer amount: {}", __FUNCTION__, player->getName(), amount);
-		offerStatus = "Failed to load amount";
+		offerStatus << "Failed to load amount " << amount << " for player " << player->getName();
 		return false;
 	}
+
 	SPDLOG_DEBUG("{} - Offer amount: {}", __FUNCTION__, amount);
 
 	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendTextMessage(MESSAGE_MARKET, "Only premium accounts may create offers for that object.");
-		offerStatus = "Only premium can create offers";
 		return false;
 	}
 
 	const uint32_t maxOfferCount = g_configManager().getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
 	if (maxOfferCount != 0 && IOMarket::getPlayerOfferCount(player->getGUID()) >= maxOfferCount) {
-		offerStatus = "Excedeed max offer count";
+		offerStatus << "Player " << player->getName() << "excedeed max offer count " << maxOfferCount;
 		return false;
 	}
 
@@ -7503,13 +7490,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 {
 	// Initialize variables
 	// Before creating the offer we will compare it with the RETURN VALUE ERROR
-	std::string offerStatus = "No error.";
+	std::ostringstream offerStatus;
 	Player *player = getPlayerByID(playerId);
 	const ItemType &it = Item::items[itemId];
 
 	// Make sure everything is ok before the create market offer starts
 	if (!checkCanInitCreateMarketOffer(player, type, it, amount, price, offerStatus)) {
-		SPDLOG_ERROR("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus);
+		SPDLOG_ERROR("{} - Player {} had an error on init offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
 
@@ -7519,14 +7506,13 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	if (type == MARKETACTION_SELL) {
 		if (fee > (player->getBankBalance() + player->getMoney())) {
-			offerStatus = "Fee is greater than player money";
+			offerStatus << "Fee is greater than player money";
 			return;
 		}
 
 		DepotLocker *depotLocker = player->getDepotLocker(player->getLastDepotId());
 		if (depotLocker == nullptr) {
-			SPDLOG_ERROR("[Game::playerCreateMarketOffer] - Sell depot chest is nullptr for player {}", player->getName());
-			offerStatus = "Depot locker is nullptr";
+			offerStatus << "Depot locker is nullptr for player " << player->getName();
 			return;
 		}
 
@@ -7537,7 +7523,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			account.GetCoins(&coins);
 
 			if (amount > coins) {
-				offerStatus = "Amount is greater than coins";
+				offerStatus << "Amount is greater than coins for player " << player->getName();
 				return;
 			}
 
@@ -7551,7 +7537,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 		uint64_t totalPrice = price * amount;
 		totalPrice += fee;
 		if (totalPrice > (player->getMoney() + player->getBankBalance())) {
-			offerStatus = "Fee is greater than player money (buy offer)";
+			offerStatus << "Fee is greater than player money (buy offer)";
 			return;
 		}
 
@@ -7561,8 +7547,9 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	// Send market window again for update item stats and avoid item clone
 	player->sendMarketEnter(player->getLastDepotId());
 
-	if (!canFinishOfferTransaction(*player, offerStatus)) {
-		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus);
+	if (!offerStatus.str().empty()) {
+		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
 
@@ -7673,15 +7660,15 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount)
 {
-	std::string offerStatus = "No error.";
+	std::ostringstream offerStatus;
 	Player* player = getPlayerByID(playerId);
 	if (!player) {
-		offerStatus = "Failed to load player";
+		offerStatus << "Failed to load player";
 		return;
 	}
 
 	if (!player->isInMarket()) {
-		offerStatus = "Failed to load market";
+		offerStatus << "Failed to load market";
 		return;
 	}
 
@@ -7694,20 +7681,19 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	MarketOfferEx offer = IOMarket::getOfferByCounter(timestamp, counter);
 	if (offer.id == 0) {
-		offerStatus = "Failed to load offer id";
+		offerStatus << "Failed to load offer id";
 		return;
 	}
 
 	const ItemType& it = Item::items[offer.itemId];
 	if (it.id == 0) {
-		offerStatus = "Failed to load item id";
+		offerStatus << "Failed to load item id";
 		return;
 	}
 
 	if (amount == 0 || !it.stackable && amount > 2000 || it.stackable && amount > 64000 || amount > offer.amount)
 	{
-		SPDLOG_ERROR("{} - Player: {} invalid offer amount: {}", __FUNCTION__, player->getName(), amount);
-		offerStatus = "Depot locker is nullptr";
+		offerStatus << "Invalid offer amount " << amount << " for player " << player->getName();
 		return;
 	}
 
@@ -7718,8 +7704,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	if (offer.type == MARKETACTION_BUY) {
 		DepotLocker* depotLocker = player->getDepotLocker(player->getLastDepotId());
 		if (depotLocker == nullptr) {
-			SPDLOG_ERROR("{} - Buy depot chest is nullptr", __FUNCTION__);
-			offerStatus = "Depot locker is nullptr";
+			offerStatus << "Depot locker is nullptr";
 			return;
 		}
 
@@ -7728,14 +7713,13 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			buyerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(buyerPlayer, offer.playerId)) {
 				delete buyerPlayer;
-				offerStatus = "Failed to load buyer player";
+				offerStatus << "Failed to load buyer player " << player->getName();
 				return;
 			}
 		}
 
 		if (player == buyerPlayer || player->getAccount() == buyerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
-			offerStatus = "Cannot accept own buy offer";
 			return;
 		}
 
@@ -7745,7 +7729,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			uint32_t coins;
 			account.GetCoins(&coins);
 			if (amount > coins) {
-				offerStatus = "Amount is greater than coins";
+				offerStatus << "Amount is greater than coins";
 				return;
 			}
 
@@ -7771,7 +7755,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (internalAddItem(buyerPlayer->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-					offerStatus = "Failed to add player inbox stackable item for buy offer";
+					offerStatus << "Failed to add player inbox stackable item for buy offer for player " << player->getName();
 					delete item;
 					break;
 				}
@@ -7799,7 +7783,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (internalAddItem(buyerPlayer->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-					offerStatus = "Failed to add player inbox item for buy offer";
+					offerStatus << "Failed to add player inbox item for buy offer for player " << player->getName();
 					delete item;
 					break;
 				}
@@ -7815,7 +7799,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (!sellerPlayer) {
 			sellerPlayer = new Player(nullptr);
 			if (!IOLoginData::loadPlayerById(sellerPlayer, offer.playerId)) {
-				offerStatus = "Failed to load seller player";
+				offerStatus << "Failed to load seller player";
 				delete sellerPlayer;
 				return;
 			}
@@ -7823,12 +7807,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 		if (player == sellerPlayer || player->getAccount() == sellerPlayer->getAccount()) {
 			player->sendTextMessage(MESSAGE_MARKET, "You cannot accept your own offer.");
-			offerStatus = "Cannot accept own sell offer";
 			return;
 		}
 
 		if (totalPrice > (player->getBankBalance() + player->getMoney())) {
-			offerStatus = "Cannot accept own sell offer";
 			return;
 		}
 
@@ -7864,7 +7846,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				)
 				{
 					SPDLOG_ERROR("{} - Create offer internal add item error code: {}", __FUNCTION__, ret);
-					offerStatus = "Failed to add inbox stackable item for sell offer";
+					offerStatus << "Failed to add inbox stackable item for sell offer for player " << player->getName();
 					delete item;
 					break;
 				}
@@ -7887,7 +7869,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				Item* item = Item::CreateItem(it.id, subType);
 				auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				if (ret != RETURNVALUE_NOERROR) {
-					offerStatus = "Failed to add inbox item for sell offer";
+					offerStatus << "Failed to add inbox item for sell offer for player " << player->getName();
 					delete item;
 					break;
 				}
@@ -7919,8 +7901,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// Send market window again for update item stats and avoid item clone
 	player->sendMarketEnter(player->getLastDepotId());
 
-	if (!canFinishOfferTransaction(*player, offerStatus)) {
-		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus);
+	if (!offerStatus.str().empty()) {
+		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
+		SPDLOG_ERROR("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
 		return;
 	}
 

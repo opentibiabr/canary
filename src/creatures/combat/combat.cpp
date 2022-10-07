@@ -895,12 +895,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 	}
 
 	if (params.combatType == COMBAT_HEALING && target->getMonster()){
-		if (target != caster)	{
+		if (target != caster) {
 			return;
 		}
 	}
 
-	if(caster && caster->getPlayer()){
+	if(caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		// Charm low blow rune)
@@ -946,38 +946,43 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 
 void Combat::doCombatHealth(Creature* caster, const Position& position, const AreaCombat* area, CombatDamage& damage, const CombatParams& params)
 {
-		if(caster && caster->getPlayer()){
-			// Critical damage
-			if (uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-			damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance) {
-				damage.critical = true;
-				damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-				damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-			}
+	if(caster && caster->getPlayer())
+	{
+		// Critical damage
+		if (uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
+		damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance)
+		{
+			damage.critical = true;
+			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+		}
 
-			// fatal hit (onslaught)
-			if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
-				double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
-				if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
-					damage.fatal = true;
-					damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 1.6));
-					damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 1.6));
-				}
+		// fatal hit (onslaught)
+		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr)
+		{
+			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+				damage.fatal = true;
+				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 1.6));
+				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 1.6));
 			}
 		}
+	}
 	CombatFunc(caster, position, area, params, CombatHealthFunc, &damage);
 }
 
 void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& damage, const CombatParams& params)
 {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
-	if ( (caster && target)
-			&& (caster == target || canCombat)
-			&& (params.impactEffect != CONST_ME_NONE)) {
+	if ((caster && target)
+	&& (caster == target || canCombat)
+	&& (params.impactEffect != CONST_ME_NONE))
+	{
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if(caster && caster->getPlayer()){
+	if (caster && caster->getPlayer())
+	{
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		if (chance != 0 && uniform_random(1, 100) <= chance) {
@@ -986,6 +991,7 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 	}
+
 	if (canCombat) {
 		if (caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
@@ -1000,15 +1006,17 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 
 void Combat::doCombatMana(Creature* caster, const Position& position, const AreaCombat* area, CombatDamage& damage, const CombatParams& params)
 {
-	if(caster && caster->getPlayer()){
-			// Critical damage
-			uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-			if (chance != 0 && uniform_random(1, 100) <= chance) {
-				damage.critical = true;
-				damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-				damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-			}
+	if (caster && caster->getPlayer())
+	{
+		// Critical damage
+		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
+		if (chance != 0 && uniform_random(1, 100) <= chance)
+		{
+			damage.critical = true;
+			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
+	}
 	CombatFunc(caster, position, area, params, CombatManaFunc, &damage);
 }
 

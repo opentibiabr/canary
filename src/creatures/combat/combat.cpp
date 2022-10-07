@@ -572,9 +572,11 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 	}
 
 	for (const auto& condition : params.conditionList) {
-		//Cleanse charm rune (target as player)
+		// Some exceptions when target is player
+		
 		Player* player = target->getPlayer();
 		if (player) {
+			//Cleanse charm rune (target as player)
 			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
@@ -595,12 +597,37 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 					}
 				}
 			}
+			/**
+			 *	Feared condition when player is on Party (target as player)
+			 * 	
+			 *	When a player is part of 5 player party only 1 member can be feared,
+			 *	with 6, 2 members can be feared until 10, on 11, 3 members...
+			 *
+			 */
+			if(condition->getType() == CONDITION_FEARED){
+				Party* party = player->getParty();
+				if(party) {
+					uint8_t affectedCount = std::ceil((party->getMemberCount()+5)/5);
+					SPDLOG_INFO("[Combat::CombatConditionFunc] Player is member of a party, {} members can be feared", affectedCount);
+					
+					for (Player* member : party->getMembers()){
+						if(member->hasCondition(CONDITION_FEARED)){
+							affectedCount -= 1;
+						}
+					}
+
+					if(affectedCount <= 0){
+						return;
+					}
+				}
+			}
 		}
 
 		if (caster == target || !target->isImmune(condition->getType())) {
 			Condition* conditionCopy = condition->clone();
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
+				conditionCopy->setParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
 			}
 
 			//TODO: infight condition until all aggressive conditions has ended

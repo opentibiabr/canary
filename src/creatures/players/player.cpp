@@ -1707,6 +1707,21 @@ bool Player::closeShopWindow(bool sendCloseShopWindow /*= true*/)
 
 void Player::onWalk(Direction& dir)
 {
+
+	if(hasCondition(CONDITION_FEARED)) {
+		Position pos = getNextPosition(dir, getPosition());
+		
+		const Tile* tile = g_game().map.getTile(pos);
+		if (tile) {
+			const MagicField* field = tile->getFieldItem();
+			if (field && !field->isBlocking() && field->getDamage() != 0) {
+				setNextActionTask(nullptr);
+				setNextAction(OTSYS_TIME() + getStepDuration(dir));
+				return;
+			}
+		}
+	}
+
 	Creature::onWalk(dir);
 	setNextActionTask(nullptr);
 	setNextAction(OTSYS_TIME() + getStepDuration(dir));
@@ -4101,6 +4116,18 @@ void Player::onWalkAborted()
 
 void Player::onWalkComplete()
 {
+	if (hasCondition(CONDITION_FEARED)){
+		/**
+		 * The walk is only processed during the fear condition execution, 
+		 * but adding this check and executing the condition here as soon it ends
+		 * makes the fleeing more smooth and with litle to no hickups.
+		 */
+
+		SPDLOG_DEBUG("[Player::onWalkComplete] Executing feared conditions as players completed it's walk.");
+		Condition* f = getCondition(CONDITION_FEARED);
+		f->executeCondition(this, 0);
+	}
+
 	if (walkTask) {
 		walkTaskEvent = g_scheduler().addEvent(walkTask);
 		walkTask = nullptr;
@@ -4176,6 +4203,10 @@ void Player::onAddCombatCondition(ConditionType_t type)
 
 		case CONDITION_ROOTED:
 			sendTextMessage(MESSAGE_FAILURE, "You are rooted.");
+			break;
+		
+		case CONDITION_FEARED:
+			sendTextMessage(MESSAGE_FAILURE, "You are feared.");
 			break;
 
 		case CONDITION_CURSED:

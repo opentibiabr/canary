@@ -40,6 +40,11 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 {
 	std::string str_words = words;
 
+	if (player->hasCondition(CONDITION_FEARED)) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return TALKACTION_FAILED;
+	}
+
 	//strip trailing spaces
 	trimString(str_words);
 
@@ -465,7 +470,8 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 		"drowncondition",
 		"freezecondition",
 		"cursecondition",
-		"dazzlecondition"
+		"dazzlecondition",
+		"fear"
 	};
 
 	//static size_t size = sizeof(reservedList) / sizeof(const char*);

@@ -285,6 +285,7 @@ class Game
 							uint16_t itemId, uint8_t fromStackPos, const Position& toPos, uint8_t count, Item* item, Cylinder* toCylinder);
 		void playerEquipItem(uint32_t playerId, uint16_t itemId);
 		void playerMove(uint32_t playerId, Direction direction);
+		void forcePlayerMove(uint32_t playerId, Direction direction);
 		void playerCreatePrivateChannel(uint32_t playerId);
 		void playerChannelInvite(uint32_t playerId, const std::string& name);
 		void playerChannelExclude(uint32_t playerId, const std::string& name);
@@ -298,6 +299,7 @@ class Game
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
 		void playerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir);
+		void forcePlayerAutoWalk(uint32_t playerId, const std::forward_list<Direction>& listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position& fromPos, uint8_t fromStackPos,
                               uint16_t fromItemId, const Position& toPos, uint8_t toStackPos, uint16_t toItemId);

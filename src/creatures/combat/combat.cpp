@@ -611,7 +611,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 
 void Combat::CombatDispelFunc(Creature*, Creature* target, const CombatParams& params, CombatDamage*)
 {
-	if(target) {
+	if (target) {
 		target->removeCombatCondition(params.dispelType);
 	}
 }
@@ -900,7 +900,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		}
 	}
 
-	if(caster && caster->getPlayer()) {
+	if (caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		// Charm low blow rune)
@@ -946,7 +946,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 
 void Combat::doCombatHealth(Creature* caster, const Position& position, const AreaCombat* area, CombatDamage& damage, const CombatParams& params)
 {
-	if(caster && caster->getPlayer())
+	if (caster && caster->getPlayer())
 	{
 		// Critical damage
 		if (uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);

@@ -95,12 +95,14 @@ allConsoleLog = false
 stashMoving = false
 depotChest = 4
 autoLoot = false
--- autoBank = true, the dropped coins from monsters will be automatically 
+-- autoBank = true, the dropped coins from monsters will be automatically
 -- deposited to your bank account.
 autoBank = false
 -- teleporte summon
 -- true will never remove the summon
 teleportSummons = false
+-- true will allow the /reload command to be used
+allowReload = false
 
 -- Stamina in Trainers
 staminaTrainer = false

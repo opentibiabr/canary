@@ -1,3 +1,10 @@
+-- NOTE: Using this script might cause unwanted changes.
+-- This script forces a reload in the entire server, this means
+-- that everything that is stored in memory might stop to work
+-- properly and/or completely.
+--
+-- This script should be used in test environments only.
+
 local reloadTypes = {
 	["all"] = RELOAD_TYPE_ALL,
 
@@ -42,6 +49,11 @@ local reload = TalkAction("/reload")
 
 function reload.onSay(player, words, param)
 	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
+		return true
+	end
+
+	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then
+		player:sendCancelMessage("Reload command is disabled.")
 		return true
 	end
 

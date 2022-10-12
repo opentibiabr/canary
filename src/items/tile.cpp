@@ -560,7 +560,8 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 				}
 			}
 
-			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasHarmfulField()) {
+			MagicField* field = getFieldItem();
+			if (!hasBitSet(FLAG_IGNOREFIELDDAMAGE, tileFlags) && field && field->getDamage() != 0) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 

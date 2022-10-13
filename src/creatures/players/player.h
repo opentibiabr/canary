@@ -549,10 +549,10 @@ class Player final : public Creature, public Cylinder
 
 			stashItems[itemId] = amount;
 		}
-		uint16_t getStashItemCount(uint16_t itemId) const {
+		uint32_t getStashItemCount(uint16_t itemId) const {
 			auto it = stashItems.find(itemId);
 			if (it != stashItems.end()) {
-				return static_cast<uint16_t>(it->second);
+				return it->second;
 			}
 			return 0;
 		}
@@ -633,7 +633,6 @@ class Player final : public Creature, public Cylinder
 		void getRewardList(std::vector<uint32_t>& rewards);
 		RewardChest* getRewardChest();
 
-		DepotChest* getDepotBox();
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
 		DepotLocker* getDepotLocker(uint32_t depotId);
 		void onReceiveMail() const;
@@ -2088,6 +2087,8 @@ class Player final : public Creature, public Cylinder
 		void updateDepotSearchExhausted() {
 			lastDepotSearchInteraction = OTSYS_TIME();
 		}
+
+		std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> requestLockerItems(DepotLocker *depotLocker) const;
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;

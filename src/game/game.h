@@ -318,10 +318,10 @@ class Game
 								uint32_t tradePlayerId, uint16_t itemId);
 		void playerAcceptTrade(uint32_t playerId);
 		void playerLookInTrade(uint32_t playerId, bool lookAtCounterOffer, uint8_t index);
-		void playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint8_t amount,
+		void playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount,
 								bool ignoreCap = false, bool inBackpacks = false);
 		void playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count,
-								uint8_t amount, bool ignoreEquipped = false);
+								uint16_t amount, bool ignoreEquipped = false);
 		void playerCloseShop(uint32_t playerId);
 		void playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count);
 		void playerCloseTrade(uint32_t playerId);
@@ -379,7 +379,7 @@ class Game
 		void playerBrowseMarket(uint32_t playerId, uint16_t itemId);
 		void playerBrowseMarketOwnOffers(uint32_t playerId);
 		void playerBrowseMarketOwnHistory(uint32_t playerId);
-		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint32_t price, bool anonymous);
+		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint64_t price, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
 		void playerStoreOpen(uint32_t playerId, uint8_t serviceType);
@@ -389,8 +389,6 @@ class Game
 		void playerStoreTransactionHistory(uint32_t playerId, uint32_t page);
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
-
-		std::vector<Item*> getMarketItemList(uint16_t wareId, uint16_t sufficientCount, DepotLocker* depotLocker);
 
 		static void updatePremium(account::Account& account);
 
@@ -470,7 +468,7 @@ class Game
 
 		void sendOfflineTrainingDialog(Player* player);
 
-		const std::map<uint16_t, uint32_t>& getItemsPrice() const { return itemsPriceMap; }
+		const std::map<uint16_t, uint64_t>& getItemsPrice() const { return itemsPriceMap; }
 		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
@@ -492,7 +490,7 @@ class Game
 
 		phmap::flat_hash_map<Tile*, Container*> browseFields;
 
-		void internalRemoveItems(std::vector<Item*> itemList, uint32_t amount, bool stackable);
+		void internalRemoveItems(const std::vector<Item*> itemVector, uint32_t amount, bool stackable);
 
 		BedItem* getBedBySleeper(uint32_t guid) const;
 		void setBedSleeper(BedItem* bed, uint32_t guid);
@@ -658,7 +656,7 @@ class Game
 		std::string motdHash;
 		uint32_t motdNum = 0;
 
-		std::map<uint16_t, uint32_t> itemsPriceMap;
+		std::map<uint16_t, uint64_t> itemsPriceMap;
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;

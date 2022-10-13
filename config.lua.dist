@@ -50,7 +50,7 @@ packetCompressionLevel = 6
 -- Depot Limit
 freeDepotLimit = 2000
 premiumDepotLimit = 10000
-depotBoxes = 18
+depotBoxes = 20
 
 -- GameStore
 gamestoreByModules = true

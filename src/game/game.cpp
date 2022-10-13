@@ -350,7 +350,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 			if (rightthing) {
 				Item* slotRight_Item = rightthing->getItem();
 				if (slotRight_Item) {
-					if (newitemType.weaponType != WEAPON_DISTANCE || !slotRight_Item->isQuiver())
+					if (newitemType.weaponType != WEAPON_DISTANCE || newitemType.weaponType != WEAPON_MISSILE || !slotRight_Item->isQuiver())
 						ret = internalMoveItem(slotRight_Item->getParent(), player, 0, slotRight_Item, slotRight_Item->getItemCount(), nullptr);
 				}
 				else {
@@ -399,7 +399,7 @@ void Game::onPressHotkeyEquip(uint32_t playerId, uint16_t itemId)
 				if (slotLeft_item) {
 					ItemType& it = Item::items.getItemType(slotLeft_item->getID());
 					if (hasBitSet(SLOTP_TWO_HAND, it.slotPosition)) {
-						if (newitemType.type != ITEM_TYPE_QUIVER || slotLeft_item->getWeaponType() != WEAPON_DISTANCE)
+						if (newitemType.type != ITEM_TYPE_QUIVER || slotLeft_item->getWeaponType() != WEAPON_DISTANCE || slotLeft_item->getWeaponType() != WEAPON_MISSILE)
 							ret = internalMoveItem(slotLeft_item->getParent(), player, 0, slotLeft_item, slotLeft_item->getItemCount(), nullptr);
 					}
 				}
@@ -2646,6 +2646,7 @@ ObjectCategory_t Game::getObjectCategory(const Item* item)
 			case WEAPON_SHIELD:
 				category = OBJECTCATEGORY_SHIELDS;
 				break;
+			case WEAPON_MISSILE:
 			case WEAPON_DISTANCE:
 				category = OBJECTCATEGORY_DISTANCEWEAPONS;
 				break;

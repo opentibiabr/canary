@@ -233,7 +233,7 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
+  if (!ignoreAmmo && (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE)) {
     const ItemType& it = Item::items[item->getID()];
     if (it.ammoType != AMMO_NONE) {
       Item* quiver = inventory[CONST_SLOT_RIGHT];
@@ -307,6 +307,7 @@ int32_t Player::getWeaponSkill(const Item* item) const
 			break;
 		}
 
+		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE: {
 			attackSkill = getSkillLevel(SKILL_DISTANCE);
 			break;
@@ -3032,26 +3033,23 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 		case CONST_SLOT_RIGHT: {
 			if (slotPosition & SLOTP_RIGHT) {
 				if (!g_configManager().getBoolean(CLASSIC_EQUIPMENT_SLOTS)) {
-          if (item->getWeaponType() != WEAPON_SHIELD && !item->isQuiver()) {
-            ret = RETURNVALUE_CANNOTBEDRESSED;
-          }
-          else {
-            const Item* leftItem = inventory[CONST_SLOT_LEFT];
-            if (leftItem) {
-              if ((leftItem->getSlotPosition() | slotPosition) & SLOTP_TWO_HAND) {
-                if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE)
-                  ret = RETURNVALUE_NOERROR;
-                else
-                  ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
-              }
-              else {
-                ret = RETURNVALUE_NOERROR;
-              }
-            }
-            else {
-              ret = RETURNVALUE_NOERROR;
-            }
-          }
+					if (item->getWeaponType() != WEAPON_SHIELD && !item->isQuiver()) {
+						ret = RETURNVALUE_CANNOTBEDRESSED;
+					} else {
+						const Item *leftItem = inventory[CONST_SLOT_LEFT];
+						if (leftItem) {
+							if ((leftItem->getSlotPosition() | slotPosition) & SLOTP_TWO_HAND) {
+								if (item->isQuiver() && leftItem->getWeaponType() == WEAPON_DISTANCE)
+									ret = RETURNVALUE_NOERROR;
+								else
+									ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
+							} else {
+								ret = RETURNVALUE_NOERROR;
+							}
+						} else {
+							ret = RETURNVALUE_NOERROR;
+						}
+					}
 				} else if (slotPosition & SLOTP_TWO_HAND) {
 					if (inventory[CONST_SLOT_LEFT] && inventory[CONST_SLOT_LEFT] != item) {
 						ret = RETURNVALUE_BOTHHANDSNEEDTOBEFREE;
@@ -3059,7 +3057,7 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 						ret = RETURNVALUE_NOERROR;
 					}
 				} else if (inventory[CONST_SLOT_LEFT]) {
-					const Item* leftItem = inventory[CONST_SLOT_LEFT];
+					const Item *leftItem = inventory[CONST_SLOT_LEFT];
 					WeaponType_t type = item->getWeaponType(), leftType = leftItem->getWeaponType();
 
 					if (leftItem->getSlotPosition() & SLOTP_TWO_HAND) {
@@ -3069,8 +3067,7 @@ ReturnValue Player::queryAdd(int32_t index, const Thing& thing, uint32_t count, 
 					} else if (leftType == WEAPON_SHIELD && type == WEAPON_SHIELD) {
 						ret = RETURNVALUE_CANONLYUSEONESHIELD;
 					} else if (leftType == WEAPON_NONE || type == WEAPON_NONE ||
-                               leftType == WEAPON_SHIELD || leftType == WEAPON_AMMO
-                               || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
+							 leftType == WEAPON_SHIELD || leftType == WEAPON_AMMO || type == WEAPON_SHIELD || type == WEAPON_AMMO) {
 						ret = RETURNVALUE_NOERROR;
 					} else {
 						ret = RETURNVALUE_CANONLYUSEONEWEAPON;

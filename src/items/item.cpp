@@ -1202,7 +1202,7 @@ std::vector<std::pair<std::string, std::string>>
 		}
 
 		if (!it.vocationString.empty()) {
-			descriptions.emplace_back("Professions", it.vocationString);
+			descriptions.emplace_back("Vocations", it.vocationString);
 		}
 
 		std::string weaponName = getWeaponName(it.weaponType);
@@ -1417,7 +1417,7 @@ std::vector<std::pair<std::string, std::string>>
 		}
 
 		if (!it.vocationString.empty()) {
-			descriptions.emplace_back("Professions", it.vocationString);
+			descriptions.emplace_back("Vocations", it.vocationString);
 		}
 
 		std::string weaponName = getWeaponName(it.weaponType);

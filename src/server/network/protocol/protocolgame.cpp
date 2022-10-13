@@ -4383,7 +4383,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	const ItemType &it = Item::items[itemId];
 
 	if (it.upgradeClassification > 0) {
-		msg.addByte(it.upgradeClassification);
+		msg.addByte(tier);
 	}
 
 	if (it.armor != 0)

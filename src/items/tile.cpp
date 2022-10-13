@@ -422,7 +422,7 @@ void Tile::onRemoveTileItem(const SpectatorVector &spectators, const std::vector
 	const ItemType &iType = Item::items[item->getID()];
 
 	// send to client + event method
-	size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
+	auto i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendRemoveTileThing(cylinderMapPos, oldStackPosVector[++i]);
@@ -451,7 +451,7 @@ void Tile::onRemoveTileItem(const SpectatorVector &spectators, const std::vector
 	}
 }
 
-void Tile::onUpdateTile(const SpectatorVector &spectators) {
+void Tile::onUpdateTile(const SpectatorVector &spectators) const {
 	const Position &cylinderMapPos = getPosition();
 
 	// send to clients
@@ -560,7 +560,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing &thing, uint32_t, uint32_t tileF
 				}
 			}
 
-			MagicField* field = getFieldItem();
+			const MagicField* field = getFieldItem();
 			if (!hasBitSet(FLAG_IGNOREFIELDDAMAGE, tileFlags) && field && field->getDamage() != 0) {
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
@@ -1086,11 +1086,12 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 		g_game().map.getSpectators(spectators, getPosition(), true);
 
 		std::vector<int32_t> oldStackPosVector(spectators.size());
-		size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
+		auto i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
 
 		for (Creature* spectator : spectators) {
 			if (Player* tmpPlayer = spectator->getPlayer()) {
-				oldStackPosVector[++i] = getStackposOfItem(tmpPlayer, item);
+				auto newI = ++i;
+				oldStackPosVector[newI] = getStackposOfItem(tmpPlayer, item);
 			}
 		}
 
@@ -1113,11 +1114,12 @@ void Tile::removeThing(Thing* thing, uint32_t count) {
 			g_game().map.getSpectators(spectators, getPosition(), true);
 
 			std::vector<int32_t> oldStackPosVector(spectators.size());
-			size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
+			auto i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
 
 			for (Creature* spectator : spectators) {
 				if (Player* tmpPlayer = spectator->getPlayer()) {
-					oldStackPosVector[++i] = getStackposOfItem(tmpPlayer, item);
+					auto newI = ++i;
+					oldStackPosVector[newI] = getStackposOfItem(tmpPlayer, item);
 				}
 			}
 
@@ -1586,38 +1588,30 @@ void Tile::resetTileFlags(const Item* item) {
 		if ((blockSolid | immovableBlockSolid | blockPath | noFieldBlockPath | immovableBlockPath | immovableNoFieldBlockPath | blockProjectile) == false) {
 			break;
 		}
-	} while (0);
-
+	} while (false);
 
 	if ((blockSolid | immovableBlockSolid | blockPath | noFieldBlockPath | immovableBlockPath | immovableNoFieldBlockPath | blockProjectile) != false) {
 		if (ground && item != ground) {
 			if (blockSolid && ground->hasProperty(CONST_PROP_BLOCKSOLID)) {
 				blockSolid = false;
-
 			}
 			if (immovableBlockSolid && ground->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID)) {
 				immovableBlockSolid = false;
-
 			}
 			if (blockPath && ground->hasProperty(CONST_PROP_BLOCKPATH)) {
 				blockPath = false;
-
 			}
 			if (noFieldBlockPath && ground->hasProperty(CONST_PROP_NOFIELDBLOCKPATH)) {
 				noFieldBlockPath = false;
-
 			}
 			if (immovableBlockPath && ground->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH)) {
 				immovableBlockPath = false;
-
 			}
 			if (immovableNoFieldBlockPath && ground->hasProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH)) {
 				immovableNoFieldBlockPath = false;
-
 			}
 			if (blockProjectile && ground->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 				blockProjectile = false;
-
 			}
 		}
 
@@ -1626,31 +1620,24 @@ void Tile::resetTileFlags(const Item* item) {
 				if (item != checkItem) {
 					if (blockSolid && checkItem->hasProperty(CONST_PROP_BLOCKSOLID)) {
 						blockSolid = false;
-		
 					}
 					if (immovableBlockSolid && checkItem->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID)) {
 						immovableBlockSolid = false;
-		
 					}
 					if (blockPath && checkItem->hasProperty(CONST_PROP_BLOCKPATH)) {
 						blockPath = false;
-		
 					}
 					if (noFieldBlockPath && checkItem->hasProperty(CONST_PROP_NOFIELDBLOCKPATH)) {
 						noFieldBlockPath = false;
-		
 					}
 					if (immovableBlockPath && checkItem->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH)) {
 						immovableBlockPath = false;
-		
 					}
 					if (immovableNoFieldBlockPath && checkItem->hasProperty(CONST_PROP_IMMOVABLENOFIELDBLOCKPATH)) {
 						immovableNoFieldBlockPath = false;
-		
 					}
 					if (blockProjectile && checkItem->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 						blockProjectile = false;
-		
 					}
 				}
 			}

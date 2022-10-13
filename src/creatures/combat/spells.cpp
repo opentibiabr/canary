@@ -18,8 +18,7 @@
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
-TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words, const std::string& lowerWords)
-{
+TalkActionResult_t Spells::playerSaySpell(Player* player, std::string &words) {
 	std::string str_words = words;
 
 	// strip trailing spaces
@@ -433,7 +432,7 @@ bool Spell::playerSpellCheck(Player* player) const {
 	return true;
 }
 
-bool Spell::playerInstantSpellCheck(Player* player, const Position &toPos) {
+bool Spell::playerInstantSpellCheck(const Player* player, const Position &toPos) const {
 	if (toPos.x == 0xFFFF) {
 		return true;
 	}
@@ -590,8 +589,7 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost) 
 	}
 }
 
-uint32_t Spell::getManaCost(const Player* player) const
-{
+uint32_t Spell::getManaCost(const Player* player) const {
 	uint32_t manaCost = mana;
 
 	if (manaPercent != 0) {
@@ -723,13 +721,10 @@ bool InstantSpell::playerCastInstant(Player* player, std::string &param) {
 	return result;
 }
 
-bool InstantSpell::canThrowSpell(const Creature* creature, const Creature* target) const
-{
-	const Position& fromPos = creature->getPosition();
-	const Position& toPos = target->getPosition();
-	if (fromPos.z != toPos.z ||
-        	(range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) ||
-	    	(range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {
+bool InstantSpell::canThrowSpell(const Creature* creature, const Creature* target) const {
+	const Position &fromPos = creature->getPosition();
+	const Position &toPos = target->getPosition();
+	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {
 		return false;
 	}
 	return true;

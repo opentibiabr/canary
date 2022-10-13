@@ -84,7 +84,7 @@ int64_t WaitingList::getTime(std::size_t slot) {
 	}
 }
 
-bool WaitingList::clientLogin(const Player* player, std::size_t &currentSlot) {
+bool WaitingList::clientLogin(const Player* player, std::size_t &currentSlot) const {
 	if (player->hasFlag(PlayerFlags_t::CanAlwaysLogin) || player->getAccountType() >= account::ACCOUNT_TYPE_GAMEMASTER) {
 		return true;
 	}
@@ -92,7 +92,7 @@ bool WaitingList::clientLogin(const Player* player, std::size_t &currentSlot) {
 	cleanupList(info->priorityWaitList);
 	cleanupList(info->waitList);
 
-	uint32_t maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
+	auto maxPlayers = static_cast<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
 	if (maxPlayers == 0 || (info->priorityWaitList.empty() && info->waitList.empty() && g_game().getPlayersOnline() < maxPlayers)) {
 		return true;
 	}
@@ -113,10 +113,12 @@ bool WaitingList::clientLogin(const Player* player, std::size_t &currentSlot) {
 
 	currentSlot = info->priorityWaitList.size();
 	if (player->isPremium()) {
-		info->priorityWaitList.emplace_back(OTSYS_TIME() + (getTimeout(++currentSlot) * 1000), player->getGUID());
+		++currentSlot;
+		info->priorityWaitList.emplace_back(OTSYS_TIME() + (getTimeout(currentSlot) * 1000), player->getGUID());
 	} else {
 		currentSlot += info->waitList.size();
-		info->waitList.emplace_back(OTSYS_TIME() + (getTimeout(++currentSlot) * 1000), player->getGUID());
+		++currentSlot;
+		info->waitList.emplace_back(OTSYS_TIME() + (getTimeout(currentSlot) * 1000), player->getGUID());
 	}
 	return false;
 }

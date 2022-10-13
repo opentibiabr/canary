@@ -34,11 +34,14 @@ class SpectatorVector : public CreatureVector
 		}
 
 		void mergeSpectators(const SpectatorVector& spectators) {
-			size_t it = 0, end = spectators.size();
+			size_t it = 0;
+			size_t end = spectators.size();
 			while (it < end) {
 				Creature* spectator = spectators[it];
 
-				size_t cit = 0, cend = size();
+				size_t cit = 0;
+				size_t cend = size();
+
 				while (cit < cend) {
 					if (operator[](cit) == spectator) {
 						goto Skip_Duplicate;
@@ -53,8 +56,10 @@ class SpectatorVector : public CreatureVector
 			}
 		}
 
-		void erase(Creature* spectator) {
-			size_t it = 0, end = size();
+		void erase(const Creature* spectator) {
+			size_t it = 0;
+			size_t end = size();
+
 			while (it < end) {
 				if (operator[](it) == spectator) {
 					std::swap(operator[](it), back());
@@ -286,7 +291,7 @@ class Tile : public Cylinder {
 		void onAddTileItem(Item* item);
 		void onUpdateTileItem(Item* oldItem, const ItemType& oldType, Item* newItem, const ItemType& newType);
 		void onRemoveTileItem(const SpectatorVector& spectators, const std::vector<int32_t>& oldStackPosVector, Item* item);
-		void onUpdateTile(const SpectatorVector& spectators);
+		void onUpdateTile(const SpectatorVector& spectators) const;
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);

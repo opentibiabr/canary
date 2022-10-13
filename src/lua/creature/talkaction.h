@@ -72,11 +72,11 @@ class TalkActions final : public Scripts {
 
 		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string &words) const;
 
-		bool registerLuaEvent(TalkAction_ptr& event);
+		bool registerLuaEvent(const TalkAction_ptr&event);
 		void clear();
 
 	private:
-		std::unordered_map<std::string, TalkAction> talkActions;
+		phmap::flat_hash_map<std::string, TalkAction> talkActions;
 };
 
 constexpr auto g_talkActions = &TalkActions::getInstance;

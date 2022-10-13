@@ -703,7 +703,7 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 	map.getSpectators(spectators, tile->getPosition(), true);
 
 	std::vector<int32_t> oldStackPosVector(spectators.size());
-	size_t i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
+	auto i = static_cast<size_t>(-1); // Start index at -1 to avoid copying it
 	for (Creature* spectator : spectators) {
 		if (Player* player = spectator->getPlayer()) {
 			auto newI = ++i;
@@ -718,7 +718,8 @@ bool Game::removeCreature(Creature* creature, bool isLogout /* = true*/) {
 
 	for (Creature* spectator : spectators) {
 		if (Player* player = spectator->getPlayer()) {
-			player->sendRemoveTileThing(tilePosition, oldStackPosVector[++i]);
+			++i;
+			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i]);
 		}
 		spectator->onRemoveCreature(creature, isLogout);
 	}
@@ -4906,7 +4907,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 	}
 }
 
-bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &text) {
+bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &text) const {
 	if (player->walkExhausted()) {
 		return true;
 	}
@@ -4922,7 +4923,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 		}
 	}
 
-	result = g_spells().playerSaySpell(player, words, lowerWords);
+	result = g_spells().playerSaySpell(player, words);
 	if (result == TALKACTION_BREAK) {
 		if (!g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
 			player->cancelPush();
@@ -4941,7 +4942,7 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string &
 	return false;
 }
 
-void Game::playerWhisper(Player* player, const std::string &text) {
+void Game::playerWhisper(Player* player, const std::string &text) const {
 	SpectatorVector spectators;
 	const Position &pos = player->getPosition();
 	map.getSpectatorsInternal(spectators, pos, Map::maxClientViewportX, Map::maxClientViewportX, Map::maxClientViewportY, Map::maxClientViewportY, pos.z, pos.z, false);
@@ -4959,7 +4960,7 @@ void Game::playerWhisper(Player* player, const std::string &text) {
 	}
 }
 
-bool Game::playerYell(Player* player, const std::string &text) {
+bool Game::playerYell(Player* player, const std::string &text) const {
 	if (player->getLevel() == 1) {
 		player->sendTextMessage(MESSAGE_FAILURE, "You may not yell as long as you are on level 1.");
 		return false;
@@ -5060,7 +5061,7 @@ bool Game::internalCreatureTurn(Creature* creature, Direction dir) {
 	return true;
 }
 
-bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorVector* spectatorsPtr /* = nullptr*/, const Position* pos /* = nullptr*/) {
+bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorVector* spectatorsPtr /* = nullptr*/, const Position* pos /* = nullptr*/) const {
 	if (!creature) {
 		return false;
 	}

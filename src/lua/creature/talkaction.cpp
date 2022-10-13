@@ -20,8 +20,8 @@ void TalkActions::clear() {
 	talkActions.clear();
 }
 
-bool TalkActions::registerLuaEvent(TalkAction_ptr& event) {
-	TalkAction_ptr talkAction { event };
+bool TalkActions::registerLuaEvent(const TalkAction_ptr& event) {
+	TalkAction_ptr talkAction{ event };
 	std::vector<std::string> words = talkAction->getWordsMap();
 
 	for (size_t i = 0; i < words.size(); i++) {
@@ -36,7 +36,9 @@ bool TalkActions::registerLuaEvent(TalkAction_ptr& event) {
 }
 
 TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const {
-	std::string param, instantWords = words;
+	std::string param;
+	std::string instantWords = words;
+
 	if (instantWords.size() >= 3 && instantWords.front() != ' ') {
 		size_t param_find = instantWords.find(' ');
 			if (param_find != std::string::npos) {

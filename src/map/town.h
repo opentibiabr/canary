@@ -51,7 +51,7 @@ class Towns {
 		Towns &operator=(const Towns &) = delete;
 
 		Town* addTown(uint32_t townId) {
-			return &townMap.emplace(townId, townId).first->second;
+			return &townMap.try_emplace(townId, townId).first->second;
 		}
 
 		Town* getTown(const std::string &townName) {

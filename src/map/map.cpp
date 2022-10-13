@@ -400,9 +400,9 @@ void Map::getSpectatorsInternal(SpectatorVector &spectators, const Position &cen
 	int32_t max_y = centerPos.y + maxRangeY;
 	int32_t max_x = centerPos.x + maxRangeX;
 
-	uint32_t width = static_cast<uint32_t>(max_x - min_x);
-	uint32_t height = static_cast<uint32_t>(max_y - min_y);
-	uint32_t depth = static_cast<uint32_t>(maxRangeZ - minRangeZ);
+	auto width = static_cast<uint32_t>(max_x - min_x);
+	auto height = static_cast<uint32_t>(max_y - min_y);
+	auto depth = static_cast<uint32_t>(maxRangeZ - minRangeZ);
 
 	int32_t minoffset = centerPos.getZ() - maxRangeZ;
 	int32_t x1 = std::min<int32_t>(0xFFFF, std::max<int32_t>(0, (min_x + minoffset)));

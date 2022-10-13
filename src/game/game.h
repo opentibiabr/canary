@@ -199,7 +199,7 @@ class Game {
 
 		bool internalCreatureTurn(Creature* creature, Direction dir);
 
-		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorVector* spectatorsPtr = nullptr, const Position* pos = nullptr);
+		bool internalCreatureSay(Creature* creature, SpeakClasses type, const std::string &text, bool ghostMode, SpectatorVector* spectatorsPtr = nullptr, const Position* pos = nullptr) const;
 
 		void internalQuickLootCorpse(Player* player, Container* corpse);
 
@@ -278,7 +278,7 @@ class Game {
 		void playerCloseNpcChannel(uint32_t playerId);
 		void playerReceivePing(uint32_t playerId);
 		void playerReceivePingBack(uint32_t playerId);
-		void playerAutoWalk(uint32_t playerId, const std::vector<Direction>& listDir);
+		void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 		void playerStopAutoWalk(uint32_t playerId);
 		void playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t fromStackPos, uint16_t fromItemId, const Position &toPos, uint8_t toStackPos, uint16_t toItemId);
 		void playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId);
@@ -375,9 +375,8 @@ class Game {
 
 		void onPressHotkeyEquip(uint32_t playerId, uint16_t itemId);
 
-		bool canThrowObjectTo(const Position& fromPos, const Position& toPos, SightLines_t lineOfSight = SightLine_CheckSightLine,
-                              int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
-		bool isSightClear(const Position& fromPos, const Position& toPos, bool sameFloor) const;
+		bool canThrowObjectTo(const Position &fromPos, const Position &toPos, SightLines_t lineOfSight = SightLine_CheckSightLine, int32_t rangex = Map::maxClientViewportX, int32_t rangey = Map::maxClientViewportY) const;
+		bool isSightClear(const Position &fromPos, const Position &toPos, bool sameFloor) const;
 
 		void changeSpeed(Creature* creature, int32_t varSpeedDelta);
 		void changePlayerSpeed(Player &player, int32_t varSpeedDelta);
@@ -449,10 +448,18 @@ class Game {
 
 		void sendOfflineTrainingDialog(Player* player);
 
-		const std::map<uint16_t, std::map<uint8_t, uint64_t>>& getItemsPrice() const { return itemsPriceMap; }
-		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
-		const phmap::flat_hash_map<uint32_t, Monster*>& getMonsters() const { return monsters; }
-		const phmap::flat_hash_map<uint32_t, Npc*>& getNpcs() const { return npcs; }
+		const std::map<uint16_t, std::map<uint8_t, uint64_t>> &getItemsPrice() const {
+			return itemsPriceMap;
+		}
+		const phmap::flat_hash_map<uint32_t, Player*> &getPlayers() const {
+			return players;
+		}
+		const phmap::flat_hash_map<uint32_t, Monster*> &getMonsters() const {
+			return monsters;
+		}
+		const phmap::flat_hash_map<uint32_t, Npc*> &getNpcs() const {
+			return npcs;
+		}
 
 		const std::vector<ItemClassification*> &getItemsClassifications() const {
 			return itemsClassifications;
@@ -562,10 +569,11 @@ class Game {
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;
 		std::set<uint32_t> fiendishMonsters;
 		std::set<uint32_t> influencedMonsters;
+
 		void checkImbuements();
-		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text);
-		void playerWhisper(Player* player, const std::string &text);
-		bool playerYell(Player* player, const std::string &text);
+		bool playerSaySpell(Player* player, SpeakClasses type, const std::string &text) const;
+		void playerWhisper(Player* player, const std::string &text) const;
+		bool playerYell(Player* player, const std::string &text) const;
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string &receiver, const std::string &text);
 		void playerSpeakToNpc(Player* player, const std::string &text);
 

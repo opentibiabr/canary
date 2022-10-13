@@ -3321,8 +3321,8 @@ void ProtocolGame::sendCyclopediaCharacterTitles() {
 }
 
 void ProtocolGame::sendTournamentLeaderboard() {
-	NetworkMessage msg;
 	// playermsg.reset();
+	NetworkMessage msg;
 	msg.addByte(0xC5);
 	msg.addByte(0);
 	msg.addByte(0x01);
@@ -5833,14 +5833,10 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 		msg.addByte(it.second);
 	}
 
-	OperatingSystem_t regularOS = player->getOperatingSystem();
-	if (regularOS >= CLIENTOS_NEW_LINUX && regularOS < CLIENTOS_OTCLIENT_LINUX) {
-		msg.addByte(modalWindow.defaultEscapeButton);
-		msg.addByte(modalWindow.defaultEnterButton);
-	} else {
-		msg.addByte(modalWindow.defaultEscapeButton);
-		msg.addByte(modalWindow.defaultEnterButton);
-	}
+	// Check
+	msg.addByte(modalWindow.defaultEscapeButton);
+	msg.addByte(modalWindow.defaultEnterButton);
+
 	msg.addByte(modalWindow.priority ? 0x01 : 0x00);
 
 	writeToOutputBuffer(msg);

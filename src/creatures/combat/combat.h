@@ -158,9 +158,8 @@ class AreaCombat {
 	public:
 		AreaCombat() = default;
 
-		AreaCombat(const AreaCombat &rhs);
-
 		// non-assignable
+		AreaCombat(const AreaCombat &rhs);
 		AreaCombat &operator=(const AreaCombat &) = delete;
 
 		void getList(const Position &centerPos, const Position &targetPos, const Position &sightLinePos, std::vector<Tile*> &list) const;

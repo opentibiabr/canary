@@ -328,9 +328,9 @@ int WeaponFunctions::luaWeaponVocation(lua_State* L) {
 		}
 		if (showInDescription) {
 			if (weapon->getVocationString().empty()) {
-				tmp = std::move(asLowerCaseString(std::move(getString(L, 2))));
+				tmp = asLowerCaseString(getString(L, 2));
 				tmp += "s";
-				weapon->setVocationString(std::move(tmp));
+				weapon->setVocationString(tmp);
 			} else {
 				tmp = weapon->getVocationString();
 				if (lastVoc) {
@@ -338,9 +338,9 @@ int WeaponFunctions::luaWeaponVocation(lua_State* L) {
 				} else {
 					tmp += ", ";
 				}
-				tmp += asLowerCaseString(std::move(getString(L, 2)));
+				tmp += asLowerCaseString(getString(L, 2));
 				tmp += "s";
-				weapon->setVocationString(std::move(tmp));
+				weapon->setVocationString(tmp);
 			}
 		}
 		pushBoolean(L, true);

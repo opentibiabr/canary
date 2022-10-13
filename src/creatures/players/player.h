@@ -2366,7 +2366,7 @@ class Player final : public Creature, public Cylinder {
 
 		std::vector<Party*> invitePartyList;
 		std::vector<uint32_t> modalWindows;
-		std::unordered_set<std::string> learnedInstantSpellList;
+		phmap::flat_hash_set<std::string> learnedInstantSpellList;
 		// TODO: This variable is only temporarily used when logging in, get rid of it somehow.
 		std::vector<Condition*> storedConditionList;
 

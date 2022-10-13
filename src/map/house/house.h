@@ -248,7 +248,7 @@ class Houses {
 				return &it->second;
 			}
 
-			return &houseMap.emplace(id, id).first->second;
+			return &houseMap.try_emplace(id, id).first->second;
 		}
 
 		House* getHouse(uint32_t houseId) {

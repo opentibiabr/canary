@@ -69,8 +69,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	return damage;
 }
 
-void Combat::getCombatArea(const Position& centerPos, const Position& targetPos, const AreaCombat* area, std::vector<Tile*>& list, bool directionalArea)
-{
+void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const AreaCombat* area, std::vector<Tile*> &list, bool directionalArea) {
 	if (targetPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -1317,8 +1316,7 @@ AreaCombat::AreaCombat(const AreaCombat &rhs) {
 	}
 }
 
-void AreaCombat::getList(const Position& centerPos, const Position& targetPos, const Position& sightLinePos, std::vector<Tile*>& list) const
-{
+void AreaCombat::getList(const Position &centerPos, const Position &targetPos, const Position &sightLinePos, std::vector<Tile*> &list) const {
 	const MatrixArea* area = getArea(centerPos, targetPos);
 	if (!area) {
 		return;
@@ -1334,15 +1332,13 @@ void AreaCombat::getList(const Position& centerPos, const Position& targetPos, c
 	Position tmpPos(targetPos.x - centerX, targetPos.y - centerY, targetPos.z);
 	for (uint32_t y = 0; y < rows; ++y, ++tmpPos.y, tmpPos.x -= cols) {
 		for (uint32_t x = 0; x < cols; ++x, ++tmpPos.x) {
-			if (area->getValue(y, x) != 0) {
-				if (g_game().isSightClear(sightLinePos, tmpPos, true)) {
-					Tile* tile = g_game().map.getTile(tmpPos);
-					if (!tile) {
-						tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
-						g_game().map.setTile(tmpPos, tile);
-					}
-					list.push_back(tile);
+			if ((area->getValue(y, x) != 0) && (g_game().isSightClear(sightLinePos, tmpPos, true))) {
+				Tile* tile = g_game().map.getTile(tmpPos);
+				if (!tile) {
+					tile = new StaticTile(tmpPos.x, tmpPos.y, tmpPos.z);
+					g_game().map.setTile(tmpPos, tile);
 				}
+				list.push_back(tile);
 			}
 		}
 	}
@@ -1357,7 +1353,8 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 			for (uint32_t y = 0; y < input->getRows(); ++y) {
 				uint32_t rx = 0;
 				for (int32_t x = input->getCols(); --x >= 0;) {
-					output->setValue(y, rx++, input->getValue(y, x));
+					auto newRx = rx++;
+					output->setValue(y, newRx, input->getValue(y, x));
 				}
 			}
 
@@ -1369,7 +1366,8 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 			for (uint32_t x = 0; x < input->getCols(); ++x) {
 				uint32_t ry = 0;
 				for (int32_t y = input->getRows(); --y >= 0;) {
-					output->setValue(ry++, x, input->getValue(y, x));
+					auto newRy = ry++;
+					output->setValue(newRy, x, input->getValue(y, x));
 				}
 			}
 			output->setCenter((input->getCols() - 1) - centerY, centerX);
@@ -1380,7 +1378,8 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 			for (uint32_t x = 0; x < input->getCols(); ++x) {
 				uint32_t rx = 0;
 				for (int32_t y = input->getRows(); --y >= 0;) {
-					output->setValue(ry, rx++, input->getValue(y, x));
+					auto newRx = rx++;
+					output->setValue(ry, newRx, input->getValue(y, x));
 				}
 
 				++ry;
@@ -1397,7 +1396,8 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 
 		uint32_t ry = 0;
 				for (int32_t y = input->getRows(); --y >= 0;) {
-					output->setValue(ry++, rx, input->getValue(y, x));
+					auto newRy = ry++;
+					output->setValue(newRy, rx, input->getValue(y, x));
 				}
 			}
 
@@ -1412,7 +1412,8 @@ void AreaCombat::copyArea(const MatrixArea* input, MatrixArea* output, MatrixOpe
 
 				uint32_t rx = input->getRows();
 				for (int32_t y = input->getRows(); --y >= 0;) {
-					output->setValue(ry, --rx, input->getValue(y, x));
+					auto newRx = --rx;
+					output->setValue(ry, newRx, input->getValue(y, x));
 				}
 			}
 			// we need position correction
@@ -1526,7 +1527,7 @@ MatrixArea* AreaCombat::createArea(Direction dir, const std::list<uint32_t> &lis
 
 void AreaCombat::setupArea(const std::list<uint32_t> &list, uint32_t rows) {
 	// NORTH
-	MatrixArea* area = createArea(DIRECTION_NORTH, list, rows);
+	const MatrixArea* area = createArea(DIRECTION_NORTH, list, rows);
 
 	// SOUTH
 	MatrixArea* southArea = &areas[DIRECTION_SOUTH];
@@ -1620,7 +1621,7 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 	hasExtArea = true;
 
 	// NORTH-WEST
-	MatrixArea* area = createArea(DIRECTION_NORTHWEST, list, rows);
+	const MatrixArea* area = createArea(DIRECTION_NORTHWEST, list, rows);
 
 	// NORTH-EAST
 	MatrixArea* neArea = &areas[DIRECTION_NORTHEAST];

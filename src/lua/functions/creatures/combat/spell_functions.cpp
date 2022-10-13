@@ -633,8 +633,8 @@ int SpellFunctions::luaSpellWords(lua_State* L) {
 			if (lua_gettop(L) == 3) {
 				sep = getString(L, 3);
 			}
-			spell->setWords(std::move(getString(L, 2)));
-			spell->setSeparator((sep.empty() ? '"' : sep[0]));
+			spell->setWords(getString(L, 2));
+			spell->setSeparator(sep.empty() ? '"' : sep[0]);
 			pushBoolean(L, true);
 		}
 	} else {

@@ -4431,7 +4431,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId)
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (it.defense != 0)
+	if (it.defense != 0 || it.isMissile())
 	{
 		if (it.extraDefense != 0)
 		{

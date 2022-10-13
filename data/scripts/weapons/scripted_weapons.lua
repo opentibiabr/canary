@@ -51,7 +51,7 @@ viperCombat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_GREENSTAR)
 viperCombat:setParameter(COMBAT_PARAM_BLOCKARMOR, true)
 viperCombat:setFormula(COMBAT_FORMULA_SKILL, 0, 0, 1, 0)
 
-local viperstar= Weapon(WEAPON_DISTANCE)
+local viperstar= Weapon(WEAPON_MISSILE)
 viperstar.onUseWeapon = function(player, variant)
 	if not viperCombat:execute(player, variant) then
 		return false

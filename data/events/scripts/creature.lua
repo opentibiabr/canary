@@ -28,7 +28,7 @@ local function removeCombatProtection(cid)
 		return true
 	end
 
-	local time = 0
+	local time
 	if player:isMage() then
 		time = 10
 	elseif player:isPaladin() then

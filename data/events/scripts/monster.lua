@@ -37,7 +37,7 @@ function Monster:onDropLoot(corpse)
 		end
 
 		if player then
-			local text = {}
+			local text
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
 				 text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else

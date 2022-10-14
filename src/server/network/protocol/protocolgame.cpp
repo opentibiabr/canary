@@ -4676,11 +4676,11 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 
 	if (it.upgradeClassification > 0)
 	{
-		msg.addString(std::to_string(it.upgradeClassification));
+		msg.addString(std::to_string(tier));
 	}
 	else
 	{
-		msg.add<uint16_t>(tier);
+		msg.add<uint16_t>(0x00);
 	}
 
 	// Item tier modifier (12.82)

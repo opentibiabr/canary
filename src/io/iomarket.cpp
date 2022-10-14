@@ -52,7 +52,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 		} else {
 			offer.playerName = "Anonymous";
 		}
-		offer.tier = result->getNumber<uint8_t>("tier");
+		offer.tier = std::atoi(result->getString("tier").c_str());
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -79,7 +79,7 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
 		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
 		offer.itemId = result->getNumber<uint16_t>("itemtype");
-		offer.tier = result->getNumber<uint8_t>("tier");
+		offer.tier = std::atoi(result->getString("tier").c_str());
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -103,7 +103,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("expires_at");
-		offer.tier = result->getNumber<uint8_t>("tier");
+		offer.tier = std::atoi(result->getString("tier").c_str());
 
 		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getNumber<uint16_t>("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
@@ -130,7 +130,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 		const uint32_t playerId = result->getNumber<uint32_t>("player_id");
 		const uint16_t amount = result->getNumber<uint16_t>("amount");
-		const auto tier = result->getNumber<uint8_t>("tier");
+		const auto tier = std::atoi(result->getString("tier").c_str());
 		if (result->getNumber<uint16_t>("sale") == 1) {
 			const ItemType& itemType = Item::items[result->getNumber<uint16_t>("itemtype")];
 			if (itemType.id == 0) {
@@ -251,7 +251,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 	offer.price = result->getNumber<uint64_t>("price");
 	offer.itemId = result->getNumber<uint16_t>("itemtype");
 	offer.playerId = result->getNumber<uint32_t>("player_id");
-	offer.tier = result->getNumber<uint8_t>("tier");
+	offer.tier = std::atoi(result->getString("tier").c_str());
 	if (result->getNumber<uint16_t>("anonymous") == 0) {
 		offer.playerName = result->getString("player_name");
 	} else {
@@ -308,7 +308,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 		return false;
 	}
 
-	appendHistory(result->getNumber<uint32_t>("player_id"), static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")), result->getNumber<uint16_t>("itemtype"), result->getNumber<uint16_t>("amount"), result->getNumber<uint64_t>("price"), time(nullptr), result->getNumber<uint8_t>("tier"), state);
+	appendHistory(result->getNumber<uint32_t>("player_id"), static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")), result->getNumber<uint16_t>("itemtype"), result->getNumber<uint16_t>("amount"), result->getNumber<uint64_t>("price"), time(nullptr), std::atoi(result->getString("tier").c_str()), state);
 	return true;
 }
 

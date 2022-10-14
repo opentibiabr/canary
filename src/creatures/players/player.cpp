@@ -5964,8 +5964,7 @@ void Player::requestDepotItems()
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			auto itemMap_it = itemMap.find((*it)->getID());
 
-			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? 1 : 0;
-			// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
+			uint8_t itemTier = (*it)->getTier() + 1;
 			if (itemMap_it == itemMap.end()) {
 				std::map<uint8_t, uint32_t> itemTierMap;
 				itemTierMap[itemTier] = Item::countByType((*it), -1);
@@ -5982,19 +5981,17 @@ void Player::requestDepotItems()
 
 	for (const auto& [itemId, itemCount] : getStashItems()) {
 		auto itemMap_it = itemMap.find(itemId);
-
-		uint8_t itemTier = Item::items[itemId].upgradeClassification > 0 ? 1 : 0;
-		// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
+		// Stackable items only have tier 0
 		if (itemMap_it == itemMap.end()) {
 			std::map<uint8_t, uint32_t> itemTierMap;
-			itemTierMap[itemTier] = itemCount;
+			itemTierMap[0] = itemCount;
 			itemMap[itemId] = itemTierMap;
 			count++;
-		} else if (auto itemTier_it = itemMap[itemId].find(itemTier); itemTier_it == itemMap[itemId].end()) {
-			itemMap[itemId][itemTier] = itemCount;
+		} else if (auto itemTier_it = itemMap[itemId].find(0); itemTier_it == itemMap[itemId].end()) {
+			itemMap[itemId][0] = itemCount;
 			count++;
 		} else {
-			itemMap[itemId][itemTier] += itemCount;
+			itemMap[itemId][0] += itemCount;
 		}
 	}
 

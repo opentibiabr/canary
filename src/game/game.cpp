@@ -1564,11 +1564,10 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		if (Player* player = actor->getPlayer()) {
 
 			// Refresh depot search window if necessary
-			// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
 			if (player->isDepotSearchOpenOnItem(item->getID()) &&
 				((fromCylinder->getItem() && fromCylinder->getItem()->isInsideDepot(true)) ||
 				(toCylinder->getItem() && toCylinder->getItem()->isInsideDepot(true)))) {
-				player->requestDepotSearchItem(item->getID(), 0);
+				player->requestDepotSearchItem(item->getID(), item->getTier());
 			}
 
 			const ItemType& it = Item::items[fromCylinder->getItem()->getID()];
@@ -3573,8 +3572,8 @@ void Game::playerStowItem(uint32_t playerId, const Position& pos, uint16_t itemI
 	player->stowItem(item, count, allItems);
 
 	// Refresh depot search window if necessary
-	// To-Do: Set 'item->getTier()' here on the '0' values when tier system is ready.
 	if (player->isDepotSearchOpenOnItem(itemId)) {
+		// Tier for item stackable is 0
 		player->requestDepotSearchItem(itemId, 0);
 	}
 }

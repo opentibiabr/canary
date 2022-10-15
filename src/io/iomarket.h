@@ -50,16 +50,15 @@ class IOMarket
 
 		void updateStatistics();
 
-		MarketStatistics* getPurchaseStatistics(uint16_t itemId, uint8_t tier);
-		MarketStatistics* getSaleStatistics(uint16_t itemId, uint8_t tier);
+		const MarketStatistics* getPurchaseStatistics(uint16_t itemId, uint8_t tier);
+		const MarketStatistics* getSaleStatistics(uint16_t itemId, uint8_t tier);
 
 	private:
 		IOMarket() = default;
 
-		//std::map<uint16_t, std::map<MarketStatistics, uint16_t>> purchaseStatistics;
-		//std::map<uint16_t, std::map<MarketStatistics, uint16_t>> saleStatistics;
-		std::map<uint16_t, MarketStatistics> purchaseStatistics;
-		std::map<uint16_t, MarketStatistics> saleStatistics;
+		// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
+		std::map<uint16_t, std::map<uint8_t, MarketStatistics>> purchaseStatistics;
+		std::map<uint16_t, std::map<uint8_t, MarketStatistics>> saleStatistics;
 };
 
 #endif  // SRC_IO_IOMARKET_H_

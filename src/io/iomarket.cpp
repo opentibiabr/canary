@@ -323,35 +323,40 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics;
+		uint8_t tier = std::atoi(result->getString("tier").c_str());
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
-			statistics = &purchaseStatistics[result->getNumber<uint16_t>("itemtype")]; // todo
+			statistics = &(purchaseStatistics[result->getNumber<uint16_t>("itemtype")])[tier];
 		} else {
-			statistics = &saleStatistics[result->getNumber<uint16_t>("itemtype")]; // todo
+			statistics = &(saleStatistics[result->getNumber<uint16_t>("itemtype")])[tier];
 		}
 
 		statistics->numTransactions = result->getNumber<uint32_t>("num");
-		statistics->lowestPrice = result->getNumber<uint32_t>("min");
+		statistics->lowestPrice = result->getNumber<uint64_t>("min");
 		statistics->totalPrice = result->getNumber<uint64_t>("sum");
-		statistics->highestPrice = result->getNumber<uint32_t>("max");
+		statistics->highestPrice = result->getNumber<uint64_t>("max");
 	} while (result->next());
 }
 
-MarketStatistics* IOMarket::getPurchaseStatistics(uint16_t itemId, uint8_t tier)
+const MarketStatistics* IOMarket::getPurchaseStatistics(uint16_t itemId, uint8_t tier)
 {
-	auto it = purchaseStatistics.find(itemId);
-	if (it == purchaseStatistics.end()) {
-		return nullptr;
+	for (auto &[mapItemId, secondMap] : purchaseStatistics) {
+		for (auto [mapTier, statisticsStruct] : secondMap) {
+			if (itemId == mapItemId && tier == mapTier) {
+				return &statisticsStruct;
+			}
+		}
 	}
-	return &it->second;
-	// todo: implement purchase statistics
+	return nullptr;
 }
 
-MarketStatistics* IOMarket::getSaleStatistics(uint16_t itemId, uint8_t tier)
+const MarketStatistics* IOMarket::getSaleStatistics(uint16_t itemId, uint8_t tier)
 {
-	auto it = saleStatistics.find(itemId);
-	if (it == saleStatistics.end()) {
-		return nullptr;
+	for (auto &[mapItemId, secondMap] : saleStatistics) {
+		for (auto [mapTier, statisticsStruct] : secondMap) {
+			if (itemId == mapItemId && tier == mapTier) {
+				return &statisticsStruct;
+			}
+		}
 	}
-	return &it->second;
-	// todo: implement sale statistics
+	return nullptr;
 }

@@ -6025,8 +6025,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			Item* item = *it;
-			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-			if (!item || item->getID() != itemId) {
+			if (!item || item->getID() != itemId || item->getTier() != depotSearchOnItem.second) {
 				continue;
 			}
 
@@ -6065,8 +6064,7 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 		}
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-			if (Item* item = *it; item && item->getID() == itemId) {
+			if (Item* item = *it; item && item->getID() == itemId || item->getTier() != depotSearchOnItem.second) {
 				itemsVector.push_back(item);
 			}
 		}
@@ -6131,8 +6129,7 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			Item* item = *it;
-			//  To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-			if (!item || item->getID() != itemId) {
+			if (!item || item->getID() != itemId || item->getTier() != depotSearchOnItem.second) {
 				continue;
 			}
 

@@ -4674,6 +4674,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	// Perfect shot modifier (12.70)
 	msg.add<uint16_t>(0x00);
 
+	// Upgrade and tier detail modifier
 	if (it.upgradeClassification > 0)
 	{
 		msg.addString(std::to_string(it.upgradeClassification));
@@ -4685,28 +4686,28 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.add<uint16_t>(0x00);
 	}
 
-	const MarketStatistics *statistics = IOMarket::getInstance().getPurchaseStatistics(itemId, tier);
-	if (statistics)
+	auto purchaseStatistics = IOMarket::getInstance().getPurchaseStatistics(itemId, tier);
+	if (purchaseStatistics)
 	{
 		msg.addByte(0x01);
-		msg.add<uint32_t>(statistics->numTransactions);
-		msg.add<uint64_t>(statistics->totalPrice);
-		msg.add<uint64_t>(statistics->highestPrice);
-		msg.add<uint64_t>(statistics->lowestPrice);
+		msg.add<uint32_t>(purchaseStatistics->numTransactions);
+		msg.add<uint64_t>(purchaseStatistics->totalPrice);
+		msg.add<uint64_t>(purchaseStatistics->highestPrice);
+		msg.add<uint64_t>(purchaseStatistics->lowestPrice);
 	}
 	else
 	{
 		msg.addByte(0x00);
 	}
 
-	statistics = IOMarket::getInstance().getSaleStatistics(itemId, tier);
-	if (statistics)
+	auto saleStatistics = IOMarket::getInstance().getSaleStatistics(itemId, tier);
+	if (saleStatistics)
 	{
 		msg.addByte(0x01);
-		msg.add<uint32_t>(statistics->numTransactions);
-		msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), statistics->totalPrice));
-		msg.add<uint64_t>(statistics->highestPrice);
-		msg.add<uint64_t>(statistics->lowestPrice);
+		msg.add<uint32_t>(saleStatistics->numTransactions);
+		msg.add<uint64_t>(std::min<uint64_t>(std::numeric_limits<uint32_t>::max(), saleStatistics->totalPrice));
+		msg.add<uint64_t>(saleStatistics->highestPrice);
+		msg.add<uint64_t>(saleStatistics->lowestPrice);
 	}
 	else
 	{

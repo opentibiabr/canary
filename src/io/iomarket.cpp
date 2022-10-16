@@ -26,6 +26,15 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
+uint8_t getDatabaseTier(std::string string) {
+	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
+	if (tier > MAX_ITEM_FORGE_TIER) {
+		SPDLOG_ERROR("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
+		return 0;
+	}
+
+	return tier;
+}
 
 MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier)
 {
@@ -52,7 +61,7 @@ MarketOfferList IOMarket::getActiveOffers(MarketAction_t action, uint16_t itemId
 		} else {
 			offer.playerName = "Anonymous";
 		}
-		offer.tier = std::atoi(result->getString("tier").c_str());
+		offer.tier = getDatabaseTier(result->getString("tier"));
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -79,7 +88,7 @@ MarketOfferList IOMarket::getOwnOffers(MarketAction_t action, uint32_t playerId)
 		offer.timestamp = result->getNumber<uint32_t>("created") + marketOfferDuration;
 		offer.counter = result->getNumber<uint32_t>("id") & 0xFFFF;
 		offer.itemId = result->getNumber<uint16_t>("itemtype");
-		offer.tier = std::atoi(result->getString("tier").c_str());
+		offer.tier = getDatabaseTier(result->getString("tier"));
 		offerList.push_back(offer);
 	} while (result->next());
 	return offerList;
@@ -103,7 +112,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		offer.amount = result->getNumber<uint16_t>("amount");
 		offer.price = result->getNumber<uint64_t>("price");
 		offer.timestamp = result->getNumber<uint32_t>("expires_at");
-		offer.tier = std::atoi(result->getString("tier").c_str());
+		offer.tier = getDatabaseTier(result->getString("tier"));
 
 		MarketOfferState_t offerState = static_cast<MarketOfferState_t>(result->getNumber<uint16_t>("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
@@ -130,7 +139,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 		const uint32_t playerId = result->getNumber<uint32_t>("player_id");
 		const uint16_t amount = result->getNumber<uint16_t>("amount");
-		const auto tier = std::atoi(result->getString("tier").c_str());
+		const auto tier = getDatabaseTier(result->getString("tier"));
 		if (result->getNumber<uint16_t>("sale") == 1) {
 			const ItemType& itemType = Item::items[result->getNumber<uint16_t>("itemtype")];
 			if (itemType.id == 0) {
@@ -251,7 +260,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 	offer.price = result->getNumber<uint64_t>("price");
 	offer.itemId = result->getNumber<uint16_t>("itemtype");
 	offer.playerId = result->getNumber<uint32_t>("player_id");
-	offer.tier = std::atoi(result->getString("tier").c_str());
+	offer.tier = getDatabaseTier(result->getString("tier"));
 	if (result->getNumber<uint16_t>("anonymous") == 0) {
 		offer.playerName = result->getString("player_name");
 	} else {
@@ -308,7 +317,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 		return false;
 	}
 
-	appendHistory(result->getNumber<uint32_t>("player_id"), static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")), result->getNumber<uint16_t>("itemtype"), result->getNumber<uint16_t>("amount"), result->getNumber<uint64_t>("price"), time(nullptr), std::atoi(result->getString("tier").c_str()), state);
+	appendHistory(result->getNumber<uint32_t>("player_id"), static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")), result->getNumber<uint16_t>("itemtype"), result->getNumber<uint16_t>("amount"), result->getNumber<uint64_t>("price"), time(nullptr), getDatabaseTier(result->getString("tier")), state);
 	return true;
 }
 
@@ -323,40 +332,18 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics;
-		uint8_t tier = std::atoi(result->getString("tier").c_str());
+		uint8_t tier = static_cast<uint8_t>(std::atoi(result->getString("tier").c_str()));
+		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
-			statistics = &(purchaseStatistics[result->getNumber<uint16_t>("itemtype")])[tier];
+			statistics = &purchaseStatistics[itemId][tier];
 		} else {
-			statistics = &(saleStatistics[result->getNumber<uint16_t>("itemtype")])[tier];
+			statistics = &saleStatistics[itemId][tier];
 		}
 
 		statistics->numTransactions = result->getNumber<uint32_t>("num");
 		statistics->lowestPrice = result->getNumber<uint64_t>("min");
 		statistics->totalPrice = result->getNumber<uint64_t>("sum");
 		statistics->highestPrice = result->getNumber<uint64_t>("max");
+		SPDLOG_INFO("ITEM ID {}, TIER {}, numTransactions {}, totalPrice {}, highestPrice {}, lowestPrice {}", itemId, tier, statistics->numTransactions, statistics->totalPrice, statistics->highestPrice, statistics->lowestPrice);
 	} while (result->next());
-}
-
-const MarketStatistics* IOMarket::getPurchaseStatistics(uint16_t itemId, uint8_t tier)
-{
-	for (auto &[mapItemId, secondMap] : purchaseStatistics) {
-		for (auto [mapTier, statisticsStruct] : secondMap) {
-			if (itemId == mapItemId && tier == mapTier) {
-				return &statisticsStruct;
-			}
-		}
-	}
-	return nullptr;
-}
-
-const MarketStatistics* IOMarket::getSaleStatistics(uint16_t itemId, uint8_t tier)
-{
-	for (auto &[mapItemId, secondMap] : saleStatistics) {
-		for (auto [mapTier, statisticsStruct] : secondMap) {
-			if (itemId == mapItemId && tier == mapTier) {
-				return &statisticsStruct;
-			}
-		}
-	}
-	return nullptr;
 }

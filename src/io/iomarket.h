@@ -25,6 +25,7 @@
 
 class IOMarket
 {
+	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
 	public:
 		static IOMarket& getInstance() {
 			static IOMarket instance;
@@ -50,15 +51,19 @@ class IOMarket
 
 		void updateStatistics();
 
-		const MarketStatistics* getPurchaseStatistics(uint16_t itemId, uint8_t tier);
-		const MarketStatistics* getSaleStatistics(uint16_t itemId, uint8_t tier);
+		StatisticsMap getPurchaseStatistics() const {
+			return purchaseStatistics;
+		}
+		StatisticsMap getSaleStatistics() const {
+			return saleStatistics;
+		}
 
 	private:
 		IOMarket() = default;
 
 		// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
-		std::map<uint16_t, std::map<uint8_t, MarketStatistics>> purchaseStatistics;
-		std::map<uint16_t, std::map<uint8_t, MarketStatistics>> saleStatistics;
+		StatisticsMap purchaseStatistics;
+		StatisticsMap saleStatistics;
 };
 
 #endif  // SRC_IO_IOMARKET_H_

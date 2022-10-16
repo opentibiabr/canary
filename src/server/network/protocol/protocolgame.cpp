@@ -4686,7 +4686,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.add<uint16_t>(0x00);
 	}
 
-	auto purchaseStatistics = IOMarket::getInstance().getPurchaseStatistics(itemId, tier);
+	auto purchase = IOMarket::getInstance().getPurchaseStatistics()[itemId][tier];
+	MarketStatistics* purchaseStatistics = &purchase;
 	if (purchaseStatistics)
 	{
 		msg.addByte(0x01);
@@ -4700,7 +4701,8 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.addByte(0x00);
 	}
 
-	auto saleStatistics = IOMarket::getInstance().getSaleStatistics(itemId, tier);
+	auto sale = IOMarket::getInstance().getSaleStatistics()[itemId][tier];
+	MarketStatistics* saleStatistics = &sale;
 	if (saleStatistics)
 	{
 		msg.addByte(0x01);

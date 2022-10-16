@@ -1123,12 +1123,24 @@ class Item : virtual public Thing
 		}
 
 		uint8_t getTier() const {
-			if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
-				return static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
+			if (!hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+				return 0;
 			}
-			return 0;
+
+			auto tier = static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
+			if (tier > MAX_ITEM_FORGE_TIER) {
+				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+				return 0;
+			}
+
+			return tier;
 		}
 		void setTier(uint8_t tier) {
+			if (tier > MAX_ITEM_FORGE_TIER) {
+				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, MAX_ITEM_FORGE_TIER);
+				return;
+			}
+
 			if (items[id].upgradeClassification) {
 				setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
 			}

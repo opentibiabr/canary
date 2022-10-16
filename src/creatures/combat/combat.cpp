@@ -963,8 +963,8 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
 			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
 				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 1.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 1.6));
+				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
+				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
 			}
 		}
 	}

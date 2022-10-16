@@ -4074,9 +4074,9 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	msg.skipBytes(2); // Total items count
 
 	uint16_t totalItemsCount = 0;
-	for (const auto [itemId, tierAndCountMap] : lockerItems)
+	for (auto &[itemId, tierAndCountMap] : lockerItems)
 	{
-		for (const auto [tier, count] : tierAndCountMap) {
+		for (auto &[tier, count] : tierAndCountMap) {
 			msg.add<uint16_t>(itemId);
 			if (Item::items[itemId].upgradeClassification > 0) {
 				msg.addByte(tier);
@@ -4687,8 +4687,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	}
 
 	auto purchase = IOMarket::getInstance().getPurchaseStatistics()[itemId][tier];
-	MarketStatistics* purchaseStatistics = &purchase;
-	if (purchaseStatistics)
+	if (const MarketStatistics* purchaseStatistics = &purchase; purchaseStatistics)
 	{
 		msg.addByte(0x01);
 		msg.add<uint32_t>(purchaseStatistics->numTransactions);
@@ -4702,8 +4701,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	}
 
 	auto sale = IOMarket::getInstance().getSaleStatistics()[itemId][tier];
-	MarketStatistics* saleStatistics = &sale;
-	if (saleStatistics)
+	if (const MarketStatistics* saleStatistics = &sale; saleStatistics)
 	{
 		msg.addByte(0x01);
 		msg.add<uint32_t>(saleStatistics->numTransactions);
@@ -5597,11 +5595,11 @@ void ProtocolGame::sendInventoryIds()
 	}
 
 	uint16_t totalItemsCount = 0;
-	for (const auto [itemId, item] : items) {
+	for (auto &[itemId, item] : items) {
 		for (const auto [tier, count] : item) {
 			msg.add<uint16_t>(itemId);
 			msg.addByte(tier);
-			msg.add<uint16_t>(count);
+			msg.add<uint16_t>(static_cast<uint16_t>(count));
 			totalItemsCount++;
 		}
 	}

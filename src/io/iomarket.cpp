@@ -26,7 +26,7 @@
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 
-uint8_t getDatabaseTier(std::string string) {
+uint8_t getDatabaseTier(std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
 	if (tier > MAX_ITEM_FORGE_TIER) {
 		SPDLOG_ERROR("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
@@ -332,7 +332,7 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics = nullptr;
-		uint8_t tier = static_cast<uint8_t>(std::atoi(result->getString("tier").c_str()));
+		auto tier = static_cast<uint8_t>(std::atoi(result->getString("tier").c_str()));
 		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
 			statistics = &purchaseStatistics[itemId][tier];

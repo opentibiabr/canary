@@ -6030,7 +6030,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			Item* item = *it;
-			if (!item || item->getID() != itemId || item->getTier() != depotSearchOnItem.second) {
+			if (!item || item->getID() != itemId || item->getTier() != tier) {
 				continue;
 			}
 
@@ -6063,13 +6063,22 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	for (Item* locker : depotLocker->getItemList()) {
 		const Container* c = locker->getContainer();
 		if (!c || c->empty() ||
-			(c->isInbox() && isDepot) ||	// Retrieve from inbox.
-			(!c->isInbox() && !isDepot)) {	// Retrieve from depot.
+			// Retrieve from inbox.
+			(c->isInbox() && isDepot) ||
+			// Retrieve from depot.
+			(!c->isInbox() && !isDepot)
+		)
+		{
 			continue;
 		}
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-			if (Item* item = *it; item && item->getID() == itemId || item->getTier() != depotSearchOnItem.second) {
+			Item* item = *it;
+			if (!item) {
+				continue;
+			}
+
+			if (item->getID() == itemId && item->getTier() == depotSearchOnItem.second) {
 				itemsVector.push_back(item);
 			}
 		}

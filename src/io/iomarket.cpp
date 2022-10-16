@@ -331,7 +331,7 @@ void IOMarket::updateStatistics()
 	}
 
 	do {
-		MarketStatistics* statistics;
+		MarketStatistics* statistics = nullptr;
 		uint8_t tier = static_cast<uint8_t>(std::atoi(result->getString("tier").c_str()));
 		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
@@ -344,6 +344,5 @@ void IOMarket::updateStatistics()
 		statistics->lowestPrice = result->getNumber<uint64_t>("min");
 		statistics->totalPrice = result->getNumber<uint64_t>("sum");
 		statistics->highestPrice = result->getNumber<uint64_t>("max");
-		SPDLOG_INFO("ITEM ID {}, TIER {}, numTransactions {}, totalPrice {}, highestPrice {}, lowestPrice {}", itemId, tier, statistics->numTransactions, statistics->totalPrice, statistics->highestPrice, statistics->lowestPrice);
 	} while (result->next());
 }

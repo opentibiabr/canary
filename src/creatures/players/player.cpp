@@ -5964,7 +5964,7 @@ void Player::requestDepotItems()
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			auto itemMap_it = itemMap.find((*it)->getID());
 
-			uint8_t itemTier = (*it)->getTier() + 1;
+			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? (*it)->getTier() + 1 : 0;
 			if (itemMap_it == itemMap.end()) {
 				std::map<uint8_t, uint32_t> itemTierMap;
 				itemTierMap[itemTier] = Item::countByType((*it), -1);
@@ -5981,7 +5981,12 @@ void Player::requestDepotItems()
 
 	for (const auto& [itemId, itemCount] : getStashItems()) {
 		auto itemMap_it = itemMap.find(itemId);
-		// Stackable items only have tier 0
+		// Stackable items not have upgrade classification
+		if (Item::items[itemId].upgradeClassification > 0) {
+			SPDLOG_ERROR("{} - Player {} have wrong item with id {} on stash with upgrade classification", __FUNCTION__, getName(), itemId);
+			continue;
+		}
+
 		if (itemMap_it == itemMap.end()) {
 			std::map<uint8_t, uint32_t> itemTierMap;
 			itemTierMap[0] = itemCount;

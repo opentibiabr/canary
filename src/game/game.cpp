@@ -5125,11 +5125,15 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 			return;
 		}
 
+		int32_t speedChange = mount->speed;
 		if (player->isMounted()) {
 			Mount* prevMount = mounts.getMountByID(player->getCurrentMount());
 			if (prevMount) {
-				changeSpeed(player, mount->speed - prevMount->speed);
+				speedChange -= prevMount->speed;
 			}
+		}
+
+		changeSpeed(player, speedChange);
 
 		player->setCurrentMount(mount->id);
 	} else {
@@ -5149,10 +5153,10 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit)
 
 		internalCreatureChangeOutfit(player, outfit);
 	}
-	
+
 	if (player->isMounted()) {
 		player->onChangeZone(player->getZone());
-	}	
+	}
 }
 
 void Game::playerShowQuestLog(uint32_t playerId)

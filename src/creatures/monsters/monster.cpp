@@ -643,7 +643,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 		default: {
 			if (!resultList.empty()) {
 				auto it = resultList.begin();
-				std::advance(it, uniform_random(0, resultList.size() - 1));
+				std::advance(it, uniform_random(0, static_cast<int64_t>(resultList.size() - 1)));
 				return selectTarget(*it);
 			}
 			break;
@@ -678,7 +678,7 @@ void Monster::onFollowCreatureComplete(const Creature* creature)
 	}
 }
 
-BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
+BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
                               bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */)
 {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
@@ -691,7 +691,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int32
 		}
 
 		if (elementMod != 0) {
-			damage = static_cast<int32_t>(std::round(damage * ((100 - elementMod) / 100.)));
+			damage = static_cast<int64_t>(std::round(damage * ((100 - elementMod) / 100.)));
 			if (damage <= 0) {
 				damage = 0;
 				blockType = BLOCK_ARMOR;
@@ -1119,7 +1119,7 @@ void Monster::onThinkYell(uint32_t interval)
 		yellTicks = 0;
 
 		if (!mType->info.voiceVector.empty() && (mType->info.yellChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-			uint32_t index = uniform_random(0, mType->info.voiceVector.size() - 1);
+			int64_t index = uniform_random(0, static_cast<int64_t>(mType->info.voiceVector.size() - 1));
 			const voiceBlock_t& vb = mType->info.voiceVector[index];
 
 			if (vb.yellText) {
@@ -1142,7 +1142,7 @@ void Monster::onThinkSound(uint32_t interval)
 		soundTicks = 0;
 
 		if (!mType->info.soundVector.empty() && (mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-			uint32_t index = uniform_random(0, mType->info.soundVector.size() - 1);
+			int64_t index = uniform_random(0, static_cast<int64_t>(mType->info.soundVector.size() - 1));
 			g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
 		}
 	}
@@ -1402,7 +1402,7 @@ bool Monster::getDanceStep(const Position& creaturePos, Direction& moveDirection
 
 	if (!dirList.empty()) {
 		std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
-		moveDirection = dirList[uniform_random(0, dirList.size() - 1)];
+		moveDirection = dirList[uniform_random(0, static_cast<int64_t>(dirList.size() - 1))];
 		return true;
 	}
 	return false;
@@ -1980,7 +1980,7 @@ bool Monster::isInSpawnRange(const Position& pos) const
 	return true;
 }
 
-bool Monster::getCombatValues(int32_t& min, int32_t& max)
+bool Monster::getCombatValues(int64_t& min, int64_t& max)
 {
 	if (minCombatValue == 0 && maxCombatValue == 0) {
 		return false;
@@ -2086,7 +2086,7 @@ void Monster::drainHealth(Creature* attacker, int64_t damage)
 void Monster::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/)
 {
 	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
-		uint32_t index = uniform_random(0, mType->info.soundVector.size() - 1);
+		uint32_t index = uniform_random(0, static_cast<int64_t>(mType->info.soundVector.size() - 1));
 		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
 	}
 

@@ -283,7 +283,7 @@ class Creature : virtual public Thing
 			return attackedCreature;
 		}
 		virtual bool setAttackedCreature(Creature* creature);
-		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
+		virtual BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
                                     bool checkDefense = false, bool checkArmor = false, bool field = false);
 
 		bool setMaster(Creature* newMaster, bool reloadCreature = false);
@@ -433,7 +433,7 @@ class Creature : virtual public Thing
 
 		virtual void onPlacedCreature() {}
 
-		virtual bool getCombatValues(int32_t&, int32_t&) {
+		virtual bool getCombatValues(int64_t&, int64_t&) {
 			return false;
 		}
 

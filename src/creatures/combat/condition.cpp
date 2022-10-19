@@ -1259,12 +1259,12 @@ bool ConditionDamage::init()
 	if (damageList.empty()) {
 		setTicks(0);
 
-		int32_t amount = uniform_random(minDamage, maxDamage);
+		int64_t amount = uniform_random(minDamage, maxDamage);
 		if (amount != 0) {
 			if (startDamage > maxDamage) {
 				startDamage = maxDamage;
 			} else if (startDamage == 0) {
-				startDamage = std::max<int32_t>(1, std::ceil(amount / 20.0));
+				startDamage = std::max<int64_t>(1, std::ceil(amount / 20.0));
 			}
 
 			std::list<int32_t> list;
@@ -1521,7 +1521,7 @@ void ConditionSpeed::setFormulaVars(float NewMina, float NewMinb, float NewMaxa,
 	this->maxb = NewMaxb;
 }
 
-void ConditionSpeed::getFormulaValues(int32_t var, int32_t& min, int32_t& max) const
+void ConditionSpeed::getFormulaValues(int32_t var, int64_t& min, int64_t& max) const
 {
 	min = (var * mina) + minb;
 	max = (var * maxa) + maxb;
@@ -1587,7 +1587,7 @@ bool ConditionSpeed::startCondition(Creature* creature)
 	}
 
 	if (speedDelta == 0) {
-		int32_t min, max;
+		int64_t min, max;
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		speedDelta = uniform_random(min, max);
 	}
@@ -1627,8 +1627,7 @@ void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondit
 	maxb = conditionSpeed.maxb;
 
 	if (speedDelta == 0) {
-		int32_t min;
-		int32_t max;
+		int64_t min, max;
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		speedDelta = uniform_random(min, max);
 	}

@@ -2372,7 +2372,7 @@ bool Player::hasShield() const
 	return false;
 }
 
-BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
+BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
                               bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false*/)
 {
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
@@ -2756,8 +2756,8 @@ void Player::despawn()
 			oldStackPosVector.push_back(player->canSeeCreature(this) ? tile->getStackposOfCreature(player, this) : -1);
 		}
 		if (Player* player = spectator->getPlayer()) {
-			player->sendRemoveTileCreature(tile->getPosition(), oldStackPosVector[i++], this->getID());
-		}
+			player->sendRemoveTileThing(tile->getPosition(), oldStackPosVector[i++]);
+		} 
 
 		spectator->onRemoveCreature(this, false);
 		// Remove player from spectator target list

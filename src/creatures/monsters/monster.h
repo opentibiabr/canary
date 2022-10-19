@@ -174,7 +174,7 @@ class Monster final : public Creature
 		}
 
 		void setNormalCreatureLight() override;
-		bool getCombatValues(int32_t& min, int32_t& max) override;
+		bool getCombatValues(int64_t& min, int64_t& max) override;
 
 		void doAttacking(uint32_t interval) override;
 		bool hasExtraSwing() override {
@@ -216,7 +216,7 @@ class Monster final : public Creature
 			return mType->info.raceid;
 		}
 
-		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
+		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
                               bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
 		static uint32_t monsterAutoID;

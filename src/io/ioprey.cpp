@@ -40,12 +40,12 @@ void PreySlot::reloadBonusType()
 	if (bonusRarity == 10) {
 		PreyBonus_t bonus_tmp = bonus;
 		while (bonus_tmp == bonus) {
-			bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
+			bonus = static_cast<PreyBonus_t>(uniform_random(static_cast<int64_t>(PreyBonus_First), static_cast<int64_t>(PreyBonus_Last)));
 		}
 		return;
 	}
 
-	bonus = static_cast<PreyBonus_t>(uniform_random(PreyBonus_First, PreyBonus_Last));
+	bonus = static_cast<PreyBonus_t>(uniform_random(static_cast<int64_t>(PreyBonus_First), static_cast<int64_t>(PreyBonus_Last)));
 }
 
 void PreySlot::reloadBonusValue()
@@ -56,7 +56,7 @@ void PreySlot::reloadBonusValue()
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
 	} else {
-		bonusRarity = static_cast<uint8_t>(uniform_random(bonusRarity + 1, 10));
+		bonusRarity = static_cast<uint8_t>(uniform_random(static_cast<int64_t>(bonusRarity + 1), 10));
 	}
 
 	bonusPercentage = stagePercent * bonusRarity;
@@ -111,7 +111,7 @@ void PreySlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_t level
 	}
 
 	uint8_t tries = 0;
-	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
+	auto maxIndex = static_cast<int64_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
 		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;
@@ -193,7 +193,7 @@ void TaskHuntingSlot::reloadMonsterGrid(std::vector<uint16_t> blackList, uint32_
 	}
 
 	uint8_t tries = 0;
-	auto maxIndex = static_cast<int32_t>(bestiary.size() - 1);
+	auto maxIndex = static_cast<int64_t>(bestiary.size() - 1);
 	while (raceIdList.size() < 9) {
 		uint16_t raceId = (*(std::next(bestiary.begin(), uniform_random(0, maxIndex)))).first;
 		tries++;

@@ -101,7 +101,7 @@ void Game::loadBoostedCreature()
 		uint16_t newrace = 0;
 		uint8_t k = 1;
 		while (newrace == 0 || newrace == oldrace) {
-			uint16_t random = normal_random(0, monsterlist.size());
+			uint16_t random = normal_random(0, static_cast<int64_t>(monsterlist.size()));
 			for (auto it : monsterlist) {
 				if (k == random) {
 					newrace = it.first;
@@ -5490,7 +5490,7 @@ void Game::addCreatureCheck(Creature* creature)
 	}
 
 	creature->inCheckCreaturesVector = true;
-	checkCreatureLists[uniform_random(0, EVENT_CREATURECOUNT - 1)].push_back(creature);
+	checkCreatureLists[uniform_random(0, static_cast<int64_t>(EVENT_CREATURECOUNT - 1))].push_back(creature);
 	creature->incrementReferenceCounter();
 }
 

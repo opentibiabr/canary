@@ -278,8 +278,8 @@ class ConditionDamage final : public Condition
 		bool unserializeProp(ConditionAttr_t attr, PropStream& propStream) override;
 
 	private:
-		int32_t maxDamage = 0;
-		int32_t minDamage = 0;
+		int64_t maxDamage = 0;
+		int64_t minDamage = 0;
 		int32_t startDamage = 0;
 		int32_t periodDamage = 0;
 		int32_t periodDamageTick = 0;
@@ -294,7 +294,7 @@ class ConditionDamage final : public Condition
 
 		std::list<IntervalInfo> damageList;
 
-		bool getNextDamage(int32_t& damage);
+		bool getNextDamage(int64_t& damage);
 		bool doDamage(Creature* creature, int64_t healthChange);
 
 		bool updateCondition(const Condition* addCondition) override;
@@ -325,7 +325,7 @@ class ConditionSpeed final : public Condition
 		bool unserializeProp(ConditionAttr_t attr, PropStream& propStream) override;
 
 	private:
-		void getFormulaValues(int32_t var, int32_t& min, int32_t& max) const;
+		void getFormulaValues(int32_t var, int64_t& min, int64_t& max) const;
 
 		int32_t speedDelta;
 

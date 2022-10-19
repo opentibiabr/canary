@@ -57,7 +57,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 				if (weapon) {
 					damage.primary.value = normal_random(
 						static_cast<int64_t>(minb),
-						static_cast<int64_t>(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb)
+						weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb
 					);
 
 					damage.secondary.type = weapon->getElementType();
@@ -937,7 +937,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
-						sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
+						g_game().sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
 					}
 				}
 			}

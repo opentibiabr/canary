@@ -745,7 +745,7 @@ class Player final : public Creature, public Cylinder
 		bool isPzLocked() const {
 			return pzLocked;
 		}
-		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
+		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
                              bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 		void doAttacking(uint32_t interval) override;
 		bool hasExtraSwing() override {

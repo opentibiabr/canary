@@ -221,7 +221,7 @@ void Creature::onCreatureWalk()
 void Creature::onWalk(Direction& dir)
 {
 	if (hasCondition(CONDITION_DRUNK)) {
-		uint32_t r = uniform_random(0, 20);
+		int64_t r = uniform_random(0, 20);
 		if (r <= DIRECTION_DIAGONAL_MASK) {
 			if (r < DIRECTION_DIAGONAL_MASK) {
 				dir = static_cast<Direction>(r);
@@ -864,7 +864,7 @@ void Creature::drainMana(Creature* attacker, int64_t manaLoss)
 	}
 }
 
-BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
+BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int64_t& damage,
                                bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */)
 {
 	BlockType_t blockType = BLOCK_NONE;
@@ -881,7 +881,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		}
 
 		if (checkDefense && hasDefense && canUseDefense) {
-			int32_t defense = getDefense();
+			int64_t defense = static_cast<int64_t>(getDefense());
 			damage -= uniform_random(defense / 2, defense);
 			if (damage <= 0) {
 				damage = 0;
@@ -891,7 +891,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 		}
 
 		if (checkArmor) {
-			int32_t armor = getArmor();
+			int64_t armor = static_cast<int64_t>(getArmor());
 			if (armor > 3) {
 				damage -= uniform_random(armor / 2, armor - (armor % 2 + 1));
 			} else if (armor > 0) {

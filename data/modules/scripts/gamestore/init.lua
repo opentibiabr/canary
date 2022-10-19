@@ -675,11 +675,13 @@ function sendShowStoreOffers(playerId, category, redirectId)
 	msg:addU16(0) -- Collection Name
 
 	if not category.offers then
-		msg:addU16(0)
+		msg:addU16(0) -- Disable reasons
+		msg:addU16(0) -- Offers
 		msg:sendToPlayer(player)
 		return
 	end
 
+	local disableReasons = {}
 	local offers = {}
 	local count = 0
 	for k, offer in ipairs(category.offers) do
@@ -701,6 +703,21 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				offers[name].itemtype = offer.itemtype
 			end
 		end
+
+		local canBuy = player:canBuyOffer(offer)
+		if (canBuy.disabled == 1) then
+			for index, disableTable in ipairs(disableReasons) do
+				if (canBuy.disabledReason == disableTable.reason) then
+					offer.disabledReadonIndex = index
+				end
+			end
+
+			if (offer.disabledReadonIndex == nil) then
+				offer.disabledReadonIndex = #disableReasons
+				table.insert(disableReasons, canBuy.disabledReason)
+			end
+		end
+
 		table.insert(offers[name].offers, offer)
 	end
 
@@ -715,6 +732,11 @@ function sendShowStoreOffers(playerId, category, redirectId)
 			offers["Hireling Cook"] = nil
 			count = count - 6
 		end
+	end
+
+	msg:addU16(#disableReasons)
+	for _, reason in ipairs(disableReasons) do
+		msg:addString(reason)
 	end
 
 	msg:addU16(count)
@@ -735,11 +757,10 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				msg:addU32(xpBoostPrice or off.price)
 				msg:addByte(off.coinType or 0x00)
 
-				local disabled, disabledReason = player:canBuyOffer(off).disabled, player:canBuyOffer(off).disabledReason
-				msg:addByte(disabled)
-				if disabled == 1 then
+				msg:addByte((off.disabledReadonIndex ~= nil) and 1 or 0)
+				if (off.disabledReadonIndex ~= nil) then
 					msg:addByte(0x01);
-					msg:addString(disabledReason)
+					msg:addU16(off.disabledReadonIndex)
 				end
 
 				if (off.state) then
@@ -1067,7 +1088,7 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 		repeat
 			local entry = {
 				mode = result.getNumber(resultId, "mode"),
-				description = result.getDataString(resultId, "description"),
+				description = result.getString(resultId, "description"),
 				amount = result.getNumber(resultId, "coin_amount"),
 				time = result.getNumber(resultId, "time"),
 			}
@@ -1665,6 +1686,28 @@ function sendHomePage(playerId)
 	msg:addU16(0x00) -- Collection Name
 
 	local homeOffers = getHomeOffers(player:getId())
+	local disableReasons = {}
+	for p, offer in pairs(homeOffers)do
+		local canBuy = player:canBuyOffer(offer)
+		if (canBuy.disabled == 1) then
+			for index, disableTable in ipairs(disableReasons) do
+				if (canBuy.disabledReason == disableTable.reason) then
+					offer.disabledReadonIndex = index
+				end
+			end
+
+			if (offer.disabledReadonIndex == nil) then
+				offer.disabledReadonIndex = #disableReasons
+				table.insert(disableReasons, canBuy.disabledReason)
+			end
+		end
+	end
+
+	msg:addU16(#disableReasons)
+	for _, reason in ipairs(disableReasons) do
+		msg:addString(reason)
+	end
+
 	msg:addU16(#homeOffers) -- offers
 
 	for p, offer in pairs(homeOffers)do
@@ -1674,11 +1717,11 @@ function sendHomePage(playerId)
 		msg:addU16(0x1)
 		msg:addU32(offer.price)
 		msg:addByte(offer.coinType or 0x00)
-		local disabled, disabledReason = player:canBuyOffer(offer).disabled, player:canBuyOffer(offer).disabledReason
-		msg:addByte(disabled)
-		if disabled == 1 then
+
+		msg:addByte((offer.disabledReadonIndex ~= nil) and 1 or 0)
+		if (offer.disabledReadonIndex ~= nil) then
 			msg:addByte(0x01);
-			msg:addString(disabledReason)
+			msg:addU16(offer.disabledReadonIndex)
 		end
 
 		msg:addByte(0x00)

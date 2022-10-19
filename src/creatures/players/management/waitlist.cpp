@@ -97,17 +97,17 @@ bool WaitingList::clientLogin(const Player* player, std::size_t &currentSlot) {
 		return true;
 	}
 
-	auto result = info->findClient(player);
-	if (std::get<1>(result) != std::get<0>(result).end()) {
-		currentSlot = std::get<2>(result);
+	auto [waitList, iterator, size]= info->findClient(player);
+	if (iterator != waitList.end()) {
+		currentSlot = size;
 		if ((g_game().getPlayersOnline() + currentSlot) <= maxPlayers) {
-			// should be able to login now
-			std::get<0>(result).erase(std::get<1>(result));
+			//should be able to login now
+			waitList.erase(iterator);
 			return true;
 		}
 
-		// let them wait a bit longer
-		std::get<1>(result)->timeout = OTSYS_TIME() + (getTimeout(currentSlot) * 1000);
+		//let them wait a bit longer
+		iterator->timeout = OTSYS_TIME() + (getTimeout(currentSlot) * 1000);
 		return false;
 	}
 

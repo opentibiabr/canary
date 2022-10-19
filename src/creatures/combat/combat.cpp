@@ -35,11 +35,11 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 	damage.primary.type = params.combatType;
 	if (formulaType == COMBAT_FORMULA_DAMAGE) {
 		damage.primary.value = normal_random(
-			static_cast<int32_t>(mina),
-			static_cast<int32_t>(maxa)
+			static_cast<int64_t>(mina),
+			static_cast<int64_t>(maxa)
 		);
 	} else if (creature) {
-		int32_t min, max;
+		int64_t min, max;
 		if (creature->getCombatValues(min, max)) {
 			damage.primary.value = normal_random(min, max);
 		} else if (Player* player = creature->getPlayer()) {
@@ -48,16 +48,16 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 			} else if (formulaType == COMBAT_FORMULA_LEVELMAGIC) {
 				int32_t levelFormula = player->getLevel() * 2 + player->getMagicLevel() * 3;
 				damage.primary.value = normal_random(
-					static_cast<int32_t>(levelFormula * mina + minb),
-					static_cast<int32_t>(levelFormula * maxa + maxb)
+					static_cast<int64_t>(levelFormula * mina + minb),
+					static_cast<int64_t>(levelFormula * maxa + maxb)
 				);
 			} else if (formulaType == COMBAT_FORMULA_SKILL) {
 				Item* tool = player->getWeapon();
 				const Weapon* weapon = g_weapons().getWeapon(tool);
 				if (weapon) {
 					damage.primary.value = normal_random(
-						static_cast<int32_t>(minb),
-						static_cast<int32_t>(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb)
+						static_cast<int64_t>(minb),
+						static_cast<int64_t>(weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb)
 					);
 
 					damage.secondary.type = weapon->getElementType();
@@ -70,8 +70,8 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 					}
 				} else {
 					damage.primary.value = normal_random(
-						static_cast<int32_t>(minb),
-						static_cast<int32_t>(maxb)
+						static_cast<int64_t>(minb),
+						static_cast<int64_t>(maxb)
 					);
 				}
 			}
@@ -863,7 +863,7 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 			}
 		}
 	}
-	//
+
 	CombatDamage tmpDamage;
     if(data) {
         tmpDamage.origin = data->origin;
@@ -937,6 +937,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 					Charm* charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 					if (charm) {
 						chance += charm->percent;
+						sendDoubleSoundEffect(target->getPosition(), charm->soundCastEffect, charm->soundImpactEffect, caster);
 					}
 				}
 			}
@@ -947,6 +948,7 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 	}
+
 	if (canCombat) {
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
@@ -1219,15 +1221,15 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 	}
 	else {
 
-		int32_t defaultDmg = normal_random(
-			LuaScriptInterface::getNumber<int32_t>(L, -2),
-			LuaScriptInterface::getNumber<int32_t>(L, -1)
+		int64_t defaultDmg = normal_random(
+			LuaScriptInterface::getNumber<int64_t>(L, -2),
+			LuaScriptInterface::getNumber<int64_t>(L, -1)
 		);
 
 		if (shouldCalculateSecondaryDamage) {
 			double factor = (double)elementAttack / (double)attackValue; //attack value here is phys dmg + element dmg
-			int32_t elementDamage = std::round(defaultDmg * factor);
-			int32_t physDmg = std::round(defaultDmg * (1.0 - factor));
+			int64_t elementDamage = std::round(defaultDmg * factor);
+			int64_t physDmg = std::round(defaultDmg * (1.0 - factor));
 			damage.primary.value = physDmg;
 			damage.secondary.value = elementDamage;
 

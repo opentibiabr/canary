@@ -275,6 +275,7 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "isOffline", PlayerFunctions::luaPlayerIsOffline);
 
+			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 			registerMethod(L, "Player", "sendSingleSoundEffect", PlayerFunctions::luaPlayerSendSingleSoundEffect);
 			registerMethod(L, "Player", "sendDoubleSoundEffect", PlayerFunctions::luaPlayerSendDoubleSoundEffect);
 

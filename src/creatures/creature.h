@@ -202,10 +202,10 @@ class Creature : virtual public Thing
 			return baseSpeed;
 		}
 
-		int32_t getHealth() const {
+		int64_t getHealth() const {
 			return health;
 		}
-		virtual int32_t getMaxHealth() const {
+		virtual int64_t getMaxHealth() const {
 			return healthMax;
 		}
 		uint32_t getMana() const {
@@ -215,29 +215,29 @@ class Creature : virtual public Thing
 			return mana;
 		}
 
-    uint16_t getManaShield() const {
-      return manaShield;
-    }
+		uint32_t getManaShield() const {
+		return manaShield;
+		}
 
-    void setManaShield(uint16_t value) {
-      manaShield = value;
-    }
+		void setManaShield(uint32_t value) {
+		manaShield = value;
+		}
 
-    uint16_t getMaxManaShield() const {
-      return maxManaShield;
-    }
+		uint32_t getMaxManaShield() const {
+		return maxManaShield;
+		}
 
-    void setMaxManaShield(uint16_t value) {
-      maxManaShield = value;
-    }
+		void setMaxManaShield(uint32_t value) {
+		maxManaShield = value;
+		}
 
-    int32_t getBuff(int32_t buff) {
-      return varBuffs[buff];
-    }
+		int32_t getBuff(int32_t buff) {
+		return varBuffs[buff];
+		}
 
-    void setBuff(buffs_t buff, int32_t modifier) {
-      varBuffs[buff] += modifier;
-    }
+		void setBuff(buffs_t buff, int32_t modifier) {
+		varBuffs[buff] += modifier;
+		}
 
 		virtual CreatureIcon_t getIcon() const {
 			return CREATUREICON_NONE;
@@ -359,12 +359,12 @@ class Creature : virtual public Thing
 			return FACTION_DEFAULT;
 		}
 
-		virtual void changeHealth(int32_t healthChange, bool sendHealthChange = true);
-		virtual void changeMana(int32_t manaChange);
+		virtual void changeHealth(int64_t healthChange, bool sendHealthChange = true);
+		virtual void changeMana(int64_t manaChange);
 
-		void gainHealth(Creature* attacker, int32_t healthGain);
-		virtual void drainHealth(Creature* attacker, int32_t damage);
-		virtual void drainMana(Creature* attacker, int32_t manaLoss);
+		void gainHealth(Creature* attacker, int64_t healthGain);
+		virtual void drainHealth(Creature* attacker, int64_t damage);
+		virtual void drainMana(Creature* attacker, int64_t manaLoss);
 
 		virtual bool challengeCreature(Creature*) {
 			return false;
@@ -383,8 +383,8 @@ class Creature : virtual public Thing
 		virtual void onCombatRemoveCondition(Condition* condition);
 		virtual void onAttackedCreature(Creature*) {}
 		virtual void onAttacked();
-		virtual void onAttackedCreatureDrainHealth(Creature* target, int32_t points);
-		virtual void onTargetCreatureGainHealth(Creature*, int32_t) {}
+		virtual void onAttackedCreatureDrainHealth(Creature* target, int64_t points);
+		virtual void onTargetCreatureGainHealth(Creature*, int64_t) {}
 		void onAttackedCreatureKilled(Creature* target);
 		virtual bool onKilledCreature(Creature* target, bool lastHit = true);
 		virtual void onGainExperience(uint64_t gainExp, Creature* target);
@@ -566,11 +566,11 @@ class Creature : virtual public Thing
 		uint32_t baseSpeed = 220;
 		uint32_t mana = 0;
 		int32_t varSpeed = 0;
-		int32_t health = 1000;
-		int32_t healthMax = 1000;
+		int64_t health = 1000;
+		int64_t healthMax = 1000;
 
-		uint16_t manaShield = 0;
-		uint16_t maxManaShield = 0;
+		uint32_t manaShield = 0;
+		uint32_t maxManaShield = 0;
 		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
 
 		Outfit_t currentOutfit;

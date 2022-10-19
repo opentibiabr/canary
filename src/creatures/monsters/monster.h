@@ -151,8 +151,8 @@ class Monster final : public Creature
 		void onCreatureMove(Creature* creature, const Tile* newTile, const Position& newPos, const Tile* oldTile, const Position& oldPos, bool teleport) override;
 		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text) override;
 
-		void drainHealth(Creature* attacker, int32_t damage) override;
-		void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
+		void drainHealth(Creature* attacker, int64_t damage) override;
+		void changeHealth(int64_t healthChange, bool sendHealthChange = true) override;
 		bool getNextStep(Direction& direction, uint32_t& flags) override;
 		void onFollowCreatureComplete(const Creature* creature) override;
 

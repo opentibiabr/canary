@@ -373,7 +373,7 @@ void Events::eventCreatureOnHear(Creature* creature, Creature* speaker, const st
 	scriptInterface.callVoidFunction(4);
 }
 
-void Events::eventCreatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t& typePrimary, int32_t& damagePrimary, CombatType_t& typeSecondary, int32_t& damageSecondary, TextColor_t& colorPrimary, TextColor_t& colorSecondary) {
+void Events::eventCreatureOnDrainHealth(Creature* creature, Creature* attacker, CombatType_t& typePrimary, int64_t& damagePrimary, CombatType_t& typeSecondary, int64_t& damageSecondary, TextColor_t& colorPrimary, TextColor_t& colorSecondary) {
 	if (info.creatureOnDrainHealth == -1) {
 		return;
 	}
@@ -417,9 +417,9 @@ void Events::eventCreatureOnDrainHealth(Creature* creature, Creature* attacker, 
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
 		typePrimary = LuaScriptInterface::getNumber<CombatType_t>(L, -6);
-		damagePrimary = LuaScriptInterface::getNumber<int32_t>(L, -5);
+		damagePrimary = LuaScriptInterface::getNumber<int64_t>(L, -5);
 		typeSecondary = LuaScriptInterface::getNumber<CombatType_t>(L, -4);
-		damageSecondary = LuaScriptInterface::getNumber<int32_t>(L, -3);
+		damageSecondary = LuaScriptInterface::getNumber<int64_t>(L, -3);
 		colorPrimary = LuaScriptInterface::getNumber<TextColor_t>(L, -2);
 		colorSecondary = LuaScriptInterface::getNumber<TextColor_t>(L, -1);
 		lua_pop(L, 6);
@@ -1186,9 +1186,9 @@ void Events::eventPlayerOnCombat(Player* player, Creature* target, Item* item, C
 	if (scriptInterface.protectedCall(L, 8, 4) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	} else {
-		damage.primary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -4));
+		damage.primary.value = std::abs(LuaScriptInterface::getNumber<int64_t>(L, -4));
 		damage.primary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -3);
-		damage.secondary.value = std::abs(LuaScriptInterface::getNumber<int32_t>(L, -2));
+		damage.secondary.value = std::abs(LuaScriptInterface::getNumber<int64_t>(L, -2));
 		damage.secondary.type = LuaScriptInterface::getNumber<CombatType_t>(L, -1);
 
 		lua_pop(L, 4);

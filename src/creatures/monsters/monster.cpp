@@ -2069,7 +2069,7 @@ void Monster::setNormalCreatureLight()
 	internalLight = mType->info.light;
 }
 
-void Monster::drainHealth(Creature* attacker, int32_t damage)
+void Monster::drainHealth(Creature* attacker, int64_t damage)
 {
 	Creature::drainHealth(attacker, damage);
 
@@ -2083,7 +2083,7 @@ void Monster::drainHealth(Creature* attacker, int32_t damage)
 	}
 }
 
-void Monster::changeHealth(int32_t healthChange, bool sendHealthChange/* = true*/)
+void Monster::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/)
 {
 	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
 		uint32_t index = uniform_random(0, mType->info.soundVector.size() - 1);

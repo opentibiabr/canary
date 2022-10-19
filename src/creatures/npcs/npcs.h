@@ -62,8 +62,8 @@ class NpcType
 		int32_t playerSellEvent = -1;
 		int32_t playerLookEvent = -1;
 
-		int32_t health = 100;
-		int32_t healthMax = 100;
+		int64_t health = 100;
+		int64_t healthMax = 100;
 
 		int32_t walkRadius = 10;
 

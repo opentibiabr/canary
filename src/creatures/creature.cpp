@@ -810,14 +810,14 @@ Item* Creature::getCorpse(Creature*, Creature*)
 	return Item::CreateItem(getLookCorpse());
 }
 
-void Creature::changeHealth(int32_t healthChange, bool sendHealthChange/* = true*/)
+void Creature::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/)
 {
-	int32_t oldHealth = health;
+	int64_t oldHealth = health;
 
 	if (healthChange > 0) {
-		health += std::min<int32_t>(healthChange, getMaxHealth() - health);
+		health += std::min<int64_t>(healthChange, getMaxHealth() - health);
 	} else {
-		health = std::max<int32_t>(0, health + healthChange);
+		health = std::max<int64_t>(0, health + healthChange);
 	}
 
 	if (sendHealthChange && oldHealth != health) {
@@ -828,16 +828,16 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange/* = true
 	}
 }
 
-void Creature::changeMana(int32_t manaChange)
+void Creature::changeMana(int64_t manaChange)
 {
 	if (manaChange > 0) {
-		mana += std::min<int32_t>(manaChange, getMaxMana() - mana);
+		mana += std::min<int64_t>(manaChange, getMaxMana() - mana);
 	} else {
-		mana = std::max<int32_t>(0, mana + manaChange);
+		mana = std::max<int64_t>(0, mana + manaChange);
 	}
 }
 
-void Creature::gainHealth(Creature* healer, int32_t healthGain)
+void Creature::gainHealth(Creature* healer, int64_t healthGain)
 {
 	changeHealth(healthGain);
 	if (healer) {
@@ -845,7 +845,7 @@ void Creature::gainHealth(Creature* healer, int32_t healthGain)
 	}
 }
 
-void Creature::drainHealth(Creature* attacker, int32_t damage)
+void Creature::drainHealth(Creature* attacker, int64_t damage)
 {
 	changeHealth(-damage, false);
 
@@ -854,7 +854,7 @@ void Creature::drainHealth(Creature* attacker, int32_t damage)
 	}
 }
 
-void Creature::drainMana(Creature* attacker, int32_t manaLoss)
+void Creature::drainMana(Creature* attacker, int64_t manaLoss)
 {
 	onAttacked();
 	changeMana(-manaLoss);
@@ -1144,7 +1144,7 @@ void Creature::onAttacked()
 	//
 }
 
-void Creature::onAttackedCreatureDrainHealth(Creature* target, int32_t points)
+void Creature::onAttackedCreatureDrainHealth(Creature* target, int64_t points)
 {
 	target->addDamagePoints(this, points);
 }
@@ -1194,7 +1194,7 @@ void Creature::onGainExperience(uint64_t gainExp, Creature* target)
 		TextMessage message(MESSAGE_EXPERIENCE_OTHERS, ucfirst(getNameDescription()) + " gained " + std::to_string(gainExp) + (gainExp != 1 ? " experience points." : " experience point."));
 		message.position = position;
 		message.primary.color = TEXTCOLOR_WHITE_EXP;
-		message.primary.value = gainExp;
+		message.primary.value = static_cast<int64_t>(std::min<uint64_t>(gainExp, std::numeric_limits<int64_t>::max()));
 
 		for (Creature* spectator : spectators) {
 			spectator->getPlayer()->sendTextMessage(message);

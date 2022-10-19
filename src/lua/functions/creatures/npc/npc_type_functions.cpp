@@ -170,7 +170,7 @@ int NpcTypeFunctions::luaNpcTypeHealth(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, npcType->info.health);
 		} else {
-			npcType->info.health = getNumber<int32_t>(L, 2);
+			npcType->info.health = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -186,7 +186,7 @@ int NpcTypeFunctions::luaNpcTypeMaxHealth(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, npcType->info.healthMax);
 		} else {
-			npcType->info.healthMax = getNumber<int32_t>(L, 2);
+			npcType->info.healthMax = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {

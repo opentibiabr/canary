@@ -21,7 +21,6 @@
 
 #include "creatures/combat/combat.h"
 #include "game/game.h"
-#include "utils/pugicast.h"
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
 
@@ -120,18 +119,6 @@ Event_ptr Weapons::getEvent(const std::string& nodeName)
 	return nullptr;
 }
 
-bool Weapons::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
-	Weapon* weapon = static_cast<Weapon*>(event.release()); //event is guaranteed to be a Weapon
-
-	auto result = weapons.emplace(weapon->getID(), weapon);
-	if (!result.second) {
-		SPDLOG_WARN("[Weapons::registerEvent] - "
-                    "Duplicate registered item with id: {}", weapon->getID());
-	}
-	return result.second;
-}
-
 bool Weapons::registerLuaEvent(Weapon* event)
 {
 	weapons[event->getID()] = event;
@@ -153,123 +140,6 @@ int32_t Weapons::getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t
 	else {
 		return static_cast<int32_t>(std::round((0.09 * attackFactor * attackValue * attackSkill) + (level / 5)));
 	}
-}
-
-bool Weapon::configureEvent(const pugi::xml_node& node)
-{
-	pugi::xml_attribute attr;
-	if (!(attr = node.attribute("id"))) {
-		SPDLOG_ERROR("[Weapon::configureEvent] - Weapon without id");
-		return false;
-	}
-	id = pugi::cast<uint16_t>(attr.value());
-
-	if ((attr = node.attribute("level"))) {
-		level = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("maglv")) || (attr = node.attribute("maglevel"))) {
-		magLevel = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("mana"))) {
-		mana = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("soul"))) {
-		soul = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("prem"))) {
-		premium = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("breakchance")) && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
-		breakChance = std::min<uint8_t>(100, pugi::cast<uint16_t>(attr.value()));
-	}
-
-	if ((attr = node.attribute("action"))) {
-		action = getWeaponAction(asLowerCaseString(attr.as_string()));
-		if (action == WEAPONACTION_NONE) {
-			SPDLOG_WARN("[Weapon::configureEvent] - "
-                        "Unknown action {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("enabled"))) {
-		enabled = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("unproperly"))) {
-		wieldUnproperly = attr.as_bool();
-	}
-
-	std::list<std::string> vocStringList;
-	for (auto vocationNode : node.children()) {
-		if (!(attr = vocationNode.attribute("name"))) {
-			continue;
-		}
-
-		uint16_t vocationId = g_vocations().getVocationId(attr.as_string());
-		if (vocationId != -1) {
-			vocWeaponMap[vocationId] = true;
-			int32_t promotedVocation = g_vocations().getPromotedVocation(vocationId);
-			if (promotedVocation != VOCATION_NONE) {
-				vocWeaponMap[promotedVocation] = true;
-			}
-
-			if (vocationNode.attribute("showInDescription").as_bool(true)) {
-				vocStringList.push_back(asLowerCaseString(attr.as_string()));
-			}
-		}
-	}
-
-	std::string vocationString;
-	for (const std::string& str : vocStringList) {
-		if (!vocationString.empty()) {
-			if (str != vocStringList.back()) {
-				vocationString.push_back(',');
-				vocationString.push_back(' ');
-			} else {
-				vocationString += " and ";
-			}
-		}
-
-		vocationString += str;
-		vocationString.push_back('s');
-	}
-
-	uint32_t wieldInfo = 0;
-	if (getReqLevel() > 0) {
-		wieldInfo |= WIELDINFO_LEVEL;
-	}
-
-	if (getReqMagLv() > 0) {
-		wieldInfo |= WIELDINFO_MAGLV;
-	}
-
-	if (!vocationString.empty()) {
-		wieldInfo |= WIELDINFO_VOCREQ;
-	}
-
-	if (isPremium()) {
-		wieldInfo |= WIELDINFO_PREMIUM;
-	}
-
-	if (wieldInfo != 0) {
-		ItemType& it = Item::items.getItemType(id);
-		it.wieldInfo = wieldInfo;
-		it.vocationString = vocationString;
-		it.minReqLevel = getReqLevel();
-		it.minReqMagicLevel = getReqMagLv();
-	}
-
-	configureWeapon(Item::items[id]);
-	return true;
 }
 
 void Weapon::configureWeapon(const ItemType& it)
@@ -360,9 +230,9 @@ CombatDamage Weapon::getCombatDamage(CombatDamage combat, Player * player, Item 
 	double weaponAttackProportion = (double)weaponAttack / (double)totalAttack;
 
 	//Calculating damage
-	int32_t maxDamage = static_cast<int32_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
-	int32_t minDamage = level / 5;
-	int32_t realDamage = normal_random(minDamage, maxDamage);
+	int64_t maxDamage = static_cast<int64_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
+	int64_t minDamage = level / 5;
+	int64_t realDamage = normal_random(minDamage, maxDamage);
 
 	//Setting damage to combat
 	combat.primary.value = realDamage * weaponAttackProportion;
@@ -381,12 +251,13 @@ bool Weapon::useFist(Player* player, Creature* target)
 	int32_t attackSkill = player->getSkillLevel(SKILL_FIST);
 	int32_t attackValue = 7;
 
-	int32_t maxDamage = Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true);
+	int64_t maxDamage = Weapons::getMaxWeaponDamage(player->getLevel(), attackSkill, attackValue, attackFactor, true);
 
 	CombatParams params;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
+	params.soundImpactEffect = SOUND_EFFECT_TYPE_HUMAN_CLOSE_ATK_FIST;
 
 	CombatDamage damage;
 	damage.origin = ORIGIN_MELEE;
@@ -472,12 +343,12 @@ void Weapon::onUsedWeapon(Player* player, Item* item, Tile* destTile) const
 	uint32_t manaCost = getManaCost(player);
 	if (manaCost != 0) {
 		player->addManaSpent(manaCost);
-		player->changeMana(-static_cast<int32_t>(manaCost));
+		player->changeMana(-static_cast<int64_t>(manaCost));
 	}
 
-	uint32_t healthCost = getHealthCost(player);
+	int64_t healthCost = getHealthCost(player);
 	if (healthCost != 0) {
-		player->changeHealth(-static_cast<int32_t>(healthCost));
+		player->changeHealth(-healthCost);
 	}
 
 	if (!player->hasFlag(PlayerFlag_HasInfiniteSoul) && soul > 0) {
@@ -527,7 +398,7 @@ uint32_t Weapon::getManaCost(const Player* player) const
 	return (player->getMaxMana() * manaPercent) / 100;
 }
 
-int32_t Weapon::getHealthCost(const Player* player) const
+int64_t Weapon::getHealthCost(const Player* player) const
 {
 	if (health != 0) {
 		return health;
@@ -965,46 +836,6 @@ bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& s
 		}
 	} else {
 		skillpoint = 0;
-	}
-	return true;
-}
-
-bool WeaponWand::configureEvent(const pugi::xml_node& node)
-{
-	if (!Weapon::configureEvent(node)) {
-		return false;
-	}
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("min"))) {
-		minChange = pugi::cast<int32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("max"))) {
-		maxChange = pugi::cast<int32_t>(attr.value());
-	}
-
-	attr = node.attribute("type");
-	if (!attr) {
-		return true;
-	}
-
-	std::string tmpStrValue = asLowerCaseString(attr.as_string());
-	if (tmpStrValue == "earth") {
-		params.combatType = COMBAT_EARTHDAMAGE;
-	} else if (tmpStrValue == "ice") {
-		params.combatType = COMBAT_ICEDAMAGE;
-	} else if (tmpStrValue == "energy") {
-		params.combatType = COMBAT_ENERGYDAMAGE;
-	} else if (tmpStrValue == "fire") {
-		params.combatType = COMBAT_FIREDAMAGE;
-	} else if (tmpStrValue == "death") {
-		params.combatType = COMBAT_DEATHDAMAGE;
-	} else if (tmpStrValue == "holy") {
-		params.combatType = COMBAT_HOLYDAMAGE;
-	} else {
-		SPDLOG_WARN("[WeaponWand::configureEvent] - "
-                    "Type {} does not exist", attr.as_string());
 	}
 	return true;
 }

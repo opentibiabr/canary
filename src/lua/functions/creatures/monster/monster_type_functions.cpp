@@ -323,7 +323,7 @@ int MonsterTypeFunctions::luaMonsterTypeHealth(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, monsterType->info.health);
 		} else {
-			monsterType->info.health = getNumber<int32_t>(L, 2);
+			monsterType->info.health = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {
@@ -339,7 +339,7 @@ int MonsterTypeFunctions::luaMonsterTypeMaxHealth(lua_State* L) {
 		if (lua_gettop(L) == 1) {
 			lua_pushnumber(L, monsterType->info.healthMax);
 		} else {
-			monsterType->info.healthMax = getNumber<int32_t>(L, 2);
+			monsterType->info.healthMax = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
 		}
 	} else {

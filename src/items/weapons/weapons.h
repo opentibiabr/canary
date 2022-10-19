@@ -65,7 +65,9 @@ class Weapons final : public BaseEvents
 		LuaScriptInterface& getScriptInterface() override;
 		std::string getScriptBaseName() const override;
 		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
+		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override {
+			return true;
+		}
 
 		std::map<uint32_t, Weapon*> weapons;
 
@@ -79,7 +81,9 @@ class Weapon : public Event
 	public:
 		explicit Weapon(LuaScriptInterface* interface) : Event(interface) {}
 
-		bool configureEvent(const pugi::xml_node& node) override;
+		bool configureEvent(const pugi::xml_node& node) override {
+			return true;
+		}
 		bool loadFunction(const pugi::xml_attribute&, bool) final {
 			return true;
 		}
@@ -146,10 +150,10 @@ class Weapon : public Event
 			manaPercent = m;
 		}
 
-		int32_t getHealth() const {
+		uint32_t getHealth() const {
 			return health;
 		}
-		void setHealth(int32_t h) {
+		void setHealth(uint32_t h) {
 			health = h;
 		}
 
@@ -219,7 +223,7 @@ class Weapon : public Event
 		}
 
 		uint32_t getManaCost(const Player* player) const;
-		int32_t getHealthCost(const Player* player) const;
+		int64_t getHealthCost(const Player* player) const;
 
 		uint32_t level = 0;
 		uint32_t magLevel = 0;
@@ -294,7 +298,6 @@ class WeaponWand final : public Weapon
 	public:
 		explicit WeaponWand(LuaScriptInterface* interface) : Weapon(interface) {}
 
-		bool configureEvent(const pugi::xml_node& node) override;
 		void configureWeapon(const ItemType& it) override;
 
 		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;

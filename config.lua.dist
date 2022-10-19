@@ -52,9 +52,6 @@ freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
 
--- GameStore
-gamestoreByModules = true
-
 -- Prey system
 -- NOTE: preyRerollPricePerLevel: Price multiplier in gold coin for rerolling prey list.
 -- NOTE: preySelectListPrice: Price to manually select creature on list and to lock prey slot.

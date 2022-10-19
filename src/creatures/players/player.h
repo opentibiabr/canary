@@ -28,7 +28,6 @@
 #include "items/containers/depot/depotchest.h"
 #include "items/containers/depot/depotlocker.h"
 #include "grouping/familiars.h"
-#include "game/gamestore.h"
 #include "grouping/groups.h"
 #include "grouping/guild.h"
 #include "imbuements/imbuements.h"
@@ -619,11 +618,11 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		int32_t getMaxHealth() const override {
-			return std::max<int32_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
+		int64_t getMaxHealth() const override {
+			return std::max<int64_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
 		}
 		uint32_t getMaxMana() const override {
-			return std::max<int32_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
+			return std::max<int64_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
 		}
 
 		Item* getInventoryItem(Slots_t slot) const;
@@ -640,7 +639,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		void setVarStats(stats_t stat, int32_t modifier);
-		int32_t getDefaultStats(stats_t stat) const;
+		int64_t getDefaultStats(stats_t stat) const;
 
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
@@ -739,8 +738,8 @@ class Player final : public Creature, public Cylinder
 		bool addItemFromStash(uint16_t itemId, uint32_t itemCount);
 		void stowItem(Item* item, uint32_t count, bool allItems);
 
-		void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
-		void changeMana(int32_t manaChange) override;
+		void changeHealth(int64_t healthChange, bool sendHealthChange = true) override;
+		void changeMana(int64_t manaChange) override;
 		void changeSoul(int32_t soulChange);
 
 		bool isPzLocked() const {
@@ -783,8 +782,8 @@ class Player final : public Creature, public Cylinder
 		int32_t getWeaponSkill(const Item* item) const;
 		void getShieldAndWeapon(const Item*& shield, const Item*& weapon) const;
 
-		void drainHealth(Creature* attacker, int32_t damage) override;
-		void drainMana(Creature* attacker, int32_t manaLoss) override;
+		void drainHealth(Creature* attacker, int64_t damage) override;
+		void drainMana(Creature* attacker, int64_t manaLoss) override;
 		void addManaSpent(uint64_t amount);
 		void addSkillAdvance(skills_t skill, uint64_t count);
 
@@ -804,8 +803,8 @@ class Player final : public Creature, public Cylinder
 		void onCombatRemoveCondition(Condition* condition) override;
 		void onAttackedCreature(Creature* target) override;
 		void onAttacked() override;
-		void onAttackedCreatureDrainHealth(Creature* target, int32_t points) override;
-		void onTargetCreatureGainHealth(Creature* target, int32_t points) override;
+		void onAttackedCreatureDrainHealth(Creature* target, int64_t points) override;
+		void onTargetCreatureGainHealth(Creature* target, int64_t points) override;
 		bool onKilledCreature(Creature* target, bool lastHit = true) override;
 		void onGainExperience(uint64_t gainExp, Creature* target) override;
 		void onGainSharedExperience(uint64_t gainExp, Creature* target);
@@ -1062,44 +1061,6 @@ class Player final : public Creature, public Cylinder
 		}
 
 		void openPlayerContainers();
-
-		//store
-		void sendOpenStore(uint8_t serviceType) {
-			if(client) {
-				client->sendOpenStore(serviceType);
-			}
-		}
-
-		void sendShowStoreCategoryOffers(StoreCategory* category) {
-			if(client) {
-				client->sendStoreCategoryOffers(category);
-			}
-		}
-
-		void sendStoreError(GameStoreError_t error, const std::string& errorMessage) {
-			if(client) {
-				client->sendStoreError(error, errorMessage);
-			}
-		}
-
-		void sendStorePurchaseSuccessful(const std::string& message, const uint32_t newCoinBalance) {
-			if(client)
-			{
-				client->sendStorePurchaseSuccessful(message, newCoinBalance);
-			}
-		}
-
-		void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType) {
-			if(client) {
-				client->sendStoreRequestAdditionalInfo(offerId, clientOfferType);
-			}
-		}
-
-		void sendStoreTrasactionHistory(HistoryStoreOfferList& list, uint32_t page, uint8_t entriesPerPage) {
-			if(client) {
-				client->sendStoreTrasactionHistory(list, page, entriesPerPage);
-			}
-		}
 
 		// Quickloot
 		void sendLootContainers() {
@@ -1545,12 +1506,6 @@ class Player final : public Creature, public Cylinder
 		void sendNetworkMessage(const NetworkMessage& message) {
 			if (client) {
 				client->writeToOutputBuffer(message);
-			}
-		}
-
-		void sendStoreOpen(uint8_t serviceType) {
-			if (client) {
-				client->sendOpenStore(serviceType);
 			}
 		}
 

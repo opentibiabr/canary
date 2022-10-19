@@ -66,7 +66,7 @@ class Condition
 		static Condition* createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);
 		static Condition* createCondition(PropStream& propStream);
 
-		virtual bool setParam(ConditionParam_t param, int32_t value);
+		virtual bool setParam(ConditionParam_t param, int64_t value);
 
 		//serialization
 		bool unserialize(PropStream& propStream);
@@ -117,7 +117,7 @@ class ConditionAttributes final : public ConditionGeneric
 		void endCondition(Creature* creature) final;
 		void addCondition(Creature* creature, const Condition* condition) final;
 
-		bool setParam(ConditionParam_t param, int32_t value) final;
+		bool setParam(ConditionParam_t param, int64_t value) final;
 
 		ConditionAttributes* clone() const final {
 			return new ConditionAttributes(*this);
@@ -130,7 +130,7 @@ class ConditionAttributes final : public ConditionGeneric
 	private:
 		int32_t skills[SKILL_LAST + 1] = {};
 		int32_t skillsPercent[SKILL_LAST + 1] = {};
-		int32_t stats[STAT_LAST + 1] = {};
+		int64_t stats[STAT_LAST + 1] = {};
 		int32_t statsPercent[STAT_LAST + 1] = {};
     	int32_t buffsPercent[BUFF_LAST + 1] = {};
     	int32_t buffs[BUFF_LAST + 1] = {};
@@ -159,7 +159,7 @@ class ConditionRegeneration final : public ConditionGeneric
 		void addCondition(Creature* creature, const Condition* addCondition) override;
 		bool executeCondition(Creature* creature, int32_t interval) override;
 
-		bool setParam(ConditionParam_t param, int32_t value) override;
+		bool setParam(ConditionParam_t param, int64_t value) override;
 
 		uint32_t getHealthTicks(Creature* creature) const;
 		uint32_t getManaTicks(Creature* creature) const;
@@ -193,7 +193,7 @@ public:
   void addCondition(Creature* creature, const Condition* addCondition) override;
   uint32_t getIcons() const override;
 
-  bool setParam(ConditionParam_t param, int32_t value) override;
+  bool setParam(ConditionParam_t param, int64_t value) override;
 
   ConditionManaShield* clone() const override {
     return new ConditionManaShield(*this);
@@ -204,7 +204,7 @@ public:
   bool unserializeProp(ConditionAttr_t attr, PropStream& propStream) override;
 
 private:
-  uint16_t manaShield = 0;
+  uint32_t manaShield = 0;
 };
 
 class ConditionSoul final : public ConditionGeneric
@@ -216,7 +216,7 @@ class ConditionSoul final : public ConditionGeneric
 		void addCondition(Creature* creature, const Condition* addCondition) override;
 		bool executeCondition(Creature* creature, int32_t interval) override;
 
-		bool setParam(ConditionParam_t param, int32_t value) override;
+		bool setParam(ConditionParam_t param, int64_t value) override;
 
 		ConditionSoul* clone() const override {
 			return new ConditionSoul(*this);
@@ -265,7 +265,7 @@ class ConditionDamage final : public Condition
 			return new ConditionDamage(*this);
 		}
 
-		bool setParam(ConditionParam_t param, int32_t value) override;
+		bool setParam(ConditionParam_t param, int64_t value) override;
 
 		bool addDamage(int32_t rounds, int32_t time, int32_t value);
 		bool doForceUpdate() const {
@@ -295,7 +295,7 @@ class ConditionDamage final : public Condition
 		std::list<IntervalInfo> damageList;
 
 		bool getNextDamage(int32_t& damage);
-		bool doDamage(Creature* creature, int32_t healthChange);
+		bool doDamage(Creature* creature, int64_t healthChange);
 
 		bool updateCondition(const Condition* addCondition) override;
 };
@@ -316,7 +316,7 @@ class ConditionSpeed final : public Condition
 			return new ConditionSpeed(*this);
 		}
 
-		bool setParam(ConditionParam_t param, int32_t value) override;
+		bool setParam(ConditionParam_t param, int64_t value) override;
 
 		void setFormulaVars(float mina, float minb, float maxa, float maxb);
 
@@ -378,7 +378,7 @@ class ConditionLight final : public Condition
 			return new ConditionLight(*this);
 		}
 
-		bool setParam(ConditionParam_t param, int32_t value) override;
+		bool setParam(ConditionParam_t param, int64_t value) override;
 
 		//serialization
 		void serialize(PropWriteStream& propWriteStream) override;

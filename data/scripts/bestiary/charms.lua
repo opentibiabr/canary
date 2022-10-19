@@ -11,7 +11,10 @@ local charms = {
 		messageCancel = "You wounded the monster.",
 		messageServerLog = "[Wound charm]",
 		effect = CONST_ME_HITAREA,
-		points = 600
+		points = 600,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Enflame charm
 	[2] = {
@@ -27,8 +30,7 @@ local charms = {
 		effect = CONST_ME_HITBYFIRE,
 		points = 1000,
 		sounds = {
-			impactSound = SOUND_EFFECT_TYPE_MAGICAL_RANGE_ATK,
-			castSound = SOUND_EFFECT_TYPE_MONSTER_SPELL_SINGLE_TARGET_FIRE
+			castSound = SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE
 		}
 	},
 	-- Poison charm
@@ -43,7 +45,10 @@ local charms = {
 		messageCancel = "You poisoned the monster.",
 		messageServerLog = "[Poison charm]",
 		effect = CONST_ME_GREEN_RINGS,
-		points = 600
+		points = 600,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_TERRA_STRIKE
+		}
 	},
 	-- Freeze charm
 	[4] = {
@@ -57,7 +62,10 @@ local charms = {
 		messageCancel = "You frozen the monster.",
 		messageServerLog = "[Freeze charm]",
 		effect = CONST_ME_ICEATTACK,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_ICE_STRIKE
+		}
 	},
 	--Zap charm
 	[5] = {
@@ -71,7 +79,10 @@ local charms = {
 		messageCancel = "You eletrocuted the monster.",
 		messageServerLog = "[Zap charm]",
 		effect = CONST_ME_ENERGYHIT,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE
+		}
 	},
 	--Curse charm
 	[6] = {
@@ -85,7 +96,10 @@ local charms = {
 		messageCancel = "You curse the monster.",
 		messageServerLog = "[Curse charm]",
 		effect = CONST_ME_SMALLCLOUDS,
-		points = 900
+		points = 900,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_DEATH_STRIKE
+		}
 	},
 	-- Cripple charm
 	[7] = {
@@ -154,7 +168,10 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 10,
 		chance = 100,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Scavenge charm
 	[14] = {
@@ -162,7 +179,10 @@ local charms = {
 		description = "Enhances your chances to successfully skin/dust a skinnable/dustable creature.",
 		type = CHARM_PASSIVE,
 		percent = 10,
-		points = 800
+		points = 800,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Gut charm
 	[15] = {
@@ -170,7 +190,7 @@ local charms = {
 		description = "Gutting the creature yields 20% more creature products.",
 		type = CHARM_PASSIVE,
 		percent = 20,
-		points = 800,
+		points = 800
 	},
 	-- Low blow charm
 	[16] = {
@@ -179,7 +199,10 @@ local charms = {
 		type = CHARM_PASSIVE,
 		percent = 8,
 		chance = 0,
-		points = 2000
+		points = 2000,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE
+		}
 	},
 	-- Divine wrath charm
 	[17] = {
@@ -193,7 +216,10 @@ local charms = {
 		messageCancel = "You divine the monster.",
 		messageServerLog = "[Divine charm]",
 		effect = CONST_ME_HOLYDAMAGE,
-		points = 1500
+		points = 1500,
+		sounds = {
+			castSound = SOUND_EFFECT_TYPE_SPELL_HOLY_FLASH
+		}
 	},
 	-- Vampiric embrace charm
 	[18] = {

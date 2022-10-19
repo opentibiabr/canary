@@ -97,6 +97,10 @@ enum MagicEffectsType_t : uint8_t {
 	MAGIC_EFFECTS_CREATE_DISTANCEEFFECT = 4,
 	// needs uint8_t and deltaX(int8_t), deltaY(int8_t) after type
 	MAGIC_EFFECTS_CREATE_DISTANCEEFFECT_REVERSED = 5,
+	// needs uint16_t after type
+	MAGIC_EFFECTS_CREATE_SOUND_MAIN_EFFECT = 6,
+	// needs uint8_t and uint16_t after type
+	MAGIC_EFFECTS_CREATE_SOUND_SECONDARY_EFFECT = 7,
 };
 
 enum ImpactAnalyzerAndTracker_t : uint8_t {

@@ -171,7 +171,6 @@ target_sources(${PROJECT_NAME}
     database/databasemanager.cpp
     database/databasetasks.cpp
     game/game.cpp
-    game/gamestore.cpp
     game/movement/position.cpp
     game/movement/teleport.cpp
     game/scheduling/scheduler.cpp

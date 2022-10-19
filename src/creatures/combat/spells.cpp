@@ -24,7 +24,6 @@
 #include "creatures/monsters/monster.h"
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/pugicast.h"
 
 Spells::Spells()
 {
@@ -143,33 +142,6 @@ bool Spells::hasInstantSpell(const std::string& word) const
 	{
 		return true;
 	}
-	return false;
-}
-
-bool Spells::registerEvent(Event_ptr event, const pugi::xml_node&)
-{
-	InstantSpell* instant = dynamic_cast<InstantSpell*>(event.get());
-	if (instant) {
-		auto result = instants.emplace(instant->getWords(), std::move(*instant));
-		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerEvent] - "
-                        "Duplicate registered instant spell with words: {}",
-                        instant->getWords());
-		}
-		return result.second;
-	}
-
-	RuneSpell* rune = dynamic_cast<RuneSpell*>(event.get());
-	if (rune) {
-		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
-		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerEvent] - "
-                        "Duplicate registered rune with id: {}",
-                        rune->getRuneItemId());
-		}
-		return result.second;
-	}
-
 	return false;
 }
 
@@ -369,14 +341,6 @@ bool CombatSpell::castSpell(Creature* creature)
 		pos = creature->getPosition();
 	}
 
-	if (soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_CASTSOUND, soundCastEffect);
-	}
-
-	if (soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_IMPACTSOUND, soundImpactEffect);
-	}
-
 	combat->doCombat(creature, pos);
 	return true;
 }
@@ -401,14 +365,6 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 			var.number = target->getID();
 		}
 		return executeCastSpell(creature, var);
-	}
-
-	if (soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_CASTSOUND, soundCastEffect);
-	}
-
-	if (soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_IMPACTSOUND, soundImpactEffect);
 	}
 
 	if (combat->hasArea()) {
@@ -446,200 +402,6 @@ bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 	LuaScriptInterface::pushVariant(L, var);
 
 	return scriptInterface->callFunction(2);
-}
-
-bool Spell::configureSpell(const pugi::xml_node& node)
-{
-	pugi::xml_attribute nameAttribute = node.attribute("name");
-	if (!nameAttribute) {
-		SPDLOG_ERROR("[Spell::configureSpell] - Spell without name");
-		return false;
-	}
-
-	name = nameAttribute.as_string();
-
-	static const char* reservedList[] = {
-		"melee",
-		"physical",
-		"poison",
-		"fire",
-		"energy",
-		"drown",
-		"lifedrain",
-		"manadrain",
-		"healing",
-		"speed",
-		"outfit",
-		"invisible",
-		"drunk",
-		"firefield",
-		"poisonfield",
-		"energyfield",
-		"firecondition",
-		"poisoncondition",
-		"energycondition",
-		"drowncondition",
-		"freezecondition",
-		"cursecondition",
-		"dazzlecondition"
-	};
-
-	//static size_t size = sizeof(reservedList) / sizeof(const char*);
-	//for (size_t i = 0; i < size; ++i) {
-	for (const char* reserved : reservedList) {
-		if (strcasecmp(reserved, name.c_str()) == 0) {
-			SPDLOG_ERROR("[Spell::configureSpell] - "
-                         "Spell is using a reserved name: {}", reserved);
-			return false;
-		}
-	}
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("spellid"))) {
-		spellId = pugi::cast<uint16_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("group"))) {
-		std::string tmpStr = asLowerCaseString(attr.as_string());
-		SpellGroup_t spellgroup = stringToSpellGroup(tmpStr);
-		if (spellgroup != SPELLGROUP_NONE) {
-			group = spellgroup;
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Unknown group: {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("groupcooldown"))) {
-		groupCooldown = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("secondarygroup"))) {
-		std::string tmpStr = asLowerCaseString(attr.as_string());
-		SpellGroup_t spellgroup = stringToSpellGroup(tmpStr);
-		if (spellgroup != SPELLGROUP_NONE) {
-			secondaryGroup = spellgroup;
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Unknown secondarygroup: {}", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("secondarygroupcooldown"))) {
-		secondaryGroupCooldown = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("level")) || (attr = node.attribute("lvl"))) {
-		level = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("magiclevel")) || (attr = node.attribute("maglv"))) {
-		magLevel = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("mana"))) {
-		mana = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("castSound"))) {
-		soundCastEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(attr.value()));
-	}
-
-	if ((attr = node.attribute("impactSound"))) {
-		soundImpactEffect = static_cast<SoundEffect_t>(pugi::cast<uint16_t>(attr.value()));
-	}
-
-	if ((attr = node.attribute("manapercent"))) {
-		manaPercent = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("soul"))) {
-		soul = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("range"))) {
-		range = pugi::cast<int32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("cooldown")) || (attr = node.attribute("exhaustion"))) {
-		cooldown = pugi::cast<uint32_t>(attr.value());
-	}
-
-	if ((attr = node.attribute("setPzLocked"))) {
-		pzLocked = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("premium")) || (attr = node.attribute("prem"))) {
-		premium = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("enabled"))) {
-		enabled = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("needtarget"))) {
-		needTarget = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("needweapon"))) {
-		needWeapon = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("selftarget"))) {
-		selfTarget = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("needlearn"))) {
-		learnable = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("blocking"))) {
-		blockingSolid = attr.as_bool();
-		blockingCreature = blockingSolid;
-	}
-
-	if ((attr = node.attribute("blocktype"))) {
-		std::string tmpStrValue = asLowerCaseString(attr.as_string());
-		if (tmpStrValue == "all") {
-			blockingSolid = true;
-			blockingCreature = true;
-		} else if (tmpStrValue == "solid") {
-			blockingSolid = true;
-		} else if (tmpStrValue == "creature") {
-			blockingCreature = true;
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Blocktype {} does not exist", attr.as_string());
-		}
-	}
-
-	if ((attr = node.attribute("allowOnSelf"))) {
-		allowOnSelf = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("aggressive"))) {
-		aggressive = booleanString(attr.as_string());
-	}
-
-	if (group == SPELLGROUP_NONE) {
-		group = (aggressive ? SPELLGROUP_ATTACK : SPELLGROUP_HEALING);
-	}
-
-	for (auto vocationNode : node.children()) {
-		if (!(attr = vocationNode.attribute("name"))) {
-			continue;
-		}
-
-		int32_t vocationId = g_vocations().getVocationId(attr.as_string());
-		if (vocationId != -1) {
-			attr = vocationNode.attribute("showInDescription");
-			vocSpellMap[vocationId] = !attr || attr.as_bool();
-		} else {
-			SPDLOG_WARN("[Spell::configureSpell] - "
-                        "Wrong vocation name: {}", attr.as_string());
-		}
-	}
-	return true;
 }
 
 bool Spell::playerSpellCheck(Player* player) const
@@ -884,10 +646,6 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 		if (aggressive) {
 			player->addInFightTicks();
 		}
-
-		if (player && soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), soundCastEffect, soundImpactEffect, player);
-		}
 	}
 
 	if (payCost) {
@@ -899,7 +657,7 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost)
 {
 	if (manaCost > 0) {
 		player->addManaSpent(manaCost);
-		player->changeMana(-static_cast<int32_t>(manaCost));
+		player->changeMana(-static_cast<int64_t>(manaCost));
 	}
 
 	if (!player->hasFlag(PlayerFlag_HasInfiniteSoul)) {
@@ -927,39 +685,6 @@ uint32_t Spell::getManaCost(const Player* player) const
 std::string InstantSpell::getScriptEventName() const
 {
 	return "onCastSpell";
-}
-
-bool InstantSpell::configureEvent(const pugi::xml_node& node)
-{
-	if (!Spell::configureSpell(node)) {
-		return false;
-	}
-
-	if (!TalkAction::configureEvent(node)) {
-		return false;
-	}
-
-	spellType = SPELL_INSTANT;
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("params"))) {
-		hasParam = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("playernameparam"))) {
-		hasPlayerNameParam = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("direction"))) {
-		needDirection = attr.as_bool();
-	} else if ((attr = node.attribute("casterTargetOrDirection"))) {
-		casterTargetOrDirection = attr.as_bool();
-	}
-
-	if ((attr = node.attribute("blockwalls"))) {
-		checkLineOfSight = attr.as_bool();
-	}
-	return true;
 }
 
 bool InstantSpell::playerCastInstant(Player* player, std::string& param)
@@ -1186,43 +911,6 @@ bool InstantSpell::canCast(const Player* player) const
 std::string RuneSpell::getScriptEventName() const
 {
 	return "onCastSpell";
-}
-
-bool RuneSpell::configureEvent(const pugi::xml_node& node)
-{
-	if (!Spell::configureSpell(node)) {
-		return false;
-	}
-
-	if (!Action::configureEvent(node)) {
-		return false;
-	}
-
-	spellType = SPELL_RUNE;
-
-	pugi::xml_attribute attr;
-	if (!(attr = node.attribute("id"))) {
-		SPDLOG_ERROR("[RuneSpell::configureEvent] - Rune spell without id");
-		return false;
-	}
-	runeId = pugi::cast<uint16_t>(attr.value());
-
-	if ((attr = node.attribute("charges"))) {
-		charges = pugi::cast<uint32_t>(attr.value());
-	} else {
-		charges = 0;
-	}
-
-	hasCharges = (charges > 0);
-	if (magLevel != 0 || level != 0) {
-		//Change information in the ItemType to get accurate description
-		ItemType& iType = Item::items.getItemType(runeId);
-		iType.runeMagLevel = magLevel;
-		iType.runeLevel = level;
-		iType.charges = charges;
-	}
-
-	return true;
 }
 
 ReturnValue RuneSpell::canExecuteAction(const Player* player, const Position& toPos)

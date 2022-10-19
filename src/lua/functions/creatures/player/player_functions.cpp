@@ -859,7 +859,7 @@ int PlayerFunctions::luaPlayerAddMana(lua_State* L) {
 		return 1;
 	}
 
-	int32_t manaChange = getNumber<int32_t>(L, 2);
+	int64_t manaChange = getNumber<int64_t>(L, 2);
 	bool animationOnLoss = getBoolean(L, 3, false);
 	if (!animationOnLoss && manaChange < 0) {
 		player->changeMana(manaChange);
@@ -888,8 +888,8 @@ int PlayerFunctions::luaPlayerSetMaxMana(lua_State* L) {
 	// player:setMaxMana(maxMana)
 	Player* player = getPlayer(L, 1);
 	if (player) {
-		player->manaMax = getNumber<int32_t>(L, 2);
-		player->mana = std::min<int32_t>(player->mana, player->manaMax);
+		player->manaMax = getNumber<int64_t>(L, 2);
+		player->mana = std::min<int64_t>(player->mana, player->manaMax);
 		g_game().addPlayerMana(player);
 		player->sendStats();
 		pushBoolean(L, true);
@@ -1904,12 +1904,12 @@ int PlayerFunctions::luaPlayerSendTextMessage(lua_State* L) {
 	} else {
 		if (parameters >= 6) {
 			message.position = getPosition(L, 4);
-			message.primary.value = getNumber<int32_t>(L, 5);
+			message.primary.value = getNumber<int64_t>(L, 5);
 			message.primary.color = getNumber<TextColor_t>(L, 6);
 		}
 
 		if (parameters >= 8) {
-			message.secondary.value = getNumber<int32_t>(L, 7);
+			message.secondary.value = getNumber<int64_t>(L, 7);
 			message.secondary.color = getNumber<TextColor_t>(L, 8);
 		}
 	}

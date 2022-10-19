@@ -1286,7 +1286,7 @@ struct LightInfo {
 struct CombatDamage {
 	struct {
 		CombatType_t type;
-		int32_t value;
+		int64_t value;
 	} primary, secondary;
 
 	CombatOrigin origin;

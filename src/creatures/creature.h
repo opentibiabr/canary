@@ -490,6 +490,7 @@ class Creature : virtual public Thing {
 				int32_t total;
 				int64_t ticks;
 		};
+
 		using CountMap = std::map<uint32_t, CountBlock_t>;
 		CountMap getDamageMap() const {
 			return damageMap;

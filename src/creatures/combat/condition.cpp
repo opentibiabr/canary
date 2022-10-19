@@ -769,7 +769,7 @@ void ConditionRegeneration::serialize(PropWriteStream &propWriteStream) {
 bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interval) {
 	internalHealthTicks += interval;
 	internalManaTicks += interval;
-	Player* player = creature->getPlayer();
+	const Player* player = creature->getPlayer();
 	int32_t PlayerdailyStreak = 0;
 	if (player) {
 		PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);

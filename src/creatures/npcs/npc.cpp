@@ -312,14 +312,19 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	auto item = player->getInventoryItemFromId(itemId, ignore);
-	if (item) {
-		SPDLOG_INFO("TIER {}, IMBUEMENT {}", item->getTier(), item->hasImbuements());
-	}
+	auto items = player->getInventoryItemsFromId(itemId, ignore);
+	for (auto item : items) {
+		if (!item || item->getTier() > 0) {
+			continue;
+		}
 
-	if (!player->removeItemOfType(itemId, amount, -1, ignore, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
-		return;
+		if (!item->hasImbuements()) {
+			if (auto ret = g_game().internalRemoveItem(item, amount);
+			ret != RETURNVALUE_NOERROR) {
+				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+				continue;
+			}
+		}
 	}
 
 	int64_t totalCost = sellPrice * amount;

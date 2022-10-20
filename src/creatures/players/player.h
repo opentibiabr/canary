@@ -537,7 +537,7 @@ class Player final : public Creature, public Cylinder
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool ignoreImbued = true) const;
+		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false) const;
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {
 			auto it = stashItems.find(itemId);
@@ -2139,11 +2139,13 @@ class Player final : public Creature, public Cylinder
 		size_t getLastIndex() const override;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 		void stashContainer(StashContainerList itemDict);
+		ItemsTierCountList getInventoryItemsId() const;
+		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		ItemsTierCountList getInventoryItemsId() const;
-		Item* getInventoryItemFromId(uint16_t itemId, bool ignore) const;
-		std::map<uint16_t, uint16_t> getAllItemTypeCountAndSubtype() const;
+		std::map<uint16_t, uint16_t>& getAllItemTypeCount(std::map<uint16_t,
+                                      uint16_t>& countMap) const;
+		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 
 		void internalAddThing(Thing* thing) override;

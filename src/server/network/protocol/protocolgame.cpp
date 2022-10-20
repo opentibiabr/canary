@@ -4029,13 +4029,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			continue;
 		}
 
-		auto index = shopBlock.itemId;
-		if (Item::items[shopBlock.itemId].isFluidContainer())
-		{
-			index |= (static_cast<uint16_t>(shopBlock.itemSubType) << 16);
-		}
-
-		it = inventoryMap.find(index);
+		it = inventoryMap.find(shopBlock.itemId);
 		if (it != inventoryMap.end())
 		{
 			itemsToSend++;

@@ -8430,7 +8430,8 @@ void Game::updatePlayerSaleItems(uint32_t playerId)
 		return;
 	}
 
-	player->sendSaleItemList(player->getAllItemTypeCountAndSubtype());
+	std::map<uint16_t, uint16_t> map;
+	player->sendSaleItemList(player->getAllItemTypeCount(map));
 	player->setScheduledSaleUpdate(false);
 }
 

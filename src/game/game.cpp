@@ -8442,7 +8442,7 @@ void Game::updatePlayerSaleItems(uint32_t playerId)
 	}
 
 	std::map<uint16_t, uint16_t> inventoryMap;
-	player->sendSaleItemList(player->getAllItemTypeCount(inventoryMap));
+	player->sendSaleItemList(player->getAllSaleItemIdAndCount(inventoryMap));
 	player->setScheduledSaleUpdate(false);
 }
 

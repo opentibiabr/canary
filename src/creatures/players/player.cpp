@@ -1684,7 +1684,7 @@ bool Player::openShopWindow(Npc* npc)
 	sendShop(npc);
 
 	std::map<uint16_t, uint16_t> map;
-	sendSaleItemList(getAllItemTypeCount(map));
+	sendSaleItemList(getAllSaleItemIdAndCount(map));
 	return true;
 }
 
@@ -3722,43 +3722,44 @@ std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore 
 	return itemVector;
 }
 
-std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const
+std::vector<Item*> Player::getAllInventoryItems() const
 {
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+	std::vector<Item*> itemVector;
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
 		Item* item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
-		countMap[item->getID()] += Item::countByType(item, -1);
-
-		if (Container* container = item->getContainer()) {
+		itemVector.push_back(item);
+		if (Container* container = item->getContainer())
+		{
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				countMap[(*it)->getID()] += Item::countByType(*it, -1);
+				itemVector.push_back(*it);
 			}
 		}
+	}
+
+	return itemVector;
+}
+
+std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const
+{
+	for (auto item : getAllInventoryItems()) {
+		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
 	}
 	return countMap;
 }
 
-std::map<uint16_t, uint16_t>& Player::getAllItemTypeCount(std::map<uint16_t, uint16_t>& countMap) const
+std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t>& countMap) const
 {
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-		Item* item = inventory[i];
-		if (!item || item->getTier() != 0 || item->hasImbuements()) {
+	for (auto item : getAllInventoryItems()) {
+		if (item->getTier() > 0) {
 			continue;
 		}
-
-		countMap[item->getID()] += Item::countByType(item, -1);
-
-		if (Container* container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto containerItem = *it;
-				if (!containerItem || containerItem->getTier() != 0 || containerItem->hasImbuements()) {
-					continue;
-				}
-				countMap[containerItem->getID()] += Item::countByType(containerItem, -1);
-			}
+		
+		if (!item->hasImbuements()) {
+			countMap[item->getID()] += item->getItemCount();
 		}
 	}
 	return countMap;
@@ -3766,30 +3767,12 @@ std::map<uint16_t, uint16_t>& Player::getAllItemTypeCount(std::map<uint16_t, uin
 
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const
 {
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-		Item* item = inventory[i];
-		if (!item) {
-			continue;
-		}
-
+	for (auto item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
 			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
 		} else {
 			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
-		}
-
-		if (Container* container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				item = (*it);
-
-				itemId = item->getID();
-				if (Item::items[itemId].isFluidContainer()) {
-					countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
-				} else {
-					countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
-				}
-			}
 		}
 	}
 }

@@ -181,7 +181,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void sendForgingData() {
+		void sendForgingData() const {
 			if (client) {
 				client->sendForgingData();
 			}
@@ -2146,10 +2146,17 @@ class Player final : public Creature, public Cylinder
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
 		void stashContainer(StashContainerList itemDict);
 		ItemsTierCountList getInventoryItemsId() const;
+
+		// Get specific inventory item from itemid
 		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
+
+		// This get all player inventory items
+		std::vector<Item*> getAllInventoryItems() const;
+		// This function is a override function of base class
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
-		std::map<uint16_t, uint16_t>& getAllItemTypeCount(std::map<uint16_t,
+		// Function from player class with correct type sizes (uint16_t)
+		std::map<uint16_t, uint16_t>& getAllSaleItemIdAndCount(std::map<uint16_t,
                                       uint16_t>& countMap) const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;

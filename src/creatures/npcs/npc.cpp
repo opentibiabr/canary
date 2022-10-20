@@ -314,6 +314,8 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 
 	auto removeAmount = amount;
 	auto items = player->getInventoryItemsFromId(itemId, ignore);
+	int64_t totalCost = sellPrice * amount;
+	uint8_t removedItems = 0;
 	for (auto item : items) {
 		// Ignore item with tier highter than 0
 		if (!item || item->getTier() > 0) {
@@ -335,11 +337,12 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 			if (removeAmount == 0) {
 				break;
 			}
+
+			// Must be at the end of the loop to avoid cloning money
+			g_game().addMoney(player, totalCost, 0);
 		}
 	}
 
-	int64_t totalCost = sellPrice * amount;
-	g_game().addMoney(player, totalCost, 0);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);

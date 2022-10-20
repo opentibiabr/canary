@@ -312,7 +312,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	uint16_t removeAmount = amount;
+	auto removeAmount = amount;
 	auto items = player->getInventoryItemsFromId(itemId, ignore);
 	for (auto item : items) {
 		// Ignore item with tier highter than 0
@@ -322,7 +322,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 
 		// Only remove if item has no imbuements
 		if (!item->hasImbuements()) {
-			uint16_t removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
+			auto removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
 			removeAmount -= removeCount;
 
 			if (auto ret = g_game().internalRemoveItem(item, removeCount);

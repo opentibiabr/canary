@@ -7429,7 +7429,7 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 	}
 }
 
-bool checkCanInitCreateMarketOffer(Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus)
+bool checkCanInitCreateMarketOffer(const Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus)
 {
 	if (!player) {
 		offerStatus << "Failed to load player";

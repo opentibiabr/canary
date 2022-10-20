@@ -537,7 +537,6 @@ class Player final : public Creature, public Cylinder
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool canSellImbuedItem(Item *item, bool ignoreImbued);
 		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool ignoreImbued = true) const;
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {
@@ -1273,7 +1272,7 @@ class Player final : public Creature, public Cylinder
 				client->sendShop(npc);
 			}
 		}
-		void sendSaleItemList(const std::map<uint32_t, uint32_t>& inventoryMap) const {
+		void sendSaleItemList(const std::map<uint16_t, uint16_t>& inventoryMap) const {
 			if (client && shopOwner) {
 				client->sendSaleItemList(shopOwner->getShopItemVector(), inventoryMap);
 			}
@@ -2143,7 +2142,8 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
 		ItemsTierCountList getInventoryItemsId() const;
-		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
+		Item* getInventoryItemFromId(uint16_t itemId, bool ignore) const;
+		std::map<uint16_t, uint16_t> getAllItemTypeCountAndSubtype() const;
 		Thing* getThing(size_t index) const override;
 
 		void internalAddThing(Thing* thing) override;

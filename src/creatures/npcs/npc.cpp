@@ -312,7 +312,12 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	if(!player->removeItemOfType(itemId, amount, -1, ignore, false)) {
+	auto item = player->getInventoryItemFromId(itemId, ignore);
+	if (item) {
+		SPDLOG_INFO("TIER {}, IMBUEMENT {}", item->getTier(), item->hasImbuements());
+	}
+
+	if (!player->removeItemOfType(itemId, amount, -1, ignore, false)) {
 		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}

@@ -3977,7 +3977,7 @@ void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint32_t, uint32_t> &inventoryMap)
+void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap)
 {
 	//Since we already have full inventory map we shouldn't call getMoney here - it is simply wasting cpu power
 	uint64_t playerMoney = 0;
@@ -4010,7 +4010,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 		msg.addByte(0x02);
 		uint64_t newCurrency = 0;
 		auto search = inventoryMap.find(currency);
-  		if (search != inventoryMap.end()) {
+		if (search != inventoryMap.end()) {
 			newCurrency += static_cast<uint64_t>(search->second);
 		}
 		msg.add<uint64_t>(newCurrency);
@@ -4029,21 +4029,18 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 			continue;
 		}
 
-		auto index = static_cast<uint32_t>(shopBlock.itemId);
+		auto index = shopBlock.itemId;
 		if (Item::items[shopBlock.itemId].isFluidContainer())
 		{
-			index |= (static_cast<uint32_t>(shopBlock.itemSubType) << 16);
+			index |= (static_cast<uint16_t>(shopBlock.itemSubType) << 16);
 		}
 
 		it = inventoryMap.find(index);
 		if (it != inventoryMap.end())
 		{
+			itemsToSend++;
 			msg.add<uint16_t>(shopBlock.itemId);
-			msg.add<uint16_t>(std::min<uint16_t>(it->second, std::numeric_limits<uint16_t>::max()));
-			if (++itemsToSend >= 0xFF)
-			{
-				break;
-			}
+			msg.add<uint16_t>(it->second);
 		}
 	}
 
@@ -7124,14 +7121,17 @@ void ProtocolGame::sendItemsPrice()
 	msg.add<uint16_t>(g_game().getItemsPriceCount());
 	if (g_game().getItemsPriceCount() > 0)
 	{
-		for (const auto &[itemId, itemPrice] : g_game().getItemsPrice())
+		for (const auto &[itemId, tierAndPriceMap] : g_game().getItemsPrice())
 		{
-			msg.add<uint16_t>(itemId);
-			if (Item::items[itemId].upgradeClassification > 0)
+			for (const auto &[tier, price] : tierAndPriceMap)
 			{
-				msg.addByte(Item(itemId).getTier());
+				msg.add<uint16_t>(itemId);
+				if (Item::items[itemId].upgradeClassification > 0)
+				{
+					msg.addByte(tier);
+				}
+				msg.add<uint64_t>(price);
 			}
-			msg.add<uint64_t>(itemPrice);
 		}
 	}
 

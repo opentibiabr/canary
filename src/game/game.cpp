@@ -294,7 +294,9 @@ bool Game::loadItemsPrice()
 		query2 << "SELECT `price` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
 		DBResult_ptr resultQuery2 = db.storeQuery(query2.str());
 		if (resultQuery2) {
-			itemsPriceMap[itemId] = resultQuery2->getNumber<uint32_t>("price");
+			std::map<uint8_t, uint64_t> tierAndCount;
+			tierAndCount[resultQuery2->getNumber<uint8_t>("tier")] = resultQuery2->getNumber<uint64_t>("price");
+			itemsPriceMap[itemId] = tierAndCount;
 			itemsSaleCount++;
 		}
 
@@ -2418,7 +2420,7 @@ ObjectCategory_t Game::getObjectCategory(const Item* item)
 	return category;
 }
 
-uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, bool buyPrice) const
+uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint64_t> const &itemMap, bool buyPrice) const
 {
 	uint64_t total = 0;
 	for (const auto& it : itemMap) {
@@ -2431,7 +2433,9 @@ uint64_t Game::getItemMarketPrice(std::map<uint16_t, uint32_t> const &itemMap, b
 		} else {
 			auto marketIt = itemsPriceMap.find(it.first);
 			if (marketIt != itemsPriceMap.end()) {
-				total += (*marketIt).second * it.second;
+				for (auto &[tier, price] : (*marketIt).second) {
+					total += price * it.second;
+				}
 			} else {
 				const ItemType& iType = Item::items[it.first];
 				total += (buyPrice ? iType.buyPrice : iType.sellPrice) * it.second;
@@ -3728,7 +3732,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		return;
 	}
 
-  if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
+	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(tradeItem->getTile())) {
 			House* house = houseTile->getHouse();
 			if (house && !house->isInvited(player)) {
@@ -7554,12 +7558,15 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 	IOMarket::createOffer(player->getGUID(), static_cast<MarketAction_t> (type), it.id, amount, price, tier, anonymous);
 
+	// uint8_t = tier, uint64_t price
+	std::map<uint8_t, uint64_t> tierAndPriceMap;
+	tierAndPriceMap[tier] = price;
 	auto ColorItem = itemsPriceMap.find(it.id);
 	if (ColorItem == itemsPriceMap.end()) {
-		itemsPriceMap[it.id] = price;
+		itemsPriceMap[it.id] = tierAndPriceMap;
 		itemsSaleCount++;
-	} else if (ColorItem->second < price) {
-		itemsPriceMap[it.id] = price;
+	} else if (auto priceIt = ColorItem->second.find(tier); priceIt->second < price) {
+		itemsPriceMap[it.id] = tierAndPriceMap;
 	}
 
 	const MarketOfferList &buyOffers = IOMarket::getActiveOffers(MARKETACTION_BUY, it.id, tier);
@@ -7647,6 +7654,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	}
 
 	IOMarket::moveOfferToHistory(offer.id, OFFERSTATE_CANCELLED);
+
 	offer.amount = 0;
 	offer.timestamp += g_configManager().getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
@@ -8422,10 +8430,7 @@ void Game::updatePlayerSaleItems(uint32_t playerId)
 		return;
 	}
 
-	std::map<uint32_t, uint32_t> tempInventoryMap;
-	player->getAllItemTypeCountAndSubtype(tempInventoryMap);
-
-	player->sendSaleItemList(tempInventoryMap);
+	player->sendSaleItemList(player->getAllItemTypeCountAndSubtype());
 	player->setScheduledSaleUpdate(false);
 }
 

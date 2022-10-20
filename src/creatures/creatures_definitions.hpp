@@ -898,8 +898,8 @@ struct PartyAnalyzer {
 	uint64_t lootPrice = 0;
 	uint64_t supplyPrice = 0;
 
-	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
-	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
+	std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
+	std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

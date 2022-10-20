@@ -5955,13 +5955,14 @@ void Player::triggerMomentum() {
 		bool triggered = false;
 		auto it = conditions.begin();
 		while (it != conditions.end()) {
-			ConditionType_t type = (*it)->getType();
-			uint32_t spellId = (*it)->getSubId();
-			int32_t ticks = (*it)->getTicks();
+			auto condItem = *it;
+			ConditionType_t type = condItem->getType();
+			uint32_t spellId = condItem->getSubId();
+			int32_t ticks = condItem->getTicks();
 			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;
 			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
-				(*it)->setTicks(newTicks);
+				condItem->setTicks(newTicks);
 				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
 			}
 			++it;

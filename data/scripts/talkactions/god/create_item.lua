@@ -49,20 +49,14 @@ function createItem.onSay(player, words, param)
 		end
 	end
 
-	local result = player:addItem(itemType:getId(), count)
+	local result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 	if result then
 		if not itemType:isStackable() then
 			if type(result) == "table" then
 				for _, item in ipairs(result) do
-					if tier then
-						item:setTier(tier)
-					end
 					item:decay()
 				end
 			else
-				if tier then
-					result:setTier(tier)
-				end
 				result:decay()
 			end
 		end

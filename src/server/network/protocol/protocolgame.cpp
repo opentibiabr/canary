@@ -140,19 +140,22 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		}
 
 		// Quiver ammo count
-    	if (container && item->isQuiver() && player->getThing(CONST_SLOT_RIGHT) == item) {
-      		uint16_t ammoTotal = 0;
-      		for (Item* listItem : container->getItemList()) {
-      		    if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
-      		        ammoTotal += listItem->getItemCount();
+		if (container && item->isQuiver() && player->getThing(CONST_SLOT_RIGHT) == item) {
+			uint16_t ammoTotal = 0;
+			for (Item* listItem : container->getItemList()) {
+				if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
+					ammoTotal += listItem->getItemCount();
       		    }
-      		}
-      		msg.addByte(0x01);
-      		msg.add<uint32_t>(ammoTotal);
-    	}
-    	else
-      		msg.addByte(0x00);
+			}
+			msg.addByte(0x01);
+			msg.add<uint32_t>(ammoTotal);
+		}
+		else
+		{
+			msg.addByte(0x00);
+		}
 	}
+
 	if (it.isPodium) {
 		const ItemAttributes::CustomAttribute* podiumVisible = item->getCustomAttribute("PodiumVisible");
 		const ItemAttributes::CustomAttribute* lookType = item->getCustomAttribute("LookType");
@@ -206,7 +209,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		msg.addByte(lookDirection ? static_cast<uint8_t>(boost::get<int64_t>(lookDirection->value)) : 2);
 		msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
 	}
-	if (it.upgradeClassification > 0) {
+	if (item->getClassification() > 0) {
 		msg.addByte(item->getTier());
 	}
 	// Timer
@@ -4337,10 +4340,10 @@ void ProtocolGame::sendForgingData()
 	{
 		msg.addByte(classification->id);
 		msg.addByte(classification->tiers.size());
-		for (std::pair<uint8_t, uint64_t> tier : classification->tiers)
+		for (const auto &[tier, price] : classification->tiers)
 		{
-			msg.addByte(tier.first);
-			msg.add<uint64_t>(tier.second);
+			msg.addByte(tier);
+			msg.add<uint64_t>(price);
 		}
 	}
 
@@ -6660,7 +6663,7 @@ void ProtocolGame::openImbuementWindow(Item *item)
 	NetworkMessage msg;
 	msg.addByte(0xEB);
 	msg.add<uint16_t>(item->getID());
-	if (Item::items[item->getID()].upgradeClassification > 0) {
+	if (item->getClassification() > 0) {
 		msg.addByte(item->getTier());
 	}
 	msg.addByte(item->getImbuementSlot());

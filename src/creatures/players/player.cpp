@@ -1978,7 +1978,8 @@ void Player::onThink(uint32_t interval)
 		addMessageBuffer();
 	}
 
-	triggerMomentum(); // momentum (cooldown resets)
+	// Momentum (cooldown resets)
+	triggerMomentum();
 
 	if (!getTile()->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
 		idleTime += interval;
@@ -3686,8 +3687,8 @@ ItemsTierCountList Player::getInventoryItemsId() const
 		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto item = (*it);
-				(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
+				auto containerItem = *it;
+				(itemMap[containerItem->getID()])[containerItem->getTier()] += Item::countByType(containerItem, -1);
 			}
 		}
 	}
@@ -5944,27 +5945,30 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 }
 
 void Player::triggerMomentum() {
-	if (getInventoryItem(CONST_SLOT_HEAD) != nullptr) {
-		double_t chance = getInventoryItem(CONST_SLOT_HEAD)->getMomentumChance();
-		if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
-			bool triggered = false;
-			auto it = conditions.begin();
-			while (it != conditions.end()) {
-				ConditionType_t type = (*it)->getType();
-				uint32_t spellId = (*it)->getSubId();
-				int32_t ticks = (*it)->getTicks();
-				int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
-				triggered = true;
-				if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
-					(*it)->setTicks(newTicks);
-					type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
-				}
-				++it;
+	auto item = getInventoryItem(CONST_SLOT_HEAD);
+	if (item == nullptr) {
+		return;
+	}
+
+	double_t chance = item->getMomentumChance();
+	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
+		bool triggered = false;
+		auto it = conditions.begin();
+		while (it != conditions.end()) {
+			ConditionType_t type = (*it)->getType();
+			uint32_t spellId = (*it)->getSubId();
+			int32_t ticks = (*it)->getTicks();
+			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
+			triggered = true;
+			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
+				(*it)->setTicks(newTicks);
+				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
 			}
-			if (triggered) {
-				g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
-				sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
-			}
+			++it;
+		}
+		if (triggered) {
+			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
+			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
 		}
 	}
 }

@@ -1128,7 +1128,7 @@ class Item : virtual public Thing
 			}
 
 			auto tier = static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
-			if (tier > MAX_ITEM_FORGE_TIER) {
+			if (tier > g_configManager().getNumber(MAX_ITEM_FORGE_TIER)) {
 				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
 				return 0;
 			}
@@ -1136,8 +1136,9 @@ class Item : virtual public Thing
 			return tier;
 		}
 		void setTier(uint8_t tier) {
-			if (tier > MAX_ITEM_FORGE_TIER) {
-				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, MAX_ITEM_FORGE_TIER);
+			auto configTier = g_configManager().getNumber(MAX_ITEM_FORGE_TIER);
+			if (tier > configTier) {
+				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
 				return;
 			}
 
@@ -1145,7 +1146,7 @@ class Item : virtual public Thing
 				setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
 			}
 		}
-		uint16_t getClassification() const {
+		uint8_t getClassification() const {
 			return items[id].upgradeClassification;
 		}
 

@@ -61,6 +61,8 @@ class IOMarket
 	private:
 		IOMarket() = default;
 
+		static uint8_t getTierFromDatabaseTable(const std::string &string);
+
 		// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
 		StatisticsMap purchaseStatistics;
 		StatisticsMap saleStatistics;

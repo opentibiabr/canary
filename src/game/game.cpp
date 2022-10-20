@@ -1746,6 +1746,11 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 		ret = internalAddItem(player->getTile(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 	}
 
+	if (ret == RETURNVALUE_NOERROR)
+	{
+		player->sendForgingData();
+	}
+
 	return ret;
 }
 
@@ -5424,7 +5429,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		}
 	};
 
-	// dodge (ruse)
+	// Skill dodge (ruse)
 	if (const Player* targetPlayer = target->getPlayer()) {
 		if (targetPlayer->getInventoryItem(CONST_SLOT_ARMOR) != nullptr) {
 			double_t chance = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR)->getDodgeChance();
@@ -7550,6 +7555,8 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	// Send market window again for update item stats and avoid item clone
 	player->sendMarketEnter(player->getLastDepotId());
 
+	// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
+	// The player may lose the item as it will have already been removed, but will not clone
 	if (!offerStatus.str().empty()) {
 		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 		SPDLOG_ERROR("{} - Player {} had an error creating an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
@@ -7846,7 +7853,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
 				Item* item = Item::CreateItem(it.id, stackCount);
 				if (
-					// init-statement
+					// Init-statement
 					auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 					// Condition
 					ret != RETURNVALUE_NOERROR
@@ -7874,8 +7881,12 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 			for (uint16_t i = 0; i < amount; ++i) {
 				Item* item = Item::CreateItem(it.id, subType);
-				auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
-				if (ret != RETURNVALUE_NOERROR) {
+				if (
+					// Init-statement
+					auto ret = internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT);
+					// Condition
+					ret != RETURNVALUE_NOERROR)
+				{
 					offerStatus << "Failed to add inbox item for sell offer for player " << player->getName();
 					delete item;
 					break;
@@ -8430,8 +8441,8 @@ void Game::updatePlayerSaleItems(uint32_t playerId)
 		return;
 	}
 
-	std::map<uint16_t, uint16_t> map;
-	player->sendSaleItemList(player->getAllItemTypeCount(map));
+	std::map<uint16_t, uint16_t> inventoryMap;
+	player->sendSaleItemList(player->getAllItemTypeCount(inventoryMap));
 	player->setScheduledSaleUpdate(false);
 }
 

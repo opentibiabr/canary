@@ -314,13 +314,16 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 
 	auto items = player->getInventoryItemsFromId(itemId, ignore);
 	for (auto item : items) {
+		// Ignore item with tier highter than 0
 		if (!item || item->getTier() > 0) {
 			continue;
 		}
 
+		// Only remove if item has no imbuements
 		if (!item->hasImbuements()) {
 			if (auto ret = g_game().internalRemoveItem(item, amount);
-			ret != RETURNVALUE_NOERROR) {
+			ret != RETURNVALUE_NOERROR)
+			{
 				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
 				continue;
 			}

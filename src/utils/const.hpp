@@ -23,8 +23,6 @@
 const uint32_t MAX_LOOTCHANCE = 100000;
 const uint32_t MAX_STATICWALK = 100;
 
-const uint8_t MAX_ITEM_FORGE_TIER = 10;
-
 static constexpr size_t NETWORKMESSAGE_PLAYERNAME_MAXLENGTH = 30;
 static constexpr int32_t NETWORKMESSAGE_MAXSIZE = 65500;
 

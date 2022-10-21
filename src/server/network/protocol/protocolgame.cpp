@@ -6235,8 +6235,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint32_t>(std::min<int64_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
-	msg.add<uint32_t>(std::min<int64_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
+	msg.add<uint32_t>(std::min<int64_t>(player->getMana(), std::numeric_limits<uint32_t>::max()));
+	msg.add<uint32_t>(std::min<int64_t>(player->getMaxMana(), std::numeric_limits<uint32_t>::max()));
 
 	msg.addByte(player->getSoul());
 

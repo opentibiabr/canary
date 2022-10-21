@@ -313,10 +313,9 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 	}
 
 	auto removeAmount = amount;
-	auto items = player->getInventoryItemsFromId(itemId, ignore);
-	int64_t totalCost = sellPrice * amount;
-	uint8_t removedItems = 0;
-	for (auto item : items) {
+	auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
+	uint16_t removedItems = 0;
+	for (auto item : inventoryItems) {
 		// Ignore item with tier highter than 0
 		if (!item || item->getTier() > 0) {
 			continue;
@@ -334,15 +333,24 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 				continue;
 			}
 
+			// We will use it to check how many items have been removed to send totalCost
+			removedItems++;
+
 			if (removeAmount == 0) {
 				break;
 			}
-
-			// Must be at the end of the loop to avoid cloning money
-			g_game().addMoney(player, totalCost, 0);
 		}
 	}
 
+	uint64_t totalCost = 0;
+	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
+	if (removedItems == 0) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
+		return;
+	}
+
+	totalCost = static_cast<uint64_t>(sellPrice * removedItems);
+	g_game().addMoney(player, totalCost);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);

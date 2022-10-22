@@ -1682,9 +1682,8 @@ bool Player::openShopWindow(Npc* npc)
 	npc->addShopPlayer(this);
 
 	sendShop(npc);
-
-	std::map<uint16_t, uint16_t> map;
-	sendSaleItemList(getAllSaleItemIdAndCount(map));
+	std::map<uint16_t, uint16_t> inventoryMap;
+	sendSaleItemList(getAllSaleItemIdAndCount(inventoryMap));
 	return true;
 }
 
@@ -3751,7 +3750,7 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 	return countMap;
 }
 
-std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t>& countMap) const
+std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const
 {
 	for (auto item : getAllInventoryItems()) {
 		if (item->getTier() > 0) {
@@ -3762,6 +3761,7 @@ std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t
 			countMap[item->getID()] += item->getItemCount();
 		}
 	}
+
 	return countMap;
 }
 

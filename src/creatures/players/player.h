@@ -2156,8 +2156,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
 		// Function from player class with correct type sizes (uint16_t)
-		std::map<uint16_t, uint16_t>& getAllSaleItemIdAndCount(std::map<uint16_t,
-                                      uint16_t>& countMap) const;
+		std::map<uint16_t, uint16_t>& getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> & countMap) const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
 		Thing* getThing(size_t index) const override;
 

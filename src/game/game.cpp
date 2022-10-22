@@ -7393,7 +7393,7 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 	}
 
 	if (removeAmount > 0) {
-		auto [itemVector, itemMap] = player.requestLockerItems(&depotLocker, tier);
+		auto [itemVector, itemMap] = player.requestLockerItems(&depotLocker, false, tier);
 		uint32_t count = 0;
 		for (auto item : itemVector) {
 			if (itemType.id != item->getID()) {

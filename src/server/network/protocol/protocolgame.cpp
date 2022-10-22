@@ -4063,7 +4063,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId)
 	player->setInMarket(true);
 
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
-	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker);
+	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker, true);
 	auto totalItemsCountPosition = msg.getBufferPosition();
 	msg.skipBytes(2); // Total items count
 

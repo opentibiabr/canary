@@ -6171,7 +6171,7 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	return nullptr;
 }
 
-std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(DepotLocker *depotLocker, uint8_t tier /*= tier*/) const
+std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(DepotLocker *depotLocker, bool sendToClient /*= false*/, uint8_t tier /*= 0*/) const
 {
 	if (depotLocker == nullptr) {
 		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
@@ -6207,7 +6207,7 @@ std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> P
 				continue;
 			}
 
-			if (tier != 0 && item->getTier() != tier) {
+			if (!sendToClient && item->getTier() != tier) {
 				continue;
 			}
 

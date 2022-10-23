@@ -371,7 +371,7 @@ void Player::getShieldAndWeapon(const Item*&shield, const Item*&weapon) const {
 
 int32_t Player::getDefense() const {
 	int32_t defenseSkill = getSkillLevel(SKILL_FIST);
-	int32_t defenseValue = 7;
+	int32_t defenseValue = 0;
 	const Item* weapon;
 	const Item* shield;
 	try {
@@ -401,10 +401,23 @@ int32_t Player::getDefense() const {
 		}
 	}
 
-	return (defenseSkill / 4. + 2.23) * defenseValue * 0.15 * getDefenseFactor() * vocation->defenseMultiplier;
+	return static_cast<int32_t>((getDefenseFactor() * defenseValue) * (defenseSkill + 10) / 40);
 }
 
 float Player::getAttackFactor() const {
+	switch (fightMode) {
+		case FIGHTMODE_ATTACK:
+			return 1.2f;
+		case FIGHTMODE_BALANCED:
+			return 1.0f;
+		case FIGHTMODE_DEFENSE:
+			return 0.6f;
+		default:
+			return 1.0f;
+	}
+}
+
+float Player::getDistFactor() const {
 	switch (fightMode) {
 		case FIGHTMODE_ATTACK:
 			return 1.0f;
@@ -413,18 +426,18 @@ float Player::getAttackFactor() const {
 		case FIGHTMODE_DEFENSE:
 			return 0.5f;
 		default:
-			return 1.0f;
+			return 0.75f;
 	}
 }
 
 float Player::getDefenseFactor() const {
 	switch (fightMode) {
 		case FIGHTMODE_ATTACK:
-			return (OTSYS_TIME() - lastAttack) < getAttackSpeed() ? 0.5f : 1.0f;
+			return 0.9f;
 		case FIGHTMODE_BALANCED:
-			return (OTSYS_TIME() - lastAttack) < getAttackSpeed() ? 0.75f : 1.0f;
-		case FIGHTMODE_DEFENSE:
 			return 1.0f;
+		case FIGHTMODE_DEFENSE:
+			return 1.9f;
 		default:
 			return 1.0f;
 	}
@@ -7366,4 +7379,13 @@ error_t Player::SetAccountInterface(account::Account* account) {
 error_t Player::GetAccountInterface(account::Account* account) {
 	account = account_;
 	return account::ERROR_NO;
+}
+
+int32_t Player::getBaseAttack(uint32_t level) const {
+	double square = std::sqrt(2.0 * level - 1 + 2025);
+	double stepFormula = std::floor((square + 5) / 10);
+	double frac = ((level + 1000.0) / stepFormula) - (50 * stepFormula);
+	double baseForm = frac + (100 * stepFormula) - 450;
+
+	return static_cast<int32_t>(std::floor(baseForm));
 }

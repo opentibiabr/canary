@@ -304,6 +304,9 @@ class Creature : virtual public Thing {
 		virtual float getAttackFactor() const {
 			return 1.0f;
 		}
+		virtual float getDistFactor() const {
+			return 1.0f;
+		}
 		virtual float getDefenseFactor() const {
 			return 1.0f;
 		}

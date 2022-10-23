@@ -3509,3 +3509,15 @@ int PlayerFunctions::luaPlayerGetHazardSystemPoints(lua_State* L) {
 	lua_pushnumber(L, player->getHazardSystemPoints());
 	return 1;
 }
+
+int PlayerFunctions::luaPlayerGetBaseAttack(lua_State* L) {
+	// player:getBaseAttack(level)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player) {
+		uint32_t level = player->getLevel();
+		lua_pushnumber(L, player->getBaseAttack(level));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}

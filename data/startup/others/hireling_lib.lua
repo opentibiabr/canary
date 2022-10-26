@@ -113,7 +113,6 @@ local function checkHouseAccess(hireling)
 
 end
 
-
 local function spawnNPCs()
 	Spdlog.info("Spawning Hirelings")
 	local hireling

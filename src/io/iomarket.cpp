@@ -334,7 +334,6 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics = nullptr;
-		// For some reason, if using getTierFromDatabaseTable function, it doesn't correctly return the tier
 		auto tier = getTierFromDatabaseTable(result->getString("tier"));
 		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {

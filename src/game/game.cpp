@@ -279,7 +279,7 @@ void Game::saveGameState()
 bool Game::loadItemsPrice()
 {
 	itemsSaleCount = 0;
-	std::ostringstream query, query2;
+	std::ostringstream query, marketQuery;
 	query << "SELECT DISTINCT `itemtype` FROM `market_offers`;";
 
 	Database& db = Database::getInstance();
@@ -289,17 +289,18 @@ bool Game::loadItemsPrice()
 	}
 
 	do {
-		query2.str(std::string());
+		marketQuery.str(std::string());
 		uint16_t itemId = result->getNumber<uint16_t>("itemtype");
-		query2 << "SELECT `price` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
-		DBResult_ptr resultQuery2 = db.storeQuery(query2.str());
-		if (resultQuery2) {
+		marketQuery << "SELECT `price`, `tier` FROM `market_offers` WHERE `itemtype` = " << itemId << " ORDER BY `price` DESC LIMIT 1";
+		DBResult_ptr marketOffersResult = db.storeQuery(marketQuery.str());
+		if (marketOffersResult) {
 			std::map<uint8_t, uint64_t> tierAndCount;
-			tierAndCount[resultQuery2->getNumber<uint8_t>("tier")] = resultQuery2->getNumber<uint64_t>("price");
+			auto tier = marketOffersResult->getNumber<uint8_t>("tier");
+			auto price = marketOffersResult->getNumber<uint64_t>("price");
+			tierAndCount[tier] = price;
 			itemsPriceMap[itemId] = tierAndCount;
 			itemsSaleCount++;
 		}
-
 	} while (result->next());
 
 

@@ -216,7 +216,7 @@ void IOMarket::checkExpiredOffers()
 	const time_t lastExpireDate = time(nullptr) - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::ostringstream query;
-	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
+	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale`, `tier` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
 	g_databaseTasks().addTask(query.str(), IOMarket::processExpiredOffers, true);
 
 	int32_t checkExpiredMarketOffersEachMinutes = g_configManager().getNumber(CHECK_EXPIRED_MARKET_OFFERS_EACH_MINUTES);
@@ -335,7 +335,7 @@ void IOMarket::updateStatistics()
 	do {
 		MarketStatistics* statistics = nullptr;
 		// For some reason, if using getTierFromDatabaseTable function, it doesn't correctly return the tier
-		auto tier = static_cast<uint8_t>(std::atoi(result->getString("tier").c_str()));
+		auto tier = getTierFromDatabaseTable(result->getString("tier"));
 		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
 			statistics = &purchaseStatistics[itemId][tier];

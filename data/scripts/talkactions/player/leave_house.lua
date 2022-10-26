@@ -1,18 +1,18 @@
 local leaveHouse = TalkAction("!leavehouse")
 
 function leaveHouse.onSay(player, words, param)
-	local position = player:getPosition()
-	local tile = Tile(position)
-	local house = tile and tile:getHouse()
+	local playerPosition = player:getPosition()
+	local playerTile = Tile(playerPosition)
+	local house = playerTile and playerTile:getHouse()
 	if not house then
 		player:sendCancelMessage("You are not inside a house.")
-		position:sendMagicEffect(CONST_ME_POFF)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
 	if house:getOwnerGuid() ~= player:getGuid() then
 		player:sendCancelMessage("You are not the owner of this house.")
-		position:sendMagicEffect(CONST_ME_POFF)
+		playerPosition:sendMagicEffect(CONST_ME_POFF)
 		return false
 	end
 
@@ -31,7 +31,7 @@ function leaveHouse.onSay(player, words, param)
 
 	house:setOwnerGuid(0)
 	player:sendTextMessage(MESSAGE_LOOK, "You have successfully left your house.")
-	position:sendMagicEffect(CONST_ME_POFF)
+	playerPosition:sendMagicEffect(CONST_ME_POFF)
 	return false
 end
 

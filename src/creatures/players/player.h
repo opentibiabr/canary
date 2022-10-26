@@ -2090,6 +2090,14 @@ class Player final : public Creature, public Cylinder
 
 		std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> requestLockerItems(DepotLocker *depotLocker) const;
 
+		bool saySpell(
+			SpeakClasses type,
+			const std::string& text,
+			bool ghostMode,
+			SpectatorHashSet* spectatorsPtr = nullptr,
+			const Position* pos = nullptr
+		);
+
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
 

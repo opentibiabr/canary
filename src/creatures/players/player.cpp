@@ -6211,7 +6211,7 @@ bool Player::saySpell(
 {
 	if (text.empty()) {
 		SPDLOG_DEBUG("{} - Spell text is empty for player {}", __FUNCTION__, getName());
-		return;
+		return false;
 	}
 
 	if (!pos) {

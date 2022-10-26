@@ -22,7 +22,7 @@ function leaveHouse.onSay(player, words, param)
 			if tile then
 				local position = Position(tile:getPosition())
 				local hireling = getHirelingByPosition(position)
-				if (hireling) then
+				if hireling then
 					hireling:returnToLamp(player:getGuid())
 				end
 			end

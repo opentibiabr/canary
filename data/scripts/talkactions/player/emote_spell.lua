@@ -1,3 +1,4 @@
+-- Usage talkaction: "!emote on" or "!emote off"
 local emoteSpell = TalkAction("!emote")
 
 function emoteSpell.onSay(player, words, param)

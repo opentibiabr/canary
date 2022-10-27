@@ -488,8 +488,6 @@ function PersistHireling(hireling)
 	end
 end
 
-
-
 -- [[ END GLOBAL FUNCTIONS ]]
 
 -- [[ Player extension ]]

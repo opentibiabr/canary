@@ -41,7 +41,15 @@ function createItem.onSay(player, words, param)
 		end
 	end
 
-	local result = player:addItem(itemType:getId(), count)
+	local tier = tonumber(split[3])
+	if tier then
+		if tier <= 0 or tier > 10 then
+			player:sendCancelMessage("Invalid tier count.")
+			return false
+		end
+	end
+
+	local result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 	if result then
 		if not itemType:isStackable() then
 			if type(result) == "table" then

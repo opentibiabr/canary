@@ -259,7 +259,7 @@ int HouseFunctions::luaHouseGetTiles(lua_State* L) {
 	}
 
 	const auto& tiles = house->getTiles();
-	lua_createtable(L, tiles.size(), 0);
+	lua_newtable(L);
 
 	int index = 0;
 	for (Tile* tile : tiles) {

@@ -1681,11 +1681,9 @@ bool Player::openShopWindow(Npc* npc)
 	setShopOwner(npc);
 	npc->addShopPlayer(this);
 
-	std::map<uint32_t, uint32_t> tempInventoryMap;
-	getAllItemTypeCountAndSubtype(tempInventoryMap);
-
 	sendShop(npc);
-	sendSaleItemList(tempInventoryMap);
+	std::map<uint16_t, uint16_t> inventoryMap;
+	sendSaleItemList(getAllSaleItemIdAndCount(inventoryMap));
 	return true;
 }
 
@@ -1978,6 +1976,9 @@ void Player::onThink(uint32_t interval)
 		MessageBufferTicks = 0;
 		addMessageBuffer();
 	}
+
+	// Momentum (cooldown resets)
+	triggerMomentum();
 
 	if (!getTile()->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining()) {
 		idleTime += interval;
@@ -3622,21 +3623,7 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 }
 
-bool Player::canSellImbuedItem(Item *item, bool ignoreImbued)
-{
-	if (!ignoreImbued) {
-		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-			ImbuementInfo imbuementInfo;
-			if (item->getImbuementInfo(slotid, &imbuementInfo)) {
-				sendTextMessage(MESSAGE_LOOK, "You cannot sell an imbued item.");
-				return false;
-			}
-		}
-	}
-	return true;
-}
-
-bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/, bool ignoreImbued /*false*/) const
+bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/) const
 {
 	if (amount == 0) {
 		return true;
@@ -3651,15 +3638,9 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 			continue;
 		}
 
-		Player *player = item->getHoldingPlayer();
-
 		if (!ignoreEquipped && item->getID() == itemId) {
 			uint32_t itemCount = Item::countByType(item, subType);
 			if (itemCount == 0) {
-				continue;
-			}
-
-			if (player && !player->canSellImbuedItem(item, ignoreImbued)) {
 				continue;
 			}
 
@@ -3679,10 +3660,6 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 						continue;
 					}
 
-					if (player && !player->canSellImbuedItem(containerItem, ignoreImbued)) {
-						continue;
-					}
-
 					itemList.push_back(containerItem);
 
 					count += itemCount;
@@ -3697,88 +3674,107 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	return false;
 }
 
-std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const
+ItemsTierCountList Player::getInventoryItemsId() const
 {
+	ItemsTierCountList itemMap;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
-		countMap[item->getID()] += Item::countByType(item, -1);
-
+		(itemMap[item->getID()])[item->getTier()] += Item::countByType(item, -1);
 		if (Container* container = item->getContainer()) {
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				countMap[(*it)->getID()] += Item::countByType(*it, -1);
-			}
-		}
-	}
-	return countMap;
-}
-
-std::map<uint16_t, uint16_t> Player::getInventoryItemsId() const
-{
-	std::map<uint16_t, uint16_t> itemMap;
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-		Item* item = inventory[i];
-		if (!item) {
-			continue;
-		}
-
-		auto rootSearch = itemMap.find(item->getID());
-		if (rootSearch != itemMap.end()) {
-			itemMap[item->getID()] = itemMap[item->getID()] + static_cast<uint16_t>(Item::countByType(item, -1));
-		}
-		else
-		{
-			itemMap.emplace(item->getID(), static_cast<uint16_t>(Item::countByType(item, -1)));
-		}
-
-		if (Container* container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto containerSearch = itemMap.find((*it)->getID());
-				if (containerSearch != itemMap.end()) {
-					itemMap[(*it)->getID()] = itemMap[(*it)->getID()] + static_cast<uint16_t>(Item::countByType(*it, -1));
-				}
-				else
-				{
-					itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
-				}
-				itemMap.emplace((*it)->getID(), Item::countByType(*it, -1));
+				auto containerItem = *it;
+				(itemMap[containerItem->getID()])[containerItem->getTier()] += Item::countByType(containerItem, -1);
 			}
 		}
 	}
 	return itemMap;
 }
 
+std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore /*= true*/) const
+{
+	std::vector<Item*> itemVector;
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		if (!ignore && item->getID() == itemId) {
+			itemVector.push_back(item);
+		}
+
+		if (Container* container = item->getContainer())
+		{
+			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				auto containerItem = *it;
+				if (containerItem->getID() == itemId) {
+					itemVector.push_back(containerItem);
+				}
+			}
+		}
+	}
+
+	return itemVector;
+}
+
+std::vector<Item*> Player::getAllInventoryItems() const
+{
+	std::vector<Item*> itemVector;
+	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		itemVector.push_back(item);
+		if (Container* container = item->getContainer())
+		{
+			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				itemVector.push_back(*it);
+			}
+		}
+	}
+
+	return itemVector;
+}
+
+std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const
+{
+	for (auto item : getAllInventoryItems()) {
+		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
+	}
+	return countMap;
+}
+
+std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const
+{
+	for (auto item : getAllInventoryItems()) {
+		if (item->getTier() > 0) {
+			continue;
+		}
+		
+		if (!item->hasImbuements()) {
+			countMap[item->getID()] += item->getItemCount();
+		}
+	}
+
+	return countMap;
+}
+
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const
 {
-  for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-    Item* item = inventory[i];
-    if (!item) {
-      continue;
-    }
-
-    uint16_t itemId = item->getID();
-    if (Item::items[itemId].isFluidContainer()) {
-      countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
-    } else {
-      countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
-    }
-
-    if (Container* container = item->getContainer()) {
-      for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-        item = (*it);
-
-        itemId = item->getID();
-        if (Item::items[itemId].isFluidContainer()) {
-          countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
-        } else {
-          countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
-        }
-      }
-    }
-  }
+	for (auto item : getAllInventoryItems()) {
+		uint16_t itemId = item->getID();
+		if (Item::items[itemId].isFluidContainer()) {
+			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
+		} else {
+			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
+		}
+	}
 }
 
 Thing* Player::getThing(size_t index) const
@@ -5618,10 +5614,10 @@ uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) 
 {
 	auto it = itemPriceMap.find(itemId);
 	if (it != itemPriceMap.end()) {
-		return static_cast<uint64_t>(it->second);
+		return it->second;
 	}
 
-	std::map<uint16_t, uint32_t> itemMap {{itemId, 1}};
+	std::map<uint16_t, uint64_t> itemMap {{itemId, 1}};
 	return g_game().getItemMarketPrice(itemMap, buyPrice);
 }
 
@@ -5931,6 +5927,36 @@ bool Player::isCreatureUnlockedOnTaskHunting(const MonsterType* mtype) const {
 	return getBestiaryKillCount(mtype->info.raceid) >= mtype->info.bestiaryToUnlock;
 }
 
+void Player::triggerMomentum() {
+	auto item = getInventoryItem(CONST_SLOT_HEAD);
+	if (item == nullptr) {
+		return;
+	}
+
+	double_t chance = item->getMomentumChance();
+	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME()/1000) % 2) == 0 && chance > 0 && uniform_random(1, 100) <= chance) {
+		bool triggered = false;
+		auto it = conditions.begin();
+		while (it != conditions.end()) {
+			auto condItem = *it;
+			ConditionType_t type = condItem->getType();
+			uint32_t spellId = condItem->getSubId();
+			int32_t ticks = condItem->getTicks();
+			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
+			triggered = true;
+			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
+				condItem->setTicks(newTicks);
+				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint8_t>(spellId), newTicks);
+			}
+			++it;
+		}
+		if (triggered) {
+			g_game().addMagicEffect(getPosition(), CONST_ME_HOURGLASS);
+			sendTextMessage(MESSAGE_ATTENTION, "Momentum was triggered.");
+		}
+	}
+}
+
 /*******************************************************************************
  * Depot search system
  ******************************************************************************/
@@ -5952,8 +5978,7 @@ void Player::requestDepotItems()
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			auto itemMap_it = itemMap.find((*it)->getID());
 
-			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? 1 : 0;
-			// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
+			uint8_t itemTier = Item::items[(*it)->getID()].upgradeClassification > 0 ? (*it)->getTier() + 1 : 0;
 			if (itemMap_it == itemMap.end()) {
 				std::map<uint8_t, uint32_t> itemTierMap;
 				itemTierMap[itemTier] = Item::countByType((*it), -1);
@@ -5970,19 +5995,22 @@ void Player::requestDepotItems()
 
 	for (const auto& [itemId, itemCount] : getStashItems()) {
 		auto itemMap_it = itemMap.find(itemId);
+		// Stackable items not have upgrade classification
+		if (Item::items[itemId].upgradeClassification > 0) {
+			SPDLOG_ERROR("{} - Player {} have wrong item with id {} on stash with upgrade classification", __FUNCTION__, getName(), itemId);
+			continue;
+		}
 
-		uint8_t itemTier = Item::items[itemId].upgradeClassification > 0 ? 1 : 0;
-		// To-Do: When forge is complete, change this to '(*it)->getTier() + 1'
 		if (itemMap_it == itemMap.end()) {
 			std::map<uint8_t, uint32_t> itemTierMap;
-			itemTierMap[itemTier] = itemCount;
+			itemTierMap[0] = itemCount;
 			itemMap[itemId] = itemTierMap;
 			count++;
-		} else if (auto itemTier_it = itemMap[itemId].find(itemTier); itemTier_it == itemMap[itemId].end()) {
-			itemMap[itemId][itemTier] = itemCount;
+		} else if (auto itemTier_it = itemMap[itemId].find(0); itemTier_it == itemMap[itemId].end()) {
+			itemMap[itemId][0] = itemCount;
 			count++;
 		} else {
-			itemMap[itemId][itemTier] += itemCount;
+			itemMap[itemId][0] += itemCount;
 		}
 	}
 
@@ -6016,8 +6044,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier)
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			Item* item = *it;
-			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-			if (!item || item->getID() != itemId) {
+			if (!item || item->getID() != itemId || item->getTier() != tier) {
 				continue;
 			}
 
@@ -6050,14 +6077,22 @@ void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool
 	for (Item* locker : depotLocker->getItemList()) {
 		const Container* c = locker->getContainer();
 		if (!c || c->empty() ||
-			(c->isInbox() && isDepot) ||	// Retrieve from inbox.
-			(!c->isInbox() && !isDepot)) {	// Retrieve from depot.
+			// Retrieve from inbox.
+			(c->isInbox() && isDepot) ||
+			// Retrieve from depot.
+			(!c->isInbox() && !isDepot)
+		)
+		{
 			continue;
 		}
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
-			// To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-			if (Item* item = *it; item && item->getID() == itemId) {
+			Item* item = *it;
+			if (!item) {
+				continue;
+			}
+
+			if (item->getID() == itemId && item->getTier() == depotSearchOnItem.second) {
 				itemsVector.push_back(item);
 			}
 		}
@@ -6122,8 +6157,7 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 
 		for (ContainerIterator it = c->iterator(); it.hasNext(); it.advance()) {
 			Item* item = *it;
-			//  To-Do: When forge is complete check for item tier here using 'depotSearchOnItem.second'.
-			if (!item || item->getID() != itemId) {
+			if (!item || item->getID() != itemId || item->getTier() != depotSearchOnItem.second) {
 				continue;
 			}
 
@@ -6137,14 +6171,14 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	return nullptr;
 }
 
-std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLockerItems(DepotLocker *depotLocker) const
+std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(DepotLocker *depotLocker, bool sendToClient /*= false*/, uint8_t tier /*= 0*/) const
 {
 	if (depotLocker == nullptr) {
 		SPDLOG_ERROR("{} - Depot locker is nullptr", __FUNCTION__);
 		return {};
 	}
 
-	std::map<uint16_t, uint32_t> marketItems;
+	std::map<uint16_t, std::map<uint8_t, uint32_t>> lockerItems;
 	std::vector<Item*> itemVector;
 	std::vector<Container*> containers {depotLocker};
 
@@ -6173,7 +6207,11 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 				continue;
 			}
 
-			marketItems[itemType.wareId] += Item::countByType(item, -1);
+			if (!sendToClient && item->getTier() != tier) {
+				continue;
+			}
+
+			(lockerItems[itemType.wareId])[item->getTier()] += Item::countByType(item, -1);
 			itemVector.push_back(item);
 		}
 	} while (size < containers.size());
@@ -6195,11 +6233,11 @@ std::pair<std::vector<Item*>, std::map<uint16_t, uint32_t>> Player::requestLocke
 			}
 
 			countSize = countSize - itemCount;
-			marketItems[itemType.wareId] += itemCount;
+			(lockerItems[itemType.wareId])[0] += itemCount;
 		}
 	} while (countSize > 0);
 
-	return std::make_pair(itemVector, marketItems);
+	return std::make_pair(itemVector, lockerItems);
 }
 
 /*******************************************************************************

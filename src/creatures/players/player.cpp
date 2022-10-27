@@ -6240,6 +6240,70 @@ std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> P
 	return std::make_pair(itemVector, lockerItems);
 }
 
+bool Player::saySpell(
+	SpeakClasses type,
+	const std::string& text,
+	bool ghostMode,
+	SpectatorHashSet* spectatorsPtr/* = nullptr*/,
+	const Position* pos/* = nullptr*/)
+{
+	if (text.empty()) {
+		SPDLOG_DEBUG("{} - Spell text is empty for player {}", __FUNCTION__, getName());
+		return false;
+	}
+
+	if (!pos) {
+		pos = &getPosition();
+	}
+
+	SpectatorHashSet spectators;
+
+	if (!spectatorsPtr || spectatorsPtr->empty()) {
+		// This somewhat complex construct ensures that the cached SpectatorHashSet
+		// is used if available and if it can be used, else a local vector is
+		// used (hopefully the compiler will optimize away the construction of
+		// the temporary when it's not used).
+		if (type != TALKTYPE_YELL && type != TALKTYPE_MONSTER_YELL) {
+			g_game().map.getSpectators(spectators, *pos, false, false,
+                           Map::maxClientViewportX, Map::maxClientViewportX,
+                           Map::maxClientViewportY, Map::maxClientViewportY);
+		} else {
+			g_game().map.getSpectators(spectators, *pos, true, false, 18, 18, 14, 14);
+		}
+	} else {
+		spectators = (*spectatorsPtr);
+	}
+
+	int32_t valueEmote = 0;
+	// Send to client 
+	for (Creature* spectator : spectators) {
+		if (Player* tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE, valueEmote);
+			if (!ghostMode || tmpPlayer->canSeeCreature(this)) {
+				if (valueEmote == 1) {
+					tmpPlayer->sendCreatureSay(this, TALKTYPE_MONSTER_SAY, text, pos);
+				} else {
+					tmpPlayer->sendCreatureSay(this, TALKTYPE_SPELL_USE, text, pos);
+				}
+			}
+		}
+	}
+
+	// Execute lua event method
+	for (Creature* spectator : spectators) {
+		auto tmpPlayer = spectator->getPlayer();
+		if (!tmpPlayer) {
+			continue;
+		}
+
+		tmpPlayer->onCreatureSay(this, type, text);
+		if (this != tmpPlayer) {
+			g_events().eventCreatureOnHear(tmpPlayer, this, text, type);
+		}
+	}
+	return true;
+}
+
 /*******************************************************************************
  * Interfaces
  ******************************************************************************/
@@ -6257,4 +6321,3 @@ error_t Player::GetAccountInterface(account::Account* account) {
 	account = account_;
 	return account::ERROR_NO;
 }
-

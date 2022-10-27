@@ -5005,10 +5005,10 @@ bool Game::playerSaySpell(Player* player, SpeakClasses type, const std::string& 
 			player->cancelPush();
 		}
 
-		if (!g_configManager().getBoolean(EMOTE_SPELLS)) {
-			return internalCreatureSay(player, TALKTYPE_SPELL_USE, words, false);
-		} else {
+		if (g_configManager().getBoolean(EMOTE_SPELLS)) {
 			return internalCreatureSay(player, TALKTYPE_MONSTER_SAY, words, false);
+		} else {
+			return player->saySpell(type, words, false);
 		}
 
 	} else if (result == TALKACTION_FAILED) {

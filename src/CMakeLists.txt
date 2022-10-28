@@ -1,4 +1,8 @@
-project(canary)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  project(canary-debug)
+else()
+  project(canary)
+endif()
 
 # *****************************************************************************
 # Cmake Features
@@ -27,6 +31,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # *****************************************************************************
 # Options
 # *****************************************************************************
+option(TOGGLE_BIN_FOLDER "Use build/bin folder for generate compilation files" ON)
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
@@ -373,3 +378,16 @@ set_target_properties(${PROJECT_NAME}
     PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
+
+## Link compilation files to build/bin folder, else link to the main dir
+if (TOGGLE_BIN_FOLDER)
+	set_target_properties(${PROJECT_NAME}
+		PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+	)
+else()
+	set_target_properties(${PROJECT_NAME}
+	PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/"
+	)
+endif()

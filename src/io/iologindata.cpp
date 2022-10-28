@@ -88,6 +88,11 @@ void IOLoginData::updateOnlineStatus(uint32_t guid, bool login)
 
   std::ostringstream query;
   if (login) {
+    query << "SELECT `id` FROM `players_online` WHERE `id` = " << guid;
+    if (DBResult_ptr result = db.storeQuery(query.str()); result) {
+      return;
+    }
+
     query << "INSERT INTO `players_online` VALUES (" << guid << ')';
   } else {
     query << "DELETE FROM `players_online` WHERE `player_id` = " << guid;

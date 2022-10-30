@@ -47,7 +47,7 @@ jobs:
         uses: lukka/run-vcpkg@main
         with:
           vcpkgGitURL: "https://github.com/opentibiabr/vcpkg.git"
-          vcpkgGitCommitId: 253704407ae68efa37bf8f5b59b3e06dd40d3d3f
+          vcpkgGitCommitId: 2400585c812a27a7d93461bf84f2907f42367904
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@main

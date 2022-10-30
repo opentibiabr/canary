@@ -59,7 +59,8 @@ jobs:
         if: ${{ matrix.language == 'cpp' }}
         uses: lukka/run-vcpkg@main
         with:
-          vcpkgGitCommitId: e0a9559a9b24af116388eae242d675bf9fde025c
+          vcpkgGitURL: "https://github.com/opentibiabr/vcpkg.git"
+          vcpkgGitCommitId: 2400585c812a27a7d93461bf84f2907f42367904
 
       - name: Get latest CMake and ninja
         if: ${{ matrix.language == 'cpp' }}

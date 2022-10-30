@@ -850,3 +850,43 @@ int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
 	pushBoolean(L, item->isInsideDepot(getBoolean(L, 2, false)));
 	return 1;
 }
+
+int ItemFunctions::luaItemGetTier(lua_State* L) {
+	// item:getTier()
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, item->getTier());
+	return 1;
+}
+
+int ItemFunctions::luaItemSetTier(lua_State* L) {
+	// item:setTier(tier)
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	item->setTier(getNumber<uint8_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ItemFunctions::luaItemGetClassification(lua_State* L) {
+	// item:getClassification()
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, item->getClassification());
+	return 1;
+}

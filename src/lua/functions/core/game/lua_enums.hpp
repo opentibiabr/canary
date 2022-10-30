@@ -1038,6 +1038,7 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, LIGHT_STATE_NIGHT);
 			registerEnum(L, LIGHT_STATE_SUNSET);
 			registerEnum(L, LIGHT_STATE_SUNRISE);
+			registerEnum(L, STORAGEVALUE_EMOTE);
 
 			// Webhook default colors
 			registerEnum(L, WEBHOOK_COLOR_ONLINE);

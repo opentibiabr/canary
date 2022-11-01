@@ -1149,7 +1149,11 @@ void Player::sendPing()
 	if ((hasLostConnection || noPongTime >= 7000) && attackedCreature && attackedCreature->getPlayer()) {
 		setAttackedCreature(nullptr);
 	}
-
+	
+	if (pzLocked) {
+		return;
+	}
+	
 	if (noPongTime >= 60000 && canLogout() && g_creatureEvents().playerLogout(this)) {
 		if (client) {
 			client->logout(true, true);

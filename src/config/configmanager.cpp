@@ -291,8 +291,8 @@ bool ConfigManager::load()
 	boolean[TASK_HUNTING_FREE_THIRD_SLOT] = getGlobalBoolean(L, "taskHuntingFreeThirdSlot", false);
 	integer[TASK_HUNTING_LIMIT_EXHAUST] = getGlobalNumber(L, "taskHuntingLimitedTasksExhaust", 72000);
 	integer[TASK_HUNTING_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "taskHuntingRerollPricePerLevel", 200);
-	integer[TASK_HUNTING_SELECTION_LIST_PRICE] = getGlobalNumber(L, "taskHuntingSelectListPrice", 1);
-	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 2);
+	integer[TASK_HUNTING_SELECTION_LIST_PRICE] = getGlobalNumber(L, "taskHuntingSelectListPrice", 5);
+	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 1);
 	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
 
 	loaded = true;

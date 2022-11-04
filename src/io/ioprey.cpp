@@ -50,20 +50,18 @@ void PreySlot::reloadBonusType()
 
 void PreySlot::reloadBonusValue()
 {
-	auto minBonusPercent = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_PERCENT_MIN));
-	auto maxBonusPercent = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_PERCENT_MAX));
-	auto stagePercent = static_cast<uint16_t>(std::floor((maxBonusPercent - minBonusPercent) / 8));
 	if (bonusRarity >= 9) {
 		bonusRarity = 10;
 	} else {
+		// Every time you roll it will increase the rarity (star)
 		bonusRarity = static_cast<uint8_t>(uniform_random(bonusRarity + 1, 10));
 	}
-
-	bonusPercentage = stagePercent * bonusRarity;
-	if (bonusPercentage > maxBonusPercent) {
-		bonusPercentage = maxBonusPercent;
-	} else if (bonusPercentage < minBonusPercent) {
-		bonusPercentage = minBonusPercent;
+	if (bonus == PreyBonus_Damage) {
+		bonusPercentage = 2 * bonusRarity + 5;
+	} else if (bonus == PreyBonus_Defense) {
+		bonusPercentage = 2 * bonusRarity + 10;
+	} else {
+		bonusPercentage = 3 * bonusRarity + 10;
 	}
 }
 

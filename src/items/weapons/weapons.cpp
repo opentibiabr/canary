@@ -666,7 +666,7 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 		return -maxValue;
 	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(minValue, static_cast<int32_t>(maxValue * player->getVocation()->distDamageMultiplier));
 }
 
 WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
@@ -930,7 +930,7 @@ int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
     	}
   	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(minValue, static_cast<int32_t>(maxValue * player->getVocation()->distDamageMultiplier));
 }
 
 bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& skill, uint32_t& skillpoint) const
@@ -1013,7 +1013,7 @@ int32_t WeaponWand::getWeaponDamage(const Player*, const Creature*, const Item*,
 	if (maxDamage) {
 		return -maxChange;
 	}
-	return -normal_random(minChange, maxChange);
+	return -normal_random(minChange, static_cast<int32_t>(maxChange * player->getVocation()->distDamageMultiplier));
 }
 
 int16_t WeaponWand::getElementDamageValue() const

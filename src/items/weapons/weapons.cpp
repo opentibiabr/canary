@@ -1013,7 +1013,7 @@ int32_t WeaponWand::getWeaponDamage(const Player*, const Creature*, const Item*,
 	if (maxDamage) {
 		return -maxChange;
 	}
-	return -normal_random(minChange, static_cast<int32_t>(maxChange * player->getVocation()->distDamageMultiplier));
+	return -normal_random(minChange, maxChange);
 }
 
 int16_t WeaponWand::getElementDamageValue() const

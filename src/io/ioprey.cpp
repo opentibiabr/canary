@@ -273,8 +273,8 @@ void IOPrey::CheckPlayerPreys(Player* player, uint8_t amount) const
 			if (slot->bonusTimeLeft <= amount) {
 				if (slot->option == PreyOption_AutomaticReroll) {
 					if (player->usePreyCards(static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_REROLL_PRICE)))) {
-						slot->reloadBonusValue();
 						slot->reloadBonusType();
+						slot->reloadBonusValue();
 						slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 						player->sendTextMessage(MESSAGE_STATUS, "Your prey bonus type and time has been succesfully reseted.");
 						player->reloadPreySlot(static_cast<PreySlot_t>(slotId));
@@ -353,8 +353,8 @@ void IOPrey::ParsePreyAction(Player* player,
 		}
 
 		if (slot->bonus == PreyBonus_None) {
-			slot->reloadBonusValue();
 			slot->reloadBonusType();
+			slot->reloadBonusValue();
 		}
 
 		slot->state = PreyDataState_Active;
@@ -370,8 +370,8 @@ void IOPrey::ParsePreyAction(Player* player,
 			return;
 		}
 
-		slot->reloadBonusValue();
 		slot->reloadBonusType();
+		slot->reloadBonusValue();
 		slot->bonusTimeLeft = static_cast<uint16_t>(g_configManager().getNumber(PREY_BONUS_TIME));
 	} else if (action == PreyAction_MonsterSelection) {
 		if (slot->isOccupied()) {
@@ -386,8 +386,8 @@ void IOPrey::ParsePreyAction(Player* player,
 		}
 
 		if (slot->bonus == PreyBonus_None) {
-			slot->reloadBonusValue();
 			slot->reloadBonusType();
+			slot->reloadBonusValue();
 		}
 		slot->state = PreyDataState_Active;
 		slot->selectedRaceId = slot->raceIdList[index];

@@ -494,12 +494,33 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 {
 	assert(data);
 	CombatDamage damage = *data;
-	if (caster && caster->getPlayer()) {
-		Item *item = caster->getPlayer()->getWeapon();
-		damage = applyImbuementElementalDamage(item, damage);
-		g_events().eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
 
-		if (target && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
+	Player *attackerPlayer = nullptr;
+	if (caster) {
+		attackerPlayer = caster->getPlayer();
+	}
+
+	Monster *targetMonster = nullptr;
+	if (target) {
+		targetMonster = target->getMonster();
+	}
+
+	Monster *attackerMonster = nullptr;
+	if (caster) {
+		attackerMonster = caster->getMonster();
+	}
+
+	Player *targetPlayer = nullptr;
+	if (target) {
+		targetPlayer = target->getPlayer();
+	}
+
+	if (caster && attackerPlayer) {
+		Item *item = attackerPlayer->getWeapon();
+		damage = applyImbuementElementalDamage(item, damage);
+		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
+
+		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
 			if (damage.primary.type != COMBAT_HEALING) {
 				damage.primary.value /= 2;
 			}
@@ -511,6 +532,23 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
+	}
+
+	// Player attacking monster
+	if (attackerPlayer && targetMonster) {
+		const PreySlot* slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
+			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+		}
+	}
+	
+	// Monster attacking player
+	if (attackerMonster && targetPlayer) {
+		const PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
+			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+		}
 	}
 
 	if (g_game().combatChangeHealth(caster, target, damage)) {

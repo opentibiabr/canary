@@ -282,11 +282,11 @@ bool ConfigManager::load()
 	boolean[PREY_ENABLED] = getGlobalBoolean(L, "preySystemEnabled", true);
 	boolean[PREY_FREE_THIRD_SLOT] = getGlobalBoolean(L, "preyFreeThirdSlot", false);
 	integer[PREY_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "preyRerollPricePerLevel", 200);
-	integer[PREY_SELECTION_LIST_PRICE] = getGlobalNumber(L, "preySelectListPrice", 1);
+	integer[PREY_SELECTION_LIST_PRICE] = getGlobalNumber(L, "preySelectListPrice", 5);
 	integer[PREY_BONUS_PERCENT_MIN] = getGlobalNumber(L, "preyBonusPercentMin", 5);
 	integer[PREY_BONUS_PERCENT_MAX] = getGlobalNumber(L, "preyBonusPercentMax", 40);
 	integer[PREY_BONUS_TIME] = getGlobalNumber(L, "preyBonusTime", 7200);
-	integer[PREY_BONUS_REROLL_PRICE] = getGlobalNumber(L, "preyBonusRerollPrice", 2);
+	integer[PREY_BONUS_REROLL_PRICE] = getGlobalNumber(L, "preyBonusRerollPrice", 1);
 	integer[PREY_FREE_REROLL_TIME] = getGlobalNumber(L, "preyFreeRerollTime", 72000);
 
 	boolean[TASK_HUNTING_ENABLED] = getGlobalBoolean(L, "taskHuntingSystemEnabled", true);

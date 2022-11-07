@@ -291,7 +291,7 @@ end
 local logFormat = "[%s] %s %s"
 
 function logCommand(player, words, param)
-	local file = io.open("data/logs/" .. player:getName() .. " commands.log", "a")
+	local file = io.open("core/logs/" .. player:getName() .. " commands.log", "a")
 	if not file then
 		return
 	end

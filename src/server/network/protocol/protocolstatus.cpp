@@ -21,6 +21,8 @@
 
 #include "otpch.h"
 
+#include "core.hpp"
+
 #include "server/network/protocol/protocolstatus.h"
 #include "game/game.h"
 #include "server/network/message/outputmessage.h"

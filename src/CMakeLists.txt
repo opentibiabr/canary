@@ -177,7 +177,6 @@ target_sources(${PROJECT_NAME}
     database/databasemanager.cpp
     database/databasetasks.cpp
     game/game.cpp
-    game/gamestore.cpp
     game/movement/position.cpp
     game/movement/teleport.cpp
     game/scheduling/scheduler.cpp
@@ -220,6 +219,7 @@ target_sources(${PROJECT_NAME}
     lua/functions/core/game/config_functions.cpp
     lua/functions/core/game/game_functions.cpp
     lua/functions/core/game/global_functions.cpp
+    lua/functions/core/game/lua_enums.cpp
     lua/functions/core/game/modal_window_functions.cpp
     lua/functions/core/libs/bit_functions.cpp
     lua/functions/core/libs/db_functions.cpp

@@ -18,6 +18,7 @@
  */
 
 #include "otpch.h"
+
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
 #include "creatures/combat/spells.h"
@@ -189,9 +190,10 @@ void Items::loadFromProtobuf()
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
+	auto folder = "core/items/items.xml";
+	pugi::xml_parse_result result = doc.load_file(folder);
 	if (!result) {
-		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

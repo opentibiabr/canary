@@ -1,2 +1,2 @@
-dofile('data/startup/tables/load.lua')
-dofile('data/startup/others/others.lua')
+dofile(DATAPACK_FOLDER_NAME.. '/startup/tables/load.lua')
+dofile(DATAPACK_FOLDER_NAME.. '/startup/others/others.lua')

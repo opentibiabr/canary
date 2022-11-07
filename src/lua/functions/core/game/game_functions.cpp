@@ -19,6 +19,8 @@
 
 #include "otpch.h"
 
+#include "core.hpp"
+
 #include <boost/range/adaptor/reversed.hpp>
 
 #include "creatures/monsters/monster.h"
@@ -578,11 +580,8 @@ int GameFunctions::luaGameReload(lua_State* L) {
 	}
 
 	if (reloadType == RELOAD_TYPE_GLOBAL) {
-		pushBoolean(L, g_luaEnvironment.loadFile("data/global.lua") == 0);
-		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
+		pushBoolean(L, g_luaEnvironment.loadFile("core/core.lua") == 0);
 		pushBoolean(L, g_scripts().loadScripts("scripts/lib", true, true));
-	} else if (reloadType == RELOAD_TYPE_STAGES) {
-		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
 	} else {
 		pushBoolean(L, g_game().reload(reloadType));
 	}

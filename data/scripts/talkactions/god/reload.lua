@@ -10,8 +10,6 @@ local reloadTypes = {
 
 	["events"] = RELOAD_TYPE_EVENTS,
 
-	["global"] = RELOAD_TYPE_GLOBAL,
-
 	["items"] = RELOAD_TYPE_ITEMS,
 
 	["module"] = RELOAD_TYPE_MODULES,
@@ -31,9 +29,13 @@ local reloadTypes = {
 
 	["scripts"] = RELOAD_TYPE_SCRIPTS,
 
+	["rate"] = RELOAD_TYPE_GLOBAL,
+	["rates"] = RELOAD_TYPE_GLOBAL,
+	["stage"] = RELOAD_TYPE_GLOBAL,
+	["stages"] = RELOAD_TYPE_GLOBAL,
+	["global"] = RELOAD_TYPE_GLOBAL,
+	["core"] = RELOAD_TYPE_GLOBAL,
 	["libs"] = RELOAD_TYPE_GLOBAL,
-
-	["stages"] = RELOAD_TYPE_STAGES,
 
 	["imbuements"] = RELOAD_TYPE_IMBUEMENTS
 }

@@ -1,4 +1,4 @@
-dofile('data/modules/scripts/blessings/blessings.lua')
+dofile("core/modules/scripts/blessings/blessings.lua")
 
 local checkBless = Action()
 

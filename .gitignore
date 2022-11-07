@@ -377,8 +377,6 @@ client_assertions.txt
 *.manifest
 *.otbm
 *.rar
-# Folders
-data-global
 
 # SFTP for Sublime
 sftp-config.json

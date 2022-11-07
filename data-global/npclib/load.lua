@@ -1,0 +1,6 @@
+dofile(DATAPACK_FOLDER_NAME .. "/npclib/npc.lua")
+dofile(DATAPACK_FOLDER_NAME .. "/npclib/npc_system/npc_handler.lua")
+dofile(DATAPACK_FOLDER_NAME .. "/npclib/npc_system/keyword_handler.lua")
+dofile(DATAPACK_FOLDER_NAME .. "/npclib/npc_system/modules.lua")
+dofile(DATAPACK_FOLDER_NAME .. "/npclib/npc_system/custom_modules.lua")
+dofile(DATAPACK_FOLDER_NAME .. "/npclib/npc_system/bank_system.lua")

@@ -112,7 +112,8 @@ local function checkHouseAccess(hireling)
 	-- player is not invited anymore, return to lamp
 	Spdlog.info("Returning Hireling:" .. hireling:getName() .. " to owner Inbox")
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
+	-- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
+	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
 	player:save()
@@ -387,7 +388,7 @@ function Hireling:returnToLamp(player_id)
 		end
 
 		local inbox = owner:getSlotItem(CONST_SLOT_STORE_INBOX)
-		if not inbox or inbox:getEmptySlots() == 0 then
+		if not inbox or inbox:getEmptySlots() < 1 then
 			owner:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return owner:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		end
@@ -398,7 +399,7 @@ function Hireling:returnToLamp(player_id)
 		end
 
 		npc:say("As you wish!",	TALKTYPE_PRIVATE_NP, false, owner, npc:getPosition())
-		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
+		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
 		npc:remove() --remove hireling
 		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
@@ -534,7 +535,7 @@ function Player:addNewHireling(name, sex)
 	end
 
 	local inbox = self:getSlotItem(CONST_SLOT_STORE_INBOX)
-	if not inbox or inbox:getEmptySlots() == 0 then
+	if not inbox or inbox:getEmptySlots() < 1 then
 		self:getPosition():sendMagicEffect(CONST_ME_POFF)
 		self:sendTextMessage(MESSAGE_FAILURE, "You don't have enough room in your inbox.")
 		return false
@@ -550,7 +551,7 @@ function Player:addNewHireling(name, sex)
 		end
 		table.insert(PLAYER_HIRELINGS[self:getGuid()], hireling)
 		table.insert(HIRELINGS, hireling)
-		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1)
+		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
 		hireling.active = 0

@@ -1,3 +1,5 @@
+dofile("core/libs/vocation.lua")
+
 Dawnport = {
 	skillsLimit = {
 		[VOCATION.ID.NONE] = {},

@@ -13,16 +13,14 @@ table.find = function (table, value)
 	return nil
 end
 
-table.contains = function (txt, str)
-	for i, v in pairs(str) do
-		if(txt:find(v) and not txt:find('(%w+)' .. v) and not txt:find(v .. '(%w+)')) then
+table.contains = function(array, value)
+	for _, targetColumn in pairs(array) do
+		if targetColumn == value then
 			return true
 		end
 	end
-
 	return false
 end
-table.isStrIn = table.contains
 
 table.count = function (table, item)
 	local count = 0
@@ -104,12 +102,6 @@ function table.unserialize(str)
 	return loadstring("return " .. str)()
 end
 
-function table.join(tableA, tableB)
-	local result = {unpack(tableA)}
-	table.move(tableB, 1, #tableB, #result + 1, result)
-	return result
-end
-
 function pairsByKeys(t, f)
 	local a = {}
 	for n in pairs(t) do table.insert(a, n) end
@@ -122,10 +114,4 @@ function pairsByKeys(t, f)
 		end
 	end
 	return iter
-end
-
-function Set(list)
-	local set = {}
-	for _, l in ipairs(list) do set[l] = true end
-	return set
 end

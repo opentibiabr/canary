@@ -1,8 +1,0 @@
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/vocation.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/achievements_lib.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/door.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/exercise_training.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/familiar.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/teleport_item_destinations.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/town.lua')
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/window.lua')

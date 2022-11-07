@@ -36,11 +36,11 @@ gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
 if datapackFolderName == "data-global" then
-    serverName = "OTServBR-Global"
-    motd = "Welcome to the OTServBR-Global!"
+	serverName = "OTServBR-Global"
+	motd = "Welcome to the OTServBR-Global!"
 else
-    serverName = "Canary"
-    motd = "Welcome to the Canary!"
+	serverName = "Canary"
+	motd = "Welcome to the Canary!"
 end
 onePlayerOnlinePerAccount = true
 allowClones = false
@@ -174,13 +174,13 @@ pushWhenAttacking = false
 -- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
 if datapackFolderName == "data-global" then
-    toggleDownloadMap = true
-    mapName = "otservbr"
-    mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
+	toggleDownloadMap = true
+	mapName = "otservbr"
+	mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
 else
-    toggleDownloadMap = false
-    mapName = "canary"
-    mapDownloadUrl = ""
+	toggleDownloadMap = false
+	mapName = "canary"
+	mapDownloadUrl = ""
 end
 mapAuthor = "OpenTibiaBR"
 
@@ -192,11 +192,12 @@ partyListMaxDistance = 30
 -- Custom Map
 -- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
 if datapackFolderName == "data-global" then
-    toggleMapCustom = true
+	toggleMapCustom = true
+	mapCustomName = "otservbr-custom"
 else
-    toggleMapCustom = false
+	toggleMapCustom = false
+	mapCustomName = ""
 end
-mapCustomName = "otservbr-custom"
 mapCustomAuthor = "OpenTibiaBR"
 
 -- Market
@@ -210,9 +211,9 @@ mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
 if datapackFolderName == "data-global" then
-    mysqlDatabase = "otservbr-global"
+	mysqlDatabase = "otservbr-global"
 else
-    mysqlDatabase = "canary"
+	mysqlDatabase = "canary"
 end
 mysqlPort = 3306
 mysqlSock = ""

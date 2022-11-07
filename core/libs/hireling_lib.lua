@@ -90,9 +90,18 @@ HIRELING_FOODS = { -- only the non-skill ones
 
 local function checkHouseAccess(hireling)
 	--check if owner still have access to the house
-	if hireling.active == 0 then return false end
+	if not hireling or hireling.active == 0 then
+		return false
+	end
 
-	local house = hireling:getPosition():getTile():getHouse()
+	local tile = hireling:getPosition():getTile()
+	if not tile then
+		return false
+	end
+	local house = tile:getHouse()
+	if not house then
+		return false
+	end
 	local player = Player(hireling:getOwnerId())
 	if not player then
 		player = Game.getOfflinePlayer(hireling:getOwnerId())
@@ -334,7 +343,10 @@ end
 
 function Hireling:spawn()
 	self.active = 1
-	local npc = Npc(Game.generateNpc('hireling'))
+	-- Creating new hireling with player choose name
+	createHirelingType(self:getName())
+
+	local npc = Npc(Game.generateNpc(self:getName()))
 	npc:setName(self:getName())
 	local creature = Creature(npc)
 	creature:setOutfit(self:getOutfit())
@@ -487,6 +499,8 @@ function PersistHireling(hireling)
 		return false
 	end
 end
+
+
 
 -- [[ END GLOBAL FUNCTIONS ]]
 

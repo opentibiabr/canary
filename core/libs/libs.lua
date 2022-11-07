@@ -1,0 +1,1 @@
+dofile("core/libs/hireling_lib.lua")

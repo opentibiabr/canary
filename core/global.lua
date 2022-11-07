@@ -3,7 +3,9 @@ DATAPACK_FOLDER_NAME = configManager.getString(configKeys.DATAPACK_FOLDER_NAME)
 math.randomseed(os.time())
 
 dofile(DATAPACK_FOLDER_NAME .. "/lib/lib.lua")
-dofile(DATAPACK_FOLDER_NAME.. "/startup/startup.lua")
+if DATAPACK_FOLDER_NAME == "data-global" then
+	dofile(DATAPACK_FOLDER_NAME.. "/startup/startup.lua")
+end
 
 NOT_MOVEABLE_ACTION = 100
 PARTY_PROTECTION = 1 -- Set to 0 to disable.

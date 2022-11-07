@@ -4982,8 +4982,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection)
 	NetworkMessage msg;
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
-	int32_t PlayerdailyStreak = 0;
-	player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
+	int32_t PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
 	msg.addByte(PlayerdailyStreak < 2 ? 0 : 1);
 	if (PlayerdailyStreak < 2)
 	{

@@ -1342,9 +1342,9 @@ const char* getReturnMessage(ReturnValue value)
 
 		case RETURNVALUE_NOTPOSSIBLE :
 			return "Sorry, not possible.";
-
-		default: // RETURNVALUE_NOTPOSSIBLE, etc
-			return "No error.";
+		// Any unhandled ReturnValue will go enter here
+		default:
+			return "Unknown error.";
 	}
 }
 

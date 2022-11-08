@@ -1340,8 +1340,11 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_NOTENOUGHFISHLEVEL:
 			return "You do not have enough fishing level";
 
-		default: // RETURNVALUE_NOTPOSSIBLE, etc
+		case RETURNVALUE_NOTPOSSIBLE :
 			return "Sorry, not possible.";
+
+		default: // RETURNVALUE_NOTPOSSIBLE, etc
+			return "No error.";
 	}
 }
 

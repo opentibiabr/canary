@@ -1348,7 +1348,9 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		}
 	}
 
-	if (Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT); slotItem && slotItem->isQuiver() && item->getWeaponType() != WEAPON_AMMO) {
+	Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+	WeaponType_t itemType = item->getWeaponType();
+	if (slotItem && slotItem->isQuiver() && itemType != WEAPON_AMMO && itemType != WEAPON_DISTANCE) {
 		player->sendCancelMessage("This quiver only holds arrows and bolts.\nYou cannot put any other items in it.");
 		return;
 	}

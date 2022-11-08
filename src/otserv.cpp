@@ -72,9 +72,8 @@ void toggleForceCloseButton() {
 
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	g_loaderSignal.notify_all();
 	getchar();
-	exit(-1);
+	g_loaderSignal.notify_all();
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -97,6 +96,12 @@ void modulesLoadHelper(bool loaded, std::string moduleName) {
 
 void loadModules() {
 	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
+
+	auto datapackName = g_configManager().getString(DATAPACK_FOLDER_NAME);
+	if (datapackName != "data" && datapackName != "data-global" || datapackName != "data-global" && datapackName != "data") {
+		SPDLOG_ERROR("The datapack folder name '{}' is wrong, please select valid datapack name 'data' or 'data-global", datapackName);
+		startupErrorMessage();
+	}
 
 	SPDLOG_INFO("Server protocol: {}.{}",
 		CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);

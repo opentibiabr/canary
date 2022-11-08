@@ -638,6 +638,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	if (player->isDead() || player->getHealth() <= 0) {
 		if (recvbyte == 0x14) {
 			disconnect();
+			IOLoginData::updateOnlineStatus(player->getGUID(), false);
 			return;
 		}
 

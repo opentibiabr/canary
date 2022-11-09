@@ -412,7 +412,8 @@ enum BlockType_t : uint8_t {
 	BLOCK_NONE,
 	BLOCK_DEFENSE,
 	BLOCK_ARMOR,
-	BLOCK_IMMUNITY
+	BLOCK_IMMUNITY,
+	BLOCK_DODGE
 };
 
 enum BestiaryType_t : uint8_t {
@@ -678,6 +679,7 @@ struct MarketOffer {
 	uint16_t amount;
 	uint16_t counter;
 	uint16_t itemId;
+	uint8_t tier;
 	std::string playerName;
 };
 
@@ -692,6 +694,7 @@ struct MarketOfferEx {
         counter(other.counter),
         itemId(other.itemId),
         type(other.type),
+        tier(other.tier),
         playerName(std::move(other.playerName)) {}
 
 	uint32_t id;
@@ -702,6 +705,7 @@ struct MarketOfferEx {
 	uint16_t counter;
 	uint16_t itemId;
 	MarketAction_t type;
+	uint8_t tier;
 	std::string playerName;
 };
 
@@ -710,6 +714,7 @@ struct HistoryMarketOffer {
 	uint64_t price;
 	uint16_t itemId;
 	uint16_t amount;
+	uint8_t tier;
 	MarketOfferState_t state;
 };
 
@@ -767,6 +772,7 @@ struct CombatDamage {
 	int affected;
 	bool extension;
 	std::string exString;
+	bool fatal;
 
 	CombatDamage() {
 		origin = ORIGIN_NONE;
@@ -776,6 +782,7 @@ struct CombatDamage {
 		affected = 1;
 		extension = false;
 		exString = "";
+		fatal = false;
 	}
 };
 
@@ -892,8 +899,8 @@ struct PartyAnalyzer {
 	uint64_t lootPrice = 0;
 	uint64_t supplyPrice = 0;
 
-	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
-	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
+	std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
+	std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

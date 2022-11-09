@@ -64,10 +64,8 @@ gamestoreByModules = true
 preySystemEnabled = true
 preyFreeThirdSlot = false
 preyRerollPricePerLevel = 200
-preySelectListPrice = 1
-preyBonusRerollPrice = 2
-preyBonusPercentMin = 5
-preyBonusPercentMax = 40
+preySelectListPrice = 5
+preyBonusRerollPrice = 1
 preyBonusTime = 2 * 60 * 60
 preyFreeRerollTime = 20 * 60 * 60
 
@@ -79,9 +77,12 @@ taskHuntingSystemEnabled = true
 taskHuntingFreeThirdSlot = false
 taskHuntingLimitedTasksExhaust = 20 * 60 * 60
 taskHuntingRerollPricePerLevel = 200
-taskHuntingSelectListPrice = 1
-taskHuntingBonusRerollPrice = 2
+taskHuntingSelectListPrice = 5
+taskHuntingBonusRerollPrice = 1
 taskHuntingFreeRerollTime = 20 * 60 * 60
+
+-- Forge system
+forgeMaxItemTier = 10
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false

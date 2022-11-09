@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "creatures/combat/combat.h"
@@ -186,11 +186,11 @@ ReturnValue Combat::canTargetCreature(Player* player, Creature* target)
 	if (!player->hasFlag(PlayerFlag_IgnoreProtectionZone)) {
 		//pz-zone
 		if (player->getZone() == ZONE_PROTECTION) {
-			return RETURNVALUE_YOUMAYNOTATTACKAPERSONWHILEINPROTECTIONZONE;
+			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 
 		if (target->getZone() == ZONE_PROTECTION) {
-			return RETURNVALUE_YOUMAYNOTATTACKAPERSONINPROTECTIONZONE;
+			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 
 		//nopvp-zone
@@ -494,12 +494,33 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 {
 	assert(data);
 	CombatDamage damage = *data;
-	if (caster && caster->getPlayer()) {
-		Item *item = caster->getPlayer()->getWeapon();
-		damage = applyImbuementElementalDamage(item, damage);
-		g_events().eventPlayerOnCombat(caster->getPlayer(), target, item, damage);
 
-		if (target && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
+	Player *attackerPlayer = nullptr;
+	if (caster) {
+		attackerPlayer = caster->getPlayer();
+	}
+
+	Monster *targetMonster = nullptr;
+	if (target) {
+		targetMonster = target->getMonster();
+	}
+
+	Monster *attackerMonster = nullptr;
+	if (caster) {
+		attackerMonster = caster->getMonster();
+	}
+
+	Player *targetPlayer = nullptr;
+	if (target) {
+		targetPlayer = target->getPlayer();
+	}
+
+	if (caster && attackerPlayer) {
+		Item *item = attackerPlayer->getWeapon();
+		damage = applyImbuementElementalDamage(item, damage);
+		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
+
+		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
 			if (damage.primary.type != COMBAT_HEALING) {
 				damage.primary.value /= 2;
 			}
@@ -511,6 +532,23 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
+	}
+
+	// Player attacking monster
+	if (attackerPlayer && targetMonster) {
+		const PreySlot* slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
+			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+		}
+	}
+	
+	// Monster attacking player
+	if (attackerMonster && targetPlayer) {
+		const PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
+		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
+			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+		}
 	}
 
 	if (g_game().combatChangeHealth(caster, target, damage)) {
@@ -611,7 +649,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 
 void Combat::CombatDispelFunc(Creature*, Creature* target, const CombatParams& params, CombatDamage*)
 {
-	if(target) {
+	if (target) {
 		target->removeCombatCondition(params.dispelType);
 	}
 }
@@ -838,14 +876,16 @@ void Combat::CombatFunc(Creature* caster, const Position& pos, const AreaCombat*
 	}
 	//
 	CombatDamage tmpDamage;
-    if(data) {
-        tmpDamage.origin = data->origin;
-        tmpDamage.primary.type = data->primary.type;
-        tmpDamage.primary.value = data->primary.value;
-        tmpDamage.secondary.type = data->secondary.type;
-        tmpDamage.secondary.value = data->secondary.value;
-        tmpDamage.critical = data->critical;
-    }
+	if (data) {
+		tmpDamage.origin = data->origin;
+		tmpDamage.primary.type = data->primary.type;
+		tmpDamage.primary.value = data->primary.value;
+		tmpDamage.secondary.type = data->secondary.type;
+		tmpDamage.secondary.value = data->secondary.value;
+		tmpDamage.critical = data->critical;
+		tmpDamage.fatal = data->fatal;
+	}
+
 	tmpDamage.affected = affected;
 	for (Tile* tile : tileList) {
 		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
@@ -893,12 +933,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 	}
 
 	if (params.combatType == COMBAT_HEALING && target->getMonster()){
-		if (target != caster)	{
+		if (target != caster) {
 			return;
 		}
 	}
 
-	if(caster && caster->getPlayer()){
+	if (caster && caster->getPlayer()) {
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		// Charm low blow rune)
@@ -919,6 +959,16 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
+
+		// fatal hit (onslaught)
+		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+				damage.fatal = true;
+				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
+				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
+			}
+		}
 	}
 	if (canCombat) {
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
@@ -934,28 +984,43 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 
 void Combat::doCombatHealth(Creature* caster, const Position& position, const AreaCombat* area, CombatDamage& damage, const CombatParams& params)
 {
-		if(caster && caster->getPlayer()){
-			// Critical damage
-			uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-			if (damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance) {
-				damage.critical = true;
-				damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-				damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+	if (caster && caster->getPlayer())
+	{
+		// Critical damage
+		if (uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
+		damage.primary.type != COMBAT_HEALING && chance != 0 && uniform_random(1, 100) <= chance)
+		{
+			damage.critical = true;
+			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+		}
+
+		// fatal hit (onslaught)
+		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr)
+		{
+			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+				damage.fatal = true;
+				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
+				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
 			}
 		}
+	}
 	CombatFunc(caster, position, area, params, CombatHealthFunc, &damage);
 }
 
 void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& damage, const CombatParams& params)
 {
 	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target) == RETURNVALUE_NOERROR);
-	if ( (caster && target)
-			&& (caster == target || canCombat)
-			&& (params.impactEffect != CONST_ME_NONE)) {
+	if ((caster && target)
+	&& (caster == target || canCombat)
+	&& (params.impactEffect != CONST_ME_NONE))
+	{
 		g_game().addMagicEffect(target->getPosition(), params.impactEffect);
 	}
 
-	if(caster && caster->getPlayer()){
+	if (caster && caster->getPlayer())
+	{
 		// Critical damage
 		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
 		if (chance != 0 && uniform_random(1, 100) <= chance) {
@@ -964,6 +1029,7 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 	}
+
 	if (canCombat) {
 		if (caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
@@ -978,15 +1044,17 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 
 void Combat::doCombatMana(Creature* caster, const Position& position, const AreaCombat* area, CombatDamage& damage, const CombatParams& params)
 {
-	if(caster && caster->getPlayer()){
-			// Critical damage
-			uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
-			if (chance != 0 && uniform_random(1, 100) <= chance) {
-				damage.critical = true;
-				damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-				damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
-			}
+	if (caster && caster->getPlayer())
+	{
+		// Critical damage
+		uint16_t chance = caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE);
+		if (chance != 0 && uniform_random(1, 100) <= chance)
+		{
+			damage.critical = true;
+			damage.primary.value += (damage.primary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
+			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
+	}
 	CombatFunc(caster, position, area, params, CombatManaFunc, &damage);
 }
 

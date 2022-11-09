@@ -17,15 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "declarations.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
-#include "lua/callbacks/creaturecallback.h"
+#include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/events.h"
+#include "lua/callbacks/creaturecallback.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -312,13 +310,45 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	if(!player->removeItemOfType(itemId, amount, -1, ignore, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
+	auto removeAmount = amount;
+	auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
+	uint16_t removedItems = 0;
+	for (auto item : inventoryItems) {
+		// Ignore item with tier highter than 0
+		if (!item || item->getTier() > 0) {
+			continue;
+		}
+
+		// Only remove if item has no imbuements
+		if (!item->hasImbuements()) {
+			auto removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
+			removeAmount -= removeCount;
+
+			if (auto ret = g_game().internalRemoveItem(item, removeCount);
+			ret != RETURNVALUE_NOERROR)
+			{
+				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+				continue;
+			}
+
+			// We will use it to check how many items have been removed to send totalCost
+			removedItems++;
+
+			if (removeAmount == 0) {
+				break;
+			}
+		}
+	}
+
+	uint64_t totalCost = 0;
+	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
+	if (removedItems == 0) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
 
-	int64_t totalCost = sellPrice * amount;
-	g_game().addMoney(player, totalCost, 0);
+	totalCost = static_cast<uint64_t>(sellPrice * removedItems);
+	g_game().addMoney(player, totalCost);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);

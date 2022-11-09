@@ -506,7 +506,7 @@ function cleanAreaQuest(frompos, topos, itemtable, blockmonsters)
 					local mtempc = tile:getCreatures()
 					if mtempc and tile:getCreatureCount() > 0 then
 						for _, pid in pairs(mtempc) do
-							if pid:isMonster() and not isInArray(blockmonsters, pid:getName():lower()) then
+							if pid:isMonster() and not table.contains(blockmonsters, pid:getName():lower()) then
 								-- broadcastMessage(pid:getName())
 								pid:remove()
 							end

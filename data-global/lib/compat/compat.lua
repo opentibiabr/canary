@@ -43,15 +43,6 @@ CONDITION_EXHAUST = CONDITION_EXHAUST_WEAPON
 TALKTYPE_ORANGE_1 = TALKTYPE_MONSTER_SAY
 TALKTYPE_ORANGE_2 = TALKTYPE_MONSTER_YELL
 
-NORTH = DIRECTION_NORTH
-EAST = DIRECTION_EAST
-SOUTH = DIRECTION_SOUTH
-WEST = DIRECTION_WEST
-SOUTHWEST = DIRECTION_SOUTHWEST
-SOUTHEAST = DIRECTION_SOUTHEAST
-NORTHWEST = DIRECTION_NORTHWEST
-NORTHEAST = DIRECTION_NORTHEAST
-
 function pushThing(thing)
 	local t = {uid = 0, itemid = 0, type = 0, actionid = 0}
 	if thing then
@@ -1040,6 +1031,3 @@ function doSetCreatureLight(cid, lightLevel, lightColor, time)
 	creature:addCondition(condition)
 	return true
 end
-
--- this is a fix for lua52 or higher which has the function renamed to table.unpack, while luajit still uses unpack
-if unpack == nil then unpack = table.unpack end

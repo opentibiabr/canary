@@ -11,6 +11,15 @@ NOT_MOVEABLE_ACTION = 100
 PARTY_PROTECTION = 1 -- Set to 0 to disable.
 ADVANCED_SECURE_MODE = 1 -- Set to 0 to disable.
 
+NORTH = DIRECTION_NORTH
+EAST = DIRECTION_EAST
+SOUTH = DIRECTION_SOUTH
+WEST = DIRECTION_WEST
+SOUTHWEST = DIRECTION_SOUTHWEST
+SOUTHEAST = DIRECTION_SOUTHEAST
+NORTHWEST = DIRECTION_NORTHWEST
+NORTHEAST = DIRECTION_NORTHEAST
+
 STORAGEVALUE_PROMOTION = 30018
 
 SERVER_NAME = configManager.getString(configKeys.SERVER_NAME)
@@ -54,10 +63,14 @@ specialRopeSpots = { 12935 }
 updateInterval = 2
 -- Healing
 -- Global table to insert data
-healingImpact = {}
+if healingImpact == nil then
+	healingImpact = {}
+end
 -- Damage
 -- Global table to insert data
-damageImpact = {}
+if damageImpact == nil then
+	damageImpact = {}
+end
 
 table.contains = function(array, value)
 	for _, targetColumn in pairs(array) do
@@ -86,6 +99,11 @@ end
 
 string.trim = function(str)
 	return str:match'^()%s*$' and '' or str:match'^%s*(.*%S)'
+end
+
+-- Exercise Training
+if onExerciseTraining == nil then
+	onExerciseTraining = {}
 end
 
 -- Stamina
@@ -125,6 +143,13 @@ staminaBonus = {
 	bonus = configManager.getNumber(configKeys.STAMINA_TRAINER_GAIN), -- gain stamina trainers
 	eventsTrainer = {}, -- stamina in trainers
 	eventsPz = {} -- stamina in Pz
+}
+
+FAMILIARSNAME = {
+	"sorcerer familiar",
+	"knight familiar",
+	"druid familiar",
+	"paladin familiar"
 }
 
 function addStamina(playerId, ...)
@@ -185,6 +210,3 @@ function addStamina(playerId, ...)
 	end
 	return false
 end
-
--- Exercise Training
-onExerciseTraining = {}

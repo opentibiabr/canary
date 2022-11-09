@@ -1,4 +1,3 @@
--- Functions from The Forgotten Server
 function Creature:onChangeOutfit(outfit)
 	if self:isPlayer() then
 		local familiarLookType = self:getFamiliarLooktype()
@@ -19,7 +18,6 @@ end
 function Creature:onHear(speaker, words, type)
 end
 
--- Functions from OTServBR-Global
 function Creature:onAreaCombat(tile, isAggressive)
 	return true
 end

@@ -1017,6 +1017,10 @@ class Item : virtual public Thing
 
 		virtual void startDecaying();
 		virtual void stopDecaying();
+		
+		bool getLoadedFromMap() {
+			return loadedFromMap;
+		}
 
 		void setLoadedFromMap(bool value) {
 			loadedFromMap = value;

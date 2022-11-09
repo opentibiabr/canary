@@ -187,9 +187,10 @@ void Items::loadFromProtobuf()
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

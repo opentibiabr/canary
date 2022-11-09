@@ -17,16 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
-
-#include "utils/pugicast.h"
 #include "lua/creature/events.h"
+#include "utils/pugicast.h"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day

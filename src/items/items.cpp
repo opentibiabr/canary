@@ -17,14 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
-#include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 #include "game/game.h"
-
 #include "utils/pugicast.h"
 
 #ifdef __cpp_lib_filesystem
@@ -34,7 +32,6 @@ namespace fs = std::filesystem;
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 #endif
-
 
 Items::Items(){}
 
@@ -190,10 +187,9 @@ void Items::loadFromProtobuf()
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
 	if (!result) {
-		printXMLError(__FUNCTION__, folder, result);
+		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
 		return false;
 	}
 

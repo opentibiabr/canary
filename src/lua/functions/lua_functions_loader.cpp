@@ -17,35 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/spells.h"
-#include "creatures/interactions/chat.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/player.h"
-#include "database/databasemanager.h"
-#include "database/databasetasks.h"
 #include "game/game.h"
 #include "game/movement/teleport.h"
-#include "game/scheduling/scheduler.h"
-#include "io/iobestiary.h"
-#include "io/iologindata.h"
-#include "items/bed.h"
 #include "items/weapons/weapons.h"
-#include "lua/creature/movement.h"
 #include "lua/functions/core/core_functions.hpp"
 #include "lua/functions/creatures/creature_functions.hpp"
 #include "lua/functions/events/events_functions.hpp"
 #include "lua/functions/items/item_functions.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/functions/map/map_functions.hpp"
-#include "lua/global/globalevent.h"
-#include "lua/scripts/scripts.h"
-#include "server/network/protocol/protocolstatus.h"
-#include "server/network/webhook/webhook.h"
-
 
 class LuaScriptInterface;
 

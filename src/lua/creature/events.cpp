@@ -17,14 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/events.h"
 #include "utils/tools.h"
 #include "items/item.h"
 #include "creatures/players/player.h"
-
-#include <set>
 
 Events::Events() :
 	scriptInterface("Event Interface") {

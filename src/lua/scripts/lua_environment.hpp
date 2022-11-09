@@ -20,9 +20,6 @@
 #ifndef SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
 #define SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
 
-#include <unordered_map>
-#include <vector>
-
 #include "creatures/combat/combat.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"

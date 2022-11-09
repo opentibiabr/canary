@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include "lua/scripts/luajit_sync.hpp"
+#include "pch.hpp"
 
 #include "config/configmanager.h"
 #include "declarations.hpp"
 #include "game/game.h"
+#include "lua/scripts/luajit_sync.hpp"
 
 #if LUA_VERSION_NUM >= 502
 #undef lua_strlen

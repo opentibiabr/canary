@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "game/movement/teleport.h"
 #include "game/game.h"
+#include "game/movement/teleport.h"
 
 
 Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)

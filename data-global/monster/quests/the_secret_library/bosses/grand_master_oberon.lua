@@ -1,4 +1,4 @@
-dofile(DATAPACK_FOLDER_NAME .. "/monster/quests/the_secret_library/bosses/grand_master_oberon_functions.lua")
+dofile(DATA_DIRECTORY .. "/monster/quests/the_secret_library/bosses/grand_master_oberon_functions.lua")
 
 local mType = Game.createMonsterType("Grand Master Oberon")
 local monster = {}

@@ -493,7 +493,7 @@ function Player:onMoveCreature(creature, fromPosition, toPosition)
 end
 
 local function hasPendingReport(name, targetName, reportType)
-	local f = io.open(string.format("core/reports/players/%s-%s-%d.txt", name, targetName, reportType), "r")
+	local f = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "r")
 	if f then
 		io.close(f)
 		return true
@@ -509,7 +509,7 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 		return
 	end
 
-	local file = io.open(string.format("core/reports/players/%s-%s-%d.txt", name, targetName, reportType), "a")
+	local file = io.open(string.format("%s/reports/players/%s-%s-%d.txt", CORE_DIRECTORY, name, targetName, reportType), "a")
 	if not file then
 		self:sendTextMessage(MESSAGE_REPORT,
 			"There was an error when processing your report, please contact a gamemaster.")
@@ -539,7 +539,7 @@ function Player:onReportBug(message, position, category)
 	end
 
 	local name = self:getName()
-	local file = io.open("core/reports/bugs/" .. name .. " report.txt", "a")
+	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then
 		self:sendTextMessage(MESSAGE_REPORT,

@@ -1,4 +1,4 @@
-dofile("core/modules/scripts/blessings/blessings.lua")
+dofile(CORE_DIRECTORY .. "/modules/scripts/blessings/blessings.lua")
 local dropLoot = CreatureEvent("DropLoot")
 function dropLoot.onDeath(player, corpse, killer, mostDamage, unjustified, mostDamage_unjustified)
 	local town = player:getTown()

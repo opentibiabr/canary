@@ -202,7 +202,8 @@ bool ConfigManager::load()
 	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
 	string[GLOBAL_SERVER_SAVE_TIME] = getGlobalString(L, "globalServerSaveTime", "06:00");
-	string[DATAPACK_FOLDER_NAME] = getGlobalString(L, "datapackFolderName", "data");
+	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data");
+	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "core");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);

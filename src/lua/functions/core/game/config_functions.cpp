@@ -174,7 +174,8 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_USE_STAGES)
 	registerEnumIn(L, "configKeys", TOGGLE_IMBUEMENT_SHRINE_STORAGE)
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
-	registerEnumIn(L, "configKeys", DATAPACK_FOLDER_NAME)
+	registerEnumIn(L, "configKeys", DATA_DIRECTORY)
+	registerEnumIn(L, "configKeys", CORE_DIRECTORY)
 
 	#undef registerEnumIn
 }

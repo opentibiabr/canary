@@ -30,10 +30,10 @@ local function changeMap(mapName)
 	cleanMMap(Position(32512, 32364, 10), Position(32526, 32474, 10))
 	if mapName:lower() == "illusion" then
 		Game.setStorageValue("cultsMisguidedMap", "illusion")
-		Game.loadMap(DATAPACK_FOLDER_NAME.. '/world/quest/cults_of_tibia/misguided/illusion.otbm')
+		Game.loadMap(DATA_DIRECTORY.. '/world/quest/cults_of_tibia/misguided/illusion.otbm')
 	else
 		Game.setStorageValue("cultsMisguidedMap", "reality")
-		Game.loadMap(DATAPACK_FOLDER_NAME.. '/world/quest/cults_of_tibia/misguided/reality.otbm')
+		Game.loadMap(DATA_DIRECTORY.. '/world/quest/cults_of_tibia/misguided/reality.otbm')
 		addEvent(changeMap, 15000, "illusion")
 	end
 end

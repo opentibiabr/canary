@@ -97,7 +97,7 @@ void modulesLoadHelper(bool loaded, std::string moduleName) {
 void loadModules() {
 	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
 
-	auto datapackName = g_configManager().getString(DATAPACK_FOLDER_NAME);
+	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
 	if (datapackName != "data" && datapackName != "data-global" || datapackName != "data-global" && datapackName != "data") {
 		SPDLOG_ERROR("The datapack folder name '{}' is wrong, please select valid datapack name 'data' or 'data-global", datapackName);
 		startupErrorMessage();
@@ -145,29 +145,30 @@ void loadModules() {
 	}
 
 	// Core start
-	modulesLoadHelper((g_game().loadAppearanceProtobuf("core/items/appearances.dat") == ERROR_NONE),
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE),
 		"appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
 
-	auto datapackFolder = g_configManager().getString(DATAPACK_FOLDER_NAME);
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	// Lua Interface start
-	modulesLoadHelper((g_luaEnvironment.loadFile("core/core.lua") == 0),
-		"core/core.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
+		coreFolder + "/core.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
-		"core/XML/vocations.xml");
+		coreFolder + "/XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),
-		"core/XML/events.xml");
+		coreFolder + "/XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
-		"core/XML/outfits.xml");
+		coreFolder + "/XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
-		"core/XML/familiars.xml");
+		coreFolder + "/XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(),
-		"core/XML/imbuements.xml");
+		coreFolder + "/XML/imbuements.xml");
 	modulesLoadHelper(g_modules().loadFromXml(),
-		"core/modules/modules.xml");
+		coreFolder + "/modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(),
-		"core/events/events.xml");
+		coreFolder + "/events/events.xml");
 	modulesLoadHelper((g_luaEnvironment.loadFile(datapackFolder + "/npclib/load.lua") == 0),
 		datapackFolder + "/npclib/load.lua");
 	// Core end

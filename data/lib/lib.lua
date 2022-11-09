@@ -1,6 +1,6 @@
 -- Core API functions implemented in Lua
-dofile(DATAPACK_FOLDER_NAME.. '/lib/core/load.lua')
+dofile(DATA_DIRECTORY.. '/lib/core/load.lua')
 
 
 -- Tables library
-dofile(DATAPACK_FOLDER_NAME.. '/lib/tables/load.lua')
+dofile(DATA_DIRECTORY.. '/lib/tables/load.lua')

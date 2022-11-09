@@ -1,7 +1,9 @@
 -- Core settings
 -- Note: If you want to use datapack canary (custom), put only "data"
 -- If you want to use the global datapack, pute "data-global"
-datapackFolderName = "data-global"
+dataPackDirectory = "data-global"
+-- Don't change this unless you know what you're doing
+coreDirectory = "core"
 
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
@@ -37,7 +39,7 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-if datapackFolderName == "data-global" then
+if dataPackDirectory == "data-global" then
 	serverName = "OTServBR-Global"
 	motd = "Welcome to the OTServBR-Global!"
 else
@@ -175,7 +177,7 @@ pushWhenAttacking = false
 -- NOTE: set mapName WITHOUT .otbm at the end
 -- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
-if datapackFolderName == "data-global" then
+if dataPackDirectory == "data-global" then
 	toggleDownloadMap = true
 	mapName = "otservbr"
 	mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
@@ -192,8 +194,8 @@ mapAuthor = "OpenTibiaBR"
 partyListMaxDistance = 30
 
 -- Custom Map
--- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
-if datapackFolderName == "data-global" then
+-- NOTE: mapCustomEnabled = activate the map, false = disable the map
+if dataPackDirectory == "data-global" then
 	toggleMapCustom = true
 	mapCustomName = "otservbr-custom"
 else
@@ -212,7 +214,7 @@ maxMarketOffersAtATimePerPlayer = 100
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
-if datapackFolderName == "data-global" then
+if dataPackDirectory == "data-global" then
 	mysqlDatabase = "otservbr-global"
 else
 	mysqlDatabase = "canary"

@@ -323,7 +323,7 @@ function functionRevert()
 		end
 	end
 
-	Game.loadMap(DATAPACK_FOLDER_NAME.. '/world/quest/ferumbras_ascendant/habitats.otbm')
+	Game.loadMap(DATA_DIRECTORY.. '/world/quest/ferumbras_ascendant/habitats.otbm')
 	return true
 end
 
@@ -674,7 +674,7 @@ end
 local logFormat = "[%s] %s %s"
 
 function logCommand(player, words, param)
-	local file = io.open(DATAPACK_FOLDER_NAME .. "/logs/" .. player:getName() .. " commands.log", "a")
+	local file = io.open(DATA_DIRECTORY .. "/logs/" .. player:getName() .. " commands.log", "a")
 	if not file then
 		return
 	end

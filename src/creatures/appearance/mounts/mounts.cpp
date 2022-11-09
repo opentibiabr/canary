@@ -35,8 +35,8 @@ bool Mounts::reload()
 bool Mounts::loadFromXml()
 {
 	pugi::xml_document doc;
-	auto folder = "core/XML/mounts.xml";
-	pugi::xml_parse_result result = doc.load_file(folder);
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/mounts.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		printXMLError(__FUNCTION__, folder, result);
 		return false;

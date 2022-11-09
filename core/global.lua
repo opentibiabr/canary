@@ -1,10 +1,8 @@
-DATAPACK_FOLDER_NAME = configManager.getString(configKeys.DATAPACK_FOLDER_NAME)
-
 math.randomseed(os.time())
 
-dofile(DATAPACK_FOLDER_NAME .. "/lib/lib.lua")
-if DATAPACK_FOLDER_NAME == "data-global" then
-	dofile(DATAPACK_FOLDER_NAME.. "/startup/startup.lua")
+dofile(DATA_DIRECTORY .. "/lib/lib.lua")
+if DATA_DIRECTORY == "data-global" then
+	dofile(DATA_DIRECTORY.. "/startup/startup.lua")
 end
 
 NOT_MOVEABLE_ACTION = 100

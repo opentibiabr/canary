@@ -71,7 +71,7 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
 	namespace fs = boost::filesystem;
 
-	auto datapackFolder = g_configManager().getString(DATAPACK_FOLDER_NAME);
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	const auto dir = fs::current_path() / datapackFolder / folderName;
 	if(!fs::exists(dir) || !fs::is_directory(dir)) {
 		SPDLOG_ERROR("Can not load folder {}", folderName);

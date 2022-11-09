@@ -306,14 +306,14 @@ bool Game::loadMainMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMap(g_configManager().getString(DATAPACK_FOLDER_NAME) + "/world/" + filename + ".otbm", true, true, true, true);
+	return map.loadMap(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm", true, true, true, true);
 }
 
 bool Game::loadCustomMap(const std::string& filename)
 {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);
-	return map.loadMapCustom(g_configManager().getString(DATAPACK_FOLDER_NAME) + "/world/custom/" + filename + ".otbm", true, true, true);
+	return map.loadMapCustom(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + filename + ".otbm", true, true, true);
 }
 
 void Game::loadMap(const std::string& path)
@@ -8185,7 +8185,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			// Reload npc scripts
 			g_scripts().loadScripts("npc", false, true);
 			// Reload npclib
-			g_luaEnvironment.loadFile(g_configManager().getString(DATAPACK_FOLDER_NAME) + "/npclib/load.lua");
+			g_luaEnvironment.loadFile(g_configManager().getString(DATA_DIRECTORY) + "/npclib/load.lua");
 			return true;
 		}
 		case RELOAD_TYPE_CHAT: return g_chat().load();
@@ -8215,7 +8215,7 @@ bool Game::reload(ReloadTypes_t reloadType)
 			// Reload npc scripts
 			g_scripts().loadScripts("npc", false, true);
 			// Reload npclib
-			g_luaEnvironment.loadFile(g_configManager().getString(DATAPACK_FOLDER_NAME) + "/npclib/load.lua");
+			g_luaEnvironment.loadFile(g_configManager().getString(DATA_DIRECTORY) + "/npclib/load.lua");
 			return true;
 		}
 

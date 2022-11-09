@@ -1,4 +1,4 @@
-dofile(DATAPACK_FOLDER_NAME .. "/npc/alesar_functions.lua")
+dofile(DATA_DIRECTORY .. "/npc/alesar_functions.lua")
 
 local internalNpcName = "Alesar"
 local npcType = Game.createNpcType(internalNpcName)

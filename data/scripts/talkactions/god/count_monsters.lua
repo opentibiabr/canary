@@ -1,4 +1,4 @@
-local xml_monster_dir = DATAPACK_FOLDER_NAME.. '/world/canary-monster.xml'
+local xml_monster_dir = DATA_DIRECTORY.. '/world/canary-monster.xml'
 local new_file_name = 'monster_count.txt'
 
 local count_monsters = TalkAction("/countmonsters")

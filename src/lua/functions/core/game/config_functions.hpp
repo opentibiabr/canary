@@ -98,8 +98,6 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", PREY_ENABLED)
 			registerEnumIn(L, "configKeys", PREY_FREE_THIRD_SLOT)
 			registerEnumIn(L, "configKeys", PREY_REROLL_PRICE_LEVEL)
-			registerEnumIn(L, "configKeys", PREY_BONUS_PERCENT_MIN)
-			registerEnumIn(L, "configKeys", PREY_BONUS_PERCENT_MAX)
 			registerEnumIn(L, "configKeys", PREY_BONUS_TIME)
 			registerEnumIn(L, "configKeys", PREY_BONUS_REROLL_PRICE)
 			registerEnumIn(L, "configKeys", PREY_FREE_REROLL_TIME)

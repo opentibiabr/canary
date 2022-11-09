@@ -19,6 +19,7 @@
 
 #include "pch.hpp"
 
+#include "config/configmanager.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/pugicast.h"

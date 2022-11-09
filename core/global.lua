@@ -59,6 +59,9 @@ specialRopeSpots = { 12935 }
 -- Impact Analyser
 -- Every 2 seconds
 updateInterval = 2
+if not GlobalBosses then
+	GlobalBosses = {}
+end
 -- Healing
 -- Global table to insert data
 if healingImpact == nil then
@@ -68,6 +71,29 @@ end
 -- Global table to insert data
 if damageImpact == nil then
 	damageImpact = {}
+end
+
+-- Exercise Training
+if onExerciseTraining == nil then
+	onExerciseTraining = {}
+end
+
+-- Stamina
+if nextUseStaminaTime == nil then
+	nextUseStaminaTime = {}
+end
+
+if nextUseXpStamina == nil then
+	nextUseXpStamina = {}
+end
+
+if lastItemImbuing == nil then
+	lastItemImbuing = {}
+end
+
+-- Delay potion
+if not playerDelayPotion then
+	playerDelayPotion = {}
 end
 
 table.contains = function(array, value)
@@ -97,29 +123,6 @@ end
 
 string.trim = function(str)
 	return str:match'^()%s*$' and '' or str:match'^%s*(.*%S)'
-end
-
--- Exercise Training
-if onExerciseTraining == nil then
-	onExerciseTraining = {}
-end
-
--- Stamina
-if nextUseStaminaTime == nil then
-	nextUseStaminaTime = {}
-end
-
-if nextUseXpStamina == nil then
-	nextUseXpStamina = {}
-end
-
-if lastItemImbuing == nil then
-	lastItemImbuing = {}
-end
-
--- Delay potion
-if not playerDelayPotion then
-	playerDelayPotion = {}
 end
 
 -- for use of: data\scripts\globalevents\customs\save_interval.lua

@@ -1,7 +1,3 @@
-if not GlobalBosses then
-	GlobalBosses = {}
-end
-
 -- Unused function
 function PushValues(buffer, sep, ...)
 	local argv = {...}

@@ -33,6 +33,7 @@ function login.onLogin(player)
 	-- Events
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
+	player:registerEvent("BossParticipation")
 
 
 	if onExerciseTraining[player:getId()] then -- onLogin & onLogout

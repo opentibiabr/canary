@@ -39,13 +39,8 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-if dataPackDirectory == "data-global" then
-	serverName = "OTServBR-Global"
-	motd = "Welcome to the OTServBR-Global!"
-else
-	serverName = "Canary"
-	motd = "Welcome to the Canary!"
-end
+serverName = "OTServBR-Global"
+motd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true
 allowClones = false
 statusTimeout = 5 * 1000
@@ -177,15 +172,9 @@ pushWhenAttacking = false
 -- NOTE: set mapName WITHOUT .otbm at the end
 -- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
-if dataPackDirectory == "data-global" then
-	toggleDownloadMap = true
-	mapName = "otservbr"
-	mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
-else
-	toggleDownloadMap = false
-	mapName = "canary"
-	mapDownloadUrl = ""
-end
+toggleDownloadMap = true
+mapName = "otservbr"
+mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations
@@ -195,13 +184,8 @@ partyListMaxDistance = 30
 
 -- Custom Map
 -- NOTE: mapCustomEnabled = activate the map, false = disable the map
-if dataPackDirectory == "data-global" then
-	toggleMapCustom = true
-	mapCustomName = "otservbr-custom"
-else
-	toggleMapCustom = false
-	mapCustomName = ""
-end
+toggleMapCustom = true
+mapCustomName = "otservbr-custom"
 mapCustomAuthor = "OpenTibiaBR"
 
 -- Market
@@ -214,11 +198,7 @@ maxMarketOffersAtATimePerPlayer = 100
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
 mysqlPass = "root"
-if dataPackDirectory == "data-global" then
-	mysqlDatabase = "otservbr-global"
-else
-	mysqlDatabase = "canary"
-end
+mysqlDatabase = "otservbr-global"
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"

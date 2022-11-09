@@ -83,6 +83,9 @@ taskHuntingSelectListPrice = 1
 taskHuntingBonusRerollPrice = 2
 taskHuntingFreeRerollTime = 20 * 60 * 60
 
+-- Forge system
+forgeMaxItemTier = 10
+
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false
 

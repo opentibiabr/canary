@@ -484,6 +484,7 @@ class ItemAttributes
 			checkTypes |= ITEM_ATTRIBUTE_OPENCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+			checkTypes |= ITEM_ATTRIBUTE_TIER;
 			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(ItemAttrTypes type) {
@@ -796,6 +797,7 @@ class Item : virtual public Thing
 
 		static std::string parseImbuementDescription(const Item* item);
 		static std::string parseShowAttributesDescription(const Item *item, const uint16_t itemId);
+		static std::string parseClassificationDescription(const Item* item);
 
 		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
                                     const Item* item = nullptr);
@@ -1097,6 +1099,55 @@ class Item : virtual public Thing
 			}
 
 			return false;
+		}
+
+		double_t getDodgeChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 0.5 * getTier() + 0.03 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		double_t getFatalChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 0.5 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		double_t getMomentumChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 2 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		uint8_t getTier() const {
+			if (!hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+				return 0;
+			}
+
+			auto tier = static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
+			if (tier > g_configManager().getNumber(MAX_ITEM_FORGE_TIER)) {
+				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+				return 0;
+			}
+
+			return tier;
+		}
+		void setTier(uint8_t tier) {
+			auto configTier = g_configManager().getNumber(MAX_ITEM_FORGE_TIER);
+			if (tier > configTier) {
+				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
+				return;
+			}
+
+			if (items[id].upgradeClassification) {
+				setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+			}
+		}
+		uint8_t getClassification() const {
+			return items[id].upgradeClassification;
 		}
 
 	protected:

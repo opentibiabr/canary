@@ -1706,6 +1706,14 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 		SPDLOG_DEBUG("{} - Failed to remove item", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
+	
+	// Not remove item with decay loaded from map
+	if (item->canDecay() && cylinder->getTile() && item->getLoadedFromMap()) {
+		SPDLOG_DEBUG("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
+		item->stopDecaying();
+		return RETURNVALUE_NOERROR;
+	}
+
 	if (!test) {
 		int32_t index = cylinder->getThingIndex(item);
 		//remove the item

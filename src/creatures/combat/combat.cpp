@@ -186,11 +186,11 @@ ReturnValue Combat::canTargetCreature(Player* player, Creature* target)
 	if (!player->hasFlag(PlayerFlag_IgnoreProtectionZone)) {
 		//pz-zone
 		if (player->getZone() == ZONE_PROTECTION) {
-			return RETURNVALUE_YOUMAYNOTATTACKAPERSONWHILEINPROTECTIONZONE;
+			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 
 		if (target->getZone() == ZONE_PROTECTION) {
-			return RETURNVALUE_YOUMAYNOTATTACKAPERSONINPROTECTIONZONE;
+			return RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE;
 		}
 
 		//nopvp-zone

@@ -710,6 +710,7 @@ class LuaEnums final : LuaScriptInterface {
 
 			registerEnum(L, VOCATION_NONE)
 
+			registerEnum(L, SKILL_NONE);
 			registerEnum(L, SKILL_FIST)
 			registerEnum(L, SKILL_CLUB)
 			registerEnum(L, SKILL_SWORD)
@@ -1036,7 +1037,6 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, LIGHT_STATE_SUNSET);
 			registerEnum(L, LIGHT_STATE_SUNRISE);
 			registerEnum(L, STORAGEVALUE_EMOTE);
-			registerEnum(L, SKILL_NONE);
 
 			// Webhook default colors
 			registerEnum(L, WEBHOOK_COLOR_ONLINE);

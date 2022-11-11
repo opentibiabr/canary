@@ -626,7 +626,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 
 	if (!player || player->isRemoved()) {
 		if (recvbyte == 0x0F) {
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::disconnect, getThis())));
+			disconnect();
 		}
 		return;
 	}
@@ -647,7 +647,7 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 void ProtocolGame::parsePacketDead(uint8_t recvbyte)
 {
 	if (recvbyte == 0x14) {
-		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::disconnect, getThis())));
+		disconnect();
 		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
 		return;
 	}
@@ -660,7 +660,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte)
 		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPing, getThis())));
 
 		if (!player->spawn()) {
-			g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::disconnect, getThis())));
+			disconnect();
 			addGameTask(&Game::removeCreature, player, true);
 			return;
 		}

@@ -275,9 +275,9 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	// Check if config or config.dist exist
 	std::ifstream c_test("./" + configName);
 	if (!c_test.is_open()) {
-		std::ifstream config_lua_dist(configName);
+		std::ifstream config_lua_dist(configName + ".dist");
 		if (config_lua_dist.is_open()) {
-			SPDLOG_INFO("Copying {}.dist to {}", configName);
+			SPDLOG_INFO("Copying {}.dist to {}", configName, configName);
 			std::ofstream config_lua(configName);
 			config_lua << config_lua_dist.rdbuf();
 			config_lua.close();

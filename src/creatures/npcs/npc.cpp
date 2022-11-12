@@ -346,8 +346,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		return;
 	}
 
-	uint64_t totalCost = 0;
-	totalCost = static_cast<uint64_t>(sellPrice * amount);
+	auto totalCost = static_cast<uint64_t>(sellPrice * amount);
 	g_game().addMoney(player, totalCost);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)

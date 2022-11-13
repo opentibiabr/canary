@@ -17,11 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/filesystem.hpp>
-#include <fstream>
-#include <curl/curl.h>
+#include "pch.hpp"
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -29,7 +25,6 @@
 #include "creatures/creature.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
 
 bool Map::load(const std::string& identifier) {
 	try {

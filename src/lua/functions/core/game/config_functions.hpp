@@ -20,7 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_CONFIG_FUNCTIONS_HPP_
 
-#include "config/configmanager.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 
@@ -98,8 +97,6 @@ class ConfigFunctions final : LuaScriptInterface {
 			registerEnumIn(L, "configKeys", PREY_ENABLED)
 			registerEnumIn(L, "configKeys", PREY_FREE_THIRD_SLOT)
 			registerEnumIn(L, "configKeys", PREY_REROLL_PRICE_LEVEL)
-			registerEnumIn(L, "configKeys", PREY_BONUS_PERCENT_MIN)
-			registerEnumIn(L, "configKeys", PREY_BONUS_PERCENT_MAX)
 			registerEnumIn(L, "configKeys", PREY_BONUS_TIME)
 			registerEnumIn(L, "configKeys", PREY_BONUS_REROLL_PRICE)
 			registerEnumIn(L, "configKeys", PREY_FREE_REROLL_TIME)

@@ -20,19 +20,12 @@
 #ifndef SRC_ITEMS_ITEM_H_
 #define SRC_ITEMS_ITEM_H_
 
-#include <utility>
-#include <vector>
-
 #include "items/cylinder.h"
 #include "items/thing.h"
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
 #include "utils/tools.h"
-#include <typeinfo>
-
-#include <boost/variant.hpp>
-#include <boost/lexical_cast.hpp>
-#include <deque>
+#include "io/fileloader.h"
 
 class Creature;
 class Player;

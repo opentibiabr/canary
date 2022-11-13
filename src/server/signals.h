@@ -20,8 +20,6 @@
 #ifndef SRC_SERVER_SIGNALS_H_
 #define SRC_SERVER_SIGNALS_H_
 
-#include <boost/asio.hpp>
-
 class Signals
 {
 	boost::asio::signal_set set;

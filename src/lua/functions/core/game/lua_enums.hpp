@@ -20,13 +20,10 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_LUA_ENUMS_HPP_
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/account/account.hpp"
-#include "creatures/creature.h"
-#include "lua/creature/creatureevent.h"
 #include "declarations.hpp"
-#include "game/game.h"
 #include "lua/scripts/luascript.h"
 
 class LuaEnums final : LuaScriptInterface {

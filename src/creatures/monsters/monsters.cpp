@@ -676,7 +676,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
 			combat->addCondition(condition);
 		} else if (tmpName == "fear") {
-			int32_t duration = 1000;
+			int32_t duration = 6000;
 
 			if (spell->duration != 0) {
 				duration = spell->duration;

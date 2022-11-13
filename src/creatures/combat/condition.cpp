@@ -21,6 +21,7 @@
 
 #include "creatures/combat/condition.h"
 #include "game/game.h"
+#include "game/scheduling/tasks.h"
 
 /**
  *  Condition

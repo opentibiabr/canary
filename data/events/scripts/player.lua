@@ -6,7 +6,6 @@ function Player:onLook(thing, position, distance)
 	local description = "You see "
 	description = description .. thing:getDescription(distance)
 	if thing:isMonster() then
-		description = description .. thing:getDescription(distance)
 		local master = thing:getMaster()
 		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
 			description = description..' (Master: ' .. master:getName() .. '). \z

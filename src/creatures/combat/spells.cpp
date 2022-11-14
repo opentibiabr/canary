@@ -634,6 +634,11 @@ bool Spell::playerSpellCheck(Player* player) const
 		return true;
 	}
 
+	if (player->hasCondition(CONDITION_FEARED)) {
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return false;
+	}
+
 	if (!enabled) {
 		return false;
 	}

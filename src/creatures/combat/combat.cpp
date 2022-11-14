@@ -660,7 +660,6 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				}
 
 				/**
-				 *	Player is on Party (target as player)
 				 * 	
 				 *	When a player is part of 5 player party only 1 member can be feared,
 				 *	with 6, 2 members can be feared until 10, on 11, 3 members...

@@ -2503,6 +2503,14 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		return;
 	}
 
+	if (player->hasCondition(CONDITION_FEARED)) {
+		/*
+		*	When player is feared the player can´t equip any items.
+		*/
+		player->sendTextMessage(MESSAGE_FAILURE, "You are feared.");
+		return;
+	}
+
 	Item* item = player->getInventoryItem(CONST_SLOT_BACKPACK);
 	if (!item) {
 		return;

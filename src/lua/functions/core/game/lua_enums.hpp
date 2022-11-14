@@ -33,6 +33,7 @@ class LuaEnums final : LuaScriptInterface {
 				std::string enumName = #value; \
 				registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
 			}
+			
 			registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
 			registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
 			registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);

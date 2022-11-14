@@ -1347,7 +1347,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 
 	Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT);
 	WeaponType_t itemType = item->getWeaponType();
-	if (slotItem && slotItem->isQuiver() && itemType != WEAPON_AMMO && itemType != WEAPON_DISTANCE) {
+	if (slotItem && slotItem->isQuiver() && toIndex == CONST_SLOT_RIGHT && itemType != WEAPON_AMMO) {
 		player->sendCancelMessage("This quiver only holds arrows and bolts.\nYou cannot put any other items in it.");
 		return;
 	}
@@ -2522,13 +2522,15 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
-		if (slotItem && slotItem->isQuiver()) {
+		Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
+		if (quiver && quiver->isQuiver()) {
 			if (it.weaponType == WEAPON_AMMO) {
-				internalMoveItem(equipItem->getParent(), slotItem->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
+				internalMoveItem(equipItem->getParent(), quiver->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
 				return;
 			}
 
-			if (Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT); leftItem) {
+			Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
+			if (leftItem && leftItem->getWeaponType() != WEAPON_DISTANCE) {
 				internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
 			}
 			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);

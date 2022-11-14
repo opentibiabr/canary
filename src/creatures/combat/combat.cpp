@@ -635,14 +635,37 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 					}
 				}
 			}
+
 			/**
-			 *	Feared condition when player is on Party (target as player)
-			 * 	
-			 *	When a player is part of 5 player party only 1 member can be feared,
-			 *	with 6, 2 members can be feared until 10, on 11, 3 members...
-			 *
+			 * Specifics checks for Feared condtion
 			 */
 			if(condition->getType() == CONDITION_FEARED){
+				/**
+				 * After being feared the player has a cooldown until it can be feared again
+				 */
+				if (player->isImmuneFear(CONDITION_FEARED)) {
+					return;
+				}
+
+				/**
+				 * Block fear condition to be applied when player is already in fear
+				 * This is done to ensure player won't be feared for a maximun of 6 seconds (by default)
+				 * and have a cooldown until it can be feared again
+				 *
+				 * Without this check a player can be feared eternally as long it
+				 * keeps receiving the spell before it ends
+				 */
+				if (player->hasCondition(CONDITION_FEARED)) {
+					return;
+				}
+
+				/**
+				 *	Player is on Party (target as player)
+				 * 	
+				 *	When a player is part of 5 player party only 1 member can be feared,
+				 *	with 6, 2 members can be feared until 10, on 11, 3 members...
+				 *
+				 */
 				Party* party = player->getParty();
 				if(party) {
 					uint8_t affectedCount = std::ceil((party->getMemberCount()+5)/5);

@@ -1737,6 +1737,14 @@ bool ConditionFeared::executeCondition(Creature* creature, int32_t interval) {
 
 void ConditionFeared::endCondition(Creature* creature) {
 	creature->stopEventWalk();
+	/*
+	 * After a player is feared there's a 10 seconds before he can feared again.
+	 */
+	Player* player = creature->getPlayer();
+	if (player) {
+		player->setImmuneFear(CONDITION_FEARED);
+	}
+	
 }
 
 void ConditionFeared::addCondition(Creature*, const Condition* addCondition) {

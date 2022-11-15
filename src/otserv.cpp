@@ -96,7 +96,7 @@ void loadModules() {
 	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
 
 	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
-	if (datapackName != "data" && datapackName != "data-global" || datapackName != "data-global" && datapackName != "data") {
+	if (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary") {
 		SPDLOG_ERROR("The datapack folder name '{}' is wrong, please select valid datapack name 'data' or 'data-global", datapackName);
 		startupErrorMessage();
 	}

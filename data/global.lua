@@ -1,7 +1,7 @@
 math.randomseed(os.time())
 
 dofile(DATA_DIRECTORY .. "/lib/lib.lua")
-if DATA_DIRECTORY == "data-global" then
+if DATA_DIRECTORY == "data-otservbr-global" then
 	dofile(DATA_DIRECTORY.. "/startup/startup.lua")
 end
 

@@ -1502,11 +1502,11 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
 bool ConditionFeared::isStuck(Creature* creature, Position pos) {
 	for (Direction dir : dirList) {
 		if (canWalkTo(creature, pos, dir)) {
-			return true;
+			return false;
 		}
 	}
 
-	return false;
+	return true;
 }
 
 bool ConditionFeared::getRandomDirection(Creature* creature, Position pos) {
@@ -1629,7 +1629,7 @@ bool ConditionFeared::getFleePath(Creature* creature, Position& pos, std::forwar
 				fleeIndx = 0;
 			}
 
-			if(!isStuck(creature, pos)){ // Check if it is possible to walk to any direction
+			if(isStuck(creature, pos)){ // Check if it is possible to walk to any direction
 				SPDLOG_DEBUG("[ConditionsFeared::getFleePath] Can't walk to anywhere");
 				return false;
 			}

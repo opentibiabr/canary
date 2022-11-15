@@ -667,7 +667,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				 */
 				Party* party = player->getParty();
 				if(party) {
-					uint8_t affectedCount = std::ceil((party->getMemberCount()+5)/5);
+					uint8_t affectedCount = std::floor((party->getMemberCount()+5)/5);
 					SPDLOG_DEBUG("[Combat::CombatConditionFunc] Player is member of a party, {} members can be feared", affectedCount);
 					
 					for (Player* member : party->getMembers()){

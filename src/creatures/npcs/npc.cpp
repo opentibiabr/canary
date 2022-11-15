@@ -340,14 +340,13 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	uint64_t totalCost = 0;
 	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
 	if (removedItems == 0) {
 		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
 
-	totalCost = static_cast<uint64_t>(sellPrice * removedItems);
+	auto totalCost = static_cast<uint64_t>(sellPrice * amount);
 	g_game().addMoney(player, totalCost);
 
 	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)

@@ -643,7 +643,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 				/**
 				 * After being feared the player has a cooldown until it can be feared again
 				 */
-				if (player->isImmuneFear(CONDITION_FEARED)) {
+				if (player->isImmuneFear()) {
 					return;
 				}
 

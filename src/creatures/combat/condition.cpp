@@ -1742,7 +1742,7 @@ void ConditionFeared::endCondition(Creature* creature) {
 	 */
 	Player* player = creature->getPlayer();
 	if (player) {
-		player->setImmuneFear(CONDITION_FEARED);
+		player->setImmuneFear();
 	}
 	
 }

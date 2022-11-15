@@ -1789,13 +1789,13 @@ class Player final : public Creature, public Cylinder
 			}
 			return false;
 		}
-		void setImmuneFear(ConditionType_t conditiontype) {
-			fearCondition.first = conditiontype;
+		void setImmuneFear() {
+			fearCondition.first = CONDITION_FEARED;
 			fearCondition.second = OTSYS_TIME() + 10000;
 		}
-		bool isImmuneFear(ConditionType_t conditiontype) {
+		bool isImmuneFear() {
 			uint64_t timenow = OTSYS_TIME();
-			if ((fearCondition.first == conditiontype)
+			if ((fearCondition.first == CONDITION_FEARED)
                     && (timenow <= fearCondition.second)) {
 				return true;
 			}

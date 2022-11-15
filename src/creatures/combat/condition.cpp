@@ -1510,8 +1510,20 @@ bool ConditionFeared::isStuck(Creature* creature, Position pos) {
 }
 
 bool ConditionFeared::getRandomDirection(Creature* creature, Position pos) {
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
-	for (Direction dir : dirList) {
+
+	static std::vector<Direction> directions {
+		DIRECTION_NORTH,
+		DIRECTION_NORTHEAST,
+		DIRECTION_EAST,
+		DIRECTION_SOUTHEAST,
+		DIRECTION_SOUTH,
+		DIRECTION_SOUTHWEST,
+		DIRECTION_WEST,
+		DIRECTION_NORTHWEST
+	};
+
+	std::shuffle(directions.begin(), directions.end(), getRandomGenerator());
+	for (Direction dir : directions) {
 		if (canWalkTo(creature, pos, dir)) {
 			this->fleeIndx = static_cast<uint8_t>(dir);
 			return true;

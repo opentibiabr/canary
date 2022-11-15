@@ -1551,9 +1551,6 @@ bool ConditionFeared::canWalkTo(Creature* creature, Position pos, Direction move
 bool ConditionFeared::getFleeDirection(Creature* creature) {
 	Position creaturePos = creature->getPosition();
 
-	int_fast32_t dx = Position::getDistanceX(creaturePos, fleeingFromPos);
-	int_fast32_t dy = Position::getDistanceY(creaturePos, fleeingFromPos);
-
 	int_fast32_t offx = Position::getOffsetX(creaturePos, fleeingFromPos);
 	int_fast32_t offy = Position::getOffsetY(creaturePos, fleeingFromPos);
 

@@ -1144,7 +1144,7 @@ int_fast32_t AStarNodes::getTileWalkCost(const Creature& creature, const Tile* t
 		 * Make player try to avoid magic fields, when calculating pathing
 		 */
 		const Player* player = creature.getPlayer();
-		if (player && field && !field->isBlocking() && field->getDamage() != 0) {
+		if (player && !field->isBlocking() && field->getDamage() != 0) {
 			cost += MAP_NORMALWALKCOST * 18;
 		}
 	}

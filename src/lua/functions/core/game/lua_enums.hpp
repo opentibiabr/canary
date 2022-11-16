@@ -29,10 +29,11 @@
 class LuaEnums final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			#define registerEnum(L, value) { \
-				std::string enumName = #value; \
-				registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
-			}
+
+			#define registerEnum(L, value) {	\
+				std::string enumName = #value;	\
+				registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value);	\
+				} (void) 0
 			
 			registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
 			registerEnum(L, account::ACCOUNT_TYPE_TUTOR);

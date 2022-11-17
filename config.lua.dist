@@ -1,6 +1,6 @@
 -- Core settings
 -- Note: If you want to use datapack folder canary (custom), put only "data-canary"
--- If you want to use the global datapack folder, pute "data-otservbr-global"
+-- If you want to use the global datapack folder, put "data-otservbr-global"
 -- If "useAnyDatapackFolder" is set to true then you can choose any datapack folder for your server
 useAnyDatapackFolder = false
 dataPackDirectory = "data-otservbr-global"

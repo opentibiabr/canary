@@ -1015,16 +1015,16 @@ void LuaEnums::init(lua_State* L) {
 	registerEnum(L, NPCS_EVENT_PLAYER_CHECK_ITEM)
 	registerEnum(L, NPCS_EVENT_PLAYER_CLOSE_CHANNEL)
 
-	registerEnum(L, LIGHT_STATE_DAY);
-	registerEnum(L, LIGHT_STATE_NIGHT);
-	registerEnum(L, LIGHT_STATE_SUNSET);
-	registerEnum(L, LIGHT_STATE_SUNRISE);
-	registerEnum(L, STORAGEVALUE_EMOTE);
+	registerEnum(L, LIGHT_STATE_DAY)
+	registerEnum(L, LIGHT_STATE_NIGHT)
+	registerEnum(L, LIGHT_STATE_SUNSET)
+	registerEnum(L, LIGHT_STATE_SUNRISE)
+	registerEnum(L, STORAGEVALUE_EMOTE)
 
 	// Webhook default colors
-	registerEnum(L, WEBHOOK_COLOR_ONLINE);
-	registerEnum(L, WEBHOOK_COLOR_OFFLINE);
-	registerEnum(L, WEBHOOK_COLOR_WARNING);
-	registerEnum(L, WEBHOOK_COLOR_RAID);
+	registerEnum(L, WEBHOOK_COLOR_ONLINE)
+	registerEnum(L, WEBHOOK_COLOR_OFFLINE)
+	registerEnum(L, WEBHOOK_COLOR_WARNING)
+	registerEnum(L, WEBHOOK_COLOR_RAID)
 	#undef registerEnum
 }

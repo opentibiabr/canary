@@ -1037,9 +1037,9 @@ class LuaEnums final : LuaScriptInterface {
 			registerEnum(L, NPCS_EVENT_PLAYER_CHECK_ITEM)
 			registerEnum(L, NPCS_EVENT_PLAYER_CLOSE_CHANNEL)
 
-			registerEnum(L, FORGESYSTEM_NORMAL_MONSTER)
-			registerEnum(L, FORGESYSTEM_INFLUENCED_MONSTER)
-			registerEnum(L, FORGESYSTEM_FIENDISH_MONSTER)
+			registerEnum(L, FORGE_NORMAL_MONSTER)
+			registerEnum(L, FORGE_INFLUENCED_MONSTER)
+			registerEnum(L, FORGE_FIENDISH_MONSTER)
 
 			registerEnum(L, LIGHT_STATE_DAY);
 			registerEnum(L, LIGHT_STATE_NIGHT);

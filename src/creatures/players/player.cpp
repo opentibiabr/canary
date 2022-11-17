@@ -6377,17 +6377,19 @@ bool Player::saySpell(
 void Player::fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
 {
 	Item* item = g_game().findItemOfType(this, itemid, true, -1, true, tier);
-	Item* item2 = g_game().findItemOfType(this, itemid, true, -1, true, tier);
+	g_game().internalRemoveItem(item, 1);
 
-	// Need to change this (maybe removeInternalItem?)
-	removeItemOfType(itemid, 2, -1, true);
+	Item* item2 = g_game().findItemOfType(this, itemid, true, -1, true, tier);
+	g_game().internalRemoveItem(item2, 1);
 
 	Container* chest = Item::CreateItem(37561, 1)->getContainer();
 
 	Item* newItem = Item::CreateItem(itemid, 1);
+	newItem->setTier(tier);
 	g_game().internalAddItem(chest, newItem, INDEX_WHEREEVER);
 
 	Item* newItem2 = Item::CreateItem(itemid, 1);
+	newItem2->setTier(tier);
 	g_game().internalAddItem(chest, newItem2, INDEX_WHEREEVER);
 
 	if (success)
@@ -6412,7 +6414,7 @@ void Player::fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduce
 					continue;
 				}
 
-				for (auto [tier, price] : itemClassification->tiers)
+				for (auto &[tier, price] : itemClassification->tiers)
 				{
 					if (tier == item->getTier())
 					{
@@ -6475,7 +6477,6 @@ void Player::transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondIte
 	Item* fromItem = g_game().findItemOfType(this, firstItemId, true, -1, true, tier);
 	Item* toItem = g_game().findItemOfType(this, secondItemId, true, -1, true, tier);
 
-	// Need to change this (maybe removeInternalItem?)
 	removeItemOfType(firstItemId, 1, -1, true);
 	removeItemOfType(secondItemId, 1, -1, true);
 

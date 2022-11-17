@@ -284,6 +284,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addForgeDusts", PlayerFunctions::luaPlayerAddForgeDusts);
 			registerMethod(L, "Player", "removeForgeDusts", PlayerFunctions::luaPlayerRemoveForgeDusts);
 			registerMethod(L, "Player", "getForgeDusts", PlayerFunctions::luaPlayerGetForgeDusts);
+			registerMethod(L, "Player", "setForgeDusts", PlayerFunctions::luaPlayerSetForgeDusts);
 
 			registerMethod(L, "Player", "addForgeDustLevel", PlayerFunctions::luaPlayerAddForgeDustLevel);
 			registerMethod(L, "Player", "removeForgeDustLevel", PlayerFunctions::luaPlayerRemoveForgeDustLevel);
@@ -556,6 +557,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerAddForgeDusts(lua_State* L);
 		static int luaPlayerRemoveForgeDusts(lua_State* L);
 		static int luaPlayerGetForgeDusts(lua_State* L);
+		static int luaPlayerSetForgeDusts(lua_State *L);
 
 		static int luaPlayerAddForgeDustLevel(lua_State *L);
 		static int luaPlayerRemoveForgeDustLevel(lua_State *L);

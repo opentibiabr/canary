@@ -485,9 +485,9 @@ enum DailyRewardStatus : uint8_t {
 };
 
 enum MonsterForgeClassifications_t : uint8_t {
-	FORGESYSTEM_NORMAL_MONSTER = 0,
-	FORGESYSTEM_INFLUENCED_MONSTER = 1,
-	FORGESYSTEM_FIENDISH_MONSTER = 2,
+	FORGE_NORMAL_MONSTER = 0,
+	FORGE_INFLUENCED_MONSTER = 1,
+	FORGE_FIENDISH_MONSTER = 2,
 };
 
 enum OperatingSystem_t : uint8_t {

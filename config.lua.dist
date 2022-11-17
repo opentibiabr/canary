@@ -94,6 +94,10 @@ forgeTransferCost = 100
 forgeBaseSuccessRate = 50
 forgeBonusSuccessRate = 15
 forgeTierLossReduction = 50
+forgeMinSlivers = 3
+forgeMaxSlivers = 7
+forgeInfluencedLimit = 300
+forgeFiendishLimit = 3
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false

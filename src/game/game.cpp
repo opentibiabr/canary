@@ -8723,7 +8723,7 @@ void Game::sendUpdateCreature(Creature *creature) {
 }
 
 uint32_t Game::makeInfluencedMonster() {
-	uint32_t influencedLimit = 300;
+	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 	if (forgeableMonsters.size() == 0 || influencedMonsters.size() >= influencedLimit)
 		return 0;
 
@@ -8763,7 +8763,7 @@ uint32_t Game::makeInfluencedMonster() {
 	}
 
 	if (monster && monster->canBeForgeMonster()) {
-		monster->setMonsterForgeClassification(FORGESYSTEM_INFLUENCED_MONSTER);
+		monster->setMonsterForgeClassification(FORGE_INFLUENCED_MONSTER);
 		monster->configureForgeSystem();
 		influencedMonsters.insert(monster->getID());
 		return monster->getID();
@@ -8773,7 +8773,7 @@ uint32_t Game::makeInfluencedMonster() {
 }
 
 uint32_t Game::makeFiendishMonster() {
-	uint32_t fiendishLimit = 3;
+	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
 	if (forgeableMonsters.size() == 0 || fiendishMonsters.size() >= fiendishLimit)
 		return 0;
 
@@ -8810,7 +8810,7 @@ uint32_t Game::makeFiendishMonster() {
 
 	if (monster && monster->canBeForgeMonster()) {
 		time_t timeToChangeFiendish = 3600;
-		monster->setMonsterForgeClassification(FORGESYSTEM_FIENDISH_MONSTER);
+		monster->setMonsterForgeClassification(FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();
 		monster->setTimeToChangeFiendish(timeToChangeFiendish + time(nullptr));
 		fiendishMonsters.insert(monster->getID());
@@ -8835,9 +8835,9 @@ void Game::updateFiendishMonsterStatus(uint32_t monsterId) {
 
 bool Game::removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monsterForgeClassification, bool create) {
 	create = true;
-	if (monsterForgeClassification == FORGESYSTEM_FIENDISH_MONSTER)
+	if (monsterForgeClassification == FORGE_FIENDISH_MONSTER)
 		removeFiendishMonster(id, create);
-	else if (monsterForgeClassification == FORGESYSTEM_INFLUENCED_MONSTER)
+	else if (monsterForgeClassification == FORGE_INFLUENCED_MONSTER)
 		removeInfluencedMonster(id, create);
 	return true;
 }
@@ -8882,7 +8882,7 @@ void Game::updateForgeableMonsters()
 			forgeableMonsters.push_back(monster.second->getID());
 	}
 
-	uint32_t fiendishLimit = 3; // Fiendish Creatures limit
+	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	if (fiendishMonsters.size() < fiendishLimit)
 		createFiendishMonsters();
 }
@@ -8890,7 +8890,7 @@ void Game::updateForgeableMonsters()
 void Game::createFiendishMonsters()
 {
 	uint32_t created = 0;
-	uint32_t fiendishLimit = 3; // Fiendish Creatures limit
+	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	while (created < fiendishLimit)
 	{
 		if (fiendishMonsters.size() >= fiendishLimit)
@@ -8906,7 +8906,7 @@ void Game::createFiendishMonsters()
 void Game::createInfluencedMonsters()
 {
 	uint32_t created = 0;
-	uint32_t influencedLimit = 300;
+	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 	while (created < influencedLimit)
 	{
 		if (influencedMonsters.size() >= influencedLimit)
@@ -8932,11 +8932,11 @@ bool Game::addInfluencedMonster(Monster *monster)
 {
 	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss())
 	{
-		uint16_t maxInfluencedMonsters = 30;
+		uint16_t maxInfluencedMonsters = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);;
 		if ((influencedMonsters.size() + 1) > maxInfluencedMonsters)
 			return false;
 
-		monster->setMonsterForgeClassification(FORGESYSTEM_INFLUENCED_MONSTER);
+		monster->setMonsterForgeClassification(FORGE_INFLUENCED_MONSTER);
 		monster->configureForgeSystem();
 		influencedMonsters.insert(monster->getID());
 		return true;

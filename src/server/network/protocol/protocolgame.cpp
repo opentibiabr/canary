@@ -4466,8 +4466,7 @@ void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
 	}
 }
 
-void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss)
-{
+void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss) {
 	NetworkMessage msg;
 	// WIP
 	msg.addByte(0x8A);
@@ -4479,14 +4478,15 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 	bool success = roll ? 1 : 0;
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
-	msg.addByte(success); // success?
+	msg.addByte(success); 		// was succeeded?
 
 	msg.add<uint16_t>(item);	// left item
 	msg.addByte(tier);			// left item tier
 	msg.add<uint16_t>(item);	// right item
 	msg.addByte(tier + 1);		// right item tier
 
-	uint8_t bonus = uniform_random(0, 8);
+	uint32_t chance = uniform_random(0, 10000);
+	uint8_t bonus = forgeBonus(chance);
 	SPDLOG_WARN("bonus: {}", bonus);
 	if (!success)
 		bonus = 0;
@@ -4503,7 +4503,7 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 		msg.addByte(tier);
 	}
 	writeToOutputBuffer(msg);
-	sendForgingData();
+	sendOpenForge();
 }
 
 void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
@@ -4515,12 +4515,12 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 
 	msg.add<uint16_t>(firstItem);	// left item
 	msg.addByte(tier);				// left item tier
-	msg.add<uint16_t>(0x01);		// right item
+	msg.add<uint16_t>(secondItem);	// right item
 
 	// player->transferItem(firstItem, tier, secondItem);
 
 	writeToOutputBuffer(msg);
-	sendForgingData();
+	sendOpenForge();
 }
 
 void ProtocolGame::forgeResourceConversion(uint16_t action) {

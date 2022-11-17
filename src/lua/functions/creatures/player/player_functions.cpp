@@ -3066,6 +3066,17 @@ int PlayerFunctions::luaPlayerGetForgeDusts(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerSetForgeDusts(lua_State* L) {
+	// player:setForgeDusts()
+	if (Player* player = getUserdata<Player>(L, 1)) {
+		player->setForgeDusts(getNumber<uint64_t>(L, 2, 0));
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerAddForgeDustLevel(lua_State* L) {
 	// player:addForgeDustLevel(amount)
 	if (Player* player = getUserdata<Player>(L, 1)) {

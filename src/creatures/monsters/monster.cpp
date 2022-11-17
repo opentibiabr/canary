@@ -887,11 +887,11 @@ void Monster::doAttacking(uint32_t interval)
 	bool resetTicks = interval != 0;
 	attackTicks += interval;
 
-	float forgeSystemAtkBonus = 0;
-	if (monsterForgeClassification > FORGESYSTEM_NORMAL_MONSTER)
+	float forgeAttackBonus = 0;
+	if (monsterForgeClassification > FORGE_NORMAL_MONSTER)
 	{
 		uint16_t damageBase = 3;
-		forgeSystemAtkBonus = static_cast<float>(damageBase + 100) / 100.f;
+		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
 	}
 
 	const Position& myPos = getPosition();
@@ -916,18 +916,18 @@ void Monster::doAttacking(uint32_t interval)
 				}
 
 				float multiplier;
-				if (maxCombatValue > 0) { //defense
+				if (maxCombatValue > 0) { // Defense
 					multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
-				} else { //attack
+				} else { // Attack
 					multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
 
-				if (maxCombatValue <= 0 && forgeSystemAtkBonus > 0) {
-					minCombatValue *= forgeSystemAtkBonus;
-					maxCombatValue *= forgeSystemAtkBonus;
+				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
+					minCombatValue *= forgeAttackBonus;
+					maxCombatValue *= forgeAttackBonus;
 				}
 
 				spellBlock.spell->castSpell(this, attackedCreature);
@@ -1914,7 +1914,7 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) const
 
 void Monster::death(Creature*)
 {
-	if (monsterForgeClassification > FORGESYSTEM_NORMAL_MONSTER) {
+	if (monsterForgeClassification > FORGE_NORMAL_MONSTER) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
 	setAttackedCreature(nullptr);
@@ -2054,9 +2054,9 @@ void Monster::dropLoot(Container* corpse, Creature*)
 	if (corpse && lootDrop) {
 		MonsterForgeClassifications_t classification = getMonsterForgeClassification();
 		// Only fiendish drops sliver
-		if (classification == FORGESYSTEM_FIENDISH_MONSTER) {
-			uint16_t minSlivers = 3;
-			uint16_t maxSlivers = 7;
+		if (classification == FORGE_FIENDISH_MONSTER) {
+			uint16_t minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
+			uint16_t maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
 
 			uint16_t sliverCount = uniform_random(minSlivers, maxSlivers);
 
@@ -2166,7 +2166,7 @@ void Monster::configureForgeSystem()
 	}
 
 	// Avoid double forge
-	if (monsterForgeClassification == FORGESYSTEM_FIENDISH_MONSTER)
+	if (monsterForgeClassification == FORGE_FIENDISH_MONSTER)
 	{
 		// Set stack
 		setForgeStack(15);
@@ -2175,7 +2175,7 @@ void Monster::configureForgeSystem()
 		// Update
 		g_game().updateCreatureIcon(this);
 	}
-	else if (monsterForgeClassification == FORGESYSTEM_INFLUENCED_MONSTER)
+	else if (monsterForgeClassification == FORGE_INFLUENCED_MONSTER)
 	{
 		// Set stack
 		uint16_t stack = normal_random(1, 5);
@@ -2187,7 +2187,7 @@ void Monster::configureForgeSystem()
 	}
 
 	// Change health based in stacks
-	float percentToIncrement = static_cast<float>((forgeSystemStack * 6) + 100) / 100.f;
+	float percentToIncrement = static_cast<float>((forgeStack * 6) + 100) / 100.f;
 	int32_t newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
 
 	healthMax = newHealth;
@@ -2197,9 +2197,6 @@ void Monster::configureForgeSystem()
 	const std::string &Eventname = "ForgeSystemMonster";
 	registerCreatureEvent(Eventname);
 
-	// const Position& monsterPos = getPosition();
-	// std::cout << "Name: " << getName() << ", Position(" << static_cast<uint16_t>(monsterPos.x) << ", " << static_cast<uint16_t>(monsterPos.y) << ", " << static_cast<uint16_t>(monsterPos.z) << "), " << std::endl;
-
 	g_game().sendUpdateCreature(this);
 }
 
@@ -2207,8 +2204,8 @@ void Monster::clearFiendishStatus()
 {
 	timeToChangeFiendish = 0;
 	forgeMonster = false;
-	forgeSystemStack = 0;
-	monsterForgeClassification = FORGESYSTEM_NORMAL_MONSTER;
+	forgeStack = 0;
+	monsterForgeClassification = FORGE_NORMAL_MONSTER;
 
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health * multiplier;

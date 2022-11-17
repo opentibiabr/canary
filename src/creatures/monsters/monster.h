@@ -276,7 +276,7 @@ class Monster final : public Creature
 		void configureForgeSystem();
 
 		bool canBeForgeMonster() {
-			return getForgeStack() == 0 && !isSummon() && mType->info.isForgeSystemCreature;
+			return getForgeStack() == 0 && !isSummon() && mType->info.isForgeCreature;
 		}
 
 		void setForgeMonster(bool forge) {
@@ -284,11 +284,11 @@ class Monster final : public Creature
 		}
 
 		uint32_t getForgeStack() const {
-			return forgeSystemStack;
+			return forgeStack;
 		}
 
 		void setForgeStack(uint16_t stack) {
-			forgeSystemStack = stack;
+			forgeStack = stack;
 		}
 
 		MonsterForgeClassifications_t getMonsterForgeClassification() {
@@ -320,8 +320,8 @@ class Monster final : public Creature
 		bool forgeMonster = false;
 
 		// Forge System
-		uint16_t forgeSystemStack = 0;
-		MonsterForgeClassifications_t monsterForgeClassification = FORGESYSTEM_NORMAL_MONSTER;
+		uint16_t forgeStack = 0;
+		MonsterForgeClassifications_t monsterForgeClassification = FORGE_NORMAL_MONSTER;
 
 		std::string strDescription;
 

@@ -816,7 +816,7 @@ class Player final : public Creature, public Cylinder
 		void removeAttacked(const Player* attacked);
 		void clearAttacked();
 		void addUnjustifiedDead(const Player* attacked);
-		void sendCreatureEmblem(Creature *creature) const {
+		void sendCreatureEmblem(const Creature* creature) const {
 			if (client) {
 				client->sendCreatureEmblem(creature);
 			}
@@ -2107,7 +2107,7 @@ class Player final : public Creature, public Cylinder
 		);
 
 		// Forge system
-		void fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
+		void fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondItemId);
 		void sendOpenForge() const
 		{

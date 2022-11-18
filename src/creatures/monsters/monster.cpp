@@ -2189,7 +2189,7 @@ void Monster::configureForgeSystem()
 
 	// Change health based in stacks
 	float percentToIncrement = static_cast<float>((forgeStack * 6) + 100) / 100.f;
-	int32_t newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
+	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
 
 	healthMax = newHealth;
 	health = newHealth;

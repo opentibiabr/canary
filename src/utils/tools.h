@@ -108,7 +108,7 @@ int64_t OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
 
-int32_t forgeBonus(int32_t number);
+uint8_t forgeBonus(int32_t number);
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {

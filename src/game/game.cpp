@@ -17,10 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <fstream>
-#include "utils/pugicast.h"
+#include "pch.hpp"
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"
@@ -3745,7 +3742,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 		if (HouseTile* houseTile = dynamic_cast<HouseTile*>(tradeItem->getTile())) {
 			House* house = houseTile->getHouse();
 			if (house && !house->isInvited(player)) {
-				player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				player->sendCancelMessage(RETURNVALUE_PLAYERISNOTINVITED);
 				return;
 			}
 		}
@@ -5767,20 +5764,6 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			attackerMonster = attacker->getMonster();
 		} else {
 			attackerMonster = nullptr;
-		}
-
-		if (attackerPlayer && targetMonster) {
-			const PreySlot* slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
-			if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
-				damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-				damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
-			}
-		} else if (attackerMonster && targetPlayer) {
-			const PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
-			if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
-				damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-				damage.secondary.value -= static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
-			}
 		}
 
 		TextMessage message;

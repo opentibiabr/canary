@@ -20,9 +20,9 @@
 #ifndef SRC_CREATURES_MONSTERS_MONSTER_H_
 #define SRC_CREATURES_MONSTERS_MONSTER_H_
 
+#include "creatures/monsters/monsters.h"
 #include "declarations.hpp"
 #include "items/tile.h"
-#include "creatures/monsters/monsters.h"
 
 class Creature;
 class Game;

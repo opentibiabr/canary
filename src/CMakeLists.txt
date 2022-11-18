@@ -1,4 +1,8 @@
-project(canary)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  project(canary-debug)
+else()
+  project(canary)
+endif()
 
 # *****************************************************************************
 # Cmake Features
@@ -27,9 +31,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # *****************************************************************************
 # Options
 # *****************************************************************************
+option(TOGGLE_BIN_FOLDER "Use build/bin folder for generate compilation files" ON)
 option(OPTIONS_ENABLE_OPENMP "Enable Open Multi-Processing support." ON)
 option(DEBUG_LOG "Enable Debug Log" OFF)
 option(ASAN_ENABLED "Build this target with AddressSanitizer" OFF)
+option(BUILD_STATIC_LIBRARY "Build using static libraries" OFF)
 
 
 # *****************************************************************************
@@ -94,12 +100,12 @@ endif()
 
 # === DEBUG LOG ===
 # cmake -DDEBUG_LOG=ON ..
-if(CMAKE_BUILD_TYPE MATCHES Debug)
+if(DEBUG_LOG)
   target_compile_definitions(${PROJECT_NAME} PRIVATE -DDEBUG_LOG=ON )
   log_option_enabled("DEBUG LOG")
   else()
   log_option_disabled("DEBUG LOG")
-endif(CMAKE_BUILD_TYPE MATCHES Debug)
+endif(DEBUG_LOG)
 
 
 # Set for suppress deprecated declarations (for GCC/GNU)
@@ -267,7 +273,6 @@ target_sources(${PROJECT_NAME}
     map/house/house.cpp
     map/house/housetile.cpp
     map/map.cpp
-    otpch.cpp
     otserv.cpp
     security/rsa.cpp
     server/network/connection/connection.cpp
@@ -297,7 +302,17 @@ if (MSVC)
     string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
   endif()
 
-  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
+  if(BUILD_STATIC_LIBRARY)
+    log_option_enabled("STATIC_LIBRARY")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+    find_package(unofficial-libmariadb CONFIG REQUIRED)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    target_link_libraries(${PROJECT_NAME}  PRIVATE unofficial::libmariadb unofficial::mariadbclient jsoncpp_static)
+  else()
+    log_option_disabled("STATIC_LIBRARY")
+    target_link_libraries(${PROJECT_NAME}  PRIVATE jsoncpp_lib)
+    target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
+  endif()
 
   target_include_directories(${PROJECT_NAME}
     PRIVATE
@@ -312,7 +327,6 @@ if (MSVC)
       ${Protobuf_INCLUDE_DIRS}
       ${SPDLOG_INCLUDE_DIR}
       ${GMP_INCLUDE_DIR}
-      $<TARGET_PROPERTY:jsoncpp_lib,INTERFACE_INCLUDE_DIRECTORIES>
   )
 
   target_link_libraries(${PROJECT_NAME}
@@ -327,7 +341,6 @@ if (MSVC)
       ${SPDLOG_LIBRARY}
       ${GMP_LIBRARIES}
       fmt::fmt
-      jsoncpp_lib
   )
 
 else()
@@ -365,3 +378,16 @@ set_target_properties(${PROJECT_NAME}
     PROPERTIES
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
+
+## Link compilation files to build/bin folder, else link to the main dir
+if (TOGGLE_BIN_FOLDER)
+	set_target_properties(${PROJECT_NAME}
+		PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+	)
+else()
+	set_target_properties(${PROJECT_NAME}
+	PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/"
+	)
+endif()

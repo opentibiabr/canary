@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@main
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
@@ -48,7 +48,7 @@ jobs:
           sudo update-alternatives --set gcc /usr/bin/gcc-11
 
       - name: CCache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@main
         with:
           max-size: "1G"
           key: ccache-${{ matrix.os }}-${{ matrix.buildtype }}
@@ -57,17 +57,18 @@ jobs:
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/run-vcpkg@v10
+        uses: lukka/run-vcpkg@main
         with:
-          vcpkgGitCommitId: 8b62d95a81afcb9efe74bebeb62f04c1e0e2a003
+          vcpkgGitURL: "https://github.com/opentibiabr/vcpkg.git"
+          vcpkgGitCommitId: 2400585c812a27a7d93461bf84f2907f42367904
 
       - name: Get latest CMake and ninja
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@main
 
       - name: Run CMake
         if: ${{ matrix.language == 'cpp' }}
-        uses: lukka/run-cmake@v10
+        uses: lukka/run-cmake@main
         with:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}

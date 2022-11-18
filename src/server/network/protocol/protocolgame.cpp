@@ -20,6 +20,7 @@
 #include "pch.hpp"
 
 #include "creatures/players/management/ban.h"
+#include "creatures/monsters/monster.h"
 #include "declarations.hpp"
 #include "game/game.h"
 #include "creatures/players/imbuements/imbuements.h"
@@ -6691,24 +6692,23 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			msg.add<uint16_t>(0);
 		}
 	} else {
-		if (creature->getMonster()) {
-			const Monster *monster = creature->getMonster(); // Convertendo pra monster
-			if (monster) {
-				CreatureIcon_t icon = monster->getIcon();
-				msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
-				if (icon != CREATUREICON_NONE) {
+		if (auto monster = creature->getMonster();
+			monster)
+		{
+			CreatureIcon_t icon = monster->getIcon();
+			msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
+			if (icon != CREATUREICON_NONE) {
 
-					// Icones com stack (Fiendishs e Influenceds)
-					if (monster->getForgeStack() > 0) {
-						msg.addByte(icon);
-						msg.addByte(1);
-						msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // stack
-					} else {
-						// icones sem numero do lado
-						msg.addByte(icon);
-						msg.addByte(1);
-						msg.add<uint16_t>(0);
-					}
+				// Icones com stack (Fiendishs e Influenceds)
+				if (monster->getForgeStack() > 0) {
+					msg.addByte(icon);
+					msg.addByte(1);
+					msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // stack
+				} else {
+					// icones sem numero do lado
+					msg.addByte(icon);
+					msg.addByte(1);
+					msg.add<uint16_t>(0);
 				}
 			}
 		} else {

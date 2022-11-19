@@ -20,8 +20,6 @@
 #ifndef SRC_ITEMS_CONTAINERS_CONTAINER_H_
 #define SRC_ITEMS_CONTAINERS_CONTAINER_H_
 
-#include <queue>
-
 #include "items/cylinder.h"
 #include "items/item.h"
 #include "items/tile.h"

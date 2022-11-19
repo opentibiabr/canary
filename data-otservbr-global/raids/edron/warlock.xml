@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="Some monks have gathered at a stone circle west of Edron.
+		They seem to be up to something." />
+	<announce delay="20000" type="event" message="More monks have gathered at a stone circle west of Edron.
+		Something terrible is going to happen!" />
+	<announce delay="120000" type="event" message="Run! Warlocks east of Edron!
+		There seems to be a very unholy gathering!" />
+	<!--Single Spawns-->
+	<areaspawn delay="20000" fromx="33112" fromy="31694" fromz="7" tox="33123" toy="31705" toz="7">
+		<monster name="Monk" amount="6" />
+	</areaspawn>
+	<areaspawn delay="120000" fromx="33112" fromy="31694" fromz="7" tox="33123" toy="31705" toz="7">
+		<monster name="Warlock" amount="3" />
+	</areaspawn>
+</raid>

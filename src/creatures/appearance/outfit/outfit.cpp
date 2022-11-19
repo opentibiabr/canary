@@ -17,10 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/appearance/outfit/outfit.h"
-
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 #include "game/game.h"
@@ -28,9 +27,10 @@
 bool Outfits::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/outfits.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("[Outfits::loadFromXml] - ", "data/XML/outfits.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

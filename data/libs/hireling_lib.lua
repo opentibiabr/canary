@@ -90,9 +90,18 @@ HIRELING_FOODS = { -- only the non-skill ones
 
 local function checkHouseAccess(hireling)
 	--check if owner still have access to the house
-	if hireling.active == 0 then return false end
+	if not hireling or hireling.active == 0 then
+		return false
+	end
 
-	local house = hireling:getPosition():getTile():getHouse()
+	local tile = hireling:getPosition():getTile()
+	if not tile then
+		return false
+	end
+	local house = tile:getHouse()
+	if not house then
+		return false
+	end
 	local player = Player(hireling:getOwnerId())
 	if not player then
 		player = Game.getOfflinePlayer(hireling:getOwnerId())
@@ -103,7 +112,8 @@ local function checkHouseAccess(hireling)
 	-- player is not invited anymore, return to lamp
 	Spdlog.info("Returning Hireling:" .. hireling:getName() .. " to owner Inbox")
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
-	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT) -- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
+	-- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
+	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
 	player:save()
@@ -334,7 +344,10 @@ end
 
 function Hireling:spawn()
 	self.active = 1
-	local npc = Npc(Game.generateNpc('hireling'))
+	-- Creating new hireling with player choose name
+	createHirelingType(self:getName())
+
+	local npc = Npc(Game.generateNpc(self:getName()))
 	npc:setName(self:getName())
 	local creature = Creature(npc)
 	creature:setOutfit(self:getOutfit())

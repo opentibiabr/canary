@@ -11,7 +11,7 @@ function spell.onCastSpell(player, variant)
 		return false
 	end
 
-	if not creature:hasFlag(PlayerFlag_CanSummonAll) then
+	if not player:hasFlag(PlayerFlag_CanSummonAll) then
 		if not monsterType:isSummonable() then
 			player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			position:sendMagicEffect(CONST_ME_POFF)

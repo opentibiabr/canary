@@ -6,13 +6,13 @@ Blessings.Types = {
 
 Blessings.All = {
 	[1] = {id = 1, name = "Twist of Fate", type = Blessings.Types.PvP},
-	[2] = {id = 2, name = "The Wisdom of Solitude", charm = 11262, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
-	[3] = {id = 3, name = "The Spark of the Phoenix", charm = 11258, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
-	[4] = {id = 4, name = "The Fire of the Suns", charm = 11261, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
-	[5] = {id = 5, name = "The Spiritual Shielding", charm = 11260, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
-	[6] = {id = 6, name = "The Embrace of Tibia", charm = 11259, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
-	[7] = {id = 7, name = "Blood of the Mountain", charm = 28036, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false},
-	[8] = {id = 8, name = "Heart of the Mountain", charm = 28037, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false}
+	[2] = {id = 2, name = "The Wisdom of Solitude", charm = 10345, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
+	[3] = {id = 3, name = "The Spark of the Phoenix", charm = 10341, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
+	[4] = {id = 4, name = "The Fire of the Suns", charm = 10344, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
+	[5] = {id = 5, name = "The Spiritual Shielding", charm = 10343, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
+	[6] = {id = 6, name = "The Embrace of Tibia", charm = 10342, type = Blessings.Types.REGULAR, losscount = true, inquisition = true},
+	[7] = {id = 7, name = "Blood of the Mountain", charm = 25360, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false},
+	[8] = {id = 8, name = "Heart of the Mountain", charm = 25361, type = Blessings.Types.ENHANCED, losscount = true, inquisition = false}
 }
 
 

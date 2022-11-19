@@ -556,14 +556,18 @@ void IOPrey::InitializeTaskHuntOptions()
 	}
 
 	// Move it to config.lua
-	uint8_t killStage = 25;											// Kill stage is the multiplier for kills and rewards on task hunting.
 
-	uint8_t limitOfStars = 5;										// This is hardcoded on client but i'm saving it in case that they change it in the future.
+	// Kill stage is the multiplier for kills and rewards on task hunting
+	uint8_t killStage = 25;
+
+	// This is hardcoded on client but i'm saving it in case that they change it in the future
+	uint8_t limitOfStars = 5;
 	uint16_t kills = killStage;
 	NetworkMessage msg;
 	for (uint8_t difficulty = PreyTaskDifficult_First; difficulty <= PreyTaskDifficult_Last; ++difficulty) {	// Difficulties of creatures on bestiary.
 		auto reward = static_cast<uint16_t>(std::round((10 * kills) / killStage));
-		for (uint8_t star = 1; star <= limitOfStars; ++star) { 		// Amount of task stars on task hunting.
+		// Amount of task stars on task hunting
+		for (uint8_t star = 1; star <= limitOfStars; ++star) {
 			auto option = new TaskHuntingOption();
 			option->difficult = static_cast<PreyTaskDifficult_t>(difficulty);
 			option->rarity = star;

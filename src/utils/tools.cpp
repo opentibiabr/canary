@@ -19,6 +19,8 @@
 
 #include "pch.hpp"
 
+#include "core.hpp"
+
 #include "utils/tools.h"
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)

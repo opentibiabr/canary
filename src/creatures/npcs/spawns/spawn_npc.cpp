@@ -38,7 +38,7 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(fileNpcName.c_str());
 	if (!result) {
-		printXMLError("SpawnsNpc::loadFromXml", fileNpcName, result);
+		printXMLError(__FUNCTION__, fileNpcName, result);
 		return false;
 	}
 

@@ -600,6 +600,12 @@ void LuaFunctionsLoader::registerGlobalVariable(lua_State* L, const std::string&
 	lua_setglobal(L, name.c_str());
 }
 
+void LuaFunctionsLoader::registerGlobalString(lua_State* L, const std::string& variable, const std::string &name) {
+	// Example: registerGlobalString(L, "VARIABLE_NAME", "variable string");
+	pushString(L, name);
+	lua_setglobal(L, variable.c_str());
+}
+
 std::string LuaFunctionsLoader::escapeString(const std::string& string) {
 	std::string s = string;
 	replaceString(s, "\\", "\\\\");

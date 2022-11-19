@@ -41,6 +41,34 @@ local storeItemID = {
 -- Players cannot throw items on teleports if set to true
 local blockTeleportTrashing = true
 
+local titles = {
+	{storageID = 14960, title = " Scout"},
+	{storageID = 14961, title = " Sentinel"},
+	{storageID = 14962, title = " Steward"},
+	{storageID = 14963, title = " Warden"},
+	{storageID = 14964, title = " Squire"},
+	{storageID = 14965, title = " Warrior"},
+	{storageID = 14966, title = " Keeper"},
+	{storageID = 14967, title = " Guardian"},
+	{storageID = 14968, title = " Sage"},
+	{storageID = 14969, title = " Tutor"},
+	{storageID = 14970, title = " Senior Tutor"},
+	{storageID = 14971, title = " King"},
+}
+
+local function getTitle(uid)
+	local player = Player(uid)
+	if not player then return false end
+
+	for i = #titles, 1, -1 do
+		if player:getStorageValue(titles[i].storageID) == 1 then
+			return titles[i].title
+		end
+	end
+
+	return false
+end
+
 function Player:onBrowseField(position)
 	return true
 end
@@ -89,13 +117,32 @@ end
 
 function Player:onLook(thing, position, distance)
 	local description = "You see "
-	description = description .. thing:getDescription(distance)
-	if thing:isMonster() then
+	if thing:isItem() then
+		if thing.actionid == 5640 then
+			description = description .. "a honeyflower patch."
+		elseif thing.actionid == 5641 then
+			description = description .. "a banana palm."
+		elseif thing.itemid >= ITEM_HEALTH_CASK_START and thing.itemid <= ITEM_HEALTH_CASK_END
+		or thing.itemid >= ITEM_MANA_CASK_START and thing.itemid <= ITEM_MANA_CASK_END
+		or thing.itemid >= ITEM_SPIRIT_CASK_START and thing.itemid <= ITEM_SPIRIT_CASK_END
+		or thing.itemid >= ITEM_KEG_START and thing.itemid <= ITEM_KEG_END then
+			description = description .. thing:getDescription(distance)
+			local charges = thing:getCharges()
+			if charges then
+				description = string.format("%s\nIt has %d refillings left.", description, charges)
+			end
+		else
+			description = description .. thing:getDescription(distance)
+		end
+	else
 		description = description .. thing:getDescription(distance)
-		local master = thing:getMaster()
-		if master and table.contains(FAMILIARSNAME, thing:getName():lower()) then
-			description = description..' (Master: ' .. master:getName() .. '). \z
+		if thing:isMonster() then
+			local master = thing:getMaster()
+			if master and table.contains({'sorcerer familiar','knight familiar','druid familiar','paladin familiar'},
+																						thing:getName():lower()) then
+				description = description..' (Master: ' .. master:getName() .. '). \z
 				It will disappear in ' .. getTimeinWords(master:getStorageValue(Storage.FamiliarSummon) - os.time())
+			end
 		end
 	end
 
@@ -115,20 +162,19 @@ function Player:onLook(thing, position, distance)
 
 			local itemType = thing:getType()
 
-			if itemType then
-				local transformEquipId = itemType:getTransformEquipId()
-				local transformDeEquipId = itemType:getTransformDeEquipId()
-				if transformEquipId ~= 0 then
-					description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
-				elseif transformDeEquipId ~= 0 then
-					description = string.format("%s\nTransforms to: %d (onDeEquip)", 	description, transformDeEquipId)
-				end
-
-				local decayId = itemType:getDecayId()
-				if decayId ~= -1 then
-					description = string.format("%s\nDecays to: %d", description, decayId)
-				end
+			local transformEquipId = itemType:getTransformEquipId()
+			local transformDeEquipId = itemType:getTransformDeEquipId()
+			if transformEquipId ~= 0 then
+				description = string.format("%s\nTransforms to: %d (onEquip)", description, transformEquipId)
+			elseif transformDeEquipId ~= 0 then
+				description = string.format("%s\nTransforms to: %d (onDeEquip)", description, transformDeEquipId)
 			end
+
+			local decayId = itemType:getDecayId()
+			if decayId ~= -1 then
+				description = string.format("%s\nDecays to: %d", description, decayId)
+			end
+
 		elseif thing:isCreature() then
 			local str = "%s\nHealth: %d / %d"
 			if thing:isPlayer() and thing:getMaxMana() > 0 then
@@ -137,10 +183,9 @@ function Player:onLook(thing, position, distance)
 			description = string.format(str, description, thing:getHealth(), thing:getMaxHealth()) .. "."
 		end
 
-		local position = thing:getPosition()
 		description = string.format(
-			"%s\nPosition: %d, %d, %d",
-			description, position.x, position.y, position.z
+		"%s\nPosition: %d, %d, %d",
+		description, position.x, position.y, position.z
 		)
 
 		if thing:isCreature() then
@@ -171,8 +216,9 @@ function Player:onLookInBattleList(creature, distance)
 
 		local position = creature:getPosition()
 		description = string.format(
-			"%s\nPosition: %d, %d, %d",
-			description, position.x, position.y, position.z
+		"%s\nPosition: %d, %d, %d",
+		description, position.x, position.y, position.z
+
 		)
 
 		if creature:isPlayer() then
@@ -267,6 +313,21 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 			self:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			self:getPosition():sendMagicEffect(CONST_ME_POFF)
 			return false
+		end
+	end
+
+	-- SSA exhaust
+	local exhaust = { }
+	if toPosition.x == CONTAINER_POSITION and toPosition.y == CONST_SLOT_NECKLACE
+	and item:getId() == ITEM_STONE_SKIN_AMULET then
+		local pid = self:getId()
+		if exhaust[pid] then
+			self:sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED)
+			return false
+		else
+			exhaust[pid] = true
+			addEvent(function() exhaust[pid] = false end, 2000, pid)
+			return true
 		end
 	end
 
@@ -389,6 +450,43 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 end
 
 function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
+
+	-- We won't run anything from here on down if we're opening the global pack
+	if not DATA_DIRECTORY == "data-otservbr-global" then
+		return true
+	end
+
+	-- Cults of Tibia begin
+	local frompos = Position(33023, 31904, 14) -- Checagem
+	local topos = Position(33052, 31932, 15) -- Checagem
+	local removeItem = false
+	if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
+		local tileBoss = Tile(toPosition)
+		if tileBoss and tileBoss:getTopCreature() and tileBoss:getTopCreature():isMonster() then
+			if tileBoss:getTopCreature():getName():lower() == 'the remorseless corruptor' then
+				tileBoss:getTopCreature():addHealth(-17000)
+				tileBoss:getTopCreature():remove()
+				local monster = Game.createMonster('The Corruptor of Souls', toPosition)
+				if not monster then
+					return false
+				end
+				removeItem = true
+				monster:registerEvent('CheckTile')
+				if Game.getStorageValue('healthSoul') > 0 then
+					monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
+				end
+				Game.setStorageValue('CheckTile', os.time()+30)
+			elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
+				Game.setStorageValue('CheckTile', os.time()+30)
+				removeItem = true
+			end
+		end
+		if removeItem then
+			item:remove(1)
+		end
+	end
+	-- Cults of Tibia end
+	return true
 end
 
 function Player:onMoveCreature(creature, fromPosition, toPosition)
@@ -419,7 +517,8 @@ function Player:onReportRuleViolation(targetName, reportType, reportReason, comm
 
 	local file = io.open(string.format("data/reports/players/%s-%s-%d.txt", name, targetName, reportType), "a")
 	if not file then
-		self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
+			"There was an error when processing your report, please contact a gamemaster.")
 		return
 	end
 
@@ -449,7 +548,8 @@ function Player:onReportBug(message, position, category)
 	local file = io.open("data/reports/bugs/" .. name .. " report.txt", "a")
 
 	if not file then
-		self:sendTextMessage(MESSAGE_STATUS, "There was an error when processing your report, please contact a gamemaster.")
+		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
+			"There was an error when processing your report, please contact a gamemaster.")
 		return true
 	end
 
@@ -464,7 +564,8 @@ function Player:onReportBug(message, position, category)
 	io.write("Comment: " .. message .. "\n")
 	io.close(file)
 
-	self:sendTextMessage(MESSAGE_STATUS, "Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
+	self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
+		"Your report has been sent to " .. configManager.getString(configKeys.SERVER_NAME) .. ".")
 	return true
 end
 
@@ -636,6 +737,10 @@ function Player:onLoseExperience(exp)
 end
 
 function Player:onGainSkillTries(skill, tries)
+	-- Dawnport skills limit
+	if DATA_DIRECTORY == "data-otservbr-global" and isSkillGrowthLimited(self, skill) then
+		return 0
+	end
 	if APPLY_SKILL_MULTIPLIER == false then
 		return tries
 	end

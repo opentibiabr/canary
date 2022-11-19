@@ -20,8 +20,6 @@
 #ifndef SRC_GAME_MOVEMENT_POSITION_H_
 #define SRC_GAME_MOVEMENT_POSITION_H_
 
-#include <string>
-
 enum Direction : uint8_t {
 	DIRECTION_NORTH = 0,
 	DIRECTION_EAST = 1,
@@ -131,9 +129,9 @@ struct Position
 		std::string str;
 		return str.append("( ")
                   .append(std::to_string(getX()))
-                  .append(" / ")
+                  .append(", ")
                   .append(std::to_string(getY()))
-                  .append(" / ")
+                  .append(", ")
                   .append(std::to_string(getZ()))
                   .append(" )");
 	}

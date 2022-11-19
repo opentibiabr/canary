@@ -17,12 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/grouping/party.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
-
 
 Party::Party(Player* initLeader) : leader(initLeader)
 {
@@ -595,7 +594,7 @@ void Party::addPlayerLoot(const Player* player, const Item* item)
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
-		std::map<uint16_t, uint32_t> itemMap {{item->getID(), count}};
+		std::map<uint16_t, uint64_t> itemMap {{item->getID(), count}};
 		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
 	}
 	updateTrackerAnalyzer();
@@ -618,7 +617,7 @@ void Party::addPlayerSupply(const Player* player, const Item* item)
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		std::map<uint16_t, uint32_t> itemMap {{item->getID(), 1}};
+		std::map<uint16_t, uint64_t> itemMap {{item->getID(), 1}};
 		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
 	}
 	updateTrackerAnalyzer();

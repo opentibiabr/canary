@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Hirintror" x="32101" y="31167" z="9"/>
+</raid>

@@ -545,7 +545,7 @@ function Player:onReportBug(message, position, category)
 	end
 
 	local name = self:getName()
-	local file = io.open("data/reports/bugs/" .. name .. " report.txt", "a")
+	local file = io.open(string.format("%s/reports/bugs/%s/report.txt", CORE_DIRECTORY, name), "a")
 
 	if not file then
 		self:sendTextMessage(MESSAGE_EVENT_ADVANCE,
@@ -586,7 +586,7 @@ function Player:onTradeRequest(target, item)
 		return false
 	end
 
-	if isInArray(storeItemID,item.itemid) then
+	if table.contains(storeItemID,item.itemid) then
 		return false
 	end
 	return true
@@ -787,7 +787,7 @@ function Player:onCombat(target, item, primaryDamage, primaryType, secondaryDama
 	end
 
 	if ItemType(item:getId()):getWeaponType() == WEAPON_AMMO then
-		if isInArray({ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW}, item:getId()) then
+		if table.contains({ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW}, item:getId()) then
 			return primaryDamage, primaryType, secondaryDamage, secondaryType
 		else
 			item = self:getSlotItem(CONST_SLOT_LEFT)

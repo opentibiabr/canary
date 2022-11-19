@@ -6,7 +6,7 @@ OFFER_TYPE_ALLBLESSINGS
 ]]
 
 -- Parser
-dofile('data/modules/scripts/gamestore/init.lua')
+dofile(CORE_DIRECTORY.. '/modules/scripts/gamestore/init.lua')
 -- Config
 
 HomeBanners = {

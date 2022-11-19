@@ -1,0 +1,489 @@
+<?xml version="1.0"?>
+<monsters>
+	<monster centerx="33805" centery="31041" centerz="5" radius="3">
+		<monster name="Schiach" x="2" y="2" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31041" centerz="5" radius="3">
+		<monster name="Schiach" x="-1" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31041" centerz="5" radius="3">
+		<monster name="Schiach" x="2" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31041" centerz="5" radius="3">
+		<monster name="Schiach" x="-1" y="3" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31048" centerz="5" radius="3">
+		<monster name="Schiach" x="0" y="-2" z="5" spawntime="60" />
+		<monster name="Schiach" x="1" y="0" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31048" centerz="5" radius="3">
+		<monster name="Schiach" x="2" y="-1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31055" centerz="5" radius="3">
+		<monster name="Schiach" x="3" y="-2" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31055" centerz="5" radius="3">
+		<monster name="Schiach" x="-3" y="-2" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33798" centery="31062" centerz="5" radius="3">
+		<monster name="Schiach" x="1" y="-3" z="5" spawntime="60" />
+		<monster name="Schiach" x="1" y="2" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31062" centerz="5" radius="3">
+		<monster name="Schiach" x="-1" y="-3" z="5" spawntime="60" />
+		<monster name="Schiach" x="-3" y="2" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33798" centery="31069" centerz="5" radius="3">
+		<monster name="Schiach" x="0" y="1" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31076" centerz="5" radius="3">
+		<monster name="Schiach" x="-3" y="3" z="5" spawntime="60" />
+	</monster>
+	<monster centerx="33868" centery="31013" centerz="6" radius="3">
+		<monster name="Percht" x="1" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33875" centery="31013" centerz="6" radius="3">
+		<monster name="Percht" x="0" y="-3" z="6" spawntime="60" />
+		<monster name="Schiach" x="2" y="3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33868" centery="31020" centerz="6" radius="3">
+		<monster name="Percht" x="2" y="0" z="6" spawntime="60" />
+		<monster name="Schiach" x="3" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31027" centerz="6" radius="3">
+		<monster name="Percht" x="-3" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31027" centerz="6" radius="3">
+		<monster name="Percht" x="-3" y="2" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31027" centerz="6" radius="3">
+		<monster name="Percht" x="2" y="3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31034" centerz="6" radius="3">
+		<monster name="Schiach" x="3" y="2" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31034" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="-3" z="6" spawntime="60" />
+		<monster name="Percht" x="3" y="-3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31034" centerz="6" radius="3">
+		<monster name="Percht" x="-3" y="1" z="6" spawntime="60" />
+		<monster name="Schiach" x="-1" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31034" centerz="6" radius="3">
+		<monster name="Percht" x="0" y="-1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33833" centery="31034" centerz="6" radius="3">
+		<monster name="Percht" x="1" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33791" centery="31041" centerz="6" radius="3">
+		<monster name="Percht" x="0" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31041" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31041" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="-1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31041" centerz="6" radius="3">
+		<monster name="Schiach" x="-1" y="-2" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31048" centerz="6" radius="3">
+		<monster name="Percht" x="0" y="-2" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33791" centery="31055" centerz="6" radius="3">
+		<monster name="Schiach" x="2" y="-1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31055" centerz="6" radius="3">
+		<monster name="Schiach" x="2" y="-3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31055" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33791" centery="31062" centerz="6" radius="3">
+		<monster name="Percht" x="3" y="1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31062" centerz="6" radius="3">
+		<monster name="Schiach" x="-1" y="3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31062" centerz="6" radius="3">
+		<monster name="Percht" x="-2" y="-3" z="6" spawntime="60" />
+		<monster name="Schiach" x="0" y="-3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31069" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="0" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33784" centery="31076" centerz="6" radius="3">
+		<monster name="Schiach" x="0" y="-3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31076" centerz="6" radius="3">
+		<monster name="Percht" x="1" y="3" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33791" centery="31083" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="-2" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31090" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="-1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31090" centerz="6" radius="3">
+		<monster name="Schiach" x="-3" y="-1" z="6" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="30999" centerz="7" radius="3">
+		<monster name="Percht" x="3" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31006" centerz="7" radius="3">
+		<monster name="Schiach" x="-3" y="2" z="7" spawntime="60" />
+		<monster name="Percht" x="-1" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31006" centerz="7" radius="3">
+		<monster name="Percht" x="3" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33854" centery="31006" centerz="7" radius="3">
+		<monster name="Percht" x="-1" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33875" centery="31006" centerz="7" radius="3">
+		<monster name="Schiach" x="3" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31013" centerz="7" radius="3">
+		<monster name="Percht" x="-1" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31013" centerz="7" radius="3">
+		<monster name="Schiach" x="2" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33833" centery="31013" centerz="7" radius="3">
+		<monster name="Schiach" x="-3" y="2" z="7" spawntime="60" />
+		<monster name="Bonny Bunny" x="2" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33896" centery="31013" centerz="7" radius="3">
+		<monster name="Percht" x="0" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33862" centery="31016" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33777" centery="31020" centerz="7" radius="3">
+		<monster name="Percht" x="3" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31020" centerz="7" radius="3">
+		<monster name="Bonny Bunny" x="-1" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33829" centery="31020" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33889" centery="31020" centerz="7" radius="3">
+		<monster name="Percht" x="-2" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33896" centery="31020" centerz="7" radius="3">
+		<monster name="Schiach" x="-2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33792" centery="31026" centerz="7" radius="1">
+		<monster name="Baleful Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31027" centerz="7" radius="3">
+		<monster name="Percht" x="-2" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33882" centery="31027" centerz="7" radius="3">
+		<monster name="Schiach" x="3" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33787" centery="31029" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33784" centery="31034" centerz="7" radius="3">
+		<monster name="Baleful Bunny" x="-3" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31034" centerz="7" radius="3">
+		<monster name="Percht" x="-2" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33882" centery="31034" centerz="7" radius="3">
+		<monster name="Schiach" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33784" centery="31041" centerz="7" radius="3">
+		<monster name="Schiach" x="-3" y="-1" z="7" spawntime="60" />
+		<monster name="Baleful Bunny" x="-2" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31041" centerz="7" radius="3">
+		<monster name="Schiach" x="2" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31041" centerz="7" radius="3">
+		<monster name="Percht" x="2" y="-3" z="7" spawntime="60" />
+		<monster name="Percht" x="-2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33868" centery="31041" centerz="7" radius="3">
+		<monster name="Percht" x="-2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33875" centery="31041" centerz="7" radius="3">
+		<monster name="Percht" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33882" centery="31041" centerz="7" radius="3">
+		<monster name="Percht" x="2" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31048" centerz="7" radius="3">
+		<monster name="Schiach" x="-3" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31048" centerz="7" radius="3">
+		<monster name="Percht" x="-2" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33781" centery="31049" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33851" centery="31049" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33880" centery="31049" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="-1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33777" centery="31055" centerz="7" radius="3">
+		<monster name="Percht" x="0" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31055" centerz="7" radius="3">
+		<monster name="Schiach" x="3" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31055" centerz="7" radius="3">
+		<monster name="Schiach" x="-3" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33833" centery="31055" centerz="7" radius="3">
+		<monster name="Bonny Bunny" x="-2" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33882" centery="31055" centerz="7" radius="3">
+		<monster name="Percht" x="2" y="0" z="7" spawntime="60" />
+		<monster name="Percht" x="-2" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33786" centery="31057" centerz="7" radius="1">
+		<monster name="Baleful Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33784" centery="31062" centerz="7" radius="3">
+		<monster name="Percht" x="-3" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31062" centerz="7" radius="3">
+		<monster name="Schiach" x="3" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33889" centery="31062" centerz="7" radius="3">
+		<monster name="Percht" x="2" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31063" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31069" centerz="7" radius="3">
+		<monster name="Baleful Bunny" x="3" y="-1" z="7" spawntime="60" />
+		<monster name="Baleful Bunny" x="0" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33868" centery="31069" centerz="7" radius="3">
+		<monster name="Percht" x="3" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33865" centery="31073" centerz="7" radius="5">
+		<monster name="Schiach" x="0" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33821" centery="31074" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33834" centery="31075" centerz="7" radius="1">
+		<monster name="Baleful Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33770" centery="31076" centerz="7" radius="3">
+		<monster name="Percht" x="-3" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33777" centery="31076" centerz="7" radius="3">
+		<monster name="Percht" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33873" centery="31076" centerz="7" radius="5">
+		<monster name="Schiach" x="1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33774" centery="31080" centerz="7" radius="1">
+		<monster name="Baleful Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33792" centery="31083" centerz="7" radius="5">
+		<monster name="Schiach" x="0" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31083" centerz="7" radius="3">
+		<monster name="Baleful Bunny" x="2" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31083" centerz="7" radius="3">
+		<monster name="Schiach" x="-2" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33803" centery="31084" centerz="7" radius="5">
+		<monster name="Schiach" x="-2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31086" centerz="7" radius="1">
+		<monster name="Baleful Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33777" centery="31088" centerz="7" radius="5">
+		<monster name="Bonny Bunny" x="-4" y="-5" z="7" spawntime="60" />
+		<monster name="Schiach" x="-2" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33770" centery="31090" centerz="7" radius="3">
+		<monster name="Baleful Bunny" x="1" y="-3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31090" centerz="7" radius="3">
+		<monster name="Schiach" x="2" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33818" centery="31091" centerz="7" radius="5">
+		<monster name="Schiach" x="-1" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33870" centery="31092" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33827" centery="31093" centerz="7" radius="5">
+		<monster name="Schiach" x="-1" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33786" centery="31094" centerz="7" radius="5">
+		<monster name="Schiach" x="-2" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33798" centery="31097" centerz="7" radius="3">
+		<monster name="Percht" x="-3" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31097" centerz="7" radius="3">
+		<monster name="Schiach" x="-2" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33850" centery="31099" centerz="7" radius="5">
+		<monster name="Schiach" x="-3" y="-1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33858" centery="31101" centerz="7" radius="5">
+		<monster name="Schiach" x="-2" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33866" centery="31101" centerz="7" radius="5">
+		<monster name="Schiach" x="-1" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33872" centery="31102" centerz="7" radius="5">
+		<monster name="Schiach" x="2" y="5" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31104" centerz="7" radius="3">
+		<monster name="Percht" x="0" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33854" centery="31104" centerz="7" radius="3">
+		<monster name="Schiach" x="-1" y="3" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33794" centery="31105" centerz="7" radius="1">
+		<monster name="Baleful Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33797" centery="31105" centerz="7" radius="1">
+		<monster name="Bonny Bunny" x="0" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33784" centery="31109" centerz="7" radius="5">
+		<monster name="Schiach" x="-2" y="0" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33791" centery="31111" centerz="7" radius="5">
+		<monster name="Schiach" x="0" y="1" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33798" centery="31111" centerz="7" radius="3">
+		<monster name="Schiach" x="1" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31118" centerz="7" radius="3">
+		<monster name="Schiach" x="3" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33805" centery="31125" centerz="7" radius="3">
+		<monster name="Percht" x="3" y="-2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31125" centerz="7" radius="3">
+		<monster name="Percht" x="1" y="2" z="7" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31027" centerz="8" radius="3">
+		<monster name="Percht" x="3" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31034" centerz="8" radius="3">
+		<monster name="Percht" x="0" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33798" centery="31048" centerz="8" radius="3">
+		<monster name="Schiach" x="3" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31055" centerz="8" radius="3">
+		<monster name="Schiach" x="1" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31055" centerz="8" radius="3">
+		<monster name="Schiach" x="-2" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33833" centery="31055" centerz="8" radius="3">
+		<monster name="Schiach" x="0" y="1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33798" centery="31066" centerz="8" radius="5">
+		<monster name="Percht" x="0" y="0" z="8" spawntime="60" />
+		<monster name="Schiach" x="-2" y="4" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31069" centerz="8" radius="3">
+		<monster name="Schiach" x="-2" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31069" centerz="8" radius="3">
+		<monster name="Percht" x="-2" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33812" centery="31076" centerz="8" radius="3">
+		<monster name="Percht" x="-1" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33819" centery="31076" centerz="8" radius="3">
+		<monster name="Percht" x="1" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31076" centerz="8" radius="3">
+		<monster name="Percht" x="2" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31083" centerz="8" radius="3">
+		<monster name="Percht" x="-3" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31090" centerz="8" radius="3">
+		<monster name="Percht" x="3" y="-3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31090" centerz="8" radius="3">
+		<monster name="Percht" x="2" y="2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33854" centery="31090" centerz="8" radius="3">
+		<monster name="Schiach" x="1" y="0" z="8" spawntime="60" />
+		<monster name="Percht" x="1" y="3" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33833" centery="31097" centerz="8" radius="3">
+		<monster name="Schiach" x="2" y="-1" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33840" centery="31097" centerz="8" radius="3">
+		<monster name="Schiach" x="2" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31097" centerz="8" radius="3">
+		<monster name="Percht" x="-3" y="0" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33854" centery="31097" centerz="8" radius="3">
+		<monster name="Percht" x="3" y="-2" z="8" spawntime="60" />
+	</monster>
+	<monster centerx="33824" centery="31039" centerz="9" radius="5">
+		<monster name="Schiach" x="-1" y="-3" z="9" spawntime="60" />
+		<monster name="Schiach" x="-3" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33826" centery="31039" centerz="9" radius="5">
+		<monster name="Schiach" x="4" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33844" centery="31039" centerz="9" radius="5">
+		<monster name="Schiach" x="3" y="-3" z="9" spawntime="60" />
+		<monster name="Schiach" x="1" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33816" centery="31051" centerz="9" radius="5">
+		<monster name="Schiach" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Schiach" x="-2" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33832" centery="31053" centerz="9" radius="5">
+		<monster name="Schiach" x="0" y="-1" z="9" spawntime="60" />
+		<monster name="Schiach" x="-2" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31055" centerz="9" radius="3">
+		<monster name="Schiach" x="1" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31055" centerz="9" radius="3">
+		<monster name="Schiach" x="1" y="-2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31062" centerz="9" radius="3">
+		<monster name="Percht" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33813" centery="31065" centerz="9" radius="5">
+		<monster name="Schiach" x="2" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33847" centery="31069" centerz="9" radius="3">
+		<monster name="Schiach" x="2" y="-3" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33861" centery="31069" centerz="9" radius="3">
+		<monster name="Schiach" x="1" y="1" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33827" centery="31072" centerz="9" radius="5">
+		<monster name="Schiach" x="2" y="-1" z="9" spawntime="60" />
+		<monster name="Schiach" x="0" y="0" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33841" centery="31077" centerz="9" radius="5">
+		<monster name="Schiach" x="1" y="1" z="9" spawntime="60" />
+		<monster name="Schiach" x="-1" y="2" z="9" spawntime="60" />
+	</monster>
+	<monster centerx="33815" centery="31090" centerz="9" radius="5">
+		<monster name="Schiach" x="1" y="0" z="9" spawntime="60" />
+		<monster name="Schiach" x="-1" y="1" z="9" spawntime="60" />
+	</monster>
+</monsters>

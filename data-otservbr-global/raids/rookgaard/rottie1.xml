@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Inumerous Rats invaded Rookgaard!" />
+	<areaspawn delay="1000" fromx="32066" fromy="32187" fromz="7" tox="32110" toy="32219" toz="7">
+		<monster name="Rat" amount="20" />
+		<monster name="Cave Rat" amount="10" />
+	</areaspawn>
+</raid>

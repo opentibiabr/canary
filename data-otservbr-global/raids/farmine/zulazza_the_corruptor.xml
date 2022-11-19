@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="Event" message="A massive orc force is gathering at the gates of Zzaion." />
+	<announce delay="30000" type="Event" message="Orc reinforcements have arrived at the gates of Zzaion!
+		The gates are under heavy attack!." />
+	<announce delay="60000" type="Event" message="More orc reinforcements have arrived at the gates of Zzaion!
+		The gates are under heavy attack!." />
+	<announce delay="90000" type="Event" message="The gates to Zzaion have been breached! Orcs are invading the city!." />
+	<announce delay="120000" type="Event" message="More orcs have arrived in Zzaion! The city is under attack!
+		Strong lizard leaders have come to defend the city." />
+	<!--Single Spawns-->
+	<singlespawn delay="120000" name="Zulazza the Corruptor" x="33348" y="31609" z="1"/>
+	<singlespawn delay="120000" name="Chizzoron the Distorter" x="33344" y="31605" z="4"/>
+</raid>

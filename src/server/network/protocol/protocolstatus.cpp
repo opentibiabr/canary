@@ -21,6 +21,8 @@
 
 #include "pch.hpp"
 
+#include "core.hpp"
+
 #include "server/network/protocol/protocolstatus.h"
 #include "game/game.h"
 #include "game/scheduling/tasks.h"

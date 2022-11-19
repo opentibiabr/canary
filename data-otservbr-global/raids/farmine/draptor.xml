@@ -1,0 +1,23 @@
+<raid>
+	<!-- Announcements -->
+	<announce delay="1000" type="event" message="The dragons of the Dragonblaze Mountains have 
+		descended to Zao to protect the lizardkin!" />
+	<!-- Single Spawns -->
+	<singlespawn delay="120000" name="Draptor" x="33206" y="31247" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33256" y="31235" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33214" y="31187" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33236" y="31168" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33307" y="31185" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33338" y="31197" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33256" y="31158" z="7"/>
+	<singlespawn delay="120000" name="Draptor" x="33234" y="31185" z="7"/>
+	<areaspawn delay="20000" fromx="33213" fromy="31160" fromz="7" tox="33352" toy="31237" toz="7">
+		<monster name="Dragon" amount="70"/>
+	</areaspawn>
+	<areaspawn delay="10000" fromx="33195" fromy="31185" fromz="7" tox="33286" toy="31247" toz="7">
+		<monster name="Dragon" amount="40"/>
+	</areaspawn>
+	<areaspawn delay="10000" fromx="33284" fromy="31169" fromz="7" tox="33350" toy="31196" toz="7">
+		<monster name="Dragon" amount="40"/>
+	</areaspawn>
+</raid>

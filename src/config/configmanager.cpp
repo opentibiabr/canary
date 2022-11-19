@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include "lua/scripts/luajit_sync.hpp"
+#include "pch.hpp"
 
 #include "config/configmanager.h"
 #include "declarations.hpp"
 #include "game/game.h"
+#include "lua/scripts/luajit_sync.hpp"
 
 #if LUA_VERSION_NUM >= 502
 #undef lua_strlen
@@ -168,7 +167,6 @@ bool ConfigManager::load()
 	boolean[HOUSE_OWNED_BY_ACCOUNT] = getGlobalBoolean(L, "houseOwnedByAccount", false);
 	boolean[CLEAN_PROTECTION_ZONES] = getGlobalBoolean(L, "cleanProtectionZones", false);
 	boolean[GLOBAL_SERVER_SAVE_SHUTDOWN] = getGlobalBoolean(L, "globalServerSaveShutdown", true);
-	boolean[STOREMODULES] = getGlobalBoolean(L, "gamestoreByModules", true);
 	boolean[ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS] = getGlobalBoolean(L, "onlyInvitedCanMoveHouseItems", true);
 	boolean[PUSH_WHEN_ATTACKING] = getGlobalBoolean(L, "pushWhenAttacking", false);
 
@@ -191,6 +189,7 @@ bool ConfigManager::load()
 	boolean[TOGGLE_IMBUEMENT_SHRINE_STORAGE] = getGlobalBoolean(L, "toggleImbuementShrineStorage", true);
 
 	boolean[TOGGLE_DOWNLOAD_MAP] = getGlobalBoolean(L, "toggleDownloadMap", false);
+	boolean[USE_ANY_DATAPACK_FOLDER] = getGlobalBoolean(L, "useAnyDatapackFolder", false);
 
 	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
 	string[SERVER_NAME] = getGlobalString(L, "serverName", "");
@@ -204,6 +203,8 @@ bool ConfigManager::load()
 	string[DISCORD_WEBHOOK_URL] = getGlobalString(L, "discordWebhookURL", "");
 	string[SAVE_INTERVAL_TYPE] = getGlobalString(L, "saveIntervalType", "");
 	string[GLOBAL_SERVER_SAVE_TIME] = getGlobalString(L, "globalServerSaveTime", "06:00");
+	string[DATA_DIRECTORY] = getGlobalString(L, "dataPackDirectory", "data-otserbr-global");
+	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "data");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
@@ -259,6 +260,7 @@ bool ConfigManager::load()
 
 	boolean[INVENTORY_GLOW] = getGlobalBoolean(L, "inventoryGlowOnFiveBless", false);
 	integer[ADVENTURERSBLESSING_LEVEL] = getGlobalNumber(L, "adventurersBlessingLevel", 21);
+	integer[MAX_ITEM_FORGE_TIER] = getGlobalNumber(L, "forgeMaxItemTier", 10);
 
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
@@ -282,19 +284,17 @@ bool ConfigManager::load()
 	boolean[PREY_ENABLED] = getGlobalBoolean(L, "preySystemEnabled", true);
 	boolean[PREY_FREE_THIRD_SLOT] = getGlobalBoolean(L, "preyFreeThirdSlot", false);
 	integer[PREY_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "preyRerollPricePerLevel", 200);
-	integer[PREY_SELECTION_LIST_PRICE] = getGlobalNumber(L, "preySelectListPrice", 1);
-	integer[PREY_BONUS_PERCENT_MIN] = getGlobalNumber(L, "preyBonusPercentMin", 5);
-	integer[PREY_BONUS_PERCENT_MAX] = getGlobalNumber(L, "preyBonusPercentMax", 40);
+	integer[PREY_SELECTION_LIST_PRICE] = getGlobalNumber(L, "preySelectListPrice", 5);
 	integer[PREY_BONUS_TIME] = getGlobalNumber(L, "preyBonusTime", 7200);
-	integer[PREY_BONUS_REROLL_PRICE] = getGlobalNumber(L, "preyBonusRerollPrice", 2);
+	integer[PREY_BONUS_REROLL_PRICE] = getGlobalNumber(L, "preyBonusRerollPrice", 1);
 	integer[PREY_FREE_REROLL_TIME] = getGlobalNumber(L, "preyFreeRerollTime", 72000);
 
 	boolean[TASK_HUNTING_ENABLED] = getGlobalBoolean(L, "taskHuntingSystemEnabled", true);
 	boolean[TASK_HUNTING_FREE_THIRD_SLOT] = getGlobalBoolean(L, "taskHuntingFreeThirdSlot", false);
 	integer[TASK_HUNTING_LIMIT_EXHAUST] = getGlobalNumber(L, "taskHuntingLimitedTasksExhaust", 72000);
 	integer[TASK_HUNTING_REROLL_PRICE_LEVEL] = getGlobalNumber(L, "taskHuntingRerollPricePerLevel", 200);
-	integer[TASK_HUNTING_SELECTION_LIST_PRICE] = getGlobalNumber(L, "taskHuntingSelectListPrice", 1);
-	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 2);
+	integer[TASK_HUNTING_SELECTION_LIST_PRICE] = getGlobalNumber(L, "taskHuntingSelectListPrice", 5);
+	integer[TASK_HUNTING_BONUS_REROLL_PRICE] = getGlobalNumber(L, "taskHuntingBonusRerollPrice", 1);
 	integer[TASK_HUNTING_FREE_REROLL_TIME] = getGlobalNumber(L, "taskHuntingFreeRerollTime", 72000);
 
 	loaded = true;

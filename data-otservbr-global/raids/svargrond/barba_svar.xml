@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="Scouts report a barbarian army gathering near Svargrond." />
+	<announce delay="10000" type="event" message="Some invaders might try to access Svargrond
+		via the ice to the south west." />
+	<announce delay="30000" type="event" message="Raiders are attacking Svargrond!" />
+	<announce delay="120000" type="event" message="The barbarians attacks on Svargrond are
+		becoming more and more fierce!" />
+	<announce delay="180000" type="event" message="The barbarians are preparing for a final assault on Svargrond.
+		Hide or fight!" />
+	<!--Single Spawns-->
+	<areaspawn delay="30000" fromx="32175" fromy="31178" fromz="7" tox="32207" toy="31208" toz="7">
+		<monster name="Barbarian Bloodwalker" amount="5" />
+		<monster name="Barbarian Brutetamer" amount="5" />
+		<monster name="Barbarian Headsplitter" amount="5" />
+		<monster name="Barbarian Skullhunter" amount="5" />
+	</areaspawn>
+	<areaspawn delay="120000" fromx="32175" fromy="31178" fromz="7" tox="32207" toy="31208" toz="7">
+		<monster name="Barbarian Bloodwalker" amount="5" />
+		<monster name="Barbarian Brutetamer" amount="5" />
+		<monster name="Barbarian Headsplitter" amount="5" />
+		<monster name="Barbarian Skullhunter" amount="5" />
+	</areaspawn>
+	<areaspawn delay="180000" fromx="32175" fromy="31178" fromz="7" tox="32207" toy="31208" toz="7">
+		<monster name="Barbarian Bloodwalker" amount="5" />
+		<monster name="Barbarian Brutetamer" amount="5" />
+		<monster name="Barbarian Headsplitter" amount="5" />
+		<monster name="Barbarian Skullhunter" amount="5" />
+	</areaspawn>
+</raid>

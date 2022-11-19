@@ -20,8 +20,6 @@
 #ifndef SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
 #define SRC_CREATURES_APPEARANCE_OUTFIT_OUTFIT_H_
 
-#include <utility>
-
 #include "declarations.hpp"
 
 struct Outfit {

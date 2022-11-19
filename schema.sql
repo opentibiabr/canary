@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '3'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '22'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
     `lastday` int(10) UNSIGNED NOT NULL DEFAULT '0',
     `type` tinyint(1) UNSIGNED NOT NULL DEFAULT '1',
     `coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
+    `tournament_coins` int(12) UNSIGNED NOT NULL DEFAULT '0',
     `creation` int(11) UNSIGNED NOT NULL DEFAULT '0',
     `recruiter` INT(6) DEFAULT 0,
     CONSTRAINT `accounts_pk` PRIMARY KEY (`id`),
@@ -139,6 +140,8 @@ CREATE TABLE IF NOT EXISTS `players` (
     `lookfamiliarstype` int(11) unsigned NOT NULL DEFAULT '0',
     `isreward` tinyint(1) NOT NULL DEFAULT '1',
     `istutorial` tinyint(1) NOT NULL DEFAULT '0',
+    `forge_dusts` bigint(21) NOT NULL DEFAULT '0',
+    `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),
@@ -249,12 +252,14 @@ CREATE TABLE IF NOT EXISTS `global_storage` (
 -- Table structure `guilds`
 CREATE TABLE IF NOT EXISTS `guilds` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
+    `level` int(11) NOT NULL DEFAULT '1',
     `name` varchar(255) NOT NULL,
     `ownerid` int(11) NOT NULL,
     `creationdata` int(11) NOT NULL,
     `motd` varchar(255) NOT NULL DEFAULT '',
     `residence` int(11) NOT NULL DEFAULT '0',
     `balance` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+    `points` int(11) NOT NULL DEFAULT '0',
     CONSTRAINT `guilds_pk` PRIMARY KEY (`id`),
     CONSTRAINT `guilds_name_unique` UNIQUE (`name`),
     CONSTRAINT `guilds_owner_unique` UNIQUE (`ownerid`),
@@ -675,14 +680,13 @@ CREATE TABLE IF NOT EXISTS `player_storage` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- --------------------------------------------------------
-
 -- Table structure `store_history`
 CREATE TABLE IF NOT EXISTS `store_history` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `account_id` int(11) UNSIGNED NOT NULL,
     `mode` smallint(2) NOT NULL DEFAULT '0',
     `description` varchar(3500) NOT NULL,
+    `coin_type` tinyint(1) NOT NULL DEFAULT '0',
     `coin_amount` int(12) NOT NULL,
     `time` bigint(20) UNSIGNED NOT NULL,
     `timestamp` int(11) NOT NULL DEFAULT '0',

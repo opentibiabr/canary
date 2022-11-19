@@ -17,7 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
+
+#include "core.hpp"
 
 #include "utils/tools.h"
 
@@ -425,31 +427,39 @@ Position getNextPosition(Direction direction, Position pos)
 		case DIRECTION_NORTH:
 			pos.y--;
 			break;
+
 		case DIRECTION_SOUTH:
 			pos.y++;
 			break;
+
 		case DIRECTION_WEST:
 			pos.x--;
 			break;
+
 		case DIRECTION_EAST:
 			pos.x++;
 			break;
+
 		case DIRECTION_SOUTHWEST:
 			pos.x--;
 			pos.y++;
 			break;
+
 		case DIRECTION_NORTHWEST:
 			pos.x--;
 			pos.y--;
 			break;
+
 		case DIRECTION_NORTHEAST:
 			pos.x++;
 			pos.y--;
 			break;
+
 		case DIRECTION_SOUTHEAST:
 			pos.x++;
 			pos.y++;
 			break;
+
 		default:
 			break;
 	}
@@ -866,34 +876,49 @@ std::string getSkillName(uint8_t skillid)
 	switch (skillid) {
 		case SKILL_FIST:
 			return "fist fighting";
+
 		case SKILL_CLUB:
 			return "club fighting";
+
 		case SKILL_SWORD:
 			return "sword fighting";
+
 		case SKILL_AXE:
 			return "axe fighting";
+
 		case SKILL_DISTANCE:
 			return "distance fighting";
+
 		case SKILL_SHIELD:
 			return "shielding";
+
 		case SKILL_FISHING:
 			return "fishing";
+
 		case SKILL_CRITICAL_HIT_CHANCE:
 			return "critical hit chance";
+
 		case SKILL_CRITICAL_HIT_DAMAGE:
 			return "critical extra damage";
+
 		case SKILL_LIFE_LEECH_CHANCE:
 			return "life leech chance";
+
 		case SKILL_LIFE_LEECH_AMOUNT:
 			return "life leech amount";
+
 		case SKILL_MANA_LEECH_CHANCE:
 			return "mana leech chance";
+
 		case SKILL_MANA_LEECH_AMOUNT:
 			return "mana leech amount";
+
 		case SKILL_MAGLEVEL:
 			return "magic level";
+
 		case SKILL_LEVEL:
 			return "level";
+
 		default:
 			return "unknown";
 	}
@@ -1087,162 +1112,240 @@ const char* getReturnMessage(ReturnValue value)
 			return "No error.";
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
+
 		case RETURNVALUE_DESTINATIONOUTOFREACH:
 			return "Destination is out of reach.";
+
 		case RETURNVALUE_NOTMOVEABLE:
 			return "You cannot move this object.";
+
 		case RETURNVALUE_DROPTWOHANDEDITEM:
 			return "Drop the double-handed object first.";
+
 		case RETURNVALUE_BOTHHANDSNEEDTOBEFREE:
 			return "Both hands need to be free.";
+
 		case RETURNVALUE_CANNOTBEDRESSED:
 			return "You cannot dress this object there.";
+
 		case RETURNVALUE_PUTTHISOBJECTINYOURHAND:
 			return "Put this object in your hand.";
+
 		case RETURNVALUE_PUTTHISOBJECTINBOTHHANDS:
 			return "Put this object in both hands.";
+
 		case RETURNVALUE_CANONLYUSEONEWEAPON:
 			return "You may only use one weapon.";
+
 		case RETURNVALUE_TOOFARAWAY:
 			return "Too far away.";
+
 		case RETURNVALUE_FIRSTGODOWNSTAIRS:
 			return "First go downstairs.";
+
 		case RETURNVALUE_FIRSTGOUPSTAIRS:
 			return "First go upstairs.";
+
 		case RETURNVALUE_NOTENOUGHCAPACITY:
 			return "This object is too heavy for you to carry.";
+
 		case RETURNVALUE_CONTAINERNOTENOUGHROOM:
 			return "You cannot put more objects in this container.";
+
 		case RETURNVALUE_ONLYAMMOINQUIVER:
 			return "This quiver only holds arrows and bolts.\nYou cannot put any other items in it.";
+
 		case RETURNVALUE_CREATUREBLOCK:
 		case RETURNVALUE_NEEDEXCHANGE:
 		case RETURNVALUE_NOTENOUGHROOM:
 			return "There is not enough room.";
+
 		case RETURNVALUE_CANNOTPICKUP:
 			return "You cannot take this object.";
+
 		case RETURNVALUE_CANNOTTHROW:
 			return "You cannot throw there.";
+
 		case RETURNVALUE_THEREISNOWAY:
 			return "There is no way.";
+
 		case RETURNVALUE_THISISIMPOSSIBLE:
 			return "This is impossible.";
+
 		case RETURNVALUE_PLAYERISPZLOCKED:
 			return "You can not enter a protection zone after attacking another player.";
+
 		case RETURNVALUE_PLAYERISNOTINVITED:
 			return "You are not invited.";
+
 		case RETURNVALUE_CREATUREDOESNOTEXIST:
 			return "Creature does not exist.";
+
 		case RETURNVALUE_DEPOTISFULL:
 			return "You cannot put more items in this depot.";
+
 		case RETURNVALUE_CANNOTUSETHISOBJECT:
 			return "You cannot use this object.";
+
 		case RETURNVALUE_PLAYERWITHTHISNAMEISNOTONLINE:
 			return "A player with this name is not online.";
+
 		case RETURNVALUE_NOTREQUIREDLEVELTOUSERUNE:
 			return "You do not have the required magic level to use this rune.";
+
 		case RETURNVALUE_YOUAREALREADYTRADING:
 			return "You are already trading.";
+
 		case RETURNVALUE_THISPLAYERISALREADYTRADING:
 			return "This player is already trading.";
+
 		case RETURNVALUE_YOUMAYNOTLOGOUTDURINGAFIGHT:
 			return "You may not logout during or immediately after a fight!";
+
 		case RETURNVALUE_DIRECTPLAYERSHOOT:
 			return "You are not allowed to shoot directly on players.";
+
 		case RETURNVALUE_NOTENOUGHLEVEL:
 			return "You do not have enough level.";
+
 		case RETURNVALUE_NOTENOUGHMAGICLEVEL:
 			return "You do not have enough magic level.";
+
 		case RETURNVALUE_NOTENOUGHMANA:
 			return "You do not have enough mana.";
+
 		case RETURNVALUE_NOTENOUGHSOUL:
 			return "You do not have enough soul.";
+
 		case RETURNVALUE_YOUAREEXHAUSTED:
 			return "You are exhausted.";
+
 		case RETURNVALUE_CANONLYUSETHISRUNEONCREATURES:
 			return "You can only use this rune on creatures.";
+
 		case RETURNVALUE_PLAYERISNOTREACHABLE:
 			return "Player is not reachable.";
+
 		case RETURNVALUE_CREATUREISNOTREACHABLE:
 			return "Creature is not reachable.";
+
 		case RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE:
 			return "This action is not permitted in a protection zone.";
+
 		case RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER:
 			return "You may not attack this player.";
+
 		case RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE:
 			return "You may not attack this creature.";
+
 		case RETURNVALUE_YOUMAYNOTATTACKAPERSONINPROTECTIONZONE:
 			return "You may not attack a person in a protection zone.";
+
 		case RETURNVALUE_YOUMAYNOTATTACKAPERSONWHILEINPROTECTIONZONE:
 			return "You may not attack a person while you are in a protection zone.";
+
 		case RETURNVALUE_YOUCANONLYUSEITONCREATURES:
 			return "You can only use it on creatures.";
+
 		case RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS:
 			return "Turn secure mode off if you really want to attack unmarked players.";
+
 		case RETURNVALUE_YOUNEEDPREMIUMACCOUNT:
 			return "You need a premium account.";
+
 		case RETURNVALUE_YOUNEEDTOLEARNTHISSPELL:
 			return "You need to learn this spell first.";
+
 		case RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL:
 			return "Your vocation cannot use this spell.";
+
 		case RETURNVALUE_YOUNEEDAWEAPONTOUSETHISSPELL:
 			return "You need to equip a weapon to use this spell.";
+
 		case RETURNVALUE_PLAYERISPZLOCKEDLEAVEPVPZONE:
 			return "You can not leave a pvp zone after attacking another player.";
+
 		case RETURNVALUE_PLAYERISPZLOCKEDENTERPVPZONE:
 			return "You can not enter a pvp zone after attacking another player.";
+
 		case RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE:
 			return "This action is not permitted in a non pvp zone.";
+
 		case RETURNVALUE_YOUCANNOTLOGOUTHERE:
 			return "You can not logout here.";
+
 		case RETURNVALUE_YOUNEEDAMAGICITEMTOCASTSPELL:
 			return "You need a magic item to cast this spell.";
+
 		case RETURNVALUE_CANNOTCONJUREITEMHERE:
 			return "You cannot conjure items here.";
+
 		case RETURNVALUE_YOUNEEDTOSPLITYOURSPEARS:
 			return "You need to split your spears first.";
+
 		case RETURNVALUE_NAMEISTOOAMBIGUOUS:
 			return "Player name is ambiguous.";
+
 		case RETURNVALUE_CANONLYUSEONESHIELD:
 			return "You may use only one shield.";
+
 		case RETURNVALUE_NOPARTYMEMBERSINRANGE:
 			return "No party members in range.";
+
 		case RETURNVALUE_YOUARENOTTHEOWNER:
 			return "You are not the owner.";
+
 		case RETURNVALUE_YOUCANTOPENCORPSEADM:
 			return "You can't open this corpse, because you are an Admin.";
+
 		case RETURNVALUE_NOSUCHRAIDEXISTS:
 			return "No such raid exists.";
+
 		case RETURNVALUE_ANOTHERRAIDISALREADYEXECUTING:
 			return "Another raid is already executing.";
+
 		case RETURNVALUE_TRADEPLAYERFARAWAY:
 			return "Trade player is too far away.";
+
 		case RETURNVALUE_YOUDONTOWNTHISHOUSE:
 			return "You don't own this house.";
+
 		case RETURNVALUE_TRADEPLAYERALREADYOWNSAHOUSE:
 			return "Trade player already owns a house.";
+
 		case RETURNVALUE_TRADEPLAYERHIGHESTBIDDER:
 			return "Trade player is currently the highest bidder of an auctioned house.";
+
 		case RETURNVALUE_YOUCANNOTTRADETHISHOUSE:
 			return "You can not trade this house.";
+
 		case RETURNVALUE_YOUDONTHAVEREQUIREDPROFESSION:
 			return "You don't have the required profession.";
+
 		case RETURNVALUE_NOTENOUGHFISTLEVEL:
 			return "You do not have enough fist level";
+
 		case RETURNVALUE_NOTENOUGHCLUBLEVEL:
 			return "You do not have enough club level";
+
 		case RETURNVALUE_NOTENOUGHSWORDLEVEL:
 			return "You do not have enough sword level";
+
 		case RETURNVALUE_NOTENOUGHAXELEVEL:
 			return "You do not have enough axe level";
+
 		case RETURNVALUE_NOTENOUGHDISTANCELEVEL:
 			return "You do not have enough distance level";
+
 		case RETURNVALUE_NOTENOUGHSHIELDLEVEL:
 			return "You do not have enough shielding level";
+
 		case RETURNVALUE_NOTENOUGHFISHLEVEL:
 			return "You do not have enough fishing level";
+
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";

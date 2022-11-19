@@ -38,9 +38,10 @@ Imbuement* Imbuements::getImbuement(uint16_t id)
 
 bool Imbuements::loadFromXml(bool /* reloading */) {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/imbuements.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/imbuements.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Imbuements::loadFromXml", "data/XML/imbuements.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return  false;
 	}
 

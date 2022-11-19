@@ -31,9 +31,10 @@ Events::Events() :
 
 bool Events::loadFromXml() {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/events/events.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/events/events.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Events::load", "data/events/events.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
@@ -49,8 +50,9 @@ bool Events::loadFromXml() {
 		auto res = classes.insert(className);
 		if (res.second) {
 			const std::string& lowercase = asLowerCaseString(className);
-			if (scriptInterface.loadFile("data/events/scripts/" + lowercase + ".lua") != 0) {
-				SPDLOG_WARN("[Events::load] - Can not load script: {}.lua", lowercase);
+			auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" + lowercase + ".lua") != 0) {
+				SPDLOG_WARN("{} - Can not load script: {}.lua", __FUNCTION__, lowercase);
 				SPDLOG_WARN(scriptInterface.getLastLuaError());
 			}
 		}
@@ -69,7 +71,7 @@ bool Events::loadFromXml() {
 			} else if (methodName == "onDrainHealth") {
 				info.creatureOnDrainHealth = event;
 			} else {
-				SPDLOG_WARN("[Events::load] - Unknown creature method: {}", methodName);
+				SPDLOG_WARN("{} - Unknown creature method: {}", __FUNCTION__, methodName);
 			}
 		} else if (className == "Party") {
 			if (methodName == "onJoin") {
@@ -81,7 +83,7 @@ bool Events::loadFromXml() {
 			} else if (methodName == "onShareExperience") {
 				info.partyOnShareExperience = event;
 			} else {
-				SPDLOG_WARN("[Events::load] - Unknown party method: {}", methodName);
+				SPDLOG_WARN("{} - Unknown party method: {}", __FUNCTION__, methodName);
 			}
 		} else if (className == "Player") {
 			if (methodName == "onBrowseField") {
@@ -129,7 +131,7 @@ bool Events::loadFromXml() {
 			}else if (methodName == "onCombat") {
 				info.playerOnCombat = event;
 			} else {
-				SPDLOG_WARN("[Events::load] - Unknown player method: {}", methodName);
+				SPDLOG_WARN("{} - Unknown player method: {}", __FUNCTION__, methodName);
 			}
 		} else if (className == "Monster") {
 			if (methodName == "onDropLoot") {
@@ -137,16 +139,16 @@ bool Events::loadFromXml() {
 			} else if (methodName == "onSpawn") {
 				info.monsterOnSpawn = event;
 			} else {
-				SPDLOG_WARN("[Events::load] - Unknown monster method: {}", methodName);
+				SPDLOG_WARN("{} - Unknown monster method: {}", __FUNCTION__, methodName);
 			}
 		} else if (className == "Npc") {
 			if (methodName == "onSpawn") {
 				info.monsterOnSpawn = event;
 			} else {
-				SPDLOG_WARN("[Events::load] - Unknown npc method: {}", methodName);
+				SPDLOG_WARN("{} - Unknown npc method: {}", __FUNCTION__, methodName);
 			}
 		} else {
-			SPDLOG_WARN("[Events::load] - Unknown class: {}", className);
+			SPDLOG_WARN("{} - Unknown class: {}", __FUNCTION__, className);
 		}
 	}
 	return true;
@@ -160,10 +162,10 @@ void Events::eventMonsterOnSpawn(Monster* monster, const Position& position) {
 	}
 
 	if (!scriptInterface.reserveScriptEnv()) {
-		SPDLOG_ERROR("[Events::eventMonsterOnSpawn - "
-                     "Position x: {} y: {} z: {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     position.getX(), position.getY(), position.getZ());
+		SPDLOG_ERROR("{} - "
+                     "Position {}"
+                     ". Call stack overflow. Too many lua script calls being nested.",
+                     __FUNCTION__, position.toString());
 		return;
 	}
 
@@ -194,10 +196,10 @@ void Events::eventNpcOnSpawn(Npc* npc, const Position& position) {
 	}
 
 	if (!scriptInterface.reserveScriptEnv()) {
-		SPDLOG_ERROR("[Events::eventMonsterOnSpawn - "
-                     "Position x: {} y: {} z: {}] "
-                     "Call stack overflow. Too many lua script calls being nested.",
-                     position.getX(), position.getY(), position.getZ());
+		SPDLOG_ERROR("{} - "
+                     "Position {}"
+                     ". Call stack overflow. Too many lua script calls being nested.",
+                    __FUNCTION__, position.toString());
 		return;
 	}
 
@@ -256,12 +258,10 @@ ReturnValue Events::eventCreatureOnAreaCombat(Creature* creature, Tile* tile, bo
 
 	if (!scriptInterface.reserveScriptEnv()) {
 		SPDLOG_ERROR("[Events::eventCreatureOnAreaCombat - "
-                     "Creature {} on tile x: {} y: {} z: {}] "
+                     "Creature {} on tile position {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName(),
-                     (tile->getPosition()).getX(),
-                     (tile->getPosition()).getY(),
-                     (tile->getPosition()).getZ());
+                     tile->getPosition().toString());
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 

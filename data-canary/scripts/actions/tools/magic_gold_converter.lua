@@ -2,37 +2,36 @@ local data = {
 	converterIds = {
 		[28525] = 28526,
 		[28526] = 28525,
-		},
+	},
 	coins = {
 		[ITEM_GOLD_COIN] = ITEM_PLATINUM_COIN,
 		[ITEM_PLATINUM_COIN] = ITEM_CRYSTAL_COIN
-		}
+	}
 }
 
-local function finditem(self, cylinder, conv)
+local function findItem(self, cylinder, converterItem)
 	if cylinder == 0 then
 		cylinder = self:getSlotItem(CONST_SLOT_BACKPACK)
-		finditem(self, self:getSlotItem(CONST_SLOT_STORE_INBOX), conv)
+		findItem(self, self:getSlotItem(CONST_SLOT_STORE_INBOX), converterItem)
 	end
 
 	if cylinder and cylinder:isContainer() then
 		for i = 0, cylinder:getSize() - 1 do
 			local item = cylinder:getItem(i)
 			if item:isContainer() then
-				if finditem(self, Container(item.uid), conv) then
+				if findItem(self, Container(item.uid), converterItem) then
 					-- Breaks the recursion from going into the next items in this cylinder
 					return true
 				end
 			else
 				for fromid, toid in pairs(data.coins) do
-					if item:getId() == fromid and item:getCount() == 100 then						
+					if item:getId() == fromid and item:getCount() == 100 then
 						item:remove()
-						if not(cylinder:addItem(toid, 1)) then
+						if not cylinder:addItem(toid, 1) then
 							player:addItem(toid, 1)
 						end
-						
-						conv:setAttribute(ITEM_ATTRIBUTE_CHARGES, conv:getAttribute(ITEM_ATTRIBUTE_CHARGES) - 1)
 
+						converterItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, converterItem:getAttribute(ITEM_ATTRIBUTE_CHARGES) - 1)
 						return true
 					end
 				end
@@ -43,19 +42,18 @@ local function finditem(self, cylinder, conv)
 	end
 end
 
-local function start_converter(pid, itemid)
-	local player = Player(pid)
+local function startConversion(playerId, itemId)
+	local player = Player(playerId)
 	if player ~= nil then
-	
-	local item = player:getItemById(itemid,true)
-		if player:getItemCount(itemid) >= 1 then
+		local converting = addEvent(startConversion, 300, playerId, itemId)
+		local item = player:getItemById(itemId,true)
+		if player:getItemCount(itemId) >= 1 then
 			if item:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
 				local charges_n = item:getAttribute(ITEM_ATTRIBUTE_CHARGES)
 				if charges_n >= 1 then
 					if player:getItemCount(ITEM_GOLD_COIN) >= 100 or player:getItemCount(ITEM_PLATINUM_COIN) >= 100 then
-						finditem(player, 0, item)
+						findItem(player, 0, item)
 					end
-					local converting = addEvent(start_converter, 300, pid, itemid)
 				else
 					item:remove(1)
 					stopEvent(converting)
@@ -71,9 +69,9 @@ end
 local magicGoldConverter = Action()
 
 function magicGoldConverter.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-		item:transform(data.converterIds[item.itemid])
-		item:decay()
-		start_converter(player:getId(), 28526)
+	item:transform(data.converterIds[item.itemId])
+	item:decay()
+	startConversion(player:getId(), 28526)
 	return true
 end
 

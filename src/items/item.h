@@ -1015,10 +1015,6 @@ class Item : virtual public Thing
 			return loadedFromMap;
 		}
 
-		bool getLoadedFromMap() {
-			return loadedFromMap;
-		}
-
 		void setLoadedFromMap(bool value) {
 			loadedFromMap = value;
 		}

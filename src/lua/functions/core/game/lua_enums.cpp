@@ -615,6 +615,9 @@ void LuaEnums::init(lua_State* L) {
 	registerEnum(L, ITEM_GOLD_POUCH)
 	registerEnum(L, ITEM_STORE_INBOX)
 
+	registerEnum(L, ITEM_FORGE_SLIVER)
+	registerEnum(L, ITEM_FORGE_CORE)
+
 	registerEnum(L, CHARM_GUT)
 	registerEnum(L, CHARM_SCAVENGE)
 
@@ -1020,6 +1023,10 @@ void LuaEnums::init(lua_State* L) {
 	registerEnum(L, LIGHT_STATE_SUNSET)
 	registerEnum(L, LIGHT_STATE_SUNRISE)
 	registerEnum(L, STORAGEVALUE_EMOTE)
+
+	registerEnum(L, FORGE_NORMAL_MONSTER)
+	registerEnum(L, FORGE_INFLUENCED_MONSTER)
+	registerEnum(L, FORGE_FIENDISH_MONSTER)
 
 	// Webhook default colors
 	registerEnum(L, WEBHOOK_COLOR_ONLINE)

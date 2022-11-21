@@ -1,5 +1,5 @@
-local addDusts = TalkAction("/adddusts")
-function addDusts.onSay(player, words, param)
+local dustFunctions = TalkAction("/adddusts")
+function dustFunctions.onSay(player, words, param)
 	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
 		return true
 	end
@@ -8,7 +8,7 @@ function addDusts.onSay(player, words, param)
 	if param == "" then
 		player:sendCancelMessage("Player name param required.")
 		-- Distro log
-		Spdlog.error("[addDusts.onSay] - Player name param not found.")
+		Spdlog.error("[dustFunctions.onSay] - Player name param not found.")
 		return false
 	end
 
@@ -24,7 +24,7 @@ function addDusts.onSay(player, words, param)
 	if not targetPlayer then
 		player:sendCancelMessage("Player ".. string.titleCase(name) .." is not online.")
 		-- Distro log
-		Spdlog.error("[addDusts.onSay] - Player ".. string.titleCase(name) .." is not online.")
+		Spdlog.error("[dustFunctions.onSay] - Player ".. string.titleCase(name) .." is not online.")
 		return false
 	end
 
@@ -35,7 +35,7 @@ function addDusts.onSay(player, words, param)
 	end
 
 	-- Check dust level
-	finalDustAmount = targetPlayer:getForgeDusts() + dustAmount
+	local finalDustAmount = targetPlayer:getForgeDusts() + dustAmount
 	if finalDustAmount > targetPlayer:getForgeDustLevel() then
 		dustAmount = targetPlayer:getForgeDustLevel() - targetPlayer:getForgeDusts()
 	end
@@ -50,8 +50,8 @@ function addDusts.onSay(player, words, param)
 	return true
 end
 
-addDusts:separator(" ")
-addDusts:register()
+dustFunctions:separator(" ")
+dustFunctions:register()
 
 local removeDusts = TalkAction("/removedusts")
 function removeDusts.onSay(player, words, param)

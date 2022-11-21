@@ -30,10 +30,10 @@ bool BaseEvents::loadFromXml() {
 	}
 
 	std::string scriptsName = getScriptBaseName();
-	std::string basePath = "data/" + scriptsName + "/";
+	std::string basePath = g_configManager().getString(CORE_DIRECTORY) + "/" + scriptsName + "/";
 	if (getScriptInterface().loadFile(basePath + "lib/" +
                                       scriptsName + ".lua") == -1) {
-		SPDLOG_WARN("[BaseEvents::loadFromXml] - Can not load {}lib/{}.lua",
+		SPDLOG_WARN(__FUNCTION__,
 					scriptsName, scriptsName);
 	}
 
@@ -42,7 +42,7 @@ bool BaseEvents::loadFromXml() {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
-		printXMLError("[BaseEvents::loadFromXml] - {} {}", filename, result);
+		printXMLError(__FUNCTION__, filename, result);
 		return false;
 	}
 

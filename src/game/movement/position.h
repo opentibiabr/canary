@@ -129,9 +129,9 @@ struct Position
 		std::string str;
 		return str.append("( ")
                   .append(std::to_string(getX()))
-                  .append(" / ")
+                  .append(", ")
                   .append(std::to_string(getY()))
-                  .append(" / ")
+                  .append(", ")
                   .append(std::to_string(getZ()))
                   .append(" )");
 	}

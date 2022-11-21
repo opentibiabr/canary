@@ -136,7 +136,7 @@ class Player final : public Creature, public Cylinder
 		{
 			uint32_t oldCount = getBestiaryKillCount(raceid);
 			uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-			addStorageValue(key, static_cast<int32_t>(oldCount + amount));
+			addStorageValue(key, static_cast<int32_t>(oldCount + amount), true);
 		}
 		uint32_t getBestiaryKillCount(uint16_t raceid) const
 		{
@@ -1060,44 +1060,6 @@ class Player final : public Creature, public Cylinder
 
 		void openPlayerContainers();
 
-		//store
-		void sendOpenStore(uint8_t serviceType) {
-			if(client) {
-				client->sendOpenStore(serviceType);
-			}
-		}
-
-		void sendShowStoreCategoryOffers(StoreCategory* category) {
-			if(client) {
-				client->sendStoreCategoryOffers(category);
-			}
-		}
-
-		void sendStoreError(GameStoreError_t error, const std::string& errorMessage) {
-			if(client) {
-				client->sendStoreError(error, errorMessage);
-			}
-		}
-
-		void sendStorePurchaseSuccessful(const std::string& message, const uint32_t newCoinBalance) {
-			if(client)
-			{
-				client->sendStorePurchaseSuccessful(message, newCoinBalance);
-			}
-		}
-
-		void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType) {
-			if(client) {
-				client->sendStoreRequestAdditionalInfo(offerId, clientOfferType);
-			}
-		}
-
-		void sendStoreTrasactionHistory(HistoryStoreOfferList& list, uint32_t page, uint8_t entriesPerPage) {
-			if(client) {
-				client->sendStoreTrasactionHistory(list, page, entriesPerPage);
-			}
-		}
-
 		// Quickloot
 		void sendLootContainers() {
 			if (client) {
@@ -1536,12 +1498,6 @@ class Player final : public Creature, public Cylinder
 		void sendNetworkMessage(const NetworkMessage& message) {
 			if (client) {
 				client->writeToOutputBuffer(message);
-			}
-		}
-
-		void sendStoreOpen(uint8_t serviceType) {
-			if (client) {
-				client->sendOpenStore(serviceType);
 			}
 		}
 

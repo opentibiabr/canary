@@ -19,6 +19,7 @@
 
 #include "pch.hpp"
 
+#include "config/configmanager.h"
 #include "creatures/players/grouping/groups.h"
 #include "utils/pugicast.h"
 #include "utils/tools.h"
@@ -72,9 +73,10 @@ const phmap::flat_hash_map<std::string, PlayerCustomFlags> ParsePlayerCustomFlag
 bool Groups::load()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/groups.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/groups.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Groups::load", "data/XML/groups.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

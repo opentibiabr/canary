@@ -1,4 +1,4 @@
-<<</**
+/**
  * Canary - A free and open-source MMORPG server emulator
  * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
  *

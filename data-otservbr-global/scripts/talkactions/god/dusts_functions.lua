@@ -42,7 +42,7 @@ function dustFunctions.onSay(player, words, param)
 
 	targetPlayer:addForgeDusts(dustAmount)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successful added ".. dustAmount .." \z
-       	                	dusts for the ".. targetPlayer:getName() .." player.")
+                           dusts for the ".. targetPlayer:getName() .." player.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." added \z
 	                             ".. dustAmount .." dusts to your character.")
 	-- Distro log
@@ -133,7 +133,7 @@ function getDusts.onSay(player, words, param)
 		Spdlog.error("[getDusts.onSay] - Player ".. string.titleCase(name) .." is not online.")
 		return false
 	end
-	
+
 	local dustAmount
 	dustAmount = targetPlayer:getForgeDusts()
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. targetPlayer:getName() .." has ".. dustAmount .." dusts.")
@@ -188,7 +188,7 @@ function setDusts.onSay(player, words, param)
 
 	targetPlayer:setForgeDusts(dustAmount)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Successful set ".. dustAmount .." \z
-       	                	dusts for the ".. targetPlayer:getName() .." player.")
+							dusts for the ".. targetPlayer:getName() .." player.")
 	targetPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "".. player:getName() .." set \z
 	                             ".. dustAmount .." dusts to your character.")
 	-- Distro log

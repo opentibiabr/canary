@@ -633,7 +633,6 @@ int GameFunctions::luaGameAddInfluencedMonster(lua_State *L) {
 int GameFunctions::luaGameGetInfluencedMonsters(lua_State *L) {
 	// Game.getInfluencedMonsters()
 	const auto monsters = g_game().getInfluencedMonsters();
-
 	lua_createtable(L, monsters.size(), 0);
 	int index = 0;
 	for (const auto &monsterId : monsters) {

@@ -275,7 +275,7 @@ class Monster final : public Creature
 
 		void configureForgeSystem();
 
-		bool canBeForgeMonster() {
+		bool canBeForgeMonster() const {
 			return getForgeStack() == 0 && !isSummon() && mType->info.isForgeCreature;
 		}
 
@@ -283,7 +283,7 @@ class Monster final : public Creature
 			forgeMonster = forge;
 		}
 
-		uint32_t getForgeStack() const {
+		uint16_t getForgeStack() const {
 			return forgeStack;
 		}
 
@@ -291,7 +291,7 @@ class Monster final : public Creature
 			forgeStack = stack;
 		}
 
-		MonsterForgeClassifications_t getMonsterForgeClassification() {
+		MonsterForgeClassifications_t getMonsterForgeClassification() const {
 			return monsterForgeClassification;
 		}
 

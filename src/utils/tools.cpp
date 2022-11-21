@@ -1478,7 +1478,8 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 	}
 }
 
-int32_t forgeBonus(int32_t number) {
+uint8_t forgeBonus(int32_t number)
+{
 	// None
 	if (number < 7450)
 		return 0;

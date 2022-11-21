@@ -585,7 +585,7 @@ class Game
 		uint32_t makeInfluencedMonster();
 
 		bool addInfluencedMonster(Monster *monster);
-		void sendUpdateCreature(Creature *creature);
+		void sendUpdateCreature(const Creature *creature);
 
 	private:
 		std::map<uint32_t, int32_t> forgeMonsterEventIds;

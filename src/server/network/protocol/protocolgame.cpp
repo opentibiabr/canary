@@ -4396,7 +4396,7 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 	uint16_t baseSuccess = g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE);
 	uint16_t bonusSuccess = g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE);
 	uint8_t roll = uniform_random(1, 100) <= (usedCore ? bonusSuccess : baseSuccess);
-	bool success = roll ? 1 : 0;
+	bool success = roll ? true : false;
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
 	msg.addByte(success); 		// was succeeded?
@@ -4804,7 +4804,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	if (it.upgradeClassification > 0 && tier > 0)
 	{
 		msg.addString(std::to_string(it.upgradeClassification));
-		float chance = 0;
+		double chance = 0;
 		std::ostringstream ss;
 
 		ss << static_cast<uint16_t>(tier) << " (";
@@ -6406,14 +6406,13 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 			CreatureIcon_t icon = monster->getIcon();
 			msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
 			if (icon != CREATUREICON_NONE) {
-
 				// Icones com stack (Fiendishs e Influenceds)
 				if (monster->getForgeStack() > 0) {
 					msg.addByte(icon);
 					msg.addByte(1);
-					msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // stack
+					msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // Stack
 				} else {
-					// icones sem numero do lado
+					// Icones sem numero do lado
 					msg.addByte(icon);
 					msg.addByte(1);
 					msg.add<uint16_t>(0);

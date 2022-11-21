@@ -8274,7 +8274,7 @@ void Game::createLuaItemsOnMap() {
 	}
 }
 
-void Game::sendUpdateCreature(Creature *creature) {
+void Game::sendUpdateCreature(const Creature* creature) {
 	if (!creature) {
 		return;
 	}
@@ -8290,23 +8290,22 @@ void Game::sendUpdateCreature(Creature *creature) {
 
 uint32_t Game::makeInfluencedMonster() {
 	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
-	if (forgeableMonsters.size() == 0 || influencedMonsters.size() >= influencedLimit)
+	if (forgeableMonsters.empty() || influencedMonsters.size() >= influencedLimit)
 		return 0;
 
-	if (forgeableMonsters.size() == 0)
+	if (forgeableMonsters.empty())
 		return 0;
 
 	uint16_t maxTries = forgeableMonsters.size();
 	uint16_t tries = 0;
-	bool found = false;
 	Monster* monster = nullptr;
-	while (!found)
+	while (true)
 	{
 		if (tries == maxTries)
 			return 0;
 
 		tries++;
-		uint16_t random = normal_random(0, forgeableMonsters.size() - 1);
+		int32_t random = normal_random(0, forgeableMonsters.size() - 1);
 		uint32_t monsterIdTest = forgeableMonsters.at(random);
 		monster = const_cast<Game*>(this)->getMonsterByID(monsterIdTest);
 
@@ -8320,9 +8319,7 @@ uint32_t Game::makeInfluencedMonster() {
 					monster = nullptr;
 					continue;
 				}
-
 				forgeableMonsters.erase(it);
-				found = true;
 				break;
 			}
 		}
@@ -8345,9 +8342,8 @@ uint32_t Game::makeFiendishMonster() {
 
 	uint16_t maxTries = forgeableMonsters.size();
 	uint16_t tries = 0;
-	bool found = false;
 	Monster *monster = nullptr;
-	while (!found)
+	while (true)
 	{
 		if (tries == maxTries) {
 			return 0;
@@ -8366,9 +8362,7 @@ uint32_t Game::makeFiendishMonster() {
 					monster = nullptr;
 					continue;
 				}
-
 				forgeableMonsters.erase(it);
-				found = true;
 				break;
 			}
 		}
@@ -8475,9 +8469,10 @@ void Game::createInfluencedMonsters()
 	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 	while (created < influencedLimit)
 	{
-		if (influencedMonsters.size() >= influencedLimit)
+		if (influencedMonsters.size() >= influencedLimit) {
 			SPDLOG_WARN("[Game::createInfluencedMonsters] - Returning in creation of Influenced, size: {}, max is: {}.", influencedMonsters.size(), influencedLimit);
 			break;
+		}
 		auto ret = makeInfluencedMonster();
 		if (ret == 0)
 			break;
@@ -8498,7 +8493,7 @@ bool Game::addInfluencedMonster(Monster *monster)
 {
 	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss())
 	{
-		uint16_t maxInfluencedMonsters = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);;
+		uint16_t maxInfluencedMonsters = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
 		if ((influencedMonsters.size() + 1) > maxInfluencedMonsters)
 			return false;
 

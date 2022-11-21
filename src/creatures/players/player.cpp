@@ -6373,7 +6373,7 @@ bool Player::saySpell(
 }
 
 // Forge system
-void Player::fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
+void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
 {
 	Item* item = g_game().findItemOfType(this, itemid, true, -1, true, tier);
 	g_game().internalRemoveItem(item, 1);
@@ -6437,12 +6437,9 @@ void Player::fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduce
 		{
 			newItem2->setTier(tier + 1);
 		}
-		else if (bonus == 7)
+		else if (bonus == 7 && tier + 2 <= newItem->getClassification())
 		{
-			if (tier + 2 <= newItem->getClassification())
-			{
-				newItem->setTier(tier + 2);
-			}
+			newItem->setTier(tier + 2);
 		}
 
 		if (bonus != 4 && bonus != 5 && bonus != 6 && bonus != 8)
@@ -6452,8 +6449,8 @@ void Player::fuseItems(uint16_t itemid, uint16_t tier, bool success, bool reduce
 	}
 	else
 	{
-		uint8_t isTierLost = uniform_random(1, 100) <= (reduceTierLoss ? g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION) : 100);
-		if (isTierLost)
+		if (auto isTierLost = uniform_random(1, 100) <= (reduceTierLoss ? g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION) : 100); 
+			isTierLost)
 		{
 			if (newItem2->getTier() >= 1)
 			{

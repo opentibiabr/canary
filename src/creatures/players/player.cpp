@@ -3788,7 +3788,6 @@ Item* Player::getForgeItemFromId(uint16_t itemId, uint8_t tier)
 		return nullptr;
 	}
 
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
 	for (auto item : backpackContainer->getItems(true)) {
 		if (!item || item->getTier() != tier || item->hasImbuements()) {
 			continue;
@@ -5549,13 +5548,13 @@ uint64_t Player::getMoney() const
 	return moneyCount;
 }
 
-uint64_t Player::getForgeSlivers() const
+std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 {
 	std::vector<const Container*> containers;
 	uint64_t sliverCount = 0;
+	uint64_t coreCount = 0;
 
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
-		Item* item = inventory[i];
+	for (auto item : getAllInventoryItems()) {
 		if (!item) {
 			continue;
 		}
@@ -5565,39 +5564,6 @@ uint64_t Player::getForgeSlivers() const
 			containers.push_back(container);
 		} else {
 			sliverCount += item->getForgeSlivers();
-		}
-	}
-
-	size_t i = 0;
-	while (i < containers.size()) {
-		const Container* container = containers[i++];
-		for (const Item* item : container->getItemList()) {
-			const Container* tmpContainer = item->getContainer();
-			if (tmpContainer) {
-				containers.push_back(tmpContainer);
-			} else {
-				sliverCount += item->getForgeSlivers();
-			}
-		}
-	}
-	return sliverCount;
-}
-
-uint64_t Player::getForgeCores() const
-{
-	std::vector<const Container*> containers;
-	uint64_t coreCount = 0;
-
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
-		Item* item = inventory[i];
-		if (!item) {
-			continue;
-		}
-
-		const Container* container = item->getContainer();
-		if (container) {
-			containers.push_back(container);
-		} else {
 			coreCount += item->getForgeCores();
 		}
 	}
@@ -5610,11 +5576,13 @@ uint64_t Player::getForgeCores() const
 			if (tmpContainer) {
 				containers.push_back(tmpContainer);
 			} else {
+				sliverCount += item->getForgeSlivers();
 				coreCount += item->getForgeCores();
 			}
 		}
 	}
-	return coreCount;
+
+	return std::make_pair(sliverCount, coreCount);
 }
 
 size_t Player::getMaxVIPEntries() const

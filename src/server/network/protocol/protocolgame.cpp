@@ -4319,7 +4319,8 @@ void ProtocolGame::sendForgingData()
 	msg.addByte(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION));
 
 	// We have a better way of refresh client
-	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
+	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
+	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), sliverCount, coreCount);
 	writeToOutputBuffer(msg);
 }
 
@@ -4473,41 +4474,41 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 void ProtocolGame::forgeResourceConversion(uint16_t action) {
 	NetworkMessage msg;
 	// Need tests
+	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
 	if (action == 2) {
 		SPDLOG_WARN("DUST TO SLIVER");
-		uint16_t dusts = player->getForgeDusts();
-		uint16_t cost = g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT);
+		auto dusts = player->getForgeDusts();
+		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
 		if (cost > dusts) {
 			player->sendFYIBox("Not enough dust.");
 		}
-		// player->setForgeSlivers(player->getForgeSlivers() + 3);
+		// player->setForgeSlivers(sliverCount + 3);
 		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
 		g_game().internalPlayerAddItem(player, item);
 		player->setForgeDusts(dusts - cost);
 		sendForgingData();
 	} else if (action == 3) {
 		SPDLOG_WARN("SLIVER TO CORE");
-		uint16_t slivers = player->getForgeSlivers();
-		uint16_t cost = g_configManager().getNumber(FORGE_CORE_COST);
-		if (cost > slivers) {
+		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST));
+		if (cost > sliverCount) {
 			player->sendFYIBox("Not enough sliver.");
 		}
 
-		// player->setForgeCores(player->getForgeCores() + 1);
-		// player->setForgeSlivers(player->getForgeSlivers() - cost);
+		// player->setForgeCores(coreCount + 1);
+		// player->setForgeSlivers(sliverCount - cost);
 		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
 		g_game().internalPlayerAddItem(player, item);
 		player->removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
 		sendForgingData();
 	} else { // else if (action == 4)
 		SPDLOG_WARN("LIMIT");
-		uint16_t dustLevel = player->getForgeDustLevel();
+		auto dustLevel = player->getForgeDustLevel();
 		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST)) {
 			player->sendFYIBox("Maximum level reached.");
 		}
 
-		uint16_t upgradeCost = player->getForgeDustLevel() - 75;
-		uint16_t dusts = player->getForgeDusts();
+		auto upgradeCost = player->getForgeDustLevel() - 75;
+		auto dusts = player->getForgeDusts();
 		if (upgradeCost > dusts) {
 			player->sendFYIBox("Not enough dust.");
 		}

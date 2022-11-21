@@ -3111,7 +3111,8 @@ int PlayerFunctions::luaPlayerGetForgeSlivers(lua_State* L) {
 	// player:getForgeSlivers()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->getForgeSlivers());
+		auto [sliver, core] = player->getForgeSliversAndCores();
+		lua_pushnumber(L, sliver);
 	} else {
 		lua_pushnil(L);
 	}
@@ -3122,7 +3123,8 @@ int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
 	// player:getForgeCores()
 	Player *player = getUserdata<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->getForgeCores());
+		auto [sliver, core] = player->getForgeSliversAndCores();
+		lua_pushnumber(L, core);
 	} else {
 		lua_pushnil(L);
 	}

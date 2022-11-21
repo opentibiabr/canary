@@ -655,8 +655,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint64_t getMoney() const;
-		uint64_t getForgeSlivers() const;
-		uint64_t getForgeCores() const;
+		std::pair<uint64_t, uint64_t> getForgeSliversAndCores() const;
 
 		//safe-trade functions
 		void setTradeState(TradeState_t state) {

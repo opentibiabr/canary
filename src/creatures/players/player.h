@@ -136,7 +136,7 @@ class Player final : public Creature, public Cylinder
 		{
 			uint32_t oldCount = getBestiaryKillCount(raceid);
 			uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-			addStorageValue(key, static_cast<int32_t>(oldCount + amount));
+			addStorageValue(key, static_cast<int32_t>(oldCount + amount), true);
 		}
 		uint32_t getBestiaryKillCount(uint16_t raceid) const
 		{

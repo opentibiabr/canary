@@ -8405,11 +8405,10 @@ bool Game::removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monster
 bool Game::removeInfluencedMonster(uint32_t id, bool create) {
 	auto find = influencedMonsters.find(id);
 	if (find != influencedMonsters.end()) {
-		uint32_t time = 200;
 		influencedMonsters.erase(find);
 
 		if (create)
-			g_scheduler().addEvent(createSchedulerTask(time * 1000, std::bind(&Game::makeInfluencedMonster, this)));
+			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind(&Game::makeInfluencedMonster, this)));
 	} else {
 		SPDLOG_WARN("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster (ID NOT IN SET)");
 	}
@@ -8420,12 +8419,11 @@ bool Game::removeFiendishMonster(uint32_t id, bool create)
 {
 	auto find = fiendishMonsters.find(id);
 	if (find != fiendishMonsters.end()) {
-		uint32_t time = 300;
 		fiendishMonsters.erase(find);
 		g_game().checkForgeEventId(id);
 
 		if (create)
-			g_scheduler().addEvent(createSchedulerTask(time * 1000, std::bind(&Game::makeFiendishMonster, this)));
+			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind(&Game::makeFiendishMonster, this)));
 	} else {
 		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster (ID NOT IN SET)");
 	}
@@ -8453,12 +8451,17 @@ void Game::createFiendishMonsters()
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	while (created < fiendishLimit)
 	{
-		if (fiendishMonsters.size() >= fiendishLimit)
-			SPDLOG_WARN("[Game::createFiendishMonsters] - Returning in creation of Fiendish, size: {}, max is: {}.", fiendishMonsters.size(), fiendishLimit);
+		if (fiendishMonsters.size() >= fiendishLimit) {
+			SPDLOG_WARN("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.",
+				__FUNCTION__, fiendishMonsters.size(), fiendishLimit);
 			break;
+		}
+
 		auto ret = makeFiendishMonster();
-		if (ret == 0)
+		if (ret == 0) {
 			break;
+		}
+
 		created++;
 	}
 }
@@ -8470,12 +8473,16 @@ void Game::createInfluencedMonsters()
 	while (created < influencedLimit)
 	{
 		if (influencedMonsters.size() >= influencedLimit) {
-			SPDLOG_WARN("[Game::createInfluencedMonsters] - Returning in creation of Influenced, size: {}, max is: {}.", influencedMonsters.size(), influencedLimit);
+			SPDLOG_WARN("[{}] - Returning in creation of Influenced, size: {}, max is: {}.",
+				__FUNCTION__, influencedMonsters.size(), influencedLimit);
 			break;
 		}
+
 		auto ret = makeInfluencedMonster();
-		if (ret == 0)
+		if (ret == 0) {
 			break;
+		}
+
 		created++;
 	}
 }

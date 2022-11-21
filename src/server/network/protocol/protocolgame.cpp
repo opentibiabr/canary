@@ -4329,42 +4329,64 @@ void ProtocolGame::sendOpenForge() {
 
 	msg.addByte(0x01);
 	msg.addByte(0x00);
+
 	auto itemCountPosition = msg.getBufferPosition();
 	msg.skipBytes(1); // total items count
+	
+	auto backpackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
+	if (!backpackItem) {
+		return;
+	}
 
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> items;
-	for (const Item* item : player->getInventoryItem(CONST_SLOT_BACKPACK)->getContainer()->getItems(true)) {
+	auto backpackContainer = backpackItem->getContainer();
+	if (!backpackContainer) {
+		return;
+	}
+
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
+	for (auto item : backpackContainer->getItems(true)) {
+		if (!item) {
+			continue;
+		}
+
+		// Ignore imbued items
+		if (item->hasImbuements()) {
+			continue;
+		}
+
 		uint8_t maxTier = (item->getClassification() == 4 ? FORGE_MAX_ITEM_TIER : item->getClassification());
 		if (item->getClassification() != 0 && item->getTier() < maxTier) {
 			std::map<uint8_t, uint16_t> itemInfo;
 			itemInfo.insert({ item->getTier(), item->getItemCount() });
-			auto rt = items.insert({ item->getID(), itemInfo });
+			auto rt = itemsMap.insert({ item->getID(), itemInfo });
 			if (!rt.second) {
-				auto rt2 = items[item->getID()].insert({ item->getTier(), item->getItemCount() });
+				auto rt2 = itemsMap[item->getID()].insert({ item->getTier(), item->getItemCount() });
 				if (!rt2.second) {
-					(items[item->getID()])[item->getTier()] += item->getItemCount();
+					(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
 				}
 			}
 		}
 	}
-	uint8_t itemsCount = 0;
-	for (const auto itemId : items) {
-		for (const auto itemInfo : itemId.second) {
-			if (itemInfo.second >= 2) {
-				msg.add<uint16_t>(itemId.first);	// id
-				msg.addByte(itemInfo.first);		// tier
-				msg.add<uint16_t>(itemInfo.second); // count
-				itemsCount++;
+
+	uint8_t totalItemsCount = 0;
+	for (const auto [itemId, tierAndCountMap] : itemsMap) {
+		for (const auto [itemTier, itemCount] : tierAndCountMap) {
+			if (itemCount >= 2) {
+				msg.add<uint16_t>(itemId); // Item id
+				msg.addByte(itemTier); // Item tier
+				msg.add<uint16_t>(itemCount); // Item count
+				totalItemsCount++;
 			}
 		}
 	}
+
 	auto itemsPosition = msg.getBufferPosition();
 	msg.setBufferPosition(itemCountPosition);
-	msg.addByte(itemsCount);
+	msg.addByte(totalItemsCount);
 
 	msg.setBufferPosition(itemsPosition);
 	msg.addByte(0x00);
-	msg.addByte(player->getForgeDustLevel());		// Player dust limit
+	msg.addByte(player->getForgeDustLevel()); // Player dust limit
 
 	sendForgingData();
 	writeToOutputBuffer(msg);
@@ -4399,22 +4421,26 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 	bool success = roll ? true : false;
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
-	msg.addByte(success); 		// was succeeded?
+	// Was succeeded bool
+	msg.addByte(success);
 
-	msg.add<uint16_t>(item);	// left item
-	msg.addByte(tier);			// left item tier
-	msg.add<uint16_t>(item);	// right item
-	msg.addByte(tier + 1);		// right item tier
+	msg.add<uint16_t>(item); // Left item
+	msg.addByte(tier); // Left item tier
+	msg.add<uint16_t>(item); // Right item
+	msg.addByte(tier + 1); // Right item tier
 
 	uint32_t chance = uniform_random(0, 10000);
 	uint8_t bonus = forgeBonus(chance);
 	SPDLOG_WARN("bonus: {}", bonus);
-	if (!success)
+	if (!success) {
 		bonus = 0;
+	}
+
 	player->fuseItems(item, tier, success, reduceTierLoss, bonus, coreCount);
-	msg.addByte(bonus); // roll fusion bonus
+	msg.addByte(bonus); // Roll fusion bonus
+	// Core kept
 	if (bonus == 2)
-	{ // core kept
+	{
 		msg.addByte(coreCount);
 	}
 	else if (bonus == 4 || bonus == 5 || bonus == 6 || bonus == 7 || bonus == 8)
@@ -4432,11 +4458,11 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 	// WIP
 	msg.addByte(0x8A);
 
-	msg.addByte(0x01); // transfer = 1
+	msg.addByte(0x01); // Transfer = 1
 
-	msg.add<uint16_t>(firstItem);	// left item
-	msg.addByte(tier);				// left item tier
-	msg.add<uint16_t>(secondItem);	// right item
+	msg.add<uint16_t>(firstItem); // Left item
+	msg.addByte(tier); // Left item tier
+	msg.add<uint16_t>(secondItem); // Right item
 
 	// player->transferItem(firstItem, tier, secondItem);
 

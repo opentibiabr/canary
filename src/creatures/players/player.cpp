@@ -3776,6 +3776,41 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMa
 	}
 }
 
+Item* Player::getForgeItemFromId(uint16_t itemId, uint8_t tier)
+{
+	auto backpackItem = getInventoryItem(CONST_SLOT_BACKPACK);
+	if (!backpackItem) {
+		return nullptr;
+	}
+
+	auto backpackContainer = backpackItem->getContainer();
+	if (!backpackContainer) {
+		return nullptr;
+	}
+
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
+	for (auto item : backpackContainer->getItems(true)) {
+		if (!item || item->getTier() != tier || item->hasImbuements()) {
+			continue;
+		}
+
+		if (item->getID() == itemId) {
+			return item;
+		}
+
+		if (Container* container = item->getContainer())
+		{
+			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+				auto containerItem = *it;
+				if (containerItem->getID() == itemId) {
+					return containerItem;
+				}
+			}
+		}
+	}
+
+	return nullptr;
+}
 
 Thing* Player::getThing(size_t index) const
 {
@@ -6375,25 +6410,70 @@ bool Player::saySpell(
 // Forge system
 void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
 {
-	Item* item = g_game().findItemOfType(this, itemid, true, -1, true, tier);
-	g_game().internalRemoveItem(item, 1);
+	auto firstForgingItem = getForgeItemFromId(itemid, tier);
+	if (!firstForgingItem) {
+		SPDLOG_ERROR("[Log 1] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		return;
+	}
+	auto returnValue = g_game().internalRemoveItem(firstForgingItem, 1);
+	if (returnValue != RETURNVALUE_NOERROR)
+	{
+		SPDLOG_ERROR("[Log 1] Failed to remove forge item {} from player with name {}", itemid, getName());
+		sendCancelMessage(getReturnMessage(returnValue));
+		return;
+	}
+	auto secondForgingItem = getForgeItemFromId(itemid, tier);
+	if (!secondForgingItem) {
+		SPDLOG_ERROR("[Log 2] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		return;
+	}
+	if (returnValue = g_game().internalRemoveItem(secondForgingItem, 1);
+		returnValue != RETURNVALUE_NOERROR)
+	{
+		SPDLOG_ERROR("[Log 2] Failed to remove forge item {} from player with name {}", itemid, getName());
+		sendCancelMessage(getReturnMessage(returnValue));
+		return;
+	}
 
-	Item* item2 = g_game().findItemOfType(this, itemid, true, -1, true, tier);
-	g_game().internalRemoveItem(item2, 1);
+	auto exaltationChest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1);
+	if (!exaltationChest) {
+		return;
+	}
+	auto exaltationContainer = exaltationChest->getContainer();
+	if (!exaltationContainer) {
+		return;
+	}
 
-	Container* chest = Item::CreateItem(37561, 1)->getContainer();
+	Item* firstForgedItem = Item::CreateItem(itemid, 1);
+	if (!firstForgedItem) {
+		SPDLOG_ERROR("[Log 3] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		return;
+	}
+	firstForgedItem->setTier(tier);
+	returnValue = g_game().internalAddItem(exaltationContainer, firstForgedItem, INDEX_WHEREEVER);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		SPDLOG_ERROR("[Log 1] Failed to add forge item {} from player with name {}", itemid, getName());
+		sendCancelMessage(getReturnMessage(returnValue));
+		return;
+	}
 
-	Item* newItem = Item::CreateItem(itemid, 1);
-	newItem->setTier(tier);
-	g_game().internalAddItem(chest, newItem, INDEX_WHEREEVER);
+	Item* secondForgedItem = Item::CreateItem(itemid, 1);
+	if (!secondForgedItem) {
+		SPDLOG_ERROR("[Log 4] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		return;
+	}
 
-	Item* newItem2 = Item::CreateItem(itemid, 1);
-	newItem2->setTier(tier);
-	g_game().internalAddItem(chest, newItem2, INDEX_WHEREEVER);
+	secondForgedItem->setTier(tier);
+	returnValue = g_game().internalAddItem(exaltationContainer, secondForgedItem, INDEX_WHEREEVER);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		SPDLOG_ERROR("[Log 2] Failed to add forge item {} from player with name {}", itemid, getName());
+		sendCancelMessage(getReturnMessage(returnValue));
+		return;
+	}
 
 	if (success)
 	{
-		newItem->setTier(tier + 1);
+		firstForgedItem->setTier(tier + 1);
 
 		if (bonus != 1)
 		{
@@ -6401,21 +6481,24 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 		}
 		if (bonus != 2)
 		{
-			removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true);
+			if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true)) {
+				SPDLOG_ERROR("[Log 5] Failed to remove forge item {} from player with name {}", ITEM_FORGE_CORE, getName());
+				return;
+			}
 		}
 		if (bonus != 3)
 		{
 			uint64_t cost = 0;
 			for (auto itemClassification : g_game().getItemsClassifications())
 			{
-				if (itemClassification->id != item->getClassification())
+				if (itemClassification->id != firstForgingItem->getClassification())
 				{
 					continue;
 				}
 
 				for (auto &[tier, price] : itemClassification->tiers)
 				{
-					if (tier == item->getTier())
+					if (tier == firstForgingItem->getTier())
 					{
 						cost = price;
 						break;
@@ -6430,21 +6513,26 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 		{
 			if (tier > 0)
 			{
-				newItem2->setTier(tier - 1);
+				secondForgedItem->setTier(tier - 1);
 			}
 		}
 		else if (bonus == 6)
 		{
-			newItem2->setTier(tier + 1);
+			secondForgedItem->setTier(tier + 1);
 		}
-		else if (bonus == 7 && tier + 2 <= newItem->getClassification())
+		else if (bonus == 7 && tier + 2 <= firstForgedItem->getClassification())
 		{
-			newItem->setTier(tier + 2);
+			firstForgedItem->setTier(tier + 2);
 		}
 
 		if (bonus != 4 && bonus != 5 && bonus != 6 && bonus != 8)
 		{
-			g_game().internalRemoveItem(newItem2, 1);
+			returnValue = g_game().internalRemoveItem(secondForgedItem, 1);
+			if (returnValue != RETURNVALUE_NOERROR) {
+				SPDLOG_ERROR("[Log 6] Failed to remove forge item {} from player with name {}", itemid, getName());
+				sendCancelMessage(getReturnMessage(returnValue));
+				return;
+			}
 		}
 	}
 	else
@@ -6452,20 +6540,27 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 		if (auto isTierLost = uniform_random(1, 100) <= (reduceTierLoss ? g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION) : 100); 
 			isTierLost)
 		{
-			if (newItem2->getTier() >= 1)
+			if (secondForgedItem->getTier() >= 1)
 			{
-				newItem2->setTier(tier - 1);
+				secondForgedItem->setTier(tier - 1);
 			}
 			else
 			{
-				g_game().internalRemoveItem(newItem2, 1);
+				g_game().internalRemoveItem(secondForgedItem, 1);
 			}
 		}
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_FUSION_DUST_COST));
-		removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true);
+		if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true)) {
+			SPDLOG_ERROR("[Log 7] Failed to remove forge item {} from player with name {}", itemid, getName());
+			return;
+		}
 		// RemoveMoney()
 	}
-	g_game().internalAddItem(this, chest, INDEX_WHEREEVER);
+	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
+	if (returnValue != RETURNVALUE_NOERROR) {
+		SPDLOG_ERROR("[Log 3] Failed to add forge item {} from player with name {}", itemid, getName());
+		sendCancelMessage(getReturnMessage(returnValue));
+	}
 }
 
 void Player::transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondItemId)
@@ -6476,7 +6571,7 @@ void Player::transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondIte
 	removeItemOfType(firstItemId, 1, -1, true);
 	removeItemOfType(secondItemId, 1, -1, true);
 
-	Container* chest = Item::CreateItem(37561, 1)->getContainer();
+	Container* chest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1)->getContainer();
 
 	Item* newFromItem = Item::CreateItem(firstItemId, 1);
 	g_game().internalAddItem(chest, newFromItem, INDEX_WHEREEVER);

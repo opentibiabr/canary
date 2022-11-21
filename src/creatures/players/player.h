@@ -2194,6 +2194,7 @@ class Player final : public Creature, public Cylinder
 		// Function from player class with correct type sizes (uint16_t)
 		std::map<uint16_t, uint16_t>& getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> & countMap) const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
+		Item* getForgeItemFromId(uint16_t itemId, uint8_t tier);
 		Thing* getThing(size_t index) const override;
 
 		void internalAddThing(Thing* thing) override;

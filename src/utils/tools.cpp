@@ -1507,4 +1507,6 @@ uint8_t forgeBonus(int32_t number)
 	// Item not consumed
 	else if (number >= 9975)
 		return 8;
+
+	return 0;
 }

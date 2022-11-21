@@ -208,6 +208,7 @@ class LuaFunctionsLoader {
 		static void registerGlobalBoolean(lua_State* L, const std::string& name, bool value);
 		static void registerGlobalMethod(lua_State* L, const std::string& functionName, lua_CFunction func);
 		static void registerGlobalVariable(lua_State* L, const std::string& name, lua_Number value);
+		static void registerGlobalString(lua_State* L, const std::string& variable, const std::string &name);
 
 		static int luaUserdataCompare(lua_State* L);
 

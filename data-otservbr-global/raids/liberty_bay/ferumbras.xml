@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="Event" message="The seals on Ferumbras old cidatel are glowing.
+		Prepare for HIS return mortals." />
+	<announce delay="80000" type="Event" message="Ferumbras return is at hand.
+		The Edron Academy calls for Heroes to fight that evil." />
+	<announce delay="100000" type="Event" message="Ferumbras has returned to his citadel once more.
+		Stop him before its too late." />
+	<!--Single Spawns-->
+	<singlespawn delay="100000" name="Ferumbras" x="32124" y="32687" z="4"/>
+</raid>

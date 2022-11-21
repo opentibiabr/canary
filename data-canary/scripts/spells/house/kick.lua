@@ -8,7 +8,7 @@ function spell.onCastSpell(player, variant)
 		if not owner:canEditAccessList(GUEST_LIST, player) then
 			player:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
 			player:getPosition():sendMagicEffect(CONST_ME_POFF)
-		return false
+			return false
 		end
 	end
 

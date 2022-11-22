@@ -5550,7 +5550,6 @@ uint64_t Player::getMoney() const
 
 std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 {
-	std::vector<const Container*> containers;
 	uint64_t sliverCount = 0;
 	uint64_t coreCount = 0;
 
@@ -5566,7 +5565,6 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 
 	// Check items from stash
 	StashItemList stashToSend = getStashItems();
-	uint32_t countSize = 0;
 	for (auto [itemId, itemCount] : stashToSend)
 	{
 		if (itemId == ITEM_FORGE_SLIVER) {

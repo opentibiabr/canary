@@ -2503,16 +2503,16 @@ uint32_t Item::getWorth() const
 
 uint32_t Item::getForgeSlivers() const
 {
-	if (id == ITEM_FORGE_SLIVER)
-		return count;
+	if (getID() == ITEM_FORGE_SLIVER)
+		return getItemCount();
 	else
 		return 0;
 }
 
 uint32_t Item::getForgeCores() const
 {
-	if (id == ITEM_FORGE_CORE)
-		return count;
+	if (getID() == ITEM_FORGE_CORE)
+		return getItemCount();
 	else
 		return 0;
 }

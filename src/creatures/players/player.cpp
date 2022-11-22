@@ -5554,31 +5554,26 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 	uint64_t sliverCount = 0;
 	uint64_t coreCount = 0;
 
+	// Check items from inventory
 	for (auto item : getAllInventoryItems()) {
 		if (!item) {
 			continue;
 		}
 
-		const Container* container = item->getContainer();
-		if (container) {
-			containers.push_back(container);
-		} else {
-			sliverCount += item->getForgeSlivers();
-			coreCount += item->getForgeCores();
-		}
+		sliverCount += item->getForgeSlivers();
+		coreCount += item->getForgeCores();
 	}
 
-	size_t i = 0;
-	while (i < containers.size()) {
-		const Container* container = containers[i++];
-		for (const Item* item : container->getItemList()) {
-			const Container* tmpContainer = item->getContainer();
-			if (tmpContainer) {
-				containers.push_back(tmpContainer);
-			} else {
-				sliverCount += item->getForgeSlivers();
-				coreCount += item->getForgeCores();
-			}
+	// Check items from stash
+	StashItemList stashToSend = getStashItems();
+	uint32_t countSize = 0;
+	for (auto [itemId, itemCount] : stashToSend)
+	{
+		if (itemId == ITEM_FORGE_SLIVER) {
+			sliverCount += itemCount;
+		}
+		if (itemId == ITEM_FORGE_CORE) {
+			coreCount += itemCount;
 		}
 	}
 

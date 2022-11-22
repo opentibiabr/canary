@@ -8339,7 +8339,7 @@ uint32_t Game::makeInfluencedMonster() {
 }
 
 uint32_t Game::makeFiendishMonster() {
-	if (uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
+	if (auto fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
 		//Condition
 		forgeableMonsters.empty() || fiendishMonsters.size() >= fiendishLimit)
 	{

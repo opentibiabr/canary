@@ -8308,7 +8308,7 @@ uint32_t Game::makeInfluencedMonster() {
 			return 0;
 
 		tries++;
-		auto random = static_cast<uint32_t>(normal_random(0, forgeableMonsters.size() - 1));
+		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
 		auto monsterId = forgeableMonsters.at(random);
 		monster = g_game().getMonsterByID(monsterId);
 
@@ -8356,7 +8356,7 @@ uint32_t Game::makeFiendishMonster() {
 		}
 		tries++;
 
-		uint16_t random = normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1));
+		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
 		uint32_t monsterIdTest = forgeableMonsters.at(random);
 		monster = g_game().getMonsterByID(monsterIdTest);
 		if (monster == nullptr) {

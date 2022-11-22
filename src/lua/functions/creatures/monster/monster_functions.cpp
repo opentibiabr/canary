@@ -390,12 +390,14 @@ int MonsterFunctions::luaMonsterGetRespawnType(lua_State *L) {
 
 int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State *L) {
 	// monster:getTimeToChangeFiendish()
-	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		lua_pushnumber(L, monster->getTimeToChangeFiendish());
-	} else {
-		lua_pushnil(L);
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(monster->getTimeToChangeFiendish()));
 
 	return 1;
 }
@@ -404,24 +406,26 @@ int MonsterFunctions::luaMonsterSetTimeToChangeFiendish(lua_State *L) {
 	// monster:setTimeToChangeFiendish(endTime)
 	time_t endTime = getNumber<uint32_t>(L, 2, 1);
 	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		monster->setTimeToChangeFiendish(endTime);
-	} else {
-		lua_pushnil(L);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
+	monster->setTimeToChangeFiendish(endTime);
 	return 1;
 }
 
 int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State *L) {
 	// monster:getMonsterForgeClassification()
-	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		lua_pushnumber(L, monster->getMonsterForgeClassification());
-	} else {
-		lua_pushnil(L);
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
+	lua_pushnumber(L, monster->getMonsterForgeClassification());
 	return 1;
 }
 
@@ -429,24 +433,26 @@ int MonsterFunctions::luaMonsterSetMonsterForgeClassification(lua_State *L) {
 	// monster:setMonsterForgeClassification(classication)
 	MonsterForgeClassifications_t classification = getNumber<MonsterForgeClassifications_t>(L, 2);
 	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		monster->setMonsterForgeClassification(classification);
-	} else {
-		lua_pushnil(L);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
+	monster->setMonsterForgeClassification(classification);
 	return 1;
 }
 
 int MonsterFunctions::luaMonsterGetForgeStack(lua_State *L) {
 	// monster:getForgeStack()
-	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		lua_pushnumber(L, monster->getForgeStack());
-	} else {
-		lua_pushnil(L);
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
+	lua_pushnumber(L, monster->getForgeStack());
 	return 1;
 }
 
@@ -454,23 +460,25 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State *L) {
 	// monster:setForgeStack(stack)
 	uint16_t stack = getNumber<uint16_t>(L, 2, 0);
 	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		monster->setForgeStack(stack);
-	} else {
-		lua_pushnil(L);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
+	monster->setForgeStack(stack);
 	return 1;
 }
 
 int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State *L) {
 	// monster:configureForgeSystem()
 	Monster *monster = getUserdata<Monster>(L, 1);
-	if (monster) {
-		monster->configureForgeSystem();
-	} else {
-		lua_pushnil(L);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
-	
+
+	monster->configureForgeSystem();
 	return 1;
 }

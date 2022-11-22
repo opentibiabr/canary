@@ -3797,7 +3797,7 @@ Item* Player::getForgeItemFromId(uint16_t itemId, uint8_t tier)
 			return item;
 		}
 
-		if (Container* container = item->getContainer())
+		if (auto container = item->getContainer())
 		{
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
 				auto containerItem = *it;
@@ -6449,26 +6449,23 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 		}
 		if (bonus != 2)
 		{
-			if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true)) {
-				SPDLOG_ERROR("[Log 5] Failed to remove forge item {} from player with name {}", ITEM_FORGE_CORE, getName());
-				return;
-			}
+			removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true);
 		}
 		if (bonus != 3)
 		{
 			uint64_t cost = 0;
-			for (auto itemClassification : g_game().getItemsClassifications())
+			for (const auto itemClassification : g_game().getItemsClassifications())
 			{
 				if (itemClassification->id != firstForgingItem->getClassification())
 				{
 					continue;
 				}
 
-				for (auto &[tier, price] : itemClassification->tiers)
+				for (const auto &[mapTier, mapPrice] : itemClassification->tiers)
 				{
-					if (tier == firstForgingItem->getTier())
+					if (mapTier == firstForgingItem->getTier())
 					{
-						cost = price;
+						cost = mapPrice;
 						break;
 					}
 				}

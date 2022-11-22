@@ -2850,7 +2850,7 @@ void ProtocolGame::sendCreatureEmblem(const Creature *creature)
 	NetworkMessage msg;
 	msg.addByte(0x6A);
 	msg.addPosition(pos);
-	msg.addByte(stackpos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
 	AddCreature(msg, creature, false, creature->getID());
 	writeToOutputBuffer(msg);
 }
@@ -4296,27 +4296,27 @@ void ProtocolGame::sendForgingData()
 	// Forge Config Bytes
 
 	// (conversion) (left column top) Cost to make 1 bottom item - 20
-	msg.addByte(g_configManager().getNumber(FORGE_COST_ONE_SLIVER));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
 	// (conversion) (left column bottom) How many items to make - 3
-	msg.addByte(g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT)));
 	// (conversion) (middle column top) Cost to make 1 - 50
-	msg.addByte(g_configManager().getNumber(FORGE_CORE_COST));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CORE_COST)));
 	// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
 	msg.addByte(75);
 	// (conversion) (right column bottom) Starting stored dust limit
-	msg.addByte(player->getForgeDustLevel());
+	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel()));
 	// (conversion) (right column bottom) Max stored dust limit - 225
-	msg.addByte(g_configManager().getNumber(FORGE_MAX_DUST));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_MAX_DUST)));
 	// (fusion) Dust cost - 100
-	msg.addByte(g_configManager().getNumber(FORGE_FUSION_DUST_COST));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST)));
 	// (transfer) Dust cost - 100
-	msg.addByte(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)));
 	// (fusion) Base success rate - 50
-	msg.addByte(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE)));
 	// (fusion) Bonus success rate - 15
-	msg.addByte(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)));
 	// (fusion) Tier loss chance after reduction - 50
-	msg.addByte(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION));
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION)));
 
 	// We have a better way of refresh client
 	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
@@ -4359,10 +4359,10 @@ void ProtocolGame::sendOpenForge() {
 		if (item->getClassification() != 0 && item->getTier() < maxTier) {
 			std::map<uint8_t, uint16_t> itemInfo;
 			itemInfo.insert({ item->getTier(), item->getItemCount() });
-			auto rt = itemsMap.insert({ item->getID(), itemInfo });
-			if (!rt.second) {
-				auto rt2 = itemsMap[item->getID()].insert({ item->getTier(), item->getItemCount() });
-				if (!rt2.second) {
+			auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
+			if (!inserted) {
+				auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
+				if (!otherInserted) {
 					(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
 				}
 			}
@@ -4370,7 +4370,7 @@ void ProtocolGame::sendOpenForge() {
 	}
 
 	uint8_t totalItemsCount = 0;
-	for (const auto [itemId, tierAndCountMap] : itemsMap) {
+	for (const auto &[itemId, tierAndCountMap] : itemsMap) {
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				msg.add<uint16_t>(itemId); // Item id
@@ -4387,7 +4387,7 @@ void ProtocolGame::sendOpenForge() {
 
 	msg.setBufferPosition(itemsPosition);
 	msg.addByte(0x00);
-	msg.addByte(player->getForgeDustLevel()); // Player dust limit
+	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
 
 	sendForgingData();
 	writeToOutputBuffer(msg);
@@ -4416,9 +4416,11 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 	msg.addByte(0x8A);
 
 	msg.addByte(0x00); // fusion = 0
-	uint16_t baseSuccess = g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE);
-	uint16_t bonusSuccess = g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE);
-	uint8_t roll = uniform_random(1, 100) <= (usedCore ? bonusSuccess : baseSuccess);
+	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
+		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
+	);
+	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
 	bool success = roll ? true : false;
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
@@ -4465,7 +4467,8 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 	msg.addByte(tier); // Left item tier
 	msg.add<uint16_t>(secondItem); // Right item
 
-	// player->transferItem(firstItem, tier, secondItem);
+	// Need testing and review
+	player->transferItem(firstItem, tier, secondItem);
 
 	writeToOutputBuffer(msg);
 	sendOpenForge();
@@ -4483,7 +4486,8 @@ void ProtocolGame::forgeResourceConversion(uint16_t action) {
 			player->sendFYIBox("Not enough dust.");
 		}
 		// player->setForgeSlivers(sliverCount + 3);
-		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+		auto itemCount = static_cast<uint16_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, itemCount);
 		g_game().internalPlayerAddItem(player, item);
 		player->setForgeDusts(dusts - cost);
 		sendForgingData();
@@ -4507,13 +4511,13 @@ void ProtocolGame::forgeResourceConversion(uint16_t action) {
 			player->sendFYIBox("Maximum level reached.");
 		}
 
-		auto upgradeCost = player->getForgeDustLevel() - 75;
+		auto upgradeCost = dustLevel - 75;
 		auto dusts = player->getForgeDusts();
 		if (upgradeCost > dusts) {
 			player->sendFYIBox("Not enough dust.");
 		}
 
-		SPDLOG_WARN("Total dusts: {}, Dust Level: {}, Upgrade Cost (Formula): {}, Upgrade Cost (Variable): {}", player->getForgeDusts(), player->getForgeDustLevel(), player->getForgeDustLevel() - 75, upgradeCost);
+		SPDLOG_WARN("Total dusts: {}, Dust Level: {}, Upgrade Cost (Formula): {}, Upgrade Cost (Variable): {}", dusts, dustLevel, dustLevel - 75, upgradeCost);
 		player->removeForgeDusts(upgradeCost);
 		player->addForgeDustLevel(1);
 		sendForgingData();
@@ -7328,22 +7332,22 @@ void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
 
 void ProtocolGame::sendUpdateCreature(const Creature* creature)
 {
-    if (!creature || !player) {
-        return; 
-    }
+	if (!creature || !player) {
+		return; 
+	}
 
-    if (!canSee(creature))
-        return;
+	if (!canSee(creature))
+		return;
 
-    int32_t stackPos = creature->getTile()->getClientIndexOfCreature(player, creature);
-    if (stackPos == -1 || stackPos >= 10) {
-        return;
-    }
+	int32_t stackPos = creature->getTile()->getClientIndexOfCreature(player, creature);
+	if (stackPos == -1 || stackPos >= 10) {
+		return;
+	}
 
-    NetworkMessage msg; 
-    msg.addByte(0x6B);
-    msg.addPosition(creature->getPosition());
-    msg.addByte(stackPos);
-    AddCreature(msg, creature, false, 0);
-    writeToOutputBuffer(msg);
+	NetworkMessage msg; 
+	msg.addByte(0x6B);
+	msg.addPosition(creature->getPosition());
+	msg.addByte(static_cast<uint8_t>(stackPos));
+	AddCreature(msg, creature, false, 0);
+	writeToOutputBuffer(msg);
 }

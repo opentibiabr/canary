@@ -967,7 +967,7 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureIcon(creature);
 			}
 		}
-		void sendUpdateCreature(const Creature *creature) {
+		void sendUpdateCreature(const Creature *creature) const {
 			if (client) {
 				client->sendUpdateCreature(creature);
 			}

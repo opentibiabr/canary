@@ -3008,24 +3008,25 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 // Forge
 int PlayerFunctions::luaPlayerOpenForge(lua_State* L) {
 	// player:openForge()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		player->sendOpenForge();
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
+	player->sendOpenForge();
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerCloseForge(lua_State* L) {
 	// player:closeForge()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
-		return 1;
+		return 0;
 	}
 
 	player->closeForgeWindow();
@@ -3109,24 +3110,28 @@ int PlayerFunctions::luaPlayerGetForgeDustLevel(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetForgeSlivers(lua_State* L) {
 	// player:getForgeSlivers()
-	Player* player = getUserdata<Player>(L, 1);
-	if (player) {
-		auto [sliver, core] = player->getForgeSliversAndCores();
-		lua_pushnumber(L, sliver);
-	} else {
-		lua_pushnil(L);
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	auto [sliver, core] = player->getForgeSliversAndCores();
+	lua_pushnumber(L, static_cast<lua_Number>(sliver));
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
 	// player:getForgeCores()
-	Player *player = getUserdata<Player>(L, 1);
-	if (player) {
-		auto [sliver, core] = player->getForgeSliversAndCores();
-		lua_pushnumber(L, core);
-	} else {
-		lua_pushnil(L);
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	auto [sliver, core] = player->getForgeSliversAndCores();
+	lua_pushnumber(L, static_cast<lua_Number>(core));
 	return 1;
 }

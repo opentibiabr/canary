@@ -927,8 +927,8 @@ void Monster::doAttacking(uint32_t interval)
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
 
 				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
-					minCombatValue *= forgeAttackBonus;
-					maxCombatValue *= forgeAttackBonus;
+					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
+					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
 				}
 
 				spellBlock.spell->castSpell(this, attackedCreature);
@@ -2053,13 +2053,15 @@ void Monster::updateLookDirection()
 void Monster::dropLoot(Container* corpse, Creature*)
 {
 	if (corpse && lootDrop) {
-		MonsterForgeClassifications_t classification = getMonsterForgeClassification();
 		// Only fiendish drops sliver
-		if (classification == FORGE_FIENDISH_MONSTER) {
-			uint16_t minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
-			uint16_t maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
+		if (MonsterForgeClassifications_t classification = getMonsterForgeClassification();
+			// Condition
+			classification == FORGE_FIENDISH_MONSTER)
+		{
+			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
+			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
 
-			uint16_t sliverCount = uniform_random(minSlivers, maxSlivers);
+			auto sliverCount = static_cast<uint16_t>(uniform_random(minSlivers, maxSlivers));
 
 			Item *sliver = Item::CreateItem(ITEM_FORGE_SLIVER, sliverCount);
 			if (g_game().internalAddItem(corpse, sliver) != RETURNVALUE_NOERROR) {
@@ -2179,7 +2181,7 @@ void Monster::configureForgeSystem()
 	else if (monsterForgeClassification == FORGE_INFLUENCED_MONSTER)
 	{
 		// Set stack
-		uint16_t stack = normal_random(1, 5);
+		auto stack = static_cast<uint16_t>(normal_random(1, 5));
 		setForgeStack(stack);
 		// Set icon
 		setMonsterIcon(stack, 4);
@@ -2209,8 +2211,8 @@ void Monster::clearFiendishStatus()
 	monsterForgeClassification = FORGE_NORMAL_MONSTER;
 
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
-	health = mType->info.health * multiplier;
-	healthMax = mType->info.healthMax * multiplier;
+	health = mType->info.health * static_cast<int32_t>(multiplier);
+	healthMax = mType->info.healthMax * static_cast<int32_t>(multiplier);
 
 	// Set icon
 	setMonsterIcon(0, CREATUREICON_NONE);

@@ -18,6 +18,8 @@ local config = {
 	timeToKill = 15, -- time in minutes to remove the player	
 }	
 
+local currentEvent = nil
+
 local function RoomIsOccupied(centerPosition, rangeX, rangeY)
 	local spectators = Game.getSpectators(config.centerPosition, false, true, config.rangeX, config.rangeX, config.rangeY, config.rangeY)
 	if #spectators ~= 0 then
@@ -44,6 +46,7 @@ local function clearRoomDrume(centerPosition, rangeX, rangeY, resetGlobalStorage
 	if Game.getStorageValue(resetGlobalStorage) == 1 then
 		Game.setStorageValue(resetGlobalStorage, -1)
 	end
+	currentEvent = nil
 end
 
 local drumeAction = Action()
@@ -104,10 +107,13 @@ function drumeAction.onUse(player, item, fromPosition, target, toPosition, isHot
 	for _, pi in pairs(players) do
 		pi:setStorageValue(Storage.TheOrderOfTheLion.Drume.Timer, os.time() + (20 * 60 * 60))
 		pi:teleportTo(config.newPosition)
-		addEvent(clearRoomDrume, config.timeToKill * 60 * 1000, config.centerPosition, config.rangeX, config.rangeY, resetGlobalStorage)
 		pi:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have " ..config.timeToKill.." minutes to defeat Drume.")
 		
 	end
+	if currentEvent then
+		stopEvent(currentEvent)
+	end
+	currentEvent = addEvent(clearRoomDrume, config.timeToKill * 60 * 1000, config.centerPosition, config.rangeX, config.rangeY, resetGlobalStorage)
 	config.newPosition:sendMagicEffect(CONST_ME_TELEPORT)
 	toPosition:sendMagicEffect(CONST_ME_POFF)
 	Game.setStorageValue(Storage.TheOrderOfTheLion.Drume.TotalLionCommanders, totalLion)

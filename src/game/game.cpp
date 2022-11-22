@@ -8390,21 +8390,22 @@ uint32_t Game::makeFiendishMonster() {
 
 void Game::updateFiendishMonsterStatus(uint32_t monsterId) {
 	Monster *monster = getMonsterByID(monsterId);
-	if (monster) {
-		monster->clearFiendishStatus();
-		removeFiendishMonster(monsterId, false);
-		makeFiendishMonster();
-	} else {
-		SPDLOG_WARN("[Game::updateFiendishMonsterStatus] - Failed to update a Fiendish Monster (MONSTER ID NOT FOUND)");
+	if (!monster) {
+		SPDLOG_WARN("[Game::updateFiendishMonsterStatus] - Failed to update a Fiendish Monster, monster with id {} not found", monsterId);
+		return;
 	}
+
+	monster->clearFiendishStatus();
+	removeFiendishMonster(monsterId, false);
+	makeFiendishMonster();
 }
 
 bool Game::removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monsterForgeClassification, bool create) {
-	create = true;
 	if (monsterForgeClassification == FORGE_FIENDISH_MONSTER)
 		removeFiendishMonster(id, create);
 	else if (monsterForgeClassification == FORGE_INFLUENCED_MONSTER)
 		removeInfluencedMonster(id, create);
+
 	return true;
 }
 
@@ -8419,7 +8420,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create) {
 			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind(&Game::makeInfluencedMonster, this)));
 		}
 	} else {
-		SPDLOG_WARN("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster (ID NOT IN SET)");
+		SPDLOG_WARN("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
 	}
 	return false;
 }
@@ -8437,7 +8438,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create)
 			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind(&Game::makeFiendishMonster, this)));
 		}
 	} else {
-		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster (ID NOT IN SET)");
+		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
 	}
 
 	return false;

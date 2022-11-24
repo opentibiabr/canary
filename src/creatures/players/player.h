@@ -2186,7 +2186,7 @@ class Player final : public Creature, public Cylinder
 		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
 		// This get all player inventory items
-		std::vector<Item*> getAllInventoryItems() const;
+		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false) const;
 		// This function is a override function of base class
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;

@@ -39,6 +39,20 @@
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
 
+// This function will allow us to get the total number of iterations that run within a specific map
+// Very useful to send the total amount in certain bytes in the ProtocolGame class
+namespace {
+template <typename T>
+uint16_t getIterationIncreaseCount(T& map) {
+	uint16_t totalIterationCount = 0;
+	for (const auto &[first, second] : map) {
+		totalIterationCount++;
+	}
+
+	return totalIterationCount;
+}
+}
+
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {
 	version = CLIENT_VERSION;
 }
@@ -4324,6 +4338,22 @@ void ProtocolGame::sendForgingData()
 	writeToOutputBuffer(msg);
 }
 
+std::map<uint16_t, std::map<uint8_t, uint16_t>> getForgeInfoMap(Item *item)
+{
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
+	std::map<uint8_t, uint16_t> itemInfo;
+	itemInfo.insert({ item->getTier(), item->getItemCount() });
+	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
+	if (!inserted) {
+		auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
+		if (!otherInserted) {
+			(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
+		}
+	}
+
+	return itemsMap;
+}
+
 void ProtocolGame::sendOpenForge() {
 	NetworkMessage msg;
 	msg.addByte(0x87);
@@ -4331,64 +4361,118 @@ void ProtocolGame::sendOpenForge() {
 	msg.addByte(0x01);
 	msg.addByte(0x00);
 
-	auto itemCountPosition = msg.getBufferPosition();
-	msg.skipBytes(1); // total items count
-	
-	auto backpackItem = player->getInventoryItem(CONST_SLOT_BACKPACK);
-	if (!backpackItem) {
-		return;
-	}
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
 
-	auto backpackContainer = backpackItem->getContainer();
-	if (!backpackContainer) {
-		return;
-	}
-
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
-	for (auto item : backpackContainer->getItems(true)) {
-		if (!item) {
-			continue;
-		}
-
-		// Ignore imbued items
-		if (item->hasImbuements()) {
-			continue;
-		}
-
-		uint8_t maxTier = (item->getClassification() == 4 ? FORGE_MAX_ITEM_TIER : item->getClassification());
-		if (item->getClassification() != 0 && item->getTier() < maxTier) {
+	uint8_t donorTierTotalCount = 0;
+	uint8_t receiveTierTotalCount = 0;
+	for (auto item : player->getAllInventoryItems(true)) {
+		auto itemClassification = item->getClassification();
+		auto itemTier = item->getTier();
+		auto maxTier = (itemClassification == 4 ? FORGE_MAX_ITEM_TIER : itemClassification);
+		auto itemId = item->getID();
+		auto itemCount = item->getItemCount();
+		// Save fusion items on map
+		if (itemClassification != 0 && itemTier < maxTier) {
 			std::map<uint8_t, uint16_t> itemInfo;
-			itemInfo.insert({ item->getTier(), item->getItemCount() });
-			auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
+			itemInfo.insert({ itemTier, itemCount });
+			auto [first, inserted] = fusionItemsMap.try_emplace(itemId, itemInfo);
 			if (!inserted) {
-				auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
+				auto [otherFirst, otherInserted] = fusionItemsMap[itemId].try_emplace(itemTier, itemCount);
 				if (!otherInserted) {
-					(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
+					(fusionItemsMap[itemId])[itemTier] += itemCount;
 				}
+			}
+		}
+
+		if (itemClassification > 0) {
+			// Save donor transfer items on map
+			if (itemTier > 1) {
+				std::map<uint8_t, uint16_t> itemInfo;
+				itemInfo.insert({ itemTier, itemCount });
+				auto [first, inserted] = donorTierItemMap.try_emplace(itemId, itemInfo);
+				if (!inserted) {
+					auto [otherFirst, otherInserted] = donorTierItemMap[itemId].try_emplace(itemTier, itemCount);
+					if (!otherInserted) {
+						(donorTierItemMap[itemId])[itemTier] += itemCount;
+					}
+				}
+				donorTierTotalCount++;
+			}
+			// Save receive transfer items on map
+			if (itemTier == 0) {
+				std::map<uint8_t, uint16_t> itemInfo;
+				itemInfo.insert({ itemTier, itemCount });
+				auto [first, inserted] = receiveTierItemMap.try_emplace(itemId, itemInfo);
+				if (!inserted) {
+					auto [otherFirst, otherInserted] = receiveTierItemMap[itemId].try_emplace(itemTier, itemCount);
+					if (!otherInserted) {
+						(receiveTierItemMap[itemId])[itemTier] += itemCount;
+					}
+				}
+				receiveTierTotalCount++;
 			}
 		}
 	}
 
-	uint8_t totalItemsCount = 0;
-	for (const auto &[itemId, tierAndCountMap] : itemsMap) {
+	// Checking size of map to send in the addByte
+	uint8_t fusionTotalCount = 0;
+	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
+		for (const auto [itemTier, itemCount] : tierAndCountMap) {
+			if (itemCount >= 2) {
+				fusionTotalCount++;
+			}
+		}
+	}
+
+	SPDLOG_INFO("[1] FUSION ITEM COUNT {}", fusionTotalCount);
+	msg.addByte(fusionTotalCount);
+	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
 				msg.add<uint16_t>(itemId); // Item id
 				msg.addByte(itemTier); // Item tier
 				msg.add<uint16_t>(itemCount); // Item count
-				totalItemsCount++;
 			}
 		}
 	}
 
-	auto itemsPosition = msg.getBufferPosition();
-	msg.setBufferPosition(itemCountPosition);
-	msg.addByte(totalItemsCount);
+	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
+	SPDLOG_INFO("[2] TRANSFER ITEM COUNT {}", transferTotalCount);
+	msg.addByte(transferTotalCount);
+	if (transferTotalCount > 0) {
+		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
+			SPDLOG_INFO("[3] DONOR ITEM ID {}, TOTAL DONOR ITEM COUNT {}", itemId, donorTierTotalCount);
+			// Total items size
+			msg.add<uint16_t>(donorTierTotalCount);
+			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
+				SPDLOG_INFO("[4] DONOR ITEM ID {}, DONOR ITEM TIER {}, DONOR ITEM COUNT {}", itemId, donorItemTier, donorItemCount);
+				msg.add<uint16_t>(itemId);
+				msg.addByte(donorItemTier);
+				msg.add<uint16_t>(donorItemCount);
+			}
 
-	msg.setBufferPosition(itemsPosition);
-	msg.addByte(0x00);
+			uint8_t receiveTierItemCount = 0;
+			for (const auto &[first, second] : receiveTierItemMap) {
+				receiveTierItemCount++;
+			}
+
+			SPDLOG_INFO("[5] RECEIVE ITEM COUNT {}", receiveTierItemCount);
+			msg.add<uint16_t>(receiveTierItemCount);
+			if (receiveTierItemCount > 0) {
+				for (const auto &[itemId, receiveTierAndCountMap] : receiveTierItemMap) {
+					for (const auto [receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+						SPDLOG_INFO("[6] RECEIVE ITEM COUNT {}", receiveItemCount);
+						msg.add<uint16_t>(itemId); // Item id
+						msg.add<uint16_t>(receiveItemCount); // Item count
+					}
+				}
+			}
+		}
+	}
+
 	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
-
 	sendForgingData();
 	writeToOutputBuffer(msg);
 }

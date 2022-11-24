@@ -3720,7 +3720,7 @@ std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore 
 	return itemVector;
 }
 
-std::vector<Item*> Player::getAllInventoryItems() const
+std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) const
 {
 	std::vector<Item*> itemVector;
 	for (int i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; ++i) {
@@ -3729,7 +3729,10 @@ std::vector<Item*> Player::getAllInventoryItems() const
 			continue;
 		}
 
-		itemVector.push_back(item);
+		// Only get equiped items if ignored equipped is false
+		if (!ignoreEquiped) {
+			itemVector.push_back(item);
+		}
 		if (Container* container = item->getContainer())
 		{
 			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {

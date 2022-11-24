@@ -4390,7 +4390,7 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 	} else if (const Monster* monster = target->getMonster()) {
 		// Access to the monster's map damage to check if the player attacked it
 		for (auto [playerId, damage] : monster->getDamageMap()) {
-			auto damagePlayer = g_game.getPlayerByID(playerId);
+			auto damagePlayer = g_game().getPlayerByID(playerId);
 			if (damagePlayer) {
 				// If the player is not in a party and sharing exp active and enabled
 				// And it's not the player killing the creature, then we ignore everything else

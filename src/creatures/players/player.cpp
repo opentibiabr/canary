@@ -4387,16 +4387,34 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 				}
 			}
 		}
-	} else if (const Monster* monster = target->getMonster();
-		TaskHuntingSlot* taskSlot = getTaskHuntingWithCreature(monster->getRaceId())) {
-		if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {
-			taskSlot->currentKills += 1;
-			if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
-				(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
-				taskSlot->state = PreyTaskDataState_Completed;
-				sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
+	} else if (const Monster* monster = target->getMonster()) {
+		// Access to the monster's map damage to check if the player attacked it
+		for (auto [playerId, damage] : monster->getDamageMap()) {
+			auto damagePlayer = g_game.getPlayerByID(playerId);
+			if (damagePlayer) {
+				// If the player is not in a party and sharing exp active and enabled
+				// And it's not the player killing the creature, then we ignore everything else
+				auto damageParty = damagePlayer->getParty();
+				if (this->getID() != damagePlayer->getID() &&
+					(!damageParty || !damageParty->isSharedExperienceActive() || !damageParty->isSharedExperienceEnabled()))
+				{
+					continue;
+				}
+				TaskHuntingSlot* taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
+				if (!taskSlot || monster->isSummon()) {
+					return false;
+				}
+
+				if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {
+					taskSlot->currentKills += 1;
+					if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
+						(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+						taskSlot->state = PreyTaskDataState_Completed;
+						damagePlayer->sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
+					}
+					damagePlayer->reloadTaskSlot(taskSlot->id);
+				}
 			}
-			reloadTaskSlot(taskSlot->id);
 		}
 	}
 

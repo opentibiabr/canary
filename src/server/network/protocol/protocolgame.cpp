@@ -800,7 +800,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE7: /* thank you */ break;
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEB: parsePreyAction(msg); break;
-		case 0xED: parseSendResourceBalance(msg); break;
+		case 0xED: parseSendResourceBalance(); break;
 		case 0xEE: parseGreet(msg); break;
 		// Premium coins transfer
 		// case 0xEF: parseCoinTransfer(msg); break;
@@ -2580,7 +2580,7 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 	addGameTask(&Game::playerPreyAction, player->getID(), slot, action, option, index, raceId);
 }
 
-void ProtocolGame::parseSendResourceBalance(NetworkMessage &msg) {
+void ProtocolGame::parseSendResourceBalance() {
 	sendResourcesBalance(
 		player->getMoney(),
 		player->getBankBalance(),

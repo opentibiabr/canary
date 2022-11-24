@@ -2580,7 +2580,8 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 	addGameTask(&Game::playerPreyAction, player->getID(), slot, action, option, index, raceId);
 }
 
-void ProtocolGame::parseSendResourceBalance() {
+void ProtocolGame::parseSendResourceBalance()
+{
 	sendResourcesBalance(
 		player->getMoney(),
 		player->getBankBalance(),

@@ -4400,9 +4400,10 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 				{
 					continue;
 				}
+
 				TaskHuntingSlot* taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
 				if (!taskSlot || monster->isSummon()) {
-					return false;
+					continue;
 				}
 
 				if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {

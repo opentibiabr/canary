@@ -33,7 +33,7 @@ function bonusPreyLootDeath.onDeath(creature, corpse, killer, mostDamageKiller, 
 	for i, loot in pairs(monsterLoot) do
 		local item = corpse:createLootItem(monsterLoot[i], false)
 		if not item then
-			Spdlog.warn(string.format("[Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+			Spdlog.warn(string.format("[bonusPreyLootDeath.onDeath] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
 		end
 	end
 	return true

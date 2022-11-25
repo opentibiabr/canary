@@ -4152,14 +4152,56 @@ GameStore.Categories = {
         },
       },
   },
--- Usefull Things  
-  {   
+-- Usefull Things
+  {
    icons = { "Category_UsefulThings.png" },
    name = "Useful Things",
    parent = "Extras",
    rookgaard = true,
    state = GameStore.States.STATE_NONE,
-   offers = { 
+   offers = {
+        {
+          icons = {"Prey_Bonus_Reroll.png"},
+          name = "Prey Wildcard",
+          price = 15,
+          id = 1,
+          count = 5,
+          description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
+          type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
+        },
+        {
+          icons = {"Instant_Reward_Access.png"},
+          name = "Instant Reward Access",
+          price = 50,
+          id = 2,
+          count = 1,
+          description = "<i>No matter where you are in Tibia, claim your daily reward on the spot!</i>\n\n{character}\n{info} added to your reward wall\n{info} maximum amount that can be owned by character: 90",
+          type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
+        },
+        {
+          icons = {"Charm_Expansion_Offer.png"},
+          name = "Charm Expansion",
+          price = 400,
+          id = 3,
+          description = "<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i>\n\n{character}\n{once}",
+          type = GameStore.OfferTypes.OFFER_TYPE_CHARMS
+        },
+        {
+          icons = {"Permanent_Prey_Slot.png"},
+          name = "Permanent Prey Slot",
+          price = 350,
+          id = 4,
+          description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
+          type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
+        },
+        {
+          icons = {"Permanent_Hunting_Task_Slot.png"},
+          name = "Permanent Hunting Task Slot",
+          price = 350,
+          id = 5,
+          description = "<i>Get an additional hunting tasks slot to activate additional hunting task!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Hunting Task dialog",
+          type = GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
+        },
         {
           icons = { "Gold_Converter.png" },
           name = "Gold Converter",
@@ -4179,23 +4221,6 @@ GameStore.Categories = {
           type = GameStore.OfferTypes.OFFER_TYPE_POUNCH,
         },
         {
-          icons = { "Instant_Reward_Access.png" },
-          name = "Instant Reward Access",
-          price = 100,
-          id = 2,
-          count = 1,
-          description = "<i>No matter where you are in Tibia, claim your daily reward on the spot!</i>\n\n{character}\n{info} added to your reward wall\n{info} maximum amount that can be owned by character: 90",
-          type = GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS,
-        },
-        {                
-          icons = { "Charm_Expansion_Offer.png" },
-          name = "Charm Expansion",
-          price = 450,
-          id = 65005,
-          description = "<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i>\n\n{character}\n{once}",
-          type = GameStore.OfferTypes.OFFER_TYPE_CHARMS,
-        }, 
-        {
           icons = { "Magic_Gold_Converter.png" },
           name = "Magic Gold Converter",
           price = 15,
@@ -4203,23 +4228,6 @@ GameStore.Categories = {
           charges = 500,
           description = "<i>Changes automatically either a stack of 100 gold pieces into 1 platinum coin, or a stack of 100 platinum coins into 1 crystal coin!</i>\n\n{character}\n{storeinbox}\n{useicon} use it to activate or deactivate the automatic conversion\n{info} converts all stacks of 100 gold or platinum in the inventory whenever it is activated\n{info} deactivated upon purchase\n{info} usable for 500 conversions a piece",
           type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
-        },
-        {
-          icons = { "Permanent_Prey_Slot.png" },
-          name = "Permanent Prey Slot",
-          price = 900,
-          id = 65008,
-          description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
-          type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT,
-        },
-        {
-          icons = { "Prey_Bonus_Reroll.png" },
-          name = "Prey Wildcard",
-          price = 50,
-          id = 1,
-          count = 5,
-          description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
-          type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,
         },
         {
           icons = { "Prey_Bonus_Reroll.png" },
@@ -4236,7 +4244,7 @@ GameStore.Categories = {
           description = "<i>Teleports you instantly to your home temple.</i>\n\n{character}\n{useicon} use it to teleport you to your home temple</i>\n{battlesign}\n{info} does not work in no-logout zones or close to a character's home temple",
           type = GameStore.OfferTypes.OFFER_TYPE_TEMPLE,
         },
-      }, 
+      },
   },
    --Tournament
    {

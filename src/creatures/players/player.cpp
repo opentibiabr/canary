@@ -5867,6 +5867,8 @@ void Player::initializePrey()
 				slot->state = PreyDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(PREY_FREE_THIRD_SLOT)) {
 				slot->state = PreyDataState_Locked;
+			} else if (slot->id == PreySlot_Two && !isPremium()) {
+				slot->state = PreyDataState_Locked;
 			} else {
 				slot->state = PreyDataState_Selection;
 				slot->reloadMonsterGrid(getPreyBlackList(), getLevel());
@@ -5887,6 +5889,8 @@ void Player::initializeTaskHunting()
 			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
 				slot->state = PreyTaskDataState_Inactive;
 			} else if (slot->id == PreySlot_Three && !g_configManager().getBoolean(TASK_HUNTING_FREE_THIRD_SLOT)) {
+				slot->state = PreyTaskDataState_Locked;
+			} else if (slot->id == PreySlot_Two && !isPremium()) {
 				slot->state = PreyTaskDataState_Locked;
 			} else {
 				slot->state = PreyTaskDataState_Selection;

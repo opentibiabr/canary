@@ -3781,37 +3781,17 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMa
 
 Item* Player::getForgeItemFromId(uint16_t itemId, uint8_t tier)
 {
-	auto backpackItem = getInventoryItem(CONST_SLOT_BACKPACK);
-	if (!backpackItem) {
-		return nullptr;
-	}
+    for (auto item : getAllInventoryItems(true)) {
+        if (item->hasImbuements()) {
+            continue;
+        }
 
-	auto backpackContainer = backpackItem->getContainer();
-	if (!backpackContainer) {
-		return nullptr;
-	}
+        if (item->getID() == itemId && item->getTier() == tier) {
+            return item;
+        }
+    }
 
-	for (auto item : backpackContainer->getItems(true)) {
-		if (!item || item->getTier() != tier || item->hasImbuements()) {
-			continue;
-		}
-
-		if (item->getID() == itemId) {
-			return item;
-		}
-
-		if (auto container = item->getContainer())
-		{
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				auto containerItem = *it;
-				if (containerItem->getID() == itemId) {
-					return containerItem;
-				}
-			}
-		}
-	}
-
-	return nullptr;
+    return nullptr;
 }
 
 Thing* Player::getThing(size_t index) const

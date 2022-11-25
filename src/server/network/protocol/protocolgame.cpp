@@ -4355,12 +4355,6 @@ std::map<uint16_t, std::map<uint8_t, uint16_t>> getForgeInfoMap(Item *item)
 }
 
 void ProtocolGame::sendOpenForge() {
-	NetworkMessage msg;
-	msg.addByte(0x87);
-
-	msg.addByte(0x01);
-	msg.addByte(0x00);
-
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
@@ -4426,11 +4420,15 @@ void ProtocolGame::sendOpenForge() {
 		}
 	}
 
+	NetworkMessage msg;
+	msg.addByte(0x87);
+
 	SPDLOG_INFO("[1] FUSION ITEM COUNT {}", fusionTotalCount);
-	msg.addByte(fusionTotalCount);
+	msg.add<uint16_t>(fusionTotalCount);
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
+				msg.addByte(0x01);
 				msg.add<uint16_t>(itemId); // Item id
 				msg.addByte(itemTier); // Item tier
 				msg.add<uint16_t>(itemCount); // Item count
@@ -4473,8 +4471,8 @@ void ProtocolGame::sendOpenForge() {
 	}
 
 	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
-	sendForgingData();
 	writeToOutputBuffer(msg);
+	sendForgingData();
 }
 
 void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {

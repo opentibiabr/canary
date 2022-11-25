@@ -8460,9 +8460,8 @@ void Game::updateForgeableMonsters()
 
 void Game::createFiendishMonsters()
 {
-	uint32_t created = 0;
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
-	while (created < fiendishLimit)
+	while (fiendishMonsters.size() < fiendishLimit)
 	{
 		if (fiendishMonsters.size() >= fiendishLimit) {
 			SPDLOG_WARN("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.",
@@ -8476,8 +8475,6 @@ void Game::createFiendishMonsters()
 		{
 			break;
 		}
-
-		created++;
 	}
 }
 

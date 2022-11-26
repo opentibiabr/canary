@@ -4381,6 +4381,9 @@ void ProtocolGame::sendOpenForge() {
 		}
 
 		if (itemClassification > 0) {
+			if (itemClassification < 4 && itemTier > itemClassification) {
+				continue;
+			}
 			// Save donor transfer items on map
 			if (itemTier > 1) {
 				std::map<uint8_t, uint16_t> itemInfo;

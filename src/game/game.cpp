@@ -5174,7 +5174,9 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
                            Map::maxClientViewportX, Map::maxClientViewportX,
                            Map::maxClientViewportY, Map::maxClientViewportY);
 		} else {
-			map.getSpectators(spectators, *pos, true, false, 18, 18, 14, 14);
+			map.getSpectators(spectators, *pos, true, false,
+				          (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
+				          (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);

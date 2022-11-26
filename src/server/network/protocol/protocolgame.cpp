@@ -4355,12 +4355,14 @@ std::map<uint16_t, std::map<uint8_t, uint16_t>> getForgeInfoMap(Item *item)
 }
 
 void ProtocolGame::sendOpenForge() {
+	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
 
-	uint8_t donorTierTotalCount = 0;
-	uint8_t receiveTierTotalCount = 0;
+	/*
+	 *Start - Parsing items informations
+	*/
 	for (auto item : player->getAllInventoryItems(true)) {
 		auto itemClassification = item->getClassification();
 		auto itemTier = item->getTier();
@@ -4384,7 +4386,7 @@ void ProtocolGame::sendOpenForge() {
 			if (itemClassification < 4 && itemTier > itemClassification) {
 				continue;
 			}
-			// Save donor transfer items on map
+			// Save transfer (donator of tier) items on map
 			if (itemTier > 1) {
 				std::map<uint8_t, uint16_t> itemInfo;
 				itemInfo.insert({ itemTier, itemCount });
@@ -4395,9 +4397,8 @@ void ProtocolGame::sendOpenForge() {
 						(donorTierItemMap[itemId])[itemTier] += itemCount;
 					}
 				}
-				donorTierTotalCount++;
 			}
-			// Save receive transfer items on map
+			// Save transfer (receiver of tier) items on map
 			if (itemTier == 0) {
 				std::map<uint8_t, uint16_t> itemInfo;
 				itemInfo.insert({ itemTier, itemCount });
@@ -4408,65 +4409,75 @@ void ProtocolGame::sendOpenForge() {
 						(receiveTierItemMap[itemId])[itemTier] += itemCount;
 					}
 				}
-				receiveTierTotalCount++;
 			}
 		}
 	}
 
-	// Checking size of map to send in the addByte
-	uint8_t fusionTotalCount = 0;
+	// Checking size of map to send in the addByte (total fusion items count)
+	uint8_t fusionTotalItemsCount = 0;
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
-				fusionTotalCount++;
+				fusionTotalItemsCount++;
 			}
 		}
 	}
 
+	/*
+	 * Start - Sending bytes
+	*/
 	NetworkMessage msg;
+	// Header byte (135)
 	msg.addByte(0x87);
-
-	SPDLOG_INFO("[1] FUSION ITEM COUNT {}", fusionTotalCount);
-	msg.add<uint16_t>(fusionTotalCount);
+	msg.add<uint16_t>(fusionTotalItemsCount);
 	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
 		for (const auto [itemTier, itemCount] : tierAndCountMap) {
 			if (itemCount >= 2) {
-				msg.addByte(0x01);
-				msg.add<uint16_t>(itemId); // Item id
-				msg.addByte(itemTier); // Item tier
-				msg.add<uint16_t>(itemCount); // Item count
+				msg.addByte(0x01); // Number of friend items?
+				msg.add<uint16_t>(itemId);
+				msg.addByte(itemTier);
+				msg.add<uint16_t>(itemCount);
 			}
 		}
 	}
 
 	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
-	SPDLOG_INFO("[2] TRANSFER ITEM COUNT {}", transferTotalCount);
 	msg.addByte(transferTotalCount);
 	if (transferTotalCount > 0) {
 		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
-			SPDLOG_INFO("[3] DONOR ITEM ID {}, TOTAL DONOR ITEM COUNT {}", itemId, donorTierTotalCount);
-			// Total items size
-			msg.add<uint16_t>(donorTierTotalCount);
+			// Let's access the itemType to check the item's (donator of tier) classification level
+			// Must be the same as the item that will receive the tier
+			const ItemType &donorType = Item::items[itemId];
+
+			// Total count of item (donator of tier)
+			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
+			msg.add<uint16_t>(donorTierTotalItemsCount);
 			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
-				SPDLOG_INFO("[4] DONOR ITEM ID {}, DONOR ITEM TIER {}, DONOR ITEM COUNT {}", itemId, donorItemTier, donorItemCount);
 				msg.add<uint16_t>(itemId);
 				msg.addByte(donorItemTier);
-				msg.add<uint16_t>(donorItemCount);
+				msg.add<uint16_t>(donorItemCount); 
 			}
 
-			uint8_t receiveTierItemCount = 0;
-			for (const auto &[first, second] : receiveTierItemMap) {
-				receiveTierItemCount++;
+			uint16_t receiveTierTotalItemCount = 0;
+			for (const auto &[iteratorItemId, unusedTierAndCountMap] : receiveTierItemMap) {
+				// Let's access the itemType to check the item's (receiver of tier) classification level
+				const ItemType &receiveType = Item::items[iteratorItemId];
+				if (donorType.upgradeClassification == receiveType.upgradeClassification) {
+					receiveTierTotalItemCount++;
+				}
 			}
 
-			SPDLOG_INFO("[5] RECEIVE ITEM COUNT {}", receiveTierItemCount);
-			msg.add<uint16_t>(receiveTierItemCount);
-			if (receiveTierItemCount > 0) {
-				for (const auto &[itemId, receiveTierAndCountMap] : receiveTierItemMap) {
-					for (const auto [receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
-						SPDLOG_INFO("[6] RECEIVE ITEM COUNT {}", receiveItemCount);
-						msg.add<uint16_t>(itemId); // Item id
-						msg.add<uint16_t>(receiveItemCount); // Item count
+			// Total count of item (receiver of tier)
+			msg.add<uint16_t>(receiveTierTotalItemCount);
+			if (receiveTierTotalItemCount > 0) {
+				for (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
+					// Let's access the itemType to check the item's (receiver of tier) classification level
+					const ItemType &receiveType = Item::items[receiveItemId];
+					if (donorType.upgradeClassification == receiveType.upgradeClassification) {
+						for (const auto [receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+							msg.add<uint16_t>(receiveItemId);
+							msg.add<uint16_t>(receiveItemCount);
+						}
 					}
 				}
 			}
@@ -4475,6 +4486,7 @@ void ProtocolGame::sendOpenForge() {
 
 	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
 	writeToOutputBuffer(msg);
+	// Update forging informations
 	sendForgingData();
 }
 

@@ -594,7 +594,7 @@ void Combat::CombatManaFunc(Creature* caster, Creature* target, const CombatPara
 	assert(data);
 	CombatDamage damage = *data;
 	if (damage.primary.value < 0) {
-		if (caster && targetPlayer && caster->getPlayer() && targetPlayer->getPlayer() && targetPlayer->getSkull() != SKULL_BLACK) {
+		if (caster && caster->getPlayer() && target->getSkull() != SKULL_BLACK && target->getPlayer()) {
 			damage.primary.value /= 2;
 		}
 	}

@@ -4455,7 +4455,7 @@ void ProtocolGame::sendOpenForge() {
 			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
 				msg.add<uint16_t>(itemId);
 				msg.addByte(donorItemTier);
-				msg.add<uint16_t>(donorItemCount); 
+				msg.add<uint16_t>(donorItemCount);
 			}
 
 			uint16_t receiveTierTotalItemCount = 0;

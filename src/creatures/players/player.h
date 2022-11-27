@@ -2063,7 +2063,7 @@ class Player final : public Creature, public Cylinder
 
 		// Forge system
 		void fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
-		void transferItem(uint16_t firstItemId, uint8_t tier, uint16_t secondItemId);
+		void transferItem(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
 		void sendOpenForge() const
 		{
 			if (client)

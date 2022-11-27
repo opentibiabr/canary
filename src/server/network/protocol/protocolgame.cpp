@@ -4512,7 +4512,7 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 	// WIP
 	msg.addByte(0x8A);
 
-	msg.addByte(0x00); // fusion = 0
+	msg.addByte(0x00); // Fusion = 0
 	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
 	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
 		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
@@ -4559,13 +4559,17 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 	msg.addByte(0x8A);
 
 	msg.addByte(0x01); // Transfer = 1
+	msg.addByte(0x01); // Always success
 
 	msg.add<uint16_t>(firstItem); // Left item
 	msg.addByte(tier); // Left item tier
 	msg.add<uint16_t>(secondItem); // Right item
+	msg.addByte(tier - 1); // Right item tier
 
 	// Need testing and review
 	player->transferItem(firstItem, tier, secondItem);
+
+	msg.addByte(0x00); // Bonus type always none
 
 	writeToOutputBuffer(msg);
 	sendOpenForge();

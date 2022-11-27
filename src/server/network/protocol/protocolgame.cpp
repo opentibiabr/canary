@@ -4576,54 +4576,64 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 }
 
 void ProtocolGame::forgeResourceConversion(uint16_t action) {
-	NetworkMessage msg;
-	// Need tests
-	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
 	if (action == 2) {
-		SPDLOG_WARN("DUST TO SLIVER");
 		auto dusts = player->getForgeDusts();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
 		if (cost > dusts) {
 			player->sendFYIBox("Not enough dust.");
 		}
-		// player->setForgeSlivers(sliverCount + 3);
+
 		auto itemCount = static_cast<uint16_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
 		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, itemCount);
-		g_game().internalPlayerAddItem(player, item);
+		auto returnValue = g_game().internalPlayerAddItem(player, item);
+		if (returnValue != RETURNVALUE_NOERROR)
+		{
+			SPDLOG_ERROR("[Log 1] Failed to {} slivers to player with name {}", itemCount, player->getName());
+			player->sendCancelMessage(getReturnMessage(returnValue));
+			return;
+		}
 		player->setForgeDusts(dusts - cost);
 		sendForgingData();
 	} else if (action == 3) {
-		SPDLOG_WARN("SLIVER TO CORE");
+		auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST));
 		if (cost > sliverCount) {
 			player->sendFYIBox("Not enough sliver.");
 		}
 
-		// player->setForgeCores(coreCount + 1);
-		// player->setForgeSlivers(sliverCount - cost);
+		auto removeConfirm = player->removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
+		if (!removeConfirm)
+		{
+			SPDLOG_ERROR("[Log 1] Failed to remove slivers from player with name {}", player->getName());
+			return;
+		}
+
 		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
-		g_game().internalPlayerAddItem(player, item);
-		player->removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
-		sendForgingData();
-	} else { // else if (action == 4)
-		SPDLOG_WARN("LIMIT");
+		auto returnValue = g_game().internalPlayerAddItem(player, item);
+		if (returnValue != RETURNVALUE_NOERROR)
+		{
+			SPDLOG_ERROR("[Log 2] Failed to add one core to player with name {}", player->getName());
+			player->sendCancelMessage(getReturnMessage(returnValue));
+			return;
+		}
+	} else {
 		auto dustLevel = player->getForgeDustLevel();
-		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST)) {
+		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST))
+		{
 			player->sendFYIBox("Maximum level reached.");
 		}
 
 		auto upgradeCost = dustLevel - 75;
 		auto dusts = player->getForgeDusts();
-		if (upgradeCost > dusts) {
+		if (upgradeCost > dusts)
+		{
 			player->sendFYIBox("Not enough dust.");
 		}
 
-		SPDLOG_WARN("Total dusts: {}, Dust Level: {}, Upgrade Cost (Formula): {}, Upgrade Cost (Variable): {}", dusts, dustLevel, dustLevel - 75, upgradeCost);
 		player->removeForgeDusts(upgradeCost);
 		player->addForgeDustLevel(1);
-		sendForgingData();
 	}
-	writeToOutputBuffer(msg);
+	sendForgingData();
 }
 
 void ProtocolGame::closeForgeWindow()

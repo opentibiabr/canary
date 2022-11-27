@@ -17,12 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "creatures/players/management/waitlist.h"
-
-
 
 namespace {
 

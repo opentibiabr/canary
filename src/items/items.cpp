@@ -17,13 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
+
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
-#include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 #include "game/game.h"
-
 #include "utils/pugicast.h"
 
 #ifdef __cpp_lib_filesystem
@@ -33,7 +32,6 @@ namespace fs = std::filesystem;
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 #endif
-
 
 Items::Items(){}
 
@@ -170,6 +168,10 @@ void Items::loadFromProtobuf()
 		iType.lookThrough = object.flags().ignore_look();
 		iType.stackable = object.flags().cumulative();
 		iType.isPodium = object.flags().show_off_socket();
+		iType.wearOut = object.flags().wearout();
+		iType.clockExpire = object.flags().clockexpire();
+		iType.expire = object.flags().expire();
+		iType.expireStop = object.flags().expirestop();
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({
@@ -185,9 +187,10 @@ void Items::loadFromProtobuf()
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

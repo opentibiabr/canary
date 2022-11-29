@@ -691,6 +691,7 @@ void LuaEnums::init(lua_State* L) {
 
 	registerEnum(L, VOCATION_NONE)
 
+	registerEnum(L, SKILL_NONE)
 	registerEnum(L, SKILL_FIST)
 	registerEnum(L, SKILL_CLUB)
 	registerEnum(L, SKILL_SWORD)

@@ -1121,7 +1121,7 @@ int PlayerFunctions::luaPlayerSetOfflineTrainingSkill(lua_State* L) {
 	// player:setOfflineTrainingSkill(skillId)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		uint32_t skillId = getNumber<uint32_t>(L, 2);
+		int8_t skillId = getNumber<int8_t>(L, 2);
 		player->setOfflineTrainingSkill(skillId);
 		pushBoolean(L, true);
 	} else {

@@ -197,10 +197,10 @@ class Player final : public Creature, public Cylinder
 			return offlineTrainingTime;
 		}
 
-		int32_t getOfflineTrainingSkill() const {
+		int8_t getOfflineTrainingSkill() const {
 			return offlineTrainingSkill;
 		}
-		void setOfflineTrainingSkill(int32_t skill) {
+		void setOfflineTrainingSkill(int8_t skill) {
 			offlineTrainingSkill = skill;
 		}
 
@@ -2246,7 +2246,7 @@ class Player final : public Creature, public Cylinder
 		uint32_t premiumDays = 0;
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
-		int32_t offlineTrainingSkill = -1;
+		int8_t offlineTrainingSkill = SKILL_NONE;
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;

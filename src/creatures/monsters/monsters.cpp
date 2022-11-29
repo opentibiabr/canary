@@ -81,7 +81,7 @@ bool MonsterType::canSpawn(const Position& pos)
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
-		canSpawn = (pos.z > 7 && info.respawnType.underground);
+		canSpawn = (pos.z > MAP_INIT_SURFACE_LAYER && info.respawnType.underground);
 	}
 
 	return canSpawn;

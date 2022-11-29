@@ -876,6 +876,7 @@ void LuaEnums::initReportReasonEnums(lua_State* L) {
 }
 
 void LuaEnums::initSkillEnums(lua_State* L) {
+	registerEnum(L, SKILL_NONE)
 	registerEnum(L, SKILL_FIST)
 	registerEnum(L, SKILL_CLUB)
 	registerEnum(L, SKILL_SWORD)

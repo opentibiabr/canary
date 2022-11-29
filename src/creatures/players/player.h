@@ -2062,13 +2062,27 @@ class Player final : public Creature, public Cylinder
 		);
 
 		// Forge system
-		void fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
-		void transferItem(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
+		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
+		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
+		void forgeResourceConversion(uint16_t action);
+		
 		void sendOpenForge() const
 		{
 			if (client)
 			{
 				client->sendOpenForge();
+			}
+		}
+		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss) {
+			if (client)
+			{
+				client->sendForgeFusionItem(itemId, tier, usedCore, reduceTierLoss);
+			}
+		}
+		void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
+			if (client)
+			{
+				client->sendTransferItemTier(firstItem, tier, secondItem);
 			}
 		}
 		void closeForgeWindow() const

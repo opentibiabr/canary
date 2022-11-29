@@ -8528,3 +8528,34 @@ bool Game::addInfluencedMonster(Monster *monster)
 	}
 	return false;
 }
+
+void Game::forgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	// Call protocolgame function
+	player->sendForgeFusionItem(itemId, tier, usedCore, reduceTierLoss);
+}
+
+void Game::forgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->forgeTransferItemTier(donorItemId, tier, receiveItemId);
+}
+
+void Game::forgeResourceConversion(uint32_t playerId, uint16_t action)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->forgeResourceConversion(action);
+}

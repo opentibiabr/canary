@@ -267,9 +267,8 @@ private:
 	void sendOpenForge();
 	void closeForgeWindow();
 	void parseForgeEnter(NetworkMessage &msg);
-	void forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss);
-	void forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t secondItem);
-	void forgeResourceConversion(uint16_t action);
+	void sendForgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss);
+	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem);
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 	void sendMagicEffect(const Position &pos, uint8_t type);

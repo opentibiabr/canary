@@ -585,6 +585,20 @@ class Game
 		uint32_t makeInfluencedMonster();
 
 		bool addInfluencedMonster(Monster *monster);
+		void forgeFuseItems(
+			uint32_t playerId,
+			uint16_t itemId,
+			uint8_t tier,
+			bool usedCore,
+			bool reduceTierLoss
+		);
+		void forgeTransferItemTier(
+			uint32_t playerId,
+			uint16_t donorItemId,
+			uint8_t tier,
+			uint16_t receiveItemId
+		);
+		void forgeResourceConversion(uint32_t playerId, uint16_t action);
 		void sendUpdateCreature(const Creature *creature);
 
 	private:

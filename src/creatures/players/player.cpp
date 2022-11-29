@@ -6352,29 +6352,29 @@ bool Player::saySpell(
 }
 
 // Forge system
-void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
+void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
 {
-	auto firstForgingItem = getForgeItemFromId(itemid, tier);
+	auto firstForgingItem = getForgeItemFromId(itemId, tier);
 	if (!firstForgingItem) {
-		SPDLOG_ERROR("[Log 1] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		SPDLOG_ERROR("[Log 1] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		return;
 	}
 	auto returnValue = g_game().internalRemoveItem(firstForgingItem, 1);
 	if (returnValue != RETURNVALUE_NOERROR)
 	{
-		SPDLOG_ERROR("[Log 1] Failed to remove forge item {} from player with name {}", itemid, getName());
+		SPDLOG_ERROR("[Log 1] Failed to remove forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		return;
 	}
-	auto secondForgingItem = getForgeItemFromId(itemid, tier);
+	auto secondForgingItem = getForgeItemFromId(itemId, tier);
 	if (!secondForgingItem) {
-		SPDLOG_ERROR("[Log 2] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		SPDLOG_ERROR("[Log 2] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(secondForgingItem, 1);
 		returnValue != RETURNVALUE_NOERROR)
 	{
-		SPDLOG_ERROR("[Log 2] Failed to remove forge item {} from player with name {}", itemid, getName());
+		SPDLOG_ERROR("[Log 2] Failed to remove forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		return;
 	}
@@ -6388,29 +6388,29 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 		return;
 	}
 
-	Item* firstForgedItem = Item::CreateItem(itemid, 1);
+	Item* firstForgedItem = Item::CreateItem(itemId, 1);
 	if (!firstForgedItem) {
-		SPDLOG_ERROR("[Log 3] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		SPDLOG_ERROR("[Log 3] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		return;
 	}
 	firstForgedItem->setTier(tier);
 	returnValue = g_game().internalAddItem(exaltationContainer, firstForgedItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 1] Failed to add forge item {} from player with name {}", itemid, getName());
+		SPDLOG_ERROR("[Log 1] Failed to add forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		return;
 	}
 
-	Item* secondForgedItem = Item::CreateItem(itemid, 1);
+	Item* secondForgedItem = Item::CreateItem(itemId, 1);
 	if (!secondForgedItem) {
-		SPDLOG_ERROR("[Log 4] Player with name {} failed to fuse item with id {}", getName(), itemid);
+		SPDLOG_ERROR("[Log 4] Player with name {} failed to fuse item with id {}", getName(), itemId);
 		return;
 	}
 
 	secondForgedItem->setTier(tier);
 	returnValue = g_game().internalAddItem(exaltationContainer, secondForgedItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
-		SPDLOG_ERROR("[Log 2] Failed to add forge item {} from player with name {}", itemid, getName());
+		SPDLOG_ERROR("[Log 2] Failed to add forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
 		return;
 	}
@@ -6470,7 +6470,7 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 		{
 			returnValue = g_game().internalRemoveItem(secondForgedItem, 1);
 			if (returnValue != RETURNVALUE_NOERROR) {
-				SPDLOG_ERROR("[Log 6] Failed to remove forge item {} from player with name {}", itemid, getName());
+				SPDLOG_ERROR("[Log 6] Failed to remove forge item {} from player with name {}", itemId, getName());
 				sendCancelMessage(getReturnMessage(returnValue));
 				return;
 			}
@@ -6511,7 +6511,7 @@ void Player::fuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceT
 	}
 }
 
-void Player::transferItem(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
+void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
 {
 	auto donorItem = getForgeItemFromId(donorItemId, tier);
 	if (!donorItem) {
@@ -6590,7 +6590,74 @@ void Player::transferItem(uint16_t donorItemId, uint8_t tier, uint16_t receiveIt
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("[Log 10] Failed to add forge item {} from player with name {}", ITEM_EXALTATION_CHEST, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
+		return;
 	}
+
+	sendTransferItemTier(donorItemId, tier, receiveItemId);
+}
+
+void Player::forgeResourceConversion(uint16_t action)
+{
+	ReturnValue returnValue = RETURNVALUE_NOERROR;
+	if (action == 2) {
+		auto dusts = getForgeDusts();
+		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+		if (cost > dusts) {
+			sendFYIBox("Not enough dust.");
+		}
+
+		auto itemCount = static_cast<uint16_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
+		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, itemCount);
+		returnValue = g_game().internalPlayerAddItem(this, item);
+		if (returnValue != RETURNVALUE_NOERROR)
+		{
+			SPDLOG_ERROR("[Log 1] Failed to add {} slivers to player with name {}", itemCount, getName());
+			sendCancelMessage(getReturnMessage(returnValue));
+			return;
+		}
+		setForgeDusts(dusts - cost);
+		sendForgingData();
+	} else if (action == 3) {
+		auto [sliverCount, coreCount] = getForgeSliversAndCores();
+		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST));
+		if (cost > sliverCount) {
+			sendFYIBox("Not enough sliver.");
+		}
+
+		auto removeConfirm = removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
+		if (!removeConfirm)
+		{
+			SPDLOG_ERROR("[Log 1] Failed to remove slivers from player with name {}", getName());
+			return;
+		}
+
+		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
+		returnValue = g_game().internalPlayerAddItem(this, item);
+		if (returnValue != RETURNVALUE_NOERROR)
+		{
+			SPDLOG_ERROR("[Log 2] Failed to add one core to player with name {}", getName());
+			sendCancelMessage(getReturnMessage(returnValue));
+			return;
+		}
+	} else {
+		auto dustLevel = getForgeDustLevel();
+		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST))
+		{
+			sendFYIBox("Maximum level reached.");
+		}
+
+		auto upgradeCost = dustLevel - 75;
+		auto dusts = getForgeDusts();
+		if (upgradeCost > dusts)
+		{
+			sendFYIBox("Not enough dust.");
+		}
+
+		removeForgeDusts(upgradeCost);
+		addForgeDustLevel(1);
+	}
+
+	sendForgingData();
 }
 
 /*******************************************************************************

@@ -4499,34 +4499,34 @@ void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
 	bool usedCore = msg.getByte();
 	bool reduceTierLoss = msg.getByte();
 	if (action == 0) {
-		forgeFusionItem(firstItem, tier, usedCore, reduceTierLoss);
+		addGameTask(&Game::forgeFuseItems, player->getID(), firstItem, tier, usedCore, reduceTierLoss);
 	} else if (action == 1) {
-		forgeTransferItem(firstItem, tier, secondItem);
+		addGameTask(&Game::forgeTransferItemTier, player->getID(), firstItem, tier, secondItem);
 	} else if (action <= 4) {
-		forgeResourceConversion(action);
+		addGameTask(&Game::forgeResourceConversion, player->getID(), action);
 	}
 }
 
-void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, bool reduceTierLoss) {
-	NetworkMessage msg;
-	// WIP
-	msg.addByte(0x8A);
-
-	msg.addByte(0x00); // Fusion = 0
+void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss) {
 	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
 	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
 		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
 	);
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
 	bool success = roll ? true : false;
+
+	NetworkMessage msg;
+	msg.addByte(0x8A);
+
+	msg.addByte(0x00); // Fusion = 0
 	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
 	// Was succeeded bool
 	msg.addByte(success);
 
-	msg.add<uint16_t>(item); // Left item
+	msg.add<uint16_t>(itemId); // Left item
 	msg.addByte(tier); // Left item tier
-	msg.add<uint16_t>(item); // Right item
+	msg.add<uint16_t>(itemId); // Right item
 	msg.addByte(tier + 1); // Right item tier
 
 	uint32_t chance = uniform_random(0, 10000);
@@ -4536,26 +4536,26 @@ void ProtocolGame::forgeFusionItem(uint16_t item, uint8_t tier, bool usedCore, b
 		bonus = 0;
 	}
 
-	player->fuseItems(item, tier, success, reduceTierLoss, bonus, coreCount);
+	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);
 	msg.addByte(bonus); // Roll fusion bonus
 	// Core kept
 	if (bonus == 2)
 	{
 		msg.addByte(coreCount);
 	}
-	else if (bonus == 4 || bonus == 5 || bonus == 6 || bonus == 7 || bonus == 8)
+	else if (bonus >= 4 && bonus <= 8)
 	{
-		SPDLOG_WARN("caiu no if: item id {}, tier {}", item, tier);
-		msg.add<uint16_t>(item);
+		SPDLOG_WARN("caiu no if: item id {}, tier {}", itemId, tier);
+		msg.add<uint16_t>(itemId);
 		msg.addByte(tier);
 	}
+
 	writeToOutputBuffer(msg);
 	sendOpenForge();
 }
 
-void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
+void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
 	NetworkMessage msg;
-	// WIP
 	msg.addByte(0x8A);
 
 	msg.addByte(0x01); // Transfer = 1
@@ -4566,74 +4566,10 @@ void ProtocolGame::forgeTransferItem(uint16_t firstItem, uint8_t tier, uint16_t 
 	msg.add<uint16_t>(secondItem); // Right item
 	msg.addByte(tier - 1); // Right item tier
 
-	// Need testing and review
-	player->transferItem(firstItem, tier, secondItem);
-
 	msg.addByte(0x00); // Bonus type always none
 
 	writeToOutputBuffer(msg);
 	sendOpenForge();
-}
-
-void ProtocolGame::forgeResourceConversion(uint16_t action) {
-	if (action == 2) {
-		auto dusts = player->getForgeDusts();
-		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
-		if (cost > dusts) {
-			player->sendFYIBox("Not enough dust.");
-		}
-
-		auto itemCount = static_cast<uint16_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
-		Item* item = Item::CreateItem(ITEM_FORGE_SLIVER, itemCount);
-		auto returnValue = g_game().internalPlayerAddItem(player, item);
-		if (returnValue != RETURNVALUE_NOERROR)
-		{
-			SPDLOG_ERROR("[Log 1] Failed to {} slivers to player with name {}", itemCount, player->getName());
-			player->sendCancelMessage(getReturnMessage(returnValue));
-			return;
-		}
-		player->setForgeDusts(dusts - cost);
-		sendForgingData();
-	} else if (action == 3) {
-		auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
-		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST));
-		if (cost > sliverCount) {
-			player->sendFYIBox("Not enough sliver.");
-		}
-
-		auto removeConfirm = player->removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
-		if (!removeConfirm)
-		{
-			SPDLOG_ERROR("[Log 1] Failed to remove slivers from player with name {}", player->getName());
-			return;
-		}
-
-		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
-		auto returnValue = g_game().internalPlayerAddItem(player, item);
-		if (returnValue != RETURNVALUE_NOERROR)
-		{
-			SPDLOG_ERROR("[Log 2] Failed to add one core to player with name {}", player->getName());
-			player->sendCancelMessage(getReturnMessage(returnValue));
-			return;
-		}
-	} else {
-		auto dustLevel = player->getForgeDustLevel();
-		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST))
-		{
-			player->sendFYIBox("Maximum level reached.");
-		}
-
-		auto upgradeCost = dustLevel - 75;
-		auto dusts = player->getForgeDusts();
-		if (upgradeCost > dusts)
-		{
-			player->sendFYIBox("Not enough dust.");
-		}
-
-		player->removeForgeDusts(upgradeCost);
-		player->addForgeDustLevel(1);
-	}
-	sendForgingData();
 }
 
 void ProtocolGame::closeForgeWindow()

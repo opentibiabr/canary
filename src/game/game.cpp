@@ -7987,7 +7987,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 			if (choice == SKILL_SWORD || choice == SKILL_AXE || choice == SKILL_CLUB || choice == SKILL_DISTANCE || choice == SKILL_MAGLEVEL) {
 				BedItem* bedItem = player->getBedItem();
 				if (bedItem && bedItem->sleep(player)) {
-					player->setOfflineTrainingSkill(choice);
+					player->setOfflineTrainingSkill(static_cast<int8_t>(choice));
 					return;
 				}
 			}

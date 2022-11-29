@@ -34,7 +34,7 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 		local preyLootActive = false
-		if player then 
+		if player then
 			local preyLootPercent = player:getPreyLootPercentage(mType:raceId())
 			if preyLootPercent > 0 then
 				local probability = math.random(0, 100)

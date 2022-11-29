@@ -33,7 +33,6 @@ function Monster:onDropLoot(corpse)
 				Spdlog.warn(string.format("[2][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
 			end
 		end
-		
 		local preyLootActive = false
 		if player then 
 			local preyLootPercent = player:getPreyLootPercentage(mType:raceId())

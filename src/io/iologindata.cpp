@@ -17,16 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <boost/range/adaptor/reversed.hpp>
 #include "io/iologindata.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
-
-#include <limits>
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {
@@ -297,7 +293,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->lastLogout = result->getNumber<time_t>("lastlogout");
 
   player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
-  player->offlineTrainingSkill = result->getNumber<int32_t>("offlinetraining_skill");
+	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
+  player->setOfflineTrainingSkill(skill);
 
   Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
   if (!town) {
@@ -925,7 +922,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`lastlogout` = " << player->getLastLogout() << ',';
   query << "`balance` = " << player->bankBalance << ',';
   query << "`offlinetraining_time` = " << player->getOfflineTrainingTime() / 1000 << ',';
-  query << "`offlinetraining_skill` = " << player->getOfflineTrainingSkill() << ',';
+  query << "`offlinetraining_skill` = " << std::to_string(player->getOfflineTrainingSkill()) << ',';
   query << "`stamina` = " << player->getStaminaMinutes() << ',';
   query << "`skill_fist` = " << player->skills[SKILL_FIST].level << ',';
   query << "`skill_fist_tries` = " << player->skills[SKILL_FIST].tries << ',';

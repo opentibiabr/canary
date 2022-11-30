@@ -17,7 +17,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
+
 #include "lua/functions/core/network/webhook_functions.hpp"
 #include "server/network/webhook/webhook.h"
 

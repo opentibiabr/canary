@@ -24,6 +24,51 @@
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
 
+namespace InternalIOLoginData {
+void loadForgeHistoryLogin(Player *player, DBResult_ptr result) {
+	std::ostringstream query;
+	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
+	if (result = Database::getInstance().storeQuery(query.str())) {
+		do {
+			ForgeHistory history;
+			history.actionType = static_cast<uint8_t>(result->getNumber<uint16_t>("action_type"));
+			history.description = result->getString("description");
+			history.createdAt = static_cast<time_t>(result->getNumber<uint16_t>("done_at"));
+			history.success = static_cast<PreyBonus_t>(result->getNumber<bool>("is_success"));
+			player->setForgeHistory(history);
+		} while (result->next());
+	}
+}
+
+bool saveForgeHistoryLogin(Player *player) {
+	std::ostringstream query;
+	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();
+	if (!Database::getInstance().executeQuery(query.str())) {
+		return false;
+	}
+
+	query.str(std::string());
+
+	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
+	for (const auto history : player->getForgeHistory()) {
+		auto stringDescription = Database::getInstance().escapeString(history.description);
+		query << player->getGUID() << ','
+    << std::to_string(history.actionType) << ','
+    << stringDescription << ','
+    << history.createdAt << ','
+    << history.success;
+		if (!insertQuery.addRow(query)) {
+			return false;
+		}
+	}
+
+	if (!insertQuery.execute()) {
+		return false;
+	}
+}
+
+} // namespace
+
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
 	if (account::ERROR_NO != account->LoadAccountDB(email)) {
 		SPDLOG_ERROR("Email {} doesn't match any account.", email);
@@ -684,6 +729,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
+  InternalIOLoginData::loadForgeHistoryLogin(player, result);
+
   // Load task hunting class
   if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
     query.str(std::string());
@@ -1249,6 +1296,8 @@ bool IOLoginData::savePlayer(Player* player)
       }
     }
   }
+
+  InternalIOLoginData::saveForgeHistoryLogin(player);
 
   query.str(std::string());
   query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();

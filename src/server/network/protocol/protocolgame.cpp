@@ -39,13 +39,28 @@
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
 
-// This function will allow us to get the total number of iterations that run within a specific map
+/*
+* NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.h" file
+* Do not use functions only in the .cpp scope without having a namespace, it may conflict with functions in other files of the same name
+*/
+
+// This "getIteration" function will allow us to get the total number of iterations that run within a specific map
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 template <typename T>
 uint16_t getIterationIncreaseCount(T& map) {
 	uint16_t totalIterationCount = 0;
 	for (const auto &[first, second] : map) {
+		totalIterationCount++;
+	}
+
+	return totalIterationCount;
+}
+
+template <typename T>
+uint16_t getVectorIterationIncreaseCount(T& vector) {
+	uint16_t totalIterationCount = 0;
+	for (const auto &vectorIteration : vector) {
 		totalIterationCount++;
 	}
 
@@ -790,6 +805,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xBA: parseTaskHuntingAction(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
 		case 0xBF: parseForgeEnter(msg); break;
+		case 0xC0: parseForgeBrowseHistory(msg); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
@@ -4495,28 +4511,24 @@ void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
 	bool usedCore = msg.getByte();
 	bool reduceTierLoss = msg.getByte();
 	if (action == 0) {
-		addGameTask(&Game::forgeFuseItems, player->getID(), firstItem, tier, usedCore, reduceTierLoss);
+		addGameTask(&Game::playerForgeFuseItems, player->getID(), firstItem, tier, usedCore, reduceTierLoss);
 	} else if (action == 1) {
-		addGameTask(&Game::forgeTransferItemTier, player->getID(), firstItem, tier, secondItem);
+		addGameTask(&Game::playerForgeTransferItemTier, player->getID(), firstItem, tier, secondItem);
 	} else if (action <= 4) {
-		addGameTask(&Game::forgeResourceConversion, player->getID(), action);
+		addGameTask(&Game::playerForgeResourceConversion, player->getID(), action);
 	}
 }
 
-void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss) {
-	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
-	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
-		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
-	);
-	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
-	bool success = roll ? true : false;
+void ProtocolGame::parseForgeBrowseHistory(NetworkMessage& msg)
+{
+	addGameTask(&Game::playerBrowseForgeHistory, player->getID(), msg.getByte());
+}
 
+void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount) {
 	NetworkMessage msg;
 	msg.addByte(0x8A);
 
 	msg.addByte(0x00); // Fusion = 0
-	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
-	SPDLOG_WARN("success? roll: {}, {}, {}", success, roll, coreCount);
 	// Was succeeded bool
 	msg.addByte(success);
 
@@ -4525,14 +4537,6 @@ void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool usedC
 	msg.add<uint16_t>(itemId); // Right item
 	msg.addByte(tier + 1); // Right item tier
 
-	uint32_t chance = uniform_random(0, 10000);
-	uint8_t bonus = forgeBonus(chance);
-	SPDLOG_WARN("bonus: {}", bonus);
-	if (!success) {
-		bonus = 0;
-	}
-
-	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);
 	msg.addByte(bonus); // Roll fusion bonus
 	// Core kept
 	if (bonus == 2)
@@ -4566,6 +4570,30 @@ void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16
 
 	writeToOutputBuffer(msg);
 	sendOpenForge();
+}
+
+void ProtocolGame::sendForgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage)
+{
+	auto historyVector = player->getForgeHistory();
+	NetworkMessage msg;
+	msg.addByte(0x88);
+	msg.add<uint16_t>(page); // current page
+	msg.add<uint16_t>(page > 0 ? page - 1 : 0); // lastpage
+
+	auto historyToSend = getVectorIterationIncreaseCount(historyVector);
+	msg.addByte(static_cast<uint8_t>(historyToSend)); // history to send
+	SPDLOG_INFO("HISTORY SIZE {}", historyToSend);
+	if (historyToSend > 0) {
+		for (auto history : historyVector) {
+			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
+			msg.addByte(history.actionType);
+			msg.addString(history.description);
+			msg.addByte(history.success ? 0x01 : 0x00);
+			SPDLOG_INFO("HISTORY CREATION {}, ACTION {}, BONUS {}", history.createdAt, history.actionType, history.success);
+		}
+	}
+	
+	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::closeForgeWindow()

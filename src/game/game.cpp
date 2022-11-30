@@ -8006,6 +8006,63 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 	}
 }
 
+void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
+
+	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
+		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
+	);
+	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
+	bool success = roll ? true : false;
+
+	uint32_t chance = uniform_random(0, 10000);
+	uint8_t bonus = forgeBonus(chance);
+	if (!success) {
+		bonus = 0;
+	}
+
+	// Call protocolgame function
+	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);
+}
+
+void Game::playerForgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->forgeTransferItemTier(donorItemId, tier, receiveItemId);
+}
+
+void Game::playerForgeResourceConversion(uint32_t playerId, uint16_t action)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->forgeResourceConversion(action);
+}
+
+void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	// prevent request spam
+	player->forgeHistory(page, 0, 0);
+}
+
 void Game::updatePlayerSaleItems(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
@@ -8529,35 +8586,4 @@ bool Game::addInfluencedMonster(Monster *monster)
 		return true;
 	}
 	return false;
-}
-
-void Game::forgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss)
-{
-	Player* player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
-
-	// Call protocolgame function
-	player->sendForgeFusionItem(itemId, tier, usedCore, reduceTierLoss);
-}
-
-void Game::forgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
-{
-	Player* player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
-
-	player->forgeTransferItemTier(donorItemId, tier, receiveItemId);
-}
-
-void Game::forgeResourceConversion(uint32_t playerId, uint16_t action)
-{
-	Player* player = getPlayerByID(playerId);
-	if (!player) {
-		return;
-	}
-
-	player->forgeResourceConversion(action);
 }

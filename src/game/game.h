@@ -252,6 +252,21 @@ class Game
 		void playerNpcGreet(uint32_t playerId, uint32_t npcId);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId,
                                      uint8_t button, uint8_t choice);
+		void playerForgeFuseItems(
+			uint32_t playerId,
+			uint16_t itemId,
+			uint8_t tier,
+			bool usedCore,
+			bool reduceTierLoss
+		);
+		void playerForgeTransferItemTier(
+			uint32_t playerId,
+			uint16_t donorItemId,
+			uint8_t tier,
+			uint16_t receiveItemId
+		);
+		void playerForgeResourceConversion(uint32_t playerId, uint16_t action);
+		void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 		void playerReportRuleViolationReport(uint32_t playerId,
                                              const std::string& targetName,
                                              uint8_t reportType, uint8_t reportReason,
@@ -585,20 +600,6 @@ class Game
 		uint32_t makeInfluencedMonster();
 
 		bool addInfluencedMonster(Monster *monster);
-		void forgeFuseItems(
-			uint32_t playerId,
-			uint16_t itemId,
-			uint8_t tier,
-			bool usedCore,
-			bool reduceTierLoss
-		);
-		void forgeTransferItemTier(
-			uint32_t playerId,
-			uint16_t donorItemId,
-			uint8_t tier,
-			uint16_t receiveItemId
-		);
-		void forgeResourceConversion(uint32_t playerId, uint16_t action);
 		void sendUpdateCreature(const Creature *creature);
 
 	private:

@@ -55,6 +55,38 @@ class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
 
+struct ForgeHistory {
+	uint8_t actionType = 0;
+	uint8_t tier = 0;
+	uint8_t bonus = 0;
+
+	time_t createdAt;
+
+	uint16_t historyId = 0;
+
+	uint64_t cost = 0;
+	uint64_t dustCost = 0;
+	uint64_t coresCost = 0;
+	uint64_t gained = 0;
+
+	bool success = false;
+	bool tierLoss = false;
+	bool successCore = false;
+	bool tierCore = false;
+	
+	std::string description;
+	std::string firstItemName;
+	std::string secondItemName;
+};
+
+enum ForgeConversionTypes_t : uint8_t {
+	FORGE_ACTION_FUSION = 0,
+	FORGE_ACTION_TRANSFER = 1,
+	FORGE_ACTION_DUSTTOSLIVERS = 2,
+	FORGE_ACTION_SLIVERSTOCORES = 3,
+	FORGE_ACTION_INCREASELIMIT = 4
+};
+
 struct OpenContainer {
 	Container* container;
 	uint16_t index;
@@ -2065,6 +2097,7 @@ class Player final : public Creature, public Cylinder
 		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
 		void forgeResourceConversion(uint16_t action);
+		void forgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage);
 		
 		void sendOpenForge() const
 		{
@@ -2073,16 +2106,22 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenForge();
 			}
 		}
-		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss) {
+		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount) {
 			if (client)
 			{
-				client->sendForgeFusionItem(itemId, tier, usedCore, reduceTierLoss);
+				client->sendForgeFusionItem(itemId, tier, success, reduceTierLoss, bonus, coreCount);
 			}
 		}
 		void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
 			if (client)
 			{
 				client->sendTransferItemTier(firstItem, tier, secondItem);
+			}
+		}
+		void sendForgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage) {
+			if (client)
+			{
+				client->sendForgeHistory(page, currentPage, lastPage);
 			}
 		}
 		void closeForgeWindow() const
@@ -2137,6 +2176,16 @@ class Player final : public Creature, public Cylinder
 		{
 			return forgeDustLevel;
 		}
+
+		std::vector<ForgeHistory>& getForgeHistory() {
+			return forgeHistoryVector;
+		}
+
+		void setForgeHistory(ForgeHistory history) {
+			forgeHistoryVector.push_back(history);
+		}
+
+		void registerForgeDescription(ForgeHistory history);
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2233,6 +2282,8 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, Reward*> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
+		std::vector<ForgeHistory> forgeHistoryVector;
+
 		std::vector<uint16_t> quickLootListItemIds;
 
 		std::vector<OutfitEntry> outfits;

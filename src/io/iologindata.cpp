@@ -33,8 +33,8 @@ void loadForgeHistoryLogin(Player *player, DBResult_ptr result) {
 			ForgeHistory history;
 			history.actionType = static_cast<uint8_t>(result->getNumber<uint16_t>("action_type"));
 			history.description = result->getString("description");
-			history.createdAt = static_cast<time_t>(result->getNumber<uint16_t>("done_at"));
-			history.success = static_cast<PreyBonus_t>(result->getNumber<bool>("is_success"));
+			history.createdAt = result->getNumber<time_t>("done_at");
+			history.success = result->getNumber<bool>("is_success");
 			player->setForgeHistory(history);
 		} while (result->next());
 	}

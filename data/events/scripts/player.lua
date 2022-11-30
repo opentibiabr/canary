@@ -719,7 +719,7 @@ function Player:onGainExperience(target, exp, rawExp)
 	local finalExperience
 	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
 		finalExperience = (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
-	else 
+	else
 		finalExperience = (exp + (exp * (storeXpBoostAmount/100))) * staminaBoost
 	end
 

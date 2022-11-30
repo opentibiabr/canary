@@ -6267,7 +6267,9 @@ bool Player::saySpell(
                            Map::maxClientViewportX, Map::maxClientViewportX,
                            Map::maxClientViewportY, Map::maxClientViewportY);
 		} else {
-			g_game().map.getSpectators(spectators, *pos, true, false, 18, 18, 14, 14);
+			g_game().map.getSpectators(spectators, *pos, true, false,
+                          (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
+				          (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);

@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/vocations/vocation.h"
 
@@ -27,16 +27,17 @@
 bool Vocations::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/vocations.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/vocations.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("[Vocations::loadFromXml]", "data/XML/vocations.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
 	for (auto vocationNode : doc.child("vocations").children()) {
 		pugi::xml_attribute attr;
 		if (!(attr = vocationNode.attribute("id"))) {
-			SPDLOG_WARN("[Vocations::loadFromXml] - Missing vocation id");
+			SPDLOG_WARN("[{}] - Missing vocation id", __FUNCTION__);
 			continue;
 		}
 

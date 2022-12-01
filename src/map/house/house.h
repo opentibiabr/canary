@@ -20,9 +20,6 @@
 #ifndef SRC_MAP_HOUSE_HOUSE_H_
 #define SRC_MAP_HOUSE_HOUSE_H_
 
-#include <set>
-#include <unordered_set>
-
 #include "items/containers/container.h"
 #include "declarations.hpp"
 #include "map/house/housetile.h"

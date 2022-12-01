@@ -17,21 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-#include <csignal>
+#include "pch.hpp"
 
 #include "creatures/appearance/mounts/mounts.h"
-#include "creatures/combat/spells.h"
-#include "creatures/monsters/monster.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/tasks.h"
-#include "lua/creature/actions.h"
 #include "lua/creature/events.h"
 #include "lua/creature/raids.h"
-#include "lua/creature/talkaction.h"
-#include "lua/global/globalevent.h"
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
 
@@ -146,11 +140,8 @@ void Signals::sighupHandler()
 	g_chat().load();
 	SPDLOG_INFO("Reloaded chatchannels");
 
-	g_luaEnvironment.loadFile("data/global.lua");
-	SPDLOG_INFO("Reloaded global.lua");
-
-	g_luaEnvironment.loadFile("data/stages.lua");
-	SPDLOG_INFO("Reloaded stages.lua");
+	g_luaEnvironment.loadFile(g_configManager().getString(CORE_DIRECTORY) + "/core.lua");
+	SPDLOG_INFO("Reloaded core.lua");
 
 	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
 }

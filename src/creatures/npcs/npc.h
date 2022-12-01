@@ -20,8 +20,8 @@
 #ifndef SRC_CREATURES_NPCS_NPC_H_
 #define SRC_CREATURES_NPCS_NPC_H_
 
-#include "declarations.hpp"
 #include "creatures/npcs/npcs.h"
+#include "declarations.hpp"
 #include "items/tile.h"
 
 class Creature;

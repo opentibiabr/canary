@@ -39,7 +39,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filemonstername.c_str());
 	if (!result) {
-		printXMLError("SpawnsMonster::loadFromXml", filemonstername, result);
+		printXMLError(__FUNCTION__, filemonstername, result);
 		return false;
 	}
 

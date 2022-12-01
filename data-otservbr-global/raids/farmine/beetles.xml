@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="Lancer beetles troop up in Farmine. Beware!" />
+	<announce delay="20000" type="event" message="A pack of lancer beetles heads towards the coast!" />
+	<!--Single Spawns-->
+	<areaspawn delay="20000" fromx="33204" fromy="31184" fromz="7" tox="33235" toy="31212" toz="7">
+		<monster name="Lancer Beetle" amount="10" />
+	</areaspawn>
+</raid>

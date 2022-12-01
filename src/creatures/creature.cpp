@@ -49,16 +49,16 @@ Creature::~Creature()
 
 bool Creature::canSee(const Position& myPos, const Position& pos, int32_t viewRangeX, int32_t viewRangeY)
 {
-	if (myPos.z <= 7) {
+	if (myPos.z <= MAP_INIT_SURFACE_LAYER) {
 		//we are on ground level or above (7 -> 0)
 		//view is from 7 -> 0
-		if (pos.z > 7) {
+		if (pos.z > MAP_INIT_SURFACE_LAYER) {
 			return false;
 		}
-	} else if (myPos.z >= 8) {
+	} else if (myPos.z >= MAP_INIT_SURFACE_LAYER + 1) {
 		//we are underground (8 -> 15)
 		//view is +/- 2 from the floor we stand on
-		if (Position::getDistanceZ(myPos, pos) > 2) {
+		if (Position::getDistanceZ(myPos, pos) > MAP_LAYER_VIEW_LIMIT) {
 			return false;
 		}
 	}

@@ -513,21 +513,21 @@ void Map::getSpectators(SpectatorHashSet& spectators, const Position& centerPos,
 		int32_t maxRangeZ;
 
 		if (multifloor) {
-			if (centerPos.z > 7) {
+			if (centerPos.z > MAP_INIT_SURFACE_LAYER) {
 				//underground
 
 				//8->15
-				minRangeZ = std::max<int32_t>(centerPos.getZ() - 2, 0);
-				maxRangeZ = std::min<int32_t>(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
-			} else if (centerPos.z == 6) {
+				minRangeZ = std::max<int32_t>(centerPos.getZ() - MAP_LAYER_VIEW_LIMIT, 0);
+				maxRangeZ = std::min<int32_t>(centerPos.getZ() + MAP_LAYER_VIEW_LIMIT, MAP_MAX_LAYERS - 1);
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER - 1) {
 				minRangeZ = 0;
-				maxRangeZ = 8;
-			} else if (centerPos.z == 7) {
+				maxRangeZ = (MAP_INIT_SURFACE_LAYER - 1) + MAP_LAYER_VIEW_LIMIT;
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER) {
 				minRangeZ = 0;
-				maxRangeZ = 9;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER + MAP_LAYER_VIEW_LIMIT;
 			} else {
 				minRangeZ = 0;
-				maxRangeZ = 7;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER;
 			}
 		} else {
 			minRangeZ = centerPos.z;
@@ -558,12 +558,12 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 	//z checks
 	//underground 8->15
 	//ground level and above 7->0
-	if ((fromPos.z >= 8 && toPos.z < 8) || (toPos.z >= 8 && fromPos.z < 8)) {
+	if ((fromPos.z >= 8 && toPos.z <= MAP_INIT_SURFACE_LAYER) || (toPos.z >= MAP_INIT_SURFACE_LAYER + 1 && fromPos.z <= MAP_INIT_SURFACE_LAYER)) {
 		return false;
 	}
 
 	int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
-	if (deltaz > 2) {
+	if (deltaz > MAP_LAYER_VIEW_LIMIT) {
 		return false;
 	}
 

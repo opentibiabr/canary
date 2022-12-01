@@ -1,3 +1,12 @@
+-- Core settings
+-- Note: If you want to use datapack folder canary (custom), put only "data-canary"
+-- If you want to use the global datapack folder, put "data-otservbr-global"
+-- If "useAnyDatapackFolder" is set to true then you can choose any datapack folder for your server
+useAnyDatapackFolder = false
+dataPackDirectory = "data-otservbr-global"
+-- Don't change this unless you know what you're doing
+coreDirectory = "data"
+
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 worldType = "pvp"
@@ -32,10 +41,10 @@ loginProtocolPort = 7171
 gameProtocolPort = 7172
 statusProtocolPort = 7171
 maxPlayers = 0
-motd = "Welcome to the Canary!"
+serverName = "OTServBR-Global"
+motd = "Welcome to the OTServBR-Global!"
 onePlayerOnlinePerAccount = true
 allowClones = false
-serverName = "Canary"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
 maxPacketsPerSecond = 25
@@ -51,9 +60,6 @@ packetCompressionLevel = 6
 freeDepotLimit = 2000
 premiumDepotLimit = 10000
 depotBoxes = 20
-
--- GameStore
-gamestoreByModules = true
 
 -- Prey system
 -- NOTE: preyRerollPricePerLevel: Price multiplier in gold coin for rerolling prey list.
@@ -99,8 +105,9 @@ autoLoot = false
 -- autoBank = true, the dropped coins from monsters will be automatically 
 -- deposited to your bank account.
 autoBank = false
--- teleporte summon
--- true will never remove the summon
+
+-- Teleport summon
+-- Set to true will never remove the summon
 teleportSummons = false
 
 -- Stamina in Trainers
@@ -165,9 +172,9 @@ pushWhenAttacking = false
 -- NOTE: set mapName WITHOUT .otbm at the end
 -- NOTE: If toggleDownloadMap if false, then the mapDownloadUrl will not be used
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
-toggleDownloadMap = false
-mapName = "canary"
-mapDownloadUrl = ""
+toggleDownloadMap = true
+mapName = "otservbr"
+mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations
@@ -176,9 +183,9 @@ mapAuthor = "OpenTibiaBR"
 partyListMaxDistance = 30
 
 -- Custom Map
--- NOTE: mapCustomEnabled: true = activate the map, false = disable the map
-toggleMapCustom = false
-mapCustomName = "canary-custom"
+-- NOTE: mapCustomEnabled = activate the map, false = disable the map
+toggleMapCustom = true
+mapCustomName = "otservbr-custom"
 mapCustomAuthor = "OpenTibiaBR"
 
 -- Market
@@ -190,8 +197,8 @@ maxMarketOffersAtATimePerPlayer = 100
 -- MySQL
 mysqlHost = "127.0.0.1"
 mysqlUser = "root"
-mysqlPass = ""
-mysqlDatabase = "canary"
+mysqlPass = "root"
+mysqlDatabase = "otservbr-global"
 mysqlPort = 3306
 mysqlSock = ""
 passwordType = "sha1"
@@ -230,7 +237,7 @@ globalServerSaveTime = "06:00:00"
 sortLootByChance = false
 
 -- Rates
--- NOTE: rateExp, rateSkill and rateMagic are only used when 'rateUseStages = false'
+-- NOTE: rateExp, rateSkill and rateMagic is used when 'rateUseStages = false' - or a fallback only
 -- To configure rates see file data/stages.lua
 rateUseStages = false
 rateExp = 1

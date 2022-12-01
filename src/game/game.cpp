@@ -4569,13 +4569,13 @@ void Game::playerRequestDepotItems(uint32_t playerId)
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(500)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->requestDepotItems();
-	player->updateUIExhausted(500);
+	player->updateUIExhausted();
 }
 
 void Game::playerRequestCloseDepotSearch(uint32_t playerId)
@@ -4596,13 +4596,13 @@ void Game::playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(500)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->requestDepotSearchItem(itemId, tier);
-	player->updateUIExhausted(500);
+	player->updateUIExhausted();
 }
 
 void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type)
@@ -4612,13 +4612,13 @@ void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, 
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(500)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->retrieveAllItemsFromDepotSearch(itemId, tier, type == 1);
-	player->updateUIExhausted(500);
+	player->updateUIExhausted();
 }
 
 void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos)
@@ -4628,13 +4628,13 @@ void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Po
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(500)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->openContainerFromDepotSearch(pos);
-	player->updateUIExhausted(500);
+	player->updateUIExhausted();
 }
 /*******************************************************************************/
 
@@ -7473,7 +7473,7 @@ bool checkCanInitCreateMarketOffer(const Player *player, uint8_t type, const Ite
 		return false;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return false;
 	}
@@ -7591,7 +7591,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
 
 	// Exhausted for create offert in the market
-	player->updateUIExhausted(1000);
+	player->updateUIExhausted();
 	IOLoginData::savePlayer(player);
 }
 
@@ -7606,7 +7606,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
@@ -7676,7 +7676,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
-	player->updateUIExhausted(1000);
+	player->updateUIExhausted();
 	IOLoginData::savePlayer(player);
 }
 
@@ -7694,7 +7694,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
@@ -7948,7 +7948,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.timestamp += marketOfferDuration;
 	player->sendMarketAcceptOffer(offer);
 	// Exhausted for accept offer in the market
-	player->updateUIExhausted(1000);
+	player->updateUIExhausted();
 	IOLoginData::savePlayer(player);
 }
 

@@ -6436,7 +6436,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		if (bonus != 3)
 		{
 			uint64_t cost = 0;
-			for (const auto &itemClassification : g_game().getItemsClassifications())
+			for (const auto *itemClassification : g_game().getItemsClassifications())
 			{
 				if (itemClassification->id != firstForgingItem->getClassification())
 				{
@@ -6770,7 +6770,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 	const ItemType &itemType = Item::items[itemId];
 	if (history.actionType == FORGE_ACTION_FUSION) {
 		if (history.success) {
-		detailsResponse << fmt::format(
+			detailsResponse << fmt::format(
 				"{:s} <br><br>"
 				"Fusion partners:"
 				"<ul> "
@@ -6813,7 +6813,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 				std::to_string(history.cost)
 			);
 		} else {
-		detailsResponse << fmt::format(
+			detailsResponse << fmt::format(
 				"{:s} <br><br>"
 				"Fusion partners:"
 				"<ul> "

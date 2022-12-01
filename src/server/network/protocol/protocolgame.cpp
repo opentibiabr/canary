@@ -7274,7 +7274,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 		return;
 	}
 
-	if (player->isUIExhausted()) {
+	if (player->isUIExhausted(500)) {
 		player->sendCancelMessage("You need to wait to do this again.");
 		return;
 	}
@@ -7315,7 +7315,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 			break;
 	}
 
-	player->updateUIExhausted(500);
+	player->updateUIExhausted();
 }
 
 void ProtocolGame::sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count)

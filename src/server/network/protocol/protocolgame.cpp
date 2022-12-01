@@ -4350,7 +4350,7 @@ void ProtocolGame::sendForgingData()
 	writeToOutputBuffer(msg);
 }
 
-std::map<uint16_t, std::map<uint8_t, uint16_t>> getForgeInfoMap(Item *item)
+std::map<uint16_t, std::map<uint8_t, uint16_t>> getForgeInfoMap(const Item *item)
 {
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
 	std::map<uint8_t, uint16_t> itemInfo;
@@ -4375,7 +4375,7 @@ void ProtocolGame::sendOpenForge() {
 	/*
 	 *Start - Parsing items informations
 	*/
-	for (auto item : player->getAllInventoryItems(true)) {
+	for (const auto &item : player->getAllInventoryItems(true)) {
 		auto itemClassification = item->getClassification();
 		auto itemTier = item->getTier();
 		auto maxTier = (itemClassification == 4 ? FORGE_MAX_ITEM_TIER : itemClassification);
@@ -4574,21 +4574,40 @@ void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16
 
 void ProtocolGame::sendForgeHistory(uint8_t page)
 {
+	page = page + 1;
 	auto historyVector = player->getForgeHistory();
+	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
+
+	reverse(historyVector.begin(), historyVector.end());
+
+	uint16_t floorTest = floor((historyVectorLen - 1) / 9) + 1;
+
+	uint16_t lastPage = (1 < floorTest) ? floorTest : 1;
+	uint16_t currentPage = (lastPage < page) ? lastPage : page;
+
+	std::vector<ForgeHistory> historyPerPage;
+	uint16_t x = ((currentPage - 1) * 9);
+	uint16_t y = (currentPage * 9 < historyVectorLen) ? currentPage * 9 : historyVectorLen;
+	for (uint16_t i = x; i < y; ++i) {
+		historyPerPage.push_back(historyVector[i]);
+	}
+
+	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
+
 	NetworkMessage msg;
 	msg.addByte(0x88);
-	msg.add<uint16_t>(page); // current page
-	msg.add<uint16_t>(page > 0 ? page - 1 : 0); // lastpage
+	msg.add<uint16_t>(currentPage - 1); // Current page
+	msg.add<uint16_t>(lastPage); // Last page
+	msg.addByte(static_cast<uint8_t>(historyPageToSend)); // History to send
 
-	auto historyToSend = getVectorIterationIncreaseCount(historyVector);
-	msg.addByte(static_cast<uint8_t>(historyToSend)); // history to send
-	SPDLOG_INFO("HISTORY SIZE {}", historyToSend);
-	if (historyToSend > 0) {
-		for (auto history : historyVector) {
+	SPDLOG_INFO("HISTORY TOTAL SIZE {}", historyVectorLen);
+	SPDLOG_INFO("HISTORY PAGE SIZE {}", historyPageToSend);
+	if (historyPageToSend > 0) {
+		for (auto history : historyPerPage) {
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
 			msg.addByte(history.actionType);
 			msg.addString(history.description);
-			msg.addByte(history.bonus >= 1 ? 0x01 : 0x00);
+			msg.addByte((history.bonus >= 1 && history.bonus < 8) ? 0x01 : 0x00);
 			SPDLOG_INFO("HISTORY CREATION {}, ACTION {}, BONUS {}", history.createdAt, history.actionType, history.bonus);
 		}
 	}

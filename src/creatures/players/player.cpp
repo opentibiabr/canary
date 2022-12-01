@@ -5537,7 +5537,7 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 	uint64_t coreCount = 0;
 
 	// Check items from inventory
-	for (const auto item : getAllInventoryItems()) {
+	for (const auto &item : getAllInventoryItems()) {
 		if (!item) {
 			continue;
 		}
@@ -6785,7 +6785,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 						"{:d} cores"
 					"</li>"
 					"<li>"
-						"100 dust"
+						"{:d} dust"
 					"</li>"
 					"<li>"
 						"{:s} gold"
@@ -6795,7 +6795,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
 				history.bonus == 8 ? "unchanged" : "consumed",
-				history.coresCost,
+				history.coresCost, history.dustCost,
 				// Convert to shortenCost
 				std::to_string(history.cost)
 			);
@@ -6828,7 +6828,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 						"{:d} cores"
 					"</li>"
 					"<li>"
-						"{:d} dust"
+						"100 dust"
 					"</li>"
 					"<li>"
 						"{:s} gold"
@@ -6838,7 +6838,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
 				history.bonus == 8 ? "unchanged" : history.tier > 0 ? "tier - 1" : "consumed",
-				history.coresCost, history.dustCost,
+				history.coresCost,
 				// Convert to shortenCost
 				std::to_string(history.cost)
 			);

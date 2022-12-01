@@ -8025,7 +8025,6 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 	uint32_t chance = uniform_random(0, 10000);
 	uint8_t bonus = forgeBonus(chance);
 
-	// Call protocolgame function
 	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);
 }
 
@@ -8051,12 +8050,12 @@ void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action)
 
 void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page)
 {
-	Player* player = getPlayerByID(playerId);
+	const Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
 
-	// prevent request spam
+	// Prevent request spam
 	player->forgeHistory(page);
 }
 

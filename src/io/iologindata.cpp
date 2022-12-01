@@ -65,6 +65,8 @@ bool saveForgeHistoryLogin(Player *player) {
 	if (!insertQuery.execute()) {
 		return false;
 	}
+
+	return true;
 }
 
 } // namespace

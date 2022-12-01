@@ -128,6 +128,7 @@ class Party
 		std::vector<PartyAnalyzer*> membersData;
 
 	private:
+		const char* getSharedExpReturnMessage(SharedExpStatus_t value);
 		SharedExpStatus_t getSharedExperienceStatus();
 
 		std::map<uint32_t, int64_t> ticksMap;

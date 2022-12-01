@@ -3565,11 +3565,6 @@ uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) con
 	return count;
 }
 
-bool Player::isStashExhausted() const {
-	uint32_t exhaust_time = 1500;
-	return (OTSYS_TIME() - lastStashInteraction < exhaust_time);
-}
-
 void Player::stashContainer(StashContainerList itemDict)
 {
 	StashItemList stashItemDict; // ItemID - Count
@@ -5537,7 +5532,7 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 	uint64_t coreCount = 0;
 
 	// Check items from inventory
-	for (const auto &item : getAllInventoryItems()) {
+	for (const auto *item : getAllInventoryItems()) {
 		if (!item) {
 			continue;
 		}
@@ -5642,19 +5637,13 @@ void Player::updateRegeneration()
 	}
 }
 
-//Custom: Anti bug of market
-bool Player::isMarketExhausted() const {
-	uint32_t exhaust_time = 3000; // half second 500
-	return (OTSYS_TIME() - lastMarketInteraction < exhaust_time);
+// Forge action exhaustion
+bool Player::isUIExhausted(uint32_t exhaustionTime /*= 250*/) const {
+	return (OTSYS_TIME() - lastUIInteraction < exhaustionTime);
 }
 
-// Player talk with npc exhausted
-bool Player::isNpcExhausted(uint32_t exhaustionTime /*= 250*/) const {
-	return (OTSYS_TIME() - lastNpcInteraction < exhaustionTime);
-}
-
-void Player::updateNpcExhausted() {
-	lastNpcInteraction = OTSYS_TIME();
+void Player::updateUIExhausted() {
+	lastUIInteraction = OTSYS_TIME();
 }
 
 uint64_t Player::getItemCustomPrice(uint16_t itemId, bool buyPrice/* = false*/) const
@@ -6356,6 +6345,12 @@ bool Player::saySpell(
 // Forge system
 void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
 {
+	if (isUIExhausted()) {
+		return;
+	}
+
+	updateUIExhausted();
+
 	ForgeHistory history;
 	history.actionType = FORGE_ACTION_FUSION;
 	history.tier = tier;
@@ -6553,6 +6548,12 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
 {
+	if (isUIExhausted()) {
+		return;
+	}
+
+	updateUIExhausted();
+
 	ForgeHistory history;
 	history.actionType = FORGE_ACTION_TRANSFER;
 	history.tier = tier;
@@ -6670,6 +6671,12 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 void Player::forgeResourceConversion(uint8_t action)
 {
+	if (isUIExhausted()) {
+		return;
+	}
+
+	updateUIExhausted();
+
 	ForgeHistory history;
 	history.actionType = action;
 	history.success = true;
@@ -6744,8 +6751,14 @@ void Player::forgeResourceConversion(uint8_t action)
 	sendForgingData();
 }
 
-void Player::forgeHistory(uint8_t page) const
+void Player::forgeHistory(uint8_t page)
 {
+	if (isUIExhausted()) {
+		return;
+	}
+
+	updateUIExhausted();
+
 	sendForgeHistory(page);
 }
 
@@ -6904,6 +6917,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 	history.description = detailsResponse.str();
 
 	setForgeHistory(history);
+	updateUIExhausted();
 }
 
 /*******************************************************************************

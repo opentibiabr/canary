@@ -4129,13 +4129,13 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 	}
 
 	// Check npc say exhausted
-	if (player->isNpcExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
-	player->updateNpcExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreEquipped)
@@ -4164,13 +4164,13 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 	}
 
 	// Check npc say exhausted
-	if (player->isNpcExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	merchant->onPlayerSellItem(player, it.id, count, amount, ignoreEquipped);
-	player->updateNpcExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -4565,12 +4565,17 @@ void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t fi
 void Game::playerRequestDepotItems(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchAvailable() || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchAvailable()) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->requestDepotItems();
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted(500);
 }
 
 void Game::playerRequestCloseDepotSearch(uint32_t playerId)
@@ -4587,34 +4592,49 @@ void Game::playerRequestCloseDepotSearch(uint32_t playerId)
 void Game::playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchOpen() || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchOpen()) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->requestDepotSearchItem(itemId, tier);
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted(500);
 }
 
 void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchOpenOnItem(itemId) || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchOpenOnItem(itemId)) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->retrieveAllItemsFromDepotSearch(itemId, tier, type == 1);
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted(500);
 }
 
 void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchOpen() || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchOpen()) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->openContainerFromDepotSearch(pos);
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted(500);
 }
 /*******************************************************************************/
 
@@ -5102,7 +5122,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 	}
 
 	// Check npc say exhausted
-	if (player->isNpcExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
@@ -5115,7 +5135,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 		}
 	}
 
-	player->updateNpcExhausted();
+	player->updateUIExhausted();
 }
 
 //--
@@ -7453,10 +7473,8 @@ bool checkCanInitCreateMarketOffer(const Player *player, uint8_t type, const Ite
 		return false;
 	}
 
-	// Check market exhausted
-	if (player->isMarketExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 
@@ -7573,7 +7591,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
 
 	// Exhausted for create offert in the market
-	player->updateMarketExhausted();
+	player->updateUIExhausted(1000);
 	IOLoginData::savePlayer(player);
 }
 
@@ -7588,10 +7606,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	// Check market exhausted
-	if (player->isMarketExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7660,7 +7676,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
-	player->updateMarketExhausted();
+	player->updateUIExhausted(1000);
 	IOLoginData::savePlayer(player);
 }
 
@@ -7678,10 +7694,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	// Check market exhausted
-	if (player->isMarketExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7934,7 +7948,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.timestamp += marketOfferDuration;
 	player->sendMarketAcceptOffer(offer);
 	// Exhausted for accept offer in the market
-	player->updateMarketExhausted();
+	player->updateUIExhausted(1000);
 	IOLoginData::savePlayer(player);
 }
 
@@ -8050,7 +8064,7 @@ void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action)
 
 void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page)
 {
-	const Player* player = getPlayerByID(playerId);
+	Player* player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}

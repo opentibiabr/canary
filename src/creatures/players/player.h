@@ -1541,10 +1541,6 @@ class Player final : public Creature, public Cylinder
         		client->sendOpenStash();
 			}
 		}
-		bool isStashExhausted() const;
-		void updateStashExhausted() {
-			lastStashInteraction = OTSYS_TIME();
-		}
 
 		void onThink(uint32_t interval) override;
 
@@ -1681,13 +1677,8 @@ class Player final : public Creature, public Cylinder
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
 
-		bool isMarketExhausted() const;
-		void updateMarketExhausted() {
-			lastMarketInteraction = OTSYS_TIME();
-		}
-
-		bool isNpcExhausted(uint32_t exhaustionTime = 150) const;
-		void updateNpcExhausted();
+		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
+		void updateUIExhausted();
 
 		bool isQuickLootListedItem(const Item* item) const {
 			if (!item) {
@@ -2076,12 +2067,6 @@ class Player final : public Creature, public Cylinder
 		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
 		void openContainerFromDepotSearch(const Position& pos);
 		Item* getItemFromDepotSearch(uint16_t itemId, const Position& pos);
-		bool isDepotSearchExhausted() const {
-			return (OTSYS_TIME() - lastDepotSearchInteraction < 1000);
-		}
-		void updateDepotSearchExhausted() {
-			lastDepotSearchInteraction = OTSYS_TIME();
-		}
 
 		std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> requestLockerItems(DepotLocker *depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
 
@@ -2097,7 +2082,7 @@ class Player final : public Creature, public Cylinder
 		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
 		void forgeResourceConversion(uint8_t action);
-		void forgeHistory(uint8_t page) const;
+		void forgeHistory(uint8_t page);
 		
 		void sendOpenForge() const
 		{
@@ -2326,10 +2311,7 @@ class Player final : public Creature, public Cylinder
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
 		int64_t lastToggleMount = 0;
-		int64_t lastMarketInteraction = 0;
-		int64_t lastNpcInteraction = 0;
-		int64_t lastStashInteraction = 0;
-		int64_t lastDepotSearchInteraction = 0;
+		int64_t lastUIInteraction = 0;
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;

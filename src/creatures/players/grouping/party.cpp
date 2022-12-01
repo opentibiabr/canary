@@ -336,9 +336,7 @@ void Party::updateSharedExperience()
 	}
 }
 
-namespace {
-
-const char* getSharedExpReturnMessage(SharedExpStatus_t value)
+const char* Party::getSharedExpReturnMessage(SharedExpStatus_t value)
 {
 	switch (value) {
 		case SHAREDEXP_OK:
@@ -354,8 +352,6 @@ const char* getSharedExpReturnMessage(SharedExpStatus_t value)
 		default:
 			return "An error occured. Unable to activate shared experience.";
 	}
-}
-
 }
 
 bool Party::setSharedExperience(Player* player, bool newSharedExpActive)

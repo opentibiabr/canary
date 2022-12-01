@@ -17,12 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <boost/range/adaptor/reversed.hpp>
-
-#include "lua/creature/actions.h"
 #include "creatures/players/management/ban.h"
+#include "core.hpp"
 #include "declarations.hpp"
 #include "game/game.h"
 #include "creatures/players/imbuements/imbuements.h"
@@ -33,11 +31,16 @@
 #include "creatures/monsters/monsters.h"
 #include "server/network/message/outputmessage.h"
 #include "creatures/players/player.h"
+#include "creatures/players/grouping/familiars.h"
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
+
+ProtocolGame::ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {
+	version = CLIENT_VERSION;
+}
 
 template <typename Callable, typename... Args>
 void ProtocolGame::addGameTask(Callable function, Args &&... args)
@@ -798,7 +801,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEB: parsePreyAction(msg); break;
 		case 0xEE: parseGreet(msg); break;
-		case 0xEF: if (!g_configManager().getBoolean(STOREMODULES)) { parseCoinTransfer(msg); } break; /* premium coins transfer */
+		// Premium coins transfer
+		// case 0xEF: parseCoinTransfer(msg); break;
 		case 0xF0: addGameTaskTimed(DISPATCHER_TASK_EXPIRATION, &Game::playerShowQuestLog, player->getID()); break;
 		case 0xF1: parseQuestLine(msg); break;
 		// case 0xF2: parseRuleViolationReport(msg); break;
@@ -809,11 +813,11 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xF7: parseMarketCancelOffer(msg); break;
 		case 0xF8: parseMarketAcceptOffer(msg); break;
 		case 0xF9: parseModalWindowAnswer(msg); break;
-		case 0xFA: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreOpen(msg); } break;
-		case 0xFB: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreRequestOffers(msg); } break;
-		case 0xFC: if (!g_configManager().getBoolean(STOREMODULES)) { parseStoreBuyOffer(msg); } break;
-//		case 0xFD: parseStoreOpenTransactionHistory(msg); break;
-//		case 0xFE: parseStoreRequestTransactionHistory(msg); break;
+		// case 0xFA: parseStoreOpen(msg); break;
+		// case 0xFB: parseStoreRequestOffers(msg); break;
+		// case 0xFC: parseStoreBuyOffer(msg) break;
+		// case 0xFD: parseStoreOpenTransactionHistory(msg); break;
+		// case 0xFE: parseStoreRequestTransactionHistory(msg); break;
 
 		//case 0xDF, 0xE0, 0xE1, 0xFB, 0xFC, 0xFD, 0xFE Premium Shop.
 
@@ -822,12 +826,6 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 				player->getName(), static_cast<uint16_t>(recvbyte));
 			break;
 	}
-
-	// Send disconnect when opening the store
-	// if (msg.isOverrun()) {
-	// 	SPDLOG_WARN("[ProtocolGame::parsePacket] - Message is overrun");
-	// 	disconnect();
-	// }
 }
 
 void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg)
@@ -926,15 +924,15 @@ void ProtocolGame::GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t wi
 	int32_t skip = -1;
 	int32_t startz, endz, zstep;
 
-	if (z > 7)
+	if (z > MAP_INIT_SURFACE_LAYER)
 	{
-		startz = z - 2;
-		endz = std::min<int32_t>(MAP_MAX_LAYERS - 1, z + 2);
+		startz = z - MAP_LAYER_VIEW_LIMIT;
+		endz = std::min<int32_t>(MAP_MAX_LAYERS - 1, z + MAP_LAYER_VIEW_LIMIT);
 		zstep = 1;
 	}
 	else
 	{
-		startz = 7;
+		startz = MAP_INIT_SURFACE_LAYER;
 		endz = 0;
 		zstep = -1;
 	}
@@ -1060,33 +1058,29 @@ bool ProtocolGame::canSee(int32_t x, int32_t y, int32_t z) const
 	}
 
 	const Position &myPos = player->getPosition();
-	if (myPos.z <= 7)
+	if (myPos.z <= MAP_INIT_SURFACE_LAYER)
 	{
 		//we are on ground level or above (7 -> 0)
 		//view is from 7 -> 0
-		if (z > 7)
+		if (z > MAP_INIT_SURFACE_LAYER)
 		{
 			return false;
 		}
 	}
-	else if (myPos.z >= 8)
+	else if (myPos.z >= MAP_INIT_SURFACE_LAYER + 1)
 	{
 		//we are underground (8 -> 15)
 		//view is +/- 2 from the floor we stand on
-		if (std::abs(myPos.getZ() - z) > 2)
+		if (std::abs(myPos.getZ() - z) > MAP_LAYER_VIEW_LIMIT)
 		{
 			return false;
 		}
 	}
 
 	//negative offset means that the action taken place is on a lower floor than ourself
-	int32_t offsetz = myPos.getZ() - z;
-	if ((x >= myPos.getX() - 8 + offsetz) && (x <= myPos.getX() + 9 + offsetz) &&
-		(y >= myPos.getY() - 6 + offsetz) && (y <= myPos.getY() + 7 + offsetz))
-	{
-		return true;
-	}
-	return false;
+	const int8_t offsetz = myPos.getZ() - z;
+	return (x >= myPos.getX() - Map::maxClientViewportX + offsetz) && (x <= myPos.getX() + (Map::maxClientViewportX + 1) + offsetz) &&
+		(y >= myPos.getY() - Map::maxClientViewportY + offsetz) && (y <= myPos.getY() + (Map::maxClientViewportY + 1) + offsetz);
 }
 
 // Parse methods
@@ -2643,73 +2637,6 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg)
 	}
 }
 
-void ProtocolGame::parseStoreOpen(NetworkMessage &msg)
-{
-	uint8_t serviceType = msg.getByte();
-	addGameTaskTimed(600, &Game::playerStoreOpen, player->getID(), serviceType);
-}
-
-void ProtocolGame::parseStoreRequestOffers(NetworkMessage &message)
-{
-	//StoreService_t serviceType = SERVICE_STANDARD;
-	message.getByte(); // discard service type byte // version >= 1092
-
-	std::string categoryName = message.getString();
-	const int16_t index = g_game().gameStore.getCategoryIndexByName(categoryName);
-
-	if (index >= 0)
-	{
-		addGameTaskTimed(350, &Game::playerShowStoreCategoryOffers, player->getID(),
-                         g_game().gameStore.getCategoryOffers().at(index));
-	}
-	else
-	{
-		SPDLOG_WARN("[ProtocolGame::parseStoreRequestOffers] - "
-                    "Requested category: {} doesn't exists", categoryName);
-	}
-}
-
-void ProtocolGame::parseStoreBuyOffer(NetworkMessage &message)
-{
-	uint32_t offerId = message.get<uint32_t>();
-	uint8_t productType = message.getByte(); //used only in return of a namechange offer request
-	std::string additionalInfo;
-	if (productType == ADDITIONALINFO)
-	{
-		additionalInfo = message.getString();
-	}
-	addGameTaskTimed(350, &Game::playerBuyStoreOffer, player->getID(), offerId, productType, additionalInfo);
-}
-
-void ProtocolGame::parseStoreOpenTransactionHistory(NetworkMessage &msg)
-{
-	uint8_t entriesPerPage = msg.getByte();
-	if (entriesPerPage > 0 && entriesPerPage != GameStore::HISTORY_ENTRIES_PER_PAGE)
-	{
-		GameStore::HISTORY_ENTRIES_PER_PAGE = entriesPerPage;
-	}
-
-	addGameTaskTimed(2000, &Game::playerStoreTransactionHistory, player->getID(), 1);
-}
-
-void ProtocolGame::parseStoreRequestTransactionHistory(NetworkMessage &msg)
-{
-	uint32_t pageNumber = msg.get<uint32_t>();
-	addGameTaskTimed(2000, &Game::playerStoreTransactionHistory, player->getID(), pageNumber);
-}
-
-void ProtocolGame::parseCoinTransfer(NetworkMessage &msg)
-{
-	std::string receiverName = msg.getString();
-	uint32_t amount = msg.get<uint32_t>();
-
-	if (amount > 0)
-	{
-		addGameTaskTimed(350, &Game::playerCoinTransfer, player->getID(), receiverName, amount);
-	}
-
-	updateCoinBalance();
-}
 
 void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg)
 {
@@ -3624,17 +3551,6 @@ void ProtocolGame::sendBlessStatus()
 	msg.addByte((blessCount >= 7) ? 3 : ((blessCount >= 5) ? 2 : 1)); // 1 = Disabled | 2 = normal | 3 = green
 	// msg.add<uint16_t>(0);
 
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendStoreHighlight()
-{
-	NetworkMessage msg;
-	bool haveSale = g_game().gameStore.haveCategoryByState(StoreState_t::SALE);
-	bool haveNewItem = g_game().gameStore.haveCategoryByState(StoreState_t::NEW);
-	msg.addByte(0x19);
-	msg.addByte((haveSale) ? 1 : 0);
-	msg.addByte((haveNewItem) ? 1 : 0);
 	writeToOutputBuffer(msg);
 }
 
@@ -5193,12 +5109,12 @@ void ProtocolGame::sendFYIBox(const std::string &message)
 }
 
 //tile
-void ProtocolGame::sendMapDescription(const Position &pos)
+void ProtocolGame::sendMapDescription(const Position& pos)
 {
 	NetworkMessage msg;
 	msg.addByte(0x64);
 	msg.addPosition(player->getPosition());
-	GetMapDescription(pos.x - 8, pos.y - 6, pos.z, 18, 14, msg);
+	GetMapDescription(pos.x - Map::maxClientViewportX, pos.y - Map::maxClientViewportY, pos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, msg);
 	writeToOutputBuffer(msg);
 }
 
@@ -5389,7 +5305,6 @@ void ProtocolGame::sendAddCreature(const Creature *creature, const Position &pos
 	sendBlessStatus();
 
 	sendPremiumTrigger();
-	sendStoreHighlight();
 
 	sendItemsPrice();
 
@@ -5484,7 +5399,7 @@ void ProtocolGame::sendMoveCreature(const Creature *creature, const Position &ne
 		else
 		{
 			NetworkMessage msg;
-			if (oldPos.z == 7 && newPos.z >= 8)
+			if (oldPos.z == MAP_INIT_SURFACE_LAYER && newPos.z >= MAP_INIT_SURFACE_LAYER + 1)
 			{
 				RemoveTileThing(msg, oldPos, oldStackPos);
 			}
@@ -5508,30 +5423,30 @@ void ProtocolGame::sendMoveCreature(const Creature *creature, const Position &ne
 			if (oldPos.y > newPos.y)
 			{ // north, for old x
 				msg.addByte(0x65);
-				GetMapDescription(oldPos.x - 8, newPos.y - 6, newPos.z, 18, 1, msg);
+				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
 			}
 			else if (oldPos.y < newPos.y)
 			{ // south, for old x
 				msg.addByte(0x67);
-				GetMapDescription(oldPos.x - 8, newPos.y + 7, newPos.z, 18, 1, msg);
+				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y + (Map::maxClientViewportY + 1), newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
 			}
 
 			if (oldPos.x < newPos.x)
 			{ // east, [with new y]
 				msg.addByte(0x66);
-				GetMapDescription(newPos.x + 9, newPos.y - 6, newPos.z, 1, 14, msg);
+				GetMapDescription(newPos.x + (Map::maxClientViewportX + 1), newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
 			}
 			else if (oldPos.x > newPos.x)
 			{ // west, [with new y]
 				msg.addByte(0x68);
-				GetMapDescription(newPos.x - 8, newPos.y - 6, newPos.z, 1, 14, msg);
+				GetMapDescription(newPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
 			}
 			writeToOutputBuffer(msg);
 		}
 	}
 	else if (canSee(oldPos) && canSee(newPos))
 	{
-		if (teleport || (oldPos.z == 7 && newPos.z >= 8) || oldStackPos >= 10)
+		if (teleport || (oldPos.z == MAP_INIT_SURFACE_LAYER && newPos.z >= MAP_INIT_SURFACE_LAYER + 1) || oldStackPos >= 10)
 		{
 			sendRemoveTileThing(oldPos, oldStackPos);
 			sendAddCreature(creature, newPos, newStackPos, false);
@@ -5995,192 +5910,6 @@ void ProtocolGame::sendUseItemCooldown(uint32_t time)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendOpenStore(uint8_t)
-{
-	NetworkMessage msg;
-
-	msg.addByte(0xFB); //open store
-	msg.addByte(0x00);
-
-	//add categories
-	auto categoriesCount = static_cast<uint16_t>(g_game().gameStore.getCategoryOffers().size());
-
-	msg.add<uint16_t>(categoriesCount);
-
-	for (const StoreCategory *category : g_game().gameStore.getCategoryOffers())
-	{
-		msg.addString(category->name);
-		msg.addString(category->description);
-
-		uint8_t stateByte;
-		switch (category->state)
-		{
-		case NORMAL:
-			stateByte = 0;
-			break;
-		case NEW:
-			stateByte = 1;
-			break;
-		case SALE:
-			stateByte = 2;
-			break;
-		case LIMITED_TIME:
-			stateByte = 3;
-			break;
-		default:
-			stateByte = 0;
-			break;
-		}
-		msg.addByte(stateByte);
-
-		msg.addByte((uint8_t)category->icons.size());
-		for (std::string iconStr : category->icons)
-		{
-			msg.addString(iconStr);
-		}
-		msg.addString(""); //TODO: parentCategory
-	}
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendStoreCategoryOffers(StoreCategory *category)
-{
-	NetworkMessage msg;
-	msg.addByte(0xFC); //StoreOffers
-	msg.addString(category->name);
-	msg.add<uint16_t>(category->offers.size());
-
-	for (BaseOffer *offer : category->offers)
-	{
-		msg.add<uint32_t>(offer->id);
-		std::stringstream offername;
-		if (offer->type == Offer_t::ITEM || offer->type == Offer_t::STACKABLE_ITEM)
-		{
-			if (((ItemOffer *)offer)->count > 1)
-			{
-				offername << ((ItemOffer *)offer)->count << "x ";
-			}
-		}
-		offername << offer->name;
-
-		msg.addString(offername.str());
-		msg.addString(offer->description);
-
-		msg.add<uint32_t>(offer->price);
-		msg.addByte((uint8_t)offer->state);
-
-		//outfits
-		uint8_t disabled = 0;
-		std::stringstream disabledReason;
-
-		disabledReason << "";
-
-		if (offer->type == OUTFIT || offer->type == OUTFIT_ADDON)
-		{
-			OutfitOffer *outfitOffer = (OutfitOffer *)offer;
-
-			uint16_t looktype = (player->getSex() == PLAYERSEX_MALE) ? outfitOffer->maleLookType : outfitOffer->femaleLookType;
-			uint8_t addons = outfitOffer->addonNumber;
-
-			if (player->canWear(looktype, addons))
-			{ //player can wear the offer already
-				disabled = 1;
-				if (addons == 0)
-				{ //addons == 0 //oufit-only offer and player already has it
-					disabledReason << "You already have this outfit.";
-				}
-				else
-				{
-					disabledReason << "You already have this outfit/addon.";
-				}
-			}
-			else
-			{
-				if (outfitOffer->type == OUTFIT_ADDON && !player->canWear(looktype, 0))
-				{ //addon offer and player doesnt have the base outfit
-					disabled = 1;
-					disabledReason << "You don't have the outfit, you can't buy the addon.";
-				}
-			}
-		}
-		else if (offer->type == MOUNT)
-		{
-			MountOffer *mountOffer = (MountOffer *)offer;
-			const Mount *m = g_game().mounts.getMountByID(mountOffer->mountId);
-			if (player->hasMount(m))
-			{
-				disabled = 1;
-				disabledReason << "You already have this mount.";
-			}
-		}
-		else if (offer->type == PROMOTION)
-		{
-			if (player->isPromoted() || !player->isPremium())
-			{ //TODO: add support to multiple promotion levels
-				disabled = 1;
-				disabledReason << "You can't get this promotion";
-			}
-		}
-
-		msg.addByte(disabled);
-
-		if (disabled)
-		{
-			msg.addString(disabledReason.str());
-		}
-
-		//add icons
-		msg.addByte((uint8_t)offer->icons.size());
-
-		for (std::string iconName : offer->icons)
-		{
-			msg.addString(iconName);
-		}
-
-		msg.add<uint16_t>(0);
-		//TODO: add support to suboffers
-	}
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendStoreError(GameStoreError_t error, const std::string &message)
-{
-	NetworkMessage msg;
-
-	msg.addByte(0xE0); //storeError
-	msg.addByte(error);
-	msg.addString(message);
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendStorePurchaseSuccessful(const std::string &message, const uint32_t coinBalance)
-{
-	NetworkMessage msg;
-
-	msg.addByte(0xFE); //CompletePurchase
-	msg.addByte(0x00);
-
-	msg.addString(message);
-	msg.add<uint32_t>(coinBalance); //dont know why the client needs it duplicated. But ok...
-	msg.add<uint32_t>(coinBalance);
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType)
-{
-	NetworkMessage msg;
-
-	msg.addByte(0xE1); //RequestPurchaseData
-	msg.add<uint32_t>(offerId);
-	msg.addByte(clientOfferType);
-
-	writeToOutputBuffer(msg);
-}
-
 void ProtocolGame::sendPreyTimeLeft(const PreySlot* slot)
 {
 	if (!player || !slot) {
@@ -6309,33 +6038,6 @@ void ProtocolGame::sendPreyPrices()
 	msg.add<uint32_t>(player->getTaskHuntingRerollPrice());
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_SELECTION_LIST_PRICE)));
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(TASK_HUNTING_BONUS_REROLL_PRICE)));
-
-	writeToOutputBuffer(msg);
-}
-
-void ProtocolGame::sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint32_t page, uint8_t entriesPerPage)
-{
-	NetworkMessage msg;
-	uint32_t isLastPage = (list.size() <= entriesPerPage) ? 0x01 : 0x00;
-
-	//TODO: Support multiple pages
-	isLastPage = 0x01; //FIXME
-	page = 0x00;
-	////////////////////////
-
-	msg.addByte(0xFD); //BrowseTransactionHistory
-	msg.add<uint32_t>(page); //which page
-	msg.add<uint32_t>(isLastPage); //is the last page? /
-	msg.addByte((uint8_t)list.size()); //how many elements follows
-
-	for (HistoryStoreOffer offer : list)
-	{
-		msg.add<uint32_t>(offer.time);
-		msg.addByte(offer.mode);
-		msg.add<uint32_t>(offer.amount); //FIXME: investigate why it doesn't send the price properly
-		msg.addByte(0x00); // 0 = transferable tibia coin, 1 = normal tibia coin
-		msg.addString(offer.description);
-	}
 
 	writeToOutputBuffer(msg);
 }
@@ -6974,15 +6676,15 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature *creature,
 	msg.addByte(0xBE);
 
 	//going to surface
-	if (newPos.z == 7)
+	if (newPos.z == MAP_INIT_SURFACE_LAYER)
 	{
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 5, 18, 14, 3, skip); //(floor 7 and 6 already set)
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 4, 18, 14, 4, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 3, 18, 14, 5, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 2, 18, 14, 6, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 1, 18, 14, 7, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 0, 18, 14, 8, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 5, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip); //(floor 7 and 6 already set)
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 4, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 4, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 5, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 6, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 7, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 0, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 8, skip);
 
 		if (skip >= 0)
 		{
@@ -6991,10 +6693,10 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature *creature,
 		}
 	}
 	//underground, going one floor up (still underground)
-	else if (newPos.z > 7)
+	else if (newPos.z > MAP_INIT_SURFACE_LAYER)
 	{
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, oldPos.getZ() - 3, 18, 14, 3, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, oldPos.getZ() - 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip);
 
 		if (skip >= 0)
 		{
@@ -7006,11 +6708,11 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature *creature,
 	//moving up a floor up makes us out of sync
 	//west
 	msg.addByte(0x68);
-	GetMapDescription(oldPos.x - 8, oldPos.y - 5, newPos.z, 1, 14, msg);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - (Map::maxClientViewportY - 1), newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
 
 	//north
 	msg.addByte(0x65);
-	GetMapDescription(oldPos.x - 8, oldPos.y - 6, newPos.z, 18, 1, msg);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
 }
 
 void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos)
@@ -7024,13 +6726,13 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 	msg.addByte(0xBF);
 
 	//going from surface to underground
-	if (newPos.z == 8)
+	if (newPos.z == MAP_INIT_SURFACE_LAYER + 1)
 	{
 		int32_t skip = -1;
 
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z, 18, 14, -1, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z + 1, 18, 14, -2, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z + 2, 18, 14, -3, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -1, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -2, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
 
 		if (skip >= 0)
 		{
@@ -7039,10 +6741,10 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 		}
 	}
 	//going further down
-	else if (newPos.z > oldPos.z && newPos.z > 8 && newPos.z < 14)
+	else if (newPos.z > oldPos.z && newPos.z > MAP_INIT_SURFACE_LAYER + 1 && newPos.z < MAP_MAX_LAYERS - MAP_LAYER_VIEW_LIMIT)
 	{
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z + 2, 18, 14, -3, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + MAP_LAYER_VIEW_LIMIT, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
 
 		if (skip >= 0)
 		{
@@ -7054,11 +6756,11 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 	//moving down a floor makes us out of sync
 	//east
 	msg.addByte(0x66);
-	GetMapDescription(oldPos.x + 9, oldPos.y - 7, newPos.z, 1, 14, msg);
+	GetMapDescription(oldPos.x + Map::maxClientViewportX + 1, oldPos.y - (Map::maxClientViewportY + 1), newPos.z, 1, ((Map::maxClientViewportY + 1) * 2), msg);
 
 	//south
 	msg.addByte(0x67);
-	GetMapDescription(oldPos.x - 8, oldPos.y + 7, newPos.z, 18, 1, msg);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y + (Map::maxClientViewportY + 1), newPos.z, ((Map::maxClientViewportX + 1) * 2), 1, msg);
 }
 
 void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)

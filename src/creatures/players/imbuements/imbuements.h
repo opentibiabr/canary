@@ -20,8 +20,8 @@
 #ifndef SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENTS_H_
 #define SRC_CREATURES_PLAYERS_IMBUEMENTS_IMBUEMENTS_H_
 
-#include "declarations.hpp"
 #include "creatures/players/player.h"
+#include "declarations.hpp"
 #include "utils/tools.h"
 
 class Player;

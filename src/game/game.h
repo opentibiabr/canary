@@ -20,12 +20,9 @@
 #ifndef SRC_GAME_GAME_H_
 #define SRC_GAME_GAME_H_
 
-#include <unordered_set>
-
 #include "creatures/players/account/account.hpp"
 #include "creatures/combat/combat.h"
 #include "items/containers/container.h"
-#include "game/gamestore.h"
 #include "creatures/players/grouping/groups.h"
 #include "io/iobestiary.h"
 #include "items/item.h"
@@ -36,7 +33,6 @@
 #include "lua/creature/raids.h"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
-#include "io/ioprey.h"
 #include "items/items_classification.hpp"
 #include "protobuf/appearances.pb.h"
 
@@ -382,11 +378,6 @@ class Game
 		void playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous);
 		void playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter);
 		void playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16_t counter, uint16_t amount);
-		void playerStoreOpen(uint32_t playerId, uint8_t serviceType);
-		void playerShowStoreCategoryOffers(uint32_t playerId, StoreCategory* category);
-		void playerBuyStoreOffer(uint32_t playerId, uint32_t offerId, uint8_t productType, const std::string& additionalInfo="");
-		void playerCoinTransfer(uint32_t playerId, const std::string& receiverName, uint32_t amount);
-		void playerStoreTransactionHistory(uint32_t playerId, uint32_t page);
 
 		void parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const std::string& buffer);
 
@@ -507,7 +498,6 @@ class Game
 		Map map;
 		Mounts mounts;
 		Raids raids;
-		GameStore gameStore;
 		Canary::protobuf::appearances::Appearances appearances;
 
 		phmap::flat_hash_set<Tile*> getTilesToClean() const {

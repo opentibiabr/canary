@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/global/baseevents.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/pugicast.h"
 #include "utils/tools.h"
+
 bool BaseEvents::loadFromXml() {
 	if (loaded) {
 		SPDLOG_ERROR("[BaseEvents::loadFromXml] - It's already loaded.");
@@ -30,10 +30,10 @@ bool BaseEvents::loadFromXml() {
 	}
 
 	std::string scriptsName = getScriptBaseName();
-	std::string basePath = "data/" + scriptsName + "/";
+	std::string basePath = g_configManager().getString(CORE_DIRECTORY) + "/" + scriptsName + "/";
 	if (getScriptInterface().loadFile(basePath + "lib/" +
                                       scriptsName + ".lua") == -1) {
-		SPDLOG_WARN("[BaseEvents::loadFromXml] - Can not load {}lib/{}.lua",
+		SPDLOG_WARN(__FUNCTION__,
 					scriptsName, scriptsName);
 	}
 
@@ -42,7 +42,7 @@ bool BaseEvents::loadFromXml() {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
-		printXMLError("[BaseEvents::loadFromXml] - {} {}", filename, result);
+		printXMLError(__FUNCTION__, filename, result);
 		return false;
 	}
 

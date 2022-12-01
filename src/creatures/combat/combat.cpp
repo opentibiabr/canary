@@ -517,7 +517,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 
 	if (caster && attackerPlayer) {
 		Item *item = attackerPlayer->getWeapon();
-		damage = applyImbuementElementalDamage(item, damage);
+		damage = applyImbuementElementalDamage(caster, item, damage);
 		g_events().eventPlayerOnCombat(attackerPlayer, target, item, damage);
 
 		if (targetPlayer && targetPlayer->getSkull() != SKULL_BLACK) {
@@ -558,9 +558,15 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 	}
 }
 
-CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage damage) {
+CombatDamage Combat::applyImbuementElementalDamage(Creature* caster, Item* item, CombatDamage damage) {
 	if (!item) {
 		return damage;
+	}
+
+	if(item->getWeaponType() == WEAPON_AMMO){
+		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+			item = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+		}
 	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {

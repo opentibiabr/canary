@@ -6345,12 +6345,6 @@ bool Player::saySpell(
 // Forge system
 void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount)
 {
-	if (isUIExhausted()) {
-		return;
-	}
-
-	updateUIExhausted();
-
 	ForgeHistory history;
 	history.actionType = FORGE_ACTION_FUSION;
 	history.tier = tier;
@@ -6453,8 +6447,11 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 				}
 				break;
 			}
+			if (!g_game().removeMoney(this, cost, 0, true)) {
+				SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
+				return;
+			}
 			history.cost = cost;
-			g_game().removeMoney(this, cost, 0, true);
 		}
 
 		if (bonus == 4)
@@ -6528,8 +6525,12 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			}
 			break;
 		}
+		if (!g_game().removeMoney(this, cost, 0, true)) {
+			SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
+			return;
+		}
+
 		history.cost = cost;
-		g_game().removeMoney(this, cost, 0, true);
 	}
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
@@ -6548,12 +6549,6 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
 {
-	if (isUIExhausted()) {
-		return;
-	}
-
-	updateUIExhausted();
-
 	ForgeHistory history;
 	history.actionType = FORGE_ACTION_TRANSFER;
 	history.tier = tier;
@@ -6648,11 +6643,11 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		}
 	}
 
-	history.cost = cost;
 	if (!g_game().removeMoney(this, cost, 0, true)) {
 		SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
 		return;
 	}
+	history.cost = cost;
 
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
@@ -6671,12 +6666,6 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 void Player::forgeResourceConversion(uint8_t action)
 {
-	if (isUIExhausted()) {
-		return;
-	}
-
-	updateUIExhausted();
-
 	ForgeHistory history;
 	history.actionType = action;
 	history.success = true;
@@ -6753,12 +6742,6 @@ void Player::forgeResourceConversion(uint8_t action)
 
 void Player::forgeHistory(uint8_t page)
 {
-	if (isUIExhausted()) {
-		return;
-	}
-
-	updateUIExhausted();
-
 	sendForgeHistory(page);
 }
 

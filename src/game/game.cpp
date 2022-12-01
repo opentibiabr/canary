@@ -8027,8 +8027,14 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 		return;
 	}
 
-	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
 
+	player->updateUIExhausted();
+
+	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
 	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
 	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
 		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
@@ -8059,6 +8065,12 @@ void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action)
 		return;
 	}
 
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
 	player->forgeResourceConversion(action);
 }
 
@@ -8069,7 +8081,12 @@ void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page)
 		return;
 	}
 
-	// Prevent request spam
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
 	player->forgeHistory(page);
 }
 

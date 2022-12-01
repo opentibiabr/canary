@@ -2096,7 +2096,7 @@ class Player final : public Creature, public Cylinder
 		// Forge system
 		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
-		void forgeResourceConversion(uint16_t action);
+		void forgeResourceConversion(uint8_t action);
 		void forgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage);
 		
 		void sendOpenForge() const
@@ -2106,22 +2106,22 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenForge();
 			}
 		}
-		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount) {
+		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) const {
 			if (client)
 			{
-				client->sendForgeFusionItem(itemId, tier, success, reduceTierLoss, bonus, coreCount);
+				client->sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
 			}
 		}
-		void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
+		void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) const {
 			if (client)
 			{
 				client->sendTransferItemTier(firstItem, tier, secondItem);
 			}
 		}
-		void sendForgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage) {
+		void sendForgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage) const {
 			if (client)
 			{
-				client->sendForgeHistory(page, currentPage, lastPage);
+				client->sendForgeHistory(page);
 			}
 		}
 		void closeForgeWindow() const
@@ -2181,7 +2181,7 @@ class Player final : public Creature, public Cylinder
 			return forgeHistoryVector;
 		}
 
-		void setForgeHistory(ForgeHistory history) {
+		void setForgeHistory(ForgeHistory const &history) {
 			forgeHistoryVector.push_back(history);
 		}
 

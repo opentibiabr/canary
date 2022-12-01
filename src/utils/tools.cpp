@@ -1481,32 +1481,29 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 uint8_t forgeBonus(int32_t number)
 {
 	// None
-	if (number < 7450)
+	if (number < 7400)
 		return 0;
 	// Dust not consumed
-	else if (number >= 7450 && number < 8800)
+	else if (number >= 7400 && number < 9000)
 		return 1;
 	// Cores not consumed
-	else if (number >= 8800 && number < 9300)
+	else if (number >= 9000 && number < 9500)
 		return 2;
 	// Gold not consumed
-	else if (number >= 9300 && number < 9350)
+	else if (number >= 9500 && number < 9525)
 		return 3;
 	// Second item retained with decreased tier
-	else if (number >= 9350 && number < 9400)
+	else if (number >= 9525 && number < 9550)
 		return 4;
 	// Second item retained with unchanged tier
-	else if (number >= 9400 && number < 9900)
+	else if (number >= 9550 && number < 9950)
 		return 5;
 	// Second item retained with increased tier
-	else if (number >= 9900 && number < 9950)
+	else if (number >= 9950 && number < 9975)
 		return 6;
 	// Gain two tiers
-	else if (number >= 9950 && number < 9975)
-		return 7;
-	// Item not consumed
 	else if (number >= 9975)
-		return 8;
+		return 7;
 
 	return 0;
 }

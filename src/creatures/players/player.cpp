@@ -6487,14 +6487,9 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 				return;
 			}
 		}
-
-		history.success = true;
-		history.bonus = bonus;
-		history.createdAt = std::time(nullptr),
-		registerForgeDescription(history);
 	} else {
-		if (auto isTierLost = uniform_random(1, 100) <= (reduceTierLoss ? g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION) : 100); 
-			isTierLost)
+		auto isTierLost = uniform_random(1, 100) <= (reduceTierLoss ? g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION) : 100);
+		if (isTierLost)
 		{
 			if (secondForgedItem->getTier() >= 1)
 			{
@@ -6505,6 +6500,8 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 				g_game().internalRemoveItem(secondForgedItem, 1);
 			}
 		}
+		bonus = (isTierLost ? 0 : 8);
+		history.coresCost = coreCount;
 
 		if (getForgeDusts() < dustCost) {
 			SPDLOG_ERROR("[Log 7] Failed to remove fuse dusts from player with name {}", getName());
@@ -6545,7 +6542,12 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		return;
 	}
 
-	sendForgeFusionItem(itemId, tier, success, reduceTierLoss, bonus, coreCount);
+	history.firstItemName = firstForgingItem->getName();
+	history.bonus = bonus;
+	history.createdAt = std::time(nullptr);
+	registerForgeDescription(history);
+
+	sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
 }
 
 void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
@@ -6629,14 +6631,14 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	uint64_t cost = 0;
 	for (const auto itemClassification : g_game().getItemsClassifications())
 	{
-		if (itemClassification->id != newDonorItem->getClassification())
+		if (itemClassification->id != donorItem->getClassification())
 		{
 			continue;
 		}
 
 		for (const auto &[mapTier, mapPrice] : itemClassification->tiers)
 		{
-			if (mapTier == newDonorItem->getTier())
+			if (mapTier == donorItem->getTier() - 1)
 			{
 				cost = mapPrice;
 				break;
@@ -6645,13 +6647,9 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	}
 	
 	if (!g_game().removeMoney(this, cost, 0, true)) {
-		SPDLOG_ERROR("[{}] Failed to remove money from player", __FUNCTION__);
+		SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
 		return;
 	}
-
-	history.cost = cost;
-	history.firstItemName = newDonorItem->getName();
-	history.secondItemName = newReceiveItem->getName();
 
 	returnValue = g_game().internalAddItem(this, exaltationContainer, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
@@ -6660,15 +6658,19 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		return;
 	}
 
+	history.firstItemName = newDonorItem->getName();
+	history.secondItemName = newReceiveItem->getName();
+	history.createdAt = std::time(nullptr);
 	registerForgeDescription(history);
+
 	sendTransferItemTier(donorItemId, tier, receiveItemId);
 }
 
-void Player::forgeResourceConversion(uint16_t action)
+void Player::forgeResourceConversion(uint8_t action)
 {
 	ForgeHistory history;
 	history.actionType = action;
-	history.success = true;
+	history.success = true; 
 
 	ReturnValue returnValue = RETURNVALUE_NOERROR;
 	if (action == FORGE_ACTION_DUSTTOSLIVERS) {
@@ -6697,8 +6699,8 @@ void Player::forgeResourceConversion(uint16_t action)
 			sendFYIBox("Not enough sliver.");
 		}
 
-		auto removeConfirm = removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
-		if (!removeConfirm)
+		if (auto removeConfirm = removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
+			!removeConfirm)
 		{
 			SPDLOG_ERROR("[Log 1] Failed to remove slivers from player with name {}", getName());
 			return;
@@ -6730,11 +6732,12 @@ void Player::forgeResourceConversion(uint16_t action)
 		}
 
 		history.cost = upgradeCost;
-		history.gained = 100 + dustLevel;
+		history.gained = dustLevel;
 		removeForgeDusts(upgradeCost);
 		addForgeDustLevel(1);
 	}
 
+	history.createdAt = std::time(nullptr);
 	registerForgeDescription(history);
 	sendForgingData();
 }
@@ -6746,16 +6749,16 @@ void Player::forgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage)
 
 void Player::registerForgeDescription(ForgeHistory history)
 {
-	std::string successfulString = history.success ? "Successful" : "Failed";
+	std::string successfulString = history.success ? "Successful" : "Unsuccessful";
 	std::stringstream detailsResponse;
+	auto itemId = Item::items.getItemIdByName(history.firstItemName);
+	const ItemType &itemType = Item::items[itemId];
 	if (history.actionType == FORGE_ACTION_FUSION) {
-		auto itemId = Item::items.getItemIdByName(history.firstItemName);
-		const ItemType &itemType = Item::items[itemId];
 		if (history.success) {
-			detailsResponse << fmt::format(
+		detailsResponse << fmt::format(
 				"{:s} <br><br>"
 				"Fusion partners:"
-				"<ul>"
+				"<ul> "
 					"<li>"
 						"First item: {:s} {:s}, tier {:s}"
 					"</li>"
@@ -6767,37 +6770,36 @@ void Player::registerForgeDescription(ForgeHistory history)
 				"Result:"
 				"<ul> "
 					"<li>"
-						"First item: {:s} {:s}, tier + 1"
+						"First item: {:s} {:s}, tier {:s}"
 					"</li>"
 					"<li>"
-						"Second item: {:s} {:s}, {:s}consumed"
+						"Second item: {:s} {:s}, {:s}"
 					"</li>"
 				"</ul>"
 				"<br>"
 				"Invested:"
-				"<ul> "
-					"<li>"
-						"{:d} dust"
-					"</li>"
+				"<ul>"
 					"<li>"
 						"{:d} cores"
+					"</li>"
+					"<li>"
+						"100 dust"
 					"</li>"
 					"<li>"
 						"{:s} gold"
 					"</li>"
 				"</ul>",
-				successfulString, itemType.article, itemType.name, std::to_string(history.tier),
-				itemType.article, itemType.name, std::to_string(0),
-				itemType.article, itemType.name,
-				itemType.article, itemType.name,
-				history.tierLoss ? "not " : "",
-				history.dustCost,
+				successfulString,
+				itemType.article, itemType.name, std::to_string(history.tier),
+				itemType.article, itemType.name, std::to_string(history.tier),
+				itemType.article, itemType.name, std::to_string(history.tier + 1),
+				itemType.article, itemType.name, history.bonus == 8 ? "unchanged" : "consumed",
 				history.coresCost,
 				// Convert to shortenCost
 				std::to_string(history.cost)
 			);
 		} else {
-			detailsResponse << fmt::format(
+		detailsResponse << fmt::format(
 				"{:s} <br><br>"
 				"Fusion partners:"
 				"<ul> "
@@ -6815,17 +6817,17 @@ void Player::registerForgeDescription(ForgeHistory history)
 						"First item: {:s} {:s}, tier {:s}"
 					"</li>"
 					"<li>"
-						"Second item: {:s} {:s}, {:s}consumed"
+						"Second item: {:s} {:s}, {:s}"
 					"</li>"
 				"</ul>"
 				"<br>"
 				"Invested:"
 				"<ul>"
 					"<li>"
-						"{:d} dust"
+						"{:d} cores"
 					"</li>"
 					"<li>"
-						"{:d} cores"
+						"{:d} dust"
 					"</li>"
 					"<li>"
 						"{:s} gold"
@@ -6835,60 +6837,62 @@ void Player::registerForgeDescription(ForgeHistory history)
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
-				itemType.article, itemType.name, history.tierLoss ? "not " : "", history.dustCost, history.coresCost, 
+				itemType.article, itemType.name, history.bonus == 8 ? "unchanged" : history.tier > 0 ? fmt::format("tier {:s}", std::to_string(history.tier - 1)) : "consumed",
+				history.coresCost, history.dustCost,
 				// Convert to shortenCost
 				std::to_string(history.cost)
 			);
 		}
 	} else if (history.actionType == FORGE_ACTION_TRANSFER) {
-		/*detailsResponse << fmt::format("
-			{:s} <br><br>
-			Transfer partners:
-			<ul> 
-				<li>
-					First item: {:s} {:s}, tier {:s}
-				</li>
-				<li>
-					Second item: {:s} {:s}, tier {:s}
-				</li>
-			</ul>
-		
-			<br>
-			Result:
-			<ul> 
-				<li>
-					First item: {:s} {:s}, tier 0
-				</li>
-				<li>
-					Second item: {:s} {:s}, tier {:s}
-				</li>
-			</ul>
-		
-			<br>
-			Invested:
-			<ul> 
-				<li>
-					100 dusts
-				</li>
-				<li>
-					1 core
-				</li>
-				<li>
-					{:s} gold
-				</li>
-			</ul>
-		
-		", successfulString, history.article, history.itemA, history.tier, history.item2.article, history.item2.name, history.item2.tier, history.article, history.itemA, history.item2.name, history.item2.tier, (history.tier - 1), shortenCost(tostring(history.cost)));*/
-
+		detailsResponse << fmt::format(
+				"{:s} <br><br>"
+				"Transfer partners:"
+				"<ul> "
+					"<li>"
+						"First item: {:s} {:s}, tier {:s}"
+					"</li>"
+					"<li>"
+						"Second item: {:s} {:s}, tier {:s}"
+					"</li>"
+				"</ul>"
+				"<br>"
+				"Result:"
+				"<ul> "
+					"<li>"
+						"First item: {:s} {:s}, tier {:s}"
+					"</li>"
+					"<li>"
+						"Second item: {:s} {:s}, {:s}consumed"
+					"</li>"
+				"</ul>"
+				"<br>"
+				"Invested:"
+				"<ul>"
+					"<li>"
+						"{:d} cores"
+					"</li>"
+					"<li>"
+						"100 dust"
+					"</li>"
+					"<li>"
+						"{:s} gold"
+					"</li>"
+				"</ul>",
+				successfulString,
+				itemType.article, itemType.name, std::to_string(history.tier),
+				itemType.article, itemType.name, std::to_string(history.tier),
+				itemType.article, itemType.name, std::to_string(history.tier),
+				itemType.article, itemType.name, history.tierLoss ? "not " : "",
+				// Convert to shortenCost
+				std::to_string(history.cost)
+			);
 	} else if (history.actionType == FORGE_ACTION_DUSTTOSLIVERS) {
-		detailsResponse << fmt::format("{:s} {:d} dust to {:d} slivers.", successfulString, history.cost, history.gained);
+		detailsResponse << fmt::format("Converted {:d} dust to {:d} slivers.", history.cost, history.gained);
 
 	} else if (history.actionType == FORGE_ACTION_SLIVERSTOCORES) {
-		history.actionType = 2;
-		detailsResponse << fmt::format("{:s} {:d} slivers to {:d} cores.", successfulString, history.cost, history.gained);
+		detailsResponse << fmt::format("Converted {:d} slivers to {:d} exalted core.", history.cost, history.gained);
 
 	} else if (history.actionType == FORGE_ACTION_INCREASELIMIT) {
-		history.actionType = 2;
 		detailsResponse << fmt::format("Spent {:d} dust to increase the dust limit to {:d}.", history.cost, history.gained + 1);
 
 	} else {

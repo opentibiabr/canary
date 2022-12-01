@@ -265,7 +265,7 @@ class Game
 			uint8_t tier,
 			uint16_t receiveItemId
 		);
-		void playerForgeResourceConversion(uint32_t playerId, uint16_t action);
+		void playerForgeResourceConversion(uint32_t playerId, uint8_t action);
 		void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 		void playerReportRuleViolationReport(uint32_t playerId,
                                              const std::string& targetName,

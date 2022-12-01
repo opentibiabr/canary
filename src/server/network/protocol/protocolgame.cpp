@@ -4454,7 +4454,7 @@ void ProtocolGame::sendOpenForge() {
 	}
 
 	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
-	msg.addByte(transferTotalCount);
+	msg.addByte(static_cast<uint8_t>(transferTotalCount));
 	if (transferTotalCount > 0) {
 		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
 			// Let's access the itemType to check the item's (donator of tier) classification level
@@ -4524,7 +4524,7 @@ void ProtocolGame::parseForgeBrowseHistory(NetworkMessage& msg)
 	addGameTask(&Game::playerBrowseForgeHistory, player->getID(), msg.getByte());
 }
 
-void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount) {
+void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) {
 	NetworkMessage msg;
 	msg.addByte(0x8A);
 
@@ -4572,7 +4572,7 @@ void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16
 	sendOpenForge();
 }
 
-void ProtocolGame::sendForgeHistory(uint8_t page, uint16_t currentPage, uint16_t lastPage)
+void ProtocolGame::sendForgeHistory(uint8_t page)
 {
 	auto historyVector = player->getForgeHistory();
 	NetworkMessage msg;

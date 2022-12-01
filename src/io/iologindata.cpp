@@ -50,7 +50,7 @@ bool saveForgeHistoryLogin(Player *player) {
 	query.str(std::string());
 
 	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
-	for (const auto history : player->getForgeHistory()) {
+	for (const auto &history : player->getForgeHistory()) {
 		auto stringDescription = Database::getInstance().escapeString(history.description);
 		query << player->getGUID() << ','
     << std::to_string(history.actionType) << ','

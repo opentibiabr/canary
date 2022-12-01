@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "server/network/protocol/protocol.h"
 #include "server/network/message/outputmessage.h"
@@ -216,13 +216,11 @@ bool Protocol::RSA_decrypt(NetworkMessage& msg)
 
 uint32_t Protocol::getIP() const
 {
-	auto protocolConnection = getConnection();
-	if (protocolConnection == nullptr) {
-		SPDLOG_ERROR("[Protocol::getIP] - Connection is nullptr");
-		return 0;
+	if (auto protocolConnection = getConnection()) {
+		return protocolConnection->getIP();
 	}
 
-	return protocolConnection->getIP();
+	return 0;
 }
 
 void Protocol::enableCompression()

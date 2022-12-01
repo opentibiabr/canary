@@ -20,9 +20,6 @@
 #ifndef SRC_GAME_SCHEDULING_TASKS_H_
 #define SRC_GAME_SCHEDULING_TASKS_H_
 
-#include <condition_variable>
-
-#include "declarations.hpp"
 #include "utils/thread_holder_base.h"
 
 const int DISPATCHER_TASK_EXPIRATION = 2000;

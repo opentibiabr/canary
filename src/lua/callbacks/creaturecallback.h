@@ -20,7 +20,7 @@
 #ifndef SRC_LUA_CALLBACKS_CREATURECALLBACK_H_
 #define SRC_LUA_CALLBACKS_CREATURECALLBACK_H_
 
-#include "otpch.h"
+#include "pch.hpp"
 #include "creatures/creature.h"
 
 class Creature;

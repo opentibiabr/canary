@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Some Orcs are assembling in the woods between Carlin and Northport." />
+	<areaspawn delay="20000" fromx="32404" fromy="31604" fromz="7" tox="32436" toy="31642" toz="7">
+		<monster name="Orc" amount="50" />
+	</areaspawn>
+	<announce delay="40000" type="event" message="Orcs attacking Carlin from the north-east!" />
+	<areaspawn delay="40000" fromx="32404" fromy="31604" fromz="7" tox="32436" toy="31642" toz="7">
+		<monster name="Orc Berserker" amount="20" />
+		<monster name="Orc Leader" amount="15" />
+		<monster name="Orc Shaman" amount="15" />
+	</areaspawn>
+</raid>

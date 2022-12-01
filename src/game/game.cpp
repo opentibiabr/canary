@@ -8020,8 +8020,7 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
 	);
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
-	// bool success = roll ? true : false;
-	bool success = false;
+	bool success = roll ? true : false;
 
 	uint32_t chance = uniform_random(0, 10000);
 	uint8_t bonus = forgeBonus(chance);

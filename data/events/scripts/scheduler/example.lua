@@ -6,8 +6,8 @@
 -- With 'onStartup()' you can load any raid, for example loading a entire map/hunt and the choseen spawns.
 
 -- Examples:
--- Loading map: Game.loadMap('data/world/myMapFolder/myMapFile.otbm')
--- Loading spawn: addEvent(function() Game.loadSpawnFile('data/world/mySpawnFolder/mySpawnFile.xml) end, 30 * 1000)
+-- Loading map: Game.loadMap(DATA_DIRECTORY.. '/world/myMapFolder/myMapFile.otbm')
+-- Loading spawn: addEvent(function() Game.loadSpawnFile(DATA_DIRECTORY.. '/world/mySpawnFolder/mySpawnFile.xml) end, 30 * 1000)
 
 local Example_One = GlobalEvent("Example one")
 function Example_One.onStartup()

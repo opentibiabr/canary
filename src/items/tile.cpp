@@ -17,12 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "items/tile.h"
-
 #include "creatures/creature.h"
 #include "creatures/combat/combat.h"
 #include "game/game.h"
@@ -702,12 +699,12 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 			if (ground) {
 				const ItemType& iiType = Item::items[ground->getID()];
 				if (iiType.blockSolid) {
-					if (!iiType.allowPickupable || item->isMagicField() || item->isBlocking()) {
+					if (!iiType.pickupable || item->isMagicField() || item->isBlocking()) {
 						if (!item->isPickupable()) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 
-						if (!iiType.hasHeight || iiType.pickupable || iiType.isBed()) {
+						if (!iiType.hasHeight || iiType.isBed()) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 					}
@@ -721,7 +718,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 						continue;
 					}
 
-					if (iiType.allowPickupable && !item->isMagicField() && !item->isBlocking()) {
+					if (iiType.pickupable && !item->isMagicField() && !item->isBlocking()) {
 						continue;
 					}
 

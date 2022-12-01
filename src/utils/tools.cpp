@@ -17,7 +17,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
+
+#include "core.hpp"
 
 #include "utils/tools.h"
 
@@ -1106,6 +1108,8 @@ std::string getFirstLine(const std::string& str)
 const char* getReturnMessage(ReturnValue value)
 {
 	switch (value) {
+		case RETURNVALUE_NOERROR:
+			return "No error.";
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
@@ -1148,9 +1152,10 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_CONTAINERNOTENOUGHROOM:
 			return "You cannot put more objects in this container.";
 
-    case RETURNVALUE_ONLYAMMOINQUIVER:
-      return "This quiver only holds arrows and bolts.\nYou cannot put any other items in it.";
+		case RETURNVALUE_ONLYAMMOINQUIVER:
+			return "This quiver only holds arrows and bolts.\nYou cannot put any other items in it.";
 
+		case RETURNVALUE_CREATUREBLOCK:
 		case RETURNVALUE_NEEDEXCHANGE:
 		case RETURNVALUE_NOTENOUGHROOM:
 			return "There is not enough room.";
@@ -1338,8 +1343,12 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_NOTENOUGHFISHLEVEL:
 			return "You do not have enough fishing level";
 
-		default: // RETURNVALUE_NOTPOSSIBLE, etc
+		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
+
+		// Any unhandled ReturnValue will go enter here
+		default:
+			return "Unknown error.";
 	}
 }
 

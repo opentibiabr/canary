@@ -4588,8 +4588,8 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
 			msg.addByte(history.actionType);
 			msg.addString(history.description);
-			msg.addByte(history.success ? 0x01 : 0x00);
-			SPDLOG_INFO("HISTORY CREATION {}, ACTION {}, BONUS {}", history.createdAt, history.actionType, history.success);
+			msg.addByte(history.bonus >= 1 ? 0x01 : 0x00);
+			SPDLOG_INFO("HISTORY CREATION {}, ACTION {}, BONUS {}", history.createdAt, history.actionType, history.bonus);
 		}
 	}
 	

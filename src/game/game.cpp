@@ -8057,7 +8057,7 @@ void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page)
 	}
 
 	// prevent request spam
-	player->forgeHistory(page, 0, 0);
+	player->forgeHistory(page);
 }
 
 void Game::updatePlayerSaleItems(uint32_t playerId)
@@ -8337,8 +8337,8 @@ void Game::sendUpdateCreature(const Creature* creature) {
 
 	SpectatorHashSet spectators;
 	map.getSpectators(spectators, creature->getPosition(), true);
-	for (Creature *spectator : spectators){
-		if (Player *tmpPlayer = spectator->getPlayer()) {
+	for (Creature *spectator : spectators) {
+		if (const Player *tmpPlayer = spectator->getPlayer()) {
 			tmpPlayer->sendUpdateCreature(creature);
 		}
 	}

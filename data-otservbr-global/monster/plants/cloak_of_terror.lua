@@ -70,6 +70,10 @@ monster.light = {
 	color = 0
 }
 
+monster.events = {
+	'cloakDropEnergy'
+}
+
 monster.voices = {
 	interval = 5000,
 	chance = 10,

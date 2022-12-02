@@ -4545,7 +4545,6 @@ void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool succe
 	}
 	else if (bonus >= 4 && bonus <= 8)
 	{
-		SPDLOG_WARN("caiu no if: item id {}, tier {}", itemId, tier);
 		msg.add<uint16_t>(itemId);
 		msg.addByte(tier);
 	}
@@ -4609,6 +4608,12 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	}
 	
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendForgeError(const std::string message)
+{
+	sendMessageDialog(message);
+	closeForgeWindow();
 }
 
 void ProtocolGame::closeForgeWindow()

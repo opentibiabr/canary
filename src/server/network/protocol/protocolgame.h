@@ -265,6 +265,7 @@ private:
 	//Forge System
 	void sendForgingData();
 	void sendOpenForge();
+	void sendForgeError(const std::string message);
 	void closeForgeWindow();
 	void parseForgeEnter(NetworkMessage &msg);
 	void parseForgeBrowseHistory(NetworkMessage& msg);

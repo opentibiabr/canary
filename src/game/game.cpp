@@ -1758,7 +1758,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 	return ret;
 }
 
-Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/, bool hasTier /*= false*/, uint8_t tier /*= 0*/) const
+Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/) const
 {
 	if (cylinder == nullptr) {
 		return nullptr;
@@ -1776,7 +1776,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 			continue;
 		}
 
-		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType()) && (!hasTier || item->getTier() == tier)) {
+		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 			return item;
 		}
 
@@ -1792,7 +1792,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 	while (i < containers.size()) {
 		Container* container = containers[i++];
 		for (Item* item : container->getItemList()) {
-			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType()) && (!hasTier || item->getTier() == tier)) {
+			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 				return item;
 			}
 

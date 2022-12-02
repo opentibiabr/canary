@@ -3617,7 +3617,7 @@ void Player::stashContainer(StashContainerList itemDict)
 	}
 }
 
-bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/) const
+bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped/* = false*/, bool removeFromStash/* = false*/)
 {
 	if (amount == 0) {
 		return true;
@@ -3626,6 +3626,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	std::vector<Item*> itemList;
 
 	uint32_t count = 0;
+	uint32_t removeFromStashAmount = amount;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
 		Item* item = inventory[i];
 		if (!item) {
@@ -3657,12 +3658,26 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 					itemList.push_back(containerItem);
 
 					count += itemCount;
+					auto stackable = Item::items[itemId].stackable;
+					// If the amount of items in the backpack is equal to or greater than the amount
+					// It will remove items and stop the iteration
 					if (count >= amount) {
-						g_game().internalRemoveItems(std::move(itemList), amount, Item::items[itemId].stackable);
+						g_game().internalRemoveItems(std::move(itemList), amount, stackable);
 						return true;
+					// If not, we will remove the amount the player have and save the rest to remove from the stash
+					} else if (removeFromStash && stackable) {
+						g_game().internalRemoveItems(std::move(itemList), amount, stackable);
+						// Save remaining items to remove
+						removeFromStashAmount -= count;
 					}
 				}
 			}
+		}
+	}
+
+	if (removeFromStash && removeFromStashAmount <= amount) {
+		if (withdrawItem(itemId, removeFromStashAmount)) {
+			return true;
 		}
 	}
 	return false;
@@ -6424,8 +6439,11 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		}
 		if (bonus != 2)
 		{
+			if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
+				SPDLOG_ERROR("[{}][Log 1] Failed to remove item {} from player {}", __FUNCTION__, ITEM_FORGE_CORE, getName());
+				return;
+			}
 			history.coresCost = coreCount;
-			removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true);
 		}
 		if (bonus != 3)
 		{
@@ -6502,13 +6520,13 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			setForgeDusts(getForgeDusts() - dustCost);
 		}
 
-		if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true)) {
-			SPDLOG_ERROR("[Log 8] Failed to remove forge item {} from player with name {}", ITEM_FORGE_CORE, getName());
+		if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
+			SPDLOG_ERROR("[{}][Log 2] Failed to remove item {} from player {}", __FUNCTION__, ITEM_FORGE_CORE, getName());
 			return;
 		}
 
 		uint64_t cost = 0;
-		for (const auto &itemClassification : g_game().getItemsClassifications())
+		for (const auto *itemClassification : g_game().getItemsClassifications())
 		{
 			if (itemClassification->id != firstForgingItem->getClassification())
 			{
@@ -6621,8 +6639,8 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
 	}
 
-	if (!removeItemOfType(ITEM_FORGE_CORE, 1, -1, true)) {
-		SPDLOG_ERROR("[Log 9] Failed to remove forge item {} from player with name {}", ITEM_FORGE_CORE, getName());
+	if (!removeItemOfType(ITEM_FORGE_CORE, 1, -1, true, true)) {
+		SPDLOG_ERROR("[{}] Failed to remove item {} from player {}", __FUNCTION__, ITEM_FORGE_CORE, getName());
 		return;
 	}
 	uint64_t cost = 0;
@@ -6697,10 +6715,8 @@ void Player::forgeResourceConversion(uint8_t action)
 			sendFYIBox("Not enough sliver.");
 		}
 
-		if (auto removeConfirm = removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true);
-			!removeConfirm)
-		{
-			SPDLOG_ERROR("[Log 1] Failed to remove slivers from player with name {}", getName());
+		if (!removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true, true)) {
+			SPDLOG_ERROR("[{}] Failed to remove item {} from player {}", __FUNCTION__, ITEM_FORGE_SLIVER, getName());
 			return;
 		}
 

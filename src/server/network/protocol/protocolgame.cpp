@@ -4582,10 +4582,10 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	uint16_t currentPage = (lastPage < page) ? lastPage : page;
 
 	std::vector<ForgeHistory> historyPerPage;
-	uint16_t firstPageEntry = historyVectorLen - (currentPage - 1) * 9 - 1;
-	uint16_t lastPageEntry = (0 < historyVectorLen - currentPage * 9) ? historyVectorLen - currentPage * 9: 0;
-	for (uint16_t entry = firstPageEntry; entry > lastPageEntry; --entry) {
-		historyPerPage.push_back(historyVector[entry]);
+	uint16_t pageFirstEntry = (0 < historyVectorLen - (currentPage - 1) * 9) ? historyVectorLen - (currentPage - 1) * 9 : 0;
+	uint16_t pageLastEntry = (0 < historyVectorLen - currentPage * 9) ? historyVectorLen - currentPage * 9: 0;
+	for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
+		historyPerPage.push_back(historyVector[entry - 1]);
 	}
 
 	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);

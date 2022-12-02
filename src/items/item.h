@@ -1104,7 +1104,7 @@ class Item : virtual public Thing
 			if (getTier() == 0) {
 				return 0;
 			}
-			return 0.5 * getTier() + 0.03 * ((getTier() - 1) * (getTier() - 1));
+			return (0.0307576 * getTier() * getTier()) + (0.440697 * getTier()) + 0.026;
 		}
 
 		double_t getFatalChance() const {

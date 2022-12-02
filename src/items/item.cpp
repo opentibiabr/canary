@@ -1526,7 +1526,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 		string << std::endl << "Classification: " << std::to_string(item->getClassification()) << " Tier: " << std::to_string(item->getTier());
 		if (item->getTier() != 0) {
 			string << " (";
-			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
+			if (item->getWeaponType() != WEAPON_NONE) {
 				string << item->getFatalChance() << "% Onslaught).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
 				string << item->getMomentumChance() << "% Momentum).";

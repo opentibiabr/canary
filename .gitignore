@@ -370,6 +370,7 @@ tasks.json
 # Files
 config.lua
 client_assertions.txt
+*.gitignore
 # Extensions
 *.ini
 *.otb

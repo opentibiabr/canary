@@ -6398,13 +6398,13 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 	auto exaltationChest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1);
 	if (!exaltationChest) {
-		SPDLOG_ERROR("Failed to create exhaustation chest");
+		SPDLOG_ERROR("Failed to create exaltation chest");
 		sendForgeError(errorMessage);
 		return;
 	}
 	auto exaltationContainer = exaltationChest->getContainer();
 	if (!exaltationContainer) {
-		SPDLOG_ERROR("Failed to create exhaustation container");
+		SPDLOG_ERROR("Failed to create exaltation container");
 		sendForgeError(errorMessage);
 		return;
 	}

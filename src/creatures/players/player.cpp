@@ -3676,7 +3676,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 	}
 
 	if (removeFromStash && removeFromStashAmount <= amount) {
-		if (withdrawItem(itemId, amount)) {
+		if (withdrawItem(itemId, removeFromStashAmount)) {
 			return true;
 		}
 	}

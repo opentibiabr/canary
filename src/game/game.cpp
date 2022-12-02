@@ -2527,12 +2527,12 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
 		if (slotItem) {
-			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
-		}
+			Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
+			if (leftItem) {
+				internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+			}
 
-		Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
-		if (leftItem && slotItem) {
-			internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 		}
 
 		if (it.weaponType == WEAPON_AMMO) {

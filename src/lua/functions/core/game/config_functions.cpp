@@ -31,9 +31,11 @@ void ConfigFunctions::init(lua_State* L) {
 
 	#define registerEnumIn(L, tableName, value) { \
 		std::string enumName = #value; \
-		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value); \
-	}
+		registerVariable(L, tableName, enumName.substr(enumName.find_last_of(':') + 1), value) \
+	} (void) 0
+
 	registerTable(L, "configKeys");
+
 	registerEnumIn(L, "configKeys", ALLOW_CHANGEOUTFIT)
 	registerEnumIn(L, "configKeys", ONE_PLAYER_ON_ACCOUNT)
 	registerEnumIn(L, "configKeys", AIMBOT_HOTKEY_ENABLED)
@@ -141,7 +143,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
-	
+
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN)
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN_SPEED)
 	registerEnumIn(L, "configKeys", RATE_MANA_REGEN)
@@ -174,6 +176,16 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY)
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY)
+
+	registerEnumIn(L, "configKeys", FORGE_COST_ONE_SLIVER)
+	registerEnumIn(L, "configKeys", FORGE_SLIVER_AMOUNT)
+	registerEnumIn(L, "configKeys", FORGE_CORE_COST)
+	registerEnumIn(L, "configKeys", FORGE_MAX_DUST)
+	registerEnumIn(L, "configKeys", FORGE_FUSION_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_TRANSFER_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION)
 
 	#undef registerEnumIn
 }

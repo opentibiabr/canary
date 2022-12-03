@@ -74,7 +74,7 @@ function reload.onSay(player, words, param)
 		return true
 	elseif not reloadType then
 		player:sendCancelMessage("Reload type not found.")
-		Spdlog.info("Reload type not found")
+		Spdlog.warn("[reload.onSay] - Reload type '".. param.. "' not found")
 		return false
 	end
 	return false

@@ -177,7 +177,7 @@ class Map
 		static constexpr int32_t maxClientViewportX = 8;
 		static constexpr int32_t maxClientViewportY = 6;
 		static constexpr int32_t maxViewportX = maxClientViewportX + 3; //min value: maxClientViewportX + 1
-		static constexpr int32_t maxViewportY = maxClientViewportY + 3; //min value: maxClientViewportY + 1
+		static constexpr int32_t maxViewportY = maxClientViewportY + 5; //min value: maxClientViewportY + 1
 
 		uint32_t clean() const;
 

@@ -399,15 +399,6 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 
 			Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
 			combat->addCondition(condition);
-		} else if (tmpName == "fear") {
-			int32_t duration = 1000;
-
-			if ((attr = node.attribute("duration"))) {
-				duration = pugi::cast<int32_t>(attr.value());
-			}
-
-			Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_FEARED, duration, 0);
-			combat->addCondition(condition);
 		} else if (tmpName == "firefield") {
 			combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
 		} else if (tmpName == "poisonfield") {

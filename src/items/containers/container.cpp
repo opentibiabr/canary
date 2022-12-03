@@ -400,6 +400,16 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
+	
+	if (isQuiver() && item->getWeaponType() != WEAPON_AMMO) {
+		Player* player = actor->getPlayer();
+		Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+		if (slotItem && slotItem->getID() == getID() && item->getWeaponType() == WEAPON_SHIELD) {
+			g_game().playerEquipItem(player->getID(), item->getID());
+		} else {
+			return RETURNVALUE_ONLYAMMOINQUIVER;
+		}
+	}
 
 	const Cylinder* topParent = getTopParent();
 	if (topParent != this) {

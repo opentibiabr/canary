@@ -633,52 +633,12 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		if (recvbyte == 0x0F) {
 			disconnect();
 		}
-
 		return;
 	}
 
-	// A dead player can not performs actions
 	if (player->isDead() || player->getHealth() <= 0) {
-		if (recvbyte == 0x14) {
-			disconnect();
-			IOLoginData::updateOnlineStatus(player->getGUID(), false);
-			return;
-		}
-
-		if (recvbyte == 0x0F) {
-			if (!player) {
-				return;
-			}
-			
-			if (!player->spawn()) {
-				disconnect();
-				g_game().removeCreature(player);
-				return;
-			}
-
-			sendAddCreature(player, player->getPosition(), 0, false);
-
-			std::string bless = player->getBlessingsName();
-			std::ostringstream lostBlesses;
-			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-			if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
-				for (uint8_t i = 2; i <= 6; i++) {
-					if (!player->hasBlessing(i)) {
-						player->addBlessing(i, 1);
-					}
-				}
-				sendBlessStatus();
-			}
-			return;
-		}
-
-		if (recvbyte != 0x1D && recvbyte != 0x1E) {
-			// keep the connection alive
-			g_scheduler().addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
-			g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
-			return;
-		}
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
+		return;
 	}
 
 	// Modules system
@@ -689,6 +649,55 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
+void ProtocolGame::parsePacketDead(uint8_t recvbyte)
+{
+	if (recvbyte == 0x14) {
+		disconnect();
+		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
+		return;
+	}
+
+	if (recvbyte == 0x0F) {
+		if (!player) {
+			return;
+		}
+
+		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPing, getThis())));
+
+		if (!player->spawn()) {
+			disconnect();
+			addGameTask(&Game::removeCreature, player, true);
+			return;
+		}
+
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		return;
+	}
+
+	if (recvbyte == 0x1D) {
+		// keep the connection alive
+		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPingBack, getThis())));
+		return;
+	}
+}
+
+void ProtocolGame::addBless()
+{
+	std::string bless = player->getBlessingsName();
+	std::ostringstream lostBlesses;
+	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
+	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
+	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+		for (uint8_t i = 2; i <= 6; i++) {
+			if (!player->hasBlessing(i)) {
+				player->addBlessing(i, 1);
+			}
+		}
+		sendBlessStatus();
+	}
+}
+
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
 {
 	if (!acceptPackets || g_game().getGameState() == GAME_STATE_SHUTDOWN) {
@@ -697,7 +706,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 
 	if (!player || player->isRemoved() || player->getHealth() <= 0) {
 		return;
-}
+	}
 
 	switch (recvbyte) {
 		case 0x14: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
@@ -801,6 +810,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE7: /* thank you */ break;
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEB: parsePreyAction(msg); break;
+		case 0xED: parseSendResourceBalance(); break;
 		case 0xEE: parseGreet(msg); break;
 		// Premium coins transfer
 		// case 0xEF: parseCoinTransfer(msg); break;
@@ -2574,6 +2584,16 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 	}
 
 	addGameTask(&Game::playerPreyAction, player->getID(), slot, action, option, index, raceId);
+}
+
+void ProtocolGame::parseSendResourceBalance()
+{
+	sendResourcesBalance(
+		player->getMoney(),
+		player->getBankBalance(),
+		player->getPreyCards(),
+		player->getTaskHuntingPoints()
+	);
 }
 
 void ProtocolGame::parseInviteToParty(NetworkMessage &msg)

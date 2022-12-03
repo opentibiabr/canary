@@ -4391,30 +4391,34 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 		// Access to the monster's map damage to check if the player attacked it
 		for (auto [playerId, damage] : monster->getDamageMap()) {
 			auto damagePlayer = g_game().getPlayerByID(playerId);
-			if (damagePlayer) {
-				// If the player is not in a party and sharing exp active and enabled
-				// And it's not the player killing the creature, then we ignore everything else
-				auto damageParty = damagePlayer->getParty();
-				if (this->getID() != damagePlayer->getID() &&
-					(!damageParty || !damageParty->isSharedExperienceActive() || !damageParty->isSharedExperienceEnabled()))
-				{
-					continue;
-				}
+			if (!damagePlayer) {
+				continue;
+			}
 
-				TaskHuntingSlot* taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
-				if (!taskSlot || monster->isSummon()) {
-					continue;
-				}
+			// If the player is not in a party and sharing exp active and enabled
+			// And it's not the player killing the creature, then we ignore everything else
+			auto damageParty = damagePlayer->getParty();
+			if (this->getID() != damagePlayer->getID() &&
+				(!damageParty || !damageParty->isSharedExperienceActive() || !damageParty->isSharedExperienceEnabled()))
+			{
+				continue;
+			}
 
-				if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {
-					taskSlot->currentKills += 1;
-					if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
-						(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
-						taskSlot->state = PreyTaskDataState_Completed;
-						damagePlayer->sendTextMessage(MESSAGE_STATUS, "You succesfully finished your hunting task. Your reward is ready to be claimed!");
-					}
-					damagePlayer->reloadTaskSlot(taskSlot->id);
+			TaskHuntingSlot* taskSlot = damagePlayer->getTaskHuntingWithCreature(monster->getRaceId());
+			if (!taskSlot || monster->isSummon()) {
+				continue;
+			}
+
+			if (const TaskHuntingOption* option = g_ioprey().GetTaskRewardOption(taskSlot)) {
+				taskSlot->currentKills += 1;
+				if ((taskSlot->upgrade && taskSlot->currentKills >= option->secondKills) ||
+					(!taskSlot->upgrade && taskSlot->currentKills >= option->firstKills)) {
+					taskSlot->state = PreyTaskDataState_Completed;
+					std::string message = "You succesfully finished your hunting task. Your reward is ready to be claimed!";
+					damagePlayer->sendTextMessage(MESSAGE_STATUS, message);
 				}
+				damagePlayer->reloadTaskSlot(taskSlot->id);
+			}
 			}
 		}
 	}

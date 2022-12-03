@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="Deep under Edron, the Orc population seems to grow rapidly.
+		Be careful and take a rope with you!" />
+	<announce delay="20000" type="event" message="Orc berserkers deep under Edron!" />
+	<!--Single Spawns-->
+	<areaspawn delay="20000" fromx="33153" fromy="31875" fromz="7" tox="33183" toy="31906" toz="7">
+		<monster name="Orc" amount="20" />
+		<monster name="Orc Rider" amount="5" />
+		<monster name="Orc Spearman" amount="15" />
+		<monster name="Orc Warrior" amount="10" />
+	</areaspawn>
+</raid>

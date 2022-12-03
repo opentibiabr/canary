@@ -20,15 +20,17 @@
 #include "pch.hpp"
 
 #include "creatures/players/grouping/familiars.h"
+#include "config/configmanager.h"
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 
 bool Familiars::loadFromXml() {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/familiars.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/familiars.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
 		SPDLOG_ERROR("Failed to load Familiars");
-		printXMLError("[Familiars::loadFromXml] - ", "data/XML/familiars.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

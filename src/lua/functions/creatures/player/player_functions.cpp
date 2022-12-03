@@ -1549,12 +1549,7 @@ int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	}
 
 	uint32_t key = getNumber<uint32_t>(L, 2);
-	int32_t value = player->getStorageValue(key);
-	if (value >= 0) {
-		lua_pushnumber(L, value);
-	} else {
-		lua_pushnumber(L, -1);
-	}
+	lua_pushnumber(L, player->getStorageValue(key));
 	return 1;
 }
 

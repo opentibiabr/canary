@@ -17508,6 +17508,150 @@ local items = {
 		level = 26
 	},
 	{
+		-- Antler-Horn Helmet
+		itemid = 40588,
+		type = "equip",
+		slot = "head",
+		level = 250,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- Antler-Horn Helmet
+		itemid = 40588,
+		type = "deequip",
+		slot = "head",
+		level = 250
+	},
+        {
+		-- Mutated Skin Legs
+		itemid = 40590,
+		type = "equip",
+		slot = "legs",
+		level = 270,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- Mutated Skin Legs
+		itemid = 40590,
+		type = "deequip",
+		slot = "legs",
+		level = 270
+	},
+        {
+		-- Stitched Mutant Hide Legs
+		itemid = 40589,
+		type = "equip",
+		slot = "legs",
+		level = 270,
+		vocation = {
+			{"Knight", true},
+			{"Elite Knight"}
+		}
+	},
+	{
+		-- Stitched Mutant Hide Legs
+		itemid = 40589,
+		type = "deequip",
+		slot = "legs",
+		level = 270
+	},
+        {
+		-- mutant bone kilt
+		itemid = 40595,
+		type = "equip",
+		slot = "legs",
+		level = 300,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- mutant bone kilt
+		itemid = 40595,
+		type = "deequip",
+		slot = "legs",
+		level = 300
+	},
+        {
+		-- mutated skin armor
+		itemid = 40591,
+		type = "equip",
+		slot = "armor",
+		level = 270,
+		vocation = {
+			{"Paladin", true},
+			{"Royal Paladin"}
+		}
+	},
+	{
+		-- mutated skin armor
+		itemid = 40591,
+		type = "deequip",
+		slot = "armor",
+		level = 270
+	},
+    {
+		-- alchemist's notepad
+		itemid = 40594,
+		type = "equip",
+		slot = "shield",
+        level = 250,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- alchemist's notepad
+		itemid = 40594,
+		type = "deequip",
+		slot = "shield",
+        level = 250
+	},
+    {
+		-- mutant bone boots
+		itemid = 40593,
+		type = "equip",
+		slot = "feet",
+		level = 250,
+		vocation = {
+			{"Druid", true},
+			{"Elder Druid"}
+		}
+	},
+	{
+		-- mutant bone boots
+		itemid = 40593,
+		type = "deequip",
+		slot = "feet",
+		level = 250
+	},
+	{
+		-- alchemist's boots
+		itemid = 40592,
+		type = "equip",
+		slot = "feet",
+		level = 250,
+		vocation = {
+			{"Sorcerer", true},
+			{"Master Sorcerer"}
+		}
+	},
+	{
+		-- alchemist's boots
+		itemid = 40592,
+		type = "deequip",
+		slot = "feet",
+		level = 250
+	},
+	{
 		-- gold ring
 		itemid = 3063,
 		type = "equip",

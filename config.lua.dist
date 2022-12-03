@@ -109,7 +109,9 @@ autoBank = false
 -- Teleport summon
 -- Set to true will never remove the summon
 teleportSummons = false
--- true will allow the /reload command to be used
+-- NOTE: true will allow the /reload command to be used
+-- NOTE: Using this script might cause unwanted changes
+-- This script forces a reload in the entire server, this means that everything that is stored in memory might stop to workroperly and/or completely, this script should be used in test environments only
 allowReload = false
 
 -- Stamina in Trainers

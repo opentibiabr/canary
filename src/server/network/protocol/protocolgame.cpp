@@ -2969,7 +2969,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(player->getBaseSpeed() / 2);
 	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->getCapacity());
-	msg.add<uint32_t>(player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	msg.addByte(8);
 	msg.addByte(1);
 	msg.add<uint16_t>(player->getMagicLevel());
@@ -6232,7 +6232,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 
-	msg.add<uint32_t>(player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
 	msg.add<uint64_t>(player->getExperience());
 

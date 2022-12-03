@@ -633,51 +633,12 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 		if (recvbyte == 0x0F) {
 			disconnect();
 		}
-
 		return;
 	}
 
-	// A dead player can not performs actions
 	if (player->isDead() || player->getHealth() <= 0) {
-		if (recvbyte == 0x14) {
-			disconnect();
-			return;
-		}
-
-		if (recvbyte == 0x0F) {
-			if (!player) {
-				return;
-			}
-			
-			if (!player->spawn()) {
-				disconnect();
-				g_game().removeCreature(player);
-				return;
-			}
-
-			sendAddCreature(player, player->getPosition(), 0, false);
-
-			std::string bless = player->getBlessingsName();
-			std::ostringstream lostBlesses;
-			(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
-			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
-			if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
-				for (uint8_t i = 2; i <= 6; i++) {
-					if (!player->hasBlessing(i)) {
-						player->addBlessing(i, 1);
-					}
-				}
-				sendBlessStatus();
-			}
-			return;
-		}
-
-		if (recvbyte != 0x1D && recvbyte != 0x1E) {
-			// keep the connection alive
-			g_scheduler().addEvent(createSchedulerTask(500, std::bind(&ProtocolGame::sendPing, getThis())));
-			g_scheduler().addEvent(createSchedulerTask(1000, std::bind(&ProtocolGame::sendPingBack, getThis())));
-			return;
-		}
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketDead, getThis(), recvbyte)));
+		return;
 	}
 
 	// Modules system
@@ -688,6 +649,55 @@ void ProtocolGame::parsePacket(NetworkMessage& msg)
 	g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::parsePacketFromDispatcher, getThis(), msg, recvbyte)));
 }
 
+void ProtocolGame::parsePacketDead(uint8_t recvbyte)
+{
+	if (recvbyte == 0x14) {
+		disconnect();
+		g_dispatcher().addTask(createTask(std::bind(&IOLoginData::updateOnlineStatus, player->getGUID(), false)));
+		return;
+	}
+
+	if (recvbyte == 0x0F) {
+		if (!player) {
+			return;
+		}
+
+		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPing, getThis())));
+
+		if (!player->spawn()) {
+			disconnect();
+			addGameTask(&Game::removeCreature, player, true);
+			return;
+		}
+
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::sendAddCreature, getThis(), player, player->getPosition(), 0, false)));
+		g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::addBless, getThis())));
+		return;
+	}
+
+	if (recvbyte == 0x1D) {
+		// keep the connection alive
+		g_scheduler().addEvent(createSchedulerTask(100, std::bind(&ProtocolGame::sendPingBack, getThis())));
+		return;
+	}
+}
+
+void ProtocolGame::addBless()
+{
+	std::string bless = player->getBlessingsName();
+	std::ostringstream lostBlesses;
+	(bless.length() == 0) ? lostBlesses << "You lost all your blessings." : lostBlesses <<  "You are still blessed with " << bless;
+	player->sendTextMessage(MESSAGE_EVENT_ADVANCE, lostBlesses.str());
+	if (player->getLevel() < g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL)) {
+		for (uint8_t i = 2; i <= 6; i++) {
+			if (!player->hasBlessing(i)) {
+				player->addBlessing(i, 1);
+			}
+		}
+		sendBlessStatus();
+	}
+}
+
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyte)
 {
 	if (!acceptPackets || g_game().getGameState() == GAME_STATE_SHUTDOWN) {
@@ -696,7 +706,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 
 	if (!player || player->isRemoved() || player->getHealth() <= 0) {
 		return;
-}
+	}
 
 	switch (recvbyte) {
 		case 0x14: g_dispatcher().addTask(createTask(std::bind(&ProtocolGame::logout, getThis(), true, false))); break;
@@ -800,6 +810,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xE7: /* thank you */ break;
 		case 0xE8: parseDebugAssert(msg); break;
 		case 0xEB: parsePreyAction(msg); break;
+		case 0xED: parseSendResourceBalance(); break;
 		case 0xEE: parseGreet(msg); break;
 		// Premium coins transfer
 		// case 0xEF: parseCoinTransfer(msg); break;
@@ -924,15 +935,15 @@ void ProtocolGame::GetMapDescription(int32_t x, int32_t y, int32_t z, int32_t wi
 	int32_t skip = -1;
 	int32_t startz, endz, zstep;
 
-	if (z > 7)
+	if (z > MAP_INIT_SURFACE_LAYER)
 	{
-		startz = z - 2;
-		endz = std::min<int32_t>(MAP_MAX_LAYERS - 1, z + 2);
+		startz = z - MAP_LAYER_VIEW_LIMIT;
+		endz = std::min<int32_t>(MAP_MAX_LAYERS - 1, z + MAP_LAYER_VIEW_LIMIT);
 		zstep = 1;
 	}
 	else
 	{
-		startz = 7;
+		startz = MAP_INIT_SURFACE_LAYER;
 		endz = 0;
 		zstep = -1;
 	}
@@ -1058,33 +1069,29 @@ bool ProtocolGame::canSee(int32_t x, int32_t y, int32_t z) const
 	}
 
 	const Position &myPos = player->getPosition();
-	if (myPos.z <= 7)
+	if (myPos.z <= MAP_INIT_SURFACE_LAYER)
 	{
 		//we are on ground level or above (7 -> 0)
 		//view is from 7 -> 0
-		if (z > 7)
+		if (z > MAP_INIT_SURFACE_LAYER)
 		{
 			return false;
 		}
 	}
-	else if (myPos.z >= 8)
+	else if (myPos.z >= MAP_INIT_SURFACE_LAYER + 1)
 	{
 		//we are underground (8 -> 15)
 		//view is +/- 2 from the floor we stand on
-		if (std::abs(myPos.getZ() - z) > 2)
+		if (std::abs(myPos.getZ() - z) > MAP_LAYER_VIEW_LIMIT)
 		{
 			return false;
 		}
 	}
 
 	//negative offset means that the action taken place is on a lower floor than ourself
-	int32_t offsetz = myPos.getZ() - z;
-	if ((x >= myPos.getX() - 8 + offsetz) && (x <= myPos.getX() + 9 + offsetz) &&
-		(y >= myPos.getY() - 6 + offsetz) && (y <= myPos.getY() + 7 + offsetz))
-	{
-		return true;
-	}
-	return false;
+	const int8_t offsetz = myPos.getZ() - z;
+	return (x >= myPos.getX() - Map::maxClientViewportX + offsetz) && (x <= myPos.getX() + (Map::maxClientViewportX + 1) + offsetz) &&
+		(y >= myPos.getY() - Map::maxClientViewportY + offsetz) && (y <= myPos.getY() + (Map::maxClientViewportY + 1) + offsetz);
 }
 
 // Parse methods
@@ -2579,6 +2586,16 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 	addGameTask(&Game::playerPreyAction, player->getID(), slot, action, option, index, raceId);
 }
 
+void ProtocolGame::parseSendResourceBalance()
+{
+	sendResourcesBalance(
+		player->getMoney(),
+		player->getBankBalance(),
+		player->getPreyCards(),
+		player->getTaskHuntingPoints()
+	);
+}
+
 void ProtocolGame::parseInviteToParty(NetworkMessage &msg)
 {
 	uint32_t targetId = msg.get<uint32_t>();
@@ -2973,7 +2990,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(player->getBaseSpeed() / 2);
 	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->getCapacity());
-	msg.add<uint32_t>(player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	msg.addByte(8);
 	msg.addByte(1);
 	msg.add<uint16_t>(player->getMagicLevel());
@@ -5113,12 +5130,12 @@ void ProtocolGame::sendFYIBox(const std::string &message)
 }
 
 //tile
-void ProtocolGame::sendMapDescription(const Position &pos)
+void ProtocolGame::sendMapDescription(const Position& pos)
 {
 	NetworkMessage msg;
 	msg.addByte(0x64);
 	msg.addPosition(player->getPosition());
-	GetMapDescription(pos.x - 8, pos.y - 6, pos.z, 18, 14, msg);
+	GetMapDescription(pos.x - Map::maxClientViewportX, pos.y - Map::maxClientViewportY, pos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, msg);
 	writeToOutputBuffer(msg);
 }
 
@@ -5403,7 +5420,7 @@ void ProtocolGame::sendMoveCreature(const Creature *creature, const Position &ne
 		else
 		{
 			NetworkMessage msg;
-			if (oldPos.z == 7 && newPos.z >= 8)
+			if (oldPos.z == MAP_INIT_SURFACE_LAYER && newPos.z >= MAP_INIT_SURFACE_LAYER + 1)
 			{
 				RemoveTileThing(msg, oldPos, oldStackPos);
 			}
@@ -5427,30 +5444,30 @@ void ProtocolGame::sendMoveCreature(const Creature *creature, const Position &ne
 			if (oldPos.y > newPos.y)
 			{ // north, for old x
 				msg.addByte(0x65);
-				GetMapDescription(oldPos.x - 8, newPos.y - 6, newPos.z, 18, 1, msg);
+				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
 			}
 			else if (oldPos.y < newPos.y)
 			{ // south, for old x
 				msg.addByte(0x67);
-				GetMapDescription(oldPos.x - 8, newPos.y + 7, newPos.z, 18, 1, msg);
+				GetMapDescription(oldPos.x - Map::maxClientViewportX, newPos.y + (Map::maxClientViewportY + 1), newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
 			}
 
 			if (oldPos.x < newPos.x)
 			{ // east, [with new y]
 				msg.addByte(0x66);
-				GetMapDescription(newPos.x + 9, newPos.y - 6, newPos.z, 1, 14, msg);
+				GetMapDescription(newPos.x + (Map::maxClientViewportX + 1), newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
 			}
 			else if (oldPos.x > newPos.x)
 			{ // west, [with new y]
 				msg.addByte(0x68);
-				GetMapDescription(newPos.x - 8, newPos.y - 6, newPos.z, 1, 14, msg);
+				GetMapDescription(newPos.x - Map::maxClientViewportX, newPos.y - Map::maxClientViewportY, newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
 			}
 			writeToOutputBuffer(msg);
 		}
 	}
 	else if (canSee(oldPos) && canSee(newPos))
 	{
-		if (teleport || (oldPos.z == 7 && newPos.z >= 8) || oldStackPos >= 10)
+		if (teleport || (oldPos.z == MAP_INIT_SURFACE_LAYER && newPos.z >= MAP_INIT_SURFACE_LAYER + 1) || oldStackPos >= 10)
 		{
 			sendRemoveTileThing(oldPos, oldStackPos);
 			sendAddCreature(creature, newPos, newStackPos, false);
@@ -6236,7 +6253,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 
-	msg.add<uint32_t>(player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
 	msg.add<uint64_t>(player->getExperience());
 
@@ -6680,15 +6697,15 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature *creature,
 	msg.addByte(0xBE);
 
 	//going to surface
-	if (newPos.z == 7)
+	if (newPos.z == MAP_INIT_SURFACE_LAYER)
 	{
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 5, 18, 14, 3, skip); //(floor 7 and 6 already set)
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 4, 18, 14, 4, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 3, 18, 14, 5, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 2, 18, 14, 6, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 1, 18, 14, 7, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, 0, 18, 14, 8, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 5, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip); //(floor 7 and 6 already set)
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 4, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 4, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 5, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 6, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 7, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, 0, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 8, skip);
 
 		if (skip >= 0)
 		{
@@ -6697,10 +6714,10 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature *creature,
 		}
 	}
 	//underground, going one floor up (still underground)
-	else if (newPos.z > 7)
+	else if (newPos.z > MAP_INIT_SURFACE_LAYER)
 	{
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, oldPos.getZ() - 3, 18, 14, 3, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, oldPos.getZ() - 3, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, 3, skip);
 
 		if (skip >= 0)
 		{
@@ -6712,11 +6729,11 @@ void ProtocolGame::MoveUpCreature(NetworkMessage &msg, const Creature *creature,
 	//moving up a floor up makes us out of sync
 	//west
 	msg.addByte(0x68);
-	GetMapDescription(oldPos.x - 8, oldPos.y - 5, newPos.z, 1, 14, msg);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - (Map::maxClientViewportY - 1), newPos.z, 1, (Map::maxClientViewportY + 1) * 2, msg);
 
 	//north
 	msg.addByte(0x65);
-	GetMapDescription(oldPos.x - 8, oldPos.y - 6, newPos.z, 18, 1, msg);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, 1, msg);
 }
 
 void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creature, const Position &newPos, const Position &oldPos)
@@ -6730,13 +6747,13 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 	msg.addByte(0xBF);
 
 	//going from surface to underground
-	if (newPos.z == 8)
+	if (newPos.z == MAP_INIT_SURFACE_LAYER + 1)
 	{
 		int32_t skip = -1;
 
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z, 18, 14, -1, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z + 1, 18, 14, -2, skip);
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z + 2, 18, 14, -3, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -1, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 1, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -2, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + 2, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
 
 		if (skip >= 0)
 		{
@@ -6745,10 +6762,10 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 		}
 	}
 	//going further down
-	else if (newPos.z > oldPos.z && newPos.z > 8 && newPos.z < 14)
+	else if (newPos.z > oldPos.z && newPos.z > MAP_INIT_SURFACE_LAYER + 1 && newPos.z < MAP_MAX_LAYERS - MAP_LAYER_VIEW_LIMIT)
 	{
 		int32_t skip = -1;
-		GetFloorDescription(msg, oldPos.x - 8, oldPos.y - 6, newPos.z + 2, 18, 14, -3, skip);
+		GetFloorDescription(msg, oldPos.x - Map::maxClientViewportX, oldPos.y - Map::maxClientViewportY, newPos.z + MAP_LAYER_VIEW_LIMIT, (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportY + 1) * 2, -3, skip);
 
 		if (skip >= 0)
 		{
@@ -6760,11 +6777,11 @@ void ProtocolGame::MoveDownCreature(NetworkMessage &msg, const Creature *creatur
 	//moving down a floor makes us out of sync
 	//east
 	msg.addByte(0x66);
-	GetMapDescription(oldPos.x + 9, oldPos.y - 7, newPos.z, 1, 14, msg);
+	GetMapDescription(oldPos.x + Map::maxClientViewportX + 1, oldPos.y - (Map::maxClientViewportY + 1), newPos.z, 1, ((Map::maxClientViewportY + 1) * 2), msg);
 
 	//south
 	msg.addByte(0x67);
-	GetMapDescription(oldPos.x - 8, oldPos.y + 7, newPos.z, 18, 1, msg);
+	GetMapDescription(oldPos.x - Map::maxClientViewportX, oldPos.y + (Map::maxClientViewportY + 1), newPos.z, ((Map::maxClientViewportX + 1) * 2), 1, msg);
 }
 
 void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)

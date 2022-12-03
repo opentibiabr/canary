@@ -439,3 +439,19 @@ function Player:CreateFamiliarSpell()
 	end
 	return true
 end
+
+function Player.getFinalBaseRateExperience(self)
+	-- Experience Stage Multiplier
+	local baseRate
+	local rateExperience = configManager.getNumber(configKeys.RATE_EXPERIENCE)
+	if configManager.getBoolean(configKeys.RATE_USE_STAGES) then
+		baseRate = getRateFromTable(experienceStages, self:getLevel(), rateExperience)
+	else 
+		baseRate = rateExperience
+	end
+	-- Event scheduler
+	if SCHEDULE_EXP_RATE ~= 100 then
+		baseRate = math.max(0, (baseRate * SCHEDULE_EXP_RATE) / 100)
+	end
+	return baseRate
+end

@@ -1531,7 +1531,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
 				string << item->getMomentumChance() << "% Momentum).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
-				string << item->getDodgeChance() << "% Ruse).";
+				string << std::setprecision(2) << std::fixed << item->getDodgeChance() << "% Ruse).";
 			}
 		}
 	}

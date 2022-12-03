@@ -1340,10 +1340,8 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		}
 	}
 
-	Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT);
-	WeaponType_t itemType = item->getWeaponType();
-	if (slotItem && slotItem->isQuiver() && toIndex == CONST_SLOT_RIGHT && itemType != WEAPON_AMMO) {
-		player->sendCancelMessage("This quiver only holds arrows and bolts.\nYou cannot put any other items in it.");
+	if (toCylinder->getItem() && toCylinder->getItem()->isQuiver() && item->getWeaponType() != WEAPON_AMMO) {
+		player->sendCancelMessage(RETURNVALUE_ONLYAMMOINQUIVER);
 		return;
 	}
 
@@ -2525,18 +2523,21 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
-		Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
-		if (quiver && quiver->isQuiver()) {
-			if (it.weaponType == WEAPON_AMMO) {
+		if (slotItem) {
+			Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
+			if (leftItem) {
+				internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+			}
+
+			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+		}
+
+		if (it.weaponType == WEAPON_AMMO) {
+			Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
+			if (quiver && quiver->isQuiver()) {
 				internalMoveItem(equipItem->getParent(), quiver->getContainer(), 0, equipItem, equipItem->getItemCount(), nullptr);
 				return;
 			}
-
-			Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
-			if (leftItem && leftItem->getWeaponType() != WEAPON_DISTANCE) {
-				internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
-			}
-			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 		}
 
 		internalMoveItem(equipItem->getParent(), player, slot, equipItem, equipItem->getItemCount(), nullptr);

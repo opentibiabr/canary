@@ -20,10 +20,8 @@
 #ifndef SRC_DATABASE_DATABASETASKS_H_
 #define SRC_DATABASE_DATABASETASKS_H_
 
-#include <condition_variable>
-#include "utils/thread_holder_base.h"
 #include "database/database.h"
-#include "declarations.hpp"
+#include "utils/thread_holder_base.h"
 
 struct DatabaseTask {
 	DatabaseTask(std::string&& initQuery, std::function<void(DBResult_ptr, bool)>&& initCallback, bool initStore) :

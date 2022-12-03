@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Elf Scouts have been sighted near Venore!" />
+	<announce delay="20000" type="event" message="The elves attack from shadowthorn!" />
+	<announce delay="60000" type="event" message="Venore is under attack!" />
+	<areaspawn delay="60000" fromx="32853" fromy="32123" fromz="7" tox="32861" toy="32130" toz="7">
+		<monster name="elf" amount="4" />
+		<monster name="elf scout" amount="4" />
+		<monster name="elf arcanist" amount="3" />
+	</areaspawn>
+	<areaspawn delay="60000" fromx="32932" fromy="32158" fromz="7" tox="32944" toy="32168" toz="7">
+		<monster name="elf" amount="4" />
+		<monster name="elf scout" amount="4" />
+		<monster name="elf arcanist" amount="3" />
+	</areaspawn>
+	<areaspawn delay="60000" fromx="32853" fromy="32025" fromz="7" tox="32868" toy="32034" toz="7">
+		<monster name="elf" amount="4" />
+		<monster name="elf scout" amount="4" />
+		<monster name="elf arcanist" amount="3" />
+	</areaspawn>
+</raid>

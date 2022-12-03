@@ -17,14 +17,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/combat.h"
 #include "game/game.h"
 #include "utils/pugicast.h"
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
-
 
 Weapons::Weapons()
 {
@@ -666,7 +665,7 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 		return -maxValue;
 	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->meleeDamageMultiplier)));
 }
 
 WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
@@ -930,7 +929,7 @@ int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
     	}
   	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->distDamageMultiplier)));
 }
 
 bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& skill, uint32_t& skillpoint) const

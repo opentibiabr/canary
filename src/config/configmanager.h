@@ -57,6 +57,7 @@ class ConfigManager
 
 	private:
 		std::string configFileLua = { "config.lua" };
+
 		std::string string[LAST_STRING_CONFIG] = {};
 		int32_t integer[LAST_INTEGER_CONFIG] = {};
 		bool boolean[LAST_BOOLEAN_CONFIG] = {};

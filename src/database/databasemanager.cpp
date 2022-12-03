@@ -17,10 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
+#include "config/configmanager.h"
 #include "database/databasemanager.h"
-
 #include "lua/functions/core/libs/core_libs_functions.hpp"
 #include "lua/scripts/luascript.h"
 
@@ -102,7 +102,7 @@ void DatabaseManager::updateDatabase()
 	int32_t version = getDatabaseVersion();
 	do {
 		std::ostringstream ss;
-		ss << "data/migrations/" << version << ".lua";
+		ss << g_configManager().getString(DATA_DIRECTORY) + "/migrations/" << version << ".lua";
 		if (luaL_dofile(L, ss.str().c_str()) != 0) {
 			SPDLOG_ERROR("DatabaseManager::updateDatabase - Version: {}""] {}",
                          version, lua_tostring(L, -1));

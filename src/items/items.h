@@ -23,7 +23,6 @@
 #include "config/configmanager.h"
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
-#include "io/fileloader.h"
 #include "game/movement/position.h"
 
 struct Abilities {
@@ -157,7 +156,7 @@ class ItemType
 			return (type == ITEM_TYPE_RUNE);
 		}
 		bool isPickupable() const {
-			return (allowPickupable || pickupable);
+			return pickupable;
 		}
 		bool isMultiUse() const {
 			return multiUse;
@@ -262,6 +261,12 @@ class ItemType
 		uint8_t imbuementSlot = 0;
 		int8_t hitChance = 0;
 
+		// 12.90
+		bool wearOut = false;
+		bool clockExpire = false;
+		bool expire = false;
+		bool expireStop = false;
+
 		bool forceUse = false;
 		bool hasHeight = false;
 		bool walkStack = true;
@@ -269,7 +274,6 @@ class ItemType
 		bool blockPickupable = false;
 		bool blockProjectile = false;
 		bool blockPathFind = false;
-		bool allowPickupable = false;
 		bool showDuration = false;
 		bool showCharges = false;
 		bool showAttributes = false;

@@ -4617,7 +4617,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	msg.addByte(static_cast<uint8_t>(historyPageToSend)); // History to send
 
 	if (historyPageToSend > 0) {
-		for (const auto history : historyPerPage) {
+		for (const auto &history : historyPerPage) {
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
 			msg.addByte(history.actionType);
 			msg.addString(history.description);

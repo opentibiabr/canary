@@ -17,24 +17,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <bitset>
-
-#include "creatures/players/player.h"
-#include "items/bed.h"
-#include "creatures/interactions/chat.h"
 #include "creatures/combat/combat.h"
-#include "lua/creature/creatureevent.h"
-#include "lua/creature/events.h"
-#include "game/game.h"
-#include "io/iologindata.h"
+#include "creatures/interactions/chat.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
-#include "lua/creature/movement.h"
+#include "creatures/players/player.h"
+#include "game/game.h"
 #include "game/scheduling/scheduler.h"
-#include "items/weapons/weapons.h"
+#include "grouping/familiars.h"
+#include "lua/creature/creatureevent.h"
+#include "lua/creature/events.h"
+#include "lua/creature/movement.h"
+#include "io/iologindata.h"
 #include "io/iobestiary.h"
+#include "items/bed.h"
+#include "items/weapons/weapons.h"
 
 MuteCountMap Player::muteCountMap;
 
@@ -4809,11 +4808,11 @@ void Player::addUnjustifiedDead(const Player* attacked)
 		if (dayKills >= 2 * g_configManager().getNumber(DAY_KILLS_TO_RED) || weekKills >= 2 * g_configManager().getNumber(WEEK_KILLS_TO_RED) || monthKills >= 2 * g_configManager().getNumber(MONTH_KILLS_TO_RED)) {
 			setSkull(SKULL_BLACK);
 			//start black skull time
-			skullTicks = static_cast<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
+			skullTicks = static_cast<int64_t>(g_configManager().getNumber(BLACK_SKULL_DURATION)) * 24 * 60 * 60;
 		} else if (dayKills >= g_configManager().getNumber(DAY_KILLS_TO_RED) || weekKills >= g_configManager().getNumber(WEEK_KILLS_TO_RED) || monthKills >= g_configManager().getNumber(MONTH_KILLS_TO_RED)) {
 			setSkull(SKULL_RED);
 			//reset red skull time
-			skullTicks = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60 * 1000;
+			skullTicks = static_cast<int64_t>(g_configManager().getNumber(RED_SKULL_DURATION)) * 24 * 60 * 60;
 		}
 	}
 
@@ -6265,7 +6264,9 @@ bool Player::saySpell(
                            Map::maxClientViewportX, Map::maxClientViewportX,
                            Map::maxClientViewportY, Map::maxClientViewportY);
 		} else {
-			g_game().map.getSpectators(spectators, *pos, true, false, 18, 18, 14, 14);
+			g_game().map.getSpectators(spectators, *pos, true, false,
+                          (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
+				          (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);

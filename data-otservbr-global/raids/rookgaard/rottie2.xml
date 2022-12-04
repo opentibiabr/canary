@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Something is moving in the northern grounds of the Rookgaard." />
+	<areaspawn delay="120000" fromx="31977" fromy="32063" fromz="13" tox="31977" toy="32063" toz="13">
+		<monster name="Rottie The Rotworm" amount="1" />
+	</areaspawn>
+</raid>

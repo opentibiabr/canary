@@ -6587,7 +6587,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
 {
 	ForgeHistory history;
-	history.actionType = ForgeConversionTypes_t::FORGE_ACTION_TRANSFER;
+	history.actionType = FORGE_ACTION_TRANSFER;
 	history.tier = tier;
 	history.success = true;
 	const std::string errorMessage = "An error has occurred, please contact your administrator.";

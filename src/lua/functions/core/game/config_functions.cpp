@@ -56,6 +56,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_CHARGES)
 	registerEnumIn(L, "configKeys", REMOVE_POTION_CHARGES)
 	registerEnumIn(L, "configKeys", WEATHER_RAIN)
+	registerEnumIn(L, "configKeys", ALLOW_RELOAD)
 	registerEnumIn(L, "configKeys", WEATHER_THUNDER)
 	registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST)
 	registerEnumIn(L, "configKeys", FREE_QUEST_STAGE)
@@ -141,7 +142,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
-	
+
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN)
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN_SPEED)
 	registerEnumIn(L, "configKeys", RATE_MANA_REGEN)

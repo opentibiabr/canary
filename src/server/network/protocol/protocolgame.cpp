@@ -50,7 +50,7 @@ namespace {
 template <typename T>
 uint16_t getIterationIncreaseCount(T& map) {
 	uint16_t totalIterationCount = 0;
-	for (const auto &[first, second] : map) {
+	for ([[maybe_unused]] const auto &[first, second] : map) {
 		totalIterationCount++;
 	}
 
@@ -60,7 +60,7 @@ uint16_t getIterationIncreaseCount(T& map) {
 template <typename T>
 uint16_t getVectorIterationIncreaseCount(T& vector) {
 	uint16_t totalIterationCount = 0;
-	for (const auto &vectorIteration : vector) {
+	for ([[maybe_unused]] const auto &vectorIteration : vector) {
 		totalIterationCount++;
 	}
 
@@ -4595,15 +4595,12 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	msg.add<uint16_t>(lastPage); // Last page
 	msg.addByte(static_cast<uint8_t>(historyPageToSend)); // History to send
 
-	SPDLOG_INFO("HISTORY TOTAL SIZE {}", historyVectorLen);
-	SPDLOG_INFO("HISTORY PAGE SIZE {}", historyPageToSend);
 	if (historyPageToSend > 0) {
 		for (auto history : historyPerPage) {
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
 			msg.addByte(history.actionType);
 			msg.addString(history.description);
 			msg.addByte((history.bonus >= 1 && history.bonus < 8) ? 0x01 : 0x00);
-			SPDLOG_INFO("HISTORY CREATION {}, ACTION {}, BONUS {}", history.createdAt, history.actionType, history.bonus);
 		}
 	}
 	

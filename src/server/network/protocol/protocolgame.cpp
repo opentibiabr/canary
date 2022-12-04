@@ -455,6 +455,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+	player->resetIdleTime();
 	acceptPackets = true;
 }
 
@@ -4376,22 +4377,6 @@ void ProtocolGame::sendForgingData()
 	writeToOutputBuffer(msg);
 }
 
-std::map<uint16_t, std::map<uint8_t, uint16_t>> getForgeInfoMap(const Item *item)
-{
-	std::map<uint16_t, std::map<uint8_t, uint16_t>> itemsMap;
-	std::map<uint8_t, uint16_t> itemInfo;
-	itemInfo.insert({ item->getTier(), item->getItemCount() });
-	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
-	if (!inserted) {
-		auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
-		if (!otherInserted) {
-			(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
-		}
-	}
-
-	return itemsMap;
-}
-
 void ProtocolGame::sendOpenForge() {
 	// We will use it when sending the bytes to send the item information to the client
 	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
@@ -4409,15 +4394,7 @@ void ProtocolGame::sendOpenForge() {
 		auto itemCount = item->getItemCount();
 		// Save fusion items on map
 		if (itemClassification != 0 && itemTier < maxTier) {
-			std::map<uint8_t, uint16_t> itemInfo;
-			itemInfo.insert({ itemTier, itemCount });
-			auto [first, inserted] = fusionItemsMap.try_emplace(itemId, itemInfo);
-			if (!inserted) {
-				auto [otherFirst, otherInserted] = fusionItemsMap[itemId].try_emplace(itemTier, itemCount);
-				if (!otherInserted) {
-					(fusionItemsMap[itemId])[itemTier] += itemCount;
-				}
-			}
+			getForgeInfoMap(item, fusionItemsMap);
 		}
 
 		if (itemClassification > 0) {
@@ -4426,27 +4403,11 @@ void ProtocolGame::sendOpenForge() {
 			}
 			// Save transfer (donator of tier) items on map
 			if (itemTier > 1) {
-				std::map<uint8_t, uint16_t> itemInfo;
-				itemInfo.insert({ itemTier, itemCount });
-				auto [first, inserted] = donorTierItemMap.try_emplace(itemId, itemInfo);
-				if (!inserted) {
-					auto [otherFirst, otherInserted] = donorTierItemMap[itemId].try_emplace(itemTier, itemCount);
-					if (!otherInserted) {
-						(donorTierItemMap[itemId])[itemTier] += itemCount;
-					}
-				}
+				getForgeInfoMap(item, donorTierItemMap);
 			}
 			// Save transfer (receiver of tier) items on map
 			if (itemTier == 0) {
-				std::map<uint8_t, uint16_t> itemInfo;
-				itemInfo.insert({ itemTier, itemCount });
-				auto [first, inserted] = receiveTierItemMap.try_emplace(itemId, itemInfo);
-				if (!inserted) {
-					auto [otherFirst, otherInserted] = receiveTierItemMap[itemId].try_emplace(itemTier, itemCount);
-					if (!otherInserted) {
-						(receiveTierItemMap[itemId])[itemTier] += itemCount;
-					}
-				}
+				getForgeInfoMap(item, receiveTierItemMap);
 			}
 		}
 	}
@@ -4633,9 +4594,9 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendForgeError(const std::string &message)
+void ProtocolGame::sendForgeError(const ReturnValue returnValue)
 {
-	sendMessageDialog(message);
+	sendMessageDialog(getReturnMessage(returnValue));
 	closeForgeWindow();
 }
 
@@ -4949,10 +4910,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	if (it.upgradeClassification > 0 && tier > 0)
 	{
 		msg.addString(std::to_string(it.upgradeClassification));
-		double chance = 0;
 		std::ostringstream ss;
 
 		ss << static_cast<uint16_t>(tier) << " (";
+		double chance;
 		if (it.isWeapon()) {
 			chance = 0.5 * tier + 0.05 * ((tier - 1) * (tier - 1));
 			ss << std::setprecision(2) << std::fixed << chance << "% Onslaught)";
@@ -6536,10 +6497,13 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 
 	msg.add<uint16_t>(creature->getStepSpeed() / 2);
 
+	CreatureIcon_t icon;
+	auto sendIcon = false;
 	if (otherPlayer) {
-		CreatureIcon_t icon = creature->getIcon();
-		msg.addByte(icon != CREATUREICON_NONE); // Icons
-		if (icon != CREATUREICON_NONE) {
+		icon = creature->getIcon();
+		sendIcon = icon != CREATUREICON_NONE;
+		msg.addByte(sendIcon); // Icons
+		if (sendIcon) {
 			msg.addByte(icon);
 			msg.addByte(1);
 			msg.add<uint16_t>(0);
@@ -6548,25 +6512,27 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 		if (auto monster = creature->getMonster();
 			monster)
 		{
-			CreatureIcon_t icon = monster->getIcon();
-			msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
-			if (icon != CREATUREICON_NONE) {
-				// Icones com stack (Fiendishs e Influenceds)
+			icon = monster->getIcon();
+			sendIcon = icon != CREATUREICON_NONE;
+			msg.addByte(sendIcon); // Send Icons true/false
+			if (sendIcon) {
+				// Icones with stack (Fiendishs e Influenceds)
 				if (monster->getForgeStack() > 0) {
 					msg.addByte(icon);
 					msg.addByte(1);
 					msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // Stack
 				} else {
-					// Icones sem numero do lado
+					// Icons without number on the side
 					msg.addByte(icon);
 					msg.addByte(1);
 					msg.add<uint16_t>(0);
 				}
 			}
 		} else {
-			CreatureIcon_t icon = creature->getIcon();
-			msg.addByte(icon != CREATUREICON_NONE); // Sent Icons true/false
-			if (icon != CREATUREICON_NONE) {
+			icon = creature->getIcon();
+			sendIcon = icon != CREATUREICON_NONE;
+			msg.addByte(sendIcon); // Send Icons true/false
+			if (sendIcon) {
 				msg.addByte(icon);
 				msg.addByte(1);
 				msg.add<uint16_t>(0);
@@ -7464,4 +7430,17 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature)
 	msg.addByte(static_cast<uint8_t>(stackPos));
 	AddCreature(msg, creature, false, 0);
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap)
+{
+	std::map<uint8_t, uint16_t> itemInfo;
+	itemInfo.insert({ item->getTier(), item->getItemCount() });
+	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
+	if (!inserted) {
+		auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
+		if (!otherInserted) {
+			(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
+		}
+	}
 }

@@ -1109,6 +1109,7 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHSHIELDLEVEL)
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL)
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY)
+	registerEnum(L, RETURNVALUE_CONTACTADMINISTRATOR)
 }
 
 // Reload

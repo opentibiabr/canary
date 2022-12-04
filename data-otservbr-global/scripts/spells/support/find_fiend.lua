@@ -81,9 +81,6 @@ function spell.onCastSpell(creature, variant)
 
 	local monsterType = target:getType()
 	local stringLevel = 'Unknown'
-	print(monsterType:raceId())
-	local unlocked = creature:isMonsterBestiaryUnlocked(monsterType:raceId())
-	print(unlocked)
 	if monsterType and creature:isMonsterBestiaryUnlocked(monsterType:raceId()) then
 		local bestiaryKillsAmount = monsterType:BestiarytoKill()
 		if bestiaryKillsAmount >= 5 and bestiaryKillsAmount <= 25 then

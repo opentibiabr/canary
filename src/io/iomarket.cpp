@@ -161,7 +161,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 					Item* item = Item::CreateItem(itemType.id, stackCount);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR)
 					{
-						SPDLOG_ERROR("{} - Ocurred an error to add item with id {} to player {}", itemType.id, player->getName());
+						SPDLOG_ERROR("{} - Ocurred an error to add item with id {} to player {}", __FUNCTION__, itemType.id, player->getName());
 						delete item;
 						break;
 					}

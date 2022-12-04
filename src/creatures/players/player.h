@@ -2091,11 +2091,11 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenForge();
 			}
 		}
-		void sendForgeError(const std::string &message) const
+		void sendForgeError(ReturnValue returnValue) const
 		{
 			if (client)
 			{
-				client->sendForgeError(message);
+				client->sendForgeError(returnValue);
 			}
 		}
 		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) const {
@@ -2177,7 +2177,7 @@ class Player final : public Creature, public Cylinder
 			forgeHistoryVector.push_back(history);
 		}
 
-		void registerForgeDescription(ForgeHistory history);
+		void registerForgeHistoryDescription(ForgeHistory history);
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;

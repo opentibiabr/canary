@@ -266,7 +266,7 @@ private:
 	//Forge System
 	void sendForgingData();
 	void sendOpenForge();
-	void sendForgeError(const std::string &message);
+	void sendForgeError(const ReturnValue returnValue);
 	void closeForgeWindow();
 	void parseForgeEnter(NetworkMessage &msg);
 	void parseForgeBrowseHistory(NetworkMessage& msg);
@@ -466,6 +466,8 @@ private:
 
 	//reloadCreature
 	void reloadCreature(const Creature *creature);
+
+	void getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap);
 
 	friend class Player;
 

@@ -628,7 +628,6 @@ int GameFunctions::luaGameAddInfluencedMonster(lua_State *L) {
 	}
 
 	lua_pushboolean(L, g_game().addInfluencedMonster(monster));
-
 	return 1;
 }
 

@@ -1347,6 +1347,9 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
 
+		case RETURNVALUE_CONTACTADMINISTRATOR:
+			return "An error has occurred, please contact your administrator.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";

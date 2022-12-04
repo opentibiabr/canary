@@ -5651,7 +5651,7 @@ void Player::updateRegeneration()
 	}
 }
 
-// Forge action exhaustion
+// User Interface action exhaustion
 bool Player::isUIExhausted(uint32_t exhaustionTime /*= 250*/) const {
 	return (OTSYS_TIME() - lastUIInteraction < exhaustionTime);
 }
@@ -6364,12 +6364,11 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	history.tier = tier;
 	history.success = success;
 	history.tierLoss = reduceTierLoss;
-	const std::string errorMessage = "An error has occurred, please contact your administrator.";
 
 	auto firstForgingItem = getForgeItemFromId(itemId, tier);
 	if (!firstForgingItem) {
 		SPDLOG_ERROR("[Log 1] Player with name {} failed to fuse item with id {}", getName(), itemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto returnValue = g_game().internalRemoveItem(firstForgingItem, 1);
@@ -6377,13 +6376,13 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	{
 		SPDLOG_ERROR("[Log 1] Failed to remove forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto secondForgingItem = getForgeItemFromId(itemId, tier);
 	if (!secondForgingItem) {
 		SPDLOG_ERROR("[Log 2] Player with name {} failed to fuse item with id {}", getName(), itemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(secondForgingItem, 1);
@@ -6391,27 +6390,27 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	{
 		SPDLOG_ERROR("[Log 2] Failed to remove forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	auto exaltationChest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1);
 	if (!exaltationChest) {
 		SPDLOG_ERROR("Failed to create exaltation chest");
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto exaltationContainer = exaltationChest->getContainer();
 	if (!exaltationContainer) {
 		SPDLOG_ERROR("Failed to create exaltation container");
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	Item* firstForgedItem = Item::CreateItem(itemId, 1);
 	if (!firstForgedItem) {
 		SPDLOG_ERROR("[Log 3] Player with name {} failed to fuse item with id {}", getName(), itemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	firstForgedItem->setTier(tier);
@@ -6419,14 +6418,14 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("[Log 1] Failed to add forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	Item* secondForgedItem = Item::CreateItem(itemId, 1);
 	if (!secondForgedItem) {
 		SPDLOG_ERROR("[Log 4] Player with name {} failed to fuse item with id {}", getName(), itemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
@@ -6435,7 +6434,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("[Log 2] Failed to add forge item {} from player with name {}", itemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
@@ -6453,7 +6452,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		{
 			if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
 				SPDLOG_ERROR("[{}][Log 1] Failed to remove item 'id :{} count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
-				sendForgeError(errorMessage);
+				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
 			history.coresCost = coreCount;
@@ -6480,7 +6479,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			}
 			if (!g_game().removeMoney(this, cost, 0, true)) {
 				SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
-				sendForgeError(errorMessage);
+				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
 			history.cost = cost;
@@ -6508,7 +6507,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			if (returnValue != RETURNVALUE_NOERROR) {
 				SPDLOG_ERROR("[Log 6] Failed to remove forge item {} from player with name {}", itemId, getName());
 				sendCancelMessage(getReturnMessage(returnValue));
-				sendForgeError(errorMessage);
+				sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 				return;
 			}
 		}
@@ -6522,7 +6521,13 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 			}
 			else
 			{
-				g_game().internalRemoveItem(secondForgedItem, 1);
+				returnValue = g_game().internalRemoveItem(secondForgedItem, 1);
+				if (returnValue != RETURNVALUE_NOERROR) {
+					SPDLOG_ERROR("[Log 7] Failed to remove forge item {} from player with name {}", itemId, getName());
+					sendCancelMessage(getReturnMessage(returnValue));
+					sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+					return;
+				}
 			}
 		}
 		bonus = (isTierLost ? 0 : 8);
@@ -6530,7 +6535,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 		if (getForgeDusts() < dustCost) {
 			SPDLOG_ERROR("[Log 7] Failed to remove fuse dusts from player with name {}", getName());
-			sendForgeError(errorMessage);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		} else {
 			setForgeDusts(getForgeDusts() - dustCost);
@@ -6538,7 +6543,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 		if (!removeItemOfType(ITEM_FORGE_CORE, coreCount, -1, true, true)) {
 			SPDLOG_ERROR("[{}][Log 2] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, coreCount, getName());
-			sendForgeError(errorMessage);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
@@ -6562,7 +6567,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 		}
 		if (!g_game().removeMoney(this, cost, 0, true)) {
 			SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
-			sendForgeError(errorMessage);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
@@ -6572,14 +6577,14 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("Failed to add exaltation chest to player with name {}", ITEM_EXALTATION_CHEST, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	history.firstItemName = firstForgingItem->getName();
 	history.bonus = bonus;
 	history.createdAt = std::time(nullptr);
-	registerForgeDescription(history);
+	registerForgeHistoryDescription(history);
 
 	sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
 }
@@ -6590,12 +6595,11 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	history.actionType = FORGE_ACTION_TRANSFER;
 	history.tier = tier;
 	history.success = true;
-	const std::string errorMessage = "An error has occurred, please contact your administrator.";
 
 	auto donorItem = getForgeItemFromId(donorItemId, tier);
 	if (!donorItem) {
 		SPDLOG_ERROR("[Log 1] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto returnValue = g_game().internalRemoveItem(donorItem, 1);
@@ -6603,14 +6607,14 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	{
 		SPDLOG_ERROR("[Log 1] Failed to remove transfer item {} from player with name {}", donorItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	auto receiveItem = getForgeItemFromId(receiveItemId, 0);
 	if (!receiveItem) {
 		SPDLOG_ERROR("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	if (returnValue = g_game().internalRemoveItem(receiveItem, 1);
@@ -6618,39 +6622,41 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	{
 		SPDLOG_ERROR("[Log 2] Failed to remove transfer item {} from player with name {}", receiveItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	auto exaltationChest = Item::CreateItem(ITEM_EXALTATION_CHEST, 1);
 	if (!exaltationChest) {
-		sendForgeError(errorMessage);
+		SPDLOG_ERROR("Exaltation chest is nullptr");
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	auto exaltationContainer = exaltationChest->getContainer();
 	if (!exaltationContainer) {
-		sendForgeError(errorMessage);
+		SPDLOG_ERROR("Exaltation container is nullptr");
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	Item* newDonorItem = Item::CreateItem(donorItemId, 1);
 	if (!newDonorItem) {
 		SPDLOG_ERROR("[Log 4] Player with name {} failed to transfer item with id {}", getName(), donorItemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	returnValue = g_game().internalAddItem(exaltationContainer, newDonorItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("[Log 5] Failed to add forge item {} from player with name {}", donorItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	Item* newReceiveItem = Item::CreateItem(receiveItemId, 1);
 	if (!newReceiveItem) {
 		SPDLOG_ERROR("[Log 6] Player with name {} failed to fuse item with id {}", getName(), receiveItemId);
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	newReceiveItem->setTier(tier - 1);
@@ -6658,13 +6664,13 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("[Log 7] Failed to add forge item {} from player with name {}", receiveItemId, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	if (getForgeDusts() < g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)) {
 		SPDLOG_ERROR("[Log 8] Failed to remove transfer dusts from player with name {}", getName());
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	} else {
 		setForgeDusts(getForgeDusts() - g_configManager().getNumber(FORGE_TRANSFER_DUST_COST));
@@ -6672,7 +6678,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	if (!removeItemOfType(ITEM_FORGE_CORE, 1, -1, true, true)) {
 		SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count: {}' from player {}", __FUNCTION__, ITEM_FORGE_CORE, 1, getName());
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	uint64_t cost = 0;
@@ -6695,7 +6701,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	if (!g_game().removeMoney(this, cost, 0, true)) {
 		SPDLOG_ERROR("[{}] Failed to remove {} gold from player with name {}", __FUNCTION__, cost, getName());
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 	history.cost = cost;
@@ -6704,14 +6710,14 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 	if (returnValue != RETURNVALUE_NOERROR) {
 		SPDLOG_ERROR("[Log 10] Failed to add forge item {} from player with name {}", ITEM_EXALTATION_CHEST, getName());
 		sendCancelMessage(getReturnMessage(returnValue));
-		sendForgeError(errorMessage);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
 
 	history.firstItemName = newDonorItem->getName();
 	history.secondItemName = newReceiveItem->getName();
 	history.createdAt = std::time(nullptr);
-	registerForgeDescription(history);
+	registerForgeHistoryDescription(history);
 
 	sendTransferItemTier(donorItemId, tier, receiveItemId);
 }
@@ -6721,14 +6727,14 @@ void Player::forgeResourceConversion(uint8_t action)
 	ForgeHistory history;
 	history.actionType = action;
 	history.success = true;
-	const std::string errorMessage = "An error has occurred, please contact your administrator.";
 
-	ReturnValue returnValue = RETURNVALUE_NOERROR;
+	ReturnValue returnValue;
 	if (action == FORGE_ACTION_DUSTTOSLIVERS) {
 		auto dusts = getForgeDusts();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));
 		if (cost > dusts) {
-			sendForgeError("Not enough dust.");
+			SPDLOG_ERROR("[{}] Not enough dust", __FUNCTION__);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
@@ -6739,7 +6745,7 @@ void Player::forgeResourceConversion(uint8_t action)
 		{
 			SPDLOG_ERROR("Failed to add {} slivers to player with name {}", itemCount, getName());
 			sendCancelMessage(getReturnMessage(returnValue));
-			sendForgeError(errorMessage);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 		history.cost = cost;
@@ -6749,23 +6755,26 @@ void Player::forgeResourceConversion(uint8_t action)
 		auto [sliverCount, coreCount] = getForgeSliversAndCores();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_CORE_COST));
 		if (cost > sliverCount) {
-			sendForgeError("Not enough sliver.");
+			SPDLOG_ERROR("[{}] Not enough sliver", __FUNCTION__);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
 		if (!removeItemOfType(ITEM_FORGE_SLIVER, cost, -1, true, true)) {
 			SPDLOG_ERROR("[{}] Failed to remove item 'id: {}, count {}' from player {}", __FUNCTION__, ITEM_FORGE_SLIVER, cost, getName());
-			sendForgeError(errorMessage);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
 		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
-		returnValue = g_game().internalPlayerAddItem(this, item);
+		if (item) {
+			returnValue = g_game().internalPlayerAddItem(this, item);
+		}
 		if (returnValue != RETURNVALUE_NOERROR)
 		{
 			SPDLOG_ERROR("Failed to add one core to player with name {}", getName());
 			sendCancelMessage(getReturnMessage(returnValue));
-			sendForgeError(errorMessage);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
@@ -6775,7 +6784,8 @@ void Player::forgeResourceConversion(uint8_t action)
 		auto dustLevel = getForgeDustLevel();
 		if (dustLevel >= g_configManager().getNumber(FORGE_MAX_DUST))
 		{
-			sendForgeError("Maximum level reached.");
+			SPDLOG_ERROR("[{}] Maximum level reached", __FUNCTION__);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
@@ -6783,7 +6793,8 @@ void Player::forgeResourceConversion(uint8_t action)
 		if (auto dusts = getForgeDusts();
 			upgradeCost > dusts)
 		{
-			sendForgeError("Not enough dust.");
+			SPDLOG_ERROR("[{}] Not enough dust", __FUNCTION__);
+			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
 
@@ -6794,7 +6805,7 @@ void Player::forgeResourceConversion(uint8_t action)
 	}
 
 	history.createdAt = std::time(nullptr);
-	registerForgeDescription(history);
+	registerForgeHistoryDescription(history);
 	sendForgingData();
 }
 
@@ -6803,7 +6814,7 @@ void Player::forgeHistory(uint8_t page) const
 	sendForgeHistory(page);
 }
 
-void Player::registerForgeDescription(ForgeHistory history)
+void Player::registerForgeHistoryDescription(ForgeHistory history)
 {
 	std::string successfulString = history.success ? "Successful" : "Unsuccessful";
 	std::string historyTierString = history.tier > 0 ? "tier - 1" : "consumed";
@@ -6959,7 +6970,6 @@ void Player::registerForgeDescription(ForgeHistory history)
 	history.description = detailsResponse.str();
 
 	setForgeHistory(history);
-	updateUIExhausted();
 }
 
 /*******************************************************************************

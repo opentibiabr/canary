@@ -3059,81 +3059,104 @@ int PlayerFunctions::luaPlayerCloseForge(lua_State* L) {
 	}
 
 	player->closeForgeWindow();
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerAddForgeDusts(lua_State* L) {
 	// player:addForgeDusts(amount)
-	if (Player* player = getUserdata<Player>(L, 1)) {
-		player->addForgeDusts(getNumber<uint64_t>(L, 2, 0));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	player->addForgeDusts(getNumber<uint64_t>(L, 2, 0));
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerRemoveForgeDusts(lua_State* L) {
 	// player:removeForgeDusts(amount)
-	if (Player* player = getUserdata<Player>(L, 1)) {
-		player->removeForgeDusts(getNumber<uint64_t>(L, 2, 0));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	player->removeForgeDusts(getNumber<uint64_t>(L, 2, 0));
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerGetForgeDusts(lua_State* L) {
 	// player:getForgeDusts()
-	if (const Player* player = getUserdata<Player>(L, 1)) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDusts()));
-	} else {
-		lua_pushnil(L);
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+
+	lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDusts()));
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerSetForgeDusts(lua_State* L) {
 	// player:setForgeDusts()
-	if (Player* player = getUserdata<Player>(L, 1)) {
-		player->setForgeDusts(getNumber<uint64_t>(L, 2, 0));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	player->setForgeDusts(getNumber<uint64_t>(L, 2, 0));
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerAddForgeDustLevel(lua_State* L) {
 	// player:addForgeDustLevel(amount)
-	if (Player* player = getUserdata<Player>(L, 1)) {
-		player->addForgeDustLevel(getNumber<uint64_t>(L, 2, 1));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	player->addForgeDustLevel(getNumber<uint64_t>(L, 2, 1));
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerRemoveForgeDustLevel(lua_State* L) {
 	// player:removeForgeDustLevel(amount)
-	if (Player* player = getUserdata<Player>(L, 1)) {
-		player->removeForgeDustLevel(getNumber<uint64_t>(L, 2, 1));
-		pushBoolean(L, true);
-	} else {
-		lua_pushnil(L);
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	player->removeForgeDustLevel(getNumber<uint64_t>(L, 2, 1));
+	pushBoolean(L, true);
 	return 1;
 }
 
 int PlayerFunctions::luaPlayerGetForgeDustLevel(lua_State* L) {
 	// player:getForgeDustLevel()
-	if (const Player* player = getUserdata<Player>(L, 1)) {
-		lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDustLevel()));
-	} else {
-		lua_pushnil(L);
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDustLevel()));
 	return 1;
 }
 

@@ -149,9 +149,9 @@ void Game::start(ServiceManager* manager)
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::updateForgeableMonsters, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS + 1000, std::bind(&Game::createFiendishMonsters, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS + 1000, std::bind(&Game::createInfluencedMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS, std::bind(&Game::updateForgeableMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind(&Game::createFiendishMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind(&Game::createInfluencedMonsters, this)));
 }
 
 GameState_t Game::getGameState() const

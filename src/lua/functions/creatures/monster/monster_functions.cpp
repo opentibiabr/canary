@@ -398,7 +398,6 @@ int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State *L) {
 	}
 
 	lua_pushnumber(L, static_cast<lua_Number>(monster->getTimeToChangeFiendish()));
-
 	return 1;
 }
 

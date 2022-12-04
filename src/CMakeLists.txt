@@ -186,6 +186,8 @@ target_sources(${PROJECT_NAME}
     io/iobestiary.cpp
     io/ioguild.cpp
     io/iologindata.cpp
+    io/functions/iologindata_load_player.cpp
+    io/functions/iologindata_save_player.cpp
     io/iomap.cpp
     io/iomapserialize.cpp
     io/iomarket.cpp

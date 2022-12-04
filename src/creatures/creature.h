@@ -181,7 +181,7 @@ class Creature : virtual public Thing
 			return getSpeed();
 		}
 		uint16_t getSpeed() const {
-			return baseSpeed + varSpeed;
+			return static_cast<uint16_t>(baseSpeed + varSpeed);
 		}
 		void setSpeed(int32_t varSpeedDelta) {
 			int32_t oldSpeed = getSpeed();

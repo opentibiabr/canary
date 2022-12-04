@@ -30,7 +30,8 @@ function getFiendishMinutesLeft(leftTime)
 	return desc
 end
 
-function ForgeMonster:getTimeLeftToChangeMonster(monster)
+function ForgeMonster:getTimeLeftToChangeMonster(creature)
+	local monster = Monster(creature)
 	if monster then
 		local leftTime = monster:getTimeToChangeFiendish()
 		leftTime = leftTime or 0
@@ -141,7 +142,8 @@ function ForgeMonster:onDeath(creature, corpse, killer, mostDamageKiller, unjust
 	return true
 end
 
-function ForgeMonster:onSpawn(monster)
+function ForgeMonster:onSpawn(creature)
+	local monster = Monster(creature)
 	if not monster then
 		return false
 	end
@@ -169,7 +171,8 @@ function ForgeMonster:pickFiendish()
 	return 0
 end
 
-function ForgeMonster:pickClosestFiendish(player)
+function ForgeMonster:pickClosestFiendish(creature)
+	local player = Player(creature)
 	if not player then
 		return 0
 	end

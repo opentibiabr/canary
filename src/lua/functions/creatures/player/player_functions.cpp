@@ -308,6 +308,35 @@ int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked(lua_State *L) {
+	// player:isMonsterBestiaryUnlocked(raceId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto raceId = getNumber<uint16_t>(L, 2, 0);
+	if (!g_monsters().getMonsterTypeByRaceId(raceId)) {
+		reportErrorFunc("Monster race id not exists");
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto finishedMonsters = g_iobestiary().getBestiaryFinished(player);
+	for (uint16_t finishedRaceId : finishedMonsters)
+	{
+		if (raceId == finishedRaceId) {
+			pushBoolean(L, true);
+			return 1;
+		}
+	}
+
+	pushBoolean(L, false);
+	return 0;
+}
+
 int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 	// player:getCharmMonsterType(charmRune_t)
 	Player* player = getUserdata<Player>(L, 1);

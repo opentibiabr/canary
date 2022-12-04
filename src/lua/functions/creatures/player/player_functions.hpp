@@ -47,6 +47,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getAccountType", PlayerFunctions::luaPlayerGetAccountType);
 			registerMethod(L, "Player", "setAccountType", PlayerFunctions::luaPlayerSetAccountType);
 
+			registerMethod(L, "Player", "isMonsterBestiaryUnlocked", PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked);
 			registerMethod(L, "Player", "addBestiaryKill", PlayerFunctions::luaPlayeraddBestiaryKill);
 			registerMethod(L, "Player", "charmExpansion", PlayerFunctions::luaPlayercharmExpansion);
 			registerMethod(L, "Player", "getCharmMonsterType", PlayerFunctions::luaPlayergetCharmMonsterType);
@@ -315,6 +316,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSetAccountType(lua_State* L);
 
 		static int luaPlayeraddBestiaryKill(lua_State* L);
+		static int luaPlayerIsMonsterBestiaryUnlocked(lua_State* L);
 		static int luaPlayercharmExpansion(lua_State* L);
 		static int luaPlayergetCharmMonsterType(lua_State* L);
 

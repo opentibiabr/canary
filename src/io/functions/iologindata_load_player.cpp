@@ -11,8 +11,6 @@
 
 #include "io/functions/iologindata_load_player.hpp"
 
-#include "database/database.h"
-
 void IOLoginDataLoad::loadPlayerForgeHistory(Player *player, DBResult_ptr result) {
 	std::ostringstream query;
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();

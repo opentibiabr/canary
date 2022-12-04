@@ -11,8 +11,6 @@
 
 #include "io/functions/iologindata_save_player.hpp"
 
-#include "database/database.h"
-
 bool IOLoginDataSave::savePlayerForgeHistory(Player *player) {
 	std::ostringstream query;
 	query << "DELETE FROM `forge_history` WHERE `player_id` = " << player->getGUID();

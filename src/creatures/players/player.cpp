@@ -6818,6 +6818,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history)
 {
 	std::string successfulString = history.success ? "Successful" : "Unsuccessful";
 	std::string historyTierString = history.tier > 0 ? "tier - 1" : "consumed";
+	std::string price = history.bonus != 3 ? formatPrice(std::to_string(history.cost), true) : "0";
 	std::stringstream detailsResponse;
 	auto itemId = Item::items.getItemIdByName(history.firstItemName);
 	const ItemType &itemType = Item::items[itemId];
@@ -6861,9 +6862,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history)
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
 				history.bonus == 8 ? "unchanged" : "consumed",
-				history.coresCost, history.dustCost,
-				// Convert to shortenCost
-				std::to_string(history.cost)
+				history.coresCost, history.dustCost, price
 			);
 		} else {
 			detailsResponse << fmt::format(
@@ -6904,9 +6903,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history)
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
 				history.bonus == 8 ? "unchanged" : historyTierString,
-				history.coresCost,
-				// Convert to shortenCost
-				std::to_string(history.cost)
+				history.coresCost, price
 			);
 		}
 	} else if (history.actionType == FORGE_ACTION_TRANSFER) {
@@ -6949,8 +6946,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history)
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
-				// Convert to shortenCost
-				std::to_string(history.cost)
+				price
 			);
 	} else if (history.actionType == FORGE_ACTION_DUSTTOSLIVERS) {
 		detailsResponse << fmt::format("Converted {:d} dust to {:d} slivers.", history.cost, history.gained);

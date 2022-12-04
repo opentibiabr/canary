@@ -410,12 +410,13 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			} else {
 				return RETURNVALUE_ONLYAMMOINQUIVER;
 			}
-		}
-		Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT);
-		if (slotItem && slotItem->getID() == getID() && item->getWeaponType() == WEAPON_SHIELD) {
-			g_game().playerEquipItem(player->getID(), item->getID());
-		} else {
-			return RETURNVALUE_ONLYAMMOINQUIVER;
+
+			Item* slotItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+			if (slotItem && slotItem->getID() == getID() && item->getWeaponType() == WEAPON_SHIELD) {
+				g_game().playerEquipItem(player->getID(), item->getID());
+			} else {
+				return RETURNVALUE_ONLYAMMOINQUIVER;
+			}
 		}
 	}
 

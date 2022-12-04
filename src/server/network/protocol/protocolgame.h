@@ -159,6 +159,7 @@ private:
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
+	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarysendRaces();
@@ -489,6 +490,9 @@ private:
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
+	void addBless();
+	void parsePacketDead(uint8_t recvbyte);
+
 };
 
 #endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

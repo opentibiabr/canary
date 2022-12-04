@@ -217,20 +217,15 @@ function playerLogin.onLogin(player)
 	end
 
 	-- Set Client XP Gain Rate --
-	local rateExp = 1
 	if Game.getStorageValue(GlobalStorage.XpDisplayMode) > 0 then
-		rateExp = getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
-
-		if SCHEDULE_EXP_RATE ~= 100 then
-			rateExp = math.max(0, (rateExp * SCHEDULE_EXP_RATE)/100)
-		end
+		local baseRate = player:getFinalBaseRateExperience()
+		player:setBaseXpGain(baseRate * 100)
 	end
 
 	local staminaMinutes = player:getStamina()
 	local staminaBonus = (staminaMinutes > 2340) and 150 or ((staminaMinutes < 840) and 50 or 100)
 
 	player:setStaminaXpBoost(staminaBonus)
-	player:setBaseXpGain(rateExp * 100)
 
 	if onExerciseTraining[player:getId()] then -- onLogin & onLogout
 		stopEvent(onExerciseTraining[player:getId()].event)

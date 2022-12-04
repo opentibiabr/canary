@@ -1013,7 +1013,7 @@ class Item : virtual public Thing
 		virtual void startDecaying();
 		virtual void stopDecaying();
 
-		bool getLoadedFromMap() {
+		bool getLoadedFromMap() const {
 			return loadedFromMap;
 		}
 

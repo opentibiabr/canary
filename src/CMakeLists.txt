@@ -387,11 +387,6 @@ else()
 
 endif (MSVC)
 
-set_target_properties(${PROJECT_NAME}
-		PROPERTIES
-			RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-)
-
 ## Link compilation files to build/bin folder, else link to the main dir
 if (TOGGLE_BIN_FOLDER)
 	set_target_properties(${PROJECT_NAME}

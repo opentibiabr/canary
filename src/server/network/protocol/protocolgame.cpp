@@ -4598,7 +4598,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	auto historyVector = player->getForgeHistory();
 	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
 
-	uint16_t lastPage = (1 < floor((historyVectorLen - 1) / 9) + 1) ? floor((historyVectorLen - 1) / 9) + 1 : 1;
+	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
 	uint16_t currentPage = (lastPage < page) ? lastPage : page;
 
 	std::vector<ForgeHistory> historyPerPage;
@@ -4628,7 +4628,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendForgeError(const std::string message)
+void ProtocolGame::sendForgeError(const std::string &message)
 {
 	sendMessageDialog(message);
 	closeForgeWindow();

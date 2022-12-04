@@ -3666,7 +3666,7 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 						return true;
 					// If not, we will remove the amount the player have and save the rest to remove from the stash
 					} else if (removeFromStash && stackable) {
-						g_game().internalRemoveItems(std::move(itemList), amount, stackable);
+						g_game().internalRemoveItems(itemList, amount, stackable);
 						// Save remaining items to remove
 						removeFromStashAmount -= count;
 					}
@@ -3675,11 +3675,10 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 		}
 	}
 
-	if (removeFromStash && removeFromStashAmount <= amount) {
-		if (withdrawItem(itemId, removeFromStashAmount)) {
-			return true;
-		}
+	if (removeFromStash && removeFromStashAmount <= amount && withdrawItem(itemId, removeFromStashAmount)) {
+		return true;
 	}
+
 	return false;
 }
 
@@ -6588,7 +6587,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
 {
 	ForgeHistory history;
-	history.actionType = FORGE_ACTION_TRANSFER;
+	history.actionType = ForgeConversionTypes_t::FORGE_ACTION_TRANSFER;
 	history.tier = tier;
 	history.success = true;
 	const std::string errorMessage = "An error has occurred, please contact your administrator.";
@@ -6799,7 +6798,7 @@ void Player::forgeResourceConversion(uint8_t action)
 	sendForgingData();
 }
 
-void Player::forgeHistory(uint8_t page)
+void Player::forgeHistory(uint8_t page) const
 {
 	sendForgeHistory(page);
 }
@@ -6807,6 +6806,7 @@ void Player::forgeHistory(uint8_t page)
 void Player::registerForgeDescription(ForgeHistory history)
 {
 	std::string successfulString = history.success ? "Successful" : "Unsuccessful";
+	std::string historyTierString = history.tier > 0 ? "tier - 1" : "consumed";
 	std::stringstream detailsResponse;
 	auto itemId = Item::items.getItemIdByName(history.firstItemName);
 	const ItemType &itemType = Item::items[itemId];
@@ -6892,7 +6892,7 @@ void Player::registerForgeDescription(ForgeHistory history)
 				successfulString,
 				itemType.article, itemType.name, std::to_string(history.tier),
 				itemType.article, itemType.name, std::to_string(history.tier),
-				history.bonus == 8 ? "unchanged" : history.tier > 0 ? "tier - 1" : "consumed",
+				history.bonus == 8 ? "unchanged" : historyTierString,
 				history.coresCost,
 				// Convert to shortenCost
 				std::to_string(history.cost)

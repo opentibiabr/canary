@@ -22,7 +22,7 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player *player) {
 
 	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
 	for (auto history : player->getForgeHistory()) {
-		auto stringDescription = Database::getInstance().escapeString(history.description);
+		const auto stringDescription = Database::getInstance().escapeString(history.description);
 		// Append query informations
 		query << player->getGUID() << ','
 		<< std::to_string(history.actionType) << ','

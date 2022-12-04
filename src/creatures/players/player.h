@@ -2082,7 +2082,7 @@ class Player final : public Creature, public Cylinder
 		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
 		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
 		void forgeResourceConversion(uint8_t action);
-		void forgeHistory(uint8_t page);
+		void forgeHistory(uint8_t page) const;
 		
 		void sendOpenForge() const
 		{
@@ -2091,7 +2091,7 @@ class Player final : public Creature, public Cylinder
 				client->sendOpenForge();
 			}
 		}
-		void sendForgeError(const std::string message) const
+		void sendForgeError(const std::string &message) const
 		{
 			if (client)
 			{

@@ -1343,11 +1343,6 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		}
 	}
 
-	if (toCylinder->getItem() && toCylinder->getItem()->isQuiver() && item->getWeaponType() != WEAPON_AMMO) {
-		player->sendCancelMessage(RETURNVALUE_ONLYAMMOINQUIVER);
-		return;
-	}
-
 	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
@@ -1767,6 +1762,7 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/) const
 {
 	if (cylinder == nullptr) {
+		SPDLOG_ERROR("[{}] Cylinder is nullptr", __FUNCTION__);
 		return nullptr;
 	}
 
@@ -2526,15 +2522,6 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
-		if (slotItem) {
-			Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
-			if (leftItem) {
-				internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
-			}
-
-			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
-		}
-
 		if (it.weaponType == WEAPON_AMMO) {
 			Item* quiver = player->getInventoryItem(CONST_SLOT_RIGHT);
 			if (quiver && quiver->isQuiver()) {
@@ -8561,6 +8548,7 @@ void Game::updateForgeableMonsters()
 
 void Game::createFiendishMonsters()
 {
+	uint32_t created = 0;
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	while (fiendishMonsters.size() < fiendishLimit)
 	{
@@ -8574,8 +8562,10 @@ void Game::createFiendishMonsters()
 			// Condition
 			ret == 0)
 		{
-			break;
+			return;
 		}
+
+		created++;
 	}
 }
 
@@ -8595,7 +8585,7 @@ void Game::createInfluencedMonsters()
 			//If condition
 			ret == 0)
 		{
-			break;
+			return;
 		}
 
 		created++;

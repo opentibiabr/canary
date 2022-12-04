@@ -1,3 +1,10 @@
+-- NOTE: Using this script might cause unwanted changes.
+-- This script forces a reload in the entire server, this means
+-- that everything that is stored in memory might stop to work
+-- properly and/or completely.
+--
+-- This script should be used in test environments only.
+
 local reloadTypes = {
 	["all"] = RELOAD_TYPE_ALL,
 
@@ -47,6 +54,11 @@ function reload.onSay(player, words, param)
 		return true
 	end
 
+	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then
+		player:sendCancelMessage("Reload command is disabled.")
+		return true
+	end
+
 	if param == "" then
 		player:sendCancelMessage("Command param required.")
 		return false
@@ -62,7 +74,7 @@ function reload.onSay(player, words, param)
 		return true
 	elseif not reloadType then
 		player:sendCancelMessage("Reload type not found.")
-		Spdlog.info("Reload type not found")
+		Spdlog.warn("[reload.onSay] - Reload type '".. param.. "' not found")
 		return false
 	end
 	return false

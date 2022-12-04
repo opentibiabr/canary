@@ -36,9 +36,10 @@ Scripts::~Scripts() {
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 	namespace fs = boost::filesystem;
 
-	const auto dir = fs::current_path() / "core" / "events" / "scripts" / "scheduler";
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	const auto dir = fs::current_path() / coreFolder / "events" / "scripts" / "scheduler";
 	if(!fs::exists(dir) || !fs::is_directory(dir)) {
-		SPDLOG_WARN("{} - Can not load folder 'scheduler' on core/events/scripts'", __FUNCTION__);
+		SPDLOG_WARN("{} - Can not load folder 'scheduler' on {}/events/scripts'", __FUNCTION__, coreFolder);
 		return false;
 	}
 

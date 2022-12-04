@@ -2619,11 +2619,16 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 
 void ProtocolGame::parseSendResourceBalance()
 {
+	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
+
 	sendResourcesBalance(
 		player->getMoney(),
 		player->getBankBalance(),
 		player->getPreyCards(),
-		player->getTaskHuntingPoints()
+		player->getTaskHuntingPoints(),
+		player->getForgeDusts(),
+		sliverCount,
+		coreCount
 	);
 }
 
@@ -4365,9 +4370,9 @@ void ProtocolGame::sendForgingData()
 	// (fusion) Tier loss chance after reduction - 50
 	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION)));
 
-	// We have a better way of refresh client
-	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
-	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), sliverCount, coreCount);
+	// Update player resources
+	parseSendResourceBalance();
+
 	writeToOutputBuffer(msg);
 }
 

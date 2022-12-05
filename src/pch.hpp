@@ -25,6 +25,7 @@
 #include "utils/simd.hpp"
 
 #include <algorithm>
+#include <asio.hpp>
 #include <bitset>
 #include <chrono>
 #include <cstdint>

@@ -29,9 +29,8 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "server/signals.h"
 
-using ErrorCode = boost::system::error_code;
 
-Signals::Signals(boost::asio::io_service& service) :
+Signals::Signals(asio::io_service& service) :
 	set(service)
 {
 	set.add(SIGINT);
@@ -51,7 +50,7 @@ Signals::Signals(boost::asio::io_service& service) :
 
 void Signals::asyncWait()
 {
-	set.async_wait([this] (ErrorCode err, int signal) {
+	set.async_wait([this] (std::error_code err, int signal) {
 		if (err) {
 			SPDLOG_ERROR("[Signals::asyncWait] - "
                          "Signal handling error: {}", err.message());

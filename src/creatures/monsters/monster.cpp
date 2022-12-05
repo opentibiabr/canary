@@ -2072,10 +2072,6 @@ void Monster::dropLoot(Container* corpse, Creature*)
 	}
 }
 
-bool Monster::canDropLoot() {
-	return mType->info.lootItems.size() != 0;
-}
-
 void Monster::setNormalCreatureLight()
 {
 	internalLight = mType->info.light;
@@ -2228,4 +2224,8 @@ void Monster::setMonsterIcon(uint16_t iconcount, uint16_t iconnumber)
 {
 	iconCount = iconcount;
 	iconNumber = iconnumber;
+}
+
+bool Monster::canDropLoot() {
+	return mType->info.lootItems.size() != 0;
 }

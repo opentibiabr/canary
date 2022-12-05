@@ -308,6 +308,7 @@ class Monster final : public Creature
 		}
 
 		void clearFiendishStatus();
+		bool canDropLoot();
 
 	private:
 		CreatureHashSet friendList;
@@ -406,7 +407,6 @@ class Monster final : public Creature
 			return mType->info.lookcorpse;
 		}
 		void dropLoot(Container* corpse, Creature* lastHitCreature) override;
-		bool canDropLoot();
 		uint32_t getDamageImmunities() const override {
 			return mType->info.damageImmunities;
 		}

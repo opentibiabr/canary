@@ -6766,8 +6766,8 @@ void Player::forgeResourceConversion(uint8_t action)
 			return;
 		}
 
-		Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
-		if (item) {
+		if (Item* item = Item::CreateItem(ITEM_FORGE_CORE, 1);
+			item) {
 			returnValue = g_game().internalPlayerAddItem(this, item);
 		}
 		if (returnValue != RETURNVALUE_NOERROR)

@@ -4419,7 +4419,6 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 				}
 				damagePlayer->reloadTaskSlot(taskSlot->id);
 			}
-			}
 		}
 	}
 

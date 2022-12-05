@@ -8,6 +8,9 @@ dofile(DATA_DIRECTORY.. '/lib/compat/compat.lua')
 -- Tables library
 dofile(DATA_DIRECTORY.. '/lib/tables/load.lua')
 
+-- Quests Modal System
+dofile(DATA_DIRECTORY.. '/lib/functions/quests.lua')
+
 -- Others library
 dofile(DATA_DIRECTORY.. '/lib/others/load.lua')
 

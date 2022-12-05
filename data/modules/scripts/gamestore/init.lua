@@ -223,7 +223,7 @@ function onRecvbyte(player, msg, byte)
 		return player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
 	end
 
-	local exaust = player:getStorageValue(Storage.StoreExaust)
+	local exaust = player:getStorageValue(Global.Storage.StoreExaust)
 	local currentTime = os.time()
 
 	if byte == GameStore.RecivedPackets.C_StoreEvent then
@@ -235,7 +235,7 @@ function onRecvbyte(player, msg, byte)
 			return false
 		end
 		local num = currentTime + 1
-		player:setStorageValue(Storage.StoreExaust, num)
+		player:setStorageValue(Global.Storage.StoreExaust, num)
 
 		parseOpenStore(player:getId(), msg)
 	elseif byte == GameStore.RecivedPackets.C_RequestStoreOffers then

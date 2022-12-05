@@ -207,12 +207,14 @@ function StdModule.rookgaardHints(npc, player, message, keywords, parameters, no
 		return false
 	end
 
-	local hintId = player:getStorageValue(Storage.RookgaardHints)
-	npcHandler:say(hints[hintId], npc, player)
-	if hintId >= #hints then
-		player:setStorageValue(Storage.RookgaardHints, -1)
-	else
-		player:setStorageValue(Storage.RookgaardHints, hintId + 1)
+	if DATA_DIRECTORY == "data-otservbr-global" then
+		local hintId = player:getStorageValue(Storage.RookgaardHints)
+		npcHandler:say(hints[hintId], npc, player)
+		if hintId >= #hints then
+			player:setStorageValue(Storage.RookgaardHints, -1)
+		else
+			player:setStorageValue(Storage.RookgaardHints, hintId + 1)
+		end
+		return true
 	end
-	return true
 end

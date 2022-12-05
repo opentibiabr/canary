@@ -280,7 +280,7 @@ class Monster final : public Creature
 		}
 
 		void setForgeMonster(bool forge) {
-			forgeMonster = forge;
+			mType->info.isForgeCreature = forge;
 		}
 
 		uint16_t getForgeStack() const {
@@ -317,7 +317,7 @@ class Monster final : public Creature
 		uint32_t iconNumber = 0;
 
 		time_t timeToChangeFiendish = 0;
-		bool forgeMonster = false;
+		bool isForgeMonster = false;
 
 		// Forge System
 		uint16_t forgeStack = 0;

@@ -2206,7 +2206,6 @@ void Monster::configureForgeSystem()
 void Monster::clearFiendishStatus()
 {
 	timeToChangeFiendish = 0;
-	forgeMonster = false;
 	forgeStack = 0;
 	monsterForgeClassification = FORGE_NORMAL_MONSTER;
 

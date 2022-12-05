@@ -75,8 +75,11 @@ monster.light = {
 	color = 0
 }
 
-monster.summons = {
-	{name = "Slime", chance = 10, interval = 2000}
+monster.summon = {
+	maxSummons = 1,
+	summons = {
+		{name = "Slime", chance = 10, interval = 2000}
+	}
 }
 
 monster.voices = {

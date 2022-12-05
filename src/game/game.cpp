@@ -8445,14 +8445,14 @@ uint32_t Game::makeFiendishMonster() {
 		tries++;
 
 		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
-		uint32_t monsterIdTest = forgeableMonsters.at(random);
-		monster = g_game().getMonsterByID(monsterIdTest);
+		uint32_t randomMonsterId = forgeableMonsters.at(random);
+		monster = g_game().getMonsterByID(randomMonsterId);
 		if (monster == nullptr) {
 			continue;
 		}
 
 		if (monster && monster->getForgeStack() == 0) {
-			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), monsterIdTest);
+			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), randomMonsterId);
 			if (it == forgeableMonsters.end()) {
 				monster = nullptr;
 				continue;
@@ -8462,7 +8462,7 @@ uint32_t Game::makeFiendishMonster() {
 		}
 	}
 
-	if (monster && monster->canBeForgeMonster()) {
+	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss()) {
 		time_t timeToChangeFiendish = 3600;
 		monster->setMonsterForgeClassification(FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();

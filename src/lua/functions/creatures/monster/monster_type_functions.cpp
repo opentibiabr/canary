@@ -227,6 +227,24 @@ int MonsterTypeFunctions::luaMonsterTypeIsBlockable(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeIsForgeCreature(lua_State* L) {
+	// get: monsterType:isForgeCreature() set: monsterType:isForgeCreature(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		pushBoolean(L, false);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
+		return 0;
+	}
+
+	if (lua_gettop(L) == 1) {
+		pushBoolean(L, monsterType->info.isForgeCreature);
+	} else {
+		monsterType->info.isForgeCreature = getBoolean(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeCanSpawn(lua_State* L) {
 	// monsterType:canSpawn(pos)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);

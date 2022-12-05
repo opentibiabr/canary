@@ -190,6 +190,9 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.isBlockable ~= nil then
 			mtype:isBlockable(mask.flags.isBlockable)
 		end
+		if mask.flags.isForgeCreature ~= nil then
+			mtype:isForgeCreature(mask.flags.isForgeCreature)
+		end
 	end
 end
 registerMonsterType.light = function(mtype, mask)

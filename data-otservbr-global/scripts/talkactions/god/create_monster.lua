@@ -13,7 +13,7 @@ function createMonster.onSay(player, words, param)
 		return false
 	end
 
-	local split = param:split(", ")
+	local split = param:split(",")
 	local monsterName = split[1]
 	local monsterForge = nil
 	if split[2] then
@@ -22,7 +22,7 @@ function createMonster.onSay(player, words, param)
 	-- Check dust level
 	local setFiendish = false
 	local setInfluenced
-	if type(monsterForge) == "string" and monsterForge == "fiendish" then
+	if type(monsterForge) == "string" and monsterForge == " fiendish" then
 		setFiendish = true
 	end
 	local influencedLevel
@@ -43,6 +43,11 @@ function createMonster.onSay(player, words, param)
 		monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		position:sendMagicEffect(CONST_ME_MAGIC_RED)
 		if setFiendish then
+			local monsterType = monster:getType()
+			if monsterType and not monsterType:isForgeCreature() then
+				player:sendCancelMessage("Only allowed monsters can be fiendish.")
+				return false
+			end
 			monster:setFiendish(position, player)
 		end
 		if setInfluenced then

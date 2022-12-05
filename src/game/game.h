@@ -646,7 +646,7 @@ class Game
 
 		std::map<uint32_t, Npc*> npcs;
 		std::map<uint32_t, Monster*> monsters;
-		std::vector<uint32_t> forgeableMonsters;
+		std::unordered_set<uint32_t> forgeableMonsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 

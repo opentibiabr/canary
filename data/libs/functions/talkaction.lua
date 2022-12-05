@@ -13,14 +13,9 @@ function Player.setFiendish(self)
 	position:getNextPosition(self:getDirection())
 
 	local tile = Tile(position)
-	if not tile then
-		self:sendCancelMessage("Monster not found.")
-		return false
-	end
-
 	local thing = tile:getTopVisibleThing(self)
-	if not thing then
-		self:sendCancelMessage("Thing not found.")
+	if not tile or thing and not thing:isMonster() then
+		self:sendCancelMessage("Monster not found.")
 		return false
 	end
 

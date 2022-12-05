@@ -466,6 +466,9 @@ int MonsterFunctions::luaMonsterSetForgeStack(lua_State *L) {
 	}
 
 	monster->setForgeStack(stack);
+	// Update new stack icon
+	g_game().updateCreatureIcon(monster);
+	g_game().sendUpdateCreature(monster);
 	return 1;
 }
 
@@ -479,5 +482,18 @@ int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State *L) {
 	}
 
 	monster->configureForgeSystem();
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State *L) {
+	// monster:clearFiendishStatus()
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->clearFiendishStatus();
 	return 1;
 }

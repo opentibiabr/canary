@@ -597,7 +597,7 @@ class Game
 		void createInfluencedMonsters();
 		void updateForgeableMonsters();
 		void checkForgeEventId(uint32_t monsterId);
-		uint32_t makeFiendishMonster();
+		uint32_t makeFiendishMonster(uint32_t monsterId = 0, bool createForgeableMonsters = false);
 		uint32_t makeInfluencedMonster();
 
 		bool addInfluencedMonster(Monster *monster);

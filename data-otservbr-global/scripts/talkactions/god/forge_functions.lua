@@ -218,6 +218,15 @@ end
 
 forge:register()
 
+-- Set a new fiendish monster
+local setFiendish = TalkAction("/setfiendish")
+
+function setFiendish.onSay(player, words, param)
+	return player:setFiendish()
+end
+
+setFiendish:register()
+
 -- Open forge window
 local forge = TalkAction("/openforge")
 

@@ -276,7 +276,12 @@ class Monster final : public Creature
 		void configureForgeSystem();
 
 		bool canBeForgeMonster() const {
-			return getForgeStack() == 0 && !isSummon() && mType->info.isForgeCreature;
+			return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature();
+		}
+
+		
+		bool isForgeCreature() const {
+			return mType->info.isForgeCreature;
 		}
 
 		void setForgeMonster(bool forge) {
@@ -308,7 +313,7 @@ class Monster final : public Creature
 		}
 
 		void clearFiendishStatus();
-		bool canDropLoot();
+		bool canDropLoot() const;
 
 	private:
 		CreatureHashSet friendList;

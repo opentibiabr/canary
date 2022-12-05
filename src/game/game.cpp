@@ -8398,7 +8398,7 @@ uint32_t Game::makeInfluencedMonster() {
 		tries++;
 		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
 		auto monsterId = forgeableMonsters.at(random);
-		monster = g_game().getMonsterByID(monsterId);
+		monster = getMonsterByID(monsterId);
 
 		if (monster == nullptr) {
 			continue;
@@ -8426,7 +8426,35 @@ uint32_t Game::makeInfluencedMonster() {
 	return 0;
 }
 
-uint32_t Game::makeFiendishMonster() {
+uint32_t Game::makeFiendishMonster(uint32_t monsterId/* = 0*/, bool createForgeableMonsters/* = false*/) {
+	if (createForgeableMonsters) {
+		forgeableMonsters.clear();
+		// If the forgeable monsters haven't been created
+		// Then we'll create them so they don't return in the next if (forgeableMonsters.empty())
+		for (auto [monsterId, monster] : monsters) {
+			auto monsterTile = monster->getTile();
+			if (!monster || !monsterTile) {
+				continue;
+			}
+
+			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+				forgeableMonsters.push_back(monster->getID());
+			}
+		}
+		for (const auto monsterId : getFiendishMonsters()) {
+			// If the fiendish is no longer on the map, we remove it from the vector
+			if (!getMonsterByID(monsterId)) {
+				removeFiendishMonster(monsterId);
+			}
+
+			// If you're trying to create a new fiendish and it's already max size, let's remove one of them
+			if (getFiendishMonsters().size() >= 3) {
+				removeFiendishMonster(monsterId);
+				break;
+			}
+		}
+	}
+
 	if (auto fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
 		//Condition
 		forgeableMonsters.empty() || fiendishMonsters.size() >= fiendishLimit)
@@ -8444,15 +8472,18 @@ uint32_t Game::makeFiendishMonster() {
 		}
 		tries++;
 
-		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
-		uint32_t randomMonsterId = forgeableMonsters.at(random);
-		monster = g_game().getMonsterByID(randomMonsterId);
+		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
+		uint32_t fiendishMonsterId = monsterId;
+		if (fiendishMonsterId == 0) {
+			fiendishMonsterId = forgeableMonsters.at(random);
+		}
+		monster = getMonsterByID(fiendishMonsterId);
 		if (monster == nullptr) {
 			continue;
 		}
 
 		if (monster && monster->getForgeStack() == 0) {
-			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), randomMonsterId);
+			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), fiendishMonsterId);
 			if (it == forgeableMonsters.end()) {
 				monster = nullptr;
 				continue;
@@ -8462,14 +8493,43 @@ uint32_t Game::makeFiendishMonster() {
 		}
 	}
 
-	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss() && monster->canDropLoot()) {
-		time_t timeToChangeFiendish = 3600;
+	// Get interval time to fiendish
+	std::string saveIntervalType = g_configManager().getString(FORGE_FIENDISH_INTERVAL_TYPE);
+	auto saveIntervalConfigTime = std::atoi(g_configManager().getString(FORGE_FIENDISH_INTERVAL_TIME).c_str());
+	int intervalTime = 0;
+	time_t timeToChangeFiendish;
+	if (saveIntervalType == "second") {
+		intervalTime = 1000;
+		timeToChangeFiendish = 1;
+	} else if (saveIntervalType == "minute") {
+		intervalTime = 60 * 1000;
+		timeToChangeFiendish = 60;
+	} else if (saveIntervalType == "hour") {
+		intervalTime = 60 * 60 * 1000;
+		timeToChangeFiendish = 3600;
+	} else {
+		timeToChangeFiendish = 3600;
+	}
+
+	uint32_t finalTime = 0;
+	if (intervalTime == 0) {
+		SPDLOG_WARN("Fiendish interval type is wrong, setting default time to 1h");
+		finalTime = 3600 * 1000;
+	} else {
+		finalTime = static_cast<uint32_t>((saveIntervalConfigTime) * intervalTime);
+	}
+
+	if (monster && monster->canBeForgeMonster()) {
 		monster->setMonsterForgeClassification(FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();
 		monster->setTimeToChangeFiendish(timeToChangeFiendish + time(nullptr));
 		fiendishMonsters.insert(monster->getID());
 
-		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(timeToChangeFiendish) * 1000, std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())));
+		auto schedulerTask = createSchedulerTask(
+				finalTime,
+				std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
+		);
+		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(schedulerTask);
 		return monster->getID();
 	}
 
@@ -8497,7 +8557,7 @@ bool Game::removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monster
 	return true;
 }
 
-bool Game::removeInfluencedMonster(uint32_t id, bool create) {
+bool Game::removeInfluencedMonster(uint32_t id, bool create/* = false*/) {
 	if (auto find = influencedMonsters.find(id);
 		// Condition
 		find != influencedMonsters.end())
@@ -8513,17 +8573,17 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create) {
 	return false;
 }
 
-bool Game::removeFiendishMonster(uint32_t id, bool create)
+bool Game::removeFiendishMonster(uint32_t id, bool create/* = true*/)
 {
 	if (auto find = fiendishMonsters.find(id);
 		// Condition
 		find != fiendishMonsters.end())
 	{
 		fiendishMonsters.erase(find);
-		g_game().checkForgeEventId(id);
+		checkForgeEventId(id);
 
 		if (create) {
-			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind(&Game::makeFiendishMonster, this)));
+			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind(&Game::makeFiendishMonster, this, 0, false)));
 		}
 	} else {
 		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
@@ -8537,10 +8597,21 @@ void Game::updateForgeableMonsters()
 	g_scheduler().addEvent(createSchedulerTask(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind(&Game::updateForgeableMonsters, this)));
 	forgeableMonsters.clear();
 	for (auto [monsterId, monster] : monsters) {
-		if (monster->canBeForgeMonster() && !monster->getTile()->hasFlag(TILESTATE_NOLOGOUT))
+		auto monsterTile = monster->getTile();
+		if (!monsterTile) {
+			continue;
+		}
+
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT))
 			forgeableMonsters.push_back(monster->getID());
 	}
 
+	for (const auto monsterId : getFiendishMonsters()) {
+		if (!getMonsterByID(monsterId)) {
+			removeFiendishMonster(monsterId);
+		}
+	}
+	
 	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
 	if (fiendishMonsters.size() < fiendishLimit)
 		createFiendishMonsters();
@@ -8603,7 +8674,7 @@ void Game::checkForgeEventId(uint32_t monsterId)
 
 bool Game::addInfluencedMonster(Monster *monster)
 {
-	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss())
+	if (monster && monster->canBeForgeMonster())
 	{
 		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT));
 			// If condition

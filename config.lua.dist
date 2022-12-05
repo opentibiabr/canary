@@ -102,6 +102,8 @@ forgeMinSlivers = 3
 forgeMaxSlivers = 7
 forgeInfluencedLimit = 300
 forgeFiendishLimit = 3
+forgeFiendishIntervalType = "hour"
+forgeFiendishIntervalTime = "1"
 
 -- NOTE: Access only for Premium Account
 onlyPremiumAccount = false

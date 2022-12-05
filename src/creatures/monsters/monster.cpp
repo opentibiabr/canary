@@ -2226,6 +2226,6 @@ void Monster::setMonsterIcon(uint16_t iconcount, uint16_t iconnumber)
 	iconNumber = iconnumber;
 }
 
-bool Monster::canDropLoot() {
+bool Monster::canDropLoot() const {
 	return mType->info.lootItems.size() != 0;
 }

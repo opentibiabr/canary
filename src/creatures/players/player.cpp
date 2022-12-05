@@ -913,7 +913,7 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 		}
 	}
 
-	return (previousContainer != nullptr ? previousContainer : nullptr);
+	return (previousContainer ? previousContainer : nullptr);
 }
 
 Container* Player::getLootContainer(ObjectCategory_t category) const

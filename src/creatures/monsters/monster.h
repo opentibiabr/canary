@@ -317,7 +317,6 @@ class Monster final : public Creature
 		uint32_t iconNumber = 0;
 
 		time_t timeToChangeFiendish = 0;
-		bool isForgeMonster = false;
 
 		// Forge System
 		uint16_t forgeStack = 0;
@@ -407,6 +406,7 @@ class Monster final : public Creature
 			return mType->info.lookcorpse;
 		}
 		void dropLoot(Container* corpse, Creature* lastHitCreature) override;
+		bool canDropLoot();
 		uint32_t getDamageImmunities() const override {
 			return mType->info.damageImmunities;
 		}

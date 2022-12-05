@@ -2072,6 +2072,10 @@ void Monster::dropLoot(Container* corpse, Creature*)
 	}
 }
 
+bool Monster::canDropLoot() {
+	return mType->info.lootItems.size() != 0;
+}
+
 void Monster::setNormalCreatureLight()
 {
 	internalLight = mType->info.light;

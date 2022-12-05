@@ -8462,7 +8462,7 @@ uint32_t Game::makeFiendishMonster() {
 		}
 	}
 
-	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss()) {
+	if (monster && monster->canBeForgeMonster() && !monster->isRewardBoss() && monster->canDropLoot()) {
 		time_t timeToChangeFiendish = 3600;
 		monster->setMonsterForgeClassification(FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();

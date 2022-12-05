@@ -279,6 +279,7 @@ private:
 	);
 	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem);
 	void sendForgeHistory(uint8_t page);
+	void sendForgeSkillChances(NetworkMessage &msg);
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 	void sendMagicEffect(const Position &pos, uint8_t type);

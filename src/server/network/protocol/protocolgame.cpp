@@ -3085,10 +3085,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i) {
-		msg.add<uint16_t>(0);
-		msg.add<uint16_t>(0);
-	}
+	sendForgeSkillChances(msg);
 
 	// Cleave (12.70)
 	msg.add<uint16_t>(0);
@@ -6665,10 +6662,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i) {
-		msg.add<uint16_t>(0);
-		msg.add<uint16_t>(0);
-	}
+	sendForgeSkillChances(msg);
 
 	// used for imbuement (Feather)
 	msg.add<uint32_t>(player->getCapacity()); // total capacity
@@ -7441,5 +7435,27 @@ void ProtocolGame::getForgeInfoMap(const Item *item, std::map<uint16_t, std::map
 		if (!otherInserted) {
 			(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
 		}
+	}
+}
+
+void ProtocolGame::sendForgeSkillChances(NetworkMessage &msg) {
+	Slots_t slots[3] = { CONST_SLOT_LEFT, CONST_SLOT_ARMOR, CONST_SLOT_HEAD };
+	for (const auto &slot : slots) {
+		double_t skill = 0;
+		if (Item* item = player->getInventoryItem(slot); item) {
+			const ItemType &it = Item::items[item->getID()];
+			if (it.isWeapon()) {
+				skill = item->getFatalChance() * 100;
+			}
+			if (it.isArmor()) {
+				skill = item->getDodgeChance() * 100;
+			}
+			if (it.isHelmet()) {
+				skill = item->getMomentumChance() * 100;
+			}
+		}
+
+		msg.add<uint16_t>(skill);
+		msg.add<uint16_t>(skill);
 	}
 }

@@ -8469,17 +8469,17 @@ uint32_t Game::makeFiendishMonster() {
 		monster->setTimeToChangeFiendish(timeToChangeFiendish + time(nullptr));
 		fiendishMonsters.insert(monster->getID());
 
-		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(timeToChangeFiendish) * 1000, std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID())));
+		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(timeToChangeFiendish) * 1000, std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())));
 		return monster->getID();
 	}
 
 	return 0;
 }
 
-void Game::updateFiendishMonsterStatus(uint32_t monsterId) {
+void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &monsterName) {
 	Monster *monster = getMonsterByID(monsterId);
 	if (!monster) {
-		SPDLOG_WARN("[Game::updateFiendishMonsterStatus] - Failed to update a Fiendish Monster, monster with id {} not found", monsterId);
+		SPDLOG_WARN("[Game::updateFiendishMonsterStatus] - Failed to update a Fiendish Monster, monster with id {} and name {} not found", monsterId, monsterName);
 		return;
 	}
 

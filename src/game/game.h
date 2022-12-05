@@ -592,7 +592,7 @@ class Game
 		bool removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monsterForgeClassification, bool create = true);
 		bool removeInfluencedMonster(uint32_t id, bool create = false);
 		bool removeFiendishMonster(uint32_t id, bool create = true);
-		void updateFiendishMonsterStatus(uint32_t monsterId);
+		void updateFiendishMonsterStatus(uint32_t monsterId, const std::string &monsterName);
 		void createFiendishMonsters();
 		void createInfluencedMonsters();
 		void updateForgeableMonsters();

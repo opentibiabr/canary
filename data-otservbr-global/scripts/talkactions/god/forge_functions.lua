@@ -208,7 +208,11 @@ function forge.onSay(player, words, param)
 	end
 
 	local monster = Monster(ForgeMonster:pickFiendish())
-	player:teleportTo(monster:getPosition())
+	if monster then
+		player:teleportTo(monster:getPosition())
+	else
+		player:sendCancelMessage("There are not fiendish monsters right now.")
+	end
 	return false
 end
 

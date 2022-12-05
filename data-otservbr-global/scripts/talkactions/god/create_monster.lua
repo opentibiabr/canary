@@ -29,7 +29,7 @@ function createMonster.onSay(player, words, param)
 	if not setFiendish then
 		influencedLevel = tonumber(monsterForge)
 	end
-	if influencedLevel > 0 then
+	if influencedLevel and influencedLevel > 0 then
 		if influencedLevel > 5 then
 			player:sendCancelMessage("Invalid influenced level.")
 			return false

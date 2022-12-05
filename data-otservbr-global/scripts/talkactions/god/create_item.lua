@@ -51,9 +51,11 @@ function createItem.onSay(player, words, param)
 		end
 	end
 
-	local result = player:addItem(itemType:getId(), count)
+	local result
 	local tier = tonumber(split[3])
-	if tier then
+	if not tier then
+		result = player:addItem(itemType:getId(), count)
+	else
 		if tier <= 0 or tier > 10 then
 			player:sendCancelMessage("Invalid tier count.")
 			return false

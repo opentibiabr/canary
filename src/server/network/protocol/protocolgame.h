@@ -467,7 +467,7 @@ private:
 	//reloadCreature
 	void reloadCreature(const Creature *creature);
 
-	void getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap);
+	void getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap) const;
 
 	friend class Player;
 

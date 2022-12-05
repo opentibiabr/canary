@@ -4389,16 +4389,15 @@ void ProtocolGame::sendOpenForge() {
 	for (const auto &item : player->getAllInventoryItems(true)) {
 		auto itemClassification = item->getClassification();
 		auto itemTier = item->getTier();
-		auto maxTier = (itemClassification == 4 ? FORGE_MAX_ITEM_TIER : itemClassification);
-		auto itemId = item->getID();
-		auto itemCount = item->getItemCount();
+		auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
+		auto maxTier = (itemClassification == 4 ? maxConfigTier : itemClassification);
 		// Save fusion items on map
 		if (itemClassification != 0 && itemTier < maxTier) {
 			getForgeInfoMap(item, fusionItemsMap);
 		}
 
 		if (itemClassification > 0) {
-			if (itemClassification < 4 && itemTier > itemClassification) {
+			if (itemClassification < 4 && itemTier > maxTier) {
 				continue;
 			}
 			// Save transfer (donator of tier) items on map
@@ -7432,7 +7431,7 @@ void ProtocolGame::sendUpdateCreature(const Creature* creature)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap)
+void ProtocolGame::getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap) const
 {
 	std::map<uint8_t, uint16_t> itemInfo;
 	itemInfo.insert({ item->getTier(), item->getItemCount() });

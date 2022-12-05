@@ -6728,7 +6728,7 @@ void Player::forgeResourceConversion(uint8_t action)
 	history.actionType = action;
 	history.success = true;
 
-	ReturnValue returnValue;
+	ReturnValue returnValue = RETURNVALUE_NOERROR;
 	if (action == FORGE_ACTION_DUSTTOSLIVERS) {
 		auto dusts = getForgeDusts();
 		auto cost = static_cast<uint16_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER) * g_configManager().getNumber(FORGE_SLIVER_AMOUNT));

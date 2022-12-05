@@ -261,7 +261,6 @@ bool ConfigManager::load()
 
 	integer[ADVENTURERSBLESSING_LEVEL] = getGlobalNumber(L, "adventurersBlessingLevel", 21);
 	integer[FORGE_MAX_ITEM_TIER] = getGlobalNumber(L, "forgeMaxItemTier", 10);
-	integer[FORGE_MAX_ITEM_TIER] = getGlobalNumber(L, "forgeMaxItemTier", 10);
 	integer[FORGE_COST_ONE_SLIVER] = getGlobalNumber(L, "forgeCostOneSliver", 20);
 	integer[FORGE_SLIVER_AMOUNT] = getGlobalNumber(L, "forgeSliverAmount", 3);
 	integer[FORGE_CORE_COST] = getGlobalNumber(L, "forgeCoreCost", 50);

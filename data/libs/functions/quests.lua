@@ -1,23 +1,3 @@
-if not Quests then
-	Quests = {
-		[1] = {
-			name = "Example",
-			startStorageId = Storage.Quest.ExampleQuest.Example,
-			startStorageValue = 1,
-			missions = {
-				[1] = {
-					name = "The Hidden Seal",
-					storageId = Storage.Quest.ExampleQuest.Example,
-					missionId = 1,
-					startValue = 1,
-					endValue = 1,
-					description = "You broke the first seal."
-				}
-			}
-		}
-	}
-end
-
 if not LastQuestlogUpdate then
 	LastQuestlogUpdate = {}
 end
@@ -28,7 +8,7 @@ end
 
 -- Text functions
 
-function evaluateText(value, player)
+local function evaluateText(value, player)
 	if type(value) == "function" then
 		return tostring(value(player))
 	end
@@ -377,9 +357,9 @@ function Player.updateStorage(self, key, value, oldValue, currentFrameTime)
 	local playerId = self:getId()
 	if LastQuestlogUpdate[playerId] ~= currentFrameTime and Game.isQuestStorage(key, value, oldValue) then
 		LastQuestlogUpdate[playerId] = currentFrameTime
-        if value ~= oldValue then
-            self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your questlog has been updated.")
-        end
+		if value ~= oldValue then
+			self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your questlog has been updated.")
+		end
 	end
 	local missions = self:getMissionsData(key)
 	for i = 1, #missions do

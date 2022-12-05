@@ -41,7 +41,7 @@ end, "l")
 
 -- OTServBr-Global functions
 function getJackLastMissionState(player)
-	if DATA_DIRECTORY ~= "data-otservbr-global" then
+	if not IsRunningGlobalDatapack() then
 		return true
 	end
 

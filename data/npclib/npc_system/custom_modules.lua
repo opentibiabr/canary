@@ -203,18 +203,16 @@ function StdModule.rookgaardHints(npc, player, message, keywords, parameters, no
 		error("StdModule.say called without any npcHandler instance.")
 	end
 
-	if not npcHandler:checkInteraction(npc, player) then
+	if not npcHandler:checkInteraction(npc, player) or not IsRunningGlobalDatapack() then
 		return false
 	end
 
-	if DATA_DIRECTORY == "data-otservbr-global" then
-		local hintId = player:getStorageValue(Storage.RookgaardHints)
-		npcHandler:say(hints[hintId], npc, player)
-		if hintId >= #hints then
-			player:setStorageValue(Storage.RookgaardHints, -1)
-		else
-			player:setStorageValue(Storage.RookgaardHints, hintId + 1)
-		end
-		return true
+	local hintId = player:getStorageValue(Storage.RookgaardHints)
+	npcHandler:say(hints[hintId], npc, player)
+	if hintId >= #hints then
+		player:setStorageValue(Storage.RookgaardHints, -1)
+	else
+		player:setStorageValue(Storage.RookgaardHints, hintId + 1)
 	end
+	return true
 end

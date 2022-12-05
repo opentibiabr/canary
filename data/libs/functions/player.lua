@@ -103,7 +103,7 @@ end
 
 -- Functions From OTServBR-Global
 function Player.getCookiesDelivered(self)
-	if DATA_DIRECTORY ~= "data-otservbr-global" then
+	if not IsRunningGlobalDatapack() then
 		return true
 	end
 
@@ -126,7 +126,7 @@ function Player.allowMovement(self, allow)
 end
 
 function Player.checkGnomeRank(self)
-	if DATA_DIRECTORY ~= "data-otservbr-global" then
+	if not IsRunningGlobalDatapack() then
 		return true
 	end
 

@@ -80,10 +80,6 @@ function Monster:onDropLoot(corpse)
 end
 
 function Monster:onSpawn(position)
-	if DATA_DIRECTORY ~= "data-otservbr-global" then
-		return true
-	end
-
 	if self:getType():isRewardBoss() then
 		self:setReward(true)
 	end

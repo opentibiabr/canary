@@ -71,5 +71,6 @@
 #include <parallel_hashmap/phmap.h>
 #include <pugixml.hpp>
 #include <zlib.h>
+#include <magic_enum.hpp>
 
 #endif  // SRC_PCH_HPP_

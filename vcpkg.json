@@ -14,7 +14,7 @@
     "jsoncpp",
     "protobuf",
     "parallel-hashmap",
-    "magic-enum,
+    "magic-enum",
     {
       "name": "luajit",
       "platform": "!arm"

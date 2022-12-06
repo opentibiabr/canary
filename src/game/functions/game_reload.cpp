@@ -15,7 +15,6 @@
 #include "lua/creature/events.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/magic_enum.hpp"
 #include "lua/modules/modules.h"
 #include "lua/scripts/scripts.h"
 

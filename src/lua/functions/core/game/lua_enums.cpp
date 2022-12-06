@@ -19,7 +19,6 @@
 #include "declarations.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.h"
-#include "utils/magic_enum.hpp"
 
 #define registerEnumClass(luaState, enumClassType) { \
 	auto number = magic_enum::enum_integer(enumClassType); \

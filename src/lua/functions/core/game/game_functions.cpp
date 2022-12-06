@@ -28,7 +28,6 @@
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
 #include "game/scheduling/tasks.h"
-#include "utils/magic_enum.hpp"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"

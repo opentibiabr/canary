@@ -8538,7 +8538,6 @@ uint32_t Game::makeFiendishMonster(uint32_t monsterId/* = 0*/, bool createForgea
 				std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
 		);
 		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(schedulerTask);
-		SPDLOG_INFO("NEW FIENDISH MONSTER NAME {}, ID {}", monster->getName(), monster->getID());
 		return monster->getID();
 	}
 

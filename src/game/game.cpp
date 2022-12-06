@@ -8429,7 +8429,7 @@ uint32_t Game::makeInfluencedMonster() {
 	return 0;
 }
 
-uint32_t Game::makeFiendishMonster(uint32_t monsterId/* = 0*/, bool createForgeableMonsters/* = false*/) {
+uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool createForgeableMonsters/* = false*/) {
 	if (createForgeableMonsters) {
 		forgeableMonsters.clear();
 		// If the forgeable monsters haven't been created
@@ -8479,10 +8479,10 @@ uint32_t Game::makeFiendishMonster(uint32_t monsterId/* = 0*/, bool createForgea
 		tries++;
 
 		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.bucket_count() - 1)));
-		uint32_t fiendishMonsterId = monsterId;
-		auto it = forgeableMonsters.cbegin(random);
+		uint32_t fiendishMonsterId = forgeableMonsterId;
+		auto randomId = forgeableMonsters.cbegin(random);
 		if (fiendishMonsterId == 0) {
-			fiendishMonsterId = *it;
+			fiendishMonsterId = *randomId;
 		}
 		monster = getMonsterByID(fiendishMonsterId);
 		if (monster == nullptr) {
@@ -8524,7 +8524,7 @@ uint32_t Game::makeFiendishMonster(uint32_t monsterId/* = 0*/, bool createForgea
 		SPDLOG_WARN("Fiendish interval type is wrong, setting default time to 1h");
 		finalTime = 3600 * 1000;
 	} else {
-		finalTime = static_cast<uint32_t>((saveIntervalConfigTime) * intervalTime);
+		finalTime = static_cast<uint32_t>(saveIntervalConfigTime * intervalTime);
 	}
 
 	if (monster && monster->canBeForgeMonster()) {

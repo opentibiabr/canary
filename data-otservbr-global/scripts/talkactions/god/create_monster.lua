@@ -17,12 +17,13 @@ function createMonster.onSay(player, words, param)
 	local monsterName = split[1]
 	local monsterForge = nil
 	if split[2] then
+		split[2] = split[2]:gsub("^%s*(.-)$", "%1") --Trim left
 		monsterForge = split[2]
 	end
 	-- Check dust level
 	local setFiendish = false
 	local setInfluenced
-	if type(monsterForge) == "string" and monsterForge == " fiendish" then
+	if type(monsterForge) == "string" and monsterForge == "fiendish" then
 		setFiendish = true
 	end
 	local influencedLevel

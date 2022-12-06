@@ -156,6 +156,8 @@ void loadModules() {
 	// Lua Interface start
 	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
 		coreFolder + "/core.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0),
+		coreFolder + "/scripts/talkactions.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
 		coreFolder + "/XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),

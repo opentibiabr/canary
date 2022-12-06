@@ -17,7 +17,9 @@
 #include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
 #include "declarations.hpp"
+#include "game/functions/game_reload.hpp"
 #include "game/game.h"
+#include "utils/magic_enum.hpp"
 
 void LuaEnums::init(lua_State* L) {
 	#define registerEnum(L, value) { \
@@ -971,20 +973,62 @@ void LuaEnums::init(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL)
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY)
 
-	// Reload
-	registerEnum(L, RELOAD_TYPE_ALL)
-	registerEnum(L, RELOAD_TYPE_CHAT)
-	registerEnum(L, RELOAD_TYPE_CONFIG)
-	registerEnum(L, RELOAD_TYPE_EVENTS)
-	registerEnum(L, RELOAD_TYPE_GLOBAL)
-	registerEnum(L, RELOAD_TYPE_IMBUEMENTS)
-	registerEnum(L, RELOAD_TYPE_ITEMS)
-	registerEnum(L, RELOAD_TYPE_MODULES)
-	registerEnum(L, RELOAD_TYPE_MONSTERS)
-	registerEnum(L, RELOAD_TYPE_MOUNTS)
-	registerEnum(L, RELOAD_TYPE_NPCS)
-	registerEnum(L, RELOAD_TYPE_RAIDS)
-	registerEnum(L, RELOAD_TYPE_SCRIPTS)
+	/* Need refactor */
+	auto number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_ALL);
+	auto name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_ALL).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_CHAT);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_CHAT).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_CONFIG);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_CONFIG).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_EVENTS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_EVENTS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_CORE);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_CORE).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_IMBUEMENTS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_IMBUEMENTS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_ITEMS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_ITEMS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_MODULES);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_MODULES).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_MONSTERS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_MONSTERS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_MOUNTS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_MOUNTS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_NPCS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_NPCS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_RAIDS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_RAIDS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_SCRIPTS);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_SCRIPTS).data();
+	registerGlobalVariable(L, name, number);
+
+	number = magic_enum::enum_integer(ReloadTypes::RELOAD_TYPE_TALKACTION);
+	name = magic_enum::enum_name(ReloadTypes::RELOAD_TYPE_TALKACTION).data();
+	registerGlobalVariable(L, name, number);
 
 	registerEnum(L, ZONE_PROTECTION)
 	registerEnum(L, ZONE_NOPVP)

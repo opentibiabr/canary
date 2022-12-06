@@ -28,8 +28,10 @@ TalkActions::TalkActions()
 	scriptInterface.initState();
 }
 
-TalkActions::~TalkActions() {
-	clear(false);
+TalkActions::~TalkActions() = default;
+
+void TalkActions::clear() {
+	talkActions.clear();
 }
 
 void TalkActions::clear(bool fromLua) {

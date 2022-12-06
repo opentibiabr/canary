@@ -73,6 +73,21 @@ Game::~Game()
 	}
 }
 
+void Game::resetMonsters() {
+	for (const auto& [monsterId, monster] : getMonsters()) {
+		monster->clearTargetList();
+		monster->clearFriendList();
+	}
+}
+
+void Game::resetNpcs() {
+	// Close shop window from all npcs and reset the shopPlayerSet
+	for (const auto& [npcId, npc] : getNpcs()) {
+		npc->closeAllShopWindows();
+		npc->resetPlayerInteractions();
+	}
+}
+
 void Game::loadBoostedCreature()
 {
 	Database& db = Database::getInstance();

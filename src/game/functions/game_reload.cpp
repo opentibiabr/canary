@@ -107,6 +107,8 @@ bool GameReload::reloadModules()
 
 bool GameReload::reloadMonsters()
 {
+	// Reset monsters target
+	g_game().resetMonsters();
 	if (g_scripts().loadScripts("monster", false, true) && g_scripts().loadScripts("scripts/lib", true, true)) {
 		return true;
 	}
@@ -120,11 +122,10 @@ bool GameReload::reloadMounts()
 
 bool GameReload::reloadNpcs()
 {
-	auto coreFolder = g_configManager().getString(DATA_DIRECTORY);
-	if (g_scripts().loadScripts("npc", false, true) && g_scripts().loadScripts(coreFolder + "npclib/load.lua", true, true)) {
-		g_npc().reset();
+	if (g_npc().reset()) {
 		return true;
 	}
+
 	return false;
 }
 
@@ -135,13 +136,21 @@ bool GameReload::reloadRaids()
 
 bool GameReload::reloadScripts()
 {
-	if (g_scripts().loadScripts("scripts", false, true) && reloadMonsters() && reloadNpcs()) {
+	// Resets monster targets to prevent the spell from being incorrectly cleared from memory
+	g_game().resetMonsters();
+	g_scripts().clear();
+	if (g_scripts().loadScripts("scripts", false, true)) {
 		return true;
 	}
 	return false;
 }
 
-// Private member
+/*
+* From here down have the private members functions
+* These should only be used within the class itself
+* If it is necessary to call elsewhere, seriously think about creating a function that calls this
+* Changing this to public may cause some unexpected behavior or bug
+*/
 uint8_t GameReload::getReloadNumber(ReloadTypes reloadTypes)
 {
 	auto integer = magic_enum::enum_integer(reloadTypes);

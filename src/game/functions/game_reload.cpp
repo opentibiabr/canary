@@ -53,7 +53,7 @@ uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const
 * If it is necessary to call elsewhere, seriously think about creating a function that calls this
 * Changing this to public may cause some unexpected behavior or bug
 */
-bool GameReload::reloadAll()
+bool GameReload::reloadAll() const
 {
 	if (reloadChat() || reloadConfig() || reloadEvents() ||
 		reloadCore() || reloadImbuements() || reloadItems() ||

@@ -47,7 +47,7 @@ public:
 	uint8_t getReloadNumber(Reload_t reloadTypes) const;
 
 private:
-	bool reloadAll();
+	bool reloadAll() const;
 	bool reloadChat() const;
 	bool reloadConfig() const;
 	bool reloadEvents() const;

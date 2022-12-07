@@ -204,3 +204,17 @@ function ForgeMonster:pickClosestFiendish(creature)
 	end)
 	return creatures[1].cid
 end
+
+function ForgeMonster:exceededMaxInfluencedMonsters()
+	local totalMonsters = 0
+	for _, cid in pairs(Game.getInfluencedMonsters()) do
+		if Monster(cid) then
+			totalMonsters = totalMonsters + 1
+		end
+	end
+	local configMaxMonsters = configManager.getNumber(configKeys.FORGE_INFLUENCED_CREATURES_LIMIT)
+	if totalMonsters >= configMaxMonsters then
+		return true
+	end
+	return false
+end

@@ -7456,7 +7456,8 @@ void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
 			}
 		}
 
-		msg.add<uint16_t>(skill);
-		msg.add<uint16_t>(skill);
+		auto skillCast = static_cast<uint16_t>(skill);
+		msg.add<uint16_t>(skillCast);
+		msg.add<uint16_t>(skillCast);
 	}
 }

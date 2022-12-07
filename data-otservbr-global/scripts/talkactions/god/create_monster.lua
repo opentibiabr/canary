@@ -52,6 +52,13 @@ function createMonster.onSay(player, words, param)
 			monster:setFiendish(position, player)
 		end
 		if setInfluenced then
+			local influencedMonster = Monster(ForgeMonster:pickInfluenced())
+			-- If it's reached the limit, we'll remove one to add the new one.
+			if ForgeMonster:exceededMaxInfluencedMonsters() then
+				if influencedMonster then
+					Game.removeInfluencedMonster(influencedMonster:getId())
+				end
+			end
 			Game.addInfluencedMonster(monster)
 			monster:setForgeStack(influencedLevel)
 		end

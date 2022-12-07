@@ -631,6 +631,14 @@ int GameFunctions::luaGameAddInfluencedMonster(lua_State *L) {
 	return 1;
 }
 
+int GameFunctions::luaGameRemoveInfluencedMonster(lua_State *L) {
+	// Game.removeInfluencedMonster(monsterId)
+	uint32_t monsterId = getNumber<uint32_t>(L, 1);
+	auto create = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().removeInfluencedMonster(monsterId, create));
+	return 1;
+}
+
 int GameFunctions::luaGameGetInfluencedMonsters(lua_State *L) {
 	// Game.getInfluencedMonsters()
 	const auto monsters = g_game().getInfluencedMonsters();

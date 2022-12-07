@@ -533,7 +533,7 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 		g_game().decreasePlayerActiveImbuements(player->getID());
 	}
 
-	if (!it.abilities) {
+	if (it.abilities) {
 		if (it.abilities->invisible) {
 			player->removeCondition(CONDITION_INVISIBLE, static_cast<ConditionId_t>(slot));
 		}

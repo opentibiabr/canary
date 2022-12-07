@@ -55,8 +55,16 @@ class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
 
+enum class ForgeConversion_t : uint8_t {
+	FORGE_ACTION_FUSION = 0,
+	FORGE_ACTION_TRANSFER = 1,
+	FORGE_ACTION_DUSTTOSLIVERS = 2,
+	FORGE_ACTION_SLIVERSTOCORES = 3,
+	FORGE_ACTION_INCREASELIMIT = 4
+};
+
 struct ForgeHistory {
-	uint8_t actionType = 0;
+	ForgeConversion_t actionType = ForgeConversion_t::FORGE_ACTION_FUSION;
 	uint8_t tier = 0;
 	uint8_t bonus = 0;
 
@@ -77,14 +85,6 @@ struct ForgeHistory {
 	std::string description;
 	std::string firstItemName;
 	std::string secondItemName;
-};
-
-enum ForgeConversionTypes_t : uint8_t {
-	FORGE_ACTION_FUSION = 0,
-	FORGE_ACTION_TRANSFER = 1,
-	FORGE_ACTION_DUSTTOSLIVERS = 2,
-	FORGE_ACTION_SLIVERSTOCORES = 3,
-	FORGE_ACTION_INCREASELIMIT = 4
 };
 
 struct OpenContainer {

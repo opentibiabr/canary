@@ -8392,17 +8392,15 @@ uint32_t Game::makeInfluencedMonster() {
 	Monster* monster = nullptr;
 	while (true)
 	{
-		if (tries == maxTries)
+		if (tries == maxTries) {
 			return 0;
+		}
 
 		tries++;
 
-		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.bucket_count() - 1)));
-		auto it = forgeableMonsters.cbegin(random);
-		uint32_t monsterId = *it;
-
+		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
+		auto monsterId = forgeableMonsters.at(random);
 		monster = getMonsterByID(monsterId);
-
 		if (monster == nullptr) {
 			continue;
 		}
@@ -8420,7 +8418,7 @@ uint32_t Game::makeInfluencedMonster() {
 	}
 
 	if (monster && monster->canBeForgeMonster()) {
-		monster->setMonsterForgeClassification(FORGE_INFLUENCED_MONSTER);
+		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
 		monster->configureForgeSystem();
 		influencedMonsters.insert(monster->getID());
 		return monster->getID();
@@ -8441,7 +8439,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool cre
 			}
 
 			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
-				forgeableMonsters.emplace(monster->getID());
+				forgeableMonsters.push_back(monster->getID());
 			}
 		}
 		for (const auto monsterId : getFiendishMonsters()) {
@@ -8476,13 +8474,13 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool cre
 		if (tries == maxTries) {
 			return 0;
 		}
+
 		tries++;
 
-		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.bucket_count() - 1)));
+		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
 		uint32_t fiendishMonsterId = forgeableMonsterId;
-		auto randomId = forgeableMonsters.cbegin(random);
 		if (fiendishMonsterId == 0) {
-			fiendishMonsterId = *randomId;
+			fiendishMonsterId = forgeableMonsters.at(random);
 		}
 		monster = getMonsterByID(fiendishMonsterId);
 		if (monster == nullptr) {
@@ -8528,7 +8526,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool cre
 	}
 
 	if (monster && monster->canBeForgeMonster()) {
-		monster->setMonsterForgeClassification(FORGE_FIENDISH_MONSTER);
+		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();
 		monster->setTimeToChangeFiendish(timeToChangeFiendish + time(nullptr));
 		fiendishMonsters.insert(monster->getID());
@@ -8538,6 +8536,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool cre
 				std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
 		);
 		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(schedulerTask);
+		SPDLOG_INFO("NEW FIENDISH MONSTER NAME {}, ID {}", monster->getName(), monster->getID());
 		return monster->getID();
 	}
 
@@ -8556,10 +8555,10 @@ void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &mo
 	makeFiendishMonster();
 }
 
-bool Game::removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monsterForgeClassification, bool create) {
-	if (monsterForgeClassification == FORGE_FIENDISH_MONSTER)
+bool Game::removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create) {
+	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
 		removeFiendishMonster(id, create);
-	else if (monsterForgeClassification == FORGE_INFLUENCED_MONSTER)
+	else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER)
 		removeInfluencedMonster(id, create);
 
 	return true;
@@ -8611,7 +8610,7 @@ void Game::updateForgeableMonsters()
 		}
 
 		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT))
-			forgeableMonsters.emplace(monster->getID());
+			forgeableMonsters.push_back(monster->getID());
 	}
 
 	for (const auto monsterId : getFiendishMonsters()) {
@@ -8691,7 +8690,7 @@ bool Game::addInfluencedMonster(Monster *monster)
 			return false;
 		}
 
-		monster->setMonsterForgeClassification(FORGE_INFLUENCED_MONSTER);
+		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
 		monster->configureForgeSystem();
 		influencedMonsters.insert(monster->getID());
 		return true;

@@ -200,9 +200,9 @@ setDusts:separator(" ")
 setDusts:register()
 
 -- Goto fiendish monster
-local forge = TalkAction("/fiendish")
+local gotoFiendish = TalkAction("/fiendish")
 
-function forge.onSay(player, words, param)
+function gotoFiendish.onSay(player, words, param)
 	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
 		return true
 	end
@@ -216,7 +216,26 @@ function forge.onSay(player, words, param)
 	return false
 end
 
-forge:register()
+gotoFiendish:register()
+
+-- Goto influenced monster
+local gotoInfluenced = TalkAction("/influenced")
+
+function gotoInfluenced.onSay(player, words, param)
+	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
+		return true
+	end
+
+	local monster = Monster(ForgeMonster:pickInfluenced())
+	if monster then
+		player:teleportTo(monster:getPosition())
+	else
+		player:sendCancelMessage("There are not influenced monsters right now.")
+	end
+	return false
+end
+
+gotoInfluenced:register()
 
 -- Set a new fiendish monster
 local setFiendish = TalkAction("/setfiendish")

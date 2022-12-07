@@ -485,7 +485,7 @@ enum DailyRewardStatus : uint8_t {
 	DAILY_REWARD_NOTAVAILABLE = 2
 };
 
-enum MonsterForgeClassifications_t : uint8_t {
+enum class ForgeClassifications_t : uint8_t {
 	FORGE_NORMAL_MONSTER = 0,
 	FORGE_INFLUENCED_MONSTER = 1,
 	FORGE_FIENDISH_MONSTER = 2,

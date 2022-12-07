@@ -4580,8 +4580,9 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 
 	if (historyPageToSend > 0) {
 		for (const auto &history : historyPerPage) {
+			auto action = magic_enum::enum_integer(history.actionType);
 			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
-			msg.addByte(history.actionType);
+			msg.addByte(action);
 			msg.addString(history.description);
 			msg.addByte((history.bonus >= 1 && history.bonus < 8) ? 0x01 : 0x00);
 		}

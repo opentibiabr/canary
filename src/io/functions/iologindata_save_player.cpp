@@ -23,9 +23,10 @@ bool IOLoginDataSave::savePlayerForgeHistory(Player *player) {
 	DBInsert insertQuery("INSERT INTO `forge_history` (`player_id`, `action_type`, `description`, `done_at`, `is_success`) VALUES");
 	for (const auto &history : player->getForgeHistory()) {
 		const auto stringDescription = Database::getInstance().escapeString(history.description);
+		auto actionString = magic_enum::enum_integer(history.actionType);
 		// Append query informations
 		query << player->getGUID() << ','
-		<< std::to_string(history.actionType) << ','
+		<< std::to_string(actionString) << ','
 		<< stringDescription << ','
 		<< history.createdAt << ','
 		<< history.success;

@@ -296,11 +296,11 @@ class Monster final : public Creature
 			forgeStack = stack;
 		}
 
-		MonsterForgeClassifications_t getMonsterForgeClassification() const {
+		ForgeClassifications_t getMonsterForgeClassification() const {
 			return monsterForgeClassification;
 		}
 
-		void setMonsterForgeClassification(MonsterForgeClassifications_t classification) {
+		void setMonsterForgeClassification(ForgeClassifications_t classification) {
 			monsterForgeClassification = classification;
 		}
 
@@ -326,7 +326,7 @@ class Monster final : public Creature
 
 		// Forge System
 		uint16_t forgeStack = 0;
-		MonsterForgeClassifications_t monsterForgeClassification = FORGE_NORMAL_MONSTER;
+		ForgeClassifications_t monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
 		std::string strDescription;
 

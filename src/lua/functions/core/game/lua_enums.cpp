@@ -19,6 +19,12 @@
 #include "declarations.hpp"
 #include "game/game.h"
 
+#define registerEnumClass(luaState, enumClassType) { \
+	auto number = magic_enum::enum_integer(enumClassType); \
+	auto name = magic_enum::enum_name(enumClassType).data(); \
+	registerGlobalVariable(luaState, name, number); \
+} void(0)
+
 #define registerEnum(L, value) { \
 	std::string enumName = #value; \
 	registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
@@ -1150,9 +1156,9 @@ void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 }
 
 void LuaEnums::initForgeEnums(lua_State* L) {
-	registerEnum(L, FORGE_NORMAL_MONSTER)
-	registerEnum(L, FORGE_INFLUENCED_MONSTER)
-	registerEnum(L, FORGE_FIENDISH_MONSTER)
+	registerEnumClass(L, ForgeClassifications_t::FORGE_NORMAL_MONSTER);
+	registerEnumClass(L, ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
+	registerEnumClass(L, ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
 }
 
 // Webhook default colors

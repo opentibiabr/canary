@@ -16,8 +16,9 @@ void IOLoginDataLoad::loadPlayerForgeHistory(Player *player, DBResult_ptr result
 	query << "SELECT * FROM `forge_history` WHERE `player_id` = " << player->getGUID();
 	if (result = Database::getInstance().storeQuery(query.str())) {
 		do {
+			auto actionEnum = magic_enum::enum_value<ForgeConversion_t>(result->getNumber<uint16_t>("action_type"));
 			ForgeHistory history;
-			history.actionType = static_cast<uint8_t>(result->getNumber<uint16_t>("action_type"));
+			history.actionType = actionEnum;
 			history.description = result->getString("description");
 			history.createdAt = result->getNumber<time_t>("done_at");
 			history.success = result->getNumber<bool>("is_success");

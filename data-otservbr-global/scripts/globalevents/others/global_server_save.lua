@@ -9,7 +9,7 @@ local function ServerSave()
 		Game.setGameState(GAME_STATE_SHUTDOWN)
 	end
 	-- Updating daily reward next server save.
-	updateGlobalStorage(DailyReward.storages.lastServerSave, os.time())
+	UpdateDailyRewardGlobalStorage(DailyReward.storages.lastServerSave, os.time())
 	-- Reset gamestore exp boost count.
 	db.query('UPDATE `player_storage` SET `value` = 0 WHERE `player_storage`.`key` = 51052')
 end

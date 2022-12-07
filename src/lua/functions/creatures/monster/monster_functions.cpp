@@ -424,13 +424,14 @@ int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State *L) {
 		return 0;
 	}
 
-	lua_pushnumber(L, monster->getMonsterForgeClassification());
+	auto classification = static_cast<lua_Number>(monster->getMonsterForgeClassification());
+	lua_pushnumber(L, classification);
 	return 1;
 }
 
 int MonsterFunctions::luaMonsterSetMonsterForgeClassification(lua_State *L) {
 	// monster:setMonsterForgeClassification(classication)
-	MonsterForgeClassifications_t classification = getNumber<MonsterForgeClassifications_t>(L, 2);
+	ForgeClassifications_t classification = getNumber<ForgeClassifications_t>(L, 2);
 	Monster *monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));

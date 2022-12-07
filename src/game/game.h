@@ -589,7 +589,7 @@ class Game
 			return influencedMonsters;
 		}
 
-		bool removeForgeMonster(uint32_t id, MonsterForgeClassifications_t monsterForgeClassification, bool create = true);
+		bool removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create = true);
 		bool removeInfluencedMonster(uint32_t id, bool create = false);
 		bool removeFiendishMonster(uint32_t id, bool create = true);
 		void updateFiendishMonsterStatus(uint32_t monsterId, const std::string &monsterName);
@@ -646,7 +646,7 @@ class Game
 
 		std::map<uint32_t, Npc*> npcs;
 		std::map<uint32_t, Monster*> monsters;
-		std::unordered_set<uint32_t> forgeableMonsters;
+		std::vector<uint32_t> forgeableMonsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 

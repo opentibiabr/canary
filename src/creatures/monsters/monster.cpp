@@ -889,7 +889,7 @@ void Monster::doAttacking(uint32_t interval)
 	attackTicks += interval;
 
 	float forgeAttackBonus = 0;
-	if (monsterForgeClassification > FORGE_NORMAL_MONSTER)
+	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER)
 	{
 		uint16_t damageBase = 3;
 		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
@@ -1915,7 +1915,7 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) const
 
 void Monster::death(Creature*)
 {
-	if (monsterForgeClassification > FORGE_NORMAL_MONSTER) {
+	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
 		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
 	}
 	setAttackedCreature(nullptr);
@@ -2054,9 +2054,9 @@ void Monster::dropLoot(Container* corpse, Creature*)
 {
 	if (corpse && lootDrop) {
 		// Only fiendish drops sliver
-		if (MonsterForgeClassifications_t classification = getMonsterForgeClassification();
+		if (ForgeClassifications_t classification = getMonsterForgeClassification();
 			// Condition
-			classification == FORGE_FIENDISH_MONSTER)
+			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
 		{
 			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
 			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
@@ -2169,7 +2169,7 @@ void Monster::configureForgeSystem()
 	}
 
 	// Avoid double forge
-	if (monsterForgeClassification == FORGE_FIENDISH_MONSTER)
+	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
 	{
 		// Set stack
 		setForgeStack(15);
@@ -2178,7 +2178,7 @@ void Monster::configureForgeSystem()
 		// Update
 		g_game().updateCreatureIcon(this);
 	}
-	else if (monsterForgeClassification == FORGE_INFLUENCED_MONSTER)
+	else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER)
 	{
 		// Set stack
 		auto stack = static_cast<uint16_t>(normal_random(1, 5));
@@ -2207,7 +2207,7 @@ void Monster::clearFiendishStatus()
 {
 	timeToChangeFiendish = 0;
 	forgeStack = 0;
-	monsterForgeClassification = FORGE_NORMAL_MONSTER;
+	monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
 
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health * static_cast<int32_t>(multiplier);

@@ -171,6 +171,15 @@ function ForgeMonster:pickFiendish()
 	return 0
 end
 
+function ForgeMonster:pickInfluenced()
+	for _, cid in pairs(Game.getInfluencedMonsters()) do
+		if Monster(cid) then
+			return cid
+		end
+	end
+	return 0
+end
+
 function ForgeMonster:pickClosestFiendish(creature)
 	local player = Player(creature)
 	if not player then

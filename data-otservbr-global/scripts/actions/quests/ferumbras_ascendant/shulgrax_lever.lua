@@ -1,5 +1,8 @@
 local config = {
-	bossName = "Shulgrax",
+	boss = {
+		name = "Shulgrax",
+		position = Position(33485, 32786, 13)
+	},
 	timeToFightAgain = 20 * 60 * 60,
 	timeToDefeatBoss = 30 * 60,
 	playerPositions = {
@@ -9,7 +12,6 @@ local config = {
 		{ pos = Position(33434, 32788, 13), teleport = Position(33485, 32790, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33434, 32789, 13), teleport = Position(33485, 32790, 13), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33485, 32786, 13),
 	specPos = {
 		from = Position(33474, 32775, 13),
 		to = Position(33496, 32798, 13)

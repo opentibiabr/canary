@@ -1,5 +1,8 @@
 local config = {
-	bossName = "Faceless Bane",
+	boss = {
+		name = "Faceless Bane",
+		position = Position(33617, 32561, 13),
+	},
 	requiredLevel = 250,
 	timeToFightAgain = 20 * 60 * 60,
 	timeToDefeatBoss = 1 * 60,
@@ -10,7 +13,6 @@ local config = {
 		{ pos = Position(33641, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33642, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33617, 32561, 13),
 	specPos = {
 		from = Position(33607, 32553, 13),
 		to = Position(33627, 32570, 13)

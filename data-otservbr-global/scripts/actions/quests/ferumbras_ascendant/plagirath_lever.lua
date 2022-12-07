@@ -1,5 +1,8 @@
 local config = {
-	bossName = "Plagirath",
+	boss = {
+		name = "Plagirath",
+		position = Position(33172, 31501, 13)
+	},
 	timeToFightAgain = 20 * 60 * 60,
 	timeToDefeatBoss = 30 * 60,
 	playerPositions = {
@@ -9,7 +12,6 @@ local config = {
 		{ pos = Position(33229, 31503, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33229, 31504, 13), teleport = Position(33173, 31504, 13), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33172, 31501, 13),
 	specPos = {
 		from = Position(33159, 31488, 13),
 		to = Position(33190, 31515, 13)

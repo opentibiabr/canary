@@ -1,5 +1,8 @@
 local config = {
-	bossName = "Tarbaz",
+	boss = {
+		name = "Tarbaz",
+		position = Position(33459, 32844, 11)
+	},
 	timeToFightAgain = 20 * 60 * 60,
 	timeToDefeatBoss = 30 * 60,
 	playerPositions = {
@@ -9,7 +12,6 @@ local config = {
 		{ pos = Position(33418, 32852, 11), teleport = Position(33459, 32848, 11), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33418, 32853, 11), teleport = Position(33459, 32848, 11), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33459, 32844, 11),
 	specPos = {
 		from = Position(33447, 32832, 11),
 		to = Position(33473, 32856, 11)

@@ -184,7 +184,10 @@ end
 
 --[[
 local config = {
-	bossName = "Faceless Bane",
+	boss = {
+		name = "Faceless Bane",
+		position = Position(33617, 32561, 13)
+	}
 	requiredLevel = 250,
 	timeToFightAgain = 20 * 60 * 60, -- In second
 	timeToDefeatBoss = 20 * 60, -- In second
@@ -195,7 +198,6 @@ local config = {
 		{ pos = Position(33641, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33642, 32562, 13), teleport = Position(33617, 32567, 13), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33617, 32561, 13),
 	specPos = {
 		from = Position(33607, 32553, 13),
 		to = Position(33627, 32570, 13)
@@ -224,7 +226,7 @@ function CreateDefaultLeverBoss(player, config) -- This function is to suppress 
 	spec:check()
 
 	if spec:getPlayers() > 0 then
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's someone fighting with " .. config.bossName .. ".")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "There's someone fighting with " .. config.boss.name .. ".")
 		return true
 	end
 
@@ -246,7 +248,7 @@ function CreateDefaultLeverBoss(player, config) -- This function is to suppress 
 				for _, v in pairs(info) do
 					local newPlayer = v.creature
 					if newPlayer then
-						newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. string.diff(config.timeToFightAgain) .. " to face ".. config.bossName .." again!")
+						newPlayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You or a member in your team have to wait " .. string.diff(config.timeToFightAgain) .. " to face ".. config.boss.name .." again!")
 						if newPlayer:getStorageValue(config.storage) > os.time() then
 							newPlayer:getPosition():sendMagicEffect(CONST_ME_POFF)
 						end
@@ -260,7 +262,7 @@ function CreateDefaultLeverBoss(player, config) -- This function is to suppress 
 	lever:checkPositions()
 	if lever:checkConditions() then
 		spec:removeMonsters()
-		local monster = Game.createMonster(config.bossName, config.bossPosition, true, true)
+		local monster = Game.createMonster(config.boss.name, config.boss.position, true, true)
 		if not monster then
 			return true
 		end

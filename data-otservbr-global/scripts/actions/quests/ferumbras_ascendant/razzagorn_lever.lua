@@ -1,5 +1,8 @@
 local config = {
-	bossName = "Razzagorn",
+	boss = {
+		name = "Razzagorn",
+		position = Position(33422, 32467, 14)
+	},
 	timeToFightAgain = 20 * 60 * 60,
 	timeToDefeatBoss = 30 * 60,
 	playerPositions = {
@@ -9,7 +12,6 @@ local config = {
 		{ pos = Position(33389, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33390, 32455, 14), teleport = Position(33419, 32467, 14), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33422, 32467, 14),
 	specPos = {
 		from = Position(33407, 32453, 14),
 		to = Position(33439, 32481, 14)

@@ -1,5 +1,8 @@
 local config = {
-	bossName = "Mazoran",
+	boss = {
+		name = "Mazoran",
+		position = Position(33584, 32689, 14)
+	},
 	timeToFightAgain = 20 * 60 * 60,
 	timeToDefeatBoss = 30 * 60,
 	playerPositions = {
@@ -9,7 +12,6 @@ local config = {
 		{ pos = Position(33593, 32647, 14), teleport = Position(33585, 32693, 14), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33593, 32648, 14), teleport = Position(33585, 32693, 14), effect = CONST_ME_TELEPORT }
 	},
-	bossPosition = Position(33584, 32689, 14),
 	specPos = {
 		from = Position(33570, 32677, 14),
 		to = Position(33597, 32700, 14)

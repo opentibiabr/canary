@@ -14,7 +14,7 @@
 
 class Game;
 
-enum class ReloadTypes : uint8_t {
+enum class Reload_t : uint8_t {
 	RELOAD_TYPE_NONE,
 	RELOAD_TYPE_ALL,
 	RELOAD_TYPE_CHAT,
@@ -43,24 +43,24 @@ public:
 	GameReload(const GameReload&) = delete;
 	GameReload &operator = (const GameReload&) = delete;
 
-	bool init(ReloadTypes reloadType);
-	uint8_t getReloadNumber(ReloadTypes reloadTypes);
+	bool init(Reload_t reloadType);
+	uint8_t getReloadNumber(Reload_t reloadTypes) const;
 
 private:
 	bool reloadAll();
-	bool reloadChat();
-	bool reloadConfig();
-	bool reloadEvents();
-	bool reloadCore();
-	bool reloadImbuements();
-	bool reloadItems();
-	bool reloadModules();
-	bool reloadMonsters();
-	bool reloadMounts();
-	bool reloadNpcs();
-	bool reloadRaids();
-	bool reloadScripts();
-	bool reloadTalkaction();
+	bool reloadChat() const;
+	bool reloadConfig() const;
+	bool reloadEvents() const;
+	bool reloadCore() const;
+	bool reloadImbuements() const;
+	bool reloadItems() const;
+	bool reloadModules() const;
+	bool reloadMonsters() const;
+	bool reloadMounts() const;
+	bool reloadNpcs() const;
+	bool reloadRaids() const;
+	bool reloadScripts() const;
+	bool reloadTalkaction() const;
 };
 
 inline GameReload g_gameReload;

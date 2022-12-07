@@ -66,8 +66,8 @@ class Game
 			return instance;
 		}
 
-		void resetMonsters();
-		void resetNpcs();
+		void resetMonsters() const;
+		void resetNpcs() const;
 
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);

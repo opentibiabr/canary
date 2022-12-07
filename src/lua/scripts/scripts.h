@@ -38,7 +38,7 @@ class Scripts {
 			return instance;
 		}
 
-		void clear();
+		void clear() const;
 
 		bool loadEventSchedulerScripts(const std::string& fileName);
 		bool loadScripts(std::string folderName, bool isLib, bool reload);

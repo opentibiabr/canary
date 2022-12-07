@@ -73,14 +73,14 @@ Game::~Game()
 	}
 }
 
-void Game::resetMonsters() {
+void Game::resetMonsters() const{
 	for (const auto& [monsterId, monster] : getMonsters()) {
 		monster->clearTargetList();
 		monster->clearFriendList();
 	}
 }
 
-void Game::resetNpcs() {
+void Game::resetNpcs() const {
 	// Close shop window from all npcs and reset the shopPlayerSet
 	for (const auto& [npcId, npc] : getNpcs()) {
 		npc->closeAllShopWindows();

@@ -979,21 +979,21 @@ void LuaEnums::init(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL);
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY);
 
-	// ReloadTypes
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_ALL);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_CHAT);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_CONFIG);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_EVENTS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_CORE);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_IMBUEMENTS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_ITEMS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_MODULES);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_MONSTERS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_MOUNTS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_NPCS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_RAIDS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_SCRIPTS);
-	registerEnumClass(L, ReloadTypes::RELOAD_TYPE_TALKACTION);
+	// Reload_t
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_ALL);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CHAT);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CONFIG);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_EVENTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CORE);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_IMBUEMENTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_ITEMS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MODULES);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MONSTERS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MOUNTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_NPCS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
 
 	registerEnum(L, ZONE_PROTECTION);
 	registerEnum(L, ZONE_NOPVP);

@@ -21,27 +21,38 @@
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
 
-bool GameReload::init(ReloadTypes reloadTypes)
+bool GameReload::init(Reload_t reloadTypes)
 {
 	switch (reloadTypes) {
-		case ReloadTypes::RELOAD_TYPE_ALL : return reloadAll();
-		case ReloadTypes::RELOAD_TYPE_CHAT : return reloadChat();
-		case ReloadTypes::RELOAD_TYPE_CONFIG : return reloadConfig();
-		case ReloadTypes::RELOAD_TYPE_EVENTS : return reloadEvents();
-		case ReloadTypes::RELOAD_TYPE_CORE : return reloadCore();
-		case ReloadTypes::RELOAD_TYPE_IMBUEMENTS : return reloadImbuements();
-		case ReloadTypes::RELOAD_TYPE_ITEMS : return reloadItems();
-		case ReloadTypes::RELOAD_TYPE_MODULES : return reloadModules();
-		case ReloadTypes::RELOAD_TYPE_MONSTERS : return reloadMonsters();
-		case ReloadTypes::RELOAD_TYPE_MOUNTS : return reloadMounts();
-		case ReloadTypes::RELOAD_TYPE_NPCS : return reloadNpcs();
-		case ReloadTypes::RELOAD_TYPE_RAIDS : return reloadRaids();
-		case ReloadTypes::RELOAD_TYPE_SCRIPTS : return reloadScripts();
-		case ReloadTypes::RELOAD_TYPE_TALKACTION : return reloadTalkaction();
+		case Reload_t::RELOAD_TYPE_ALL : return reloadAll();
+		case Reload_t::RELOAD_TYPE_CHAT : return reloadChat();
+		case Reload_t::RELOAD_TYPE_CONFIG : return reloadConfig();
+		case Reload_t::RELOAD_TYPE_EVENTS : return reloadEvents();
+		case Reload_t::RELOAD_TYPE_CORE : return reloadCore();
+		case Reload_t::RELOAD_TYPE_IMBUEMENTS : return reloadImbuements();
+		case Reload_t::RELOAD_TYPE_ITEMS : return reloadItems();
+		case Reload_t::RELOAD_TYPE_MODULES : return reloadModules();
+		case Reload_t::RELOAD_TYPE_MONSTERS : return reloadMonsters();
+		case Reload_t::RELOAD_TYPE_MOUNTS : return reloadMounts();
+		case Reload_t::RELOAD_TYPE_NPCS : return reloadNpcs();
+		case Reload_t::RELOAD_TYPE_RAIDS : return reloadRaids();
+		case Reload_t::RELOAD_TYPE_SCRIPTS : return reloadScripts();
+		case Reload_t::RELOAD_TYPE_TALKACTION : return reloadTalkaction();
 		default : return false;
 	}
 }
 
+uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const
+{
+	return magic_enum::enum_integer(reloadTypes);
+}
+
+/*
+* From here down have the private members functions
+* These should only be used within the class itself
+* If it is necessary to call elsewhere, seriously think about creating a function that calls this
+* Changing this to public may cause some unexpected behavior or bug
+*/
 bool GameReload::reloadAll()
 {
 	if (reloadChat() || reloadConfig() || reloadEvents() ||
@@ -56,55 +67,47 @@ bool GameReload::reloadAll()
 	return false;
 }
 
-bool GameReload::reloadChat()
+bool GameReload::reloadChat() const
 {
 	return g_chat().load();
 }
 
-bool GameReload::reloadConfig()
+bool GameReload::reloadConfig() const
 {
 	return g_configManager().reload();
 }
 
-bool GameReload::reloadEvents()
+bool GameReload::reloadEvents() const
 {
 	return g_events().loadFromXml();
 }
 
-bool GameReload::reloadTalkaction()
+bool GameReload::reloadCore() const
 {
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	if (g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0) {
+	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0)
+	{
 		return true;
 	}
 	return false;
 }
 
-bool GameReload::reloadCore()
-{
-	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	if (g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0) {
-		return true;
-	}
-	return false;
-}
-
-bool GameReload::reloadImbuements()
+bool GameReload::reloadImbuements() const
 {
 	return g_imbuements().reload();
 }
 
-bool GameReload::reloadItems()
+bool GameReload::reloadItems() const
 {
 	return Item::items.reload();
 }
 
-bool GameReload::reloadModules()
+bool GameReload::reloadModules() const
 {
 	return g_modules().reload();
 }
 
-bool GameReload::reloadMonsters()
+bool GameReload::reloadMonsters() const
 {
 	// Reset monsters target
 	g_game().resetMonsters();
@@ -114,12 +117,12 @@ bool GameReload::reloadMonsters()
 	return false;
 }
 
-bool GameReload::reloadMounts()
+bool GameReload::reloadMounts() const
 {
 	return g_game().mounts.reload();
 }
 
-bool GameReload::reloadNpcs()
+bool GameReload::reloadNpcs() const
 {
 	if (g_npc().reset()) {
 		return true;
@@ -128,12 +131,12 @@ bool GameReload::reloadNpcs()
 	return false;
 }
 
-bool GameReload::reloadRaids()
+bool GameReload::reloadRaids() const
 {
 	return g_game().raids.reload() && g_game().raids.startup();
 }
 
-bool GameReload::reloadScripts()
+bool GameReload::reloadScripts() const
 {
 	// Resets monster targets to prevent the spell from being incorrectly cleared from memory
 	g_game().resetMonsters();
@@ -144,14 +147,12 @@ bool GameReload::reloadScripts()
 	return false;
 }
 
-/*
-* From here down have the private members functions
-* These should only be used within the class itself
-* If it is necessary to call elsewhere, seriously think about creating a function that calls this
-* Changing this to public may cause some unexpected behavior or bug
-*/
-uint8_t GameReload::getReloadNumber(ReloadTypes reloadTypes)
+bool GameReload::reloadTalkaction() const
 {
-	auto integer = magic_enum::enum_integer(reloadTypes);
-	return static_cast<uint8_t>(integer);
+	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0)
+	{
+		return true;
+	}
+	return false;
 }

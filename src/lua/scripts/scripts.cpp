@@ -35,7 +35,7 @@ Scripts::~Scripts() {
 	scriptInterface.reInitState();
 }
 
-void Scripts::clear() {
+void Scripts::clear() const {
 	g_actions().clear();
 	g_creatureEvents().clear();
 	g_talkActions().clear();

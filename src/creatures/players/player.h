@@ -1987,7 +1987,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void addTaskHuntingPoints(uint16_t amount) {
+		void addTaskHuntingPoints(uint64_t amount) {
 			taskHuntingPoints += amount;
 			if (client) {
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());

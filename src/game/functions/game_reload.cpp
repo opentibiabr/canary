@@ -118,7 +118,6 @@ bool GameReload::reloadMonsters() const
 	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
 		return false;
 	}
-	g_spells().clear();
 
 	if (g_scripts().loadScripts("monster", false, true) && g_scripts().loadScripts("scripts/lib", true, true)) {
 		return true;

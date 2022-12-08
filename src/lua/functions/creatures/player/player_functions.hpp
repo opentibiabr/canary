@@ -312,6 +312,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetPreyExperiencePercentage(lua_State* L);
 		static int luaPlayerRemoveTaskHuntingPoints(lua_State* L);
 		static int luaPlayerGetTaskHuntingPoints(lua_State* L);
+		static int luaPlayerAddTaskHuntingPoints(lua_State* L);
 
 		static int luaPlayerGetCapacity(lua_State* L);
 		static int luaPlayerSetCapacity(lua_State* L);

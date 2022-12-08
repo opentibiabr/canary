@@ -190,6 +190,7 @@ PRIVATE
 	database/database.cpp
 	database/databasemanager.cpp
 	database/databasetasks.cpp
+	game/functions/game_reload.cpp
 	game/game.cpp
 	game/movement/position.cpp
 	game/movement/teleport.cpp

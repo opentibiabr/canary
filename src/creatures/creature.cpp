@@ -1435,7 +1435,7 @@ int64_t Creature::getStepDuration() const
 	}
 
 	int32_t stepSpeed = getStepSpeed();
-	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5), 1);
+	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5), 1); // Warning: this formula is not exact?, but is the best we can do with the current available formula.
 	calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? calculatedStepSpeed : 1;
 
 	uint32_t groundSpeed = 150;

@@ -182,6 +182,7 @@ bool ConfigManager::load()
 	boolean[TOGGLE_SAVE_INTERVAL] = getGlobalBoolean(L, "toggleSaveInterval", false);
 	boolean[TOGGLE_SAVE_INTERVAL_CLEAN_MAP] = getGlobalBoolean(L, "toggleSaveIntervalCleanMap", false);
 	boolean[TELEPORT_SUMMONS] = getGlobalBoolean(L, "teleportSummons", false);
+	boolean[ALLOW_RELOAD] = getGlobalBoolean(L, "allowReload", false);
 
 	boolean[ONLY_PREMIUM_ACCOUNT] = getGlobalBoolean(L, "onlyPremiumAccount", false);
 	boolean[RATE_USE_STAGES] = getGlobalBoolean(L, "rateUseStages", false);
@@ -271,7 +272,7 @@ bool ConfigManager::load()
 	floating[RATE_ATTACK_SPEED] = getGlobalFloat(L, "rateAttackSpeed", 1.0);
 	floating[RATE_OFFLINE_TRAINING_SPEED] = getGlobalFloat(L, "rateOfflineTrainingSpeed", 1.0);
 	floating[RATE_EXERCISE_TRAINING_SPEED] = getGlobalFloat(L, "rateExerciseTrainingSpeed", 1.0);
-	
+
 	floating[RATE_MONSTER_HEALTH] = getGlobalFloat(L, "rateMonsterHealth", 1.0);
 	floating[RATE_MONSTER_ATTACK] = getGlobalFloat(L, "rateMonsterAttack", 1.0);
 	floating[RATE_MONSTER_DEFENSE] = getGlobalFloat(L, "rateMonsterDefense", 1.0);

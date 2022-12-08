@@ -1203,13 +1203,13 @@ int MonsterTypeFunctions::luaMonsterTypeManaCost(lua_State* L) {
 }
 
 int MonsterTypeFunctions::luaMonsterTypeBaseSpeed(lua_State* L) {
-	// monsterType:getBaseSpeed()
+	// monsterType:baseSpeed()
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.baseSpeed);
+			lua_pushnumber(L, monsterType->getBaseSpeed());
 		} else {
-			monsterType->info.baseSpeed = getNumber<uint32_t>(L, 2);
+			monsterType->setBaseSpeed(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

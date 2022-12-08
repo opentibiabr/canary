@@ -1673,6 +1673,10 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool test /*= false*/, uint32_t flags /*= 0*/)
 {
+	if (item == nullptr) {
+		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
 		SPDLOG_DEBUG("{} - Cylinder is nullptr", __FUNCTION__);
@@ -1703,7 +1707,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	if (item->canDecay() && cylinder->getTile() && item->getLoadedFromMap()) {
 		SPDLOG_DEBUG("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
 		item->stopDecaying();
-		return RETURNVALUE_NOERROR;
+		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
 
 	if (!test) {

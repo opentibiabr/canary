@@ -52,7 +52,7 @@ Monster::Monster(MonsterType* mType) :
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health*multiplier;
 	healthMax = mType->info.healthMax*multiplier;
-	baseSpeed = mType->info.baseSpeed;
+	baseSpeed = mType->getBaseSpeed();
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
 	targetDistance = mType->info.targetDistance;
@@ -918,6 +918,10 @@ void Monster::doAttacking(uint32_t interval)
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
+				if (!spellBlock.spell) {
+					continue;
+				}
+
 				spellBlock.spell->castSpell(this, attackedCreature);
 
 				if (spellBlock.isMelee) {

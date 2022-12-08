@@ -1475,6 +1475,24 @@ LightInfo Creature::getCreatureLight() const
 	return internalLight;
 }
 
+void Creature::setSpeed(int32_t varSpeedDelta) {
+	// Prevents creatures from not exceeding the maximum allowed speed
+	if (getSpeed() >= PLAYER_MAX_SPEED)
+	{
+		return;
+	}
+
+	int32_t oldSpeed = getSpeed();
+	varSpeed = varSpeedDelta;
+
+	if (getSpeed() <= 0) {
+		stopEventWalk();
+		cancelNextWalk = true;
+	} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
+		addEventWalk();
+	}
+}
+
 void Creature::setCreatureLight(LightInfo lightInfo) {
 	internalLight = std::move(lightInfo);
 }

@@ -511,16 +511,19 @@ class Creature : virtual public Thing
 				delete this;
 			}
 		}
+		struct CountBlock_t {
+			int32_t total;
+			int64_t ticks;
+		};
+		using CountMap = std::map<uint32_t, CountBlock_t>;
+		CountMap getDamageMap() const {
+				return damageMap;
+		}
 
 	protected:
 		virtual bool useCacheMap() const {
 			return false;
 		}
-
-		struct CountBlock_t {
-			int32_t total;
-			int64_t ticks;
-		};
 
 		static constexpr int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;
 		static constexpr int32_t mapWalkHeight = Map::maxViewportY * 2 + 1;
@@ -529,7 +532,6 @@ class Creature : virtual public Thing
 
 		Position position;
 
-		using CountMap = std::map<uint32_t, CountBlock_t>;
 		CountMap damageMap;
 
 		std::list<Creature*> summons;

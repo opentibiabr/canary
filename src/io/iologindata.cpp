@@ -658,7 +658,16 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     if (result = db.storeQuery(query.str())) {
       do {
         auto slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-        slot->state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+        PreyDataState_t state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+        if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
+          if (!player->isPremium()) {
+            slot->state = PreyDataState_Locked;
+          } else {
+            slot->state = PreyDataState_Selection;
+          }
+        } else {
+          slot->state = state;
+        }
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
         slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
@@ -689,7 +698,16 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     if (result = db.storeQuery(query.str())) {
       do {
         auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-        slot->state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+        PreyTaskDataState_t state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+        if (slot->id == PreySlot_Two && state == PreyTaskDataState_Locked) {
+          if (!player->isPremium()) {
+            slot->state = PreyTaskDataState_Locked;
+          } else {
+            slot->state = PreyTaskDataState_Selection;
+          }
+        } else {
+          slot->state = state;
+        }
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->upgrade = result->getNumber<bool>("upgrade");
         slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));

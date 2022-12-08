@@ -76,7 +76,7 @@ void LuaEnums::init(lua_State* L) {
 	initWebhookEnums(L);
 }
 
-void LuaEnums::initOthersEnums(lua_State* L); {
+void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, WORLD_TYPE_NO_PVP);
 	registerEnum(L, WORLD_TYPE_PVP);
 	registerEnum(L, WORLD_TYPE_PVP_ENFORCED);
@@ -168,7 +168,7 @@ void LuaEnums::initOthersEnums(lua_State* L); {
 	registerEnum(L, WEAPON_AMMO);
 }
 
-void LuaEnums::initAccountEnums(lua_State* L); {
+void LuaEnums::initAccountEnums(lua_State* L) {
 	registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
 	registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
 	registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);
@@ -183,33 +183,33 @@ void LuaEnums::initAccountEnums(lua_State* L); {
 	registerEnum(L, account::GROUP_TYPE_GOD);
 }
 
-void LuaEnums::initDailyRewardEnums(lua_State* L); {
+void LuaEnums::initDailyRewardEnums(lua_State* L) {
 	registerEnum(L, DAILY_REWARD_COLLECTED);
 	registerEnum(L, DAILY_REWARD_NOTCOLLECTED);
 	registerEnum(L, DAILY_REWARD_NOTAVAILABLE);
 }
 
-void LuaEnums::initBugCategoryEnums(lua_State* L); {
+void LuaEnums::initBugCategoryEnums(lua_State* L) {
 	registerEnum(L, BUG_CATEGORY_MAP);
 	registerEnum(L, BUG_CATEGORY_TYPO);
 	registerEnum(L, BUG_CATEGORY_TECHNICAL);
 	registerEnum(L, BUG_CATEGORY_OTHER);
 }
 
-void LuaEnums::initReportTypeEnums(lua_State* L); {
+void LuaEnums::initReportTypeEnums(lua_State* L) {
 	registerEnum(L, REPORT_TYPE_NAME);
 	registerEnum(L, REPORT_TYPE_STATEMENT);
 	registerEnum(L, REPORT_TYPE_BOT);
 }
 
-void LuaEnums::initCallbackParamEnums(lua_State* L); {
+void LuaEnums::initCallbackParamEnums(lua_State* L) {
 	registerEnum(L, CALLBACK_PARAM_LEVELMAGICVALUE);
 	registerEnum(L, CALLBACK_PARAM_SKILLVALUE);
 	registerEnum(L, CALLBACK_PARAM_TARGETTILE);
 	registerEnum(L, CALLBACK_PARAM_TARGETCREATURE);
 }
 
-void LuaEnums::initCombatEnums(lua_State* L); {
+void LuaEnums::initCombatEnums(lua_State* L) {
 	registerEnum(L, COMBAT_NONE);
 	registerEnum(L, COMBAT_PHYSICALDAMAGE);
 	registerEnum(L, COMBAT_ENERGYDAMAGE);
@@ -225,7 +225,7 @@ void LuaEnums::initCombatEnums(lua_State* L); {
 	registerEnum(L, COMBAT_DEATHDAMAGE);
 }
 
-void LuaEnums::initCombatParamEnums(lua_State* L); {
+void LuaEnums::initCombatParamEnums(lua_State* L) {
 	registerEnum(L, COMBAT_PARAM_TYPE);
 	registerEnum(L, COMBAT_PARAM_EFFECT);
 	registerEnum(L, COMBAT_PARAM_DISTANCEEFFECT);
@@ -238,14 +238,14 @@ void LuaEnums::initCombatParamEnums(lua_State* L); {
 	registerEnum(L, COMBAT_PARAM_USECHARGES);
 }
 
-void LuaEnums::initCombatFormulaEnums(lua_State* L); {
+void LuaEnums::initCombatFormulaEnums(lua_State* L) {
 	registerEnum(L, COMBAT_FORMULA_UNDEFINED);
 	registerEnum(L, COMBAT_FORMULA_LEVELMAGIC);
 	registerEnum(L, COMBAT_FORMULA_SKILL);
 	registerEnum(L, COMBAT_FORMULA_DAMAGE);
 }
 
-void LuaEnums::initDirectionEnums(lua_State* L); {
+void LuaEnums::initDirectionEnums(lua_State* L) {
 	registerEnum(L, DIRECTION_NORTH);
 	registerEnum(L, DIRECTION_EAST);
 	registerEnum(L, DIRECTION_SOUTH);
@@ -256,7 +256,7 @@ void LuaEnums::initDirectionEnums(lua_State* L); {
 	registerEnum(L, DIRECTION_NORTHEAST);
 }
 
-void LuaEnums::initFactionEnums(lua_State* L); {
+void LuaEnums::initFactionEnums(lua_State* L) {
 	registerEnum(L, FACTION_DEFAULT);
 	registerEnum(L, FACTION_PLAYER);
 	registerEnum(L, FACTION_LION);
@@ -264,7 +264,7 @@ void LuaEnums::initFactionEnums(lua_State* L); {
 	registerEnum(L, FACTION_LAST);
 }
 
-void LuaEnums::initConditionEnums(lua_State* L); {
+void LuaEnums::initConditionEnums(lua_State* L) {
 	registerEnum(L, CONDITION_NONE);
 	registerEnum(L, CONDITION_POISON);
 	registerEnum(L, CONDITION_FIRE);
@@ -297,7 +297,7 @@ void LuaEnums::initConditionEnums(lua_State* L); {
 	registerEnum(L, CONDITION_ROOTED);
 }
 
-void LuaEnums::initConditionIdEnums(lua_State* L); {
+void LuaEnums::initConditionIdEnums(lua_State* L) {
 	registerEnum(L, CONDITIONID_DEFAULT);
 	registerEnum(L, CONDITIONID_COMBAT);
 	registerEnum(L, CONDITIONID_HEAD);
@@ -312,7 +312,7 @@ void LuaEnums::initConditionIdEnums(lua_State* L); {
 	registerEnum(L, CONDITIONID_AMMO);
 }
 
-void LuaEnums::initConditionParamEnums(lua_State* L); {
+void LuaEnums::initConditionParamEnums(lua_State* L) {
 	registerEnum(L, CONDITION_PARAM_OWNER);
 	registerEnum(L, CONDITION_PARAM_TICKS);
 	registerEnum(L, CONDITION_PARAM_HEALTHGAIN);
@@ -368,7 +368,7 @@ void LuaEnums::initConditionParamEnums(lua_State* L); {
 	registerEnum(L, CONDITION_PARAM_BUFF_DAMAGERECEIVED);
 }
 
-void LuaEnums::initConstMeEnums(lua_State* L); {
+void LuaEnums::initConstMeEnums(lua_State* L) {
 	registerEnum(L, CONST_ME_NONE);
 	registerEnum(L, CONST_ME_DRAWBLOOD);
 	registerEnum(L, CONST_ME_LOSEENERGY);
@@ -508,7 +508,7 @@ void LuaEnums::initConstMeEnums(lua_State* L); {
 	registerEnum(L, CONST_ME_FERUMBRAS_2);
 }
 
-void LuaEnums::initConstAniEnums(lua_State* L); {
+void LuaEnums::initConstAniEnums(lua_State* L) {
 	registerEnum(L, CONST_ANI_NONE);
 	registerEnum(L, CONST_ANI_SPEAR);
 	registerEnum(L, CONST_ANI_BOLT);
@@ -567,7 +567,7 @@ void LuaEnums::initConstAniEnums(lua_State* L); {
 	registerEnum(L, CONST_ANI_WEAPONTYPE);
 }
 
-void LuaEnums::initConstPropEnums(lua_State* L); {
+void LuaEnums::initConstPropEnums(lua_State* L) {
 	registerEnum(L, CONST_PROP_BLOCKSOLID);
 	registerEnum(L, CONST_PROP_HASHEIGHT);
 	registerEnum(L, CONST_PROP_BLOCKPROJECTILE);
@@ -582,7 +582,7 @@ void LuaEnums::initConstPropEnums(lua_State* L); {
 	registerEnum(L, CONST_PROP_SUPPORTHANGABLE);
 }
 
-void LuaEnums::initConstSlotEnums(lua_State* L); {
+void LuaEnums::initConstSlotEnums(lua_State* L) {
 	registerEnum(L, CONST_SLOT_FIRST);
 	registerEnum(L, CONST_SLOT_HEAD);
 	registerEnum(L, CONST_SLOT_NECKLACE);
@@ -598,7 +598,7 @@ void LuaEnums::initConstSlotEnums(lua_State* L); {
 	registerEnum(L, CONST_SLOT_LAST);
 }
 
-void LuaEnums::initCreatureEventEnums(lua_State* L); {
+void LuaEnums::initCreatureEventEnums(lua_State* L) {
 	registerEnum(L, CREATURE_EVENT_NONE);
 	registerEnum(L, CREATURE_EVENT_LOGIN);
 	registerEnum(L, CREATURE_EVENT_LOGOUT);
@@ -614,7 +614,7 @@ void LuaEnums::initCreatureEventEnums(lua_State* L); {
 	registerEnum(L, CREATURE_EVENT_EXTENDED_OPCODE);
 }
 
-void LuaEnums::initGameStateEnums(lua_State* L); {
+void LuaEnums::initGameStateEnums(lua_State* L) {
 	registerEnum(L, GAME_STATE_STARTUP);
 	registerEnum(L, GAME_STATE_INIT);
 	registerEnum(L, GAME_STATE_NORMAL);
@@ -624,7 +624,7 @@ void LuaEnums::initGameStateEnums(lua_State* L); {
 	registerEnum(L, GAME_STATE_MAINTAIN);
 }
 
-void LuaEnums::initMessageEnums(lua_State* L); {
+void LuaEnums::initMessageEnums(lua_State* L) {
 	registerEnum(L, MESSAGE_GAMEMASTER_CONSOLE);
 	registerEnum(L, MESSAGE_LOGIN);
 	registerEnum(L, MESSAGE_ADMINISTRADOR);
@@ -659,7 +659,7 @@ void LuaEnums::initMessageEnums(lua_State* L); {
 	registerEnum(L, MESSAGE_POTION);
 }
 
-void LuaEnums::initCreatureTypeEnums(lua_State* L); {
+void LuaEnums::initCreatureTypeEnums(lua_State* L) {
 	registerEnum(L, CREATURETYPE_PLAYER);
 	registerEnum(L, CREATURETYPE_MONSTER);
 	registerEnum(L, CREATURETYPE_NPC);
@@ -668,7 +668,7 @@ void LuaEnums::initCreatureTypeEnums(lua_State* L); {
 	registerEnum(L, CREATURETYPE_HIDDEN);
 }
 
-void LuaEnums::initClientOsEnums(lua_State* L); {
+void LuaEnums::initClientOsEnums(lua_State* L) {
 	registerEnum(L, CLIENTOS_LINUX);
 	registerEnum(L, CLIENTOS_WINDOWS);
 	registerEnum(L, CLIENTOS_FLASH);
@@ -679,13 +679,13 @@ void LuaEnums::initClientOsEnums(lua_State* L); {
 	registerEnum(L, CLIENTOS_OTCLIENT_MAC);
 }
 
-void LuaEnums::initFightModeEnums(lua_State* L); {
+void LuaEnums::initFightModeEnums(lua_State* L) {
 	registerEnum(L, FIGHTMODE_ATTACK);
 	registerEnum(L, FIGHTMODE_BALANCED);
 	registerEnum(L, FIGHTMODE_DEFENSE);
 }
 
-void LuaEnums::initItemAttributeEnums(lua_State* L); {
+void LuaEnums::initItemAttributeEnums(lua_State* L) {
 	registerEnum(L, ITEM_ATTRIBUTE_NONE);
 	registerEnum(L, ITEM_ATTRIBUTE_ACTIONID);
 	registerEnum(L, ITEM_ATTRIBUTE_UNIQUEID);
@@ -716,7 +716,7 @@ void LuaEnums::initItemAttributeEnums(lua_State* L); {
 	registerEnum(L, ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
 }
 
-void LuaEnums::initItemTypeEnums(lua_State* L); {
+void LuaEnums::initItemTypeEnums(lua_State* L) {
 	registerEnum(L, ITEM_TYPE_DEPOT);
 	registerEnum(L, ITEM_TYPE_REWARDCHEST);
 	registerEnum(L, ITEM_TYPE_MAILBOX);
@@ -756,7 +756,7 @@ void LuaEnums::initItemTypeEnums(lua_State* L); {
 	registerEnum(L, ITEM_TYPE_UNASSIGNED);
 }
 
-void LuaEnums::initItemIdEnums(lua_State* L); {
+void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_BAG);
 	registerEnum(L, ITEM_SHOPPING_BAG);
 	registerEnum(L, ITEM_GOLD_COIN);
@@ -814,7 +814,7 @@ void LuaEnums::initItemIdEnums(lua_State* L); {
 	registerEnum(L, ITEM_FORGE_CORE);
 }
 
-void LuaEnums::initPlayerFlagEnums(lua_State* L); {
+void LuaEnums::initPlayerFlagEnums(lua_State* L) {
 	registerEnum(L, PlayerFlag_CannotUseCombat);
 	registerEnum(L, PlayerFlag_CannotAttackPlayer);
 	registerEnum(L, PlayerFlag_CannotAttackMonster);
@@ -858,7 +858,7 @@ void LuaEnums::initPlayerFlagEnums(lua_State* L); {
 	registerEnum(L, PlayerCustomFlag_IgnoredByNpcs);
 }
 
-void LuaEnums::initReportReasonEnums(lua_State* L); {
+void LuaEnums::initReportReasonEnums(lua_State* L) {
 	registerEnum(L, REPORT_REASON_NAMEINAPPROPRIATE);
 	registerEnum(L, REPORT_REASON_NAMEPOORFORMATTED);
 	registerEnum(L, REPORT_REASON_NAMEADVERTISING);
@@ -882,7 +882,7 @@ void LuaEnums::initReportReasonEnums(lua_State* L); {
 	registerEnum(L, REPORT_REASON_SERVICEAGREEMENT);
 }
 
-void LuaEnums::initSkillEnums(lua_State* L); {
+void LuaEnums::initSkillEnums(lua_State* L) {
 	registerEnum(L, SKILL_NONE);
 	registerEnum(L, SKILL_FIST);
 	registerEnum(L, SKILL_CLUB);
@@ -901,7 +901,7 @@ void LuaEnums::initSkillEnums(lua_State* L); {
 	registerEnum(L, SKILL_LEVEL);
 }
 
-void LuaEnums::initSkullEnums(lua_State* L); {
+void LuaEnums::initSkullEnums(lua_State* L) {
 	registerEnum(L, SKULL_NONE);
 	registerEnum(L, SKULL_YELLOW);
 	registerEnum(L, SKULL_GREEN);
@@ -911,7 +911,7 @@ void LuaEnums::initSkullEnums(lua_State* L); {
 	registerEnum(L, SKULL_ORANGE);
 }
 
-void LuaEnums::initTalkTypeEnums(lua_State* L); {
+void LuaEnums::initTalkTypeEnums(lua_State* L) {
 	registerEnum(L, TALKTYPE_SAY);
 	registerEnum(L, TALKTYPE_WHISPER);
 	registerEnum(L, TALKTYPE_YELL);
@@ -930,7 +930,7 @@ void LuaEnums::initTalkTypeEnums(lua_State* L); {
 	registerEnum(L, TALKTYPE_CHANNEL_R2);
 }
 
-void LuaEnums::initBestiaryEnums(lua_State* L); {
+void LuaEnums::initBestiaryEnums(lua_State* L) {
 	registerEnum(L, BESTY_RACE_NONE);
 	registerEnum(L, BESTY_RACE_FIRST);
 	registerEnum(L, BESTY_RACE_AMPHIBIC);
@@ -956,7 +956,7 @@ void LuaEnums::initBestiaryEnums(lua_State* L); {
 	registerEnum(L, BESTY_RACE_LAST);
 }
 
-void LuaEnums::initTextColorEnums(lua_State* L); {
+void LuaEnums::initTextColorEnums(lua_State* L) {
 	registerEnum(L, TEXTCOLOR_BLUE);
 	registerEnum(L, TEXTCOLOR_LIGHTGREEN);
 	registerEnum(L, TEXTCOLOR_LIGHTBLUE);
@@ -974,7 +974,7 @@ void LuaEnums::initTextColorEnums(lua_State* L); {
 	registerEnum(L, TEXTCOLOR_NONE);
 }
 
-void LuaEnums::initTileStateEnums(lua_State* L); {
+void LuaEnums::initTileStateEnums(lua_State* L) {
 	registerEnum(L, TILESTATE_NONE);
 	registerEnum(L, TILESTATE_PROTECTIONZONE);
 	registerEnum(L, TILESTATE_NOPVPZONE);
@@ -1004,7 +1004,7 @@ void LuaEnums::initTileStateEnums(lua_State* L); {
 }
 
 // Use with npc:setSpeechBubble
-void LuaEnums::initSpeechBubbleEnums(lua_State* L); {
+void LuaEnums::initSpeechBubbleEnums(lua_State* L) {
 	registerEnum(L, SPEECHBUBBLE_NONE);
 	registerEnum(L, SPEECHBUBBLE_NORMAL);
 	registerEnum(L, SPEECHBUBBLE_TRADE);
@@ -1013,7 +1013,7 @@ void LuaEnums::initSpeechBubbleEnums(lua_State* L); {
 }
 
 // Use with player:addMapMark
-void LuaEnums::initMapMarkEnums(lua_State* L); {
+void LuaEnums::initMapMarkEnums(lua_State* L) {
 	registerEnum(L, MAPMARK_TICK);
 	registerEnum(L, MAPMARK_QUESTION);
 	registerEnum(L, MAPMARK_EXCLAMATION);
@@ -1037,7 +1037,7 @@ void LuaEnums::initMapMarkEnums(lua_State* L); {
 }
 
 // Use with Game.getReturnMessage
-void LuaEnums::initReturnValueEnums(lua_State* L); {
+void LuaEnums::initReturnValueEnums(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOERROR);
 	registerEnum(L, RETURNVALUE_NOTPOSSIBLE);
 	registerEnum(L, RETURNVALUE_NOTENOUGHROOM);
@@ -1120,20 +1120,21 @@ void LuaEnums::initReturnValueEnums(lua_State* L); {
 }
 
 // Reload
-void LuaEnums::initReloadTypeEnums(lua_State* L); {
-	registerEnum(L, RELOAD_TYPE_ALL);
-	registerEnum(L, RELOAD_TYPE_CHAT);
-	registerEnum(L, RELOAD_TYPE_CONFIG);
-	registerEnum(L, RELOAD_TYPE_EVENTS);
-	registerEnum(L, RELOAD_TYPE_GLOBAL);
-	registerEnum(L, RELOAD_TYPE_IMBUEMENTS);
-	registerEnum(L, RELOAD_TYPE_ITEMS);
-	registerEnum(L, RELOAD_TYPE_MODULES);
-	registerEnum(L, RELOAD_TYPE_MONSTERS);
-	registerEnum(L, RELOAD_TYPE_MOUNTS);
-	registerEnum(L, RELOAD_TYPE_NPCS);
-	registerEnum(L, RELOAD_TYPE_RAIDS);
-	registerEnum(L, RELOAD_TYPE_SCRIPTS);
+void LuaEnums::initReloadTypeEnums(lua_State* L) {
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_ALL);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CHAT);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CONFIG);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_EVENTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CORE);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_IMBUEMENTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_ITEMS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MODULES);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MONSTERS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MOUNTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_NPCS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
 }
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {

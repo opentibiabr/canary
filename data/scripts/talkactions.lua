@@ -42,6 +42,7 @@ function Player.reloadTalkaction(self, param)
 		["stages"] = RELOAD_TYPE_CORE,
 		["global"] = RELOAD_TYPE_CORE,
 		["core"] = RELOAD_TYPE_CORE,
+		["lib"] = RELOAD_TYPE_CORE,
 		["libs"] = RELOAD_TYPE_CORE,
 	
 		["imbuements"] = RELOAD_TYPE_IMBUEMENTS,

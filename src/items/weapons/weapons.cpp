@@ -30,10 +30,7 @@ Weapons::Weapons()
 	scriptInterface.initState();
 }
 
-Weapons::~Weapons()
-{
-	clear(false);
-}
+Weapons::~Weapons() = default;
 
 const Weapon* Weapons::getWeapon(const Item* item) const
 {
@@ -46,6 +43,10 @@ const Weapon* Weapons::getWeapon(const Item* item) const
 		return nullptr;
 	}
 	return it->second;
+}
+
+void Weapons::clear() {
+	weapons.clear();
 }
 
 void Weapons::clear(bool fromLua)

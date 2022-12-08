@@ -8,7 +8,6 @@ local goldConverter = Action()
 
 function goldConverter.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local coin = config[target.itemid]
-
 	if not coin then
 		return false
 	end
@@ -32,5 +31,5 @@ function goldConverter.onUse(player, item, fromPosition, target, toPosition, isH
 	return true
 end
 
-goldConverter:id(23722)
+goldConverter:id(23722, 25719)
 goldConverter:register()

@@ -28,6 +28,13 @@ CreatureEvents::CreatureEvents() :
 	scriptInterface.initState();
 }
 
+void CreatureEvents::clear()
+{
+	for (auto &[name, event] : creatureEvents) {
+		event.clearEvent();
+	}
+}
+
 void CreatureEvents::clear(bool fromLua) {
 	for (auto it = creatureEvents.begin(); it != creatureEvents.end(); ++it) {
 		if (fromLua == it->second.fromLua) {

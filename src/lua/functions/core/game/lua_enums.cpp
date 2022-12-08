@@ -17,14 +17,21 @@
 #include "creatures/creature.h"
 #include "lua/creature/creatureevent.h"
 #include "declarations.hpp"
+#include "game/functions/game_reload.hpp"
 #include "game/game.h"
 
-void LuaEnums::init(lua_State* L) {
-	#define registerEnum(L, value) { \
-		std::string enumName = #value; \
-		registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
-	} (void) 0
+#define registerEnumClass(luaState, enumClassType) { \
+	auto number = magic_enum::enum_integer(enumClassType); \
+	auto name = magic_enum::enum_name(enumClassType).data(); \
+	registerGlobalVariable(luaState, name, number); \
+} void(0)
 
+#define registerEnum(L, value) { \
+	std::string enumName = #value; \
+	registerGlobalVariable(L, enumName.substr(enumName.find_last_of(':') + 1), value); \
+} void(0)
+
+void LuaEnums::init(lua_State* L) {
 	registerEnum(L, account::ACCOUNT_TYPE_NORMAL);
 	registerEnum(L, account::ACCOUNT_TYPE_TUTOR);
 	registerEnum(L, account::ACCOUNT_TYPE_SENIORTUTOR);
@@ -972,20 +979,21 @@ void LuaEnums::init(lua_State* L) {
 	registerEnum(L, RETURNVALUE_NOTENOUGHFISHLEVEL);
 	registerEnum(L, RETURNVALUE_REWARDCHESTISEMPTY);
 
-	// Reload
-	registerEnum(L, RELOAD_TYPE_ALL);
-	registerEnum(L, RELOAD_TYPE_CHAT);
-	registerEnum(L, RELOAD_TYPE_CONFIG);
-	registerEnum(L, RELOAD_TYPE_EVENTS);
-	registerEnum(L, RELOAD_TYPE_GLOBAL);
-	registerEnum(L, RELOAD_TYPE_IMBUEMENTS);
-	registerEnum(L, RELOAD_TYPE_ITEMS);
-	registerEnum(L, RELOAD_TYPE_MODULES);
-	registerEnum(L, RELOAD_TYPE_MONSTERS);
-	registerEnum(L, RELOAD_TYPE_MOUNTS);
-	registerEnum(L, RELOAD_TYPE_NPCS);
-	registerEnum(L, RELOAD_TYPE_RAIDS);
-	registerEnum(L, RELOAD_TYPE_SCRIPTS);
+	// Reload_t
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_ALL);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CHAT);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CONFIG);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_EVENTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_CORE);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_IMBUEMENTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_ITEMS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MODULES);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MONSTERS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_MOUNTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_NPCS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
 
 	registerEnum(L, ZONE_PROTECTION);
 	registerEnum(L, ZONE_NOPVP);

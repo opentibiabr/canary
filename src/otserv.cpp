@@ -153,41 +153,40 @@ void loadModules() {
 		"items.xml");
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	// Lua Interface start
+	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
 	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
-		coreFolder + "/core.lua");
+		"core.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0),
+		"scripts/talkactions.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
-		coreFolder + "/XML/vocations.xml");
+		"XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),
-		coreFolder + "/XML/events.xml");
+		"XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
-		coreFolder + "/XML/outfits.xml");
+		"XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
-		coreFolder + "/XML/familiars.xml");
+		"XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(),
-		coreFolder + "/XML/imbuements.xml");
+		"XML/imbuements.xml");
 	modulesLoadHelper(g_modules().loadFromXml(),
-		coreFolder + "/modules/modules.xml");
+		"modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(),
-		coreFolder + "/events/events.xml");
-	modulesLoadHelper((g_luaEnvironment.loadFile(datapackFolder + "/npclib/load.lua") == 0),
-		datapackFolder + "/npclib/load.lua");
-	// Core end
+		"events/events.xml");
+	modulesLoadHelper((g_npc().load(true, false)),
+		"npclib");
 
-	// Scripts start
-	// Load libs
+	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
+	// Load libs first
 	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
-		datapackFolder + "/scripts/libs");
+		"scripts/libs");
 	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false),
-		datapackFolder + "/scripts");
+		"scripts");
 	// Load monsters
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
-		datapackFolder + "/monster");
-	// Load npcs
-	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
-		datapackFolder + "/npc");
-	// Lua Interface end
+		"monster");
+	modulesLoadHelper((g_npc().load(false, true)),
+		"npc");
 
 	g_game().loadBoostedCreature();
 	g_ioprey().InitializeTaskHuntOptions();

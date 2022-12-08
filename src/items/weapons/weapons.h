@@ -58,6 +58,8 @@ class Weapons final : public BaseEvents
 		static int32_t getMaxWeaponDamage(uint32_t level, int32_t attackSkill, int32_t attackValue, float attackFactor, bool isMelee);
 
 		bool registerLuaEvent(Weapon* event);
+		void clear();
+		// Old XML interface
 		void clear(bool fromLua) override final;
 
 	private:

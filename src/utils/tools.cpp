@@ -396,6 +396,10 @@ std::string formatDateShort(time_t time)
 	return {buffer, 11};
 }
 
+std::time_t getTimeNow() {
+	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+}
+
 Direction getDirection(const std::string& string)
 {
 	Direction direction = DIRECTION_NORTH;

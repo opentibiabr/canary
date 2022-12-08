@@ -5313,6 +5313,7 @@ void Game::changeSpeed(Creature* creature, int32_t varSpeedDelta)
 
 void Game::changePlayerSpeed(Player& player, int32_t varSpeedDelta)
 {
+	// Prevents players from not exceeding the maximum allowed speed
 	if (player.getSpeed() >= PLAYER_MAX_SPEED) {
 		return;
 	}

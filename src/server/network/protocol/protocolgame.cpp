@@ -1955,7 +1955,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 		newmsg.addByte(0x2);
 		newmsg.add<uint32_t>(mtype->info.healthMax);
 		newmsg.add<uint32_t>(mtype->info.experience);
-		msg.add<uint16_t>(mtype->getBaseSpeed());
+		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
 	}
 
@@ -4856,7 +4856,7 @@ void ProtocolGame::sendChangeSpeed(const Creature *creature, uint16_t speed)
 	NetworkMessage msg;
 	msg.addByte(0x8F);
 	msg.add<uint32_t>(creature->getID());
-	msg.add<uint16_t>(player->getBaseSpeed());
+	msg.add<uint16_t>(creature->getBaseSpeed());
 	msg.add<uint16_t>(speed);
 	writeToOutputBuffer(msg);
 }

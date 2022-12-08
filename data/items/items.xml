@@ -4819,11 +4819,10 @@
 		<attribute key="weight" value="490"/>
 	</item>
 	<item id="3079" name="boots of haste">
+		<attribute key="showAttributes" value="1"/>
 		<attribute key="speed" value="20"/>
 		<attribute key="weight" value="750"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="increase speed" value="3"/>
-		</attribute>
+		<attribute key="imbuementslot" value="1"/>
 	</item>
 	<item id="3080" article="a" name="broken amulet">
 		<attribute key="weight" value="420"/>

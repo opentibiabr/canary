@@ -63,6 +63,6 @@ private:
 	bool reloadTalkaction() const;
 };
 
-inline GameReload g_gameReload;
+const inline GameReload g_gameReload;
 
 #endif  // SRC_GAME_FUNCTIONS_GAME_RELOAD_HPP_

@@ -125,6 +125,7 @@ find_package(LuaJIT REQUIRED)
 find_package(Threads REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(GMP REQUIRED)
+find_package(magic_enum CONFIG REQUIRED)
 
 if (MSVC)
   find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
@@ -176,6 +177,7 @@ target_sources(${PROJECT_NAME}
     database/database.cpp
     database/databasemanager.cpp
     database/databasetasks.cpp
+    game/functions/game_reload.cpp
     game/game.cpp
     game/movement/position.cpp
     game/movement/teleport.cpp
@@ -341,6 +343,7 @@ if (MSVC)
       ${SPDLOG_LIBRARY}
       ${GMP_LIBRARIES}
       fmt::fmt
+      magic_enum::magic_enum
   )
 
 else()
@@ -370,6 +373,7 @@ else()
       pugixml::pugixml
       spdlog::spdlog
       Threads::Threads
+      magic_enum::magic_enum
   )
 
 endif (MSVC)

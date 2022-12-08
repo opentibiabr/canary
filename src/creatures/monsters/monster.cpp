@@ -918,6 +918,10 @@ void Monster::doAttacking(uint32_t interval)
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
+				if (!spellBlock.spell) {
+					continue;
+				}
+
 				spellBlock.spell->castSpell(this, attackedCreature);
 
 				if (spellBlock.isMelee) {

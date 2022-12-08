@@ -450,42 +450,38 @@ function Player:onMoveItem(item, count, fromPosition, toPosition, fromCylinder, 
 end
 
 function Player:onItemMoved(item, count, fromPosition, toPosition, fromCylinder, toCylinder)
-
-	-- We won't run anything from here on down if we're opening the global pack
-	if not DATA_DIRECTORY == "data-otservbr-global" then
-		return true
-	end
-
-	-- Cults of Tibia begin
-	local frompos = Position(33023, 31904, 14) -- Checagem
-	local topos = Position(33052, 31932, 15) -- Checagem
-	local removeItem = false
-	if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
-		local tileBoss = Tile(toPosition)
-		if tileBoss and tileBoss:getTopCreature() and tileBoss:getTopCreature():isMonster() then
-			if tileBoss:getTopCreature():getName():lower() == 'the remorseless corruptor' then
-				tileBoss:getTopCreature():addHealth(-17000)
-				tileBoss:getTopCreature():remove()
-				local monster = Game.createMonster('The Corruptor of Souls', toPosition)
-				if not monster then
-					return false
+	if IsRunningGlobalDatapack() then
+		-- Cults of Tibia begin
+		local frompos = Position(33023, 31904, 14) -- Checagem
+		local topos = Position(33052, 31932, 15) -- Checagem
+		local removeItem = false
+		if self:getPosition():isInRange(frompos, topos) and item:getId() == 23729 then
+			local tileBoss = Tile(toPosition)
+			if tileBoss and tileBoss:getTopCreature() and tileBoss:getTopCreature():isMonster() then
+				if tileBoss:getTopCreature():getName():lower() == 'the remorseless corruptor' then
+					tileBoss:getTopCreature():addHealth(-17000)
+					tileBoss:getTopCreature():remove()
+					local monster = Game.createMonster('The Corruptor of Souls', toPosition)
+					if not monster then
+						return false
+					end
+					removeItem = true
+					monster:registerEvent('CheckTile')
+					if Game.getStorageValue('healthSoul') > 0 then
+						monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
+					end
+					Game.setStorageValue('CheckTile', os.time()+30)
+				elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
+					Game.setStorageValue('CheckTile', os.time()+30)
+					removeItem = true
 				end
-				removeItem = true
-				monster:registerEvent('CheckTile')
-				if Game.getStorageValue('healthSoul') > 0 then
-					monster:addHealth(-(monster:getHealth() - Game.getStorageValue('healthSoul')))
-				end
-				Game.setStorageValue('CheckTile', os.time()+30)
-			elseif tileBoss:getTopCreature():getName():lower() == 'the corruptor of souls' then
-				Game.setStorageValue('CheckTile', os.time()+30)
-				removeItem = true
+			end
+			if removeItem then
+				item:remove(1)
 			end
 		end
-		if removeItem then
-			item:remove(1)
-		end
+		-- Cults of Tibia end
 	end
-	-- Cults of Tibia end
 	return true
 end
 
@@ -738,7 +734,7 @@ end
 
 function Player:onGainSkillTries(skill, tries)
 	-- Dawnport skills limit
-	if DATA_DIRECTORY == "data-otservbr-global" and isSkillGrowthLimited(self, skill) then
+	if  IsRunningGlobalDatapack() and isSkillGrowthLimited(self, skill) then
 		return 0
 	end
 	if APPLY_SKILL_MULTIPLIER == false then

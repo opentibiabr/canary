@@ -86,7 +86,7 @@ class MonsterType
 
 		LightInfo light = {};
 		uint16_t lookcorpse = 0;
-		uint16_t baseSpeed = 110;
+		uint16_t baseSpeed = 55;
 
 		uint64_t experience = 0;
 

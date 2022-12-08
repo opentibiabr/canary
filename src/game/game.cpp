@@ -165,9 +165,9 @@ void Game::start(ServiceManager* manager)
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_MS, std::bind(&Game::updateForgeableMonsters, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind(&Game::createFiendishMonsters, this)));
-	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind(&Game::createInfluencedMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this)));
 }
 
 GameState_t Game::getGameState() const
@@ -8357,8 +8357,8 @@ uint32_t Game::makeInfluencedMonster() {
 		}
 
 		// Avoiding replace forgeable monster with another
-		if (monster && monster->getForgeStack() == 0) {
-			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), monsterId);
+		if (monster->getForgeStack() == 0) {
+			auto it = std::ranges::find(forgeableMonsters.begin(), forgeableMonsters.end(), monsterId);
 			if (it == forgeableMonsters.end()) {
 				monster = nullptr;
 				continue;
@@ -8439,7 +8439,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool cre
 		}
 
 		// Avoiding replace forgeable monster with another
-		if (monster && monster->getForgeStack() == 0) {
+		if (monster->getForgeStack() == 0) {
 			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), fiendishMonsterId);
 			if (it == forgeableMonsters.end()) {
 				monster = nullptr;
@@ -8479,12 +8479,12 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool cre
 	if (monster && monster->canBeForgeMonster()) {
 		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();
-		monster->setTimeToChangeFiendish(timeToChangeFiendish + time(nullptr));
+		monster->setTimeToChangeFiendish(timeToChangeFiendish + getTimeNow());
 		fiendishMonsters.insert(monster->getID());
 
 		auto schedulerTask = createSchedulerTask(
 				finalTime,
-				std::bind(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
+				std::bind_front(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
 		);
 		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(schedulerTask);
 		return monster->getID();
@@ -8522,7 +8522,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create/* = false*/) {
 		influencedMonsters.erase(find);
 
 		if (create) {
-			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind(&Game::makeInfluencedMonster, this)));
+			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind_front(&Game::makeInfluencedMonster, this)));
 		}
 	} else {
 		SPDLOG_WARN("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
@@ -8540,7 +8540,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create/* = true*/)
 		checkForgeEventId(id);
 
 		if (create) {
-			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind(&Game::makeFiendishMonster, this, 0, false)));
+			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind_front(&Game::makeFiendishMonster, this, 0, false)));
 		}
 	} else {
 		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
@@ -8551,7 +8551,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create/* = true*/)
 
 void Game::updateForgeableMonsters()
 {
-	g_scheduler().addEvent(createSchedulerTask(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind(&Game::updateForgeableMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind_front(&Game::updateForgeableMonsters, this)));
 	forgeableMonsters.clear();
 	for (auto [monsterId, monster] : monsters) {
 		auto monsterTile = monster->getTile();

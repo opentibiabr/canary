@@ -5578,8 +5578,8 @@ std::pair<uint64_t, uint64_t> Player::getForgeSliversAndCores() const
 	}
 
 	// Check items from stash
-	StashItemList stashToSend = getStashItems();
-	for (auto [itemId, itemCount] : stashToSend)
+	for (StashItemList stashToSend = getStashItems();
+		auto [itemId, itemCount] : stashToSend)
 	{
 		if (itemId == ITEM_FORGE_SLIVER) {
 			sliverCount += itemCount;
@@ -6609,7 +6609,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 	history.firstItemName = firstForgingItem->getName();
 	history.bonus = bonus;
-	history.createdAt = std::time(nullptr);
+	history.createdAt = getTimeNow();
 	registerForgeHistoryDescription(history);
 
 	sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
@@ -6742,7 +6742,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	history.firstItemName = newDonorItem->getName();
 	history.secondItemName = newReceiveItem->getName();
-	history.createdAt = std::time(nullptr);
+	history.createdAt = getTimeNow();
 	registerForgeHistoryDescription(history);
 
 	sendTransferItemTier(donorItemId, tier, receiveItemId);
@@ -6831,7 +6831,7 @@ void Player::forgeResourceConversion(uint8_t action)
 		addForgeDustLevel(1);
 	}
 
-	history.createdAt = std::time(nullptr);
+	history.createdAt = getTimeNow();
 	registerForgeHistoryDescription(history);
 	sendForgingData();
 }

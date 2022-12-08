@@ -787,28 +787,28 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 	registerEnum(L, ITEM_WILDGROWTH_PERSISTENT);
 	registerEnum(L, ITEM_WILDGROWTH_SAFE);
 
-	registerEnum(L, ITEM_EXERCISE_START);;
-	registerEnum(L, ITEM_EXERCISE_END);;
+	registerEnum(L, ITEM_EXERCISE_START);
+	registerEnum(L, ITEM_EXERCISE_END);
 
-	registerEnum(L, ITEM_HEALTH_CASK_START);;
-	registerEnum(L, ITEM_HEALTH_CASK_END);;
+	registerEnum(L, ITEM_HEALTH_CASK_START);
+	registerEnum(L, ITEM_HEALTH_CASK_END);
 
-	registerEnum(L, ITEM_MANA_CASK_START);;
-	registerEnum(L, ITEM_MANA_CASK_END);;
+	registerEnum(L, ITEM_MANA_CASK_START);
+	registerEnum(L, ITEM_MANA_CASK_END);
 
-	registerEnum(L, ITEM_SPIRIT_CASK_START);;
-	registerEnum(L, ITEM_SPIRIT_CASK_END);;
+	registerEnum(L, ITEM_SPIRIT_CASK_START);
+	registerEnum(L, ITEM_SPIRIT_CASK_END);
 
-	registerEnum(L, ITEM_KEG_START);;
-	registerEnum(L, ITEM_KEG_END);;
+	registerEnum(L, ITEM_KEG_START);
+	registerEnum(L, ITEM_KEG_END);
 
-	registerEnum(L, ITEM_STONE_SKIN_AMULET);;
+	registerEnum(L, ITEM_STONE_SKIN_AMULET);
 
-	registerEnum(L, ITEM_OLD_DIAMOND_ARROW);;
-	registerEnum(L, ITEM_DIAMOND_ARROW);;
+	registerEnum(L, ITEM_OLD_DIAMOND_ARROW);
+	registerEnum(L, ITEM_DIAMOND_ARROW);
 
-	registerEnum(L, ITEM_GOLD_POUCH);;
-	registerEnum(L, ITEM_STORE_INBOX);;
+	registerEnum(L, ITEM_GOLD_POUCH);
+	registerEnum(L, ITEM_STORE_INBOX);
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);

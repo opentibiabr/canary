@@ -1499,9 +1499,9 @@ uint8_t forgeBonus(int32_t number)
 
 std::string formatPrice(std::string price, bool space/* = false*/)
 {
-	std::reverse(price.begin(), price.end());
+	std::ranges::reverse(price.begin(), price.end());
 	price = std::regex_replace(price, std::regex("000"), "k");
-	std::reverse(price.begin(), price.end());
+	std::ranges::reverse(price.begin(), price.end());
 	if (space) {
 		price = std::regex_replace(price, std::regex("k"), " k", std::regex_constants::format_first_only);
 	}

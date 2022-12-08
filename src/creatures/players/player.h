@@ -62,7 +62,7 @@ struct OpenContainer {
 
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
-static constexpr int32_t PLAYER_MAX_SPEED = 70000;
+static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 
 class Player final : public Creature, public Cylinder
@@ -197,10 +197,10 @@ class Player final : public Creature, public Cylinder
 			return offlineTrainingTime;
 		}
 
-		int32_t getOfflineTrainingSkill() const {
+		int8_t getOfflineTrainingSkill() const {
 			return offlineTrainingSkill;
 		}
-		void setOfflineTrainingSkill(int32_t skill) {
+		void setOfflineTrainingSkill(int8_t skill) {
 			offlineTrainingSkill = skill;
 		}
 
@@ -1102,7 +1102,7 @@ class Player final : public Creature, public Cylinder
 				client->sendCancelWalk();
 			}
 		}
-		void sendChangeSpeed(const Creature* creature, uint32_t newSpeed) const {
+		void sendChangeSpeed(const Creature* creature, uint16_t newSpeed) const {
 			if (client) {
 				client->sendChangeSpeed(creature, newSpeed);
 			}
@@ -2246,7 +2246,7 @@ class Player final : public Creature, public Cylinder
 		uint32_t premiumDays = 0;
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
-		int32_t offlineTrainingSkill = -1;
+		int8_t offlineTrainingSkill = SKILL_NONE;
 		int32_t offlineTrainingTime = 0;
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
@@ -2330,12 +2330,12 @@ class Player final : public Creature, public Cylinder
 		static uint32_t playerAutoID;
 
 		void updateItemsLight(bool internal = false);
-		int32_t getStepSpeed() const override {
-			return std::max<int32_t>(PLAYER_MIN_SPEED, std::min<int32_t>(PLAYER_MAX_SPEED, getSpeed()));
+		uint16_t getStepSpeed() const override {
+			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
 		}
 		void updateBaseSpeed() {
 			if (!hasFlag(PlayerFlag_SetMaxSpeed)) {
-				baseSpeed = vocation->getBaseSpeed() + (2 * (level - 1));
+				baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 			} else {
 				baseSpeed = PLAYER_MAX_SPEED;
 			}

@@ -1,8 +1,15 @@
+-- NOTE: Using this script might cause unwanted changes.
+-- This script forces a reload in the entire server, this means
+-- that everything that is stored in memory might stop to work
+-- properly and/or completely.
+--
+-- This script should be used in test environments only.
+
 local reloadTypes = {
 	["all"] = RELOAD_TYPE_ALL,
 
-	["channel"] = RELOAD_TYPE_CHAT,
 	["chat"] = RELOAD_TYPE_CHAT,
+	["channel"] = RELOAD_TYPE_CHAT,
 	["chatchannels"] = RELOAD_TYPE_CHAT,
 
 	["config"] = RELOAD_TYPE_CONFIG,
@@ -35,13 +42,20 @@ local reloadTypes = {
 	["stages"] = RELOAD_TYPE_GLOBAL,
 	["global"] = RELOAD_TYPE_GLOBAL,
 	["core"] = RELOAD_TYPE_GLOBAL,
-	["libs"] = RELOAD_TYPE_GLOBAL
+	["libs"] = RELOAD_TYPE_GLOBAL,
+
+	["imbuements"] = RELOAD_TYPE_IMBUEMENTS
 }
 
 local reload = TalkAction("/reload")
 
 function reload.onSay(player, words, param)
 	if not player:getGroup():getAccess() or player:getAccountType() < ACCOUNT_TYPE_GOD then
+		return true
+	end
+
+	if not configManager.getBoolean(configKeys.ALLOW_RELOAD) then
+		player:sendCancelMessage("Reload command is disabled.")
 		return true
 	end
 
@@ -55,8 +69,8 @@ function reload.onSay(player, words, param)
 	local reloadType = reloadTypes[param:lower()]
 	if reloadType then
 		Game.reload(reloadType)
-		player:sendTextMessage(MESSAGE_ADMINISTRADOR, string.format("Reloaded %s.", param:lower()))
-		Spdlog.info("Reloaded " .. param:lower())
+		player:sendTextMessage(MESSAGE_LOOK, string.format("Reloaded %s.", param:lower()))
+		Spdlog.info("Reloaded " .. param:lower() .. "")
 		return true
 	elseif not reloadType then
 		player:sendCancelMessage("Reload type not found.")

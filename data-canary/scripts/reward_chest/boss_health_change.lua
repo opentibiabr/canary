@@ -20,7 +20,7 @@ function bossParticipation.onHealthChange(creature, attacker, primaryDamage, pri
 
 	-- Account for healing of others active in the boss fight
 	if primaryType == COMBAT_HEALING and attacker:isPlayer() and attackerId ~= creatureId then
-		local healerStats = getPlayerStats(stats.bossId, attacker:getGuid(), true)
+		local healerStats = GetPlayerStats(stats.bossId, attacker:getGuid(), true)
 		healerStats.active = true
 		-- Update player id
 		healerStats.playerId = attackerId

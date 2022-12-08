@@ -5,7 +5,6 @@ run
 
 if $_exitcode == 999
 	thread apply all bt full
-	call (void) saveServer()
 	quit
 end
 

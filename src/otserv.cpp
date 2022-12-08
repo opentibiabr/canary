@@ -384,9 +384,4 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	g_loaderSignal.notify_all();
 }
 
-#ifndef _WIN32
-__attribute__ ((used)) void saveServer() {
-	if(g_game().getPlayersOnline() > 0)
-		g_game().saveGameState(true);
-}
 #endif

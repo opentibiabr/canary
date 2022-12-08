@@ -7,10 +7,10 @@ then
 	echo "Clean build directory"
 	rm -rf *
 	echo "Configuring"
-	cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+	cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
 else
 	mkdir "build" && cd build
-	cmake -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
+	cmake -DCMAKE_TOOLCHAIN_FILE=../../vcpkg/scripts/buildsystems/vcpkg.cmake .. --preset linux-release
 fi
 
 cmake --build linux-release || exit 1

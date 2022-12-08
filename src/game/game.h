@@ -417,7 +417,7 @@ class Game
 
 		GameState_t getGameState() const;
 		void setGameState(GameState_t newState);
-		void saveGameState(bool crash = false);
+		void saveGameState();
 
 		// Events
 		void checkCreatureWalk(uint32_t creatureId);

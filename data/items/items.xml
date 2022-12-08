@@ -42575,8 +42575,9 @@
 		</attribute>
 	</item>
 	<item id="29432" article="a" name="hireling lamp">
-		<attribute key="description" value="This mysterious lamp summons your very own personal hireling"/>
-		<attribute key="wrapableto" value="23398"/>
+		<attribute key="weight" value="1000" />
+		<attribute key="description" value="This mysterious lamp summons your very own personal hireling." />
+		<attribute key="moveable" value="0" />
 	</item>
 	<item id="29433" article="a" name="chest">
 		<attribute key="containersize" value="15"/>

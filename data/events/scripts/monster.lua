@@ -22,7 +22,6 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 
-
 		for i = 1, #monsterLoot do
 			local item = corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost)
 			if self:getName():lower() == Game.getBoostedCreature():lower() then
@@ -41,7 +40,7 @@ function Monster:onDropLoot(corpse)
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
 				 text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else
-				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())			
+				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
 			end
 			if preyChanceBoost ~= 100 then
 				text = text .. " (active prey bonus)"
@@ -73,11 +72,14 @@ function Monster:onSpawn(position)
 		self:setReward(true)
 	end
 
-	if self:getName():lower() == "cobra scout" or 
-		self:getName():lower() == "cobra vizier" or 
-		self:getName():lower() == "cobra assassin" then
-		if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
-			self:setHealth(self:getMaxHealth() * 0.75)
+	-- We won't run anything from here on down if we're opening the global pack
+	if IsRunningGlobalDatapack() then
+		if self:getName():lower() == "cobra scout" or 
+			self:getName():lower() == "cobra vizier" or 
+			self:getName():lower() == "cobra assassin" then
+			if getGlobalStorageValue(GlobalStorage.CobraBastionFlask) >= os.time() then
+				self:setHealth(self:getMaxHealth() * 0.75)
+			end
 		end
 	end
 
@@ -92,34 +94,36 @@ function Monster:onSpawn(position)
 			end
 		end
 
-		if self:getName():lower() == 'iron servant replica' then
-			local chance = math.random(100)
-			if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1
-			and Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
-				if chance > 30 then
-					local chance2 = math.random(2)
-					if chance2 == 1 then
-						Game.createMonster('diamond servant replica', self:getPosition(), false, true)
-					elseif chance2 == 2 then
-						Game.createMonster('golden servant replica', self:getPosition(), false, true)
+		if IsRunningGlobalDatapack() then
+			if self:getName():lower() == 'iron servant replica' then
+				local chance = math.random(100)
+				if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1
+				and Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
+					if chance > 30 then
+						local chance2 = math.random(2)
+						if chance2 == 1 then
+							Game.createMonster('diamond servant replica', self:getPosition(), false, true)
+						elseif chance2 == 2 then
+							Game.createMonster('golden servant replica', self:getPosition(), false, true)
+						end
+						self:remove()
 					end
-					self:remove()
+					return true
+				end
+				if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1 then
+					if chance > 30 then
+						Game.createMonster('diamond servant replica', self:getPosition(), false, true)
+						self:remove()
+					end
+				end
+				if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
+					if chance > 30 then
+						Game.createMonster('golden servant replica', self:getPosition(), false, true)
+						self:remove()
+					end
 				end
 				return true
 			end
-			if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismDiamond) >= 1 then
-				if chance > 30 then
-					Game.createMonster('diamond servant replica', self:getPosition(), false, true)
-					self:remove()
-				end
-			end
-			if Game.getStorageValue(GlobalStorage.ForgottenKnowledge.MechanismGolden) >= 1 then
-				if chance > 30 then
-					Game.createMonster('golden servant replica', self:getPosition(), false, true)
-					self:remove()
-				end
-			end
-			return true
 		end
 	end
 end

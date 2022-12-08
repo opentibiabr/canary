@@ -4163,7 +4163,7 @@ GameStore.Categories = {
         {
           icons = {"Prey_Bonus_Reroll.png"},
           name = "Prey Wildcard",
-          price = 15,
+          price = 50,
           id = 1,
           count = 5,
           description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
@@ -4172,7 +4172,7 @@ GameStore.Categories = {
         {
           icons = {"Instant_Reward_Access.png"},
           name = "Instant Reward Access",
-          price = 50,
+          price = 100,
           id = 2,
           count = 1,
           description = "<i>No matter where you are in Tibia, claim your daily reward on the spot!</i>\n\n{character}\n{info} added to your reward wall\n{info} maximum amount that can be owned by character: 90",
@@ -4181,7 +4181,7 @@ GameStore.Categories = {
         {
           icons = {"Charm_Expansion_Offer.png"},
           name = "Charm Expansion",
-          price = 400,
+          price = 450,
           id = 3,
           description = "<i>Assign as many of your unlocked Charms as you like and get a 25% discount whenever you are removing a Charm from a creature!</i>\n\n{character}\n{once}",
           type = GameStore.OfferTypes.OFFER_TYPE_CHARMS
@@ -4189,7 +4189,7 @@ GameStore.Categories = {
         {
           icons = {"Permanent_Prey_Slot.png"},
           name = "Permanent Prey Slot",
-          price = 350,
+          price = 900,
           id = 4,
           description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
           type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
@@ -4197,7 +4197,7 @@ GameStore.Categories = {
         {
           icons = {"Permanent_Hunting_Task_Slot.png"},
           name = "Permanent Hunting Task Slot",
-          price = 350,
+          price = 900,
           id = 5,
           description = "<i>Get an additional hunting tasks slot to activate additional hunting task!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Hunting Task dialog",
           type = GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
@@ -4232,7 +4232,7 @@ GameStore.Categories = {
         {
           icons = { "Prey_Bonus_Reroll.png" },
           name = "Prey Wildcard",
-          price = 200,
+          price = 50,
           count = 20,
           description = "<i>Use Prey Wildcards to reroll the bonus of an active prey, to lock your active prey or to select a prey of your choice.</i>\n\n{character}\n{info} added directly to Prey dialog\n{info} maximum amount that can be owned by character: 50",
           type = GameStore.OfferTypes.OFFER_TYPE_PREYBONUS,

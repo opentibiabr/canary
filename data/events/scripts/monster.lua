@@ -33,6 +33,7 @@ function Monster:onDropLoot(corpse)
 			end
 		end
 		local preyLootActive = false
+		-- Runs the loot again if the player gets a chance to loot in the prey
 		if player then
 			local preyLootPercent = player:getPreyLootPercentage(mType:raceId())
 			if preyLootPercent > 0 then

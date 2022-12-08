@@ -159,6 +159,7 @@ private:
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
+	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarysendRaces();
@@ -285,7 +286,7 @@ private:
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
   
 	void sendCancelWalk();
-	void sendChangeSpeed(const Creature *creature, uint32_t speed);
+	void sendChangeSpeed(const Creature *creature, uint16_t speed);
 	void sendCancelTarget();
 	void sendCreatureOutfit(const Creature *creature, const Outfit_t &outfit);
 	void sendStats();
@@ -471,6 +472,9 @@ private:
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
+	void addBless();
+	void parsePacketDead(uint8_t recvbyte);
+
 };
 
 #endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

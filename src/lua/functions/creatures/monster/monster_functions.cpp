@@ -92,7 +92,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 		monster->health = monsterType->info.health * multiplier;
 		monster->healthMax = monsterType->info.healthMax * multiplier;
-		monster->baseSpeed = monsterType->info.baseSpeed;
+		monster->baseSpeed = monsterType->getBaseSpeed();
 		monster->internalLight = monsterType->info.light;
 		monster->hiddenHealth = monsterType->info.hiddenHealth;
 		monster->targetDistance = monsterType->info.targetDistance;

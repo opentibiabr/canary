@@ -52,7 +52,7 @@ Monster::Monster(MonsterType* mType) :
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health*multiplier;
 	healthMax = mType->info.healthMax*multiplier;
-	baseSpeed = mType->info.baseSpeed;
+	baseSpeed = mType->getBaseSpeed();
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
 	targetDistance = mType->info.targetDistance;
@@ -929,6 +929,10 @@ void Monster::doAttacking(uint32_t interval)
 				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
 					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
 					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
+				}
+
+				if (!spellBlock.spell) {
+					continue;
 				}
 
 				spellBlock.spell->castSpell(this, attackedCreature);

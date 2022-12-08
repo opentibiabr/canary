@@ -24,6 +24,8 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -64,14 +66,25 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-void Npc::reset() const
-{
-	g_npcs().reset();
-	// Close shop window from all npcs and reset the shopPlayerSet
-	for (const auto& [npcId, npc] : g_game().getNpcs()) {
-		npc->closeAllShopWindows();
-		npc->resetPlayerInteractions();
+bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
+	if (loadLibs) {
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
 	}
+	if (loadNpcs) {
+		return g_scripts().loadScripts("npc", false, true);
+	}
+	return false;
+}
+
+bool Npc::reset() const
+{
+	if (load()) {
+		g_npcs().reset();
+		g_game().resetNpcs();
+		return true;
+	}
+	return false;
 }
 
 void Npc::addList()

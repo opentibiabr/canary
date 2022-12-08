@@ -21,6 +21,7 @@
 
 #include "core.hpp"
 #include "creatures/monsters/monster.h"
+#include "game/functions/game_reload.hpp"
 #include "game/game.h"
 #include "items/item.h"
 #include "io/iobestiary.h"
@@ -572,19 +573,20 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 
 int GameFunctions::luaGameReload(lua_State* L) {
 	// Game.reload(reloadType)
-	ReloadTypes_t reloadType = getNumber<ReloadTypes_t>(L, 1);
-	if (!reloadType) {
-		lua_pushnil(L);
-		return 1;
+	Reload_t reloadType = getNumber<Reload_t>(L, 1);
+	if (g_gameReload.getReloadNumber(reloadType) == g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
+		reportErrorFunc("Reload type is none");
+		pushBoolean(L, false);
+		return 0;
 	}
 
-	if (reloadType == RELOAD_TYPE_GLOBAL) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		pushBoolean(L, g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0);
-		pushBoolean(L, g_scripts().loadScripts("scripts/lib", true, true));
-	} else {
-		pushBoolean(L, g_game().reload(reloadType));
+	if (g_gameReload.getReloadNumber(reloadType) >= g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
+		reportErrorFunc("Reload type not exist");
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	pushBoolean(L, g_gameReload.init(reloadType));
 	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
 	return 1;
 }

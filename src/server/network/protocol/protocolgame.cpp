@@ -1955,7 +1955,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 		newmsg.addByte(0x2);
 		newmsg.add<uint32_t>(mtype->info.healthMax);
 		newmsg.add<uint32_t>(mtype->info.experience);
-		msg.add<uint16_t>(mtype->getBaseSpeed() > PLAYER_MAX_SPEED ? PLAYER_MAX_SPEED : mtype->getBaseSpeed());
+		msg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
 	}
 
@@ -2987,7 +2987,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);
 	msg.add<uint16_t>(player->getOfflineTrainingTime() / 60 / 1000);
 	msg.add<uint16_t>(player->getSpeed());
-	msg.add<uint16_t>(player->getBaseSpeed() > PLAYER_MAX_SPEED ? PLAYER_MAX_SPEED : player->getBaseSpeed());
+	msg.add<uint16_t>(player->getBaseSpeed());
 	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
@@ -4856,7 +4856,7 @@ void ProtocolGame::sendChangeSpeed(const Creature *creature, uint16_t speed)
 	NetworkMessage msg;
 	msg.addByte(0x8F);
 	msg.add<uint32_t>(creature->getID());
-	msg.add<uint16_t>(player->getBaseSpeed() > PLAYER_MAX_SPEED ? PLAYER_MAX_SPEED : player->getBaseSpeed());
+	msg.add<uint16_t>(player->getBaseSpeed());
 	msg.add<uint16_t>(speed);
 	writeToOutputBuffer(msg);
 }
@@ -6272,7 +6272,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 
 	msg.add<uint16_t>(player->getStaminaMinutes());
 
-	msg.add<uint16_t>(player->getBaseSpeed() > PLAYER_MAX_SPEED ? PLAYER_MAX_SPEED : player->getBaseSpeed());
+	msg.add<uint16_t>(player->getBaseSpeed());
 
 	Condition *condition = player->getCondition(CONDITION_REGENERATION, CONDITIONID_DEFAULT);
 	msg.add<uint16_t>(condition ? condition->getTicks() / 1000 : 0x00);

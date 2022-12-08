@@ -2171,7 +2171,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 		if (it.abilities) {
 			if (it.abilities->speed > 0) {
-				s << " (speed " << std::showpos << (it.abilities->speed / 2) << std::noshowpos << ')';
+				s << " (speed " << std::showpos << (it.abilities->speed) << std::noshowpos << ')';
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {

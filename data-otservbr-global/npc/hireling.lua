@@ -161,7 +161,7 @@ function createHirelingType(HirelingName)
 		{itemName = "moonlight rod", clientId = 3070, buy = 1245},
 		{itemName = "morning star", clientId = 3282, sell = 100},
 		{itemName = "necrotic rod", clientId = 3069, buy = 4999},
-		{itemName = "northwind rod", clientId = 8083, buy = 142},
+		{itemName = "northwind rod", clientId = 8083, buy = 7500},
 		{itemName = "onyx arrow", clientId = 7365, buy = 7},
 		{itemName = "orange tapestry", clientId = 2653, buy = 25},
 		{itemName = "oven kit", clientId = 6371, buy = 80},

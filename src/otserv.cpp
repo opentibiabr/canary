@@ -383,5 +383,3 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	g_loaderSignal.notify_all();
 }
-
-#endif

@@ -21,7 +21,7 @@
 GameReload::GameReload() = default;
 GameReload::~GameReload() = default;
 
-bool GameReload::init(Reload_t reloadTypes)
+bool GameReload::init(Reload_t reloadTypes) const
 {
 	switch (reloadTypes) {
 		case Reload_t::RELOAD_TYPE_ALL : return reloadAll();
@@ -109,8 +109,12 @@ bool GameReload::reloadModules() const
 
 bool GameReload::reloadMonsters() const
 {
-	// Reset monsters target
-	g_game().resetMonsters();
+	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
+	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
+		return false;
+	}
+	g_spells().clear();
+
 	if (g_scripts().loadScripts("monster", false, true) && g_scripts().loadScripts("scripts/lib", true, true)) {
 		return true;
 	}
@@ -125,6 +129,9 @@ bool GameReload::reloadMounts() const
 bool GameReload::reloadNpcs() const
 {
 	if (g_npc().reset()) {
+		if (!g_scripts().loadScripts("scripts/lib", true, false)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -138,9 +145,12 @@ bool GameReload::reloadRaids() const
 
 bool GameReload::reloadScripts() const
 {
-	// Resets monster targets to prevent the spell from being incorrectly cleared from memory
-	g_game().resetMonsters();
+	// Resets monster spells to prevent the spell from being incorrectly cleared from memory
+	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
+		return false;
+	}
 	g_scripts().clear();
+
 	if (g_scripts().loadScripts("scripts", false, true)) {
 		return true;
 	}

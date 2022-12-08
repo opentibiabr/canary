@@ -12,10 +12,8 @@ function Monster:onDropLoot(corpse)
 	local player = Player(corpse:getCorpseOwner())
 	if not player or player:getStamina() > 840 then
 		local monsterLoot = mType:getLoot()
-		local preyChanceBoost = 100
 		local charmBonus = false
 		if player and mType and mType:raceId() > 0 then
-			preyChanceBoost = player:getPreyLootPercentage(mType:raceId())
 			local charm = player:getCharmMonsterType(CHARM_GUT)
 			if charm and charm:raceId() == mType:raceId() then
 				charmBonus = true
@@ -23,15 +21,33 @@ function Monster:onDropLoot(corpse)
 		end
 
 		for i = 1, #monsterLoot do
-			local item = corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost)
+			local item = corpse:createLootItem(monsterLoot[i], charmBonus)
 			if self:getName():lower() == Game.getBoostedCreature():lower() then
-				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus, preyChanceBoost)
+				local itemBoosted = corpse:createLootItem(monsterLoot[i], charmBonus)
 				if not itemBoosted then
-					Spdlog.warn(string.format("[Monster:onDropLoot] - Could not add loot item to boosted monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+					Spdlog.warn(string.format("[1][Monster:onDropLoot] - Could not add loot item to boosted monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
 				end
 			end
 			if not item then
-				Spdlog.warn(string.format("[Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+				Spdlog.warn(string.format("[2][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+			end
+		end
+		local preyLootActive = false
+		-- Runs the loot again if the player gets a chance to loot in the prey
+		if player then
+			local preyLootPercent = player:getPreyLootPercentage(mType:raceId())
+			if preyLootPercent > 0 then
+				local probability = math.random(0, 100)
+				if probability < preyLootPercent then
+					for i, loot in pairs(monsterLoot) do
+						local item = corpse:createLootItem(monsterLoot[i], charmBonus)
+						if not item then
+							Spdlog.warn(string.format("[3][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
+						else
+							preyLootActive = true
+						end
+					end
+				end
 			end
 		end
 
@@ -42,7 +58,7 @@ function Monster:onDropLoot(corpse)
 			else
 				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
 			end
-			if preyChanceBoost ~= 100 then
+			if preyLootActive then
 				text = text .. " (active prey bonus)"
 			end
 			if charmBonus then

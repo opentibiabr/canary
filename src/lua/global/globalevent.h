@@ -52,6 +52,8 @@ class GlobalEvents final : public BaseEvents {
 		static void clearMap(GlobalEventMap& map, bool fromLua);
 
 		bool registerLuaEvent(GlobalEvent* event);
+		void clear();
+		// Old XML interface
 		void clear(bool fromLua) override final;
 
 	private:

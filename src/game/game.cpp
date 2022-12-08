@@ -26,6 +26,7 @@
 #include "database/databasetasks.h"
 #include "lua/creature/events.h"
 #include "game/game.h"
+#include "game/functions/game_reload.hpp"
 #include "lua/global/globalevent.h"
 #include "io/iologindata.h"
 #include "io/iomarket.h"
@@ -69,6 +70,21 @@ Game::~Game()
 
 	for (const auto& it : CharmList) {
 		delete it;
+	}
+}
+
+void Game::resetMonsters() const{
+	for (const auto& [monsterId, monster] : getMonsters()) {
+		monster->clearTargetList();
+		monster->clearFriendList();
+	}
+}
+
+void Game::resetNpcs() const {
+	// Close shop window from all npcs and reset the shopPlayerSet
+	for (const auto& [npcId, npc] : getNpcs()) {
+		npc->closeAllShopWindows();
+		npc->resetPlayerInteractions();
 	}
 }
 
@@ -8159,75 +8175,6 @@ void Game::removeUniqueItem(uint16_t uniqueId)
 	if (it != uniqueItems.end()) {
 		uniqueItems.erase(it);
 	}
-}
-
-bool Game::reload(ReloadTypes_t reloadType)
-{
-	switch (reloadType) {
-		case RELOAD_TYPE_MONSTERS: {
-			g_scripts().loadScripts("monster", false, true);
-			return true;
-		}
-		case RELOAD_TYPE_NPCS: {
-			// Reset informations from npc interface
-			g_npc().reset();
-			// Reload npc scripts
-			g_scripts().loadScripts("npc", false, true);
-			// Reload npclib
-			g_luaEnvironment.loadFile(g_configManager().getString(DATA_DIRECTORY) + "/npclib/load.lua");
-			return true;
-		}
-		case RELOAD_TYPE_CHAT: return g_chat().load();
-		case RELOAD_TYPE_CONFIG: return g_configManager().reload();
-		case RELOAD_TYPE_EVENTS: return g_events().loadFromXml();
-		case RELOAD_TYPE_ITEMS: return Item::items.reload();
-		case RELOAD_TYPE_MODULES: return g_modules().reload();
-		case RELOAD_TYPE_MOUNTS: return mounts.reload();
-		case RELOAD_TYPE_IMBUEMENTS: return g_imbuements().reload();
-		case RELOAD_TYPE_RAIDS: return raids.reload() && raids.startup();
-
-		case RELOAD_TYPE_SCRIPTS: {
-			// commented out stuff is TODO, once we approach further in revscriptsys
-			g_actions().clear(true);
-			g_creatureEvents().clear(true);
-			g_moveEvents().clear();
-			g_talkActions().clear(true);
-			g_globalEvents().clear(true);
-			g_weapons().clear(true);
-			g_weapons().loadDefaults();
-			g_spells().clear(true);
-			// Reset informations from npc interface
-			g_npc().reset();
-			g_scripts().loadScripts("scripts", false, true);
-			// lean up the monsters interface, ensuring that after reloading the scripts there is no use of any deallocated memory
-			g_scripts().loadScripts("monster", false, true);
-			// Reload npc scripts
-			g_scripts().loadScripts("npc", false, true);
-			// Reload npclib
-			g_luaEnvironment.loadFile(g_configManager().getString(DATA_DIRECTORY) + "/npclib/load.lua");
-			return true;
-		}
-
-		default: {
-
-			g_configManager().reload();
-			raids.reload() && raids.startup();
-			Item::items.reload();
-			g_weapons().clear(true);
-			g_weapons().loadDefaults();
-			mounts.reload();
-			g_events().loadFromXml();
-			g_chat().load();
-			g_actions().clear(true);
-			g_creatureEvents().clear(true);
-			g_moveEvents().clear(true);
-			g_talkActions().clear(true);
-			g_globalEvents().clear(true);
-			g_spells().clear(true);
-			g_scripts().loadScripts("scripts", false, true);
-		}
-	}
-	return true;
 }
 
 bool Game::hasEffect(uint8_t effectId) {

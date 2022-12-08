@@ -20,9 +20,11 @@
 #include "pch.hpp"
 
 #include "creatures/players/imbuements/imbuements.h"
+#include "lua/global/globalevent.h"
 #include "items/weapons/weapons.h"
 #include "lua/creature/movement.h"
 #include "lua/scripts/scripts.h"
+#include "creatures/combat/spells.h"
 
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
@@ -31,6 +33,16 @@ Scripts::Scripts() :
 
 Scripts::~Scripts() {
 	scriptInterface.reInitState();
+}
+
+void Scripts::clear() const {
+	g_actions().clear();
+	g_creatureEvents().clear();
+	g_talkActions().clear();
+	g_globalEvents().clear();
+	g_spells().clear();
+	g_moveEvents().clear();
+	g_weapons().clear();
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {

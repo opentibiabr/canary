@@ -1673,6 +1673,10 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool test /*= false*/, uint32_t flags /*= 0*/)
 {
+	if (item == nullptr) {
+		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
 		SPDLOG_DEBUG("{} - Cylinder is nullptr", __FUNCTION__);

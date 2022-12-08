@@ -17,7 +17,7 @@ monster.health = 8500
 monster.maxHealth = 8500
 monster.race = "blood"
 monster.corpse = 33965
-monster.speed = 330
+monster.speed = 165
 
 monster.faction = FACTION_LION
 monster.enemyFactions = {FACTION_LIONUSURPERS}

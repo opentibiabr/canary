@@ -60,6 +60,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addPreyCards", PlayerFunctions::luaPlayerAddPreyCards);
 			registerMethod(L, "Player", "removeTaskHuntingPoints", PlayerFunctions::luaPlayerRemoveTaskHuntingPoints);
 			registerMethod(L, "Player", "getTaskHuntingPoints", PlayerFunctions::luaPlayerGetTaskHuntingPoints);
+			registerMethod(L, "Player", "addTaskHuntingPoints", PlayerFunctions::luaPlayerAddTaskHuntingPoints);
 
 			registerMethod(L, "Player", "getCapacity", PlayerFunctions::luaPlayerGetCapacity);
 			registerMethod(L, "Player", "setCapacity", PlayerFunctions::luaPlayerSetCapacity);

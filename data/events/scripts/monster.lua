@@ -54,9 +54,9 @@ function Monster:onDropLoot(corpse)
 		if player then
 			local text = {}
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
-				 text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else
-				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
 			end
 			if preyLootActive then
 				text = text .. " (active prey bonus)"

@@ -6174,7 +6174,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 	msg.addByte(player->isAccessPlayer() ? 0xFF : lightInfo.level);
 	msg.addByte(lightInfo.color);
 
-	msg.add<uint16_t>(creature->getStepSpeed()); // Warning
+	msg.add<uint16_t>(creature->getStepSpeed());
 
 	CreatureIcon_t icon = creature->getIcon();
 	msg.addByte(icon != CREATUREICON_NONE); // Icons

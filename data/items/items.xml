@@ -4909,8 +4909,6 @@
 		<attribute key="weight" value="80"/>
 	</item>
 	<item id="3090" article="a" name="time ring">
-		<attribute key="showduration" value="1"/>
-		<attribute key="showAttributes" value="1"/>
 		<attribute key="speed" value="30"/>
 		<attribute key="duration" value="600"/>
 		<attribute key="transformdeequipto" value="3053"/>
@@ -20088,9 +20086,7 @@
 		<attribute key="speed" value="5"/>
 		<attribute key="armor" value="1"/>
 		<attribute key="weight" value="700"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="increase speed" value="3"/>
-		</attribute>
+		<attribute key="imbuementslot" value="1"/>
 	</item>
 	<item id="10387" article="a" name="Zaoan legs">
 		<attribute key="absorbpercentphysical" value="2"/>

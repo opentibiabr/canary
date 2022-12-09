@@ -1987,7 +1987,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void addTaskHuntingPoints(uint16_t amount) {
+		void addTaskHuntingPoints(uint64_t amount) {
 			taskHuntingPoints += amount;
 			if (client) {
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
@@ -2334,6 +2334,10 @@ class Player final : public Creature, public Cylinder
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
 		}
 		void updateBaseSpeed() {
+			if (baseSpeed >= PLAYER_MAX_SPEED) {
+				return;
+			}
+
 			if (!hasFlag(PlayerFlag_SetMaxSpeed)) {
 				baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 			} else {

@@ -4384,6 +4384,10 @@ void ProtocolGame::sendOpenForge() {
 	 *Start - Parsing items informations
 	*/
 	for (const auto &item : player->getAllInventoryItems(true)) {
+		if (item->hasImbuements()) {
+			continue;
+		}
+
 		auto itemClassification = item->getClassification();
 		auto itemTier = item->getTier();
 		auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);

@@ -109,6 +109,10 @@ int64_t OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
 
+uint8_t forgeBonus(int32_t number);
+
+std::string formatPrice(std::string price, bool space/* = false*/);
+
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {
 		case COMBAT_PHYSICALDAMAGE: return CIPBIA_ELEMENTAL_PHYSICAL;

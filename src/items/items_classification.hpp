@@ -31,7 +31,7 @@ class ItemClassification
 
 	void addTier(uint8_t tierId, uint64_t tierPrice)
 	{
-		for (auto[tier, price] : tiers) {
+		for (auto [tier, price] : tiers) {
 			if (tier == tierId) {
 				price = tierPrice;
 				return;

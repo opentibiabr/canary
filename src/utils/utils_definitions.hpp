@@ -666,7 +666,8 @@ enum item_t : uint16_t {
 	ITEM_PRISMATIC_RING_ACTIVATED = 16264,
 
 	ITEM_FORGE_SLIVER = 37109,
-	ITEM_FORGE_CORE = 37110
+	ITEM_FORGE_CORE = 37110,
+	ITEM_EXALTATION_CHEST = 37561
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.

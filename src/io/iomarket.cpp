@@ -27,7 +27,7 @@
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
-	if (tier > g_configManager().getNumber(MAX_ITEM_FORGE_TIER)) {
+	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
 		SPDLOG_ERROR("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
 		return 0;
 	}

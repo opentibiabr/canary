@@ -606,7 +606,7 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
-	uint32_t playerId = getNumber<uint32_t>(L,1);
+	uint32_t playerId = getNumber<uint32_t>(L, 1);
 
 	Player* offlinePlayer = new Player(nullptr);
 	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {
@@ -615,6 +615,72 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 	} else {
 		pushUserdata<Player>(L, offlinePlayer);
 		setMetatable(L, -1, "Player");
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameAddInfluencedMonster(lua_State *L) {
+	// Game.addInfluencedMonster(monster)
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushboolean(L, g_game().addInfluencedMonster(monster));
+	return 1;
+}
+
+int GameFunctions::luaGameRemoveInfluencedMonster(lua_State *L) {
+	// Game.removeInfluencedMonster(monsterId)
+	uint32_t monsterId = getNumber<uint32_t>(L, 1);
+	auto create = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().removeInfluencedMonster(monsterId, create));
+	return 1;
+}
+
+int GameFunctions::luaGameGetInfluencedMonsters(lua_State *L) {
+	// Game.getInfluencedMonsters()
+	const auto monsters = g_game().getInfluencedMonsters();
+	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	int index = 0;
+	for (const auto &monsterId : monsters) {
+		++index;
+		lua_pushnumber(L, monsterId);
+		lua_rawseti(L, -2, index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameMakeFiendishMonster(lua_State *L) {
+	// Game.makeFiendishMonster(monsterId[default= 0])
+	uint32_t monsterId = getNumber<uint32_t>(L, 1, 0);
+	auto createForgeableMonsters = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().makeFiendishMonster(monsterId, createForgeableMonsters));
+	return 1;
+}
+
+int GameFunctions::luaGameRemoveFiendishMonster(lua_State *L) {
+	// Game.removeFiendishMonster(monsterId)
+	uint32_t monsterId = getNumber<uint32_t>(L, 1);
+	auto create = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().removeFiendishMonster(monsterId, create));
+	return 1;
+}
+
+int GameFunctions::luaGameGetFiendishMonsters(lua_State *L) {
+	// Game.getFiendishMonsters()
+	const auto monsters = g_game().getFiendishMonsters();
+
+	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	int index = 0;
+	for (const auto &monsterId : monsters) {
+		++index;
+		lua_pushnumber(L, monsterId);
+		lua_rawseti(L, -2, index);
 	}
 
 	return 1;

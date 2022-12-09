@@ -82,7 +82,7 @@ class Guild
 		std::list<Player*> membersOnline;
 		std::vector<GuildRank_ptr> ranks;
 		std::string name;
-    uint64_t bankBalance = 0;
+		uint64_t bankBalance = 0;
 		std::string motd;
 		uint32_t id;
 		uint32_t memberCount = 0;

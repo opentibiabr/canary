@@ -45,9 +45,11 @@ class Charm;
 class IOPrey;
 class ItemClassification;
 
+static constexpr int32_t EVENT_MS = 10000;
 static constexpr int32_t EVENT_LIGHTINTERVAL_MS = 10000;
 static constexpr int32_t EVENT_DECAYINTERVAL = 250;
 static constexpr int32_t EVENT_DECAY_BUCKETS = 4;
+static constexpr int32_t EVENT_FORGEABLEMONSTERCHECKINTERVAL = 300000;
 
 class Game
 {
@@ -208,7 +210,7 @@ class Game
                                           Slots_t slot = CONST_SLOT_WHEREEVER);
 
 		Item* findItemOfType(const Cylinder* cylinder, uint16_t itemId,
-                             bool depthSearch = true, int32_t subType = -1, bool hasTier = false, uint8_t tier = 0) const;
+                             bool depthSearch = true, int32_t subType = -1) const;
 
 		void createLuaItemsOnMap();
 
@@ -237,7 +239,7 @@ class Game
 
 		ObjectCategory_t getObjectCategory(const Item* item);
 
-		uint64_t getItemMarketPrice(std::map<uint16_t, uint64_t>  const &itemMap, bool buyPrice) const;
+		uint64_t getItemMarketPrice(std::map<uint16_t, uint64_t> const &itemMap, bool buyPrice) const;
 
 		void loadPlayersRecord();
 		void checkPlayersRecord();
@@ -254,6 +256,21 @@ class Game
 		void playerNpcGreet(uint32_t playerId, uint32_t npcId);
 		void playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId,
                                      uint8_t button, uint8_t choice);
+		void playerForgeFuseItems(
+			uint32_t playerId,
+			uint16_t itemId,
+			uint8_t tier,
+			bool usedCore,
+			bool reduceTierLoss
+		);
+		void playerForgeTransferItemTier(
+			uint32_t playerId,
+			uint16_t donorItemId,
+			uint8_t tier,
+			uint16_t receiveItemId
+		);
+		void playerForgeResourceConversion(uint32_t playerId, uint8_t action);
+		void playerBrowseForgeHistory(uint32_t playerId, uint8_t page);
 		void playerReportRuleViolationReport(uint32_t playerId,
                                              const std::string& targetName,
                                              uint8_t reportType, uint8_t reportReason,
@@ -568,7 +585,32 @@ class Game
 			mapLuaItemsStored[position] = itemId;
 		}
 
+		std::set<uint32_t> getFiendishMonsters() const {
+			return fiendishMonsters;
+		}
+
+		std::set<uint32_t> getInfluencedMonsters() const {
+			return influencedMonsters;
+		}
+
+		bool removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create = true);
+		bool removeInfluencedMonster(uint32_t id, bool create = false);
+		bool removeFiendishMonster(uint32_t id, bool create = true);
+		void updateFiendishMonsterStatus(uint32_t monsterId, const std::string &monsterName);
+		void createFiendishMonsters();
+		void createInfluencedMonsters();
+		void updateForgeableMonsters();
+		void checkForgeEventId(uint32_t monsterId);
+		uint32_t makeFiendishMonster(uint32_t forgeableMonsterId = 0, bool createForgeableMonsters = false);
+		uint32_t makeInfluencedMonster();
+
+		bool addInfluencedMonster(Monster *monster);
+		void sendUpdateCreature(const Creature *creature);
+
 	private:
+		std::map<uint32_t, int32_t> forgeMonsterEventIds;
+		std::set<uint32_t> fiendishMonsters;
+		std::set<uint32_t> influencedMonsters;
 		void checkImbuements();
 		bool playerSaySpell(Player* player, SpeakClasses type, const std::string& text);
 		void playerWhisper(Player* player, const std::string& text);
@@ -608,6 +650,7 @@ class Game
 
 		std::map<uint32_t, Npc*> npcs;
 		std::map<uint32_t, Monster*> monsters;
+		std::vector<uint32_t> forgeableMonsters;
 
 		std::map<uint32_t, TeamFinder*> teamFinderMap; // [leaderGUID] = TeamFinder*
 

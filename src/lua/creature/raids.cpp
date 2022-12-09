@@ -390,6 +390,8 @@ bool SingleSpawnEvent::executeEvent() {
                     monsterName);
 		return false;
 	}
+
+	monster->setForgeMonster(false);
 	return true;
 }
 
@@ -542,6 +544,7 @@ bool AreaSpawnEvent::executeEvent() {
 				const Tile* tile = g_game().map.getTile(static_cast<uint16_t>(uniform_random(fromPos.x, toPos.x)), static_cast<uint16_t>(uniform_random(fromPos.y, toPos.y)), static_cast<uint8_t>(uniform_random(fromPos.z, toPos.z)));
 				if (tile && !tile->isMoveableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && tile->getTopCreature() == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					success = true;
+					monster->setForgeMonster(false);
 					break;
 				}
 			}

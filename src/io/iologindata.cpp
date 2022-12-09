@@ -20,6 +20,8 @@
 #include "pch.hpp"
 
 #include "io/iologindata.h"
+#include "io/functions/iologindata_load_player.hpp"
+#include "io/functions/iologindata_save_player.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
@@ -288,6 +290,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
   player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
   player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
+  player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
+  player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
@@ -691,6 +695,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
+  IOLoginDataLoad::loadPlayerForgeHistory(player, result);
+
   // Load task hunting class
   if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
     query.str(std::string());
@@ -893,6 +899,8 @@ bool IOLoginData::savePlayer(Player* player)
 
   query << "`prey_wildcard` = " << player->getPreyCards() << ',';
   query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
+  query << "`forge_dusts` = " << player->getForgeDusts() << ',';
+  query << "`forge_dust_level` = " << player->getForgeDustLevel() << ',';
 
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';
@@ -1263,6 +1271,8 @@ bool IOLoginData::savePlayer(Player* player)
       }
     }
   }
+
+  IOLoginDataSave::savePlayerForgeHistory(player);
 
   query.str(std::string());
   query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();

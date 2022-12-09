@@ -1531,7 +1531,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
 				string << item->getMomentumChance() << "% Momentum).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
-				string << item->getDodgeChance() << "% Ruse).";
+				string << std::setprecision(2) << std::fixed << item->getDodgeChance() << "% Ruse).";
 			}
 		}
 	}
@@ -2500,6 +2500,22 @@ uint32_t Item::getWorth() const
 		default:
 			return 0;
 	}
+}
+
+uint32_t Item::getForgeSlivers() const
+{
+	if (getID() == ITEM_FORGE_SLIVER)
+		return getItemCount();
+	else
+		return 0;
+}
+
+uint32_t Item::getForgeCores() const
+{
+	if (getID() == ITEM_FORGE_CORE)
+		return getItemCount();
+	else
+		return 0;
 }
 
 LightInfo Item::getLightInfo() const

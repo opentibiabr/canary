@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '23'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '24'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -132,6 +132,8 @@ CREATE TABLE IF NOT EXISTS `players` (
     `bonus_rerolls` bigint(21) NOT NULL DEFAULT '0',
     `prey_wildcard` bigint(21) NOT NULL DEFAULT '0',
     `task_points` bigint(21) NOT NULL DEFAULT '0',
+    `forge_dusts` bigint(21) NOT NULL DEFAULT '0',
+    `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
     `quickloot_fallback` tinyint(1) DEFAULT '0',
     `lookmountbody` tinyint(3) unsigned NOT NULL DEFAULT '0',
     `lookmountfeet` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -241,6 +243,21 @@ CREATE TABLE IF NOT EXISTS `daily_reward_history` (
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Tabble Structure `forge_history`
+CREATE TABLE IF NOT EXISTS `forge_history` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `player_id` int NOT NULL,
+    `action_type` int NOT NULL DEFAULT '0',
+    `description` text NOT NULL,
+    `is_success` tinyint NOT NULL DEFAULT '0',
+    `bonus` tinyint NOT NULL DEFAULT '0',
+    `done_at` bigint NOT NULL,
+    `done_at_date` datetime DEFAULT NOW(),
+    `cost` bigint UNSIGNED NOT NULL DEFAULT '0',
+    `gained` bigint UNSIGNED NOT NULL DEFAULT '0',
+    CONSTRAINT `forge_history_pk` PRIMARY KEY (`id`),
+    FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE CASCADE
+) ENGINE='InnoDB' DEFAULT CHARSET=utf8;
 
 -- Table structure `global_storage`
 CREATE TABLE IF NOT EXISTS `global_storage` (

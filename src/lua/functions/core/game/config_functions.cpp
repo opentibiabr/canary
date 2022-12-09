@@ -49,7 +49,6 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", STAMINA_SYSTEM)
 	registerEnumIn(L, "configKeys", WARN_UNSAFE_SCRIPTS)
 	registerEnumIn(L, "configKeys", CONVERT_UNSAFE_SCRIPTS)
-	registerEnumIn(L, "configKeys", CLASSIC_EQUIPMENT_SLOTS)
 	registerEnumIn(L, "configKeys", ALLOW_BLOCK_SPAWN)
 	registerEnumIn(L, "configKeys", CLASSIC_ATTACK_SPEED)
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO)

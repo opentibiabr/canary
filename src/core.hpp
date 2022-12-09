@@ -11,7 +11,7 @@
 #define SRC_CORE_HPP_
 
 static constexpr auto STATUS_SERVER_NAME = "Canary";
-static constexpr auto STATUS_SERVER_VERSION = "1.5.0";
+static constexpr auto STATUS_SERVER_VERSION = "2.6.0";
 static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;

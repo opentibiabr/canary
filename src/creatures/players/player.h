@@ -2464,6 +2464,10 @@ class Player final : public Creature, public Cylinder
 			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
 		}
 		void updateBaseSpeed() {
+			if (baseSpeed >= PLAYER_MAX_SPEED) {
+				return;
+			}
+
 			if (!hasFlag(PlayerFlag_SetMaxSpeed)) {
 				baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 			} else {

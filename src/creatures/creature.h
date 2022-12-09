@@ -183,17 +183,7 @@ class Creature : virtual public Thing
 		uint16_t getSpeed() const {
 			return static_cast<uint16_t>(baseSpeed + varSpeed);
 		}
-		void setSpeed(int32_t varSpeedDelta) {
-			int32_t oldSpeed = getSpeed();
-			varSpeed = varSpeedDelta;
-
-			if (getSpeed() <= 0) {
-				stopEventWalk();
-				cancelNextWalk = true;
-			} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
-				addEventWalk();
-			}
-		}
+		void setSpeed(int32_t varSpeedDelta);
 
 		void setBaseSpeed(uint16_t newBaseSpeed) {
 			baseSpeed = newBaseSpeed;

@@ -407,7 +407,7 @@ int PlayerFunctions::luaPlayerAddTaskHuntingPoints(lua_State* L) {
 	if (Player* player = getUserdata<Player>(L, 1)) {
 		auto points = getNumber<uint64_t>(L, 2);
 		player->addTaskHuntingPoints(getNumber<uint64_t>(L, 2));
-		lua_pushnumber(L, points);
+		lua_pushnumber(L, static_cast<lua_Number>(points));
 	} else {
 		lua_pushnil(L);
 	}

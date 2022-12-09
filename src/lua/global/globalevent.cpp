@@ -29,9 +29,7 @@ GlobalEvents::GlobalEvents() :
 	scriptInterface.initState();
 }
 
-GlobalEvents::~GlobalEvents() {
-	clear(false);
-}
+GlobalEvents::~GlobalEvents() = default;
 
 void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ) {
@@ -41,6 +39,17 @@ void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 			++it;
 		}
 	}
+}
+
+void GlobalEvents::clear() {
+	g_scheduler().stopEvent(thinkEventId);
+	thinkEventId = 0;
+	g_scheduler().stopEvent(timerEventId);
+	timerEventId = 0;
+
+	thinkMap.clear();
+	serverMap.clear();
+	timerMap.clear();
 }
 
 void GlobalEvents::clear(bool fromLua) {

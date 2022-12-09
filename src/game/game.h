@@ -66,6 +66,9 @@ class Game
 			return instance;
 		}
 
+		void resetMonsters() const;
+		void resetNpcs() const;
+
 		void loadBoostedCreature();
 		void start(ServiceManager* manager);
 
@@ -459,6 +462,9 @@ class Game
 
 		const std::map<uint16_t, std::map<uint8_t, uint64_t>>& getItemsPrice() const { return itemsPriceMap; }
 		const phmap::flat_hash_map<uint32_t, Player*>& getPlayers() const { return players; }
+		const std::map<uint32_t, Monster*>& getMonsters() const {
+			return monsters;
+		}
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
 		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
@@ -488,8 +494,6 @@ class Game
 		Item* getUniqueItem(uint16_t uniqueId);
 		bool addUniqueItem(uint16_t uniqueId, Item* item);
 		void removeUniqueItem(uint16_t uniqueId);
-
-		bool reload(ReloadTypes_t reloadType);
 
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);

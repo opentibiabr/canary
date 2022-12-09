@@ -102,13 +102,17 @@ allConsoleLog = false
 stashMoving = false
 depotChest = 4
 autoLoot = false
--- autoBank = true, the dropped coins from monsters will be automatically 
+-- autoBank = true, the dropped coins from monsters will be automatically
 -- deposited to your bank account.
 autoBank = false
 
 -- Teleport summon
 -- Set to true will never remove the summon
 teleportSummons = false
+-- NOTE: true will allow the /reload command to be used
+-- NOTE: Using this script might cause unwanted changes
+-- This script forces a reload in the entire server, this means that everything that is stored in memory might stop to work properly and/or completely, this script should be used in test environments only
+allowReload = false
 
 -- Stamina in Trainers
 staminaTrainer = false
@@ -174,7 +178,7 @@ pushWhenAttacking = false
 -- NOTE: If a map with the name already exists in the world folder, the map will not be downloaded even if the toggleDownloadMap is true
 toggleDownloadMap = true
 mapName = "otservbr"
-mapDownloadUrl = "https://github.com/opentibiabr/otservbr-global/releases/download/v1.5.0/otservbr.otbm"
+mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v1.5.0/otservbr.otbm"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations

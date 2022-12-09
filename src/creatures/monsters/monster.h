@@ -216,6 +216,10 @@ class Monster final : public Creature
 			return mType->info.raceid;
 		}
 
+		void updateTargetList();
+		void clearTargetList();
+		void clearFriendList();
+
 		BlockType_t blockHit(Creature* attacker, CombatType_t combatType, int32_t& damage,
                               bool checkDefense = false, bool checkArmor = false, bool field = false) override;
 
@@ -264,10 +268,6 @@ class Monster final : public Creature
 		void removeFriend(Creature* creature);
 		void addTarget(Creature* creature, bool pushFront = false);
 		void removeTarget(Creature* creature);
-
-		void updateTargetList();
-		void clearTargetList();
-		void clearFriendList();
 
 		void death(Creature* lastHitCreature) override;
 		Item* getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature) override;

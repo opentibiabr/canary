@@ -31,7 +31,13 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HIRELING_NAMECHANGE = 21,
 	OFFER_TYPE_HIRELING_SEXCHANGE = 22,
 	OFFER_TYPE_HIRELING_SKILL = 23,
-	OFFER_TYPE_HIRELING_OUTFIT = 24
+	OFFER_TYPE_HIRELING_OUTFIT = 24,
+	OFFER_TYPE_HUNTINGSLOT = 25
+}
+
+GameStore.SubActions = {
+	PREY_THIRDSLOT = 0,
+	TASKHUNTING_THIRDSLOT = 14
 }
 
 GameStore.ActionType = {
@@ -309,22 +315,24 @@ function parseRequestStoreOffers(playerId, msg)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_USEFUL_THINGS then
 		local subAction = msg:getByte()
-		local redirectId = subAction
-		local category = nil
-		if subAction >= 4 then
-			category = GameStore.getCategoryByName("Blessings")
-		else
-			category = GameStore.getCategoryByName("Useful Things")
-		end
+		local offerId = subAction
+		local category = GameStore.getCategoryByName("Useful Things")
 
 		-- Third prey slot offerId
 		-- We can't use offerId 0
-		if subAction == 0 then
-			redirectId = 65008
+		-- Subaction 0 is offer from "unlock permanently" of prey window button, offerId 4 is the id of the gamestore.lua third slot
+		if subAction == GameStore.SubActions.PREY_THIRDSLOT then
+			offerId = 4
+		-- Subaction 14 is offer from "unlock permanently" of task hunting window button, offerId 5 is the id of the gamestore.lua third slot
+		elseif subAction == GameStore.SubActions.TASKHUNTING_THIRDSLOT then
+			offerId = 5
 		end
+		-- Enable this for look sub action offer button
+		-- Example of subaction is the button for redirect to the store on clicking "unlock permanently" on prey window
+		--Spdlog.info("SubAction ".. subAction)
 
 		if category then
-			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, redirectId)
+			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
 
 	elseif actionType == GameStore.ActionType.OPEN_OFFER then

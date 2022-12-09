@@ -238,10 +238,12 @@ local trapDoors =
 
 local crate = MoveEvent()
 
-function crate.onStepIn(player, item, position, fromPosition, toPosition)
+function crate.onStepIn(creature, item, position, fromPosition, toPosition)
+	local player = Player(creature)
 	if not player then
-		return true
+		return false
 	end
+
 	for j = 1, #positions do
 		if j <= 20 then
 			if player:getPosition() == Position(positions[j]) then

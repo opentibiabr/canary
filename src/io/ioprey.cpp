@@ -504,7 +504,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 		}
 
 		if (const TaskHuntingOption* option = GetTaskRewardOption(slot)) {
-			uint16_t reward;
+			uint64_t reward;
 			int32_t boostChange = uniform_random(0, 100);
 			if (slot->rarity >= 4 && boostChange <= 5) {
 				boostChange = 20;
@@ -524,7 +524,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 			}
 
 			std::ostringstream ss;
-			reward = static_cast<uint16_t>(std::ceil((reward * boostChange) / 10));
+			reward = static_cast<uint64_t>(std::ceil((reward * boostChange) / 10));
 			ss << "Congratulations! You have earned " << reward;
 			if (boostChange == 20) {
 				ss << " Hunting Task points including a 100% bonus.";

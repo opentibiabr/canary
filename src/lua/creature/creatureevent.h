@@ -102,6 +102,8 @@ class CreatureEvents final : public BaseEvents {
 
 		bool registerLuaEvent(CreatureEvent* event);
 		void removeInvalidEvents();
+		void clear();
+		// Old XML interface
 		void clear(bool fromLua) override final;
 
 	private:

@@ -402,6 +402,18 @@ int PlayerFunctions::luaPlayerGetTaskHuntingPoints(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerAddTaskHuntingPoints(lua_State* L) {
+	// player:addTaskHuntingPoints(amount)
+	if (Player* player = getUserdata<Player>(L, 1)) {
+		auto points = getNumber<uint64_t>(L, 2);
+		player->addTaskHuntingPoints(getNumber<uint64_t>(L, 2));
+		lua_pushnumber(L, points);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (const Player* player = getUserdata<Player>(L, 1)) {

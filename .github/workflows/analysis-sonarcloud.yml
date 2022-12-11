@@ -26,6 +26,7 @@ jobs:
       - uses: actions/checkout@main
         if: ${{ github.event_name == 'pull_request' || github.event_name == 'pull_request_target' }}
         with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
 

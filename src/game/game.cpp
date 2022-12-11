@@ -880,7 +880,7 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	// Prevent the player from being able to move the item within the imbuement window
 	if (player->hasImbuingItem()) {
         return;
-    }
+	}
 
 	uint8_t fromIndex = 0;
 	if (fromPos.x == 0xFFFF) {

@@ -876,6 +876,10 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	if (!player) {
 		return;
 	}
+	
+	if (player->hasImbuingItem()) {
+        return;
+    }
 
 	uint8_t fromIndex = 0;
 	if (fromPos.x == 0xFFFF) {

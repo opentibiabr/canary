@@ -465,9 +465,9 @@ void Npc::onThinkWalk(uint32_t interval)
 		return;
 	}
 
-	Direction dir = Position::getRandomDirection();
-	if (canWalkTo(getPosition(), dir)) {
-		listWalkDir.push_front(dir);
+	Direction newDirection;
+	if (getRandomStep(newDirection)) {
+		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
 
@@ -560,6 +560,27 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 
 bool Npc::getNextStep(Direction& nextDirection, uint32_t& flags) {
 	return Creature::getNextStep(nextDirection, flags);
+}
+
+bool Npc::getRandomStep(Direction& moveDirection) const
+{
+	static std::vector<Direction> directionvector {
+		Direction::DIRECTION_NORTH,
+		Direction::DIRECTION_WEST,
+		Direction::DIRECTION_EAST,
+		Direction::DIRECTION_SOUTH
+	};
+	std::shuffle(directionvector.begin(), directionvector.end(), getRandomGenerator());
+
+	for (const Position& creaturePos = getPosition();
+		Direction direction : directionvector)
+	{
+		if (canWalkTo(creaturePos, direction)) {
+			moveDirection = direction;
+			return true;
+		}
+	}
+	return false;
 }
 
 void Npc::addShopPlayer(Player* player)

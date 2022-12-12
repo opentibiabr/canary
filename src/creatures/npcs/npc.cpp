@@ -570,7 +570,7 @@ bool Npc::getRandomStep(Direction& moveDirection) const
 		Direction::DIRECTION_EAST,
 		Direction::DIRECTION_SOUTH
 	};
-	std::shuffle(directionvector.begin(), directionvector.end(), getRandomGenerator());
+	std::ranges::shuffle(directionvector, getRandomGenerator());
 
 	for (const Position& creaturePos = getPosition();
 		Direction direction : directionvector)

@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/player.h"
 #include "lua/creature/talkaction.h"
@@ -28,8 +28,10 @@ TalkActions::TalkActions()
 	scriptInterface.initState();
 }
 
-TalkActions::~TalkActions() {
-	clear(false);
+TalkActions::~TalkActions() = default;
+
+void TalkActions::clear() {
+	talkActions.clear();
 }
 
 void TalkActions::clear(bool fromLua) {

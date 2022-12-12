@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <fstream>
+#include "pch.hpp"
 
 #ifdef OS_WINDOWS
 	#include "conio.h"
@@ -27,6 +25,7 @@
 
 #include "declarations.hpp"
 #include "creatures/combat/spells.h"
+#include "creatures/players/grouping/familiars.h"
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
@@ -43,11 +42,12 @@
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
 #include "io/ioprey.h"
-#include "io/iobestiary.h"
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
 #endif
+
+#include "core.hpp"
 
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
@@ -70,9 +70,8 @@ void toggleForceCloseButton() {
 
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
-	g_loaderSignal.notify_all();
 	getchar();
-	exit(-1);
+	g_loaderSignal.notify_all();
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -94,8 +93,16 @@ void modulesLoadHelper(bool loaded, std::string moduleName) {
 }
 
 void loadModules() {
-	modulesLoadHelper(g_configManager().load(),
-		"config.lua");
+	modulesLoadHelper(g_configManager().load(), g_configManager().getConfigFileLua());
+
+	// If "USE_ANY_DATAPACK_FOLDER" is set to true then you can choose any datapack folder for your server
+	auto useAnyDatapack = g_configManager().getBoolean(USE_ANY_DATAPACK_FOLDER);
+	auto datapackName = g_configManager().getString(DATA_DIRECTORY);
+	if (!useAnyDatapack && (datapackName != "data-canary" && datapackName != "data-otservbr-global" || datapackName != "data-otservbr-global" && datapackName != "data-canary")) {
+		SPDLOG_ERROR("The datapack folder name '{}' is wrong, please select valid datapack name 'data-canary' or 'data-otservbr-global", datapackName);
+		SPDLOG_ERROR("Or enable in config.lua to use any datapack folder", datapackName);
+		startupErrorMessage();
+	}
 
 	SPDLOG_INFO("Server protocol: {}.{}",
 		CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER);
@@ -125,8 +132,8 @@ void loadModules() {
 	// Run database manager
 	SPDLOG_INFO("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
-		SPDLOG_ERROR("The database you have specified in config.lua is empty, "
-			"please import the schema.sql to your database.");
+		SPDLOG_ERROR("The database you have specified in {} is empty, "
+			"please import the schema.sql to your database.", g_configManager().getConfigFileLua());
 		startupErrorMessage();
 	}
 
@@ -138,45 +145,48 @@ void loadModules() {
 		SPDLOG_INFO("No tables were optimized");
 	}
 
-	modulesLoadHelper((g_game().loadAppearanceProtobuf("data/items/appearances.dat") == ERROR_NONE),
+	// Core start
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE),
 		"appearances.dat");
 	modulesLoadHelper(Item::items.loadFromXml(),
 		"items.xml");
 
-	// Lua Env
-	modulesLoadHelper((g_luaEnvironment.loadFile("data/global.lua") == 0),
-		"data/global.lua");
-	if (g_configManager().getBoolean(RATE_USE_STAGES)) {
-		modulesLoadHelper((g_luaEnvironment.loadFile("data/stages.lua") == 0),
-			"data/stages.lua");
-	}
-	modulesLoadHelper((g_luaEnvironment.loadFile("data/startup/startup.lua") == 0),
-		"data/startup/startup.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile("data/npclib/load.lua") == 0),
-		"data/npclib/load.lua");
-
-	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
-		"data/scripts/libs");
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
+		"core.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0),
+		"scripts/talkactions.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
-		"data/XML/vocations.xml");
+		"XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),
-		"data/XML/events.xml");
+		"XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
-		"data/XML/outfits.xml");
+		"XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
-		"data/XML/familiars.xml");
+		"XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(),
-		"data/XML/imbuements.xml");
+		"XML/imbuements.xml");
 	modulesLoadHelper(g_modules().loadFromXml(),
-		"data/modules/modules.xml");
+		"modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(),
-		"data/events/events.xml");
+		"events/events.xml");
+	modulesLoadHelper((g_npc().load(true, false)),
+		"npclib");
+
+	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
+	// Load libs first
+	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
+		"scripts/libs");
+	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false),
-		"data/scripts");
+		"scripts");
+	// Load monsters
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
-		"data/monster");
-	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
-		"data/npc");
+		"monster");
+	modulesLoadHelper((g_npc().load(false, true)),
+		"npc");
 
 	g_game().loadBoostedCreature();
 	g_ioprey().InitializeTaskHuntOptions();
@@ -242,8 +252,6 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
-	SPDLOG_INFO("Compiled with {}", BOOST_COMPILER);
-
 	std::string platform;
 	#if defined(__amd64__) || defined(_M_X64)
 		platform = "x64";
@@ -255,7 +263,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		platform = "unknown";
 	#endif
 
-	SPDLOG_INFO("Compiled on {} {} for platform {}\n", __DATE__, __TIME__, platform);
+	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", BOOST_COMPILER, __DATE__, __TIME__, platform);
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);
@@ -265,13 +273,14 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("Visit our website for updates, support, and resources: "
 		"https://docs.opentibiabr.org/");
 
-	// check if config.lua or config.lua.dist exist
-	std::ifstream c_test("./config.lua");
+	std::string configName = "config.lua";
+	// Check if config or config.dist exist
+	std::ifstream c_test("./" + configName);
 	if (!c_test.is_open()) {
-		std::ifstream config_lua_dist("./config.lua.dist");
+		std::ifstream config_lua_dist(configName + ".dist");
 		if (config_lua_dist.is_open()) {
-			SPDLOG_INFO("Copying config.lua.dist to config.lua");
-			std::ofstream config_lua("config.lua");
+			SPDLOG_INFO("Copying {}.dist to {}", configName, configName);
+			std::ofstream config_lua(configName);
 			config_lua << config_lua_dist.rdbuf();
 			config_lua.close();
 			config_lua_dist.close();
@@ -279,6 +288,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	} else {
 		c_test.close();
 	}
+
+	g_configManager().setConfigFileLua(configName);
 
 	// Init and load modules
 	loadModules();

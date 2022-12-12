@@ -20,7 +20,6 @@
 #ifndef SRC_LUA_SCRIPTS_SCRIPTS_H_
 #define SRC_LUA_SCRIPTS_SCRIPTS_H_
 
-#include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 
 class Scripts {
@@ -38,6 +37,8 @@ class Scripts {
 			// Instantiated on first use
 			return instance;
 		}
+
+		void clear() const;
 
 		bool loadEventSchedulerScripts(const std::string& fileName);
 		bool loadScripts(std::string folderName, bool isLib, bool reload);

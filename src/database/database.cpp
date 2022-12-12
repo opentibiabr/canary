@@ -17,12 +17,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
+#include "config/configmanager.h"
 #include "database/database.h"
-
-#include <mysql/errmsg.h>
-
 
 Database::~Database()
 {
@@ -280,6 +278,28 @@ const char* DBResult::getStream(const std::string& s, unsigned long& size) const
 
 	size = mysql_fetch_lengths(handle)[it->second];
 	return row[it->second];
+}
+
+uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const
+{
+	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
+	if (result > std::numeric_limits<uint8_t>::max()) {
+		SPDLOG_ERROR("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
+		return 0;
+	}
+
+	return result;
+}
+
+int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const
+{
+	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
+	if (result > std::numeric_limits<int8_t>::max()) {
+		SPDLOG_ERROR("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
+		return 0;
+	}
+
+	return result;
 }
 
 size_t DBResult::countResults() const

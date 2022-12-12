@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="The dead of the plains of havoc are becoming restless!" />
+	<announce delay="20000" type="event" message="A veritable army of undead is amassing in the plains of havoc,
+    beware!" />
+	<announce delay="60000" type="event" message="The dreaded banshee lead their undead minions
+    to claim the plains of havoc!" />
+	<areaspawn delay="60000" fromx="32789" fromy="32277" fromz="7" tox="32836" toy="32299" toz="7">
+		<monster name="Skeleton" amount="35" />
+		<monster name="Banshee" amount="12" />
+		<monster name="ghoul" amount="22" />
+		<monster name="demon skeleton" amount="18" />
+		<monster name="Vampire" amount="15" />
+	</areaspawn>
+</raid>

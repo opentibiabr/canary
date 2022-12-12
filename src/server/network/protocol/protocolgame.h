@@ -20,15 +20,9 @@
 #ifndef SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
 #define SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_
 
-#include <string>
-
 #include "server/network/protocol/protocol.h"
 #include "creatures/interactions/chat.h"
-#include "config/configmanager.h"
 #include "creatures/creature.h"
-#include "game/scheduling/tasks.h"
-#include "game/gamestore.h"
-#include "io/ioprey.h"
 
 class NetworkMessage;
 class Player;
@@ -74,13 +68,13 @@ public:
 		return "gameworld protocol";
 	}
 
-	explicit ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {}
+	explicit ProtocolGame(Connection_ptr initConnection);
 
 	void login(const std::string &name, uint32_t accnumber, OperatingSystem_t operatingSystem);
 	void logout(bool displayEffect, bool forced);
 
 	void AddItem(NetworkMessage &msg, const Item *item);
-	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count);
+	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier);
 
 	uint16_t getVersion() const
 	{
@@ -165,6 +159,7 @@ private:
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
+	void parseSendResourceBalance();
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarysendRaces();
@@ -245,12 +240,6 @@ private:
 	void parseOpenPrivateChannel(NetworkMessage &msg);
 	void parseCloseChannel(NetworkMessage &msg);
 
-	//Store methods
-	void parseStoreOpen(NetworkMessage &message);
-	void parseStoreRequestOffers(NetworkMessage &message);
-	void parseStoreBuyOffer(NetworkMessage &message);
-	void parseCoinTransfer(NetworkMessage &msg);
-
 	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
 
@@ -273,7 +262,24 @@ private:
 	void closeImbuementWindow();
 
 	void sendItemsPrice();
+	
+	//Forge System
 	void sendForgingData();
+	void sendOpenForge();
+	void sendForgeError(const ReturnValue returnValue);
+	void closeForgeWindow();
+	void parseForgeEnter(NetworkMessage &msg);
+	void parseForgeBrowseHistory(NetworkMessage& msg);
+	void sendForgeFusionItem(
+		uint16_t itemId,
+		uint8_t tier,
+		bool success,
+		uint8_t bonus,
+		uint8_t coreCount
+	);
+	void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem);
+	void sendForgeHistory(uint8_t page);
+	void sendForgeSkillStats(NetworkMessage &msg) const;
 
 	void sendDistanceShoot(const Position &from, const Position &to, uint8_t type);
 	void sendMagicEffect(const Position &pos, uint8_t type);
@@ -297,12 +303,11 @@ private:
 	void sendUnjustifiedPoints(const uint8_t &dayProgress, const uint8_t &dayLeft, const uint8_t &weekProgress, const uint8_t &weekLeft, const uint8_t &monthProgress, const uint8_t &monthLeft, const uint8_t &skullDuration);
   
 	void sendCancelWalk();
-	void sendChangeSpeed(const Creature *creature, uint32_t speed);
+	void sendChangeSpeed(const Creature *creature, uint16_t speed);
 	void sendCancelTarget();
 	void sendCreatureOutfit(const Creature *creature, const Outfit_t &outfit);
 	void sendStats();
 	void sendBasicData();
-	void sendStoreHighlight();
 	void sendTextMessage(const TextMessage &message);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
 
@@ -327,6 +332,7 @@ private:
 
 	void sendCreatureWalkthrough(const Creature *creature, bool walkthrough);
 	void sendCreatureShield(const Creature *creature);
+	void sendCreatureEmblem(const Creature *creature);
 	void sendCreatureSkull(const Creature *creature);
 	void sendCreatureType(const Creature *creature, uint8_t creatureType);
 
@@ -334,24 +340,23 @@ private:
 	void sendCloseShop();
 	void sendClientCheck();
 	void sendGameNews();
-	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0);
+	void sendResourcesBalance(uint64_t money = 0, uint64_t bank = 0, uint64_t preyCards = 0, uint64_t taskHunting = 0, uint64_t forgeDust = 0, uint64_t forgeSliver = 0, uint64_t forgeCores = 0);
 	void sendResourceBalance(Resource_t resourceType, uint64_t value);
-	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint32_t, uint32_t> &inventoryMap);
+	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
 	void sendMarketEnter(uint32_t depotId);
 	void updateCoinBalance();
 	void sendMarketLeave();
-	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
+	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers, uint8_t tier);
 	void sendMarketAcceptOffer(const MarketOfferEx &offer);
 	void sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, const MarketOfferList &sellOffers);
 	void sendMarketCancelOffer(const MarketOfferEx &offer);
 	void sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers);
-	void sendMarketDetail(uint16_t itemId);
+	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const Item *item, bool ack);
 	void sendCloseTrade();
 	void updatePartyTrackerAnalyzer(const Party* party);
 
 	void sendTextWindow(uint32_t windowTextId, Item *item, uint16_t maxlen, bool canWrite);
-	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendHouseWindow(uint32_t windowTextId, const std::string &text);
 	void sendOutfitWindow();
 	void sendPodiumWindow(const Item* podium, const Position& position, uint16_t itemId, uint8_t stackpos);
@@ -366,6 +371,7 @@ private:
 
 	void sendCreatureLight(const Creature *creature);
 	void sendCreatureIcon(const Creature* creature);
+	void sendUpdateCreature(const Creature* creature);
 	void sendWorldLight(const LightInfo &lightInfo);
 	void sendTibiaTime(int32_t time);
 
@@ -377,19 +383,9 @@ private:
 
 	void sendCoinBalance();
 
-	void sendOpenStore(uint8_t serviceType);
-	void sendStoreCategoryOffers(StoreCategory *category);
-	void sendStoreError(GameStoreError_t error, const std::string &message);
-	void sendStorePurchaseSuccessful(const std::string &message, const uint32_t coinBalance);
-	void sendStoreRequestAdditionalInfo(uint32_t offerId, ClientOffer_t clientOfferType);
-
 	void sendPreyTimeLeft(const PreySlot* slot);
 	void sendPreyData(const PreySlot* slot);
 	void sendPreyPrices();
-
-	void sendStoreTrasactionHistory(HistoryStoreOfferList &list, uint32_t page, uint8_t entriesPerPage);
-	void parseStoreOpenTransactionHistory(NetworkMessage &msg);
-	void parseStoreRequestTransactionHistory(NetworkMessage &msg);
 
 	//tiles
 	void sendMapDescription(const Position &pos);
@@ -472,6 +468,8 @@ private:
 	//reloadCreature
 	void reloadCreature(const Creature *creature);
 
+	void getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap) const;
+
 	friend class Player;
 
 	phmap::flat_hash_set<uint32_t> knownCreatureSet;
@@ -479,7 +477,7 @@ private:
 
 	uint32_t eventConnect = 0;
 	uint32_t challengeTimestamp = 0;
-	uint16_t version = CLIENT_VERSION;
+	uint16_t version = 0;
 	int32_t clientVersion = 0;
 
 	uint8_t challengeRandom = 0;
@@ -495,6 +493,9 @@ private:
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
 	void sendSpecialContainersAvailable();
+	void addBless();
+	void parsePacketDead(uint8_t recvbyte);
+
 };
 
 #endif  // SRC_SERVER_NETWORK_PROTOCOL_PROTOCOLGAME_H_

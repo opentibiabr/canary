@@ -17,17 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <boost/range/adaptor/reversed.hpp>
-
+#include "core.hpp"
 #include "creatures/monsters/monster.h"
+#include "game/functions/game_reload.hpp"
 #include "game/game.h"
 #include "items/item.h"
 #include "io/iobestiary.h"
 #include "io/iologindata.h"
 #include "lua/functions/core/game/game_functions.hpp"
+#include "game/scheduling/tasks.h"
 #include "lua/functions/creatures/npc/npc_type_functions.hpp"
+#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 
 // Game
@@ -571,21 +573,20 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 
 int GameFunctions::luaGameReload(lua_State* L) {
 	// Game.reload(reloadType)
-	ReloadTypes_t reloadType = getNumber<ReloadTypes_t>(L, 1);
-	if (!reloadType) {
-		lua_pushnil(L);
-		return 1;
+	Reload_t reloadType = getNumber<Reload_t>(L, 1);
+	if (g_gameReload.getReloadNumber(reloadType) == g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_NONE)) {
+		reportErrorFunc("Reload type is none");
+		pushBoolean(L, false);
+		return 0;
 	}
 
-	if (reloadType == RELOAD_TYPE_GLOBAL) {
-		pushBoolean(L, g_luaEnvironment.loadFile("data/global.lua") == 0);
-		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
-		pushBoolean(L, g_scripts().loadScripts("scripts/lib", true, true));
-	} else if (reloadType == RELOAD_TYPE_STAGES) {
-		pushBoolean(L, g_luaEnvironment.loadFile("data/stages.lua") == 0);
-	} else {
-		pushBoolean(L, g_game().reload(reloadType));
+	if (g_gameReload.getReloadNumber(reloadType) >= g_gameReload.getReloadNumber(Reload_t::RELOAD_TYPE_LAST)) {
+		reportErrorFunc("Reload type not exist");
+		pushBoolean(L, false);
+		return 0;
 	}
+
+	pushBoolean(L, g_gameReload.init(reloadType));
 	lua_gc(g_luaEnvironment.getLuaState(), LUA_GCCOLLECT, 0);
 	return 1;
 }
@@ -605,7 +606,7 @@ int GameFunctions::luaGameHasDistanceEffect(lua_State* L) {
 }
 
 int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
-	uint32_t playerId = getNumber<uint32_t>(L,1);
+	uint32_t playerId = getNumber<uint32_t>(L, 1);
 
 	Player* offlinePlayer = new Player(nullptr);
 	if (!IOLoginData::loadPlayerById(offlinePlayer, playerId)) {
@@ -614,6 +615,72 @@ int GameFunctions::luaGameGetOfflinePlayer(lua_State* L) {
 	} else {
 		pushUserdata<Player>(L, offlinePlayer);
 		setMetatable(L, -1, "Player");
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameAddInfluencedMonster(lua_State *L) {
+	// Game.addInfluencedMonster(monster)
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushboolean(L, g_game().addInfluencedMonster(monster));
+	return 1;
+}
+
+int GameFunctions::luaGameRemoveInfluencedMonster(lua_State *L) {
+	// Game.removeInfluencedMonster(monsterId)
+	uint32_t monsterId = getNumber<uint32_t>(L, 1);
+	auto create = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().removeInfluencedMonster(monsterId, create));
+	return 1;
+}
+
+int GameFunctions::luaGameGetInfluencedMonsters(lua_State *L) {
+	// Game.getInfluencedMonsters()
+	const auto monsters = g_game().getInfluencedMonsters();
+	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	int index = 0;
+	for (const auto &monsterId : monsters) {
+		++index;
+		lua_pushnumber(L, monsterId);
+		lua_rawseti(L, -2, index);
+	}
+
+	return 1;
+}
+
+int GameFunctions::luaGameMakeFiendishMonster(lua_State *L) {
+	// Game.makeFiendishMonster(monsterId[default= 0])
+	uint32_t monsterId = getNumber<uint32_t>(L, 1, 0);
+	auto createForgeableMonsters = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().makeFiendishMonster(monsterId, createForgeableMonsters));
+	return 1;
+}
+
+int GameFunctions::luaGameRemoveFiendishMonster(lua_State *L) {
+	// Game.removeFiendishMonster(monsterId)
+	uint32_t monsterId = getNumber<uint32_t>(L, 1);
+	auto create = getBoolean(L, 2, false);
+	lua_pushnumber(L, g_game().removeFiendishMonster(monsterId, create));
+	return 1;
+}
+
+int GameFunctions::luaGameGetFiendishMonsters(lua_State *L) {
+	// Game.getFiendishMonsters()
+	const auto monsters = g_game().getFiendishMonsters();
+
+	lua_createtable(L, static_cast<int>(monsters.size()), 0);
+	int index = 0;
+	for (const auto &monsterId : monsters) {
+		++index;
+		lua_pushnumber(L, monsterId);
+		lua_rawseti(L, -2, index);
 	}
 
 	return 1;

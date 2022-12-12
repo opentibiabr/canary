@@ -20,8 +20,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/scripts/luascript.h"
 #include "lua/functions/creatures/monster/charm_functions.hpp"
 #include "lua/functions/creatures/monster/loot_functions.hpp"
@@ -56,6 +54,15 @@ class MonsterFunctions final : LuaScriptInterface {
 				registerMethod(L, "Monster", "searchTarget", MonsterFunctions::luaMonsterSearchTarget);
 				registerMethod(L, "Monster", "setSpawnPosition", MonsterFunctions::luaMonsterSetSpawnPosition);
 				registerMethod(L, "Monster", "getRespawnType", MonsterFunctions::luaMonsterGetRespawnType);
+
+				registerMethod(L, "Monster", "getTimeToChangeFiendish", MonsterFunctions::luaMonsterGetTimeToChangeFiendish);
+				registerMethod(L, "Monster", "setTimeToChangeFiendish", MonsterFunctions::luaMonsterSetTimeToChangeFiendish);
+				registerMethod(L, "Monster", "getMonsterForgeClassification", MonsterFunctions::luaMonsterGetMonsterForgeClassification);
+				registerMethod(L, "Monster", "setMonsterForgeClassification", MonsterFunctions::luaMonsterSetMonsterForgeClassification);
+				registerMethod(L, "Monster", "getForgeStack", MonsterFunctions::luaMonsterGetForgeStack);
+				registerMethod(L, "Monster", "setForgeStack", MonsterFunctions::luaMonsterSetForgeStack);
+				registerMethod(L, "Monster", "configureForgeSystem", MonsterFunctions::luaMonsterConfigureForgeSystem);
+				registerMethod(L, "Monster", "clearFiendishStatus", MonsterFunctions::luaMonsterClearFiendishStatus);
 
 				CharmFunctions::init(L);
 				LootFunctions::init(L);
@@ -97,6 +104,15 @@ class MonsterFunctions final : LuaScriptInterface {
 
 		static int luaMonsterSetSpawnPosition(lua_State* L);
 		static int luaMonsterGetRespawnType(lua_State* L);
+
+		static int luaMonsterGetTimeToChangeFiendish(lua_State *L);
+		static int luaMonsterSetTimeToChangeFiendish(lua_State *L);
+		static int luaMonsterGetMonsterForgeClassification(lua_State *L);
+		static int luaMonsterSetMonsterForgeClassification(lua_State *L);
+		static int luaMonsterGetForgeStack(lua_State *L);
+		static int luaMonsterSetForgeStack(lua_State *L);
+		static int luaMonsterConfigureForgeSystem(lua_State *L);
+		static int luaMonsterClearFiendishStatus(lua_State *L);
 
 		friend class CreatureFunctions;
 };

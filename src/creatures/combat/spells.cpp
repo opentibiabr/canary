@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/combat.h"
 #include "creatures/combat/spells.h"
@@ -31,10 +31,7 @@ Spells::Spells()
 	scriptInterface.initState();
 }
 
-Spells::~Spells()
-{
-	clear(false);
-}
+Spells::~Spells() = default;
 
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 {
@@ -88,6 +85,12 @@ TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 	}
 
 	return TALKACTION_FAILED;
+}
+
+void Spells::clear()
+{
+	instants.clear();
+	runes.clear();
 }
 
 void Spells::clearMaps(bool fromLua)

@@ -513,24 +513,6 @@ enum GuildEmblems_t : uint8_t {
 	GUILDEMBLEM_OTHER = 5,
 };
 
-enum ReloadTypes_t : uint8_t  {
-	RELOAD_TYPE_ALL,
-	RELOAD_TYPE_CHAT,
-	RELOAD_TYPE_COMMANDS,
-	RELOAD_TYPE_CONFIG,
-	RELOAD_TYPE_EVENTS,
-	RELOAD_TYPE_GLOBAL,
-	RELOAD_TYPE_IMBUEMENTS,
-	RELOAD_TYPE_ITEMS,
-	RELOAD_TYPE_MODULES,
-	RELOAD_TYPE_MONSTERS,
-	RELOAD_TYPE_MOUNTS,
-	RELOAD_TYPE_NPCS,
-	RELOAD_TYPE_RAIDS,
-	RELOAD_TYPE_SCRIPTS,
-	RELOAD_TYPE_STAGES,
-};
-
 enum NameEval_t : uint8_t {
 	VALID,
 	INVALID,
@@ -567,6 +549,8 @@ enum item_t : uint16_t {
 	ITEM_DEPOT_XVI = 22812,
 	ITEM_DEPOT_XVII = 22813,
 	ITEM_DEPOT_XVIII = 31915,
+	ITEM_DEPOT_XIX = 39723,
+	ITEM_DEPOT_XX = 39724,
 
 	ITEM_FIREFIELD_PVP_FULL = 2118,
 	ITEM_FIREFIELD_PVP_MEDIUM = 2119,
@@ -679,7 +663,11 @@ enum item_t : uint16_t {
 	ITEM_DEATH_RING_ACTIVATED = 6300,
 
 	ITEM_PRISMATIC_RING = 16114,
-	ITEM_PRISMATIC_RING_ACTIVATED = 16264
+	ITEM_PRISMATIC_RING_ACTIVATED = 16264,
+
+	ITEM_FORGE_SLIVER = 37109,
+	ITEM_FORGE_CORE = 37110,
+	ITEM_EXALTATION_CHEST = 37561
 };
 
 // A map which contains items that, when on creating, should be transformed to the default type.
@@ -738,8 +726,8 @@ enum PlayerFlags : uint64_t {
 };
 
 enum PlayerCustomFlags : uint64_t {
-  PlayerCustomFlag_CanMapClickTeleport = 1 << 0,
-  PlayerCustomFlag_IgnoredByNpcs = 1 << 1
+	PlayerCustomFlag_CanMapClickTeleport = 1 << 0,
+	PlayerCustomFlag_IgnoredByNpcs = 1 << 1
 };
 
 enum Blessings_t : uint8_t {

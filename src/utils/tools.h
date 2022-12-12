@@ -20,11 +20,6 @@
 #ifndef SRC_UTILS_TOOLS_H_
 #define SRC_UTILS_TOOLS_H_
 
-#include <random>
-#include <string>
-#include <regex>
-#include <boost/algorithm/string.hpp>
-
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.h"
@@ -66,6 +61,7 @@ std::string getFirstLine(const std::string& str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+std::time_t getTimeNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string& str);
@@ -112,6 +108,10 @@ std::string getObjectCategoryName(ObjectCategory_t category);
 int64_t OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
+
+uint8_t forgeBonus(int32_t number);
+
+std::string formatPrice(std::string price, bool space/* = false*/);
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {

@@ -17,12 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "game/game.h"
 #include "io/iobestiary.h"
-#include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "creatures/players/player.h"
 
@@ -38,7 +37,7 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 	if (charm->type == CHARM_OFFENSIVE) {
 		if (charm->id == CHARM_CRIPPLE) {
 			ConditionSpeed* cripple = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0));
-			cripple->setFormulaVars(-1, 80, -1, 80);
+			cripple->setFormulaVars(-1, 81, -1, 81);
 			target->addCondition(cripple);
 			player->sendCancelMessage(charm->cancelMsg);
 			return false;
@@ -75,14 +74,14 @@ bool IOBestiary::parseCharmCombat(Charm* charm, Player* player, Creature* target
 			}
 			case CHARM_ADRENALINE: {
 				ConditionSpeed* adrenaline = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_HASTE, 10000, 0));
-				adrenaline->setFormulaVars(1, -80, 1, -80);
+				adrenaline->setFormulaVars(1.5, -0, 1.5, -0);
 				player->addCondition(adrenaline);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;
 			}
 			case CHARM_NUMB: {
 				ConditionSpeed* numb = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, CONDITION_PARALYZE, 10000, 0));
-				numb->setFormulaVars(-1, 80, -1, 80);
+				numb->setFormulaVars(-1, 81, -1, 81);
 				target->addCondition(numb);
 				player->sendCancelMessage(charm->cancelMsg);
 				return false;

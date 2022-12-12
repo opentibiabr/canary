@@ -17,12 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/grouping/party.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
-
 
 Party::Party(Player* initLeader) : leader(initLeader)
 {
@@ -329,11 +328,29 @@ void Party::broadcastPartyMessage(MessageClasses msgClass, const std::string& ms
 void Party::updateSharedExperience()
 {
 	if (sharedExpActive) {
-		bool result = canEnableSharedExperience();
+		bool result = getSharedExperienceStatus() == SHAREDEXP_OK;
 		if (result != sharedExpEnabled) {
 			sharedExpEnabled = result;
 			updateAllPartyIcons();
 		}
+	}
+}
+
+const char* Party::getSharedExpReturnMessage(SharedExpStatus_t value)
+{
+	switch (value) {
+		case SHAREDEXP_OK:
+			return "Shared Experience is now active.";
+		case SHAREDEXP_TOOFARAWAY:
+			return "Shared Experience has been activated, but some members of your party are too far away.";
+		case SHAREDEXP_LEVELDIFFTOOLARGE:
+			return "Shared Experience has been activated, but the level spread of your party is too wide.";
+		case SHAREDEXP_MEMBERINACTIVE:
+			return "Shared Experience has been activated, but some members of your party are inactive.";
+		case SHAREDEXP_EMPTYPARTY:
+			return "Shared Experience has been activated, but you are alone in your party.";
+		default:
+			return "An error occured. Unable to activate shared experience.";
 	}
 }
 
@@ -350,13 +367,9 @@ bool Party::setSharedExperience(Player* player, bool newSharedExpActive)
 	this->sharedExpActive = newSharedExpActive;
 
 	if (newSharedExpActive) {
-		this->sharedExpEnabled = canEnableSharedExperience();
-
-		if (this->sharedExpEnabled) {
-			leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Shared Experience is now active.");
-		} else {
-			leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Shared Experience has been activated, but some members of your party are inactive.");
-		}
+		SharedExpStatus_t sharedExpStatus = getSharedExperienceStatus();
+		this->sharedExpEnabled = sharedExpStatus == SHAREDEXP_OK;
+		leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, getSharedExpReturnMessage(sharedExpStatus));
 	} else {
 		leader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Shared Experience has been deactivated.");
 	}
@@ -377,8 +390,13 @@ void Party::shareExperience(uint64_t experience, Creature* target/* = nullptr*/)
 
 bool Party::canUseSharedExperience(const Player* player) const
 {
+	return getMemberSharedExperienceStatus(player) == SHAREDEXP_OK;
+}
+
+SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) const
+{
 	if (memberList.empty()) {
-		return false;
+		return SHAREDEXP_EMPTYPARTY;
 	}
 
 	uint32_t highestLevel = leader->getLevel();
@@ -390,40 +408,42 @@ bool Party::canUseSharedExperience(const Player* player) const
 
 	uint32_t minLevel = static_cast<uint32_t>(std::ceil((static_cast<float>(highestLevel) * 2) / 3));
 	if (player->getLevel() < minLevel) {
-		return false;
+		return SHAREDEXP_LEVELDIFFTOOLARGE;
 	}
 
 	if (!Position::areInRange<30, 30, 1>(leader->getPosition(), player->getPosition())) {
-		return false;
+		return SHAREDEXP_TOOFARAWAY;
 	}
 
 	if (!player->hasFlag(PlayerFlag_NotGainInFight)) {
 		//check if the player has healed/attacked anything recently
 		auto it = ticksMap.find(player->getID());
 		if (it == ticksMap.end()) {
-			return false;
+			return SHAREDEXP_MEMBERINACTIVE;
 		}
 
 		uint64_t timeDiff = OTSYS_TIME() - it->second;
 		if (timeDiff > static_cast<uint64_t>(g_configManager().getNumber(PZ_LOCKED))) {
-			return false;
+			return SHAREDEXP_MEMBERINACTIVE;
 		}
 	}
-	return true;
+	return SHAREDEXP_OK;
 }
 
-bool Party::canEnableSharedExperience()
+SharedExpStatus_t Party::getSharedExperienceStatus()
 {
-	if (!canUseSharedExperience(leader)) {
-		return false;
+	SharedExpStatus_t leaderStatus = getMemberSharedExperienceStatus(leader);
+	if (leaderStatus != SHAREDEXP_OK) {
+		return leaderStatus;
 	}
 
 	for (Player* member : memberList) {
-		if (!canUseSharedExperience(member)) {
-			return false;
+		SharedExpStatus_t memberStatus = getMemberSharedExperienceStatus(member);
+		if (memberStatus != SHAREDEXP_OK) {
+			return memberStatus;
 		}
 	}
-	return true;
+	return SHAREDEXP_OK;
 }
 
 void Party::updatePlayerTicks(Player* player, uint32_t points)
@@ -595,7 +615,7 @@ void Party::addPlayerLoot(const Player* player, const Item* item)
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->lootPrice += leader->getItemCustomPrice(item->getID()) * count;
 	} else {
-		std::map<uint16_t, uint32_t> itemMap {{item->getID(), count}};
+		std::map<uint16_t, uint64_t> itemMap {{item->getID(), count}};
 		playerAnalyzer->lootPrice += g_game().getItemMarketPrice(itemMap, false);
 	}
 	updateTrackerAnalyzer();
@@ -618,7 +638,7 @@ void Party::addPlayerSupply(const Player* player, const Item* item)
 	if (priceType == LEADER_PRICE) {
 		playerAnalyzer->supplyPrice += leader->getItemCustomPrice(item->getID(), true);
 	} else {
-		std::map<uint16_t, uint32_t> itemMap {{item->getID(), 1}};
+		std::map<uint16_t, uint64_t> itemMap {{item->getID(), 1}};
 		playerAnalyzer->supplyPrice += g_game().getItemMarketPrice(itemMap, true);
 	}
 	updateTrackerAnalyzer();

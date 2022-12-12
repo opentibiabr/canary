@@ -17,15 +17,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "declarations.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
-#include "lua/callbacks/creaturecallback.h"
+#include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/events.h"
+#include "lua/callbacks/creaturecallback.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -66,14 +66,25 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-void Npc::reset() const
-{
-	g_npcs().reset();
-	// Close shop window from all npcs and reset the shopPlayerSet
-	for (const auto& [npcId, npc] : g_game().getNpcs()) {
-		npc->closeAllShopWindows();
-		npc->resetPlayerInteractions();
+bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
+	if (loadLibs) {
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
 	}
+	if (loadNpcs) {
+		return g_scripts().loadScripts("npc", false, true);
+	}
+	return false;
+}
+
+bool Npc::reset() const
+{
+	if (load()) {
+		g_npcs().reset();
+		g_game().resetNpcs();
+		return true;
+	}
+	return false;
 }
 
 void Npc::addList()
@@ -220,43 +231,63 @@ void Npc::onThink(uint32_t interval)
 }
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint8_t amount, bool ignore, bool inBackpacks)
+                          uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks)
 {
 	if (player == nullptr) {
 		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 
-	const ItemType& itemType = Item::items[itemId];
-	if (!itemType.stackable && player->getFreeBackpackSlots() < amount || player->getFreeBackpackSlots() == 0) {
+	// Check if the player not have empty slots
+	if (!ignore && player->getFreeBackpackSlots() == 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
 
+	uint32_t shoppingBagPrice = 20;
+	uint32_t shoppingBagSlots = 20;
+	const ItemType& itemType = Item::items[itemId];
+	if (const Tile* tile = ignore ? player->getTile() : nullptr; tile) {
+		double slotsNedeed = 0;
+		if (itemType.stackable) {
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / 100);
+		} else {
+			slotsNedeed = inBackpacks ? std::ceil(static_cast<double>(amount) / shoppingBagSlots) : static_cast<double>(amount);
+		}
+
+		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+			return;
+		}
+	}
+
 	uint32_t buyPrice = 0;
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
-	{
-		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
-		{
+	for (ShopBlock shopBlock : shopVector) {
+		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
 		}
 	}
 
 	uint32_t totalCost = buyPrice * amount;
-	if (getCurrency() == ITEM_GOLD_COIN) {
-		if (!g_game().removeMoney(player, totalCost, 0, true)) {
-			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
-			return;
-		}
-	} else if(!player->removeItemOfType(getCurrency(), totalCost, -1, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+	uint32_t bagsCost = 0;
+	if (inBackpacks && itemType.stackable) {
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots));
+	} else if (inBackpacks && !itemType.stackable) {
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(static_cast<double>(amount) / shoppingBagSlots));
+	}
+
+	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		return;
+	} else if (getCurrency() != ITEM_GOLD_COIN && (player->getItemTypeCount(getCurrency()) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost))) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 
-	// onPlayerBuyItem(self, player, itemId, subType, amount, ignore inBackpacks)
+	// npc:onBuyItem(player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerBuyEvent)) {
 		callback.pushSpecificCreature(this);
@@ -264,8 +295,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 		callback.pushNumber(itemId);
 		callback.pushNumber(subType);
 		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
 		callback.pushBoolean(inBackpacks);
-		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
 	}
 
@@ -275,7 +306,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 }
 
 void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint8_t amount, bool ignore)
+                          uint8_t subType, uint16_t amount, bool ignore)
 {
 	if (!player) {
 		return;
@@ -292,15 +323,46 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	if(!player->removeItemOfType(itemId, amount, -1, false, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
+	auto removeAmount = amount;
+	auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
+	uint16_t removedItems = 0;
+	for (auto item : inventoryItems) {
+		// Ignore item with tier highter than 0
+		if (!item || item->getTier() > 0) {
+			continue;
+		}
+
+		// Only remove if item has no imbuements
+		if (!item->hasImbuements()) {
+			auto removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
+			removeAmount -= removeCount;
+
+			if (auto ret = g_game().internalRemoveItem(item, removeCount);
+			ret != RETURNVALUE_NOERROR)
+			{
+				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+				continue;
+			}
+
+			// We will use it to check how many items have been removed to send totalCost
+			removedItems++;
+
+			if (removeAmount == 0) {
+				break;
+			}
+		}
+	}
+
+	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
+	if (removedItems == 0) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
 
-	int64_t totalCost = sellPrice * amount;
-	g_game().addMoney(player, totalCost, 0);
+	auto totalCost = static_cast<uint64_t>(sellPrice * amount);
+	g_game().addMoney(player, totalCost);
 
-	// onPlayerSellItem(self, player, itemId, subType, amount, ignore)
+	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
 		callback.pushSpecificCreature(this);
@@ -308,6 +370,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		callback.pushNumber(itemType.id);
 		callback.pushNumber(subType);
 		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
 	}

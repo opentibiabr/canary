@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"
@@ -32,9 +32,7 @@ Actions::Actions() :
 	scriptInterface.initState();
 }
 
-Actions::~Actions() {
-	clear(false);
-}
+Actions::~Actions() = default;
 
 void Actions::clearMap(ActionUseMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ) {
@@ -44,6 +42,13 @@ void Actions::clearMap(ActionUseMap& map, bool fromLua) {
 			++it;
 		}
 	}
+}
+
+void Actions::clear() {
+	useItemMap.clear();
+	uniqueItemMap.clear();
+	actionItemMap.clear();
+	actionPositionMap.clear();
 }
 
 void Actions::clear(bool fromLua) {

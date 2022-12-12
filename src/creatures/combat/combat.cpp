@@ -312,6 +312,10 @@ ReturnValue Combat::canDoCombat(Creature* attacker, Creature* target)
 				} else if (attackerPlayer->getTile()->hasFlag(TILESTATE_NOPVPZONE) && !targetPlayerTile->hasFlag(TILESTATE_NOPVPZONE | TILESTATE_PROTECTIONZONE)) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
+
+				if (attackerPlayer->getFaction() != FACTION_DEFAULT && attackerPlayer->getFaction() != FACTION_PLAYER && attackerPlayer->getFaction() == targetPlayer->getFaction()) {
+					return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
+				}
 			}
 
 			if (attackerMaster) {

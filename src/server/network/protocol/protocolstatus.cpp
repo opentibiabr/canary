@@ -168,68 +168,68 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 	auto output = OutputMessagePool::getOutputMessage();
 
 	if (requestedInfo & REQUEST_BASIC_SERVER_INFO) {
-		output->addByte(0x10);
-		output->addString(g_configManager().getString(SERVER_NAME));
-		output->addString(g_configManager().getString(IP));
-		output->addString(std::to_string(g_configManager().getNumber(LOGIN_PORT)));
+		output->addByte(__FUNCTION__, 0x10);
+		output->addString(__FUNCTION__, g_configManager().getString(SERVER_NAME));
+		output->addString(__FUNCTION__, g_configManager().getString(IP));
+		output->addString(__FUNCTION__, std::to_string(g_configManager().getNumber(LOGIN_PORT)));
 	}
 
 	if (requestedInfo & REQUEST_OWNER_SERVER_INFO) {
-		output->addByte(0x11);
-		output->addString(g_configManager().getString(OWNER_NAME));
-		output->addString(g_configManager().getString(OWNER_EMAIL));
+		output->addByte(__FUNCTION__, 0x11);
+		output->addString(__FUNCTION__, g_configManager().getString(OWNER_NAME));
+		output->addString(__FUNCTION__, g_configManager().getString(OWNER_EMAIL));
 	}
 
 	if (requestedInfo & REQUEST_MISC_SERVER_INFO) {
-		output->addByte(0x12);
-		output->addString(g_configManager().getString(MOTD));
-		output->addString(g_configManager().getString(LOCATION));
-		output->addString(g_configManager().getString(URL));
-		output->add<uint64_t>((OTSYS_TIME() - ProtocolStatus::start) / 1000);
+		output->addByte(__FUNCTION__, 0x12);
+		output->addString(__FUNCTION__, g_configManager().getString(MOTD));
+		output->addString(__FUNCTION__, g_configManager().getString(LOCATION));
+		output->addString(__FUNCTION__, g_configManager().getString(URL));
+		output->addU64(__FUNCTION__, (OTSYS_TIME() - ProtocolStatus::start) / 1000);
 	}
 
 	if (requestedInfo & REQUEST_PLAYERS_INFO) {
-		output->addByte(0x20);
-		output->add<uint32_t>(static_cast<uint32_t>(g_game().getPlayersOnline()));
-		output->add<uint32_t>(g_configManager().getNumber(MAX_PLAYERS));
-		output->add<uint32_t>(g_game().getPlayersRecord());
+		output->addByte(__FUNCTION__, 0x20);
+		output->addU32(__FUNCTION__, static_cast<uint32_t>(g_game().getPlayersOnline()));
+		output->addU32(__FUNCTION__, g_configManager().getNumber(MAX_PLAYERS));
+		output->addU32(__FUNCTION__, g_game().getPlayersRecord());
 	}
 
 	if (requestedInfo & REQUEST_MAP_INFO) {
-		output->addByte(0x30);
-		output->addString(g_configManager().getString(MAP_NAME));
-		output->addString(g_configManager().getString(MAP_AUTHOR));
+		output->addByte(__FUNCTION__, 0x30);
+		output->addString(__FUNCTION__, g_configManager().getString(MAP_NAME));
+		output->addString(__FUNCTION__, g_configManager().getString(MAP_AUTHOR));
 		uint32_t mapWidth, mapHeight;
 		g_game().getMapDimensions(mapWidth, mapHeight);
-		output->add<uint16_t>(mapWidth);
-		output->add<uint16_t>(mapHeight);
+		output->addU16(__FUNCTION__, mapWidth);
+		output->addU16(__FUNCTION__, mapHeight);
 	}
 
 	if (requestedInfo & REQUEST_EXT_PLAYERS_INFO) {
-		output->addByte(0x21); // players info - online players list
+		output->addByte(__FUNCTION__, 0x21); // players info - online players list
 
 		const auto& players = g_game().getPlayers();
-		output->add<uint32_t>(players.size());
+		output->addU32(__FUNCTION__, players.size());
 		for (const auto& it : players) {
-			output->addString(it.second->getName());
-			output->add<uint32_t>(it.second->getLevel());
+			output->addString(__FUNCTION__, it.second->getName());
+			output->addU32(__FUNCTION__, it.second->getLevel());
 		}
 	}
 
 	if (requestedInfo & REQUEST_PLAYER_STATUS_INFO) {
-		output->addByte(0x22); // players info - online status info of a player
+		output->addByte(__FUNCTION__, 0x22); // players info - online status info of a player
 		if (g_game().getPlayerByName(characterName) != nullptr) {
-			output->addByte(0x01);
+			output->addByte(__FUNCTION__, 0x01);
 		} else {
-			output->addByte(0x00);
+			output->addByte(__FUNCTION__, 0x00);
 		}
 	}
 
 	if (requestedInfo & REQUEST_SERVER_SOFTWARE_INFO) {
-		output->addByte(0x23); // server software info
-		output->addString(STATUS_SERVER_NAME);
-		output->addString(STATUS_SERVER_VERSION);
-		output->addString(std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
+		output->addByte(__FUNCTION__, 0x23); // server software info
+		output->addString(__FUNCTION__, STATUS_SERVER_NAME);
+		output->addString(__FUNCTION__, STATUS_SERVER_VERSION);
+		output->addString(__FUNCTION__, std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
 	}
 	send(output);
 	disconnect();

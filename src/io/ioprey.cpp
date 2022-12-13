@@ -586,9 +586,9 @@ void IOPrey::InitializeTaskHuntOptions()
 		kills *= 4;
 	}
 
-	msg.addByte(0xBA);
+	msg.addByte(__FUNCTION__, 0xBA);
 	std::map<uint16_t, std::string> bestiaryList = g_game().getBestiaryList();
-	msg.add<uint16_t>(static_cast<uint16_t>(bestiaryList.size()));
+	msg.addU16(__FUNCTION__, static_cast<uint16_t>(bestiaryList.size()));
 	std::for_each(bestiaryList.begin(), bestiaryList.end(), [&msg](auto& mType)
 	{
 		const MonsterType* mtype = g_monsters().getMonsterType(mType.second);
@@ -596,25 +596,25 @@ void IOPrey::InitializeTaskHuntOptions()
 			return;
 		}
 
-		msg.add<uint16_t>(mtype->info.raceid);
+		msg.addU16(__FUNCTION__, mtype->info.raceid);
 		if (mtype->info.bestiaryStars <= 1) {
-			msg.addByte(0x01);
+			msg.addByte(__FUNCTION__, 0x01);
 		} else if (mtype->info.bestiaryStars <= 3) {
-			msg.addByte(0x02);
+			msg.addByte(__FUNCTION__, 0x02);
 		} else {
-			msg.addByte(0x03);
+			msg.addByte(__FUNCTION__, 0x03);
 		}
 	});
 
-	msg.addByte(static_cast<uint8_t>(taskOption.size()));
+	msg.addByte(__FUNCTION__, static_cast<uint8_t>(taskOption.size()));
 	std::for_each(taskOption.begin(), taskOption.end(), [&msg](const TaskHuntingOption* option)
 	{
-		msg.addByte(static_cast<uint8_t>(option->difficult));
-		msg.addByte(option->rarity);
-		msg.add<uint16_t>(option->firstKills);
-		msg.add<uint16_t>(option->firstReward);
-		msg.add<uint16_t>(option->secondKills);
-		msg.add<uint16_t>(option->secondReward);
+		msg.addByte(__FUNCTION__, static_cast<uint8_t>(option->difficult));
+		msg.addByte(__FUNCTION__, option->rarity);
+		msg.addU16(__FUNCTION__, option->firstKills);
+		msg.addU16(__FUNCTION__, option->firstReward);
+		msg.addU16(__FUNCTION__, option->secondKills);
+		msg.addU16(__FUNCTION__, option->secondReward);
 	});
 	baseDataMessage = msg;
 }

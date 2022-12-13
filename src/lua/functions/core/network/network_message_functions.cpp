@@ -110,7 +110,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddByte(lua_State* L) {
 	uint8_t number = getNumber<uint8_t>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->addByte(number);
+		message->addByte(__FUNCTION__, number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -123,7 +123,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddU16(lua_State* L) {
 	uint16_t number = getNumber<uint16_t>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->add<uint16_t>(number);
+		message->addU16(__FUNCTION__, number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -136,7 +136,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddU32(lua_State* L) {
 	uint32_t number = getNumber<uint32_t>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->add<uint32_t>(number);
+		message->addU32(__FUNCTION__,number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -149,7 +149,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
 	uint64_t number = getNumber<uint64_t>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->add<uint64_t>(number);
+		message->addU64(__FUNCTION__,number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -162,7 +162,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddString(lua_State* L) {
 	const std::string& string = getString(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->addString(string);
+		message->addString(__FUNCTION__, string);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -175,7 +175,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddPosition(lua_State* L) {
 	const Position& position = getPosition(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->addPosition(position);
+		message->addPosition(__FUNCTION__, position);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -188,7 +188,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddDouble(lua_State* L) {
 	double number = getNumber<double>(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
-		message->addDouble(number);
+		message->addDouble(__FUNCTION__, number);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

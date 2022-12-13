@@ -31,8 +31,8 @@ void ProtocolLogin::disconnectClient(const std::string& message, uint16_t versio
 {
 	auto output = OutputMessagePool::getOutputMessage();
 
-	output->addByte(version >= 1076 ? 0x0B : 0x0A);
-	output->addString(message);
+	output->addByte(__FUNCTION__, version >= 1076 ? 0x0B : 0x0A);
+	output->addString(__FUNCTION__, message);
 	send(output);
 
 	disconnect();
@@ -53,50 +53,50 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 	const std::string& motd = g_configManager().getString(MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
-		output->addByte(0x14);
+		output->addByte(__FUNCTION__, 0x14);
 
 		std::ostringstream ss;
 		ss << g_game().getMotdNum() << "\n" << motd;
-		output->addString(ss.str());
+		output->addString(__FUNCTION__, ss.str());
 	}
 
 	// Add session key
-	output->addByte(0x28);
-	output->addString(email + "\n" + password);
+	output->addByte(__FUNCTION__, 0x28);
+	output->addString(__FUNCTION__, email + "\n" + password);
 
 	// Add char list
 	std::vector<account::Player> players;
 	account.GetAccountPlayers(&players);
-	output->addByte(0x64);
+	output->addByte(__FUNCTION__, 0x64);
 
-	output->addByte(1);  // number of worlds
+	output->addByte(__FUNCTION__, 1);  // number of worlds
 
-	output->addByte(0);  // world id
-	output->addString(g_configManager().getString(SERVER_NAME));
-	output->addString(g_configManager().getString(IP));
+	output->addByte(__FUNCTION__, 0);  // world id
+	output->addString(__FUNCTION__, g_configManager().getString(SERVER_NAME));
+	output->addString(__FUNCTION__, g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_configManager().getShortNumber(GAME_PORT));
+	output->addU16(__FUNCTION__, g_configManager().getShortNumber(GAME_PORT));
 
-	output->addByte(0);
+	output->addByte(__FUNCTION__, 0);
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(),
                                   players.size());
-	output->addByte(size);
+	output->addByte(__FUNCTION__, size);
 	for (uint8_t i = 0; i < size; i++) {
-		output->addByte(0);
-		output->addString(players[i].name);
+		output->addByte(__FUNCTION__, 0);
+		output->addString(__FUNCTION__, players[i].name);
 	}
 
 	// Add premium days
-	output->addByte(0);
+	output->addByte(__FUNCTION__, 0);
 	if (g_configManager().getBoolean(FREE_PREMIUM)) {
-		output->addByte(1);
-		output->add<uint32_t>(0);
+		output->addByte(__FUNCTION__, 1);
+		output->addU32(__FUNCTION__, 0);
 	} else {
 	uint32_t days;
 	account.GetPremiumRemaningDays(&days);
-	output->addByte(0);
-	output->add<uint32_t>(time(nullptr) + (days * 86400));
+	output->addByte(__FUNCTION__, 0);
+	output->addU32(__FUNCTION__, time(nullptr) + (days * 86400));
   }
 
 	send(output);

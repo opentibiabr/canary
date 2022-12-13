@@ -7668,7 +7668,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					SPDLOG_WARN("[{}] Stackable item with id {} have tier", __FUNCTION__, item->getID());
 				}
 
 				tmpAmount -= stackCount;
@@ -7808,7 +7808,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					SPDLOG_WARN("[{}] Stackable item with id {} have tier", __FUNCTION__, item->getID());
 				}
 
 				tmpAmount -= stackCount;
@@ -7899,7 +7899,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					SPDLOG_WARN("[{}] Stackable item with id {} have tier", __FUNCTION__, item->getID());
 				}
 
 				tmpAmount -= stackCount;

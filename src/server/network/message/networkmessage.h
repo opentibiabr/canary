@@ -78,36 +78,25 @@ class NetworkMessage
 			info.position += count;
 		}
 
-		// simply write functions for outgoing message
-		void addByte(uint8_t value) {
-			if (!canAdd(1)) {
-				return;
-			}
+		// Write position byte
+		void addPosition(const std::string &function, const Position& pos);
 
-			buffer[info.position++] = value;
-			info.length++;
-		}
+		// Simply write functions for outgoing message
+		void addByte(const std::string &function, uint8_t value);
+		void addU16(const std::string &function, uint16_t value);
+		void addU32(const std::string &function, uint32_t value);
+		void addU64(const std::string &function, uint64_t value);
 
-		template<typename T>
-		void add(T value) {
-			if (!canAdd(sizeof(T))) {
-				return;
-			}
-
-			memcpy(buffer + info.position, &value, sizeof(T));
-			info.position += sizeof(T);
-			info.length += sizeof(T);
-		}
+		void add16(const std::string &function, int16_t value);
+		void add32(const std::string &function, int32_t value);
+		void add64(const std::string &function, int64_t value);
 
 		void addBytes(const char* bytes, size_t size);
 		void addPaddingBytes(size_t n);
 
-		void addString(const std::string& value);
+		void addString(const std::string &function, const std::string& value);
 
-		void addDouble(double value, uint8_t precision = 2);
-
-		// write functions for complex types
-		void addPosition(const Position& pos);
+		void addDouble(const std::string &function, double value, uint8_t precision = 2);
 
 		MsgSize_t getLength() const {
 			return info.length;
@@ -169,6 +158,28 @@ class NetworkMessage
 
 		NetworkMessageInfo info;
 		uint8_t buffer[NETWORKMESSAGE_MAXSIZE];
+
+private:
+	// Unsigned
+	void writeU16(uint8_t* addr, uint16_t value) {
+		addr[1] = value >> 8; addr[0] = static_cast<uint8_t>(value);
+	}
+	void writeU32(uint8_t* addr, uint32_t value) {
+		writeU16(addr + 2, value >> 16); writeU16(addr, static_cast<uint16_t>(value));
+	}
+	inline void writeU64(uint8_t* addr, uint64_t value) {
+		writeU32(addr + 4, value >> 32); writeU32(addr, static_cast<uint32_t>(value));
+	}
+	// Signed
+	void write16(uint8_t* addr, int16_t value) {
+		addr[1] = value >> 8; addr[0] = static_cast<int8_t>(value);
+	}
+	void write32(uint8_t* addr, int32_t value) {
+		write16(addr + 2, value >> 16); write16(addr, static_cast<int16_t>(value));
+	}
+	void write64(uint8_t* addr, int64_t value) {
+		write32(addr + 4, value >> 32); write32(addr, static_cast<int32_t>(value));
+	}
 };
 
 #endif // SRC_SERVER_NETWORK_MESSAGE_NETWORKMESSAGE_H_

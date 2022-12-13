@@ -19,6 +19,8 @@
 
 #include "pch.hpp"
 
+#include <limits>
+
 #include "server/network/message/networkmessage.h"
 #include "items/containers/container.h"
 #include "creatures/creature.h"
@@ -54,31 +56,27 @@ Position NetworkMessage::getPosition()
 	return pos;
 }
 
-void NetworkMessage::addString(const std::string& value)
+void NetworkMessage::addString(const std::string& function, const std::string& value)
 {
 	size_t stringLen = value.length();
 	if (value.empty()) {
-		SPDLOG_DEBUG("[NetworkMessage::addString] - Value string is empty");
-	}
-	if (!canAdd(stringLen + 2)) {
-		SPDLOG_ERROR("[NetworkMessage::addString] - NetworkMessage size is wrong: {}", stringLen);
-		return;
+		SPDLOG_DEBUG("Value string is empty");
 	}
 	if (stringLen > NETWORKMESSAGE_MAXSIZE) {
-		SPDLOG_ERROR("[NetworkMessage::addString] - Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, stringLen);
+		SPDLOG_ERROR("Exceded NetworkMessage max size: {}, actually size: {}", NETWORKMESSAGE_MAXSIZE, stringLen);
 		return;
 	}
 
-	add<uint16_t>(stringLen);
+	addU16(function, stringLen);
 	memcpy(buffer + info.position, value.c_str(), stringLen);
 	info.position += stringLen;
 	info.length += stringLen;
 }
 
-void NetworkMessage::addDouble(double value, uint8_t precision/* = 2*/)
+void NetworkMessage::addDouble(const std::string &function, double value, uint8_t precision/* = 2*/)
 {
-	addByte(precision);
-	add<uint32_t>((value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max());
+	addByte(function, precision);
+	addU32(function, (value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max());
 }
 
 void NetworkMessage::addBytes(const char* bytes, size_t size)
@@ -113,9 +111,91 @@ void NetworkMessage::addPaddingBytes(size_t n)
 	info.length += n;
 }
 
-void NetworkMessage::addPosition(const Position& pos)
+void NetworkMessage::addPosition(const std::string &function, const Position& pos)
 {
-	add<uint16_t>(pos.x);
-	add<uint16_t>(pos.y);
-	addByte(pos.z);
+	addU16(function, pos.x);
+	addU16(function, pos.y);
+	addByte(function, pos.z);
+}
+
+void NetworkMessage::addByte(const std::string &function, uint8_t value) {
+	if (value > std::numeric_limits<uint8_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded uint8_t size", function);
+		value = 0;
+	}
+
+	buffer[info.position++] = value;
+	info.length++;
+}
+
+void NetworkMessage::addU16(const std::string &function, uint16_t value) {
+	// If uint16_t overflows, send 0 for avoid errors
+	if (value > std::numeric_limits<uint16_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded uint16_t size", function);
+		value = 0;
+	}
+
+	writeU16(&buffer[info.position], value);
+	info.position += sizeof(value);
+	info.length += sizeof(value);
+}
+
+void NetworkMessage::addU32(const std::string &function, uint32_t value) {
+	// If uint16_t overflows, send 0 for avoid errors
+	if (value > std::numeric_limits<uint32_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded uint32_t size", function);
+		value = 0;
+	}
+
+	writeU32(&buffer[info.position], value);
+	info.position += sizeof(value);
+	info.length += sizeof(value);
+}
+
+void NetworkMessage::addU64(const std::string &function, uint64_t value) {
+	// If uint16_t overflows, send 0 for avoid errors
+	if (value > std::numeric_limits<uint64_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded uint64_t size", function);
+		value = 0;
+	}
+
+	writeU64(&buffer[info.position], value);
+	info.position += sizeof(value);
+	info.length += sizeof(value);
+}
+
+void NetworkMessage::add16(const std::string &function, int16_t value) {
+	// If uint16_t overflows, send 0 for avoid errors
+	if (value > std::numeric_limits<int16_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded int16_t size", function);
+		value = 0;
+	}
+
+	write16(&buffer[info.position], value);
+	info.position += sizeof(value);
+	info.length += sizeof(value);
+}
+
+void NetworkMessage::add32(const std::string &function, int32_t value) {
+	// If uint16_t overflows, send 0 for avoid errors
+	if (value > std::numeric_limits<int32_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded int32_t size", function);
+		value = 0;
+	}
+
+	write32(&buffer[info.position], value);
+	info.position += sizeof(value);
+	info.length += sizeof(value);
+}
+
+void NetworkMessage::add64(const std::string &function, int64_t value) {
+	// If uint16_t overflows, send 0 for avoid errors
+	if (value > std::numeric_limits<int64_t>::max()) {
+		SPDLOG_WARN("Could not add byte in function {}, exceeded int64_t size", function);
+		value = 0;
+	}
+
+	write64(&buffer[info.position], value);
+	info.position += sizeof(value);
+	info.length += sizeof(value);
 }

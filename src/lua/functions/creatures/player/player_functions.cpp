@@ -448,9 +448,9 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	if (const Player* player = getUserdata<Player>(L, 1)) {
 		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
-			lua_pushnumber(L, 100 + slot->bonusPercentage);
+			lua_pushnumber(L, slot->bonusPercentage);
 		} else {
-			lua_pushnumber(L, 100);
+			lua_pushnumber(L, 0);
 		}
 	} else {
 		lua_pushnil(L);

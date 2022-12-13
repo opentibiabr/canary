@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/creature.h"
 #include "declarations.hpp"
@@ -49,16 +49,16 @@ Creature::~Creature()
 
 bool Creature::canSee(const Position& myPos, const Position& pos, int32_t viewRangeX, int32_t viewRangeY)
 {
-	if (myPos.z <= 7) {
+	if (myPos.z <= MAP_INIT_SURFACE_LAYER) {
 		//we are on ground level or above (7 -> 0)
 		//view is from 7 -> 0
-		if (pos.z > 7) {
+		if (pos.z > MAP_INIT_SURFACE_LAYER) {
 			return false;
 		}
-	} else if (myPos.z >= 8) {
+	} else if (myPos.z >= MAP_INIT_SURFACE_LAYER + 1) {
 		//we are underground (8 -> 15)
 		//view is +/- 2 from the floor we stand on
-		if (Position::getDistanceZ(myPos, pos) > 2) {
+		if (Position::getDistanceZ(myPos, pos) > MAP_LAYER_VIEW_LIMIT) {
 			return false;
 		}
 	}
@@ -1435,7 +1435,7 @@ int64_t Creature::getStepDuration() const
 	}
 
 	int32_t stepSpeed = getStepSpeed();
-	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5), 1);
+	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + 0.5), 1);
 	calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? calculatedStepSpeed : 1;
 
 	uint32_t groundSpeed = 150;
@@ -1473,6 +1473,24 @@ int64_t Creature::getEventStepTicks(bool onlyDelay) const
 LightInfo Creature::getCreatureLight() const
 {
 	return internalLight;
+}
+
+void Creature::setSpeed(int32_t varSpeedDelta) {
+	// Prevents creatures from not exceeding the maximum allowed speed
+	if (getSpeed() >= PLAYER_MAX_SPEED)
+	{
+		return;
+	}
+
+	int32_t oldSpeed = getSpeed();
+	varSpeed = varSpeedDelta;
+
+	if (getSpeed() <= 0) {
+		stopEventWalk();
+		cancelNextWalk = true;
+	} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
+		addEventWalk();
+	}
 }
 
 void Creature::setCreatureLight(LightInfo lightInfo) {

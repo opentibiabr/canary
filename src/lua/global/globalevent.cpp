@@ -17,22 +17,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
 #include "game/scheduling/scheduler.h"
 #include "utils/pugicast.h"
 
-
 GlobalEvents::GlobalEvents() :
 	scriptInterface("GlobalEvent Interface") {
 	scriptInterface.initState();
 }
 
-GlobalEvents::~GlobalEvents() {
-	clear(false);
-}
+GlobalEvents::~GlobalEvents() = default;
 
 void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 	for (auto it = map.begin(); it != map.end(); ) {
@@ -42,6 +39,17 @@ void GlobalEvents::clearMap(GlobalEventMap& map, bool fromLua) {
 			++it;
 		}
 	}
+}
+
+void GlobalEvents::clear() {
+	g_scheduler().stopEvent(thinkEventId);
+	thinkEventId = 0;
+	g_scheduler().stopEvent(timerEventId);
+	timerEventId = 0;
+
+	thinkMap.clear();
+	serverMap.clear();
+	timerMap.clear();
 }
 
 void GlobalEvents::clear(bool fromLua) {

@@ -17,9 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "creatures/combat/spells.h"
 #include "creatures/creature.h"
@@ -310,6 +308,35 @@ int PlayerFunctions::luaPlayeraddBestiaryKill(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked(lua_State *L) {
+	// player:isMonsterBestiaryUnlocked(raceId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto raceId = getNumber<uint16_t>(L, 2, 0);
+	if (!g_monsters().getMonsterTypeByRaceId(raceId)) {
+		reportErrorFunc("Monster race id not exists");
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	for (auto finishedMonsters = g_iobestiary().getBestiaryFinished(player);
+		uint16_t finishedRaceId : finishedMonsters)
+	{
+		if (raceId == finishedRaceId) {
+			pushBoolean(L, true);
+			return 1;
+		}
+	}
+
+	pushBoolean(L, false);
+	return 0;
+}
+
 int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 	// player:getCharmMonsterType(charmRune_t)
 	Player* player = getUserdata<Player>(L, 1);
@@ -404,14 +431,26 @@ int PlayerFunctions::luaPlayerGetTaskHuntingPoints(lua_State* L) {
 	return 1;
 }
 
+int PlayerFunctions::luaPlayerAddTaskHuntingPoints(lua_State* L) {
+	// player:addTaskHuntingPoints(amount)
+	if (Player* player = getUserdata<Player>(L, 1)) {
+		auto points = getNumber<uint64_t>(L, 2);
+		player->addTaskHuntingPoints(getNumber<uint64_t>(L, 2));
+		lua_pushnumber(L, static_cast<lua_Number>(points));
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	// player:getPreyLootPercentage(raceid)
 	if (const Player* player = getUserdata<Player>(L, 1)) {
 		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
-			lua_pushnumber(L, 100 + slot->bonusPercentage);
+			lua_pushnumber(L, slot->bonusPercentage);
 		} else {
-			lua_pushnumber(L, 100);
+			lua_pushnumber(L, 0);
 		}
 	} else {
 		lua_pushnil(L);
@@ -1123,7 +1162,7 @@ int PlayerFunctions::luaPlayerSetOfflineTrainingSkill(lua_State* L) {
 	// player:setOfflineTrainingSkill(skillId)
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		uint32_t skillId = getNumber<uint32_t>(L, 2);
+		int8_t skillId = getNumber<int8_t>(L, 2);
 		player->setOfflineTrainingSkill(skillId);
 		pushBoolean(L, true);
 	} else {
@@ -1581,7 +1620,7 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
-	// player:addItem(itemId[, count = 1[, canDropOnMap = true[, subType = 1[, slot = CONST_SLOT_WHEREEVER]]]])
+	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
 		pushBoolean(L, false);
@@ -1628,6 +1667,7 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 
 	bool canDropOnMap = getBoolean(L, 4, true);
 	Slots_t slot = getNumber<Slots_t>(L, 6, CONST_SLOT_WHEREEVER);
+	auto tier = getNumber<uint8_t>(L, 7, 0);
 	for (int32_t i = 1; i <= itemCount; ++i) {
 		int32_t stackCount = subType;
 		if (it.stackable) {
@@ -1641,6 +1681,10 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 				lua_pushnil(L);
 			}
 			return 1;
+		}
+
+		if (tier > 0) {
+			item->setTier(tier);
 		}
 
 		ReturnValue ret = g_game().internalPlayerAddItem(player, item, canDropOnMap, slot);
@@ -3002,35 +3046,193 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 	return 1;
 }
 
-int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
-{
-    // player:sendSingleSoundEffect(soundId[, actor = true])
-	Player* player = getUserdata<Player>(L, 1);
+// Forge
+int PlayerFunctions::luaPlayerOpenForge(lua_State* L) {
+	// player:openForge()
+	const Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
-    SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
-    bool actor = getBoolean(L, 3, true);
+	player->sendOpenForge();
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerCloseForge(lua_State* L) {
+	// player:closeForge()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->closeForgeWindow();
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddForgeDusts(lua_State* L) {
+	// player:addForgeDusts(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->addForgeDusts(getNumber<uint64_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveForgeDusts(lua_State* L) {
+	// player:removeForgeDusts(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->removeForgeDusts(getNumber<uint64_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetForgeDusts(lua_State* L) {
+	// player:getForgeDusts()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+
+	lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDusts()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetForgeDusts(lua_State* L) {
+	// player:setForgeDusts()
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->setForgeDusts(getNumber<uint64_t>(L, 2, 0));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerAddForgeDustLevel(lua_State* L) {
+	// player:addForgeDustLevel(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->addForgeDustLevel(getNumber<uint64_t>(L, 2, 1));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerRemoveForgeDustLevel(lua_State* L) {
+	// player:removeForgeDustLevel(amount)
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	player->removeForgeDustLevel(getNumber<uint64_t>(L, 2, 1));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetForgeDustLevel(lua_State* L) {
+	// player:getForgeDustLevel()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(player->getForgeDustLevel()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetForgeSlivers(lua_State* L) {
+	// player:getForgeSlivers()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto [sliver, core] = player->getForgeSliversAndCores();
+	lua_pushnumber(L, static_cast<lua_Number>(sliver));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
+	// player:getForgeCores()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto [sliver, core] = player->getForgeSliversAndCores();
+	lua_pushnumber(L, static_cast<lua_Number>(core));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
+{
+	// player:sendSingleSoundEffect(soundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
+	bool actor = getBoolean(L, 3, true);
 
 	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
-    pushBoolean(L, true);
-    return 1;
+	pushBoolean(L, true);
+	return 1;
 }
 
 int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L)
 {
-    // player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
+	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
 	Player* player = getUserdata<Player>(L, 1);
 	if (!player) {
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
-    SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
-    SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
-    bool actor = getBoolean(L, 4, true);
+	SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
+	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
+	bool actor = getBoolean(L, 4, true);
 
 	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL, secondarySoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
-    pushBoolean(L, true);
-    return 1;
+	pushBoolean(L, true);
+	return 1;
 }

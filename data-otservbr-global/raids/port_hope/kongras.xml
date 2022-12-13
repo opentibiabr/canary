@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="event" message="Lizards Sentinels seem to attack Port Hope from Chor." />
+	<announce delay="120000" type="event" message="Lizards are advancing to Port Hope from Chor." />
+	<!--Single Spawns-->
+	<areaspawn delay="1000" fromx="32882" fromy="32804" fromz="7" tox="32818" toy="32764" toz="7">
+		<monster name="Lizard Snakecharmer" amount="5" />
+		<monster name="Lizard Templar" amount="10" />
+		<monster name="Lizard Sentinel" amount="5" />
+	</areaspawn>
+	<areaspawn delay="120000" fromx="32882" fromy="32804" fromz="7" tox="32818" toy="32764" toz="7">
+		<monster name="Lizard Snakecharmer" amount="10" />
+		<monster name="Lizard Templar" amount="5" />
+		<monster name="Lizard Sentinel" amount="5" />
+	</areaspawn>
+</raid>

@@ -17,12 +17,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/decay/decay.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
-
 
 void Decay::startDecay(Item* item)
 {
@@ -191,6 +190,10 @@ void Decay::internalDecayItem(Item* item)
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));
 	} else {
+		if (item->getLoadedFromMap()) {
+			return;
+		}
+
 		ReturnValue ret = g_game().internalRemoveItem(item);
 		if (ret != RETURNVALUE_NOERROR) {
 			SPDLOG_ERROR("[Decay::internalDecayItem] - internalDecayItem failed, "

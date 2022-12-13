@@ -20,8 +20,6 @@
 #ifndef SRC_CREATURES_COMBAT_CONDITION_H_
 #define SRC_CREATURES_COMBAT_CONDITION_H_
 
-#include <list>
-
 #include "declarations.hpp"
 #include "io/fileloader.h"
 

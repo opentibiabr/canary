@@ -42,8 +42,8 @@ enum Offer_t {
 };
 
 enum ClientOffer_t{
-	SIMPLE=0,
-	ADDITIONALINFO=1
+	SIMPLE = 0,
+	ADDITIONALINFO = 1
 };
 
 enum StackPosType_t {

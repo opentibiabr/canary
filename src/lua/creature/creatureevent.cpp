@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/creatureevent.h"
 #include "utils/tools.h"
@@ -26,6 +26,13 @@
 CreatureEvents::CreatureEvents() :
 	scriptInterface("CreatureScript Interface") {
 	scriptInterface.initState();
+}
+
+void CreatureEvents::clear()
+{
+	for (auto &[name, event] : creatureEvents) {
+		event.clearEvent();
+	}
 }
 
 void CreatureEvents::clear(bool fromLua) {

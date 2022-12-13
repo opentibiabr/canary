@@ -20,10 +20,8 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_
 
-#include <set>
-
-#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/luascript.h"
+
 class GameFunctions final : LuaScriptInterface {
 	public:
 			static void init(lua_State* L) {
@@ -77,6 +75,13 @@ class GameFunctions final : LuaScriptInterface {
 				registerMethod(L, "Game", "hasDistanceEffect", GameFunctions::luaGameHasDistanceEffect);
 				registerMethod(L, "Game", "hasEffect", GameFunctions::luaGameHasEffect);
 				registerMethod(L, "Game", "getOfflinePlayer", GameFunctions::luaGameGetOfflinePlayer);
+
+				registerMethod(L, "Game", "addInfluencedMonster", GameFunctions::luaGameAddInfluencedMonster);
+				registerMethod(L, "Game", "removeInfluencedMonster", GameFunctions::luaGameRemoveInfluencedMonster);
+				registerMethod(L, "Game", "getInfluencedMonsters", GameFunctions::luaGameGetInfluencedMonsters);
+				registerMethod(L, "Game", "makeFiendishMonster", GameFunctions::luaGameMakeFiendishMonster);
+				registerMethod(L, "Game", "removeFiendishMonster", GameFunctions::luaGameRemoveFiendishMonster);
+				registerMethod(L, "Game", "getFiendishMonsters", GameFunctions::luaGameGetFiendishMonsters);
 			}
 
 	private:
@@ -128,6 +133,13 @@ class GameFunctions final : LuaScriptInterface {
 			static int luaGameGetOfflinePlayer(lua_State* L);
 			static int luaGameHasEffect(lua_State* L);
 			static int luaGameHasDistanceEffect(lua_State* L);
+
+			static int luaGameAddInfluencedMonster(lua_State *L);
+			static int luaGameRemoveInfluencedMonster(lua_State *L);
+			static int luaGameGetInfluencedMonsters(lua_State *L);
+			static int luaGameMakeFiendishMonster(lua_State *L);
+			static int luaGameRemoveFiendishMonster(lua_State *L);
+			static int luaGameGetFiendishMonsters(lua_State *L);
 };
 
 #endif  // SRC_LUA_FUNCTIONS_CORE_GAME_GAME_FUNCTIONS_HPP_

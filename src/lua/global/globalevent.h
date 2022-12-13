@@ -19,9 +19,8 @@
 
 #ifndef SRC_LUA_GLOBAL_GLOBALEVENT_H_
 #define SRC_LUA_GLOBAL_GLOBALEVENT_H_
-#include "lua/global/baseevents.h"
 
-#include "utils/utils_definitions.hpp"
+#include "lua/global/baseevents.h"
 
 class GlobalEvent;
 using GlobalEvent_ptr = std::unique_ptr<GlobalEvent>;
@@ -53,6 +52,8 @@ class GlobalEvents final : public BaseEvents {
 		static void clearMap(GlobalEventMap& map, bool fromLua);
 
 		bool registerLuaEvent(GlobalEvent* event);
+		void clear();
+		// Old XML interface
 		void clear(bool fromLua) override final;
 
 	private:

@@ -17,14 +17,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/monsters/monsters.h"
-#include "creatures/monsters/monster.h"
-#include "creatures/combat/spells.h"
+
 #include "creatures/combat/combat.h"
-#include "items/weapons/weapons.h"
 #include "game/game.h"
+#include "creatures/combat/spells.h"
+#include "items/weapons/weapons.h"
 
 spellBlock_t::~spellBlock_t()
 {
@@ -56,7 +56,7 @@ bool MonsterType::canSpawn(const Position& pos)
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
-		canSpawn = (pos.z > 7 && info.respawnType.underground);
+		canSpawn = (pos.z > MAP_INIT_SURFACE_LAYER && info.respawnType.underground);
 	}
 
 	return canSpawn;
@@ -99,7 +99,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 	if (spell->isScripted) {
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
+		if (!combatSpellPtr->loadScript(g_configManager().getString(DATA_DIRECTORY) + "/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - Cannot find file: {}",
                          spell->scriptName);
 			return false;

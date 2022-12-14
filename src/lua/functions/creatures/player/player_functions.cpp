@@ -1994,7 +1994,7 @@ int PlayerFunctions::luaPlayerOpenChannel(lua_State* L) {
 	uint16_t channelId = getNumber<uint16_t>(L, 2);
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		g_game().playerOpenChannel(player->getID(), channelId);
+		g_game().playerOpenChannel(player, channelId);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

@@ -76,7 +76,7 @@ class TalkActions final : public Scripts {
 		void clear();
 
 	private:
-		std::map<std::string, TalkAction> talkActions;
+		phmap::flat_hash_map<std::string, TalkAction> talkActions;
 };
 
 constexpr auto g_talkActions = &TalkActions::getInstance;

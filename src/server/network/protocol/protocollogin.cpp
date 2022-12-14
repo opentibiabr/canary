@@ -93,11 +93,11 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 		output->addByte(__FUNCTION__, 1);
 		output->addU32(__FUNCTION__, 0);
 	} else {
-	uint32_t days;
-	account.GetPremiumRemaningDays(&days);
-	output->addByte(__FUNCTION__, 0);
-	output->addU32(__FUNCTION__, time(nullptr) + (days * 86400));
-  }
+		uint32_t days;
+		account.GetPremiumRemaningDays(&days);
+		output->addByte(__FUNCTION__, 0);
+		output->addU32(__FUNCTION__, static_cast<uint32_t>(getTimeNow() + (days * 86400)));
+	}
 
 	send(output);
 

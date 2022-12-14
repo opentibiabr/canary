@@ -67,7 +67,7 @@ void NetworkMessage::addString(const std::string& function, const std::string& v
 		return;
 	}
 
-	addU16(function, stringLen);
+	addU16(function, static_cast<uint16_t>(stringLen));
 	memcpy(buffer + info.position, value.c_str(), stringLen);
 	info.position += stringLen;
 	info.length += stringLen;
@@ -76,7 +76,7 @@ void NetworkMessage::addString(const std::string& function, const std::string& v
 void NetworkMessage::addDouble(const std::string &function, double value, uint8_t precision/* = 2*/)
 {
 	addByte(function, precision);
-	addU32(function, (value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max());
+	addU32(function, static_cast<uint32_t>((value * std::pow(static_cast<float>(10), precision)) + std::numeric_limits<int32_t>::max()));
 }
 
 void NetworkMessage::addBytes(const char* bytes, size_t size)

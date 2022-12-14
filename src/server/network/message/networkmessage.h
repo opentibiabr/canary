@@ -161,7 +161,7 @@ class NetworkMessage
 
 private:
 	// Unsigned
-	void writeU16(uint8_t* addr, uint16_t value) {
+	void writeU16(uint8_t* addr, uint16_t value) const {
 		addr[1] = value >> 8; addr[0] = static_cast<uint8_t>(value);
 	}
 	void writeU32(uint8_t* addr, uint32_t value) {
@@ -171,7 +171,7 @@ private:
 		writeU32(addr + 4, value >> 32); writeU32(addr, static_cast<uint32_t>(value));
 	}
 	// Signed
-	void write16(uint8_t* addr, int16_t value) {
+	void write16(uint8_t* addr, int16_t value) const {
 		addr[1] = value >> 8; addr[0] = static_cast<int8_t>(value);
 	}
 	void write32(uint8_t* addr, int32_t value) {

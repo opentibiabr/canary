@@ -199,8 +199,8 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 		output->addByte(__FUNCTION__, 0x30);
 		output->addString(__FUNCTION__, g_configManager().getString(MAP_NAME));
 		output->addString(__FUNCTION__, g_configManager().getString(MAP_AUTHOR));
-		uint32_t mapWidth, mapHeight;
-		g_game().getMapDimensions(mapWidth, mapHeight);
+		uint16_t mapWidth, mapHeight;
+		g_game().getMapDimensions(static_cast<uint32_t>(mapWidth), static_cast<uint32_t>(mapHeight));
 		output->addU16(__FUNCTION__, mapWidth);
 		output->addU16(__FUNCTION__, mapHeight);
 	}
@@ -209,7 +209,7 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 		output->addByte(__FUNCTION__, 0x21); // players info - online players list
 
 		const auto& players = g_game().getPlayers();
-		output->addU32(__FUNCTION__, players.size());
+		output->addU32(__FUNCTION__, static_cast<uint32_t>(players.size()));
 		for (const auto& it : players) {
 			output->addString(__FUNCTION__, it.second->getName());
 			output->addU32(__FUNCTION__, it.second->getLevel());

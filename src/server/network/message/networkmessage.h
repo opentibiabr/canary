@@ -162,23 +162,29 @@ class NetworkMessage
 private:
 	// Unsigned
 	void writeU16(uint8_t* addr, uint16_t value) const {
-		addr[1] = value >> 8; addr[0] = static_cast<uint8_t>(value);
+		addr[1] = value >> 8;
+		addr[0] = static_cast<uint8_t>(value);
 	}
-	void writeU32(uint8_t* addr, uint32_t value) {
-		writeU16(addr + 2, value >> 16); writeU16(addr, static_cast<uint16_t>(value));
+	void writeU32(uint8_t* addr, uint32_t value) const {
+		writeU16(addr + 2, value >> 16);
+		writeU16(addr, static_cast<uint16_t>(value));
 	}
-	inline void writeU64(uint8_t* addr, uint64_t value) {
-		writeU32(addr + 4, value >> 32); writeU32(addr, static_cast<uint32_t>(value));
+	inline void writeU64(uint8_t* addr, uint64_t value) const {
+		writeU32(addr + 4, value >> 32);
+		writeU32(addr, static_cast<uint32_t>(value));
 	}
 	// Signed
 	void write16(uint8_t* addr, int16_t value) const {
-		addr[1] = value >> 8; addr[0] = static_cast<int8_t>(value);
+		addr[1] = value >> 8;
+		addr[0] = static_cast<int8_t>(value);
 	}
-	void write32(uint8_t* addr, int32_t value) {
-		write16(addr + 2, value >> 16); write16(addr, static_cast<int16_t>(value));
+	void write32(uint8_t* addr, int32_t value) const {
+		write16(addr + 2, value >> 16);
+		write16(addr, static_cast<int16_t>(value));
 	}
-	void write64(uint8_t* addr, int64_t value) {
-		write32(addr + 4, value >> 32); write32(addr, static_cast<int32_t>(value));
+	void write64(uint8_t* addr, int64_t value) const {
+		write32(addr + 4, value >> 32);
+		write32(addr, static_cast<int32_t>(value));
 	}
 };
 

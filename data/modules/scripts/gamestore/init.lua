@@ -36,7 +36,7 @@ GameStore.OfferTypes = {
 }
 
 GameStore.SubActions = {
-	PREY_THIRDSLOT = 0,
+	PREY_THIRDSLOT_REAL = 0,
 	PREY_WILDCARD = 1,
 	INSTANT_REWARD = 2,
 	BLESSING_TWIST = 3,
@@ -50,7 +50,8 @@ GameStore.SubActions = {
 	BLESSING_ALL_PVE = 11,
 	BLESSING_ALL_PVP = 12,
 	CHARM_EXPANSION = 13,
-	TASKHUNTING_THIRDSLOT = 14
+	TASKHUNTING_THIRDSLOT = 14,
+	PREY_THIRDSLOT_REDIRECT = 15
 }
 
 GameStore.ActionType = {
@@ -335,6 +336,9 @@ function parseRequestStoreOffers(playerId, msg)
 			category = GameStore.getCategoryByName("Useful Things")
 		end
 
+		if subAction == GameStore.SubActions.PREY_THIRDSLOT_REAL then
+			offerId = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT
+		end
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end

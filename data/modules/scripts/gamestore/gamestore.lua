@@ -4190,7 +4190,7 @@ GameStore.Categories = {
 				icons = {"Permanent_Prey_Slot.png"},
 				name = "Permanent Prey Slot",
 				price = 900,
-				id = GameStore.SubActions.PREY_THIRDSLOT,
+				id = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT,
 				description = "<i>Get an additional prey slot to activate additional prey!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Prey dialog",
 				type = GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
 			},

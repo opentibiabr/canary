@@ -302,7 +302,6 @@ function parseRequestStoreOffers(playerId, msg)
 
 	local actionType = msg:getByte()
 	if actionType == GameStore.ActionType.OPEN_CATEGORY then
-		print(actionType)
 		local categoryName = msg:getString()
 		local category = GameStore.getCategoryByName(categoryName)
 		if category then
@@ -327,7 +326,6 @@ function parseRequestStoreOffers(playerId, msg)
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_USEFUL_THINGS then
-		print(actionType)
 		local subAction = msg:getByte()
 		local offerId = subAction
 		local category = nil

@@ -199,10 +199,10 @@ void ProtocolStatus::sendInfo(uint16_t requestedInfo, const std::string& charact
 		output->addByte(__FUNCTION__, 0x30);
 		output->addString(__FUNCTION__, g_configManager().getString(MAP_NAME));
 		output->addString(__FUNCTION__, g_configManager().getString(MAP_AUTHOR));
-		uint16_t mapWidth, mapHeight;
-		g_game().getMapDimensions(static_cast<uint32_t>(mapWidth), static_cast<uint32_t>(mapHeight));
-		output->addU16(__FUNCTION__, mapWidth);
-		output->addU16(__FUNCTION__, mapHeight);
+		uint32_t mapWidth, mapHeight;
+		g_game().getMapDimensions(mapWidth, mapHeight);
+		output->addU16(__FUNCTION__, static_cast<uint16_t>(mapWidth));
+		output->addU16(__FUNCTION__, static_cast<uint16_t>(mapHeight));
 	}
 
 	if (requestedInfo & REQUEST_EXT_PLAYERS_INFO) {

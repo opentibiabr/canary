@@ -46,7 +46,7 @@
 
 // This "getIteration" function will allow us to get the total number of iterations that run within a specific map
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
-namespace {
+namespace InternalProtocol {
 template <typename T>
 uint16_t getIterationIncreaseCount(T& map) {
 	uint16_t totalIterationCount = 0;
@@ -66,7 +66,30 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 
 	return totalIterationCount;
 }
+
+void sendMarketBrowseOffers(const std::string &function, NetworkMessage &msg, std::map<uint32_t, uint16_t> counterMap, const HistoryMarketOfferList& offers, uint32_t offersToSend)
+{
+	uint32_t i = 0;
+	msg.addU32(function, offersToSend);
+	for (auto it = offers.begin(); i < offersToSend; ++it, ++i)
+	{
+		uint16_t timeStamp = counterMap[it->timestamp];
+		timeStamp++;
+		msg.addU32(function, it->timestamp);
+		msg.addU16(function, timeStamp);
+		msg.addU16(function, it->itemId);
+		if (Item::items[it->itemId].upgradeClassification > 0) {
+			msg.addByte(function, it->tier);
+		}
+		msg.addU16(function, it->amount);
+		msg.addU64(function, it->price);
+		msg.addByte(function, it->state);
+	}
+	i = 0;
+	counterMap.clear();
 }
+
+} // Namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {
 	version = CLIENT_VERSION;
@@ -2049,8 +2072,8 @@ void ProtocolGame::sendTeamFinderList()
 	msg.addByte(__FUNCTION__, 0x2D);
 	msg.addByte(__FUNCTION__, 0x00); // Bool value, with 'true' the player exceed packets for second.
 	std::map<uint32_t, TeamFinder*> teamFinder = g_game().getTeamFinderList();
-	auto teamFinderSize = getIterationIncreaseCount(teamFinder);
-	msg.addU16(__FUNCTION__, static_cast<uint16_t>(teamFinderSize));
+	auto teamFinderSize = InternalProtocol::getIterationIncreaseCount(teamFinder);
+	msg.addU16(__FUNCTION__, teamFinderSize);
 	for (auto it : teamFinder) {
 		const Player* leader = g_game().getPlayerByGUID(it.first);
 		if (!leader)
@@ -4282,7 +4305,6 @@ void ProtocolGame::sendMarketCancelOffer(const MarketOfferEx &offer)
 
 void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyOffers, const HistoryMarketOfferList &sellOffers)
 {
-	uint32_t i = 0;
 	std::map<uint32_t, uint16_t> counterMap;
 	uint32_t buyOffersToSend = std::min<uint32_t>(buyOffers.size(), 810 + std::max<int32_t>(0, 810 - sellOffers.size()));
 	uint32_t sellOffersToSend = std::min<uint32_t>(sellOffers.size(), 810 + std::max<int32_t>(0, 810 - buyOffers.size()));
@@ -4290,40 +4312,9 @@ void ProtocolGame::sendMarketBrowseOwnHistory(const HistoryMarketOfferList &buyO
 	NetworkMessage msg;
 	msg.addByte(__FUNCTION__, 0xF9);
 	msg.addByte(__FUNCTION__, MARKETREQUEST_OWN_HISTORY);
-
-	msg.addU32(__FUNCTION__, buyOffersToSend);
-	for (auto it = buyOffers.begin(); i < buyOffersToSend; ++it, ++i)
-	{
-		uint16_t timeStamp = counterMap[it->timestamp]++;
-		msg.addU32(__FUNCTION__, it->timestamp);
-		msg.addU16(__FUNCTION__, timeStamp);
-		msg.addU16(__FUNCTION__, it->itemId);
-		if (Item::items[it->itemId].upgradeClassification > 0) {
-			msg.addByte(__FUNCTION__, it->tier);
-		}
-		msg.addU16(__FUNCTION__, it->amount);
-		msg.addU64(__FUNCTION__, it->price);
-		msg.addByte(__FUNCTION__, it->state);
-	}
-
-	counterMap.clear();
-	i = 0;
-
-	msg.addU32(__FUNCTION__, sellOffersToSend);
-	for (auto it = sellOffers.begin(); i < sellOffersToSend; ++it, ++i)
-	{
-		uint16_t timeStamp = counterMap[it->timestamp]++;
-		msg.addU32(__FUNCTION__, it->timestamp);
-		msg.addU16(__FUNCTION__, timeStamp);
-		msg.addU16(__FUNCTION__, it->itemId);
-		if (Item::items[it->itemId].upgradeClassification > 0) {
-			msg.addByte(__FUNCTION__, it->tier);
-		}
-		msg.addU16(__FUNCTION__, it->amount);
-		msg.addU64(__FUNCTION__, it->price);
-		msg.addByte(__FUNCTION__, it->state);
-	}
-
+	// Send offers bytes
+	InternalProtocol::sendMarketBrowseOffers(__FUNCTION__, msg, counterMap, buyOffers, buyOffersToSend);
+	InternalProtocol::sendMarketBrowseOffers(__FUNCTION__, msg, counterMap, sellOffers, sellOffersToSend);
 	writeToOutputBuffer(msg);
 }
 
@@ -4443,7 +4434,7 @@ void ProtocolGame::sendOpenForge() {
 		}
 	}
 
-	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
+	auto transferTotalCount = InternalProtocol::getIterationIncreaseCount(donorTierItemMap);
 	msg.addByte(__FUNCTION__, static_cast<uint8_t>(transferTotalCount));
 	if (transferTotalCount > 0) {
 		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
@@ -4452,7 +4443,7 @@ void ProtocolGame::sendOpenForge() {
 			const ItemType &donorType = Item::items[itemId];
 
 			// Total count of item (donator of tier)
-			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
+			auto donorTierTotalItemsCount = InternalProtocol::getIterationIncreaseCount(tierAndCountMap);
 			msg.addU16(__FUNCTION__, donorTierTotalItemsCount);
 			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
 				msg.addU16(__FUNCTION__, itemId);
@@ -4565,7 +4556,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 {
 	page = page + 1;
 	auto historyVector = player->getForgeHistory();
-	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
+	auto historyVectorLen = InternalProtocol::getVectorIterationIncreaseCount(historyVector);
 
 	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
 	uint16_t currentPage = (lastPage < page) ? lastPage : page;
@@ -4577,7 +4568,7 @@ void ProtocolGame::sendForgeHistory(uint8_t page)
 		historyPerPage.push_back(historyVector[entry - 1]);
 	}
 
-	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
+	auto historyPageToSend = InternalProtocol::getVectorIterationIncreaseCount(historyPerPage);
 
 	NetworkMessage msg;
 	msg.addByte(__FUNCTION__, 0x88);

@@ -465,8 +465,9 @@ void Npc::onThinkWalk(uint32_t interval)
 		return;
 	}
 
-	Direction newDirection;
-	if (getRandomStep(newDirection)) {
+	if (Direction newDirection;
+		getRandomStep(newDirection))
+	{
 		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}

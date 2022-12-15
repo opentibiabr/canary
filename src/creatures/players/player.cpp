@@ -592,8 +592,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	}
 
 	if (sendUpdateSkills) {
-		sendSkills();
-		sendStats();
+		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 	}
 }
 
@@ -2183,8 +2182,7 @@ void Player::addManaSpent(uint64_t amount) {
 	}
 
 	if (sendUpdateStats) {
-		sendStats();
-		sendSkills();
+		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 	}
 }
 
@@ -2696,8 +2694,7 @@ void Player::death(Creature* lastHitCreature) {
 			}
 		}
 
-		sendStats();
-		sendSkills();
+		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 		sendReLoginWindow(unfairFightReduction);
 		sendBlessStatus();
 		if (getSkull() == SKULL_BLACK) {
@@ -3962,8 +3959,8 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 			onSendContainer(container);
 		}
 
-		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
-			updateSaleShopList(item);
+		if (requireListUpdate) {
+			addScheduledUpdates(PlayerUpdate_Inventory);
 		}
 	} else if (const Creature* creature = thing->getCreature()) {
 		if (creature == this) {
@@ -4046,8 +4043,8 @@ void Player::postRemoveNotification(Thing* thing, const Cylinder* newParent, int
 			}
 		}
 
-		if (shopOwner && !scheduledSaleUpdate && requireListUpdate) {
-			updateSaleShopList(item);
+		if (requireListUpdate) {
+			addScheduledUpdates(PlayerUpdate_Inventory);
 		}
 	}
 }
@@ -5547,8 +5544,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	}
 
 	if (sendUpdate) {
-		sendSkills();
-		sendStats();
+		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 	}
 
 	std::string message = fmt::format(
@@ -5838,8 +5834,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement) {
 	}
 
 	if (requestUpdate) {
-		sendStats();
-		sendSkills();
+		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 	}
 }
 
@@ -5873,8 +5868,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement) {
 	}
 
 	if (requestUpdate) {
-		sendStats();
-		sendSkills();
+		addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 	}
 }
 
@@ -7375,6 +7369,15 @@ void Player::decrementeHazardSystemReference() {
 			client->reloadHazardSystemIcon(hazardSystemReferenceCounter);
 		}
 		reloadHazardSystemPointsCounter = true;
+	}
+}
+
+void Player::addScheduledUpdates(uint32_t flags) {
+	scheduledUpdates |= flags;
+	if (!scheduledUpdate) {
+		//To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
+		g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerEvent, &g_game(), getPlayer())));
+		scheduledUpdate = true;
 	}
 }
 

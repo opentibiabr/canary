@@ -127,7 +127,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint
 	}
 
 	if (it.isSplash() || it.isFluidContainer()) {
-		msg.addByte(count);
+		msg.addByte(Fluids_t(count));
 	}
 
 	if (oldProtocol) {
@@ -187,7 +187,8 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item* item) {
 	}
 
 	if (it.isSplash() || it.isFluidContainer()) {
-		msg.addByte(item->getAttribute<uint8_t>(ItemAttribute_t::FLUIDTYPE));
+		// msg.addByte(item->getAttribute<uint8_t>(ItemAttribute_t::FLUIDTYPE));
+		msg.addByte(static_cast<uint8_t>(Fluids_t(item->getFluidType())));
 	}
 
 	if (oldProtocol) {

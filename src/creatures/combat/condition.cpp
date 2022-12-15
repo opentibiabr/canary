@@ -507,10 +507,9 @@ void ConditionAttributes::updateStats(Player* player) {
 		}
 	}
 
-	if (needUpdate) {
-		player->sendStats();
-		player->sendSkills();
-	}
+  if (needUpdate) {
+    player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+  }
 }
 
 void ConditionAttributes::updatePercentSkills(Player* player) {
@@ -534,9 +533,9 @@ void ConditionAttributes::updateSkills(Player* player) {
 		}
 	}
 
-	if (needUpdateSkills) {
-		player->sendSkills();
-	}
+  if (needUpdateSkills) {
+    player->addScheduledUpdates(PlayerUpdate_Skills);
+  }
 }
 
 void ConditionAttributes::updatePercentBuffs(Creature* creature) {
@@ -586,21 +585,20 @@ void ConditionAttributes::endCondition(Creature* creature) {
 			}
 		}
 
-		if (needUpdate) {
-			player->sendStats();
-			player->sendSkills();
-		}
-	}
-	bool needUpdateIcons = false;
-	for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
-		if (buffs[i]) {
-			needUpdateIcons = true;
-			creature->setBuff(static_cast<buffs_t>(i), -buffs[i]);
-		}
-	}
-	if (creature->getMonster() && needUpdateIcons) {
-		g_game().updateCreatureIcon(creature);
-	}
+    if (needUpdate) {
+      player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
+    }
+  }
+  bool needUpdateIcons = false;
+  for (int32_t i = BUFF_FIRST; i <= BUFF_LAST; ++i) {
+    if (buffs[i]) {
+      needUpdateIcons = true;
+      creature->setBuff(static_cast<buffs_t>(i), -buffs[i]);
+    }
+  }
+  if (creature->getMonster() && needUpdateIcons) {
+    g_game().updateCreatureIcon(creature);
+  }
 
 	if (disableDefense) {
 		creature->setUseDefense(true);
@@ -790,14 +788,14 @@ bool ConditionRegeneration::startCondition(Creature* creature) {
 	}
 
 	if (Player* player = creature->getPlayer()) {
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 	}
 	return true;
 }
 
 void ConditionRegeneration::endCondition(Creature* creature) {
 	if (Player* player = creature->getPlayer()) {
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 	}
 }
 
@@ -815,7 +813,7 @@ void ConditionRegeneration::addCondition(Creature* creature, const Condition* ad
 	}
 
 	if (Player* player = creature->getPlayer()) {
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 	}
 }
 
@@ -952,31 +950,25 @@ uint32_t ConditionRegeneration::getManaTicks(Creature* creature) const {
 	return manaTicks;
 }
 
-/**
- *  ConditionManaShield
- */
-
 bool ConditionManaShield::startCondition(Creature* creature) {
-	if (!Condition::startCondition(creature)) {
-		return false;
-	}
-
-	creature->setManaShield(manaShield);
-	creature->setMaxManaShield(manaShield);
-
-	if (Player* player = creature->getPlayer()) {
-		player->sendStats();
-	}
-
-	return true;
+  if (!Condition::startCondition(creature)) {
+    return false;
+  }
+  creature->setManaShield(manaShield);
+  creature->setMaxManaShield(manaShield);
+  if (Player* player = creature->getPlayer()) {
+    player->addScheduledUpdates(PlayerUpdate_Stats);
+  }
+  return true;
 }
 
-void ConditionManaShield::endCondition(Creature* creature) {
-	creature->setManaShield(0);
-	creature->setMaxManaShield(0);
-	if (Player* player = creature->getPlayer()) {
-		player->sendStats();
-	}
+void ConditionManaShield::endCondition(Creature* creature)
+{
+  creature->setManaShield(0);
+  creature->setMaxManaShield(0);
+  if (Player* player = creature->getPlayer()) {
+    player->addScheduledUpdates(PlayerUpdate_Stats);
+  }
 }
 
 void ConditionManaShield::addCondition(Creature* creature, const Condition* addCondition) {
@@ -990,7 +982,7 @@ void ConditionManaShield::addCondition(Creature* creature, const Condition* addC
 	creature->setMaxManaShield(manaShield);
 
 	if (Player* player = creature->getPlayer()) {
-		player->sendStats();
+		player->addScheduledUpdates(PlayerUpdate_Stats);
 	}
 }
 

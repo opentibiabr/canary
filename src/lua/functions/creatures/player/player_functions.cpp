@@ -1048,8 +1048,7 @@ int PlayerFunctions::luaPlayerSetMagicLevel(lua_State* L) {
 			player->manaSpent = 0;
 			player->magLevelPercent = 0;
 		}
-		player->sendStats();
-		player->sendSkills();
+		player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -1073,8 +1072,7 @@ int PlayerFunctions::luaPlayerSetSkillLevel(lua_State* L) {
 			player->skills[skillType].tries = 0;
 			player->skills[skillType].percent = 0;
 		}
-		player->sendStats();
-		player->sendSkills();
+		player->addScheduledUpdates((PlayerUpdate_Stats | PlayerUpdate_Skills));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

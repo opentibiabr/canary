@@ -264,7 +264,7 @@ class Game {
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string &worldName, uint16_t page, uint8_t entriesPerPage);
 
 
-		void updatePlayerSaleItems(Player* player);
+		void updatePlayerEvent(Player* player);
 
 		bool internalStartTrade(Player* player, Player* partner, Item* tradeItem);
 		void internalCloseTrade(Player* player);

@@ -150,7 +150,7 @@ void Decay::internalDecayItem(Item* item) {
 			}
 
 			if (needUpdateSkills) {
-				player->sendSkills();
+				player->addScheduledUpdates(PlayerUpdate_Skills);
 			}
 
 			bool needUpdateStats = false;
@@ -167,11 +167,11 @@ void Decay::internalDecayItem(Item* item) {
 			}
 
 			if (needUpdateStats) {
-				player->sendStats();
+				player->addScheduledUpdates(PlayerUpdate_Stats);;
 			}
 
 			if (needUpdateSkills) {
-				player->sendSkills();
+				player->addScheduledUpdates(PlayerUpdate_Skills);
 			}
 		}
 		g_game().transformItem(item, static_cast<uint16_t>(it.decayTo));

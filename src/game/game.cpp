@@ -555,7 +555,7 @@ Thing* Game::internalGetThing(Player* player, const Position &pos, int32_t index
 
 		int32_t subType;
 		if (it.isFluidContainer()) {
-			subType = index;
+			subType = Fluids_t(index);
 		} else {
 			subType = -1;
 		}
@@ -8611,15 +8611,30 @@ void Game::playerRequestInventoryImbuements(uint32_t playerId, bool isTrackerOpe
 /* Player Methods end
 ********************/
 
-void Game::updatePlayerSaleItems(Player* player)
+void Game::updatePlayerEvent(Player* player)
 {
 	if (!player) {
 		return;
 	}
 
-	std::map<uint16_t, uint16_t> inventoryMap;
-	player->sendSaleItemList(player->getAllSaleItemIdAndCount(inventoryMap));
-	player->setScheduledSaleUpdate(false);
+	if (player->hasScheduledUpdates(PlayerUpdate_Weight)) {
+		player->updateInventoryWeight();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Light)) {
+		player->updateItemsLight();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Stats)) {
+		player->sendStats();
+	}
+	if (player->hasScheduledUpdates(PlayerUpdate_Skills)) {
+		player->sendSkills();
+	}
+
+	if (player->hasScheduledUpdates((PlayerUpdate_Inventory | PlayerUpdate_Sale))) {
+		std::map<uint16_t, uint16_t> inventoryMap;
+		player->sendSaleItemList(player->getAllSaleItemIdAndCount(inventoryMap));
+	}
+	player->resetScheduledUpdates();
 }
 
 void Game::addPlayer(Player* player) {

@@ -28,6 +28,7 @@
 #include "io/iologindata.h"
 #include "io/iomarket.h"
 #include "lua/modules/modules.h"
+#include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "server/network/message/outputmessage.h"
 #include "creatures/players/player.h"
@@ -37,6 +38,35 @@
 #include "creatures/combat/spells.h"
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
+
+/*
+* NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.h" file
+* Do not use functions only in the .cpp scope without having a namespace, it may conflict with functions in other files of the same name
+*/
+
+// This "getIteration" function will allow us to get the total number of iterations that run within a specific map
+// Very useful to send the total amount in certain bytes in the ProtocolGame class
+namespace {
+template <typename T>
+uint16_t getIterationIncreaseCount(T& map) {
+	uint16_t totalIterationCount = 0;
+	for ([[maybe_unused]] const auto &[first, second] : map) {
+		totalIterationCount++;
+	}
+
+	return totalIterationCount;
+}
+
+template <typename T>
+uint16_t getVectorIterationIncreaseCount(T& vector) {
+	uint16_t totalIterationCount = 0;
+	for ([[maybe_unused]] const auto &vectorIteration : vector) {
+		totalIterationCount++;
+	}
+
+	return totalIterationCount;
+}
+}
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {
 	version = CLIENT_VERSION;
@@ -148,7 +178,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 			for (Item* listItem : container->getItemList()) {
 				if (player->getLevel() >= Item::items[listItem->getID()].minReqLevel) {
 					ammoTotal += listItem->getItemCount();
-      		    }
+				}
 			}
 			msg.addByte(0x01);
 			msg.add<uint32_t>(ammoTotal);
@@ -425,7 +455,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
 	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
-	player->resetIdleTime();	
+	player->resetIdleTime();
 	acceptPackets = true;
 }
 
@@ -785,6 +815,8 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage msg, uint8_t recvbyt
 		case 0xB1: parseHighscores(msg); break;
 		case 0xBA: parseTaskHuntingAction(msg); break;
 		case 0xBE: addGameTask(&Game::playerCancelAttackAndFollow, player->getID()); break;
+		case 0xBF: parseForgeEnter(msg); break;
+		case 0xC0: parseForgeBrowseHistory(msg); break;
 		case 0xC7: parseTournamentLeaderboard(msg); break;
 		case 0xC9: /* update tile */ break;
 		case 0xCA: parseUpdateContainer(msg); break;
@@ -2588,11 +2620,16 @@ void ProtocolGame::parsePreyAction(NetworkMessage &msg)
 
 void ProtocolGame::parseSendResourceBalance()
 {
+	auto [sliverCount, coreCount] = player->getForgeSliversAndCores();
+
 	sendResourcesBalance(
 		player->getMoney(),
 		player->getBankBalance(),
 		player->getPreyCards(),
-		player->getTaskHuntingPoints()
+		player->getTaskHuntingPoints(),
+		player->getForgeDusts(),
+		sliverCount,
+		coreCount
 	);
 }
 
@@ -2852,6 +2889,25 @@ void ProtocolGame::sendCreatureShield(const Creature *creature)
 	writeToOutputBuffer(msg);
 }
 
+void ProtocolGame::sendCreatureEmblem(const Creature *creature)
+{
+	if (!canSee(creature))
+	{
+		return;
+	}
+
+	// Remove creature from client and re-add to update
+	Position pos = creature->getPosition();
+	int32_t stackpos = creature->getTile()->getClientIndexOfCreature(player, creature);
+	sendRemoveTileThing(pos, stackpos);
+	NetworkMessage msg;
+	msg.addByte(0x6A);
+	msg.addPosition(pos);
+	msg.addByte(static_cast<uint8_t>(stackpos));
+	AddCreature(msg, creature, false, creature->getID());
+	writeToOutputBuffer(msg);
+}
+
 void ProtocolGame::sendCreatureSkull(const Creature *creature)
 {
 	if (g_game().getWorldType() != WORLD_TYPE_PVP)
@@ -3029,10 +3085,7 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i) {
-		msg.add<uint16_t>(0);
-		msg.add<uint16_t>(0);
-	}
+	sendForgeSkillStats(msg);
 
 	// Cleave (12.70)
 	msg.add<uint16_t>(0);
@@ -3901,12 +3954,16 @@ void ProtocolGame::sendGameNews()
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/)
+void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/,
+										uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/)
 {
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
 	sendResourceBalance(RESOURCE_TASK_HUNTING, taskHunting);
+	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDust);
+	sendResourceBalance(RESOURCE_FORGE_SLIVER, forgeSliver);
+	sendResourceBalance(RESOURCE_FORGE_CORES, forgeCores);
 }
 
 void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value)
@@ -4273,7 +4330,7 @@ void ProtocolGame::sendForgingData()
 	msg.addByte(0x86);
 
 	std::vector<ItemClassification*> classifications = g_game().getItemsClassifications();
-	msg.addByte(classifications.size());	
+	msg.addByte(classifications.size());
 	for (ItemClassification* classification : classifications)
 	{
 		msg.addByte(classification->id);
@@ -4286,24 +4343,268 @@ void ProtocolGame::sendForgingData()
 	}
 
 	// Version 12.81
-	for (uint8_t i = 1; i <= 11; ++i) {
-		msg.addByte(0);
-	}
+	// Forge Config Bytes
 
-	uint32_t sliverCount = 0;
-	uint32_t coreCount = 0;
-	if (Item* mainBp = player->getInventoryItem(CONST_SLOT_BACKPACK); mainBp) {
-		for (const Item* item : mainBp->getContainer()->getItems(true)) {
-			if (item->getID() == ITEM_FORGE_SLIVER) {
-				sliverCount += Item::countByType(item, -1);
-			} else if (item->getID() == ITEM_FORGE_CORE) {
-				coreCount += Item::countByType(item, -1);
+	// (conversion) (left column top) Cost to make 1 bottom item - 20
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
+	// (conversion) (left column bottom) How many items to make - 3
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT)));
+	// (conversion) (middle column top) Cost to make 1 - 50
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CORE_COST)));
+	// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
+	msg.addByte(75);
+	// (conversion) (right column bottom) Starting stored dust limit
+	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel()));
+	// (conversion) (right column bottom) Max stored dust limit - 225
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_MAX_DUST)));
+	// (fusion) Dust cost - 100
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST)));
+	// (transfer) Dust cost - 100
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)));
+	// (fusion) Base success rate - 50
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE)));
+	// (fusion) Bonus success rate - 15
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)));
+	// (fusion) Tier loss chance after reduction - 50
+	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION)));
+
+	// Update player resources
+	parseSendResourceBalance();
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendOpenForge() {
+	// We will use it when sending the bytes to send the item information to the client
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> fusionItemsMap;
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> donorTierItemMap;
+	std::map<uint16_t, std::map<uint8_t, uint16_t>> receiveTierItemMap;
+
+	/*
+	 *Start - Parsing items informations
+	*/
+	for (const auto &item : player->getAllInventoryItems(true)) {
+		if (item->hasImbuements()) {
+			continue;
+		}
+
+		auto itemClassification = item->getClassification();
+		auto itemTier = item->getTier();
+		auto maxConfigTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
+		auto maxTier = (itemClassification == 4 ? maxConfigTier : itemClassification);
+		// Save fusion items on map
+		if (itemClassification != 0 && itemTier < maxTier) {
+			getForgeInfoMap(item, fusionItemsMap);
+		}
+
+		if (itemClassification > 0) {
+			if (itemClassification < 4 && itemTier > maxTier) {
+				continue;
+			}
+			// Save transfer (donator of tier) items on map
+			if (itemTier > 1) {
+				getForgeInfoMap(item, donorTierItemMap);
+			}
+			// Save transfer (receiver of tier) items on map
+			if (itemTier == 0) {
+				getForgeInfoMap(item, receiveTierItemMap);
 			}
 		}
 	}
 
-	// until we have a better way of refresh client, leave this line commented
-	//sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints(), player->getForgeDusts(), player->getForgeSlivers(), player->getForgeCores());
+	// Checking size of map to send in the addByte (total fusion items count)
+	uint8_t fusionTotalItemsCount = 0;
+	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
+		for (const auto [itemTier, itemCount] : tierAndCountMap) {
+			if (itemCount >= 2) {
+				fusionTotalItemsCount++;
+			}
+		}
+	}
+
+	/*
+	 * Start - Sending bytes
+	*/
+	NetworkMessage msg;
+	// Header byte (135)
+	msg.addByte(0x87);
+	msg.add<uint16_t>(fusionTotalItemsCount);
+	for (const auto &[itemId, tierAndCountMap] : fusionItemsMap) {
+		for (const auto [itemTier, itemCount] : tierAndCountMap) {
+			if (itemCount >= 2) {
+				msg.addByte(0x01); // Number of friend items?
+				msg.add<uint16_t>(itemId);
+				msg.addByte(itemTier);
+				msg.add<uint16_t>(itemCount);
+			}
+		}
+	}
+
+	auto transferTotalCount = getIterationIncreaseCount(donorTierItemMap);
+	msg.addByte(static_cast<uint8_t>(transferTotalCount));
+	if (transferTotalCount > 0) {
+		for (const auto &[itemId, tierAndCountMap] : donorTierItemMap) {
+			// Let's access the itemType to check the item's (donator of tier) classification level
+			// Must be the same as the item that will receive the tier
+			const ItemType &donorType = Item::items[itemId];
+
+			// Total count of item (donator of tier)
+			auto donorTierTotalItemsCount = getIterationIncreaseCount(tierAndCountMap);
+			msg.add<uint16_t>(donorTierTotalItemsCount);
+			for (const auto [donorItemTier, donorItemCount] : tierAndCountMap) {
+				msg.add<uint16_t>(itemId);
+				msg.addByte(donorItemTier);
+				msg.add<uint16_t>(donorItemCount);
+			}
+
+			uint16_t receiveTierTotalItemCount = 0;
+			for (const auto &[iteratorItemId, unusedTierAndCountMap] : receiveTierItemMap) {
+				// Let's access the itemType to check the item's (receiver of tier) classification level
+				const ItemType &receiveType = Item::items[iteratorItemId];
+				if (donorType.upgradeClassification == receiveType.upgradeClassification) {
+					receiveTierTotalItemCount++;
+				}
+			}
+
+			// Total count of item (receiver of tier)
+			msg.add<uint16_t>(receiveTierTotalItemCount);
+			if (receiveTierTotalItemCount > 0) {
+				for (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
+					// Let's access the itemType to check the item's (receiver of tier) classification level
+					const ItemType &receiveType = Item::items[receiveItemId];
+					if (donorType.upgradeClassification == receiveType.upgradeClassification) {
+						for (const auto [receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+							msg.add<uint16_t>(receiveItemId);
+							msg.add<uint16_t>(receiveItemCount);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	msg.addByte(static_cast<uint8_t>(player->getForgeDustLevel())); // Player dust limit
+	writeToOutputBuffer(msg);
+	// Update forging informations
+	sendForgingData();
+}
+
+void ProtocolGame::parseForgeEnter(NetworkMessage& msg) {
+	// 0xBF -> 0 = fusion, 1 = transfer, 2 = dust to sliver, 3 = sliver to core, 4 = increase dust limit
+	uint8_t action = msg.getByte();
+	uint16_t firstItem = msg.get<uint16_t>();
+	uint8_t tier = msg.getByte();
+	uint16_t secondItem = msg.get<uint16_t>();
+	bool usedCore = msg.getByte();
+	bool reduceTierLoss = msg.getByte();
+	if (action == 0) {
+		addGameTask(&Game::playerForgeFuseItems, player->getID(), firstItem, tier, usedCore, reduceTierLoss);
+	} else if (action == 1) {
+		addGameTask(&Game::playerForgeTransferItemTier, player->getID(), firstItem, tier, secondItem);
+	} else if (action <= 4) {
+		addGameTask(&Game::playerForgeResourceConversion, player->getID(), action);
+	}
+}
+
+void ProtocolGame::parseForgeBrowseHistory(NetworkMessage& msg)
+{
+	addGameTask(&Game::playerBrowseForgeHistory, player->getID(), msg.getByte());
+}
+
+void ProtocolGame::sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) {
+	NetworkMessage msg;
+	msg.addByte(0x8A);
+
+	msg.addByte(0x00); // Fusion = 0
+	// Was succeeded bool
+	msg.addByte(success);
+
+	msg.add<uint16_t>(itemId); // Left item
+	msg.addByte(tier); // Left item tier
+	msg.add<uint16_t>(itemId); // Right item
+	msg.addByte(tier + 1); // Right item tier
+
+	msg.addByte(bonus); // Roll fusion bonus
+	// Core kept
+	if (bonus == 2)
+	{
+		msg.addByte(coreCount);
+	}
+	else if (bonus >= 4 && bonus <= 8)
+	{
+		msg.add<uint16_t>(itemId);
+		msg.addByte(tier);
+	}
+
+	writeToOutputBuffer(msg);
+	sendOpenForge();
+}
+
+void ProtocolGame::sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) {
+	NetworkMessage msg;
+	msg.addByte(0x8A);
+
+	msg.addByte(0x01); // Transfer = 1
+	msg.addByte(0x01); // Always success
+
+	msg.add<uint16_t>(firstItem); // Left item
+	msg.addByte(tier); // Left item tier
+	msg.add<uint16_t>(secondItem); // Right item
+	msg.addByte(tier - 1); // Right item tier
+
+	msg.addByte(0x00); // Bonus type always none
+
+	writeToOutputBuffer(msg);
+	sendOpenForge();
+}
+
+void ProtocolGame::sendForgeHistory(uint8_t page)
+{
+	page = page + 1;
+	auto historyVector = player->getForgeHistory();
+	auto historyVectorLen = getVectorIterationIncreaseCount(historyVector);
+
+	uint16_t lastPage = (1 < std::floor((historyVectorLen - 1) / 9) + 1) ? static_cast<uint16_t>(std::floor((historyVectorLen - 1) / 9) + 1) : 1;
+	uint16_t currentPage = (lastPage < page) ? lastPage : page;
+
+	std::vector<ForgeHistory> historyPerPage;
+	uint16_t pageFirstEntry = (0 < historyVectorLen - (currentPage - 1) * 9) ? historyVectorLen - (currentPage - 1) * 9 : 0;
+	uint16_t pageLastEntry = (0 < historyVectorLen - currentPage * 9) ? historyVectorLen - currentPage * 9: 0;
+	for (uint16_t entry = pageFirstEntry; entry > pageLastEntry; --entry) {
+		historyPerPage.push_back(historyVector[entry - 1]);
+	}
+
+	auto historyPageToSend = getVectorIterationIncreaseCount(historyPerPage);
+
+	NetworkMessage msg;
+	msg.addByte(0x88);
+	msg.add<uint16_t>(currentPage - 1); // Current page
+	msg.add<uint16_t>(lastPage); // Last page
+	msg.addByte(static_cast<uint8_t>(historyPageToSend)); // History to send
+
+	if (historyPageToSend > 0) {
+		for (const auto &history : historyPerPage) {
+			auto action = magic_enum::enum_integer(history.actionType);
+			msg.add<uint32_t>(static_cast<uint32_t>(history.createdAt));
+			msg.addByte(action);
+			msg.addString(history.description);
+			msg.addByte((history.bonus >= 1 && history.bonus < 8) ? 0x01 : 0x00);
+		}
+	}
+	
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendForgeError(const ReturnValue returnValue)
+{
+	sendMessageDialog(getReturnMessage(returnValue));
+	closeForgeWindow();
+}
+
+void ProtocolGame::closeForgeWindow()
+{
+	NetworkMessage msg;
+	msg.addByte(0x89);
 	writeToOutputBuffer(msg);
 }
 
@@ -4607,7 +4908,28 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	msg.add<uint16_t>(0x00);
 
 	// Upgrade and tier detail modifier
-	if (it.upgradeClassification > 0)
+	if (it.upgradeClassification > 0 && tier > 0)
+	{
+		msg.addString(std::to_string(it.upgradeClassification));
+		std::ostringstream ss;
+
+		ss << static_cast<uint16_t>(tier) << " (";
+		double chance;
+		if (it.isWeapon()) {
+			chance = 0.5 * tier + 0.05 * ((tier - 1) * (tier - 1));
+			ss << std::setprecision(2) << std::fixed << chance << "% Onslaught)";
+		}
+		else if (it.isHelmet()) {
+			chance = 2 * tier + 0.05 * ((tier - 1) * (tier - 1));
+			ss << std::setprecision(2) << std::fixed << chance << "% Momentum)";
+		}
+		else if (it.isArmor()) {
+			chance = (0.0307576 * tier * tier) + (0.440697 * tier) + 0.026;
+			ss << std::setprecision(2) << std::fixed << chance << "% Ruse)";
+		}
+		msg.addString(ss.str());
+	}
+	else if (it.upgradeClassification > 0 && tier == 0)
 	{
 		msg.addString(std::to_string(it.upgradeClassification));
 		msg.addString(std::to_string(tier));
@@ -6174,14 +6496,49 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const Creature *creature, bo
 	msg.addByte(player->isAccessPlayer() ? 0xFF : lightInfo.level);
 	msg.addByte(lightInfo.color);
 
-	msg.add<uint16_t>(creature->getStepSpeed()); // Warning
+	msg.add<uint16_t>(creature->getStepSpeed());
 
-	CreatureIcon_t icon = creature->getIcon();
-	msg.addByte(icon != CREATUREICON_NONE); // Icons
-	if (icon != CREATUREICON_NONE) {
-		msg.addByte(icon);
-		msg.addByte(1);
-		msg.add<uint16_t>(0);
+	CreatureIcon_t icon;
+	auto sendIcon = false;
+	if (otherPlayer) {
+		icon = creature->getIcon();
+		sendIcon = icon != CREATUREICON_NONE;
+		msg.addByte(sendIcon); // Icons
+		if (sendIcon) {
+			msg.addByte(icon);
+			msg.addByte(1);
+			msg.add<uint16_t>(0);
+		}
+	} else {
+		if (auto monster = creature->getMonster();
+			monster)
+		{
+			icon = monster->getIcon();
+			sendIcon = icon != CREATUREICON_NONE;
+			msg.addByte(sendIcon); // Send Icons true/false
+			if (sendIcon) {
+				// Icones with stack (Fiendishs e Influenceds)
+				if (monster->getForgeStack() > 0) {
+					msg.addByte(icon);
+					msg.addByte(1);
+					msg.add<uint16_t>(icon != 5 ? monster->getForgeStack() : 0); // Stack
+				} else {
+					// Icons without number on the side
+					msg.addByte(icon);
+					msg.addByte(1);
+					msg.add<uint16_t>(0);
+				}
+			}
+		} else {
+			icon = creature->getIcon();
+			sendIcon = icon != CREATUREICON_NONE;
+			msg.addByte(sendIcon); // Send Icons true/false
+			if (sendIcon) {
+				msg.addByte(icon);
+				msg.addByte(1);
+				msg.add<uint16_t>(0);
+			}
+		}
 	}
 
 	msg.addByte(player->getSkullClient(creature));
@@ -6310,10 +6667,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 	}
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
-	for (uint8_t i = 1; i <= 3; ++i) {
-		msg.add<uint16_t>(0);
-		msg.add<uint16_t>(0);
-	}
+	sendForgeSkillStats(msg);
 
 	// used for imbuement (Feather)
 	msg.add<uint32_t>(player->getCapacity()); // total capacity
@@ -6908,7 +7262,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 		return;
 	}
 
-	if (player->isStashExhausted()) {
+	if (player->isUIExhausted(500)) {
 		player->sendCancelMessage("You need to wait to do this again.");
 		return;
 	}
@@ -6949,7 +7303,7 @@ void ProtocolGame::parseStashWithdraw(NetworkMessage &msg)
 			break;
 	}
 
-	player->updateStashExhausted();
+	player->updateUIExhausted();
 }
 
 void ProtocolGame::sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count)
@@ -7052,4 +7406,62 @@ void ProtocolGame::parseOpenParentContainer(NetworkMessage &msg)
 	Position pos = msg.getPosition();
 
 	addGameTask(&Game::playerRequestOpenContainerFromDepotSearch, player->getID(), pos);
+}
+
+void ProtocolGame::sendUpdateCreature(const Creature* creature)
+{
+	if (!creature || !player) {
+		return; 
+	}
+
+	if (!canSee(creature))
+		return;
+
+	int32_t stackPos = creature->getTile()->getClientIndexOfCreature(player, creature);
+	if (stackPos == -1 || stackPos >= 10) {
+		return;
+	}
+
+	NetworkMessage msg; 
+	msg.addByte(0x6B);
+	msg.addPosition(creature->getPosition());
+	msg.addByte(static_cast<uint8_t>(stackPos));
+	AddCreature(msg, creature, false, 0);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::getForgeInfoMap(const Item *item, std::map<uint16_t, std::map<uint8_t, uint16_t>>& itemsMap) const
+{
+	std::map<uint8_t, uint16_t> itemInfo;
+	itemInfo.insert({ item->getTier(), item->getItemCount() });
+	auto [first, inserted] = itemsMap.try_emplace(item->getID(), itemInfo);
+	if (!inserted) {
+		auto [otherFirst, otherInserted] = itemsMap[item->getID()].try_emplace(item->getTier(), item->getItemCount());
+		if (!otherInserted) {
+			(itemsMap[item->getID()])[item->getTier()] += item->getItemCount();
+		}
+	}
+}
+
+void ProtocolGame::sendForgeSkillStats(NetworkMessage &msg) const {
+	std::vector<Slots_t> slots{ CONST_SLOT_LEFT, CONST_SLOT_ARMOR, CONST_SLOT_HEAD };
+	for (const auto &slot : slots) {
+		double_t skill = 0;
+		if (const Item* item = player->getInventoryItem(slot); item) {
+			const ItemType &it = Item::items[item->getID()];
+			if (it.isWeapon()) {
+				skill = item->getFatalChance() * 100;
+			}
+			if (it.isArmor()) {
+				skill = item->getDodgeChance() * 100;
+			}
+			if (it.isHelmet()) {
+				skill = item->getMomentumChance() * 100;
+			}
+		}
+
+		auto skillCast = static_cast<uint16_t>(skill);
+		msg.add<uint16_t>(skillCast);
+		msg.add<uint16_t>(skillCast);
+	}
 }

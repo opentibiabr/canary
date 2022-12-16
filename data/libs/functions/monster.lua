@@ -115,3 +115,38 @@ function Monster.onReceivDamageSL(self, damage, tp, killer)
 	updateMonstersSharedLife(storage, damage, self:getId(), tp, killer)
 	return true
 end
+
+function Monster.setFiendish(self, position, player)
+	if not self then
+		player:sendCancelMessage("Only allowed monsters can be fiendish.")
+		return false
+	end
+
+	local monsterType = self:getType()
+	local fiendishMonster = Monster(ForgeMonster:pickFiendish())
+	if monsterType then
+		if not monsterType:isForgeCreature() then
+			player:sendCancelMessage("Only allowed monsters can be fiendish.")
+			return false
+		end
+	end
+	if fiendishMonster and fiendishMonster:getId() == self:getId() then
+		player:sendCancelMessage("This monster is already fiendish.")
+		return false
+	end
+	position:sendMagicEffect(CONST_ME_MAGIC_RED)
+	self:clearFiendishStatus()
+	local success
+	if fiendishMonster then
+		Game.removeFiendishMonster(fiendishMonster:getId())
+	end
+	if Game.makeFiendishMonster(self:getId(), true) ~= 0 then
+		success = "set sucessfully a new fiendish monster"
+	else
+		success = "have error to set fiendish monster"
+		player:sendCancelMessage("This monster is not forgeable, fiendish not added.")
+	end
+
+	Spdlog.info(string.format("Player %s %s with name %s and id %d on position [x = %d, y = %d, z = %d]", player:getName(), success, self:getName(), self:getId(), self:getPosition().x, self:getPosition().y, self:getPosition().z))
+	return true
+end

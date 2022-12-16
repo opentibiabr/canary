@@ -49,7 +49,7 @@ class NpcType
 
 		uint32_t yellChance = 0;
 		uint32_t yellSpeedTicks = 0;
-		uint32_t baseSpeed = 110;
+		uint32_t baseSpeed = 55;
 		uint32_t walkInterval = 2000;
 
 		int32_t creatureAppearEvent = -1;

@@ -47,6 +47,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "getAccountType", PlayerFunctions::luaPlayerGetAccountType);
 			registerMethod(L, "Player", "setAccountType", PlayerFunctions::luaPlayerSetAccountType);
 
+			registerMethod(L, "Player", "isMonsterBestiaryUnlocked", PlayerFunctions::luaPlayerIsMonsterBestiaryUnlocked);
 			registerMethod(L, "Player", "addBestiaryKill", PlayerFunctions::luaPlayeraddBestiaryKill);
 			registerMethod(L, "Player", "charmExpansion", PlayerFunctions::luaPlayercharmExpansion);
 			registerMethod(L, "Player", "getCharmMonsterType", PlayerFunctions::luaPlayergetCharmMonsterType);
@@ -60,6 +61,7 @@ class PlayerFunctions final : LuaScriptInterface {
 			registerMethod(L, "Player", "addPreyCards", PlayerFunctions::luaPlayerAddPreyCards);
 			registerMethod(L, "Player", "removeTaskHuntingPoints", PlayerFunctions::luaPlayerRemoveTaskHuntingPoints);
 			registerMethod(L, "Player", "getTaskHuntingPoints", PlayerFunctions::luaPlayerGetTaskHuntingPoints);
+			registerMethod(L, "Player", "addTaskHuntingPoints", PlayerFunctions::luaPlayerAddTaskHuntingPoints);
 
 			registerMethod(L, "Player", "getCapacity", PlayerFunctions::luaPlayerGetCapacity);
 			registerMethod(L, "Player", "setCapacity", PlayerFunctions::luaPlayerSetCapacity);
@@ -275,6 +277,22 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "openMarket", PlayerFunctions::luaPlayerOpenMarket);
 
+			// Forge Functions
+			registerMethod(L, "Player", "openForge", PlayerFunctions::luaPlayerOpenForge);
+			registerMethod(L, "Player", "closeForge", PlayerFunctions::luaPlayerCloseForge);
+
+			registerMethod(L, "Player", "addForgeDusts", PlayerFunctions::luaPlayerAddForgeDusts);
+			registerMethod(L, "Player", "removeForgeDusts", PlayerFunctions::luaPlayerRemoveForgeDusts);
+			registerMethod(L, "Player", "getForgeDusts", PlayerFunctions::luaPlayerGetForgeDusts);
+			registerMethod(L, "Player", "setForgeDusts", PlayerFunctions::luaPlayerSetForgeDusts);
+
+			registerMethod(L, "Player", "addForgeDustLevel", PlayerFunctions::luaPlayerAddForgeDustLevel);
+			registerMethod(L, "Player", "removeForgeDustLevel", PlayerFunctions::luaPlayerRemoveForgeDustLevel);
+			registerMethod(L, "Player", "getForgeDustLevel", PlayerFunctions::luaPlayerGetForgeDustLevel);
+
+			registerMethod(L, "Player", "getForgeSlivers", PlayerFunctions::luaPlayerGetForgeSlivers);
+			registerMethod(L, "Player", "getForgeCores", PlayerFunctions::luaPlayerGetForgeCores);
+
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
 			MountFunctions::init(L);
@@ -299,6 +317,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerSetAccountType(lua_State* L);
 
 		static int luaPlayeraddBestiaryKill(lua_State* L);
+		static int luaPlayerIsMonsterBestiaryUnlocked(lua_State* L);
 		static int luaPlayercharmExpansion(lua_State* L);
 		static int luaPlayergetCharmMonsterType(lua_State* L);
 
@@ -311,6 +330,7 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetPreyExperiencePercentage(lua_State* L);
 		static int luaPlayerRemoveTaskHuntingPoints(lua_State* L);
 		static int luaPlayerGetTaskHuntingPoints(lua_State* L);
+		static int luaPlayerAddTaskHuntingPoints(lua_State* L);
 
 		static int luaPlayerGetCapacity(lua_State* L);
 		static int luaPlayerSetCapacity(lua_State* L);
@@ -531,6 +551,22 @@ class PlayerFunctions final : LuaScriptInterface {
 		static int luaPlayerGetFreeBackpackSlots(lua_State* L);
 
 		static int luaPlayerOpenMarket(lua_State* L);
+
+		static int luaPlayerOpenForge(lua_State* L);
+		static int luaPlayerCloseForge(lua_State* L);
+		static int luaPlayerSendForgeError(lua_State* L);
+
+		static int luaPlayerAddForgeDusts(lua_State* L);
+		static int luaPlayerRemoveForgeDusts(lua_State* L);
+		static int luaPlayerGetForgeDusts(lua_State* L);
+		static int luaPlayerSetForgeDusts(lua_State *L);
+
+		static int luaPlayerAddForgeDustLevel(lua_State *L);
+		static int luaPlayerRemoveForgeDustLevel(lua_State *L);
+		static int luaPlayerGetForgeDustLevel(lua_State *L);
+
+		static int luaPlayerGetForgeSlivers(lua_State* L);
+		static int luaPlayerGetForgeCores(lua_State* L);
 
 		friend class CreatureFunctions;
 };

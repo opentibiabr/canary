@@ -27,7 +27,7 @@
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
-	if (tier > g_configManager().getNumber(MAX_ITEM_FORGE_TIER)) {
+	if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
 		SPDLOG_ERROR("{} - Failed to get number value {} for tier table result", __FUNCTION__, tier);
 		return 0;
 	}
@@ -161,7 +161,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 					Item* item = Item::CreateItem(itemType.id, stackCount);
 					if (g_game().internalAddItem(player->getInbox(), item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR)
 					{
-						SPDLOG_ERROR("{} - Ocurred an error to add item with id {} to player {}", itemType.id, player->getName());
+						SPDLOG_ERROR("[{}] Ocurred an error to add item with id {} to player {}", __FUNCTION__, itemType.id, player->getName());
 						delete item;
 						break;
 					}
@@ -212,7 +212,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 
 void IOMarket::checkExpiredOffers()
 {
-	const time_t lastExpireDate = time(nullptr) - g_configManager().getNumber(MARKET_OFFER_DURATION);
+	const time_t lastExpireDate = getTimeNow() - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::ostringstream query;
 	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale`, `tier` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
@@ -273,7 +273,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)
 void IOMarket::createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous)
 {
 	std::ostringstream query;
-	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `created`, `anonymous`, `price`, `tier`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << time(nullptr) << ',' << anonymous << ',' << price << ',' << std::to_string(tier) << ')';
+	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `created`, `anonymous`, `price`, `tier`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << getTimeNow() << ',' << anonymous << ',' << price << ',' << std::to_string(tier) << ')';
 	Database::getInstance().executeQuery(query.str());
 }
 
@@ -296,7 +296,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	std::ostringstream query;
 	query << "INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`, `tier`) VALUES ("
 		<< playerId << ',' << type << ',' << itemId << ',' << amount << ',' << price << ','
-		<< timestamp << ',' << time(nullptr) << ',' << state << ',' << std::to_string(tier) << ')';
+		<< timestamp << ',' << getTimeNow() << ',' << state << ',' << std::to_string(tier) << ')';
 	g_databaseTasks().addTask(query.str());
 }
 
@@ -318,7 +318,14 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state)
 		return false;
 	}
 
-	appendHistory(result->getNumber<uint32_t>("player_id"), static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")), result->getNumber<uint16_t>("itemtype"), result->getNumber<uint16_t>("amount"), result->getNumber<uint64_t>("price"), time(nullptr), getTierFromDatabaseTable(result->getString("tier")), state);
+	appendHistory(
+		result->getNumber<uint32_t>("player_id"),
+		static_cast<MarketAction_t>(result->getNumber<uint16_t>("sale")),
+		result->getNumber<uint16_t>("itemtype"),
+		result->getNumber<uint16_t>("amount"),
+		result->getNumber<uint64_t>("price"),
+		getTimeNow(),
+		getTierFromDatabaseTable(result->getString("tier")), state);
 	return true;
 }
 

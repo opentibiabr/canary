@@ -82,6 +82,8 @@ class TalkActions final : public BaseEvents {
 		TalkActionResult_t playerSaySpell(Player* player, SpeakClasses type, const std::string& words) const;
 
 		bool registerLuaEvent(TalkAction* event);
+		void clear();
+		// Old XML interface
 		void clear(bool fromLua) override final;
 
 	private:

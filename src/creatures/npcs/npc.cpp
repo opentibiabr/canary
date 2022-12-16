@@ -24,6 +24,8 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
+#include "lua/scripts/lua_environment.hpp"
+#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -64,14 +66,25 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-void Npc::reset() const
-{
-	g_npcs().reset();
-	// Close shop window from all npcs and reset the shopPlayerSet
-	for (const auto& [npcId, npc] : g_game().getNpcs()) {
-		npc->closeAllShopWindows();
-		npc->resetPlayerInteractions();
+bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
+	if (loadLibs) {
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
 	}
+	if (loadNpcs) {
+		return g_scripts().loadScripts("npc", false, true);
+	}
+	return false;
+}
+
+bool Npc::reset() const
+{
+	if (load()) {
+		g_npcs().reset();
+		g_game().resetNpcs();
+		return true;
+	}
+	return false;
 }
 
 void Npc::addList()
@@ -452,9 +465,10 @@ void Npc::onThinkWalk(uint32_t interval)
 		return;
 	}
 
-	Direction dir = Position::getRandomDirection();
-	if (canWalkTo(getPosition(), dir)) {
-		listWalkDir.push_front(dir);
+	if (Direction newDirection;
+		getRandomStep(newDirection))
+	{
+		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
 
@@ -547,6 +561,27 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 
 bool Npc::getNextStep(Direction& nextDirection, uint32_t& flags) {
 	return Creature::getNextStep(nextDirection, flags);
+}
+
+bool Npc::getRandomStep(Direction& moveDirection) const
+{
+	static std::vector<Direction> directionvector {
+		Direction::DIRECTION_NORTH,
+		Direction::DIRECTION_WEST,
+		Direction::DIRECTION_EAST,
+		Direction::DIRECTION_SOUTH
+	};
+	std::ranges::shuffle(directionvector, getRandomGenerator());
+
+	for (const Position& creaturePos = getPosition();
+		Direction direction : directionvector)
+	{
+		if (canWalkTo(creaturePos, direction)) {
+			moveDirection = direction;
+			return true;
+		}
+	}
+	return false;
 }
 
 void Npc::addShopPlayer(Player* player)

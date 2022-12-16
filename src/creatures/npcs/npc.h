@@ -63,7 +63,8 @@ class Npc final : public Creature
 			}
 		}
 
-		void reset() const;
+		bool load(bool loadLibs = true, bool loadNpcs = true) const;
+		bool reset() const;
 
 		void removeList() override;
 		void addList() override;
@@ -169,7 +170,8 @@ class Npc final : public Creature
 		void onPlacedCreature() override;
 
 		bool canWalkTo(const Position& fromPos, Direction dir) const;
-		bool getNextStep(Direction& direction, uint32_t& flags) override;
+		bool getNextStep(Direction& nextDirection, uint32_t& flags) override;
+		bool getRandomStep(Direction& moveDirection) const;
 
 		void setNormalCreatureLight() override {
 			internalLight = npcType->info.light;
@@ -177,11 +179,11 @@ class Npc final : public Creature
 
 		void addShopPlayer(Player* player);
 		void removeShopPlayer(Player* player);
+		void closeAllShopWindows();
 
 		static uint32_t npcAutoID;
 
 	private:
-		void closeAllShopWindows();
 		void onThinkYell(uint32_t interval);
 		void onThinkWalk(uint32_t interval);
 

@@ -49,7 +49,6 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", STAMINA_SYSTEM)
 	registerEnumIn(L, "configKeys", WARN_UNSAFE_SCRIPTS)
 	registerEnumIn(L, "configKeys", CONVERT_UNSAFE_SCRIPTS)
-	registerEnumIn(L, "configKeys", CLASSIC_EQUIPMENT_SLOTS)
 	registerEnumIn(L, "configKeys", ALLOW_BLOCK_SPAWN)
 	registerEnumIn(L, "configKeys", CLASSIC_ATTACK_SPEED)
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO)
@@ -175,6 +174,17 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY)
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY)
+
+	registerEnumIn(L, "configKeys", FORGE_COST_ONE_SLIVER)
+	registerEnumIn(L, "configKeys", FORGE_SLIVER_AMOUNT)
+	registerEnumIn(L, "configKeys", FORGE_CORE_COST)
+	registerEnumIn(L, "configKeys", FORGE_MAX_DUST)
+	registerEnumIn(L, "configKeys", FORGE_FUSION_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_TRANSFER_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION)
+	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT)
 
 	#undef registerEnumIn
 }

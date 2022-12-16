@@ -160,6 +160,8 @@ class Actions final : public BaseEvents {
 		bool registerLuaActionEvent(Action* action);
 		bool registerLuaPositionEvent(Action* action);
 		bool registerLuaEvent(Action* event);
+		void clear();
+		// Old XML interface
 		void clear(bool fromLua) override final;
 
 	private:

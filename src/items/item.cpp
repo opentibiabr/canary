@@ -1075,7 +1075,7 @@ std::vector<std::pair<std::string, std::string>>
 
 			if (it.abilities->speed) {
 				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << (it.abilities->speed) << std::noshowpos;
 				descriptions.emplace_back("Speed", ss.str());
 			}
 
@@ -1329,7 +1329,7 @@ std::vector<std::pair<std::string, std::string>>
 
 			if (it.abilities->speed) {
 				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << (it.abilities->speed) << std::noshowpos;
 				descriptions.emplace_back("Speed", ss.str());
 			}
 
@@ -1531,7 +1531,7 @@ std::string Item::parseClassificationDescription(const Item* item) {
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
 				string << item->getMomentumChance() << "% Momentum).";
 			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
-				string << item->getDodgeChance() << "% Ruse).";
+				string << std::setprecision(2) << std::fixed << item->getDodgeChance() << "% Ruse).";
 			}
 		}
 	}
@@ -1700,7 +1700,8 @@ std::string Item::parseShowAttributesDescription(const Item *item, const uint16_
 					itemDescription << ", ";
 				}
 
-				itemDescription << "speed " << std::showpos << (itemType.abilities->speed >> 1) << std::noshowpos;
+				
+				itemDescription << "speed " << std::showpos << (itemType.abilities->speed) << std::noshowpos;
 			}
 		}
 
@@ -1951,7 +1952,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 						s << ", ";
 					}
 
-					s << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+					s << "speed " << std::showpos << (it.abilities->speed) << std::noshowpos;
 				}
 			}
 
@@ -2145,7 +2146,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 						s << ", ";
 					}
 
-					s << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+					s << "speed " << std::showpos << (it.abilities->speed) << std::noshowpos;
 				}
 			}
 
@@ -2169,9 +2170,9 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	} else {
 		bool found = true;
 
-		if (it.abilities) {
+		if (it.abilities && it.slotPosition & SLOTP_RING) {
 			if (it.abilities->speed > 0) {
-				s << " (speed " << std::showpos << (it.abilities->speed / 2) << std::noshowpos << ')';
+				s << " (speed " << std::showpos << (it.abilities->speed) << std::noshowpos << ')';
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {
@@ -2499,6 +2500,22 @@ uint32_t Item::getWorth() const
 		default:
 			return 0;
 	}
+}
+
+uint32_t Item::getForgeSlivers() const
+{
+	if (getID() == ITEM_FORGE_SLIVER)
+		return getItemCount();
+	else
+		return 0;
+}
+
+uint32_t Item::getForgeCores() const
+{
+	if (getID() == ITEM_FORGE_CORE)
+		return getItemCount();
+	else
+		return 0;
 }
 
 LightInfo Item::getLightInfo() const

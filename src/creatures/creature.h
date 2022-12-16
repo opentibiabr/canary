@@ -183,17 +183,7 @@ class Creature : virtual public Thing
 		uint16_t getSpeed() const {
 			return static_cast<uint16_t>(baseSpeed + varSpeed);
 		}
-		void setSpeed(int32_t varSpeedDelta) {
-			int32_t oldSpeed = getSpeed();
-			varSpeed = varSpeedDelta;
-
-			if (getSpeed() <= 0) {
-				stopEventWalk();
-				cancelNextWalk = true;
-			} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
-				addEventWalk();
-			}
-		}
+		void setSpeed(int32_t varSpeedDelta);
 
 		void setBaseSpeed(uint16_t newBaseSpeed) {
 			baseSpeed = newBaseSpeed;
@@ -511,16 +501,19 @@ class Creature : virtual public Thing
 				delete this;
 			}
 		}
+		struct CountBlock_t {
+			int32_t total;
+			int64_t ticks;
+		};
+		using CountMap = std::map<uint32_t, CountBlock_t>;
+		CountMap getDamageMap() const {
+				return damageMap;
+		}
 
 	protected:
 		virtual bool useCacheMap() const {
 			return false;
 		}
-
-		struct CountBlock_t {
-			int32_t total;
-			int64_t ticks;
-		};
 
 		static constexpr int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;
 		static constexpr int32_t mapWalkHeight = Map::maxViewportY * 2 + 1;
@@ -529,7 +522,6 @@ class Creature : virtual public Thing
 
 		Position position;
 
-		using CountMap = std::map<uint32_t, CountBlock_t>;
 		CountMap damageMap;
 
 		std::list<Creature*> summons;

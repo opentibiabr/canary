@@ -891,6 +891,8 @@ class Item : virtual public Thing
 		}
 
 		uint32_t getWorth() const;
+		uint32_t getForgeSlivers() const;
+		uint32_t getForgeCores() const;
 		LightInfo getLightInfo() const;
 
 		bool hasProperty(ItemProperty prop) const;
@@ -1102,7 +1104,7 @@ class Item : virtual public Thing
 			if (getTier() == 0) {
 				return 0;
 			}
-			return 0.5 * getTier() + 0.03 * ((getTier() - 1) * (getTier() - 1));
+			return (0.0307576 * getTier() * getTier()) + (0.440697 * getTier()) + 0.026;
 		}
 
 		double_t getFatalChance() const {
@@ -1125,7 +1127,7 @@ class Item : virtual public Thing
 			}
 
 			auto tier = static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
-			if (tier > g_configManager().getNumber(MAX_ITEM_FORGE_TIER)) {
+			if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
 				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
 				return 0;
 			}
@@ -1133,7 +1135,7 @@ class Item : virtual public Thing
 			return tier;
 		}
 		void setTier(uint8_t tier) {
-			auto configTier = g_configManager().getNumber(MAX_ITEM_FORGE_TIER);
+			auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
 			if (tier > configTier) {
 				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
 				return;

@@ -16,7 +16,10 @@ function buyHouse.onSay(player, words, param)
 
 	local tile = Tile(position)
 	local house = tile and tile:getHouse()
-	if not house then
+	local playerPos = player:getPosition()
+	local houseEntry = house and house:getExitPosition()
+
+	if not house or playerPos ~= houseEntry then
 		player:sendCancelMessage("You have to be looking at the door of the house you would like to buy.")
 		return false
 	end
@@ -38,7 +41,7 @@ function buyHouse.onSay(player, words, param)
 	end
 
 	house:setOwnerGuid(player:getGuid())
-	player:sendTextMessage(MESSAGE_LOOK, "You have successfully bought this house, be sure to have the money for the rent in the bank.")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have successfully bought this house, be sure to have the money for the rent in the bank.")
 	return false
 end
 

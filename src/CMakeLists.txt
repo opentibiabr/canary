@@ -14,6 +14,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(Boost_NO_WARN_NEW_VERSIONS ON)
+set(CMAKE_SKIP_DEPENDENCY_CHECKS ON)
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+set(CMAKE_CACHE_RULE_LAUNCH_COMPILE 1)
+
 
 # Global gives error when building spdlog
 # Avoid changes by cmake/make on the source tree
@@ -328,8 +332,10 @@ if (MSVC)
 	else()
 		log_option_disabled("STATIC_LIBRARY")
 		target_link_libraries(${PROJECT_NAME}	PRIVATE jsoncpp_lib)
-		target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 	endif()
+
+  target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE
@@ -362,6 +368,9 @@ if (MSVC)
 	)
 
 else()
+
+  target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE

@@ -1008,9 +1008,11 @@ bool IOLoginData::savePlayer(Player* player) {
 	query << " WHERE `id` = " << player->getGUID();
 
 	DBTransaction transaction;
-	if (!transaction.begin()) {
+	if (!transaction.start()) {
 		return false;
 	}
+	
+	DBTransactionGuard guard(transaction);
 
 	if (!db.executeQuery(query.str())) {
 		return false;

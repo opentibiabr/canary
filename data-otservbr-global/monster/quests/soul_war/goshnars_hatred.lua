@@ -17,7 +17,7 @@ monster.health = 300000
 monster.maxHealth = 300000
 monster.race = "undead"
 monster.corpse = 33875
-monster.speed = 300
+monster.speed = 150
 
 monster.changeTarget = {
 	interval = 2000,

@@ -27255,7 +27255,9 @@
 	</item>
 	<item fromid="18011" toid="18012" article="a" name="stone wall"/>
 	<!-- gate -->
-	<item id="18013" article="a" name="stone floor"/>
+	<item id="18013" article="a" name="stone floor">
+		<attribute key="walkstack" value="0"/>
+	</item>
 	<item id="18014" name="RESERVED SPRITE"/>
 	<item id="18015" article="a" name="cabinet">
 		<attribute key="containersize" value="8"/>
@@ -47507,6 +47509,14 @@
 	</item>
 	<item id="32974" article="a" name="carved table">
 		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="32979" name="fog portal">
+		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
+	</item>
+	<item fromid="33004" toid="33007" name="fog portal">
+		<attribute key="type" value="teleport"/>
+		<attribute key="effect" value="teleport"/>
 	</item>
 	<item fromid="33026" toid="33027" name="heart lamp">
 		<attribute key="wrapableto" value="23398"/>

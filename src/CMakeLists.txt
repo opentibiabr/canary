@@ -370,7 +370,6 @@ if (MSVC)
 else()
 
   target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
-  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE

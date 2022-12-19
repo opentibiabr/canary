@@ -501,7 +501,7 @@ int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State *L) {
 
 int MonsterFunctions::luaMonsterIsForgeable(lua_State *L) {
 	// monster:isForgeable()
-	Monster *monster = getUserdata<Monster>(L, 1);
+	const Monster *monster = getUserdata<Monster>(L, 1);
 	if (!monster) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
 		pushBoolean(L, false);

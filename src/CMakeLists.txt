@@ -133,6 +133,9 @@ if(DEBUG_LOG)
 	log_option_disabled("DEBUG LOG")
 endif(DEBUG_LOG)
 
+# === PRECOMPILED HEADER ===
+target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
+
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
@@ -331,7 +334,6 @@ if (MSVC)
 		target_link_libraries(${PROJECT_NAME}	PRIVATE jsoncpp_lib)
 	endif()
 
-  target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
   target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
 	target_include_directories(${PROJECT_NAME}
@@ -365,8 +367,6 @@ if (MSVC)
 	)
 
 else()
-
-  target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE

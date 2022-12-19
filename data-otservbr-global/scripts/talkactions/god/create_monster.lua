@@ -41,6 +41,10 @@ function createMonster.onSay(player, words, param)
 	local position = player:getPosition()
 	local monster = Game.createMonster(monsterName, position)
 	if monster then
+		if not monster:isForgeable() then
+			player:sendCancelMessage("Only allowed monsters can be fiendish.")
+			return false
+		end
 		monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		position:sendMagicEffect(CONST_ME_MAGIC_RED)
 		if setFiendish then

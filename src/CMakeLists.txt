@@ -15,6 +15,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(Boost_NO_WARN_NEW_VERSIONS ON)
 
+
 # Global gives error when building spdlog
 # Avoid changes by cmake/make on the source tree
 # https://gitlab.kitware.com/cmake/cmake/issues/18403
@@ -131,6 +132,9 @@ if(DEBUG_LOG)
 	else()
 	log_option_disabled("DEBUG LOG")
 endif(DEBUG_LOG)
+
+# === PRECOMPILED HEADER ===
+target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 
 # *****************************************************************************
 # Packages / Libs
@@ -328,8 +332,9 @@ if (MSVC)
 	else()
 		log_option_disabled("STATIC_LIBRARY")
 		target_link_libraries(${PROJECT_NAME}	PRIVATE jsoncpp_lib)
-		target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 	endif()
+
+  target_compile_options(${PROJECT_NAME} PUBLIC /MP /FS /Zf /EHsc )
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE

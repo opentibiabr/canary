@@ -36,8 +36,22 @@ GameStore.OfferTypes = {
 }
 
 GameStore.SubActions = {
-	PREY_THIRDSLOT = 0,
-	TASKHUNTING_THIRDSLOT = 14
+	PREY_THIRDSLOT_REAL = 0,
+	PREY_WILDCARD = 1,
+	INSTANT_REWARD = 2,
+	BLESSING_TWIST = 3,
+	BLESSING_SOLITUDE = 4,
+	BLESSING_PHOENIX = 5,
+	BLESSING_SUNS = 6,
+	BLESSING_SPIRITUAL = 7,
+	BLESSING_EMBRACE = 8,
+	BLESSING_HEART = 9,
+	BLESSING_BLOOD = 10,
+	BLESSING_ALL_PVE = 11,
+	BLESSING_ALL_PVP = 12,
+	CHARM_EXPANSION = 13,
+	TASKHUNTING_THIRDSLOT = 14,
+	PREY_THIRDSLOT_REDIRECT = 15
 }
 
 GameStore.ActionType = {
@@ -288,7 +302,6 @@ function parseRequestStoreOffers(playerId, msg)
 	end
 
 	local actionType = msg:getByte()
-
 	if actionType == GameStore.ActionType.OPEN_CATEGORY then
 		local categoryName = msg:getString()
 		local category = GameStore.getCategoryByName(categoryName)
@@ -316,25 +329,19 @@ function parseRequestStoreOffers(playerId, msg)
 	elseif actionType == GameStore.ActionType.OPEN_USEFUL_THINGS then
 		local subAction = msg:getByte()
 		local offerId = subAction
-		local category = GameStore.getCategoryByName("Useful Things")
-
-		-- Third prey slot offerId
-		-- We can't use offerId 0
-		-- Subaction 0 is offer from "unlock permanently" of prey window button, offerId 4 is the id of the gamestore.lua third slot
-		if subAction == GameStore.SubActions.PREY_THIRDSLOT then
-			offerId = 4
-		-- Subaction 14 is offer from "unlock permanently" of task hunting window button, offerId 5 is the id of the gamestore.lua third slot
-		elseif subAction == GameStore.SubActions.TASKHUNTING_THIRDSLOT then
-			offerId = 5
+		local category = nil
+		if subAction >= GameStore.SubActions.BLESSING_TWIST and subAction <= GameStore.SubActions.BLESSING_ALL_PVP then
+			category = GameStore.getCategoryByName("Blessings")
+		else
+			category = GameStore.getCategoryByName("Useful Things")
 		end
-		-- Enable this for look sub action offer button
-		-- Example of subaction is the button for redirect to the store on clicking "unlock permanently" on prey window
-		--Spdlog.info("SubAction ".. subAction)
 
+		if subAction == GameStore.SubActions.PREY_THIRDSLOT_REAL then
+			offerId = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT
+		end
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
-
 	elseif actionType == GameStore.ActionType.OPEN_OFFER then
 		local offerId = msg:getU32()
 		local category = GameStore.getCategoryByOffer(offerId)

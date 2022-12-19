@@ -42,13 +42,13 @@ function createMonster.onSay(player, words, param)
 	local monster = Game.createMonster(monsterName, position)
 	if monster then
 		if not monster:isForgeable() then
-			player:sendCancelMessage("Only allowed monsters can be fiendish.")
+			player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
 			return false
 		end
 		monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		position:sendMagicEffect(CONST_ME_MAGIC_RED)
+		local monsterType = monster:getType()
 		if setFiendish then
-			local monsterType = monster:getType()
 			if monsterType and not monsterType:isForgeCreature() then
 				player:sendCancelMessage("Only allowed monsters can be fiendish.")
 				return false
@@ -56,6 +56,10 @@ function createMonster.onSay(player, words, param)
 			monster:setFiendish(position, player)
 		end
 		if setInfluenced then
+			if monsterType and not monsterType:isForgeCreature() then
+				player:sendCancelMessage("Only allowed monsters can be influenced.")
+				return false
+			end
 			local influencedMonster = Monster(ForgeMonster:pickInfluenced())
 			-- If it's reached the limit, we'll remove one to add the new one.
 			if ForgeMonster:exceededMaxInfluencedMonsters() then

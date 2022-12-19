@@ -3856,7 +3856,6 @@ void Player::postAddNotification(Thing* thing, const Cylinder* oldParent, int32_
 				if (!Position::areInRange<1, 1, 0>(container->getPosition(), getPosition())) {
 								containers.push_back(container);
 				}
-				}
 			}
 
 			for (const Container* container : containers) {

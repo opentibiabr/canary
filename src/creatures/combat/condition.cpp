@@ -1896,7 +1896,7 @@ void ConditionSpellCooldown::addCondition(Creature* creature, const Condition* a
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
-				player->sendSpellCooldown(subId, ticks);
+				player->sendSpellCooldown(static_cast<uint16_t>(subId), ticks);
 			}
 		}
 	}
@@ -1911,7 +1911,7 @@ bool ConditionSpellCooldown::startCondition(Creature* creature)
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
-			player->sendSpellCooldown(subId, ticks);
+			player->sendSpellCooldown(static_cast<uint16_t>(subId), ticks);
 		}
 	}
 	return true;

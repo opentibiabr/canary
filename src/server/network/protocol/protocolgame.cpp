@@ -1623,6 +1623,7 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 	msg.addByte(0x76);
 	msg.addByte(0x00);
 	msg.addByte(cyclopedia ? 0x01 : 0x00);
+	msg.add<uint32_t>(player->getID());
 	msg.addByte(0x01);
 
 	const ItemType &it = Item::items[itemId];
@@ -1989,6 +1990,8 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg)
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
 		newmsg.add<uint16_t>(mtype->info.armor);
+		// Version 13.10 (mitigation)
+		newmsg.addDouble(0);
 	}
 
 	if (currentLevel > 2)
@@ -3196,6 +3199,8 @@ void ProtocolGame::sendCyclopediaCharacterCombatStats()
 
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getDefense());
+	// Version 13.10 (mitigation)
+	msg.addDouble(0);
 
 	uint8_t combats = 0;
 	auto startCombats = msg.getBufferPosition();
@@ -3589,7 +3594,7 @@ void ProtocolGame::sendBasicData()
 	msg.add<uint16_t>(spellsList.size());
 	for (uint16_t sid : spellsList)
 	{
-		msg.addByte(sid);
+		msg.add<uint16_t>(sid);
 	}
 	msg.addByte(player->getVocation()->getMagicShield()); // bool - determine whether magic shield is active or not
 	writeToOutputBuffer(msg);
@@ -6225,12 +6230,12 @@ void ProtocolGame::sendVIP(uint32_t guid, const std::string &name, const std::st
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendSpellCooldown(uint8_t spellId, uint32_t time)
+void ProtocolGame::sendSpellCooldown(uint16_t spellId, uint32_t time)
 {
 	NetworkMessage msg;
 	msg.addByte(0xA4);
 
-	msg.addByte(spellId);
+	msg.add<uint16_t>(spellId);
 	msg.add<uint32_t>(time);
 	writeToOutputBuffer(msg);
 }
@@ -6664,6 +6669,9 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
 	}
+
+	// Version 13.10 (mitigation)
+	msg.addByte(0);
 
 	// Version 12.81 new skill (Fatal, Dodge and Momentum)
 	sendForgeSkillStats(msg);

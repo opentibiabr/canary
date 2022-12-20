@@ -498,3 +498,16 @@ int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State *L) {
 	monster->clearFiendishStatus();
 	return 1;
 }
+
+int MonsterFunctions::luaMonsterIsForgeable(lua_State *L) {
+	// monster:isForgeable()
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, monster->canBeForgeMonster());
+	return 1;
+}

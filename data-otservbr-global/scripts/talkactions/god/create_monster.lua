@@ -21,46 +21,24 @@ function createMonster.onSay(player, words, param)
 		monsterForge = split[2]
 	end
 	-- Check dust level
-	local setFiendish = false
-	local setInfluenced
-	if type(monsterForge) == "string" and monsterForge == "fiendish" then
-		setFiendish = true
-	end
-	local influencedLevel
-	if not setFiendish then
-		influencedLevel = tonumber(monsterForge)
-	end
-	if influencedLevel and influencedLevel > 0 then
-		if influencedLevel > 5 then
-			player:sendCancelMessage("Invalid influenced level.")
-			return false
-		end
-		setInfluenced = true
-	end
+	local canSetFiendish, canSetInfluenced, influencedLevel = CheckDustLevel(monsterForge, player)
 
 	local position = player:getPosition()
 	local monster = Game.createMonster(monsterName, position)
 	if monster then
+		if not monster:isForgeable() then
+			player:sendCancelMessage("Only allowed monsters can be fiendish or influenced.")
+			return false
+		end
 		monster:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 		position:sendMagicEffect(CONST_ME_MAGIC_RED)
-		if setFiendish then
-			local monsterType = monster:getType()
-			if monsterType and not monsterType:isForgeCreature() then
-				player:sendCancelMessage("Only allowed monsters can be fiendish.")
-				return false
-			end
-			monster:setFiendish(position, player)
+
+		local monsterType = monster:getType()
+		if canSetFiendish then
+			SetFiendish(monsterType, position, player, monster)
 		end
-		if setInfluenced then
-			local influencedMonster = Monster(ForgeMonster:pickInfluenced())
-			-- If it's reached the limit, we'll remove one to add the new one.
-			if ForgeMonster:exceededMaxInfluencedMonsters() then
-				if influencedMonster then
-					Game.removeInfluencedMonster(influencedMonster:getId())
-				end
-			end
-			Game.addInfluencedMonster(monster)
-			monster:setForgeStack(influencedLevel)
+		if canSetInfluenced then
+			SetInfluenced(monsterType, monster, player, influencedLevel)
 		end
 	else
 		player:sendCancelMessage("There is not enough room.")

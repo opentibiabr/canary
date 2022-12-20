@@ -280,7 +280,7 @@ class Monster final : public Creature
 		void configureForgeSystem();
 
 		bool canBeForgeMonster() const {
-			return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature();
+			return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature() && getRaceId() > 0;
 		}
 
 		

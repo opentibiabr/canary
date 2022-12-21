@@ -60,8 +60,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{name = "dreadful harvester", chance = 40, interval = 1000, max = 2},
-		{name = "mean maw", chance = 30, interval = 1000, max = 2}
+		{name = "dreadful harvester", chance = 40, interval = 1000, count = 2},
+		{name = "mean maw", chance = 30, interval = 1000, count = 2}
 	}
 }
 
@@ -94,10 +94,10 @@ monster.loot = {
 	{name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100},
 	{name = "cruelty's chest", chance = 2000},
 	{name = "cruelty's claw", chance = 2000},
-	{name = "figurine of cruelty", chance = 400, unique = true},
-	{name = "spectral saddle", chance = 400, unique = true},
-	{name = "spectral horse tack", chance = 400, unique = true},
-	{name = "bag you desire", chance = 100, unique = true}
+	{name = "figurine of cruelty", chance = 400},
+	{name = "spectral saddle", chance = 400},
+	{name = "spectral horse tack", chance = 400},
+	{name = "bag you desire", chance = 100}
 }
 
 monster.attacks = {

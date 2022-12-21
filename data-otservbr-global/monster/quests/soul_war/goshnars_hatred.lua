@@ -60,8 +60,8 @@ monster.light = {
 monster.summon = {
 	maxSummons = 4,
 	summons = {
-		{name = "dreadful harvester", chance = 10, interval = 1000, max = 2},
-		{name = "hateful soul", chance = 10, interval = 1000, max = 2}
+		{name = "dreadful harvester", chance = 10, interval = 1000, count = 2},
+		{name = "hateful soul", chance = 10, interval = 1000, count = 2}
 	}
 }
 
@@ -92,11 +92,11 @@ monster.loot = {
 	{name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100},
 	{name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100},
 	{name = "vial of hatred", chance = 25000, maxCount = 1},
-	{name = "figurine of hatred", chance = 400, unique = true}, 
-	{name = "spectral horseshoe", chance = 400, unique = true},
-	{name = "spectral horse tack", chance = 400, unique = true},
-	{name = "bracelet of strengthening", chance = 400, unique = true},
-	{name = "bag you desire", chance = 100, unique = true}
+	{name = "figurine of hatred", chance = 400}, 
+	{name = "spectral horseshoe", chance = 400},
+	{name = "spectral horse tack", chance = 400},
+	{name = "bracelet of strengthening", chance = 400},
+	{name = "bag you desire", chance = 100}
 }
 
 monster.attacks = {

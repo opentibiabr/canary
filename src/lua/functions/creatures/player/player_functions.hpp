@@ -292,6 +292,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 			registerMethod(L, "Player", "getForgeSlivers", PlayerFunctions::luaPlayerGetForgeSlivers);
 			registerMethod(L, "Player", "getForgeCores", PlayerFunctions::luaPlayerGetForgeCores);
+			registerMethod(L, "Player", "isUIExhausted", PlayerFunctions::luaPlayerIsUIExhausted);
+            registerMethod(L, "Player", "updateUIExhausted", PlayerFunctions::luaPlayerUpdateUIExhausted);
 
 			GroupFunctions::init(L);
 			GuildFunctions::init(L);
@@ -567,7 +569,8 @@ class PlayerFunctions final : LuaScriptInterface {
 
 		static int luaPlayerGetForgeSlivers(lua_State* L);
 		static int luaPlayerGetForgeCores(lua_State* L);
-
+  		static int luaPlayerIsUIExhausted(lua_State* L);
+        static int luaPlayerUpdateUIExhausted(lua_State* L);
 		friend class CreatureFunctions;
 };
 

@@ -20,6 +20,8 @@
 #include "pch.hpp"
 
 #include "io/iologindata.h"
+#include "io/functions/iologindata_load_player.hpp"
+#include "io/functions/iologindata_save_player.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "io/ioprey.h"
@@ -287,13 +289,16 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->loginPosition.z = result->getNumber<uint16_t>("posz");
 
   player->addPreyCards(result->getNumber<uint64_t>("prey_wildcard"));
-  player->addTaskHuntingPoints(result->getNumber<uint16_t>("task_points"));
+  player->addTaskHuntingPoints(result->getNumber<uint64_t>("task_points"));
+  player->addForgeDusts(result->getNumber<uint64_t>("forge_dusts"));
+  player->addForgeDustLevel(result->getNumber<uint64_t>("forge_dust_level"));
 
   player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
   player->lastLogout = result->getNumber<time_t>("lastlogout");
 
   player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
-  player->offlineTrainingSkill = result->getNumber<int32_t>("offlinetraining_skill");
+	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
+  player->setOfflineTrainingSkill(skill);
 
   Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
   if (!town) {
@@ -657,7 +662,16 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     if (result = db.storeQuery(query.str())) {
       do {
         auto slot = new PreySlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-        slot->state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+        PreyDataState_t state = static_cast<PreyDataState_t>(result->getNumber<uint16_t>("state"));
+        if (slot->id == PreySlot_Two && state == PreyDataState_Locked) {
+          if (!player->isPremium()) {
+            slot->state = PreyDataState_Locked;
+          } else {
+            slot->state = PreyDataState_Selection;
+          }
+        } else {
+          slot->state = state;
+        }
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->option = static_cast<PreyOption_t>(result->getNumber<uint16_t>("option"));
         slot->bonus = static_cast<PreyBonus_t>(result->getNumber<uint16_t>("bonus_type"));
@@ -681,6 +695,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
+  IOLoginDataLoad::loadPlayerForgeHistory(player, result);
+
   // Load task hunting class
   if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
     query.str(std::string());
@@ -688,7 +704,16 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     if (result = db.storeQuery(query.str())) {
       do {
         auto slot = new TaskHuntingSlot(static_cast<PreySlot_t>(result->getNumber<uint16_t>("slot")));
-        slot->state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+        PreyTaskDataState_t state = static_cast<PreyTaskDataState_t>(result->getNumber<uint16_t>("state"));
+        if (slot->id == PreySlot_Two && state == PreyTaskDataState_Locked) {
+          if (!player->isPremium()) {
+            slot->state = PreyTaskDataState_Locked;
+          } else {
+            slot->state = PreyTaskDataState_Selection;
+          }
+        } else {
+          slot->state = state;
+        }
         slot->selectedRaceId = result->getNumber<uint16_t>("raceid");
         slot->upgrade = result->getNumber<bool>("upgrade");
         slot->rarity = static_cast<uint8_t>(result->getNumber<uint16_t>("rarity"));
@@ -874,6 +899,8 @@ bool IOLoginData::savePlayer(Player* player)
 
   query << "`prey_wildcard` = " << player->getPreyCards() << ',';
   query << "`task_points` = " << player->getTaskHuntingPoints() << ',';
+  query << "`forge_dusts` = " << player->getForgeDusts() << ',';
+  query << "`forge_dust_level` = " << player->getForgeDustLevel() << ',';
 
   query << "`cap` = " << (player->capacity / 100) << ',';
   query << "`sex` = " << static_cast<uint16_t>(player->sex) << ',';
@@ -921,7 +948,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`lastlogout` = " << player->getLastLogout() << ',';
   query << "`balance` = " << player->bankBalance << ',';
   query << "`offlinetraining_time` = " << player->getOfflineTrainingTime() / 1000 << ',';
-  query << "`offlinetraining_skill` = " << player->getOfflineTrainingSkill() << ',';
+  query << "`offlinetraining_skill` = " << std::to_string(player->getOfflineTrainingSkill()) << ',';
   query << "`stamina` = " << player->getStaminaMinutes() << ',';
   query << "`skill_fist` = " << player->skills[SKILL_FIST].level << ',';
   query << "`skill_fist_tries` = " << player->skills[SKILL_FIST].tries << ',';
@@ -1244,6 +1271,8 @@ bool IOLoginData::savePlayer(Player* player)
       }
     }
   }
+
+  IOLoginDataSave::savePlayerForgeHistory(player);
 
   query.str(std::string());
   query << "DELETE FROM `player_storage` WHERE `player_id` = " << player->getGUID();

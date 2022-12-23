@@ -61,6 +61,7 @@ std::string getFirstLine(const std::string& str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+std::time_t getTimeNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string& str);
@@ -107,6 +108,10 @@ std::string getObjectCategoryName(ObjectCategory_t category);
 int64_t OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
+
+uint8_t forgeBonus(int32_t number);
+
+std::string formatPrice(std::string price, bool space/* = false*/);
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {

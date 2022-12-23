@@ -23,6 +23,8 @@
 
 #include "utils/tools.h"
 
+#include <fmt/chrono.h>
+
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
 	SPDLOG_ERROR("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -368,32 +370,16 @@ std::string convertIPToString(uint32_t ip)
 
 std::string formatDate(time_t time)
 {
-	const tm* tms = localtime(&time);
-	if (!tms) {
-		return {};
-	}
-
-	char buffer[20];
-	int res = sprintf(buffer, "%02d/%02d/%04d %02d:%02d:%02d", tms->tm_mday, tms->tm_mon + 1, tms->tm_year + 1900, tms->tm_hour, tms->tm_min, tms->tm_sec);
-	if (res < 0) {
-		return {};
-	}
-	return {buffer, 19};
+	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
 }
 
 std::string formatDateShort(time_t time)
 {
-	const tm* tms = localtime(&time);
-	if (!tms) {
-		return {};
-	}
+	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+}
 
-	char buffer[12];
-	size_t res = strftime(buffer, 12, "%d %b %Y", tms);
-	if (res == 0) {
-		return {};
-	}
-	return {buffer, 11};
+std::time_t getTimeNow() {
+	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
 Direction getDirection(const std::string& string)
@@ -1110,6 +1096,7 @@ const char* getReturnMessage(ReturnValue value)
 	switch (value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
+
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
@@ -1346,6 +1333,9 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
 
+		case RETURNVALUE_CONTACTADMINISTRATOR:
+			return "An error has occurred, please contact your administrator.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";
@@ -1475,4 +1465,46 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+uint8_t forgeBonus(int32_t number)
+{
+	// None
+	if (number < 7400)
+		return 0;
+	// Dust not consumed
+	else if (number >= 7400 && number < 9000)
+		return 1;
+	// Cores not consumed
+	else if (number >= 9000 && number < 9500)
+		return 2;
+	// Gold not consumed
+	else if (number >= 9500 && number < 9525)
+		return 3;
+	// Second item retained with decreased tier
+	else if (number >= 9525 && number < 9550)
+		return 4;
+	// Second item retained with unchanged tier
+	else if (number >= 9550 && number < 9950)
+		return 5;
+	// Second item retained with increased tier
+	else if (number >= 9950 && number < 9975)
+		return 6;
+	// Gain two tiers
+	else if (number >= 9975)
+		return 7;
+
+	return 0;
+}
+
+std::string formatPrice(std::string price, bool space/* = false*/)
+{
+	std::ranges::reverse(price.begin(), price.end());
+	price = std::regex_replace(price, std::regex("000"), "k");
+	std::ranges::reverse(price.begin(), price.end());
+	if (space) {
+		price = std::regex_replace(price, std::regex("k"), " k", std::regex_constants::format_first_only);
+	}
+
+	return price;
 }

@@ -227,6 +227,24 @@ int MonsterTypeFunctions::luaMonsterTypeIsBlockable(lua_State* L) {
 	return 1;
 }
 
+int MonsterTypeFunctions::luaMonsterTypeIsForgeCreature(lua_State* L) {
+	// get: monsterType:isForgeCreature() set: monsterType:isForgeCreature(bool)
+	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	if (!monsterType) {
+		pushBoolean(L, false);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_TYPE_NOT_FOUND));
+		return 0;
+	}
+
+	if (lua_gettop(L) == 1) {
+		pushBoolean(L, monsterType->info.isForgeCreature);
+	} else {
+		monsterType->info.isForgeCreature = getBoolean(L, 2);
+		pushBoolean(L, true);
+	}
+	return 1;
+}
+
 int MonsterTypeFunctions::luaMonsterTypeCanSpawn(lua_State* L) {
 	// monsterType:canSpawn(pos)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
@@ -1203,13 +1221,13 @@ int MonsterTypeFunctions::luaMonsterTypeManaCost(lua_State* L) {
 }
 
 int MonsterTypeFunctions::luaMonsterTypeBaseSpeed(lua_State* L) {
-	// monsterType:getBaseSpeed()
+	// monsterType:baseSpeed()
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.baseSpeed);
+			lua_pushnumber(L, monsterType->getBaseSpeed());
 		} else {
-			monsterType->info.baseSpeed = getNumber<uint32_t>(L, 2);
+			monsterType->setBaseSpeed(getNumber<uint16_t>(L, 2));
 			pushBoolean(L, true);
 		}
 	} else {

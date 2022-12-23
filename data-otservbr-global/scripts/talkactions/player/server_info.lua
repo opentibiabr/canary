@@ -2,8 +2,9 @@ local serverInfo = TalkAction("!serverinfo")
 
 function serverInfo.onSay(player, words, param)
 	local configRateSkill =  configManager.getNumber(configKeys.RATE_SKILL)
+	local baseRate = player:getFinalBaseRateExperience()
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Server Info:"
-	.. "\nExp rate: " .. getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
+	.. "\nExp rate: " .. baseRate
 	.. "\nSword Skill rate: " .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_SWORD), configRateSkill)
 	.. "\nClub Skill rate: " .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_CLUB), configRateSkill)
 	.. "\nAxe Skill rate: " .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_AXE), configRateSkill)

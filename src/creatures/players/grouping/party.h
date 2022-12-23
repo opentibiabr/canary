@@ -23,6 +23,14 @@
 #include "creatures/players/player.h"
 #include "creatures/monsters/monsters.h"
 
+enum SharedExpStatus_t : uint8_t {
+	SHAREDEXP_OK,
+	SHAREDEXP_TOOFARAWAY,
+	SHAREDEXP_LEVELDIFFTOOLARGE,
+	SHAREDEXP_MEMBERINACTIVE,
+	SHAREDEXP_EMPTYPARTY
+};
+
 class Player;
 class Party;
 
@@ -75,6 +83,7 @@ class Party
 			return sharedExpEnabled;
 		}
 		bool canUseSharedExperience(const Player* player) const;
+		SharedExpStatus_t getMemberSharedExperienceStatus(const Player* player) const;		
 		void updateSharedExperience();
 
 		void updatePlayerTicks(Player* player, uint32_t points);
@@ -119,7 +128,8 @@ class Party
 		std::vector<PartyAnalyzer*> membersData;
 
 	private:
-		bool canEnableSharedExperience();
+		const char* getSharedExpReturnMessage(SharedExpStatus_t value);
+		SharedExpStatus_t getSharedExperienceStatus();
 
 		std::map<uint32_t, int64_t> ticksMap;
 

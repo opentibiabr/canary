@@ -27,6 +27,20 @@ echo "================================"
 echo ""
 
 echo ""
+echo "===== Wait for the DB to be Up ====="
+echo ""
+
+until mysql -u "$DB_USER" -p"$DB_PASSWORD" -h "$DB_HOST" --port="$DB_PORT" -e "SHOW DATABASES;"
+do
+	echo "DB offline, trying again"
+	sleep 5s
+done
+
+echo ""
+echo "================================"
+echo ""
+
+echo ""
 echo "===== Create Database and Import schema ====="
 echo ""
 

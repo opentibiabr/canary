@@ -36,7 +36,7 @@ monster.health = 150
 monster.maxHealth = 150
 monster.race = "venom"
 monster.corpse = 2127
-monster.speed = 120
+monster.speed = 60
 monster.manaCost = 0
 monster.maxSummons = 3
 
@@ -75,8 +75,11 @@ monster.light = {
 	color = 0
 }
 
-monster.summons = {
-	{name = "Slime", chance = 10, interval = 2000}
+monster.summon = {
+	maxSummons = 1,
+	summons = {
+		{name = "Slime", chance = 10, interval = 2000}
+	}
 }
 
 monster.voices = {

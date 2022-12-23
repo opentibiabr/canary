@@ -49,13 +49,13 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", STAMINA_SYSTEM)
 	registerEnumIn(L, "configKeys", WARN_UNSAFE_SCRIPTS)
 	registerEnumIn(L, "configKeys", CONVERT_UNSAFE_SCRIPTS)
-	registerEnumIn(L, "configKeys", CLASSIC_EQUIPMENT_SLOTS)
 	registerEnumIn(L, "configKeys", ALLOW_BLOCK_SPAWN)
 	registerEnumIn(L, "configKeys", CLASSIC_ATTACK_SPEED)
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO)
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_CHARGES)
 	registerEnumIn(L, "configKeys", REMOVE_POTION_CHARGES)
 	registerEnumIn(L, "configKeys", WEATHER_RAIN)
+	registerEnumIn(L, "configKeys", ALLOW_RELOAD)
 	registerEnumIn(L, "configKeys", WEATHER_THUNDER)
 	registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST)
 	registerEnumIn(L, "configKeys", FREE_QUEST_STAGE)
@@ -141,7 +141,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
-	
+
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN)
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN_SPEED)
 	registerEnumIn(L, "configKeys", RATE_MANA_REGEN)
@@ -174,6 +174,17 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY)
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY)
+
+	registerEnumIn(L, "configKeys", FORGE_COST_ONE_SLIVER)
+	registerEnumIn(L, "configKeys", FORGE_SLIVER_AMOUNT)
+	registerEnumIn(L, "configKeys", FORGE_CORE_COST)
+	registerEnumIn(L, "configKeys", FORGE_MAX_DUST)
+	registerEnumIn(L, "configKeys", FORGE_FUSION_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_TRANSFER_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION)
+	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT)
 
 	#undef registerEnumIn
 }

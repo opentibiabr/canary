@@ -360,7 +360,8 @@ enum PlayerSex_t : uint8_t {
 	PLAYERSEX_LAST = PLAYERSEX_MALE
 };
 
-enum skills_t : uint8_t {
+enum skills_t : int8_t {
+	SKILL_NONE = -1,
 	SKILL_FIST = 0,
 	SKILL_CLUB = 1,
 	SKILL_SWORD = 2,
@@ -482,6 +483,12 @@ enum DailyRewardStatus : uint8_t {
 	DAILY_REWARD_COLLECTED = 0,
 	DAILY_REWARD_NOTCOLLECTED = 1,
 	DAILY_REWARD_NOTAVAILABLE = 2
+};
+
+enum class ForgeClassifications_t : uint8_t {
+	FORGE_NORMAL_MONSTER = 0,
+	FORGE_INFLUENCED_MONSTER = 1,
+	FORGE_FIENDISH_MONSTER = 2,
 };
 
 enum OperatingSystem_t : uint8_t {

@@ -13,7 +13,7 @@ local function playerFreeQuestStart(playerId, index)
 	for i = 1, 5 do
 		index = index + 1
 		if not questTable[index] then
-			player:sendTextMessage(MESSAGE_INFO_DESCR, "Player FreeQuest is complete.")
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player FreeQuest is complete.")
 			player:setStorageValue(Storage.FreeQuests, stage)
 			return
 		end
@@ -34,7 +34,7 @@ function freeQuests.onLogin(player)
 		return true
 	end
 
-	player:sendTextMessage(MESSAGE_INFO_DESCR, "Player FreeQuest in progress..")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Player FreeQuest in progress..")
 	addEvent(playerFreeQuestStart, 500, player:getId(), 0)
 	return true
 end

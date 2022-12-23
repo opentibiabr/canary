@@ -1,8 +1,18 @@
 math.randomseed(os.time())
 
 dofile(DATA_DIRECTORY .. "/lib/lib.lua")
-if DATA_DIRECTORY == "data-otservbr-global" then
+local startupFile=io.open(DATA_DIRECTORY.. "/startup/startup.lua", "r")
+if startupFile ~= nil then
+	io.close(startupFile)
 	dofile(DATA_DIRECTORY.. "/startup/startup.lua")
+end
+
+function IsRunningGlobalDatapack()
+	if DATA_DIRECTORY == "data-otservbr-global" then
+		return true
+	else
+		return false
+	end
 end
 
 NOT_MOVEABLE_ACTION = 100

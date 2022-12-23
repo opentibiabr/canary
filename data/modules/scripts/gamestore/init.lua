@@ -31,7 +31,27 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_HIRELING_NAMECHANGE = 21,
 	OFFER_TYPE_HIRELING_SEXCHANGE = 22,
 	OFFER_TYPE_HIRELING_SKILL = 23,
-	OFFER_TYPE_HIRELING_OUTFIT = 24
+	OFFER_TYPE_HIRELING_OUTFIT = 24,
+	OFFER_TYPE_HUNTINGSLOT = 25
+}
+
+GameStore.SubActions = {
+	PREY_THIRDSLOT_REAL = 0,
+	PREY_WILDCARD = 1,
+	INSTANT_REWARD = 2,
+	BLESSING_TWIST = 3,
+	BLESSING_SOLITUDE = 4,
+	BLESSING_PHOENIX = 5,
+	BLESSING_SUNS = 6,
+	BLESSING_SPIRITUAL = 7,
+	BLESSING_EMBRACE = 8,
+	BLESSING_HEART = 9,
+	BLESSING_BLOOD = 10,
+	BLESSING_ALL_PVE = 11,
+	BLESSING_ALL_PVP = 12,
+	CHARM_EXPANSION = 13,
+	TASKHUNTING_THIRDSLOT = 14,
+	PREY_THIRDSLOT_REDIRECT = 15
 }
 
 GameStore.ActionType = {
@@ -282,7 +302,6 @@ function parseRequestStoreOffers(playerId, msg)
 	end
 
 	local actionType = msg:getByte()
-
 	if actionType == GameStore.ActionType.OPEN_CATEGORY then
 		local categoryName = msg:getString()
 		local category = GameStore.getCategoryByName(categoryName)
@@ -309,24 +328,20 @@ function parseRequestStoreOffers(playerId, msg)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_USEFUL_THINGS then
 		local subAction = msg:getByte()
-		local redirectId = subAction
+		local offerId = subAction
 		local category = nil
-		if subAction >= 4 then
+		if subAction >= GameStore.SubActions.BLESSING_TWIST and subAction <= GameStore.SubActions.BLESSING_ALL_PVP then
 			category = GameStore.getCategoryByName("Blessings")
 		else
 			category = GameStore.getCategoryByName("Useful Things")
 		end
 
-		-- Third prey slot offerId
-		-- We can't use offerId 0
-		if subAction == 0 then
-			redirectId = 65008
+		if subAction == GameStore.SubActions.PREY_THIRDSLOT_REAL then
+			offerId = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT
 		end
-
 		if category then
-			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, redirectId)
+			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
-
 	elseif actionType == GameStore.ActionType.OPEN_OFFER then
 		local offerId = msg:getU32()
 		local category = GameStore.getCategoryByOffer(offerId)

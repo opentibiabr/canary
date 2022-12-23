@@ -79,6 +79,8 @@ class Spells final : public BaseEvents
 			instants.try_emplace(word, instant);
 		}
 
+		void clear();
+		// old XML inteface
 		void clear(bool fromLua) override final;
 		bool registerInstantLuaEvent(InstantSpell* event);
 		bool registerRuneLuaEvent(RuneSpell* event);

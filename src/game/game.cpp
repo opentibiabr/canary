@@ -26,6 +26,7 @@
 #include "database/databasetasks.h"
 #include "lua/creature/events.h"
 #include "game/game.h"
+#include "game/functions/game_reload.hpp"
 #include "lua/global/globalevent.h"
 #include "io/iologindata.h"
 #include "io/iomarket.h"
@@ -69,6 +70,21 @@ Game::~Game()
 
 	for (const auto& it : CharmList) {
 		delete it;
+	}
+}
+
+void Game::resetMonsters() const{
+	for (const auto& [monsterId, monster] : getMonsters()) {
+		monster->clearTargetList();
+		monster->clearFriendList();
+	}
+}
+
+void Game::resetNpcs() const {
+	// Close shop window from all npcs and reset the shopPlayerSet
+	for (const auto& [npcId, npc] : getNpcs()) {
+		npc->closeAllShopWindows();
+		npc->resetPlayerInteractions();
 	}
 }
 
@@ -149,6 +165,9 @@ void Game::start(ServiceManager* manager)
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_IMBUEMENT_INTERVAL, std::bind(&Game::checkImbuements, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS, std::bind_front(&Game::updateForgeableMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createFiendishMonsters, this)));
+	g_scheduler().addEvent(createSchedulerTask(EVENT_MS + 1000, std::bind_front(&Game::createInfluencedMonsters, this)));
 }
 
 GameState_t Game::getGameState() const
@@ -857,6 +876,11 @@ void Game::playerMoveThing(uint32_t playerId, const Position& fromPos,
 	if (!player) {
 		return;
 	}
+	
+	// Prevent the player from being able to move the item within the imbuement window
+	if (player->hasImbuingItem()) {
+        return;
+	}
 
 	uint8_t fromIndex = 0;
 	if (fromPos.x == 0xFFFF) {
@@ -1339,6 +1363,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 				return;
 		}
 	}
+
 	ReturnValue ret = internalMoveItem(fromCylinder, toCylinder, toIndex, item, count, nullptr, 0, player);
 	if (ret != RETURNVALUE_NOERROR) {
 		player->sendCancelMessage(ret);
@@ -1673,6 +1698,10 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t inde
 
 ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool test /*= false*/, uint32_t flags /*= 0*/)
 {
+	if (item == nullptr) {
+		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 	Cylinder* cylinder = item->getParent();
 	if (cylinder == nullptr) {
 		SPDLOG_DEBUG("{} - Cylinder is nullptr", __FUNCTION__);
@@ -1703,7 +1732,7 @@ ReturnValue Game::internalRemoveItem(Item* item, int32_t count /*= -1*/, bool te
 	if (item->canDecay() && cylinder->getTile() && item->getLoadedFromMap()) {
 		SPDLOG_DEBUG("Cannot remove item with id {}, name {}, on position {}", item->getID(), item->getName(), cylinder->getPosition().toString());
 		item->stopDecaying();
-		return RETURNVALUE_NOERROR;
+		return RETURNVALUE_THISISIMPOSSIBLE;
 	}
 
 	if (!test) {
@@ -1755,9 +1784,10 @@ ReturnValue Game::internalPlayerAddItem(Player* player, Item* item, bool dropOnM
 	return ret;
 }
 
-Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/, bool hasTier /*= false*/, uint8_t tier /*= 0*/) const
+Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depthSearch /*= true*/, int32_t subType /*= -1*/) const
 {
 	if (cylinder == nullptr) {
+		SPDLOG_ERROR("[{}] Cylinder is nullptr", __FUNCTION__);
 		return nullptr;
 	}
 
@@ -1773,7 +1803,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 			continue;
 		}
 
-		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType()) && (!hasTier || item->getTier() == tier)) {
+		if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 			return item;
 		}
 
@@ -1789,7 +1819,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 	while (i < containers.size()) {
 		Container* container = containers[i++];
 		for (Item* item : container->getItemList()) {
-			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType()) && (!hasTier || item->getTier() == tier)) {
+			if (item->getID() == itemId && (subType == -1 || subType == item->getSubType())) {
 				return item;
 			}
 
@@ -4126,13 +4156,13 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 	}
 
 	// Check npc say exhausted
-	if (player->isNpcExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	merchant->onPlayerBuyItem(player, it.id, count, amount, ignoreCap, inBackpacks);
-	player->updateNpcExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint16_t amount, bool ignoreEquipped)
@@ -4161,13 +4191,13 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 	}
 
 	// Check npc say exhausted
-	if (player->isNpcExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	merchant->onPlayerSellItem(player, it.id, count, amount, ignoreEquipped);
-	player->updateNpcExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerCloseShop(uint32_t playerId)
@@ -4562,12 +4592,17 @@ void Game::playerQuickLootBlackWhitelist(uint32_t playerId, QuickLootFilter_t fi
 void Game::playerRequestDepotItems(uint32_t playerId)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchAvailable() || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchAvailable()) {
+		return;
+	}
+
+	if (player->isUIExhausted(500)) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->requestDepotItems();
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerRequestCloseDepotSearch(uint32_t playerId)
@@ -4584,34 +4619,49 @@ void Game::playerRequestCloseDepotSearch(uint32_t playerId)
 void Game::playerRequestDepotSearchItem(uint32_t playerId, uint16_t itemId, uint8_t tier)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchOpen() || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchOpen()) {
+		return;
+	}
+
+	if (player->isUIExhausted(500)) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->requestDepotSearchItem(itemId, tier);
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerRequestDepotSearchRetrieve(uint32_t playerId, uint16_t itemId, uint8_t tier, uint8_t type)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchOpenOnItem(itemId) || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchOpenOnItem(itemId)) {
+		return;
+	}
+
+	if (player->isUIExhausted(500)) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->retrieveAllItemsFromDepotSearch(itemId, tier, type == 1);
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted();
 }
 
 void Game::playerRequestOpenContainerFromDepotSearch(uint32_t playerId, const Position& pos)
 {
 	Player* player = getPlayerByID(playerId);
-	if (!player || !player->isDepotSearchOpen() || player->isDepotSearchExhausted()) {
+	if (!player || !player->isDepotSearchOpen()) {
+		return;
+	}
+
+	if (player->isUIExhausted(500)) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
 
 	player->openContainerFromDepotSearch(pos);
-	player->updateDepotSearchExhausted();
+	player->updateUIExhausted();
 }
 /*******************************************************************************/
 
@@ -5099,7 +5149,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 	}
 
 	// Check npc say exhausted
-	if (player->isNpcExhausted()) {
+	if (player->isUIExhausted()) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
@@ -5112,7 +5162,7 @@ void Game::playerSpeakToNpc(Player* player, const std::string& text)
 		}
 	}
 
-	player->updateNpcExhausted();
+	player->updateUIExhausted();
 }
 
 //--
@@ -5174,7 +5224,9 @@ bool Game::internalCreatureSay(Creature* creature, SpeakClasses type, const std:
                            Map::maxClientViewportX, Map::maxClientViewportX,
                            Map::maxClientViewportY, Map::maxClientViewportY);
 		} else {
-			map.getSpectators(spectators, *pos, true, false, 18, 18, 14, 14);
+			map.getSpectators(spectators, *pos, true, false,
+				          (Map::maxClientViewportX + 1) * 2, (Map::maxClientViewportX + 1) * 2,
+				          (Map::maxClientViewportY + 1) * 2, (Map::maxClientViewportY + 1) * 2);
 		}
 	} else {
 		spectators = (*spectatorsPtr);
@@ -7448,10 +7500,8 @@ bool checkCanInitCreateMarketOffer(const Player *player, uint8_t type, const Ite
 		return false;
 	}
 
-	// Check market exhausted
-	if (player->isMarketExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 
@@ -7568,7 +7618,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
 
 	// Exhausted for create offert in the market
-	player->updateMarketExhausted();
+	player->updateUIExhausted();
 	IOLoginData::savePlayer(player);
 }
 
@@ -7583,10 +7633,8 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	// Check market exhausted
-	if (player->isMarketExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7655,7 +7703,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
 	// Exhausted for cancel offer in the market
-	player->updateMarketExhausted();
+	player->updateUIExhausted();
 	IOLoginData::savePlayer(player);
 }
 
@@ -7673,10 +7721,8 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		return;
 	}
 
-	// Check market exhausted
-	if (player->isMarketExhausted()) {
+	if (player->isUIExhausted(1000)) {
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return;
 	}
 
@@ -7929,7 +7975,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.timestamp += marketOfferDuration;
 	player->sendMarketAcceptOffer(offer);
 	// Exhausted for accept offer in the market
-	player->updateMarketExhausted();
+	player->updateUIExhausted();
 	IOLoginData::savePlayer(player);
 }
 
@@ -7985,7 +8031,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 			if (choice == SKILL_SWORD || choice == SKILL_AXE || choice == SKILL_CLUB || choice == SKILL_DISTANCE || choice == SKILL_MAGLEVEL) {
 				BedItem* bedItem = player->getBedItem();
 				if (bedItem && bedItem->sleep(player)) {
-					player->setOfflineTrainingSkill(choice);
+					player->setOfflineTrainingSkill(static_cast<int8_t>(choice));
 					return;
 				}
 			}
@@ -7999,6 +8045,76 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 			creatureEvent->executeModalWindow(player, modalWindowId, button, choice);
 		}
 	}
+}
+
+void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier, bool usedCore, bool reduceTierLoss)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
+
+	uint8_t coreCount = (usedCore ? 1 : 0) + (reduceTierLoss ? 1 : 0);
+	auto baseSuccess = static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE));
+	auto bonusSuccess = static_cast<uint8_t>(g_configManager().getNumber(
+		FORGE_BASE_SUCCESS_RATE) + g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)
+	);
+	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
+	bool success = roll ? true : false;
+
+	uint32_t chance = uniform_random(0, 10000);
+	uint8_t bonus = forgeBonus(chance);
+
+	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);
+}
+
+void Game::playerForgeTransferItemTier(uint32_t playerId, uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	player->forgeTransferItemTier(donorItemId, tier, receiveItemId);
+}
+
+void Game::playerForgeResourceConversion(uint32_t playerId, uint8_t action)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
+	player->forgeResourceConversion(action);
+}
+
+void Game::playerBrowseForgeHistory(uint32_t playerId, uint8_t page)
+{
+	Player* player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	if (player->isUIExhausted()) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return;
+	}
+
+	player->updateUIExhausted();
+	player->forgeHistory(page);
 }
 
 void Game::updatePlayerSaleItems(uint32_t playerId)
@@ -8155,75 +8271,6 @@ void Game::removeUniqueItem(uint16_t uniqueId)
 	}
 }
 
-bool Game::reload(ReloadTypes_t reloadType)
-{
-	switch (reloadType) {
-		case RELOAD_TYPE_MONSTERS: {
-			g_scripts().loadScripts("monster", false, true);
-			return true;
-		}
-		case RELOAD_TYPE_NPCS: {
-			// Reset informations from npc interface
-			g_npc().reset();
-			// Reload npc scripts
-			g_scripts().loadScripts("npc", false, true);
-			// Reload npclib
-			g_luaEnvironment.loadFile(g_configManager().getString(DATA_DIRECTORY) + "/npclib/load.lua");
-			return true;
-		}
-		case RELOAD_TYPE_CHAT: return g_chat().load();
-		case RELOAD_TYPE_CONFIG: return g_configManager().reload();
-		case RELOAD_TYPE_EVENTS: return g_events().loadFromXml();
-		case RELOAD_TYPE_ITEMS: return Item::items.reload();
-		case RELOAD_TYPE_MODULES: return g_modules().reload();
-		case RELOAD_TYPE_MOUNTS: return mounts.reload();
-		case RELOAD_TYPE_IMBUEMENTS: return g_imbuements().reload();
-		case RELOAD_TYPE_RAIDS: return raids.reload() && raids.startup();
-
-		case RELOAD_TYPE_SCRIPTS: {
-			// commented out stuff is TODO, once we approach further in revscriptsys
-			g_actions().clear(true);
-			g_creatureEvents().clear(true);
-			g_moveEvents().clear();
-			g_talkActions().clear(true);
-			g_globalEvents().clear(true);
-			g_weapons().clear(true);
-			g_weapons().loadDefaults();
-			g_spells().clear(true);
-			// Reset informations from npc interface
-			g_npc().reset();
-			g_scripts().loadScripts("scripts", false, true);
-			// lean up the monsters interface, ensuring that after reloading the scripts there is no use of any deallocated memory
-			g_scripts().loadScripts("monster", false, true);
-			// Reload npc scripts
-			g_scripts().loadScripts("npc", false, true);
-			// Reload npclib
-			g_luaEnvironment.loadFile(g_configManager().getString(DATA_DIRECTORY) + "/npclib/load.lua");
-			return true;
-		}
-
-		default: {
-
-			g_configManager().reload();
-			raids.reload() && raids.startup();
-			Item::items.reload();
-			g_weapons().clear(true);
-			g_weapons().loadDefaults();
-			mounts.reload();
-			g_events().loadFromXml();
-			g_chat().load();
-			g_actions().clear(true);
-			g_creatureEvents().clear(true);
-			g_moveEvents().clear(true);
-			g_talkActions().clear(true);
-			g_globalEvents().clear(true);
-			g_spells().clear(true);
-			g_scripts().loadScripts("scripts", false, true);
-		}
-	}
-	return true;
-}
-
 bool Game::hasEffect(uint8_t effectId) {
 	for (uint8_t i = CONST_ME_NONE; i <= CONST_ME_LAST; i++) {
 		MagicEffectClasses effect = static_cast<MagicEffectClasses>(i);
@@ -8269,4 +8316,339 @@ void Game::createLuaItemsOnMap() {
 			g_game().internalAddItem(tile, item, INDEX_WHEREEVER, FLAG_NOLIMIT);
 		}
 	}
+}
+
+void Game::sendUpdateCreature(const Creature* creature) {
+	if (!creature) {
+		return;
+	}
+
+	SpectatorHashSet spectators;
+	map.getSpectators(spectators, creature->getPosition(), true);
+	for (Creature *spectator : spectators) {
+		if (const Player *tmpPlayer = spectator->getPlayer()) {
+			tmpPlayer->sendUpdateCreature(creature);
+		}
+	}
+}
+
+uint32_t Game::makeInfluencedMonster() {
+	if (auto influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
+		// Condition
+		forgeableMonsters.empty() || influencedMonsters.size() >= influencedLimit)
+	{
+		return 0;
+	}
+
+	if (forgeableMonsters.empty())
+		return 0;
+
+	auto maxTries = forgeableMonsters.size();
+	uint16_t tries = 0;
+	Monster* monster = nullptr;
+	while (true)
+	{
+		if (tries == maxTries) {
+			return 0;
+		}
+
+		tries++;
+
+		auto random = static_cast<uint32_t>(normal_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
+		auto monsterId = forgeableMonsters.at(random);
+		monster = getMonsterByID(monsterId);
+		if (monster == nullptr) {
+			continue;
+		}
+
+		// Avoiding replace forgeable monster with another
+		if (monster->getForgeStack() == 0) {
+			auto it = std::ranges::find(forgeableMonsters.begin(), forgeableMonsters.end(), monsterId);
+			if (it == forgeableMonsters.end()) {
+				monster = nullptr;
+				continue;
+			}
+			forgeableMonsters.erase(it);
+			break;
+		}
+	}
+
+	if (monster && monster->canBeForgeMonster()) {
+		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
+		monster->configureForgeSystem();
+		influencedMonsters.insert(monster->getID());
+		return monster->getID();
+	}
+
+	return 0;
+}
+
+uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId/* = 0*/, bool createForgeableMonsters/* = false*/) {
+	if (createForgeableMonsters) {
+		forgeableMonsters.clear();
+		// If the forgeable monsters haven't been created
+		// Then we'll create them so they don't return in the next if (forgeableMonsters.empty())
+		for (auto [monsterId, monster] : monsters) {
+			auto monsterTile = monster->getTile();
+			if (!monster || !monsterTile) {
+				continue;
+			}
+
+			if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT)) {
+				forgeableMonsters.push_back(monster->getID());
+			}
+		}
+		for (const auto monsterId : getFiendishMonsters()) {
+			// If the fiendish is no longer on the map, we remove it from the vector
+			auto monster = getMonsterByID(monsterId);
+			if (!monster) {
+				removeFiendishMonster(monsterId);
+				continue;
+			}
+
+			// If you're trying to create a new fiendish and it's already max size, let's remove one of them
+			if (getFiendishMonsters().size() >= 3) {
+				monster->clearFiendishStatus();
+				removeFiendishMonster(monsterId);
+				break;
+			}
+		}
+	}
+
+	if (auto fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT);
+		//Condition
+		forgeableMonsters.empty() || fiendishMonsters.size() >= fiendishLimit)
+	{
+		return 0;
+	}
+
+	auto maxTries = forgeableMonsters.size();
+	uint16_t tries = 0;
+	Monster *monster = nullptr;
+	while (true)
+	{
+		if (tries == maxTries) {
+			return 0;
+		}
+
+		tries++;
+
+		auto random = static_cast<uint32_t>(uniform_random(0, static_cast<int32_t>(forgeableMonsters.size() - 1)));
+		uint32_t fiendishMonsterId = forgeableMonsterId;
+		if (fiendishMonsterId == 0) {
+			fiendishMonsterId = forgeableMonsters.at(random);
+		}
+		monster = getMonsterByID(fiendishMonsterId);
+		if (monster == nullptr) {
+			continue;
+		}
+
+		// Avoiding replace forgeable monster with another
+		if (monster->getForgeStack() == 0) {
+			auto it = std::find(forgeableMonsters.begin(), forgeableMonsters.end(), fiendishMonsterId);
+			if (it == forgeableMonsters.end()) {
+				monster = nullptr;
+				continue;
+			}
+			forgeableMonsters.erase(it);
+			break;
+		}
+	}
+
+	// Get interval time to fiendish
+	std::string saveIntervalType = g_configManager().getString(FORGE_FIENDISH_INTERVAL_TYPE);
+	auto saveIntervalConfigTime = std::atoi(g_configManager().getString(FORGE_FIENDISH_INTERVAL_TIME).c_str());
+	int intervalTime = 0;
+	time_t timeToChangeFiendish;
+	if (saveIntervalType == "second") {
+		intervalTime = 1000;
+		timeToChangeFiendish = 1;
+	} else if (saveIntervalType == "minute") {
+		intervalTime = 60 * 1000;
+		timeToChangeFiendish = 60;
+	} else if (saveIntervalType == "hour") {
+		intervalTime = 60 * 60 * 1000;
+		timeToChangeFiendish = 3600;
+	} else {
+		timeToChangeFiendish = 3600;
+	}
+
+	uint32_t finalTime = 0;
+	if (intervalTime == 0) {
+		SPDLOG_WARN("Fiendish interval type is wrong, setting default time to 1h");
+		finalTime = 3600 * 1000;
+	} else {
+		finalTime = static_cast<uint32_t>(saveIntervalConfigTime * intervalTime);
+	}
+
+	if (monster && monster->canBeForgeMonster()) {
+		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
+		monster->configureForgeSystem();
+		monster->setTimeToChangeFiendish(timeToChangeFiendish + getTimeNow());
+		fiendishMonsters.insert(monster->getID());
+
+		auto schedulerTask = createSchedulerTask(
+				finalTime,
+				std::bind_front(&Game::updateFiendishMonsterStatus, this, monster->getID(), monster->getName())
+		);
+		forgeMonsterEventIds[monster->getID()] = g_scheduler().addEvent(schedulerTask);
+		return monster->getID();
+	}
+
+	return 0;
+}
+
+void Game::updateFiendishMonsterStatus(uint32_t monsterId, const std::string &monsterName) {
+	Monster *monster = getMonsterByID(monsterId);
+	if (!monster) {
+		SPDLOG_WARN("[{}] Failed to update monster with id {} and name {}, monster not found", __FUNCTION__, monsterId, monsterName);
+		return;
+	}
+
+	monster->clearFiendishStatus();
+	removeFiendishMonster(monsterId, false);
+	makeFiendishMonster();
+}
+
+bool Game::removeForgeMonster(uint32_t id, ForgeClassifications_t monsterForgeClassification, bool create) {
+	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
+		removeFiendishMonster(id, create);
+	else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER)
+		removeInfluencedMonster(id, create);
+
+	return true;
+}
+
+bool Game::removeInfluencedMonster(uint32_t id, bool create/* = false*/) {
+	if (auto find = influencedMonsters.find(id);
+		// Condition
+		find != influencedMonsters.end())
+	{
+		influencedMonsters.erase(find);
+
+		if (create) {
+			g_scheduler().addEvent(createSchedulerTask(200 * 1000, std::bind_front(&Game::makeInfluencedMonster, this)));
+		}
+	} else {
+		SPDLOG_WARN("[Game::removeInfluencedMonster] - Failed to remove a Influenced Monster, error code: monster id not exist in the influenced monsters map");
+	}
+	return false;
+}
+
+bool Game::removeFiendishMonster(uint32_t id, bool create/* = true*/)
+{
+	if (auto find = fiendishMonsters.find(id);
+		// Condition
+		find != fiendishMonsters.end())
+	{
+		fiendishMonsters.erase(find);
+		checkForgeEventId(id);
+
+		if (create) {
+			g_scheduler().addEvent(createSchedulerTask(300 * 1000, std::bind_front(&Game::makeFiendishMonster, this, 0, false)));
+		}
+	} else {
+		SPDLOG_WARN("[Game::removeFiendishMonster] - Failed to remove a Fiendish Monster, error code: monster id not exist in the fiendish monsters map");
+	}
+
+	return false;
+}
+
+void Game::updateForgeableMonsters()
+{
+	g_scheduler().addEvent(createSchedulerTask(EVENT_FORGEABLEMONSTERCHECKINTERVAL, std::bind_front(&Game::updateForgeableMonsters, this)));
+	forgeableMonsters.clear();
+	for (auto [monsterId, monster] : monsters) {
+		auto monsterTile = monster->getTile();
+		if (!monsterTile) {
+			continue;
+		}
+
+		if (monster->canBeForgeMonster() && !monsterTile->hasFlag(TILESTATE_NOLOGOUT))
+			forgeableMonsters.push_back(monster->getID());
+	}
+
+	for (const auto monsterId : getFiendishMonsters()) {
+		if (!getMonsterByID(monsterId)) {
+			removeFiendishMonster(monsterId);
+		}
+	}
+	
+	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
+	if (fiendishMonsters.size() < fiendishLimit)
+		createFiendishMonsters();
+}
+
+void Game::createFiendishMonsters()
+{
+	uint32_t created = 0;
+	uint32_t fiendishLimit = g_configManager().getNumber(FORGE_FIENDISH_CREATURES_LIMIT); // Fiendish Creatures limit
+	while (fiendishMonsters.size() < fiendishLimit)
+	{
+		if (fiendishMonsters.size() >= fiendishLimit) {
+			SPDLOG_WARN("[{}] - Returning in creation of Fiendish, size: {}, max is: {}.",
+				__FUNCTION__, fiendishMonsters.size(), fiendishLimit);
+			break;
+		}
+
+		if (auto ret = makeFiendishMonster();
+			// Condition
+			ret == 0)
+		{
+			return;
+		}
+
+		created++;
+	}
+}
+
+void Game::createInfluencedMonsters()
+{
+	uint32_t created = 0;
+	uint32_t influencedLimit = g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT);
+	while (created < influencedLimit)
+	{
+		if (influencedMonsters.size() >= influencedLimit) {
+			SPDLOG_WARN("[{}] - Returning in creation of Influenced, size: {}, max is: {}.",
+				__FUNCTION__, influencedMonsters.size(), influencedLimit);
+			break;
+		}
+
+		if (auto ret = makeInfluencedMonster();
+			//If condition
+			ret == 0)
+		{
+			return;
+		}
+
+		created++;
+	}
+}
+
+void Game::checkForgeEventId(uint32_t monsterId)
+{
+	auto find = forgeMonsterEventIds.find(monsterId);
+	if (find != forgeMonsterEventIds.end()) {
+		g_scheduler().stopEvent(find->second);
+		forgeMonsterEventIds.erase(find);
+	}
+}
+
+bool Game::addInfluencedMonster(Monster *monster)
+{
+	if (monster && monster->canBeForgeMonster())
+	{
+		if (auto maxInfluencedMonsters = static_cast<uint32_t>(g_configManager().getNumber(FORGE_INFLUENCED_CREATURES_LIMIT));
+			// If condition
+			(influencedMonsters.size() + 1) > maxInfluencedMonsters)
+		{
+			return false;
+		}
+
+		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
+		monster->configureForgeSystem();
+		influencedMonsters.insert(monster->getID());
+		return true;
+	}
+	return false;
 }

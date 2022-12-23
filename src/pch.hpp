@@ -66,6 +66,7 @@
 #include <boost/variant.hpp>
 #include <curl/curl.h>
 #include <json/json.h>
+#include <magic_enum.hpp>
 #include <mysql/errmsg.h>
 #include <spdlog/spdlog.h>
 #include <parallel_hashmap/phmap.h>

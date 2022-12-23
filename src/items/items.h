@@ -167,6 +167,17 @@ class ItemType
 		bool hasSubType() const {
 			return (isFluidContainer() || isSplash() || stackable || charges != 0);
 		}
+		bool isWeapon() const {
+			return weaponType != WEAPON_NONE && weaponType != WEAPON_SHIELD && weaponType != WEAPON_AMMO;
+		}
+		bool isArmor() const
+		{
+			return slotPosition & SLOTP_ARMOR;
+		}
+		bool isHelmet() const
+		{
+			return slotPosition & SLOTP_HEAD;
+		}
 
 		Abilities& getAbilities() {
 			if (!abilities) {

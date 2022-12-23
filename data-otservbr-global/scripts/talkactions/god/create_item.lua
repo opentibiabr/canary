@@ -24,32 +24,46 @@ function createItem.onSay(player, words, param)
 		return false
 	end
 
+	local charges = itemType:getCharges()
 	local count = tonumber(split[2])
 	if count then
 		if itemType:isStackable() then
 			count = math.min(10000, math.max(1, count))
 		elseif not itemType:isFluidContainer() then
-			count = math.min(100, math.max(1, count))
+			local min = 100;
+			if(charges > 0) then
+				min = charges;
+			end
+			count = math.min(min, math.max(1, count))
 		else
 			count = math.max(0, count)
 		end
 	else
 		if not itemType:isFluidContainer() then
-			count = 1
+			if charges > 0 then
+				player:addItem(itemType:getId(), 0)
+				return false
+			else
+				count = 1
+			end
 		else
 			count = 0
 		end
 	end
 
+	local result
 	local tier = tonumber(split[3])
-	if tier then
+	if not tier then
+		result = player:addItem(itemType:getId(), count)
+	else
 		if tier <= 0 or tier > 10 then
 			player:sendCancelMessage("Invalid tier count.")
 			return false
+		else 
+			result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 		end
 	end
 
-	local result = player:addItem(itemType:getId(), count, true, 0, CONST_SLOT_WHEREEVER, tier)
 	if result then
 		if not itemType:isStackable() then
 			if type(result) == "table" then

@@ -20,9 +20,11 @@
 #include "pch.hpp"
 
 #include "creatures/players/imbuements/imbuements.h"
+#include "lua/global/globalevent.h"
 #include "items/weapons/weapons.h"
 #include "lua/creature/movement.h"
 #include "lua/scripts/scripts.h"
+#include "creatures/combat/spells.h"
 
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
@@ -33,12 +35,23 @@ Scripts::~Scripts() {
 	scriptInterface.reInitState();
 }
 
+void Scripts::clear() const {
+	g_actions().clear();
+	g_creatureEvents().clear();
+	g_talkActions().clear();
+	g_globalEvents().clear();
+	g_spells().clear();
+	g_moveEvents().clear();
+	g_weapons().clear();
+}
+
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 	namespace fs = boost::filesystem;
 
-	const auto dir = fs::current_path() / "core" / "events" / "scripts" / "scheduler";
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	const auto dir = fs::current_path() / coreFolder / "events" / "scripts" / "scheduler";
 	if(!fs::exists(dir) || !fs::is_directory(dir)) {
-		SPDLOG_WARN("{} - Can not load folder 'scheduler' on core/events/scripts'", __FUNCTION__);
+		SPDLOG_WARN("{} - Can not load folder 'scheduler' on {}/events/scripts'", __FUNCTION__, coreFolder);
 		return false;
 	}
 

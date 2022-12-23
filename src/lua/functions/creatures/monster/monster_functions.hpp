@@ -55,6 +55,16 @@ class MonsterFunctions final : LuaScriptInterface {
 				registerMethod(L, "Monster", "setSpawnPosition", MonsterFunctions::luaMonsterSetSpawnPosition);
 				registerMethod(L, "Monster", "getRespawnType", MonsterFunctions::luaMonsterGetRespawnType);
 
+				registerMethod(L, "Monster", "getTimeToChangeFiendish", MonsterFunctions::luaMonsterGetTimeToChangeFiendish);
+				registerMethod(L, "Monster", "setTimeToChangeFiendish", MonsterFunctions::luaMonsterSetTimeToChangeFiendish);
+				registerMethod(L, "Monster", "getMonsterForgeClassification", MonsterFunctions::luaMonsterGetMonsterForgeClassification);
+				registerMethod(L, "Monster", "setMonsterForgeClassification", MonsterFunctions::luaMonsterSetMonsterForgeClassification);
+				registerMethod(L, "Monster", "getForgeStack", MonsterFunctions::luaMonsterGetForgeStack);
+				registerMethod(L, "Monster", "setForgeStack", MonsterFunctions::luaMonsterSetForgeStack);
+				registerMethod(L, "Monster", "configureForgeSystem", MonsterFunctions::luaMonsterConfigureForgeSystem);
+				registerMethod(L, "Monster", "clearFiendishStatus", MonsterFunctions::luaMonsterClearFiendishStatus);
+				registerMethod(L, "Monster", "isForgeable", MonsterFunctions::luaMonsterIsForgeable);
+
 				CharmFunctions::init(L);
 				LootFunctions::init(L);
 				MonsterSpellFunctions::init(L);
@@ -95,6 +105,16 @@ class MonsterFunctions final : LuaScriptInterface {
 
 		static int luaMonsterSetSpawnPosition(lua_State* L);
 		static int luaMonsterGetRespawnType(lua_State* L);
+
+		static int luaMonsterGetTimeToChangeFiendish(lua_State *L);
+		static int luaMonsterSetTimeToChangeFiendish(lua_State *L);
+		static int luaMonsterGetMonsterForgeClassification(lua_State *L);
+		static int luaMonsterSetMonsterForgeClassification(lua_State *L);
+		static int luaMonsterGetForgeStack(lua_State *L);
+		static int luaMonsterSetForgeStack(lua_State *L);
+		static int luaMonsterConfigureForgeSystem(lua_State *L);
+		static int luaMonsterClearFiendishStatus(lua_State *L);
+		static int luaMonsterIsForgeable(lua_State *L);
 
 		friend class CreatureFunctions;
 };

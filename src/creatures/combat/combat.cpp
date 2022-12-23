@@ -539,7 +539,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 		const PreySlot* slot = attackerPlayer->getPreyWithMonster(targetMonster->getRaceId());
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Damage && slot->bonusTimeLeft > 0) {
 			damage.primary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
-			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+			damage.secondary.value += static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
 		}
 	}
 	
@@ -548,6 +548,7 @@ void Combat::CombatHealthFunc(Creature* caster, Creature* target, const CombatPa
 		const PreySlot* slot = targetPlayer->getPreyWithMonster(attackerMonster->getRaceId());
 		if (slot && slot->isOccupied() && slot->bonus == PreyBonus_Defense && slot->bonusTimeLeft > 0) {
 			damage.primary.value -= static_cast<int32_t>(std::ceil((damage.primary.value * slot->bonusPercentage) / 100));
+			damage.secondary.value -= static_cast<int32_t>(std::ceil((damage.secondary.value * slot->bonusPercentage) / 100));
 		}
 	}
 

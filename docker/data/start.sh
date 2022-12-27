@@ -42,7 +42,7 @@ if [ "$OT_SERVER_DATA" = "data-otservbr-global" ] && [ ! -f data-otservbr-global
 	echo "YES"
 
 	echo "Downloading OTBR Map..."
-	wget --no-check-certificate $OT_SERVER_MAP -O data-otservbr-global/world/otservbr.otbm
+	wget --no-check-certificate "$OT_SERVER_MAP" -O data-otservbr-global/world/otservbr.otbm
 
 	echo "Done"
 
@@ -158,7 +158,7 @@ if [ -d "/data/server/" ]; then
 
 	cp config.lua /data/server/
 	cp -r data/ /data/server/
-	cp -r $OT_SERVER_DATA/ /data/server/
+	cp -r "$OT_SERVER_DATA"/ /data/server/
 
 	echo ""
 	echo "================================"

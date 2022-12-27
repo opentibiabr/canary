@@ -82,7 +82,7 @@ class Raids {
 		std::list<Raid*> raidList;
 		Raid* running = nullptr;
 		uint64_t lastRaidEnd = 0;
-		uint32_t checkRaidsEvent = 0;
+		uint64_t checkRaidsEvent = 0;
 		bool loaded = false;
 		bool started = false;
 };
@@ -130,11 +130,11 @@ class Raid {
 	private:
 		std::vector<RaidEvent*> raidEvents;
 		std::string name;
+		uint64_t margin;
+		uint64_t nextEventEvent = 0;
 		uint32_t interval;
 		uint32_t nextEvent = 0;
-		uint64_t margin;
 		RaidState_t state = RAIDSTATE_IDLE;
-		uint32_t nextEventEvent = 0;
 		bool loaded = false;
 		bool repeat;
 };

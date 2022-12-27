@@ -4125,7 +4125,7 @@ bool Player::setAttackedCreature(Creature* creature) {
 	}
 
 	if (creature) {
-		g_dispatcher().addTask(createTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID())));
+		g_dispatcher().addTask(std::bind(&Game::checkCreatureAttack, &g_game(), getID()));
 	}
 	return true;
 }
@@ -7376,7 +7376,7 @@ void Player::addScheduledUpdates(uint32_t flags) {
 	scheduledUpdates |= flags;
 	if (!scheduledUpdate) {
 		//To make it work even better it's possible to use slightly delayed scheduler task so it'll cache even more updates at once
-		g_dispatcher().addTask(createTask(std::bind(&Game::updatePlayerEvent, &g_game(), getPlayer())));
+		g_dispatcher().addTask(std::bind(&Game::updatePlayerEvent, &g_game(), getPlayer()));
 		scheduledUpdate = true;
 	}
 }

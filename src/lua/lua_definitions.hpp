@@ -195,10 +195,10 @@ struct LuaVariant {
 };
 
 struct LuaTimerEventDesc {
-		int32_t scriptId = -1;
-		int32_t function = -1;
-		std::list<int32_t> parameters;
-		uint32_t eventId = 0;
+	std::list<int32_t> parameters;
+	uint64_t eventId = 0;
+	int32_t scriptId = -1;
+	int32_t function = -1;
 
 		LuaTimerEventDesc() = default;
 		LuaTimerEventDesc(LuaTimerEventDesc &&other) = default;

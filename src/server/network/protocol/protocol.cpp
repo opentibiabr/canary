@@ -58,7 +58,7 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 			}
 		}
 	};
-	g_dispatcher().addTask(createTask(callback));
+	g_dispatcher().addTask(callback);
 	return true;
 }
 

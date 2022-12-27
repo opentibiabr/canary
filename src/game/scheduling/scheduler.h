@@ -17,33 +17,28 @@ static constexpr int32_t SCHEDULER_MINTICKS = 50;
 
 class SchedulerTask : public Task {
 	public:
-		void setEventId(uint32_t id) {
+		void setEventId(uint64_t id) {
 			eventId = id;
 		}
-		uint32_t getEventId() const {
+		uint64_t getEventId() const {
 			return eventId;
 		}
 
-		std::chrono::system_clock::time_point getCycle() const {
-			return expiration;
+		uint32_t getDelay() const {
+			return delay;
 		}
 
 	private:
-		SchedulerTask(uint32_t delay, std::function<void(void)> &&f) :
-			Task(delay, std::move(f)) { }
+		SchedulerTask(uint32_t delay, std::function<void (void)>&& f) : Task(std::move(f)), delay(delay) {}
 
-		uint32_t eventId = 0;
+		uint64_t eventId = 0;
+		uint32_t delay = 0;
 
 		friend SchedulerTask* createSchedulerTask(uint32_t, std::function<void(void)>);
 };
 
 SchedulerTask* createSchedulerTask(uint32_t delay, std::function<void(void)> f);
 
-struct TaskComparator {
-		bool operator()(const SchedulerTask* lhs, const SchedulerTask* rhs) const {
-			return lhs->getCycle() > rhs->getCycle();
-		}
-};
 
 class Scheduler : public ThreadHolder<Scheduler> {
 	public:
@@ -59,8 +54,8 @@ class Scheduler : public ThreadHolder<Scheduler> {
 			return instance;
 		}
 
-		uint32_t addEvent(SchedulerTask* task);
-		bool stopEvent(uint32_t eventId);
+		uint64_t addEvent(SchedulerTask* task);
+		void stopEvent(uint64_t eventId);
 
 		void shutdown();
 
@@ -68,12 +63,10 @@ class Scheduler : public ThreadHolder<Scheduler> {
 
 	private:
 		std::thread thread;
-		std::mutex eventLock;
-		std::condition_variable eventSignal;
-
-		uint32_t lastEventId { 0 };
-		std::priority_queue<SchedulerTask*, std::deque<SchedulerTask*>, TaskComparator> eventList;
-		phmap::flat_hash_set<uint32_t> eventIds;
+		std::atomic<uint64_t> lastEventId {0};
+		phmap::flat_hash_map<uint64_t, asio::high_resolution_timer> eventIds;
+		asio::io_service io_service;
+		asio::io_service::work work{ io_service };
 };
 
 constexpr auto g_scheduler = &Scheduler::getInstance;

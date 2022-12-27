@@ -470,8 +470,10 @@ class ProtocolGame final : public Protocol {
 
 		uint8_t challengeRandom = 0;
 
-		bool debugAssertSent = false;
-		bool acceptPackets = false;
+	uint64_t eventConnect = 0;
+	uint32_t challengeTimestamp = 0;
+	uint16_t version = 0;
+	int32_t clientVersion = 0;
 
 		bool loggedIn = false;
 		bool shouldAddExivaRestrictions = false;

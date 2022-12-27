@@ -12,13 +12,28 @@
 #include "config/configmanager.h"
 #include "database/database.h"
 
-Database::~Database() {
-	if (handle != nullptr) {
-		mysql_close(handle);
+bool Database::init()
+{
+	if (mysql_library_init(0, NULL, NULL) != 0) {
+		SPDLOG_ERROR("Failed to initialize MySQL client library.");
+		return false;
 	}
+	return true;
 }
 
-bool Database::connect() {
+void Database::end()
+{
+	mysql_library_end();
+}
+
+bool Database::connect()
+{
+	// thread-specific variables initialization
+	if (mysql_thread_init() != 0) {
+		SPDLOG_ERROR("Failed to initialize MySQL thread-specific variables.");
+		return false;
+	}
+
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
@@ -43,7 +58,15 @@ bool Database::connect() {
 	return true;
 }
 
-bool Database::connect(const char* host, const char* user, const char* password, const char* database, uint32_t port, const char* sock) {
+bool Database::connect(const char *host, const char *user, const char *password,
+                      const char *database, uint32_t port, const char *sock) {
+	
+	// thread-specific variables initialization
+	if (mysql_thread_init() != 0) {
+		SPDLOG_ERROR("Failed to initialize MySQL thread-specific variables.");
+		return false;
+	}
+
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
@@ -68,7 +91,18 @@ bool Database::connect(const char* host, const char* user, const char* password,
 	return true;
 }
 
-bool Database::beginTransaction() {
+void Database::disconnect()
+{
+	if (handle != nullptr) {
+		mysql_close(handle);
+		handle = nullptr;
+	}
+
+	mysql_thread_end();
+}
+
+bool Database::beginTransaction()
+{
 	if (!executeQuery("BEGIN")) {
 		return false;
 	}
@@ -84,8 +118,8 @@ bool Database::rollback() {
 	}
 
 	if (mysql_rollback(handle) != 0) {
-		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		databaseLock.unlock();
+		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		return false;
 	}
 
@@ -149,7 +183,7 @@ DBResult_ptr Database::storeQuery(const std::string &query) {
 
 	databaseLock.lock();
 
-retry:
+	retry:
 	while (mysql_real_query(handle, query.c_str(), query.length()) != 0) {
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -167,12 +201,13 @@ retry:
 		SPDLOG_ERROR("Query: {}", query);
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
 		auto error = mysql_errno(handle);
-		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053 /*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
+		if (error != CR_SERVER_LOST && error != CR_SERVER_GONE_ERROR && error != CR_CONN_HOST_ERROR && error != 1053/*ER_SERVER_SHUTDOWN*/ && error != CR_CONNECTION_ERROR) {
 			databaseLock.unlock();
 			return nullptr;
 		}
 		goto retry;
 	}
+
 	databaseLock.unlock();
 
 	// retrieving results of query
@@ -192,17 +227,16 @@ std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	size_t maxLength = (length * 2) + 1;
 
 	std::string escaped;
-	escaped.reserve(maxLength + 2);
-	escaped.push_back('\'');
+	escaped.resize(maxLength + 2);
 
+	size_t position = 0;
+	escaped[position++] = '\'';
 	if (length != 0) {
-		char* output = new char[maxLength];
-		mysql_real_escape_string(handle, output, s, length);
-		escaped.append(output);
-		delete[] output;
+		position += mysql_real_escape_string(handle, &escaped[position], s, length);
 	}
 
-	escaped.push_back('\'');
+	escaped[position++] = '\'';
+	escaped.resize(position);
 	return escaped;
 }
 

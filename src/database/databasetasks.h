@@ -37,8 +37,7 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks> {
 			return instance;
 		}
 
-		bool SetDatabaseInterface(Database* database);
-		void start();
+		bool SetDatabaseInterface(Database *database);
 		void startThread();
 		void flush();
 		void shutdown();

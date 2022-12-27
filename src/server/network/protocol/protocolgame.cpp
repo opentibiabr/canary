@@ -400,7 +400,14 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX)
+		{
+			NetworkMessage opcodeMessage;
+			opcodeMessage.addByte(0x32);
+			opcodeMessage.addByte(0x00);
+			opcodeMessage.add<uint16_t>(0x00);
+			writeToOutputBuffer(opcodeMessage);
+
 			player->registerCreatureEvent("ExtendedOpcode");
 		}
 

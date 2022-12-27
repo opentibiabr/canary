@@ -25,20 +25,14 @@ bool DatabaseTasks::SetDatabaseInterface(Database* database) {
 	return true;
 }
 
-void DatabaseTasks::start() {
-	if (db_ == nullptr) {
-		return;
-	}
-	db_->connect();
-	ThreadHolder::start();
-}
-
-void DatabaseTasks::startThread() {
+void DatabaseTasks::startThread()
+{
 	ThreadHolder::start();
 }
 
 void DatabaseTasks::threadMain() {
 	std::unique_lock<std::mutex> taskLockUnique(taskLock, std::defer_lock);
+	g_database.connect();
 	while (getState() != THREAD_STATE_TERMINATED) {
 		taskLockUnique.lock();
 		if (tasks.empty()) {
@@ -59,6 +53,7 @@ void DatabaseTasks::threadMain() {
 			taskLockUnique.unlock();
 		}
 	}
+	g_database.disconnect();
 }
 
 void DatabaseTasks::addTask(std::string query, std::function<void(DBResult_ptr, bool)> callback /* = nullptr*/, bool store /* = false*/) {

@@ -211,6 +211,10 @@ int main(int argc, char* argv[]) {
 	// Setup bad allocation handler
 	std::set_new_handler(badAllocationHandler);
 
+	if (!g_database.init()) {
+		return 1;
+	}
+
 	ServiceManager serviceManager;
 
 	g_dispatcher().start();
@@ -235,6 +239,7 @@ int main(int argc, char* argv[]) {
 	g_scheduler().join();
 	g_databaseTasks().join();
 	g_dispatcher().join();
+	g_database.end();
 	return 0;
 }
 #endif

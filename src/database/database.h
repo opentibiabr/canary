@@ -18,7 +18,6 @@ using DBResult_ptr = std::shared_ptr<DBResult>;
 class Database {
 	public:
 		Database() = default;
-		~Database();
 
 		// Singleton - ensures we don't accidentally copy it.
 		Database(const Database &) = delete;
@@ -31,7 +30,10 @@ class Database {
 			return instance;
 		}
 
+		bool init();
+		void end();
 		bool connect();
+		void disconnect();
 
 		bool connect(const char* host, const char* user, const char* password, const char* database, uint32_t port, const char* sock);
 
@@ -211,4 +213,6 @@ class DBTransaction {
 		TransactionStates_t state = STATE_NO_START;
 };
 
-#endif // SRC_DATABASE_DATABASE_H_
+inline Database g_database;
+
+#endif  // SRC_DATABASE_DATABASE_H_

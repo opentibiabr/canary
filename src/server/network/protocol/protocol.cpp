@@ -45,17 +45,16 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 
 bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 	if (encryptionEnabled && !XTEA_decrypt(msg)) {
-		SPDLOG_ERROR("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
-		getConnection()->resumeWork();
 		return false;
 	}
 
-	auto protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
-	std::function<void(void)> callback = [protocolWeak, &msg]() {
+	using ProtocolWeak_ptr = std::weak_ptr<Protocol>;
+	ProtocolWeak_ptr protocolWeak = std::weak_ptr<Protocol>(shared_from_this());
+	std::function<void (void)> callback = [protocolWeak, &msg]() {
 		if (auto protocol = protocolWeak.lock()) {
-			if (auto protocolConnection = protocol->getConnection()) {
+			if (auto connection = protocol->getConnection()) {
 				protocol->parsePacket(msg);
-				protocolConnection->resumeWork();
+				connection->resumeWork();
 			}
 		}
 	};
@@ -70,7 +69,6 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 			if (recvChecksum == 0) {
 				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
 				// since we don't need that packet skip it
-				getConnection()->resumeWork();
 				return false;
 			}
 
@@ -82,7 +80,6 @@ bool Protocol::onRecvMessage(NetworkMessage &msg) {
 
 			if (recvChecksum != checksum) {
 				// incorrect packet - skip it
-				getConnection()->resumeWork();
 				return false;
 			}
 		} else {

@@ -779,6 +779,7 @@ function sendShowStoreOffers(playerId, category, redirectId)
 				if (off.disabledReadonIndex ~= nil) then
 					msg:addByte(0x01);
 					msg:addU16(off.disabledReadonIndex)
+					off.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 				end
 
 				if (off.state) then
@@ -1811,6 +1812,7 @@ function sendHomePage(playerId)
 		if (offer.disabledReadonIndex ~= nil) then
 			msg:addByte(0x01);
 			msg:addU16(offer.disabledReadonIndex)
+			offer.disabledReadonIndex = nil -- Reseting the table to nil disable reason
 		end
 
 		msg:addByte(0x00)

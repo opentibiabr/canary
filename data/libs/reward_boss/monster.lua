@@ -81,9 +81,7 @@ function MonsterType.getBossReward(self, lootFactor, topScore)
 		for i = #loot, 0, -1 do
 			local lootBlock = loot[i]
 			if lootBlock then
-				if lootBlock.unique and not topScore then
-					return
-				else
+				if not lootBlock.unique or topScore then
 					self:createLootItem(lootBlock, lootFactor, result)
 				end
 			end

@@ -206,27 +206,27 @@ class Creature : virtual public Thing
 		}
 
 		uint32_t getManaShield() const {
-		return manaShield;
+			return manaShield;
 		}
 
 		void setManaShield(uint32_t value) {
-		manaShield = value;
+			manaShield = value;
 		}
 
 		uint32_t getMaxManaShield() const {
-		return maxManaShield;
+			return maxManaShield;
 		}
 
 		void setMaxManaShield(uint32_t value) {
-		maxManaShield = value;
+			maxManaShield = value;
 		}
 
 		int32_t getBuff(int32_t buff) {
-		return varBuffs[buff];
+			return varBuffs[buff];
 		}
 
 		void setBuff(buffs_t buff, int32_t modifier) {
-		varBuffs[buff] += modifier;
+			varBuffs[buff] += modifier;
 		}
 
 		virtual CreatureIcon_t getIcon() const {

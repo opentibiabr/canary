@@ -543,17 +543,17 @@ local function loadcastSound(effect, incomingLua, mtype)
 
 	-- Bow shoottype
 	elseif effect == CONST_ANI_POISONARROW or
-			effect == CONST_ANI_BURSTARROW or 
-			effect == CONST_ANI_SNIPERARROW or 
-			effect == CONST_ANI_ONYXARROW or 
-			effect == CONST_ANI_FLASHARROW or 
-			effect == CONST_ANI_FLAMMINGARROW or 
-			effect == CONST_ANI_SHIVERARROW or 
-			effect == CONST_ANI_EARTHARROW or 
-			effect == CONST_ANI_TARSALARROW or 
-			effect == CONST_ANI_CRYSTALLINEARROW or 
-			effect == CONST_ANI_ENVENOMEDARROW or 
-			effect == CONST_ANI_SIMPLEARROW or 
+			effect == CONST_ANI_BURSTARROW or
+			effect == CONST_ANI_SNIPERARROW or
+			effect == CONST_ANI_ONYXARROW or
+			effect == CONST_ANI_FLASHARROW or
+			effect == CONST_ANI_FLAMMINGARROW or
+			effect == CONST_ANI_SHIVERARROW or
+			effect == CONST_ANI_EARTHARROW or
+			effect == CONST_ANI_TARSALARROW or
+			effect == CONST_ANI_CRYSTALLINEARROW or
+			effect == CONST_ANI_ENVENOMEDARROW or
+			effect == CONST_ANI_SIMPLEARROW or
 			effect == CONST_ANI_DIAMONDARROW
 			then
 		return SOUND_EFFECT_TYPE_DIST_ATK_BOW

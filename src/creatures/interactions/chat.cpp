@@ -12,7 +12,7 @@
 #include "creatures/interactions/chat.h"
 #include "game/game.h"
 #include "utils/pugicast.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 
 bool PrivateChatChannel::isInvited(uint32_t guid) const {
 	if (guid == getOwner()) {
@@ -81,7 +81,7 @@ bool ChatChannel::addUser(Player &player) {
 	if (id == CHANNEL_GUILD) {
 		Guild* guild = player.getGuild();
 		if (guild && !guild->getMotd().empty()) {
-			g_scheduler().addEvent(createSchedulerTask(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getPlayer())));
+			g_dispatcher().addEvent(150, std::bind(&Game::sendGuildMotd, &g_game(), player.getPlayer()));
 		}
 	}
 

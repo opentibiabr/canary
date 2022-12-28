@@ -13,7 +13,7 @@
 #include "database/databasetasks.h"
 #include "io/iologindata.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
@@ -207,7 +207,7 @@ void IOMarket::checkExpiredOffers() {
 		return;
 	}
 
-	g_scheduler().addEvent(createSchedulerTask(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers));
+	g_dispatcher().addEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers);
 }
 
 uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId) {

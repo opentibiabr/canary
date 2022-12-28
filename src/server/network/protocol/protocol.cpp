@@ -14,7 +14,13 @@
 #include "security/rsa.h"
 #include "game/scheduling/tasks.h"
 
-Protocol::~Protocol() = default;
+Protocol::~Protocol()
+{
+	if (compreesionEnabled) {
+		deflateEnd(defStream.get());
+	}
+}
+
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {

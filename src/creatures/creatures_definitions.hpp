@@ -1182,13 +1182,13 @@ struct IntervalInfo {
 };
 
 struct FindPathParams {
-		bool fullPathSearch = true;
-		bool clearSight = true;
-		bool allowDiagonal = true;
-		bool keepDistance = false;
-		int32_t maxSearchDist = 0;
-		int32_t minTargetDist = -1;
-		int32_t maxTargetDist = -1;
+	bool fullPathSearch = true;
+	bool clearSight = false;
+	bool allowDiagonal = true;
+	bool keepDistance = false;
+	int32_t maxSearchDist = 0;
+	int32_t minTargetDist = -1;
+	int32_t maxTargetDist = -1;
 };
 
 struct RecentDeathEntry {

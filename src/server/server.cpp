@@ -12,7 +12,7 @@
 #include "server/network/message/outputmessage.h"
 #include "server/server.h"
 #include "config/configmanager.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 #include "creatures/players/management/ban.h"
 
 Ban g_bans;
@@ -110,7 +110,8 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code &err
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
-			g_scheduler().addEvent(createSchedulerTask(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort)));
+			deadline_timer.expires_from_now(std::chrono::seconds(15));
+			deadline_timer.async_wait(std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), serverPort));
 		}
 	}
 }
@@ -159,7 +160,8 @@ void ServicePort::open(uint16_t port) {
 		SPDLOG_WARN("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
-		g_scheduler().addEvent(createSchedulerTask(15000, std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
+		deadline_timer.expires_from_now(std::chrono::seconds(15));
+		deadline_timer.async_wait(std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port));
 	}
 }
 

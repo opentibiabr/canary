@@ -671,7 +671,7 @@ bool Map::getPathMatching(const Creature &creature, std::forward_list<Direction>
 	const Position startPos = pos;
 
 	AStarNode* found = nullptr;
-	while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100) {
+	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
 			if (found) {
@@ -777,7 +777,7 @@ bool Map::getPathMatching(const Creature &creature, std::forward_list<Direction>
 		}
 
 		nodes.closeNode(n);
-	}
+	} while (nodes.getClosedNodes() < 100);
 
 	if (!found) {
 		return false;
@@ -845,7 +845,7 @@ bool Map::getPathMatching(const Position &start, std::forward_list<Direction> &d
 	const Position startPos = pos;
 
 	AStarNode* found = nullptr;
-	while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100) {
+	do {
 		AStarNode* n = nodes.getBestNode();
 		if (!n) {
 			if (found) {
@@ -951,7 +951,7 @@ bool Map::getPathMatching(const Position &start, std::forward_list<Direction> &d
 		}
 
 		nodes.closeNode(n);
-	}
+	} while (fpp.maxSearchDist != 0 || nodes.getClosedNodes() < 100);
 
 	if (!found) {
 		return false;

@@ -12,31 +12,13 @@
 
 #include "utils/thread_holder_base.h"
 
+static constexpr int32_t SERVER_BEAT_MILISECONDS = 50;
 const int DISPATCHER_TASK_EXPIRATION = 2000;
 const auto SYSTEM_TIME_ZERO = std::chrono::system_clock::time_point(std::chrono::milliseconds(0));
 
-class Task {
-	public:
-		// DO NOT allocate this class on the stack
-		explicit Task(std::function<void (void)>&& f) : func(std::move(f)) {}
-
-		virtual ~Task() = default;
-		void operator()() {
-			func();
-		}
-
-	private:
-		// Expiration has another meaning for scheduler tasks,
-		// then it is the time the task should be added to the
-		// dispatcher
-		std::function<void(void)> func;
-};
-
-Task* createTask(std::function<void (void)> f);
-
 class Dispatcher : public ThreadHolder<Dispatcher> {
 	public:
-		Dispatcher() = default;
+		Dispatcher() : work(asio::make_work_guard(io_service)) {}
 
 		Dispatcher(const Dispatcher &) = delete;
 		void operator=(const Dispatcher &) = delete;
@@ -49,7 +31,8 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 		}
 
 		void addTask(std::function<void (void)> functor);
-		void addTask(Task* task);
+		uint64_t addEvent(uint32_t delay, std::function<void (void)> functor);
+		void stopEvent(uint64_t eventId);
 
 		void shutdown();
 
@@ -61,9 +44,11 @@ class Dispatcher : public ThreadHolder<Dispatcher> {
 
 	private:
 		std::thread thread;
+		uint64_t lastEventId = 0;
 		uint64_t dispatcherCycle = 0;
+		phmap::flat_hash_map<uint64_t, asio::high_resolution_timer> eventIds;
 		asio::io_service io_service;
-		asio::io_service::work work{ io_service };
+		asio::executor_work_guard<asio::io_context::executor_type> work;
 };
 
 constexpr auto g_dispatcher = &Dispatcher::getInstance;

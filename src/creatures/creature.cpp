@@ -13,7 +13,7 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 
 double Creature::speedA = 857.36;
 double Creature::speedB = 261.29;
@@ -258,12 +258,12 @@ void Creature::addEventWalk(bool firstStep) {
 		g_game().checkCreatureWalk(getID());
 	}
 
-	eventWalk = g_scheduler().addEvent(createSchedulerTask(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID())));
+	eventWalk = g_dispatcher().addEvent(static_cast<uint32_t>(ticks), std::bind(&Game::checkCreatureWalk, &g_game(), getID()));
 }
 
 void Creature::stopEventWalk() {
 	if (eventWalk != 0) {
-		g_scheduler().stopEvent(eventWalk);
+		g_dispatcher().stopEvent(eventWalk);
 		eventWalk = 0;
 	}
 }
@@ -916,7 +916,7 @@ bool Creature::setAttackedCreature(Creature* creature) {
 
 void Creature::getPathSearchParams(const Creature*, FindPathParams &fpp) const {
 	fpp.fullPathSearch = !hasFollowPath;
-	fpp.clearSight = true;
+	fpp.clearSight = false;
 	fpp.maxSearchDist = 12;
 	fpp.minTargetDist = 1;
 	fpp.maxTargetDist = 1;
@@ -1268,7 +1268,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		if (!force && conditionType == CONDITION_PARALYZE) {
 			int32_t walkDelay = getWalkDelay();
 			if (walkDelay > 0) {
-				g_scheduler().addEvent(createSchedulerTask(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId)));
+				g_dispatcher().addEvent(walkDelay, std::bind(&Game::forceRemoveCondition, &g_game(), getID(), conditionType, conditionId));
 				return;
 			}
 		}

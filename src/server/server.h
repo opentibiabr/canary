@@ -74,6 +74,7 @@ class ServicePort : public std::enable_shared_from_this<ServicePort> {
 		asio::io_service &io_service;
 		std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 		std::vector<Service_ptr> services;
+		asio::high_resolution_timer deadline_timer { io_service };
 
 		uint16_t serverPort = 0;
 		bool pendingStart = false;
@@ -104,8 +105,8 @@ class ServiceManager {
 		phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
 		asio::io_service io_service;
-		Signals signals { io_service };
-		asio::high_resolution_timer death_timer { io_service };
+		Signals signals{ io_service };
+		asio::high_resolution_timer death_timer{ io_service };
 		bool running = false;
 };
 

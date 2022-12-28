@@ -2395,11 +2395,17 @@ class Player final : public Creature, public Cylinder {
 		 */
 		void updateInventoryImbuement();
 
-		void setNextWalkActionTask(SchedulerTask* task);
-		void setNextWalkTask(SchedulerTask* task);
-		void setNextActionTask(SchedulerTask* task, bool resetIdleTime = true);
-		void setNextActionPushTask(SchedulerTask* task);
-		void setNextPotionActionTask(SchedulerTask* task);
+		void stopNextWalkActionTask();
+		void stopNextWalkTask();
+		void stopNextActionTask();
+		void stopNextActionPushTask();
+		void stopNextPotionActionTask();
+
+		void setNextWalkActionTask(uint32_t delay, std::function<void (void)> f);
+		void setNextWalkTask(uint32_t delay, std::function<void (void)> f);
+		void setNextActionTask(uint32_t delay, std::function<void (void)> f, bool resetIdleTime = true);
+		void setNextActionPushTask(uint32_t delay, std::function<void (void)> f);
+		void setNextPotionActionTask(uint32_t delay, std::function<void (void)> f);
 
 		void death(Creature* lastHitCreature) override;
 		bool spawn();
@@ -2540,7 +2546,7 @@ class Player final : public Creature, public Cylinder {
 		Party* party = nullptr;
 		Player* tradePartner = nullptr;
 		ProtocolGame_ptr client;
-		SchedulerTask* walkTask = nullptr;
+		std::pair<uint32_t, std::function<void (void)>>* walkTask = nullptr;
 		Town* town = nullptr;
 		Vocation* vocation = nullptr;
 		RewardChest* rewardChest = nullptr;

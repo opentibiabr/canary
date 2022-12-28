@@ -13,7 +13,7 @@
 #include "server/network/message/outputmessage.h"
 #include "server/network/protocol/protocol.h"
 #include "server/network/protocol/protocolgame.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 #include "server/server.h"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service &io_service, ConstServicePort_ptr servicePort) {
@@ -66,9 +66,7 @@ void Connection::close(bool force) {
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addTask(
-			createSchedulerTask(1000, std::bind_front(&Protocol::release, protocol))
-		);
+		g_dispatcher().addEvent(1000, std::bind_front(&Protocol::release, protocol));
 	}
 
 	if (messageQueue.empty() || force) {
@@ -95,7 +93,7 @@ void Connection::closeSocket() {
 void Connection::accept(Protocol_ptr protocolPtr) {
 	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocolPtr;
-	g_dispatcher().addTask(createSchedulerTask(1000, std::bind_front(&Protocol::onConnect, protocolPtr)));
+	g_dispatcher().addEvent(1000, std::bind_front(&Protocol::onConnect, protocolPtr));
 
 	// Call second accept for not duplicate code
 	accept(false);

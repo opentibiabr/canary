@@ -15,7 +15,7 @@
 #include "database/databasemanager.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "io/iomarket.h"
 #include "lua/creature/events.h"
@@ -74,12 +74,7 @@ void startupErrorMessage() {
 
 	g_loaderSignal.notify_all();
 
-#ifdef _WIN32
 	exit(-1);
-#else
-	g_scheduler().shutdown();
-	exit(-1);
-#endif
 }
 
 void mainLoader(int argc, char* argv[], ServiceManager* servicer);
@@ -92,12 +87,7 @@ void badAllocationHandler() {
 		getchar();
 	}
 
-#ifdef _WIN32
 	exit(-1);
-#else
-	g_scheduler().shutdown();
-	exit(-1);
-#endif
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {
@@ -218,7 +208,6 @@ int main(int argc, char* argv[]) {
 	ServiceManager serviceManager;
 
 	g_dispatcher().start();
-	g_scheduler().start();
 
 	g_dispatcher().addTask(std::bind(mainLoader, argc, argv,
 												&serviceManager));
@@ -237,7 +226,6 @@ int main(int argc, char* argv[]) {
 		exit(-1);
 	}
 
-	g_scheduler().join();
 	g_databaseTasks().join();
 	g_dispatcher().join();
 	g_database.end();

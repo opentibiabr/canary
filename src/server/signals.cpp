@@ -12,7 +12,6 @@
 #include "creatures/appearance/mounts/mounts.h"
 #include "database/databasetasks.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
 #include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
 #include "lua/creature/raids.h"
@@ -72,7 +71,6 @@ void Signals::dispatchSignalHandler(int signal)
 		case SIGBREAK: //Shuts the server down
 			g_dispatcher().addTask(sigbreakHandler);
 			// hold the thread until other threads end
-			g_scheduler().join();
 			g_databaseTasks().join();
 			g_dispatcher().join();
 			break;

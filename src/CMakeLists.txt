@@ -186,7 +186,6 @@ PRIVATE
 	game/game.cpp
 	game/movement/position.cpp
 	game/movement/teleport.cpp
-	game/scheduling/scheduler.cpp
 	game/scheduling/events_scheduler.cpp
 	game/scheduling/tasks.cpp
 	io/fileloader.cpp

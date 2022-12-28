@@ -686,10 +686,11 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 
 	player->initializePrey();
 	player->initializeTaskHunting();
-	player->updateBaseSpeed();
-	player->updateInventoryWeight();
-	player->updateItemsLight(true);
-	return true;
+  player->updateBaseSpeed();
+  player->updateInventoryWeight();
+  player->updateItemsLight(true);
+
+  return true;
 }
 
 bool IOLoginData::saveItems(const Player* player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {

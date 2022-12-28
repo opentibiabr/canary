@@ -12,18 +12,12 @@
 #include "lua/creature/raids.h"
 #include "utils/pugicast.h"
 #include "game/game.h"
-#include "game/scheduling/scheduler.h"
+#include "game/scheduling/tasks.h"
 #include "creatures/monsters/monster.h"
 #include "server/network/webhook/webhook.h"
 
 Raids::Raids() {
 	scriptInterface.initState();
-}
-
-Raids::~Raids() {
-	for (Raid* raid : raidList) {
-		delete raid;
-	}
 }
 
 bool Raids::loadFromXml() {
@@ -87,14 +81,14 @@ bool Raids::loadFromXml() {
 			repeat = false;
 		}
 
-		Raid* newRaid = new Raid(name, interval, margin, repeat);
-		if (newRaid->loadFromXml(g_configManager().getString(DATA_DIRECTORY) + "/raids/" + file)) {
-			raidList.push_back(newRaid);
+		Raid newRaid(name, interval, margin, repeat);
+		if (newRaid.loadFromXml(g_configManager().getString(DATA_DIRECTORY) + "/raids/" + file)) {
+			raidList.emplace_back(std::move(newRaid));
 		} else {
 			SPDLOG_ERROR("{} - Failed to load raid: {}", __FUNCTION__, name);
-			delete newRaid;
 		}
 	}
+	raidList.shrink_to_fit();
 
 	loaded = true;
 	return true;
@@ -109,7 +103,7 @@ bool Raids::startup() {
 
 	setLastRaidEnd(OTSYS_TIME());
 
-	checkRaidsEvent = g_scheduler().addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this)));
+	checkRaidsEvent = g_dispatcher().addEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this));
 
 	started = true;
 	return started;
@@ -120,14 +114,15 @@ void Raids::checkRaids() {
 		uint64_t now = OTSYS_TIME();
 
 		for (auto it = raidList.begin(), end = raidList.end(); it != end; ++it) {
-			Raid* raid = *it;
+			Raid* raid = &(*it);
 			if (now >= (getLastRaidEnd() + raid->getMargin())) {
 				if (((MAX_RAND_RANGE * CHECK_RAIDS_INTERVAL) / raid->getInterval()) >= static_cast<uint32_t>(uniform_random(0, MAX_RAND_RANGE))) {
 					setRunning(raid);
 					raid->startRaid();
 
 					if (!raid->canBeRepeated()) {
-						raidList.erase(it);
+						(*it) = std::move(raidList.back());
+						raidList.pop_back();
 					}
 					break;
 				}
@@ -135,16 +130,15 @@ void Raids::checkRaids() {
 		}
 	}
 
-	checkRaidsEvent = g_scheduler().addEvent(createSchedulerTask(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this)));
+	checkRaidsEvent = g_dispatcher().addEvent(CHECK_RAIDS_INTERVAL * 1000, std::bind(&Raids::checkRaids, this));
 }
 
 void Raids::clear() {
-	g_scheduler().stopEvent(checkRaidsEvent);
+	g_dispatcher().stopEvent(checkRaidsEvent);
 	checkRaidsEvent = 0;
 
-	for (Raid* raid : raidList) {
-		raid->stopEvents();
-		delete raid;
+	for (Raid& raid : raidList) {
+		raid.stopEvents();
 	}
 	raidList.clear();
 
@@ -161,10 +155,10 @@ bool Raids::reload() {
 	return loadFromXml();
 }
 
-Raid* Raids::getRaidByName(const std::string &name) {
-	for (Raid* raid : raidList) {
-		if (strcasecmp(raid->getName().c_str(), name.c_str()) == 0) {
-			return raid;
+Raid* Raids::getRaidByName(const std::string& name) {
+	for (Raid& raid : raidList) {
+		if (strcasecmp(raid.getName().c_str(), name.c_str()) == 0) {
+			return &raid;
 		}
 	}
 	return nullptr;
@@ -212,7 +206,8 @@ bool Raid::loadFromXml(const std::string &filename) {
 		}
 	}
 
-	// sort by delay time
+	//sort by delay time
+	raidEvents.shrink_to_fit();
 	std::sort(raidEvents.begin(), raidEvents.end(), [](const RaidEvent* lhs, const RaidEvent* rhs) {
 		return lhs->getDelay() < rhs->getDelay();
 	});
@@ -225,7 +220,7 @@ void Raid::startRaid() {
 	RaidEvent* raidEvent = getNextRaidEvent();
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
-		nextEventEvent = g_scheduler().addEvent(createSchedulerTask(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent)));
+		nextEventEvent = g_dispatcher().addEvent(raidEvent->getDelay(), std::bind(&Raid::executeRaidEvent, this, raidEvent));
 	}
 }
 
@@ -236,7 +231,7 @@ void Raid::executeRaidEvent(RaidEvent* raidEvent) {
 
 		if (newRaidEvent) {
 			uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
-			nextEventEvent = g_scheduler().addEvent(createSchedulerTask(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent)));
+			nextEventEvent = g_dispatcher().addEvent(ticks, std::bind(&Raid::executeRaidEvent, this, newRaidEvent));
 		} else {
 			resetRaid();
 		}
@@ -254,7 +249,7 @@ void Raid::resetRaid() {
 
 void Raid::stopEvents() {
 	if (nextEventEvent != 0) {
-		g_scheduler().stopEvent(nextEventEvent);
+		g_dispatcher().stopEvent(nextEventEvent);
 		nextEventEvent = 0;
 	}
 }
@@ -532,6 +527,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 
 		spawnMonsterList.emplace_back(name, minAmount, maxAmount);
 	}
+	spawnMonsterList.shrink_to_fit();
 	return true;
 }
 

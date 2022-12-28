@@ -19,9 +19,17 @@ struct MonsterSpawn {
 		MonsterSpawn(std::string initName, uint32_t initMinAmount, uint32_t initMaxAmount) :
 			name(std::move(initName)), minAmount(initMinAmount), maxAmount(initMaxAmount) { }
 
-		std::string name;
-		uint32_t minAmount;
-		uint32_t maxAmount;
+	// non-copyable
+	MonsterSpawn(const MonsterSpawn&) = delete;
+	MonsterSpawn& operator=(const MonsterSpawn&) = delete;
+
+	// moveable
+	MonsterSpawn(MonsterSpawn&& rhs) noexcept : name(std::move(rhs.name)), minAmount(rhs.minAmount), maxAmount(rhs.maxAmount) {}
+	MonsterSpawn& operator=(const MonsterSpawn&&) = delete;
+
+	std::string name;
+	uint32_t minAmount;
+	uint32_t maxAmount;
 };
 
 // How many times it will try to find a tile to add the monster to before giving up
@@ -35,7 +43,6 @@ class RaidEvent;
 class Raids {
 	public:
 		Raids();
-		~Raids();
 
 		// non-copyable
 		Raids(const Raids &) = delete;
@@ -79,7 +86,7 @@ class Raids {
 	private:
 		LuaScriptInterface scriptInterface { "Raid Interface" };
 
-		std::list<Raid*> raidList;
+		std::vector<Raid> raidList;
 		Raid* running = nullptr;
 		uint64_t lastRaidEnd = 0;
 		uint64_t checkRaidsEvent = 0;
@@ -97,7 +104,26 @@ class Raid {
 		Raid(const Raid &) = delete;
 		Raid &operator=(const Raid &) = delete;
 
-		bool loadFromXml(const std::string &filename);
+		// moveable
+		Raid(Raid&& rhs) noexcept : raidEvents(std::move(rhs.raidEvents)), name(std::move(rhs.name)),
+			margin(rhs.margin), nextEventEvent(rhs.nextEventEvent), interval(rhs.interval), nextEvent(rhs.nextEvent),
+			state(rhs.state), loaded(rhs.loaded), repeat(rhs.repeat) {}
+		Raid& operator=(Raid&& rhs) noexcept {
+			if (this != &rhs) {
+				raidEvents = std::move(rhs.raidEvents);
+				name = std::move(rhs.name);
+				margin = rhs.margin;
+				nextEventEvent = rhs.nextEventEvent;
+				interval = rhs.interval;
+				nextEvent = rhs.nextEvent;
+				state = rhs.state;
+				loaded = rhs.loaded;
+				repeat = rhs.repeat;
+			}
+			return *this;
+		}
+
+		bool loadFromXml(const std::string& filename);
 
 		void startRaid();
 
@@ -185,7 +211,7 @@ class AreaSpawnEvent final : public RaidEvent {
 		bool executeEvent() override;
 
 	private:
-		std::list<MonsterSpawn> spawnMonsterList;
+		std::vector<MonsterSpawn> spawnMonsterList;
 		Position fromPos, toPos;
 };
 

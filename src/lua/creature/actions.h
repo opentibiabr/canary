@@ -77,7 +77,7 @@ class Action : public Event {
 			itemIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getUniqueIdsVector() const {
+		const std::vector<uint16_t>& getUniqueIdsVector() const {
 			return uniqueIds;
 		}
 
@@ -85,7 +85,7 @@ class Action : public Event {
 			uniqueIds.emplace_back(id);
 		}
 
-		std::vector<uint16_t> getActionIdsVector() const {
+		const std::vector<uint16_t>& getActionIdsVector() const {
 			return actionIds;
 		}
 
@@ -93,7 +93,7 @@ class Action : public Event {
 			actionIds.emplace_back(id);
 		}
 
-		std::vector<Position> getPositionsVector() const {
+		const std::vector<Position>& getPositionsVector() const {
 			return positions;
 		}
 

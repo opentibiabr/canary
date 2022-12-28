@@ -1,7 +1,7 @@
 local spell = Spell("instant")
 
 function spell.onCastSpell(player, variant)
-	player:CreateFamiliarSpell()
+	player:createFamiliarSpell()
 	return true
 end
 
@@ -9,6 +9,7 @@ spell:group("support")
 spell:id(195)
 spell:name("Paladin familiar")
 spell:words("utevo gran res sac")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_SUMMON_PALADIN_FAMILIAR)
 spell:level(200)
 spell:mana(2000)
 spell:cooldown(30 * 60 * 1000)

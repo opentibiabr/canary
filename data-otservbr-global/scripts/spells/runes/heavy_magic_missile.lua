@@ -19,6 +19,8 @@ end
 
 rune:group("attack")
 rune:name("heavy magic missile rune")
+rune:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
+rune:impactSound(SOUND_EFFECT_TYPE_SPELL_HEAVY_MAGIC_MISSILE_RUNE)
 rune:runeId(3198)
 rune:allowFarUse(true)
 rune:charges(10)

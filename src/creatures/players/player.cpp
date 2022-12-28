@@ -2388,7 +2388,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 	if (damage > 0) {
 		for (int32_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
 			if (!isItemAbilityEnabled(static_cast<Slots_t>(slot))) {
-				SPDLOG_WARN("NOT ABILIT SLOT {}", slot);
 				continue;
 			}
 
@@ -2403,10 +2402,8 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 				if (absorbPercent != 0) {
 					damage -= std::round(damage * (absorbPercent / 100.));
 
-					SPDLOG_WARN("NOT DECAY CHARGES ITEM {}", item->getID());
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
-						SPDLOG_WARN("DECAY CHARGES ITEM {}", item->getID());
 						g_game().transformItem(item, item->getID(), charges - 1);
 					}
 				}

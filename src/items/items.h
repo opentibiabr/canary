@@ -316,7 +316,7 @@ class Items
 		using NameMap = std::unordered_multimap<std::string, uint16_t>;
 		using InventoryVector = std::vector<uint16_t>;
 
-		Items() = default;
+		Items();
 
 		// non-copyable
 		Items(const Items&) = delete;

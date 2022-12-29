@@ -25,6 +25,8 @@
 #include "game/game.h"
 #include "utils/pugicast.h"
 
+Items::Items() = default;
+
 void Items::clear()
 {
 	items.clear();

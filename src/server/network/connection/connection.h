@@ -49,7 +49,7 @@ class ConnectionManager
 			return instance;
 		}
 
-		Connection_ptr createConnection(boost::asio::io_service& io_service, ConstServicePort_ptr servicePort);
+		Connection_ptr createConnection(asio::io_service& io_service, ConstServicePort_ptr servicePort);
 		void releaseConnection(const Connection_ptr& connection);
 		void closeAll();
 
@@ -64,7 +64,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 {
 	public:
 		// Constructor
-		Connection(boost::asio::io_service& initIoService,
+		Connection(asio::io_service& initIoService,
 			ConstServicePort_ptr initservicePort);
 		// Constructor end
 
@@ -86,26 +86,26 @@ class Connection : public std::enable_shared_from_this<Connection>
 		uint32_t getIP();
 
 	private:
-		void parseProxyIdentification(const boost::system::error_code& error);
-		void parseHeader(const boost::system::error_code& error);
-		void parsePacket(const boost::system::error_code& error);
+		void parseProxyIdentification(const std::error_code& error);
+		void parseHeader(const std::error_code& error);
+		void parsePacket(const std::error_code& error);
 
-		void onWriteOperation(const boost::system::error_code& error);
+		void onWriteOperation(const std::error_code& error);
 
-		static void handleTimeout(ConnectionWeak_ptr connectionWeak, const boost::system::error_code& error);
+		static void handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code& error);
 
 		void closeSocket();
 		void internalWorker();
 		void internalSend(const OutputMessage_ptr& outputMessage);
 
-		boost::asio::ip::tcp::socket& getSocket() {
+		asio::ip::tcp::socket& getSocket() {
 			return socket;
 		}
 
 		NetworkMessage msg;
 
-		boost::asio::deadline_timer readTimer;
-		boost::asio::deadline_timer writeTimer;
+		asio::high_resolution_timer readTimer;
+		asio::high_resolution_timer writeTimer;
 
 		std::recursive_mutex connectionLock;
 
@@ -114,7 +114,7 @@ class Connection : public std::enable_shared_from_this<Connection>
 		ConstServicePort_ptr service_port;
 		Protocol_ptr protocol;
 
-		boost::asio::ip::tcp::socket socket;
+		asio::ip::tcp::socket socket;
 
 		time_t timeConnected;
 		uint32_t packetsSent = 0;

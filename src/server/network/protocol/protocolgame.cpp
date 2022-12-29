@@ -67,7 +67,7 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 	return totalIterationCount;
 }
 
-void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, const ItemAttributes::CustomAttribute* attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false)
+void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, const ItemAttributes::CustomAttribute* attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false)
 {
 	auto look = static_cast<uint16_t>(attribute->getInt());
 	msg.add<uint16_t>(look);
@@ -87,7 +87,7 @@ void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, const ItemAtt
 			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
 		}
 	} else {
-		if (addAddon) {
+		if (addByte) {
 			msg.add<uint16_t>(0);
 		}
 	}
@@ -6083,48 +6083,14 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	const ItemAttributes::CustomAttribute* lookMount = podium->getCustomAttribute("LookMount");
 	const ItemAttributes::CustomAttribute* lookDirection = podium->getCustomAttribute("LookDirection");
 
-	bool outfited = false;
-	bool mounted = false;
-
 	if (lookType) {
-		uint16_t look = static_cast<uint16_t>(lookType->getInt());
-		outfited = (look != 0);
-		msg.add<uint16_t>(look);
-
-		if (outfited) {
-			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookHead");
-			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookBody");
-			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookLegs");
-			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookFeet");
-
-			msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
-
-			const ItemAttributes::CustomAttribute* lookAddons = podium->getCustomAttribute("LookAddons");
-			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
-		}
+		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
 	} else {
 		msg.add<uint16_t>(0);
 	}
 
 	if (lookMount) {
-		uint16_t look = static_cast<uint16_t>(lookMount->getInt());
-		mounted = (look != 0);
-		msg.add<uint16_t>(look);
-
-		if (mounted) {
-			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookMountHead");
-			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookMountBody");
-			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookMountLegs");
-			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookMountFeet");
-
-			msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
-		}
+		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet");
 	} else {
 		msg.add<uint16_t>(0);
 		msg.addByte(0);
@@ -6185,7 +6151,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(0);
 
 	msg.addByte(0x05);
-	msg.addByte(mounted ? 0x01 : 0x00);
+	msg.addByte(lookMount != 0 ? 0x01 : 0x00);
 
 	msg.add<uint16_t>(0);
 
@@ -6194,7 +6160,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.addByte(stackpos);
 
 	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt()) : 0x01);
-	msg.addByte(outfited ? 0x01 : 0x00);
+	msg.addByte(lookType != 0 ? 0x01 : 0x00);
 	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt()) : 2);
 	writeToOutputBuffer(msg);
 }

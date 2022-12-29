@@ -515,24 +515,24 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttributes::CustomAttribute val;
+	ItemAttributes::CustomAttribute attribute;
 	if (isNumber(L, 3)) {
-		double tmp = getNumber<double>(L, 3);
-		if (std::floor(tmp) < tmp) {
-			val.set<double>(tmp);
+		double doubleValue = getNumber<double>(L, 3);
+		if (std::floor(doubleValue) < doubleValue) {
+			attribute.setDouble(doubleValue);
 		} else {
-			val.set<int64_t>(tmp);
+			attribute.setInt64(getNumber<int64_t>(L, 3));
 		}
 	} else if (isString(L, 3)) {
-		val.set<std::string>(getString(L, 3));
+		attribute.setString(getString(L, 3));
 	} else if (isBoolean(L, 3)) {
-		val.set<bool>(getBoolean(L, 3));
+		attribute.setBool(getBoolean(L, 3));
 	} else {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	item->setCustomAttribute(key, val);
+	item->setCustomAttribute(key, attribute);
 	pushBoolean(L, true);
 	return 1;
 }

@@ -3,7 +3,6 @@
   "version-string": "1.0.0",
   "dependencies": [
     "asio",
-    "boost-variant",
     "pugixml",
     "spdlog",
     "curl",

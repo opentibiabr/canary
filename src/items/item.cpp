@@ -87,7 +87,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
 	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	uint32_t info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
+	auto info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
@@ -752,12 +752,12 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				};
 
 				// Unserialize value type and value
-				ItemAttributes::CustomAttribute val;
-				if (!val.unserialize(propStream)) {
+				ItemAttributes::CustomAttribute customAttribute;
+				if (!customAttribute.unserialize(propStream)) {
 					return ATTR_READ_ERROR;
 				}
 
-				setCustomAttribute(key, val);
+				setCustomAttribute(key, customAttribute);
 			}
 			break;
 		}

@@ -150,152 +150,121 @@ class ItemAttributes
 
 		struct CustomAttribute
 		{
-			typedef boost::variant<boost::blank, std::string, int64_t, double, bool> VariantAttribute;
-			VariantAttribute value;
+			std::string stringValue;
+			int64_t intValue;
+			bool boolValue;
+			double doubleValue;
+			bool hasStringValue = false;
+			bool hasIntValue = false;
+			bool hasBoolValue = false;
+			bool hasDoubleValue = false;
 
-			CustomAttribute() : value(boost::blank()) {}
+			CustomAttribute() = default;
 
-			template<typename T>
-			explicit CustomAttribute(const T& v) : value(v) {}
+			void setString(const std::string& string) {
+				stringValue = string;
+				hasStringValue = true;
+			}
 
-			template<typename T>
-			void set(const T& v) {
-				value = v;
+			void setInt64(int64_t int64) {
+				intValue = int64;
+				hasIntValue = true;
+			}
+
+			void setDouble(double newDouble) {
+				doubleValue = newDouble;
+				hasDoubleValue = true;
+			}
+
+			void setBool(bool boolean) {
+				boolValue = boolean;
+				hasBoolValue = true;
 			}
 
 			const std::string& getString() const {
-				if (value.type() == typeid(std::string)) {
-					return boost::get<std::string>(value);
-				}
-
-				return emptyString;
+				return stringValue;
 			}
 
-			const int64_t& getInt() const {
-				if (value.type() == typeid(int64_t)) {
-					return boost::get<int64_t>(value);
-				}
-
-				return emptyInt;
+			int64_t getInt() const {
+				return intValue;
 			}
 
-			const double& getDouble() const {
-				if (value.type() == typeid(double)) {
-					return boost::get<double>(value);
-				}
-
-				return emptyDouble;
+			bool getBool() const {
+				return boolValue;
 			}
 
-			const bool& getBool() const {
-				if (value.type() == typeid(bool)) {
-					return boost::get<bool>(value);
-				}
-
-				return emptyBool;
+			bool hasValue() const {
+				return hasStringValue || hasIntValue || hasBoolValue || hasDoubleValue;
 			}
-
-			struct PushLuaVisitor : public boost::static_visitor<> {
-				lua_State* L;
-
-				explicit PushLuaVisitor(lua_State* L) : boost::static_visitor<>(), L(L) {}
-
-				void operator()(const boost::blank&) const {
-					lua_pushnil(L);
-				}
-
-				void operator()(const std::string& v) const {
-					LuaScriptInterface::pushString(L, v);
-				}
-
-				void operator()(bool v) const {
-					LuaScriptInterface::pushBoolean(L, v);
-				}
-
-				void operator()(const int64_t& v) const {
-					lua_pushnumber(L, v);
-				}
-
-				void operator()(const double& v) const {
-					lua_pushnumber(L, v);
-				}
-			};
 
 			void pushToLua(lua_State* L) const {
-				boost::apply_visitor(PushLuaVisitor(L), value);
+				if (hasStringValue) {
+					LuaScriptInterface::pushString(L, stringValue);
+				} else if (hasIntValue) {
+					lua_pushnumber(L, static_cast<lua_Number>(intValue));
+				} else if (hasDoubleValue) {
+					lua_pushnumber(L, doubleValue);
+				} else if (hasBoolValue) {
+					LuaScriptInterface::pushBoolean(L, boolValue);
+				} else {
+					lua_pushnil(L);
+				}
 			}
 
-			struct SerializeVisitor : public boost::static_visitor<> {
-				PropWriteStream& propWriteStream;
-
-				explicit SerializeVisitor(PropWriteStream& propWriteStream) : boost::static_visitor<>(), propWriteStream(propWriteStream) {}
-
-				void operator()(const boost::blank&) const {
-				}
-
-				void operator()(const std::string& v) const {
-					propWriteStream.writeString(v);
-				}
-
-				template<typename T>
-				void operator()(const T& v) const {
-					propWriteStream.write<T>(v);
-				}
-			};
-
 			void serialize(PropWriteStream& propWriteStream) const {
-				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.which()));
-				boost::apply_visitor(SerializeVisitor(propWriteStream), value);
+				if (hasStringValue) {
+					propWriteStream.write<uint8_t>(1);
+					propWriteStream.writeString(stringValue);
+				} else if (hasIntValue) {
+					propWriteStream.write<uint8_t>(2);
+				} else if (hasDoubleValue) {
+					propWriteStream.write<uint8_t>(3);
+				} else if (hasBoolValue) {
+					propWriteStream.write<uint8_t>(4);
+				}
 			}
 
 			bool unserialize(PropStream& propStream) {
-				// This is hard coded so it's not general, depends on the position of the variants.
-				uint8_t pos;
-				if (!propStream.read<uint8_t>(pos)) {
+				uint8_t type;
+				if (!propStream.read<uint8_t>(type)) {
 					return false;
 				}
 
-				switch (pos) {
-					case 1:  { // std::string
-						std::string tmp;
-						if (!propStream.readString(tmp)) {
+				switch (type) {
+					case 1: {
+						std::string readString;
+						if (!propStream.readString(readString)) {
 							return false;
 						}
-						value = tmp;
+						setString(readString);
 						break;
 					}
-
-					case 2: { // int64_t
-						int64_t tmp;
-						if (!propStream.read<int64_t>(tmp)) {
+					case 2: {
+						int64_t readInt;
+						if (!propStream.read<int64_t>(readInt)) {
 							return false;
 						}
-						value = tmp;
+						setInt64(readInt);
 						break;
 					}
-
-					case 3: { // double
-						double tmp;
-						if (!propStream.read<double>(tmp)) {
+					case 3: {
+						double readDouble;
+						if (!propStream.read<double>(readDouble)) {
 							return false;
 						}
-						value = tmp;
+						setDouble(readDouble);
 						break;
 					}
-
-					case 4: { // bool
-						bool tmp;
-						if (!propStream.read<bool>(tmp)) {
+					case 4: {
+						bool readBoolean;
+						if (!propStream.read<bool>(readBoolean)) {
 							return false;
 						}
-						value = tmp;
+						setBool(readBoolean);
 						break;
 					}
-
-					default: {
-						value = boost::blank();
+					default:
 						return false;
-					}
 				}
 				return true;
 			}
@@ -410,6 +379,18 @@ class ItemAttributes
 				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
 			}
 			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, value);
+		}
+		void setCustomAttribute(std::string& key, int64_t intValue) {
+			toLowerCaseString(key);
+			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+				removeCustomAttribute(key);
+			} else {
+				auto newAttribute = std::make_unique<CustomAttributeMap>();
+				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = newAttribute.get();
+			}
+			ItemAttributes::CustomAttribute customAttribute;
+			customAttribute.setInt64(intValue);
+			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, customAttribute);
 		}
 
 		void setCustomAttribute(std::string& key, CustomAttribute& value) {

@@ -20,7 +20,6 @@
 #ifndef SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_HPP_
 #define SRC_GAME_SCHEDUNLING_EVENTS_SCHEDULER_HPP_
 
-// #include <unordered_set>
 
 #include "utils/tools.h"
 

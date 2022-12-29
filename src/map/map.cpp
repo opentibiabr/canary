@@ -46,7 +46,7 @@ bool Map::loadMap(const std::string& identifier,
 	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
 	// Only download map if is loading the main map and it is not already downloaded
-	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !boost::filesystem::exists(identifier)) {
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");

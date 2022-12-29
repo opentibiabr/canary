@@ -54,15 +54,15 @@ void ServiceManager::stop()
 
 	for (auto& servicePortIt : acceptors) {
 		try {
-			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
-		} catch (const boost::system::system_error& e) {
+			io_service.post(std::bind_front(&ServicePort::onStopServer, servicePortIt.second));
+		} catch (const std::system_error& e) {
 			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
 		}
 	}
 
 	acceptors.clear();
 
-	death_timer.expires_from_now(boost::posix_time::seconds(3));
+	death_timer.expires_from_now(std::chrono::seconds(3));
 	death_timer.async_wait(std::bind(&ServiceManager::die, this));
 }
 
@@ -101,7 +101,7 @@ void ServicePort::accept()
 	acceptor->async_accept(connection->getSocket(), std::bind(&ServicePort::onAccept, shared_from_this(), connection, std::placeholders::_1));
 }
 
-void ServicePort::onAccept(Connection_ptr connection, const boost::system::error_code& error)
+void ServicePort::onAccept(Connection_ptr connection, const std::error_code& error)
 {
 	if (!error) {
 		if (services.empty()) {
@@ -121,12 +121,12 @@ void ServicePort::onAccept(Connection_ptr connection, const boost::system::error
 		}
 
 		accept();
-	} else if (error != boost::asio::error::operation_aborted) {
+	} else if (error != asio::error::operation_aborted) {
 		if (!pendingStart) {
 			close();
 			pendingStart = true;
 			g_scheduler().addEvent(createSchedulerTask(15000,
-                                std::bind(&ServicePort::openAcceptor,
+                                std::bind_front(&ServicePort::openAcceptor,
                                 std::weak_ptr<ServicePort>(shared_from_this()),
                                 serverPort)));
 		}
@@ -169,41 +169,42 @@ void ServicePort::open(uint16_t port)
 
 	try {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service,
-                           boost::asio::ip::tcp::endpoint(
-                           boost::asio::ip::address(
-                           boost::asio::ip::address_v4::from_string(
+														acceptor.reset(new asio::ip::tcp::acceptor(io_service,
+														asio::ip::tcp::endpoint(
+					asio::ip::address(
+						asio::ip::address_v4::from_string(
                            g_configManager().getString(IP))), serverPort)));
 		} else {
-			acceptor.reset(new boost::asio::ip::tcp::acceptor(io_service,
-                           boost::asio::ip::tcp::endpoint(
-                           boost::asio::ip::address(
-                           boost::asio::ip::address_v4(INADDR_ANY)), serverPort)));
+			acceptor.reset(new asio::ip::tcp::acceptor(io_service,
+				asio::ip::tcp::endpoint(
+					asio::ip::address(
+						asio::ip::address_v4(INADDR_ANY)), serverPort)));
 		}
 
-		acceptor->set_option(boost::asio::ip::tcp::no_delay(true));
+		acceptor->set_option(asio::ip::tcp::no_delay(true));
 
 		accept();
-	} catch (const boost::system::system_error& e) {
-		SPDLOG_WARN("[ServicePort::open] - Error: {}", e.what());
+	}
+	catch (const std::system_error& e) {
+		SPDLOG_WARN("[ServicePort::open] - Error code: {}", e.what());
 
 		pendingStart = true;
 		g_scheduler().addEvent(createSchedulerTask(15000,
-                            std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
+                            std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
 	}
 }
 
 void ServicePort::close()
 {
 	if (acceptor && acceptor->is_open()) {
-		boost::system::error_code error;
+		std::error_code error;
 		acceptor->close(error);
 	}
 }
 
 bool ServicePort::add_service(const Service_ptr& new_svc)
 {
-	if (std::any_of(services.begin(), services.end(), [](const Service_ptr& svc) {return svc->is_single_socket();})) {
+	if (std::ranges::any_of(services, [](const Service_ptr& svc) {return svc->is_single_socket();})) {
 		return false;
 	}
 

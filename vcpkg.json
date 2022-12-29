@@ -2,10 +2,10 @@
   "name": "canary",
   "version-string": "1.0.0",
   "dependencies": [
-    "boost-asio",
+    "asio",
+    "boost-algorithm",
+    "boost-lexical-cast",
     "boost-variant",
-    "boost-filesystem",
-    "boost-system",
     "pugixml",
     "spdlog",
     "curl",
@@ -18,7 +18,8 @@
       "name": "luajit",
       "platform": "!arm"
     },
-    { "name": "libmariadb",
+    {
+      "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },
     {

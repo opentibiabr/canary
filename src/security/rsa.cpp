@@ -22,8 +22,6 @@
 
 #include "security/rsa.h"
 
-#include <fstream>
-
 RSA::RSA()
 {
 	mpz_init(n);

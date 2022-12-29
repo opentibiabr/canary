@@ -23,30 +23,23 @@
 class PropStream;
 
 namespace OTB {
-	using MappedFile = boost::iostreams::mapped_file_source;
-	using ContentIt = MappedFile::iterator;
 	using Identifier = std::array < char, 4 > ;
 
 	struct Node {
-		Node() =
-			default;
-		Node(Node && ) =
-			default;
-		Node & operator = (Node && ) =
-			default;
-		Node(const Node & ) = delete;
-		Node & operator = (const Node & ) = delete;
+		Node() = default;
+		Node(Node&&) = default;
+		Node& operator=(Node&&) = default;
+		Node(const Node&) = delete;
+		Node& operator=(const Node&) = delete;
 
-		using ChildrenVector = std::vector < Node > ;
-
-		ChildrenVector children;
-		ContentIt propsBegin;
-		ContentIt propsEnd;
+		std::list<Node> children;
+		mio::mmap_source::const_iterator propsBegin;
+		mio::mmap_source::const_iterator propsEnd;
 		uint8_t type;
 		enum NodeChar: uint8_t {
 			ESCAPE = 0xFD,
-				START = 0xFE,
-				END = 0xFF,
+			START = 0xFE,
+			END = 0xFF,
 		};
 	};
 
@@ -61,7 +54,7 @@ namespace OTB {
 	};
 
 	class Loader {
-		MappedFile fileContents;
+		mio::mmap_source fileContents;
 		Node root;
 		std::vector < char > propBuffer;
 		public:

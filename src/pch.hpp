@@ -43,6 +43,7 @@
 #include <memory>
 #include <mutex>
 #include <mysql.h>
+#include <mio/mmap.hpp>
 #include <random>
 #include <regex>
 #include <set>
@@ -61,7 +62,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/variant.hpp>
 #include <curl/curl.h>

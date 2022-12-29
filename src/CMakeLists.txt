@@ -145,15 +145,16 @@ find_package(Threads REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(GMP REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
+find_package(mio REQUIRED)
 
 if (MSVC)
-	find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
+	find_package(Boost 1.53.0 COMPONENTS system filesystem date_time REQUIRED)
 	find_package(CURL REQUIRED)
 	find_package(jsoncpp REQUIRED)
 	find_package(MySQL REQUIRED)
 	find_package(PugiXML REQUIRED)
 else()
-	find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
+	find_package(Boost REQUIRED COMPONENTS system filesystem date_time)
 	find_package(CURL CONFIG REQUIRED)
 	find_package(jsoncpp CONFIG REQUIRED)
 	find_package(pugixml CONFIG REQUIRED)
@@ -364,6 +365,7 @@ if (MSVC)
 			${GMP_LIBRARIES}
 			fmt::fmt
 			magic_enum::magic_enum
+			mio::mio
 	)
 
 else()
@@ -382,10 +384,8 @@ else()
 			${LUAJIT_LIBRARIES}
 			${Protobuf_LIBRARIES}
 			${GMP_LIBRARIES}
-			Boost::boost
 			Boost::date_time
 			Boost::filesystem
-			Boost::iostreams
 			Boost::system
 			CURL::libcurl
 			jsoncpp_static
@@ -394,6 +394,7 @@ else()
 			spdlog::spdlog
 			Threads::Threads
 			magic_enum::magic_enum
+			mio::mio
 	)
 
 endif (MSVC)

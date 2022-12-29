@@ -154,12 +154,12 @@ class ItemAttributes
 			int64_t intValue;
 			bool boolValue;
 			double doubleValue;
-			bool hasStringValue;
-			bool hasIntValue;
-			bool hasBoolValue;
-			bool hasDoubleValue;
+			bool hasStringValue = false;
+			bool hasIntValue = false;
+			bool hasBoolValue = false;
+			bool hasDoubleValue = false;
 
-			CustomAttribute() : hasStringValue(false), hasIntValue(false), hasDoubleValue(false), hasBoolValue(false) {}
+			CustomAttribute() {}
 
 			void setString(const std::string& string) {
 				stringValue = string;
@@ -185,7 +185,7 @@ class ItemAttributes
 				return stringValue;
 			}
 
-			int getInt() const {
+			int64_t getInt() const {
 				return intValue;
 			}
 
@@ -201,9 +201,9 @@ class ItemAttributes
 				if (hasStringValue) {
 					LuaScriptInterface::pushString(L, stringValue);
 				} else if (hasIntValue) {
-					lua_pushnumber(L, intValue);
+					lua_pushnumber(L, static_cast<lua_Number>(intValue));
 				} else if (hasDoubleValue) {
-					lua_pushnumber(L, doubleValue);
+					lua_pushnumber(L, static_cast<lua_Number>(doubleValue));
 				} else if (hasBoolValue) {
 					LuaScriptInterface::pushBoolean(L, boolValue);
 				} else {
@@ -385,7 +385,8 @@ class ItemAttributes
 			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				removeCustomAttribute(key);
 			} else {
-				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
+				auto newAttribute = std::make_unique<CustomAttributeMap>();
+				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = newAttribute.get();
 			}
 			ItemAttributes::CustomAttribute customAttribute;
 			customAttribute.setInt64(intValue);

@@ -517,11 +517,11 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 
 	ItemAttributes::CustomAttribute attribute;
 	if (isNumber(L, 3)) {
-		double tmp = getNumber<double>(L, 3);
-		if (std::floor(tmp) < tmp) {
-			attribute.setDouble(tmp);
+		double doubleValue = getNumber<double>(L, 3);
+		if (std::floor(doubleValue) < doubleValue) {
+			attribute.setDouble(doubleValue);
 		} else {
-			attribute.setInt64(tmp);
+			attribute.setInt64(getNumber<int64_t>(L, 3));
 		}
 	} else if (isString(L, 3)) {
 		attribute.setString(getString(L, 3));

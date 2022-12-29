@@ -41,7 +41,10 @@ bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
+	std::vector<uint32_t> tmpVector;
+	tmpVector.reserve(itemIdVector.size());
+
+	for (const auto& itemId : itemIdVector) {
 		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
 			it.wieldInfo = moveEvent.getWieldInfo();
@@ -49,11 +52,13 @@ bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 			it.minReqMagicLevel = moveEvent.getReqMagLv();
 			it.vocationString = moveEvent.getVocationString();
 		}
-		return registerEvent(moveEvent, itemId, itemIdMap);
-	});
-	itemIdVector.clear();
-	itemIdVector.shrink_to_fit();
-	return true;
+		if (registerEvent(moveEvent, itemId, itemIdMap)) {
+			tmpVector.emplace_back(itemId);
+		}
+	}
+
+	itemIdVector = std::move(tmpVector);
+	return !itemIdVector.empty();
 }
 
 bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
@@ -62,13 +67,17 @@ bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
-		return registerEvent(moveEvent, actionId, actionIdMap);
-	});
+	std::vector<uint32_t> tmpVector;
+	tmpVector.reserve(actionIdVector.size());
 
-	actionIdVector.clear();
-	actionIdVector.shrink_to_fit();
-	return true;
+	for (const auto& actionId : actionIdVector) {
+		if (registerEvent(moveEvent, actionId, actionIdMap)) {
+			tmpVector.emplace_back(actionId);
+		}
+	}
+
+	actionIdVector = std::move(tmpVector);
+	return !actionIdVector.empty();
 }
 
 bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
@@ -77,13 +86,17 @@ bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
-		return registerEvent(moveEvent, uniqueId, uniqueIdMap);
-	});
+	std::vector<uint32_t> tmpVector;
+	tmpVector.reserve(uniqueIdVector.size());
 
-	uniqueIdVector.clear();
-	uniqueIdVector.shrink_to_fit();
-	return true;
+	for (const auto& uniqueId : uniqueIdVector) {
+		if (registerEvent(moveEvent, uniqueId, uniqueIdMap)) {
+			tmpVector.emplace_back(uniqueId);
+		}
+	}
+
+	uniqueIdVector = std::move(tmpVector);
+	return !uniqueIdVector.empty();
 }
 
 bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
@@ -92,13 +105,17 @@ bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
-		return registerEvent(moveEvent, position, positionsMap);
-	});
+	std::vector<Position> tmpVector;
+	tmpVector.reserve(positionVector.size());
 
-	positionVector.clear();
-	positionVector.shrink_to_fit();
-	return true;
+	for (const auto& position : positionVector) {
+		if (registerEvent(moveEvent, position, positionsMap)) {
+			tmpVector.emplace_back(position);
+		}
+	}
+
+	positionVector = std::move(tmpVector);
+	return !positionVector.empty();
 }
 
 bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
@@ -118,21 +135,24 @@ bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
 	return false;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
+bool MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
 		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
 		moveListMap[id] = moveEventList;
+		return true;
 	} else {
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		for (MoveEvent& existingMoveEvent : moveEventList) {
 			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
 				SPDLOG_WARN("[MoveEvents::registerEvent] - "
 							"Duplicate move event found: {}", id);
+				return false;
 			}
 		}
 		moveEventList.push_back(std::move(moveEvent));
+		return true;
 	}
 }
 
@@ -208,20 +228,23 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	return nullptr;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
+bool MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
 		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
 		moveListMap[position] = moveEventList;
+		return true;
 	} else {
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		if (!moveEventList.empty()) {
 			SPDLOG_WARN("[MoveEvents::registerEvent] - "
 						"Duplicate move event found: {}", position.toString());
+			return false;
 		}
 
 		moveEventList.push_back(std::move(moveEvent));
+		return true;
 	}
 }
 

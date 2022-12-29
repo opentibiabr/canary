@@ -25,16 +25,6 @@
 #include "game/game.h"
 #include "utils/pugicast.h"
 
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
-
-Items::Items(){}
-
 void Items::clear()
 {
 	items.clear();

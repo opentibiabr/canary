@@ -6090,7 +6090,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	}
 
 	if (lookMount) {
-		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet");
+		addOutfitAndMountBytes(msg, podium, lookMount, "LookMountHead", "LookMountBody", "LookMountLegs", "LookMountFeet");
 	} else {
 		msg.add<uint16_t>(0);
 		msg.addByte(0);
@@ -6151,7 +6151,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(0);
 
 	msg.addByte(0x05);
-	msg.addByte(lookMount != 0 ? 0x01 : 0x00);
+	msg.addByte(lookMount ? 0x01 : 0x00);
 
 	msg.add<uint16_t>(0);
 
@@ -6160,7 +6160,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.addByte(stackpos);
 
 	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt()) : 0x01);
-	msg.addByte(lookType != 0 ? 0x01 : 0x00);
+	msg.addByte(lookType ? 0x01 : 0x00);
 	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt()) : 2);
 	writeToOutputBuffer(msg);
 }

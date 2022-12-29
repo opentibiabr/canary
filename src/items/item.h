@@ -159,7 +159,7 @@ class ItemAttributes
 			bool hasBoolValue = false;
 			bool hasDoubleValue = false;
 
-			CustomAttribute() {}
+			CustomAttribute() = default;
 
 			void setString(const std::string& string) {
 				stringValue = string;
@@ -203,7 +203,7 @@ class ItemAttributes
 				} else if (hasIntValue) {
 					lua_pushnumber(L, static_cast<lua_Number>(intValue));
 				} else if (hasDoubleValue) {
-					lua_pushnumber(L, static_cast<lua_Number>(doubleValue));
+					lua_pushnumber(L, doubleValue);
 				} else if (hasBoolValue) {
 					LuaScriptInterface::pushBoolean(L, boolValue);
 				} else {

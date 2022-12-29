@@ -584,7 +584,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
     //second loop (this time a reverse one) to insert the items in the correct order
     //for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-    for (const auto& it : boost::adaptors::reverse(itemMap)) {
+    for (const auto& it : std::views::reverse(itemMap)) {
       const std::pair<Item*, int32_t>& pair = it.second;
       Item* item = pair.first;
 

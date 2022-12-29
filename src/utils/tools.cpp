@@ -1400,12 +1400,15 @@ void consoleHandlerExit()
 
 NameEval_t validateName(const std::string &name)
 {
-
 	StringVector prohibitedWords = {"owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god"};
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
-	boost::split(toks, name, boost::is_any_of(" '"));
+	std::stringstream ss(name);
+	std::istream_iterator<std::string> begin(ss);
+	std::istream_iterator<std::string> end;
+	std::copy(begin, end, std::back_inserter(toks));
+
 	if(name.length()<3 || name.length()>14) {
 		return INVALID_LENGTH;
 	}
@@ -1424,6 +1427,7 @@ NameEval_t validateName(const std::string &name)
 
 	return VALID;
 }
+
 bool isCaskItem(uint16_t itemId)
 {
 	return (itemId >= ITEM_HEALTH_CASK_START && itemId <= ITEM_HEALTH_CASK_END) ||

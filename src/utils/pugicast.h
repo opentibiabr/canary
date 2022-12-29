@@ -20,17 +20,19 @@
 #ifndef SRC_UTILS_PUGICAST_H_
 #define SRC_UTILS_PUGICAST_H_
 
-
 namespace pugi {
 	template<typename T>
 	T cast(const pugi::char_t* str)
 	{
 		T value;
 		try {
-			value = boost::lexical_cast<T>(str);
-		} catch (boost::bad_lexical_cast&) {
+			value = std::stoll(str);
+		} catch (std::invalid_argument&) {
+			value = T();
+		} catch (std::out_of_range&) {
 			value = T();
 		}
+
 		return value;
 	}
 }

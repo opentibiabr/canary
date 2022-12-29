@@ -40,7 +40,6 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-#include <boost/variant.hpp>
 #include <curl/curl.h>
 #include <fmt/chrono.h>
 #include <gmp.h>

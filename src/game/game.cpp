@@ -3419,8 +3419,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	const ItemAttributes::CustomAttribute* attr = item->getCustomAttribute("unWrapId");
 	uint16_t unWrapId = 0;
 	if (attr != nullptr) {
-		uint32_t tmp = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
-		unWrapId = (uint16_t)tmp;
+		unWrapId = static_cast<uint16_t>(attr->getInt());
 	}
 
 	// Prevent to wrap a filled bath tube
@@ -3437,10 +3436,10 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		uint16_t oldItemID = item->getID();
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
 		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
-		ItemAttributes::CustomAttribute val;
-		val.set<int64_t>(oldItemID);
+		ItemAttributes::CustomAttribute customAttribute;
+		customAttribute.setInt64(oldItemID);
 		std::string key = "unWrapId";
-		newItem->setCustomAttribute(key, val);
+		newItem->setCustomAttribute(key, customAttribute);
 		item->setSpecialDescription("Unwrap it in your own house to create a <" + itemName + ">.");
 		if (hiddenCharges > 0) {
 			item->setDate(hiddenCharges);

@@ -134,7 +134,6 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 # Packages / Libs
 # *****************************************************************************
 find_package(asio CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system iostreams)
 find_package(CURL CONFIG REQUIRED)
 find_package(GMP REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
@@ -339,8 +338,6 @@ if (MSVC)
 			${LUAJIT_LIBRARIES}
 			${MYSQL_CLIENT_LIBS}
 			asio::asio
-			Boost::boost
-			Boost::iostreams
 			CURL::libcurl
 			fmt::fmt
 			magic_enum::magic_enum

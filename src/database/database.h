@@ -102,25 +102,22 @@ class DBResult
 				return static_cast<T>(0);
 			}
 
-			T data = { 0 };
+			T data = 0;
 			try {
-				// Uses std::sto to convert the string to generic type T
-				data = std::stol(row[it->second]);
-			}
-			catch (std::invalid_argument&) {
-				// Overflow; tries to get it as uint64 (as big as possible);
-				uint64_t u64data;
+				// Uses std::stoull to convert the string to generic type T
+				data = std::stoull(row[it->second]);
+			} catch (std::invalid_argument&) {
+				SPDLOG_ERROR("INVALID ARGUMENT FOR STOULL");
+			} catch (std::out_of_range&) {
+				int64_t signedMaxData;
 				try {
-					u64data = std::stoull(row[it->second]);
-					if (u64data > 0) {
-						// Is a valid! thus truncate into int max for data type;
-						data = std::numeric_limits<T>::max();
-					}
-				}
-				catch (std::invalid_argument& e) {
+					signedMaxData = std::stoll(row[it->second]);
+					data = signedMaxData;
+				} catch (std::invalid_argument& e) {
 					// invalid! discard value.
 					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, e.what());
-					data = 0;
+				} catch (std::out_of_range&) {
+					SPDLOG_ERROR("OUT OF RANGE FOR SIGNED VALUE");
 				}
 			}
 			return data;

@@ -5,7 +5,6 @@
     "asio",
     "boost-algorithm",
     "boost-lexical-cast",
-    "boost-iostreams",
     "boost-variant",
     "pugixml",
     "spdlog",
@@ -14,6 +13,7 @@
     "protobuf",
     "parallel-hashmap",
     "magic-enum",
+    "mio",
     {
       "name": "luajit",
       "platform": "!arm"

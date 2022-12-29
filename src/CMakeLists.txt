@@ -134,7 +134,6 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 # Packages / Libs
 # *****************************************************************************
 find_package(asio CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS system iostreams)
 find_package(CURL CONFIG REQUIRED)
 find_package(GMP REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
@@ -145,7 +144,7 @@ find_package(Protobuf REQUIRED)
 find_package(pugixml CONFIG REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(unofficial-libmariadb CONFIG REQUIRED)
-
+find_package(mio REQUIRED)
 find_package(Threads REQUIRED)
 
 include(GNUInstallDirs)
@@ -339,11 +338,10 @@ if (MSVC)
 			${LUAJIT_LIBRARIES}
 			${MYSQL_CLIENT_LIBS}
 			asio::asio
-			Boost::boost
-			Boost::iostreams
 			CURL::libcurl
 			fmt::fmt
 			magic_enum::magic_enum
+			mio::mio
 			protobuf::libprotobuf
 			pugixml::pugixml
 			spdlog::spdlog
@@ -366,12 +364,11 @@ else()
 			${LUAJIT_LIBRARIES}
 			${GMP_LIBRARIES}
 			asio::asio
-			Boost::boost
-			Boost::iostreams
 			CURL::libcurl
 			fmt::fmt
 			jsoncpp_static
 			magic_enum::magic_enum
+			mio::mio
 			protobuf::libprotobuf
 			pugixml::pugixml
 			spdlog::spdlog

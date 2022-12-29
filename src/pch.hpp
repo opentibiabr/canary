@@ -39,7 +39,6 @@
 #include <asio.hpp>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/variant.hpp>
 #include <curl/curl.h>
@@ -48,6 +47,7 @@
 #include <json/json.h>
 #include <luajit/lua.hpp>
 #include <magic_enum.hpp>
+#include <mio/mmap.hpp>
 #include <mysql.h>
 #include <mysql/errmsg.h>
 #include <spdlog/spdlog.h>

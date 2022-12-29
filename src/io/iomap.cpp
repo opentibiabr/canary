@@ -106,12 +106,12 @@ bool IOMap::loadMap(Map* map, const std::string& fileName)
 	map->width = root_header.width;
 	map->height = root_header.height;
 
-	if (root.children.size() != 1 || root.children[0].type != OTBM_MAP_DATA) {
+	if (root.children.size() != 1 || root.children.front().type != OTBM_MAP_DATA) {
 		setLastErrorString("Could not read data node.");
 		return false;
 	}
 
-	auto& mapNode = root.children[0];
+	auto& mapNode = root.children.front();
 	if (!parseMapDataAttributes(loader, mapNode, *map, fileName)) {
 		return false;
 	}

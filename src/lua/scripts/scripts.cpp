@@ -46,7 +46,7 @@ void Scripts::clear() const {
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
-	namespace fs = boost::filesystem;
+	namespace fs = std::filesystem;
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	const auto dir = fs::current_path() / coreFolder / "events" / "scripts" / "scheduler";
@@ -72,7 +72,7 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 }
 
 bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
-	namespace fs = boost::filesystem;
+	namespace fs = std::filesystem;
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	const auto dir = fs::current_path() / datapackFolder / folderName;

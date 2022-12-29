@@ -66,7 +66,34 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 
 	return totalIterationCount;
 }
+
+void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, const ItemAttributes::CustomAttribute* attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false)
+{
+	auto look = static_cast<uint16_t>(attribute->getInt());
+	msg.add<uint16_t>(look);
+	if (look != 0) {
+		const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute(head);
+		const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute(body);
+		const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute(legs);
+		const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute(feet);
+
+		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+		msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
+
+		if (addAddon) {
+			const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
+			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
+		}
+	} else {
+		if (addAddon) {
+			msg.add<uint16_t>(0);
+		}
+	}
 }
+
+} // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {
 	version = CLIENT_VERSION;
@@ -196,45 +223,14 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		const ItemAttributes::CustomAttribute* lookDirection = item->getCustomAttribute("LookDirection");
 
 		if (lookType) {
-			auto look = static_cast<uint16_t>(lookType->getInt());
-			msg.add<uint16_t>(look);
-
-			if(look != 0) {
-				const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute("LookHead");
-				const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute("LookBody");
-				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookLegs");
-				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookFeet");
-
-				msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
-				msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
-				msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
-				msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
-
-				const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
-				msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
-			} else {
-				msg.add<uint16_t>(0);
-			}
+			addOutfitAndMountBytes(msg, item, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
 		} else {
 			msg.add<uint16_t>(0);
 			msg.add<uint16_t>(0);
 		}
 
 		if (lookMount) {
-			uint16_t look = static_cast<uint16_t>(lookMount->getInt());
-			msg.add<uint16_t>(look);
-
-			if (look != 0) {
-				const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute("LookMountHead");
-				const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute("LookMountBody");
-				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookMountLegs");
-				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookMountFeet");
-
-				msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
-				msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
-				msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
-				msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
-			}
+			addOutfitAndMountBytes(msg, item, lookMount, "LookMountHead", "LookMountBody", "LookMountLegs", "LookMountFeet");
 		} else {
 			msg.add<uint16_t>(0);
 		}

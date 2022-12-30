@@ -7,10 +7,10 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "game/movement/teleport.h"
 #include "game/game.h"
+#include "game/movement/teleport.h"
 
 void Teleport::serializeAttr(PropWriteStream& propWriteStream) const
 {

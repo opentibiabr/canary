@@ -7,13 +7,12 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/bed.h"
 #include "game/game.h"
 #include "io/iologindata.h"
 #include "game/scheduling/scheduler.h"
-
 
 BedItem::BedItem(uint16_t id) : Item(id)
 {

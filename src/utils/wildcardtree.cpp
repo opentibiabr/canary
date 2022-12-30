@@ -7,9 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
-
-#include <stack>
+#include "pch.hpp"
 
 #include "utils/wildcardtree.h"
 

@@ -63,7 +63,8 @@ class TalkAction : public Script {
 
 class TalkActions final : public Scripts {
 	public:
-		TalkActions() = default;
+		TalkActions();
+		~TalkActions();
 
 		// non-copyable
 		TalkActions(const TalkActions&) = delete;

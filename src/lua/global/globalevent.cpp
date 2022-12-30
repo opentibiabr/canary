@@ -7,12 +7,15 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/global/globalevent.h"
 #include "utils/tools.h"
 #include "game/game.h"
 #include "game/scheduling/scheduler.h"
+
+GlobalEvents::GlobalEvents() = default;
+GlobalEvents::~GlobalEvents() = default;
 
 void GlobalEvents::clear() {
 	// Stop events

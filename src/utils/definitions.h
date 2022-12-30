@@ -10,30 +10,6 @@
 #ifndef SRC_UTILS_DEFINITIONS_H_
 #define SRC_UTILS_DEFINITIONS_H_
 
-static constexpr auto STATUS_SERVER_NAME = "Canary";
-static constexpr auto STATUS_SERVER_VERSION = "1.4.0";
-static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization and contributors";
-
-static constexpr auto AUTHENTICATOR_DIGITS = 6U;
-static constexpr auto AUTHENTICATOR_PERIOD = 30U;
-
-static constexpr auto CLIENT_VERSION = 1286;
-#define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
-#define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
-
-#define NONCOPYABLE(Type) Type(const Type&)=delete; Type& operator=(const Type&)=delete
-
-/// Branch Prediction.  See the GCC Manual for more information.
- /// NB: These are used when speed is need most; do not use in normal
- /// code, they may slow down stuff.
-#if defined(__clang__) || defined(__GNUC__)
-#define likely(x)     __builtin_expect(!!(x), 1)
-#define unlikely(x)    __builtin_expect(!!(x), 0)
-#else
-#define likely(x)    (x)
-#define unlikely(x)    (x)
-#endif
-
 #ifndef __FUNCTION__
 #define __FUNCTION__ __func__
 #endif
@@ -45,8 +21,6 @@ static constexpr auto CLIENT_VERSION = 1286;
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
 #endif
-
-#include <cmath>
 
 #ifdef _WIN32
 #ifndef NOMINMAX

@@ -7,12 +7,10 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "creatures/players/management/waitlist.h"
-
-
 
 namespace {
 

@@ -10,7 +10,6 @@
 #ifndef SRC_DATABASE_DATABASEMANAGER_H_
 #define SRC_DATABASE_DATABASEMANAGER_H_
 
-#include "config/configmanager.h"
 #include "database/database.h"
 
 class DatabaseManager

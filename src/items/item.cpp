@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/item.h"
 #include "items/functions/item_read_map_attributes.hpp"
@@ -23,7 +23,6 @@
 #include "items/bed.h"
 #include "containers/rewards/rewardchest.h"
 #include "creatures/players/imbuements/imbuements.h"
-
 #include "lua/creature/actions.h"
 #include "creatures/combat/spells.h"
 
@@ -79,7 +78,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
 	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	uint32_t info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
+	auto info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
@@ -800,13 +799,13 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				};
 
 				// Unserialize value type and value
-				ItemAttributes::CustomAttribute val;
-				if (!val.unserialize(propStream)) {
+				ItemAttributes::CustomAttribute customAttribute;
+				if (!customAttribute.unserialize(propStream)) {
 					SPDLOG_ERROR("[Item::readAttr] Cannot read customAttribute value");
 					return ATTR_READ_ERROR;
 				}
 
-				setCustomAttribute(key, val);
+				setCustomAttribute(key, customAttribute);
 			}
 			break;
 		}
@@ -819,6 +818,16 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			}
 
 			setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
+			break;
+		}
+
+		case ATTR_TIER: {
+			uint8_t tier;
+			if (!propStream.read<uint8_t>(tier)) {
+				return ATTR_READ_ERROR;
+			}
+
+			setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
 			break;
 		}
 
@@ -1014,6 +1023,11 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
 		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE));
 	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+		propWriteStream.write<uint8_t>(ATTR_TIER);
+		propWriteStream.write<uint8_t>(getTier());
+	}
 }
 
 bool Item::hasProperty(ItemProperty prop) const
@@ -1132,7 +1146,7 @@ std::vector<std::pair<std::string, std::string>>
 
 			if (it.abilities->speed) {
 				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << (it.abilities->speed) << std::noshowpos;
 				descriptions.emplace_back("Speed", ss.str());
 			}
 
@@ -1386,7 +1400,7 @@ std::vector<std::pair<std::string, std::string>>
 
 			if (it.abilities->speed) {
 				ss.str("");
-				ss << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+				ss << std::showpos << (it.abilities->speed) << std::noshowpos;
 				descriptions.emplace_back("Speed", ss.str());
 			}
 
@@ -1522,6 +1536,10 @@ std::vector<std::pair<std::string, std::string>>
 		} else if (it.slotPosition & SLOTP_TWO_HAND || it.slotPosition & SLOTP_LEFT || it.slotPosition & SLOTP_RIGHT) {
 			descriptions.emplace_back("Body Position", "Hand");
 		}
+
+		if (it.upgradeClassification > 0) {
+			descriptions.emplace_back("Classification", std::to_string(it.upgradeClassification));
+		}
 	}
 	descriptions.shrink_to_fit();
 	return descriptions;
@@ -1571,6 +1589,24 @@ std::string Item::parseImbuementDescription(const Item* item)
 	}
 
 	return s.str();
+}
+
+std::string Item::parseClassificationDescription(const Item* item) {
+	std::ostringstream string;
+	if (item && item->getClassification() >= 1) {
+		string << std::endl << "Classification: " << std::to_string(item->getClassification()) << " Tier: " << std::to_string(item->getTier());
+		if (item->getTier() != 0) {
+			string << " (";
+			if (Item::items[item->getID()].weaponType != WEAPON_NONE) {
+				string << item->getFatalChance() << "% Onslaught).";
+			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_HELMETS) {
+				string << item->getMomentumChance() << "% Momentum).";
+			} else if (g_game().getObjectCategory(item) == OBJECTCATEGORY_ARMORS) {
+				string << std::setprecision(2) << std::fixed << item->getDodgeChance() << "% Ruse).";
+			}
+		}
+	}
+	return string.str();
 }
 
 std::string Item::parseShowAttributesDescription(const Item *item, const uint16_t itemId)
@@ -1735,7 +1771,8 @@ std::string Item::parseShowAttributesDescription(const Item *item, const uint16_
 					itemDescription << ", ";
 				}
 
-				itemDescription << "speed " << std::showpos << (itemType.abilities->speed >> 1) << std::noshowpos;
+				
+				itemDescription << "speed " << std::showpos << (itemType.abilities->speed) << std::noshowpos;
 			}
 		}
 
@@ -1767,7 +1804,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 				if (item) {
 					tmpSubType = item->getSubType();
 				}
-				s << ". " << (it.stackable && tmpSubType > 1 ? "They" : "It") << " can only be used by ";
+				s << " (\"" << it.runeSpellName << "\"). " << (it.stackable && tmpSubType > 1 ? "They" : "It") << " can only be used by ";
 
 				const VocSpellMap& vocMap = rune->getVocMap();
 				std::vector<Vocation*> showVocMap;
@@ -1986,7 +2023,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 						s << ", ";
 					}
 
-					s << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+					s << "speed " << std::showpos << (it.abilities->speed) << std::noshowpos;
 				}
 			}
 
@@ -2180,7 +2217,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 						s << ", ";
 					}
 
-					s << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+					s << "speed " << std::showpos << (it.abilities->speed) << std::noshowpos;
 				}
 			}
 
@@ -2204,9 +2241,9 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	} else {
 		bool found = true;
 
-		if (it.abilities) {
+		if (it.abilities && it.slotPosition & SLOTP_RING) {
 			if (it.abilities->speed > 0) {
-				s << " (speed " << std::showpos << (it.abilities->speed / 2) << std::noshowpos << ')';
+				s << " (speed " << std::showpos << (it.abilities->speed) << std::noshowpos << ')';
 			} else if (hasBitSet(CONDITION_DRUNK, it.abilities->conditionSuppressions)) {
 				s << " (hard drinking)";
 			} else if (it.abilities->invisible) {
@@ -2372,6 +2409,8 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 	s << parseImbuementDescription(item);
 
+	s << parseClassificationDescription(item);
+
 	if (lookDistance <= 1) {
 		if (item) {
 			const uint32_t weight = item->getWeight();
@@ -2534,6 +2573,22 @@ uint32_t Item::getWorth() const
 	}
 }
 
+uint32_t Item::getForgeSlivers() const
+{
+	if (getID() == ITEM_FORGE_SLIVER)
+		return getItemCount();
+	else
+		return 0;
+}
+
+uint32_t Item::getForgeCores() const
+{
+	if (getID() == ITEM_FORGE_CORE)
+		return getItemCount();
+	else
+		return 0;
+}
+
 LightInfo Item::getLightInfo() const
 {
 	const ItemType& it = items[id];
@@ -2673,6 +2728,10 @@ bool Item::hasMarketAttributes()
 		}
 
 		if (attribute.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
+			return false;
+		}
+
+		if (attribute.type == ITEM_ATTRIBUTE_TIER && static_cast<uint32_t>(attribute.value.integer) != getTier()) {
 			return false;
 		}
 	}

@@ -10,9 +10,6 @@
 #ifndef SRC_SECURITY_RSA_H_
 #define SRC_SECURITY_RSA_H_
 
-#include <gmp.h>
-
-#include <string>
 
 class RSA
 {

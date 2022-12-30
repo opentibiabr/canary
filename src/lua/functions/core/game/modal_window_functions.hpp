@@ -10,8 +10,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CORE_GAME_MODAL_WINDOW_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CORE_GAME_MODAL_WINDOW_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/scripts/luascript.h"
 
 class ModalWindowFunctions final : LuaScriptInterface {

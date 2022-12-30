@@ -10,8 +10,6 @@
 #ifndef SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_ITEMS_CONTAINER_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/scripts/luascript.h"
 
 class ContainerFunctions final : LuaScriptInterface {

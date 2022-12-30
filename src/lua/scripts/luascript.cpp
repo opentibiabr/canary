@@ -7,11 +7,10 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/luascript.h"
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;

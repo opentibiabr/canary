@@ -10,8 +10,6 @@
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_CREATURE_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_CREATURE_FUNCTIONS_HPP_
 
-#include <set>
-
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"

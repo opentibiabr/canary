@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/player.h"
 #include "lua/functions/core/game/modal_window_functions.hpp"

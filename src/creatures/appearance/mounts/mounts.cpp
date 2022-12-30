@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/appearance/mounts/mounts.h"
 #include "game/game.h"
-
+#include "utils/pugicast.h"
 #include "utils/tools.h"
 
 #include <string>
@@ -26,23 +26,19 @@ bool Mounts::reload()
 bool Mounts::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/mounts.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/mounts.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Mounts::loadFromXml", "data/XML/mounts.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
 	for (auto mountNode : doc.child("mounts").children()) {
-		pugi::xml_attribute clientIdAttribute = mountNode.attribute("clientid");
-		auto clientId = static_cast<uint16_t>(clientIdAttribute.as_uint());
-		const std::string mountName = mountNode.attribute("name").as_string();
-		if (!clientIdAttribute.empty()) {
-			if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && clientId != 0
-			&& !g_game().isLookTypeRegistered(clientId))
-			{
-				SPDLOG_WARN("[Mounts::loadFromXml] An unregistered creature clientid type with id '{}' was blocked to prevent client crash.", clientId);
-				return false;
-			}
+		uint16_t lookType = pugi::cast<uint16_t>(mountNode.attribute("clientid").value());
+		if (g_configManager().getBoolean(WARN_UNSAFE_SCRIPTS) && lookType != 0 && !g_game().isLookTypeRegistered(lookType)) {
+			SPDLOG_WARN("{} - An unregistered creature looktype type with id '{}' was blocked to prevent client crash.", __FUNCTION__, lookType);
+			continue;
+		}
 
 			const std::string clientIdString = clientIdAttribute.as_string();
 			if (clientIdString.empty() || clientId == 0) {

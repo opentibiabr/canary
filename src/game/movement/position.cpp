@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/movement/position.h"
 #include "utils/tools.h"

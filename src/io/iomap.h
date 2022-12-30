@@ -10,8 +10,6 @@
 #ifndef SRC_IO_IOMAP_H_
 #define SRC_IO_IOMAP_H_
 
-#include <utility>
-
 #include "declarations.hpp"
 
 #include "config/configmanager.h"
@@ -21,6 +19,29 @@
 #include "map/map.h"
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "creatures/npcs/spawns/spawn_npc.h"
+
+#pragma pack(1)
+
+struct OTBM_root_header {
+	uint32_t version;
+	uint16_t width;
+	uint16_t height;
+	uint32_t majorVersionItems;
+	uint32_t minorVersionItems;
+};
+
+struct OTBM_Destination_coords {
+	uint16_t x;
+	uint16_t y;
+	uint8_t z;
+};
+
+struct OTBM_Tile_coords {
+	uint8_t x;
+	uint8_t y;
+};
+
+#pragma pack()
 
 class IOMap
 {

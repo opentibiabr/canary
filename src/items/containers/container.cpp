@@ -7,13 +7,12 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
 #include "io/iomap.h"
 #include "game/game.h"
-
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -376,8 +375,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
-  if (isQuiver() && item->getWeaponType() != WEAPON_AMMO)
-    return RETURNVALUE_ONLYAMMOINQUIVER;
+
+	if (isQuiver() && item->getWeaponType() != WEAPON_AMMO) {
+		return RETURNVALUE_ONLYAMMOINQUIVER;
+	}
 
 	const Cylinder* topParent = getTopParent();
 	if (topParent != this) {
@@ -443,19 +444,23 @@ ReturnValue Container::queryRemove(const Thing& thing, uint32_t count, uint32_t 
 {
 	int32_t index = getThingIndex(&thing);
 	if (index == -1) {
+		SPDLOG_DEBUG("{} - Failed to get thing index", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
+		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (count == 0 || (item->isStackable() && count > item->getItemCount())) {
+		SPDLOG_DEBUG("{} - Failed to get item count", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
+		SPDLOG_DEBUG("{} - Item is not moveable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVEABLE;
 	}
   const HouseTile* houseTile = dynamic_cast<const HouseTile*>(getTopParent());

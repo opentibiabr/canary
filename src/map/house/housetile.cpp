@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/tile.h"
 #include "creatures/monsters/monster.h"
@@ -134,7 +134,7 @@ ReturnValue HouseTile::queryRemove(const Thing& thing, uint32_t count, uint32_t 
 	if (actor && g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
 		Player* actorPlayer = actor->getPlayer();
 		if (!house->isInvited(actorPlayer)) {
-			return RETURNVALUE_NOTPOSSIBLE;
+			return RETURNVALUE_PLAYERISNOTINVITED;
 		}
 	}
 	return Tile::queryRemove(thing, count, flags);

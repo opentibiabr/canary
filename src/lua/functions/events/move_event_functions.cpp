@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/creature.h"
 #include "lua/creature/movement.h"
 #include "lua/functions/events/move_event_functions.hpp"
-
 
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()

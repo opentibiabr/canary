@@ -17,7 +17,6 @@
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/vocations/vocation.h"
 
-
 class Weapon;
 class WeaponMelee;
 class WeaponDistance;
@@ -28,7 +27,8 @@ using Weapon_ptr = std::unique_ptr<Weapon>;
 class Weapons final : public Scripts
 {
 	public:
-		Weapons() = default;
+		Weapons();
+		~Weapons();
 
 		// non-copyable
 		Weapons(const Weapons&) = delete;

@@ -14,7 +14,6 @@
 #include "creatures/combat/condition.h"
 #include "declarations.hpp"
 #include "map/map.h"
-#include "items/thing.h"
 
 class Condition;
 class Creature;

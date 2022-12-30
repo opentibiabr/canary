@@ -10,8 +10,6 @@
 #ifndef SRC_ITEMS_TILE_H_
 #define SRC_ITEMS_TILE_H_
 
-#include <unordered_set>
-
 #include "items/cylinder.h"
 #include "declarations.hpp"
 #include "items/item.h"
@@ -180,6 +178,8 @@ class Tile : public Cylinder
 				return ZONE_PROTECTION;
 			} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 				return ZONE_NOPVP;
+			} else if (hasFlag(TILESTATE_NOLOGOUT)) {
+				return ZONE_NOLOGOUT;				
 			} else if (hasFlag(TILESTATE_PVPZONE)) {
 				return ZONE_PVP;
 			} else {

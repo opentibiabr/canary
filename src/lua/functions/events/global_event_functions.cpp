@@ -7,14 +7,13 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/functions/events/global_event_functions.hpp"
 #include "game/game.h"
 #include "lua/global/globalevent.h"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
-
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 	GlobalEvent* global = new GlobalEvent(getScriptEnv()->getScriptInterface());

@@ -7,11 +7,11 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
+
 #include "creatures/appearance/mounts/mounts.h"
 #include "game/game.h"
 #include "lua/functions/creatures/player/mount_functions.hpp"
-
 
 int MountFunctions::luaCreateMount(lua_State* L) {
 	// Mount(id or name)

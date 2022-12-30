@@ -7,11 +7,9 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "io/iomap.h"
-
-#include "items/bed.h"
 #include "game/movement/teleport.h"
 
 #include "map/flatbuffer/kmap_generated.h"
@@ -75,11 +73,15 @@ bool IOMap::loadMap(Map &serverMap, const std::string &fileName)
 	std::string npcFile = header->npc_spawn_file()->str();
 	std::string houseFile = header->house_file()->str();
 
-	serverMap.monsterfile = fileName.substr(0, fileName.rfind('/') + 1);
-	serverMap.monsterfile += monsterFile;
+	if (root.children.size() != 1 || root.children.front().type != OTBM_MAP_DATA) {
+		setLastErrorString("Could not read data node.");
+		return false;
+	}
 
-	serverMap.npcfile = fileName.substr(0, fileName.rfind('/') + 1);
-	serverMap.npcfile += npcFile;
+	auto& mapNode = root.children.front();
+	if (!parseMapDataAttributes(loader, mapNode, *map, fileName)) {
+		return false;
+	}
 
 	serverMap.housefile = fileName.substr(0, fileName.rfind('/') + 1);
 	serverMap.housefile += houseFile;

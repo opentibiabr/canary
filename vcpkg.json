@@ -3,6 +3,8 @@
   "version-string": "1.0.0",
   "dependencies": [
     "asio",
+    "boost-algorithm",
+    "boost-lexical-cast",
     "pugixml",
     "spdlog",
     "curl",
@@ -10,12 +12,14 @@
     "parallel-hashmap",
     "protobuf",
     "parallel-hashmap",
-    "flatbuffers",
+    "magic-enum",
+    "mio",
     {
       "name": "luajit",
       "platform": "!arm"
     },
-    { "name": "libmariadb",
+    {
+      "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },
     {

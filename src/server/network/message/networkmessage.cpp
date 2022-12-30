@@ -7,10 +7,9 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "server/network/message/networkmessage.h"
-
 #include "items/containers/container.h"
 #include "creatures/creature.h"
 

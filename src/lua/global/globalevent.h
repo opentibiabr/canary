@@ -19,7 +19,8 @@ using GlobalEventMap = std::map<std::string, GlobalEvent>;
 
 class GlobalEvents final : public Scripts {
 	public:
-		GlobalEvents() = default;
+		GlobalEvents();
+		~GlobalEvents();
 
 		// non-copyable
 		GlobalEvents(const GlobalEvents&) = delete;

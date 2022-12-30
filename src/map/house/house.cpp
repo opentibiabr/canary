@@ -7,14 +7,12 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
-
+#include "pch.hpp"
 
 #include "map/house/house.h"
 #include "io/iologindata.h"
 #include "game/game.h"
 #include "items/bed.h"
-
 
 House::House(uint32_t houseId) : id(houseId) {}
 
@@ -259,16 +257,27 @@ bool House::transferToDepot(Player* player) const
 							moveItemList.push_back(containerItem);
 						}
 					}
+
+					uint16_t hiddenCharges = 0;
+					if (isCaskItem(item->getID())) {
+						hiddenCharges = item->getSubType();
+					}
+					
 					std::string itemName = item->getName();
 					uint16_t itemID = item->getID();
 					Item* newItem = g_game().transformItem(item, ITEM_DECORATION_KIT);
-					ItemAttributes::CustomAttribute val;
-					val.set<int64_t>(itemID);
+					ItemAttributes::CustomAttribute attribute;
+					attribute.setInt64(itemID);
 					std::string key = "unWrapId";
-					newItem->setCustomAttribute(key, val);
+					newItem->setCustomAttribute(key, attribute);
 					std::ostringstream ss;
 					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
 					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
+					
+					if (hiddenCharges > 0) {
+						item->setDate(hiddenCharges);
+					}
+					
 					moveItemList.push_back(newItem);
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
@@ -617,7 +626,7 @@ bool Houses::loadHousesXML(const std::string& filename)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
-		printXMLError("Error - Houses::loadHousesXML", filename, result);
+		printXMLError(__FUNCTION__, filename, result);
 		return false;
 	}
 

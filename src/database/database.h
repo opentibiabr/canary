@@ -10,13 +10,6 @@
 #ifndef SRC_DATABASE_DATABASE_H_
 #define SRC_DATABASE_DATABASE_H_
 
-#include <mysql/mysql.h>
-#include <memory>
-#include <mutex>
-#include <map>
-#include <iostream>
-
-#include "config/configmanager.h"
 #include "declarations.hpp"
 
 class DBResult;
@@ -104,6 +97,8 @@ class DBResult
 		bool getBoolean(const std::string& tableName) const;
 		std::string getString(const std::string& s) const;
 		const char* getStream(const std::string& s, unsigned long& size) const;
+		uint8_t getU8FromString(const std::string &string, const std::string &function) const;
+		int8_t getInt8FromString(const std::string &string, const std::string &function) const;
 
 		size_t countResults() const;
 		bool hasNext() const;

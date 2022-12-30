@@ -7,17 +7,26 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
+#include "config/configmanager.h"
 #include "game/scheduling/events_scheduler.hpp"
 #include "game/game.h"
 #include "lua/scripts/scripts.h"
+#include "utils/pugicast.h"
 
 bool EventsScheduler::loadScheduleEventFromXml() const
 {
 	pugi::xml_document doc;
-	if (pugi::xml_parse_result result = doc.load_file("data/XML/events.xml"); !result) {
-		printXMLError("Error - EventsScheduler::loadScheduleEventFromXml", "data/XML/events.xml", result);
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/events.xml";
+	if (
+		// Init-statement
+		pugi::xml_parse_result result = doc.load_file(folder.c_str());
+		// Condition
+		!result
+	)
+	{
+		printXMLError(__FUNCTION__, folder, result);
 		consoleHandlerExit();
 		return false;
 	}
@@ -65,8 +74,8 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 		}
 
 		if ((attr = schedNode.attribute("script")) && (!(g_scripts().loadEventSchedulerScripts(attr.as_string())))) {
-				SPDLOG_WARN("Can not load the file '{}' on '/events/scripts/scheduler/'",
-				attr.as_string());
+				SPDLOG_WARN("{} - Can not load the file '{}' on '/events/scripts/scheduler/'",
+				__FUNCTION__, attr.as_string());
 				return false;
 		}
 

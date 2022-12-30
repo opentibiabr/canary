@@ -7,9 +7,10 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/functions/creatures/monster/monster_spell_functions.hpp"
+#include "creatures/monsters/monsters.h"
 
 int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {
 	// MonsterSpell() will create a new Monster Spell

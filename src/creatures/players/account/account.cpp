@@ -7,13 +7,10 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/account/account.hpp"
 #include "database/databasetasks.h"
-
-#include <algorithm>
-#include <limits>
 
 namespace account {
 

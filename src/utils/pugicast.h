@@ -10,7 +10,6 @@
 #ifndef SRC_UTILS_PUGICAST_H_
 #define SRC_UTILS_PUGICAST_H_
 
-#include <boost/lexical_cast.hpp>
 
 namespace pugi {
 	template<typename T>

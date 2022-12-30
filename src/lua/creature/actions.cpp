@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/actions.h"
 #include "items/bed.h"
@@ -15,6 +15,9 @@
 #include "game/game.h"
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
+
+Actions::Actions() = default;
+Actions::~Actions() = default;
 
 void Actions::clear() {
 	useItemMap.clear();

@@ -7,13 +7,15 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/combat.h"
 #include "game/game.h"
 #include "lua/creature/events.h"
 #include "items/weapons/weapons.h"
 
+Weapons::Weapons() = default;
+Weapons::~Weapons() = default;
 
 const Weapon* Weapons::getWeapon(const Item* item) const
 {
@@ -29,6 +31,11 @@ const Weapon* Weapons::getWeapon(const Item* item) const
 }
 
 void Weapons::clear()
+{
+	weapons.clear();
+}
+
+void Weapons::clear(bool fromLua)
 {
 	weapons.clear();
 }
@@ -401,7 +408,7 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 		return -maxValue;
 	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->meleeDamageMultiplier)));
 }
 
 void WeaponDistance::configureWeapon(const ItemType& it)
@@ -661,7 +668,7 @@ int32_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
     	}
   	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->distDamageMultiplier)));
 }
 
 bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& skill, uint32_t& skillpoint) const

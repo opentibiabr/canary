@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "io/iomapserialize.h"
 #include "game/game.h"
 #include "items/bed.h"
-
 
 void IOMapSerialize::loadHouseItems(Map* map)
 {

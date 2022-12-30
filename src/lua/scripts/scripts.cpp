@@ -7,22 +7,14 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include <filesystem>
-
-#include "creatures/combat/spells.h"
-#include "creatures/interactions/chat.h"
 #include "creatures/players/imbuements/imbuements.h"
-#include "items/weapons/weapons.h"
-#include "lua/creature/actions.h"
-#include "lua/creature/events.h"
-#include "lua/creature/movement.h"
-#include "lua/creature/talkaction.h"
 #include "lua/global/globalevent.h"
-#include "lua/modules/modules.h"
-#include "lua/scripts/lua_environment.hpp"
+#include "items/weapons/weapons.h"
+#include "lua/creature/movement.h"
 #include "lua/scripts/scripts.h"
+#include "creatures/combat/spells.h"
 
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
@@ -33,10 +25,23 @@ Scripts::~Scripts() {
 	scriptInterface.reInitState();
 }
 
+void Scripts::clear() const {
+	g_actions().clear();
+	g_creatureEvents().clear();
+	g_talkActions().clear();
+	g_globalEvents().clear();
+	g_spells().clear();
+	g_moveEvents().clear();
+	g_weapons().clear();
+}
+
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
-	const auto dir = std::filesystem::current_path() / "data" / "events" / "scripts" / "scheduler";
-	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
-		SPDLOG_WARN("Can not load folder 'scheduler' on '/data/events/scripts'");
+	namespace fs = std::filesystem;
+
+	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+	const auto dir = fs::current_path() / coreFolder / "events" / "scripts" / "scheduler";
+	if(!fs::exists(dir) || !fs::is_directory(dir)) {
+		SPDLOG_WARN("{} - Can not load folder 'scheduler' on {}/events/scripts'", __FUNCTION__, coreFolder);
 		return false;
 	}
 
@@ -57,7 +62,8 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 }
 
 bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload) {
-	const auto dir = std::filesystem::current_path() / "data" / folderName;
+	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
+	const auto dir = std::filesystem::current_path() / datapackFolder / folderName;
 	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
 		SPDLOG_ERROR("Can not load folder {}", folderName);
 		return false;

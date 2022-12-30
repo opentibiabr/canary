@@ -76,6 +76,7 @@ class MonsterType
 
 		LightInfo light = {};
 		uint16_t lookcorpse = 0;
+		uint16_t baseSpeed = 110;
 
 		uint64_t experience = 0;
 
@@ -87,7 +88,6 @@ class MonsterType
 		uint32_t changeTargetSpeed = 0;
 		uint32_t conditionImmunities = 0;
 		uint32_t damageImmunities = 0;
-		uint32_t baseSpeed = 200;
 
 		// Bestiary
 		uint8_t bestiaryOccurrence = 0;
@@ -138,6 +138,7 @@ class MonsterType
 		bool canWalkOnEnergy = true;
 		bool canWalkOnFire = true;
 		bool canWalkOnPoison = true;
+		bool isForgeCreature = true;
 
 		MonstersEvent_t eventType = MONSTERS_EVENT_NONE;
 	};
@@ -157,6 +158,14 @@ class MonsterType
 		std::string nameDescription;
 
 		MonsterInfo info;
+
+		uint16_t getBaseSpeed() const {
+			return info.baseSpeed;
+		}
+
+		void setBaseSpeed(const uint16_t initBaseSpeed) {
+			info.baseSpeed = initBaseSpeed;
+		}
 
 		void loadLoot(MonsterType* monsterType, LootBlock lootblock);
 

@@ -7,14 +7,22 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/appearance/outfit/outfit.h"
-
+#include "utils/pugicast.h"
 #include "utils/tools.h"
 #include "game/game.h"
 
-#include <cctype>
+bool Outfits::loadFromXml()
+{
+	pugi::xml_document doc;
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	if (!result) {
+		printXMLError(__FUNCTION__, folder, result);
+		return false;
+	}
 
 bool Outfits::parseOutfitNode()
 {

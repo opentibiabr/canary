@@ -7,11 +7,14 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/player.h"
 #include "lua/scripts/scripts.h"
 #include "lua/creature/talkaction.h"
+
+TalkActions::TalkActions() = default;
+TalkActions::~TalkActions() = default;
 
 void TalkActions::clear() {
 	talkActions.clear();

@@ -7,7 +7,7 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "lua/functions/items/item_classification_functions.hpp"

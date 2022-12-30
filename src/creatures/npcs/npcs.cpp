@@ -7,16 +7,14 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/combat.h"
+#include "creatures/combat/spells.h"
+#include "creatures/npcs/npcs.h"
 #include "creatures/creature.h"
 #include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/npcs/npc.h"
-#include "creatures/npcs/npcs.h"
-#include "creatures/combat/spells.h"
-#include "items/weapons/weapons.h"
 
 bool NpcType::canSpawn(const Position& pos)
 {
@@ -26,7 +24,7 @@ bool NpcType::canSpawn(const Position& pos)
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
-		canSpawn = (pos.z > 7 && info.respawnType.underground);
+		canSpawn = (pos.z > MAP_INIT_SURFACE_LAYER && info.respawnType.underground);
 	}
 
 	return canSpawn;

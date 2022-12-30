@@ -7,15 +7,15 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/monsters/spawns/spawn_monster.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 #include "game/scheduling/scheduler.h"
 #include "game/scheduling/events_scheduler.hpp"
-
 #include "lua/creature/events.h"
+#include "utils/pugicast.h"
 
 static constexpr int32_t MONSTER_MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MONSTER_MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -29,7 +29,7 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filemonstername.c_str());
 	if (!result) {
-		printXMLError("SpawnsMonster::loadFromXml", filemonstername, result);
+		printXMLError(__FUNCTION__, filemonstername, result);
 		return false;
 	}
 

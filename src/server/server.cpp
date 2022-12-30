@@ -1,16 +1,27 @@
 /**
- * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
- * Repository: https://github.com/opentibiabr/canary
- * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
- * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * The Forgotten Server - a free and open-source MMORPG server emulator
+ * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "server/network/message/outputmessage.h"
 #include "server/server.h"
+#include "config/configmanager.h"
 #include "game/scheduling/scheduler.h"
 #include "creatures/players/management/ban.h"
 
@@ -43,9 +54,9 @@ void ServiceManager::stop()
 
 	for (auto& servicePortIt : acceptors) {
 		try {
-			io_service.post(std::bind(&ServicePort::onStopServer, servicePortIt.second));
+			io_service.post(std::bind_front(&ServicePort::onStopServer, servicePortIt.second));
 		} catch (const std::system_error& e) {
-			SPDLOG_WARN("[ServiceManager::stop] - Error code: {}", e.what());
+			SPDLOG_WARN("[ServiceManager::stop] - Network error: {}", e.what());
 		}
 	}
 
@@ -115,7 +126,7 @@ void ServicePort::onAccept(Connection_ptr connection, const std::error_code& err
 			close();
 			pendingStart = true;
 			g_scheduler().addEvent(createSchedulerTask(15000,
-                                std::bind(&ServicePort::openAcceptor,
+                                std::bind_front(&ServicePort::openAcceptor,
                                 std::weak_ptr<ServicePort>(shared_from_this()),
                                 serverPort)));
 		}
@@ -158,26 +169,28 @@ void ServicePort::open(uint16_t port)
 
 	try {
 		if (g_configManager().getBoolean(BIND_ONLY_GLOBAL_ADDRESS)) {
-			acceptor.reset(new asio::ip::tcp::acceptor(io_service,
-                           asio::ip::tcp::endpoint(
-                           asio::ip::address(
-                           asio::ip::address_v4::from_string(
+														acceptor.reset(new asio::ip::tcp::acceptor(io_service,
+														asio::ip::tcp::endpoint(
+					asio::ip::address(
+						asio::ip::address_v4::from_string(
                            g_configManager().getString(IP))), serverPort)));
 		} else {
 			acceptor.reset(new asio::ip::tcp::acceptor(io_service,
-                           asio::ip::tcp::endpoint(
-                           asio::ip::address(
-                           asio::ip::address_v4(INADDR_ANY)), serverPort)));
+				asio::ip::tcp::endpoint(
+					asio::ip::address(
+						asio::ip::address_v4(INADDR_ANY)), serverPort)));
 		}
 
 		acceptor->set_option(asio::ip::tcp::no_delay(true));
 
 		accept();
-	} catch (const std::system_error& e) {
+	}
+	catch (const std::system_error& e) {
 		SPDLOG_WARN("[ServicePort::open] - Error code: {}", e.what());
+
 		pendingStart = true;
 		g_scheduler().addEvent(createSchedulerTask(15000,
-                            std::bind(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
+                            std::bind_front(&ServicePort::openAcceptor, std::weak_ptr<ServicePort>(shared_from_this()), port)));
 	}
 }
 
@@ -191,7 +204,7 @@ void ServicePort::close()
 
 bool ServicePort::add_service(const Service_ptr& new_svc)
 {
-	if (std::ranges::any_of(services.begin(), services.end(), [](const Service_ptr& svc) {return svc->is_single_socket();})) {
+	if (std::ranges::any_of(services, [](const Service_ptr& svc) {return svc->is_single_socket();})) {
 		return false;
 	}
 

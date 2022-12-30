@@ -1,39 +1,41 @@
 /**
- * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
- * Repository: https://github.com/opentibiabr/canary
- * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
- * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * The Forgotten Server - a free and open-source MMORPG server emulator
+ * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
-#include "otpch.h"
-
-#include <filesystem>
-#include <fstream>
-#include <curl/curl.h>
-#include <iostream>
+#include "pch.hpp"
 
 #include "io/iomap.h"
-#include "map/kmap_loader.hpp"
 #include "io/iomapserialize.h"
 #include "creatures/combat/combat.h"
 #include "creatures/creature.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
 
 bool Map::load(const std::string& identifier) {
 	try {
-		KmapLoader kmapLoader;
-		if (!kmapLoader.load(*this, identifier)) {
-			SPDLOG_ERROR("[Map::load] - Cannot load map file: {}", identifier);
-			getMapFileName().clear();
+		IOMap loader;
+		if (!loader.loadMap(this, identifier)) {
+			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
 			return false;
 		}
 	}
 	catch(const std::exception) {
-		SPDLOG_ERROR("[Map::load] - Failed to load map with name: {}", identifier);
+		SPDLOG_ERROR("[Map::load] - The map in folder {} is missing or corrupted", identifier);
 		return false;
 	}
 	return true;
@@ -274,10 +276,10 @@ bool Map::placeCreature(const Position& centerPos, Creature* creature, bool exte
 		std::vector<std::pair<int32_t, int32_t>>& relList = (extendedPos ? extendedRelList : normalRelList);
 
 		if (extendedPos) {
-			std::ranges::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
-			std::ranges::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
+			std::shuffle(relList.begin(), relList.begin() + 4, getRandomGenerator());
+			std::shuffle(relList.begin() + 4, relList.end(), getRandomGenerator());
 		} else {
-			std::ranges::shuffle(relList.begin(), relList.end(), getRandomGenerator());
+			std::shuffle(relList.begin(), relList.end(), getRandomGenerator());
 		}
 
 		for (const auto& it : relList) {
@@ -423,9 +425,8 @@ void Map::getSpectatorsInternal(SpectatorHashSet& spectators, const Position& ce
 		leafE = leafS;
 		for (int_fast32_t nx = startx1; nx <= endx2; nx += FLOOR_SIZE) {
 			if (leafE) {
-				for (const CreatureVector& creatureVector = (onlyPlayers ? leafE->player_list : leafE->creature_list);
-				Creature* creature : creatureVector)
-				{
+				const CreatureVector& node_list = (onlyPlayers ? leafE->player_list : leafE->creature_list);
+				for (Creature* creature : node_list) {
 					const Position& cpos = creature->getPosition();
 					if (minRangeZ > cpos.z || maxRangeZ < cpos.z) {
 						continue;
@@ -512,21 +513,21 @@ void Map::getSpectators(SpectatorHashSet& spectators, const Position& centerPos,
 		int32_t maxRangeZ;
 
 		if (multifloor) {
-			if (centerPos.z > 7) {
+			if (centerPos.z > MAP_INIT_SURFACE_LAYER) {
 				//underground
 
 				//8->15
-				minRangeZ = std::max<int32_t>(centerPos.getZ() - 2, 0);
-				maxRangeZ = std::min<int32_t>(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
-			} else if (centerPos.z == 6) {
+				minRangeZ = std::max<int32_t>(centerPos.getZ() - MAP_LAYER_VIEW_LIMIT, 0);
+				maxRangeZ = std::min<int32_t>(centerPos.getZ() + MAP_LAYER_VIEW_LIMIT, MAP_MAX_LAYERS - 1);
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER - 1) {
 				minRangeZ = 0;
-				maxRangeZ = 8;
-			} else if (centerPos.z == 7) {
+				maxRangeZ = (MAP_INIT_SURFACE_LAYER - 1) + MAP_LAYER_VIEW_LIMIT;
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER) {
 				minRangeZ = 0;
-				maxRangeZ = 9;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER + MAP_LAYER_VIEW_LIMIT;
 			} else {
 				minRangeZ = 0;
-				maxRangeZ = 7;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER;
 			}
 		} else {
 			minRangeZ = centerPos.z;
@@ -557,12 +558,12 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 	//z checks
 	//underground 8->15
 	//ground level and above 7->0
-	if ((fromPos.z >= 8 && toPos.z < 8) || (toPos.z >= 8 && fromPos.z < 8)) {
+	if ((fromPos.z >= 8 && toPos.z <= MAP_INIT_SURFACE_LAYER) || (toPos.z >= MAP_INIT_SURFACE_LAYER + 1 && fromPos.z <= MAP_INIT_SURFACE_LAYER)) {
 		return false;
 	}
 
 	int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
-	if (deltaz > 2) {
+	if (deltaz > MAP_LAYER_VIEW_LIMIT) {
 		return false;
 	}
 
@@ -1220,13 +1221,13 @@ void QTreeLeafNode::addCreature(Creature* c)
 
 void QTreeLeafNode::removeCreature(Creature* c)
 {
-	auto iter = std::ranges::find(creature_list.begin(), creature_list.end(), c);
+	auto iter = std::find(creature_list.begin(), creature_list.end(), c);
 	assert(iter != creature_list.end());
 	*iter = creature_list.back();
 	creature_list.pop_back();
 
 	if (c->getPlayer()) {
-		iter = std::ranges::find(player_list.begin(), player_list.end(), c);
+		iter = std::find(player_list.begin(), player_list.end(), c);
 		assert(iter != player_list.end());
 		*iter = player_list.back();
 		player_list.pop_back();

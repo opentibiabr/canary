@@ -1,13 +1,23 @@
 /**
- * Canary - A free and open-source MMORPG server emulator
- * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
- * Repository: https://github.com/opentibiabr/canary
- * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
- * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
- * Website: https://docs.opentibiabr.org/
-*/
+ * The Forgotten Server - a free and open-source MMORPG server emulator
+ * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "server/network/connection/connection.h"
 #include "server/network/message/outputmessage.h"
@@ -15,7 +25,6 @@
 #include "server/network/protocol/protocolgame.h"
 #include "game/scheduling/scheduler.h"
 #include "server/server.h"
-#include "game/game.h"
 
 Connection_ptr ConnectionManager::createConnection(asio::io_service& io_service, ConstServicePort_ptr servicePort)
 {
@@ -41,7 +50,6 @@ void ConnectionManager::closeAll()
 		try {
 			std::error_code error;
 			connection->socket.shutdown(asio::ip::tcp::socket::shutdown_both, error);
-			connection->socket.close(error);
 		} catch (const std::system_error& systemError) {
 			SPDLOG_ERROR("[ConnectionManager::closeAll] - Failed to close connection, system error code {}", systemError.what());
 		}
@@ -57,7 +65,7 @@ Connection::Connection(asio::io_service& initIoService, ConstServicePort_ptr ini
 	service_port(std::move(initservicePort)),
 	socket(initIoService)
 {
-	timeConnected = Game::getTimeNow();
+	timeConnected = time(nullptr);
 }
 // Constructor end
 
@@ -74,7 +82,7 @@ void Connection::close(bool force)
 
 	if (protocol) {
 		g_dispatcher().addTask(
-			createSchedulerTask(1000, std::bind(&Protocol::release, protocol)));
+			createSchedulerTask(1000, std::bind_front(&Protocol::release, protocol)));
 	}
 
 	if (messageQueue.empty() || force) {
@@ -103,7 +111,7 @@ void Connection::accept(Protocol_ptr protocolPtr)
 {
 	this->connectionState = CONNECTION_STATE_IDENTIFYING;
 	this->protocol = protocolPtr;
-	g_dispatcher().addTask(createSchedulerTask(1000, std::bind(&Protocol::onConnect, protocolPtr)));
+	g_dispatcher().addTask(createSchedulerTask(1000, std::bind_front(&Protocol::onConnect, protocolPtr)));
 
 	// Call second accept for not duplicate code
 	accept(false);
@@ -202,7 +210,7 @@ void Connection::parseHeader(const std::error_code& error)
 		return;
 	}
 
-	uint32_t timePassed = std::max<uint32_t>(1, static_cast<uint32_t>((Game::getTimeNow() - timeConnected) + 1));
+	uint32_t timePassed = std::max<uint32_t>(1, (time(nullptr) - timeConnected) + 1);
 	if ((++packetsSent / timePassed) > static_cast<uint32_t>(g_configManager().getNumber(MAX_PACKETS_PER_SECOND))) {
 		SPDLOG_WARN("{} disconnected for exceeding packet per second limit.", convertIPToString(getIP()));
 		close();
@@ -210,7 +218,7 @@ void Connection::parseHeader(const std::error_code& error)
 	}
 
 	if (timePassed > 2) {
-		timeConnected = Game::getTimeNow();
+		timeConnected = time(nullptr);
 		packetsSent = 0;
 	}
 

@@ -7,16 +7,12 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
-
-#include <limits>
-#include <map>
+#include "pch.hpp"
 
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/scripts/luascript.h"
 #include "lua/scripts/script_environment.hpp"
-
 
 ScriptEnvironment::ScriptEnvironment() {
 	resetEnv();

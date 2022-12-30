@@ -10,22 +10,13 @@
 #ifndef SRC_ITEMS_ITEM_H_
 #define SRC_ITEMS_ITEM_H_
 
-#include <utility>
-#include <vector>
-
 #include "items/cylinder.h"
 #include "core/file_handle.hpp"
 #include "items/thing.h"
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
 #include "utils/tools.h"
-
-#include <typeinfo>
-#include <deque>
-#include <iostream>
-#include <string>
-#include <variant>
-#include <limits>
+#include "io/fileloader.h"
 
 class Creature;
 class Player;
@@ -150,195 +141,121 @@ class ItemAttributes
 
 		struct CustomAttribute
 		{
-			std::variant<std::monostate, std::string, int64_t, double, bool> value;
+			std::string stringValue;
+			int64_t intValue;
+			bool boolValue;
+			double doubleValue;
+			bool hasStringValue = false;
+			bool hasIntValue = false;
+			bool hasBoolValue = false;
+			bool hasDoubleValue = false;
 
-			CustomAttribute() : value(std::monostate()) {}
+			CustomAttribute() = default;
 
-			template<typename T>
-			explicit CustomAttribute(const T& v) : value(v) {}
+			void setString(const std::string& string) {
+				stringValue = string;
+				hasStringValue = true;
+			}
 
-			template<typename T>
-			void set(const T& v) {
-				value = v;
+			void setInt64(int64_t int64) {
+				intValue = int64;
+				hasIntValue = true;
+			}
+
+			void setDouble(double newDouble) {
+				doubleValue = newDouble;
+				hasDoubleValue = true;
+			}
+
+			void setBool(bool boolean) {
+				boolValue = boolean;
+				hasBoolValue = true;
 			}
 
 			const std::string& getString() const {
-				try {
-					return std::get<std::string>(value);
-				}
-				catch (const std::bad_variant_access& ex) {
-					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is string: {}]", ex.what());
-				}
-				return emptyString;
+				return stringValue;
 			}
 
-			const int64_t& getInt() const {
-				try {
-					return std::get<int64_t>(value);
-				}
-				catch (const std::bad_variant_access& ex) {
-					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is int64_t: {}", ex.what());
-				}
-				return emptyInt;
+			int64_t getInt() const {
+				return intValue;
 			}
 
-			const double& getDouble() const {
-				try {
-					return std::get<double>(value);
-				}
-				catch (const std::bad_variant_access& ex) {
-					SPDLOG_ERROR("[CustomAttribute::std::string& getString()] - Object not is double {}", ex.what());
-				}
-				return emptyDouble;
+			bool getBool() const {
+				return boolValue;
 			}
 
-			const bool& getBool() const {
-				try {
-					return std::get<bool>(value);
-				}
-				catch (const std::bad_variant_access& ex) {
-					SPDLOG_ERROR("[CustomAttribute::std::string& getString() - Object not is bool: {}", ex.what());
-				}
-				return emptyBool;
+			bool hasValue() const {
+				return hasStringValue || hasIntValue || hasBoolValue || hasDoubleValue;
 			}
-
-			struct PushLuaVisitor {
-				lua_State* L;
-
-				explicit PushLuaVisitor(lua_State* L) : L(L) {}
-
-				void operator()(const std::monostate&) const {
-					lua_pushnil(L);
-				}
-
-				void operator()(const std::string& v) const {
-					LuaScriptInterface::pushString(L, v);
-				}
-
-				void operator()(bool v) const {
-					LuaScriptInterface::pushBoolean(L, v);
-				}
-
-				void operator()(const int64_t& v) const {
-					lua_pushnumber(L, v);
-				}
-
-				void operator()(const double& v) const {
-					lua_pushnumber(L, v);
-				}
-			};
 
 			void pushToLua(lua_State* L) const {
-				std::visit(PushLuaVisitor(L), value);
+				if (hasStringValue) {
+					LuaScriptInterface::pushString(L, stringValue);
+				} else if (hasIntValue) {
+					lua_pushnumber(L, static_cast<lua_Number>(intValue));
+				} else if (hasDoubleValue) {
+					lua_pushnumber(L, doubleValue);
+				} else if (hasBoolValue) {
+					LuaScriptInterface::pushBoolean(L, boolValue);
+				} else {
+					lua_pushnil(L);
+				}
 			}
-
-			struct SerializeVisitor {
-				PropWriteStream& propWriteStream;
-
-				explicit SerializeVisitor(PropWriteStream& propWriteStream) : propWriteStream(propWriteStream) {}
-
-				void operator()(const std::monostate&) const {
-					return;
-				}
-
-				void operator()(const std::string& v) const {
-					propWriteStream.writeString(v);
-				}
-
-				template<typename T>
-				void operator()(const T& v) const {
-					propWriteStream.write<T>(v);
-				}
-			};
 
 			void serialize(PropWriteStream& propWriteStream) const {
-				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.index()));
-				std::visit(SerializeVisitor(propWriteStream), value);
-			}
-
-			// BinaryNode unserialize parses
-			bool unserializeString(BinaryNode &binaryNode)
-			{
-				std::string string = binaryNode.getString();
-				if (string.empty()) {
-					SPDLOG_ERROR("[Item::unserializeString] - String is empty");
-					return false;
+				if (hasStringValue) {
+					propWriteStream.write<uint8_t>(1);
+					propWriteStream.writeString(stringValue);
+				} else if (hasIntValue) {
+					propWriteStream.write<uint8_t>(2);
+				} else if (hasDoubleValue) {
+					propWriteStream.write<uint8_t>(3);
+				} else if (hasBoolValue) {
+					propWriteStream.write<uint8_t>(4);
 				}
-
-				value = string;
-				return true;
-			}
-			bool unserializeInt(BinaryNode &binaryNode)
-			{
-				int64_t int64 = binaryNode.get64();
-				if (int64 == 0) {
-					SPDLOG_ERROR("[Item::unserializeInt] - Failed to get64");
-					return false;
-				}
-
-				value = int64;
-				return true;
-			}
-			bool unserializeDouble(BinaryNode &binaryNode)
-			{
-				double doubleValue = binaryNode.getDouble();
-				if (doubleValue == 0) {
-					SPDLOG_ERROR("[Item::unserializeDouble] - Failed to getDouble");
-					return false;
-				}
-
-				value = doubleValue;
-				return true;
 			}
 
 			bool unserialize(PropStream& propStream) {
-				// This is hard coded so it's not general, depends on the position of the variants.
-				uint8_t pos;
-				if (!propStream.read<uint8_t>(pos)) {
+				uint8_t type;
+				if (!propStream.read<uint8_t>(type)) {
 					return false;
 				}
 
-				switch (pos) {
-					case 1:  { // std::string
-						std::string tmp;
-						if (!propStream.readString(tmp)) {
+				switch (type) {
+					case 1: {
+						std::string readString;
+						if (!propStream.readString(readString)) {
 							return false;
 						}
-						value = tmp;
+						setString(readString);
 						break;
 					}
-
-					case 2: { // int64_t
-						int64_t tmp;
-						if (!propStream.read<int64_t>(tmp)) {
+					case 2: {
+						int64_t readInt;
+						if (!propStream.read<int64_t>(readInt)) {
 							return false;
 						}
-						value = tmp;
+						setInt64(readInt);
 						break;
 					}
-
-					case 3: { // double
-						double tmp;
-						if (!propStream.read<double>(tmp)) {
+					case 3: {
+						double readDouble;
+						if (!propStream.read<double>(readDouble)) {
 							return false;
 						}
-						value = tmp;
+						setDouble(readDouble);
 						break;
 					}
-
-					case 4: { // bool
-						bool tmp;
-						if (!propStream.read<bool>(tmp)) {
+					case 4: {
+						bool readBoolean;
+						if (!propStream.read<bool>(readBoolean)) {
 							return false;
 						}
-						value = tmp;
+						setBool(readBoolean);
 						break;
 					}
-
-					default: {
-						value = std::monostate();
+					default:
 						return false;
-					}
 				}
 				return true;
 			}
@@ -489,6 +406,18 @@ class ItemAttributes
 			}
 			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, value);
 		}
+		void setCustomAttribute(std::string& key, int64_t intValue) {
+			toLowerCaseString(key);
+			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+				removeCustomAttribute(key);
+			} else {
+				auto newAttribute = std::make_unique<CustomAttributeMap>();
+				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = newAttribute.get();
+			}
+			ItemAttributes::CustomAttribute customAttribute;
+			customAttribute.setInt64(intValue);
+			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, customAttribute);
+		}
 
 		void setCustomAttribute(std::string& key, CustomAttribute& value) {
 			toLowerCaseString(key);
@@ -554,6 +483,7 @@ class ItemAttributes
 			checkTypes |= ITEM_ATTRIBUTE_OPENCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_QUICKLOOTCONTAINER;
 			checkTypes |= ITEM_ATTRIBUTE_DURATION_TIMESTAMP;
+			checkTypes |= ITEM_ATTRIBUTE_TIER;
 			return (type & static_cast<ItemAttrTypes>(checkTypes)) != 0;
 		}
 		static bool isStrAttrType(ItemAttrTypes type) {
@@ -867,6 +797,7 @@ class Item : virtual public Thing
 
 		static std::string parseImbuementDescription(const Item* item);
 		static std::string parseShowAttributesDescription(const Item *item, const uint16_t itemId);
+		static std::string parseClassificationDescription(const Item* item);
 
 		static std::vector<std::pair<std::string, std::string>> getDescriptions(const ItemType& it,
                                     const Item* item = nullptr);
@@ -1012,6 +943,8 @@ class Item : virtual public Thing
 		}
 
 		uint32_t getWorth() const;
+		uint32_t getForgeSlivers() const;
+		uint32_t getForgeCores() const;
 		LightInfo getLightInfo() const;
 
 		bool hasProperty(ItemProperty prop) const;
@@ -1132,6 +1065,10 @@ class Item : virtual public Thing
 		virtual void startDecaying();
 		virtual void stopDecaying();
 
+		bool getLoadedFromMap() const {
+			return loadedFromMap;
+		}
+
 		void setLoadedFromMap(bool value) {
 			loadedFromMap = value;
 		}
@@ -1213,6 +1150,55 @@ class Item : virtual public Thing
 			}
 
 			return false;
+		}
+
+		double_t getDodgeChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return (0.0307576 * getTier() * getTier()) + (0.440697 * getTier()) + 0.026;
+		}
+
+		double_t getFatalChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 0.5 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		double_t getMomentumChance() const {
+			if (getTier() == 0) {
+				return 0;
+			}
+			return 2 * getTier() + 0.05 * ((getTier() - 1) * (getTier() - 1));
+		}
+
+		uint8_t getTier() const {
+			if (!hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+				return 0;
+			}
+
+			auto tier = static_cast<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_TIER));
+			if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
+				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
+				return 0;
+			}
+
+			return tier;
+		}
+		void setTier(uint8_t tier) {
+			auto configTier = g_configManager().getNumber(FORGE_MAX_ITEM_TIER);
+			if (tier > configTier) {
+				SPDLOG_ERROR("{} - It is not possible to set a tier higher than {}", __FUNCTION__, configTier);
+				return;
+			}
+
+			if (items[id].upgradeClassification) {
+				setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+			}
+		}
+		uint8_t getClassification() const {
+			return items[id].upgradeClassification;
 		}
 
 	protected:

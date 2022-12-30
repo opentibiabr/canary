@@ -146,7 +146,8 @@ class Action : public Script {
 
 class Actions final : public Scripts {
 	public:
-		Actions() = default;
+		Actions();
+		~Actions();
 
 		// non-copyable
 		Actions(const Actions&) = delete;

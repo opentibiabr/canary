@@ -7,12 +7,11 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/creatureevent.h"
 #include "lua/functions/events/creature_event_functions.hpp"
 #include "utils/tools.h"
-
 
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)

@@ -7,14 +7,17 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/creature/creatureevent.h"
 #include "utils/tools.h"
 #include "creatures/players/player.h"
 
-void CreatureEvents::clear() {
-	creatureEvents.clear();
+void CreatureEvents::clear()
+{
+	for (auto &[name, event] : creatureEvents) {
+		event.clearEvent();
+	}
 }
 
 bool CreatureEvents::registerLuaEvent(CreatureEvent* event) {

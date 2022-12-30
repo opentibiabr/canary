@@ -7,11 +7,9 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "security/rsa.h"
-
-#include <fstream>
 
 RSA::RSA()
 {

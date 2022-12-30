@@ -149,8 +149,8 @@ class MoveEvents final : public BaseEvents {
 			return false;
 		}
 
-		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
-		void registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
+		bool registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
+		bool registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
 		MoveEvent* getEvent(Tile& tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType, Slots_t slot);

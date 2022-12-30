@@ -83,60 +83,113 @@ class Database
 class DBResult
 {
 	public:
-		explicit DBResult(MYSQL_RES* res);
-		~DBResult();
+	explicit DBResult(MYSQL_RES *res);
+	~DBResult();
 
-		// non-copyable
-		DBResult(const DBResult&) = delete;
-		DBResult& operator=(const DBResult&) = delete;
+	// Non copyable
+	DBResult(const DBResult &) = delete;
+	DBResult &operator=(const DBResult &) = delete;
 
-		template<typename T>
-		T getNumber(const std::string& s) const {
-			auto it = listNames.find(s);
-			if (it == listNames.end()) {
-				SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
-				return static_cast<T>(0);
-			}
-
-			if (row[it->second] == nullptr) {
-				return static_cast<T>(0);
-			}
-
-			T data = 0;
-			try {
-				// Uses std::stoull to convert the string to generic type T
-				data = std::stoull(row[it->second]);
-			} catch (std::invalid_argument&) {
-				SPDLOG_ERROR("INVALID ARGUMENT FOR STOULL");
-			} catch (std::out_of_range&) {
-				int64_t signedMaxData;
-				try {
-					signedMaxData = std::stoll(row[it->second]);
-					data = signedMaxData;
-				} catch (std::invalid_argument& e) {
-					// invalid! discard value.
-					SPDLOG_ERROR("Column '{}' has an invalid value set: {}", s, e.what());
-				} catch (std::out_of_range&) {
-					SPDLOG_ERROR("OUT OF RANGE FOR SIGNED VALUE");
-				}
-			}
-			return data;
+	template < typename T>
+	T getNumber(const std::string &s) const
+	{
+		auto it = listNames.find(s);
+		if (it == listNames.end())
+		{
+			SPDLOG_ERROR("[DBResult::getNumber] - Column '{}' doesn't exist in the result set", s);
+			return T();
 		}
 
-		std::string getString(const std::string& s) const;
-		const char* getStream(const std::string& s, unsigned long& size) const;
-		uint8_t getU8FromString(const std::string &string, const std::string &function) const;
-		int8_t getInt8FromString(const std::string &string, const std::string &function) const;
+		if (row[it->second] == nullptr)
+		{
+			return T();
+		}
 
-    size_t countResults() const;
-		bool hasNext() const;
-		bool next();
+		T data = 0;
+		try
+		{
+			// Check if the type T is signed or unsigned
+			if constexpr(std::is_signed_v<T>)
+			{
+				// Check if the type T is int8_t or int16_t
+				if constexpr(std::is_same_v<T, int8_t> || std::is_same_v<T, int16_t>)
+				{
+					// Use std::stoi to convert string to int8_t
+					data = static_cast<T>(std::stoi(row[it->second]));
+				}
+				// Check if the type T is int32_t
+				else if constexpr(std::is_same_v<T, int32_t>)
+				{
+					// Use std::stol to convert string to int32_t
+					data = static_cast<T>(std::stol(row[it->second]));
+				}
+				// Check if the type T is int64_t
+				else if constexpr(std::is_same_v<T, int64_t>)
+				{
+					// Use std::stoll to convert string to int64_t
+					data = static_cast<T>(std::stoll(row[it->second]));
+				}
+				else
+				{
+					// Throws exception indicating that type T is invalid
+					SPDLOG_ERROR("Invalid signed type T");
+				}
+			}
+			else if (std::is_same<T, bool>::value)
+			{
+				data = static_cast<T>(std::stoi(row[it->second]));
+			}
+			else
+			{
+				// Check if the type T is uint8_t or uint16_t or uint32_t
+				if constexpr(std::is_same_v<T, uint8_t> || std::is_same_v<T, uint16_t> || std::is_same_v<T, uint32_t>)
+				{
+					// Use std::stoul to convert string to uint8_t
+					data = static_cast<T>(std::stoul(row[it->second]));
+				}
+				// Check if the type T is uint64_t
+				else if constexpr(std::is_same_v<T, uint64_t>)
+				{
+					// Use std::stoull to convert string to uint64_t
+					data = static_cast<T>(std::stoull(row[it->second]));
+				}
+				else
+				{
+					// Send log indicating that type T is invalid
+					SPDLOG_ERROR("Column '{}' has an invalid unsigned T is invalid", s);
+				}
+			}
+		}
+		catch (std::invalid_argument &e)
+		{
+			// Value of string is invalid
+			SPDLOG_ERROR("Column '{}' has an invalid value set, error code: {}", s, e.what());
+			data = T();
+		}
+		catch (std::out_of_range &e)
+		{
+			// Value of string is too large to fit the range allowed by type T
+			SPDLOG_ERROR("Column '{}' has a value out of range, error code: {}", s, e.what());
+			data = T();
+		}
+
+		return data;
+	}
+
+	std::string getString(const std::string &s) const;
+	const char *getStream(const std::string &s, unsigned long &size) const;
+	uint8_t getU8FromString(const std::string &string, const std::string &function) const;
+	int8_t getInt8FromString(const std::string &string, const std::string &function) const;
+
+	size_t countResults() const;
+	bool hasNext() const;
+	bool next();
 
 	private:
-		MYSQL_RES* handle;
-		MYSQL_ROW row;
+	MYSQL_RES * handle;
+	MYSQL_ROW row;
 
-		std::map<std::string, size_t> listNames;
+	std::map<std::string, size_t> listNames;
 
 	friend class Database;
 };

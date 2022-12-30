@@ -1383,7 +1383,7 @@ void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
     Item* item = Item::CreateItem(type, count);
     if (item) {
       if (!item->unserializeAttr(propStream)) {
-        SPDLOG_WARN("[IOLoginData::loadItems] - Failed to serialize");
+        SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes");
       }
 
       std::pair<Item*, uint32_t> pair(item, pid);

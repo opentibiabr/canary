@@ -126,8 +126,8 @@ class MoveEvents final : public Scripts {
 		void clearMap(std::map<int32_t, MoveEventList>& map) const;
 		void clearPosMap(std::map<Position, MoveEventList>& map);
 
-		void registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
-		void registerEvent(std::shared_ptr<MoveEvent> moveEventPtr, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
+		bool registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
+		bool registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
 		MoveEvent* getEvent(Tile& tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType, Slots_t slot);

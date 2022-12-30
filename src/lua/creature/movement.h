@@ -19,7 +19,7 @@
 class MoveEvent;
 
 struct MoveEventList {
-	std::shared_ptr<MoveEvent> moveEventPtr[MOVE_EVENT_LAST];
+	std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
 };
 
 using VocEquipMap = std::map<uint16_t, bool>;
@@ -115,11 +115,11 @@ class MoveEvents final : public Scripts {
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType);
 
-		bool registerLuaItemEvent(std::shared_ptr<MoveEvent> moveEventPtr);
-		bool registerLuaActionEvent(std::shared_ptr<MoveEvent> moveEventPtr);
-		bool registerLuaUniqueEvent(std::shared_ptr<MoveEvent> moveEventPtr);
-		bool registerLuaPositionEvent(std::shared_ptr<MoveEvent> moveEventPtr);
-		bool registerLuaEvent(std::shared_ptr<MoveEvent> moveEventPtr);
+		bool registerLuaItemEvent(MoveEvent& moveEvent);
+		bool registerLuaActionEvent(MoveEvent& moveEvent);
+		bool registerLuaUniqueEvent(MoveEvent& moveEvent);
+		bool registerLuaPositionEvent(MoveEvent& moveEvent);
+		bool registerLuaEvent(MoveEvent& event);
 		void clear();
 
 	private:

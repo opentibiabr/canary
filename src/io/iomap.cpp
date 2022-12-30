@@ -301,7 +301,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				case OTBM_ATTR_ITEM: {
 					uint16_t mapItemId;
 					if (!propStream.read<uint16_t>(mapItemId)) {
-						SPDLOG_ERROR("{} - Item with id {} not exist", __FUNCTION__, mapItemId);
+						SPDLOG_DEBUG("{} - Item with id {} not exist (ERROR CODE: 1)", __FUNCTION__, mapItemId);
 						continue;
 					}
 
@@ -391,7 +391,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 			uint16_t mapItemId;
 			if (!propStream.read<uint16_t>(mapItemId)) {
-				SPDLOG_ERROR("[{}] Item with id {} not exist", __FUNCTION__, mapItemId);
+				SPDLOG_DEBUG("[{}] Item with id {} not exist (ERROR CODE: 2)", __FUNCTION__, mapItemId);
 				continue;
 			}
 

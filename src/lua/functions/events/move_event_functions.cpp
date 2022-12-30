@@ -71,11 +71,11 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 		// If not scripted, register item event
 		// Example: unscripted_equipments.lua
 		if (!moveevent->isLoadedCallback()) {
-			pushBoolean(L, g_moveEvents().registerLuaItemEvent(moveEventPtr));
-		} else {
-			pushBoolean(L, g_moveEvents().registerLuaEvent(moveEventPtr));
+			pushBoolean(L, g_moveEvents().registerLuaItemEvent(*moveevent));
+			return 1;
 		}
 
+		pushBoolean(L, g_moveEvents().registerLuaEvent(*moveevent));
 	} else {
 		lua_pushnil(L);
 	}

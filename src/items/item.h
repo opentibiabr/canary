@@ -490,7 +490,7 @@ class Item : virtual public Thing
 		//Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* createMapItem(uint16_t mapItemId);
+		static Item* createMapItem(PropStream& propStream);
 		static Items items;
 
 		// Constructor for items
@@ -787,7 +787,7 @@ class Item : virtual public Thing
 
 		// Serialization items
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		bool unserializeAttr(PropStream& propStream, Position position);
+		bool unserializeAttr(PropStream& propStream, Position position, const std::string &function);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 

@@ -70,12 +70,12 @@ class PropStream
 {
 	public:
 		void init(const char* a, size_t size) {
-			p = a;
+			reading_position = a;
 			end = a + size;
 		}
 
 		size_t size() const {
-			return end - p;
+			return end - reading_position;
 		}
 
 		template <typename T>
@@ -84,21 +84,30 @@ class PropStream
 				return false;
 			}
 
-			memcpy(&ret, p, sizeof(T));
-			p += sizeof(T);
+			memcpy(&ret, reading_position, sizeof(T));
+			reading_position += sizeof(T);
 			return true;
 		}
 
+		// Reads a value of type T from the stream.
 		template <typename T>
-		T read() {
+		T get() {
+			// T must be a trivially copyable type
+			static_assert(std::is_trivially_copyable_v<T>);
+
 			T value = 0;
+			// Return the value if the stream is not large enough to hold a value of type T
 			if (size() < sizeof(T)) {
 				return value;
 			}
 
-			memcpy(&value, p, sizeof(T));
-			p += sizeof(T);
-			return true;
+			// Copy the bytes from the stream into the value
+			std::memmove(&value, reading_position, sizeof(T));
+
+			// Advance the cursor by the size of T
+			reading_position += sizeof(T);
+
+			return value;
 		}
 
 		bool readString(std::string& ret) {
@@ -112,11 +121,11 @@ class PropStream
 			}
 
 			char* str = new char[strLen + 1];
-			memcpy(str, p, strLen);
+			memcpy(str, reading_position, strLen);
 			str[strLen] = 0;
 			ret.assign(str, strLen);
 			delete[] str;
-			p += strLen;
+			reading_position += strLen;
 			return true;
 		}
 
@@ -131,9 +140,9 @@ class PropStream
 			}
 
 			std::stringstream strStream;
-			strStream.write(p, strLen);
+			strStream.write(reading_position, strLen);
 			std::string string = strStream.str();
-			p += strLen;
+			reading_position += strLen;
 			return string;
 		}
 
@@ -142,12 +151,12 @@ class PropStream
 				return false;
 			}
 
-			p += n;
+			reading_position += n;
 			return true;
 		}
 
 	private:
-		const char* p = nullptr;
+		const char* reading_position = nullptr;
 		const char* end = nullptr;
 };
 

@@ -134,7 +134,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		//create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {
-			if (item->unserializeAttr(propStream, item->getPosition())) {
+			if (item->unserializeAttr(propStream, item->getPosition(), __FUNCTION__)) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					delete item;
@@ -168,7 +168,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		}
 
 		if (item) {
-			if (item->unserializeAttr(propStream, item->getPosition())) {
+			if (item->unserializeAttr(propStream, item->getPosition(), __FUNCTION__)) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					return false;
@@ -182,7 +182,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 			//The map changed since the last save, just read the attributes
 			std::unique_ptr<Item> dummy(Item::CreateItem(id));
 			if (dummy) {
-				dummy->unserializeAttr(propStream, dummy->getPosition());
+				dummy->unserializeAttr(propStream, dummy->getPosition(), __FUNCTION__);
 				Container* container = dummy->getContainer();
 				if (container) {
 					if (!loadContainer(propStream, container)) {

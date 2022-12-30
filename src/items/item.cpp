@@ -155,9 +155,10 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 	return newItem;
 }
 
-Item* Item::createMapItem(uint16_t mapItemId)
+Item* Item::createMapItem(PropStream& propStream)
 {
-	if (!items.hasItemType(mapItemId)) {
+	uint16_t mapItemId;;
+	if (!propStream.read<uint16_t>(mapItemId)) {
 		SPDLOG_ERROR("{} - Item with id {} not exist", __FUNCTION__, mapItemId);
 		return nullptr;
 	}
@@ -839,7 +840,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return ATTR_READ_CONTINUE;
 }
 
-bool Item::unserializeAttr(PropStream& propStream, Position position)
+bool Item::unserializeAttr(PropStream& propStream, Position position, const std::string &function)
 {
 	try {
 		uint8_t attributeType;

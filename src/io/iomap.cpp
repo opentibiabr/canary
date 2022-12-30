@@ -299,16 +299,10 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				}
 
 				case OTBM_ATTR_ITEM: {
-					uint16_t mapItemId;
-					if (!propStream.read<uint16_t>(mapItemId)) {
-						SPDLOG_DEBUG("{} - Item with id {} not exist (ERROR CODE: 1)", __FUNCTION__, mapItemId);
-						continue;
-					}
-
-					Item* item = Item::createMapItem(mapItemId);
+					Item* item = Item::createMapItem(propStream);
 					if (!item) {
 						std::ostringstream ss;
-						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
+						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item, (ERROR CODE: 1)";
 						setLastErrorString(ss.str());
 						SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 						break;;
@@ -389,22 +383,16 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				return false;
 			}
 
-			uint16_t mapItemId;
-			if (!propStream.read<uint16_t>(mapItemId)) {
-				SPDLOG_DEBUG("[{}] Item with id {} not exist (ERROR CODE: 2)", __FUNCTION__, mapItemId);
-				continue;
-			}
-
-			Item* item = Item::createMapItem(mapItemId);
+			Item* item = Item::createMapItem(propStream);
 			if (!item) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
+				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item (ERROR CODE: 2)";
 				setLastErrorString(ss.str());
 				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 				continue;;
 			}
 
-			if (!item->unserializeAttr(stream, tilePosition)) {
+			if (!item->unserializeAttr(stream, tilePosition), __FUNCTION__) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());

@@ -154,6 +154,7 @@ class ItemAttributes
 			int64_t intValue;
 			bool boolValue;
 			double doubleValue;
+
 			bool hasStringValue = false;
 			bool hasIntValue = false;
 			bool hasBoolValue = false;
@@ -217,16 +218,22 @@ class ItemAttributes
 					propWriteStream.writeString(stringValue);
 				} else if (hasIntValue) {
 					propWriteStream.write<uint8_t>(2);
+					propWriteStream.write<int64_t>(intValue);
 				} else if (hasDoubleValue) {
 					propWriteStream.write<uint8_t>(3);
+					propWriteStream.write<double>(doubleValue);
 				} else if (hasBoolValue) {
 					propWriteStream.write<uint8_t>(4);
+					propWriteStream.write<bool>(boolValue);
+				} else {
+					propWriteStream.write<uint8_t>(0);
 				}
 			}
 
-			bool unserialize(PropStream& propStream) {
+			bool unserialize(PropStream& propStream, const std::string& function) {
 				uint8_t type;
 				if (!propStream.read<uint8_t>(type)) {
+					SPDLOG_ERROR("[{}] Failed to read type", function);
 					return false;
 				}
 
@@ -234,6 +241,7 @@ class ItemAttributes
 					case 1: {
 						std::string readString;
 						if (!propStream.readString(readString)) {
+							SPDLOG_ERROR("[{}] Failed to read string", function);
 							return false;
 						}
 						setString(readString);
@@ -242,6 +250,7 @@ class ItemAttributes
 					case 2: {
 						int64_t readInt;
 						if (!propStream.read<int64_t>(readInt)) {
+							SPDLOG_ERROR("[{}] Failed to read int64", function);
 							return false;
 						}
 						setInt64(readInt);
@@ -250,6 +259,7 @@ class ItemAttributes
 					case 3: {
 						double readDouble;
 						if (!propStream.read<double>(readDouble)) {
+							SPDLOG_ERROR("[{}] Failed to read double", function);
 							return false;
 						}
 						setDouble(readDouble);
@@ -258,13 +268,14 @@ class ItemAttributes
 					case 4: {
 						bool readBoolean;
 						if (!propStream.read<bool>(readBoolean)) {
+							SPDLOG_ERROR("[{}] Failed to read boolean", function);
 							return false;
 						}
 						setBool(readBoolean);
 						break;
 					}
 					default:
-						return false;
+						break;
 				}
 				return true;
 			}

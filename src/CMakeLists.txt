@@ -282,6 +282,7 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
+	map/town.cpp
 	otserv.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp

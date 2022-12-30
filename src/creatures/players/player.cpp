@@ -6037,9 +6037,41 @@ void Player::reloadTaskSlot(PreySlot_t slotid) const
 	}
 }
 
-TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) {
+TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) const {
 	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
 			return itTask->id == slotid;
+		}); it != taskHunting.end()) {
+		return *it;
+	}
+
+	return nullptr;
+}
+
+std::vector<uint16_t> Player::getTaskHuntingBlackList() const {
+	std::vector<uint16_t> rt;
+
+	std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot)
+	{
+		if (slot->isOccupied()) {
+			rt.push_back(slot->selectedRaceId);
+		} else {
+			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId)
+			{
+				rt.push_back(raceId);
+			});
+		}
+	});
+
+	return rt;
+}
+
+TaskHuntingSlot* Player::getTaskHuntingWithCreature(uint16_t raceId) const {
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		return nullptr;
+	}
+
+	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
+			return itTask->selectedRaceId == raceId;
 		}); it != taskHunting.end()) {
 		return *it;
 	}

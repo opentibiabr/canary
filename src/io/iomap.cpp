@@ -471,7 +471,7 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 		}
 
 		Town *town = nullptr;
-		town = map.towns.getTown(townId);
+		town = map.towns.getTown(static_cast<uint8_t>(townId));
 		if (town) {
 			SPDLOG_ERROR("[IOMap::parseTowns] - Duplicate town with id: {}, discarding town", townId);
 			continue;

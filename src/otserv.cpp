@@ -68,6 +68,19 @@ void toggleForceCloseButton() {
 	#endif
 }
 
+std::string getCompiler() {
+	std::string compiler;
+	#if defined(__clang__)
+		return compiler = "Clang++ " + std::to_string(__clang_major__) + "." + std::to_string(__clang_minor__) + "." + std::to_string(__clang_patchlevel__) +"";
+	#elif defined(_MSC_VER)
+		return compiler = "Microsoft Visual Studio " + std::to_string(_MSC_VER) +"";
+	#elif defined(__GNUC__)
+		return compiler = "G++ " + std::to_string(__GNUC__) + "." + std::to_string(__GNUC_MINOR__) + "." + std::to_string(__GNUC_PATCHLEVEL__) +"";
+	#else
+		return compiler = "unknown";
+	#endif
+}
+
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
@@ -263,7 +276,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		platform = "unknown";
 	#endif
 
-	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", BOOST_COMPILER, __DATE__, __TIME__, platform);
+	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);

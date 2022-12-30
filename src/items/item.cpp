@@ -95,7 +95,7 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
-	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
+	std::string key = std::to_string(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute customAttribute;
 	customAttribute.setInt64(duration > 0 ? (duration << 8) | imbuementId : 0);
 	setCustomAttribute(key, customAttribute);

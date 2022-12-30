@@ -3,8 +3,6 @@
   "version-string": "1.0.0",
   "dependencies": [
     "asio",
-    "boost-algorithm",
-    "boost-lexical-cast",
     "pugixml",
     "spdlog",
     "curl",

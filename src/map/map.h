@@ -312,7 +312,6 @@ class Map
 
 		friend class Game;
 		friend class IOMap;
-		friend class KmapLoader;
 };
 
 #endif  // SRC_MAP_MAP_H_

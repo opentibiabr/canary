@@ -392,7 +392,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				continue;;
 			}
 
-			if (!item->unserializeAttr(stream, tilePosition), __FUNCTION__) {
+			if (!item->unserializeAttr(stream, tilePosition, __FUNCTION__)) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());

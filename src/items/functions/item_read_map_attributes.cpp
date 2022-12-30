@@ -258,7 +258,7 @@ Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &
 }
 
 bool ItemReadMapAttributes::readAttributeCount(PropStream& propStream, Item &item, Position position) {
-	uint8_t attrItemCount = propStream.read<uint8_t>();
+	uint8_t attrItemCount = propStream.get<uint8_t>();
 	if (attrItemCount == 0 || attrItemCount == -1) {
 		attrItemCount = 1;
 		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have invalid count, setting count to 1", getID(), position.toString());
@@ -269,7 +269,7 @@ bool ItemReadMapAttributes::readAttributeCount(PropStream& propStream, Item &ite
 }
 
 bool ItemReadMapAttributes::readAttributeRuneCharge(PropStream& propStream, Item &item) {
-	uint8_t charges = propStream.read<uint8_t>();
+	uint8_t charges = propStream.get<uint8_t>();
 	if (charges == 0) {
 		return false;
 	}
@@ -279,7 +279,7 @@ bool ItemReadMapAttributes::readAttributeRuneCharge(PropStream& propStream, Item
 }
 
 bool ItemReadMapAttributes::readAttributeActionId(PropStream& propStream, Item &item) {
-	uint16_t actionId = propStream.read<uint16_t>();
+	uint16_t actionId = propStream.get<uint16_t>();
 	if (actionId == 0) {
 		return false;
 	}
@@ -289,7 +289,7 @@ bool ItemReadMapAttributes::readAttributeActionId(PropStream& propStream, Item &
 }
 
 bool ItemReadMapAttributes::readAttributeUniqueId(PropStream& propStream, Item &item) {
-	uint16_t uniqueId = propStream.read<uint16_t>();
+	uint16_t uniqueId = propStream.get<uint16_t>();
 	if (uniqueId == 0) {
 		return false;
 	}
@@ -309,7 +309,7 @@ bool ItemReadMapAttributes::readAttributeText(PropStream& propStream, Item &item
 }
 
 bool ItemReadMapAttributes::readAttributeWrittenDate(PropStream& propStream, Item &item) {
-	uint32_t writtenDate = propStream.read<uint32_t>();
+	uint32_t writtenDate = propStream.get<uint32_t>();
 	if (writtenDate == 0) {
 		return false;
 	}
@@ -339,7 +339,7 @@ bool ItemReadMapAttributes::readAttributeDescription(PropStream& propStream, Ite
 }
 
 bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &item, Position position) {
-	uint16_t charges = propStream.read<uint16_t>();
+	uint16_t charges = propStream.get<uint16_t>();
 	// If item not have charges, then set to 1 and send warning
 	if (charges == 0) {
 		charges = 1;
@@ -351,7 +351,7 @@ bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &it
 }
 
 bool ItemReadMapAttributes::readAttributeDuration(PropStream& propStream, Item &item) {
-	int32_t duration = propStream.read<uint32_t>();
+	int32_t duration = propStream.get<uint32_t>();
 	if (duration == 0) {
 		return false;
 	}
@@ -361,7 +361,7 @@ bool ItemReadMapAttributes::readAttributeDuration(PropStream& propStream, Item &
 }
 
 bool ItemReadMapAttributes::readAttributeDecayingState(PropStream& propStream, Item &item) {
-	uint8_t state = propStream.read<uint8_t>();
+	uint8_t state = propStream.get<uint8_t>();
 	if (state == 0) {
 		return false;
 	}
@@ -403,7 +403,7 @@ bool ItemReadMapAttributes::readAttributePluralName(PropStream& propStream, Item
 }
 
 bool ItemReadMapAttributes::readAttributeWeight(PropStream& propStream, Item &item) {
-	uint32_t weight = propStream.read<uint32_t>();
+	uint32_t weight = propStream.get<uint32_t>();
 	if (weight == 0) {
 		return false;
 	}
@@ -413,7 +413,7 @@ bool ItemReadMapAttributes::readAttributeWeight(PropStream& propStream, Item &it
 }
 
 bool ItemReadMapAttributes::readAttributeAttack(PropStream& propStream, Item &item) {
-	int32_t attack = propStream.read<uint32_t>();
+	int32_t attack = propStream.get<uint32_t>();
 	if (attack == 0) {
 		return false;
 	}
@@ -423,7 +423,7 @@ bool ItemReadMapAttributes::readAttributeAttack(PropStream& propStream, Item &it
 }
 
 bool ItemReadMapAttributes::readAttributeDefense(PropStream& propStream, Item &item) {
-	int32_t defense = propStream.read<uint32_t>();
+	int32_t defense = propStream.get<uint32_t>();
 	if (defense == 0) {
 		return false;
 	}
@@ -433,7 +433,7 @@ bool ItemReadMapAttributes::readAttributeDefense(PropStream& propStream, Item &i
 }
 
 bool ItemReadMapAttributes::readAttributeExtraDefense(PropStream& propStream, Item &item) {
-	int32_t extraDefense = propStream.read<uint32_t>();
+	int32_t extraDefense = propStream.get<uint32_t>();
 	if (extraDefense == 0) {
 		return false;
 	}
@@ -443,7 +443,7 @@ bool ItemReadMapAttributes::readAttributeExtraDefense(PropStream& propStream, It
 }
 
 bool ItemReadMapAttributes::readAttributeImbuementSlot(PropStream& propStream, Item &item) {
-	int32_t imbuementSlot = propStream.read<uint32_t>();
+	int32_t imbuementSlot = propStream.get<uint32_t>();
 	if (imbuementSlot == 0) {
 		return false;
 	}
@@ -453,7 +453,7 @@ bool ItemReadMapAttributes::readAttributeImbuementSlot(PropStream& propStream, I
 }
 
 bool ItemReadMapAttributes::readAttributeOpenContainer(PropStream& propStream, Item &item) {
-	uint8_t openContainer = propStream.read<uint8_t>();
+	uint8_t openContainer = propStream.get<uint8_t>();
 	if (openContainer == 0) {
 		return false;
 	}
@@ -463,7 +463,7 @@ bool ItemReadMapAttributes::readAttributeOpenContainer(PropStream& propStream, I
 }
 
 bool ItemReadMapAttributes::readAttributeArmor(PropStream& propStream, Item &item) {
-	int32_t armor = propStream.read<uint32_t>();
+	int32_t armor = propStream.get<uint32_t>();
 	if (armor == 0) {
 		return false;
 	}
@@ -473,7 +473,7 @@ bool ItemReadMapAttributes::readAttributeArmor(PropStream& propStream, Item &ite
 }
 
 bool ItemReadMapAttributes::readAttributeHitChance(PropStream& propStream, Item &item) {
-	int8_t hitChance = propStream.read<uint8_t>();
+	int8_t hitChance = propStream.get<uint8_t>();
 	if (hitChance == 0) {
 		return false;
 	}
@@ -483,7 +483,7 @@ bool ItemReadMapAttributes::readAttributeHitChance(PropStream& propStream, Item 
 }
 
 bool ItemReadMapAttributes::readAttributeShootRange(PropStream& propStream, Item &item) {
-	uint8_t shootRange = propStream.read<uint8_t>();
+	uint8_t shootRange = propStream.get<uint8_t>();
 	if (shootRange == 0) {
 		return false;
 	}
@@ -503,7 +503,7 @@ bool ItemReadMapAttributes::readAttributeSpecial(PropStream& propStream, Item &i
 }
 
 bool ItemReadMapAttributes::readAttributeQuicklootContainer(PropStream& propStream, Item &item) {
-	uint32_t flags = propStream.read<uint32_t>();
+	uint32_t flags = propStream.get<uint32_t>();
 	if (flags == 0) {
 		return false;
 	}
@@ -513,7 +513,7 @@ bool ItemReadMapAttributes::readAttributeQuicklootContainer(PropStream& propStre
 }
 
 bool ItemReadMapAttributes::readAttributeDepotId(PropStream& propStream, Item &item) {
-	uint16_t attrDepotId = propStream.read<uint16_t>();
+	uint16_t attrDepotId = propStream.get<uint16_t>();
 	if (attrDepotId == 0) {
 		return false;
 	}
@@ -523,7 +523,7 @@ bool ItemReadMapAttributes::readAttributeDepotId(PropStream& propStream, Item &i
 }
 
 bool ItemReadMapAttributes::readAttributeHouseDoorId(PropStream& propStream, Item &item) {
-	uint8_t attrDoorId = propStream.read<uint8_t>();
+	uint8_t attrDoorId = propStream.get<uint8_t>();
 	if (attrDoorId == 0) {
 		return false;
 	}
@@ -533,7 +533,7 @@ bool ItemReadMapAttributes::readAttributeHouseDoorId(PropStream& propStream, Ite
 }
 
 bool ItemReadMapAttributes::readAttributeSleeperGuid(PropStream& propStream, Item &item) {
-	uint32_t guid = propStream.read<uint32_t>();
+	uint32_t guid = propStream.get<uint32_t>();
 	if (guid == 0) {
 		return false;
 	}
@@ -551,7 +551,7 @@ bool ItemReadMapAttributes::readAttributeSleeperGuid(PropStream& propStream, Ite
 }
 
 bool ItemReadMapAttributes::readAttributeSleepStart(PropStream& propStream, Item &item) {
-	uint32_t attrSleepStart = propStream.read<uint32_t>();
+	uint32_t attrSleepStart = propStream.get<uint32_t>();
 	if (attrSleepStart == 0) {
 		return false;
 	}
@@ -561,9 +561,9 @@ bool ItemReadMapAttributes::readAttributeSleepStart(PropStream& propStream, Item
 }
 
 bool ItemReadMapAttributes::readAttributeTeleportDestination(PropStream& propStream, Item &item) {
-	uint16_t x = propStream.read<uint16_t>();
-	uint16_t y = propStream.read<uint16_t>();
-	uint8_t z = propStream.read<uint8_t>();
+	uint16_t x = propStream.get<uint16_t>();
+	uint16_t y = propStream.get<uint16_t>();
+	uint8_t z = propStream.get<uint8_t>();
 	Position newPosition(x, y, z);
 	if (x == 0 || y == 0 || z == 0) {
 		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have empty destination", getID(), newPosition.toString());
@@ -574,7 +574,7 @@ bool ItemReadMapAttributes::readAttributeTeleportDestination(PropStream& propStr
 }
 
 bool ItemReadMapAttributes::readAttributeContainerItems(PropStream& propStream, Item &item) {
-	uint32_t attrSerializationCount = propStream.read<uint32_t>();
+	uint32_t attrSerializationCount = propStream.get<uint32_t>();
 	if (attrSerializationCount == 0) {
 		return false;
 	}
@@ -584,7 +584,7 @@ bool ItemReadMapAttributes::readAttributeContainerItems(PropStream& propStream, 
 }
 
 bool ItemReadMapAttributes::readAttributeCustomAttributes(PropStream& propStream, Item &item) {
-	uint64_t size = propStream.read<uint64_t>();
+	uint64_t size = propStream.get<uint64_t>();
 	if (size == 0) {
 		return false;
 	}

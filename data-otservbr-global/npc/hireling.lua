@@ -471,7 +471,7 @@ function createHirelingType(HirelingName)
 			local balance
 			local resultId = db.storeQuery("SELECT `balance` FROM `guilds` WHERE `id` = " .. id)
 			if resultId then
-				balance = result.getU64(resultId, "balance")
+				balance = result.getNumber(resultId, "balance")
 				result.free(resultId)
 			end
 

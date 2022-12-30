@@ -90,7 +90,7 @@ echo ""
 if [[ $(mysql -u "$OT_DB_USER" -p"$OT_DB_PASSWORD" -h "$OT_DB_HOST" -e 'SHOW TABLES LIKE "server_config"' -D "$OT_DB_DATABASE") ]]; then
 	echo "Table server_config exists so we don't need to import"
 else
-	echo "Create Database and Import Schema"
+	echo "Import Canary-Server Schema"
 	mysql -u "$OT_DB_USER" -p"$OT_DB_PASSWORD" -h "$OT_DB_HOST" --port="$OT_DB_PORT" -D "$OT_DB_DATABASE" <schema.sql
 
 	echo ""

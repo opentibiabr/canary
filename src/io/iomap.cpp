@@ -202,9 +202,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		return false;
 	}
 
-	uint16_t base_x = area_coord.x;
-	uint16_t base_y = area_coord.y;
-	uint16_t z = area_coord.z;
+	auto base_x = area_coord.x;
+	auto base_y = area_coord.y;
 
 	static std::map<uint64_t, uint64_t> teleportMap;
 
@@ -227,6 +226,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 		uint16_t x = base_x + tile_coord.x;
 		uint16_t y = base_y + tile_coord.y;
+		auto z = area_coord.z;
 
 		Position tilePosition;
 		tilePosition.x = x;
@@ -311,9 +311,6 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				}
 				for (auto const& it2 : teleportMap) {
 					if (it2.second == teleportPosition) {
-						uint16_t fx = (it2.first >> 24) & 0xFFFF;
-						uint16_t fy = (it2.first >> 8) & 0xFFFF;
-						uint8_t fz = (it2.first) & 0xFF;
 						SPDLOG_WARN("[IOMap::loadMap] - "
                                     "Teleport in position: {} "
                                     "is leading to another teleport (ERROR CODE: 2)", tilePosition.toString());

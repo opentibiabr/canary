@@ -7199,7 +7199,7 @@ void Game::playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, C
 	}
 }
 
-void Game::playerSendHighscoreTask(DBResult_ptr result, bool store, uint32_t playerID, uint8_t category, uint8_t entriesPerPage) {
+void Game::playerSendHighscoreTask(DBResult_ptr result, uint32_t playerID, uint8_t category, uint8_t entriesPerPage) {
 	Player* player = g_game().getPlayerByID(playerID);
 	if (!player) {
 		return;
@@ -7299,11 +7299,11 @@ void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t catego
 	}
 
 	uint32_t playerID = player->getID();
-	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, entriesPerPage](DBResult_ptr result, bool store) {
-		Game::playerSendHighscoreTask(result, store, playerID, category, entriesPerPage);
+	std::function<void(DBResult_ptr, bool)> callback = [playerID, category, entriesPerPage](DBResult_ptr result, bool) {
+		Game::playerSendHighscoreTask(result, playerID, category, entriesPerPage);
 	};
 
-	g_databaseTasks().addTask(query.str(), callback, true);
+	g_databaseTasks().addTask(query.str(), callback);
 	player->addAsyncOngoingTask(PlayerAsyncTask_Highscore);
 }
 

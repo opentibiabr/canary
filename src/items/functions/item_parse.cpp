@@ -794,7 +794,7 @@ void ItemParse::parseImbuement(const std::string& tmpStrValue, pugi::xml_node at
 	if (stringValue != "imbuementslot") {
 		return;
 	}
-	itemType.imbuementSlot = valueAttribute.as_int();
+	itemType.imbuementSlot = static_cast<uint8_t>(valueAttribute.as_int());
 
 	for (auto subAttributeNode: attributeNode.children()) {
 		pugi::xml_attribute subKeyAttribute = subAttributeNode.attribute("key");

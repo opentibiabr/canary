@@ -5971,7 +5971,7 @@ void Player::initializePrey()
 }
 
 PreySlot* Player::getPreySlotById(PreySlot_t slotid) const {
-	if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+	if (auto it = std::ranges::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
 			return preyIt->id == slotid;
 		}); it != preys.end()) {
 		return *it;
@@ -5993,8 +5993,8 @@ PreySlot* Player::getPreyWithMonster(uint16_t raceId) const {
 		return nullptr;
 	}
 
-	if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
-			return it->selectedRaceId == raceId;
+	if (auto it = std::ranges::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* slot) {
+			return slot->selectedRaceId == raceId;
 		}); it != preys.end()) {
 		return *it;
 	}
@@ -6038,8 +6038,8 @@ void Player::reloadTaskSlot(PreySlot_t slotid) const
 }
 
 TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) const {
-	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
-			return itTask->id == slotid;
+	if (auto it = std::ranges::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* task) {
+			return task->id == slotid;
 		}); it != taskHunting.end()) {
 		return *it;
 	}
@@ -6050,12 +6050,12 @@ TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) const {
 std::vector<uint16_t> Player::getTaskHuntingBlackList() const {
 	std::vector<uint16_t> rt;
 
-	std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot)
+	std::ranges::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot)
 	{
 		if (slot->isOccupied()) {
 			rt.push_back(slot->selectedRaceId);
 		} else {
-			std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId)
+			std::ranges::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId)
 			{
 				rt.push_back(raceId);
 			});
@@ -6070,8 +6070,8 @@ TaskHuntingSlot* Player::getTaskHuntingWithCreature(uint16_t raceId) const {
 		return nullptr;
 	}
 
-	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
-			return itTask->selectedRaceId == raceId;
+	if (auto it = std::ranges::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* taskSlot) {
+			return taskSlot->selectedRaceId == raceId;
 		}); it != taskHunting.end()) {
 		return *it;
 	}

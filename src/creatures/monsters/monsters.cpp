@@ -93,10 +93,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 
 	CombatSpell *combatSpell = nullptr;
 
-	std::unique_ptr<Combat> combat
-	{
-		new Combat
-	};
+	std::unique_ptr<Combat> combat = std::make_unique<Combat>();
 
 	sb.combatSpell = true;
 
@@ -118,9 +115,9 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		combat->setArea(area);
 	}
 
-	std::string tmpName = asLowerCaseString(spell->name);
 
-	if (tmpName == "melee")
+	if (std::string spellName = asLowerCaseString(spell->name);
+		spellName == "melee")
 	{
 		sb.isMelee = true;
 
@@ -136,7 +133,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		combat->setParam(COMBAT_PARAM_BLOCKSHIELD, 1);
 		combat->setOrigin(ORIGIN_MELEE);
 	}
-	else if (tmpName == "combat")
+	else if (spellName == "combat")
 	{
 		if (spell->combatType == COMBAT_PHYSICALDAMAGE)
 		{
@@ -150,7 +147,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 
 		combat->setParam(COMBAT_PARAM_TYPE, spell->combatType);
 	}
-	else if (tmpName == "speed")
+	else if (spellName == "speed")
 	{
 		int32_t speedChange = 0;
 		int32_t duration = 10000;
@@ -185,7 +182,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		condition->setFormulaVars(speedChange / 1000.0, 0, speedChange / 1000.0, 0);
 		combat->addCondition(condition);
 	}
-	else if (tmpName == "outfit")
+	else if (spellName == "outfit")
 	{
 		int32_t duration = 10000;
 
@@ -217,7 +214,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combat->addCondition(condition);
 	}
-	else if (tmpName == "invisible")
+	else if (spellName == "invisible")
 	{
 		int32_t duration = 10000;
 
@@ -230,7 +227,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combat->addCondition(condition);
 	}
-	else if (tmpName == "drunk")
+	else if (spellName == "drunk")
 	{
 		int32_t duration = 10000;
 
@@ -242,19 +239,19 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		Condition *condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
 		combat->addCondition(condition);
 	}
-	else if (tmpName == "firefield")
+	else if (spellName == "firefield")
 	{
 		combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
 	}
-	else if (tmpName == "poisonfield")
+	else if (spellName == "poisonfield")
 	{
 		combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_POISONFIELD_PVP);
 	}
-	else if (tmpName == "energyfield")
+	else if (spellName == "energyfield")
 	{
 		combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
 	}
-	else if (tmpName == "condition")
+	else if (spellName == "condition")
 	{
 		if (spell->conditionType == CONDITION_NONE)
 		{
@@ -262,11 +259,11 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 				"{} condition is not set for: {}", description, spell->name);
 		}
 	}
-	else if (tmpName == "strength")
+	else if (spellName == "strength")
 	{
 		//
 	}
-	else if (tmpName == "effect")
+	else if (spellName == "effect")
 	{
 		//
 	}

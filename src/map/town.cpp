@@ -13,7 +13,7 @@
 
 Town::Town(uint32_t initId) : id(initId) {}
 
-Town::Town(const std::string initTownName, uint8_t initTownId, const Position initPosition) : name(initTownName), id(initTownId), templePosition(initPosition)
+Town::Town(const std::string initTownName, uint32_t initTownId, const Position initPosition) : name(initTownName), id(initTownId), templePosition(initPosition)
 {
 	if (name.empty())
 	{
@@ -26,7 +26,7 @@ Town::Town(const std::string initTownName, uint8_t initTownId, const Position in
 	}
 }
 
-bool Towns::addTown(uint8_t townId, Town* town) {
+bool Towns::addTown(uint32_t townId, Town* town) {
 	return townMap.emplace(townId, town).second;
 }
 
@@ -39,7 +39,7 @@ Town* Towns::getTown(const std::string& townName) const {
 	return nullptr;
 }
 
-Town* Towns::getTown(uint8_t townId) const {
+Town* Towns::getTown(uint32_t townId) const {
 	auto it = townMap.find(townId);
 	if (it == townMap.end()) {
 		return nullptr;
@@ -47,6 +47,6 @@ Town* Towns::getTown(uint8_t townId) const {
 	return it->second;
 }
 
-const std::map<uint8_t, Town*>& Towns::getTowns() const {
+const std::map<uint32_t, Town*>& Towns::getTowns() const {
 	return townMap;
 }

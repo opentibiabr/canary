@@ -16,7 +16,7 @@ class Town
 {
 	public:
 		explicit Town(uint32_t initId);
-		explicit Town(const std::string initTownName, uint8_t initTownId, const Position initPosition);
+		explicit Town(const std::string initTownName, uint32_t initTownId, const Position initPosition);
 
 		const Position& getTemplePosition() const {
 			return templePosition;
@@ -31,7 +31,7 @@ class Town
 		void setName(std::string newName) {
 			this->name = std::move(newName);
 		}
-		uint8_t getID() const {
+		uint32_t getID() const {
 			return id;
 		}
 
@@ -55,16 +55,16 @@ class Towns
 		Towns(const Towns&) = delete;
 		Towns& operator=(const Towns&) = delete;
 
-		bool addTown(uint8_t townId, Town* town);
+		bool addTown(uint32_t townId, Town* town);
 
 		Town* getTown(const std::string& townName) const;
 
-		Town* getTown(uint8_t townId) const;
+		Town* getTown(uint32_t townId) const;
 
-		const std::map<uint8_t, Town*>& getTowns() const;
+		const std::map<uint32_t, Town*>& getTowns() const;
 
 	private:
-		std::map<uint8_t, Town*> townMap;
+		std::map<uint32_t, Town*> townMap;
 };
 
 #endif  // SRC_MAP_TOWN_H_

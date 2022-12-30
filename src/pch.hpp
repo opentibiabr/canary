@@ -42,7 +42,11 @@
 #include <fmt/chrono.h>
 #include <gmp.h>
 #include <json/json.h>
-#include <luajit/lua.hpp>
+#if __has_include("luajit/lua.hpp")
+	#include <luajit/lua.hpp>
+#else
+	#include <lua.hpp>
+#endif
 #include <magic_enum.hpp>
 #include <mio/mmap.hpp>
 #include <mysql.h>

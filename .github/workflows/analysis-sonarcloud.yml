@@ -94,7 +94,7 @@ jobs:
             --define sonar.cfamily.compile-commands=build/compile_commands.json \
             --define sonar.pullrequest.key=${{ github.event.pull_request.number }} \
             --define sonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} \
-            --define sonar.pullrequest.base=${{ github.event.pull_request.head.ref.base_ref }}
+            --define sonar.pullrequest.base=${{ github.event.pull_request.base_ref }}
 
       - name: Run sonar-scanner
         if: ${{ github.event_name == 'push' }}

@@ -238,11 +238,6 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		uint16_t x = base_x + tile_coord.x;
 		uint16_t y = base_y + tile_coord.y;
 
-		Position tilePosition;
-		tilePosition.x = x;
-		tilePosition.y = y;
-		tilePosition.z = z;
-
 		bool isHouseTile = false;
 		House* house = nullptr;
 		Tile* tile = nullptr;
@@ -299,17 +294,17 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				}
 
 				case OTBM_ATTR_ITEM: {
-					Item* item = Item::createMapItem(propStream);
+					Item* item = Item::CreateItem(propStream);
 					if (!item) {
 						std::ostringstream ss;
-						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item, (ERROR CODE: 1)";
+						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 						setLastErrorString(ss.str());
 						SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 						break;;
 					}
 
 			if (Teleport* teleport = item->getTeleport()) {
-				const Position& destPos = teleport->getDestination();
+				const Position& destPos = teleport->getDestPos();
 				uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
 				uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
 				teleportMap.emplace(teleportPosition, destinationPosition);
@@ -383,16 +378,16 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				return false;
 			}
 
-			Item* item = Item::createMapItem(propStream);
+			Item* item = Item::CreateItem(stream);
 			if (!item) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item (ERROR CODE: 2)";
+				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
 				setLastErrorString(ss.str());
 				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 				continue;;
 			}
 
-			if (!item->unserializeAttr(stream, tilePosition, __FUNCTION__)) {
+			if (!item->unserializeItemNode(loader, itemNode, stream)) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());
@@ -483,6 +478,7 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 	return true;
 }
 
+
 bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map)
 {
 	PropStream propStream;
@@ -513,4 +509,3 @@ bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, 
 	}
 	return true;
 }
-

@@ -126,7 +126,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say({"Do you have the sample I asked you for?"}, npc, creature)
 			npcHandler:setTopic(playerId, 16)
 		elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 16 then
-			npcHandler:say({"Thanks a lot. Let me check the result. Well, I think you need the counteragent. Please apply it to the oasis!"}, npc, creature)
+			npcHandler:say({"Thanks a lot. Let me check the Result. Well, I think you need the counteragent. Please apply it to the oasis!"}, npc, creature)
 			player:addItem(25304, 1)
 			player:setStorageValue(Storage.CultsOfTibia.Life.Mission, 6)
 		end

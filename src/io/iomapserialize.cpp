@@ -182,7 +182,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 			//The map changed since the last save, just read the attributes
 			std::unique_ptr<Item> dummy(Item::CreateItem(id));
 			if (dummy) {
-				dummy->unserializeAttr(propStream, item->getPosition());
+				dummy->unserializeAttr(propStream, dummy->getPosition());
 				Container* container = dummy->getContainer();
 				if (container) {
 					if (!loadContainer(propStream, container)) {

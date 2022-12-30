@@ -11,6 +11,8 @@
 
 #include "town.h"
 
+Town::Town(uint32_t initId) : id(initId) {}
+
 Town::Town(const std::string initTownName, uint8_t initTownId, const Position initPosition) : name(initTownName), id(initTownId), templePosition(initPosition)
 {
 	if (name.empty())

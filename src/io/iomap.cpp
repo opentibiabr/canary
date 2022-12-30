@@ -470,17 +470,10 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 			return false;
 		}
 
-		Town *town = nullptr;
-		town = map.towns.getTown(static_cast<uint8_t>(townId));
-		if (town) {
-			SPDLOG_ERROR("[IOMap::parseTowns] - Duplicate town with id: {}, discarding town", townId);
-			continue;
-		}
-
-		if (!map.towns.addTown(townId, town)) {
-			SPDLOG_ERROR("[IOMap::parseTowns] - Cannot create town with id: {}, discarding town", townId);
-			delete town;
-			continue;
+		Town* town = map.towns.getTown(townId);
+		if (!town) {
+			town = new Town(townId);
+			map.towns.addTown(townId, town);
 		}
 
 		std::string townName;
@@ -489,10 +482,6 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 			return false;
 		}
 
-		if (townName.empty()) {
-			SPDLOG_ERROR("[IOMap::parseTowns] - Could not read town name");
-			continue;
-		}
 		town->setName(townName);
 
 		OTBM_Destination_coords town_coords;
@@ -505,7 +494,6 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 	}
 	return true;
 }
-
 
 bool IOMap::parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map)
 {

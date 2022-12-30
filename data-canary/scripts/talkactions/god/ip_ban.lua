@@ -18,7 +18,7 @@ function ipBan.onSay(player, words, param)
 	end
 
 	local targetName = Result.getString(resultId, "name")
-	local targetIp = Result.getU32(resultId, "lastip")
+	local targetIp = Result.getNumber(resultId, "lastip")
 	Result.free(resultId)
 
 	local targetPlayer = Player(param)

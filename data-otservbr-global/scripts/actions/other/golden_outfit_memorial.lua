@@ -10,15 +10,15 @@ local function updateGoldenOutfitCache()
 
 	local resultId = db.storeQuery("SELECT `name`, `value` FROM `player_storage` INNER JOIN `players` as `p` ON `p`.`id` = `player_id` WHERE `key` = " .. Storage.OutfitQuest.GoldenOutfit .. " AND `value` >= 1;")
 	if not resultId then
-		result.free(resultId)
+		Result.free(resultId)
 		lastUpdated = os.time()
 		return
 	end
 
 	repeat
-		table.insert(goldenOutfitCache[result.getNumber(resultId, "value")], result.getString(resultId, "name"))
-	until not result.next(resultId)
-	result.free(resultId)
+		table.insert(goldenOutfitCache[Result.getNumber(resultId, "value")], Result.getString(resultId, "name"))
+	until not Result.next(resultId)
+	Result.free(resultId)
 
 	lastUpdated = os.time()
 end

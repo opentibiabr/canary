@@ -15,12 +15,12 @@
 class ResultFunctions final : LuaScriptInterface {
 	public:
 		static void init(lua_State* L) {
-			registerTable(L, "result");
-			registerMethod(L, "result", "getNumber", ResultFunctions::luaResultGetNumber);
-			registerMethod(L, "result", "getString", ResultFunctions::luaResultGetString);
-			registerMethod(L, "result", "getStream", ResultFunctions::luaResultGetStream);
-			registerMethod(L, "result", "next", ResultFunctions::luaResultNext);
-			registerMethod(L, "result", "free", ResultFunctions::luaResultFree);
+			registerTable(L, "Result");
+			registerMethod(L, "Result", "getNumber", ResultFunctions::luaResultGetNumber);
+			registerMethod(L, "Result", "getString", ResultFunctions::luaResultGetString);
+			registerMethod(L, "Result", "getStream", ResultFunctions::luaResultGetStream);
+			registerMethod(L, "Result", "next", ResultFunctions::luaResultNext);
+			registerMethod(L, "Result", "free", ResultFunctions::luaResultFree);
 		}
 
 	private:

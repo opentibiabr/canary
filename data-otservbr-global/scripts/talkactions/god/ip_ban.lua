@@ -17,9 +17,9 @@ function ipBan.onSay(player, words, param)
 		return false
 	end
 
-	local targetName = result.getString(resultId, "name")
-	local targetIp = result.getNumber(resultId, "lastip")
-	result.free(resultId)
+	local targetName = Result.getString(resultId, "name")
+	local targetIp = Result.getNumber(resultId, "lastip")
+	Result.free(resultId)
 
 	local targetPlayer = Player(param)
 	if targetPlayer then
@@ -34,7 +34,7 @@ function ipBan.onSay(player, words, param)
 	resultId = db.storeQuery("SELECT 1 FROM `ip_bans` WHERE `ip` = " .. targetIp)
 	if resultId ~= false then
 		player:sendTextMessage(MESSAGE_ADMINISTRADOR, targetName .. "  is already IP banned.")
-		result.free(resultId)
+		Result.free(resultId)
 		return false
 	end
 

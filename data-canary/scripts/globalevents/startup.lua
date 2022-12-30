@@ -17,8 +17,8 @@ function startup.onStartup()
 	local resultId = db.storeQuery("SELECT * FROM `account_bans` WHERE `expires_at` != 0 AND `expires_at` <= " .. os.time())
 	if resultId ~= false then
 		repeat
-			local accountId = Result.getU32(resultId, "account_id")
-			db.asyncQuery("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(Result.getString(resultId, "reason")) .. ", " .. Result.get64(resultId, "banned_at") .. ", " .. Result.get64(resultId, "expires_at") .. ", " .. Result.get64(resultId, "banned_by") .. ")")
+			local accountId = Result.getNumber(resultId, "account_id")
+			db.asyncQuery("INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" .. accountId .. ", " .. db.escapeString(Result.getString(resultId, "reason")) .. ", " .. Result.getNumber(resultId, "banned_at") .. ", " .. Result.getNumber(resultId, "expires_at") .. ", " .. Result.getNumber(resultId, "banned_by") .. ")")
 			db.asyncQuery("DELETE FROM `account_bans` WHERE `account_id` = " .. accountId)
 		until not Result.next(resultId)
 		Result.free(resultId)
@@ -28,11 +28,11 @@ function startup.onStartup()
 	local resultId = db.storeQuery("SELECT `id`, `highest_bidder`, `last_bid`, (SELECT `balance` FROM `players` WHERE `players`.`id` = `highest_bidder`) AS `balance` FROM `houses` WHERE `owner` = 0 AND `bid_end` != 0 AND `bid_end` < " .. os.time())
 	if resultId ~= false then
 		repeat
-			local house = House(Result.get32(resultId, "id"))
+			local house = House(Result.getNumber(resultId, "id"))
 			if house then
-				local highestBidder = Result.get32(resultId, "highest_bidder")
-				local balance = Result.getU64(resultId, "balance")
-				local lastBid = Result.get32(resultId, "last_bid")
+				local highestBidder = Result.getNumber(resultId, "highest_bidder")
+				local balance = Result.getNumber(resultId, "balance")
+				local lastBid = Result.getNumber(resultId, "last_bid")
 				if balance >= lastBid then
 					db.query("UPDATE `players` SET `balance` = " .. (balance - lastBid) .. " WHERE `id` = " .. highestBidder)
 					house:setOwnerGuid(highestBidder)

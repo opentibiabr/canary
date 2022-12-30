@@ -103,7 +103,7 @@ HistoryMarketOfferList IOMarket::getOwnHistory(MarketAction_t action, uint32_t p
 		offer.timestamp = result->getNumber<uint32_t>("expires_at");
 		offer.tier = getTierFromDatabaseTable(result->getString("tier"));
 
-		auto offerState = static_cast<MarketOfferState_t>(result->getU16("state"));
+		auto offerState = static_cast<MarketOfferState_t>(result->getNumber<uint16_t>("state"));
 		if (offerState == OFFERSTATE_ACCEPTEDEX) {
 			offerState = OFFERSTATE_ACCEPTED;
 		}
@@ -122,7 +122,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 	}
 
 	do {
-		if (!IOMarket::moveOfferToHistory(result->getU32("id"), OFFERSTATE_EXPIRED)) {
+		if (!IOMarket::moveOfferToHistory(result->getNumber<uint32_t>("id"), OFFERSTATE_EXPIRED)) {
 			continue;
 		}
 
@@ -188,7 +188,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool)
 				delete player;
 			}
 		} else {
-			uint64_t totalPrice = result->getU64("price") * amount;
+			uint64_t totalPrice = result->getNumber<uint64_t>("price") * amount;
 
 			Player* player = g_game().getPlayerByGUID(playerId);
 			if (player) {
@@ -225,7 +225,7 @@ uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId)
 	if (!result) {
 		return 0;
 	}
-	return result->get32("count");
+	return result->getNumber<int32_t>("count");
 }
 
 MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter)

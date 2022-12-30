@@ -265,20 +265,20 @@ bool IOMapSerialize::loadHouseInfo()
 	}
 
 	do {
-		House* house = g_game().map.houses.getHouse(result->getU32("id"));
+		House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("id"));
 		if (house) {
-			house->setOwner(result->getU32("owner"), false);
+			house->setOwner(result->getNumber<uint32_t>("owner"), false);
 			house->setPaidUntil(result->getTime("paid"));
-			house->setPayRentWarnings(result->getU32("warnings"));
+			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
 		}
 	} while (result->next());
 
 	result = db.storeQuery("SELECT `house_id`, `listid`, `list` FROM `house_lists`");
 	if (result) {
 		do {
-			House* house = g_game().map.houses.getHouse(result->getU32("house_id"));
+			House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("house_id"));
 			if (house) {
-				house->setAccessList(result->getU32("listid"), result->getString("list"));
+				house->setAccessList(result->getNumber<uint32_t>("listid"), result->getString("list"));
 			}
 		} while (result->next());
 	}

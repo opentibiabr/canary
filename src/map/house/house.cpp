@@ -109,7 +109,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase/* = true*/, Player* play
 		if (!name.empty()) {
 			owner = guid;
 			ownerName = name;
-			ownerAccountId =  result->getU32("account_id");
+			ownerAccountId =  result->getNumber<uint32_t>("account_id");
 		}
 	}
 

@@ -41,7 +41,7 @@ bool Database::connect()
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getU64("Value");
+		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
 	return true;
 }
@@ -68,7 +68,7 @@ bool Database::connect(const char *host, const char *user, const char *password,
 
 	DBResult_ptr result = storeQuery("SHOW VARIABLES LIKE 'max_allowed_packet'");
 	if (result) {
-		maxPacketSize = result->getU64("Value");
+		maxPacketSize = result->getNumber<uint64_t>("Value");
 	}
 	return true;
 }

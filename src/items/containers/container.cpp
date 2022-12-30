@@ -127,36 +127,6 @@ StashContainerList Container::getStowableItems() const
 	return toReturnList;
 }
 
-bool Container::unserializeMapItem(BinaryNode &binaryNode, Position position)
-{
-	bool ret = Item::unserializeMapItem(binaryNode, position);
-	if (!ret) {
-		return false;
-	}
-
-	while (binaryNode.canRead()) {
-		if (binaryNode.getU8() != OTBM_ITEM) [[unlikely]] {
-			return false;
-		}
-
-		/*Item* item = Item::createMapItem(binaryNode);
-		if (!item) {
-			SPDLOG_ERROR("[Container::unserializeMapItem] (1) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
-			return false;
-		}
-
-		if (!item->unserializeMapItem(binaryNode, position)) {
-			SPDLOG_ERROR("[Container::unserializeMapItem] (2) - Item with id {} on position {} is wrong and not loaded", getID(), position.toString());
-			return false;
-		}
-
-		addItem(item);
-		updateItemWeight(item->getWeight());*/
-
-	}
-	return true;
-}
-
 bool Container::countsToLootAnalyzerBalance()
 {
 	if (isCorpse()) {

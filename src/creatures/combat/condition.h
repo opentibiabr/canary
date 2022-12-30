@@ -11,7 +11,7 @@
 #define SRC_CREATURES_COMBAT_CONDITION_H_
 
 #include "declarations.hpp"
-#include "utils/prop_stream.hpp"
+#include "io/fileloader.h"
 
 class Creature;
 class Player;

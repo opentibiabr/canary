@@ -85,8 +85,6 @@ class Container : public Item, public Cylinder
 			return false;
 		}
 
-		bool unserializeMapItem(BinaryNode& binaryNode, Position position) override;
-
 		std::string getContentDescription() const;
 
 		size_t size() const {

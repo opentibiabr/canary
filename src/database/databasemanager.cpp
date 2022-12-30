@@ -136,7 +136,7 @@ bool DatabaseManager::getDatabaseConfig(const std::string& config, int32_t& valu
 		return false;
 	}
 
-	value = result->get32("value");
+	value = result->getNumber<int32_t>("value");
 	return true;
 }
 

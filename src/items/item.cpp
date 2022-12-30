@@ -844,26 +844,6 @@ bool Item::unserializeAttr(PropStream& propStream)
 	try {
 		uint8_t attributeType;
 		while (propStream.read<uint8_t>(attributeType) && attributeType != 0) {
-			Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attributeType), propStream);
-			if (ret == ATTR_READ_ERROR) {
-				SPDLOG_ERROR("{} - Invalid attribute: {}, for item with id: {}", __FUNCTION__, attributeType, getID());
-				return false;
-			} else if (ret == ATTR_READ_END) {
-				return true;
-			}
-		}
-	} catch (const std::system_error& error) {
-		SPDLOG_ERROR("{} - Failed to unserialize map item with id: {}, error code: {}", __FUNCTION__, getID(), error.what());
-		return false;
-	}
-	return true;
-}
-
-bool Item::unserializeMapItem(BinaryNode &binaryNode, Position position)
-{
-	try {
-		while (binaryNode.canRead()) {
-			uint8_t attributeType = binaryNode.getU8();
 			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, binaryNode, position);
 			if (ret == ATTR_READ_ERROR) {
 				SPDLOG_ERROR("{} - Invalid item attribute {}", __FUNCTION__, attributeType);

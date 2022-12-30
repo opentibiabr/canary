@@ -14,235 +14,237 @@
 #include "game/game.h"
 #include "io/iologindata.h"
 
-Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &item, BinaryNode& binaryNode, Position position)
+class PropStream;
+
+Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &item, PropStream& propStream, Position position)
 {
 	switch (attr) {
 	case ATTR_COUNT:
-		if (!readAttributeCount(binaryNode, item, position)) {
+		if (!readAttributeCount(propStream, item, position)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read count attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_RUNE_CHARGES:
-		if (!readAttributeRuneCharge(binaryNode, item)) {
+		if (!readAttributeRuneCharge(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read rune charge attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 
 		break;
 	case ATTR_ACTION_ID:
-		if (!readAttributeActionId(binaryNode, item)) {
+		if (!readAttributeActionId(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read action id attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_UNIQUE_ID:
-		if (!readAttributeUniqueId(binaryNode, item)) {
+		if (!readAttributeUniqueId(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read unique id attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_TEXT:
-		if (!readAttributeText(binaryNode, item)) {
+		if (!readAttributeText(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read text attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_WRITTENDATE:
-		if (!readAttributeWrittenDate(binaryNode, item)) {
+		if (!readAttributeWrittenDate(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read written date attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_WRITTENBY:
-		if (!readAttributeWrittenBy(binaryNode, item)) {
+		if (!readAttributeWrittenBy(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read written by attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_DESC:
-		if (!readAttributeDescription(binaryNode, item)) {
+		if (!readAttributeDescription(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read description attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_CHARGES:
-		if (!readAttributeCharge(binaryNode, item, position)) {
+		if (!readAttributeCharge(propStream, item, position)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read charge attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_DURATION:
-		if (!readAttributeDuration(binaryNode, item)) {
+		if (!readAttributeDuration(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read duration attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_DECAYING_STATE:
-		if (!readAttributeDecayingState(binaryNode, item)) {
+		if (!readAttributeDecayingState(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read decaying state attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_NAME:
-		if (!readAttributeName(binaryNode, item)) {
+		if (!readAttributeName(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read name attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_ARTICLE:
-		if (!readAttributeArticle(binaryNode, item)) {
+		if (!readAttributeArticle(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read article attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_PLURALNAME:
-		if (!readAttributePluralName(binaryNode, item)) {
+		if (!readAttributePluralName(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read plural name attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_WEIGHT:
-		if (!readAttributeWeight(binaryNode, item)) {
+		if (!readAttributeWeight(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read weight attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_ATTACK:
-		if (!readAttributeAttack(binaryNode, item)) {
+		if (!readAttributeAttack(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read attack attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_DEFENSE:
-		if (!readAttributeDefense(binaryNode, item)) {
+		if (!readAttributeDefense(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read defense attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_EXTRADEFENSE:
-		if (!readAttributeExtraDefense(binaryNode, item)) {
+		if (!readAttributeExtraDefense(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read extra defense attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_IMBUEMENT_SLOT:
-		if (!readAttributeImbuementSlot(binaryNode, item)) {
+		if (!readAttributeImbuementSlot(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read imbuement slot attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_OPENCONTAINER:
-		if (!readAttributeOpenContainer(binaryNode, item)) {
+		if (!readAttributeOpenContainer(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read open container attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_ARMOR:
-		if (!readAttributeArmor(binaryNode, item)) {
+		if (!readAttributeArmor(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read armor attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_HITCHANCE:
-		if (!readAttributeHitChance(binaryNode, item)) {
+		if (!readAttributeHitChance(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read hit chance attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_SHOOTRANGE:
-		if (!readAttributeShootRange(binaryNode, item)) {
+		if (!readAttributeShootRange(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read shoot range attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_SPECIAL:
-		if (!readAttributeSpecial(binaryNode, item)) {
+		if (!readAttributeSpecial(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read special attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_QUICKLOOTCONTAINER:
-		if (!readAttributeQuicklootContainer(binaryNode, item)) {
+		if (!readAttributeQuicklootContainer(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read quickloot container attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_DEPOT_ID:
-		if (!readAttributeDepotId(binaryNode, item)) {
+		if (!readAttributeDepotId(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read depot id attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_HOUSEDOORID:
-		if (!readAttributeHouseDoorId(binaryNode, item)) {
+		if (!readAttributeHouseDoorId(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read house door id attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_SLEEPERGUID:
-		if (!readAttributeSleeperGuid(binaryNode, item)) {
+		if (!readAttributeSleeperGuid(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read sleeper guid attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_SLEEPSTART:
-		if (!readAttributeSleepStart(binaryNode, item)) {
+		if (!readAttributeSleepStart(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read sleeper start attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_TELE_DEST:
-		if (!readAttributeTeleportDestination(binaryNode, item)) {
+		if (!readAttributeTeleportDestination(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read teleport destination attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_CONTAINER_ITEMS:
-		if (!readAttributeContainerItems(binaryNode, item)) {
+		if (!readAttributeContainerItems(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read container items attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 
 		break;
 	case ATTR_CUSTOM_ATTRIBUTES:
-		if (!readAttributeCustomAttributes(binaryNode, item)) {
+		if (!readAttributeCustomAttributes(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read custom attributes for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
 		
 		break;
 	case ATTR_IMBUEMENT_TYPE:
-		if (!readAttributeImbuementType(binaryNode, item)) {
+		if (!readAttributeImbuementType(propStream, item)) {
 			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read imbuement type attribute for item with id {}, on position {}", item.getID(), position.toString());
 			return ATTR_READ_ERROR;
 		}
@@ -255,8 +257,8 @@ Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &
 	return ATTR_READ_CONTINUE;
 }
 
-bool ItemReadMapAttributes::readAttributeCount(BinaryNode& binaryNode, Item &item, Position position) {
-	uint8_t attrItemCount = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeCount(PropStream& propStream, Item &item, Position position) {
+	uint8_t attrItemCount = propStream.getU8();
 	if (attrItemCount == 0 || attrItemCount == -1) {
 		attrItemCount = 1;
 		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have invalid count, setting count to 1", getID(), position.toString());
@@ -266,8 +268,8 @@ bool ItemReadMapAttributes::readAttributeCount(BinaryNode& binaryNode, Item &ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeRuneCharge(BinaryNode& binaryNode, Item &item) {
-	uint8_t charges = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeRuneCharge(PropStream& propStream, Item &item) {
+	uint8_t charges = propStream.getU8();
 	if (charges == 0) {
 		return false;
 	}
@@ -276,8 +278,8 @@ bool ItemReadMapAttributes::readAttributeRuneCharge(BinaryNode& binaryNode, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeActionId(BinaryNode& binaryNode, Item &item) {
-	uint16_t actionId = binaryNode.getU16();
+bool ItemReadMapAttributes::readAttributeActionId(PropStream& propStream, Item &item) {
+	uint16_t actionId = propStream.getU16();
 	if (actionId == 0) {
 		return false;
 	}
@@ -286,8 +288,8 @@ bool ItemReadMapAttributes::readAttributeActionId(BinaryNode& binaryNode, Item &
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeUniqueId(BinaryNode& binaryNode, Item &item) {
-	uint16_t uniqueId = binaryNode.getU16();
+bool ItemReadMapAttributes::readAttributeUniqueId(PropStream& propStream, Item &item) {
+	uint16_t uniqueId = propStream.getU16();
 	if (uniqueId == 0) {
 		return false;
 	}
@@ -296,8 +298,8 @@ bool ItemReadMapAttributes::readAttributeUniqueId(BinaryNode& binaryNode, Item &
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeText(BinaryNode& binaryNode, Item &item) {
-	std::string text = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeText(PropStream& propStream, Item &item) {
+	std::string text = propStream.getString();
 	if (text.empty()) {
 		return false;
 	}
@@ -306,8 +308,8 @@ bool ItemReadMapAttributes::readAttributeText(BinaryNode& binaryNode, Item &item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeWrittenDate(BinaryNode& binaryNode, Item &item) {
-	uint32_t writtenDate = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeWrittenDate(PropStream& propStream, Item &item) {
+	uint32_t writtenDate = propStream.getU32();
 	if (writtenDate == 0) {
 		return false;
 	}
@@ -316,8 +318,8 @@ bool ItemReadMapAttributes::readAttributeWrittenDate(BinaryNode& binaryNode, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeWrittenBy(BinaryNode& binaryNode, Item &item) {
-	std::string writer = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeWrittenBy(PropStream& propStream, Item &item) {
+	std::string writer = propStream.getString();
 	if (writer.empty()) {
 		return false;
 	}
@@ -326,8 +328,8 @@ bool ItemReadMapAttributes::readAttributeWrittenBy(BinaryNode& binaryNode, Item 
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDescription(BinaryNode& binaryNode, Item &item) {
-	std::string text = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeDescription(PropStream& propStream, Item &item) {
+	std::string text = propStream.getString();
 	if (text.empty()) {
 		return false;
 	}
@@ -336,8 +338,8 @@ bool ItemReadMapAttributes::readAttributeDescription(BinaryNode& binaryNode, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeCharge(BinaryNode& binaryNode, Item &item, Position position) {
-	uint16_t charges = binaryNode.getU16();
+bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &item, Position position) {
+	uint16_t charges = propStream.getU16();
 	// If item not have charges, then set to 1 and send warning
 	if (charges == 0 || charges == -1) {
 		charges = 1;
@@ -348,8 +350,8 @@ bool ItemReadMapAttributes::readAttributeCharge(BinaryNode& binaryNode, Item &it
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDuration(BinaryNode& binaryNode, Item &item) {
-	int32_t duration = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeDuration(PropStream& propStream, Item &item) {
+	int32_t duration = propStream.getU32();
 	if (duration == 0) {
 		return false;
 	}
@@ -358,8 +360,8 @@ bool ItemReadMapAttributes::readAttributeDuration(BinaryNode& binaryNode, Item &
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDecayingState(BinaryNode& binaryNode, Item &item) {
-	uint8_t state = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeDecayingState(PropStream& propStream, Item &item) {
+	uint8_t state = propStream.getU8();
 	if (state == 0) {
 		return false;
 	}
@@ -370,8 +372,8 @@ bool ItemReadMapAttributes::readAttributeDecayingState(BinaryNode& binaryNode, I
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeName(BinaryNode& binaryNode, Item &item) {
-	std::string name = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeName(PropStream& propStream, Item &item) {
+	std::string name = propStream.getString();
 	if (name.empty()) {
 		return false;
 	}
@@ -380,8 +382,8 @@ bool ItemReadMapAttributes::readAttributeName(BinaryNode& binaryNode, Item &item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeArticle(BinaryNode& binaryNode, Item &item) {
-	std::string article = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeArticle(PropStream& propStream, Item &item) {
+	std::string article = propStream.getString();
 	if (article.empty()) {
 		return false;
 	}
@@ -390,8 +392,8 @@ bool ItemReadMapAttributes::readAttributeArticle(BinaryNode& binaryNode, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributePluralName(BinaryNode& binaryNode, Item &item) {
-	std::string pluralName = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributePluralName(PropStream& propStream, Item &item) {
+	std::string pluralName = propStream.getString();
 	if (pluralName.empty()) {
 		return false;
 	}
@@ -400,8 +402,8 @@ bool ItemReadMapAttributes::readAttributePluralName(BinaryNode& binaryNode, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeWeight(BinaryNode& binaryNode, Item &item) {
-	uint32_t weight = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeWeight(PropStream& propStream, Item &item) {
+	uint32_t weight = propStream.getU32();
 	if (weight == 0) {
 		return false;
 	}
@@ -410,8 +412,8 @@ bool ItemReadMapAttributes::readAttributeWeight(BinaryNode& binaryNode, Item &it
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeAttack(BinaryNode& binaryNode, Item &item) {
-	int32_t attack = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeAttack(PropStream& propStream, Item &item) {
+	int32_t attack = propStream.getU32();
 	if (attack == 0) {
 		return false;
 	}
@@ -420,8 +422,8 @@ bool ItemReadMapAttributes::readAttributeAttack(BinaryNode& binaryNode, Item &it
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDefense(BinaryNode& binaryNode, Item &item) {
-	int32_t defense = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeDefense(PropStream& propStream, Item &item) {
+	int32_t defense = propStream.getU32();
 	if (defense == 0) {
 		return false;
 	}
@@ -430,8 +432,8 @@ bool ItemReadMapAttributes::readAttributeDefense(BinaryNode& binaryNode, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeExtraDefense(BinaryNode& binaryNode, Item &item) {
-	int32_t extraDefense = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeExtraDefense(PropStream& propStream, Item &item) {
+	int32_t extraDefense = propStream.getU32();
 	if (extraDefense == 0) {
 		return false;
 	}
@@ -440,8 +442,8 @@ bool ItemReadMapAttributes::readAttributeExtraDefense(BinaryNode& binaryNode, It
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeImbuementSlot(BinaryNode& binaryNode, Item &item) {
-	int32_t imbuementSlot = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeImbuementSlot(PropStream& propStream, Item &item) {
+	int32_t imbuementSlot = propStream.getU32();
 	if (imbuementSlot == 0) {
 		return false;
 	}
@@ -450,8 +452,8 @@ bool ItemReadMapAttributes::readAttributeImbuementSlot(BinaryNode& binaryNode, I
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeOpenContainer(BinaryNode& binaryNode, Item &item) {
-	uint8_t openContainer = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeOpenContainer(PropStream& propStream, Item &item) {
+	uint8_t openContainer = propStream.getU8();
 	if (openContainer == 0) {
 		return false;
 	}
@@ -460,8 +462,8 @@ bool ItemReadMapAttributes::readAttributeOpenContainer(BinaryNode& binaryNode, I
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeArmor(BinaryNode& binaryNode, Item &item) {
-	int32_t armor = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeArmor(PropStream& propStream, Item &item) {
+	int32_t armor = propStream.getU32();
 	if (armor == 0) {
 		return false;
 	}
@@ -470,8 +472,8 @@ bool ItemReadMapAttributes::readAttributeArmor(BinaryNode& binaryNode, Item &ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeHitChance(BinaryNode& binaryNode, Item &item) {
-	int8_t hitChance = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeHitChance(PropStream& propStream, Item &item) {
+	int8_t hitChance = propStream.getU8();
 	if (hitChance == 0) {
 		return false;
 	}
@@ -480,8 +482,8 @@ bool ItemReadMapAttributes::readAttributeHitChance(BinaryNode& binaryNode, Item 
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeShootRange(BinaryNode& binaryNode, Item &item) {
-	uint8_t shootRange = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeShootRange(PropStream& propStream, Item &item) {
+	uint8_t shootRange = propStream.getU8();
 	if (shootRange == 0) {
 		return false;
 	}
@@ -490,8 +492,8 @@ bool ItemReadMapAttributes::readAttributeShootRange(BinaryNode& binaryNode, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeSpecial(BinaryNode& binaryNode, Item &item) {
-	std::string special = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeSpecial(PropStream& propStream, Item &item) {
+	std::string special = propStream.getString();
 	if (special.empty()) {
 		return false;
 	}
@@ -500,8 +502,8 @@ bool ItemReadMapAttributes::readAttributeSpecial(BinaryNode& binaryNode, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeQuicklootContainer(BinaryNode& binaryNode, Item &item) {
-	uint32_t flags = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeQuicklootContainer(PropStream& propStream, Item &item) {
+	uint32_t flags = propStream.getU32();
 	if (flags == 0) {
 		return false;
 	}
@@ -510,8 +512,8 @@ bool ItemReadMapAttributes::readAttributeQuicklootContainer(BinaryNode& binaryNo
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDepotId(BinaryNode& binaryNode, Item &item) {
-	uint16_t attrDepotId = binaryNode.getU16();
+bool ItemReadMapAttributes::readAttributeDepotId(PropStream& propStream, Item &item) {
+	uint16_t attrDepotId = propStream.getU16();
 	if (attrDepotId == 0) {
 		return false;
 	}
@@ -520,8 +522,8 @@ bool ItemReadMapAttributes::readAttributeDepotId(BinaryNode& binaryNode, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeHouseDoorId(BinaryNode& binaryNode, Item &item) {
-	uint8_t attrDoorId = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeHouseDoorId(PropStream& propStream, Item &item) {
+	uint8_t attrDoorId = propStream.getU8();
 	if (attrDoorId == 0) {
 		return false;
 	}
@@ -530,8 +532,8 @@ bool ItemReadMapAttributes::readAttributeHouseDoorId(BinaryNode& binaryNode, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeSleeperGuid(BinaryNode& binaryNode, Item &item) {
-	uint32_t guid = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeSleeperGuid(PropStream& propStream, Item &item) {
+	uint32_t guid = propStream.getU32();
 	if (guid == 0) {
 		return false;
 	}
@@ -548,8 +550,8 @@ bool ItemReadMapAttributes::readAttributeSleeperGuid(BinaryNode& binaryNode, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeSleepStart(BinaryNode& binaryNode, Item &item) {
-	uint32_t attrSleepStart = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeSleepStart(PropStream& propStream, Item &item) {
+	uint32_t attrSleepStart = propStream.getU32();
 	if (attrSleepStart == 0) {
 		return false;
 	}
@@ -558,10 +560,10 @@ bool ItemReadMapAttributes::readAttributeSleepStart(BinaryNode& binaryNode, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeTeleportDestination(BinaryNode& binaryNode, Item &item) {
-	uint16_t x = binaryNode.getU16();
-	uint16_t y = binaryNode.getU16();
-	uint8_t z = binaryNode.getU8();
+bool ItemReadMapAttributes::readAttributeTeleportDestination(PropStream& propStream, Item &item) {
+	uint16_t x = propStream.getU16();
+	uint16_t y = propStream.getU16();
+	uint8_t z = propStream.getU8();
 	Position newPosition(x, y, z);
 	if (x == 0 || y == 0 || z == 0) {
 		SPDLOG_DEBUG("[readAttributesMap] - Item with id {} on position {} have empty destination", getID(), newPosition.toString());
@@ -571,8 +573,8 @@ bool ItemReadMapAttributes::readAttributeTeleportDestination(BinaryNode& binaryN
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeContainerItems(BinaryNode& binaryNode, Item &item) {
-	uint32_t attrSerializationCount = binaryNode.getU32();
+bool ItemReadMapAttributes::readAttributeContainerItems(PropStream& propStream, Item &item) {
+	uint32_t attrSerializationCount = propStream.getU32();
 	if (attrSerializationCount == 0) {
 		return false;
 	}
@@ -581,15 +583,15 @@ bool ItemReadMapAttributes::readAttributeContainerItems(BinaryNode& binaryNode, 
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeCustomAttributes(BinaryNode& binaryNode, Item &item) {
-	uint64_t size = binaryNode.getU64();
+bool ItemReadMapAttributes::readAttributeCustomAttributes(PropStream& propStream, Item &item) {
+	uint64_t size = propStream.getU64();
 	if (size == 0) {
 		return false;
 	}
 
 	for (uint64_t i = 0; i < size; i++) {
 		// Unserialize key type and value
-		std::string key = binaryNode.getString();
+		std::string key = propStream.getString();
 		if (key.empty()) {
 		return false;
 		}
@@ -597,7 +599,7 @@ bool ItemReadMapAttributes::readAttributeCustomAttributes(BinaryNode& binaryNode
 		// TODO: Finalize implement this
 		//Unserialize value type and value
 		ItemAttributes::CustomAttribute attribute;
-		if (!attribute.unserialize(binaryNode)) {
+		if (!attribute.unserialize(propStream)) {
 			return false;
 		}
 
@@ -606,8 +608,8 @@ bool ItemReadMapAttributes::readAttributeCustomAttributes(BinaryNode& binaryNode
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeImbuementType(BinaryNode& binaryNode, Item &item) {
-	std::string imbuementType = binaryNode.getString();
+bool ItemReadMapAttributes::readAttributeImbuementType(PropStream& propStream, Item &item) {
+	std::string imbuementType = propStream.getString();
 	if (imbuementType.empty()) {
 		return false;
 	}

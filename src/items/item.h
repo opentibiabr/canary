@@ -11,7 +11,6 @@
 #define SRC_ITEMS_ITEM_H_
 
 #include "items/cylinder.h"
-#include "core/file_handle.hpp"
 #include "items/thing.h"
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
@@ -270,41 +269,6 @@ class ItemAttributes
 				}
 				return true;
 			}
-
-			bool unserialize(BinaryNode& binaryNode) {
-				// This is hard coded so it's not general, depends on the position of the variants.
-				uint8_t position = binaryNode.getU8();
-				if (position == 0) {
-					SPDLOG_ERROR("[Item::unserialize] - Variant position is wrong");
-					return false;
-				}
-
-				switch (position) {
-					case 1:
-						if (!unserializeString(binaryNode)) {
-							return false;
-						}
-						break;
-					case 2:
-						if (!unserializeInt(binaryNode)) {
-							return false;
-						}
-						break;
-					case 3:
-						if (!unserializeDouble(binaryNode)) {
-							return false;
-						}
-						break;
-					case 4:
-						value = binaryNode.getBoolean();
-						break;
-					default:
-						value = std::monostate();
-						return false;
-				}
-				return true;
-			}
-		};
 
 	private:
 		bool hasAttribute(ItemAttrTypes type) const {
@@ -823,9 +787,6 @@ class Item : virtual public Thing
 		// Serialization items
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 		bool unserializeAttr(PropStream& propStream);
-
-		// Serialization map items
-		virtual bool unserializeMapItem(BinaryNode &binaryNode, Position position);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 

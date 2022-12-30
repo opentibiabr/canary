@@ -753,7 +753,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 
 				// Unserialize value type and value
 				ItemAttributes::CustomAttribute customAttribute;
-				if (!customAttribute.unserialize(propStream)) {
+				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
 					return ATTR_READ_ERROR;
 				}
 

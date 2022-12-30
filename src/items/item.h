@@ -786,8 +786,7 @@ class Item : virtual public Thing
 		std::string getWeightDescription() const;
 
 		// Serialization items
-		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		bool unserializeAttr(PropStream& propStream, Position position, const std::string &function);
+		bool unserializeAttributes(PropStream& propStream, Position position, const std::string &function);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 

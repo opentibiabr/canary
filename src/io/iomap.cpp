@@ -238,6 +238,11 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		uint16_t x = base_x + tile_coord.x;
 		uint16_t y = base_y + tile_coord.y;
 
+		Position tilePosition;
+		tilePosition.x = x;
+		tilePosition.y = y;
+		tilePosition.z = z;
+
 		bool isHouseTile = false;
 		House* house = nullptr;
 		Tile* tile = nullptr;
@@ -248,7 +253,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 			uint32_t houseId;
 			if (!propStream.read<uint32_t>(houseId)) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not read house id.";
+				ss << tilePosition << " could not read house id.";
 				setLastErrorString(ss.str());
 				return false;
 			}
@@ -256,7 +261,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 			house = map.houses.addHouse(houseId);
 			if (!house) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Could not create house id: " << houseId;
+				ss << tilePosition << " could not create house id: " << houseId;
 				setLastErrorString(ss.str());
 				return false;
 			}
@@ -274,7 +279,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 					uint32_t flags;
 					if (!propStream.read<uint32_t>(flags)) {
 						std::ostringstream ss;
-						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to read tile flags.";
+						ss << tilePosition << " failed to read tile flags.";
 						setLastErrorString(ss.str());
 						return false;
 					}
@@ -294,25 +299,25 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				}
 
 				case OTBM_ATTR_ITEM: {
-					Item* item = Item::CreateItem(propStream);
+					Item* item = Item::createMapItem(propStream);
 					if (!item) {
 						std::ostringstream ss;
-						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
+						ss << tilePosition << " failed to create item, (ERROR CODE: 1)";
 						setLastErrorString(ss.str());
 						SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 						break;;
 					}
 
 			if (Teleport* teleport = item->getTeleport()) {
-				const Position& destPos = teleport->getDestPos();
+				const Position& destPos = teleport->getDestination();
 				uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
 				uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
 				teleportMap.emplace(teleportPosition, destinationPosition);
 				auto it = teleportMap.find(destinationPosition);
 				if (it != teleportMap.end()) {
 					SPDLOG_WARN("[IOMap::loadMap] - "
-                                "Teleport in position: x {}, y {}, z {} "
-                                "is leading to another teleport", x, y, z);
+                                "Teleport in position: {} "
+                                "is leading to another teleport (ERROR CODE: 1)", tilePosition);
 				}
 				for (auto const& it2 : teleportMap) {
 					if (it2.second == teleportPosition) {
@@ -320,9 +325,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 						uint16_t fy = (it2.first >> 8) & 0xFFFF;
 						uint8_t fz = (it2.first) & 0xFF;
 						SPDLOG_WARN("[IOMap::loadMap] - "
-                                    "Teleport in position: x {}, y {}, z {} "
-                                    "is leading to another teleport",
-                                    fx, fy, static_cast<uint16_t>(fz));
+                                    "Teleport in position: {} "
+                                    "is leading to another teleport (ERROR CODE: 2)", tilePosition);
 					}
 				}
 
@@ -331,8 +335,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 					if (isHouseTile && item->isMoveable()) {
 						SPDLOG_WARN("[IOMap::loadMap] - "
                                     "Moveable item with ID: {}, in house: {}, "
-                                    "at position: x {}, y {}, z {}",
-                                    item->getID(), house->getId(), x, y, z);
+                                    "at position: {} (ERROR CODE: 1)",
+                                    item->getID(), house->getId(), tilePosition);
 						delete item;
 					} else {
 						if (item->getItemCount() <= 0) {
@@ -358,7 +362,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 				default:
 					std::ostringstream ss;
-					ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown tile attribute.";
+					ss << tilePosition << " unknown tile attribute.";
 					setLastErrorString(ss.str());
 					return false;
 			}
@@ -367,7 +371,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		for (auto& itemNode : tileNode.children) {
 			if (itemNode.type != OTBM_ITEM) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Unknown node type.";
+				ss << tilePosition << " unknown node type.";
 				setLastErrorString(ss.str());
 				return false;
 			}
@@ -378,18 +382,18 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				return false;
 			}
 
-			Item* item = Item::CreateItem(stream);
+			Item* item = Item::createMapItem(stream);
 			if (!item) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
+				ss << tilePosition << " failed to create item (ERROR CODE: 2)";
 				setLastErrorString(ss.str());
 				SPDLOG_WARN("[IOMap::loadMap] - {}", ss.str());
 				continue;;
 			}
 
-			if (!item->unserializeItemNode(loader, itemNode, stream)) {
+			if (!item->unserializeAttributes(stream, tilePosition, __FUNCTION__)) {
 				std::ostringstream ss;
-				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
+				ss << tilePosition << " failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());
 				delete item;
 				return false;
@@ -398,8 +402,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 			if (isHouseTile && item->isMoveable()) {
 				SPDLOG_WARN("[IOMap::loadMap] - "
                                     "Moveable item with ID: {}, in house: {}, "
-                                    "at position: x {}, y {}, z {}",
-                                    item->getID(), house->getId(), x, y, z);
+                                    "at position: {} (ERRO CODE: 2)",
+                                    item->getID(), house->getId(), tilePosition);
 				delete item;
 			} else {
 				if (item->getItemCount() <= 0) {

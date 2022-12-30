@@ -1372,7 +1372,7 @@ void IOLoginData::loadItems(std::map<uint32_t, std::pair<Item*, uint32_t>>& item
 
     Item* item = Item::CreateItem(type, count);
     if (item) {
-      if (!item->unserializeAttr(propStream, item->getPosition(), __FUNCTION__)) {
+      if (!item->unserializeAttributes(propStream, item->getPosition(), __FUNCTION__)) {
         SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes");
       }
 

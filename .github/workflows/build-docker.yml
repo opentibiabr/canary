@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  docker-x86:
+  build_docker_x86:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -70,7 +70,7 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-  docker-arm:
+  build_docker_arm:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

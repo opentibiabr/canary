@@ -269,6 +269,7 @@ class ItemAttributes
 				}
 				return true;
 			}
+		};
 
 	private:
 		bool hasAttribute(ItemAttrTypes type) const {
@@ -786,7 +787,7 @@ class Item : virtual public Thing
 
 		// Serialization items
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		bool unserializeAttr(PropStream& propStream);
+		bool unserializeAttr(PropStream& propStream, Position position);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 

@@ -65,7 +65,7 @@ bool IOBan::isAccountBanned(uint32_t accountId, BanInfo& banInfo)
 	if (expiresAt != 0 && Game::getTimeNow() > expiresAt) {
 		// Move the ban to history if it has expired
 		query.str(std::string());
-		query << "INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" << accountId << ',' << db.escapeString(result->getString("reason")) << ',' << result->getNumber<int64_t>("banned_at") << ',' << expiresAt << ',' << result->getNumber<uint32_t>("banned_by") << ')';
+		query << "INSERT INTO `account_ban_history` (`account_id`, `reason`, `banned_at`, `expired_at`, `banned_by`) VALUES (" << accountId << ',' << db.escapeString(result->getString("reason")) << ',' << result->getNumber<time_t>("banned_at") << ',' << expiresAt << ',' << result->getNumber<uint32_t>("banned_by") << ')';
 		g_databaseTasks().addTask(query.str());
 
 		query.str(std::string());

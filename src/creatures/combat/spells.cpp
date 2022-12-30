@@ -15,6 +15,9 @@
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
 
+Spells::Spells() = default;
+Spells::~Spells() = default;
+
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
 {
 	std::string str_words = words;

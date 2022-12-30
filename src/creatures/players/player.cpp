@@ -5970,12 +5970,36 @@ void Player::initializePrey()
 	}
 }
 
+PreySlot* Player::getPreySlotById(PreySlot_t slotid) const {
+	if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
+			return preyIt->id == slotid;
+		}); it != preys.end()) {
+		return *it;
+	}
+
+	return nullptr;
+}
+
 void Player::reloadPreySlot(PreySlot_t slotid) const
 {
 	if (g_configManager().getBoolean(PREY_ENABLED) && client) {
 		client->sendPreyData(getPreySlotById(slotid));
 		client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 	}
+}
+
+PreySlot* Player::getPreyWithMonster(uint16_t raceId) const {
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
+		return nullptr;
+	}
+
+	if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
+			return it->selectedRaceId == raceId;
+		}); it != preys.end()) {
+		return *it;
+	}
+
+	return nullptr;
 }
 
 void Player::initializeTaskHunting()
@@ -6011,6 +6035,16 @@ void Player::reloadTaskSlot(PreySlot_t slotid) const
 		client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
 		client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
 	}
+}
+
+TaskHuntingSlot* Player::getTaskHuntingSlotById(PreySlot_t slotid) {
+	if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
+			return itTask->id == slotid;
+		}); it != taskHunting.end()) {
+		return *it;
+	}
+
+	return nullptr;
 }
 
 std::string Player::getBlessingsName() const

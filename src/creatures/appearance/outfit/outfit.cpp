@@ -14,20 +14,12 @@
 #include "utils/tools.h"
 #include "game/game.h"
 
-bool Outfits::loadFromXml()
-{
-	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
-	if (!result) {
-		printXMLError(__FUNCTION__, folder, result);
-		return false;
-	}
-
 bool Outfits::parseOutfitNode()
 {
 	pugi::xml_document document;
-	document.load_file("data/XML/outfits.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/outfits.xml";
+	document.load_file(folder.c_str());
+
 	for (auto outfitNode : document.child("outfits").children())
 	{
 		pugi::xml_attribute attr;

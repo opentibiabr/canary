@@ -7,12 +7,19 @@
  * Website: https://docs.opentibiabr.org/
 */
 
+#include "core.hpp"
+
 #ifndef SRC_UTILS_DEFINITIONS_H_
 #define SRC_UTILS_DEFINITIONS_H_
 
 #ifndef __FUNCTION__
 #define __FUNCTION__ __func__
 #endif
+
+#define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
+#define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)
+
+#define NONCOPYABLE(Type) Type(const Type&)=delete; Type& operator=(const Type&)=delete
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS

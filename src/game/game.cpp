@@ -7228,7 +7228,7 @@ void Game::playerSendHighscoreTask(DBResult_ptr result, bool store, uint32_t pla
 		}
 		characters.emplace_back(result->getString("name"), result->getNumber<uint64_t>("points"), result->getNumber<uint32_t>("id"), result->getNumber<uint32_t>("rank"), result->getNumber<uint16_t>("level"), characterVocation);
 	} while (result->next());
-	player->sendHighscores(characters, category, resultPage, static_cast<uint16_t>(pages));
+	player->sendHighscores(characters, category, result->getNumber<uint32_t>("id"), resultPage, static_cast<uint16_t>(pages));
 };
 
 void Game::playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string&, uint16_t page, uint8_t entriesPerPage)

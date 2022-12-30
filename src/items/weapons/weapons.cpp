@@ -35,11 +35,6 @@ void Weapons::clear()
 	weapons.clear();
 }
 
-void Weapons::clear(bool fromLua)
-{
-	weapons.clear();
-}
-
 bool Weapons::registerLuaEvent(Weapon* event)
 {
 	weapons[event->getID()] = event;

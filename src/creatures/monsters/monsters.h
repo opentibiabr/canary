@@ -246,9 +246,6 @@ class Monsters
 											int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval);
 
 		MonsterType* loadMonster(const std::string& file, const std::string& monsterName, bool reloading = false);
-
-		void loadLootContainer(const pugi::xml_node& node, LootBlock&);
-		bool loadLootItem(const pugi::xml_node& node, LootBlock&);
 };
 
 constexpr auto g_monsters = &Monsters::getInstance;

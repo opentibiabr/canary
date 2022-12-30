@@ -11,7 +11,6 @@
 
 #include "config/configmanager.h"
 #include "database/database.h"
-#include "utils/lexical_cast.hpp"
 
 Database::~Database()
 {
@@ -102,10 +101,10 @@ bool Database::rollback()
 
 bool Database::commit()
 {
-	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
-		return false;
-	}
+  if (!handle) {
+    SPDLOG_ERROR("Database not initialized!");
+    return false;
+  }
 
 	if (mysql_commit(handle) != 0) {
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -119,10 +118,10 @@ bool Database::commit()
 
 bool Database::executeQuery(const std::string& query)
 {
-	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
-		return false;
-	}
+  if (!handle) {
+    SPDLOG_ERROR("Database not initialized!");
+    return false;
+  }
 
 	bool success = true;
 
@@ -152,10 +151,10 @@ bool Database::executeQuery(const std::string& query)
 
 DBResult_ptr Database::storeQuery(const std::string& query)
 {
-	if (!handle) {
-		SPDLOG_ERROR("Database not initialized!");
-		return nullptr;
-	}
+  if (!handle) {
+    SPDLOG_ERROR("Database not initialized!");
+    return nullptr;
+  }
 
 	databaseLock.lock();
 
@@ -236,125 +235,6 @@ DBResult::DBResult(MYSQL_RES* res)
 DBResult::~DBResult()
 {
 	mysql_free_result(handle);
-}
-
-const char* DBResult::getResult(const std::string& string) const
-{
-	auto it = listNames.find(string);
-	if (it == listNames.end()) {
-		SPDLOG_ERROR("[DBResult::getResult] - Column '{}' doesn't exist in the result set", string);
-		return nullptr;
-	}
-
-	if (row[it->second] == nullptr) {
-		SPDLOG_DEBUG("Database result is nullptr");
-		return nullptr;
-	}
-
-	// Return the table size
-	SPDLOG_DEBUG("Database result founded: {}", it->second);
-	return row[it->second];
-}
-
-int8_t DBResult::get8(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<int8_t>(rowResult);
-}
-
-int16_t DBResult::get16(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<int16_t>(rowResult);
-}
-
-int32_t DBResult::get32(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<int32_t>(rowResult);
-}
-
-int64_t DBResult::get64(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return std::atoll(rowResult);
-}
-
-uint8_t DBResult::getU8(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<uint8_t>(rowResult);
-}
-
-uint16_t DBResult::getU16(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<uint16_t>(rowResult);
-}
-
-uint32_t DBResult::getU32(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<uint32_t>(rowResult);
-}
-
-uint64_t DBResult::getU64(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return LexicalCast::stringToNumeric<uint64_t>(rowResult);
-}
-
-time_t DBResult::getTime(const std::string& tableName) const
-{
-	auto rowResult = getResult(tableName);
-	if (rowResult == nullptr) {
-		return 0;
-	}
-
-	return std::atoi(rowResult);
-}
-
-bool DBResult::getBoolean(const std::string& tableName) const
-{
-	if (auto value = getU8(tableName);
-		std::cmp_equal(value, 0))
-	{
-		return false;
-	}
-
-	return true;
 }
 
 std::string DBResult::getString(const std::string& s) const

@@ -839,12 +839,12 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return ATTR_READ_CONTINUE;
 }
 
-bool Item::unserializeAttr(PropStream& propStream)
+bool Item::unserializeAttr(PropStream& propStream, Position position)
 {
 	try {
 		uint8_t attributeType;
 		while (propStream.read<uint8_t>(attributeType) && attributeType != 0) {
-			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, binaryNode, position);
+			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, propStream, position);
 			if (ret == ATTR_READ_ERROR) {
 				SPDLOG_ERROR("{} - Invalid item attribute {}", __FUNCTION__, attributeType);
 				return false;

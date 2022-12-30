@@ -89,6 +89,18 @@ class PropStream
 			return true;
 		}
 
+		template <typename T>
+		T read() {
+			T value = 0;
+			if (size() < sizeof(T)) {
+				return value;
+			}
+
+			memcpy(&value, p, sizeof(T));
+			p += sizeof(T);
+			return true;
+		}
+
 		bool readString(std::string& ret) {
 			uint16_t strLen;
 			if (!read<uint16_t>(strLen)) {
@@ -106,6 +118,23 @@ class PropStream
 			delete[] str;
 			p += strLen;
 			return true;
+		}
+
+		std::string getString() {
+			uint16_t strLen;
+			if (!read<uint16_t>(strLen)) {
+				return "";
+			}
+
+			if (size() < strLen) {
+				return "";
+			}
+
+			std::stringstream strStream;
+			strStream.write(p, strLen);
+			std::string string = strStream.str();
+			p += strLen;
+			return string;
 		}
 
 		bool skip(size_t n) {

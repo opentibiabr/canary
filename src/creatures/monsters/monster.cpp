@@ -15,8 +15,6 @@
 #include "game/scheduling/tasks.h"
 #include "lua/creature/events.h"
 
-#include <ranges>
-
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
 
@@ -377,23 +375,27 @@ void Monster::removeTarget(Creature* creature)
 
 void Monster::updateTargetList()
 {
-	std::erase_if(friendList, [this](auto friendIterator) {
-		if (Creature* creature = friendIterator;
-		creature->getHealth() <= 0 || !canSee(creature->getPosition()))
-		{
-			creature->decrementReferenceCounter();
+	for (auto creature : friendList) {
+		if (!creature) {
+			continue;
 		}
-		return true;
-	});
 
-	std::erase_if(targetList, [this](auto targetIterator) {
-		if (Creature* creature = targetIterator;
-		creature->getHealth() <= 0 || !canSee(creature->getPosition()))
+		if (creature->getHealth() <= 0 || !canSee(creature->getPosition()))
 		{
 			creature->decrementReferenceCounter();
 		}
-		return true;
-	});
+	}
+
+	for (auto creature : friendList) {
+		if (!creature) {
+			continue;
+		}
+	
+		if (creature->getHealth() <= 0 || !canSee(creature->getPosition()))
+		{
+			creature->decrementReferenceCounter();
+		}
+	}
 
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, position, true);

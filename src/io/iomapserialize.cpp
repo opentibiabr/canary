@@ -134,7 +134,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		//create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {
-			if (item->unserializeAttr(propStream)) {
+			if (item->unserializeAttr(propStream, item->getPosition())) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					delete item;
@@ -168,7 +168,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		}
 
 		if (item) {
-			if (item->unserializeAttr(propStream)) {
+			if (item->unserializeAttr(propStream, item->getPosition())) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					return false;
@@ -182,7 +182,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 			//The map changed since the last save, just read the attributes
 			std::unique_ptr<Item> dummy(Item::CreateItem(id));
 			if (dummy) {
-				dummy->unserializeAttr(propStream);
+				dummy->unserializeAttr(propStream, item->getPosition());
 				Container* container = dummy->getContainer();
 				if (container) {
 					if (!loadContainer(propStream, container)) {
@@ -268,7 +268,7 @@ bool IOMapSerialize::loadHouseInfo()
 		House* house = g_game().map.houses.getHouse(result->getNumber<uint32_t>("id"));
 		if (house) {
 			house->setOwner(result->getNumber<uint32_t>("owner"), false);
-			house->setPaidUntil(result->getTime("paid"));
+			house->setPaidUntil(result->getNumber<time_t>("paid"));
 			house->setPayRentWarnings(result->getNumber<uint32_t>("warnings"));
 		}
 	} while (result->next());

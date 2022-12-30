@@ -238,6 +238,11 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 		uint16_t x = base_x + tile_coord.x;
 		uint16_t y = base_y + tile_coord.y;
 
+		Position tilePosition;
+		tilePosition.x = x;
+		tilePosition.y = y;
+		tilePosition.z = z;
+
 		bool isHouseTile = false;
 		House* house = nullptr;
 		Tile* tile = nullptr;
@@ -294,7 +299,13 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				}
 
 				case OTBM_ATTR_ITEM: {
-					Item* item = Item::CreateItem(propStream);
+					uint16_t mapItemId;
+					if (!propStream.read<uint16_t>(mapItemId)) {
+						SPDLOG_ERROR("{} - Item with id {} not exist", __FUNCTION__, mapItemId);
+						continue;
+					}
+
+					Item* item = Item::createMapItem(mapItemId);
 					if (!item) {
 						std::ostringstream ss;
 						ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
@@ -304,7 +315,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 					}
 
 			if (Teleport* teleport = item->getTeleport()) {
-				const Position& destPos = teleport->getDestPos();
+				const Position& destPos = teleport->getDestination();
 				uint64_t teleportPosition = (static_cast<uint64_t>(x) << 24) | (y << 8) | z;
 				uint64_t destinationPosition = (static_cast<uint64_t>(destPos.x) << 24) | (destPos.y << 8) | destPos.z;
 				teleportMap.emplace(teleportPosition, destinationPosition);
@@ -378,7 +389,13 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				return false;
 			}
 
-			Item* item = Item::CreateItem(stream);
+			uint16_t mapItemId;
+			if (!propStream.read<uint16_t>(mapItemId)) {
+				SPDLOG_ERROR("[{}] Item with id {} not exist", __FUNCTION__, mapItemId);
+				continue;
+			}
+
+			Item* item = Item::createMapItem(mapItemId);
 			if (!item) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to create item.";
@@ -387,7 +404,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				continue;;
 			}
 
-			if (!item->unserializeItemNode(loader, itemNode, stream)) {
+			if (!item->unserializeAttr(stream, tilePosition)) {
 				std::ostringstream ss;
 				ss << "[x:" << x << ", y:" << y << ", z:" << z << "] Failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());
@@ -453,10 +470,17 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 			return false;
 		}
 
-		Town* town = map.towns.getTown(townId);
-		if (!town) {
-			town = new Town(townId);
-			map.towns.addTown(townId, town);
+		Town *town = nullptr;
+		town = map.towns.getTown(townId);
+		if (town) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Duplicate town with id: {}, discarding town", townId);
+			continue;
+		}
+
+		if (!map.towns.addTown(townId, town)) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Cannot create town with id: {}, discarding town", townId);
+			delete town;
+			continue;
 		}
 
 		std::string townName;
@@ -465,6 +489,10 @@ bool IOMap::parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map
 			return false;
 		}
 
+		if (townName.empty()) {
+			SPDLOG_ERROR("[IOMap::parseTowns] - Could not read town name");
+			continue;
+		}
 		town->setName(townName);
 
 		OTBM_Destination_coords town_coords;

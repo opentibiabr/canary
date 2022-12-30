@@ -27,7 +27,8 @@ using RuneSpell_ptr = std::unique_ptr<RuneSpell>;
 class Spells final : public Scripts
 {
 	public:
-		Spells() = default;
+		Spells();
+		~Spells();
 
 		// non-copyable
 		Spells(const Spells&) = delete;

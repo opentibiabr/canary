@@ -915,8 +915,9 @@ void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
 	if (creatures)
 	{
 		bool playerAdded = false;
-		for (const Creature *creature : boost::adaptors::reverse(*creatures))
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it)
 		{
+			const Creature *creature = *it;
 			if (!player->canSeeCreature(creature))
 			{
 				continue;

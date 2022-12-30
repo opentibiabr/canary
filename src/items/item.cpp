@@ -443,14 +443,14 @@ bool Item::unserializeAttributes(PropStream& propStream, Position position, cons
 		while (propStream.read<uint8_t>(attributeType) && attributeType != 0) {
 			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, propStream, position);
 			if (ret == ATTR_READ_ERROR) {
-				SPDLOG_ERROR("{} - Invalid item attribute {}", __FUNCTION__, attributeType);
+				SPDLOG_ERROR("[{}] Invalid item attribute {}, reading function [{}]", __FUNCTION__, attributeType, function);
 				return false;
 			} else if (ret == ATTR_READ_END) {
 				return true;
 			}
 		}
 	} catch (const std::system_error& error) {
-		SPDLOG_ERROR("{} - Failed to unserialize map item with id: {}, error code: {}", __FUNCTION__, getID(), error.what());
+		SPDLOG_ERROR("[{}] Failed to unserialize map item with id: {}, error code: {}, reading function [{}]", __FUNCTION__, getID(), error.what(), function);
 		return false;
 	}
 	return true;

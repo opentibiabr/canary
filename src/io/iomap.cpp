@@ -389,6 +389,10 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 			// If the current item is a container, create and deserialize items in the container
 			if (auto container = item->getContainer()) {
+				if (container.size() == 0) {
+					continue;
+				}
+
 				container->unserializeAttributes(loader, itemNode, stream, tilePosition, __FUNCTION__);
 			}
 

@@ -378,12 +378,18 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				continue;;
 			}
 
+			// Deserialize attributes of the current item
 			if (!item->unserializeAttributes(stream, tilePosition, __FUNCTION__)) {
 				std::ostringstream ss;
 				ss << tilePosition << " failed to load item " << item->getID() << '.';
 				setLastErrorString(ss.str());
 				delete item;
-				return false;
+				continue;
+			}
+
+			// If the current item is a container, create and deserialize items in the container
+			if (auto container = item->getContainer()) {
+				container->unserializeAttributes(loader, itemNode, stream, tilePosition, __FUNCTION__);
 			}
 
 			if (isHouseTile && item->isMoveable()) {

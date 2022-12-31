@@ -155,10 +155,10 @@ class House
 			return rentWarnings;
 		}
 
-		void setTownId(uint8_t newTownId) {
+		void setTownId(uint32_t newTownId) {
 			this->townId = newTownId;
 		}
-		uint8_t getTownId() const {
+		uint32_t getTownId() const {
 			return townId;
 		}
 
@@ -216,7 +216,7 @@ class House
 		uint32_t ownerAccountId = 0;
 		uint32_t rentWarnings = 0;
 		uint32_t rent = 0;
-		uint8_t townId = 0;
+		uint32_t townId = 0;
 
 		Position posEntry = {};
 

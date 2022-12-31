@@ -127,6 +127,44 @@ StashContainerList Container::getStowableItems() const
 	return toReturnList;
 }
 
+bool Container::unserializeAttributes(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream, Position position, const std::string &function)
+{
+	// Deserialize attributes of the container
+	bool ret = Item::unserializeAttributes(propStream, position, function);
+	if (!ret) {
+		return false;
+	}
+
+	// Deserialize items in the container
+	for (auto& itemNode : node.children) {
+		// Check if the node is an item node
+		if (itemNode.type != OTBM_ITEM) {
+			// Unknown node type
+			return false;
+		}
+
+		PropStream itemPropStream;
+		if (!loader.getProps(itemNode, itemPropStream)) {
+			return false;
+		}
+
+		// Create the item from the serialized data
+		Item* item = Item::createMapItem(itemPropStream);
+		if (!item) {
+			return false;
+		}
+
+		// Deserialize attributes of the item
+		if (!item->unserializeAttributes(itemPropStream, position, __FUNCTION__)) {
+			return false;
+		}
+
+		// Add the item to the container and update the total weight
+		addItem(item);
+		updateItemWeight(item->getWeight());
+	}
+}
+
 bool Container::countsToLootAnalyzerBalance()
 {
 	if (isCorpse()) {
@@ -140,13 +178,17 @@ bool Container::countsToLootAnalyzerBalance()
 	return false;
 }
 
-void Container::updateItemWeight(int32_t diff)
+void Container::updateWeight(int32_t diff)
 {
 	totalWeight += diff;
-	Container* parentContainer = this;	// credits: SaiyansKing
-	while ((parentContainer = parentContainer->getParentContainer()) != nullptr) {
-		parentContainer->totalWeight += diff;
+	if (auto parent = getParentContainer()) {
+		parent->updateWeight(diff);
 	}
+}
+
+void Container::updateItemWeight(int32_t diff)
+{
+	updateWeight(diff);
 }
 
 uint32_t Container::getWeight() const

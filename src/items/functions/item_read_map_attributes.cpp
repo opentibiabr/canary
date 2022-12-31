@@ -16,248 +16,56 @@
 
 class PropStream;
 
-Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &item, PropStream& propStream, Position position)
+using AttributeFunctionsReader = std::function<bool(PropStream&, Item&, Position&)>;
+
+std::unordered_map<AttrTypes_t, AttributeFunctionsReader> attributeReaders = {
+	{ ATTR_COUNT, ItemReadMapAttributes::readAttributeCount },
+	{ ATTR_RUNE_CHARGES, ItemReadMapAttributes::readAttributeRuneCharge },
+	{ ATTR_ACTION_ID, ItemReadMapAttributes::readAttributeActionId },
+	{ ATTR_UNIQUE_ID, ItemReadMapAttributes::readAttributeUniqueId },
+	{ ATTR_TEXT, ItemReadMapAttributes::readAttributeText },
+	{ ATTR_WRITTENDATE, ItemReadMapAttributes::readAttributeWrittenDate },
+	{ ATTR_WRITTENBY, ItemReadMapAttributes::readAttributeWrittenBy },
+	{ ATTR_DESC, ItemReadMapAttributes::readAttributeDescription },
+	{ ATTR_CHARGES, ItemReadMapAttributes::readAttributeCharge },
+	{ ATTR_DURATION, ItemReadMapAttributes::readAttributeDuration },
+	{ ATTR_DECAYING_STATE, ItemReadMapAttributes::readAttributeDecayingState },
+	{ ATTR_NAME, ItemReadMapAttributes::readAttributeName },
+	{ ATTR_ARTICLE, ItemReadMapAttributes::readAttributeArticle },
+	{ ATTR_PLURALNAME, ItemReadMapAttributes::readAttributePluralName },
+	{ ATTR_WEIGHT, ItemReadMapAttributes::readAttributeWeight },
+	{ ATTR_ATTACK, ItemReadMapAttributes::readAttributeAttack },
+	{ ATTR_DEFENSE, ItemReadMapAttributes::readAttributeDefense },
+	{ ATTR_EXTRADEFENSE, ItemReadMapAttributes::readAttributeExtraDefense },
+	{ ATTR_IMBUEMENT_SLOT, ItemReadMapAttributes::readAttributeImbuementSlot },
+	{ ATTR_OPENCONTAINER, ItemReadMapAttributes::readAttributeOpenContainer },
+	{ ATTR_ARMOR, ItemReadMapAttributes::readAttributeArmor },
+	{ ATTR_HITCHANCE, ItemReadMapAttributes::readAttributeHitChance },
+	{ ATTR_SHOOTRANGE, ItemReadMapAttributes::readAttributeShootRange },
+	{ ATTR_SPECIAL, ItemReadMapAttributes::readAttributeSpecial },
+	{ ATTR_QUICKLOOTCONTAINER, ItemReadMapAttributes::readAttributeQuicklootContainer },
+	{ ATTR_DEPOT_ID, ItemReadMapAttributes::readAttributeDepotId },
+	{ ATTR_HOUSEDOORID, ItemReadMapAttributes::readAttributeHouseDoorId },
+	{ ATTR_SLEEPERGUID, ItemReadMapAttributes::readAttributeSleeperGuid },
+	{ ATTR_SLEEPSTART, ItemReadMapAttributes::readAttributeSleepStart },
+	{ ATTR_TELE_DEST, ItemReadMapAttributes::readAttributeTeleportDestination },
+	{ ATTR_CONTAINER_ITEMS, ItemReadMapAttributes::readAttributeContainerItems },
+	{ ATTR_CUSTOM_ATTRIBUTES, ItemReadMapAttributes::readAttributeCustomAttributes },
+	{ ATTR_IMBUEMENT_TYPE, ItemReadMapAttributes::readAttributeImbuementType }
+};
+
+Attr_ReadValue ItemReadMapAttributes::readAttributesMap(AttrTypes_t attr, Item &item, PropStream& propStream, Position &position)
 {
-	switch (attr) {
-	case ATTR_COUNT:
-		if (!readAttributeCount(propStream, item, position)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read count attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_RUNE_CHARGES:
-		if (!readAttributeRuneCharge(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read rune charge attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-
-		break;
-	case ATTR_ACTION_ID:
-		if (!readAttributeActionId(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read action id attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_UNIQUE_ID:
-		if (!readAttributeUniqueId(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read unique id attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_TEXT:
-		if (!readAttributeText(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read text attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_WRITTENDATE:
-		if (!readAttributeWrittenDate(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read written date attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_WRITTENBY:
-		if (!readAttributeWrittenBy(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read written by attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_DESC:
-		if (!readAttributeDescription(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read description attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_CHARGES:
-		if (!readAttributeCharge(propStream, item, position)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read charge attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_DURATION:
-		if (!readAttributeDuration(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read duration attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_DECAYING_STATE:
-		if (!readAttributeDecayingState(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read decaying state attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_NAME:
-		if (!readAttributeName(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read name attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_ARTICLE:
-		if (!readAttributeArticle(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read article attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_PLURALNAME:
-		if (!readAttributePluralName(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read plural name attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_WEIGHT:
-		if (!readAttributeWeight(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read weight attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_ATTACK:
-		if (!readAttributeAttack(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read attack attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_DEFENSE:
-		if (!readAttributeDefense(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read defense attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_EXTRADEFENSE:
-		if (!readAttributeExtraDefense(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read extra defense attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_IMBUEMENT_SLOT:
-		if (!readAttributeImbuementSlot(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read imbuement slot attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_OPENCONTAINER:
-		if (!readAttributeOpenContainer(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read open container attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_ARMOR:
-		if (!readAttributeArmor(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read armor attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_HITCHANCE:
-		if (!readAttributeHitChance(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read hit chance attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_SHOOTRANGE:
-		if (!readAttributeShootRange(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read shoot range attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_SPECIAL:
-		if (!readAttributeSpecial(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read special attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_QUICKLOOTCONTAINER:
-		if (!readAttributeQuicklootContainer(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read quickloot container attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_DEPOT_ID:
-		if (!readAttributeDepotId(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read depot id attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_HOUSEDOORID:
-		if (!readAttributeHouseDoorId(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read house door id attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_SLEEPERGUID:
-		if (!readAttributeSleeperGuid(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read sleeper guid attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_SLEEPSTART:
-		if (!readAttributeSleepStart(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read sleeper start attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_TELE_DEST:
-		if (!readAttributeTeleportDestination(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read teleport destination attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_CONTAINER_ITEMS:
-		if (!readAttributeContainerItems(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read container items attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-
-		break;
-	case ATTR_CUSTOM_ATTRIBUTES:
-		if (!readAttributeCustomAttributes(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read custom attributes for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	case ATTR_IMBUEMENT_TYPE:
-		if (!readAttributeImbuementType(propStream, item)) {
-			SPDLOG_ERROR("[ItemReadMapAttributes::readAttributesMap] - Failed to read imbuement type attribute for item with id {}, on position {}", item.getID(), position.toString());
-			return ATTR_READ_ERROR;
-		}
-		
-		break;
-	default:
+	auto reader = attributeReaders[attr];
+	if (!reader(propStream, item, position)) {
+		SPDLOG_ERROR("[{}] Failed to read attribute {} for item with id {}, on position {}", __FUNCTION__, attr, item.getID(), position.toString());
 		return ATTR_READ_ERROR;
 	}
 
 	return ATTR_READ_CONTINUE;
 }
 
-bool ItemReadMapAttributes::readAttributeCount(PropStream& propStream, Item &item, Position position) {
+bool ItemReadMapAttributes::readAttributeCount(PropStream& propStream, Item &item, Position &position) {
 	uint8_t attrItemCount = propStream.get<uint8_t>();
 	if (attrItemCount == 0 || attrItemCount == -1) {
 		attrItemCount = 1;
@@ -268,7 +76,7 @@ bool ItemReadMapAttributes::readAttributeCount(PropStream& propStream, Item &ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeRuneCharge(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeRuneCharge(PropStream& propStream, Item &item, Position &) {
 	uint8_t charges = propStream.get<uint8_t>();
 	if (charges == 0) {
 		return false;
@@ -278,7 +86,7 @@ bool ItemReadMapAttributes::readAttributeRuneCharge(PropStream& propStream, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeActionId(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeActionId(PropStream& propStream, Item &item, Position &) {
 	uint16_t actionId = propStream.get<uint16_t>();
 	if (actionId == 0) {
 		return false;
@@ -288,7 +96,7 @@ bool ItemReadMapAttributes::readAttributeActionId(PropStream& propStream, Item &
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeUniqueId(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeUniqueId(PropStream& propStream, Item &item, Position &) {
 	uint16_t uniqueId = propStream.get<uint16_t>();
 	if (uniqueId == 0) {
 		return false;
@@ -298,7 +106,7 @@ bool ItemReadMapAttributes::readAttributeUniqueId(PropStream& propStream, Item &
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeText(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeText(PropStream& propStream, Item &item, Position &) {
 	std::string text = propStream.getString();
 	if (text.empty()) {
 		return false;
@@ -308,7 +116,7 @@ bool ItemReadMapAttributes::readAttributeText(PropStream& propStream, Item &item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeWrittenDate(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeWrittenDate(PropStream& propStream, Item &item, Position &) {
 	uint32_t writtenDate = propStream.get<uint32_t>();
 	if (writtenDate == 0) {
 		return false;
@@ -318,7 +126,7 @@ bool ItemReadMapAttributes::readAttributeWrittenDate(PropStream& propStream, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeWrittenBy(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeWrittenBy(PropStream& propStream, Item &item, Position &) {
 	std::string writer = propStream.getString();
 	if (writer.empty()) {
 		return false;
@@ -328,7 +136,7 @@ bool ItemReadMapAttributes::readAttributeWrittenBy(PropStream& propStream, Item 
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDescription(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeDescription(PropStream& propStream, Item &item, Position &) {
 	std::string text = propStream.getString();
 	if (text.empty()) {
 		return false;
@@ -338,7 +146,7 @@ bool ItemReadMapAttributes::readAttributeDescription(PropStream& propStream, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &item, Position position) {
+bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &item, Position &position) {
 	uint16_t charges = propStream.get<uint16_t>();
 	// If item not have charges, then set to 1 and send warning
 	if (charges == 0) {
@@ -350,7 +158,7 @@ bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &it
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDuration(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeDuration(PropStream& propStream, Item &item, Position &) {
 	int32_t duration = propStream.get<uint32_t>();
 	if (duration == 0) {
 		return false;
@@ -360,7 +168,7 @@ bool ItemReadMapAttributes::readAttributeDuration(PropStream& propStream, Item &
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDecayingState(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeDecayingState(PropStream& propStream, Item &item, Position &) {
 	uint8_t state = propStream.get<uint8_t>();
 	if (state == 0) {
 		return false;
@@ -372,7 +180,7 @@ bool ItemReadMapAttributes::readAttributeDecayingState(PropStream& propStream, I
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeName(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeName(PropStream& propStream, Item &item, Position &) {
 	std::string name = propStream.getString();
 	if (name.empty()) {
 		return false;
@@ -382,7 +190,7 @@ bool ItemReadMapAttributes::readAttributeName(PropStream& propStream, Item &item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeArticle(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeArticle(PropStream& propStream, Item &item, Position &) {
 	std::string article = propStream.getString();
 	if (article.empty()) {
 		return false;
@@ -392,7 +200,7 @@ bool ItemReadMapAttributes::readAttributeArticle(PropStream& propStream, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributePluralName(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributePluralName(PropStream& propStream, Item &item, Position &) {
 	std::string pluralName = propStream.getString();
 	if (pluralName.empty()) {
 		return false;
@@ -402,7 +210,7 @@ bool ItemReadMapAttributes::readAttributePluralName(PropStream& propStream, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeWeight(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeWeight(PropStream& propStream, Item &item, Position &) {
 	uint32_t weight = propStream.get<uint32_t>();
 	if (weight == 0) {
 		return false;
@@ -412,7 +220,7 @@ bool ItemReadMapAttributes::readAttributeWeight(PropStream& propStream, Item &it
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeAttack(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeAttack(PropStream& propStream, Item &item, Position &) {
 	int32_t attack = propStream.get<uint32_t>();
 	if (attack == 0) {
 		return false;
@@ -422,7 +230,7 @@ bool ItemReadMapAttributes::readAttributeAttack(PropStream& propStream, Item &it
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDefense(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeDefense(PropStream& propStream, Item &item, Position &) {
 	int32_t defense = propStream.get<uint32_t>();
 	if (defense == 0) {
 		return false;
@@ -432,7 +240,7 @@ bool ItemReadMapAttributes::readAttributeDefense(PropStream& propStream, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeExtraDefense(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeExtraDefense(PropStream& propStream, Item &item, Position &) {
 	int32_t extraDefense = propStream.get<uint32_t>();
 	if (extraDefense == 0) {
 		return false;
@@ -442,7 +250,7 @@ bool ItemReadMapAttributes::readAttributeExtraDefense(PropStream& propStream, It
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeImbuementSlot(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeImbuementSlot(PropStream& propStream, Item &item, Position &) {
 	int32_t imbuementSlot = propStream.get<uint32_t>();
 	if (imbuementSlot == 0) {
 		return false;
@@ -452,7 +260,7 @@ bool ItemReadMapAttributes::readAttributeImbuementSlot(PropStream& propStream, I
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeOpenContainer(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeOpenContainer(PropStream& propStream, Item &item, Position &) {
 	uint8_t openContainer = propStream.get<uint8_t>();
 	if (openContainer == 0) {
 		return false;
@@ -462,7 +270,7 @@ bool ItemReadMapAttributes::readAttributeOpenContainer(PropStream& propStream, I
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeArmor(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeArmor(PropStream& propStream, Item &item, Position &) {
 	int32_t armor = propStream.get<uint32_t>();
 	if (armor == 0) {
 		return false;
@@ -472,7 +280,7 @@ bool ItemReadMapAttributes::readAttributeArmor(PropStream& propStream, Item &ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeHitChance(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeHitChance(PropStream& propStream, Item &item, Position &) {
 	int8_t hitChance = propStream.get<uint8_t>();
 	if (hitChance == 0) {
 		return false;
@@ -482,7 +290,7 @@ bool ItemReadMapAttributes::readAttributeHitChance(PropStream& propStream, Item 
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeShootRange(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeShootRange(PropStream& propStream, Item &item, Position &) {
 	uint8_t shootRange = propStream.get<uint8_t>();
 	if (shootRange == 0) {
 		return false;
@@ -492,7 +300,7 @@ bool ItemReadMapAttributes::readAttributeShootRange(PropStream& propStream, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeSpecial(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeSpecial(PropStream& propStream, Item &item, Position &) {
 	std::string special = propStream.getString();
 	if (special.empty()) {
 		return false;
@@ -502,7 +310,7 @@ bool ItemReadMapAttributes::readAttributeSpecial(PropStream& propStream, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeQuicklootContainer(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeQuicklootContainer(PropStream& propStream, Item &item, Position &) {
 	uint32_t flags = propStream.get<uint32_t>();
 	if (flags == 0) {
 		return false;
@@ -512,7 +320,7 @@ bool ItemReadMapAttributes::readAttributeQuicklootContainer(PropStream& propStre
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeDepotId(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeDepotId(PropStream& propStream, Item &item, Position &) {
 	uint16_t attrDepotId = propStream.get<uint16_t>();
 	if (attrDepotId == 0) {
 		return false;
@@ -522,7 +330,7 @@ bool ItemReadMapAttributes::readAttributeDepotId(PropStream& propStream, Item &i
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeHouseDoorId(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeHouseDoorId(PropStream& propStream, Item &item, Position &) {
 	uint8_t attrDoorId = propStream.get<uint8_t>();
 	if (attrDoorId == 0) {
 		return false;
@@ -532,7 +340,7 @@ bool ItemReadMapAttributes::readAttributeHouseDoorId(PropStream& propStream, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeSleeperGuid(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeSleeperGuid(PropStream& propStream, Item &item, Position &) {
 	uint32_t guid = propStream.get<uint32_t>();
 	if (guid == 0) {
 		return false;
@@ -550,7 +358,7 @@ bool ItemReadMapAttributes::readAttributeSleeperGuid(PropStream& propStream, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeSleepStart(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeSleepStart(PropStream& propStream, Item &item, Position &) {
 	uint32_t attrSleepStart = propStream.get<uint32_t>();
 	if (attrSleepStart == 0) {
 		return false;
@@ -560,7 +368,7 @@ bool ItemReadMapAttributes::readAttributeSleepStart(PropStream& propStream, Item
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeTeleportDestination(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeTeleportDestination(PropStream& propStream, Item &item, Position &) {
 	uint16_t x = propStream.get<uint16_t>();
 	uint16_t y = propStream.get<uint16_t>();
 	uint8_t z = propStream.get<uint8_t>();
@@ -573,7 +381,7 @@ bool ItemReadMapAttributes::readAttributeTeleportDestination(PropStream& propStr
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeContainerItems(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeContainerItems(PropStream& propStream, Item &item, Position &) {
 	uint32_t attrSerializationCount = propStream.get<uint32_t>();
 	if (attrSerializationCount == 0) {
 		return false;
@@ -583,7 +391,7 @@ bool ItemReadMapAttributes::readAttributeContainerItems(PropStream& propStream, 
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeCustomAttributes(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeCustomAttributes(PropStream& propStream, Item &item, Position &) {
 	uint64_t size = propStream.get<uint64_t>();
 	if (size == 0) {
 		return false;
@@ -608,7 +416,7 @@ bool ItemReadMapAttributes::readAttributeCustomAttributes(PropStream& propStream
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeImbuementType(PropStream& propStream, Item &item) {
+bool ItemReadMapAttributes::readAttributeImbuementType(PropStream& propStream, Item &item, Position &) {
 	std::string imbuementType = propStream.getString();
 	if (imbuementType.empty()) {
 		return false;

@@ -16,10 +16,13 @@ MESSAGE_EVENT_DEFAULT = MESSAGE_STATUS
 MESSAGE_EVENT_ORANGE = TALKTYPE_MONSTER_SAY
 MESSAGE_STATUS_CONSOLE_ORANGE = TALKTYPE_MONSTER_YELL
 
-Result.getDataInt = Result.getNumber
-Result.getDataLong = Result.getNumber
-Result.getDataString = Result.getString
-Result.getDataStream = Result.getStream
+if type(result) then
+	result = Result
+end
+result.getDataInt = result.getNumber
+result.getDataLong = result.getNumber
+result.getDataString = result.getString
+result.getDataStream = result.getStream
 
 LUA_ERROR = false
 LUA_NO_ERROR = true

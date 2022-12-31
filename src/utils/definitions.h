@@ -7,8 +7,6 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#include "core.hpp"
-
 #ifndef SRC_UTILS_DEFINITIONS_H_
 #define SRC_UTILS_DEFINITIONS_H_
 

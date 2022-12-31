@@ -323,26 +323,26 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 {
 	//onCastSpell(creature, var)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CombatSpell::executeCastSpell - Creature {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	LuaScriptInterface::pushVariant(L, var);
 
-	return scriptInterface->callFunction(2);
+	return getScriptInterface()->callFunction(2);
 }
 
 bool Spell::playerSpellCheck(Player* player) const
@@ -799,26 +799,26 @@ bool InstantSpell::castSpell(Creature* creature, Creature* target)
 bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 {
 	//onCastSpell(creature, var)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[InstantSpell::executeCastSpell - Creature {} words {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName(), getWords());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	LuaScriptInterface::pushVariant(L, var);
 
-	return scriptInterface->callFunction(2);
+	return getScriptInterface()->callFunction(2);
 }
 
 bool InstantSpell::canCast(const Player* player) const
@@ -947,19 +947,19 @@ bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, boo
 bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
 {
 	//onCastSpell(creature, var, isHotkey)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[RuneSpell::executeCastSpell - Creature {} runeId {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName(), getRuneItemId());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
@@ -968,5 +968,5 @@ bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
 
-	return scriptInterface->callFunction(3);
+	return getScriptInterface()->callFunction(3);
 }

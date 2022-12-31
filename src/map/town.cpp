@@ -13,7 +13,7 @@
 
 Town::Town(uint32_t initId) : id(initId) {}
 
-Town::Town(const std::string initTownName, uint32_t initTownId, const Position initPosition) : name(initTownName), id(initTownId), templePosition(initPosition)
+Town::Town(uint32_t initTownId, const std::string &initTownName, const Position &initPosition) : id(initTownId), name(initTownName), templePosition(initPosition)
 {
 	if (name.empty())
 	{

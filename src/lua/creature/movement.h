@@ -225,7 +225,7 @@ class MoveEvent final : public Script {
 		const std::string& getFileName() const {
 			return fileName;
 		}
-		void setFileName(std::string scriptName) {
+		void setFileName(const std::string &scriptName) {
 			fileName = scriptName;
 		}
 		void setSlot(uint32_t s) {

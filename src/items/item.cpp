@@ -2289,31 +2289,42 @@ void Item::stopDecaying()
 	g_decay().stopDecay(this);
 }
 
+// Check if the item has market attributes
 bool Item::hasMarketAttributes()
 {
+	// If the item doesn't have any attributes or the attribute bits are 0, return true
 	if (!itemAttributesPtr || itemAttributesPtr->attributeBits == 0) {
 		return true;
 	}
 
-	for (const auto& attribute : itemAttributesPtr->getList()) {
+	bool success = false;
+	// Check each attribute in the item's attribute list
+	return std::ranges::all_of(itemAttributesPtr->getList(), [&](const auto& attribute) {
+		// If the attribute type is ITEM_ATTRIBUTE_CHARGES and the attribute value is different from the item's charges, return false
 		if (attribute.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
-			return false;
+			return success;
 		}
-
+		
+		// If the attribute type is ITEM_ATTRIBUTE_DURATION and the attribute value is different from the item's default duration, return false
 		if (attribute.type == ITEM_ATTRIBUTE_DURATION && static_cast<uint32_t>(attribute.value.integer) != getDefaultDuration()) {
-			return false;
+			return success;
 		}
-
+		
+		// If the attribute type is ITEM_ATTRIBUTE_IMBUEMENT_TYPE and the item doesn't have any imbued effects, return false
 		if (attribute.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
-			return false;
+			return success;
 		}
-
+		
+		// If the attribute type is ITEM_ATTRIBUTE_TIER and the attribute value is different from the item's tier, return false
 		if (attribute.type == ITEM_ATTRIBUTE_TIER && static_cast<uint32_t>(attribute.value.integer) != getTier()) {
-			return false;
+			return success;
 		}
-	}
 
-	return true;
+		return success = true;
+	});
+
+	// return success result
+	return success;
 }
 
 bool Item::isInsideDepot(bool includeInbox/* = false*/) const

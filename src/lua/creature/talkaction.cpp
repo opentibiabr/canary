@@ -78,19 +78,19 @@ TalkActionResult_t TalkActions::playerSaySpell(Player* player, SpeakClasses type
 
 bool TalkAction::executeSay(Player* player, const std::string& words, const std::string& param, SpeakClasses type) const {
 	//onSay(player, words, param, type)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[TalkAction::executeSay - Player {} words {}] "
                     "Call stack overflow. Too many lua script calls being nested.",
                     player->getName(), getWords());
 		return false;
 	}
 
-	ScriptEnvironment* scriptEnvironment = scriptInterface->getScriptEnv();
-	scriptEnvironment->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
@@ -99,5 +99,5 @@ bool TalkAction::executeSay(Player* player, const std::string& words, const std:
 	LuaScriptInterface::pushString(L, param);
 	lua_pushnumber(L, type);
 
-	return scriptInterface->callFunction(4);
+	return getScriptInterface()->callFunction(4);
 }

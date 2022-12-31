@@ -347,7 +347,7 @@ std::string fromIntToString(const int intType)
 }
 
 template<class Iter>
-Iter splitStrings(const std::string string, const std::string delim, Iter out)
+Iter splitStrings(const std::string &string, const std::string &delim, Iter out)
 {
 	const std::string & newString = string.data();
 	if (delim.empty()) {
@@ -816,8 +816,9 @@ std::string getCombatName(CombatType_t combatType)
 
 CombatType_t getCombatType(const std::string& combatname)
 {
-	auto it = std::ranges::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
-		return pair.second == combatname;
+	std::string combat = combatname;
+	auto it = std::ranges::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combat](std::pair<CombatType_t, std::string> const& pair) {
+		return pair.second == combat;
 	});
 
 	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
@@ -1529,22 +1530,12 @@ std::string formatPrice(std::string price, bool space/* = false*/)
 	return price;
 }
 
-bool isNumber(const std::string string) {
-	for(auto integer : string) {
-		if (std::isdigit(integer) == 0) {
-			return false;
-		}
-	}
-	return true;
+bool isNumber(const std::string &string) {
+	return std::ranges::all_of(string, [](char ch) { return std::isdigit(ch); });
 }
 
-bool isAlpha(const std::string string) {
-	for(auto letter : string) {
-		if (std::isalpha(letter) == 0) {
-			return false;
-		}
-	}
-	return true;
+bool isNumber(const std::string string) {
+	return std::ranges::all_of(string, [](char ch) { return std::isalpha(ch); });
 }
 
 size_t strnlength(const char* string, size_t size) 

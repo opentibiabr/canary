@@ -14,6 +14,7 @@
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.h"
+#include "utils/string_hash.hpp"
 
 struct Abilities {
 	public:
@@ -347,7 +348,8 @@ class Items
 			return items.size();
 		}
 
-		std::unordered_multimap<std::string, uint16_t> nameToItems;
+		// std::unordered_multimap with std::string as the key type, using the custom StringHash hasher and the transparent std::equal_to comparator
+		std::unordered_multimap<std::string, uint16_t, StringHash, std::equal_to<>> nameToItems;
 
 	private:
 

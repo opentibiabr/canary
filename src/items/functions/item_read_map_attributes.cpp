@@ -148,7 +148,7 @@ bool ItemReadMapAttributes::readAttributeDescription(PropStream& propStream, Ite
 	return true;
 }
 
-bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &item, const Position &position) {
+bool ItemReadMapAttributes::readAttributeCharge(PropStream& propStream, Item &item, [[maybe_unused]]const Position &position) {
 	uint16_t charges = propStream.get<uint16_t>();
 	// If item not have charges, then set to 1 and send warning
 	if (charges == 0) {
@@ -406,7 +406,6 @@ bool ItemReadMapAttributes::readAttributeCustomAttributes(PropStream& propStream
 		return false;
 		}
 
-		// TODO: Finalize implement this
 		//Unserialize value type and value
 		ItemAttributes::CustomAttribute attribute;
 		if (!attribute.unserialize(propStream, __FUNCTION__)) {

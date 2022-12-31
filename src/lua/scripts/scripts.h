@@ -28,7 +28,7 @@ class Scripts {
 			return instance;
 		}
 
-		void clear() const;
+		void clearAllScripts() const;
 
 		bool loadEventSchedulerScripts(const std::string& fileName);
 		bool loadScripts(std::string folderName, bool isLib, bool reload);
@@ -77,15 +77,6 @@ class Script {
 			loadedCallback = loaded;
 		}
 
-		/**
-		 * @brief Get the Script Id object
-		 *
-		 * @return int32_t
-		*/
-		int32_t getScriptId() const {
-			return scriptId;
-		}
-
 		// Load revscriptsys callback
 		bool loadCallback() {
 			if (!scriptInterface || scriptId != 0) {
@@ -105,14 +96,33 @@ class Script {
 		}
 
 
-	protected:
-		// If script is loaded callback
-		bool loadedCallback = false;
+	// NOTE: Pure virtual method ( = 0) that must be implemented in derived classes
+	// Script type (Action, CreatureEvent, GlobalEvent, MoveEvent, Spell, Weapon)
+	virtual std::string getScriptTypeName() const = 0;
 
-		// Script type (Action, CreatureEvent, GlobalEvent, MoveEvent, Spell, Weapon)
-		virtual std::string getScriptTypeName() const = 0;
-		int32_t scriptId = 0;
-		LuaScriptInterface* scriptInterface = nullptr;
+	// Method to access the scriptInterface in derived classes
+	virtual LuaScriptInterface* getScriptInterface() const {
+		return scriptInterface;
+	}
+	
+	virtual void setScriptInterface(LuaScriptInterface* newInterface) {
+		scriptInterface = newInterface;
+	}
+
+	// Method to access the scriptId in derived classes
+	virtual int32_t getScriptId() const {
+		return scriptId;
+	}
+	virtual void setScriptId(int32_t newScriptId) {
+		scriptId = newScriptId;
+	}
+
+	private:
+	// If script is loaded callback
+	bool loadedCallback = false;
+
+	int32_t scriptId = 0;
+	LuaScriptInterface* scriptInterface = nullptr;
 };
 
 #endif  // SRC_LUA_SCRIPTS_SCRIPTS_H_

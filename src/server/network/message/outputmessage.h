@@ -11,7 +11,6 @@
 #define SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_
 
 #include "server/network/connection/connection.h"
-#include "lockfree.h"
 #include "server/network/message/networkmessage.h"
 #include "utils/tools.h"
 
@@ -90,19 +89,13 @@ class OutputMessagePool
 		void removeProtocolFromAutosend(const Protocol_ptr& protocol);
 	private:
 		OutputMessagePool() = default;
+
 		//NOTE: A vector is used here because this container is mostly read
 		//and relatively rarely modified (only when a client connects/disconnects)
 		std::vector<Protocol_ptr> bufferedProtocols;
-};
 
-class OutputMessageAllocator
-{
-	public:
-		using value_type = OutputMessage;
-		template<typename U>
-		struct rebind {
-			using other = LockfreePoolingAllocator<U>;
-		};
+		std::mutex mutex;
+		std::vector<OutputMessage_ptr> freeObjects;
 };
 
 #endif  // SRC_SERVER_NETWORK_MESSAGE_OUTPUTMESSAGE_H_

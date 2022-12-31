@@ -272,13 +272,6 @@ class Map
 			return QTreeNode::getLeafStatic<QTreeLeafNode*, QTreeNode*>(&root, x, y);
 		}
 
-		std::string getMapFileName() const {
-			return mapFileName;
-		}
-		void setMapFileName(std::string newName) {
-			mapFileName = newName;
-		}
-
 		// Storage made by "loadFromXML" of houses, monsters and npcs for main map
 		SpawnsMonster spawnsMonster;
 		SpawnsNpc spawnsNpc;

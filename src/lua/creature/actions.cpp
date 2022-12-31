@@ -471,19 +471,19 @@ Thing* Action::getTarget(Player* player, Creature* targetCreature,
 
 bool Action::executeUse(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey) {
 	//onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[Action::executeUse - Player {}, on item {}] "
 					"Call stack overflow. Too many lua script calls being nested.",
 					player->getName(), item->getName());
 		return false;
 	}
 
-	ScriptEnvironment* scriptEnvironment = scriptInterface->getScriptEnv();
-	scriptEnvironment->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
@@ -495,5 +495,5 @@ bool Action::executeUse(Player* player, Item* item, const Position& fromPosition
 	LuaScriptInterface::pushPosition(L, toPosition);
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
-	return scriptInterface->callFunction(6);
+	return getScriptInterface()->callFunction(6);
 }

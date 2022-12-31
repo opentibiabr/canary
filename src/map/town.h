@@ -16,7 +16,7 @@ class Town
 {
 	public:
 		explicit Town(uint32_t initId);
-		explicit Town(const std::string initTownName, uint32_t initTownId, const Position initPosition);
+		explicit Town(uint32_t initTownId, const std::string &initTownName, const Position &initPosition);
 
 		const Position& getTemplePosition() const {
 			return templePosition;

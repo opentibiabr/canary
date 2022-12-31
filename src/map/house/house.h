@@ -59,15 +59,7 @@ class Door final : public Item
 		}
 
 		//serialization
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		void serializeAttr(PropWriteStream&) const override {}
-
-		void setDoorId(uint32_t doorId) {
-			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
-		}
-		uint32_t getDoorId() const {
-			return getIntAttr(ITEM_ATTRIBUTE_DOORID);
-		}
 
 		bool canUse(const Player* player);
 

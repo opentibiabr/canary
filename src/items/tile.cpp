@@ -21,7 +21,6 @@
 #include "map/house/housetile.h"
 #include "io/iomap.h"
 
-
 StaticTile real_nullptr_tile(0xFFFF, 0xFFFF, 0xFF);
 Tile& Tile::nullptr_tile = real_nullptr_tile;
 
@@ -1064,7 +1063,7 @@ void Tile::removeThing(Thing* thing, uint32_t count)
 	if (creature) {
 		CreatureVector* creatures = getCreatures();
 		if (creatures) {
-			auto it = std::find(creatures->begin(), creatures->end(), thing);
+			auto it = std::ranges::find(creatures->begin(), creatures->end(), thing);
 			if (it != creatures->end()) {
 				g_game().map.clearSpectatorCache();
 				creatures->erase(it);

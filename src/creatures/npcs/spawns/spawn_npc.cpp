@@ -37,15 +37,15 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 
 	for (auto spawnNode : doc.child("npcs").children()) {
 		Position centerPos(
-			pugi::cast<uint16_t>(spawnNode.attribute("centerx").value()),
-			pugi::cast<uint16_t>(spawnNode.attribute("centery").value()),
-			pugi::cast<uint16_t>(spawnNode.attribute("centerz").value())
+			static_cast<uint16_t>(spawnNode.attribute("centerx").as_int()),
+			static_cast<uint16_t>(spawnNode.attribute("centery").as_int()),
+			static_cast<uint8_t>(spawnNode.attribute("centerz").as_int())
 		);
 
 		int32_t radius;
 		pugi::xml_attribute radiusAttribute = spawnNode.attribute("radius");
 		if (radiusAttribute) {
-			radius = pugi::cast<int32_t>(radiusAttribute.value());
+			radius = radiusAttribute.as_int();
 		} else {
 			radius = -1;
 		}
@@ -55,41 +55,50 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 			continue;
 		}
 
-		spawnNpcList.emplace_front(centerPos, radius);
-		SpawnNpc& spawnNpc = spawnNpcList.front();
-
+		// Store spawn npc
+		setSpawnNpcList(centerPos, radius);
 		for (auto childNode : spawnNode.children()) {
-			if (strcasecmp(childNode.name(), "npc") == 0) {
-				pugi::xml_attribute nameAttribute = childNode.attribute("name");
-				if (!nameAttribute) {
-					continue;
-				}
-
-				Direction dir;
-
-				pugi::xml_attribute directionAttribute = childNode.attribute("direction");
-				if (directionAttribute) {
-					dir = static_cast<Direction>(pugi::cast<uint16_t>(directionAttribute.value()));
-				} else {
-					dir = DIRECTION_NORTH;
-				}
-
-				Position pos(
-					centerPos.x + pugi::cast<uint16_t>(childNode.attribute("x").value()),
-					centerPos.y + pugi::cast<uint16_t>(childNode.attribute("y").value()),
-					centerPos.z
-				);
-				int64_t interval = pugi::cast<int64_t>(childNode.attribute("spawntime").value()) * 1000;
-				if (interval >= MINSPAWN_INTERVAL && interval <= MAXSPAWN_INTERVAL) {
-					spawnNpc.addNpc(nameAttribute.as_string(), pos, dir, static_cast<uint32_t>(interval));
-				} else {
-					if (interval <= MINSPAWN_INTERVAL) {
-						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds", nameAttribute.as_string(), pos.toString(), MINSPAWN_INTERVAL / 1000);
-					} else {
-						SPDLOG_WARN("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds", nameAttribute.as_string(), pos.toString(), MAXSPAWN_INTERVAL / 1000);
-					}
-				}
+			if (childNode.name() == "npc") {
+				continue;
 			}
+
+			pugi::xml_attribute nameAttribute = childNode.attribute("name");
+			const std::string npcName = nameAttribute.as_string();
+			if (!nameAttribute || npcName.empty()) {
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - Missing or empty tag 'name' on npc position {}", centerPos.toString());
+				continue;
+			}
+
+			pugi::xml_attribute directionAttribute = childNode.attribute("direction");
+			const std::string directionString = directionAttribute.as_string();
+			if (!isNumber(directionAttribute.as_string())) {
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - Invalid direction with npc name {}", npcName);
+				continue;
+			}
+
+			Position spawnPosition(
+				centerPos.x + static_cast<uint16_t>(childNode.attribute("x").as_int()),
+				centerPos.y + static_cast<uint16_t>(childNode.attribute("y").as_int()),
+				centerPos.z
+			);
+
+			int64_t interval = static_cast<int64_t>(childNode.attribute("spawntime").as_int()) * 1000;
+			if (interval < MINSPAWN_INTERVAL) {
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be less than {} seconds, discarding spawn", nameAttribute.as_string(), spawnPosition.toString(), MINSPAWN_INTERVAL / 1000);
+				continue;
+			} else if (interval > MAXSPAWN_INTERVAL){
+				SPDLOG_ERROR("[SpawnsNpc::loadFromXml] - {} {} spawntime can not be more than {} seconds, discarding spawn", nameAttribute.as_string(), spawnPosition.toString(), MAXSPAWN_INTERVAL / 1000);
+				continue;
+			}
+
+			Direction npcDirection;
+			if (directionAttribute) {
+				npcDirection = static_cast<Direction>(directionAttribute.as_int());
+			} else {
+				npcDirection = DIRECTION_NORTH;
+			}
+
+			getSpawnNpc().addNpc(nameAttribute.as_string(), spawnPosition, npcDirection, static_cast<uint32_t>(interval));
 		}
 	}
 	return true;
@@ -133,7 +142,7 @@ bool SpawnsNpc::isInZone(const Position& centerPos, int32_t radius, const Positi
 void SpawnNpc::startSpawnNpcCheck()
 {
 	if (checkSpawnNpcEvent == 0) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind_front(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -144,6 +153,7 @@ SpawnNpc::~SpawnNpc()
 		npc->setSpawnNpc(nullptr);
 		npc->decrementReferenceCounter();
 	}
+	spawnedNpcMap.clear();
 }
 
 bool SpawnNpc::findPlayer(const Position& pos)
@@ -206,7 +216,7 @@ void SpawnNpc::checkSpawnNpc()
 
 	for (auto& it : spawnNpcMap) {
 		uint32_t spawnId = it.first;
-		if (spawnedNpcMap.find(spawnId) != spawnedNpcMap.end()) {
+		if (spawnedNpcMap.contains(spawnId)) {
 			continue;
 		}
 
@@ -227,7 +237,7 @@ void SpawnNpc::checkSpawnNpc()
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
-		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind(&SpawnNpc::checkSpawnNpc, this)));
+		checkSpawnNpcEvent = g_scheduler().addEvent(createSchedulerTask(getInterval(), std::bind_front(&SpawnNpc::checkSpawnNpc, this)));
 	}
 }
 
@@ -237,22 +247,16 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t& sb, uint16_t 
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
-		g_scheduler().addEvent(createSchedulerTask(1400, std::bind(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
+		g_scheduler().addEvent(createSchedulerTask(1400, std::bind_front(&SpawnNpc::scheduleSpawnNpc, this, spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL)));
 	}
 }
 
 void SpawnNpc::cleanup()
 {
-	auto it = spawnedNpcMap.begin();
-	while (it != spawnedNpcMap.end()) {
-            uint32_t spawnId = it->first;
-		Npc* npc = it->second;
-            if (npc->isRemoved()) {
-               spawnNpcMap[spawnId].lastSpawnNpc = OTSYS_TIME();
+	for (auto [id, npc] : spawnedNpcMap) {
+		if (npc->isRemoved()) {
+			spawnNpcMap[id].lastSpawnNpc = OTSYS_TIME();
 			npc->decrementReferenceCounter();
-			it = spawnedNpcMap.erase(it);
-		} else {
-			++it;
 		}
 	}
 }

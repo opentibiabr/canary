@@ -278,17 +278,7 @@ class Player final : public Creature, public Cylinder
 			return BestiaryTracker;
 		}
 
-		void addBestiaryTrackerList(MonsterType* mtype) {
-			if (client) {
-				auto it = std::find(BestiaryTracker.begin(), BestiaryTracker.end(), mtype);
-				if (it == BestiaryTracker.end()) {
-					BestiaryTracker.push_front(mtype);
-				} else {
-					BestiaryTracker.remove(mtype);
-				}
-				client->refreshBestiaryTracker(BestiaryTracker);
-			}
-		}
+		void addBestiaryTrackerList(MonsterType* mtype);
 
 		void sendBestiaryEntryChanged(uint16_t raceid) {
 			if (client) {
@@ -828,6 +818,7 @@ class Player final : public Creature, public Cylinder
 		LightInfo getCreatureLight() const override;
 
 		Skulls_t getSkull() const override;
+		Skulls_t getSkullUnjustified(const Creature &creature) const;
 		Skulls_t getSkullClient(const Creature* creature) const override;
 		int64_t getSkullTicks() const { return skullTicks; }
 		void setSkullTicks(int64_t ticks) { skullTicks = ticks; }
@@ -1485,9 +1476,14 @@ class Player final : public Creature, public Cylinder
 				client->sendHighscoresNoData();
 			}
 		}
-		void sendHighscores(const std::vector<HighscoreCharacter>& characters,
-                            uint8_t categoryId, uint32_t vocationId,
-                            uint16_t page, uint16_t pages) {
+		void sendHighscores(
+			const std::vector<HighscoreCharacter>& characters,
+			uint8_t categoryId,
+			uint32_t vocationId,
+			uint16_t page,
+			uint16_t pages
+		)
+		{
 			if (client) {
 				client->sendHighscores(characters, categoryId, vocationId, page, pages);
 			}
@@ -1670,15 +1666,7 @@ class Player final : public Creature, public Cylinder
 		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
 		void updateUIExhausted();
 
-		bool isQuickLootListedItem(const Item* item) const {
-			if (!item) {
-				return false;
-			}
-
-			auto it = std::find(quickLootListItemIds.begin(),
-                                quickLootListItemIds.end(), item->getID());
-			return it != quickLootListItemIds.end();
-		}
+		bool isQuickLootListedItem(const Item* item) const;
 
 		bool updateKillTracker(Container* corpse,
                                const std::string& playerName,
@@ -1868,22 +1856,9 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void reloadPreySlot(PreySlot_t slotid) {
-			if (g_configManager().getBoolean(PREY_ENABLED) && client) {
-				client->sendPreyData(getPreySlotById(slotid));
-				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
-			}
-		}
+		void reloadPreySlot(PreySlot_t slotid) const;
 
-		PreySlot* getPreySlotById(PreySlot_t slotid) {
-			if (auto it = std::find_if(preys.begin(), preys.end(), [slotid](const PreySlot* preyIt) {
-					return preyIt->id == slotid;
-				}); it != preys.end()) {
-				return *it;
-			}
-
-			return nullptr;
-		}
+		PreySlot* getPreySlotById(PreySlot_t slotid) const;
 
 		bool setPreySlotClass(PreySlot* slot) {
 			if (getPreySlotById(slot->id)) {
@@ -1937,19 +1912,7 @@ class Player final : public Creature, public Cylinder
 			return rt;
 		}
 
-		PreySlot* getPreyWithMonster(uint16_t raceId) const {
-			if (!g_configManager().getBoolean(PREY_ENABLED)) {
-				return nullptr;
-			}
-
-			if (auto it = std::find_if(preys.begin(), preys.end(), [raceId](const PreySlot* it) {
-					return it->selectedRaceId == raceId;
-				}); it != preys.end()) {
-				return *it;
-			}
-
-			return nullptr;
-		}
+		PreySlot* getPreyWithMonster(uint16_t raceId) const;
 
 		// Task hunting system
 		void initializeTaskHunting();
@@ -1964,40 +1927,11 @@ class Player final : public Creature, public Cylinder
 			return true;
 		}
 
-		void reloadTaskSlot(PreySlot_t slotid) {
-			if (g_configManager().getBoolean(TASK_HUNTING_ENABLED) && client) {
-				client->sendTaskHuntingData(getTaskHuntingSlotById(slotid));
-				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
-			}
-		}
+		void reloadTaskSlot(PreySlot_t slotid) const;
 
-		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) {
-			if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [slotid](const TaskHuntingSlot* itTask) {
-					return itTask->id == slotid;
-				}); it != taskHunting.end()) {
-				return *it;
-			}
+		TaskHuntingSlot* getTaskHuntingSlotById(PreySlot_t slotid) const;
 
-			return nullptr;
-		}
-
-		std::vector<uint16_t> getTaskHuntingBlackList() const {
-			std::vector<uint16_t> rt;
-
-			std::for_each(taskHunting.begin(), taskHunting.end(), [&rt](const TaskHuntingSlot* slot)
-			{
-				if (slot->isOccupied()) {
-					rt.push_back(slot->selectedRaceId);
-				} else {
-					std::for_each(slot->raceIdList.begin(), slot->raceIdList.end(), [&rt](uint16_t raceId)
-					{
-						rt.push_back(raceId);
-					});
-				}
-			});
-
-			return rt;
-		}
+		std::vector<uint16_t> getTaskHuntingBlackList() const;
 
 		void sendTaskHuntingData() const {
 			if (client) {
@@ -2037,19 +1971,7 @@ class Player final : public Creature, public Cylinder
 			return getLevel() * g_configManager().getNumber(TASK_HUNTING_REROLL_PRICE_LEVEL);
 		}
 
-		TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const {
-			if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-				return nullptr;
-			}
-
-			if (auto it = std::find_if(taskHunting.begin(), taskHunting.end(), [raceId](const TaskHuntingSlot* itTask) {
-					return itTask->selectedRaceId == raceId;
-				}); it != taskHunting.end()) {
-				return *it;
-			}
-
-			return nullptr;
-		}
+		TaskHuntingSlot* getTaskHuntingWithCreature(uint16_t raceId) const;
 
 		// Depot search system
 		void requestDepotItems();

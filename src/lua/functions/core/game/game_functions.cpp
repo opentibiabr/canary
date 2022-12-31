@@ -521,9 +521,9 @@ int GameFunctions::luaGameCreateItemClassification(lua_State* L) {
 		return 1;
 	}
 
-	ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 1), true);
+	const ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 1), true);
 	if (itemClassification) {
-		pushUserdata<ItemClassification>(L, itemClassification);
+		pushUserdata<const ItemClassification>(L, itemClassification);
 		setMetatable(L, -1, "ItemClassification");
 	} else {
 		lua_pushnil(L);

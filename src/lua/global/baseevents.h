@@ -66,7 +66,6 @@ class Event {
         * @return true Success
         * @return false Fail
         */
-		bool loadCallback();
 
 		virtual bool loadFunction(const pugi::xml_attribute&, bool) {
 			return false;
@@ -92,7 +91,6 @@ class Event {
 		}
 
 		bool scripted = false;
-		bool fromLua = false;
 
 	protected:
 		virtual std::string getScriptEventName() const = 0;
@@ -142,11 +140,10 @@ class BaseEvents {
 		}
 
 		/**
-        * @brief Restart the Lua interface state
-        *
-        * @param fromLua
-        */
-		void reInitState(bool fromLua);
+		 * @brief Restart the Lua interface state
+		 *
+		*/
+		void reInitState();
 
 	private:
 		virtual LuaScriptInterface& getScriptInterface() = 0;

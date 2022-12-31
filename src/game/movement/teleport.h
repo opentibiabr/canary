@@ -25,15 +25,7 @@ class Teleport final : public Item, public Cylinder
 		}
 
 		//serialization
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		void serializeAttr(PropWriteStream& propWriteStream) const override;
-
-		const Position& getDestPos() const {
-			return destPos;
-		}
-		void setDestPos(Position pos) {
-			destPos = std::move(pos);
-		}
 
 		bool checkInfinityLoop(Tile* destTile);
 
@@ -56,9 +48,6 @@ class Teleport final : public Item, public Cylinder
 
 		void postAddNotification(Thing* thing, const Cylinder* oldParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
 		void postRemoveNotification(Thing* thing, const Cylinder* newParent, int32_t index, CylinderLink_t link = LINK_OWNER) override;
-
-	private:
-		Position destPos;
 };
 
 #endif  // SRC_GAME_MOVEMENT_TELEPORT_H_

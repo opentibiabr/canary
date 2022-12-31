@@ -342,6 +342,7 @@ class ItemAttributes
 		std::vector<Attribute> attributes;
 		std::underlying_type_t<ItemAttrTypes> attributeBits = 0;
 
+	public:
 		const std::string& getStrAttr(ItemAttrTypes type) const;
 		void setStrAttr(ItemAttrTypes type, const std::string& value);
 
@@ -435,7 +436,6 @@ class ItemAttributes
 			return false;
 		}
 
-	public:
 		static bool isIntAttrType(ItemAttrTypes type) {
 			std::underlying_type_t<ItemAttrTypes> checkTypes = 0;
 			checkTypes |= ITEM_ATTRIBUTE_ACTIONID;
@@ -490,7 +490,7 @@ class Item : virtual public Thing
 		//Factory member to create item of right type based on type
 		static Item* CreateItem(const uint16_t type, uint16_t count = 0);
 		static Container* CreateItemAsContainer(const uint16_t type, uint16_t size);
-		static Item* CreateItem(PropStream& propStream);
+		static Item* createMapItem(PropStream& propStream);
 		static Items items;
 
 		// Constructor for items
@@ -498,6 +498,7 @@ class Item : virtual public Thing
 		Item(const Item& i);
 		virtual Item* clone() const;
 
+		Item() = default;
 		virtual ~Item() = default;
 
 		// non-assignable
@@ -549,20 +550,20 @@ class Item : virtual public Thing
 		}
 
 		const std::string& getStrAttr(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return ItemAttributes::emptyString;
 			}
-			return attributes->getStrAttr(type);
+			return itemAttributesPtr->getStrAttr(type);
 		}
 		void setStrAttr(ItemAttrTypes type, const std::string& value) {
 			getAttributes()->setStrAttr(type, value);
 		}
 
 		int64_t getIntAttr(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
-			return attributes->getIntAttr(type);
+			return itemAttributesPtr->getIntAttr(type);
 		}
 		void setIntAttr(ItemAttrTypes type, int64_t value) {
 			getAttributes()->setIntAttr(type, value);
@@ -580,15 +581,15 @@ class Item : virtual public Thing
 		}
 
 		void removeAttribute(ItemAttrTypes type) {
-			if (attributes) {
-				attributes->removeAttribute(type);
+			if (itemAttributesPtr) {
+				itemAttributesPtr->removeAttribute(type);
 			}
 		}
 		bool hasAttribute(ItemAttrTypes type) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return false;
 			}
-			return attributes->hasAttribute(type);
+			return itemAttributesPtr->hasAttribute(type);
 		}
 
 		template<typename R>
@@ -608,15 +609,15 @@ class Item : virtual public Thing
 			return getAttributes()->getCustomAttribute(key);
 		}
 		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return nullptr;
 			}
 
-			if (!attributes->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+			if (!itemAttributesPtr->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
 				return nullptr;
 			}
 
-			ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
+			ItemAttributes::CustomAttributeMap* customAttrMap = itemAttributesPtr->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
 			if (!customAttrMap) {
 				return nullptr;
 			}
@@ -682,14 +683,14 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_ACTIONID, n);
 		}
 		uint16_t getActionId() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_ACTIONID));
 		}
 
 		uint16_t getUniqueId() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_UNIQUEID));
@@ -699,7 +700,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_CHARGES, n);
 		}
 		uint16_t getCharges() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_CHARGES));
@@ -709,7 +710,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_FLUIDTYPE, n);
 		}
 		uint16_t getFluidType() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return static_cast<uint16_t>(getIntAttr(ITEM_ATTRIBUTE_FLUIDTYPE));
@@ -719,7 +720,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_OWNER, owner);
 		}
 		uint32_t getOwner() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return getIntAttr(ITEM_ATTRIBUTE_OWNER);
@@ -729,7 +730,7 @@ class Item : virtual public Thing
 			setIntAttr(ITEM_ATTRIBUTE_CORPSEOWNER, corpseOwner);
 		}
 		uint32_t getCorpseOwner() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return 0;
 			}
 			return getIntAttr(ITEM_ATTRIBUTE_CORPSEOWNER);
@@ -764,7 +765,7 @@ class Item : virtual public Thing
 			}
 		}
 		ItemDecayState_t getDecaying() const {
-			if (!attributes) {
+			if (!itemAttributesPtr) {
 				return DECAYING_FALSE;
 			}
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
@@ -784,12 +785,53 @@ class Item : virtual public Thing
 		std::string getNameDescription() const;
 		std::string getWeightDescription() const;
 
-		//serialization
-		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
-		bool unserializeAttr(PropStream& propStream);
-		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream);
+		// Serialization items
+		bool unserializeAttributes(PropStream& propStream, Position position, const std::string &function);
 
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
+
+		// Serialization functions for classes: Teleport, Bed, Container, DepotLocker, Door
+		// Depot class
+		virtual uint16_t getDepotId() const {
+			return depotId;
+		}
+		virtual void setDepotId(uint16_t newDepotId) {
+			depotId = newDepotId;
+		}
+		// Door class
+		virtual void setDoorId(uint32_t doorId) {
+			setIntAttr(ITEM_ATTRIBUTE_DOORID, doorId);
+		}
+		virtual uint32_t getDoorId() const {
+			return static_cast<uint32_t>(getIntAttr(ITEM_ATTRIBUTE_DOORID));
+		}
+		// Bed class
+		virtual const uint32_t& getSleeperGUID() const {
+			return sleeperGUID;
+		}
+		virtual void setSleeperGuid(uint32_t newSleeperGuid) {
+			sleeperGUID = newSleeperGuid;
+		}
+		virtual const uint32_t& getSleepStart() const {
+			return sleepStart;
+		}
+		virtual void setSleepStart(uint32_t newSleepStart) {
+			sleepStart = newSleepStart;
+		}
+		// Teleport class
+		virtual const Position& getDestination() const {
+			return destinationPosition;
+		}
+		virtual void setDestination(Position position) {
+			destinationPosition = std::move(position);
+		}
+		// Container class
+		virtual uint32_t getSerializationCount() const {
+			return serializationCount;
+		}
+		virtual void setSerializationCount(uint32_t newCount) {
+			serializationCount = newCount;
+		}
 
 		bool isPushable() const override final {
 			return isMoveable();
@@ -1009,10 +1051,10 @@ class Item : virtual public Thing
 		bool hasMarketAttributes();
 
 		std::unique_ptr<ItemAttributes>& getAttributes() {
-			if (!attributes) {
-				attributes.reset(new ItemAttributes());
+			if (!itemAttributesPtr) {
+				itemAttributesPtr.reset(new ItemAttributes());
 			}
-			return attributes;
+			return itemAttributesPtr;
 		}
 
 		void incrementReferenceCounter() {
@@ -1135,7 +1177,6 @@ class Item : virtual public Thing
 		std::string getWeightDescription(uint32_t weight) const;
 
 		Cylinder* parent = nullptr;
-		std::unique_ptr<ItemAttributes> attributes;
 
 		uint32_t referenceCounter = 0;
 
@@ -1146,9 +1187,17 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 	
 	private:
+		std::unique_ptr<ItemAttributes> itemAttributesPtr;
+		uint16_t depotId;
+		uint32_t sleeperGUID;
+		uint32_t sleepStart;
+		Position destinationPosition;
+		uint32_t serializationCount = 0;
+
 		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
+		friend class IOMapSerialize;
 };
 
 using ItemList = std::list<Item*>;

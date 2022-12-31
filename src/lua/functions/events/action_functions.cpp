@@ -18,7 +18,8 @@ int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
 	Action* action = new Action(getScriptEnv()->getScriptInterface());
 	if (action) {
-		action->fromLua = true;
+		// Register script name on action interface
+		action->setFileName(getScriptEnv()->getScriptInterface()->getLoadingScriptName());
 		pushUserdata<Action>(L, action);
 		setMetatable(L, -1, "Action");
 	} else {
@@ -36,7 +37,7 @@ int ActionFunctions::luaActionOnUse(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
-		action->scripted = true;
+		action->setLoadedCallback(true);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ACTION_NOT_FOUND));
@@ -49,7 +50,7 @@ int ActionFunctions::luaActionRegister(lua_State* L) {
 	// action:register()
 	Action* action = getUserdata<Action>(L, 1);
 	if (action) {
-		if (!action->isScripted()) {
+		if (!action->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -123,6 +124,7 @@ int ActionFunctions::luaActionUniqueId(lua_State* L) {
 }
 
 int ActionFunctions::luaActionPosition(lua_State* L) {
+	// action:position({x, y,z} or Position(pos))
 	/** @brief Create action position
 	 * @param positions = position or table of positions to set a action script
 	 * @param itemId or @param itemName = if item id or string name is set, the item is created on position (if not exists), this variable is nil by default

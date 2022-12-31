@@ -85,8 +85,7 @@ class Container : public Item, public Cylinder
 			return false;
 		}
 
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;
+		bool unserializeAttributes(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream, Position position, const std::string &function);
 		std::string getContentDescription() const;
 
 		size_t size() const {
@@ -123,6 +122,7 @@ class Container : public Item, public Cylinder
 		uint32_t getContainerHoldingCount() const;
 		uint16_t getFreeSlots() const;
 		uint32_t getWeight() const override final;
+		void updateItemWeight(int32_t diff);
 
 		bool isUnlocked() const {
 			return !this->isCorpse() && unlocked;
@@ -172,7 +172,6 @@ class Container : public Item, public Cylinder
 		uint32_t maxSize;
 		uint32_t totalWeight = 0;
 		ItemDeque itemlist;
-		uint32_t serializationCount = 0;
 
 		bool unlocked;
 		bool pagination;
@@ -184,7 +183,7 @@ class Container : public Item, public Cylinder
 
 		Container* getParentContainer();
 		Container* getTopParentContainer() const;
-		void updateItemWeight(int32_t diff);
+		void updateWeight(int32_t diff);
 
 		friend class ContainerIterator;
 		friend class IOMapSerialize;

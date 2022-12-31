@@ -260,7 +260,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->currentOutfit = player->defaultOutfit;
 
   if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
-    const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
+    const time_t skullSeconds = result->getNumber<time_t>("skulltime") - Game::getTimeNow();
     if (skullSeconds > 0) {
       //ensure that we round up the number of ticks
       player->skullTicks = (skullSeconds + 2);
@@ -290,7 +290,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
   player->setOfflineTrainingSkill(skill);
 
-  Town* town = g_game().map.towns.getTown(result->getNumber<uint32_t>("town_id"));
+  Town* town = g_game().map.towns.getTown(result->getNumber<uint8_t>("town_id"));
   if (!town) {
     SPDLOG_ERROR("Player {} has town id {} whitch doesn't exist", player->name,
 			result->getNumber<uint16_t>("town_id"));
@@ -435,14 +435,14 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   //load inventory items
-  ItemMap itemMap;
+  std::map<uint32_t, std::pair<Item*, uint32_t>> itemMap;
 
   query.str(std::string());
   query << "SELECT `player_id`, `time`, `target`, `unavenged` FROM `player_kills` WHERE `player_id` = " << player->getGUID();
   if ((result = db.storeQuery(query.str()))) {
     do {
       time_t killTime = result->getNumber<time_t>("time");
-      if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
+      if ((Game::getTimeNow() - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
         player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
       }
     } while (result->next());
@@ -456,7 +456,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   if ((result = db.storeQuery(query.str()))) {
     loadItems(itemMap, result);
 
-    for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+    for (std::map<uint32_t, std::pair<Item*, uint32_t>>::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const std::pair<Item*, int32_t>& pair = it->second;
       Item* item = pair.first;
       if (!item) {
@@ -469,7 +469,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         player->internalAddThing(pid, item);
         item->startDecaying();
       } else {
-        ItemMap::const_iterator it2 = itemMap.find(pid);
+        std::map<uint32_t, std::pair<Item*, uint32_t>>::const_iterator it2 = itemMap.find(pid);
         if (it2 == itemMap.end()) {
           continue;
         }
@@ -521,7 +521,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   if ((result = db.storeQuery(query.str()))) {
     loadItems(itemMap, result);
 
-    for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+    for (std::map<uint32_t, std::pair<Item*, uint32_t>>::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const std::pair<Item*, int32_t>& pair = it->second;
       Item* item = pair.first;
 
@@ -533,7 +533,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
           item->startDecaying();
         }
       } else {
-        ItemMap::const_iterator it2 = itemMap.find(pid);
+        std::map<uint32_t, std::pair<Item*, uint32_t>>::const_iterator it2 = itemMap.find(pid);
         if (it2 == itemMap.end()) {
           continue;
         }
@@ -556,7 +556,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     loadItems(itemMap, result);
 
     //first loop handles the reward containers to retrieve its date attribute
-    //for (ItemMap::iterator it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
+    //for (std::map<uint32_t, std::pair<Item*, uint32_t>>::iterator it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
     for (auto& it : itemMap) {
       const std::pair<Item*, int32_t>& pair = it.second;
       Item* item = pair.first;
@@ -573,7 +573,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
 
     //second loop (this time a reverse one) to insert the items in the correct order
-    //for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+    //for (std::map<uint32_t, std::pair<Item*, uint32_t>>::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
     for (const auto& it : std::views::reverse(itemMap)) {
       const std::pair<Item*, int32_t>& pair = it.second;
       Item* item = pair.first;
@@ -583,7 +583,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         break;
       }
 
-      ItemMap::const_iterator it2 = itemMap.find(pid);
+      std::map<uint32_t, std::pair<Item*, uint32_t>>::const_iterator it2 = itemMap.find(pid);
       if (it2 == itemMap.end()) {
         continue;
       }
@@ -603,7 +603,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   if ((result = db.storeQuery(query.str()))) {
     loadItems(itemMap, result);
 
-    for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
+    for (std::map<uint32_t, std::pair<Item*, uint32_t>>::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const std::pair<Item*, int32_t>& pair = it->second;
       Item* item = pair.first;
       int32_t pid = pair.second;
@@ -612,7 +612,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
         player->getInbox()->internalAddThing(item);
         item->startDecaying();
       } else {
-        ItemMap::const_iterator it2 = itemMap.find(pid);
+        std::map<uint32_t, std::pair<Item*, uint32_t>>::const_iterator it2 = itemMap.find(pid);
 
         if (it2 == itemMap.end()) {
           continue;
@@ -739,7 +739,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   return true;
 }
 
-bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream)
+bool IOLoginData::saveItems(const Player* player, const std::list<std::pair<int32_t, Item*>>& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream)
 {
   Database& db = Database::getInstance();
 
@@ -921,7 +921,7 @@ bool IOLoginData::savePlayer(Player* player)
     int64_t skullTime = 0;
 
     if (player->skullTicks > 0) {
-      skullTime = time(nullptr) + player->skullTicks;
+      skullTime = Game::getTimeNow() + player->skullTicks;
     }
 
     query << "`skulltime` = " << skullTime << ',';
@@ -973,7 +973,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ',';
 
   if (!player->isOffline()) {
-    query << "`onlinetime` = `onlinetime` + " << (time(nullptr) - player->lastLoginSaved) << ',';
+    query << "`onlinetime` = `onlinetime` + " << (Game::getTimeNow() - player->lastLoginSaved) << ',';
   }
   for (int i = 1; i <= 8; i++) {
     query << "`blessings" << i << "`" << " = " << static_cast<uint32_t>(player->getBlessingCount(i)) << ((i == 8) ? ' ' : ',');
@@ -1095,7 +1095,7 @@ bool IOLoginData::savePlayer(Player* player)
 
   DBInsert itemsQuery("INSERT INTO `player_items` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
 
-  ItemBlockList itemList;
+  std::list<std::pair<int32_t, Item*>> itemList;
   for (int32_t slotId = CONST_SLOT_FIRST; slotId <= CONST_SLOT_LAST; ++slotId) {
     Item* item = player->inventory[slotId];
     if (item) {
@@ -1151,7 +1151,7 @@ bool IOLoginData::savePlayer(Player* player)
     for (const auto& rewardId : rewardList) {
       Reward* reward = player->getReward(rewardId, false);
       // rewards that are empty or older than 7 days aren't stored
-      if (!reward->empty() && (time(nullptr) - rewardId <= 60 * 60 * 24 * 7)) {
+      if (!reward->empty() && (Game::getTimeNow() - rewardId <= 60 * 60 * 24 * 7)) {
         itemList.emplace_back(++running, reward);
       }
     }
@@ -1356,7 +1356,7 @@ bool IOLoginData::formatPlayerName(std::string& name)
   return true;
 }
 
-void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
+void IOLoginData::loadItems(std::map<uint32_t, std::pair<Item*, uint32_t>>& itemMap, DBResult_ptr result)
 {
   do {
     uint32_t sid = result->getNumber<uint32_t>("sid");
@@ -1372,7 +1372,7 @@ void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
 
     Item* item = Item::CreateItem(type, count);
     if (item) {
-      if (!item->unserializeAttr(propStream)) {
+      if (!item->unserializeAttributes(propStream, item->getPosition(), __FUNCTION__)) {
         SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes");
       }
 

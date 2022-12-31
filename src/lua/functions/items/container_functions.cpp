@@ -264,7 +264,7 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 		return 1;
 	}
 
-	auto timestamp = time(nullptr);
+	auto timestamp = Game::getTimeNow();
 	Item * rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
 	rewardContainer->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);
 	container->setIntAttr(ITEM_ATTRIBUTE_DATE, timestamp);

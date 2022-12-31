@@ -1125,7 +1125,7 @@ GameStore.canUseHirelingName = function(name)
 		ability = false
 	}
 	if name:len() < 3 or name:len() > 14 then
-		result.reason = "The length of the hireling name must be between 3 and 14 characters."
+		Result.reason = "The length of the hireling name must be between 3 and 14 characters."
 		return result
 	end
 
@@ -1137,18 +1137,18 @@ GameStore.canUseHirelingName = function(name)
 
 	local matchtwo = name:match("^%s+")
 	if (matchtwo) then
-		result.reason = "The hireling name can't have whitespace at begin."
+		Result.reason = "The hireling name can't have whitespace at begin."
 		return result
 	end
 
 	local matchthree = name:match("[^a-zA-Z ]")
 	if (matchthree) then
-		result.reason = "The hireling name has invalid characters"
+		Result.reason = "The hireling name has invalid characters"
 		return result
 	end
 
 	if (count > 1) then
-		result.reason = "The hireling name have more than 1 whitespace."
+		Result.reason = "The hireling name have more than 1 whitespace."
 		return result
 	end
 
@@ -1158,7 +1158,7 @@ GameStore.canUseHirelingName = function(name)
 	for k, word in ipairs(words) do
 		for k, nameWord in ipairs(split) do
 			if nameWord:lower() == word then
-				result.reason = "You can't use word \"" .. word .. "\" in your hireling name."
+				Result.reason = "You can't use word \"" .. word .. "\" in your hireling name."
 				return result
 			end
 		end
@@ -1167,12 +1167,12 @@ GameStore.canUseHirelingName = function(name)
 	local tmpName = name:gsub("%s+", "")
 	for i = 1, #words do
 		if (tmpName:lower():find(words[i])) then
-			result.reason = "You can't use word \"" .. words[i] .. "\" with whitespace in your hireling name."
+			Result.reason = "You can't use word \"" .. words[i] .. "\" with whitespace in your hireling name."
 			return result
 		end
 	end
 
-	result.ability = true
+	Result.ability = true
 	return result
 end
 
@@ -1181,7 +1181,7 @@ GameStore.canChangeToName = function(name)
 		ability = false
 	}
 	if name:len() < 3 or name:len() > 14 then
-		result.reason = "The length of your new name must be between 3 and 14 characters."
+		Result.reason = "The length of your new name must be between 3 and 14 characters."
 		return result
 	end
 
@@ -1193,12 +1193,12 @@ GameStore.canChangeToName = function(name)
 
 	local matchtwo = name:match("^%s+")
 	if (matchtwo) then
-		result.reason = "Your new name can't have whitespace at begin."
+		Result.reason = "Your new name can't have whitespace at begin."
 		return result
 	end
 
 	if (count > 1) then
-		result.reason = "Your new name have more than 1 whitespace."
+		Result.reason = "Your new name have more than 1 whitespace."
 		return result
 	end
 
@@ -1208,7 +1208,7 @@ GameStore.canChangeToName = function(name)
 	for k, word in ipairs(words) do
 		for k, nameWord in ipairs(split) do
 			if nameWord:lower() == word then
-				result.reason = "You can't use word \"" .. word .. "\" in your new name."
+				Result.reason = "You can't use word \"" .. word .. "\" in your new name."
 				return result
 			end
 		end
@@ -1217,16 +1217,16 @@ GameStore.canChangeToName = function(name)
 	local tmpName = name:gsub("%s+", "")
 	for i = 1, #words do
 		if (tmpName:lower():find(words[i])) then
-			result.reason = "You can't use word \"" .. words[i] .. "\" with whitespace in your new name."
+			Result.reason = "You can't use word \"" .. words[i] .. "\" with whitespace in your new name."
 			return result
 		end
 	end
 
 	if MonsterType(name) then
-		result.reason = "Your new name \"" .. name .. "\" can't be a monster's name."
+		Result.reason = "Your new name \"" .. name .. "\" can't be a monster's name."
 		return result
 	elseif Npc(name) then
-		result.reason = "Your new name \"" .. name .. "\" can't be a npc's name."
+		Result.reason = "Your new name \"" .. name .. "\" can't be a npc's name."
 		return result
 	end
 
@@ -1236,12 +1236,12 @@ GameStore.canChangeToName = function(name)
 		for i = 1, name:len() do
 			local m = name:sub(i, i)
 			if m == c then
-				result.reason = "You can't use this letter \"" .. c .. "\" in your new name."
+				Result.reason = "You can't use this letter \"" .. c .. "\" in your new name."
 				return result
 			end
 		end
 	end
-	result.ability = true
+	Result.ability = true
 	return result
 end
 
@@ -1436,8 +1436,8 @@ function GameStore.processNameChangePurchase(player, offer, productType, newName
 		end
 
 		local result = GameStore.canChangeToName(newName)
-		if not result.ability then
-			return error({code = 1, message = result.reason})
+		if not Result.ability then
+			return error({code = 1, message = Result.reason})
 		end
 
 		player:makeCoinTransaction(offer)
@@ -1519,8 +1519,8 @@ function GameStore.processHirelingPurchase(player, offer, productType, hirelingN
 	if productType == GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_HIRELING then
 
 		local result = GameStore.canUseHirelingName(hirelingName)
-		if not result.ability then
-			return error({code = 1, message = result.reason})
+		if not Result.ability then
+			return error({code = 1, message = Result.reason})
 		end
 
 		hirelingName = hirelingName:lower():gsub("(%l)(%w*)", function(a, b) return string.upper(a) .. b end)
@@ -1549,8 +1549,8 @@ function GameStore.processHirelingChangeNamePurchase(player, offer, productType,
 	local offerId = offer.id
 	if productType == GameStore.ClientOfferTypes.CLIENT_STORE_OFFER_NAMECHANGE then
 		local result = GameStore.canUseHirelingName(newHirelingName)
-		if not result.ability then
-			return error({code = 1, message = result.reason})
+		if not Result.ability then
+			return error({code = 1, message = Result.reason})
 		end
 
 		newHirelingName = newHirelingName:lower():gsub("(%l)(%w*)", function(a, b) return string.upper(a) .. b end)

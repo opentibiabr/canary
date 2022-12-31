@@ -212,6 +212,7 @@ PRIVATE
 	items/item.cpp
 	items/items.cpp
 	items/functions/item_parse.cpp
+	items/functions/item_read_map_attributes.cpp
 	items/thing.cpp
 	items/tile.cpp
 	items/trashholder.cpp
@@ -281,6 +282,7 @@ PRIVATE
 	map/house/house.cpp
 	map/house/housetile.cpp
 	map/map.cpp
+	map/town.cpp
 	otserv.cpp
 	security/rsa.cpp
 	server/network/connection/connection.cpp

@@ -25,7 +25,8 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		virtual bool initState();
 		bool reInitState();
 
-		int32_t loadFile(const std::string& file);
+		// Script name is empty by default and optional
+		int32_t loadFile(const std::string& file, const std::string &scriptName = "");
 
 		const std::string& getFileById(int32_t scriptId);
 		int32_t getEvent(const std::string& eventName);
@@ -40,6 +41,17 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		}
 		const std::string& getLoadingFile() const {
 			return loadingFile;
+		}
+		const std::string& getLoadingScriptName() const {
+			// If scripty name is empty, return warning informing
+			if (loadingScriptName.empty()) {
+				SPDLOG_WARN("[LuaScriptInterface::getLoadingScriptName] - Script name is empty");
+			}
+
+			return loadingScriptName;
+		}
+		void setLoadingScriptName(std::string scriptName) {
+			loadingScriptName = scriptName;
 		}
 
 		lua_State* getLuaState() const {
@@ -64,6 +76,7 @@ class LuaScriptInterface : public LuaFunctionsLoader {
 		std::string lastLuaError;
 		std::string interfaceName;
 		std::string loadingFile;
+		std::string loadingScriptName;
 };
 
 #endif  // SRC_LUA_SCRIPTS_LUASCRIPT_H_

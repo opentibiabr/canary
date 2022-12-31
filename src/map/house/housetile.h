@@ -17,6 +17,7 @@ class House;
 class HouseTile final : public DynamicTile
 {
 	public:
+		HouseTile(Position initPos, House* initHouse);
 		HouseTile(int32_t x, int32_t y, int32_t z, House* house);
 
 		//cylinder implementations

@@ -106,6 +106,8 @@ class Tile : public Cylinder
 	public:
 		static Tile& nullptr_tile;
 		Tile(uint16_t x, uint16_t y, uint8_t z) : tilePos(x, y, z) {}
+		explicit Tile(Position initPosition) : tilePos(initPosition.x, initPosition.y, initPosition.z) {}
+
 		virtual ~Tile() {
 			delete ground;
 		};
@@ -266,6 +268,7 @@ class DynamicTile : public Tile
 
 	public:
 		DynamicTile(uint16_t x, uint16_t y, uint8_t z) : Tile(x, y, z) {}
+		explicit DynamicTile(Position initPosition) : Tile(initPosition) {}
 		~DynamicTile() {
 			for (Item* item : items) {
 				item->decrementReferenceCounter();
@@ -306,6 +309,8 @@ class StaticTile final : public Tile
 
 	public:
 		StaticTile(uint16_t x, uint16_t y, uint8_t z) : Tile(x, y, z) {}
+		explicit StaticTile(Position initPosition) : Tile(initPosition) {}
+
 		~StaticTile() {
 			if (items) {
 				for (Item* item : *items) {

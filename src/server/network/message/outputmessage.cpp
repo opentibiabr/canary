@@ -57,5 +57,14 @@ void OutputMessagePool::removeProtocolFromAutosend(const Protocol_ptr& protocol)
 
 OutputMessage_ptr OutputMessagePool::getOutputMessage()
 {
-	return std::make_shared<OutputMessage>();
+	OutputMessagePool outputMessagePool;
+	std::unique_lock<std::mutex> lock(outputMessagePool.mutex);
+
+	if (!outputMessagePool.freeObjects.empty()) {
+		OutputMessage_ptr outputMessage = outputMessagePool.freeObjects.back();
+		outputMessagePool.freeObjects.pop_back();
+		return outputMessage;
+	} else {
+		return std::make_shared<OutputMessage>();
+	}
 }

@@ -130,12 +130,7 @@ class Npc final : public Creature
 		void removePlayerInteraction(uint32_t playerId);
 		void resetPlayerInteractions();
 
-		bool isInteractingWithPlayer(uint32_t playerId) {
-		if (playerInteractions.find(playerId) == playerInteractions.end()) {
-			return false;
-		}
-			return true;
-		}
+		bool isInteractingWithPlayer(uint32_t playerId) const;
 
 		bool isPlayerInteractingOnTopic(uint32_t playerId, uint16_t topicId) {
 			auto it = playerInteractions.find(playerId);

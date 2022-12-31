@@ -14,6 +14,7 @@
 #endif
 
 #include "declarations.hpp"
+#include "utils/definitions.h"
 #include "creatures/combat/spells.h"
 #include "creatures/players/grouping/familiars.h"
 #include "database/databasemanager.h"
@@ -71,6 +72,42 @@ std::string getCompiler() {
 	#endif
 }
 
+std::string getCppVersion() {
+	std::string cppVersion;
+	// c++ 20 or higher still doesn't have a definitive version
+	if (__cplusplus > 201703L) {
+		return cppVersion = "C++20 or higher";
+	}
+	else if (__cplusplus == 201703L) {
+		return cppVersion = "C++17";
+	}
+	else if (__cplusplus == 201402L) {
+		return cppVersion = "C++14";
+	}
+	else if (__cplusplus == 201103L) {
+		return cppVersion = "C++11";
+	}
+	else if (__cplusplus == 199711L) {
+		return cppVersion = "C++98";
+	}
+	else {
+		return "C++ unknown";
+	}
+}
+
+std::string getPlatform() {
+	std::string platform;
+	#if defined(__amd64__) || defined(_M_X64)
+		return platform = "x64";
+	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
+		return platform = "x86";
+	#elif defined(__arm__)
+		return platform = "ARM";
+	#else
+		return platform = "unknown";
+	#endif
+}
+
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
@@ -88,7 +125,7 @@ void badAllocationHandler() {
 }
 
 void modulesLoadHelper(bool loaded, std::string moduleName) {
-	SPDLOG_INFO("Loading {}", moduleName);
+	SPDLOG_INFO("Loaded {}", moduleName);
 	if (!loaded) {
 		SPDLOG_ERROR("Cannot load: {}", moduleName);
 		startupErrorMessage();
@@ -214,7 +251,7 @@ int main(int argc, char* argv[]) {
 	g_dispatcher().start();
 	g_scheduler().start();
 
-	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
+	g_dispatcher().addTask(createTask(std::bind_front(mainLoader, argc, argv,
 												&serviceManager)));
 
 	g_loaderSignal.wait(g_loaderUniqueLock);
@@ -243,8 +280,12 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
 #ifdef _WIN32
-	SetConsoleTitle(STATUS_SERVER_NAME);
-#endif
+#ifdef UNICODE
+SetConsoleTitle(std::bit_cast<LPCWSTR>(STATUS_SERVER_NAME));
+#else
+SetConsoleTitle(std::bit_cast<LPCSTR>(STATUS_SERVER_NAME));
+#endif  // !UNICODE
+#endif  // _WIN32
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	SPDLOG_INFO("{} - Version [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);
@@ -255,24 +296,15 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	SPDLOG_INFO("{} - Version {}", STATUS_SERVER_NAME, STATUS_SERVER_VERSION);
 #endif
 
-	std::string platform;
-	#if defined(__amd64__) || defined(_M_X64)
-		platform = "x64";
-	#elif defined(__i386__) || defined(_M_IX86) || defined(_X86_)
-		platform = "x86";
-	#elif defined(__arm__)
-		platform = "ARM";
-	#else
-		platform = "unknown";
-	#endif
-
-	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
+	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, getPlatform());
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);
 #endif
 
 	SPDLOG_INFO("A server developed by: {}", STATUS_SERVER_DEVELOPERS);
+	SPDLOG_INFO("Thanks for our contributors: "
+		"https://github.com/opentibiabr/canary/graphs/contributors");
 	SPDLOG_INFO("Visit our website for updates, support, and resources: "
 		"https://docs.opentibiabr.org/");
 

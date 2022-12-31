@@ -83,11 +83,12 @@ void ProtocolLogin::getCharacterList(const std::string& email, const std::string
 		output->addByte(1);
 		output->add<uint32_t>(0);
 	} else {
-	uint32_t days;
-	account.GetPremiumRemaningDays(&days);
-	output->addByte(0);
-	output->add<uint32_t>(time(nullptr) + (days * 86400));
-  }
+		uint32_t days;
+		account.GetPremiumRemaningDays(&days);
+		output->addByte(0);
+		auto time = static_cast<uint32_t>(Game::getTimeNow() + (days * 86400));
+		output->add<uint32_t>(time);
+	}
 
 	send(output);
 
@@ -165,5 +166,5 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage& msg)
 	}
 
 	auto thisPtr = std::static_pointer_cast<ProtocolLogin>(shared_from_this());
-	g_dispatcher().addTask(createTask(std::bind(&ProtocolLogin::getCharacterList, thisPtr, email, password, version)));
+	g_dispatcher().addTask(createTask(std::bind_front(&ProtocolLogin::getCharacterList, thisPtr, email, password, version)));
 }

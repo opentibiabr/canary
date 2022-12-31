@@ -127,28 +127,19 @@ StashContainerList Container::getStowableItems() const
 	return toReturnList;
 }
 
-Attr_ReadValue Container::readAttr(AttrTypes_t attr, PropStream& propStream)
+bool Container::unserializeAttributes(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream, Position position, const std::string &function)
 {
-	if (attr == ATTR_CONTAINER_ITEMS) {
-		if (!propStream.read<uint32_t>(serializationCount)) {
-			return ATTR_READ_ERROR;
-		}
-		return ATTR_READ_END;
-	}
-	return Item::readAttr(attr, propStream);
-}
-
-bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream)
-{
-	bool ret = Item::unserializeItemNode(loader, node, propStream);
+	// Deserialize attributes of the container
+	bool ret = Item::unserializeAttributes(propStream, position, function);
 	if (!ret) {
 		return false;
 	}
 
+	// Deserialize items in the container
 	for (auto& itemNode : node.children) {
-		//load container items
+		// Check if the node is an item node
 		if (itemNode.type != OTBM_ITEM) {
-			// unknown type
+			// Unknown node type
 			return false;
 		}
 
@@ -157,15 +148,24 @@ bool Container::unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, 
 			return false;
 		}
 
-		Item* item = Item::CreateItem(itemPropStream);
+		// Create the item from the serialized data
+		Item* item = Item::createMapItem(itemPropStream);
 		if (!item) {
 			return false;
 		}
 
-		if (!item->unserializeItemNode(loader, itemNode, itemPropStream)) {
+		// Deserialize attributes of the item
+		if (!item->unserializeAttributes(itemPropStream, position, __FUNCTION__)) {
 			return false;
 		}
 
+		if (auto subContainer = item->getContainer()) {
+			if (!subContainer->unserializeAttributes(loader, itemNode, itemPropStream, position, function)) {
+				continue;
+			}
+		}
+
+		// Add the item to the container and update the total weight
 		addItem(item);
 		updateItemWeight(item->getWeight());
 	}
@@ -185,13 +185,17 @@ bool Container::countsToLootAnalyzerBalance()
 	return false;
 }
 
-void Container::updateItemWeight(int32_t diff)
+void Container::updateWeight(int32_t diff)
 {
 	totalWeight += diff;
-	Container* parentContainer = this;	// credits: SaiyansKing
-	while ((parentContainer = parentContainer->getParentContainer()) != nullptr) {
-		parentContainer->totalWeight += diff;
+	if (auto parent = getParentContainer()) {
+		parent->updateWeight(diff);
 	}
+}
+
+void Container::updateItemWeight(int32_t diff)
+{
+	updateWeight(diff);
 }
 
 uint32_t Container::getWeight() const

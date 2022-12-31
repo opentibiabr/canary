@@ -184,7 +184,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	}
 
 	uint16_t innerLength = msg.get<uint16_t>();
-	if (innerLength > msgLength - 2) {
+	if (std::cmp_greater(innerLength, msgLength - 2)) {
 		return false;
 	}
 
@@ -243,7 +243,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	static thread_local std::array<char, NETWORKMESSAGE_MAXSIZE> defBuffer;
 	defStream->next_in = msg.getOutputBuffer();
 	defStream->avail_in = outputMessageSize;
-	defStream->next_out = (Bytef*)defBuffer.data();
+	defStream->next_out = std::bit_cast<Bytef*>(defBuffer.data());
 	defStream->avail_out = NETWORKMESSAGE_MAXSIZE;
 
 	if (int32_t ret = deflate(defStream.get(), Z_FINISH);
@@ -258,7 +258,7 @@ bool Protocol::compression(OutputMessage& msg) const
 	}
 
 	msg.reset();
-	auto charData = static_cast<char*>(static_cast<void*>(defBuffer.data()));
+	auto charData = std::bit_cast<const char*>(defBuffer.data());
 	msg.addBytes(charData, static_cast<size_t>(totalSize));
 	return true;
 }

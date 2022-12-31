@@ -11,19 +11,7 @@
 
 #include "items/containers/depot/depotlocker.h"
 
-DepotLocker::DepotLocker(uint16_t type) :
-	Container(type, 4), depotId(0) {}
-
-Attr_ReadValue DepotLocker::readAttr(AttrTypes_t attr, PropStream& propStream)
-{
-	if (attr == ATTR_DEPOT_ID) {
-		if (!propStream.read<uint16_t>(depotId)) {
-			return ATTR_READ_ERROR;
-		}
-		return ATTR_READ_CONTINUE;
-	}
-	return Item::readAttr(attr, propStream);
-}
+DepotLocker::DepotLocker(uint16_t type) : Container(type, 4) {}
 
 ReturnValue DepotLocker::queryAdd(int32_t, const Thing&, uint32_t, uint32_t, Creature*) const
 {
@@ -46,7 +34,7 @@ void DepotLocker::postRemoveNotification(Thing* thing, const Cylinder* newParent
 
 void DepotLocker::removeInbox(Inbox* inbox)
 {
-	auto cit = std::find(itemlist.begin(), itemlist.end(), inbox);
+	auto cit = std::ranges::find(itemlist.begin(), itemlist.end(), inbox);
 	if (cit == itemlist.end()) {
 		return;
 	}

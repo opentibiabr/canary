@@ -27,16 +27,6 @@ class DepotLocker final : public Container
 
 		void removeInbox(Inbox* inbox);
 
-		//serialization
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
-
-		uint16_t getDepotId() const {
-			return depotId;
-		}
-		void setDepotId(uint16_t newDepotId) {
-			this->depotId = newDepotId;
-		}
-
 		//cylinder implementations
 		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
 				uint32_t flags, Creature* actor = nullptr) const override;
@@ -50,9 +40,6 @@ class DepotLocker final : public Container
 		bool isRemoved() const override {
 			return false;
 		}
-
-	private:
-		uint16_t depotId;
 };
 
 #endif  // SRC_ITEMS_CONTAINERS_DEPOT_DEPOTLOCKER_H_

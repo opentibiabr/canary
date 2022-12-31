@@ -11,6 +11,7 @@
 
 #include "config/configmanager.h"
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/game.h"
 #include "lua/scripts/scripts.h"
 #include "utils/pugicast.h"
 
@@ -31,9 +32,10 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 	}
 
 	int daysNow;
-	time_t t = time(nullptr);
-	const tm* timePtr = localtime(&t);
-	int daysMath = ((timePtr->tm_year + 1900) * 365) + ((timePtr->tm_mon + 1) * 30) + (timePtr->tm_mday);
+	auto dayNow = Game::getDateDay();
+	auto monthNow = Game::getDateMonth();
+	auto yearNow = Game::getDateYear();
+	int daysMath = ((yearNow + 1900) * 365) + ((monthNow + 1) * 30) + dayNow;
 
 	for (auto schedNode : doc.child("events").children()) {
 		std::string ss_d;
@@ -79,25 +81,25 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 
 		for (auto schedENode : schedNode.children()) {
 			if ((schedENode.attribute("exprate"))) {
-				uint16_t exprate = pugi::cast<uint16_t>(schedENode.attribute("exprate").value());
+				auto exprate = static_cast<uint16_t>(schedENode.attribute("exprate").as_uint());
 				g_eventsScheduler().setExpSchedule(exprate);
 				ss << " exp: " << exprate << "%";
 			}
 
 			if ((schedENode.attribute("lootrate"))) {
-				uint16_t lootrate = pugi::cast<uint16_t>(schedENode.attribute("lootrate").value());
+				auto lootrate = static_cast<uint16_t>(schedENode.attribute("lootrate").as_uint());
 				g_eventsScheduler().setLootSchedule(lootrate);
 				ss << ", loot: " << lootrate << "%";
 			}
 
 			if ((schedENode.attribute("spawnrate"))) {
-				uint32_t spawnrate = pugi::cast<uint32_t>(schedENode.attribute("spawnrate").value());
+				uint32_t spawnrate = schedENode.attribute("spawnrate").as_uint();
 				g_eventsScheduler().setSpawnMonsterSchedule(spawnrate);
 				ss << ", spawn: "  << spawnrate << "%";
 			}
 
 			if ((schedENode.attribute("skillrate"))) {
-				uint16_t skillrate = pugi::cast<uint16_t>(schedENode.attribute("skillrate").value());
+				auto skillrate = static_cast<uint16_t>(schedENode.attribute("skillrate").as_uint());
 				g_eventsScheduler().setSkillSchedule(skillrate);
 				ss << ", skill: " << skillrate << "%";
 				break;

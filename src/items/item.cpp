@@ -10,14 +10,16 @@
 #include "pch.hpp"
 
 #include "items/item.h"
+#include "items/functions/item_read_map_attributes.hpp"
 #include "items/functions/item_parse.hpp"
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
-#include "game/movement/teleport.h"
 #include "items/trashholder.h"
 #include "items/containers/mailbox/mailbox.h"
 #include "map/house/house.h"
+#include "io/iologindata.h"
 #include "game/game.h"
+#include "game/movement/teleport.h"
 #include "items/bed.h"
 #include "containers/rewards/rewardchest.h"
 #include "creatures/players/imbuements/imbuements.h"
@@ -25,7 +27,6 @@
 #include "creatures/combat/spells.h"
 
 #define IMBUEMENT_SLOT 500
-
 
 Items Item::items;
 
@@ -154,47 +155,48 @@ Container* Item::CreateItemAsContainer(const uint16_t type, uint16_t size)
 	return newItem;
 }
 
-Item* Item::CreateItem(PropStream& propStream)
+Item* Item::createMapItem(PropStream& propStream)
 {
-	uint16_t id;
-	if (!propStream.read<uint16_t>(id)) {
+	uint16_t mapItemId = propStream.get<uint16_t>();
+	if (!items.hasItemType(mapItemId)) {
+		SPDLOG_ERROR("[{}] Item with id {} not exist", __FUNCTION__, mapItemId);
 		return nullptr;
 	}
 
-	switch (id) {
+	switch (mapItemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
-			id = ITEM_FIREFIELD_PERSISTENT_FULL;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_FULL;
 			break;
 
 		case ITEM_FIREFIELD_PVP_MEDIUM:
-			id = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_MEDIUM;
 			break;
 
 		case ITEM_FIREFIELD_PVP_SMALL:
-			id = ITEM_FIREFIELD_PERSISTENT_SMALL;
+			mapItemId = ITEM_FIREFIELD_PERSISTENT_SMALL;
 			break;
 
 		case ITEM_ENERGYFIELD_PVP:
-			id = ITEM_ENERGYFIELD_PERSISTENT;
+			mapItemId = ITEM_ENERGYFIELD_PERSISTENT;
 			break;
 
 		case ITEM_POISONFIELD_PVP:
-			id = ITEM_POISONFIELD_PERSISTENT;
+			mapItemId = ITEM_POISONFIELD_PERSISTENT;
 			break;
 
 		case ITEM_MAGICWALL:
-			id = ITEM_MAGICWALL_PERSISTENT;
+			mapItemId = ITEM_MAGICWALL_PERSISTENT;
 			break;
 
 		case ITEM_WILDGROWTH:
-			id = ITEM_WILDGROWTH_PERSISTENT;
+			mapItemId = ITEM_WILDGROWTH_PERSISTENT;
 			break;
 
 		default:
 			break;
 	}
 
-	return Item::CreateItem(id, 0);
+	return Item::CreateItem(mapItemId, 0);
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
@@ -224,16 +226,16 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 Item::Item(const Item& i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
 {
-	if (i.attributes) {
-		attributes.reset(new ItemAttributes(*i.attributes));
+	if (i.itemAttributesPtr) {
+		itemAttributesPtr.reset(new ItemAttributes(*i.itemAttributesPtr));
 	}
 }
 
 Item* Item::clone() const
 {
 	Item* item = Item::CreateItem(id, count);
-	if (attributes) {
-		item->attributes.reset(new ItemAttributes(*attributes));
+	if (itemAttributesPtr) {
+		item->itemAttributesPtr.reset(new ItemAttributes(*itemAttributesPtr));
 	}
 	return item;
 }
@@ -248,20 +250,20 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
-	if (!attributes) {
-		return !otherItem->attributes;
+	if (!itemAttributesPtr) {
+		return !otherItem->itemAttributesPtr;
 	}
 
-	const auto& otherAttributes = otherItem->attributes;
+	const auto& otherAttributes = otherItem->itemAttributesPtr;
 	if (!otherAttributes) {
 		return false;
 	}
 
-	if (attributes->attributeBits != otherAttributes->attributeBits) {
+	if (itemAttributesPtr->attributeBits != otherAttributes->attributeBits) {
 		return false;
 	}
 
-	for (const auto& attribute : attributes->attributes) {
+	for (const auto& attribute : itemAttributesPtr->attributes) {
 		for (const auto& otherAttribute : otherAttributes->attributes) {
 			if (attribute.type != otherAttribute.type) {
 				continue;
@@ -434,368 +436,24 @@ void Item::setSubType(uint16_t n)
 	}
 }
 
-Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
+bool Item::unserializeAttributes(PropStream& propStream, Position position, const std::string &function)
 {
-	switch (attr) {
-		case ATTR_COUNT:
-		case ATTR_RUNE_CHARGES: {
-			uint8_t charges;
-			if (!propStream.read<uint8_t>(charges)) {
-				return ATTR_READ_ERROR;
+	try {
+		uint8_t attributeType;
+		while (propStream.read<uint8_t>(attributeType) && attributeType != 0) {
+			Attr_ReadValue ret = ItemReadMapAttributes::readAttributesMap(static_cast<AttrTypes_t>(attributeType), *this, propStream, position);
+			if (ret == ATTR_READ_ERROR) {
+				SPDLOG_ERROR("[{}] Invalid item attribute {}, reading function [{}]", __FUNCTION__, attributeType, function);
+				return false;
+			} else if (ret == ATTR_READ_END) {
+				return true;
 			}
-
-			setSubType(charges);
-			break;
 		}
-
-		case ATTR_ACTION_ID: {
-			uint16_t actionId;
-			if (!propStream.read<uint16_t>(actionId)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setActionId(actionId);
-			break;
-		}
-
-		case ATTR_UNIQUE_ID: {
-			uint16_t uniqueId;
-			if (!propStream.read<uint16_t>(uniqueId)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setUniqueId(uniqueId);
-			break;
-		}
-
-		case ATTR_TEXT: {
-			std::string text;
-			if (!propStream.readString(text)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setText(text);
-			break;
-		}
-
-		case ATTR_WRITTENDATE: {
-			uint32_t writtenDate;
-			if (!propStream.read<uint32_t>(writtenDate)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setDate(writtenDate);
-			break;
-		}
-
-		case ATTR_WRITTENBY: {
-			std::string writer;
-			if (!propStream.readString(writer)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setWriter(writer);
-			break;
-		}
-
-		case ATTR_DESC: {
-			std::string text;
-			if (!propStream.readString(text)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setSpecialDescription(text);
-			break;
-		}
-
-		case ATTR_CHARGES: {
-			uint16_t charges;
-			if (!propStream.read<uint16_t>(charges)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setSubType(charges);
-			break;
-		}
-
-		case ATTR_DURATION: {
-			int32_t duration;
-			if (!propStream.read<int32_t>(duration)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setDuration(duration);
-			break;
-		}
-
-		case ATTR_DECAYING_STATE: {
-			uint8_t state;
-			if (!propStream.read<uint8_t>(state)) {
-				return ATTR_READ_ERROR;
-			}
-
-			if (state != DECAYING_FALSE) {
-				setDecaying(DECAYING_PENDING);
-			}
-			break;
-		}
-
-		case ATTR_NAME: {
-			std::string name;
-			if (!propStream.readString(name)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setStrAttr(ITEM_ATTRIBUTE_NAME, name);
-			break;
-		}
-
-		case ATTR_ARTICLE: {
-			std::string article;
-			if (!propStream.readString(article)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setStrAttr(ITEM_ATTRIBUTE_ARTICLE, article);
-			break;
-		}
-
-		case ATTR_PLURALNAME: {
-			std::string pluralName;
-			if (!propStream.readString(pluralName)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setStrAttr(ITEM_ATTRIBUTE_PLURALNAME, pluralName);
-			break;
-		}
-
-		case ATTR_WEIGHT: {
-			uint32_t weight;
-			if (!propStream.read<uint32_t>(weight)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_WEIGHT, weight);
-			break;
-		}
-
-		case ATTR_ATTACK: {
-			int32_t attack;
-			if (!propStream.read<int32_t>(attack)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_ATTACK, attack);
-			break;
-		}
-
-		case ATTR_DEFENSE: {
-			int32_t defense;
-			if (!propStream.read<int32_t>(defense)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_DEFENSE, defense);
-			break;
-		}
-
-		case ATTR_EXTRADEFENSE: {
-			int32_t extraDefense;
-			if (!propStream.read<int32_t>(extraDefense)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE, extraDefense);
-			break;
-		}
-
-		case ATTR_IMBUEMENT_SLOT: {
-			int32_t imbuementSlot;
-			if (!propStream.read<int32_t>(imbuementSlot)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, imbuementSlot);
-			break;
-		}
-
-		case ATTR_OPENCONTAINER: {
-			uint8_t openContainer;
-			if (!propStream.read<uint8_t>(openContainer)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, openContainer);
-			break;
-		}
-
-		case ATTR_ARMOR: {
-			int32_t armor;
-			if (!propStream.read<int32_t>(armor)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_ARMOR, armor);
-			break;
-		}
-
-		case ATTR_HITCHANCE: {
-			int8_t hitChance;
-			if (!propStream.read<int8_t>(hitChance)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_HITCHANCE, hitChance);
-			break;
-		}
-
-		case ATTR_SHOOTRANGE: {
-			uint8_t shootRange;
-			if (!propStream.read<uint8_t>(shootRange)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE, shootRange);
-			break;
-		}
-
-		case ATTR_SPECIAL: {
-			std::string special;
-			if (!propStream.readString(special)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setStrAttr(ITEM_ATTRIBUTE_SPECIAL, special);
-			break;
-		}
-
-		case ATTR_QUICKLOOTCONTAINER: {
-			uint32_t flags;
-			if (!propStream.read<uint32_t>(flags)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
-			break;
-		}
-
-		//these should be handled through derived classes
-		//If these are called then something has changed in the items.xml since the map was saved
-		//just read the values
-
-		//Depot class
-		case ATTR_DEPOT_ID: {
-			if (!propStream.skip(2)) {
-				return ATTR_READ_ERROR;
-			}
-			break;
-		}
-
-		//Door class
-		case ATTR_HOUSEDOORID: {
-			if (!propStream.skip(1)) {
-				return ATTR_READ_ERROR;
-			}
-			break;
-		}
-
-		//Bed class
-		case ATTR_SLEEPERGUID: {
-			if (!propStream.skip(4)) {
-				return ATTR_READ_ERROR;
-			}
-			break;
-		}
-
-		case ATTR_SLEEPSTART: {
-			if (!propStream.skip(4)) {
-				return ATTR_READ_ERROR;
-			}
-			break;
-		}
-
-		//Teleport class
-		case ATTR_TELE_DEST: {
-			if (!propStream.skip(5)) {
-				return ATTR_READ_ERROR;
-			}
-			break;
-		}
-
-		//Container class
-		case ATTR_CONTAINER_ITEMS: {
-			return ATTR_READ_ERROR;
-		}
-
-		case ATTR_CUSTOM_ATTRIBUTES: {
-			uint64_t size;
-			if (!propStream.read<uint64_t>(size)) {
-				return ATTR_READ_ERROR;
-			}
-
-			for (uint64_t i = 0; i < size; i++) {
-				// Unserialize key type and value
-				std::string key;
-				if (!propStream.readString(key)) {
-					return ATTR_READ_ERROR;
-				};
-
-				// Unserialize value type and value
-				ItemAttributes::CustomAttribute customAttribute;
-				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
-					return ATTR_READ_ERROR;
-				}
-
-				setCustomAttribute(key, customAttribute);
-			}
-			break;
-		}
-
-		case ATTR_IMBUEMENT_TYPE: {
-			std::string imbuementType;
-			if (!propStream.readString(imbuementType)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
-			break;
-		}
-
-		case ATTR_TIER: {
-			uint8_t tier;
-			if (!propStream.read<uint8_t>(tier)) {
-				return ATTR_READ_ERROR;
-			}
-
-			setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
-			break;
-		}
-
-		default:
-			return ATTR_READ_ERROR;
-	}
-
-	return ATTR_READ_CONTINUE;
-}
-
-bool Item::unserializeAttr(PropStream& propStream)
-{
-	uint8_t attr_type;
-	while (propStream.read<uint8_t>(attr_type) && attr_type != 0) {
-		Attr_ReadValue ret = readAttr(static_cast<AttrTypes_t>(attr_type), propStream);
-		if (ret == ATTR_READ_ERROR) {
-			return false;
-		} else if (ret == ATTR_READ_END) {
-			return true;
-		}
+	} catch (const std::system_error& error) {
+		SPDLOG_ERROR("[{}] Failed to unserialize map item with id: {}, error code: {}, reading function [{}]", __FUNCTION__, getID(), error.what(), function);
+		return false;
 	}
 	return true;
-}
-
-bool Item::unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream)
-{
-	return unserializeAttr(propStream);
 }
 
 void Item::serializeAttr(PropWriteStream& propWriteStream) const
@@ -921,7 +579,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-		const ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getCustomAttributeMap();
+		const ItemAttributes::CustomAttributeMap* customAttrMap = itemAttributesPtr->getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
 		propWriteStream.write<uint64_t>(customAttrMap->size());
 		for (const auto &entry : *customAttrMap) {
@@ -2631,31 +2289,42 @@ void Item::stopDecaying()
 	g_decay().stopDecay(this);
 }
 
+// Check if the item has market attributes
 bool Item::hasMarketAttributes()
 {
-	if (!attributes) {
+	// If the item doesn't have any attributes or the attribute bits are 0, return true
+	if (!itemAttributesPtr || itemAttributesPtr->attributeBits == 0) {
 		return true;
 	}
 
-	for (const auto& attribute : attributes->getList()) {
+	bool success = false;
+	// Check each attribute in the item's attribute list
+	return std::ranges::all_of(itemAttributesPtr->getList(), [&](const auto& attribute) {
+		// If the attribute type is ITEM_ATTRIBUTE_CHARGES and the attribute value is different from the item's charges, return false
 		if (attribute.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
-			return false;
+			return success;
 		}
-
+		
+		// If the attribute type is ITEM_ATTRIBUTE_DURATION and the attribute value is different from the item's default duration, return false
 		if (attribute.type == ITEM_ATTRIBUTE_DURATION && static_cast<uint32_t>(attribute.value.integer) != getDefaultDuration()) {
-			return false;
+			return success;
 		}
-
+		
+		// If the attribute type is ITEM_ATTRIBUTE_IMBUEMENT_TYPE and the item doesn't have any imbued effects, return false
 		if (attribute.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
-			return false;
+			return success;
 		}
-
+		
+		// If the attribute type is ITEM_ATTRIBUTE_TIER and the attribute value is different from the item's tier, return false
 		if (attribute.type == ITEM_ATTRIBUTE_TIER && static_cast<uint32_t>(attribute.value.integer) != getTier()) {
-			return false;
+			return success;
 		}
-	}
 
-	return true;
+		return success = true;
+	});
+
+	// return success result
+	return success;
 }
 
 bool Item::isInsideDepot(bool includeInbox/* = false*/) const

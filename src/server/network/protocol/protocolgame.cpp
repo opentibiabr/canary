@@ -383,7 +383,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->lastIP = player->getIP();
-		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+		player->lastLoginSaved = std::max<time_t>(Game::getTimeNow(), player->lastLoginSaved + 1);
 		acceptPackets = true;
 	}
 	else
@@ -440,7 +440,7 @@ void ProtocolGame::connect(uint32_t playerId, OperatingSystem_t operatingSystem)
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
-	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+	player->lastLoginSaved = std::max<time_t>(Game::getTimeNow(), player->lastLoginSaved + 1);
 	player->resetIdleTime();
 	acceptPackets = true;
 }
@@ -608,7 +608,7 @@ void ProtocolGame::onConnect()
 	output->addByte(0x1F);
 
 	// Add timestamp & random number
-	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
+	challengeTimestamp = static_cast<uint32_t>(Game::getTimeNow());
 	output->add<uint32_t>(challengeTimestamp);
 
 	challengeRandom = randNumber(generator);
@@ -1776,7 +1776,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
+	msg.add<uint32_t>(Game::getTimeNow()); // Last Update
 
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
@@ -3554,7 +3554,7 @@ void ProtocolGame::sendBasicData()
 	if (player->isPremium())
 	{
 		msg.addByte(1);
-		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		msg.add<uint32_t>(Game::getTimeNow() + (player->premiumDays * 86400));
 	}
 	else
 	{

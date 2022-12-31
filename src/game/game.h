@@ -156,9 +156,9 @@ class Game
 		void addItemsClassification(ItemClassification* itemsClassification) {
 			itemsClassifications.push_back(itemsClassification);
 		}
-		ItemClassification* getItemsClassification(uint8_t id, bool create) {
-			auto it = std::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](ItemClassification* it) {
-				return it->id == id;
+		const ItemClassification* getItemsClassification(uint8_t id, bool create) {
+			const auto it = std::ranges::find_if(itemsClassifications.begin(), itemsClassifications.end(), [id](const ItemClassification* itemClassification) {
+				return itemClassification->id == id;
 				});
 
 			if (it != itemsClassifications.end()) {
@@ -269,6 +269,7 @@ class Game
 
 		void playerCyclopediaCharacterInfo(Player* player, uint32_t characterID, CyclopediaCharacterInfoType_t characterInfoType, uint16_t entriesPerPage, uint16_t page);
 
+		static void playerSendHighscoreTask(DBResult_ptr result, uint32_t playerID, uint8_t category, uint8_t entriesPerPage);
 		void playerHighscores(Player* player, HighscoreType_t type, uint8_t category, uint32_t vocation, const std::string& worldName, uint16_t page, uint8_t entriesPerPage);
 
 		void playerTournamentLeaderboard(uint32_t playerId, uint8_t leaderboardType);
@@ -474,7 +475,9 @@ class Game
 		}
 		const std::map<uint32_t, Npc*>& getNpcs() const { return npcs; }
 
-		const std::vector<ItemClassification*>& getItemsClassifications() const { return itemsClassifications; }
+		const std::vector<ItemClassification*>& getItemsClassifications() const {
+			return itemsClassifications;
+		}
 
 		void addPlayer(Player* player);
 		void removePlayer(Player* player);
@@ -560,20 +563,33 @@ class Game
 
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
 		bool isMagicEffectRegistered(uint8_t type) const {
-			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
+			return std::ranges::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
 		}
 
 		bool isDistanceEffectRegistered(uint8_t type) const {
-			return std::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
+			return std::ranges::find(registeredDistanceEffects.begin(), registeredDistanceEffects.end(), type) != registeredDistanceEffects.end();
 		}
 
 		bool isLookTypeRegistered(uint16_t type) const {
-			return std::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
+			return std::ranges::find(registeredLookTypes.begin(), registeredLookTypes.end(), type) != registeredLookTypes.end();
 		}
 
 		void setCreateLuaItems(Position position, uint16_t itemId) {
 			mapLuaItemsStored[position] = itemId;
 		}
+		
+		// Return time now
+		static std::time_t getTimeNow();
+
+		static tm getTime(time_t timeNow = 0);
+
+		// Return actual day
+		static uint16_t getDateDay();
+		static uint16_t getDateMonth();
+		static int32_t getDateYear();
+
+		// Return actual minute
+		static int32_t getTimeMinutes();
 
 		std::set<uint32_t> getFiendishMonsters() const {
 			return fiendishMonsters;
@@ -669,7 +685,7 @@ class Game
 		LightState_t lightState = LIGHT_STATE_DAY;
 		LightState_t currentLightState = lightState;
 		uint8_t lightLevel = LIGHT_LEVEL_DAY;
-		int32_t lightHour = SUNRISE + (SUNSET - SUNRISE) / 2;
+		int32_t lightHour = std::midpoint(SUNRISE, SUNSET);
 		// (1440 total light of tibian day)/(3600 real seconds each tibian day) * 10 seconds event interval
 		int32_t lightHourDelta = (LIGHT_DAY_LENGTH * (EVENT_LIGHTINTERVAL_MS/1000)) / DAY_LENGTH_SECONDS;
 

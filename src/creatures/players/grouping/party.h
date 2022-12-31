@@ -95,25 +95,13 @@ class Party
 		void resetAnalyzer();
 		void reloadPrices();
 
-		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const
-		{
-			if (auto it = std::find_if(membersData.begin(), membersData.end(), [playerId](const PartyAnalyzer* preyIt) {
-					return preyIt->id == playerId;
-				}); it != membersData.end()) {
-				return *it;
-			}
+		PartyAnalyzer* getPlayerPartyAnalyzerStruct(uint32_t playerId) const;
 
-			return nullptr;
-		}
-
-		uint32_t getAnalyzerTimeNow() const
-		{
-			return static_cast<uint32_t>(time(nullptr) - trackerTime);
-		}
+		uint32_t getAnalyzerTimeNow() const;
 
 	public:
 		// Party analyzer
-		time_t trackerTime = time(nullptr);
+		time_t trackerTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 		PartyAnalyzer_t priceType = MARKET_PRICE;
 		std::vector<PartyAnalyzer*> membersData;
 

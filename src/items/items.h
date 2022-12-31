@@ -14,6 +14,7 @@
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "game/movement/position.h"
+#include "utils/string_hash.hpp"
 
 struct Abilities {
 	public:
@@ -303,7 +304,6 @@ class ItemType
 class Items
 {
 	public:
-		using NameMap = std::unordered_multimap<std::string, uint16_t>;
 		using InventoryVector = std::vector<uint16_t>;
 
 		Items();
@@ -337,7 +337,7 @@ class Items
 		ItemTypes_t getLootType(const std::string& strValue);
 
 		bool loadFromXml();
-		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id);
+		void parseItemNode(const pugi::xml_node& itemNode, uint16_t id, const std::string &itemName);
 
 		void buildInventoryList();
 		const InventoryVector& getInventory() const {
@@ -348,7 +348,8 @@ class Items
 			return items.size();
 		}
 
-		NameMap nameToItems;
+		// std::unordered_multimap with std::string as the key type, using the custom StringHash hasher and the transparent std::equal_to comparator
+		std::unordered_multimap<std::string, uint16_t, StringHash, std::equal_to<>> nameToItems;
 
 	private:
 

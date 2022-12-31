@@ -11,7 +11,7 @@
 
 #include "core.hpp"
 #include "utils/tools.h"
-
+#include "game/game.h"
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -254,7 +254,7 @@ void trim_left(std::string& source, char t)
 
 void toLowerCaseString(std::string& source)
 {
-	std::transform(source.begin(), source.end(), source.begin(), tolower);
+	std::ranges::transform(source.begin(), source.end(), source.begin(), tolower);
 }
 
 std::string asLowerCaseString(std::string source)
@@ -265,7 +265,7 @@ std::string asLowerCaseString(std::string source)
 
 std::string asUpperCaseString(std::string source)
 {
-	std::transform(source.begin(), source.end(), source.begin(), toupper);
+	std::ranges::transform(source.begin(), source.end(), source.begin(), toupper);
 	return source;
 }
 
@@ -336,6 +336,33 @@ bool boolean_random(double probability/* = 0.5*/)
 {
 	static std::bernoulli_distribution booleanRand;
 	return booleanRand(getRandomGenerator(), std::bernoulli_distribution::param_type(probability));
+}
+
+std::string fromIntToString(const int intType)
+{
+	static std::stringstream stringStream;
+	stringStream.str("");
+	stringStream << intType;
+	return stringStream.str();
+}
+
+template<class Iter>
+Iter splitStrings(const std::string &string, const std::string &delim, Iter out)
+{
+	const std::string & newString = string.data();
+	if (delim.empty()) {
+		*out++ = string.data();
+		return out;
+	}
+	size_t a = 0;
+	size_t b = newString.find(delim);
+	for ( ; b != std::string::npos;
+		a = b + delim.length(), b = newString.find(delim, a))
+	{
+		*out++ = std::move(newString.substr(a, b - a));
+	}
+	*out++ = std::move(newString.substr(a, newString.length() - a));
+	return out;
 }
 
 void trimString(std::string& str)
@@ -789,8 +816,9 @@ std::string getCombatName(CombatType_t combatType)
 
 CombatType_t getCombatType(const std::string& combatname)
 {
-	auto it = std::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combatname](std::pair<CombatType_t, std::string> const& pair) {
-		return pair.second == combatname;
+	std::string combat = combatname;
+	auto it = std::ranges::find_if(combatTypeNames.begin(), combatTypeNames.end(), [combat](std::pair<CombatType_t, std::string> const& pair) {
+		return pair.second == combat;
 	});
 
 	return it != combatTypeNames.end() ? it->first : COMBAT_NONE;
@@ -1410,7 +1438,8 @@ NameEval_t validateName(const std::string &name)
 	for(std::string str : toks) {
 		if(str.length()<2)
 			return INVALID_TOKEN_LENGTH;
-		else if(std::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) { //searching for prohibited words
+		// Searching for prohibited words
+		else if(std::ranges::find(prohibitedWords.begin(), prohibitedWords.end(),str) != prohibitedWords.end()) {
 			return INVALID_FORBIDDEN;
 		}
 	}
@@ -1499,4 +1528,19 @@ std::string formatPrice(std::string price, bool space/* = false*/)
 	}
 
 	return price;
+}
+
+bool isNumber(const std::string &string) {
+	return std::ranges::all_of(string, [](char ch) { return std::isdigit(ch); });
+}
+
+bool isAlpha(const std::string &string) {
+	return std::ranges::all_of(string, [](char ch) { return std::isalpha(ch); });
+}
+
+size_t strnlength(const char* string, size_t size) 
+{
+	const char* found;
+	memcpy(&found, &string, size);
+	return found ? (size_t)(found-string) : size; 
 }

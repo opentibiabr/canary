@@ -27,15 +27,10 @@ class BedItem final : public Item
 			return this;
 		}
 
-		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		void serializeAttr(PropWriteStream& propWriteStream) const override;
 
 		bool canRemove() const override {
 			return house == nullptr;
-		}
-
-		uint32_t getSleeper() const {
-			return sleeperGUID;
 		}
 
 		void setHouse(House* h) {
@@ -57,8 +52,6 @@ class BedItem final : public Item
 		void internalRemoveSleeper();
 
 		House* house = nullptr;
-		uint64_t sleepStart;
-		uint32_t sleeperGUID;
 };
 
 #endif  // SRC_ITEMS_BED_H_

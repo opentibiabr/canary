@@ -20,7 +20,7 @@ Direction Position::getRandomDirection()
 					DIRECTION_EAST,
 					DIRECTION_SOUTH
 	};
-	std::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
+	std::ranges::shuffle(dirList.begin(), dirList.end(), getRandomGenerator());
 
 	return dirList.front();
 }

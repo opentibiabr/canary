@@ -67,7 +67,7 @@ class Database
 		std::recursive_mutex databaseLock;
 		uint64_t maxPacketSize = 1048576;
 
-	friend class DBTransaction;
+		friend class DBTransaction;
 };
 
 class DBResult

@@ -11,7 +11,6 @@
 
 #include "game/game.h"
 #include "lua/creature/events.h"
-#include "utils/pugicast.h"
 #include "lua/creature/movement.h"
 
 void MoveEvents::clear() {
@@ -19,10 +18,6 @@ void MoveEvents::clear() {
 	actionIdMap.clear();
 	itemIdMap.clear();
 	positionsMap.clear();
-}
-
-Event_ptr MoveEvents::getEvent(const std::string& nodeName) {
-	return Event_ptr(new MoveEvent(&scriptInterface));
 }
 
 bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
@@ -118,10 +113,10 @@ bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
 		return true;
 	} else {
 		SPDLOG_WARN("[MoveEvents::registerLuaEvent] - "
-				"Missing id, aid, uid or position");
+				"Missing id, aid, uid or position for script with name {}", moveEvent.getFileName());
 		return false;
 	}
-	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for some script");
+	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for script with name {}", moveEvent.getFileName());
 	return false;
 }
 
@@ -255,7 +250,7 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 
 	uint32_t ret = 1;
 
-	MoveEvent* moveEvent = getEvent(tile, eventType);
+	MoveEvent *moveEvent = getEvent(tile, eventType);
 	if (moveEvent) {
 		ret &= moveEvent->fireStepEvent(creature, nullptr, pos);
 	}
@@ -280,7 +275,7 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 }
 
 uint32_t MoveEvents::onPlayerEquip(Player& player, Item& item, Slots_t slot, bool isCheck) {
-	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
+	MoveEvent *moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -288,7 +283,7 @@ uint32_t MoveEvents::onPlayerEquip(Player& player, Item& item, Slots_t slot, boo
 }
 
 uint32_t MoveEvents::onPlayerDeEquip(Player& player, Item& item, Slots_t slot) {
-	MoveEvent* moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
+	MoveEvent *moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
 	}
@@ -306,7 +301,7 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 	}
 
 	uint32_t ret = 1;
-	MoveEvent* moveEvent = getEvent(tile, eventType1);
+	MoveEvent *moveEvent = getEvent(tile, eventType1);
 	if (moveEvent) {
 		// No tile item
 		ret &= moveEvent->fireAddRemItem(item, tile.getPosition());
@@ -333,11 +328,33 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 		if (moveEvent) {
 			ret &= moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
 		}
+
 	}
+
 	return ret;
 }
 
-MoveEvent::MoveEvent(LuaScriptInterface* interface) : Event(interface) {}
+MoveEvent::MoveEvent(LuaScriptInterface* interface) : Script(interface) {}
+
+std::string MoveEvent::getScriptTypeName() const {
+	switch (eventType) {
+	case MOVE_EVENT_STEP_IN:
+		return "onStepIn";
+	case MOVE_EVENT_STEP_OUT:
+		return "onStepOut";
+	case MOVE_EVENT_EQUIP:
+		return "onEquip";
+	case MOVE_EVENT_DEEQUIP:
+		return "onDeEquip";
+	case MOVE_EVENT_ADD_ITEM:
+		return "onAddItem";
+	case MOVE_EVENT_REMOVE_ITEM:
+		return "onRemoveItem";
+	default:
+		SPDLOG_ERROR("[MoveEvent::getScriptTypeName] - Invalid event type for script with name {}", getFileName());
+		return std::string();
+	}
+}
 
 uint32_t MoveEvent::StepInField(Creature* creature, Item* item, const Position&) {
 	if (creature == nullptr) {
@@ -398,7 +415,7 @@ uint32_t MoveEvent::RemoveItemField(Item*, Item*, const Position&) {
 	return 1;
 }
 
-uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool isCheck) {
+uint32_t MoveEvent::EquipItem(MoveEvent *moveEvent, Player* player, Item* item, Slots_t slot, bool isCheck) {
 	if (player == nullptr) {
 		SPDLOG_ERROR("[MoveEvent::EquipItem] - Player is nullptr");
 		return 0;
@@ -423,7 +440,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		}
 
 		const std::map<uint16_t, bool>& vocEquipMap = moveEvent->getVocEquipMap();
-		if (!vocEquipMap.empty() && vocEquipMap.find(player->getVocationId()) == vocEquipMap.end()) {
+		if (!vocEquipMap.empty() && !vocEquipMap.contains(player->getVocationId())) {
 			return 0;
 		}
 	}
@@ -600,7 +617,7 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 }
 
 uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position& pos) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		return executeStep(creature, item, pos);
 	} else {
 		return stepFunction(&creature, item, pos);
@@ -641,7 +658,7 @@ bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos)
 }
 
 uint32_t MoveEvent::fireEquip(Player& player, Item& item, Slots_t toSlot, bool isCheck) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		if (!equipFunction || equipFunction(this, &player, &item, toSlot, isCheck) == 1) {
 			if (executeEquip(player, item, toSlot, isCheck)) {
 				return 1;
@@ -679,7 +696,7 @@ bool MoveEvent::executeEquip(Player& player, Item& item, Slots_t onSlot, bool is
 }
 
 uint32_t MoveEvent::fireAddRemItem(Item& item, Item& fromTile, const Position& pos) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
 		return moveFunction(&item, &fromTile, pos);
@@ -712,7 +729,7 @@ bool MoveEvent::executeAddRemItem(Item& item, Item& fromTile, const Position& po
 }
 
 uint32_t MoveEvent::fireAddRemItem(Item& item, const Position& pos) {
-	if (isScripted()) {
+	if (isLoadedCallback()) {
 		return executeAddRemItem(item, pos);
 	} else {
 		return moveFunction(&item, nullptr, pos);

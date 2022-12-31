@@ -20,6 +20,7 @@
 #include <forward_list>
 #include <list>
 #include <map>
+#include <numeric>
 #include <random>
 #include <ranges>
 #include <regex>

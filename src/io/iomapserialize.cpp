@@ -134,7 +134,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		//create a new item
 		Item* item = Item::CreateItem(id);
 		if (item) {
-			if (item->unserializeAttr(propStream)) {
+			if (item->unserializeAttributes(propStream, item->getPosition(), __FUNCTION__)) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					delete item;
@@ -168,7 +168,7 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 		}
 
 		if (item) {
-			if (item->unserializeAttr(propStream)) {
+			if (item->unserializeAttributes(propStream, item->getPosition(), __FUNCTION__)) {
 				Container* container = item->getContainer();
 				if (container && !loadContainer(propStream, container)) {
 					return false;
@@ -182,14 +182,14 @@ bool IOMapSerialize::loadItem(PropStream& propStream, Cylinder* parent)
 			//The map changed since the last save, just read the attributes
 			std::unique_ptr<Item> dummy(Item::CreateItem(id));
 			if (dummy) {
-				dummy->unserializeAttr(propStream);
+				dummy->unserializeAttributes(propStream, dummy->getPosition(), __FUNCTION__);
 				Container* container = dummy->getContainer();
 				if (container) {
 					if (!loadContainer(propStream, container)) {
 						return false;
 					}
 				} else if (BedItem* bedItem = dynamic_cast<BedItem*>(dummy.get())) {
-					uint32_t sleeperGUID = bedItem->getSleeper();
+					uint32_t sleeperGUID = bedItem->getSleeperGUID();
 					if (sleeperGUID != 0) {
 						g_game().removeBedSleeper(sleeperGUID);
 					}

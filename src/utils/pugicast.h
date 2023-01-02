@@ -23,14 +23,18 @@ namespace pugi {
 	{
 		T value; // Value to be returned
 		try {
-			// Uses std::stoll to convert the string to the generic type T
-			value = static_cast<T>(std::stoll(str));
+			if constexpr(std::is_same_v<T, float>) {
+				// Convert the string to float using std::stof
+				value = static_cast<T>(std::stof(str));
+			} else {
+				// Convert the string to T using std::stoll
+				value = static_cast<T>(std::stoll(str));
+			}
 		} catch (std::invalid_argument&) {
-			// Value of the string is invalid
 			value = T();
 		} catch (std::out_of_range&) {
-			// Value of the string is too large to fit in the range allowed by type T
 			value = T();
+			SPDLOG_WARN("Value of the string '{}' is too large to fit in the range allowed by type T", str);
 		}
 
 		return value;

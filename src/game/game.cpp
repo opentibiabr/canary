@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -3419,8 +3409,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	const ItemAttributes::CustomAttribute* attr = item->getCustomAttribute("unWrapId");
 	uint16_t unWrapId = 0;
 	if (attr != nullptr) {
-		uint32_t tmp = static_cast<uint32_t>(boost::get<int64_t>(attr->value));
-		unWrapId = (uint16_t)tmp;
+		unWrapId = static_cast<uint16_t>(attr->getInt());
 	}
 
 	// Prevent to wrap a filled bath tube
@@ -3437,10 +3426,10 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		uint16_t oldItemID = item->getID();
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
 		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
-		ItemAttributes::CustomAttribute val;
-		val.set<int64_t>(oldItemID);
+		ItemAttributes::CustomAttribute customAttribute;
+		customAttribute.setInt64(oldItemID);
 		std::string key = "unWrapId";
-		newItem->setCustomAttribute(key, val);
+		newItem->setCustomAttribute(key, customAttribute);
 		item->setSpecialDescription("Unwrap it in your own house to create a <" + itemName + ">.");
 		if (hiddenCharges > 0) {
 			item->setDate(hiddenCharges);

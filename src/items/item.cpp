@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -87,7 +77,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
 	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	uint32_t info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
+	auto info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
@@ -95,10 +85,10 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
-	std::string key = boost::lexical_cast<std::string>(IMBUEMENT_SLOT + slot);
-	ItemAttributes::CustomAttribute value;
-	value.set<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0);
-	setCustomAttribute(key, value);
+	std::string key = std::to_string(IMBUEMENT_SLOT + slot);
+	ItemAttributes::CustomAttribute customAttribute;
+	customAttribute.setInt64(duration > 0 ? (duration << 8) | imbuementId : 0);
+	setCustomAttribute(key, customAttribute);
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
@@ -752,12 +742,12 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				};
 
 				// Unserialize value type and value
-				ItemAttributes::CustomAttribute val;
-				if (!val.unserialize(propStream)) {
+				ItemAttributes::CustomAttribute customAttribute;
+				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
 					return ATTR_READ_ERROR;
 				}
 
-				setCustomAttribute(key, val);
+				setCustomAttribute(key, customAttribute);
 			}
 			break;
 		}

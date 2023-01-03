@@ -18,9 +18,9 @@ function gold_rank.onSay(player, words, param)
 		local x = 0
 		repeat
 			x = x + 1
-				str = str.."\n"..x.."- "..result.getString(resultId, "name").." ("..result.getNumber(resultId, "balance")..")."
-		until not result.next(resultId)
-		result.free(resultId)
+				str = str.."\n"..x.."- "..Result.getString(resultId, "name").." ("..Result.getNumber(resultId, "balance")..")."
+		until not Result.next(resultId)
+		Result.free(resultId)
 		if str == "" then
 			str = "No highscore to show."
 		end

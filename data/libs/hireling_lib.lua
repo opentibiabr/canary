@@ -150,13 +150,13 @@ local function initStorageCache()
 	if resultId ~= false then
 		local player_id, key, value
 		repeat
-			player_id = result.getNumber(resultId,"player_id")
-			key = result.getNumber(resultId,"key")
-			value = result.getNumber(resultId,"value")
+			player_id = Result.getNumber(resultId,"player_id")
+			key = Result.getNumber(resultId,"key")
+			value = Result.getNumber(resultId,"value")
 
 			addStorageCacheValue(player_id, key, value)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 end
 
@@ -443,31 +443,31 @@ function HirelingsInit()
 
 	if rows then
 		repeat
-			local player_id = result.getNumber(rows, "player_id")
+			local player_id = Result.getNumber(rows, "player_id")
 
 			if not PLAYER_HIRELINGS[player_id] then
 				PLAYER_HIRELINGS[player_id] = {}
 			end
 
 			local hireling = Hireling:new()
-			hireling.id = result.getNumber(rows, "id")
+			hireling.id = Result.getNumber(rows, "id")
 			hireling.player_id = player_id
-			hireling.name = result.getString(rows, "name")
-			hireling.active = result.getNumber(rows, "active")
-			hireling.sex = result.getNumber(rows, "sex")
-			hireling.posx = result.getNumber(rows, "posx")
-			hireling.posy = result.getNumber(rows, "posy")
-			hireling.posz = result.getNumber(rows, "posz")
-			hireling.lookbody = result.getNumber(rows, "lookbody")
-			hireling.lookfeet = result.getNumber(rows, "lookfeet")
-			hireling.lookhead = result.getNumber(rows, "lookhead")
-			hireling.looklegs = result.getNumber(rows, "looklegs")
-			hireling.looktype = result.getNumber(rows, "looktype")
+			hireling.name = Result.getString(rows, "name")
+			hireling.active = Result.getNumber(rows, "active")
+			hireling.sex = Result.getNumber(rows, "sex")
+			hireling.posx = Result.getNumber(rows, "posx")
+			hireling.posy = Result.getNumber(rows, "posy")
+			hireling.posz = Result.getNumber(rows, "posz")
+			hireling.lookbody = Result.getNumber(rows, "lookbody")
+			hireling.lookfeet = Result.getNumber(rows, "lookfeet")
+			hireling.lookhead = Result.getNumber(rows, "lookhead")
+			hireling.looklegs = Result.getNumber(rows, "looklegs")
+			hireling.looktype = Result.getNumber(rows, "looktype")
 
 			table.insert(PLAYER_HIRELINGS[player_id], hireling)
 			table.insert(HIRELINGS, hireling)
-		until not result.next(rows)
-		result.free(rows)
+		until not Result.next(rows)
+		Result.free(rows)
 
 		spawnNPCs()
 		initStorageCache()
@@ -493,7 +493,7 @@ function PersistHireling(hireling)
 	local resultId = db.storeQuery(query)
 
 	if resultId then
-		local id = result.getNumber(resultId, 'id')
+		local id = Result.getNumber(resultId, 'id')
 		hireling.id = id
 		return true
 	else

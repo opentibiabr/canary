@@ -815,46 +815,9 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 }
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
-	registerEnumClass(L, PlayerFlags_t::CannotUseCombat);
-	registerEnumClass(L, PlayerFlags_t::CannotAttackPlayer);
-	registerEnumClass(L, PlayerFlags_t::CannotAttackMonster);
-	registerEnumClass(L, PlayerFlags_t::CannotBeAttacked);
-	registerEnumClass(L, PlayerFlags_t::CanConvinceAll);
-	registerEnumClass(L, PlayerFlags_t::CanSummonAll);
-	registerEnumClass(L, PlayerFlags_t::CanIllusionAll);
-	registerEnumClass(L, PlayerFlags_t::CanSenseInvisibility);
-	registerEnumClass(L, PlayerFlags_t::IgnoredByMonsters);
-	registerEnumClass(L, PlayerFlags_t::NotGainInFight);
-	registerEnumClass(L, PlayerFlags_t::HasInfiniteMana);
-	registerEnumClass(L, PlayerFlags_t::HasInfiniteSoul);
-	registerEnumClass(L, PlayerFlags_t::HasNoExhaustion);
-	registerEnumClass(L, PlayerFlags_t::CannotUseSpells);
-	registerEnumClass(L, PlayerFlags_t::CannotPickupItem);
-	registerEnumClass(L, PlayerFlags_t::CanAlwaysLogin);
-	registerEnumClass(L, PlayerFlags_t::CanBroadcast);
-	registerEnumClass(L, PlayerFlags_t::CanEditHouses);
-	registerEnumClass(L, PlayerFlags_t::CannotBeBanned);
-	registerEnumClass(L, PlayerFlags_t::CannotBePushed);
-	registerEnumClass(L, PlayerFlags_t::HasInfiniteCapacity);
-	registerEnumClass(L, PlayerFlags_t::CanPushAllCreatures);
-	registerEnumClass(L, PlayerFlags_t::CanTalkRedPrivate);
-	registerEnumClass(L, PlayerFlags_t::CanTalkRedChannel);
-	registerEnumClass(L, PlayerFlags_t::TalkOrangeHelpChannel);
-	registerEnumClass(L, PlayerFlags_t::NotGainExperience);
-	registerEnumClass(L, PlayerFlags_t::NotGainMana);
-	registerEnumClass(L, PlayerFlags_t::NotGainHealth);
-	registerEnumClass(L, PlayerFlags_t::NotGainSkill);
-	registerEnumClass(L, PlayerFlags_t::SetMaxSpeed);
-	registerEnumClass(L, PlayerFlags_t::SpecialVIP);
-	registerEnumClass(L, PlayerFlags_t::NotGenerateLoot);
-	registerEnumClass(L, PlayerFlags_t::CanTalkRedChannelAnonymous);
-	registerEnumClass(L, PlayerFlags_t::IgnoreProtectionZone);
-	registerEnumClass(L, PlayerFlags_t::IgnoreSpellCheck);
-	registerEnumClass(L, PlayerFlags_t::IgnoreWeaponCheck);
-	registerEnumClass(L, PlayerFlags_t::CannotBeMuted);
-	registerEnumClass(L, PlayerFlags_t::IsAlwaysPremium);
-	registerEnumClass(L, PlayerFlags_t::CanMapClickTeleport);
-	registerEnumClass(L, PlayerFlags_t::IgnoredByNpcs);
+	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initReportReasonEnums(lua_State* L) {

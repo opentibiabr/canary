@@ -10,6 +10,8 @@
 #ifndef SRC_UTILS_PUGICAST_H_
 #define SRC_UTILS_PUGICAST_H_
 
+#include <charconv>
+
 namespace pugi {
 template<typename T>
 	// NOTE: std::clamp returns the minimum value if the value is less than the specified minimum value, the maximum value if the value is greater than the specified maximum value, or the value itself if it falls within the range

@@ -815,47 +815,46 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 }
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
-	registerEnum(L, PlayerFlag_CannotUseCombat);
-	registerEnum(L, PlayerFlag_CannotAttackPlayer);
-	registerEnum(L, PlayerFlag_CannotAttackMonster);
-	registerEnum(L, PlayerFlag_CannotBeAttacked);
-	registerEnum(L, PlayerFlag_CanConvinceAll);
-	registerEnum(L, PlayerFlag_CanSummonAll);
-	registerEnum(L, PlayerFlag_CanIllusionAll);
-	registerEnum(L, PlayerFlag_CanSenseInvisibility);
-	registerEnum(L, PlayerFlag_IgnoredByMonsters);
-	registerEnum(L, PlayerFlag_NotGainInFight);
-	registerEnum(L, PlayerFlag_HasInfiniteMana);
-	registerEnum(L, PlayerFlag_HasInfiniteSoul);
-	registerEnum(L, PlayerFlag_HasNoExhaustion);
-	registerEnum(L, PlayerFlag_CannotUseSpells);
-	registerEnum(L, PlayerFlag_CannotPickupItem);
-	registerEnum(L, PlayerFlag_CanAlwaysLogin);
-	registerEnum(L, PlayerFlag_CanBroadcast);
-	registerEnum(L, PlayerFlag_CanEditHouses);
-	registerEnum(L, PlayerFlag_CannotBeBanned);
-	registerEnum(L, PlayerFlag_CannotBePushed);
-	registerEnum(L, PlayerFlag_HasInfiniteCapacity);
-	registerEnum(L, PlayerFlag_CanPushAllCreatures);
-	registerEnum(L, PlayerFlag_CanTalkRedPrivate);
-	registerEnum(L, PlayerFlag_CanTalkRedChannel);
-	registerEnum(L, PlayerFlag_TalkOrangeHelpChannel);
-	registerEnum(L, PlayerFlag_NotGainExperience);
-	registerEnum(L, PlayerFlag_NotGainMana);
-	registerEnum(L, PlayerFlag_NotGainHealth);
-	registerEnum(L, PlayerFlag_NotGainSkill);
-	registerEnum(L, PlayerFlag_SetMaxSpeed);
-	registerEnum(L, PlayerFlag_SpecialVIP);
-	registerEnum(L, PlayerFlag_NotGenerateLoot);
-	registerEnum(L, PlayerFlag_CanTalkRedChannelAnonymous);
-	registerEnum(L, PlayerFlag_IgnoreProtectionZone);
-	registerEnum(L, PlayerFlag_IgnoreSpellCheck);
-	registerEnum(L, PlayerFlag_IgnoreWeaponCheck);
-	registerEnum(L, PlayerFlag_CannotBeMuted);
-	registerEnum(L, PlayerFlag_IsAlwaysPremium);
-
-	registerEnum(L, PlayerCustomFlag_CanMapClickTeleport);
-	registerEnum(L, PlayerCustomFlag_IgnoredByNpcs);
+	registerEnumClass(L, PlayerFlags_t::CannotUseCombat);
+	registerEnumClass(L, PlayerFlags_t::CannotAttackPlayer);
+	registerEnumClass(L, PlayerFlags_t::CannotAttackMonster);
+	registerEnumClass(L, PlayerFlags_t::CannotBeAttacked);
+	registerEnumClass(L, PlayerFlags_t::CanConvinceAll);
+	registerEnumClass(L, PlayerFlags_t::CanSummonAll);
+	registerEnumClass(L, PlayerFlags_t::CanIllusionAll);
+	registerEnumClass(L, PlayerFlags_t::CanSenseInvisibility);
+	registerEnumClass(L, PlayerFlags_t::IgnoredByMonsters);
+	registerEnumClass(L, PlayerFlags_t::NotGainInFight);
+	registerEnumClass(L, PlayerFlags_t::HasInfiniteMana);
+	registerEnumClass(L, PlayerFlags_t::HasInfiniteSoul);
+	registerEnumClass(L, PlayerFlags_t::HasNoExhaustion);
+	registerEnumClass(L, PlayerFlags_t::CannotUseSpells);
+	registerEnumClass(L, PlayerFlags_t::CannotPickupItem);
+	registerEnumClass(L, PlayerFlags_t::CanAlwaysLogin);
+	registerEnumClass(L, PlayerFlags_t::CanBroadcast);
+	registerEnumClass(L, PlayerFlags_t::CanEditHouses);
+	registerEnumClass(L, PlayerFlags_t::CannotBeBanned);
+	registerEnumClass(L, PlayerFlags_t::CannotBePushed);
+	registerEnumClass(L, PlayerFlags_t::HasInfiniteCapacity);
+	registerEnumClass(L, PlayerFlags_t::CanPushAllCreatures);
+	registerEnumClass(L, PlayerFlags_t::CanTalkRedPrivate);
+	registerEnumClass(L, PlayerFlags_t::CanTalkRedChannel);
+	registerEnumClass(L, PlayerFlags_t::TalkOrangeHelpChannel);
+	registerEnumClass(L, PlayerFlags_t::NotGainExperience);
+	registerEnumClass(L, PlayerFlags_t::NotGainMana);
+	registerEnumClass(L, PlayerFlags_t::NotGainHealth);
+	registerEnumClass(L, PlayerFlags_t::NotGainSkill);
+	registerEnumClass(L, PlayerFlags_t::SetMaxSpeed);
+	registerEnumClass(L, PlayerFlags_t::SpecialVIP);
+	registerEnumClass(L, PlayerFlags_t::NotGenerateLoot);
+	registerEnumClass(L, PlayerFlags_t::CanTalkRedChannelAnonymous);
+	registerEnumClass(L, PlayerFlags_t::IgnoreProtectionZone);
+	registerEnumClass(L, PlayerFlags_t::IgnoreSpellCheck);
+	registerEnumClass(L, PlayerFlags_t::IgnoreWeaponCheck);
+	registerEnumClass(L, PlayerFlags_t::CannotBeMuted);
+	registerEnumClass(L, PlayerFlags_t::IsAlwaysPremium);
+	registerEnumClass(L, PlayerFlags_t::CanMapClickTeleport);
+	registerEnumClass(L, PlayerFlags_t::IgnoredByNpcs);
 }
 
 void LuaEnums::initReportReasonEnums(lua_State* L) {
@@ -1135,6 +1134,7 @@ void LuaEnums::initReloadTypeEnums(lua_State* L) {
 	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
 	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
 	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
+	registerEnumClass(L, Reload_t::RELOAD_TYPE_GROUPS);
 }
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {

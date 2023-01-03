@@ -79,8 +79,8 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 				}
 
 				Position pos(
-					centerPos.x + pugi::cast<uint16_t>(childMonsterNode.attribute("x").value()),
-					centerPos.y + pugi::cast<uint16_t>(childMonsterNode.attribute("y").value()),
+					centerPos.x + pugi::cast<int16_t>(childMonsterNode.attribute("x").value()),
+					centerPos.y + pugi::cast<int16_t>(childMonsterNode.attribute("y").value()),
 					centerPos.z
 				);
 
@@ -162,7 +162,7 @@ bool SpawnMonster::findPlayer(const Position& pos)
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
-		if (!spectator->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 			return true;
 		}
 	}

@@ -10,10 +10,11 @@
 #ifndef SRC_CREATURES_PLAYERS_GROUPING_GROUPS_H_
 #define SRC_CREATURES_PLAYERS_GROUPING_GROUPS_H_
 
+#include "declarations.hpp"
+
 struct Group {
 	std::string name;
-	uint64_t flags;
-	uint64_t customflags;
+	bool flags[magic_enum::enum_integer(PlayerFlags_t::FlagLast)] = { false };
 	uint32_t maxDepotItems;
 	uint32_t maxVipEntries;
 	uint16_t id;
@@ -22,6 +23,9 @@ struct Group {
 
 class Groups {
 	public:
+		static uint8_t getFlagNumber(PlayerFlags_t playerFlags);
+		static PlayerFlags_t getFlagType(uint8_t value);
+		static bool reload();
 		bool load();
 		Group* getGroup(uint16_t id);
 

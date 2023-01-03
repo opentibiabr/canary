@@ -971,11 +971,11 @@ bool Item::hasProperty(ItemProperty prop) const
 
 uint32_t Item::getWeight() const
 {
-	uint32_t weight = getBaseWeight();
+	uint32_t baseWeight = getBaseWeight();
 	if (isStackable()) {
-		return weight * std::max<uint32_t>(1, getItemCount());
+		return baseWeight * std::max<uint32_t>(1, getItemCount());
 	}
-	return weight;
+	return baseWeight;
 }
 
 std::vector<std::pair<std::string, std::string>>
@@ -1388,7 +1388,7 @@ std::vector<std::pair<std::string, std::string>>
 			descriptions.emplace_back("Rune Spell Name", it.runeSpellName);
 		}
 
-		uint32_t weight = it.weight;
+		auto weight = it.weight;
 		if (weight != 0) {
 			ss.str("");
 			if (weight < 10) {

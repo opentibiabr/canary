@@ -101,7 +101,7 @@ void ItemParse::parseRuneSpellName(const std::string& tmpStrValue, pugi::xml_att
 void ItemParse::parseWeight(const std::string& tmpStrValue, pugi::xml_attribute valueAttribute, ItemType& itemType) {
 	std::string stringValue = tmpStrValue;
 	if (stringValue == "weight") {
-		itemType.weight = pugi::cast<uint32_t>(valueAttribute.value());
+		itemType.weight = pugi::cast<int32_t>(valueAttribute.value());
 	}
 }
 
@@ -720,26 +720,29 @@ void ItemParse::parseBeds(const std::string& tmpStrValue, pugi::xml_attribute va
 		itemType.bedPartnerDir = getDirection(valueAttribute.as_string());
 	}
 
-	uint16_t value = pugi::cast<uint16_t>(valueAttribute.value());
-	ItemType & other = Item::items.getItemType(value);
 	if (stringValue == "maletransformto") {
-		itemType.transformToOnUse[PLAYERSEX_MALE] = value;
+		uint16_t valueMale = pugi::cast<uint16_t>(valueAttribute.value());
+		ItemType & other = Item::items.getItemType(valueMale);
+		itemType.transformToOnUse[PLAYERSEX_MALE] = valueMale;
 		if (other.transformToFree == 0) {
 			other.transformToFree = itemType.id;
 		}
 
 		if (itemType.transformToOnUse[PLAYERSEX_FEMALE] == 0) {
-			itemType.transformToOnUse[PLAYERSEX_FEMALE] = value;
+			itemType.transformToOnUse[PLAYERSEX_FEMALE] = valueMale;
 		}
 	} else if (stringValue == "femaletransformto") {
-		itemType.transformToOnUse[PLAYERSEX_FEMALE] = value;
+		uint16_t valueFemale = pugi::cast<uint16_t>(valueAttribute.value());
+		ItemType & other = Item::items.getItemType(valueFemale);
+
+		itemType.transformToOnUse[PLAYERSEX_FEMALE] = valueFemale;
 
 		if (other.transformToFree == 0) {
 			other.transformToFree = itemType.id;
 		}
 
 		if (itemType.transformToOnUse[PLAYERSEX_MALE] == 0) {
-			itemType.transformToOnUse[PLAYERSEX_MALE] = value;
+			itemType.transformToOnUse[PLAYERSEX_MALE] = valueFemale;
 		}
 	}
 }

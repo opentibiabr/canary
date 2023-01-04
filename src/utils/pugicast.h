@@ -18,7 +18,9 @@ template<typename T>
 		T value;
 
 		// Set the last character to parse
-		const auto last = str + std::strlen(str);
+		std::string_view string(str);
+		const auto last = str + string.size();
+
 		// Convert the string to the specified type
 		const auto [pointer, errorCode] = std::from_chars(str, last, value);
 		// If the conversion was successful and all characters were parsed

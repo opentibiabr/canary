@@ -24,13 +24,16 @@ struct Group {
 class Groups {
 	public:
 		static uint8_t getFlagNumber(PlayerFlags_t playerFlags);
-		static PlayerFlags_t getFlagType(uint8_t value);
-		static bool reload();
+		static PlayerFlags_t getFlagFromNumber(uint8_t value);
+		bool reload();
 		bool load();
 		Group* getGroup(uint16_t id);
+		std::vector<Group>& getGroups() {
+			return groups_vector;
+		}
 
 	private:
-		std::vector<Group> groups;
+		std::vector<Group> groups_vector;
 };
 
 #endif  // SRC_CREATURES_PLAYERS_GROUPING_GROUPS_H_

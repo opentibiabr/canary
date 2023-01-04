@@ -78,9 +78,11 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 					dir = DIRECTION_NORTH;
 				}
 
+				auto xOffset = pugi::cast<int16_t>(childMonsterNode.attribute("x").value());
+				auto yOffset = pugi::cast<int16_t>(childMonsterNode.attribute("y").value());
 				Position pos(
-					centerPos.x + pugi::cast<int16_t>(childMonsterNode.attribute("x").value()),
-					centerPos.y + pugi::cast<int16_t>(childMonsterNode.attribute("y").value()),
+					static_cast<uint16_t>(centerPos.x + xOffset),
+					static_cast<uint16_t>(centerPos.y + yOffset),
 					centerPos.z
 				);
 

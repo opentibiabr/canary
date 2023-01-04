@@ -67,7 +67,7 @@ bool GameReload::reloadAll() const
 		reloadResults.push_back(init(value));
 	}
 
-	return std::any_of(reloadResults.begin(), reloadResults.end(), [](bool result) { return result; });
+	return std::ranges::any_of(reloadResults.begin(), reloadResults.end(), [](bool result) { return result; });
 }
 
 bool GameReload::reloadChat() const
@@ -176,5 +176,5 @@ bool GameReload::reloadTalkaction() const
 
 bool GameReload::reloadGroups() const
 {
-	return Groups::reload();
+	return g_game().groups.reload();
 }

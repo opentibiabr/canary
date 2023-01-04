@@ -10,6 +10,7 @@
 #include "pch.hpp"
 
 #include "config/configmanager.h"
+#include "game/game.h"
 #include "creatures/players/grouping/groups.h"
 #include "utils/pugicast.h"
 #include "utils/tools.h"
@@ -39,15 +40,16 @@ uint8_t Groups::getFlagNumber(PlayerFlags_t playerFlags)
 	return magic_enum::enum_integer(playerFlags);
 }
 
-PlayerFlags_t Groups::getFlagType(uint8_t value)
+PlayerFlags_t Groups::getFlagFromNumber(uint8_t value)
 {
 	return magic_enum::enum_value<PlayerFlags_t>(value);
 }
 
 bool Groups::reload()
 {
-	Groups group;
-	return group.load();
+	// Clear groups
+	g_game().groups.getGroups().clear();
+	return g_game().groups.load();
 }
 
 bool Groups::load()
@@ -88,15 +90,15 @@ bool Groups::load()
 			}
 		}
 
-		groups.push_back(group);
+		groups_vector.push_back(group);
 	}
-	groups.shrink_to_fit();
+	groups_vector.shrink_to_fit();
 	return true;
 }
 
 Group* Groups::getGroup(uint16_t id)
 {
-	for (Group& group : groups) {
+	for (Group& group : groups_vector) {
 		if (group.id == id) {
 			return &group;
 		}

@@ -170,9 +170,4 @@ echo "===== Start Server ====="
 echo ""
 
 ulimit -c unlimited
-while true; do
-	exec canary
-	sleep 5
-	mysqldump -u "$OT_DB_USER" -p"$OT_DB_PASSWORD" -h "$OT_DB_HOST" --port="$OT_DB_PORT" --all-databases >/data/"$(date +'%Y'_'%m'_'%d')"_databases_bkp.sql
-	sleep 5
-done
+exec canary

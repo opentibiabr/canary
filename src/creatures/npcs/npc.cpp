@@ -228,7 +228,7 @@ void Npc::onThink(uint32_t interval)
 	// Get a set of spectators that are within the visible range of the NPC
 	g_game().map.getSpectators(spectators, position, false, false);
 	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag
-	if (std::ranges::any_of(spectators.begin(), spectators.end(), [](Creature* spectator) {
+	if (std::ranges::any_of(spectators, [](Creature* spectator) {
 		auto player = spectator->getPlayer();
 		// If there are no players or all players have the "IgnoredByNpcs" flag, then the NPC will not walk or yell.
 		return player && !player->hasFlag(PlayerFlags_t::IgnoredByNpcs);

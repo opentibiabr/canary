@@ -1083,21 +1083,9 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 
 // Reload
 void LuaEnums::initReloadTypeEnums(lua_State* L) {
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_ALL);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CHAT);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CONFIG);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_EVENTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CORE);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_IMBUEMENTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_ITEMS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MODULES);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MONSTERS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MOUNTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_NPCS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_GROUPS);
+	for (auto value : magic_enum::enum_values<Reload_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {
@@ -1121,9 +1109,9 @@ void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 }
 
 void LuaEnums::initForgeEnums(lua_State* L) {
-	registerEnumClass(L, ForgeClassifications_t::FORGE_NORMAL_MONSTER);
-	registerEnumClass(L, ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
-	registerEnumClass(L, ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
+	for (auto value : magic_enum::enum_values<ForgeClassifications_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 // Webhook default colors

@@ -26,6 +26,7 @@
 			<flag canillusionall="0" />
 			<flag cansenseinvisibility="1" />
 			<flag ignoredbymonsters="1" />
+			<flag ignoredbynpcs="1" />
 			<flag notgaininfight="1" />
 			<flag hasinfinitemana="0" />
 			<flag hasinfinitesoul="0" />
@@ -55,10 +56,8 @@
 			<flag ignoreweaponcheck="0" />
 			<flag cannotbemuted="1" />
 			<flag isalwayspremium="1" />
+			<flag canmapclickteleport="0" />
 		</flags>
-		<customflags>
-			<customflag canmapclickteleport="0" />
-		</customflags>
 	</group>
 	<group id="5" name="community manager" access="1" maxdepotitems="0" maxvipentries="200">
 		<flags>
@@ -71,6 +70,7 @@
 			<flag canillusionall="1" />
 			<flag cansenseinvisibility="1" />
 			<flag ignoredbymonsters="1" />
+			<flag ignoredbynpcs="1" />
 			<flag notgaininfight="1" />
 			<flag hasinfinitemana="1" />
 			<flag hasinfinitesoul="1" />
@@ -100,10 +100,8 @@
 			<flag ignoreweaponcheck="1" />
 			<flag cannotbemuted="1" />
 			<flag isalwayspremium="1" />
+			<flag canmapclickteleport="0" />
 		</flags>
-		<customflags>
-			<customflag canmapclickteleport="0" />
-		</customflags>
 	</group>
 	<group id="6" name="god" access="1" maxdepotitems="0" maxvipentries="200">
 		<flags>
@@ -116,6 +114,7 @@
 			<flag canillusionall="1" />
 			<flag cansenseinvisibility="1" />
 			<flag ignoredbymonsters="1" />
+			<flag ignoredbynpcs="1" />
 			<flag notgaininfight="1" />
 			<flag hasinfinitemana="1" />
 			<flag hasinfinitesoul="1" />
@@ -145,9 +144,7 @@
 			<flag ignoreweaponcheck="1" />
 			<flag cannotbemuted="1" />
 			<flag isalwayspremium="1" />
+			<flag canmapclickteleport="1" />
 		</flags>
-		<customflags>
-			<customflag canmapclickteleport="1" />
-		</customflags>
 	</group>
 </groups>

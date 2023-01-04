@@ -405,7 +405,7 @@ SharedExpStatus_t Party::getMemberSharedExperienceStatus(const Player* player) c
 		return SHAREDEXP_TOOFARAWAY;
 	}
 
-	if (!player->hasFlag(PlayerFlag_NotGainInFight)) {
+	if (!player->hasFlag(PlayerFlags_t::NotGainInFight)) {
 		//check if the player has healed/attacked anything recently
 		auto it = ticksMap.find(player->getID());
 		if (it == ticksMap.end()) {
@@ -438,7 +438,7 @@ SharedExpStatus_t Party::getSharedExperienceStatus()
 
 void Party::updatePlayerTicks(Player* player, uint32_t points)
 {
-	if (points != 0 && !player->hasFlag(PlayerFlag_NotGainInFight)) {
+	if (points != 0 && !player->hasFlag(PlayerFlags_t::NotGainInFight)) {
 		ticksMap[player->getID()] = OTSYS_TIME();
 		updateSharedExperience();
 	}

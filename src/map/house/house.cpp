@@ -143,7 +143,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player)
 		}
 	}
 
-	if (player->hasFlag(PlayerFlag_CanEditHouses)) {
+	if (player->hasFlag(PlayerFlags_t::CanEditHouses)) {
 		return HOUSE_OWNER;
 	}
 
@@ -173,7 +173,7 @@ bool House::kickPlayer(Player* player, Player* target)
 		return false;
 	}
 
-	if (getHouseAccessLevel(player) < getHouseAccessLevel(target) || target->hasFlag(PlayerFlag_CanEditHouses)) {
+	if (getHouseAccessLevel(player) < getHouseAccessLevel(target) || target->hasFlag(PlayerFlags_t::CanEditHouses)) {
 		return false;
 	}
 

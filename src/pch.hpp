@@ -15,6 +15,7 @@
 #include "utils/simd.hpp"
 
 #include <bitset>
+#include <charconv>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>

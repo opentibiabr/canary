@@ -37,10 +37,6 @@ function Player.hasFlag(self, flag)
 	return self:getGroup():hasFlag(flag)
 end
 
-function Player.hasCustomFlag(self, customflag)
-	return self:getGroup():hasCustomFlag(customflag)
-end
-
 function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end

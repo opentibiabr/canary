@@ -441,6 +441,10 @@ class Game
 		void combatGetTypeInfo(CombatType_t combatType, Creature* target, TextColor_t& color, uint8_t& effect);
 
 		bool combatChangeHealth(Creature* attacker, Creature* target, CombatDamage& damage, bool isEvent = false);
+		void applyCharmRune(CombatDamage& damage, Monster* targetMonster, Player* attackerPlayer, Creature* target, int32_t& realDamage) const;
+		void applyManaLeech(Player* attackerPlayer, Monster* targetMonster, CombatDamage& damage, int32_t& realDamage) const;
+		void applyLifeLeech(Player* attackerPlayer, Monster* targetMonster, CombatDamage& damage, int32_t& realDamage) const;
+		double calculateLeechAmount(const int32_t& realDamage, const uint16_t& skillAmount, int targetsAffected) const;
 		bool combatChangeMana(Creature* attacker, Creature* target, CombatDamage& damage);
 
 		// Animation help functions
@@ -685,6 +689,13 @@ class Game
 		uint16_t itemsSaleCount;
 
 		std::vector<ItemClassification*> itemsClassifications;
+
+    void sendDamageMessageAndEffects(const Creature *attacker, Creature *target, CombatDamage &damage, const Position &targetPos,
+                                     Player *attackerPlayer, Player *targetPlayer, TextMessage &message,
+                                     SpectatorHashSet &spectators,
+                                     int32_t realDamage);
+
+    void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const Player *player) const;
 };
 
 constexpr auto g_game = &Game::getInstance;

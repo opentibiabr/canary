@@ -6305,6 +6305,23 @@ std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> P
 	return std::make_pair(itemVector, lockerItems);
 }
 
+std::pair<std::vector<Item*>, uint16_t> Player::getLockerItemsAndCountById(DepotLocker &depotLocker, uint8_t tier, uint16_t itemId)
+{
+	std::vector<Item*> lockerItems;
+	auto [itemVector, itemMap] = requestLockerItems(&depotLocker, false, tier);
+	uint16_t totalCount = 0;
+	for (auto item : itemVector) {
+		if (!item || item->getID() != itemId) {
+			continue;
+		}
+
+		totalCount++;
+		lockerItems.push_back(item);
+	}
+
+	return std::make_pair(lockerItems, totalCount);
+}
+
 bool Player::saySpell(
 	SpeakClasses type,
 	const std::string& text,

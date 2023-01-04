@@ -7563,6 +7563,18 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			account.RemoveCoins(static_cast<uint32_t>(amount));
 		} else {
+			auto [itemVector, itemMap] = player->requestLockerItems(depotLocker, false, tier);
+			uint32_t count = 0;
+			
+			for (auto item : itemVector) {
+				if(item->getID() == itemId){
+					count += 1;
+				}
+			}
+
+			if (count <= 0) {
+				return;
+			}
 			removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus);
 		}
 

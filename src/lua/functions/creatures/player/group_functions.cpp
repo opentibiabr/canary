@@ -53,13 +53,13 @@ int GroupFunctions::luaGroupGetFlags(lua_State* L) {
 	// group:getFlags()
 	Group* group = getUserdata<Group>(L, 1);
 	if (group) {
-		uint8_t flags = 0;
+		std::bitset<magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags;
 		for (uint8_t i = 0; i < magic_enum::enum_integer(PlayerFlags_t::FlagLast); ++i) {
 			if (group->flags[i]) {
-				flags |= (1 << i);
+				flags.set(i);
 			}
 		}
-		lua_pushnumber(L, static_cast<lua_Number>(flags));
+		lua_pushnumber(L, static_cast<lua_Number>(flags.to_ulong()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -103,7 +103,7 @@ int GroupFunctions::luaGroupHasFlag(lua_State* L) {
 	// group:hasFlag(flag)
 	Group* group = getUserdata<Group>(L, 1);
 	if (group) {
-		PlayerFlags_t flag = static_cast<PlayerFlags_t>(getNumber<int>(L, 2));
+		auto flag = static_cast<PlayerFlags_t>(getNumber<int>(L, 2));
 		pushBoolean(L, group->flags[Groups::getFlagNumber(flag)]);
 	} else {
 		lua_pushnil(L);

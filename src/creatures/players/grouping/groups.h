@@ -25,7 +25,7 @@ class Groups {
 	public:
 		static uint8_t getFlagNumber(PlayerFlags_t playerFlags);
 		static PlayerFlags_t getFlagFromNumber(uint8_t value);
-		bool reload();
+		bool reload() const;
 		bool load();
 		Group* getGroup(uint16_t id);
 		std::vector<Group>& getGroups() {

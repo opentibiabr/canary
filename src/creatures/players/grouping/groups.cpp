@@ -24,7 +24,7 @@ phmap::flat_hash_map<std::string, PlayerFlags_t> initParsePlayerFlagMap() {
 		// Get the string representation of the current enumeration value
 		std::string name(magic_enum::enum_name(value).data());
 		// Convert the string to lowercase
-		std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+		std::ranges::transform(name.begin(), name.end(), name.begin(), ::tolower);
 		// Add the current value to the map with its lowercase string representation as the key
 		map[name] = value;
 	}
@@ -32,7 +32,7 @@ phmap::flat_hash_map<std::string, PlayerFlags_t> initParsePlayerFlagMap() {
 	return map;
 }
 
-phmap::flat_hash_map<std::string, PlayerFlags_t> parsePlayerFlagMap = initParsePlayerFlagMap();
+const phmap::flat_hash_map<std::string, PlayerFlags_t> parsePlayerFlagMap = initParsePlayerFlagMap();
 }
 
 uint8_t Groups::getFlagNumber(PlayerFlags_t playerFlags)
@@ -45,11 +45,29 @@ PlayerFlags_t Groups::getFlagFromNumber(uint8_t value)
 	return magic_enum::enum_value<PlayerFlags_t>(value);
 }
 
-bool Groups::reload()
+bool Groups::reload() const
 {
 	// Clear groups
 	g_game().groups.getGroups().clear();
 	return g_game().groups.load();
+}
+
+void parseGroupFlags(Group& group, const pugi::xml_node& groupNode) {
+	if (pugi::xml_node node = groupNode.child("flags")) {
+		for (auto flagNode : node.children()) {
+			pugi::xml_attribute attr = flagNode.first_attribute();
+			if (!attr || (attr && !attr.as_bool())) {
+				continue;
+			}
+
+			// Ensure always send the string completely in lower case
+			std::string string = asLowerCaseString(attr.name());
+			auto parseFlag = ParsePlayerFlagMap::parsePlayerFlagMap.find(string);
+			if (parseFlag != ParsePlayerFlagMap::parsePlayerFlagMap.end()) {
+				group.flags[Groups::getFlagNumber(parseFlag->second)] = true;
+			}
+		}
+	}
 }
 
 bool Groups::load()
@@ -70,25 +88,14 @@ bool Groups::load()
 		group.maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
 		group.maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
 		auto flagsInt = static_cast<uint8_t>(groupNode.attribute("flags").as_uint());
-		for (int i = 0; i < magic_enum::enum_integer(PlayerFlags_t::FlagLast); i++) {
-			PlayerFlags_t flag = magic_enum::enum_cast<PlayerFlags_t>(i).value();
-			group.flags[i] = (flagsInt & Groups::getFlagNumber(flag)) != 0;
+		std::bitset<magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags(flagsInt);
+		for (uint8_t i = 0; i < getFlagNumber(PlayerFlags_t::FlagLast); i++) {
+			PlayerFlags_t flag = getFlagFromNumber(i);
+			group.flags[i] = flags[Groups::getFlagNumber(getFlagFromNumber(i))];
 		}
-		if (pugi::xml_node node = groupNode.child("flags")) {
-			for (auto flagNode : node.children()) {
-				pugi::xml_attribute attr = flagNode.first_attribute();
-				if (!attr || (attr && !attr.as_bool())) {
-					continue;
-				}
 
-				// Ensure always send the string completely in lower case
-				std::string string = asLowerCaseString(attr.name());
-				auto parseFlag = ParsePlayerFlagMap::parsePlayerFlagMap.find(string);
-				if (parseFlag != ParsePlayerFlagMap::parsePlayerFlagMap.end()) {
-					group.flags[Groups::getFlagNumber(parseFlag->second)] = true;
-				}
-			}
-		}
+		// Parsing group flags
+		parseGroupFlags(group, groupNode);
 
 		groups_vector.push_back(group);
 	}

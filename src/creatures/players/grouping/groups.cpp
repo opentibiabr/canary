@@ -91,7 +91,7 @@ bool Groups::load()
 		std::bitset<magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags(flagsInt);
 		for (uint8_t i = 0; i < getFlagNumber(PlayerFlags_t::FlagLast); i++) {
 			PlayerFlags_t flag = getFlagFromNumber(i);
-			group.flags[i] = flags[Groups::getFlagNumber(getFlagFromNumber(i))];
+			group.flags[i] = flags[Groups::getFlagNumber(flag)];
 		}
 
 		// Parsing group flags

@@ -1374,6 +1374,15 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
                                   uint32_t flags /*= 0*/, Creature* actor/*=nullptr*/,
                                   Item* tradeItem/* = nullptr*/)
 {
+	if (fromCylinder == nullptr) {
+		SPDLOG_ERROR("[{}] fromCylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+	if (toCylinder == nullptr) {
+		SPDLOG_ERROR("[{}] toCylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	Tile* fromTile = fromCylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1605,7 +1614,12 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item,
 ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t index,
                                   uint32_t flags, bool test, uint32_t& remainderCount)
 {
-	if (toCylinder == nullptr || item == nullptr) {
+	if (toCylinder == nullptr) {
+		SPDLOG_ERROR("[{}] fromCylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+	if (item == nullptr) {
+		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -1825,6 +1839,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/, bool useBalance /*= false*/)
 {
 	if (cylinder == nullptr) {
+		SPDLOG_ERROR("[{}] cylinder is nullptr", __FUNCTION__);
 		return false;
 	}
 	if (money == 0) {
@@ -1906,6 +1921,10 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 
 void Game::addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/)
 {
+	if (cylinder == nullptr) {
+		SPDLOG_ERROR("[{}] cylinder is nullptr", __FUNCTION__);
+		return;
+	}
 	if (money == 0) {
 		return;
 	}

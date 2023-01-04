@@ -14,7 +14,7 @@
 
 struct Group {
 	std::string name;
-	bool flags[magic_enum::enum_integer(PlayerFlags_t::FlagLast)] = { false };
+	std::array<bool, magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags{false};
 	uint32_t maxDepotItems;
 	uint32_t maxVipEntries;
 	uint16_t id;

@@ -773,6 +773,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 		ret != RETURNVALUE_NOERROR)
 	{
 		player->sendCancelMessage(ret);
+		SPDLOG_ERROR("[{}] Failed to teleport player, error code: {}", __FUNCTION__, getReturnMessage(ret));
 		pushBoolean(L, false);
 		return 1;
 	}

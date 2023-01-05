@@ -749,18 +749,13 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 		return 1;
 	}
 
-	Player *player = creature->getPlayer();
+	const Player *player = creature->getPlayer();
 	if (!player) {
 		return 1;
 	}
 
 	const Position oldPosition = creature->getPosition();
 	if (oldPosition == position) {
-		Tile* templeTile = g_game().map.getTile(player->getTemplePosition());
-		if (!player || !templeTile) {
-			return 1;
-		}
-
 		g_game().internalTeleport(creature, player->getTemplePosition(), pushMovement);
 		SPDLOG_WARN("[{}] - Cannot teleport creature: {}, fromPosition: {}, as same of toPosition: {}", __FUNCTION__, player->getName(), oldPosition.toString(), position.toString());
 		pushBoolean(L, false);

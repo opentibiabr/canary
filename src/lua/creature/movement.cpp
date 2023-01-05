@@ -617,10 +617,15 @@ uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position
 
 bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos) {
 	auto fromPosition = creature.getLastPosition();
-	auto player = creature.getPlayer();
-	if (player && fromPosition == pos) {
-		SPDLOG_WARN("[{}] - Cannot teleport creature with name: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
-		g_game().internalTeleport(player, player->getTemplePosition());
+	if (auto player = creature.getPlayer();
+		fromPosition == pos)
+	{
+		if (player) {
+			SPDLOG_WARN("[{}] - Cannot teleport player with name: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
+			g_game().internalTeleport(player, player->getTemplePosition());
+		} else {
+			g_game().removeCreature(&creature);
+		}
 		return false;
 	}
 

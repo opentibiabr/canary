@@ -175,7 +175,7 @@ void loadModules() {
 		"modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(),
 		"events/events.xml");
-	modulesLoadHelper((g_npc().load(true, false)),
+	modulesLoadHelper((g_npcs().load(true, false)),
 		"npclib");
 
 	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
@@ -188,7 +188,7 @@ void loadModules() {
 	// Load monsters
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"monster");
-	modulesLoadHelper((g_npc().load(false, true)),
+	modulesLoadHelper((g_npcs().load(false, true)),
 		"npc");
 
 	g_game().loadBoostedCreature();

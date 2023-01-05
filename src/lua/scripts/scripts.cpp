@@ -56,6 +56,7 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 			}
 		}
 	}
+
 	return false;
 }
 
@@ -108,10 +109,14 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 		if (isLib || (fileFolderView != "lib" && fileFolderView != "events"))
 		{
 			// If console logs are enabled and the file is not a library file
-			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS) && !isLib && lastDirectory.empty() || lastDirectory != scriptFolderView)
+			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS))
 			{
-				// Update the last directory variable and log the directory name
-				SPDLOG_INFO("[{}]", realPath.parent_path().filename().string());
+			// If the current directory is different from the last directory that was logged
+				if (lastDirectory.empty() || lastDirectory != scriptFolderView)
+				{
+					// Update the last directory variable and log the directory name
+					SPDLOG_INFO("Loading folder: [{}]", realPath.parent_path().filename().string());
+				}
 				lastDirectory = realPath.parent_path().string();
 			}
 
@@ -127,9 +132,9 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 
 		if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 			if (!reload) {
-				SPDLOG_INFO("[script]: {} [loaded]", realPath.filename().string());
+				SPDLOG_INFO("[script loaded]: {}", realPath.filename().string());
 			} else {
-				SPDLOG_INFO("[script]: {} [reloaded]", realPath.filename().string());
+				SPDLOG_INFO("[script reloaded]: {}", realPath.filename().string());
 			}
 		}
 	}

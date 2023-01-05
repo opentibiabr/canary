@@ -14,8 +14,6 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
-#include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -54,33 +52,6 @@ Npc::Npc(NpcType* npcType) :
 }
 
 Npc::~Npc() {
-}
-
-bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/, bool reloading/* = false*/) const {
-	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
-	}
-	if (loadNpcs) {
-		return g_scripts().loadScripts("npc", false, reloading);
-	}
-	return false;
-}
-
-bool Npc::reset() const
-{
-	// Load the "npclib" folder
-	if (load(true, false, true)) {
-		// Load the npcs scripts folder
-		if (!load(false, true, true)) {
-			return false;
-		}
-
-		g_npcs().reset();
-		g_game().resetNpcs();
-		return true;
-	}
-	return false;
 }
 
 void Npc::addList()

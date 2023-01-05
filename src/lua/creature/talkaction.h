@@ -14,15 +14,14 @@
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
+#include "lua/scripts/scripts.h"
 
 class TalkAction;
 using TalkAction_ptr = std::unique_ptr<TalkAction>;
 
-class TalkAction : public Event {
+class TalkAction : public Script {
 	public:
-		explicit TalkAction(LuaScriptInterface* interface) : Event(interface) {}
-
-		bool configureEvent(const pugi::xml_node& node) override;
+		using Script::Script;
 
 		const std::string& getWords() const {
 			return words;
@@ -46,14 +45,16 @@ class TalkAction : public Event {
 		//
 
 	private:
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override {
+			return "onSay";
+		}
 
 		std::string words;
 		std::vector<std::string> wordsMap;
 		std::string separator = "\"";
 };
 
-class TalkActions final : public BaseEvents {
+class TalkActions final : public Scripts {
 	public:
 		TalkActions();
 		~TalkActions();
@@ -73,18 +74,9 @@ class TalkActions final : public BaseEvents {
 
 		bool registerLuaEvent(TalkAction* event);
 		void clear();
-		// Old XML interface
-		void clear(bool fromLua) override final;
 
 	private:
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
 		std::map<std::string, TalkAction> talkActions;
-
-		LuaScriptInterface scriptInterface;
 };
 
 constexpr auto g_talkActions = &TalkActions::getInstance;

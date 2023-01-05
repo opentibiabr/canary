@@ -10,23 +10,16 @@
 #include "pch.hpp"
 
 #include "lua/functions/events/global_event_functions.hpp"
+#include "game/game.h"
 #include "lua/global/globalevent.h"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
-	// GlobalEvent(eventName)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("GlobalEvents can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
 	GlobalEvent* global = new GlobalEvent(getScriptEnv()->getScriptInterface());
 	if (global) {
 		global->setName(getString(L, 2));
 		global->setEventType(GLOBALEVENT_NONE);
-		global->fromLua = true;
 		pushUserdata<GlobalEvent>(L, global);
 		setMetatable(L, -1, "GlobalEvent");
 	} else {
@@ -49,9 +42,11 @@ int GlobalEventFunctions::luaGlobalEventType(lua_State* L) {
 			global->setEventType(GLOBALEVENT_RECORD);
 		} else if (tmpStr == "periodchange") {
 			global->setEventType(GLOBALEVENT_PERIODCHANGE);
+		} else if (tmpStr == "onthink") {
+			global->setEventType(GLOBALEVENT_ON_THINK);
 		} else {
 			SPDLOG_ERROR("[GlobalEventFunctions::luaGlobalEventType] - "
-                         "Invalid type for global event: {}", typeName);
+                         "Invalid type for global event: {}");
 			pushBoolean(L, false);
 		}
 		pushBoolean(L, true);
@@ -65,7 +60,7 @@ int GlobalEventFunctions::luaGlobalEventRegister(lua_State* L) {
 	// globalevent:register()
 	GlobalEvent* globalevent = getUserdata<GlobalEvent>(L, 1);
 	if (globalevent) {
-		if (!globalevent->isScripted()) {
+		if (!globalevent->isLoadedCallback()) {
 			pushBoolean(L, false);
 			return 1;
 		}
@@ -133,18 +128,21 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			}
 		}
 
-		time_t current_time = time(nullptr);
-		tm* timeinfo = localtime(&current_time);
-		timeinfo->tm_hour = hour;
-		timeinfo->tm_min = min;
-		timeinfo->tm_sec = sec;
+		// Create an alias for the std::chrono::system_clock type so it can be referred to as "chronoclock"
+		using chronoclock = std::chrono::system_clock;
+		// Get the current time as a time_point object using std::chrono::system_clock
+		chronoclock::time_point chrono_current_time = chronoclock::now();
+		// Convert hours, minutes and seconds to total seconds and create a time_point object for the target time
+		chronoclock::time_point chrono_target_time(chronoclock::time_point::duration(hour * 3600 + min * 60 + sec));
 
-		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
+		// Calculate the difference between the current time and the target time in seconds using std::chrono::duration_cast
+		auto difference = std::chrono::duration_cast<std::chrono::seconds>(chrono_target_time - chrono_current_time).count();
+		// If the difference is negative, add 86400 seconds (1 day) to it
 		if (difference < 0) {
 			difference += 86400;
 		}
 
-		globalevent->setNextExecution(current_time + difference);
+		globalevent->setNextExecution(getTimeNow() + difference);
 		globalevent->setEventType(GLOBALEVENT_TIMER);
 		pushBoolean(L, true);
 	} else {

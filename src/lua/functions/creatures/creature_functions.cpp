@@ -756,7 +756,6 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 
 	const Position oldPosition = creature->getPosition();
 	if (oldPosition == position) {
-		Player *player = creature->getPlayer();
 		Tile* templeTile = g_game().map.getTile(player->getTemplePosition());
 		if (!player || !templeTile) {
 			return 1;

@@ -108,7 +108,6 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 				if (lastDirectory.empty() || lastDirectory != scriptFolder)
 				{
 					// Update the last directory variable and log the directory name
-					std::cout << "> " << it->path().filename().string() << " [disabled]" << std::endl;
 					SPDLOG_INFO("[{}]", realPath.parent_path().filename().string());
 					lastDirectory = realPath.parent_path().string();
 				}

@@ -18,7 +18,6 @@
 #include "lua/scripts/scripts.h"
 #include "game/game.h"
 
-
 bool NpcType::canSpawn(const Position& pos)
 {
 	bool canSpawn = true;

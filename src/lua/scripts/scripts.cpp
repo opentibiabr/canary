@@ -93,8 +93,12 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 
 		// Check if file start with "#"
 		std::string disable("#");
-		if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS) && file.front() == disable.front()) {
-			SPDLOG_INFO("[script]: {} [disabled]", realPath.filename().string());
+		if (file.front() == disable.front()) {
+			// Send log of disabled script
+			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
+				SPDLOG_INFO("[script]: {} [disabled]", realPath.filename().string());
+			}
+			// Skip for next loop and ignore disabled file
 			continue;
 		}
 

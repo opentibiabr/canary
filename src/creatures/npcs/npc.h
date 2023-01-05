@@ -53,9 +53,6 @@ class Npc final : public Creature
 			}
 		}
 
-		bool load(bool loadLibs = true, bool loadNpcs = true) const;
-		bool reset() const;
-
 		void removeList() override;
 		void addList() override;
 

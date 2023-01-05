@@ -2127,19 +2127,6 @@ ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, bool pu
 	}
 
 	if (Creature* creature = thing->getCreature()) {
-		if (auto player = creature->getPlayer()) {
-			Tile* templeTile = map.getTile(player->getTemplePosition());
-			if (!templeTile) {
-				return RETURNVALUE_NOTPOSSIBLE;
-			}
-			
-			if (creature->getPosition() == newPos) {
-				SPDLOG_ERROR("[{}] creature with name {} is teleporting old position same of a new position", __FUNCTION__, creature->getName());
-				map.moveCreature(*creature, *templeTile, true);
-				return RETURNVALUE_NOTPOSSIBLE;
-			}
-		}
-
 		ReturnValue ret = toTile->queryAdd(0, *creature, 1, FLAG_NOLIMIT);
 		if (ret != RETURNVALUE_NOERROR) {
 			return ret;

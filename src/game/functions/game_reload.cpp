@@ -38,6 +38,7 @@ bool GameReload::init(Reload_t reloadTypes) const
 		case Reload_t::RELOAD_TYPE_RAIDS : return reloadRaids();
 		case Reload_t::RELOAD_TYPE_SCRIPTS : return reloadScripts();
 		case Reload_t::RELOAD_TYPE_TALKACTION : return reloadTalkaction();
+		case Reload_t::RELOAD_TYPE_GROUPS : return reloadGroups();
 		default : return false;
 	}
 }
@@ -55,16 +56,18 @@ uint8_t GameReload::getReloadNumber(Reload_t reloadTypes) const
 */
 bool GameReload::reloadAll() const
 {
-	if (reloadChat() || reloadConfig() || reloadEvents() ||
-		reloadCore() || reloadImbuements() || reloadItems() ||
-		reloadModules() || reloadMonsters() || reloadMounts() ||
-		reloadNpcs() || reloadRaids() || reloadScripts() ||
-		reloadTalkaction()
-	)
-	{
-		return true;
+	std::vector<bool> reloadResults;
+	reloadResults.reserve(magic_enum::enum_count<Reload_t>());
+
+	for (auto value : magic_enum::enum_values<Reload_t>()) {
+		if (value == Reload_t::RELOAD_TYPE_ALL) {
+			continue;
+		}
+
+		reloadResults.push_back(init(value));
 	}
-	return false;
+
+	return std::ranges::any_of(reloadResults, [](bool result) { return result; });
 }
 
 bool GameReload::reloadChat() const
@@ -169,4 +172,9 @@ bool GameReload::reloadTalkaction() const
 		return true;
 	}
 	return false;
+}
+
+bool GameReload::reloadGroups() const
+{
+	return g_game().groups.reload();
 }

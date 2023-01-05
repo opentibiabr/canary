@@ -815,47 +815,9 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 }
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {
-	registerEnum(L, PlayerFlag_CannotUseCombat);
-	registerEnum(L, PlayerFlag_CannotAttackPlayer);
-	registerEnum(L, PlayerFlag_CannotAttackMonster);
-	registerEnum(L, PlayerFlag_CannotBeAttacked);
-	registerEnum(L, PlayerFlag_CanConvinceAll);
-	registerEnum(L, PlayerFlag_CanSummonAll);
-	registerEnum(L, PlayerFlag_CanIllusionAll);
-	registerEnum(L, PlayerFlag_CanSenseInvisibility);
-	registerEnum(L, PlayerFlag_IgnoredByMonsters);
-	registerEnum(L, PlayerFlag_NotGainInFight);
-	registerEnum(L, PlayerFlag_HasInfiniteMana);
-	registerEnum(L, PlayerFlag_HasInfiniteSoul);
-	registerEnum(L, PlayerFlag_HasNoExhaustion);
-	registerEnum(L, PlayerFlag_CannotUseSpells);
-	registerEnum(L, PlayerFlag_CannotPickupItem);
-	registerEnum(L, PlayerFlag_CanAlwaysLogin);
-	registerEnum(L, PlayerFlag_CanBroadcast);
-	registerEnum(L, PlayerFlag_CanEditHouses);
-	registerEnum(L, PlayerFlag_CannotBeBanned);
-	registerEnum(L, PlayerFlag_CannotBePushed);
-	registerEnum(L, PlayerFlag_HasInfiniteCapacity);
-	registerEnum(L, PlayerFlag_CanPushAllCreatures);
-	registerEnum(L, PlayerFlag_CanTalkRedPrivate);
-	registerEnum(L, PlayerFlag_CanTalkRedChannel);
-	registerEnum(L, PlayerFlag_TalkOrangeHelpChannel);
-	registerEnum(L, PlayerFlag_NotGainExperience);
-	registerEnum(L, PlayerFlag_NotGainMana);
-	registerEnum(L, PlayerFlag_NotGainHealth);
-	registerEnum(L, PlayerFlag_NotGainSkill);
-	registerEnum(L, PlayerFlag_SetMaxSpeed);
-	registerEnum(L, PlayerFlag_SpecialVIP);
-	registerEnum(L, PlayerFlag_NotGenerateLoot);
-	registerEnum(L, PlayerFlag_CanTalkRedChannelAnonymous);
-	registerEnum(L, PlayerFlag_IgnoreProtectionZone);
-	registerEnum(L, PlayerFlag_IgnoreSpellCheck);
-	registerEnum(L, PlayerFlag_IgnoreWeaponCheck);
-	registerEnum(L, PlayerFlag_CannotBeMuted);
-	registerEnum(L, PlayerFlag_IsAlwaysPremium);
-
-	registerEnum(L, PlayerCustomFlag_CanMapClickTeleport);
-	registerEnum(L, PlayerCustomFlag_IgnoredByNpcs);
+	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initReportReasonEnums(lua_State* L) {
@@ -1121,20 +1083,9 @@ void LuaEnums::initReturnValueEnums(lua_State* L) {
 
 // Reload
 void LuaEnums::initReloadTypeEnums(lua_State* L) {
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_ALL);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CHAT);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CONFIG);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_EVENTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_CORE);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_IMBUEMENTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_ITEMS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MODULES);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MONSTERS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_MOUNTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_NPCS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_RAIDS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_SCRIPTS);
-	registerEnumClass(L, Reload_t::RELOAD_TYPE_TALKACTION);
+	for (auto value : magic_enum::enum_values<Reload_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 void LuaEnums::initCreaturesEventEnums(lua_State* L) {
@@ -1158,9 +1109,9 @@ void LuaEnums::initCreaturesEventEnums(lua_State* L) {
 }
 
 void LuaEnums::initForgeEnums(lua_State* L) {
-	registerEnumClass(L, ForgeClassifications_t::FORGE_NORMAL_MONSTER);
-	registerEnumClass(L, ForgeClassifications_t::FORGE_INFLUENCED_MONSTER);
-	registerEnumClass(L, ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
+	for (auto value : magic_enum::enum_values<ForgeClassifications_t>()) {
+		registerEnumClass(L, value);
+	}
 }
 
 // Webhook default colors

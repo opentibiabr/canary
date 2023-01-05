@@ -11,29 +11,44 @@
 #define SRC_UTILS_PUGICAST_H_
 
 namespace pugi {
-	/**
-	 * @brief Converts a string to a generic type T.
-	 *
-	 * @tparam T Type to which the string will be converted.
-	 * @param str String to be converted.
-	 * @return Value converted to type T.
-	 */
-	template<typename T>
-	T cast(const pugi::char_t* str)
-	{
-		T value; // Value to be returned
-		try {
-			// Uses std::stoll to convert the string to the generic type T
-			value = static_cast<T>(std::stoll(str));
-		} catch (std::invalid_argument&) {
-			// Value of the string is invalid
-			value = T();
-		} catch (std::out_of_range&) {
-			// Value of the string is too large to fit in the range allowed by type T
-			value = T();
+template<typename T>
+	// NOTE: std::clamp returns the minimum value if the value is less than the specified minimum value, the maximum value if the value is greater than the specified maximum value, or the value itself if it falls within the range
+	T cast(const pugi::char_t* str) {
+		// Initialize value to return
+		T value;
+
+		// Set the last character to parse
+		std::string_view string(str);
+		const auto last = str + string.size();
+
+		// Convert the string to the specified type
+		const auto [pointer, errorCode] = std::from_chars(str, last, value);
+		// If the conversion was successful and all characters were parsed
+		if (errorCode == std::errc{} && pointer == last) {
+			// Ensure that the converted value is within the valid range for the type
+			value = std::clamp(
+				value,
+				std::numeric_limits<T>::lowest(),
+				std::numeric_limits<T>::max()
+			);
+			return value;
 		}
 
-		return value;
+		// If the string could not be parsed as the specified type
+		if (errorCode == std::errc::invalid_argument) {
+			// Throw an exception indicating that the argument is invalid
+			SPDLOG_ERROR("Invalid argument {}", str);
+			throw std::invalid_argument("Invalid argument: " + std::string(str));
+		}
+		// If the parsed value is out of range for the specified type
+		else if (errorCode == std::errc::result_out_of_range) {
+			// Throw an exception indicating that the result is out of range
+			SPDLOG_ERROR("Result out of range: {}", str);
+			throw std::out_of_range("Result out of range: " + std::string(str));
+		}
+
+		// Return a default value if no exception is thrown
+		return T{};
 	}
 }
 

@@ -175,7 +175,7 @@ class Player final : public Creature, public Cylinder
 			return guid;
 		}
 		bool canSeeInvisibility() const override {
-			return hasFlag(PlayerFlag_CanSenseInvisibility) || group->access;
+			return hasFlag(PlayerFlags_t::CanSenseInvisibility) || group->access;
 		}
 
 		void setDailyReward(uint8_t reward) {
@@ -347,12 +347,8 @@ class Player final : public Creature, public Cylinder
 			return manaSpent;
 		}
 
-		bool hasFlag(PlayerFlags value) const {
-			return (group->flags & value) != 0;
-		}
-
-		bool hasCustomFlag(PlayerCustomFlags value) const {
-			return (group->customflags & value) != 0;
+		bool hasFlag(PlayerFlags_t flag) const {
+			return group->flags[Groups::getFlagNumber(flag)];
 		}
 
 		BedItem* getBedItem() {
@@ -600,27 +596,27 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint32_t getBaseCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			}
 			return capacity;
 		}
 
 		uint32_t getCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			}
 			return capacity + bonusCapacity;
 		}
 
 		uint32_t getFreeCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			} else {
 				return std::max<int32_t>(0, getCapacity() - inventoryWeight);
@@ -2458,7 +2454,7 @@ class Player final : public Creature, public Cylinder
 				return;
 			}
 
-			if (!hasFlag(PlayerFlag_SetMaxSpeed)) {
+			if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
 				baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 			} else {
 				baseSpeed = PLAYER_MAX_SPEED;

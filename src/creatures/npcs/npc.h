@@ -115,6 +115,7 @@ class Npc final : public Creature
 		}
 
 		bool canSee(const Position& pos) const override;
+		bool canSeeRange(const Position& pos, int32_t viewRangeX = 4, int32_t viewRangeY = 4) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}

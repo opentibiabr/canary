@@ -78,9 +78,11 @@ bool SpawnsMonster::loadFromXML(const std::string& filemonstername)
 					dir = DIRECTION_NORTH;
 				}
 
+				auto xOffset = pugi::cast<int16_t>(childMonsterNode.attribute("x").value());
+				auto yOffset = pugi::cast<int16_t>(childMonsterNode.attribute("y").value());
 				Position pos(
-					centerPos.x + pugi::cast<uint16_t>(childMonsterNode.attribute("x").value()),
-					centerPos.y + pugi::cast<uint16_t>(childMonsterNode.attribute("y").value()),
+					static_cast<uint16_t>(centerPos.x + xOffset),
+					static_cast<uint16_t>(centerPos.y + yOffset),
 					centerPos.z
 				);
 
@@ -162,7 +164,7 @@ bool SpawnMonster::findPlayer(const Position& pos)
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
-		if (!spectator->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 			return true;
 		}
 	}

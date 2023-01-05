@@ -1327,16 +1327,11 @@ bool IOLoginData::getGuidByNameEx(uint32_t& guid, bool& specialVip, std::string&
 
   name = result->getString("name");
   guid = result->getNumber<uint32_t>("id");
-  const Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
-
-  uint64_t flags;
-  if (group) {
-    flags = group->flags;
+  if (auto group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"))) {
+    specialVip = group->flags[Groups::getFlagNumber(PlayerFlags_t::SpecialVIP)];
   } else {
-    flags = 0;
+    specialVip = false;
   }
-
-  specialVip = (flags & PlayerFlag_SpecialVIP) != 0;
   return true;
 }
 

@@ -225,7 +225,6 @@ class DBTransaction {
 			} catch (const std::exception &exception) {
 				// An error occurred while rollback the transaction
 				SPDLOG_ERROR("An error occurred while rollback the transaction", exception.what());
-				throw exception;
 			}
 		}
 
@@ -239,13 +238,13 @@ class DBTransaction {
 			try {
 				// Commit the transaction
 				state = STATE_COMMIT;
-				Database::getInstance().commit();
+				return Database::getInstance().commit();
 			} catch (const std::exception &exception) {
 				// An error occurred while starting the transaction
 				state = STATE_NO_START;
 				SPDLOG_ERROR("An error occurred while starting the transaction", exception.what());
-				throw exception;
 			}
+			return false;
 		}
 
 		bool isStarted() const { return state == STATE_START; }

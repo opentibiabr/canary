@@ -74,9 +74,11 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 					dir = DIRECTION_NORTH;
 				}
 
+				auto xOffset = pugi::cast<int16_t>(childNode.attribute("x").value());
+				auto yOffset = pugi::cast<int16_t>(childNode.attribute("y").value());
 				Position pos(
-					centerPos.x + pugi::cast<uint16_t>(childNode.attribute("x").value()),
-					centerPos.y + pugi::cast<uint16_t>(childNode.attribute("y").value()),
+					static_cast<uint16_t>(centerPos.x + xOffset),
+					static_cast<uint16_t>(centerPos.y + yOffset),
 					centerPos.z
 				);
 				int64_t interval = pugi::cast<int64_t>(childNode.attribute("spawntime").value()) * 1000;
@@ -151,7 +153,7 @@ bool SpawnNpc::findPlayer(const Position& pos)
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
-		if (!spectator->getPlayer()->hasCustomFlag(PlayerCustomFlag_IgnoredByNpcs)) {
+		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
 			return true;
 		}
 	}

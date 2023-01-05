@@ -97,7 +97,7 @@ bool Player::setVocation(uint16_t vocId)
 
 bool Player::isPushable() const
 {
-	if (hasFlag(PlayerFlag_CannotBePushed)) {
+	if (hasFlag(PlayerFlags_t::CannotBePushed)) {
 		return false;
 	}
 	return Creature::isPushable();
@@ -449,7 +449,7 @@ uint32_t Player::getClientIcons() const
 
 void Player::updateInventoryWeight()
 {
-	if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+	if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 		return;
 	}
 
@@ -1565,7 +1565,7 @@ void Player::onFollowCreatureDisappear(bool isLogout)
 void Player::onChangeZone(ZoneType_t zone)
 {
 	if (zone == ZONE_PROTECTION) {
-		if (attackedCreature && !hasFlag(PlayerFlag_IgnoreProtectionZone)) {
+		if (attackedCreature && !hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 			setAttackedCreature(nullptr);
 			onAttackedCreatureDisappear(false);
 		}
@@ -1590,13 +1590,13 @@ void Player::onChangeZone(ZoneType_t zone)
 void Player::onAttackedCreatureChangeZone(ZoneType_t zone)
 {
 	if (zone == ZONE_PROTECTION) {
-		if (!hasFlag(PlayerFlag_IgnoreProtectionZone)) {
+		if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 			setAttackedCreature(nullptr);
 			onAttackedCreatureDisappear(false);
 		}
 	} else if (zone == ZONE_NOPVP) {
 		if (attackedCreature->getPlayer()) {
-			if (!hasFlag(PlayerFlag_IgnoreProtectionZone)) {
+			if (!hasFlag(PlayerFlags_t::IgnoreProtectionZone)) {
 				setAttackedCreature(nullptr);
 				onAttackedCreatureDisappear(false);
 			}
@@ -1993,7 +1993,7 @@ void Player::onThink(uint32_t interval)
 
 uint32_t Player::isMuted() const
 {
-	if (hasFlag(PlayerFlag_CannotBeMuted)) {
+	if (hasFlag(PlayerFlags_t::CannotBeMuted)) {
 		return 0;
 	}
 
@@ -2008,14 +2008,14 @@ uint32_t Player::isMuted() const
 
 void Player::addMessageBuffer()
 {
-	if (MessageBufferCount > 0 && g_configManager().getNumber(MAX_MESSAGEBUFFER) != 0 && !hasFlag(PlayerFlag_CannotBeMuted)) {
+	if (MessageBufferCount > 0 && g_configManager().getNumber(MAX_MESSAGEBUFFER) != 0 && !hasFlag(PlayerFlags_t::CannotBeMuted)) {
 		--MessageBufferCount;
 	}
 }
 
 void Player::removeMessageBuffer()
 {
-	if (hasFlag(PlayerFlag_CannotBeMuted)) {
+	if (hasFlag(PlayerFlags_t::CannotBeMuted)) {
 		return;
 	}
 
@@ -2054,7 +2054,7 @@ void Player::drainMana(Creature* attacker, int32_t manaLoss)
 
 void Player::addManaSpent(uint64_t amount)
 {
-	if (hasFlag(PlayerFlag_NotGainMana)) {
+	if (hasFlag(PlayerFlags_t::NotGainMana)) {
 		return;
 	}
 
@@ -2796,7 +2796,7 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 
 void Player::addInFightTicks(bool pzlock /*= false*/)
 {
-	if (hasFlag(PlayerFlag_NotGainInFight)) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
 		return;
 	}
 
@@ -2935,11 +2935,11 @@ void Player::autoCloseContainers(const Container* container)
 
 bool Player::hasCapacity(const Item* item, uint32_t count) const
 {
-	if (hasFlag(PlayerFlag_CannotPickupItem)) {
+	if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 		return false;
 	}
 
-	if (hasFlag(PlayerFlag_HasInfiniteCapacity) || item->getTopParent() == this) {
+	if (hasFlag(PlayerFlags_t::HasInfiniteCapacity) || item->getTopParent() == this) {
 		return true;
 	}
 
@@ -4269,7 +4269,7 @@ void Player::onAttackedCreature(Creature* target)
 		return;
 	}
 
-	if (hasFlag(PlayerFlag_NotGainInFight)) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
 		return;
 	}
 
@@ -4370,7 +4370,7 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 {
 	bool unjustified = false;
 
-	if (hasFlag(PlayerFlag_NotGenerateLoot)) {
+	if (hasFlag(PlayerFlags_t::NotGenerateLoot)) {
 		target->setDropLoot(false);
 	}
 
@@ -4380,7 +4380,7 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 		if (targetPlayer && targetPlayer->getZone() == ZONE_PVP) {
 			targetPlayer->setDropLoot(false);
 			targetPlayer->setSkillLoss(false);
-		} else if (!hasFlag(PlayerFlag_NotGainInFight) && !isPartner(targetPlayer)) {
+		} else if (!hasFlag(PlayerFlags_t::NotGainInFight) && !isPartner(targetPlayer)) {
 			if (!Combat::isInPvpZone(this, targetPlayer) && hasAttacked(targetPlayer) && !targetPlayer->hasAttacked(this) && !isGuildMate(targetPlayer) && targetPlayer != this) {
 				if (targetPlayer->hasKilled(this)) {
 					for (auto& kill : targetPlayer->unjustifiedKills) {
@@ -4443,7 +4443,7 @@ bool Player::onKilledCreature(Creature* target, bool lastHit/* = true*/)
 
 void Player::gainExperience(uint64_t gainExp, Creature* target)
 {
-	if (hasFlag(PlayerFlag_NotGainExperience) || gainExp == 0 || staminaMinutes == 0) {
+	if (hasFlag(PlayerFlags_t::NotGainExperience) || gainExp == 0 || staminaMinutes == 0) {
 		return;
 	}
 
@@ -4452,7 +4452,7 @@ void Player::gainExperience(uint64_t gainExp, Creature* target)
 
 void Player::onGainExperience(uint64_t gainExp, Creature* target)
 {
-	if (hasFlag(PlayerFlag_NotGainExperience)) {
+	if (hasFlag(PlayerFlags_t::NotGainExperience)) {
 		return;
 	}
 
@@ -4473,7 +4473,7 @@ void Player::onGainSharedExperience(uint64_t gainExp, Creature* target)
 
 bool Player::isImmune(CombatType_t type) const
 {
-	if (hasFlag(PlayerFlag_CannotBeAttacked)) {
+	if (hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 		return true;
 	}
 	return Creature::isImmune(type);
@@ -4481,7 +4481,7 @@ bool Player::isImmune(CombatType_t type) const
 
 bool Player::isImmune(ConditionType_t type) const
 {
-	if (hasFlag(PlayerFlag_CannotBeAttacked)) {
+	if (hasFlag(PlayerFlags_t::CannotBeAttacked)) {
 		return true;
 	}
 	return Creature::isImmune(type);
@@ -4489,7 +4489,7 @@ bool Player::isImmune(ConditionType_t type) const
 
 bool Player::isAttackable() const
 {
-	return !hasFlag(PlayerFlag_CannotBeAttacked);
+	return !hasFlag(PlayerFlags_t::CannotBeAttacked);
 }
 
 bool Player::lastHitIsPlayer(Creature* lastHitCreature)
@@ -4514,7 +4514,7 @@ void Player::changeHealth(int32_t healthChange, bool sendHealthChange/* = true*/
 
 void Player::changeMana(int32_t manaChange)
 {
-	if (!hasFlag(PlayerFlag_HasInfiniteMana)) {
+	if (!hasFlag(PlayerFlags_t::HasInfiniteMana)) {
 		Creature::changeMana(manaChange);
 	}
 	g_game().addPlayerMana(this);
@@ -4735,7 +4735,7 @@ void Player::setSex(PlayerSex_t newSex)
 
 Skulls_t Player::getSkull() const
 {
-	if (hasFlag(PlayerFlag_NotGainInFight)) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
 		return SKULL_NONE;
 	}
 	return skull;
@@ -4785,7 +4785,7 @@ bool Player::hasKilled(const Player* player) const
 
 bool Player::hasAttacked(const Player* attacked) const
 {
-	if (hasFlag(PlayerFlag_NotGainInFight) || !attacked) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked) {
 		return false;
 	}
 
@@ -4794,7 +4794,7 @@ bool Player::hasAttacked(const Player* attacked) const
 
 void Player::addAttacked(const Player* attacked)
 {
-	if (hasFlag(PlayerFlag_NotGainInFight) || !attacked || attacked == this) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked || attacked == this) {
 		return;
 	}
 
@@ -4820,7 +4820,7 @@ void Player::clearAttacked()
 
 void Player::addUnjustifiedDead(const Player* attacked)
 {
-	if (hasFlag(PlayerFlag_NotGainInFight) || attacked == this || g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
+	if (hasFlag(PlayerFlags_t::NotGainInFight) || attacked == this || g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
 		return;
 	}
 
@@ -4931,11 +4931,11 @@ void Player::forgetInstantSpell(const std::string& spellName)
 
 bool Player::hasLearnedInstantSpell(const std::string& spellName) const
 {
-	if (hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
 
-	if (hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
 	}
 
@@ -4968,7 +4968,7 @@ bool Player::isInWarList(uint32_t guildId) const
 
 bool Player::isPremium() const
 {
-	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlag_IsAlwaysPremium)) {
+	if (g_configManager().getBoolean(FREE_PREMIUM) || hasFlag(PlayerFlags_t::IsAlwaysPremium)) {
 		return true;
 	}
 

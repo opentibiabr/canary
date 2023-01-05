@@ -413,7 +413,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		return 1;
 	}
 
-	if (!player->hasFlag(PlayerFlag_IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0) {
+	if (!player->hasFlag(PlayerFlags_t::IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0) {
 		if (player->getLevel() < moveEvent->getReqLevel() || player->getMagicLevel() < moveEvent->getReqMagLv()) {
 			return 0;
 		}

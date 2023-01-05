@@ -2449,7 +2449,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 		return 1;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		pushBoolean(L, true);
 		return 1;
 	}

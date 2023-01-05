@@ -292,13 +292,13 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlag_CanAlwaysLogin))
+		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin))
 		{
 			disconnectClient("The game is just going down.\nPlease try again later.");
 			return;
 		}
 
-		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlag_CanAlwaysLogin))
+		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin))
 		{
 			disconnectClient("Server is currently closed.\nPlease try again later.");
 			return;
@@ -316,7 +316,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!player->hasFlag(PlayerFlag_CannotBeBanned))
+		if (!player->hasFlag(PlayerFlags_t::CannotBeBanned))
 		{
 			BanInfo banInfo;
 			if (IOBan::isAccountBanned(accountId, banInfo))
@@ -3033,7 +3033,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(player->getBaseSpeed());
 	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->getCapacity());
-	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	msg.addByte(8);
 	msg.addByte(1);
 	msg.add<uint16_t>(player->getMagicLevel());
@@ -6563,7 +6563,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 
-	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
 	msg.add<uint64_t>(player->getExperience());
 

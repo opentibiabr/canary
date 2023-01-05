@@ -77,7 +77,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 	for (const auto &entry: std::filesystem::recursive_directory_iterator(dir))
 	{
 		// Get the filename of the entry as a string
-		auto realPath = entry.path();
+		const auto& realPath = entry.path();
 		std::string fileFolder = realPath.parent_path().filename().string();
 		// Script folder, example: "actions"
 		std::string scriptFolder = realPath.parent_path().string();
@@ -93,8 +93,9 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 		}
 
 		// Check if file start with "#"
-		std::string disable("#");
-		if (file.front() == disable.front()) {
+		if (std::string disable("#");
+			file.front() == disable.front())
+		{
 			// Send log of disabled script
 			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 				SPDLOG_INFO("[script]: {} [disabled]", realPath.filename().string());
@@ -107,15 +108,11 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 		if (isLib || (fileFolderView != "lib" && fileFolderView != "events"))
 		{
 			// If console logs are enabled and the file is not a library file
-			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS) && !isLib)
+			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS) && !isLib && lastDirectory.empty() || lastDirectory != scriptFolderView)
 			{
-				// If the current directory is different from the last directory that was logged
-				if (lastDirectory.empty() || lastDirectory != scriptFolderView)
-				{
-					// Update the last directory variable and log the directory name
-					SPDLOG_INFO("[{}]", realPath.parent_path().filename().string());
-					lastDirectory = realPath.parent_path().string();
-				}
+				// Update the last directory variable and log the directory name
+				SPDLOG_INFO("[{}]", realPath.parent_path().filename().string());
+				lastDirectory = realPath.parent_path().string();
 			}
 
 			// If the function 'loadFile' returns -1, then there was an error loading the file

@@ -76,11 +76,14 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 	// Recursive iterate through all entries in the directory
 	for (const auto &entry: std::filesystem::recursive_directory_iterator(dir))
 	{
-		// Get the filename of the entry as a string_view
+		// Get the filename of the entry as a string
 		auto realPath = entry.path();
-		std::string_view fileFolder(realPath.parent_path().filename().string());
+		std::string fileFolder = realPath.parent_path().filename().string();
 		// Script folder, example: "actions"
-		std::string_view scriptFolder(realPath.parent_path().string());
+		std::string scriptFolder = realPath.parent_path().string();
+		// Create a string_view for the fileFolder and scriptFolder strings
+		std::string_view fileFolderView(fileFolder);
+		std::string_view scriptFolderView(scriptFolder);
 		// Filename, example: "demon.lua"
 		std::string file(realPath.filename().string());
 		if (!std::filesystem::is_regular_file(entry) || realPath.extension() != ".lua")
@@ -101,13 +104,13 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 		}
 
 		// If the file is a library file or if the file's parent directory is not "lib" or "events"
-		if (isLib || (fileFolder != "lib" && fileFolder != "events"))
+		if (isLib || (fileFolderView != "lib" && fileFolderView != "events"))
 		{
 			// If console logs are enabled and the file is not a library file
 			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS) && !isLib)
 			{
 				// If the current directory is different from the last directory that was logged
-				if (lastDirectory.empty() || lastDirectory != scriptFolder)
+				if (lastDirectory.empty() || lastDirectory != scriptFolderView)
 				{
 					// Update the last directory variable and log the directory name
 					SPDLOG_INFO("[{}]", realPath.parent_path().filename().string());

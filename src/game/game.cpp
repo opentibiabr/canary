@@ -2127,7 +2127,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, bool pushMove/* = true*/, uint32_t flags /*= 0*/)
 {
 	if (newPos == thing->getPosition()) {
-		return RETURNVALUE_NOERROR;
+		return RETURNVALUE_CONTACTADMINISTRATOR;
 	} else if (thing->isRemoved()) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}

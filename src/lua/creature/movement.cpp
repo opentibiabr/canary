@@ -252,7 +252,6 @@ MoveEvent* MoveEvents::getEvent(Tile& tile, MoveEvent_t eventType) {
 
 uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t eventType) {
 	const Position& pos = tile.getPosition();
-
 	uint32_t ret = 1;
 
 	MoveEvent* moveEvent = getEvent(tile, eventType);
@@ -273,7 +272,12 @@ uint32_t MoveEvents::onCreatureMove(Creature& creature, Tile& tile, MoveEvent_t 
 
 		moveEvent = getEvent(*tileItem, eventType);
 		if (moveEvent) {
-			ret &= moveEvent->fireStepEvent(creature, tileItem, pos);
+			auto step = moveEvent->fireStepEvent(creature, tileItem, pos);
+			// If there is any problem in the function, we will kill the loop
+			if (step == 0) {
+				break;
+			}
+			ret &= step;
 		}
 	}
 	return ret;
@@ -331,7 +335,11 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 
 		moveEvent = getEvent(*tileItem, eventType2);
 		if (moveEvent) {
-			ret &= moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
+			auto moveItem = moveEvent->fireAddRemItem(item, *tileItem, tile.getPosition());
+			// If there is any problem in the function, we will kill the loop
+			if (moveItem == 0) {
+				break;
+			}
 		}
 	}
 	return ret;
@@ -608,6 +616,14 @@ uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position
 }
 
 bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos) {
+	auto fromPosition = creature.getLastPosition();
+	auto player = creature.getPlayer();
+	if (player && fromPosition == pos) {
+		SPDLOG_WARN("[{}] - Cannot teleport creature with name: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
+		g_game().internalTeleport(player, player->getTemplePosition());
+		return false;
+	}
+
 	//onStepIn(creature, item, pos, fromPosition)
 	//onStepOut(creature, item, pos, fromPosition)
 	if (!scriptInterface->reserveScriptEnv()) {
@@ -635,7 +651,7 @@ bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos)
 	LuaScriptInterface::setCreatureMetatable(L, -1, &creature);
 	LuaScriptInterface::pushThing(L, item);
 	LuaScriptInterface::pushPosition(L, pos);
-	LuaScriptInterface::pushPosition(L, creature.getLastPosition());
+	LuaScriptInterface::pushPosition(L, fromPosition);
 
 	return scriptInterface->callFunction(4);
 }

@@ -749,9 +749,30 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 		return 1;
 	}
 
+	Player *player = creature->getPlayer();
+	if (!player) {
+		return 1;
+	}
+
 	const Position oldPosition = creature->getPosition();
-	if (g_game().internalTeleport(creature, position, pushMovement) != RETURNVALUE_NOERROR) {
-		SPDLOG_WARN("[{}] - Cannot teleport creature with name: {}, fromPosition {}, toPosition {}", __FUNCTION__, creature->getName(), oldPosition.toString(), position.toString());
+	if (oldPosition == position) {
+		Player *player = creature->getPlayer();
+		Tile* templeTile = g_game().map.getTile(player->getTemplePosition());
+		if (!player || !templeTile) {
+			return 1;
+		}
+
+		g_game().internalTeleport(creature, player->getTemplePosition(), pushMovement);
+		SPDLOG_WARN("[{}] - Cannot teleport creature: {}, fromPosition: {}, as same of toPosition: {}", __FUNCTION__, player->getName(), oldPosition.toString(), position.toString());
+		pushBoolean(L, false);
+		reportErrorFunc("The new position is the same as the old one.");
+		return 1;
+	}
+
+	if (auto ret = g_game().internalTeleport(creature, position, pushMovement);
+		ret != RETURNVALUE_NOERROR)
+	{
+		player->sendCancelMessage(ret);
 		pushBoolean(L, false);
 		return 1;
 	}

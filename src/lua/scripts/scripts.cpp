@@ -36,8 +36,6 @@ void Scripts::clear() const {
 }
 
 bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
-	namespace fs = std::filesystem;
-
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 	const auto dir = std::filesystem::current_path() / coreFolder / "events" / "scripts" / "scheduler";
 	if(!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {

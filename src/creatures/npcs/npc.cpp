@@ -56,20 +56,26 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
+bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/, bool reloading/* = false*/) const {
 	if (loadLibs) {
 		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
 		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
 	}
 	if (loadNpcs) {
-		return g_scripts().loadScripts("npc", false, true);
+		return g_scripts().loadScripts("npc", false, reloading);
 	}
 	return false;
 }
 
 bool Npc::reset() const
 {
-	if (load()) {
+	// Load the "npclib" folder
+	if (load(true, false, true)) {
+		// Load the npcs scripts folder
+		if (!load(false, true, true)) {
+			return false;
+		}
+
 		g_npcs().reset();
 		g_game().resetNpcs();
 		return true;

@@ -1160,11 +1160,6 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 
 	player->setNextActionTask(nullptr);
 
-	if (player->isInMarket()) {
-		player->sendMarketLeave();
-		return;
-	}
-
 	if (item == nullptr) {
 		uint8_t fromIndex = 0;
 		if (fromPos.x == 0xFFFF) {

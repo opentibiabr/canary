@@ -7471,13 +7471,12 @@ bool removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 				}
 
 				if (removeAmount == 0) {
-					return false;
+					break;
 				}
 			} else {
 				count += Item::countByType(item, -1);
 				if (count > amount) {
-					offerStatus << "Current count value " << count << " is greater than expected amount value " << amount;
-					return false;
+					break;
 				}
 				auto ret = g_game().internalRemoveItem(item);
 				if (ret != RETURNVALUE_NOERROR) {

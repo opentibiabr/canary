@@ -222,7 +222,7 @@ Item* Player::getWeapon(Slots_t slot, bool ignoreAmmo) const
 		return nullptr;
 	}
 
-  if (!ignoreAmmo && weaponType == WEAPON_DISTANCE) {
+  if (!ignoreAmmo && (weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE)) {
     const ItemType& it = Item::items[item->getID()];
     if (it.ammoType != AMMO_NONE) {
       Item* quiver = inventory[CONST_SLOT_RIGHT];
@@ -296,6 +296,7 @@ int32_t Player::getWeaponSkill(const Item* item) const
 			break;
 		}
 
+		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE: {
 			attackSkill = getSkillLevel(SKILL_DISTANCE);
 			break;

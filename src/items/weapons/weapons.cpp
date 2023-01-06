@@ -81,8 +81,9 @@ void Weapons::loadDefaults()
 			}
 
 			case WEAPON_AMMO:
+			case WEAPON_MISSILE:
 			case WEAPON_DISTANCE: {
-				if (it.weaponType == WEAPON_DISTANCE && it.ammoType != AMMO_NONE) {
+				if ((it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_MISSILE) && it.ammoType != AMMO_NONE) {
 					continue;
 				}
 
@@ -401,7 +402,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 	} else {
 		CombatDamage damage;
 		WeaponType_t weaponType = item->getWeaponType();
-		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE || weaponType == WEAPON_MISSILE) {
 			damage.origin = ORIGIN_RANGED;
 		} else {
 			damage.origin = ORIGIN_MELEE;
@@ -410,15 +411,15 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		damage.primary.type = params.combatType;
 		damage.secondary.type = getElementType();
 
-    if (damage.secondary.type == COMBAT_NONE) {
-    	damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-    	damage.secondary.value = 0;
-    } else {
-    	damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-    	damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
-    }
+		if (damage.secondary.type == COMBAT_NONE) {
+			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+			damage.secondary.value = 0;
+		} else {
+			damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
+			damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
+		}
 
-      	Combat::doCombatHealth(player, target, damage, params);
+		Combat::doCombatHealth(player, target, damage, params);
 	}
 
 	onUsedWeapon(player, item, target->getTile());

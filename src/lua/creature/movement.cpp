@@ -620,7 +620,7 @@ bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos)
 	//onStepOut(creature, item, pos, fromPosition)
 
 	// Check if the new position is the same as the old one
-	// If it is, log a warning and either teleport the player to their temple position or remove the creature from the game
+	// If it is, log a warning and either teleport the player to their temple position if item type is an teleport
 	auto fromPosition = creature.getLastPosition();
 	const ItemType& itemType = Item::items[item->getID()];
 	if (auto player = creature.getPlayer(); fromPosition == pos && getEventType() == MOVE_EVENT_STEP_IN)

@@ -616,21 +616,23 @@ uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position
 }
 
 bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos) {
+	//onStepIn(creature, item, pos, fromPosition)
+	//onStepOut(creature, item, pos, fromPosition)
+
+	// Check if the new position is the same as the old one
+	// If it is, log a warning and either teleport the player to their temple position or remove the creature from the game
 	auto fromPosition = creature.getLastPosition();
-	if (auto player = creature.getPlayer();
-		fromPosition == pos)
-	{
+	if (auto player = creature.getPlayer(); fromPosition == pos) {
 		if (player) {
 			SPDLOG_WARN("[{}] - Cannot teleport player with name: {}, to the same position: {} of fromPosition: {}", __FUNCTION__, player->getName(), pos.toString(), fromPosition.toString());
 			g_game().internalTeleport(player, player->getTemplePosition());
 		} else {
 			g_game().removeCreature(&creature);
 		}
+
 		return false;
 	}
 
-	//onStepIn(creature, item, pos, fromPosition)
-	//onStepOut(creature, item, pos, fromPosition)
 	if (!scriptInterface->reserveScriptEnv()) {
 		if (item != nullptr) {
 			SPDLOG_ERROR("[MoveEvent::executeStep - Creature {} item {}, position {}] "

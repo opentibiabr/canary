@@ -28,7 +28,7 @@ class Time {
 public:
 	/**
 	* @brief Gets the current date in hh_mm_ss format
-	* @return std::chrono::hh_mm_ss<time_t> Current date
+	* @return std::chrono::hh_mm_ss<std::chrono::milliseconds> Current date
 	*/
 	static std::chrono::hh_mm_ss<std::chrono::milliseconds> getCurrentLocalTimeInHMS();
 	static std::time_t getCurrentTime();

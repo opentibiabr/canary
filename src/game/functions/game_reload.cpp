@@ -135,14 +135,7 @@ bool GameReload::reloadMounts() const
 
 bool GameReload::reloadNpcs() const
 {
-	if (g_npc().reset()) {
-		if (!g_scripts().loadScripts("scripts/lib", true, false)) {
-			return false;
-		}
-		return true;
-	}
-
-	return false;
+	return g_npcs().reload();
 }
 
 bool GameReload::reloadRaids() const

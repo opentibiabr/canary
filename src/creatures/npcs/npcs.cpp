@@ -9,11 +9,13 @@
 
 #include "pch.hpp"
 
+#include "declarations.hpp"
 #include "creatures/combat/combat.h"
+#include "creatures/creature.h"
+#include "lua/scripts/lua_environment.hpp"
 #include "creatures/combat/spells.h"
 #include "creatures/npcs/npcs.h"
-#include "creatures/creature.h"
-#include "declarations.hpp"
+#include "lua/scripts/scripts.h"
 #include "game/game.h"
 
 bool NpcType::canSpawn(const Position& pos)
@@ -97,6 +99,34 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 	} else {
 		npcType->info.shopItemVector.push_back(shopBlock);
 	}
+}
+
+bool Npcs::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/, bool reloading/* = false*/) const {
+	if (loadLibs) {
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
+	}
+	if (loadNpcs) {
+		return g_scripts().loadScripts("npc", false, reloading);
+	}
+	return false;
+}
+
+bool Npcs::reload()
+{
+	// Load the "npclib" folder
+	if (load(true, false, true)) {
+		// Load the npcs scripts folder
+		if (!load(false, true, true)) {
+			return false;
+		}
+
+		npcs.clear();
+		scriptInterface.reset();
+		g_game().resetNpcs();
+		return true;
+	}
+	return false;
 }
 
 NpcType* Npcs::getNpcType(const std::string& name, bool create /* = false*/)

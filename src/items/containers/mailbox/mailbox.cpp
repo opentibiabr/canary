@@ -81,7 +81,7 @@ bool Mailbox::sendItem(Item* item) const {
 
 	const Player* player = g_game().getPlayerByName(receiver);
 	std::string writer;
-	time_t date = time(0);
+	auto date = Time::getCurrentTime();
 	std::string text;
 	if (item && item->getID() == ITEM_LETTER && !item->getAttribute<std::string>(ItemAttribute_t::WRITER).empty()) {
 		writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);

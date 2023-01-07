@@ -297,6 +297,7 @@ PRIVATE
 	server/network/webhook/webhook.cpp
 	server/server.cpp
 	server/signals.cpp
+	utils/date_time.cpp
 	utils/tools.cpp
 	utils/wildcardtree.cpp
 )

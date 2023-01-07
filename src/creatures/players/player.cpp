@@ -1571,7 +1571,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin) {
 		int32_t offlineTime;
 		if (getLastLogout() != 0) {
 			// Not counting more than 21 days to prevent overflow when multiplying with 1000 (for milliseconds).
-			offlineTime = std::min<int32_t>(time(nullptr) - getLastLogout(), 86400 * 21);
+			offlineTime = std::min<int32_t>(Time::getCurrentTime() - getLastLogout(), 86400 * 21);
 		} else {
 			offlineTime = 0;
 		}
@@ -1676,7 +1676,7 @@ void Player::onRemoveCreature(Creature* creature, bool isLogout) {
 
 			g_game().removePlayerUniqueLogin(this);
 			loginPosition = getPosition();
-			lastLogout = time(nullptr);
+			lastLogout = Time::getCurrentTime();
 			SPDLOG_INFO("{} has logged out", getName());
 			g_chat().removeUserFromAllChannels(*this);
 			clearPartyInvitations();
@@ -4827,7 +4827,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const {
 	if (player && player->getSkull() == SKULL_NONE) {
 		if (player == this) {
 			for (const auto &kill : unjustifiedKills) {
-				if (kill.unavenged && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
+				if (kill.unavenged && (Time::getCurrentTime() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60) {
 					return SKULL_ORANGE;
 				}
 			}
@@ -4850,7 +4850,7 @@ Skulls_t Player::getSkullClient(const Creature* creature) const {
 
 bool Player::hasKilled(const Player* player) const {
 	for (const auto &kill : unjustifiedKills) {
-		if (kill.target == player->getGUID() && (time(nullptr) - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
+		if (kill.target == player->getGUID() && (Time::getCurrentTime() - kill.time) < g_configManager().getNumber(ORANGE_SKULL_DURATION) * 24 * 60 * 60 && kill.unavenged) {
 			return true;
 		}
 	}
@@ -4896,14 +4896,14 @@ void Player::addUnjustifiedDead(const Player* attacked) {
 
 	sendTextMessage(MESSAGE_EVENT_ADVANCE, "Warning! The murder of " + attacked->getName() + " was not justified.");
 
-	unjustifiedKills.emplace_back(attacked->getGUID(), time(nullptr), true);
+	unjustifiedKills.emplace_back(attacked->getGUID(), Time::getCurrentTime(), true);
 
 	uint8_t dayKills = 0;
 	uint8_t weekKills = 0;
 	uint8_t monthKills = 0;
 
 	for (const auto &kill : unjustifiedKills) {
-		const auto diff = time(nullptr) - kill.time;
+		const auto diff = Time::getCurrentTime() - kill.time;
 		if (diff <= 4 * 60 * 60) {
 			dayKills += 1;
 		}
@@ -5182,7 +5182,7 @@ void Player::sendUnjustifiedPoints() {
 		double monthKills = 0;
 
 		for (const auto &kill : unjustifiedKills) {
-			const auto diff = time(nullptr) - kill.time;
+			const auto diff = Time::getCurrentTime() - kill.time;
 			if (diff <= 24 * 60 * 60) {
 				dayKills += 1;
 			}
@@ -6652,7 +6652,7 @@ void Player::forgeFuseItems(uint16_t itemId, uint8_t tier, bool success, bool re
 
 	history.firstItemName = firstForgingItem->getName();
 	history.bonus = bonus;
-	history.createdAt = getTimeNow();
+	history.createdAt = Time::getCurrentTime();
 	registerForgeHistoryDescription(history);
 
 	sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
@@ -6781,7 +6781,7 @@ void Player::forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t 
 
 	history.firstItemName = newDonorItem->getName();
 	history.secondItemName = newReceiveItem->getName();
-	history.createdAt = getTimeNow();
+	history.createdAt = Time::getCurrentTime();
 	registerForgeHistoryDescription(history);
 
 	sendTransferItemTier(donorItemId, tier, receiveItemId);
@@ -6865,7 +6865,7 @@ void Player::forgeResourceConversion(uint8_t action) {
 		addForgeDustLevel(1);
 	}
 
-	history.createdAt = getTimeNow();
+	history.createdAt = Time::getCurrentTime();
 	registerForgeHistoryDescription(history);
 	sendForgingData();
 }

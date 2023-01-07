@@ -264,7 +264,7 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 		return 1;
 	}
 
-	int64_t rewardId = getTimeMsNow();
+	auto rewardId = Time::getCurrentTime();
 	Item* rewardContainer = Item::CreateItem(ITEM_REWARD_CONTAINER);
 	rewardContainer->setAttribute(ItemAttribute_t::DATE, rewardId);
 	container->setAttribute(ItemAttribute_t::DATE, rewardId);

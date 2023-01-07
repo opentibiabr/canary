@@ -106,12 +106,12 @@ class Party {
 		}
 
 		uint32_t getAnalyzerTimeNow() const {
-			return static_cast<uint32_t>(time(nullptr) - trackerTime);
+			return static_cast<uint32_t>(Time::getCurrentTime() - trackerTime);
 		}
 
 	public:
 		// Party analyzer
-		time_t trackerTime = time(nullptr);
+		time_t trackerTime = Time::getCurrentTime();
 		PartyAnalyzer_t priceType = MARKET_PRICE;
 		std::vector<PartyAnalyzer*> membersData;
 

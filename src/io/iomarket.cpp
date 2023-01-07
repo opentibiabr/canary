@@ -196,7 +196,7 @@ void IOMarket::processExpiredOffers(DBResult_ptr result, bool) {
 }
 
 void IOMarket::checkExpiredOffers() {
-	const time_t lastExpireDate = getTimeNow() - g_configManager().getNumber(MARKET_OFFER_DURATION);
+	const time_t lastExpireDate = Time::getCurrentTime() - g_configManager().getNumber(MARKET_OFFER_DURATION);
 
 	std::ostringstream query;
 	query << "SELECT `id`, `amount`, `price`, `itemtype`, `player_id`, `sale`, `tier` FROM `market_offers` WHERE `created` <= " << lastExpireDate;
@@ -254,7 +254,7 @@ MarketOfferEx IOMarket::getOfferByCounter(uint32_t timestamp, uint16_t counter) 
 
 void IOMarket::createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous) {
 	std::ostringstream query;
-	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `created`, `anonymous`, `price`, `tier`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << getTimeNow() << ',' << anonymous << ',' << price << ',' << std::to_string(tier) << ')';
+	query << "INSERT INTO `market_offers` (`player_id`, `sale`, `itemtype`, `amount`, `created`, `anonymous`, `price`, `tier`) VALUES (" << playerId << ',' << action << ',' << itemId << ',' << amount << ',' << Time::getCurrentTime() << ',' << anonymous << ',' << price << ',' << std::to_string(tier) << ')';
 	Database::getInstance().executeQuery(query.str());
 }
 
@@ -274,7 +274,7 @@ void IOMarket::appendHistory(uint32_t playerId, MarketAction_t type, uint16_t it
 	std::ostringstream query;
 	query << "INSERT INTO `market_history` (`player_id`, `sale`, `itemtype`, `amount`, `price`, `expires_at`, `inserted`, `state`, `tier`) VALUES ("
 		  << playerId << ',' << type << ',' << itemId << ',' << amount << ',' << price << ','
-		  << timestamp << ',' << getTimeNow() << ',' << state << ',' << std::to_string(tier) << ')';
+		  << timestamp << ',' << Time::getCurrentTime() << ',' << state << ',' << std::to_string(tier) << ')';
 	g_databaseTasks().addTask(query.str());
 }
 
@@ -301,7 +301,7 @@ bool IOMarket::moveOfferToHistory(uint32_t offerId, MarketOfferState_t state) {
 		result->getNumber<uint16_t>("itemtype"),
 		result->getNumber<uint16_t>("amount"),
 		result->getNumber<uint64_t>("price"),
-		getTimeNow(),
+		Time::getCurrentTime(),
 		getTierFromDatabaseTable(result->getString("tier")), state
 	);
 	return true;

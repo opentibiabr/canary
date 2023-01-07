@@ -256,7 +256,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	player->currentOutfit = player->defaultOutfit;
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
-		const time_t skullSeconds = result->getNumber<time_t>("skulltime") - time(nullptr);
+		const time_t skullSeconds = result->getNumber<time_t>("skulltime") - Time::getCurrentTime();
 		if (skullSeconds > 0) {
 			// ensure that we round up the number of ticks
 			player->skullTicks = (skullSeconds + 2);
@@ -438,7 +438,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result) {
 	if ((result = db.storeQuery(query.str()))) {
 		do {
 			time_t killTime = result->getNumber<time_t>("time");
-			if ((time(nullptr) - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
+			if ((Time::getCurrentTime() - killTime) <= g_configManager().getNumber(FRAG_TIME)) {
 				player->unjustifiedKills.emplace_back(result->getNumber<uint32_t>("target"), killTime, result->getNumber<bool>("unavenged"));
 			}
 		} while (result->next());
@@ -872,7 +872,7 @@ bool IOLoginData::savePlayer(Player* player) {
 		int64_t skullTime = 0;
 
 		if (player->skullTicks > 0) {
-			skullTime = time(nullptr) + player->skullTicks;
+			skullTime = Time::getCurrentTime() + player->skullTicks;
 		}
 
 		query << "`skulltime` = " << skullTime << ',';
@@ -924,7 +924,7 @@ bool IOLoginData::savePlayer(Player* player) {
 	query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ',';
 
 	if (!player->isOffline()) {
-		query << "`onlinetime` = `onlinetime` + " << (time(nullptr) - player->lastLoginSaved) << ',';
+		query << "`onlinetime` = `onlinetime` + " << (Time::getCurrentTime() - player->lastLoginSaved) << ',';
 	}
 	for (int i = 1; i <= 8; i++) {
 		query << "`blessings" << i << "`"

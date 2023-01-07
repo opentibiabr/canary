@@ -128,19 +128,12 @@ int GlobalEventFunctions::luaGlobalEventTime(lua_State* L) {
 			}
 		}
 
-		time_t current_time = time(nullptr);
-		tm* timeinfo = localtime(&current_time);
-		timeinfo->tm_hour = hour;
-		timeinfo->tm_min = min;
-		timeinfo->tm_sec = sec;
-
-		time_t difference = static_cast<time_t>(difftime(mktime(timeinfo), current_time));
-		// If the difference is negative, add 86400 seconds (1 day) to it
-		if (difference < 0) {
-			difference += 86400;
+		auto differenceTimeSeconds = Time::getTimeDifferenceInSeconds(hour, min, sec);
+		if (differenceTimeSeconds < 0) {
+			differenceTimeSeconds += 86400;
 		}
 
-		globalevent->setNextExecution(current_time + difference);
+		globalevent->setNextExecution(Time::getCurrentTime() + differenceTimeSeconds);
 		globalevent->setEventType(GLOBALEVENT_TIMER);
 		pushBoolean(L, true);
 	} else {

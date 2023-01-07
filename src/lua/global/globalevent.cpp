@@ -64,15 +64,13 @@ void GlobalEvents::startup() const {
 }
 
 void GlobalEvents::timer() {
-	time_t now = time(nullptr);
-
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
 
 	auto it = timerMap.begin();
 	while (it != timerMap.end()) {
 		GlobalEvent &globalEvent = it->second;
 
-		int64_t nextExecutionTime = globalEvent.getNextExecution() - now;
+		int64_t nextExecutionTime = globalEvent.getNextExecution() - Time::getCurrentTime();
 		if (nextExecutionTime > 0) {
 			if (nextExecutionTime < nextScheduledTime) {
 				nextScheduledTime = nextExecutionTime;

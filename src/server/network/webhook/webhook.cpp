@@ -66,24 +66,17 @@ void webhook_send_message(std::string title, std::string message, int color, std
 }
 
 static std::string get_payload(std::string title, std::string message, int color) {
-	time_t now;
-	time(&now);
-	struct tm tm;
-
-#ifdef _MSC_VER
-	gmtime_s(&tm, &now);
-#else
-	gmtime_r(&now, &tm);
-#endif
-
-	char time_buf[sizeof "00:00"];
-	strftime(time_buf, sizeof time_buf, "%R", &tm);
+	// Format the current time in "HH:MM" format
+	std::stringstream time_buf;
+	time_buf << std::setw(2) << std::setfill('0') << Time::getCurrentHour() << ":"
+			 << std::setw(2) << std::setfill('0') << Time::getCurrentMinute();
 
 	std::stringstream footer_text;
 	footer_text
 		<< g_configManager().getString(IP) << ":"
 		<< g_configManager().getNumber(GAME_PORT) << " | "
-		<< time_buf << " UTC";
+		<< time_buf.str() << " UTC";
+	SPDLOG_INFO("TIMEBUF {}", time_buf.str());
 
 	Json::Value footer(Json::objectValue);
 	footer["text"] = Json::Value(footer_text.str());

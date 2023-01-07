@@ -72,7 +72,7 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, Player* pla
 		}
 	} else {
 		std::string strRentPeriod = asLowerCaseString(g_configManager().getString(HOUSE_RENT_PERIOD));
-		time_t currentTime = time(nullptr);
+		time_t currentTime = Time::getCurrentTime();
 		if (strRentPeriod == "yearly") {
 			currentTime += 24 * 60 * 60 * 365;
 		} else if (strRentPeriod == "monthly") {
@@ -635,7 +635,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const {
 		return;
 	}
 
-	time_t currentTime = time(nullptr);
+	time_t currentTime = Time::getCurrentTime();
 	for (const auto &it : houseMap) {
 		House* house = it.second;
 		if (house->getOwner() == 0) {

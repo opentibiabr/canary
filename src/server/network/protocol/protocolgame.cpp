@@ -351,7 +351,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 				std::ostringstream ss;
 				if (banInfo.expiresAt > 0) {
-					ss << "Your account has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
+					ss << "Your account has been banned until " << Date::formatShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 					   << banInfo.reason;
 				} else {
 					ss << "Your account has been permanently banned by " << banInfo.bannedBy << ".\n\nReason specified:\n"
@@ -402,7 +402,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 
 		player->lastIP = player->getIP();
-		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+		player->lastLoginSaved = std::max<time_t>(Time::getCurrentTime(), player->lastLoginSaved + 1);
 		acceptPackets = true;
 	} else {
 		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN)) {
@@ -452,7 +452,7 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	player->openPlayerContainers();
 	sendAddCreature(player, player->getPosition(), 0, true);
 	player->lastIP = player->getIP();
-	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+	player->lastLoginSaved = std::max<time_t>(Time::getCurrentTime(), player->lastLoginSaved + 1);
 	player->resetIdleTime();
 	acceptPackets = true;
 }
@@ -594,8 +594,8 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			banInfo.reason = "(none)";
 		}
 
-		ss.str(std::string());
-		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
+		std::ostringstream ss;
+		ss << "Your IP has been banned until " << Date::formatShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 		   << banInfo.reason;
 		disconnectClient(ss.str());
 		return;
@@ -626,7 +626,7 @@ void ProtocolGame::onConnect() {
 	output->addByte(0x1F);
 
 	// Add timestamp & random number
-	challengeTimestamp = static_cast<uint32_t>(time(nullptr));
+	challengeTimestamp = static_cast<uint32_t>(Time::getCurrentTime());
 	output->add<uint32_t>(challengeTimestamp);
 
 	challengeRandom = randNumber(generator);
@@ -1945,7 +1945,7 @@ void ProtocolGame::sendHighscores(const std::vector<HighscoreCharacter> &charact
 	msg.addByte(0xFF); // ??
 	msg.addByte(0); // ??
 	msg.addByte(1); // ??
-	msg.add<uint32_t>(time(nullptr)); // Last Update
+	msg.add<uint32_t>(static_cast<uint32_t>(Time::getCurrentTime())); // Last Update
 
 	msg.setBufferPosition(vocationPosition);
 	msg.addByte(vocations);
@@ -3605,7 +3605,7 @@ void ProtocolGame::sendBasicData() {
 	msg.addByte(0x9F);
 	if (player->isPremium()) {
 		msg.addByte(1);
-		msg.add<uint32_t>(time(nullptr) + (player->premiumDays * 86400));
+		msg.add<uint32_t>(static_cast<uint32_t>(Time::getCurrentTime() + (player->premiumDays * 86400)));
 	} else {
 		msg.addByte(0);
 		msg.add<uint32_t>(0);
@@ -5900,7 +5900,7 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item* item, uint16_t ma
 
 	auto writtenDate = item->getAttribute<time_t>(ItemAttribute_t::DATE);
 	if (writtenDate != 0) {
-		msg.addString(formatDateShort(writtenDate));
+		msg.addString(Date::formatShort(writtenDate));
 	} else {
 		msg.add<uint16_t>(0x00);
 	}

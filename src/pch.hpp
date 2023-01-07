@@ -10,12 +10,9 @@
 #ifndef SRC_PCH_HPP_
 #define SRC_PCH_HPP_
 
-// Definitions should be global.
-#include "utils/definitions.h"
-#include "utils/simd.hpp"
-
 #include <bitset>
 #include <charconv>
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
@@ -70,5 +67,10 @@
 
 #include <string>
 #include <iostream>
+
+// Definitions should be global.
+#include "utils/definitions.h"
+#include "utils/simd.hpp"
+#include "utils/date_time.hpp"
 
 #endif // SRC_PCH_HPP_

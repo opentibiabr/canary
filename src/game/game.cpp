@@ -130,76 +130,58 @@ void Game::loadBoostedCreature() {
 		return;
 	}
 
-	const uint16_t date = result->getNumber<uint16_t>("date");
-	const time_t now = time(0);
-	tm* ltm = localtime(&now);
-
-	if (date == ltm->tm_mday) {
-		setBoostedName(result->getString("boostname"));
-		return;
-	}
-
-	const uint16_t oldRace = result->getNumber<uint16_t>("raceid");
-	const auto &monsterlist = getBestiaryList();
-
-	struct MonsterRace {
-			uint16_t raceId { 0 };
-			std::string name;
-	};
-
-	MonsterRace selectedMonster;
-	if (!monsterlist.empty()) {
-		std::vector<MonsterRace> monsters;
-		for (const auto &[raceId, _name] : BestiaryList) {
-			if (raceId != oldRace)
-				monsters.emplace_back(raceId, _name);
+	uint16_t date = result->getNumber<uint16_t>("date");
+	std::string name = "";
+	auto currentDay = Date::getCurrentDay();
+	if (date == currentDay) {
+		name = result->getString("boostname");
+	} else {
+		uint16_t oldrace = result->getNumber<uint16_t>("raceid");
+		std::map<uint16_t, std::string> monsterlist = getBestiaryList();
+		uint16_t newrace = 0;
+		uint8_t k = 1;
+		while (newrace == 0 || newrace == oldrace) {
+			uint16_t random = normal_random(0, monsterlist.size());
+			for (auto it : monsterlist) {
+				if (k == random) {
+					newrace = it.first;
+					name = it.second;
+				}
+				k++;
+			}
 		}
 
-		if (!monsters.empty())
-			selectedMonster = monsters[normal_random(0, monsters.size() - 1)];
-	}
+		const MonsterType* monsterType = g_monsters().getMonsterTypeByRaceId(newrace);
 
-	if (selectedMonster.raceId == 0) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"It was not possible to generate a new boosted creature.");
-		return;
-	}
+		query.str(std::string());
+		query << "UPDATE `boosted_creature` SET ";
+		query << "`date` = '" << currentDay << "',";
+		query << "`boostname` = " << db.escapeString(name) << ",";
 
-	const auto monsterType = g_monsters().getMonsterType(selectedMonster.name);
-	if (!monsterType) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"It was not possible to generate a new boosted creature. Monster '"
-					+ selectedMonster.name + "' not found.");
-		return;
-	}
+		if (monsterType) {
+			query << "`looktype` = " << static_cast<int>(monsterType->info.outfit.lookType) << ",";
+			query << "`lookfeet` = " << static_cast<int>(monsterType->info.outfit.lookFeet) << ",";
+			query << "`looklegs` = " << static_cast<int>(monsterType->info.outfit.lookLegs) << ",";
+			query << "`lookhead` = " << static_cast<int>(monsterType->info.outfit.lookHead) << ",";
+			query << "`lookbody` = " << static_cast<int>(monsterType->info.outfit.lookBody) << ",";
+			query << "`lookaddons` = " << static_cast<int>(monsterType->info.outfit.lookAddons) << ",";
+			query << "`lookmount` = " << static_cast<int>(monsterType->info.outfit.lookMount) << ",";
+		}
 
-	setBoostedName(selectedMonster.name);
+		query << "`raceid` = '" << newrace << "'";
 
-	auto query = std::string("UPDATE `boosted_creature` SET ")
-		+ "`date` = '" + std::to_string(ltm->tm_mday) + "',"
-		+ "`boostname` = " + db.escapeString(selectedMonster.name) + ","
-		+ "`looktype` = " + std::to_string(monsterType->info.outfit.lookType) + ","
-		+ "`lookfeet` = " + std::to_string(monsterType->info.outfit.lookFeet) + ","
-		+ "`looklegs` = " + std::to_string(monsterType->info.outfit.lookLegs) + ","
-		+ "`lookhead` = " + std::to_string(monsterType->info.outfit.lookHead) + ","
-		+ "`lookbody` = " + std::to_string(monsterType->info.outfit.lookBody) + ","
-		+ "`lookaddons` = " + std::to_string(monsterType->info.outfit.lookAddons) + ","
-		+ "`lookmount` = " + std::to_string(monsterType->info.outfit.lookMount) + ","
-		+ "`raceid` = '" + std::to_string(selectedMonster.raceId) + "'";
-
-	if (!db.executeQuery(query)) {
-		SPDLOG_WARN("[Game::loadBoostedCreature] - "
-					"Failed to detect boosted creature database. (CODE 02)");
+		if (!db.executeQuery(query.str())) {
+			SPDLOG_WARN("[Game::loadBoostedCreature] - "
+						"Failed to detect boosted creature database. (CODE 02)");
+			return;
+		}
 	}
 }
 
 void Game::start(ServiceManager* manager) {
 	serviceManager = manager;
 
-	time_t now = time(0);
-	const tm* tms = localtime(&now);
-	int minutes = tms->tm_min;
-	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
+	lightHour = (Time::getCurrentMinute() * LIGHT_DAY_LENGTH) / 60;
 
 	g_scheduler().addEvent(createSchedulerTask(EVENT_LIGHTINTERVAL_MS, std::bind(&Game::checkLight, this)));
 	g_scheduler().addEvent(createSchedulerTask(EVENT_CREATURE_THINK_INTERVAL, std::bind(&Game::checkCreatures, this, 0)));
@@ -3689,7 +3671,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 		if (writeItem->getAttribute<std::string>(ItemAttribute_t::TEXT) != text) {
 			writeItem->setAttribute(ItemAttribute_t::TEXT, text);
 			writeItem->setAttribute(ItemAttribute_t::WRITER, player->getName());
-			writeItem->setAttribute(ItemAttribute_t::DATE, getTimeNow());
+			writeItem->setAttribute(ItemAttribute_t::DATE, Time::getCurrentTime());
 		}
 	} else {
 		writeItem->removeAttribute(ItemAttribute_t::TEXT);
@@ -6987,9 +6969,10 @@ void Game::updateCreatureType(Creature* creature) {
 	}
 }
 
-void Game::updatePremium(account::Account &account) {
-	bool save = false;
-	time_t timeNow = time(nullptr);
+void Game::updatePremium(account::Account& account)
+{
+bool save = false;
+	time_t timeNow = Time::getCurrentTime();
 	uint32_t rem_days = 0;
 	time_t last_day;
 	account.GetPremiumRemaningDays(&rem_days);
@@ -7560,7 +7543,7 @@ void Game::playerDebugAssert(uint32_t playerId, const std::string &assertLine, c
 	// TODO: move debug assertions to database
 	FILE* file = fopen("client_assertions.txt", "a");
 	if (file) {
-		fprintf(file, "----- %s - %s (%s) -----\n", formatDate(time(nullptr)).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
+		fprintf(file, "----- %s - %s (%s) -----\n", Date::format(Time::getCurrentTime()).c_str(), player->getName().c_str(), convertIPToString(player->getIP()).c_str());
 		fprintf(file, "%s\n%s\n%s\n%s\n", assertLine.c_str(), date.c_str(), description.c_str(), comment.c_str());
 		fclose(file);
 	}
@@ -7700,7 +7683,7 @@ namespace {
 
 			uint32_t count = 0;
 			for (auto item : itemVector) {
-				if (!item) {
+				if (!item || itemType.id != item->getID()) {
 					continue;
 				}
 
@@ -8238,9 +8221,9 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	const int32_t marketOfferDuration = g_configManager().getNumber(MARKET_OFFER_DURATION);
 
-	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, time(nullptr), offer.tier, OFFERSTATE_ACCEPTEDEX);
+	IOMarket::appendHistory(player->getGUID(), (offer.type == MARKETACTION_BUY ? MARKETACTION_SELL : MARKETACTION_BUY), offer.itemId, amount, offer.price, Time::getCurrentTime(), offer.tier, OFFERSTATE_ACCEPTEDEX);
 
-	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, time(nullptr), offer.tier, OFFERSTATE_ACCEPTED);
+	IOMarket::appendHistory(offer.playerId, offer.type, offer.itemId, amount, offer.price, Time::getCurrentTime(), offer.tier, OFFERSTATE_ACCEPTED);
 
 	offer.amount -= amount;
 
@@ -8929,7 +8912,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 	if (monster && monster->canBeForgeMonster()) {
 		monster->setMonsterForgeClassification(ForgeClassifications_t::FORGE_FIENDISH_MONSTER);
 		monster->configureForgeSystem();
-		monster->setTimeToChangeFiendish(timeToChangeFiendish + getTimeNow());
+		monster->setTimeToChangeFiendish(timeToChangeFiendish + Time::getCurrentTime());
 		fiendishMonsters.insert(monster->getID());
 
 		auto schedulerTask = createSchedulerTask(

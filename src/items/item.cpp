@@ -2457,7 +2457,7 @@ std::string Item::getDescription(const ItemType &it, int32_t lookDistance, const
 								s << writer << " wrote";
 								auto date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
 								if (date != 0) {
-									s << " on " << formatDateShort(date);
+									s << " on " << Date::formatShort(date);
 								}
 								s << ": ";
 							} else {

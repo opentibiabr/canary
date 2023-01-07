@@ -97,7 +97,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountIdentifier, const
 		uint32_t days;
 		account.GetPremiumRemaningDays(&days);
 		output->addByte(0);
-		output->add<uint32_t>(time(nullptr) + (days * 86400));
+		output->add<uint32_t>(Time::getCurrentTime() + (days * 86400));
 	}
 
 	send(output);
@@ -160,7 +160,7 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		}
 
 		std::ostringstream ss;
-		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
+		ss << "Your IP has been banned until " << Date::formatShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 		   << banInfo.reason;
 		disconnectClient(ss.str());
 		return;

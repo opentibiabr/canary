@@ -24,7 +24,7 @@ bool EventsScheduler::loadScheduleEventFromXml() {
 	}
 
 	int daysNow;
-	int daysMath = ((Date::getCurrentYear() + 1900) * 365) + ((Date::getCurrentMonth() + 1) * 30) + (Date::getCurrentDay());
+	int daysMath = (Date::getCurrentYear() * 365) + (Date::getCurrentMonth() * 30) + Date::getCurrentDay();
 
 	// Keep track of loaded scripts to check for duplicates
 	int count = 0;

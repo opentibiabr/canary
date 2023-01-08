@@ -92,6 +92,8 @@ bool Events::loadFromXml() {
 				info.playerOnTradeAccept = event;
 			} else if (methodName == "onMoveItem") {
 				info.playerOnMoveItem = event;
+			} else if (methodName == "onInventoryUpdate") {
+				info.playerOnInventoryUpdate = event;
 			} else if (methodName == "onItemMoved") {
 				info.playerOnItemMoved = event;
 			} else if (methodName == "onChangeZone") {
@@ -760,6 +762,36 @@ bool Events::eventPlayerOnMoveItem(Player* player, Item* item, uint16_t count, c
 	LuaScriptInterface::pushCylinder(L, toCylinder);
 
 	return scriptInterface.callFunction(7);
+}
+
+void Events::eventPlayerOnInventoryUpdate(Player* player, Item* item, Slots_t slot, bool equip)
+{
+	// Player:onInventoryUpdate(item, slot, equip)
+	if (info.playerOnInventoryUpdate == -1) {
+		return;
+	}
+
+	if (!scriptInterface.reserveScriptEnv()) {
+		std::cout << "[Error - Events::eventPlayerOnInventoryUpdate] Call stack overflow" << std::endl;
+		return;
+	}
+
+	ScriptEnvironment* env = scriptInterface.getScriptEnv();
+	env->setScriptId(info.playerOnInventoryUpdate, &scriptInterface);
+
+	lua_State* L = scriptInterface.getLuaState();
+	scriptInterface.pushFunction(info.playerOnInventoryUpdate);
+
+	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::setMetatable(L, -1, "Player");
+
+	LuaScriptInterface::pushUserdata<Item>(L, item);
+	LuaScriptInterface::setItemMetatable(L, -1, item);
+
+	lua_pushnumber(L, slot);
+	LuaScriptInterface::pushBoolean(L, equip);
+
+	scriptInterface.callVoidFunction(4);
 }
 
 void Events::eventPlayerOnItemMoved(Player* player, Item* item, uint16_t count, const Position& fromPosition, const Position& toPosition, Cylinder* fromCylinder, Cylinder* toCylinder) {

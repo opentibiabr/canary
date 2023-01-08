@@ -1,29 +1,14 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_UTILS_TOOLS_H_
 #define SRC_UTILS_TOOLS_H_
-
-#include <random>
-#include <string>
-#include <regex>
-#include <boost/algorithm/string.hpp>
 
 #include "utils/utils_definitions.hpp"
 #include "declarations.hpp"
@@ -66,6 +51,7 @@ std::string getFirstLine(const std::string& str);
 
 std::string formatDate(time_t time);
 std::string formatDateShort(time_t time);
+std::time_t getTimeNow();
 std::string convertIPToString(uint32_t ip);
 
 void trimString(std::string& str);
@@ -112,6 +98,10 @@ std::string getObjectCategoryName(ObjectCategory_t category);
 int64_t OTSYS_TIME();
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
+
+uint8_t forgeBonus(int32_t number);
+
+std::string formatPrice(std::string price, bool space/* = false*/);
 
 static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {

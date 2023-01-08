@@ -1,32 +1,20 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/npcs/spawns/spawn_npc.h"
-#include "game/game.h"
 #include "creatures/npcs/npc.h"
+#include "game/game.h"
 #include "game/scheduling/scheduler.h"
-
-#include "utils/pugicast.h"
 #include "lua/creature/events.h"
-
+#include "utils/pugicast.h"
 
 static constexpr int32_t MINSPAWN_INTERVAL = 1000; // 1 second
 static constexpr int32_t MAXSPAWN_INTERVAL = 86400000; // 1 day
@@ -40,7 +28,7 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(fileNpcName.c_str());
 	if (!result) {
-		printXMLError("SpawnsNpc::loadFromXml", fileNpcName, result);
+		printXMLError(__FUNCTION__, fileNpcName, result);
 		return false;
 	}
 
@@ -86,9 +74,11 @@ bool SpawnsNpc::loadFromXml(const std::string& fileNpcName)
 					dir = DIRECTION_NORTH;
 				}
 
+				auto xOffset = pugi::cast<int16_t>(childNode.attribute("x").value());
+				auto yOffset = pugi::cast<int16_t>(childNode.attribute("y").value());
 				Position pos(
-					centerPos.x + pugi::cast<uint16_t>(childNode.attribute("x").value()),
-					centerPos.y + pugi::cast<uint16_t>(childNode.attribute("y").value()),
+					static_cast<uint16_t>(centerPos.x + xOffset),
+					static_cast<uint16_t>(centerPos.y + yOffset),
 					centerPos.z
 				);
 				int64_t interval = pugi::cast<int64_t>(childNode.attribute("spawntime").value()) * 1000;
@@ -163,7 +153,7 @@ bool SpawnNpc::findPlayer(const Position& pos)
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
-		if (!spectator->getPlayer()->hasCustomFlag(PlayerCustomFlag_IgnoredByNpcs)) {
+		if (!spectator->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByNpcs)) {
 			return true;
 		}
 	}

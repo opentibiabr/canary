@@ -1,23 +1,13 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/players/vocations/vocation.h"
 
@@ -27,16 +17,17 @@
 bool Vocations::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/vocations.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/vocations.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("[Vocations::loadFromXml]", "data/XML/vocations.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
 	for (auto vocationNode : doc.child("vocations").children()) {
 		pugi::xml_attribute attr;
 		if (!(attr = vocationNode.attribute("id"))) {
-			SPDLOG_WARN("[Vocations::loadFromXml] - Missing vocation id");
+			SPDLOG_WARN("[{}] - Missing vocation id", __FUNCTION__);
 			continue;
 		}
 
@@ -62,9 +53,9 @@ bool Vocations::loadFromXml()
 			voc.description = attr.as_string();
 		}
 
-    if ((attr = vocationNode.attribute("magicshield"))) {
-      voc.magicShield = attr.as_bool();
-    }
+		if ((attr = vocationNode.attribute("magicshield"))) {
+			voc.magicShield = attr.as_bool();
+		}
 
 		if ((attr = vocationNode.attribute("gaincap"))) {
 			voc.gainCap = pugi::cast<uint32_t>(attr.value()) * 100;
@@ -116,6 +107,10 @@ bool Vocations::loadFromXml()
 
 		if ((attr = vocationNode.attribute("fromvoc"))) {
 			voc.fromVocation = pugi::cast<uint32_t>(attr.value());
+		}
+
+		if ((attr = vocationNode.attribute("canCombat"))) {
+			voc.combat = attr.as_bool();
 		}
 
 		for (auto childNode : vocationNode.children()) {

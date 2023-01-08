@@ -1,58 +1,35 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_IO_FILELOADER_H_
 #define SRC_IO_FILELOADER_H_
 
-#include <limits>
-#include <vector>
-#include <boost/iostreams/device/mapped_file.hpp>
-
-#include "declarations.hpp"
-
 class PropStream;
 
 namespace OTB {
-	using MappedFile = boost::iostreams::mapped_file_source;
-	using ContentIt = MappedFile::iterator;
 	using Identifier = std::array < char, 4 > ;
 
 	struct Node {
-		Node() =
-			default;
-		Node(Node && ) =
-			default;
-		Node & operator = (Node && ) =
-			default;
-		Node(const Node & ) = delete;
-		Node & operator = (const Node & ) = delete;
+		Node() = default;
+		Node(Node&&) = default;
+		Node& operator=(Node&&) = default;
+		Node(const Node&) = delete;
+		Node& operator=(const Node&) = delete;
 
-		using ChildrenVector = std::vector < Node > ;
-
-		ChildrenVector children;
-		ContentIt propsBegin;
-		ContentIt propsEnd;
+		std::list<Node> children;
+		mio::mmap_source::const_iterator propsBegin;
+		mio::mmap_source::const_iterator propsEnd;
 		uint8_t type;
 		enum NodeChar: uint8_t {
 			ESCAPE = 0xFD,
-				START = 0xFE,
-				END = 0xFF,
+			START = 0xFE,
+			END = 0xFF,
 		};
 	};
 
@@ -67,7 +44,7 @@ namespace OTB {
 	};
 
 	class Loader {
-		MappedFile fileContents;
+		mio::mmap_source fileContents;
 		Node root;
 		std::vector < char > propBuffer;
 		public:

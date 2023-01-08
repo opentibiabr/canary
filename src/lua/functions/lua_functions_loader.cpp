@@ -1,51 +1,28 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/combat/spells.h"
-#include "creatures/interactions/chat.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/npcs/npc.h"
 #include "creatures/players/imbuements/imbuements.h"
 #include "creatures/players/player.h"
-#include "database/databasemanager.h"
-#include "database/databasetasks.h"
 #include "game/game.h"
 #include "game/movement/teleport.h"
-#include "game/scheduling/scheduler.h"
-#include "io/iobestiary.h"
-#include "io/iologindata.h"
-#include "items/bed.h"
 #include "items/weapons/weapons.h"
-#include "lua/creature/movement.h"
 #include "lua/functions/core/core_functions.hpp"
 #include "lua/functions/creatures/creature_functions.hpp"
 #include "lua/functions/events/events_functions.hpp"
 #include "lua/functions/items/item_functions.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/functions/map/map_functions.hpp"
-#include "lua/global/globalevent.h"
-#include "lua/scripts/scripts.h"
-#include "server/network/protocol/protocolstatus.h"
-#include "server/network/webhook/webhook.h"
-
 
 class LuaScriptInterface;
 
@@ -69,6 +46,8 @@ std::string LuaFunctionsLoader::getErrorDesc(ErrorCode_t code) {
 		case LUA_ERROR_CREATURE_NOT_FOUND: return "Creature not found";
 		case LUA_ERROR_NPC_NOT_FOUND: return "Npc not found";
 		case LUA_ERROR_NPC_TYPE_NOT_FOUND: return "Npc type not found";
+		case LUA_ERROR_MONSTER_NOT_FOUND: return "Monster not found";
+		case LUA_ERROR_MONSTER_TYPE_NOT_FOUND: return "Monster type not found";
 		case LUA_ERROR_ITEM_NOT_FOUND: return "Item not found";
 		case LUA_ERROR_THING_NOT_FOUND: return "Thing not found";
 		case LUA_ERROR_TILE_NOT_FOUND: return "Tile not found";
@@ -611,6 +590,12 @@ void LuaFunctionsLoader::registerGlobalVariable(lua_State* L, const std::string&
 	// _G[name] = value
 	lua_pushnumber(L, value);
 	lua_setglobal(L, name.c_str());
+}
+
+void LuaFunctionsLoader::registerGlobalString(lua_State* L, const std::string& variable, const std::string &name) {
+	// Example: registerGlobalString(L, "VARIABLE_NAME", "variable string");
+	pushString(L, name);
+	lua_setglobal(L, variable.c_str());
 }
 
 std::string LuaFunctionsLoader::escapeString(const std::string& string) {

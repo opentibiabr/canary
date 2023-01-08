@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="There are dragons rising in Draconia!" />
+	<areaspawn delay="1000" fromx="32780" fromy="31581" fromz="7" tox="32783" toy="31587" toz="7">
+		<monster name="Dragon" amount="2" />
+		<monster name="Dragon Hatchling" amount="3" />
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32819" fromy="31591" fromz="7" tox="32823" toy="31596" toz="7">
+		<monster name="Dragon" amount="2" />
+		<monster name="Dragon Hatchling" amount="3" />
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32801" fromy="31601" fromz="7" tox="32809" toy="31608" toz="7">
+		<monster name="Dragon" amount="2" />
+		<monster name="Dragon Hatchling" amount="3" />
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32776" fromy="31598" fromz="7" tox="32788" toy="31610" toz="7">
+		<monster name="Dragon" amount="2" />
+		<monster name="Dragon Hatchling" amount="3" />
+	</areaspawn>
+	<singlespawn delay="1000" name="Dragon Lord" x="32798" y="31558" z="6" />
+	<singlespawn delay="1000" name="Dragon Lord" x="32798" y="31558" z="5" />
+	<singlespawn delay="1000" name="Dragon Lord" x="32798" y="31558" z="4" />
+	<singlespawn delay="1000" name="Dragon Lord" x="32798" y="31558" z="3" />
+</raid>

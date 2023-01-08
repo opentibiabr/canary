@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Announcements-->
+	<announce delay="1000" type="Event" message="An ancient evil is awakening in the grimvale mines." />
+	<announce delay="30000" type="Event" message="Werewolfs entities are entering the
+	mortal realm in the grimvale mines." />
+	<announce delay="60000" type="Event" message="The Feroxa master has revealed itself in the mines of grimvale." />
+	<!--Single Spawns-->
+	<singlespawn delay="60000" name="Feroxa" x="33389" y="31539" z="11"/>
+</raid>

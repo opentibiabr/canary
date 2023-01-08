@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_CREATURES_CREATURE_H_
 #define SRC_CREATURES_CREATURE_H_
@@ -177,28 +167,18 @@ class Creature : virtual public Thing
 		int64_t getEventStepTicks(bool onlyDelay = false) const;
 		int64_t getStepDuration(Direction dir) const;
 		int64_t getStepDuration() const;
-		virtual int32_t getStepSpeed() const {
+		virtual uint16_t getStepSpeed() const {
 			return getSpeed();
 		}
-		int32_t getSpeed() const {
-			return baseSpeed + varSpeed;
+		uint16_t getSpeed() const {
+			return static_cast<uint16_t>(baseSpeed + varSpeed);
 		}
-		void setSpeed(int32_t varSpeedDelta) {
-			int32_t oldSpeed = getSpeed();
-			varSpeed = varSpeedDelta;
+		void setSpeed(int32_t varSpeedDelta);
 
-			if (getSpeed() <= 0) {
-				stopEventWalk();
-				cancelNextWalk = true;
-			} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
-				addEventWalk();
-			}
-		}
-
-		void setBaseSpeed(uint32_t newBaseSpeed) {
+		void setBaseSpeed(uint16_t newBaseSpeed) {
 			baseSpeed = newBaseSpeed;
 		}
-		uint32_t getBaseSpeed() const {
+		uint16_t getBaseSpeed() const {
 			return baseSpeed;
 		}
 
@@ -511,16 +491,19 @@ class Creature : virtual public Thing
 				delete this;
 			}
 		}
+		struct CountBlock_t {
+			int32_t total;
+			int64_t ticks;
+		};
+		using CountMap = std::map<uint32_t, CountBlock_t>;
+		CountMap getDamageMap() const {
+				return damageMap;
+		}
 
 	protected:
 		virtual bool useCacheMap() const {
 			return false;
 		}
-
-		struct CountBlock_t {
-			int32_t total;
-			int64_t ticks;
-		};
 
 		static constexpr int32_t mapWalkWidth = Map::maxViewportX * 2 + 1;
 		static constexpr int32_t mapWalkHeight = Map::maxViewportY * 2 + 1;
@@ -529,7 +512,6 @@ class Creature : virtual public Thing
 
 		Position position;
 
-		using CountMap = std::map<uint32_t, CountBlock_t>;
 		CountMap damageMap;
 
 		std::list<Creature*> summons;
@@ -563,7 +545,7 @@ class Creature : virtual public Thing
 		uint32_t blockCount = 0;
 		uint32_t blockTicks = 0;
 		uint32_t lastStepCost = 1;
-		uint32_t baseSpeed = 220;
+		uint16_t baseSpeed = 110;
 		uint32_t mana = 0;
 		int32_t varSpeed = 0;
 		int32_t health = 1000;

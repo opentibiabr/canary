@@ -1,32 +1,19 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "creatures/creature.h"
 #include "creatures/monsters/monster.h"
 #include "creatures/monsters/monsters.h"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
-
 
 int MonsterFunctions::luaMonsterCreate(lua_State* L) {
 	// Monster(id or userdata)
@@ -95,7 +82,7 @@ int MonsterFunctions::luaMonsterSetType(lua_State* L) {
 		float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 		monster->health = monsterType->info.health * multiplier;
 		monster->healthMax = monsterType->info.healthMax * multiplier;
-		monster->baseSpeed = monsterType->info.baseSpeed;
+		monster->baseSpeed = monsterType->getBaseSpeed();
 		monster->internalLight = monsterType->info.light;
 		monster->hiddenHealth = monsterType->info.hiddenHealth;
 		monster->targetDistance = monsterType->info.targetDistance;
@@ -375,9 +362,9 @@ int MonsterFunctions::luaMonsterSetSpawnPosition(lua_State* L) {
 	return 1;
 }
 
-int MonsterFunctions::luaMonsterGetRespawnType(lua_State* L) {
+int MonsterFunctions::luaMonsterGetRespawnType(lua_State *L) {
 	// monster:getRespawnType()
-	Monster* monster = getUserdata<Monster>(L, 1);
+	Monster *monster = getUserdata<Monster>(L, 1);
 
 	if (!monster) {
 		lua_pushnil(L);
@@ -389,4 +376,128 @@ int MonsterFunctions::luaMonsterGetRespawnType(lua_State* L) {
 	pushBoolean(L, respawnType.underground);
 
 	return 2;
+}
+
+int MonsterFunctions::luaMonsterGetTimeToChangeFiendish(lua_State *L) {
+	// monster:getTimeToChangeFiendish()
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(monster->getTimeToChangeFiendish()));
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterSetTimeToChangeFiendish(lua_State *L) {
+	// monster:setTimeToChangeFiendish(endTime)
+	time_t endTime = getNumber<uint32_t>(L, 2, 1);
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->setTimeToChangeFiendish(endTime);
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterGetMonsterForgeClassification(lua_State *L) {
+	// monster:getMonsterForgeClassification()
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	auto classification = static_cast<lua_Number>(monster->getMonsterForgeClassification());
+	lua_pushnumber(L, classification);
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterSetMonsterForgeClassification(lua_State *L) {
+	// monster:setMonsterForgeClassification(classication)
+	ForgeClassifications_t classification = getNumber<ForgeClassifications_t>(L, 2);
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->setMonsterForgeClassification(classification);
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterGetForgeStack(lua_State *L) {
+	// monster:getForgeStack()
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	lua_pushnumber(L, monster->getForgeStack());
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterSetForgeStack(lua_State *L) {
+	// monster:setForgeStack(stack)
+	uint16_t stack = getNumber<uint16_t>(L, 2, 0);
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->setForgeStack(stack);
+	// Update new stack icon
+	g_game().updateCreatureIcon(monster);
+	g_game().sendUpdateCreature(monster);
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterConfigureForgeSystem(lua_State *L) {
+	// monster:configureForgeSystem()
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->configureForgeSystem();
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterClearFiendishStatus(lua_State *L) {
+	// monster:clearFiendishStatus()
+	Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	monster->clearFiendishStatus();
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterIsForgeable(lua_State *L) {
+	// monster:isForgeable()
+	const Monster *monster = getUserdata<Monster>(L, 1);
+	if (!monster) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_MONSTER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	pushBoolean(L, monster->canBeForgeMonster());
+	return 1;
 }

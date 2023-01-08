@@ -1,28 +1,15 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "items/tile.h"
-
 #include "creatures/creature.h"
 #include "creatures/combat/combat.h"
 #include "game/game.h"
@@ -702,12 +689,12 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 			if (ground) {
 				const ItemType& iiType = Item::items[ground->getID()];
 				if (iiType.blockSolid) {
-					if (!iiType.allowPickupable || item->isMagicField() || item->isBlocking()) {
+					if (!iiType.pickupable || item->isMagicField() || item->isBlocking()) {
 						if (!item->isPickupable()) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 
-						if (!iiType.hasHeight || iiType.pickupable || iiType.isBed()) {
+						if (!iiType.hasHeight || iiType.isBed()) {
 							return RETURNVALUE_NOTENOUGHROOM;
 						}
 					}
@@ -721,7 +708,7 @@ ReturnValue Tile::queryAdd(int32_t, const Thing& thing, uint32_t, uint32_t tileF
 						continue;
 					}
 
-					if (iiType.allowPickupable && !item->isMagicField() && !item->isBlocking()) {
+					if (iiType.pickupable && !item->isMagicField() && !item->isBlocking()) {
 						continue;
 					}
 
@@ -1233,10 +1220,10 @@ int32_t Tile::getClientIndexOfCreature(const Player* player, const Creature* cre
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				++n;
 			}
 		}
@@ -1262,10 +1249,10 @@ int32_t Tile::getStackposOfCreature(const Player* player, const Creature* creatu
 	}
 
 	if (const CreatureVector* creatures = getCreatures()) {
-		for (const Creature* c : boost::adaptors::reverse(*creatures)) {
-			if (c == creature) {
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it) {
+			if (*it == creature) {
 				return n;
-			} else if (player->canSeeCreature(c)) {
+			} else if (player->canSeeCreature(*it)) {
 				if (++n >= 10) {
 					return -1;
 				}

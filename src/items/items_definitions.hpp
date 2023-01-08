@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
 #define SRC_ITEMS_ITEMS_DEFINITIONS_HPP_
@@ -127,6 +117,7 @@ enum ReturnValue {
 	RETURNVALUE_NOTENOUGHSHIELDLEVEL,
 	RETURNVALUE_NOTENOUGHFISHLEVEL,
 	RETURNVALUE_REWARDCHESTISEMPTY,
+	RETURNVALUE_CONTACTADMINISTRATOR
 };
 
 enum ItemGroup_t {
@@ -242,7 +233,8 @@ enum AttrTypes_t {
 	ATTR_OPENCONTAINER = 36,
 	ATTR_CUSTOM_ATTRIBUTES = 37,
 	ATTR_QUICKLOOTCONTAINER = 38,
-	ATTR_IMBUEMENT_TYPE = 39
+	ATTR_IMBUEMENT_TYPE = 39,
+	ATTR_TIER = 40
 };
 
 enum ImbuementTypes_t : int64_t {
@@ -316,6 +308,8 @@ enum ItemAttrTypes : uint32_t {
 	ITEM_ATTRIBUTE_QUICKLOOTCONTAINER = 1 << 26,
 	ITEM_ATTRIBUTE_DURATION_TIMESTAMP = 1 << 27,
 	ITEM_ATTRIBUTE_IMBUEMENT_TYPE = 1 << 28,
+	ITEM_ATTRIBUTE_TIER = 1 << 29,
+
 	ITEM_ATTRIBUTE_CUSTOM = 1U << 31
 };
 

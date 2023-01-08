@@ -1,31 +1,19 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/monsters/monsters.h"
-#include "creatures/monsters/monster.h"
 #include "creatures/combat/spells.h"
 #include "creatures/combat/combat.h"
-#include "items/weapons/weapons.h"
 #include "game/game.h"
-
+#include "items/weapons/weapons.h"
 #include "utils/pugicast.h"
 
 spellBlock_t::~spellBlock_t()
@@ -59,7 +47,7 @@ bool Monsters::loadFromXml(bool reloading /*= false*/)
 
 	for (auto monsterNode : doc.child("monsters").children()) {
 		std::string name = asLowerCaseString(monsterNode.attribute("name").as_string());
-		std::string file = "data/monster/" + std::string(monsterNode.attribute("file").as_string());
+		std::string file = g_configManager().getString(DATA_DIRECTORY) + "/monster/" + std::string(monsterNode.attribute("file").as_string());
 		auto forceLoad = g_configManager().getBoolean(FORCE_MONSTERTYPE_LOAD);
 		if (forceLoad) {
 			loadMonster(file, name, true);
@@ -83,7 +71,7 @@ bool MonsterType::canSpawn(const Position& pos)
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
-		canSpawn = (pos.z > 7 && info.respawnType.underground);
+		canSpawn = (pos.z > MAP_INIT_SURFACE_LAYER && info.respawnType.underground);
 	}
 
 	return canSpawn;
@@ -181,7 +169,7 @@ bool Monsters::deserializeSpell(const pugi::xml_node& node, spellBlock_t& sb, co
 		}
 
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, needTarget, needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + scriptName)) {
+		if (!combatSpellPtr->loadScript(g_configManager().getString(DATA_DIRECTORY) + "/" + g_spells().getScriptBaseName() + "/scripts/" + scriptName)) {
 			return false;
 		}
 
@@ -543,7 +531,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 	if (spell->isScripted) {
 		std::unique_ptr<CombatSpell> combatSpellPtr(new CombatSpell(nullptr, spell->needTarget, spell->needDirection));
-		if (!combatSpellPtr->loadScript("data/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
+		if (!combatSpellPtr->loadScript(g_configManager().getString(DATA_DIRECTORY) + "/" + g_spells().getScriptBaseName() + "/scripts/" + spell->scriptName)) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - Cannot find file: {}",
                          spell->scriptName);
 			return false;
@@ -739,7 +727,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(file.c_str());
 	if (!result) {
-		printXMLError("Error - Monsters::loadMonster", file, result);
+		printXMLError(__FUNCTION__, file, result);
 		return nullptr;
 	}
 
@@ -820,7 +808,7 @@ MonsterType* Monsters::loadMonster(const std::string& file, const std::string& m
 		}
 
 		std::string script = attr.as_string();
-		if (scriptInterface->loadFile("data/monster/scripts/" + script) == 0) {
+		if (scriptInterface->loadFile(g_configManager().getString(DATA_DIRECTORY) + "/monster/scripts/" + script) == 0) {
 			mType->info.scriptInterface = scriptInterface.get();
 			mType->info.creatureAppearEvent = scriptInterface->getEvent("onCreatureAppear");
 			mType->info.creatureDisappearEvent = scriptInterface->getEvent("onCreatureDisappear");

@@ -1,31 +1,19 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "utils/pugicast.h"
-
 #include "map/house/house.h"
 #include "io/iologindata.h"
 #include "game/game.h"
 #include "items/bed.h"
-
 
 House::House(uint32_t houseId) : id(houseId) {}
 
@@ -155,7 +143,7 @@ AccessHouseLevel_t House::getHouseAccessLevel(const Player* player)
 		}
 	}
 
-	if (player->hasFlag(PlayerFlag_CanEditHouses)) {
+	if (player->hasFlag(PlayerFlags_t::CanEditHouses)) {
 		return HOUSE_OWNER;
 	}
 
@@ -185,7 +173,7 @@ bool House::kickPlayer(Player* player, Player* target)
 		return false;
 	}
 
-	if (getHouseAccessLevel(player) < getHouseAccessLevel(target) || target->hasFlag(PlayerFlag_CanEditHouses)) {
+	if (getHouseAccessLevel(player) < getHouseAccessLevel(target) || target->hasFlag(PlayerFlags_t::CanEditHouses)) {
 		return false;
 	}
 
@@ -265,16 +253,27 @@ bool House::transferToDepot(Player* player) const
 							moveItemList.push_back(containerItem);
 						}
 					}
+
+					uint16_t hiddenCharges = 0;
+					if (isCaskItem(item->getID())) {
+						hiddenCharges = item->getSubType();
+					}
+					
 					std::string itemName = item->getName();
 					uint16_t itemID = item->getID();
 					Item* newItem = g_game().transformItem(item, ITEM_DECORATION_KIT);
-					ItemAttributes::CustomAttribute val;
-					val.set<int64_t>(itemID);
+					ItemAttributes::CustomAttribute attribute;
+					attribute.setInt64(itemID);
 					std::string key = "unWrapId";
-					newItem->setCustomAttribute(key, val);
+					newItem->setCustomAttribute(key, attribute);
 					std::ostringstream ss;
 					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
 					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
+					
+					if (hiddenCharges > 0) {
+						item->setDate(hiddenCharges);
+					}
+					
 					moveItemList.push_back(newItem);
 				} else if (item->isPickupable()) {
 					moveItemList.push_back(item);
@@ -637,7 +636,7 @@ bool Houses::loadHousesXML(const std::string& filename)
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
-		printXMLError("Error - Houses::loadHousesXML", filename, result);
+		printXMLError(__FUNCTION__, filename, result);
 		return false;
 	}
 

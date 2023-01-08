@@ -1,25 +1,13 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "creatures/creature.h"
@@ -486,7 +474,7 @@ int NpcFunctions::luaNpcGetId(lua_State* L)
 
 int NpcFunctions::luaNpcSellItem(lua_State* L)
 {
-	// npc:sellItem(player, itemid, amount, <optional> subtype, <optional> actionid, <optional: default: 1> canDropOnMap)
+	// npc:sellItem(player, itemid, amount, <optional: default: 1> subtype, <optional: default: 0> actionid, <optional: default: false> ignoreCap, <optional: default: false> inBackpacks)
 	Npc* npc = getUserdata<Npc>(L, 1);
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));
@@ -501,58 +489,158 @@ int NpcFunctions::luaNpcSellItem(lua_State* L)
 		return 1;
 	}
 
-	uint32_t sellCount = 0;
-
-	uint32_t itemId = getNumber<uint32_t>(L, 3);
-	uint32_t amount = getNumber<uint32_t>(L, 4);
-	uint32_t subType;
-
-	int32_t n = getNumber<int32_t>(L, 5, -1);
-	if (n != -1) {
-		subType = n;
-	} else {
-		subType = 1;
-	}
-
-	uint32_t actionId = getNumber<uint32_t>(L, 6, 0);
-	bool canDropOnMap = getBoolean(L, 7, true);
+	uint16_t itemId = getNumber<uint16_t>(L, 3);
+	double amount = getNumber<double>(L, 4);
+	uint16_t subType = getNumber<uint16_t>(L, 5, 1);
+	uint16_t actionId = getNumber<uint16_t>(L, 6, 0);
+	bool ignoreCap = getBoolean(L, 7, false);
+	bool inBackpacks = getBoolean(L, 8, false);
 
 	const ItemType& it = Item::items[itemId];
-	if (it.stackable) {
-		while (amount > 0) {
-			int32_t stackCount = std::min<int32_t>(100, amount);
-			Item* item = Item::CreateItem(it.id, stackCount);
-			if (item && actionId != 0) {
-				item->setActionId(actionId);
-			}
+	if (it.id == 0) {
+		pushBoolean(L, false);
+		return 1;
+	}
 
-			if (g_game().internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
-				delete item;
-				lua_pushnumber(L, sellCount);
-				return 1;
-			}
-
-			amount -= stackCount;
-			sellCount += stackCount;
+	uint32_t shoppingBagPrice = 20;
+	double shoppingBagSlots = 20;
+	if (const Tile* tile = ignoreCap ? player->getTile() : nullptr; tile) {
+		double slotsNedeed = 0;
+		if (it.stackable) {
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(amount / 100) / shoppingBagSlots) : std::ceil(amount / 100);
+		} else {
+			slotsNedeed = inBackpacks ? std::ceil(amount / shoppingBagSlots) : amount;
 		}
-	} else {
-		for (uint32_t i = 0; i < amount; ++i) {
-			Item* item = Item::CreateItem(it.id, subType);
-			if (item && actionId != 0) {
-				item->setActionId(actionId);
-			}
 
-			if (g_game().internalPlayerAddItem(player, item, canDropOnMap) != RETURNVALUE_NOERROR) {
-				delete item;
-				lua_pushnumber(L, sellCount);
-				return 1;
-			}
-
-			++sellCount;
+		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+			pushBoolean(L, false);
+			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+			return 1;
 		}
 	}
 
-	lua_pushnumber(L, sellCount);
+	uint64_t pricePerUnit = 0;
+	const std::vector<ShopBlock> &shopVector = npc->getShopItemVector();
+	for (ShopBlock shopBlock : shopVector) {
+		if (itemId == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
+			pricePerUnit = shopBlock.itemBuyPrice;
+			break;
+		}
+	}
+
+	uint32_t itemsPurchased = 0;
+	uint8_t backpacksPurchased = 0;
+	uint8_t internalCount = it.stackable ? 100 : 1;
+	auto remainingAmount = static_cast<uint32_t>(amount);
+	if (inBackpacks) {
+		while (remainingAmount > 0) {
+			Item* container = Item::CreateItem(ITEM_SHOPPING_BAG);
+			if (!container) {
+				break;
+			}
+
+			if (g_game().internalPlayerAddItem(player, container, ignoreCap, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
+				delete container;
+				break;
+			}
+
+			backpacksPurchased++;
+			uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
+			Item* item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+			if (actionId != 0) {
+				item->setActionId(actionId);
+			}
+
+			while (remainingAmount > 0) {
+				if (g_game().internalAddItem(container->getContainer(), item, INDEX_WHEREEVER, 0) != RETURNVALUE_NOERROR) {
+					delete item;
+					break;
+				}
+
+				itemsPurchased += internalAmount;
+				remainingAmount -= internalAmount;
+				internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
+				item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+			}
+		}
+	} else {
+		uint8_t internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
+		Item* item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+		if (actionId != 0) {
+			item->setActionId(actionId);
+		}
+
+		while (remainingAmount > 0) {
+			if (g_game().internalPlayerAddItem(player, item, ignoreCap, CONST_SLOT_WHEREEVER) != RETURNVALUE_NOERROR) {
+				delete item;
+				break;
+			}
+
+			itemsPurchased += internalAmount;
+			remainingAmount -= internalAmount;
+			internalAmount = (remainingAmount > internalCount) ? internalCount : static_cast<uint8_t>(remainingAmount);
+			item = Item::CreateItem(itemId, it.stackable ? internalAmount : subType);
+		}
+	}
+
+	std::stringstream ss;
+	uint64_t itemCost = itemsPurchased * pricePerUnit;
+	uint64_t backpackCost = backpacksPurchased * shoppingBagPrice;
+	if (npc->getCurrency() == ITEM_GOLD_COIN) {
+		if (!g_game().removeMoney(player, itemCost + backpackCost, 0, true)) {
+			SPDLOG_ERROR("[NpcFunctions::luaNpcSellItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
+			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+		} else if (backpacksPurchased > 0) {
+			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " and " << std::to_string(backpacksPurchased);
+			if (backpacksPurchased > 1) {
+				ss << " shopping bags for " << std::to_string(itemCost + backpackCost) << " gold coin";
+			} else {
+				ss << " shopping bag for " << std::to_string(itemCost + backpackCost) << " gold coin";
+			}
+			if ((itemCost + backpackCost) > 1) {
+				ss << "s.";
+			} else {
+				ss << ".";
+			}
+		} else {
+			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " for " << std::to_string(itemCost) << " gold coin";
+			if (itemCost > 1) {
+				ss << "s.";
+			} else {
+				ss << ".";
+			}
+		}
+	} else {
+		if (!g_game().removeMoney(player, backpackCost, 0, true) || !player->removeItemOfType(npc->getCurrency(), itemCost, -1, false)) {
+			SPDLOG_ERROR("[NpcFunctions::luaNpcSellItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, npc->getName());
+			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, npc->getName(), player->getPosition().toString());
+		} else if (backpacksPurchased > 0) {
+			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " for " << std::to_string(itemCost) << " " << Item::items[npc->getCurrency()].name;
+			if (itemCost > 1) {
+				ss << "s";
+			}
+			ss << " and " << std::to_string(backpacksPurchased) << "x shopping bag";
+			if (backpacksPurchased > 1) {
+				ss << "s";
+			}
+			ss << " for " << std::to_string(backpackCost) << " gold coin";
+			if (backpackCost > 1) {
+				ss << "s.";
+			} else {
+				ss << ".";
+			}
+		} else {
+			ss << "Bought " << std::to_string(itemsPurchased) << "x " << it.name << " for " << std::to_string(itemCost) << " " << Item::items[npc->getCurrency()].name;
+			if (itemCost > 1) {
+				ss << "s.";
+			} else {
+				ss << ".";
+			}
+		}
+	}
+
+	player->sendTextMessage(MESSAGE_TRADE, ss.str());
+	pushBoolean(L, true);
 	return 1;
 }
 

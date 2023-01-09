@@ -53,9 +53,6 @@ class Npc final : public Creature
 			}
 		}
 
-		bool load(bool loadLibs = true, bool loadNpcs = true) const;
-		bool reset() const;
-
 		void removeList() override;
 		void addList() override;
 
@@ -115,6 +112,7 @@ class Npc final : public Creature
 		}
 
 		bool canSee(const Position& pos) const override;
+		bool canSeeRange(const Position& pos, int32_t viewRangeX = 4, int32_t viewRangeY = 4) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}

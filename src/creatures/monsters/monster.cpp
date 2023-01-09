@@ -469,7 +469,7 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
-	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
 	} else {
 		if (getFaction() != FACTION_DEFAULT) {

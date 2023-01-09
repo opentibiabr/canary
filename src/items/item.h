@@ -824,7 +824,7 @@ class Item : virtual public Thing
 			if (hasAttribute(ITEM_ATTRIBUTE_WEIGHT)) {
 				return getIntAttr(ITEM_ATTRIBUTE_WEIGHT);
 			}
-			return items[id].weight;
+			return static_cast<uint32_t>(items[id].weight);
 		}
 		int32_t getAttack() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {

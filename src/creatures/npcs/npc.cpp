@@ -14,8 +14,6 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
-#include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -56,27 +54,6 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
-	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
-	}
-	if (loadNpcs) {
-		return g_scripts().loadScripts("npc", false, true);
-	}
-	return false;
-}
-
-bool Npc::reset() const
-{
-	if (load()) {
-		g_npcs().reset();
-		g_game().resetNpcs();
-		return true;
-	}
-	return false;
-}
-
 void Npc::addList()
 {
 	g_game().addNpc(this);
@@ -93,6 +70,14 @@ bool Npc::canSee(const Position& pos) const
 		return false;
 	}
 	return Creature::canSee(getPosition(), pos, 4, 4);
+}
+
+bool Npc::canSeeRange(const Position& pos, int32_t viewRangeX/* = 4*/, int32_t viewRangeY/* = 4*/) const
+{
+	if (pos.z != getPosition().z) {
+		return false;
+	}
+	return Creature::canSee(getPosition(), pos, viewRangeX, viewRangeY);
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin)
@@ -216,8 +201,19 @@ void Npc::onThink(uint32_t interval)
 		closeAllShopWindows();
 	}
 
-	onThinkYell(interval);
-	onThinkWalk(interval);
+	SpectatorHashSet spectators;
+	// Get a set of spectators that are within the visible range of the NPC
+	g_game().map.getSpectators(spectators, position, false, false);
+	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag
+	if (std::ranges::any_of(spectators, [](Creature* spectator) {
+		auto player = spectator->getPlayer();
+		// If there are no players or all players have the "IgnoredByNpcs" flag, then the NPC will not walk or yell.
+		return player && !player->hasFlag(PlayerFlags_t::IgnoredByNpcs);
+	})) {
+		// There is at least one normal player on the screen, so the NPC should continue walking and yelling
+		onThinkYell(interval);
+		onThinkWalk(interval);
+	}
 }
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,

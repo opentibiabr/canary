@@ -210,7 +210,6 @@ class ItemType
 		std::unique_ptr<Abilities> abilities;
 		std::unique_ptr<ConditionDamage> conditionDamage;
 
-		uint32_t weight = 0;
 		uint32_t levelDoor = 0;
 		uint32_t decayTime = 0;
 		uint32_t wieldInfo = 0;
@@ -219,6 +218,8 @@ class ItemType
 		uint32_t charges = 0;
 		uint32_t buyPrice = 0;
 		uint32_t sellPrice = 0;
+		// Signed, because some items have negative weight, but this will only be necessary for the look so everything else will be uint32_t
+		int32_t weight = 0;
 		int32_t maxHitChance = -1;
 		int32_t decayTo = -1;
 		int32_t attack = 0;

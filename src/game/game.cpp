@@ -234,7 +234,7 @@ void Game::setGameState(GameState_t newState)
 			/* kick all players without the CanAlwaysLogin flag */
 			auto it = players.begin();
 			while (it != players.end()) {
-				if (!it->second->hasFlag(PlayerFlag_CanAlwaysLogin)) {
+				if (!it->second->hasFlag(PlayerFlags_t::CanAlwaysLogin)) {
 					it->second->removePlayer(true);
 					it = players.begin();
 				} else {
@@ -779,7 +779,7 @@ void Game::executeDeath(uint32_t creatureId)
 
 void Game::playerTeleport(uint32_t playerId, const Position& newPosition) {
   Player* player = getPlayerByID(playerId);
-  if (!player || !player->hasCustomFlag(PlayerCustomFlag_CanMapClickTeleport)) {
+  if (!player || !player->hasFlag(PlayerFlags_t::CanMapClickTeleport)) {
     return;
   }
 
@@ -983,7 +983,7 @@ void Game::playerMoveCreature(Player* player, Creature* movingCreature, const Po
 		isFamiliar = monster->isFamiliar();
 	}
 
-	if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlag_CanPushAllCreatures)) ||
+	if (!isFamiliar && ((!movingCreature->isPushable() && !player->hasFlag(PlayerFlags_t::CanPushAllCreatures)) ||
 				(movingCreature->isInGhostMode() && !player->isAccessPlayer()))) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
 		return;
@@ -1374,6 +1374,15 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
                                   uint32_t flags /*= 0*/, Creature* actor/*=nullptr*/,
                                   Item* tradeItem/* = nullptr*/)
 {
+	if (fromCylinder == nullptr) {
+		SPDLOG_ERROR("[{}] fromCylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+	if (toCylinder == nullptr) {
+		SPDLOG_ERROR("[{}] toCylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	Tile* fromTile = fromCylinder->getTile();
 	if (fromTile) {
 		auto it = browseFields.find(fromTile);
@@ -1605,7 +1614,12 @@ ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item,
 ReturnValue Game::internalAddItem(Cylinder* toCylinder, Item* item, int32_t index,
                                   uint32_t flags, bool test, uint32_t& remainderCount)
 {
-	if (toCylinder == nullptr || item == nullptr) {
+	if (toCylinder == nullptr) {
+		SPDLOG_ERROR("[{}] fromCylinder is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+	if (item == nullptr) {
+		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -1825,6 +1839,7 @@ Item* Game::findItemOfType(const Cylinder* cylinder, uint16_t itemId, bool depth
 bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/, bool useBalance /*= false*/)
 {
 	if (cylinder == nullptr) {
+		SPDLOG_ERROR("[{}] cylinder is nullptr", __FUNCTION__);
 		return false;
 	}
 	if (money == 0) {
@@ -1906,6 +1921,10 @@ bool Game::removeMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*
 
 void Game::addMoney(Cylinder* cylinder, uint64_t money, uint32_t flags /*= 0*/)
 {
+	if (cylinder == nullptr) {
+		SPDLOG_ERROR("[{}] cylinder is nullptr", __FUNCTION__);
+		return;
+	}
 	if (money == 0) {
 		return;
 	}
@@ -2107,9 +2126,12 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, bool pushMove/* = true*/, uint32_t flags /*= 0*/)
 {
-	if (newPos == thing->getPosition()) {
-		return RETURNVALUE_NOERROR;
-	} else if (thing->isRemoved()) {
+	if (thing == nullptr) {
+		SPDLOG_ERROR("[{}] thing is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (thing->isRemoved()) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -2565,7 +2587,7 @@ void Game::playerMove(uint32_t playerId, Direction direction)
 
 bool Game::playerBroadcastMessage(Player* player, const std::string& text) const
 {
-	if (!player->hasFlag(PlayerFlag_CanBroadcast)) {
+	if (!player->hasFlag(PlayerFlags_t::CanBroadcast)) {
 		return false;
 	}
 
@@ -3614,7 +3636,7 @@ void Game::playerStashWithdraw(uint32_t playerId, uint16_t itemId, uint32_t coun
 		return;
 	}
 
-	if (player->hasFlag(PlayerFlag_CannotPickupItem)) {
+	if (player->hasFlag(PlayerFlags_t::CannotPickupItem)) {
 		return;
 	}
 
@@ -4743,14 +4765,14 @@ void Game::playerRequestAddVip(uint32_t playerId, const std::string& name)
 			return;
 		}
 
-		if (specialVip && !player->hasFlag(PlayerFlag_SpecialVIP)) {
+		if (specialVip && !player->hasFlag(PlayerFlags_t::SpecialVIP)) {
 			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player.");
 			return;
 		}
 
 		player->addVIP(guid, formattedName, VIPSTATUS_OFFLINE);
 	} else {
-		if (vipPlayer->hasFlag(PlayerFlag_SpecialVIP) && !player->hasFlag(PlayerFlag_SpecialVIP)) {
+		if (vipPlayer->hasFlag(PlayerFlags_t::SpecialVIP) && !player->hasFlag(PlayerFlags_t::SpecialVIP)) {
 			player->sendTextMessage(MESSAGE_FAILURE, "You can not add this player.");
 			return;
 		}
@@ -5111,7 +5133,7 @@ bool Game::playerSpeakTo(Player* player, SpeakClasses type, const std::string& r
 		return false;
 	}
 
-	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlag_CanTalkRedPrivate) || player->getAccountType() >= account::AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
+	if (type == TALKTYPE_PRIVATE_RED_TO && (player->hasFlag(PlayerFlags_t::CanTalkRedPrivate) || player->getAccountType() >= account::AccountType::ACCOUNT_TYPE_GAMEMASTER)) {
 		type = TALKTYPE_PRIVATE_RED_FROM;
 	} else {
 		type = TALKTYPE_PRIVATE_FROM;
@@ -7459,7 +7481,8 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 	player->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 }
 
-void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus)
+namespace {
+bool removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus)
 {
 	uint16_t removeAmount = amount;
 	if (
@@ -7475,15 +7498,20 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 			removeAmount = 0;
 		} else {
 			offerStatus << "Failed to remove stash items from player " << player.getName();
-			return;
+			return false;
 		}
 	}
 
+	auto [itemVector, totalCount] = player.getLockerItemsAndCountById(depotLocker, tier, itemType.id);
 	if (removeAmount > 0) {
-		auto [itemVector, itemMap] = player.requestLockerItems(&depotLocker, false, tier);
+		if (totalCount == 0 || itemVector.size() == 0) {
+			offerStatus << "Player " << player.getName() << " not have item for create offer";
+			return false;
+		}
+
 		uint32_t count = 0;
 		for (auto item : itemVector) {
-			if (itemType.id != item->getID()) {
+			if (!item) {
 				continue;
 			}
 
@@ -7497,9 +7525,8 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 					ret != RETURNVALUE_NOERROR
 				)
 				{
-					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
-					offerStatus << "Failed to remove items from player " << player.getName();
-					break;
+					offerStatus << "Failed to remove items from player " << player.getName() << " error: " << getReturnMessage(ret);
+					return false;
 				}
 
 				if (removeAmount == 0) {
@@ -7512,14 +7539,15 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 				}
 				auto ret = g_game().internalRemoveItem(item);
 				if (ret != RETURNVALUE_NOERROR) {
-					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
-					offerStatus << "Failed to remove items from player " << player.getName();
-					break;
+					offerStatus << "Failed to remove items from player " << player.getName() << " error: " << getReturnMessage(ret);
+					return false;
 				}
 			}
 		}
 	}
+	return true;
 }
+} // namespace
 
 bool checkCanInitCreateMarketOffer(const Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus)
 {
@@ -7622,7 +7650,10 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			account.RemoveCoins(static_cast<uint32_t>(amount));
 		} else {
-			removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus);
+			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
+				SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
+				return;
+			}
 		}
 
 		g_game().removeMoney(player, fee, 0, true);
@@ -7832,7 +7863,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
 											 "Sold on Market");
 		} else {
-			removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus);
+				if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
+					SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
+					return;
+				}
 		}
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 

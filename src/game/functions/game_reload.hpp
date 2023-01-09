@@ -30,6 +30,9 @@ enum class Reload_t : uint8_t {
 	RELOAD_TYPE_RAIDS,
 	RELOAD_TYPE_SCRIPTS,
 	RELOAD_TYPE_TALKACTION,
+	RELOAD_TYPE_GROUPS,
+
+	// Every is last
 	RELOAD_TYPE_LAST
 };
 
@@ -61,6 +64,7 @@ private:
 	bool reloadRaids() const;
 	bool reloadScripts() const;
 	bool reloadTalkaction() const;
+	bool reloadGroups() const;
 };
 
 const inline GameReload g_gameReload;

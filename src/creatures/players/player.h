@@ -175,7 +175,7 @@ class Player final : public Creature, public Cylinder
 			return guid;
 		}
 		bool canSeeInvisibility() const override {
-			return hasFlag(PlayerFlag_CanSenseInvisibility) || group->access;
+			return hasFlag(PlayerFlags_t::CanSenseInvisibility) || group->access;
 		}
 
 		void setDailyReward(uint8_t reward) {
@@ -347,12 +347,8 @@ class Player final : public Creature, public Cylinder
 			return manaSpent;
 		}
 
-		bool hasFlag(PlayerFlags value) const {
-			return (group->flags & value) != 0;
-		}
-
-		bool hasCustomFlag(PlayerCustomFlags value) const {
-			return (group->customflags & value) != 0;
+		bool hasFlag(PlayerFlags_t flag) const {
+			return group->flags[Groups::getFlagNumber(flag)];
 		}
 
 		BedItem* getBedItem() {
@@ -600,27 +596,27 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint32_t getBaseCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			}
 			return capacity;
 		}
 
 		uint32_t getCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			}
 			return capacity + bonusCapacity;
 		}
 
 		uint32_t getFreeCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			} else {
 				return std::max<int32_t>(0, getCapacity() - inventoryWeight);
@@ -2060,6 +2056,20 @@ class Player final : public Creature, public Cylinder
 
 		std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> requestLockerItems(DepotLocker *depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
 
+		/**
+		This function returns a pair of an array of items and a 16-bit integer from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
+		@param depotLocker The instance of DepotLocker from which to retrieve items.
+		@param tier The 8-bit byte that specifies the level of the tier to search.
+		@param itemId The 16-bit integer that specifies the ID of the item to search for.
+		@return A pair of an array of items and a 16-bit integer, where the array of items is filled with all items from the
+		locker with the specified id and the 16-bit integer is the total items found.
+		*/
+		std::pair<std::vector<Item*>, uint16_t> getLockerItemsAndCountById(
+			DepotLocker &depotLocker,
+			uint8_t tier,
+			uint16_t itemId
+		);
+
 		bool saySpell(
 			SpeakClasses type,
 			const std::string& text,
@@ -2458,7 +2468,7 @@ class Player final : public Creature, public Cylinder
 				return;
 			}
 
-			if (!hasFlag(PlayerFlag_SetMaxSpeed)) {
+			if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
 				baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 			} else {
 				baseSpeed = PLAYER_MAX_SPEED;

@@ -106,10 +106,8 @@ class Npcs
 		NpcType* getNpcType(const std::string& name, bool create = false);
 
 		// Reset npcs informations on reload
-		void reset() {
-			npcs.clear();
-			scriptInterface.reset();
-		};
+		bool load(bool loadLibs = true, bool loadNpcs = true, bool reloading = false) const;
+		bool reload();
 
 	private:
 		std::unique_ptr<LuaScriptInterface> scriptInterface;

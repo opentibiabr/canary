@@ -106,9 +106,9 @@ class Player final : public Creature, public Cylinder
 
 		void setID() override {
 			if (id == 0) {
-				// keep id the same as guid because client save data using this id
-				id = 0x10010000 + guid;
-				playerAutoID = std::max<uint32_t>(playerAutoID, id);
+				if (guid != 0) {
+					id = 0x10000000 + guid;
+				}
 			}
 		}
 

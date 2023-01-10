@@ -18,7 +18,7 @@
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
 
-uint32_t Npc::npcAutoID = 0x80000000;
+uint32_t Npc::npcAutoID = 0x100000000;
 
 Npc* Npc::createNpc(const std::string& name)
 {

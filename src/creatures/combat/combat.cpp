@@ -952,8 +952,9 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		}
 
 		// Fatal hit (onslaught)
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
-			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier()) {
+			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
@@ -988,9 +989,10 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 		}
 
 		// Fatal hit (onslaught)
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr)
+		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier() > 0)
 		{
-			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
+			double_t fatalChance = playerWeapon->getFatalChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;

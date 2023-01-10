@@ -9,9 +9,10 @@
 
 #include "pch.hpp"
 
+#include "lua/functions/items/item_functions.hpp"
+
 #include "game/game.h"
 #include "items/item.h"
-#include "lua/functions/items/item_functions.hpp"
 #include "items/decay/decay.h"
 
 class Imbuement;
@@ -469,18 +470,18 @@ int ItemFunctions::luaItemGetCustomAttribute(lua_State* L) {
 		return 1;
 	}
 
-	const ItemAttributes::CustomAttribute* attr;
+	const CustomAttribute* customAttribute;
 	if (isNumber(L, 2)) {
-		attr = item->getCustomAttribute(getNumber<int64_t>(L, 2));
+		customAttribute = item->getCustomAttribute(std::to_string(getNumber<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
-		attr = item->getCustomAttribute(getString(L, 2));
+		customAttribute = item->getCustomAttribute(getString(L, 2));
 	} else {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	if (attr) {
-		attr->pushToLua(L);
+	if (customAttribute) {
+		customAttribute->pushToLua(L);
 	} else {
 		lua_pushnil(L);
 	}
@@ -505,24 +506,27 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttributes::CustomAttribute attribute;
+	std::map<std::string, CustomAttribute> newMap;
 	if (isNumber(L, 3)) {
-		double doubleValue = getNumber<double>(L, 3);
+		const double doubleValue = getNumber<double>(L, 3);
 		if (std::floor(doubleValue) < doubleValue) {
-			attribute.setDouble(doubleValue);
+			newMap[key] = CustomAttribute(key, doubleValue);
 		} else {
-			attribute.setInt64(getNumber<int64_t>(L, 3));
+			int64_t int64 = getNumber<int64_t>(L, 3);
+			newMap[key] = CustomAttribute(key, int64);
 		}
 	} else if (isString(L, 3)) {
-		attribute.setString(getString(L, 3));
+		const std::string stringValue = getString(L, 3);
+		newMap[key] = CustomAttribute(key, stringValue);
 	} else if (isBoolean(L, 3)) {
-		attribute.setBool(getBoolean(L, 3));
+		const bool boolValue = getBoolean(L, 3);
+		newMap[key] = CustomAttribute(key, boolValue);
 	} else {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	item->setCustomAttribute(key, attribute);
+	item->setCustomAttributeMap(std::move(newMap));
 	pushBoolean(L, true);
 	return 1;
 }
@@ -536,7 +540,7 @@ int ItemFunctions::luaItemRemoveCustomAttribute(lua_State* L) {
 	}
 
 	if (isNumber(L, 2)) {
-		pushBoolean(L, item->removeCustomAttribute(getNumber<int64_t>(L, 2)));
+		pushBoolean(L, item->removeCustomAttribute(std::to_string(getNumber<int64_t>(L, 2))));
 	} else if (isString(L, 2)) {
 		pushBoolean(L, item->removeCustomAttribute(getString(L, 2)));
 	} else {

@@ -13,6 +13,7 @@
 #include "items/cylinder.h"
 #include "items/thing.h"
 #include "items/items.h"
+#include "items/functions/attribute_custom.hpp"
 #include "lua/scripts/luascript.h"
 #include "utils/tools.h"
 #include "io/fileloader.h"
@@ -138,140 +139,18 @@ class ItemAttributes
 			return static_cast<ItemDecayState_t>(getIntAttr(ITEM_ATTRIBUTE_DECAYSTATE));
 		}
 
-		struct CustomAttribute
-		{
-			std::string stringValue;
-			int64_t intValue;
-			bool boolValue;
-			double doubleValue;
+	// CustomAttribute map methods
+	const std::map<std::string, CustomAttribute>& getCustomAttributeMap() const;
+	void setCustomAttributeMap(const std::map<std::string, CustomAttribute>& newMap);
+	// CustomAttribute object methods
+	const CustomAttribute* getCustomAttribute(const std::string& attributeName) const;
+	template <typename GenericType>
+	void setCustomAttribute(const std::string &key, GenericType value);
+	bool removeCustomAttribute(const std::string& attributeName);
 
-			bool hasStringValue = false;
-			bool hasIntValue = false;
-			bool hasBoolValue = false;
-			bool hasDoubleValue = false;
+private:
+	std::map<std::string, CustomAttribute> customAttributeMap;
 
-			CustomAttribute() = default;
-
-			void setString(const std::string& string) {
-				stringValue = string;
-				hasStringValue = true;
-			}
-
-			void setInt64(int64_t int64) {
-				intValue = int64;
-				hasIntValue = true;
-			}
-
-			void setDouble(double newDouble) {
-				doubleValue = newDouble;
-				hasDoubleValue = true;
-			}
-
-			void setBool(bool boolean) {
-				boolValue = boolean;
-				hasBoolValue = true;
-			}
-
-			const std::string& getString() const {
-				return stringValue;
-			}
-
-			int64_t getInt() const {
-				return intValue;
-			}
-
-			bool getBool() const {
-				return boolValue;
-			}
-
-			bool hasValue() const {
-				return hasStringValue || hasIntValue || hasBoolValue || hasDoubleValue;
-			}
-
-			void pushToLua(lua_State* L) const {
-				if (hasStringValue) {
-					LuaScriptInterface::pushString(L, stringValue);
-				} else if (hasIntValue) {
-					lua_pushnumber(L, static_cast<lua_Number>(intValue));
-				} else if (hasDoubleValue) {
-					lua_pushnumber(L, doubleValue);
-				} else if (hasBoolValue) {
-					LuaScriptInterface::pushBoolean(L, boolValue);
-				} else {
-					lua_pushnil(L);
-				}
-			}
-
-			void serialize(PropWriteStream& propWriteStream) const {
-				if (hasStringValue) {
-					propWriteStream.write<uint8_t>(1);
-					propWriteStream.writeString(stringValue);
-				} else if (hasIntValue) {
-					propWriteStream.write<uint8_t>(2);
-					propWriteStream.write<int64_t>(intValue);
-				} else if (hasDoubleValue) {
-					propWriteStream.write<uint8_t>(3);
-					propWriteStream.write<double>(doubleValue);
-				} else if (hasBoolValue) {
-					propWriteStream.write<uint8_t>(4);
-					propWriteStream.write<bool>(boolValue);
-				} else {
-					propWriteStream.write<uint8_t>(0);
-				}
-			}
-
-			bool unserialize(PropStream& propStream, const std::string& function) {
-				uint8_t type;
-				if (!propStream.read<uint8_t>(type)) {
-					SPDLOG_ERROR("[{}] Failed to read type", function);
-					return false;
-				}
-
-				switch (type) {
-					case 1: {
-						std::string readString;
-						if (!propStream.readString(readString)) {
-							SPDLOG_ERROR("[{}] Failed to read string", function);
-							return false;
-						}
-						setString(readString);
-						break;
-					}
-					case 2: {
-						int64_t readInt;
-						if (!propStream.read<int64_t>(readInt)) {
-							SPDLOG_ERROR("[{}] Failed to read int64", function);
-							return false;
-						}
-						setInt64(readInt);
-						break;
-					}
-					case 3: {
-						double readDouble;
-						if (!propStream.read<double>(readDouble)) {
-							SPDLOG_ERROR("[{}] Failed to read double", function);
-							return false;
-						}
-						setDouble(readDouble);
-						break;
-					}
-					case 4: {
-						bool readBoolean;
-						if (!propStream.read<bool>(readBoolean)) {
-							SPDLOG_ERROR("[{}] Failed to read boolean", function);
-							return false;
-						}
-						setBool(readBoolean);
-						break;
-					}
-					default:
-						break;
-				}
-				return true;
-			}
-		};
-
-	private:
 		bool hasAttribute(ItemAttrTypes type) const {
 			return (type & static_cast<ItemAttrTypes>(attributeBits)) != 0;
 		}
@@ -282,13 +161,10 @@ class ItemAttributes
 		static double emptyDouble;
 		static bool emptyBool;
 
-		typedef phmap::flat_hash_map<std::string, CustomAttribute> CustomAttributeMap;
-
 		struct Attribute {
 			union {
 				int64_t integer;
 				std::string* string;
-				CustomAttributeMap* custom;
 			} value;
 			ItemAttrTypes type;
 
@@ -304,8 +180,6 @@ class ItemAttributes
 					value.integer = i.value.integer;
 				} else if (ItemAttributes::isStrAttrType(type)) {
 					value.string = new std::string(*i.value.string);
-				} else if (ItemAttributes::isCustomAttrType(type)) {
-					value.custom = new CustomAttributeMap(*i.value.custom);
 				} else {
 					memset(&value, 0, sizeof(value));
 				}
@@ -318,8 +192,6 @@ class ItemAttributes
 				if (this != &other) {
 					if (ItemAttributes::isStrAttrType(type)) {
 						delete value.string;
-					} else if (ItemAttributes::isCustomAttrType(type)) {
-						delete value.custom;
 					}
 
 					value = other.value;
@@ -333,8 +205,6 @@ class ItemAttributes
 			~Attribute() {
 				if (ItemAttributes::isStrAttrType(type)) {
 					delete value.string;
-				} else if (ItemAttributes::isCustomAttrType(type)) {
-					delete value.custom;
 				}
 			}
 		};
@@ -351,89 +221,6 @@ class ItemAttributes
 
 		const Attribute* getExistingAttr(ItemAttrTypes type) const;
 		Attribute& getAttr(ItemAttrTypes type);
-
-		CustomAttributeMap* getCustomAttributeMap() {
-			if (!hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-				return nullptr;
-			}
-
-			return getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
-		}
-
-		template<typename R>
-		void setCustomAttribute(int64_t key, R value) {
-			std::string tmp = std::to_string(key);
-			setCustomAttribute(tmp, value);
-		}
-
-		void setCustomAttribute(int64_t key, CustomAttribute& value) {
-			std::string tmp = std::to_string(key);
-			setCustomAttribute(tmp, value);
-		}
-
-		template<typename R>
-		void setCustomAttribute(std::string& key, R value) {
-			toLowerCaseString(key);
-			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-				removeCustomAttribute(key);
-			} else {
-				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
-			}
-			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, value);
-		}
-		void setCustomAttribute(std::string& key, int64_t intValue) {
-			toLowerCaseString(key);
-			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-				removeCustomAttribute(key);
-			} else {
-				auto newAttribute = std::make_unique<CustomAttributeMap>();
-				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = newAttribute.get();
-			}
-			ItemAttributes::CustomAttribute customAttribute;
-			customAttribute.setInt64(intValue);
-			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, customAttribute);
-		}
-
-		void setCustomAttribute(std::string& key, CustomAttribute& value) {
-			toLowerCaseString(key);
-			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-				removeCustomAttribute(key);
-			} else {
-				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
-			}
-			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->insert(std::make_pair(std::move(key), std::move(value)));
-		}
-
-		const CustomAttribute* getCustomAttribute(int64_t key) {
-			std::string tmp = std::to_string(key);
-			return getCustomAttribute(tmp);
-		}
-
-		const CustomAttribute* getCustomAttribute(const std::string& key) {
-			if (const CustomAttributeMap* customAttrMap = getCustomAttributeMap()) {
-				auto it = customAttrMap->find(asLowerCaseString(key));
-				if (it != customAttrMap->end()) {
-					return &(it->second);
-				}
-			}
-			return nullptr;
-		}
-
-		bool removeCustomAttribute(int64_t key) {
-			std::string tmp = std::to_string(key);
-			return removeCustomAttribute(tmp);
-		}
-
-		bool removeCustomAttribute(const std::string& key) {
-			if (CustomAttributeMap* customAttrMap = getCustomAttributeMap()) {
-				auto it = customAttrMap->find(asLowerCaseString(key));
-				if (it != customAttrMap->end()) {
-					customAttrMap->erase(it);
-					return true;
-				}
-			}
-			return false;
-		}
 
 	public:
 		static bool isIntAttrType(ItemAttrTypes type) {
@@ -484,7 +271,7 @@ class ItemAttributes
 	friend class Item;
 };
 
-class Item : virtual public Thing
+class Item : virtual public Thing, public ItemAttributes
 {
 	public:
 		//Factory member to create item of right type based on type
@@ -589,52 +376,6 @@ class Item : virtual public Thing
 				return false;
 			}
 			return attributes->hasAttribute(type);
-		}
-
-		template<typename R>
-		void setCustomAttribute(std::string& key, R value) {
-			getAttributes()->setCustomAttribute(key, value);
-		}
-
-		void setCustomAttribute(std::string& key, ItemAttributes::CustomAttribute& value) {
-			getAttributes()->setCustomAttribute(key, value);
-		}
-
-		const ItemAttributes::CustomAttribute* getCustomAttribute(int64_t key) {
-			return getAttributes()->getCustomAttribute(key);
-		}
-
-		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) {
-			return getAttributes()->getCustomAttribute(key);
-		}
-		const ItemAttributes::CustomAttribute* getCustomAttribute(const std::string& key) const {
-			if (!attributes) {
-				return nullptr;
-			}
-
-			if (!attributes->hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-				return nullptr;
-			}
-
-			ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom;
-			if (!customAttrMap) {
-				return nullptr;
-			}
-
-			auto it = customAttrMap->find(asLowerCaseString(key));
-			if (it != customAttrMap->end()) {
-				return &(it->second);
-			}
-
-			return nullptr;
-		}
-
-		bool removeCustomAttribute(int64_t key) {
-			return getAttributes()->removeCustomAttribute(key);
-		}
-
-		bool removeCustomAttribute(const std::string& key) {
-			return getAttributes()->removeCustomAttribute(key);
 		}
 
 		void setSpecialDescription(const std::string& desc) {

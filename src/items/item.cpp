@@ -76,8 +76,8 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 {
-	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	auto info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
+	const CustomAttribute* attribute = getCustomAttribute(std::to_string(IMBUEMENT_SLOT + slot));
+	auto info = attribute ? static_cast<uint32_t>(attribute->getInt64Value()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
@@ -85,10 +85,8 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
-	std::string key = std::to_string(IMBUEMENT_SLOT + slot);
-	ItemAttributes::CustomAttribute customAttribute;
-	customAttribute.setInt64(duration > 0 ? (duration << 8) | imbuementId : 0);
-	setCustomAttribute(key, customAttribute);
+	auto keyDuration = (static_cast<std::int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
+	setCustomAttribute(std::to_string(IMBUEMENT_SLOT + slot), keyDuration);
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
@@ -728,8 +726,9 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			return ATTR_READ_ERROR;
 		}
 
+		// Deprecated (override by ATTR_CUSTOM)
 		case ATTR_CUSTOM_ATTRIBUTES: {
-			uint64_t size;
+			/*uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
 				return ATTR_READ_ERROR;
 			}
@@ -741,14 +740,13 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 					return ATTR_READ_ERROR;
 				};
 
-				// Unserialize value type and value
+				 Unserialize value type and value
 				ItemAttributes::CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
 					return ATTR_READ_ERROR;
 				}
 
-				setCustomAttribute(key, customAttribute);
-			}
+				setCustomAttribute(key, customAttribute);*/
 			break;
 		}
 
@@ -920,17 +918,10 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_SPECIAL));
 	}
 
+	// Deprecated
 	if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-		const ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getCustomAttributeMap();
-		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
-		propWriteStream.write<uint64_t>(customAttrMap->size());
-		for (const auto &entry : *customAttrMap) {
-			// Serializing key type and value
-			propWriteStream.writeString(entry.first);
-
-			// Serializing value type and value
-			entry.second.serialize(propWriteStream);
-		}
+		propWriteStream.writeString(std::string());
+		propWriteStream.write<int64_t>(0);
 	}
 
 	if (hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
@@ -946,6 +937,17 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
 		propWriteStream.write<uint8_t>(ATTR_TIER);
 		propWriteStream.write<uint8_t>(getTier());
+	}
+
+	auto customAttributeMap = getCustomAttributeMap();
+	if (customAttributeMap.size() > 0) {
+		propWriteStream.write<uint8_t>(ATTR_CUSTOM);
+		propWriteStream.write<uint64_t>(customAttributeMap.size());
+		for (const auto& [string, attribute] : customAttributeMap)
+		{
+			propWriteStream.writeString(string);
+			propWriteStream.write<int64_t>(attribute.getInt64Value());
+		}
 	}
 }
 
@@ -2686,4 +2688,62 @@ bool Item::isInsideDepot(bool includeInbox/* = false*/) const
 	}
 
 	return false;
+}
+
+/*
+============
+ItemAttributes Class
+============
+*/
+// CustomAttribute map methods
+const std::map<std::string, CustomAttribute>& ItemAttributes::getCustomAttributeMap() const
+{
+	return customAttributeMap;
+}
+void ItemAttributes::setCustomAttributeMap(const std::map<std::string, CustomAttribute>& newMap)
+{
+	customAttributeMap = newMap;
+}
+
+// CustomAttribute object methods
+const CustomAttribute* ItemAttributes::getCustomAttribute(const std::string& attributeName) const
+{
+	auto it = customAttributeMap.find(asLowerCaseString(attributeName));
+	if (it != customAttributeMap.end())
+	{
+		return &it->second;
+	}
+	return nullptr;
+}
+
+template <typename GenericType>
+void ItemAttributes::setCustomAttribute(const std::string &key, GenericType value) {
+	if (std::is_same<GenericType, std::int64_t>::value
+		|| std::is_same<GenericType, std::string>::value
+		|| std::is_same<GenericType, double>::value
+		|| std::is_same<GenericType, bool>::value)
+	{
+		auto it = customAttributeMap.find(key);
+		if (it != customAttributeMap.end()) {
+			SPDLOG_WARN("[{}] custom attribute with key {} not exist in the map", __FUNCTION__, key);
+		} else {
+			CustomAttribute attribute(key, value);
+			customAttributeMap[asLowerCaseString(attribute.getStringKey())] = attribute;
+		}
+	} else {
+		SPDLOG_ERROR("[{}] Invalid type for custom attribute with key {}", __FUNCTION__, key);
+		throw std::invalid_argument("Invalid type");
+	}
+}
+
+bool ItemAttributes::removeCustomAttribute(const std::string& attributeName)
+{
+	auto it = customAttributeMap.find(asLowerCaseString(attributeName));
+	if (it == customAttributeMap.end()) {
+		SPDLOG_WARN("[{}] {} attribute not found in customAttributeMap.", __FUNCTION__, attributeName);
+		return false;
+	}
+
+	customAttributeMap.erase(it);
+	return true;
 }

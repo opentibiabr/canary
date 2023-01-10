@@ -464,45 +464,38 @@ void Player::updateInventoryWeight()
 
 void Player::updateInventoryImbuement(bool init /* = false */)
 {
+	const Tile* playerTile = getTile();
+	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
+	
 	uint8_t imbuementsToCheck = g_game().getPlayerActiveImbuements(getID());
-	for (int items = CONST_SLOT_FIRST; items <= CONST_SLOT_LAST; ++items) {
-		/*
-		 * Small optimization to avoid unneeded iteration.
-		 */
-		if (!init && imbuementsToCheck == 0) {
-			break;
-		}
-
-		Item* item = inventory[items];
-		if (!item) {
-			continue;
-		}
-
-		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+	for (auto item : getAllInventoryItems()) {
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
+		{
 			ImbuementInfo imbuementInfo;
-			if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
+			if (!item->getImbuementInfo(slotid, &imbuementInfo))
+			{
 				continue;
 			}
 
-			// Time not decay on protection zone
-			const Tile* playerTile = getTile();
-			const CategoryImbuement *categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
-			if (categoryImbuement->agressive && playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-				continue;
+			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
+			if (categoryImbuement && categoryImbuement->agressive)
+			{
+				if (isInProtectionZone || !isInFightMode)
+				{
+					break;
+				}
 			}
 
-			// Time not decay if not is infight mode
-			if (categoryImbuement->agressive && !hasCondition(CONDITION_INFIGHT)) {
-				continue;
-			}
-
-			if (init) {
+			if (init)
+			{
 				g_game().increasePlayerActiveImbuements(getID());
 			}
 
 			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			item->decayImbuementTime(slotid, imbuementInfo.imbuement->getID(), duration);
-			if (duration == 0) {
+			if (duration == 0)
+			{
 				removeItemImbuementStats(imbuementInfo.imbuement);
 				g_game().decreasePlayerActiveImbuements(getID());
 			}
@@ -1287,13 +1280,14 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 		return;
 	}
 
-	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
-
 	// Update imbuement stats item if the item is equipped
 	if (item->getParent() == this) {
 		addItemImbuementStats(imbuement);
 	}
+
+	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
+	updateInventoryImbuement();
 }
 
 void Player::onClearImbuement(Item* item, uint8_t slot)
@@ -5733,8 +5727,6 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 		sendStats();
 		sendSkills();
 	}
-
-	return;
 }
 
 void Player::removeItemImbuementStats(const Imbuement* imbuement)
@@ -5771,8 +5763,6 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement)
 		sendStats();
 		sendSkills();
 	}
-
-	return;
 }
 
 bool Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {

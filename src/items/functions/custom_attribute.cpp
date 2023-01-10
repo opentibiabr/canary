@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "items/functions/attribute_custom.hpp"
+#include "items/functions/custom_attribute.hpp"
 
 #include "lua/scripts/luascript.h"
 
@@ -58,4 +58,73 @@ void CustomAttribute::pushToLua(lua_State* L) const {
 	} else {
 		lua_pushnil(L);
 	}
+}
+
+void CustomAttribute::serialize(PropWriteStream& propWriteStream) const {
+	if (int64Value != 0) {
+		propWriteStream.write<uint8_t>(1);
+		propWriteStream.write<int64_t>(int64Value);
+	} else if (!stringValue.empty()) {
+		propWriteStream.write<uint8_t>(2);
+		propWriteStream.writeString(stringValue);
+	} else if (doubleValue != 0) {
+		propWriteStream.write<uint8_t>(3);
+		propWriteStream.write<double>(doubleValue);
+	} else if (boolValue) {
+		propWriteStream.write<uint8_t>(4);
+		propWriteStream.write<bool>(boolValue);
+	} else {
+		propWriteStream.write<uint8_t>(0);
+	}
+}
+
+bool CustomAttribute::unserialize(PropStream& propStream, const std::string& function) {
+	uint8_t type;
+	if (!propStream.read<uint8_t>(type)) {
+	SPDLOG_ERROR("[{}] Failed to read type", function);
+		return false;
+	}
+
+	switch (type) {
+		case 1: {
+			int64_t readInt;
+			if (!propStream.read<int64_t>(readInt)) {
+				SPDLOG_ERROR("[{}] Failed to read int64", function);
+				return false;
+			}
+			int64Value = readInt;
+			break;
+		}
+		case 2: {
+			std::string readString;
+			if (!propStream.readString(readString)) {
+				SPDLOG_ERROR("[{}] Failed to read string", function);
+				return false;
+			}
+			stringValue = readString;
+			break;
+		}
+		
+		case 3: {
+			double readDouble;
+			if (!propStream.read<double>(readDouble)) {
+				SPDLOG_ERROR("[{}] Failed to read double", function);
+				return false;
+			}
+			doubleValue = readDouble;
+			break;
+		}
+		case 4: {
+			bool readBoolean;
+			if (!propStream.read<bool>(readBoolean)) {
+				SPDLOG_ERROR("[{}] Failed to read boolean", function);
+				return false;
+			}
+			boolValue = readBoolean;
+			break;
+		}
+		default:
+			break;
+	}
+	return true;
 }

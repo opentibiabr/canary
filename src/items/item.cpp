@@ -728,25 +728,6 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 
 		// Deprecated (override by ATTR_CUSTOM)
 		case ATTR_CUSTOM_ATTRIBUTES: {
-			/*uint64_t size;
-			if (!propStream.read<uint64_t>(size)) {
-				return ATTR_READ_ERROR;
-			}
-
-			for (uint64_t i = 0; i < size; i++) {
-				// Unserialize key type and value
-				std::string key;
-				if (!propStream.readString(key)) {
-					return ATTR_READ_ERROR;
-				};
-
-				 Unserialize value type and value
-				ItemAttributes::CustomAttribute customAttribute;
-				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
-					return ATTR_READ_ERROR;
-				}
-
-				setCustomAttribute(key, customAttribute);*/
 			break;
 		}
 
@@ -767,6 +748,32 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			}
 
 			setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+			break;
+		}
+		case ATTR_CUSTOM: {
+			uint64_t size;
+			if (!propStream.read<uint64_t>(size)) {
+				SPDLOG_ERROR("[{}] failed to read size");
+				return ATTR_READ_ERROR;
+			}
+
+			for (uint64_t i = 0; i < size; i++) {
+				// Unserialize custom attribute key type
+				std::string key;
+				if (!propStream.readString(key)) {
+					SPDLOG_ERROR("[{}] failed to read custom type");
+					return ATTR_READ_ERROR;
+				};
+
+				
+				CustomAttribute customAttribute;
+				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
+					SPDLOG_ERROR("[{}] failed to read custom value");
+					return ATTR_READ_ERROR;
+				}
+
+				addCustomAttribute(key, customAttribute);
+			}
 			break;
 		}
 
@@ -939,14 +946,17 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<uint8_t>(getTier());
 	}
 
-	auto customAttributeMap = getCustomAttributeMap();
-	if (customAttributeMap.size() > 0) {
+	if (auto customAttributeMap = getCustomAttributeMap();
+		customAttributeMap.size() > 0)
+	{
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM);
 		propWriteStream.write<uint64_t>(customAttributeMap.size());
-		for (const auto& [string, attribute] : customAttributeMap)
+		for (const auto &[attributeKey, customAttribute] : customAttributeMap)
 		{
-			propWriteStream.writeString(string);
-			propWriteStream.write<int64_t>(attribute.getInt64Value());
+			// Serializing custom attribute key type
+			propWriteStream.writeString(attributeKey);
+			// Serializing custom attribute value type
+			customAttribute.serialize(propWriteStream);
 		}
 	}
 }
@@ -2734,6 +2744,11 @@ void ItemAttributes::setCustomAttribute(const std::string &key, GenericType valu
 		SPDLOG_ERROR("[{}] Invalid type for custom attribute with key {}", __FUNCTION__, key);
 		throw std::invalid_argument("Invalid type");
 	}
+}
+
+void ItemAttributes::addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute)
+{
+	customAttributeMap[asLowerCaseString(key)] = customAttribute;
 }
 
 bool ItemAttributes::removeCustomAttribute(const std::string& attributeName)

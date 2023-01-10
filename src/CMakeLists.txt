@@ -211,7 +211,7 @@ PRIVATE
 	items/decay/decay.cpp
 	items/item.cpp
 	items/items.cpp
-	items/functions/attribute_custom.cpp
+	items/functions/custom_attribute.cpp
 	items/functions/item_parse.cpp
 	items/thing.cpp
 	items/tile.cpp

@@ -7,8 +7,10 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#ifndef SRC_ITEMS_FUNCTIONS_ATTRIBUTE_CUSTOM_HPP_
-#define SRC_ITEMS_FUNCTIONS_ATTRIBUTE_CUSTOM_HPP_
+#ifndef SRC_ITEMS_FUNCTIONS_CUSTOM_ATTRIBUTE_HPP_
+#define SRC_ITEMS_FUNCTIONS_CUSTOM_ATTRIBUTE_HPP_
+
+#include "io/fileloader.h"
 
 class CustomAttribute {
 public:
@@ -27,6 +29,10 @@ public:
 	const bool &getBoolValue() const;
 
 	void pushToLua(lua_State* L) const;
+
+	void serialize(PropWriteStream& propWriteStream) const;
+	bool unserialize(PropStream& propStream, const std::string& function);
+
 private:
 	std::string stringKey;
 
@@ -36,4 +42,4 @@ private:
 	bool boolValue = false;
 };
 
-#endif //  SRC_ITEMS_FUNCTIONS_ATTRIBUTE_CUSTOM_HPP_
+#endif //  SRC_ITEMS_FUNCTIONS_CUSTOM_ATTRIBUTE_HPP_

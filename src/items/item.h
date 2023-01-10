@@ -13,7 +13,7 @@
 #include "items/cylinder.h"
 #include "items/thing.h"
 #include "items/items.h"
-#include "items/functions/attribute_custom.hpp"
+#include "items/functions/custom_attribute.hpp"
 #include "lua/scripts/luascript.h"
 #include "utils/tools.h"
 #include "io/fileloader.h"
@@ -30,7 +30,7 @@ class MagicField;
 class BedItem;
 class Imbuement;
 
-class ItemAttributes
+class ItemAttributes : public CustomAttribute
 {
 	public:
 		ItemAttributes() = default;
@@ -146,6 +146,7 @@ class ItemAttributes
 	const CustomAttribute* getCustomAttribute(const std::string& attributeName) const;
 	template <typename GenericType>
 	void setCustomAttribute(const std::string &key, GenericType value);
+	void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute);
 	bool removeCustomAttribute(const std::string& attributeName);
 
 private:

@@ -1295,8 +1295,8 @@ bool IOLoginData::savePlayer(Player* player) {
 		return false;
 	}
 
-	// End the transaction
-	return transaction.commit();
+  //End the transaction
+  return true;
 }
 
 std::string IOLoginData::getNameByGuid(uint32_t guid) {

@@ -33,11 +33,9 @@ class Database {
 
 		bool connect();
 
-		bool connect(const char* host, const char* user, const char* password, const char* database, uint32_t port, const char* sock);
+		bool executeQuery(const std::string_view& query);
 
-		bool executeQuery(const std::string &query);
-
-		DBResult_ptr storeQuery(const std::string &query);
+		DBResult_ptr storeQuery(const std::string_view& query);
 
 		std::string escapeString(const std::string &s) const;
 
@@ -59,6 +57,14 @@ class Database {
 		bool beginTransaction();
 		bool rollback();
 		bool commit();
+
+		bool isRecoverableError(unsigned int error) {
+			return error == CR_SERVER_LOST ||
+				error == CR_SERVER_GONE_ERROR ||
+				error == CR_CONN_HOST_ERROR ||
+				error == 1053/*ER_SERVER_SHUTDOWN*/ ||
+				error == CR_CONNECTION_ERROR;
+		}
 
 		MYSQL* handle = nullptr;
 		std::recursive_mutex databaseLock;
@@ -151,10 +157,10 @@ class DBResult {
 		bool next();
 
 	private:
-		MYSQL_RES* handle;
+		MYSQL_RES *handle;
 		MYSQL_ROW row;
 
-		std::map<std::string, size_t> listNames;
+		phmap::flat_hash_map<std::string_view, size_t> listNames;
 
 		friend class Database;
 };
@@ -165,8 +171,8 @@ class DBResult {
 class DBInsert {
 	public:
 		explicit DBInsert(std::string query);
-		bool addRow(const std::string &row);
-		bool addRow(std::ostringstream &row);
+		bool addRow(const std::string_view row);
+		bool addRow(std::ostringstream& row);
 		bool execute();
 
 	private:

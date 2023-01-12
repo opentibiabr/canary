@@ -5700,7 +5700,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
 		if (imbuement->skills[skill]) {
 			requestUpdate = true;
-			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill] < 0 ? 0 : imbuement->skills[skill]);
+			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill]);
 		}
 	}
 
@@ -5708,7 +5708,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
 		if (imbuement->stats[stat]) {
 			requestUpdate = true;
-			setVarStats(static_cast<stats_t>(stat), imbuement->stats[stat] < 0 ? 0 : imbuement->stats[stat]);
+			setVarStats(static_cast<stats_t>(stat), imbuement->stats[stat]);
 		}
 	}
 

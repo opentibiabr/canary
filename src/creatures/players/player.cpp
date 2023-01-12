@@ -5440,7 +5440,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 	}
 
 	std::string message = fmt::format(
-		"Your {} skill changed from level {} (with {}% progress towards level {}) to level {} (with {}% progress towards level {})",
+		"Your {} skill changed from level {} (with {:.2f}% progress towards level {}) to level {} (with {:.2f}% progress towards level {})",
 		ucwords(getSkillName(skill)),
 		oldSkillValue,
 		oldPercentToNextLevel,

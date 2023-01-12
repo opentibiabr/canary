@@ -808,7 +808,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 	Player* player = creature->getPlayer();
 	int32_t PlayerdailyStreak = 0;
 	if (player) {
-		player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
+		PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
 	}
 	if (creature->getZone() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
@@ -824,7 +824,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 
 			if (isBuff && realHealthGain > 0) {
 				if (player) {
-					std::string healString = std::to_string(realHealthGain) + (realHealthGain != 1 ? " hitpoints." : " hitpoint.");
+					std::string healString = fmt::format("{} hitpoint{}.", realHealthGain, (realHealthGain != 1 ? "s" : ""));
 
 					TextMessage message(MESSAGE_HEALED, "You were healed for " + healString);
 					message.position = player->getPosition();

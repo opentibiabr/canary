@@ -162,10 +162,9 @@ class Player final : public Creature, public Cylinder
 		}
 		uint32_t getBestiaryKillCount(uint16_t raceid) const
 		{
-			int32_t cp = 0;
 			uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-			getStorageValue(key, cp);
-			return cp > 0 ? static_cast<uint32_t>(cp) : 0;
+			auto value = getStorageValue(key);
+			return value > 0 ? static_cast<uint32_t>(value) : 0;
 		}
 
 		void setGUID(uint32_t newGuid) {
@@ -406,7 +405,7 @@ class Player final : public Creature, public Cylinder
 		bool canOpenCorpse(uint32_t ownerId) const;
 
 		void addStorageValue(const uint32_t key, const int32_t value, const bool isLogin = false);
-		bool getStorageValue(const uint32_t key, int32_t& value) const;
+		int32_t getStorageValue(const uint32_t key) const;
 		void genReservedStorageRange();
 
 		void setGroup(Group* newGroup) {

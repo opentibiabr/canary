@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -818,7 +808,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 	Player* player = creature->getPlayer();
 	int32_t PlayerdailyStreak = 0;
 	if (player) {
-		player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
+		PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
 	}
 	if (creature->getZone() != ZONE_PROTECTION || PlayerdailyStreak >= DAILY_REWARD_HP_REGENERATION) {
 		if (internalHealthTicks >= getHealthTicks(creature)) {
@@ -834,7 +824,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 
 			if (isBuff && realHealthGain > 0) {
 				if (player) {
-					std::string healString = std::to_string(realHealthGain) + (realHealthGain != 1 ? " hitpoints." : " hitpoint.");
+					std::string healString = fmt::format("{} hitpoint{}.", realHealthGain, (realHealthGain != 1 ? "s" : ""));
 
 					TextMessage message(MESSAGE_HEALED, "You were healed for " + healString);
 					message.position = player->getPosition();

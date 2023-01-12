@@ -49,12 +49,12 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	local deathRecords = 0
 	local tmpResultId = resultId
 	while tmpResultId ~= false do
-		tmpResultId = result.next(resultId)
+		tmpResultId = Result.next(resultId)
 		deathRecords = deathRecords + 1
 	end
 
 	if resultId ~= false then
-		result.free(resultId)
+		Result.free(resultId)
 	end
 
 	local limit = deathRecords - maxDeathRecords
@@ -72,8 +72,8 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 				local warId = false
 				resultId = db.storeQuery("SELECT `id` FROM `guild_wars` WHERE `status` = 1 AND ((`guild1` = " .. killerGuild .. " AND `guild2` = " .. targetGuild .. ") OR (`guild1` = " .. targetGuild .. " AND `guild2` = " .. killerGuild .. "))")
 				if resultId ~= false then
-					warId = result.getNumber(resultId, "id")
-					result.free(resultId)
+					warId = Result.getNumber(resultId, "id")
+					Result.free(resultId)
 				end
 
 				if warId ~= false then

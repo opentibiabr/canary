@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_ITEMS_ITEM_H_
 #define SRC_ITEMS_ITEM_H_
@@ -150,152 +140,132 @@ class ItemAttributes
 
 		struct CustomAttribute
 		{
-			typedef boost::variant<boost::blank, std::string, int64_t, double, bool> VariantAttribute;
-			VariantAttribute value;
+			std::string stringValue;
+			int64_t intValue;
+			bool boolValue;
+			double doubleValue;
 
-			CustomAttribute() : value(boost::blank()) {}
+			bool hasStringValue = false;
+			bool hasIntValue = false;
+			bool hasBoolValue = false;
+			bool hasDoubleValue = false;
 
-			template<typename T>
-			explicit CustomAttribute(const T& v) : value(v) {}
+			CustomAttribute() = default;
 
-			template<typename T>
-			void set(const T& v) {
-				value = v;
+			void setString(const std::string& string) {
+				stringValue = string;
+				hasStringValue = true;
+			}
+
+			void setInt64(int64_t int64) {
+				intValue = int64;
+				hasIntValue = true;
+			}
+
+			void setDouble(double newDouble) {
+				doubleValue = newDouble;
+				hasDoubleValue = true;
+			}
+
+			void setBool(bool boolean) {
+				boolValue = boolean;
+				hasBoolValue = true;
 			}
 
 			const std::string& getString() const {
-				if (value.type() == typeid(std::string)) {
-					return boost::get<std::string>(value);
-				}
-
-				return emptyString;
+				return stringValue;
 			}
 
-			const int64_t& getInt() const {
-				if (value.type() == typeid(int64_t)) {
-					return boost::get<int64_t>(value);
-				}
-
-				return emptyInt;
+			int64_t getInt() const {
+				return intValue;
 			}
 
-			const double& getDouble() const {
-				if (value.type() == typeid(double)) {
-					return boost::get<double>(value);
-				}
-
-				return emptyDouble;
+			bool getBool() const {
+				return boolValue;
 			}
 
-			const bool& getBool() const {
-				if (value.type() == typeid(bool)) {
-					return boost::get<bool>(value);
-				}
-
-				return emptyBool;
+			bool hasValue() const {
+				return hasStringValue || hasIntValue || hasBoolValue || hasDoubleValue;
 			}
-
-			struct PushLuaVisitor : public boost::static_visitor<> {
-				lua_State* L;
-
-				explicit PushLuaVisitor(lua_State* L) : boost::static_visitor<>(), L(L) {}
-
-				void operator()(const boost::blank&) const {
-					lua_pushnil(L);
-				}
-
-				void operator()(const std::string& v) const {
-					LuaScriptInterface::pushString(L, v);
-				}
-
-				void operator()(bool v) const {
-					LuaScriptInterface::pushBoolean(L, v);
-				}
-
-				void operator()(const int64_t& v) const {
-					lua_pushnumber(L, v);
-				}
-
-				void operator()(const double& v) const {
-					lua_pushnumber(L, v);
-				}
-			};
 
 			void pushToLua(lua_State* L) const {
-				boost::apply_visitor(PushLuaVisitor(L), value);
+				if (hasStringValue) {
+					LuaScriptInterface::pushString(L, stringValue);
+				} else if (hasIntValue) {
+					lua_pushnumber(L, static_cast<lua_Number>(intValue));
+				} else if (hasDoubleValue) {
+					lua_pushnumber(L, doubleValue);
+				} else if (hasBoolValue) {
+					LuaScriptInterface::pushBoolean(L, boolValue);
+				} else {
+					lua_pushnil(L);
+				}
 			}
-
-			struct SerializeVisitor : public boost::static_visitor<> {
-				PropWriteStream& propWriteStream;
-
-				explicit SerializeVisitor(PropWriteStream& propWriteStream) : boost::static_visitor<>(), propWriteStream(propWriteStream) {}
-
-				void operator()(const boost::blank&) const {
-				}
-
-				void operator()(const std::string& v) const {
-					propWriteStream.writeString(v);
-				}
-
-				template<typename T>
-				void operator()(const T& v) const {
-					propWriteStream.write<T>(v);
-				}
-			};
 
 			void serialize(PropWriteStream& propWriteStream) const {
-				propWriteStream.write<uint8_t>(static_cast<uint8_t>(value.which()));
-				boost::apply_visitor(SerializeVisitor(propWriteStream), value);
+				if (hasStringValue) {
+					propWriteStream.write<uint8_t>(1);
+					propWriteStream.writeString(stringValue);
+				} else if (hasIntValue) {
+					propWriteStream.write<uint8_t>(2);
+					propWriteStream.write<int64_t>(intValue);
+				} else if (hasDoubleValue) {
+					propWriteStream.write<uint8_t>(3);
+					propWriteStream.write<double>(doubleValue);
+				} else if (hasBoolValue) {
+					propWriteStream.write<uint8_t>(4);
+					propWriteStream.write<bool>(boolValue);
+				} else {
+					propWriteStream.write<uint8_t>(0);
+				}
 			}
 
-			bool unserialize(PropStream& propStream) {
-				// This is hard coded so it's not general, depends on the position of the variants.
-				uint8_t pos;
-				if (!propStream.read<uint8_t>(pos)) {
+			bool unserialize(PropStream& propStream, const std::string& function) {
+				uint8_t type;
+				if (!propStream.read<uint8_t>(type)) {
+					SPDLOG_ERROR("[{}] Failed to read type", function);
 					return false;
 				}
 
-				switch (pos) {
-					case 1:  { // std::string
-						std::string tmp;
-						if (!propStream.readString(tmp)) {
+				switch (type) {
+					case 1: {
+						std::string readString;
+						if (!propStream.readString(readString)) {
+							SPDLOG_ERROR("[{}] Failed to read string", function);
 							return false;
 						}
-						value = tmp;
+						setString(readString);
 						break;
 					}
-
-					case 2: { // int64_t
-						int64_t tmp;
-						if (!propStream.read<int64_t>(tmp)) {
+					case 2: {
+						int64_t readInt;
+						if (!propStream.read<int64_t>(readInt)) {
+							SPDLOG_ERROR("[{}] Failed to read int64", function);
 							return false;
 						}
-						value = tmp;
+						setInt64(readInt);
 						break;
 					}
-
-					case 3: { // double
-						double tmp;
-						if (!propStream.read<double>(tmp)) {
+					case 3: {
+						double readDouble;
+						if (!propStream.read<double>(readDouble)) {
+							SPDLOG_ERROR("[{}] Failed to read double", function);
 							return false;
 						}
-						value = tmp;
+						setDouble(readDouble);
 						break;
 					}
-
-					case 4: { // bool
-						bool tmp;
-						if (!propStream.read<bool>(tmp)) {
+					case 4: {
+						bool readBoolean;
+						if (!propStream.read<bool>(readBoolean)) {
+							SPDLOG_ERROR("[{}] Failed to read boolean", function);
 							return false;
 						}
-						value = tmp;
+						setBool(readBoolean);
 						break;
 					}
-
-					default: {
-						value = boost::blank();
-						return false;
-					}
+					default:
+						break;
 				}
 				return true;
 			}
@@ -410,6 +380,18 @@ class ItemAttributes
 				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = new CustomAttributeMap();
 			}
 			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, value);
+		}
+		void setCustomAttribute(std::string& key, int64_t intValue) {
+			toLowerCaseString(key);
+			if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+				removeCustomAttribute(key);
+			} else {
+				auto newAttribute = std::make_unique<CustomAttributeMap>();
+				getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom = newAttribute.get();
+			}
+			ItemAttributes::CustomAttribute customAttribute;
+			customAttribute.setInt64(intValue);
+			getAttr(ITEM_ATTRIBUTE_CUSTOM).value.custom->emplace(key, customAttribute);
 		}
 
 		void setCustomAttribute(std::string& key, CustomAttribute& value) {
@@ -842,7 +824,7 @@ class Item : virtual public Thing
 			if (hasAttribute(ITEM_ATTRIBUTE_WEIGHT)) {
 				return getIntAttr(ITEM_ATTRIBUTE_WEIGHT);
 			}
-			return items[id].weight;
+			return static_cast<uint32_t>(items[id].weight);
 		}
 		int32_t getAttack() const {
 			if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {

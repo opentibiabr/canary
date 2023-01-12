@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -294,7 +284,7 @@ int32_t Weapon::playerWeaponCheck(Player* player, Creature* target, uint8_t shoo
 		return 0;
 	}
 
-	if (!player->hasFlag(PlayerFlag_IgnoreWeaponCheck)) {
+	if (!player->hasFlag(PlayerFlags_t::IgnoreWeaponCheck)) {
 		if (!enabled) {
 			return 0;
 		}
@@ -394,7 +384,7 @@ bool Weapon::useFist(Player* player, Creature* target)
 	damage.primary.value = -normal_random(0, maxDamage);
 
 	Combat::doCombatHealth(player, target, damage, params);
-	if (!player->hasFlag(PlayerFlag_NotGainSkill) && player->getAddAttackSkill()) {
+	if (!player->hasFlag(PlayerFlags_t::NotGainSkill) && player->getAddAttackSkill()) {
 		player->addSkillAdvance(SKILL_FIST, 1);
 	}
 
@@ -452,7 +442,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const
 
 void Weapon::onUsedWeapon(Player* player, Item* item, Tile* destTile) const
 {
-	if (!player->hasFlag(PlayerFlag_NotGainSkill)) {
+	if (!player->hasFlag(PlayerFlags_t::NotGainSkill)) {
 		skills_t skillType;
 		uint32_t skillPoint;
 		if (getSkillType(player, item, skillType, skillPoint)) {
@@ -471,7 +461,7 @@ void Weapon::onUsedWeapon(Player* player, Item* item, Tile* destTile) const
 		player->changeHealth(-static_cast<int32_t>(healthCost));
 	}
 
-	if (!player->hasFlag(PlayerFlag_HasInfiniteSoul) && soul > 0) {
+	if (!player->hasFlag(PlayerFlags_t::HasInfiniteSoul) && soul > 0) {
 		player->changeSoul(-static_cast<int32_t>(soul));
 	}
 

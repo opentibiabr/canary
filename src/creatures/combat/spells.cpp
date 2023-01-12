@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -623,11 +613,11 @@ bool Spell::configureSpell(const pugi::xml_node& node)
 
 bool Spell::playerSpellCheck(Player* player) const
 {
-	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
 	}
 
@@ -646,7 +636,7 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
-	if (aggressive && !player->hasFlag(PlayerFlag_IgnoreProtectionZone) && player->getZone() == ZONE_PROTECTION) {
+	if (aggressive && !player->hasFlag(PlayerFlags_t::IgnoreProtectionZone) && player->getZone() == ZONE_PROTECTION) {
 		player->sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 		return false;
 	}
@@ -673,13 +663,13 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
-	if (player->getMana() < getManaCost(player) && !player->hasFlag(PlayerFlag_HasInfiniteMana)) {
+	if (player->getMana() < getManaCost(player) && !player->hasFlag(PlayerFlags_t::HasInfiniteMana)) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHMANA);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 
-	if (player->getSoul() < soul && !player->hasFlag(PlayerFlag_HasInfiniteSoul)) {
+	if (player->getSoul() < soul && !player->hasFlag(PlayerFlags_t::HasInfiniteSoul)) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHSOUL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -856,7 +846,7 @@ void Spell::applyCooldownConditions(Player* player) const
 void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool payCost /*= true*/) const
 {
 	if (finishedCast) {
-		if (!player->hasFlag(PlayerFlag_HasNoExhaustion)) {
+		if (!player->hasFlag(PlayerFlags_t::HasNoExhaustion)) {
 			applyCooldownConditions(player);
 		}
 
@@ -877,7 +867,7 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost)
 		player->changeMana(-static_cast<int32_t>(manaCost));
 	}
 
-	if (!player->hasFlag(PlayerFlag_HasInfiniteSoul)) {
+	if (!player->hasFlag(PlayerFlags_t::HasInfiniteSoul)) {
 		if (soulCost > 0) {
 			player->changeSoul(-static_cast<int32_t>(soulCost));
 		}
@@ -1137,11 +1127,11 @@ bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
 
 bool InstantSpell::canCast(const Player* player) const
 {
-	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
 	}
 
@@ -1202,7 +1192,7 @@ bool RuneSpell::configureEvent(const pugi::xml_node& node)
 
 ReturnValue RuneSpell::canExecuteAction(const Player* player, const Position& toPos)
 {
-	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return RETURNVALUE_CANNOTUSETHISOBJECT;
 	}
 

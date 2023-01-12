@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -24,8 +14,6 @@
 #include "declarations.hpp"
 #include "game/game.h"
 #include "lua/callbacks/creaturecallback.h"
-#include "lua/scripts/lua_environment.hpp"
-#include "lua/scripts/scripts.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -66,27 +54,6 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-bool Npc::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/) const {
-	if (loadLibs) {
-		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
-	}
-	if (loadNpcs) {
-		return g_scripts().loadScripts("npc", false, true);
-	}
-	return false;
-}
-
-bool Npc::reset() const
-{
-	if (load()) {
-		g_npcs().reset();
-		g_game().resetNpcs();
-		return true;
-	}
-	return false;
-}
-
 void Npc::addList()
 {
 	g_game().addNpc(this);
@@ -103,6 +70,14 @@ bool Npc::canSee(const Position& pos) const
 		return false;
 	}
 	return Creature::canSee(getPosition(), pos, 4, 4);
+}
+
+bool Npc::canSeeRange(const Position& pos, int32_t viewRangeX/* = 4*/, int32_t viewRangeY/* = 4*/) const
+{
+	if (pos.z != getPosition().z) {
+		return false;
+	}
+	return Creature::canSee(getPosition(), pos, viewRangeX, viewRangeY);
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin)
@@ -226,8 +201,19 @@ void Npc::onThink(uint32_t interval)
 		closeAllShopWindows();
 	}
 
-	onThinkYell(interval);
-	onThinkWalk(interval);
+	SpectatorHashSet spectators;
+	// Get a set of spectators that are within the visible range of the NPC
+	g_game().map.getSpectators(spectators, position, false, false);
+	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag
+	if (std::ranges::any_of(spectators, [](Creature* spectator) {
+		auto player = spectator->getPlayer();
+		// If there are no players or all players have the "IgnoredByNpcs" flag, then the NPC will not walk or yell.
+		return player && !player->hasFlag(PlayerFlags_t::IgnoredByNpcs);
+	})) {
+		// There is at least one normal player on the screen, so the NPC should continue walking and yelling
+		onThinkYell(interval);
+		onThinkWalk(interval);
+	}
 }
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
@@ -465,9 +451,10 @@ void Npc::onThinkWalk(uint32_t interval)
 		return;
 	}
 
-	Direction dir = Position::getRandomDirection();
-	if (canWalkTo(getPosition(), dir)) {
-		listWalkDir.push_front(dir);
+	if (Direction newDirection;
+		getRandomStep(newDirection))
+	{
+		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
 
@@ -560,6 +547,27 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 
 bool Npc::getNextStep(Direction& nextDirection, uint32_t& flags) {
 	return Creature::getNextStep(nextDirection, flags);
+}
+
+bool Npc::getRandomStep(Direction& moveDirection) const
+{
+	static std::vector<Direction> directionvector {
+		Direction::DIRECTION_NORTH,
+		Direction::DIRECTION_WEST,
+		Direction::DIRECTION_EAST,
+		Direction::DIRECTION_SOUTH
+	};
+	std::ranges::shuffle(directionvector, getRandomGenerator());
+
+	for (const Position& creaturePos = getPosition();
+		Direction direction : directionvector)
+	{
+		if (canWalkTo(creaturePos, direction)) {
+			moveDirection = direction;
+			return true;
+		}
+	}
+	return false;
 }
 
 void Npc::addShopPlayer(Player* player)

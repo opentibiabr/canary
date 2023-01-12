@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -448,9 +438,9 @@ int PlayerFunctions::luaPlayerGetPreyLootPercentage(lua_State* L) {
 	if (const Player* player = getUserdata<Player>(L, 1)) {
 		if (const PreySlot* slot = player->getPreyWithMonster(getNumber<uint16_t>(L, 2, 0));
 			slot && slot->isOccupied() && slot->bonus == PreyBonus_Loot) {
-			lua_pushnumber(L, 100 + slot->bonusPercentage);
+			lua_pushnumber(L, slot->bonusPercentage);
 		} else {
-			lua_pushnumber(L, 100);
+			lua_pushnumber(L, 0);
 		}
 	} else {
 		lua_pushnil(L);
@@ -1588,12 +1578,7 @@ int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	}
 
 	uint32_t key = getNumber<uint32_t>(L, 2);
-	int32_t value;
-	if (player->getStorageValue(key, value)) {
-		lua_pushnumber(L, value);
-	} else {
-		lua_pushnumber(L, -1);
-	}
+	lua_pushnumber(L, player->getStorageValue(key));
 	return 1;
 }
 
@@ -2459,7 +2444,7 @@ int PlayerFunctions::luaPlayerCanLearnSpell(lua_State* L) {
 		return 1;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		pushBoolean(L, true);
 		return 1;
 	}

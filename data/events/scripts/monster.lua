@@ -32,9 +32,9 @@ function Monster:onDropLoot(corpse)
 				Spdlog.warn(string.format("[2][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
 			end
 		end
-		local preyLootActive = false
-		-- Runs the loot again if the player gets a chance to loot in the prey
+
 		if player then
+			-- Runs the loot again if the player gets a chance to loot in the prey
 			local preyLootPercent = player:getPreyLootPercentage(mType:raceId())
 			if preyLootPercent > 0 then
 				local probability = math.random(0, 100)
@@ -43,22 +43,18 @@ function Monster:onDropLoot(corpse)
 						local item = corpse:createLootItem(monsterLoot[i], charmBonus)
 						if not item then
 							Spdlog.warn(string.format("[3][Monster:onDropLoot] - Could not add loot item to monster: %s, from corpse id: %d.", self:getName(), corpse:getId()))
-						else
-							preyLootActive = true
 						end
 					end
 				end
 			end
-		end
 
-		if player then
 			local text = {}
 			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
-				 text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
 			else
-				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
+				text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())
 			end
-			if preyLootActive then
+			if preyLootPercent > 0 then
 				text = text .. " (active prey bonus)"
 			end
 			if charmBonus then

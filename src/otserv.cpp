@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -65,6 +55,19 @@ void toggleForceCloseButton() {
 	HWND hwnd = GetConsoleWindow();
 	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
+	#endif
+}
+
+std::string getCompiler() {
+	std::string compiler;
+	#if defined(__clang__)
+		return compiler = fmt::format("Clang++ {}.{}.{}", __clang_major__, __clang_minor__, __clang_patchlevel__);
+	#elif defined(_MSC_VER)
+		return compiler = fmt::format("Microsoft Visual Studio {}", _MSC_VER);
+	#elif defined(__GNUC__)
+		return compiler = fmt::format("G++ {}.{}.{}", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+	#else
+		return compiler = "unknown";
 	#endif
 }
 
@@ -172,7 +175,7 @@ void loadModules() {
 		"modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(),
 		"events/events.xml");
-	modulesLoadHelper((g_npc().load(true, false)),
+	modulesLoadHelper((g_npcs().load(true, false)),
 		"npclib");
 
 	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
@@ -185,7 +188,7 @@ void loadModules() {
 	// Load monsters
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
 		"monster");
-	modulesLoadHelper((g_npc().load(false, true)),
+	modulesLoadHelper((g_npcs().load(false, true)),
 		"npc");
 
 	g_game().loadBoostedCreature();
@@ -263,7 +266,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		platform = "unknown";
 	#endif
 
-	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", BOOST_COMPILER, __DATE__, __TIME__, platform);
+	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);

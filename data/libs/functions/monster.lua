@@ -117,7 +117,7 @@ function Monster.onReceivDamageSL(self, damage, tp, killer)
 end
 
 function Monster.setFiendish(self, position, player)
-	if not self then
+	if not self or not self:isForgeable() then
 		player:sendCancelMessage("Only allowed monsters can be fiendish.")
 		return false
 	end

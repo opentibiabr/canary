@@ -641,7 +641,7 @@ class Player final : public Creature, public Cylinder
 
 		void setVarSkill(skills_t skill, int32_t modifier) {
 			varSkills[skill] += modifier;
-			varSkills[skill] = varSkills[skill] > 0 : varSkills[skill] : 0;
+			varSkills[skill] = varSkills[skill] > 0 ? varSkills[skill] : 0;
 		}
 
 		void setVarStats(stats_t stat, int32_t modifier);

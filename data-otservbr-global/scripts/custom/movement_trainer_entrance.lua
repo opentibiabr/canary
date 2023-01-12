@@ -12,9 +12,9 @@ local config = {
 }
 
 local function isBusyable(position)
-	local player = Tile(position):getTopCreature()
-	if player then
-		if player:isPlayer() then
+	local creature = Tile(position):getTopCreature()
+	if creature then
+		if creature:isPlayer() or creature:getMaster() then
 			return false
 		end
 	end

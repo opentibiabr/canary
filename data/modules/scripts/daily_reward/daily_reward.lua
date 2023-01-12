@@ -71,7 +71,7 @@ local DailyRewardItems = {
 
 DailyReward = {
 	testMode = false,
-	serverTimeThreshold = (24 * 60 * 60), -- Counting down 24hours from last server save
+	serverTimeThreshold = (25 * 60 * 60), -- Counting down 24hours from last server save
 
 	storages = {
 		-- Player
@@ -221,13 +221,13 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	if resultId ~= false then
 		repeat
 			local entry = {
-				description = result.getDataString(resultId, "description"),
-				timestamp = result.getDataInt(resultId, "timestamp"),
-				daystreak = result.getDataInt(resultId, "daystreak"),
+				description = Result.getDataString(resultId, "description"),
+				timestamp = Result.getDataInt(resultId, "timestamp"),
+				daystreak = Result.getDataInt(resultId, "daystreak"),
 			}
 			table.insert(entries, entry)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 	return entries
 end

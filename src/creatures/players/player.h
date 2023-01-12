@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_CREATURES_PLAYERS_PLAYER_H_
 #define SRC_CREATURES_PLAYERS_PLAYER_H_
@@ -55,6 +45,38 @@ class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
 
+enum class ForgeConversion_t : uint8_t {
+	FORGE_ACTION_FUSION = 0,
+	FORGE_ACTION_TRANSFER = 1,
+	FORGE_ACTION_DUSTTOSLIVERS = 2,
+	FORGE_ACTION_SLIVERSTOCORES = 3,
+	FORGE_ACTION_INCREASELIMIT = 4
+};
+
+struct ForgeHistory {
+	ForgeConversion_t actionType = ForgeConversion_t::FORGE_ACTION_FUSION;
+	uint8_t tier = 0;
+	uint8_t bonus = 0;
+
+	time_t createdAt;
+
+	uint16_t historyId = 0;
+
+	uint64_t cost = 0;
+	uint64_t dustCost = 0;
+	uint64_t coresCost = 0;
+	uint64_t gained = 0;
+
+	bool success = false;
+	bool tierLoss = false;
+	bool successCore = false;
+	bool tierCore = false;
+	
+	std::string description;
+	std::string firstItemName;
+	std::string secondItemName;
+};
+
 struct OpenContainer {
 	Container* container;
 	uint16_t index;
@@ -62,7 +84,7 @@ struct OpenContainer {
 
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
-static constexpr int32_t PLAYER_MAX_SPEED = 70000;
+static constexpr int32_t PLAYER_MAX_SPEED = 65535;
 static constexpr int32_t PLAYER_MIN_SPEED = 10;
 
 class Player final : public Creature, public Cylinder
@@ -153,7 +175,7 @@ class Player final : public Creature, public Cylinder
 			return guid;
 		}
 		bool canSeeInvisibility() const override {
-			return hasFlag(PlayerFlag_CanSenseInvisibility) || group->access;
+			return hasFlag(PlayerFlags_t::CanSenseInvisibility) || group->access;
 		}
 
 		void setDailyReward(uint8_t reward) {
@@ -325,12 +347,8 @@ class Player final : public Creature, public Cylinder
 			return manaSpent;
 		}
 
-		bool hasFlag(PlayerFlags value) const {
-			return (group->flags & value) != 0;
-		}
-
-		bool hasCustomFlag(PlayerCustomFlags value) const {
-			return (group->customflags & value) != 0;
+		bool hasFlag(PlayerFlags_t flag) const {
+			return group->flags[Groups::getFlagNumber(flag)];
 		}
 
 		BedItem* getBedItem() {
@@ -541,7 +559,7 @@ class Player final : public Creature, public Cylinder
 		void addMessageBuffer();
 		void removeMessageBuffer();
 
-		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false) const;
+		bool removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped = false, bool removeFromStash = false);
 
 		void addItemOnStash(uint16_t itemId, uint32_t amount) {
 			auto it = stashItems.find(itemId);
@@ -578,27 +596,27 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint32_t getBaseCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			}
 			return capacity;
 		}
 
 		uint32_t getCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			}
 			return capacity + bonusCapacity;
 		}
 
 		uint32_t getFreeCapacity() const {
-			if (hasFlag(PlayerFlag_CannotPickupItem)) {
+			if (hasFlag(PlayerFlags_t::CannotPickupItem)) {
 				return 0;
-			} else if (hasFlag(PlayerFlag_HasInfiniteCapacity)) {
+			} else if (hasFlag(PlayerFlags_t::HasInfiniteCapacity)) {
 				return std::numeric_limits<uint32_t>::max();
 			} else {
 				return std::max<int32_t>(0, getCapacity() - inventoryWeight);
@@ -655,6 +673,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint64_t getMoney() const;
+		std::pair<uint64_t, uint64_t> getForgeSliversAndCores() const;
 
 		//safe-trade functions
 		void setTradeState(TradeState_t state) {
@@ -814,6 +833,11 @@ class Player final : public Creature, public Cylinder
 		void removeAttacked(const Player* attacked);
 		void clearAttacked();
 		void addUnjustifiedDead(const Player* attacked);
+		void sendCreatureEmblem(const Creature* creature) const {
+			if (client) {
+				client->sendCreatureEmblem(creature);
+			}
+		}
 		void sendCreatureSkull(const Creature* creature) const {
 			if (client) {
 				client->sendCreatureSkull(creature);
@@ -961,6 +985,11 @@ class Player final : public Creature, public Cylinder
 				client->sendCreatureIcon(creature);
 			}
 		}
+		void sendUpdateCreature(const Creature *creature) const {
+			if (client) {
+				client->sendUpdateCreature(creature);
+			}
+		}
 		void sendCreatureWalkthrough(const Creature* creature, bool walkthrough) {
 			if (client) {
 				client->sendCreatureWalkthrough(creature, walkthrough);
@@ -991,7 +1020,6 @@ class Player final : public Creature, public Cylinder
 				client->sendUseItemCooldown(time);
 			}
 		}
-
 		void reloadCreature(const Creature* creature) {
 			if (client) {
 				client->reloadCreature(creature);
@@ -1102,7 +1130,7 @@ class Player final : public Creature, public Cylinder
 				client->sendCancelWalk();
 			}
 		}
-		void sendChangeSpeed(const Creature* creature, uint32_t newSpeed) const {
+		void sendChangeSpeed(const Creature* creature, uint16_t newSpeed) const {
 			if (client) {
 				client->sendChangeSpeed(creature, newSpeed);
 			}
@@ -1499,10 +1527,6 @@ class Player final : public Creature, public Cylinder
         		client->sendOpenStash();
 			}
 		}
-		bool isStashExhausted() const;
-		void updateStashExhausted() {
-			lastStashInteraction = OTSYS_TIME();
-		}
 
 		void onThink(uint32_t interval) override;
 
@@ -1639,13 +1663,8 @@ class Player final : public Creature, public Cylinder
 		void addItemImbuementStats(const Imbuement* imbuement);
 		void removeItemImbuementStats(const Imbuement* imbuement);
 
-		bool isMarketExhausted() const;
-		void updateMarketExhausted() {
-			lastMarketInteraction = OTSYS_TIME();
-		}
-
-		bool isNpcExhausted(uint32_t exhaustionTime = 150) const;
-		void updateNpcExhausted();
+		bool isUIExhausted(uint32_t exhaustionTime = 250) const;
+		void updateUIExhausted();
 
 		bool isQuickLootListedItem(const Item* item) const {
 			if (!item) {
@@ -1987,7 +2006,7 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void addTaskHuntingPoints(uint16_t amount) {
+		void addTaskHuntingPoints(uint64_t amount) {
 			taskHuntingPoints += amount;
 			if (client) {
 				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints());
@@ -2034,14 +2053,22 @@ class Player final : public Creature, public Cylinder
 		void retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot);
 		void openContainerFromDepotSearch(const Position& pos);
 		Item* getItemFromDepotSearch(uint16_t itemId, const Position& pos);
-		bool isDepotSearchExhausted() const {
-			return (OTSYS_TIME() - lastDepotSearchInteraction < 1000);
-		}
-		void updateDepotSearchExhausted() {
-			lastDepotSearchInteraction = OTSYS_TIME();
-		}
 
 		std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> requestLockerItems(DepotLocker *depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
+
+		/**
+		This function returns a pair of an array of items and a 16-bit integer from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
+		@param depotLocker The instance of DepotLocker from which to retrieve items.
+		@param tier The 8-bit byte that specifies the level of the tier to search.
+		@param itemId The 16-bit integer that specifies the ID of the item to search for.
+		@return A pair of an array of items and a 16-bit integer, where the array of items is filled with all items from the
+		locker with the specified id and the 16-bit integer is the total items found.
+		*/
+		std::pair<std::vector<Item*>, uint16_t> getLockerItemsAndCountById(
+			DepotLocker &depotLocker,
+			uint8_t tier,
+			uint16_t itemId
+		);
 
 		bool saySpell(
 			SpeakClasses type,
@@ -2050,6 +2077,107 @@ class Player final : public Creature, public Cylinder
 			SpectatorHashSet* spectatorsPtr = nullptr,
 			const Position* pos = nullptr
 		);
+
+		// Forge system
+		void forgeFuseItems(uint16_t itemid, uint8_t tier, bool success, bool reduceTierLoss, uint8_t bonus, uint8_t coreCount);
+		void forgeTransferItemTier(uint16_t donorItemId, uint8_t tier, uint16_t receiveItemId);
+		void forgeResourceConversion(uint8_t action);
+		void forgeHistory(uint8_t page) const;
+		
+		void sendOpenForge() const
+		{
+			if (client)
+			{
+				client->sendOpenForge();
+			}
+		}
+		void sendForgeError(ReturnValue returnValue) const
+		{
+			if (client)
+			{
+				client->sendForgeError(returnValue);
+			}
+		}
+		void sendForgeFusionItem(uint16_t itemId, uint8_t tier, bool success, uint8_t bonus, uint8_t coreCount) const {
+			if (client)
+			{
+				client->sendForgeFusionItem(itemId, tier, success, bonus, coreCount);
+			}
+		}
+		void sendTransferItemTier(uint16_t firstItem, uint8_t tier, uint16_t secondItem) const {
+			if (client)
+			{
+				client->sendTransferItemTier(firstItem, tier, secondItem);
+			}
+		}
+		void sendForgeHistory(uint8_t page) const {
+			if (client)
+			{
+				client->sendForgeHistory(page);
+			}
+		}
+		void closeForgeWindow() const
+		{
+			if (client) {
+				client->closeForgeWindow();
+			}
+		}
+
+		void setForgeDusts(uint64_t amount)
+		{
+			forgeDusts = amount;
+			if (client)
+			{
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		void addForgeDusts(uint64_t amount)
+		{
+			forgeDusts += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		void removeForgeDusts(uint64_t amount)
+		{
+			forgeDusts = std::max<uint64_t>(0, forgeDusts - amount);
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		uint64_t getForgeDusts() const
+		{
+			return forgeDusts;
+		}
+
+		void addForgeDustLevel(uint64_t amount)
+		{
+			forgeDustLevel += amount;
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		void removeForgeDustLevel(uint64_t amount)
+		{
+			forgeDustLevel = std::max<uint64_t>(0, forgeDustLevel - amount);
+			if (client) {
+				client->sendResourcesBalance(getMoney(), getBankBalance(), getPreyCards(), getTaskHuntingPoints(), getForgeDusts());
+			}
+		}
+		uint64_t getForgeDustLevel() const
+		{
+			return forgeDustLevel;
+		}
+
+		std::vector<ForgeHistory>& getForgeHistory() {
+			return forgeHistoryVector;
+		}
+
+		void setForgeHistory(ForgeHistory const &history) {
+			forgeHistoryVector.push_back(history);
+		}
+
+		void registerForgeHistoryDescription(ForgeHistory history);
 
 	private:
 		std::forward_list<Condition*> getMuteConditions() const;
@@ -2113,13 +2241,14 @@ class Player final : public Creature, public Cylinder
 		std::vector<Item*> getInventoryItemsFromId(uint16_t itemId, bool ignore = true) const;
 
 		// This get all player inventory items
-		std::vector<Item*> getAllInventoryItems() const;
+		std::vector<Item*> getAllInventoryItems(bool ignoreEquiped = false) const;
 		// This function is a override function of base class
 		std::map<uint32_t, uint32_t>& getAllItemTypeCount(std::map<uint32_t,
                                       uint32_t>& countMap) const override;
 		// Function from player class with correct type sizes (uint16_t)
 		std::map<uint16_t, uint16_t>& getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> & countMap) const;
 		void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const;
+		Item* getForgeItemFromId(uint16_t itemId, uint8_t tier);
 		Thing* getThing(size_t index) const override;
 
 		void internalAddThing(Thing* thing) override;
@@ -2145,6 +2274,8 @@ class Player final : public Creature, public Cylinder
 		std::map<uint32_t, Reward*> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
+		std::vector<ForgeHistory> forgeHistoryVector;
+
 		std::vector<uint16_t> quickLootListItemIds;
 
 		std::vector<OutfitEntry> outfits;
@@ -2181,14 +2312,13 @@ class Player final : public Creature, public Cylinder
 		uint64_t lastQuestlogUpdate = 0;
 		uint64_t preyCards = 0;
 		uint64_t taskHuntingPoints = 0;
+		uint64_t forgeDusts = 0;
+		uint64_t forgeDustLevel = 0;
 		int64_t lastFailedFollow = 0;
 		int64_t skullTicks = 0;
 		int64_t lastWalkthroughAttempt = 0;
 		int64_t lastToggleMount = 0;
-		int64_t lastMarketInteraction = 0;
-		int64_t lastNpcInteraction = 0;
-		int64_t lastStashInteraction = 0;
-		int64_t lastDepotSearchInteraction = 0;
+		int64_t lastUIInteraction = 0;
 		int64_t lastPing;
 		int64_t lastPong;
 		int64_t nextAction = 0;
@@ -2330,12 +2460,16 @@ class Player final : public Creature, public Cylinder
 		static uint32_t playerAutoID;
 
 		void updateItemsLight(bool internal = false);
-		int32_t getStepSpeed() const override {
-			return std::max<int32_t>(PLAYER_MIN_SPEED, std::min<int32_t>(PLAYER_MAX_SPEED, getSpeed()));
+		uint16_t getStepSpeed() const override {
+			return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
 		}
 		void updateBaseSpeed() {
-			if (!hasFlag(PlayerFlag_SetMaxSpeed)) {
-				baseSpeed = vocation->getBaseSpeed() + (2 * (level - 1));
+			if (baseSpeed >= PLAYER_MAX_SPEED) {
+				return;
+			}
+
+			if (!hasFlag(PlayerFlags_t::SetMaxSpeed)) {
+				baseSpeed = static_cast<uint16_t>(vocation->getBaseSpeed() + (level - 1));
 			} else {
 				baseSpeed = PLAYER_MAX_SPEED;
 			}

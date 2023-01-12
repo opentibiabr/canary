@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -65,6 +55,19 @@ void toggleForceCloseButton() {
 	HWND hwnd = GetConsoleWindow();
 	HMENU hmenu = GetSystemMenu(hwnd, FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
+	#endif
+}
+
+std::string getCompiler() {
+	std::string compiler;
+	#if defined(__clang__)
+		return compiler = "Clang++ " + std::to_string(__clang_major__) + "." + std::to_string(__clang_minor__) + "." + std::to_string(__clang_patchlevel__) +"";
+	#elif defined(_MSC_VER)
+		return compiler = "Microsoft Visual Studio " + std::to_string(_MSC_VER) +"";
+	#elif defined(__GNUC__)
+		return compiler = "G++ " + std::to_string(__GNUC__) + "." + std::to_string(__GNUC_MINOR__) + "." + std::to_string(__GNUC_PATCHLEVEL__) +"";
+	#else
+		return compiler = "unknown";
 	#endif
 }
 
@@ -153,41 +156,40 @@ void loadModules() {
 		"items.xml");
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	// Lua Interface start
+	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
 	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
-		coreFolder + "/core.lua");
+		"core.lua");
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0),
+		"scripts/talkactions.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
-		coreFolder + "/XML/vocations.xml");
+		"XML/vocations.xml");
 	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromXml(),
-		coreFolder + "/XML/events.xml");
+		"XML/events.xml");
 	modulesLoadHelper(Outfits::getInstance().loadFromXml(),
-		coreFolder + "/XML/outfits.xml");
+		"XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
-		coreFolder + "/XML/familiars.xml");
+		"XML/familiars.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(),
-		coreFolder + "/XML/imbuements.xml");
+		"XML/imbuements.xml");
 	modulesLoadHelper(g_modules().loadFromXml(),
-		coreFolder + "/modules/modules.xml");
+		"modules/modules.xml");
 	modulesLoadHelper(g_events().loadFromXml(),
-		coreFolder + "/events/events.xml");
-	modulesLoadHelper((g_luaEnvironment.loadFile(datapackFolder + "/npclib/load.lua") == 0),
-		datapackFolder + "/npclib/load.lua");
-	// Core end
+		"events/events.xml");
+	modulesLoadHelper((g_npcs().load(true, false)),
+		"npclib");
 
-	// Scripts start
-	// Load libs
+	SPDLOG_INFO("Loading datapack scripts on folder: {}/", datapackName);
+	// Load libs first
 	modulesLoadHelper(g_scripts().loadScripts("scripts/lib", true, false),
-		datapackFolder + "/scripts/libs");
+		"scripts/libs");
 	// Load scripts
 	modulesLoadHelper(g_scripts().loadScripts("scripts", false, false),
-		datapackFolder + "/scripts");
+		"scripts");
 	// Load monsters
 	modulesLoadHelper(g_scripts().loadScripts("monster", false, false),
-		datapackFolder + "/monster");
-	// Load npcs
-	modulesLoadHelper(g_scripts().loadScripts("npc", false, false),
-		datapackFolder + "/npc");
-	// Lua Interface end
+		"monster");
+	modulesLoadHelper((g_npcs().load(false, true)),
+		"npc");
 
 	g_game().loadBoostedCreature();
 	g_ioprey().InitializeTaskHuntOptions();
@@ -264,7 +266,7 @@ void mainLoader(int, char*[], ServiceManager* services) {
 		platform = "unknown";
 	#endif
 
-	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", BOOST_COMPILER, __DATE__, __TIME__, platform);
+	SPDLOG_INFO("Compiled with {}, on {} {}, for platform {}\n", getCompiler(), __DATE__, __TIME__, platform);
 
 #if defined(LUAJIT_VERSION)
 	SPDLOG_INFO("Linked with {} for Lua support", LUAJIT_VERSION);

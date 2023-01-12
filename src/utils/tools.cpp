@@ -1,27 +1,17 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
 #include "core.hpp"
-
 #include "utils/tools.h"
+
 
 void printXMLError(const std::string& where, const std::string& fileName, const pugi::xml_parse_result& result)
 {
@@ -368,32 +358,16 @@ std::string convertIPToString(uint32_t ip)
 
 std::string formatDate(time_t time)
 {
-	const tm* tms = localtime(&time);
-	if (!tms) {
-		return {};
-	}
-
-	char buffer[20];
-	int res = sprintf(buffer, "%02d/%02d/%04d %02d:%02d:%02d", tms->tm_mday, tms->tm_mon + 1, tms->tm_year + 1900, tms->tm_hour, tms->tm_min, tms->tm_sec);
-	if (res < 0) {
-		return {};
-	}
-	return {buffer, 19};
+	return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
 }
 
 std::string formatDateShort(time_t time)
 {
-	const tm* tms = localtime(&time);
-	if (!tms) {
-		return {};
-	}
+	return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+}
 
-	char buffer[12];
-	size_t res = strftime(buffer, 12, "%d %b %Y", tms);
-	if (res == 0) {
-		return {};
-	}
-	return {buffer, 11};
+std::time_t getTimeNow() {
+	return std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 }
 
 Direction getDirection(const std::string& string)
@@ -1110,6 +1084,7 @@ const char* getReturnMessage(ReturnValue value)
 	switch (value) {
 		case RETURNVALUE_NOERROR:
 			return "No error.";
+
 		case RETURNVALUE_REWARDCHESTISEMPTY:
 			return "The chest is currently empty. You did not take part in any battles in the last seven days or already claimed your reward.";
 
@@ -1346,6 +1321,9 @@ const char* getReturnMessage(ReturnValue value)
 		case RETURNVALUE_NOTPOSSIBLE:
 			return "Sorry, not possible.";
 
+		case RETURNVALUE_CONTACTADMINISTRATOR:
+			return "An error has occurred, please contact your administrator.";
+
 		// Any unhandled ReturnValue will go enter here
 		default:
 			return "Unknown error.";
@@ -1412,12 +1390,15 @@ void consoleHandlerExit()
 
 NameEval_t validateName(const std::string &name)
 {
-
 	StringVector prohibitedWords = {"owner", "gamemaster", "hoster", "admin", "staff", "tibia", "account", "god", "anal", "ass", "fuck", "sex", "hitler", "pussy", "dick", "rape", "cm", "gm", "tutor", "counsellor", "god"};
 	StringVector toks;
 	std::regex regexValidChars("^[a-zA-Z' ]+$");
 
-	boost::split(toks, name, boost::is_any_of(" '"));
+	std::stringstream ss(name);
+	std::istream_iterator<std::string> begin(ss);
+	std::istream_iterator<std::string> end;
+	std::copy(begin, end, std::back_inserter(toks));
+
 	if(name.length()<3 || name.length()>14) {
 		return INVALID_LENGTH;
 	}
@@ -1436,6 +1417,7 @@ NameEval_t validateName(const std::string &name)
 
 	return VALID;
 }
+
 bool isCaskItem(uint16_t itemId)
 {
 	return (itemId >= ITEM_HEALTH_CASK_START && itemId <= ITEM_HEALTH_CASK_END) ||
@@ -1475,4 +1457,46 @@ std::string getObjectCategoryName(ObjectCategory_t category)
 		case OBJECTCATEGORY_DEFAULT: return "Unassigned Loot";
 		default: return std::string();
 	}
+}
+
+uint8_t forgeBonus(int32_t number)
+{
+	// None
+	if (number < 7400)
+		return 0;
+	// Dust not consumed
+	else if (number >= 7400 && number < 9000)
+		return 1;
+	// Cores not consumed
+	else if (number >= 9000 && number < 9500)
+		return 2;
+	// Gold not consumed
+	else if (number >= 9500 && number < 9525)
+		return 3;
+	// Second item retained with decreased tier
+	else if (number >= 9525 && number < 9550)
+		return 4;
+	// Second item retained with unchanged tier
+	else if (number >= 9550 && number < 9950)
+		return 5;
+	// Second item retained with increased tier
+	else if (number >= 9950 && number < 9975)
+		return 6;
+	// Gain two tiers
+	else if (number >= 9975)
+		return 7;
+
+	return 0;
+}
+
+std::string formatPrice(std::string price, bool space/* = false*/)
+{
+	std::ranges::reverse(price.begin(), price.end());
+	price = std::regex_replace(price, std::regex("000"), "k");
+	std::ranges::reverse(price.begin(), price.end());
+	if (space) {
+		price = std::regex_replace(price, std::regex("k"), " k", std::regex_constants::format_first_only);
+	}
+
+	return price;
 }

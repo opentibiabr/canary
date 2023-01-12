@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -49,13 +39,13 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", STAMINA_SYSTEM)
 	registerEnumIn(L, "configKeys", WARN_UNSAFE_SCRIPTS)
 	registerEnumIn(L, "configKeys", CONVERT_UNSAFE_SCRIPTS)
-	registerEnumIn(L, "configKeys", CLASSIC_EQUIPMENT_SLOTS)
 	registerEnumIn(L, "configKeys", ALLOW_BLOCK_SPAWN)
 	registerEnumIn(L, "configKeys", CLASSIC_ATTACK_SPEED)
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_AMMO)
 	registerEnumIn(L, "configKeys", REMOVE_WEAPON_CHARGES)
 	registerEnumIn(L, "configKeys", REMOVE_POTION_CHARGES)
 	registerEnumIn(L, "configKeys", WEATHER_RAIN)
+	registerEnumIn(L, "configKeys", ALLOW_RELOAD)
 	registerEnumIn(L, "configKeys", WEATHER_THUNDER)
 	registerEnumIn(L, "configKeys", TOGGLE_FREE_QUEST)
 	registerEnumIn(L, "configKeys", FREE_QUEST_STAGE)
@@ -141,7 +131,7 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", RATE_NPC_HEALTH)
 	registerEnumIn(L, "configKeys", RATE_NPC_ATTACK)
 	registerEnumIn(L, "configKeys", RATE_NPC_DEFENSE)
-	
+
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN)
 	registerEnumIn(L, "configKeys", RATE_HEALTH_REGEN_SPEED)
 	registerEnumIn(L, "configKeys", RATE_MANA_REGEN)
@@ -174,6 +164,17 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", GLOBAL_SERVER_SAVE_TIME)
 	registerEnumIn(L, "configKeys", DATA_DIRECTORY)
 	registerEnumIn(L, "configKeys", CORE_DIRECTORY)
+
+	registerEnumIn(L, "configKeys", FORGE_COST_ONE_SLIVER)
+	registerEnumIn(L, "configKeys", FORGE_SLIVER_AMOUNT)
+	registerEnumIn(L, "configKeys", FORGE_CORE_COST)
+	registerEnumIn(L, "configKeys", FORGE_MAX_DUST)
+	registerEnumIn(L, "configKeys", FORGE_FUSION_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_TRANSFER_DUST_COST)
+	registerEnumIn(L, "configKeys", FORGE_BASE_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_BONUS_SUCCESS_RATE)
+	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION)
+	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT)
 
 	#undef registerEnumIn
 }

@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -1435,7 +1425,7 @@ int64_t Creature::getStepDuration() const
 	}
 
 	int32_t stepSpeed = getStepSpeed();
-	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5), 1);
+	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + 0.5), 1);
 	calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? calculatedStepSpeed : 1;
 
 	uint32_t groundSpeed = 150;
@@ -1473,6 +1463,24 @@ int64_t Creature::getEventStepTicks(bool onlyDelay) const
 LightInfo Creature::getCreatureLight() const
 {
 	return internalLight;
+}
+
+void Creature::setSpeed(int32_t varSpeedDelta) {
+	// Prevents creatures from not exceeding the maximum allowed speed
+	if (getSpeed() >= PLAYER_MAX_SPEED)
+	{
+		return;
+	}
+
+	int32_t oldSpeed = getSpeed();
+	varSpeed = varSpeedDelta;
+
+	if (getSpeed() <= 0) {
+		stopEventWalk();
+		cancelNextWalk = true;
+	} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
+		addEventWalk();
+	}
 }
 
 void Creature::setCreatureLight(LightInfo lightInfo) {

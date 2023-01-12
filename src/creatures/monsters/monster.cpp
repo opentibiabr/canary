@@ -1,23 +1,11 @@
 /**
- * @file monster.cpp
- *
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019 Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -52,7 +40,7 @@ Monster::Monster(MonsterType* mType) :
 	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
 	health = mType->info.health*multiplier;
 	healthMax = mType->info.healthMax*multiplier;
-	baseSpeed = mType->info.baseSpeed;
+	baseSpeed = mType->getBaseSpeed();
 	internalLight = mType->info.light;
 	hiddenHealth = mType->info.hiddenHealth;
 	targetDistance = mType->info.targetDistance;
@@ -481,7 +469,7 @@ bool Monster::isOpponent(const Creature* creature) const
 		if (creature != getMaster()) {
 			return true;
 		}
-	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlag_IgnoredByMonsters)) {
+	} else if (creature->getPlayer() && creature->getPlayer()->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
 	} else {
 		if (getFaction() != FACTION_DEFAULT) {
@@ -888,6 +876,13 @@ void Monster::doAttacking(uint32_t interval)
 	bool resetTicks = interval != 0;
 	attackTicks += interval;
 
+	float forgeAttackBonus = 0;
+	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER)
+	{
+		uint16_t damageBase = 3;
+		forgeAttackBonus = static_cast<float>(damageBase + 100) / 100.f;
+	}
+
 	const Position& myPos = getPosition();
 	const Position& targetPos = attackedCreature->getPosition();
 
@@ -910,14 +905,24 @@ void Monster::doAttacking(uint32_t interval)
 				}
 
 				float multiplier;
-				if (maxCombatValue > 0) { //defense
+				if (maxCombatValue > 0) { // Defense
 					multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
-				} else { //attack
+				} else { // Attack
 					multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
 				}
 
 				minCombatValue = spellBlock.minCombatValue * multiplier;
 				maxCombatValue = spellBlock.maxCombatValue * multiplier;
+
+				if (maxCombatValue <= 0 && forgeAttackBonus > 0) {
+					minCombatValue *= static_cast<int32_t>(forgeAttackBonus);
+					maxCombatValue *= static_cast<int32_t>(forgeAttackBonus);
+				}
+
+				if (!spellBlock.spell) {
+					continue;
+				}
+
 				spellBlock.spell->castSpell(this, attackedCreature);
 
 				if (spellBlock.isMelee) {
@@ -1902,6 +1907,9 @@ bool Monster::canWalkTo(Position pos, Direction moveDirection) const
 
 void Monster::death(Creature*)
 {
+	if (monsterForgeClassification > ForgeClassifications_t::FORGE_NORMAL_MONSTER) {
+		g_game().removeForgeMonster(getID(), monsterForgeClassification, true);
+	}
 	setAttackedCreature(nullptr);
 
 	for (Creature* summon : summons) {
@@ -1965,9 +1973,9 @@ bool Monster::getCombatValues(int32_t& min, int32_t& max)
 	}
 
 	float multiplier;
-	if (maxCombatValue > 0) { //defense
+	if (maxCombatValue > 0) { // Defense
 		multiplier = g_configManager().getFloat(RATE_MONSTER_DEFENSE);
-	} else { //attack
+	} else { // Attack
 		multiplier = g_configManager().getFloat(RATE_MONSTER_ATTACK);
 	}
 
@@ -2031,13 +2039,27 @@ void Monster::updateLookDirection()
 			}
 		}
 	}
-
 	g_game().internalCreatureTurn(this, newDir);
 }
 
 void Monster::dropLoot(Container* corpse, Creature*)
 {
 	if (corpse && lootDrop) {
+		// Only fiendish drops sliver
+		if (ForgeClassifications_t classification = getMonsterForgeClassification();
+			// Condition
+			classification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
+		{
+			auto minSlivers = g_configManager().getNumber(FORGE_MIN_SLIVERS);
+			auto maxSlivers = g_configManager().getNumber(FORGE_MAX_SLIVERS);
+
+			auto sliverCount = static_cast<uint16_t>(uniform_random(minSlivers, maxSlivers));
+
+			Item *sliver = Item::CreateItem(ITEM_FORGE_SLIVER, sliverCount);
+			if (g_game().internalAddItem(corpse, sliver) != RETURNVALUE_NOERROR) {
+				corpse->internalAddThing(sliver);
+			}
+		}
 		g_events().eventMonsterOnDropLoot(this, corpse);
 	}
 }
@@ -2063,7 +2085,7 @@ void Monster::drainHealth(Creature* attacker, int32_t damage)
 
 void Monster::changeHealth(int32_t healthChange, bool sendHealthChange/* = true*/)
 {
-	//In case a player with ignore flag set attacks the monster
+	// In case a player with ignore flag set attacks the monster
 	setIdle(false);
 	Creature::changeHealth(healthChange, sendHealthChange);
 }
@@ -2120,7 +2142,7 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 			fpp.fullPathSearch = !canUseAttack(getPosition(), creature);
 		}
 	} else if (isFleeing()) {
-		//Distance should be higher than the client view range (Map::maxClientViewportX/Map::maxClientViewportY)
+		// Distance should be higher than the client view range (Map::maxClientViewportX/Map::maxClientViewportY)
 		fpp.maxTargetDist = Map::maxViewportX;
 		fpp.clearSight = false;
 		fpp.keepDistance = true;
@@ -2130,4 +2152,72 @@ void Monster::getPathSearchParams(const Creature* creature, FindPathParams& fpp)
 	} else {
 		fpp.fullPathSearch = !canUseAttack(getPosition(), creature);
 	}
+}
+
+void Monster::configureForgeSystem()
+{
+	if (!canBeForgeMonster()) {
+		return;
+	}
+
+	// Avoid double forge
+	if (monsterForgeClassification == ForgeClassifications_t::FORGE_FIENDISH_MONSTER)
+	{
+		// Set stack
+		setForgeStack(15);
+		// Set icon
+		setMonsterIcon(15, 5);
+		// Update
+		g_game().updateCreatureIcon(this);
+	}
+	else if (monsterForgeClassification == ForgeClassifications_t::FORGE_INFLUENCED_MONSTER)
+	{
+		// Set stack
+		auto stack = static_cast<uint16_t>(normal_random(1, 5));
+		setForgeStack(stack);
+		// Set icon
+		setMonsterIcon(stack, 4);
+		// Update
+		g_game().updateCreatureIcon(this);
+	}
+
+	// Change health based in stacks
+	float percentToIncrement = static_cast<float>((forgeStack * 6) + 100) / 100.f;
+	auto newHealth = static_cast<int32_t>(std::ceil(static_cast<float>(healthMax) * percentToIncrement));
+
+	healthMax = newHealth;
+	health = newHealth;
+
+	// Event to give Dusts
+	const std::string &Eventname = "ForgeSystemMonster";
+	registerCreatureEvent(Eventname);
+
+	g_game().sendUpdateCreature(this);
+}
+
+void Monster::clearFiendishStatus()
+{
+	timeToChangeFiendish = 0;
+	forgeStack = 0;
+	monsterForgeClassification = ForgeClassifications_t::FORGE_NORMAL_MONSTER;
+
+	float multiplier = g_configManager().getFloat(RATE_MONSTER_HEALTH);
+	health = mType->info.health * static_cast<int32_t>(multiplier);
+	healthMax = mType->info.healthMax * static_cast<int32_t>(multiplier);
+
+	// Set icon
+	setMonsterIcon(0, CREATUREICON_NONE);
+	g_game().updateCreatureIcon(this);
+
+	g_game().sendUpdateCreature(this);
+}
+
+void Monster::setMonsterIcon(uint16_t iconcount, uint16_t iconnumber)
+{
+	iconCount = iconcount;
+	iconNumber = iconnumber;
+}
+
+bool Monster::canDropLoot() const {
+	return !mType->info.lootItems.empty();
 }

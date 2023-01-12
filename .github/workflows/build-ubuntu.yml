@@ -54,7 +54,7 @@ jobs:
         uses: lukka/run-vcpkg@main
         with:
           vcpkgGitURL: "https://github.com/opentibiabr/vcpkg.git"
-          vcpkgGitCommitId: 2400585c812a27a7d93461bf84f2907f42367904
+          vcpkgGitCommitId: 8974d642d47efd578e0da3223b4101c5d59aebcf
 
       - name: Get latest CMake and ninja
         uses: lukka/get-cmake@main
@@ -68,6 +68,6 @@ jobs:
       - name: Create and Upload Artifact
         uses: actions/upload-artifact@main
         with:
-          name: canary-${{ matrix.buildtype }}-${{ github.sha }}
+          name: canary-${{ matrix.os }}-${{ matrix.buildtype }}-${{ github.sha }}
           path: |
             ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/

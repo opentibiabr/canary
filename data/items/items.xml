@@ -4820,7 +4820,7 @@
 	</item>
 	<item id="3079" name="boots of haste">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="40"/>
+		<attribute key="speed" value="20"/>
 		<attribute key="weight" value="750"/>
 		<attribute key="imbuementslot" value="1"/>
 	</item>
@@ -4909,9 +4909,7 @@
 		<attribute key="weight" value="80"/>
 	</item>
 	<item id="3090" article="a" name="time ring">
-		<attribute key="showduration" value="1"/>
-		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="60"/>
+		<attribute key="speed" value="30"/>
 		<attribute key="duration" value="600"/>
 		<attribute key="transformdeequipto" value="3053"/>
 		<attribute key="decayTo" value="0"/>
@@ -8160,7 +8158,7 @@
 		<attribute key="decayTo" value="0"/>
 	</item>
 	<item id="4033" article="a" name="draken boots">
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="2500"/>
 		<attribute key="imbuementslot" value="1"/>
@@ -15112,7 +15110,7 @@
 	</item>
 	<item id="7457" name="fur boots">
 		<attribute key="description" value="These boots keep your toes warm even in the iciest regions, but they feel kind of heavy"/>
-		<attribute key="speed" value="-12"/>
+		<attribute key="speed" value="-6"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1200"/>
 		<attribute key="imbuementslot" value="1"/>
@@ -16170,7 +16168,7 @@
 	<item id="8080" article="a" name="sparking rainbow shield">
 		<attribute key="description" value="It has been temporarily imbued with energy magic and increases your speed"/>
 		<attribute key="weaponType" value="shield"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="duration" value="1200"/>
 		<attribute key="decayTo" value="8077"/>
 		<attribute key="defense" value="36"/>
@@ -17660,7 +17658,7 @@
 	<item id="9042" article="a" name="magical torch">
 		<attribute key="description" value="Light all important locations given to you by Lucius before one of the basins stops burning"/>
 		<attribute key="showduration" value="1"/>
-		<attribute key="speed" value="50"/>
+		<attribute key="speed" value="25"/>
 		<attribute key="duration" value="86400"/>
 		<attribute key="decayTo" value="0"/>
 		<attribute key="defense" value="25"/>
@@ -20067,7 +20065,7 @@
 		<attribute key="containersize" value="15"/>
 	</item>
 	<item id="10384" article="a" name="Zaoan armor">
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="13"/>
 		<attribute key="weight" value="9550"/>
 	</item>
@@ -20085,12 +20083,10 @@
 		</attribute>
 	</item>
 	<item id="10386" article="a" name="Zaoan shoes">
-		<attribute key="speed" value="10"/>
+		<attribute key="speed" value="5"/>
 		<attribute key="armor" value="1"/>
 		<attribute key="weight" value="700"/>
-		<attribute key="imbuementslot" value="1">
-			<attribute key="increase speed" value="3"/>
-		</attribute>
+		<attribute key="imbuementslot" value="1"/>
 	</item>
 	<item id="10387" article="a" name="Zaoan legs">
 		<attribute key="absorbpercentphysical" value="2"/>
@@ -20412,7 +20408,7 @@
 	</item>
 	<item id="10457" article="a" name="beetle necklace">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="4"/>
+		<attribute key="speed" value="2"/>
 		<attribute key="weight" value="819"/>
 	</item>
 	<item id="10458" article="a" name="dead lancer beetle">
@@ -21154,7 +21150,7 @@
 		<attribute key="suppressdrown" value="1"/>
 		<attribute key="showduration" value="1"/>
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="600"/>
+		<attribute key="speed" value="300"/>
 		<attribute key="duration" value="21600"/>
 		<attribute key="transformdeequipto" value="5460"/>
 		<attribute key="decayTo" value="5460"/>
@@ -21376,7 +21372,7 @@
 		<attribute key="weight" value="120"/>
 	</item>
 	<item id="11651" article="an" name="elite draken mail">
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="15"/>
 		<attribute key="weight" value="12000"/>
 		<attribute key="imbuementslot" value="2">
@@ -23908,7 +23904,7 @@
 	<item id="13997" article="a" name="depth calcei">
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="5"/>
-		<attribute key="speed" value="-10"/>
+		<attribute key="speed" value="-5"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="3700"/>
 		<attribute key="imbuementslot" value="1"/>
@@ -24209,7 +24205,7 @@
 	</item>
 	<item id="14087" article="a" name="grasshopper legs">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="weight" value="3200"/>
 	</item>
@@ -25502,7 +25498,7 @@
 	</item>
 	<item id="16110" article="a" name="prismatic armor">
 		<attribute key="absorbpercentphysical" value="5"/>
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="15"/>
 		<attribute key="weight" value="7900"/>
 		<attribute key="imbuementslot" value="1">
@@ -25524,7 +25520,7 @@
 	<item id="16112" name="prismatic boots">
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentdeath" value="3"/>
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="1800"/>
 		<attribute key="imbuementslot" value="1">
@@ -29919,7 +29915,7 @@
 	</item>
 	<item id="19357" article="a" name="shrunken head necklace">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="weight" value="550"/>
 	</item>
 	<item id="19358" article="an" name="albino plate">
@@ -31814,7 +31810,7 @@
 		</attribute>
 	</item>
 	<item id="21168" name="alloy legs">
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="6"/>
 		<attribute key="weight" value="4500"/>
 	</item>
@@ -32880,7 +32876,7 @@
 	</item>
 	<item id="21892" article="a" name="crest of the deep seas">
 		<attribute key="absorbpercentice" value="5"/>
-		<attribute key="speed" value="10"/>
+		<attribute key="speed" value="5"/>
 		<attribute key="armor" value="7"/>
 		<attribute key="weight" value="4500"/>
 	</item>
@@ -33132,7 +33128,7 @@
 	</item>
 	<item id="21981" name="oriental shoes">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="500"/>
 		<attribute key="imbuementslot" value="1"/>
@@ -33407,7 +33403,7 @@
 	</item>
 	<item id="22062" article="a" name="werewolf helmet">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="9"/>
 		<attribute key="weight" value="2500"/>
 	</item>
@@ -33504,7 +33500,7 @@
 	</item>
 	<item id="22086" article="a" name="badger boots">
 		<attribute key="showAttributes" value="1"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1200"/>
 		<attribute key="imbuementslot" value="1">
@@ -35265,7 +35261,7 @@
 		<attribute key="managain" value="8"/>
 		<attribute key="healthticks" value="6000"/>
 		<attribute key="healthgain" value="2"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="transformdeequipto" value="23474"/>
 		<attribute key="decayTo" value="0"/>
@@ -35281,7 +35277,7 @@
 		<attribute key="managain" value="12"/>
 		<attribute key="healthticks" value="6000"/>
 		<attribute key="healthgain" value="3"/>
-		<attribute key="speed" value="60"/>
+		<attribute key="speed" value="30"/>
 		<attribute key="duration" value="3600"/>
 		<attribute key="transformdeequipto" value="23477"/> 
 		<attribute key="decayTo" value="0"/>
@@ -37438,7 +37434,7 @@
 		<attribute key="description" value="It was carefully crafted out of one hundred swan maiden feathers"/>
 		<attribute key="absorbpercentpoison" value="12"/>
 		<attribute key="absorbpercentenergy" value="12"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="12"/>
 		<attribute key="weight" value="400"/>
 	</item>
@@ -42575,8 +42571,9 @@
 		</attribute>
 	</item>
 	<item id="29432" article="a" name="hireling lamp">
-		<attribute key="description" value="This mysterious lamp summons your very own personal hireling"/>
-		<attribute key="wrapableto" value="23398"/>
+		<attribute key="weight" value="1000" />
+		<attribute key="description" value="This mysterious lamp summons your very own personal hireling." />
+		<attribute key="moveable" value="0" />
 	</item>
 	<item id="29433" article="a" name="chest">
 		<attribute key="containersize" value="15"/>
@@ -43938,7 +43935,7 @@
 	<item id="30394" name="cobra boots">
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentphysical" value="6"/>
-		<attribute key="speed" value="20"/>
+		<attribute key="speed" value="10"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="900"/>
 		<attribute key="imbuementslot" value="1"/>
@@ -45578,7 +45575,7 @@
 		<attribute key="showAttributes" value="1"/>
 		<attribute key="absorbpercentpoison" value="7"/>
 		<attribute key="skilldist" value="1"/>
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="2"/>
 		<attribute key="weight" value="1200"/>
 		<attribute key="imbuementslot" value="1">
@@ -48933,7 +48930,7 @@
 		<attribute key="skillclub" value="1"/>
 		<attribute key="skillaxe" value="1"/>
 		<attribute key="skillsword" value="1"/>
-		<attribute key="speed" value="30"/>
+		<attribute key="speed" value="15"/>
 		<attribute key="armor" value="4"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="imbuementslot" value="1">
@@ -48943,7 +48940,7 @@
 	<item id="34098" name="pair of soulstalkers">
 		<attribute key="absorbpercentphysical" value="5"/>
 		<attribute key="skilldist" value="1"/>
-		<attribute key="speed" value="40"/>
+		<attribute key="speed" value="20"/>
 		<attribute key="armor" value="3"/>
 		<attribute key="weight" value="1300"/>
 		<attribute key="imbuementslot" value="1">

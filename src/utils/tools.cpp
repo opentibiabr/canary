@@ -348,7 +348,7 @@ std::string convertIPToString(uint32_t ip)
 {
 	char buffer[17];
 
-	int res = sprintf(buffer, "%u.%u.%u.%u", ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, (ip >> 24));
+	int res = fmt::format("{}.{}.{}.{}", (ip & 0xFF), ((ip >> 8) & 0xFF), ((ip >> 16) & 0xFF), ((ip >> 24)));
 	if (res < 0) {
 		return {};
 	}

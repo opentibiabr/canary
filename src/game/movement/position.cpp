@@ -27,7 +27,7 @@ Direction Position::getRandomDirection()
 
 std::ostream& operator<<(std::ostream& os, const Position& pos)
 {
-	os << fmt::format("( {:05} / {:05} / {:03} )", pos.x, pos.y, pos.getZ());
+	os << pos.toString();
 	return os;
 }
 

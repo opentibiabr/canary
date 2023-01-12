@@ -77,11 +77,16 @@ bool CreatureEvents::playerLogout(Player* player) const {
 	return true;
 }
 
-bool CreatureEvents::playerAdvance(Player* player, skills_t skill, uint32_t oldLevel,
-                                   uint32_t newLevel) {
-	for (auto& it : creatureEvents) {
-		if (it.second.getEventType() == CREATURE_EVENT_ADVANCE) {
-			if (!it.second.executeAdvance(player, skill, oldLevel, newLevel)) {
+bool CreatureEvents::playerAdvance(
+	Player* player,
+	skills_t skill,
+	uint32_t oldLevel,
+	uint32_t newLevel
+) const
+{
+	for ([[maybe_unused]] const auto& [eventName, eventPtr] : creatureEvents) {
+		if (eventPtr.getEventType() == CREATURE_EVENT_ADVANCE) {
+			if (!eventPtr.executeAdvance(player, skill, oldLevel, newLevel)) {
 				return false;
 			}
 		}
@@ -150,7 +155,7 @@ std::string CreatureEvent::getScriptTypeName() const {
 	}
 }
 
-void CreatureEvent::copyEvent(CreatureEvent* creatureEvent) {
+void CreatureEvent::copyEvent(const CreatureEvent* creatureEvent) {
 	setScriptId(creatureEvent->getScriptId());
 	setScriptInterface(creatureEvent->getScriptInterface());
 	setLoadedCallback(creatureEvent->isLoadedCallback());

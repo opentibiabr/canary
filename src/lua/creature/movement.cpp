@@ -618,7 +618,7 @@ void MoveEvent::setEventType(MoveEvent_t type) {
 	eventType = type;
 }
 
-uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position& pos) {
+uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position& pos) const {
 	if (isLoadedCallback()) {
 		return executeStep(creature, item, pos);
 	} else {
@@ -697,7 +697,7 @@ bool MoveEvent::executeEquip(Player& player, Item& item, Slots_t onSlot, bool is
 	return getScriptInterface()->callFunction(4);
 }
 
-uint32_t MoveEvent::fireAddRemItem(Item& item, Item& fromTile, const Position& pos) {
+uint32_t MoveEvent::fireAddRemItem(Item& item, Item& fromTile, const Position& pos) const {
 	if (isLoadedCallback()) {
 		return executeAddRemItem(item, fromTile, pos);
 	} else {
@@ -730,7 +730,7 @@ bool MoveEvent::executeAddRemItem(Item& item, Item& fromTile, const Position& po
 	return getScriptInterface()->callFunction(3);
 }
 
-uint32_t MoveEvent::fireAddRemItem(Item& item, const Position& pos) {
+uint32_t MoveEvent::fireAddRemItem(Item& item, const Position& pos) const {
 	if (isLoadedCallback()) {
 		return executeAddRemItem(item, pos);
 	} else {

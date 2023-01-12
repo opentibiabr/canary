@@ -41,7 +41,7 @@ class CreatureEvent final : public Script {
 		}
 
 		void clearEvent();
-		void copyEvent(CreatureEvent* creatureEvent);
+		void copyEvent(const CreatureEvent* creatureEvent);
 
 		//scripting
 		bool executeOnLogin(Player* player) const;
@@ -84,7 +84,7 @@ class CreatureEvents final : public Scripts {
 		// global events
 		bool playerLogin(Player* player) const;
 		bool playerLogout(Player* player) const;
-		bool playerAdvance(Player* player, skills_t, uint32_t, uint32_t);
+		bool playerAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
 
 		CreatureEvent* getEventByName(const std::string& name, bool forceLoaded = true);
 

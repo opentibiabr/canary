@@ -147,9 +147,9 @@ class MoveEvent final : public Script {
 		MoveEvent_t getEventType() const;
 		void setEventType(MoveEvent_t type);
 
-		uint32_t fireStepEvent(Creature& creature, Item* item, const Position& pos);
-		uint32_t fireAddRemItem(Item& item, Item& tileItem, const Position& pos);
-		uint32_t fireAddRemItem(Item& item, const Position& pos);
+		uint32_t fireStepEvent(Creature& creature, Item* item, const Position& pos) const;
+		uint32_t fireAddRemItem(Item& item, Item& tileItem, const Position& pos) const;
+		uint32_t fireAddRemItem(Item& item, const Position& pos) const;
 		uint32_t fireEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
 
 		uint32_t getSlot() const {

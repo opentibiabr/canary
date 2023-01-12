@@ -732,30 +732,27 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 	}
 
 	if (value != -1) {
-		int32_t oldValue;
-		getStorageValue(key, oldValue);
-
 		storageMap[key] = value;
 
 		if (!isLogin) {
 			auto currentFrameTime = g_dispatcher().getDispatcherCycle();
-			g_events().eventOnStorageUpdate(this, key, value, oldValue, currentFrameTime);
+			g_events().eventOnStorageUpdate(this, key, value, getStorageValue(key), currentFrameTime);
 		}
 	} else {
 		storageMap.erase(key);
 	}
 }
 
-bool Player::getStorageValue(const uint32_t key, int32_t& value) const
+int32_t Player::getStorageValue(const uint32_t key) const
 {
+	int32_t value = -1;
 	auto it = storageMap.find(key);
 	if (it == storageMap.end()) {
-		value = -1;
-		return false;
+		return value;
 	}
 
 	value = it->second;
-	return true;
+	return value;
 }
 
 bool Player::canSee(const Position& pos) const
@@ -5154,8 +5151,8 @@ void Player::sendUnjustifiedPoints()
 
 uint8_t Player::getCurrentMount() const
 {
-	int32_t value;
-	if (getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT, value)) {
+	int32_t value = getStorageValue(PSTRG_MOUNTS_CURRENTMOUNT);
+	if (value > 0) {
 		return value;
 	}
 	return 0;
@@ -5242,8 +5239,8 @@ bool Player::tameMount(uint8_t mountId)
 	const uint8_t tmpMountId = mountId - 1;
 	const uint32_t key = PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31);
 
-	int32_t value;
-	if (getStorageValue(key, value)) {
+	int32_t value = getStorageValue(key);
+	if (value != -1) {
 		value |= (1 << (tmpMountId % 31));
 	} else {
 		value = (1 << (tmpMountId % 31));
@@ -5262,8 +5259,8 @@ bool Player::untameMount(uint8_t mountId)
 	const uint8_t tmpMountId = mountId - 1;
 	const uint32_t key = PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31);
 
-	int32_t value;
-	if (!getStorageValue(key, value)) {
+	int32_t value = getStorageValue(key);
+	if (value == -1) {
 		return true;
 	}
 
@@ -5294,8 +5291,8 @@ bool Player::hasMount(const Mount* mount) const
 
 	const uint8_t tmpMountId = mount->id - 1;
 
-	int32_t value;
-	if (!getStorageValue(PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31), value)) {
+	int32_t value = getStorageValue(PSTRG_MOUNTS_RANGE_START + (tmpMountId / 31));
+	if (value == -1) {
 		return false;
 	}
 
@@ -6350,10 +6347,10 @@ bool Player::saySpell(
 	}
 
 	int32_t valueEmote = 0;
-	// Send to client 
+	// Send to client
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE, valueEmote);
+			valueEmote = tmpPlayer->getStorageValue(STORAGEVALUE_EMOTE);
 			if (!ghostMode || tmpPlayer->canSeeCreature(this)) {
 				if (valueEmote == 1) {
 					tmpPlayer->sendCreatureSay(this, TALKTYPE_MONSTER_SAY, text, pos);

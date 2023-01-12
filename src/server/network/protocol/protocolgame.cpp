@@ -5228,8 +5228,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection)
 	NetworkMessage msg;
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
-	int32_t PlayerdailyStreak = 0;
-	player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
+	int32_t PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
 	msg.addByte(PlayerdailyStreak < 2 ? 0 : 1);
 	if (PlayerdailyStreak < 2)
 	{
@@ -7105,9 +7104,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
-	int32_t storageValue;
-	player->getStorageValue(shopBlock.itemStorageKey, storageValue);
-	if (shopBlock.itemStorageKey != 0 && storageValue < shopBlock.itemStorageValue)
+	if (shopBlock.itemStorageKey != 0 && player->getStorageValue(shopBlock.itemStorageKey) < shopBlock.itemStorageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;

@@ -46,16 +46,16 @@ class CreatureEvent final : public Script {
 		//scripting
 		bool executeOnLogin(Player* player) const;
 		bool executeOnLogout(Player* player) const;
-		bool executeOnThink(Creature* creature, uint32_t interval);
-		bool executeOnPrepareDeath(Creature* creature, Creature* killer);
-		bool executeOnDeath(Creature* creature, Item* corpse, Creature* killer, Creature* mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified);
-		void executeOnKill(Creature* creature, Creature* target, bool lastHit);
-		bool executeAdvance(Player* player, skills_t, uint32_t, uint32_t);
-		void executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId);
-		bool executeTextEdit(Player* player, Item* item, const std::string& text);
-		void executeHealthChange(Creature* creature, Creature* attacker, CombatDamage& damage);
-		void executeManaChange(Creature* creature, Creature* attacker, CombatDamage& damage);
-		void executeExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer);
+		bool executeOnThink(Creature* creature, uint32_t interval) const;
+		bool executeOnPrepareDeath(Creature* creature, Creature* killer) const;
+		bool executeOnDeath(Creature* creature, Item* corpse, Creature* killer, Creature* mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const;
+		void executeOnKill(Creature* creature, Creature* target, bool lastHit) const;
+		bool executeAdvance(Player* player, skills_t, uint32_t, uint32_t) const;
+		void executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const;
+		bool executeTextEdit(Player* player, Item* item, const std::string& text) const;
+		void executeHealthChange(Creature* creature, Creature* attacker, CombatDamage& damage) const;
+		void executeManaChange(Creature* creature, Creature* attacker, CombatDamage& damage) const;
+		void executeExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer) const;
 		//
 
 	private:

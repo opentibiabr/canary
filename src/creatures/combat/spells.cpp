@@ -320,7 +320,7 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 	return true;
 }
 
-bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
+bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var) const
 {
 	//onCastSpell(creature, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
@@ -796,7 +796,7 @@ bool InstantSpell::castSpell(Creature* creature, Creature* target)
 	}
 }
 
-bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
+bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var) const
 {
 	//onCastSpell(creature, var)
 	if (!getScriptInterface()->reserveScriptEnv()) {
@@ -944,7 +944,7 @@ bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, boo
 	return result;
 }
 
-bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
+bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey) const
 {
 	//onCastSpell(creature, var, isHotkey)
 	if (!getScriptInterface()->reserveScriptEnv()) {

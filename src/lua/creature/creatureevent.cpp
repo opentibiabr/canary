@@ -204,7 +204,7 @@ bool CreatureEvent::executeOnLogout(Player* player) const {
 	return getScriptInterface()->callFunction(1);
 }
 
-bool CreatureEvent::executeOnThink(Creature* creature, uint32_t interval) {
+bool CreatureEvent::executeOnThink(Creature* creature, uint32_t interval) const {
 	//onThink(creature, interval)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeOnThink - Creature {} event {}] "
@@ -226,7 +226,7 @@ bool CreatureEvent::executeOnThink(Creature* creature, uint32_t interval) {
 	return getScriptInterface()->callFunction(2);
 }
 
-bool CreatureEvent::executeOnPrepareDeath(Creature* creature, Creature* killer) {
+bool CreatureEvent::executeOnPrepareDeath(Creature* creature, Creature* killer) const {
 	//onPrepareDeath(creature, killer)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeOnPrepareDeath - Creature {} killer {}"
@@ -255,7 +255,7 @@ bool CreatureEvent::executeOnPrepareDeath(Creature* creature, Creature* killer) 
 	return getScriptInterface()->callFunction(2);
 }
 
-bool CreatureEvent::executeOnDeath(Creature* creature, Item* corpse, Creature* killer, Creature* mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) {
+bool CreatureEvent::executeOnDeath(Creature* creature, Item* corpse, Creature* killer, Creature* mostDamageKiller, bool lastHitUnjustified, bool mostDamageUnjustified) const {
 	//onDeath(creature, corpse, lasthitkiller, mostdamagekiller, lasthitunjustified, mostdamageunjustified)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeOnDeath - Creature {} killer {} event {}] "
@@ -296,7 +296,7 @@ bool CreatureEvent::executeOnDeath(Creature* creature, Item* corpse, Creature* k
 }
 
 bool CreatureEvent::executeAdvance(Player* player, skills_t skill, uint32_t oldLevel,
-                                   uint32_t newLevel) {
+                                   uint32_t newLevel) const {
 	//onAdvance(player, skill, oldLevel, newLevel)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeAdvance - Player {} event {}] "
@@ -320,7 +320,7 @@ bool CreatureEvent::executeAdvance(Player* player, skills_t skill, uint32_t oldL
 	return getScriptInterface()->callFunction(4);
 }
 
-void CreatureEvent::executeOnKill(Creature* creature, Creature* target, bool lastHit) {
+void CreatureEvent::executeOnKill(Creature* creature, Creature* target, bool lastHit) const {
 	//onKill(creature, target, lastHit)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeOnKill - Creature {} target {} event {}] "
@@ -343,7 +343,7 @@ void CreatureEvent::executeOnKill(Creature* creature, Creature* target, bool las
 	getScriptInterface()->callVoidFunction(3);
 }
 
-void CreatureEvent::executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) {
+void CreatureEvent::executeModalWindow(Player* player, uint32_t modalWindowId, uint8_t buttonId, uint8_t choiceId) const {
 	//onModalWindow(player, modalWindowId, buttonId, choiceId)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeModalWindow - "
@@ -369,7 +369,7 @@ void CreatureEvent::executeModalWindow(Player* player, uint32_t modalWindowId, u
 	getScriptInterface()->callVoidFunction(4);
 }
 
-bool CreatureEvent::executeTextEdit(Player* player, Item* item, const std::string& text) {
+bool CreatureEvent::executeTextEdit(Player* player, Item* item, const std::string& text) const {
 	//onTextEdit(player, item, text)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeTextEdit - Player {} event {}] "
@@ -393,7 +393,7 @@ bool CreatureEvent::executeTextEdit(Player* player, Item* item, const std::strin
 	return getScriptInterface()->callFunction(3);
 }
 
-void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, CombatDamage& damage) {
+void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, CombatDamage& damage) const {
 	//onHealthChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeHealthChange - "
@@ -438,7 +438,7 @@ void CreatureEvent::executeHealthChange(Creature* creature, Creature* attacker, 
 	getScriptInterface()->resetScriptEnv();
 }
 
-void CreatureEvent::executeManaChange(Creature* creature, Creature* attacker, CombatDamage& damage) {
+void CreatureEvent::executeManaChange(Creature* creature, Creature* attacker, CombatDamage& damage) const {
 	//onManaChange(creature, attacker, primaryDamage, primaryType, secondaryDamage, secondaryType, origin)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeManaChange - "
@@ -478,7 +478,7 @@ void CreatureEvent::executeManaChange(Creature* creature, Creature* attacker, Co
 	getScriptInterface()->resetScriptEnv();
 }
 
-void CreatureEvent::executeExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer) {
+void CreatureEvent::executeExtendedOpcode(Player* player, uint8_t opcode, const std::string& buffer) const {
 	//onExtendedOpcode(player, opcode, buffer)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CreatureEvent::executeExtendedOpcode - "

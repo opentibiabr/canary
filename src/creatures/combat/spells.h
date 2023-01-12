@@ -107,7 +107,7 @@ class CombatSpell final : public Script, public BaseSpell
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant& var);
+		bool executeCastSpell(Creature* creature, const LuaVariant& var) const;
 
 		bool loadScriptCombat();
 		Combat* getCombat() {
@@ -349,7 +349,7 @@ class InstantSpell final : public TalkAction, public Spell
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant& var);
+		bool executeCastSpell(Creature* creature, const LuaVariant& var) const;
 
 		bool isInstant() const override {
 			return true;
@@ -418,7 +418,7 @@ class RuneSpell final : public Action, public Spell
 		bool castSpell(Creature* creature, Creature* target) override;
 
 		// Scripting spell
-		bool executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey);
+		bool executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey) const;
 
 		bool isInstant() const override {
 			return false;

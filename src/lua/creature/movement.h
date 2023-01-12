@@ -157,11 +157,11 @@ class MoveEvent final : public Script {
 		}
 
 		// Scripting to lua interface
-		bool executeStep(Creature& creature, Item* item, const Position& pos);
-		bool executeEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
-		bool executeAddRemItem(Item& item, Item& tileItem, const Position& pos);
+		bool executeStep(Creature& creature, Item* item, const Position& pos) const ;
+		bool executeEquip(Player& player, Item& item, Slots_t slot, bool isCheck) const ;
+		bool executeAddRemItem(Item& item, Item& tileItem, const Position& pos) const ;
 		// No have tile item
-		bool executeAddRemItem(Item& item, const Position& pos);
+		bool executeAddRemItem(Item& item, const Position& pos) const ;
 		//
 
 		//onEquip information

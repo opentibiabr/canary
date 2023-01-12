@@ -183,7 +183,6 @@ class Weapon
 		void internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const;
 		void internalUseWeapon(Player* player, Item* item, Tile* tile) const;
 
-		uint16_t id = 0;
 
 	private:
 		virtual bool getSkillType(const Player*, const Item*, skills_t&, uint32_t&) const {
@@ -192,6 +191,8 @@ class Weapon
 
 		uint32_t getManaCost(const Player* player) const;
 		int32_t getHealthCost(const Player* player) const;
+
+		uint16_t id = 0;
 
 		uint32_t level = 0;
 		uint32_t magLevel = 0;

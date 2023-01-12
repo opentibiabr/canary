@@ -183,7 +183,7 @@ std::string GlobalEvent::getScriptTypeName() const {
 	}
 }
 
-bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightInfo) {
+bool GlobalEvent::executePeriodChange(LightState_t lightState, LightInfo lightInfo) const {
 	//onPeriodChange(lightState, lightTime)
 	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[GlobalEvent::executePeriodChange - {}] "

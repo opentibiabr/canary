@@ -93,7 +93,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 
 	CombatSpell *combatSpell = nullptr;
 
-	std::unique_ptr<Combat> combat = std::make_unique<Combat>();
+	auto combatPtr = std::make_unique<Combat>();
 
 	sb.combatSpell = true;
 
@@ -103,7 +103,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 
 		AreaCombat *area = new AreaCombat();
 		area->setupArea(spell->length, spell->spread);
-		combat->setArea(area);
+		combatPtr->setArea(area);
 
 		spell->needDirection = true;
 	}
@@ -112,7 +112,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 	{
 		AreaCombat *area = new AreaCombat();
 		area->setupArea(spell->radius);
-		combat->setArea(area);
+		combatPtr->setArea(area);
 	}
 
 
@@ -128,24 +128,24 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		}
 
 		sb.range = 1;
-		combat->setParam(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE);
-		combat->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
-		combat->setParam(COMBAT_PARAM_BLOCKSHIELD, 1);
-		combat->setOrigin(ORIGIN_MELEE);
+		combatPtr->setParam(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE);
+		combatPtr->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
+		combatPtr->setParam(COMBAT_PARAM_BLOCKSHIELD, 1);
+		combatPtr->setOrigin(ORIGIN_MELEE);
 	}
 	else if (spellName == "combat")
 	{
 		if (spell->combatType == COMBAT_PHYSICALDAMAGE)
 		{
-			combat->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
-			combat->setOrigin(ORIGIN_RANGED);
+			combatPtr->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
+			combatPtr->setOrigin(ORIGIN_RANGED);
 		}
 		else if (spell->combatType == COMBAT_HEALING)
 		{
-			combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
+			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		}
 
-		combat->setParam(COMBAT_PARAM_TYPE, spell->combatType);
+		combatPtr->setParam(COMBAT_PARAM_TYPE, spell->combatType);
 	}
 	else if (spellName == "speed")
 	{
@@ -171,7 +171,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		if (speedChange > 0)
 		{
 			conditionType = CONDITION_HASTE;
-			combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
+			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		}
 		else
 		{
@@ -180,7 +180,7 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 
 		ConditionSpeed *condition = static_cast<ConditionSpeed*> (Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0));
 		condition->setFormulaVars(speedChange / 1000.0, 0, speedChange / 1000.0, 0);
-		combat->addCondition(condition);
+		combatPtr->addCondition(condition);
 	}
 	else if (spellName == "outfit")
 	{
@@ -211,8 +211,8 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 			return false;
 		}
 
-		combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
-		combat->addCondition(condition);
+		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
+		combatPtr->addCondition(condition);
 	}
 	else if (spellName == "invisible")
 	{
@@ -224,8 +224,8 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		}
 
 		Condition *condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_INVISIBLE, duration, 0);
-		combat->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
-		combat->addCondition(condition);
+		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
+		combatPtr->addCondition(condition);
 	}
 	else if (spellName == "drunk")
 	{
@@ -237,19 +237,19 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		}
 
 		Condition *condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
-		combat->addCondition(condition);
+		combatPtr->addCondition(condition);
 	}
 	else if (spellName == "firefield")
 	{
-		combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
+		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
 	}
 	else if (spellName == "poisonfield")
 	{
-		combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_POISONFIELD_PVP);
+		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_POISONFIELD_PVP);
 	}
 	else if (spellName == "energyfield")
 	{
-		combat->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
+		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
 	}
 	else if (spellName == "condition")
 	{
@@ -275,12 +275,12 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 
 	if (spell->shoot != CONST_ANI_NONE)
 	{
-		combat->setParam(COMBAT_PARAM_DISTANCEEFFECT, spell->shoot);
+		combatPtr->setParam(COMBAT_PARAM_DISTANCEEFFECT, spell->shoot);
 	}
 
 	if (spell->effect != CONST_ME_NONE)
 	{
-		combat->setParam(COMBAT_PARAM_EFFECT, spell->effect);
+		combatPtr->setParam(COMBAT_PARAM_EFFECT, spell->effect);
 	}
 
 	// If a spell has a condition, it always applies, no matter what kind of spell it is
@@ -307,11 +307,11 @@ bool Monsters::deserializeSpell(MonsterSpell *spell, spellBlock_t &sb, const std
 		}
 
 		Condition *condition = getDamageCondition(spell->conditionType, maxDamage, minDamage, startDamage, tickInterval);
-		combat->addCondition(condition);
+		combatPtr->addCondition(condition);
 	}
 
-	combat->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
-	combatSpell = new CombatSpell(combat.release(), spell->needTarget, spell->needDirection);
+	combatPtr->setPlayerCombatValues(COMBAT_FORMULA_DAMAGE, sb.minCombatValue, 0, sb.maxCombatValue, 0);
+	combatSpell = new CombatSpell(combatPtr.release(), spell->needTarget, spell->needDirection);
 
 	sb.spell = combatSpell;
 	if (combatSpell)

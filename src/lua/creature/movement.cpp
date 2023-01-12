@@ -624,7 +624,7 @@ uint32_t MoveEvent::fireStepEvent(Creature& creature, Item* item, const Position
 	}
 }
 
-bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos) {
+bool MoveEvent::executeStep(Creature& creature, Item* item, const Position& pos) const {
 	//onStepIn(creature, item, pos, fromPosition)
 	//onStepOut(creature, item, pos, fromPosition)
 	if (!getScriptInterface()->reserveScriptEnv()) {
@@ -670,7 +670,7 @@ uint32_t MoveEvent::fireEquip(Player& player, Item& item, Slots_t toSlot, bool i
 	}
 }
 
-bool MoveEvent::executeEquip(Player& player, Item& item, Slots_t onSlot, bool isCheck) {
+bool MoveEvent::executeEquip(Player& player, Item& item, Slots_t onSlot, bool isCheck) const {
 	//onEquip(player, item, slot, isCheck)
 	//onDeEquip(player, item, slot, isCheck)
 	if (!getScriptInterface()->reserveScriptEnv()) {
@@ -703,7 +703,7 @@ uint32_t MoveEvent::fireAddRemItem(Item& item, Item& fromTile, const Position& p
 	}
 }
 
-bool MoveEvent::executeAddRemItem(Item& item, Item& fromTile, const Position& pos) {
+bool MoveEvent::executeAddRemItem(Item& item, Item& fromTile, const Position& pos) const {
 	//onAddItem(moveitem, tileitem, pos)
 	//onRemoveItem(moveitem, tileitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {
@@ -736,7 +736,7 @@ uint32_t MoveEvent::fireAddRemItem(Item& item, const Position& pos) {
 	}
 }
 
-bool MoveEvent::executeAddRemItem(Item& item, const Position& pos) {
+bool MoveEvent::executeAddRemItem(Item& item, const Position& pos) const {
 	//onaddItem(moveitem, pos)
 	//onRemoveItem(moveitem, pos)
 	if (!getScriptInterface()->reserveScriptEnv()) {

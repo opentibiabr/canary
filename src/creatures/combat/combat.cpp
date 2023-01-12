@@ -951,10 +951,12 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 
-		// fatal hit (onslaught)
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
-			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+		// Fatal hit (onslaught)
+		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier()) {
+			double_t fatalChance = playerWeapon->getFatalChance();
+			double_t randomChance = uniform_random(0, 10000) / 100;
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
 				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
 				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
@@ -986,11 +988,13 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 			damage.secondary.value += (damage.secondary.value * caster->getPlayer()->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE ))/100;
 		}
 
-		// fatal hit (onslaught)
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr)
+		// Fatal hit (onslaught)
+		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
+			playerWeapon != nullptr && playerWeapon->getTier() > 0)
 		{
-			double_t fatalChance = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT)->getFatalChance();
-			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && uniform_random(1, 100) <= fatalChance) {
+			double_t fatalChance = playerWeapon->getFatalChance();
+			double_t randomChance = uniform_random(0, 10000) / 100;
+			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
 				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
 				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));

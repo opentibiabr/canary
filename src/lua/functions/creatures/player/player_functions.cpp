@@ -3188,9 +3188,10 @@ int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
 int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
 	// player:setFaction(factionId)
 	Player* player = getUserdata<Player>(L, 1);
-	if (!player) {
-		lua_pushnil(L);
-		return 1;
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 	Faction_t factionId = getNumber<Faction_t>(L, 2);
 	player->setFaction(factionId);

@@ -2124,7 +2124,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText/* = fal
 	experience += exp;
 
 	if (sendText) {
-		std::string expString = fmt::format("{} experience point{}", exp, (exp != 1 ? "s" : ""));
+		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString);
 		message.position = position;
@@ -2218,9 +2218,9 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 	if (sendText) {
 		lostExp -= experience;
 
-		std::string expString = fmt::format("{} experience point{} lost", lostExp, (lostExp != 1 ? "s" : ""));
+		std::string expString = fmt::format("You lost {} experience point{}.", lostExp, (lostExp != 1 ? "s" : ""));
 
-		TextMessage message(MESSAGE_EXPERIENCE, "You lost " + expString);
+		TextMessage message(MESSAGE_EXPERIENCE, expString);
 		message.position = position;
 		message.primary.value = lostExp;
 		message.primary.color = TEXTCOLOR_RED;

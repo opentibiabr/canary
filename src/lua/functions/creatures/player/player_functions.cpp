@@ -3216,12 +3216,12 @@ int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
 int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 	// player:getFaction()
 	Player* player = getUserdata<Player>(L, 1);
-
-	if (player) {
-		lua_pushnumber(L, player->getFaction());
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
-	else {
-		lua_pushnil(L);
-	}
+	
+	lua_pushnumber(L, player->getFaction());
 	return 1;
 }

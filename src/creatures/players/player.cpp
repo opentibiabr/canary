@@ -5439,12 +5439,10 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 		sendStats();
 	}
 
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(2) << "Your " << ucwords(getSkillName(skill)) << " skill changed from level " << oldSkillValue
-	<< " (with " << oldPercentToNextLevel << "% progress towards level " << (oldSkillValue + 1) << ") to level " << newSkillValue << " (with "
-	<< newPercentToNextLevel << "% progress towards level " << (newSkillValue + 1) << ')';
+	std::string message = fmt::format("Your {} skill changed from level {:.2f} (with {:.2f}% progress towards level {:.2f}) to level {:.2f} (with {:.2f}% progress towards level {:.2f})",
+    ucwords(getSkillName(skill)), oldSkillValue, oldPercentToNextLevel, oldSkillValue + 1, newSkillValue, newPercentToNextLevel, newSkillValue + 1);
 
-	sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+	sendTextMessage(MESSAGE_EVENT_ADVANCE, message);
 	return sendUpdate;
 }
 

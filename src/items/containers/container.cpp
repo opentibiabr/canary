@@ -1,29 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
 #include "io/iomap.h"
 #include "game/game.h"
-
 
 Container::Container(uint16_t type) :
 	Container(type, items[type].maxItems) {
@@ -401,8 +390,10 @@ ReturnValue Container::queryAdd(int32_t addIndex, const Thing& addThing, uint32_
 			return RETURNVALUE_NOTPOSSIBLE;
 		}
 	}
-  if (isQuiver() && item->getWeaponType() != WEAPON_AMMO)
-    return RETURNVALUE_ONLYAMMOINQUIVER;
+
+	if (isQuiver() && item->getWeaponType() != WEAPON_AMMO) {
+		return RETURNVALUE_ONLYAMMOINQUIVER;
+	}
 
 	const Cylinder* topParent = getTopParent();
 	if (topParent != this) {
@@ -468,19 +459,23 @@ ReturnValue Container::queryRemove(const Thing& thing, uint32_t count, uint32_t 
 {
 	int32_t index = getThingIndex(&thing);
 	if (index == -1) {
+		SPDLOG_DEBUG("{} - Failed to get thing index", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	const Item* item = thing.getItem();
 	if (item == nullptr) {
+		SPDLOG_DEBUG("{} - Item is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (count == 0 || (item->isStackable() && count > item->getItemCount())) {
+		SPDLOG_DEBUG("{} - Failed to get item count", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
 	if (!item->isMoveable() && !hasBitSet(FLAG_IGNORENOTMOVEABLE, flags)) {
+		SPDLOG_DEBUG("{} - Item is not moveable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVEABLE;
 	}
   const HouseTile* houseTile = dynamic_cast<const HouseTile*>(getTopParent());
@@ -682,9 +677,9 @@ void Container::removeThing(Thing* thing, uint32_t count)
 	}
 }
 
-uint8_t Container::getThingIndex(const Thing* thing) const
+int32_t Container::getThingIndex(const Thing* thing) const
 {
-	uint8_t index = 0;
+	int32_t index = 0;
 	for (Item* item : itemlist) {
 		if (item == thing) {
 			return index;

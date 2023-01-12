@@ -1,27 +1,14 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
 #define SRC_LUA_SCRIPTS_LUA_ENVIRONMENT_HPP_
-
-#include <unordered_map>
-#include <vector>
 
 #include "creatures/combat/combat.h"
 #include "declarations.hpp"
@@ -59,16 +46,16 @@ class LuaEnvironment: public LuaScriptInterface {
 	private:
 		void executeTimerEvent(uint32_t eventIndex);
 
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		LuaTimerEventDesc > timerEvents;
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		Combat * > combatMap;
-		std::unordered_map < uint32_t,
+		phmap::flat_hash_map < uint32_t,
 		AreaCombat * > areaMap;
 
-		std::unordered_map < LuaScriptInterface * ,
+		phmap::flat_hash_map < LuaScriptInterface * ,
 		std::vector < uint32_t >> combatIdMap;
-		std::unordered_map < LuaScriptInterface * ,
+		phmap::flat_hash_map < LuaScriptInterface * ,
 		std::vector < uint32_t >> areaIdMap;
 
 		LuaScriptInterface * testInterface = nullptr;

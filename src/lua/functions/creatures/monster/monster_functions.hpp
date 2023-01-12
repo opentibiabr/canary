@@ -1,26 +1,14 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_FUNCTIONS_HPP_
 #define SRC_LUA_FUNCTIONS_CREATURES_MONSTER_MONSTER_FUNCTIONS_HPP_
-
-#include <set>
 
 #include "lua/scripts/luascript.h"
 #include "lua/functions/creatures/monster/charm_functions.hpp"
@@ -56,6 +44,16 @@ class MonsterFunctions final : LuaScriptInterface {
 				registerMethod(L, "Monster", "searchTarget", MonsterFunctions::luaMonsterSearchTarget);
 				registerMethod(L, "Monster", "setSpawnPosition", MonsterFunctions::luaMonsterSetSpawnPosition);
 				registerMethod(L, "Monster", "getRespawnType", MonsterFunctions::luaMonsterGetRespawnType);
+
+				registerMethod(L, "Monster", "getTimeToChangeFiendish", MonsterFunctions::luaMonsterGetTimeToChangeFiendish);
+				registerMethod(L, "Monster", "setTimeToChangeFiendish", MonsterFunctions::luaMonsterSetTimeToChangeFiendish);
+				registerMethod(L, "Monster", "getMonsterForgeClassification", MonsterFunctions::luaMonsterGetMonsterForgeClassification);
+				registerMethod(L, "Monster", "setMonsterForgeClassification", MonsterFunctions::luaMonsterSetMonsterForgeClassification);
+				registerMethod(L, "Monster", "getForgeStack", MonsterFunctions::luaMonsterGetForgeStack);
+				registerMethod(L, "Monster", "setForgeStack", MonsterFunctions::luaMonsterSetForgeStack);
+				registerMethod(L, "Monster", "configureForgeSystem", MonsterFunctions::luaMonsterConfigureForgeSystem);
+				registerMethod(L, "Monster", "clearFiendishStatus", MonsterFunctions::luaMonsterClearFiendishStatus);
+				registerMethod(L, "Monster", "isForgeable", MonsterFunctions::luaMonsterIsForgeable);
 
 				CharmFunctions::init(L);
 				LootFunctions::init(L);
@@ -97,6 +95,16 @@ class MonsterFunctions final : LuaScriptInterface {
 
 		static int luaMonsterSetSpawnPosition(lua_State* L);
 		static int luaMonsterGetRespawnType(lua_State* L);
+
+		static int luaMonsterGetTimeToChangeFiendish(lua_State *L);
+		static int luaMonsterSetTimeToChangeFiendish(lua_State *L);
+		static int luaMonsterGetMonsterForgeClassification(lua_State *L);
+		static int luaMonsterSetMonsterForgeClassification(lua_State *L);
+		static int luaMonsterGetForgeStack(lua_State *L);
+		static int luaMonsterSetForgeStack(lua_State *L);
+		static int luaMonsterConfigureForgeSystem(lua_State *L);
+		static int luaMonsterClearFiendishStatus(lua_State *L);
+		static int luaMonsterIsForgeable(lua_State *L);
 
 		friend class CreatureFunctions;
 };

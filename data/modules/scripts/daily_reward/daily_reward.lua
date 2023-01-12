@@ -71,12 +71,12 @@ local DailyRewardItems = {
 
 DailyReward = {
 	testMode = false,
-	serverTimeThreshold = (24 * 60 * 60), -- Counting down 24hours from last server save
+	serverTimeThreshold = (25 * 60 * 60), -- Counting down 24hours from last server save
 
 	storages = {
 		-- Player
 		currentDayStreak = 14897,
-		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.hpp (STORAGEVALUE_DAILYREWARD)
+		currentStreakLevel = 14898, -- Cpp uses the same storage value on const.h (STORAGEVALUE_DAILYREWARD)
 		nextRewardTime = 14899,
 		collectionTokens = 14901,
 		staminaBonus = 14902,
@@ -221,13 +221,13 @@ DailyReward.retrieveHistoryEntries = function(playerId)
 	if resultId ~= false then
 		repeat
 			local entry = {
-				description = result.getString(resultId, "description"),
-				timestamp = result.getNumber(resultId, "timestamp"),
-				daystreak = result.getNumber(resultId, "daystreak"),
+				description = Result.getDataString(resultId, "description"),
+				timestamp = Result.getDataInt(resultId, "timestamp"),
+				daystreak = Result.getDataInt(resultId, "daystreak"),
 			}
 			table.insert(entries, entry)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 	return entries
 end
@@ -428,9 +428,9 @@ function Player.selectDailyReward(self, msg)
 		-- Creating items table
 		local columnsPicked = msg:getByte() -- Columns picked
 		for i = 1, columnsPicked do
-			local spriteId = msg:getU16()
+			local itemId = msg:getU16()
 			local count = msg:getByte()
-			items[i] = {spriteId = spriteId, count = count}
+			items[i] = {itemId = itemId, count = count}
 		end
 
 		-- Verifying if items if player is picking the correct amount
@@ -461,10 +461,10 @@ function Player.selectDailyReward(self, msg)
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
 				for i = 1, v.count do
-					inbox:addItem(v.ItemId, dailyTable.itemCharges) -- adding charges for each item
+					inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
 				end
 			else
-				inbox:addItem(v.ItemId, v.count) -- adding single item w/o charges
+				inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
 			end
 			if k ~= columnsPicked then
 				description = description .. "" .. v.count .. "x " .. ItemType(v.itemId):getName() .. ", "

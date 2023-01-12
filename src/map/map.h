@@ -1,30 +1,17 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_MAP_MAP_H_
 #define SRC_MAP_MAP_H_
 
 #include "game/movement/position.h"
 #include "items/item.h"
-#include "io/fileloader.h"
-
-#include "utils/tools.h"
 #include "items/tile.h"
 #include "map/town.h"
 #include "map/house/house.h"
@@ -37,7 +24,9 @@ class Game;
 class Tile;
 class Map;
 
-static constexpr int32_t MAP_MAX_LAYERS = 16;
+static constexpr int8_t MAP_MAX_LAYERS = 16;
+static constexpr int8_t MAP_INIT_SURFACE_LAYER = 7; // (MAP_MAX_LAYERS / 2) -1
+static constexpr int8_t MAP_LAYER_VIEW_LIMIT = 2;
 
 struct FindPathParams;
 struct AStarNode {
@@ -70,7 +59,7 @@ class AStarNodes
 	private:
 		AStarNode nodes[MAX_NODES];
 		bool openNodes[MAX_NODES];
-		std::unordered_map<uint32_t, AStarNode*> nodeTable;
+		phmap::flat_hash_map<uint32_t, AStarNode*> nodeTable;
 		size_t curNode;
 		int_fast32_t closedNodes;
 };
@@ -174,10 +163,11 @@ class QTreeLeafNode final : public QTreeNode
 class Map
 {
 	public:
-		static constexpr int32_t maxViewportX = 11; //min value: maxClientViewportX + 1
-		static constexpr int32_t maxViewportY = 11; //min value: maxClientViewportY + 1
+
 		static constexpr int32_t maxClientViewportX = 8;
 		static constexpr int32_t maxClientViewportY = 6;
+		static constexpr int32_t maxViewportX = maxClientViewportX + 3; //min value: maxClientViewportX + 1
+		static constexpr int32_t maxViewportY = maxClientViewportY + 5; //min value: maxClientViewportY + 1
 
 		uint32_t clean() const;
 
@@ -186,11 +176,6 @@ class Map
          * \returns true if the map was loaded successfully
          */
 		bool load(const std::string& identifier);
-		/**
-         * Extract the map.
-         * \returns true if the map was extracted successfully
-         */
-		bool extractMap(const std::string& identifier) const;
 		/**
 		* Load the main map
 		 * \param identifier Is the main map name (name of file .otbm)

@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_GAME_GAME_DEFINITIONS_HPP_
 #define SRC_GAME_GAME_DEFINITIONS_HPP_
@@ -39,32 +29,6 @@ enum Offer_t {
 	BOOST_XP, //not using yet
 	BOOST_STAMINA, //not using yet
 	WRAP_ITEM
-};
-
-enum ClientOffer_t{
-	SIMPLE=0,
-	ADDITIONALINFO=1
-};
-
-enum StoreState_t {
-	NORMAL=0,
-	NEW,
-	SALE,
-	LIMITED_TIME
-};
-
-enum GameStoreError_t{
-	STORE_ERROR_PURCHASE=0,
-	STORE_ERROR_NETWORK,
-	STORE_ERROR_HISTORY,
-	STORE_ERROR_TRANSFER,
-	STORE_ERROR_INFORMATION
-};
-
-enum StoreService_t {
-	SERVICE_STANDARD = 0,
-	SERVICE_OUTFIT = 3,
-	SERVICE_MOUNT = 4
 };
 
 enum StackPosType_t {
@@ -159,16 +123,6 @@ enum Webhook_Colors_t : uint32_t {
 	WEBHOOK_COLOR_RAID = 0x0000FF
 };
 
-// Structs
-struct HistoryStoreOffer {
-	uint32_t time;
-	uint8_t mode;
-	uint32_t amount;
-	std::string description;
-};
-
-using HistoryStoreOfferList = std::vector<HistoryStoreOffer>;
-
 struct ModalWindow {
 	std::list<std::pair<std::string, uint8_t>> buttons, choices;
 	std::string title, message;
@@ -183,51 +137,6 @@ struct ModalWindow {
                     defaultEnterButton(0xFF),
                     defaultEscapeButton(0xFF),
 					priority(false) {}
-};
-
-struct BaseOffer{
-	uint32_t id;
-	std::string name;
-	std::string description;
-	uint32_t price;
-	Offer_t type;
-	StoreState_t state;
-	std::vector<std::string> icons;
-};
-
-struct ItemOffer : BaseOffer{
-	uint16_t productId;
-	uint16_t count;
-};
-
-struct MountOffer: BaseOffer{
-	uint8_t mountId;
-};
-
-struct OutfitOffer : BaseOffer {
-	uint16_t maleLookType;
-	uint16_t femaleLookType;
-	uint8_t addonNumber;
-};
-
-struct TeleportOffer : BaseOffer{
-	Position position;
-};
-
-struct PremiumTimeOffer : BaseOffer{
-	uint16_t days;
-};
-
-struct BlessingOffer : BaseOffer{
-	std::vector<uint8_t> blessings;
-};
-
-struct StoreCategory{
-	std::string name;
-	std::string description;
-	StoreState_t state;
-	std::vector<std::string> icons;
-	std::vector<BaseOffer*> offers;
 };
 
 #endif  // SRC_GAME_GAME_DEFINITIONS_HPP_

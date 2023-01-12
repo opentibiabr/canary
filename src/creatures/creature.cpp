@@ -1,23 +1,13 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "creatures/creature.h"
 #include "declarations.hpp"
@@ -49,16 +39,16 @@ Creature::~Creature()
 
 bool Creature::canSee(const Position& myPos, const Position& pos, int32_t viewRangeX, int32_t viewRangeY)
 {
-	if (myPos.z <= 7) {
+	if (myPos.z <= MAP_INIT_SURFACE_LAYER) {
 		//we are on ground level or above (7 -> 0)
 		//view is from 7 -> 0
-		if (pos.z > 7) {
+		if (pos.z > MAP_INIT_SURFACE_LAYER) {
 			return false;
 		}
-	} else if (myPos.z >= 8) {
+	} else if (myPos.z >= MAP_INIT_SURFACE_LAYER + 1) {
 		//we are underground (8 -> 15)
 		//view is +/- 2 from the floor we stand on
-		if (Position::getDistanceZ(myPos, pos) > 2) {
+		if (Position::getDistanceZ(myPos, pos) > MAP_LAYER_VIEW_LIMIT) {
 			return false;
 		}
 	}
@@ -447,29 +437,38 @@ void Creature::onAttackedCreatureChangeZone(ZoneType_t zone)
 void Creature::checkSummonMove(const Position& newPos, bool teleportSummon) const
 {
 	if (hasSummons()) {
-		// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
-		std::forward_list<Creature*> despawnMonsterList;
+		std::vector<Creature*> despawnMonsterList;
 		for (Creature* creature : getSummons()) {
 			if (!creature) {
 				continue;
 			}
 
-			const Monster* monster = creature->getMonster();
-			// Check is is familiar for teleport to the master, if "teleportSummon" is true, this is not executed
 			const Position& pos = creature->getPosition();
-			if (!teleportSummon && !monster->isFamiliar()) {
-				SPDLOG_DEBUG("[Creature::checkSummonMove] - Creature name {}", creature->getName());
+			const Monster* monster = creature->getMonster();
+			bool protectionZoneCheck = this->getTile()->hasFlag(TILESTATE_PROTECTIONZONE);
+			// Check if any of our summons is out of range (+/- 0 floors or 15 tiles away)
+			bool checkSummonDist = Position::getDistanceZ(newPos, pos) > 0 ||
+				(std::max<int32_t>(Position::getDistanceX(newPos, pos),
+					Position::getDistanceY(newPos, pos)) > 15);
+			// Check if any of our summons is out of range (+/- 2 floors or 30 tiles away)
+			bool checkRemoveDist = Position::getDistanceZ(newPos, pos) > 2 ||
+				(std::max<int32_t>(Position::getDistanceX(newPos, pos),
+					Position::getDistanceY(newPos, pos)) > 30);
+
+			if (monster->isFamiliar() && checkSummonDist || teleportSummon && !protectionZoneCheck && checkSummonDist) {
+				g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
 				continue;
 			}
 
-			if (Position::getDistanceZ(newPos, pos) > 0 || (std::max<int32_t>(Position::getDistanceX(newPos, pos), Position::getDistanceY(newPos, pos)) > 15))
-			{
-				g_game().internalTeleport(creature, creature->getMaster()->getPosition(), true);
+			if (monster->isSummon() && !monster->isFamiliar() && !teleportSummon && checkRemoveDist) {
+				despawnMonsterList.push_back(creature);
 			}
 		}
 
 		for (Creature* despawnCreature : despawnMonsterList) {
-			g_game().removeCreature(despawnCreature, true);
+			if (!despawnMonsterList.empty()) {
+				g_game().removeCreature(despawnCreature, true);
+			}
 		}
 	}
 }
@@ -493,7 +492,7 @@ void Creature::onCreatureMove(Creature* creature, const Tile* newTile, const Pos
 			stopEventWalk();
 		}
 
-		checkSummonMove(newPos, false);
+		checkSummonMove(newPos, g_configManager().getBoolean(TELEPORT_SUMMONS));
 
 		if (Player* player = creature->getPlayer()) {
 			if (player->isExerciseTraining()){
@@ -1426,7 +1425,7 @@ int64_t Creature::getStepDuration() const
 	}
 
 	int32_t stepSpeed = getStepSpeed();
-	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log((stepSpeed / 2) + Creature::speedB) + Creature::speedC) + 0.5), 1);
+	uint32_t calculatedStepSpeed = std::max<uint32_t>(floor((Creature::speedA * log(stepSpeed + Creature::speedB) + Creature::speedC) + 0.5), 1);
 	calculatedStepSpeed = (stepSpeed > -Creature::speedB) ? calculatedStepSpeed : 1;
 
 	uint32_t groundSpeed = 150;
@@ -1464,6 +1463,24 @@ int64_t Creature::getEventStepTicks(bool onlyDelay) const
 LightInfo Creature::getCreatureLight() const
 {
 	return internalLight;
+}
+
+void Creature::setSpeed(int32_t varSpeedDelta) {
+	// Prevents creatures from not exceeding the maximum allowed speed
+	if (getSpeed() >= PLAYER_MAX_SPEED)
+	{
+		return;
+	}
+
+	int32_t oldSpeed = getSpeed();
+	varSpeed = varSpeedDelta;
+
+	if (getSpeed() <= 0) {
+		stopEventWalk();
+		cancelNextWalk = true;
+	} else if (oldSpeed <= 0 && !listWalkDir.empty()) {
+		addEventWalk();
+	}
 }
 
 void Creature::setCreatureLight(LightInfo lightInfo) {

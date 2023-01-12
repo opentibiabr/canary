@@ -1,27 +1,17 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_CREATURES_NPCS_NPC_H_
 #define SRC_CREATURES_NPCS_NPC_H_
 
-#include "declarations.hpp"
 #include "creatures/npcs/npcs.h"
+#include "declarations.hpp"
 #include "items/tile.h"
 
 class Creature;
@@ -62,8 +52,6 @@ class Npc final : public Creature
 				id = npcAutoID++;
 			}
 		}
-
-		void reset() const;
 
 		void removeList() override;
 		void addList() override;
@@ -124,6 +112,7 @@ class Npc final : public Creature
 		}
 
 		bool canSee(const Position& pos) const override;
+		bool canSeeRange(const Position& pos, int32_t viewRangeX = 4, int32_t viewRangeY = 4) const;
 		bool canSeeInvisibility() const override {
 			return true;
 		}
@@ -160,16 +149,17 @@ class Npc final : public Creature
 		void onCreatureSay(Creature* creature, SpeakClasses type, const std::string& text) override;
 		void onThink(uint32_t interval) override;
 		void onPlayerBuyItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint8_t amount, bool ignore, bool inBackpacks);
+                            uint16_t amount, bool ignore, bool inBackpacks);
 		void onPlayerSellItem(Player* player, uint16_t itemid, uint8_t count,
-                            uint8_t amount, bool ignore);
+                            uint16_t amount, bool ignore);
 		void onPlayerCheckItem(Player* player, uint16_t itemid,
                           uint8_t count);
 		void onPlayerCloseChannel(Creature* creature);
 		void onPlacedCreature() override;
 
 		bool canWalkTo(const Position& fromPos, Direction dir) const;
-		bool getNextStep(Direction& direction, uint32_t& flags) override;
+		bool getNextStep(Direction& nextDirection, uint32_t& flags) override;
+		bool getRandomStep(Direction& moveDirection) const;
 
 		void setNormalCreatureLight() override {
 			internalLight = npcType->info.light;
@@ -177,11 +167,11 @@ class Npc final : public Creature
 
 		void addShopPlayer(Player* player);
 		void removeShopPlayer(Player* player);
+		void closeAllShopWindows();
 
 		static uint32_t npcAutoID;
 
 	private:
-		void closeAllShopWindows();
 		void onThinkYell(uint32_t interval);
 		void onThinkWalk(uint32_t interval);
 

@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_IO_IOMARKET_H_
 #define SRC_IO_IOMARKET_H_
@@ -25,13 +15,14 @@
 
 class IOMarket
 {
+	using StatisticsMap = std::map<uint16_t, std::map<uint8_t, MarketStatistics>>;
 	public:
 		static IOMarket& getInstance() {
 			static IOMarket instance;
 			return instance;
 		}
 
-		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId);
+		static MarketOfferList getActiveOffers(MarketAction_t action, uint16_t itemId, uint8_t tier);
 		static MarketOfferList getOwnOffers(MarketAction_t action, uint32_t playerId);
 		static HistoryMarketOfferList getOwnHistory(MarketAction_t action, uint32_t playerId);
 
@@ -41,23 +32,30 @@ class IOMarket
 		static uint32_t getPlayerOfferCount(uint32_t playerId);
 		static MarketOfferEx getOfferByCounter(uint32_t timestamp, uint16_t counter);
 
-		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint32_t price, bool anonymous);
+		static void createOffer(uint32_t playerId, MarketAction_t action, uint32_t itemId, uint16_t amount, uint64_t price, uint8_t tier, bool anonymous);
 		static void acceptOffer(uint32_t offerId, uint16_t amount);
 		static void deleteOffer(uint32_t offerId);
 
-		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint32_t price, time_t timestamp, MarketOfferState_t state);
+		static void appendHistory(uint32_t playerId, MarketAction_t type, uint16_t itemId, uint16_t amount, uint64_t price, time_t timestamp, uint8_t tier, MarketOfferState_t state);
 		static bool moveOfferToHistory(uint32_t offerId, MarketOfferState_t state);
 
 		void updateStatistics();
 
-		MarketStatistics* getPurchaseStatistics(uint16_t itemId);
-		MarketStatistics* getSaleStatistics(uint16_t itemId);
+		StatisticsMap getPurchaseStatistics() const {
+			return purchaseStatistics;
+		}
+		StatisticsMap getSaleStatistics() const {
+			return saleStatistics;
+		}
+
+		static uint8_t getTierFromDatabaseTable(const std::string &string);
 
 	private:
 		IOMarket() = default;
 
-		std::map<uint16_t, MarketStatistics> purchaseStatistics;
-		std::map<uint16_t, MarketStatistics> saleStatistics;
+		// [uint16_t = item id, [uint8_t = item tier, MarketStatistics = structure of the statistics]]
+		StatisticsMap purchaseStatistics;
+		StatisticsMap saleStatistics;
 };
 
 #endif  // SRC_IO_IOMARKET_H_

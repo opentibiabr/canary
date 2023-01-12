@@ -1,28 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "lua/global/baseevents.h"
 #include "lua/scripts/lua_environment.hpp"
-#include "utils/pugicast.h"
 #include "utils/tools.h"
+
 bool BaseEvents::loadFromXml() {
 	if (loaded) {
 		SPDLOG_ERROR("[BaseEvents::loadFromXml] - It's already loaded.");
@@ -30,10 +20,10 @@ bool BaseEvents::loadFromXml() {
 	}
 
 	std::string scriptsName = getScriptBaseName();
-	std::string basePath = "data/" + scriptsName + "/";
+	std::string basePath = g_configManager().getString(CORE_DIRECTORY) + "/" + scriptsName + "/";
 	if (getScriptInterface().loadFile(basePath + "lib/" +
                                       scriptsName + ".lua") == -1) {
-		SPDLOG_WARN("[BaseEvents::loadFromXml] - Can not load {}lib/{}.lua",
+		SPDLOG_WARN(__FUNCTION__,
 					scriptsName, scriptsName);
 	}
 
@@ -42,7 +32,7 @@ bool BaseEvents::loadFromXml() {
 	pugi::xml_document doc;
 	pugi::xml_parse_result result = doc.load_file(filename.c_str());
 	if (!result) {
-		printXMLError("[BaseEvents::loadFromXml] - {} {}", filename, result);
+		printXMLError(__FUNCTION__, filename, result);
 		return false;
 	}
 

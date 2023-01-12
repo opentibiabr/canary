@@ -1,29 +1,17 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_SERVER_SERVER_H_
 #define SRC_SERVER_SERVER_H_
 
 #include "server/network/connection/connection.h"
-#include "config/configmanager.h"
 #include "server/signals.h"
-#include <memory>
 
 class Protocol;
 
@@ -63,7 +51,7 @@ class Service final : public ServiceBase
 class ServicePort : public std::enable_shared_from_this<ServicePort>
 {
 	public:
-		explicit ServicePort(boost::asio::io_service& init_io_service) : io_service(init_io_service) {}
+		explicit ServicePort(asio::io_service& init_io_service) : io_service(init_io_service) {}
 		~ServicePort();
 
 		// non-copyable
@@ -80,13 +68,13 @@ class ServicePort : public std::enable_shared_from_this<ServicePort>
 		Protocol_ptr make_protocol(bool checksummed, NetworkMessage& msg, const Connection_ptr& connection) const;
 
 		void onStopServer();
-		void onAccept(Connection_ptr connection, const boost::system::error_code& error);
+		void onAccept(Connection_ptr connection, const std::error_code& error);
 
 	private:
 		void accept();
 
-		boost::asio::io_service& io_service;
-		std::unique_ptr<boost::asio::ip::tcp::acceptor> acceptor;
+		asio::io_service& io_service;
+		std::unique_ptr<asio::ip::tcp::acceptor> acceptor;
 		std::vector<Service_ptr> services;
 
 		uint16_t serverPort = 0;
@@ -116,11 +104,11 @@ class ServiceManager
 	private:
 		void die();
 
-		std::unordered_map<uint16_t, ServicePort_ptr> acceptors;
+		phmap::flat_hash_map<uint16_t, ServicePort_ptr> acceptors;
 
-		boost::asio::io_service io_service;
+		asio::io_service io_service;
 		Signals signals{io_service};
-		boost::asio::deadline_timer death_timer { io_service };
+		asio::high_resolution_timer death_timer{ io_service };
 		bool running = false;
 };
 

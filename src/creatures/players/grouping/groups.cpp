@@ -1,81 +1,82 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
+#include "config/configmanager.h"
+#include "game/game.h"
 #include "creatures/players/grouping/groups.h"
-
 #include "utils/pugicast.h"
 #include "utils/tools.h"
 
-const std::unordered_map<std::string, PlayerFlags> ParsePlayerFlagMap = {
-	{"cannotusecombat", PlayerFlag_CannotUseCombat},
-	{"cannotattackplayer", PlayerFlag_CannotAttackPlayer},
-	{"cannotattackmonster", PlayerFlag_CannotAttackMonster},
-	{"cannotbeattacked", PlayerFlag_CannotBeAttacked},
-	{"canconvinceall", PlayerFlag_CanConvinceAll},
-	{"cansummonall", PlayerFlag_CanSummonAll},
-	{"canillusionall", PlayerFlag_CanIllusionAll},
-	{"cansenseinvisibility", PlayerFlag_CanSenseInvisibility},
-	{"ignoredbymonsters", PlayerFlag_IgnoredByMonsters},
-	{"notgaininfight", PlayerFlag_NotGainInFight},
-	{"hasinfinitemana", PlayerFlag_HasInfiniteMana},
-	{"hasinfinitesoul", PlayerFlag_HasInfiniteSoul},
-	{"hasnoexhaustion", PlayerFlag_HasNoExhaustion},
-	{"cannotusespells", PlayerFlag_CannotUseSpells},
-	{"cannotpickupitem", PlayerFlag_CannotPickupItem},
-	{"canalwayslogin", PlayerFlag_CanAlwaysLogin},
-	{"canbroadcast", PlayerFlag_CanBroadcast},
-	{"canedithouses", PlayerFlag_CanEditHouses},
-	{"cannotbebanned", PlayerFlag_CannotBeBanned},
-	{"cannotbepushed", PlayerFlag_CannotBePushed},
-	{"hasinfinitecapacity", PlayerFlag_HasInfiniteCapacity},
-	{"canpushallcreatures", PlayerFlag_CanPushAllCreatures},
-	{"cantalkredprivate", PlayerFlag_CanTalkRedPrivate},
-	{"cantalkredchannel", PlayerFlag_CanTalkRedChannel},
-	{"talkorangehelpchannel", PlayerFlag_TalkOrangeHelpChannel},
-	{"notgainexperience", PlayerFlag_NotGainExperience},
-	{"notgainmana", PlayerFlag_NotGainMana},
-	{"notgainhealth", PlayerFlag_NotGainHealth},
-	{"notgainskill", PlayerFlag_NotGainSkill},
-	{"setmaxspeed", PlayerFlag_SetMaxSpeed},
-	{"specialvip", PlayerFlag_SpecialVIP},
-	{"notgenerateloot", PlayerFlag_NotGenerateLoot},
-	{"cantalkredchannelanonymous", PlayerFlag_CanTalkRedChannelAnonymous},
-	{"ignoreprotectionzone", PlayerFlag_IgnoreProtectionZone},
-	{"ignorespellcheck", PlayerFlag_IgnoreSpellCheck},
-	{"ignoreweaponcheck", PlayerFlag_IgnoreWeaponCheck},
-	{"cannotbemuted", PlayerFlag_CannotBeMuted},
-	{"isalwayspremium", PlayerFlag_IsAlwaysPremium}
-};
+namespace ParsePlayerFlagMap {
+// Initialize the map with all the values from the PlayerFlags_t enumeration
+phmap::flat_hash_map<std::string, PlayerFlags_t> initParsePlayerFlagMap() {
+	phmap::flat_hash_map<std::string, PlayerFlags_t> map;
+	// Iterate through all values of the PlayerFlags_t enumeration
+	for (auto value : magic_enum::enum_values<PlayerFlags_t>()) {
+		// Get the string representation of the current enumeration value
+		std::string name(magic_enum::enum_name(value).data());
+		// Convert the string to lowercase
+		std::ranges::transform(name.begin(), name.end(), name.begin(), ::tolower);
+		// Add the current value to the map with its lowercase string representation as the key
+		map[name] = value;
+	}
 
-const std::unordered_map<std::string, PlayerCustomFlags> ParsePlayerCustomFlagMap = {
-  {"canmapclickteleport", PlayerCustomFlag_CanMapClickTeleport},
-  {"ignoredbynpcs", PlayerCustomFlag_IgnoredByNpcs}
-};
+	return map;
+}
+
+const phmap::flat_hash_map<std::string, PlayerFlags_t> parsePlayerFlagMap = initParsePlayerFlagMap();
+}
+
+uint8_t Groups::getFlagNumber(PlayerFlags_t playerFlags)
+{
+	return magic_enum::enum_integer(playerFlags);
+}
+
+PlayerFlags_t Groups::getFlagFromNumber(uint8_t value)
+{
+	return magic_enum::enum_value<PlayerFlags_t>(value);
+}
+
+bool Groups::reload() const
+{
+	// Clear groups
+	g_game().groups.getGroups().clear();
+	return g_game().groups.load();
+}
+
+void parseGroupFlags(Group& group, const pugi::xml_node& groupNode) {
+	if (pugi::xml_node node = groupNode.child("flags")) {
+		for (auto flagNode : node.children()) {
+			pugi::xml_attribute attr = flagNode.first_attribute();
+			if (!attr || !attr.as_bool()) {
+				continue;
+			}
+
+			// Ensure always send the string completely in lower case
+			std::string string = asLowerCaseString(attr.name());
+			auto parseFlag = ParsePlayerFlagMap::parsePlayerFlagMap.find(string);
+			if (parseFlag != ParsePlayerFlagMap::parsePlayerFlagMap.end()) {
+				group.flags[Groups::getFlagNumber(parseFlag->second)] = true;
+			}
+		}
+	}
+}
 
 bool Groups::load()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/XML/groups.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/XML/groups.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Groups::load", "data/XML/groups.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 
@@ -86,44 +87,25 @@ bool Groups::load()
 		group.access = groupNode.attribute("access").as_bool();
 		group.maxDepotItems = pugi::cast<uint32_t>(groupNode.attribute("maxdepotitems").value());
 		group.maxVipEntries = pugi::cast<uint32_t>(groupNode.attribute("maxvipentries").value());
-		group.flags = pugi::cast<uint64_t>(groupNode.attribute("flags").value());
-		if (pugi::xml_node node = groupNode.child("flags")) {
-			for (auto flagNode : node.children()) {
-				pugi::xml_attribute attr = flagNode.first_attribute();
-				if (!attr || (attr && !attr.as_bool())) {
-					continue;
-				}
-
-				auto parseFlag = ParsePlayerFlagMap.find(attr.name());
-				if (parseFlag != ParsePlayerFlagMap.end()) {
-					group.flags |= parseFlag->second;
-				}
-			}
-		}
-    group.customflags = pugi::cast<uint64_t>(groupNode.attribute("customflags").value());
-    if (pugi::xml_node node = groupNode.child("customflags")) {
-      for (auto customflagNode : node.children()) {
-				pugi::xml_attribute attr = customflagNode.first_attribute();
-				if (!attr || (attr && !attr.as_bool())) {
-					continue;
-				}
-
-				auto parseCustomFlag = ParsePlayerCustomFlagMap.find(attr.name());
-				if (parseCustomFlag != ParsePlayerCustomFlagMap.end()) {
-					group.customflags |= parseCustomFlag->second;
-				}
-			}
+		auto flagsInt = static_cast<uint8_t>(groupNode.attribute("flags").as_uint());
+		std::bitset<magic_enum::enum_integer(PlayerFlags_t::FlagLast)> flags(flagsInt);
+		for (uint8_t i = 0; i < getFlagNumber(PlayerFlags_t::FlagLast); i++) {
+			PlayerFlags_t flag = getFlagFromNumber(i);
+			group.flags[i] = flags[Groups::getFlagNumber(flag)];
 		}
 
-		groups.push_back(group);
+		// Parsing group flags
+		parseGroupFlags(group, groupNode);
+
+		groups_vector.push_back(group);
 	}
-	groups.shrink_to_fit();
+	groups_vector.shrink_to_fit();
 	return true;
 }
 
 Group* Groups::getGroup(uint16_t id)
 {
-	for (Group& group : groups) {
+	for (Group& group : groups_vector) {
 		if (group.id == id) {
 			return &group;
 		}

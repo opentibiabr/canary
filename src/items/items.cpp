@@ -1,41 +1,21 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
+
 #include "items/functions/item_parse.hpp"
 #include "items/items.h"
-#include "creatures/combat/spells.h"
 #include "items/weapons/weapons.h"
 #include "game/game.h"
-
 #include "utils/pugicast.h"
 
-#ifdef __cpp_lib_filesystem
-#include <filesystem>
-namespace fs = std::filesystem;
-#else
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-#endif
-
-
-Items::Items(){}
+Items::Items() = default;
 
 void Items::clear()
 {
@@ -43,7 +23,7 @@ void Items::clear()
 	nameToItems.clear();
 }
 
-using LootTypeNames = std::unordered_map<std::string, ItemTypes_t>;
+using LootTypeNames = phmap::flat_hash_map<std::string, ItemTypes_t>;
 
 LootTypeNames lootTypeNames = {
 	{"armor", ITEM_TYPE_ARMOR},
@@ -170,6 +150,10 @@ void Items::loadFromProtobuf()
 		iType.lookThrough = object.flags().ignore_look();
 		iType.stackable = object.flags().cumulative();
 		iType.isPodium = object.flags().show_off_socket();
+		iType.wearOut = object.flags().wearout();
+		iType.clockExpire = object.flags().clockexpire();
+		iType.expire = object.flags().expire();
+		iType.expireStop = object.flags().expirestop();
 
 		if (!iType.name.empty()) {
 			nameToItems.insert({
@@ -185,9 +169,10 @@ void Items::loadFromProtobuf()
 bool Items::loadFromXml()
 {
 	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("data/items/items.xml");
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
 	if (!result) {
-		printXMLError("Error - Items::loadFromXml", "data/items/items.xml", result);
+		printXMLError(__FUNCTION__, folder, result);
 		return false;
 	}
 

@@ -1,35 +1,22 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
+#include "declarations.hpp"
 #include "creatures/combat/combat.h"
 #include "creatures/creature.h"
-#include "declarations.hpp"
-#include "game/game.h"
-#include "creatures/npcs/npc.h"
-#include "creatures/npcs/npcs.h"
+#include "lua/scripts/lua_environment.hpp"
 #include "creatures/combat/spells.h"
-#include "items/weapons/weapons.h"
-
-#include "utils/pugicast.h"
-
+#include "creatures/npcs/npcs.h"
+#include "lua/scripts/scripts.h"
+#include "game/game.h"
 
 bool NpcType::canSpawn(const Position& pos)
 {
@@ -39,7 +26,7 @@ bool NpcType::canSpawn(const Position& pos)
 	if ((isDay && info.respawnType.period == RESPAWNPERIOD_NIGHT) ||
 		(!isDay && info.respawnType.period == RESPAWNPERIOD_DAY)) {
 		// It will ignore day and night if underground
-		canSpawn = (pos.z > 7 && info.respawnType.underground);
+		canSpawn = (pos.z > MAP_INIT_SURFACE_LAYER && info.respawnType.underground);
 	}
 
 	return canSpawn;
@@ -112,6 +99,34 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 	} else {
 		npcType->info.shopItemVector.push_back(shopBlock);
 	}
+}
+
+bool Npcs::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/, bool reloading/* = false*/) const {
+	if (loadLibs) {
+		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
+		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
+	}
+	if (loadNpcs) {
+		return g_scripts().loadScripts("npc", false, reloading);
+	}
+	return false;
+}
+
+bool Npcs::reload()
+{
+	// Load the "npclib" folder
+	if (load(true, false, true)) {
+		// Load the npcs scripts folder
+		if (!load(false, true, true)) {
+			return false;
+		}
+
+		npcs.clear();
+		scriptInterface.reset();
+		g_game().resetNpcs();
+		return true;
+	}
+	return false;
 }
 
 NpcType* Npcs::getNpcType(const std::string& name, bool create /* = false*/)

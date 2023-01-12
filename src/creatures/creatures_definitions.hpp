@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
@@ -360,7 +350,8 @@ enum PlayerSex_t : uint8_t {
 	PLAYERSEX_LAST = PLAYERSEX_MALE
 };
 
-enum skills_t : uint8_t {
+enum skills_t : int8_t {
+	SKILL_NONE = -1,
 	SKILL_FIST = 0,
 	SKILL_CLUB = 1,
 	SKILL_SWORD = 2,
@@ -411,7 +402,8 @@ enum BlockType_t : uint8_t {
 	BLOCK_NONE,
 	BLOCK_DEFENSE,
 	BLOCK_ARMOR,
-	BLOCK_IMMUNITY
+	BLOCK_IMMUNITY,
+	BLOCK_DODGE
 };
 
 enum BestiaryType_t : uint8_t {
@@ -481,6 +473,12 @@ enum DailyRewardStatus : uint8_t {
 	DAILY_REWARD_COLLECTED = 0,
 	DAILY_REWARD_NOTCOLLECTED = 1,
 	DAILY_REWARD_NOTAVAILABLE = 2
+};
+
+enum class ForgeClassifications_t : uint8_t {
+	FORGE_NORMAL_MONSTER = 0,
+	FORGE_INFLUENCED_MONSTER = 1,
+	FORGE_FIENDISH_MONSTER = 2,
 };
 
 enum OperatingSystem_t : uint8_t {
@@ -672,11 +670,12 @@ struct RecentPvPKillEntry {
 };
 
 struct MarketOffer {
-	uint32_t price;
+	uint64_t price;
 	uint32_t timestamp;
 	uint16_t amount;
 	uint16_t counter;
 	uint16_t itemId;
+	uint8_t tier;
 	std::string playerName;
 };
 
@@ -691,30 +690,43 @@ struct MarketOfferEx {
         counter(other.counter),
         itemId(other.itemId),
         type(other.type),
+        tier(other.tier),
         playerName(std::move(other.playerName)) {}
 
 	uint32_t id;
 	uint32_t playerId;
 	uint32_t timestamp;
-	uint32_t price;
+	uint64_t price;
 	uint16_t amount;
 	uint16_t counter;
 	uint16_t itemId;
 	MarketAction_t type;
+	uint8_t tier;
 	std::string playerName;
 };
 
 struct HistoryMarketOffer {
 	uint32_t timestamp;
-	uint32_t price;
+	uint64_t price;
 	uint16_t itemId;
 	uint16_t amount;
+	uint8_t tier;
 	MarketOfferState_t state;
 };
 
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
 using StashItemList = std::map<uint16_t, uint32_t>;
+
+using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
+/*
+	> ItemsTierCountList structure:
+	|- [itemID]
+		|- [itemTier]
+			|- Count
+		| ...
+	| ...
+*/
 
 struct Familiar {
 	Familiar(std::string initName, uint16_t initLookType,
@@ -756,6 +768,7 @@ struct CombatDamage {
 	int affected;
 	bool extension;
 	std::string exString;
+	bool fatal;
 
 	CombatDamage() {
 		origin = ORIGIN_NONE;
@@ -765,6 +778,7 @@ struct CombatDamage {
 		affected = 1;
 		extension = false;
 		exString = "";
+		fatal = false;
 	}
 };
 
@@ -881,8 +895,8 @@ struct PartyAnalyzer {
 	uint64_t lootPrice = 0;
 	uint64_t supplyPrice = 0;
 
-	std::map<uint16_t, uint32_t> lootMap; // [itemID] = amount
-	std::map<uint16_t, uint32_t> supplyMap; // [itemID] = amount
+	std::map<uint16_t, uint64_t> lootMap; // [itemID] = amount
+	std::map<uint16_t, uint64_t> supplyMap; // [itemID] = amount
 };
 
 #endif  // SRC_CREATURES_CREATURES_DEFINITIONS_HPP_

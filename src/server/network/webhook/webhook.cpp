@@ -1,13 +1,16 @@
-#include "otpch.h"
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
+
+#include "pch.hpp"
 
 #include "server/network/webhook/webhook.h"
-
-#include <curl/curl.h>
-#include <json/json.h>
-
-#include <ctime>
-#include <iostream>
-#include <memory>
+#include "config/configmanager.h"
 
 // Tread no further, adventurer!
 // Go back while you still can.

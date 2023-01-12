@@ -1,28 +1,16 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
+#include "config/configmanager.h"
 #include "database/database.h"
-
-#include <mysql/errmsg.h>
-
 
 Database::~Database()
 {
@@ -280,6 +268,28 @@ const char* DBResult::getStream(const std::string& s, unsigned long& size) const
 
 	size = mysql_fetch_lengths(handle)[it->second];
 	return row[it->second];
+}
+
+uint8_t DBResult::getU8FromString(const std::string &string, const std::string &function) const
+{
+	auto result = static_cast<uint8_t>(std::atoi(string.c_str()));
+	if (result > std::numeric_limits<uint8_t>::max()) {
+		SPDLOG_ERROR("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
+		return 0;
+	}
+
+	return result;
+}
+
+int8_t DBResult::getInt8FromString(const std::string &string, const std::string &function) const
+{
+	auto result = static_cast<int8_t>(std::atoi(string.c_str()));
+	if (result > std::numeric_limits<int8_t>::max()) {
+		SPDLOG_ERROR("[{}] Failed to get number value {} for tier table result, on function call: {}", __FUNCTION__, result, function);
+		return 0;
+	}
+
+	return result;
 }
 
 size_t DBResult::countResults() const

@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
 #define SRC_CONFIG_CONFIG_DEFINITIONS_HPP_
@@ -37,7 +27,6 @@ enum booleanConfig_t {
 	STAMINA_SYSTEM,
 	WARN_UNSAFE_SCRIPTS,
 	CONVERT_UNSAFE_SCRIPTS,
-	CLASSIC_EQUIPMENT_SLOTS,
 	CLASSIC_ATTACK_SPEED,
 	SCRIPTS_CONSOLE_LOGS,
 	REMOVE_WEAPON_AMMO,
@@ -50,7 +39,6 @@ enum booleanConfig_t {
 	FORCE_MONSTERTYPE_LOAD,
 	HOUSE_OWNED_BY_ACCOUNT,
 	CLEAN_PROTECTION_ZONES,
-	STOREMODULES,
 	ALLOW_BLOCK_SPAWN,
 	ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS,
 	WEATHER_RAIN,
@@ -75,12 +63,18 @@ enum booleanConfig_t {
 	AUTOBANK,
 	RATE_USE_STAGES,
 	INVENTORY_GLOW,
+	TELEPORT_SUMMONS,
+	TOGGLE_DOWNLOAD_MAP,
+	USE_ANY_DATAPACK_FOLDER,
+	ALLOW_RELOAD,
 
 	LAST_BOOLEAN_CONFIG
 	};
 
 enum stringConfig_t {
 	MAP_NAME,
+	MAP_DOWNLOAD_URL,
+	MAP_AUTHOR,
 	HOUSE_RENT_PERIOD,
 	SERVER_NAME,
 	OWNER_NAME,
@@ -96,13 +90,16 @@ enum stringConfig_t {
 	MYSQL_DB,
 	MYSQL_SOCK,
 	DEFAULT_PRIORITY,
-	MAP_AUTHOR,
 	STORE_IMAGES_URL,
 	MAP_CUSTOM_NAME,
 	MAP_CUSTOM_AUTHOR,
 	DISCORD_WEBHOOK_URL,
 	SAVE_INTERVAL_TYPE,
 	GLOBAL_SERVER_SAVE_TIME,
+	DATA_DIRECTORY,
+	CORE_DIRECTORY,
+	FORGE_FIENDISH_INTERVAL_TYPE,
+	FORGE_FIENDISH_INTERVAL_TIME,
 
 	LAST_STRING_CONFIG
 	};
@@ -163,8 +160,6 @@ enum integerConfig_t {
 	SAVE_INTERVAL_TIME,
 	PREY_REROLL_PRICE_LEVEL,
 	PREY_SELECTION_LIST_PRICE,
-	PREY_BONUS_PERCENT_MIN,
-	PREY_BONUS_PERCENT_MAX,
 	PREY_BONUS_TIME,
 	PREY_BONUS_REROLL_PRICE,
 	PREY_FREE_REROLL_TIME,
@@ -178,6 +173,20 @@ enum integerConfig_t {
 	DEPOTCHEST,
 	CRITICALCHANCE,
 	ADVENTURERSBLESSING_LEVEL,
+	FORGE_MAX_ITEM_TIER,
+	FORGE_COST_ONE_SLIVER,
+	FORGE_SLIVER_AMOUNT,
+	FORGE_CORE_COST,
+	FORGE_MAX_DUST,
+	FORGE_FUSION_DUST_COST,
+	FORGE_TRANSFER_DUST_COST,
+	FORGE_BASE_SUCCESS_RATE,
+	FORGE_BONUS_SUCCESS_RATE,
+	FORGE_TIER_LOSS_REDUCTION,
+	FORGE_MIN_SLIVERS,
+	FORGE_MAX_SLIVERS,
+	FORGE_INFLUENCED_CREATURES_LIMIT,
+	FORGE_FIENDISH_CREATURES_LIMIT,
 
 	LAST_INTEGER_CONFIG
 };

@@ -1,31 +1,18 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
-
-#include <boost/range/adaptor/reversed.hpp>
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "items/item.h"
 #include "lua/functions/items/item_functions.hpp"
 #include "items/decay/decay.h"
-
 
 class Imbuement;
 
@@ -510,7 +497,7 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 
 	std::string key;
 	if (isNumber(L, 2)) {
-		key = boost::lexical_cast<std::string>(getNumber<int64_t>(L, 2));
+		key = std::to_string(getNumber<int64_t>(L, 2));
 	} else if (isString(L, 2)) {
 		key = getString(L, 2);
 	} else {
@@ -518,24 +505,24 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 		return 1;
 	}
 
-	ItemAttributes::CustomAttribute val;
+	ItemAttributes::CustomAttribute attribute;
 	if (isNumber(L, 3)) {
-		double tmp = getNumber<double>(L, 3);
-		if (std::floor(tmp) < tmp) {
-			val.set<double>(tmp);
+		double doubleValue = getNumber<double>(L, 3);
+		if (std::floor(doubleValue) < doubleValue) {
+			attribute.setDouble(doubleValue);
 		} else {
-			val.set<int64_t>(tmp);
+			attribute.setInt64(getNumber<int64_t>(L, 3));
 		}
 	} else if (isString(L, 3)) {
-		val.set<std::string>(getString(L, 3));
+		attribute.setString(getString(L, 3));
 	} else if (isBoolean(L, 3)) {
-		val.set<bool>(getBoolean(L, 3));
+		attribute.setBool(getBoolean(L, 3));
 	} else {
 		lua_pushnil(L);
 		return 1;
 	}
 
-	item->setCustomAttribute(key, val);
+	item->setCustomAttribute(key, attribute);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -835,5 +822,58 @@ int ItemFunctions::luaItemSetDuration(lua_State* L) {
 	it.decayTo = itemid;
 	item->startDecaying();
 	pushBoolean(L, true);
+	return 1;
+}
+
+int ItemFunctions::luaItemIsInsideDepot(lua_State* L) {
+	// item:isInsideDepot([includeInbox = false])
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	pushBoolean(L, item->isInsideDepot(getBoolean(L, 2, false)));
+	return 1;
+}
+
+int ItemFunctions::luaItemGetTier(lua_State* L) {
+	// item:getTier()
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, item->getTier());
+	return 1;
+}
+
+int ItemFunctions::luaItemSetTier(lua_State* L) {
+	// item:setTier(tier)
+	Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	item->setTier(getNumber<uint8_t>(L, 2));
+	pushBoolean(L, true);
+	return 1;
+}
+
+int ItemFunctions::luaItemGetClassification(lua_State* L) {
+	// item:getClassification()
+	const Item* item = getUserdata<Item>(L, 1);
+	if (!item) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
+		pushBoolean(L, false);
+		return 1;
+	}
+
+	lua_pushnumber(L, item->getClassification());
 	return 1;
 }

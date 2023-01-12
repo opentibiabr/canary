@@ -1,26 +1,14 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_ITEMS_CONTAINERS_CONTAINER_H_
 #define SRC_ITEMS_CONTAINERS_CONTAINER_H_
-
-#include <queue>
 
 #include "items/cylinder.h"
 #include "items/item.h"
@@ -90,6 +78,12 @@ class Container : public Item, public Cylinder
 		virtual const Reward* getReward() const {
 			return nullptr;
 		}
+		virtual bool isInbox() const {
+			return false;
+		}
+		virtual bool isDepotChest() const {
+			return false;
+		}
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		bool unserializeItemNode(OTB::Loader& loader, const OTB::Node& node, PropStream& propStream) override;
@@ -155,7 +149,7 @@ class Container : public Item, public Cylinder
 
 		void removeThing(Thing* thing, uint32_t count) override final;
 
-		uint8_t getThingIndex(const Thing* thing) const override final;
+		int32_t getThingIndex(const Thing* thing) const override final;
 		size_t getFirstIndex() const override final;
 		size_t getLastIndex() const override final;
 		uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override final;

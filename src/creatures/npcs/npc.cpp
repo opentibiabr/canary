@@ -1,31 +1,19 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
-#include "declarations.hpp"
 #include "creatures/npcs/npc.h"
 #include "creatures/npcs/npcs.h"
-#include "lua/callbacks/creaturecallback.h"
+#include "declarations.hpp"
 #include "game/game.h"
-#include "creatures/combat/spells.h"
-#include "lua/creature/events.h"
+#include "lua/callbacks/creaturecallback.h"
 
 int32_t Npc::despawnRange;
 int32_t Npc::despawnRadius;
@@ -66,16 +54,6 @@ Npc::Npc(NpcType* npcType) :
 Npc::~Npc() {
 }
 
-void Npc::reset() const
-{
-	g_npcs().reset();
-	// Close shop window from all npcs and reset the shopPlayerSet
-	for (const auto& [npcId, npc] : g_game().getNpcs()) {
-		npc->closeAllShopWindows();
-		npc->resetPlayerInteractions();
-	}
-}
-
 void Npc::addList()
 {
 	g_game().addNpc(this);
@@ -92,6 +70,14 @@ bool Npc::canSee(const Position& pos) const
 		return false;
 	}
 	return Creature::canSee(getPosition(), pos, 4, 4);
+}
+
+bool Npc::canSeeRange(const Position& pos, int32_t viewRangeX/* = 4*/, int32_t viewRangeY/* = 4*/) const
+{
+	if (pos.z != getPosition().z) {
+		return false;
+	}
+	return Creature::canSee(getPosition(), pos, viewRangeX, viewRangeY);
 }
 
 void Npc::onCreatureAppear(Creature* creature, bool isLogin)
@@ -215,48 +201,79 @@ void Npc::onThink(uint32_t interval)
 		closeAllShopWindows();
 	}
 
-	onThinkYell(interval);
-	onThinkWalk(interval);
+	SpectatorHashSet spectators;
+	// Get a set of spectators that are within the visible range of the NPC
+	g_game().map.getSpectators(spectators, position, false, false);
+	// Check if there is at least one player in the set of spectators that does not have the "IgnoredByNpcs" flag
+	if (std::ranges::any_of(spectators, [](Creature* spectator) {
+		auto player = spectator->getPlayer();
+		// If there are no players or all players have the "IgnoredByNpcs" flag, then the NPC will not walk or yell.
+		return player && !player->hasFlag(PlayerFlags_t::IgnoredByNpcs);
+	})) {
+		// There is at least one normal player on the screen, so the NPC should continue walking and yelling
+		onThinkYell(interval);
+		onThinkWalk(interval);
+	}
 }
 
 void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint8_t amount, bool ignore, bool inBackpacks)
+                          uint8_t subType, uint16_t amount, bool ignore, bool inBackpacks)
 {
-	if (!player) {
+	if (player == nullptr) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem] - Player is nullptr");
 		return;
 	}
 
 	// Check if the player not have empty slots
-	if (player->getFreeBackpackSlots() == 0) {
+	if (!ignore && player->getFreeBackpackSlots() == 0) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
 		return;
 	}
 
-	uint32_t buyPrice = 0;
+	uint32_t shoppingBagPrice = 20;
+	uint32_t shoppingBagSlots = 20;
 	const ItemType& itemType = Item::items[itemId];
+	if (const Tile* tile = ignore ? player->getTile() : nullptr; tile) {
+		double slotsNedeed = 0;
+		if (itemType.stackable) {
+			slotsNedeed = inBackpacks ? std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots) : std::ceil(static_cast<double>(amount) / 100);
+		} else {
+			slotsNedeed = inBackpacks ? std::ceil(static_cast<double>(amount) / shoppingBagSlots) : static_cast<double>(amount);
+		}
+
+		if ((static_cast<double>(tile->getItemList()->size()) + (slotsNedeed - player->getFreeBackpackSlots())) > 30) {
+			player->sendCancelMessage(RETURNVALUE_NOTENOUGHROOM);
+			return;
+		}
+	}
+
+	uint32_t buyPrice = 0;
 	const std::vector<ShopBlock> &shopVector = getShopItemVector();
-	for (ShopBlock shopBlock : shopVector)
-	{
-		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0)
-		{
+	for (ShopBlock shopBlock : shopVector) {
+		if (itemType.id == shopBlock.itemId && shopBlock.itemBuyPrice != 0) {
 			buyPrice = shopBlock.itemBuyPrice;
 		}
 	}
 
 	uint32_t totalCost = buyPrice * amount;
-	if (getCurrency() == ITEM_GOLD_COIN) {
-		if (!g_game().removeMoney(player, totalCost, 0, true)) {
-			SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-			SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
-			return;
-		}
-	} else if(!player->removeItemOfType(getCurrency(), totalCost, -1, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerBuyItem (removeItemOfType)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
-		SPDLOG_DEBUG("[Information] Player {} buyed item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+	uint32_t bagsCost = 0;
+	if (inBackpacks && itemType.stackable) {
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(std::ceil(static_cast<double>(amount) / 100) / shoppingBagSlots));
+	} else if (inBackpacks && !itemType.stackable) {
+		bagsCost = shoppingBagPrice * static_cast<uint32_t>(std::ceil(static_cast<double>(amount) / shoppingBagSlots));
+	}
+
+	if (getCurrency() == ITEM_GOLD_COIN && (player->getMoney() + player->getBankBalance()) < totalCost) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getMoney)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
+		return;
+	} else if (getCurrency() != ITEM_GOLD_COIN && (player->getItemTypeCount(getCurrency()) < totalCost || ((player->getMoney() + player->getBankBalance()) < bagsCost))) {
+		SPDLOG_ERROR("[Npc::onPlayerBuyItem (getItemTypeCount)] - Player {} have a problem for buy item {} on shop for npc {}", player->getName(), itemId, getName());
+		SPDLOG_DEBUG("[Information] Player {} tried to buy item {} on shop for npc {}, at position {}", player->getName(), itemId, getName(), player->getPosition().toString());
 		return;
 	}
 
-	// onPlayerBuyItem(self, player, itemId, subType, amount, ignore inBackpacks)
+	// npc:onBuyItem(player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerBuyEvent)) {
 		callback.pushSpecificCreature(this);
@@ -264,8 +281,8 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 		callback.pushNumber(itemId);
 		callback.pushNumber(subType);
 		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
 		callback.pushBoolean(inBackpacks);
-		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
 	}
 
@@ -275,7 +292,7 @@ void Npc::onPlayerBuyItem(Player* player, uint16_t itemId,
 }
 
 void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
-                          uint8_t subType, uint8_t amount, bool ignore)
+                          uint8_t subType, uint16_t amount, bool ignore)
 {
 	if (!player) {
 		return;
@@ -292,15 +309,46 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		}
 	}
 
-	if(!player->removeItemOfType(itemId, amount, -1, false, false)) {
-		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), itemId, getName());
+	auto removeAmount = amount;
+	auto inventoryItems = player->getInventoryItemsFromId(itemId, ignore);
+	uint16_t removedItems = 0;
+	for (auto item : inventoryItems) {
+		// Ignore item with tier highter than 0
+		if (!item || item->getTier() > 0) {
+			continue;
+		}
+
+		// Only remove if item has no imbuements
+		if (!item->hasImbuements()) {
+			auto removeCount = std::min<uint16_t>(removeAmount, item->getItemCount());
+			removeAmount -= removeCount;
+
+			if (auto ret = g_game().internalRemoveItem(item, removeCount);
+			ret != RETURNVALUE_NOERROR)
+			{
+				SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for sell item {} on shop for npc {}", player->getName(), item->getID(), getName());
+				continue;
+			}
+
+			// We will use it to check how many items have been removed to send totalCost
+			removedItems++;
+
+			if (removeAmount == 0) {
+				break;
+			}
+		}
+	}
+
+	// We will only add the money if any item has been removed from the player, to ensure that there is no possibility of cloning money
+	if (removedItems == 0) {
+		SPDLOG_ERROR("[Npc::onPlayerSellItem] - Player {} have a problem for remove items from id {} on shop for npc {}", player->getName(), itemId, getName());
 		return;
 	}
 
-	int64_t totalCost = sellPrice * amount;
-	g_game().addMoney(player, totalCost, 0);
+	auto totalCost = static_cast<uint64_t>(sellPrice * amount);
+	g_game().addMoney(player, totalCost);
 
-	// onPlayerSellItem(self, player, itemId, subType, amount, ignore)
+	// npc:onSellItem(player, itemId, subType, amount, ignore, itemName, totalCost)
 	CreatureCallback callback = CreatureCallback(npcType->info.scriptInterface, this);
 	if (callback.startScriptInterface(npcType->info.playerSellEvent)) {
 		callback.pushSpecificCreature(this);
@@ -308,6 +356,7 @@ void Npc::onPlayerSellItem(Player* player, uint16_t itemId,
 		callback.pushNumber(itemType.id);
 		callback.pushNumber(subType);
 		callback.pushNumber(amount);
+		callback.pushBoolean(ignore);
 		callback.pushString(itemType.name);
 		callback.pushNumber(totalCost);
 	}
@@ -402,9 +451,10 @@ void Npc::onThinkWalk(uint32_t interval)
 		return;
 	}
 
-	Direction dir = Position::getRandomDirection();
-	if (canWalkTo(getPosition(), dir)) {
-		listWalkDir.push_front(dir);
+	if (Direction newDirection;
+		getRandomStep(newDirection))
+	{
+		listWalkDir.push_front(newDirection);
 		addEventWalk();
 	}
 
@@ -497,6 +547,27 @@ bool Npc::canWalkTo(const Position& fromPos, Direction dir) const
 
 bool Npc::getNextStep(Direction& nextDirection, uint32_t& flags) {
 	return Creature::getNextStep(nextDirection, flags);
+}
+
+bool Npc::getRandomStep(Direction& moveDirection) const
+{
+	static std::vector<Direction> directionvector {
+		Direction::DIRECTION_NORTH,
+		Direction::DIRECTION_WEST,
+		Direction::DIRECTION_EAST,
+		Direction::DIRECTION_SOUTH
+	};
+	std::ranges::shuffle(directionvector, getRandomGenerator());
+
+	for (const Position& creaturePos = getPosition();
+		Direction direction : directionvector)
+	{
+		if (canWalkTo(creaturePos, direction)) {
+			moveDirection = direction;
+			return true;
+		}
+	}
+	return false;
 }
 
 void Npc::addShopPlayer(Player* player)

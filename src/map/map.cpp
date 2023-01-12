@@ -1,27 +1,13 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
-
-#include <boost/filesystem.hpp>
-#include <fstream>
-#include <libzippp.h>
+#include "pch.hpp"
 
 #include "io/iomap.h"
 #include "io/iomapserialize.h"
@@ -29,8 +15,6 @@
 #include "creatures/creature.h"
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
-#include "creatures/npcs/npc.h"
-#include "utils/tools.h"
 
 bool Map::load(const std::string& identifier) {
 	try {
@@ -47,36 +31,28 @@ bool Map::load(const std::string& identifier) {
 	return true;
 }
 
-bool Map::extractMap(const std::string& identifier) const {
-	if (boost::filesystem::exists(identifier)) {
-		return true;
-	}
-	
-	using namespace libzippp;
-	std::string mapName = g_configManager().getString(MAP_NAME) + ".otbm";
-	SPDLOG_INFO("Unzipping " + mapName + " to world folder");
-	ZipArchive zf("data/world/world.zip");
-
-	if (!zf.open(ZipArchive::ReadOnly)) {
-		SPDLOG_ERROR("[Map::extractMap] - Failed to unzip world.zip, file doesn't exist");
-		consoleHandlerExit();
-		return false;
-	}
-
-	std::ofstream unzippedFile("data/world/" + mapName, std::ofstream::binary);
-	zf.getEntry(mapName).readContent(unzippedFile, ZipArchive::Current);
-	zf.close();
-	return true;
-}
-
 bool Map::loadMap(const std::string& identifier,
 	bool mainMap /*= false*/,bool loadHouses /*= false*/,
 	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
 {
-	// Only extract map if is loading the main map
-	if (mainMap) {
-		// Extract the map
-		this->extractMap(identifier);
+	// Only download map if is loading the main map and it is not already downloaded
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
+		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
+		if (mapDownloadUrl.empty()) {
+			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
+		}
+
+		if (CURL *curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
+			SPDLOG_INFO("Downloading " + g_configManager().getString(MAP_NAME) + ".otbm to world folder");
+			FILE *otbm = fopen(identifier.c_str(), "wb");
+			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
+			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+			curl_easy_perform(curl);
+			curl_easy_cleanup(curl);
+			fclose(otbm);
+		}
 	}
 
 	// Load the map
@@ -527,21 +503,21 @@ void Map::getSpectators(SpectatorHashSet& spectators, const Position& centerPos,
 		int32_t maxRangeZ;
 
 		if (multifloor) {
-			if (centerPos.z > 7) {
+			if (centerPos.z > MAP_INIT_SURFACE_LAYER) {
 				//underground
 
 				//8->15
-				minRangeZ = std::max<int32_t>(centerPos.getZ() - 2, 0);
-				maxRangeZ = std::min<int32_t>(centerPos.getZ() + 2, MAP_MAX_LAYERS - 1);
-			} else if (centerPos.z == 6) {
+				minRangeZ = std::max<int32_t>(centerPos.getZ() - MAP_LAYER_VIEW_LIMIT, 0);
+				maxRangeZ = std::min<int32_t>(centerPos.getZ() + MAP_LAYER_VIEW_LIMIT, MAP_MAX_LAYERS - 1);
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER - 1) {
 				minRangeZ = 0;
-				maxRangeZ = 8;
-			} else if (centerPos.z == 7) {
+				maxRangeZ = (MAP_INIT_SURFACE_LAYER - 1) + MAP_LAYER_VIEW_LIMIT;
+			} else if (centerPos.z == MAP_INIT_SURFACE_LAYER) {
 				minRangeZ = 0;
-				maxRangeZ = 9;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER + MAP_LAYER_VIEW_LIMIT;
 			} else {
 				minRangeZ = 0;
-				maxRangeZ = 7;
+				maxRangeZ = MAP_INIT_SURFACE_LAYER;
 			}
 		} else {
 			minRangeZ = centerPos.z;
@@ -572,12 +548,12 @@ bool Map::canThrowObjectTo(const Position& fromPos, const Position& toPos, bool 
 	//z checks
 	//underground 8->15
 	//ground level and above 7->0
-	if ((fromPos.z >= 8 && toPos.z < 8) || (toPos.z >= 8 && fromPos.z < 8)) {
+	if ((fromPos.z >= 8 && toPos.z <= MAP_INIT_SURFACE_LAYER) || (toPos.z >= MAP_INIT_SURFACE_LAYER + 1 && fromPos.z <= MAP_INIT_SURFACE_LAYER)) {
 		return false;
 	}
 
 	int32_t deltaz = Position::getDistanceZ(fromPos, toPos);
-	if (deltaz > 2) {
+	if (deltaz > MAP_LAYER_VIEW_LIMIT) {
 		return false;
 	}
 

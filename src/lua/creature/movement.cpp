@@ -1,31 +1,18 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
-#include "otpch.h"
+#include "pch.hpp"
 
 #include "game/game.h"
 #include "lua/creature/events.h"
-
 #include "utils/pugicast.h"
-
 #include "lua/creature/movement.h"
-#include "creatures/players/imbuements/imbuements.h"
 
 void MoveEvents::clear() {
 	uniqueIdMap.clear();
@@ -44,7 +31,10 @@ bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(itemIdVector.begin(), itemIdVector.end(), [this, &moveEvent](const uint32_t &itemId) {
+	std::vector<uint32_t> tmpVector;
+	tmpVector.reserve(itemIdVector.size());
+
+	for (const auto& itemId : itemIdVector) {
 		if (moveEvent.getEventType() == MOVE_EVENT_EQUIP) {
 			ItemType& it = Item::items.getItemType(itemId);
 			it.wieldInfo = moveEvent.getWieldInfo();
@@ -52,11 +42,13 @@ bool MoveEvents::registerLuaItemEvent(MoveEvent& moveEvent) {
 			it.minReqMagicLevel = moveEvent.getReqMagLv();
 			it.vocationString = moveEvent.getVocationString();
 		}
-		return registerEvent(moveEvent, itemId, itemIdMap);
-	});
-	itemIdVector.clear();
-	itemIdVector.shrink_to_fit();
-	return true;
+		if (registerEvent(moveEvent, itemId, itemIdMap)) {
+			tmpVector.emplace_back(itemId);
+		}
+	}
+
+	itemIdVector = std::move(tmpVector);
+	return !itemIdVector.empty();
 }
 
 bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
@@ -65,13 +57,17 @@ bool MoveEvents::registerLuaActionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(actionIdVector.begin(), actionIdVector.end(), [this, &moveEvent](const uint32_t &actionId) {
-		return registerEvent(moveEvent, actionId, actionIdMap);
-	});
+	std::vector<uint32_t> tmpVector;
+	tmpVector.reserve(actionIdVector.size());
 
-	actionIdVector.clear();
-	actionIdVector.shrink_to_fit();
-	return true;
+	for (const auto& actionId : actionIdVector) {
+		if (registerEvent(moveEvent, actionId, actionIdMap)) {
+			tmpVector.emplace_back(actionId);
+		}
+	}
+
+	actionIdVector = std::move(tmpVector);
+	return !actionIdVector.empty();
 }
 
 bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
@@ -80,13 +76,17 @@ bool MoveEvents::registerLuaUniqueEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(uniqueIdVector.begin(), uniqueIdVector.end(), [this, &moveEvent](const uint32_t &uniqueId) {
-		return registerEvent(moveEvent, uniqueId, uniqueIdMap);
-	});
+	std::vector<uint32_t> tmpVector;
+	tmpVector.reserve(uniqueIdVector.size());
 
-	uniqueIdVector.clear();
-	uniqueIdVector.shrink_to_fit();
-	return true;
+	for (const auto& uniqueId : uniqueIdVector) {
+		if (registerEvent(moveEvent, uniqueId, uniqueIdMap)) {
+			tmpVector.emplace_back(uniqueId);
+		}
+	}
+
+	uniqueIdVector = std::move(tmpVector);
+	return !uniqueIdVector.empty();
 }
 
 bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
@@ -95,13 +95,17 @@ bool MoveEvents::registerLuaPositionEvent(MoveEvent& moveEvent) {
 		return false;
 	}
 
-	std::for_each(positionVector.begin(), positionVector.end(), [this, &moveEvent](const Position &position) {
-		return registerEvent(moveEvent, position, positionsMap);
-	});
+	std::vector<Position> tmpVector;
+	tmpVector.reserve(positionVector.size());
 
-	positionVector.clear();
-	positionVector.shrink_to_fit();
-	return true;
+	for (const auto& position : positionVector) {
+		if (registerEvent(moveEvent, position, positionsMap)) {
+			tmpVector.emplace_back(position);
+		}
+	}
+
+	positionVector = std::move(tmpVector);
+	return !positionVector.empty();
 }
 
 bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
@@ -121,21 +125,24 @@ bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
 	return false;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
+bool MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(id);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
 		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
 		moveListMap[id] = moveEventList;
+		return true;
 	} else {
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		for (MoveEvent& existingMoveEvent : moveEventList) {
 			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
 				SPDLOG_WARN("[MoveEvents::registerEvent] - "
 							"Duplicate move event found: {}", id);
+				return false;
 			}
 		}
 		moveEventList.push_back(std::move(moveEvent));
+		return true;
 	}
 }
 
@@ -211,20 +218,23 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	return nullptr;
 }
 
-void MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
+bool MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const {
 	auto it = moveListMap.find(position);
 	if (it == moveListMap.end()) {
 		MoveEventList moveEventList;
 		moveEventList.moveEvent[moveEvent.getEventType()].push_back(std::move(moveEvent));
 		moveListMap[position] = moveEventList;
+		return true;
 	} else {
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		if (!moveEventList.empty()) {
 			SPDLOG_WARN("[MoveEvents::registerEvent] - "
 						"Duplicate move event found: {}", position.toString());
+			return false;
 		}
 
 		moveEventList.push_back(std::move(moveEvent));
+		return true;
 	}
 }
 
@@ -403,7 +413,7 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 		return 1;
 	}
 
-	if (!player->hasFlag(PlayerFlag_IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0) {
+	if (!player->hasFlag(PlayerFlags_t::IgnoreWeaponCheck) && moveEvent->getWieldInfo() != 0) {
 		if (player->getLevel() < moveEvent->getReqLevel() || player->getMagicLevel() < moveEvent->getReqMagLv()) {
 			return 0;
 		}
@@ -437,80 +447,71 @@ uint32_t MoveEvent::EquipItem(MoveEvent* moveEvent, Player* player, Item* item, 
 
 		player->addItemImbuementStats(imbuementInfo.imbuement);
 		g_game().increasePlayerActiveImbuements(player->getID());
+		player->updateInventoryImbuement(true);
 	}
 
-	if (!it.abilities) {
-		return 1;
-	}
-
-	if (it.abilities->invisible) {
-		Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
-		player->addCondition(condition);
-	}
-
-	if (it.abilities->manaShield) {
-		Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
-		player->addCondition(condition);
-	}
-
-	if (it.abilities->speed != 0) {
-		g_game().changePlayerSpeed(*player, it.abilities->speed);
-	}
-
-	if (it.abilities->conditionSuppressions != 0) {
-		player->addConditionSuppressions(it.abilities->conditionSuppressions);
-		player->sendIcons();
-	}
-
-	if (it.abilities->regeneration) {
-		Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
-
-		if (it.abilities->getHealthGain() != 0) {
-			condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
+	if (it.abilities) {
+		if (it.abilities->invisible) {
+			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_INVISIBLE, -1, 0);
+			player->addCondition(condition);
 		}
 
-		if (it.abilities->getHealthTicks() != 0) {
-			condition->setParam(CONDITION_PARAM_HEALTHTICKS, it.abilities->getHealthTicks());
+		if (it.abilities->manaShield) {
+			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_MANASHIELD, -1, 0);
+			player->addCondition(condition);
 		}
 
-		if (it.abilities->getManaGain() != 0) {
-			condition->setParam(CONDITION_PARAM_MANAGAIN, it.abilities->getManaGain());
+		if (it.abilities->speed != 0) {
+			g_game().changePlayerSpeed(*player, it.abilities->speed);
 		}
 
-		if (it.abilities->getManaTicks() != 0) {
-			condition->setParam(CONDITION_PARAM_MANATICKS, it.abilities->getManaTicks());
+		if (it.abilities->conditionSuppressions != 0) {
+			player->addConditionSuppressions(it.abilities->conditionSuppressions);
+			player->sendIcons();
 		}
 
-		player->addCondition(condition);
-	}
+		if (it.abilities->regeneration) {
+			Condition* condition = Condition::createCondition(static_cast<ConditionId_t>(slot), CONDITION_REGENERATION, -1, 0);
 
-	//skill/stats modifiers
-	bool needUpdate = false;
+			if (it.abilities->getHealthGain() != 0) {
+				condition->setParam(CONDITION_PARAM_HEALTHGAIN, it.abilities->getHealthGain());
+			}
 
-	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (it.abilities->skills[i]) {
-			needUpdate = true;
-			player->setVarSkill(static_cast<skills_t>(i), it.abilities->skills[i]);
+			if (it.abilities->getHealthTicks() != 0) {
+				condition->setParam(CONDITION_PARAM_HEALTHTICKS, it.abilities->getHealthTicks());
+			}
+
+			if (it.abilities->getManaGain() != 0) {
+				condition->setParam(CONDITION_PARAM_MANAGAIN, it.abilities->getManaGain());
+			}
+
+			if (it.abilities->getManaTicks() != 0) {
+				condition->setParam(CONDITION_PARAM_MANATICKS, it.abilities->getManaTicks());
+			}
+
+			player->addCondition(condition);
 		}
-	}
 
-	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-		if (it.abilities->stats[s]) {
-			needUpdate = true;
-			player->setVarStats(static_cast<stats_t>(s), it.abilities->stats[s]);
+		// Skill and stats modifiers
+		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
+			if (it.abilities->skills[i]) {
+				player->setVarSkill(static_cast<skills_t>(i), it.abilities->skills[i]);
+			}
 		}
 
-		if (it.abilities->statsPercent[s]) {
-			needUpdate = true;
-			player->setVarStats(static_cast<stats_t>(s), static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
+			if (it.abilities->stats[s]) {
+				player->setVarStats(static_cast<stats_t>(s), it.abilities->stats[s]);
+			}
+
+			if (it.abilities->statsPercent[s]) {
+				player->setVarStats(static_cast<stats_t>(s), static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+			}
 		}
 	}
 
-	if (needUpdate) {
-		player->sendStats();
-		player->sendSkills();
-	}
-
+	player->sendStats();
+	player->sendSkills();
 	return 1;
 }
 
@@ -544,60 +545,51 @@ uint32_t MoveEvent::DeEquipItem(MoveEvent*, Player* player, Item* item, Slots_t 
 
 		player->removeItemImbuementStats(imbuementInfo.imbuement);
 		g_game().decreasePlayerActiveImbuements(player->getID());
+		player->updateInventoryImbuement(true);
 	}
 
-	if (!it.abilities) {
-		return 1;
-	}
+	if (it.abilities) {
+		if (it.abilities->invisible) {
+			player->removeCondition(CONDITION_INVISIBLE, static_cast<ConditionId_t>(slot));
+		}
 
-	if (it.abilities->invisible) {
-		player->removeCondition(CONDITION_INVISIBLE, static_cast<ConditionId_t>(slot));
-	}
+		if (it.abilities->manaShield) {
+			player->removeCondition(CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
+		}
 
-	if (it.abilities->manaShield) {
-		player->removeCondition(CONDITION_MANASHIELD, static_cast<ConditionId_t>(slot));
-	}
+		if (it.abilities->speed != 0) {
+			g_game().changePlayerSpeed(*player, -it.abilities->speed);
+		}
 
-	if (it.abilities->speed != 0) {
-		g_game().changePlayerSpeed(*player, -it.abilities->speed);
-	}
+		if (it.abilities->conditionSuppressions != 0) {
+			player->removeConditionSuppressions(it.abilities->conditionSuppressions);
+			player->sendIcons();
+		}
 
-	if (it.abilities->conditionSuppressions != 0) {
-		player->removeConditionSuppressions(it.abilities->conditionSuppressions);
-		player->sendIcons();
-	}
+		if (it.abilities->regeneration) {
+			player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
+		}
 
-	if (it.abilities->regeneration) {
-		player->removeCondition(CONDITION_REGENERATION, static_cast<ConditionId_t>(slot));
-	}
+		// Skill and stats modifiers
+		for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
+			if (it.abilities->skills[i] != 0) {
+				player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+			}
+		}
 
-	//skill/stats modifiers
-	bool needUpdate = false;
+		for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
+			if (it.abilities->stats[s]) {
+				player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
+			}
 
-	for (int32_t i = SKILL_FIRST; i <= SKILL_LAST; ++i) {
-		if (it.abilities->skills[i] != 0) {
-			needUpdate = true;
-			player->setVarSkill(static_cast<skills_t>(i), -it.abilities->skills[i]);
+			if (it.abilities->statsPercent[s]) {
+				player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
+			}
 		}
 	}
 
-	for (int32_t s = STAT_FIRST; s <= STAT_LAST; ++s) {
-		if (it.abilities->stats[s]) {
-			needUpdate = true;
-			player->setVarStats(static_cast<stats_t>(s), -it.abilities->stats[s]);
-		}
-
-		if (it.abilities->statsPercent[s]) {
-			needUpdate = true;
-			player->setVarStats(static_cast<stats_t>(s), -static_cast<int32_t>(player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f)));
-		}
-	}
-
-	if (needUpdate) {
-		player->sendStats();
-		player->sendSkills();
-	}
-
+	player->sendStats();
+	player->sendSkills();
 	return 1;
 }
 

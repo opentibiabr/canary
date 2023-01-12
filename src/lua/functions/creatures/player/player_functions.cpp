@@ -3201,7 +3201,7 @@ int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 	// player:getFaction()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (player == nullptr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);

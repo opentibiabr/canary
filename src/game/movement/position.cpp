@@ -27,10 +27,7 @@ Direction Position::getRandomDirection()
 
 std::ostream& operator<<(std::ostream& os, const Position& pos)
 {
-	os << "( " << std::setw(5) << std::setfill('0') << pos.x;
-	os << " / " << std::setw(5) << std::setfill('0') << pos.y;
-	os << " / " << std::setw(3) << std::setfill('0') << pos.getZ();
-	os << " )";
+	os << pos.toString();
 	return os;
 }
 

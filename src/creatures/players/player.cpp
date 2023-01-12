@@ -1238,7 +1238,7 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 
 	if (!g_game().removeMoney(this, price, 0, true))
 	{
-		std::string message = "You don't have " + std::to_string(price) + " gold coins.";
+		std::string message = fmt::format("You don't have {} gold coins.", price);
 
 		SPDLOG_ERROR("[Player::onApplyImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		sendImbuementResult(message);
@@ -1308,7 +1308,7 @@ void Player::onClearImbuement(Item* item, uint8_t slot)
 
 	if (!g_game().removeMoney(this, baseImbuement->removeCost, 0, true))
 	{
-		std::string message = "You don't have " + std::to_string(baseImbuement->removeCost) + " gold coins.";
+		std::string message = fmt::format("You don't have {} gold coins.", baseImbuement->removeCost);
 
 		SPDLOG_ERROR("[Player::onClearImbuement] - An error occurred while player with name {} try to apply imbuement, player do not have money", this->getName());
 		this->sendImbuementResult(message);
@@ -2121,7 +2121,7 @@ void Player::addExperience(Creature* target, uint64_t exp, bool sendText/* = fal
 	experience += exp;
 
 	if (sendText) {
-		std::string expString = std::to_string(exp) + (exp != 1 ? " experience points." : " experience point.");
+		std::string expString = fmt::format("{} experience point{}.", exp, (exp != 1 ? "s" : ""));
 
 		TextMessage message(MESSAGE_EXPERIENCE, "You gained " + expString);
 		message.position = position;
@@ -2215,9 +2215,9 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 	if (sendText) {
 		lostExp -= experience;
 
-		std::string expString = std::to_string(lostExp) + (lostExp != 1 ? " experience points." : " experience point.");
+		std::string expString = fmt::format("You lost {} experience point{}.", lostExp, (lostExp != 1 ? "s" : ""));
 
-		TextMessage message(MESSAGE_EXPERIENCE, "You lost " + expString);
+		TextMessage message(MESSAGE_EXPERIENCE, expString);
 		message.position = position;
 		message.primary.value = lostExp;
 		message.primary.color = TEXTCOLOR_RED;
@@ -5436,9 +5436,18 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
 		sendStats();
 	}
 
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(2) << "Your " << ucwords(getSkillName(skill)) << " skill changed from level " << oldSkillValue << " (with " << oldPercentToNextLevel << "% progress towards level " << (oldSkillValue + 1) << ") to level " << newSkillValue << " (with " << newPercentToNextLevel << "% progress towards level " << (newSkillValue + 1) << ')';
-	sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
+	std::string message = fmt::format(
+		"Your {} skill changed from level {} (with {:.2f}% progress towards level {}) to level {} (with {:.2f}% progress towards level {})",
+		ucwords(getSkillName(skill)),
+		oldSkillValue,
+		oldPercentToNextLevel,
+		oldSkillValue + 1,
+		newSkillValue,
+		newPercentToNextLevel,
+		newSkillValue + 1
+	);
+
+	sendTextMessage(MESSAGE_EVENT_ADVANCE, message);
 	return sendUpdate;
 }
 

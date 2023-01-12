@@ -824,7 +824,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int32_t interva
 
 			if (isBuff && realHealthGain > 0) {
 				if (player) {
-					std::string healString = std::to_string(realHealthGain) + (realHealthGain != 1 ? " hitpoints." : " hitpoint.");
+					std::string healString = fmt::format("{} hitpoint{}.", realHealthGain, (realHealthGain != 1 ? "s" : ""));
 
 					TextMessage message(MESSAGE_HEALED, "You were healed for " + healString);
 					message.position = player->getPosition();

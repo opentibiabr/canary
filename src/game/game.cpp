@@ -6248,7 +6248,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		realManaChange = target->getMana() - realManaChange;
 
 		if (realManaChange > 0 && !target->isInGhostMode()) {
-			std::string damageString = std::to_string(realManaChange) + " mana.";
+			std::string damageString = fmt::format("{} mana", realManaChange);
 
 			std::string spectatorMessage;
 			if (!attacker) {

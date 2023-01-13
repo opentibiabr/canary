@@ -66,6 +66,7 @@ class Database {
 				error == CR_CONNECTION_ERROR;
 		}
 
+	private:
 		MYSQL* handle = nullptr;
 		std::recursive_mutex databaseLock;
 		uint64_t maxPacketSize = 1048576;
@@ -191,7 +192,7 @@ class DBTransaction {
 					rollback();
 				} catch (const std::exception &exception) {
 					// Error occurred while rollback transaction
-					SPDLOG_ERROR("Error occurred while rollback transaction", exception.what());
+					SPDLOG_ERROR("Error occurred while rollback transaction", __FUNCTION__, exception.what());
 				}
 			}
 		}
@@ -213,7 +214,7 @@ class DBTransaction {
 			} catch (const std::exception &exception) {
 				// An error occurred while starting the transaction
 				state = STATE_NO_START;
-				SPDLOG_ERROR("An error occurred while starting the transaction", exception.what());
+				SPDLOG_ERROR("An error occurred while starting the transaction", __FUNCTION__, exception.what());
 				return false;
 			}
 		}
@@ -230,7 +231,7 @@ class DBTransaction {
 				Database::getInstance().rollback();
 			} catch (const std::exception &exception) {
 				// An error occurred while rollback the transaction
-				SPDLOG_ERROR("An error occurred while rollback the transaction", exception.what());
+				SPDLOG_ERROR("An error occurred while rollback the transaction", __FUNCTION__, exception.what());
 			}
 		}
 
@@ -248,7 +249,7 @@ class DBTransaction {
 			} catch (const std::exception &exception) {
 				// An error occurred while starting the transaction
 				state = STATE_NO_START;
-				SPDLOG_ERROR("An error occurred while starting the transaction", exception.what());
+				SPDLOG_ERROR("An error occurred while starting the transaction", __FUNCTION__, exception.what());
 			}
 			return false;
 		}
@@ -281,7 +282,7 @@ class DBTransactionGuard
 					transaction_.commit();
 				} catch (const std::exception &exception) {
 					// Error occurred while committing transaction
-					SPDLOG_ERROR("Error occurred while committing transaction", exception.what());
+					SPDLOG_ERROR("Error occurred while committing transaction", __FUNCTION__, exception.what());
 					transaction_.rollback();
 				}
 			}

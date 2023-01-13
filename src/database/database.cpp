@@ -97,6 +97,7 @@ bool Database::executeQuery(const std::string_view& query) {
 
 	bool success = true;
 	int retry = 0;
+	databaseLock.lock();
 	while (mysql_query(handle, query.data()) != 0) {
 		SPDLOG_ERROR("Query: {}", query.substr(0, 256));
 		SPDLOG_ERROR("Message: {}", mysql_error(handle));
@@ -113,6 +114,7 @@ bool Database::executeQuery(const std::string_view& query) {
 	}
 
 	MYSQL_RES* m_res = mysql_store_result(handle);
+	databaseLock.unlock();
 	if (m_res) {
 		mysql_free_result(m_res);
 	}

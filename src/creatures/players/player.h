@@ -768,7 +768,7 @@ class Player final : public Creature, public Cylinder
 				skillLevel = std::min<int32_t>(it->second, skillLevel);
 			}
 
-			return skillLevel;
+			return static_cast<uint16_t>(skillLevel);
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;

@@ -62,12 +62,12 @@ function addSkill.onSay(player, words, param)
 		target:addExperience(addExp, false)
 	elseif ch == "m" then
 		for i = 1, count do
-			target:addManaSpent(target:getVocation():getRequiredManaSpent(target:getBaseMagicLevel() + 1) - target:getManaSpent())
+			target:addManaSpent(target:getVocation():getRequiredManaSpent(target:getBaseMagicLevel() + 1) - target:getManaSpent(), true)
 		end
 	else
 		local skillId = getSkillId(split[2])
 		for i = 1, count do
-			target:addSkillTries(skillId, target:getVocation():getRequiredSkillTries(skillId, target:getSkillLevel(skillId) + 1) - target:getSkillTries(skillId))
+			target:addSkillTries(skillId, target:getVocation():getRequiredSkillTries(skillId, target:getSkillLevel(skillId) + 1) - target:getSkillTries(skillId), true)
 		end
 	end
 	return false

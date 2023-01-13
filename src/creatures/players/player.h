@@ -162,10 +162,9 @@ class Player final : public Creature, public Cylinder
 		}
 		uint32_t getBestiaryKillCount(uint16_t raceid) const
 		{
-			int32_t cp = 0;
 			uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-			getStorageValue(key, cp);
-			return cp > 0 ? static_cast<uint32_t>(cp) : 0;
+			auto value = getStorageValue(key);
+			return value > 0 ? static_cast<uint32_t>(value) : 0;
 		}
 
 		void setGUID(uint32_t newGuid) {
@@ -406,7 +405,7 @@ class Player final : public Creature, public Cylinder
 		bool canOpenCorpse(uint32_t ownerId) const;
 
 		void addStorageValue(const uint32_t key, const int32_t value, const bool isLogin = false);
-		bool getStorageValue(const uint32_t key, int32_t& value) const;
+		int32_t getStorageValue(const uint32_t key) const;
 		void genReservedStorageRange();
 
 		void setGroup(Group* newGroup) {
@@ -729,9 +728,12 @@ class Player final : public Creature, public Cylinder
 		}
 
 		Faction_t getFaction() const override {
-			return FACTION_PLAYER;
+			return faction;
 		}
 
+		void setFaction(Faction_t factionId) {
+			faction = factionId;
+		}
 		//combat functions
 		bool setAttackedCreature(Creature* creature) override;
 		bool isImmune(CombatType_t type) const override;
@@ -2434,6 +2436,7 @@ class Player final : public Creature, public Cylinder
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		TradeState_t tradeState = TRADE_NONE;
 		FightMode_t fightMode = FIGHTMODE_ATTACK;
+		Faction_t faction = FACTION_PLAYER;
 		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
 		VipStatus_t statusVipList = VIPSTATUS_ONLINE;

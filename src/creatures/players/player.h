@@ -760,7 +760,9 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const {
-			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+			int32_t value = skills[skill].level + varSkills[skill];
+			value = value > 0 ? value : 0;
+			uint16_t skillLevel = std::max<uint16_t>(0, value);
 
 			auto it = maxValuePerSkill.find(skill);
 			if (it != maxValuePerSkill.end()) {

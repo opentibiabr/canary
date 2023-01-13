@@ -149,7 +149,7 @@ bool GameReload::reloadScripts() const
 	if (!g_scripts().loadScripts("scripts/lib", true, false)) {
 		return false;
 	}
-	g_scripts().clear();
+	g_scripts().clearAllScripts();
 
 	if (g_scripts().loadScripts("scripts", false, true)) {
 		return true;

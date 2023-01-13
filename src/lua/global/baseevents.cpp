@@ -77,10 +77,8 @@ bool BaseEvents::reload() {
 	return loadFromXml();
 }
 
-void BaseEvents::reInitState(bool fromLua) {
-	if (!fromLua) {
-		getScriptInterface().reInitState();
-	}
+void BaseEvents::reInitState() {
+	getScriptInterface().reInitState();
 }
 
 Event::Event(LuaScriptInterface* interface) : scriptInterface(interface) {}
@@ -135,25 +133,6 @@ bool Event::loadScript(const std::string& scriptFile) {
 	if (id == -1) {
 		SPDLOG_WARN("[Event::loadScript] - Event {} not found {}",
 					getScriptEventName(), scriptFile);
-		return false;
-	}
-
-	scripted = true;
-	scriptId = id;
-	return true;
-}
-
-bool Event::loadCallback() {
-	if ((scriptInterface == nullptr) || scriptId != 0) {
-		SPDLOG_WARN("[Event::loadScript] - ScriptInterface (nullptr), "
-					"can not load scriptid: {}", scriptId);
-		return false;
-	}
-
-	int32_t id = scriptInterface->getEvent();
-	if (id == -1) {
-		SPDLOG_WARN("[Event::loadScript] - Event {} not found",
-					getScriptEventName());
 		return false;
 	}
 

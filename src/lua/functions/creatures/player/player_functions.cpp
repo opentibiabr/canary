@@ -1578,12 +1578,7 @@ int PlayerFunctions::luaPlayerGetStorageValue(lua_State* L) {
 	}
 
 	uint32_t key = getNumber<uint32_t>(L, 2);
-	int32_t value;
-	if (player->getStorageValue(key, value)) {
-		lua_pushnumber(L, value);
-	} else {
-		lua_pushnumber(L, -1);
-	}
+	lua_pushnumber(L, player->getStorageValue(key));
 	return 1;
 }
 
@@ -3187,5 +3182,32 @@ int PlayerFunctions::luaPlayerGetForgeCores(lua_State *L) {
 
 	auto [sliver, core] = player->getForgeSliversAndCores();
 	lua_pushnumber(L, static_cast<lua_Number>(core));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
+	// player:setFaction(factionId)
+	Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	Faction_t factionId = getNumber<Faction_t>(L, 2);
+	player->setFaction(factionId);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
+	// player:getFaction()
+	const Player* player = getUserdata<Player>(L, 1);
+	if (player == nullptr) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+	
+	lua_pushnumber(L, player->getFaction());
 	return 1;
 }

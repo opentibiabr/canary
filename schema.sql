@@ -142,6 +142,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `istutorial` tinyint(1) NOT NULL DEFAULT '0',
     `forge_dusts` bigint(21) NOT NULL DEFAULT '0',
     `forge_dust_level` bigint(21) NOT NULL DEFAULT '100',
+    `randomize_mount` tinyint(1) NOT NULL DEFAULT '0',
     INDEX `account_id` (`account_id`),
     INDEX `vocation` (`vocation`),
     CONSTRAINT `players_pk` PRIMARY KEY (`id`),

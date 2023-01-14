@@ -307,6 +307,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->staminaMinutes = result->getNumber<uint16_t>("stamina");
   player->setStoreXpBoost(result->getNumber<uint16_t>("xpboost_value"));
   player->setExpBoostStamina(result->getNumber<uint16_t>("xpboost_stamina"));
+  player->setRandomMount(result->getNumber<uint8_t>("randomize_mount"));
 
   static const std::string skillNames[] = {"skill_fist", "skill_club", "skill_sword", "skill_axe", "skill_dist", "skill_shielding", "skill_fishing", "skill_critical_hit_chance", "skill_critical_hit_damage", "skill_life_leech_chance", "skill_life_leech_amount", "skill_mana_leech_chance", "skill_mana_leech_amount"};
   static const std::string skillNameTries[] = {"skill_fist_tries", "skill_club_tries", "skill_sword_tries", "skill_axe_tries", "skill_dist_tries", "skill_shielding_tries", "skill_fishing_tries", "skill_critical_hit_chance_tries", "skill_critical_hit_damage_tries", "skill_life_leech_chance_tries", "skill_life_leech_amount_tries", "skill_mana_leech_chance_tries", "skill_mana_leech_amount_tries"};
@@ -970,6 +971,7 @@ bool IOLoginData::savePlayer(Player* player)
   query << "`max_manashield` = " << player->getMaxManaShield() << ',';
   query << "`xpboost_value` = " << player->getStoreXpBoost() << ',';
   query << "`xpboost_stamina` = " << player->getExpBoostStamina() << ',';
+  query << "`randomize_mount` = " << player->isRandomMounted() << ',';
   query << "`quickloot_fallback` = " << (player->quickLootFallbackToMainContainer ? 1 : 0) << ',';
 
   if (!player->isOffline()) {

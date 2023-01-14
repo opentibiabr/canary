@@ -1229,7 +1229,8 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg)
 			newOutfit.lookMountLegs = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookMountFeet = std::min<uint8_t>(132, msg.getByte());
 			newOutfit.lookFamiliarsType = msg.get<uint16_t>();
-			g_game().playerChangeOutfit(player->getID(), newOutfit);
+			uint8_t isMountRandomized = msg.getByte();
+			g_game().playerChangeOutfit(player->getID(), newOutfit, isMountRandomized);
 		}
 		else if (outfitType == 1)
 		{
@@ -6092,7 +6093,7 @@ void ProtocolGame::sendOutfitWindow()
 	msg.addByte(mounted ? 0x01 : 0x00);
 
 	// Version 12.81 - Random outfit 'bool'
-	msg.addByte(0);
+	msg.addByte(player->isRandomMounted());
 
 	writeToOutputBuffer(msg);
 }

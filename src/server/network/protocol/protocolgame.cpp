@@ -5987,16 +5987,44 @@ void ProtocolGame::sendOutfitWindow()
 
 	for (const Outfit& outfit : outfits) {
 		uint8_t addons;
-		if (!player->getOutfitAddons(outfit, addons)) {
-			continue;
-		}
-
-		msg.add<uint16_t>(outfit.lookType);
-		msg.addString(outfit.name);
-		msg.addByte(addons);
-		msg.addByte(0x00);
-		if (++outfitSize == limitOutfits) {
-			break;
+		if (player->getOutfitAddons(outfit, addons)) {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(addons);
+			msg.addByte(0x00);
+			if (++outfitSize == limitOutfits) {
+				break;
+			}
+		} else if (outfit.lookType == 1210 || outfit.lookType == 1211) {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(3);
+			msg.addByte(0x02);
+			if (++outfitSize == limitOutfits) {
+				break;
+			}
+		} else if (outfit.lookType == 1456 || outfit.lookType == 1457) {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			msg.addByte(3);
+			msg.addByte(0x03);
+			if (++outfitSize == limitOutfits) {
+				break;
+			}
+		} else if (outfit.from == "store") {
+			msg.add<uint16_t>(outfit.lookType);
+			msg.addString(outfit.name);
+			uint8_t addonsCount = 0;
+			if (outfit.lookType >= 962 && outfit.lookType <= 974) {
+				msg.addByte(0);
+			} else {
+				msg.addByte(3);
+			}
+			msg.addByte(0x01);
+			msg.add<uint32_t>(0x00);
+			if (++outfitSize == limitOutfits) {
+				break;
+			}
 		}
 	}
 
@@ -6016,6 +6044,14 @@ void ProtocolGame::sendOutfitWindow()
 			msg.add<uint16_t>(mount.clientId);
 			msg.addString(mount.name);
 			msg.addByte(0x00);
+			if (++mountSize == limitMounts) {
+				break;
+			}
+		} else if (mount.type == "store") {
+			msg.add<uint16_t>(mount.clientId);
+			msg.addString(mount.name);
+			msg.addByte(0x01);
+			msg.add<uint32_t>(0x00);
 			if (++mountSize == limitMounts) {
 				break;
 			}

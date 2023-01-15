@@ -467,7 +467,7 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 	const Tile* playerTile = getTile();
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
-	
+
 	uint8_t imbuementsToCheck = g_game().getPlayerActiveImbuements(getID());
 	for (auto item : getAllInventoryItems()) {
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
@@ -654,9 +654,42 @@ void Player::closeContainer(uint8_t cid)
 	Container* container = openContainer.container;
 	openContainers.erase(it);
 
-	if (container && container->getID() == ITEM_BROWSEFIELD) {
+	if(!container){
+		return;
+	}
+
+	if (container->isAnykindOfRewardContainer() && !hasAnykindOfRewardContainerOpen()) {
+		removeEmptyRewards();
+	}
+
+	if (container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
+
+}
+
+void Player::removeEmptyRewards()
+{
+	auto container = rewardMap.begin();
+	for (; container != rewardMap.end();) {
+		if (container->second->size() == 0) {
+			auto &toRemove = container->second;
+			container = rewardMap.erase(container);
+			getRewardChest()->removeThing(toRemove, 1);
+			delete toRemove;
+		} else {
+			container++;
+		}
+	}
+}
+
+bool Player::hasAnykindOfRewardContainerOpen() {
+	for (const auto& it : openContainers) {
+		if (it.second.container->isAnykindOfRewardContainer()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index)
@@ -1349,7 +1382,7 @@ void Player::sendMarketEnter(uint32_t depotId)
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
-	
+
 	client->sendMarketEnter(depotId);
 }
 
@@ -5959,7 +5992,7 @@ std::string Player::getBlessingsName() const
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
 			blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {

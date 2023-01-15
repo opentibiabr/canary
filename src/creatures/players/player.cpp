@@ -246,8 +246,8 @@ Item* Player::getQuiverAmmoOfType(const ItemType &it) const {
         return nullptr;
     }
     Item* quiver = inventory[CONST_SLOT_RIGHT];
-    Container *container = quiver->getContainer();
-    for (Item* ammoItem : container->getItemList()) {
+    for (Container *container = quiver->getContainer();
+	Item* ammoItem : container->getItemList()) {
       if (ammoItem->getAmmoType() == it.ammoType) {
         if (level >= Item::items[ammoItem->getID()].minReqLevel) {
             return ammoItem;

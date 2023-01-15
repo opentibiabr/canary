@@ -5176,7 +5176,7 @@ bool Player::hasAnyMount() const
 
 uint8_t Player::getRandomMountId() const
 {
-	std::vector<uint16_t> playerMounts;
+	std::vector<uint8_t> playerMounts;
 
 	for (const auto& mounts = g_game().mounts.getMounts();
 		const Mount& mount : mounts) {
@@ -5185,9 +5185,9 @@ uint8_t Player::getRandomMountId() const
 		}
 	}
 
-	auto playerMountsCount = std::max<int32_t>(0, playerMounts.size() - 1);
-	auto randomIndex = uniform_random(0, playerMountsCount);
-	return playerMounts[randomIndex];
+	auto playerMountsSize = static_cast<int32_t>(playerMounts.size() - 1);
+	auto randomIndex = uniform_random(0, std::max<int32_t>(0, playerMountsSize));
+	return playerMounts.at(randomIndex);
 }
 
 bool Player::toggleMount(bool mount)

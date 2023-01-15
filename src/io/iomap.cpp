@@ -228,7 +228,7 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 		uint16_t x = base_x + tile_coord.x + pos.x;
 		uint16_t y = base_y + tile_coord.y + pos.y;
-		uint8_t z = base_z + pos.z;
+		uint8_t z = static_cast<uint8_t>(base_z + pos.z);
 
 		if (unload) {
 			Tile* tile = map.getTile(Position(x, y, z));

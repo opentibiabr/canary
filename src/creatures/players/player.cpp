@@ -5185,7 +5185,7 @@ uint8_t Player::getRandomMountId() const
 		}
 	}
 
-	auto playerMountsCount =std::max<int32_t>(0, playerMounts.size() - 1);
+	auto playerMountsCount = std::max<int32_t>(0, playerMounts.size() - 1);
 	auto randomIndex = uniform_random(0, playerMountsCount);
 	return playerMounts[randomIndex];
 }

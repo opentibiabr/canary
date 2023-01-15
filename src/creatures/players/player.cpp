@@ -482,10 +482,12 @@ void Player::updateInventoryImbuement()
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 	// Check if the player is in fight mode
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
+
 	// Iterate through all items in the player's inventory
 	for (auto item : getAllInventoryItems())
 	{
 		// Iterate through all imbuement slots on the item
+
 
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 		{
@@ -679,9 +681,42 @@ void Player::closeContainer(uint8_t cid)
 	Container* container = openContainer.container;
 	openContainers.erase(it);
 
-	if (container && container->getID() == ITEM_BROWSEFIELD) {
+	if(!container){
+		return;
+	}
+
+	if (container->isAnykindOfRewardContainer() && !hasAnykindOfRewardContainerOpen()) {
+		removeEmptyRewards();
+	}
+
+	if (container->getID() == ITEM_BROWSEFIELD) {
 		container->decrementReferenceCounter();
 	}
+
+}
+
+void Player::removeEmptyRewards()
+{
+	auto container = rewardMap.begin();
+	for (; container != rewardMap.end();) {
+		if (container->second->size() == 0) {
+			auto &toRemove = container->second;
+			container = rewardMap.erase(container);
+			getRewardChest()->removeThing(toRemove, 1);
+			delete toRemove;
+		} else {
+			container++;
+		}
+	}
+}
+
+bool Player::hasAnykindOfRewardContainerOpen() {
+	for (const auto& it : openContainers) {
+		if (it.second.container->isAnykindOfRewardContainer()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index)

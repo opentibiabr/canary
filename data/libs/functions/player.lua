@@ -37,10 +37,6 @@ function Player.hasFlag(self, flag)
 	return self:getGroup():hasFlag(flag)
 end
 
-function Player.hasCustomFlag(self, customflag)
-	return self:getGroup():hasCustomFlag(customflag)
-end
-
 function Player.isPremium(self)
 	return self:getPremiumDays() > 0 or configManager.getBoolean(configKeys.FREE_PREMIUM)
 end
@@ -210,14 +206,14 @@ function Player.transferMoneyTo(self, target, amount)
 
 		local query_town = db.storeQuery('SELECT `town_id` FROM `players` WHERE `name` = ' .. db.escapeString(target) ..' LIMIT 1;')
 		if query_town ~= false then
-			local town = result.getDataInt(query_town, "town_id")
+			local town = Result.getDataInt(query_town, "town_id")
 			if town then
 				local town_id = Town(town) and Town(town):getId()
 				if town_id and town_id  == TOWNS_LIST.DAWNPORT or town_id == TOWNS_LIST.DAWNPORT_TUTORIAL then -- Blocking transfer to Dawnport
 					return false
 				end
 			end
-			result.free(consulta)
+			Result.free(consulta)
 			db.query("UPDATE `players` SET `balance` = `balance` + '" .. amount .. "' WHERE `name` = " .. db.escapeString(target))
 		end
 	end
@@ -322,9 +318,9 @@ function Player.getAccountStorage(self, accountId, key, forceUpdate)
 
 	local query = db.storeQuery("SELECT `key`, MAX(`value`) as value FROM `player_storage` WHERE `player_id` IN (SELECT `id` FROM `players` WHERE `account_id` = ".. accountId ..") AND `key` = ".. key .." GROUP BY `key` LIMIT 1;")
 	if query ~= false then
-		local value = result.getDataInt(query, "value")
+		local value = Result.getDataInt(query, "value")
 		ACCOUNT_STORAGES[accountId] = value
-		result.free(query)
+		Result.free(query)
 		return value
 	end
 	return false

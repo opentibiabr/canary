@@ -1,26 +1,16 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_LUA_CREATURE_ACTIONS_H_
 #define SRC_LUA_CREATURE_ACTIONS_H_
 
-#include "lua/global/baseevents.h"
+#include "lua/scripts/scripts.h"
 #include "declarations.hpp"
 #include "lua/scripts/luascript.h"
 
@@ -28,17 +18,10 @@ class Action;
 class Position;
 
 using Action_ptr = std::unique_ptr<Action>;
-using ActionFunction =
-                       std::function<bool(Player* player, Item* item,
-                            const Position& fromPosition, Thing* target,
-                            const Position& toPosition, bool isHotkey
-                       )>;
 
-class Action : public Event {
+class Action : public Script {
 	public:
 		explicit Action(LuaScriptInterface* interface);
-
-		bool configureEvent(const pugi::xml_node& node) override;
 
 		// Scripting
 		virtual bool executeUse(Player* player, Item* item,
@@ -101,6 +84,22 @@ class Action : public Event {
 			positions.emplace_back(pos);
 		}
 
+		bool hasPosition(Position position) {
+			return std::ranges::find_if(positions.begin(), positions.end(), [position](Position storedPosition) {
+				if (storedPosition == position) {
+					return true;
+				}
+				return false;
+			}) != positions.end();
+		}
+
+		std::vector<Position> getPositions() const {
+			return positions;
+		}
+		void setPositions(Position pos) {
+			positions.emplace_back(pos);
+		}
+
 		virtual ReturnValue canExecuteAction(const Player* player,
                                              const Position& toPos);
 
@@ -111,14 +110,16 @@ class Action : public Event {
 		virtual Thing* getTarget(Player* player, Creature* targetCreature,
 						const Position& toPosition, uint8_t toStackPos) const;
 
-		/**ActionFunction = std::function<bool(Player* player, Item* item,
-        * const Position& fromPosition, Thing* target,
-        * const Position& toPosition, bool isHotkey)>;
-		**/
-		ActionFunction function;
-
 	private:
-		std::string getScriptEventName() const override;
+		std::string getScriptTypeName() const override {
+			return "onUse";
+		}
+
+		std::function<bool(
+			Player* player, Item* item,
+			const Position& fromPosition, Thing* target,
+			const Position& toPosition, bool isHotkey
+		)> useFunction = nullptr;
 
 		// Atributes
 		bool allowFarUse = false;
@@ -130,9 +131,11 @@ class Action : public Event {
 		std::vector<uint16_t> uniqueIds;
 		std::vector<uint16_t> actionIds;
 		std::vector<Position> positions;
+
+		friend class Actions;
 };
 
-class Actions final : public BaseEvents {
+class Actions final : public Scripts {
 	public:
 		Actions();
 		~Actions();
@@ -160,7 +163,8 @@ class Actions final : public BaseEvents {
 		bool registerLuaActionEvent(Action* action);
 		bool registerLuaPositionEvent(Action* action);
 		bool registerLuaEvent(Action* event);
-		void clear(bool fromLua) override final;
+		// Clear maps for reloading
+		void clear();
 
 	private:
 		bool hasPosition(Position position) const {
@@ -223,11 +227,6 @@ class Actions final : public BaseEvents {
 		ReturnValue internalUseItem(Player* player, const Position& pos, uint8_t index, Item* item, bool isHotkey);
 		static void showUseHotkeyMessage(Player* player, const Item* item, uint32_t count);
 
-		LuaScriptInterface& getScriptInterface() override;
-		std::string getScriptBaseName() const override;
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent(Event_ptr event, const pugi::xml_node& node) override;
-
 		using ActionUseMap = std::map<uint16_t, Action>;
 		ActionUseMap useItemMap;
 		ActionUseMap uniqueItemMap;
@@ -235,11 +234,6 @@ class Actions final : public BaseEvents {
 		std::map<Position, Action> actionPositionMap;
 
 		Action* getAction(const Item* item);
-		void clearMap(ActionUseMap& map, bool fromLua);
-
-		friend class ActionFunctions;
-
-		LuaScriptInterface scriptInterface;
 };
 
 constexpr auto g_actions = &Actions::getInstance;

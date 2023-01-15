@@ -1,29 +1,19 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_LUA_CREATURE_MOVEMENT_H_
 #define SRC_LUA_CREATURE_MOVEMENT_H_
 
-#include "lua/global/baseevents.h"
 #include "declarations.hpp"
 #include "items/item.h"
 #include "lua/functions/events/move_event_functions.hpp"
+#include "lua/scripts/scripts.h"
 #include "creatures/players/vocations/vocation.h"
 
 class MoveEvent;
@@ -32,10 +22,12 @@ struct MoveEventList {
 	std::list<MoveEvent> moveEvent[MOVE_EVENT_LAST];
 };
 
-class MoveEvents final : public BaseEvents {
+using VocEquipMap = std::map<uint16_t, bool>;
+
+class MoveEvents final : public Scripts {
 	public:
 		MoveEvents() = default;
-		~MoveEvents() override = default;
+		~MoveEvents() = default;
 
 		// non-copyable
 		MoveEvents(const MoveEvents&) = delete;
@@ -52,10 +44,6 @@ class MoveEvents final : public BaseEvents {
 		uint32_t onPlayerEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
 		uint32_t onPlayerDeEquip(Player& player, Item& item, Slots_t slot);
 		uint32_t onItemMove(Item& item, Tile& tile, bool isAdd);
-
-		void clear(bool fromLua) override {
-			fromLua = false;
-		}
 
 		std::map<Position, MoveEventList> getPositionsMap() const {
 			return positionsMap;
@@ -135,22 +123,11 @@ class MoveEvents final : public BaseEvents {
 		void clear();
 
 	private:
-		void clearMap(std::map<int32_t, MoveEventList>& map, bool fromLua);
-		void clearPosMap(std::map<Position, MoveEventList>& map, bool fromLua);
+		void clearMap(std::map<int32_t, MoveEventList>& map) const;
+		void clearPosMap(std::map<Position, MoveEventList>& map);
 
-		LuaScriptInterface& getScriptInterface() override {
-			return scriptInterface;
-		}
-		std::string getScriptBaseName() const override {
-			return "";
-		}
-		Event_ptr getEvent(const std::string& nodeName) override;
-		bool registerEvent([[maybe_unused]] Event_ptr event, [[maybe_unused]] const pugi::xml_node& node) override {
-			return false;
-		}
-
-		void registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
-		void registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
+		bool registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_t, MoveEventList>& moveListMap) const;
+		bool registerEvent(MoveEvent& moveEvent, const Position& position, std::map<Position, MoveEventList>& moveListMap) const;
 		MoveEvent* getEvent(Tile& tile, MoveEvent_t eventType);
 
 		MoveEvent* getEvent(Item& item, MoveEvent_t eventType, Slots_t slot);
@@ -159,26 +136,20 @@ class MoveEvents final : public BaseEvents {
 		std::map<int32_t, MoveEventList> actionIdMap;
 		std::map<int32_t, MoveEventList> itemIdMap;
 		std::map<Position, MoveEventList> positionsMap;
-
-		LuaScriptInterface scriptInterface {"MoveEvent interface"};
 };
 
 constexpr auto g_moveEvents = &MoveEvents::getInstance;
 
-class MoveEvent final : public Event {
+class MoveEvent final : public Script {
 	public:
 		explicit MoveEvent(LuaScriptInterface* interface);
 
 		MoveEvent_t getEventType() const;
 		void setEventType(MoveEvent_t type);
 
-		bool configureEvent([[maybe_unused]] const pugi::xml_node& node) override {
-			return false;
-		}
-
-		uint32_t fireStepEvent(Creature& creature, Item* item, const Position& pos);
-		uint32_t fireAddRemItem(Item& item, Item& tileItem, const Position& pos);
-		uint32_t fireAddRemItem(Item& item, const Position& pos);
+		uint32_t fireStepEvent(Creature& creature, Item* item, const Position& pos) const;
+		uint32_t fireAddRemItem(Item& item, Item& tileItem, const Position& pos) const;
+		uint32_t fireAddRemItem(Item& item, const Position& pos) const;
 		uint32_t fireEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
 
 		uint32_t getSlot() const {
@@ -186,11 +157,11 @@ class MoveEvent final : public Event {
 		}
 
 		// Scripting to lua interface
-		bool executeStep(Creature& creature, Item* item, const Position& pos);
-		bool executeEquip(Player& player, Item& item, Slots_t slot, bool isCheck);
-		bool executeAddRemItem(Item& item, Item& tileItem, const Position& pos);
+		bool executeStep(Creature& creature, Item* item, const Position& pos) const ;
+		bool executeEquip(Player& player, Item& item, Slots_t slot, bool isCheck) const ;
+		bool executeAddRemItem(Item& item, Item& tileItem, const Position& pos) const ;
 		// No have tile item
-		bool executeAddRemItem(Item& item, const Position& pos);
+		bool executeAddRemItem(Item& item, const Position& pos) const ;
 		//
 
 		//onEquip information
@@ -288,20 +259,25 @@ class MoveEvent final : public Event {
 		static uint32_t EquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 		static uint32_t DeEquipItem(MoveEvent* moveEvent, Player* player, Item* item, Slots_t slot, bool boolean);
 
+	private:
+		std::string getScriptTypeName() const override;
+
+		uint32_t slot = SLOTP_WHEREEVER;
+
 		MoveEvent_t eventType = MOVE_EVENT_NONE;
-		// Step function structure
+		/// Step function
 		std::function<uint32_t(
 			Creature* creature,
 			Item* item,
 			const Position& pos
-		)>stepFunction;
-		// Move function structure
+		)> stepFunction;
+		// Move function
 		std::function<uint32_t(
 			Item* item,
 			Item* tileItem,
 			const Position& pos
 		)> moveFunction;
-		// Equip function structure
+		// equipFunction
 		std::function<uint32_t(
 			MoveEvent* moveEvent,
 			Player* player,
@@ -309,13 +285,6 @@ class MoveEvent final : public Event {
 			Slots_t slot,
 			bool boolean
 		)> equipFunction;
-
-	private:
-		std::string getScriptEventName() const override {
-			return "";
-		}
-
-		uint32_t slot = SLOTP_WHEREEVER;
 
 		//onEquip information
 		uint32_t reqLevel = 0;
@@ -330,6 +299,8 @@ class MoveEvent final : public Event {
 		std::vector<uint32_t> actionIdVector;
 		std::vector<uint32_t> uniqueIdVector;
 		std::vector<Position> positionVector;
+
+		friend class MoveEventFunctions;
 };
 
 #endif  // SRC_LUA_CREATURE_MOVEMENT_H_

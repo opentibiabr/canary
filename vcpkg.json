@@ -2,23 +2,21 @@
   "name": "canary",
   "version-string": "1.0.0",
   "dependencies": [
-    "boost-asio",
-    "boost-lockfree",
-    "boost-variant",
-    "boost-filesystem",
-    "boost-iostreams",
-    "boost-system",
+    "asio",
     "pugixml",
     "spdlog",
     "curl",
     "jsoncpp",
     "protobuf",
     "parallel-hashmap",
+    "magic-enum",
+    "mio",
     {
       "name": "luajit",
       "platform": "!arm"
     },
-    { "name": "libmariadb",
+    {
+      "name": "libmariadb",
       "features": [ "mariadbclient" ]
     },
     {

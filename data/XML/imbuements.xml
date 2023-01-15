@@ -283,18 +283,18 @@
 	<!-- Speed Imbuement -->
 	<imbuement name="Swiftness" base="1" category="10" iconid="73" premium="0" storage="0">
 		<attribute key="description" value="Raises walking speed by 10." />
-		<attribute key="effect" type="speed" value="20" />
+		<attribute key="effect" type="speed" value="10" />
 		<attribute key="item" value="17458" count="15" />
 	</imbuement>
 	<imbuement name="Swiftness" base="2" category="10" iconid="73" premium="1" storage="0">
 		<attribute key="description" value="Raises walking speed by 15." />
-		<attribute key="effect" type="speed" value="30" />
+		<attribute key="effect" type="speed" value="15" />
 		<attribute key="item" value="17458" count="15" />
 		<attribute key="item" value="10302" count="25" />
 	</imbuement>
 	<imbuement name="Swiftness" base="3" category="10" iconid="73" premium="1" storage="50490">
 		<attribute key="description" value="Raises walking speed by 30." />
-		<attribute key="effect" type="speed" value="60" />
+		<attribute key="effect" type="speed" value="30" />
 		<attribute key="item" value="17458" count="15" />
 		<attribute key="item" value="10302" count="25" />
 		<attribute key="item" value="14081" count="20" />

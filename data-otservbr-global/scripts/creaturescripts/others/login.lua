@@ -78,7 +78,7 @@ function playerLogin.onLogin(player)
 
 	-- Recruiter system
 	local resultId = db.storeQuery('SELECT `recruiter` from `accounts` where `id`='..getAccountNumberByPlayerName(getPlayerName(player)))
-	local recruiterStatus = result.getNumber(resultId, 'recruiter')
+	local recruiterStatus = Result.getNumber(resultId, 'recruiter')
 	local sex = player:getSex()
 	if recruiterStatus >= 1 then
 		if sex == 1 then

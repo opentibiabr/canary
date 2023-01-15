@@ -142,7 +142,7 @@ class Player final : public Creature, public Cylinder
 		bool untameMount(uint8_t mountId);
 		bool hasMount(const Mount* mount) const;
 		bool hasAnyMount() const;
-		uint16_t getRandomMountId() const;
+		uint8_t getRandomMountId() const;
 		void dismount();
 
 		uint8_t isRandomMounted() const {

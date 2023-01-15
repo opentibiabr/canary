@@ -4921,6 +4921,11 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 	player->setRandomMount(isMountRandomized);
 
+	if (isMountRandomized && player->hasAnyMount()) {
+		auto randomMount = mounts.getMountByID(player->getRandomMountId());
+		outfit.lookMount = randomMount->clientId;
+	}
+
 	const Outfit* playerOutfit = Outfits::getInstance().getOutfitByLookType(player->getSex(), outfit.lookType);
 	if (!playerOutfit) {
 		outfit.lookMount = 0;
@@ -4941,12 +4946,9 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			if (prevMount) {
 				changeSpeed(player, mount->speed - prevMount->speed);
 			}
-
-			player->setCurrentMount(mount->id);
-		} else {
-			player->setCurrentMount(mount->id);
-			outfit.lookMount = 0;
 		}
+
+		player->setCurrentMount(mount->id);
 	} else if (player->isMounted()) {
 		player->dismount();
 	}
@@ -4956,11 +4958,6 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 
 		if (player->hasCondition(CONDITION_OUTFIT)) {
 			return;
-		}
-
-		if (player->randomMount && player->hasAnyMount()) {
-			auto mount = mounts.getMountByID(player->getRandomMountId());
-			outfit.lookMount = mount->clientId;
 		}
 
 		internalCreatureChangeOutfit(player, outfit);

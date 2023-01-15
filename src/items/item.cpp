@@ -1975,6 +1975,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 					if (i != SKILL_CRITICAL_HIT_CHANCE) {
 						s << std::noshowpos;
 					}
+					s << '%';
 				}
 
 				if (it.abilities->stats[STAT_MAGICPOINTS]) {

@@ -48846,7 +48846,7 @@
 	</item>
 	<item id="34090" article="a" name="soultainter">
 		<attribute key="weaponType" value="wand"/>
-		<attribute key="shootType" value="death"/>
+		<attribute key="shootType" value="suddendeath"/>
 		<attribute key="absorbpercentdeath" value="12"/>
 		<attribute key="magicpoints" value="5"/>
 		<attribute key="criticalhitdamage" value="10"/>

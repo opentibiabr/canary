@@ -228,12 +228,13 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 
 		uint16_t x = base_x + tile_coord.x + pos.x;
 		uint16_t y = base_y + tile_coord.y + pos.y;
-		uint16_t z = base_z + pos.z;
+		uint8_t z = base_z + pos.z;
 
 		if (unload) {
 			Tile* tile = map.getTile(Position(x, y, z));
-			TileItemVector* items = tile->getItemList();
-			if (items) {
+
+			if (const TileItemVector* items = tile->getItemList();
+				items) {
 				TileItemVector item_list = *items;
 				if (!item_list.size() == 0) {
 					for (Item* item : item_list) {
@@ -244,8 +245,8 @@ bool IOMap::parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Ma
 				}
 			}
 
-			Item* ground = tile->getGround();
-			if (ground) {
+			if (Item* ground = tile->getGround();
+				ground) {
 				g_game().internalRemoveItem(ground);
 			}
 			continue;

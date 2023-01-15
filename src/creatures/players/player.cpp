@@ -488,7 +488,6 @@ void Player::updateInventoryImbuement()
 	{
 		// Iterate through all imbuement slots on the item
 
-
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 		{
 			ImbuementInfo imbuementInfo;

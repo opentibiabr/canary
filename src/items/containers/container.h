@@ -118,7 +118,7 @@ class Container : public Item, public Cylinder
 		StashContainerList getStowableItems() const;
 		Item* getItemByIndex(size_t index) const;
 		bool isHoldingItem(const Item* item) const;
-		bool containItemWithId(const uint16_t id) const;
+		bool isHoldingItemWithId(const uint16_t id) const;
 
 		uint32_t getItemHoldingCount() const;
 		uint32_t getContainerHoldingCount() const;

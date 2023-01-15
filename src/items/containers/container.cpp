@@ -269,7 +269,7 @@ bool Container::isHoldingItem(const Item* item) const
 	return false;
 }
 
-bool Container::containItemWithId(const uint16_t id) const
+bool Container::isHoldingItemWithId(const uint16_t id) const
 {
     for (ContainerIterator it = iterator(); it.hasNext(); it.advance()) {
         if (it.operator*()->getID() == id) {
@@ -284,7 +284,7 @@ bool Container::isAnykindOfRewardContainer() const {
 }
 
 bool Container::isBrowseFieldAndHoldsRewardContainer() const {
-    return getID() == ITEM_BROWSEFIELD && containItemWithId(ITEM_REWARD_CHEST);
+    return getID() == ITEM_BROWSEFIELD && isHoldingItemWithId(ITEM_REWARD_CHEST);
 }
 
 void Container::onAddContainerItem(Item* item)

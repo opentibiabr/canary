@@ -237,7 +237,7 @@ bool Player::hasQuiverEquipped() const {
 }
 
 bool Player::hasWeaponDistanceEquipped() const{
-    Item* item = inventory[CONST_SLOT_LEFT];
+    const Item* item = inventory[CONST_SLOT_LEFT];
     return item && item->getWeaponType() == WEAPON_DISTANCE;
 }
 

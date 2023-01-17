@@ -4941,6 +4941,15 @@ void Game::playerChangeOutfit(uint32_t playerId, Outfit_t outfit, uint8_t isMoun
 			return;
 		}
 
+		const Tile* playerTile = player->getTile();
+		if (!playerTile) {
+			return;
+		}
+
+		if (playerTile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+			outfit.lookMount = 0;
+		}
+
 		if (player->isMounted()) {
 			Mount* prevMount = mounts.getMountByID(player->getCurrentMount());
 			if (prevMount) {

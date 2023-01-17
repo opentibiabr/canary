@@ -98,7 +98,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					if inbox and inbox:getEmptySlots() > 0 then
 						local decoKit = inbox:addItem(23398, 1)
 						local decoItemName = ItemType(31510):getName()
-						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION,
+						decoKit:setAttribute(DESCRIPTION,
 						"Unwrap it in your own house to create a " .. decoItemName .. ".")
 						decoKit:setCustomAttribute("unWrapId", 31510)
 						npcHandler:say(

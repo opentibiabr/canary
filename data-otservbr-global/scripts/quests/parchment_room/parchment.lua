@@ -21,7 +21,7 @@ end
 local parchment = MoveEvent()
 
 function parchment.onRemoveItem(item, position)
-	item:removeAttribute(ITEM_ATTRIBUTE_ACTIONID)
+	item:removeAttribute(ACTIONID)
 	addEvent(recreateParchment, 2 * 60 * 60 * 1000, position) -- 2 hours
 
 	for i = 1, #demonPositions do

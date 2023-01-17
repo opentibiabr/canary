@@ -50,7 +50,7 @@ local function playerAddItem(params, item)
 		-- If the item is writeable, just put its unique and the text in the "AttributeTable"
 		local attribute = AttributeTable[item.uid]
 		if attribute then
-			addItem:setAttribute(ITEM_ATTRIBUTE_TEXT, attribute.text)
+			addItem:setAttribute(TEXT, attribute.text)
 		end
 		local achievement = achievementTable[item.uid]
 		if achievement then
@@ -82,7 +82,7 @@ local function playerAddContainerItem(params, item)
 		reward:addItem(params.itemid, params.count)
 		local attribute = AttributeTable[item.uid]
 		if attribute then
-			addItem:setAttribute(ITEM_ATTRIBUTE_TEXT, attribute.text)
+			addItem:setAttribute(TEXT, attribute.text)
 		end
 	end
 

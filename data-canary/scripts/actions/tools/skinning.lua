@@ -348,7 +348,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 				if target.itemid == 10426 then
 					local marble = player:addItem(value.newItem, value.amount or 1)
 					if marble then
-						marble:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, value.desc:gsub("|PLAYERNAME|", player:getName()))
+						marble:setAttribute(DESCRIPTION, value.desc:gsub("|PLAYERNAME|", player:getName()))
 					end
 					effect = CONST_ME_HITAREA
 					target:remove()

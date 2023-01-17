@@ -37,16 +37,16 @@ function loadLuaMapAction(tablename)
 				
 				-- If he found the item, add the action id.
 				if item and value.itemId ~= false then
-					item:setAttribute(ITEM_ATTRIBUTE_ACTIONID, index)
+					item:setAttribute(ACTIONID, index)
 				end
 				if value.itemId == false and tile:getTopDownItem() then
-					tile:getTopDownItem():setAttribute(ITEM_ATTRIBUTE_ACTIONID, index)
+					tile:getTopDownItem():setAttribute(ACTIONID, index)
 				end
 				if value.itemId == false and tile:getTopTopItem() then
-					tile:getTopTopItem():setAttribute(ITEM_ATTRIBUTE_ACTIONID, index)
+					tile:getTopTopItem():setAttribute(ACTIONID, index)
 				end
 				if value.itemId == false and tile:getGround() then
-					tile:getGround():setAttribute(ITEM_ATTRIBUTE_ACTIONID, index)
+					tile:getGround():setAttribute(ACTIONID, index)
 				end
 			end
 		end
@@ -74,7 +74,7 @@ function loadLuaMapUnique(tablename)
 			item = tile:getItemById(value.itemId)
 			-- If he found the item, add the unique id
 			if item then
-				item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, index)
+				item:setAttribute(UNIQUEID, index)
 			end
 		end
 	end
@@ -98,7 +98,7 @@ function loadLuaMapSign(tablename)
 			end
 			-- If he found the item, add the text
 			if item then
-				item:setAttribute(ITEM_ATTRIBUTE_TEXT, value.text)
+				item:setAttribute(TEXT, value.text)
 			end
 		end
 	end
@@ -133,7 +133,7 @@ function loadLuaMapBookDocument(tablename)
 					end
 					-- If the item exists, add the text
 					if item then
-						item:setAttribute(ITEM_ATTRIBUTE_TEXT, value.text)
+						item:setAttribute(TEXT, value.text)
 						totals[2] = totals[2] + 1
 					else
 						Spdlog.warn("[loadLuaMapBookDocument] - Item not found! Index: ".. index ..", itemId: ".. value.itemId.."")

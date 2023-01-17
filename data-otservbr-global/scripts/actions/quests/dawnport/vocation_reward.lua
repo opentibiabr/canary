@@ -107,7 +107,7 @@ function vocationReward.onUse(player, item, fromPosition, itemEx, toPosition)
 		if reward.commonItems[i].text then
 			-- Create item to customize
 			local document = Game.createItem(reward.commonItems[i].id)
-			document:setAttribute(ITEM_ATTRIBUTE_TEXT, reward.commonItems[i].text)
+			document:setAttribute(TEXT, reward.commonItems[i].text)
 			container:addItemEx(document)
 		else
 			container:addItem(reward.commonItems[i].id, reward.commonItems[i].amount)

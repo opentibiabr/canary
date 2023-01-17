@@ -112,7 +112,7 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			Game.setStorageValue(GlobalStorage.Inquisition, math.random(4,5))
 		end
 		target:transform(target.itemid + 1)
-		target:setAttribute(ITEM_ATTRIBUTE_DURATION, 20000)
+		target:setAttribute(DURATION, 20000)
 		target:decay()
 		nexusMessage(player, player:getName() .. ' damaged the shadow nexus! You can\'t damage it while it\'s burning.')
 		toPosition:sendMagicEffect(CONST_ME_ENERGYHIT)

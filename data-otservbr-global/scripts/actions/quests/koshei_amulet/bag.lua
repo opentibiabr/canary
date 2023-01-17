@@ -16,8 +16,8 @@ function kosheiBag.onUse(player, item, fromPosition, target, toPosition, isHotke
 		if (bag) then
 			local document = bag:addItem(2834, 1)
 			if (document) then
-				document:setAttribute(ITEM_ATTRIBUTE_NAME, "Famous Inhabitants of Darashia, Page 2")
-				document:setAttribute(ITEM_ATTRIBUTE_TEXT, documentContent)
+				document:setAttribute(NAME, "Famous Inhabitants of Darashia, Page 2")
+				document:setAttribute(TEXT, documentContent)
 			end
 		end
 		player:setStorageValue(483293)

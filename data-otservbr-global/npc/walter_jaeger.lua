@@ -277,7 +277,7 @@ local function processItemInboxPurchase(player, name, id)
 	if inbox and inbox:getEmptySlots() > 0 then
 		local decoKit = inbox:addItem(23398, 1)
 		if decoKit then
-			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item with the Walter Jaeger.\nUnwrap it in your own house to create a <" .. name .. ">.")
+			decoKit:setAttribute(DESCRIPTION, "You bought this item with the Walter Jaeger.\nUnwrap it in your own house to create a <" .. name .. ">.")
 			decoKit:setCustomAttribute("unWrapId", id)
 			return true
 		end

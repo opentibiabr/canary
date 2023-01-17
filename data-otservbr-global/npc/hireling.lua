@@ -435,7 +435,7 @@ function createHirelingType(HirelingName)
 	local function GetReceipt(info)
 		local receipt = Game.createItem(info.success and 21932 or 21933)
 		receipt:setAttribute(
-			ITEM_ATTRIBUTE_TEXT,
+			TEXT,
 			receiptFormat:format(
 				os.date("%d. %b %Y - %H:%M:%S"),
 				info.type,

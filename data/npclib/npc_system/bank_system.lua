@@ -621,7 +621,7 @@ end
 
 function GetReceipt(info)
 	local receipt = Game.createItem(info.success and 19598 or 19599)
-	receipt:setAttribute(ITEM_ATTRIBUTE_TEXT, receiptFormat:format(os.date("%d. %b %Y - %H:%M:%S"),
+	receipt:setAttribute(TEXT, receiptFormat:format(os.date("%d. %b %Y - %H:%M:%S"),
                          info.type, info.amount, info.owner, info.recipient, info.message))
 
 	return receipt

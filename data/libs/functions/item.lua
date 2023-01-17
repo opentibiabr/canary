@@ -32,25 +32,25 @@ end
 
 function Item.setDescription(self, description)
 	if description ~= '' then
-		self:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, description)
+		self:setAttribute(DESCRIPTION, description)
 	else
-		self:removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION)
+		self:removeAttribute(DESCRIPTION)
 	end
 end
 
 function Item.setText(self, text)
 	if text ~= '' then
-		self:setAttribute(ITEM_ATTRIBUTE_TEXT, text)
+		self:setAttribute(TEXT, text)
 	else
-		self:removeAttribute(ITEM_ATTRIBUTE_TEXT)
+		self:removeAttribute(TEXT)
 	end
 end
 
 function Item.setName(self, name)
 	if name ~= '' then
-		self:setAttribute(ITEM_ATTRIBUTE_NAME, name)
+		self:setAttribute(NAME, name)
 	else
-		self:removeAttribute(ITEM_ATTRIBUTE_NAME)
+		self:removeAttribute(NAME)
 	end
 end
 
@@ -59,5 +59,5 @@ function Item.setUniqueId(self, uniqueId)
 		return false
 	end
 
-	self:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, uniqueId)
+	self:setAttribute(UNIQUEID, uniqueId)
 end

@@ -30,7 +30,7 @@ function theCursedMiscAction.onUse(cid, item, frompos, item2, topos)
 		if (user1:getStorageValue(Storage.TibiaTales.TheCursedCrystal.Oneeyedjoe) < 1) then
 			user1:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a sheet of paper.")
 			local paperCursedCrystal = doPlayerAddItem(cid, 2820, 1)
-			Item(paperCursedCrystal):setAttribute(ITEM_ATTRIBUTE_TEXT, "I did it! I reached the crystal gardens! What beauty and splendor I have seen down there. Even more: I discovered a small subterranean lake - but Harry was there before me. And he did something strange: He ringed a small, transparent looking bell and immediatly a big whirl appeared in the water. I suppose this is the mysterious way deeper into the caves we sought after for so long. But Harry, the coward, didn't dare to dive into the water. Instead he left the caverns and heeded back to the surface. I have to go after him tomorrow. I must have this bell!")
+			Item(paperCursedCrystal):setAttribute(TEXT, "I did it! I reached the crystal gardens! What beauty and splendor I have seen down there. Even more: I discovered a small subterranean lake - but Harry was there before me. And he did something strange: He ringed a small, transparent looking bell and immediatly a big whirl appeared in the water. I suppose this is the mysterious way deeper into the caves we sought after for so long. But Harry, the coward, didn't dare to dive into the water. Instead he left the caverns and heeded back to the surface. I have to go after him tomorrow. I must have this bell!")
 		else
 			user1:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The pile of bones empty.")
 		end

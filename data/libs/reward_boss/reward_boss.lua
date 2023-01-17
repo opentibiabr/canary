@@ -71,7 +71,7 @@ function InsertRewardItems(playerGuid, timestamp, itemList)
 				running = lastSid
 			}
 			local bag = Game.createItem(ITEM_REWARD_CONTAINER)
-			bag:setAttribute(ITEM_ATTRIBUTE_DATE, timestamp)
+			bag:setAttribute(DATE, timestamp)
 			if itemList then
 				for _, p in ipairs(itemList) do
 					bag:addItem(p[1], p[2])

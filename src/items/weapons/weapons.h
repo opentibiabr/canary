@@ -228,7 +228,7 @@ class Weapon : public Script
 class WeaponMelee final : public Weapon
 {
 	public:
-		explicit WeaponMelee(LuaScriptInterface* interface) : Weapon(interface) {}
+		explicit WeaponMelee(LuaScriptInterface* interface);
 
 		std::string getScriptTypeName() const override {
 			return "onUseWeapon";
@@ -253,7 +253,7 @@ class WeaponMelee final : public Weapon
 class WeaponDistance final : public Weapon
 {
 	public:
-		explicit WeaponDistance(LuaScriptInterface* interface) : Weapon(interface) {}
+		explicit WeaponDistance(LuaScriptInterface* interface);
 
 		std::string getScriptTypeName() const override {
 			return "onUseWeapon";

@@ -870,12 +870,12 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 	auto it = quickLootContainers.find(category);
 	if (it != quickLootContainers.end() && !loading) {
 		previousContainer = (*it).second;
-		int64_t flags = previousContainer->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+		int64_t flags = previousContainer->getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER);
 		flags &= ~(1 << category);
 		if (flags == 0) {
-			previousContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
 		} else {
-			previousContainer->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+			previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
 		}
 
 		previousContainer->decrementReferenceCounter();
@@ -888,8 +888,9 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 
 		container->incrementReferenceCounter();
 		if (!loading) {
-			int64_t flags = container->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-			container->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags | static_cast<uint32_t>(1 << category));
+			int64_t flags = container->getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER);
+			auto sendAttribute = flags | 1 << category;
+			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
 	}
 
@@ -941,7 +942,7 @@ void Player::checkLootContainers(const Item* item)
 			shouldSend = true;
 			it = quickLootContainers.erase(it);
 			lootContainer->decrementReferenceCounter();
-			lootContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			lootContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
 		} else {
 			++it;
 		}
@@ -1060,7 +1061,7 @@ Reward* Player::getReward(uint32_t rewardId, bool autoCreate)
 
 	Reward* reward = new Reward();
 	reward->incrementReferenceCounter();
-	reward->setIntAttr(ITEM_ATTRIBUTE_DATE, rewardId);
+	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
 
 	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
@@ -2380,10 +2381,9 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			const ItemType& it = Item::items[item->getID()];
 			if (it.abilities) {
 				const int16_t& absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
+				uint16_t charges = item->getCharges();
 				if (absorbPercent != 0) {
 					damage -= std::round(damage * (absorbPercent / 100.));
-
-					uint16_t charges = item->getCharges();
 					if (charges != 0) {
 						g_game().transformItem(item, item->getID(), charges - 1);
 					}
@@ -2393,8 +2393,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 					const int16_t& fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
 					if (fieldAbsorbPercent != 0) {
 						damage -= std::round(damage * (fieldAbsorbPercent / 100.));
-
-						uint16_t charges = item->getCharges();
 						if (charges != 0) {
 							g_game().transformItem(item, item->getID(), charges - 1);
 						}
@@ -5871,14 +5869,14 @@ void Player::openPlayerContainers()
 
 		Container* itemContainer = item->getContainer();
 		if (itemContainer) {
-			int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+			int64_t cid = item->getAttributeValue(ItemAttribute_t::OPENCONTAINER);
 			if (cid > 0) {
 				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 			}
 			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
 				Container* subContainer = (*it)->getContainer();
 				if (subContainer) {
-					uint8_t subcid = (*it)->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+					auto subcid = static_cast<uint8_t>((*it)->getAttributeValue(ItemAttribute_t::OPENCONTAINER));
 					if (subcid > 0) {
 						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
 					}

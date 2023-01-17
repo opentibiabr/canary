@@ -1221,7 +1221,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 		}
 	}
 
-	if (!item->isPushable() || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (!item->isPushable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTMOVEABLE);
 		return;
 	}
@@ -2027,7 +2027,7 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 	if (curType.type == newType.type) {
 		//Both items has the same type so we can safely change id/subtype
-		if (newCount == 0 && (item->isStackable() || item->hasAttribute(ITEM_ATTRIBUTE_CHARGES))) {
+		if (newCount == 0 && (item->isStackable() || item->hasAttribute(ItemAttribute_t::CHARGES))) {
 			if (item->isStackable()) {
 				internalRemoveItem(item);
 				return nullptr;
@@ -3220,7 +3220,7 @@ void Game::playerRotateItem(uint32_t playerId, const Position& pos, uint8_t stac
 	}
 
 	Item* item = thing->getItem();
-	if (!item || item->getID() != itemId || !item->isRotatable() || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (!item || item->getID() != itemId || !item->isRotatable() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3259,7 +3259,7 @@ void Game::playerConfigureShowOffSocket(uint32_t playerId, const Position& pos, 
 	}
 
 	Item* item = thing->getItem();
-	if (!item || item->getID() != itemId || !item->isPodium() || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (!item || item->getID() != itemId || !item->isPodium() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3295,7 +3295,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Pos
 	}
 
 	Item* item = thing->getItem();
-	if (!item || item->getID() != itemId || !item->isPodium() || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (!item || item->getID() != itemId || !item->isPodium() || item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3330,30 +3330,29 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t& outfit, const Pos
 		outfit.lookMount = 0;
 	}
 
-	std::string key; // Too lazy to fix it :) let's just use temporary key variable
 	if (outfit.lookType != 0) {
-		key = "LookType"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookType));
-		key = "LookHead"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookHead));
-		key = "LookBody"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookBody));
-		key = "LookLegs"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookLegs));
-		key = "LookFeet"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookFeet));
-		key = "LookAddons"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookAddons));
+		item->setCustomAttribute("LookType", static_cast<int64_t>(outfit.lookType));
+		item->setCustomAttribute("LookHead", static_cast<int64_t>(outfit.lookHead));
+		item->setCustomAttribute("LookBody", static_cast<int64_t>(outfit.lookBody));
+		item->setCustomAttribute("LookLegs", static_cast<int64_t>(outfit.lookLegs));
+		item->setCustomAttribute("LookFeet", static_cast<int64_t>(outfit.lookFeet));
+		item->setCustomAttribute("LookAddons", static_cast<int64_t>(outfit.lookAddons));
 	} else {
 		item->removeCustomAttribute("LookType");
 	}
 
 	if (outfit.lookMount != 0) {
-		key = "LookMount"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookMount));
-		key = "LookMountHead"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountHead));
-		key = "LookMountBody"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountBody));
-		key = "LookMountLegs"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountLegs));
-		key = "LookMountFeet"; item->setCustomAttribute(key, static_cast<int64_t>(outfit.lookMountFeet));
+		item->setCustomAttribute("LookMount", static_cast<int64_t>(outfit.lookMount));
+		item->setCustomAttribute("LookMountHead", static_cast<int64_t>(outfit.lookMountHead));
+		item->setCustomAttribute("LookMountBody", static_cast<int64_t>(outfit.lookMountBody));
+		item->setCustomAttribute("LookMountLegs", static_cast<int64_t>(outfit.lookMountLegs));
+		item->setCustomAttribute("LookMountFeet", static_cast<int64_t>(outfit.lookMountFeet));
 	} else {
 		item->removeCustomAttribute("LookMount");
 	}
 
-	key = "PodiumVisible"; item->setCustomAttribute(key, static_cast<int64_t>(podiumVisible));
-	key = "LookDirection"; item->setCustomAttribute(key, static_cast<int64_t>(direction));
+	item->setCustomAttribute("PodiumVisible", static_cast<int64_t>(podiumVisible));
+	item->setCustomAttribute("LookDirection", static_cast<int64_t>(direction));
 
 	SpectatorHashSet spectators;
 	g_game().map.getSpectators(spectators, pos, true);
@@ -3396,7 +3395,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			return;
 	}
 
-	if (!item || item->getID() != itemId || item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || (!item->isWrapable() && item->getID() != ITEM_DECORATION_KIT)) {
+	if (!item || item->getID() != itemId || item->hasAttribute(ItemAttribute_t::UNIQUEID) || (!item->isWrapable() && item->getID() != ITEM_DECORATION_KIT)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -3428,10 +3427,10 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 	}
 
 	std::string itemName = item->getName();
-	const ItemAttributes::CustomAttribute* attr = item->getCustomAttribute("unWrapId");
+	auto attr = item->getCustomAttribute("unWrapId");
 	uint16_t unWrapId = 0;
 	if (attr != nullptr) {
-		unWrapId = static_cast<uint16_t>(attr->getInt());
+		unWrapId = static_cast<uint16_t>(attr->getInt64Value());
 	}
 
 	// Prevent to wrap a filled bath tube
@@ -3448,10 +3447,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		uint16_t oldItemID = item->getID();
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
 		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
-		ItemAttributes::CustomAttribute customAttribute;
-		customAttribute.setInt64(oldItemID);
-		std::string key = "unWrapId";
-		newItem->setCustomAttribute(key, customAttribute);
+		newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
 		item->setSpecialDescription("Unwrap it in your own house to create a <" + itemName + ">.");
 		if (hiddenCharges > 0) {
 			item->setDate(hiddenCharges);
@@ -3467,7 +3463,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 			}
 			addMagicEffect(pos, CONST_ME_POFF);
 			newItem->removeCustomAttribute("unWrapId");
-			newItem->removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION);
+			newItem->removeAttribute(ItemAttribute_t::DESCRIPTION);
 			newItem->startDecaying();
 		}
 	}
@@ -3774,7 +3770,7 @@ void Game::playerRequestTrade(uint32_t playerId, const Position& pos, uint8_t st
 	}
 
 	Item* tradeItem = tradeThing->getItem();
-	if (tradeItem->getID() != itemId || !tradeItem->isPickupable() || tradeItem->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (tradeItem->getID() != itemId || !tradeItem->isPickupable() || tradeItem->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -4389,7 +4385,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position& pos, uint16_t item
 		corpse = item->getContainer();
 	}
 
-	if (!corpse || corpse->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || corpse->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+	if (!corpse || corpse->hasAttribute(ItemAttribute_t::UNIQUEID) || corpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
 	}
@@ -4468,7 +4464,7 @@ void Game::playerLootAllCorpses(Player* player, const Position& pos, bool lootAl
 			}
 
 			Container *tileCorpse = tileItem->getContainer();
-			if (!tileCorpse || !tileCorpse->isCorpse() || tileCorpse->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) || tileCorpse->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+			if (!tileCorpse || !tileCorpse->isCorpse() || tileCorpse->hasAttribute(ItemAttribute_t::UNIQUEID) || tileCorpse->hasAttribute(ItemAttribute_t::ACTIONID)) {
 				continue;
 			}
 
@@ -7690,7 +7686,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
 				}
 
 				tmpAmount -= stackCount;
@@ -7711,7 +7707,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
 				}
 			}
 		}
@@ -7833,7 +7829,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
 				}
 
 				tmpAmount -= stackCount;
@@ -7857,7 +7853,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
 				}
 			}
 		}
@@ -7924,7 +7920,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
 				}
 
 				tmpAmount -= stackCount;
@@ -7951,7 +7947,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				}
 
 				if (offer.tier > 0) {
-					item->setIntAttr(ITEM_ATTRIBUTE_TIER, offer.tier);
+					item->setAttribute(ItemAttribute_t::TIER, offer.tier);
 				}
 			}
 		}

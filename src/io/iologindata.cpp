@@ -483,12 +483,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       Container* itemContainer = item->getContainer();
       if (itemContainer) {
-        int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+        int64_t cid = item->getAttributeValue(ItemAttribute_t::OPENCONTAINER);
         if (cid > 0) {
           openContainersList.emplace_back(std::make_pair(cid, itemContainer));
         }
-        if (item->hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
-          int64_t flags = item->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+        if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
+          int64_t flags = item->getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER);
           for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
             if (hasBitSet(1 << category, flags)) {
               player->setLootContainer((ObjectCategory_t)category, itemContainer, true);
@@ -563,7 +563,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       int32_t pid = pair.second;
       if (pid >= 0 && pid < 100) {
-        Reward* reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
+        Reward* reward = player->getReward(item->getAttributeValue(ItemAttribute_t::DATE), true);
         if (reward) {
           it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
         }
@@ -757,8 +757,8 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
     ++runningId;
 
     if (Container* container = item->getContainer()) {
-      if (container->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-        container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
+      if (container->getAttributeValue(ItemAttribute_t::OPENCONTAINER) > 0) {
+        container->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
       }
 
       if (!openContainers.empty()) {
@@ -767,7 +767,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
           auto opcontainer = openContainer.container;
 
           if (opcontainer == container) {
-            container->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)its.first) + 1);
+            container->setAttribute(ItemAttribute_t::OPENCONTAINER, ((int)its.first) + 1);
             break;
           }
         }
@@ -801,8 +801,8 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
       Container* subContainer = item->getContainer();
       if (subContainer) {
         queue.emplace_back(subContainer, runningId);
-        if (subContainer->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER) > 0) {
-          subContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, 0);
+        if (subContainer->getAttributeValue(ItemAttribute_t::OPENCONTAINER) > 0) {
+          subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
         }
 
         if (!openContainers.empty()) {
@@ -811,7 +811,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
             auto opcontainer = openContainer.container;
 
             if (opcontainer == subContainer) {
-              subContainer->setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, ((int)it.first) + 1);
+              subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, (it.first) + 1);
               break;
             }
           }

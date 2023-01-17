@@ -10,7 +10,7 @@
 #include "pch.hpp"
 
 #include "items/item.h"
-#include "items/functions/item_parse.hpp"
+#include "items/functions/item/item_parse.hpp"
 #include "items/containers/container.h"
 #include "items/decay/decay.h"
 #include "game/movement/teleport.h"
@@ -24,7 +24,7 @@
 #include "lua/creature/actions.h"
 #include "creatures/combat/spells.h"
 
-#define IMBUEMENT_SLOT 500
+#define ITEM_IMBUEMENT_SLOT 500
 
 
 Items Item::items;
@@ -74,10 +74,10 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 	return newItem;
 }
 
-bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
+bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const
 {
-	const ItemAttributes::CustomAttribute* attribute = getCustomAttribute(IMBUEMENT_SLOT + slot);
-	auto info = attribute ? static_cast<uint32_t>(attribute->getInt()) : 0;
+	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
+	auto info = attribute ? static_cast<uint32_t>(attribute->getInt64Value()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
@@ -85,10 +85,8 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
 {
-	std::string key = std::to_string(IMBUEMENT_SLOT + slot);
-	ItemAttributes::CustomAttribute customAttribute;
-	customAttribute.setInt64(duration > 0 ? (duration << 8) | imbuementId : 0);
-	setCustomAttribute(key, customAttribute);
+	auto valueDuration = (static_cast<std::int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
+	setCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot), valueDuration);
 }
 
 void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
@@ -201,16 +199,16 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	id(itemId)
 {
 	const ItemType& it = items[id];
-
+	auto itemCharges = it.charges;
 	if (it.isFluidContainer() || it.isSplash()) {
 		setFluidType(itemCount);
 	} else if (it.stackable) {
 		if (itemCount != 0) {
 			setItemCount(itemCount);
-		} else if (it.charges != 0) {
-			setItemCount(it.charges);
+		} else if (itemCharges != 0) {
+			setItemCount(itemCharges);
 		}
-	} else if (it.charges != 0) {
+	} else if (itemCharges != 0) {
 		if (itemCount != 0) {
 			setCharges(itemCount);
 		} else {
@@ -222,19 +220,16 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 }
 
 Item::Item(const Item& i) :
-	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
-{
-	if (i.attributes) {
-		attributes.reset(new ItemAttributes(*i.attributes));
-	}
-}
+	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {}
 
 Item* Item::clone() const
 {
 	Item* item = Item::CreateItem(id, count);
-	if (attributes) {
-		item->attributes.reset(new ItemAttributes(*attributes));
+	if (item == nullptr) {
+		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
+		return nullptr;
 	}
+
 	return item;
 }
 
@@ -248,30 +243,21 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
-	if (!attributes) {
-		return !otherItem->attributes;
-	}
-
-	const auto& otherAttributes = otherItem->attributes;
-	if (!otherAttributes) {
+	if (getAttributeBits() != otherItem->getAttributeBits()) {
 		return false;
 	}
 
-	if (attributes->attributeBits != otherAttributes->attributeBits) {
-		return false;
-	}
-
-	for (const auto& attribute : attributes->attributes) {
-		for (const auto& otherAttribute : otherAttributes->attributes) {
-			if (attribute.type != otherAttribute.type) {
+	for (const auto& attribute : getAttributeVector()) {
+		for (const auto& compareAttribute : otherItem->getAttributeVector()) {
+			if (attribute.type != compareAttribute.type) {
 				continue;
 			}
 
-			if (ItemAttributes::isStrAttrType(attribute.type) && *attribute.value.string != *otherAttribute.value.string) {
+			if (isIntAttrType(attribute.type) && attribute.value.integer != compareAttribute.value.integer) {
 				return false;
 			}
 
-			if (ItemAttributes::isIntAttrType(attribute.type) && attribute.value.integer != otherAttribute.value.integer) {
+			if (isStrAttrType(attribute.type) && *attribute.value.string != *compareAttribute.value.string) {
 				return false;
 			}
 		}
@@ -286,9 +272,11 @@ void Item::setDefaultSubtype()
 
 	setItemCount(1);
 
-	if (it.charges != 0) {
+	auto itemCharges = it.charges;
+
+	if (itemCharges != 0) {
 		if (it.stackable) {
-			setItemCount(it.charges);
+			setItemCount(itemCharges);
 		} else {
 			setCharges(it.charges);
 		}
@@ -299,7 +287,7 @@ void Item::onRemoved()
 {
 	ScriptEnvironment::removeTempItem(this);
 
-	if (hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		g_game().removeUniqueItem(getUniqueId());
 	}
 }
@@ -314,17 +302,17 @@ void Item::setID(uint16_t newid)
 
 	if (newDuration == 0 && !it.stopTime && it.decayTo < 0) {
 		//We'll get called startDecay anyway so let's schedule it - actually not in all casses
-		if (hasAttribute(ITEM_ATTRIBUTE_DECAYSTATE)) {
+		if (hasAttribute(ItemAttribute_t::DECAYSTATE)) {
 			setDecaying(DECAYING_STOPPING);
 		}
-		removeAttribute(ITEM_ATTRIBUTE_DURATION);
+		removeAttribute(ItemAttribute_t::DURATION);
 	}
 
 	if (!isRewardCorpse()) {
-		removeAttribute(ITEM_ATTRIBUTE_CORPSEOWNER);
+		removeAttribute(ItemAttribute_t::CORPSEOWNER);
 	}
 
-	if (newDuration > 0 && (!prevIt.stopTime || !hasAttribute(ITEM_ATTRIBUTE_DURATION))) {
+	if (newDuration > 0 && (!prevIt.stopTime || !hasAttribute(ItemAttribute_t::DURATION))) {
 		setDecaying(DECAYING_PENDING);
 		setDuration(newDuration);
 	}
@@ -464,7 +452,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setUniqueId(uniqueId);
+			addUniqueId(uniqueId);
 			break;
 		}
 
@@ -546,7 +534,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setStrAttr(ITEM_ATTRIBUTE_NAME, name);
+			setAttribute(ItemAttribute_t::NAME, name);
 			break;
 		}
 
@@ -556,7 +544,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setStrAttr(ITEM_ATTRIBUTE_ARTICLE, article);
+			setAttribute(ItemAttribute_t::ARTICLE, article);
 			break;
 		}
 
@@ -566,7 +554,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setStrAttr(ITEM_ATTRIBUTE_PLURALNAME, pluralName);
+			setAttribute(ItemAttribute_t::PLURALNAME, pluralName);
 			break;
 		}
 
@@ -576,7 +564,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_WEIGHT, weight);
+			setAttribute(ItemAttribute_t::WEIGHT, weight);
 			break;
 		}
 
@@ -586,7 +574,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_ATTACK, attack);
+			setAttribute(ItemAttribute_t::ATTACK, attack);
 			break;
 		}
 
@@ -596,7 +584,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_DEFENSE, defense);
+			setAttribute(ItemAttribute_t::DEFENSE, defense);
 			break;
 		}
 
@@ -606,7 +594,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE, extraDefense);
+			setAttribute(ItemAttribute_t::EXTRADEFENSE, extraDefense);
 			break;
 		}
 
@@ -616,7 +604,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, imbuementSlot);
+			setAttribute(ItemAttribute_t::IMBUEMENT_SLOT, imbuementSlot);
 			break;
 		}
 
@@ -626,7 +614,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, openContainer);
+			setAttribute(ItemAttribute_t::OPENCONTAINER, openContainer);
 			break;
 		}
 
@@ -636,7 +624,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_ARMOR, armor);
+			setAttribute(ItemAttribute_t::ARMOR, armor);
 			break;
 		}
 
@@ -646,7 +634,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_HITCHANCE, hitChance);
+			setAttribute(ItemAttribute_t::HITCHANCE, hitChance);
 			break;
 		}
 
@@ -656,7 +644,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE, shootRange);
+			setAttribute(ItemAttribute_t::SHOOTRANGE, shootRange);
 			break;
 		}
 
@@ -666,7 +654,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setStrAttr(ITEM_ATTRIBUTE_SPECIAL, special);
+			setAttribute(ItemAttribute_t::SPECIAL, special);
 			break;
 		}
 
@@ -676,7 +664,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+			setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
 			break;
 		}
 
@@ -728,6 +716,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			return ATTR_READ_ERROR;
 		}
 
+		// Deprecated, all items that still exist with this attribute will work normally, but new items will be created with the new system, using ATTR_CUSTOM
 		case ATTR_CUSTOM_ATTRIBUTES: {
 			uint64_t size;
 			if (!propStream.read<uint64_t>(size)) {
@@ -738,16 +727,21 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				// Unserialize key type and value
 				std::string key;
 				if (!propStream.readString(key)) {
-					return ATTR_READ_ERROR;
-				};
-
-				// Unserialize value type and value
-				ItemAttributes::CustomAttribute customAttribute;
-				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
+					SPDLOG_ERROR("[DEPRECATED] Failed to read key");
 					return ATTR_READ_ERROR;
 				}
 
-				setCustomAttribute(key, customAttribute);
+				// Unserialize value type and value
+				CustomAttribute customAttribute;
+				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
+					SPDLOG_ERROR("[DEPRECATED] Failed to unserialize attributes");
+					return ATTR_READ_ERROR;
+				}
+
+				// Remove old custom attribute
+				removeAttribute(ItemAttribute_t::CUSTOM);
+				// Add new custom attribute
+				addCustomAttribute(key, customAttribute);
 			}
 			break;
 		}
@@ -758,17 +752,45 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, imbuementType);
+			setAttribute(ItemAttribute_t::IMBUEMENT_TYPE, imbuementType);
 			break;
 		}
 
 		case ATTR_TIER: {
 			uint8_t tier;
 			if (!propStream.read<uint8_t>(tier)) {
+				SPDLOG_ERROR("[{}] failed to read tier", __FUNCTION__);
 				return ATTR_READ_ERROR;
 			}
 
-			setIntAttr(ITEM_ATTRIBUTE_TIER, tier);
+			setAttribute(ItemAttribute_t::TIER, tier);
+			break;
+		}
+
+		case ATTR_CUSTOM: {
+			uint64_t size;
+			if (!propStream.read<uint64_t>(size)) {
+				SPDLOG_ERROR("[{}] failed to read size", __FUNCTION__);
+				return ATTR_READ_ERROR;
+			}
+
+			for (uint64_t i = 0; i < size; i++) {
+				// Unserialize custom attribute key type
+				std::string key;
+				if (!propStream.readString(key)) {
+					SPDLOG_ERROR("[{}] failed to read custom type", __FUNCTION__);
+					return ATTR_READ_ERROR;
+				};
+
+				
+				CustomAttribute customAttribute;
+				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
+					SPDLOG_ERROR("[{}] failed to read custom value", __FUNCTION__);
+					return ATTR_READ_ERROR;
+				}
+
+				addCustomAttribute(key, customAttribute);
+			}
 			break;
 		}
 
@@ -844,108 +866,123 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.writeString(specialDesc);
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+	if (hasAttribute(ItemAttribute_t::DURATION)) {
 		propWriteStream.write<uint8_t>(ATTR_DURATION);
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	ItemDecayState_t decayState = getDecaying();
+	auto decayState = getDecaying();
 	if (decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_NAME)) {
+	if (hasAttribute(ItemAttribute_t::NAME)) {
 		propWriteStream.write<uint8_t>(ATTR_NAME);
-		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_NAME));
+		propWriteStream.writeString(getAttributeString(ItemAttribute_t::NAME));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_ARTICLE)) {
+	if (hasAttribute(ItemAttribute_t::ARTICLE)) {
 		propWriteStream.write<uint8_t>(ATTR_ARTICLE);
-		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_ARTICLE));
+		propWriteStream.writeString(getAttributeString(ItemAttribute_t::ARTICLE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_PLURALNAME)) {
+	if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
 		propWriteStream.write<uint8_t>(ATTR_PLURALNAME);
-		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_PLURALNAME));
+		propWriteStream.writeString(getAttributeString(ItemAttribute_t::PLURALNAME));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_WEIGHT)) {
+	if (hasAttribute(ItemAttribute_t::WEIGHT)) {
 		propWriteStream.write<uint8_t>(ATTR_WEIGHT);
-		propWriteStream.write<uint32_t>(getIntAttr(ITEM_ATTRIBUTE_WEIGHT));
+		propWriteStream.write<uint32_t>(getAttributeValue(ItemAttribute_t::WEIGHT));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {
+	if (hasAttribute(ItemAttribute_t::ATTACK)) {
 		propWriteStream.write<uint8_t>(ATTR_ATTACK);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_ATTACK));
+		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::ATTACK));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_DEFENSE)) {
+	if (hasAttribute(ItemAttribute_t::DEFENSE)) {
 		propWriteStream.write<uint8_t>(ATTR_DEFENSE);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_DEFENSE));
+		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::DEFENSE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_EXTRADEFENSE)) {
+	if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
 		propWriteStream.write<uint8_t>(ATTR_EXTRADEFENSE);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE));
+		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::EXTRADEFENSE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)) {
+	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT));
+		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_OPENCONTAINER)) {
+	if (hasAttribute(ItemAttribute_t::OPENCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_OPENCONTAINER);
-		propWriteStream.write<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER));
+		propWriteStream.write<uint8_t>(getAttributeValue(ItemAttribute_t::OPENCONTAINER));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_ARMOR)) {
+	if (hasAttribute(ItemAttribute_t::ARMOR)) {
 		propWriteStream.write<uint8_t>(ATTR_ARMOR);
-		propWriteStream.write<int32_t>(getIntAttr(ITEM_ATTRIBUTE_ARMOR));
+		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::ARMOR));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_HITCHANCE)) {
+	if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
 		propWriteStream.write<uint8_t>(ATTR_HITCHANCE);
-		propWriteStream.write<int8_t>(getIntAttr(ITEM_ATTRIBUTE_HITCHANCE));
+		propWriteStream.write<int8_t>(getAttributeValue(ItemAttribute_t::HITCHANCE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_SHOOTRANGE)) {
+	if (hasAttribute(ItemAttribute_t::SHOOTRANGE)) {
 		propWriteStream.write<uint8_t>(ATTR_SHOOTRANGE);
-		propWriteStream.write<uint8_t>(getIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE));
+		propWriteStream.write<uint8_t>(getAttributeValue(ItemAttribute_t::SHOOTRANGE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_SPECIAL)) {
+	if (hasAttribute(ItemAttribute_t::SPECIAL)) {
 		propWriteStream.write<uint8_t>(ATTR_SPECIAL);
-		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_SPECIAL));
+		propWriteStream.writeString(getAttributeString(ItemAttribute_t::SPECIAL));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
-		const ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getCustomAttributeMap();
+	// Deprecated, all items that still exist with this attribute will work normally, but new items will be created with the new system, using ATTR_CUSTOM
+	if (hasAttribute(ItemAttribute_t::CUSTOM)) {
+		auto customAttrMap = getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
-		propWriteStream.write<uint64_t>(customAttrMap->size());
-		for (const auto &entry : *customAttrMap) {
-			// Serializing key type and value
-			propWriteStream.writeString(entry.first);
-
-			// Serializing value type and value
-			entry.second.serialize(propWriteStream);
+		propWriteStream.write<uint64_t>(customAttrMap.size());
+		for (const auto &[attributeName, attributePtr] : customAttrMap) {
+			// Serializing key type
+			propWriteStream.writeString(attributeName);
+			// Serializing value type
+			attributePtr.serialize(propWriteStream);
 		}
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
+	if (hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_QUICKLOOTCONTAINER);
 		propWriteStream.write<uint32_t>(getQuicklootAttr());
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_TYPE)) {
+	if (hasAttribute(ItemAttribute_t::IMBUEMENT_TYPE)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
-		propWriteStream.writeString(getStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE));
+		propWriteStream.writeString(getAttributeString(ItemAttribute_t::IMBUEMENT_TYPE));
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_TIER)) {
+	if (hasAttribute(ItemAttribute_t::TIER)) {
 		propWriteStream.write<uint8_t>(ATTR_TIER);
 		propWriteStream.write<uint8_t>(getTier());
+	}
+
+	// Serialize custom attributes, only serialize if the map not is empty
+	if (auto customAttributeMap = getCustomAttributeMap();
+		!customAttributeMap.empty())
+	{
+		propWriteStream.write<uint8_t>(ATTR_CUSTOM);
+		propWriteStream.write<uint64_t>(customAttributeMap.size());
+		for (const auto &[attributeKey, customAttribute] : customAttributeMap)
+		{
+			// Serializing custom attribute key type
+			propWriteStream.writeString(attributeKey);
+			// Serializing custom attribute value type
+			customAttribute.serialize(propWriteStream);
+		}
 	}
 }
 
@@ -954,15 +991,15 @@ bool Item::hasProperty(ItemProperty prop) const
 	const ItemType& it = items[id];
 	switch (prop) {
 		case CONST_PROP_BLOCKSOLID: return it.blockSolid;
-		case CONST_PROP_MOVEABLE: return it.moveable && !hasAttribute(ITEM_ATTRIBUTE_UNIQUEID);
+		case CONST_PROP_MOVEABLE: return it.moveable && !hasAttribute(ItemAttribute_t::UNIQUEID);
 		case CONST_PROP_HASHEIGHT: return it.hasHeight;
 		case CONST_PROP_BLOCKPROJECTILE: return it.blockProjectile;
 		case CONST_PROP_BLOCKPATH: return it.blockPathFind;
 		case CONST_PROP_ISVERTICAL: return it.isVertical;
 		case CONST_PROP_ISHORIZONTAL: return it.isHorizontal;
-		case CONST_PROP_IMMOVABLEBLOCKSOLID: return it.blockSolid && (!it.moveable || hasAttribute(ITEM_ATTRIBUTE_UNIQUEID));
-		case CONST_PROP_IMMOVABLEBLOCKPATH: return it.blockPathFind && (!it.moveable || hasAttribute(ITEM_ATTRIBUTE_UNIQUEID));
-		case CONST_PROP_IMMOVABLENOFIELDBLOCKPATH: return !it.isMagicField() && it.blockPathFind && (!it.moveable || hasAttribute(ITEM_ATTRIBUTE_UNIQUEID));
+		case CONST_PROP_IMMOVABLEBLOCKSOLID: return it.blockSolid && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+		case CONST_PROP_IMMOVABLEBLOCKPATH: return it.blockPathFind && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
+		case CONST_PROP_IMMOVABLENOFIELDBLOCKPATH: return !it.isMagicField() && it.blockPathFind && (!it.moveable || hasAttribute(ItemAttribute_t::UNIQUEID));
 		case CONST_PROP_NOFIELDBLOCKPATH: return !it.isMagicField() && it.blockPathFind;
 		case CONST_PROP_SUPPORTHANGABLE: return it.isHorizontal || it.isVertical;
 		default: return false;
@@ -1101,7 +1138,7 @@ std::vector<std::pair<std::string, std::string>>
 				ss.str("");
 				ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
 				descriptions.emplace_back("Protection", ss.str());
-		}
+			}
 			for (size_t i = 0; i < COMBAT_COUNT; ++i) {
 				if (it.abilities->fieldAbsorbPercent[i] == 0) {
 					continue;
@@ -1158,7 +1195,7 @@ std::vector<std::pair<std::string, std::string>>
 
 		if (it.showDuration) {
 			ss.str("");
-			if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+			if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 				uint32_t duration = item->getDuration() / 1000;
 				ss << "Will expire in ";
 				if (duration >= 86400) {
@@ -1660,7 +1697,8 @@ std::string Item::parseShowAttributesDescription(const Item *item, const uint16_
 						itemDescription << ", ";
 					}
 
-					itemDescription << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);				}
+					itemDescription << fmt::format("{} field {:+}%", getCombatName(indexToCombatType(i)), itemType.abilities->fieldAbsorbPercent[i]);
+				}
 			} else {
 				if (begin) {
 					begin = false;
@@ -2135,7 +2173,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		}
 	} else if (it.isContainer() || (item && item->getContainer())) {
 		uint32_t volume = 0;
-		if (!item || !item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+		if (!item || !item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 			if (it.isContainer()) {
 				volume = it.maxItems;
 			} else {
@@ -2237,7 +2275,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	}
 
 	if (it.showDuration) {
-		if (item && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+		if (item && item->hasAttribute(ItemAttribute_t::DURATION)) {
 			uint32_t duration = item->getDuration() / 1000;
 			s << " that will expire in ";
 
@@ -2435,14 +2473,14 @@ std::string Item::getWeightDescription() const
 	return getWeightDescription(weight);
 }
 
-void Item::setUniqueId(uint16_t n)
+void Item::addUniqueId(uint16_t uniqueId)
 {
-	if (hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		return;
 	}
 
-	if (g_game().addUniqueItem(n, this)) {
-		getAttributes()->setUniqueId(n);
+	if (g_game().addUniqueItem(uniqueId, this)) {
+		setUniqueId(uniqueId);
 	}
 }
 
@@ -2457,7 +2495,7 @@ bool Item::canDecay() const
 		return false;
 	}
 
-	if (hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		return false;
 	}
 
@@ -2503,113 +2541,6 @@ LightInfo Item::getLightInfo() const
 	return {it.lightLevel, it.lightColor};
 }
 
-std::string ItemAttributes::emptyString;
-int64_t ItemAttributes::emptyInt;
-double ItemAttributes::emptyDouble;
-bool ItemAttributes::emptyBool;
-
-const std::string& ItemAttributes::getStrAttr(ItemAttrTypes type) const
-{
-	if (!isStrAttrType(type)) {
-		return emptyString;
-	}
-
-	const Attribute* attr = getExistingAttr(type);
-	if (!attr) {
-		return emptyString;
-	}
-	return *attr->value.string;
-}
-
-void ItemAttributes::setStrAttr(ItemAttrTypes type, const std::string& value)
-{
-	if (!isStrAttrType(type)) {
-		return;
-	}
-
-	if (value.empty()) {
-		return;
-	}
-
-	Attribute& attr = getAttr(type);
-	delete attr.value.string;
-	attr.value.string = new std::string(value);
-}
-
-void ItemAttributes::removeAttribute(ItemAttrTypes type)
-{
-	if (!hasAttribute(type)) {
-		return;
-	}
-
-	for (auto it = attributes.begin(), end = attributes.end(); it != end; ++it) {
-		if ((*it).type == type) {
-			(*it) = std::move(attributes.back());
-			attributes.pop_back();
-			break;
-		}
-	}
-	attributeBits &= ~type;
-}
-
-int64_t ItemAttributes::getIntAttr(ItemAttrTypes type) const
-{
-	if (!isIntAttrType(type)) {
-		return 0;
-	}
-
-	const Attribute* attr = getExistingAttr(type);
-	if (!attr) {
-		return 0;
-	}
-	return attr->value.integer;
-}
-
-void ItemAttributes::setIntAttr(ItemAttrTypes type, int64_t value)
-{
-	if (!isIntAttrType(type)) {
-		return;
-	}
-
-	getAttr(type).value.integer = value;
-}
-
-void ItemAttributes::increaseIntAttr(ItemAttrTypes type, int64_t value)
-{
-	if (!isIntAttrType(type)) {
-		return;
-	}
-
-	getAttr(type).value.integer += value;
-}
-
-const ItemAttributes::Attribute* ItemAttributes::getExistingAttr(ItemAttrTypes type) const
-{
-	if (hasAttribute(type)) {
-		for (const Attribute& attribute : attributes) {
-			if (attribute.type == type) {
-				return &attribute;
-			}
-		}
-	}
-	return nullptr;
-}
-
-ItemAttributes::Attribute& ItemAttributes::getAttr(ItemAttrTypes type)
-{
-	if (hasAttribute(type)) {
-		for (Attribute& attribute : attributes) {
-			if (attribute.type == type) {
-				return attribute;
-			}
-		}
-	}
-
-	attributeBits |= type;
-	attributes.emplace_back(type);
-	return attributes.back();
-}
-
 void Item::startDecaying()
 {
 	g_decay().startDecay(this);
@@ -2622,24 +2553,20 @@ void Item::stopDecaying()
 
 bool Item::hasMarketAttributes()
 {
-	if (!attributes) {
-		return true;
-	}
-
-	for (const auto& attribute : attributes->getList()) {
-		if (attribute.type == ITEM_ATTRIBUTE_CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
+	for (const auto& attribute : getAttributeVector()) {
+		if (attribute.type == ItemAttribute_t::CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
 			return false;
 		}
 
-		if (attribute.type == ITEM_ATTRIBUTE_DURATION && static_cast<uint32_t>(attribute.value.integer) != getDefaultDuration()) {
+		if (attribute.type == ItemAttribute_t::DURATION && static_cast<uint32_t>(attribute.value.integer) != getDefaultDuration()) {
 			return false;
 		}
 
-		if (attribute.type == ITEM_ATTRIBUTE_IMBUEMENT_TYPE && !hasImbuements()) {
+		if (attribute.type == ItemAttribute_t::IMBUEMENT_TYPE && !hasImbuements()) {
 			return false;
 		}
 
-		if (attribute.type == ITEM_ATTRIBUTE_TIER && static_cast<uint32_t>(attribute.value.integer) != getTier()) {
+		if (attribute.type == ItemAttribute_t::TIER && static_cast<uint8_t>(attribute.value.integer) != getTier()) {
 			return false;
 		}
 	}

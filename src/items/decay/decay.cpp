@@ -29,14 +29,14 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	const int64_t duration = item->getIntAttr(ITEM_ATTRIBUTE_DURATION);
-	if (duration <= 0 && item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+	const int64_t duration = item->getAttributeValue(ItemAttribute_t::DURATION);
+	if (duration <= 0 && item->hasAttribute(ItemAttribute_t::DURATION)) {
 		internalDecayItem(item);
 		return;
 	}
 
 	if (duration > 0) {
-		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
+		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			stopDecay(item);
 		}
 
@@ -59,9 +59,9 @@ void Decay::startDecay(Item* item)
 
 void Decay::stopDecay(Item* item)
 {
-	if (item->hasAttribute(ITEM_ATTRIBUTE_DECAYSTATE)) {
-		int64_t timestamp = item->getIntAttr(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
-		if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP)) {
+	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
+		int64_t timestamp = item->getAttributeValue(ItemAttribute_t::DURATION_TIMESTAMP);
+		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {
 				std::vector<Item*>& decayItems = it->second;
@@ -69,11 +69,11 @@ void Decay::stopDecay(Item* item)
 				size_t i = 0, end = decayItems.size();
 				if (end == 1) {
 					if (item == decayItems[i]) {
-						if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							//Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
-						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
+						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
 						g_game().ReleaseItem(item);
 
 						decayMap.erase(it);
@@ -82,11 +82,11 @@ void Decay::stopDecay(Item* item)
 				}
 				while (i < end) {
 					if (item == decayItems[i]) {
-						if (item->hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+						if (item->hasAttribute(ItemAttribute_t::DURATION)) {
 							//Incase we removed duration attribute don't assign new duration
 							item->setDuration(item->getDuration());
 						}
-						item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
+						item->removeAttribute(ItemAttribute_t::DECAYSTATE);
 						g_game().ReleaseItem(item);
 
 						decayItems[i] = decayItems.back();
@@ -96,9 +96,9 @@ void Decay::stopDecay(Item* item)
 					++i;
 				}
 			}
-			item->removeAttribute(ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+			item->removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
 		} else {
-			item->removeAttribute(ITEM_ATTRIBUTE_DECAYSTATE);
+			item->removeAttribute(ItemAttribute_t::DECAYSTATE);
 		}
 	}
 }

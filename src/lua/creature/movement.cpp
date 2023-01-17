@@ -162,7 +162,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 		default: slotp = 0; break;
 	}
 
-	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
 		std::map<int32_t, MoveEventList>::iterator it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
@@ -188,7 +188,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType, Slots_t slot)
 
 MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 	std::map<int32_t, MoveEventList>::iterator it;
-	if (item.hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (item.hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		it = uniqueIdMap.find(item.getUniqueId());
 		if (it != uniqueIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];
@@ -198,7 +198,7 @@ MoveEvent* MoveEvents::getEvent(Item& item, MoveEvent_t eventType) {
 		}
 	}
 
-	if (item.hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+	if (item.hasAttribute(ItemAttribute_t::ACTIONID)) {
 		it = actionIdMap.find(item.getActionId());
 		if (it != actionIdMap.end()) {
 			std::list<MoveEvent>& moveEventList = it->second.moveEvent[eventType];

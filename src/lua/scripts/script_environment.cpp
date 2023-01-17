@@ -73,7 +73,7 @@ uint32_t ScriptEnvironment::addThing(Thing * thing) {
 	}
 
 	Item * item = thing -> getItem();
-	if (item && item -> hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (item && item -> hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		return item -> getUniqueId();
 	}
 

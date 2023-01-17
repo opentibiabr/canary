@@ -262,13 +262,10 @@ bool House::transferToDepot(Player* player) const
 					std::string itemName = item->getName();
 					uint16_t itemID = item->getID();
 					Item* newItem = g_game().transformItem(item, ITEM_DECORATION_KIT);
-					ItemAttributes::CustomAttribute attribute;
-					attribute.setInt64(itemID);
-					std::string key = "unWrapId";
-					newItem->setCustomAttribute(key, attribute);
+					newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(itemID));
 					std::ostringstream ss;
 					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
-					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
+					newItem->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 					
 					if (hiddenCharges > 0) {
 						item->setDate(hiddenCharges);

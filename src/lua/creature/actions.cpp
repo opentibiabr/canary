@@ -365,14 +365,14 @@ ReturnValue Actions::canUseFar(const Creature* creature, const Position& toPos,
 }
 
 Action* Actions::getAction(const Item* item) {
-	if (item->hasAttribute(ITEM_ATTRIBUTE_UNIQUEID)) {
+	if (item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
 		auto it = uniqueItemMap.find(item->getUniqueId());
 		if (it != uniqueItemMap.end()) {
 			return &it->second;
 		}
 	}
 
-	if (item->hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) {
+	if (item->hasAttribute(ItemAttribute_t::ACTIONID)) {
 		auto it = actionItemMap.find(item->getActionId());
 		if (it != actionItemMap.end()) {
 			return &it->second;
@@ -473,7 +473,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 
 		//reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
-			if (Reward* reward = player->getReward(container->getIntAttr(ITEM_ATTRIBUTE_DATE), false)) {
+			if (Reward* reward = player->getReward(container->getAttributeValue(ItemAttribute_t::DATE), false)) {
 				reward->setParent(container->getRealParent());
 				openContainer = reward;
 			} else {
@@ -487,7 +487,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER || player->getAccountType() >= account::ACCOUNT_TYPE_SENIORTUTOR) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
-			if (!player->getReward(container->getIntAttr(ITEM_ATTRIBUTE_DATE), false)) {
+			if (!player->getReward(container->getAttributeValue(ItemAttribute_t::DATE), false)) {
 				return RETURNVALUE_YOUARENOTTHEOWNER;
 			}
 		} else if (corpseOwner != 0 && !player->canOpenCorpse(corpseOwner)) {

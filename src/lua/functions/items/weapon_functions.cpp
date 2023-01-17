@@ -113,7 +113,6 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 		}
 
 		weapon->configureWeapon(it);
-		weapon->setLoadedCallback(true);
 		pushBoolean(L, g_weapons().registerLuaEvent(weapon));
 		weapon = nullptr; // Releases weapon, removing the luascript reference
 	} else {

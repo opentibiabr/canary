@@ -17,13 +17,14 @@
 =============================
 */
 const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const {
+	static std::string emptyString;
 	if (!isStrAttrType(type)) {
-		return {};
+		return emptyString;
 	}
 
 	auto attribute = getAttribute(type);
 	if (!attribute) {
-		return {};
+		return emptyString;
 	}
 
 	return *attribute->value.string;

@@ -867,21 +867,6 @@ void Player::onReceiveMail() const
 Container* Player::setLootContainer(ObjectCategory_t category, Container* container, bool loading /* = false*/)
 {
 	Container* previousContainer = nullptr;
-	auto it = quickLootContainers.find(category);
-	if (it != quickLootContainers.end() && !loading) {
-		previousContainer = (*it).second;
-		int64_t flags = previousContainer->getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER);
-		flags &= ~(1 << category);
-		if (flags == 0) {
-			previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
-		} else {
-			previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
-		}
-
-		previousContainer->decrementReferenceCounter();
-		quickLootContainers.erase(it);
-	}
-
 	if (container) {
 		previousContainer = container;
 		quickLootContainers[category] = container;
@@ -892,9 +877,26 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 			auto sendAttribute = flags | 1 << category;
 			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
+		return previousContainer;
+	} else {
+		if (auto it = quickLootContainers.find(category);
+			it != quickLootContainers.end() && !loading)
+		{
+			previousContainer = (*it).second;
+			int64_t flags = previousContainer->getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER);
+			flags &= ~(1 << category);
+			if (flags == 0) {
+				previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
+			} else {
+				previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
+			}
+
+			previousContainer->decrementReferenceCounter();
+			quickLootContainers.erase(it);
+		}
 	}
 
-	return previousContainer;
+	return nullptr;
 }
 
 Container* Player::getLootContainer(ObjectCategory_t category) const
@@ -941,8 +943,8 @@ void Player::checkLootContainers(const Item* item)
 		if (remove) {
 			shouldSend = true;
 			it = quickLootContainers.erase(it);
-			lootContainer->decrementReferenceCounter();
 			lootContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
+			lootContainer->decrementReferenceCounter();
 		} else {
 			++it;
 		}

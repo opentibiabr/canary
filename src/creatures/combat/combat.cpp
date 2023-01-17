@@ -639,7 +639,9 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 			}
 
 			//TODO: infight condition until all aggressive conditions has ended
-			target->addCombatCondition(conditionCopy);
+			if (target) {
+				target->addCombatCondition(conditionCopy);
+			}
 		}
 	}
 }

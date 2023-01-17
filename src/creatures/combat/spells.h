@@ -95,7 +95,7 @@ class CombatSpell final : public Script, public BaseSpell
 {
 	public:
 		// Constructor
-		CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection);
+		CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection);
 		// Destructor
 		~CombatSpell() override;
 

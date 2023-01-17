@@ -242,11 +242,11 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 	return getNextPosition(dir, creature->getPosition());
 }
 
-CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection) :
+CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection) :
 	Script(&g_spells().getScriptInterface()),
 	combat(newCombat),
-	needDirection(newNeedTarget),
-	needTarget(needDirection)
+	needDirection(newNeedDirection),
+	needTarget(newNeedTarget)
 {
 // Empty
 }

@@ -251,7 +251,11 @@ CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirecti
 // Empty
 }
 
-CombatSpell::~CombatSpell() = default;
+CombatSpell::~CombatSpell() {
+	if (!isLoadedCallback()) {
+		delete combat;
+	}
+}
 
 bool CombatSpell::loadScriptCombat()
 {

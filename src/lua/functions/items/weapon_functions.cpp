@@ -23,7 +23,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			auto weapon = new WeaponMelee();
+			WeaponMelee* weapon = new WeaponMelee(getScriptEnv()->getScriptInterface());
 			if (weapon) {
 				pushUserdata<WeaponMelee>(L, weapon);
 				setMetatable(L, -1, "Weapon");
@@ -35,7 +35,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		}
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			auto weapon = new WeaponDistance();
+			WeaponDistance* weapon = new WeaponDistance(getScriptEnv()->getScriptInterface());
 			if (weapon) {
 				pushUserdata<WeaponDistance>(L, weapon);
 				setMetatable(L, -1, "Weapon");
@@ -46,7 +46,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 			break;
 		}
 		case WEAPON_WAND: {
-			auto weapon = new WeaponWand();
+			WeaponWand* weapon = new WeaponWand(getScriptEnv()->getScriptInterface());
 			if (weapon) {
 				pushUserdata<WeaponWand>(L, weapon);
 				setMetatable(L, -1, "Weapon");
@@ -113,6 +113,7 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 		}
 
 		weapon->configureWeapon(it);
+		weapon->setLoadedCallback(true);
 		pushBoolean(L, g_weapons().registerLuaEvent(weapon));
 		weapon = nullptr; // Releases weapon, removing the luascript reference
 	} else {
@@ -123,8 +124,13 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 
 int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
-	const Weapon* weapon = getUserdata<Weapon>(L, 1);
+	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
+		if (!weapon->loadCallback()) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

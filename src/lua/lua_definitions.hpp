@@ -1,21 +1,11 @@
 /**
  * Canary - A free and open-source MMORPG server emulator
- * Copyright (C) 2021 OpenTibiaBR <opentibiabr@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_LUA_LUA_DEFINITIONS_HPP_
 #define SRC_LUA_LUA_DEFINITIONS_HPP_
@@ -89,7 +79,8 @@ enum GlobalEvent_t {
 	GLOBALEVENT_STARTUP,
 	GLOBALEVENT_SHUTDOWN,
 	GLOBALEVENT_RECORD,
-	GLOBALEVENT_PERIODCHANGE
+	GLOBALEVENT_PERIODCHANGE,
+	GLOBALEVENT_ON_THINK,
 };
 
 enum ModuleType_t {
@@ -111,6 +102,8 @@ enum ErrorCode_t {
 	LUA_ERROR_CREATURE_NOT_FOUND,
 	LUA_ERROR_NPC_NOT_FOUND,
 	LUA_ERROR_NPC_TYPE_NOT_FOUND,
+	LUA_ERROR_MONSTER_NOT_FOUND,
+	LUA_ERROR_MONSTER_TYPE_NOT_FOUND,
 	LUA_ERROR_ITEM_NOT_FOUND,
 	LUA_ERROR_THING_NOT_FOUND,
 	LUA_ERROR_TILE_NOT_FOUND,

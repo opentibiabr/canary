@@ -36,8 +36,22 @@ GameStore.OfferTypes = {
 }
 
 GameStore.SubActions = {
-	PREY_THIRDSLOT = 0,
-	TASKHUNTING_THIRDSLOT = 14
+	PREY_THIRDSLOT_REAL = 0,
+	PREY_WILDCARD = 1,
+	INSTANT_REWARD = 2,
+	BLESSING_TWIST = 3,
+	BLESSING_SOLITUDE = 4,
+	BLESSING_PHOENIX = 5,
+	BLESSING_SUNS = 6,
+	BLESSING_SPIRITUAL = 7,
+	BLESSING_EMBRACE = 8,
+	BLESSING_HEART = 9,
+	BLESSING_BLOOD = 10,
+	BLESSING_ALL_PVE = 11,
+	BLESSING_ALL_PVP = 12,
+	CHARM_EXPANSION = 13,
+	TASKHUNTING_THIRDSLOT = 14,
+	PREY_THIRDSLOT_REDIRECT = 15
 }
 
 GameStore.ActionType = {
@@ -258,7 +272,7 @@ function parseTransferCoins(playerId, msg)
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "We couldn't find that player.")
 	end
 
-	local accountId = result.getNumber(resultId, "account_id")
+	local accountId = Result.getNumber(resultId, "account_id")
 	if accountId == player:getAccountId() then
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You cannot transfer coin to a character in the same account.")
 	end
@@ -288,7 +302,6 @@ function parseRequestStoreOffers(playerId, msg)
 	end
 
 	local actionType = msg:getByte()
-
 	if actionType == GameStore.ActionType.OPEN_CATEGORY then
 		local categoryName = msg:getString()
 		local category = GameStore.getCategoryByName(categoryName)
@@ -316,25 +329,19 @@ function parseRequestStoreOffers(playerId, msg)
 	elseif actionType == GameStore.ActionType.OPEN_USEFUL_THINGS then
 		local subAction = msg:getByte()
 		local offerId = subAction
-		local category = GameStore.getCategoryByName("Useful Things")
-
-		-- Third prey slot offerId
-		-- We can't use offerId 0
-		-- Subaction 0 is offer from "unlock permanently" of prey window button, offerId 4 is the id of the gamestore.lua third slot
-		if subAction == GameStore.SubActions.PREY_THIRDSLOT then
-			offerId = 4
-		-- Subaction 14 is offer from "unlock permanently" of task hunting window button, offerId 5 is the id of the gamestore.lua third slot
-		elseif subAction == GameStore.SubActions.TASKHUNTING_THIRDSLOT then
-			offerId = 5
+		local category = nil
+		if subAction >= GameStore.SubActions.BLESSING_TWIST and subAction <= GameStore.SubActions.BLESSING_ALL_PVP then
+			category = GameStore.getCategoryByName("Blessings")
+		else
+			category = GameStore.getCategoryByName("Useful Things")
 		end
-		-- Enable this for look sub action offer button
-		-- Example of subaction is the button for redirect to the store on clicking "unlock permanently" on prey window
-		--Spdlog.info("SubAction ".. subAction)
 
+		if subAction == GameStore.SubActions.PREY_THIRDSLOT_REAL then
+			offerId = GameStore.SubActions.PREY_THIRDSLOT_REDIRECT
+		end
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category, offerId)
 		end
-
 	elseif actionType == GameStore.ActionType.OPEN_OFFER then
 		local offerId = msg:getU32()
 		local category = GameStore.getCategoryByOffer(offerId)
@@ -1064,8 +1071,8 @@ GameStore.retrieveHistoryTotalPages = function (accountId)
 		return 0
 	end
 
-	local totalPages = result.getNumber(resultId, "total")
-	result.free(resultId)
+	local totalPages = Result.getNumber(resultId, "total")
+	Result.free(resultId)
 	return totalPages
 end
 
@@ -1077,15 +1084,15 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 	if resultId ~= false then
 		repeat
 			local entry = {
-				mode = result.getNumber(resultId, "mode"),
-				description = result.getDataString(resultId, "description"),
-				amount = result.getNumber(resultId, "coin_amount"),
-				type = result.getNumber(resultId, "coin_type"),
-				time = result.getNumber(resultId, "time"),
+				mode = Result.getNumber(resultId, "mode"),
+				description = Result.getDataString(resultId, "description"),
+				amount = Result.getNumber(resultId, "coin_amount"),
+				type = Result.getNumber(resultId, "coin_type"),
+				time = Result.getNumber(resultId, "time"),
 			}
 			table.insert(entries, entry)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 	return entries
 end
@@ -1587,7 +1594,7 @@ end
 function Player.getCoinsBalance(self)
 	resultId = db.storeQuery("SELECT `coins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
 	if not resultId then return 0 end
-	return result.getNumber(resultId, "coins")
+	return Result.getNumber(resultId, "coins")
 end
 
 function Player.setCoinsBalance(self, coins)
@@ -1622,7 +1629,7 @@ function Player.getTournamentBalance(self)
 	if not resultId then
 		return 0
 	end
-	return result.getNumber(resultId, "tournament_coins")
+	return Result.getNumber(resultId, "tournament_coins")
 end
 
 function Player.setTournamentBalance(self, tournament)

@@ -69,8 +69,8 @@ function getAccountNumberByPlayerName(name)
 
 	local resultId = db.storeQuery("SELECT `account_id` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId ~= false then
-		local accountId = result.getNumber(resultId, "account_id")
-		result.free(resultId)
+		local accountId = Result.getNumber(resultId, "account_id")
+		Result.free(resultId)
 		return accountId
 	end
 	return 0
@@ -136,8 +136,8 @@ end
 function getPlayerSpouse(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_spouse` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = result.getDataInt(resultQuery, "marriage_spouse")
-		result.free(resultQuery)
+		local ret = Result.getDataInt(resultQuery, "marriage_spouse")
+		Result.free(resultQuery)
 		return ret
 	end
 	return -1
@@ -146,8 +146,8 @@ end
 function getPlayerMarriageStatus(id)
 	local resultQuery = db.storeQuery("SELECT `marriage_status` FROM `players` WHERE `id` = " .. db.escapeString(id))
 	if resultQuery ~= false then
-		local ret = result.getDataInt(resultQuery, "marriage_status")
-		result.free(resultQuery)
+		local ret = Result.getDataInt(resultQuery, "marriage_status")
+		Result.free(resultQuery)
 		return ret
 	end
 	return -1
@@ -155,9 +155,9 @@ end
 
 function getPlayerNameById(id)
 	local resultName = db.storeQuery("SELECT `name` FROM `players` WHERE `id` = " .. db.escapeString(id))
-	local name = result.getDataString(resultName, "name")
+	local name = Result.getDataString(resultName, "name")
 	if resultName ~= false then
-		result.free(resultName)
+		Result.free(resultName)
 		return name
 	end
 	return false
@@ -248,7 +248,7 @@ end
 function playerExists(name)
 	local resultId = db.storeQuery("SELECT `name` FROM `players` WHERE `name` = " .. db.escapeString(name))
 	if resultId then
-		result.free(resultId)
+		Result.free(resultId)
 		return true
 	end
 	return false
@@ -853,7 +853,7 @@ function Player:loadSpecialStorage()
 	PLAYER_STORAGE[self:getGuid()] = {}
 	local resultId = db.storeQuery("SELECT * FROM `player_misc` WHERE `player_id` = " .. self:getGuid())
 	if resultId then
-		local info = result.getStream(resultId , "info") or "{}"
+		local info = Result.getStream(resultId , "info") or "{}"
 		unserializeTable(info, PLAYER_STORAGE[self:getGuid()])
 	end
 end
@@ -908,4 +908,48 @@ function Player:doCheckBossRoom(bossName, fromPos, toPos)
 		end
 	end
 	return true
+end
+
+function CheckDustLevel(monsterForge, player)
+	local canSetFiendish = false
+	local canSetInfluenced
+	if type(monsterForge) == "string" and monsterForge == "fiendish" then
+		canSetFiendish = true
+	end
+	local influencedLevel
+	if not canSetFiendish then
+		influencedLevel = tonumber(monsterForge)
+	end
+	if influencedLevel and influencedLevel > 0 then
+		if influencedLevel > 5 then
+			player:sendCancelMessage("Invalid influenced level.")
+			return false
+		end
+		canSetInfluenced = true
+	end
+	return canSetFiendish, canSetInfluenced, influencedLevel
+end
+
+function SetFiendish(monsterType, position, player, monster)
+	if monsterType and not monsterType:isForgeCreature() then
+		player:sendCancelMessage("Only allowed monsters can be fiendish.")
+		return false
+	end
+	monster:setFiendish(position, player)
+end
+
+function SetInfluenced(monsterType, monster, player, influencedLevel)
+	if monsterType and not monsterType:isForgeCreature() then
+		player:sendCancelMessage("Only allowed monsters can be influenced.")
+		return false
+	end
+	local influencedMonster = Monster(ForgeMonster:pickInfluenced())
+	-- If it's reached the limit, we'll remove one to add the new one.
+	if ForgeMonster:exceededMaxInfluencedMonsters() then
+		if influencedMonster then
+			Game.removeInfluencedMonster(influencedMonster:getId())
+		end
+	end
+	Game.addInfluencedMonster(monster)
+	monster:setForgeStack(influencedLevel)
 end

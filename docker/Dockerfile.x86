@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends cmake git \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
-RUN git clone https://github.com/microsoft/vcpkg --depth=1
-RUN ./vcpkg/bootstrap-vcpkg.sh
+RUN git clone https://github.com/microsoft/vcpkg --depth=1 \
+	&& ./vcpkg/bootstrap-vcpkg.sh
 
 WORKDIR /opt/vcpkg
 COPY vcpkg.json /opt/vcpkg/
@@ -25,19 +25,24 @@ RUN export VCPKG_ROOT=/opt/vcpkg/ && cmake --preset linux-release && cmake --bui
 
 # Stage 3: load data and execute
 FROM ubuntu:22.04
+VOLUME [ "/data" ]
 
 COPY --from=build /srv/build/linux-release/bin/canary /bin/canary
 COPY LICENSE *.sql key.pem /canary/
 COPY data /canary/data
+COPY data-canary /canary/data-canary
+COPY data-otservbr-global /canary/data-otservbr-global
 COPY config.lua.dist /canary/config.lua
 
 WORKDIR /canary
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	mariadb-client \
+	mariadb-client curl \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
-COPY docker/server/start.sh start.sh
+COPY docker/data/01-test_account.sql 01-test_account.sql
+COPY docker/data/02-test_account_players.sql 02-test_account_players.sql
+COPY docker/data/start.sh start.sh
 
 ENTRYPOINT ["/canary/start.sh"]

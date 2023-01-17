@@ -49,7 +49,7 @@ We use the [issue tracker on GitHub](https://github.com/opentibiabr/canary/issue
 
 Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) please keep in mind:
 
-  * Do not send Pull Request changing the map, as we can't review the changes it's better to use our [Discord](https://discord.gg/3NxYnyV) to talk about or send the map changes to the responsible for updating it.
+  * Do not send Pull Request changing the map, as we can't review the changes it's better to use our [Discord](https://discord.gg/X3mSnMH8jg) to talk about or send the map changes to the responsible for updating it.
   * Focus on fixing only one thing, mixing too much things on the same Pull Request make it harder to review, harder to test and if we need to revert the change it will remove other things together.
   * Follow the project indentation, if your editor support you can use the [editorconfig](https://editorconfig.org/) to automatic configure the indentation.
   * There are people that doesn't play the game on the official server, so explain your changes to help understand what are you changing and why.

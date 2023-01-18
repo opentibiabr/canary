@@ -606,7 +606,7 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 	}
 
 	for (const auto& condition : params.conditionList) {
-		Player* player;
+		Player* player = nullptr;
 		if (target) {
 			player = target->getPlayer();
 		}

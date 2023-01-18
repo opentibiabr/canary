@@ -2564,13 +2564,12 @@ void Game::playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier /* =
 	if (slotItem && slotItem->getID() == it.id && (!it.stackable || slotItem->getItemCount() == 100 || !equipItem)) {
 		internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
 	} else if (equipItem) {
-		if (slot == CONST_SLOT_LEFT) {
-			Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
-			if (leftItem) {
-				internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
-			}
-
-			internalMoveItem(slotItem->getParent(), player, CONST_SLOT_WHEREEVER, slotItem, slotItem->getItemCount(), nullptr);
+		Item* leftItem = player->getInventoryItem(CONST_SLOT_LEFT);
+		Item* rightItem = player->getInventoryItem(CONST_SLOT_RIGHT);
+		if (leftItem && leftItem->getSlotPosition() & SLOTP_TWO_HAND) {
+			internalMoveItem(leftItem->getParent(), player, CONST_SLOT_WHEREEVER, leftItem, leftItem->getItemCount(), nullptr);
+		} else if (rightItem && rightItem->getWeaponType() == WEAPON_SHIELD) {
+			internalMoveItem(rightItem->getParent(), player, CONST_SLOT_WHEREEVER, rightItem, rightItem->getItemCount(), nullptr);
 		}
 
 		if (it.weaponType == WEAPON_AMMO) {

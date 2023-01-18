@@ -1,0 +1,64 @@
+syntax = "proto2";
+
+package Canary.protobuf.playersystems;
+
+message PlayerSystems {
+	repeated Charm charms = 1;
+	repeated Prey prey = 2;
+	repeated TaskHunting task_hunting = 3;
+	repeated uint32 bestiary_tracker = 4;
+}
+
+enum CHARM_TYPE {
+	CHARM_TYPE_USED = 0;
+	CHARM_TYPE_UNLOCKED = 1;
+	CHARM_TYPE_WOUND = 2;
+	CHARM_TYPE_ENFLAME = 3;
+	CHARM_TYPE_POISON = 4;
+	CHARM_TYPE_FREEZE = 5;
+	CHARM_TYPE_ZAP = 6;
+	CHARM_TYPE_CURSE = 7;
+	CHARM_TYPE_CRIPPLE = 8;
+	CHARM_TYPE_PARRY = 9;
+	CHARM_TYPE_DODGE = 10;
+	CHARM_TYPE_ADRENALINE = 11;
+	CHARM_TYPE_NUMB = 12;
+	CHARM_TYPE_CLEANSE = 13;
+	CHARM_TYPE_BLESS = 14;
+	CHARM_TYPE_SCAVENGE = 15;
+	CHARM_TYPE_GUT = 16;
+	CHARM_TYPE_LOW_BLOW = 17;
+	CHARM_TYPE_DIVINE = 18;
+	CHARM_TYPE_VAMP = 19;
+	CHARM_TYPE_VOID = 20;
+}
+
+message Charm {
+	optional CHARM_TYPE type = 1;
+	optional uint32 raceid = 2;
+}
+
+message Prey {
+	optional uint32 slot = 1;
+	optional uint32 state = 2;
+	optional uint32 raceid = 3;
+	optional uint32 option = 4;
+	optional uint32 bonus_type = 5;
+	optional uint32 bonus_rarity = 6;
+	optional uint32 bonus_percentage = 7;
+	optional uint32 bonus_time = 8;
+	optional uint64 free_reroll = 9;
+	repeated uint32 grid = 10;
+}
+
+message TaskHunting {
+	optional uint32 slot = 1;
+	optional uint32 state = 2;
+	optional uint32 raceid = 3;
+	optional bool upgrade = 4;
+	optional uint32 rarity = 5;
+	optional uint32 kills = 6;
+	optional uint64 disable_time = 7;
+	optional uint64 free_reroll = 8;
+	repeated uint32 grid = 9;
+}

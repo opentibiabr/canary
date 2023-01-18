@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package Canary.protobuf.itemsserialization;
+
+message ItemsSerialization {
+	repeated Item item = 1;
+}
+
+enum ATTRIBUTE_TYPE {
+	ATTRIBUTE_TYPE_STRING = 0;
+	ATTRIBUTE_TYPE_NUMERIC = 1;
+	ATTRIBUTE_TYPE_FLOAT = 2;
+	ATTRIBUTE_TYPE_BOOLEAN = 3;
+	ATTRIBUTE_TYPE_POSITION = 4;
+}
+
+message Position {
+	optional uint32 x = 1;
+	optional uint32 y = 2;
+	optional uint32 z = 3;
+}
+
+message Item {
+	optional uint32 pid = 1;
+	optional uint32 sid = 2;
+	optional uint32 id = 3;
+	optional uint32 subtype = 4;
+	repeated Attribute attribute = 5;
+}
+
+message Attribute {
+	optional uint32 id = 1;
+	optional ATTRIBUTE_TYPE type = 2;
+	optional bytes extended = 3;
+	optional bytes data = 4;
+	optional Position position = 5;
+}

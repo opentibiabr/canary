@@ -11,6 +11,7 @@
 #define SRC_ITEMS_BED_H_
 
 #include "items/item.h"
+#include "protobuf/itemsserialization.pb.h"
 
 class House;
 class Player;
@@ -29,6 +30,7 @@ class BedItem final : public Item
 
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		void serializeAttr(PropWriteStream& propWriteStream) const override;
+		bool serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const override;
 
 		bool canRemove() const override {
 			return house == nullptr;

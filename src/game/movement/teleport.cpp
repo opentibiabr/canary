@@ -24,6 +24,25 @@ Attr_ReadValue Teleport::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return Item::readAttr(attr, propStream);
 }
 
+bool Teleport::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const
+{
+	if (!Item::serializeAttrToProtobuf(itemProtobuf))
+	{
+		return false;
+	}
+
+	Canary::protobuf::itemsserialization::Attribute* attribute = itemProtobuf->add_attribute();
+    attribute->set_id(ATTR_TELE_DEST);
+    attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_POSITION);
+
+	Canary::protobuf::itemsserialization::Position* protobufPosition = new Canary::protobuf::itemsserialization::Position();
+	protobufPosition->set_x(static_cast<uint32_t>(destPos.x));
+	protobufPosition->set_y(static_cast<uint32_t>(destPos.y));
+	protobufPosition->set_z(static_cast<uint32_t>(destPos.z));
+	attribute->set_allocated_position(protobufPosition);
+	return true;
+}
+
 void Teleport::serializeAttr(PropWriteStream& propWriteStream) const
 {
 	Item::serializeAttr(propWriteStream);

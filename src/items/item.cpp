@@ -779,6 +779,159 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 	return ATTR_READ_CONTINUE;
 }
 
+bool Item::unserializeAttrFromProtobuf(Canary::protobuf::itemsserialization::Item itemProtobuf)
+{
+	for (const auto& attributeProtobuf : itemProtobuf.attribute()) {
+		switch (attributeProtobuf.id()) {
+			case ATTR_COUNT:
+			case ATTR_RUNE_CHARGES: {
+				setSubType(static_cast<uint8_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_ACTION_ID: {
+				setActionId(static_cast<uint16_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_UNIQUE_ID: {
+				setUniqueId(static_cast<uint16_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_TEXT: {
+				setText(attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_WRITTENDATE: {
+				setDate(static_cast<uint32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_WRITTENBY: {
+				setWriter(attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_DESC: {
+				setSpecialDescription(attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_CHARGES: {
+				setSubType(static_cast<uint16_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_DURATION: {
+				setDuration(static_cast<int32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_DECAYING_STATE: {
+				uint8_t state = static_cast<uint8_t>(std::stoll(attributeProtobuf.data()));
+				if (state != DECAYING_FALSE) {
+					setDecaying(DECAYING_PENDING);
+				}
+				break;
+			}
+
+			case ATTR_NAME: {
+				setStrAttr(ITEM_ATTRIBUTE_NAME, attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_ARTICLE: {
+				setStrAttr(ITEM_ATTRIBUTE_ARTICLE, attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_PLURALNAME: {
+				setStrAttr(ITEM_ATTRIBUTE_PLURALNAME, attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_WEIGHT: {
+				setIntAttr(ITEM_ATTRIBUTE_WEIGHT, static_cast<uint32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_ATTACK: {
+				setIntAttr(ITEM_ATTRIBUTE_ATTACK, static_cast<int32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_DEFENSE: {
+				setIntAttr(ITEM_ATTRIBUTE_DEFENSE, static_cast<int32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_EXTRADEFENSE: {
+				setIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE, static_cast<int32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_IMBUEMENT_SLOT: {
+				setIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT, static_cast<int32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_OPENCONTAINER: {
+				setIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER, static_cast<uint8_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_ARMOR: {
+				setIntAttr(ITEM_ATTRIBUTE_ARMOR, static_cast<int32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_HITCHANCE: {
+				setIntAttr(ITEM_ATTRIBUTE_HITCHANCE, static_cast<int8_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_SHOOTRANGE: {
+				setIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE, static_cast<uint8_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_SPECIAL: {
+				setStrAttr(ITEM_ATTRIBUTE_SPECIAL, attributeProtobuf.data());
+				break;
+			}
+
+			case ATTR_QUICKLOOTCONTAINER: {
+				setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, static_cast<uint32_t>(std::stoll(attributeProtobuf.data())));
+				break;
+			}
+
+			case ATTR_CUSTOM_ATTRIBUTES: {
+				std::string key = attributeProtobuf.extended();
+
+				// Unserialize value type and value
+				ItemAttributes::CustomAttribute val;
+				val.unserializeFromProtobuf(attributeProtobuf);
+				setCustomAttribute(key, val);
+				break;
+			}
+
+			case ATTR_IMBUEMENT_TYPE: {
+				setStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE, attributeProtobuf.data());
+				break;
+			}
+
+			default: {
+				SPDLOG_WARN("[Item::unserializeAttrFromProtobuf] Item has an unknown attribute type '{}' that was ignored", attributeProtobuf.id());
+				break;
+			}
+		}
+	}
+
+	return true;
+}
+
 bool Item::unserializeAttr(PropStream& propStream)
 {
 	uint8_t attr_type;
@@ -796,6 +949,202 @@ bool Item::unserializeAttr(PropStream& propStream)
 bool Item::unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream)
 {
 	return unserializeAttr(propStream);
+}
+
+bool Item::serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const
+{
+	Canary::protobuf::itemsserialization::Attribute* attribute;
+	const ItemType& it = items[id];
+	if (it.stackable || it.isFluidContainer() || it.isSplash()) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_COUNT);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getSubType()));
+	}
+
+	uint16_t charges = getCharges();
+	if (charges != 0) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_CHARGES);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(charges));
+	}
+
+	if (it.moveable) {
+		uint16_t actionId = getActionId();
+		if (actionId != 0) {
+			attribute = itemProtobuf->add_attribute();
+			attribute->set_id(ATTR_ACTION_ID);
+			attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+			attribute->set_data(std::to_string(actionId));
+		}
+	}
+
+	const std::string& text = getText();
+	if (!text.empty()) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_TEXT);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(text);
+	}
+
+	const time_t writtenDate = getDate();
+	if (writtenDate != 0) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_WRITTENDATE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(writtenDate));
+	}
+
+	const std::string& writer = getWriter();
+	if (!writer.empty()) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_WRITTENBY);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(writer);
+	}
+
+	const std::string& specialDesc = getSpecialDescription();
+	if (!specialDesc.empty()) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_DESC);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(specialDesc);
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_DURATION)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_DURATION);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getDuration()));
+	}
+
+	ItemDecayState_t decayState = getDecaying();
+	if (decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_DECAYING_STATE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(decayState));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_NAME)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_NAME);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(getStrAttr(ITEM_ATTRIBUTE_NAME));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_ARTICLE)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_ARTICLE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(getStrAttr(ITEM_ATTRIBUTE_ARTICLE));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_PLURALNAME)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_PLURALNAME);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(getStrAttr(ITEM_ATTRIBUTE_PLURALNAME));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_WEIGHT)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_WEIGHT);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_WEIGHT)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_ATTACK)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_ATTACK);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_ATTACK)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_DEFENSE)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_DEFENSE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_DEFENSE)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_EXTRADEFENSE)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_EXTRADEFENSE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_EXTRADEFENSE)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_IMBUEMENT_SLOT);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_IMBUEMENT_SLOT)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_OPENCONTAINER)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_OPENCONTAINER);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_ARMOR)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_ARMOR);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_ARMOR)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_HITCHANCE)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_HITCHANCE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_HITCHANCE)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_SHOOTRANGE)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_SHOOTRANGE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getIntAttr(ITEM_ATTRIBUTE_SHOOTRANGE)));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_SPECIAL)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_SPECIAL);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(getStrAttr(ITEM_ATTRIBUTE_SPECIAL));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_CUSTOM)) {
+		const ItemAttributes::CustomAttributeMap* customAttrMap = attributes->getCustomAttributeMap();
+		for (const auto &entry : *customAttrMap) {
+			attribute = itemProtobuf->add_attribute();
+			attribute->set_id(ATTR_CUSTOM_ATTRIBUTES);
+			attribute->set_extended(entry.first);
+
+			// Serializing value type and value
+			entry.second.serializeToProtobuf(attribute);
+		}
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_QUICKLOOTCONTAINER);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+		attribute->set_data(std::to_string(getQuicklootAttr()));
+	}
+
+	if (hasAttribute(ITEM_ATTRIBUTE_IMBUEMENT_TYPE)) {
+		attribute = itemProtobuf->add_attribute();
+        attribute->set_id(ATTR_IMBUEMENT_TYPE);
+        attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+		attribute->set_data(getStrAttr(ITEM_ATTRIBUTE_IMBUEMENT_TYPE));
+	}
+
+	return true;
 }
 
 void Item::serializeAttr(PropWriteStream& propWriteStream) const

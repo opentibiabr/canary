@@ -11,6 +11,7 @@
 #define SRC_GAME_MOVEMENT_TELEPORT_H_
 
 #include "items/tile.h"
+#include "protobuf/itemsserialization.pb.h"
 
 class Teleport final : public Item, public Cylinder
 {
@@ -27,6 +28,7 @@ class Teleport final : public Item, public Cylinder
 		//serialization
 		Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream) override;
 		void serializeAttr(PropWriteStream& propWriteStream) const override;
+		bool serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const override;
 
 		const Position& getDestPos() const {
 			return destPos;

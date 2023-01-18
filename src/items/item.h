@@ -14,6 +14,7 @@
 #include "items/thing.h"
 #include "items/items.h"
 #include "lua/scripts/luascript.h"
+#include "protobuf/itemsserialization.pb.h"
 #include "utils/tools.h"
 #include "io/fileloader.h"
 
@@ -180,6 +181,11 @@ class ItemAttributes
 				return intValue;
 			}
 
+			
+			double getDouble() const {
+				return doubleValue;
+			}
+
 			bool getBool() const {
 				return boolValue;
 			}
@@ -268,6 +274,50 @@ class ItemAttributes
 						break;
 				}
 				return true;
+			}
+
+			void serializeToProtobuf(Canary::protobuf::itemsserialization::Attribute* attribute) const {
+				if (hasStringValue) {
+					attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING);
+					attribute->set_data(getString());
+				} else if (hasIntValue) {
+					attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC);
+					attribute->set_data(std::to_string(getInt()));
+				} else if (hasDoubleValue) {
+					attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_FLOAT);
+					attribute->set_data(std::to_string(getDouble()));
+				} else if (hasBoolValue) {
+					attribute->set_type(Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_BOOLEAN);
+						attribute->set_data(getBool() ? "1" : "0");
+				}
+			}
+
+			void unserializeFromProtobuf(Canary::protobuf::itemsserialization::Attribute attribute) {
+				switch (attribute.type()) {
+					case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_STRING: {
+						setString(attribute.data());
+						break;
+					}
+
+					case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_NUMERIC: { // int64_t
+						setInt64(static_cast<int64_t>(std::stoi(attribute.data())));
+						break;
+					}
+
+					case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_FLOAT: { // double
+						setDouble(std::stod(attribute.data()));
+						break;
+					}
+
+					case Canary::protobuf::itemsserialization::ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_BOOLEAN: { // bool
+						setBool(attribute.data() == "1");
+						break;
+					}
+
+					default: {
+						break;
+					}
+				}
 			}
 		};
 
@@ -787,8 +837,10 @@ class Item : virtual public Thing
 		//serialization
 		virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream& propStream);
 		bool unserializeAttr(PropStream& propStream);
+		bool unserializeAttrFromProtobuf(Canary::protobuf::itemsserialization::Item itemProtobuf);
 		virtual bool unserializeItemNode(OTB::Loader&, const OTB::Node&, PropStream& propStream);
 
+		virtual bool serializeAttrToProtobuf(Canary::protobuf::itemsserialization::Item* itemProtobuf) const;
 		virtual void serializeAttr(PropWriteStream& propWriteStream) const;
 
 		bool isPushable() const override final {

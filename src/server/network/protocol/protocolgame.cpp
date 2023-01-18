@@ -361,6 +361,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
+		uint64_t loadTime = OTSYS_TIME();
 		if (!IOLoginData::loadPlayerById(player, player->getGUID()))
 		{
 			disconnectClient("Your character could not be loaded.");
@@ -376,6 +377,8 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			SPDLOG_WARN("Player {} temple position is wrong", player->getName());
 			return;
 		}
+
+		SPDLOG_INFO("{} has logged in. (Loaded in {}ms)", player->getName(), OTSYS_TIME() - loadTime);
 
 		if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX)
 		{

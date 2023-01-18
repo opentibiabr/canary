@@ -199,6 +199,8 @@ PRIVATE
 	io/iomarket.cpp
 	io/ioprey.cpp
 	protobuf/appearances.pb.cc
+	protobuf/itemsserialization.pb.cc
+	protobuf/playersystems.pb.cc
 	items/bed.cpp
 	items/containers/container.cpp
 	items/containers/depot/depotchest.cpp

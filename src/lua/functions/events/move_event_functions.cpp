@@ -18,7 +18,6 @@ int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	MoveEvent* moveevent = new MoveEvent(getScriptEnv()->getScriptInterface());
 	if (moveevent) {
 		pushUserdata<MoveEvent>(L, moveevent);
-		moveevent->fromLua = true;
 		setMetatable(L, -1, "MoveEvent");
 	} else {
 		lua_pushnil(L);
@@ -68,7 +67,7 @@ int MoveEventFunctions::luaMoveEventRegister(lua_State* L) {
 	if (moveevent) {
 		// If not scripted, register item event
 		// Example: unscripted_equipments.lua
-		if (!moveevent->isScripted()) {
+		if (!moveevent->isLoadedCallback()) {
 			pushBoolean(L, g_moveEvents().registerLuaItemEvent(*moveevent));
 			return 1;
 		}

@@ -71,7 +71,6 @@ bool Items::reload()
 		return false;
 	}
 
-	g_weapons().loadDefaults();
 	return true;
 }
 

@@ -13,191 +13,17 @@
 #include "items/bed.h"
 #include "items/containers/container.h"
 #include "game/game.h"
-#include "utils/pugicast.h"
 #include "creatures/combat/spells.h"
 #include "items/containers/rewards/rewardchest.h"
 
-Actions::Actions() :
-	scriptInterface("Action Interface") {
-	scriptInterface.initState();
-}
-
+Actions::Actions() = default;
 Actions::~Actions() = default;
-
-void Actions::clearMap(ActionUseMap& map, bool fromLua) {
-	for (auto it = map.begin(); it != map.end(); ) {
-		if (fromLua == it->second.fromLua) {
-			it = map.erase(it);
-		} else {
-			++it;
-		}
-	}
-}
 
 void Actions::clear() {
 	useItemMap.clear();
 	uniqueItemMap.clear();
 	actionItemMap.clear();
 	actionPositionMap.clear();
-}
-
-void Actions::clear(bool fromLua) {
-	clearMap(useItemMap, fromLua);
-	clearMap(uniqueItemMap, fromLua);
-	clearMap(actionItemMap, fromLua);
-
-	// Clear position map
-	for (auto it = actionPositionMap.begin(); it != actionPositionMap.end(); ) {
-		if (fromLua == it->second.fromLua) {
-			it = actionPositionMap.erase(it);
-		} else {
-			++it;
-		}
-	}
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& Actions::getScriptInterface() {
-	return scriptInterface;
-}
-
-std::string Actions::getScriptBaseName() const {
-	return "actions";
-}
-
-Event_ptr Actions::getEvent(const std::string& nodeName) {
-	if (strcasecmp(nodeName.c_str(), "action") != 0) {
-		return nullptr;
-	}
-	return Event_ptr(new Action(&scriptInterface));
-}
-
-bool Actions::registerEvent(Event_ptr event, const pugi::xml_node& node) {
-	//event is guaranteed to be an Action
-	Action_ptr action{static_cast<Action*>(event.release())};
-
-	pugi::xml_attribute attr;
-	if ((attr = node.attribute("itemid"))) {
-		uint16_t id = pugi::cast<uint16_t>(attr.value());
-
-		auto result = useItemMap.emplace(id, std::move(*action));
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate registered item with "
-				"id: {}", id);
-		}
-		return result.second;
-	} else if ((attr = node.attribute("fromid"))) {
-		pugi::xml_attribute toIdAttribute = node.attribute("toid");
-		if (!toIdAttribute) {
-			SPDLOG_WARN("[Actions::registerEvent] - Missing toid in fromid: {}",
-				attr.as_string());
-			return false;
-		}
-
-		uint16_t fromId = pugi::cast<uint16_t>(attr.value());
-		uint16_t iterId = fromId;
-		uint16_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
-
-		auto result = useItemMap.emplace(iterId, *action);
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with id: {} in fromid: {}, toid: {}", iterId, fromId, toId);
-		}
-
-		bool success = result.second;
-		while (++iterId <= toId) {
-			result = useItemMap.emplace(iterId, *action);
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-							"registered item with id: {} in fromid: {}, toid: {}", iterId, fromId, toId);
-				continue;
-			}
-			success = true;
-		}
-		return success;
-	} else if ((attr = node.attribute("uniqueid"))) {
-		uint16_t uid = pugi::cast<uint16_t>(attr.value());
-
-		auto result = uniqueItemMap.emplace(uid, std::move(*action));
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with uniqueid: {}", uid);
-		}
-		return result.second;
-	} else if ((attr = node.attribute("fromuid"))) {
-		pugi::xml_attribute toUidAttribute = node.attribute("touid");
-		if (!toUidAttribute) {
-			SPDLOG_WARN("[Actions::registerEvent] - Missing touid in fromuid: {}",
-						attr.as_string());
-			return false;
-		}
-
-		uint16_t fromUid = pugi::cast<uint16_t>(attr.value());
-		uint16_t iterUid = fromUid;
-		uint16_t toUid = pugi::cast<uint16_t>(toUidAttribute.value());
-
-		auto result = uniqueItemMap.emplace(iterUid, *action);
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with unique id: {} in fromuid: {}, touid: {}",
-						iterUid, fromUid, toUid);
-		}
-
-		bool success = result.second;
-		while (++iterUid <= toUid) {
-			result = uniqueItemMap.emplace(iterUid, *action);
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-							"registered item with unique id: {} in fromuid: {}, touid: {}",
-							iterUid, fromUid, toUid);
-				continue;
-			}
-			success = true;
-		}
-		return success;
-	} else if ((attr = node.attribute("actionid"))) {
-		uint16_t aid = pugi::cast<uint16_t>(attr.value());
-
-		auto result = actionItemMap.emplace(aid, std::move(*action));
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with actionid: {}", aid);
-		}
-		return result.second;
-	} else if ((attr = node.attribute("fromaid"))) {
-		pugi::xml_attribute toAidAttribute = node.attribute("toaid");
-		if (!toAidAttribute) {
-			SPDLOG_WARN("[Actions::registerEvent()] - Missing toaid in fromaid: {}",
-						attr.as_string());
-			return false;
-		}
-
-		uint16_t fromAid = pugi::cast<uint16_t>(attr.value());
-		uint16_t iterAid = fromAid;
-		uint16_t toAid = pugi::cast<uint16_t>(toAidAttribute.value());
-
-		auto result = actionItemMap.emplace(iterAid, *action);
-		if (!result.second) {
-			SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-						"registered item with action id: {} in fromaid: {}, toaid: {}",
-						iterAid, fromAid, toAid);
-		}
-
-		bool success = result.second;
-		while (++iterAid <= toAid) {
-			result = actionItemMap.emplace(iterAid, *action);
-			if (!result.second) {
-				SPDLOG_WARN("[Actions::registerEvent] - Duplicate "
-							"registered item with action id: {} in fromaid: {}, toaid: {}",
-							iterAid, fromAid, toAid);
-				continue;
-			}
-			success = true;
-		}
-		return success;
-	}
-	return false;
 }
 
 bool Actions::registerLuaItemEvent(Action* action) {
@@ -304,18 +130,18 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 	return !positionVector.empty();
 }
 
-bool Actions::registerLuaEvent(Action* event) {
-	Action_ptr action{ event };
+bool Actions::registerLuaEvent(Action* action) {
+	Action_ptr actionPtr{ action };
 
 	// Call all register lua events
-	if (registerLuaItemEvent(event) || registerLuaUniqueEvent(event) || registerLuaActionEvent(event) || registerLuaPositionEvent(event)) {
+	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
 		return true;
 	} else {
 		SPDLOG_WARN("[Actions::registerLuaEvent] - "
 				"Missing id/aid/uid/position for one script event");
 		return false;
 	}
-	SPDLOG_DEBUG("[Actions::registerLuaEvent] - Missing or incorrect script event");
+	SPDLOG_DEBUG("[Actions::registerLuaEvent] - Missing or incorrect script");
 	return false;
 }
 
@@ -415,18 +241,17 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 
 	Action* action = getAction(item);
 	if (action != nullptr) {
-		if (action->isScripted()) {
+		if (action->isLoadedCallback()) {
 			if (action->executeUse(player, item, pos, nullptr, pos, isHotkey)) {
 				return RETURNVALUE_NOERROR;
 			}
-
 			if (item->isRemoved()) {
 				return RETURNVALUE_CANNOTUSETHISOBJECT;
 			}
-		} else if (action->function) {
-			if (action->function(player, item, pos, nullptr, pos, isHotkey)) {
-				return RETURNVALUE_NOERROR;
-			}
+		} else if (action->useFunction
+		&& action->useFunction(player, item, pos, nullptr, pos, isHotkey))
+		{
+			return RETURNVALUE_NOERROR;
 		}
 	}
 
@@ -584,8 +409,8 @@ bool Actions::useItemEx(Player* player, const Position& fromPos, const Position&
 		showUseHotkeyMessage(player, item, player->getItemTypeCount(item->getID(), subType != item->getItemCount() ? subType : -1));
 	}
 
-	if (action->function) {
-		if (action->function(player, item, fromPos, action->getTarget(player, creature, toPos, toStackPos), toPos, isHotkey)) {
+	if (action->useFunction) {
+		if (action->useFunction(player, item, fromPos, action->getTarget(player, creature, toPos, toStackPos), toPos, isHotkey)) {
 			return true;
 		}
 		return false;
@@ -618,31 +443,15 @@ void Actions::showUseHotkeyMessage(Player* player, const Item* item, uint32_t co
 	player->sendTextMessage(MESSAGE_HOTKEY_PRESSED, ss.str());
 }
 
-Action::Action(LuaScriptInterface* interface) :
-	Event(interface), function(nullptr), allowFarUse(false), checkFloor(true), checkLineOfSight(true) {}
 
-bool Action::configureEvent(const pugi::xml_node& node) {
-	pugi::xml_attribute allowFarUseAttr = node.attribute("allowfaruse");
-	if (allowFarUseAttr != nullptr) {
-		allowFarUse = allowFarUseAttr.as_bool();
-	}
+/*
+ ================
+ Action interface
+ ================
+*/
 
-	pugi::xml_attribute blockWallsAttr = node.attribute("blockwalls");
-	if (blockWallsAttr != nullptr) {
-		checkLineOfSight = blockWallsAttr.as_bool();
-	}
-
-	pugi::xml_attribute checkFloorAttr = node.attribute("checkfloor");
-	if (checkFloorAttr != nullptr) {
-		checkFloor = checkFloorAttr.as_bool();
-	}
-
-	return true;
-}
-
-std::string Action::getScriptEventName() const {
-	return "onUse";
-}
+// Action constructor
+Action::Action(LuaScriptInterface* interface) : Script(interface) {}
 
 ReturnValue Action::canExecuteAction(const Player* player, const Position& toPos) {
 	if (!allowFarUse) {
@@ -662,19 +471,19 @@ Thing* Action::getTarget(Player* player, Creature* targetCreature,
 
 bool Action::executeUse(Player* player, Item* item, const Position& fromPosition, Thing* target, const Position& toPosition, bool isHotkey) {
 	//onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[Action::executeUse - Player {}, on item {}] "
 					"Call stack overflow. Too many lua script calls being nested.",
 					player->getName(), item->getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* scriptEnvironment = getScriptInterface()->getScriptEnv();
+	scriptEnvironment->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Player>(L, player);
 	LuaScriptInterface::setMetatable(L, -1, "Player");
@@ -686,5 +495,5 @@ bool Action::executeUse(Player* player, Item* item, const Position& fromPosition
 	LuaScriptInterface::pushPosition(L, toPosition);
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
-	return scriptInterface->callFunction(6);
+	return getScriptInterface()->callFunction(6);
 }

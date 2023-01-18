@@ -48,7 +48,9 @@ void DatabaseTasks::threadMain()
 			if (flushTasks) {
 				flushSignal.notify_one();
 			}
-			taskSignal.wait(taskLockUnique);
+			taskSignal.wait(taskLockUnique, [this] {
+				return !tasks.empty();
+			});
 		}
 
 		if (!tasks.empty()) {
@@ -102,7 +104,9 @@ void DatabaseTasks::flush()
 	std::unique_lock<std::mutex> guard{ taskLock };
 	if (!tasks.empty()) {
 		flushTasks = true;
-		flushSignal.wait(guard);
+		flushSignal.wait(guard, [this] {
+			return !flushTasks;
+		});
 		flushTasks = false;
 	}
 }

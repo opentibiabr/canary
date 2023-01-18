@@ -606,11 +606,13 @@ void Combat::CombatConditionFunc(Creature* caster, Creature* target, const Comba
 	}
 
 	for (const auto& condition : params.conditionList) {
-		//Cleanse charm rune (target as player)
+		Player* player;
 		if (target) {
-			if (Player* player = target->getPlayer();
-				player->isImmuneCleanse(condition->getType()))
-			{
+			player = target->getPlayer();
+		}
+		//Cleanse charm rune (target as player)
+		if (player) {
+			if (player->isImmuneCleanse(condition->getType())) {
 				player->sendCancelMessage("You are still immune against this spell.");
 				return;
 			} else if (caster && caster->getMonster()) {

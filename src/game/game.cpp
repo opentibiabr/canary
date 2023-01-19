@@ -666,7 +666,7 @@ void Game::loadMigrationItems(std::map<uint32_t, std::pair<Item*, uint32_t>> &it
 		Item* item = Item::CreateItem(type, count);
 		if (item) {
 			if (!item->unserializeAttr(propStream)) {
-				SPDLOG_WARN("[loadMigrationItems::loadItems] - Failed to serialize");
+				SPDLOG_WARN("[loadMigrationItems::loadItems] - Failed to unserialize item {}, from player {}", item->getID(), result->getString("name"));
 			}
 
 			std::pair<Item*, uint32_t> pair(item, pid);

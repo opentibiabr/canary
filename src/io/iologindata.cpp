@@ -427,7 +427,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   }
 
   player->initializePrey();
-	player->initializeTaskHunting();
+  player->initializeTaskHunting();
   player->updateBaseSpeed();
   player->updateInventoryWeight();
   player->updateInventoryImbuement(true);
@@ -437,7 +437,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
 void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstream& query)
 {
-	Database& db = Database::getInstance();
+  Database& db = Database::getInstance();
   using ContainerBlock = std::pair<Container*, int32_t>;
   std::list<ContainerBlock> queue;
   ItemBlockList itemList;

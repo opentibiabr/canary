@@ -2565,7 +2565,9 @@ int PlayerFunctions::luaPlayerSave(lua_State* L) {
 	// player:save()
 	Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		player->loginPosition = player->getPosition();
+		if (!player->isOffline()) {
+ 			player->loginPosition = player->getPosition();
+		}
 		pushBoolean(L, IOLoginData::savePlayer(player));
 		if (player->isOffline()) {
 			delete player; //avoiding memory leak

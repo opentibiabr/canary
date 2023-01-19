@@ -378,6 +378,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	g_game().start(services);
 	g_game().setGameState(GAME_STATE_NORMAL);
 
+	g_game().initializeItemsDatabaseMigration();
+
 	webhook_init();
 
 	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);

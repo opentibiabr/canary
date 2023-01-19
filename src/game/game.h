@@ -428,6 +428,8 @@ class Game
 		GameState_t getGameState() const;
 		void setGameState(GameState_t newState);
 		void saveGameState();
+		void initializeItemsDatabaseMigration();
+		void loadMigrationItems(std::map<uint32_t, std::pair<Item*, uint32_t>> &itemsMap, DBResult_ptr result);
 
 		// Events
 		void checkCreatureWalk(uint32_t creatureId);

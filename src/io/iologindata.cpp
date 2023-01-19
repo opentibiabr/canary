@@ -444,7 +444,6 @@ void IOLoginData::savePlayerDataToProtobufArray(Player* player, std::ostringstre
   int32_t runningId = 100;
   const auto& openContainers = player->getOpenContainers();
   size_t protobufSize;
-  std::unique_ptr<char[]> protobufSerialized;
 
   // Inventory
   auto inventoryItemsProtobuf = Canary::protobuf::itemsserialization::ItemsSerialization();

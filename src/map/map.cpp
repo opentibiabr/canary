@@ -16,10 +16,10 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 
-bool Map::load(const std::string& identifier) {
+bool Map::load(const std::string& identifier, const Position& pos, bool unload) {
 	try {
 		IOMap loader;
-		if (!loader.loadMap(this, identifier)) {
+		if (!loader.loadMap(this, identifier, pos, unload)) {
 			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
 			return false;
 		}
@@ -33,7 +33,8 @@ bool Map::load(const std::string& identifier) {
 
 bool Map::loadMap(const std::string& identifier,
 	bool mainMap /*= false*/,bool loadHouses /*= false*/,
-	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
+	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/,
+	const Position& pos /*= Position()*/, bool unload /*= false*/)
 {
 	// Only download map if is loading the main map and it is not already downloaded
 	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
@@ -56,7 +57,7 @@ bool Map::loadMap(const std::string& identifier,
 	}
 
 	// Load the map
-	this->load(identifier);
+	this->load(identifier, pos, unload);
 
 	// Only create items from lua functions if is loading main map
 	// It needs to be after the load map to ensure the map already exists before creating the items

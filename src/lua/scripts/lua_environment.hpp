@@ -43,8 +43,9 @@ class LuaEnvironment: public LuaScriptInterface {
 		template<typename T>
 		std::shared_ptr<T> createWeaponObject(LuaScriptInterface *interface) {
 			auto weapon = std::make_shared<T>(interface);
-			weaponMap[++lastWeaponId] = weapon;
-			weaponIdMap[interface].push_back(lastWeaponId);
+			int weaponId = ++lastWeaponId;
+			weaponMap[weaponId] = weapon;
+			weaponIdMap[interface].push_back(weaponId);
 			return weapon;
 		}
 

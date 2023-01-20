@@ -24,8 +24,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponMelee>(getScriptEnv()->getScriptInterface());
-			if (weaponPtr) {
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponMelee>(getScriptEnv()->getScriptInterface())) {
 				pushUserdata<WeaponMelee>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
 				weaponPtr->weaponType = type;
@@ -36,8 +35,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		}
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface());
-			if (weaponPtr) {
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface())) {
 				pushUserdata<WeaponDistance>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
 				weaponPtr->weaponType = type;
@@ -47,8 +45,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 			break;
 		}
 		case WEAPON_WAND: {
-			auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponWand>(getScriptEnv()->getScriptInterface());
-			if (weaponPtr) {
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponWand>(getScriptEnv()->getScriptInterface())) {
 				pushUserdata<WeaponWand>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
 				weaponPtr->weaponType = type;

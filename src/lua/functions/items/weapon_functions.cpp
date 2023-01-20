@@ -23,7 +23,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			WeaponMelee* weapon = new WeaponMelee(getScriptEnv()->getScriptInterface());
+			auto weapon = new WeaponMelee(getScriptEnv()->getScriptInterface());
 			if (weapon) {
 				pushUserdata<WeaponMelee>(L, weapon);
 				setMetatable(L, -1, "Weapon");
@@ -35,7 +35,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		}
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			WeaponDistance* weapon = new WeaponDistance(getScriptEnv()->getScriptInterface());
+			auto weapon = new WeaponDistance(getScriptEnv()->getScriptInterface());
 			if (weapon) {
 				pushUserdata<WeaponDistance>(L, weapon);
 				setMetatable(L, -1, "Weapon");
@@ -46,7 +46,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 			break;
 		}
 		case WEAPON_WAND: {
-			WeaponWand* weapon = new WeaponWand(getScriptEnv()->getScriptInterface());
+			auto weapon = new WeaponWand(getScriptEnv()->getScriptInterface());
 			if (weapon) {
 				pushUserdata<WeaponWand>(L, weapon);
 				setMetatable(L, -1, "Weapon");

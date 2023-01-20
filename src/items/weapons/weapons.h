@@ -280,7 +280,7 @@ class WeaponDistance final : public Weapon
 class WeaponWand final : public Weapon
 {
 	public:
-		explicit WeaponWand(LuaScriptInterface* interface) : Weapon(interface) {}
+		using Weapon::Weapon;
 
 		std::string getScriptTypeName() const override {
 			return "onUseWeapon";

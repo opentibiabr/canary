@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
-        language: ['cpp', 'python']
+        language: ['cpp']
         include:
           - language: cpp
             buildtype: linux-release

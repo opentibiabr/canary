@@ -68,31 +68,7 @@ struct Position
 	uint8_t z = 0;
 
 	bool operator<(const Position& p) const {
-		if (z < p.z) {
-			return true;
-		}
-
-		if (z > p.z) {
-			return false;
-		}
-
-		if (y < p.y) {
-			return true;
-		}
-
-		if (y > p.y) {
-			return false;
-		}
-
-		if (x < p.x) {
-			return true;
-		}
-
-		if (x > p.x) {
-			return false;
-		}
-
-		return false;
+		return (z < p.z) || (z == p.z && y < p.y) || (z == p.z && y == p.y && x < p.x);
 	}
 
 	bool operator>(const Position& p) const {

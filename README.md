@@ -8,7 +8,6 @@
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/opentibiabr/canary)
 
-[![Analysis - CodeQL](https://github.com/opentibiabr/canary/actions/workflows/analysis-codeql.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/analysis-codeql.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opentibiabr_canary&metric=alert_status)](https://sonarcloud.io/dashboard?id=opentibiabr_canary)
 
 ## Builds

@@ -355,12 +355,12 @@ void Monster::removeTarget(Creature* creature)
 
 	auto it = std::find(targetList.begin(), targetList.end(), creature);
 	if (it != targetList.end()) {
-		creature->decrementReferenceCounter();
-		targetList.erase(it);
-
 		if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
 			totalPlayersOnScreen--;
 		}
+
+		creature->decrementReferenceCounter();
+		targetList.erase(it);
 	}
 }
 

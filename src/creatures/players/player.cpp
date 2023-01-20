@@ -867,21 +867,6 @@ void Player::onReceiveMail() const
 Container* Player::setLootContainer(ObjectCategory_t category, Container* container, bool loading /* = false*/)
 {
 	Container* previousContainer = nullptr;
-	auto it = quickLootContainers.find(category);
-	if (it != quickLootContainers.end() && !loading) {
-		previousContainer = (*it).second;
-		int64_t flags = previousContainer->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-		flags &= ~(1 << category);
-		if (flags == 0) {
-			previousContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-		} else {
-			previousContainer->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
-		}
-
-		previousContainer->decrementReferenceCounter();
-		quickLootContainers.erase(it);
-	}
-
 	if (container) {
 		previousContainer = container;
 		quickLootContainers[category] = container;
@@ -889,11 +874,29 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 		container->incrementReferenceCounter();
 		if (!loading) {
 			int64_t flags = container->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
-			container->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags | static_cast<uint32_t>(1 << category));
+			auto sendAttribute = flags | 1 << category;
+			container->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, sendAttribute);
+		}
+		return previousContainer;
+	} else {
+		if (auto it = quickLootContainers.find(category);
+			it != quickLootContainers.end() && !loading)
+		{
+			previousContainer = (*it).second;
+			int64_t flags = previousContainer->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			flags &= ~(1 << category);
+			if (flags == 0) {
+				previousContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			} else {
+				previousContainer->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+			}
+
+			previousContainer->decrementReferenceCounter();
+			quickLootContainers.erase(it);
 		}
 	}
 
-	return previousContainer;
+	return nullptr;
 }
 
 Container* Player::getLootContainer(ObjectCategory_t category) const
@@ -917,9 +920,9 @@ Container* Player::getLootContainer(ObjectCategory_t category) const
 
 void Player::checkLootContainers(const Item* item)
 {
-  if (!item) {
-    return;
-  }
+	if (!item) {
+		return;
+	}
 
 	const Container* container = item->getContainer();
 	if (!container) {
@@ -940,8 +943,8 @@ void Player::checkLootContainers(const Item* item)
 		if (remove) {
 			shouldSend = true;
 			it = quickLootContainers.erase(it);
-			lootContainer->decrementReferenceCounter();
 			lootContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			lootContainer->decrementReferenceCounter();
 		} else {
 			++it;
 		}

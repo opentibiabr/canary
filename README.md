@@ -70,7 +70,7 @@ Before [creating a pull request](https://github.com/opentibiabr/canary/pulls) pl
 
 ### **Sponsors**
 
-See your [donate page](https://docs.opentibiabr.org/donate)
+See our [donate page](https://docs.opentibiabr.org/donate)
 
 ### Partners
 

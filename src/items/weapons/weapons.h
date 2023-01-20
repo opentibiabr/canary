@@ -58,7 +58,7 @@ constexpr auto g_weapons = &Weapons::getInstance;
 class Weapon : public Script
 {
 	public:
-		explicit Weapon(LuaScriptInterface* interface) : Script(interface) {}
+		using Script::Script;
 
 		virtual void configureWeapon(const ItemType& it);
 		virtual bool interruptSwing() const {

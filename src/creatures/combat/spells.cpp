@@ -251,15 +251,9 @@ CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDire
 // Empty
 }
 
-CombatSpell::~CombatSpell() {
-	if (!isLoadedCallback()) {
-		delete combat;
-	}
-}
-
 bool CombatSpell::loadScriptCombat()
 {
-	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId);
+	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId).get();
 	return combat != nullptr;
 }
 

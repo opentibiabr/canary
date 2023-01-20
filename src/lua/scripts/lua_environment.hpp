@@ -35,9 +35,9 @@ class LuaEnvironment: public LuaScriptInterface {
 
 		LuaScriptInterface * getTestInterface();
 
-		Combat * getCombatObject(uint32_t id) const;
-		Combat * createCombatObject(LuaScriptInterface * interface);
-		void clearCombatObjects(LuaScriptInterface * interface);
+		std::shared_ptr<Combat> getCombatObject(uint32_t id) const;
+		std::shared_ptr<Combat> createCombatObject(LuaScriptInterface *interface);
+		void clearCombatObjects(LuaScriptInterface *interface);
 
 		AreaCombat * getAreaObject(uint32_t id) const;
 		uint32_t createAreaObject(LuaScriptInterface * interface);
@@ -46,19 +46,14 @@ class LuaEnvironment: public LuaScriptInterface {
 	private:
 		void executeTimerEvent(uint32_t eventIndex);
 
-		phmap::flat_hash_map < uint32_t,
-		LuaTimerEventDesc > timerEvents;
-		phmap::flat_hash_map < uint32_t,
-		Combat * > combatMap;
-		phmap::flat_hash_map < uint32_t,
-		AreaCombat * > areaMap;
+		phmap::flat_hash_map<uint32_t, LuaTimerEventDesc> timerEvents;
+		phmap::flat_hash_map<uint32_t, std::shared_ptr<Combat>> combatMap;
+		phmap::flat_hash_map<uint32_t, AreaCombat*> areaMap;
 
-		phmap::flat_hash_map < LuaScriptInterface * ,
-		std::vector < uint32_t >> combatIdMap;
-		phmap::flat_hash_map < LuaScriptInterface * ,
-		std::vector < uint32_t >> areaIdMap;
+		phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> combatIdMap;
+		phmap::flat_hash_map<LuaScriptInterface*, std::vector<uint32_t>> areaIdMap;
 
-		LuaScriptInterface * testInterface = nullptr;
+		LuaScriptInterface *testInterface = nullptr;
 
 		uint32_t lastEventTimerId = 1;
 		uint32_t lastCombatId = 0;

@@ -38,9 +38,15 @@ bool Actions::registerLuaItemEvent(Action* action) {
 	for (const auto& itemId : itemIdVector) {
 		// Check if the item is already registered and prevent it from being registered again
 		if (hasItemId(itemId)) {
-			SPDLOG_WARN("[Actions::registerLuaItemEvent] - Duplicate "
-						"registered item with id: {} in range from id: {}, to id: {}",
-						itemId, itemIdVector.at(0), itemIdVector.at(itemIdVector.size() - 1));
+			SPDLOG_WARN(
+				"[{}] - Duplicate "
+				"registered item with id: {} in range from id: {}, to id: {}, for script: {}",
+				__FUNCTION__,
+				itemId,
+				itemIdVector.at(0),
+				itemIdVector.at(itemIdVector.size() - 1),
+				action->getScriptInterface()->getLoadingScriptName()
+			);
 			continue;
 		}
 
@@ -69,9 +75,14 @@ bool Actions::registerLuaUniqueEvent(Action* action) {
 			setUniqueId(uniqueId, std::move(*action));
 			tmpVector.emplace_back(uniqueId);
 		} else {
-			SPDLOG_WARN("[Actions::registerLuaUniqueEvent] - Duplicate "
-						"registered item with uid: {} in range from uid: {}, to uid: {}",
-						uniqueId, uniqueIdVector.at(0), uniqueIdVector.at(uniqueIdVector.size() - 1));
+			SPDLOG_WARN(
+				"[{}] duplicate registered item with uid: {} in range from uid: {}, to uid: {}, for script: {}",
+				__FUNCTION__,
+				uniqueId,
+				uniqueIdVector.at(0),
+				uniqueIdVector.at(uniqueIdVector.size() - 1),
+				action->getScriptInterface()->getLoadingScriptName()
+			);
 		}
 	}
 
@@ -95,9 +106,14 @@ bool Actions::registerLuaActionEvent(Action* action) {
 			setActionId(actionId, std::move(*action));
 			tmpVector.emplace_back(actionId);
 		} else {
-			SPDLOG_WARN("[Actions::registerLuaActionEvent] - Duplicate "
-						"registered item with aid: {} in range from aid: {}, to aid: {}",
-						actionId, actionIdVector.at(0), actionIdVector.at(actionIdVector.size() - 1));
+			SPDLOG_WARN(
+				"[{}] duplicate registered item with aid: {} in range from aid: {}, to aid: {}, for script: {}",
+				__FUNCTION__,
+				actionId,
+				actionIdVector.at(0),
+				actionIdVector.at(actionIdVector.size() - 1),
+				action->getScriptInterface()->getLoadingScriptName()
+			);
 		}
 	}
 
@@ -121,8 +137,12 @@ bool Actions::registerLuaPositionEvent(Action* action) {
 			setPosition(position, std::move(*action));
 			tmpVector.emplace_back(position);
 		} else {
-			SPDLOG_WARN("[Actions::registerLuaPositionEvent] - Duplicate "
-						"registered script with range position: {}", position.toString());
+			SPDLOG_WARN(
+				"[{}] duplicate registered script with range position: {}, for script: {}",
+				__FUNCTION__,
+				position.toString(),
+				action->getScriptInterface()->getLoadingScriptName()
+			);
 		}
 	}
 
@@ -137,11 +157,17 @@ bool Actions::registerLuaEvent(Action* action) {
 	if (registerLuaItemEvent(action) || registerLuaUniqueEvent(action) || registerLuaActionEvent(action) || registerLuaPositionEvent(action)) {
 		return true;
 	} else {
-		SPDLOG_WARN("[Actions::registerLuaEvent] - "
-				"Missing id/aid/uid/position for one script event");
+		SPDLOG_WARN(
+			"[{}] missing id/aid/uid/position for one script event, for script: {}",
+			__FUNCTION__,
+			action->getScriptInterface()->getLoadingScriptName()
+		);
 		return false;
 	}
-	SPDLOG_DEBUG("[Actions::registerLuaEvent] - Missing or incorrect script");
+	SPDLOG_DEBUG("[{}] missing or incorrect script: {}",
+		__FUNCTION__,
+		action->getScriptInterface()->getLoadingScriptName()
+	);
 	return false;
 }
 

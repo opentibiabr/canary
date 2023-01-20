@@ -23,7 +23,11 @@ void CreatureEvents::clear()
 bool CreatureEvents::registerLuaEvent(CreatureEvent* event) {
 	CreatureEvent_ptr creatureEvent{ event };
 	if (creatureEvent->getEventType() == CREATURE_EVENT_NONE) {
-		SPDLOG_ERROR("[CreatureEvents::registerLuaEvent] - Trying to register event without type");
+		SPDLOG_ERROR(
+			"[{}] - Trying to register event without type for script: {}",
+			__FUNCTION__,
+			event->getScriptInterface()->getLoadingScriptName()
+		);
 		return false;
 	}
 

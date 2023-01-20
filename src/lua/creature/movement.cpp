@@ -112,11 +112,18 @@ bool MoveEvents::registerLuaEvent(MoveEvent& moveEvent) {
 	{
 		return true;
 	} else {
-		SPDLOG_WARN("[MoveEvents::registerLuaEvent] - "
-				"Missing id, aid, uid or position");
+		SPDLOG_WARN(
+			"[{}] missing id, aid, uid or position for script: {}",
+			__FUNCTION__,
+			moveEvent.getScriptInterface()->getLoadingScriptName()
+		);
 		return false;
 	}
-	SPDLOG_DEBUG("[MoveEvents::registerLuaEvent] - Missing or incorrect event for script");
+	SPDLOG_DEBUG(
+		"[{}] missing or incorrect event for script: {}",
+		__FUNCTION__,
+		moveEvent->getScriptInterface()->getLoadingScriptName()
+	);
 	return false;
 }
 
@@ -131,8 +138,12 @@ bool MoveEvents::registerEvent(MoveEvent& moveEvent, int32_t id, std::map<int32_
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		for (MoveEvent& existingMoveEvent : moveEventList) {
 			if (existingMoveEvent.getSlot() == moveEvent.getSlot()) {
-				SPDLOG_WARN("[MoveEvents::registerEvent] - "
-							"Duplicate move event found: {}", id);
+				SPDLOG_WARN(
+					"[{}] duplicate move event found: {}, for script: {}",
+					__FUNCTION__,
+					id,
+					moveEvent.getScriptInterface()->getLoadingScriptName()
+				);
 				return false;
 			}
 		}
@@ -223,8 +234,12 @@ bool MoveEvents::registerEvent(MoveEvent& moveEvent, const Position& position, s
 	} else {
 		std::list<MoveEvent>& moveEventList = it->second.moveEvent[moveEvent.getEventType()];
 		if (!moveEventList.empty()) {
-			SPDLOG_WARN("[MoveEvents::registerEvent] - "
-						"Duplicate move event found: {}", position.toString());
+			SPDLOG_WARN(
+				"[{}] duplicate move event found: {}, for script {}",
+				__FUNCTION__,
+				position.toString(),
+				moveEvent.getScriptInterface()->getLoadingScriptName()
+			);
 			return false;
 		}
 
@@ -334,6 +349,11 @@ uint32_t MoveEvents::onItemMove(Item& item, Tile& tile, bool isAdd) {
 	return ret;
 }
 
+/*
+================
+ MoveEvent class
+================
+*/
 MoveEvent::MoveEvent(LuaScriptInterface* interface) : Script(interface) {}
 
 std::string MoveEvent::getScriptTypeName() const {
@@ -351,7 +371,11 @@ std::string MoveEvent::getScriptTypeName() const {
 	case MOVE_EVENT_REMOVE_ITEM:
 		return "onRemoveItem";
 	default:
-		SPDLOG_ERROR("[MoveEvent::getScriptTypeName] - Invalid event type");
+		SPDLOG_ERROR(
+			"[{}] invalid event type for script: {}",
+			__FUNCTION__,
+			getScriptInterface()->getLoadingScriptName()
+		);
 		return std::string();
 	}
 }

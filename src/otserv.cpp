@@ -158,9 +158,9 @@ void loadModules() {
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0),
 		"core.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0),
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0),
 		"scripts/talkactions.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
 		"XML/vocations.xml");

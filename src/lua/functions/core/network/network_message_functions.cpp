@@ -134,6 +134,19 @@ int NetworkMessageFunctions::luaNetworkMessageAddU32(lua_State* L) {
 	return 1;
 }
 
+int NetworkMessageFunctions::luaNetworkMessageAddInt32(lua_State* L) {
+	// networkMessage:addInt32(number)
+	int32_t number = getNumber<int32_t>(L, 2);
+	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
+	if (message) {
+		message->add<int32_t>(number);
+		pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
 int NetworkMessageFunctions::luaNetworkMessageAddU64(lua_State* L) {
 	// networkMessage:addU64(number)
 	uint64_t number = getNumber<uint64_t>(L, 2);

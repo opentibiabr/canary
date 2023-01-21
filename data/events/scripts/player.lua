@@ -726,7 +726,7 @@ function Player:onGainExperience(target, exp, rawExp)
 
 	local baseRate = self:getFinalBaseRateExperience()
 
-	return math.max((exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost)
+	return (exp * baseRate + (exp * (storeXpBoostAmount/100))) * staminaBoost
 end
 
 function Player:onLoseExperience(exp)

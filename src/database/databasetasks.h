@@ -51,11 +51,11 @@ class DatabaseTasks : public ThreadHolder<DatabaseTasks>
 		void runTask(const DatabaseTask& task);
 
 		Database *db_;
-		std::thread thread;
 		std::list<DatabaseTask> tasks;
 		std::mutex taskLock;
 		std::condition_variable taskSignal;
 		std::condition_variable flushSignal;
+		std::once_flag shutdown_flag;
 		bool flushTasks = false;
 };
 

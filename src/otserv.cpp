@@ -75,7 +75,7 @@ std::string getCompiler() {
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
-	exit(0);
+	g_databaseTasks().shutdown();
 	g_loaderSignal.notify_all();
 }
 

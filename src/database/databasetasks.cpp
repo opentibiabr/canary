@@ -113,13 +113,13 @@ void DatabaseTasks::flush()
 
 void DatabaseTasks::shutdown()
 {
-  std::unique_lock<std::mutex> guard(taskLock, std::defer_lock);
-  if(!guard.try_lock()){
-      return;
-  }
-  setState(THREAD_STATE_TERMINATED);
-  std::call_once(shutdown_flag, [&] {
-      flush();
-      taskSignal.notify_one();
-  });
+	std::unique_lock guard(taskLock, std::defer_lock);
+	if(!guard.try_lock()){
+		return;
+	}
+	setState(THREAD_STATE_TERMINATED);
+	std::call_once(shutdown_flag, [this] {
+		flush();
+		taskSignal.notify_one();
+	});
 }

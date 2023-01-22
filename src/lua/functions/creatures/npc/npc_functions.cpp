@@ -59,7 +59,7 @@ int NpcFunctions::luaNpcSetMasterPos(lua_State* L) {
 		return 1;
 	}
 
-	const Position& pos = getPosition(L, 2);
+	const Position& pos = getLuaPosition(L, 2);
 	npc->setMasterPos(pos);
 	pushBoolean(L, true);
 	return 1;
@@ -149,7 +149,7 @@ int NpcFunctions::luaNpcPlace(lua_State* L) {
 		return 1;
 	}
 
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, true);
 	if (g_game().placeCreature(npc, position, extended, force)) {
@@ -167,7 +167,7 @@ int NpcFunctions::luaNpcSay(lua_State* L) {
 
 	Position position;
 	if (parameters >= 6) {
-		position = getPosition(L, 6);
+		position = getLuaPosition(L, 6);
 		if (!position.x || !position.y) {
 			reportErrorFunc("Invalid position specified.");
 			pushBoolean(L, false);
@@ -324,7 +324,7 @@ int NpcFunctions::luaNpcIsPlayerInteractingOnTopic(lua_State* L) {
 int NpcFunctions::luaNpcIsInTalkRange(lua_State* L) {
 	// npc:isInTalkRange()
 	Npc* npc = getUserdata<Npc>(L, 1);
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 
 	if (!npc) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_NPC_NOT_FOUND));

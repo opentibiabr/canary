@@ -146,6 +146,7 @@ find_package(spdlog REQUIRED)
 find_package(unofficial-libmariadb CONFIG REQUIRED)
 find_package(mio REQUIRED)
 find_package(Threads REQUIRED)
+find_path(LUABRIDGE_INCLUDE_DIRS "LuaBridge/Array.h")
 
 include(GNUInstallDirs)
 
@@ -252,7 +253,7 @@ PRIVATE
 	lua/functions/creatures/player/guild_functions.cpp
 	lua/functions/creatures/player/mount_functions.cpp
 	lua/functions/creatures/player/party_functions.cpp
-	lua/functions/creatures/player/player_functions.cpp
+	lua/functions/creatures/player/lua_player_methods.cpp
 	lua/functions/creatures/player/vocation_functions.cpp
 	lua/functions/events/action_functions.cpp
 	lua/functions/events/creature_event_functions.cpp
@@ -329,6 +330,7 @@ if (MSVC)
 			${LUAJIT_INCLUDE_DIRS}
 			${PARALLEL_HASHMAP_INCLUDE_DIRS}
 			${GMP_INCLUDE_DIR}
+			${LUABRIDGE_INCLUDE_DIRS}
 	)
 
 	target_link_libraries(${PROJECT_NAME}
@@ -357,6 +359,7 @@ else()
 			${LUAJIT_INCLUDE_DIRS}
 			${PARALLEL_HASHMAP_INCLUDE_DIRS}
 			${GMP_INCLUDE_DIRS}
+			${LUABRIDGE_INCLUDE_DIRS}
 	)
 
 	target_link_libraries(${PROJECT_NAME}

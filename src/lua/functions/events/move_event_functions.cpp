@@ -281,10 +281,10 @@ int MoveEventFunctions::luaMoveEventPosition(lua_State* L) {
 		int parameters = lua_gettop(L) - 1; // - 1 because self is a parameter aswell, which we want to skip ofc
 		if (parameters > 1) {
 			for (int i = 0; i < parameters; ++i) {
-				moveevent->setPosition(getPosition(L, 2 + i));
+				moveevent->setPosition(getLuaPosition(L, 2 + i));
 			}
 		} else {
-			moveevent->setPosition(getPosition(L, 2));
+			moveevent->setPosition(getLuaPosition(L, 2));
 		}
 		pushBoolean(L, true);
 	} else {

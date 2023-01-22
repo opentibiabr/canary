@@ -268,7 +268,7 @@ std::string LuaFunctionsLoader::getString(lua_State* L, int32_t arg) {
 	return std::string(c_str, len);
 }
 
-Position LuaFunctionsLoader::getPosition(lua_State* L, int32_t arg, int32_t& stackpos) {
+Position LuaFunctionsLoader::getLuaPosition(lua_State* L, int32_t arg, int32_t& stackpos) {
 	Position position;
 	position.x = getField<uint16_t>(L, arg, "x");
 	position.y = getField<uint16_t>(L, arg, "y");
@@ -285,7 +285,7 @@ Position LuaFunctionsLoader::getPosition(lua_State* L, int32_t arg, int32_t& sta
 	return position;
 }
 
-Position LuaFunctionsLoader::getPosition(lua_State* L, int32_t arg) {
+Position LuaFunctionsLoader::getLuaPosition(lua_State* L, int32_t arg) {
 	Position position;
 	position.x = getField<uint16_t>(L, arg, "x");
 	position.y = getField<uint16_t>(L, arg, "y");
@@ -335,7 +335,7 @@ LuaVariant LuaFunctionsLoader::getVariant(lua_State* L, int32_t arg) {
 		case VARIANT_POSITION:
 		case VARIANT_TARGETPOSITION: {
 			lua_getfield(L, arg, "pos");
-			var.pos = getPosition(L, lua_gettop(L));
+			var.pos = getLuaPosition(L, lua_gettop(L));
 			lua_pop(L, 2);
 			break;
 		}

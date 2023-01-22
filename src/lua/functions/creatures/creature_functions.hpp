@@ -13,7 +13,7 @@
 #include "lua/functions/creatures/combat/combat_functions.hpp"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
-#include "lua/functions/creatures/player/player_functions.hpp"
+#include "lua/functions/creatures/player/lua_player_methods.hpp"
 #include "lua/scripts/luascript.h"
 
 class CreatureFunctions final : LuaScriptInterface {
@@ -83,7 +83,7 @@ class CreatureFunctions final : LuaScriptInterface {
 			CombatFunctions::init(L);
 			MonsterFunctions::init(L);
 			NpcFunctions::init(L);
-			PlayerFunctions::init(L);
+			LuaPlayer::init(L);
 		}
 
 	private:

@@ -78,7 +78,7 @@ int NpcTypeFunctions::luaNpcTypeFloorChange(lua_State* L) {
 int NpcTypeFunctions::luaNpcTypeCanSpawn(lua_State* L) {
 	// monsterType:canSpawn(pos)
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	if (npcType) {
 		pushBoolean(L, npcType->canSpawn(position));
 	}

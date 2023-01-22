@@ -238,7 +238,7 @@ int MonsterTypeFunctions::luaMonsterTypeIsForgeCreature(lua_State* L) {
 int MonsterTypeFunctions::luaMonsterTypeCanSpawn(lua_State* L) {
 	// monsterType:canSpawn(pos)
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	if (monsterType) {
 		pushBoolean(L, monsterType->canSpawn(position));
 	}

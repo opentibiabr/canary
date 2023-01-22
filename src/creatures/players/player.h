@@ -237,7 +237,7 @@ class Player final : public Creature, public Cylinder
 		}
 		void setGuild(Guild* guild);
 
-         GuildRank_ptr getGuildRank() const {
+		GuildRank_ptr getGuildRank() const {
 			return guildRank;
 		}
 		void setGuildRank(GuildRank_ptr newGuildRank) {
@@ -2512,7 +2512,7 @@ class Player final : public Creature, public Cylinder
 
 		friend class Game;
 		friend class Npc;
-		friend class PlayerFunctions;
+		friend class LuaPlayer;
 		friend class NetworkMessageFunctions;
 		friend class Map;
 		friend class Actions;

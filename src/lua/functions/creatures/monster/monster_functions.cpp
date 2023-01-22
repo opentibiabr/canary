@@ -122,7 +122,7 @@ int MonsterFunctions::luaMonsterIsInSpawnRange(lua_State* L) {
 	// monster:isInSpawnRange([position])
 	Monster* monster = getUserdata<Monster>(L, 1);
 	if (monster) {
-		pushBoolean(L, monster->isInSpawnRange(lua_gettop(L) >= 2 ? getPosition(L, 2) : monster->getPosition()));
+		pushBoolean(L, monster->isInSpawnRange(lua_gettop(L) >= 2 ? getLuaPosition(L, 2) : monster->getPosition()));
 	} else {
 		lua_pushnil(L);
 	}

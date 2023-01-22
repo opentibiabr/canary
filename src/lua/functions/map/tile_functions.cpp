@@ -17,7 +17,7 @@ int TileFunctions::luaTileCreate(lua_State* L) {
 	// Tile(position)
 	Tile* tile;
 	if (isTable(L, 2)) {
-		tile = g_game().map.getTile(getPosition(L, 2));
+		tile = g_game().map.getTile(getLuaPosition(L, 2));
 	} else {
 		uint8_t z = getNumber<uint8_t>(L, 4);
 		uint16_t y = getNumber<uint16_t>(L, 3);

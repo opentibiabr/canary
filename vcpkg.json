@@ -11,6 +11,7 @@
     "parallel-hashmap",
     "magic-enum",
     "mio",
+    "luabridge",
     {
       "name": "luajit",
       "platform": "!arm"

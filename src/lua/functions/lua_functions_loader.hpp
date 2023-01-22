@@ -24,6 +24,12 @@ class Item;
 class Player;
 class Thing;
 
+// Used to store the information of the lua functions
+struct LuaFunction {
+	std::string name;
+	lua_CFunction func;
+};
+
 #define reportErrorFunc(a)  reportError(__FUNCTION__, a, true)
 
 class LuaFunctionsLoader {
@@ -107,8 +113,8 @@ class LuaFunctionsLoader {
 
 		static std::string getString(lua_State* L, int32_t arg);
 		static CombatDamage getCombatDamage(lua_State* L);
-		static Position getPosition(lua_State* L, int32_t arg, int32_t& stackpos);
-		static Position getPosition(lua_State* L, int32_t arg);
+		static Position getLuaPosition(lua_State* L, int32_t arg, int32_t& stackpos);
+		static Position getLuaPosition(lua_State* L, int32_t arg);
 		static Outfit_t getOutfit(lua_State* L, int32_t arg);
 		static LuaVariant getVariant(lua_State* L, int32_t arg);
 

@@ -299,7 +299,7 @@ int GlobalFunctions::luaDoAreaCombatHealth(lua_State* L) {
 		damage.primary.type = combatType;
 		damage.primary.value = normal_random(getNumber<int32_t>(L, 6), getNumber<int32_t>(L, 5));
 
-		Combat::doCombatHealth(creature, getPosition(L, 3), area, damage, params);
+		Combat::doCombatHealth(creature, getLuaPosition(L, 3), area, damage, params);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
@@ -366,7 +366,7 @@ int GlobalFunctions::luaDoAreaCombatMana(lua_State* L) {
 		damage.primary.type = COMBAT_MANADRAIN;
 		damage.primary.value = normal_random(getNumber<int32_t>(L, 4), getNumber<int32_t>(L, 5));
 
-		Position pos = getPosition(L, 2);
+		Position pos = getLuaPosition(L, 2);
 		Combat::doCombatMana(creature, pos, area, damage, params);
 		pushBoolean(L, true);
 	} else {
@@ -427,7 +427,7 @@ int GlobalFunctions::luaDoAreaCombatCondition(lua_State* L) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint8_t>(L, 5);
 		params.conditionList.emplace_front(condition);
-		Combat::doCombatCondition(creature, getPosition(L, 2), area, params);
+		Combat::doCombatCondition(creature, getLuaPosition(L, 2), area, params);
 		pushBoolean(L, true);
 	} else {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_AREA_NOT_FOUND));
@@ -482,7 +482,7 @@ int GlobalFunctions::luaDoAreaCombatDispel(lua_State* L) {
 		CombatParams params;
 		params.impactEffect = getNumber<uint8_t>(L, 5);
 		params.dispelType = getNumber<ConditionType_t>(L, 4);
-		Combat::doCombatDispel(creature, getPosition(L, 2), area, params);
+		Combat::doCombatDispel(creature, getLuaPosition(L, 2), area, params);
 
 		pushBoolean(L, true);
 	} else {

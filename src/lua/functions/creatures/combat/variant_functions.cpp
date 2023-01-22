@@ -22,7 +22,7 @@ int VariantFunctions::luaVariantCreate(lua_State* L) {
 		}
 	} else if (isTable(L, 2)) {
 		variant.type = VARIANT_POSITION;
-		variant.pos = getPosition(L, 2);
+		variant.pos = getLuaPosition(L, 2);
 	} else if (isNumber(L, 2)) {
 		variant.type = VARIANT_NUMBER;
 		variant.number = getNumber<uint32_t>(L, 2);

@@ -127,7 +127,7 @@ int CreatureFunctions::luaCreatureCanSee(lua_State* L) {
 	// creature:canSee(position)
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
-		const Position& position = getPosition(L, 2);
+		const Position& position = getLuaPosition(L, 2);
 		pushBoolean(L, creature->canSee(position));
 	} else {
 		lua_pushnil(L);
@@ -741,7 +741,7 @@ int CreatureFunctions::luaCreatureTeleportTo(lua_State* L) {
 	// creature:teleportTo(position[, pushMovement = false])
 	bool pushMovement = getBoolean(L, 3, false);
 
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	Creature* creature = getUserdata<Creature>(L, 1);
 	if (creature == nullptr) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_CREATURE_NOT_FOUND));
@@ -779,7 +779,7 @@ int CreatureFunctions::luaCreatureSay(lua_State* L) {
 
 	Position position;
 	if (parameters >= 6) {
-		position = getPosition(L, 6);
+		position = getLuaPosition(L, 6);
 		if (!position.x || !position.y) {
 			reportErrorFunc("Invalid position specified.");
 			pushBoolean(L, false);
@@ -884,7 +884,7 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 		return 1;
 	}
 
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 
 	FindPathParams fpp;
 	fpp.minTargetDist = getNumber<int32_t>(L, 3, 0);

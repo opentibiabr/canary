@@ -594,7 +594,7 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 				break;
 		}
 	} else {
-		toCylinder = g_game().map.getTile(getPosition(L, 2));
+		toCylinder = g_game().map.getTile(getLuaPosition(L, 2));
 	}
 
 	if (!toCylinder) {

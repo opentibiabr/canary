@@ -38,6 +38,8 @@
 #else
 	#include <lua.hpp>
 #endif
+// Manage lua communication with c++
+#include <LuaBridge/LuaBridge.h>
 #include <magic_enum.hpp>
 #include <mio/mmap.hpp>
 #include <mysql.h>

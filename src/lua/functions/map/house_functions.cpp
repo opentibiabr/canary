@@ -231,7 +231,7 @@ int HouseFunctions::luaHouseGetDoorIdByPosition(lua_State* L) {
 		return 1;
 	}
 
-	Door* door = house->getDoorByPosition(getPosition(L, 2));
+	Door* door = house->getDoorByPosition(getLuaPosition(L, 2));
 	if (door) {
 		lua_pushnumber(L, door->getDoorId());
 	} else {

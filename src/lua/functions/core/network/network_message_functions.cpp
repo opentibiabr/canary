@@ -162,7 +162,7 @@ int NetworkMessageFunctions::luaNetworkMessageAddString(lua_State* L) {
 
 int NetworkMessageFunctions::luaNetworkMessageAddPosition(lua_State* L) {
 	// networkMessage:addPosition(position)
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	NetworkMessage* message = getUserdata<NetworkMessage>(L, 1);
 	if (message) {
 		message->addPosition(position);

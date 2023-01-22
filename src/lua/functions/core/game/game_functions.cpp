@@ -51,7 +51,7 @@ int GameFunctions::luaGameCreateNpcType(lua_State* L) {
 
 int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	// Game.getSpectators(position[, multifloor = false[, onlyPlayer = false[, minRangeX = 0[, maxRangeX = 0[, minRangeY = 0[, maxRangeY = 0]]]]]])
-	const Position& position = getPosition(L, 1);
+	const Position& position = getLuaPosition(L, 1);
 	bool multifloor = getBoolean(L, 2, false);
 	bool onlyPlayers = getBoolean(L, 3, false);
 	int32_t minRangeX = getNumber<int32_t>(L, 4, 0);
@@ -270,7 +270,7 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 
 	Position position;
 	if (lua_gettop(L) >= 3) {
-		position = getPosition(L, 3);
+		position = getLuaPosition(L, 3);
 	}
 
 	bool hasTable = itemCount > 1;
@@ -355,7 +355,7 @@ int GameFunctions::luaGameCreateContainer(lua_State* L) {
 	}
 
 	if (lua_gettop(L) >= 3) {
-		const Position& position = getPosition(L, 3);
+		const Position& position = getLuaPosition(L, 3);
 		Tile* tile = g_game().map.getTile(position);
 		if (!tile) {
 			delete container;
@@ -391,7 +391,7 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 		}
 	}
 
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, false);
 	if (g_game().placeCreature(monster, position, extended, force)) {
@@ -429,7 +429,7 @@ int GameFunctions::luaGameCreateNpc(lua_State* L) {
 		return 1;
 	}
 
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	bool extended = getBoolean(L, 3, false);
 	bool force = getBoolean(L, 4, false);
 	if (g_game().placeCreature(npc, position, extended, force)) {
@@ -448,7 +448,7 @@ int GameFunctions::luaGameCreateTile(lua_State* L) {
 	Position position;
 	bool isDynamic;
 	if (isTable(L, 1)) {
-		position = getPosition(L, 1);
+		position = getLuaPosition(L, 1);
 		isDynamic = getBoolean(L, 2, false);
 	} else {
 		position.x = getNumber<uint16_t>(L, 1);

@@ -149,7 +149,7 @@ int GameFunctions::luaGameLoadMap(lua_State* L) {
 int GameFunctions::luaGameloadMapChunk(lua_State* L) {
 	// Game.loadMapChunk(path, position, remove)
 	const std::string& path = getString(L, 1);
-	const Position& position = getPosition(L, 2);
+	const Position& position = getLuaPosition(L, 2);
 	bool unload = getBoolean(L, 3);
 	g_dispatcher().addTask(createTask([path, position, unload]() {g_game().loadMap(path, position, unload); }));
 	return 0;

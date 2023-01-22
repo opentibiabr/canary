@@ -45,17 +45,18 @@ bool EventsScheduler::loadScheduleEventFromXml() const
             continue;
         }
 
-        if (loadedScripts.count(eventScript) > 0) {
+        if (!eventScript.empty() && loadedScripts.count(eventScript) > 0) {
             SPDLOG_WARN("{} - Script declaration '{}' in duplicate 'data/XML/events.xml'.", __FUNCTION__, eventScript);
             continue;
         }
+
         loadedScripts.insert(eventScript);
 
-        if (!g_scripts().loadEventSchedulerScripts(eventScript)) {
+        if (!eventScript.empty() && !g_scripts().loadEventSchedulerScripts(eventScript)) {
             SPDLOG_WARN("{} - Can not load the file '{}' on '/events/scripts/scheduler/'",
                         __FUNCTION__, eventScript);
-			return false;
-		}
+            return false;
+        }
 
 		for (const auto& ingameNode : eventNode.children()) {
 			if (ingameNode.attribute("exprate")) {

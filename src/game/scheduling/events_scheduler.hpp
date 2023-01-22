@@ -35,36 +35,36 @@ class EventsScheduler {
 			return expSchedule;
 		}
 		void setExpSchedule(uint16_t exprate) {
-			expSchedule = exprate;
+			expSchedule = (expSchedule * exprate)/100;
 		}
 
 		uint32_t getLootSchedule() const {
 			return lootSchedule;
 		}
 		void setLootSchedule(uint32_t lootrate) {
-			lootSchedule = lootrate;
+			lootSchedule = (lootSchedule * lootrate)/100;
 		}
 
 		uint32_t getSpawnMonsterSchedule() const {
 			return spawnMonsterSchedule;
 		}
 		void setSpawnMonsterSchedule(uint32_t spawnrate) {
-			spawnMonsterSchedule = spawnrate;
+			spawnMonsterSchedule = (spawnMonsterSchedule * spawnrate)/100;
 		}
 
 		uint16_t getSkillSchedule() const {
 			return skillSchedule;
 		}
 		void setSkillSchedule(uint16_t skillrate) {
-			skillSchedule = skillrate;
+			skillSchedule = (skillSchedule * skillrate)/100;
 		}
 
 	private:
 		// Event schedule
-		uint16_t expSchedule = 0;
-		uint32_t lootSchedule = 0;
-		uint16_t skillSchedule = 0;
-		uint32_t spawnMonsterSchedule = 0;
+		uint16_t expSchedule = 100;
+		uint32_t lootSchedule = 100;
+		uint16_t skillSchedule = 100;
+		uint32_t spawnMonsterSchedule = 100;
 
 };
 

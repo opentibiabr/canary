@@ -34,8 +34,12 @@ bool EventsScheduler::loadScheduleEventFromXml() const
     for (const auto& eventNode : doc.child("events").children()) {
         std::string eventScript = eventNode.attribute("script").as_string();
 
-        int16_t startYear, startMonth, startDay;
-        int16_t endYear, endMonth, endDay;
+        int16_t startYear;
+        int16_t startMonth;
+        int16_t startDay;
+        int16_t endYear;
+        int16_t endMonth;
+        int16_t endDay;
         sscanf(eventNode.attribute("startdate").as_string(), "%hd/%hd/%hd", &startMonth, &startDay, &startYear);
         sscanf(eventNode.attribute("enddate").as_string(), "%hd/%hd/%hd", &endMonth, &endDay, &endYear);
         int startDays = ((startYear * 365) + (startMonth * 30) + startDay);
@@ -60,7 +64,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 
 		for (const auto& ingameNode : eventNode.children()) {
 			if (ingameNode.attribute("exprate")) {
-				g_eventsScheduler().setExpSchedule(ingameNode.attribute("exprate").as_uint());
+				g_eventsScheduler().setExpSchedule(static_cast<uint16_t>(ingameNode.attribute("exprate").as_uint()));
 			}
 
 			if (ingameNode.attribute("lootrate")) {
@@ -72,7 +76,7 @@ bool EventsScheduler::loadScheduleEventFromXml() const
 			}
 
 			if (ingameNode.attribute("skillrate")) {
-				g_eventsScheduler().setSkillSchedule(ingameNode.attribute("skillrate").as_uint());
+				g_eventsScheduler().setSkillSchedule(static_cast<uint16_t>(ingameNode.attribute("skillrate").as_uint()));
 			}
 		}
 	}
@@ -90,6 +94,5 @@ bool EventsScheduler::loadScheduleEventFromXml() const
        g_eventsScheduler().setSkillSchedule(100);
     }
 
-    SPDLOG_WARN("{}, {}, {}, {}", getExpSchedule(), getLootSchedule(), getSpawnMonsterSchedule(), getSkillSchedule());
 	return true;
 }

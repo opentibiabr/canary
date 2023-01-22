@@ -55,6 +55,9 @@ class IOLoginData
 
 		static void loadItems(ItemMap& itemMap, DBResult_ptr result);
 		static bool saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& stream);
+		static void loadRewardItems(Player *player, DBResult_ptr &result);
+		static void loadRewardBag(Player *player, ItemMap &itemMap);
+		static void insertItensIntoRewardBag(ItemMap &itemMap);
 };
 
 #endif  // SRC_IO_IOLOGINDATA_H_

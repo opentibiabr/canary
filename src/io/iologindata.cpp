@@ -547,53 +547,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
     }
   }
 
-  //load reward chest items
-  itemMap.clear();
-
-  query.str(std::string());
-  query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
-    if ((result = db.storeQuery(query.str()))) {
-    loadItems(itemMap, result);
-
-    //first loop handles the reward containers to retrieve its date attribute
-    //for (ItemMap::iterator it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
-    for (auto& it : itemMap) {
-      const std::pair<Item*, int32_t>& pair = it.second;
-      Item* item = pair.first;
-
-      int32_t pid = pair.second;
-      if (pid >= 0 && pid < 100) {
-        Reward* reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
-        if (reward) {
-          it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
-        }
-      } else {
-        break;
-      }
-    }
-
-    //second loop (this time a reverse one) to insert the items in the correct order
-    //for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
-    for (const auto& it : std::views::reverse(itemMap)) {
-      const std::pair<Item*, int32_t>& pair = it.second;
-      Item* item = pair.first;
-
-      int32_t pid = pair.second;
-      if (pid >= 0 && pid < 100) {
-        break;
-      }
-
-      ItemMap::const_iterator it2 = itemMap.find(pid);
-      if (it2 == itemMap.end()) {
-        continue;
-      }
-
-      Container* container = it2->second.first->getContainer();
-      if (container) {
-        container->internalAddThing(item);
-      }
-    }
-  }
+  loadRewardItems(player, result);
 
   //load inbox items
   itemMap.clear();
@@ -737,6 +691,58 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->updateInventoryImbuement(true);
   player->updateItemsLight(true);
   return true;
+}
+
+void IOLoginData::loadRewardItems(Player *player, DBResult_ptr &result) {
+	Database &db = Database::getInstance();
+	ItemMap itemMap;
+	std::ostringstream query;
+	query.str(std::string());
+	query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = "
+		  << player->getGUID() << " ORDER BY `pid`, `sid` ASC";
+	if ((result = db.storeQuery(query.str()))) {
+		loadItems(itemMap, result);
+		loadRewardBag(player, itemMap);
+		insertItensIntoRewardBag(itemMap);
+	}
+}
+
+void IOLoginData::insertItensIntoRewardBag(IOLoginData::ItemMap &itemMap) {
+	for (const auto &it: std::views::reverse(itemMap)) {
+		const std::pair<Item *, int32_t> &pair = it.second;
+		Item *item = pair.first;
+		int32_t pid = pair.second;
+		if (pid == 0) {
+			break;
+		}
+
+		ItemMap::const_iterator it2 = itemMap.find(pid);
+		if (it2 == itemMap.end()) {
+			continue;
+		}
+
+		Container *container = it2->second.first->getContainer();
+		if (container) {
+			container->internalAddThing(item);
+		}
+	}
+}
+
+void IOLoginData::loadRewardBag(Player *player, IOLoginData::ItemMap &itemMap) {
+	for (auto &it: itemMap) {
+		const std::pair<Item *, int32_t> &pair = it.second;
+		Item *item = pair.first;
+		int32_t pid = pair.second;
+		if (pid == 0) {
+			Reward *reward = player->getReward(item->getIntAttr(ITEM_ATTRIBUTE_DATE), true);
+			if (reward) {
+				it.second = std::pair<Item *, int32_t>(reward->getItem(),
+													   player->getRewardChest()->getID());
+			}
+		} else {
+			break;
+		}
+	}
 }
 
 bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& propWriteStream)
@@ -1152,7 +1158,7 @@ bool IOLoginData::savePlayer(Player* player)
       Reward* reward = player->getReward(rewardId, false);
       // rewards that are empty or older than 7 days aren't stored
       if (!reward->empty() && (time(nullptr) - rewardId <= 60 * 60 * 24 * 7)) {
-        itemList.emplace_back(++running, reward);
+        itemList.emplace_back(0, reward);
       }
     }
 

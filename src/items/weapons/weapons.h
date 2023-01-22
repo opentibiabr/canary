@@ -55,11 +55,11 @@ class Weapons final : public Scripts
 
 constexpr auto g_weapons = &Weapons::getInstance;
 
-class Weapon
+class Weapon : public Script
 {
 	public:
-		Weapon() = default;
-		virtual ~Weapon() = default;
+		using Script::Script;
+
 		virtual void configureWeapon(const ItemType& it);
 		virtual bool interruptSwing() const {
 			return false;
@@ -191,6 +191,7 @@ class Weapon
 
 		uint32_t getManaCost(const Player* player) const;
 		int32_t getHealthCost(const Player* player) const;
+		bool executeUseWeapon(Player* player, const LuaVariant& var) const;
 
 		uint16_t id = 0;
 
@@ -227,6 +228,12 @@ class Weapon
 class WeaponMelee final : public Weapon
 {
 	public:
+		explicit WeaponMelee(LuaScriptInterface* interface);
+
+		std::string getScriptTypeName() const override {
+			return "onUseWeapon";
+		}
+
 		void configureWeapon(const ItemType& it) override;
 
 		bool useWeapon(Player* player, Item* item, Creature* target) const override;
@@ -246,6 +253,12 @@ class WeaponMelee final : public Weapon
 class WeaponDistance final : public Weapon
 {
 	public:
+		explicit WeaponDistance(LuaScriptInterface* interface);
+
+		std::string getScriptTypeName() const override {
+			return "onUseWeapon";
+		}
+
 		void configureWeapon(const ItemType& it) override;
 		bool interruptSwing() const override {
 			return true;
@@ -267,6 +280,12 @@ class WeaponDistance final : public Weapon
 class WeaponWand final : public Weapon
 {
 	public:
+		using Weapon::Weapon;
+
+		std::string getScriptTypeName() const override {
+			return "onUseWeapon";
+		}
+
 		void configureWeapon(const ItemType& it) override;
 
 		int32_t getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage = false) const override;

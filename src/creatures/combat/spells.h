@@ -95,9 +95,7 @@ class CombatSpell final : public Script, public BaseSpell
 {
 	public:
 		// Constructor
-		CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection);
-		// Destructor
-		~CombatSpell() override;
+		CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection);
 
 		// The copy constructor and the assignment operator have been deleted to prevent accidental copying.
 		CombatSpell(const CombatSpell&) = delete;

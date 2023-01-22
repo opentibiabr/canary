@@ -47,7 +47,7 @@ bool Scripts::loadEventSchedulerScripts(const std::string& fileName) {
 	for(std::filesystem::recursive_directory_iterator it(dir); it != endit; ++it) {
 		if(std::filesystem::is_regular_file(*it) && it->path().extension() == ".lua") {
 			if (it->path().filename().string() == fileName) {
-				if(scriptInterface.loadFile(it->path().string()) == -1) {
+				if(scriptInterface.loadFile(it->path().string(), it->path().filename().string()) == -1) {
 					SPDLOG_ERROR(it->path().string());
 					SPDLOG_ERROR(scriptInterface.getLastLuaError());
 					continue;
@@ -121,7 +121,7 @@ bool Scripts::loadScripts(std::string folderName, bool isLib, bool reload)
 			}
 
 			// If the function 'loadFile' returns -1, then there was an error loading the file
-			if (scriptInterface.loadFile(realPath.string()) == -1)
+			if (scriptInterface.loadFile(realPath.string(), realPath.filename().string()) == -1)
 			{
 				// Log the error and the file path, and skip to the next iteration of the loop.
 				SPDLOG_ERROR(realPath.string());

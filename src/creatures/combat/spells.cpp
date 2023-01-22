@@ -120,8 +120,12 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event)
 		uint16_t id = rune->getRuneItemId();
 		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
 		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerRuneLuaEvent] - "
-                        "Duplicate registered rune with id: {}", id);
+			SPDLOG_WARN(
+				"[{}] duplicate registered rune with id: {}, for script: {}",
+				__FUNCTION__,
+				id,
+				event->getScriptInterface()->getLoadingScriptName()
+			);
 		}
 		return result.second;
 	}
@@ -242,20 +246,18 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 	return getNextPosition(dir, creature->getPosition());
 }
 
-CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool needDirection) :
+CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection) :
 	Script(&g_spells().getScriptInterface()),
 	combat(newCombat),
-	needDirection(newNeedTarget),
-	needTarget(needDirection)
+	needDirection(newNeedDirection),
+	needTarget(newNeedTarget)
 {
 // Empty
 }
 
-CombatSpell::~CombatSpell() = default;
-
 bool CombatSpell::loadScriptCombat()
 {
-	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId);
+	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId).get();
 	return combat != nullptr;
 }
 

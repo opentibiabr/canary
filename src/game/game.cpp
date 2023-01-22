@@ -322,9 +322,9 @@ bool Game::loadCustomMap(const std::string& filename)
 	return map.loadMapCustom(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + filename + ".otbm", true, true, true);
 }
 
-void Game::loadMap(const std::string& path)
+void Game::loadMap(const std::string& path, const Position& pos, bool unload)
 {
-	map.loadMap(path);
+	map.loadMap(path, false, false, false, false, pos, unload);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position& pos) const

@@ -104,7 +104,7 @@ void NpcType::loadShop(NpcType* npcType, ShopBlock shopBlock)
 bool Npcs::load(bool loadLibs/* = true*/, bool loadNpcs/* = true*/, bool reloading/* = false*/) const {
 	if (loadLibs) {
 		auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua") == 0;
+		return g_luaEnvironment.loadFile(coreFolder + "/npclib/load.lua", "load.lua") == 0;
 	}
 	if (loadNpcs) {
 		return g_scripts().loadScripts("npc", false, reloading);

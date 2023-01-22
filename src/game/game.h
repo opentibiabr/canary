@@ -78,7 +78,7 @@ class Game
 		 * \returns true if the custom map was loaded successfully
 		*/
 		bool loadCustomMap(const std::string& filename);
-		void loadMap(const std::string& path);
+		void loadMap(const std::string& path, const Position& pos = Position(), bool unload = false);
 
 		void getMapDimensions(uint32_t& width, uint32_t& height) const {
 			width = map.width;

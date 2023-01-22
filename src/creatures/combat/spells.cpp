@@ -120,8 +120,12 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event)
 		uint16_t id = rune->getRuneItemId();
 		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
 		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerRuneLuaEvent] - "
-                        "Duplicate registered rune with id: {}", id);
+			SPDLOG_WARN(
+				"[{}] duplicate registered rune with id: {}, for script: {}",
+				__FUNCTION__,
+				id,
+				event->getScriptInterface()->getLoadingScriptName()
+			);
 		}
 		return result.second;
 	}

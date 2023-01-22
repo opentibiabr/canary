@@ -11,16 +11,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(GNUCXX_MINIMUM_VERSION 11)
 set(MSVC_MINIMUM_VERSION "19.32")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(Boost_NO_WARN_NEW_VERSIONS ON)
-
-
-# Global gives error when building spdlog
-# Avoid changes by cmake/make on the source tree
-# https://gitlab.kitware.com/cmake/cmake/issues/18403
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
+set(Boost_NO_WARN_NEW_VERSIONS ON)
 
 # Make will print more details
 set(CMAKE_VERBOSE_MAKEFILE OFF)
@@ -139,26 +133,19 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE pch.hpp)
 # *****************************************************************************
 # Packages / Libs
 # *****************************************************************************
-find_package(spdlog REQUIRED)
-find_package(LuaJIT REQUIRED)
-find_package(Threads REQUIRED)
-find_package(Protobuf REQUIRED)
+find_package(asio CONFIG REQUIRED)
+find_package(CURL CONFIG REQUIRED)
 find_package(GMP REQUIRED)
+find_package(jsoncpp CONFIG REQUIRED)
+find_package(LuaJIT REQUIRED)
+find_package(MySQL REQUIRED)
 find_package(magic_enum CONFIG REQUIRED)
-
-if (MSVC)
-	find_package(Boost 1.53.0 COMPONENTS system filesystem iostreams date_time REQUIRED)
-	find_package(CURL REQUIRED)
-	find_package(jsoncpp REQUIRED)
-	find_package(MySQL REQUIRED)
-	find_package(PugiXML REQUIRED)
-else()
-	find_package(Boost REQUIRED COMPONENTS system filesystem iostreams date_time)
-	find_package(CURL CONFIG REQUIRED)
-	find_package(jsoncpp CONFIG REQUIRED)
-	find_package(pugixml CONFIG REQUIRED)
-	find_package(unofficial-libmariadb CONFIG REQUIRED)
-endif (MSVC)
+find_package(Protobuf REQUIRED)
+find_package(pugixml CONFIG REQUIRED)
+find_package(spdlog REQUIRED)
+find_package(unofficial-libmariadb CONFIG REQUIRED)
+find_package(mio REQUIRED)
+find_package(Threads REQUIRED)
 
 include(GNUInstallDirs)
 
@@ -328,7 +315,7 @@ if (MSVC)
 		set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
 		find_package(unofficial-libmariadb CONFIG REQUIRED)
 		set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-		target_link_libraries(${PROJECT_NAME}	PRIVATE unofficial::libmariadb unofficial::mariadbclient jsoncpp_static)
+		target_link_libraries(${PROJECT_NAME}	PRIVATE jsoncpp_static)
 	else()
 		log_option_disabled("STATIC_LIBRARY")
 		target_link_libraries(${PROJECT_NAME}	PRIVATE jsoncpp_lib)
@@ -338,32 +325,28 @@ if (MSVC)
 
 	target_include_directories(${PROJECT_NAME}
 		PRIVATE
-			${Boost_LIBRARY_DIRS}
 			${CMAKE_SOURCE_DIR}/src
-			${MYSQL_INCLUDE_DIR}
 			${LUAJIT_INCLUDE_DIRS}
-			${Boost_INCLUDE_DIRS}
-			${PUGIXML_INCLUDE_DIR}
-			${CURL_INCLUDE_DIRS}
 			${PARALLEL_HASHMAP_INCLUDE_DIRS}
-			${Protobuf_INCLUDE_DIRS}
-			${SPDLOG_INCLUDE_DIR}
 			${GMP_INCLUDE_DIR}
 	)
 
 	target_link_libraries(${PROJECT_NAME}
 		PRIVATE
-			${MYSQL_CLIENT_LIBS}
-			${LUAJIT_LIBRARIES}
-			${Boost_LIBRARIES}
-			${PUGIXML_LIBRARIES}
 			${CMAKE_THREAD_LIBS_INIT}
-			${CURL_LIBRARIES}
-			${Protobuf_LIBRARIES}
-			${SPDLOG_LIBRARY}
 			${GMP_LIBRARIES}
+			${LUAJIT_LIBRARIES}
+			${MYSQL_CLIENT_LIBS}
+			asio::asio
+			CURL::libcurl
 			fmt::fmt
 			magic_enum::magic_enum
+			mio::mio
+			protobuf::libprotobuf
+			pugixml::pugixml
+			spdlog::spdlog
+			unofficial::libmariadb
+			unofficial::mariadbclient
 	)
 
 else()
@@ -373,27 +356,26 @@ else()
 			${CMAKE_SOURCE_DIR}/src
 			${LUAJIT_INCLUDE_DIRS}
 			${PARALLEL_HASHMAP_INCLUDE_DIRS}
-			${Protobuf_INCLUDE_DIRS}
 			${GMP_INCLUDE_DIRS}
 	)
 
 	target_link_libraries(${PROJECT_NAME}
 		PRIVATE
 			${LUAJIT_LIBRARIES}
-			${Protobuf_LIBRARIES}
 			${GMP_LIBRARIES}
-			Boost::boost
-			Boost::date_time
-			Boost::filesystem
-			Boost::iostreams
-			Boost::system
+			asio::asio
 			CURL::libcurl
+			fmt::fmt
 			jsoncpp_static
-			unofficial::libmariadb unofficial::mariadbclient
+			magic_enum::magic_enum
+			mio::mio
+			protobuf::libprotobuf
 			pugixml::pugixml
 			spdlog::spdlog
+			unofficial::libmariadb
+			unofficial::mariadbclient
+
 			Threads::Threads
-			magic_enum::magic_enum
 	)
 
 endif (MSVC)

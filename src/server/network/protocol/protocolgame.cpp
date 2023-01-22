@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -66,7 +56,34 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 
 	return totalIterationCount;
 }
+
+void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, const ItemAttributes::CustomAttribute* attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false)
+{
+	auto look = static_cast<uint16_t>(attribute->getInt());
+	msg.add<uint16_t>(look);
+	if (look != 0) {
+		const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute(head);
+		const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute(body);
+		const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute(legs);
+		const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute(feet);
+
+		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt()) : 0);
+		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt()) : 0);
+		msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt()) : 0);
+		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt()) : 0);
+
+		if (addAddon) {
+			const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
+			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt()) : 0);
+		}
+	} else {
+		if (addByte) {
+			msg.add<uint16_t>(0);
+		}
+	}
 }
+
+} // namespace
 
 ProtocolGame::ProtocolGame(Connection_ptr initConnection) : Protocol(initConnection) {
 	version = CLIENT_VERSION;
@@ -196,51 +213,20 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 		const ItemAttributes::CustomAttribute* lookDirection = item->getCustomAttribute("LookDirection");
 
 		if (lookType) {
-			uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookType->value));
-			msg.add<uint16_t>(look);
-
-			if(look != 0) {
-				const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute("LookHead");
-				const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute("LookBody");
-				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookLegs");
-				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookFeet");
-
-				msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-				msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-				msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-				msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
-
-				const ItemAttributes::CustomAttribute* lookAddons = item->getCustomAttribute("LookAddons");
-				msg.addByte(lookAddons ? static_cast<uint8_t>(boost::get<int64_t>(lookAddons->value)) : 0);
-			} else {
-				msg.add<uint16_t>(0);
-			}
+			addOutfitAndMountBytes(msg, item, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
 		} else {
 			msg.add<uint16_t>(0);
 			msg.add<uint16_t>(0);
 		}
 
 		if (lookMount) {
-			uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookMount->value));
-			msg.add<uint16_t>(look);
-
-			if (look != 0) {
-				const ItemAttributes::CustomAttribute* lookHead = item->getCustomAttribute("LookMountHead");
-				const ItemAttributes::CustomAttribute* lookBody = item->getCustomAttribute("LookMountBody");
-				const ItemAttributes::CustomAttribute* lookLegs = item->getCustomAttribute("LookMountLegs");
-				const ItemAttributes::CustomAttribute* lookFeet = item->getCustomAttribute("LookMountFeet");
-
-				msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-				msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-				msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-				msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
-			}
+			addOutfitAndMountBytes(msg, item, lookMount, "LookMountHead", "LookMountBody", "LookMountLegs", "LookMountFeet");
 		} else {
 			msg.add<uint16_t>(0);
 		}
 
-		msg.addByte(lookDirection ? static_cast<uint8_t>(boost::get<int64_t>(lookDirection->value)) : 2);
-		msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
+		msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt()) : 2);
+		msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt()) : 0x01);
 	}
 	if (item->getClassification() > 0) {
 		msg.addByte(item->getTier());
@@ -306,13 +292,13 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlag_CanAlwaysLogin))
+		if (g_game().getGameState() == GAME_STATE_CLOSING && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin))
 		{
 			disconnectClient("The game is just going down.\nPlease try again later.");
 			return;
 		}
 
-		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlag_CanAlwaysLogin))
+		if (g_game().getGameState() == GAME_STATE_CLOSED && !player->hasFlag(PlayerFlags_t::CanAlwaysLogin))
 		{
 			disconnectClient("Server is currently closed.\nPlease try again later.");
 			return;
@@ -330,7 +316,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!player->hasFlag(PlayerFlag_CannotBeBanned))
+		if (!player->hasFlag(PlayerFlags_t::CannotBeBanned))
 		{
 			BanInfo banInfo;
 			if (IOBan::isAccountBanned(accountId, banInfo))
@@ -919,8 +905,9 @@ void ProtocolGame::GetTileDescription(const Tile *tile, NetworkMessage &msg)
 	if (creatures)
 	{
 		bool playerAdded = false;
-		for (const Creature *creature : boost::adaptors::reverse(*creatures))
+		for (auto it = creatures->rbegin(); it != creatures->rend(); ++it)
 		{
+			const Creature *creature = *it;
 			if (!player->canSeeCreature(creature))
 			{
 				continue;
@@ -3046,7 +3033,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint16_t>(player->getBaseSpeed());
 	msg.add<uint32_t>(player->getCapacity());
 	msg.add<uint32_t>(player->getCapacity());
-	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 	msg.addByte(8);
 	msg.addByte(1);
 	msg.add<uint16_t>(player->getMagicLevel());
@@ -4725,7 +4712,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				separator = true;
 			}
 
-			ss << getCombatName(indexToCombatType(i)) << ' ' << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+			ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
 		}
 
 		msg.addString(ss.str());
@@ -4754,7 +4741,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	}
 
 	msg.addString(it.vocationString);
-
 	msg.addString(it.runeSpellName);
 
 	if (it.abilities)
@@ -4778,7 +4764,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				separator = true;
 			}
 
-			ss << getSkillName(i) << ' ' << std::showpos << it.abilities->skills[i] << std::noshowpos;
+			ss << fmt::format("{} {:+}", getSkillName(i), it.abilities->skills[i]);
 		}
 
 		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++)
@@ -4819,7 +4805,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				separator = true;
 			}
 
-			ss << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			ss << fmt::format("magic level {:+}",it.abilities->stats[STAT_MAGICPOINTS]);
 		}
 
 		if (it.abilities->speed != 0)
@@ -4829,7 +4815,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				ss << ", ";
 			}
 
-			ss << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+			ss << fmt::format("speed {:+}", (it.abilities->speed >> 1));
 		}
 
 		msg.addString(ss.str());
@@ -4913,19 +4899,18 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.addString(std::to_string(it.upgradeClassification));
 		std::ostringstream ss;
 
-		ss << static_cast<uint16_t>(tier) << " (";
 		double chance;
 		if (it.isWeapon()) {
 			chance = 0.5 * tier + 0.05 * ((tier - 1) * (tier - 1));
-			ss << std::setprecision(2) << std::fixed << chance << "% Onslaught)";
+			ss << fmt::format("{} ({:.2f}% Onslaught)", static_cast<uint16_t>(tier), chance);
 		}
 		else if (it.isHelmet()) {
 			chance = 2 * tier + 0.05 * ((tier - 1) * (tier - 1));
-			ss << std::setprecision(2) << std::fixed << chance << "% Momentum)";
+			ss << fmt::format("{} ({:.2f}% Momentum)", static_cast<uint16_t>(tier), chance);
 		}
 		else if (it.isArmor()) {
 			chance = (0.0307576 * tier * tier) + (0.440697 * tier) + 0.026;
-			ss << std::setprecision(2) << std::fixed << chance << "% Ruse)";
+			ss << fmt::format("{} ({:.2f}% Ruse)", static_cast<uint16_t>(tier), chance);
 		}
 		msg.addString(ss.str());
 	}
@@ -5241,8 +5226,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection)
 	NetworkMessage msg;
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
-	int32_t PlayerdailyStreak = 0;
-	player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
+	int32_t PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
 	msg.addByte(PlayerdailyStreak < 2 ? 0 : 1);
 	if (PlayerdailyStreak < 2)
 	{
@@ -6087,48 +6071,14 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	const ItemAttributes::CustomAttribute* lookMount = podium->getCustomAttribute("LookMount");
 	const ItemAttributes::CustomAttribute* lookDirection = podium->getCustomAttribute("LookDirection");
 
-	bool outfited = false;
-	bool mounted = false;
-
 	if (lookType) {
-		uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookType->value));
-		outfited = (look != 0);
-		msg.add<uint16_t>(look);
-
-		if (outfited) {
-			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookHead");
-			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookBody");
-			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookLegs");
-			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookFeet");
-
-			msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
-
-			const ItemAttributes::CustomAttribute* lookAddons = podium->getCustomAttribute("LookAddons");
-			msg.addByte(lookAddons ? static_cast<uint8_t>(boost::get<int64_t>(lookAddons->value)) : 0);
-		}
+		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
 	} else {
 		msg.add<uint16_t>(0);
 	}
 
 	if (lookMount) {
-		uint16_t look = static_cast<uint16_t>(boost::get<int64_t>(lookMount->value));
-		mounted = (look != 0);
-		msg.add<uint16_t>(look);
-
-		if (mounted) {
-			const ItemAttributes::CustomAttribute* lookHead = podium->getCustomAttribute("LookMountHead");
-			const ItemAttributes::CustomAttribute* lookBody = podium->getCustomAttribute("LookMountBody");
-			const ItemAttributes::CustomAttribute* lookLegs = podium->getCustomAttribute("LookMountLegs");
-			const ItemAttributes::CustomAttribute* lookFeet = podium->getCustomAttribute("LookMountFeet");
-
-			msg.addByte(lookHead ? static_cast<uint8_t>(boost::get<int64_t>(lookHead->value)) : 0);
-			msg.addByte(lookBody ? static_cast<uint8_t>(boost::get<int64_t>(lookBody->value)) : 0);
-			msg.addByte(lookLegs ? static_cast<uint8_t>(boost::get<int64_t>(lookLegs->value)) : 0);
-			msg.addByte(lookFeet ? static_cast<uint8_t>(boost::get<int64_t>(lookFeet->value)) : 0);
-		}
+		addOutfitAndMountBytes(msg, podium, lookMount, "LookMountHead", "LookMountBody", "LookMountLegs", "LookMountFeet");
 	} else {
 		msg.add<uint16_t>(0);
 		msg.addByte(0);
@@ -6189,7 +6139,7 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(0);
 
 	msg.addByte(0x05);
-	msg.addByte(mounted ? 0x01 : 0x00);
+	msg.addByte(lookMount ? 0x01 : 0x00);
 
 	msg.add<uint16_t>(0);
 
@@ -6197,9 +6147,9 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(itemId);
 	msg.addByte(stackpos);
 
-	msg.addByte(podiumVisible ? static_cast<uint8_t>(boost::get<int64_t>(podiumVisible->value)) : 0x01);
-	msg.addByte(outfited ? 0x01 : 0x00);
-	msg.addByte(lookDirection ? static_cast<uint8_t>(boost::get<int64_t>(lookDirection->value)) : 2);
+	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt()) : 0x01);
+	msg.addByte(lookType ? 0x01 : 0x00);
+	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt()) : 2);
 	writeToOutputBuffer(msg);
 }
 
@@ -6610,7 +6560,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 	msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 
-	msg.add<uint32_t>(player->hasFlag(PlayerFlag_HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
+	msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
 
 	msg.add<uint64_t>(player->getExperience());
 
@@ -7152,9 +7102,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
-	int32_t storageValue;
-	player->getStorageValue(shopBlock.itemStorageKey, storageValue);
-	if (shopBlock.itemStorageKey != 0 && storageValue < shopBlock.itemStorageValue)
+	if (shopBlock.itemStorageKey != 0 && player->getStorageValue(shopBlock.itemStorageKey) < shopBlock.itemStorageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;

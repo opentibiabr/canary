@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #ifndef SRC_MAP_MAP_H_
 #define SRC_MAP_MAP_H_
@@ -185,7 +175,7 @@ class Map
          * Load a map.
          * \returns true if the map was loaded successfully
          */
-		bool load(const std::string& identifier);
+		bool load(const std::string& identifier, const Position& pos = Position(), bool unload = false);
 		/**
 		* Load the main map
 		 * \param identifier Is the main map name (name of file .otbm)
@@ -194,7 +184,7 @@ class Map
 		 * \param loadNpcs if true, the main map npcs is loaded
 		 * \returns true if the main map was loaded successfully
 		*/
-		bool loadMap(const std::string& identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false);
+		bool loadMap(const std::string& identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false, const Position& pos = Position(), bool unload = false);
 		/**
 		* Load the custom map
 		 * \param identifier Is the map custom folder

@@ -4,11 +4,11 @@ function checkInbox.onThink(interval, lastExecution)
 	if records ~= false then
 		local count = 0
 		repeat
-			local player_id = result.getNumber(records, 'player_id')
+			local player_id = Result.getNumber(records, 'player_id')
 			db.asyncQuery('DELETE FROM `player_inboxitems` WHERE `player_id` = ' .. player_id)
 			db.asyncQuery('DELETE FROM `player` WHERE `id` = ' .. player_id)
-		until not result.next(records)
-		result.free(records)
+		until not Result.next(records)
+		Result.free(records)
 	end
 	return true
 end

@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -26,10 +16,10 @@
 #include "game/game.h"
 #include "creatures/monsters/monster.h"
 
-bool Map::load(const std::string& identifier) {
+bool Map::load(const std::string& identifier, const Position& pos, bool unload) {
 	try {
 		IOMap loader;
-		if (!loader.loadMap(this, identifier)) {
+		if (!loader.loadMap(this, identifier, pos, unload)) {
 			SPDLOG_ERROR("[Map::load] - {}", loader.getLastErrorString());
 			return false;
 		}
@@ -43,10 +33,11 @@ bool Map::load(const std::string& identifier) {
 
 bool Map::loadMap(const std::string& identifier,
 	bool mainMap /*= false*/,bool loadHouses /*= false*/,
-	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/)
+	bool loadMonsters /*= false*/, bool loadNpcs /*= false*/,
+	const Position& pos /*= Position()*/, bool unload /*= false*/)
 {
 	// Only download map if is loading the main map and it is not already downloaded
-	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !boost::filesystem::exists(identifier)) {
+	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			SPDLOG_WARN("Map download URL in config.lua is empty, download disabled");
@@ -57,8 +48,8 @@ bool Map::loadMap(const std::string& identifier,
 			FILE *otbm = fopen(identifier.c_str(), "wb");
 			curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 			curl_easy_setopt(curl, CURLOPT_URL, mapDownloadUrl.c_str());
-			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, otbm);
 			curl_easy_perform(curl);
 			curl_easy_cleanup(curl);
 			fclose(otbm);
@@ -66,7 +57,7 @@ bool Map::loadMap(const std::string& identifier,
 	}
 
 	// Load the map
-	this->load(identifier);
+	this->load(identifier, pos, unload);
 
 	// Only create items from lua functions if is loading main map
 	// It needs to be after the load map to ensure the map already exists before creating the items

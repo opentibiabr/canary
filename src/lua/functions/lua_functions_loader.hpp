@@ -113,8 +113,8 @@ class LuaFunctionsLoader {
 
 		static std::string getString(lua_State* L, int32_t arg);
 		static CombatDamage getCombatDamage(lua_State* L);
-		static Position getLuaPosition(lua_State* L, int32_t arg, int32_t& stackpos);
-		static Position getLuaPosition(lua_State* L, int32_t arg);
+		static Position getPositionFromLua(lua_State* L, int32_t arg, int32_t& stackpos);
+		static Position getPositionFromLua(lua_State* L, int32_t arg);
 		static Outfit_t getOutfit(lua_State* L, int32_t arg);
 		static LuaVariant getVariant(lua_State* L, int32_t arg);
 

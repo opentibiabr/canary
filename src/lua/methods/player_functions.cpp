@@ -1326,7 +1326,7 @@ int LuaPlayerFunctions::teleportTo(lua_State *L)
 	// player:teleportTo(position[, pushMovement = false])
 	bool pushMovement = getBoolean(L, 3, false);
 
-	const Position &position = getLuaPosition(L, 2);
+	const Position &position = getPositionFromLua(L, 2);
 	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
@@ -2667,7 +2667,7 @@ int LuaPlayerFunctions::sendTextMessage(lua_State *L)
 	{
 		if (parameters >= 6)
 		{
-			message.position = getLuaPosition(L, 4);
+			message.position = getPositionFromLua(L, 4);
 			message.primary.value = getNumber<int32_t> (L, 5);
 			message.primary.color = getNumber<TextColor_t> (L, 6);
 		}
@@ -3478,7 +3478,7 @@ int LuaPlayerFunctions::addMapMark(lua_State *L)
 		return 0;
 	}
 
-	const Position &position = getLuaPosition(L, 2);
+	const Position &position = getPositionFromLua(L, 2);
 	uint8_t type = getNumber<uint8_t> (L, 3);
 	const std::string &description = getString(L, 4);
 	player->sendAddMarker(position, type, description);

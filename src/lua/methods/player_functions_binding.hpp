@@ -7,8 +7,8 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#ifndef SRC_LUA_METHODS_PLAYER_LUA_BINDING_HPP_
-#define SRC_LUA_METHODS_PLAYER_LUA_BINDING_HPP_
+#ifndef SRC_LUA_METHODS_PLAYER_FUNCTIONS_BINDING_HPP_
+#define SRC_LUA_METHODS_PLAYER_FUNCTIONS_BINDING_HPP_
 
 #include "lua/methods/player_functions.hpp"
 
@@ -22,4 +22,4 @@ public:
 	static const std::unordered_map<std::string, lua_CFunction> getPlayerFunctionsMap(lua_State *L);
 };
 
-#endif  // SRC_LUA_METHODS_PLAYER_LUA_BINDING_HPP_
+#endif  // SRC_LUA_METHODS_PLAYER_FUNCTIONS_BINDING_HPP_

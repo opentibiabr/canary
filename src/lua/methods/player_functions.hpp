@@ -7,8 +7,8 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#ifndef SRC_LUA_METHODS_PLAYER_METHODS_HPP_
-#define SRC_LUA_METHODS_PLAYER_METHODS_HPP_
+#ifndef SRC_LUA_METHODS_PLAYER_FUNCTIONS_HPP_
+#define SRC_LUA_METHODS_PLAYER_FUNCTIONS_HPP_
 
 #include "lua/scripts/luascript.h"
 #include "lua/functions/creatures/player/group_functions.hpp"
@@ -300,4 +300,4 @@ public:
 	friend class CreatureFunctions;
 };
 
-#endif  // SRC_LUA_METHODS_PLAYER_METHODS_HPP_
+#endif  // SRC_LUA_METHODS_PLAYER_FUNCTIONS_HPP_

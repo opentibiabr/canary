@@ -20,284 +20,286 @@
 #include "io/ioprey.h"
 #include "items/item.h"
 
-const std::vector<LuaFunction> LuaPlayer::luaFunctions = {
-	{"resetCharmsBestiary", LuaPlayer::resetCharmsBestiary},
-	{"unlockAllCharmRunes", LuaPlayer::unlockAllCharmRunes},
-	{"addCharmPoints", LuaPlayer::addCharmPoints},
-	{"isPlayer", LuaPlayer::isPlayer},
-
-	{"getGuid", LuaPlayer::getGuid},
-	{"getIp", LuaPlayer::getIp},
-	{"getAccountId", LuaPlayer::getAccountId},
-	{"getLastLoginSaved", LuaPlayer::getLastLoginSaved},
-	{"getLastLogout", LuaPlayer::getLastLogout},
-
-	{"getAccountType", LuaPlayer::getAccountType},
-	{"setAccountType", LuaPlayer::setAccountType},
-
-	{"isMonsterBestiaryUnlocked", LuaPlayer::isMonsterBestiaryUnlocked},
-	{"addBestiaryKill", LuaPlayer::addBestiaryKill},
-	{"charmExpansion", LuaPlayer::charmExpansion},
-	{"getCharmMonsterType", LuaPlayer::getCharmMonsterType},
-
-	{"getPreyCards", LuaPlayer::getPreyCards},
-	{"getPreyLootPercentage", LuaPlayer::getPreyLootPercentage},
-	{"getPreyExperiencePercentage", LuaPlayer::getPreyExperiencePercentage},
-	{"preyThirdSlot", LuaPlayer::preyThirdSlot},
-	{"taskHuntingThirdSlot", LuaPlayer::taskHuntingThirdSlot},
-	{"removePreyStamina", LuaPlayer::removePreyStamina},
-	{"addPreyCards", LuaPlayer::addPreyCards},
-	{"removeTaskHuntingPoints", LuaPlayer::removeTaskHuntingPoints},
-	{"getTaskHuntingPoints", LuaPlayer::getTaskHuntingPoints},
-	{"addTaskHuntingPoints", LuaPlayer::addTaskHuntingPoints},
-
-	{"getCapacity", LuaPlayer::getCapacity},
-	{"setCapacity", LuaPlayer::setCapacity},
-
-	{"isTraining", LuaPlayer::getIsTraining},
-	{"setTraining", LuaPlayer::setTraining},
-
-	{"getFreeCapacity", LuaPlayer::getFreeCapacity},
-
-	{"getKills", LuaPlayer::getKills},
-	{"setKills", LuaPlayer::setKills},
-
-	{"getReward", LuaPlayer::getReward},
-	{"removeReward", LuaPlayer::removeReward},
-	{"getRewardList", LuaPlayer::getRewardList},
-
-	{"setDailyReward", LuaPlayer::setDailyReward},
-
-	{"sendInventory", LuaPlayer::sendInventory},
-	{"sendLootStats", LuaPlayer::sendLootStats},
-	{"updateSupplyTracker", LuaPlayer::updateSupplyTracker},
-	{"updateKillTracker", LuaPlayer::updateKillTracker},
-
-	{"getDepotLocker", LuaPlayer::getDepotLocker},
-	{"getDepotChest", LuaPlayer::getDepotChest},
-	{"getInbox", LuaPlayer::getInbox},
+const std::unordered_map<std::string, lua_CFunction> LuaPlayer::luaPlayerFunctionsMap(lua_State *L) {
+	return {
+		{"resetCharmsBestiary", LuaPlayer::resetCharmsBestiary},
+		{"unlockAllCharmRunes", LuaPlayer::unlockAllCharmRunes},
+		{"addCharmPoints", LuaPlayer::addCharmPoints},
+		{"isPlayer", LuaPlayer::isPlayer},
+
+		{"getGuid", LuaPlayer::getGuid},
+		{"getIp", LuaPlayer::getIp},
+		{"getAccountId", LuaPlayer::getAccountId},
+		{"getLastLoginSaved", LuaPlayer::getLastLoginSaved},
+		{"getLastLogout", LuaPlayer::getLastLogout},
+
+		{"getAccountType", LuaPlayer::getAccountType},
+		{"setAccountType", LuaPlayer::setAccountType},
+
+		{"isMonsterBestiaryUnlocked", LuaPlayer::isMonsterBestiaryUnlocked},
+		{"addBestiaryKill", LuaPlayer::addBestiaryKill},
+		{"charmExpansion", LuaPlayer::charmExpansion},
+		{"getCharmMonsterType", LuaPlayer::getCharmMonsterType},
+
+		{"getPreyCards", LuaPlayer::getPreyCards},
+		{"getPreyLootPercentage", LuaPlayer::getPreyLootPercentage},
+		{"getPreyExperiencePercentage", LuaPlayer::getPreyExperiencePercentage},
+		{"preyThirdSlot", LuaPlayer::preyThirdSlot},
+		{"taskHuntingThirdSlot", LuaPlayer::taskHuntingThirdSlot},
+		{"removePreyStamina", LuaPlayer::removePreyStamina},
+		{"addPreyCards", LuaPlayer::addPreyCards},
+		{"removeTaskHuntingPoints", LuaPlayer::removeTaskHuntingPoints},
+		{"getTaskHuntingPoints", LuaPlayer::getTaskHuntingPoints},
+		{"addTaskHuntingPoints", LuaPlayer::addTaskHuntingPoints},
+
+		{"getCapacity", LuaPlayer::getCapacity},
+		{"setCapacity", LuaPlayer::setCapacity},
+
+		{"isTraining", LuaPlayer::getIsTraining},
+		{"setTraining", LuaPlayer::setTraining},
+
+		{"getFreeCapacity", LuaPlayer::getFreeCapacity},
+
+		{"getKills", LuaPlayer::getKills},
+		{"setKills", LuaPlayer::setKills},
+
+		{"getReward", LuaPlayer::getReward},
+		{"removeReward", LuaPlayer::removeReward},
+		{"getRewardList", LuaPlayer::getRewardList},
+
+		{"setDailyReward", LuaPlayer::setDailyReward},
+
+		{"sendInventory", LuaPlayer::sendInventory},
+		{"sendLootStats", LuaPlayer::sendLootStats},
+		{"updateSupplyTracker", LuaPlayer::updateSupplyTracker},
+		{"updateKillTracker", LuaPlayer::updateKillTracker},
+
+		{"getDepotLocker", LuaPlayer::getDepotLocker},
+		{"getDepotChest", LuaPlayer::getDepotChest},
+		{"getInbox", LuaPlayer::getInbox},
+
+		{"getSkullTime", LuaPlayer::getSkullTime},
+		{"setSkullTime", LuaPlayer::setSkullTime},
+		{"getDeathPenalty", LuaPlayer::getDeathPenalty},
+
+		{"getExperience", LuaPlayer::getExperience},
+		{"addExperience", LuaPlayer::addExperience},
+		{"removeExperience", LuaPlayer::removeExperience},
+		{"getLevel", LuaPlayer::getLevel},
 
-	{"getSkullTime", LuaPlayer::getSkullTime},
-	{"setSkullTime", LuaPlayer::setSkullTime},
-	{"getDeathPenalty", LuaPlayer::getDeathPenalty},
-
-	{"getExperience", LuaPlayer::getExperience},
-	{"addExperience", LuaPlayer::addExperience},
-	{"removeExperience", LuaPlayer::removeExperience},
-	{"getLevel", LuaPlayer::getLevel},
+		{"getMagicLevel", LuaPlayer::getMagicLevel},
+		{"getBaseMagicLevel", LuaPlayer::getBaseMagicLevel},
+		{"getMana", LuaPlayer::getMana},
+		{"addMana", LuaPlayer::addMana},
+		{"getMaxMana", LuaPlayer::getMaxMana},
+		{"setMaxMana", LuaPlayer::setMaxMana},
+		{"getManaSpent", LuaPlayer::getManaSpent},
+		{"addManaSpent", LuaPlayer::addManaSpent},
+
+		{"getName", LuaPlayer::getName},
+		{"getId", LuaPlayer::getId},
+		{"getPosition", LuaPlayer::getPosition},
+		{"teleportTo", LuaPlayer::teleportTo},
+
+		{"getBaseMaxHealth", LuaPlayer::getBaseMaxHealth},
+		{"getBaseMaxMana", LuaPlayer::getBaseMaxMana},
+
+		{"getSkillLevel", LuaPlayer::getSkillLevel},
+		{"getEffectiveSkillLevel", LuaPlayer::getEffectiveSkillLevel},
+		{"getSkillPercent", LuaPlayer::getSkillPercent},
+		{"getSkillTries", LuaPlayer::getSkillTries},
+		{"addSkillTries", LuaPlayer::addSkillTries},
+
+		{"setMagicLevel", LuaPlayer::setMagicLevel},
+		{"setSkillLevel", LuaPlayer::setSkillLevel},
+
+		{"addOfflineTrainingTime", LuaPlayer::addOfflineTrainingTime},
+		{"getOfflineTrainingTime", LuaPlayer::getOfflineTrainingTime},
+		{"removeOfflineTrainingTime", LuaPlayer::removeOfflineTrainingTime},
+
+		{"addOfflineTrainingTries", LuaPlayer::addOfflineTrainingTries},
+
+		{"getOfflineTrainingSkill", LuaPlayer::getOfflineTrainingSkill},
+		{"setOfflineTrainingSkill", LuaPlayer::setOfflineTrainingSkill},
 
-	{"getMagicLevel", LuaPlayer::getMagicLevel},
-	{"getBaseMagicLevel", LuaPlayer::getBaseMagicLevel},
-	{"getMana", LuaPlayer::getMana},
-	{"addMana", LuaPlayer::addMana},
-	{"getMaxMana", LuaPlayer::getMaxMana},
-	{"setMaxMana", LuaPlayer::setMaxMana},
-	{"getManaSpent", LuaPlayer::getManaSpent},
-	{"addManaSpent", LuaPlayer::addManaSpent},
-
-	{"getName", LuaPlayer::getName},
-	{"getId", LuaPlayer::getId},
-	{"getPosition", LuaPlayer::getPosition},
-	{"teleportTo", LuaPlayer::teleportTo},
-
-	{"getBaseMaxHealth", LuaPlayer::getBaseMaxHealth},
-	{"getBaseMaxMana", LuaPlayer::getBaseMaxMana},
-
-	{"getSkillLevel", LuaPlayer::getSkillLevel},
-	{"getEffectiveSkillLevel", LuaPlayer::getEffectiveSkillLevel},
-	{"getSkillPercent", LuaPlayer::getSkillPercent},
-	{"getSkillTries", LuaPlayer::getSkillTries},
-	{"addSkillTries", LuaPlayer::addSkillTries},
-
-	{"setMagicLevel", LuaPlayer::setMagicLevel},
-	{"setSkillLevel", LuaPlayer::setSkillLevel},
-
-	{"addOfflineTrainingTime", LuaPlayer::addOfflineTrainingTime},
-	{"getOfflineTrainingTime", LuaPlayer::getOfflineTrainingTime},
-	{"removeOfflineTrainingTime", LuaPlayer::removeOfflineTrainingTime},
-
-	{"addOfflineTrainingTries", LuaPlayer::addOfflineTrainingTries},
-
-	{"getOfflineTrainingSkill", LuaPlayer::getOfflineTrainingSkill},
-	{"setOfflineTrainingSkill", LuaPlayer::setOfflineTrainingSkill},
-
-	{"getItemCount", LuaPlayer::getItemCount},
-	{"getStashItemCount", LuaPlayer::getStashItemCount},
-	{"getItemById", LuaPlayer::getItemById},
+		{"getItemCount", LuaPlayer::getItemCount},
+		{"getStashItemCount", LuaPlayer::getStashItemCount},
+		{"getItemById", LuaPlayer::getItemById},
 
-	{"getVocation", LuaPlayer::getVocation},
-	{"setVocation", LuaPlayer::setVocation},
+		{"getVocation", LuaPlayer::getVocation},
+		{"setVocation", LuaPlayer::setVocation},
 
-	{"getSex", LuaPlayer::getSex},
-	{"setSex", LuaPlayer::setSex},
+		{"getSex", LuaPlayer::getSex},
+		{"setSex", LuaPlayer::setSex},
 
-	{"getTown", LuaPlayer::getTown},
-	{"setTown", LuaPlayer::setTown},
+		{"getTown", LuaPlayer::getTown},
+		{"setTown", LuaPlayer::setTown},
 
-	{"getGuild", LuaPlayer::getGuild},
-	{"setGuild", LuaPlayer::setGuild},
+		{"getGuild", LuaPlayer::getGuild},
+		{"setGuild", LuaPlayer::setGuild},
 
-	{"getGuildLevel", LuaPlayer::getGuildLevel},
-	{"setGuildLevel", LuaPlayer::setGuildLevel},
+		{"getGuildLevel", LuaPlayer::getGuildLevel},
+		{"setGuildLevel", LuaPlayer::setGuildLevel},
 
-	{"getGuildNick", LuaPlayer::getGuildNick},
-	{"setGuildNick", LuaPlayer::setGuildNick},
+		{"getGuildNick", LuaPlayer::getGuildNick},
+		{"setGuildNick", LuaPlayer::setGuildNick},
 
-	{"getGroup", LuaPlayer::getGroup},
-	{"setGroup", LuaPlayer::setGroup},
+		{"getGroup", LuaPlayer::getGroup},
+		{"setGroup", LuaPlayer::setGroup},
 
-	{"setSpecialContainersAvailable", LuaPlayer::setSpecialContainersAvailable},
-	{"getStashCount", LuaPlayer::getStashCounter},
-	{"openStash", LuaPlayer::openStash},
+		{"setSpecialContainersAvailable", LuaPlayer::setSpecialContainersAvailable},
+		{"getStashCount", LuaPlayer::getStashCounter},
+		{"openStash", LuaPlayer::openStash},
 
-	{"getStamina", LuaPlayer::getStamina},
-	{"setStamina", LuaPlayer::setStamina},
+		{"getStamina", LuaPlayer::getStamina},
+		{"setStamina", LuaPlayer::setStamina},
 
-	{"getSoul", LuaPlayer::getSoul},
-	{"addSoul", LuaPlayer::addSoul},
-	{"getMaxSoul", LuaPlayer::getMaxSoul},
+		{"getSoul", LuaPlayer::getSoul},
+		{"addSoul", LuaPlayer::addSoul},
+		{"getMaxSoul", LuaPlayer::getMaxSoul},
 
-	{"getBankBalance", LuaPlayer::getBankBalance},
-	{"setBankBalance", LuaPlayer::setBankBalance},
+		{"getBankBalance", LuaPlayer::getBankBalance},
+		{"setBankBalance", LuaPlayer::setBankBalance},
 
-	{"getStorageValue", LuaPlayer::getStorageValue},
-	{"setStorageValue", LuaPlayer::setStorageValue},
+		{"getStorageValue", LuaPlayer::getStorageValue},
+		{"setStorageValue", LuaPlayer::setStorageValue},
 
-	{"addItem", LuaPlayer::addItem},
-	{"addItemEx", LuaPlayer::addItemEx},
-	{"removeStashItem", LuaPlayer::removeStashItem},
-	{"removeItem", LuaPlayer::removeItem},
-	{"sendContainer", LuaPlayer::sendContainer},
+		{"addItem", LuaPlayer::addItem},
+		{"addItemEx", LuaPlayer::addItemEx},
+		{"removeStashItem", LuaPlayer::removeStashItem},
+		{"removeItem", LuaPlayer::removeItem},
+		{"sendContainer", LuaPlayer::sendContainer},
 
-	{"getMoney", LuaPlayer::getMoney},
-	{"addMoney", LuaPlayer::addMoney},
-	{"removeMoney", LuaPlayer::removeMoney},
+		{"getMoney", LuaPlayer::getMoney},
+		{"addMoney", LuaPlayer::addMoney},
+		{"removeMoney", LuaPlayer::removeMoney},
 
-	{"showTextDialog", LuaPlayer::showTextDialog},
+		{"showTextDialog", LuaPlayer::showTextDialog},
 
-	{"sendTextMessage", LuaPlayer::sendTextMessage},
-	{"sendChannelMessage", LuaPlayer::sendChannelMessage},
-	{"sendPrivateMessage", LuaPlayer::sendPrivateMessage},
-	{"channelSay", LuaPlayer::channelSay},
-	{"openChannel", LuaPlayer::openChannel},
+		{"sendTextMessage", LuaPlayer::sendTextMessage},
+		{"sendChannelMessage", LuaPlayer::sendChannelMessage},
+		{"sendPrivateMessage", LuaPlayer::sendPrivateMessage},
+		{"channelSay", LuaPlayer::channelSay},
+		{"openChannel", LuaPlayer::openChannel},
 
-	{"getSlotItem", LuaPlayer::getSlotItem},
+		{"getSlotItem", LuaPlayer::getSlotItem},
 
-	{"getParty", LuaPlayer::getParty},
+		{"getParty", LuaPlayer::getParty},
 
-	{"addOutfit", LuaPlayer::addOutfit},
-	{"addOutfitAddon", LuaPlayer::addOutfitAddon},
-	{"removeOutfit", LuaPlayer::removeOutfit},
-	{"removeOutfitAddon", LuaPlayer::removeOutfitAddon},
-	{"hasOutfit", LuaPlayer::hasOutfit},
-	{"sendOutfitWindow", LuaPlayer::sendOutfitWindow},
+		{"addOutfit", LuaPlayer::addOutfit},
+		{"addOutfitAddon", LuaPlayer::addOutfitAddon},
+		{"removeOutfit", LuaPlayer::removeOutfit},
+		{"removeOutfitAddon", LuaPlayer::removeOutfitAddon},
+		{"hasOutfit", LuaPlayer::hasOutfit},
+		{"sendOutfitWindow", LuaPlayer::sendOutfitWindow},
 
-	{"addMount", LuaPlayer::addMount},
-	{"removeMount", LuaPlayer::removeMount},
-	{"hasMount", LuaPlayer::hasMount},
+		{"addMount", LuaPlayer::addMount},
+		{"removeMount", LuaPlayer::removeMount},
+		{"hasMount", LuaPlayer::hasMount},
 
-	{"addFamiliar", LuaPlayer::addFamiliar},
-	{"removeFamiliar", LuaPlayer::removeFamiliar},
-	{"hasFamiliar", LuaPlayer::hasFamiliar},
-	{"setFamiliarLooktype", LuaPlayer::setFamiliarLooktype},
-	{"getFamiliarLooktype", LuaPlayer::getFamiliarLooktype},
+		{"addFamiliar", LuaPlayer::addFamiliar},
+		{"removeFamiliar", LuaPlayer::removeFamiliar},
+		{"hasFamiliar", LuaPlayer::hasFamiliar},
+		{"setFamiliarLooktype", LuaPlayer::setFamiliarLooktype},
+		{"getFamiliarLooktype", LuaPlayer::getFamiliarLooktype},
 
-	{"getPremiumDays", LuaPlayer::getPremiumDays},
-	{"addPremiumDays", LuaPlayer::addPremiumDays},
-	{"removePremiumDays", LuaPlayer::removePremiumDays},
+		{"getPremiumDays", LuaPlayer::getPremiumDays},
+		{"addPremiumDays", LuaPlayer::addPremiumDays},
+		{"removePremiumDays", LuaPlayer::removePremiumDays},
 
-	{"getTibiaCoins", LuaPlayer::getTibiaCoins},
-	{"addTibiaCoins", LuaPlayer::addTibiaCoins},
-	{"removeTibiaCoins", LuaPlayer::removeTibiaCoins},
+		{"getTibiaCoins", LuaPlayer::getTibiaCoins},
+		{"addTibiaCoins", LuaPlayer::addTibiaCoins},
+		{"removeTibiaCoins", LuaPlayer::removeTibiaCoins},
 
-	{"hasBlessing", LuaPlayer::hasBlessing},
-	{"addBlessing", LuaPlayer::addBlessing},
-	{"removeBlessing", LuaPlayer::removeBlessing},
-	{"getBlessingCount", LuaPlayer::getBlessingCount},
+		{"hasBlessing", LuaPlayer::hasBlessing},
+		{"addBlessing", LuaPlayer::addBlessing},
+		{"removeBlessing", LuaPlayer::removeBlessing},
+		{"getBlessingCount", LuaPlayer::getBlessingCount},
 
-	{"canLearnSpell", LuaPlayer::canLearnSpell},
-	{"learnSpell", LuaPlayer::learnSpell},
-	{"forgetSpell", LuaPlayer::forgetSpell},
-	{"hasLearnedSpell", LuaPlayer::hasLearnedSpell},
+		{"canLearnSpell", LuaPlayer::canLearnSpell},
+		{"learnSpell", LuaPlayer::learnSpell},
+		{"forgetSpell", LuaPlayer::forgetSpell},
+		{"hasLearnedSpell", LuaPlayer::hasLearnedSpell},
 
-	{"openImbuementWindow", LuaPlayer::openImbuementWindow},
-	{"closeImbuementWindow", LuaPlayer::closeImbuementWindow},
+		{"openImbuementWindow", LuaPlayer::openImbuementWindow},
+		{"closeImbuementWindow", LuaPlayer::closeImbuementWindow},
 
-	{"sendTutorial", LuaPlayer::sendTutorial},
-	{"addMapMark", LuaPlayer::addMapMark},
+		{"sendTutorial", LuaPlayer::sendTutorial},
+		{"addMapMark", LuaPlayer::addMapMark},
 
-	{"save", LuaPlayer::save},
-	{"popupFYI", LuaPlayer::popupFYI},
+		{"save", LuaPlayer::save},
+		{"popupFYI", LuaPlayer::popupFYI},
 
-	{"isPzLocked", LuaPlayer::isPzLocked},
+		{"isPzLocked", LuaPlayer::isPzLocked},
 
-	{"getClient", LuaPlayer::getClient},
+		{"getClient", LuaPlayer::getClient},
 
-	{"getHouse", LuaPlayer::getHouse},
-	{"sendHouseWindow", LuaPlayer::sendHouseWindow},
-	{"setEditHouse", LuaPlayer::setEditHouse},
+		{"getHouse", LuaPlayer::getHouse},
+		{"sendHouseWindow", LuaPlayer::sendHouseWindow},
+		{"setEditHouse", LuaPlayer::setEditHouse},
 
-	{"setGhostMode", LuaPlayer::setGhostMode},
+		{"setGhostMode", LuaPlayer::setGhostMode},
 
-	{"getContainerId", LuaPlayer::getContainerId},
-	{"getContainerById", LuaPlayer::getContainerById},
-	{"getContainerIndex", LuaPlayer::getContainerIndex},
+		{"getContainerId", LuaPlayer::getContainerId},
+		{"getContainerById", LuaPlayer::getContainerById},
+		{"getContainerIndex", LuaPlayer::getContainerIndex},
 
-	{"getInstantSpells", LuaPlayer::getInstantSpells},
-	{"canCast", LuaPlayer::canCast},
+		{"getInstantSpells", LuaPlayer::getInstantSpells},
+		{"canCast", LuaPlayer::canCast},
 
-	{"hasChaseMode", LuaPlayer::hasChaseMode},
-	{"hasSecureMode", LuaPlayer::hasSecureMode},
-	{"getFightMode", LuaPlayer::getFightMode},
+		{"hasChaseMode", LuaPlayer::hasChaseMode},
+		{"hasSecureMode", LuaPlayer::hasSecureMode},
+		{"getFightMode", LuaPlayer::getFightMode},
 
-	{"getBaseXpGain", LuaPlayer::getBaseXpGain},
-	{"setBaseXpGain", LuaPlayer::setBaseXpGain},
-	{"getVoucherXpBoost", LuaPlayer::getVoucherXpBoost},
-	{"setVoucherXpBoost", LuaPlayer::setVoucherXpBoost},
-	{"getGrindingXpBoost", LuaPlayer::getGrindingXpBoost},
-	{"setGrindingXpBoost", LuaPlayer::setGrindingXpBoost},
-	{"getStoreXpBoost", LuaPlayer::getStoreXpBoost},
-	{"setStoreXpBoost", LuaPlayer::setStoreXpBoost},
-	{"getStaminaXpBoost", LuaPlayer::getStaminaXpBoost},
-	{"setStaminaXpBoost", LuaPlayer::setStaminaXpBoost},
-	{"getExpBoostStamina", LuaPlayer::getExpBoostStamina},
-	{"setExpBoostStamina", LuaPlayer::setExpBoostStamina},
+		{"getBaseXpGain", LuaPlayer::getBaseXpGain},
+		{"setBaseXpGain", LuaPlayer::setBaseXpGain},
+		{"getVoucherXpBoost", LuaPlayer::getVoucherXpBoost},
+		{"setVoucherXpBoost", LuaPlayer::setVoucherXpBoost},
+		{"getGrindingXpBoost", LuaPlayer::getGrindingXpBoost},
+		{"setGrindingXpBoost", LuaPlayer::setGrindingXpBoost},
+		{"getStoreXpBoost", LuaPlayer::getStoreXpBoost},
+		{"setStoreXpBoost", LuaPlayer::setStoreXpBoost},
+		{"getStaminaXpBoost", LuaPlayer::getStaminaXpBoost},
+		{"setStaminaXpBoost", LuaPlayer::setStaminaXpBoost},
+		{"getExpBoostStamina", LuaPlayer::getExpBoostStamina},
+		{"setExpBoostStamina", LuaPlayer::setExpBoostStamina},
 
-	{"getIdleTime", LuaPlayer::getIdleTime},
-	{"getFreeBackpackSlots", LuaPlayer::getFreeBackpackSlots},
+		{"getIdleTime", LuaPlayer::getIdleTime},
+		{"getFreeBackpackSlots", LuaPlayer::getFreeBackpackSlots},
 
-	{"isOffline", LuaPlayer::isOffline},
+		{"isOffline", LuaPlayer::isOffline},
 
-	{"openMarket", LuaPlayer::openMarket},
+		{"openMarket", LuaPlayer::openMarket},
 
-	// Forge Functions
-	{"openForge", LuaPlayer::openForge},
-	{"closeForge", LuaPlayer::closeForge},
+		// Forge Functions
+		{"openForge", LuaPlayer::openForge},
+		{"closeForge", LuaPlayer::closeForge},
 
-	{"addForgeDusts", LuaPlayer::addForgeDusts},
-	{"removeForgeDusts", LuaPlayer::removeForgeDusts},
-	{"getForgeDusts", LuaPlayer::getForgeDusts},
-	{"setForgeDusts", LuaPlayer::setForgeDusts},
+		{"addForgeDusts", LuaPlayer::addForgeDusts},
+		{"removeForgeDusts", LuaPlayer::removeForgeDusts},
+		{"getForgeDusts", LuaPlayer::getForgeDusts},
+		{"setForgeDusts", LuaPlayer::setForgeDusts},
 
-	{"addForgeDustLevel", LuaPlayer::addForgeDustLevel},
-	{"removeForgeDustLevel", LuaPlayer::removeForgeDustLevel},
-	{"getForgeDustLevel", LuaPlayer::getForgeDustLevel},
+		{"addForgeDustLevel", LuaPlayer::addForgeDustLevel},
+		{"removeForgeDustLevel", LuaPlayer::removeForgeDustLevel},
+		{"getForgeDustLevel", LuaPlayer::getForgeDustLevel},
 
-	{"getForgeSlivers", LuaPlayer::getForgeSlivers},
-	{"getForgeCores", LuaPlayer::getForgeCores},
+		{"getForgeSlivers", LuaPlayer::getForgeSlivers},
+		{"getForgeCores", LuaPlayer::getForgeCores},
 
-	{"setFaction", LuaPlayer::setFaction},
-	{"getFaction", LuaPlayer::getFaction}
-};
+		{"setFaction", LuaPlayer::setFaction},
+		{"getFaction", LuaPlayer::getFaction}
+	};
+}
 
 void LuaPlayer::init(lua_State *L)
 {
 	registerClass(L, "Player", "Creature", LuaPlayer::create);
 	registerMetaMethod(L, "Player", "__eq", LuaPlayer::luaUserdataCompare);
 
-	for (const auto &[name, function]: LuaPlayer::luaFunctions)
+	for (const auto &[functionName, functionReference]: LuaPlayer::luaPlayerFunctionsMap(L))
 	{
-		registerLuaFunction(L, std::move(name.c_str()), function);
+		registerLuaFunction(L, functionName.c_str(), functionReference);
 	}
 
 	GroupFunctions::init(L);
@@ -2606,7 +2608,7 @@ int LuaPlayer::addItem(lua_State *L)
 	{
 		if (it.stackable)
 		{
-			itemCount = std::ceil(count / 100. f);
+			itemCount = std::ceil(count / 100.f);
 		}
 
 		subType = count;

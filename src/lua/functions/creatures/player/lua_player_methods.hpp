@@ -24,6 +24,7 @@ public:
 
 protected:
 	static const std::vector<LuaFunction> luaFunctions;
+	static const std::unordered_map<std::string, lua_CFunction> luaPlayerFunctionsMap(lua_State *L);
 	// Register functions in the lua interface using lua bridge library
 	static void registerLuaFunction(lua_State* L, const char* functionName, lua_CFunction function);
 	// Get Player userdata from lua interface

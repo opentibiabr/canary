@@ -34,8 +34,6 @@
 #include "server/server.h"
 #include "io/ioprey.h"
 
-Store g_store;
-
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
 #endif
@@ -174,8 +172,8 @@ void loadModules() {
 		"XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
 		"XML/familiars.xml");
-	modulesLoadHelper(g_store.loadFromXML(),
-		"XML/store.xml");
+	modulesLoadHelper(g_store().loadFromXML(),
+		"store/store.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(),
 		"XML/imbuements.xml");
 	modulesLoadHelper(g_modules().loadFromXml(),

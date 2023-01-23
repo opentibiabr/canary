@@ -26,7 +26,7 @@ Account::Account()
     m_tournamentCoinBalance = 0;
     m_accountType = ACCOUNT_TYPE_NORMAL;
     m_db = &Database::getInstance();
-    m_dbTasks = &g_databaseTasks;
+    m_dbTasks = &g_databaseTasks();
 }
 
 Account::Account(uint32_t id)
@@ -40,7 +40,7 @@ Account::Account(uint32_t id)
     m_tournamentCoinBalance = 0;
     m_accountType = ACCOUNT_TYPE_NORMAL;
     m_db = &Database::getInstance();
-    m_dbTasks = &g_databaseTasks;
+    m_dbTasks = &g_databaseTasks();
 }
 
 Account::Account(const std::string& email)
@@ -54,7 +54,7 @@ Account::Account(const std::string& email)
     m_tournamentCoinBalance = 0;
     m_accountType = ACCOUNT_TYPE_NORMAL;
     m_db = &Database::getInstance();
-    m_dbTasks = &g_databaseTasks;
+    m_dbTasks = &g_databaseTasks();
 }
 
 
@@ -336,7 +336,6 @@ std::tuple<Player, error_t> Account::loadAccountPlayerDB(
 {
 
     Player player;
-
     if (m_id == 0) {
         std::make_tuple(player, ERROR_NOT_INITIALIZED);
     }

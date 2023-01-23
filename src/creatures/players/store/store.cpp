@@ -28,17 +28,17 @@
 #define localtime_r(T, Tm) (localtime_s(Tm, T) ? NULL : Tm)
 #endif
 
-const std::unordered_map<std::string, CoinType_t> CoinTypeMap = {
+const phmap::flat_hash_map<std::string, CoinType_t> CoinTypeMap = {
     { "coin", COIN_TYPE_DEFAULT }, { "transferable", COIN_TYPE_TRANSFERABLE },
     { "tournament", COIN_TYPE_TOURNAMENT }
 };
 
-const std::unordered_map<std::string, OfferStates_t> OfferStatesMap = {
+const phmap::flat_hash_map<std::string, OfferStates_t> OfferStatesMap = {
     { "none", OFFER_STATE_NONE }, { "new", OFFER_STATE_NEW },
     { "sale", OFFER_STATE_SALE }, { "timed", OFFER_STATE_TIMED }
 };
 
-const std::unordered_map<std::string, OfferTypes_t> OfferTypesMap = {
+const phmap::flat_hash_map<std::string, OfferTypes_t> OfferTypesMap = {
     { "none", OFFER_TYPE_NONE },
     { "item", OFFER_TYPE_ITEM },
     { "stackeable", OFFER_TYPE_STACKABLE },
@@ -67,13 +67,13 @@ const std::unordered_map<std::string, OfferTypes_t> OfferTypesMap = {
     { "recoverykey", OFFER_TYPE_RECOVERY_KEY },
 };
 
-const std::unordered_map<std::string, OfferBuyTypes_t> OfferBuyTypesMap = {
+const phmap::flat_hash_map<std::string, OfferBuyTypes_t> OfferBuyTypesMap = {
     { "none", OFFER_BUY_TYPE_OTHERS },
     { "offername", OFFER_BUY_TYPE_NAMECHANGE },
     { "teste", OFFER_BUY_TYPE_TESTE }
 };
 
-const std::unordered_map<std::string, Skulls_t> OfferSkullMap = {
+const phmap::flat_hash_map<std::string, Skulls_t> OfferSkullMap = {
     { "none", SKULL_NONE }, { "red", SKULL_RED }, { "black", SKULL_BLACK }
 };
 
@@ -91,11 +91,12 @@ bool Store::isValidType(OfferTypes_t type)
 bool Store::loadFromXML(bool /* reloading */)
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("data/XML/store.xml");
-    if (!result) {
-        printXMLError("[Store::loadFromXML] - ", "data/XML/store.xml", result);
-        return false;
-    }
+	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/store/store.xml";
+	pugi::xml_parse_result result = doc.load_file(folder.c_str());
+	if (!result) {
+		printXMLError(__FUNCTION__, folder, result);
+		return  false;
+	}
 
     loaded = true;
     for (auto baseNode : doc.child("store").children()) {

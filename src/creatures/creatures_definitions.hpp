@@ -11,15 +11,14 @@
 #define SRC_CREATURES_CREATURES_DEFINITIONS_HPP_
 
 struct StoreHistory {
-	StoreHistory(uint32_t time, uint8_t mode, uint32_t amount, uint8_t coinMode, std::string description, int32_t cust) : 
-		time(time), mode(mode), amount(amount), coinMode(coinMode), description(std::move(description)), cust(cust) {}
+	StoreHistory(uint32_t time, uint8_t mode, uint32_t coin_amount, uint8_t coin_type, std::string description) : 
+		time(time), mode(mode), coin_amount(coin_amount), coin_type(coin_type), description(std::move(description)) {}
 
 	uint32_t time;
 	uint8_t mode;
-	uint32_t amount;
-	uint8_t coinMode;
+	uint32_t coin_amount;
+	uint8_t coin_type;
 	std::string description;
-	int32_t cust;
 
 };
 

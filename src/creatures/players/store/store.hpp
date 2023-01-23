@@ -127,6 +127,21 @@ struct StoreHome {
 class Store
 {
 public:
+
+    Store() = default;
+    ~Store() = default;
+
+    // Singleton - ensures we don't accidentally copy it.
+    Store(const Game&) = delete;
+    Store& operator=(const Game&) = delete;
+
+    static Store& getInstance() {
+        // Guaranteed to be destroyed
+        static Store instance;
+        // Instantiated on first use
+        return instance;
+    }
+
     // bool loadStore(const FileName& identifier);
     bool loadFromXML(bool reloading = false);
     bool loadCategory(pugi::xml_node node, pugi::xml_attribute m_name);
@@ -199,6 +214,8 @@ private:
     bool newoffer = false;
     bool saleoffer = false;
 };
+
+constexpr auto g_store = &Store::getInstance;
 
 class StoreOffers
 {

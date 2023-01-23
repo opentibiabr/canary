@@ -39,8 +39,6 @@
 #include "server/network/webhook/webhook.h"
 #include "protobuf/appearances.pb.h"
 
-extern Store g_store;
-
 Game::Game()
 {
 	offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
@@ -7545,7 +7543,7 @@ bool checkCanInitCreateMarketOffer(Player *player, uint8_t type, const ItemType 
 
 	if (g_configManager().getBoolean(MARKET_PREMIUM) && !player->isPremium()) {
 		player->sendMarketLeave();
-		return;
+		return false;
 	}
 
 	const uint32_t maxOfferCount = g_configManager().getNumber(MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER);
@@ -8775,7 +8773,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 
 	player->updateCoinBalance();
 	OfferTypes_t offerType = thisOffer->getOfferType();
-	if (!g_store.isValidType(offerType)) {
+	if (!g_store().isValidType(offerType)) {
 		player->sendStoreError(STORE_ERROR_INFORMATION, "This offer is unavailable.");
 		return;
 	}
@@ -8899,7 +8897,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 							(itemId >= ITEM_SPIRIT_CASK_START && itemId <= ITEM_SPIRIT_CASK_END));
 		uint64_t weight = static_cast<uint64_t>(itemType.weight) * std::max<int32_t>(1, (isKeg ? 1 : thisOffer->getCount()));
 		if (isCaskItem) {
-			const ItemType& itemType2 = Item::items[TRANSFORM_BOX_ID];
+			const ItemType& itemType2 = Item::items[ITEM_DECORATION_KIT];
 			weight = static_cast<uint64_t>(itemType2.weight);
 		}
 		if (player->getFreeCapacity() < weight) {
@@ -8934,7 +8932,7 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 		int32_t rcreateitem = ((isKeg || isHouseOffer || isTraining) ? 1 : 100);
 		while (pendingCount > 0) {
 			uint16_t n = static_cast<uint16_t>(std::min<int32_t>(pendingCount, rcreateitem));
-			Item* tmpItem = Item::CreateItem((isHouseOffer ? TRANSFORM_BOX_ID : itemId), n);
+			Item* tmpItem = Item::CreateItem((isHouseOffer ? ITEM_DECORATION_KIT : itemId), n);
 			if (!tmpItem) {
 				break;
 			}
@@ -9213,11 +9211,11 @@ void Game::playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::
 		}
 
 		// update
-		int32_t value1 = player->getStorageValue(51052);
+		int32_t value2 = player->getStorageValue(51052);
 
 		returnmessage << "You have purchased " << thisOffer->getName() << " for " << thisOffer->getPrice(player) <<" coins";
 
-		player->addStorageValue(51052, value1 + 1);
+		player->addStorageValue(51052, value2 + 1);
 		player->addStorageValue(51053, OS_TIME(nullptr)); // last bought
 		player->sendStats();
 		successfully = true;

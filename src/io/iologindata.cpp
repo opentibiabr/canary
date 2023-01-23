@@ -81,17 +81,16 @@ bool IOLoginData::loadAccountStoreHistory(uint32_t accountId)
 
   // Load from database
   std::ostringstream query;
-  query << "SELECT `time`, `mode`, `amount`, `coinMode`, `description`, `cust` FROM `store_history` WHERE `account_id` = " << accountId;
+  query << "SELECT `time`, `mode`, `coin_amount`, `coin_type`, `description` FROM `store_history` WHERE `account_id` = " << accountId;
   DBResult_ptr result = Database::getInstance().storeQuery(query.str());
   if (result) {
     do {
       history.emplace_back(
         result->getNumber<uint32_t>("time"),
-        static_cast<uint8_t>(result->getNumber<uint32_t>("mode")),
-        result->getNumber<uint32_t>("amount"),
-        static_cast<uint8_t>(result->getNumber<uint32_t>("coinMode")),
-        result->getString("description"),
-        result->getNumber<int32_t>("cust")
+        result->getNumber<uint16_t>("mode"),
+        result->getNumber<uint32_t>("coin_amount"),
+        result->getNumber<uint16_t>("coin_type"),
+        result->getString("description")
       );
       history.shrink_to_fit();
 

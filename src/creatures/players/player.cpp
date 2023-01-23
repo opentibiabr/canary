@@ -611,6 +611,44 @@ int32_t Player::getDefaultStats(stats_t stat) const
 	}
 }
 
+void Player::openPlayerContainers()
+{
+	std::vector<std::pair<uint8_t, Container*>> openContainersList;
+
+	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+		Item* item = inventory[i];
+		if (!item) {
+			continue;
+		}
+
+		Container* itemContainer = item->getContainer();
+		if (itemContainer) {
+			int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+			if (cid > 0) {
+				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
+			}
+			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
+				Container* subContainer = (*it)->getContainer();
+				if (subContainer) {
+					uint8_t subcid = (*it)->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+					if (subcid > 0) {
+						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
+					}
+				}
+			}
+		}
+	}
+
+	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
+		return left.first < right.first;
+	});
+
+	for (auto& it : openContainersList) {
+		addContainer(it.first - 1, it.second);
+		onSendContainer(it.second);
+	}
+}
+
 void Player::addContainer(uint8_t cid, Container* container)
 {
 	if (cid > 0xF) {

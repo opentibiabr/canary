@@ -721,6 +721,7 @@ enum class PlayerFlags_t : uint8_t {
 };
 
 enum Blessings_t : uint8_t {
+	ADVENTURE_BLESS = 0,
 	TWIST_OF_FATE = 1,
 	WISDOM_OF_SOLITUDE = 2,
 	SPARK_OF_THE_PHOENIX = 3,
@@ -729,6 +730,11 @@ enum Blessings_t : uint8_t {
 	EMBRACE_OF_TIBIA = 6,
 	BLOOD_OF_THE_MOUNTAIN = 7,
 	HEARTH_OF_THE_MOUNTAIN = 8,
+
+	BLESS_ADV_FIRST = ADVENTURE_BLESS,
+	BLESS_FIRST = TWIST_OF_FATE,
+	BLESS_PVE_FIRST = WISDOM_OF_SOLITUDE,
+	BLESS_LAST = HEARTH_OF_THE_MOUNTAIN
 };
 
 const phmap::flat_hash_map<Blessings_t, std::string> BlessingNames = {

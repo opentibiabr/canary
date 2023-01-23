@@ -30,7 +30,6 @@
 #include "creatures/players/management/waitlist.h"
 #include "items/weapons/weapons.h"
 
-extern Store g_store;
 
 /*
 * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.h" file
@@ -2773,14 +2772,14 @@ void ProtocolGame::parseRequestStoreOffers(NetworkMessage& msg)
 	StoreOffers* offers = nullptr;
 	if (actionType == 2) {
 		std::string categoryName = msg.getString();
-		offers = g_store.getOfferByName(categoryName);
+		offers = g_store().getOfferByName(categoryName);
 	} else if (actionType == 4) {
 		uint32_t id = msg.get<uint32_t>();
-		offers = g_store.getOffersByOfferId(id);
+		offers = g_store().getOffersByOfferId(id);
 	} else {
 		// SPDLOG_INFO("Test");
 		// std::string categoryName = msg.getString();
-		// offers = g_store.getOfferByName(categoryName);
+		// offers = g_store().getOfferByName(categoryName);
 	}
 
 	if (offers != nullptr) {
@@ -2796,7 +2795,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage& msg)
 	OfferBuyTypes_t productType = static_cast<OfferBuyTypes_t>(msg.getByte());
 	std::string param;
 
-	StoreOffer* offer = g_store.getOfferById(id);
+	StoreOffer* offer = g_store().getOfferById(id);
 	if (offer == nullptr) {
 		return;
 	}
@@ -2816,7 +2815,7 @@ void ProtocolGame::parseBuyStoreOffer(NetworkMessage& msg)
 void ProtocolGame::parseSendDescription(NetworkMessage& msg)
 {
 	uint32_t offerId = msg.get<uint32_t>();
-	StoreOffer* storeOffer = g_store.getOfferById(offerId);
+	StoreOffer* storeOffer = g_store().getOfferById(offerId);
 	if (storeOffer == nullptr) {
 		return;
 	}
@@ -7544,10 +7543,10 @@ void ProtocolGame::sendStoreHistory(uint32_t totalPages, uint32_t pages, std::ve
 
 		msg.add<uint32_t>((*currentHistory).time);
 		msg.addByte((*currentHistory).mode);
-		msg.add<int32_t>((*currentHistory).cust);
+		msg.add<int32_t>((*currentHistory).coin_amount);
 
 		// Version 1200+
-		msg.addByte((*currentHistory).coinMode); //0 = transferable tibia coin, 1 = normal tibia coin
+		msg.addByte((*currentHistory).coin_type); //0 = transferable tibia coin, 1 = normal tibia coin
 		msg.addString((*currentHistory).description);
 		msg.addByte(0); //-- details
 	}
@@ -7572,7 +7571,7 @@ void ProtocolGame::sendShowStoreOffers(StoreOffers* offers)
 	msg.add<uint32_t>(0);
 
 	uint16_t count = 0;
-	std::map<std::string, std::vector<StoreOffer*>> organized = g_store.getStoreOrganizedByName(offers);
+	std::map<std::string, std::vector<StoreOffer*>> organized = g_store().getStoreOrganizedByName(offers);
 	for (const auto& it : organized) {
 		if (!it.first.empty()) {
 			count++;
@@ -7613,7 +7612,7 @@ void ProtocolGame::sendStoreHome()
 	msg.add<uint16_t>(0x00);
 
 	uint16_t count = 0;
-	std::map<std::string, std::vector<StoreOffer*>> organized = g_store.getHomeOffersOrganized();
+	std::map<std::string, std::vector<StoreOffer*>> organized = g_store().getHomeOffersOrganized();
 	for (const auto& it : organized) {
 		if (!it.first.empty())
 			count++;
@@ -7629,7 +7628,7 @@ void ProtocolGame::sendStoreHome()
 
 	}
 
-	std::vector<std::string> banners =  g_store.getHomeBanners();
+	std::vector<std::string> banners =  g_store().getHomeBanners();
 	for (auto banner = banners.begin(), end = banners.end(); banner != end; ++banner) {
 		msg.addByte(banners.size());
 		msg.addString((*banner));
@@ -7679,9 +7678,9 @@ void ProtocolGame::openStore()
 	NetworkMessage msg;
 	msg.addByte(0xFB);
 
-	msg.add<uint16_t>(g_store.getOfferCount());
+	msg.add<uint16_t>(g_store().getOfferCount());
 	// First sending categories without subcategories
-	std::vector<StoreCategory> categories = g_store.getStoreCategories();
+	std::vector<StoreCategory> categories = g_store().getStoreCategories();
 	for (auto it = categories.begin(), end = categories.end(); it != end; ++it) {
 		msg.addString((*it).m_name);
 
@@ -7693,7 +7692,7 @@ void ProtocolGame::openStore()
 		msg.add<uint16_t>(0x00);
 	}
 
-	std::vector<StoreOffers*> offers = g_store.getStoreOffers();
+	std::vector<StoreOffers*> offers = g_store().getStoreOffers();
 	for (auto it = offers.begin(), end = offers.end(); it != end; ++it) {
 		msg.addString((*it)->getName());
 
@@ -7758,7 +7757,7 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 
 	}
 
-	uint8_t oftp = g_store.convertType(lasttype);
+	uint8_t oftp = g_store().convertType(lasttype);
 	msg.addByte(oftp);
 	if (oftp == 0) {
 		msg.addString(lasticon);
@@ -7771,7 +7770,7 @@ void ProtocolGame::addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> i
 		msg.addByte(player->getCurrentOutfit().lookLegs);
 		msg.addByte(player->getCurrentOutfit().lookFeet);
 	} else if (oftp == 3) {
-		addItem(lastitemid);
+        msg.add<uint16_t>(lastitemid);
 	}
 
 	// Version 1220+

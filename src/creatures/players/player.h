@@ -2448,6 +2448,7 @@ class Player final : public Creature, public Cylinder
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
 		uint32_t premiumDays = 0;
+        uint32_t tournamentCoinBalance = 0;
 		int32_t bloodHitCount = 0;
 		int32_t shieldBlockCount = 0;
 		int8_t offlineTrainingSkill = SKILL_NONE;
@@ -2456,10 +2457,6 @@ class Player final : public Creature, public Cylinder
 		uint32_t coinBalance = 0;
 		uint16_t expBoostStamina = 0;
 		uint16_t entriesPerPage = 26;
-
-		uint32_t coinBalance = 0;
-		uint32_t tournamentCoinBalance = 0;
-		uint32_t premiumDays = 0;
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;

@@ -655,7 +655,7 @@ int LuaPlayerFunctions::getIsTraining(lua_State *L)
 {
 	// player:isTraining()
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		lua_pushnil(L);
@@ -2259,7 +2259,7 @@ int LuaPlayerFunctions::addItem(lua_State *L)
 {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		pushBoolean(L, false);
 		return 1;
@@ -3433,7 +3433,7 @@ int LuaPlayerFunctions::openImbuementWindow(lua_State *L)
 {
 	// player:openImbuementWindow(item)
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -3456,7 +3456,7 @@ int LuaPlayerFunctions::closeImbuementWindow(lua_State *L)
 {
 	// player:closeImbuementWindow()
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4078,9 +4078,11 @@ int LuaPlayerFunctions::getFreeBackpackSlots(lua_State *L)
 {
 	// player:getFreeBackpackSlots()
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
-		lua_pushnil(L);
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
 	}
 
 	lua_pushnumber(L, std::max<uint16_t> (0, player->getFreeBackpackSlots()));
@@ -4122,7 +4124,7 @@ int LuaPlayerFunctions::openForge(lua_State *L)
 {
 	// player:openForge()
 	const Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4138,7 +4140,7 @@ int LuaPlayerFunctions::closeForge(lua_State *L)
 {
 	// player:closeForge()
 	const Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4154,7 +4156,7 @@ int LuaPlayerFunctions::addForgeDusts(lua_State *L)
 {
 	// player:addForgeDusts(amount)
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4170,7 +4172,7 @@ int LuaPlayerFunctions::removeForgeDusts(lua_State *L)
 {
 	// player:removeForgeDusts(amount)
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4186,7 +4188,7 @@ int LuaPlayerFunctions::getForgeDusts(lua_State *L)
 {
 	// player:getForgeDusts()
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4201,7 +4203,7 @@ int LuaPlayerFunctions::setForgeDusts(lua_State *L)
 {
 	// player:setForgeDusts()
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4217,7 +4219,7 @@ int LuaPlayerFunctions::addForgeDustLevel(lua_State *L)
 {
 	// player:addForgeDustLevel(amount)
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4233,7 +4235,7 @@ int LuaPlayerFunctions::removeForgeDustLevel(lua_State *L)
 {
 	// player:removeForgeDustLevel(amount)
 	Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4249,7 +4251,7 @@ int LuaPlayerFunctions::getForgeDustLevel(lua_State *L)
 {
 	// player:getForgeDustLevel()
 	const Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4264,7 +4266,7 @@ int LuaPlayerFunctions::getForgeSlivers(lua_State *L)
 {
 	// player:getForgeSlivers()
 	const Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);
@@ -4280,7 +4282,7 @@ int LuaPlayerFunctions::getForgeCores(lua_State *L)
 {
 	// player:getForgeCores()
 	const Player *player = getPlayerUserdata(L);
-	if (!player)
+	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
 		pushBoolean(L, false);

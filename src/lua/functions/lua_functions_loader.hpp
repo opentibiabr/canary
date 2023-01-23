@@ -24,12 +24,6 @@ class Item;
 class Player;
 class Thing;
 
-// Used to store the information of the lua functions
-struct LuaFunction {
-	std::string name;
-	lua_CFunction func;
-};
-
 #define reportErrorFunc(a)  reportError(__FUNCTION__, a, true)
 
 class LuaFunctionsLoader {

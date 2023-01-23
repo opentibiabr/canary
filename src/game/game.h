@@ -21,6 +21,7 @@
 #include "movement/position.h"
 #include "creatures/players/player.h"
 #include "lua/creature/raids.h"
+#include "creatures/players/store/store.hpp"
 #include "creatures/players/grouping/team_finder.hpp"
 #include "utils/wildcardtree.h"
 #include "items/items_classification.hpp"
@@ -505,6 +506,10 @@ class Game
 		bool hasEffect(uint8_t effectId);
 		bool hasDistanceEffect(uint8_t effectId);
 
+		bool addAccountHistory(uint32_t accountId, StoreHistory history);
+		void loadAccountStoreHistory(uint32_t account, std::vector<StoreHistory> history);
+		bool getAccountHistory(const uint32_t accountId, std::vector<StoreHistory>& history) const;
+
 		Groups groups;
 		Map map;
 		Mounts mounts;
@@ -536,6 +541,13 @@ class Game
 		std::vector<Charm*> getCharmList() {
 			return CharmList;
 		}
+
+		// Store
+		void playerOpenStore(uint32_t playerId, bool openStore, StoreOffers* offers = nullptr);
+		void playerBuyStoreOffer(uint32_t playerId, const StoreOffer& offer, std::string& param);
+		void playerStoreTransactionHistory(uint32_t playerId, uint32_t pages, uint8_t entryPages);
+		void queueSendStoreAlertToUser(uint32_t playerId, std::string message, StoreErrors_t storeErrorCode = STORE_ERROR_NETWORK);
+		void playerCoinTransfer(uint32_t playerId, const std::string &recipient, uint16_t amount);
 
 		void increasePlayerActiveImbuements(uint32_t playerId) {
 			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
@@ -607,6 +619,9 @@ class Game
 		bool playerYell(Player* player, const std::string& text);
 		bool playerSpeakTo(Player* player, SpeakClasses type, const std::string& receiver, const std::string& text);
 		void playerSpeakToNpc(Player* player, const std::string& text);
+
+		// Account id and history
+		phmap::flat_hash_map<uint32_t, std::vector<StoreHistory>> storeHistory;
 
 		phmap::flat_hash_map<uint32_t, Player*> players;
 		phmap::flat_hash_map<uint32_t, uint8_t> playersActiveImbuements;

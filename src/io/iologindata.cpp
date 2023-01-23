@@ -17,35 +17,38 @@
 #include "io/ioprey.h"
 
 bool IOLoginData::authenticateAccountPassword(const std::string& email, const std::string& password, account::Account *account) {
-	if (account::ERROR_NO != account->LoadAccountDB(email)) {
-		SPDLOG_ERROR("Email {} doesn't match any account.", email);
+	if (account && account::ERROR_NO != account->loadAccountDB(email)) {
+		SPDLOG_ERROR("Email [{}] doesn't match any account.", email);
 		return false;
 	}
 
-	std::string accountPassword;
-	account->GetPassword(&accountPassword);
+	std::string accountPassword = account->getPassword();
 	if (transformToSHA1(password) != accountPassword) {
-			SPDLOG_ERROR("Password '{}' doesn't match any account", transformToSHA1(password));
-			return false;
+			SPDLOG_ERROR("Password [{}] doesn't match any account",
+									transformToSHA1(password));
+		return false;
 	}
 
 	return true;
 }
 
-bool IOLoginData::gameWorldAuthentication(const std::string& email, const std::string& password, std::string& characterName, uint32_t *accountId)
+bool IOLoginData::gameWorldAuthentication(const std::string& email,
+	const std::string& password, std::string& characterName, uint32_t *accountId)
 {
 	account::Account account;
 	if (!IOLoginData::authenticateAccountPassword(email, password, &account)) {
 		return false;
 	}
 
-	account::Player player;
-	if (account::ERROR_NO != account.GetAccountPlayer(&player, characterName)) {
-		SPDLOG_ERROR("Player not found or deleted for account.");
+	int result;
+
+	if (auto [player, result] = account.getAccountPlayer(characterName);
+				account::ERROR_NO != result) {
+		SPDLOG_ERROR("Player [{}] not found or deleted for account.", characterName);
 		return false;
 	}
 
-	account.GetID(accountId);
+	*accountId = account.getID();
 
 	return true;
 }
@@ -68,6 +71,37 @@ void IOLoginData::setAccountType(uint32_t accountId, account::AccountType accoun
   Database::getInstance().executeQuery(query.str());
 }
 
+bool IOLoginData::loadAccountStoreHistory(uint32_t accountId)
+{
+  std::vector<StoreHistory> history;
+  g_game().getAccountHistory(accountId, history);
+  if (!history.empty()) {
+    return false;
+  }
+
+  // Load from database
+  std::ostringstream query;
+  query << "SELECT `time`, `mode`, `amount`, `coinMode`, `description`, `cust` FROM `store_history` WHERE `account_id` = " << accountId;
+  DBResult_ptr result = Database::getInstance().storeQuery(query.str());
+  if (result) {
+    do {
+      history.emplace_back(
+        result->getNumber<uint32_t>("time"),
+        static_cast<uint8_t>(result->getNumber<uint32_t>("mode")),
+        result->getNumber<uint32_t>("amount"),
+        static_cast<uint8_t>(result->getNumber<uint32_t>("coinMode")),
+        result->getString("description"),
+        result->getNumber<int32_t>("cust")
+      );
+      history.shrink_to_fit();
+
+    } while (result->next());
+  }
+
+  g_game().loadAccountStoreHistory(accountId, history);
+  return true;
+}
+
 void IOLoginData::updateOnlineStatus(uint32_t guid, bool login)
 {
   if (g_configManager().getBoolean(ALLOW_CLONES)) {
@@ -88,7 +122,7 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   Database& db = Database::getInstance();
 
   std::ostringstream query;
-  query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`";
+  query << "SELECT `id`, `account_id`, `group_id`, `deletion`, (SELECT `type` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `account_type`, (SELECT `coins` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `coinbalance`, (SELECT `tournament_coins` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `tournamentcoins`";
   if (!g_configManager().getBoolean(FREE_PREMIUM)) {
     query << ", (SELECT `premdays` FROM `accounts` WHERE `accounts`.`id` = `account_id`) AS `premium_days`";
   }
@@ -112,6 +146,8 @@ bool IOLoginData::preloadPlayer(Player* player, const std::string& name)
   player->setGroup(group);
   player->accountNumber = result->getNumber<uint32_t>("account_id");
   player->accountType = static_cast<account::AccountType>(result->getNumber<uint16_t>("account_type"));
+  player->coinBalance = result->getNumber<uint32_t>("coinbalance");
+  player->tournamentCoinBalance = result->getNumber<uint32_t>("tournamentcoins");
   if (!g_configManager().getBoolean(FREE_PREMIUM)) {
     player->premiumDays = result->getNumber<uint16_t>("premium_days");
   } else {
@@ -145,22 +181,42 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   Database& db = Database::getInstance();
 
   uint32_t accountId = result->getNumber<uint32_t>("account_id");
-  account::Account acc;
-  acc.SetDatabaseInterface(&db);
-  acc.LoadAccountDB(accountId);
+   account::Account account(accountId);
+  account.setDatabaseInterface(&db);
+	if(account::ERROR_NO != account.loadAccountDB())
+	{
+		SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
+		return false;
+	}
 
   player->setGUID(result->getNumber<uint32_t>("id"));
   player->name = result->getString("name");
-  acc.GetID(&(player->accountNumber));
-  acc.GetAccountType(&(player->accountType));
+  player->accountNumber = account.getID();
+  player->accountType = account.getAccountType();
+
+	int res = 0;
+	uint32_t coins, tournament_coins;
+
+	if (auto [ coins, res ] = account.getCoins(); account::ERROR_NO != res) {
+		SPDLOG_ERROR("Failed to load Player [{}] coins. (Error: [{}])",
+			player->name, res);
+		return false;
+	}
+	player->coinBalance = coins;
+
+	if (auto [ tournament_coins, res ] = account.getTournamentCoins();
+			account::ERROR_NO != res) {
+		SPDLOG_ERROR("Failed to load Player [{}] tournament coins. (Error: [{}])",
+			player->name, res);
+		return false;
+	}
+	player->tournamentCoinBalance = tournament_coins;
 
   if (g_configManager().getBoolean(FREE_PREMIUM)) {
     player->premiumDays = std::numeric_limits<uint16_t>::max();
   } else {
-    acc.GetPremiumRemaningDays(&(player->premiumDays));
+    player->premiumDays = account.getPremiumRemaningDays();
   }
-
-  acc.GetCoins(&(player->coinBalance));
 
   Group* group = g_game().groups.getGroup(result->getNumber<uint16_t>("group_id"));
   if (!group) {
@@ -736,6 +792,9 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   player->updateInventoryWeight();
   player->updateInventoryImbuement(true);
   player->updateItemsLight(true);
+
+  // Load account history
+  loadAccountStoreHistory(player->getAccount());
   return true;
 }
 

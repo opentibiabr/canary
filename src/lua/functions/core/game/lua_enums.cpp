@@ -714,6 +714,7 @@ void LuaEnums::initItemAttributeEnums(lua_State* L) {
 	registerEnum(L, ITEM_ATTRIBUTE_OPENCONTAINER);
 	registerEnum(L, ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
 	registerEnum(L, ITEM_ATTRIBUTE_DURATION_TIMESTAMP);
+	registerEnum(L, ITEM_ATTRIBUTE_WRAPID);
 }
 
 void LuaEnums::initItemTypeEnums(lua_State* L) {

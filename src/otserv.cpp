@@ -29,9 +29,12 @@
 #include "security/rsa.h"
 #include "server/network/protocol/protocollogin.h"
 #include "server/network/protocol/protocolstatus.h"
+#include "creatures/players/store/store.hpp"
 #include "server/network/webhook/webhook.h"
 #include "server/server.h"
 #include "io/ioprey.h"
+
+Store g_store;
 
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
@@ -171,6 +174,8 @@ void loadModules() {
 		"XML/outfits.xml");
 	modulesLoadHelper(Familiars::getInstance().loadFromXml(),
 		"XML/familiars.xml");
+	modulesLoadHelper(g_store.loadFromXML(),
+		"XML/store.xml");
 	modulesLoadHelper(g_imbuements().loadFromXml(),
 		"XML/imbuements.xml");
 	modulesLoadHelper(g_modules().loadFromXml(),
@@ -246,9 +251,6 @@ void mainLoader(int, char*[], ServiceManager* services) {
 	g_game().setGameState(GAME_STATE_STARTUP);
 
 	srand(static_cast<unsigned int>(OTSYS_TIME()));
-#ifdef _WIN32
-	SetConsoleTitle(STATUS_SERVER_NAME);
-#endif
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
 	SPDLOG_INFO("{} - Version [{}] dated [{}]",
                 STATUS_SERVER_NAME, STATUS_SERVER_VERSION, GIT_COMMIT_DATE_ISO8601);

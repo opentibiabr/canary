@@ -175,6 +175,7 @@ PRIVATE
 	creatures/players/grouping/party.cpp
 	creatures/players/imbuements/imbuements.cpp
 	creatures/players/management/ban.cpp
+	creatures/players/store/store.cpp
 	creatures/players/management/waitlist.cpp
 	creatures/players/player.cpp
 	creatures/players/vocations/vocation.cpp

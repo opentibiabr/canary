@@ -7,7 +7,7 @@ Blessings.Credits = {
 	todo = {
 		"Insert & Select query in blessings_history",
 		"Add unfair fight reductio (convert the get killer is pvp fight with getDamageMap of dead player)",
-		"Gamestore buy blessing",
+		"Store buy blessing",
 		"Test ank print text",
 		"Test all functions",
 		"Test henricus prices/blessings",

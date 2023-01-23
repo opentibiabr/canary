@@ -26,6 +26,9 @@ class ProtocolGame;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
+class StoreOffers;
+class StoreOffer;
+
 using ProtocolGame_ptr = std::shared_ptr<ProtocolGame>;
 
 
@@ -146,6 +149,7 @@ private:
 	void parseTournamentLeaderboard(NetworkMessage &msg);
 
 	void parseGreet(NetworkMessage &msg);
+	void parseCoinTransfer(NetworkMessage &msg);
 	void parseBugReport(NetworkMessage &msg);
 	void parseDebugAssert(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
@@ -232,6 +236,25 @@ private:
 
 	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
+
+	// Store
+	void parseOpenStore();
+	void parseRequestStoreOffers(NetworkMessage& msg);
+	void parseBuyStoreOffer(NetworkMessage& msg);
+	void parseSendDescription(NetworkMessage& msg);
+	void parseOpenTransactionHistory(NetworkMessage& msg);
+	void parseRequestTransactionHistory(NetworkMessage& msg);
+
+	void sendStoreHistory(uint32_t totalPages, uint32_t pages, std::vector<StoreHistory> filter);
+	void sendShowStoreOffers(StoreOffers* offers);
+	void sendOfferDescription(uint32_t id, std::string desc);
+	void sendStoreHome();
+	void sendStoreError(uint8_t errorType, std::string message);
+	void sendStorePurchaseSuccessful(const std::string& message);
+
+	void requestPurchaseData(uint32_t offerId, uint8_t offerType);
+	void openStore();
+	void addStoreOffer(NetworkMessage& msg, std::vector<StoreOffer*> it);
 
 	//Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);

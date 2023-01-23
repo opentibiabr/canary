@@ -176,6 +176,8 @@ void ConfigFunctions::init(lua_State* L) {
 	registerEnumIn(L, "configKeys", FORGE_TIER_LOSS_REDUCTION)
 	registerEnumIn(L, "configKeys", FORGE_INFLUENCED_CREATURES_LIMIT)
 
+	registerEnumIn(L, "configKeys", TIME_GMT)
+
 	#undef registerEnumIn
 }
 

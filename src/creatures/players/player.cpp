@@ -4975,9 +4975,69 @@ void Player::setPremiumDays(int32_t v)
 	sendBasicData();
 }
 
-void Player::setTibiaCoins(int32_t v)
+void Player::setCoins(int32_t coins)
 {
-	coinBalance = v;
+	coinBalance = coins;
+}
+
+void Player::setTournamentCoins(int32_t tournamentCoins)
+{
+	tournamentCoinBalance = tournamentCoins;
+}
+
+bool Player::canRemoveCoins(int32_t coins)
+{
+	int result;
+	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
+		// Update every 2 seconds
+		lastUpdateCoin = OTSYS_TIME() + 2000;
+
+		account::Account account(this->getAccount());
+		if(account::ERROR_NO != account.loadAccountDB())
+		{
+			SPDLOG_ERROR("Failed to load Account: [{}]", account.getID());
+			return false;
+		};
+
+		if(auto [ coinBalance, result ] = account.getCoins() ;
+			account::ERROR_NO != result)
+		{
+			SPDLOG_ERROR("Failed to get Coins for account: [{}]",
+				this->getAccount());
+			return false;
+		};
+	}
+	int32_t removeCoins = coinBalance;
+
+	return (removeCoins - coins) >= 0;
+}
+
+bool Player::canRemoveTournamentCoins(int32_t tournamentCoins)
+{
+	if (lastUpdateCoin - OTSYS_TIME() < 2000) {
+		// Update every 2 seconds
+		lastUpdateCoin = OTSYS_TIME() + 2000;
+
+		account::Account account(this->getAccount());
+		if(account::ERROR_NO != account.loadAccountDB())
+		{
+			SPDLOG_ERROR("Failed to load Account: [{}]",
+				account.getID());
+			return false;
+		};
+
+		if(auto [ tournamentCoinBalance, result ] = account.getTournamentCoins() ;
+			account::ERROR_NO != result)
+		{
+			SPDLOG_ERROR("Failed to get Tournament Coins for account: [{}]",
+				this->getAccount());
+			return false;
+		};
+	}
+
+	int32_t removeTournamentCoins = tournamentCoinBalance;
+
+	return (removeTournamentCoins - tournamentCoins) >= 0;
 }
 
 PartyShields_t Player::getPartyShield(const Player* player) const
@@ -5479,35 +5539,6 @@ void Player::clearModalWindows()
 	modalWindows.clear();
 }
 
-uint16_t Player::getHelpers() const
-{
-	uint16_t helpers;
-
-	if (guild && party) {
-		phmap::flat_hash_set<Player*> helperSet;
-
-		const auto& guildMembers = guild->getMembersOnline();
-		helperSet.insert(guildMembers.begin(), guildMembers.end());
-
-		const auto& partyMembers = party->getMembers();
-		helperSet.insert(partyMembers.begin(), partyMembers.end());
-
-		const auto& partyInvitees = party->getInvitees();
-		helperSet.insert(partyInvitees.begin(), partyInvitees.end());
-
-		helperSet.insert(party->getLeader());
-
-		helpers = helperSet.size();
-	} else if (guild) {
-		helpers = guild->getMembersOnline().size();
-	} else if (party) {
-		helpers = party->getMemberCount() + party->getInvitationCount() + 1;
-	} else {
-		helpers = 0;
-	}
-
-	return helpers;
-}
 
 void Player::sendClosePrivate(uint16_t channelId)
 {
@@ -5862,42 +5893,51 @@ void Player::stowItem(Item* item, uint32_t count, bool allItems) {
 	stashContainer(itemDict);
 }
 
-void Player::openPlayerContainers()
+bool Player::removeFrags(uint8_t count)
 {
-	std::vector<std::pair<uint8_t, Container*>> openContainersList;
-
-	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
-		Item* item = inventory[i];
-		if (!item) {
-			continue;
-		}
-
-		Container* itemContainer = item->getContainer();
-		if (itemContainer) {
-			int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
-			if (cid > 0) {
-				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
-			}
-			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
-				Container* subContainer = (*it)->getContainer();
-				if (subContainer) {
-					uint8_t subcid = (*it)->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
-					if (subcid > 0) {
-						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
-					}
-				}
-			}
-		}
+	if (unjustifiedKills.empty()) {
+		return false;
 	}
 
-	std::sort(openContainersList.begin(), openContainersList.end(), [](const std::pair<uint8_t, Container*>& left, const std::pair<uint8_t, Container*>& right) {
-		return left.first < right.first;
-	});
+	uint8_t passed = 0;
+	std::vector<Kill> v_unjustifiedKills = unjustifiedKills;
+	for (const auto& kill : v_unjustifiedKills) {
+		if (passed >= count) {
+			break;
+		}
 
-	for (auto& it : openContainersList) {
-		addContainer(it.first - 1, it.second);
-		onSendContainer(it.second);
+		if (kill.time > 0) {
+			unjustifiedKills.erase(unjustifiedKills.begin() + passed);
+			passed++;
+		}
+
 	}
+
+	sendUnjustifiedPoints();
+	return true;
+}
+
+void Player::addAccountStorageValue(const uint32_t key, const int32_t value)
+{
+	if (value != -1) {
+		int32_t oldValue;
+		getAccountStorageValue(key, oldValue);
+		accountStorageMap[key] = value;
+	} else {
+		accountStorageMap.erase(key);
+	}
+}
+
+bool Player::getAccountStorageValue(const uint32_t key, int32_t& value) const
+{
+	auto it = accountStorageMap.find(key);
+	if (it == accountStorageMap.end()) {
+		value = -1;
+		return false;
+	}
+
+	value = it->second;
+	return true;
 }
 
 void Player::initializePrey()

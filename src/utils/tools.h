@@ -95,7 +95,10 @@ bool isCaskItem(uint16_t itemId);
 
 std::string getObjectCategoryName(ObjectCategory_t category);
 
-int64_t OTSYS_TIME();
+std::string generateRK(size_t length);
+
+int64_t OTSYS_TIME(bool useTime = false);
+int32_t OS_TIME(time_t* timer);
 
 SpellGroup_t stringToSpellGroup(const std::string &value);
 

@@ -44,6 +44,7 @@ class Guild;
 class Imbuement;
 class PreySlot;
 class TaskHuntingSlot;
+class StoreOffers;
 
 enum class ForgeConversion_t : uint8_t {
 	FORGE_ACTION_FUSION = 0,
@@ -394,6 +395,7 @@ class Player final : public Creature, public Cylinder
 		}
 		uint32_t getIP() const;
 
+		void openPlayerContainers();
 		void addContainer(uint8_t cid, Container* container);
 		void closeContainer(uint8_t cid);
 		void setContainerIndex(uint8_t cid, uint16_t index);
@@ -511,9 +513,17 @@ class Player final : public Creature, public Cylinder
 		bool isPremium() const;
 		void setPremiumDays(int32_t v);
 
-		void setTibiaCoins(int32_t v);
+		void setCoins(int32_t coins);
+		bool canRemoveCoins(int32_t coins);
+		int32_t getCoinBalance() {
+			return coinBalance;
+		}
 
-		uint16_t getHelpers() const;
+		void setTournamentCoins(int32_t coins);
+		bool canRemoveTournamentCoins(int32_t coins);
+		int32_t getTournamentCoinBalance() {
+			return tournamentCoinBalance;
+		}
 
 		bool setVocation(uint16_t vocId);
 		uint16_t getVocationId() const {
@@ -1077,7 +1087,6 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		void openPlayerContainers();
 
 		// Quickloot
 		void sendLootContainers() {
@@ -1085,6 +1094,64 @@ class Player final : public Creature, public Cylinder
 				client->sendLootContainers();
 			}
 		}
+
+		void sendLootStats(Item* item, uint8_t count) {
+			if (client) {
+				client->sendLootStats(item, count);
+			}
+		}
+
+		// Store
+		void openStore() {
+			if (client) {
+				client->openStore();
+			}
+		}
+		void updateCoinBalance() {
+			if (client) {
+				client->updateCoinBalance();
+			}
+		}
+
+		void sendStoreHome() {
+			if (client) {
+				client->sendStoreHome();
+			}
+		}
+		void sendStoreHistory(uint32_t totalPages, uint32_t pages, std::vector<StoreHistory> filter) {
+			if (client) {
+				client->sendStoreHistory(totalPages, pages, filter);
+			}
+		}
+		void sendStorePurchaseSuccessful(const std::string& message) {
+			if (client) {
+				client->sendStorePurchaseSuccessful(message);
+			}
+		}
+		void sendStoreError(uint8_t errorType, std::string message) {
+			if (client) {
+				client->sendStoreError(errorType, message);
+			}
+		}
+		void sendOfferDescription(uint32_t id, std::string desc) {
+			if (client) {
+				client->sendOfferDescription(id, desc);
+			}
+		}
+		void sendShowStoreOffers(StoreOffers* offers) {
+			if (client) {
+				client->sendShowStoreOffers(offers);
+			}
+		}
+
+		uint16_t getEntriesPerPage() {
+			return entriesPerPage;
+		}
+		void setEntriesPerPage(uint16_t entriesPage) {
+			entriesPerPage = entriesPage;
+		}
+
+		bool removeFrags(uint8_t count = 1);
 
 		//event methods
 		void onUpdateTileItem(const Tile* tile, const Position& pos, const Item* oldItem,
@@ -1836,9 +1903,14 @@ class Player final : public Creature, public Cylinder
 		uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
 		uint16_t getFreeBackpackSlots() const;
 
+		void addAccountStorageValue(const uint32_t key, const int32_t value);
+		bool getAccountStorageValue(const uint32_t key, int32_t& value) const;
+
 		// Interfaces
 		error_t SetAccountInterface(account::Account *account);
 		error_t GetAccountInterface(account::Account *account);
+
+		std::vector<Kill> unjustifiedKills;
 
 		void sendMessageDialog(const std::string& message) const
 		{
@@ -2266,6 +2338,7 @@ class Player final : public Creature, public Cylinder
 		std::map<uint8_t, int64_t> moduleDelayMap;
 		std::map<uint32_t, int32_t> storageMap;
 		std::map<uint16_t, uint64_t> itemPriceMap;
+		std::map<uint32_t, int32_t> accountStorageMap;
 
 		std::map<uint8_t, uint16_t> maxValuePerSkill = {
 			{SKILL_LIFE_LEECH_CHANCE, 100},
@@ -2328,8 +2401,7 @@ class Player final : public Creature, public Cylinder
 		int64_t lastQuickLootNotification = 0;
 		int64_t lastWalking = 0;
 		uint64_t asyncOngoingTasks = 0;
-
-		std::vector<Kill> unjustifiedKills;
+		uint32_t lastUpdateCoin = OTSYS_TIME();
 
 		BedItem* bedItem = nullptr;
 		Guild* guild = nullptr;
@@ -2383,6 +2455,11 @@ class Player final : public Creature, public Cylinder
 		int32_t idleTime = 0;
 		uint32_t coinBalance = 0;
 		uint16_t expBoostStamina = 0;
+		uint16_t entriesPerPage = 26;
+
+		uint32_t coinBalance = 0;
+		uint32_t tournamentCoinBalance = 0;
+		uint32_t premiumDays = 0;
 
 		uint16_t lastStatsTrainingTime = 0;
 		uint16_t staminaMinutes = 2520;

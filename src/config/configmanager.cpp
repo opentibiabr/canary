@@ -180,6 +180,7 @@ bool ConfigManager::load()
 	boolean[TOGGLE_DOWNLOAD_MAP] = getGlobalBoolean(L, "toggleDownloadMap", false);
 	boolean[USE_ANY_DATAPACK_FOLDER] = getGlobalBoolean(L, "useAnyDatapackFolder", false);
 	boolean[INVENTORY_GLOW] = getGlobalBoolean(L, "inventoryGlowOnFiveBless", false);
+	boolean[STORE_PREMIUM_DISCOUNT] = getGlobalBoolean(L, "storePremiumDiscount", false);
 
 	string[DEFAULT_PRIORITY] = getGlobalString(L, "defaultPriority", "high");
 	string[SERVER_NAME] = getGlobalString(L, "serverName", "");
@@ -197,6 +198,7 @@ bool ConfigManager::load()
 	string[CORE_DIRECTORY] = getGlobalString(L, "coreDirectory", "data");
 	string[FORGE_FIENDISH_INTERVAL_TYPE] = getGlobalString(L, "forgeFiendishIntervalType", "hour");
 	string[FORGE_FIENDISH_INTERVAL_TIME] = getGlobalString(L, "forgeFiendishIntervalTime", "1");
+	string[DEFAULT_OFFER] = getGlobalString(L, "defaultStoreOffer", "Blessings");
 
 	integer[MAX_PLAYERS] = getGlobalNumber(L, "maxPlayers");
 	integer[PZ_LOCKED] = getGlobalNumber(L, "pzLocked", 60000);
@@ -265,6 +267,7 @@ bool ConfigManager::load()
 	integer[FORGE_MAX_SLIVERS] = getGlobalNumber(L, "forgeMaxSlivers", 7);
 	integer[FORGE_INFLUENCED_CREATURES_LIMIT] = getGlobalNumber(L, "forgeInfluencedLimit", 300);
 	integer[FORGE_FIENDISH_CREATURES_LIMIT] = getGlobalNumber(L, "forgeFiendishLimit", 3);
+	integer[TIME_GMT] = getGlobalNumber(L, "timeGMT", -3 * 60 * 60);
 
 	floating[RATE_HEALTH_REGEN] = getGlobalFloat(L, "rateHealthRegen", 1.0);
 	floating[RATE_HEALTH_REGEN_SPEED] = getGlobalFloat(L, "rateHealthRegenSpeed", 1.0);
@@ -284,6 +287,7 @@ bool ConfigManager::load()
 	floating[RATE_NPC_HEALTH] = getGlobalFloat(L, "rateNpcHealth", 1.0);
 	floating[RATE_NPC_ATTACK] = getGlobalFloat(L, "rateNpcAttack", 1.0);
 	floating[RATE_NPC_DEFENSE] = getGlobalFloat(L, "rateNpcDefense", 1.0);
+	floating[RATE_STORE_PREMIUM_DISCOUNT] = getGlobalFloat(L, "rateStorePremiumDiscount", 0.90);
 
 	boolean[PREY_ENABLED] = getGlobalBoolean(L, "preySystemEnabled", true);
 	boolean[PREY_FREE_THIRD_SLOT] = getGlobalBoolean(L, "preyFreeThirdSlot", false);

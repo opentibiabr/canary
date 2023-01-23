@@ -195,7 +195,7 @@ enum ItemDecayState_t : uint8_t {
 };
 
 enum AttrTypes_t {
-	//ATTR_DESCRIPTION = 1,
+	ATTR_WRAPID = 1,
 	//ATTR_EXT_FILE = 2,
 	ATTR_TILE_FLAGS = 3,
 	ATTR_ACTION_ID = 4,
@@ -309,6 +309,7 @@ enum ItemAttrTypes : uint32_t {
 	ITEM_ATTRIBUTE_DURATION_TIMESTAMP = 1 << 27,
 	ITEM_ATTRIBUTE_IMBUEMENT_TYPE = 1 << 28,
 	ITEM_ATTRIBUTE_TIER = 1 << 29,
+	ITEM_ATTRIBUTE_WRAPID = 1 << 30,
 
 	ITEM_ATTRIBUTE_CUSTOM = 1U << 31
 };

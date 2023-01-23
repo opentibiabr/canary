@@ -657,9 +657,9 @@ class Player final : public Creature, public Cylinder
 		void addConditionSuppressions(uint32_t conditions);
 		void removeConditionSuppressions(uint32_t conditions);
 
-		Reward* getReward(uint32_t rewardId, bool autoCreate);
-		void removeReward(uint32_t rewardId);
-		void getRewardList(std::vector<uint32_t>& rewards);
+		Reward* getReward(uint64_t rewardId, bool autoCreate);
+		void removeReward(uint64_t rewardId);
+		void getRewardList(std::vector<uint64_t>& rewards) const;
 		RewardChest* getRewardChest();
 
 		DepotChest* getDepotChest(uint32_t depotId, bool autoCreate);
@@ -2284,7 +2284,7 @@ class Player final : public Creature, public Cylinder
 			{SKILL_CRITICAL_HIT_CHANCE, g_configManager().getNumber(CRITICALCHANCE)}
 		};
 
-		std::map<uint32_t, Reward*> rewardMap;
+		std::map<uint64_t, Reward*> rewardMap;
 
 		std::map<ObjectCategory_t, Container*> quickLootContainers;
 		std::vector<ForgeHistory> forgeHistoryVector;

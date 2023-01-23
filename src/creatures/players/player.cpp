@@ -697,8 +697,8 @@ void Player::closeContainer(uint8_t cid)
 void Player::removeEmptyRewards()
 {
 	auto container = rewardMap.begin();
-	for (; container != rewardMap.end();) {
-		if (container->second->size() == 0) {
+	while ( container != rewardMap.end()) {
+		if (container->second->empty()) {
 			auto &toRemove = container->second;
 			container = rewardMap.erase(container);
 			getRewardChest()->removeThing(toRemove, 1);
@@ -709,13 +709,11 @@ void Player::removeEmptyRewards()
 	}
 }
 
-bool Player::hasAnykindOfRewardContainerOpen() {
-	for (const auto& it : openContainers) {
-		if (it.second.container->isAnykindOfRewardContainer()) {
-			return true;
-		}
-	}
-	return false;
+bool Player::hasAnykindOfRewardContainerOpen() const {
+	return std::ranges::any_of(openContainers.begin(), openContainers.end(),
+					   [](const auto& containerPair) {
+						   return containerPair.second.container->isAnykindOfRewardContainer();
+					   });
 }
 
 void Player::setContainerIndex(uint8_t cid, uint16_t index)
@@ -1109,7 +1107,7 @@ RewardChest* Player::getRewardChest()
 	return rewardChest;
 }
 
-Reward* Player::getReward(uint32_t rewardId, bool autoCreate)
+Reward* Player::getReward(uint64_t rewardId, bool autoCreate)
 {
 	auto it = rewardMap.find(rewardId);
 	if (it != rewardMap.end()) {
@@ -1130,11 +1128,11 @@ Reward* Player::getReward(uint32_t rewardId, bool autoCreate)
 	return reward;
 }
 
-void Player::removeReward(uint32_t rewardId) {
+void Player::removeReward(uint64_t rewardId) {
 	rewardMap.erase(rewardId);
 }
 
-void Player::getRewardList(std::vector<uint32_t>& rewards) {
+void Player::getRewardList(std::vector<uint64_t>& rewards) const {
 	rewards.reserve(rewardMap.size());
 	for (auto& it : rewardMap) {
 		rewards.push_back(it.first);

@@ -635,7 +635,7 @@ int PlayerFunctions::luaPlayerGetReward(lua_State* L) {
 		return 1;
 	}
 
-	uint32_t rewardId = getNumber<uint32_t>(L, 2);
+	uint64_t rewardId = getNumber<uint64_t>(L, 2);
 	bool autoCreate = getBoolean(L, 3, false);
 	if (Reward* reward = player->getReward(rewardId, autoCreate)) {
 		pushUserdata<Item>(L, reward);
@@ -668,7 +668,7 @@ int PlayerFunctions::luaPlayerGetRewardList(lua_State* L) {
 		return 1;
 	}
 
-	std::vector<uint32_t> rewardVec;
+	std::vector<uint64_t> rewardVec;
 	player->getRewardList(rewardVec);
 	lua_createtable(L, rewardVec.size(), 0);
 
@@ -2523,7 +2523,7 @@ int PlayerFunctions::luaPlayerOpenImbuementWindow(lua_State* L) {
 		pushBoolean(L, false);
 		return 1;
 	}
-	
+
 	Item* item = getUserdata<Item>(L, 2);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
@@ -3209,7 +3209,7 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 		pushBoolean(L, false);
 		return 0;
 	}
-	
+
 	lua_pushnumber(L, player->getFaction());
 	return 1;
 }

@@ -253,7 +253,6 @@ PRIVATE
 	lua/functions/creatures/player/guild_functions.cpp
 	lua/functions/creatures/player/mount_functions.cpp
 	lua/functions/creatures/player/party_functions.cpp
-	lua/functions/creatures/player/lua_player_methods.cpp
 	lua/functions/creatures/player/vocation_functions.cpp
 	lua/functions/events/action_functions.cpp
 	lua/functions/events/creature_event_functions.cpp
@@ -274,6 +273,8 @@ PRIVATE
 	lua/functions/map/town_functions.cpp
 	lua/global/baseevents.cpp
 	lua/global/globalevent.cpp
+	lua/methods/player_functions.cpp
+	lua/methods/player_functions_binding.cpp
 	lua/modules/modules.cpp
 	lua/scripts/lua_environment.cpp
 	lua/scripts/luascript.cpp

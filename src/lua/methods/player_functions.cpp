@@ -9,7 +9,7 @@
 
 #include "pch.hpp"
 
-#include "lua/functions/creatures/player/lua_player_methods.hpp"
+#include "lua/methods/player_functions.hpp"
 
 #include "creatures/combat/spells.h"
 #include "creatures/creature.h"
@@ -20,320 +20,7 @@
 #include "io/ioprey.h"
 #include "items/item.h"
 
-const std::unordered_map<std::string, lua_CFunction> LuaPlayer::luaPlayerFunctionsMap(lua_State *L) {
-	return {
-		{"resetCharmsBestiary", LuaPlayer::resetCharmsBestiary},
-		{"unlockAllCharmRunes", LuaPlayer::unlockAllCharmRunes},
-		{"addCharmPoints", LuaPlayer::addCharmPoints},
-		{"isPlayer", LuaPlayer::isPlayer},
-
-		{"getGuid", LuaPlayer::getGuid},
-		{"getIp", LuaPlayer::getIp},
-		{"getAccountId", LuaPlayer::getAccountId},
-		{"getLastLoginSaved", LuaPlayer::getLastLoginSaved},
-		{"getLastLogout", LuaPlayer::getLastLogout},
-
-		{"getAccountType", LuaPlayer::getAccountType},
-		{"setAccountType", LuaPlayer::setAccountType},
-
-		{"isMonsterBestiaryUnlocked", LuaPlayer::isMonsterBestiaryUnlocked},
-		{"addBestiaryKill", LuaPlayer::addBestiaryKill},
-		{"charmExpansion", LuaPlayer::charmExpansion},
-		{"getCharmMonsterType", LuaPlayer::getCharmMonsterType},
-
-		{"getPreyCards", LuaPlayer::getPreyCards},
-		{"getPreyLootPercentage", LuaPlayer::getPreyLootPercentage},
-		{"getPreyExperiencePercentage", LuaPlayer::getPreyExperiencePercentage},
-		{"preyThirdSlot", LuaPlayer::preyThirdSlot},
-		{"taskHuntingThirdSlot", LuaPlayer::taskHuntingThirdSlot},
-		{"removePreyStamina", LuaPlayer::removePreyStamina},
-		{"addPreyCards", LuaPlayer::addPreyCards},
-		{"removeTaskHuntingPoints", LuaPlayer::removeTaskHuntingPoints},
-		{"getTaskHuntingPoints", LuaPlayer::getTaskHuntingPoints},
-		{"addTaskHuntingPoints", LuaPlayer::addTaskHuntingPoints},
-
-		{"getCapacity", LuaPlayer::getCapacity},
-		{"setCapacity", LuaPlayer::setCapacity},
-
-		{"isTraining", LuaPlayer::getIsTraining},
-		{"setTraining", LuaPlayer::setTraining},
-
-		{"getFreeCapacity", LuaPlayer::getFreeCapacity},
-
-		{"getKills", LuaPlayer::getKills},
-		{"setKills", LuaPlayer::setKills},
-
-		{"getReward", LuaPlayer::getReward},
-		{"removeReward", LuaPlayer::removeReward},
-		{"getRewardList", LuaPlayer::getRewardList},
-
-		{"setDailyReward", LuaPlayer::setDailyReward},
-
-		{"sendInventory", LuaPlayer::sendInventory},
-		{"sendLootStats", LuaPlayer::sendLootStats},
-		{"updateSupplyTracker", LuaPlayer::updateSupplyTracker},
-		{"updateKillTracker", LuaPlayer::updateKillTracker},
-
-		{"getDepotLocker", LuaPlayer::getDepotLocker},
-		{"getDepotChest", LuaPlayer::getDepotChest},
-		{"getInbox", LuaPlayer::getInbox},
-
-		{"getSkullTime", LuaPlayer::getSkullTime},
-		{"setSkullTime", LuaPlayer::setSkullTime},
-		{"getDeathPenalty", LuaPlayer::getDeathPenalty},
-
-		{"getExperience", LuaPlayer::getExperience},
-		{"addExperience", LuaPlayer::addExperience},
-		{"removeExperience", LuaPlayer::removeExperience},
-		{"getLevel", LuaPlayer::getLevel},
-
-		{"getMagicLevel", LuaPlayer::getMagicLevel},
-		{"getBaseMagicLevel", LuaPlayer::getBaseMagicLevel},
-		{"getMana", LuaPlayer::getMana},
-		{"addMana", LuaPlayer::addMana},
-		{"getMaxMana", LuaPlayer::getMaxMana},
-		{"setMaxMana", LuaPlayer::setMaxMana},
-		{"getManaSpent", LuaPlayer::getManaSpent},
-		{"addManaSpent", LuaPlayer::addManaSpent},
-
-		{"getName", LuaPlayer::getName},
-		{"getId", LuaPlayer::getId},
-		{"getPosition", LuaPlayer::getPosition},
-		{"teleportTo", LuaPlayer::teleportTo},
-
-		{"getBaseMaxHealth", LuaPlayer::getBaseMaxHealth},
-		{"getBaseMaxMana", LuaPlayer::getBaseMaxMana},
-
-		{"getSkillLevel", LuaPlayer::getSkillLevel},
-		{"getEffectiveSkillLevel", LuaPlayer::getEffectiveSkillLevel},
-		{"getSkillPercent", LuaPlayer::getSkillPercent},
-		{"getSkillTries", LuaPlayer::getSkillTries},
-		{"addSkillTries", LuaPlayer::addSkillTries},
-
-		{"setMagicLevel", LuaPlayer::setMagicLevel},
-		{"setSkillLevel", LuaPlayer::setSkillLevel},
-
-		{"addOfflineTrainingTime", LuaPlayer::addOfflineTrainingTime},
-		{"getOfflineTrainingTime", LuaPlayer::getOfflineTrainingTime},
-		{"removeOfflineTrainingTime", LuaPlayer::removeOfflineTrainingTime},
-
-		{"addOfflineTrainingTries", LuaPlayer::addOfflineTrainingTries},
-
-		{"getOfflineTrainingSkill", LuaPlayer::getOfflineTrainingSkill},
-		{"setOfflineTrainingSkill", LuaPlayer::setOfflineTrainingSkill},
-
-		{"getItemCount", LuaPlayer::getItemCount},
-		{"getStashItemCount", LuaPlayer::getStashItemCount},
-		{"getItemById", LuaPlayer::getItemById},
-
-		{"getVocation", LuaPlayer::getVocation},
-		{"setVocation", LuaPlayer::setVocation},
-
-		{"getSex", LuaPlayer::getSex},
-		{"setSex", LuaPlayer::setSex},
-
-		{"getTown", LuaPlayer::getTown},
-		{"setTown", LuaPlayer::setTown},
-
-		{"getGuild", LuaPlayer::getGuild},
-		{"setGuild", LuaPlayer::setGuild},
-
-		{"getGuildLevel", LuaPlayer::getGuildLevel},
-		{"setGuildLevel", LuaPlayer::setGuildLevel},
-
-		{"getGuildNick", LuaPlayer::getGuildNick},
-		{"setGuildNick", LuaPlayer::setGuildNick},
-
-		{"getGroup", LuaPlayer::getGroup},
-		{"setGroup", LuaPlayer::setGroup},
-
-		{"setSpecialContainersAvailable", LuaPlayer::setSpecialContainersAvailable},
-		{"getStashCount", LuaPlayer::getStashCounter},
-		{"openStash", LuaPlayer::openStash},
-
-		{"getStamina", LuaPlayer::getStamina},
-		{"setStamina", LuaPlayer::setStamina},
-
-		{"getSoul", LuaPlayer::getSoul},
-		{"addSoul", LuaPlayer::addSoul},
-		{"getMaxSoul", LuaPlayer::getMaxSoul},
-
-		{"getBankBalance", LuaPlayer::getBankBalance},
-		{"setBankBalance", LuaPlayer::setBankBalance},
-
-		{"getStorageValue", LuaPlayer::getStorageValue},
-		{"setStorageValue", LuaPlayer::setStorageValue},
-
-		{"addItem", LuaPlayer::addItem},
-		{"addItemEx", LuaPlayer::addItemEx},
-		{"removeStashItem", LuaPlayer::removeStashItem},
-		{"removeItem", LuaPlayer::removeItem},
-		{"sendContainer", LuaPlayer::sendContainer},
-
-		{"getMoney", LuaPlayer::getMoney},
-		{"addMoney", LuaPlayer::addMoney},
-		{"removeMoney", LuaPlayer::removeMoney},
-
-		{"showTextDialog", LuaPlayer::showTextDialog},
-
-		{"sendTextMessage", LuaPlayer::sendTextMessage},
-		{"sendChannelMessage", LuaPlayer::sendChannelMessage},
-		{"sendPrivateMessage", LuaPlayer::sendPrivateMessage},
-		{"channelSay", LuaPlayer::channelSay},
-		{"openChannel", LuaPlayer::openChannel},
-
-		{"getSlotItem", LuaPlayer::getSlotItem},
-
-		{"getParty", LuaPlayer::getParty},
-
-		{"addOutfit", LuaPlayer::addOutfit},
-		{"addOutfitAddon", LuaPlayer::addOutfitAddon},
-		{"removeOutfit", LuaPlayer::removeOutfit},
-		{"removeOutfitAddon", LuaPlayer::removeOutfitAddon},
-		{"hasOutfit", LuaPlayer::hasOutfit},
-		{"sendOutfitWindow", LuaPlayer::sendOutfitWindow},
-
-		{"addMount", LuaPlayer::addMount},
-		{"removeMount", LuaPlayer::removeMount},
-		{"hasMount", LuaPlayer::hasMount},
-
-		{"addFamiliar", LuaPlayer::addFamiliar},
-		{"removeFamiliar", LuaPlayer::removeFamiliar},
-		{"hasFamiliar", LuaPlayer::hasFamiliar},
-		{"setFamiliarLooktype", LuaPlayer::setFamiliarLooktype},
-		{"getFamiliarLooktype", LuaPlayer::getFamiliarLooktype},
-
-		{"getPremiumDays", LuaPlayer::getPremiumDays},
-		{"addPremiumDays", LuaPlayer::addPremiumDays},
-		{"removePremiumDays", LuaPlayer::removePremiumDays},
-
-		{"getTibiaCoins", LuaPlayer::getTibiaCoins},
-		{"addTibiaCoins", LuaPlayer::addTibiaCoins},
-		{"removeTibiaCoins", LuaPlayer::removeTibiaCoins},
-
-		{"hasBlessing", LuaPlayer::hasBlessing},
-		{"addBlessing", LuaPlayer::addBlessing},
-		{"removeBlessing", LuaPlayer::removeBlessing},
-		{"getBlessingCount", LuaPlayer::getBlessingCount},
-
-		{"canLearnSpell", LuaPlayer::canLearnSpell},
-		{"learnSpell", LuaPlayer::learnSpell},
-		{"forgetSpell", LuaPlayer::forgetSpell},
-		{"hasLearnedSpell", LuaPlayer::hasLearnedSpell},
-
-		{"openImbuementWindow", LuaPlayer::openImbuementWindow},
-		{"closeImbuementWindow", LuaPlayer::closeImbuementWindow},
-
-		{"sendTutorial", LuaPlayer::sendTutorial},
-		{"addMapMark", LuaPlayer::addMapMark},
-
-		{"save", LuaPlayer::save},
-		{"popupFYI", LuaPlayer::popupFYI},
-
-		{"isPzLocked", LuaPlayer::isPzLocked},
-
-		{"getClient", LuaPlayer::getClient},
-
-		{"getHouse", LuaPlayer::getHouse},
-		{"sendHouseWindow", LuaPlayer::sendHouseWindow},
-		{"setEditHouse", LuaPlayer::setEditHouse},
-
-		{"setGhostMode", LuaPlayer::setGhostMode},
-
-		{"getContainerId", LuaPlayer::getContainerId},
-		{"getContainerById", LuaPlayer::getContainerById},
-		{"getContainerIndex", LuaPlayer::getContainerIndex},
-
-		{"getInstantSpells", LuaPlayer::getInstantSpells},
-		{"canCast", LuaPlayer::canCast},
-
-		{"hasChaseMode", LuaPlayer::hasChaseMode},
-		{"hasSecureMode", LuaPlayer::hasSecureMode},
-		{"getFightMode", LuaPlayer::getFightMode},
-
-		{"getBaseXpGain", LuaPlayer::getBaseXpGain},
-		{"setBaseXpGain", LuaPlayer::setBaseXpGain},
-		{"getVoucherXpBoost", LuaPlayer::getVoucherXpBoost},
-		{"setVoucherXpBoost", LuaPlayer::setVoucherXpBoost},
-		{"getGrindingXpBoost", LuaPlayer::getGrindingXpBoost},
-		{"setGrindingXpBoost", LuaPlayer::setGrindingXpBoost},
-		{"getStoreXpBoost", LuaPlayer::getStoreXpBoost},
-		{"setStoreXpBoost", LuaPlayer::setStoreXpBoost},
-		{"getStaminaXpBoost", LuaPlayer::getStaminaXpBoost},
-		{"setStaminaXpBoost", LuaPlayer::setStaminaXpBoost},
-		{"getExpBoostStamina", LuaPlayer::getExpBoostStamina},
-		{"setExpBoostStamina", LuaPlayer::setExpBoostStamina},
-
-		{"getIdleTime", LuaPlayer::getIdleTime},
-		{"getFreeBackpackSlots", LuaPlayer::getFreeBackpackSlots},
-
-		{"isOffline", LuaPlayer::isOffline},
-
-		{"openMarket", LuaPlayer::openMarket},
-
-		// Forge Functions
-		{"openForge", LuaPlayer::openForge},
-		{"closeForge", LuaPlayer::closeForge},
-
-		{"addForgeDusts", LuaPlayer::addForgeDusts},
-		{"removeForgeDusts", LuaPlayer::removeForgeDusts},
-		{"getForgeDusts", LuaPlayer::getForgeDusts},
-		{"setForgeDusts", LuaPlayer::setForgeDusts},
-
-		{"addForgeDustLevel", LuaPlayer::addForgeDustLevel},
-		{"removeForgeDustLevel", LuaPlayer::removeForgeDustLevel},
-		{"getForgeDustLevel", LuaPlayer::getForgeDustLevel},
-
-		{"getForgeSlivers", LuaPlayer::getForgeSlivers},
-		{"getForgeCores", LuaPlayer::getForgeCores},
-
-		{"setFaction", LuaPlayer::setFaction},
-		{"getFaction", LuaPlayer::getFaction}
-	};
-}
-
-void LuaPlayer::init(lua_State *L)
-{
-	registerClass(L, "Player", "Creature", LuaPlayer::create);
-	registerMetaMethod(L, "Player", "__eq", LuaPlayer::luaUserdataCompare);
-
-	for (const auto &[functionName, functionReference]: LuaPlayer::luaPlayerFunctionsMap(L))
-	{
-		registerLuaFunction(L, functionName.c_str(), functionReference);
-	}
-
-	GroupFunctions::init(L);
-	GuildFunctions::init(L);
-	MountFunctions::init(L);
-	PartyFunctions::init(L);
-	VocationFunctions::init(L);
-}
-
-void LuaPlayer::registerLuaFunction(lua_State *L, const char *functionName, lua_CFunction
-	function)
-{
-	// LuaInterface state (L)
-	luabridge::getGlobalNamespace(L)
-		// Player interface
-		.beginNamespace("Player")
-		// Register Function
-		.addFunction(functionName, function)
-		// Exit namespace
-		.endNamespace();
-}
-
-Player *LuaPlayer::getPlayerUserdata(lua_State *L, int32_t arg /*= -1*/)
-{
-	Player *player = getUserdata<Player> (L, arg != -1 ? arg : 1);
-	if (!player)
-	{
-		return nullptr;
-	}
-
-	return player;
-}
-
-int LuaPlayer::create(lua_State *L)
+int LuaPlayerFunctions::create(lua_State *L)
 {
 	// Player(id or guid or name or userdata)
 	Player * player;
@@ -386,10 +73,10 @@ int LuaPlayer::create(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::resetCharmsBestiary(lua_State *L)
+int LuaPlayerFunctions::resetCharmsBestiary(lua_State *L)
 {
 	// player:resetCharmsBestiary()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -410,10 +97,10 @@ int LuaPlayer::resetCharmsBestiary(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::unlockAllCharmRunes(lua_State *L)
+int LuaPlayerFunctions::unlockAllCharmRunes(lua_State *L)
 {
 	// player:unlockAllCharmRunes()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -435,10 +122,10 @@ int LuaPlayer::unlockAllCharmRunes(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addCharmPoints(lua_State *L)
+int LuaPlayerFunctions::addCharmPoints(lua_State *L)
 {
 	// player:addCharmPoints()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -461,17 +148,17 @@ int LuaPlayer::addCharmPoints(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::isPlayer(lua_State *L)
+int LuaPlayerFunctions::isPlayer(lua_State *L)
 {
 	// player:isPlayer()
 	pushBoolean(L, getPlayerUserdata(L) != nullptr);
 	return 1;
 }
 
-int LuaPlayer::getGuid(lua_State *L)
+int LuaPlayerFunctions::getGuid(lua_State *L)
 {
 	// player:getGuid()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -483,10 +170,10 @@ int LuaPlayer::getGuid(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getIp(lua_State *L)
+int LuaPlayerFunctions::getIp(lua_State *L)
 {
 	// player:getIp()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -498,10 +185,10 @@ int LuaPlayer::getIp(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getAccountId(lua_State *L)
+int LuaPlayerFunctions::getAccountId(lua_State *L)
 {
 	// player:getAccountId()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -513,10 +200,10 @@ int LuaPlayer::getAccountId(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getLastLoginSaved(lua_State *L)
+int LuaPlayerFunctions::getLastLoginSaved(lua_State *L)
 {
 	// player:getLastLoginSaved()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -528,10 +215,10 @@ int LuaPlayer::getLastLoginSaved(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getLastLogout(lua_State *L)
+int LuaPlayerFunctions::getLastLogout(lua_State *L)
 {
 	// player:getLastLogout()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -543,10 +230,10 @@ int LuaPlayer::getLastLogout(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getAccountType(lua_State *L)
+int LuaPlayerFunctions::getAccountType(lua_State *L)
 {
 	// player:getAccountType()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -558,10 +245,10 @@ int LuaPlayer::getAccountType(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setAccountType(lua_State *L)
+int LuaPlayerFunctions::setAccountType(lua_State *L)
 {
 	// player:setAccountType(accountType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -575,10 +262,10 @@ int LuaPlayer::setAccountType(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addBestiaryKill(lua_State *L)
+int LuaPlayerFunctions::addBestiaryKill(lua_State *L)
 {
 	// player:addBestiaryKill(name[, amount = 1])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -599,10 +286,10 @@ int LuaPlayer::addBestiaryKill(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::isMonsterBestiaryUnlocked(lua_State *L)
+int LuaPlayerFunctions::isMonsterBestiaryUnlocked(lua_State *L)
 {
 	// player:isMonsterBestiaryUnlocked(raceId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -631,10 +318,10 @@ int LuaPlayer::isMonsterBestiaryUnlocked(lua_State *L)
 	return 0;
 }
 
-int LuaPlayer::getCharmMonsterType(lua_State *L)
+int LuaPlayerFunctions::getCharmMonsterType(lua_State *L)
 {
 	// player:getCharmMonsterType(charmRune_t)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -664,10 +351,10 @@ int LuaPlayer::getCharmMonsterType(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removePreyStamina(lua_State *L)
+int LuaPlayerFunctions::removePreyStamina(lua_State *L)
 {
 	// player:removePreyStamina(amount)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -680,7 +367,7 @@ int LuaPlayer::removePreyStamina(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addPreyCards(lua_State *L)
+int LuaPlayerFunctions::addPreyCards(lua_State *L)
 {
 	// player:addPreyCards(amount)
 	Player *player = getPlayerUserdata(L);
@@ -696,7 +383,7 @@ int LuaPlayer::addPreyCards(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getPreyCards(lua_State *L)
+int LuaPlayerFunctions::getPreyCards(lua_State *L)
 {
 	// player:getPreyCards()
 	const Player *player = getPlayerUserdata(L);
@@ -711,7 +398,7 @@ int LuaPlayer::getPreyCards(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getPreyExperiencePercentage(lua_State *L)
+int LuaPlayerFunctions::getPreyExperiencePercentage(lua_State *L)
 {
 	// player:getPreyExperiencePercentage(raceId)
 	const Player *player = getPlayerUserdata(L);
@@ -734,7 +421,7 @@ int LuaPlayer::getPreyExperiencePercentage(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeTaskHuntingPoints(lua_State *L)
+int LuaPlayerFunctions::removeTaskHuntingPoints(lua_State *L)
 {
 	// player:removeTaskHuntingPoints(amount)
 	Player *player = getPlayerUserdata(L);
@@ -749,10 +436,10 @@ int LuaPlayer::removeTaskHuntingPoints(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getTaskHuntingPoints(lua_State *L)
+int LuaPlayerFunctions::getTaskHuntingPoints(lua_State *L)
 {
 	// player:getTaskHuntingPoints()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -764,7 +451,7 @@ int LuaPlayer::getTaskHuntingPoints(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addTaskHuntingPoints(lua_State *L)
+int LuaPlayerFunctions::addTaskHuntingPoints(lua_State *L)
 {
 	// player:addTaskHuntingPoints(amount)
 	Player *player = getPlayerUserdata(L);
@@ -781,7 +468,7 @@ int LuaPlayer::addTaskHuntingPoints(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getPreyLootPercentage(lua_State *L)
+int LuaPlayerFunctions::getPreyLootPercentage(lua_State *L)
 {
 	// player:getPreyLootPercentage(raceid)
 	const Player *player = getPlayerUserdata(L);
@@ -804,10 +491,10 @@ int LuaPlayer::getPreyLootPercentage(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::preyThirdSlot(lua_State *L)
+int LuaPlayerFunctions::preyThirdSlot(lua_State *L)
 {
 	// get: player:preyThirdSlot() set: player:preyThirdSlot(bool)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -847,10 +534,10 @@ int LuaPlayer::preyThirdSlot(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::taskHuntingThirdSlot(lua_State *L)
+int LuaPlayerFunctions::taskHuntingThirdSlot(lua_State *L)
 {
 	// get: player:taskHuntingThirdSlot() set: player:taskHuntingThirdSlot(bool)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -891,10 +578,10 @@ int LuaPlayer::taskHuntingThirdSlot(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::charmExpansion(lua_State *L)
+int LuaPlayerFunctions::charmExpansion(lua_State *L)
 {
 	// get: player:charmExpansion() set: player:charmExpansion(bool)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -915,10 +602,10 @@ int LuaPlayer::charmExpansion(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getCapacity(lua_State *L)
+int LuaPlayerFunctions::getCapacity(lua_State *L)
 {
 	// player:getCapacity()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -930,10 +617,10 @@ int LuaPlayer::getCapacity(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setCapacity(lua_State *L)
+int LuaPlayerFunctions::setCapacity(lua_State *L)
 {
 	// player:setCapacity(capacity)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -947,10 +634,10 @@ int LuaPlayer::setCapacity(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setTraining(lua_State *L)
+int LuaPlayerFunctions::setTraining(lua_State *L)
 {
 	// player:setTraining(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -964,10 +651,10 @@ int LuaPlayer::setTraining(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getIsTraining(lua_State *L)
+int LuaPlayerFunctions::getIsTraining(lua_State *L)
 {
 	// player:isTraining()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -979,10 +666,10 @@ int LuaPlayer::getIsTraining(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getFreeCapacity(lua_State *L)
+int LuaPlayerFunctions::getFreeCapacity(lua_State *L)
 {
 	// player:getFreeCapacity()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -994,10 +681,10 @@ int LuaPlayer::getFreeCapacity(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getKills(lua_State *L)
+int LuaPlayerFunctions::getKills(lua_State *L)
 {
 	// player:getKills()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1022,10 +709,10 @@ int LuaPlayer::getKills(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setKills(lua_State *L)
+int LuaPlayerFunctions::setKills(lua_State *L)
 {
 	// player:setKills(kills)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1054,10 +741,10 @@ int LuaPlayer::setKills(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getReward(lua_State *L)
+int LuaPlayerFunctions::getReward(lua_State *L)
 {
 	// player:getReward(rewardId[, autoCreate = false])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1080,10 +767,10 @@ int LuaPlayer::getReward(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeReward(lua_State *L)
+int LuaPlayerFunctions::removeReward(lua_State *L)
 {
 	// player:removeReward(rewardId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1097,10 +784,10 @@ int LuaPlayer::removeReward(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getRewardList(lua_State *L)
+int LuaPlayerFunctions::getRewardList(lua_State *L)
 {
 	// player:getRewardList()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1122,10 +809,10 @@ int LuaPlayer::getRewardList(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setDailyReward(lua_State *L)
+int LuaPlayerFunctions::setDailyReward(lua_State *L)
 {
 	// player:setDailyReward(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1138,10 +825,10 @@ int LuaPlayer::setDailyReward(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendInventory(lua_State *L)
+int LuaPlayerFunctions::sendInventory(lua_State *L)
 {
 	// player:sendInventory()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1154,10 +841,10 @@ int LuaPlayer::sendInventory(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendLootStats(lua_State *L)
+int LuaPlayerFunctions::sendLootStats(lua_State *L)
 {
 	// player:sendLootStats(item, count)
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1186,10 +873,10 @@ int LuaPlayer::sendLootStats(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::updateSupplyTracker(lua_State *L)
+int LuaPlayerFunctions::updateSupplyTracker(lua_State *L)
 {
 	// player:updateSupplyTracker(item)
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1210,10 +897,10 @@ int LuaPlayer::updateSupplyTracker(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::updateKillTracker(lua_State *L)
+int LuaPlayerFunctions::updateKillTracker(lua_State *L)
 {
 	// player:updateKillTracker(creature, corpse)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1242,10 +929,10 @@ int LuaPlayer::updateKillTracker(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getDepotLocker(lua_State *L)
+int LuaPlayerFunctions::getDepotLocker(lua_State *L)
 {
 	// player:getDepotLocker(depotId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1269,10 +956,10 @@ int LuaPlayer::getDepotLocker(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getStashCounter(lua_State *L)
+int LuaPlayerFunctions::getStashCounter(lua_State *L)
 {
 	// player:getStashCount()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1285,10 +972,10 @@ int LuaPlayer::getStashCounter(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getDepotChest(lua_State *L)
+int LuaPlayerFunctions::getDepotChest(lua_State *L)
 {
 	// player:getDepotChest(depotId[, autoCreate = false])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1313,10 +1000,10 @@ int LuaPlayer::getDepotChest(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getInbox(lua_State *L)
+int LuaPlayerFunctions::getInbox(lua_State *L)
 {
 	// player:getInbox()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1338,10 +1025,10 @@ int LuaPlayer::getInbox(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSkullTime(lua_State *L)
+int LuaPlayerFunctions::getSkullTime(lua_State *L)
 {
 	// player:getSkullTime()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1353,10 +1040,10 @@ int LuaPlayer::getSkullTime(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setSkullTime(lua_State *L)
+int LuaPlayerFunctions::setSkullTime(lua_State *L)
 {
 	// player:setSkullTime(skullTime)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1369,10 +1056,10 @@ int LuaPlayer::setSkullTime(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getDeathPenalty(lua_State *L)
+int LuaPlayerFunctions::getDeathPenalty(lua_State *L)
 {
 	// player:getDeathPenalty()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1384,10 +1071,10 @@ int LuaPlayer::getDeathPenalty(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getExperience(lua_State *L)
+int LuaPlayerFunctions::getExperience(lua_State *L)
 {
 	// player:getExperience()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1399,10 +1086,10 @@ int LuaPlayer::getExperience(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addExperience(lua_State *L)
+int LuaPlayerFunctions::addExperience(lua_State *L)
 {
 	// player:addExperience(experience[, sendText = false])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1417,10 +1104,10 @@ int LuaPlayer::addExperience(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeExperience(lua_State *L)
+int LuaPlayerFunctions::removeExperience(lua_State *L)
 {
 	// player:removeExperience(experience[, sendText = false])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1435,10 +1122,10 @@ int LuaPlayer::removeExperience(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getLevel(lua_State *L)
+int LuaPlayerFunctions::getLevel(lua_State *L)
 {
 	// player:getLevel()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1450,10 +1137,10 @@ int LuaPlayer::getLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getMagicLevel(lua_State *L)
+int LuaPlayerFunctions::getMagicLevel(lua_State *L)
 {
 	// player:getMagicLevel()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1465,10 +1152,10 @@ int LuaPlayer::getMagicLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getBaseMagicLevel(lua_State *L)
+int LuaPlayerFunctions::getBaseMagicLevel(lua_State *L)
 {
 	// player:getBaseMagicLevel()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1480,7 +1167,7 @@ int LuaPlayer::getBaseMagicLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getMana(lua_State *L)
+int LuaPlayerFunctions::getMana(lua_State *L)
 {
 	// player:getMana()
 	const Player *player = getPlayerUserdata(L);
@@ -1495,10 +1182,10 @@ int LuaPlayer::getMana(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addMana(lua_State *L)
+int LuaPlayerFunctions::addMana(lua_State *L)
 {
 	// player:addMana(manaChange[, animationOnLoss = false])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1524,7 +1211,7 @@ int LuaPlayer::addMana(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getMaxMana(lua_State *L)
+int LuaPlayerFunctions::getMaxMana(lua_State *L)
 {
 	// player:getMaxMana()
 	const Player *player = getPlayerUserdata(L);
@@ -1539,7 +1226,7 @@ int LuaPlayer::getMaxMana(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setMaxMana(lua_State *L)
+int LuaPlayerFunctions::setMaxMana(lua_State *L)
 {
 	// player:setMaxMana(maxMana)
 	Player *player = getPlayer(L, 1);
@@ -1558,10 +1245,10 @@ int LuaPlayer::setMaxMana(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getManaSpent(lua_State *L)
+int LuaPlayerFunctions::getManaSpent(lua_State *L)
 {
 	// player:getManaSpent()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1573,10 +1260,10 @@ int LuaPlayer::getManaSpent(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addManaSpent(lua_State *L)
+int LuaPlayerFunctions::addManaSpent(lua_State *L)
 {
 	// player:addManaSpent(amount)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1589,10 +1276,10 @@ int LuaPlayer::addManaSpent(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getName(lua_State *L)
+int LuaPlayerFunctions::getName(lua_State *L)
 {
 	// player:getName()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1604,10 +1291,10 @@ int LuaPlayer::getName(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getId(lua_State *L)
+int LuaPlayerFunctions::getId(lua_State *L)
 {
 	// player:getId()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1619,10 +1306,10 @@ int LuaPlayer::getId(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getPosition(lua_State *L)
+int LuaPlayerFunctions::getPosition(lua_State *L)
 {
 	// player:getPosition()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1634,13 +1321,13 @@ int LuaPlayer::getPosition(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::teleportTo(lua_State *L)
+int LuaPlayerFunctions::teleportTo(lua_State *L)
 {
 	// player:teleportTo(position[, pushMovement = false])
 	bool pushMovement = getBoolean(L, 3, false);
 
 	const Position &position = getLuaPosition(L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1683,10 +1370,10 @@ int LuaPlayer::teleportTo(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getBaseMaxHealth(lua_State *L)
+int LuaPlayerFunctions::getBaseMaxHealth(lua_State *L)
 {
 	// player:getBaseMaxHealth()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1698,10 +1385,10 @@ int LuaPlayer::getBaseMaxHealth(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getBaseMaxMana(lua_State *L)
+int LuaPlayerFunctions::getBaseMaxMana(lua_State *L)
 {
 	// player:getBaseMaxMana()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1713,11 +1400,11 @@ int LuaPlayer::getBaseMaxMana(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSkillLevel(lua_State *L)
+int LuaPlayerFunctions::getSkillLevel(lua_State *L)
 {
 	// player:getSkillLevel(skillType)
 	skills_t skillType = getNumber<skills_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1733,11 +1420,11 @@ int LuaPlayer::getSkillLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getEffectiveSkillLevel(lua_State *L)
+int LuaPlayerFunctions::getEffectiveSkillLevel(lua_State *L)
 {
 	// player:getEffectiveSkillLevel(skillType)
 	skills_t skillType = getNumber<skills_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1753,11 +1440,11 @@ int LuaPlayer::getEffectiveSkillLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSkillPercent(lua_State *L)
+int LuaPlayerFunctions::getSkillPercent(lua_State *L)
 {
 	// player:getSkillPercent(skillType)
 	skills_t skillType = getNumber<skills_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1773,11 +1460,11 @@ int LuaPlayer::getSkillPercent(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSkillTries(lua_State *L)
+int LuaPlayerFunctions::getSkillTries(lua_State *L)
 {
 	// player:getSkillTries(skillType)
 	skills_t skillType = getNumber<skills_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1793,10 +1480,10 @@ int LuaPlayer::getSkillTries(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addSkillTries(lua_State *L)
+int LuaPlayerFunctions::addSkillTries(lua_State *L)
 {
 	// player:addSkillTries(skillType, tries)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1811,10 +1498,10 @@ int LuaPlayer::addSkillTries(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setMagicLevel(lua_State *L)
+int LuaPlayerFunctions::setMagicLevel(lua_State *L)
 {
 	// player:setMagicLevel(level[, manaSpent])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1843,10 +1530,10 @@ int LuaPlayer::setMagicLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setSkillLevel(lua_State *L)
+int LuaPlayerFunctions::setSkillLevel(lua_State *L)
 {
 	// player:setSkillLevel(skillType, level[, tries])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1876,10 +1563,10 @@ int LuaPlayer::setSkillLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addOfflineTrainingTime(lua_State *L)
+int LuaPlayerFunctions::addOfflineTrainingTime(lua_State *L)
 {
 	// player:addOfflineTrainingTime(time)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1894,10 +1581,10 @@ int LuaPlayer::addOfflineTrainingTime(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getOfflineTrainingTime(lua_State *L)
+int LuaPlayerFunctions::getOfflineTrainingTime(lua_State *L)
 {
 	// player:getOfflineTrainingTime()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1909,10 +1596,10 @@ int LuaPlayer::getOfflineTrainingTime(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeOfflineTrainingTime(lua_State *L)
+int LuaPlayerFunctions::removeOfflineTrainingTime(lua_State *L)
 {
 	// player:removeOfflineTrainingTime(time)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1927,10 +1614,10 @@ int LuaPlayer::removeOfflineTrainingTime(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addOfflineTrainingTries(lua_State *L)
+int LuaPlayerFunctions::addOfflineTrainingTries(lua_State *L)
 {
 	// player:addOfflineTrainingTries(skillType, tries)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1944,10 +1631,10 @@ int LuaPlayer::addOfflineTrainingTries(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getOfflineTrainingSkill(lua_State *L)
+int LuaPlayerFunctions::getOfflineTrainingSkill(lua_State *L)
 {
 	// player:getOfflineTrainingSkill()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1959,10 +1646,10 @@ int LuaPlayer::getOfflineTrainingSkill(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setOfflineTrainingSkill(lua_State *L)
+int LuaPlayerFunctions::setOfflineTrainingSkill(lua_State *L)
 {
 	// player:setOfflineTrainingSkill(skillId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -1976,10 +1663,10 @@ int LuaPlayer::setOfflineTrainingSkill(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::openStash(lua_State *L)
+int LuaPlayerFunctions::openStash(lua_State *L)
 {
 	// player:openStash(isNpc)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	bool isNpc = getBoolean(L, 2, false);
 	if (player == nullptr)
 	{
@@ -1994,10 +1681,10 @@ int LuaPlayer::openStash(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getItemCount(lua_State *L)
+int LuaPlayerFunctions::getItemCount(lua_State *L)
 {
 	// player:getItemCount(itemId[, subType = -1])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2025,10 +1712,10 @@ int LuaPlayer::getItemCount(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getStashItemCount(lua_State *L)
+int LuaPlayerFunctions::getStashItemCount(lua_State *L)
 {
 	// player:getStashItemCount(itemId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2062,10 +1749,10 @@ int LuaPlayer::getStashItemCount(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getItemById(lua_State *L)
+int LuaPlayerFunctions::getItemById(lua_State *L)
 {
 	// player:getItemById(itemId, deepSearch[, subType = -1])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2104,10 +1791,10 @@ int LuaPlayer::getItemById(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getVocation(lua_State *L)
+int LuaPlayerFunctions::getVocation(lua_State *L)
 {
 	// player:getVocation()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2120,10 +1807,10 @@ int LuaPlayer::getVocation(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setVocation(lua_State *L)
+int LuaPlayerFunctions::setVocation(lua_State *L)
 {
 	// player:setVocation(id or name or userdata)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2160,10 +1847,10 @@ int LuaPlayer::setVocation(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSex(lua_State *L)
+int LuaPlayerFunctions::getSex(lua_State *L)
 {
 	// player:getSex()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2175,10 +1862,10 @@ int LuaPlayer::getSex(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setSex(lua_State *L)
+int LuaPlayerFunctions::setSex(lua_State *L)
 {
 	// player:setSex(newSex)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2192,10 +1879,10 @@ int LuaPlayer::setSex(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getTown(lua_State *L)
+int LuaPlayerFunctions::getTown(lua_State *L)
 {
 	// player:getTown()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2208,7 +1895,7 @@ int LuaPlayer::getTown(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setTown(lua_State *L)
+int LuaPlayerFunctions::setTown(lua_State *L)
 {
 	// player:setTown(town)
 	Town *town = getUserdata<Town> (L, 2);
@@ -2218,7 +1905,7 @@ int LuaPlayer::setTown(lua_State *L)
 		return 1;
 	}
 
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2231,10 +1918,10 @@ int LuaPlayer::setTown(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getGuild(lua_State *L)
+int LuaPlayerFunctions::getGuild(lua_State *L)
 {
 	// player:getGuild()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2254,10 +1941,10 @@ int LuaPlayer::getGuild(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setGuild(lua_State *L)
+int LuaPlayerFunctions::setGuild(lua_State *L)
 {
 	// player:setGuild(guild)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2270,10 +1957,10 @@ int LuaPlayer::setGuild(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getGuildLevel(lua_State *L)
+int LuaPlayerFunctions::getGuildLevel(lua_State *L)
 {
 	// player:getGuildLevel()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2292,11 +1979,11 @@ int LuaPlayer::getGuildLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setGuildLevel(lua_State *L)
+int LuaPlayerFunctions::setGuildLevel(lua_State *L)
 {
 	// player:setGuildLevel(level)
 	uint8_t level = getNumber<uint8_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player || !player->getGuild())
 	{
 		lua_pushnil(L);
@@ -2317,10 +2004,10 @@ int LuaPlayer::setGuildLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getGuildNick(lua_State *L)
+int LuaPlayerFunctions::getGuildNick(lua_State *L)
 {
 	// player:getGuildNick()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2332,11 +2019,11 @@ int LuaPlayer::getGuildNick(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setGuildNick(lua_State *L)
+int LuaPlayerFunctions::setGuildNick(lua_State *L)
 {
 	// player:setGuildNick(nick)
 	const std::string &nick = getString(L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2349,10 +2036,10 @@ int LuaPlayer::setGuildNick(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getGroup(lua_State *L)
+int LuaPlayerFunctions::getGroup(lua_State *L)
 {
 	// player:getGroup()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2365,7 +2052,7 @@ int LuaPlayer::getGroup(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setGroup(lua_State *L)
+int LuaPlayerFunctions::setGroup(lua_State *L)
 {
 	// player:setGroup(group)
 	Group *group = getUserdata<Group> (L, 2);
@@ -2375,7 +2062,7 @@ int LuaPlayer::setGroup(lua_State *L)
 		return 1;
 	}
 
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2388,13 +2075,13 @@ int LuaPlayer::setGroup(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setSpecialContainersAvailable(lua_State *L)
+int LuaPlayerFunctions::setSpecialContainersAvailable(lua_State *L)
 {
 	// player:setSpecialContainersAvailable(stashMenu, marketMenu, depotSearchMenu)
 	bool supplyStashMenu = getBoolean(L, 2, false);
 	bool marketMenu = getBoolean(L, 3, false);
 	bool depotSearchMenu = getBoolean(L, 4, false);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2407,10 +2094,10 @@ int LuaPlayer::setSpecialContainersAvailable(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getStamina(lua_State *L)
+int LuaPlayerFunctions::getStamina(lua_State *L)
 {
 	// player:getStamina()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2422,11 +2109,11 @@ int LuaPlayer::getStamina(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setStamina(lua_State *L)
+int LuaPlayerFunctions::setStamina(lua_State *L)
 {
 	// player:setStamina(stamina)
 	uint16_t stamina = getNumber<uint16_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2439,10 +2126,10 @@ int LuaPlayer::setStamina(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSoul(lua_State *L)
+int LuaPlayerFunctions::getSoul(lua_State *L)
 {
 	// player:getSoul()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2454,11 +2141,11 @@ int LuaPlayer::getSoul(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addSoul(lua_State *L)
+int LuaPlayerFunctions::addSoul(lua_State *L)
 {
 	// player:addSoul(soulChange)
 	int32_t soulChange = getNumber<int32_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2471,10 +2158,10 @@ int LuaPlayer::addSoul(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getMaxSoul(lua_State *L)
+int LuaPlayerFunctions::getMaxSoul(lua_State *L)
 {
 	// player:getMaxSoul()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2494,10 +2181,10 @@ int LuaPlayer::getMaxSoul(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getBankBalance(lua_State *L)
+int LuaPlayerFunctions::getBankBalance(lua_State *L)
 {
 	// player:getBankBalance()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2509,10 +2196,10 @@ int LuaPlayer::getBankBalance(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setBankBalance(lua_State *L)
+int LuaPlayerFunctions::setBankBalance(lua_State *L)
 {
 	// player:setBankBalance(bankBalance)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2525,10 +2212,10 @@ int LuaPlayer::setBankBalance(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getStorageValue(lua_State *L)
+int LuaPlayerFunctions::getStorageValue(lua_State *L)
 {
 	// player:getStorageValue(key)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2541,12 +2228,12 @@ int LuaPlayer::getStorageValue(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setStorageValue(lua_State *L)
+int LuaPlayerFunctions::setStorageValue(lua_State *L)
 {
 	// player:setStorageValue(key, value)
 	int32_t value = getNumber<int32_t> (L, 3);
 	uint32_t key = getNumber<uint32_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (IS_IN_KEYRANGE(key, RESERVED_RANGE))
 	{
 		std::ostringstream ss;
@@ -2568,10 +2255,10 @@ int LuaPlayer::setStorageValue(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addItem(lua_State *L)
+int LuaPlayerFunctions::addItem(lua_State *L)
 {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		pushBoolean(L, false);
@@ -2686,7 +2373,7 @@ int LuaPlayer::addItem(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addItemEx(lua_State *L)
+int LuaPlayerFunctions::addItemEx(lua_State *L)
 {
 	// player:addItemEx(item[, canDropOnMap = false[, index = INDEX_WHEREEVER[, flags = 0]]])
 	// player:addItemEx(item[, canDropOnMap = true[, slot = CONST_SLOT_WHEREEVER]])
@@ -2698,7 +2385,7 @@ int LuaPlayer::addItemEx(lua_State *L)
 		return 1;
 	}
 
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2736,10 +2423,10 @@ int LuaPlayer::addItemEx(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeStashItem(lua_State *L)
+int LuaPlayerFunctions::removeStashItem(lua_State *L)
 {
 	// player:removeStashItem(itemId, count)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2774,10 +2461,10 @@ int LuaPlayer::removeStashItem(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeItem(lua_State *L)
+int LuaPlayerFunctions::removeItem(lua_State *L)
 {
 	// player:removeItem(itemId, count[, subType = -1[, ignoreEquipped = false]])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2807,10 +2494,10 @@ int LuaPlayer::removeItem(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendContainer(lua_State *L)
+int LuaPlayerFunctions::sendContainer(lua_State *L)
 {
 	// player:sendContainer(container)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2830,10 +2517,10 @@ int LuaPlayer::sendContainer(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getMoney(lua_State *L)
+int LuaPlayerFunctions::getMoney(lua_State *L)
 {
 	// player:getMoney()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2845,11 +2532,11 @@ int LuaPlayer::getMoney(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addMoney(lua_State *L)
+int LuaPlayerFunctions::addMoney(lua_State *L)
 {
 	// player:addMoney(money)
 	uint64_t money = getNumber<uint64_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2862,10 +2549,10 @@ int LuaPlayer::addMoney(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeMoney(lua_State *L)
+int LuaPlayerFunctions::removeMoney(lua_State *L)
 {
 	// player:removeMoney(money)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2878,10 +2565,10 @@ int LuaPlayer::removeMoney(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::showTextDialog(lua_State *L)
+int LuaPlayerFunctions::showTextDialog(lua_State *L)
 {
 	// player:showTextDialog(id or name or userdata[, text[, canWrite[, length]]])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2948,12 +2635,12 @@ int LuaPlayer::showTextDialog(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendTextMessage(lua_State *L)
+int LuaPlayerFunctions::sendTextMessage(lua_State *L)
 {
 	// player:sendTextMessage(type, text[, position, primaryValue = 0, primaryColor = TEXTCOLOR_NONE[, secondaryValue = 0, secondaryColor = TEXTCOLOR_NONE]])
 	// player:sendTextMessage(type, text, channelId)
 
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -2997,10 +2684,10 @@ int LuaPlayer::sendTextMessage(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendChannelMessage(lua_State *L)
+int LuaPlayerFunctions::sendChannelMessage(lua_State *L)
 {
 	// player:sendChannelMessage(author, text, type, channelId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3017,10 +2704,10 @@ int LuaPlayer::sendChannelMessage(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendPrivateMessage(lua_State *L)
+int LuaPlayerFunctions::sendPrivateMessage(lua_State *L)
 {
 	// player:sendPrivateMessage(speaker, text[, type])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3036,10 +2723,10 @@ int LuaPlayer::sendPrivateMessage(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::channelSay(lua_State *L)
+int LuaPlayerFunctions::channelSay(lua_State *L)
 {
 	// player:channelSay(speaker, type, text, channelId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3056,11 +2743,11 @@ int LuaPlayer::channelSay(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::openChannel(lua_State *L)
+int LuaPlayerFunctions::openChannel(lua_State *L)
 {
 	// player:openChannel(channelId)
 	uint16_t channelId = getNumber<uint16_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3073,7 +2760,7 @@ int LuaPlayer::openChannel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getSlotItem(lua_State *L)
+int LuaPlayerFunctions::getSlotItem(lua_State *L)
 {
 	// player:getSlotItem(slot)
 	const Player *player = getPlayerUserdata(L);
@@ -3105,7 +2792,7 @@ int LuaPlayer::getSlotItem(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getParty(lua_State *L)
+int LuaPlayerFunctions::getParty(lua_State *L)
 {
 	// player:getParty()
 	const Player *player = getPlayerUserdata(L);
@@ -3129,10 +2816,10 @@ int LuaPlayer::getParty(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addOutfit(lua_State *L)
+int LuaPlayerFunctions::addOutfit(lua_State *L)
 {
 	// player:addOutfit(lookType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3145,10 +2832,10 @@ int LuaPlayer::addOutfit(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addOutfitAddon(lua_State *L)
+int LuaPlayerFunctions::addOutfitAddon(lua_State *L)
 {
 	// player:addOutfitAddon(lookType, addon)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3163,10 +2850,10 @@ int LuaPlayer::addOutfitAddon(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeOutfit(lua_State *L)
+int LuaPlayerFunctions::removeOutfit(lua_State *L)
 {
 	// player:removeOutfit(lookType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3179,10 +2866,10 @@ int LuaPlayer::removeOutfit(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeOutfitAddon(lua_State *L)
+int LuaPlayerFunctions::removeOutfitAddon(lua_State *L)
 {
 	// player:removeOutfitAddon(lookType, addon)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3196,10 +2883,10 @@ int LuaPlayer::removeOutfitAddon(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasOutfit(lua_State *L)
+int LuaPlayerFunctions::hasOutfit(lua_State *L)
 {
 	// player:hasOutfit(lookType[, addon = 0])
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3213,10 +2900,10 @@ int LuaPlayer::hasOutfit(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendOutfitWindow(lua_State *L)
+int LuaPlayerFunctions::sendOutfitWindow(lua_State *L)
 {
 	// player:sendOutfitWindow()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3229,10 +2916,10 @@ int LuaPlayer::sendOutfitWindow(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addMount(lua_State *L)
+int LuaPlayerFunctions::addMount(lua_State *L)
 {
 	// player:addMount(mountId or mountName)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3261,10 +2948,10 @@ int LuaPlayer::addMount(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeMount(lua_State *L)
+int LuaPlayerFunctions::removeMount(lua_State *L)
 {
 	// player:removeMount(mountId or mountName)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3293,7 +2980,7 @@ int LuaPlayer::removeMount(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasMount(lua_State *L)
+int LuaPlayerFunctions::hasMount(lua_State *L)
 {
 	// player:hasMount(mountId or mountName)
 	const Player *player = getPlayerUserdata(L);
@@ -3325,10 +3012,10 @@ int LuaPlayer::hasMount(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addFamiliar(lua_State *L)
+int LuaPlayerFunctions::addFamiliar(lua_State *L)
 {
 	// player:addFamiliar(lookType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3341,10 +3028,10 @@ int LuaPlayer::addFamiliar(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeFamiliar(lua_State *L)
+int LuaPlayerFunctions::removeFamiliar(lua_State *L)
 {
 	// player:removeFamiliar(lookType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3357,10 +3044,10 @@ int LuaPlayer::removeFamiliar(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasFamiliar(lua_State *L)
+int LuaPlayerFunctions::hasFamiliar(lua_State *L)
 {
 	// player:hasFamiliar(lookType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3373,10 +3060,10 @@ int LuaPlayer::hasFamiliar(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setFamiliarLooktype(lua_State *L)
+int LuaPlayerFunctions::setFamiliarLooktype(lua_State *L)
 {
 	// player:setFamiliarLooktype(lookType)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3389,10 +3076,10 @@ int LuaPlayer::setFamiliarLooktype(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getFamiliarLooktype(lua_State *L)
+int LuaPlayerFunctions::getFamiliarLooktype(lua_State *L)
 {
 	// player:getFamiliarLooktype()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3404,10 +3091,10 @@ int LuaPlayer::getFamiliarLooktype(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getPremiumDays(lua_State *L)
+int LuaPlayerFunctions::getPremiumDays(lua_State *L)
 {
 	// player:getPremiumDays()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3419,10 +3106,10 @@ int LuaPlayer::getPremiumDays(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addPremiumDays(lua_State *L)
+int LuaPlayerFunctions::addPremiumDays(lua_State *L)
 {
 	// player:addPremiumDays(days)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3445,10 +3132,10 @@ int LuaPlayer::addPremiumDays(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removePremiumDays(lua_State *L)
+int LuaPlayerFunctions::removePremiumDays(lua_State *L)
 {
 	// player:removePremiumDays(days)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3471,10 +3158,10 @@ int LuaPlayer::removePremiumDays(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getTibiaCoins(lua_State *L)
+int LuaPlayerFunctions::getTibiaCoins(lua_State *L)
 {
 	// player:getTibiaCoins()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3490,10 +3177,10 @@ int LuaPlayer::getTibiaCoins(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addTibiaCoins(lua_State *L)
+int LuaPlayerFunctions::addTibiaCoins(lua_State *L)
 {
 	// player:addTibiaCoins(coins)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3518,10 +3205,10 @@ int LuaPlayer::addTibiaCoins(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeTibiaCoins(lua_State *L)
+int LuaPlayerFunctions::removeTibiaCoins(lua_State *L)
 {
 	// player:removeTibiaCoins(coins)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3546,11 +3233,11 @@ int LuaPlayer::removeTibiaCoins(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasBlessing(lua_State *L)
+int LuaPlayerFunctions::hasBlessing(lua_State *L)
 {
 	// player:hasBlessing(blessing)
 	uint8_t blessing = getNumber<uint8_t> (L, 2);
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3562,10 +3249,10 @@ int LuaPlayer::hasBlessing(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addBlessing(lua_State *L)
+int LuaPlayerFunctions::addBlessing(lua_State *L)
 {
 	// player:addBlessing(blessing)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3582,10 +3269,10 @@ int LuaPlayer::addBlessing(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeBlessing(lua_State *L)
+int LuaPlayerFunctions::removeBlessing(lua_State *L)
 {
 	// player:removeBlessing(blessing)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3607,10 +3294,10 @@ int LuaPlayer::removeBlessing(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getBlessingCount(lua_State *L)
+int LuaPlayerFunctions::getBlessingCount(lua_State *L)
 {
 	// player:getBlessingCount(index)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	uint8_t index = getNumber<uint8_t> (L, 2);
 	if (index == 0)
 	{
@@ -3628,7 +3315,7 @@ int LuaPlayer::getBlessingCount(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::canLearnSpell(lua_State *L)
+int LuaPlayerFunctions::canLearnSpell(lua_State *L)
 {
 	// player:canLearnSpell(spellName)
 	const Player *player = getPlayerUserdata(L);
@@ -3675,10 +3362,10 @@ int LuaPlayer::canLearnSpell(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::learnSpell(lua_State *L)
+int LuaPlayerFunctions::learnSpell(lua_State *L)
 {
 	// player:learnSpell(spellName)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3692,10 +3379,10 @@ int LuaPlayer::learnSpell(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::forgetSpell(lua_State *L)
+int LuaPlayerFunctions::forgetSpell(lua_State *L)
 {
 	// player:forgetSpell(spellName)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3709,10 +3396,10 @@ int LuaPlayer::forgetSpell(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasLearnedSpell(lua_State *L)
+int LuaPlayerFunctions::hasLearnedSpell(lua_State *L)
 {
 	// player:hasLearnedSpell(spellName)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3725,10 +3412,10 @@ int LuaPlayer::hasLearnedSpell(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendTutorial(lua_State *L)
+int LuaPlayerFunctions::sendTutorial(lua_State *L)
 {
 	// player:sendTutorial(tutorialId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3742,10 +3429,10 @@ int LuaPlayer::sendTutorial(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::openImbuementWindow(lua_State *L)
+int LuaPlayerFunctions::openImbuementWindow(lua_State *L)
 {
 	// player:openImbuementWindow(item)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3765,10 +3452,10 @@ int LuaPlayer::openImbuementWindow(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::closeImbuementWindow(lua_State *L)
+int LuaPlayerFunctions::closeImbuementWindow(lua_State *L)
 {
 	// player:closeImbuementWindow()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3780,10 +3467,10 @@ int LuaPlayer::closeImbuementWindow(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addMapMark(lua_State *L)
+int LuaPlayerFunctions::addMapMark(lua_State *L)
 {
 	// player:addMapMark(position, type, description)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3799,10 +3486,10 @@ int LuaPlayer::addMapMark(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::save(lua_State *L)
+int LuaPlayerFunctions::save(lua_State *L)
 {
 	// player:save()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3820,10 +3507,10 @@ int LuaPlayer::save(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::popupFYI(lua_State *L)
+int LuaPlayerFunctions::popupFYI(lua_State *L)
 {
 	// player:popupFYI(message)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3837,10 +3524,10 @@ int LuaPlayer::popupFYI(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::isPzLocked(lua_State *L)
+int LuaPlayerFunctions::isPzLocked(lua_State *L)
 {
 	// player:isPzLocked()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3852,10 +3539,10 @@ int LuaPlayer::isPzLocked(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getClient(lua_State *L)
+int LuaPlayerFunctions::getClient(lua_State *L)
 {
 	// player:getClient()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3869,10 +3556,10 @@ int LuaPlayer::getClient(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getHouse(lua_State *L)
+int LuaPlayerFunctions::getHouse(lua_State *L)
 {
 	// player:getHouse()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3893,10 +3580,10 @@ int LuaPlayer::getHouse(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::sendHouseWindow(lua_State *L)
+int LuaPlayerFunctions::sendHouseWindow(lua_State *L)
 {
 	// player:sendHouseWindow(house, listId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3918,10 +3605,10 @@ int LuaPlayer::sendHouseWindow(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setEditHouse(lua_State *L)
+int LuaPlayerFunctions::setEditHouse(lua_State *L)
 {
 	// player:setEditHouse(house, listId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -3943,10 +3630,10 @@ int LuaPlayer::setEditHouse(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setGhostMode(lua_State *L)
+int LuaPlayerFunctions::setGhostMode(lua_State *L)
 {
 	// player:setGhostMode(enabled)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4017,10 +3704,10 @@ int LuaPlayer::setGhostMode(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getContainerId(lua_State *L)
+int LuaPlayerFunctions::getContainerId(lua_State *L)
 {
 	// player:getContainerId(container)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4040,10 +3727,10 @@ int LuaPlayer::getContainerId(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getContainerById(lua_State *L)
+int LuaPlayerFunctions::getContainerById(lua_State *L)
 {
 	// player:getContainerById(id)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4064,10 +3751,10 @@ int LuaPlayer::getContainerById(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getContainerIndex(lua_State *L)
+int LuaPlayerFunctions::getContainerIndex(lua_State *L)
 {
 	// player:getContainerIndex(id)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4079,10 +3766,10 @@ int LuaPlayer::getContainerIndex(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getInstantSpells(lua_State *L)
+int LuaPlayerFunctions::getInstantSpells(lua_State *L)
 {
 	// player:getInstantSpells()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4111,10 +3798,10 @@ int LuaPlayer::getInstantSpells(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::canCast(lua_State *L)
+int LuaPlayerFunctions::canCast(lua_State *L)
 {
 	// player:canCast(spell)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4134,10 +3821,10 @@ int LuaPlayer::canCast(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasChaseMode(lua_State *L)
+int LuaPlayerFunctions::hasChaseMode(lua_State *L)
 {
 	// player:hasChaseMode()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4149,10 +3836,10 @@ int LuaPlayer::hasChaseMode(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::hasSecureMode(lua_State *L)
+int LuaPlayerFunctions::hasSecureMode(lua_State *L)
 {
 	// player:hasSecureMode()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4164,10 +3851,10 @@ int LuaPlayer::hasSecureMode(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getFightMode(lua_State *L)
+int LuaPlayerFunctions::getFightMode(lua_State *L)
 {
 	// player:getFightMode()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4179,10 +3866,10 @@ int LuaPlayer::getFightMode(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getBaseXpGain(lua_State *L)
+int LuaPlayerFunctions::getBaseXpGain(lua_State *L)
 {
 	// player:getBaseXpGain()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4194,10 +3881,10 @@ int LuaPlayer::getBaseXpGain(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setBaseXpGain(lua_State *L)
+int LuaPlayerFunctions::setBaseXpGain(lua_State *L)
 {
 	// player:setBaseXpGain(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4211,10 +3898,10 @@ int LuaPlayer::setBaseXpGain(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getVoucherXpBoost(lua_State *L)
+int LuaPlayerFunctions::getVoucherXpBoost(lua_State *L)
 {
 	// player:getVoucherXpBoost()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4226,10 +3913,10 @@ int LuaPlayer::getVoucherXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setVoucherXpBoost(lua_State *L)
+int LuaPlayerFunctions::setVoucherXpBoost(lua_State *L)
 {
 	// player:setVoucherXpBoost(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4243,10 +3930,10 @@ int LuaPlayer::setVoucherXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getGrindingXpBoost(lua_State *L)
+int LuaPlayerFunctions::getGrindingXpBoost(lua_State *L)
 {
 	// player:getGrindingXpBoost()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4258,10 +3945,10 @@ int LuaPlayer::getGrindingXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setGrindingXpBoost(lua_State *L)
+int LuaPlayerFunctions::setGrindingXpBoost(lua_State *L)
 {
 	// player:setGrindingXpBoost(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4275,10 +3962,10 @@ int LuaPlayer::setGrindingXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getStoreXpBoost(lua_State *L)
+int LuaPlayerFunctions::getStoreXpBoost(lua_State *L)
 {
 	// player:getStoreXpBoost()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4290,10 +3977,10 @@ int LuaPlayer::getStoreXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setStoreXpBoost(lua_State *L)
+int LuaPlayerFunctions::setStoreXpBoost(lua_State *L)
 {
 	// player:setStoreXpBoost(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4307,10 +3994,10 @@ int LuaPlayer::setStoreXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getStaminaXpBoost(lua_State *L)
+int LuaPlayerFunctions::getStaminaXpBoost(lua_State *L)
 {
 	// player:getStaminaXpBoost()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4322,10 +4009,10 @@ int LuaPlayer::getStaminaXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setStaminaXpBoost(lua_State *L)
+int LuaPlayerFunctions::setStaminaXpBoost(lua_State *L)
 {
 	// player:setStaminaXpBoost(value)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4339,10 +4026,10 @@ int LuaPlayer::setStaminaXpBoost(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setExpBoostStamina(lua_State *L)
+int LuaPlayerFunctions::setExpBoostStamina(lua_State *L)
 {
 	// player:setExpBoostStamina(percent)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4357,10 +4044,10 @@ int LuaPlayer::setExpBoostStamina(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getExpBoostStamina(lua_State *L)
+int LuaPlayerFunctions::getExpBoostStamina(lua_State *L)
 {
 	// player:getExpBoostStamina()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4372,10 +4059,10 @@ int LuaPlayer::getExpBoostStamina(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getIdleTime(lua_State *L)
+int LuaPlayerFunctions::getIdleTime(lua_State *L)
 {
 	// player:getIdleTime()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4387,10 +4074,10 @@ int LuaPlayer::getIdleTime(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getFreeBackpackSlots(lua_State *L)
+int LuaPlayerFunctions::getFreeBackpackSlots(lua_State *L)
 {
 	// player:getFreeBackpackSlots()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		lua_pushnil(L);
@@ -4400,9 +4087,9 @@ int LuaPlayer::getFreeBackpackSlots(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::isOffline(lua_State *L)
+int LuaPlayerFunctions::isOffline(lua_State *L)
 {
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4414,10 +4101,10 @@ int LuaPlayer::isOffline(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::openMarket(lua_State *L)
+int LuaPlayerFunctions::openMarket(lua_State *L)
 {
 	// player:openMarket()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4431,10 +4118,10 @@ int LuaPlayer::openMarket(lua_State *L)
 }
 
 // Forge
-int LuaPlayer::openForge(lua_State *L)
+int LuaPlayerFunctions::openForge(lua_State *L)
 {
 	// player:openForge()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4447,10 +4134,10 @@ int LuaPlayer::openForge(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::closeForge(lua_State *L)
+int LuaPlayerFunctions::closeForge(lua_State *L)
 {
 	// player:closeForge()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4463,10 +4150,10 @@ int LuaPlayer::closeForge(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addForgeDusts(lua_State *L)
+int LuaPlayerFunctions::addForgeDusts(lua_State *L)
 {
 	// player:addForgeDusts(amount)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4479,10 +4166,10 @@ int LuaPlayer::addForgeDusts(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeForgeDusts(lua_State *L)
+int LuaPlayerFunctions::removeForgeDusts(lua_State *L)
 {
 	// player:removeForgeDusts(amount)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4495,10 +4182,10 @@ int LuaPlayer::removeForgeDusts(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getForgeDusts(lua_State *L)
+int LuaPlayerFunctions::getForgeDusts(lua_State *L)
 {
 	// player:getForgeDusts()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4510,10 +4197,10 @@ int LuaPlayer::getForgeDusts(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setForgeDusts(lua_State *L)
+int LuaPlayerFunctions::setForgeDusts(lua_State *L)
 {
 	// player:setForgeDusts()
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4526,10 +4213,10 @@ int LuaPlayer::setForgeDusts(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::addForgeDustLevel(lua_State *L)
+int LuaPlayerFunctions::addForgeDustLevel(lua_State *L)
 {
 	// player:addForgeDustLevel(amount)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4542,10 +4229,10 @@ int LuaPlayer::addForgeDustLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::removeForgeDustLevel(lua_State *L)
+int LuaPlayerFunctions::removeForgeDustLevel(lua_State *L)
 {
 	// player:removeForgeDustLevel(amount)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4558,10 +4245,10 @@ int LuaPlayer::removeForgeDustLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getForgeDustLevel(lua_State *L)
+int LuaPlayerFunctions::getForgeDustLevel(lua_State *L)
 {
 	// player:getForgeDustLevel()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4573,10 +4260,10 @@ int LuaPlayer::getForgeDustLevel(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getForgeSlivers(lua_State *L)
+int LuaPlayerFunctions::getForgeSlivers(lua_State *L)
 {
 	// player:getForgeSlivers()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4589,10 +4276,10 @@ int LuaPlayer::getForgeSlivers(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getForgeCores(lua_State *L)
+int LuaPlayerFunctions::getForgeCores(lua_State *L)
 {
 	// player:getForgeCores()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (!player)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4605,10 +4292,10 @@ int LuaPlayer::getForgeCores(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::setFaction(lua_State *L)
+int LuaPlayerFunctions::setFaction(lua_State *L)
 {
 	// player:setFaction(factionId)
-	Player *player = LuaPlayer::getPlayerUserdata(L);
+	Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -4622,10 +4309,10 @@ int LuaPlayer::setFaction(lua_State *L)
 	return 1;
 }
 
-int LuaPlayer::getFaction(lua_State *L)
+int LuaPlayerFunctions::getFaction(lua_State *L)
 {
 	// player:getFaction()
-	const Player *player = LuaPlayer::getPlayerUserdata(L);
+	const Player *player = getPlayerUserdata(L);
 	if (player == nullptr)
 	{
 		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));

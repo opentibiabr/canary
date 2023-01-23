@@ -7,8 +7,8 @@
  * Website: https://docs.opentibiabr.org/
 */
 
-#ifndef SRC_LUA_FUNCTIONS_CREATURES_PLAYER_LUA_PLAYER_METHODS_HPP_
-#define SRC_LUA_FUNCTIONS_CREATURES_PLAYER_LUA_PLAYER_METHODS_HPP_
+#ifndef SRC_LUA_METHODS_PLAYER_METHODS_HPP_
+#define SRC_LUA_METHODS_PLAYER_METHODS_HPP_
 
 #include "lua/scripts/luascript.h"
 #include "lua/functions/creatures/player/group_functions.hpp"
@@ -17,20 +17,11 @@
 #include "lua/functions/creatures/player/party_functions.hpp"
 #include "lua/functions/creatures/player/vocation_functions.hpp"
 
-class LuaPlayer final : LuaScriptInterface
+#include "lua/methods/player_functions_binding.hpp"
+
+class LuaPlayerFunctions final : LuaScriptInterface
 {
 public:
-	static void init(lua_State* L);
-
-protected:
-	static const std::vector<LuaFunction> luaFunctions;
-	static const std::unordered_map<std::string, lua_CFunction> luaPlayerFunctionsMap(lua_State *L);
-	// Register functions in the lua interface using lua bridge library
-	static void registerLuaFunction(lua_State* L, const char* functionName, lua_CFunction function);
-	// Get Player userdata from lua interface
-	static Player* getPlayerUserdata(lua_State* L, int32_t arg = -1);
-
-private:
 	static int create(lua_State* L);
 	static int unlockAllCharmRunes(lua_State* L);
 	static int resetCharmsBestiary(lua_State* L);
@@ -309,4 +300,4 @@ private:
 	friend class CreatureFunctions;
 };
 
-#endif  // SRC_LUA_FUNCTIONS_CREATURES_PLAYER_LUA_PLAYER_METHODS_HPP_
+#endif  // SRC_LUA_METHODS_PLAYER_METHODS_HPP_

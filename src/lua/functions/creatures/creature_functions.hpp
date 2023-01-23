@@ -11,10 +11,10 @@
 #define SRC_LUA_FUNCTIONS_CREATURES_CREATURE_FUNCTIONS_HPP_
 
 #include "lua/functions/creatures/combat/combat_functions.hpp"
+#include "lua/scripts/luascript.h"
 #include "lua/functions/creatures/monster/monster_functions.hpp"
 #include "lua/functions/creatures/npc/npc_functions.hpp"
-#include "lua/functions/creatures/player/lua_player_methods.hpp"
-#include "lua/scripts/luascript.h"
+#include "lua/methods/player_functions_binding.hpp"
 
 class CreatureFunctions final : LuaScriptInterface {
 	public:
@@ -83,7 +83,8 @@ class CreatureFunctions final : LuaScriptInterface {
 			CombatFunctions::init(L);
 			MonsterFunctions::init(L);
 			NpcFunctions::init(L);
-			LuaPlayer::init(L);
+
+			LuaPlayerFunctionsBinding::init(L);
 		}
 
 	private:

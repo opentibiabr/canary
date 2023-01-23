@@ -2512,7 +2512,7 @@ class Player final : public Creature, public Cylinder
 
 		friend class Game;
 		friend class Npc;
-		friend class LuaPlayer;
+		friend class LuaPlayerFunctions;
 		friend class NetworkMessageFunctions;
 		friend class Map;
 		friend class Actions;

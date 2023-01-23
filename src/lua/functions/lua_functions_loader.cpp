@@ -613,3 +613,27 @@ int LuaFunctionsLoader::luaUserdataCompare(lua_State* L) {
 	pushBoolean(L, getUserdata<void>(L, 1) == getUserdata<void>(L, 2));
 	return 1;
 }
+
+void LuaFunctionsLoader::registerFunction(lua_State *L, const char *className, const char *functionName, lua_CFunction
+	function)
+{
+	// LuaInterface state (L)
+	luabridge::getGlobalNamespace(L)
+		// Player interface
+		.beginNamespace(className)
+		// Register Function
+		.addFunction(functionName, function)
+		// Exit namespace
+	.endNamespace();
+}
+
+Player *LuaFunctionsLoader::getPlayerUserdata(lua_State *L, int32_t arg /*= -1*/)
+{
+	Player *player = getUserdata<Player>(L, arg != -1 ? arg : 1);
+	if (!player)
+	{
+		return nullptr;
+	}
+
+	return player;
+}

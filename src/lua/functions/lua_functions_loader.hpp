@@ -206,6 +206,10 @@ class LuaFunctionsLoader {
 		static void registerGlobalVariable(lua_State* L, const std::string& name, lua_Number value);
 		static void registerGlobalString(lua_State* L, const std::string& variable, const std::string &name);
 
+		// Register functions in the lua interface using lua bridge library
+		static void registerFunction(lua_State *L, const char *className, const char *functionName, lua_CFunction function);
+		static Player* getPlayerUserdata(lua_State* L, int32_t arg = -1);
+
 		static int luaUserdataCompare(lua_State* L);
 
 		static ScriptEnvironment scriptEnv[16];

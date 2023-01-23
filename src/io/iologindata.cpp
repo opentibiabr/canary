@@ -1146,18 +1146,16 @@ bool IOLoginData::savePlayer(Player* player)
     return false;
   }
 
-  std::vector<uint32_t> rewardList;
+  std::vector<uint64_t> rewardList;
   player->getRewardList(rewardList);
 
   if (!rewardList.empty()) {
     DBInsert rewardQuery("INSERT INTO `player_rewards` (`player_id`, `pid`, `sid`, `itemtype`, `count`, `attributes`) VALUES ");
     itemList.clear();
 
-    int running = 0;
     for (const auto& rewardId : rewardList) {
       Reward* reward = player->getReward(rewardId, false);
-      // rewards that are empty or older than 7 days aren't stored
-      if (!reward->empty() && (time(nullptr) - rewardId <= 60 * 60 * 24 * 7)) {
+      if (!reward->empty() && ((time(nullptr) - rewardId / 1000) <= 60 * 60 * 24 * 7)) {
         itemList.emplace_back(0, reward);
       }
     }

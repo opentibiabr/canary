@@ -474,6 +474,7 @@ void Player::updateInventoryImbuement()
 	for (auto item : getAllInventoryItems())
 	{
 		// Iterate through all imbuement slots on the item
+
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 		{
 			ImbuementInfo imbuementInfo;
@@ -1363,7 +1364,7 @@ void Player::sendMarketEnter(uint32_t depotId)
 	if (!client || this->getLastDepotId() == -1 || !depotId) {
 		return;
 	}
-	
+
 	client->sendMarketEnter(depotId);
 }
 
@@ -3719,6 +3720,60 @@ std::vector<Item*> Player::getInventoryItemsFromId(uint16_t itemId, bool ignore 
 	return itemVector;
 }
 
+std::array<double_t, COMBAT_COUNT> Player::getFinalDamageReduction() const {
+    std::array<double_t, COMBAT_COUNT> combatReductionArray;
+	combatReductionArray.fill(0);
+    calculateDamageReductionFromEquipedItems(combatReductionArray);
+	for (int combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
+		combatReductionArray[combatTypeIndex] = std::clamp<int8_t>(std::floor(combatReductionArray[combatTypeIndex]), -100, 100);
+	}
+    return combatReductionArray;
+}
+
+
+void Player::calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionArray) const {
+	for (uint8_t slot = CONST_SLOT_FIRST; slot <= CONST_SLOT_LAST; ++slot) {
+		Item *item = inventory[slot];
+		if (item) {
+			calculateDamageReductionFromItem(combatReductionArray, item);
+		}
+	}
+}
+
+void Player::calculateDamageReductionFromItem(std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item) const {
+	for (uint16_t combatTypeIndex = 0; combatTypeIndex < COMBAT_COUNT; combatTypeIndex++) {
+		updateDamageReductionFromItemImbuement(combatReductionArray, item, combatTypeIndex);
+		updateDamageReductionFromItemAbility(combatReductionArray, item, combatTypeIndex);
+	}
+}
+
+void Player::updateDamageReductionFromItemImbuement(std::array<double_t, COMBAT_COUNT> &combatReductionArray, Item *item, uint16_t combatTypeIndex) const {
+	for (uint8_t imbueSlotId = 0; imbueSlotId < item->getImbuementSlot(); imbueSlotId++) {
+		ImbuementInfo imbuementInfo;
+		if (item->getImbuementInfo(imbueSlotId, &imbuementInfo) && imbuementInfo.imbuement) {
+			int16_t imbuementAbsorption = imbuementInfo.imbuement->absorbPercent[combatTypeIndex];
+			if(imbuementAbsorption != 0) {
+				combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], imbuementAbsorption);
+			}
+		}
+	}
+}
+
+void Player::updateDamageReductionFromItemAbility(std::array<double_t, COMBAT_COUNT> &combatReductionArray, const Item *item, uint16_t combatTypeIndex) const {
+	if(!item) return;
+	const ItemType &itemType = Item::items[item->getID()];
+	if (itemType.abilities) {
+		int16_t elementReduction = itemType.abilities->absorbPercent[combatTypeIndex];
+		if (elementReduction != 0) {
+			combatReductionArray[combatTypeIndex] = calculateDamageReduction(combatReductionArray[combatTypeIndex], elementReduction);
+		}
+	}
+}
+
+double_t Player::calculateDamageReduction(double_t currentTotal, int16_t resistance) const {
+	return (100 - currentTotal) / 100.0 * resistance + currentTotal;
+}
+
 std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) const
 {
 	std::vector<Item*> itemVector;
@@ -5973,7 +6028,7 @@ std::string Player::getBlessingsName() const
 	std::ostringstream os;
 	for (uint8_t i = 1; i <= 8; i++) {
 		if (hasBlessing(i)) {
-			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i)); 
+			if (auto blessName = BlessingNames.find(static_cast<Blessings_t>(i));
 			blessName != BlessingNames.end()) {
 				os << (*blessName).second;
 			} else {

@@ -17,7 +17,7 @@ static constexpr auto STATUS_SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 static constexpr auto AUTHENTICATOR_DIGITS = 6U;
 static constexpr auto AUTHENTICATOR_PERIOD = 30U;
 
-static constexpr auto CLIENT_VERSION = 1310;
+static constexpr auto CLIENT_VERSION = 1311;
 
 #define CLIENT_VERSION_UPPER (CLIENT_VERSION / 100)
 #define CLIENT_VERSION_LOWER (CLIENT_VERSION % 100)

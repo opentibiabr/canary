@@ -5565,7 +5565,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			double_t chance = playerArmor->getDodgeChance();
 			double_t randomChance = uniform_random(0, 10000) / 100;
 			if (chance > 0 && randomChance < chance) {
-				sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
+				InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
 				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
 				return true;
 			}

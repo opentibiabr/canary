@@ -47,7 +47,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 				if (weapon) {
 					damage.primary.value = normal_random(
 						static_cast<int64_t>(minb),
-						weapon->getWeaponDamage(player, target, tool, true) * maxa + maxb
+						weapon->getWeaponDamage(player, target, tool, true) * static_cast<int64_t>(maxa + maxb)
 					);
 
 					damage.secondary.type = weapon->getElementType();
@@ -993,11 +993,11 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 		if (auto playerWeapon = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
 			playerWeapon != nullptr && playerWeapon->getTier()) {
 			double_t fatalChance = playerWeapon->getFatalChance();
-			double_t randomChance = uniform_random(0, 10000) / 100;
+			auto randomChance = static_cast<double_t>(uniform_random(0, 10000) / 100);
 			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
+				damage.primary.value += static_cast<int64_t>(std::round(static_cast<double>(damage.primary.value) * 0.6));
+				damage.secondary.value += static_cast<int64_t>(std::round(static_cast<double>(damage.secondary.value) * 0.6));
 			}
 		}
 	}
@@ -1038,11 +1038,11 @@ void Combat::doCombatHealth(Creature* caster, const Position& position, const Ar
 			playerWeapon != nullptr && playerWeapon->getTier() > 0)
 		{
 			double_t fatalChance = playerWeapon->getFatalChance();
-			double_t randomChance = uniform_random(0, 10000) / 100;
+			auto randomChance = static_cast<double_t>(uniform_random(0, 10000) / 100);
 			if (damage.primary.type != COMBAT_HEALING && fatalChance > 0 && randomChance < fatalChance) {
 				damage.fatal = true;
-				damage.primary.value += static_cast<int32_t>(std::round(damage.primary.value * 0.6));
-				damage.secondary.value += static_cast<int32_t>(std::round(damage.secondary.value * 0.6));
+				damage.primary.value += static_cast<int64_t>(std::round(static_cast<double>(damage.primary.value) * 0.6));
+				damage.secondary.value += static_cast<int64_t>(std::round(static_cast<double>(damage.secondary.value) * 0.6));
 			}
 		}
 	}
@@ -1301,8 +1301,8 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 
 		if (shouldCalculateSecondaryDamage) {
 			double factor = (double)elementAttack / (double)attackValue; //attack value here is phys dmg + element dmg
-			int64_t elementDamage = std::round(defaultDmg * factor);
-			int64_t physDmg = std::round(defaultDmg * (1.0 - factor));
+			auto elementDamage = static_cast<int64_t>(std::round(static_cast<double>(defaultDmg) * factor));
+			auto physDmg = static_cast<int64_t>(std::round(static_cast<double>(defaultDmg) * (1.0 - factor)));
 			damage.primary.value = physDmg;
 			damage.secondary.value = elementDamage;
 

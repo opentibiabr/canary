@@ -1162,9 +1162,9 @@ struct Kill {
 };
 
 struct IntervalInfo {
-	int32_t timeLeft;
-	int32_t value;
-	int32_t interval;
+	time_t timeLeft;
+	int64_t value;
+	int64_t interval;
 };
 
 struct FindPathParams {
@@ -1172,9 +1172,9 @@ struct FindPathParams {
 	bool clearSight = true;
 	bool allowDiagonal = true;
 	bool keepDistance = false;
-	int32_t maxSearchDist = 0;
-	int32_t minTargetDist = -1;
-	int32_t maxTargetDist = -1;
+	int64_t maxSearchDist = 0;
+	int64_t minTargetDist = -1;
+	int64_t maxTargetDist = -1;
 };
 
 struct RecentDeathEntry {

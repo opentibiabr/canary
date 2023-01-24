@@ -571,7 +571,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count)
 	}
 }
 
-void Player::setVarStats(stats_t stat, int32_t modifier)
+void Player::setVarStats(stats_t stat, int64_t modifier)
 {
 	varStats[stat] += modifier;
 
@@ -5711,7 +5711,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 {
 	bool requestUpdate = false;
 	// Check imbuement skills
-	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
+	for (int64_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
 		if (imbuement->skills[skill]) {
 			requestUpdate = true;
 			setVarSkill(static_cast<skills_t>(skill), imbuement->skills[skill]);
@@ -5719,7 +5719,7 @@ void Player::addItemImbuementStats(const Imbuement* imbuement)
 	}
 
 	// Check imbuement magic level
-	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
+	for (int64_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
 		if (imbuement->stats[stat]) {
 			requestUpdate = true;
 			setVarStats(static_cast<stats_t>(stat), imbuement->stats[stat]);
@@ -5747,7 +5747,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement)
 {
 	bool requestUpdate = false;
 
-	for (int32_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
+	for (int64_t skill = SKILL_FIRST; skill <= SKILL_LAST; ++skill) {
 		if (imbuement->skills[skill]) {
 			requestUpdate = true;
 			setVarSkill(static_cast<skills_t>(skill), -imbuement->skills[skill]);
@@ -5755,7 +5755,7 @@ void Player::removeItemImbuementStats(const Imbuement* imbuement)
 	}
 
 	// Check imbuement magic level
-	for (int32_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
+	for (int64_t stat = STAT_FIRST; stat <= STAT_LAST; ++stat) {
 		if (imbuement->stats[stat]) {
 			requestUpdate = true;
 			setVarStats(static_cast<stats_t>(stat), -imbuement->stats[stat]);

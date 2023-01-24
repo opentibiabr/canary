@@ -211,11 +211,11 @@ class Creature : virtual public Thing
 			maxManaShield = value;
 		}
 
-		int32_t getBuff(int32_t buff) {
+		int64_t getBuff(int64_t buff) {
 			return varBuffs[buff];
 		}
 
-		void setBuff(buffs_t buff, int32_t modifier) {
+		void setBuff(buffs_t buff, int64_t modifier) {
 			varBuffs[buff] += modifier;
 		}
 
@@ -553,7 +553,7 @@ class Creature : virtual public Thing
 
 		uint32_t manaShield = 0;
 		uint32_t maxManaShield = 0;
-		int32_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
+		int64_t varBuffs[BUFF_LAST + 1] = { 100, 100 };
 
 		Outfit_t currentOutfit;
 		Outfit_t defaultOutfit;

@@ -512,7 +512,7 @@ class Player final : public Creature, public Cylinder
 			return levelPercent;
 		}
 		uint32_t getMagicLevel() const {
-			return std::max<int32_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
+			return std::max<int64_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
 		}
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
@@ -656,11 +656,11 @@ class Player final : public Creature, public Cylinder
 			inventoryAbilities[slot] = enabled;
 		}
 
-		void setVarSkill(skills_t skill, int32_t modifier) {
+		void setVarSkill(skills_t skill, int64_t modifier) {
 			varSkills[skill] += modifier;
 		}
 
-		void setVarStats(stats_t stat, int32_t modifier);
+		void setVarStats(stats_t stat, int64_t modifier);
 		int64_t getDefaultStats(stats_t stat) const;
 
 		void addConditionSuppressions(uint32_t conditions);
@@ -2389,8 +2389,8 @@ class Player final : public Creature, public Cylinder
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
 		uint32_t manaMax = 0;
-		int32_t varSkills[SKILL_LAST + 1] = {};
-		int32_t varStats[STAT_LAST + 1] = {};
+		int64_t varSkills[SKILL_LAST + 1] = {};
+		int64_t varStats[STAT_LAST + 1] = {};
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
 		uint32_t premiumDays = 0;

@@ -334,7 +334,7 @@ class MagicField final : public Item
 			const ItemType& it = items[getID()];
 			return it.combatType;
 		}
-		int32_t getDamage() const {
+		int64_t getDamage() const {
 			const ItemType& it = items[getID()];
 			if (it.conditionDamage) {
 				return it.conditionDamage->getTotalDamage();

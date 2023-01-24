@@ -272,7 +272,7 @@ function parseTransferCoins(playerId, msg)
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "We couldn't find that player.")
 	end
 
-	local accountId = result.getNumber(resultId, "account_id")
+	local accountId = Result.getNumber(resultId, "account_id")
 	if accountId == player:getAccountId() then
 		return addPlayerEvent(sendStoreError, 350, playerId, GameStore.StoreErrors.STORE_ERROR_TRANSFER, "You cannot transfer coin to a character in the same account.")
 	end
@@ -1093,8 +1093,8 @@ GameStore.retrieveHistoryTotalPages = function (accountId)
 		return 0
 	end
 
-	local totalPages = result.getNumber(resultId, "total")
-	result.free(resultId)
+	local totalPages = Result.getNumber(resultId, "total")
+	Result.free(resultId)
 	return totalPages
 end
 
@@ -1113,8 +1113,8 @@ GameStore.retrieveHistoryEntries = function(accountId, currentPage, entriesPerPa
 				time = result.getNumber(resultId, "time"),
 			}
 			table.insert(entries, entry)
-		until not result.next(resultId)
-		result.free(resultId)
+		until not Result.next(resultId)
+		Result.free(resultId)
 	end
 	return entries
 end
@@ -1616,7 +1616,7 @@ end
 function Player.getCoinsBalance(self)
 	resultId = db.storeQuery("SELECT `coins` FROM `accounts` WHERE `id` = " .. self:getAccountId())
 	if not resultId then return 0 end
-	return result.getNumber(resultId, "coins")
+	return Result.getNumber(resultId, "coins")
 end
 
 function Player.setCoinsBalance(self, coins)
@@ -1651,7 +1651,7 @@ function Player.getTournamentBalance(self)
 	if not resultId then
 		return 0
 	end
-	return result.getNumber(resultId, "tournament_coins")
+	return Result.getNumber(resultId, "tournament_coins")
 end
 
 function Player.setTournamentBalance(self, tournament)

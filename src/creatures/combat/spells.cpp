@@ -1,21 +1,11 @@
 /**
- * The Forgotten Server - a free and open-source MMORPG server emulator
- * Copyright (C) 2019  Mark Samman <mark.samman@gmail.com>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019-2022 OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.org/
+*/
 
 #include "pch.hpp"
 
@@ -25,11 +15,7 @@
 #include "game/game.h"
 #include "lua/scripts/lua_environment.hpp"
 
-Spells::Spells()
-{
-	scriptInterface.initState();
-}
-
+Spells::Spells() = default;
 Spells::~Spells() = default;
 
 TalkActionResult_t Spells::playerSaySpell(Player* player, std::string& words)
@@ -92,52 +78,6 @@ void Spells::clear()
 	runes.clear();
 }
 
-void Spells::clearMaps(bool fromLua)
-{
-	for (auto instant = instants.begin(); instant != instants.end(); ) {
-		if (fromLua == instant->second.fromLua) {
-			instant = instants.erase(instant);
-		} else {
-			++instant;
-		}
-	}
-
-	for (auto rune = runes.begin(); rune != runes.end(); ) {
-		if (fromLua == rune->second.fromLua) {
-			rune = runes.erase(rune);
-		} else {
-			++rune;
-		}
-	}
-}
-
-void Spells::clear(bool fromLua)
-{
-	clearMaps(fromLua);
-
-	reInitState(fromLua);
-}
-
-LuaScriptInterface& Spells::getScriptInterface()
-{
-	return scriptInterface;
-}
-
-std::string Spells::getScriptBaseName() const
-{
-	return "spells";
-}
-
-Event_ptr Spells::getEvent(const std::string& nodeName)
-{
-	if (strcasecmp(nodeName.c_str(), "rune") == 0) {
-		return Event_ptr(new RuneSpell(&scriptInterface));
-	} else if (strcasecmp(nodeName.c_str(), "instant") == 0) {
-		return Event_ptr(new InstantSpell(&scriptInterface));
-	}
-	return nullptr;
-}
-
 bool Spells::hasInstantSpell(const std::string& word) const
 {
 	if (auto iterate = instants.find(word);
@@ -180,8 +120,12 @@ bool Spells::registerRuneLuaEvent(RuneSpell* event)
 		uint16_t id = rune->getRuneItemId();
 		auto result = runes.emplace(rune->getRuneItemId(), std::move(*rune));
 		if (!result.second) {
-			SPDLOG_WARN("[Spells::registerRuneLuaEvent] - "
-                        "Duplicate registered rune with id: {}", id);
+			SPDLOG_WARN(
+				"[{}] duplicate registered rune with id: {}, for script: {}",
+				__FUNCTION__,
+				id,
+				event->getScriptInterface()->getLoadingScriptName()
+			);
 		}
 		return result.second;
 	}
@@ -302,29 +246,24 @@ Position Spells::getCasterPosition(Creature* creature, Direction dir)
 	return getNextPosition(dir, creature->getPosition());
 }
 
-CombatSpell::CombatSpell(Combat* initCombat, bool initNeedTarget, bool initNeedDirection) :
-	Event(&g_spells().getScriptInterface()),
-	combat(initCombat),
-	needDirection(initNeedDirection),
-	needTarget(initNeedTarget)
-{}
-
-CombatSpell::~CombatSpell()
+CombatSpell::CombatSpell(Combat* newCombat, bool newNeedTarget, bool newNeedDirection) :
+	Script(&g_spells().getScriptInterface()),
+	combat(newCombat),
+	needDirection(newNeedDirection),
+	needTarget(newNeedTarget)
 {
-	if (!scripted) {
-		delete combat;
-	}
+// Empty
 }
 
 bool CombatSpell::loadScriptCombat()
 {
-	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId);
+	combat = g_luaEnvironment.getCombatObject(g_luaEnvironment.lastCombatId).get();
 	return combat != nullptr;
 }
 
 bool CombatSpell::castSpell(Creature* creature)
 {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		LuaVariant var;
 		var.type = VARIANT_POSITION;
 
@@ -358,7 +297,7 @@ bool CombatSpell::castSpell(Creature* creature)
 
 bool CombatSpell::castSpell(Creature* creature, Creature* target)
 {
-	if (scripted) {
+	if (isLoadedCallback()) {
 		LuaVariant var;
 
 		if (combat->hasArea()) {
@@ -375,6 +314,7 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
 		}
+
 		return executeCastSpell(creature, var);
 	}
 
@@ -398,38 +338,38 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 	return true;
 }
 
-bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
+bool CombatSpell::executeCastSpell(Creature* creature, const LuaVariant& var) const
 {
 	//onCastSpell(creature, var)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[CombatSpell::executeCastSpell - Creature {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	LuaScriptInterface::pushVariant(L, var);
 
-	return scriptInterface->callFunction(2);
+	return getScriptInterface()->callFunction(2);
 }
 
 bool Spell::playerSpellCheck(Player* player) const
 {
-	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
 	}
 
@@ -448,7 +388,7 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
-	if (aggressive && !player->hasFlag(PlayerFlag_IgnoreProtectionZone) && player->getZone() == ZONE_PROTECTION) {
+	if (aggressive && !player->hasFlag(PlayerFlags_t::IgnoreProtectionZone) && player->getZone() == ZONE_PROTECTION) {
 		player->sendCancelMessage(RETURNVALUE_ACTIONNOTPERMITTEDINPROTECTIONZONE);
 		return false;
 	}
@@ -475,13 +415,13 @@ bool Spell::playerSpellCheck(Player* player) const
 		return false;
 	}
 
-	if (player->getMana() < getManaCost(player) && !player->hasFlag(PlayerFlag_HasInfiniteMana)) {
+	if (player->getMana() < getManaCost(player) && !player->hasFlag(PlayerFlags_t::HasInfiniteMana)) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHMANA);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
 	}
 
-	if (player->getSoul() < soul && !player->hasFlag(PlayerFlag_HasInfiniteSoul)) {
+	if (player->getSoul() < soul && !player->hasFlag(PlayerFlags_t::HasInfiniteSoul)) {
 		player->sendCancelMessage(RETURNVALUE_NOTENOUGHSOUL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -493,7 +433,7 @@ bool Spell::playerSpellCheck(Player* player) const
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;
 		}
-	} else if (!vocSpellMap.empty() && vocSpellMap.find(player->getVocationId()) == vocSpellMap.end()) {
+	} else if (!vocSpellMap.empty() && !vocSpellMap.contains(player->getVocationId())) {
 		player->sendCancelMessage(RETURNVALUE_YOURVOCATIONCANNOTUSETHISSPELL);
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 		return false;
@@ -658,7 +598,7 @@ void Spell::applyCooldownConditions(Player* player) const
 void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool payCost /*= true*/) const
 {
 	if (finishedCast) {
-		if (!player->hasFlag(PlayerFlag_HasNoExhaustion)) {
+		if (!player->hasFlag(PlayerFlags_t::HasNoExhaustion)) {
 			applyCooldownConditions(player);
 		}
 
@@ -683,7 +623,7 @@ void Spell::postCastSpell(Player* player, uint32_t manaCost, uint32_t soulCost)
 		player->changeMana(-static_cast<int64_t>(manaCost));
 	}
 
-	if (!player->hasFlag(PlayerFlag_HasInfiniteSoul)) {
+	if (!player->hasFlag(PlayerFlags_t::HasInfiniteSoul)) {
 		if (soulCost > 0) {
 			player->changeSoul(-static_cast<int32_t>(soulCost));
 		}
@@ -703,11 +643,6 @@ uint32_t Spell::getManaCost(const Player* player) const
 	}
 
 	return 0;
-}
-
-std::string InstantSpell::getScriptEventName() const
-{
-	return "onCastSpell";
 }
 
 bool InstantSpell::playerCastInstant(Player* player, std::string& param)
@@ -883,38 +818,38 @@ bool InstantSpell::castSpell(Creature* creature, Creature* target)
 	}
 }
 
-bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var)
+bool InstantSpell::executeCastSpell(Creature* creature, const LuaVariant& var) const
 {
 	//onCastSpell(creature, var)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[InstantSpell::executeCastSpell - Creature {} words {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName(), getWords());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
 
 	LuaScriptInterface::pushVariant(L, var);
 
-	return scriptInterface->callFunction(2);
+	return getScriptInterface()->callFunction(2);
 }
 
 bool InstantSpell::canCast(const Player* player) const
 {
-	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return false;
 	}
 
-	if (player->hasFlag(PlayerFlag_IgnoreSpellCheck)) {
+	if (player->hasFlag(PlayerFlags_t::IgnoreSpellCheck)) {
 		return true;
 	}
 
@@ -923,7 +858,7 @@ bool InstantSpell::canCast(const Player* player) const
 			return true;
 		}
 	} else {
-		if (vocSpellMap.empty() || vocSpellMap.find(player->getVocationId()) != vocSpellMap.end()) {
+		if (vocSpellMap.empty() || vocSpellMap.contains(player->getVocationId())) {
 			return true;
 		}
 	}
@@ -931,14 +866,9 @@ bool InstantSpell::canCast(const Player* player) const
 	return false;
 }
 
-std::string RuneSpell::getScriptEventName() const
-{
-	return "onCastSpell";
-}
-
 ReturnValue RuneSpell::canExecuteAction(const Player* player, const Position& toPos)
 {
-	if (player->hasFlag(PlayerFlag_CannotUseSpells)) {
+	if (player->hasFlag(PlayerFlags_t::CannotUseSpells)) {
 		return RETURNVALUE_CANNOTUSETHISOBJECT;
 	}
 
@@ -964,7 +894,8 @@ bool RuneSpell::executeUse(Player* player, Item* item, const Position&, Thing* t
 		return false;
 	}
 
-	if (!scripted) {
+	// If script not loaded correctly, return
+	if (!isLoadedCallback()) {
 		return false;
 	}
 
@@ -1027,7 +958,7 @@ bool RuneSpell::castSpell(Creature* creature, Creature* target)
 bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
 {
 	bool result;
-	if (scripted) {
+	if (isLoadedCallback()) {
 		result = executeCastSpell(creature, var, isHotkey);
 	} else {
 		result = false;
@@ -1035,22 +966,22 @@ bool RuneSpell::internalCastSpell(Creature* creature, const LuaVariant& var, boo
 	return result;
 }
 
-bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey)
+bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool isHotkey) const
 {
 	//onCastSpell(creature, var, isHotkey)
-	if (!scriptInterface->reserveScriptEnv()) {
+	if (!getScriptInterface()->reserveScriptEnv()) {
 		SPDLOG_ERROR("[RuneSpell::executeCastSpell - Creature {} runeId {}] "
                      "Call stack overflow. Too many lua script calls being nested.",
                      creature->getName(), getRuneItemId());
 		return false;
 	}
 
-	ScriptEnvironment* env = scriptInterface->getScriptEnv();
-	env->setScriptId(scriptId, scriptInterface);
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
 
-	lua_State* L = scriptInterface->getLuaState();
+	lua_State* L = getScriptInterface()->getLuaState();
 
-	scriptInterface->pushFunction(scriptId);
+	getScriptInterface()->pushFunction(getScriptId());
 
 	LuaScriptInterface::pushUserdata<Creature>(L, creature);
 	LuaScriptInterface::setCreatureMetatable(L, -1, creature);
@@ -1059,5 +990,5 @@ bool RuneSpell::executeCastSpell(Creature* creature, const LuaVariant& var, bool
 
 	LuaScriptInterface::pushBoolean(L, isHotkey);
 
-	return scriptInterface->callFunction(3);
+	return getScriptInterface()->callFunction(3);
 }

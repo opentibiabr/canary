@@ -3193,6 +3193,7 @@ int PlayerFunctions::luaPlayerSetFaction(lua_State* L) {
 		pushBoolean(L, false);
 		return 0;
 	}
+
 	Faction_t factionId = getNumber<Faction_t>(L, 2);
 	player->setFaction(factionId);
 	pushBoolean(L, true);
@@ -3209,5 +3210,42 @@ int PlayerFunctions::luaPlayerGetFaction(lua_State* L) {
 	}
 	
 	lua_pushnumber(L, player->getFaction());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
+{
+	// player:sendSingleSoundEffect(soundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
+	bool actor = getBoolean(L, 3, true);
+
+	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
+	pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L)
+{
+	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
+	Player* player = getUserdata<Player>(L, 1);
+	if (!player) {
+		reportErrorFunc(getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		pushBoolean(L, false);
+		return 0;
+	}
+
+	SoundEffect_t mainSoundEffect = getNumber<SoundEffect_t>(L, 2);
+	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
+	bool actor = getBoolean(L, 4, true);
+
+	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL, secondarySoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
+	pushBoolean(L, true);
 	return 1;
 }

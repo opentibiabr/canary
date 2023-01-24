@@ -537,22 +537,6 @@ class Game
 			return CharmList;
 		}
 
-		void removePlayerActiveImbuement(std::string playerName, std::string imbuementName) {
-			if (playersActiveImbuements.contains(playerName) && playersActiveImbuements[playerName] == imbuementName) {
-				playersActiveImbuements.erase(playerName);
-			}
-		}
-
-		void setPlayerActiveImbuement(std::string playerName, std::string imbuementName) {
-			playersActiveImbuements[playerName] = imbuementName;
-		}
-
-		const std::string& getPlayerActiveImbuements(std::string playerName) const {
-			if (playersActiveImbuements.contains(playerName)) {
-				return playersActiveImbuements.at(playerName);
-			}
-		}
-
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
 		bool isMagicEffectRegistered(uint8_t type) const {
 			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
@@ -604,7 +588,6 @@ class Game
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
 		phmap::flat_hash_map<uint32_t, Player*> players;
-		phmap::flat_hash_map<std::string, std::string> playersActiveImbuements;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;

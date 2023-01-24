@@ -537,25 +537,20 @@ class Game
 			return CharmList;
 		}
 
-		void increasePlayerActiveImbuements(uint32_t playerId) {
-			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
-		}
-
-		void decreasePlayerActiveImbuements(uint32_t playerId) {
-			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] - 1);
-		}
-
-		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
-			if (value <= 0) {
-				playersActiveImbuements.erase(playerId);
-				return;
+		void removePlayerActiveImbuement(std::string playerName, std::string imbuementName) {
+			if (playersActiveImbuements.contains(playerName) && playersActiveImbuements[playerName] == imbuementName) {
+				playersActiveImbuements.erase(playerName);
 			}
-			
-			playersActiveImbuements[playerId] = std::min<uint8_t>(255, value);
 		}
 
-		uint8_t getPlayerActiveImbuements(uint32_t playerId) {
-			return playersActiveImbuements[playerId];
+		void setPlayerActiveImbuement(std::string playerName, std::string imbuementName) {
+			playersActiveImbuements[playerName] = imbuementName;
+		}
+
+		const std::string& getPlayerActiveImbuements(std::string playerName) const {
+			if (playersActiveImbuements.contains(playerName)) {
+				return playersActiveImbuements.at(playerName);
+			}
 		}
 
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
@@ -609,7 +604,7 @@ class Game
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
 		phmap::flat_hash_map<uint32_t, Player*> players;
-		phmap::flat_hash_map<uint32_t, uint8_t> playersActiveImbuements;
+		phmap::flat_hash_map<std::string, std::string> playersActiveImbuements;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;

@@ -1057,7 +1057,7 @@ class Item : virtual public Thing
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
 		 */
-		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, int32_t duration) {
+		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint64_t duration) {
 			return setImbuement(slot, imbuementId, duration);
 		}
 		void clearImbuement(uint8_t slot, uint16_t imbuementId) {
@@ -1146,7 +1146,7 @@ class Item : virtual public Thing
 		bool isLootTrackeable = false;
 	
 	private:
-		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
+		void setImbuement(uint8_t slot, uint16_t imbuementId, uint64_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		friend class Decay;
 };

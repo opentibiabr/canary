@@ -488,15 +488,16 @@ void Player::updateInventoryImbuement()
 
 			// Get the category of the imbuement
 			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
-
+			// Parent type true = parent is Container, false = parent is the player
+			auto parent = item->getParent();
 			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
 			if (categoryImbuement && categoryImbuement->agressive) {
-				if (!isInFightMode || isInProtectionZone || item->getParent() && item->getParent() && item->getParent()->getContainer()) {
+				if (!isInFightMode || isInProtectionZone || parent && parent->getContainer()) {
 					continue;
 				}
 			}
 			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
-			if (categoryImbuement && !categoryImbuement->agressive && item->getParent() && item->getParent() != this) {
+			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != this) {
 				continue;
 			}
 
@@ -507,6 +508,7 @@ void Player::updateInventoryImbuement()
 				continue;
 			}
 
+			SPDLOG_DEBUG("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
 			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
 			uint64_t duration = std::max<uint64_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
 			// Update the imbuement's duration in the item

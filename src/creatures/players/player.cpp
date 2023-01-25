@@ -481,7 +481,7 @@ void Player::updateInventoryImbuement()
 			if (!item->getImbuementInfo(slotid, &imbuementInfo))
 			{
 				// If no imbuement is found, continue to the next slot
-				continue;
+				break;
 			}
 
 			auto imbuement = imbuementInfo.imbuement;

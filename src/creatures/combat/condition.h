@@ -49,9 +49,7 @@ class Condition
 		int64_t getTicks() const {
 			return ticks;
 		}
-		uint32_t getTicksSpellCooldown() const {
-			return convertToSafeInteger<uint32_t>(ticks);
-		}
+		uint32_t getTicksSpellCooldown() const;
 		void setTicks(int64_t newTicks);
 
 		static Condition* createCondition(ConditionId_t id, ConditionType_t type, int64_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);

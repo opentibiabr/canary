@@ -12,6 +12,11 @@
 #include "creatures/combat/condition.h"
 #include "game/game.h"
 
+
+uint32_t Condition::getTicksSpellCooldown() const {
+	return convertToSafeInteger<uint32_t>(ticks);
+}
+
 bool Condition::setParam(ConditionParam_t param, int64_t value)
 {
 	switch (param) {

@@ -507,7 +507,7 @@ void Monster::onCreatureLeave(Creature* creature)
 bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAULT*/)
 {
 	if (searchType == TARGETSEARCH_DEFAULT) {
-		int32_t rnd = uniform_random(1, 100);
+		auto rnd = static_cast<int32_t>(uniform_random(1, 100));
 
 		searchType = TARGETSEARCH_NEAREST;
 
@@ -590,7 +590,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t minHp = getTarget->getHealth();
+					int64_t minHp = getTarget->getHealth();
 					do {
 						if ((*it)->getHealth() < minHp) {
 							getTarget = *it;
@@ -680,7 +680,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64
 		}
 
 		if (elementMod != 0) {
-			damage = static_cast<int64_t>(std::round(damage * ((100 - elementMod) / 100.)));
+			damage = damage * ((100 - elementMod) / 100.);
 			if (damage <= 0) {
 				damage = 0;
 				blockType = BLOCK_ARMOR;
@@ -1101,7 +1101,7 @@ void Monster::onThinkDefense(uint32_t interval)
 					summon->setMaster(this, true);
 					g_game().addMagicEffect(getPosition(), CONST_ME_MAGIC_BLUE);
 					g_game().addMagicEffect(summon->getPosition(), CONST_ME_TELEPORT);
-					g_game().sendSingleSoundEffect(summon->getPosition(), SOUND_EFFECT_TYPE_MONSTER_SPELL_SUMMON, this);
+					g_game().sendSingleSoundEffect(summon->getPosition(), SoundEffect_t::MONSTER_SPELL_SUMMON, this);
 				} else {
 					delete summon;
 				}
@@ -2109,8 +2109,9 @@ void Monster::drainHealth(Creature* attacker, int64_t damage)
 void Monster::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/)
 {
 	if (mType && !mType->info.soundVector.empty() && mType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100))) {
-		uint32_t index = uniform_random(0, static_cast<int64_t>(mType->info.soundVector.size() - 1));
-		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[index], this);
+		auto index = uniform_random(0, mType->info.soundVector.size() - 1);
+		auto convertedSafe = convertToSafeInteger<uint16_t>(index);
+		g_game().sendSingleSoundEffect(this->getPosition(), mType->info.soundVector[convertedSafe], this);
 	}
 
 	//In case a player with ignore flag set attacks the monster

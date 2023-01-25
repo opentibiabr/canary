@@ -119,4 +119,30 @@ static inline Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	}
 }
 
+/**
+ * @brief Function to convert and ensure value safety
+ * @param ReturnValue type of value to be returned by the function
+ * @param ConvertValue type of value to be converted and passed as an argument to the function
+ * @param convertValue Value to convert and ensure security
+ * @return ReturnValue Value converted and guaranteed to be safe
+*/
+template<typename ReturnValue, typename ConvertValue>
+ReturnValue convertToSafeInteger(ConvertValue convertValue)
+{
+	auto convertSafeValue = std::clamp(static_cast<ReturnValue>(convertValue), (ReturnValue)0, std::numeric_limits<ReturnValue>::max());
+	return convertSafeValue;
+}
+
+/**
+ * @brief Returns the underlying integral value of an enumeration value.
+ * @param EnumClass The enumeration type to be converted.
+ * @param convertValue The enumeration value to be converted.
+ * @return The underlying integral value of the enumeration value.
+*/
+template<typename EnumClass>
+auto getEnumClassNumber(EnumClass& convertValue)
+{
+	return magic_enum::enum_integer(convertValue);
+}
+
 #endif  // SRC_UTILS_TOOLS_H_

@@ -108,9 +108,9 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		combatPtr->setArea(area);
 	}
 
-	std::string tmpName = asLowerCaseString(spell->name);
-
-	if (tmpName == "melee") {
+	if (std::string spellName = asLowerCaseString(spell->name);
+		spellName == "melee")
+	{
 		sb.isMelee = true;
 
 		if (spell->attack > 0 && spell->skill > 0) {
@@ -123,7 +123,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		combatPtr->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
 		combatPtr->setParam(COMBAT_PARAM_BLOCKSHIELD, 1);
 		combatPtr->setOrigin(ORIGIN_MELEE);
-	} else if (tmpName == "combat") {
+	} else if (spellName == "combat") {
 		if (spell->combatType == COMBAT_PHYSICALDAMAGE) {
 			combatPtr->setParam(COMBAT_PARAM_BLOCKARMOR, 1);
 			combatPtr->setOrigin(ORIGIN_RANGED);
@@ -131,7 +131,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 			combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		}
 		combatPtr->setParam(COMBAT_PARAM_TYPE, spell->combatType);
-	} else if (tmpName == "speed") {
+	} else if (spellName == "speed") {
 		int32_t speedChange = 0;
 		int32_t duration = 10000;
 
@@ -158,7 +158,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		ConditionSpeed* condition = static_cast<ConditionSpeed*>(Condition::createCondition(CONDITIONID_COMBAT, conditionType, duration, 0));
 		condition->setFormulaVars(speedChange / 1000.0, 0, speedChange / 1000.0, 0);
 		combatPtr->addCondition(condition);
-	} else if (tmpName == "outfit") {
+	} else if (spellName == "outfit") {
 		int32_t duration = 10000;
 
 		if (spell->duration != 0) {
@@ -182,7 +182,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combatPtr->addCondition(condition);
-	} else if (tmpName == "invisible") {
+	} else if (spellName == "invisible") {
 		int32_t duration = 10000;
 
 		if (spell->duration != 0) {
@@ -192,7 +192,7 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 		Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_INVISIBLE, duration, 0);
 		combatPtr->setParam(COMBAT_PARAM_AGGRESSIVE, 0);
 		combatPtr->addCondition(condition);
-	} else if (tmpName == "drunk") {
+	} else if (spellName == "drunk") {
 		int32_t duration = 10000;
 
 		if (spell->duration != 0) {
@@ -201,21 +201,21 @@ bool Monsters::deserializeSpell(MonsterSpell* spell, spellBlock_t& sb, const std
 
 		Condition* condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_DRUNK, duration, 0);
 		combatPtr->addCondition(condition);
-	} else if (tmpName == "firefield") {
+	} else if (spellName == "firefield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_FIREFIELD_PVP_FULL);
-	} else if (tmpName == "poisonfield") {
+	} else if (spellName == "poisonfield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_POISONFIELD_PVP);
-	} else if (tmpName == "energyfield") {
+	} else if (spellName == "energyfield") {
 		combatPtr->setParam(COMBAT_PARAM_CREATEITEM, ITEM_ENERGYFIELD_PVP);
-	} else if (tmpName == "condition") {
+	} else if (spellName == "condition") {
 		if (spell->conditionType == CONDITION_NONE) {
 			SPDLOG_ERROR("[Monsters::deserializeSpell] - "
                          "{} condition is not set for: {}"
                          , description, spell->name);
 		}
-	} else if (tmpName == "strength") {
+	} else if (spellName == "strength") {
 		//
-	} else if (tmpName == "effect") {
+	} else if (spellName == "effect") {
 		//
 	} else {
 		SPDLOG_ERROR("[Monsters::deserializeSpell] - "

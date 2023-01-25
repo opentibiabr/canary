@@ -3226,7 +3226,7 @@ int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L)
 	SoundEffect_t soundEffect = getNumber<SoundEffect_t>(L, 2);
 	bool actor = getBoolean(L, 3, true);
 
-	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
+	player->sendSingleSoundEffect(player->getPosition(), soundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
 	pushBoolean(L, true);
 	return 1;
 }
@@ -3245,7 +3245,7 @@ int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L)
 	SoundEffect_t secondarySoundEffect = getNumber<SoundEffect_t>(L, 3);
 	bool actor = getBoolean(L, 4, true);
 
-	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL, secondarySoundEffect, actor ? SOUND_SOURCE_TYPE_OWN : SOUND_SOURCE_TYPE_GLOBAL);
+	player->sendDoubleSoundEffect(player->getPosition(), mainSoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL, secondarySoundEffect, actor ? SourceEffect_t::OWN : SourceEffect_t::GLOBAL);
 	pushBoolean(L, true);
 	return 1;
 }

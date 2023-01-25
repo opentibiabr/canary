@@ -489,8 +489,8 @@ class Player final : public Creature, public Cylinder
 			}
 		}
 
-		SoundEffect_t getAttackSoundEffect();
-		SoundEffect_t getHitSoundEffect();
+		SoundEffect_t getAttackSoundEffect() const;
+		SoundEffect_t getHitSoundEffect() const;
 
 		bool isInGhostMode() const override {
 			return ghostMode;
@@ -512,7 +512,8 @@ class Player final : public Creature, public Cylinder
 			return levelPercent;
 		}
 		uint32_t getMagicLevel() const {
-			return std::max<int64_t>(0, magLevel + varStats[STAT_MAGICPOINTS]);
+			auto safeConverted = convertToSafeInteger<uint32_t>(magLevel + varStats[STAT_MAGICPOINTS]);
+			return safeConverted;
 		}
 		uint32_t getBaseMagicLevel() const {
 			return magLevel;
@@ -641,10 +642,12 @@ class Player final : public Creature, public Cylinder
 		}
 
 		int64_t getMaxHealth() const override {
-			return std::max<int64_t>(1, healthMax + varStats[STAT_MAXHITPOINTS]);
+			auto safeConverted = convertToSafeInteger<uint32_t>(healthMax + varStats[STAT_MAXHITPOINTS]);
+			return safeConverted;
 		}
 		uint32_t getMaxMana() const override {
-			return std::max<int64_t>(0, manaMax + varStats[STAT_MAXMANAPOINTS]);
+			auto safeConverted = convertToSafeInteger<uint32_t>(manaMax + varStats[STAT_MAXMANAPOINTS]);
+			return safeConverted;
 		}
 
 		Item* getInventoryItem(Slots_t slot) const;
@@ -657,7 +660,7 @@ class Player final : public Creature, public Cylinder
 		}
 
 		void setVarSkill(skills_t skill, int64_t modifier) {
-			varSkills[skill] += modifier;
+			varSkills.at(skill) += modifier;
 		}
 
 		void setVarStats(stats_t stat, int64_t modifier);
@@ -2389,8 +2392,8 @@ class Player final : public Creature, public Cylinder
 		uint32_t windowTextId = 0;
 		uint32_t editListId = 0;
 		uint32_t manaMax = 0;
-		int64_t varSkills[SKILL_LAST + 1] = {};
-		int64_t varStats[STAT_LAST + 1] = {};
+		std::array<int64_t, SKILL_LAST + 1> varSkills = {};
+		std::array<int64_t, STAT_LAST + 1> varStats = {};
 		int32_t shopCallback = -1;
 		int32_t MessageBufferCount = 0;
 		uint32_t premiumDays = 0;

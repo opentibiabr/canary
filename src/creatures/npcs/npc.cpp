@@ -187,8 +187,9 @@ void Npc::onThinkSound(uint32_t interval)
 		soundTicks = 0;
 
 		if (!npcType->info.soundVector.empty() && (npcType->info.soundChance >= static_cast<uint32_t>(uniform_random(1, 100)))) {
-			uint32_t index = uniform_random(0, static_cast<int64_t>(npcType->info.soundVector.size() - 1));
-			g_game().sendSingleSoundEffect(this->getPosition(), npcType->info.soundVector[index], this);
+			auto index = uniform_random(0, npcType->info.soundVector.size() - 1);
+			auto convertedSafe = convertToSafeInteger<uint16_t>(index);
+			g_game().sendSingleSoundEffect(this->getPosition(), npcType->info.soundVector[convertedSafe], this);
 		}
 	}
 }

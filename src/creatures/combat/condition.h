@@ -49,6 +49,10 @@ class Condition
 		int64_t getTicks() const {
 			return ticks;
 		}
+		uint32_t getTicksSpellCooldown() const {
+			auto convertSafeValue = std::clamp(static_cast<uint32_t>(ticks), 0u, std::numeric_limits<uint32_t>::max());
+			return convertSafeValue;
+		}
 		void setTicks(int64_t newTicks);
 
 		static Condition* createCondition(ConditionId_t id, ConditionType_t type, int64_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0);
@@ -71,8 +75,8 @@ class Condition
 		ConditionId_t id;
 		bool isBuff;
 
-		SoundEffect_t tickSound = SOUND_EFFECT_TYPE_SILENCE;
-		SoundEffect_t addSound = SOUND_EFFECT_TYPE_SILENCE;
+		SoundEffect_t tickSound = SoundEffect_t::SILENCE;
+		SoundEffect_t addSound = SoundEffect_t::SILENCE;
 
 		virtual bool updateCondition(const Condition* addCondition);
 };
@@ -84,7 +88,6 @@ class ConditionGeneric : public Condition
 			Condition(initId, initType, initTicks, initBuff, initSubId) {}
 
 		bool startCondition(Creature* creature) override;
-		bool executeCondition(Creature* creature, int64_t interval) override;
 		void endCondition(Creature* creature) override;
 		void addCondition(Creature* creature, const Condition* condition) override;
 		uint32_t getIcons() const override;
@@ -101,11 +104,10 @@ class ConditionAttributes final : public ConditionGeneric
 			ConditionGeneric(initId, initType, initTicks, initBuff, initSubId) {}
 
 		bool startCondition(Creature* creature) final;
-		bool executeCondition(Creature* creature, int64_t interval) final;
 		void endCondition(Creature* creature) final;
 		void addCondition(Creature* creature, const Condition* condition) final;
 
-		bool setParam(ConditionParam_t param, int64_t value) final;
+		bool setParam(ConditionParam_t param, int64_t value) override;
 
 		ConditionAttributes* clone() const final {
 			return new ConditionAttributes(*this);
@@ -255,7 +257,7 @@ class ConditionDamage final : public Condition
 
 		bool setParam(ConditionParam_t param, int64_t value) override;
 
-		bool addDamage(int64_t rounds, int32_t time, int64_t value);
+		bool addDamage(int64_t rounds, time_t time, int64_t value);
 		bool doForceUpdate() const {
 			return forceUpdate;
 		}
@@ -331,7 +333,6 @@ class ConditionOutfit final : public Condition
 			Condition(initId, initType, initTicks, initBuff, initSubId) {}
 
 		bool startCondition(Creature* creature) override;
-		bool executeCondition(Creature* creature, int64_t interval) override;
 		void endCondition(Creature* creature) override;
 		void addCondition(Creature* creature, const Condition* condition) override;
 

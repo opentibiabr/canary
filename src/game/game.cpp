@@ -77,7 +77,7 @@ void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Posit
 	}
 
 	if (blockType != BLOCK_NONE) {
-		g_game().sendSingleSoundEffect(targetPos, SOUND_EFFECT_TYPE_NO_DAMAGE, source);
+		g_game().sendSingleSoundEffect(targetPos, SoundEffect_t::NO_DAMAGE, source);
 	}
 }
 
@@ -1614,10 +1614,11 @@ ReturnValue Game::internalMoveItem(Cylinder* fromCylinder,
 		}
 	}
 
-	SoundEffect_t soundEffect = item->getMovementSound(toCylinder);
-	if (toCylinder && soundEffect != SOUND_EFFECT_TYPE_SILENCE) {
+	if (SoundEffect_t soundEffect = item->getMovementSound(toCylinder);
+		toCylinder && soundEffect != SoundEffect_t::SILENCE)
+	{
 		if (toCylinder->getContainer() && actor && actor->getPlayer() && (toCylinder->getContainer()->isInsideDepot(true) || toCylinder->getContainer()->getHoldingPlayer())) {
-            actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SOUND_SOURCE_TYPE_OWN);
+            actor->getPlayer()->sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, SourceEffect_t::OWN);
 		} else {
 			sendSingleSoundEffect(toCylinder->getPosition(), soundEffect, actor);
 		}
@@ -5497,7 +5498,7 @@ void Game::reloadCreature(const Creature* creature)
 
 void Game::sendSingleSoundEffect(const Position& pos, SoundEffect_t soundId, Creature* actor/* = nullptr*/)
 {
-	if (soundId == SOUND_EFFECT_TYPE_SILENCE) {
+	if (soundId == SoundEffect_t::SILENCE) {
 		return;
 	}
 
@@ -5505,13 +5506,13 @@ void Game::sendSingleSoundEffect(const Position& pos, SoundEffect_t soundId, Cre
 	map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			SourceEffect_t source = SOUND_SOURCE_TYPE_CREATURES;
+			SourceEffect_t source = SourceEffect_t::CREATURES;
 			if (!actor || actor->getNpc()) {
-				source = SOUND_SOURCE_TYPE_GLOBAL;
+				source = SourceEffect_t::GLOBAL;
 			} else if (actor == spectator) {
-				source = SOUND_SOURCE_TYPE_OWN;
+				source = SourceEffect_t::OWN;
 			} else if (actor->getPlayer()) {
-				source = SOUND_SOURCE_TYPE_OTHERS;
+				source = SourceEffect_t::OTHERS;
 			}
 
 			tmpPlayer->sendSingleSoundEffect(pos, soundId, source);
@@ -5521,7 +5522,7 @@ void Game::sendSingleSoundEffect(const Position& pos, SoundEffect_t soundId, Cre
 
 void Game::sendDoubleSoundEffect(const Position& pos, SoundEffect_t mainSoundEffect, SoundEffect_t secondarySoundEffect, Creature* actor/* = nullptr*/)
 {
-	if (secondarySoundEffect == SOUND_EFFECT_TYPE_SILENCE) {
+	if (secondarySoundEffect == SoundEffect_t::SILENCE) {
 		sendSingleSoundEffect(pos, mainSoundEffect, actor);
 		return;
 	}
@@ -5530,13 +5531,13 @@ void Game::sendDoubleSoundEffect(const Position& pos, SoundEffect_t mainSoundEff
 	map.getSpectators(spectators, pos, false, true);
 	for (Creature* spectator : spectators) {
 		if (Player* tmpPlayer = spectator->getPlayer()) {
-			SourceEffect_t source = SOUND_SOURCE_TYPE_CREATURES;
+			SourceEffect_t source = SourceEffect_t::CREATURES;
 			if (!actor || actor->getNpc()) {
-				source = SOUND_SOURCE_TYPE_GLOBAL;
+				source = SourceEffect_t::GLOBAL;
 			} else if (actor == spectator) {
-				source = SOUND_SOURCE_TYPE_OWN;
+				source = SourceEffect_t::OWN;
 			} else if (actor->getPlayer()) {
-				source = SOUND_SOURCE_TYPE_OTHERS;
+				source = SourceEffect_t::OTHERS;
 			}
 
 			tmpPlayer->sendDoubleSoundEffect(pos, mainSoundEffect, source, secondarySoundEffect, source);
@@ -5563,7 +5564,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		if (auto playerArmor = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR);
 			playerArmor != nullptr && playerArmor->getTier()) {
 			double_t chance = playerArmor->getDodgeChance();
-			double_t randomChance = uniform_random(0, 10000) / 100;
+			auto randomChance = static_cast<double_t>(uniform_random(0, 10000) / 100);
 			if (chance > 0 && randomChance < chance) {
 				InternalGame::sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition(), attacker);
 				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
@@ -5586,7 +5587,10 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			uint32_t primaryReflect = target->getMonster()->getReflectValue(damage.primary.type);
 			if (primaryReflect > 0) {
 				damageReflected.primary.type = damage.primary.type;
-				damageReflected.primary.value = std::ceil((damage.primary.value) * (primaryReflect / 100.));
+				auto convertedValue = convertToSafeInteger<int64_t>(
+					std::ceil((static_cast<double>(damage.primary.value)) * (primaryReflect / 100.))
+				);
+				damageReflected.primary.value = convertedValue;
 				damageReflected.extension = true;
 				damageReflected.exString = "(damage reflection)";
 				canReflect = true;

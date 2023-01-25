@@ -1991,13 +1991,13 @@ uint32_t Player::isMuted() const
 		return 0;
 	}
 
-	int32_t muteTicks = 0;
+	int64_t muteTicks = 0;
 	for (Condition* condition : conditions) {
 		if (condition->getType() == CONDITION_MUTED && condition->getTicks() > muteTicks) {
 			muteTicks = condition->getTicks();
 		}
 	}
-	return static_cast<uint32_t>(muteTicks) / 1000;
+	return convertToSafeInteger<uint32_t>(muteTicks) / 1000;
 }
 
 void Player::addMessageBuffer()
@@ -2246,13 +2246,13 @@ void Player::removeExperience(uint64_t exp, bool sendText/* = false*/)
 		// Player stats loss for vocations level <= 8
 		if (vocation->getId() != VOCATION_NONE && level <= 8) {
 			const Vocation* noneVocation = g_vocations().getVocation(VOCATION_NONE);
-			healthMax = std::max<int64_t>(0, healthMax - noneVocation->getHPGain());
-			manaMax = std::max<int64_t>(0, manaMax - noneVocation->getManaGain());
-			capacity = std::max<int32_t>(0, capacity - noneVocation->getCapGain());
+			healthMax = convertToSafeInteger<int64_t>(healthMax - noneVocation->getHPGain());
+			manaMax = convertToSafeInteger<uint32_t>(manaMax - noneVocation->getManaGain());
+			capacity = convertToSafeInteger<uint32_t>(capacity - noneVocation->getCapGain());
 		} else {
-			healthMax = std::max<int64_t>(0, healthMax - vocation->getHPGain());
-			manaMax = std::max<int64_t>(0, manaMax - vocation->getManaGain());
-			capacity = std::max<int32_t>(0, capacity - vocation->getCapGain());
+			healthMax = convertToSafeInteger<int64_t>(healthMax - vocation->getHPGain());
+			manaMax = convertToSafeInteger<uint32_t>(manaMax - vocation->getManaGain());
+			capacity = convertToSafeInteger<uint32_t>(capacity - vocation->getCapGain());
 		}
 		currLevelExp = Player::getExpForLevel(level);
 	}
@@ -2395,7 +2395,8 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 				if (field) {
 					const int16_t& fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
 					if (fieldAbsorbPercent != 0) {
-						damage -= std::round(damage * (fieldAbsorbPercent / 100.));
+						auto safeConverted = convertToSafeInteger<int64_t>(std::round(damage * fieldAbsorbPercent));
+						damage -= safeConverted / 100;
 
 						uint16_t charges = item->getCharges();
 						if (charges != 0) {
@@ -2413,7 +2414,10 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 						CombatDamage reflectDamage;
 						reflectDamage.origin = ORIGIN_SPELL;
 						reflectDamage.primary.type = combatType;
-						reflectDamage.primary.value = std::round(-damage * (reflectPercent / 100.));
+						auto safeConverted = convertToSafeInteger<int64_t>(
+							std::round(-damage * (reflectPercent / 100))
+						);
+						reflectDamage.primary.value = safeConverted;
 
 						Combat::doCombatHealth(this, attacker, reflectDamage, params);
 					}
@@ -2431,7 +2435,10 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 				const int16_t& imbuementAbsorbPercent = imbuementInfo.imbuement->absorbPercent[combatTypeToIndex(combatType)];
 
 				if (imbuementAbsorbPercent != 0) {
-					damage -= std::ceil(damage * (imbuementAbsorbPercent / 100.));
+					auto safeConverted = convertToSafeInteger<int64_t>(
+						std::ceil(damage * (imbuementAbsorbPercent / 100))
+					);
+					damage -= safeConverted;
 				}
 			}
 
@@ -2458,7 +2465,7 @@ void Player::death(Creature* lastHitCreature)
 {
 	loginPosition = town->getTemplePosition();
 
-	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SOUND_EFFECT_TYPE_HUMAN_FEMALE_DEATH : SOUND_EFFECT_TYPE_HUMAN_MALE_DEATH, this);
+	g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_DEATH : SoundEffect_t::HUMAN_MALE_DEATH, this);
 	if (skillLoss) {
 		uint8_t unfairFightReduction = 100;
 		int playerDmg = 0;
@@ -2574,9 +2581,9 @@ void Player::death(Creature* lastHitCreature)
 
 			while (level > 1 && experience < Player::getExpForLevel(level)) {
 				--level;
-				healthMax = std::max<int64_t>(0, healthMax - vocation->getHPGain());
-				manaMax = std::max<int64_t>(0, manaMax - vocation->getManaGain());
-				capacity = std::max<int32_t>(0, capacity - vocation->getCapGain());
+				healthMax = convertToSafeInteger<int64_t>(healthMax - vocation->getHPGain());
+				manaMax = convertToSafeInteger<uint32_t>(manaMax - vocation->getManaGain());
+				capacity = convertToSafeInteger<uint32_t>(capacity - vocation->getCapGain());
 			}
 
 			if (oldLevel != level) {
@@ -4504,7 +4511,7 @@ bool Player::lastHitIsPlayer(Creature* lastHitCreature)
 void Player::changeHealth(int64_t healthChange, bool sendHealthChange/* = true*/)
 {
 	if (PLAYER_SOUND_HEALTH_CHANGE >= static_cast<uint32_t>(uniform_random(1, 100))) {
-		g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SOUND_EFFECT_TYPE_HUMAN_FEMALE_BARK : SOUND_EFFECT_TYPE_HUMAN_MALE_BARK, this);
+		g_game().sendSingleSoundEffect(this->getPosition(), sex == PLAYERSEX_FEMALE ? SoundEffect_t::HUMAN_FEMALE_BARK : SoundEffect_t::HUMAN_MALE_BARK, this);
 	}
 
 	Creature::changeHealth(healthChange, sendHealthChange);
@@ -6011,12 +6018,13 @@ void Player::triggerMomentum() {
 			auto condItem = *it;
 			ConditionType_t type = condItem->getType();
 			uint32_t spellId = condItem->getSubId();
-			int32_t ticks = condItem->getTicks();
-			int32_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
+			int64_t ticks = condItem->getTicks();
+			int64_t newTicks = (ticks <= 2000) ? 0 : ticks - 2000;
 			triggered = true;
 			if (type == CONDITION_SPELLCOOLDOWN || (type == CONDITION_SPELLGROUPCOOLDOWN && spellId > SPELLGROUP_SUPPORT)) {
 				condItem->setTicks(newTicks);
-				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), newTicks) : sendSpellCooldown(static_cast<uint16_t>(spellId), newTicks);
+				auto safeConverted = convertToSafeInteger<uint32_t>(newTicks);
+				type == CONDITION_SPELLGROUPCOOLDOWN ? sendSpellGroupCooldown(static_cast<SpellGroup_t>(spellId), safeConverted) : sendSpellCooldown(static_cast<uint16_t>(spellId), safeConverted);
 			}
 			++it;
 		}
@@ -6241,84 +6249,94 @@ Item* Player::getItemFromDepotSearch(uint16_t itemId, const Position& pos)
 	return nullptr;
 }
 
-SoundEffect_t Player::getHitSoundEffect()
+SoundEffect_t Player::getHitSoundEffect() const
 {
 	// Distance sound effects
-	if (Item* tool = getWeapon()) {
-    	const ItemType& it = Item::items[tool->getID()];
-		if (it.weaponType == WEAPON_AMMO) {
-			if (it.ammoType == AMMO_BOLT) {
-				return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW_SHOT;
-			} else if (it.ammoType == AMMO_ARROW) {
-				if (it.shootType == CONST_ANI_BURSTARROW) {
-					return SOUND_EFFECT_TYPE_BURST_ARROW_EFFECT;
-				} else if (it.shootType == CONST_ANI_DIAMONDARROW) {
-					return SOUND_EFFECT_TYPE_DIAMOND_ARROW_EFFECT;
-				}
-			} else {
-				return SOUND_EFFECT_TYPE_DIST_ATK_THROW_SHOT;
+	const Item* tool = getWeapon();
+	if (tool == nullptr) {
+		return SoundEffect_t::SILENCE;
+	}
+
+	const ItemType& it = Item::items[tool->getID()];
+	switch (it.weaponType) {
+	case WEAPON_AMMO: {
+		if (it.ammoType == AMMO_BOLT) {
+			return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
+		} else if (it.ammoType == AMMO_ARROW) {
+			if (it.shootType == CONST_ANI_BURSTARROW) {
+				return SoundEffect_t::BURST_ARROW_EFFECT;
+			} else if (it.shootType == CONST_ANI_DIAMONDARROW) {
+				return SoundEffect_t::DIAMOND_ARROW_EFFECT;
 			}
-		} else if (it.weaponType == WEAPON_DISTANCE) {
-			if (tool->getAmmoType() == AMMO_BOLT) {
-				return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW_SHOT;
-			} else if (tool->getAmmoType() == AMMO_ARROW) {
-				return SOUND_EFFECT_TYPE_DIST_ATK_BOW_SHOT;
-			} else {
-				return SOUND_EFFECT_TYPE_DIST_ATK_THROW_SHOT;
-			}
-		} else if (it.weaponType == WEAPON_WAND) {
-			// Separate between wand and rod here
-			//return SOUND_EFFECT_TYPE_DIST_ATK_ROD_SHOT;
-			return SOUND_EFFECT_TYPE_DIST_ATK_WAND_SHOT;
+		} else {
+			return SoundEffect_t::DIST_ATK_THROW_SHOT;
 		}
 	}
+	case WEAPON_DISTANCE: {
+		if (tool->getAmmoType() == AMMO_BOLT) {
+			return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;
+		} else if (tool->getAmmoType() == AMMO_ARROW) {
+			return SoundEffect_t::DIST_ATK_BOW_SHOT;
+		} else {
+			return SoundEffect_t::DIST_ATK_THROW_SHOT;
+		}
+	}
+	case WEAPON_WAND: {
+		// Separate between wand and rod here
+		//return SoundEffect_t::DIST_ATK_ROD_SHOT;
+		return SoundEffect_t::DIST_ATK_WAND_SHOT;
+	}
+	default: {
+		return SoundEffect_t::SILENCE;
+	}
+	} // switch
 
-	return SOUND_EFFECT_TYPE_SILENCE;
+	return SoundEffect_t::SILENCE;
 }
 
-SoundEffect_t Player::getAttackSoundEffect()
+SoundEffect_t Player::getAttackSoundEffect() const
 {
-	Item* tool = getWeapon();
-	if (!tool) {
-		return SOUND_EFFECT_TYPE_HUMAN_CLOSE_ATK_FIST;
+	const Item* tool = getWeapon();
+	if (tool == nullptr) {
+		return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 	}
 
-    const ItemType& it = Item::items[tool->getID()];
+	const ItemType& it = Item::items[tool->getID()];
 	if (it.weaponType == WEAPON_NONE || it.weaponType == WEAPON_SHIELD) {
-		return SOUND_EFFECT_TYPE_HUMAN_CLOSE_ATK_FIST;
+		return SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 	}
 
 	switch (it.weaponType) {
 		case WEAPON_AXE: {
-			return SOUND_EFFECT_TYPE_MELEE_ATK_AXE;
+			return SoundEffect_t::MELEE_ATK_AXE;
 		}
 		case WEAPON_SWORD: {
-			return SOUND_EFFECT_TYPE_MELEE_ATK_SWORD;
+			return SoundEffect_t::MELEE_ATK_SWORD;
 		}
 		case WEAPON_CLUB: {
-			return SOUND_EFFECT_TYPE_MELEE_ATK_CLUB;
+			return SoundEffect_t::MELEE_ATK_CLUB;
 		}
 		case WEAPON_AMMO:
 		case WEAPON_DISTANCE: {
 			if (tool->getAmmoType() == AMMO_BOLT) {
-				return SOUND_EFFECT_TYPE_DIST_ATK_CROSSBOW;
+				return SoundEffect_t::DIST_ATK_CROSSBOW;
 			} else if (tool->getAmmoType() == AMMO_ARROW) {
-				return SOUND_EFFECT_TYPE_DIST_ATK_BOW;
+				return SoundEffect_t::DIST_ATK_BOW;
 			} else {
-				return SOUND_EFFECT_TYPE_DIST_ATK_THROW;
+				return SoundEffect_t::DIST_ATK_THROW;
 			}
 			
 			break;
 		}
 		case WEAPON_WAND: {
-			return SOUND_EFFECT_TYPE_MAGICAL_RANGE_ATK;
+			return SoundEffect_t::MAGICAL_RANGE_ATK;
 		}
 		default: {
-			return SOUND_EFFECT_TYPE_SILENCE;
+			return SoundEffect_t::SILENCE;
 		}
 	}
 
-	return SOUND_EFFECT_TYPE_SILENCE;
+	return SoundEffect_t::SILENCE;
 }
 
 std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> Player::requestLockerItems(

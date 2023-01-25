@@ -588,7 +588,7 @@ CombatDamage Combat::applyImbuementElementalDamage(Item* item, CombatDamage dama
 		damage.primary.value = damage.primary.value * (1 - damagePercent);
 		damage.secondary.value = damage.primary.value * (damagePercent);
  
-		if (imbuementInfo.imbuement->soundEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (imbuementInfo.imbuement->soundEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(item->getPosition(), imbuementInfo.imbuement->soundEffect, item->getHoldingPlayer());
 		}
 
@@ -761,9 +761,9 @@ void Combat::combatTileEffects(const SpectatorHashSet& spectators, Creature* cas
 		Game::addMagicEffect(spectators, tile->getPosition(), params.impactEffect);
 	}
 
-	if (params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
 		g_game().sendDoubleSoundEffect(tile->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
-	} else if (params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
 		g_game().sendSingleSoundEffect(tile->getPosition(), params.soundCastEffect, caster);
 	}
 }
@@ -774,9 +774,9 @@ void Combat::postCombatEffects(Creature* caster, const Position& pos, const Comb
 		addDistanceEffect(caster, caster->getPosition(), pos, params.distanceEffect);
 	}
 
-	if (params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+	if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
 		g_game().sendDoubleSoundEffect(pos, params.soundCastEffect, params.soundImpactEffect, caster);
-	} else if (params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+	} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
 		g_game().sendSingleSoundEffect(pos, params.soundCastEffect, caster);
 	}
 }
@@ -1012,9 +1012,9 @@ void Combat::doCombatHealth(Creature* caster, Creature* target, CombatDamage& da
 			params.targetCallback->onTargetCombat(caster, target);
 		}
 
-		if (target && params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
-		} else if (target && params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
@@ -1080,9 +1080,9 @@ void Combat::doCombatMana(Creature* caster, Creature* target, CombatDamage& dama
 			params.targetCallback->onTargetCombat(caster, target);
 		}
 
-		if (target && params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
-		} else if (target && params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
@@ -1126,9 +1126,9 @@ void Combat::doCombatCondition(Creature* caster, Creature* target, const CombatP
 			params.targetCallback->onTargetCombat(caster, target);
 		}
 
-		if (target && params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
-		} else if (target && params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
@@ -1159,9 +1159,9 @@ void Combat::doCombatDispel(Creature* caster, Creature* target, const CombatPara
 		}
 
 
-		if (target && params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (target && params.soundImpactEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
-		} else if (target && params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		} else if (target && params.soundCastEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
@@ -1190,9 +1190,9 @@ void Combat::doCombatDefault(Creature* caster, Creature* target, const CombatPar
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
 
-		if (params.soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (params.soundImpactEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(target->getPosition(), params.soundCastEffect, params.soundImpactEffect, caster);
-		} else if (params.soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		} else if (params.soundCastEffect != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}

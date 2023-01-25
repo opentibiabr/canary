@@ -823,7 +823,7 @@ void Creature::changeMana(int64_t manaChange)
 	if (manaChange > 0) {
 		mana += std::min<int64_t>(manaChange, getMaxMana() - mana);
 	} else {
-		mana = std::max<int64_t>(0, mana + manaChange);
+		mana = convertToSafeInteger<uint32_t>(mana + manaChange);
 	}
 }
 
@@ -871,7 +871,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int6
 		}
 
 		if (checkDefense && hasDefense && canUseDefense) {
-			int64_t defense = static_cast<int64_t>(getDefense());
+			auto defense = static_cast<int64_t>(getDefense());
 			damage -= uniform_random(defense / 2, defense);
 			if (damage <= 0) {
 				damage = 0;
@@ -881,7 +881,7 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int6
 		}
 
 		if (checkArmor) {
-			int64_t armor = static_cast<int64_t>(getArmor());
+			auto armor = static_cast<int64_t>(getArmor());
 			if (armor > 3) {
 				damage -= uniform_random(armor / 2, armor - (armor % 2 + 1));
 			} else if (armor > 0) {
@@ -1046,7 +1046,7 @@ uint64_t Creature::getGainedExperience(Creature* attacker) const
 	return std::floor(getDamageRatio(attacker) * getLostExperience());
 }
 
-void Creature::addDamagePoints(Creature* attacker, int32_t damagePoints)
+void Creature::addDamagePoints(Creature* attacker, int64_t damagePoints)
 {
 	if (damagePoints <= 0) {
 		return;

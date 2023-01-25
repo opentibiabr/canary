@@ -51,8 +51,8 @@ struct spellBlock_t {
 	bool combatSpell = false;
 	bool isMelee = false;
 
-	SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
-	SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SILENCE;
+	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+	SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 };
 
 class MonsterType
@@ -107,7 +107,7 @@ class MonsterType
 		uint32_t soundChance = 0;
 		uint32_t soundSpeedTicks = 0;
 		std::vector<SoundEffect_t> soundVector;
-		SoundEffect_t deathSound = SOUND_EFFECT_TYPE_SILENCE;
+		SoundEffect_t deathSound = SoundEffect_t::SILENCE;
 
 		int32_t creatureAppearEvent = -1;
 		int32_t creatureDisappearEvent = -1;
@@ -225,8 +225,8 @@ class MonsterSpell
 		ConditionType_t conditionType = CONDITION_NONE;
 		CombatType_t combatType = COMBAT_UNDEFINEDDAMAGE;
 
-		SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
-		SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SILENCE;
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SILENCE;
 };
 
 class Monsters

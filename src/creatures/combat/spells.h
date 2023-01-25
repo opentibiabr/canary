@@ -90,8 +90,8 @@ class BaseSpell
 		virtual bool castSpell(Creature* creature) = 0;
 		virtual bool castSpell(Creature* creature, Creature* target) = 0;
 
-		SoundEffect_t soundImpactEffect = SOUND_EFFECT_TYPE_SILENCE;
-		SoundEffect_t soundCastEffect = SOUND_EFFECT_TYPE_SPELL_OR_RUNE;
+		SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
+		SoundEffect_t soundCastEffect = SoundEffect_t::SPELL_OR_RUNE;
 };
 
 class CombatSpell final : public Script, public BaseSpell

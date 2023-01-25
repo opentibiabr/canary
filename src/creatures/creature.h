@@ -352,7 +352,7 @@ class Creature : virtual public Thing
 
 		void onDeath();
 		virtual uint64_t getGainedExperience(Creature* attacker) const;
-		void addDamagePoints(Creature* attacker, int32_t damagePoints);
+		void addDamagePoints(Creature* attacker, int64_t damagePoints);
 		bool hasBeenAttacked(uint32_t attackerId);
 
 		//combat event functions
@@ -492,7 +492,7 @@ class Creature : virtual public Thing
 			}
 		}
 		struct CountBlock_t {
-			int32_t total;
+			int64_t total;
 			int64_t ticks;
 		};
 		using CountMap = std::map<uint32_t, CountBlock_t>;

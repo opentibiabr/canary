@@ -135,7 +135,7 @@ void Condition::serialize(PropWriteStream& propWriteStream)
 	propWriteStream.write<uint32_t>(id);
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_TICKS);
-	propWriteStream.write<uint32_t>(ticks);
+	propWriteStream.write<uint32_t>(static_cast<uint32_t>(ticks));
 
 	propWriteStream.write<uint8_t>(CONDITIONATTR_ISBUFF);
 	propWriteStream.write<uint8_t>(isBuff);
@@ -168,7 +168,7 @@ bool Condition::executeCondition(Creature* creature, int64_t interval)
 		return false;
 	}
 
-	if (creature && tickSound != SOUND_EFFECT_TYPE_SILENCE) {
+	if (creature && tickSound != SoundEffect_t::SILENCE) {
 		g_game().sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
 	}
 
@@ -335,11 +335,6 @@ bool ConditionGeneric::startCondition(Creature* creature)
 	return Condition::startCondition(creature);
 }
 
-bool ConditionGeneric::executeCondition(Creature* creature, int64_t interval)
-{
-	return Condition::executeCondition(creature, interval);
-}
-
 void ConditionGeneric::endCondition(Creature*)
 {
 	//
@@ -350,7 +345,7 @@ void ConditionGeneric::addCondition(Creature* creature, const Condition* addCond
 	if (updateCondition(addCondition)) {
 		setTicks(addCondition->getTicks());
 
-		if (creature && addSound != SOUND_EFFECT_TYPE_SILENCE) {
+		if (creature && addSound != SoundEffect_t::SILENCE) {
 			g_game().sendSingleSoundEffect(creature->getPosition(), addSound, creature);
 		}
 	}
@@ -393,18 +388,18 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 		memcpy(skills, conditionAttrs.skills, sizeof(skills));
 		memcpy(skillsPercent, conditionAttrs.skillsPercent, sizeof(skillsPercent));
 		memcpy(stats, conditionAttrs.stats, sizeof(stats));
-		std::copy(std::begin(conditionAttrs.statsPercent), std::end(conditionAttrs.statsPercent), std::begin(statsPercent));
-		std::copy(std::begin(conditionAttrs.buffs), std::end(conditionAttrs.buffs), std::begin(buffs));
-		std::copy(std::begin(conditionAttrs.buffsPercent), std::end(conditionAttrs.buffsPercent), std::begin(buffsPercent));
+		std::ranges::copy(std::begin(conditionAttrs.statsPercent), std::end(conditionAttrs.statsPercent), std::begin(statsPercent));
+		std::ranges::copy(std::begin(conditionAttrs.buffs), std::end(conditionAttrs.buffs), std::begin(buffs));
+		std::ranges::copy(std::begin(conditionAttrs.buffsPercent), std::end(conditionAttrs.buffsPercent), std::begin(buffsPercent));
 		updatePercentBuffs(creature);
 		updateBuffs(creature);
 		disableDefense = conditionAttrs.disableDefense;
 
 		if (Player* player = creature->getPlayer()) {
-		updatePercentSkills(player);
-		updateSkills(player);
-		updatePercentStats(player);
-		updateStats(player);
+			updatePercentSkills(player);
+			updateSkills(player);
+			updatePercentStats(player);
+			updateStats(player);
 		}
 	}
 }
@@ -557,11 +552,6 @@ void ConditionAttributes::updateBuffs(Creature* creature)
 	if (creature->getMonster() && needUpdate) {
 		g_game().updateCreatureIcon(creature);
 	}
-}
-
-bool ConditionAttributes::executeCondition(Creature* creature, int64_t interval)
-{
-  return ConditionGeneric::executeCondition(creature, interval);
 }
 
 void ConditionAttributes::endCondition(Creature* creature)
@@ -906,14 +896,14 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int64_t interva
 		}
 	}
 
-	return ConditionGeneric::executeCondition(creature, interval);
+	return executeCondition(creature, interval);
 }
 
 bool ConditionRegeneration::setParam(ConditionParam_t param, int64_t value)
 {
 	bool ret = ConditionGeneric::setParam(param, value);
 
-	auto convertSafeValue = std::clamp(static_cast<uint32_t>(value), 0u, std::numeric_limits<uint32_t>::max());
+	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_HEALTHGAIN:
 			healthGain = convertSafeValue;
@@ -1087,7 +1077,7 @@ bool ConditionSoul::executeCondition(Creature* creature, int64_t interval)
 bool ConditionSoul::setParam(ConditionParam_t param, int64_t value)
 {
 	bool ret = ConditionGeneric::setParam(param, value);
-	auto convertSafeValue = std::clamp(static_cast<uint32_t>(value), 0u, std::numeric_limits<uint32_t>::max());
+	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_SOULGAIN:
 			soulGain = convertSafeValue;
@@ -1106,7 +1096,7 @@ bool ConditionDamage::setParam(ConditionParam_t param, int64_t value)
 {
 	bool ret = Condition::setParam(param, value);
 
-	auto convertSafeValue = std::clamp(static_cast<uint32_t>(value), 0u, std::numeric_limits<uint32_t>::max());
+	auto convertSafeValue = convertToSafeInteger<uint32_t>(value);
 	switch (param) {
 		case CONDITION_PARAM_OWNER:
 			owner = convertSafeValue;
@@ -1210,7 +1200,7 @@ bool ConditionDamage::updateCondition(const Condition* addCondition)
 	return conditionDamage.getTotalDamage() > getTotalDamage();
 }
 
-bool ConditionDamage::addDamage(int64_t rounds, int32_t time, int64_t value)
+bool ConditionDamage::addDamage(int64_t rounds, time_t time, int64_t value)
 {
 	time = std::max<int32_t>(time, EVENT_CREATURE_THINK_INTERVAL);
 	if (rounds == -1) {
@@ -1374,7 +1364,7 @@ bool ConditionDamage::doDamage(Creature* creature, int64_t healthChange)
 		return false;
 	}
 
-	if (creature && tickSound != SOUND_EFFECT_TYPE_SILENCE) {
+	if (creature && tickSound != SoundEffect_t::SILENCE) {
 		g_game().sendSingleSoundEffect(creature->getPosition(), tickSound, creature);
 	}
 
@@ -1529,8 +1519,7 @@ bool ConditionSpeed::setParam(ConditionParam_t param, int64_t value)
 		return false;
 	}
 
-	auto convertSafeValue = std::clamp(static_cast<int32_t>(value), 0, std::numeric_limits<int32_t>::max());
-	speedDelta = static_cast<int32_t>(value);
+	speedDelta = convertToSafeInteger<int32_t>(value);
 
 	if (value > 0) {
 		conditionType = CONDITION_HASTE;
@@ -1587,8 +1576,7 @@ bool ConditionSpeed::startCondition(Creature* creature)
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		// convert to save int32_t
 		auto randomValue = uniform_random(min, max);
-		auto convertSafeValue = std::clamp(static_cast<int32_t>(randomValue), 0, std::numeric_limits<int32_t>::max());
-		speedDelta = convertSafeValue;
+		speedDelta = convertToSafeInteger<int32_t>(randomValue);
 	}
 
 	g_game().changeSpeed(creature, speedDelta);
@@ -1630,8 +1618,7 @@ void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondit
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		// convert to save int32_t
 		auto randomValue = uniform_random(min, max);
-		auto convertSafeValue = std::clamp(static_cast<int32_t>(randomValue), 0, std::numeric_limits<int32_t>::max());
-		speedDelta = convertSafeValue;
+		speedDelta = convertToSafeInteger<int32_t>(randomValue);
 	}
 
 	int32_t newSpeedChange = (speedDelta - oldSpeedDelta);
@@ -1729,11 +1716,6 @@ bool ConditionOutfit::startCondition(Creature* creature)
 	return true;
 }
 
-bool ConditionOutfit::executeCondition(Creature* creature, int64_t interval)
-{
-	return Condition::executeCondition(creature, interval);
-}
-
 void ConditionOutfit::endCondition(Creature* creature)
 {
 	g_game().internalCreatureChangeOutfit(creature, creature->getDefaultOutfit());
@@ -1778,8 +1760,7 @@ bool ConditionLight::startCondition(Creature* creature)
 	}
 
 	internalLightTicks = 0;
-	auto convertSafeValue = std::clamp(static_cast<uint32_t>(ticks), 0u, std::numeric_limits<uint32_t>::max());
-	lightChangeInterval = ticks / lightInfo.level;
+	lightChangeInterval = convertToSafeInteger<uint32_t>(ticks) / lightInfo.level;
 	creature->setCreatureLight(lightInfo);
 	g_game().changeLight(creature);
 	return true;
@@ -1817,8 +1798,7 @@ void ConditionLight::addCondition(Creature* creature, const Condition* condition
 		const ConditionLight& conditionLight = static_cast<const ConditionLight&>(*condition);
 		lightInfo.level = conditionLight.lightInfo.level;
 		lightInfo.color = conditionLight.lightInfo.color;
-		auto convertSafeValue = std::clamp(static_cast<uint32_t>(ticks), 0u, std::numeric_limits<uint32_t>::max());
-		lightChangeInterval = ticks / lightInfo.level;
+		lightChangeInterval = convertToSafeInteger<uint32_t>(ticks) / lightInfo.level;
 		internalLightTicks = 0;
 		creature->setCreatureLight(lightInfo);
 		g_game().changeLight(creature);
@@ -1900,8 +1880,7 @@ void ConditionSpellCooldown::addCondition(Creature* creature, const Condition* a
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
-				auto convertSafeValue = std::clamp(static_cast<uint32_t>(ticks), 0u, std::numeric_limits<uint32_t>::max());
-				player->sendSpellCooldown(static_cast<uint16_t>(subId), convertSafeValue);
+				player->sendSpellCooldown(static_cast<uint16_t>(subId), getTicksSpellCooldown());
 			}
 		}
 	}
@@ -1916,8 +1895,7 @@ bool ConditionSpellCooldown::startCondition(Creature* creature)
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
-			auto convertSafeValue = std::clamp(static_cast<uint32_t>(ticks), 0u, std::numeric_limits<uint32_t>::max());
-			player->sendSpellCooldown(static_cast<uint16_t>(subId), convertSafeValue);
+			player->sendSpellCooldown(static_cast<uint16_t>(subId), getTicksSpellCooldown());
 		}
 	}
 	return true;
@@ -1931,7 +1909,7 @@ void ConditionSpellGroupCooldown::addCondition(Creature* creature, const Conditi
 		if (subId != 0 && ticks > 0) {
 			Player* player = creature->getPlayer();
 			if (player) {
-				player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
+				player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), getTicksSpellCooldown());
 			}
 		}
 	}
@@ -1946,7 +1924,7 @@ bool ConditionSpellGroupCooldown::startCondition(Creature* creature)
 	if (subId != 0 && ticks > 0) {
 		Player* player = creature->getPlayer();
 		if (player) {
-			player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), ticks);
+			player->sendSpellGroupCooldown(static_cast<SpellGroup_t>(subId), getTicksSpellCooldown());
 		}
 	}
 	return true;

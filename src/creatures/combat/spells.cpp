@@ -283,12 +283,12 @@ bool CombatSpell::castSpell(Creature* creature)
 		pos = creature->getPosition();
 	}
 
-	if (soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_CASTSOUND, soundCastEffect);
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, getEnumClassNumber(soundCastEffect));
 	}
 
-	if (soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_IMPACTSOUND, soundImpactEffect);
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, getEnumClassNumber(soundImpactEffect));
 	}
 
 	combat->doCombat(creature, pos);
@@ -318,12 +318,12 @@ bool CombatSpell::castSpell(Creature* creature, Creature* target)
 		return executeCastSpell(creature, var);
 	}
 
-	if (soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_CASTSOUND, soundCastEffect);
+	if (soundCastEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_CASTSOUND, getEnumClassNumber(soundCastEffect));
 	}
 
-	if (soundImpactEffect != SOUND_EFFECT_TYPE_SILENCE) {
-		combat->setParam(COMBAT_PARAM_IMPACTSOUND, soundImpactEffect);
+	if (soundImpactEffect != SoundEffect_t::SILENCE) {
+		combat->setParam(COMBAT_PARAM_IMPACTSOUND, getEnumClassNumber(soundImpactEffect));
 	}
 
 	if (combat->hasArea()) {
@@ -606,7 +606,7 @@ void Spell::postCastSpell(Player* player, bool finishedCast /*= true*/, bool pay
 			player->addInFightTicks();
 		}
 
-		if (player && soundCastEffect != SOUND_EFFECT_TYPE_SILENCE) {
+		if (player && soundCastEffect != SoundEffect_t::SILENCE) {
 			g_game().sendDoubleSoundEffect(player->getPosition(), soundCastEffect, soundImpactEffect, player);
 		}
 	}

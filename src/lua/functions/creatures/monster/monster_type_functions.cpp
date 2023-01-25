@@ -1556,7 +1556,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetSounds(lua_State* L) {
 	lua_createtable(L, monsterType->info.soundVector.size(), 0);
 	for (const auto& sound : monsterType->info.soundVector) {
 		lua_createtable(L, 0, 1);
-		lua_pushnumber(L, sound);
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(sound)));
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
@@ -1572,7 +1572,7 @@ int MonsterTypeFunctions::luaMonsterTypedeathSound(lua_State* L) {
 	}
 
 	if (lua_gettop(L) == 1) {
-		lua_pushnumber(L, monsterType->info.deathSound);
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(monsterType->info.deathSound)));
 	} else {
 		monsterType->info.deathSound = getNumber<SoundEffect_t>(L, 2);
 		pushBoolean(L, true);

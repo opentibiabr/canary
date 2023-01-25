@@ -564,7 +564,7 @@ int NpcTypeFunctions::luaNpcTypeGetSounds(lua_State* L) {
 	lua_createtable(L, npcType->info.soundVector.size(), 0);
 	for (const auto& sound : npcType->info.soundVector) {
 		lua_createtable(L, 0, 1);
-		lua_pushnumber(L, sound);
+		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(sound)));
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

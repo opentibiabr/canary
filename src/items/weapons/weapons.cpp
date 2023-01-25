@@ -167,7 +167,7 @@ bool Weapon::useFist(Player* player, Creature* target)
 	params.combatType = COMBAT_PHYSICALDAMAGE;
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
-	params.soundImpactEffect = SOUND_EFFECT_TYPE_HUMAN_CLOSE_ATK_FIST;
+	params.soundImpactEffect = SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 
 	CombatDamage damage;
 	damage.origin = ORIGIN_MELEE;
@@ -202,7 +202,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int
 		damage.secondary.type = getElementType();
 
 		if (player) {
-			if (params.soundCastEffect == SOUND_EFFECT_TYPE_SILENCE) {
+			if (params.soundCastEffect == SoundEffect_t::SILENCE) {
 				g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
 			} else {
 				g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
@@ -226,7 +226,7 @@ void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const
 	} else {
 		Combat::postCombatEffects(player, tile->getPosition(), params);
 		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
-		g_game().sendSingleSoundEffect(tile->getPosition(), SOUND_EFFECT_TYPE_PHYSICAL_RANGE_MISS, player);
+		g_game().sendSingleSoundEffect(tile->getPosition(), SoundEffect_t::PHYSICAL_RANGE_MISS, player);
 	}
 	onUsedWeapon(player, item, tile);
 }

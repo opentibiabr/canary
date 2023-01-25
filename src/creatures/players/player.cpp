@@ -462,45 +462,57 @@ void Player::updateInventoryWeight()
 	}
 }
 
-void Player::updateInventoryImbuement(bool init /* = false */)
+void Player::updateInventoryImbuement()
 {
+	// Get the tile the player is currently on
 	const Tile* playerTile = getTile();
+	// Check if the player is in a protection zone
 	bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
+	// Check if the player is in fight mode
 	bool isInFightMode = hasCondition(CONDITION_INFIGHT);
-	
-	uint8_t imbuementsToCheck = g_game().getPlayerActiveImbuements(getID());
-	for (auto item : getAllInventoryItems()) {
+	// Iterate through all items in the player's inventory
+	for (auto item : getAllInventoryItems())
+	{
+		// Iterate through all imbuement slots on the item
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++)
 		{
 			ImbuementInfo imbuementInfo;
+			// Get the imbuement information for the current slot
 			if (!item->getImbuementInfo(slotid, &imbuementInfo))
 			{
+				// If no imbuement is found, continue to the next slot
+				break;
+			}
+
+			// Imbuement from imbuementInfo, this variable reduces code complexity
+			auto imbuement = imbuementInfo.imbuement;
+			// Get the category of the imbuement
+			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+			// Parent of the imbued item
+			auto parent = item->getParent();
+			// If the imbuement is aggressive and the player is not in fight mode or is in a protection zone, or the item is in a container, ignore it.
+			if (categoryImbuement && categoryImbuement->agressive) {
+				if (!isInFightMode || isInProtectionZone || parent && parent->getContainer()) {
+					continue;
+				}
+			}
+			// If the item is not in the backpack slot and it's not a agressive imbuement, ignore it.
+			if (categoryImbuement && !categoryImbuement->agressive && parent && parent != this) {
 				continue;
 			}
 
-			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
-			if (categoryImbuement && categoryImbuement->agressive)
+			// If the imbuement's duration is 0, remove its stats and continue to the next slot
+			if (imbuementInfo.duration == 0)
 			{
-				if (isInProtectionZone || !isInFightMode)
-				{
-					break;
-				}
+				removeItemImbuementStats(imbuement);
+				continue;
 			}
 
-			if (init)
-			{
-				g_game().increasePlayerActiveImbuements(getID());
-			}
-
-			int32_t duration = std::max<int32_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
-			item->decayImbuementTime(slotid, imbuementInfo.imbuement->getID(), duration);
-			if (duration == 0)
-			{
-				removeItemImbuementStats(imbuementInfo.imbuement);
-				g_game().decreasePlayerActiveImbuements(getID());
-			}
-
-			imbuementsToCheck--;
+			SPDLOG_DEBUG("Decaying imbuement {} from item {} of player {}", imbuement->getName(), item->getName(), getName());
+			// Calculate the new duration of the imbuement, making sure it doesn't go below 0
+			uint64_t duration = std::max<uint64_t>(0, imbuementInfo.duration - EVENT_IMBUEMENT_INTERVAL / 1000);
+			// Update the imbuement's duration in the item
+			item->decayImbuementTime(slotid, imbuement->getID(), duration);
 		}
 	}
 }
@@ -1287,7 +1299,6 @@ void Player::onApplyImbuement(Imbuement *imbuement, Item *item, uint8_t slot, bo
 
 	item->addImbuement(slot, imbuement->getID(), baseImbuement->duration);
 	openImbuementWindow(item);
-	updateInventoryImbuement();
 }
 
 void Player::onClearImbuement(Item* item, uint8_t slot)

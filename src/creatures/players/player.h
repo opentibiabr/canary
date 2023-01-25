@@ -2198,7 +2198,7 @@ class Player final : public Creature, public Cylinder
 		 * @brief Starts checking the imbuements in the item so that the time decay is performed
 		 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
 		 */
-		void updateInventoryImbuement(bool init = false);
+		void updateInventoryImbuement();
 
 		void setNextWalkActionTask(SchedulerTask* task);
 		void setNextWalkTask(SchedulerTask* task);

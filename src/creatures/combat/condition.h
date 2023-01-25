@@ -50,8 +50,7 @@ class Condition
 			return ticks;
 		}
 		uint32_t getTicksSpellCooldown() const {
-			auto convertSafeValue = std::clamp(static_cast<uint32_t>(ticks), 0u, std::numeric_limits<uint32_t>::max());
-			return convertSafeValue;
+			return convertToSafeInteger<uint32_t>(ticks);
 		}
 		void setTicks(int64_t newTicks);
 

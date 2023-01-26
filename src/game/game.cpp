@@ -66,7 +66,7 @@ Game::~Game()
 void Game::resetMonsters() const{
 	for (const auto& [monsterId, monster] : getMonsters()) {
 		monster->clearTargetList();
-		monster->clearFriendList();
+		
 	}
 }
 

@@ -461,13 +461,13 @@ bool Party::canOpenCorpse(uint32_t ownerId) const
 	return false;
 }
 
-uint8_t Party::getHealthPercent(const Creature* creature) {
+uint8_t Party::getHealthPercent(const Creature* creature) const {
 	auto health = static_cast<double>(creature->getHealth());
 	auto maxHealth = static_cast<double>(std::max<int64_t>(creature->getMaxHealth(), 1));
 	return static_cast<uint8_t>(std::ceil((health / maxHealth) * 100));
 }
 
-uint8_t Party::getManaPercent(const Creature* creature) {
+uint8_t Party::getManaPercent(const Creature* creature) const {
 	auto mana = static_cast<double>(creature->getMana());
 	auto maxMana = static_cast<double>(std::max<int64_t>(creature->getMaxMana(), 1));
 	return static_cast<uint8_t>(std::ceil((mana / maxMana) * 100));

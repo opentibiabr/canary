@@ -562,7 +562,7 @@ enum TradeState_t : uint8_t {
 	TRADE_TRANSFER,
 };
 
-enum CombatType_t : uint16_t {
+enum CombatType_t : int64_t {
 	COMBAT_NONE = 0,
 
 	COMBAT_PHYSICALDAMAGE = 1 << 0,

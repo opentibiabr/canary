@@ -92,7 +92,8 @@ bool Monster::canWalkOnFieldType(CombatType_t combatType) const
 uint32_t Monster::getReflectValue(CombatType_t reflectType) const {
 	auto it = mType->info.reflectMap.find(reflectType);
 	if (it != mType->info.reflectMap.end()) {
-		return it->second;
+		auto convertedSafe = convertToSafeInteger<uint32_t>(it->second);
+		return convertedSafe;
 	}
 	return 0;
 }
@@ -100,7 +101,8 @@ uint32_t Monster::getReflectValue(CombatType_t reflectType) const {
 uint32_t Monster::getHealingCombatValue(CombatType_t healingType) const {
 	auto it = mType->info.healingMap.find(healingType);
 	if (it != mType->info.healingMap.end()) {
-		return it->second;
+		auto convertedSafe = convertToSafeInteger<uint32_t>(it->second);
+		return convertedSafe;
 	}
 	return 0;
 }
@@ -611,7 +613,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t mostDamage = 0;
+					int64_t mostDamage = 0;
 					do {
 						const auto& dmg = damageMap.find((*it)->getID());
 						if (dmg != damageMap.end()) {
@@ -673,7 +675,7 @@ BlockType_t Monster::blockHit(Creature* attacker, CombatType_t combatType, int64
 	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
 
 	if (damage != 0) {
-		int32_t elementMod = 0;
+		int64_t elementMod = 0;
 		auto it = mType->info.elementMap.find(combatType);
 		if (it != mType->info.elementMap.end()) {
 			elementMod = it->second;

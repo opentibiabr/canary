@@ -478,8 +478,8 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 				continue;
 			}
 
-			const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
-			if (categoryImbuement && categoryImbuement->agressive)
+			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
+				categoryImbuement && categoryImbuement->agressive)
 			{
 				if (isInProtectionZone || !isInFightMode)
 				{
@@ -1106,10 +1106,17 @@ void Player::updateSupplyTracker(const Item* item) const
 	}
 }
 
-void Player::updateImpactTracker(CombatType_t type, int32_t amount) const
+void Player::updateImpactTracker(int64_t type, int64_t amount) const
 {
 	if (client) {
-		client->sendUpdateImpactTracker(type, amount);
+		client->sendUpdateImpactTracker(static_cast<CombatType_t>(type), convertToSafeInteger<uint32_t>(amount));
+	}
+}
+
+void Player::updateInputAnalyzer(int64_t type, int64_t amount, std::string target) const
+{
+	if (client) {
+		client->sendUpdateInputAnalyzer(static_cast<CombatType_t>(type), convertToSafeInteger<uint32_t>(amount), target);
 	}
 }
 
@@ -2384,7 +2391,8 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int64_
 			if (it.abilities) {
 				const int16_t& absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
 				if (absorbPercent != 0) {
-					damage -= std::round(damage * (absorbPercent / 100.));
+					auto safeConverted = convertToSafeInteger<int64_t>(std::round(damage * (absorbPercent / 100.)));
+					damage -= safeConverted;
 
 					uint16_t charges = item->getCharges();
 					if (charges != 0) {
@@ -4025,6 +4033,18 @@ void Player::getPathSearchParams(const Creature* creature, FindPathParams& fpp) 
 {
 	Creature::getPathSearchParams(creature, fpp);
 	fpp.fullPathSearch = true;
+}
+
+uint16_t Player::getSkillLevel(uint8_t skill) const {
+	auto skillLevel = convertToSafeInteger<uint16_t>(skills[skill].level + varSkills[skill]);
+
+	if (auto it = maxValuePerSkill.find(skill); 
+		it != maxValuePerSkill.end())
+	{
+		skillLevel = std::min<uint16_t>(it->second, skillLevel);
+	}
+
+	return skillLevel;
 }
 
 void Player::doAttacking(uint32_t)
@@ -6010,7 +6030,7 @@ void Player::triggerMomentum() {
 	}
 
 	double_t chance = item->getMomentumChance();
-	double_t randomChance = uniform_random(0, 10000) / 100;
+	auto randomChance = static_cast<double_t>(uniform_random(0, 10000) / 100);
 	if (getZone() != ZONE_PROTECTION && hasCondition(CONDITION_INFIGHT) && ((OTSYS_TIME() / 1000) % 2) == 0 && chance > 0 && randomChance < chance) {
 		bool triggered = false;
 		auto it = conditions.begin();
@@ -6257,8 +6277,7 @@ SoundEffect_t Player::getHitSoundEffect() const
 		return SoundEffect_t::SILENCE;
 	}
 
-	const ItemType& it = Item::items[tool->getID()];
-	switch (it.weaponType) {
+	switch (auto const &it = Item::items[tool->getID()]; it.weaponType) {
 	case WEAPON_AMMO: {
 		if (it.ammoType == AMMO_BOLT) {
 			return SoundEffect_t::DIST_ATK_CROSSBOW_SHOT;

@@ -5601,7 +5601,10 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		if (attacker && target->getMonster()) {
 			uint32_t primaryHealing = target->getMonster()->getHealingCombatValue(damage.primary.type);
 			if (primaryHealing > 0) {
-				damageHeal.primary.value = std::ceil((damage.primary.value) * (primaryHealing / 100.));
+				auto doublePrimaryValue = static_cast<double>(damage.primary.value);
+				auto doublePrimaryHealing = static_cast<double>(primaryHealing);
+				auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doublePrimaryValue) * (doublePrimaryHealing / 100.)));
+				damageHeal.primary.value = safeValue;
 				canHeal = true;
 			}
 		}
@@ -5620,13 +5623,24 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			if (secondaryReflect > 0) {
 				if (!canReflect) {
 					damageReflected.primary.type = damage.secondary.type;
-					damageReflected.primary.value = static_cast<int64_t>(std::ceil((static_cast<double>(damage.secondary.value)) * (secondaryReflect / 100.)));
+
+					// Safe conversion
+					auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
+					auto doubleSecondaryReflect = static_cast<double>(secondaryReflect);
+					auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doubleSecondaryValue) * (doubleSecondaryReflect / 100.)));
+					damageReflected.primary.value = safeValue;
+
 					damageReflected.extension = true;
 					damageReflected.exString = "(damage reflection)";
 					canReflect = true;
 				} else {
 					damageReflected.secondary.type = damage.secondary.type;
-					damageReflected.secondary.value = std::ceil((damage.secondary.value) * (secondaryReflect / 100.));
+
+					// Safe conversion
+					auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
+					auto doubleSecondaryReflect = static_cast<double>(secondaryReflect);
+					auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doubleSecondaryValue) * (doubleSecondaryReflect / 100.)));
+					damageReflected.secondary.value = safeValue;
 				}
 			}
 		}
@@ -5635,7 +5649,12 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 		if (attacker && target->getMonster()) {
 			uint32_t secondaryHealing = target->getMonster()->getHealingCombatValue(damage.secondary.type);
 			if (secondaryHealing > 0) {;
-				damageHeal.primary.value += std::ceil((damage.secondary.value) * (secondaryHealing / 100.));
+				// Safe conversion
+				auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
+				auto doubleSecondaryHealing = static_cast<double>(secondaryHealing);
+				auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doubleSecondaryValue) * (doubleSecondaryHealing / 100.)));
+				damageHeal.primary.value += safeValue;
+
 				canHeal = true;
 			}
 		}
@@ -5907,12 +5926,12 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 			g_events().eventCreatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
 		}
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
-			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
-			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
+			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100;
+			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100;
 		}
 		if (damage.origin != ORIGIN_NONE && target && damage.primary.type != COMBAT_HEALING) {
-			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
-			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100.;
+			damage.primary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100;
+			damage.secondary.value *= target->getBuff(BUFF_DAMAGERECEIVED) / 100;
 		}
 		int64_t healthChange = damage.primary.value + damage.secondary.value;
 		if (healthChange == 0) {
@@ -6113,7 +6132,16 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				int affected = damage.affected;
 				tmpDamage.origin = ORIGIN_SPELL;
 				tmpDamage.primary.type = COMBAT_HEALING;
-				tmpDamage.primary.value = std::round(realDamage * (lifeSkill / 100.) * (0.2 * affected + 0.9)) / affected;
+				// Safe conversion
+				auto doubleRealDamage = static_cast<double>(realDamage);
+				auto doubleLifeSkill = static_cast<double>(lifeSkill);
+				auto doubleAffected = static_cast<double>(affected);
+				auto safeValue = convertToSafeInteger<int64_t>(
+					std::round(
+						doubleRealDamage * (doubleLifeSkill / 100.) * (0.2 * doubleAffected + 0.9)
+					)
+				);
+				tmpDamage.primary.value = safeValue / affected;
 
 				Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 			}
@@ -6137,7 +6165,16 @@ bool Game::combatChangeHealth(Creature* attacker, Creature* target, CombatDamage
 				int affected = damage.affected;
 				tmpDamage.origin = ORIGIN_SPELL;
 				tmpDamage.primary.type = COMBAT_MANADRAIN;
-				tmpDamage.primary.value = std::round(realDamage * (manaSkill / 100.) * (0.1 * affected + 0.9)) / affected;
+				// Safe conversion
+				auto doubleRealDamage = static_cast<double>(realDamage);
+				auto doubleManaSkill = static_cast<double>(manaSkill);
+				auto doubleAffected = static_cast<double>(affected);
+				auto safeValue = convertToSafeInteger<int64_t>(
+					std::round(
+						doubleRealDamage * (doubleManaSkill / 100.) * (0.1 * doubleAffected + 0.9)
+					)
+				);
+				tmpDamage.primary.value = safeValue / affected;
 
 				Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 			}
@@ -6501,7 +6538,16 @@ void Game::addCreatureHealth(const Creature* target)
 
 void Game::addCreatureHealth(const SpectatorHashSet& spectators, const Creature* target)
 {
-	uint8_t healthPercent = std::ceil((static_cast<double>(target->getHealth()) / std::max<int64_t>(target->getMaxHealth(), 1)) * 100);
+	// Safe conversion
+	auto safeValue = convertToSafeInteger<uint8_t>(
+		std::ceil(
+			(
+				static_cast<double>(target->getHealth()) /
+				static_cast<double>(std::max<int64_t>(target->getMaxHealth(), 1))
+			) * 100.
+		)
+	);
+	uint8_t healthPercent = safeValue;
 	if (const Player* targetPlayer = target->getPlayer()) {
 		if (Party* party = targetPlayer->getParty()) {
 			party->updatePlayerHealth(targetPlayer, target, healthPercent);
@@ -6522,8 +6568,17 @@ void Game::addCreatureHealth(const SpectatorHashSet& spectators, const Creature*
 
 void Game::addPlayerMana(const Player* target)
 {
+	// Safe conversion
+	auto safeValue = convertToSafeInteger<uint8_t>(
+		std::ceil(
+			(
+				static_cast<double>(target->getMana()) /
+				static_cast<double>(std::max<int64_t>(target->getMaxMana(), 1))
+			) * 100.
+		)
+	);
+	uint8_t manaPercent = safeValue;
 	if (Party* party = target->getParty()) {
-		uint8_t manaPercent = std::ceil((static_cast<double>(target->getMana()) / std::max<int64_t>(target->getMaxMana(), 1)) * 100);
 		party->updatePlayerMana(target, manaPercent);
 	}
 }
@@ -8169,7 +8224,7 @@ void Game::playerForgeFuseItems(uint32_t playerId, uint16_t itemId, uint8_t tier
 	auto roll = static_cast<uint8_t>(uniform_random(1, 100)) <= (usedCore ? bonusSuccess : baseSuccess);
 	bool success = roll ? true : false;
 
-	uint32_t chance = uniform_random(0, 10000);
+	auto chance = convertToSafeInteger<int32_t>(uniform_random(0, 10000));
 	uint8_t bonus = forgeBonus(chance);
 
 	player->forgeFuseItems(itemId, tier, success, reduceTierLoss, bonus, coreCount);

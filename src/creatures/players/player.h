@@ -781,16 +781,7 @@ class Player final : public Creature, public Cylinder
 			return lastAttack > 0 && ((OTSYS_TIME() - lastAttack) >= getAttackSpeed());
 		}
 
-		uint16_t getSkillLevel(uint8_t skill) const {
-			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
-
-			auto it = maxValuePerSkill.find(skill);
-			if (it != maxValuePerSkill.end()) {
-				skillLevel = std::min<uint16_t>(it->second, skillLevel);
-			}
-
-			return skillLevel;
-		}
+		uint16_t getSkillLevel(uint8_t skill) const;
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
 		}
@@ -1720,33 +1711,28 @@ class Player final : public Creature, public Cylinder
 
 		void sendLootStats(Item* item, uint8_t count) const;
 		void updateSupplyTracker(const Item* item) const;
-		void updateImpactTracker(CombatType_t type, int32_t amount)const;
+		void updateImpactTracker(int64_t type, int64_t amount) const;
 
-		void updateInputAnalyzer(CombatType_t type, int32_t amount, std::string target) {
+		void updateInputAnalyzer(int64_t type, int64_t amount, std::string target) const;
+
+		void createLeaderTeamFinder(NetworkMessage &msg)
+		{
 			if (client) {
-				client->sendUpdateInputAnalyzer(type, amount, target);
+				client->createLeaderTeamFinder(msg);
 			}
 		}
-
-
-   		void createLeaderTeamFinder(NetworkMessage &msg)
- 		{
-  			if (client) {
- 				client->createLeaderTeamFinder(msg);
- 			}
- 		}
-   		void sendLeaderTeamFinder(bool reset)
- 		{
-  			if (client) {
- 				client->sendLeaderTeamFinder(reset);
- 			}
- 		}
-   		void sendTeamFinderList()
- 		{
-  			if (client) {
- 				client->sendTeamFinderList();
- 			}
- 		}
+		void sendLeaderTeamFinder(bool reset)
+		{
+			if (client) {
+				client->sendLeaderTeamFinder(reset);
+			}
+		}
+		void sendTeamFinderList()
+		{
+			if (client) {
+				client->sendTeamFinderList();
+			}
+		}
 		void setItemCustomPrice(uint16_t itemId, uint64_t price)
 		{
 			itemPriceMap[itemId] = price;

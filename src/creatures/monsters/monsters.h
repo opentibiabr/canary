@@ -60,9 +60,9 @@ class MonsterType
 	struct MonsterInfo {
 		LuaScriptInterface* scriptInterface;
 
-		std::map<CombatType_t, int32_t> elementMap;
-		std::map<CombatType_t, int32_t> reflectMap;
-		std::map<CombatType_t, int32_t> healingMap;
+		std::map<CombatType_t, int64_t> elementMap;
+		std::map<CombatType_t, int64_t> reflectMap;
+		std::map<CombatType_t, int64_t> healingMap;
 
 		std::vector<voiceBlock_t> voiceVector;
 

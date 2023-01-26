@@ -390,9 +390,9 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 		endCondition(creature);
 
 		//Apply the new one
-		memcpy(skills, conditionAttrs.skills, sizeof(skills));
-		memcpy(skillsPercent, conditionAttrs.skillsPercent, sizeof(skillsPercent));
-		memcpy(stats, conditionAttrs.stats, sizeof(stats));
+		std::ranges::copy(std::begin(conditionAttrs.skills), std::end(conditionAttrs.skills), std::begin(skills));
+		std::ranges::copy(std::begin(conditionAttrs.skillsPercent), std::end(conditionAttrs.skillsPercent), std::begin(skillsPercent));
+		std::ranges::copy(std::begin(conditionAttrs.stats), std::end(conditionAttrs.stats), std::begin(stats));
 		std::ranges::copy(std::begin(conditionAttrs.statsPercent), std::end(conditionAttrs.statsPercent), std::begin(statsPercent));
 		std::ranges::copy(std::begin(conditionAttrs.buffs), std::end(conditionAttrs.buffs), std::begin(buffs));
 		std::ranges::copy(std::begin(conditionAttrs.buffsPercent), std::end(conditionAttrs.buffsPercent), std::begin(buffsPercent));
@@ -1207,7 +1207,7 @@ bool ConditionDamage::updateCondition(const Condition* addCondition)
 
 bool ConditionDamage::addDamage(int64_t rounds, time_t time, int64_t value)
 {
-	time = std::max<int32_t>(time, EVENT_CREATURE_THINK_INTERVAL);
+	time = std::max<time_t>(time, EVENT_CREATURE_THINK_INTERVAL);
 	if (rounds == -1) {
 		//periodic damage
 		periodDamage = value;
@@ -1342,7 +1342,7 @@ bool ConditionDamage::getNextDamage(int64_t& damage)
 	return false;
 }
 
-bool ConditionDamage::doDamage(Creature* creature, int64_t healthChange)
+bool ConditionDamage::doDamage(Creature* creature, int64_t healthChange) const
 {
 	if (creature->isSuppress(getType())) {
 		return true;
@@ -1577,7 +1577,8 @@ bool ConditionSpeed::startCondition(Creature* creature)
 	}
 
 	if (speedDelta == 0) {
-		int64_t min, max;
+		int64_t min;
+		int64_t max;
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		// convert to save int32_t
 		auto randomValue = uniform_random(min, max);
@@ -1586,11 +1587,6 @@ bool ConditionSpeed::startCondition(Creature* creature)
 
 	g_game().changeSpeed(creature, speedDelta);
 	return true;
-}
-
-bool ConditionSpeed::executeCondition(Creature* creature, int64_t interval)
-{
-	return Condition::executeCondition(creature, interval);
 }
 
 void ConditionSpeed::endCondition(Creature* creature)
@@ -1619,7 +1615,8 @@ void ConditionSpeed::addCondition(Creature* creature, const Condition* addCondit
 	maxb = conditionSpeed.maxb;
 
 	if (speedDelta == 0) {
-		int64_t min, max;
+		int64_t min;
+		int64_t max;
 		getFormulaValues(creature->getBaseSpeed(), min, max);
 		// convert to save int32_t
 		auto randomValue = uniform_random(min, max);

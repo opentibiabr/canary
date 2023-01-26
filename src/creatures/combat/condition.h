@@ -115,9 +115,9 @@ class ConditionAttributes final : public ConditionGeneric
 		bool unserializeProp(ConditionAttr_t attr, PropStream& propStream) final;
 
 	private:
-		int64_t skills[SKILL_LAST + 1] = {};
-		int64_t skillsPercent[SKILL_LAST + 1] = {};
-		int64_t stats[STAT_LAST + 1] = {};
+		std::array<int64_t, SKILL_LAST + 1> skills;
+		std::array<int64_t, SKILL_LAST + 1> skillsPercent;
+		std::array<int64_t, STAT_LAST + 1> stats;
 		std::array<int64_t, STAT_LAST + 1> statsPercent;
 		std::array<int64_t, BUFF_LAST + 1> buffsPercent;
 		std::array<int64_t, BUFF_LAST + 1> buffs;
@@ -282,7 +282,7 @@ class ConditionDamage final : public Condition
 		std::list<IntervalInfo> damageList;
 
 		bool getNextDamage(int64_t& damage);
-		bool doDamage(Creature* creature, int64_t healthChange);
+		bool doDamage(Creature* creature, int64_t healthChange) const;
 
 		bool updateCondition(const Condition* addCondition) override;
 };
@@ -294,7 +294,6 @@ class ConditionSpeed final : public Condition
 			Condition(initId, initType, initTicks, initBuff, initSubId), speedDelta(initChangeSpeed) {}
 
 		bool startCondition(Creature* creature) override;
-		bool executeCondition(Creature* creature, int64_t interval) override;
 		void endCondition(Creature* creature) override;
 		void addCondition(Creature* creature, const Condition* condition) override;
 		uint32_t getIcons() const override;

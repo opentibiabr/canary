@@ -6900,7 +6900,7 @@ void ProtocolGame::sendUpdateSupplyTracker(const Item *item)
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount)
+void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, uint32_t amount)
 {
 	NetworkMessage msg;
 	msg.addByte(0xCC);
@@ -6917,7 +6917,7 @@ void ProtocolGame::sendUpdateImpactTracker(CombatType_t type, int32_t amount)
 	}
 	writeToOutputBuffer(msg);
 }
-void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, int32_t amount, std::string target)
+void ProtocolGame::sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, std::string target)
 {
 	NetworkMessage msg;
 	msg.addByte(0xCC);

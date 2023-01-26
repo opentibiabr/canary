@@ -862,7 +862,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddElement(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		CombatType_t element = getNumber<CombatType_t>(L, 2);
-		monsterType->info.elementMap[element] = getNumber<int32_t>(L, 3);
+		monsterType->info.elementMap[element] = getNumber<int64_t>(L, 3);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -875,7 +875,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddReflect(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		CombatType_t element = getNumber<CombatType_t>(L, 2);
-		monsterType->info.reflectMap[element] = getNumber<int32_t>(L, 3);
+		monsterType->info.reflectMap[element] = getNumber<int64_t>(L, 3);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -888,7 +888,7 @@ int MonsterTypeFunctions::luaMonsterTypeAddHealing(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		CombatType_t element = getNumber<CombatType_t>(L, 2);
-		monsterType->info.healingMap[element] = getNumber<int32_t>(L, 3);
+		monsterType->info.healingMap[element] = getNumber<int64_t>(L, 3);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -906,7 +906,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetElementList(lua_State* L) {
 
 	lua_createtable(L, monsterType->info.elementMap.size(), 0);
 	for (const auto& elementEntry : monsterType->info.elementMap) {
-		lua_pushnumber(L, elementEntry.second);
+		lua_pushnumber(L, static_cast<lua_Number>(elementEntry.second));
 		lua_rawseti(L, -2, elementEntry.first);
 	}
 	return 1;

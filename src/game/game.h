@@ -78,7 +78,7 @@ class Game
 		 * \returns true if the custom map was loaded successfully
 		*/
 		bool loadCustomMap(const std::string& filename);
-		void loadMap(const std::string& path);
+		void loadMap(const std::string& path, const Position& pos = Position(), bool unload = false);
 
 		void getMapDimensions(uint32_t& width, uint32_t& height) const {
 			width = map.width;
@@ -537,27 +537,6 @@ class Game
 			return CharmList;
 		}
 
-		void increasePlayerActiveImbuements(uint32_t playerId) {
-			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] + 1);
-		}
-
-		void decreasePlayerActiveImbuements(uint32_t playerId) {
-			setPlayerActiveImbuements(playerId, playersActiveImbuements[playerId] - 1);
-		}
-
-		void setPlayerActiveImbuements(uint32_t playerId, uint8_t value) {
-			if (value <= 0) {
-				playersActiveImbuements.erase(playerId);
-				return;
-			}
-			
-			playersActiveImbuements[playerId] = std::min<uint8_t>(255, value);
-		}
-
-		uint8_t getPlayerActiveImbuements(uint32_t playerId) {
-			return playersActiveImbuements[playerId];
-		}
-
 		FILELOADER_ERRORS loadAppearanceProtobuf(const std::string& file);
 		bool isMagicEffectRegistered(uint8_t type) const {
 			return std::find(registeredMagicEffects.begin(), registeredMagicEffects.end(), type) != registeredMagicEffects.end();
@@ -609,7 +588,6 @@ class Game
 		void playerSpeakToNpc(Player* player, const std::string& text);
 
 		phmap::flat_hash_map<uint32_t, Player*> players;
-		phmap::flat_hash_map<uint32_t, uint8_t> playersActiveImbuements;
 		phmap::flat_hash_map<std::string, Player*> mappedPlayerNames;
 		phmap::flat_hash_map<uint32_t, Guild*> guilds;
 		phmap::flat_hash_map<uint16_t, Item*> uniqueItems;

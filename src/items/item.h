@@ -373,8 +373,8 @@ class Item : virtual public Thing, public ItemAttribute
 		 * @return true = duration is > 0 (info >> 8)
 		 * @return false
 		 */
-		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const;
-		void addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);
+		bool getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo);
+		void addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 		/**
 		 * @brief Decay imbuement time duration, only use this for decay the imbuement time
 		 * 
@@ -382,7 +382,7 @@ class Item : virtual public Thing, public ItemAttribute
 		 * @param imbuementId Imbuement id to decay
 		 * @param duration New duration
 		 */
-		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, int32_t duration) {
+		void decayImbuementTime(uint8_t slot, uint16_t imbuementId, uint32_t duration) {
 			return setImbuement(slot, imbuementId, duration);
 		}
 		void clearImbuement(uint8_t slot, uint16_t imbuementId) {
@@ -466,8 +466,8 @@ class Item : virtual public Thing, public ItemAttribute
 
 		bool loadedFromMap = false;
 		bool isLootTrackeable = false;
-
-private:
+	private:
+		void setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration);
 		//Don't add variables here, use the ItemAttribute class.
 		std::string getWeightDescription(uint32_t weight) const;
 		void setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration);

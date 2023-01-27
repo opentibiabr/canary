@@ -47,7 +47,7 @@ class IOMap
 	static Tile* createTile(Item*& ground, Item* item, uint16_t x, uint16_t y, uint8_t z);
 
 	public:
-		bool loadMap(Map* map, const std::string& identifier);
+		bool loadMap(Map* map, const std::string& identifier, const Position& pos = Position(), bool unload = false);
 
 		/**
 		* Load main map monsters
@@ -157,7 +157,7 @@ class IOMap
 		bool parseMapDataAttributes(OTB::Loader& loader, const OTB::Node& mapNode, Map& map, const std::string& fileName);
 		bool parseWaypoints(OTB::Loader& loader, const OTB::Node& waypointsNode, Map& map);
 		bool parseTowns(OTB::Loader& loader, const OTB::Node& townsNode, Map& map);
-		bool parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map);
+		bool parseTileArea(OTB::Loader& loader, const OTB::Node& tileAreaNode, Map& map, const Position& pos, bool unload);
 		std::string errorString;
 };
 

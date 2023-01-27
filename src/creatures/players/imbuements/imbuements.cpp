@@ -51,7 +51,7 @@ bool Imbuements::loadFromXml(bool /* reloading */) {
 				pugi::cast<uint32_t>(baseNode.attribute("price").value()),
 				pugi::cast<uint32_t>(baseNode.attribute("protectionPrice").value()),
 				pugi::cast<uint32_t>(baseNode.attribute("removecost").value()),
-				pugi::cast<int32_t>(baseNode.attribute("duration").value()),
+				pugi::cast<uint32_t>(baseNode.attribute("duration").value()),
 				pugi::cast<uint16_t>(baseNode.attribute("percent").value())
 
 			);

@@ -6638,18 +6638,12 @@ void Game::checkImbuements()
 
 	std::vector<uint32_t> toErase;
 
-	for (const auto& [key, value] : playersActiveImbuements) {
-		Player* player = getPlayerByID(key);
-		if (!player) {
-			toErase.push_back(key);
+	for (const auto& [mapPlayerId, mapPlayer] : getPlayers()) {
+		if (!mapPlayer) {
 			continue;
 		}
 
-		player->updateInventoryImbuement();
-	}
-
-	for (uint32_t playerId : toErase) {
-		setPlayerActiveImbuements(playerId, 0);
+		mapPlayer->updateInventoryImbuement();
 	}
 
 }

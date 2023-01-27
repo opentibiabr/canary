@@ -183,34 +183,40 @@ bool Weapon::useFist(Player* player, Creature* target)
 
 void Weapon::internalUseWeapon(Player* player, Item* item, Creature* target, int32_t damageModifier) const
 {
-	CombatDamage damage;
-	WeaponType_t weaponType = item->getWeaponType();
-	if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
-		damage.origin = ORIGIN_RANGED;
+	if (isLoadedCallback()) {
+		LuaVariant var;
+		var.type = VARIANT_NUMBER;
+		var.number = target->getID();
+		executeUseWeapon(player, var);
 	} else {
-		damage.origin = ORIGIN_MELEE;
-	}
-
-	damage.primary.type = params.combatType;
-	damage.secondary.type = getElementType();
-
-	if (damage.secondary.type == COMBAT_NONE) {
+		CombatDamage damage;
+		WeaponType_t weaponType = item->getWeaponType();
+		if (weaponType == WEAPON_AMMO || weaponType == WEAPON_DISTANCE) {
+			damage.origin = ORIGIN_RANGED;
+		} else {
+			damage.origin = ORIGIN_MELEE;
+		}
+		damage.primary.type = params.combatType;
 		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		damage.secondary.value = 0;
-	} else {
-		damage.primary.value = (getWeaponDamage(player, target, item) * damageModifier) / 100;
-		damage.secondary.value = (getElementDamage(player, target, item) * damageModifier) / 100;
+		damage.secondary.type = getElementType();
+		damage.secondary.value = getElementDamage(player, target, item);
+		Combat::doCombatHealth(player, target, damage, params);
 	}
-
-	Combat::doCombatHealth(player, target, damage, params);
 
 	onUsedWeapon(player, item, target->getTile());
 }
 
 void Weapon::internalUseWeapon(Player* player, Item* item, Tile* tile) const
 {
-	Combat::postCombatEffects(player, tile->getPosition(), params);
-	g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+	if (isLoadedCallback()) {
+		LuaVariant var;
+		var.type = VARIANT_TARGETPOSITION;
+		var.pos = tile->getPosition();
+		executeUseWeapon(player, var);
+	} else {
+		Combat::postCombatEffects(player, tile->getPosition(), params);
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
+	}
 	onUsedWeapon(player, item, tile);
 }
 
@@ -295,6 +301,29 @@ int32_t Weapon::getHealthCost(const Player* player) const
 	return (player->getMaxHealth() * healthPercent) / 100;
 }
 
+bool Weapon::executeUseWeapon(Player* player, const LuaVariant& var) const
+{
+	//onUseWeapon(player, var)
+	if (!getScriptInterface()->reserveScriptEnv()) {
+		SPDLOG_ERROR("[Weapon::executeUseWeapon - Player {} weaponId {}]"
+                     "Call stack overflow. Too many lua script calls being nested.",
+                     player->getName(), getID());
+		return false;
+	}
+
+	ScriptEnvironment* env = getScriptInterface()->getScriptEnv();
+	env->setScriptId(getScriptId(), getScriptInterface());
+
+	lua_State* L = getScriptInterface()->getLuaState();
+
+	getScriptInterface()->pushFunction(getScriptId());
+	LuaScriptInterface::pushUserdata<Player>(L, player);
+	LuaScriptInterface::setMetatable(L, -1, "Player");
+	getScriptInterface()->pushVariant(L, var);
+
+	return getScriptInterface()->callFunction(2);
+}
+
 void Weapon::decrementItemCount(Item* item)
 {
 	uint16_t count = item->getItemCount();
@@ -305,13 +334,16 @@ void Weapon::decrementItemCount(Item* item)
 	}
 }
 
-void WeaponMelee::configureWeapon(const ItemType& it)
+WeaponMelee::WeaponMelee(LuaScriptInterface* interface) : Weapon(interface)
 {
 	// Add combat type and blocked attributes to the weapon
 	params.blockedByArmor = true;
 	params.blockedByShield = true;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
+}
 
+void WeaponMelee::configureWeapon(const ItemType& it)
+{
 	if (it.abilities) {
 		elementType = it.abilities->elementType;
 		elementDamage = it.abilities->elementDamage;
@@ -407,13 +439,17 @@ int32_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->meleeDamageMultiplier)));
 }
 
-void WeaponDistance::configureWeapon(const ItemType& it)
+WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
+	Weapon(interface)
 {
 	// Add combat type and distance effect to the weapon
 	params.blockedByArmor = true;
 	params.combatType = COMBAT_PHYSICALDAMAGE;
-	params.distanceEffect = it.shootType;
+}
 
+void WeaponDistance::configureWeapon(const ItemType& it)
+{
+	params.distanceEffect = it.shootType;
 	if (it.abilities) {
 		elementType = it.abilities->elementType;
 		elementDamage = it.abilities->elementDamage;

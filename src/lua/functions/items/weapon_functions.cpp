@@ -9,10 +9,11 @@
 
 #include "pch.hpp"
 
+#include "lua/functions/items/weapon_functions.hpp"
+
 #include "game/game.h"
 #include "items/item.h"
-#include "items/weapons/weapons.h"
-#include "lua/functions/items/weapon_functions.hpp"
+#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
@@ -23,11 +24,10 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			auto weapon = new WeaponMelee();
-			if (weapon) {
-				pushUserdata<WeaponMelee>(L, weapon);
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponMelee>(getScriptEnv()->getScriptInterface())) {
+				pushUserdata<WeaponMelee>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
-				weapon->weaponType = type;
+				weaponPtr->weaponType = type;
 			} else {
 				lua_pushnil(L);
 			}
@@ -35,22 +35,20 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		}
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			auto weapon = new WeaponDistance();
-			if (weapon) {
-				pushUserdata<WeaponDistance>(L, weapon);
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface())) {
+				pushUserdata<WeaponDistance>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
-				weapon->weaponType = type;
+				weaponPtr->weaponType = type;
 			} else {
 				lua_pushnil(L);
 			}
 			break;
 		}
 		case WEAPON_WAND: {
-			auto weapon = new WeaponWand();
-			if (weapon) {
-				pushUserdata<WeaponWand>(L, weapon);
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponWand>(getScriptEnv()->getScriptInterface())) {
+				pushUserdata<WeaponWand>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
-				weapon->weaponType = type;
+				weaponPtr->weaponType = type;
 			} else {
 				lua_pushnil(L);
 			}
@@ -123,8 +121,13 @@ int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 
 int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 	// weapon:onUseWeapon(callback)
-	const Weapon* weapon = getUserdata<Weapon>(L, 1);
+	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
+		if (!weapon->loadCallback()) {
+			pushBoolean(L, false);
+			return 1;
+		}
+
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

@@ -42,6 +42,7 @@
 std::mutex g_loaderLock;
 std::condition_variable g_loaderSignal;
 std::unique_lock<std::mutex> g_loaderUniqueLock(g_loaderLock);
+bool g_loaderDone = false;
 
 /**
  *It is preferable to keep the close button off as it closes the server without saving (this can cause the player to lose items from houses and others informations, since windows automatically closes the process in five seconds, when forcing the close)
@@ -74,6 +75,7 @@ std::string getCompiler() {
 void startupErrorMessage() {
 	SPDLOG_ERROR("The program will close after pressing the enter key...");
 	getchar();
+	exit(0);
 	g_loaderSignal.notify_all();
 }
 
@@ -157,9 +159,9 @@ void loadModules() {
 
 	auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	SPDLOG_INFO("Loading core scripts on folder: {}/", coreFolder);
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0),
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0),
 		"core.lua");
-	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0),
+	modulesLoadHelper((g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0),
 		"scripts/talkactions.lua");
 	modulesLoadHelper(g_vocations().loadFromXml(),
 		"XML/vocations.xml");
@@ -217,7 +219,9 @@ int main(int argc, char* argv[]) {
 	g_dispatcher().addTask(createTask(std::bind(mainLoader, argc, argv,
 												&serviceManager)));
 
-	g_loaderSignal.wait(g_loaderUniqueLock);
+	g_loaderSignal.wait(g_loaderUniqueLock, [] {
+		return g_loaderDone;
+	});
 
 	if (serviceManager.is_running()) {
 		SPDLOG_INFO("{} {}", g_configManager().getString(SERVER_NAME),
@@ -382,6 +386,8 @@ void mainLoader(int, char*[], ServiceManager* services) {
 
 	std::string url = g_configManager().getString(DISCORD_WEBHOOK_URL);
 	webhook_send_message("Server is now online", "Server has successfully started.", WEBHOOK_COLOR_ONLINE, url);
+
+	g_loaderDone = true;
 
 	g_loaderSignal.notify_all();
 }

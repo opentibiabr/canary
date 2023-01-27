@@ -184,7 +184,7 @@ bool Protocol::XTEA_decrypt(NetworkMessage& msg) const
 	}
 
 	uint16_t innerLength = msg.get<uint16_t>();
-	if (innerLength > msgLength - 2) {
+	if (std::cmp_greater(innerLength, msgLength - 2)) {
 		return false;
 	}
 

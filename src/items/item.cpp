@@ -735,7 +735,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
 					SPDLOG_ERROR("[DEPRECATED] Failed to unserialize attributes for item {}, on position {}", getID(), getPosition());
-					return ATTR_READ_ERROR;
+					throw std::exception("[DEPRECATED] Failed to unserialize attributes");
 				}
 
 				// Remove old custom attribute

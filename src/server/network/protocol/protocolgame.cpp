@@ -3031,10 +3031,10 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats()
 	msg.add<uint32_t>(std::clamp((uint32_t)playerMaxHealth, 0u, maxUint32));
 	// Safe conversion for mana
 	auto playerMana = player->getMana();
-	msg.add<uint32_t>(std::clamp((uint32_t)playerMana, 0u, maxUint32));
+	msg.add<uint32_t>(std::clamp(playerMana, 0u, maxUint32));
 	// Safe conversion for max mana
 	auto playerMaxMana = player->getMaxMana();
-	msg.add<uint32_t>(std::clamp((uint32_t)playerMaxMana, 0u, maxUint32));
+	msg.add<uint32_t>(std::clamp(playerMaxMana, 0u, maxUint32));
 
 	msg.addByte(player->getSoul());
 	msg.add<uint16_t>(player->getStaminaMinutes());
@@ -6594,8 +6594,8 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg)
 	msg.add<uint16_t>(player->getStoreXpBoost()); // xp boost
 	msg.add<uint16_t>(player->getStaminaXpBoost()); // stamina multiplier (100 = 1.0x)
 
-	msg.add<uint32_t>(std::clamp((uint32_t)player->getMana(), 0u, maxUint));
-	msg.add<uint32_t>(std::clamp((uint32_t)player->getMaxMana(), 0u, maxUint));
+	msg.add<uint32_t>(std::clamp(player->getMana(), 0u, maxUint));
+	msg.add<uint32_t>(std::clamp(player->getMaxMana(), 0u, maxUint));
 
 	msg.addByte(player->getSoul());
 

@@ -136,7 +136,7 @@ CombatDamage Weapon::getCombatDamage(CombatDamage combat, Player * player, Item 
 	float attackFactor = player->getAttackFactor(); // full atk, balanced or full defense
 
 	//Getting values factores
-	auto totalAttack = convertToSafeInteger<int64_t>(elementalAttack + weaponAttack);
+	auto totalAttack = convertToSafeInteger<int32_t>(elementalAttack + weaponAttack);
 	auto weaponAttackProportion = convertToSafeInteger<int64_t>(weaponAttack / totalAttack);
 
 	//Calculating damage
@@ -669,7 +669,7 @@ int64_t WeaponDistance::getElementDamage(const Player* player, const Creature* t
 		}
 	}
 
-	return -normal_random(minValue, maxValue);
+	return -normal_random(static_cast<int64_t>(minValue), maxValue);
 }
 
 int16_t WeaponDistance::getElementDamageValue() const
@@ -700,8 +700,8 @@ int64_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
 	float attackFactor = player->getAttackFactor();
 
 	auto minValue = convertToSafeInteger<int64_t>(player->getLevel() / 5);
-	auto doubleMaxValue = std::round((0.09f * attackFactor) * attackSkill * attackValue + minValue);
-	auto maxValue = convertToSafeInteger<int64_t>(doubleMaxValue);
+	auto floatMaxValue = std::round((0.09f * attackFactor) * (float)attackSkill * (float)attackValue + (float)minValue);
+	auto maxValue = convertToSafeInteger<int64_t>(floatMaxValue);
 	if (maxDamage) {
 		return -maxValue;
 	}
@@ -719,7 +719,7 @@ int64_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
 		}
 	}
 
-	auto finalMaxValue = convertToSafeInteger<int64_t>(maxValue * player->getVocation()->distDamageMultiplier);
+	auto finalMaxValue = convertToSafeInteger<int64_t>((float)maxValue * player->getVocation()->distDamageMultiplier);
 	return -normal_random(minValue, finalMaxValue);
 }
 

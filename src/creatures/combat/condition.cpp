@@ -411,16 +411,22 @@ void ConditionAttributes::addCondition(Creature* creature, const Condition* addC
 
 bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream& propStream)
 {
-  if (attr == CONDITIONATTR_SKILLS) {
-    return propStream.read<int64_t>(skills[currentSkill++]);
-  }
-  else if (attr == CONDITIONATTR_STATS) {
-    return propStream.read<int64_t>(stats[currentStat++]);
-  }
-  else if (attr == CONDITIONATTR_BUFFS) {
-    return propStream.read<int64_t>(buffs[currentBuff++]);
-  }
-  return Condition::unserializeProp(attr, propStream);
+	if (attr == CONDITIONATTR_SKILLS) {
+		auto result = propStream.read<int64_t>(skills[currentSkill]);
+		currentSkill++;
+		return result;
+	}
+	else if (attr == CONDITIONATTR_STATS) {
+		auto result = propStream.read<int64_t>(stats[currentStat]);
+		currentStat++;
+		return result;
+	}
+	else if (attr == CONDITIONATTR_BUFFS) {
+		auto result = propStream.read<int64_t>(buffs[currentBuff]);
+		currentBuff++;
+		return result;
+	}
+	return Condition::unserializeProp(attr, propStream);
 }
 
 void ConditionAttributes::serialize(PropWriteStream& propWriteStream)
@@ -901,7 +907,7 @@ bool ConditionRegeneration::executeCondition(Creature* creature, int64_t interva
 		}
 	}
 
-	return executeCondition(creature, interval);
+	return ConditionGeneric::executeCondition(creature, interval);
 }
 
 bool ConditionRegeneration::setParam(ConditionParam_t param, int64_t value)

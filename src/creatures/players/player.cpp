@@ -479,12 +479,9 @@ void Player::updateInventoryImbuement(bool init /* = false */)
 			}
 
 			if (const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuementInfo.imbuement->getCategory());
-				categoryImbuement && categoryImbuement->agressive)
+				categoryImbuement && categoryImbuement->agressive && (isInProtectionZone || !isInFightMode))
 			{
-				if (isInProtectionZone || !isInFightMode)
-				{
-					break;
-				}
+				break;
 			}
 
 			if (init)
@@ -1113,7 +1110,7 @@ void Player::updateImpactTracker(int64_t type, int64_t amount) const
 	}
 }
 
-void Player::updateInputAnalyzer(int64_t type, int64_t amount, std::string target) const
+void Player::updateInputAnalyzer(int64_t type, int64_t amount, std::string const &target) const
 {
 	if (client) {
 		client->sendUpdateInputAnalyzer(static_cast<CombatType_t>(type), convertToSafeInteger<uint32_t>(amount), target);

@@ -5603,7 +5603,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 			if (primaryHealing > 0) {
 				auto doublePrimaryValue = static_cast<double>(damage.primary.value);
 				auto doublePrimaryHealing = static_cast<double>(primaryHealing);
-				auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doublePrimaryValue) * (doublePrimaryHealing / 100.)));
+				auto safeValue = convertToSafeInteger<int64_t>(std::ceil(doublePrimaryValue) * (doublePrimaryHealing / 100.));
 				damageHeal.primary.value = safeValue;
 				canHeal = true;
 			}
@@ -5627,7 +5627,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 					// Safe conversion
 					auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
 					auto doubleSecondaryReflect = static_cast<double>(secondaryReflect);
-					auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doubleSecondaryValue) * (doubleSecondaryReflect / 100.)));
+					auto safeValue = convertToSafeInteger<int64_t>(std::ceil(doubleSecondaryValue) * (doubleSecondaryReflect / 100.));
 					damageReflected.primary.value = safeValue;
 
 					damageReflected.extension = true;
@@ -5639,7 +5639,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 					// Safe conversion
 					auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
 					auto doubleSecondaryReflect = static_cast<double>(secondaryReflect);
-					auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doubleSecondaryValue) * (doubleSecondaryReflect / 100.)));
+					auto safeValue = convertToSafeInteger<int64_t>(std::ceil(doubleSecondaryValue) * (doubleSecondaryReflect / 100.));
 					damageReflected.secondary.value = safeValue;
 				}
 			}
@@ -5652,7 +5652,7 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 				// Safe conversion
 				auto doubleSecondaryValue = static_cast<double>(damage.secondary.value);
 				auto doubleSecondaryHealing = static_cast<double>(secondaryHealing);
-				auto safeValue = convertToSafeInteger<int64_t>(std::ceil((doubleSecondaryValue) * (doubleSecondaryHealing / 100.)));
+				auto safeValue = convertToSafeInteger<int64_t>(std::ceil(doubleSecondaryValue) * (doubleSecondaryHealing / 100.));
 				damageHeal.primary.value += safeValue;
 
 				canHeal = true;

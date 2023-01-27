@@ -953,9 +953,9 @@ int PlayerFunctions::luaPlayerAddManaSpent(lua_State* L) {
 
 int PlayerFunctions::luaPlayerGetBaseMaxHealth(lua_State* L) {
 	// player:getBaseMaxHealth()
-	Player* player = getUserdata<Player>(L, 1);
+	const Player* player = getUserdata<Player>(L, 1);
 	if (player) {
-		lua_pushnumber(L, player->healthMax);
+		lua_pushnumber(L, static_cast<lua_Number>(player->healthMax));
 	} else {
 		lua_pushnil(L);
 	}

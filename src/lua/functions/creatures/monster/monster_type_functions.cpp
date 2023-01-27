@@ -328,7 +328,7 @@ int MonsterTypeFunctions::luaMonsterTypeHealth(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.health);
+			lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.health));
 		} else {
 			monsterType->info.health = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
@@ -344,7 +344,7 @@ int MonsterTypeFunctions::luaMonsterTypeMaxHealth(lua_State* L) {
 	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (monsterType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, monsterType->info.healthMax);
+			lua_pushnumber(L, static_cast<lua_Number>(monsterType->info.healthMax));
 		} else {
 			monsterType->info.healthMax = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
@@ -907,7 +907,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetElementList(lua_State* L) {
 	lua_createtable(L, monsterType->info.elementMap.size(), 0);
 	for (const auto& elementEntry : monsterType->info.elementMap) {
 		lua_pushnumber(L, static_cast<lua_Number>(elementEntry.second));
-		lua_rawseti(L, -2, elementEntry.first);
+		lua_rawseti(L, -2, static_cast<int>(elementEntry.first));
 	}
 	return 1;
 }
@@ -1546,18 +1546,19 @@ int MonsterTypeFunctions::luaMonsterTypeAddSound(lua_State* L) {
 
 int MonsterTypeFunctions::luaMonsterTypeGetSounds(lua_State* L) {
 	// monsterType:getSounds()
-	MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
+	const MonsterType* monsterType = getUserdata<MonsterType>(L, 1);
 	if (!monsterType) {
 		lua_pushnil(L);
 		return 1;
 	}
 
 	int index = 0;
-	lua_createtable(L, monsterType->info.soundVector.size(), 0);
+	lua_createtable(L, static_cast<int>(monsterType->info.soundVector.size()), 0);
 	for (const auto& sound : monsterType->info.soundVector) {
+		++index;
 		lua_createtable(L, 0, 1);
 		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(sound)));
-		lua_rawseti(L, -2, ++index);
+		lua_rawseti(L, -2, index);
 	}
 	return 1;
 }

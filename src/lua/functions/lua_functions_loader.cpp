@@ -420,11 +420,11 @@ void LuaFunctionsLoader::pushBoolean(lua_State* L, bool value) {
 }
 
 void LuaFunctionsLoader::pushCombatDamage(lua_State* L, const CombatDamage& damage) {
-	lua_pushnumber(L, damage.primary.value);
-	lua_pushnumber(L, damage.primary.type);
-	lua_pushnumber(L, damage.secondary.value);
-	lua_pushnumber(L, damage.secondary.type);
-	lua_pushnumber(L, damage.origin);
+	lua_pushnumber(L, static_cast<lua_Number>(damage.primary.value));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.primary.type));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.secondary.value));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.secondary.type));
+	lua_pushnumber(L, static_cast<lua_Number>(damage.origin));
 }
 
 void LuaFunctionsLoader::pushInstantSpell(lua_State* L, const InstantSpell& spell) {

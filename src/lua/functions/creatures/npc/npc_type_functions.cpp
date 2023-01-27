@@ -157,7 +157,7 @@ int NpcTypeFunctions::luaNpcTypeHealth(lua_State* L) {
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.health);
+			lua_pushnumber(L, static_cast<lua_Number>(npcType->info.health));
 		} else {
 			npcType->info.health = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
@@ -173,7 +173,7 @@ int NpcTypeFunctions::luaNpcTypeMaxHealth(lua_State* L) {
 	NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (npcType) {
 		if (lua_gettop(L) == 1) {
-			lua_pushnumber(L, npcType->info.healthMax);
+			lua_pushnumber(L, static_cast<lua_Number>(npcType->info.healthMax));
 		} else {
 			npcType->info.healthMax = getNumber<int64_t>(L, 2);
 			pushBoolean(L, true);
@@ -554,18 +554,19 @@ int NpcTypeFunctions::luaNpcTypeAddSound(lua_State* L) {
 
 int NpcTypeFunctions::luaNpcTypeGetSounds(lua_State* L) {
 	// npcType:getSounds()
-	NpcType* npcType = getUserdata<NpcType>(L, 1);
+	const NpcType* npcType = getUserdata<NpcType>(L, 1);
 	if (!npcType) {
 		lua_pushnil(L);
 		return 1;
 	}
 
 	int index = 0;
-	lua_createtable(L, npcType->info.soundVector.size(), 0);
+	lua_createtable(L, static_cast<int>(npcType->info.soundVector.size()), 0);
 	for (const auto& sound : npcType->info.soundVector) {
+		++index;
 		lua_createtable(L, 0, 1);
 		lua_pushnumber(L, static_cast<lua_Number>(getEnumClassNumber(sound)));
-		lua_rawseti(L, -2, ++index);
+		lua_rawseti(L, -2, index);
 	}
 	return 1;
 }

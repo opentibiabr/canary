@@ -1505,18 +1505,19 @@ std::string Item::parseImbuementDescription(const Item* item)
 	return s.str();
 }
 
-SoundEffect_t Item::getMovementSound(Cylinder* toCylinder)
+SoundEffect_t Item::getMovementSound(Cylinder* toCylinder) const
 {
 	if (!toCylinder) {
 		return SoundEffect_t::ITEM_MOVE_DEFAULT;
 	}
 
-	Container* toContainer = toCylinder->getContainer();
-	if (toContainer && toContainer->getHoldingPlayer()) {
+	if (const Container* toContainer = toCylinder->getContainer();
+		toContainer && toContainer->getHoldingPlayer())
+	{
 		return SoundEffect_t::ITEM_MOVE_BACKPACK;
 	}
 
-    switch (items[id].type) {
+	switch (items[id].type) {
 		case ITEM_TYPE_ARMOR: { return SoundEffect_t::ITEM_MOVE_ARMORS; }
 		case ITEM_TYPE_AMULET: { return SoundEffect_t::ITEM_MOVE_NECKLACES; }
 		case ITEM_TYPE_BOOTS: { return SoundEffect_t::ITEM_MOVE_BOOTS; }

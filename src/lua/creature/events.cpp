@@ -395,12 +395,12 @@ void Events::eventCreatureOnDrainHealth(Creature* creature, Creature* attacker, 
 		lua_pushnil(L);
 	}
 
-	lua_pushnumber(L, typePrimary);
-	lua_pushnumber(L, damagePrimary);
-	lua_pushnumber(L, typeSecondary);
-	lua_pushnumber(L, damageSecondary);
-	lua_pushnumber(L, colorPrimary);
-	lua_pushnumber(L, colorSecondary);
+	lua_pushnumber(L, static_cast<lua_Number>(typePrimary));
+	lua_pushnumber(L, static_cast<lua_Number>(damagePrimary));
+	lua_pushnumber(L, static_cast<lua_Number>(typeSecondary));
+	lua_pushnumber(L, static_cast<lua_Number>(damageSecondary));
+	lua_pushnumber(L, static_cast<lua_Number>(colorPrimary));
+	lua_pushnumber(L, static_cast<lua_Number>(colorSecondary));
 
 	if (scriptInterface.protectedCall(L, 8, 6) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));

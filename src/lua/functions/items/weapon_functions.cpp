@@ -201,7 +201,7 @@ int WeaponFunctions::luaWeaponHealth(lua_State* L) {
 	// weapon:health(health)
 	Weapon* weapon = getUserdata<Weapon>(L, 1);
 	if (weapon) {
-		weapon->setHealth(getNumber<int64_t>(L, 2));
+		weapon->setHealth(getNumber<uint32_t>(L, 2));
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

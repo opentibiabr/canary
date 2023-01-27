@@ -519,8 +519,7 @@ int SpellFunctions::luaSpellNeedLearn(lua_State* L) {
 
 int SpellFunctions::luaSpellSelfTarget(lua_State* L) {
 	// spell:isSelfTarget(bool)
-	Spell* spell = getUserdata<Spell>(L, 1);
-	if (spell) {
+	if (Spell* spell = getUserdata<Spell>(L, 1)) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, spell->getSelfTarget());
 		} else {
@@ -535,8 +534,7 @@ int SpellFunctions::luaSpellSelfTarget(lua_State* L) {
 
 int SpellFunctions::luaSpellBlocking(lua_State* L) {
 	// spell:isBlocking(blockingSolid, blockingCreature)
-	Spell* spell = getUserdata<Spell>(L, 1);
-	if (spell) {
+	if (Spell* spell = getUserdata<Spell>(L, 1)) {
 		if (lua_gettop(L) == 1) {
 			pushBoolean(L, spell->getBlockingSolid());
 			pushBoolean(L, spell->getBlockingCreature());

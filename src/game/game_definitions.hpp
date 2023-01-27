@@ -12,30 +12,6 @@
 
 #include "movement/position.h"
 
-// Enums
-enum Offer_t {
-	DISABLED=0,
-	ITEM=1,
-	STACKABLE_ITEM=2,
-	OUTFIT=3,
-	OUTFIT_ADDON=4,
-	MOUNT=5,
-	NAMECHANGE=6,
-	SEXCHANGE=7,
-	PROMOTION=8,
-	PREMIUM_TIME,
-	TELEPORT,
-	BLESSING,
-	BOOST_XP, //not using yet
-	BOOST_STAMINA, //not using yet
-	WRAP_ITEM
-};
-
-enum ClientOffer_t{
-	SIMPLE = 0,
-	ADDITIONALINFO = 1
-};
-
 enum StackPosType_t {
 	STACKPOS_MOVE,
 	STACKPOS_LOOK,

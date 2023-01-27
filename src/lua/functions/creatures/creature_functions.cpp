@@ -452,7 +452,7 @@ int CreatureFunctions::luaCreatureGetHealth(lua_State* L) {
 	// creature:getHealth()
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
-		lua_pushnumber(L, creature->getHealth());
+		lua_pushnumber(L, static_cast<lua_Number>(creature->getHealth()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -503,7 +503,7 @@ int CreatureFunctions::luaCreatureGetMaxHealth(lua_State* L) {
 	// creature:getMaxHealth()
 	const Creature* creature = getUserdata<const Creature>(L, 1);
 	if (creature) {
-		lua_pushnumber(L, creature->getMaxHealth());
+		lua_pushnumber(L, static_cast<lua_Number>(creature->getMaxHealth()));
 	} else {
 		lua_pushnil(L);
 	}
@@ -826,8 +826,8 @@ int CreatureFunctions::luaCreatureGetDamageMap(lua_State* L) {
 	lua_createtable(L, creature->damageMap.size(), 0);
 	for (auto damageEntry : creature->damageMap) {
 		lua_createtable(L, 0, 2);
-		setField(L, "total", damageEntry.second.total);
-		setField(L, "ticks", damageEntry.second.ticks);
+		setField(L, "total", static_cast<lua_Number>(damageEntry.second.total));
+		setField(L, "ticks", static_cast<lua_Number>(damageEntry.second.ticks));
 		lua_rawseti(L, -2, damageEntry.first);
 	}
 	return 1;

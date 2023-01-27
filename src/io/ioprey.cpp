@@ -224,7 +224,7 @@ void TaskHuntingSlot::reloadReward()
 		return;
 	}
 
-	int32_t chance;
+	int64_t chance;
 	if (rarity == 0) {
 		chance = uniform_random(0, 100);
 	} else if (rarity == 1) {
@@ -495,7 +495,7 @@ void IOPrey::ParseTaskHuntingAction(Player* player,
 
 		if (const TaskHuntingOption* option = GetTaskRewardOption(slot)) {
 			uint64_t reward;
-			int32_t boostChange = uniform_random(0, 100);
+			auto boostChange = static_cast<int32_t>(uniform_random(0, 100));
 			if (slot->rarity >= 4 && boostChange <= 5) {
 				boostChange = 20;
 			} else if (slot->rarity >= 4 && boostChange <= 10) {

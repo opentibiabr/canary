@@ -109,7 +109,7 @@ int ConditionFunctions::luaConditionGetTicks(lua_State* L) {
 	// condition:getTicks()
 	Condition* condition = getUserdata<Condition>(L, 1);
 	if (condition) {
-		lua_pushnumber(L, condition->getTicks());
+		lua_pushnumber(L, static_cast<lua_Number>(condition->getTicks()));
 	} else {
 		lua_pushnil(L);
 	}

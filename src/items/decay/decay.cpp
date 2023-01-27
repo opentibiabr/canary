@@ -166,7 +166,10 @@ void Decay::internalDecayItem(Item* item)
 				}
 				if (it.abilities && it.abilities->statsPercent[s] != 0) {
 					needUpdateStats = true;
-					player->setVarStats(static_cast<stats_t>(s), -player->getDefaultStats(static_cast<stats_t>(s)) * ((it.abilities->statsPercent[s] - 100) / 100.f));
+					auto statsPercent = it.abilities->statsPercent[s];
+					auto defaultStats = player->getDefaultStats(static_cast<stats_t>(s));
+					auto statsModification = convertToSafeInteger<int64_t>((statsPercent - 100) / 100.f * -defaultStats);
+					player->setVarStats(static_cast<stats_t>(s), statsModification);
 				}
 			}
 

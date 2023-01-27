@@ -136,13 +136,13 @@ CombatDamage Weapon::getCombatDamage(CombatDamage combat, Player * player, Item 
 	float attackFactor = player->getAttackFactor(); // full atk, balanced or full defense
 
 	//Getting values factores
-	int32_t totalAttack = elementalAttack + weaponAttack;
-	double weaponAttackProportion = (double)weaponAttack / (double)totalAttack;
+	auto totalAttack = convertToSafeInteger<int64_t>(elementalAttack + weaponAttack);
+	auto weaponAttackProportion = convertToSafeInteger<int64_t>(weaponAttack / totalAttack);
 
 	//Calculating damage
 	int64_t maxDamage = static_cast<int64_t>(Weapons::getMaxWeaponDamage(level, playerSkill, totalAttack, attackFactor, true) * player->getVocation()->meleeDamageMultiplier * damageModifier / 100);
 	int64_t minDamage = level / 5;
-	int64_t realDamage = normal_random(minDamage, maxDamage);
+	auto realDamage = normal_random(minDamage, maxDamage);
 
 	//Setting damage to combat
 	combat.primary.value = realDamage * weaponAttackProportion;
@@ -420,10 +420,12 @@ int64_t WeaponMelee::getElementDamage(const Player* player, const Creature*, con
 	int32_t attackValue = elementDamage;
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
-	int64_t minValue = static_cast<int64_t>(level / 5);
+	auto minValue = convertToSafeInteger<int64_t>(level / 5);
 
 	int64_t maxValue = Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true);
-	return -normal_random(minValue, static_cast<int64_t>(maxValue * player->getVocation()->meleeDamageMultiplier));
+	auto doubleDamage = static_cast<double>(maxValue) * player->getVocation()->meleeDamageMultiplier;
+	auto totalDamage = -normal_random(minValue, convertToSafeInteger<int64_t>(doubleDamage));
+	return totalDamage;
 }
 
 int16_t WeaponMelee::getElementDamageValue() const
@@ -439,7 +441,10 @@ int64_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 	float attackFactor = player->getAttackFactor();
 	uint32_t level = player->getLevel();
 
-	int64_t maxValue = static_cast<int64_t>(Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true) * player->getVocation()->meleeDamageMultiplier);
+	auto weaponDamage = Weapons::getMaxWeaponDamage(level, attackSkill, attackValue, attackFactor, true);
+	auto meleeDamageMultiplier = player->getVocation()->meleeDamageMultiplier;
+	auto doubleMaxValue = static_cast<double>(weaponDamage) * meleeDamageMultiplier;
+	auto maxValue = convertToSafeInteger<int64_t>(doubleMaxValue);
 
 	int64_t minValue = level / 5;
 
@@ -447,7 +452,8 @@ int64_t WeaponMelee::getWeaponDamage(const Player* player, const Creature*, cons
 		return -maxValue;
 	}
 
-	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->meleeDamageMultiplier)));
+	auto randomMaxValue = maxValue * convertToSafeInteger<int64_t>(meleeDamageMultiplier);
+	return -normal_random(minValue, randomMaxValue);
 }
 
 WeaponDistance::WeaponDistance(LuaScriptInterface* interface) :
@@ -643,26 +649,27 @@ int64_t WeaponDistance::getElementDamage(const Player* player, const Creature* t
 	if (item->getWeaponType() == WEAPON_AMMO) {
 		Item* weapon = player->getWeapon(true);
 		if (weapon) {
-      		attackValue += item->getAttack();
+			attackValue += item->getAttack();
 			attackValue += weapon->getAttack();
 		}
 	}
 
-	int32_t attackSkill = player->getSkillLevel(SKILL_DISTANCE);
-	float attackFactor = player->getAttackFactor();
+	auto attackSkill = convertToSafeInteger<float>(player->getSkillLevel(SKILL_DISTANCE));
+	auto attackFactor = player->getAttackFactor();
 
-  	int64_t minValue = std::round(player->getLevel() / 5);
-  	int64_t maxValue = std::round((0.09f * attackFactor) * attackSkill * attackValue + minValue) / 2;
+	auto minValue = std::round(static_cast<double>(player->getLevel()) / 5.);
+	auto doubleMaxValue = std::round((0.09f * attackFactor) * attackSkill * (double)attackValue + minValue) / 2;
+	auto maxValue = convertToSafeInteger<int64_t>(doubleMaxValue * player->getVocation()->distDamageMultiplier);
 
-  	if (target) {
-    	if (target->getPlayer()) {
-      		minValue /= 4;
-   		} else {
-      		minValue /= 2;
-    	}
-  	}
+	if (target) {
+		if (target->getPlayer()) {
+			minValue /= 4;
+		} else {
+			minValue /= 2;
+		}
+	}
 
-	return -normal_random(minValue, static_cast<int64_t>(maxValue * player->getVocation()->distDamageMultiplier));
+	return -normal_random(minValue, maxValue);
 }
 
 int16_t WeaponDistance::getElementDamageValue() const
@@ -674,16 +681,16 @@ int16_t WeaponDistance::getElementDamageValue() const
 int64_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* target, const Item* item, bool maxDamage /*= false*/) const
 {
 	int32_t attackValue = item->getAttack();
-  	bool hasElement = false;
+	bool hasElement = false;
 
 	if (item->getWeaponType() == WEAPON_AMMO) {
 		Item* weapon = player->getWeapon(true);
 		if (weapon) {
-      		const ItemType& it = Item::items[item->getID()];
-      		if (it.abilities && it.abilities->elementDamage != 0) {
-        		attackValue += it.abilities->elementDamage;
-        		hasElement = true;
-      		}
+			const ItemType& it = Item::items[item->getID()];
+			if (it.abilities && it.abilities->elementDamage != 0) {
+				attackValue += it.abilities->elementDamage;
+				hasElement = true;
+			}
 
 			attackValue += weapon->getAttack();
 		}
@@ -692,26 +699,28 @@ int64_t WeaponDistance::getWeaponDamage(const Player* player, const Creature* ta
 	int32_t attackSkill = player->getSkillLevel(SKILL_DISTANCE);
 	float attackFactor = player->getAttackFactor();
 
-  	int64_t minValue = static_cast<int64_t>(player->getLevel() / 5);
-  	int64_t maxValue = std::round((0.09f * attackFactor) * attackSkill * attackValue + minValue);
+	auto minValue = convertToSafeInteger<int64_t>(player->getLevel() / 5);
+	auto doubleMaxValue = std::round((0.09f * attackFactor) * attackSkill * attackValue + minValue);
+	auto maxValue = convertToSafeInteger<int64_t>(doubleMaxValue);
 	if (maxDamage) {
 		return -maxValue;
 	}
 
-  	if (target->getPlayer()) {
-    	if (hasElement) {
-      	minValue /= 4;
-    	} else {
-      	minValue /= 2;
-    	}
-  	} else {
-    	if (hasElement) {
-      	maxValue /= 2;
-     	minValue /= 2;
-    	}
-  	}
+	if (target->getPlayer()) {
+		if (hasElement) {
+			minValue /= 4;
+		} else {
+			minValue /= 2;
+		}
+	} else {
+		if (hasElement) {
+			maxValue /= 2;
+			minValue /= 2;
+		}
+	}
 
-	return -normal_random(minValue, (maxValue * static_cast<int32_t>(player->getVocation()->distDamageMultiplier)));
+	auto finalMaxValue = convertToSafeInteger<int64_t>(maxValue * player->getVocation()->distDamageMultiplier);
+	return -normal_random(minValue, finalMaxValue);
 }
 
 bool WeaponDistance::getSkillType(const Player* player, const Item*, skills_t& skill, uint32_t& skillpoint) const

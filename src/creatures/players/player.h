@@ -1713,7 +1713,7 @@ class Player final : public Creature, public Cylinder
 		void updateSupplyTracker(const Item* item) const;
 		void updateImpactTracker(int64_t type, int64_t amount) const;
 
-		void updateInputAnalyzer(int64_t type, int64_t amount, std::string target) const;
+		void updateInputAnalyzer(int64_t type, int64_t amount, std::string const &target) const;
 
 		void createLeaderTeamFinder(NetworkMessage &msg)
 		{

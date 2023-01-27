@@ -418,7 +418,7 @@ private:
 	void sendKillTrackerUpdate(Container *corpse, const std::string &name, const Outfit_t creatureOutfit);
 	void sendUpdateSupplyTracker(const Item *item);
 	void sendUpdateImpactTracker(CombatType_t type, uint32_t amount);
-	void sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, std::string target);
+	void sendUpdateInputAnalyzer(CombatType_t type, uint32_t amount, std::string const &target);
 
 	// Hotkey equip/dequip item
 	void parseHotkeyEquip(NetworkMessage &msg);

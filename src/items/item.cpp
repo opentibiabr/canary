@@ -727,15 +727,15 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				// Unserialize key type and value
 				std::string key;
 				if (!propStream.readString(key)) {
-					SPDLOG_ERROR("[DEPRECATED] Failed to read key for item {}, on position {}", getID(), getPosition());
+					SPDLOG_ERROR("[DEPRECATED] Failed to read key for item {}, on position {}", getID(), getPosition().toString());
 					return ATTR_READ_ERROR;
 				}
 
 				// Unserialize value type and value
 				CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
-					SPDLOG_ERROR("[DEPRECATED] Failed to unserialize attributes for item {}, on position {}", getID(), getPosition());
-					throw std::exception("[DEPRECATED] Failed to unserialize attributes");
+					SPDLOG_ERROR("[DEPRECATED] Failed to unserialize attributes for item {}, on position {}", getID(), getPosition().toString());
+					return ATTR_READ_ERROR;
 				}
 
 				// Remove old custom attribute

@@ -454,7 +454,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   std::vector<std::pair<uint8_t, Container*>> openContainersList;
 
   if ((result = db.storeQuery(query.str()))) {
-    loadItems(itemMap, result);
+    loadItems(itemMap, result, player->getGUID());
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const std::pair<Item*, int32_t>& pair = it->second;
@@ -519,7 +519,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   query.str(std::string());
   query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_depotitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
   if ((result = db.storeQuery(query.str()))) {
-    loadItems(itemMap, result);
+    loadItems(itemMap, result, player->getGUID());
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const std::pair<Item*, int32_t>& pair = it->second;
@@ -553,7 +553,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   query.str(std::string());
   query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_rewards` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
     if ((result = db.storeQuery(query.str()))) {
-    loadItems(itemMap, result);
+    loadItems(itemMap, result, player->getGUID());
 
     //first loop handles the reward containers to retrieve its date attribute
     //for (ItemMap::iterator it = itemMap.begin(), end = itemMap.end(); it != end; ++it) {
@@ -601,7 +601,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
   query.str(std::string());
   query << "SELECT `pid`, `sid`, `itemtype`, `count`, `attributes` FROM `player_inboxitems` WHERE `player_id` = " << player->getGUID() << " ORDER BY `sid` DESC";
   if ((result = db.storeQuery(query.str()))) {
-    loadItems(itemMap, result);
+    loadItems(itemMap, result, player->getGUID());
 
     for (ItemMap::const_reverse_iterator it = itemMap.rbegin(), end = itemMap.rend(); it != end; ++it) {
       const std::pair<Item*, int32_t>& pair = it->second;
@@ -1350,7 +1350,7 @@ bool IOLoginData::formatPlayerName(std::string& name)
   return true;
 }
 
-void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
+void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result, uint32_t playerId)
 {
   do {
     uint32_t sid = result->getNumber<uint32_t>("sid");
@@ -1367,7 +1367,7 @@ void IOLoginData::loadItems(ItemMap& itemMap, DBResult_ptr result)
     Item* item = Item::CreateItem(type, count);
     if (item) {
       if (!item->unserializeAttr(propStream)) {
-        SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes");
+        SPDLOG_WARN("[IOLoginData::loadItems] - Failed to unserialize attributes of item {} to player id {}", item->getID(), playerId);
       }
 
       std::pair<Item*, uint32_t> pair(item, pid);

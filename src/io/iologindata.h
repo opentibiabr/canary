@@ -53,7 +53,7 @@ class IOLoginData
 	private:
 		using ItemMap = std::map<uint32_t, std::pair<Item*, uint32_t>>;
 
-		static void loadItems(ItemMap& itemMap, DBResult_ptr result);
+		static void loadItems(ItemMap& itemMap, DBResult_ptr result, uint32_t playerId);
 		static bool saveItems(const Player* player, const ItemBlockList& itemList, DBInsert& query_insert, PropWriteStream& stream);
 };
 

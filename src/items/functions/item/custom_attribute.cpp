@@ -74,8 +74,6 @@ void CustomAttribute::serialize(PropWriteStream& propWriteStream) const {
 	} else if (boolValue) {
 		propWriteStream.write<uint8_t>(4);
 		propWriteStream.write<bool>(boolValue);
-	} else {
-		propWriteStream.write<uint8_t>(0);
 	}
 }
 

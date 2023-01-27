@@ -2523,7 +2523,7 @@ class Player final : public Creature, public Cylinder
 		friend class MoveEvent;
 		friend class BedItem;
 
-  		account::Account *account_;
+		account::Account *account_;
 
 		std::array<double_t, COMBAT_COUNT> getFinalDamageReduction() const;
 		void calculateDamageReductionFromEquipedItems(std::array<double_t, COMBAT_COUNT> &combatReductionMap) const;

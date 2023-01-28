@@ -9,7 +9,7 @@ function buyHouse.onSay(player, words, param)
 	local houseBuyLevel = configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
 	if player:getLevel() < houseBuyLevel then
 		player:sendCancelMessage("You need to be level " ..houseBuyLevel.. " to buy a house.")
-		return false;
+		return false
 	end
 
 	if not player:isPremium() then

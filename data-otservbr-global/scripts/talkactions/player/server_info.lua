@@ -1,9 +1,19 @@
 local serverInfo = TalkAction("!serverinfo")
 
 function serverInfo.onSay(player, words, param)
+	local configRateSkill =  configManager.getNumber(configKeys.RATE_SKILL)
+	local baseRate = player:getFinalBaseRateExperience()
+	local houseBuyLevel = configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
+	local protectionLeve = configManager.getNumber(configKeys.PROTECTION_LEVEL)
+	local rateSpawn = configManager.getNumber(configKeys.RATE_SPAWN)
+	local serversave = configManager.getString(configKeys.GLOBAL_SERVER_SAVE_TIME)
+	local dayKillsToRedSkull = configManager.getNumber(configKeys.DAY_KILLS_TO_RED)
+	local weekKillsToRedSkull = configManager.getNumber(configKeys.WEEK_KILLS_TO_RED)
+	local monthKillsToRedSkull = configManager.getNumber(configKeys.MONTH_KILLS_TO_RED)
+	local worldType = configManager.getString(configKeys.WORLD_TYPE)
 	local text = "Server Info: \n\n"
-	.. "\nExp rate: x" .. configManager.getNumber(configKeys.RATE_EXPERIENCE)
-	.. "\nExp rate stages: x" .. getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
+	.. "\nExp rate: x" .. baseRate
+	..	"\nExp rate stages: x" .. getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
 	.. "\nSword Skill rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_SWORD), configRateSkill)
 	.. "\nClub Skill rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_CLUB), configRateSkill)
 	.. "\nAxe Skill rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_AXE), configRateSkill)

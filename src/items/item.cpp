@@ -83,15 +83,16 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo)
 	return imbuementInfo->duration && imbuementInfo->imbuement;
 }
 
-void Item::setImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
+void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration)
 {
 	std::string key = std::to_string(IMBUEMENT_SLOT + slot);
 	ItemAttributes::CustomAttribute customAttribute;
-	customAttribute.setInt64(duration > 0 ? (duration << 8) | imbuementId : 0);
+	auto convertSafeValue = std::clamp(static_cast<int64_t>(duration), (int64_t)0, std::numeric_limits<int64_t>::max());
+	customAttribute.setInt64(convertSafeValue > 0 ? (convertSafeValue << 8) | imbuementId : 0);
 	setCustomAttribute(key, customAttribute);
 }
 
-void Item::addImbuement(uint8_t slot, uint16_t imbuementId, int32_t duration)
+void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration)
 {
 	Player* player = getHoldingPlayer();
 	if (!player) {
@@ -1493,8 +1494,8 @@ std::string Item::parseImbuementDescription(const Item* item)
 				continue;
 			}
 
-			int minutes = imbuementInfo.duration / 60;
-			int hours = minutes / 60;
+			auto minutes = imbuementInfo.duration / 60;
+			auto hours = minutes / 60;
 			s << fmt::format("{} {} {:02}:{:02}h", baseImbuement->name, imbuementInfo.imbuement->getName(), hours, minutes % 60);
 		}
 		s << ").";

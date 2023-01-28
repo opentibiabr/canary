@@ -208,6 +208,7 @@ bool ConfigManager::load()
 	integer[RATE_MAGIC] = getGlobalNumber(L, "rateMagic", 1);
 	integer[RATE_SPAWN] = getGlobalNumber(L, "rateSpawn", 1);
 	integer[HOUSE_PRICE] = getGlobalNumber(L, "housePriceEachSQM", 1000);
+	integer[HOUSE_BUY_LEVEL] = getGlobalNumber(L, "houseBuyLevel", 0);
 	integer[ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenActions", 200);
 	integer[EX_ACTIONS_DELAY_INTERVAL] = getGlobalNumber(L, "timeBetweenExActions", 1000);
 	integer[MAX_MESSAGEBUFFER] = getGlobalNumber(L, "maxMessageBuffer", 4);

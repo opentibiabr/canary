@@ -486,14 +486,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
+	setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+	enableCompression();
+
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
-		enableCompression();
-	} else {
-		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
-	}
-	
 
 	version = msg.get<uint16_t>(); // Protocol version
 
@@ -6599,14 +6595,14 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 
 	msg.add<uint16_t>(player->getMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
-	msg.add<uint16_t>(player->getBaseMagicLevel());
+	msg.add<uint16_t>(player->getBaseMagicLevel()); // Loyalty Bonus
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
-		msg.add<uint16_t>(player->getBaseSkill(i));
+		msg.add<uint16_t>(player->getBaseSkill(i)); // Loyalty Bonus
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 

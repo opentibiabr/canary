@@ -26,7 +26,7 @@ function questDoor.onUse(player, item, fromPosition, target, toPosition, isHotke
 		end
 	end
 
-	if Creature.isInsideDoor(player, toPosition) then
+	if Creature.checkCreatureInsideDoor(player, toPosition) then
 		return true
 	end
 	return true

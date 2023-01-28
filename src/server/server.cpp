@@ -19,7 +19,11 @@ Ban g_bans;
 
 ServiceManager::~ServiceManager()
 {
-	stop();
+	try {
+		stop();
+	} catch (std::exception &exception) {
+		SPDLOG_ERROR("{} - Catch exception error: {}", __FUNCTION__, exception.what());
+	}
 }
 
 void ServiceManager::die()

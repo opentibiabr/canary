@@ -58,7 +58,7 @@ class Event {
         * @return true Success
         * @return false Fail
         */
-		bool loadScript(const std::string& scriptFile);
+		bool loadScript(const std::string& scriptFile, const std::string& scriptName);
 
 		/**
         * @brief Load script ID using the lua script interface

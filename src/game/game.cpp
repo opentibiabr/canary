@@ -1367,7 +1367,7 @@ void Game::playerMoveItem(Player* player, const Position& fromPos,
 }
 
 bool Game::isTryingToStow(const Position &toPos, Cylinder *toCylinder) const {
-	return toCylinder->getContainer() != NULL &&
+	return toCylinder->getContainer() &&
 			toCylinder->getItem()->getID() == ITEM_LOCKER &&
 			toPos.getZ() == ITEM_SUPPLY_STASH_INDEX;
 }

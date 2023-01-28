@@ -273,7 +273,7 @@ class Monster final : public Creature
 			return getForgeStack() == 0 && !isSummon() && !isRewardBoss() && canDropLoot() && isForgeCreature() && getRaceId() > 0;
 		}
 
-		
+
 		bool isForgeCreature() const {
 			return mType->info.isForgeCreature;
 		}
@@ -383,8 +383,8 @@ class Monster final : public Creature
 		bool isInSpawnRange(const Position& pos) const;
 		bool canWalkTo(Position pos, Direction direction) const;
 
-		static bool pushItem(Item* item);
-		static void pushItems(Tile* tile);
+		static bool pushItem(Item *item, Direction& nextDirection);
+		static void pushItems(Tile *tile, Direction& nextDirection);
 		static bool pushCreature(Creature* creature);
 		static void pushCreatures(Tile* tile);
 
@@ -415,6 +415,8 @@ class Monster final : public Creature
 
 		friend class MonsterFunctions;
 		friend class Map;
+
+		static std::vector<std::pair<int32_t, int32_t>> getPushItemLocationOptions(Direction &direction);
 };
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTER_H_

@@ -1138,11 +1138,8 @@ void Monster::onThinkYell(uint32_t interval)
 bool Monster::pushItem(Item *item, Direction& nextDirection)
 {
 	const Position& centerPos = item->getPosition();
-
-	std::vector<std::pair<int32_t, int32_t>> options = getPushItemLocationOptions(nextDirection);
-
-	for (const auto& it : options) {
-		Position tryPos(centerPos.x + it.first, centerPos.y + it.second, centerPos.z);
+	for (const auto& [x, y] : getPushItemLocationOptions(nextDirection)) {
+		Position tryPos(centerPos.x + x, centerPos.y + y, centerPos.z);
 		Tile* tile = g_game().map.getTile(tryPos);
 		if (tile && g_game().canThrowObjectTo(centerPos, tryPos) && g_game().internalMoveItem(item->getParent(), tile, INDEX_WHEREEVER, item, item->getItemCount(), nullptr) == RETURNVALUE_NOERROR) {
 			return true;
@@ -1153,27 +1150,28 @@ bool Monster::pushItem(Item *item, Direction& nextDirection)
 
 void Monster::pushItems(Tile *tile, Direction& nextDirection)
 {
-	if (TileItemVector* items = tile->getItemList()) {
-		uint32_t moveCount = 0;
-		uint32_t removeCount = 0;
-		auto it = items->begin();
-		while (it != items->end()) {
-			Item* item = *it;
-			if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH)
-					|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getActionId() != 100 /* non-moveable action*/) {
-				if (moveCount < 20 && Monster::pushItem(item, nextDirection)) {
-					++moveCount;
-				} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
-					++removeCount;
-				}
-			} else {
-				it++;
+	TileItemVector* items;
+	if (!(items = tile->getItemList())) {
+		return;
+	}
+	uint32_t moveCount = 0;
+	uint32_t removeCount = 0;
+	auto it = items->begin();
+	while (it != items->end()) {
+		Item* item = *it;
+		if (item && item->hasProperty(CONST_PROP_MOVEABLE) && (item->hasProperty(CONST_PROP_BLOCKPATH)
+				|| item->hasProperty(CONST_PROP_BLOCKSOLID)) && item->getActionId() != 100 /* non-moveable action*/) {
+			if (moveCount < 20 && pushItem(item, nextDirection)) {
+				++moveCount;
+			} else if (!item->isCorpse() && g_game().internalRemoveItem(item) == RETURNVALUE_NOERROR) {
+				++removeCount;
 			}
+		} else {
+			it++;
 		}
-
-		if (removeCount > 0) {
-			g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
-		}
+	}
+	if(removeCount > 0){
+		g_game().addMagicEffect(tile->getPosition(), CONST_ME_POFF);
 	}
 }
 
@@ -2214,7 +2212,7 @@ bool Monster::canDropLoot() const {
 	return !mType->info.lootItems.empty();
 }
 
-std::vector<std::pair<int32_t, int32_t>> Monster::getPushItemLocationOptions(Direction &direction) {
+std::vector<std::pair<int32_t, int32_t>> Monster::getPushItemLocationOptions(const Direction &direction) {
 	if(direction == DIRECTION_WEST || direction == DIRECTION_EAST){
 		return {{0, -1}, {0, 1}};
 	}

@@ -416,7 +416,7 @@ class Monster final : public Creature
 		friend class MonsterFunctions;
 		friend class Map;
 
-		static std::vector<std::pair<int32_t, int32_t>> getPushItemLocationOptions(Direction &direction);
+		static std::vector<std::pair<int32_t, int32_t>> getPushItemLocationOptions(const Direction &direction);
 };
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTER_H_

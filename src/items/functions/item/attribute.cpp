@@ -30,7 +30,8 @@ const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const
 	return *attribute->value.string;
 }
 
-const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const {
+const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const
+{
 	static int64_t emptyInt;
 	if (!isIntAttrType(type)) {
 		return emptyInt;

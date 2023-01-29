@@ -62,10 +62,10 @@ void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, auto attribut
 	auto look = static_cast<uint16_t>(attribute->getInt64Value());
 	msg.add<uint16_t>(look);
 	if (look != 0) {
-		auto lookHead = item->getCustomAttribute(head);
-		auto lookBody = item->getCustomAttribute(body);
-		auto lookLegs = item->getCustomAttribute(legs);
-		auto lookFeet = item->getCustomAttribute(feet);
+		auto lookHead = std::bit_cast<Item*>(item)->getCustomAttribute(head);
+		auto lookBody = std::bit_cast<Item*>(item)->getCustomAttribute(body);
+		auto lookLegs = std::bit_cast<Item*>(item)->getCustomAttribute(legs);
+		auto lookFeet = std::bit_cast<Item*>(item)->getCustomAttribute(feet);
 
 		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt64Value()) : 0);
 		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt64Value()) : 0);
@@ -73,7 +73,7 @@ void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, auto attribut
 		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt64Value()) : 0);
 
 		if (addAddon) {
-			auto lookAddons = item->getCustomAttribute("LookAddons");
+			auto lookAddons = std::bit_cast<Item*>(item)->getCustomAttribute("LookAddons");
 			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt64Value()) : 0);
 		}
 	} else {
@@ -207,10 +207,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 
 	if (it.isPodium) {
-		auto podiumVisible = item->getCustomAttribute("PodiumVisible");
-		auto lookType = item->getCustomAttribute("LookType");
-		auto lookMount = item->getCustomAttribute("LookMount");
-		auto lookDirection = item->getCustomAttribute("LookDirection");
+		auto podiumVisible = std::bit_cast<Item*>(item)->getCustomAttribute("PodiumVisible");
+		auto lookType = std::bit_cast<Item*>(item)->getCustomAttribute("LookType");
+		auto lookMount = std::bit_cast<Item*>(item)->getCustomAttribute("LookMount");
+		auto lookDirection = std::bit_cast<Item*>(item)->getCustomAttribute("LookDirection");
 
 		if (lookType) {
 			addOutfitAndMountBytes(msg, item, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
@@ -6066,10 +6066,10 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
-	auto podiumVisible = podium->getCustomAttribute("PodiumVisible");
-	auto lookType = podium->getCustomAttribute("LookType");
-	auto lookMount = podium->getCustomAttribute("LookMount");
-	auto lookDirection = podium->getCustomAttribute("LookDirection");
+	auto podiumVisible = std::bit_cast<Item*>(podium)->getCustomAttribute("PodiumVisible");
+	auto lookType = std::bit_cast<Item*>(podium)->getCustomAttribute("LookType");
+	auto lookMount = std::bit_cast<Item*>(podium)->getCustomAttribute("LookMount");
+	auto lookDirection = std::bit_cast<Item*>(podium)->getCustomAttribute("LookDirection");
 
 	if (lookType) {
 		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);

@@ -478,9 +478,9 @@ int ItemFunctions::luaItemGetCustomAttribute(lua_State* L) {
 
 	const CustomAttribute* customAttribute;
 	if (isNumber(L, 2)) {
-		customAttribute = item->getCustomAttribute(std::to_string(getNumber<int64_t>(L, 2)));
+		customAttribute = std::bit_cast<Item*>(item)->getCustomAttribute(std::to_string(getNumber<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
-		customAttribute = item->getCustomAttribute(getString(L, 2));
+		customAttribute = std::bit_cast<Item*>(item)->getCustomAttribute(getString(L, 2));
 	} else {
 		lua_pushnil(L);
 		return 1;

@@ -76,7 +76,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const
 {
-	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
+	const CustomAttribute* attribute = std::bit_cast<Item*>(this)->getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
 	auto info = attribute ? static_cast<uint32_t>(attribute->getInt64Value()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
@@ -220,7 +220,12 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 }
 
 Item::Item(const Item& i) :
-	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap) {}
+	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
+{
+	if (i.attributePtr) {
+		attributePtr.reset(new ItemAttribute(*i.attributePtr));
+	}
+}
 
 Item* Item::clone() const
 {
@@ -228,6 +233,10 @@ Item* Item::clone() const
 	if (item == nullptr) {
 		SPDLOG_ERROR("[{}] item is nullptr", __FUNCTION__);
 		return nullptr;
+	}
+
+	if (attributePtr) {
+		item->attributePtr.reset(new ItemAttribute(*attributePtr));
 	}
 
 	return item;
@@ -945,7 +954,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 
 	// Deprecated, all items that still exist with this attribute will work normally, but new items will be created with the new system, using ATTR_CUSTOM
 	if (hasAttribute(ItemAttribute_t::CUSTOM)) {
-		auto customAttrMap = getCustomAttributeMap();
+		const auto customAttrMap = std::bit_cast<Item*>(this)->getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
 		propWriteStream.write<uint64_t>(customAttrMap.size());
 		for (const auto &[attributeName, attributePtr] : customAttrMap) {
@@ -972,7 +981,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty
-	if (auto customAttributeMap = getCustomAttributeMap();
+	if (auto customAttributeMap = std::bit_cast<Item*>(this)->getCustomAttributeMap();
 		!customAttributeMap.empty())
 	{
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM);

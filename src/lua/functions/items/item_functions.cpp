@@ -512,7 +512,6 @@ int ItemFunctions::luaItemSetCustomAttribute(lua_State* L) {
 		return 1;
 	}
 
-	std::map<std::string, CustomAttribute, std::less<>> newMap;
 	if (isNumber(L, 3)) {
 		const double doubleValue = getNumber<double>(L, 3);
 		if (std::floor(doubleValue) < doubleValue) {

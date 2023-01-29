@@ -761,14 +761,14 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const {
-			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
-			auto it = maxValuePerSkill.find(skill);
-			if (it != maxValuePerSkill.end()) {
-				skillLevel = std::min<uint16_t>(it->second, skillLevel);
+			if (auto it = maxValuePerSkill.find(skill);
+				it != maxValuePerSkill.end()) {
+				skillLevel = std::min<int32_t>(it->second, skillLevel);
 			}
 
-			return skillLevel;
+			return static_cast<uint16_t>(skillLevel);
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
@@ -2198,7 +2198,7 @@ class Player final : public Creature, public Cylinder
 		 * @brief Starts checking the imbuements in the item so that the time decay is performed
 		 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
 		 */
-		void updateInventoryImbuement(bool init = false);
+		void updateInventoryImbuement();
 
 		void setNextWalkActionTask(SchedulerTask* task);
 		void setNextWalkTask(SchedulerTask* task);

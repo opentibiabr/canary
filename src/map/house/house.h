@@ -66,7 +66,7 @@ class Door final : public Item
 			setAttribute(ItemAttribute_t::DOORID, doorId);
 		}
 		uint32_t getDoorId() const {
-			return getAttributeValue(ItemAttribute_t::DOORID);
+			return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::DOORID));
 		}
 
 		bool canUse(const Player* player);

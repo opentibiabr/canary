@@ -155,37 +155,37 @@ class Item : virtual public Thing, public ItemAttribute
 		virtual uint32_t getWeight() const;
 		uint32_t getBaseWeight() const {
 			if (hasAttribute(ItemAttribute_t::WEIGHT)) {
-				return getAttributeValue(ItemAttribute_t::WEIGHT);
+				return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::WEIGHT));
 			}
-			return static_cast<uint32_t>(items[id].weight);
+			return items[id].weight;
 		}
 		int32_t getAttack() const {
 			if (hasAttribute(ItemAttribute_t::ATTACK)) {
-				return getAttributeValue(ItemAttribute_t::ATTACK);
+				return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ATTACK));
 			}
 			return items[id].attack;
 		}
 		int32_t getArmor() const {
 			if (hasAttribute(ItemAttribute_t::ARMOR)) {
-				return getAttributeValue(ItemAttribute_t::ARMOR);
+				return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ARMOR));
 			}
 			return items[id].armor;
 		}
 		int32_t getDefense() const {
 			if (hasAttribute(ItemAttribute_t::DEFENSE)) {
-				return getAttributeValue(ItemAttribute_t::DEFENSE);
+				return static_cast<int32_t>( getAttributeValue(ItemAttribute_t::DEFENSE));
 			}
 			return items[id].defense;
 		}
 		int32_t getExtraDefense() const {
 			if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
-				return getAttributeValue(ItemAttribute_t::EXTRADEFENSE);
+				return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::EXTRADEFENSE));
 			}
 			return items[id].extraDefense;
 		}
 		uint8_t getImbuementSlot() const {
 			if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
-				return getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT);
+				return static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT));
 			}
 			return items[id].imbuementSlot;
 		}
@@ -194,13 +194,13 @@ class Item : virtual public Thing, public ItemAttribute
 		}
 		int8_t getHitChance() const {
 			if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
-				return getAttributeValue(ItemAttribute_t::HITCHANCE);
+				return static_cast<int8_t>(getAttributeValue(ItemAttribute_t::HITCHANCE));
 			}
 			return items[id].hitChance;
 		}
 		uint32_t getQuicklootAttr() const {
 			if (hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-				return getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER);
+				return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER));
 			}
 			return 0;
 		}
@@ -395,8 +395,8 @@ class Item : virtual public Thing, public ItemAttribute
 			}
 			return false;
 		}
-		bool hasImbuementCategoryId(uint16_t categoryId);
-		bool hasImbuements() {
+		bool hasImbuementCategoryId(uint16_t categoryId) const;
+		bool hasImbuements() const {
 			for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 				ImbuementInfo imbuementInfo;
 				if (getImbuementInfo(slotid, &imbuementInfo)) {

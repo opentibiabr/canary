@@ -362,11 +362,11 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 
 	if (item->isIntAttrType(attribute)) {
 		if (attribute == ItemAttribute_t::DURATION) {
-			lua_pushnumber(L, item->getDuration());
+			lua_pushnumber(L, static_cast<lua_Number>(item->getDuration()));
 			return 1;
 		}
 
-		lua_pushnumber(L, item->getAttributeValue(attribute));
+		lua_pushnumber(L, static_cast<lua_Number>(item->getAttributeValue(attribute)));
 	} else if (item->isStrAttrType(attribute)) {
 		pushString(L, item->getAttributeString(attribute));
 	} else {
@@ -395,8 +395,9 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 	if (item->isIntAttrType(attribute)) {
 		switch (attribute) {
 			case ItemAttribute_t::DECAYSTATE: {
-				ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
-				if (decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING) {
+				if (ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
+					decayState == DECAYING_FALSE || decayState == DECAYING_STOPPING)
+				{
 					g_decay().stopDecay(item);
 				} else {
 					g_decay().startDecay(item);
@@ -423,7 +424,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		pushBoolean(L, true);
 	} else if (item->isStrAttrType(attribute)) {
 		auto newAttributeString = getString(L, 3);
-		item->setAttribute(attribute, std::move(newAttributeString));
+		item->setAttribute(attribute, newAttributeString);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -433,7 +434,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 
 int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {
 	// item:removeAttribute(key)
-	Item* item = getUserdata<Item>(L, 1);
+	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		lua_pushnil(L);
 		return 1;
@@ -452,7 +453,11 @@ int ItemFunctions::luaItemRemoveAttribute(lua_State* L) {
 	if (ret) {
 		ret = (attribute != ItemAttribute_t::DURATION_TIMESTAMP);
 		if (ret) {
-			item->removeAttribute(attribute);
+			// We will convert the item to non-const in order to use it to set values
+			auto noConstItem = std::bit_cast<Item*>(item);
+			if (noConstItem) {
+				noConstItem->removeAttribute(attribute);
+			}
 		} else {
 			reportErrorFunc("Attempt to erase protected key \"duration timestamp\"");
 		}

@@ -30,14 +30,15 @@ const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const
 	return *attribute->value.string;
 }
 
-int64_t ItemAttribute::getAttributeValue(ItemAttribute_t type) const {
+const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const {
+	static int64_t emptyInt;
 	if (!isIntAttrType(type)) {
-		return 0;
+		return emptyInt;
 	}
 
 	auto attribute = getAttribute(type);
 	if (!attribute) {
-		return 0;
+		return emptyInt;
 	}
 
 	return attribute->value.integer;
@@ -98,13 +99,15 @@ bool ItemAttribute::removeAttribute(ItemAttribute_t type)
 		return false;
 	}
 
-	for (auto it = attributeVector.begin(), end = attributeVector.end(); it != end; ++it) {
-		if ((*it).type == type) {
-			(*it) = std::move(attributeVector.back());
+	std::ranges::for_each(attributeVector, [this, type](auto &it) {
+		if (it.type == type) {
+			it = std::move(attributeVector.back());
 			attributeVector.pop_back();
-			break;
+			return false;
 		}
-	}
+
+		return true;
+	});
 	attributeBits &= ~type;
 	return true;
 }

@@ -563,7 +563,8 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       int32_t pid = pair.second;
       if (pid >= 0 && pid < 100) {
-        Reward* reward = player->getReward(item->getAttributeValue(ItemAttribute_t::DATE), true);
+        auto rewardId = static_cast<uint32_t>(item->getDate());
+        Reward* reward = player->getReward(rewardId, true);
         if (reward) {
           it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
         }

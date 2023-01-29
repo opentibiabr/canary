@@ -118,7 +118,7 @@ void Item::addImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration)
 	setImbuement(slot, imbuementId, duration);
 }
 
-bool Item::hasImbuementCategoryId(uint16_t categoryId) {
+bool Item::hasImbuementCategoryId(uint16_t categoryId) const {
 	for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 		ImbuementInfo imbuementInfo;
 		if (getImbuementInfo(slotid, &imbuementInfo)) {
@@ -871,8 +871,9 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	auto decayState = getDecaying();
-	if (decayState == DECAYING_TRUE || decayState == DECAYING_PENDING) {
+	if (auto decayState = getDecaying();
+		decayState == DECAYING_TRUE || decayState == DECAYING_PENDING)
+	{
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
 		propWriteStream.write<uint8_t>(decayState);
 	}
@@ -894,47 +895,47 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 
 	if (hasAttribute(ItemAttribute_t::WEIGHT)) {
 		propWriteStream.write<uint8_t>(ATTR_WEIGHT);
-		propWriteStream.write<uint32_t>(getAttributeValue(ItemAttribute_t::WEIGHT));
+		propWriteStream.write<uint32_t>(static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::WEIGHT)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::ATTACK)) {
 		propWriteStream.write<uint8_t>(ATTR_ATTACK);
-		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::ATTACK));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ATTACK)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::DEFENSE)) {
 		propWriteStream.write<uint8_t>(ATTR_DEFENSE);
-		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::DEFENSE));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::DEFENSE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
 		propWriteStream.write<uint8_t>(ATTR_EXTRADEFENSE);
-		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::EXTRADEFENSE));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::EXTRADEFENSE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
-		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::OPENCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_OPENCONTAINER);
-		propWriteStream.write<uint8_t>(getAttributeValue(ItemAttribute_t::OPENCONTAINER));
+		propWriteStream.write<uint8_t>(static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::OPENCONTAINER)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::ARMOR)) {
 		propWriteStream.write<uint8_t>(ATTR_ARMOR);
-		propWriteStream.write<int32_t>(getAttributeValue(ItemAttribute_t::ARMOR));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ARMOR)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
 		propWriteStream.write<uint8_t>(ATTR_HITCHANCE);
-		propWriteStream.write<int8_t>(getAttributeValue(ItemAttribute_t::HITCHANCE));
+		propWriteStream.write<int8_t>(static_cast<int8_t>(getAttributeValue(ItemAttribute_t::HITCHANCE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::SHOOTRANGE)) {
 		propWriteStream.write<uint8_t>(ATTR_SHOOTRANGE);
-		propWriteStream.write<uint8_t>(getAttributeValue(ItemAttribute_t::SHOOTRANGE));
+		propWriteStream.write<uint8_t>(static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::SHOOTRANGE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::SPECIAL)) {
@@ -1511,14 +1512,8 @@ std::string Item::parseImbuementDescription(const Item* item)
 				s << ", ";
 			}
 
-			Item* castItem = const_cast<Item*>(item);
-			if (!castItem)
-			{
-				continue;
-			}
-
 			ImbuementInfo imbuementInfo;
-			if (!castItem->getImbuementInfo(slotid, &imbuementInfo))
+			if (!item->getImbuementInfo(slotid, &imbuementInfo))
 			{
 				s << "Empty Slot";
 				continue;

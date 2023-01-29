@@ -188,6 +188,7 @@ enum TradeEvents_t {
 };
 
 enum AttrTypes_t {
+	// ATTR_NONE = 0 (last enum)
 	//ATTR_DESCRIPTION = 1,
 	//ATTR_EXT_FILE = 2,
 	ATTR_TILE_FLAGS = 3,
@@ -231,7 +232,7 @@ enum AttrTypes_t {
 	ATTR_CUSTOM = 41,
 
 	// Always the last
-	ATTR_LAST
+	ATTR_NONE = 0
 };
 
 enum ImbuementTypes_t : int64_t {

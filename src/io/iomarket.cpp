@@ -330,7 +330,7 @@ void IOMarket::updateStatistics()
 
 	do {
 		MarketStatistics* statistics = nullptr;
-		auto tier = getTierFromDatabaseTable(result->getString("tier"));
+		const auto tier = getTierFromDatabaseTable(result->getString("tier"));
 		auto itemId = result->getNumber<uint16_t>("itemtype");
 		if (result->getNumber<uint16_t>("sale") == MARKETACTION_BUY) {
 			statistics = &purchaseStatistics[itemId][tier];

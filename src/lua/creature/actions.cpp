@@ -322,9 +322,10 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 			openContainer = myRewardChest;
 		}
 
-		//reward container proxy created when the boss dies
+		auto rewardId = static_cast<uint32_t>(container->getDate());
+		// Reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
-			if (Reward* reward = player->getReward(container->getAttributeValue(ItemAttribute_t::DATE), false)) {
+			if (Reward* reward = player->getReward(rewardId, false)) {
 				reward->setParent(container->getRealParent());
 				openContainer = reward;
 			} else {
@@ -338,7 +339,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 			if (player->getGroup()->id >= account::GROUP_TYPE_GAMEMASTER || player->getAccountType() >= account::ACCOUNT_TYPE_SENIORTUTOR) {
 				return RETURNVALUE_YOUCANTOPENCORPSEADM;
 			}
-			if (!player->getReward(container->getAttributeValue(ItemAttribute_t::DATE), false)) {
+			if (!player->getReward(rewardId, false)) {
 				return RETURNVALUE_YOUARENOTTHEOWNER;
 			}
 		} else if (corpseOwner != 0 && !player->canOpenCorpse(corpseOwner)) {

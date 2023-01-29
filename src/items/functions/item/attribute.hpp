@@ -59,7 +59,7 @@ public:
 	}
 };
 
-struct Attributes : virtual public ItemAttributeHelper
+struct Attributes : public ItemAttributeHelper
 {
 	explicit Attributes(ItemAttribute_t type) : type(type) {
 		memset(&value, 0, sizeof(value));
@@ -108,7 +108,7 @@ struct Attributes : virtual public ItemAttributeHelper
 	} value;
 };
 
-class ItemAttribute : virtual public ItemAttributeHelper
+class ItemAttribute : public ItemAttributeHelper
 {
 public:
 	ItemAttribute() = default;
@@ -131,7 +131,7 @@ public:
 	bool removeAttribute(ItemAttribute_t type);
 
 	const std::string& getAttributeString(ItemAttribute_t type) const;
-	int64_t getAttributeValue(ItemAttribute_t type) const;
+	const int64_t& getAttributeValue(ItemAttribute_t type) const;
 
 	const std::underlying_type_t<ItemAttribute_t>& getAttributeBits() const {
 		return attributeBits;
@@ -217,20 +217,20 @@ public:
 		setAttribute(ItemAttribute_t::OWNER, owner);
 	}
 	uint32_t getOwner() const {
-		return getAttributeValue(ItemAttribute_t::OWNER);
+		return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::OWNER));
 	}
 
 	void setCorpseOwner(uint32_t corpseOwner) {
 		setAttribute(ItemAttribute_t::CORPSEOWNER, corpseOwner);
 	}
 	uint32_t getCorpseOwner() const {
-		return getAttributeValue(ItemAttribute_t::CORPSEOWNER);
+		return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::CORPSEOWNER));
 	}
 
 	void setRewardCorpse() {
 		setCorpseOwner(static_cast<uint32_t>(std::numeric_limits<int32_t>::max()));
 	}
-	bool isRewardCorpse() {
+	bool isRewardCorpse() const {
 		return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
 	}
 
@@ -245,7 +245,7 @@ public:
 		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
 			return std::max<int32_t>(0, static_cast<int32_t>(getAttributeValue(ItemAttribute_t::DURATION_TIMESTAMP) -OTSYS_TIME()));
 		} else {
-			return getAttributeValue(ItemAttribute_t::DURATION);
+			return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::DURATION));
 		}
 	}
 

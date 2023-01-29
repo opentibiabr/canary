@@ -1,13 +1,13 @@
 local function revertAid(position)
 	local mushroom = Tile(position):getItemById(15704)
 	if mushroom then
-		mushroom:removeAttribute(ACTIONID)
+		mushroom:removeAttribute(ITEM_ATTRIBUTE_ACTIONID)
 	end
 end
 
 local bigfootMushroom = Action()
 function bigfootMushroom.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	if item:hasAttribute(ACTIONID) then
+	if item:hasAttribute(ITEM_ATTRIBUTE_ACTIONID) then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to extract spores from this mushroom.")
 		return true
 	end

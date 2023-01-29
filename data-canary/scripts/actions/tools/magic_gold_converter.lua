@@ -31,7 +31,7 @@ local function findItem(self, cylinder, converterItem)
 							player:addItem(toid, 1)
 						end
 
-						converterItem:setAttribute(CHARGES, converterItem:getAttribute(CHARGES) - 1)
+						converterItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, converterItem:getAttribute(ITEM_ATTRIBUTE_CHARGES) - 1)
 						return true
 					end
 				end
@@ -48,8 +48,8 @@ local function startConversion(playerId, itemId)
 		local converting = addEvent(startConversion, 300, playerId, itemId)
 		local item = player:getItemById(itemId,true)
 		if player:getItemCount(itemId) >= 1 then
-			if item:hasAttribute(CHARGES) then
-				local charges_n = item:getAttribute(CHARGES)
+			if item:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
+				local charges_n = item:getAttribute(ITEM_ATTRIBUTE_CHARGES)
 				if charges_n >= 1 then
 					if player:getItemCount(ITEM_GOLD_COIN) >= 100 or player:getItemCount(ITEM_PLATINUM_COIN) >= 100 then
 						findItem(player, 0, item)

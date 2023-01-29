@@ -114,7 +114,7 @@ local function checkHouseAccess(hireling)
 	local inbox = player:getSlotItem(CONST_SLOT_STORE_INBOX)
 	-- Using FLAG_NOLIMIT to avoid losing the hireling after being kicked out of the house and having no slots available in the store inbox
 	local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
-	lamp:setAttribute(DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
+	lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 	lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
 	player:save()
 	hireling.active = 0
@@ -402,7 +402,7 @@ function Hireling:returnToLamp(player_id)
 		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
 		npc:getPosition():sendMagicEffect(CONST_ME_PURPLESMOKE)
 		npc:remove() --remove hireling
-		lamp:setAttribute(DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
+		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. self:getName() .. ".")
 		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hirelingId) --save hirelingId on item
 		hireling:setPosition({x=0,y=0,z=0})
 	end, 1000, self.cid, player:getGuid(), self.id)
@@ -550,7 +550,7 @@ function Player:addNewHireling(name, sex)
 		table.insert(PLAYER_HIRELINGS[self:getGuid()], hireling)
 		table.insert(HIRELINGS, hireling)
 		local lamp = inbox:addItem(HIRELING_LAMP_ID, 1, INDEX_WHEREEVER, FLAG_NOLIMIT)
-		lamp:setAttribute(DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
+		lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 		lamp:setSpecialAttribute(HIRELING_ATTRIBUTE, hireling:getId()) --save hirelingId on item
 		hireling.active = 0
 		return hireling

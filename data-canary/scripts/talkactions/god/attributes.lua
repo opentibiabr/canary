@@ -2,20 +2,20 @@ local itemFunctions = {
 	["actionid"] = { isActive = true, targetFunction = function (item, target) return item:setActionId(target) end },
 	["action"] = { isActive = true, targetFunction = function (item, target) return item:setActionId(target) end },
 	["aid"] = { isActive = true, targetFunction = function (item, target) return item:setActionId(target) end },
-	["uniqueid"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(UNIQUEID, target) end },
-	["unique"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(UNIQUEID, target) end },
-	["uid"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(UNIQUEID, target) end },
-	["description"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(DESCRIPTION, target) end },
-	["desc"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(DESCRIPTION, target) end },
-	["name"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(NAME, target) end },
+	["uniqueid"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, target) end },
+	["unique"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, target) end },
+	["uid"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, target) end },
+	["description"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, target) end },
+	["desc"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, target) end },
+	["name"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_NAME, target) end },
 	["remove"] = { isActive = true, targetFunction = function (item, target) return item:remove() end },
 	["decay"] = { isActive = true, targetFunction = function (item, target) return item:decay() end },
 	["transform"] = { isActive = true, targetFunction = function (item, target) return item:transform(target) end },
 	["clone"] = { isActive = true, targetFunction = function (item, target) return item:clone() end },
-	["attack"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ATTACK, target) end },
-	["defense"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(DEFENSE, target) end },
-	["extradefense"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(EXTRADEFENSE, target) end },
-	["armor"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ARMOR, target) end }
+	["attack"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_ATTACK, target) end },
+	["defense"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_DEFENSE, target) end },
+	["extradefense"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_EXTRADEFENSE, target) end },
+	["armor"] = { isActive = true, targetFunction = function (item, target) return item:setAttribute(ITEM_ATTRIBUTE_ARMOR, target) end }
 }
 
 local creatureFunctions = {

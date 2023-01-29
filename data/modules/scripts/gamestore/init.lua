@@ -1330,7 +1330,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		if (isKeg and offerCount > 500) or offerCount > 100 then
 			local parcel = inbox:addItem(PARCEL_ID, 1)
 			if parcel then
-				parcel:setAttribute(NAME, '' .. offerCount .. 'x ' .. offerName .. ' package.')
+				parcel:setAttribute(ITEM_ATTRIBUTE_NAME, '' .. offerCount .. 'x ' .. offerName .. ' package.')
 				local pendingCount = offerCount
 				local limit = isKeg and 500 or 100
 				while (pendingCount > 0) do
@@ -1342,7 +1342,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 					end
 					if isKeg then
 						local kegItem = parcel:addItem(offerId, 1)
-						kegItem:setAttribute(CHARGES, pack)
+						kegItem:setAttribute(ITEM_ATTRIBUTE_CHARGES, pack)
 					else
 						parcel:addItem(offerId, pack)
 					end
@@ -1352,7 +1352,7 @@ function GameStore.processStackablePurchase(player, offerId, offerCount, offerNa
 		else
 			local item = inbox:addItem(offerId, isKeg and 1 or offerCount)
 			if item and isKeg then
-				item:setAttribute(CHARGES, offerCount)
+				item:setAttribute(ITEM_ATTRIBUTE_CHARGES, offerCount)
 			end
 		end
 	else
@@ -1371,10 +1371,10 @@ function GameStore.processHouseRelatedPurchase(player, offerId, offerCount)
 	if inbox and inbox:getEmptySlots() > 0 then
 		local decoKit = inbox:addItem(23398, 1)
 		if decoKit then
-			decoKit:setAttribute(DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
+			decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(offerId):getName() .. ">.")
 			decoKit:setCustomAttribute("unWrapId", offerId)
 			if isCaskItem(offerId) then
-				decoKit:setAttribute(DATE, offerCount)
+				decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offerCount)
 			end
 		end
 	else
@@ -1859,7 +1859,7 @@ function HandleHirelingNameChange(playerId, offer, newHirelingName)
 
 		local lamp = player:findHirelingLamp(hireling:getId())
 		if lamp then
-			lamp:setAttribute(DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
+			lamp:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "This mysterious lamp summons your very own personal hireling.\nThis item cannot be traded.\nThis magic lamp is the home of " .. hireling:getName() .. ".")
 		end
 		Spdlog.debug(string.format('%s has been renamed to %s', oldName, newHirelingName))
 		sendUpdatedStoreBalances(playerId)

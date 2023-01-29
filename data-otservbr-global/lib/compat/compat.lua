@@ -673,9 +673,9 @@ function doSetItemText(uid, text)
 	end
 
 	if text ~= "" then
-		item:setAttribute(TEXT, text)
+		item:setAttribute(ITEM_ATTRIBUTE_TEXT, text)
 	else
-		item:removeAttribute(TEXT)
+		item:removeAttribute(ITEM_ATTRIBUTE_TEXT)
 	end
 	return true
 end
@@ -686,9 +686,9 @@ function doSetItemSpecialDescription(uid, desc)
 	end
 
 	if desc ~= "" then
-		item:setAttribute(DESCRIPTION, desc)
+		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, desc)
 	else
-		item:removeAttribute(DESCRIPTION)
+		item:removeAttribute(ITEM_ATTRIBUTE_DESCRIPTION)
 	end
 	return true
 end

@@ -38,7 +38,7 @@ function clayLump.onUse(player, item, fromPosition, target, toPosition, isHotkey
 				player:say(tmpItem.sound, TALKTYPE_MONSTER_SAY, false, player)
 			end
 			if tmpItem.description then
-				item:setAttribute(DESCRIPTION, tmpItem.description:gsub('|PLAYERNAME|', player:getName()))
+				item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, tmpItem.description:gsub('|PLAYERNAME|', player:getName()))
 			end
 			break
 		end

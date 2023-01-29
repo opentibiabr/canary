@@ -457,7 +457,7 @@ function Player:conjureItem(reagentId, conjureId, conjureCount, effect)
 		return false
 	end
 
-	if item:hasAttribute(DURATION) then
+	if item:hasAttribute(ITEM_ATTRIBUTE_DURATION) then
 		item:decay()
 	end
 

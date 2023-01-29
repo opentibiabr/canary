@@ -79,13 +79,13 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 	end
 
 	local weapon = player:getItemById(weaponId, true)
-	if not weapon:isItem() or not weapon:hasAttribute(CHARGES) then
+	if not weapon:isItem() or not weapon:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
 		player:sendTextMessage(MESSAGE_FAILURE, "The selected item is not a training weapon, the training has stopped.")
 		LeaveTraining(playerId)
 		return false
 	end
 
-	local weaponCharges = weapon:getAttribute(CHARGES)
+	local weaponCharges = weapon:getAttribute(ITEM_ATTRIBUTE_CHARGES)
 	if not weaponCharges or weaponCharges <= 0 then
 		weapon:remove(1) -- ??
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your training weapon has disappeared.")
@@ -115,14 +115,14 @@ function ExerciseEvent(playerId, tilePosition, weaponId, dummyId)
 		player:addSkillTries(ExerciseWeaponsTable[weaponId].skill, (7 * expRate) * bonusDummy)
 	end
 
-	weapon:setAttribute(CHARGES, (weaponCharges - 1))
+	weapon:setAttribute(ITEM_ATTRIBUTE_CHARGES, (weaponCharges - 1))
 	tilePosition:sendMagicEffect(CONST_ME_HITAREA)
 
 	if ExerciseWeaponsTable[weaponId].effect then
 		playerPosition:sendDistanceEffect(tilePosition, ExerciseWeaponsTable[weaponId].effect)
 	end
 
-	if weapon:getAttribute(CHARGES) <= 0 then
+	if weapon:getAttribute(ITEM_ATTRIBUTE_CHARGES) <= 0 then
 		weapon:remove(1)
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your training weapon has disappeared.")
 		LeaveTraining(playerId)

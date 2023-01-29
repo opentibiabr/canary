@@ -463,7 +463,7 @@ local function energyBarrierRestore(barrierUID)
 	local energyBarrier = Tile(energyBarriers[barrierUID].position):getItemById(12796)
 	if not energyBarrier then
 		energyBarrier = Game.createItem(12796, 1, energyBarriers[barrierUID].position)
-		energyBarrier:setAttribute(UNIQUEID, barrierUID)
+		energyBarrier:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, barrierUID)
 	end
 end
 

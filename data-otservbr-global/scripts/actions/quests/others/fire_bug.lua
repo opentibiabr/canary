@@ -13,7 +13,7 @@ local function revertAshes()
 		local tileItemUid = Tile(Position(32849, 32233, 9))
 		local itemUid = tileItemUid:getItemById(3134)
 		if tileItemUid and itemUid then
-			itemUid:setAttribute(UNIQUEID, 2243)
+			itemUid:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, 2243)
 		end
 	end
 end

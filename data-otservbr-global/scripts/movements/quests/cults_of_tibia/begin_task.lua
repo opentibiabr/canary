@@ -49,7 +49,7 @@ beginTask:register()
 beginTask = MoveEvent()
 
 function beginTask.onDeEquip(player, item, slot, isCheck)
-	item:setAttribute(DECAYSTATE, 0)
+	item:setAttribute(ITEM_ATTRIBUTE_DECAYSTATE, 0)
 	return true
 end
 

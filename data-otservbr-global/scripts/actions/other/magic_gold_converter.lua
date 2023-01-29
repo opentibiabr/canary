@@ -31,7 +31,7 @@ local function finditem(self, cylinder, conv)
 							player:addItem(toid, 1)
 						end
 						
-						conv:setAttribute(CHARGES, conv:getAttribute(CHARGES) - 1)
+						conv:setAttribute(ITEM_ATTRIBUTE_CHARGES, conv:getAttribute(ITEM_ATTRIBUTE_CHARGES) - 1)
 
 						return true
 					end
@@ -49,8 +49,8 @@ local function start_converter(pid, itemid)
 	
 	local item = player:getItemById(itemid,true)
 		if player:getItemCount(itemid) >= 1 then
-			if item:hasAttribute(CHARGES) then
-				local charges_n = item:getAttribute(CHARGES)
+			if item:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
+				local charges_n = item:getAttribute(ITEM_ATTRIBUTE_CHARGES)
 				if charges_n >= 1 then
 					if player:getItemCount(ITEM_GOLD_COIN) >= 100 or player:getItemCount(ITEM_PLATINUM_COIN) >= 100 then
 						finditem(player, 0, item)

@@ -796,8 +796,8 @@ end
 
 function Item:setSpecialAttribute(...)
 	local tmp
-	if self:hasAttribute(SPECIAL) then
-		tmp = self:getAttribute(SPECIAL)
+	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
+		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
 	else
 		tmp = "{}"
 	end
@@ -806,15 +806,15 @@ function Item:setSpecialAttribute(...)
 	if tab then
 		setTableIndexes(tab, ...)
 		tmp = serializeTable(tab)
-		self:setAttribute(SPECIAL, tmp)
+		self:setAttribute(ITEM_ATTRIBUTE_SPECIAL, tmp)
 		return true
 	end
 end
 
 function Item:getSpecialAttribute(...)
 	local tmp
-	if self:hasAttribute(SPECIAL) then
-		tmp = self:getAttribute(SPECIAL)
+	if self:hasAttribute(ITEM_ATTRIBUTE_SPECIAL) then
+		tmp = self:getAttribute(ITEM_ATTRIBUTE_SPECIAL)
 	else
 		tmp = "{}"
 	end

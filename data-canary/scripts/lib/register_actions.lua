@@ -23,7 +23,7 @@ ActionsLib.destroyItem = function(player, target, toPosition)
 		return false
 	end
 
-	if target:hasAttribute(UNIQUEID) or target:hasAttribute(ACTIONID) then
+	if target:hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) or target:hasAttribute(ITEM_ATTRIBUTE_ACTIONID) then
 		return false
 	end
 
@@ -108,7 +108,7 @@ ActionsLib.usePick = function(player, item, fromPosition, target, toPosition, is
 		return false
 	end
 
-	if table.contains(groundIds, ground.itemid) and (ground:hasAttribute(UNIQUEID) or ground:hasAttribute(ACTIONID)) then
+	if table.contains(groundIds, ground.itemid) and (ground:hasAttribute(ITEM_ATTRIBUTE_UNIQUEID) or ground:hasAttribute(ITEM_ATTRIBUTE_ACTIONID)) then
 		ground:transform(392)
 		ground:decay()
 

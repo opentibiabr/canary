@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					if inbox and inbox:getEmptySlots() > 0 then
 						local decoKit = inbox:addItem(23398, 1)
 						local decoItemName = ItemType(31510):getName()
-							decoKit:setAttribute(DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
+							decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a " .. decoItemName .. ".")
 							decoKit:setActionId(36345)
 							npcHandler:say("Take this armor as a token of great gratitude. Let us forever remember this day, my friend!", npc, creature)
 							player:removeMoneyBank(500000000)

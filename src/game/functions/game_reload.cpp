@@ -88,7 +88,7 @@ bool GameReload::reloadEvents() const
 bool GameReload::reloadCore() const
 {
 	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		g_luaEnvironment.loadFile(coreFolder + "/core.lua") == 0)
+		g_luaEnvironment.loadFile(coreFolder + "/core.lua", "core.lua") == 0)
 	{
 		// Reload scripts lib
 		if (!g_scripts().loadScripts("scripts/lib", true, false)) {
@@ -160,7 +160,7 @@ bool GameReload::reloadScripts() const
 bool GameReload::reloadTalkaction() const
 {
 	if (auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-		g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua") == 0)
+		g_luaEnvironment.loadFile(coreFolder + "/scripts/talkactions.lua", "talkactions.lua") == 0)
 	{
 		return true;
 	}

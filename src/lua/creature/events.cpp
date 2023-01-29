@@ -40,8 +40,9 @@ bool Events::loadFromXml() {
 		auto res = classes.insert(className);
 		if (res.second) {
 			const std::string& lowercase = asLowerCaseString(className);
+			const std::string& scriptName = lowercase + ".lua";
 			auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" + lowercase + ".lua") != 0) {
+			if (scriptInterface.loadFile(coreFolder + "/events/scripts/" + scriptName, scriptName) != 0) {
 				SPDLOG_WARN("{} - Can not load script: {}.lua", __FUNCTION__, lowercase);
 				SPDLOG_WARN(scriptInterface.getLastLuaError());
 			}

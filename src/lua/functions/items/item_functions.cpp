@@ -170,7 +170,7 @@ int ItemFunctions::luaItemGetUniqueId(lua_State* L) {
 	// item:getUniqueId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		uint32_t uniqueId = item->getUniqueId();
+		uint32_t uniqueId = static_cast<uint16_t>(item->getInteger(ItemAttribute_t::UNIQUEID));
 		if (uniqueId == 0) {
 			uniqueId = getScriptEnv()->addThing(item);
 		}
@@ -185,7 +185,7 @@ int ItemFunctions::luaItemGetActionId(lua_State* L) {
 	// item:getActionId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getActionId());
+		lua_pushnumber(L, static_cast<lua_Number>(item->getInteger(ItemAttribute_t::ACTIONID)));
 	} else {
 		lua_pushnil(L);
 	}
@@ -197,7 +197,7 @@ int ItemFunctions::luaItemSetActionId(lua_State* L) {
 	uint16_t actionId = getNumber<uint16_t>(L, 2);
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		item->setActionId(actionId);
+		item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);
@@ -231,7 +231,7 @@ int ItemFunctions::luaItemGetFluidType(lua_State* L) {
 	// item:getFluidType()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getFluidType());
+		lua_pushnumber(L, item->getInteger(ItemAttribute_t::FLUIDTYPE));
 	} else {
 		lua_pushnil(L);
 	}
@@ -366,9 +366,9 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 			return 1;
 		}
 
-		lua_pushnumber(L, static_cast<lua_Number>(item->getAttributeValue(attribute)));
+		lua_pushnumber(L, static_cast<lua_Number>(item->getInteger(attribute)));
 	} else if (item->isStrAttrType(attribute)) {
-		pushString(L, item->getAttributeString(attribute));
+		pushString(L, item->getString(attribute));
 	} else {
 		lua_pushnil(L);
 	}
@@ -478,9 +478,9 @@ int ItemFunctions::luaItemGetCustomAttribute(lua_State* L) {
 
 	const CustomAttribute* customAttribute;
 	if (isNumber(L, 2)) {
-		customAttribute = std::bit_cast<Item*>(item)->getCustomAttribute(std::to_string(getNumber<int64_t>(L, 2)));
+		customAttribute = item->getCustomAttribute(std::to_string(getNumber<int64_t>(L, 2)));
 	} else if (isString(L, 2)) {
-		customAttribute = std::bit_cast<Item*>(item)->getCustomAttribute(getString(L, 2));
+		customAttribute = item->getCustomAttribute(getString(L, 2));
 	} else {
 		lua_pushnil(L);
 		return 1;

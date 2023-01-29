@@ -19,7 +19,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	ItemDecayState_t decayState = item->getDecaying();
+	ItemDecayState_t decayState = static_cast<ItemDecayState_t>(item->getInteger(ItemAttribute_t::DECAYSTATE));
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
 		return;
@@ -29,7 +29,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	const int64_t duration = item->getAttributeValue(ItemAttribute_t::DURATION);
+	const int64_t duration = item->getInteger(ItemAttribute_t::DURATION);
 	if (duration <= 0 && item->hasAttribute(ItemAttribute_t::DURATION)) {
 		internalDecayItem(item);
 		return;
@@ -52,7 +52,7 @@ void Decay::startDecay(Item* item)
 
 		item->incrementReferenceCounter();
 		item->setDecaying(DECAYING_TRUE);
-		item->setDurationTimestamp(timestamp);
+		item->setAttribute(ItemAttribute_t::DURATION_TIMESTAMP, timestamp);
 		decayMap[timestamp].push_back(item);
 	}
 }
@@ -60,7 +60,7 @@ void Decay::startDecay(Item* item)
 void Decay::stopDecay(Item* item)
 {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
-		int64_t timestamp = item->getAttributeValue(ItemAttribute_t::DURATION_TIMESTAMP);
+		int64_t timestamp = item->getInteger(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {

@@ -31,7 +31,143 @@ class MagicField;
 class BedItem;
 class Imbuement;
 
-class Item : virtual public Thing
+// This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
+class ItemProperties {
+public:
+	const int64_t& getInteger(ItemAttribute_t type) const {
+		static int64_t emptyInt;
+		if (!attributePtr) {
+			return emptyInt;
+		}
+
+		return attributePtr->getAttributeValue(type);
+	}
+	const std::string& getString(ItemAttribute_t type) const {
+		static std::string emptyString;
+		if (!attributePtr) {
+			return emptyString;
+		}
+
+		return attributePtr->getAttributeString(type);
+	}
+	bool hasAttribute(ItemAttribute_t type) const {
+		if (!attributePtr) {
+			return false;
+		}
+
+		return attributePtr->hasAttribute(type);
+	}
+	void removeAttribute(ItemAttribute_t type) {
+		if (attributePtr) {
+			attributePtr->removeAttribute(type);
+		}
+	}
+
+	template<typename GenericAttribute>
+	void setAttribute(ItemAttribute_t type, GenericAttribute genericAttribute) {
+		getAttribute()->setAttribute(type, genericAttribute);
+	}
+
+	std::unique_ptr<ItemAttribute>& getAttribute() {
+		if (!attributePtr) {
+			attributePtr.reset(new ItemAttribute());
+		}
+	
+		return attributePtr;
+	}
+	const std::unique_ptr<ItemAttribute>& getAttribute() const {
+		if (!attributePtr) {
+			std::bit_cast<ItemProperties*>(this)->attributePtr.reset(new ItemAttribute());
+		}
+	
+		return attributePtr;
+	}
+
+	const std::underlying_type_t<ItemAttribute_t>& getAttributeBits() const {
+		return attributePtr->getAttributeBits();
+	}
+	const std::vector<Attributes>& getAttributeVector() const {
+		return attributePtr->getAttributeVector();
+	}
+
+	bool isIntAttrType(ItemAttribute_t type) const {
+		if (!attributePtr) {
+			return false;
+		}
+
+		return attributePtr->isIntAttrType(type);
+	}
+
+	bool isStrAttrType(ItemAttribute_t type) const {
+		if (!attributePtr) {
+			return false;
+		}
+
+		return attributePtr->isStrAttrType(type);
+	}
+
+	// Custom Attributes
+	const std::map<std::string, CustomAttribute, std::less<>>& getCustomAttributeMap() const {
+		return getAttribute()->getCustomAttributeMap();
+	}
+	const CustomAttribute* getCustomAttribute(const std::string& attributeName) const
+	{
+		return getAttribute()->getCustomAttribute(attributeName);
+	}
+
+	template<typename GenericType>
+	void setCustomAttribute(const std::string &key, GenericType value) {
+		getAttribute()->setCustomAttribute(key, value);
+	}
+
+	void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute)
+	{
+		getAttribute()->addCustomAttribute(key, customAttribute);
+	}
+
+	bool removeCustomAttribute(const std::string& attributeName) {
+		return getAttribute()->removeCustomAttribute(attributeName);
+	}
+
+	uint16_t getCharges() const {
+		if (!attributePtr) {
+			return 0;
+		}
+
+		return static_cast<uint16_t>(getInteger(ItemAttribute_t::CHARGES));
+	}
+
+	uint32_t getCorpseOwner() const {
+		return static_cast<uint32_t>(getInteger(ItemAttribute_t::CORPSEOWNER));
+	}
+
+	int32_t getDuration() const {
+		ItemDecayState_t decayState = getDecaying();
+		if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
+			return std::max<int32_t>(0, static_cast<int32_t>(getInteger(ItemAttribute_t::DURATION_TIMESTAMP) -OTSYS_TIME()));
+		} else {
+			return static_cast<int32_t>(getInteger(ItemAttribute_t::DURATION));
+		}
+	}
+
+	void setDecaying(ItemDecayState_t decayState) {
+		setAttribute(ItemAttribute_t::DECAYSTATE, decayState);
+		if (decayState == DECAYING_FALSE) {
+			removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
+		}
+	}
+	ItemDecayState_t getDecaying() const {
+		return static_cast<ItemDecayState_t>(getInteger(ItemAttribute_t::DECAYSTATE));
+	}
+
+	bool isRewardCorpse() const {
+		return getCorpseOwner();
+	}
+
+	std::unique_ptr<ItemAttribute> attributePtr;
+};
+
+class Item : virtual public Thing, public ItemProperties
 {
 	public:
 		//Factory member to create item of right type based on type
@@ -147,7 +283,7 @@ class Item : virtual public Thing
 		}
 		uint8_t getShootRange() const {
 			if (hasAttribute(ItemAttribute_t::SHOOTRANGE)) {
-				return static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::SHOOTRANGE));
+				return static_cast<uint8_t>(getInteger(ItemAttribute_t::SHOOTRANGE));
 			}
 			return items[id].shootRange;
 		}
@@ -155,37 +291,37 @@ class Item : virtual public Thing
 		virtual uint32_t getWeight() const;
 		uint32_t getBaseWeight() const {
 			if (hasAttribute(ItemAttribute_t::WEIGHT)) {
-				return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::WEIGHT));
+				return static_cast<uint32_t>(getInteger(ItemAttribute_t::WEIGHT));
 			}
 			return items[id].weight;
 		}
 		int32_t getAttack() const {
 			if (hasAttribute(ItemAttribute_t::ATTACK)) {
-				return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ATTACK));
+				return static_cast<int32_t>(getInteger(ItemAttribute_t::ATTACK));
 			}
 			return items[id].attack;
 		}
 		int32_t getArmor() const {
 			if (hasAttribute(ItemAttribute_t::ARMOR)) {
-				return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ARMOR));
+				return static_cast<int32_t>(getInteger(ItemAttribute_t::ARMOR));
 			}
 			return items[id].armor;
 		}
 		int32_t getDefense() const {
 			if (hasAttribute(ItemAttribute_t::DEFENSE)) {
-				return static_cast<int32_t>( getAttributeValue(ItemAttribute_t::DEFENSE));
+				return static_cast<int32_t>(getInteger(ItemAttribute_t::DEFENSE));
 			}
 			return items[id].defense;
 		}
 		int32_t getExtraDefense() const {
 			if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
-				return static_cast<int32_t>(getAttributeValue(ItemAttribute_t::EXTRADEFENSE));
+				return static_cast<int32_t>(getInteger(ItemAttribute_t::EXTRADEFENSE));
 			}
 			return items[id].extraDefense;
 		}
 		uint8_t getImbuementSlot() const {
 			if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
-				return static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT));
+				return static_cast<uint8_t>(getInteger(ItemAttribute_t::IMBUEMENT_SLOT));
 			}
 			return items[id].imbuementSlot;
 		}
@@ -194,13 +330,13 @@ class Item : virtual public Thing
 		}
 		int8_t getHitChance() const {
 			if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
-				return static_cast<int8_t>(getAttributeValue(ItemAttribute_t::HITCHANCE));
+				return static_cast<int8_t>(getInteger(ItemAttribute_t::HITCHANCE));
 			}
 			return items[id].hitChance;
 		}
 		uint32_t getQuicklootAttr() const {
 			if (hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-				return static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::QUICKLOOTCONTAINER));
+				return static_cast<uint32_t>(getInteger(ItemAttribute_t::QUICKLOOTCONTAINER));
 			}
 			return 0;
 		}
@@ -265,19 +401,19 @@ class Item : virtual public Thing
 
 		const std::string& getName() const {
 			if (hasAttribute(ItemAttribute_t::NAME)) {
-				return getAttributeString(ItemAttribute_t::NAME);
+				return getString(ItemAttribute_t::NAME);
 			}
 			return items[id].name;
 		}
 		const std::string getPluralName() const {
 			if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
-				return getAttributeString(ItemAttribute_t::PLURALNAME);
+				return getString(ItemAttribute_t::PLURALNAME);
 			}
 			return items[id].getPluralName();
 		}
 		const std::string& getArticle() const {
 			if (hasAttribute(ItemAttribute_t::ARTICLE)) {
-				return getAttributeString(ItemAttribute_t::ARTICLE);
+				return getString(ItemAttribute_t::ARTICLE);
 			}
 			return items[id].article;
 		}
@@ -310,9 +446,13 @@ class Item : virtual public Thing
 				setDuration(duration);
 			}
 		}
+		void setDuration(int32_t time) {
+			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
+		}
 		uint32_t getDefaultDuration() const {
 			return items[id].decayTime * 1000;
 		}
+		
 		bool canDecay() const;
 
 		virtual bool canRemove() const {
@@ -336,244 +476,6 @@ class Item : virtual public Thing
 		}
 		bool isCleanable() const {
 			return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ItemAttribute_t::UNIQUEID) && !hasAttribute(ItemAttribute_t::ACTIONID);
-		}
-
-		void removeAttribute(ItemAttribute_t type) {
-			if (attributePtr) {
-				attributePtr->removeAttribute(type);
-			}
-		}
-		template<typename GenericAttribute>
-		void setAttribute(ItemAttribute_t type, GenericAttribute genericAttribute) {
-			getAttributePtr()->setAttribute(type, genericAttribute);
-		}
-		bool hasAttribute(ItemAttribute_t type) const {
-			if (!attributePtr) {
-				return false;
-			}
-
-			return attributePtr->hasAttribute(type);
-		}
-
-		const std::string& getAttributeString(ItemAttribute_t type) const {
-			static std::string emptyString;
-			if (!attributePtr) {
-				return emptyString;
-			}
-
-			return attributePtr->getAttributeString(type);
-		}
-
-		int64_t getAttributeValue(ItemAttribute_t type) const {
-			if (!attributePtr) {
-				return 0;
-			}
-
-			return attributePtr->getAttributeValue(type);
-		}
-
-		std::unique_ptr<ItemAttribute>& getAttributePtr() {
-			if (!attributePtr) {
-				attributePtr.reset(new ItemAttribute());
-			}
-			return attributePtr;
-		}
-
-		// Custom attributes
-		const std::map<std::string, CustomAttribute, std::less<>>& getCustomAttributeMap() {
-			
-			return getAttributePtr()->getCustomAttributeMap();
-		}
-		const CustomAttribute* getCustomAttribute(const std::string& attributeName)
-		{
-			return getAttributePtr()->getCustomAttribute(attributeName);
-		}
-
-		template<typename GenericType>
-		void setCustomAttribute(const std::string &key, GenericType value) {
-			if (!attributePtr) {
-				return;
-			}
-
-			getAttributePtr()->setCustomAttribute(key, value);
-		}
-
-		void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute)
-		{
-			if (!attributePtr) {
-				return;
-			}
-
-			getAttributePtr()->addCustomAttribute(key, customAttribute);
-		}
-
-		bool removeCustomAttribute(const std::string& attributeName) {
-			if (!attributePtr) {
-				return false;
-			}
-
-			return getAttributePtr()->removeCustomAttribute(attributeName);
-		}
-
-		const std::underlying_type_t<ItemAttribute_t>& getAttributeBits() const {
-			if (!attributePtr) {
-				return {};
-			}
-
-			return attributePtr->getAttributeBits();
-		}
-		const std::vector<Attributes>& getAttributeVector() const {
-			if (!attributePtr) {
-				return {};
-			}
-
-			return attributePtr->getAttributeVector();
-		}
-
-		bool isIntAttrType(ItemAttribute_t type) const {
-			return attributePtr->isIntAttrType(type);
-		}
-
-		bool isStrAttrType(ItemAttribute_t type) const {
-			return attributePtr->isStrAttrType(type);
-		}
-
-		// Test
-		void setSpecialDescription(const std::string& desc) {
-			setAttribute(ItemAttribute_t::DESCRIPTION, desc);
-		}
-		const std::string& getSpecialDescription() const {
-			return getAttributeString(ItemAttribute_t::DESCRIPTION);
-		}
-
-		void setText(const std::string& text) {
-			setAttribute(ItemAttribute_t::TEXT, text);
-		}
-		void resetText() {
-			removeAttribute(ItemAttribute_t::TEXT);
-		}
-		const std::string& getText() const {
-			return getAttributeString(ItemAttribute_t::TEXT);
-		}
-
-		void setDate(int32_t n) {
-			setAttribute(ItemAttribute_t::DATE, n);
-		}
-		void resetDate() {
-			removeAttribute(ItemAttribute_t::DATE);
-		}
-		time_t getDate() const {
-			return static_cast<time_t>(getAttributeValue(ItemAttribute_t::DATE));
-		}
-
-		void setWriter(const std::string& writer) {
-			setAttribute(ItemAttribute_t::WRITER, writer);
-		}
-		void resetWriter() {
-			removeAttribute(ItemAttribute_t::WRITER);
-		}
-		const std::string& getWriter() const {
-			return getAttributeString(ItemAttribute_t::WRITER);
-		}
-
-		void setActionId(uint16_t n) {
-			if (n < 100) {
-				n = 100;
-			}
-
-			setAttribute(ItemAttribute_t::ACTIONID, n);
-		}
-		uint16_t getActionId() const {
-			if (!attributePtr) {
-				return 0;
-			}
-			return static_cast<uint16_t>(getAttributeValue(ItemAttribute_t::ACTIONID));
-		}
-
-		uint16_t getUniqueId() const {
-			if (!attributePtr) {
-				return 0;
-			}
-			return static_cast<uint16_t>(getAttributeValue(ItemAttribute_t::UNIQUEID));
-		}
-
-		void setUniqueId(uint16_t n) {
-			setAttribute(ItemAttribute_t::UNIQUEID, n);
-		}
-
-		void setCharges(uint16_t n) {
-			setAttribute(ItemAttribute_t::CHARGES, n);
-		}
-		uint16_t getCharges() const {
-			if (!attributePtr) {
-				return 0;
-			}
-			return static_cast<uint16_t>(getAttributeValue(ItemAttribute_t::CHARGES));
-		}
-
-		void setFluidType(uint16_t n) {
-			setAttribute(ItemAttribute_t::FLUIDTYPE, n);
-		}
-		uint16_t getFluidType() const {
-			if (!attributePtr) {
-				return 0;
-			}
-			return static_cast<uint16_t>(getAttributeValue(ItemAttribute_t::FLUIDTYPE));
-		}
-
-		void setOwner(uint32_t owner) {
-			setAttribute(ItemAttribute_t::OWNER, owner);
-		}
-		uint32_t getOwner() const {
-			if (!attributePtr) {
-				return 0;
-			}
-			return getAttributeValue(ItemAttribute_t::OWNER);
-		}
-
-		void setCorpseOwner(uint32_t corpseOwner) {
-			setAttribute(ItemAttribute_t::CORPSEOWNER, corpseOwner);
-		}
-		uint32_t getCorpseOwner() const {
-			if (!attributePtr) {
-				return 0;
-			}
-			return getAttributeValue(ItemAttribute_t::CORPSEOWNER);
-		}
-
-		void setRewardCorpse() {
-			setCorpseOwner(static_cast<uint32_t>(std::numeric_limits<int32_t>::max()));
-		}
-		bool isRewardCorpse() {
-			return getCorpseOwner() == static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
-		}
-
-		void setDuration(int32_t time) {
-			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
-		}
-		void setDurationTimestamp(int64_t timestamp) {
-			setAttribute(ItemAttribute_t::DURATION_TIMESTAMP, timestamp);
-		}
-		int32_t getDuration() const {
-			ItemDecayState_t decayState = getDecaying();
-			if (decayState == DECAYING_TRUE || decayState == DECAYING_STOPPING) {
-				return std::max<int32_t>(0, static_cast<int32_t>(getAttributeValue(ItemAttribute_t::DURATION_TIMESTAMP) - OTSYS_TIME()));
-			} else {
-				return getAttributeValue(ItemAttribute_t::DURATION);
-			}
-		}
-
-		void setDecaying(ItemDecayState_t decayState) {
-			setAttribute(ItemAttribute_t::DECAYSTATE, decayState);
-			if (decayState == DECAYING_FALSE) {
-				removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
-			}
-		}
-		ItemDecayState_t getDecaying() const {
-			if (!attributePtr) {
-				return DECAYING_FALSE;
-			}
-			return static_cast<ItemDecayState_t>(getAttributeValue(ItemAttribute_t::DECAYSTATE));
 		}
 
 		bool hasMarketAttributes();
@@ -671,7 +573,7 @@ class Item : virtual public Thing
 				return 0;
 			}
 
-			auto tier = static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::TIER));
+			auto tier = static_cast<uint8_t>(getInteger(ItemAttribute_t::TIER));
 			if (tier > g_configManager().getNumber(FORGE_MAX_ITEM_TIER)) {
 				SPDLOG_ERROR("{} - Item {} have a wrong tier {}", __FUNCTION__, getName(), tier);
 				return 0;
@@ -696,8 +598,6 @@ class Item : virtual public Thing
 
 	protected:
 		Cylinder* parent = nullptr;
-
-		std::unique_ptr<ItemAttribute> attributePtr;
 
 		uint32_t referenceCounter = 0;
 

@@ -269,7 +269,7 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	rewardContainer->setAttribute(ItemAttribute_t::DATE, timestamp);
 	container->setAttribute(ItemAttribute_t::DATE, timestamp);
 	container->internalAddThing(rewardContainer);
-	container->setRewardCorpse();
+	container->setAttribute(ItemAttribute_t::CORPSEOWNER, static_cast<uint32_t>(std::numeric_limits<int32_t>::max()));
 
 	pushBoolean(L, true);
 	return 1;

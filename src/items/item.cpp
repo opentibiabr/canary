@@ -76,7 +76,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const
 {
-	const CustomAttribute* attribute = std::bit_cast<Item*>(this)->getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
+	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
 	auto info = attribute ? static_cast<uint32_t>(attribute->getInt64Value()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
@@ -201,7 +201,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 	const ItemType& it = items[id];
 	auto itemCharges = it.charges;
 	if (it.isFluidContainer() || it.isSplash()) {
-		setFluidType(itemCount);
+		setAttribute(ItemAttribute_t::FLUIDTYPE, itemCount);
 	} else if (it.stackable) {
 		if (itemCount != 0) {
 			setItemCount(itemCount);
@@ -210,9 +210,9 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 		}
 	} else if (itemCharges != 0) {
 		if (itemCount != 0) {
-			setCharges(itemCount);
+			setAttribute(ItemAttribute_t::CHARGES, itemCount);
 		} else {
-			setCharges(it.charges);
+			setAttribute(ItemAttribute_t::CHARGES, it.charges);
 		}
 	}
 
@@ -223,7 +223,7 @@ Item::Item(const Item& i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
 {
 	if (i.attributePtr) {
-		attributePtr.reset(new ItemAttribute(*i.attributePtr));
+		attributePtr.reset(new ItemAttribute());
 	}
 }
 
@@ -236,7 +236,7 @@ Item* Item::clone() const
 	}
 
 	if (attributePtr) {
-		item->attributePtr.reset(new ItemAttribute(*attributePtr));
+		item->attributePtr.reset(new ItemAttribute());
 	}
 
 	return item;
@@ -287,7 +287,7 @@ void Item::setDefaultSubtype()
 		if (it.stackable) {
 			setItemCount(itemCharges);
 		} else {
-			setCharges(it.charges);
+			setAttribute(ItemAttribute_t::CHARGES, it.charges);
 		}
 	}
 }
@@ -297,7 +297,7 @@ void Item::onRemoved()
 	ScriptEnvironment::removeTempItem(this);
 
 	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		g_game().removeUniqueItem(getUniqueId());
+		g_game().removeUniqueItem(static_cast<uint16_t>(getInteger(ItemAttribute_t::UNIQUEID)));
 	}
 }
 
@@ -389,11 +389,11 @@ uint16_t Item::getSubType() const
 {
 	const ItemType& it = items[id];
 	if (it.isFluidContainer() || it.isSplash()) {
-		return getFluidType();
+		return  static_cast<uint16_t>(getInteger(ItemAttribute_t::FLUIDTYPE));
 	} else if (it.stackable) {
 		return count;
 	} else if (it.charges != 0) {
-		return getCharges();
+		return getInteger(ItemAttribute_t::CHARGES);
 	}
 	return count;
 }
@@ -421,11 +421,11 @@ void Item::setSubType(uint16_t n)
 {
 	const ItemType& it = items[id];
 	if (it.isFluidContainer() || it.isSplash()) {
-		setFluidType(n);
+		setAttribute(ItemAttribute_t::FLUIDTYPE, n);
 	} else if (it.stackable) {
 		setItemCount(n);
 	} else if (it.charges != 0) {
-		setCharges(n);
+		setAttribute(ItemAttribute_t::CHARGES, n);
 	} else {
 		setItemCount(n);
 	}
@@ -451,7 +451,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setActionId(actionId);
+			setAttribute(ItemAttribute_t::ACTIONID, actionId);
 			break;
 		}
 
@@ -471,7 +471,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setText(text);
+			setAttribute(ItemAttribute_t::TEXT, text);
 			break;
 		}
 
@@ -481,7 +481,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setDate(writtenDate);
+			setAttribute(ItemAttribute_t::DATE, writtenDate);
 			break;
 		}
 
@@ -491,7 +491,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setWriter(writer);
+			setAttribute(ItemAttribute_t::WRITER, writer);
 			break;
 		}
 
@@ -501,7 +501,7 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				return ATTR_READ_ERROR;
 			}
 
-			setSpecialDescription(text);
+			setAttribute(ItemAttribute_t::DESCRIPTION, text);
 			break;
 		}
 
@@ -837,39 +837,39 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<uint8_t>(getSubType());
 	}
 
-	uint16_t charges = getCharges();
+	uint16_t charges = getInteger(ItemAttribute_t::CHARGES);
 	if (charges != 0) {
 		propWriteStream.write<uint8_t>(ATTR_CHARGES);
 		propWriteStream.write<uint16_t>(charges);
 	}
 
 	if (it.moveable) {
-		uint16_t actionId = getActionId();
+		uint16_t actionId = getInteger(ItemAttribute_t::ACTIONID);
 		if (actionId != 0) {
 			propWriteStream.write<uint8_t>(ATTR_ACTION_ID);
 			propWriteStream.write<uint16_t>(actionId);
 		}
 	}
 
-	const std::string& text = getText();
+	const std::string& text = getString(ItemAttribute_t::TEXT);
 	if (!text.empty()) {
 		propWriteStream.write<uint8_t>(ATTR_TEXT);
 		propWriteStream.writeString(text);
 	}
 
-	const time_t writtenDate = getDate();
+	const time_t writtenDate = getInteger(ItemAttribute_t::DATE);
 	if (writtenDate != 0) {
 		propWriteStream.write<uint8_t>(ATTR_WRITTENDATE);
 		propWriteStream.write<uint32_t>(writtenDate);
 	}
 
-	const std::string& writer = getWriter();
+	const std::string& writer = getString(ItemAttribute_t::WRITER);
 	if (!writer.empty()) {
 		propWriteStream.write<uint8_t>(ATTR_WRITTENBY);
 		propWriteStream.writeString(writer);
 	}
 
-	const std::string& specialDesc = getSpecialDescription();
+	const std::string& specialDesc = getString(ItemAttribute_t::DESCRIPTION);
 	if (!specialDesc.empty()) {
 		propWriteStream.write<uint8_t>(ATTR_DESC);
 		propWriteStream.writeString(specialDesc);
@@ -880,7 +880,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.write<int32_t>(getDuration());
 	}
 
-	if (auto decayState = getDecaying();
+	if (auto decayState = static_cast<ItemDecayState_t>(getInteger(ItemAttribute_t::DECAYSTATE));
 		decayState == DECAYING_TRUE || decayState == DECAYING_PENDING)
 	{
 		propWriteStream.write<uint8_t>(ATTR_DECAYING_STATE);
@@ -889,72 +889,72 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 
 	if (hasAttribute(ItemAttribute_t::NAME)) {
 		propWriteStream.write<uint8_t>(ATTR_NAME);
-		propWriteStream.writeString(getAttributeString(ItemAttribute_t::NAME));
+		propWriteStream.writeString(getString(ItemAttribute_t::NAME));
 	}
 
 	if (hasAttribute(ItemAttribute_t::ARTICLE)) {
 		propWriteStream.write<uint8_t>(ATTR_ARTICLE);
-		propWriteStream.writeString(getAttributeString(ItemAttribute_t::ARTICLE));
+		propWriteStream.writeString(getString(ItemAttribute_t::ARTICLE));
 	}
 
 	if (hasAttribute(ItemAttribute_t::PLURALNAME)) {
 		propWriteStream.write<uint8_t>(ATTR_PLURALNAME);
-		propWriteStream.writeString(getAttributeString(ItemAttribute_t::PLURALNAME));
+		propWriteStream.writeString(getString(ItemAttribute_t::PLURALNAME));
 	}
 
 	if (hasAttribute(ItemAttribute_t::WEIGHT)) {
 		propWriteStream.write<uint8_t>(ATTR_WEIGHT);
-		propWriteStream.write<uint32_t>(static_cast<uint32_t>(getAttributeValue(ItemAttribute_t::WEIGHT)));
+		propWriteStream.write<uint32_t>(static_cast<uint32_t>(getInteger(ItemAttribute_t::WEIGHT)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::ATTACK)) {
 		propWriteStream.write<uint8_t>(ATTR_ATTACK);
-		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ATTACK)));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getInteger(ItemAttribute_t::ATTACK)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::DEFENSE)) {
 		propWriteStream.write<uint8_t>(ATTR_DEFENSE);
-		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::DEFENSE)));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getInteger(ItemAttribute_t::DEFENSE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::EXTRADEFENSE)) {
 		propWriteStream.write<uint8_t>(ATTR_EXTRADEFENSE);
-		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::EXTRADEFENSE)));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getInteger(ItemAttribute_t::EXTRADEFENSE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_SLOT)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_SLOT);
-		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::IMBUEMENT_SLOT)));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getInteger(ItemAttribute_t::IMBUEMENT_SLOT)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::OPENCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_OPENCONTAINER);
-		propWriteStream.write<uint8_t>(static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::OPENCONTAINER)));
+		propWriteStream.write<uint8_t>(static_cast<uint8_t>(getInteger(ItemAttribute_t::OPENCONTAINER)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::ARMOR)) {
 		propWriteStream.write<uint8_t>(ATTR_ARMOR);
-		propWriteStream.write<int32_t>(static_cast<int32_t>(getAttributeValue(ItemAttribute_t::ARMOR)));
+		propWriteStream.write<int32_t>(static_cast<int32_t>(getInteger(ItemAttribute_t::ARMOR)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::HITCHANCE)) {
 		propWriteStream.write<uint8_t>(ATTR_HITCHANCE);
-		propWriteStream.write<int8_t>(static_cast<int8_t>(getAttributeValue(ItemAttribute_t::HITCHANCE)));
+		propWriteStream.write<int8_t>(static_cast<int8_t>(getInteger(ItemAttribute_t::HITCHANCE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::SHOOTRANGE)) {
 		propWriteStream.write<uint8_t>(ATTR_SHOOTRANGE);
-		propWriteStream.write<uint8_t>(static_cast<uint8_t>(getAttributeValue(ItemAttribute_t::SHOOTRANGE)));
+		propWriteStream.write<uint8_t>(static_cast<uint8_t>(getInteger(ItemAttribute_t::SHOOTRANGE)));
 	}
 
 	if (hasAttribute(ItemAttribute_t::SPECIAL)) {
 		propWriteStream.write<uint8_t>(ATTR_SPECIAL);
-		propWriteStream.writeString(getAttributeString(ItemAttribute_t::SPECIAL));
+		propWriteStream.writeString(getString(ItemAttribute_t::SPECIAL));
 	}
 
 	// Deprecated, all items that still exist with this attribute will work normally, but new items will be created with the new system, using ATTR_CUSTOM
 	if (hasAttribute(ItemAttribute_t::CUSTOM)) {
-		const auto customAttrMap = std::bit_cast<Item*>(this)->getCustomAttributeMap();
+		const auto customAttrMap = getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
 		propWriteStream.write<uint64_t>(customAttrMap.size());
 		for (const auto &[attributeName, attributePtr] : customAttrMap) {
@@ -972,7 +972,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 
 	if (hasAttribute(ItemAttribute_t::IMBUEMENT_TYPE)) {
 		propWriteStream.write<uint8_t>(ATTR_IMBUEMENT_TYPE);
-		propWriteStream.writeString(getAttributeString(ItemAttribute_t::IMBUEMENT_TYPE));
+		propWriteStream.writeString(getString(ItemAttribute_t::IMBUEMENT_TYPE));
 	}
 
 	if (hasAttribute(ItemAttribute_t::TIER)) {
@@ -981,7 +981,7 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty
-	if (auto customAttributeMap = std::bit_cast<Item*>(this)->getCustomAttributeMap();
+	if (auto customAttributeMap = getCustomAttributeMap();
 		!customAttributeMap.empty())
 	{
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM);
@@ -1031,7 +1031,7 @@ std::vector<std::pair<std::string, std::string>>
 	std::vector<std::pair<std::string, std::string>> descriptions;
 	descriptions.reserve(30);
 	if (item) {
-		const std::string& specialDescription = item->getSpecialDescription();
+		const std::string& specialDescription = item->getString(ItemAttribute_t::DESCRIPTION);
 		if (!specialDescription.empty()) {
         descriptions.emplace_back("Description", specialDescription);
     } else if (!it.description.empty()) {
@@ -1039,7 +1039,7 @@ std::vector<std::pair<std::string, std::string>>
     }
 
 		if (it.showCharges) {
-			int32_t charges = item->getCharges();
+			int32_t charges = item->getInteger(ItemAttribute_t::CHARGES);
 			if (charges != 0) {
 				descriptions.emplace_back("Charges", std::to_string(charges));
 			}
@@ -1162,7 +1162,7 @@ std::vector<std::pair<std::string, std::string>>
 
 		if (it.isKey()) {
 			ss.str("");
-			ss << fmt::format("{:04}", item->getActionId());
+			ss << fmt::format("{:04}", item->getInteger(ItemAttribute_t::ACTIONID));
 			descriptions.emplace_back("Key", ss.str());
 		}
 
@@ -2211,7 +2211,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 		if (!found) {
 			if (it.isKey()) {
-				s << fmt::format(" (Key:{:04})", item ? item->getActionId() : 0);
+				s << fmt::format(" (Key:{:04})", item ? item->getInteger(ItemAttribute_t::ACTIONID) : 0);
 			} else if (it.isFluidContainer()) {
 				if (subType > 0) {
 					const std::string& itemName = items[subType].name;
@@ -2232,12 +2232,12 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 				if (lookDistance <= 4) {
 					if (item) {
-						text = &item->getText();
+						text = &item->getString(ItemAttribute_t::TEXT);
 						if (!text->empty()) {
-							const std::string& writer = item->getWriter();
+							const std::string& writer = item->getString(ItemAttribute_t::WRITER);
 							if (!writer.empty()) {
 								s << writer << " wrote";
-								time_t date = item->getDate();
+								time_t date = item->getInteger(ItemAttribute_t::DATE);
 								if (date != 0) {
 									s << " on " << formatDateShort(date);
 								}
@@ -2256,7 +2256,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 					s << "You are too far away to read it";
 				}
 			} else if (it.levelDoor != 0 && item) {
-				uint16_t actionId = item->getActionId();
+				uint16_t actionId = item->getInteger(ItemAttribute_t::ACTIONID);
 				if (actionId >= it.levelDoor) {
 					s << " for level " << (actionId - it.levelDoor);
 				}
@@ -2319,7 +2319,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		s << '.';
 	} else {
 		if (!text && item) {
-			text = &item->getText();
+			text = &item->getString(ItemAttribute_t::TEXT);
 		}
 
 		if (!text || text->empty()) {
@@ -2373,7 +2373,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	}
 
 	if (item) {
-		const std::string& specialDescription = item->getSpecialDescription();
+		const std::string& specialDescription = item->getString(ItemAttribute_t::DESCRIPTION);
 		if (!specialDescription.empty()) {
 			s << std::endl << specialDescription;
 		} else if (lookDistance <= 1 && !it.description.empty()) {
@@ -2385,7 +2385,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 	if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {
 		if (!text && item) {
-			text = &item->getText();
+			text = &item->getString(ItemAttribute_t::TEXT);
 		}
 
 		if (text && !text->empty()) {
@@ -2484,7 +2484,7 @@ void Item::addUniqueId(uint16_t uniqueId)
 	}
 
 	if (g_game().addUniqueItem(uniqueId, this)) {
-		setUniqueId(uniqueId);
+		setAttribute(ItemAttribute_t::UNIQUEID, uniqueId);
 	}
 }
 

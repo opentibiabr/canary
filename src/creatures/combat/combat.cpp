@@ -53,7 +53,7 @@ CombatDamage Combat::getCombatDamage(Creature* creature, Creature* target) const
 					damage.secondary.type = weapon->getElementType();
 					damage.secondary.value = weapon->getElementDamage(player, target, tool);
 					if (params.useCharges) {
-						uint16_t charges = tool->getCharges();
+						uint16_t charges = tool->getInteger(ItemAttribute_t::CHARGES);
 						if (charges != 0) {
 							g_game().transformItem(tool, tool->getID(), charges - 1);
 						}
@@ -727,7 +727,7 @@ void Combat::combatTileEffects(const SpectatorHashSet& spectators, Creature* cas
 
 		Item* item = Item::CreateItem(itemId);
 		if (caster) {
-			item->setOwner(caster->getID());
+			item->setAttribute(ItemAttribute_t::OWNER, caster->getID());
 		}
 
 		ReturnValue ret = g_game().internalAddItem(tile, item);
@@ -1207,7 +1207,7 @@ void ValueCallback::getMinMaxValues(Player* player, CombatDamage& damage, bool u
 				}
 
 				if (useCharges) {
-					uint16_t charges = tool->getCharges();
+					uint16_t charges = tool->getInteger(ItemAttribute_t::CHARGES);
 					if (charges != 0) {
 						g_game().transformItem(tool, tool->getID(), charges - 1);
 					}
@@ -1649,7 +1649,7 @@ void MagicField::onStepInField(Creature& creature)
 	const ItemType& it = items[getID()];
 	if (it.conditionDamage) {
 		Condition* conditionCopy = it.conditionDamage->clone();
-		uint32_t ownerId = getOwner();
+		uint32_t ownerId = static_cast<uint32_t>(getInteger(ItemAttribute_t::OWNER));
 		if (ownerId) {
 			bool harmfulField = true;
 

@@ -3448,14 +3448,14 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		addMagicEffect(item->getPosition(), CONST_ME_POFF);
 		Item* newItem = transformItem(item, ITEM_DECORATION_KIT);
 		newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(oldItemID));
-		item->setSpecialDescription("Unwrap it in your own house to create a <" + itemName + ">.");
+		item->setAttribute(ItemAttribute_t::DESCRIPTION, "Unwrap it in your own house to create a <" + itemName + ">.");
 		if (hiddenCharges > 0) {
-			item->setDate(hiddenCharges);
+			item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 		}
 		newItem->startDecaying();
 	}
 	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
-		uint16_t hiddenCharges = item->getDate();
+		uint16_t hiddenCharges = item->getInteger(ItemAttribute_t::DATE);
 		Item* newItem = transformItem(item, unWrapId);
 		if (newItem) {
 			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
@@ -3510,15 +3510,15 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 	}
 
 	if (!text.empty()) {
-		if (writeItem->getText() != text) {
-			writeItem->setText(text);
-			writeItem->setWriter(player->getName());
-			writeItem->setDate(time(nullptr));
+		if (writeItem->getString(ItemAttribute_t::TEXT) != text) {
+			writeItem->setAttribute(ItemAttribute_t::TEXT, text);
+			writeItem->setAttribute(ItemAttribute_t::WRITER, player->getName());
+			writeItem->setAttribute(ItemAttribute_t::DATE, time(nullptr));
 		}
 	} else {
-		writeItem->resetText();
-		writeItem->resetWriter();
-		writeItem->resetDate();
+		writeItem->removeAttribute(ItemAttribute_t::TEXT);
+		writeItem->removeAttribute(ItemAttribute_t::WRITER);
+		writeItem->removeAttribute(ItemAttribute_t::DATE);
 	}
 
 	uint16_t newId = Item::items[writeItem->getID()].writeOnceItemId;

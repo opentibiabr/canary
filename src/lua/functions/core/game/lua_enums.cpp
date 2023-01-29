@@ -687,7 +687,10 @@ void LuaEnums::initFightModeEnums(lua_State* L) {
 
 void LuaEnums::initItemAttributeEnums(lua_State* L) {
 	for (auto value : magic_enum::enum_values<ItemAttribute_t>()) {
-		registerEnumClass(L, value);
+		auto number = magic_enum::enum_integer(value);
+		// Creation of the "ITEM_ATTRIBUTE_" namespace for lua scripts
+		std::string enumName = "ITEM_ATTRIBUTE_" + std::string(magic_enum::enum_name(value));
+		registerGlobalVariable(L, enumName, number);
 	}
 }
 

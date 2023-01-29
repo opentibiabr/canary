@@ -1135,7 +1135,7 @@ void Monster::onThinkYell(uint32_t interval)
 	}
 }
 
-bool Monster::pushItem(Item *item, Direction& nextDirection)
+bool Monster::pushItem(Item *item, const Direction& nextDirection)
 {
 	const Position& centerPos = item->getPosition();
 	for (const auto& [x, y] : getPushItemLocationOptions(nextDirection)) {
@@ -1148,7 +1148,7 @@ bool Monster::pushItem(Item *item, Direction& nextDirection)
 	return false;
 }
 
-void Monster::pushItems(Tile *tile, Direction& nextDirection)
+void Monster::pushItems(Tile *tile, const Direction& nextDirection)
 {
 	TileItemVector* items;
 	if (!(items = tile->getItemList())) {
@@ -2212,7 +2212,7 @@ bool Monster::canDropLoot() const {
 	return !mType->info.lootItems.empty();
 }
 
-std::vector<std::pair<int32_t, int32_t>> Monster::getPushItemLocationOptions(const Direction &direction) {
+std::vector<std::pair<int8_t, int8_t>> Monster::getPushItemLocationOptions(const Direction &direction) {
 	if(direction == DIRECTION_WEST || direction == DIRECTION_EAST){
 		return {{0, -1}, {0, 1}};
 	}

@@ -1233,30 +1233,11 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 	}
 
 	bool result = false;
-	if ((!followCreature || !hasFollowPath) && (!isSummon() || !isMasterInRange)) {
-		if (getTimeSinceLastMove() >= 1000) {
-			randomStepping = true;
-			//choose a random direction
-			result = getRandomStep(getPosition(), nextDirection);
-		}
-	} else if ((isSummon() && isMasterInRange) || followCreature) {
-		randomStepping = false;
-		result = Creature::getNextStep(nextDirection, flags);
-		if (result) {
-			flags |= FLAG_PATHFINDING;
-		} else {
-			if (ignoreFieldDamage) {
-				updateMapCache();
-			}
-			//target dancing
-			if (attackedCreature && attackedCreature == followCreature) {
-				if (isFleeing()) {
-					result = getDanceStep(getPosition(), nextDirection, false, false);
-				} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
-					result = getDanceStep(getPosition(), nextDirection);
-				}
-			}
-		}
+
+	if (followCreature && hasFollowPath) {
+		doFollowCreature(flags, nextDirection, result);
+	} else {
+		doRandomStep(nextDirection, result);
 	}
 
 	if (result && (canPushItems() || canPushCreatures())) {
@@ -1274,6 +1255,33 @@ bool Monster::getNextStep(Direction& nextDirection, uint32_t& flags)
 	}
 
 	return result;
+}
+
+void Monster::doRandomStep(Direction &nextDirection, bool &result) {
+	if (getTimeSinceLastMove() >= 1000) {
+		randomStepping = true;
+		result = getRandomStep(getPosition(), nextDirection);
+	}
+}
+
+void Monster::doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result) {
+	randomStepping = false;
+	result = Creature::getNextStep(nextDirection, flags);
+	if (result) {
+		flags |= FLAG_PATHFINDING;
+	} else {
+		if (ignoreFieldDamage) {
+			updateMapCache();
+		}
+		//target dancing
+		if (attackedCreature && attackedCreature == followCreature) {
+			if (isFleeing()) {
+				result = getDanceStep(getPosition(), nextDirection, false, false);
+			} else if (mType->info.staticAttackChance < static_cast<uint32_t>(uniform_random(1, 100))) {
+				result = getDanceStep(getPosition(), nextDirection);
+			}
+		}
+	}
 }
 
 bool Monster::getRandomStep(const Position& creaturePos, Direction& moveDirection) const

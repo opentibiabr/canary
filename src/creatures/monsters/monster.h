@@ -418,6 +418,8 @@ class Monster final : public Creature
 
 		static std::vector<std::pair<int8_t, int8_t>> getPushItemLocationOptions(const Direction &direction);
 
+		void doFollowCreature(uint32_t &flags, Direction &nextDirection, bool &result);
+		void doRandomStep(Direction &nextDirection, bool &result);
 };
 
 #endif  // SRC_CREATURES_MONSTERS_MONSTER_H_

@@ -998,7 +998,7 @@ void Creature::goToFollowCreature()
 	onFollowCreatureComplete(followCreature);
 }
 
-bool Creature::canFollowMaster() {
+bool Creature::canFollowMaster() const {
 	return !master->getTile()->hasFlag(TILESTATE_PROTECTIONZONE) && (canSeeInvisibility() || !master->isInvisible());
 }
 
@@ -1709,7 +1709,7 @@ void Creature::turnToCreature(Creature* creature)
 	g_game().internalCreatureTurn(this, dir);
 }
 
-bool Creature::isLostSummon() {
+bool Creature::isLostSummon() const {
 	if (!isSummon()) {
 		return false;
 	}

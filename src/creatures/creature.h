@@ -611,8 +611,9 @@ class Creature : virtual public Thing
 		friend class Map;
 		friend class CreatureFunctions;
 
-		bool canFollowMaster();
-		bool isLostSummon();
+	private:
+		bool canFollowMaster() const;
+		bool isLostSummon() const;
 		void handleLostSummon(bool teleportSummons);
 };
 

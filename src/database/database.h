@@ -208,7 +208,11 @@ class DBTransaction
 
 		~DBTransaction() {
 			if (state == STATE_START) {
-				Database::getInstance().rollback();
+				try {
+					Database::getInstance().rollback();
+				} catch (std::exception &exception) {
+					SPDLOG_ERROR("{} - Catch exception error: {}", __FUNCTION__, exception.what());
+				}
 			}
 		}
 

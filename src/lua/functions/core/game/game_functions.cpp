@@ -46,16 +46,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 }
 
 int GameFunctions::luaGameCreateNpcType(lua_State* L) {
-	// Game.createNpcType(name)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("NpcType can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
-	NpcTypeFunctions::luaNpcTypeCreate(L);
-
-	return 1;
+	return NpcTypeFunctions::luaNpcTypeCreate(L);
 }
 
 int GameFunctions::luaGameGetSpectators(lua_State* L) {
@@ -152,6 +143,15 @@ int GameFunctions::luaGameLoadMap(lua_State* L) {
 	// Game.loadMap(path)
 	const std::string& path = getString(L, 1);
 	g_dispatcher().addTask(createTask([path]() {g_game().loadMap(path); }));
+	return 0;
+}
+
+int GameFunctions::luaGameloadMapChunk(lua_State* L) {
+	// Game.loadMapChunk(path, position, remove)
+	const std::string& path = getString(L, 1);
+	const Position& position = getPosition(L, 2);
+	bool unload = getBoolean(L, 3);
+	g_dispatcher().addTask(createTask([path, position, unload]() {g_game().loadMap(path, position, unload); }));
 	return 0;
 }
 
@@ -498,12 +498,6 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("Charm bestiary can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
 	if (Charm* charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(getNumber<int8_t>(L, 1, 0)), true)) {
 		pushUserdata<Charm>(L, charm);
 		setMetatable(L, -1, "Charm");
@@ -515,15 +509,9 @@ int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 
 int GameFunctions::luaGameCreateItemClassification(lua_State* L) {
 	// Game.createItemClassification(id)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("Item classification can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
-	ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 1), true);
+	const ItemClassification* itemClassification = g_game().getItemsClassification(getNumber<uint8_t>(L, 1), true);
 	if (itemClassification) {
-		pushUserdata<ItemClassification>(L, itemClassification);
+		pushUserdata<const ItemClassification>(L, itemClassification);
 		setMetatable(L, -1, "ItemClassification");
 	} else {
 		lua_pushnil(L);
@@ -557,7 +545,8 @@ int GameFunctions::luaGameGetClientVersion(lua_State* L) {
 	lua_createtable(L, 0, 3);
 	setField(L, "min", CLIENT_VERSION);
 	setField(L, "max", CLIENT_VERSION);
-	setField(L, "string", std::to_string(CLIENT_VERSION_UPPER) + "." + std::to_string(CLIENT_VERSION_LOWER));
+	std::string version = fmt::format("{}.{}",CLIENT_VERSION_UPPER,CLIENT_VERSION_LOWER);
+	setField(L, "string", version);
 	return 1;
 }
 

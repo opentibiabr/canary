@@ -486,14 +486,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
+	setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+	enableCompression();
+
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
-		enableCompression();
-	} else {
-		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
-	}
-	
 
 	version = msg.get<uint16_t>(); // Protocol version
 
@@ -4738,7 +4734,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				separator = true;
 			}
 
-			ss << getCombatName(indexToCombatType(i)) << ' ' << std::showpos << it.abilities->absorbPercent[i] << std::noshowpos << '%';
+			ss << fmt::format("{} {:+}%", getCombatName(indexToCombatType(i)), it.abilities->absorbPercent[i]);
 		}
 
 		msg.addString(ss.str());
@@ -4767,7 +4763,6 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 	}
 
 	msg.addString(it.vocationString);
-
 	msg.addString(it.runeSpellName);
 
 	if (it.abilities)
@@ -4791,7 +4786,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				separator = true;
 			}
 
-			ss << getSkillName(i) << ' ' << std::showpos << it.abilities->skills[i] << std::noshowpos;
+			ss << fmt::format("{} {:+}", getSkillName(i), it.abilities->skills[i]);
 		}
 
 		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; i++)
@@ -4832,7 +4827,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				separator = true;
 			}
 
-			ss << "magic level " << std::showpos << it.abilities->stats[STAT_MAGICPOINTS] << std::noshowpos;
+			ss << fmt::format("magic level {:+}",it.abilities->stats[STAT_MAGICPOINTS]);
 		}
 
 		if (it.abilities->speed != 0)
@@ -4842,7 +4837,7 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 				ss << ", ";
 			}
 
-			ss << "speed " << std::showpos << (it.abilities->speed >> 1) << std::noshowpos;
+			ss << fmt::format("speed {:+}", (it.abilities->speed >> 1));
 		}
 
 		msg.addString(ss.str());
@@ -4926,19 +4921,18 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier)
 		msg.addString(std::to_string(it.upgradeClassification));
 		std::ostringstream ss;
 
-		ss << static_cast<uint16_t>(tier) << " (";
 		double chance;
 		if (it.isWeapon()) {
 			chance = 0.5 * tier + 0.05 * ((tier - 1) * (tier - 1));
-			ss << std::setprecision(2) << std::fixed << chance << "% Onslaught)";
+			ss << fmt::format("{} ({:.2f}% Onslaught)", static_cast<uint16_t>(tier), chance);
 		}
 		else if (it.isHelmet()) {
 			chance = 2 * tier + 0.05 * ((tier - 1) * (tier - 1));
-			ss << std::setprecision(2) << std::fixed << chance << "% Momentum)";
+			ss << fmt::format("{} ({:.2f}% Momentum)", static_cast<uint16_t>(tier), chance);
 		}
 		else if (it.isArmor()) {
 			chance = (0.0307576 * tier * tier) + (0.440697 * tier) + 0.026;
-			ss << std::setprecision(2) << std::fixed << chance << "% Ruse)";
+			ss << fmt::format("{} ({:.2f}% Ruse)", static_cast<uint16_t>(tier), chance);
 		}
 		msg.addString(ss.str());
 	}
@@ -5254,8 +5248,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection)
 	NetworkMessage msg;
 	msg.addByte(0xA9);
 	msg.addByte(protection); // 1 / 0
-	int32_t PlayerdailyStreak = 0;
-	player->getStorageValue(STORAGEVALUE_DAILYREWARD, PlayerdailyStreak);
+	int32_t PlayerdailyStreak = player->getStorageValue(STORAGEVALUE_DAILYREWARD);
 	msg.addByte(PlayerdailyStreak < 2 ? 0 : 1);
 	if (PlayerdailyStreak < 2)
 	{
@@ -6628,14 +6621,14 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg)
 
 	msg.add<uint16_t>(player->getMagicLevel());
 	msg.add<uint16_t>(player->getBaseMagicLevel());
-	msg.add<uint16_t>(player->getBaseMagicLevel());
+	msg.add<uint16_t>(player->getBaseMagicLevel()); // Loyalty Bonus
 	msg.add<uint16_t>(player->getMagicLevelPercent() * 100);
 
 	for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i)
 	{
 		msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(i), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(player->getBaseSkill(i));
-		msg.add<uint16_t>(player->getBaseSkill(i));
+		msg.add<uint16_t>(player->getBaseSkill(i)); // Loyalty Bonus
 		msg.add<uint16_t>(player->getSkillPercent(i) * 100);
 	}
 
@@ -7131,9 +7124,7 @@ void ProtocolGame::AddHiddenShopItem(NetworkMessage &msg)
 void ProtocolGame::AddShopItem(NetworkMessage &msg, const ShopBlock &shopBlock)
 {
 	// Sends the item information empty if the player doesn't have the storage to buy/sell a certain item
-	int32_t storageValue;
-	player->getStorageValue(shopBlock.itemStorageKey, storageValue);
-	if (shopBlock.itemStorageKey != 0 && storageValue < shopBlock.itemStorageValue)
+	if (shopBlock.itemStorageKey != 0 && player->getStorageValue(shopBlock.itemStorageKey) < shopBlock.itemStorageValue)
 	{
 		AddHiddenShopItem(msg);
 		return;

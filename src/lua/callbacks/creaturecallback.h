@@ -62,7 +62,7 @@ class CreatureCallback {
 		LuaScriptInterface* scriptInterface;
 		Creature* targetCreature;
 		uint32_t params = 0;
-		lua_State* L;
+		lua_State* L = nullptr;
 };
 
 #endif  // SRC_LUA_CALLBACKS_CREATURECALLBACK_H_

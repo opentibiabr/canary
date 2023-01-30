@@ -322,9 +322,9 @@ bool Game::loadCustomMap(const std::string& filename)
 	return map.loadMapCustom(g_configManager().getString(DATA_DIRECTORY) + "/world/custom/" + filename + ".otbm", true, true, true);
 }
 
-void Game::loadMap(const std::string& path)
+void Game::loadMap(const std::string& path, const Position& pos, bool unload)
 {
-	map.loadMap(path);
+	map.loadMap(path, false, false, false, false, pos, unload);
 }
 
 Cylinder* Game::internalGetCylinder(Player* player, const Position& pos) const
@@ -2126,9 +2126,12 @@ Item* Game::transformItem(Item* item, uint16_t newId, int32_t newCount /*= -1*/)
 
 ReturnValue Game::internalTeleport(Thing* thing, const Position& newPos, bool pushMove/* = true*/, uint32_t flags /*= 0*/)
 {
-	if (newPos == thing->getPosition()) {
-		return RETURNVALUE_NOERROR;
-	} else if (thing->isRemoved()) {
+	if (thing == nullptr) {
+		SPDLOG_ERROR("[{}] thing is nullptr", __FUNCTION__);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	if (thing->isRemoved()) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
@@ -5493,9 +5496,11 @@ bool Game::combatBlockHit(CombatDamage& damage, Creature* attacker, Creature* ta
 
 	// Skill dodge (ruse)
 	if (const Player* targetPlayer = target->getPlayer()) {
-		if (targetPlayer->getInventoryItem(CONST_SLOT_ARMOR) != nullptr) {
-			double_t chance = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR)->getDodgeChance();
-			if (chance > 0 && uniform_random(1, 100) <= chance) {
+		if (auto playerArmor = targetPlayer->getInventoryItem(CONST_SLOT_ARMOR);
+			playerArmor != nullptr && playerArmor->getTier()) {
+			double_t chance = playerArmor->getDodgeChance();
+			double_t randomChance = uniform_random(0, 10000) / 100;
+			if (chance > 0 && randomChance < chance) {
 				sendBlockEffect(BLOCK_DODGE, damage.primary.type, target->getPosition());
 				targetPlayer->sendTextMessage(MESSAGE_ATTENTION, "You dodged an attack. (Ruse)");
 				return true;
@@ -6244,7 +6249,7 @@ bool Game::combatChangeMana(Creature* attacker, Creature* target, CombatDamage& 
 		realManaChange = target->getMana() - realManaChange;
 
 		if (realManaChange > 0 && !target->isInGhostMode()) {
-			std::string damageString = std::to_string(realManaChange) + " mana.";
+			std::string damageString = fmt::format("{} mana", realManaChange);
 
 			std::string spectatorMessage;
 			if (!attacker) {
@@ -6509,18 +6514,12 @@ void Game::checkImbuements()
 
 	std::vector<uint32_t> toErase;
 
-	for (const auto& [key, value] : playersActiveImbuements) {
-		Player* player = getPlayerByID(key);
-		if (!player) {
-			toErase.push_back(key);
+	for (const auto& [mapPlayerId, mapPlayer] : getPlayers()) {
+		if (!mapPlayer) {
 			continue;
 		}
 
-		player->updateInventoryImbuement();
-	}
-
-	for (uint32_t playerId : toErase) {
-		setPlayerActiveImbuements(playerId, 0);
+		mapPlayer->updateInventoryImbuement();
 	}
 
 }
@@ -6572,19 +6571,19 @@ void Game::checkLight()
 	LightInfo lightInfo = getWorldLightInfo();
 
 	if (lightChange) {
-		for (const auto& it : players) {
-			it.second->sendWorldLight(lightInfo);
-      it.second->sendTibiaTime(lightHour);
+		for ([[maybe_unused]] const auto& [mapPlayerId, mapPlayer] : getPlayers()) {
+			mapPlayer->sendWorldLight(lightInfo);
+			mapPlayer->sendTibiaTime(lightHour);
 		}
 	} else {
-		for (const auto& it : players) {
-			it.second->sendTibiaTime(lightHour);
-    }
+		for ([[maybe_unused]] const auto& [mapPlayerId, mapPlayer] : getPlayers()) {
+			mapPlayer->sendTibiaTime(lightHour);
+		}
 	}
-  if (currentLightState != lightState) {
+	if (currentLightState != lightState) {
 		currentLightState = lightState;
-		for (auto& [key, it] : g_globalEvents().getEventMap(GLOBALEVENT_PERIODCHANGE)) {
-			it.executePeriodChange(lightState, lightInfo);
+		for (const auto& [eventName, globalEvent] : g_globalEvents().getEventMap(GLOBALEVENT_PERIODCHANGE)) {
+			globalEvent.executePeriodChange(lightState, lightInfo);
 		}
 	}
 }
@@ -6634,6 +6633,7 @@ void Game::shutdown()
 	ConnectionManager::getInstance().closeAll();
 
 	SPDLOG_INFO("Done!");
+	exit(0);
 }
 
 void Game::cleanup()
@@ -6742,6 +6742,10 @@ void Game::updateCreatureType(Creature* creature)
 	if (creatureType == CREATURETYPE_SUMMON_OTHERS) {
 		for (Creature* spectator : spectators) {
 			Player* player = spectator->getPlayer();
+			if (!player) {
+				continue;
+			}
+
 			if (masterPlayer == player) {
 				player->sendCreatureType(creature, CREATURETYPE_SUMMON_PLAYER);
 			} else {
@@ -7420,7 +7424,8 @@ void Game::playerBrowseMarketOwnHistory(uint32_t playerId)
 	player->sendMarketBrowseOwnHistory(buyOffers, sellOffers);
 }
 
-void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus)
+namespace {
+bool removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &itemType, uint16_t amount, uint8_t tier, std::ostringstream &offerStatus)
 {
 	uint16_t removeAmount = amount;
 	if (
@@ -7436,15 +7441,20 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 			removeAmount = 0;
 		} else {
 			offerStatus << "Failed to remove stash items from player " << player.getName();
-			return;
+			return false;
 		}
 	}
 
+	auto [itemVector, totalCount] = player.getLockerItemsAndCountById(depotLocker, tier, itemType.id);
 	if (removeAmount > 0) {
-		auto [itemVector, itemMap] = player.requestLockerItems(&depotLocker, false, tier);
+		if (totalCount == 0 || itemVector.size() == 0) {
+			offerStatus << "Player " << player.getName() << " not have item for create offer";
+			return false;
+		}
+
 		uint32_t count = 0;
 		for (auto item : itemVector) {
-			if (itemType.id != item->getID()) {
+			if (!item) {
 				continue;
 			}
 
@@ -7458,9 +7468,8 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 					ret != RETURNVALUE_NOERROR
 				)
 				{
-					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
-					offerStatus << "Failed to remove items from player " << player.getName();
-					break;
+					offerStatus << "Failed to remove items from player " << player.getName() << " error: " << getReturnMessage(ret);
+					return false;
 				}
 
 				if (removeAmount == 0) {
@@ -7473,14 +7482,15 @@ void removeOfferItems(Player &player, DepotLocker &depotLocker, const ItemType &
 				}
 				auto ret = g_game().internalRemoveItem(item);
 				if (ret != RETURNVALUE_NOERROR) {
-					SPDLOG_ERROR("{} - Create offer internal remove item error code: {}", __FUNCTION__, ret);
-					offerStatus << "Failed to remove items from player " << player.getName();
-					break;
+					offerStatus << "Failed to remove items from player " << player.getName() << " error: " << getReturnMessage(ret);
+					return false;
 				}
 			}
 		}
 	}
+	return true;
 }
+} // namespace
 
 bool checkCanInitCreateMarketOffer(const Player *player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus)
 {
@@ -7583,7 +7593,10 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 
 			account.RemoveCoins(static_cast<uint32_t>(amount));
 		} else {
-			removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus);
+			if (!removeOfferItems(*player, *depotLocker, it, amount, tier, offerStatus)) {
+				SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
+				return;
+			}
 		}
 
 		g_game().removeMoney(player, fee, 0, true);
@@ -7793,7 +7806,10 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 			account.RegisterCoinsTransaction(account::COIN_REMOVE, amount,
 											 "Sold on Market");
 		} else {
-			removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus);
+				if (!removeOfferItems(*player, *depotLocker, it, amount, offer.tier, offerStatus)) {
+					SPDLOG_ERROR("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
+					return;
+				}
 		}
 		player->setBankBalance(player->getBankBalance() + totalPrice);
 
@@ -7995,7 +8011,7 @@ void Game::parsePlayerExtendedOpcode(uint32_t playerId, uint8_t opcode, const st
 		return;
 	}
 
-	for (CreatureEvent* creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
+	for (const CreatureEvent* creatureEvent : player->getCreatureEvents(CREATURE_EVENT_EXTENDED_OPCODE)) {
 		creatureEvent->executeExtendedOpcode(player, opcode, buffer);
 	}
 }
@@ -8050,7 +8066,7 @@ void Game::playerAnswerModalWindow(uint32_t playerId, uint32_t modalWindowId, ui
 
 		player->setBedItem(nullptr);
 	} else {
-		for (auto creatureEvent : player->getCreatureEvents(CREATURE_EVENT_MODALWINDOW)) {
+		for (const auto creatureEvent : player->getCreatureEvents(CREATURE_EVENT_MODALWINDOW)) {
 			creatureEvent->executeModalWindow(player, modalWindowId, button, choice);
 		}
 	}

@@ -162,10 +162,9 @@ class Player final : public Creature, public Cylinder
 		}
 		uint32_t getBestiaryKillCount(uint16_t raceid) const
 		{
-			int32_t cp = 0;
 			uint32_t key = STORAGEVALUE_BESTIARYKILLCOUNT + raceid;
-			getStorageValue(key, cp);
-			return cp > 0 ? static_cast<uint32_t>(cp) : 0;
+			auto value = getStorageValue(key);
+			return value > 0 ? static_cast<uint32_t>(value) : 0;
 		}
 
 		void setGUID(uint32_t newGuid) {
@@ -406,7 +405,7 @@ class Player final : public Creature, public Cylinder
 		bool canOpenCorpse(uint32_t ownerId) const;
 
 		void addStorageValue(const uint32_t key, const int32_t value, const bool isLogin = false);
-		bool getStorageValue(const uint32_t key, int32_t& value) const;
+		int32_t getStorageValue(const uint32_t key) const;
 		void genReservedStorageRange();
 
 		void setGroup(Group* newGroup) {
@@ -729,9 +728,12 @@ class Player final : public Creature, public Cylinder
 		}
 
 		Faction_t getFaction() const override {
-			return FACTION_PLAYER;
+			return faction;
 		}
 
+		void setFaction(Faction_t factionId) {
+			faction = factionId;
+		}
 		//combat functions
 		bool setAttackedCreature(Creature* creature) override;
 		bool isImmune(CombatType_t type) const override;
@@ -759,14 +761,14 @@ class Player final : public Creature, public Cylinder
 		}
 
 		uint16_t getSkillLevel(uint8_t skill) const {
-			uint16_t skillLevel = std::max<uint16_t>(0, skills[skill].level + varSkills[skill]);
+			auto skillLevel = std::max<int32_t>(0, skills[skill].level + varSkills[skill]);
 
-			auto it = maxValuePerSkill.find(skill);
-			if (it != maxValuePerSkill.end()) {
-				skillLevel = std::min<uint16_t>(it->second, skillLevel);
+			if (auto it = maxValuePerSkill.find(skill);
+				it != maxValuePerSkill.end()) {
+				skillLevel = std::min<int32_t>(it->second, skillLevel);
 			}
 
-			return skillLevel;
+			return static_cast<uint16_t>(skillLevel);
 		}
 		uint16_t getBaseSkill(uint8_t skill) const {
 			return skills[skill].level;
@@ -2056,6 +2058,20 @@ class Player final : public Creature, public Cylinder
 
 		std::pair<std::vector<Item*>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> requestLockerItems(DepotLocker *depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
 
+		/**
+		This function returns a pair of an array of items and a 16-bit integer from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
+		@param depotLocker The instance of DepotLocker from which to retrieve items.
+		@param tier The 8-bit byte that specifies the level of the tier to search.
+		@param itemId The 16-bit integer that specifies the ID of the item to search for.
+		@return A pair of an array of items and a 16-bit integer, where the array of items is filled with all items from the
+		locker with the specified id and the 16-bit integer is the total items found.
+		*/
+		std::pair<std::vector<Item*>, uint16_t> getLockerItemsAndCountById(
+			DepotLocker &depotLocker,
+			uint8_t tier,
+			uint16_t itemId
+		);
+
 		bool saySpell(
 			SpeakClasses type,
 			const std::string& text,
@@ -2182,7 +2198,7 @@ class Player final : public Creature, public Cylinder
 		 * @brief Starts checking the imbuements in the item so that the time decay is performed
 		 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
 		 */
-		void updateInventoryImbuement(bool init = false);
+		void updateInventoryImbuement();
 
 		void setNextWalkActionTask(SchedulerTask* task);
 		void setNextWalkTask(SchedulerTask* task);
@@ -2420,6 +2436,7 @@ class Player final : public Creature, public Cylinder
 		BlockType_t lastAttackBlockType = BLOCK_NONE;
 		TradeState_t tradeState = TRADE_NONE;
 		FightMode_t fightMode = FIGHTMODE_ATTACK;
+		Faction_t faction = FACTION_PLAYER;
 		account::AccountType accountType = account::AccountType::ACCOUNT_TYPE_NORMAL;
 		QuickLootFilter_t quickLootFilter;
 		VipStatus_t statusVipList = VIPSTATUS_ONLINE;

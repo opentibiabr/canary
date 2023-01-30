@@ -175,7 +175,7 @@ class Map
          * Load a map.
          * \returns true if the map was loaded successfully
          */
-		bool load(const std::string& identifier);
+		bool load(const std::string& identifier, const Position& pos = Position(), bool unload = false);
 		/**
 		* Load the main map
 		 * \param identifier Is the main map name (name of file .otbm)
@@ -184,7 +184,7 @@ class Map
 		 * \param loadNpcs if true, the main map npcs is loaded
 		 * \returns true if the main map was loaded successfully
 		*/
-		bool loadMap(const std::string& identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false);
+		bool loadMap(const std::string& identifier, bool mainMap = false, bool loadHouses = false, bool loadMonsters = false, bool loadNpcs = false, const Position& pos = Position(), bool unload = false);
 		/**
 		* Load the custom map
 		 * \param identifier Is the map custom folder

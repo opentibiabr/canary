@@ -9,32 +9,25 @@
 
 #include "pch.hpp"
 
+#include "lua/functions/items/weapon_functions.hpp"
+
 #include "game/game.h"
 #include "items/item.h"
-#include "items/weapons/weapons.h"
-#include "lua/functions/items/weapon_functions.hpp"
+#include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.h"
 #include "utils/tools.h"
 
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
-	if (getScriptEnv()->getScriptInterface() != &g_scripts().getScriptInterface()) {
-		reportErrorFunc("Weapons can only be registered in the Scripts interface.");
-		lua_pushnil(L);
-		return 1;
-	}
-
 	WeaponType_t type = getNumber<WeaponType_t>(L, 2);
 	switch (type) {
 		case WEAPON_SWORD:
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
-			WeaponMelee* weapon = new WeaponMelee(getScriptEnv()->getScriptInterface());
-			if (weapon) {
-				pushUserdata<WeaponMelee>(L, weapon);
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponMelee>(getScriptEnv()->getScriptInterface())) {
+				pushUserdata<WeaponMelee>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
-				weapon->weaponType = type;
-				weapon->fromLua = true;
+				weaponPtr->weaponType = type;
 			} else {
 				lua_pushnil(L);
 			}
@@ -43,24 +36,20 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_MISSILE:
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
-			WeaponDistance* weapon = new WeaponDistance(getScriptEnv()->getScriptInterface());
-			if (weapon) {
-				pushUserdata<WeaponDistance>(L, weapon);
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponDistance>(getScriptEnv()->getScriptInterface())) {
+				pushUserdata<WeaponDistance>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
-				weapon->weaponType = type;
-				weapon->fromLua = true;
+				weaponPtr->weaponType = type;
 			} else {
 				lua_pushnil(L);
 			}
 			break;
 		}
 		case WEAPON_WAND: {
-			WeaponWand* weapon = new WeaponWand(getScriptEnv()->getScriptInterface());
-			if (weapon) {
-				pushUserdata<WeaponWand>(L, weapon);
+			if (auto weaponPtr = g_luaEnvironment.createWeaponObject<WeaponWand>(getScriptEnv()->getScriptInterface())) {
+				pushUserdata<WeaponWand>(L, weaponPtr.get());
 				setMetatable(L, -1, "Weapon");
-				weapon->weaponType = type;
-				weapon->fromLua = true;
+				weaponPtr->weaponType = type;
 			} else {
 				lua_pushnil(L);
 			}
@@ -139,6 +128,7 @@ int WeaponFunctions::luaWeaponOnUseWeapon(lua_State* L) {
 			pushBoolean(L, false);
 			return 1;
 		}
+
 		pushBoolean(L, true);
 	} else {
 		lua_pushnil(L);

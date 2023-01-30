@@ -177,7 +177,7 @@ class Tile : public Cylinder
 			} else if (hasFlag(TILESTATE_NOPVPZONE)) {
 				return ZONE_NOPVP;
 			} else if (hasFlag(TILESTATE_NOLOGOUT)) {
-				return ZONE_NOLOGOUT;				
+				return ZONE_NOLOGOUT;
 			} else if (hasFlag(TILESTATE_PVPZONE)) {
 				return ZONE_PVP;
 			} else {
@@ -249,11 +249,13 @@ class Tile : public Cylinder
 
 		void setTileFlags(const Item* item);
 		void resetTileFlags(const Item* item);
+		bool fieldIsUnharmable() const;
 
 	protected:
 		Item* ground = nullptr;
 		Position tilePos;
 		uint32_t flags = 0;
+
 };
 
 // Used for walkable tiles, where there is high likeliness of

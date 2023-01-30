@@ -885,9 +885,9 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 
 		container->incrementReferenceCounter();
 		if (!loading) {
-			int64_t flags = container->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			int64_t flags = container->getInteger(ItemAttribute_t::QUICKLOOTCONTAINER);
 			auto sendAttribute = flags | 1 << category;
-			container->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, sendAttribute);
+			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
 		return previousContainer;
 	} else {
@@ -895,12 +895,12 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 			it != quickLootContainers.end() && !loading)
 		{
 			previousContainer = (*it).second;
-			int64_t flags = previousContainer->getIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			int64_t flags = previousContainer->getInteger(ItemAttribute_t::QUICKLOOTCONTAINER);
 			flags &= ~(1 << category);
 			if (flags == 0) {
-				previousContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+				previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
 			} else {
-				previousContainer->setIntAttr(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER, flags);
+				previousContainer->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, flags);
 			}
 
 			previousContainer->decrementReferenceCounter();
@@ -955,7 +955,7 @@ void Player::checkLootContainers(const Item* item)
 		if (remove) {
 			shouldSend = true;
 			it = quickLootContainers.erase(it);
-			lootContainer->removeAttribute(ITEM_ATTRIBUTE_QUICKLOOTCONTAINER);
+			lootContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
 			lootContainer->decrementReferenceCounter();
 		} else {
 			++it;
@@ -1075,7 +1075,7 @@ Reward* Player::getReward(uint32_t rewardId, bool autoCreate)
 
 	Reward* reward = new Reward();
 	reward->incrementReferenceCounter();
-	reward->setIntAttr(ITEM_ATTRIBUTE_DATE, rewardId);
+	reward->setAttribute(ItemAttribute_t::DATE, rewardId);
 	rewardMap[rewardId] = reward;
 
 	g_game().internalAddItem(getRewardChest(), reward, INDEX_WHEREEVER, FLAG_NOLIMIT);
@@ -2394,10 +2394,9 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			const ItemType& it = Item::items[item->getID()];
 			if (it.abilities) {
 				const int16_t& absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
+				uint16_t charges = item->getInteger(ItemAttribute_t::CHARGES);
 				if (absorbPercent != 0) {
 					damage -= std::round(damage * (absorbPercent / 100.));
-
-					uint16_t charges = item->getCharges();
 					if (charges != 0) {
 						g_game().transformItem(item, item->getID(), charges - 1);
 					}
@@ -2407,8 +2406,6 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 					const int16_t& fieldAbsorbPercent = it.abilities->fieldAbsorbPercent[combatTypeToIndex(combatType)];
 					if (fieldAbsorbPercent != 0) {
 						damage -= std::round(damage * (fieldAbsorbPercent / 100.));
-
-						uint16_t charges = item->getCharges();
 						if (charges != 0) {
 							g_game().transformItem(item, item->getID(), charges - 1);
 						}
@@ -2794,7 +2791,7 @@ Item* Player::getCorpse(Creature* lastHitCreature, Creature* mostDamageCreature)
 			ss << "You recognize " << getNameDescription() << '.';
 		}
 
-		corpse->setSpecialDescription(ss.str());
+		corpse->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	}
 	return corpse;
 }
@@ -3771,7 +3768,7 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMa
 	for (auto item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
-			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getFluidType()) << 16)] += item->getItemCount();
+			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getInteger(ItemAttribute_t::FLUIDTYPE)) << 16)] += item->getItemCount();
 		} else {
 			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
 		}
@@ -5885,14 +5882,14 @@ void Player::openPlayerContainers()
 
 		Container* itemContainer = item->getContainer();
 		if (itemContainer) {
-			int64_t cid = item->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+			int64_t cid = item->getInteger(ItemAttribute_t::OPENCONTAINER);
 			if (cid > 0) {
 				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 			}
 			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
 				Container* subContainer = (*it)->getContainer();
 				if (subContainer) {
-					uint8_t subcid = (*it)->getIntAttr(ITEM_ATTRIBUTE_OPENCONTAINER);
+					auto subcid = static_cast<uint8_t>((*it)->getInteger(ItemAttribute_t::OPENCONTAINER));
 					if (subcid > 0) {
 						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
 					}

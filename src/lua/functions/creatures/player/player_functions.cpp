@@ -1891,7 +1891,7 @@ int PlayerFunctions::luaPlayerShowTextDialog(lua_State* L) {
 	}
 
 	if (!text.empty()) {
-		item->setText(text);
+		item->setAttribute(ItemAttribute_t::TEXT, text);
 		length = std::max<int32_t>(text.size(), length);
 	}
 

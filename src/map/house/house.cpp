@@ -127,7 +127,7 @@ void House::updateDoorDescription() const
 	}
 
 	for (const auto& it : doorList) {
-		it->setSpecialDescription(ss.str());
+		it->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	}
 }
 
@@ -262,16 +262,13 @@ bool House::transferToDepot(Player* player) const
 					std::string itemName = item->getName();
 					uint16_t itemID = item->getID();
 					Item* newItem = g_game().transformItem(item, ITEM_DECORATION_KIT);
-					ItemAttributes::CustomAttribute attribute;
-					attribute.setInt64(itemID);
-					std::string key = "unWrapId";
-					newItem->setCustomAttribute(key, attribute);
+					newItem->setCustomAttribute("unWrapId", static_cast<int64_t>(itemID));
 					std::ostringstream ss;
 					ss << "Unwrap it in your own house to create a <" << itemName << ">.";
-					newItem->setStrAttr(ITEM_ATTRIBUTE_DESCRIPTION, ss.str());
+					newItem->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 					
 					if (hiddenCharges > 0) {
-						item->setDate(hiddenCharges);
+						item->setAttribute(ItemAttribute_t::DATE, hiddenCharges);
 					}
 					
 					moveItemList.push_back(newItem);
@@ -407,7 +404,7 @@ HouseTransferItem* HouseTransferItem::createHouseTransferItem(House* house)
 	transferItem->setSubType(1);
 	std::ostringstream ss;
 	ss << "It is a house transfer document for '" << house->getName() << "'.";
-	transferItem->setSpecialDescription(ss.str());
+	transferItem->setAttribute(ItemAttribute_t::DESCRIPTION, ss.str());
 	return transferItem;
 }
 
@@ -759,7 +756,7 @@ void Houses::payHouses(RentPeriod_t rentPeriod) const
 
 				std::ostringstream ss;
 				ss << "Warning! \nThe " << period << " rent of " << house->getRent() << " gold for your house \"" << house->getName() << "\" is payable. Have it within " << daysLeft << " days or you will lose this house.";
-				letter->setText(ss.str());
+				letter->setAttribute(ItemAttribute_t::TEXT, ss.str());
 				g_game().internalAddItem(player.getInbox(), letter, INDEX_WHEREEVER, FLAG_NOLIMIT);
 				house->setPayRentWarnings(house->getPayRentWarnings() + 1);
 			} else {

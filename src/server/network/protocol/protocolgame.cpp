@@ -486,14 +486,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 		return;
 	}
 
+	setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+	enableCompression();
+
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
-		enableCompression();
-	} else {
-		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
-	}
-	
 
 	version = msg.get<uint16_t>(); // Protocol version
 

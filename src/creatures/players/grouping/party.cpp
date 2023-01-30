@@ -151,6 +151,7 @@ bool Party::passPartyLeadership(Player* player)
 	memberList.insert(memberList.begin(), oldLeader);
 
 	updateSharedExperience();
+	updateTrackerAnalyzer();
 
 	for (Player* member : memberList) {
 		member->sendPartyCreatureShield(oldLeader);

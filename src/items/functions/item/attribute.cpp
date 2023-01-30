@@ -27,7 +27,7 @@ const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const
 		return emptyString;
 	}
 
-	return *attribute->value.string;
+	return *attribute->getString().get();
 }
 
 const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const
@@ -42,14 +42,14 @@ const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const
 		return emptyInt;
 	}
 
-	return attribute->value.integer;
+	return attribute->getInteger();
 }
 
 const Attributes* ItemAttribute::getAttribute(ItemAttribute_t type) const
 {
 	if (hasAttribute(type)) {
 		for (const Attributes& attribute : attributeVector) {
-			if (attribute.type == type) {
+			if (attribute.getAttributeType() == type) {
 				return &attribute;
 			}
 		}
@@ -61,7 +61,7 @@ Attributes& ItemAttribute::getAttributesByType(ItemAttribute_t type)
 {
 	if (hasAttribute(type)) {
 		for (Attributes& attribute : attributeVector) {
-			if (attribute.type == type) {
+			if (attribute.getAttributeType() == type) {
 				return attribute;
 			}
 		}
@@ -77,7 +77,7 @@ void ItemAttribute::setAttribute(ItemAttribute_t type, int64_t value) {
 		return;
 	}
 
-	getAttributesByType(type).value.integer = std::move(value);
+	getAttributesByType(type).setValue(value);
 }
 
 void ItemAttribute::setAttribute(ItemAttribute_t type, const std::string &value) {
@@ -89,9 +89,7 @@ void ItemAttribute::setAttribute(ItemAttribute_t type, const std::string &value)
 		return;
 	}
 
-	Attributes& attr = getAttributesByType(type);
-	delete attr.value.string;
-	attr.value.string = new std::string(value);
+	getAttributesByType(type).setValue(value);
 }
 
 bool ItemAttribute::removeAttribute(ItemAttribute_t type)
@@ -101,7 +99,7 @@ bool ItemAttribute::removeAttribute(ItemAttribute_t type)
 	}
 
 	std::ranges::for_each(attributeVector, [this, type](auto &it) {
-		if (it.type == type) {
+		if (it.getAttributeType() == type) {
 			it = std::move(attributeVector.back());
 			attributeVector.pop_back();
 			return false;
@@ -109,6 +107,7 @@ bool ItemAttribute::removeAttribute(ItemAttribute_t type)
 
 		return true;
 	});
+
 	attributeBits &= ~type;
 	return true;
 }

@@ -51,11 +51,7 @@ public:
 		return attributePtr->getAttributeString(type);
 	}
 	bool hasAttribute(ItemAttribute_t type) const {
-		if (!attributePtr) {
-			return false;
-		}
-
-		return attributePtr->hasAttribute(type);
+		return getAttribute()->hasAttribute(type);
 	}
 	void removeAttribute(ItemAttribute_t type) {
 		if (attributePtr) {
@@ -84,9 +80,19 @@ public:
 	}
 
 	const std::underlying_type_t<ItemAttribute_t>& getAttributeBits() const {
+		static std::underlying_type_t<ItemAttribute_t> emptyType = {};
+		if (!attributePtr) {
+			return emptyType;
+		}
+
 		return attributePtr->getAttributeBits();
 	}
 	const std::vector<Attributes>& getAttributeVector() const {
+		static std::vector<Attributes> emptyVector = {};
+		if (!attributePtr) {
+			return emptyVector;
+		}
+
 		return attributePtr->getAttributeVector();
 	}
 
@@ -95,7 +101,7 @@ public:
 			return false;
 		}
 
-		return attributePtr->isIntAttrType(type);
+		return getAttribute()->isIntAttrType(type);
 	}
 
 	bool isStrAttrType(ItemAttribute_t type) const {
@@ -103,16 +109,24 @@ public:
 			return false;
 		}
 
-		return attributePtr->isStrAttrType(type);
+		return getAttribute()->isStrAttrType(type);
 	}
 
 	// Custom Attributes
 	const std::map<std::string, CustomAttribute, std::less<>>& getCustomAttributeMap() const {
-		return getAttribute()->getCustomAttributeMap();
+		static std::map<std::string, CustomAttribute, std::less<>> map = {};
+		if (!attributePtr) {
+			return map;
+		}
+		return attributePtr->getCustomAttributeMap();
 	}
 	const CustomAttribute* getCustomAttribute(const std::string& attributeName) const
 	{
-		return getAttribute()->getCustomAttribute(attributeName);
+		if (!attributePtr) {
+			return nullptr;
+		}
+
+		return attributePtr->getCustomAttribute(attributeName);
 	}
 
 	template<typename GenericType>
@@ -126,7 +140,11 @@ public:
 	}
 
 	bool removeCustomAttribute(const std::string& attributeName) {
-		return getAttribute()->removeCustomAttribute(attributeName);
+		if (!attributePtr) {
+			return false;
+		}
+
+		return attributePtr->removeCustomAttribute(attributeName);
 	}
 
 	uint16_t getCharges() const {
@@ -151,7 +169,7 @@ public:
 	}
 
 	void setDecaying(ItemDecayState_t decayState) {
-		setAttribute(ItemAttribute_t::DECAYSTATE, decayState);
+		setAttribute(ItemAttribute_t::DECAYSTATE, static_cast<int64_t>(decayState));
 		if (decayState == DECAYING_FALSE) {
 			removeAttribute(ItemAttribute_t::DURATION_TIMESTAMP);
 		}
@@ -446,8 +464,8 @@ class Item : virtual public Thing, public ItemProperties
 				setDuration(duration);
 			}
 		}
-		void setDuration(int32_t time) {
-			setAttribute(ItemAttribute_t::DURATION, std::max<int32_t>(0, time));
+		void setDuration(time_t time) {
+			setAttribute(ItemAttribute_t::DURATION, static_cast<int64_t>(std::max<int32_t>(0, time)));
 		}
 		uint32_t getDefaultDuration() const {
 			return items[id].decayTime * 1000;

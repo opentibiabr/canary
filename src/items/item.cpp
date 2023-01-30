@@ -58,7 +58,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 		} else if (it.isBed()) {
 			newItem = new BedItem(type);
 		} else {
-			auto itemMap = ItemTransformationMap.find(static_cast<item_t>(it.id));
+			auto itemMap = ItemTransformationMap.find(static_cast<ItemID_t>(it.id));
 			if (itemMap != ItemTransformationMap.end()) {
 				newItem = new Item(itemMap->second, count);
 			} else {
@@ -252,21 +252,25 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
+	if (!attributePtr || !otherItem->attributePtr) {
+		return false;
+	}
+
 	if (getAttributeBits() != otherItem->getAttributeBits()) {
 		return false;
 	}
 
 	for (const auto& attribute : getAttributeVector()) {
 		for (const auto& compareAttribute : otherItem->getAttributeVector()) {
-			if (attribute.type != compareAttribute.type) {
+			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;
 			}
 
-			if (isIntAttrType(attribute.type) && attribute.value.integer != compareAttribute.value.integer) {
+			if (isIntAttrType(attribute.getAttributeType()) && attribute.getInteger() != compareAttribute.getInteger()) {
 				return false;
 			}
 
-			if (isStrAttrType(attribute.type) && *attribute.value.string != *compareAttribute.value.string) {
+			if (isStrAttrType(attribute.getAttributeType()) && attribute.getString() != compareAttribute.getString()) {
 				return false;
 			}
 		}
@@ -664,6 +668,14 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 			}
 
 			setAttribute(ItemAttribute_t::SPECIAL, special);
+
+			// Migrate hireling lamps to CustomAttribute instead of SpecialAttribute
+			if (getID() == ItemID_t::HIRELING_LAMP) {
+				// Remove special attribute
+				removeAttribute(ItemAttribute_t::SPECIAL);
+				// Add custom attribute
+				setCustomAttribute("Hireling", static_cast<int64_t>(std::atoi(special.c_str())));
+			}
 			break;
 		}
 
@@ -2558,19 +2570,19 @@ void Item::stopDecaying()
 bool Item::hasMarketAttributes()
 {
 	for (const auto& attribute : getAttributeVector()) {
-		if (attribute.type == ItemAttribute_t::CHARGES && static_cast<uint16_t>(attribute.value.integer) != items[id].charges) {
+		if (attribute.getAttributeType() == ItemAttribute_t::CHARGES && static_cast<uint16_t>(attribute.getInteger()) != items[id].charges) {
 			return false;
 		}
 
-		if (attribute.type == ItemAttribute_t::DURATION && static_cast<uint32_t>(attribute.value.integer) != getDefaultDuration()) {
+		if (attribute.getAttributeType() == ItemAttribute_t::DURATION && static_cast<uint32_t>(attribute.getInteger()) != getDefaultDuration()) {
 			return false;
 		}
 
-		if (attribute.type == ItemAttribute_t::IMBUEMENT_TYPE && !hasImbuements()) {
+		if (attribute.getAttributeType() == ItemAttribute_t::IMBUEMENT_TYPE && !hasImbuements()) {
 			return false;
 		}
 
-		if (attribute.type == ItemAttribute_t::TIER && static_cast<uint8_t>(attribute.value.integer) != getTier()) {
+		if (attribute.getAttributeType() == ItemAttribute_t::TIER && static_cast<uint8_t>(attribute.getInteger()) != getTier()) {
 			return false;
 		}
 	}

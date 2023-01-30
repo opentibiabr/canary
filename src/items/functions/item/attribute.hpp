@@ -59,59 +59,70 @@ public:
 	}
 };
 
-struct Attributes : public ItemAttributeHelper
+class Attributes : public ItemAttributeHelper
 {
-	explicit Attributes(ItemAttribute_t type) : type(type) {
-		memset(&value, 0, sizeof(value));
-	}
-	Attributes(const Attributes& i) {
-		type = i.type;
-		if (isIntAttrType(type)) {
-			value.integer = i.value.integer;
-		} else if (isStrAttrType(type)) {
-			value.string = new std::string(*i.value.string);
-		} else {
-			memset(&value, 0, sizeof(value));
-		}
-	}
-	Attributes(Attributes&& attribute) noexcept : value(attribute.value), type(attribute.type) {
-		memset(&attribute.value, 0, sizeof(value));
-		attribute.type = ItemAttribute_t::NONE;
-	}
+public:
+	explicit Attributes(ItemAttribute_t type) : type(type), value(getDefaultValueForType(type)) {}
+	~Attributes() = default;
+
+	Attributes(const Attributes& i) : type(i.type), value(i.value) {}
+	Attributes(Attributes&& attribute) noexcept : type(attribute.type), value(std::move(attribute.value)) {}
+
 	Attributes& operator=(Attributes&& other) noexcept {
-		if (this != &other) {
-			if (isStrAttrType(type)) {
-				delete value.string;
-			}
-
-			value = other.value;
-			type = other.type;
-
-			memset(&other.value, 0, sizeof(value));
-			other.type = ItemAttribute_t::NONE;
-		}
+		type = other.type;
+		value = std::move(other.value);
 		return *this;
 	}
-	~Attributes() {
-		if (isStrAttrType(type)) {
-			delete value.string;
+
+	const ItemAttribute_t &getAttributeType() const {
+		return type;
+	}
+
+	std::variant<int64_t, std::shared_ptr<std::string>> getDefaultValueForType(ItemAttribute_t type) {
+		if (isIntAttrType(type)) {
+			return 0;
+		} else if (isStrAttrType(type)) {
+			return std::make_shared<std::string>();
+		} else {
+			return {};
 		}
 	}
 
-	const ItemAttribute_t &getAttributeType() const;
+	void setValue(int64_t newValue) {
+		if (std::holds_alternative<int64_t>(value)) {
+			value = newValue;
+		}
+	}
+	void setValue(const std::string& newValue) {
+		if (std::holds_alternative<std::shared_ptr<std::string>>(value)) {
+			value = std::make_shared<std::string>(newValue);
+		}
+	}
+	const int64_t& getInteger() const {
+		if (std::holds_alternative<int64_t>(value)) {
+			return std::get<int64_t>(value);
+		}
+		static int64_t emptyVaue;
+		return emptyVaue;
+	}
 
+	const std::shared_ptr<std::string>& getString() const {
+		if (std::holds_alternative<std::shared_ptr<std::string>>(value)) {
+			return std::get<std::shared_ptr<std::string>>(value);
+		}
+		static std::shared_ptr<std::string> emptyPtr;
+		return emptyPtr;
+	}
+
+private:
 	ItemAttribute_t type;
-
-	union {
-		int64_t integer;
-		std::string* string;
-	} value;
+	std::variant<int64_t, std::shared_ptr<std::string>> value;
 };
 
 class ItemAttribute : public ItemAttributeHelper
 {
 public:
-	ItemAttribute() {}
+	ItemAttribute() = default;
 
 	// CustomAttribute map methods
 	const std::map<std::string, CustomAttribute, std::less<>>& getCustomAttributeMap() const;

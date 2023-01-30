@@ -690,7 +690,7 @@ void LuaEnums::initItemAttributeEnums(lua_State* L) {
 		auto number = magic_enum::enum_integer(value);
 		// Creation of the "ITEM_ATTRIBUTE_" namespace for lua scripts
 		std::string enumName = "ITEM_ATTRIBUTE_" + std::string(magic_enum::enum_name(value));
-		registerGlobalVariable(L, enumName, number);
+		registerGlobalVariable(L, enumName, static_cast<lua_Number>(number));
 	}
 }
 
@@ -790,6 +790,7 @@ void LuaEnums::initItemIdEnums(lua_State* L) {
 
 	registerEnum(L, ITEM_FORGE_SLIVER);
 	registerEnum(L, ITEM_FORGE_CORE);
+	registerEnum(L, ItemID_t::HIRELING_LAMP);
 }
 
 void LuaEnums::initPlayerFlagEnums(lua_State* L) {

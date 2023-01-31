@@ -6009,7 +6009,7 @@ void ProtocolGame::sendOutfitWindow()
 		} else if (outfit.from == "store") {
 			msg.add<uint16_t>(outfit.lookType);
 			msg.addString(outfit.name);
-			msg.addByte(outfit.lookType >= 962 && outfit.lookType <= 974 ? 0 : 3);
+			msg.addByte(outfit.lookType >= 962 && outfit.lookType <= 975 ? 0 : 3);
 			msg.addByte(0x01);
 			msg.add<uint32_t>(0x00);
 			++outfitSize;

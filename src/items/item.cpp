@@ -748,21 +748,18 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream& propStream)
 				// Unserialize key type and value
 				std::string key;
 				if (!propStream.readString(key)) {
-					SPDLOG_ERROR("[DEPRECATED] Failed to read key for item {}, on position {}", getID(), getPosition().toString());
 					return ATTR_READ_ERROR;
 				}
 
 				// Unserialize value type and value
 				CustomAttribute customAttribute;
 				if (!customAttribute.unserialize(propStream, __FUNCTION__)) {
-					SPDLOG_ERROR("[DEPRECATED] Failed to unserialize attributes for item {}, on position {}", getID(), getPosition().toString());
 					return ATTR_READ_ERROR;
 				}
-
-				// Remove old custom attribute
-				removeAttribute(ItemAttribute_t::CUSTOM);
 				// Add new custom attribute
 				addCustomAttribute(key, customAttribute);
+				// Remove old custom attribute
+				removeAttribute(ItemAttribute_t::CUSTOM);
 			}
 			break;
 		}
@@ -962,19 +959,6 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 		propWriteStream.writeString(getString(ItemAttribute_t::SPECIAL));
 	}
 
-	// Deprecated, all items that still exist with this attribute will work normally, but new items will be created with the new system, using ATTR_CUSTOM
-	if (hasAttribute(ItemAttribute_t::CUSTOM)) {
-		const auto customAttrMap = getCustomAttributeMap();
-		propWriteStream.write<uint8_t>(ATTR_CUSTOM_ATTRIBUTES);
-		propWriteStream.write<uint64_t>(customAttrMap.size());
-		for (const auto &[attributeName, attributePtr] : customAttrMap) {
-			// Serializing key type
-			propWriteStream.writeString(attributeName);
-			// Serializing value type
-			attributePtr.serialize(propWriteStream);
-		}
-	}
-
 	if (hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
 		propWriteStream.write<uint8_t>(ATTR_QUICKLOOTCONTAINER);
 		propWriteStream.write<uint32_t>(getAttribute<uint32_t>(ItemAttribute_t::QUICKLOOTCONTAINER));
@@ -991,9 +975,9 @@ void Item::serializeAttr(PropWriteStream& propWriteStream) const
 	}
 
 	// Serialize custom attributes, only serialize if the map not is empty
-	if (auto customAttributeMap = getCustomAttributeMap();
-		!customAttributeMap.empty())
+	if (hasCustomAttribute())
 	{
+		auto customAttributeMap = getCustomAttributeMap();
 		propWriteStream.write<uint8_t>(ATTR_CUSTOM);
 		propWriteStream.write<uint64_t>(customAttributeMap.size());
 		for (const auto &[attributeKey, customAttribute] : customAttributeMap)

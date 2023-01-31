@@ -59,7 +59,7 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 
 void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, auto attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false)
 {
-	auto look = static_cast<uint16_t>(attribute->getInt64Value());
+	auto look = static_cast<uint16_t>(attribute->getInteger());
 	msg.add<uint16_t>(look);
 	if (look != 0) {
 		auto lookHead = item->getCustomAttribute(head);
@@ -67,14 +67,14 @@ void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, auto attribut
 		auto lookLegs = item->getCustomAttribute(legs);
 		auto lookFeet = item->getCustomAttribute(feet);
 
-		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInt64Value()) : 0);
-		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInt64Value()) : 0);
-		msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInt64Value()) : 0);
-		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInt64Value()) : 0);
+		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInteger()) : 0);
+		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInteger()) : 0);
+		msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInteger()) : 0);
+		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInteger()) : 0);
 
 		if (addAddon) {
 			auto lookAddons = item->getCustomAttribute("LookAddons");
-			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInt64Value()) : 0);
+			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInteger()) : 0);
 		}
 	} else {
 		if (addByte) {
@@ -225,8 +225,8 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 			msg.add<uint16_t>(0);
 		}
 
-		msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt64Value()) : 2);
-		msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt64Value()) : 0x01);
+		msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInteger()) : 2);
+		msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInteger()) : 0x01);
 	}
 	if (item->getClassification() > 0) {
 		msg.addByte(item->getTier());
@@ -6147,9 +6147,9 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(itemId);
 	msg.addByte(stackpos);
 
-	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInt64Value()) : 0x01);
+	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInteger()) : 0x01);
 	msg.addByte(lookType ? 0x01 : 0x00);
-	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInt64Value()) : 2);
+	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInteger()) : 2);
 	writeToOutputBuffer(msg);
 }
 

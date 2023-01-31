@@ -16,29 +16,43 @@ class CustomAttribute {
 public:
 	CustomAttribute();
 	~CustomAttribute();
-	CustomAttribute(const std::string &initStringKey, const int64_t &initInt64Value);
-	CustomAttribute(const std::string &initStringKey, const std::string &initStringValue);
-	CustomAttribute(const std::string &initStringKey, const double &initDoubleValue);
-	CustomAttribute(const std::string &initStringKey, const bool &initBoolValue);
+
+	CustomAttribute(const std::string &initStringKey, const int64_t initInt64Value);
+	CustomAttribute(const std::string &initStringKey, const std::string initStringValue);
+	CustomAttribute(const std::string &initStringKey, const double initDoubleValue);
+	CustomAttribute(const std::string &initStringKey, const bool initBoolValue);
 
 	const std::string &getStringKey() const;
 
-	const int64_t &getInt64Value() const;
-	const std::string &getStringValue() const;
-	const double &getDoubleValue() const;
-	const bool &getBoolValue() const;
+	const int64_t &getInteger() const;
+	const std::string &getString() const;
+	const double &getDouble() const;
+	const bool &getBool() const;
 
-	void setInt64Value(const int64_t &newValue) {
-		int64Value = newValue;
+	void setValue(const int64_t newValue) {
+		if (std::holds_alternative<int64_t>(value)) {
+			value = newValue;
+		}
 	}
-	void setStringValue(const std::string &newValue) {
-		stringValue = newValue;
+	void setValue(const std::string newValue) {
+		if (std::holds_alternative<std::string>(value)) {
+			value = newValue;
+		}
 	}
-	void setDoubleValue(const double &newValue) {
-		doubleValue = newValue;
+	void setValue(const double newValue) {
+		if (std::holds_alternative<double>(value)) {
+			value = newValue;
+		}
 	}
-	void setBoolValue(const bool &newValue) {
-		boolValue = newValue;
+	void setValue(const bool newValue) {
+		if (std::holds_alternative<bool>(value)) {
+			value = newValue;
+		}
+	}
+
+	template <typename T>
+	bool hasValue() const {
+		return std::holds_alternative<T>(value);
 	}
 
 	void pushToLua(lua_State* L) const;
@@ -49,10 +63,7 @@ public:
 private:
 	std::string stringKey;
 
-	int64_t int64Value = 0;
-	std::string stringValue;
-	double doubleValue = 0;
-	bool boolValue = false;
+	std::variant<int64_t, std::string, double, bool> value;
 };
 
 #endif //  SRC_ITEMS_FUNCTIONS_CUSTOM_ATTRIBUTE_HPP_

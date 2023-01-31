@@ -18,43 +18,75 @@ CustomAttribute::~CustomAttribute() = default;
 
 // Constructor for int64_t
 CustomAttribute::CustomAttribute(const std::string& initStringKey,
-	const int64_t& initInt64) : stringKey(initStringKey), int64Value(initInt64) {}
+	const int64_t initInt64) : stringKey(initStringKey)
+{
+	setValue(initInt64);
+}
 // Constructor for string
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string &initStringValue) : stringKey(initStringKey), stringValue(initStringValue) {}
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string initStringValue) : stringKey(initStringKey)
+{
+	setValue(initStringValue);
+}
 // Constructor for double
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const double &initDoubleValue) : stringKey(initStringKey), doubleValue(initDoubleValue) {}
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const double initDoubleValue) : stringKey(initStringKey)
+{
+	setValue(initDoubleValue);
+}
 // Constructor for boolean
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const bool &initBoolValue) : stringKey(initStringKey), boolValue(initBoolValue) {}
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const bool initBoolValue) : stringKey(initStringKey)
+{
+	setValue(initBoolValue);
+}
 
 const std::string &CustomAttribute::getStringKey() const {
 	return stringKey;
 }
 
-const int64_t &CustomAttribute::getInt64Value() const {
-	return int64Value;
+const int64_t &CustomAttribute::getInteger() const {
+	if (std::holds_alternative<int64_t>(value)) {
+		return std::get<int64_t>(value);
+	}
+
+	static int64_t emptyValue;
+	return emptyValue;
 }
 
-const std::string &CustomAttribute::getStringValue() const {
-	return stringValue;
+const std::string &CustomAttribute::getString() const {
+	if (std::holds_alternative<std::string>(value)) {
+		return std::get<std::string>(value);
+	}
+
+	static std::string emptyValue;
+	return emptyValue;
 }
 
-const double &CustomAttribute::getDoubleValue() const {
-	return doubleValue;
+const double &CustomAttribute::getDouble() const {
+	if (std::holds_alternative<double>(value)) {
+		return std::get<double>(value);
+	}
+
+	static double emptyValue;
+	return emptyValue;
 }
 
-const bool &CustomAttribute::getBoolValue() const {
-	return boolValue;
+const bool &CustomAttribute::getBool() const {
+	if (std::holds_alternative<bool>(value)) {
+		return std::get<bool>(value);
+	}
+
+	static bool emptyValue;
+	return emptyValue;
 }
 
 void CustomAttribute::pushToLua(lua_State* L) const {
-	if (int64Value != 0) {
-		lua_pushnumber(L, static_cast<lua_Number>(int64Value));
-	} else if (!stringValue.empty()) {
-		LuaScriptInterface::pushString(L, stringValue);
-	} else if (doubleValue != 0) {
-		lua_pushnumber(L, doubleValue);
-	} else if (boolValue) {
-		LuaScriptInterface::pushBoolean(L, boolValue);
+	if (hasValue<std::string>()) {
+		LuaScriptInterface::pushString(L, getString());
+	} else if (hasValue<int64_t>()) {
+		lua_pushnumber(L, static_cast<lua_Number>(getInteger()));
+	} else if (hasValue<double>()) {
+		lua_pushnumber(L, getDouble());
+	} else if (hasValue<bool>()) {
+		LuaScriptInterface::pushBoolean(L, getBool());
 	} else {
 		lua_pushnil(L);
 	}
@@ -62,18 +94,18 @@ void CustomAttribute::pushToLua(lua_State* L) const {
 
 void CustomAttribute::serialize(PropWriteStream& propWriteStream) const {
 	
-	if (!stringValue.empty()) {
+	if (hasValue<std::string>()) {
 		propWriteStream.write<uint8_t>(1);
-		propWriteStream.writeString(stringValue);
-	} else if (int64Value != 0) {
+		propWriteStream.writeString(getString());
+	} else if (hasValue<int64_t>()) {
 		propWriteStream.write<uint8_t>(2);
-		propWriteStream.write<int64_t>(int64Value);
-	} else if (doubleValue != 0) {
+		propWriteStream.write<int64_t>(getInteger());
+	} else if (hasValue<double>()) {
 		propWriteStream.write<uint8_t>(3);
-		propWriteStream.write<double>(doubleValue);
-	} else if (boolValue) {
+		propWriteStream.write<double>(getDouble());
+	} else if (hasValue<bool>()) {
 		propWriteStream.write<uint8_t>(4);
-		propWriteStream.write<bool>(boolValue);
+		propWriteStream.write<bool>(getBool());
 	}
 }
 
@@ -91,7 +123,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 				SPDLOG_ERROR("[{}] Failed to read string", function);
 				return false;
 			}
-			stringValue = readString;
+			setValue(readString);
 			break;
 		}
 		case 2: {
@@ -100,7 +132,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 				SPDLOG_ERROR("[{}] Failed to read int64", function);
 				return false;
 			}
-			int64Value = readInt;
+			setValue(readInt);
 			break;
 		}
 		case 3: {
@@ -109,7 +141,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 				SPDLOG_ERROR("[{}] Failed to read double", function);
 				return false;
 			}
-			doubleValue = readDouble;
+			setValue(readDouble);
 			break;
 		}
 		case 4: {
@@ -118,7 +150,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 				SPDLOG_ERROR("[{}] Failed to read boolean", function);
 				return false;
 			}
-			boolValue = readBoolean;
+			setValue(readBoolean);
 			break;
 		}
 		default:

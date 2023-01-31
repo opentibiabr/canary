@@ -102,8 +102,8 @@ public:
 		if (std::holds_alternative<int64_t>(value)) {
 			return std::get<int64_t>(value);
 		}
-		static int64_t emptyVaue;
-		return emptyVaue;
+		static int64_t emptyValue;
+		return emptyValue;
 	}
 
 	const std::shared_ptr<std::string>& getString() const {

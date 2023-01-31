@@ -77,7 +77,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const
 {
 	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
-	auto info = attribute ? static_cast<uint32_t>(attribute->getInt64Value()) : 0;
+	auto info = attribute ? static_cast<uint32_t>(attribute->getInteger()) : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;

@@ -231,7 +231,7 @@ int ItemFunctions::luaItemGetFluidType(lua_State* L) {
 	// item:getFluidType()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, item->getInteger(ItemAttribute_t::FLUIDTYPE));
+		lua_pushnumber(L, item->getAttribute<lua_Number>(ItemAttribute_t::FLUIDTYPE));
 	} else {
 		lua_pushnil(L);
 	}
@@ -360,14 +360,14 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 		attribute = ItemAttribute_t::NONE;
 	}
 
-	if (item->isIntAttrType(attribute)) {
+	if (item->isAttributeInteger(attribute)) {
 		if (attribute == ItemAttribute_t::DURATION) {
 			lua_pushnumber(L, static_cast<lua_Number>(item->getDuration()));
 			return 1;
 		}
 
 		lua_pushnumber(L, static_cast<lua_Number>(item->getInteger(attribute)));
-	} else if (item->isStrAttrType(attribute)) {
+	} else if (item->isAttributeString(attribute)) {
 		pushString(L, item->getString(attribute));
 	} else {
 		lua_pushnil(L);
@@ -392,7 +392,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 		attribute = ItemAttribute_t::NONE;
 	}
 
-	if (item->isIntAttrType(attribute)) {
+	if (item->isAttributeInteger(attribute)) {
 		switch (attribute) {
 			case ItemAttribute_t::DECAYSTATE: {
 				if (ItemDecayState_t decayState = getNumber<ItemDecayState_t>(L, 3);
@@ -422,7 +422,7 @@ int ItemFunctions::luaItemSetAttribute(lua_State* L) {
 
 		item->setAttribute(attribute, getNumber<int64_t>(L, 3));
 		pushBoolean(L, true);
-	} else if (item->isStrAttrType(attribute)) {
+	} else if (item->isAttributeString(attribute)) {
 		auto newAttributeString = getString(L, 3);
 		item->setAttribute(attribute, newAttributeString);
 		pushBoolean(L, true);
@@ -753,7 +753,7 @@ int ItemFunctions::luaItemHasProperty(lua_State* L) {
 int ItemFunctions::luaItemGetImbuement(lua_State* L)
 {
 	// item:getImbuement()
-	Item* item = getUserdata<Item>(L, 1);
+	const Item* item = getUserdata<Item>(L, 1);
 	if (!item) {
 		reportErrorFunc(getErrorDesc(LUA_ERROR_ITEM_NOT_FOUND));
 		pushBoolean(L, false);

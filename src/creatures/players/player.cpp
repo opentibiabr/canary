@@ -2394,7 +2394,7 @@ BlockType_t Player::blockHit(Creature* attacker, CombatType_t combatType, int32_
 			const ItemType& it = Item::items[item->getID()];
 			if (it.abilities) {
 				const int16_t& absorbPercent = it.abilities->absorbPercent[combatTypeToIndex(combatType)];
-				uint16_t charges = item->getInteger(ItemAttribute_t::CHARGES);
+				auto charges = item->getAttribute<uint16_t>(ItemAttribute_t::CHARGES);
 				if (absorbPercent != 0) {
 					damage -= std::round(damage * (absorbPercent / 100.));
 					if (charges != 0) {
@@ -3742,7 +3742,7 @@ std::vector<Item*> Player::getAllInventoryItems(bool ignoreEquiped /*= false*/) 
 
 std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uint32_t>& countMap) const
 {
-	for (auto item : getAllInventoryItems()) {
+	for (const auto item : getAllInventoryItems()) {
 		countMap[static_cast<uint32_t>(item->getID())] += Item::countByType(item, -1);
 	}
 	return countMap;
@@ -3750,7 +3750,7 @@ std::map<uint32_t, uint32_t>& Player::getAllItemTypeCount(std::map<uint32_t, uin
 
 std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const
 {
-	for (auto item : getAllInventoryItems()) {
+	for (const auto item : getAllInventoryItems()) {
 		if (item->getTier() > 0) {
 			continue;
 		}
@@ -3765,7 +3765,7 @@ std::map<uint16_t, uint16_t>& Player::getAllSaleItemIdAndCount(std::map<uint16_t
 
 void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMap) const
 {
-	for (auto item : getAllInventoryItems()) {
+	for (const auto item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
 			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getInteger(ItemAttribute_t::FLUIDTYPE)) << 16)] += item->getItemCount();

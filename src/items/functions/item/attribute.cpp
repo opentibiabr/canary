@@ -18,7 +18,7 @@
 */
 const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const {
 	static std::string emptyString;
-	if (!isStrAttrType(type)) {
+	if (!isAttributeString(type)) {
 		return emptyString;
 	}
 
@@ -33,7 +33,7 @@ const std::string& ItemAttribute::getAttributeString(ItemAttribute_t type) const
 const int64_t& ItemAttribute::getAttributeValue(ItemAttribute_t type) const
 {
 	static int64_t emptyInt;
-	if (!isIntAttrType(type)) {
+	if (!isAttributeInteger(type)) {
 		return emptyInt;
 	}
 
@@ -73,7 +73,7 @@ Attributes& ItemAttribute::getAttributesByType(ItemAttribute_t type)
 }
 
 void ItemAttribute::setAttribute(ItemAttribute_t type, int64_t value) {
-	if (!isIntAttrType(type)) {
+	if (!isAttributeInteger(type)) {
 		return;
 	}
 
@@ -81,7 +81,7 @@ void ItemAttribute::setAttribute(ItemAttribute_t type, int64_t value) {
 }
 
 void ItemAttribute::setAttribute(ItemAttribute_t type, const std::string &value) {
-	if (!isStrAttrType(type)) {
+	if (!isAttributeString(type)) {
 		return;
 	}
 
@@ -136,24 +136,24 @@ const CustomAttribute* ItemAttribute::getCustomAttribute(const std::string& attr
 	return nullptr;
 }
 
-void ItemAttribute::setCustomAttribute(const std::string &key, int64_t value) {
-	CustomAttribute attribute(key, std::move(value));
-	customAttributeMap[asLowerCaseString(key)] = std::move(attribute);
+void ItemAttribute::setCustomAttribute(const std::string &key, const int64_t value) {
+	CustomAttribute attribute(key, value);
+	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
-void ItemAttribute::setCustomAttribute(const std::string &key, std::string value) {
-	CustomAttribute attribute(key, std::move(value));
-	customAttributeMap[asLowerCaseString(key)] = std::move(attribute);
+void ItemAttribute::setCustomAttribute(const std::string &key, const std::string &value) {
+	CustomAttribute attribute(key, value);
+	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
-void ItemAttribute::setCustomAttribute(const std::string &key, double value) {
-	CustomAttribute attribute(key, std::move(value));
-	customAttributeMap[asLowerCaseString(key)] = std::move(attribute);
+void ItemAttribute::setCustomAttribute(const std::string &key, const double value) {
+	CustomAttribute attribute(key, value);
+	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
-void ItemAttribute::setCustomAttribute(const std::string &key, bool value) {
-	CustomAttribute attribute(key, std::move(value));
-	customAttributeMap[asLowerCaseString(key)] = std::move(attribute);
+void ItemAttribute::setCustomAttribute(const std::string &key, const bool value) {
+	CustomAttribute attribute(key, value);
+	customAttributeMap[asLowerCaseString(key)] = attribute;
 }
 
 void ItemAttribute::addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute)

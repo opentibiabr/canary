@@ -19,7 +19,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	ItemDecayState_t decayState = static_cast<ItemDecayState_t>(item->getInteger(ItemAttribute_t::DECAYSTATE));
+	auto decayState = item->getAttribute<ItemDecayState_t>(ItemAttribute_t::DECAYSTATE);
 	if (decayState == DECAYING_STOPPING || (!item->canDecay() && decayState == DECAYING_TRUE)) {
 		stopDecay(item);
 		return;

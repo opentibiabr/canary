@@ -17,7 +17,7 @@
 class ItemAttributeHelper
 {
 public:
-	bool isIntAttrType(ItemAttribute_t type) const
+	bool isAttributeInteger(ItemAttribute_t type) const
 	{
 		std::underlying_type_t<ItemAttribute_t> checkTypes = 0;
 		checkTypes |= ItemAttribute_t::ACTIONID;
@@ -45,7 +45,7 @@ public:
 		return (type & static_cast<ItemAttribute_t>(checkTypes)) != 0;
 	}
 
-	bool isStrAttrType(ItemAttribute_t type) const
+	bool isAttributeString(ItemAttribute_t type) const
 	{
 		std::underlying_type_t<ItemAttribute_t> checkTypes = 0;
 		checkTypes |= ItemAttribute_t::DESCRIPTION;
@@ -78,10 +78,10 @@ public:
 		return type;
 	}
 
-	std::variant<int64_t, std::shared_ptr<std::string>> getDefaultValueForType(ItemAttribute_t type) {
-		if (isIntAttrType(type)) {
+	std::variant<int64_t, std::shared_ptr<std::string>> getDefaultValueForType(ItemAttribute_t attributeType) const {
+		if (isAttributeInteger(attributeType)) {
 			return 0;
-		} else if (isStrAttrType(type)) {
+		} else if (isAttributeString(attributeType)) {
 			return std::make_shared<std::string>();
 		} else {
 			return {};
@@ -129,10 +129,10 @@ public:
 	// CustomAttribute object methods
 	const CustomAttribute* getCustomAttribute(const std::string& attributeName) const;
 	
-	void setCustomAttribute(const std::string &key, int64_t value);
-	void setCustomAttribute(const std::string &key, std::string value);
-	void setCustomAttribute(const std::string &key, double value);
-	void setCustomAttribute(const std::string &key, bool value);
+	void setCustomAttribute(const std::string &key, const int64_t value);
+	void setCustomAttribute(const std::string &key, const std::string &value);
+	void setCustomAttribute(const std::string &key, const double value);
+	void setCustomAttribute(const std::string &key, const bool value);
 
 	void addCustomAttribute(const std::string &key, const CustomAttribute &customAttribute);
 	bool removeCustomAttribute(const std::string& attributeName);

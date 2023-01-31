@@ -11,8 +11,7 @@
 #define SRC_ENUMS_HPP
 
 enum ItemAttribute_t : uint64_t {
-	NONE,
-
+	NONE = 0,
 	ACTIONID = 1 << 0,
 	UNIQUEID = 1 << 1,
 	DESCRIPTION = 1 << 2,

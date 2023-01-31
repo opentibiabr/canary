@@ -34,6 +34,11 @@ class Imbuement;
 // This class ItemProperties that serves as an interface to access and modify attributes of an item. The item's attributes are stored in an instance of ItemAttribute. The class ItemProperties has methods to get and set integer and string attributes, check if an attribute exists, remove an attribute, get the underlying attribute bits, and get a vector of attributes. It also has methods to get and set custom attributes, which are stored in a std::map<std::string, CustomAttribute, std::less<>>. The class has a data member attributePtr of type std::unique_ptr<ItemAttribute> that stores a pointer to the item's attributes methods.
 class ItemProperties {
 public:
+	template<typename T>
+	T getAttribute(ItemAttribute_t type) const {
+		return std::clamp(static_cast<T>(getInteger(type)), std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+	}
+
 	const int64_t& getInteger(ItemAttribute_t type) const {
 		static int64_t emptyInt;
 		if (!attributePtr) {
@@ -96,20 +101,20 @@ public:
 		return attributePtr->getAttributeVector();
 	}
 
-	bool isIntAttrType(ItemAttribute_t type) const {
+	bool isAttributeInteger(ItemAttribute_t type) const {
 		if (!attributePtr) {
 			return false;
 		}
 
-		return getAttribute()->isIntAttrType(type);
+		return getAttribute()->isAttributeInteger(type);
 	}
 
-	bool isStrAttrType(ItemAttribute_t type) const {
+	bool isAttributeString(ItemAttribute_t type) const {
 		if (!attributePtr) {
 			return false;
 		}
 
-		return getAttribute()->isStrAttrType(type);
+		return getAttribute()->isAttributeString(type);
 	}
 
 	// Custom Attributes
@@ -352,12 +357,6 @@ class Item : virtual public Thing, public ItemProperties
 			}
 			return items[id].hitChance;
 		}
-		uint32_t getQuicklootAttr() const {
-			if (hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-				return static_cast<uint32_t>(getInteger(ItemAttribute_t::QUICKLOOTCONTAINER));
-			}
-			return 0;
-		}
 
 		uint32_t getWorth() const;
 		uint32_t getForgeSlivers() const;
@@ -465,7 +464,7 @@ class Item : virtual public Thing, public ItemProperties
 			}
 		}
 		void setDuration(time_t time) {
-			setAttribute(ItemAttribute_t::DURATION, static_cast<int64_t>(std::max<int32_t>(0, time)));
+			setAttribute(ItemAttribute_t::DURATION, std::max<time_t>(0, time));
 		}
 		uint32_t getDefaultDuration() const {
 			return items[id].decayTime * 1000;
@@ -496,7 +495,7 @@ class Item : virtual public Thing, public ItemProperties
 			return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ItemAttribute_t::UNIQUEID) && !hasAttribute(ItemAttribute_t::ACTIONID);
 		}
 
-		bool hasMarketAttributes();
+		bool hasMarketAttributes() const;
 
 		void incrementReferenceCounter() {
 			++referenceCounter;

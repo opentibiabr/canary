@@ -3455,7 +3455,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position& pos, uint8_t st
 		newItem->startDecaying();
 	}
 	else if (item->getID() == ITEM_DECORATION_KIT && unWrapId != 0) {
-		uint16_t hiddenCharges = item->getInteger(ItemAttribute_t::DATE);
+		auto hiddenCharges = item->getAttribute<uint16_t>(ItemAttribute_t::DATE);
 		Item* newItem = transformItem(item, unWrapId);
 		if (newItem) {
 			if (hiddenCharges > 0 && isCaskItem(unWrapId)) {
@@ -3513,7 +3513,7 @@ void Game::playerWriteItem(uint32_t playerId, uint32_t windowTextId, const std::
 		if (writeItem->getString(ItemAttribute_t::TEXT) != text) {
 			writeItem->setAttribute(ItemAttribute_t::TEXT, text);
 			writeItem->setAttribute(ItemAttribute_t::WRITER, player->getName());
-			writeItem->setAttribute(ItemAttribute_t::DATE, time(nullptr));
+			writeItem->setAttribute(ItemAttribute_t::DATE, getTimeNow());
 		}
 	} else {
 		writeItem->removeAttribute(ItemAttribute_t::TEXT);

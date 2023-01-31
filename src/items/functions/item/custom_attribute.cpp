@@ -23,7 +23,7 @@ CustomAttribute::CustomAttribute(const std::string& initStringKey,
 	setValue(initInt64);
 }
 // Constructor for string
-CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string initStringValue) : stringKey(initStringKey)
+CustomAttribute::CustomAttribute(const std::string &initStringKey, const std::string &initStringValue) : stringKey(initStringKey)
 {
 	setValue(initStringValue);
 }
@@ -120,7 +120,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 		case 1: {
 			std::string readString;
 			if (!propStream.readString(readString)) {
-				SPDLOG_ERROR("[{}] Failed to read string", function);
+				SPDLOG_ERROR("[{}] failed to read string, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readString);
@@ -129,7 +129,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 		case 2: {
 			int64_t readInt;
 			if (!propStream.read<int64_t>(readInt)) {
-				SPDLOG_ERROR("[{}] Failed to read int64", function);
+				SPDLOG_ERROR("[{}] failed to read int64, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readInt);
@@ -138,7 +138,7 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 		case 3: {
 			double readDouble;
 			if (!propStream.read<double>(readDouble)) {
-				SPDLOG_ERROR("[{}] Failed to read double", function);
+				SPDLOG_ERROR("[{}] failed to read double, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readDouble);
@@ -147,14 +147,14 @@ bool CustomAttribute::unserialize(PropStream& propStream, const std::string& fun
 		case 4: {
 			bool readBoolean;
 			if (!propStream.read<bool>(readBoolean)) {
-				SPDLOG_ERROR("[{}] Failed to read boolean", function);
+				SPDLOG_ERROR("[{}] failed to read boolean, call function: {}", __FUNCTION__, function);
 				return false;
 			}
 			setValue(readBoolean);
 			break;
 		}
 		default:
-			break;
+			return false;
 	}
 	return true;
 }

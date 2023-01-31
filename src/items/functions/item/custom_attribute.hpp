@@ -18,7 +18,7 @@ public:
 	~CustomAttribute();
 
 	CustomAttribute(const std::string &initStringKey, const int64_t initInt64Value);
-	CustomAttribute(const std::string &initStringKey, const std::string initStringValue);
+	CustomAttribute(const std::string &initStringKey, const std::string &initStringValue);
 	CustomAttribute(const std::string &initStringKey, const double initDoubleValue);
 	CustomAttribute(const std::string &initStringKey, const bool initBoolValue);
 
@@ -34,7 +34,7 @@ public:
 			value = newValue;
 		}
 	}
-	void setValue(const std::string newValue) {
+	void setValue(const std::string &newValue) {
 		if (std::holds_alternative<std::string>(value)) {
 			value = newValue;
 		}

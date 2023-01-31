@@ -218,14 +218,14 @@ ReturnValue Actions::canUseFar(const Creature* creature, const Position& toPos,
 
 Action* Actions::getAction(const Item* item) {
 	if (item->hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		auto it = uniqueItemMap.find(item->getInteger(ItemAttribute_t::UNIQUEID));
+		auto it = uniqueItemMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID));
 		if (it != uniqueItemMap.end()) {
 			return &it->second;
 		}
 	}
 
 	if (item->hasAttribute(ItemAttribute_t::ACTIONID)) {
-		auto it = actionItemMap.find(static_cast<uint16_t>(item->getInteger(ItemAttribute_t::ACTIONID)));
+		auto it = actionItemMap.find(item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID));
 		if (it != actionItemMap.end()) {
 			return &it->second;
 		}
@@ -322,7 +322,7 @@ ReturnValue Actions::internalUseItem(Player* player, const Position& pos, uint8_
 			openContainer = myRewardChest;
 		}
 
-		auto rewardId = static_cast<uint32_t>(container->getInteger(ItemAttribute_t::DATE));
+		auto rewardId = container->getAttribute<uint32_t>(ItemAttribute_t::DATE);
 		// Reward container proxy created when the boss dies
 		if (container->getID() == ITEM_REWARD_CONTAINER && !container->getReward()) {
 			if (Reward* reward = player->getReward(rewardId, false)) {

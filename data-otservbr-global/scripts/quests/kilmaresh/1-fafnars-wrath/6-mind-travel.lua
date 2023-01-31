@@ -112,7 +112,7 @@ function memoryShards.onUse(player, item, fromPosition, target, toPosition, isHo
     return false
 end
 
-memoryShards:id(shardIds) -- Green, blue and purple memory shards
+memoryShards:id(31354, 31355, 31356) -- Green, blue and purple memory shards
 memoryShards:register()
 
 

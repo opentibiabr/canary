@@ -13,7 +13,7 @@ function serverInfo.onSay(player, words, param)
 	local worldType = configManager.getString(configKeys.WORLD_TYPE)
 	local text = "Server Info: \n\n"
 	.. "\nExp rate: x" .. baseRate
-	..	"\nExp rate stages: x" .. getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
+	.. "\nExp rate stages: x" .. getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
 	.. "\nSword Skill rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_SWORD), configRateSkill)
 	.. "\nClub Skill rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_CLUB), configRateSkill)
 	.. "\nAxe Skill rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_AXE), configRateSkill)

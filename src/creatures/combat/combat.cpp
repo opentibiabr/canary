@@ -563,10 +563,8 @@ CombatDamage Combat::applyImbuementElementalDamage(Creature* caster, Item* item,
 		return damage;
 	}
 
-	if(item->getWeaponType() == WEAPON_AMMO){
-		if (caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
-			item = caster->getPlayer()->getInventoryItem(CONST_SLOT_LEFT);
-		}
+	if(item->getWeaponType() == WEAPON_AMMO && attackerPlayer && attackerPlayer->getInventoryItem(CONST_SLOT_LEFT) != nullptr) {
+		item = attackerPlayer->getInventoryItem(CONST_SLOT_LEFT);
 	}
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {

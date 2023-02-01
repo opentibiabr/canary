@@ -207,10 +207,10 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 
 	if (it.isPodium) {
-		auto podiumVisible = item->getCustomAttribute("PodiumVisible");
-		auto lookType = item->getCustomAttribute("LookType");
-		auto lookMount = item->getCustomAttribute("LookMount");
-		auto lookDirection = item->getCustomAttribute("LookDirection");
+		const auto podiumVisible = item->getCustomAttribute("PodiumVisible");
+		const auto lookType = item->getCustomAttribute("LookType");
+		const auto lookMount = item->getCustomAttribute("LookMount");
+		const auto lookDirection = item->getCustomAttribute("LookDirection");
 
 		if (lookType) {
 			addOutfitAndMountBytes(msg, item, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
@@ -487,13 +487,8 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg)
 	}
 
 	OperatingSystem_t operatingSystem = static_cast<OperatingSystem_t>(msg.get<uint16_t>());
-	if (operatingSystem <= CLIENTOS_NEW_MAC) {
-		setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
-		enableCompression();
-	} else {
-		setChecksumMethod(CHECKSUM_METHOD_ADLER32);
-	}
-	
+	setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+	enableCompression();
 
 	version = msg.get<uint16_t>(); // Protocol version
 

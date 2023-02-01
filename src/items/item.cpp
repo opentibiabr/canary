@@ -286,7 +286,6 @@ void Item::setDefaultSubtype()
 	setItemCount(1);
 
 	auto itemCharges = it.charges;
-
 	if (itemCharges != 0) {
 		if (it.stackable) {
 			setItemCount(static_cast<uint8_t>(itemCharges));
@@ -2554,6 +2553,10 @@ void Item::stopDecaying()
 
 bool Item::hasMarketAttributes() const
 {
+	if (initAttributePtr() == nullptr) {
+		return true;
+	}
+
 	for (const auto& attribute : getAttributeVector()) {
 		if (attribute.getAttributeType() == ItemAttribute_t::CHARGES && static_cast<uint16_t>(attribute.getInteger()) != items[id].charges) {
 			return false;

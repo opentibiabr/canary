@@ -248,10 +248,6 @@ bool Item::equals(const Item* compareItem) const
 		return false;
 	}
 
-	if (isInitializedAttributePtr() != compareItem->isInitializedAttributePtr()) {
-		return false;
-	}
-
 	if (getAttributeBits() != compareItem->getAttributeBits()) {
 		return false;
 	}

@@ -57,7 +57,7 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 	return totalIterationCount;
 }
 
-void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, auto attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false)
+void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, const CustomAttribute *attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false)
 {
 	auto look = attribute->getAttribute<uint16_t>();
 	msg.add<uint16_t>(look);

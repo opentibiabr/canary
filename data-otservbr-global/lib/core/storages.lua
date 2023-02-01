@@ -2914,29 +2914,33 @@ startupGlobalStorages = {
 	GlobalStorage.FerumbrasAscendant.Elements.Done
 }
 
--- Values extraction function
-local function extractValues(tab, ret)
-	if type(tab) == "number" then
-		table.insert(ret, tab)
-	else
-		for _, v in pairs(tab) do
-			extractValues(v, ret)
-		end
+-- Function to check for duplicate keys in a table
+-- Receives the name of the table to be checked as argument
+function checkDuplicatesStorages(varName)
+	-- Retrieve the table to be checked
+	local keys = _G[varName]
+	-- Create a table to keep track of the keys already seen
+	local seen = {}
+	-- Iterate over the keys in the table
+	for k, v in pairs(keys) do
+			-- Check if a key has already been seen
+			if seen[v] then
+					-- If it has, return true and the duplicate key
+					return true, "Duplicate key found: " .. v
+			end
+			-- If not, add the key to the seen table
+			seen[v] = true
 	end
+	-- If no duplicates were found, return false and a message indicating that
+	return false, "No duplicate keys found."
 end
 
-local extraction = {}
-extractValues(Storage, extraction) -- Call function
-table.sort(extraction) -- Sort the table
--- The choice of sorting is due to the fact that sorting is very cheap O (n log2 (n))
--- And then we can simply compare one by one the elements finding duplicates in O(n)
-
--- Scroll through the extracted table for duplicates
-if #extraction > 1 then
-	for i = 1, #extraction - 1 do
-		if extraction[i] == extraction[i+1] then
-			Spdlog.warn(string.format("Duplicate storage value found: %d",
-				extraction[i]))
-		end
-	end
+-- List of table names to be checked for duplicates
+local variableNames = {"Storage", "GlobalStorage"}
+-- Loop through the list of table names
+for _, variableName in ipairs(variableNames) do
+	-- Call the checkDuplicatesStorages function for each table
+	local hasDuplicates, message = checkDuplicatesStorages(variableName)
+	-- Print the result of the check for each table
+	Spdlog.warn(">> Checking storages " .. variableName .. ": " .. message)
 end

@@ -198,6 +198,14 @@ protected:
 		return attributePtr->getAttributeString(type);
 	}
 
+	bool isInitializedAttributePtr() const {
+		if (!attributePtr) {
+			return false;
+		}
+
+		return true;
+	}
+
 private:
 	std::unique_ptr<ItemAttribute> attributePtr;
 };
@@ -221,7 +229,7 @@ class Item : virtual public Thing, public ItemProperties
 		// non-assignable
 		Item& operator=(const Item&) = delete;
 
-		bool equals(const Item* otherItem) const;
+		bool equals(const Item* compareItem) const;
 
 		Item* getItem() override final {
 			return this;

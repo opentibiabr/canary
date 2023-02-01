@@ -242,26 +242,26 @@ Item* Item::clone() const
 	return item;
 }
 
-bool Item::equals(const Item* otherItem) const
+bool Item::equals(const Item* compareItem) const
 {
-	if (!otherItem) {
+	if (!compareItem) {
 		return false;
 	}
 
-	if (id != otherItem->id) {
+	if (id != compareItem->id) {
 		return false;
 	}
 
-	if (initAttributePtr() == nullptr || otherItem->initAttributePtr() == nullptr) {
+	if (!isInitializedAttributePtr() || !compareItem->isInitializedAttributePtr()) {
 		return false;
 	}
 
-	if (getAttributeBits() != otherItem->getAttributeBits()) {
+	if (getAttributeBits() != compareItem->getAttributeBits()) {
 		return false;
 	}
 
 	for (const auto& attribute : getAttributeVector()) {
-		for (const auto& compareAttribute : otherItem->getAttributeVector()) {
+		for (const auto& compareAttribute : compareItem->getAttributeVector()) {
 			if (attribute.getAttributeType() != compareAttribute.getAttributeType()) {
 				continue;
 			}
@@ -2553,7 +2553,7 @@ void Item::stopDecaying()
 
 bool Item::hasMarketAttributes() const
 {
-	if (initAttributePtr() == nullptr) {
+	if (!isInitializedAttributePtr()) {
 		return true;
 	}
 

@@ -29,7 +29,7 @@ void Decay::startDecay(Item* item)
 		return;
 	}
 
-	const int64_t duration = item->getInteger(ItemAttribute_t::DURATION);
+	const auto duration = item->getAttribute<int64_t>(ItemAttribute_t::DURATION);
 	if (duration <= 0 && item->hasAttribute(ItemAttribute_t::DURATION)) {
 		internalDecayItem(item);
 		return;
@@ -60,7 +60,7 @@ void Decay::startDecay(Item* item)
 void Decay::stopDecay(Item* item)
 {
 	if (item->hasAttribute(ItemAttribute_t::DECAYSTATE)) {
-		int64_t timestamp = item->getInteger(ItemAttribute_t::DURATION_TIMESTAMP);
+		auto timestamp = item->getAttribute<int64_t>(ItemAttribute_t::DURATION_TIMESTAMP);
 		if (item->hasAttribute(ItemAttribute_t::DURATION_TIMESTAMP)) {
 			auto it = decayMap.find(timestamp);
 			if (it != decayMap.end()) {

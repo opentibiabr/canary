@@ -170,11 +170,11 @@ int ItemFunctions::luaItemGetUniqueId(lua_State* L) {
 	// item:getUniqueId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		uint32_t uniqueId = static_cast<uint16_t>(item->getInteger(ItemAttribute_t::UNIQUEID));
+		uint32_t uniqueId = item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID);
 		if (uniqueId == 0) {
 			uniqueId = getScriptEnv()->addThing(item);
 		}
-		lua_pushnumber(L, uniqueId);
+		lua_pushnumber(L, static_cast<lua_Number>(uniqueId));
 	} else {
 		lua_pushnil(L);
 	}
@@ -185,7 +185,7 @@ int ItemFunctions::luaItemGetActionId(lua_State* L) {
 	// item:getActionId()
 	Item* item = getUserdata<Item>(L, 1);
 	if (item) {
-		lua_pushnumber(L, static_cast<lua_Number>(item->getInteger(ItemAttribute_t::ACTIONID)));
+		lua_pushnumber(L, item->getAttribute<lua_Number>(ItemAttribute_t::ACTIONID));
 	} else {
 		lua_pushnil(L);
 	}
@@ -366,9 +366,9 @@ int ItemFunctions::luaItemGetAttribute(lua_State* L) {
 			return 1;
 		}
 
-		lua_pushnumber(L, static_cast<lua_Number>(item->getInteger(attribute)));
+		lua_pushnumber(L, item->getAttribute<lua_Number>(attribute));
 	} else if (item->isAttributeString(attribute)) {
-		pushString(L, item->getString(attribute));
+		pushString(L, item->getAttribute<std::string>(attribute));
 	} else {
 		lua_pushnil(L);
 	}

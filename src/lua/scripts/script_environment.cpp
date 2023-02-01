@@ -74,7 +74,7 @@ uint32_t ScriptEnvironment::addThing(Thing * thing) {
 
 	Item * item = thing -> getItem();
 	if (item && item -> hasAttribute(ItemAttribute_t::UNIQUEID)) {
-		return static_cast<uint32_t>(item->getInteger(ItemAttribute_t::UNIQUEID));
+		return item->getAttribute<uint32_t>(ItemAttribute_t::UNIQUEID);
 	}
 
 	for (const auto & it: localMap) {

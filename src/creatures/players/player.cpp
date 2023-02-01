@@ -885,7 +885,7 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 
 		container->incrementReferenceCounter();
 		if (!loading) {
-			int64_t flags = container->getInteger(ItemAttribute_t::QUICKLOOTCONTAINER);
+			auto flags = container->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 			auto sendAttribute = flags | 1 << category;
 			container->setAttribute(ItemAttribute_t::QUICKLOOTCONTAINER, sendAttribute);
 		}
@@ -895,7 +895,7 @@ Container* Player::setLootContainer(ObjectCategory_t category, Container* contai
 			it != quickLootContainers.end() && !loading)
 		{
 			previousContainer = (*it).second;
-			int64_t flags = previousContainer->getInteger(ItemAttribute_t::QUICKLOOTCONTAINER);
+			auto flags = previousContainer->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
 			flags &= ~(1 << category);
 			if (flags == 0) {
 				previousContainer->removeAttribute(ItemAttribute_t::QUICKLOOTCONTAINER);
@@ -3768,7 +3768,7 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t>& countMa
 	for (const auto item : getAllInventoryItems()) {
 		uint16_t itemId = item->getID();
 		if (Item::items[itemId].isFluidContainer()) {
-			countMap[static_cast<uint32_t>(itemId) | (static_cast<uint32_t>(item->getInteger(ItemAttribute_t::FLUIDTYPE)) << 16)] += item->getItemCount();
+			countMap[static_cast<uint32_t>(itemId) | (item->getAttribute<uint32_t>(ItemAttribute_t::FLUIDTYPE)) << 16] += item->getItemCount();
 		} else {
 			countMap[static_cast<uint32_t>(itemId)] += item->getItemCount();
 		}
@@ -5882,14 +5882,14 @@ void Player::openPlayerContainers()
 
 		Container* itemContainer = item->getContainer();
 		if (itemContainer) {
-			int64_t cid = item->getInteger(ItemAttribute_t::OPENCONTAINER);
+			auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
 			if (cid > 0) {
 				openContainersList.emplace_back(std::make_pair(cid, itemContainer));
 			}
 			for (ContainerIterator it = itemContainer->iterator(); it.hasNext(); it.advance()) {
 				Container* subContainer = (*it)->getContainer();
 				if (subContainer) {
-					auto subcid = static_cast<uint8_t>((*it)->getInteger(ItemAttribute_t::OPENCONTAINER));
+					auto subcid = (*it)->getAttribute<uint8_t>(ItemAttribute_t::OPENCONTAINER);
 					if (subcid > 0) {
 						openContainersList.emplace_back(std::make_pair(subcid, subContainer));
 					}

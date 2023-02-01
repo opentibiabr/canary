@@ -59,22 +59,22 @@ uint16_t getVectorIterationIncreaseCount(T& vector) {
 
 void addOutfitAndMountBytes(NetworkMessage &msg, const Item* item, auto attribute, const std::string &head, const std::string &body, const std::string &legs, const std::string &feet, bool addAddon = false, bool addByte = false)
 {
-	auto look = static_cast<uint16_t>(attribute->getInteger());
+	auto look = attribute->getAttribute<uint16_t>();
 	msg.add<uint16_t>(look);
 	if (look != 0) {
-		auto lookHead = item->getCustomAttribute(head);
-		auto lookBody = item->getCustomAttribute(body);
-		auto lookLegs = item->getCustomAttribute(legs);
-		auto lookFeet = item->getCustomAttribute(feet);
+		const auto lookHead = item->getCustomAttribute(head);
+		const auto lookBody = item->getCustomAttribute(body);
+		const auto lookLegs = item->getCustomAttribute(legs);
+		const auto lookFeet = item->getCustomAttribute(feet);
 
-		msg.addByte(lookHead ? static_cast<uint8_t>(lookHead->getInteger()) : 0);
-		msg.addByte(lookBody ? static_cast<uint8_t>(lookBody->getInteger()) : 0);
-		msg.addByte(lookLegs ? static_cast<uint8_t>(lookLegs->getInteger()) : 0);
-		msg.addByte(lookFeet ? static_cast<uint8_t>(lookFeet->getInteger()) : 0);
+		msg.addByte(lookHead ? lookHead->getAttribute<uint8_t>() : 0);
+		msg.addByte(lookBody ? lookBody->getAttribute<uint8_t>() : 0);
+		msg.addByte(lookLegs ? lookLegs->getAttribute<uint8_t>() : 0);
+		msg.addByte(lookFeet ? lookFeet->getAttribute<uint8_t>() : 0);
 
 		if (addAddon) {
-			auto lookAddons = item->getCustomAttribute("LookAddons");
-			msg.addByte(lookAddons ? static_cast<uint8_t>(lookAddons->getInteger()) : 0);
+			const auto lookAddons = item->getCustomAttribute("LookAddons");
+			msg.addByte(lookAddons ? lookAddons->getAttribute<uint8_t>() : 0);
 		}
 	} else {
 		if (addByte) {
@@ -158,7 +158,7 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 	}
 	else if (it.isSplash() || it.isFluidContainer())
 	{
-		msg.addByte(static_cast<uint8_t>(item->getInteger(ItemAttribute_t::FLUIDTYPE)));  
+		msg.addByte(item->getAttribute<uint8_t>(ItemAttribute_t::FLUIDTYPE));
 	}
 	else if (it.isContainer())
 	{
@@ -225,8 +225,8 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const Item *item)
 			msg.add<uint16_t>(0);
 		}
 
-		msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInteger()) : 2);
-		msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInteger()) : 0x01);
+		msg.addByte(lookDirection ? lookDirection->getAttribute<uint8_t>() : 2);
+		msg.addByte(podiumVisible ? podiumVisible->getAttribute<uint8_t>() : 0x01);
 	}
 	if (item->getClassification() > 0) {
 		msg.addByte(item->getTier());
@@ -5893,16 +5893,16 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item *item, uint16_t ma
 	if (canWrite)
 	{
 		msg.add<uint16_t>(maxlen);
-		msg.addString(item->getString(ItemAttribute_t::TEXT));
+		msg.addString(item->getAttribute<std::string>(ItemAttribute_t::TEXT));
 	}
 	else
 	{
-		const std::string &text = item->getString(ItemAttribute_t::TEXT);
+		const std::string &text = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
 		msg.add<uint16_t>(text.size());
 		msg.addString(text);
 	}
 
-	const std::string &writer = item->getString(ItemAttribute_t::WRITER);
+	const std::string &writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
 	if (!writer.empty())
 	{
 		msg.addString(writer);
@@ -5914,7 +5914,7 @@ void ProtocolGame::sendTextWindow(uint32_t windowTextId, Item *item, uint16_t ma
 
 	msg.addByte(0x00); // Show (Traded)
 
-	time_t writtenDate = item->getInteger(ItemAttribute_t::DATE);
+	auto writtenDate = item->getAttribute<time_t>(ItemAttribute_t::DATE);
 	if (writtenDate != 0)
 	{
 		msg.addString(formatDateShort(writtenDate));
@@ -6066,10 +6066,10 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	NetworkMessage msg;
 	msg.addByte(0xC8);
 
-	auto podiumVisible = podium->getCustomAttribute("PodiumVisible");
-	auto lookType = podium->getCustomAttribute("LookType");
-	auto lookMount = podium->getCustomAttribute("LookMount");
-	auto lookDirection = podium->getCustomAttribute("LookDirection");
+	const auto podiumVisible = podium->getCustomAttribute("PodiumVisible");
+	const auto lookType = podium->getCustomAttribute("LookType");
+	const auto lookMount = podium->getCustomAttribute("LookMount");
+	const auto lookDirection = podium->getCustomAttribute("LookDirection");
 
 	if (lookType) {
 		addOutfitAndMountBytes(msg, podium, lookType, "LookHead", "LookBody", "LookLegs", "LookFeet", true);
@@ -6147,9 +6147,9 @@ void ProtocolGame::sendPodiumWindow(const Item* podium, const Position& position
 	msg.add<uint16_t>(itemId);
 	msg.addByte(stackpos);
 
-	msg.addByte(podiumVisible ? static_cast<uint8_t>(podiumVisible->getInteger()) : 0x01);
+	msg.addByte(podiumVisible ? podiumVisible->getAttribute<uint8_t>() : 0x01);
 	msg.addByte(lookType ? 0x01 : 0x00);
-	msg.addByte(lookDirection ? static_cast<uint8_t>(lookDirection->getInteger()) : 2);
+	msg.addByte(lookDirection ? lookDirection->getAttribute<uint8_t>() : 2);
 	writeToOutputBuffer(msg);
 }
 

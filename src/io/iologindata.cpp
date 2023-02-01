@@ -483,12 +483,12 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       Container* itemContainer = item->getContainer();
       if (itemContainer) {
-        int64_t cid = item->getInteger(ItemAttribute_t::OPENCONTAINER);
+        auto cid = item->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER);
         if (cid > 0) {
           openContainersList.emplace_back(std::make_pair(cid, itemContainer));
         }
         if (item->hasAttribute(ItemAttribute_t::QUICKLOOTCONTAINER)) {
-          int64_t flags = item->getInteger(ItemAttribute_t::QUICKLOOTCONTAINER);
+          auto flags = item->getAttribute<int64_t>(ItemAttribute_t::QUICKLOOTCONTAINER);
           for (uint8_t category = OBJECTCATEGORY_FIRST; category <= OBJECTCATEGORY_LAST; category++) {
             if (hasBitSet(1 << category, flags)) {
               player->setLootContainer((ObjectCategory_t)category, itemContainer, true);
@@ -563,7 +563,7 @@ bool IOLoginData::loadPlayer(Player* player, DBResult_ptr result)
 
       int32_t pid = pair.second;
       if (pid >= 0 && pid < 100) {
-        auto rewardId = static_cast<uint32_t>(item->getInteger(ItemAttribute_t::DATE));
+        auto rewardId = item->getAttribute<uint32_t>(ItemAttribute_t::DATE);
         Reward* reward = player->getReward(rewardId, true);
         if (reward) {
           it.second = std::pair<Item*, int32_t>(reward->getItem(), pid); //update the map with the special reward container
@@ -757,7 +757,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
     ++runningId;
 
     if (Container* container = item->getContainer()) {
-      if (container->getInteger(ItemAttribute_t::OPENCONTAINER) > 0) {
+      if (container->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
         container->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
       }
 
@@ -801,7 +801,7 @@ bool IOLoginData::saveItems(const Player* player, const ItemBlockList& itemList,
       Container* subContainer = item->getContainer();
       if (subContainer) {
         queue.emplace_back(subContainer, runningId);
-        if (subContainer->getInteger(ItemAttribute_t::OPENCONTAINER) > 0) {
+        if (subContainer->getAttribute<int64_t>(ItemAttribute_t::OPENCONTAINER) > 0) {
           subContainer->setAttribute(ItemAttribute_t::OPENCONTAINER, 0);
         }
 

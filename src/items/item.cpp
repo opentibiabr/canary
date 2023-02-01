@@ -77,7 +77,7 @@ Item* Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/)
 bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const
 {
 	const CustomAttribute* attribute = getCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot));
-	auto info = attribute ? static_cast<uint32_t>(attribute->getInteger()) : 0;
+	auto info = attribute ? attribute->getAttribute<uint32_t>() : 0;
 	imbuementInfo->imbuement = g_imbuements().getImbuement(info & 0xFF);
 	imbuementInfo->duration = info >> 8;
 	return imbuementInfo->duration && imbuementInfo->imbuement;
@@ -85,7 +85,7 @@ bool Item::getImbuementInfo(uint8_t slot, ImbuementInfo *imbuementInfo) const
 
 void Item::setImbuement(uint8_t slot, uint16_t imbuementId, uint32_t duration)
 {
-	auto valueDuration = (static_cast<std::int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
+	auto valueDuration = (static_cast<int64_t>(duration > 0 ? (duration << 8) | imbuementId : 0));
 	setCustomAttribute(std::to_string(ITEM_IMBUEMENT_SLOT + slot), valueDuration);
 }
 
@@ -210,7 +210,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 		}
 	} else if (itemCharges != 0) {
 		if (itemCount != 0) {
-			setAttribute(ItemAttribute_t::CHARGES, itemCount);
+			setItemCount(static_cast<uint8_t>(itemCount));
 		} else {
 			setAttribute(ItemAttribute_t::CHARGES, it.charges);
 		}
@@ -222,8 +222,8 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 Item::Item(const Item& i) :
 	Thing(), id(i.id), count(i.count), loadedFromMap(i.loadedFromMap)
 {
-	if (i.attributePtr) {
-		attributePtr.reset(new ItemAttribute());
+	if (i.initAttributePtr()) {
+		initAttributePtr().reset(new ItemAttribute());
 	}
 }
 
@@ -235,8 +235,8 @@ Item* Item::clone() const
 		return nullptr;
 	}
 
-	if (attributePtr) {
-		item->attributePtr.reset(new ItemAttribute());
+	if (initAttributePtr()) {
+		item->initAttributePtr().reset(new ItemAttribute());
 	}
 
 	return item;
@@ -252,7 +252,7 @@ bool Item::equals(const Item* otherItem) const
 		return false;
 	}
 
-	if (!attributePtr || !otherItem->attributePtr) {
+	if (initAttributePtr() == nullptr || otherItem->initAttributePtr() == nullptr) {
 		return false;
 	}
 
@@ -1025,7 +1025,7 @@ std::vector<std::pair<std::string, std::string>>
 	std::vector<std::pair<std::string, std::string>> descriptions;
 	descriptions.reserve(30);
 	if (item) {
-		const std::string& specialDescription = item->getString(ItemAttribute_t::DESCRIPTION);
+		const std::string& specialDescription = item->getAttribute<std::string>(ItemAttribute_t::DESCRIPTION);
 		if (!specialDescription.empty()) {
         descriptions.emplace_back("Description", specialDescription);
     } else if (!it.description.empty()) {
@@ -2226,9 +2226,10 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 				if (lookDistance <= 4) {
 					if (item) {
-						text = &item->getString(ItemAttribute_t::TEXT);
+						auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
+						text = &string;
 						if (!text->empty()) {
-							const std::string& writer = item->getString(ItemAttribute_t::WRITER);
+							const std::string& writer = item->getAttribute<std::string>(ItemAttribute_t::WRITER);
 							if (!writer.empty()) {
 								s << writer << " wrote";
 								auto date = item->getAttribute<time_t>(ItemAttribute_t::DATE);
@@ -2313,7 +2314,8 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 		s << '.';
 	} else {
 		if (!text && item) {
-			text = &item->getString(ItemAttribute_t::TEXT);
+			auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
+			text = &string;
 		}
 
 		if (!text || text->empty()) {
@@ -2367,7 +2369,7 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 	}
 
 	if (item) {
-		const std::string& specialDescription = item->getString(ItemAttribute_t::DESCRIPTION);
+		const std::string& specialDescription = item->getAttribute<std::string>(ItemAttribute_t::DESCRIPTION);
 		if (!specialDescription.empty()) {
 			s << std::endl << specialDescription;
 		} else if (lookDistance <= 1 && !it.description.empty()) {
@@ -2379,7 +2381,8 @@ std::string Item::getDescription(const ItemType& it, int32_t lookDistance,
 
 	if (it.allowDistRead && it.id >= 7369 && it.id <= 7371) {
 		if (!text && item) {
-			text = &item->getString(ItemAttribute_t::TEXT);
+			auto string = item->getAttribute<std::string>(ItemAttribute_t::TEXT);
+			text = &string;
 		}
 
 		if (text && !text->empty()) {

@@ -210,7 +210,7 @@ Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
 		}
 	} else if (itemCharges != 0) {
 		if (itemCount != 0) {
-			setItemCount(static_cast<uint8_t>(itemCount));
+			setAttribute(ItemAttribute_t::CHARGES, itemCount);
 		} else {
 			setAttribute(ItemAttribute_t::CHARGES, it.charges);
 		}

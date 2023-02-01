@@ -244,15 +244,15 @@ Item* Item::clone() const
 
 bool Item::equals(const Item* compareItem) const
 {
-	if (!compareItem) {
+	if (!compareItem || id != compareItem->id) {
 		return false;
 	}
 
-	if (id != compareItem->id) {
-		return false;
+	if (!isInitializedAttributePtr()) {
+		return !isInitializedAttributePtr();
 	}
 
-	if (!isInitializedAttributePtr() || !compareItem->isInitializedAttributePtr()) {
+	if (!compareItem->isInitializedAttributePtr()) {
 		return false;
 	}
 

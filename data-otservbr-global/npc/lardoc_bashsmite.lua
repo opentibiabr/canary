@@ -80,7 +80,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	npc = Npc(creature)
+	--npc = Npc(creature) < não é necessário pois buga o npcHandler:Say tentando pegar o uid do NPC
 
 	local tempo = 20*60*60
 

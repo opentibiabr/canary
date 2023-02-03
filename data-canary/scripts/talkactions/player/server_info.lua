@@ -2,6 +2,7 @@ local serverInfo = TalkAction("!serverinfo")
 
 function serverInfo.onSay(player, words, param)
 	local configRateSkill =  configManager.getNumber(configKeys.RATE_SKILL)
+	local rateUseStages =  configManager.getNumber(configKeys.RATE_USE_STAGES)
 	local text = "Server Info Rates: \n"
 	.. "\nExp rate: x" .. configManager.getNumber(configKeys.RATE_EXPERIENCE)
 	.. "\nSkill rate: x" .. configManager.getNumber(configKeys.RATE_SKILL)
@@ -11,7 +12,7 @@ function serverInfo.onSay(player, words, param)
 	text = text .. "\n"
 	text = text .. "\n"
 	text = text .. "Server Info Stages Rates: \n"
-	.. "\nExp rate stages: x" .. configManager.getNumber(configKeys.RATE_USE_STAGES)
+	.. "\nExp rate stages: x" .. getRateFromTable(experienceStages, player:getLevel(), expstagesrate)
 	.. "\nSword Skill Stages rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_SWORD), configRateSkill)
 	.. "\nClub Skill Stages rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_CLUB), configRateSkill)
 	.. "\nAxe Skill Stages rate: x" .. getRateFromTable(skillsStages, player:getSkillLevel(SKILL_AXE), configRateSkill)

@@ -2913,34 +2913,3 @@ startupGlobalStorages = {
 	GlobalStorage.FerumbrasAscendant.Elements.Third,
 	GlobalStorage.FerumbrasAscendant.Elements.Done
 }
-
--- Function to check for duplicate keys in a table
--- Receives the name of the table to be checked as argument
-function checkDuplicatesStorages(varName)
-	-- Retrieve the table to be checked
-	local keys = _G[varName]
-	-- Create a table to keep track of the keys already seen
-	local seen = {}
-	-- Iterate over the keys in the table
-	for k, v in pairs(keys) do
-			-- Check if a key has already been seen
-			if seen[v] then
-					-- If it has, return true and the duplicate key
-					return true, "Duplicate key found: " .. v
-			end
-			-- If not, add the key to the seen table
-			seen[v] = true
-	end
-	-- If no duplicates were found, return false and a message indicating that
-	return false, "No duplicate keys found."
-end
-
--- List of table names to be checked for duplicates
-local variableNames = {"Storage", "GlobalStorage"}
--- Loop through the list of table names
-for _, variableName in ipairs(variableNames) do
-	-- Call the checkDuplicatesStorages function for each table
-	local hasDuplicates, message = checkDuplicatesStorages(variableName)
-	-- Print the result of the check for each table
-	Spdlog.warn(">> Checking storages " .. variableName .. ": " .. message)
-end

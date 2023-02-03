@@ -1,4 +1,5 @@
 local serverstartup = GlobalEvent("serverstartup")
+
 function serverstartup.onStartup()
 	Spdlog.info("Loading map attributes")
 	Spdlog.info("Loaded ".. Game.getNpcCount() .." npcs and spawned ".. Game.getMonsterCount() .." monsters")
@@ -150,12 +151,23 @@ function serverstartup.onStartup()
 		end
 	end
 
-    -- Client XP Display Mode
+	-- Client XP Display Mode
 	-- 0 = ignore exp rate /stage
 	-- 1 = include exp rate / stage
 	Game.setStorageValue(GlobalStorage.XpDisplayMode, 1)
 
 	-- Hireling System
 	HirelingsInit()
+
+	-- List of table names to be checked for duplicates
+	local variableNames = {"Storage", "GlobalStorage"}
+	-- Loop through the list of table names
+	for _, variableName in ipairs(variableNames) do
+		-- Call the checkDuplicatesStorages function for each table
+		local hasDuplicates, message = checkDuplicatesStorages(variableName)
+		-- Print the result of the check for each table
+		Spdlog.warn(">> Checking storages " .. variableName .. ": " .. message)
+	end
 end
+
 serverstartup:register()

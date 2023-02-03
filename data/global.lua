@@ -205,19 +205,40 @@ function addStamina(playerId, ...)
 			delay = configManager.getNumber(configKeys.STAMINA_GREEN_DELAY) * 60 * 1000 -- Stamina Green 12 min.
 		elseif actualStamina == 2520 then
 			player:sendTextMessage(MESSAGE_STATUS, "You are no longer refilling stamina, \z
-                                                         because your stamina is already full.")
+														 because your stamina is already full.")
 			staminaBonus.eventsPz[localPlayerId] = nil
 			return false
 		end
 
 		player:setStamina(player:getStamina() + configManager.getNumber(configKeys.STAMINA_PZ_GAIN))
 		player:sendTextMessage(MESSAGE_STATUS,
-                               string.format("%i of stamina has been refilled.",
-                                             configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
-                               )
-        )
+							   string.format("%i of stamina has been refilled.",
+											 configManager.getNumber(configKeys.STAMINA_PZ_GAIN)
+							   )
+		)
 		staminaBonus.eventsPz[localPlayerId] = addEvent(addStamina, delay, nil, localPlayerId, delay)
 		return true
 	end
 	return false
+end
+
+-- Function to check for duplicate keys in a table
+-- Receives the name of the table to be checked as argument
+function checkDuplicatesValues(varName)
+	-- Retrieve the table to be checked
+	local keys = _G[varName]
+	-- Create a table to keep track of the keys already seen
+	local seen = {}
+	-- Iterate over the keys in the table
+	for k, v in pairs(keys) do
+		-- Check if a key has already been seen
+		if seen[v] then
+			-- If it has, return true and the duplicate key
+			return true, "Duplicate key found: " .. v
+		end
+		-- If not, add the key to the seen table
+		seen[v] = true
+	end
+	-- If no duplicates were found, return false and a message indicating that
+	return false, "No duplicate keys found."
 end

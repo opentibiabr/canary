@@ -1,6 +1,18 @@
 local serverInfo = TalkAction("!serverinfo")
 
 function serverInfo.onSay(player, words, param)
+	local exprate = configManager.getNumber(configKeys.RATE_EXPERIENCE)
+	local expstages = getRateFromTable(experienceStages, player:getLevel(), exp_rate)
+	local skillrate = configManager.getNumber(configKeys.RATE_SKILL)
+	local magicrate = configManager.getNumber(configKeys.RATE_MAGIC)
+	local lootrate = configManager.getNumber(configKeys.RATE_LOOT)
+	local buyhouse = configManager.getNumber(configKeys.HOUSE_BUY_LEVEL)
+	local protectionlevel = configManager.getNumber(configKeys.PROTECTION_LEVEL)
+	local worldtype = configManager.getString(configKeys.WORLD_TYPE)
+	local dayKillsToRedSkull = configManager.getNumber(configKeys.DAY_KILLS_TO_RED)
+	local weekKillsToRedSkull = configManager.getNumber(configKeys.WEEK_KILLS_TO_RED)
+	local monthKillsToRedSkull = configManager.getNumber(configKeys.MONTH_KILLS_TO_RED)
+	local serversave = configManager.getString(configKeys.GLOBAL_SERVER_SAVE_TIME)
 	local text = "Server Info: \n\n"
 	.. "\nExp rate: x" .. configManager.getNumber(configKeys.RATE_EXPERIENCE)
 	.. "\nExp rate stages: x" .. getRateFromTable(experienceStages, player:getLevel(), configManager.getNumber(configKeys.RATE_EXPERIENCE))
